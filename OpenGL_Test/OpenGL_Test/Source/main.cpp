@@ -10,6 +10,7 @@
 #include "ui/ui_manager.h"
 #include "file.h"
 #include "inputs/input_system.h"
+#include "scene.h"
 
 #undef main
 
@@ -46,6 +47,9 @@ int main(void)
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
 		return -1;
 	}
+
+	loadedScenes.emplace_back(new Scene());
+	usedScene = loadedScenes[0];
 
 	//AudioClip audio1 = AudioClip(R"(C:\Users\elect\Desktop\Projets Visual Studio\OpenGL_Test\Debug\camera-13695.mp3)");
 	//AudioClip audio1 = AudioClip(R"(D:\Projet Visual Studio\OpenGL_Test\Debug\camera-13695.mp3)");
@@ -286,13 +290,16 @@ int main(void)
 			camera.gameObject->transform.position.y -= vect.y;
 			camera.gameObject->transform.position.z -= vect.z;
 		}
-		if (InputSystem::GetKey(D)) {
+		/*if (InputSystem::GetKey(D)) {
 
 			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
 			vect /= 20.0f;
 			camera.gameObject->transform.position.x += vect.x;
 			camera.gameObject->transform.position.z += vect.z;
-		}
+
+			std::string vectText = std::string("x: " + std::to_string(vect.x) + ",y: " + std::to_string(vect.y) + ",z: " + std::to_string(vect.z));
+			UiManager::RenderText(shaderText, vectText, 0.0f, 820.0f - 24, 0.5f, glm::vec3(0.5, 0.0f, 0.2f));
+		}*/
 		if (InputSystem::GetKey(Q)) {
 
 			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
@@ -387,6 +394,18 @@ int main(void)
 			if (spotLight.GetRange() > 0)
 				spotLight.SetRange(spotLight.GetRange() - 0.2f);
 		}
+
+		/*if (InputSystem::GetKey(D)) {
+
+			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
+			vect /= 20.0f;
+			camera.gameObject->transform.position.x += vect.x;
+			camera.gameObject->transform.position.z += vect.z;
+
+			std::string vectText = std::string("x: " + std::to_string(vect.x) + ",y: " + std::to_string(vect.y) + ",z: " + std::to_string(vect.z));
+			UiManager::RenderText(shaderText, vectText, 0.0f, 620.0f - 24, 0.5f, glm::vec3(0.5, 0.0f, 0.2f));
+		}*/
+
 		//Draw
 		//mesh1.position.x = animation;
 		//mesh1.rotation.y = (float)SDL_GetTicks64() / 8.726646259971623f;
