@@ -6,6 +6,10 @@ AudioClip::AudioClip(std::string filePath)
 	this->filePath = File::GetGamePath() + filePath;
 }
 
+AudioClip::~AudioClip()
+{
+}
+
 std::string AudioClip::GetFilePath()
 {
 	return this->filePath;

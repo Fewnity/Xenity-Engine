@@ -12,10 +12,11 @@ class GameObject
 {
 public:
 	GameObject();
+	~GameObject();
 	bool active = true;
-	std::string name;
+	std::string name = "gameObject";
 	Transform transform = Transform();
-	std::vector<Component> components;
+	std::vector<Component*> components;
 
 	template <typename T>
 	void AddComponent()

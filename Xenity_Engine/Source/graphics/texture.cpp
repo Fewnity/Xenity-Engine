@@ -1,7 +1,6 @@
 #include "texture.h"
 #include <glad/glad.h>
-
-//#include "graphics.h"
+#include "../asset_manager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -10,6 +9,13 @@
 Texture::Texture(std::string filePath, unsigned int _textureIndex) {
 	textureIndex = _textureIndex;
 	LoadTexture(filePath);
+	AssetManager::AddTexture(this);
+}
+
+Texture::~Texture()
+{
+	AssetManager::RemoveTexture(this);
+	glDeleteTextures(1, &textureId);
 }
 
 void Texture::LoadTexture(std::string filePath) {

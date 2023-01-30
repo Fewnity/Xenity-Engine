@@ -4,7 +4,7 @@
 #include <stb_image.h>
 #include <GLFW/glfw3.h>
 
-SDL_Window* Window::window;
+SDL_Window* Window::window = nullptr;
 
 int Window::width = 1280;
 int Window::height = 720;

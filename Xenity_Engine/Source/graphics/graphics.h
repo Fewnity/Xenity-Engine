@@ -11,9 +11,6 @@
 #include "shader.h"
 #include "mesh.h"
 
-//#define STB_IMAGE_IMPLEMENTATION
-
-//#include "stb_image.h"
 #include "camera.h"
 #include "texture.h"
 
@@ -21,6 +18,5 @@ class Graphics
 {
 public :
 	static Camera* usedCamera;
-	static std::vector<Mesh*> allMesh;
 	static void DrawAllMesh();
 };

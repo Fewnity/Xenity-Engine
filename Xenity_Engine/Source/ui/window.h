@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef WINDOW_H /* Include guard */
-#define WINDOW_H
-
 #include <SDL2/SDL.h>
 #include <string>
 
@@ -21,5 +18,3 @@ public:
 private:
 	static int width, height;
 };
-
-#endif

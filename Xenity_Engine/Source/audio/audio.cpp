@@ -1,6 +1,6 @@
 #include "audio.h"
 
-ISoundEngine* Audio::engine;
+ISoundEngine* Audio::engine = nullptr;
 
 int Audio::Init()
 {

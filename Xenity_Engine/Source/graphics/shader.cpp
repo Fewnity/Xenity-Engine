@@ -3,12 +3,22 @@
 #include "../ui/window.h"
 #include <iostream>
 #include "../file_system/file.h"
+#include "../asset_manager.h"
 
 GLuint vertexShaderId, fragmentShaderId, programId;
 
 Shader::Shader(std::string vertexShaderPath, std::string fragmentShaderPath)
 {
 	LoadShader(vertexShaderPath, fragmentShaderPath);
+	AssetManager::AddShader(this);
+}
+
+Shader::~Shader()
+{
+	AssetManager::RemoveShader(this);
+	glDeleteShader(vertexShaderId);
+	glDeleteShader(fragmentShaderId);
+	glDeleteProgram(programId);
 }
 
 GLuint Shader::GetProgramId() {
@@ -38,20 +48,21 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 	glAttachShader(programId, vertexShaderId);
 	glAttachShader(programId, fragmentShaderId);
 	glLinkProgram(programId);
+
 }
 
 void Shader::SetShaderCameraPosition() {
 	Use();
 	//Camera position
-	if (Graphics::usedCamera != nullptr) 
+	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
-	Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-	vect.x += Graphics::usedCamera->gameObject->transform.position.x;
-	vect.y += Graphics::usedCamera->gameObject->transform.position.y;
-	vect.z += Graphics::usedCamera->gameObject->transform.position.z;
+		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		vect.x += Graphics::usedCamera->gameObject->transform.position.x;
+		vect.y += Graphics::usedCamera->gameObject->transform.position.y;
+		vect.z += Graphics::usedCamera->gameObject->transform.position.z;
 
-	glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.position.x, Graphics::usedCamera->gameObject->transform.position.y, Graphics::usedCamera->gameObject->transform.position.z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
+		glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.position.x, Graphics::usedCamera->gameObject->transform.position.y, Graphics::usedCamera->gameObject->transform.position.z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }
 
@@ -104,8 +115,8 @@ void Shader::SetShaderRotation(Vector3 eulerAngle) {
 void Shader::SetShaderScale(Vector3 scale) {
 	Use();
 	glm::mat3 scaleMat = glm::mat3(glm::vec3(scale.x, 0.0, 0.0),
-	                               glm::vec3(0.0, scale.y, 0.0),
-	                               glm::vec3(0.0, 0.0, scale.z));
+		glm::vec3(0.0, scale.y, 0.0),
+		glm::vec3(0.0, 0.0, scale.z));
 
 	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
 }
@@ -125,9 +136,9 @@ void Shader::SetShaderAttribut(std::string attribut, float value) {
 	glUniform1f(glGetUniformLocation(programId, attribut.c_str()), value);
 }
 
-void Shader::SetShaderTexture(std::string attribut, Texture texture) {
+void Shader::SetShaderTexture(std::string attribut, Texture *texture) {
 	Use();
-	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), texture.GetTextureIndex());
+	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), texture->GetTextureIndex());
 }
 
 void Shader::Use() {

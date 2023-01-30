@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine_settings.cpp" />
+    <ClCompile Include="Source\asset_manager.cpp" />
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\game.cpp" />
     <ClCompile Include="Source\audio\audio_source.cpp" />
@@ -196,6 +198,8 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine_settings.h" />
+    <ClInclude Include="Source\asset_manager.h" />
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\audio\audio_source.h" />
     <ClInclude Include="Source\audio\audio_clip.h" />

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "../asset_manager.h"
 
 #include "graphics.h"
 #include "../file_system/file.h"
@@ -12,15 +13,16 @@
 
 using namespace std;
 
-Mesh::Mesh() {
+Mesh::Mesh() : Component() {
 	this->verticesCount = 0;
 	this->vertices = (float*)calloc(this->verticesCount, sizeof(float));
 	this->indicesCount = 0;
 	this->indices = (unsigned int*)calloc(this->indicesCount, sizeof(unsigned int));
 	CreateBuffers(true, true);
+	OnLoadFinished();
 }
 
-Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) {
+Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component() {
 	this->verticesCount = verticesCount / sizeof(*vertices);
 	this->vertices = (float*)calloc(this->verticesCount, sizeof(float));
 	this->indicesCount = indicesCount / sizeof(*indices);
@@ -72,8 +74,8 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 
 std::string modelsPath = R"(Xenity_Engine\Source\models\)"; //TODO remove this
 
-Mesh::Mesh(const std::string meshpath) {
-std::string finalpath = PROJECT_FOLDER + modelsPath;
+Mesh::Mesh(const std::string meshpath) : Component()  {
+	std::string finalpath = PROJECT_FOLDER + modelsPath;
 	//Open file
 	ifstream file;
 	file.open(finalpath + meshpath);
@@ -95,10 +97,10 @@ std::string finalpath = PROJECT_FOLDER + modelsPath;
 	vector<int> normalsIndices;
 	bool hasNoUv = false;
 	bool hasNoNormals = false;
-
 	//Read file
 	std::string text, line;
 	while (std::getline(file, line)) {
+		//printf(line.c_str());
 		//printf("%s", line);
 		if (line.substr(0, 2) == "v ") {
 			float x = 0, y = 0, z = 0;
@@ -219,9 +221,21 @@ std::string finalpath = PROJECT_FOLDER + modelsPath;
 	OnLoadFinished();
 }
 
+Mesh::~Mesh()
+{
+	AssetManager::RemoveMesh(this);
+
+	free(vertices);
+	free(indices);
+	glDeleteVertexArrays(1, &vertexArrayBuffer);
+	glDeleteBuffers(1, &vertexBuffer);
+	glDeleteBuffers(1, &indiceBuffer);
+}
+
 void Mesh::OnLoadFinished()
 {
-	Graphics::allMesh.emplace_back(this);
+	AssetManager::AddMesh(this);
+	//Graphics::allMesh.push_back(this);
 }
 
 void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
@@ -257,10 +271,12 @@ void Mesh::DrawModel() {
 }
 
 void Mesh::UpdateShader() {
-	shader->Use();
-	shader->SetShaderCameraPosition();
-	shader->SetShaderProjection();
-	shader->SetShaderPosition(gameObject->transform.position);
-	shader->SetShaderRotation(gameObject->transform.rotation);
-	shader->SetShaderScale(gameObject->transform.scale);
+	if (shader != nullptr && gameObject != nullptr) {
+		shader->Use();
+		shader->SetShaderCameraPosition();
+		shader->SetShaderProjection();
+		shader->SetShaderPosition(gameObject->transform.position);
+		shader->SetShaderRotation(gameObject->transform.rotation);
+		shader->SetShaderScale(gameObject->transform.scale);
+	}
 }

@@ -6,6 +6,8 @@
 class Scene
 {
 public:
+	Scene();
+	~Scene();
 	std::vector<GameObject*> gameObjects;
 	void addGameObject(GameObject* gameObject);
 };

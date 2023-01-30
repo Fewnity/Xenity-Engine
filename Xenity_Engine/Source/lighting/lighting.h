@@ -18,14 +18,8 @@ public:
 		Spot,
 	};
 	LightType type = Directional;
-	//Spot and point light
-	//Vector3 position = Vector3();
-	//Directional light
-	//Vector3 direction = Vector3();
 	Vector3 color = Vector3();
 	float intensity = 0;
-
-	//void UpdatePointLightValues();
 private:
 	float range = 0;
 };

@@ -11,6 +11,10 @@ Camera::Camera() {
 	}
 }
 
+Camera::~Camera()
+{
+}
+
 void Camera::SetFov(double fov)
 {
 	this->fov = fov;
@@ -28,17 +32,19 @@ double Camera::GetFov()
 /// <param name="y"></param>
 /// <param name="z"></param>
 Vector3 Camera::GetSphericalCoordinate() {
-	float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
-	float TempT = (180 - this->gameObject->transform.rotation.x) / 180.0f * (float)M_PI;
-
-	float cosTempT = cosf(TempT);
-	float cosTempS = cosf(TempS);
-	float SinTempS = sinf(TempS);
-
 	Vector3 vect = Vector3();
-	vect.x = SinTempS * cosTempT;
-	vect.y = -sinf(TempT);
-	vect.z = cosTempS * cosTempT;
+	if (gameObject != nullptr) {
+		float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
+		float TempT = (180 - this->gameObject->transform.rotation.x) / 180.0f * (float)M_PI;
+
+		float cosTempT = cosf(TempT);
+		float cosTempS = cosf(TempS);
+		float SinTempS = sinf(TempS);
+
+		vect.x = SinTempS * cosTempT;
+		vect.y = -sinf(TempT);
+		vect.z = cosTempS * cosTempT;
+	}
 	return vect;
 }
 
@@ -49,15 +55,16 @@ Vector3 Camera::GetSphericalCoordinate() {
 /// <param name="y"></param>
 /// <param name="z"></param>
 Vector3 Camera::GetSphericalCoordinate2() {
-	float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
-
-	float cosTempS = cosf(TempS);
-	float SinTempS = sinf(TempS);
-
 	Vector3 vect = Vector3();
-	vect.x = cosTempS;
-	vect.y = 0;
-	vect.z = -SinTempS;
+	if (gameObject != nullptr) {
+		float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
 
+		float cosTempS = cosf(TempS);
+		float SinTempS = sinf(TempS);
+
+		vect.x = cosTempS;
+		vect.y = 0;
+		vect.z = -SinTempS;
+	}
 	return vect;
 }

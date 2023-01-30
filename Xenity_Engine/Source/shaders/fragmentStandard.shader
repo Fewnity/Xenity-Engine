@@ -1,10 +1,8 @@
 #version 330 core
+
 out vec4 FragColor;
-uniform vec4 ourColor;
 uniform vec3 ambiantLightColor;
-uniform vec3 lightPos;
 uniform vec3 cameraPos;
-in vec4 theColor;
 
 in vec3 Normal;
 in vec3 FragPos;
@@ -52,10 +50,14 @@ uniform Material material;
 
 #define NR_POINT_LIGHTS 1  
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-#define NR_SPOT_LIGHTS 1  
+#define NR_SPOT_LIGHTS 2  
 uniform SpotLight spotLights[NR_SPOT_LIGHTS];
 #define NR_DIRECTIONAL_LIGHTS 1  
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
+
+uniform int usedPointLightCount;
+uniform int usedSpotLightCount;
+uniform int usedDirectionalLightCount;
 
 vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) {
 
@@ -133,6 +135,7 @@ void main()
 	vec3 result = ambient; //Set face result
 	result += CalculatePointLight(pointLights[0], norm, FragPos, viewDir);
 	result += CalculateSpotLight(spotLights[0], norm, FragPos, viewDir);
+	result += CalculateSpotLight(spotLights[1], norm, FragPos, viewDir);
 	result += CalculateDirectionalLight(directionalLights[0], norm, FragPos, viewDir);
 
 	float alpha = texture(material.diffuse, TexCoord).a;

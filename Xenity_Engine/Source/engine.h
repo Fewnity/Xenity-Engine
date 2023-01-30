@@ -9,6 +9,6 @@
 
 class Engine {
 public:
-	static void Init();
+	static int Init();
 	static void Loop();
 };

@@ -7,12 +7,11 @@ class Camera : public Component
 {
 public:
 	Camera();
-	//Vector3 position;
-	//Vector3 rotation;
+	~Camera();
 	Vector3 GetSphericalCoordinate();
 	Vector3 GetSphericalCoordinate2();
 	void SetFov(double fov);
 	double GetFov();
 private:
-	double fov;
+	double fov = 60;
 };

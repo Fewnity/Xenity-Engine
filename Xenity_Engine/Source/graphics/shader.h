@@ -10,6 +10,7 @@ class Shader
 public:
 	Shader() = delete;
 	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
+	~Shader();
 	unsigned int GetProgramId();
 	void Use();
 	void SetShaderAttribut(std::string attribut, Vector3 value);
@@ -20,12 +21,12 @@ public:
 	void SetShaderPosition(Vector3 position);
 	void SetShaderRotation(Vector3 eulerAngle);
 	void SetShaderScale(Vector3 scale);
-	void SetShaderTexture(std::string attribut, Texture texture);
+	void SetShaderTexture(std::string attribut, Texture* texture);
 	void SetShaderAttribut(std::string attribut, float value);
 
 private:
 	void LoadShader(std::string vertexPath, std::string fragmentPath);
-	unsigned int vertexShaderId;
-	unsigned int fragmentShaderId;
-	unsigned int programId;
+	unsigned int vertexShaderId = 0;
+	unsigned int fragmentShaderId = 0;
+	unsigned int programId = 0;
 };

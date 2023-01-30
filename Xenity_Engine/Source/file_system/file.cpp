@@ -14,7 +14,6 @@ unsigned char* File::LoadTextureData(std::string filePath, int& width, int& heig
 }
 
 std::string shaderPath = R"(Xenity_Engine\Source\shaders\)"; //TODO improve this
-//std::string gamePath = (PROJECT_FOLDER) + R"(C:\Users\gregory.machefer\Downloads\OpenGL_Test\Debug\)"; //TODO remove this
 
 std::string File::LoadShaderData(const std::string path)
 {
@@ -29,7 +28,7 @@ std::string File::LoadShaderData(const std::string path)
 	}
 
 	//Read file
-	std::string text, line;
+	std::string text = "", line;
 	while (getline(file, line)) 
 	{
 		text += line + '\n';
