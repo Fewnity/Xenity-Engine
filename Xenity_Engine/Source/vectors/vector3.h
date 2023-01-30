@@ -1,6 +1,4 @@
 #pragma once
-#ifndef VECTOR3_H
-#define VECTOR3_H
 
 class Vector3
 {
@@ -26,5 +24,3 @@ Vector3 operator+=(Vector3& vec, float value);
 Vector3 operator-=(Vector3& vec, float value);
 
 bool operator==(const Vector3& left, const Vector3& right);
-
-#endif

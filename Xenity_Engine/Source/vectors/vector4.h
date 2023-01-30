@@ -1,6 +1,4 @@
 #pragma once
-#ifndef VECTOR4_H
-#define VECTOR4_H
 
 class Vector4
 {
@@ -16,5 +14,3 @@ public:
 
 Vector4 operator*(const Vector4& vec, float value);
 Vector4 operator*(float value, const Vector4& vec);
-
-#endif

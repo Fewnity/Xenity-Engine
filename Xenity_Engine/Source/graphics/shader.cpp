@@ -2,7 +2,7 @@
 #include "graphics.h"
 #include "../ui/window.h"
 #include <iostream>
-#include "../file.h"
+#include "../file_system/file.h"
 
 GLuint vertexShaderId, fragmentShaderId, programId;
 
@@ -43,7 +43,8 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 void Shader::SetShaderCameraPosition() {
 	Use();
 	//Camera position
-
+	if (Graphics::usedCamera != nullptr) 
+	{
 	Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
 	vect.x += Graphics::usedCamera->gameObject->transform.position.x;
 	vect.y += Graphics::usedCamera->gameObject->transform.position.y;
@@ -51,13 +52,17 @@ void Shader::SetShaderCameraPosition() {
 
 	glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.position.x, Graphics::usedCamera->gameObject->transform.position.y, Graphics::usedCamera->gameObject->transform.position.z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
+	}
 }
 
 void Shader::SetShaderProjection() {
 	Use();
-	//Projection
-	glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), 0.1, 100.0);
-	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, false, glm::value_ptr(projection));
+	if (Graphics::usedCamera != nullptr)
+	{
+		//Projection
+		glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), 0.1, 100.0);
+		glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, false, glm::value_ptr(projection));
+	}
 }
 
 void Shader::SetShaderProjection2D() {

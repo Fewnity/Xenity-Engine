@@ -8,9 +8,9 @@
 #include "ui/window.h"
 
 #include "ui/ui_manager.h"
-#include "file.h"
+#include "file_system/file.h"
 #include "inputs/input_system.h"
-#include "scene.h"
+#include "scene_manager/scene.h"
 
 #undef main
 
@@ -30,15 +30,17 @@ static void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-void GameLoop();
+bool wireframe = false;
+float animation = 0;
 
-template <class  T>
-void AddComponent2()
-{
-	cout << sizeof(T);
-	T classe = T();
-	// ...
-}
+GameObject cameraGameObject = GameObject();
+Camera camera = Camera();;
+
+GameObject myGameObject1 = GameObject();
+GameObject myGameObject2 = GameObject();
+GameObject myGameObject3 = GameObject();
+
+void GameLoop();
 
 int main(void)
 {
@@ -48,87 +50,17 @@ int main(void)
 		return -1;
 	}
 
-	//loadedScenes.emplace_back(new Scene());
+	//loadedScenes.push_back(new Scene());
 	//usedScene = loadedScenes[0];
 
-	//AudioClip audio1 = AudioClip(R"(C:\Users\elect\Desktop\Projets Visual Studio\OpenGL_Test\Debug\camera-13695.mp3)");
-	//AudioClip audio1 = AudioClip(R"(D:\Projet Visual Studio\OpenGL_Test\Debug\camera-13695.mp3)");
-	//AudioClip audio1 = AudioClip(R"(C:\Users\gregory.machefer\Downloads\OpenGL_Test\Debug\camera-13695.mp3)");
 	AudioClip audio1 = AudioClip("camera-13695.mp3");
 	//AudioSource::Play2DSound(audio1);
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
 	InputSystem::Init();
 	GameObject cameraGameObject = GameObject();
-	Camera camera = Camera();
 	camera.SetGameObject(&cameraGameObject);
 	camera.gameObject->transform.position = Vector3(0, 2, 2);
-	Graphics::usedCamera = &camera;
-
-	/*float vertices[] = {
-		 0.5, 0.5, 0.0,   1.0, 0.0, 0.0, 1.0, 1.0,
-		 0.5, -0.5, 0.0,  0.0, 1.0, 0.0, 1.0, 0.0,
-		 -0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-		 -0.5, 0.5, 0.0,  1.0, 0.0, 1.0, 0.0, 1.0,
-
-		 0.5, 0.5, 1.0,   1.0, 0.0, 0.0, 1.0, 1.0,
-		 0.5, -0.5, 1.0,  0.0, 1.0, 0.0, 1.0, 0.0,
-		 -0.5, -0.5, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-		 -0.5, 0.5, 1.0,  1.0, 0.0, 1.0, 0.0, 1.0,
-	};*/
-
-	float vertices[] = {
-		 0.5, 0.5, 0.0, 1.0, 1.0,
-		 0.5, -0.5, 0.0, 1.0, 0.0,
-		 -0.5, -0.5, 0.0, 0.0, 0.0,
-		 -0.5, 0.5, 0.0, 0.0, 1.0,
-
-		 0.5, 0.5, 1.0, 1.0, 1.0,
-		 0.5, -0.5, 1.0, 1.0, 0.0,
-		 -0.5, -0.5, 1.0, 0.0, 0.0,
-		 -0.5, 0.5, 1.0, 0.0, 1.0,
-	};
-
-	unsigned int indices[] = {
-		0,1,2,
-		2,3,0,
-		4,5,6,
-		6,7,4,
-	};
-	//Mesh mesh1 = Mesh(vertices, indices, sizeof(vertices), sizeof(indices));
-	//Mesh mesh1 = Mesh(vertices, indices, 40, 12);
-	//mesh1.position.x = 1.2f;
-	/*float vertices2[] = {
-		 0.25, 1.0, 0.0,   1.0, 1.0, 1.0, 1.0f, 1.0f,
-		 0.25, -0.5, 0.0,  0.0, 0.0, 0.0, 1.0f, 0.0f,
-		 -0.25, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0f, 0.0f,
-		 -0.25, 1.0, 0.0,  1.0, 1.0, 1.0, 0.0f, 1.0f
-	};*/
-	/*float vertices2[] = {
-		 -0.5, -0.5, 0.0, 1.0f, 1.0f,
-		 0.5, -0.5, 0.0, 1.0f, 0.0f,
-		 0.0, 0.5, 0.0, 0.0f, 0.0f
-	};*/
-
-	float vertices2[] = {
-		 0.25, 1.0, 0.0, 1.0f, 1.0f,
-		 0.25, -0.5, 0.0, 1.0f, 0.0f,
-		 -0.25, -0.5, 0.0, 0.0f, 0.0f,
-		 -0.25, 1.0, 0.0, 0.0f, 1.0f
-	};
-	unsigned int indices2[] = {
-		0,1,2,
-		2,3,0,
-	};
-
-	GameObject myGameObject1 = GameObject();
-	GameObject myGameObject2 = GameObject();
-	GameObject myGameObject3 = GameObject();
-
-	myGameObject1.AddComponent<Light>();
-	
-	//myGameObject.transform = 
-	//Mesh mesh2 = Mesh(vertices2, indices2, sizeof(vertices2), sizeof(indices2));
 
 	Mesh mesh4 = Mesh("ConeTriangulate.obj");
 	Mesh mesh3 = Mesh("CubeTriangulate.obj");
@@ -138,9 +70,6 @@ int main(void)
 	mesh3.SetGameObject(&myGameObject1);
 
 	myGameObject1.transform.position.x = 4;
-	//myGameObject1.AddComponent<Mesh>();
-	//AddComponent(Mesh());
-	//AddComponent2<Mesh>();
 
 	myGameObject2.components.push_back(mesh4);
 	mesh4.SetGameObject(&myGameObject2);
@@ -177,13 +106,7 @@ int main(void)
 
 	shader.Use();
 	bool running = true;
-	bool wireframe = false;
-	//Set wireframe
-	if (wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
 
-	float animation = 0;
 	int frameCount = 0;
 
 	//mesh1.shader = &shader;
@@ -245,77 +168,6 @@ int main(void)
 			}
 		}
 		GameLoop();
-
-		if (InputSystem::GetKeyDown(ESCAPE))
-		{
-			SDL_SetRelativeMouseMode(SDL_FALSE);
-		}
-
-		if (InputSystem::GetKeyDown(A))
-		{
-			wireframe = !wireframe;
-			//Set wireframe
-			if (wireframe) {
-				glLineWidth(2);
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			}
-			else
-			{
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-		}
-
-		if (InputSystem::GetKeyDown(W))
-		{
-			myGameObject1.active = !myGameObject1.active;
-		}
-		if (InputSystem::GetKeyDown(X))
-		{
-			myGameObject2.active = !myGameObject2.active;
-		}
-		if (InputSystem::GetKeyDown(C))
-		{
-			myGameObject3.active = !myGameObject3.active;
-		}
-
-		if (InputSystem::GetKey(Z))
-		{
-			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-			vect /= 20.0f;
-			camera.gameObject->transform.position.x += vect.x;
-			camera.gameObject->transform.position.y += vect.y;
-			camera.gameObject->transform.position.z += vect.z;
-		}
-		if (InputSystem::GetKey(S)) {
-			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-			vect /= 20.0f;
-			camera.gameObject->transform.position.x -= vect.x;
-			camera.gameObject->transform.position.y -= vect.y;
-			camera.gameObject->transform.position.z -= vect.z;
-		}
-		/*if (InputSystem::GetKey(D)) {
-
-			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
-			vect /= 20.0f;
-			camera.gameObject->transform.position.x += vect.x;
-			camera.gameObject->transform.position.z += vect.z;
-		}*/
-		if (InputSystem::GetKey(Q)) {
-
-			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
-			vect /= 20.0f;
-			camera.gameObject->transform.position.x -= vect.x;
-			camera.gameObject->transform.position.z -= vect.z;
-		}
-
-		//Animation
-		animation = (float)SDL_GetTicks64() / 500;
-		animation = sin(animation) / 2.0f + 0.5f;
-
-		if (camera.gameObject->transform.rotation.x + -InputSystem::mouseSpeed.y / 4.0f < 90 && camera.gameObject->transform.rotation.x + -InputSystem::mouseSpeed.y / 4.0f > -90)
-			camera.gameObject->transform.rotation.x += -InputSystem::mouseSpeed.y / 4.0f;
-
-		camera.gameObject->transform.rotation.y += -InputSystem::mouseSpeed.x / 4.0f;
 
 		//Clear the OpenGL window
 		glClearColor(0.529f, 0.808f, 0.922f, 1);
@@ -395,17 +247,6 @@ int main(void)
 				spotLight.SetRange(spotLight.GetRange() - 0.2f);
 		}
 
-		if (InputSystem::GetKey(D)) {
-
-			Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
-			vect /= 20.0f;
-			camera.gameObject->transform.position.x += vect.x;
-			camera.gameObject->transform.position.z += vect.z;
-
-			std::string vectText = std::string("x: " + std::to_string(vect.x) + ",y: " + std::to_string(vect.y) + ",z: " + std::to_string(vect.z));
-			UiManager::RenderText(shaderText, vectText, 0.0f, 620.0f - 24, 0.5f, glm::vec3(0.5, 0.0f, 0.2f));
-		}
-
 		//Draw
 		//mesh1.position.x = animation;
 		//mesh1.rotation.y = (float)SDL_GetTicks64() / 8.726646259971623f;
@@ -417,12 +258,20 @@ int main(void)
 		mesh4.gameObject->transform.rotation.y -= 0.1f;
 		mesh5.gameObject->transform.scale = Vector3(10, 1, 10);
 
+		//Set wireframe
+		if (wireframe) {
+			glLineWidth(2);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 		Graphics::DrawAllMesh();
 
-		//UiManager::RenderText(shaderText, "#", 0.0f, 720.0f - 48, 1.0f, glm::vec3(0.5, 0.0f, 0.2f));
-		//UiManager::RenderText(shaderText, "A", 0.0f, 720.0f - 55, 1.0f, glm::vec3(0.5, 0.0f, 0.2f));
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		std::string wireframeText = std::string("Wireframe (A): ") + (wireframe ? "True" : "False");
-		UiManager::RenderText(shaderText, wireframeText, 0.0f, 720.0f - 24, 0.5f, glm::vec3(0.5, 0.0f, 0.2f));
+		UiManager::RenderText(shaderText, wireframeText, 0.0f, 720.0f - 24, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f));
 		Window::UpdateScreen();
 		frameCount++;
 	}
@@ -433,5 +282,65 @@ int main(void)
 
 void GameLoop()
 {
+	if (InputSystem::GetKeyDown(ESCAPE))
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
 
+	if (InputSystem::GetKeyDown(A))
+	{
+		wireframe = !wireframe;
+	}
+
+	if (InputSystem::GetKeyDown(W))
+	{
+		myGameObject1.active = !myGameObject1.active;
+	}
+	if (InputSystem::GetKeyDown(X))
+	{
+		myGameObject2.active = !myGameObject2.active;
+	}
+	if (InputSystem::GetKeyDown(C))
+	{
+		myGameObject3.active = !myGameObject3.active;
+	}
+
+	if (InputSystem::GetKey(Z))
+	{
+		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		vect /= 20.0f;
+		camera.gameObject->transform.position.x += vect.x;
+		camera.gameObject->transform.position.y += vect.y;
+		camera.gameObject->transform.position.z += vect.z;
+	}
+	if (InputSystem::GetKey(S)) {
+		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		vect /= 20.0f;
+		camera.gameObject->transform.position.x -= vect.x;
+		camera.gameObject->transform.position.y -= vect.y;
+		camera.gameObject->transform.position.z -= vect.z;
+	}
+	if (InputSystem::GetKey(D)) {
+
+		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
+		vect /= 20.0f;
+		camera.gameObject->transform.position.x += vect.x;
+		camera.gameObject->transform.position.z += vect.z;
+	}
+	if (InputSystem::GetKey(Q)) {
+
+		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
+		vect /= 20.0f;
+		camera.gameObject->transform.position.x -= vect.x;
+		camera.gameObject->transform.position.z -= vect.z;
+	}
+
+	//Animation
+	animation = (float)SDL_GetTicks64() / 500;
+	animation = sin(animation) / 2.0f + 0.5f;
+
+	if (camera.gameObject->transform.rotation.x + -InputSystem::mouseSpeed.y / 4.0f < 90 && camera.gameObject->transform.rotation.x + -InputSystem::mouseSpeed.y / 4.0f > -90)
+		camera.gameObject->transform.rotation.x += -InputSystem::mouseSpeed.y / 4.0f;
+
+	camera.gameObject->transform.rotation.y += -InputSystem::mouseSpeed.x / 4.0f;
 }

@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef GRAPHICS_H /* Include guard */
-#define GRAPHICS_H
-
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -27,5 +24,3 @@ public :
 	static std::vector<Mesh*> allMesh;
 	static void DrawAllMesh();
 };
-
-#endif

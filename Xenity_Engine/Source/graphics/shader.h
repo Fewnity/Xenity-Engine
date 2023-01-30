@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef SHADER_H
-#define SHADER_H
-
 #include <string>
 #include "../vectors/vector3.h"
 #include "../vectors/vector4.h"
@@ -32,5 +29,3 @@ private:
 	unsigned int fragmentShaderId;
 	unsigned int programId;
 };
-
-#endif

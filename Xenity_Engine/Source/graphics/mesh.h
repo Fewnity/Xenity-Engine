@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef MESH_H /* Include guard */
-#define MESH_H
-
 #include "shader.h"
 #include "../component.h"
 
@@ -28,5 +25,3 @@ private:
 	unsigned int indiceBuffer;
 	void CreateBuffers(bool addUv, bool addNormals);
 };
-
-#endif

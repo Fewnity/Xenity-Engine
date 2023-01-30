@@ -5,7 +5,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "../file.h"
+#include "../file_system/file.h"
 
 Texture::Texture(std::string filePath, unsigned int _textureIndex) {
 	textureIndex = _textureIndex;

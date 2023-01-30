@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "gameobject.h"
+#include "../gameobject.h"
 
 class Scene
 {

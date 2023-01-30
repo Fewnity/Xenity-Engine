@@ -1,6 +1,4 @@
 #pragma once
-#ifndef CAMERA_H /* Include guard */
-#define CAMERA_H
 
 #include "../vectors/vector3.h"
 #include "../component.h"
@@ -18,5 +16,3 @@ public:
 private:
 	double fov;
 };
-
-#endif

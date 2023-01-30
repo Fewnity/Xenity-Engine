@@ -3,7 +3,7 @@
 #include "stb_image.h"
 #include <iostream>
 #include <fstream>
-#include "main.h"
+#include "../main.h"
 
 std::string texturePath = R"(Xenity_Engine\Source\images\)"; //TODO improve this
 

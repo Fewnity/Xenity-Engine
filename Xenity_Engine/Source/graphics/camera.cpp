@@ -2,9 +2,13 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "graphics.h"
 
 Camera::Camera() {
 	this->fov = 60;
+	if (Graphics::usedCamera == nullptr) {
+		Graphics::usedCamera = this;
+	}
 }
 
 void Camera::SetFov(double fov)
