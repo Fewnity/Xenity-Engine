@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\game.cpp" />
     <ClCompile Include="Source\audio\audio_source.cpp" />
     <ClCompile Include="Source\audio\audio_clip.cpp" />

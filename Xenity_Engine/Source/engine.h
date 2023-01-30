@@ -6,3 +6,9 @@
 #include "vectors/vector4.h"
 #include "audio/audio.h"
 #include "scene_manager/scene.h"
+
+class Engine {
+public:
+	static void Init();
+	static void Loop();
+};

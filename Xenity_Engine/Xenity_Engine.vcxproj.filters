@@ -25,6 +25,7 @@
     <ClCompile Include="Source\ui\ui_manager.cpp" />
     <ClCompile Include="Source\transform.cpp" />
     <ClCompile Include="Source\game.cpp" />
+    <ClCompile Include="Source\engine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
