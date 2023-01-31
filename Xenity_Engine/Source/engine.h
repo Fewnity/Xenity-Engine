@@ -11,4 +11,5 @@ class Engine {
 public:
 	static int Init();
 	static void Loop();
+	static void AddGameObject(GameObject* gameObject);
 };

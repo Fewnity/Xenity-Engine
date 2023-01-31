@@ -28,6 +28,7 @@ public:
 	void LoadMesh(float vertices[], unsigned int indices[]);
 	void DrawModel();
 	void CreateBuffers(bool addUv, bool addNormals);
+	void Update();
 
 private:
 	void UpdateShader();

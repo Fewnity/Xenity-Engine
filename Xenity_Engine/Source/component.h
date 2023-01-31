@@ -7,6 +7,7 @@ class Component
 public:
 	Component();
 	virtual ~Component();
+	virtual void Update();
 	void SetGameObject(GameObject* gm);
 	GameObject *gameObject = nullptr;
 };

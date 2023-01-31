@@ -39,6 +39,11 @@ Mesh::Mesh(const std::string meshpath) : Component() {
 	OnLoadFinished();
 }
 
+void Mesh::Update() {
+	if(gameObject)
+		gameObject->transform.rotation.y -= 0.1f;
+}
+
 Mesh::~Mesh()
 {
 	AssetManager::RemoveMesh(this);

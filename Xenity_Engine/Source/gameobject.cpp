@@ -1,8 +1,9 @@
 #include "gameobject.h"
+#include "engine.h"
 
 GameObject::GameObject()
 {
-	
+	Engine::AddGameObject(this);
 }
 
 GameObject::~GameObject()

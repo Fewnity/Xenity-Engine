@@ -18,10 +18,15 @@ public:
 	Transform transform = Transform();
 	std::vector<Component*> components;
 
-	template <typename T>
+	/*template <typename T>
 	void AddComponent()
 	{
 		T newClass = T();
 		components.push_back(newClass);
+	}*/
+
+	void AddComponent(Component *component)
+	{
+		components.push_back(component);
 	}
 };

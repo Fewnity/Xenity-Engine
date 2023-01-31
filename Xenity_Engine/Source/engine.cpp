@@ -20,6 +20,8 @@ GameObject spotLightGameObject = GameObject();
 GameObject spotLight2GameObject = GameObject();
 GameObject directionalLightGameObject = GameObject();
 
+std::vector<GameObject*> gameObjects;
+
 int Engine::Init()
 {
 	/* Initialize the library */
@@ -89,6 +91,15 @@ void Engine::Loop()
 				break;
 			default:
 				break;
+			}
+		}
+		int gameObjectCount = gameObjects.size();
+		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+		{
+			int componentCount = gameObjects[gIndex]->components.size();
+			for (int cIndex = 0; cIndex < componentCount; cIndex++)
+			{
+				gameObjects[gIndex]->components[cIndex]->Update();
 			}
 		}
 
@@ -229,4 +240,8 @@ void Engine::Loop()
 		Window::UpdateScreen();
 		//frameCount++;
 	}
+}
+
+void Engine::AddGameObject(GameObject* gameObject) {
+	gameObjects.push_back(gameObject);
 }

@@ -165,7 +165,7 @@ void Game::Loop()
 
 	camera.gameObject->transform.rotation.y += -InputSystem::mouseSpeed.x / 4.0f;
 
-	mesh3->gameObject->transform.rotation.y = 45;
-	mesh4->gameObject->transform.rotation.y -= 0.1f;
+	//mesh3->gameObject->transform.rotation.y = 45;
+	//mesh4->gameObject->transform.rotation.y -= 0.1f;
 	mesh5->gameObject->transform.scale = Vector3(10, 1, 10);
 }
