@@ -28,6 +28,7 @@
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\asset_manager.cpp" />
     <ClCompile Include="Source\engine_settings.cpp" />
+    <ClCompile Include="Source\file_system\mesh_loader\wavefront_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\asset_manager.h" />
     <ClInclude Include="Source\engine_settings.h" />
+    <ClInclude Include="Source\file_system\mesh_loader\wavefront_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

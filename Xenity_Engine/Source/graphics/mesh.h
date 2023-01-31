@@ -3,6 +3,20 @@
 #include "shader.h"
 #include "../component.h"
 
+class MeshData {
+public:
+	~MeshData() {
+		free(vertices);
+		free(indices);
+	}
+	float* vertices = nullptr;
+	unsigned int* indices = nullptr;
+	int verticesCount = 0;
+	int indicesCount = 0;
+	bool hasUv = false;
+	bool hasNormal = false;
+};
+
 class Mesh : public Component
 {
 public:
@@ -13,16 +27,14 @@ public:
 	Shader* shader = nullptr;
 	void LoadMesh(float vertices[], unsigned int indices[]);
 	void DrawModel();
+	void CreateBuffers(bool addUv, bool addNormals);
 
 private:
 	void UpdateShader();
 	void OnLoadFinished();
-	float *vertices = nullptr;
-	int verticesCount = 0;
-	int indicesCount = 0;
-	unsigned int *indices = nullptr;
+
 	unsigned int vertexArrayBuffer = 0;
 	unsigned int vertexBuffer = 0;
 	unsigned int indiceBuffer = 0;
-	void CreateBuffers(bool addUv, bool addNormals);
+	MeshData* meshData = new MeshData();
 };

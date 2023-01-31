@@ -19,6 +19,9 @@ Mesh* mesh3;
 Mesh* mesh4;
 Mesh* mesh5;
 float animation = 0;
+#include<chrono>
+#include <iostream>
+using namespace std::chrono;
 
 void Game::Init() {
 	//loadedScenes.push_back(new Scene());
@@ -29,6 +32,19 @@ void Game::Init() {
 
 	camera.SetGameObject(&cameraGameObject);
 	camera.gameObject->transform.position = Vector3(0, 2, 2);
+
+	/*time_point<high_resolution_clock> start_point, end_point;
+	start_point = high_resolution_clock::now();
+
+	for (int i = 0; i < 10000; i++)
+	{
+		
+	}
+
+	end_point = high_resolution_clock::now();
+	auto start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
+	auto end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
+	std::cout << "Time taken = " << (end - start) << " microseconds" << std::endl;*/
 
 	mesh3 = new Mesh("CubeTriangulate.obj");
 	mesh4 = new Mesh("ConeTriangulate.obj");
