@@ -30,7 +30,7 @@ void Game::Init() {
 	//AudioSource::Play2DSound(audio1);
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
-	camera.SetGameObject(&cameraGameObject);
+	camera.SetParent(&cameraGameObject);
 	camera.gameObject->transform.position = Vector3(0, 2, 2);
 
 	/*time_point<high_resolution_clock> start_point, end_point;
@@ -51,16 +51,19 @@ void Game::Init() {
 	mesh5 = new Mesh("CubeTriangulate.obj");
 
 	myGameObject1.components.push_back(mesh3);
-	mesh3->SetGameObject(&myGameObject1);
+	mesh3->SetParent(&myGameObject1);
 
-	myGameObject1.transform.position.x = 4;
+	//myGameObject1.transform.position.x = 4;
+	myGameObject1.transform.localPosition.x = 4;
 
 	myGameObject2.components.push_back(mesh4);
-	mesh4->SetGameObject(&myGameObject2);
+	mesh4->SetParent(&myGameObject2);
 	myGameObject2.transform.position.x = 0;
 
+	myGameObject2.AddChild(&myGameObject1);
+
 	myGameObject3.components.push_back(mesh5);
-	mesh5->SetGameObject(&myGameObject3);
+	mesh5->SetParent(&myGameObject3);
 	myGameObject3.transform.position.x = 0;
 	myGameObject3.transform.position.y = -2;
 
@@ -165,7 +168,7 @@ void Game::Loop()
 
 	camera.gameObject->transform.rotation.y += -InputSystem::mouseSpeed.x / 4.0f;
 
-	//mesh3->gameObject->transform.rotation.y = 45;
-	//mesh4->gameObject->transform.rotation.y -= 0.1f;
+	mesh3->gameObject->transform.rotation.y = 45;
+	mesh4->gameObject->transform.rotation.y -= 0.1f;
 	mesh5->gameObject->transform.scale = Vector3(10, 1, 10);
 }

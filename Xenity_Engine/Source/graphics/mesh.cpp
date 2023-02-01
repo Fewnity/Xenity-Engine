@@ -40,8 +40,8 @@ Mesh::Mesh(const std::string meshpath) : Component() {
 }
 
 void Mesh::Update() {
-	if(gameObject)
-		gameObject->transform.rotation.y -= 0.1f;
+	//if(gameObject)
+		//gameObject->transform.rotation.y -= 0.1f;
 }
 
 Mesh::~Mesh()

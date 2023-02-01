@@ -8,6 +8,6 @@ public:
 	Component();
 	virtual ~Component();
 	virtual void Update();
-	void SetGameObject(GameObject* gm);
+	void SetParent(GameObject* gm);
 	GameObject *gameObject = nullptr;
 };

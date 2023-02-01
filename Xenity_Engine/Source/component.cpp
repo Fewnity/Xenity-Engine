@@ -13,7 +13,8 @@ void Component::Update()
 {
 }
 
-void Component::SetGameObject(GameObject* gm)
+void Component::SetParent(GameObject* gm)
 {
 	gameObject = gm;
+	gameObject->AddComponent(this);
 }

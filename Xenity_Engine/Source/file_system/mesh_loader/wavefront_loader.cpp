@@ -6,13 +6,14 @@
 #include "../../vectors/vector2.h"
 #include "../../vectors/vector3.h"
 #include "../../graphics/mesh.h"
+#include "../../engine_settings.h"
 using namespace std;
 
 std::string modelsPath = R"(Xenity_Engine\Source\models\)"; //TODO remove this
 
 void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 {
-	std::string finalpath = PROJECT_FOLDER + modelsPath;
+	std::string finalpath = EngineSettings::RootFolder + modelsPath;
 	//Open file
 	ifstream file;
 	file.open(finalpath + filePath);

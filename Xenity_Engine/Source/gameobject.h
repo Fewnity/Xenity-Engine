@@ -16,6 +16,7 @@ public:
 	bool active = true;
 	std::string name = "gameObject";
 	Transform transform = Transform();
+	std::vector<GameObject*> childs;
 	std::vector<Component*> components;
 
 	/*template <typename T>
@@ -24,9 +25,7 @@ public:
 		T newClass = T();
 		components.push_back(newClass);
 	}*/
+	void AddChild(GameObject* gameObject);
+	void AddComponent(Component* component);
 
-	void AddComponent(Component *component)
-	{
-		components.push_back(component);
-	}
 };

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <glad/glad.h>
+#include "../engine_settings.h"
 
 #include FT_FREETYPE_H
 
@@ -87,7 +88,7 @@ int UiManager::Init()
 	//Load font
 	FT_Face face;
 	//if (FT_New_Face(ft, R"(C:\Users\elect\Desktop\Projets Visual Studio\OpenGL_Test\OpenGL_Test\Source\fonts\arial.ttf)", 0, &face))
-	std::string path = PROJECT_FOLDER;
+	std::string path = EngineSettings::RootFolder;
 	path += R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)";
 	if (FT_New_Face(ft, path.c_str(), 0, &face))
 	{

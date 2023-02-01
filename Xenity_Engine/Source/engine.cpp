@@ -32,7 +32,7 @@ int Engine::Init()
 	InputSystem::Init();
 
 	
-	pointLight.SetGameObject(&pointLightGameObject);
+	pointLight.SetParent(&pointLightGameObject);
 	pointLight.type = Light::Point;
 	pointLight.gameObject->transform.position = Vector3(1.5f, 1.5, 1.5f);
 	pointLight.color = Vector3(1, 0.1f, 0.1f);
@@ -40,7 +40,7 @@ int Engine::Init()
 	pointLight.SetRange(7);
 
 	
-	spotLight.SetGameObject(&spotLightGameObject);
+	spotLight.SetParent(&spotLightGameObject);
 	spotLight.type = Light::Spot;
 	spotLight.gameObject->transform.position = Vector3(0, 3, 0);
 	spotLight.gameObject->transform.rotation = Vector3(0.0f, -1.0f, 0.0f);
@@ -50,7 +50,7 @@ int Engine::Init()
 	spotLight.cutOff = glm::cos(glm::radians(12.0f));
 	spotLight.outerCutOff = glm::cos(glm::radians(17.0f));
 
-	spotLight2.SetGameObject(&spotLight2GameObject);
+	spotLight2.SetParent(&spotLight2GameObject);
 	spotLight2.type = Light::Spot;
 	spotLight2.gameObject->transform.position = Vector3(5, 3, 0);
 	spotLight2.gameObject->transform.rotation = Vector3(0.0f, -1.0f, 0.0f);
@@ -60,7 +60,7 @@ int Engine::Init()
 	spotLight2.cutOff = glm::cos(glm::radians(12.0f));
 	spotLight2.outerCutOff = glm::cos(glm::radians(17.0f));
 	
-	directionalLight.SetGameObject(&directionalLightGameObject);
+	directionalLight.SetParent(&directionalLightGameObject);
 	directionalLight.type = Light::Directional;
 	directionalLight.color = Vector3(0.3f, 0.7f, 0.3f);
 	directionalLight.intensity = 1;
