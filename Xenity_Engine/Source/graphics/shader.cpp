@@ -57,11 +57,12 @@ void Shader::SetShaderCameraPosition() {
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-		vect.x += Graphics::usedCamera->gameObject->transform.position.x;
-		vect.y += Graphics::usedCamera->gameObject->transform.position.y;
-		vect.z += Graphics::usedCamera->gameObject->transform.position.z;
 
-		glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.position.x, Graphics::usedCamera->gameObject->transform.position.y, Graphics::usedCamera->gameObject->transform.position.z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
+		vect.x += Graphics::usedCamera->gameObject->transform.GetPosition().x;
+		vect.y += Graphics::usedCamera->gameObject->transform.GetPosition().y;
+		vect.z += Graphics::usedCamera->gameObject->transform.GetPosition().z;
+
+		glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }

@@ -34,7 +34,7 @@ int Engine::Init()
 	
 	pointLight.SetParent(&pointLightGameObject);
 	pointLight.type = Light::Point;
-	pointLight.gameObject->transform.position = Vector3(1.5f, 1.5, 1.5f);
+	pointLight.gameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLight.color = Vector3(1, 0.1f, 0.1f);
 	pointLight.intensity = 10;
 	pointLight.SetRange(7);
@@ -42,8 +42,8 @@ int Engine::Init()
 	
 	spotLight.SetParent(&spotLightGameObject);
 	spotLight.type = Light::Spot;
-	spotLight.gameObject->transform.position = Vector3(0, 3, 0);
-	spotLight.gameObject->transform.rotation = Vector3(0.0f, -1.0f, 0.0f);
+	spotLight.gameObject->transform.SetPosition(Vector3(0, 3, 0));
+	spotLight.gameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
 	spotLight.color = Vector3(0.05f, 0.05f, 1);
 	spotLight.intensity = 200;
 	spotLight.SetRange(7);
@@ -52,8 +52,8 @@ int Engine::Init()
 
 	spotLight2.SetParent(&spotLight2GameObject);
 	spotLight2.type = Light::Spot;
-	spotLight2.gameObject->transform.position = Vector3(5, 3, 0);
-	spotLight2.gameObject->transform.rotation = Vector3(0.0f, -1.0f, 0.0f);
+	spotLight2.gameObject->transform.SetPosition(Vector3(5, 3, 0));
+	spotLight2.gameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
 	spotLight2.color = Vector3(0.05f, 0.05f, 1);
 	spotLight2.intensity = 200;
 	spotLight2.SetRange(7);
@@ -64,7 +64,7 @@ int Engine::Init()
 	directionalLight.type = Light::Directional;
 	directionalLight.color = Vector3(0.3f, 0.7f, 0.3f);
 	directionalLight.intensity = 1;
-	directionalLight.gameObject->transform.rotation = Vector3(0.0f, -1.0f, -1.0f);
+	directionalLight.gameObject->transform.SetRotation(Vector3(0.0f, -1.0f, -1.0f));
 
 	return 0;
 }
@@ -111,28 +111,28 @@ void Engine::Loop()
 
 		//Material
 		AssetManager::shaders[0]->SetShaderAttribut("ambiantLightColor", Vector3(1, 1, 1));
-		AssetManager::shaders[0]->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.position);
+		AssetManager::shaders[0]->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
 		AssetManager::shaders[0]->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 		AssetManager::shaders[0]->SetShaderAttribut("material.ambient", Vector3(0.529f, 0.808f, 0.922f));
 		AssetManager::shaders[0]->SetShaderAttribut("material.shininess", 32.0f);
 
 		AssetManager::shaders[1]->SetShaderAttribut("ambiantLightColor", Vector3(1, 1, 1));
-		AssetManager::shaders[1]->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.position);
+		AssetManager::shaders[1]->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
 		AssetManager::shaders[1]->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 		AssetManager::shaders[1]->SetShaderAttribut("material.ambient", Vector3(0.529f, 0.808f, 0.922f));
 		AssetManager::shaders[1]->SetShaderAttribut("material.shininess", 32.0f);
 
 		//Point light
 		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].color", pointLight.color * pointLight.intensity);
-		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].position", pointLight.gameObject->transform.position);
+		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].position", pointLight.gameObject->transform.GetPosition());
 		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].constant", lightConstant);
 		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].linear", pointLight.linear);
 		AssetManager::shaders[1]->SetShaderAttribut("pointLights[0].quadratic", pointLight.quadratic);
 
 		//Spot light
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].color", spotLight.intensity * spotLight.color);
-		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].position", spotLight.gameObject->transform.position);
-		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].direction", spotLight.gameObject->transform.rotation);
+		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].position", spotLight.gameObject->transform.GetPosition());
+		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].direction", spotLight.gameObject->transform.GetRotation());
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].constant", lightConstant);
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].linear", spotLight.linear);
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].quadratic", spotLight.quadratic);
@@ -140,8 +140,8 @@ void Engine::Loop()
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[0].outerCutOff", spotLight.outerCutOff);
 
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].color", spotLight2.intensity * spotLight2.color);
-		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].position", spotLight2.gameObject->transform.position);
-		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].direction", spotLight2.gameObject->transform.rotation);
+		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].position", spotLight2.gameObject->transform.GetPosition());
+		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].direction", spotLight2.gameObject->transform.GetRotation());
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].constant", lightConstant);
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].linear", spotLight2.linear);
 		AssetManager::shaders[1]->SetShaderAttribut("spotLights[1].quadratic", spotLight2.quadratic);
@@ -150,7 +150,7 @@ void Engine::Loop()
 
 		//Directional light
 		AssetManager::shaders[1]->SetShaderAttribut("directionalLights[0].color", directionalLight.color);
-		AssetManager::shaders[1]->SetShaderAttribut("directionalLights[0].direction", directionalLight.gameObject->transform.rotation);
+		AssetManager::shaders[1]->SetShaderAttribut("directionalLights[0].direction", directionalLight.gameObject->transform.GetRotation());
 
 		//Point light
 		/*shader.SetShaderAttribut("pointLights[0].color", pointLight.color * pointLight.intensity);

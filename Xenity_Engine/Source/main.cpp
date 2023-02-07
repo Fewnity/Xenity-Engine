@@ -26,6 +26,10 @@ using namespace std;
  * Better engine structure (lighting)
  * Better structure
  * Check mesh/shader destructor
+ * Add scale usage in local position calculation
+ * Add local scale usage
+ * Update position when updating local position
+ * Update local position when updating position
  */
 
 static void error_callback(int error, const char* description)

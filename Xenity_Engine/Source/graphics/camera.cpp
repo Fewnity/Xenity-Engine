@@ -34,8 +34,8 @@ double Camera::GetFov()
 Vector3 Camera::GetSphericalCoordinate() {
 	Vector3 vect = Vector3();
 	if (gameObject != nullptr) {
-		float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
-		float TempT = (180 - this->gameObject->transform.rotation.x) / 180.0f * (float)M_PI;
+		float TempS = this->gameObject->transform.GetRotation().y / 180.0f * (float)M_PI;
+		float TempT = (180 - this->gameObject->transform.GetRotation().x) / 180.0f * (float)M_PI;
 
 		float cosTempT = cosf(TempT);
 		float cosTempS = cosf(TempS);
@@ -57,7 +57,7 @@ Vector3 Camera::GetSphericalCoordinate() {
 Vector3 Camera::GetSphericalCoordinate2() {
 	Vector3 vect = Vector3();
 	if (gameObject != nullptr) {
-		float TempS = this->gameObject->transform.rotation.y / 180.0f * (float)M_PI;
+		float TempS = this->gameObject->transform.GetRotation().y / 180.0f * (float)M_PI;
 
 		float cosTempS = cosf(TempS);
 		float SinTempS = sinf(TempS);

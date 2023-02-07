@@ -134,8 +134,8 @@ void Mesh::UpdateShader() {
 		shader->Use();
 		shader->SetShaderCameraPosition();
 		shader->SetShaderProjection();
-		shader->SetShaderPosition(gameObject->transform.position);
-		shader->SetShaderRotation(gameObject->transform.rotation);
-		shader->SetShaderScale(gameObject->transform.scale);
+		shader->SetShaderPosition(gameObject->transform.GetPosition());
+		shader->SetShaderRotation(gameObject->transform.GetRotation());
+		shader->SetShaderScale(gameObject->transform.GetScale());
 	}
 }

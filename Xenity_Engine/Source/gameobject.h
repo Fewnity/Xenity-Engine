@@ -15,7 +15,7 @@ public:
 	~GameObject();
 	bool active = true;
 	std::string name = "gameObject";
-	Transform transform = Transform();
+	Transform transform = Transform(this);
 	std::vector<GameObject*> childs;
 	std::vector<Component*> components;
 
@@ -27,5 +27,5 @@ public:
 	}*/
 	void AddChild(GameObject* gameObject);
 	void AddComponent(Component* component);
-
+	void SetChildsWorldPositions();
 };
