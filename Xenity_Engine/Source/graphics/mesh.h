@@ -1,7 +1,9 @@
 #pragma once
 
-#include "shader.h"
 #include "../component.h"
+#include "iDrawable.h"
+
+class Shader;
 
 class MeshData {
 public:
@@ -17,7 +19,7 @@ public:
 	bool hasNormal = false;
 };
 
-class Mesh : public Component
+class Mesh : public Component, public IDrawable
 {
 public:
 	Mesh();
@@ -28,6 +30,7 @@ public:
 	void LoadMesh(float vertices[], unsigned int indices[]);
 	void DrawModel();
 	void CreateBuffers(bool addUv, bool addNormals);
+	void Draw();
 	void Update();
 
 private:

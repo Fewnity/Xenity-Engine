@@ -35,6 +35,10 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 	glShaderSource(vertexShaderId, 1, &vertex_shader_text, NULL); // Load shader text
 	glCompileShader(vertexShaderId);
 
+	GLint vResult;
+	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &vResult);
+	std::cout << "vResult" << vResult << std::endl;
+
 	//Load fragment shader text
 	std::string fragment_shader_text_temp = File::LoadShaderData(fragmentPath);
 	const char* fragment_shader_text = fragment_shader_text_temp.c_str();
@@ -42,6 +46,10 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 	fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShaderId, 1, &fragment_shader_text, NULL);// Load shader text
 	glCompileShader(fragmentShaderId);
+
+	GLint fragResult;
+	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &fragResult);
+	std::cout << "fragResult" << fragResult << std::endl;
 
 	//Link shaders to a program
 	programId = glCreateProgram();
@@ -58,16 +66,30 @@ void Shader::SetShaderCameraPosition() {
 	{
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
 
-		vect.x += Graphics::usedCamera->gameObject->transform.GetPosition().x;
-		vect.y += Graphics::usedCamera->gameObject->transform.GetPosition().y;
-		vect.z += Graphics::usedCamera->gameObject->transform.GetPosition().z;
+		vect = vect + Graphics::usedCamera->gameObject->transform.GetPosition();
 
-		glm::mat4 camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
+		float xAngle = Graphics::usedCamera->gameObject->transform.GetRotation().x;
+		while (xAngle < -90)
+		{
+			xAngle += 360;
+		}
+		while (xAngle > 360-90)
+		{
+			xAngle -= 360;
+		}
+
+		glm::mat4 camera;
+		if (xAngle > 90 || xAngle < -90)
+			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, -1, 0));
+		else
+			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
+
+
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }
 
-void Shader::SetShaderProjection() {
+void Shader::SetShaderProjection3D() {
 	Use();
 	if (Graphics::usedCamera != nullptr)
 	{
@@ -87,8 +109,22 @@ void Shader::SetShaderPosition(Vector3 position) {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
-	//trans = glm::rotate(trans, (float)0, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(glGetUniformLocation(programId, "offset"), 1, false, glm::value_ptr(trans));
+}
+
+void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale) {
+	Use();
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
+
+	glm::quat MyQuaternion;
+	glm::vec3 EulerAngles((eulerAngle.x * M_PI) / 180.0, (eulerAngle.y * M_PI) / 180.0, (eulerAngle.z * M_PI) / 180.0);
+	MyQuaternion = glm::quat(EulerAngles);
+	glm::mat4 rotation = glm::toMat4(MyQuaternion);
+	trans = trans * rotation;
+	trans = glm::scale(trans, glm::vec3(scale.x, scale.y, scale.z));
+
+	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
 }
 
 void Shader::SetShaderRotation(Vector3 eulerAngle) {
@@ -116,8 +152,8 @@ void Shader::SetShaderRotation(Vector3 eulerAngle) {
 void Shader::SetShaderScale(Vector3 scale) {
 	Use();
 	glm::mat3 scaleMat = glm::mat3(glm::vec3(scale.x, 0.0, 0.0),
-		glm::vec3(0.0, scale.y, 0.0),
-		glm::vec3(0.0, 0.0, scale.z));
+								   glm::vec3(0.0, scale.y, 0.0),
+								   glm::vec3(0.0, 0.0, scale.z));
 
 	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
 }

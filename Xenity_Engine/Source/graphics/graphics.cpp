@@ -6,8 +6,8 @@ Camera* Graphics::usedCamera = nullptr;
 
 void Graphics::DrawAllMesh()
 {
-	for (Mesh* mesh : AssetManager::meshs)
+	for (IDrawable* drawable : AssetManager::drawables)
 	{
-		mesh->DrawModel();
+		drawable->Draw();
 	}
 }

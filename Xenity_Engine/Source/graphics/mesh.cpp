@@ -14,7 +14,8 @@
 
 using namespace std;
 
-Mesh::Mesh() : Component() {
+Mesh::Mesh() : Component() 
+{
 	meshData->verticesCount = 0;
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = 0;
@@ -23,7 +24,8 @@ Mesh::Mesh() : Component() {
 	OnLoadFinished();
 }
 
-Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component() {
+Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component() 
+{
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = indicesCount / sizeof(*indices);
@@ -33,20 +35,20 @@ Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indi
 	OnLoadFinished();
 }
 
-Mesh::Mesh(const std::string meshpath) : Component() {
+Mesh::Mesh(const std::string meshpath) : Component() 
+{
 	WavefrontLoader::LoadMesh(meshData, meshpath);
 	CreateBuffers(meshData->hasUv, meshData->hasNormal);
 	OnLoadFinished();
 }
 
-void Mesh::Update() {
-	//if(gameObject)
-		//gameObject->transform.rotation.y -= 0.1f;
+void Mesh::Update() 
+{
 }
 
 Mesh::~Mesh()
 {
-	AssetManager::RemoveMesh(this);
+	AssetManager::RemoveDrawable(this);
 
 	delete meshData;
 	glDeleteVertexArrays(1, &vertexArrayBuffer);
@@ -75,21 +77,22 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)finalByteCount);
 	//Enable my vertex attrib array number 0
 	glEnableVertexAttribArray(0);//Vertex attribute array 0 is now available for use.
+	finalByteCount += 3;
 
 	if (addUv)
 	{
-		finalByteCount += 3;
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)(finalByteCount * sizeof(float)));
 		//Enable texture coords attrib array number 1
 		glEnableVertexAttribArray(1);//Texture attribute array 2 is now available for use.
+		finalByteCount += 2;
 	}
 
 	if (addNormals)
 	{
-		finalByteCount += 2;
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)(finalByteCount * sizeof(float)));
 		//Enable Normals attrib array number 2
 		glEnableVertexAttribArray(2);//Normals attribute array 2 is now available for use.	
+		finalByteCount += 3;
 	}
 	glBindVertexArray(0);
 
@@ -98,9 +101,22 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 	//glDrawElements(GL_TRIANGLES, meshData->indicesCount, GL_UNSIGNED_INT, 0);
 }
 
+void Mesh::Draw()
+{
+	if (gameObject != nullptr && gameObject->active && meshData != nullptr)
+	{
+		UpdateShader();
+		glBindVertexArray(vertexArrayBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
+		glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount);
+		glBindVertexArray(0);
+	}
+}
+
 void Mesh::OnLoadFinished()
 {
-	AssetManager::AddMesh(this);
+	AssetManager::AddDrawable(this);
 }
 
 void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
@@ -117,25 +133,17 @@ void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
 	}
 }
 
-void Mesh::DrawModel() {
-	if (gameObject != nullptr && gameObject->active)
-	{
-		UpdateShader();
-		glBindVertexArray(vertexArrayBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
-		glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount);
-		glBindVertexArray(0);
-	}
-}
-
 void Mesh::UpdateShader() {
 	if (shader != nullptr) {
 		shader->Use();
 		shader->SetShaderCameraPosition();
-		shader->SetShaderProjection();
+		shader->SetShaderProjection3D();
+		//shader->SetShaderProjection2D();
 		shader->SetShaderPosition(gameObject->transform.GetPosition());
 		shader->SetShaderRotation(gameObject->transform.GetRotation());
+
+		shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
+
 		shader->SetShaderScale(gameObject->transform.GetScale());
 	}
 }

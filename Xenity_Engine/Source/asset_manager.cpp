@@ -6,7 +6,7 @@
 
 std::vector<Shader*> AssetManager::shaders;
 std::vector<Texture*> AssetManager::textures;
-std::vector<Mesh*> AssetManager::meshs;
+std::vector<IDrawable*> AssetManager::drawables;
 
 void AssetManager::AddShader(Shader* shader)
 {
@@ -18,9 +18,9 @@ void AssetManager::AddTexture(Texture* texture)
 	textures.push_back(texture);
 }
 
-void AssetManager::AddMesh(Mesh* mesh)
+void AssetManager::AddDrawable(IDrawable* drawable)
 {
-	meshs.push_back(mesh);
+	drawables.push_back(drawable);
 }
 
 void AssetManager::RemoveShader(Shader* shader)
@@ -57,19 +57,24 @@ void AssetManager::RemoveTexture(Texture* texture)
 		textures.erase(textures.begin() + textureIndex);
 }
 
-void AssetManager::RemoveMesh(Mesh* mesh)
+void AssetManager::RemoveDrawable(IDrawable* drawable)
 {
-	int meshCount = meshs.size();
-	int meshIndex = 0;
+	int drawableCount = drawables.size();
+	int drawableIndex = 0;
 	bool found = false;
-	for (int i = 0; i < meshCount; i++)
+	for (int i = 0; i < drawableCount; i++)
 	{
-		if (meshs[i] == mesh) {
+		if (drawables[i] == drawable) {
 			found = true;
-			meshIndex = i;
+			drawableIndex = i;
 			break;
 		}
 	}
 	if (found)
-		meshs.erase(meshs.begin() + meshIndex);
+		drawables.erase(drawables.begin() + drawableIndex);
+}
+
+int AssetManager::GetTextureCount()
+{
+	return textures.size();
 }

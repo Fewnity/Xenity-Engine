@@ -19,13 +19,9 @@ public:
 	std::vector<GameObject*> childs;
 	std::vector<Component*> components;
 
-	/*template <typename T>
-	void AddComponent()
-	{
-		T newClass = T();
-		components.push_back(newClass);
-	}*/
 	void AddChild(GameObject* gameObject);
 	void AddComponent(Component* component);
 	void SetChildsWorldPositions();
+
+private:
 };

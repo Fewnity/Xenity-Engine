@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\engine_settings.cpp" />
     <ClCompile Include="Source\asset_manager.cpp" />
     <ClCompile Include="Source\engine.cpp" />
@@ -188,18 +189,24 @@
     <ClCompile Include="Source\transform.cpp" />
     <ClCompile Include="Source\file_system\mesh_loader\wavefront_loader.cpp" />
     <ClCompile Include="Source\graphics\spriteRenderer.cpp" />
+    <ClCompile Include="Source\graphics\sprite_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\fragment2.shader" />
     <None Include="Source\shaders\fragment.shader" />
+    <None Include="Source\shaders\fragment2D.shader" />
     <None Include="Source\shaders\fragmentStandard.shader" />
+    <None Include="Source\shaders\fragmentStandard2D.shader" />
     <None Include="Source\shaders\fragmentText.shader" />
     <None Include="Source\shaders\vertex.shader" />
     <None Include="Source\shaders\vertex2.shader" />
+    <None Include="Source\shaders\vertex2D.shader" />
     <None Include="Source\shaders\vertexStandard.shader" />
+    <None Include="Source\shaders\vertexStandard2D.shader" />
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine_settings.h" />
     <ClInclude Include="Source\asset_manager.h" />
     <ClInclude Include="Source\game.h" />
@@ -228,6 +235,7 @@
     <ClInclude Include="Source\transform.h" />
     <ClInclude Include="Source\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\graphics\spriteRenderer.h" />
+    <ClInclude Include="Source\graphics\sprite_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

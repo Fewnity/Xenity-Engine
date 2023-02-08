@@ -16,9 +16,10 @@ public:
 	void SetShaderAttribut(std::string attribut, Vector3 value);
 	void SetShaderAttribut(std::string attribut, Vector4 value);
 	void SetShaderCameraPosition();
-	void SetShaderProjection();
+	void SetShaderProjection3D();
 	void SetShaderProjection2D();
 	void SetShaderPosition(Vector3 position);
+	void SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale);
 	void SetShaderRotation(Vector3 eulerAngle);
 	void SetShaderScale(Vector3 scale);
 	void SetShaderTexture(std::string attribut, Texture* texture);

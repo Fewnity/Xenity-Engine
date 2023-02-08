@@ -10,18 +10,22 @@
 #include "engine_settings.h"
 #include<chrono>
 #include <iostream>
+#include "graphics/spriteRenderer.h"
 
 using namespace std::chrono;
 
-GameObject cameraGameObject = GameObject();
-Camera camera = Camera();
+GameObject* cameraGameObject = new GameObject();
+Camera* camera = new Camera();
 
 GameObject* cubeGameObject = new GameObject();
 GameObject* coneGameobject = new GameObject();
 GameObject* myGameObject3 = new GameObject();
-Mesh* mesh3;
-Mesh* mesh4;
-Mesh* mesh5;
+
+GameObject* gameObjectSprite = new GameObject();
+
+Mesh* mesh3 = nullptr;
+Mesh* mesh4 = nullptr;
+Mesh* mesh5 = nullptr;
 float animation = 0;
 
 void Game::Init() {
@@ -31,8 +35,8 @@ void Game::Init() {
 	//AudioSource::Play2DSound(audio1);
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
-	camera.SetParent(&cameraGameObject);
-	camera.gameObject->transform.SetPosition(Vector3(0, 2, 2));
+	cameraGameObject->AddComponent(camera);
+	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
 
 	/*time_point<high_resolution_clock> start_point, end_point;
 	start_point = high_resolution_clock::now();
@@ -51,58 +55,59 @@ void Game::Init() {
 	mesh4 = new Mesh("ConeTriangulate.obj");
 	mesh5 = new Mesh("CubeTriangulate.obj");
 
-	cubeGameObject->components.push_back(mesh3);
-	mesh3->SetParent(cubeGameObject);
-
-	//myGameObject1.transform.position.x = 4;
+	cubeGameObject->AddComponent(mesh3);
 	cubeGameObject->transform.SetLocalPosition(Vector3(2, 0, 0));
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
+	//cubeGameObject->transform.SetScale(Vector3(10, 0.5, 0.5));
 
-	coneGameobject->components.push_back(mesh4);
-	mesh4->SetParent(coneGameobject);
+	coneGameobject->AddComponent(mesh4);
 	coneGameobject->transform.SetPosition(Vector3(0, 0, 0));
 
 	coneGameobject->AddChild(cubeGameObject);
 
-	myGameObject3->components.push_back(mesh5);
-	mesh5->SetParent(myGameObject3);
+	myGameObject3->AddComponent(mesh5);
 	myGameObject3->transform.SetPosition(Vector3(0, -2, 0));
 
-	mesh5->gameObject->transform.SetScale( Vector3(10, 1, 10));
+	mesh5->gameObject->transform.SetScale(Vector3(10, 1, 10));
 
 	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
 	Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
 	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
 
 	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
+	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
+	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
 
-	Texture* texture1 = new Texture("Brick.png", 0);
+	Texture* texture1 = new Texture("Brick.png");
 
-	Texture* texture2 = new Texture("Dry Dirt.png", 1);
+	Texture* texture2 = new Texture("Dry Dirt.png");
 
 	//Wood and metal 1
-	Texture* texture3 = new Texture("container.png", 2);
-	Texture* texture4 = new Texture("container_specular.png", 3);
+	Texture* texture3 = new Texture("container.png");
+	Texture* texture4 = new Texture("container_specular.png");
 
 	//Wood and metal 2
-	Texture* texture5 = new Texture("Wood_Gate_Fortified_basecolor.jpg", 4);
-	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg", 5);
+	Texture* texture5 = new Texture("Wood_Gate_Fortified_basecolor.jpg");
+	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg");
+	Texture* texture7 = new Texture("ship_0000.png");
 
 	shader->SetShaderTexture("material.diffuse", texture3);
 	shader->SetShaderTexture("material.specular", texture4);
 	shader3->SetShaderTexture("material.diffuse", texture5);
 	shader3->SetShaderTexture("material.specular", texture6);
 
-
-	shader->Use();
-
-	//int frameCount = 0;
-
 	//mesh1.shader = &shader;
 	//mesh2.shader = &shader2;
 	mesh3->shader = shader3;
 	mesh4->shader = shader3;
 	mesh5->shader = shader3;
+
+	SpriteRenderer* spr = new SpriteRenderer();
+	spr->texture = texture7;
+	spr->shader = shaderStandard2D;
+	spr->width = 100;
+	spr->height = 100;
+	gameObjectSprite->AddComponent(spr);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -132,11 +137,11 @@ void Game::Loop()
 		myGameObject3->active = !myGameObject3->active;
 	}
 
-	Vector3 newCameraPosition = camera.gameObject->transform.GetPosition();
+	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
 	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-		vect /= 20.0f;
+		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition.x += vect.x;
 		newCameraPosition.y += vect.y;
 		newCameraPosition.z += vect.z;
@@ -144,7 +149,7 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(S)) {
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
-		vect /= 20.0f;
+		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition.x -= vect.x;
 		newCameraPosition.y -= vect.y;
 		newCameraPosition.z -= vect.z;
@@ -152,29 +157,31 @@ void Game::Loop()
 	if (InputSystem::GetKey(D)) {
 
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
-		vect /= 20.0f;
+		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition.x += vect.x;
 		newCameraPosition.z += vect.z;
 	}
 	if (InputSystem::GetKey(Q)) {
 
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
-		vect /= 20.0f;
+		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition.x -= vect.x;
 		newCameraPosition.z -= vect.z;
 	}
-	camera.gameObject->transform.SetPosition(newCameraPosition);
+	camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
 	animation = (float)SDL_GetTicks64() / 500;
 	animation = sin(animation) / 2.0f + 0.5f;
 
-	Vector3 newCameraRotation = camera.gameObject->transform.GetRotation();
-	if (camera.gameObject->transform.GetRotation().x + -InputSystem::mouseSpeed.y / 4.0f < 90 && camera.gameObject->transform.GetRotation().x + -InputSystem::mouseSpeed.y / 4.0f > -90)
-		newCameraRotation.x += -InputSystem::mouseSpeed.y / 4.0f;
+	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
+	float xInputToAdd = -InputSystem::mouseSpeed.y * EngineSettings::deltaTime * 20;
+	float yInputToAdd = -InputSystem::mouseSpeed.x * EngineSettings::deltaTime * 20;
 
-	newCameraRotation.y += -InputSystem::mouseSpeed.x / 4.0f;
-	camera.gameObject->transform.SetRotation(newCameraRotation);
+	newCameraRotation.x += xInputToAdd;
+	newCameraRotation.y += yInputToAdd;
+
+	camera->gameObject->transform.SetRotation(newCameraRotation);
 
 	coneGameobject->SetChildsWorldPositions();
 	//mesh3->gameObject->transform.rotation.y = 45;
@@ -182,19 +189,17 @@ void Game::Loop()
 
 	Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	if (InputSystem::GetKey(RIGHT)) {
-		mesh4NewRotation.y -= 0.5f;
+		mesh4NewRotation.y -= EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(LEFT)) {
-		mesh4NewRotation.y += 0.5f;
+		mesh4NewRotation.y += EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(UP)) {
-		mesh4NewRotation.x -= 0.5f;
+		mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(DOWN)) {
-		mesh4NewRotation.x += 0.5f;
+		mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
 
 	mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
-
-	//mesh5->gameObject->transform.scale = Vector3(10, 1, 10);
 }

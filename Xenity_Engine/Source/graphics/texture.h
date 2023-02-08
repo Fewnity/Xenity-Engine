@@ -6,7 +6,7 @@ class Texture
 {
 public:
 	Texture() = delete;
-	Texture(std::string filePath, unsigned int textureIndex);
+	Texture(std::string filePath);
 	~Texture();
 	unsigned int GetTextureIndex();
 	unsigned int GetTextureId();

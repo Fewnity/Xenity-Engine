@@ -3,22 +3,24 @@
 
 class Shader;
 class Texture;
-class Mesh;
+class IDrawable;
 
 class AssetManager
 {
 public:
 	static void AddShader(Shader* shader);
 	static void AddTexture(Texture* texture);
-	static void AddMesh(Mesh* mesh);
+	static void AddDrawable(IDrawable* drawable);
 
 	static void RemoveShader(Shader* shader);
 	static void RemoveTexture(Texture* texture);
-	static void RemoveMesh(Mesh* mesh);
+	static void RemoveDrawable(IDrawable* drawable);
+
+	static int GetTextureCount();
 
 	static std::vector<Shader *> shaders;
 	static std::vector<Texture*> textures;
-	static std::vector<Mesh*> meshs;
+	static std::vector<IDrawable*> drawables;
 private:
 };
 

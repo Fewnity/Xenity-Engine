@@ -5,6 +5,7 @@
 #include <map>
 #include <glad/glad.h>
 #include "../engine_settings.h"
+#include "window.h"
 
 #include FT_FREETYPE_H
 
@@ -33,6 +34,8 @@ void UiManager::CreateTextBuffer()
 
 void UiManager::RenderText(Shader& s, std::string text, float x, float y, float scale, glm::vec3 color)
 {
+	y = Window::GetHeight() - y;
+
 	// activate corresponding render state	
 	s.Use();
 	glUniform3f(glGetUniformLocation(s.GetProgramId(), "textColor"), color.x, color.y, color.z);

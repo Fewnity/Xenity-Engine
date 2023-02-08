@@ -6,8 +6,8 @@
 #include "stb_image.h"
 #include "../file_system/file.h"
 
-Texture::Texture(std::string filePath, unsigned int _textureIndex) {
-	textureIndex = _textureIndex;
+Texture::Texture(std::string filePath) {
+	textureIndex = AssetManager::GetTextureCount();
 	LoadTexture(filePath);
 	AssetManager::AddTexture(this);
 }

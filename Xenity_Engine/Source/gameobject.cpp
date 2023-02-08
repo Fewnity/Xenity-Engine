@@ -106,6 +106,8 @@ void GameObject::AddComponent(Component* component)
 		}
 	}
 
-	if (add)
+	if (add) {
 		components.push_back(component);
+		component->gameObject = this;
+	}
 }
