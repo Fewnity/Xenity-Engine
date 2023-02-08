@@ -7,6 +7,7 @@
 #include "../file_system/file.h"
 #include "../engine_settings.h"
 #include <iostream>
+#include "../debug.h"
 
 Texture::Texture(std::string filePath) 
 {
@@ -42,6 +43,8 @@ void Texture::SetFilter(Filter filter)
 }
 
 void Texture::LoadTexture(std::string filePath) {
+	Debug::Print("Loading texture...");
+
 	unsigned char* data = File::LoadTextureData(filePath, this->width, this->height, this->nrChannels);
 
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
@@ -61,8 +64,9 @@ void Texture::LoadTexture(std::string filePath) {
 
 		//printf("Texture loaded -> size : %dx%d; nrChannels: %d", width, height, nrChannels);
 	}
-	else {
-		printf("Texture can't be loaded. Path : \"%s\"\n", filePath.c_str());
+	else 
+	{
+		Debug::Print("exture can't be loaded. Path: " + filePath);
 	}
 	stbi_image_free(data);
 }

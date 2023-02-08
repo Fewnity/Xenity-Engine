@@ -1,6 +1,7 @@
 #include "input_system.h"
 #include <fstream>
 #include <map>
+#include "../debug.h"
 
 Vector2 InputSystem::mousePosition = Vector2();
 Vector2 InputSystem::mouseSpeed = Vector2();
@@ -12,6 +13,7 @@ void InputSystem::Init() {
 		inputs[i] = Input();
 		inputs[i].code = (KeyCode)i;
 	}
+	Debug::Print("---- Input System initiated ----");
 }
 
 void InputSystem::ClearInputs() {

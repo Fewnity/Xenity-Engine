@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../file_system/file.h"
 #include "../asset_manager.h"
+#include "../debug.h"
 
 GLuint vertexShaderId, fragmentShaderId, programId;
 
@@ -27,6 +28,9 @@ GLuint Shader::GetProgramId() {
 
 
 void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
+
+	Debug::Print("Compiling shader...");
+
 	//Load vertex shader text
 	std::string vertex_shader_text_temp = File::LoadShaderData(vertexPath);
 	const char* vertex_shader_text = vertex_shader_text_temp.c_str();
@@ -37,7 +41,9 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 
 	GLint vResult;
 	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &vResult);
-	std::cout << "vResult" << vResult << std::endl;
+
+	if(vResult == 0)
+		Debug::Print("Vertex shader error: " + vertexPath);
 
 	//Load fragment shader text
 	std::string fragment_shader_text_temp = File::LoadShaderData(fragmentPath);
@@ -49,7 +55,9 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 
 	GLint fragResult;
 	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &fragResult);
-	std::cout << "fragResult" << fragResult << std::endl;
+
+	if (fragResult == 0)
+		Debug::Print("Fragment shader error. Path: " + fragmentPath);
 
 	//Link shaders to a program
 	programId = glCreateProgram();

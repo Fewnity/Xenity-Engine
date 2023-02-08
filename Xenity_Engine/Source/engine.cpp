@@ -11,6 +11,7 @@
 #include "asset_manager.h"
 #include "engine_settings.h"
 #include "graphics/sprite_manager.h"
+#include "debug.h"
 
 PointLight * pointLight = new PointLight();
 SpotLight * spotLight = new SpotLight();
@@ -26,6 +27,7 @@ float lastTick = 0;
 
 int Engine::Init()
 {
+	Debug::Init();
 	/* Initialize the library */
 	File::InitFileSystem();
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {

@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../main.h"
 #include "../engine_settings.h"
+#include "../debug.h"
 
 std::string texturePath = R"(Xenity_Engine\Source\images\)"; //TODO improve this
 
@@ -47,6 +48,7 @@ void File::InitFileSystem()
 {
 	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
 	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	Debug::Print("---- File System initiated ----");
 	//gamePath += R"(Debug\)"; //TODO remove this
 }
 

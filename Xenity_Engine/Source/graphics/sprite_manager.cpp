@@ -6,6 +6,7 @@
 #include "../ui/window.h"
 #include "../transform.h"
 #include "graphics.h"
+#include "../debug.h"
 
 unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
 
@@ -98,4 +99,6 @@ void SpriteManager::CreateSpriteBuffer()
 
 void SpriteManager::Init() {
 	CreateSpriteBuffer();
+
+	Debug::Print("---- Sprite System initiated ----");
 }

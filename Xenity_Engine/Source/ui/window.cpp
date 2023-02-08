@@ -3,6 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <stb_image.h>
 #include <GLFW/glfw3.h>
+#include "../debug.h"
 
 SDL_Window* Window::window = nullptr;
 
@@ -53,6 +54,8 @@ int Window::InitWindow()
 
 	SDL_GL_SetSwapInterval(1);
 	stbi_set_flip_vertically_on_load(true);
+
+	Debug::Print("---- Window initiated ----");
 
 	return 0;
 }

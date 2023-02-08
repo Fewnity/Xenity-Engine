@@ -7,12 +7,16 @@
 #include "../../vectors/vector3.h"
 #include "../../graphics/mesh.h"
 #include "../../engine_settings.h"
+#include "../../debug.h"
+
 using namespace std;
 
 std::string modelsPath = R"(Xenity_Engine\Source\models\)"; //TODO remove this
 
 void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 {
+	Debug::Print("Loading mesh...");
+
 	std::string finalpath = EngineSettings::RootFolder + modelsPath;
 	//Open file
 	ifstream file;
@@ -20,7 +24,8 @@ void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 
 	//Print error if the file can't be read
 	if (file.fail()) {
-		std::cout << "\033[31mModel load error. Path : \"" << finalpath + filePath << "\"\033[0m" << std::endl;
+		Debug::Print("Mesh loading error. Path: " + finalpath + filePath);
+		//std::cout << "\033[31mModel load error. Path : \"" << finalpath + filePath << "\"\033[0m" << std::endl;
 	}
 	int verticesCount = 0;
 	int indicesCount = 0;

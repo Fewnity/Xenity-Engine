@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 #include "../engine_settings.h"
 #include "window.h"
+#include "../debug.h"
 
 #include FT_FREETYPE_H
 
@@ -156,11 +157,15 @@ int UiManager::Init()
 		catch (...)
 		{
 			std::cout << "ERROR::" << std::endl;
+			return 1;
 		}
 		
 	}
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
 	CreateTextBuffer();
+
+	Debug::Print("---- UI system initiated ----");
+
 	return 0;
 }

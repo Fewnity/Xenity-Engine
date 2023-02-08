@@ -13,6 +13,7 @@
 #include "scene_manager/scene.h"
 
 #include "game.h"
+#include "debug.h"
 
 #undef main
 
@@ -43,10 +44,15 @@ bool wireframe = false;
 int main(void)
 {
 	if (Engine::Init() != 0) {
+		Debug::Print("Engine failed to init");
 		return -1;
 	}
+
+	Debug::Print("Initiating game...");
 	Game::Init();
+	Debug::Print("---- Game initiated ----");
 	Engine::Loop();
+	Debug::Print("---- Game loop ended ----");
 
 	glfwTerminate();
 	return 0;
