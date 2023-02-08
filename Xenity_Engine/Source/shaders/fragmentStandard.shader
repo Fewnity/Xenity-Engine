@@ -48,11 +48,11 @@ struct SpotLight {
 
 uniform Material material;
 
-#define NR_POINT_LIGHTS 1  
+#define NR_POINT_LIGHTS 10  
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-#define NR_SPOT_LIGHTS 2  
+#define NR_SPOT_LIGHTS 10  
 uniform SpotLight spotLights[NR_SPOT_LIGHTS];
-#define NR_DIRECTIONAL_LIGHTS 1  
+#define NR_DIRECTIONAL_LIGHTS 10  
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
 
 uniform int usedPointLightCount;
@@ -133,10 +133,19 @@ void main()
 
 	//Result
 	vec3 result = ambient; //Set face result
-	result += CalculatePointLight(pointLights[0], norm, FragPos, viewDir);
-	result += CalculateSpotLight(spotLights[0], norm, FragPos, viewDir);
-	result += CalculateSpotLight(spotLights[1], norm, FragPos, viewDir);
-	result += CalculateDirectionalLight(directionalLights[0], norm, FragPos, viewDir);
+	for (int i = 0; i < usedPointLightCount; i++)
+	{
+		result += CalculatePointLight(pointLights[i], norm, FragPos, viewDir);
+	}	
+	for (int i = 0; i < usedSpotLightCount; i++)
+	{
+		result += CalculateSpotLight(spotLights[i], norm, FragPos, viewDir);
+	}
+	for (int i = 0; i < usedDirectionalLightCount; i++)
+	{
+		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, viewDir);
+	}
+	//result += CalculateSpotLight(spotLights[1], norm, FragPos, viewDir);
 
 	float alpha = texture(material.diffuse, TexCoord).a;
 	//if (alpha <= 0.1)

@@ -145,5 +145,6 @@ void Mesh::UpdateShader() {
 		shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
 
 		shader->SetShaderScale(gameObject->transform.GetScale());
+		shader->UpdateLights();
 	}
 }

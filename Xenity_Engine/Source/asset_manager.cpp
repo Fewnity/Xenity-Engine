@@ -3,10 +3,12 @@
 #include "graphics/texture.h"
 #include "graphics/shader.h"
 #include "graphics/mesh.h"
+#include "lighting/lighting.h"
 
 std::vector<Shader*> AssetManager::shaders;
 std::vector<Texture*> AssetManager::textures;
 std::vector<IDrawable*> AssetManager::drawables;
+std::vector<Light*> AssetManager::lights;
 
 void AssetManager::AddShader(Shader* shader)
 {
@@ -21,6 +23,11 @@ void AssetManager::AddTexture(Texture* texture)
 void AssetManager::AddDrawable(IDrawable* drawable)
 {
 	drawables.push_back(drawable);
+}
+
+void AssetManager::AddLight(Light* light)
+{
+	lights.push_back(light);
 }
 
 void AssetManager::RemoveShader(Shader* shader)
@@ -72,6 +79,23 @@ void AssetManager::RemoveDrawable(IDrawable* drawable)
 	}
 	if (found)
 		drawables.erase(drawables.begin() + drawableIndex);
+}
+
+void AssetManager::RemoveLight(Light* light)
+{
+	int lightCount = lights.size();
+	int lightIndex = 0;
+	bool found = false;
+	for (int i = 0; i < lightCount; i++)
+	{
+		if (lights[i] == light) {
+			found = true;
+			lightIndex = i;
+			break;
+		}
+	}
+	if (found)
+		lights.erase(lights.begin() + lightIndex);
 }
 
 int AssetManager::GetTextureCount()

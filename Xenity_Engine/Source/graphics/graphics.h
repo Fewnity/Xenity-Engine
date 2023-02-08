@@ -18,5 +18,5 @@ class Graphics
 {
 public :
 	static Camera* usedCamera;
-	static void DrawAllMesh();
+	static void DrawAllDrawable();
 };

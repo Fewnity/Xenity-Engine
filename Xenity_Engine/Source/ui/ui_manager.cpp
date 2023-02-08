@@ -39,6 +39,7 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 
 	// activate corresponding render state	
 	s.Use();
+	s.SetShaderProjection2D();
 	glUniform3f(glGetUniformLocation(s.GetProgramId(), "textColor"), color.x, color.y, color.z);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);

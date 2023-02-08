@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../file_system/file.h"
 #include "../asset_manager.h"
+#include "../lighting/lighting.h"
 #include "../debug.h"
 
 GLuint vertexShaderId, fragmentShaderId, programId;
@@ -81,7 +82,7 @@ void Shader::SetShaderCameraPosition() {
 		{
 			xAngle += 360;
 		}
-		while (xAngle > 360-90)
+		while (xAngle > 360 - 90)
 		{
 			xAngle -= 360;
 		}
@@ -160,8 +161,8 @@ void Shader::SetShaderRotation(Vector3 eulerAngle) {
 void Shader::SetShaderScale(Vector3 scale) {
 	Use();
 	glm::mat3 scaleMat = glm::mat3(glm::vec3(scale.x, 0.0, 0.0),
-								   glm::vec3(0.0, scale.y, 0.0),
-								   glm::vec3(0.0, 0.0, scale.z));
+		glm::vec3(0.0, scale.y, 0.0),
+		glm::vec3(0.0, 0.0, scale.z));
 
 	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
 }
@@ -181,7 +182,68 @@ void Shader::SetShaderAttribut(std::string attribut, float value) {
 	glUniform1f(glGetUniformLocation(programId, attribut.c_str()), value);
 }
 
-void Shader::SetShaderTexture(std::string attribut, Texture *texture) {
+void Shader::SetShaderAttribut(std::string attribut, int value) {
+	Use();
+	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), value);
+}
+
+void Shader::UpdateLights()
+{
+	int lightCount = AssetManager::lights.size();
+	int directionalUsed = 0;
+	int pointUsed = 0;
+	int spotUsed = 0;
+	for (int lightI = 0; lightI < lightCount; lightI++)
+	{
+		Light* light = AssetManager::lights[lightI];
+		std::string baseString = "";
+		if (light->type == Light::Directional)
+		{
+			baseString = "directionalLights[" + std::to_string(directionalUsed) + "].";
+			directionalUsed++;
+		}
+		else if (light->type == Light::Point)
+		{
+			baseString = "pointLights[" + std::to_string(pointUsed) + "].";
+			pointUsed++;
+		}
+		else if (light->type == Light::Spot)
+		{
+			baseString = "spotLights[" + std::to_string(spotUsed) + "].";
+			spotUsed++;
+		}
+
+		if (light->type == Light::Directional)
+		{
+			SetShaderAttribut(baseString + "color", light->color);
+			SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
+		}
+		else if (light->type == Light::Point)
+		{
+			SetShaderAttribut(baseString + "color", light->color* light->intensity);
+			SetShaderAttribut(baseString + "position", light->gameObject->transform.GetPosition());
+			SetShaderAttribut(baseString + "constant", lightConstant);
+			SetShaderAttribut(baseString + "linear", light->linear);
+			SetShaderAttribut(baseString + "quadratic", light->quadratic);
+		}
+		else if (light->type == Light::Spot)
+		{
+			SetShaderAttribut(baseString + "color", light->intensity * light->color);
+			SetShaderAttribut(baseString + "position", light->gameObject->transform.GetPosition());
+			SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
+			SetShaderAttribut(baseString + "constant", lightConstant);
+			SetShaderAttribut(baseString + "linear", light->linear);
+			SetShaderAttribut(baseString + "quadratic", light->quadratic);
+			SetShaderAttribut(baseString + "cutOff", glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
+			SetShaderAttribut(baseString + "outerCutOff", glm::cos(glm::radians(light->GetSpotAngle())));
+		}
+	}
+	SetShaderAttribut("usedPointLightCount", pointUsed);
+	SetShaderAttribut("usedSpotLightCount", spotUsed);
+	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
+}
+
+void Shader::SetShaderTexture(std::string attribut, Texture* texture) {
 	Use();
 	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), texture->GetTextureIndex());
 }

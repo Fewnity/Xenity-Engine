@@ -3,35 +3,49 @@
 #include <corecrt_math.h>
 
 
-void SpotLight::UpdatePointLightValues()
+void Light::UpdateLightValues()
 {
 	linear= (0.7f * 7.0f) / range;
 	quadratic = (7 * 1.8f) / (powf(range, 2) / 6.0f);
 }
 
-void PointLight::UpdatePointLightValues()
-{
-	linear = (0.7f * 7.0f) / range;
-	quadratic = (7 * 1.8f) / (powf(range, 2) / 6.0f);
-}
-
-float SpotLight::GetRange()
+float Light::GetRange()
 {
 	return range;
 }
-void SpotLight::SetRange(float value)
+
+void Light::SetSpotAngle(float angle)
 {
-	range = value;
-	UpdatePointLightValues();
+	if (angle < 0)
+		angle = 0;
+	else if (angle > 179)
+		angle = 179;
+
+	spotAngle = angle;
 }
 
-
-float PointLight::GetRange()
+void Light::SetSpotSmoothness(float smoothness)
 {
-	return range;
+	if (smoothness < 0)
+		smoothness = 0;
+	else if (smoothness > 1)
+		smoothness = 1;
+
+	spotSmoothness = smoothness;
 }
-void PointLight::SetRange(float value)
+
+float Light::GetSpotAngle()
+{
+	return spotAngle;
+}
+
+float Light::GetSpotSmoothness()
+{
+	return spotSmoothness;
+}
+
+void Light::SetRange(float value)
 {
 	range = value;
-	UpdatePointLightValues();
+	UpdateLightValues();
 }

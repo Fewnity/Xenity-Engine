@@ -24,6 +24,9 @@ public:
 	void SetShaderScale(Vector3 scale);
 	void SetShaderTexture(std::string attribut, Texture* texture);
 	void SetShaderAttribut(std::string attribut, float value);
+	void SetShaderAttribut(std::string attribut, int value);
+
+	void UpdateLights();
 
 private:
 	void LoadShader(std::string vertexPath, std::string fragmentPath);

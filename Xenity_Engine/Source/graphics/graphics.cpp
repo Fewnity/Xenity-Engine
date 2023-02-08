@@ -2,9 +2,8 @@
 #include "../asset_manager.h"
 
 Camera* Graphics::usedCamera = nullptr;
-//std::vector<Mesh*> Graphics::allMesh;
 
-void Graphics::DrawAllMesh()
+void Graphics::DrawAllDrawable()
 {
 	for (IDrawable* drawable : AssetManager::drawables)
 	{
