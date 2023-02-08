@@ -159,7 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="material.cpp" />
+    <ClCompile Include="Source\graphics\material.cpp" />
     <ClCompile Include="Source\debug.cpp" />
     <ClCompile Include="Source\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\engine_settings.cpp" />
@@ -208,7 +208,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="material.h" />
+    <ClInclude Include="Source\graphics\material.h" />
     <ClInclude Include="Source\debug.h" />
     <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine_settings.h" />

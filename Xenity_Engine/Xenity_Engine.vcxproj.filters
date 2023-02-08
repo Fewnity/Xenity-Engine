@@ -32,7 +32,7 @@
     <ClCompile Include="Source\graphics\spriteRenderer.cpp" />
     <ClCompile Include="Source\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
-    <ClCompile Include="material.cpp" />
+    <ClCompile Include="Source\graphics\material.cpp" />
     <ClCompile Include="Source\debug.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +66,7 @@
     <ClInclude Include="Source\graphics\spriteRenderer.h" />
     <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\graphics\sprite_manager.h" />
-    <ClInclude Include="material.h" />
+    <ClInclude Include="Source\graphics\material.h" />
     <ClInclude Include="Source\debug.h" />
   </ItemGroup>
   <ItemGroup>
