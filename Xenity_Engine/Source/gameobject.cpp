@@ -70,7 +70,7 @@ void GameObject::SetChildsWorldPositions()
 		double posAfterRotation[3];
 		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1,3, 3, 3);
 
-		childs[i]->transform.SetPosition(Vector3(posAfterRotation[0], posAfterRotation[1], posAfterRotation[2]));
+		childs[i]->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
 		Vector3 newRotation;
 		newRotation.x = transform.GetRotation().x + childs[i]->transform.GetLocalRotation().x;
 		newRotation.y = transform.GetRotation().y + childs[i]->transform.GetLocalRotation().y;
