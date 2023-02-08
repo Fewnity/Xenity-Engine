@@ -7,6 +7,7 @@
 //#define PROJECT_FOLDER R"(D:\Projet Visual Studio\OpenGL_Test\)";
 
 #include <string>
+#include "graphics/texture.h"
 
 class EngineSettings
 {
@@ -15,6 +16,6 @@ public:
 	static float deltaTime;
 	static int maxLightCount;
 	static std::string RootFolder;
-
+	static Texture::AnisotropicLevel anisotropicLevel;
 };
 

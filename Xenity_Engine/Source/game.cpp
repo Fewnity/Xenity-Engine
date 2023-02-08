@@ -11,6 +11,7 @@
 #include<chrono>
 #include <iostream>
 #include "graphics/spriteRenderer.h"
+#include "asset_manager.h"
 
 using namespace std::chrono;
 
@@ -89,7 +90,7 @@ void Game::Init() {
 	//Wood and metal 2
 	Texture* texture5 = new Texture("Wood_Gate_Fortified_basecolor.jpg");
 	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg");
-	Texture* texture7 = new Texture("ship_0000.png");
+	Texture* texture7 = new Texture("ship_0000.png", Texture::Filter::Point, false);
 
 	shader->SetShaderTexture("material.diffuse", texture3);
 	shader->SetShaderTexture("material.specular", texture4);
@@ -199,6 +200,21 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(DOWN)) {
 		mesh4NewRotation.x += EngineSettings::deltaTime * 25;
+	}
+
+	if (InputSystem::GetKey(V)) {
+		int c = AssetManager::textures.size();
+		for (int i = 0; i < c; i++)
+		{
+			AssetManager::textures[i]->SetFilter(Texture::Bilinear);
+		}
+	}
+	if (InputSystem::GetKey(B)) {
+		int c = AssetManager::textures.size();
+		for (int i = 0; i < c; i++)
+		{
+			AssetManager::textures[i]->SetFilter(Texture::Point);
+		}
 	}
 
 	mesh4->gameObject->transform.SetRotation(mesh4NewRotation);

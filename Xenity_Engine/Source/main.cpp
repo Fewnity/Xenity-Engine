@@ -20,8 +20,9 @@ using namespace std;
 
 /*
  * TODO :
+ * Texture filter per texture
+ * Improve shader system
  * Sounds
- * Fix normals when models doesn't have normals
  * Fix transparency order
  * Better engine structure (lighting)
  * Better structure
