@@ -21,7 +21,7 @@ GameObject * spotLightGameObject = new GameObject();
 GameObject * spotLight2GameObject = new GameObject();
 GameObject  *directionalLightGameObject = new GameObject();
 
-std::vector<GameObject*> gameObjects;
+std::vector<GameObject*> Engine::gameObjects;
 float lastTick = 0;
 
 int Engine::Init()
@@ -193,4 +193,9 @@ void Engine::Loop()
 
 void Engine::AddGameObject(GameObject* gameObject) {
 	gameObjects.push_back(gameObject);
+}
+
+std::vector<GameObject*> Engine::GetGameObjects()
+{
+	return std::vector<GameObject*>(gameObjects);
 }

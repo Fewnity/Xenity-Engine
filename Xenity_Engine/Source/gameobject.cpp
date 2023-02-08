@@ -7,6 +7,12 @@ GameObject::GameObject()
 	Engine::AddGameObject(this);
 }
 
+GameObject::GameObject(std::string name)
+{
+	this->name = name;
+	Engine::AddGameObject(this);
+}
+
 GameObject::~GameObject()
 {
 	int componentsCount = components.size();
@@ -110,4 +116,35 @@ void GameObject::AddComponent(Component* component)
 		components.push_back(component);
 		component->gameObject = this;
 	}
+}
+
+std::vector<GameObject*> GameObject::FindGameObjectsByName(std::string name)
+{
+	std::vector<GameObject*> foundGameObjects;
+
+	Engine::GetGameObjects().clear();
+	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
+
+	int gameObjectCount = gameObjects.size();
+
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		if (gameObjects[i]->name == name)
+			foundGameObjects.push_back(gameObjects[i]);
+	}
+	return foundGameObjects;
+}
+
+GameObject* GameObject::FindGameObjectByName(std::string name)
+{
+	Engine::GetGameObjects().clear();
+	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
+	int gameObjectCount = gameObjects.size();
+
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		if (gameObjects[i]->name == name)
+			return gameObjects[i];
+	}
+	return nullptr;
 }

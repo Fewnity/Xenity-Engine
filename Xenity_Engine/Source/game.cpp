@@ -65,6 +65,7 @@ void Game::Init() {
 	coneGameobject->transform.SetPosition(Vector3(0, 0, 0));
 
 	coneGameobject->AddChild(cubeGameObject);
+	coneGameobject->name = "Cone";
 
 	myGameObject3->AddComponent(mesh5);
 	myGameObject3->transform.SetPosition(Vector3(0, -2, 0));

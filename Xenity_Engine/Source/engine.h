@@ -12,4 +12,8 @@ public:
 	static int Init();
 	static void Loop();
 	static void AddGameObject(GameObject* gameObject);
+	static std::vector<GameObject*> GetGameObjects();
+
+private:
+	static std::vector<GameObject*> gameObjects;
 };

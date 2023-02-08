@@ -12,6 +12,7 @@ class GameObject
 {
 public:
 	GameObject();
+	GameObject(std::string name);
 	~GameObject();
 	bool active = true;
 	std::string name = "gameObject";
@@ -22,6 +23,8 @@ public:
 	void AddChild(GameObject* gameObject);
 	void AddComponent(Component* component);
 	void SetChildsWorldPositions();
+	static GameObject* FindGameObjectByName(std::string name);
+	static std::vector<GameObject*> FindGameObjectsByName(std::string name);
 
 private:
 };
