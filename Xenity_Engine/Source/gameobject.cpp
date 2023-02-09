@@ -46,7 +46,7 @@ void MultiplyMatrix(const double* A, const double* B, double* result, int rA, in
 	}
 }
 
-void GameObject::SetChildsWorldPositions() 
+void GameObject::SetChildsWorldPositions()
 {
 	int childCount = childs.size();
 	for (int i = 0; i < childCount; i++)
@@ -57,7 +57,7 @@ void GameObject::SetChildsWorldPositions()
 		radAngles.y = Deg2Rad * -transform.GetRotation().y;
 		radAngles.z = Deg2Rad * -transform.GetRotation().z;
 
-		double localPos[3] = { childs[i]->transform.GetLocalPosition().x, childs[i]->transform.GetLocalPosition().y, childs[i]->transform.GetLocalPosition().z};
+		double localPos[3] = { childs[i]->transform.GetLocalPosition().x, childs[i]->transform.GetLocalPosition().y, childs[i]->transform.GetLocalPosition().z };
 		double rotX[9] = { 1, 0, 0, 0, cos(radAngles.x), -sin(radAngles.x), 0, sin(radAngles.x), cos(radAngles.x) };
 		double rotY[9] = { cos(radAngles.y), 0, sin(radAngles.y), 0, 1, 0, -sin(radAngles.y), 0, cos(radAngles.y) };
 		double rotZ[9] = { cos(radAngles.z), -sin(radAngles.z), 0, sin(radAngles.z), cos(radAngles.z), 0, 0, 0, 1 };
@@ -68,7 +68,7 @@ void GameObject::SetChildsWorldPositions()
 		MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
 
 		double posAfterRotation[3];
-		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1,3, 3, 3);
+		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
 
 		childs[i]->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
 		Vector3 newRotation;
@@ -77,6 +77,8 @@ void GameObject::SetChildsWorldPositions()
 		newRotation.z = transform.GetRotation().z + childs[i]->transform.GetLocalRotation().z;
 
 		childs[i]->transform.SetRotation(newRotation);
+
+		childs[i]->SetChildsWorldPositions();
 	}
 }
 
@@ -95,11 +97,13 @@ void GameObject::AddChild(GameObject* gameObject)
 		}
 	}
 
-	if (add)
+	if (add) {
 		childs.push_back(gameObject);
+		gameObject->parent = this;
+	}
 }
 
-void GameObject::AddComponent(Component* component)
+void GameObject::AddExistingComponent(Component* component)
 {
 	bool add = true;
 	int componentCount = components.size();
@@ -112,7 +116,8 @@ void GameObject::AddComponent(Component* component)
 		}
 	}
 
-	if (add) {
+	if (add) 
+	{
 		components.push_back(component);
 		component->gameObject = this;
 	}
@@ -147,4 +152,53 @@ GameObject* GameObject::FindGameObjectByName(std::string name)
 			return gameObjects[i];
 	}
 	return nullptr;
+}
+
+bool GameObject::GetActive()
+{
+	return active;
+}
+
+bool GameObject::GetLocalActive()
+{
+	return localActive;
+}
+
+void GameObject::SetActive(bool active)
+{
+	if (active != this->active)
+	{
+		this->active = active;
+		UpdateActive(this);
+	}
+}
+
+void GameObject::UpdateActive(GameObject* changed)
+{
+	if (!changed->GetActive()) 
+	{
+		localActive = false;
+	}
+	else 
+	{
+		bool active = true;
+		GameObject* gmToCheck = parent;
+		while (gmToCheck != nullptr)
+		{
+			if (!gmToCheck->GetActive()) {
+				active = false;
+				break;
+			}
+			if (gmToCheck == changed) {
+				break;
+			}
+			gmToCheck = gmToCheck->parent;
+		}
+		localActive = active;
+	}
+	int childCount = childs.size();
+	for (int i = 0; i < childCount; i++)
+	{
+		childs[i]->UpdateActive(changed);
+	}
 }

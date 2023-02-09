@@ -37,7 +37,7 @@ int Engine::Init()
 	SpriteManager::Init();
 	
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
-	pointLightGameObject->AddComponent(pointLight);
+	pointLightGameObject->AddExistingComponent(pointLight);
 	pointLight->type = Light::Point;
 	pointLight->color = Vector3(1, 0.1f, 0.1f);
 	pointLight->intensity = 10;
@@ -45,7 +45,7 @@ int Engine::Init()
 	
 	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
 	spotLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
-	spotLightGameObject->AddComponent(spotLight);
+	spotLightGameObject->AddExistingComponent(spotLight);
 	spotLight->type = Light::Spot;
 	spotLight->color = Vector3(0.05f, 0.05f, 1);
 	spotLight->intensity = 200;
@@ -55,7 +55,7 @@ int Engine::Init()
 
 	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
 	spotLight2GameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
-	spotLight2GameObject->AddComponent(spotLight2);
+	spotLight2GameObject->AddExistingComponent(spotLight2);
 	spotLight2->type = Light::Spot;
 	spotLight2->color = Vector3(0.05f, 0.05f, 1);
 	spotLight2->intensity = 200;
@@ -64,7 +64,7 @@ int Engine::Init()
 	spotLight2->SetSpotAngle(17.0f);
 	
 	directionalLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, -1.0f));
-	directionalLightGameObject->AddComponent(directionalLight);
+	directionalLightGameObject->AddExistingComponent(directionalLight);
 	directionalLight->type = Light::Directional;
 	directionalLight->color = Vector3(0.3f, 0.7f, 0.3f);
 	directionalLight->intensity = 1;
@@ -134,6 +134,14 @@ void Engine::Loop()
 		AssetManager::shaders[5]->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 		AssetManager::shaders[5]->SetShaderAttribut("material.ambient", Vector3(0.529f, 0.808f, 0.922f));
 		AssetManager::shaders[5]->SetShaderAttribut("material.shininess", 32.0f);
+
+		
+		gameObjectCount = gameObjects.size();
+		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+		{
+			if (gameObjects[gIndex]->parent == nullptr)
+				gameObjects[gIndex]->SetChildsWorldPositions();
+		}
 
 		//Set wireframe
 		if (EngineSettings::isWireframe) {

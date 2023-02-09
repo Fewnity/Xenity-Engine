@@ -21,12 +21,11 @@ using namespace std;
 
 /*
  * TODO :
- * Texture filter per texture
- * Improve shader system
- * Sounds
+ * Fix parent system
+ * Clean code
+ * Fix light rotation
+ * 3D Sounds
  * Fix transparency order
- * Better engine structure (lighting)
- * Better structure
  * Check mesh/shader destructor
  * Add scale usage in local position calculation
  * Add local scale usage

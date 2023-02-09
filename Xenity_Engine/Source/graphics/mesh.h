@@ -25,6 +25,7 @@ public:
 	Mesh();
 	Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount);
 	Mesh(const std::string meshpath);
+	void LoadFromFile(const std::string meshpath);
 	~Mesh();
 	Shader* shader = nullptr;
 	void LoadMesh(float vertices[], unsigned int indices[]);

@@ -37,6 +37,10 @@ Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indi
 
 Mesh::Mesh(const std::string meshpath) : Component() 
 {
+	LoadFromFile(meshpath);
+}
+
+void Mesh::LoadFromFile(const std::string meshpath) {
 	WavefrontLoader::LoadMesh(meshData, meshpath);
 	CreateBuffers(meshData->hasUv, meshData->hasNormal);
 	OnLoadFinished();
@@ -103,7 +107,7 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 
 void Mesh::Draw()
 {
-	if (gameObject != nullptr && gameObject->active && meshData != nullptr)
+	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr)
 	{
 		UpdateShader();
 		glBindVertexArray(vertexArrayBuffer);

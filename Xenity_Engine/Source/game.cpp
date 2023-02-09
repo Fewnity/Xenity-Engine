@@ -5,6 +5,8 @@
 #include "graphics/mesh.h"
 #include "graphics/camera.h"
 #include <SDL2/SDL.h>
+#include "scene_manager/SceneManager.h"
+#include "game/sceneGame1.h"
 #include "lighting/lighting.h"
 #include "inputs/input_system.h"
 #include "engine_settings.h"
@@ -12,6 +14,7 @@
 #include <iostream>
 #include "graphics/spriteRenderer.h"
 #include "asset_manager.h"
+#include "debug.h"
 
 using namespace std::chrono;
 
@@ -36,7 +39,27 @@ void Game::Init() {
 	//AudioSource::Play2DSound(audio1);
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
-	cameraGameObject->AddComponent(camera);
+	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
+	Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
+	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
+	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
+	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
+	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
+
+	Texture* texture1 = new Texture("Brick.png");
+	Texture* texture2 = new Texture("Dry Dirt.png");
+	//Wood and metal 1
+	Texture* texture3 = new Texture("container.png");
+	Texture* texture4 = new Texture("container_specular.png");
+	//Wood and metal 2
+	Texture* texture5 = new Texture("Wood_Gate_Fortified_basecolor.jpg");
+	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg");
+	Texture* texture7 = new Texture("ship_0000.png", Texture::Filter::Point, false);
+
+	SceneGame1* scene = new SceneGame1();
+	SceneManager::LoadScene(scene);
+
+	cameraGameObject->AddExistingComponent(camera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
 
 	/*time_point<high_resolution_clock> start_point, end_point;
@@ -56,42 +79,25 @@ void Game::Init() {
 	mesh4 = new Mesh("ConeTriangulate.obj");
 	mesh5 = new Mesh("CubeTriangulate.obj");
 
-	cubeGameObject->AddComponent(mesh3);
+	cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetLocalPosition(Vector3(2, 0, 0));
-	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
 	//cubeGameObject->transform.SetScale(Vector3(10, 0.5, 0.5));
+	GameObject* cubeChild = new GameObject();
+	cubeChild->transform.SetLocalPosition(Vector3(1, 1, 0));
+	cubeGameObject->AddChild(cubeChild);
+	Mesh * mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
+	mesh->LoadFromFile("ConeTriangulate.obj");
 
-	coneGameobject->AddComponent(mesh4);
+	coneGameobject->AddExistingComponent(mesh4);
 	coneGameobject->transform.SetPosition(Vector3(0, 0, 0));
 
 	coneGameobject->AddChild(cubeGameObject);
 	coneGameobject->name = "Cone";
 
-	myGameObject3->AddComponent(mesh5);
+	myGameObject3->AddExistingComponent(mesh5);
 	myGameObject3->transform.SetPosition(Vector3(0, -2, 0));
 
 	mesh5->gameObject->transform.SetScale(Vector3(10, 1, 10));
-
-	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-	Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
-
-	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
-	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
-	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
-
-	Texture* texture1 = new Texture("Brick.png");
-
-	Texture* texture2 = new Texture("Dry Dirt.png");
-
-	//Wood and metal 1
-	Texture* texture3 = new Texture("container.png");
-	Texture* texture4 = new Texture("container_specular.png");
-
-	//Wood and metal 2
-	Texture* texture5 = new Texture("Wood_Gate_Fortified_basecolor.jpg");
-	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg");
-	Texture* texture7 = new Texture("ship_0000.png", Texture::Filter::Point, false);
 
 	shader->SetShaderTexture("material.diffuse", texture3);
 	shader->SetShaderTexture("material.specular", texture4);
@@ -100,6 +106,7 @@ void Game::Init() {
 
 	//mesh1.shader = &shader;
 	//mesh2.shader = &shader2;
+	mesh->shader = shader3;
 	mesh3->shader = shader3;
 	mesh4->shader = shader3;
 	mesh5->shader = shader3;
@@ -109,7 +116,7 @@ void Game::Init() {
 	spr->shader = shaderStandard2D;
 	spr->width = 100;
 	spr->height = 100;
-	gameObjectSprite->AddComponent(spr);
+	gameObjectSprite->AddExistingComponent(spr);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -128,15 +135,15 @@ void Game::Loop()
 
 	if (InputSystem::GetKeyDown(W))
 	{
-		cubeGameObject->active = !cubeGameObject->active;
+		cubeGameObject->SetActive(!cubeGameObject->GetActive());
 	}
 	if (InputSystem::GetKeyDown(X))
 	{
-		coneGameobject->active = !coneGameobject->active;
+		coneGameobject->SetActive(!coneGameobject->GetActive());
 	}
 	if (InputSystem::GetKeyDown(C))
 	{
-		myGameObject3->active = !myGameObject3->active;
+		myGameObject3->SetActive(!myGameObject3->GetActive());
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
@@ -185,7 +192,6 @@ void Game::Loop()
 
 	camera->gameObject->transform.SetRotation(newCameraRotation);
 
-	coneGameobject->SetChildsWorldPositions();
 	//mesh3->gameObject->transform.rotation.y = 45;
 	//mesh4->gameObject->transform.rotation.y -= 0.1f;
 
@@ -202,6 +208,8 @@ void Game::Loop()
 	if (InputSystem::GetKey(DOWN)) {
 		mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
+
+	cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
 
 	if (InputSystem::GetKey(V)) {
 		int c = AssetManager::textures.size();
