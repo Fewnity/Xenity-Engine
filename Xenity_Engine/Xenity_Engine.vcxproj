@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\material.cpp" />
     <ClCompile Include="Source\debug.cpp" />
     <ClCompile Include="Source\graphics\iDrawable.cpp" />
@@ -208,6 +209,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\material.h" />
     <ClInclude Include="Source\debug.h" />
     <ClInclude Include="Source\graphics\iDrawable.h" />

@@ -1,13 +1,18 @@
 #pragma once
 
 #include <vector>
-#include "scene.h"
+
+class Scene;
 
 class SceneManager {
-private:
-	std::vector<Scene*> loadedScenes;
-	Scene* usedScene = nullptr;
 public:
-	void addGameObjectToScene(GameObject* gameObject);
-	void setCurrentScene(Scene* scene);
+	static void LoadScene(Scene* scene);
+	static void LoadSceneAdditive(Scene* scene);
+	static void UnloadScene(Scene* scene);
+	static void UnloadScenes();
+
+private:
+	static std::vector<Scene*> loadedScenes;
+
+
 };

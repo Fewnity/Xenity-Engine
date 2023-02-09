@@ -8,7 +8,10 @@ Scene::~Scene()
 {
 }
 
-void Scene::addGameObject(GameObject* gameObject)
+void Scene::Load()
 {
-	gameObjects.push_back(gameObject);
+}
+
+void  Scene::Unload() {
+
 }

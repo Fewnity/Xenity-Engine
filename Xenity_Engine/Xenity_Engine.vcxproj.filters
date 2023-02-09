@@ -34,6 +34,7 @@
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\graphics\material.cpp" />
     <ClCompile Include="Source\debug.cpp" />
+    <ClCompile Include="Source\game\sceneGame1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="Source\graphics\sprite_manager.h" />
     <ClInclude Include="Source\graphics\material.h" />
     <ClInclude Include="Source\debug.h" />
+    <ClInclude Include="Source\game\sceneGame1.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
