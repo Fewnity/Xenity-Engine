@@ -22,6 +22,18 @@ public:
 
 	void AddChild(GameObject* gameObject);
 	void AddComponent(Component* component);
+
+	template <typename T>
+	T* GetComponent() {
+		int c = components.size();
+		for (int i = 0; i < c; i++)
+		{
+			if (T* result = dynamic_cast<T*>(components[i])) {
+				return result;
+			}
+		}
+	}
+
 	void SetChildsWorldPositions();
 	static GameObject* FindGameObjectByName(std::string name);
 	static std::vector<GameObject*> FindGameObjectsByName(std::string name);
