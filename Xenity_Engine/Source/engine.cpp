@@ -25,6 +25,10 @@ GameObject * directionalLightGameObject = new GameObject();
 std::vector<GameObject*> Engine::gameObjects;
 float lastTick = 0;
 
+/// <summary>
+/// Init engine
+/// </summary>
+/// <returns></returns>
 int Engine::Init()
 {
 	Debug::Init();
@@ -72,6 +76,25 @@ int Engine::Init()
 	return 0;
 }
 
+/// <summary>
+/// Update all components
+/// </summary>
+void Engine::UpdateComponents() {
+	//Update all gameobjects components
+	int gameObjectCount = gameObjects.size();
+	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+	{
+		int componentCount = gameObjects[gIndex]->components.size();
+		for (int cIndex = 0; cIndex < componentCount; cIndex++)
+		{
+			gameObjects[gIndex]->components[cIndex]->Update();
+		}
+	}
+}
+
+/// <summary>
+/// Engine loop
+/// </summary>
 void Engine::Loop()
 {
 	bool running = true;
@@ -93,22 +116,15 @@ void Engine::Loop()
 				break;
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-					Window::Resize(event.window.data1, event.window.data2);
+					Window::OnResize(event.window.data1, event.window.data2);
 				}
 				break;
 			default:
 				break;
 			}
 		}
-		int gameObjectCount = gameObjects.size();
-		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
-		{
-			int componentCount = gameObjects[gIndex]->components.size();
-			for (int cIndex = 0; cIndex < componentCount; cIndex++)
-			{
-				gameObjects[gIndex]->components[cIndex]->Update();
-			}
-		}
+
+		UpdateComponents();
 
 		Game::Loop();
 
@@ -136,11 +152,11 @@ void Engine::Loop()
 		AssetManager::shaders[5]->SetShaderAttribut("material.shininess", 32.0f);
 
 		
-		gameObjectCount = gameObjects.size();
+		int gameObjectCount = gameObjects.size();
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 		{
 			if (gameObjects[gIndex]->parent == nullptr)
-				gameObjects[gIndex]->SetChildsWorldPositions();
+				gameObjects[gIndex]->SetChildrenWorldPositions();
 		}
 
 		//Set wireframe
@@ -166,11 +182,19 @@ void Engine::Loop()
 	}
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="gameObject"></param>
 void Engine::AddGameObject(GameObject* gameObject) 
 {
 	gameObjects.push_back(gameObject);
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
 std::vector<GameObject*> Engine::GetGameObjects()
 {
 	return std::vector<GameObject*>(gameObjects);

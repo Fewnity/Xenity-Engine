@@ -32,6 +32,9 @@ Mesh* mesh4 = nullptr;
 Mesh* mesh5 = nullptr;
 float animation = 0;
 
+/// <summary>
+/// Init game
+/// </summary>
 void Game::Init() {
 	//loadedScenes.push_back(new Scene());
 	//usedScene = loadedScenes[0];
@@ -120,6 +123,9 @@ void Game::Init() {
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
+/// <summary>
+/// Game loop
+/// </summary>
 void Game::Loop()
 {
 	if (InputSystem::GetKeyDown(ESCAPE))

@@ -25,7 +25,8 @@ std::string File::LoadShaderData(const std::string path)
 	file.open(finalpath + path);
 
 	//Print error if the file can't be read
-	if (file.fail()) {
+	if (file.fail()) 
+	{
 		std::cout << "\033[31mShader read error. Path : \"" << finalpath + path << "\"\033[0m" << std::endl;
 	}
 
@@ -44,8 +45,8 @@ std::string File::LoadShaderData(const std::string path)
 
 void File::InitFileSystem() 
 {
-	EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
-	//EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
+	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
 	Debug::Print("---- File System initiated ----");
 	//gamePath += R"(Debug\)"; //TODO remove this
 }

@@ -10,6 +10,14 @@
 
 unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
 
+/// <summary>
+/// Draw a sprite
+/// </summary>
+/// <param name="transform">Sprite's transform</param>
+/// <param name="w">Sprite's width</param>
+/// <param name="h">Sprite's heigh</param>
+/// <param name="texture">Sprite's texture</param>
+/// <param name="s">Sprite's shader</param>
 void SpriteManager::RenderSprite(Transform transform, float w, float h, Texture* texture, Shader* s) {
 	SpriteManager::RenderSprite(transform.GetPosition(),
 		w,
@@ -19,6 +27,16 @@ void SpriteManager::RenderSprite(Transform transform, float w, float h, Texture*
 		texture, s);
 }
 
+/// <summary>
+/// Draw a sprite
+/// </summary>
+/// <param name="position">Sprite's position</param>
+/// <param name="w">Sprite's width</param>
+/// <param name="h">Sprite's heigh</param>
+/// <param name="scale">Sprite's scale</param>
+/// <param name="rotation">Sprite's rotation</param>
+/// <param name="texture">Sprite's texture</param>
+/// <param name="s">Sprite's shader</param>
 void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, Texture* texture, Shader* s) {
 	SpriteManager::RenderSprite(position.x,
 								position.y,
@@ -33,6 +51,21 @@ void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 sca
 								texture, s);
 }
 
+/// <summary>
+/// Draw a sprite (Raw values)
+/// </summary>
+/// <param name="x">X position</param>
+/// <param name="y">Y position</param>
+/// <param name="z">Z position</param>
+/// <param name="w">Xidth</param>
+/// <param name="h">Heigh</param>
+/// <param name="scaleX">X scale</param>
+/// <param name="scaleY">Y scale </param>
+/// <param name="xAngle">X angle</param>
+/// <param name="yAngle">Y angle</param>
+/// <param name="zAngle">Z angle</param>
+/// <param name="texture">Sprite's texture</param>
+/// <param name="s">Sprite's shader</param>
 void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, Texture* texture, Shader* s)
 {
 	if (texture == nullptr || s == nullptr)
@@ -69,6 +102,7 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 		{ xpos + w, ypos, z,      1.0f, 1.0f },
 		{ xpos + w, ypos + h,z,   1.0f, 0.0f }
 	};
+
 	// render glyph texture over quad
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 	// update content of VBO memory
@@ -82,6 +116,9 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+/// <summary>
+/// Create a buffer for sprites
+/// </summary>
 void SpriteManager::CreateSpriteBuffer()
 {
 	glGenVertexArrays(1, &spriteVAO);
@@ -97,6 +134,9 @@ void SpriteManager::CreateSpriteBuffer()
 	glBindVertexArray(0);
 }
 
+/// <summary>
+/// Init sprite manager
+/// </summary>
 void SpriteManager::Init() {
 	CreateSpriteBuffer();
 

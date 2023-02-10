@@ -19,6 +19,12 @@ Texture::Texture(std::string filePath, Filter filter, bool useMipMap)
 	CreateTextutre(filePath, filter, useMipMap);
 }
 
+/// <summary>
+/// Create the texture from the file path and texture settings
+/// </summary>
+/// <param name="filePath">File path</param>
+/// <param name="filter">Filter to use</param>
+/// <param name="useMipMap">Will texture use mipmap</param>
 void Texture::CreateTextutre(std::string filePath, Filter filter, bool useMipMap)
 {
 	this->filter = filter;
@@ -36,12 +42,20 @@ Texture::~Texture()
 	glDeleteTextures(1, &textureId);
 }
 
+/// <summary>
+/// Set texture's filter
+/// </summary>
+/// <param name="filter"></param>
 void Texture::SetFilter(Filter filter)
 {
 	this->filter = filter;
 	UpdateTextureFilter();
 }
 
+/// <summary>
+/// Load texture from a filepath
+/// </summary>
+/// <param name="filePath"></param>
 void Texture::LoadTexture(std::string filePath) {
 	Debug::Print("Loading texture...");
 
@@ -71,6 +85,9 @@ void Texture::LoadTexture(std::string filePath) {
 	stbi_image_free(data);
 }
 
+/// <summary>
+/// Update texture if the filter has changed
+/// </summary>
 void Texture::UpdateTextureFilter()
 {
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -128,12 +145,20 @@ void Texture::UpdateTextureFilter()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, anisotropicValue);
 }
 
+/// <summary>
+/// Get texture id
+/// </summary>
+/// <returns></returns>
 unsigned int Texture::GetTextureId()
 {
-	return  textureId;
+	return textureId;
 }
 
+/// <summary>
+/// Get texture index
+/// </summary>
+/// <returns></returns>
 unsigned int Texture::GetTextureIndex()
 {
-	return  textureIndex;
+	return textureIndex;
 }

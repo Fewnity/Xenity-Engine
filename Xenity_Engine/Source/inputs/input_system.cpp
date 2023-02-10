@@ -7,7 +7,11 @@ Vector2 InputSystem::mousePosition = Vector2();
 Vector2 InputSystem::mouseSpeed = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
 
-void InputSystem::Init() {
+/// <summary>
+/// Init input system
+/// </summary>
+void InputSystem::Init() 
+{
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		inputs[i] = Input();
@@ -16,7 +20,11 @@ void InputSystem::Init() {
 	Debug::Print("---- Input System initiated ----");
 }
 
-void InputSystem::ClearInputs() {
+/// <summary>
+/// Set all keys states to inactive
+/// </summary>
+void InputSystem::ClearInputs() 
+{
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		SetInputInactive(i);
@@ -25,7 +33,12 @@ void InputSystem::ClearInputs() {
 	mouseSpeed.y = 0;
 }
 
-void InputSystem::UpdateInputs(SDL_Event event) {
+/// <summary>
+/// Get inputs events
+/// </summary>
+/// <param name="event"></param>
+void InputSystem::UpdateInputs(SDL_Event event) 
+{
 	switch (event.type)
 	{
 	case SDL_MOUSEMOTION: {
@@ -68,7 +81,8 @@ void InputSystem::UpdateInputs(SDL_Event event) {
 std::map<int, int> keyMap; //TODO : To use later
 //To use like that : SetInput(pressed, keyMap.at(keyCode));
 
-void  InputSystem::InuptUpdate(bool pressed, int keyCode) {
+void  InputSystem::InuptUpdate(bool pressed, int keyCode) 
+{
 	switch (keyCode) {
 	case SDLK_LEFT:
 		SetInput(pressed, LEFT);
@@ -167,38 +181,77 @@ void  InputSystem::InuptUpdate(bool pressed, int keyCode) {
 	}
 }
 
-void InputSystem::SetInput(bool pressed, int keyCode) {
+/// <summary>
+/// Set inputs state
+/// </summary>
+/// <param name="pressed"></param>
+/// <param name="keyCode"></param>
+void InputSystem::SetInput(bool pressed, int keyCode) 
+{
 	if (pressed)
 		SetInputPressed(keyCode);
 	else
 		SetInputReleased(keyCode);
 }
 
-void InputSystem::SetInputPressed(int keyCode) {
+/// <summary>
+/// Set an input as pressed
+/// </summary>
+/// <param name="keyCode"></param>
+void InputSystem::SetInputPressed(int keyCode) 
+{
 	if (!inputs[keyCode].held) {
 		inputs[keyCode].pressed = true;
 		inputs[keyCode].held = true;
 	}
 }
 
-void InputSystem::SetInputReleased(int keyCode) {
+/// <summary>
+/// Set an input as released
+/// </summary>
+/// <param name="keyCode"></param>
+void InputSystem::SetInputReleased(int keyCode) 
+{
 	inputs[keyCode].released = true;
 	inputs[keyCode].held = false;
 }
 
-void InputSystem::SetInputInactive(int keyCode) {
+/// <summary>
+/// Set an input states to false
+/// </summary>
+/// <param name="keyCode"></param>
+void InputSystem::SetInputInactive(int keyCode) 
+{
 	inputs[keyCode].pressed = false;
 	inputs[keyCode].released = false;
 }
 
-bool InputSystem::GetKeyDown(KeyCode keyCode) {
+/// <summary>
+/// Return if the key has just been pressed
+/// </summary>
+/// <param name="keyCode"></param>
+/// <returns></returns>
+bool InputSystem::GetKeyDown(KeyCode keyCode) 
+{
 	return inputs[keyCode].pressed;
 }
 
-bool InputSystem::GetKey(KeyCode keyCode) {
+/// <summary>
+/// Return if the key is hold
+/// </summary>
+/// <param name="keyCode"></param>
+/// <returns></returns>
+bool InputSystem::GetKey(KeyCode keyCode) 
+{
 	return inputs[keyCode].held;
 }
 
-bool InputSystem::GetKeyUp(KeyCode keyCode) {
+/// <summary>
+/// Return if the key has just been released
+/// </summary>
+/// <param name="keyCode"></param>
+/// <returns></returns>
+bool InputSystem::GetKeyUp(KeyCode keyCode) 
+{
 	return inputs[keyCode].released;
 }

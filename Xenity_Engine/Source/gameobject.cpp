@@ -50,21 +50,28 @@ void MultiplyMatrix(const double* A, const double* B, double* result, int rA, in
 }
 
 /// <summary>
-/// Set gameobject's childs world positions
+/// Set gameobject's children world positions
 /// </summary>
-void GameObject::SetChildsWorldPositions()
+void GameObject::SetChildrenWorldPositions()
 {
 	double Deg2Rad = 0.01745329251; //M_PI / 180.0f
-	int childCount = childs.size();
+	int childCount = children.size();
 	Vector3 radAngles = Vector3();
 	radAngles.x = Deg2Rad * -transform.GetRotation().x;
 	radAngles.y = Deg2Rad * -transform.GetRotation().y;
 	radAngles.z = Deg2Rad * -transform.GetRotation().z;
 
+	double cosX = cos(radAngles.x);
+	double sinX = sin(radAngles.x);
+	double cosY = cos(radAngles.y);
+	double sinY = sin(radAngles.y);
+	double cosZ = cos(radAngles.z);
+	double sinZ = sin(radAngles.z);
+
 	//Create X, Y and Z matrices
-	double rotX[9] = { 1, 0, 0, 0, cos(radAngles.x), -sin(radAngles.x), 0, sin(radAngles.x), cos(radAngles.x) };
-	double rotY[9] = { cos(radAngles.y), 0, sin(radAngles.y), 0, 1, 0, -sin(radAngles.y), 0, cos(radAngles.y) };
-	double rotZ[9] = { cos(radAngles.z), -sin(radAngles.z), 0, sin(radAngles.z), cos(radAngles.z), 0, 0, 0, 1 };
+	double rotX[9] = { 1, 0, 0, 0, cosX, -sinX, 0, sinX, cosX };
+	double rotY[9] = { cosY, 0,sinY, 0, 1, 0, -sinY, 0, cosY };
+	double rotZ[9] = { cosZ, -sinZ, 0, sinZ, cosZ, 0, 0, 0, 1 };
 
 	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
 	double tempRotationM[9];
@@ -72,10 +79,10 @@ void GameObject::SetChildsWorldPositions()
 	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
 	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
 
-	//For each childs
+	//For each children
 	for (int i = 0; i < childCount; i++)
 	{
-		GameObject* child = childs[i];
+		GameObject* child = children[i];
 
 		//Get child local position
 		double localPos[3] = { child->transform.GetLocalPosition().x, child->transform.GetLocalPosition().y, child->transform.GetLocalPosition().z };
@@ -84,7 +91,7 @@ void GameObject::SetChildsWorldPositions()
 		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
 		//Set new child position (with parent's world position added)
 		child->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
-		
+
 		Vector3 newRotation;
 		newRotation.x = transform.GetRotation().x + child->transform.GetLocalRotation().x;
 		newRotation.y = transform.GetRotation().y + child->transform.GetLocalRotation().y;
@@ -92,8 +99,8 @@ void GameObject::SetChildsWorldPositions()
 
 		child->transform.SetRotation(newRotation);
 
-		//Update other child's childs positions
-		child->SetChildsWorldPositions();
+		//Update other child's children positions
+		child->SetChildrenWorldPositions();
 	}
 }
 
@@ -106,19 +113,19 @@ void GameObject::AddChild(GameObject* newChild)
 {
 	//Check if the child to add is alrady a child of this gameobject
 	bool add = true;
-	int childCount = childs.size();
+	int childCount = children.size();
 	for (int i = 0; i < childCount; i++)
 	{
-		if (childs[i] == newChild)
+		if (children[i] == newChild)
 		{
 			add = false;
 			break;
 		}
 	}
 
-	if (add) 
+	if (add)
 	{
-		childs.push_back(newChild);
+		children.push_back(newChild);
 		newChild->parent = this;
 	}
 }
@@ -213,32 +220,40 @@ void GameObject::SetActive(bool active)
 /// <param name="changed"></param>
 void GameObject::UpdateActive(GameObject* changed)
 {
+	bool lastLocalActive = localActive;
 	if (!changed->GetActive()) //if the new parent's state is false, set local active to false
 	{
 		localActive = false;
 	}
-	else
+	else if(active)
 	{
-		bool active = true;
+		bool newActive = true;
 		GameObject* gmToCheck = parent;
 		while (gmToCheck != nullptr)
 		{
-			if (!gmToCheck->GetActive()) 
+			if (!gmToCheck->GetActive()) //If a parent is disabled, set local active to false
 			{
-				active = false;
+				newActive = false;
 				break;
 			}
-			if (gmToCheck == changed) 
+			if (gmToCheck == changed)
 			{
 				break;
 			}
 			gmToCheck = gmToCheck->parent;
 		}
-		localActive = active;
+		localActive = newActive;
 	}
-	int childCount = childs.size();
-	for (int i = 0; i < childCount; i++)
+
+	//If the gameobject has changed his state
+	if (lastLocalActive != localActive)
 	{
-		childs[i]->UpdateActive(changed);
+		//Update children
+		int childCount = children.size();
+		for (int i = 0; i < childCount; i++)
+		{
+			children[i]->UpdateActive(changed);
+		}
 	}
+
 }

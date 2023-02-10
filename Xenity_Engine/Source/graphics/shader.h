@@ -5,6 +5,9 @@
 #include "../vectors/vector4.h"
 #include "texture.h"
 
+class Light;
+
+
 class Shader
 {
 public:
@@ -30,6 +33,10 @@ public:
 
 private:
 	void LoadShader(std::string vertexPath, std::string fragmentPath);
+	void SetPointLightData(Light* light, int index);
+	void SetDirectionalLightData(Light* light, int index);
+	void SetSpotLightData(Light* light, int index);
+
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;
 	unsigned int programId = 0;

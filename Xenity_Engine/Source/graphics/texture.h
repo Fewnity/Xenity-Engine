@@ -22,7 +22,6 @@ public:
 	Texture() = delete;
 	Texture(std::string filePath);
 	Texture(std::string filePath, Filter filter, bool useMipMap);
-	void CreateTextutre(std::string filePath, Filter filter, bool useMipMap);
 
 	~Texture();
 	unsigned int GetTextureIndex();
@@ -33,6 +32,7 @@ public:
 private:
 	Filter filter = Bilinear;
 	bool useMipMap = true;
+	void CreateTextutre(std::string filePath, Filter filter, bool useMipMap);
 	void LoadTexture(std::string filePath);
 	unsigned int textureId, textureIndex;
 	int width = 0, height = 0, nrChannels = 0;

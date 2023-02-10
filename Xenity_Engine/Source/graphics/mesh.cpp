@@ -71,32 +71,32 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
 
-	int byteCount = 3;
+	int finalByteCount = 3;
 	if (addNormals)
-		byteCount += 3;
+		finalByteCount += 3;
 	if (addUv)
-		byteCount += 2;
+		finalByteCount += 2;
 
-	int finalByteCount = 0;
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)finalByteCount);
+	int byteOffset = 0;
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)byteOffset);
 	//Enable my vertex attrib array number 0
 	glEnableVertexAttribArray(0);//Vertex attribute array 0 is now available for use.
-	finalByteCount += 3;
+	byteOffset += 3;
 
 	if (addUv)
 	{
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)(finalByteCount * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
 		//Enable texture coords attrib array number 1
 		glEnableVertexAttribArray(1);//Texture attribute array 2 is now available for use.
-		finalByteCount += 2;
+		byteOffset += 2;
 	}
 
 	if (addNormals)
 	{
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, byteCount * sizeof(float), (void*)(finalByteCount * sizeof(float)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
 		//Enable Normals attrib array number 2
 		glEnableVertexAttribArray(2);//Normals attribute array 2 is now available for use.	
-		finalByteCount += 3;
+		byteOffset += 3;
 	}
 	glBindVertexArray(0);
 

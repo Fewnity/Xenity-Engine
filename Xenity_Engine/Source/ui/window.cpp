@@ -11,6 +11,10 @@ int Window::width = 1280;
 int Window::height = 720;
 const char * ENGINE_NAME = "Xenity Engine";
 
+/// <summary>
+/// Init window
+/// </summary>
+/// <returns></returns>
 int Window::InitWindow()
 {
 	/* Initialize the library */
@@ -49,9 +53,6 @@ int Window::InitWindow()
 	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); //TODO Move to texture init?
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
 	SDL_GL_SetSwapInterval(1);
 	stbi_set_flip_vertically_on_load(true);
 
@@ -60,36 +61,67 @@ int Window::InitWindow()
 	return 0;
 }
 
-void Window::Resize(int newWidth, int newHeight)
+/// <summary>
+/// On windows resized
+/// </summary>
+/// <param name="newWidth"></param>
+/// <param name="newHeight"></param>
+void Window::OnResize(int newWidth, int newHeight)
 {
-	printf("%d %d", newWidth, newHeight);
 	glViewport(0, 0, newWidth, newHeight);
 	width = newWidth;
 	height = newHeight;
 }
 
-void Window::UpdateScreen() {
-
+/// <summary>
+/// Update window screen
+/// </summary>
+void Window::UpdateScreen()
+{
 	SDL_GL_SwapWindow(window);
 }
 
-void Window::SetTitle(const std::string title) {
+/// <summary>
+/// Set window title
+/// </summary>
+/// <param name="title">String title</param>
+void Window::SetTitle(const std::string title) 
+{
 	SDL_SetWindowTitle(window, title.c_str());
 }
 
-void  Window::SetWidth(int width_)
+/// <summary>
+/// Set window width value (Do not change UI size)
+/// </summary>
+/// <param name="width_"></param>
+void Window::SetWidth(int width_)
 {
 	width = width_;
 }
-void  Window::SetHeight(int height_)
+
+/// <summary>
+/// Set window height value (Do not change UI size)
+/// </summary>
+/// <param name="height_"></param>
+void Window::SetHeight(int height_)
 {
 	height = height_;
 }
-int  Window::GetWidth()
+
+/// <summary>
+/// Get window width in pixel
+/// </summary>
+/// <returns></returns>
+int Window::GetWidth()
 {
 	return width;
 }
-int  Window::GetHeight()
+
+/// <summary>
+/// Get window height in pixel
+/// </summary>
+/// <returns></returns>
+int Window::GetHeight()
 {
 	return height;
 }

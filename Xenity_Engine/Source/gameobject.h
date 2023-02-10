@@ -17,11 +17,11 @@ public:
 	~GameObject();
 	std::string name = "gameObject";
 	Transform transform = Transform(this);
-	std::vector<GameObject*> childs;
+	std::vector<GameObject*> children;
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;
-	void SetChildsWorldPositions();
+	void SetChildrenWorldPositions();
 
 	void AddChild(GameObject* gameObject);
 	void AddExistingComponent(Component* component);

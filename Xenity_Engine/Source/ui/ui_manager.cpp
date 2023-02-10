@@ -2,7 +2,6 @@
 #include "../main.h"
 #include <ft2build.h>
 #include <iostream>
-#include <map>
 #include <glad/glad.h>
 #include "../engine_settings.h"
 #include "window.h"
@@ -10,16 +9,21 @@
 
 #include FT_FREETYPE_H
 
-struct Character {
+struct Character 
+{
 	unsigned int TextureID;  // ID handle of the glyph texture
 	glm::ivec2   Size;       // Size of glyph
 	glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
 	unsigned int Advance;    // Offset to advance to next glyph
 };
 
-std::map<char, Character> Characters;
-
+std::map<char, Character> UiManager::Characters;
 unsigned int UiManager::textVAO, UiManager::textVBO;
+std::vector<Font*> UiManager::fonts;
+
+/// <summary>
+/// Create vertex buffer for texts
+/// </summary>
 void UiManager::CreateTextBuffer()
 {
 	glGenVertexArrays(1, &textVAO);
@@ -33,6 +37,15 @@ void UiManager::CreateTextBuffer()
 	glBindVertexArray(0);
 }
 
+/// <summary>
+/// Draw text
+/// </summary>
+/// <param name="s">Shader</param>
+/// <param name="text">Text string</param>
+/// <param name="x">X position</param>
+/// <param name="y">Y position</param>
+/// <param name="scale">Text's scale</param>
+/// <param name="color">Text's color</param>
 void UiManager::RenderText(Shader& s, std::string text, float x, float y, float scale, glm::vec3 color)
 {
 	y = Window::GetHeight() - y;
@@ -80,34 +93,37 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-int UiManager::Init()
+/// <summary>
+/// Load a font
+/// </summary>
+/// <param name="filePath"></param>
+/// <returns></returns>
+Font* UiManager::CreateFont(std::string filePath) 
 {
-	//Init librairy
+	Font* font = new Font();
+
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{
 		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-		return -1;
+		return nullptr;
 	}
 
 	//Load font
 	FT_Face face;
-	//if (FT_New_Face(ft, R"(C:\Users\elect\Desktop\Projets Visual Studio\OpenGL_Test\OpenGL_Test\Source\fonts\arial.ttf)", 0, &face))
-	std::string path = EngineSettings::RootFolder;
-	path += R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)";
+	std::string path = EngineSettings::RootFolder + filePath;
 	if (FT_New_Face(ft, path.c_str(), 0, &face))
 	{
 		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-		return -1;
+		return nullptr;
 	}
-	//FT_Select_Charmap(face, FT_ENCODING_UNICODE);
 
 	//Load glyph
 	FT_Set_Pixel_Sizes(face, 0, 48);
 	if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
 	{
 		std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-		return -1;
+		return nullptr;
 	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -116,8 +132,6 @@ int UiManager::Init()
 	{
 		try
 		{
-			//TODO TRY FT_Load_Glyph
-
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
@@ -146,6 +160,7 @@ int UiManager::Init()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 			// now store character for later use
 			Character character = {
 				texture,
@@ -158,12 +173,25 @@ int UiManager::Init()
 		catch (...)
 		{
 			std::cout << "ERROR::" << std::endl;
-			return 1;
+			return nullptr;
 		}
-		
 	}
+
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
+
+	fonts.push_back(font);
+	return font;
+}
+
+/// <summary>
+/// Init Ui Manager
+/// </summary>
+/// <returns></returns>
+int UiManager::Init()
+{
+	//Init librairy
+	CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
 	CreateTextBuffer();
 
 	Debug::Print("---- UI system initiated ----");

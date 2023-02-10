@@ -16,4 +16,6 @@ public:
 
 private:
 	static std::vector<GameObject*> gameObjects;
+	static void UpdateComponents();
+
 };
