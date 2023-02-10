@@ -23,6 +23,9 @@ GameObject::~GameObject()
 	components.clear();
 }
 
+/**
+* TODO : Move in a math class
+*/
 void MultiplyMatrix(const double* A, const double* B, double* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
@@ -46,70 +49,67 @@ void MultiplyMatrix(const double* A, const double* B, double* result, int rA, in
 	}
 }
 
+/// <summary>
+/// Set gameobject's childs world positions
+/// </summary>
 void GameObject::SetChildsWorldPositions()
 {
+	double Deg2Rad = 0.01745329251; //M_PI / 180.0f
 	int childCount = childs.size();
+	Vector3 radAngles = Vector3();
+	radAngles.x = Deg2Rad * -transform.GetRotation().x;
+	radAngles.y = Deg2Rad * -transform.GetRotation().y;
+	radAngles.z = Deg2Rad * -transform.GetRotation().z;
+
+	//Create X, Y and Z matrices
+	double rotX[9] = { 1, 0, 0, 0, cos(radAngles.x), -sin(radAngles.x), 0, sin(radAngles.x), cos(radAngles.x) };
+	double rotY[9] = { cos(radAngles.y), 0, sin(radAngles.y), 0, 1, 0, -sin(radAngles.y), 0, cos(radAngles.y) };
+	double rotZ[9] = { cos(radAngles.z), -sin(radAngles.z), 0, sin(radAngles.z), cos(radAngles.z), 0, 0, 0, 1 };
+
+	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
+	double tempRotationM[9];
+	double rotationM[9];
+	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
+	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
+
+	//For each childs
 	for (int i = 0; i < childCount; i++)
 	{
-		double Deg2Rad = 0.01745329251; //M_PI / 180.0f
-		Vector3 radAngles = Vector3();
-		radAngles.x = Deg2Rad * -transform.GetRotation().x;
-		radAngles.y = Deg2Rad * -transform.GetRotation().y;
-		radAngles.z = Deg2Rad * -transform.GetRotation().z;
+		GameObject* child = childs[i];
 
-		double localPos[3] = { childs[i]->transform.GetLocalPosition().x, childs[i]->transform.GetLocalPosition().y, childs[i]->transform.GetLocalPosition().z };
-		double rotX[9] = { 1, 0, 0, 0, cos(radAngles.x), -sin(radAngles.x), 0, sin(radAngles.x), cos(radAngles.x) };
-		double rotY[9] = { cos(radAngles.y), 0, sin(radAngles.y), 0, 1, 0, -sin(radAngles.y), 0, cos(radAngles.y) };
-		double rotZ[9] = { cos(radAngles.z), -sin(radAngles.z), 0, sin(radAngles.z), cos(radAngles.z), 0, 0, 0, 1 };
-
-		double tempRotationM[9];
-		double rotationM[9];
-		MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
-		MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
-
+		//Get child local position
+		double localPos[3] = { child->transform.GetLocalPosition().x, child->transform.GetLocalPosition().y, child->transform.GetLocalPosition().z };
+		//Create the matrix which store the new child's world position (wihtout parent's world position added)
 		double posAfterRotation[3];
 		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
-
-		childs[i]->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
+		//Set new child position (with parent's world position added)
+		child->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
+		
 		Vector3 newRotation;
-		newRotation.x = transform.GetRotation().x + childs[i]->transform.GetLocalRotation().x;
-		newRotation.y = transform.GetRotation().y + childs[i]->transform.GetLocalRotation().y;
-		newRotation.z = transform.GetRotation().z + childs[i]->transform.GetLocalRotation().z;
+		newRotation.x = transform.GetRotation().x + child->transform.GetLocalRotation().x;
+		newRotation.y = transform.GetRotation().y + child->transform.GetLocalRotation().y;
+		newRotation.z = transform.GetRotation().z + child->transform.GetLocalRotation().z;
 
-		childs[i]->transform.SetRotation(newRotation);
+		child->transform.SetRotation(newRotation);
 
-		childs[i]->SetChildsWorldPositions();
+		//Update other child's childs positions
+		child->SetChildsWorldPositions();
 	}
 }
 
 
-
-void GameObject::AddChild(GameObject* gameObject)
+/// <summary>
+/// Add a child the the gameobject
+/// </summary>
+/// <param name="gameObject"></param>
+void GameObject::AddChild(GameObject* newChild)
 {
+	//Check if the child to add is alrady a child of this gameobject
 	bool add = true;
 	int childCount = childs.size();
 	for (int i = 0; i < childCount; i++)
 	{
-		if (childs[i] == gameObject)
-		{
-			add = false;
-			break;
-		}
-	}
-
-	if (add) {
-		childs.push_back(gameObject);
-		gameObject->parent = this;
-	}
-}
-
-void GameObject::AddExistingComponent(Component* component)
-{
-	bool add = true;
-	int componentCount = components.size();
-	for (int i = 0; i < componentCount; i++)
-	{
-		if (components[i] == component)
+		if (childs[i] == newChild)
 		{
 			add = false;
 			break;
@@ -118,11 +118,41 @@ void GameObject::AddExistingComponent(Component* component)
 
 	if (add) 
 	{
-		components.push_back(component);
-		component->gameObject = this;
+		childs.push_back(newChild);
+		newChild->parent = this;
 	}
 }
 
+/// <summary>
+/// Add an existing component
+/// </summary>
+/// <param name="component"></param>
+void GameObject::AddExistingComponent(Component* componentToAdd)
+{
+	//Check if the component to add is alrady a component of this gameobject
+	bool add = true;
+	int componentCount = components.size();
+	for (int i = 0; i < componentCount; i++)
+	{
+		if (components[i] == componentToAdd)
+		{
+			add = false;
+			break;
+		}
+	}
+
+	if (add)
+	{
+		components.push_back(componentToAdd);
+		componentToAdd->gameObject = this;
+	}
+}
+
+/// <summary>
+/// Find all gameobjects with a specific name
+/// </summary>
+/// <param name="name">GameObjects's name</param>
+/// <returns></returns>
 std::vector<GameObject*> GameObject::FindGameObjectsByName(std::string name)
 {
 	std::vector<GameObject*> foundGameObjects;
@@ -140,9 +170,13 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(std::string name)
 	return foundGameObjects;
 }
 
+/// <summary>
+/// Find a gameobject with a specific name
+/// </summary>
+/// <param name="name">GameObject's name</param>
+/// <returns>GameObject pointer or nullptr if no one is found</returns>
 GameObject* GameObject::FindGameObjectByName(std::string name)
 {
-	Engine::GetGameObjects().clear();
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
 	int gameObjectCount = gameObjects.size();
 
@@ -173,23 +207,29 @@ void GameObject::SetActive(bool active)
 	}
 }
 
+/// <summary>
+/// Update gameobject active state. Set the local active value depending of gameobject's parents active state
+/// </summary>
+/// <param name="changed"></param>
 void GameObject::UpdateActive(GameObject* changed)
 {
-	if (!changed->GetActive()) 
+	if (!changed->GetActive()) //if the new parent's state is false, set local active to false
 	{
 		localActive = false;
 	}
-	else 
+	else
 	{
 		bool active = true;
 		GameObject* gmToCheck = parent;
 		while (gmToCheck != nullptr)
 		{
-			if (!gmToCheck->GetActive()) {
+			if (!gmToCheck->GetActive()) 
+			{
 				active = false;
 				break;
 			}
-			if (gmToCheck == changed) {
+			if (gmToCheck == changed) 
+			{
 				break;
 			}
 			gmToCheck = gmToCheck->parent;

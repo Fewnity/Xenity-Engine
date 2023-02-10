@@ -42,12 +42,10 @@ std::string File::LoadShaderData(const std::string path)
 	return text;
 }
 
-//std::string gamePath = PROJECT_FOLDER; //TODO improve this
-
 void File::InitFileSystem() 
 {
-	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
-	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
+	//EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
 	Debug::Print("---- File System initiated ----");
 	//gamePath += R"(Debug\)"; //TODO remove this
 }

@@ -40,26 +40,32 @@ void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 	vector<int> normalsIndices;
 	bool hasNoUv = false;
 	bool hasNoNormals = false;
+	int count = -1;
+
 	//Read file
 	std::string line;
-	while (std::getline(file, line)) {
-		//printf(line.c_str());
-		//printf("%s", line);
-		if (line[0] == 'v') {
-			if (line[1] == ' ') {
+	while (std::getline(file, line)) 
+	{
+		if (line[0] == 'v')
+		{
+			if (line[1] == ' ') //Add vertice
+			{
 				float x = 0, y = 0, z = 0;
 				sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
 				verticesCount++;
 				tempVertices.emplace_back(x, y, z);
 			}
-			else if (line[2] == ' ') {
-				if (line[1] == 't') {
+			else if (line[2] == ' ')
+			{
+				if (line[1] == 't') // Add texture coordinate (UV)
+				{
 					float x = 0, y = 0;
 					sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
 					textureCordsCount++;
 					tempTexturesCoords.emplace_back(x, y);
 				}
-				else if (line[1] == 'n') {
+				else if (line[1] == 'n') // Add normal
+				{
 					float x = 0, y = 0, z = 0;
 					sscanf_s(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
 					normalsCount++;
@@ -67,28 +73,25 @@ void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 				}
 			}
 		}
-		else if (line[0] == 'f' && line[1] == ' ') {
-			//f 5 3 1 NO UV NO NORMALS 0
-			//f 5/1 3/2 1/3 NO NORMALS 3
-			//f 5//1 3//1 1//1 NO UVS 6
-			//f 5/1/1 3/2/1 1/3/1 TRIANGULATE 6
-
-			//f 1 5 7 3 CLASSIC 0
-			//f 1/1 5/2 7/3 3/4 CLASSIC 4
-			//f 1//1 5//1 7//1 3//1 CLASSIC 8
-			//f 1/1/1 5/2/1 7/3/1 3/4/1 CLASSIC 8
-			int count = 0;
-			int lineSize = line.size();
-			for (int i = 0; i < lineSize - 1; i++)
+		else if (line[0] == 'f' && line[1] == ' ') // Add indices
+		{
+			//Find the number of param
+			//int count = 0;
+			if (count == -1)
 			{
-				if (line[i] == '/')
+				count = 0;
+				int lineSize = line.size();
+				for (int i = 0; i < lineSize - 1; i++)
 				{
-					count++;
-					if (line[i + 1] == '/') {
+					if (line[i] == '/')
+					{
+						count++;
+						if (line[i + 1] == '/') {
 
-						count = 6;
-						hasNoUv = true;//TODO maybe add a break?
-						break;
+							count = 6;
+							hasNoUv = true;
+							break;
+						}
 					}
 				}
 			}
@@ -139,6 +142,8 @@ void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 		byteCount += 3;
 	if (!hasNoUv)
 		byteCount += 2;
+
+	//Alloc memory for vertices and indices
 	mesh->verticesCount = indicesCount * (byteCount);
 	mesh->vertices = (float*)calloc(mesh->verticesCount, sizeof(float));
 	mesh->indicesCount = indicesCount;
@@ -147,6 +152,7 @@ void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
 	mesh->hasUv = !hasNoUv;
 	mesh->hasNormal = !hasNoNormals;
 
+	//Push vertices in the right order
 	int vertexIndicesSize = vertexIndices.size();
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
