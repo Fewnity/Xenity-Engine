@@ -36,6 +36,23 @@ void UiManager::CreateTextBuffer()
 	glBindVertexArray(0);
 }
 
+void UiManager::DeleteFont(Font * font)
+{
+	int fontCount = fonts.size();
+	for (int i = 0; i < fontCount; i++)
+	{
+		if (fonts[i] == font) {
+			DeleteFont(i);
+			break;
+		}
+	}
+}
+
+void UiManager::DeleteFont(int index)
+{
+	fonts.erase(fonts.begin() + index);
+}
+
 /// <summary>
 /// Draw text
 /// </summary>
@@ -190,12 +207,20 @@ Font* UiManager::CreateFont(std::string filePath)
 int UiManager::Init()
 {
 	//Init librairy
-	CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
-	CreateFont(R"(Xenity_Engine\Source\fonts\alagard.ttf)");
+	Font* font0 = CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
+	Font* font1 = CreateFont(R"(Xenity_Engine\Source\fonts\alagard.ttf)");
 
 	CreateTextBuffer();
 
 	Debug::Print("---- UI system initiated ----");
 
 	return 0;
+}
+
+Font::~Font()
+{
+	for (const auto& kv : Characters) {
+		glDeleteTextures(1, &kv.second.TextureID);
+	}
+	Characters.clear();
 }

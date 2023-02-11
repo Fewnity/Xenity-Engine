@@ -9,6 +9,7 @@ class Character;
 
 class Font {
 public:
+	~Font();
 	std::map<char, Character> Characters;
 private:
 };
@@ -22,6 +23,8 @@ public:
 	static std::vector<Font*> fonts;
 private:
 	static void CreateTextBuffer();
+	static void DeleteFont(Font * font);
+	static void DeleteFont(int index);
 	static unsigned int textVAO, textVBO;
 };
 
