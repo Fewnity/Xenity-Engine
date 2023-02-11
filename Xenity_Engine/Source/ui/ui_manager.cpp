@@ -50,6 +50,7 @@ void UiManager::DeleteFont(Font * font)
 
 void UiManager::DeleteFont(int index)
 {
+	delete fonts[index];
 	fonts.erase(fonts.begin() + index);
 }
 
@@ -219,7 +220,8 @@ int UiManager::Init()
 
 Font::~Font()
 {
-	for (const auto& kv : Characters) {
+	for (const auto& kv : Characters) 
+	{
 		glDeleteTextures(1, &kv.second.TextureID);
 	}
 	Characters.clear();
