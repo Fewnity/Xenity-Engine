@@ -117,12 +117,14 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 /// <returns></returns>
 Font* UiManager::CreateFont(std::string filePath) 
 {
+	Debug::Print("Loading font...");
+
 	Font* font = new Font();
 
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{
-		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+		Debug::Print("ERROR: Could not init FreeType Library");
 		return nullptr;
 	}
 
@@ -131,17 +133,12 @@ Font* UiManager::CreateFont(std::string filePath)
 	std::string path = EngineSettings::RootFolder + filePath;
 	if (FT_New_Face(ft, path.c_str(), 0, &face))
 	{
-		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+		Debug::Print("ERROR: Failed to load font. Path: " + path);
 		return nullptr;
 	}
 
 	//Load glyph
 	FT_Set_Pixel_Sizes(face, 0, 48);
-	if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-	{
-		std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-		return nullptr;
-	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -152,7 +149,7 @@ Font* UiManager::CreateFont(std::string filePath)
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+				Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
 				continue;
 			}
 
@@ -189,7 +186,8 @@ Font* UiManager::CreateFont(std::string filePath)
 		}
 		catch (...)
 		{
-			std::cout << "ERROR::" << std::endl;
+			Debug::Print("ERROR: Failed to load Glyph (Try Catch). Path: " + path);
+			//std::cout << "ERROR::" << std::endl;
 			return nullptr;
 		}
 	}
