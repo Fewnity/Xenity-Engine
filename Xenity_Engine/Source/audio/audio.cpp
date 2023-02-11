@@ -10,7 +10,7 @@ int Audio::Init()
 	if (!engine)
 		return 1; // error starting up the engine
 
-	Debug::Print("---- Audio system initiated ----");
+	Debug::Print("---- Audio System initiated ----");
 
 	return 0;
 }

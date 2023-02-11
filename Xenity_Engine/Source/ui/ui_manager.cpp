@@ -17,7 +17,6 @@ struct Character
 	unsigned int Advance;    // Offset to advance to next glyph
 };
 
-std::map<char, Character> UiManager::Characters;
 unsigned int UiManager::textVAO, UiManager::textVBO;
 std::vector<Font*> UiManager::fonts;
 
@@ -46,7 +45,7 @@ void UiManager::CreateTextBuffer()
 /// <param name="y">Y position</param>
 /// <param name="scale">Text's scale</param>
 /// <param name="color">Text's color</param>
-void UiManager::RenderText(Shader& s, std::string text, float x, float y, float scale, glm::vec3 color)
+void UiManager::RenderText(Shader& s, std::string text, float x, float y, float scale, glm::vec3 color, Font * font)
 {
 	y = Window::GetHeight() - y;
 
@@ -61,7 +60,7 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++)
 	{
-		Character ch = Characters[*c];
+		Character ch = font->Characters[*c];
 
 		float xpos = x + ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -168,7 +167,7 @@ Font* UiManager::CreateFont(std::string filePath)
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 				face->glyph->advance.x
 			};
-			Characters.insert(std::pair<char, Character>(c, character));
+			font->Characters.insert(std::pair<char, Character>(c, character));
 		}
 		catch (...)
 		{
@@ -192,6 +191,8 @@ int UiManager::Init()
 {
 	//Init librairy
 	CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
+	CreateFont(R"(Xenity_Engine\Source\fonts\alagard.ttf)");
+
 	CreateTextBuffer();
 
 	Debug::Print("---- UI system initiated ----");
