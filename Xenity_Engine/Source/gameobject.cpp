@@ -23,83 +23,6 @@ GameObject::~GameObject()
 	components.clear();
 }
 
-/**
-* TODO : Move in a math class
-*/
-void MultiplyMatrix(const double* A, const double* B, double* result, int rA, int cA, int rB, int cB)
-{
-	if (cA != rB)
-	{
-		return;
-	}
-
-	double temp = 0;
-
-	for (int i = 0; i < rA; i++)
-	{
-		for (int j = 0; j < cB; j++)
-		{
-			temp = 0;
-			for (int k = 0; k < cA; k++)
-			{
-				temp += A[i * cA + k] * B[k * cB + j];
-			}
-			result[i * cB + j] = temp;
-		}
-	}
-}
-
-/// <summary>
-/// Set gameobject's children world positions
-/// </summary>
-void GameObject::SetChildrenWorldPositions()
-{
-	double Deg2Rad = 0.01745329251; //M_PI / 180.0f
-	int childCount = children.size();
-	Vector3 radAngles = Vector3();
-	radAngles.x = Deg2Rad * -transform.GetRotation().x;
-	radAngles.y = Deg2Rad * -transform.GetRotation().y;
-	radAngles.z = Deg2Rad * -transform.GetRotation().z;
-
-	double cosX = cos(radAngles.x);
-	double sinX = sin(radAngles.x);
-	double cosY = cos(radAngles.y);
-	double sinY = sin(radAngles.y);
-	double cosZ = cos(radAngles.z);
-	double sinZ = sin(radAngles.z);
-
-	//Create X, Y and Z matrices
-	double rotX[9] = { 1, 0, 0, 0, cosX, -sinX, 0, sinX, cosX };
-	double rotY[9] = { cosY, 0,sinY, 0, 1, 0, -sinY, 0, cosY };
-	double rotZ[9] = { cosZ, -sinZ, 0, sinZ, cosZ, 0, 0, 0, 1 };
-
-	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
-	double tempRotationM[9];
-	double rotationM[9];
-	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
-	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
-
-	//For each children
-	for (int i = 0; i < childCount; i++)
-	{
-		GameObject* child = children[i];
-
-		//Get child local position
-		double localPos[3] = { child->transform.GetLocalPosition().x * transform.GetScale().x, child->transform.GetLocalPosition().y * transform.GetScale().y, child->transform.GetLocalPosition().z * transform.GetScale().z };
-		//Create the matrix which store the new child's world position (wihtout parent's world position added)
-		double posAfterRotation[3];
-		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
-		//Set new child position (with parent's world position added)
-		child->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
-
-		Vector3 newRotation;
-		newRotation = transform.GetRotation() + child->transform.GetLocalRotation();
-		child->transform.SetRotation(newRotation);
-
-		//Update other child's children positions
-	}
-}
-
 
 /// <summary>
 /// Add a child the the gameobject
@@ -123,7 +46,8 @@ void GameObject::AddChild(GameObject* newChild)
 	{
 		children.push_back(newChild);
 		newChild->parent = this;
-		//newChild->transform.UpdateLocalScale();
+		newChild->transform.OnParentChanged();
+		newChild->transform.UpdateLocalScale();
 	}
 }
 

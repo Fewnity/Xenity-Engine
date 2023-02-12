@@ -25,6 +25,8 @@ public:
 	void SetLocalScale(Vector3 value);
 	void UpdateScale();
 	void UpdateLocalScale();
+	void SetChildrenWorldPositions();
+	void OnParentChanged();
 
 private:
 	Vector3 position = Vector3(0);

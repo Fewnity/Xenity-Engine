@@ -21,6 +21,8 @@ using namespace std;
 
 /*
  * TODO :
+ * Update local position when updating position, rotation and scale
+ * Update position when parent is set to nullptr
  * Clean code
  * Text renderer component
  * Fix light rotation
@@ -29,8 +31,6 @@ using namespace std;
  * Check mesh/shader destructor
  * Add scale usage in local position calculation
  * Add local scale usage
- * Update position when updating local position
- * Update local position when updating position
  */
 
 static void error_callback(int error, const char* description)

@@ -146,13 +146,13 @@ void Mesh::UpdateShader() {
 			material->shader->SetShaderCameraPosition();
 			material->shader->SetShaderProjection3D();
 			//shader->SetShaderProjection2D();
-			material->shader->SetShaderPosition(gameObject->transform.GetPosition());
-			material->shader->SetShaderRotation(gameObject->transform.GetRotation());
+			//material->shader->SetShaderPosition(gameObject->transform.GetPosition());
+			//material->shader->SetShaderRotation(gameObject->transform.GetRotation());
 			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
 			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 			material->shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
 
-			material->shader->SetShaderScale(gameObject->transform.GetScale());
+			//material->shader->SetShaderScale(gameObject->transform.GetScale());
 			material->shader->UpdateLights();
 		}
 	}

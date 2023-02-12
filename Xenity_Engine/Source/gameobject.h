@@ -21,7 +21,7 @@ public:
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;
-	void SetChildrenWorldPositions();
+	//void SetChildrenWorldPositions();
 
 	void AddChild(GameObject* gameObject);
 	void AddExistingComponent(Component* component);
