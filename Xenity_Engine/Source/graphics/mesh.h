@@ -4,6 +4,7 @@
 #include "iDrawable.h"
 
 class Shader;
+class Material;
 
 class MeshData {
 public:
@@ -27,7 +28,8 @@ public:
 	Mesh(const std::string meshpath);
 	void LoadFromFile(const std::string meshpath);
 	~Mesh();
-	Shader* shader = nullptr;
+	//Shader* shader = nullptr;
+	Material* material;
 	void LoadMesh(float vertices[], unsigned int indices[]);
 	void DrawModel();
 	void CreateBuffers(bool addUv, bool addNormals);

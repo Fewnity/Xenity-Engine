@@ -22,8 +22,9 @@ public:
 	void SetLocalPosition(Vector3 value);
 	void SetRotation(Vector3 value);//Euler angle
 	void SetLocalRotation(Vector3 value);//Euler angle
-	void SetScale(Vector3 value);
 	void SetLocalScale(Vector3 value);
+	void UpdateScale();
+	void UpdateLocalScale();
 
 private:
 	Vector3 position = Vector3(0);

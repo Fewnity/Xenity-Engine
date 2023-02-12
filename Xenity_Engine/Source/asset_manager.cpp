@@ -3,9 +3,11 @@
 #include "graphics/texture.h"
 #include "graphics/shader.h"
 #include "graphics/mesh.h"
+#include "graphics/material.h"
 #include "lighting/lighting.h"
 
 std::vector<Shader*> AssetManager::shaders;
+std::vector<Material*> AssetManager::materials;
 std::vector<Texture*> AssetManager::textures;
 std::vector<IDrawable*> AssetManager::drawables;
 std::vector<Light*> AssetManager::lights;
@@ -17,6 +19,11 @@ std::vector<Light*> AssetManager::lights;
 void AssetManager::AddShader(Shader* shader)
 {
 	shaders.push_back(shader);
+}
+
+void AssetManager::AddMaterial(Material* material)
+{
+	materials.push_back(material);
 }
 
 /// <summary>
@@ -52,7 +59,7 @@ void AssetManager::AddLight(Light* light)
 /// <param name="shader"></param>
 void AssetManager::RemoveShader(Shader* shader)
 {
-	int shaderCount = textures.size();
+	int shaderCount = shaders.size();
 	int shaderIndex = 0;
 	bool found = false;
 	for (int i = 0; i < shaderCount; i++)
@@ -66,6 +73,24 @@ void AssetManager::RemoveShader(Shader* shader)
 
 	if (found)
 		shaders.erase(shaders.begin() + shaderIndex);
+}
+
+void AssetManager::RemoveMaterial(Material* material)
+{
+	int materialCount = materials.size();
+	int materialIndex = 0;
+	bool found = false;
+	for (int i = 0; i < materialCount; i++)
+	{
+		if (materials[i] == material) {
+			found = true;
+			materialIndex = i;
+			break;
+		}
+	}
+
+	if (found)
+		materials.erase(materials.begin() + materialIndex);
 }
 
 /// <summary>

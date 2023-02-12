@@ -85,7 +85,7 @@ void GameObject::SetChildrenWorldPositions()
 		GameObject* child = children[i];
 
 		//Get child local position
-		double localPos[3] = { child->transform.GetLocalPosition().x, child->transform.GetLocalPosition().y, child->transform.GetLocalPosition().z };
+		double localPos[3] = { child->transform.GetLocalPosition().x * transform.GetScale().x, child->transform.GetLocalPosition().y * transform.GetScale().y, child->transform.GetLocalPosition().z * transform.GetScale().z };
 		//Create the matrix which store the new child's world position (wihtout parent's world position added)
 		double posAfterRotation[3];
 		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
@@ -93,14 +93,10 @@ void GameObject::SetChildrenWorldPositions()
 		child->transform.SetPosition(Vector3(posAfterRotation[0] + transform.GetPosition().x, posAfterRotation[1] + transform.GetPosition().y, posAfterRotation[2] + transform.GetPosition().z));
 
 		Vector3 newRotation;
-		newRotation.x = transform.GetRotation().x + child->transform.GetLocalRotation().x;
-		newRotation.y = transform.GetRotation().y + child->transform.GetLocalRotation().y;
-		newRotation.z = transform.GetRotation().z + child->transform.GetLocalRotation().z;
-
+		newRotation = transform.GetRotation() + child->transform.GetLocalRotation();
 		child->transform.SetRotation(newRotation);
 
 		//Update other child's children positions
-		child->SetChildrenWorldPositions();
 	}
 }
 
@@ -127,6 +123,7 @@ void GameObject::AddChild(GameObject* newChild)
 	{
 		children.push_back(newChild);
 		newChild->parent = this;
+		//newChild->transform.UpdateLocalScale();
 	}
 }
 
@@ -255,5 +252,4 @@ void GameObject::UpdateActive(GameObject* changed)
 			children[i]->UpdateActive(changed);
 		}
 	}
-
 }

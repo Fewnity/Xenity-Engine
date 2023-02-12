@@ -249,7 +249,7 @@ void Shader::UpdateLights()
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
 }
 
-void Shader::SetShaderTexture(std::string attribut, Texture* texture) {
+void Shader::SetShaderAttribut(std::string attribut, Texture* texture) {
 	Use();
 	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), texture->GetTextureIndex());
 }

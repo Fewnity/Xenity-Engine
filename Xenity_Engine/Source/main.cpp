@@ -22,7 +22,6 @@ using namespace std;
 /*
  * TODO :
  * Clean code
- * Finish font system
  * Text renderer component
  * Fix light rotation
  * 3D Sounds

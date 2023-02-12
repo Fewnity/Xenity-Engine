@@ -3,6 +3,7 @@
 #include "gameobject.h"
 #include "graphics/graphics.h"
 #include "graphics/mesh.h"
+#include "graphics/material.h"
 #include "graphics/camera.h"
 #include <SDL2/SDL.h>
 #include "scene_manager/SceneManager.h"
@@ -10,6 +11,7 @@
 #include "lighting/lighting.h"
 #include "inputs/input_system.h"
 #include "engine_settings.h"
+#include "vectors/vector3.h"
 #include<chrono>
 #include <iostream>
 #include "graphics/spriteRenderer.h"
@@ -32,6 +34,15 @@ Mesh* mesh4 = nullptr;
 Mesh* mesh5 = nullptr;
 float animation = 0;
 
+Light* pointLight = new Light();
+Light* spotLight = new Light();
+Light* spotLight2 = new Light();
+Light* directionalLight = new Light();
+GameObject* pointLightGameObject = new GameObject();
+GameObject* spotLightGameObject = new GameObject();
+GameObject* spotLight2GameObject = new GameObject();
+GameObject* directionalLightGameObject = new GameObject();
+
 /// <summary>
 /// Init game
 /// </summary>
@@ -43,11 +54,19 @@ void Game::Init() {
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
 	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-	Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
+	//Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
+
+	Shader* shader3 = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
+	//Shader* shader3 = new Shader("3D/vStandardNoLight.shader", "3D/fStandardNoLight.shader");
+	 
+	//Shader* shader3 = new Shader("3D/Unlit/vColor.shader", "3D/Unlit/fColor.shader");
+	//Shader* shader3 = new Shader("3D/Unlit/vTexture.shader", "3D/Unlit/fTexture.shader");
+
 	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
 	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
+
 
 	Texture* texture1 = new Texture("Brick.png");
 	Texture* texture2 = new Texture("Dry Dirt.png");
@@ -61,6 +80,21 @@ void Game::Init() {
 
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);
+
+	Material* newMat = new Material();
+	newMat->shader = shader3;
+	newMat->SetAttribut("color", Vector3(0,1,1));
+	newMat->SetAttribut("material.diffuse", texture5);
+	newMat->SetAttribut("material.specular", texture6);
+	newMat->SetAttribut("material.shininess", 32.0f);
+	newMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
+
+	Material* newMat2 = new Material();
+	newMat2->shader = shader3;
+	newMat2->SetAttribut("color", Vector3(0, 1, 1));
+	newMat2->SetAttribut("material.diffuse", texture2);
+	newMat2->SetAttribut("material.shininess", 32.0f);
+	newMat2->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	cameraGameObject->AddExistingComponent(camera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
@@ -92,6 +126,7 @@ void Game::Init() {
 
 	coneGameobject->AddExistingComponent(mesh4);
 	coneGameobject->transform.SetPosition(Vector3(0, 0, 0));
+	coneGameobject->transform.SetLocalScale(Vector3(2, 2, 2));
 
 	coneGameobject->AddChild(cubeGameObject);
 	coneGameobject->name = "Cone";
@@ -99,19 +134,12 @@ void Game::Init() {
 	myGameObject3->AddExistingComponent(mesh5);
 	myGameObject3->transform.SetPosition(Vector3(0, -2, 0));
 
-	mesh5->gameObject->transform.SetScale(Vector3(10, 1, 10));
+	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
 
-	shader->SetShaderTexture("material.diffuse", texture3);
-	shader->SetShaderTexture("material.specular", texture4);
-	shader3->SetShaderTexture("material.diffuse", texture5);
-	shader3->SetShaderTexture("material.specular", texture6);
-
-	//mesh1.shader = &shader;
-	//mesh2.shader = &shader2;
-	mesh->shader = shader3;
-	mesh3->shader = shader3;
-	mesh4->shader = shader3;
-	mesh5->shader = shader3;
+	mesh->material = newMat;
+	mesh3->material = newMat;
+	mesh4->material = newMat2;
+	mesh5->material = newMat;
 
 	SpriteRenderer* spr = new SpriteRenderer();
 	spr->texture = texture7;
@@ -119,6 +147,39 @@ void Game::Init() {
 	spr->width = 100;
 	spr->height = 100;
 	gameObjectSprite->AddExistingComponent(spr);
+
+	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
+	pointLightGameObject->AddExistingComponent(pointLight);
+	pointLight->type = Light::Point;
+	pointLight->color = Vector3(1, 0.1f, 0.1f);
+	pointLight->intensity = 10;
+	pointLight->SetRange(7);
+
+	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
+	spotLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
+	spotLightGameObject->AddExistingComponent(spotLight);
+	spotLight->type = Light::Spot;
+	spotLight->color = Vector3(0.05f, 0.05f, 1);
+	spotLight->intensity = 200;
+	spotLight->SetRange(7);
+	spotLight->SetSpotSmoothness(0.0f);
+	spotLight->SetSpotAngle(17.0f);
+
+	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
+	spotLight2GameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
+	spotLight2GameObject->AddExistingComponent(spotLight2);
+	spotLight2->type = Light::Spot;
+	spotLight2->color = Vector3(0.05f, 0.05f, 1);
+	spotLight2->intensity = 200;
+	spotLight2->SetRange(7);
+	spotLight2->SetSpotSmoothness(1.0f);
+	spotLight2->SetSpotAngle(17.0f);
+
+	directionalLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, -1.0f));
+	directionalLightGameObject->AddExistingComponent(directionalLight);
+	directionalLight->type = Light::Directional;
+	directionalLight->color = Vector3(0.3f, 0.7f, 0.3f);
+	directionalLight->intensity = 1;
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -196,9 +257,6 @@ void Game::Loop()
 	newCameraRotation.y += yInputToAdd;
 
 	camera->gameObject->transform.SetRotation(newCameraRotation);
-
-	//mesh3->gameObject->transform.rotation.y = 45;
-	//mesh4->gameObject->transform.rotation.y -= 0.1f;
 
 	Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	if (InputSystem::GetKey(RIGHT)) {

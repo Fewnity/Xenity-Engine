@@ -90,5 +90,13 @@
     <None Include="Source\shaders\vertex2D.shader" />
     <None Include="Source\shaders\fragmentStandard2D.shader" />
     <None Include="Source\shaders\vertexStandard2D.shader" />
+    <None Include="Source\shaders\3D\fStandard.shader" />
+    <None Include="Source\shaders\3D\fStandardNoLight.shader" />
+    <None Include="Source\shaders\3D\vStandard.shader" />
+    <None Include="Source\shaders\3D\vStandardNoLight.shader" />
+    <None Include="Source\shaders\3D\Unlit\fColor.shader" />
+    <None Include="Source\shaders\3D\Unlit\fTexture.shader" />
+    <None Include="Source\shaders\3D\Unlit\vColor.shader" />
+    <None Include="Source\shaders\3D\Unlit\vTexture.shader" />
   </ItemGroup>
 </Project>

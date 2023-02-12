@@ -7,6 +7,7 @@
 #include "../asset_manager.h"
 
 #include "graphics.h"
+#include "material.h"
 #include "../file_system/file.h"
 #include "../main.h"
 #include "../vectors/vector2.h"
@@ -14,7 +15,7 @@
 
 using namespace std;
 
-Mesh::Mesh() : Component() 
+Mesh::Mesh() : Component()
 {
 	meshData->verticesCount = 0;
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
@@ -24,7 +25,7 @@ Mesh::Mesh() : Component()
 	OnLoadFinished();
 }
 
-Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component() 
+Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component()
 {
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
@@ -35,7 +36,7 @@ Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indi
 	OnLoadFinished();
 }
 
-Mesh::Mesh(const std::string meshpath) : Component() 
+Mesh::Mesh(const std::string meshpath) : Component()
 {
 	LoadFromFile(meshpath);
 }
@@ -46,7 +47,7 @@ void Mesh::LoadFromFile(const std::string meshpath) {
 	OnLoadFinished();
 }
 
-void Mesh::Update() 
+void Mesh::Update()
 {
 }
 
@@ -138,17 +139,21 @@ void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
 }
 
 void Mesh::UpdateShader() {
-	if (shader != nullptr) {
-		shader->Use();
-		shader->SetShaderCameraPosition();
-		shader->SetShaderProjection3D();
-		//shader->SetShaderProjection2D();
-		shader->SetShaderPosition(gameObject->transform.GetPosition());
-		shader->SetShaderRotation(gameObject->transform.GetRotation());
+	if (material != nullptr) {
+		if (material->shader != nullptr) {
+			material->Use();
+			//material->shader->Use();
+			material->shader->SetShaderCameraPosition();
+			material->shader->SetShaderProjection3D();
+			//shader->SetShaderProjection2D();
+			material->shader->SetShaderPosition(gameObject->transform.GetPosition());
+			material->shader->SetShaderRotation(gameObject->transform.GetRotation());
+			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
+			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
+			material->shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
 
-		shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
-
-		shader->SetShaderScale(gameObject->transform.GetScale());
-		shader->UpdateLights();
+			material->shader->SetShaderScale(gameObject->transform.GetScale());
+			material->shader->UpdateLights();
+		}
 	}
 }

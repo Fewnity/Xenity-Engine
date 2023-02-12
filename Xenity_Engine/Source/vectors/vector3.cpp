@@ -32,6 +32,12 @@ Vector3 operator*(float value, const Vector3& vec)
 {
 	return { vec.x * value, vec.y * value, vec.z * value };
 }
+
+Vector3 operator*(const Vector3& left, const Vector3& right)
+{
+	return { left.x * right.x, left.y * right.y, left.z * right.z };
+}
+
 Vector3 operator*(const Vector3& vec, float value)
 {
 	return { vec.x * value, vec.y * value, vec.z * value };
@@ -45,6 +51,11 @@ Vector3 operator/(float value, const Vector3& vec)
 Vector3 operator/(const Vector3& vec, float value)
 {
 	return { vec.x / value, vec.y / value, vec.z / value };
+}
+
+Vector3 operator/(const Vector3& left, const Vector3& right)
+{
+	return { left.x / right.x, left.y / right.y, left.z / right.z };
 }
 
 Vector3 operator/=(Vector3& vec, float value)

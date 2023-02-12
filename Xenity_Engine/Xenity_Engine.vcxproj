@@ -195,6 +195,14 @@
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\shaders\3D\fStandard.shader" />
+    <None Include="Source\shaders\3D\fStandardNoLight.shader" />
+    <None Include="Source\shaders\3D\Unlit\fColor.shader" />
+    <None Include="Source\shaders\3D\Unlit\fTexture.shader" />
+    <None Include="Source\shaders\3D\Unlit\vColor.shader" />
+    <None Include="Source\shaders\3D\Unlit\vTexture.shader" />
+    <None Include="Source\shaders\3D\vStandard.shader" />
+    <None Include="Source\shaders\3D\vStandardNoLight.shader" />
     <None Include="Source\shaders\fragment2.shader" />
     <None Include="Source\shaders\fragment.shader" />
     <None Include="Source\shaders\fragment2D.shader" />
