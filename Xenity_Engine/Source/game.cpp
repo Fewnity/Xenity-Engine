@@ -17,6 +17,8 @@
 #include "graphics/spriteRenderer.h"
 #include "asset_manager.h"
 #include "debug.h"
+#include "graphics/text_renderer.h"
+#include "ui/ui_manager.h"
 
 using namespace std::chrono;
 
@@ -131,14 +133,14 @@ void Game::Init() {
 	Mesh* mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
-	GameObject* cubeChild2 = new GameObject();
+	/*GameObject* cubeChild2 = new GameObject();
 	cubeChild2->name = "Cube2";
 	cubeChild2->transform.SetPosition(Vector3(6.5, 0, 0));
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
 	cubeChild2->transform.SetLocalScale(Vector3(1.5, 1.5, 1.5));
 	cubeChild->AddChild(cubeChild2);
 	Mesh* mesh222 = static_cast<Mesh*>(cubeChild2->AddComponent<Mesh>());
-	mesh222->LoadFromFile("CubeTriangulate.obj");
+	mesh222->LoadFromFile("CubeTriangulate.obj");*/
 
 	/*cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(1, 0, 0));
@@ -164,10 +166,12 @@ void Game::Init() {
 	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
 
 	mesh->material = newMat;
-	mesh222->material = newMat;
+	//mesh222->material = newMat;
 	mesh3->material = newMat;
 	mesh4->material = newMat2;
 	mesh5->material = newMat;
+
+	gameObjectSprite->transform.SetPosition(Vector3(0, 150, 0));
 
 	SpriteRenderer* spr = new SpriteRenderer();
 	spr->texture = texture7;
@@ -175,6 +179,13 @@ void Game::Init() {
 	spr->width = 100;
 	spr->height = 100;
 	gameObjectSprite->AddExistingComponent(spr);
+
+	TextRenderer* textRenderer = new TextRenderer();
+	textRenderer->shader = shaderText;
+	textRenderer->font = UiManager::fonts[0];
+	textRenderer->size = 5;
+	textRenderer->text = "Salut à tous les amissssss";
+	gameObjectSprite->AddExistingComponent(textRenderer);
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLightGameObject->AddExistingComponent(pointLight);
@@ -234,8 +245,8 @@ void Game::Loop()
 	std::cout << "cube child1 World: " << cubeGameObject->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->transform.GetPosition().z << " " << std::endl;
 	std::cout << "cube child1 Local: " << cubeGameObject->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->transform.GetLocalPosition().z << " " << std::endl;
 
-	std::cout << "cube child2 World: " << cubeGameObject->children[0]->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().z << " " << std::endl;
-	std::cout << "cube child2 Local: " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube child2 World: " << cubeGameObject->children[0]->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().z << " " << std::endl;
+	//std::cout << "cube child2 Local: " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().z << " " << std::endl;
 
 	//std::cout << "cubeGameObject: " << cubeGameObject->transform.GetLocalScale().x << std::endl;
 

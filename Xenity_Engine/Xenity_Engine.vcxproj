@@ -193,6 +193,7 @@
     <ClCompile Include="Source\file_system\mesh_loader\wavefront_loader.cpp" />
     <ClCompile Include="Source\graphics\spriteRenderer.cpp" />
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
+    <ClCompile Include="Source\graphics\text_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\3D\fStandard.shader" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Source\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\graphics\spriteRenderer.h" />
     <ClInclude Include="Source\graphics\sprite_manager.h" />
+    <ClInclude Include="Source\graphics\text_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -10,11 +10,15 @@ class SpriteRenderer : public Component, public IDrawable
 {
 	public:
 		SpriteRenderer();
+		~SpriteRenderer();
+
 		void Draw();
+
 		float width = 100;
 		float height = 100;
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
+
 	private:
 };
 

@@ -10,6 +10,10 @@ SpriteRenderer::SpriteRenderer()
 	AssetManager::AddDrawable(this);
 }
 
+SpriteRenderer::~SpriteRenderer()
+{
+}
+
 /// <summary>
 /// Draw sprite
 /// </summary>

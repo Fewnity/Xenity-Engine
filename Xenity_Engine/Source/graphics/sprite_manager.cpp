@@ -77,7 +77,7 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	s->SetShaderCameraPosition();
 	//s->SetShaderProjection3D();
 	s->SetShaderProjection2D();
-	s->SetShaderModel(Vector3(x, y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX, scaleY, 1));
+	s->SetShaderModel(Vector3(x, -y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX, scaleY, 1));
 
 	/*s->SetShaderPosition(Graphics::usedCamera->gameObject->transform.GetPosition());
 	s->SetShaderRotation(Vector3(xAngle, yAngle, zAngle));
@@ -87,7 +87,7 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(spriteVAO);
 
-	y = Window::GetHeight() - y - h;
+	y = Window::GetHeight() - h;
 
 	float xpos = x;
 	float ypos = y;
