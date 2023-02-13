@@ -185,10 +185,10 @@ void Transform::SetChildrenWorldPositions()
 	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
 	double tempRotationM[9];
 	double rotationM[9];
-	//MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
-	//MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
-	MultiplyMatrix(rotX, rotY, tempRotationM, 3, 3, 3, 3);
-	MultiplyMatrix(tempRotationM, rotZ, rotationM, 3, 3, 3, 3);
+	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
+	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
+	//MultiplyMatrix(rotX, rotY, tempRotationM, 3, 3, 3, 3);
+	//MultiplyMatrix(tempRotationM, rotZ, rotationM, 3, 3, 3, 3);
 
 	//For each children
 	for (int i = 0; i < childCount; i++)

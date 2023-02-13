@@ -122,6 +122,7 @@ void Game::Init() {
 
 	cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
+	cubeGameObject->transform.SetRotation(Vector3(0, 0, 10));
 	cubeGameObject->transform.SetLocalScale(Vector3(2, 2, 2));
 
 	GameObject* cubeChild = new GameObject();
@@ -180,12 +181,12 @@ void Game::Init() {
 	spr->height = 100;
 	gameObjectSprite->AddExistingComponent(spr);
 
-	TextRenderer* textRenderer = new TextRenderer();
+	/*TextRenderer* textRenderer = new TextRenderer();
 	textRenderer->shader = shaderText;
 	textRenderer->font = UiManager::fonts[0];
 	textRenderer->size = 5;
 	textRenderer->text = "Salut à tous les amissssss";
-	gameObjectSprite->AddExistingComponent(textRenderer);
+	gameObjectSprite->AddExistingComponent(textRenderer);*/
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLightGameObject->AddExistingComponent(pointLight);
@@ -335,6 +336,12 @@ void Game::Loop()
 	if (InputSystem::GetKey(DOWN)) {
 		mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
+	if (InputSystem::GetKey(P)) {
+		mesh4NewRotation.z -= EngineSettings::deltaTime * 25;
+	}
+	if (InputSystem::GetKey(M)) {
+		mesh4NewRotation.z += EngineSettings::deltaTime * 25;
+	}
 
 	//cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
 
@@ -354,5 +361,12 @@ void Game::Loop()
 	}
 
 	cubeGameObject->transform.SetRotation(mesh4NewRotation);
+
+	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
+	UiManager::RenderText(*AssetManager::shaders[3], debugText, 0.0f, 50, 90, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+
+	std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
+	UiManager::RenderText(*AssetManager::shaders[3], debugText2, 0.0f, 80, 90, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+
 	//mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
 }

@@ -85,8 +85,6 @@ void Engine::Loop()
 
 		UpdateComponents();
 
-		Game::Loop();
-
 		//Clear the OpenGL window
 		glClearColor(0.529f, 0.808f, 0.922f, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -101,6 +99,8 @@ void Engine::Loop()
 		{
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
+
+		Game::Loop();
 
 		Graphics::DrawAllDrawable();
 

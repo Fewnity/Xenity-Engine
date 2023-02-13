@@ -123,11 +123,14 @@ void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale)
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
 
-	glm::quat MyQuaternion;
+	/*glm::quat MyQuaternion;
 	glm::vec3 EulerAngles((eulerAngle.x * M_PI) / 180.0, (eulerAngle.y * M_PI) / 180.0, (eulerAngle.z * M_PI) / 180.0);
 	MyQuaternion = glm::quat(EulerAngles);
 	glm::mat4 rotation = glm::toMat4(MyQuaternion);
-	trans = trans * rotation;
+	trans = trans * rotation;*/
+	trans = glm::rotate(trans, glm::radians(eulerAngle.y), glm::vec3(0.0, 1.0, 0.0));
+	trans = glm::rotate(trans, glm::radians(eulerAngle.x), glm::vec3(1.0, 0.0, 0.0));
+	trans = glm::rotate(trans, glm::radians(eulerAngle.z), glm::vec3(0.0, 0.0, 1.0));
 	trans = glm::scale(trans, glm::vec3(scale.x, scale.y, scale.z));
 
 	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));

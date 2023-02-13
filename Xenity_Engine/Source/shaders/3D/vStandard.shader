@@ -21,10 +21,13 @@ uniform mat3 scale; //Model scale
 
 void main()
 {
-	//gl_Position = projection * camera * offset * rotation * vec4((pos + offsetPosition) * scale, 1);
+	//gl_Position = projection * offset * camera * rotation * vec4((pos + offsetPosition) * scale, 1);
 	gl_Position = projection * camera * model * vec4((pos + offsetPosition), 1);
 	TexCoord = aTexCoord;
 	FragPos = vec3(model * vec4((pos + offsetPosition), 1));
+	//FragPos = vec3(offset * rotation * vec4((pos + offsetPosition), 1));
+
+	//Normal = mat3(transpose(inverse(offset * rotation))) * aNormal;
 
 	Normal = mat3(transpose(inverse(model))) * aNormal; //TODO Check an object with a bigger scale and with a offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
 }
