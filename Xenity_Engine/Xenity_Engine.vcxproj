@@ -183,6 +183,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\scene_manager\scene.cpp" />
     <ClCompile Include="Source\scene_manager\SceneManager.cpp" />
+    <ClCompile Include="Source\tools\math.cpp" />
     <ClCompile Include="Source\vectors\vector2.cpp" />
     <ClCompile Include="Source\vectors\vector3.cpp" />
     <ClCompile Include="Source\vectors\vector4.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Source\graphics\shader.h" />
     <ClInclude Include="Source\scene_manager\scene.h" />
     <ClInclude Include="Source\scene_manager\SceneManager.h" />
+    <ClInclude Include="Source\tools\math.h" />
     <ClInclude Include="Source\vectors\vector2.h" />
     <ClInclude Include="Source\vectors\vector3.h" />
     <ClInclude Include="Source\vectors\vector4.h" />

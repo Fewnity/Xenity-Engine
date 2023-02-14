@@ -25,4 +25,10 @@ Vector3 operator*=(Vector3& vec, float value);
 Vector3 operator+=(Vector3& vec, float value);
 Vector3 operator-=(Vector3& vec, float value);
 
+Vector3 operator/=(Vector3& vec, const Vector3& vecRight);
+Vector3 operator*=(Vector3& vec, const Vector3& vecRight);
+Vector3 operator+=(Vector3& vec, const Vector3& vecRight);
+Vector3 operator-=(Vector3& vec, const Vector3& vecRight);
+
 bool operator==(const Vector3& left, const Vector3& right);
+bool operator!=(const Vector3& left, const Vector3& right);

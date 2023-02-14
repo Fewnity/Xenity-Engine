@@ -1,32 +1,7 @@
 #include "transform.h"
 #include "gameobject.h"
-#include <iostream>
-
-/**
-* TODO : Move in a math class
-*/
-void MultiplyMatrix(const double* A, const double* B, double* result, int rA, int cA, int rB, int cB)
-{
-	if (cA != rB)
-	{
-		return;
-	}
-
-	double temp = 0;
-
-	for (int i = 0; i < rA; i++)
-	{
-		for (int j = 0; j < cB; j++)
-		{
-			temp = 0;
-			for (int k = 0; k < cA; k++)
-			{
-				temp += A[i * cA + k] * B[k * cB + j];
-			}
-			result[i * cB + j] = temp;
-		}
-	}
-}
+#include <iostream	>
+#include "tools/math.h"
 
 Transform::Transform(GameObject* gameObject)
 {
@@ -86,8 +61,8 @@ void Transform::OnParentChanged()
 	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
 	double tempRotationM[9];
 	double rotationM[9];
-	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
-	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
+	Math::MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
+	Math::MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
 
 	//Create the matrix which store the new child's world position (wihtout parent's world position added)
 	double posAfterRotation[3];
@@ -99,7 +74,7 @@ void Transform::OnParentChanged()
 		//localPosition = (position - gameObject->parent->transform.position) / gameObject->parent->transform.scale;
 		Vector3 localPosition2 = (position - gameObject->parent->transform.position) / gameObject->parent->transform.scale;
 		double localPos[3] = { localPosition2.x, localPosition2.y , localPosition2.z };
-		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
+		Math::MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
 		localPosition = Vector3(posAfterRotation[0], posAfterRotation[1], posAfterRotation[2]);
 	}
 }
@@ -175,8 +150,8 @@ void Transform::SetChildrenWorldPositions()
 	//Multiply Z with X and with Y (there is a temp matrix because of the multiplication in two steps)
 	double tempRotationM[9];
 	double rotationM[9];
-	MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
-	MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
+	Math::MultiplyMatrix(rotZ, rotX, tempRotationM, 3, 3, 3, 3);
+	Math::MultiplyMatrix(tempRotationM, rotY, rotationM, 3, 3, 3, 3);
 	//MultiplyMatrix(rotX, rotY, tempRotationM, 3, 3, 3, 3);
 	//MultiplyMatrix(tempRotationM, rotZ, rotationM, 3, 3, 3, 3);
 
@@ -190,7 +165,7 @@ void Transform::SetChildrenWorldPositions()
 
 		//Create the matrix which store the new child's world position (wihtout parent's world position added)
 		double posAfterRotation[3];
-		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
+		Math::MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
 		//Set new child position (with parent's world position added)
 		child->transform.position = Vector3(posAfterRotation[0] + GetPosition().x, posAfterRotation[1] + GetPosition().y, posAfterRotation[2] + GetPosition().z);
 

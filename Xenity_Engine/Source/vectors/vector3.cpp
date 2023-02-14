@@ -90,7 +90,44 @@ Vector3 operator-=(Vector3& vec, float value)
 	return vec;
 }
 
+Vector3 operator/=(Vector3& vec, const Vector3& vecRight)
+{
+	vec.x /= vecRight.x;
+	vec.y /= vecRight.y;
+	vec.z /= vecRight.z;
+	return vec;
+}
+
+Vector3 operator*=(Vector3& vec, const Vector3& vecRight)
+{
+	vec.x *= vecRight.x;
+	vec.y *= vecRight.y;
+	vec.z *= vecRight.z;
+	return vec;
+}
+
+Vector3 operator+=(Vector3& vec, const Vector3& vecRight)
+{
+	vec.x += vecRight.x;
+	vec.y += vecRight.y;
+	vec.z += vecRight.z;
+	return vec;
+}
+
+Vector3 operator-=(Vector3& vec, const Vector3& vecRight)
+{
+	vec.x -= vecRight.x;
+	vec.y -= vecRight.y;
+	vec.z -= vecRight.z;
+	return vec;
+}
+
 bool operator==(const Vector3& left, const Vector3& right)
 {
 	return left.x == right.x && left.y == right.y && left.z == right.z;
+}
+
+bool operator!=(const Vector3& left, const Vector3& right)
+{
+	return left.x != right.x || left.y != right.y || left.z != right.z;
 }

@@ -36,6 +36,7 @@
     <ClCompile Include="Source\debug.cpp" />
     <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
+    <ClCompile Include="Source\tools\math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -72,6 +73,7 @@
     <ClInclude Include="Source\debug.h" />
     <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\text_renderer.h" />
+    <ClInclude Include="Source\tools\math.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
