@@ -14,9 +14,11 @@ public:
 	Shader() = delete;
 	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
 	~Shader();
+
 	unsigned int GetProgramId();
 	void Use();
 	void SetShaderCameraPosition();
+	void SetShaderCameraPosition2D();
 	void SetShaderProjection3D();
 	void SetShaderProjection2D();
 	void SetShaderPosition(Vector3 position);

@@ -14,8 +14,6 @@ class SpriteRenderer : public Component, public IDrawable
 
 		void Draw();
 
-		float width = 100;
-		float height = 100;
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
 

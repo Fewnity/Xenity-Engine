@@ -16,6 +16,6 @@ void TextRenderer::Draw()
 {
 	if (gameObject != nullptr)
 	{
-		UiManager::RenderText(*shader, text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, 0, 0.1f * size, glm::vec3(color.x, color.y, color.z), font);
+		UiManager::RenderText(*shader, text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, 0.1f * size, glm::vec3(color.x, color.y, color.z), font);
 	}
 }

@@ -52,6 +52,16 @@ void Texture::SetFilter(Filter filter)
 	UpdateTextureFilter();
 }
 
+int Texture::GetWidth()
+{
+	return width;
+}
+
+int Texture::GetHeight()
+{
+	return height;
+}
+
 /// <summary>
 /// Load texture from a filepath
 /// </summary>

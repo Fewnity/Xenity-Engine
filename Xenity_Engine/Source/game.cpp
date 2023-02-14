@@ -66,6 +66,7 @@ void Game::Init() {
 
 	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
 	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
+	Shader* shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
 
@@ -134,14 +135,14 @@ void Game::Init() {
 	Mesh* mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
-	/*GameObject* cubeChild2 = new GameObject();
+	GameObject* cubeChild2 = new GameObject();
 	cubeChild2->name = "Cube2";
 	cubeChild2->transform.SetPosition(Vector3(6.5, 0, 0));
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
 	cubeChild2->transform.SetLocalScale(Vector3(1.5, 1.5, 1.5));
 	cubeChild->AddChild(cubeChild2);
 	Mesh* mesh222 = static_cast<Mesh*>(cubeChild2->AddComponent<Mesh>());
-	mesh222->LoadFromFile("CubeTriangulate.obj");*/
+	mesh222->LoadFromFile("CubeTriangulate.obj");
 
 	/*cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(1, 0, 0));
@@ -167,26 +168,32 @@ void Game::Init() {
 	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
 
 	mesh->material = newMat;
-	//mesh222->material = newMat;
+	mesh222->material = newMat;
 	mesh3->material = newMat;
 	mesh4->material = newMat2;
 	mesh5->material = newMat;
 
-	gameObjectSprite->transform.SetPosition(Vector3(0, 150, 0));
+	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
+	//gameObjectSprite->transform.SetRotation(Vector3(45, 45, 45));
 
 	SpriteRenderer* spr = new SpriteRenderer();
 	spr->texture = texture7;
 	spr->shader = shaderStandard2D;
-	spr->width = 100;
-	spr->height = 100;
 	gameObjectSprite->AddExistingComponent(spr);
 
-	/*TextRenderer* textRenderer = new TextRenderer();
+	GameObject *t = new GameObject();
+	t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
+	SpriteRenderer* spr2 = new SpriteRenderer();
+	spr2->texture = texture7;
+	spr2->shader = shaderStandard2D;
+	t->AddExistingComponent(spr2);
+
+	TextRenderer* textRenderer = new TextRenderer();
 	textRenderer->shader = shaderText;
 	textRenderer->font = UiManager::fonts[0];
 	textRenderer->size = 5;
 	textRenderer->text = "Salut à tous les amissssss";
-	gameObjectSprite->AddExistingComponent(textRenderer);*/
+	gameObjectSprite->AddExistingComponent(textRenderer);
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLightGameObject->AddExistingComponent(pointLight);
@@ -240,11 +247,11 @@ void Game::Loop()
 	std::cout << "cubeGameObjectChild Local: " << cubeGameObject->children[0]->transform.GetLocalScale().x << " " << cubeGameObject->children[0]->transform.GetLocalScale().y << " " << cubeGameObject->children[0]->transform.GetLocalScale().z << " " << std::endl;
 	*/
 
-	std::cout << "cube World: " << cubeGameObject->transform.GetPosition().x << " " << cubeGameObject->transform.GetPosition().y << " " << cubeGameObject->transform.GetPosition().z << " " << std::endl;
-	std::cout << "cube Local: " << cubeGameObject->transform.GetLocalPosition().x << " " << cubeGameObject->transform.GetLocalPosition().y << " " << cubeGameObject->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube World: " << cubeGameObject->transform.GetPosition().x << " " << cubeGameObject->transform.GetPosition().y << " " << cubeGameObject->transform.GetPosition().z << " " << std::endl;
+	//std::cout << "cube Local: " << cubeGameObject->transform.GetLocalPosition().x << " " << cubeGameObject->transform.GetLocalPosition().y << " " << cubeGameObject->transform.GetLocalPosition().z << " " << std::endl;
 
-	std::cout << "cube child1 World: " << cubeGameObject->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->transform.GetPosition().z << " " << std::endl;
-	std::cout << "cube child1 Local: " << cubeGameObject->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube child1 World: " << cubeGameObject->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->transform.GetPosition().z << " " << std::endl;
+	//std::cout << "cube child1 Local: " << cubeGameObject->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->transform.GetLocalPosition().z << " " << std::endl;
 
 	//std::cout << "cube child2 World: " << cubeGameObject->children[0]->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().z << " " << std::endl;
 	//std::cout << "cube child2 Local: " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().z << " " << std::endl;
@@ -311,7 +318,7 @@ void Game::Loop()
 	animation = (float)SDL_GetTicks64() / 500;
 	//animation = sin(animation) / 2.0f + 0.5f;
 
-	//cubeGameObject->transform.SetLocalScale(Vector3(2 + sin(animation), 2 + sin(animation), 2 + sin(animation)));
+	cubeGameObject->transform.SetLocalScale(Vector3(2 + sin(animation)/2.0f, 2 + sin(animation) / 2.0f, 2 + sin(animation) / 2.0f));
 
 	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeed.y * EngineSettings::deltaTime * 20;
@@ -363,10 +370,12 @@ void Game::Loop()
 	cubeGameObject->transform.SetRotation(mesh4NewRotation);
 
 	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
-	UiManager::RenderText(*AssetManager::shaders[3], debugText, 0.0f, 50, 90, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::shaders[4], debugText, 0.0f, 50, 20, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
-	UiManager::RenderText(*AssetManager::shaders[3], debugText2, 0.0f, 80, 90, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::shaders[4], debugText2, 0.0f, 80, 20, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+
+	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + EngineSettings::deltaTime*10));
 
 	//mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
 }

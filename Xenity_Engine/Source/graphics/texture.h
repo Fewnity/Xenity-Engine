@@ -28,6 +28,8 @@ public:
 	unsigned int GetTextureId();
 	void UpdateTextureFilter();
 	void SetFilter(Filter filter);
+	int GetWidth();
+	int GetHeight();
 
 private:
 	Filter filter = Bilinear;

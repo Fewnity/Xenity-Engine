@@ -95,6 +95,18 @@ void Shader::SetShaderCameraPosition() {
 	}
 }
 
+void Shader::SetShaderCameraPosition2D() {
+	Use();
+	//Camera position
+	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
+	{
+		glm::mat4 camera;
+		camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, 0), glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y + 1, 0 - 1), glm::vec3(0, 1, 0));
+
+		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
+	}
+}
+
 void Shader::SetShaderProjection3D() {
 	Use();
 	if (Graphics::usedCamera != nullptr)
@@ -107,6 +119,13 @@ void Shader::SetShaderProjection3D() {
 
 void Shader::SetShaderProjection2D() {
 	Use();
+
+	//float scale = 1.0f;
+	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+	//glm::mat4 projection = glm::ortho(-aspect * scale, aspect * scale, -scale, scale);
+	//glm::mat4 projection = glm::frustum(-aspect * scale, aspect * scale, -scale, scale, 0.0f, 1000.0f);
+	//glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()), -1.0f, 100.0f);
+	//glm::mat4 projection = glm::ortho(-static_cast<float>(Window::GetWidth())/2.0f, static_cast<float>(Window::GetWidth())/2.0f, -static_cast<float>(Window::GetHeight()), static_cast<float>(Window::GetHeight()));
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
 	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -203,6 +222,7 @@ void Shader::SetDirectionalLightData(Light* light, int index)
 	SetShaderAttribut(baseString + "color", light->color);
 	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
 }
+
 void Shader::SetSpotLightData(Light* light, int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";

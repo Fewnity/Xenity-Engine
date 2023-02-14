@@ -23,7 +23,7 @@ void SpriteManager::RenderSprite(Transform transform, float w, float h, Texture*
 		w,
 		h,
 		transform.GetScale(),
-		transform.GetLocalRotation(),
+		transform.GetRotation(),
 		texture, s);
 }
 
@@ -71,36 +71,44 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	if (texture == nullptr || s == nullptr)
 		return;
 
-	//y = Window::GetHeight() - y - h;
+	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+	
+	x -= Graphics::usedCamera->gameObject->transform.GetPosition().x;
+	y += Graphics::usedCamera->gameObject->transform.GetPosition().y;
+
+	x = x / aspect * 1.7777f;
+	y = y / aspect * 1.7777f;
+
+	x += Window::GetWidth() / 100.0f / 2.0f;
+	y += Window::GetHeight() / 100.0f / 2.0f;
+
+	y *= 100;
+	x *= 100;
+	y = Window::GetHeight() - y;
 
 	s->Use();
-	s->SetShaderCameraPosition();
-	//s->SetShaderProjection3D();
+	s->SetShaderCameraPosition2D();
 	s->SetShaderProjection2D();
-	s->SetShaderModel(Vector3(x, -y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX, scaleY, 1));
-
-	/*s->SetShaderPosition(Graphics::usedCamera->gameObject->transform.GetPosition());
-	s->SetShaderRotation(Vector3(xAngle, yAngle, zAngle));
-	s->SetShaderScale(Vector3(scaleX, scaleY, 1));*/
+	s->SetShaderModel(Vector3(x, y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX / aspect * 1.7777f, scaleY / aspect * 1.7777f, 1));
 
 	//glUniform3f(glGetUniformLocation(s->GetProgramId(), "spriteColor"), 1, 1, 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(spriteVAO);
 
-	y = Window::GetHeight() - h;
-
-	float xpos = x;
-	float ypos = y;
+	float h2 = h / 2.0f;
+	float w2 = w / 2.0f;
+	float xpos = -w2;
+	float ypos = -h2;
 
 	// update VBO for each character
-	float vertices[6][5] = {
-		{ xpos,     ypos + h,z,   0.0f, 0.0f },
-		{ xpos,     ypos,z,       0.0f, 1.0f },
-		{ xpos + w, ypos, z,      1.0f, 1.0f },
+	float vertices[6][4] = {
+		{ xpos,     ypos + h,   0.0f, 0.0f },
+		{ xpos,     ypos,        0.0f, 1.0f },
+		{ xpos + w, ypos,       1.0f, 1.0f },
 
-		{ xpos,     ypos + h,z,   0.0f, 0.0f },
-		{ xpos + w, ypos, z,      1.0f, 1.0f },
-		{ xpos + w, ypos + h,z,   1.0f, 0.0f }
+		{ xpos,     ypos + h,    0.0f, 0.0f },
+		{ xpos + w, ypos,      1.0f, 1.0f },
+		{ xpos + w, ypos + h,   1.0f, 0.0f }
 	};
 
 	// render glyph texture over quad
@@ -125,10 +133,10 @@ void SpriteManager::CreateSpriteBuffer()
 	glGenBuffers(1, &spriteVBO);
 	glBindVertexArray(spriteVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

@@ -19,6 +19,7 @@ class UiManager
 public:
 	static int Init();
 	static void RenderText(Shader& s, std::string text, float x, float y, float angle, float scale, glm::vec3 color, Font* font);
+	static void RenderTextCanvas(Shader& s, std::string text, float x, float y, float angle, float scale, glm::vec3 color, Font* font);
 	//static void RenderText(Shader& s, std::string text, float x, float y, float z, float scale, glm::vec3 color, Font* font);
 	static Font* CreateFont(std::string filePath);
 	static std::vector<Font*> fonts;

@@ -92,12 +92,8 @@ void Transform::OnParentChanged()
 	//Create the matrix which store the new child's world position (wihtout parent's world position added)
 	double posAfterRotation[3];
 
-	std::cout << gameObject->name<< " S:" << localScale.x << std::endl;
-	std::cout << GetPosition().x << " " << GetPosition().y << " " << GetPosition().z << " " << std::endl;
-	std::cout << GetLocalPosition().x << " " << GetLocalPosition().y << " " << GetLocalPosition().z << " " << std::endl;
-	std::cout << gameObject->parent->transform.position.x << " " << gameObject->parent->transform.position.y << " " << gameObject->parent->transform.position.z << " " << std::endl;
-
-	if (gameObject->parent != nullptr) {
+	if (gameObject->parent != nullptr) 
+	{
 		localScale = scale / gameObject->parent->transform.scale;
 		localRotation = rotation - gameObject->parent->transform.rotation;
 		//localPosition = (position - gameObject->parent->transform.position) / gameObject->parent->transform.scale;
@@ -106,12 +102,6 @@ void Transform::OnParentChanged()
 		MultiplyMatrix(localPos, rotationM, posAfterRotation, 1, 3, 3, 3);
 		localPosition = Vector3(posAfterRotation[0], posAfterRotation[1], posAfterRotation[2]);
 	}
-
-	std::cout << gameObject->name << " S:" << localScale.x << std::endl;
-	std::cout << GetPosition().x << " " << GetPosition().y << " " << GetPosition().z << " " << std::endl;
-	std::cout << GetLocalPosition().x << " " << GetLocalPosition().y << " " << GetLocalPosition().z << " " << std::endl;
-	std::cout << gameObject->parent->transform.position.x << " " << gameObject->parent->transform.position.y << " " << gameObject->parent->transform.position.z << " " << std::endl;
-	std::cout << "--------------------------" << std::endl;
 }
 
 void Transform::SetPosition(Vector3 value)
