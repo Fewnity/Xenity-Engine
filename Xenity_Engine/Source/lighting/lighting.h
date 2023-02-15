@@ -12,15 +12,19 @@ const float lightConstant = 1;
 class Light : public Component
 {
 public:
-	Light(){
+
+	Light()
+	{
 		AssetManager::AddLight(this);
 	};
+
 	enum LightType
 	{
 		Directional,
 		Point,
 		Spot,
 	};
+
 	LightType type = Directional;
 	Vector3 color = Vector3();
 	float intensity = 0;
@@ -28,6 +32,11 @@ public:
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
+
+	void SetupPointLight(Vector3 color, float intensity, float range);
+	void SetupDirectionalLight(Vector3 color, float intensity);
+	void SetupSpotLight(Vector3 color, float intensity, float range, float angle);
+	void SetupSpotLight(Vector3 color, float intensity, float range, float angle, float smoothness);
 
 	void UpdateLightValues();
 	void SetRange(float value);

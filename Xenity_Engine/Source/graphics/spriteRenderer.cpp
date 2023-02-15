@@ -6,8 +6,12 @@
 
 SpriteRenderer::SpriteRenderer()
 {
-	//Add the sprite renderer to the drawable list
-	AssetManager::AddDrawable(this);
+}
+
+SpriteRenderer::SpriteRenderer(Texture* texture, Shader* shader)
+{
+	this->texture = texture;
+	this->shader = shader;
 }
 
 SpriteRenderer::~SpriteRenderer()

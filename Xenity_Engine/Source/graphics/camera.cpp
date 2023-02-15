@@ -6,7 +6,8 @@
 
 Camera::Camera() {
 	this->fov = 60;
-	if (Graphics::usedCamera == nullptr) {
+	if (Graphics::usedCamera == nullptr) 
+	{
 		Graphics::usedCamera = this;
 	}
 }

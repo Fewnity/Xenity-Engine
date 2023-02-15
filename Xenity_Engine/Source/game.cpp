@@ -25,8 +25,8 @@ using namespace std::chrono;
 GameObject* cameraGameObject = new GameObject();
 Camera* camera = new Camera();
 
-GameObject* cubeGameObject = new GameObject();
-GameObject* coneGameobject = new GameObject();
+GameObject* cubeGameObject = new GameObject("Cube0");
+GameObject* coneGameobject = new GameObject("Cone");
 GameObject* myGameObject3 = new GameObject();
 
 GameObject* gameObjectSprite = new GameObject();
@@ -118,16 +118,12 @@ void Game::Init() {
 	mesh4 = new Mesh("ConeTriangulate.obj");
 	mesh5 = new Mesh("CubeTriangulate.obj");
 
-	coneGameobject->name = "Cone";
-	cubeGameObject->name = "Cube0";
-
 	cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
 	cubeGameObject->transform.SetRotation(Vector3(0, 0, 10));
 	cubeGameObject->transform.SetLocalScale(Vector3(2, 2, 2));
 
-	GameObject* cubeChild = new GameObject();
-	cubeChild->name = "Cube1";
+	GameObject* cubeChild = new GameObject("Cube1");
 	cubeChild->transform.SetPosition(Vector3(4, 0, 0));
 	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
 	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
@@ -135,8 +131,7 @@ void Game::Init() {
 	Mesh* mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
-	GameObject* cubeChild2 = new GameObject();
-	cubeChild2->name = "Cube2";
+	GameObject* cubeChild2 = new GameObject("Cube2");
 	cubeChild2->transform.SetPosition(Vector3(6.5, 0, 0));
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
 	cubeChild2->transform.SetLocalScale(Vector3(1.5, 1.5, 1.5));
@@ -176,57 +171,35 @@ void Game::Init() {
 	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
 	//gameObjectSprite->transform.SetRotation(Vector3(45, 45, 45));
 
-	SpriteRenderer* spr = new SpriteRenderer();
-	spr->texture = texture7;
-	spr->shader = shaderStandard2D;
+	SpriteRenderer* spr = new SpriteRenderer(texture7, shaderStandard2D);
 	gameObjectSprite->AddExistingComponent(spr);
 
 	GameObject *t = new GameObject();
 	t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
-	SpriteRenderer* spr2 = new SpriteRenderer();
-	spr2->texture = texture7;
-	spr2->shader = shaderStandard2D;
+	SpriteRenderer* spr2 = new SpriteRenderer(texture7, shaderStandard2D);
 	t->AddExistingComponent(spr2);
 
-	TextRenderer* textRenderer = new TextRenderer();
-	textRenderer->shader = shaderText;
-	textRenderer->font = UiManager::fonts[0];
-	textRenderer->size = 5;
+	TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss";
 	gameObjectSprite->AddExistingComponent(textRenderer);
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLightGameObject->AddExistingComponent(pointLight);
-	pointLight->type = Light::Point;
-	pointLight->color = Vector3(1, 0.1f, 0.1f);
-	pointLight->intensity = 10;
-	pointLight->SetRange(7);
+	pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
 
 	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
 	spotLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
 	spotLightGameObject->AddExistingComponent(spotLight);
-	spotLight->type = Light::Spot;
-	spotLight->color = Vector3(0.05f, 0.05f, 1);
-	spotLight->intensity = 200;
-	spotLight->SetRange(7);
-	spotLight->SetSpotSmoothness(0.0f);
-	spotLight->SetSpotAngle(17.0f);
+	spotLight->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 0);
 
 	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
 	spotLight2GameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
 	spotLight2GameObject->AddExistingComponent(spotLight2);
-	spotLight2->type = Light::Spot;
-	spotLight2->color = Vector3(0.05f, 0.05f, 1);
-	spotLight2->intensity = 200;
-	spotLight2->SetRange(7);
-	spotLight2->SetSpotSmoothness(1.0f);
-	spotLight2->SetSpotAngle(17.0f);
+	spotLight2->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 1);
 
 	directionalLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, -1.0f));
 	directionalLightGameObject->AddExistingComponent(directionalLight);
-	directionalLight->type = Light::Directional;
-	directionalLight->color = Vector3(0.3f, 0.7f, 0.3f);
-	directionalLight->intensity = 1;
+	directionalLight->SetupDirectionalLight(Vector3(0.6f, 0.6f, 0.7f), 1);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -286,17 +259,13 @@ void Game::Loop()
 	{
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
 		vect *= EngineSettings::deltaTime * 2;
-		newCameraPosition.x += vect.x;
-		newCameraPosition.y += vect.y;
-		newCameraPosition.z += vect.z;
+		newCameraPosition += vect;
 
 	}
 	if (InputSystem::GetKey(S)) {
 		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
 		vect *= EngineSettings::deltaTime * 2;
-		newCameraPosition.x -= vect.x;
-		newCameraPosition.y -= vect.y;
-		newCameraPosition.z -= vect.z;
+		newCameraPosition -= vect;
 	}
 	if (InputSystem::GetKey(D)) {
 
@@ -353,27 +322,27 @@ void Game::Loop()
 	//cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
 
 	if (InputSystem::GetKey(V)) {
-		int c = AssetManager::textures.size();
+		int c = AssetManager::GetTextureCount();
 		for (int i = 0; i < c; i++)
 		{
-			AssetManager::textures[i]->SetFilter(Texture::Bilinear);
+			AssetManager::GetTexture(i)->SetFilter(Texture::Bilinear);
 		}
 	}
 	if (InputSystem::GetKey(B)) {
-		int c = AssetManager::textures.size();
+		int c = AssetManager::GetTextureCount();
 		for (int i = 0; i < c; i++)
 		{
-			AssetManager::textures[i]->SetFilter(Texture::Point);
+			AssetManager::GetTexture(i)->SetFilter(Texture::Point);
 		}
 	}
 
 	cubeGameObject->transform.SetRotation(mesh4NewRotation);
 
 	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
-	UiManager::RenderTextCanvas(*AssetManager::shaders[4], debugText, 0.0f, 50, 20, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::GetShader(4), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
-	UiManager::RenderTextCanvas(*AssetManager::shaders[4], debugText2, 0.0f, 80, 20, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::GetShader(4), debugText2, 0.0f, 80, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + EngineSettings::deltaTime*10));
 

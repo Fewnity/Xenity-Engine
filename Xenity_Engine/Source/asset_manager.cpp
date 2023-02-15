@@ -12,6 +12,12 @@ std::vector<Texture*> AssetManager::textures;
 std::vector<IDrawable*> AssetManager::drawables;
 std::vector<Light*> AssetManager::lights;
 
+int AssetManager::shaderCount = 0;
+int AssetManager::materialCount = 0;
+int AssetManager::textureCount = 0;
+int AssetManager::drawableCount = 0;
+int AssetManager::lightCount = 0;
+
 /// <summary>
 /// Add a shader in the shader list
 /// </summary>
@@ -19,11 +25,13 @@ std::vector<Light*> AssetManager::lights;
 void AssetManager::AddShader(Shader* shader)
 {
 	shaders.push_back(shader);
+	shaderCount++;
 }
 
 void AssetManager::AddMaterial(Material* material)
 {
 	materials.push_back(material);
+	materialCount++;
 }
 
 /// <summary>
@@ -33,6 +41,7 @@ void AssetManager::AddMaterial(Material* material)
 void AssetManager::AddTexture(Texture* texture)
 {
 	textures.push_back(texture);
+	textureCount++;
 }
 
 /// <summary>
@@ -42,6 +51,7 @@ void AssetManager::AddTexture(Texture* texture)
 void AssetManager::AddDrawable(IDrawable* drawable)
 {
 	drawables.push_back(drawable);
+	drawableCount++;
 }
 
 /// <summary>
@@ -51,6 +61,7 @@ void AssetManager::AddDrawable(IDrawable* drawable)
 void AssetManager::AddLight(Light* light)
 {
 	lights.push_back(light);
+	lightCount++;
 }
 
 /// <summary>
@@ -64,15 +75,19 @@ void AssetManager::RemoveShader(Shader* shader)
 	bool found = false;
 	for (int i = 0; i < shaderCount; i++)
 	{
-		if (shaders[i] == shader) {
+		if (shaders[i] == shader) 
+		{
 			found = true;
 			shaderIndex = i;
 			break;
 		}
 	}
 
-	if (found)
+	if (found) 
+	{
 		shaders.erase(shaders.begin() + shaderIndex);
+		shaderCount--;
+	}
 }
 
 void AssetManager::RemoveMaterial(Material* material)
@@ -82,7 +97,8 @@ void AssetManager::RemoveMaterial(Material* material)
 	bool found = false;
 	for (int i = 0; i < materialCount; i++)
 	{
-		if (materials[i] == material) {
+		if (materials[i] == material) 
+		{
 			found = true;
 			materialIndex = i;
 			break;
@@ -90,7 +106,10 @@ void AssetManager::RemoveMaterial(Material* material)
 	}
 
 	if (found)
+	{
 		materials.erase(materials.begin() + materialIndex);
+		materialCount--;
+	}
 }
 
 /// <summary>
@@ -104,7 +123,8 @@ void AssetManager::RemoveTexture(Texture* texture)
 	bool found = false;
 	for (int i = 0; i < textureCount; i++)
 	{
-		if (textures[i] == texture) {
+		if (textures[i] == texture) 
+		{
 			found = true;
 			textureIndex = i;
 			break;
@@ -112,7 +132,10 @@ void AssetManager::RemoveTexture(Texture* texture)
 	}
 
 	if (found)
+	{
 		textures.erase(textures.begin() + textureIndex);
+		textureCount--;
+	}
 }
 
 /// <summary>
@@ -126,7 +149,8 @@ void AssetManager::RemoveDrawable(IDrawable* drawable)
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
 	{
-		if (drawables[i] == drawable) {
+		if (drawables[i] == drawable) 
+		{
 			found = true;
 			drawableIndex = i;
 			break;
@@ -134,7 +158,10 @@ void AssetManager::RemoveDrawable(IDrawable* drawable)
 	}
 
 	if (found)
+	{
 		drawables.erase(drawables.begin() + drawableIndex);
+		drawableCount--;
+	}
 }
 
 /// <summary>
@@ -148,7 +175,8 @@ void AssetManager::RemoveLight(Light* light)
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
 	{
-		if (lights[i] == light) {
+		if (lights[i] == light) 
+		{
 			found = true;
 			lightIndex = i;
 			break;
@@ -156,14 +184,62 @@ void AssetManager::RemoveLight(Light* light)
 	}
 
 	if (found)
+	{
 		lights.erase(lights.begin() + lightIndex);
+		lightCount--;
+	}
+}
+
+Shader* AssetManager::GetShader(int index)
+{
+	return shaders[index];
+}
+
+Material* AssetManager::GetMaterial(int index) 
+{
+	return materials[index];
+}
+
+Texture* AssetManager::GetTexture(int index) 
+{
+	return textures[index];
+}
+
+IDrawable* AssetManager::GetDrawable(int index) 
+{
+	return drawables[index];
+}
+
+Light* AssetManager::GetLight(int index)
+{
+	return lights[index];
 }
 
 /// <summary>
-/// Get texture count
+/// Get sahder count
 /// </summary>
 /// <returns></returns>
+int AssetManager::GetShaderCount()
+{
+	return shaderCount;
+}
+
+int AssetManager::GetMaterialCount()
+{
+	return materialCount;
+}
+
 int AssetManager::GetTextureCount()
 {
-	return textures.size();
+	return textureCount;
+}
+
+int AssetManager::GetDrawableCount()
+{
+	return drawableCount;
+}
+
+int AssetManager::GetLightCount()
+{
+	return lightCount;
 }

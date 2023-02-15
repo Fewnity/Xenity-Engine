@@ -53,8 +53,6 @@ void Mesh::Update()
 
 Mesh::~Mesh()
 {
-	AssetManager::RemoveDrawable(this);
-
 	delete meshData;
 	glDeleteVertexArrays(1, &vertexArrayBuffer);
 	glDeleteBuffers(1, &vertexBuffer);
@@ -121,7 +119,6 @@ void Mesh::Draw()
 
 void Mesh::OnLoadFinished()
 {
-	AssetManager::AddDrawable(this);
 }
 
 void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {

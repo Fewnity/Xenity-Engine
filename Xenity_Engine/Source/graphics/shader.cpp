@@ -241,7 +241,7 @@ void Shader::SetSpotLightData(Light* light, int index)
 /// </summary>
 void Shader::UpdateLights()
 {
-	int lightCount = AssetManager::lights.size();
+	int lightCount = AssetManager::GetLightCount();
 	int directionalUsed = 0;
 	int pointUsed = 0;
 	int spotUsed = 0;
@@ -249,7 +249,7 @@ void Shader::UpdateLights()
 	//For each lights
 	for (int lightI = 0; lightI < lightCount; lightI++)
 	{
-		Light* light = AssetManager::lights[lightI];
+		Light* light = AssetManager::GetLight(lightI);
 		if (light->type == Light::Directional)
 		{
 			SetDirectionalLightData(light, directionalUsed);

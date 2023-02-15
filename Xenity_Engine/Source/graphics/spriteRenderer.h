@@ -10,6 +10,7 @@ class SpriteRenderer : public Component, public IDrawable
 {
 	public:
 		SpriteRenderer();
+		SpriteRenderer(Texture* texture, Shader* shader);
 		~SpriteRenderer();
 
 		void Draw();

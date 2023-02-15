@@ -12,6 +12,7 @@ class TextRenderer : public Component, public IDrawable
 {
 public:
 	TextRenderer();
+	TextRenderer(Font* font, float size, Shader* shader);
 	~TextRenderer();
 
 	void Draw();

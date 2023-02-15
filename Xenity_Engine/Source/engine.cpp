@@ -109,7 +109,7 @@ void Engine::Loop()
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 		debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
 		debugText += std::string(" ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().z);
-		UiManager::RenderTextCanvas(*AssetManager::shaders[4], debugText, 0.0f, 24,90, 0.5f, glm::vec3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+		UiManager::RenderTextCanvas(*AssetManager::GetShader(4), debugText, 0.0f, 24, 90, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 		Window::UpdateScreen();
 	}
 }

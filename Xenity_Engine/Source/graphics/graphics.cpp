@@ -5,8 +5,9 @@ Camera* Graphics::usedCamera = nullptr;
 
 void Graphics::DrawAllDrawable()
 {
-	for (IDrawable* drawable : AssetManager::drawables)
+	int drawableCount = AssetManager::GetDrawableCount();
+	for (int i = 0; i < drawableCount; i++)
 	{
-		drawable->Draw();
+		AssetManager::GetDrawable(i)->Draw();
 	}
 }

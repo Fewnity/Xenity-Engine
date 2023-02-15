@@ -2,12 +2,45 @@
 
 #include <corecrt_math.h>
 
+void Light::SetupPointLight(Vector3 color, float intensity, float range)
+{
+	type = Light::Point;
+
+	this->color = color;
+	this->intensity = intensity;
+	SetRange(range);
+}
+
+void Light::SetupDirectionalLight(Vector3 color, float intensity)
+{
+	type = Light::Directional;
+
+	this->color = color;
+	this->intensity = intensity;
+}
+
+void Light::SetupSpotLight(Vector3 color, float intensity, float range, float angle)
+{
+	SetupSpotLight(color, intensity, range, angle, spotSmoothness);
+}
+
+void Light::SetupSpotLight(Vector3 color, float intensity, float range, float angle, float smoothness)
+{
+	type = Light::Spot;
+
+	this->color = color;
+	this->intensity = intensity;
+	SetRange(range);
+	SetSpotAngle(angle);
+	SetSpotSmoothness(smoothness);
+}
+
 /// <summary>
 /// Update lights intern values
 /// </summary>
 void Light::UpdateLightValues()
 {
-	linear= (0.7f * 7.0f) / range;
+	linear = (0.7f * 7.0f) / range;
 	quadratic = (7 * 1.8f) / (powf(range, 2) / 6.0f);
 }
 
