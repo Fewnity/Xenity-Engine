@@ -315,7 +315,7 @@ void Game::Loop()
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
-	animation = (float)SDL_GetTicks64() / 500;
+	animation = SDL_GetTicks64() /500.0f;
 	//animation = sin(animation) / 2.0f + 0.5f;
 
 	cubeGameObject->transform.SetLocalScale(Vector3(2 + sin(animation)/2.0f, 2 + sin(animation) / 2.0f, 2 + sin(animation) / 2.0f));
