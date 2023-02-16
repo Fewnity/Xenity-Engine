@@ -48,6 +48,7 @@ void GameObject::AddChild(GameObject* newChild)
 		newChild->parent = this;
 		newChild->transform.OnParentChanged();
 		newChild->transform.UpdateLocalScale();
+		newChild->UpdateActive(this);
 	}
 }
 
@@ -145,7 +146,7 @@ void GameObject::SetActive(bool active)
 void GameObject::UpdateActive(GameObject* changed)
 {
 	bool lastLocalActive = localActive;
-	if (!changed->GetActive()) //if the new parent's state is false, set local active to false
+	if (!changed->GetActive() || (!changed->GetLocalActive() && changed != this)) //if the new parent's state is false, set local active to false
 	{
 		localActive = false;
 	}
@@ -155,7 +156,7 @@ void GameObject::UpdateActive(GameObject* changed)
 		GameObject* gmToCheck = parent;
 		while (gmToCheck != nullptr)
 		{
-			if (!gmToCheck->GetActive()) //If a parent is disabled, set local active to false
+			if (!gmToCheck->GetActive() || !gmToCheck->GetLocalActive()) //If a parent is disabled, set local active to false
 			{
 				newActive = false;
 				break;
