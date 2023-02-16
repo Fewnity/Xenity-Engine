@@ -2,6 +2,8 @@
 
 #include "shader.h"
 #include "../asset_manager.h"
+#include <glad/glad.h>
+#include <iostream>
 
 Material::Material()
 {
@@ -10,6 +12,7 @@ Material::Material()
 
 Material::~Material()
 {
+	AssetManager::RemoveMaterial(this);
 }
 
 void Material::Use() {
@@ -51,16 +54,25 @@ void Material::Update()
 	if (shader != nullptr) 
 	{
 		shader->Use();
-		for (const auto& kv : uniformsTextures) {
+
+		int textureIndex = 0;
+		for (const auto& kv : uniformsTextures) 
+		{
+			glActiveTexture(GL_TEXTURE0 + textureIndex);
+			glBindTexture(GL_TEXTURE_2D, kv.second->GetTextureId());
+			shader->SetShaderAttribut(kv.first, textureIndex);
+			textureIndex++;
+		}
+		for (const auto& kv : uniformsVector3) 
+		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
-		for (const auto& kv : uniformsVector3) {
+		for (const auto& kv : uniformsInt) 
+		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
-		for (const auto& kv : uniformsInt) {
-			shader->SetShaderAttribut(kv.first, kv.second);
-		}
-		for (const auto& kv : uniformsFloat) {
+		for (const auto& kv : uniformsFloat) 
+		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
 	}

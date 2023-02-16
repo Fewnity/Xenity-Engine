@@ -10,6 +10,8 @@ class Material;
 class AssetManager
 {
 public:
+	static void Init();
+
 	static void AddShader(Shader* shader);
 	static void AddMaterial(Material* material);
 	static void AddTexture(Texture* texture);
@@ -33,6 +35,12 @@ public:
 	static int GetTextureCount();
 	static int GetDrawableCount();
 	static int GetLightCount();
+
+	static Material* default3DMaterial;
+	static Material* default2DMaterial;
+	static Material* defaultUIMaterial;
+
+	static Texture* defaultTexture;
 
 private:
 	static int shaderCount;

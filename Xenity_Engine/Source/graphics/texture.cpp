@@ -29,7 +29,6 @@ void Texture::CreateTextutre(std::string filePath, Filter filter, bool useMipMap
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
-	textureIndex = AssetManager::GetTextureCount();
 
 	LoadTexture(filePath);
 
@@ -71,7 +70,6 @@ void Texture::LoadTexture(std::string filePath) {
 
 	unsigned char* data = File::LoadTextureData(filePath, this->width, this->height, this->nrChannels);
 
-	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
@@ -93,6 +91,8 @@ void Texture::LoadTexture(std::string filePath) {
 		Debug::Print("exture can't be loaded. Path: " + filePath);
 	}
 	stbi_image_free(data);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 /// <summary>
@@ -162,13 +162,4 @@ void Texture::UpdateTextureFilter()
 unsigned int Texture::GetTextureId()
 {
 	return textureId;
-}
-
-/// <summary>
-/// Get texture index
-/// </summary>
-/// <returns></returns>
-unsigned int Texture::GetTextureIndex()
-{
-	return textureIndex;
 }

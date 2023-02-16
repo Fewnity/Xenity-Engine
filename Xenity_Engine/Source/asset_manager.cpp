@@ -5,6 +5,7 @@
 #include "graphics/mesh.h"
 #include "graphics/material.h"
 #include "lighting/lighting.h"
+#include "debug.h"
 
 std::vector<Shader*> AssetManager::shaders;
 std::vector<Material*> AssetManager::materials;
@@ -17,6 +18,36 @@ int AssetManager::materialCount = 0;
 int AssetManager::textureCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
+
+Material* AssetManager::default3DMaterial = nullptr;
+Material* AssetManager::default2DMaterial = nullptr;
+Material* AssetManager::defaultUIMaterial = nullptr;
+
+Texture* AssetManager::defaultTexture = nullptr;
+
+void AssetManager::Init() 
+{
+	defaultTexture = new Texture("white_square.png");
+
+	Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
+
+	default3DMaterial = new Material();
+	default3DMaterial->shader = standard3D;
+	default3DMaterial->SetAttribut("material.diffuse", defaultTexture);
+	default3DMaterial->SetAttribut("material.specular", defaultTexture);
+	default3DMaterial->SetAttribut("material.shininess", 32.0f);
+	default3DMaterial->SetAttribut("ambiantLightColor", Vector3(0.7f, 0.7f, 0.7f));
+
+	Shader* sprite2D = new Shader("2D/vSprite.shader", "2D/fSprite.shader");
+
+	default2DMaterial = new Material();
+	default2DMaterial->shader = sprite2D;
+
+	Shader* ui = new Shader("UI/vUi.shader", "UI/fUi.shader");
+
+	defaultUIMaterial = new Material();
+	defaultUIMaterial->shader = ui;
+}
 
 /// <summary>
 /// Add a shader in the shader list

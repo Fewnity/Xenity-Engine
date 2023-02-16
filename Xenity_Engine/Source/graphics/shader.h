@@ -27,7 +27,6 @@ public:
 	void SetShaderScale(Vector3 scale);
 	void SetShaderAttribut(std::string attribut, Vector3 value);
 	void SetShaderAttribut(std::string attribut, Vector4 value);
-	void SetShaderAttribut(std::string attribut, Texture* texture);
 	void SetShaderAttribut(std::string attribut, float value);
 	void SetShaderAttribut(std::string attribut, int value);
 

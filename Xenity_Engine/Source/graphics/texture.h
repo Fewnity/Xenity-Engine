@@ -24,7 +24,6 @@ public:
 	Texture(std::string filePath, Filter filter, bool useMipMap);
 
 	~Texture();
-	unsigned int GetTextureIndex();
 	unsigned int GetTextureId();
 	void UpdateTextureFilter();
 	void SetFilter(Filter filter);
@@ -36,7 +35,7 @@ private:
 	bool useMipMap = true;
 	void CreateTextutre(std::string filePath, Filter filter, bool useMipMap);
 	void LoadTexture(std::string filePath);
-	unsigned int textureId, textureIndex;
+	unsigned int textureId;
 	int width = 0, height = 0, nrChannels = 0;
 };
 

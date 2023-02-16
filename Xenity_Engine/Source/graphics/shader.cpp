@@ -119,13 +119,6 @@ void Shader::SetShaderProjection3D() {
 
 void Shader::SetShaderProjection2D() {
 	Use();
-
-	//float scale = 1.0f;
-	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
-	//glm::mat4 projection = glm::ortho(-aspect * scale, aspect * scale, -scale, scale);
-	//glm::mat4 projection = glm::frustum(-aspect * scale, aspect * scale, -scale, scale, 0.0f, 1000.0f);
-	//glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()), -1.0f, 100.0f);
-	//glm::mat4 projection = glm::ortho(-static_cast<float>(Window::GetWidth())/2.0f, static_cast<float>(Window::GetWidth())/2.0f, -static_cast<float>(Window::GetHeight()), static_cast<float>(Window::GetHeight()));
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
 	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -147,6 +140,8 @@ void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale)
 	MyQuaternion = glm::quat(EulerAngles);
 	glm::mat4 rotation = glm::toMat4(MyQuaternion);
 	trans = trans * rotation;*/
+
+	//DO NOT CHANGE THE ORDER Y-X-Z
 	trans = glm::rotate(trans, glm::radians(eulerAngle.y), glm::vec3(0.0, 1.0, 0.0));
 	trans = glm::rotate(trans, glm::radians(eulerAngle.x), glm::vec3(1.0, 0.0, 0.0));
 	trans = glm::rotate(trans, glm::radians(eulerAngle.z), glm::vec3(0.0, 0.0, 1.0));
@@ -272,11 +267,7 @@ void Shader::UpdateLights()
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
 }
 
-void Shader::SetShaderAttribut(std::string attribut, Texture* texture) {
-	Use();
-	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), texture->GetTextureIndex());
-}
-
-void Shader::Use() {
+void Shader::Use() 
+{
 	glUseProgram(programId);
 }

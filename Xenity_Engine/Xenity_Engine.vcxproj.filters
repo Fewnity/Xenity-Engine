@@ -37,6 +37,8 @@
     <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
     <ClCompile Include="Source\tools\math.cpp" />
+    <ClCompile Include="Source\tools\curve.cpp" />
+    <ClCompile Include="Source\tools\shape_spawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -74,6 +76,8 @@
     <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\text_renderer.h" />
     <ClInclude Include="Source\tools\math.h" />
+    <ClInclude Include="Source\tools\curve.h" />
+    <ClInclude Include="Source\tools\shape_spawner.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
@@ -102,5 +106,9 @@
     <None Include="Source\shaders\3D\Unlit\fTexture.shader" />
     <None Include="Source\shaders\3D\Unlit\vColor.shader" />
     <None Include="Source\shaders\3D\Unlit\vTexture.shader" />
+    <None Include="Source\shaders\2D\fSprite.shader" />
+    <None Include="Source\shaders\2D\vSprite.shader" />
+    <None Include="Source\shaders\UI\fUi.shader" />
+    <None Include="Source\shaders\UI\vUi.shader" />
   </ItemGroup>
 </Project>

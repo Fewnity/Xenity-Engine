@@ -42,7 +42,8 @@ bool wireframe = false;
 
 int main(void)
 {
-	if (Engine::Init() != 0) {
+	if (Engine::Init() != 0) 
+	{
 		Debug::Print("Engine failed to init");
 		return -1;
 	}

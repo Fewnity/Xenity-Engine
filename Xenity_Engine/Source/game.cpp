@@ -12,13 +12,14 @@
 #include "inputs/input_system.h"
 #include "engine_settings.h"
 #include "vectors/vector3.h"
-#include<chrono>
+#include <chrono>
 #include <iostream>
 #include "graphics/spriteRenderer.h"
 #include "asset_manager.h"
 #include "debug.h"
 #include "graphics/text_renderer.h"
 #include "ui/ui_manager.h"
+#include "tools/shape_spawner.h"
 
 using namespace std::chrono;
 
@@ -56,7 +57,6 @@ void Game::Init() {
 	//AudioSource::Play3DSound(audio1, Vector3(0, 0, 2));
 
 	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-	//Shader* shader3 = new Shader("vertexStandard.shader", "fragmentStandard.shader");
 
 	Shader* shader3 = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 	//Shader* shader3 = new Shader("3D/vStandardNoLight.shader", "3D/fStandardNoLight.shader");
@@ -95,7 +95,8 @@ void Game::Init() {
 	Material* newMat2 = new Material();
 	newMat2->shader = shader3;
 	newMat2->SetAttribut("color", Vector3(0, 1, 1));
-	newMat2->SetAttribut("material.diffuse", texture2);
+	newMat2->SetAttribut("material.diffuse", texture5);
+	newMat2->SetAttribut("material.specular", texture6);
 	newMat2->SetAttribut("material.shininess", 32.0f);
 	newMat2->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
@@ -113,6 +114,10 @@ void Game::Init() {
 	auto start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
 	auto end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 	std::cout << "Time taken = " << (end - start) << " microseconds" << std::endl;*/
+
+	GameObject * newShape = ShapeSpawner::SpawnPlane();
+
+	//newShape->GetComponent<Mesh>()->material = newMat;
 
 	mesh3 = new Mesh("CubeTriangulate.obj");
 	mesh4 = new Mesh("ConeTriangulate.obj");
@@ -163,6 +168,7 @@ void Game::Init() {
 	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
 
 	mesh->material = newMat;
+	//mesh->material = AssetManager::default3DMaterial;
 	mesh222->material = newMat;
 	mesh3->material = newMat;
 	mesh4->material = newMat2;
@@ -287,7 +293,9 @@ void Game::Loop()
 	animation = SDL_GetTicks64() /500.0f;
 	//animation = sin(animation) / 2.0f + 0.5f;
 
-	cubeGameObject->transform.SetLocalScale(Vector3(2 + sin(animation)/2.0f, 2 + sin(animation) / 2.0f, 2 + sin(animation) / 2.0f));
+	//cubeGameObject->transform.SetLocalScale(Vector3(1 + sin(animation)/2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
+
+	cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
 
 	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeed.y * EngineSettings::deltaTime * 20;
@@ -339,10 +347,10 @@ void Game::Loop()
 	cubeGameObject->transform.SetRotation(mesh4NewRotation);
 
 	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
-	UiManager::RenderTextCanvas(*AssetManager::GetShader(4), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
-	UiManager::RenderTextCanvas(*AssetManager::GetShader(4), debugText2, 0.0f, 80, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText2, 0.0f, 80, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + EngineSettings::deltaTime*10));
 

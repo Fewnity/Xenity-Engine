@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\tools\shape_spawner.cpp" />
+    <ClCompile Include="Source\tools\curve.cpp" />
     <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\material.cpp" />
     <ClCompile Include="Source\debug.cpp" />
@@ -197,6 +199,8 @@
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\shaders\2D\fSprite.shader" />
+    <None Include="Source\shaders\2D\vSprite.shader" />
     <None Include="Source\shaders\3D\fStandard.shader" />
     <None Include="Source\shaders\3D\fStandardNoLight.shader" />
     <None Include="Source\shaders\3D\Unlit\fColor.shader" />
@@ -211,6 +215,8 @@
     <None Include="Source\shaders\fragmentStandard.shader" />
     <None Include="Source\shaders\fragmentStandard2D.shader" />
     <None Include="Source\shaders\fragmentText.shader" />
+    <None Include="Source\shaders\UI\fUi.shader" />
+    <None Include="Source\shaders\UI\vUi.shader" />
     <None Include="Source\shaders\vertex.shader" />
     <None Include="Source\shaders\vertex2.shader" />
     <None Include="Source\shaders\vertex2D.shader" />
@@ -219,6 +225,8 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\tools\shape_spawner.h" />
+    <ClInclude Include="Source\tools\curve.h" />
     <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\material.h" />
     <ClInclude Include="Source\debug.h" />

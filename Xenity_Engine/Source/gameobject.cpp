@@ -57,6 +57,9 @@ void GameObject::AddChild(GameObject* newChild)
 /// <param name="component"></param>
 void GameObject::AddExistingComponent(Component* componentToAdd)
 {
+	if (componentToAdd == nullptr)
+		return;
+
 	//Check if the component to add is alrady a component of this gameobject
 	bool add = true;
 	int componentCount = components.size();
