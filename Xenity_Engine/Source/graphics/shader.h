@@ -4,9 +4,9 @@
 #include "../vectors/vector3.h"
 #include "../vectors/vector4.h"
 #include "texture.h"
+#include <glm/glm.hpp>
 
 class Light;
-
 
 class Shader
 {
@@ -22,6 +22,7 @@ public:
 	void SetShaderProjection3D();
 	void SetShaderProjection2D();
 	void SetShaderPosition(Vector3 position);
+	void SetShaderModel(glm::mat4 trans);
 	void SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale);
 	void SetShaderRotation(Vector3 eulerAngle);
 	void SetShaderScale(Vector3 scale);

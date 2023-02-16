@@ -136,21 +136,21 @@ void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
 }
 
 void Mesh::UpdateShader() {
+	//return;
 	if (material != nullptr) {
 		if (material->shader != nullptr) {
 			material->Use();
-			//material->shader->Use();
-			material->shader->SetShaderCameraPosition();
-			material->shader->SetShaderProjection3D();
-			//shader->SetShaderProjection2D();
-			//material->shader->SetShaderPosition(gameObject->transform.GetPosition());
-			//material->shader->SetShaderRotation(gameObject->transform.GetRotation());
-			//material->shader->SetShaderScale(gameObject->transform.GetScale());
-			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
-			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
-			material->shader->SetShaderModel(gameObject->transform.GetPosition(), gameObject->transform.GetRotation(), gameObject->transform.GetScale());
-
-			material->shader->UpdateLights();
+			bool noNeedUpdate = material->updated;
+			if (!noNeedUpdate)
+			{
+			material->Update();
+				material->shader->SetShaderCameraPosition();
+				material->shader->SetShaderProjection3D();
+				material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
+				material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
+				material->shader->UpdateLights();
+			}
+			material->shader->SetShaderModel(gameObject->transform.transformationMatrix);
 		}
 	}
 }

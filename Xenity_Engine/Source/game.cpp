@@ -20,6 +20,8 @@
 #include "graphics/text_renderer.h"
 #include "ui/ui_manager.h"
 #include "tools/shape_spawner.h"
+#include "tools/curve.h"
+#include "tools/benchmark.h"
 
 using namespace std::chrono;
 
@@ -45,6 +47,8 @@ GameObject* pointLightGameObject = new GameObject();
 GameObject* spotLightGameObject = new GameObject();
 GameObject* spotLight2GameObject = new GameObject();
 GameObject* directionalLightGameObject = new GameObject();
+
+Spline* spline = new Spline();
 
 /// <summary>
 /// Init game
@@ -117,7 +121,28 @@ void Game::Init() {
 
 	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
 
-	GameObject * newShape = ShapeSpawner::SpawnPlane();
+	//GameObject * newShape = ShapeSpawner::SpawnSphere();
+
+	SplinePoint* splinePoint0 = spline->CreateSplinePoint(Vector3(0, 0, 0));
+	SplinePoint* splinePoint1 = spline->CreateSplinePoint(Vector3(1, 1, 0));
+	SplinePoint* splinePoint2 = spline->CreateSplinePoint(Vector3(3, 2, 0));
+	SplinePoint* splinePoint3 = spline->CreateSplinePoint(Vector3(6, 0, 0));
+	spline->AddSplinePoint(splinePoint0);
+	spline->AddSplinePoint(splinePoint1);
+	spline->AddSplinePoint(splinePoint2);
+	spline->AddSplinePoint(splinePoint3);
+	
+	/*Benchmark myBench;
+	myBench.Start();
+	myBench.Stop();
+	std::cout << myBench.GetMicroSeconds() << "ms" << std::endl;*/
+
+	for (int i = 0; i < 100; i++)
+	{
+		float t = i / 100.0f;
+		GameObject* newShape = ShapeSpawner::SpawnSphere();
+		newShape->transform.SetPosition(spline->GetValueAt(t));
+	}
 
 	//newShape->GetComponent<Mesh>()->material = newMat;
 

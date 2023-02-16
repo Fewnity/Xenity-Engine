@@ -25,6 +25,13 @@ Material* AssetManager::defaultUIMaterial = nullptr;
 
 Texture* AssetManager::defaultTexture = nullptr;
 
+void AssetManager::ResetMaterialsUpdates() {
+	for (int i = 0; i < materialCount; i++)
+	{
+		materials[i]->updated = false;
+	}
+}
+
 void AssetManager::Init() 
 {
 	defaultTexture = new Texture("white_square.png");

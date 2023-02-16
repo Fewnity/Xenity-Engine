@@ -11,6 +11,7 @@ class AssetManager
 {
 public:
 	static void Init();
+	static void ResetMaterialsUpdates();
 
 	static void AddShader(Shader* shader);
 	static void AddMaterial(Material* material);

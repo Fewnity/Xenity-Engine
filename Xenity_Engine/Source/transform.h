@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vectors/vector3.h"
+#include <glm/glm.hpp>
 
 class GameObject;
 
@@ -27,8 +28,12 @@ public:
 	void UpdateLocalScale();
 	void SetChildrenWorldPositions();
 	void OnParentChanged();
+	glm::mat4 transformationMatrix;
 
 private:
+	void UpdateTransformationMatrix();
+	void UpdateWorldPosition();
+	void UpdateRotationMatrix();
 	Vector3 position = Vector3(0);
 	Vector3 localPosition = Vector3(0);
 	Vector3 rotation = Vector3(0);//Euler angle
@@ -36,5 +41,6 @@ private:
 	Vector3 scale = Vector3(1);
 	Vector3 localScale = Vector3(1);
 	GameObject* gameObject = nullptr;
+	double rotationMatrix[9] = { 0 };
 };
 

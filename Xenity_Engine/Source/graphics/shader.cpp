@@ -130,6 +130,11 @@ void Shader::SetShaderPosition(Vector3 position) {
 	glUniformMatrix4fv(glGetUniformLocation(programId, "offset"), 1, false, glm::value_ptr(trans));
 }
 
+void Shader::SetShaderModel(glm::mat4 trans) {
+	Use();
+	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
+}
+
 void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale) {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);

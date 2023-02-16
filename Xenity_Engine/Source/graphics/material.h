@@ -16,6 +16,7 @@ public:
 	~Material();
 
 	void Use();
+	void Update();
 
 	Shader* shader = nullptr;
 	void SetAttribut(std::string attribut, Vector2 value);
@@ -24,6 +25,7 @@ public:
 	void SetAttribut(std::string attribut, Texture* value);
 	void SetAttribut(std::string attribut, float value);
 	void SetAttribut(std::string attribut, int value);
+	bool updated = false;
 
 private:
 	std::unordered_map <std::string, Texture*> uniformsTextures;
@@ -32,6 +34,5 @@ private:
 	std::unordered_map <std::string, Vector4> uniformsVector4;
 	std::unordered_map <std::string, int> uniformsInt;
 	std::unordered_map <std::string, float> uniformsFloat;
-	void Update();
 };
 

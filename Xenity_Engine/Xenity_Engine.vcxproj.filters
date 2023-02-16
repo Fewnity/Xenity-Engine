@@ -39,6 +39,7 @@
     <ClCompile Include="Source\tools\math.cpp" />
     <ClCompile Include="Source\tools\curve.cpp" />
     <ClCompile Include="Source\tools\shape_spawner.cpp" />
+    <ClCompile Include="Source\tools\benchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -78,6 +79,7 @@
     <ClInclude Include="Source\tools\math.h" />
     <ClInclude Include="Source\tools\curve.h" />
     <ClInclude Include="Source\tools\shape_spawner.h" />
+    <ClInclude Include="Source\tools\benchmark.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -15,8 +15,9 @@ Material::~Material()
 	AssetManager::RemoveMaterial(this);
 }
 
-void Material::Use() {
-	Update();
+void Material::Use() 
+{
+	shader->Use();
 }
 
 void Material::SetAttribut(std::string attribut, Vector2 value)
@@ -75,5 +76,7 @@ void Material::Update()
 		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
+
+		updated = true;
 	}
 }
