@@ -4,6 +4,7 @@
 
 class GameObject;
 class Mesh;
+class Vector3;
 
 class ShapeSpawner
 {
@@ -14,6 +15,10 @@ public:
 	static GameObject* SpawnDonut();
 	static GameObject* SpawnPlane();
 	static GameObject* SpawnCylinder();
+
+	static Vector3 defaultPosition;
+	static Vector3 defaultRotation;
+	static Vector3 defaultScale;
 
 private:
 	static GameObject* Spawn(Mesh* mesh, std::string name);

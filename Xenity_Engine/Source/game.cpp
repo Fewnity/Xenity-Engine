@@ -115,6 +115,8 @@ void Game::Init() {
 	auto end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 	std::cout << "Time taken = " << (end - start) << " microseconds" << std::endl;*/
 
+	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
+
 	GameObject * newShape = ShapeSpawner::SpawnPlane();
 
 	//newShape->GetComponent<Mesh>()->material = newMat;

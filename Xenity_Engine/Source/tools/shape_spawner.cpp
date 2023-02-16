@@ -2,6 +2,11 @@
 
 #include "../gameobject.h"
 #include "../graphics/mesh.h"
+#include "../vectors/vector3.h"
+
+Vector3 ShapeSpawner::defaultPosition = Vector3(0,0,0);
+Vector3 ShapeSpawner::defaultRotation = Vector3(0, 0, 0);
+Vector3 ShapeSpawner::defaultScale = Vector3(1, 1, 1);
 
 GameObject* ShapeSpawner::SpawnCube()
 {
@@ -48,6 +53,9 @@ GameObject* ShapeSpawner::SpawnCylinder()
 GameObject* ShapeSpawner::Spawn(Mesh * mesh, std::string name)
 {
     GameObject* gameObject = new GameObject(name);
+    gameObject->transform.SetPosition(defaultPosition);
+    gameObject->transform.SetRotation(defaultRotation);
+    gameObject->transform.SetLocalScale(defaultScale);
     gameObject->AddExistingComponent(mesh);
     return gameObject;
 }
