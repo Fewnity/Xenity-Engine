@@ -3,6 +3,9 @@
 
 Camera* Graphics::usedCamera = nullptr;
 
+/// <summary>
+/// Draw all Drawable elements
+/// </summary>
 void Graphics::DrawAllDrawable()
 {
 	int drawableCount = AssetManager::GetDrawableCount();

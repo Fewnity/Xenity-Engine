@@ -15,6 +15,9 @@
 
 using namespace std;
 
+/// <summary>
+/// Instantiate an empty mesh
+/// </summary>
 Mesh::Mesh() : Component()
 {
 	meshData->verticesCount = 0;
@@ -25,6 +28,13 @@ Mesh::Mesh() : Component()
 	OnLoadFinished();
 }
 
+/// <summary>
+/// Instantiate a mesh from a vertices and indices lists
+/// </summary>
+/// <param name="vertices"></param>
+/// <param name="indices"></param>
+/// <param name="verticesCount"></param>
+/// <param name="indicesCount"></param>
 Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component()
 {
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
@@ -36,12 +46,21 @@ Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indi
 	OnLoadFinished();
 }
 
+/// <summary>
+/// Instantiate a mesh from a file
+/// </summary>
+/// <param name="meshpath"></param>
 Mesh::Mesh(const std::string meshpath) : Component()
 {
 	LoadFromFile(meshpath);
 }
 
-void Mesh::LoadFromFile(const std::string meshpath) {
+/// <summary>
+/// Load the mesh from a file
+/// </summary>
+/// <param name="meshpath"></param>
+void Mesh::LoadFromFile(const std::string meshpath)
+{
 	WavefrontLoader::LoadMesh(meshData, meshpath);
 	CreateBuffers(meshData->hasUv, meshData->hasNormal);
 	OnLoadFinished();
@@ -51,6 +70,9 @@ void Mesh::Update()
 {
 }
 
+/// <summary>
+/// Mesh destructor
+/// </summary>
 Mesh::~Mesh()
 {
 	delete meshData;
@@ -59,13 +81,18 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &indiceBuffer);
 }
 
+/// <summary>
+/// Create mesh's buffers
+/// </summary>
+/// <param name="addUv"></param>
+/// <param name="addNormals"></param>
 void Mesh::CreateBuffers(bool addUv, bool addNormals)
 {
 	glGenVertexArrays(1, &vertexArrayBuffer); //Create a buffer ID for the vertex array buffer
 	glGenBuffers(1, &vertexBuffer);//Create a buffer ID for the vertex buffer
 	glGenBuffers(1, &indiceBuffer);//Create a buffer ID for the indice buffer
 
-	glBindVertexArray(vertexArrayBuffer);//??????????????????
+	glBindVertexArray(vertexArrayBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
@@ -104,16 +131,23 @@ void Mesh::CreateBuffers(bool addUv, bool addNormals)
 	//glDrawElements(GL_TRIANGLES, meshData->indicesCount, GL_UNSIGNED_INT, 0);
 }
 
+/// <summary>
+/// Draw mesh
+/// </summary>
 void Mesh::Draw()
 {
+	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
 	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr)
 	{
-		UpdateShader();
-		glBindVertexArray(vertexArrayBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
-		glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount);
-		glBindVertexArray(0);
+		if (material != nullptr)
+		{
+			UpdateMaterial();
+			glBindVertexArray(vertexArrayBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
+			glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount);
+			glBindVertexArray(0);
+		}
 	}
 }
 
@@ -121,6 +155,11 @@ void Mesh::OnLoadFinished()
 {
 }
 
+/// <summary>
+/// Fill mesh data with vertices and indices lists
+/// </summary>
+/// <param name="vertices"></param>
+/// <param name="indices"></param>
 void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
 	//Fill vertices
 	for (int i = 0; i < meshData->verticesCount; i++)
@@ -135,22 +174,24 @@ void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
 	}
 }
 
-void Mesh::UpdateShader() {
-	//return;
-	if (material != nullptr) {
-		if (material->shader != nullptr) {
-			material->Use();
-			bool noNeedUpdate = material->updated;
-			if (!noNeedUpdate)
-			{
+/// <summary>
+/// Update mesh's material
+/// </summary>
+void Mesh::UpdateMaterial() 
+{
+	if (material != nullptr && material->shader != nullptr)
+	{
+		material->Use();
+		bool noNeedUpdate = material->updated;
+		if (!noNeedUpdate)
+		{
 			material->Update();
-				material->shader->SetShaderCameraPosition();
-				material->shader->SetShaderProjection3D();
-				material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
-				material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
-				material->shader->UpdateLights();
-			}
-			material->shader->SetShaderModel(gameObject->transform.transformationMatrix);
+			material->shader->SetShaderCameraPosition();
+			material->shader->SetShaderProjection3D();
+			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
+			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
+			material->shader->UpdateLights();
 		}
+		material->shader->SetShaderModel(gameObject->transform.transformationMatrix);
 	}
 }

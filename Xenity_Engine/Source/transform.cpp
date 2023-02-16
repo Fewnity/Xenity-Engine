@@ -7,6 +7,8 @@
 Transform::Transform(GameObject* gameObject)
 {
 	this->gameObject = gameObject;
+	UpdateRotationMatrix();
+	UpdateTransformationMatrix();
 }
 
 Vector3 Transform::GetPosition()

@@ -19,6 +19,9 @@ TextRenderer::~TextRenderer()
 	
 }
 
+/// <summary>
+/// Draw text
+/// </summary>
 void TextRenderer::Draw()
 {
 	if (gameObject != nullptr)

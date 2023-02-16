@@ -7,12 +7,20 @@
 #include "../lighting/lighting.h"
 #include "../debug.h"
 
+/// <summary>
+/// Instantiate shader from files
+/// </summary>
+/// <param name="vertexShaderPath">Vertex shader file path</param>
+/// <param name="fragmentShaderPath">Fragment shader file path</param>
 Shader::Shader(std::string vertexShaderPath, std::string fragmentShaderPath)
 {
 	LoadShader(vertexShaderPath, fragmentShaderPath);
 	AssetManager::AddShader(this);
 }
 
+/// <summary>
+/// Shader destructor
+/// </summary>
 Shader::~Shader()
 {
 	AssetManager::RemoveShader(this);
@@ -21,11 +29,16 @@ Shader::~Shader()
 	glDeleteProgram(programId);
 }
 
-GLuint Shader::GetProgramId() {
+GLuint Shader::GetProgramId() 
+{
 	return this->programId;
 }
 
-
+/// <summary>
+/// Load shader files
+/// </summary>
+/// <param name="vertexPath"></param>
+/// <param name="fragmentPath"></param>
 void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 
 	Debug::Print("Compiling shader...");
@@ -63,9 +76,11 @@ void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
 	glAttachShader(programId, vertexShaderId);
 	glAttachShader(programId, fragmentShaderId);
 	glLinkProgram(programId);
-
 }
 
+/// <summary>
+/// Send to the shader the 3D camera position
+/// </summary>
 void Shader::SetShaderCameraPosition() {
 	Use();
 	//Camera position
@@ -95,6 +110,9 @@ void Shader::SetShaderCameraPosition() {
 	}
 }
 
+/// <summary>
+/// Send to the shader the 2D camera position
+/// </summary>
 void Shader::SetShaderCameraPosition2D() {
 	Use();
 	//Camera position
@@ -107,6 +125,10 @@ void Shader::SetShaderCameraPosition2D() {
 	}
 }
 
+
+/// <summary>
+/// Send to the shader the 3D camera projection
+/// </summary>
 void Shader::SetShaderProjection3D() {
 	Use();
 	if (Graphics::usedCamera != nullptr)
@@ -117,6 +139,9 @@ void Shader::SetShaderProjection3D() {
 	}
 }
 
+/// <summary>
+/// Send to the shader the 2D camera projection
+/// </summary>
 void Shader::SetShaderProjection2D() {
 	Use();
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
@@ -130,11 +155,20 @@ void Shader::SetShaderPosition(Vector3 position) {
 	glUniformMatrix4fv(glGetUniformLocation(programId, "offset"), 1, false, glm::value_ptr(trans));
 }
 
-void Shader::SetShaderModel(glm::mat4 trans) {
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
+void Shader::SetShaderModel(glm::mat4 trans) 
+{
 	Use();
 	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
 }
 
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
 void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale) {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
@@ -206,6 +240,11 @@ void Shader::SetShaderAttribut(std::string attribut, int value) {
 	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), value);
 }
 
+/// <summary>
+/// Send to the shader the point light data
+/// </summary>
+/// <param name="light">Point light</param>
+/// <param name="index">Shader's point light index</param>
 void Shader::SetPointLightData(Light* light, int index) 
 {
 	std::string baseString = "pointLights[" + std::to_string(index) + "].";
@@ -216,6 +255,11 @@ void Shader::SetPointLightData(Light* light, int index)
 	SetShaderAttribut(baseString + "quadratic", light->quadratic);
 }
 
+/// <summary>
+/// Send to the shader the directional light data
+/// </summary>
+/// <param name="light">Directional light</param>
+/// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(Light* light, int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
@@ -223,6 +267,11 @@ void Shader::SetDirectionalLightData(Light* light, int index)
 	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
 }
 
+/// <summary>
+/// Send to the shader the spot light data
+/// </summary>
+/// <param name="light">Spot light</param>
+/// <param name="index">Shader's spot light index</param>
 void Shader::SetSpotLightData(Light* light, int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
@@ -272,6 +321,9 @@ void Shader::UpdateLights()
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
 }
 
+/// <summary>
+/// Use shader
+/// </summary>
 void Shader::Use() 
 {
 	glUseProgram(programId);

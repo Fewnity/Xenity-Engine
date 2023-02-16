@@ -2,11 +2,17 @@
 
 using namespace std::chrono;
 
+/// <summary>
+/// Start the benchmark timer
+/// </summary>
 void Benchmark::Start()
 {
 	start_point = high_resolution_clock::now();
 }
 
+/// <summary>
+/// Stop the benchmark timer
+/// </summary>
 void Benchmark::Stop()
 {
 	end_point = high_resolution_clock::now();
@@ -17,21 +23,36 @@ void Benchmark::Stop()
 	time = end - start;
 }
 
+/// <summary>
+/// Get how many microseconds passed during the benchmark
+/// </summary>
+/// <returns>Microseconds</returns>
 int Benchmark::GetMicroSeconds()
 {
 	return time;
 }
 
-float Benchmark::GetSeconds() {
-
-	return time / 1000000.0f;
-}
-
+/// <summary>
+/// Get how many milliseconds passed during the benchmark
+/// </summary>
+/// <returns>Milliseconds</returns>
 int Benchmark::GetMilliseconds()
 {
 	return time / 1000.0f;
 }
 
+/// <summary>
+/// Get how many seconds passed during the benchmark
+/// </summary>
+/// <returns>Seconds</returns>
+float Benchmark::GetSeconds() {
+
+	return time / 1000000.0f;
+}
+
+/// <summary>
+/// Reset the timer
+/// </summary>
 void Benchmark::Reset()
 {
 	time = 0;

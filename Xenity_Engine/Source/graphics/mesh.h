@@ -26,18 +26,19 @@ public:
 	Mesh();
 	Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount);
 	Mesh(const std::string meshpath);
-	void LoadFromFile(const std::string meshpath);
 	~Mesh();
-	//Shader* shader = nullptr;
+
 	Material* material;
+
+	void LoadFromFile(const std::string meshpath);
 	void LoadMesh(float vertices[], unsigned int indices[]);
 	void DrawModel();
 	void CreateBuffers(bool addUv, bool addNormals);
-	void Draw();
-	void Update();
 
 private:
-	void UpdateShader();
+	void Draw();
+	void Update();
+	void UpdateMaterial();
 	void OnLoadFinished();
 
 	unsigned int vertexArrayBuffer = 0;

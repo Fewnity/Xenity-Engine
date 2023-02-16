@@ -13,11 +13,11 @@ class SpriteRenderer : public Component, public IDrawable
 		SpriteRenderer(Texture* texture, Shader* shader);
 		~SpriteRenderer();
 
-		void Draw();
 
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
 
 	private:
+		void Draw();
 };
 

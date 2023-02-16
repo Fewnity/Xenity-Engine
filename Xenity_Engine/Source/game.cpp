@@ -137,9 +137,10 @@ void Game::Init() {
 	myBench.Stop();
 	std::cout << myBench.GetMicroSeconds() << "ms" << std::endl;*/
 
-	for (int i = 0; i < 100; i++)
+	int splinePointCount = 20;
+	for (int i = 0; i < splinePointCount; i++)
 	{
-		float t = i / 100.0f;
+		float t = i / (float)splinePointCount;
 		GameObject* newShape = ShapeSpawner::SpawnSphere();
 		newShape->transform.SetPosition(spline->GetValueAt(t));
 	}
@@ -154,6 +155,7 @@ void Game::Init() {
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
 	cubeGameObject->transform.SetRotation(Vector3(0, 0, 10));
 	cubeGameObject->transform.SetLocalScale(Vector3(2, 2, 2));
+
 
 	GameObject* cubeChild = new GameObject("Cube1");
 	cubeChild->transform.SetPosition(Vector3(4, 0, 0));
@@ -280,11 +282,13 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKeyDown(X))
 	{
-		coneGameobject->SetActive(!coneGameobject->GetActive());
+		cubeGameObject->children[0]->SetActive(!cubeGameObject->children[0]->GetActive());
+		//coneGameobject->SetActive(!coneGameobject->GetActive());
 	}
 	if (InputSystem::GetKeyDown(C))
 	{
-		myGameObject3->SetActive(!myGameObject3->GetActive());
+		cubeGameObject->children[0]->children[0]->SetActive(!cubeGameObject->children[0]->children[0]->GetActive());
+		//myGameObject3->SetActive(!myGameObject3->GetActive());
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();

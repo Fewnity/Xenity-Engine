@@ -12,7 +12,6 @@ public:
 	float GetSeconds();
 	void Reset();
 
-
 private:
 	std::chrono::time_point< std::chrono::high_resolution_clock> start_point, end_point;
 	int time;
