@@ -18,12 +18,14 @@ public:
 	static void AddTexture(Texture* texture);
 	static void AddDrawable(IDrawable* drawable);
 	static void AddLight(Light* light);
+	static void AddMeshData(MeshData* meshData);
 
 	static void RemoveShader(Shader* shader);
 	static void RemoveMaterial(Material* material);
 	static void RemoveTexture(Texture* texture);
 	static void RemoveDrawable(IDrawable* drawable);
 	static void RemoveLight(Light* light);
+	static void RemoveMeshData(MeshData* meshData);
 
 	static Shader* GetShader(int index);
 	static Material* GetMaterial(int index);
@@ -55,5 +57,6 @@ private:
 	static std::vector<Texture*> textures;
 	static std::vector<IDrawable*> drawables;
 	static std::vector<Light*> lights;
+	static std::vector<MeshData*> meshesData;
 };
 

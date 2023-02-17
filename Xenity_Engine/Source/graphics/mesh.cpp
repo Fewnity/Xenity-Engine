@@ -25,7 +25,11 @@ Mesh::Mesh() : Component()
 	meshData->indicesCount = 0;
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
 	CreateBuffers(true, true);
-	OnLoadFinished();
+}
+
+Mesh::Mesh(MeshData* meshData)
+{
+	this->meshData = meshData;
 }
 
 /// <summary>
@@ -43,7 +47,6 @@ Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indi
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
 	LoadMesh(vertices, indices);
 	CreateBuffers(true, true);
-	OnLoadFinished();
 }
 
 /// <summary>
@@ -63,7 +66,6 @@ void Mesh::LoadFromFile(const std::string meshpath)
 {
 	WavefrontLoader::LoadMesh(meshData, meshpath);
 	CreateBuffers(meshData->hasUv, meshData->hasNormal);
-	OnLoadFinished();
 }
 
 void Mesh::Update()
@@ -149,10 +151,6 @@ void Mesh::Draw()
 			glBindVertexArray(0);
 		}
 	}
-}
-
-void Mesh::OnLoadFinished()
-{
 }
 
 /// <summary>

@@ -12,6 +12,7 @@ std::vector<Material*> AssetManager::materials;
 std::vector<Texture*> AssetManager::textures;
 std::vector<IDrawable*> AssetManager::drawables;
 std::vector<Light*> AssetManager::lights;
+std::vector<MeshData*> AssetManager::meshesData;
 
 int AssetManager::shaderCount = 0;
 int AssetManager::materialCount = 0;

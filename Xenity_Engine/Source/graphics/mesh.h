@@ -8,10 +8,16 @@ class Material;
 
 class MeshData {
 public:
+	MeshData(std::string path) 
+	{
+		filePath = path;
+	}
+
 	~MeshData() {
 		free(vertices);
 		free(indices);
 	}
+	std::string filePath = "";
 	float* vertices = nullptr;
 	unsigned int* indices = nullptr;
 	int verticesCount = 0;
@@ -24,22 +30,21 @@ class Mesh : public Component, public IDrawable
 {
 public:
 	Mesh();
+	Mesh(MeshData* meshData);
 	Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount);
 	Mesh(const std::string meshpath);
 	~Mesh();
 
-	Material* material;
+	Material* material = nullptr;
 
 	void LoadFromFile(const std::string meshpath);
 	void LoadMesh(float vertices[], unsigned int indices[]);
-	void DrawModel();
 	void CreateBuffers(bool addUv, bool addNormals);
 
 private:
 	void Draw();
 	void Update();
 	void UpdateMaterial();
-	void OnLoadFinished();
 
 	unsigned int vertexArrayBuffer = 0;
 	unsigned int vertexBuffer = 0;

@@ -9,7 +9,8 @@
 
 std::string texturePath = R"(Xenity_Engine\Source\images\)"; //TODO improve this
 
-unsigned char* File::LoadTextureData(std::string filePath, int& width, int& height, int& nrChannels) {
+unsigned char* File::LoadTextureData(std::string filePath, int& width, int& height, int& nrChannels) 
+{
 	std::string finalpath = EngineSettings::RootFolder + texturePath;
 	unsigned char* data = stbi_load((finalpath + filePath).c_str(), &width, &height, &nrChannels, 0);
 	return data;
@@ -45,8 +46,8 @@ std::string File::LoadShaderData(const std::string path)
 
 void File::InitFileSystem() 
 {
-	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
-	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
+	//EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
 	Debug::Print("---- File System initiated ----");
 	//gamePath += R"(Debug\)"; //TODO remove this
 }

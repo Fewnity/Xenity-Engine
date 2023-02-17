@@ -77,7 +77,8 @@ void Engine::Loop()
 				running = false;
 				break;
 			case SDL_WINDOWEVENT:
-				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) 
+				{
 					Window::OnResize(event.window.data1, event.window.data2);
 				}
 				break;
@@ -116,7 +117,7 @@ void Engine::Loop()
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 		debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
-		debugText += std::string(", fps: ") + std::to_string((int)(1/ EngineSettings::deltaTime));
+		debugText += std::string(", fps: ") + std::to_string((int)(1 / EngineSettings::deltaTime));
 		//debugText += std::string(" ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().z);
 		UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 24, 90, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 		Window::UpdateScreen();
