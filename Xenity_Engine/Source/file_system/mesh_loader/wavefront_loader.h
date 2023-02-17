@@ -6,5 +6,5 @@ class MeshData;
 
 class WavefrontLoader {
 public:
-	static void LoadMesh(MeshData* mesh, std::string filePath);
+	static void LoadMesh(MeshData* mesh, const std::string filePath);
 };

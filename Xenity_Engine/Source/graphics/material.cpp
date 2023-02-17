@@ -27,7 +27,7 @@ void Material::Use()
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector2</param>
-void Material::SetAttribut(std::string attribut, Vector2 value)
+void Material::SetAttribut(const std::string attribut, const Vector2 value)
 {
 	uniformsVector2.insert(std::pair <std::string, Vector2>(attribut, value));
 }
@@ -37,7 +37,7 @@ void Material::SetAttribut(std::string attribut, Vector2 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector3</param>
-void Material::SetAttribut(std::string attribut, Vector3 value)
+void Material::SetAttribut(const std::string attribut, const Vector3 value)
 {
 	uniformsVector3.insert(std::pair <std::string, Vector3>(attribut, value));
 }
@@ -47,7 +47,7 @@ void Material::SetAttribut(std::string attribut, Vector3 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector4</param>
-void Material::SetAttribut(std::string attribut, Vector4 value)
+void Material::SetAttribut(const std::string attribut, const Vector4 value)
 {
 	uniformsVector4.insert(std::pair <std::string, Vector4>(attribut, value));
 }
@@ -57,7 +57,7 @@ void Material::SetAttribut(std::string attribut, Vector4 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Texture pointer</param>
-void Material::SetAttribut(std::string attribut, Texture* value)
+void Material::SetAttribut(const std::string attribut, Texture* value)
 {
 	uniformsTextures.insert(std::pair <std::string, Texture*>(attribut, value));
 }
@@ -67,7 +67,7 @@ void Material::SetAttribut(std::string attribut, Texture* value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">float</param>
-void Material::SetAttribut(std::string attribut, float value)
+void Material::SetAttribut(const std::string attribut, const float value)
 {
 	uniformsFloat.insert(std::pair <std::string, float>(attribut, value));
 }
@@ -77,7 +77,7 @@ void Material::SetAttribut(std::string attribut, float value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">int</param>
-void Material::SetAttribut(std::string attribut, int value)
+void Material::SetAttribut(const std::string attribut, const int value)
 {
 	uniformsInt.insert(std::pair <std::string, int>(attribut, value));
 }

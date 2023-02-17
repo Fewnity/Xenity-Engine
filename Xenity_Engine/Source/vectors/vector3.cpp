@@ -6,13 +6,13 @@ Vector3::Vector3() {
 	this->z = 0;
 }
 
-Vector3::Vector3(float x, float y, float z) {
+Vector3::Vector3(const float x, const float y, const float z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 }
 
-Vector3::Vector3(float fillValue) {
+Vector3::Vector3(const float fillValue) {
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
@@ -38,7 +38,7 @@ Vector3 operator*(const Vector3& left, const Vector3& right)
 	return { left.x * right.x, left.y * right.y, left.z * right.z };
 }
 
-Vector3 operator*(const Vector3& vec, float value)
+Vector3 operator*(const Vector3& vec, const float value)
 {
 	return { vec.x * value, vec.y * value, vec.z * value };
 }
@@ -48,7 +48,7 @@ Vector3 operator/(float value, const Vector3& vec)
 	return { vec.x / value, vec.y / value, vec.z / value };
 }
 
-Vector3 operator/(const Vector3& vec, float value)
+Vector3 operator/(const Vector3& vec, const float value)
 {
 	return { vec.x / value, vec.y / value, vec.z / value };
 }
@@ -58,7 +58,7 @@ Vector3 operator/(const Vector3& left, const Vector3& right)
 	return { left.x / right.x, left.y / right.y, left.z / right.z };
 }
 
-Vector3 operator/=(Vector3& vec, float value)
+Vector3 operator/=(Vector3& vec, const float value)
 {
 	vec.x /= value;
 	vec.y /= value;
@@ -66,7 +66,7 @@ Vector3 operator/=(Vector3& vec, float value)
 	return vec;
 }
 
-Vector3 operator*=(Vector3& vec, float value)
+Vector3 operator*=(Vector3& vec, const float value)
 {
 	vec.x *= value;
 	vec.y *= value;
@@ -74,7 +74,7 @@ Vector3 operator*=(Vector3& vec, float value)
 	return vec;
 }
 
-Vector3 operator+=(Vector3& vec, float value)
+Vector3 operator+=(Vector3& vec, const float value)
 {
 	vec.x += value;
 	vec.y += value;
@@ -82,7 +82,7 @@ Vector3 operator+=(Vector3& vec, float value)
 	return vec;
 }
 
-Vector3 operator-=(Vector3& vec, float value)
+Vector3 operator-=(Vector3& vec, const float value)
 {
 	vec.x -= value;
 	vec.y -= value;

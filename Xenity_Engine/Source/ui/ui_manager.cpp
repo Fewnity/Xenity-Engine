@@ -64,7 +64,7 @@ void UiManager::DeleteFont(int index)
 /// <param name="y">Y position</param>
 /// <param name="scale">Text's scale</param>
 /// <param name="color">Text's color</param>
-void UiManager::RenderText(Shader& s, std::string text, float x, float y, float angle, float scale, Vector3 color, Font * font)
+void UiManager::RenderText(Shader& s, std::string text, float x, float y, float angle, float scale, Vector3 color, Font* font)
 {
 	//y = Window::GetHeight() - y;
 

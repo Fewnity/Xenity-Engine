@@ -17,33 +17,12 @@ Camera::~Camera()
 {
 }
 
-void Camera::SetFov(double fov)
+void Camera::SetFov(const double fov)
 {
 	this->fov = fov;
 }
 
-double Camera::GetFov()
+double Camera::GetFov() const
 {
 	return this->fov;
-}
-
-/// <summary>
-/// TODO Optimize this, (add a boolean to check if we need to re calculate values)
-/// </summary>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="z"></param>
-Vector3 Camera::GetSphericalCoordinate2() {
-	Vector3 vect = Vector3();
-	if (gameObject != nullptr) {
-		float TempS = this->gameObject->transform.GetRotation().y / 180.0f * (float)M_PI;
-
-		float cosTempS = cosf(TempS);
-		float SinTempS = sinf(TempS);
-
-		vect.x = cosTempS;
-		vect.y = 0;
-		vect.z = -SinTempS;
-	}
-	return vect;
 }

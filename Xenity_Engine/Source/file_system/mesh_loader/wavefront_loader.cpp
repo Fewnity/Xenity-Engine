@@ -13,7 +13,7 @@ using namespace std;
 
 std::string modelsPath = R"(Xenity_Engine\Source\models\)"; //TODO remove this
 
-void WavefrontLoader::LoadMesh(MeshData* mesh, std::string filePath)
+void WavefrontLoader::LoadMesh(MeshData* mesh, const std::string filePath)
 {
 	Debug::Print("Loading mesh...");
 

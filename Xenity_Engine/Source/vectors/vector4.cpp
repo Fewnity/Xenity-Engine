@@ -7,14 +7,14 @@ Vector4::Vector4() {
 	this->w = 0;
 }
 
-Vector4::Vector4(float x, float y, float z, float w) {
+Vector4::Vector4(const float x, const float y, const float z, const float w) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 	this->w = w;
 }
 
-Vector4::Vector4(float fillValue) {
+Vector4::Vector4(const float fillValue) {
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
@@ -31,7 +31,7 @@ Vector4 operator-(const Vector4& left, const Vector4& right)
 	return { left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
 }
 
-Vector4 operator*(float value, const Vector4& vec)
+Vector4 operator*(const float value, const Vector4& vec)
 {
 	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
@@ -41,17 +41,17 @@ Vector4 operator*(const Vector4& left, const Vector4& right)
 	return { left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w };
 }
 
-Vector4 operator*(const Vector4& vec, float value)
+Vector4 operator*(const Vector4& vec, const float value)
 {
 	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
 
-Vector4 operator/(float value, const Vector4& vec)
+Vector4 operator/(const float value, const Vector4& vec)
 {
 	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
 
-Vector4 operator/(const Vector4& vec, float value)
+Vector4 operator/(const Vector4& vec, const float value)
 {
 	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
@@ -61,7 +61,7 @@ Vector4 operator/(const Vector4& left, const Vector4& right)
 	return { left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w };
 }
 
-Vector4 operator/=(Vector4& vec, float value)
+Vector4 operator/=(Vector4& vec, const float value)
 {
 	vec.x /= value;
 	vec.y /= value;
@@ -70,7 +70,7 @@ Vector4 operator/=(Vector4& vec, float value)
 	return vec;
 }
 
-Vector4 operator*=(Vector4& vec, float value)
+Vector4 operator*=(Vector4& vec, const float value)
 {
 	vec.x *= value;
 	vec.y *= value;
@@ -79,7 +79,7 @@ Vector4 operator*=(Vector4& vec, float value)
 	return vec;
 }
 
-Vector4 operator+=(Vector4& vec, float value)
+Vector4 operator+=(Vector4& vec, const float value)
 {
 	vec.x += value;
 	vec.y += value;
@@ -88,7 +88,7 @@ Vector4 operator+=(Vector4& vec, float value)
 	return vec;
 }
 
-Vector4 operator-=(Vector4& vec, float value)
+Vector4 operator-=(Vector4& vec, const float value)
 {
 	vec.x -= value;
 	vec.y -= value;

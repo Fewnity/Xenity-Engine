@@ -12,20 +12,22 @@ public:
 	Transform() = delete;
 	Transform(GameObject* gameObject);
 
-	Vector3 GetPosition();
-	Vector3 GetLocalPosition();
-	Vector3 GetRotation();//Euler angle
-	Vector3 GetLocalRotation();//Euler angle
-	Vector3 GetScale();
-	Vector3 GetLocalScale();
+	Vector3 GetPosition() const;
+	Vector3 GetLocalPosition() const;
+	Vector3 GetRotation() const;//Euler angle
+	Vector3 GetLocalRotation() const;//Euler angle
+	Vector3 GetScale() const;
+	Vector3 GetLocalScale() const;
 
-	Vector3 GetForward();
+	Vector3 GetForward() const;
+	Vector3 GetLeft() const;
+	Vector3 GetUp() const;
 
-	void SetPosition(Vector3 value);
-	void SetLocalPosition(Vector3 value);
-	void SetRotation(Vector3 value);//Euler angle
-	void SetLocalRotation(Vector3 value);//Euler angle
-	void SetLocalScale(Vector3 value);
+	void SetPosition(const Vector3 value);
+	void SetLocalPosition(const Vector3 value);
+	void SetRotation(const Vector3 value);//Euler angle
+	void SetLocalRotation(const Vector3 value);//Euler angle
+	void SetLocalScale(const Vector3 value);
 	void UpdateScale();
 	void UpdateLocalScale();
 	void SetChildrenWorldPositions();

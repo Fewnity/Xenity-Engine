@@ -13,39 +13,54 @@ Transform::Transform(GameObject* gameObject)
 	UpdateTransformationMatrix();
 }
 
-Vector3 Transform::GetPosition()
+Vector3 Transform::GetPosition() const
 {
 	return position;
 }
 
-Vector3 Transform::GetLocalPosition()
+Vector3 Transform::GetLocalPosition() const
 {
 	return localPosition;
 }
 
-Vector3 Transform::GetRotation()
+Vector3 Transform::GetRotation() const
 {
 	return rotation;
 }
 
-Vector3 Transform::GetLocalRotation()
+Vector3 Transform::GetLocalRotation() const
 {
 	return localRotation;
 }
 
-Vector3 Transform::GetScale()
+Vector3 Transform::GetScale() const
 {
 	return scale;
 }
 
-Vector3 Transform::GetLocalScale()
+Vector3 Transform::GetLocalScale() const
 {
 	return localScale;
 }
 
-Vector3 Transform::GetForward()
+Vector3 Transform::GetForward() const
 {
-	Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
+	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
+	Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], -rotationMatrix[8]);
+	return direction;
+}
+
+Vector3 Transform::GetLeft() const
+{
+	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
+	Vector3 direction = Vector3(-rotationMatrix[0], rotationMatrix[1], -rotationMatrix[2]);
+	return direction;
+}
+
+Vector3 Transform::GetUp() const
+{
+	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
+	Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], -rotationMatrix[5]);
 	return direction;
 }
 
@@ -76,7 +91,7 @@ void Transform::OnParentChanged()
 	}
 }
 
-void Transform::SetPosition(Vector3 value)
+void Transform::SetPosition(const Vector3 value)
 {
 	position = value;
 	if (gameObject->parent == nullptr) {
@@ -91,7 +106,7 @@ void Transform::SetPosition(Vector3 value)
 		SetChildrenWorldPositions();
 }
 
-void Transform::SetLocalPosition(Vector3 value)
+void Transform::SetLocalPosition(const Vector3 value)
 {
 	localPosition = value;
 	if (gameObject != nullptr)
@@ -99,7 +114,7 @@ void Transform::SetLocalPosition(Vector3 value)
 		//gameObject->parent->transform.SetChildrenWorldPositions();
 }
 
-void Transform::SetRotation(Vector3 value)
+void Transform::SetRotation(const Vector3 value)
 {
 	rotation = value;
 	if (gameObject->parent == nullptr) {
@@ -109,14 +124,14 @@ void Transform::SetRotation(Vector3 value)
 		SetChildrenWorldPositions();
 }
 
-void Transform::SetLocalRotation(Vector3 value)
+void Transform::SetLocalRotation(const Vector3 value)
 {
 	localRotation = value;
 	if (gameObject != nullptr)
 		SetChildrenWorldPositions();
 }
 
-void Transform::SetLocalScale(Vector3 value)
+void Transform::SetLocalScale(const Vector3 value)
 {
 	localScale = value;
 	UpdateScale();

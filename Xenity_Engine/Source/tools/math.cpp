@@ -42,3 +42,16 @@ Vector3 Math::GetDirectionFromAngles(const float angleA, const float angleB)
 
 	return direction;
 }
+
+Vector3 Math::GetDirectionFromAngle(const float angleA) {
+	Vector3 direction = Vector3();
+	float TempS = angleA / 180.0f * (float)M_PI;
+
+	float cosTempS = cosf(TempS);
+	float SinTempS = sinf(TempS);
+
+	direction.x = cosTempS;
+	direction.y = 0;
+	direction.z = -SinTempS;
+	return direction;
+}

@@ -20,21 +20,21 @@ public:
 	};
 
 	Texture() = delete;
-	Texture(std::string filePath);
-	Texture(std::string filePath, Filter filter, bool useMipMap);
+	Texture(const std::string filePath);
+	Texture(const std::string filePath, const Filter filter, const bool useMipMap);
 
 	~Texture();
-	unsigned int GetTextureId();
+	unsigned int GetTextureId() const;
 	void UpdateTextureFilter();
-	void SetFilter(Filter filter);
-	int GetWidth();
-	int GetHeight();
+	void SetFilter(const Filter filter);
+	int GetWidth() const;
+	int GetHeight() const;
 
 private:
 	Filter filter = Bilinear;
 	bool useMipMap = true;
-	void CreateTextutre(std::string filePath, Filter filter, bool useMipMap);
-	void LoadTexture(std::string filePath);
+	void CreateTextutre(const std::string filePath, const Filter filter, const bool useMipMap);
+	void LoadTexture(const std::string filePath);
 	unsigned int textureId;
 	int width = 0, height = 0, nrChannels = 0;
 };

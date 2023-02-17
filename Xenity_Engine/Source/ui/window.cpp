@@ -66,7 +66,7 @@ int Window::InitWindow()
 /// </summary>
 /// <param name="newWidth"></param>
 /// <param name="newHeight"></param>
-void Window::OnResize(int newWidth, int newHeight)
+void Window::OnResize(const int newWidth, const int newHeight)
 {
 	glViewport(0, 0, newWidth, newHeight);
 	width = newWidth;
@@ -94,7 +94,7 @@ void Window::SetTitle(const std::string title)
 /// Set window width value (Do not change UI size)
 /// </summary>
 /// <param name="width_"></param>
-void Window::SetWidth(int width_)
+void Window::SetWidth(const int width_)
 {
 	width = width_;
 }
@@ -103,7 +103,7 @@ void Window::SetWidth(int width_)
 /// Set window height value (Do not change UI size)
 /// </summary>
 /// <param name="height_"></param>
-void Window::SetHeight(int height_)
+void Window::SetHeight(const int height_)
 {
 	height = height_;
 }

@@ -8,7 +8,7 @@ SpriteRenderer::SpriteRenderer()
 {
 }
 
-SpriteRenderer::SpriteRenderer(Texture* texture, Shader* shader)
+SpriteRenderer::SpriteRenderer(const Texture* texture, Shader* shader)
 {
 	this->texture = texture;
 	this->shader = shader;

@@ -18,7 +18,7 @@ unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
 /// <param name="h">Sprite's heigh</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(Transform transform, float w, float h, Texture* texture, Shader* s) {
+void SpriteManager::RenderSprite(Transform transform, float w, float h, const Texture* texture, Shader* s) {
 	SpriteManager::RenderSprite(transform.GetPosition(),
 		w,
 		h,
@@ -37,7 +37,7 @@ void SpriteManager::RenderSprite(Transform transform, float w, float h, Texture*
 /// <param name="rotation">Sprite's rotation</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, Texture* texture, Shader* s) {
+void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, const Texture* texture, Shader* s) {
 	SpriteManager::RenderSprite(position.x,
 								position.y,
 								position.z,
@@ -66,7 +66,7 @@ void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 sca
 /// <param name="zAngle">Z angle</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, Texture* texture, Shader* s)
+void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, const Texture* texture, Shader* s)
 {
 	if (texture == nullptr || s == nullptr)
 		return;

@@ -45,12 +45,12 @@ public:
 		}
 	}
 
-	static GameObject* FindGameObjectByName(std::string name);
-	static std::vector<GameObject*> FindGameObjectsByName(std::string name);
+	static GameObject* FindGameObjectByName(const std::string name);
+	static std::vector<GameObject*> FindGameObjectsByName(const std::string name);
 	
-	bool GetActive();
-	bool GetLocalActive();
-	void SetActive(bool active);
+	bool GetActive() const;
+	bool GetLocalActive() const;
+	void SetActive(const bool active);
 private:
 	void UpdateActive(GameObject * changed);
 	bool active = true;

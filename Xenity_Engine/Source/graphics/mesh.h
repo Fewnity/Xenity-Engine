@@ -11,7 +11,7 @@ public:
 	MeshData() {
 
 	}
-	MeshData(std::string path) 
+	MeshData(const std::string path)
 	{
 		filePath = path;
 	}
@@ -34,15 +34,15 @@ class Mesh : public Component, public IDrawable
 public:
 	Mesh();
 	Mesh(MeshData* meshData);
-	Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount);
+	Mesh(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
 	Mesh(const std::string meshpath);
 	~Mesh();
 
 	Material* material = nullptr;
 
 	void LoadFromFile(const std::string meshpath);
-	void LoadMesh(float vertices[], unsigned int indices[]);
-	void CreateBuffers(bool addUv, bool addNormals);
+	void LoadMesh(const float vertices[], const unsigned int indices[]);
+	void CreateBuffers(const bool addUv, const bool addNormals);
 
 private:
 	void Draw();

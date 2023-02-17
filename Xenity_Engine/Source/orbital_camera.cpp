@@ -13,7 +13,7 @@ void OrbitalCamera::Update()
 	//cameraNewPosition += Vector3(1)* gameObject->transform.GetForward() * EngineSettings::deltaTime;
 	//gameObject->transform.SetPosition(cameraNewPosition);
 
-	gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4);
+	//gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4);
 
 
 	//gameObject->transform.SetPosition

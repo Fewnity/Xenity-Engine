@@ -17,8 +17,9 @@ public:
 class Spline
 {
 public:
-    std::vector<SplinePoint*> splinePoints;
-    Vector3 GetValueAt(float t);
-    SplinePoint* CreateSplinePoint(Vector3 position);
+    SplinePoint* CreateSplinePoint(const Vector3 position);
     void AddSplinePoint(SplinePoint* point);
+    Vector3 GetValueAt(const float t) const;
+
+    std::vector<SplinePoint*> splinePoints;
 };

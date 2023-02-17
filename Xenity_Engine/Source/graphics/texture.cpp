@@ -9,12 +9,12 @@
 #include <iostream>
 #include "../debug.h"
 
-Texture::Texture(std::string filePath) 
+Texture::Texture(const std::string filePath)
 {
 	CreateTextutre(filePath, Bilinear, true);
 }
 
-Texture::Texture(std::string filePath, Filter filter, bool useMipMap)
+Texture::Texture(const std::string filePath, const Filter filter, const bool useMipMap)
 {
 	CreateTextutre(filePath, filter, useMipMap);
 }
@@ -25,7 +25,7 @@ Texture::Texture(std::string filePath, Filter filter, bool useMipMap)
 /// <param name="filePath">File path</param>
 /// <param name="filter">Filter to use</param>
 /// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTextutre(std::string filePath, Filter filter, bool useMipMap)
+void Texture::CreateTextutre(const std::string filePath, const Filter filter, const bool useMipMap)
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
@@ -45,18 +45,18 @@ Texture::~Texture()
 /// Set texture's filter
 /// </summary>
 /// <param name="filter"></param>
-void Texture::SetFilter(Filter filter)
+void Texture::SetFilter(const Filter filter)
 {
 	this->filter = filter;
 	UpdateTextureFilter();
 }
 
-int Texture::GetWidth()
+int Texture::GetWidth() const
 {
 	return width;
 }
 
-int Texture::GetHeight()
+int Texture::GetHeight() const
 {
 	return height;
 }
@@ -65,7 +65,7 @@ int Texture::GetHeight()
 /// Load texture from a filepath
 /// </summary>
 /// <param name="filePath"></param>
-void Texture::LoadTexture(std::string filePath) {
+void Texture::LoadTexture(const std::string filePath) {
 	Debug::Print("Loading texture...");
 
 	unsigned char* data = File::LoadTextureData(filePath, this->width, this->height, this->nrChannels);
@@ -159,7 +159,7 @@ void Texture::UpdateTextureFilter()
 /// Get texture id
 /// </summary>
 /// <returns></returns>
-unsigned int Texture::GetTextureId()
+unsigned int Texture::GetTextureId() const
 {
 	return textureId;
 }

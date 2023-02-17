@@ -12,7 +12,7 @@ class Shader
 {
 public:
 	Shader() = delete;
-	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
+	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath);
 	~Shader();
 
 	unsigned int GetProgramId();
@@ -21,23 +21,23 @@ public:
 	void SetShaderCameraPosition2D();
 	void SetShaderProjection3D();
 	void SetShaderProjection2D();
-	void SetShaderPosition(Vector3 position);
-	void SetShaderModel(glm::mat4 trans);
-	void SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale);
-	void SetShaderRotation(Vector3 eulerAngle);
-	void SetShaderScale(Vector3 scale);
-	void SetShaderAttribut(std::string attribut, Vector3 value);
-	void SetShaderAttribut(std::string attribut, Vector4 value);
-	void SetShaderAttribut(std::string attribut, float value);
-	void SetShaderAttribut(std::string attribut, int value);
+	void SetShaderPosition(const Vector3 position);
+	void SetShaderModel(const glm::mat4 trans);
+	void SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale);
+	void SetShaderRotation(const Vector3 eulerAngle);
+	void SetShaderScale(const Vector3 scale);
+	void SetShaderAttribut(const std::string attribut, const Vector3 value);
+	void SetShaderAttribut(const std::string attribut, const Vector4 value);
+	void SetShaderAttribut(const std::string attribut, const float value);
+	void SetShaderAttribut(const std::string attribut, const int value);
 
 	void UpdateLights();
 
 private:
-	void LoadShader(std::string vertexPath, std::string fragmentPath);
-	void SetPointLightData(Light* light, int index);
-	void SetDirectionalLightData(Light* light, int index);
-	void SetSpotLightData(Light* light, int index);
+	void LoadShader(const std::string vertexPath, const std::string fragmentPath);
+	void SetPointLightData(const Light* light, const int index);
+	void SetDirectionalLightData(const Light* light, const int index);
+	void SetSpotLightData(const Light* light, const int index);
 
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;

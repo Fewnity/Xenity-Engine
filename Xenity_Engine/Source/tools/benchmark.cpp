@@ -27,7 +27,7 @@ void Benchmark::Stop()
 /// Get how many microseconds passed during the benchmark
 /// </summary>
 /// <returns>Microseconds</returns>
-int Benchmark::GetMicroSeconds()
+int Benchmark::GetMicroSeconds() const
 {
 	return time;
 }
@@ -36,7 +36,7 @@ int Benchmark::GetMicroSeconds()
 /// Get how many milliseconds passed during the benchmark
 /// </summary>
 /// <returns>Milliseconds</returns>
-int Benchmark::GetMilliseconds()
+int Benchmark::GetMilliseconds() const
 {
 	return time / 1000.0f;
 }
@@ -45,8 +45,8 @@ int Benchmark::GetMilliseconds()
 /// Get how many seconds passed during the benchmark
 /// </summary>
 /// <returns>Seconds</returns>
-float Benchmark::GetSeconds() {
-
+float Benchmark::GetSeconds() const
+{
 	return time / 1000000.0f;
 }
 

@@ -4,7 +4,7 @@
 #include "../gameobject.h"
 #include <iostream>
 
-Vector3 Spline::GetValueAt(float t)
+Vector3 Spline::GetValueAt(const float t) const
 {
     int curveCount = splinePoints.size() - 1;
     int currentCurve = floorf(t * curveCount);
@@ -34,7 +34,7 @@ Vector3 Spline::GetValueAt(float t)
 	return result;
 }
 
-SplinePoint* Spline::CreateSplinePoint(Vector3 position)
+SplinePoint* Spline::CreateSplinePoint(const Vector3 position)
 {
     SplinePoint* point = new SplinePoint();
 

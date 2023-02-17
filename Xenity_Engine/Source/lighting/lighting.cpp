@@ -2,7 +2,7 @@
 
 #include <corecrt_math.h>
 
-void Light::SetupPointLight(Vector3 color, float intensity, float range)
+void Light::SetupPointLight(const Vector3 color, const float intensity, const float range)
 {
 	type = Light::Point;
 
@@ -11,7 +11,7 @@ void Light::SetupPointLight(Vector3 color, float intensity, float range)
 	SetRange(range);
 }
 
-void Light::SetupDirectionalLight(Vector3 color, float intensity)
+void Light::SetupDirectionalLight(const Vector3 color, const float intensity)
 {
 	type = Light::Directional;
 
@@ -19,12 +19,12 @@ void Light::SetupDirectionalLight(Vector3 color, float intensity)
 	this->intensity = intensity;
 }
 
-void Light::SetupSpotLight(Vector3 color, float intensity, float range, float angle)
+void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle)
 {
 	SetupSpotLight(color, intensity, range, angle, spotSmoothness);
 }
 
-void Light::SetupSpotLight(Vector3 color, float intensity, float range, float angle, float smoothness)
+void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle, const float smoothness)
 {
 	type = Light::Spot;
 
@@ -48,7 +48,7 @@ void Light::UpdateLightValues()
 /// Get light range
 /// </summary>
 /// <returns></returns>
-float Light::GetRange()
+float Light::GetRange() const
 {
 	return range;
 }
@@ -85,7 +85,7 @@ void Light::SetSpotSmoothness(float smoothness)
 /// Get spot light angle [0;179]
 /// </summary>
 /// <returns></returns>
-float Light::GetSpotAngle()
+float Light::GetSpotAngle() const
 {
 	return spotAngle;
 }
@@ -94,7 +94,7 @@ float Light::GetSpotAngle()
 /// Get spot light smoothness
 /// </summary>
 /// <returns></returns>
-float Light::GetSpotSmoothness()
+float Light::GetSpotSmoothness() const
 {
 	return spotSmoothness;
 }

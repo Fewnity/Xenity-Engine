@@ -7,9 +7,9 @@ class Benchmark
 public:
 	void Start();
 	void Stop();
-	int GetMicroSeconds();
-	int GetMilliseconds();
-	float GetSeconds();
+	int GetMicroSeconds() const;
+	int GetMilliseconds() const;
+	float GetSeconds() const;
 	void Reset();
 
 private:

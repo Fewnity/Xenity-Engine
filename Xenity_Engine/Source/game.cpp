@@ -300,7 +300,7 @@ void Game::Loop()
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
-	/*if (InputSystem::GetKey(Z))
+	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
 		vect *= EngineSettings::deltaTime * 2;
@@ -314,18 +314,16 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(D)) {
 
-		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
 		vect *= EngineSettings::deltaTime * 2;
-		newCameraPosition.x += vect.x;
-		newCameraPosition.z += vect.z;
+		newCameraPosition -= vect;
 	}
 	if (InputSystem::GetKey(Q)) {
 
-		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate2();
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
 		vect *= EngineSettings::deltaTime * 2;
-		newCameraPosition.x -= vect.x;
-		newCameraPosition.z -= vect.z;
-	}*/
+		newCameraPosition += vect;
+	}
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
@@ -386,7 +384,7 @@ void Game::Loop()
 		}
 	}
 
-	cubeGameObject->transform.SetRotation(mesh4NewRotation);
+	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
 	cubeGameObject->transform.SetPosition(cubeNewPosition);
 
 	//Vector3 cameraNewPosition = camera->gameObject->transform.GetPosition();

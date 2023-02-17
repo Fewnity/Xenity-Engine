@@ -15,7 +15,6 @@ public:
 	TextRenderer(Font* font, float size, Shader* shader);
 	~TextRenderer();
 
-
 	std::string text;
 	float size = 16;
 	Font* font = nullptr;

@@ -8,9 +8,8 @@ class Camera : public Component
 public:
 	Camera();
 	~Camera();
-	Vector3 GetSphericalCoordinate2();
-	void SetFov(double fov);
-	double GetFov();
+	void SetFov(const double fov);
+	double GetFov() const;
 private:
 	double fov = 60;
 };

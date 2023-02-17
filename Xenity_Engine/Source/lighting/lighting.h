@@ -33,20 +33,20 @@ public:
 	float linear = 0;
 	float quadratic = 0;
 
-	void SetupPointLight(Vector3 color, float intensity, float range);
-	void SetupDirectionalLight(Vector3 color, float intensity);
-	void SetupSpotLight(Vector3 color, float intensity, float range, float angle);
-	void SetupSpotLight(Vector3 color, float intensity, float range, float angle, float smoothness);
+	void SetupPointLight(const Vector3 color, float intensity, const float range);
+	void SetupDirectionalLight(const Vector3 color, const float intensity);
+	void SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle);
+	void SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle, const float smoothness);
 
 	void UpdateLightValues();
 	void SetRange(float value);
-	float GetRange();
+	float GetRange() const;
 
 
 	void SetSpotAngle(float angle);
 	void SetSpotSmoothness(float smoothness);
-	float GetSpotAngle();
-	float GetSpotSmoothness();
+	float GetSpotAngle() const;
+	float GetSpotSmoothness() const;
 
 private:
 	//Spot and point light

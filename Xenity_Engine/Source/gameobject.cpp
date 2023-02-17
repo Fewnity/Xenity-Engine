@@ -85,7 +85,7 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 /// </summary>
 /// <param name="name">GameObjects's name</param>
 /// <returns></returns>
-std::vector<GameObject*> GameObject::FindGameObjectsByName(std::string name)
+std::vector<GameObject*> GameObject::FindGameObjectsByName(const std::string name)
 {
 	std::vector<GameObject*> foundGameObjects;
 
@@ -107,7 +107,7 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(std::string name)
 /// </summary>
 /// <param name="name">GameObject's name</param>
 /// <returns>GameObject pointer or nullptr if no one is found</returns>
-GameObject* GameObject::FindGameObjectByName(std::string name)
+GameObject* GameObject::FindGameObjectByName(const std::string name)
 {
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
 	int gameObjectCount = gameObjects.size();
@@ -120,17 +120,17 @@ GameObject* GameObject::FindGameObjectByName(std::string name)
 	return nullptr;
 }
 
-bool GameObject::GetActive()
+bool GameObject::GetActive() const
 {
 	return active;
 }
 
-bool GameObject::GetLocalActive()
+bool GameObject::GetLocalActive() const
 {
 	return localActive;
 }
 
-void GameObject::SetActive(bool active)
+void GameObject::SetActive(const bool active)
 {
 	if (active != this->active)
 	{

@@ -37,7 +37,7 @@ void InputSystem::ClearInputs()
 /// Get inputs events
 /// </summary>
 /// <param name="event"></param>
-void InputSystem::UpdateInputs(SDL_Event event) 
+void InputSystem::UpdateInputs(const SDL_Event event)
 {
 	switch (event.type)
 	{
@@ -81,7 +81,7 @@ void InputSystem::UpdateInputs(SDL_Event event)
 std::map<int, int> keyMap; //TODO : To use later
 //To use like that : SetInput(pressed, keyMap.at(keyCode));
 
-void  InputSystem::InuptUpdate(bool pressed, int keyCode) 
+void  InputSystem::InuptUpdate(const bool pressed, const int keyCode)
 {
 	switch (keyCode) {
 	case SDLK_LEFT:
@@ -186,7 +186,7 @@ void  InputSystem::InuptUpdate(bool pressed, int keyCode)
 /// </summary>
 /// <param name="pressed"></param>
 /// <param name="keyCode"></param>
-void InputSystem::SetInput(bool pressed, int keyCode) 
+void InputSystem::SetInput(const bool pressed, const int keyCode)
 {
 	if (pressed)
 		SetInputPressed(keyCode);
@@ -198,7 +198,7 @@ void InputSystem::SetInput(bool pressed, int keyCode)
 /// Set an input as pressed
 /// </summary>
 /// <param name="keyCode"></param>
-void InputSystem::SetInputPressed(int keyCode) 
+void InputSystem::SetInputPressed(const int keyCode)
 {
 	if (!inputs[keyCode].held) {
 		inputs[keyCode].pressed = true;
@@ -210,7 +210,7 @@ void InputSystem::SetInputPressed(int keyCode)
 /// Set an input as released
 /// </summary>
 /// <param name="keyCode"></param>
-void InputSystem::SetInputReleased(int keyCode) 
+void InputSystem::SetInputReleased(const int keyCode)
 {
 	inputs[keyCode].released = true;
 	inputs[keyCode].held = false;
@@ -220,7 +220,7 @@ void InputSystem::SetInputReleased(int keyCode)
 /// Set an input states to false
 /// </summary>
 /// <param name="keyCode"></param>
-void InputSystem::SetInputInactive(int keyCode) 
+void InputSystem::SetInputInactive(const int keyCode)
 {
 	inputs[keyCode].pressed = false;
 	inputs[keyCode].released = false;
@@ -231,7 +231,7 @@ void InputSystem::SetInputInactive(int keyCode)
 /// </summary>
 /// <param name="keyCode"></param>
 /// <returns></returns>
-bool InputSystem::GetKeyDown(KeyCode keyCode) 
+bool InputSystem::GetKeyDown(const KeyCode keyCode)
 {
 	return inputs[keyCode].pressed;
 }
@@ -241,7 +241,7 @@ bool InputSystem::GetKeyDown(KeyCode keyCode)
 /// </summary>
 /// <param name="keyCode"></param>
 /// <returns></returns>
-bool InputSystem::GetKey(KeyCode keyCode) 
+bool InputSystem::GetKey(const KeyCode keyCode)
 {
 	return inputs[keyCode].held;
 }
@@ -251,7 +251,7 @@ bool InputSystem::GetKey(KeyCode keyCode)
 /// </summary>
 /// <param name="keyCode"></param>
 /// <returns></returns>
-bool InputSystem::GetKeyUp(KeyCode keyCode) 
+bool InputSystem::GetKeyUp(const KeyCode keyCode)
 {
 	return inputs[keyCode].released;
 }

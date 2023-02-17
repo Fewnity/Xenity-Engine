@@ -116,9 +116,10 @@ void Engine::Loop()
 		glPolygonMode(GL_FRONT, GL_FILL);
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
-		debugText += std::string(", fps: ") + std::to_string((int)(1 / EngineSettings::deltaTime));
+		//debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
+		//debugText += std::string(", fps: ") + std::to_string((int)(1 / EngineSettings::deltaTime));
 		//debugText += std::string(" ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().z);
+		debugText += std::string("FORWARD ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().z);
 		UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 24, 90, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 		Window::UpdateScreen();
 	}

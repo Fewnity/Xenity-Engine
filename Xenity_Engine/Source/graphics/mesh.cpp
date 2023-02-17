@@ -39,7 +39,7 @@ Mesh::Mesh(MeshData* meshData)
 /// <param name="indices"></param>
 /// <param name="verticesCount"></param>
 /// <param name="indicesCount"></param>
-Mesh::Mesh(float vertices[], unsigned int indices[], int verticesCount, int indicesCount) : Component()
+Mesh::Mesh(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount) : Component()
 {
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
@@ -88,7 +88,7 @@ Mesh::~Mesh()
 /// </summary>
 /// <param name="addUv"></param>
 /// <param name="addNormals"></param>
-void Mesh::CreateBuffers(bool addUv, bool addNormals)
+void Mesh::CreateBuffers(const bool addUv, const bool addNormals)
 {
 	glGenVertexArrays(1, &vertexArrayBuffer); //Create a buffer ID for the vertex array buffer
 	glGenBuffers(1, &vertexBuffer);//Create a buffer ID for the vertex buffer
@@ -158,7 +158,7 @@ void Mesh::Draw()
 /// </summary>
 /// <param name="vertices"></param>
 /// <param name="indices"></param>
-void Mesh::LoadMesh(float vertices[], unsigned int indices[]) {
+void Mesh::LoadMesh(const float vertices[], const unsigned int indices[]) {
 	//Fill vertices
 	for (int i = 0; i < meshData->verticesCount; i++)
 	{

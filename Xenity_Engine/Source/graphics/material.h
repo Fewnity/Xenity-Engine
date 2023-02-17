@@ -19,12 +19,12 @@ public:
 	void Update();
 
 	Shader* shader = nullptr;
-	void SetAttribut(std::string attribut, Vector2 value);
-	void SetAttribut(std::string attribut, Vector3 value);
-	void SetAttribut(std::string attribut, Vector4 value);
-	void SetAttribut(std::string attribut, Texture* value);
-	void SetAttribut(std::string attribut, float value);
-	void SetAttribut(std::string attribut, int value);
+	void SetAttribut(const std::string attribut, const Vector2 value);
+	void SetAttribut(const std::string attribut, const Vector3 value);
+	void SetAttribut(const std::string attribut, const Vector4 value);
+	void SetAttribut(const std::string attribut, Texture* value);
+	void SetAttribut(const std::string attribut, const float value);
+	void SetAttribut(const std::string attribut, const int value);
 	bool updated = false;
 
 private:

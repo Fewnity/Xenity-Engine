@@ -19,6 +19,7 @@ int AssetManager::materialCount = 0;
 int AssetManager::textureCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
+int AssetManager::meshDataCount = 0;
 
 Material* AssetManager::default3DMaterial = nullptr;
 Material* AssetManager::default2DMaterial = nullptr;
@@ -101,6 +102,16 @@ void AssetManager::AddLight(Light* light)
 {
 	lights.push_back(light);
 	lightCount++;
+}
+
+/// <summary>
+/// Add a mesh data in the mesh data list
+/// </summary>
+/// <param name="meshData"></param>
+void AssetManager::AddMeshData(MeshData* meshData)
+{
+	meshesData.push_back(meshData);
+	meshDataCount++;
 }
 
 /// <summary>
@@ -229,29 +240,57 @@ void AssetManager::RemoveLight(Light* light)
 	}
 }
 
-Shader* AssetManager::GetShader(int index)
+void AssetManager::RemoveMeshData(MeshData* meshData)
+{
+	int meshDataCount = meshesData.size();
+	int meshDataIndex = 0;
+	bool found = false;
+	for (int i = 0; i < meshDataCount; i++)
+	{
+		if (meshesData[i] == meshData)
+		{
+			found = true;
+			meshDataIndex = i;
+			break;
+		}
+	}
+
+	if (found)
+	{
+		meshesData.erase(meshesData.begin() + meshDataIndex);
+		meshDataCount--;
+	}
+}
+
+Shader* AssetManager::GetShader(const int index)
 {
 	return shaders[index];
 }
 
-Material* AssetManager::GetMaterial(int index) 
+
+Material* AssetManager::GetMaterial(const int index)
 {
 	return materials[index];
 }
 
-Texture* AssetManager::GetTexture(int index) 
+Texture* AssetManager::GetTexture(const int index)
 {
 	return textures[index];
 }
 
-IDrawable* AssetManager::GetDrawable(int index) 
+IDrawable* AssetManager::GetDrawable(const int index)
 {
 	return drawables[index];
 }
 
-Light* AssetManager::GetLight(int index)
+Light* AssetManager::GetLight(const int index)
 {
 	return lights[index];
+}
+
+MeshData* AssetManager::GetMeshData(const int index)
+{
+	return meshesData[index];
 }
 
 /// <summary>
@@ -281,4 +320,9 @@ int AssetManager::GetDrawableCount()
 int AssetManager::GetLightCount()
 {
 	return lightCount;
+}
+
+int AssetManager::GetMeshDataCount()
+{
+	return meshDataCount;
 }

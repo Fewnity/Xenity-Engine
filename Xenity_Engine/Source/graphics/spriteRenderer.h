@@ -10,11 +10,11 @@ class SpriteRenderer : public Component, public IDrawable
 {
 	public:
 		SpriteRenderer();
-		SpriteRenderer(Texture* texture, Shader* shader);
+		SpriteRenderer(const Texture* texture, Shader* shader);
 		~SpriteRenderer();
 
 
-		Texture* texture = nullptr;
+		const Texture* texture = nullptr;
 		Shader* shader = nullptr;
 
 	private:

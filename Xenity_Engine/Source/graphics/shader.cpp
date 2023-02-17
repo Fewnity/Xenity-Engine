@@ -12,7 +12,7 @@
 /// </summary>
 /// <param name="vertexShaderPath">Vertex shader file path</param>
 /// <param name="fragmentShaderPath">Fragment shader file path</param>
-Shader::Shader(std::string vertexShaderPath, std::string fragmentShaderPath)
+Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath)
 {
 	LoadShader(vertexShaderPath, fragmentShaderPath);
 	AssetManager::AddShader(this);
@@ -39,7 +39,7 @@ GLuint Shader::GetProgramId()
 /// </summary>
 /// <param name="vertexPath"></param>
 /// <param name="fragmentPath"></param>
-void Shader::LoadShader(std::string vertexPath, std::string fragmentPath) {
+void Shader::LoadShader(const std::string vertexPath, const std::string fragmentPath) {
 
 	Debug::Print("Compiling shader...");
 
@@ -148,7 +148,7 @@ void Shader::SetShaderProjection2D() {
 	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
-void Shader::SetShaderPosition(Vector3 position) {
+void Shader::SetShaderPosition(const Vector3 position) {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
@@ -159,7 +159,7 @@ void Shader::SetShaderPosition(Vector3 position) {
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(glm::mat4 trans) 
+void Shader::SetShaderModel(const glm::mat4 trans)
 {
 	Use();
 	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
@@ -169,7 +169,7 @@ void Shader::SetShaderModel(glm::mat4 trans)
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale) {
+void Shader::SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale) {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
@@ -189,7 +189,7 @@ void Shader::SetShaderModel(Vector3 position, Vector3 eulerAngle, Vector3 scale)
 	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
 }
 
-void Shader::SetShaderRotation(Vector3 eulerAngle) {
+void Shader::SetShaderRotation(const Vector3 eulerAngle) {
 	Use();
 	//Rotation
 	glm::quat MyQuaternion;
@@ -211,7 +211,7 @@ void Shader::SetShaderRotation(Vector3 eulerAngle) {
 	glUniformMatrix4fv(location, 1, false, glm::value_ptr(rotation));
 }
 
-void Shader::SetShaderScale(Vector3 scale) {
+void Shader::SetShaderScale(const Vector3 scale) {
 	Use();
 	glm::mat3 scaleMat = glm::mat3(glm::vec3(scale.x, 0.0, 0.0),
 		glm::vec3(0.0, scale.y, 0.0),
@@ -220,22 +220,22 @@ void Shader::SetShaderScale(Vector3 scale) {
 	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
 }
 
-void Shader::SetShaderAttribut(std::string attribut, Vector4 value) {
+void Shader::SetShaderAttribut(const std::string attribut, const Vector4 value) {
 	Use();
 	glUniform4f(glGetUniformLocation(programId, attribut.c_str()), value.x, value.y, value.z, value.w);
 }
 
-void Shader::SetShaderAttribut(std::string attribut, Vector3 value) {
+void Shader::SetShaderAttribut(const std::string attribut, const Vector3 value) {
 	Use();
 	glUniform3f(glGetUniformLocation(programId, attribut.c_str()), value.x, value.y, value.z);
 }
 
-void Shader::SetShaderAttribut(std::string attribut, float value) {
+void Shader::SetShaderAttribut(const std::string attribut, const float value) {
 	Use();
 	glUniform1f(glGetUniformLocation(programId, attribut.c_str()), value);
 }
 
-void Shader::SetShaderAttribut(std::string attribut, int value) {
+void Shader::SetShaderAttribut(const std::string attribut, const int value) {
 	Use();
 	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), value);
 }
@@ -245,7 +245,7 @@ void Shader::SetShaderAttribut(std::string attribut, int value) {
 /// </summary>
 /// <param name="light">Point light</param>
 /// <param name="index">Shader's point light index</param>
-void Shader::SetPointLightData(Light* light, int index) 
+void Shader::SetPointLightData(const Light* light, const int index)
 {
 	std::string baseString = "pointLights[" + std::to_string(index) + "].";
 	SetShaderAttribut(baseString + "color", light->color * light->intensity);
@@ -260,7 +260,7 @@ void Shader::SetPointLightData(Light* light, int index)
 /// </summary>
 /// <param name="light">Directional light</param>
 /// <param name="index">Shader's directional light index</param>
-void Shader::SetDirectionalLightData(Light* light, int index)
+void Shader::SetDirectionalLightData(const Light* light, const int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 	SetShaderAttribut(baseString + "color", light->color);
@@ -272,7 +272,7 @@ void Shader::SetDirectionalLightData(Light* light, int index)
 /// </summary>
 /// <param name="light">Spot light</param>
 /// <param name="index">Shader's spot light index</param>
-void Shader::SetSpotLightData(Light* light, int index)
+void Shader::SetSpotLightData(const Light* light, const int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	SetShaderAttribut(baseString + "color", light->intensity * light->color);
