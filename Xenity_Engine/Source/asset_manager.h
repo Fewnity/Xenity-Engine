@@ -6,6 +6,7 @@ class Texture;
 class IDrawable;
 class Light;
 class Material;
+class MeshData;
 
 class AssetManager
 {

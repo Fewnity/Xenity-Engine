@@ -8,6 +8,9 @@ class Material;
 
 class MeshData {
 public:
+	MeshData() {
+
+	}
 	MeshData(std::string path) 
 	{
 		filePath = path;
@@ -49,5 +52,6 @@ private:
 	unsigned int vertexArrayBuffer = 0;
 	unsigned int vertexBuffer = 0;
 	unsigned int indiceBuffer = 0;
+	//MeshData* meshData = nullptr;
 	MeshData* meshData = new MeshData();
 };

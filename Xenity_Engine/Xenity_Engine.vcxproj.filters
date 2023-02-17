@@ -40,6 +40,7 @@
     <ClCompile Include="Source\tools\curve.cpp" />
     <ClCompile Include="Source\tools\shape_spawner.cpp" />
     <ClCompile Include="Source\tools\benchmark.cpp" />
+    <ClCompile Include="Source\orbital_camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -80,6 +81,7 @@
     <ClInclude Include="Source\tools\curve.h" />
     <ClInclude Include="Source\tools\shape_spawner.h" />
     <ClInclude Include="Source\tools\benchmark.h" />
+    <ClInclude Include="Source\orbital_camera.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -86,9 +86,9 @@ void Shader::SetShaderCameraPosition() {
 	//Camera position
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
-		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		Vector3 lookDirection = Graphics::usedCamera->gameObject->transform.GetForward();
 
-		vect = vect + Graphics::usedCamera->gameObject->transform.GetPosition();
+		lookDirection = lookDirection + Graphics::usedCamera->gameObject->transform.GetPosition();
 
 		float xAngle = Graphics::usedCamera->gameObject->transform.GetRotation().x;
 		while (xAngle < -90)
@@ -102,9 +102,9 @@ void Shader::SetShaderCameraPosition() {
 
 		glm::mat4 camera;
 		if (xAngle > 90 || xAngle < -90)
-			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, -1, 0));
+			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
 		else
-			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(vect.x, vect.y, vect.z), glm::vec3(0, 1, 0));
+			camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
 
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}

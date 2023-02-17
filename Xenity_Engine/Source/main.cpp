@@ -30,6 +30,10 @@ using namespace std;
  * Check mesh/shader destructor
  * Add scale usage in local position calculation
  * Add local scale usage
+ * Ray to sphere : 
+ * https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection.html
+ * Ray to box : 
+ * https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
  */
 
 static void error_callback(int error, const char* description)
@@ -46,7 +50,7 @@ int main(void)
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-
+	printf("Salut%d", 1);
 	Debug::Print("Initiating game...");
 	Game::Init();
 	Debug::Print("---- Game initiated ----");

@@ -19,6 +19,8 @@ public:
 	Vector3 GetScale();
 	Vector3 GetLocalScale();
 
+	Vector3 GetForward();
+
 	void SetPosition(Vector3 value);
 	void SetLocalPosition(Vector3 value);
 	void SetRotation(Vector3 value);//Euler angle

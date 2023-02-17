@@ -3,6 +3,8 @@
 #include <iostream	>
 #include "tools/math.h"
 #include <glm/ext/matrix_transform.hpp>
+#include <SDL2/SDL_stdinc.h>
+#include "tools/math.h"
 
 Transform::Transform(GameObject* gameObject)
 {
@@ -39,6 +41,12 @@ Vector3 Transform::GetScale()
 Vector3 Transform::GetLocalScale()
 {
 	return localScale;
+}
+
+Vector3 Transform::GetForward()
+{
+	Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
+	return direction;
 }
 
 void Transform::OnParentChanged() 

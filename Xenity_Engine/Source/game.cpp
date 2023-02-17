@@ -22,11 +22,14 @@
 #include "tools/shape_spawner.h"
 #include "tools/curve.h"
 #include "tools/benchmark.h"
+#include "orbital_camera.h"
 
 using namespace std::chrono;
 
 GameObject* cameraGameObject = new GameObject();
+
 Camera* camera = new Camera();
+OrbitalCamera* orbitalCamera = new OrbitalCamera();
 
 GameObject* cubeGameObject = new GameObject("Cube0");
 GameObject* coneGameobject = new GameObject("Cone");
@@ -104,9 +107,14 @@ void Game::Init() {
 	newMat2->SetAttribut("material.shininess", 32.0f);
 	newMat2->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
-	cameraGameObject->AddExistingComponent(camera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
+	//cameraGameObject->AddExistingComponent(camera);
 
+	cameraGameObject->AddExistingComponent(camera);
+
+	cameraGameObject->AddExistingComponent(orbitalCamera);
+	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
+	orbitalCamera->target = &cubeGameObject->transform;
+	orbitalCamera->camera = camera;
 	/*time_point<high_resolution_clock> start_point, end_point;
 	start_point = high_resolution_clock::now();
 
@@ -292,15 +300,15 @@ void Game::Loop()
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
-	if (InputSystem::GetKey(Z))
+	/*if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
 		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition += vect;
 
 	}
 	if (InputSystem::GetKey(S)) {
-		Vector3 vect = Graphics::usedCamera->GetSphericalCoordinate();
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
 		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition -= vect;
 	}
@@ -317,7 +325,7 @@ void Game::Loop()
 		vect *= EngineSettings::deltaTime * 2;
 		newCameraPosition.x -= vect.x;
 		newCameraPosition.z -= vect.z;
-	}
+	}*/
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
@@ -339,6 +347,7 @@ void Game::Loop()
 
 	//Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	Vector3 mesh4NewRotation = cubeGameObject->transform.GetRotation();
+	Vector3 cubeNewPosition = cubeGameObject->transform.GetPosition();
 	if (InputSystem::GetKey(RIGHT)) {
 		mesh4NewRotation.y -= EngineSettings::deltaTime * 25;
 	}
@@ -346,10 +355,12 @@ void Game::Loop()
 		mesh4NewRotation.y += EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(UP)) {
-		mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
+		cubeNewPosition.z -= EngineSettings::deltaTime * 5;
+		//mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(DOWN)) {
-		mesh4NewRotation.x += EngineSettings::deltaTime * 25;
+		cubeNewPosition.z += EngineSettings::deltaTime * 5;
+		//mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(P)) {
 		mesh4NewRotation.z -= EngineSettings::deltaTime * 25;
@@ -376,6 +387,11 @@ void Game::Loop()
 	}
 
 	cubeGameObject->transform.SetRotation(mesh4NewRotation);
+	cubeGameObject->transform.SetPosition(cubeNewPosition);
+
+	//Vector3 cameraNewPosition = camera->gameObject->transform.GetPosition();
+	//cameraNewPosition += Vector3(1)* camera->gameObject->transform.GetForward() * EngineSettings::deltaTime;
+	//camera->gameObject->transform.SetPosition(cameraNewPosition);
 
 	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
 	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
