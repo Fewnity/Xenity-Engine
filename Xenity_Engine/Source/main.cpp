@@ -24,7 +24,6 @@ using namespace std;
  * Update local position when updating position, rotation and scale
  * Update position when parent is set to nullptr
  * Clean code
- * Fix light rotation
  * 3D Sounds
  * Fix transparency order
  * Check mesh/shader destructor

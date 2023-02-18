@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 class Shader;
 class Texture;
@@ -34,6 +35,7 @@ public:
 	static IDrawable* GetDrawable(const int index);
 	static Light* GetLight(const int index);
 	static MeshData* GetMeshData(const int index);
+	static MeshData* GetMeshData(const std::string path);
 
 	static int GetShaderCount();
 	static int GetMaterialCount();

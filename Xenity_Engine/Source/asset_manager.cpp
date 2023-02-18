@@ -293,6 +293,18 @@ MeshData* AssetManager::GetMeshData(const int index)
 	return meshesData[index];
 }
 
+MeshData* AssetManager::GetMeshData(const std::string path)
+{
+	for (int i = 0; i < meshDataCount; i++)
+	{
+		if (meshesData[i]->filePath == path) 
+		{
+			return meshesData[i];
+		}
+	}
+	return nullptr;
+}
+
 /// <summary>
 /// Get sahder count
 /// </summary>

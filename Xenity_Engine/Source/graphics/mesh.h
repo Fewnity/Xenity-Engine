@@ -6,20 +6,13 @@
 class Shader;
 class Material;
 
-class MeshData {
+class MeshData 
+{
 public:
-	MeshData() {
+	MeshData();
+	MeshData(const std::string path);
+	~MeshData();
 
-	}
-	MeshData(const std::string path)
-	{
-		filePath = path;
-	}
-
-	~MeshData() {
-		free(vertices);
-		free(indices);
-	}
 	std::string filePath = "";
 	float* vertices = nullptr;
 	unsigned int* indices = nullptr;
@@ -48,10 +41,11 @@ private:
 	void Draw();
 	void Update();
 	void UpdateMaterial();
+	void LoadFromMeshData(MeshData* meshData);
 
 	unsigned int vertexArrayBuffer = 0;
 	unsigned int vertexBuffer = 0;
 	unsigned int indiceBuffer = 0;
-	//MeshData* meshData = nullptr;
-	MeshData* meshData = new MeshData();
+	MeshData* meshData = nullptr;
+	//MeshData* meshData = new MeshData();
 };

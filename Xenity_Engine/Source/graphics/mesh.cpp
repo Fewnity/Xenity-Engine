@@ -15,11 +15,31 @@
 
 using namespace std;
 
+MeshData::MeshData()
+{
+	filePath = "";
+	AssetManager::AddMeshData(this);
+}
+
+MeshData::MeshData(const std::string path)
+{
+	filePath = path;
+	AssetManager::AddMeshData(this);
+}
+
+MeshData::~MeshData()
+{
+	AssetManager::RemoveMeshData(this);
+	free(vertices);
+	free(indices);
+}
+
 /// <summary>
 /// Instantiate an empty mesh
 /// </summary>
 Mesh::Mesh() : Component()
 {
+	meshData = new MeshData();
 	meshData->verticesCount = 0;
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = 0;
@@ -29,7 +49,7 @@ Mesh::Mesh() : Component()
 
 Mesh::Mesh(MeshData* meshData)
 {
-	this->meshData = meshData;
+	LoadFromMeshData(meshData);
 }
 
 /// <summary>
@@ -41,6 +61,7 @@ Mesh::Mesh(MeshData* meshData)
 /// <param name="indicesCount"></param>
 Mesh::Mesh(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount) : Component()
 {
+	meshData = new MeshData();
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = indicesCount / sizeof(*indices);
@@ -64,7 +85,22 @@ Mesh::Mesh(const std::string meshpath) : Component()
 /// <param name="meshpath"></param>
 void Mesh::LoadFromFile(const std::string meshpath)
 {
-	WavefrontLoader::LoadMesh(meshData, meshpath);
+	MeshData* foundData = AssetManager::GetMeshData(meshpath);
+	if (foundData == nullptr) 
+	{
+		meshData = new MeshData(meshpath);
+		WavefrontLoader::LoadMesh(meshData, meshpath);
+		CreateBuffers(meshData->hasUv, meshData->hasNormal);
+	}
+	else 
+	{
+		LoadFromMeshData(foundData);
+	}
+}
+
+void Mesh::LoadFromMeshData(MeshData* meshData)
+{
+	this->meshData = meshData;
 	CreateBuffers(meshData->hasUv, meshData->hasNormal);
 }
 
@@ -175,7 +211,7 @@ void Mesh::LoadMesh(const float vertices[], const unsigned int indices[]) {
 /// <summary>
 /// Update mesh's material
 /// </summary>
-void Mesh::UpdateMaterial() 
+void Mesh::UpdateMaterial()
 {
 	if (material != nullptr && material->shader != nullptr)
 	{

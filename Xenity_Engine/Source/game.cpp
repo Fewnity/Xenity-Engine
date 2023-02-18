@@ -56,7 +56,8 @@ Spline* spline = new Spline();
 /// <summary>
 /// Init game
 /// </summary>
-void Game::Init() {
+void Game::Init() 
+{
 	//loadedScenes.push_back(new Scene());
 	//usedScene = loadedScenes[0];
 	//AudioClip audio1 = AudioClip("camera-13695.mp3");
@@ -93,7 +94,7 @@ void Game::Init() {
 
 	Material* newMat = new Material();
 	newMat->shader = shader3;
-	newMat->SetAttribut("color", Vector3(0,1,1));
+	newMat->SetAttribut("color", Vector3(0, 1, 1));
 	newMat->SetAttribut("material.diffuse", texture5);
 	newMat->SetAttribut("material.specular", texture6);
 	newMat->SetAttribut("material.shininess", 32.0f);
@@ -107,29 +108,13 @@ void Game::Init() {
 	newMat2->SetAttribut("material.shininess", 32.0f);
 	newMat2->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
-	//cameraGameObject->AddExistingComponent(camera);
-
 	cameraGameObject->AddExistingComponent(camera);
-
 	cameraGameObject->AddExistingComponent(orbitalCamera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
 	orbitalCamera->target = &cubeGameObject->transform;
 	orbitalCamera->camera = camera;
-	/*time_point<high_resolution_clock> start_point, end_point;
-	start_point = high_resolution_clock::now();
-
-	for (int i = 0; i < 10000; i++)
-	{
-	}
-
-	end_point = high_resolution_clock::now();
-	auto start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
-	auto end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
-	std::cout << "Time taken = " << (end - start) << " microseconds" << std::endl;*/
 
 	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
-
-	//GameObject * newShape = ShapeSpawner::SpawnSphere();
 
 	SplinePoint* splinePoint0 = spline->CreateSplinePoint(Vector3(0, 0, 0));
 	SplinePoint* splinePoint1 = spline->CreateSplinePoint(Vector3(1, 1, 0));
@@ -139,13 +124,8 @@ void Game::Init() {
 	spline->AddSplinePoint(splinePoint1);
 	spline->AddSplinePoint(splinePoint2);
 	spline->AddSplinePoint(splinePoint3);
-	
-	/*Benchmark myBench;
-	myBench.Start();
-	myBench.Stop();
-	std::cout << myBench.GetMicroSeconds() << "ms" << std::endl;*/
 
-	int splinePointCount = 20;
+	int splinePointCount = 1000;
 	for (int i = 0; i < splinePointCount; i++)
 	{
 		float t = i / (float)splinePointCount;
@@ -176,7 +156,7 @@ void Game::Init() {
 	GameObject* cubeChild2 = new GameObject("Cube2");
 	cubeChild2->transform.SetPosition(Vector3(6.5, 0, 0));
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
-	cubeChild2->transform.SetLocalScale(Vector3(1.5, 1.5, 1.5));
+	cubeChild2->transform.SetLocalScale(Vector3(1.5f, 1.5f, 1.5f));
 	cubeChild->AddChild(cubeChild2);
 	Mesh* mesh222 = static_cast<Mesh*>(cubeChild2->AddComponent<Mesh>());
 	mesh222->LoadFromFile("CubeTriangulate.obj");
@@ -205,14 +185,12 @@ void Game::Init() {
 	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
 
 	mesh->material = newMat;
-	//mesh->material = AssetManager::default3DMaterial;
 	mesh222->material = newMat;
 	mesh3->material = newMat;
 	mesh4->material = newMat2;
 	mesh5->material = newMat;
 
 	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
-	//gameObjectSprite->transform.SetRotation(Vector3(45, 45, 45));
 
 	SpriteRenderer* spr = new SpriteRenderer(texture7, shaderStandard2D);
 	gameObjectSprite->AddExistingComponent(spr);
@@ -231,16 +209,16 @@ void Game::Init() {
 	pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
 
 	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
-	spotLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
+	spotLightGameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
 	spotLightGameObject->AddExistingComponent(spotLight);
 	spotLight->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 0);
 
 	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
-	spotLight2GameObject->transform.SetRotation(Vector3(0.0f, -1.0f, 0.0f));
+	spotLight2GameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
 	spotLight2GameObject->AddExistingComponent(spotLight2);
 	spotLight2->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 1);
 
-	directionalLightGameObject->transform.SetRotation(Vector3(0.0f, -1.0f, -1.0f));
+	directionalLightGameObject->transform.SetRotation(Vector3(45.0f, 45.0f, 0.0f));
 	directionalLightGameObject->AddExistingComponent(directionalLight);
 	directionalLight->SetupDirectionalLight(Vector3(0.6f, 0.6f, 0.7f), 1);
 
@@ -327,7 +305,7 @@ void Game::Loop()
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
-	animation = SDL_GetTicks64() /500.0f;
+	animation = SDL_GetTicks() / 500.0f;
 	//animation = sin(animation) / 2.0f + 0.5f;
 
 	//cubeGameObject->transform.SetLocalScale(Vector3(1 + sin(animation)/2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
@@ -346,37 +324,45 @@ void Game::Loop()
 	//Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	Vector3 mesh4NewRotation = cubeGameObject->transform.GetRotation();
 	Vector3 cubeNewPosition = cubeGameObject->transform.GetPosition();
-	if (InputSystem::GetKey(RIGHT)) {
+	if (InputSystem::GetKey(RIGHT)) 
+	{
 		mesh4NewRotation.y -= EngineSettings::deltaTime * 25;
 	}
-	if (InputSystem::GetKey(LEFT)) {
+	if (InputSystem::GetKey(LEFT)) 
+	{
 		mesh4NewRotation.y += EngineSettings::deltaTime * 25;
 	}
-	if (InputSystem::GetKey(UP)) {
+	if (InputSystem::GetKey(UP)) 
+	{
 		cubeNewPosition.z -= EngineSettings::deltaTime * 5;
 		//mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
 	}
-	if (InputSystem::GetKey(DOWN)) {
+	if (InputSystem::GetKey(DOWN)) 
+	{
 		cubeNewPosition.z += EngineSettings::deltaTime * 5;
 		//mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
-	if (InputSystem::GetKey(P)) {
+	if (InputSystem::GetKey(P)) 
+	{
 		mesh4NewRotation.z -= EngineSettings::deltaTime * 25;
 	}
-	if (InputSystem::GetKey(M)) {
+	if (InputSystem::GetKey(M)) 
+	{
 		mesh4NewRotation.z += EngineSettings::deltaTime * 25;
 	}
 
 	//cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
 
-	if (InputSystem::GetKey(V)) {
+	if (InputSystem::GetKey(V))
+	{
 		int c = AssetManager::GetTextureCount();
 		for (int i = 0; i < c; i++)
 		{
 			AssetManager::GetTexture(i)->SetFilter(Texture::Bilinear);
 		}
 	}
-	if (InputSystem::GetKey(B)) {
+	if (InputSystem::GetKey(B)) 
+	{
 		int c = AssetManager::GetTextureCount();
 		for (int i = 0; i < c; i++)
 		{
@@ -386,10 +372,6 @@ void Game::Loop()
 
 	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
 	cubeGameObject->transform.SetPosition(cubeNewPosition);
-
-	//Vector3 cameraNewPosition = camera->gameObject->transform.GetPosition();
-	//cameraNewPosition += Vector3(1)* camera->gameObject->transform.GetForward() * EngineSettings::deltaTime;
-	//camera->gameObject->transform.SetPosition(cameraNewPosition);
 
 	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
 	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
