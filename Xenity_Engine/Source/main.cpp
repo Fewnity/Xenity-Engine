@@ -13,7 +13,7 @@
 #include "scene_manager/scene.h"
 
 #include "game.h"
-#include "debug.h"
+#include "debug/debug.h"
 
 #undef main
 
@@ -49,7 +49,7 @@ int main(void)
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-	printf("Salut%d", 1);
+
 	Debug::Print("Initiating game...");
 	Game::Init();
 	Debug::Print("---- Game initiated ----");

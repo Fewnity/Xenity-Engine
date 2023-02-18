@@ -3,7 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <stb_image.h>
 #include <GLFW/glfw3.h>
-#include "../debug.h"
+#include "../debug/debug.h"
 
 SDL_Window* Window::window = nullptr;
 
@@ -81,6 +81,8 @@ void Window::UpdateScreen()
 	SDL_GL_SwapWindow(window);
 }
 
+#pragma region Accessors
+
 /// <summary>
 /// Set window title
 /// </summary>
@@ -125,3 +127,5 @@ int Window::GetHeight()
 {
 	return height;
 }
+
+#pragma endregion

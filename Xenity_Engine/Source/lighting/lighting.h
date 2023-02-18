@@ -13,10 +13,8 @@ class Light : public Component
 {
 public:
 
-	Light()
-	{
-		AssetManager::AddLight(this);
-	};
+	Light();
+	~Light();
 
 	enum LightType
 	{

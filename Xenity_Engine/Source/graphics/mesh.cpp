@@ -12,9 +12,15 @@
 #include "../main.h"
 #include "../vectors/vector2.h"
 #include "../file_system/mesh_loader/wavefront_loader.h"
+#include "../debug/performance.h"
 
 using namespace std;
 
+#pragma region MeshData Constructors / Destructor
+
+/// <summary>
+/// Used if a mesh is not created from a file
+/// </summary>
 MeshData::MeshData()
 {
 	filePath = "";
@@ -34,10 +40,14 @@ MeshData::~MeshData()
 	free(indices);
 }
 
+#pragma endregion
+
+#pragma region MeshRenderer Constructors / Destructor
+
 /// <summary>
 /// Instantiate an empty mesh
 /// </summary>
-Mesh::Mesh() : Component()
+MeshRenderer::MeshRenderer() : Component()
 {
 	meshData = new MeshData();
 	meshData->verticesCount = 0;
@@ -47,7 +57,7 @@ Mesh::Mesh() : Component()
 	CreateBuffers(true, true);
 }
 
-Mesh::Mesh(MeshData* meshData)
+MeshRenderer::MeshRenderer(MeshData* meshData)
 {
 	LoadFromMeshData(meshData);
 }
@@ -59,14 +69,14 @@ Mesh::Mesh(MeshData* meshData)
 /// <param name="indices"></param>
 /// <param name="verticesCount"></param>
 /// <param name="indicesCount"></param>
-Mesh::Mesh(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount) : Component()
+MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount) : Component()
 {
 	meshData = new MeshData();
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = indicesCount / sizeof(*indices);
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
-	LoadMesh(vertices, indices);
+	LoadFromRawData(vertices, indices);
 	CreateBuffers(true, true);
 }
 
@@ -74,44 +84,15 @@ Mesh::Mesh(const float vertices[], const unsigned int indices[], const int verti
 /// Instantiate a mesh from a file
 /// </summary>
 /// <param name="meshpath"></param>
-Mesh::Mesh(const std::string meshpath) : Component()
+MeshRenderer::MeshRenderer(const std::string meshpath) : Component()
 {
 	LoadFromFile(meshpath);
 }
 
 /// <summary>
-/// Load the mesh from a file
+/// Destructor
 /// </summary>
-/// <param name="meshpath"></param>
-void Mesh::LoadFromFile(const std::string meshpath)
-{
-	MeshData* foundData = AssetManager::GetMeshData(meshpath);
-	if (foundData == nullptr) 
-	{
-		meshData = new MeshData(meshpath);
-		WavefrontLoader::LoadMesh(meshData, meshpath);
-		CreateBuffers(meshData->hasUv, meshData->hasNormal);
-	}
-	else 
-	{
-		LoadFromMeshData(foundData);
-	}
-}
-
-void Mesh::LoadFromMeshData(MeshData* meshData)
-{
-	this->meshData = meshData;
-	CreateBuffers(meshData->hasUv, meshData->hasNormal);
-}
-
-void Mesh::Update()
-{
-}
-
-/// <summary>
-/// Mesh destructor
-/// </summary>
-Mesh::~Mesh()
+MeshRenderer::~MeshRenderer()
 {
 	delete meshData;
 	glDeleteVertexArrays(1, &vertexArrayBuffer);
@@ -119,12 +100,68 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &indiceBuffer);
 }
 
+#pragma endregion
+
+#pragma region Data loading
+
+/// <summary>
+/// Load the mesh from a file
+/// </summary>
+/// <param name="meshpath"></param>
+void MeshRenderer::LoadFromFile(const std::string meshpath)
+{
+	MeshData* foundData = AssetManager::GetMeshData(meshpath);
+	if (foundData == nullptr)
+	{
+		meshData = new MeshData(meshpath);
+		WavefrontLoader::LoadFromRawData(meshData, meshpath);
+		CreateBuffers(meshData->hasUv, meshData->hasNormal);
+	}
+	else
+	{
+		LoadFromMeshData(foundData);
+	}
+}
+
+void MeshRenderer::LoadFromMeshData(MeshData* meshData)
+{
+	this->meshData = meshData;
+	CreateBuffers(meshData->hasUv, meshData->hasNormal);
+}
+
+/// <summary>
+/// Fill mesh data with vertices and indices lists
+/// </summary>
+/// <param name="vertices"></param>
+/// <param name="indices"></param>
+void MeshRenderer::LoadFromRawData(const float vertices[], const unsigned int indices[]) {
+	//Fill vertices
+	for (int i = 0; i < meshData->verticesCount; i++)
+	{
+		meshData->vertices[i] = vertices[i];
+	}
+
+	//Fill indices
+	for (int i = 0; i < meshData->indicesCount; i++)
+	{
+		meshData->indices[i] = indices[i];
+	}
+}
+
+#pragma endregion
+
+
+
+void MeshRenderer::Update()
+{
+}
+
 /// <summary>
 /// Create mesh's buffers
 /// </summary>
 /// <param name="addUv"></param>
 /// <param name="addNormals"></param>
-void Mesh::CreateBuffers(const bool addUv, const bool addNormals)
+void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 {
 	glGenVertexArrays(1, &vertexArrayBuffer); //Create a buffer ID for the vertex array buffer
 	glGenBuffers(1, &vertexBuffer);//Create a buffer ID for the vertex buffer
@@ -143,15 +180,15 @@ void Mesh::CreateBuffers(const bool addUv, const bool addNormals)
 
 	int byteOffset = 0;
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)byteOffset);
-	//Enable my vertex attrib array number 0
-	glEnableVertexAttribArray(0);//Vertex attribute array 0 is now available for use.
+	//Enable vertex attrib array number 0
+	glEnableVertexAttribArray(0);
 	byteOffset += 3;
 
 	if (addUv)
 	{
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
 		//Enable texture coords attrib array number 1
-		glEnableVertexAttribArray(1);//Texture attribute array 2 is now available for use.
+		glEnableVertexAttribArray(1);
 		byteOffset += 2;
 	}
 
@@ -159,20 +196,23 @@ void Mesh::CreateBuffers(const bool addUv, const bool addNormals)
 	{
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
 		//Enable Normals attrib array number 2
-		glEnableVertexAttribArray(2);//Normals attribute array 2 is now available for use.	
+		glEnableVertexAttribArray(2);
 		byteOffset += 3;
 	}
-	glBindVertexArray(0);
 
 	glBufferData(GL_ARRAY_BUFFER, meshData->verticesCount * sizeof(*meshData->vertices), meshData->vertices, GL_STATIC_DRAW);//Put vertice in the array buffer
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData->indicesCount * sizeof(*meshData->indices), meshData->indices, GL_STATIC_DRAW);//Put vertice in the array buffer
 	//glDrawElements(GL_TRIANGLES, meshData->indicesCount, GL_UNSIGNED_INT, 0);
+	
+	glBindVertexArray(0);
 }
+
+#pragma region Drawing
 
 /// <summary>
 /// Draw mesh
 /// </summary>
-void Mesh::Draw()
+void MeshRenderer::Draw()
 {
 	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
 	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr)
@@ -180,6 +220,7 @@ void Mesh::Draw()
 		if (material != nullptr)
 		{
 			UpdateMaterial();
+			Performance::AddDrawCall();
 			glBindVertexArray(vertexArrayBuffer);
 			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
@@ -190,28 +231,9 @@ void Mesh::Draw()
 }
 
 /// <summary>
-/// Fill mesh data with vertices and indices lists
-/// </summary>
-/// <param name="vertices"></param>
-/// <param name="indices"></param>
-void Mesh::LoadMesh(const float vertices[], const unsigned int indices[]) {
-	//Fill vertices
-	for (int i = 0; i < meshData->verticesCount; i++)
-	{
-		meshData->vertices[i] = vertices[i];
-	}
-
-	//Fill indices
-	for (int i = 0; i < meshData->indicesCount; i++)
-	{
-		meshData->indices[i] = indices[i];
-	}
-}
-
-/// <summary>
 /// Update mesh's material
 /// </summary>
-void Mesh::UpdateMaterial()
+void MeshRenderer::UpdateMaterial()
 {
 	if (material != nullptr && material->shader != nullptr)
 	{
@@ -229,3 +251,6 @@ void Mesh::UpdateMaterial()
 		material->shader->SetShaderModel(gameObject->transform.transformationMatrix);
 	}
 }
+
+#pragma endregion
+

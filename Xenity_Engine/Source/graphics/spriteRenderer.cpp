@@ -4,6 +4,8 @@
 #include "../asset_manager.h"
 #include <iostream>
 
+#pragma region Constructors / Destructor
+
 SpriteRenderer::SpriteRenderer()
 {
 }
@@ -17,6 +19,8 @@ SpriteRenderer::SpriteRenderer(const Texture* texture, Shader* shader)
 SpriteRenderer::~SpriteRenderer()
 {
 }
+
+#pragma endregion
 
 /// <summary>
 /// Draw sprite

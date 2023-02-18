@@ -3,6 +3,9 @@
 #include "../asset_manager.h"
 #include <glad/glad.h>
 #include <iostream>
+#include "../debug/performance.h"
+
+#pragma region Constructors / Destructor
 
 Material::Material()
 {
@@ -14,13 +17,9 @@ Material::~Material()
 	AssetManager::RemoveMaterial(this);
 }
 
-/// <summary>
-/// Use the material to draw something
-/// </summary>
-void Material::Use() 
-{
-	shader->Use();
-}
+#pragma endregion
+
+#pragma region Attributs setters
 
 /// <summary>
 /// Add a Vector2 attribut
@@ -82,6 +81,16 @@ void Material::SetAttribut(const std::string attribut, const int value)
 	uniformsInt.insert(std::pair <std::string, int>(attribut, value));
 }
 
+#pragma endregion
+
+/// <summary>
+/// Use the material to draw something
+/// </summary>
+void Material::Use()
+{
+	shader->Use();
+}
+
 /// <summary>
 /// Update the material 
 /// </summary>
@@ -90,6 +99,7 @@ void Material::Update()
 	if (shader != nullptr) 
 	{
 		shader->Use();
+		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
 

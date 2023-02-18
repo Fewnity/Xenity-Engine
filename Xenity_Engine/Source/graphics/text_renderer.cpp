@@ -3,6 +3,8 @@
 #include "../ui/ui_manager.h"
 #include "../asset_manager.h"
 
+#pragma region Constructors / Destructor
+
 TextRenderer::TextRenderer()
 {
 }
@@ -16,8 +18,9 @@ TextRenderer::TextRenderer(Font* font, float size, Shader* shader)
 
 TextRenderer::~TextRenderer()
 {
-	
 }
+
+#pragma endregion
 
 /// <summary>
 /// Draw text
@@ -26,6 +29,6 @@ void TextRenderer::Draw()
 {
 	if (gameObject != nullptr)
 	{
-		UiManager::RenderText(*shader, text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, 0.1f * size, color, font);
+		UiManager::RenderText(*shader, text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, 0.1f * size, lineSpacing, color, font);
 	}
 }

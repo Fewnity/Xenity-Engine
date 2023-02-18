@@ -53,11 +53,6 @@ SplinePoint* Spline::CreateSplinePoint(const Vector3 position)
     point->next = &next->transform;
     point->before = &before->transform;
 
-    std::cout << parent->transform.GetPosition().x << ", " << parent->transform.GetPosition().y << ", " << parent->transform.GetPosition().z << std::endl;
-    std::cout << next->transform.GetPosition().x << ", " << next->transform.GetPosition().y << ", " << next->transform.GetPosition().z << std::endl;
-    std::cout << before->transform.GetPosition().x << ", " << before->transform.GetPosition().y << ", " << before->transform.GetPosition().z << std::endl;
-    std::cout << std::endl;
-
     return point;
 }
 

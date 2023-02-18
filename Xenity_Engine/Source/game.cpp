@@ -16,13 +16,14 @@
 #include <iostream>
 #include "graphics/spriteRenderer.h"
 #include "asset_manager.h"
-#include "debug.h"
+#include "debug/debug.h"
 #include "graphics/text_renderer.h"
 #include "ui/ui_manager.h"
 #include "tools/shape_spawner.h"
 #include "tools/curve.h"
 #include "tools/benchmark.h"
 #include "orbital_camera.h"
+#include "time/time.h"
 
 using namespace std::chrono;
 
@@ -37,9 +38,9 @@ GameObject* myGameObject3 = new GameObject();
 
 GameObject* gameObjectSprite = new GameObject();
 
-Mesh* mesh3 = nullptr;
-Mesh* mesh4 = nullptr;
-Mesh* mesh5 = nullptr;
+MeshRenderer* mesh3 = nullptr;
+MeshRenderer* mesh4 = nullptr;
+MeshRenderer* mesh5 = nullptr;
 float animation = 0;
 
 Light* pointLight = new Light();
@@ -125,7 +126,7 @@ void Game::Init()
 	spline->AddSplinePoint(splinePoint2);
 	spline->AddSplinePoint(splinePoint3);
 
-	int splinePointCount = 1000;
+	int splinePointCount = 1500;
 	for (int i = 0; i < splinePointCount; i++)
 	{
 		float t = i / (float)splinePointCount;
@@ -133,11 +134,11 @@ void Game::Init()
 		newShape->transform.SetPosition(spline->GetValueAt(t));
 	}
 
-	//newShape->GetComponent<Mesh>()->material = newMat;
+	//newShape->GetComponent<MeshRenderer>()->material = newMat;
 
-	mesh3 = new Mesh("CubeTriangulate.obj");
-	mesh4 = new Mesh("ConeTriangulate.obj");
-	mesh5 = new Mesh("CubeTriangulate.obj");
+	mesh3 = new MeshRenderer("CubeTriangulate.obj");
+	mesh4 = new MeshRenderer("ConeTriangulate.obj");
+	mesh5 = new MeshRenderer("CubeTriangulate.obj");
 
 	cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
@@ -150,7 +151,7 @@ void Game::Init()
 	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
 	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
 	cubeGameObject->AddChild(cubeChild);
-	Mesh* mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
+	MeshRenderer* mesh = static_cast<MeshRenderer*>(cubeChild->AddComponent<MeshRenderer>());
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
 	GameObject* cubeChild2 = new GameObject("Cube2");
@@ -158,7 +159,7 @@ void Game::Init()
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
 	cubeChild2->transform.SetLocalScale(Vector3(1.5f, 1.5f, 1.5f));
 	cubeChild->AddChild(cubeChild2);
-	Mesh* mesh222 = static_cast<Mesh*>(cubeChild2->AddComponent<Mesh>());
+	MeshRenderer* mesh222 = static_cast<MeshRenderer*>(cubeChild2->AddComponent<MeshRenderer>());
 	mesh222->LoadFromFile("CubeTriangulate.obj");
 
 	/*cubeGameObject->AddExistingComponent(mesh3);
@@ -167,7 +168,7 @@ void Game::Init()
 	GameObject* cubeChild = new GameObject();
 	cubeChild->transform.SetLocalPosition(Vector3(1, 1, 0));
 	cubeGameObject->AddChild(cubeChild);
-	Mesh * mesh = static_cast<Mesh*>(cubeChild->AddComponent<Mesh>());
+	MeshRenderer * mesh = static_cast<MeshRenderer*>(cubeChild->AddComponent<MeshRenderer>());
 	mesh->LoadFromFile("ConeTriangulate.obj");
 
 	coneGameobject->AddExistingComponent(mesh4);
@@ -201,7 +202,7 @@ void Game::Init()
 	t->AddExistingComponent(spr2);
 
 	TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
-	textRenderer->text = "Salut à tous les amissssss";
+	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
 	gameObjectSprite->AddExistingComponent(textRenderer);
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
@@ -281,25 +282,25 @@ void Game::Loop()
 	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
-		vect *= EngineSettings::deltaTime * 2;
+		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
 
 	}
 	if (InputSystem::GetKey(S)) {
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
-		vect *= EngineSettings::deltaTime * 2;
+		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition -= vect;
 	}
 	if (InputSystem::GetKey(D)) {
 
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= EngineSettings::deltaTime * 2;
+		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition -= vect;
 	}
 	if (InputSystem::GetKey(Q)) {
 
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= EngineSettings::deltaTime * 2;
+		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
 	}
 	camera->gameObject->transform.SetPosition(newCameraPosition);
@@ -313,8 +314,8 @@ void Game::Loop()
 	cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
 
 	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
-	float xInputToAdd = -InputSystem::mouseSpeed.y * EngineSettings::deltaTime * 20;
-	float yInputToAdd = -InputSystem::mouseSpeed.x * EngineSettings::deltaTime * 20;
+	float xInputToAdd = -InputSystem::mouseSpeed.y * Time::GetDeltaTime()  * 20;
+	float yInputToAdd = -InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
 
 	newCameraRotation.x += xInputToAdd;
 	newCameraRotation.y += yInputToAdd;
@@ -326,29 +327,29 @@ void Game::Loop()
 	Vector3 cubeNewPosition = cubeGameObject->transform.GetPosition();
 	if (InputSystem::GetKey(RIGHT)) 
 	{
-		mesh4NewRotation.y -= EngineSettings::deltaTime * 25;
+		mesh4NewRotation.y -= Time::GetDeltaTime() * 25;
 	}
 	if (InputSystem::GetKey(LEFT)) 
 	{
-		mesh4NewRotation.y += EngineSettings::deltaTime * 25;
+		mesh4NewRotation.y += Time::GetDeltaTime() * 25;
 	}
 	if (InputSystem::GetKey(UP)) 
 	{
-		cubeNewPosition.z -= EngineSettings::deltaTime * 5;
+		cubeNewPosition.z -= Time::GetDeltaTime() * 5;
 		//mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(DOWN)) 
 	{
-		cubeNewPosition.z += EngineSettings::deltaTime * 5;
+		cubeNewPosition.z += Time::GetDeltaTime() * 5;
 		//mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(P)) 
 	{
-		mesh4NewRotation.z -= EngineSettings::deltaTime * 25;
+		mesh4NewRotation.z -= Time::GetDeltaTime() * 25;
 	}
 	if (InputSystem::GetKey(M)) 
 	{
-		mesh4NewRotation.z += EngineSettings::deltaTime * 25;
+		mesh4NewRotation.z += Time::GetDeltaTime() * 25;
 	}
 
 	//cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
@@ -373,13 +374,13 @@ void Game::Loop()
 	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
 	cubeGameObject->transform.SetPosition(cubeNewPosition);
 
-	std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
+	/*std::string debugText = std::string("Cube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
 	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 50, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 
 	std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
-	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText2, 0.0f, 80, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+	UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText2, 0.0f, 80, 20, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);*/
 
-	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + EngineSettings::deltaTime*10));
+	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
 
 	//mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
 }

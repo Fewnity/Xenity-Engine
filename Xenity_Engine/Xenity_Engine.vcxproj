@@ -75,8 +75,7 @@
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>
-    </LibraryPath>
+    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
@@ -145,7 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
     </ClCompile>
@@ -154,18 +153,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib_sdl2\x64;C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\debug\performance.cpp" />
     <ClCompile Include="Source\orbital_camera.cpp" />
+    <ClCompile Include="Source\time\time.cpp" />
     <ClCompile Include="Source\tools\benchmark.cpp" />
     <ClCompile Include="Source\tools\shape_spawner.cpp" />
     <ClCompile Include="Source\tools\curve.cpp" />
     <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\material.cpp" />
-    <ClCompile Include="Source\debug.cpp" />
+    <ClCompile Include="Source\debug\debug.cpp" />
     <ClCompile Include="Source\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\engine_settings.cpp" />
     <ClCompile Include="Source\asset_manager.cpp" />
@@ -227,13 +228,15 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\orbital_camera.h" />
+    <ClInclude Include="Source\time\time.h" />
     <ClInclude Include="Source\tools\benchmark.h" />
     <ClInclude Include="Source\tools\shape_spawner.h" />
     <ClInclude Include="Source\tools\curve.h" />
     <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\material.h" />
-    <ClInclude Include="Source\debug.h" />
+    <ClInclude Include="Source\debug\debug.h" />
     <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine_settings.h" />
     <ClInclude Include="Source\asset_manager.h" />
@@ -266,6 +269,7 @@
     <ClInclude Include="Source\graphics\spriteRenderer.h" />
     <ClInclude Include="Source\graphics\sprite_manager.h" />
     <ClInclude Include="Source\graphics\text_renderer.h" />
+    <ClInclude Include="Source\xenity.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

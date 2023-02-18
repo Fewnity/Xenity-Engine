@@ -11,9 +11,10 @@
 #include "asset_manager.h"
 #include "engine_settings.h"
 #include "graphics/sprite_manager.h"
-#include "debug.h"
+#include "debug/debug.h"
 #include "tools/benchmark.h"
-
+#include "time/time.h"
+#include "debug/performance.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 float lastTick = 0;
@@ -62,15 +63,13 @@ void Engine::Loop()
 	bool running = true;
 	while (running)
 	{
-		float tempTick = (float)SDL_GetTicks64();
-		EngineSettings::deltaTime = (tempTick - lastTick) / 1000.0f;
-		lastTick = tempTick;
+		Time::UpdateTime();
 
 		SDL_Event event;
 		InputSystem::ClearInputs();
 		while (SDL_PollEvent(&event))
 		{
-			InputSystem::UpdateInputs(event);
+			InputSystem::Read(event);
 			switch (event.type)
 			{
 			case SDL_QUIT:
@@ -117,11 +116,12 @@ void Engine::Loop()
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 		//debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
-		//debugText += std::string(", fps: ") + std::to_string((int)(1 / EngineSettings::deltaTime));
-		//debugText += std::string(" ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetRotation().z);
-		debugText += std::string("FORWARD ") + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().x) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().y) + " " + std::to_string(Graphics::usedCamera->gameObject->transform.GetForward().z);
-		UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 24, 90, 0.5f, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+		debugText += std::string("\nfps: ") + std::to_string((int)(1 / Time::GetUnscaledDeltaTime()));
+		debugText += std::string("\nDrawCallCount: ") + std::to_string(Performance::GetDrawCallCount());
+		debugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
+		UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
 		Window::UpdateScreen();
+		Performance::ResetCounters();
 	}
 }
 

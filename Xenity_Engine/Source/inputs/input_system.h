@@ -110,19 +110,22 @@ class InputSystem
 {
 public:
 	static void Init();
-	static void ClearInputs();
-	static void UpdateInputs(const SDL_Event event);
-	static Vector2 mousePosition;
-	static Vector2 mouseSpeed;
+	static void Read(const SDL_Event event);
 	static bool GetKeyDown(const KeyCode keyCode);
 	static bool GetKey(const KeyCode keyCode);
 	static bool GetKeyUp(const KeyCode keyCode);
+	static void ClearInputs();
+
+	static Vector2 mousePosition;
+	static Vector2 mouseSpeed;
+
 private:
-	static Input inputs[INPUT_COUNT];
-	static void InuptUpdate(const bool pressed, const int keyCode);
+	static void ChangeInputState(const bool pressed, const int keyCode);
 	static void SetInput(const bool pressed, const int keyCode);
 	static void SetInputPressed(const int keyCode);
 	static void SetInputReleased(const int keyCode);
 	static void SetInputInactive(const int keyCode);
+
+	static Input inputs[INPUT_COUNT];
 };
 

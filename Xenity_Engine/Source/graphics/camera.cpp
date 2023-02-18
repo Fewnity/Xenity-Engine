@@ -5,7 +5,10 @@
 #include "graphics.h"
 #include "../tools/math.h"
 
-Camera::Camera() {
+#pragma region Constructors / Destructor
+
+Camera::Camera() 
+{
 	this->fov = 60;
 	if (Graphics::usedCamera == nullptr) 
 	{
@@ -17,6 +20,10 @@ Camera::~Camera()
 {
 }
 
+#pragma endregion
+
+#pragma region Accessors
+
 void Camera::SetFov(const double fov)
 {
 	this->fov = fov;
@@ -26,3 +33,6 @@ double Camera::GetFov() const
 {
 	return this->fov;
 }
+
+#pragma endregion
+

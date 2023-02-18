@@ -23,6 +23,8 @@ public:
 	Vector3 GetLeft() const;
 	Vector3 GetRight() const;
 	Vector3 GetUp() const;
+	Vector3 GetDown() const;
+	Vector3 GetBackward() const;
 
 	void SetPosition(const Vector3 value);
 	void SetLocalPosition(const Vector3 value);

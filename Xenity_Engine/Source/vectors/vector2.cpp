@@ -1,5 +1,7 @@
 #include "vector2.h"
 
+#pragma region Constructors
+
 Vector2::Vector2() {
 	this->x = 0;
 	this->y = 0;
@@ -14,6 +16,10 @@ Vector2::Vector2(const float fillValue) {
 	this->x = fillValue;
 	this->y = fillValue;
 }
+
+#pragma endregion
+
+#pragma region Operators
 
 Vector2 operator+(const Vector2& left, const Vector2& right)
 {
@@ -120,3 +126,5 @@ bool operator!=(const Vector2& left, const Vector2& right)
 {
 	return left.x != right.x || left.y != right.y;
 }
+
+#pragma endregion

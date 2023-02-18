@@ -7,17 +7,16 @@
 #include "../../vectors/vector3.h"
 #include "../../graphics/mesh.h"
 #include "../../engine_settings.h"
-#include "../../debug.h"
+#include "../../debug/debug.h"
+#include "../file.h"
 
 using namespace std;
 
-std::string modelsPath = R"(Xenity_Engine\Source\models\)"; //TODO remove this
-
-void WavefrontLoader::LoadMesh(MeshData* mesh, const std::string filePath)
+void WavefrontLoader::LoadFromRawData(MeshData* mesh, const std::string filePath)
 {
 	Debug::Print("Loading mesh...");
 
-	std::string finalpath = EngineSettings::RootFolder + modelsPath;
+	std::string finalpath = File::modelsPath;
 	//Open file
 	ifstream file;
 	file.open(finalpath + filePath);

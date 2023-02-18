@@ -1,7 +1,27 @@
 #include "lighting.h"
-
 #include <corecrt_math.h>
 
+#pragma region Constructors / Destructor
+
+Light::Light()
+{
+	AssetManager::AddLight(this);
+}
+
+Light::~Light()
+{
+}
+
+#pragma endregion
+
+#pragma region Quick light setup
+
+/// <summary>
+/// Set the light to a point light
+/// </summary>
+/// <param name="color"></param>
+/// <param name="intensity"></param>
+/// <param name="range"></param>
 void Light::SetupPointLight(const Vector3 color, const float intensity, const float range)
 {
 	type = Light::Point;
@@ -11,6 +31,11 @@ void Light::SetupPointLight(const Vector3 color, const float intensity, const fl
 	SetRange(range);
 }
 
+/// <summary>
+/// Set the light to a directional light
+/// </summary>
+/// <param name="color"></param>
+/// <param name="intensity"></param>
 void Light::SetupDirectionalLight(const Vector3 color, const float intensity)
 {
 	type = Light::Directional;
@@ -19,11 +44,25 @@ void Light::SetupDirectionalLight(const Vector3 color, const float intensity)
 	this->intensity = intensity;
 }
 
+/// <summary>
+/// Change the light to a spot light
+/// </summary>
+/// <param name="color"></param>
+/// <param name="intensity"></param>
+/// <param name="range"></param>
+/// <param name="angle"></param>
 void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle)
 {
 	SetupSpotLight(color, intensity, range, angle, spotSmoothness);
 }
 
+/// <summary>
+/// Change the light to a spot light
+/// </summary>
+/// <param name="color"></param>
+/// <param name="intensity"></param>
+/// <param name="range"></param>
+/// <param name="angle"></param>
 void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle, const float smoothness)
 {
 	type = Light::Spot;
@@ -34,6 +73,10 @@ void Light::SetupSpotLight(const Vector3 color, const float intensity, const flo
 	SetSpotAngle(angle);
 	SetSpotSmoothness(smoothness);
 }
+
+#pragma endregion
+
+#pragma region Accessors
 
 /// <summary>
 /// Update lights intern values
@@ -108,3 +151,5 @@ void Light::SetRange(float value)
 	range = value;
 	UpdateLightValues();
 }
+
+#pragma endregion

@@ -6,12 +6,18 @@
 #include <SDL2/SDL_stdinc.h>
 #include "tools/math.h"
 
+#pragma region Constructors
+
 Transform::Transform(GameObject* gameObject)
 {
 	this->gameObject = gameObject;
 	UpdateRotationMatrix();
 	UpdateTransformationMatrix();
 }
+
+#pragma endregion
+
+#pragma region Accessors
 
 Vector3 Transform::GetPosition() const
 {
@@ -49,6 +55,11 @@ Vector3 Transform::GetForward() const
 	return direction;
 }
 
+Vector3 Transform::GetBackward() const
+{
+	return -GetForward();
+}
+
 Vector3 Transform::GetLeft() const
 {
 	Vector3 direction = Vector3(-rotationMatrix[0], rotationMatrix[1], -rotationMatrix[2]);
@@ -65,6 +76,61 @@ Vector3 Transform::GetUp() const
 	Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], -rotationMatrix[5]);
 	return direction;
 }
+
+Vector3 Transform::GetDown() const
+{
+	return -GetUp();
+}
+
+void Transform::SetPosition(const Vector3 value)
+{
+	position = value;
+	if (gameObject->parent == nullptr) {
+		localPosition = value;
+	}
+	else
+	{
+		localPosition = (position - gameObject->parent->transform.position) * localScale;
+	}
+
+	if (gameObject != nullptr)
+		SetChildrenWorldPositions();
+}
+
+void Transform::SetLocalPosition(const Vector3 value)
+{
+	localPosition = value;
+	if (gameObject != nullptr)
+		UpdateWorldPosition();
+	//gameObject->parent->transform.SetChildrenWorldPositions();
+}
+
+void Transform::SetRotation(const Vector3 value)
+{
+	rotation = value;
+	if (gameObject->parent == nullptr) {
+		//localRotation = value;
+	}
+	if (gameObject != nullptr)
+		SetChildrenWorldPositions();
+}
+
+void Transform::SetLocalRotation(const Vector3 value)
+{
+	localRotation = value;
+	if (gameObject != nullptr)
+		SetChildrenWorldPositions();
+}
+
+void Transform::SetLocalScale(const Vector3 value)
+{
+	localScale = value;
+	UpdateScale();
+	if (gameObject != nullptr)
+		SetChildrenWorldPositions();
+}
+
+#pragma endregion
 
 void Transform::OnParentChanged() 
 {
@@ -91,54 +157,6 @@ void Transform::OnParentChanged()
 		Math::MultiplyMatrix(localPos, modifiedMatrix, posAfterRotation, 1, 3, 3, 3);
 		localPosition = Vector3(posAfterRotation[0], posAfterRotation[1], posAfterRotation[2]);
 	}
-}
-
-void Transform::SetPosition(const Vector3 value)
-{
-	position = value;
-	if (gameObject->parent == nullptr) {
-		localPosition = value;
-	}
-	else 
-	{
-		localPosition = (position - gameObject->parent->transform.position) * localScale;
-	}
-
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
-}
-
-void Transform::SetLocalPosition(const Vector3 value)
-{
-	localPosition = value;
-	if (gameObject != nullptr)
-		UpdateWorldPosition();
-		//gameObject->parent->transform.SetChildrenWorldPositions();
-}
-
-void Transform::SetRotation(const Vector3 value)
-{
-	rotation = value;
-	if (gameObject->parent == nullptr) {
-		//localRotation = value;
-	}
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
-}
-
-void Transform::SetLocalRotation(const Vector3 value)
-{
-	localRotation = value;
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
-}
-
-void Transform::SetLocalScale(const Vector3 value)
-{
-	localScale = value;
-	UpdateScale();
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
 }
 
 void Transform::UpdateRotationMatrix()

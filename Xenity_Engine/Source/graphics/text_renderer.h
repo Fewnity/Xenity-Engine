@@ -17,6 +17,9 @@ public:
 
 	std::string text;
 	float size = 16;
+	float lineSpacing = 16;
+	float characterSpacing = 0;
+
 	Font* font = nullptr;
 	Vector3 color = Vector3(1,1,1); // [0;1]
 	Shader* shader = nullptr;

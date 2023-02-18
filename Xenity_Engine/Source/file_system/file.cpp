@@ -5,35 +5,37 @@
 #include <fstream>
 #include "../main.h"
 #include "../engine_settings.h"
-#include "../debug.h"
+#include "../debug/debug.h"
 
-std::string texturePath = R"(Xenity_Engine\Source\images\)"; //TODO improve this
+std::string File::texturePath = R"(Xenity_Engine\Source\images\)";
+std::string File::shaderPath = R"(Xenity_Engine\Source\shaders\)";
+std::string File::modelsPath = R"(Xenity_Engine\Source\models\)";
+
+#pragma region Read/Input
 
 unsigned char* File::LoadTextureData(const std::string filePath, int& width, int& height, int& nrChannels)
 {
-	std::string finalpath = EngineSettings::RootFolder + texturePath;
-	unsigned char* data = stbi_load((finalpath + filePath).c_str(), &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load((texturePath + filePath).c_str(), &width, &height, &nrChannels, 0);
 	return data;
 }
 
-std::string shaderPath = R"(Xenity_Engine\Source\shaders\)"; //TODO improve this
 
-std::string File::LoadShaderData(const std::string path)
+std::string File::ReadText(const std::string path)
 {
-	std::string finalpath = EngineSettings::RootFolder + shaderPath;
 	//Open file
 	std::ifstream file;
-	file.open(finalpath + path);
+	//file.open(finalpath + path);
+	file.open(path);
 
 	//Print error if the file can't be read
-	if (file.fail()) 
+	if (file.fail())
 	{
-		std::cout << "\033[31mShader read error. Path : \"" << finalpath + path << "\"\033[0m" << std::endl;
+		std::cout << "\033[31mShader read error. Path : \"" << path << "\"\033[0m" << std::endl;
 	}
 
 	//Read file
 	std::string text = "", line;
-	while (getline(file, line)) 
+	while (getline(file, line))
 	{
 		text += line + '\n';
 	}
@@ -44,10 +46,22 @@ std::string File::LoadShaderData(const std::string path)
 	return text;
 }
 
+#pragma endregion
+
+#pragma region Write/Output
+
+#pragma endregion
+
+
 void File::InitFileSystem() 
 {
 	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
 	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	
+	texturePath = EngineSettings::RootFolder + texturePath;
+	shaderPath = EngineSettings::RootFolder + shaderPath;
+	modelsPath = EngineSettings::RootFolder + modelsPath;
+
 	Debug::Print("---- File System initiated ----");
 	//gamePath += R"(Debug\)"; //TODO remove this
 }

@@ -10,47 +10,47 @@ Vector3 ShapeSpawner::defaultScale = Vector3(1, 1, 1);
 
 GameObject* ShapeSpawner::SpawnCube()
 {
-    Mesh * mesh = new Mesh("Basic/CubeTriangulate.obj");
+    MeshRenderer * mesh = new MeshRenderer("Basic/CubeTriangulate.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Cube");
 }
 
 GameObject* ShapeSpawner::SpawnSphere()
 {
-    Mesh* mesh = new Mesh("Basic/SphereTriangulateSmooth.obj");
+    MeshRenderer* mesh = new MeshRenderer("Basic/SphereTriangulateSmooth.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Sphere");
 }
 
 GameObject* ShapeSpawner::SpawnCone()
 {
-    Mesh* mesh = new Mesh("Basic/ConeTriangulateSmooth.obj");
+    MeshRenderer* mesh = new MeshRenderer("Basic/ConeTriangulateSmooth.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Cone");
 }
 
 GameObject* ShapeSpawner::SpawnDonut()
 {
-    Mesh* mesh = new Mesh("Basic/DonutTriangulateSmooth.obj");
+    MeshRenderer* mesh = new MeshRenderer("Basic/DonutTriangulateSmooth.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Donut");
 }
 
 GameObject* ShapeSpawner::SpawnPlane()
 {
-    Mesh* mesh = new Mesh("Basic/PlaneTriangulate.obj");
+    MeshRenderer* mesh = new MeshRenderer("Basic/PlaneTriangulate.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Plane");
 }
 
 GameObject* ShapeSpawner::SpawnCylinder()
 {
-    Mesh* mesh = new Mesh("Basic/CylinderTriangulateSmooth.obj");
+    MeshRenderer* mesh = new MeshRenderer("Basic/CylinderTriangulateSmooth.obj");
     mesh->material = AssetManager::default3DMaterial;
     return Spawn(mesh, "Cylinder");
 }
 
-GameObject* ShapeSpawner::Spawn(Mesh * mesh, std::string name)
+GameObject* ShapeSpawner::Spawn(MeshRenderer * mesh, std::string name)
 {
     GameObject* gameObject = new GameObject(name);
     gameObject->transform.SetPosition(defaultPosition);

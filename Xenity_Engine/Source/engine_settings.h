@@ -13,7 +13,6 @@ class EngineSettings
 {
 public:
 	static bool isWireframe;
-	static float deltaTime;
 	static int maxLightCount;
 	static std::string RootFolder;
 	static Texture::AnisotropicLevel anisotropicLevel;

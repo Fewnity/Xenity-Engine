@@ -33,7 +33,7 @@
     <ClCompile Include="Source\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\graphics\material.cpp" />
-    <ClCompile Include="Source\debug.cpp" />
+    <ClCompile Include="Source\debug\debug.cpp" />
     <ClCompile Include="Source\game\sceneGame1.cpp" />
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
     <ClCompile Include="Source\tools\math.cpp" />
@@ -41,6 +41,8 @@
     <ClCompile Include="Source\tools\shape_spawner.cpp" />
     <ClCompile Include="Source\tools\benchmark.cpp" />
     <ClCompile Include="Source\orbital_camera.cpp" />
+    <ClCompile Include="Source\time\time.cpp" />
+    <ClCompile Include="Source\debug\performance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -74,7 +76,7 @@
     <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\graphics\sprite_manager.h" />
     <ClInclude Include="Source\graphics\material.h" />
-    <ClInclude Include="Source\debug.h" />
+    <ClInclude Include="Source\debug\debug.h" />
     <ClInclude Include="Source\game\sceneGame1.h" />
     <ClInclude Include="Source\graphics\text_renderer.h" />
     <ClInclude Include="Source\tools\math.h" />
@@ -82,6 +84,9 @@
     <ClInclude Include="Source\tools\shape_spawner.h" />
     <ClInclude Include="Source\tools\benchmark.h" />
     <ClInclude Include="Source\orbital_camera.h" />
+    <ClInclude Include="Source\time\time.h" />
+    <ClInclude Include="Source\debug\performance.h" />
+    <ClInclude Include="Source\xenity.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

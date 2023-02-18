@@ -22,19 +22,19 @@ public:
 	bool hasNormal = false;
 };
 
-class Mesh : public Component, public IDrawable
+class MeshRenderer : public Component, public IDrawable
 {
 public:
-	Mesh();
-	Mesh(MeshData* meshData);
-	Mesh(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
-	Mesh(const std::string meshpath);
-	~Mesh();
+	MeshRenderer();
+	MeshRenderer(MeshData* meshData);
+	MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
+	MeshRenderer(const std::string meshpath);
+	~MeshRenderer();
 
 	Material* material = nullptr;
 
 	void LoadFromFile(const std::string meshpath);
-	void LoadMesh(const float vertices[], const unsigned int indices[]);
+	void LoadFromRawData(const float vertices[], const unsigned int indices[]);
 	void CreateBuffers(const bool addUv, const bool addNormals);
 
 private:

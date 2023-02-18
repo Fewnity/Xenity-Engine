@@ -7,7 +7,9 @@
 #include "../file_system/file.h"
 #include "../engine_settings.h"
 #include <iostream>
-#include "../debug.h"
+#include "../debug/debug.h"
+
+#pragma region Constructors / Destructor
 
 Texture::Texture(const std::string filePath)
 {
@@ -18,6 +20,16 @@ Texture::Texture(const std::string filePath, const Filter filter, const bool use
 {
 	CreateTextutre(filePath, filter, useMipMap);
 }
+
+Texture::~Texture()
+{
+	AssetManager::RemoveTexture(this);
+	glDeleteTextures(1, &textureId);
+}
+
+#pragma endregion
+
+#pragma region Data loading
 
 /// <summary>
 /// Create the texture from the file path and texture settings
@@ -33,32 +45,6 @@ void Texture::CreateTextutre(const std::string filePath, const Filter filter, co
 	LoadTexture(filePath);
 
 	AssetManager::AddTexture(this);
-}
-
-Texture::~Texture()
-{
-	AssetManager::RemoveTexture(this);
-	glDeleteTextures(1, &textureId);
-}
-
-/// <summary>
-/// Set texture's filter
-/// </summary>
-/// <param name="filter"></param>
-void Texture::SetFilter(const Filter filter)
-{
-	this->filter = filter;
-	UpdateTextureFilter();
-}
-
-int Texture::GetWidth() const
-{
-	return width;
-}
-
-int Texture::GetHeight() const
-{
-	return height;
 }
 
 /// <summary>
@@ -86,14 +72,49 @@ void Texture::LoadTexture(const std::string filePath) {
 
 		//printf("Texture loaded -> size : %dx%d; nrChannels: %d", width, height, nrChannels);
 	}
-	else 
+	else
 	{
-		Debug::Print("exture can't be loaded. Path: " + filePath);
+		Debug::Print("Texture can't be loaded. Path: " + filePath);
 	}
 	stbi_image_free(data);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+#pragma endregion
+
+#pragma region Accessors
+
+/// <summary>
+/// Set texture's filter
+/// </summary>
+/// <param name="filter"></param>
+void Texture::SetFilter(const Filter filter)
+{
+	this->filter = filter;
+	UpdateTextureFilter();
+}
+
+int Texture::GetWidth() const
+{
+	return width;
+}
+
+int Texture::GetHeight() const
+{
+	return height;
+}
+
+/// <summary>
+/// Get texture id
+/// </summary>
+/// <returns></returns>
+unsigned int Texture::GetTextureId() const
+{
+	return textureId;
+}
+
+#pragma endregion
 
 /// <summary>
 /// Update texture if the filter has changed
@@ -153,13 +174,4 @@ void Texture::UpdateTextureFilter()
 	}
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, anisotropicValue);
-}
-
-/// <summary>
-/// Get texture id
-/// </summary>
-/// <returns></returns>
-unsigned int Texture::GetTextureId() const
-{
-	return textureId;
 }

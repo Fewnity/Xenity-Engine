@@ -2,6 +2,8 @@
 #include "engine.h"
 #include <iostream>
 
+#pragma region Constructors / Destructor
+
 GameObject::GameObject()
 {
 	Engine::AddGameObject(this);
@@ -23,6 +25,7 @@ GameObject::~GameObject()
 	components.clear();
 }
 
+#pragma endregion
 
 /// <summary>
 /// Add a child the the gameobject
@@ -80,6 +83,8 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 	}
 }
 
+#pragma region Find GameObjects
+
 /// <summary>
 /// Find all gameobjects with a specific name
 /// </summary>
@@ -120,6 +125,10 @@ GameObject* GameObject::FindGameObjectByName(const std::string name)
 	return nullptr;
 }
 
+#pragma endregion
+
+#pragma region Accessors
+
 bool GameObject::GetActive() const
 {
 	return active;
@@ -138,6 +147,8 @@ void GameObject::SetActive(const bool active)
 		UpdateActive(this);
 	}
 }
+
+#pragma endregion
 
 /// <summary>
 /// Update gameobject active state. Set the local active value depending of gameobject's parents active state

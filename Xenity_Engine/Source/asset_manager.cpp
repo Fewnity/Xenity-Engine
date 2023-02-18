@@ -5,7 +5,7 @@
 #include "graphics/mesh.h"
 #include "graphics/material.h"
 #include "lighting/lighting.h"
-#include "debug.h"
+#include "debug/debug.h"
 
 std::vector<Shader*> AssetManager::shaders;
 std::vector<Material*> AssetManager::materials;
@@ -27,7 +27,8 @@ Material* AssetManager::defaultUIMaterial = nullptr;
 
 Texture* AssetManager::defaultTexture = nullptr;
 
-void AssetManager::ResetMaterialsUpdates() {
+void AssetManager::ResetMaterialsUpdates() 
+{
 	for (int i = 0; i < materialCount; i++)
 	{
 		materials[i]->updated = false;
@@ -57,6 +58,8 @@ void AssetManager::Init()
 	defaultUIMaterial = new Material();
 	defaultUIMaterial->shader = ui;
 }
+
+#pragma region Add assets
 
 /// <summary>
 /// Add a shader in the shader list
@@ -114,6 +117,10 @@ void AssetManager::AddMeshData(MeshData* meshData)
 	meshDataCount++;
 }
 
+#pragma endregion
+
+#pragma region Remove assets
+
 /// <summary>
 /// Remove a shader from the shader list
 /// </summary>
@@ -125,7 +132,7 @@ void AssetManager::RemoveShader(Shader* shader)
 	bool found = false;
 	for (int i = 0; i < shaderCount; i++)
 	{
-		if (shaders[i] == shader) 
+		if (shaders[i] == shader)
 		{
 			found = true;
 			shaderIndex = i;
@@ -133,7 +140,7 @@ void AssetManager::RemoveShader(Shader* shader)
 		}
 	}
 
-	if (found) 
+	if (found)
 	{
 		shaders.erase(shaders.begin() + shaderIndex);
 		shaderCount--;
@@ -147,7 +154,7 @@ void AssetManager::RemoveMaterial(Material* material)
 	bool found = false;
 	for (int i = 0; i < materialCount; i++)
 	{
-		if (materials[i] == material) 
+		if (materials[i] == material)
 		{
 			found = true;
 			materialIndex = i;
@@ -173,7 +180,7 @@ void AssetManager::RemoveTexture(Texture* texture)
 	bool found = false;
 	for (int i = 0; i < textureCount; i++)
 	{
-		if (textures[i] == texture) 
+		if (textures[i] == texture)
 		{
 			found = true;
 			textureIndex = i;
@@ -199,7 +206,7 @@ void AssetManager::RemoveDrawable(IDrawable* drawable)
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
 	{
-		if (drawables[i] == drawable) 
+		if (drawables[i] == drawable)
 		{
 			found = true;
 			drawableIndex = i;
@@ -225,7 +232,7 @@ void AssetManager::RemoveLight(Light* light)
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
 	{
-		if (lights[i] == light) 
+		if (lights[i] == light)
 		{
 			found = true;
 			lightIndex = i;
@@ -262,11 +269,14 @@ void AssetManager::RemoveMeshData(MeshData* meshData)
 	}
 }
 
+#pragma endregion
+
+#pragma region Getters
+
 Shader* AssetManager::GetShader(const int index)
 {
 	return shaders[index];
 }
-
 
 Material* AssetManager::GetMaterial(const int index)
 {
@@ -297,7 +307,7 @@ MeshData* AssetManager::GetMeshData(const std::string path)
 {
 	for (int i = 0; i < meshDataCount; i++)
 	{
-		if (meshesData[i]->filePath == path) 
+		if (meshesData[i]->filePath == path)
 		{
 			return meshesData[i];
 		}
@@ -338,3 +348,6 @@ int AssetManager::GetMeshDataCount()
 {
 	return meshDataCount;
 }
+
+
+#pragma endregion

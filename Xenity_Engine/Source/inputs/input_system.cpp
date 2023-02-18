@@ -1,7 +1,7 @@
 #include "input_system.h"
 #include <fstream>
 #include <map>
-#include "../debug.h"
+#include "../debug/debug.h"
 
 Vector2 InputSystem::mousePosition = Vector2();
 Vector2 InputSystem::mouseSpeed = Vector2();
@@ -21,23 +21,10 @@ void InputSystem::Init()
 }
 
 /// <summary>
-/// Set all keys states to inactive
-/// </summary>
-void InputSystem::ClearInputs() 
-{
-	for (int i = 0; i < INPUT_COUNT; i++)
-	{
-		SetInputInactive(i);
-	}
-	mouseSpeed.x = 0;
-	mouseSpeed.y = 0;
-}
-
-/// <summary>
 /// Get inputs events
 /// </summary>
 /// <param name="event"></param>
-void InputSystem::UpdateInputs(const SDL_Event event)
+void InputSystem::Read(const SDL_Event event)
 {
 	switch (event.type)
 	{
@@ -68,11 +55,11 @@ void InputSystem::UpdateInputs(const SDL_Event event)
 	}
 
 	case SDL_KEYDOWN:
-		InuptUpdate(true, event.key.keysym.sym);
+		ChangeInputState(true, event.key.keysym.sym);
 		break;
 	
 	case SDL_KEYUP:
-		InuptUpdate(false, event.key.keysym.sym);
+		ChangeInputState(false, event.key.keysym.sym);
 		break;
 
 	}
@@ -81,7 +68,7 @@ void InputSystem::UpdateInputs(const SDL_Event event)
 std::map<int, int> keyMap; //TODO : To use later
 //To use like that : SetInput(pressed, keyMap.at(keyCode));
 
-void  InputSystem::InuptUpdate(const bool pressed, const int keyCode)
+void InputSystem::ChangeInputState(const bool pressed, const int keyCode)
 {
 	switch (keyCode) {
 	case SDLK_LEFT:
@@ -181,6 +168,21 @@ void  InputSystem::InuptUpdate(const bool pressed, const int keyCode)
 	}
 }
 
+#pragma region Change inputs states
+
+/// <summary>
+/// Set all keys states to inactive
+/// </summary>
+void InputSystem::ClearInputs()
+{
+	for (int i = 0; i < INPUT_COUNT; i++)
+	{
+		SetInputInactive(i);
+	}
+	mouseSpeed.x = 0;
+	mouseSpeed.y = 0;
+}
+
 /// <summary>
 /// Set inputs state
 /// </summary>
@@ -226,6 +228,10 @@ void InputSystem::SetInputInactive(const int keyCode)
 	inputs[keyCode].released = false;
 }
 
+#pragma endregion
+
+#pragma region Getters
+
 /// <summary>
 /// Return if the key has just been pressed
 /// </summary>
@@ -255,3 +261,5 @@ bool InputSystem::GetKeyUp(const KeyCode keyCode)
 {
 	return inputs[keyCode].released;
 }
+
+#pragma endregion

@@ -1,5 +1,7 @@
 #include "vector4.h"
 
+#pragma region Constructors / Destructor
+
 Vector4::Vector4() {
 	this->x = 0;
 	this->y = 0;
@@ -20,6 +22,10 @@ Vector4::Vector4(const float fillValue) {
 	this->z = fillValue;
 	this->w = fillValue;
 }
+
+#pragma endregion
+
+#pragma region Operators
 
 Vector4 operator+(const Vector4& left, const Vector4& right)
 {
@@ -142,3 +148,5 @@ bool operator!=(const Vector4& left, const Vector4& right)
 {
 	return left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w;
 }
+
+#pragma endregion

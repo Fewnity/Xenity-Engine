@@ -1,5 +1,5 @@
 #include "SceneManager.h"
-#include "../debug.h"
+#include "../debug/debug.h"
 
 #include "scene.h"
 

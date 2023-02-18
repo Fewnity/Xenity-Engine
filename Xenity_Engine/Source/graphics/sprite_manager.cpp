@@ -6,9 +6,11 @@
 #include "../ui/window.h"
 #include "../transform.h"
 #include "graphics.h"
-#include "../debug.h"
+#include "../debug/debug.h"
 
 unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
+
+#pragma region Drawing
 
 /// <summary>
 /// Draw a sprite
@@ -57,7 +59,7 @@ void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 sca
 /// <param name="x">X position</param>
 /// <param name="y">Y position</param>
 /// <param name="z">Z position</param>
-/// <param name="w">Xidth</param>
+/// <param name="w">Width</param>
 /// <param name="h">Heigh</param>
 /// <param name="scaleX">X scale</param>
 /// <param name="scaleY">Y scale </param>
@@ -124,6 +126,8 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+#pragma endregion
+
 /// <summary>
 /// Create a buffer for sprites
 /// </summary>
@@ -134,8 +138,10 @@ void SpriteManager::CreateSpriteBuffer()
 	glBindVertexArray(spriteVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	//Vertices attrib
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
+	//Uv attrib
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

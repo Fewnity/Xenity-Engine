@@ -5,7 +5,9 @@
 #include "../file_system/file.h"
 #include "../asset_manager.h"
 #include "../lighting/lighting.h"
-#include "../debug.h"
+#include "../debug/debug.h"
+
+#pragma region Constructors / Destructor
 
 /// <summary>
 /// Instantiate shader from files
@@ -29,22 +31,41 @@ Shader::~Shader()
 	glDeleteProgram(programId);
 }
 
+#pragma endregion
+
+#pragma region Getters
+
 GLuint Shader::GetProgramId() 
 {
 	return this->programId;
 }
 
+#pragma endregion
+
+/// <summary>
+/// Use shader
+/// </summary>
+void Shader::Use()
+{
+	glUseProgram(programId);
+}
+
+#pragma region Data loading
+
 /// <summary>
 /// Load shader files
 /// </summary>
-/// <param name="vertexPath"></param>
-/// <param name="fragmentPath"></param>
-void Shader::LoadShader(const std::string vertexPath, const std::string fragmentPath) {
+/// <param name="vertexFileName"></param>
+/// <param name="fragmentFileName"></param>
+void Shader::LoadShader(const std::string vertexFileName, const std::string fragmentFileName) {
 
 	Debug::Print("Compiling shader...");
 
+	std::string vertexFilePath = File::shaderPath + vertexFileName;
+	std::string fragmentFilePath = File::shaderPath + fragmentFileName;
+
 	//Load vertex shader text
-	std::string vertex_shader_text_temp = File::LoadShaderData(vertexPath);
+	std::string vertex_shader_text_temp = File::ReadText(vertexFilePath);
 	const char* vertex_shader_text = vertex_shader_text_temp.c_str();
 	//Create vertex shader
 	vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
@@ -55,10 +76,10 @@ void Shader::LoadShader(const std::string vertexPath, const std::string fragment
 	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &vResult);
 
 	if(vResult == 0)
-		Debug::Print("Vertex shader error: " + vertexPath);
+		Debug::Print("Vertex shader error: " + vertexFilePath);
 
 	//Load fragment shader text
-	std::string fragment_shader_text_temp = File::LoadShaderData(fragmentPath);
+	std::string fragment_shader_text_temp = File::ReadText(fragmentFilePath);
 	const char* fragment_shader_text = fragment_shader_text_temp.c_str();
 	//Create fragment shader
 	fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
@@ -69,7 +90,7 @@ void Shader::LoadShader(const std::string vertexPath, const std::string fragment
 	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &fragResult);
 
 	if (fragResult == 0)
-		Debug::Print("Fragment shader error. Path: " + fragmentPath);
+		Debug::Print("Fragment shader error. Path: " + fragmentFilePath);
 
 	//Link shaders to a program
 	programId = glCreateProgram();
@@ -77,6 +98,10 @@ void Shader::LoadShader(const std::string vertexPath, const std::string fragment
 	glAttachShader(programId, fragmentShaderId);
 	glLinkProgram(programId);
 }
+
+#pragma endregion
+
+#pragma region Uniform setters
 
 /// <summary>
 /// Send to the shader the 3D camera position
@@ -321,10 +346,4 @@ void Shader::UpdateLights()
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
 }
 
-/// <summary>
-/// Use shader
-/// </summary>
-void Shader::Use() 
-{
-	glUseProgram(programId);
-}
+#pragma endregion

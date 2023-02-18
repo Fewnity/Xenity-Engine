@@ -1,5 +1,5 @@
 #include "audio.h"
-#include "../debug.h"
+#include "../debug/debug.h"
 
 ISoundEngine* Audio::engine = nullptr;
 

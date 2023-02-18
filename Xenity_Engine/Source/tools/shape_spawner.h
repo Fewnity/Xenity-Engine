@@ -3,7 +3,7 @@
 #include <string>
 
 class GameObject;
-class Mesh;
+class MeshRenderer;
 class Vector3;
 
 class ShapeSpawner
@@ -21,6 +21,6 @@ public:
 	static Vector3 defaultScale;
 
 private:
-	static GameObject* Spawn(Mesh* mesh, std::string name);
+	static GameObject* Spawn(MeshRenderer* mesh, std::string name);
 };
 
