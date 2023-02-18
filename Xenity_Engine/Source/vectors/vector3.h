@@ -13,6 +13,7 @@ public:
 
 Vector3 operator+(const Vector3& left, const Vector3& right);
 Vector3 operator-(const Vector3& left, const Vector3& right);
+Vector3 operator-(const Vector3& vec);
 Vector3 operator*(const Vector3& vec, const float value);
 Vector3 operator*(const float value, const Vector3& vec);
 Vector3 operator*(const Vector3& left, const Vector3& right);

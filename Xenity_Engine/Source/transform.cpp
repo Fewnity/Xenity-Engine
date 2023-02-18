@@ -45,21 +45,23 @@ Vector3 Transform::GetLocalScale() const
 
 Vector3 Transform::GetForward() const
 {
-	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
 	Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], -rotationMatrix[8]);
 	return direction;
 }
 
 Vector3 Transform::GetLeft() const
 {
-	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
 	Vector3 direction = Vector3(-rotationMatrix[0], rotationMatrix[1], -rotationMatrix[2]);
 	return direction;
 }
 
+Vector3 Transform::GetRight() const
+{
+	return -GetLeft();
+}
+
 Vector3 Transform::GetUp() const
 {
-	//Vector3 direction = Math::GetDirectionFromAngles(gameObject->transform.GetRotation().y, gameObject->transform.GetRotation().x);
 	Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], -rotationMatrix[5]);
 	return direction;
 }

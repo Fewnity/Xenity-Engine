@@ -28,6 +28,11 @@ Vector3 operator-(const Vector3& left, const Vector3& right)
 	return { left.x - right.x, left.y - right.y, left.z - right.z };
 }
 
+Vector3 operator-(const Vector3& vec)
+{
+	return { -vec.x, -vec.y, -vec.z };
+}
+
 Vector3 operator*(float value, const Vector3& vec)
 {
 	return { vec.x * value, vec.y * value, vec.z * value };
