@@ -264,7 +264,7 @@ void Shader::SetDirectionalLightData(const Light* light, const int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 	SetShaderAttribut(baseString + "color", light->color);
-	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
+	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetForward());
 }
 
 /// <summary>
@@ -277,7 +277,7 @@ void Shader::SetSpotLightData(const Light* light, const int index)
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	SetShaderAttribut(baseString + "color", light->intensity * light->color);
 	SetShaderAttribut(baseString + "position", light->gameObject->transform.GetPosition());
-	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetRotation());
+	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetForward());
 	SetShaderAttribut(baseString + "constant", lightConstant);
 	SetShaderAttribut(baseString + "linear", light->linear);
 	SetShaderAttribut(baseString + "quadratic", light->quadratic);
