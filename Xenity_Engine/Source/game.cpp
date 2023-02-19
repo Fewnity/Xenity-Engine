@@ -126,7 +126,7 @@ void Game::Init()
 	spline->AddSplinePoint(splinePoint2);
 	spline->AddSplinePoint(splinePoint3);
 
-	int splinePointCount = 1500;
+	int splinePointCount = 100;
 	for (int i = 0; i < splinePointCount; i++)
 	{
 		float t = i / (float)splinePointCount;

@@ -119,7 +119,9 @@ void Engine::Loop()
 		debugText += std::string("\nfps: ") + std::to_string((int)(1 / Time::GetUnscaledDeltaTime()));
 		debugText += std::string("\nDrawCallCount: ") + std::to_string(Performance::GetDrawCallCount());
 		debugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
-		UiManager::RenderTextCanvas(*AssetManager::GetShader(7), debugText, 0.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0]);
+		UiManager::RenderTextCanvas(debugText, 0.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Left,  *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(debugText, Window::GetWidth() / 2.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Center, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(debugText, Window::GetWidth(), 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Right, *AssetManager::GetShader(7));
 		Window::UpdateScreen();
 		Performance::ResetCounters();
 	}

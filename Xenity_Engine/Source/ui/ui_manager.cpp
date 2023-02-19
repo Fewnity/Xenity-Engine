@@ -10,7 +10,7 @@
 
 #include FT_FREETYPE_H
 
-struct Character 
+struct Character
 {
 	unsigned int TextureID;  // ID handle of the glyph texture
 	glm::ivec2   Size;       // Size of glyph
@@ -139,7 +139,7 @@ Font* UiManager::CreateFont(std::string filePath)
 	return font;
 }
 
-void UiManager::DeleteFont(Font * font)
+void UiManager::DeleteFont(Font* font)
 {
 	int fontCount = fonts.size();
 	for (int i = 0; i < fontCount; i++)
@@ -160,6 +160,10 @@ void UiManager::DeleteFont(int index)
 #pragma endregion
 
 #pragma region Drawing
+
+void DrawCharacter() {
+
+}
 
 /// <summary>
 /// Draw text
@@ -256,7 +260,7 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void UiManager::RenderTextCanvas(Shader& s, std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font)
+void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, Aligment aligment, Shader& s)
 {
 	y = Window::GetHeight() - y;
 
@@ -271,20 +275,48 @@ void UiManager::RenderTextCanvas(Shader& s, std::string text, float x, float y, 
 
 	float startX = x;
 
-	// iterate through all characters
 	std::string::const_iterator c;
+	float len = 0;
+	int currentLine = 0;
+	std::vector<float> lineLength;
+	lineLength.push_back(0);
+
+	if (aligment != Left) {
+		for (c = text.begin(); c != text.end(); c++)
+		{
+			Character ch = font->Characters[*c];
+			if (*c == '\n')
+			{
+				lineLength.push_back(0);
+				currentLine++;
+			}
+			else {
+				lineLength[currentLine] += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+			}
+		}
+	}
+
+	currentLine = 0;
+	// iterate through all characters
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		Character ch = font->Characters[*c];
 		if (*c == '\n')
 		{
 			y -= (ch.Size.y + lineSpacing) * scale;
-			//y -= ch.Size.y * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 			x = startX;
+			currentLine++;
 		}
 		else
 		{
-			float xpos = x + ch.Bearing.x * scale;
+			float xpos = 0;
+			if (aligment == Center)
+				xpos = x + ch.Bearing.x * scale - lineLength[currentLine] / 2.0f; //Center
+			else if (aligment == Left)
+				xpos = x + ch.Bearing.x * scale; //Left
+			else
+				xpos = (x + ch.Bearing.x * scale) - lineLength[currentLine];//Right
+
 			float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
 			float w = ch.Size.x * scale;
@@ -310,7 +342,6 @@ void UiManager::RenderTextCanvas(Shader& s, std::string text, float x, float y, 
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 			x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}
-
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
