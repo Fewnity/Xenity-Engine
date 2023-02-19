@@ -115,13 +115,15 @@ void Engine::Loop()
 		glPolygonMode(GL_FRONT, GL_FILL);
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		//debugText += std::string(", Delta Time: ") + std::to_string(EngineSettings::deltaTime);
-		debugText += std::string("\nfps: ") + std::to_string((int)(1 / Time::GetUnscaledDeltaTime()));
-		debugText += std::string("\nDrawCallCount: ") + std::to_string(Performance::GetDrawCallCount());
-		debugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
-		UiManager::RenderTextCanvas(debugText, 0.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Left,  *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(debugText, Window::GetWidth() / 2.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Center, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(debugText, Window::GetWidth(), 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Right, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(debugText, 4.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Left,  *AssetManager::GetShader(7));
+
+		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
+		UiManager::RenderTextCanvas(fpsText, Window::GetWidth() / 2.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Center, *AssetManager::GetShader(7));
+		
+		std::string performanceDebugText ="DrawCallCount: " + std::to_string(Performance::GetDrawCallCount());
+		performanceDebugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
+		UiManager::RenderTextCanvas(performanceDebugText, Window::GetWidth()-4, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], UiManager::Right, *AssetManager::GetShader(7));
+		
 		Window::UpdateScreen();
 		Performance::ResetCounters();
 	}

@@ -281,7 +281,8 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 	std::vector<float> lineLength;
 	lineLength.push_back(0);
 
-	if (aligment != Left) {
+	if (aligment != Left) 
+	{
 		for (c = text.begin(); c != text.end(); c++)
 		{
 			Character ch = font->Characters[*c];
@@ -290,7 +291,8 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 				lineLength.push_back(0);
 				currentLine++;
 			}
-			else {
+			else
+			{
 				lineLength[currentLine] += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 			}
 		}
