@@ -160,6 +160,11 @@ void Shader::SetShaderProjection3D() {
 	{
 		//Projection
 		glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), 0.1, 100.0);
+
+		//invert view X axis
+		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
+		projection = projection * flipX;
+
 		glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, false, glm::value_ptr(projection));
 	}
 }

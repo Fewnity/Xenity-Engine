@@ -11,5 +11,6 @@ public:
 
 	virtual void Draw() {};
 	int drawPriority = 0;
+	bool invertedTriangles = false;
 };
 

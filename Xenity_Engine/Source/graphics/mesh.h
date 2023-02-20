@@ -42,6 +42,7 @@ private:
 	void Update();
 	void UpdateMaterial();
 	void LoadFromMeshData(MeshData* meshData);
+	void SetIDrawbleSettings();
 
 	unsigned int vertexArrayBuffer = 0;
 	unsigned int vertexBuffer = 0;

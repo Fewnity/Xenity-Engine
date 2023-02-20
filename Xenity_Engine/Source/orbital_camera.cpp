@@ -2,6 +2,7 @@
 
 #include "graphics/camera.h"
 #include "engine_settings.h"
+#include "debug/debug.h"
 
 OrbitalCamera::OrbitalCamera()
 {
@@ -14,7 +15,5 @@ void OrbitalCamera::Update()
 	//gameObject->transform.SetPosition(cameraNewPosition);
 
 	//gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4);
-
-
-	//gameObject->transform.SetPosition
+	gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4 + target->GetUp() * 2);
 }

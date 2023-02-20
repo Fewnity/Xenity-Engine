@@ -111,7 +111,7 @@ void Game::Init()
 
 	cameraGameObject->AddExistingComponent(camera);
 	cameraGameObject->AddExistingComponent(orbitalCamera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 2, 2));
+	camera->gameObject->transform.SetPosition(Vector3(0, 1, -10));
 	orbitalCamera->target = &cubeGameObject->transform;
 	orbitalCamera->camera = camera;
 
@@ -282,6 +282,7 @@ void Game::Loop()
 	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
+		//Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
 		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
 
@@ -293,9 +294,9 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(D)) {
 
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
 		vect *= Time::GetDeltaTime() * 2;
-		newCameraPosition -= vect;
+		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q)) {
 
@@ -315,7 +316,7 @@ void Game::Loop()
 
 	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeed.y * Time::GetDeltaTime()  * 20;
-	float yInputToAdd = -InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
+	float yInputToAdd = InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
 
 	newCameraRotation.x += xInputToAdd;
 	newCameraRotation.y += yInputToAdd;
@@ -335,12 +336,12 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(UP)) 
 	{
-		cubeNewPosition.z -= Time::GetDeltaTime() * 5;
+		cubeNewPosition.z += Time::GetDeltaTime() * 5;
 		//mesh4NewRotation.x -= EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(DOWN)) 
 	{
-		cubeNewPosition.z += Time::GetDeltaTime() * 5;
+		cubeNewPosition.z -= Time::GetDeltaTime() * 5;
 		//mesh4NewRotation.x += EngineSettings::deltaTime * 25;
 	}
 	if (InputSystem::GetKey(P)) 

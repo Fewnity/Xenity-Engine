@@ -11,6 +11,12 @@ void Graphics::DrawAllDrawable()
 	int drawableCount = AssetManager::GetDrawableCount();
 	for (int i = 0; i < drawableCount; i++)
 	{
-		AssetManager::GetDrawable(i)->Draw();
+		IDrawable * drawable = AssetManager::GetDrawable(i);
+		if(drawable->invertedTriangles)
+			glCullFace(GL_FRONT);
+		else
+			glCullFace(GL_BACK);
+
+		drawable->Draw();
 	}
 }
