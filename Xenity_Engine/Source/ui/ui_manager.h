@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <map>
 #include <vector>
+#include "TextAlignments.h"
 
 class Character;
 
@@ -17,14 +18,9 @@ private:
 class UiManager
 {
 public:
-	enum Aligment {
-		Left,
-		Center,
-		Right
-	};
 	static int Init();
-	static void RenderText(Shader& s, std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font);
-	static void RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, Aligment aligment, Shader& s);
+	static void RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s);
+	static void RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s);
 	//static void RenderText(Shader& s, std::string text, float x, float y, float z, float scale, glm::vec3 color, Font* font);
 	static Font* CreateFont(std::string filePath);
 	static std::vector<Font*> fonts;
@@ -32,6 +28,7 @@ private:
 	static void CreateTextBuffer();
 	static void DeleteFont(Font * font);
 	static void DeleteFont(int index);
+	static std::vector<float> GetTextLenght(std::string text, Font* font, float scale);
 	static unsigned int textVAO, textVBO;
 };
 

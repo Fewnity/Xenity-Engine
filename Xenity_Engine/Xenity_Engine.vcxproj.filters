@@ -87,6 +87,7 @@
     <ClInclude Include="Source\time\time.h" />
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\xenity.h" />
+    <ClInclude Include="Source\ui\TextAlignments.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

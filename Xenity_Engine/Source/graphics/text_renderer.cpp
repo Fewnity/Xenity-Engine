@@ -29,6 +29,6 @@ void TextRenderer::Draw()
 {
 	if (gameObject != nullptr)
 	{
-		UiManager::RenderText(*shader, text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, 0.1f * size, lineSpacing, color, font);
+		UiManager::RenderText(text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, 0.1f * size, lineSpacing, color, font, horizontalAligment, *shader);
 	}
 }

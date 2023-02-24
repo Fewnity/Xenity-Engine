@@ -3,6 +3,7 @@
 
 #include "../component.h"
 #include "iDrawable.h"
+#include "../ui/TextAlignments.h"
 
 class Font;
 class Shader;
@@ -23,6 +24,7 @@ public:
 	Font* font = nullptr;
 	Vector3 color = Vector3(1,1,1); // [0;1]
 	Shader* shader = nullptr;
+	HorizontalAlignment horizontalAligment = H_Center;
 
 private:
 	void Draw();

@@ -174,7 +174,7 @@ void DrawCharacter() {
 /// <param name="y">Y position</param>
 /// <param name="scale">Text's scale</param>
 /// <param name="color">Text's color</param>
-void UiManager::RenderText(Shader& s, std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font)
+void UiManager::RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s)
 {
 	//y = Window::GetHeight() - y;
 
@@ -205,16 +205,13 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 	glBindVertexArray(textVAO);
 
 	// iterate through all characters
-	std::string::const_iterator c;
 	int x2 = 0;
+	int y2 = 0;
 
-	float len = 0;
-	for (c = text.begin(); c != text.end(); c++)
-	{
-		Character ch = font->Characters[*c];
+	std::vector<float> lineLength = GetTextLenght(text, font, scale);
 
-		len += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
-	}
+	int currentLine = 0;
+	std::string::const_iterator c;
 
 	float startX = x;
 
@@ -223,14 +220,24 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 		Character ch = font->Characters[*c];
 		if (*c == '\n')
 		{
-			y -= (ch.Size.y + lineSpacing) * scale;
+			y2 -= (ch.Size.y + lineSpacing) * scale;
 			//x = startX;
 			x2 = 0;
+			currentLine++;
 		}
 		else
 		{
-			float xpos = x2 + ch.Bearing.x * scale - len / 2.0f;
-			float ypos = 0 - (ch.Size.y - ch.Bearing.y) * scale;
+			float xpos;
+
+			if (horizontalAlignment == H_Center)
+				xpos = x2 + ch.Bearing.x * scale - lineLength[currentLine] / 2.0f; //Center
+			else if (horizontalAlignment == H_Left)
+				xpos = x2 + ch.Bearing.x * scale; //Left
+			else
+				xpos = (x2 + ch.Bearing.x * scale) - lineLength[currentLine];//Right
+
+			//float xpos = x2 + ch.Bearing.x * scale - lineLength[currentLine] / 2.0f;
+			float ypos = y2 - (ch.Size.y - ch.Bearing.y) * scale;
 
 			float w = ch.Size.x * scale;
 			float h = ch.Size.y * scale;
@@ -260,7 +267,33 @@ void UiManager::RenderText(Shader& s, std::string text, float x, float y, float 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, Aligment aligment, Shader& s)
+//Replace float by a class with height and length or make a out param
+std::vector<float> UiManager::GetTextLenght(std::string text, Font* font, float scale)
+{
+	std::string::const_iterator c;
+	float len = 0;
+	int currentLine = 0;
+	std::vector<float> lineLength;
+	lineLength.push_back(0);
+
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		Character ch = font->Characters[*c];
+		if (*c == '\n')
+		{
+			lineLength.push_back(0);
+			currentLine++;
+		}
+		else
+		{
+			lineLength[currentLine] += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+		}
+	}
+
+	return lineLength;
+}
+
+void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s)
 {
 	y = Window::GetHeight() - y;
 
@@ -275,30 +308,10 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 
 	float startX = x;
 
-	std::string::const_iterator c;
-	float len = 0;
+	std::vector<float> lineLength = GetTextLenght(text, font, scale);
+
 	int currentLine = 0;
-	std::vector<float> lineLength;
-	lineLength.push_back(0);
-
-	if (aligment != Left) 
-	{
-		for (c = text.begin(); c != text.end(); c++)
-		{
-			Character ch = font->Characters[*c];
-			if (*c == '\n')
-			{
-				lineLength.push_back(0);
-				currentLine++;
-			}
-			else
-			{
-				lineLength[currentLine] += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
-			}
-		}
-	}
-
-	currentLine = 0;
+	std::string::const_iterator c;
 	// iterate through all characters
 	for (c = text.begin(); c != text.end(); c++)
 	{
@@ -312,9 +325,9 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 		else
 		{
 			float xpos = 0;
-			if (aligment == Center)
+			if (horizontalAlignment == H_Center)
 				xpos = x + ch.Bearing.x * scale - lineLength[currentLine] / 2.0f; //Center
-			else if (aligment == Left)
+			else if (horizontalAlignment == H_Left)
 				xpos = x + ch.Bearing.x * scale; //Left
 			else
 				xpos = (x + ch.Bearing.x * scale) - lineLength[currentLine];//Right
