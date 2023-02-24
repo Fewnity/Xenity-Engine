@@ -24,6 +24,7 @@ public:
 	//void SetChildrenWorldPositions();
 
 	void AddChild(GameObject* gameObject);
+	void SetParent(GameObject* gameObject);
 	void AddExistingComponent(Component* component);
 
 	template <typename T>

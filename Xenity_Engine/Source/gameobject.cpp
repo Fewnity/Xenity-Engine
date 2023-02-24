@@ -48,10 +48,18 @@ void GameObject::AddChild(GameObject* newChild)
 	if (add)
 	{
 		children.push_back(newChild);
-		newChild->parent = this;
-		newChild->transform.OnParentChanged();
-		newChild->transform.UpdateLocalScale();
-		newChild->UpdateActive(this);
+		newChild->SetParent(this);
+	}
+}
+
+void GameObject::SetParent(GameObject* gameObject)
+{
+	if (gameObject != parent) 
+	{
+		parent = gameObject;
+		transform.OnParentChanged();
+		//transform.UpdateLocalScale();
+		UpdateActive(this);
 	}
 }
 
@@ -161,7 +169,7 @@ void GameObject::UpdateActive(GameObject* changed)
 	{
 		localActive = false;
 	}
-	else if(active)
+	else if (active)
 	{
 		bool newActive = true;
 		GameObject* gmToCheck = parent;
