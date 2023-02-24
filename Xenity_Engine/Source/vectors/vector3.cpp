@@ -1,26 +1,62 @@
 #include "vector3.h"
+#include <corecrt_math.h>
+#include <corecrt_math_defines.h>
 
 #pragma region Constructors / Destructor
 
-Vector3::Vector3() {
+Vector3::Vector3()
+{
 	this->x = 0;
 	this->y = 0;
 	this->z = 0;
 }
 
-Vector3::Vector3(const float x, const float y, const float z) {
+Vector3::Vector3(const float x, const float y, const float z)
+{
 	this->x = x;
 	this->y = y;
 	this->z = z;
 }
 
-Vector3::Vector3(const float fillValue) {
+Vector3::Vector3(const float fillValue)
+{
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
 }
 
 #pragma endregion
+
+Vector3 Vector3::LookAt(Vector3 from, Vector3 to)
+{
+	float xdis = to.x - from.x;
+	float ydis = to.y - from.y;
+	float zdis = to.z - from.z;
+	float xzdis = sqrtf(xdis * xdis + zdis * zdis);
+
+	return Vector3((-atan2f(ydis, xzdis)) * 180 / M_PI, (-(atan2f(-xdis, zdis))) * 180 / M_PI, 0);
+}
+
+Vector3 Vector3::Normalise()
+{
+	float ls = this->x * this->x + this->y * this->y + this->z * this->z;
+	float length;
+	if (ls != 0) {
+		length = sqrtf(ls);
+		return Vector3(this->x / length, this->y / length, this->z / length);
+	}
+	else {
+		return Vector3(0, 0, 0);
+	}
+}
+
+float Vector3::Distance(Vector3 a, Vector3 b)
+{
+	float xDis = a.x - b.x;
+	float yDis = a.y - b.y;
+	float zDis = a.z - b.z;
+	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
+}
 
 #pragma region Operators
 
