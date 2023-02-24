@@ -162,6 +162,82 @@ void InputSystem::ChangeInputState(const bool pressed, const int keyCode)
 		SetInput(pressed, Z);
 		break;
 
+	case SDLK_0:
+		SetInput(pressed, NUM_0);
+		break;
+	case SDLK_1:
+		SetInput(pressed, NUM_1);
+		break;
+	case SDLK_2:
+		SetInput(pressed, NUM_2);
+		break;
+	case SDLK_3:
+		SetInput(pressed, NUM_3);
+		break;
+	case SDLK_4:
+		SetInput(pressed, NUM_4);
+		break;
+	case SDLK_5:
+		SetInput(pressed, NUM_5);
+		break;
+	case SDLK_6:
+		SetInput(pressed, NUM_6);
+		break;
+	case SDLK_7:
+		SetInput(pressed, NUM_7);
+		break;
+	case SDLK_8:
+		SetInput(pressed, NUM_8);
+		break;
+	case SDLK_9:
+		SetInput(pressed, NUM_9);
+		break;
+
+	case SDLK_F1:
+		SetInput(pressed, F1);
+		break;
+	case SDLK_F2:
+		SetInput(pressed, F2);
+		break;
+	case SDLK_F3:
+		SetInput(pressed, F3);
+		break;
+	case SDLK_F4:
+		SetInput(pressed, F4);
+		break;
+	case SDLK_F5:
+		SetInput(pressed, F5);
+		break;
+	case SDLK_F6:
+		SetInput(pressed, F6);
+		break;
+	case SDLK_F7:
+		SetInput(pressed, F7);
+		break;
+	case SDLK_F8:
+		SetInput(pressed, F8);
+		break;
+	case SDLK_F9:
+		SetInput(pressed, F9);
+		break;
+	case SDLK_F10:
+		SetInput(pressed, F10);
+		break;
+	case SDLK_F11:
+		SetInput(pressed, F11);
+		break;
+	case SDLK_F12:
+		SetInput(pressed, F12);
+		break;
+
+	case SDLK_CAPSLOCK:
+		SetInput(pressed, CAPSLOCK);
+		break;
+
+	case SDLK_SPACE:
+		SetInput(pressed, SPACE);
+		break;
+
 	case SDLK_ESCAPE:
 		SetInput(pressed, ESCAPE);
 		break;

@@ -22,7 +22,7 @@ using namespace std;
 /*
  * TODO :
  * Update local position when updating position, rotation and scale
- * Update position when parent is set to nullptr
+ * 3D text
  * Clean code
  * 3D Sounds
  * Fix transparency order
