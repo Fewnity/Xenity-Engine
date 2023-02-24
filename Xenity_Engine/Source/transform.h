@@ -31,16 +31,16 @@ public:
 	void SetRotation(const Vector3 value);//Euler angle
 	void SetLocalRotation(const Vector3 value);//Euler angle
 	void SetLocalScale(const Vector3 value);
-	void UpdateScale();
-	void UpdateLocalScale();
+	void UpdateWorldScale();
 	void SetChildrenWorldPositions();
 	void OnParentChanged();
 	glm::mat4 transformationMatrix;
 
 private:
 	void UpdateTransformationMatrix();
+	void UpdateWorldValues();
 	void UpdateWorldPosition();
-	void UpdateRotationMatrix();
+	void UpdateWorldRotation();
 	Vector3 position = Vector3(0);
 	Vector3 localPosition = Vector3(0);
 	Vector3 rotation = Vector3(0);//Euler angle
