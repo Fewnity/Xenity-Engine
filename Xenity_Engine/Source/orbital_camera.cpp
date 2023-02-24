@@ -3,17 +3,204 @@
 #include "graphics/camera.h"
 #include "engine_settings.h"
 #include "debug/debug.h"
+#include <SDL2/SDL_stdinc.h>
+#include "tools/math.h"
+#include "time/time.h"
+#include "inputs/input_system.h"
 
 OrbitalCamera::OrbitalCamera()
 {
+	walls.push_back(Box(Vector3(-1, 0, 0), Vector3(1, 1, 1)));
+}
+
+float lerp(float a, float b, float t)
+{
+	return a + t * (b - a);
+}
+
+// Optimized Min function
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+// Optimized Max function
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+bool OrbitalCamera::getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t)
+{
+	float t1 = (corner1.x - startPosition.x) * dirfrac.x;
+	float t2 = (corner2.x - startPosition.x) * dirfrac.x;
+	float t3 = (corner1.y - startPosition.y) * dirfrac.y;
+	float t4 = (corner2.y - startPosition.y) * dirfrac.y;
+	float t5 = (corner1.z - startPosition.z) * dirfrac.z;
+	float t6 = (corner2.z - startPosition.z) * dirfrac.z;
+
+	float tmin = MAX(MAX(MIN(t1, t2), MIN(t3, t4)), MIN(t5, t6));
+	float tmax = MIN(MIN(MAX(t1, t2), MAX(t3, t4)), MAX(t5, t6));
+
+	// if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us, if tmin > tmax, ray doesn't intersect AABB
+	if (tmax < 0 || tmin > tmax)
+	{
+	}
+	else
+	{
+		//if (*t > tmin)
+		//{
+			*t = tmin;
+			return true;
+		//}
+	}
+	return false;
+}
+
+bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) {
+	int boxCount = walls.size();
+	float dis = 99999;
+	bool foundWall = false;
+	for (int i = 0; i < boxCount; i++)
+	{
+		Box* b = &walls[i];
+		Vector3 c1 = Vector3(b->position.x - b->scale.x / 2.0f, b->position.y - b->scale.y / 2.0f, b->position.z - b->scale.z / 2.0f);
+		Vector3 c2 = Vector3(b->position.x + b->scale.x / 2.0f, b->position.y + b->scale.y / 2.0f, b->position.z + b->scale.z / 2.0f);
+		//Vector3 c1 = Vector3(b->position.x - b->scale.x, b->position.y - b->scale.y, b->position.z - b->scale.z);
+		//Vector3 c2 = Vector3(b->position.x + b->scale.x, b->position.y + b->scale.y, b->position.z + b->scale.z);
+		float t = 0;
+		Vector3 frag;
+
+		frag.x = 1.0f / dir.x;
+		frag.y = 1.0f / dir.y;
+		frag.z = 1.0f / dir.z;
+
+		//std::cout << "c1 " << c1.x << " " << c1.y << " " << c1.z << " " << std::endl;
+		//std::cout << "c2 " << c2.x << " " << c2.y << " " << c2.z << " " << std::endl;
+		//std::cout << "frag" << frag.x << " " << frag.y << " " << frag.z << " " << std::endl;
+		//std::cout << "dir" << dir.x << " " << dir.y << " " << dir.z << " " << std::endl;
+
+		bool found = getHitDistance(c1, c2, frag, startDir, &t);
+		if (found) 
+		{
+			//std::cout << "FOUND" << std::endl;
+			foundWall = true;
+			if (t < dis)
+			{
+				dis = t;
+			}
+		}
+	}
+	*distance = dis;
+	return foundWall;
 }
 
 void OrbitalCamera::Update()
 {
-	//Vector3 cameraNewPosition = camera->gameObject->transform.GetPosition();
-	//cameraNewPosition += Vector3(1)* gameObject->transform.GetForward() * EngineSettings::deltaTime;
-	//gameObject->transform.SetPosition(cameraNewPosition);
+	return;
+	if (InputSystem::GetKeyDown(NUM_1))
+	{
+		cameraStatus = OrbitalCamera::ThirdPerson;
+		Debug::Print("ThirdPerson");
+	}
+	else if (InputSystem::GetKeyDown(NUM_2))
+	{
+		cameraStatus = OrbitalCamera::FirstPerson;
+		Debug::Print("FirstPerson");
+	}
+	else if (InputSystem::GetKeyDown(NUM_3))
+	{
+		cameraStatus = OrbitalCamera::Camera1;
+		Debug::Print("Camera1");
+	}
 
-	//gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4);
-	gameObject->transform.SetPosition(target->GetPosition() + target->GetForward() * -4 + target->GetUp() * 2);
+	axis1 += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
+	axis2 += InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20;
+
+	int maxAxis = 10;
+	if (cameraStatus == OrbitalCamera::FirstPerson)
+		maxAxis = 80;
+
+	if (axis2 > maxAxis)
+		axis2 = maxAxis;
+	else if (axis2 < -80)
+		axis2 = -80;
+
+	Vector3 offset = Math::GetDirectionFromAngles(axis1, axis2);
+
+	Vector3 FinalPos = Vector3(0);
+	switch (cameraStatus)
+	{
+	case OrbitalCamera::ThirdPerson:
+		FinalPos = UpdateThirdPersonMode();
+		LerpMovements(FinalPos, offset);
+		break;
+	case OrbitalCamera::FirstPerson:
+		FinalPos = UpdateFpsMode();
+		LookAtFirstPerson(FinalPos);
+		break;
+	case OrbitalCamera::Camera1:
+		FinalPos = UpdateCamera1Mode();
+		LerpMovements(FinalPos, offset);
+		break;
+	}
+
+	if (speed <= 10 && Vector3::Distance(cameraWithoutOffset, FinalPos) > 0.1f)
+	{
+		speed += Time::GetDeltaTime() * 5;
+	}
+	else if (speed >= 1)
+	{
+		speed -= Time::GetDeltaTime() * 10;
+	}
+
+	float dis = 0;
+	detectWalls(&dis, offset, target->GetPosition());
+	//std::cout << dis << std::endl;
+
+	//targetDistance = 
+
+	if (dis < 4) {
+		targetDistance = dis;
+	}
+	else {
+		targetDistance = 4;
+	}
+	currentDistance = lerp(currentDistance, targetDistance, Time::GetDeltaTime() * 10);
+}
+
+void OrbitalCamera::LerpMovements(Vector3 lerpTarget, Vector3 cameraOffset)
+{
+	cameraWithoutOffset = Vector3(lerp(cameraWithoutOffset.x, lerpTarget.x, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.y, lerpTarget.y, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.z, lerpTarget.z, Time::GetDeltaTime() * speed));
+
+	Vector3 LerpPos = cameraWithoutOffset + cameraOffset * currentDistance;
+	gameObject->transform.SetPosition(LerpPos);
+
+	Vector3 angles = Vector3::LookAt(gameObject->transform.GetPosition(), target->GetPosition());
+	gameObject->transform.SetRotation(angles);
+}
+
+void OrbitalCamera::LookAtFirstPerson(Vector3 target) {
+
+	Vector3 offset = Vector3(0, 0, 0);
+	offset = Math::GetDirectionFromAngles(axis1, axis2);
+
+	Vector3 angles = Vector3::LookAt(Vector3(0), offset * 5);
+	gameObject->transform.SetRotation(angles);
+	gameObject->transform.SetPosition(target);
+}
+
+Vector3 OrbitalCamera::UpdateFpsMode()
+{
+	return target->GetPosition();
+}
+
+Vector3 OrbitalCamera::UpdateThirdPersonMode()
+{
+	/*Vector3 pos = cameraWithoutOffset;
+	if (Vector3::Distance(cameraWithoutOffset, target->GetPosition()) > 1)
+	{
+		lastMovedPos = target->GetPosition();
+		pos = target->GetPosition();
+	}*/
+	Vector3 pos = target->GetPosition();
+	return pos;
+}
+
+Vector3 OrbitalCamera::UpdateCamera1Mode()
+{
+	return camera1->GetPosition();
 }
