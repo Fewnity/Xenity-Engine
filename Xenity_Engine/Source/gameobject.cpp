@@ -17,8 +17,7 @@ GameObject::GameObject(std::string name)
 
 GameObject::~GameObject()
 {
-	int componentsCount = components.size();
-	for (int i = 0; i < componentsCount; i++)
+	for (int i = 0; i < componentCount; i++)
 	{
 		delete components[i];
 	}
@@ -35,7 +34,7 @@ void GameObject::AddChild(GameObject* newChild)
 {
 	//Check if the child to add is alrady a child of this gameobject
 	bool add = true;
-	int childCount = children.size();
+	//int childCount = children.size();
 	for (int i = 0; i < childCount; i++)
 	{
 		if (children[i] == newChild)
@@ -49,6 +48,7 @@ void GameObject::AddChild(GameObject* newChild)
 	{
 		children.push_back(newChild);
 		newChild->SetParent(this);
+		childCount++;
 	}
 }
 
@@ -58,7 +58,6 @@ void GameObject::SetParent(GameObject* gameObject)
 	{
 		parent = gameObject;
 		transform.OnParentChanged();
-		//transform.UpdateLocalScale();
 		UpdateActive(this);
 	}
 }
@@ -74,7 +73,6 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 
 	//Check if the component to add is alrady a component of this gameobject
 	bool add = true;
-	int componentCount = components.size();
 	for (int i = 0; i < componentCount; i++)
 	{
 		if (components[i] == componentToAdd)
@@ -88,6 +86,7 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 	{
 		components.push_back(componentToAdd);
 		componentToAdd->gameObject = this;
+		componentCount++;
 	}
 }
 
@@ -193,7 +192,6 @@ void GameObject::UpdateActive(GameObject* changed)
 	if (lastLocalActive != localActive)
 	{
 		//Update children
-		int childCount = children.size();
 		for (int i = 0; i < childCount; i++)
 		{
 			children[i]->UpdateActive(changed);

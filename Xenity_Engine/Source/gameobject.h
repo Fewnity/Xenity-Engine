@@ -37,8 +37,7 @@ public:
 
 	template <typename T>
 	T* GetComponent() {
-		int c = components.size();
-		for (int i = 0; i < c; i++)
+		for (int i = 0; i < componentCount; i++)
 		{
 			if (T* result = dynamic_cast<T*>(components[i])) {
 				return result;
@@ -52,8 +51,20 @@ public:
 	bool GetActive() const;
 	bool GetLocalActive() const;
 	void SetActive(const bool active);
+
+	int GetChildrenCount() 
+	{
+		return childCount;
+	}
+
+	int GetComponentCount() {
+		return componentCount;
+	}
+
 private:
 	void UpdateActive(GameObject * changed);
 	bool active = true;
 	bool localActive = true;
+	int childCount = 0;
+	int componentCount = 0;
 };

@@ -51,7 +51,6 @@ Vector3 Transform::GetLocalScale() const
 Vector3 Transform::GetForward() const
 {
 	Vector3 direction = Vector3(rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
-	//Vector3 direction = Vector3(transformationMatrix[2][0], transformationMatrix[2][1], transformationMatrix[2][2]).Normalise();
 	return direction;
 }
 
@@ -68,14 +67,12 @@ Vector3 Transform::GetLeft() const
 Vector3 Transform::GetRight() const
 {
 	Vector3 direction = Vector3(rotationMatrix[0], rotationMatrix[1], rotationMatrix[2]);
-	//Vector3 direction = Vector3(transformationMatrix[0][0], transformationMatrix[0][1], transformationMatrix[0][2]).Normalise();
 	return direction;
 }
 
 Vector3 Transform::GetUp() const
 {
 	Vector3 direction = Vector3(rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
-	//Vector3 direction = Vector3(transformationMatrix[1][0], transformationMatrix[1][1], transformationMatrix[1][2]).Normalise();
 	return direction;
 }
 
@@ -86,6 +83,11 @@ Vector3 Transform::GetDown() const
 
 void Transform::SetPosition(const Vector3 value)
 {
+	if (value != position)
+		isTransformationMatrixDirty = true;
+	else
+		return;
+
 	position = value;
 	if (gameObject->parent == nullptr)
 	{
@@ -96,46 +98,60 @@ void Transform::SetPosition(const Vector3 value)
 		localPosition = (position - gameObject->parent->transform.position) * localScale;
 	}
 
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
+	SetChildrenWorldPositions();
 }
 
 void Transform::SetLocalPosition(const Vector3 value)
 {
+	if (value != localPosition)
+		isTransformationMatrixDirty = true;
+	else
+		return;
+
 	localPosition = value;
-	if (gameObject != nullptr)
-		UpdateWorldValues();
-	//gameObject->parent->transform.SetChildrenWorldPositions();
+	UpdateWorldValues();
 }
 
 void Transform::SetRotation(const Vector3 value)
 {
+	if (value != rotation)
+		isTransformationMatrixDirty = true;
+	else
+		return;
+
 	rotation = value;
-	if (gameObject->parent == nullptr) 
+	if (gameObject->parent == nullptr)
 	{
 		localRotation = value;
 	}
-	else 
+	else
 	{
 		localRotation = rotation - gameObject->parent->transform.rotation;
 	}
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
+
+	SetChildrenWorldPositions();
 }
 
 void Transform::SetLocalRotation(const Vector3 value)
 {
+	if (value != localRotation)
+		isTransformationMatrixDirty = true;
+	else
+		return;
+
 	localRotation = value;
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
+	UpdateWorldValues();
 }
 
 void Transform::SetLocalScale(const Vector3 value)
 {
+	if (value != localScale)
+		isTransformationMatrixDirty = true;
+	else
+		return;
+
 	localScale = value;
-	UpdateWorldScale();
-	if (gameObject != nullptr)
-		SetChildrenWorldPositions();
+	UpdateWorldValues();
 }
 
 #pragma endregion
@@ -145,7 +161,7 @@ void Transform::OnParentChanged()
 	if (gameObject->parent != nullptr)
 	{
 		//Create the matrix which store the new child's world position (wihtout parent's world position added)
-		double modifiedMatrix[9];
+		float modifiedMatrix[9];
 
 		for (int i = 0; i < 9; i++)
 		{
@@ -156,12 +172,12 @@ void Transform::OnParentChanged()
 		modifiedMatrix[2] = -modifiedMatrix[2];
 		modifiedMatrix[3] = -modifiedMatrix[3];
 
-		double posAfterRotation[3];
+		float posAfterRotation[3];
 		localScale = scale / gameObject->parent->transform.scale;
 		localRotation = rotation - gameObject->parent->transform.rotation;
 
 		Vector3 localPosition2 = (position - gameObject->parent->transform.position) / gameObject->parent->transform.scale;
-		double localPos[3] = { localPosition2.x, localPosition2.y , localPosition2.z };
+		float localPos[3] = { localPosition2.x, localPosition2.y , localPosition2.z };
 		Math::MultiplyMatrix(localPos, modifiedMatrix, posAfterRotation, 1, 3, 3, 3);
 		localPosition = Vector3(posAfterRotation[0], posAfterRotation[1], posAfterRotation[2]);
 	}
@@ -194,19 +210,22 @@ void Transform::SetChildrenWorldPositions()
 	}
 	std::cout << "|" << std::endl;*/
 
-	int childCount = gameObject->children.size();
+	int childCount = gameObject->GetChildrenCount();
 
 	//For each children
 	for (int i = 0; i < childCount; i++)
 	{
+		gameObject->children[i]->transform.isTransformationMatrixDirty = true;
 		gameObject->children[i]->transform.UpdateWorldValues();
 	}
 }
 
-void Transform::UpdateWorldValues() {
+void Transform::UpdateWorldValues()
+{
 	UpdateWorldPosition();
 	UpdateWorldRotation();
 	UpdateWorldScale();
+
 	SetChildrenWorldPositions();
 }
 
@@ -227,24 +246,23 @@ void Transform::UpdateWorldPosition()
 		return;
 
 	//Get child local position
-	double scaledLocalPos[3] = { GetLocalPosition().x * gameObject->parent->transform.GetScale().x, GetLocalPosition().y * gameObject->parent->transform.GetScale().y, GetLocalPosition().z * gameObject->parent->transform.GetScale().z };
+	float scaledLocalPos[3] = { GetLocalPosition().x * gameObject->parent->transform.GetScale().x, GetLocalPosition().y * gameObject->parent->transform.GetScale().y, GetLocalPosition().z * gameObject->parent->transform.GetScale().z };
 
 	//Create the matrix which store the new child's world position (wihtout parent's world position added)
-	double posAfterRotation[3];
+	float posAfterRotation[3];
 	Math::MultiplyMatrix(scaledLocalPos, gameObject->parent->transform.rotationMatrix, posAfterRotation, 1, 3, 3, 3);
 
 	//Set new child position (with parent's world position added)
 	position = Vector3(posAfterRotation[0] + gameObject->parent->transform.GetPosition().x, posAfterRotation[1] + gameObject->parent->transform.GetPosition().y, posAfterRotation[2] + gameObject->parent->transform.GetPosition().z);
-
-	/*Vector3 newRotation;
-	newRotation = gameObject->parent->transform.GetRotation() + GetLocalRotation();
-	rotation = newRotation;*/
-
-	//SetChildrenWorldPositions();
 }
 
 void Transform::UpdateTransformationMatrix()
 {
+	if (!isTransformationMatrixDirty)
+		return;
+
+	isTransformationMatrixDirty = false;
+
 	transformationMatrix = glm::mat4(1.0f);
 
 	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(position.x, position.y, position.z));
@@ -275,7 +293,7 @@ void Transform::UpdateWorldScale()
 		parentGm = parentGm->parent;
 	}
 
-	int childCount = gameObject->children.size();
+	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
 		GameObject* child = gameObject->children[i];

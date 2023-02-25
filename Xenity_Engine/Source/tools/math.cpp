@@ -3,14 +3,14 @@
 #include <corecrt_math.h>
 #include "../vectors/vector3.h"
 
-void Math::MultiplyMatrix(const double* A, const double* B, double* result, int rA, int cA, int rB, int cB)
+void Math::MultiplyMatrix(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
 	{
 		return;
 	}
 
-	double temp = 0;
+	float temp = 0;
 
 	for (int i = 0; i < rA; i++)
 	{
