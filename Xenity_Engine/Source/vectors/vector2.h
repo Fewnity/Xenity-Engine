@@ -8,6 +8,9 @@ public:
 	Vector2(const float fillValue);
 	float x;
 	float y;
+
+	Vector2 normalize();
+	float magnitude();
 };
 
 

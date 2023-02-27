@@ -1,4 +1,5 @@
 #include "vector2.h"
+#include <corecrt_math.h>
 
 #pragma region Constructors
 
@@ -18,6 +19,22 @@ Vector2::Vector2(const float fillValue) {
 }
 
 #pragma endregion
+
+// From https://github.com/microsoft/referencesource/blob/5697c29004a34d80acdaf5742d7e699022c64ecd/System.Numerics/System/Numerics/Vector2.cs
+Vector2 Vector2::normalize()
+{
+	float ls = this->x * this->x + this->y * this->y;
+	float invNorm = 0;
+	if (ls != 0)
+		invNorm = 1.0f / sqrtf(ls);
+
+	return Vector2(this->x * invNorm, this->y * invNorm);
+}
+
+float Vector2::magnitude()
+{
+	return sqrtf(powf(this->x, 2) + powf(this->y, 2));
+}
 
 #pragma region Operators
 
