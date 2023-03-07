@@ -7,15 +7,12 @@
 #include "tools/math.h"
 #include "time/time.h"
 #include "inputs/input_system.h"
+#include "tools/math.h"
 
 OrbitalCamera::OrbitalCamera()
 {
+	//Add a wall
 	walls.push_back(Box(Vector3(-1, 0, 0), Vector3(1, 1, 1)));
-}
-
-float lerp(float a, float b, float t)
-{
-	return a + t * (b - a);
 }
 
 // Optimized Min function
@@ -23,7 +20,16 @@ float lerp(float a, float b, float t)
 // Optimized Max function
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-bool OrbitalCamera::getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t)
+/// <summary>
+/// Get the distance of a ray if the ray hits the box
+/// </summary>
+/// <param name="corner1">Corner1 of the box</param>
+/// <param name="corner2">Corner2 of the box</param>
+/// <param name="dirfrac">Direction of the ray</param>
+/// <param name="startPosition">Start position of the ray</param>
+/// <param name="t">Distance out</param>
+/// <returns>Is hitting something</returns>
+bool OrbitalCamera::GetHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t)
 {
 	float t1 = (corner1.x - startPosition.x) * dirfrac.x;
 	float t2 = (corner2.x - startPosition.x) * dirfrac.x;
@@ -41,16 +47,20 @@ bool OrbitalCamera::getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dir
 	}
 	else
 	{
-		//if (*t > tmin)
-		//{
 		*t = tmin;
 		return true;
-		//}
 	}
 	return false;
 }
 
-bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) {
+/// <summary>
+/// 
+/// </summary>
+/// <param name="distance"></param>
+/// <param name="dir"></param>
+/// <param name="startDir"></param>
+/// <returns></returns>
+bool OrbitalCamera::DetectWalls(float* distance, Vector3 dir, Vector3 startDir) {
 	int boxCount = walls.size();
 	float dis = 99999;
 	bool foundWall = false;
@@ -59,8 +69,6 @@ bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) 
 		Box* b = &walls[i];
 		Vector3 c1 = Vector3(b->position.x - b->scale.x / 2.0f, b->position.y - b->scale.y / 2.0f, b->position.z - b->scale.z / 2.0f);
 		Vector3 c2 = Vector3(b->position.x + b->scale.x / 2.0f, b->position.y + b->scale.y / 2.0f, b->position.z + b->scale.z / 2.0f);
-		//Vector3 c1 = Vector3(b->position.x - b->scale.x, b->position.y - b->scale.y, b->position.z - b->scale.z);
-		//Vector3 c2 = Vector3(b->position.x + b->scale.x, b->position.y + b->scale.y, b->position.z + b->scale.z);
 		float t = 0;
 		Vector3 frag;
 
@@ -68,12 +76,7 @@ bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) 
 		frag.y = 1.0f / dir.y;
 		frag.z = 1.0f / dir.z;
 
-		//std::cout << "c1 " << c1.x << " " << c1.y << " " << c1.z << " " << std::endl;
-		//std::cout << "c2 " << c2.x << " " << c2.y << " " << c2.z << " " << std::endl;
-		//std::cout << "frag" << frag.x << " " << frag.y << " " << frag.z << " " << std::endl;
-		//std::cout << "dir" << dir.x << " " << dir.y << " " << dir.z << " " << std::endl;
-
-		bool found = getHitDistance(c1, c2, frag, startDir, &t);
+		bool found = GetHitDistance(c1, c2, frag, startDir, &t);
 		if (found)
 		{
 			//std::cout << "FOUND" << std::endl;
@@ -155,7 +158,7 @@ void OrbitalCamera::Update()
 
 void OrbitalCamera::LerpMovements(Vector3 lerpTarget, Vector3 cameraOffset)
 {
-	cameraWithoutOffset = Vector3(lerp(cameraWithoutOffset.x, lerpTarget.x, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.y, lerpTarget.y, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.z, lerpTarget.z, Time::GetDeltaTime() * speed));
+	cameraWithoutOffset = Vector3(Math::Lerp(cameraWithoutOffset.x, lerpTarget.x, Time::GetDeltaTime() * speed), Math::Lerp(cameraWithoutOffset.y, lerpTarget.y, Time::GetDeltaTime() * speed), Math::Lerp(cameraWithoutOffset.z, lerpTarget.z, Time::GetDeltaTime() * speed));
 
 	if (cameraStatus == OrbitalCamera::ThirdPerson)
 	{
@@ -191,7 +194,7 @@ Vector3 OrbitalCamera::UpdateThirdPersonMode(Vector3 cameraOffset)
 	Vector3 pos = target->GetPosition();
 
 	float dis = 0;
-	detectWalls(&dis, cameraOffset, target->GetPosition());
+	DetectWalls(&dis, cameraOffset, target->GetPosition());
 
 	if (dis < 4)
 	{
@@ -201,7 +204,7 @@ Vector3 OrbitalCamera::UpdateThirdPersonMode(Vector3 cameraOffset)
 	{
 		targetDistance = 4;
 	}
-	currentDistance = lerp(currentDistance, targetDistance, Time::GetDeltaTime() * 10);
+	currentDistance = Math::Lerp(currentDistance, targetDistance, Time::GetDeltaTime() * 10);
 
 	return pos;
 }

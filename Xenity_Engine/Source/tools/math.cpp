@@ -55,3 +55,9 @@ Vector3 Math::GetDirectionFromAngle(const float angleA) {
 	direction.z = -SinTempS;
 	return direction;
 }
+
+
+float Math::Lerp(float a, float b, float t)
+{
+	return a + t * (b - a);
+}

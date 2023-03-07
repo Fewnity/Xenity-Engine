@@ -49,8 +49,8 @@ public:
 
 	CameraStatus cameraStatus = CameraStatus::ThirdPerson;
 	Transform* camera1 = nullptr;
-	bool getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t);;
-	bool detectWalls(float* distance, Vector3 dir, Vector3 startDir);
+	bool GetHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t);;
+	bool DetectWalls(float* distance, Vector3 dir, Vector3 startDir);
 	float currentDistance = 4;
 	float targetDistance = 4;
 
