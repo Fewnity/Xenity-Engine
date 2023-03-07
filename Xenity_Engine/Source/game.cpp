@@ -166,14 +166,14 @@ void Game::Init()
 	cubeGameObject->AddExistingComponent(mesh3);
 	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
 	cubeGameObject->transform.SetRotation(Vector3(0, 0, 10));
-	cubeGameObject->transform.SetLocalScale(Vector3(2, 2, 2));
+	cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
 	//cubeGameObject->transform.SetLocalScale(Vector3(0.1f, 0.1f, 0.1f));
 
 	//GameObject* cubeChild = new GameObject("Cube1");
 	cubeChild->transform.SetPosition(Vector3(4, 0, 0));
 	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
 	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
-	cubeGameObject->AddChild(cubeChild);
+	//cubeGameObject->AddChild(cubeChild);
 	MeshRenderer* mesh = static_cast<MeshRenderer*>(cubeChild->AddComponent<MeshRenderer>());
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
@@ -330,7 +330,7 @@ void Game::Loop()
 		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
 	}
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+	//camera->gameObject->transform.SetPosition(newCameraPosition);
 
 	//Animation
 	animation = SDL_GetTicks() / 500.0f;
@@ -350,7 +350,7 @@ void Game::Loop()
 	newCameraRotation.x += xInputToAdd;
 	newCameraRotation.y += yInputToAdd;
 
-	camera->gameObject->transform.SetRotation(newCameraRotation);
+	//camera->gameObject->transform.SetRotation(newCameraRotation);
 
 	//Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	Vector3 mesh4NewRotation = cubeChild->transform.GetRotation();
@@ -431,7 +431,7 @@ void Game::Loop()
 	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
 	cubeGameObject->transform.SetPosition(cubeNewPosition);
 
-	std::string debugText = std::string("Cube0 Position x:") + std::to_string(cubeGameObject->transform.GetPosition().x) + " y:" + std::to_string(cubeGameObject->transform.GetPosition().y) + " z:" + std::to_string(cubeGameObject->transform.GetPosition().z);
+	/*std::string debugText = std::string("Cube0 Position x:") + std::to_string(cubeGameObject->transform.GetPosition().x) + " y:" + std::to_string(cubeGameObject->transform.GetPosition().y) + " z:" + std::to_string(cubeGameObject->transform.GetPosition().z);
 	debugText += std::string("\nCube0 Local Position x:") + std::to_string(cubeGameObject->transform.GetLocalPosition().x) + " y:" + std::to_string(cubeGameObject->transform.GetLocalPosition().y) + " z:" + std::to_string(cubeGameObject->transform.GetLocalPosition().z);
 
 	debugText += std::string("\nCube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
@@ -449,7 +449,7 @@ void Game::Loop()
 	debugText += std::string("\nCube1 Scale x:") + std::to_string(cubeChild->transform.GetScale().x) + " y:" + std::to_string(cubeChild->transform.GetScale().y) + " z:" + std::to_string(cubeChild->transform.GetScale().z);
 	debugText += std::string("\nCube1 Local Scale x:") + std::to_string(cubeChild->transform.GetLocalScale().x) + " y:" + std::to_string(cubeChild->transform.GetLocalScale().y) + " z:" + std::to_string(cubeChild->transform.GetLocalScale().z);
 
-	UiManager::RenderTextCanvas(debugText, 0.0f, 50, 20, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
+	UiManager::RenderTextCanvas(debugText, 0.0f, 50, 20, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));*/
 
 	//std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
 	//UiManager::RenderTextCanvas(debugText2, 0.0f, 80, 20, 0.5f,16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));

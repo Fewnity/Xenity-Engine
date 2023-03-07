@@ -25,11 +25,11 @@ Benchmark* myBench = new Benchmark();
 /// Init engine
 /// </summary>
 /// <returns></returns>
-int Engine::Init()
+int Engine::Init(const std::string exePath)
 {
 	/* Initialize libraries */
 	Debug::Init();
-	File::InitFileSystem();
+	File::InitFileSystem(exePath);
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
 		return -1;
 	}

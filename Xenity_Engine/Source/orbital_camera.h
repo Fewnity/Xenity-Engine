@@ -42,7 +42,7 @@ public:
 	float speed = 1;
 
 	Vector3 UpdateFpsMode();
-	Vector3 UpdateThirdPersonMode();
+	Vector3 UpdateThirdPersonMode(Vector3 cameraOffset);
 	Vector3 UpdateCamera1Mode();
 	void LerpMovements(Vector3 lerpTarget, Vector3 cameraOffset);
 	void LookAtFirstPerson(Vector3 target);

@@ -42,14 +42,16 @@ static void error_callback(int error, const char* description)
 
 bool wireframe = false;
 
-int main(void)
+//int main(void)
+int main(int argc, char* argv[])
 {
-	if (Engine::Init() != 0) 
+	std::string exePath = argv[0];
+	if (Engine::Init(exePath) != 0)
 	{
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-
+	std::cout << exePath;
 	Debug::Print("Initiating game...");
 	Game::Init();
 	Debug::Print("---- Game initiated ----");

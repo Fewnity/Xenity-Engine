@@ -53,11 +53,15 @@ std::string File::ReadText(const std::string path)
 #pragma endregion
 
 
-void File::InitFileSystem() 
+void File::InitFileSystem(const std::string exePath)
 {
 	//EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
-	EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
+	//EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
 	
+	//EngineSettings::RootFolder = exePath;
+	int index = exePath.find(R"(\Xenity-Engine\)");
+	EngineSettings::RootFolder = exePath.substr(0, index + 15);
+
 	texturePath = EngineSettings::RootFolder + texturePath;
 	shaderPath = EngineSettings::RootFolder + shaderPath;
 	modelsPath = EngineSettings::RootFolder + modelsPath;

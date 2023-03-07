@@ -9,7 +9,7 @@
 
 class Engine {
 public:
-	static int Init();
+	static int Init(const std::string exePath);
 	static void Loop();
 	static void AddGameObject(GameObject* gameObject);
 	static std::vector<GameObject*> GetGameObjects();

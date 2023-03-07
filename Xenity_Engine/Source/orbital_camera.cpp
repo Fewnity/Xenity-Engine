@@ -43,8 +43,8 @@ bool OrbitalCamera::getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dir
 	{
 		//if (*t > tmin)
 		//{
-			*t = tmin;
-			return true;
+		*t = tmin;
+		return true;
 		//}
 	}
 	return false;
@@ -74,7 +74,7 @@ bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) 
 		//std::cout << "dir" << dir.x << " " << dir.y << " " << dir.z << " " << std::endl;
 
 		bool found = getHitDistance(c1, c2, frag, startDir, &t);
-		if (found) 
+		if (found)
 		{
 			//std::cout << "FOUND" << std::endl;
 			foundWall = true;
@@ -90,7 +90,6 @@ bool OrbitalCamera::detectWalls(float* distance, Vector3 dir, Vector3 startDir) 
 
 void OrbitalCamera::Update()
 {
-	return;
 	if (InputSystem::GetKeyDown(NUM_1))
 	{
 		cameraStatus = OrbitalCamera::ThirdPerson;
@@ -107,8 +106,14 @@ void OrbitalCamera::Update()
 		Debug::Print("Camera1");
 	}
 
+
+	float ySpeed = InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20;;
+	if (cameraStatus == OrbitalCamera::FirstPerson)
+	{
+		ySpeed = -ySpeed;
+	}
 	axis1 += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
-	axis2 += InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20;
+	axis2 += ySpeed;
 
 	int maxAxis = 10;
 	if (cameraStatus == OrbitalCamera::FirstPerson)
@@ -125,7 +130,7 @@ void OrbitalCamera::Update()
 	switch (cameraStatus)
 	{
 	case OrbitalCamera::ThirdPerson:
-		FinalPos = UpdateThirdPersonMode();
+		FinalPos = UpdateThirdPersonMode(offset);
 		LerpMovements(FinalPos, offset);
 		break;
 	case OrbitalCamera::FirstPerson:
@@ -146,28 +151,21 @@ void OrbitalCamera::Update()
 	{
 		speed -= Time::GetDeltaTime() * 10;
 	}
-
-	float dis = 0;
-	detectWalls(&dis, offset, target->GetPosition());
-	//std::cout << dis << std::endl;
-
-	//targetDistance = 
-
-	if (dis < 4) {
-		targetDistance = dis;
-	}
-	else {
-		targetDistance = 4;
-	}
-	currentDistance = lerp(currentDistance, targetDistance, Time::GetDeltaTime() * 10);
 }
 
 void OrbitalCamera::LerpMovements(Vector3 lerpTarget, Vector3 cameraOffset)
 {
 	cameraWithoutOffset = Vector3(lerp(cameraWithoutOffset.x, lerpTarget.x, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.y, lerpTarget.y, Time::GetDeltaTime() * speed), lerp(cameraWithoutOffset.z, lerpTarget.z, Time::GetDeltaTime() * speed));
 
-	Vector3 LerpPos = cameraWithoutOffset + cameraOffset * currentDistance;
-	gameObject->transform.SetPosition(LerpPos);
+	if (cameraStatus == OrbitalCamera::ThirdPerson)
+	{
+		Vector3 LerpPos = cameraWithoutOffset + cameraOffset * currentDistance;
+		gameObject->transform.SetPosition(LerpPos);
+	}
+	else 
+	{
+		gameObject->transform.SetPosition(lerpTarget);
+	}
 
 	Vector3 angles = Vector3::LookAt(gameObject->transform.GetPosition(), target->GetPosition());
 	gameObject->transform.SetRotation(angles);
@@ -188,15 +186,23 @@ Vector3 OrbitalCamera::UpdateFpsMode()
 	return target->GetPosition();
 }
 
-Vector3 OrbitalCamera::UpdateThirdPersonMode()
+Vector3 OrbitalCamera::UpdateThirdPersonMode(Vector3 cameraOffset)
 {
-	/*Vector3 pos = cameraWithoutOffset;
-	if (Vector3::Distance(cameraWithoutOffset, target->GetPosition()) > 1)
-	{
-		lastMovedPos = target->GetPosition();
-		pos = target->GetPosition();
-	}*/
 	Vector3 pos = target->GetPosition();
+
+	float dis = 0;
+	detectWalls(&dis, cameraOffset, target->GetPosition());
+
+	if (dis < 4)
+	{
+		targetDistance = dis;
+	}
+	else
+	{
+		targetDistance = 4;
+	}
+	currentDistance = lerp(currentDistance, targetDistance, Time::GetDeltaTime() * 10);
+
 	return pos;
 }
 
