@@ -35,7 +35,7 @@ Shader::~Shader()
 
 #pragma region Getters
 
-GLuint Shader::GetProgramId() 
+GLuint Shader::GetProgramId()
 {
 	return this->programId;
 }
@@ -47,7 +47,11 @@ GLuint Shader::GetProgramId()
 /// </summary>
 void Shader::Use()
 {
-	glUseProgram(programId);
+	if (Graphics::usedShaderProgram != programId) 
+	{
+		glUseProgram(programId);
+		Graphics::usedShaderProgram = programId;
+	}
 }
 
 #pragma region Data loading
@@ -75,7 +79,7 @@ void Shader::LoadShader(const std::string vertexFileName, const std::string frag
 	GLint vResult;
 	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &vResult);
 
-	if(vResult == 0)
+	if (vResult == 0)
 		Debug::Print("Vertex shader error: " + vertexFilePath);
 
 	//Load fragment shader text
@@ -143,8 +147,11 @@ void Shader::SetShaderCameraPosition2D() {
 	//Camera position
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
-		glm::mat4 camera;
-		camera = glm::lookAt(glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, 0), glm::vec3(Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y + 1, 0 - 1), glm::vec3(0, 1, 0));
+		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+
+		glm::mat4 camera = glm::mat4(1.0f);
+		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100 / aspect * 1.7777f + Window::GetWidth() / 2.0f,
+													-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100 / aspect * 1.7777f + Window::GetHeight()/ 2.0f, 0));
 
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}

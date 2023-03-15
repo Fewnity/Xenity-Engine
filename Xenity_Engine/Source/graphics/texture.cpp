@@ -54,6 +54,7 @@ void Texture::CreateTextutre(const std::string filePath, const Filter filter, co
 void Texture::LoadTexture(const std::string filePath) {
 	Debug::Print("Loading texture...");
 
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* data = File::LoadTextureData(filePath, this->width, this->height, this->nrChannels);
 
 	glGenTextures(1, &textureId);

@@ -24,7 +24,7 @@
     <ClCompile Include="Source\graphics\texture.cpp" />
     <ClCompile Include="Source\ui\ui_manager.cpp" />
     <ClCompile Include="Source\transform.cpp" />
-    <ClCompile Include="Source\game.cpp" />
+    <ClCompile Include="Source\gameOld.cpp" />
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\asset_manager.cpp" />
     <ClCompile Include="Source\engine_settings.cpp" />
@@ -43,6 +43,8 @@
     <ClCompile Include="Source\orbital_camera.cpp" />
     <ClCompile Include="Source\time\time.cpp" />
     <ClCompile Include="Source\debug\performance.cpp" />
+    <ClCompile Include="Source\rts_game\game.cpp" />
+    <ClCompile Include="Source\graphics\tile_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -68,7 +70,7 @@
     <ClInclude Include="Source\graphics\texture.h" />
     <ClInclude Include="Source\ui\ui_manager.h" />
     <ClInclude Include="Source\transform.h" />
-    <ClInclude Include="Source\game.h" />
+    <ClInclude Include="Source\gameOld.h" />
     <ClInclude Include="Source\asset_manager.h" />
     <ClInclude Include="Source\engine_settings.h" />
     <ClInclude Include="Source\file_system\mesh_loader\wavefront_loader.h" />
@@ -88,6 +90,8 @@
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\ui\TextAlignments.h" />
+    <ClInclude Include="Source\rts_game\game.h" />
+    <ClInclude Include="Source\graphics\tile_map.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

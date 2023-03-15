@@ -5,7 +5,7 @@
 #include "scene_manager/scene.h"
 #include "ui/window.h"
 #include "gameobject.h"
-#include "game.h"
+#include "rts_game/game.h"
 #include "graphics/graphics.h"
 #include <SDL2/SDL.h>
 #include "asset_manager.h"
@@ -28,6 +28,7 @@ Benchmark* myBench = new Benchmark();
 int Engine::Init(const std::string exePath)
 {
 	/* Initialize libraries */
+
 	Debug::Init();
 	File::InitFileSystem(exePath);
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
@@ -61,6 +62,8 @@ void Engine::UpdateComponents() {
 /// </summary>
 void Engine::Loop()
 {
+	Game::Init();
+
 	bool running = true;
 	while (running)
 	{

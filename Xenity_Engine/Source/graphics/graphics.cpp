@@ -2,12 +2,15 @@
 #include "../asset_manager.h"
 
 Camera* Graphics::usedCamera = nullptr;
+int Graphics::usedShaderProgram = -1;
 
 /// <summary>
 /// Draw all Drawable elements
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+	glEnable(GL_DEPTH_TEST);
+
 	int drawableCount = AssetManager::GetDrawableCount();
 	for (int i = 0; i < drawableCount; i++)
 	{

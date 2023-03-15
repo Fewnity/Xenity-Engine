@@ -9,6 +9,10 @@ GameObject::GameObject()
 	Engine::AddGameObject(this);
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="name">Do not use "@" alone</param>
 GameObject::GameObject(std::string name)
 {
 	this->name = name;
@@ -101,6 +105,9 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(const std::string nam
 {
 	std::vector<GameObject*> foundGameObjects;
 
+	if(name == "@")
+		return foundGameObjects;
+
 	Engine::GetGameObjects().clear();
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
 
@@ -122,6 +129,10 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(const std::string nam
 GameObject* GameObject::FindGameObjectByName(const std::string name)
 {
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
+
+	if (name == "@")
+		return nullptr;
+
 	int gameObjectCount = gameObjects.size();
 
 	for (int i = 0; i < gameObjectCount; i++)

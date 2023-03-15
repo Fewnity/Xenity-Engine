@@ -1,6 +1,6 @@
 #include "transform.h"
 #include "gameobject.h"
-#include <iostream	>
+#include <iostream>
 #include "tools/math.h"
 #include <glm/ext/matrix_transform.hpp>
 #include <SDL2/SDL_stdinc.h>

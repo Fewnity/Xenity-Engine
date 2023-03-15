@@ -10,10 +10,10 @@ SpriteRenderer::SpriteRenderer()
 {
 }
 
-SpriteRenderer::SpriteRenderer(const Texture* texture, Shader* shader)
+SpriteRenderer::SpriteRenderer(const Texture* texture, Material* material)
 {
 	this->texture = texture;
-	this->shader = shader;
+	this->material = material;
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -26,11 +26,15 @@ SpriteRenderer::~SpriteRenderer()
 /// Draw sprite
 /// </summary>
 void SpriteRenderer::Draw() {
-
-	if (gameObject != nullptr && shader != nullptr && texture != nullptr) {
-		SpriteManager::RenderSprite(gameObject->transform,
+	if (gameObject != nullptr && material != nullptr && texture != nullptr) 
+	{
+		SpriteManager::RenderSprite(gameObject->transform.transformationMatrix,
+			texture->GetWidth(),
+			texture->GetHeight(),
+			texture, material);
+		/*SpriteManager::RenderSprite(gameObject->transform,
 									texture->GetWidth(),
 									texture->GetHeight(),
-									texture, shader);
+									texture, material);*/
 	}
 }

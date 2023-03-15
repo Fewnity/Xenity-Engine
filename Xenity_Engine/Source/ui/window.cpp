@@ -45,7 +45,6 @@ int Window::InitWindow()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 
 	glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -54,7 +53,6 @@ int Window::InitWindow()
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); //TODO Move to texture init?
 
 	SDL_GL_SetSwapInterval(1);
-	stbi_set_flip_vertically_on_load(true);
 
 	Debug::Print("---- Window initiated ----");
 

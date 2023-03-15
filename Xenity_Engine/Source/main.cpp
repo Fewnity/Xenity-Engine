@@ -12,7 +12,8 @@
 #include "inputs/input_system.h"
 #include "scene_manager/scene.h"
 
-#include "game.h"
+//#include "game.h"
+//#include "rts_game/game.h"
 #include "debug/debug.h"
 
 #undef main
@@ -53,7 +54,7 @@ int main(int argc, char* argv[])
 	}
 	std::cout << exePath;
 	Debug::Print("Initiating game...");
-	Game::Init();
+	//Game::Init();
 	Debug::Print("---- Game initiated ----");
 	Engine::Loop();
 	Debug::Print("---- Game loop ended ----");

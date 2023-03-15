@@ -18,5 +18,6 @@ class Graphics
 {
 public :
 	static Camera* usedCamera;
+	static int usedShaderProgram;
 	static void DrawAllDrawable();
 };

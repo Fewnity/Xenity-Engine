@@ -98,13 +98,13 @@ void Material::Update()
 {
 	if (shader != nullptr) 
 	{
-		shader->Use();
+		Use();
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
 
 		int textureIndex = 0;
-		for (const auto& kv : uniformsTextures) 
+		for (const auto& kv : uniformsTextures)
 		{
 			//Enable each textures units
 			glActiveTexture(GL_TEXTURE0 + textureIndex);

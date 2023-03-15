@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="Source\debug\performance.cpp" />
     <ClCompile Include="Source\orbital_camera.cpp" />
+    <ClCompile Include="Source\rts_game\game.cpp" />
     <ClCompile Include="Source\time\time.cpp" />
     <ClCompile Include="Source\tools\benchmark.cpp" />
     <ClCompile Include="Source\tools\shape_spawner.cpp" />
@@ -171,7 +172,7 @@
     <ClCompile Include="Source\engine_settings.cpp" />
     <ClCompile Include="Source\asset_manager.cpp" />
     <ClCompile Include="Source\engine.cpp" />
-    <ClCompile Include="Source\game.cpp" />
+    <ClCompile Include="Source\gameOld.cpp" />
     <ClCompile Include="Source\audio\audio_source.cpp" />
     <ClCompile Include="Source\audio\audio_clip.cpp" />
     <ClCompile Include="Source\audio\audio.cpp" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Source\graphics\spriteRenderer.cpp" />
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
+    <ClCompile Include="Source\graphics\tile_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\2D\fSprite.shader" />
@@ -230,6 +232,7 @@
   <ItemGroup>
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\orbital_camera.h" />
+    <ClInclude Include="Source\rts_game\game.h" />
     <ClInclude Include="Source\time\time.h" />
     <ClInclude Include="Source\tools\benchmark.h" />
     <ClInclude Include="Source\tools\shape_spawner.h" />
@@ -240,7 +243,7 @@
     <ClInclude Include="Source\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine_settings.h" />
     <ClInclude Include="Source\asset_manager.h" />
-    <ClInclude Include="Source\game.h" />
+    <ClInclude Include="Source\gameOld.h" />
     <ClInclude Include="Source\audio\audio_source.h" />
     <ClInclude Include="Source\audio\audio_clip.h" />
     <ClInclude Include="Source\audio\audio.h" />
@@ -271,6 +274,7 @@
     <ClInclude Include="Source\graphics\sprite_manager.h" />
     <ClInclude Include="Source\graphics\text_renderer.h" />
     <ClInclude Include="Source\xenity.h" />
+    <ClInclude Include="Source\graphics\tile_map.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
