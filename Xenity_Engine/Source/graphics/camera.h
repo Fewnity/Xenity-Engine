@@ -10,6 +10,14 @@ public:
 	~Camera();
 	void SetFov(const double fov);
 	double GetFov() const;
+	double GetNearClippingPlane() const;
+	double GetFarClippingPlane() const;
+	void SetNearClippingPlane(double value);
+	void SetFarClippingPlane(double value);
+
 private:
-	double fov = 60;
+	double fov = 60.0f; //For 3D
+	double projectionSize = 5; //For 2D
+	double nearClippingPlane = 0.3f;
+	double farClippingPlane = 1000;
 };

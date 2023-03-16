@@ -263,6 +263,8 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 			x2 += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}
 	}
+
+	//TODO TO REMOVE
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -295,7 +297,10 @@ std::vector<float> UiManager::GetTextLenght(std::string text, Font* font, float 
 
 void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s)
 {
-	y = Window::GetHeight() - y;
+	//y = Window::GetHeight()/2.0f - y;
+	//x = Window::GetWidth() / 2.0f - x;
+	//y = Window::GetHeight() - y;
+	//y -= Window::GetHeight() / 2.0f;
 
 	// activate corresponding render state	
 	s.Use();

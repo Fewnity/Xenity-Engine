@@ -9,6 +9,8 @@
 
 void TileMap::Setup(int width, int height)
 {
+	AddTexture(nullptr);
+
 	this->width = width;
 	this->height = height;
 	if (tiles != nullptr)
@@ -23,16 +25,15 @@ void TileMap::Setup(int width, int height)
 			Tile* tile = GetTile(x, y);
 			tile->textureId = 0;
 			tile->transformationMatrix = glm::mat4(1.0f);
+			tile->transformationMatrix = gameObject->transform.transformationMatrix;
 
-			//tile->transformationMatrix = glm::translate(tile->transformationMatrix, glm::vec3(x * 128, y * 128, 0));
+			//tile->transformationMatrix *= gameObject->transform.transformationMatrix;
+
 			tile->transformationMatrix = glm::translate(tile->transformationMatrix, glm::vec3(x, y, 0));
-			tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));//y
-			tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));//x
-			tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//z
-			tile->transformationMatrix = glm::scale(tile->transformationMatrix, glm::vec3(1, 1, 1));
-			//tile->transformationMatrix = glm::scale(tile->transformationMatrix, glm::vec3(128, 128, 1));
-
-			//tiles[i].transformationMatrix = 
+			//tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));//y
+			//tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));//x
+			//tile->transformationMatrix = glm::rotate(tile->transformationMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));//z
+			//tile->transformationMatrix = glm::scale(tile->transformationMatrix, glm::vec3(1, 1, 1));
 		}
 	}
 }
@@ -61,6 +62,24 @@ int TileMap::GetHeight()
 	return height;
 }
 
+void TileMap::Update() 
+{
+	/*for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			Tile* tile = GetTile(x, y);
+			tile->textureId = 0;
+			tile->transformationMatrix = glm::mat4(1.0f);
+			tile->transformationMatrix = gameObject->transform.transformationMatrix;
+
+			//tile->transformationMatrix *= gameObject->transform.transformationMatrix;
+
+			tile->transformationMatrix = glm::translate(tile->transformationMatrix, glm::vec3(x, y, 0));
+		}
+	}*/
+}
+
 void TileMap::Draw()
 {
 	for (int x = 0; x < width; x++)
@@ -68,24 +87,9 @@ void TileMap::Draw()
 		for (int y = 0; y < height; y++)
 		{
 			Tile* tile = GetTile(x, y);
-
-			float xCoef = 100.0f / (float)textures[tile->textureId]->GetWidth();
-			float yCoef = 100.0f / (float)textures[tile->textureId]->GetHeight();
-			float finalCoef = xCoef;
-			if (finalCoef > yCoef)
-				finalCoef = yCoef;
-
+			if(textures[tile->textureId] != nullptr)
 			SpriteManager::RenderSprite(tile->transformationMatrix,
-				textures[tile->textureId]->GetWidth() * finalCoef,
-				textures[tile->textureId]->GetHeight() * finalCoef,
 				textures[tile->textureId], material);
-
-			/*SpriteManager::RenderSprite(Vector3(x, y, 0),
-				textures[tile->textureId]->GetWidth() * finalCoef,
-				textures[tile->textureId]->GetHeight() * finalCoef,
-				Vector3(1, 1, 1),
-				Vector3(0, 0, 0),
-				textures[tile->textureId], material);*/
 		}
 	}
 }

@@ -26,15 +26,16 @@ public:
 	void SetTile(int x, int y, int textureId);
 	int GetWidth();
 	int GetHeight();
-	void Draw();	
 	void AddTexture(Texture* texture);
 	void RemoveTexture(Texture* texture);
 	Vector2 spritesScale = Vector2(1,1);
 	Material* material = nullptr;
 
 private:
+	void Update();
+	void Draw();
 	SpriteRenderer* spriteRenderer = new SpriteRenderer();
-	GameObject* gameObjectTileMap = new GameObject("@");
+	//GameObject* gameObjectTileMap = new GameObject("@");
 
 	int GetTextureIndex(Texture* texture);
 

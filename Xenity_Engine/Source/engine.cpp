@@ -5,7 +5,6 @@
 #include "scene_manager/scene.h"
 #include "ui/window.h"
 #include "gameobject.h"
-#include "rts_game/game.h"
 #include "graphics/graphics.h"
 #include <SDL2/SDL.h>
 #include "asset_manager.h"
@@ -16,10 +15,12 @@
 #include "time/time.h"
 #include "debug/performance.h"
 #include "ui/TextAlignments.h"
+#include "rts_game/game.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 float lastTick = 0;
 Benchmark* myBench = new Benchmark();
+
 
 /// <summary>
 /// Init engine
@@ -28,7 +29,6 @@ Benchmark* myBench = new Benchmark();
 int Engine::Init(const std::string exePath)
 {
 	/* Initialize libraries */
-
 	Debug::Init();
 	File::InitFileSystem(exePath);
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
@@ -44,9 +44,11 @@ int Engine::Init(const std::string exePath)
 /// <summary>
 /// Update all components
 /// </summary>
-void Engine::UpdateComponents() {
+void Engine::UpdateComponents()
+{
 	//Update all gameobjects components
 	int gameObjectCount = gameObjects.size();
+
 	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 	{
 		int componentCount = gameObjects[gIndex]->components.size();
@@ -62,7 +64,8 @@ void Engine::UpdateComponents() {
 /// </summary>
 void Engine::Loop()
 {
-	Game::Init();
+	Game* game = new Game();
+	game->Init();
 
 	bool running = true;
 	while (running)
@@ -106,7 +109,7 @@ void Engine::Loop()
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
 
-		Game::Loop();
+		game->Loop();
 		UpdateComponents();
 
 		AssetManager::ResetMaterialsUpdates();
@@ -117,6 +120,11 @@ void Engine::Loop()
 		//std::cout << myBench->GetMicroSeconds() << " ms" << std::endl;
 
 		glPolygonMode(GL_FRONT, GL_FILL);
+
+		if (InputSystem::GetKeyDown(A))
+		{
+			EngineSettings::isWireframe = !EngineSettings::isWireframe;
+		}
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 		UiManager::RenderTextCanvas(debugText, 4.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left,  *AssetManager::GetShader(7));
@@ -131,6 +139,7 @@ void Engine::Loop()
 		Window::UpdateScreen();
 		Performance::ResetCounters();
 	}
+	delete game;
 }
 
 /// <summary>

@@ -8,7 +8,14 @@
 SDL_Window* Window::window = nullptr;
 
 int Window::width = 1280;
+//int Window::width = 900;
 int Window::height = 720;
+//int Window::height = 500;
+//int Window::height = 1000;
+
+//int Window::width = 720;
+//int Window::height = 720;
+
 const char * ENGINE_NAME = "Xenity Engine";
 
 /// <summary>
@@ -28,6 +35,8 @@ int Window::InitWindow()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);*/
+
+	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	SDL_GLContext context = SDL_GL_CreateContext(window);

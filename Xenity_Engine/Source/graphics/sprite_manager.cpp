@@ -131,17 +131,24 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 
 
 
-void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, float w, float h, const Texture* texture, Material* material)
+//void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, float w, float h, const Texture* texture, Material* material)
+void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* texture, Material* material)
 {
+
+	float unitCoef = 100.0f / texture->GetPixelPerUnit();
+	float w = texture->GetWidth() * unitCoef;
+	float h = texture->GetHeight() * unitCoef;
+
 	if (texture == nullptr || material == nullptr)
 		return;
 
-	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
-	float sizeFixer = 100 / aspect * 1.7777f;
+	float sizeFixer = 100;
 
 	//Scale
-	transformationMatrix[0].x *= w / aspect * 1.7777f;
-	transformationMatrix[1].y *= h / aspect * 1.7777f;
+	transformationMatrix[0].x *= w;
+	transformationMatrix[0].y *= h;
+	transformationMatrix[1].x *= w;
+	transformationMatrix[1].y *= h ;
 	//Move
 	transformationMatrix[3].x *= sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;
@@ -207,7 +214,6 @@ void SpriteManager::UpdateMaterial(Material* material, glm::mat4 transformationM
 			material->Update();
 			material->shader->SetShaderCameraPosition2D();
 			material->shader->SetShaderProjection2D();
-			//material->shader->SetShaderModel(Vector3(x, y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX / aspect * 1.7777f, scaleY / aspect * 1.7777f, 1));
 		}
 		material->shader->SetShaderModel(transformationMatrix);
 	}

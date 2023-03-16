@@ -20,6 +20,7 @@ public:
 	void SetShaderCameraPosition();
 	void SetShaderCameraPosition2D();
 	void SetShaderProjection3D();
+	void SetShaderProjection2DUnscaled();
 	void SetShaderProjection2D();
 	void SetShaderPosition(const Vector3 position);
 	void SetShaderModel(const glm::mat4 trans);

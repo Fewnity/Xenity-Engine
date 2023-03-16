@@ -34,5 +34,33 @@ double Camera::GetFov() const
 	return this->fov;
 }
 
+double Camera::GetNearClippingPlane() const
+{
+	return nearClippingPlane;
+}
+
+double Camera::GetFarClippingPlane() const
+{
+	return farClippingPlane;
+}
+
+void Camera::SetNearClippingPlane(double value)
+{
+	if (value >= farClippingPlane)
+	{
+		farClippingPlane = value + 0.01;
+	}
+	nearClippingPlane = value;
+}
+
+void Camera::SetFarClippingPlane(double value)
+{
+	if (value <= nearClippingPlane)
+	{
+		farClippingPlane = value + 0.01;
+	}
+	farClippingPlane = value;
+}
+
 #pragma endregion
 

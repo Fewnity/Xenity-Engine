@@ -1,4 +1,3 @@
-#include "engine.h"
 #include "main.h"
 #include "graphics/graphics.h"
 #include <SDL2/SDL.h>
@@ -11,9 +10,8 @@
 #include "file_system/file.h"
 #include "inputs/input_system.h"
 #include "scene_manager/scene.h"
+#include "engine.h"
 
-//#include "game.h"
-//#include "rts_game/game.h"
 #include "debug/debug.h"
 
 #undef main
@@ -41,20 +39,18 @@ static void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-bool wireframe = false;
-
 //int main(void)
 int main(int argc, char* argv[])
 {
+	//std::cout << "Main function : GameObject count " << Engine::gameObjects.size() << std::endl;
 	std::string exePath = argv[0];
 	if (Engine::Init(exePath) != 0)
 	{
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-	std::cout << exePath;
+
 	Debug::Print("Initiating game...");
-	//Game::Init();
 	Debug::Print("---- Game initiated ----");
 	Engine::Loop();
 	Debug::Print("---- Game loop ended ----");

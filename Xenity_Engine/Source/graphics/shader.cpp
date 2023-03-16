@@ -150,9 +150,10 @@ void Shader::SetShaderCameraPosition2D() {
 		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
 
 		glm::mat4 camera = glm::mat4(1.0f);
-		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100 / aspect * 1.7777f + Window::GetWidth() / 2.0f,
-													-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100 / aspect * 1.7777f + Window::GetHeight()/ 2.0f, 0));
-
+		//camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100 / aspect * 1.7777f + Window::GetWidth() / 2.0f,
+		//											-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100 / aspect * 1.7777f + Window::GetHeight()/ 2.0f, 0));
+		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100,
+			-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100, 0));
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }
@@ -166,7 +167,7 @@ void Shader::SetShaderProjection3D() {
 	if (Graphics::usedCamera != nullptr)
 	{
 		//Projection
-		glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), 0.1, 100.0);
+		glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), Graphics::usedCamera->GetNearClippingPlane(), Graphics::usedCamera->GetFarClippingPlane());
 
 		//invert view X axis
 		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
@@ -176,12 +177,30 @@ void Shader::SetShaderProjection3D() {
 	}
 }
 
+void Shader::SetShaderProjection2DUnscaled() {
+	Use();
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
+	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+}
+
 /// <summary>
 /// Send to the shader the 2D camera projection
 /// </summary>
 void Shader::SetShaderProjection2D() {
 	Use();
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
+	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+	//float aspect2 = static_cast<float>((Window::GetHeight()) / static_cast<float>(Window::GetWidth()));
+	float finalAspect = aspect;
+	if (finalAspect < 1.7777777f)
+		finalAspect += 1.7777777f - finalAspect;
+
+	//if (finalAspect > aspect2)
+		//finalAspect += aspect2 - 1;
+		//finalAspect = aspect2;
+
+	float scale = 2 / finalAspect * 1.7777777f;
+	glm::mat4 projection = glm::ortho(-static_cast<float>(Window::GetWidth())/ scale, static_cast<float>(Window::GetWidth()) / scale, -static_cast<float>(Window::GetHeight()) / scale, static_cast<float>(Window::GetHeight()) / scale);
+	//glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
 	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 

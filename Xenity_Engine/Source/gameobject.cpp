@@ -1,6 +1,7 @@
 #include "gameobject.h"
 #include "engine.h"
 #include <iostream>
+#include "debug/debug.h"
 
 #pragma region Constructors / Destructor
 
@@ -108,7 +109,6 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(const std::string nam
 	if(name == "@")
 		return foundGameObjects;
 
-	Engine::GetGameObjects().clear();
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
 
 	int gameObjectCount = gameObjects.size();

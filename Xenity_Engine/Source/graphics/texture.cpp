@@ -96,6 +96,12 @@ void Texture::SetFilter(const Filter filter)
 	UpdateTextureFilter();
 }
 
+void Texture::SetWrapMode(const WrapMode mode)
+{
+	wrapMode = mode;
+	UpdateTextureFilter();
+}
+
 int Texture::GetWidth() const
 {
 	return width;
@@ -104,6 +110,16 @@ int Texture::GetWidth() const
 int Texture::GetHeight() const
 {
 	return height;
+}
+
+void Texture::SetPixelPerUnit(int value)
+{
+	pixelPerUnit = value;
+}
+
+int Texture::GetPixelPerUnit() const
+{
+	return pixelPerUnit;
 }
 
 /// <summary>
@@ -151,8 +167,21 @@ void Texture::UpdateTextureFilter()
 			magfilterValue = GL_NEAREST;
 		}
 	}
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterValue);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
+
+	switch (wrapMode)
+	{
+	case Texture::Repeat:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		break;
+	case Texture::Clamp:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		break;
+	}
 
 	float anisotropicValue = 16;
 	switch (EngineSettings::anisotropicLevel)
