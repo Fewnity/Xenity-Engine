@@ -126,7 +126,7 @@ void Engine::Loop()
 			EngineSettings::isWireframe = !EngineSettings::isWireframe;
 		}
 
-		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
+		/*std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 		UiManager::RenderTextCanvas(debugText, 4.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left,  *AssetManager::GetShader(7));
 
 		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
@@ -135,7 +135,27 @@ void Engine::Loop()
 		std::string performanceDebugText ="DrawCallCount: " + std::to_string(Performance::GetDrawCallCount());
 		performanceDebugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
 		UiManager::RenderTextCanvas(performanceDebugText, Window::GetWidth()-4, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Right, *AssetManager::GetShader(7));
-		
+		*/
+
+		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
+		//UiManager::RenderTextCanvas(debugText, 0, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
+
+		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
+		//UiManager::RenderTextCanvas(fpsText, 0.5, 0, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(fpsText, 0.6, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+		//UiManager::RenderTextCanvas(fpsText, 0.4, 1, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+
+		std::string performanceDebugText = "DrawCallCountpj: " + std::to_string(Performance::GetDrawCallCount());
+		performanceDebugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
+		performanceDebugText += std::string("\ngp: ");
+		performanceDebugText += std::string("\ngpT: ");
+		performanceDebugText += std::string("\nT: ");
+		//UiManager::RenderTextCanvas(performanceDebugText, 1, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Right, *AssetManager::GetShader(7));
+		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 0, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 1, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+
+
 		Window::UpdateScreen();
 		Performance::ResetCounters();
 	}

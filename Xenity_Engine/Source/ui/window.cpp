@@ -7,14 +7,13 @@
 
 SDL_Window* Window::window = nullptr;
 
-int Window::width = 1280;
-//int Window::width = 900;
+//int Window::width = 1500;
 int Window::height = 720;
-//int Window::height = 500;
-//int Window::height = 1000;
-
-//int Window::width = 720;
+int Window::width = 1280;
 //int Window::height = 720;
+
+float Window::viewScale = 0;
+float Window::viewScaleUI = 0;
 
 const char * ENGINE_NAME = "Xenity Engine";
 
@@ -64,6 +63,7 @@ int Window::InitWindow()
 	SDL_GL_SetSwapInterval(1);
 
 	Debug::Print("---- Window initiated ----");
+	UpdateViewScale();
 
 	return 0;
 }
@@ -78,6 +78,7 @@ void Window::OnResize(const int newWidth, const int newHeight)
 	glViewport(0, 0, newWidth, newHeight);
 	width = newWidth;
 	height = newHeight;
+	UpdateViewScale();
 }
 
 /// <summary>
@@ -133,6 +134,28 @@ int Window::GetWidth()
 int Window::GetHeight()
 {
 	return height;
+}
+
+float Window::GetViewScale()
+{
+	return viewScale;
+}
+
+float Window::GetViewScaleUI()
+{
+	return viewScaleUI;
+}
+
+void Window::UpdateViewScale()
+{
+	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+	std::cout << "New Aspect Ration: " << aspect << std::endl;
+
+	//if (aspect < 1.7777777f)
+		//aspect += 1.7777777f - aspect;
+
+	viewScale = 2 / aspect * 1.7777777f;
+	//viewScale = 2;
 }
 
 #pragma endregion

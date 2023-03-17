@@ -15,6 +15,12 @@ public:
 	static void SetHeight(const int height_);
 	static int GetWidth();
 	static int GetHeight();
+	static float GetViewScale();
+	static float GetViewScaleUI();
+
 private:
+	static void UpdateViewScale();
+	static float viewScale;
+	static float viewScaleUI;
 	static int width, height;
 };

@@ -101,7 +101,8 @@ void Game::Init()
 	gameObjectSprite->AddExistingComponent(spr);
 
 	GameObject* t = new GameObject();
-	t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
+	//t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
+	t->transform.SetPosition(Vector3(1, 0, 0));
 	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
 	t->AddExistingComponent(spr2);
 
@@ -157,7 +158,5 @@ void Game::Loop()
 	Debug::Print(debugText2);
 	//UiManager::RenderTextCanvas(debugText2, 0.0f, 80, 20, 0.5f,16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
 
-	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
-
-	//mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
+	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
 }

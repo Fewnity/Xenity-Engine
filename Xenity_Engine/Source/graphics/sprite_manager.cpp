@@ -138,17 +138,19 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* 
 	float unitCoef = 100.0f / texture->GetPixelPerUnit();
 	float w = texture->GetWidth() * unitCoef;
 	float h = texture->GetHeight() * unitCoef;
+	w /= 720;
+	h /= 720;
 
 	if (texture == nullptr || material == nullptr)
 		return;
 
-	float sizeFixer = 100;
+	float sizeFixer = 100 / 720.0f;
 
 	//Scale
 	transformationMatrix[0].x *= w;
 	transformationMatrix[0].y *= h;
 	transformationMatrix[1].x *= w;
-	transformationMatrix[1].y *= h ;
+	transformationMatrix[1].y *= h;
 	//Move
 	transformationMatrix[3].x *= sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;

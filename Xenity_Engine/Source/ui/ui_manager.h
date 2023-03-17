@@ -6,6 +6,7 @@
 #include <vector>
 #include "TextAlignments.h"
 
+class Vector4;
 class Character;
 
 class Font {
@@ -28,7 +29,7 @@ private:
 	static void CreateTextBuffer();
 	static void DeleteFont(Font * font);
 	static void DeleteFont(int index);
-	static std::vector<float> GetTextLenght(std::string text, Font* font, float scale);
+	static std::vector<Vector4> GetTextLenght(std::string text, Font* font, float scale);
 	static unsigned int textVAO, textVBO;
 };
 
