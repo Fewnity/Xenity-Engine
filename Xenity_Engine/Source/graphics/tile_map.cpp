@@ -38,7 +38,7 @@ void TileMap::Setup(int width, int height)
 	}
 }
 
-Tile* TileMap::GetTile(int x, int y)
+TileMap::Tile* TileMap::GetTile(int x, int y)
 {
 	if (tiles == nullptr)
 		return nullptr;

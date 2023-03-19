@@ -49,18 +49,11 @@ void InputSystem::Read(const SDL_Event event)
 		float xSpeedRaw = event.motion.xrel;
 		float ySpeedRaw = -event.motion.yrel;
 
-		//mouseSpeed.x += xSpeed;
-		//mouseSpeed.y += ySpeed;
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;
 
 		mouseSpeedRaw.x = xSpeedRaw;
 		mouseSpeedRaw.y = ySpeedRaw;
-
-		/*std::cout << "MOUSE X " << event.motion.xrel << std::endl;
-		std::cout << "MOUSE Y " << event.motion.yrel << std::endl;
-		std::cout << "event.motion.state " << event.motion.state << std::endl;
-		std::cout << "Window ID " << event.motion.windowID << std::endl;*/
 		break;
 	}
 
@@ -100,8 +93,6 @@ void InputSystem::Read(const SDL_Event event)
 		break;
 
 	case SDL_MOUSEWHEEL:
-		//std::cout << "X: " << event.wheel.preciseX << std::endl;
-		std::cout << "Y: " << event.wheel.preciseY << std::endl;
 		mouseWheel = event.wheel.preciseY;
 		break;
 	}

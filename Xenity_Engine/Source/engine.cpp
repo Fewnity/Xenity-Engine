@@ -38,6 +38,9 @@ int Engine::Init(const std::string exePath)
 	SpriteManager::Init();
 	AssetManager::Init();
 
+	//Init random
+	srand(time(NULL));
+
 	return 0;
 }
 
@@ -70,8 +73,6 @@ void Engine::Loop()
 	game->Init();
 
 	bool running = true;
-	//SDL_SetRelativeMouseMode(SDL_bool::SDL_TRUE);
-	//SDL_HINT_MOUSE_RELATIVE_MODE_WARP(1);
 
 	while (running)
 	{
@@ -97,7 +98,6 @@ void Engine::Loop()
 				break;
 			}
 		}
-		//std::cout << "END EVENT" << std::endl;
 
 		//Clear the OpenGL window
 		glClearColor(0.529f, 0.808f, 0.922f, 1);

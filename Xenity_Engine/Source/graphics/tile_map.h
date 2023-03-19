@@ -7,13 +7,6 @@
 #include "spriteRenderer.h"
 #include <glm/glm.hpp>
 
-class Tile 
-{
-public:
-	int textureId = 0;
-	glm::mat4 transformationMatrix;
-private:
-};
 
 class Texture;
 class Material;
@@ -21,6 +14,13 @@ class Material;
 class TileMap : public Component, public IDrawable
 {
 public:
+	class Tile 
+	{
+	public:
+		int textureId = 0;
+		glm::mat4 transformationMatrix;
+	private:
+	};
 	void Setup(int width, int height);
 	Tile * GetTile(int x, int y);
 	void SetTile(int x, int y, int textureId);

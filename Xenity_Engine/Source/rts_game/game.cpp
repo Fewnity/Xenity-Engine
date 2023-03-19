@@ -50,12 +50,19 @@ void Game::Init()
 	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png");
 	textureTile1->SetPixelPerUnit(128);
 
-	Texture* textureEnv0 = new Texture("rts/Environment/scifiEnvironment_07.png");
-	textureEnv0->SetWrapMode(Texture::Clamp);
-	textureEnv0->SetPixelPerUnit(128);
-	Texture* textureEnv1 = new Texture("rts/Environment/scifiEnvironment_17.png");
-	textureEnv1->SetWrapMode(Texture::Clamp);
-	textureEnv1->SetPixelPerUnit(128);
+	for (int i = 0; i < 19; i++)
+	{
+		std::string propTextureName = "rts/Environment/scifiEnvironment_" + std::to_string(i + 1) + ".png";
+		Texture* textureEnv = new Texture(propTextureName, Texture::Bilinear, true);
+		propsTextures.push_back(textureEnv);
+	}
+
+	int propsTexturesCount = propsTextures.size();
+	for (int i = 0; i < propsTexturesCount; i++)
+	{
+		propsTextures[i]->SetWrapMode(Texture::Clamp);
+		propsTextures[i]->SetPixelPerUnit(128);
+	}
 
 	cameraGameObject->AddExistingComponent(camera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
@@ -67,53 +74,57 @@ void Game::Init()
 
 	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
 
+	GenerateMap();
+
 	tileMap = new TileMap();
 	gameObjectTileMap->AddExistingComponent(tileMap);
-	tileMap->Setup(10, 10);
+	tileMap->Setup(mapSize, mapSize);
 	tileMap->AddTexture(textureTile0);
 	tileMap->AddTexture(textureTile1);
-	for (int x = 0; x < 10; x++)
+	for (int x = 0; x < mapSize; x++)
 	{
-		for (int y = 0; y < 10; y++)
+		for (int y = 0; y < mapSize; y++)
 		{
 			tileMap->SetTile(x, y, 1);
 		}
 	}
-	tileMap->SetTile(4, 4, 2);
-	tileMap->SetTile(1, 0, 2);
-	tileMap->SetTile(2, 5, 2);
-	tileMap->SetTile(8, 5, 2);
-	tileMap->SetTile(4, 8, 2);
 	tileMap->material = material2D;
 
 	//Props tilemap
 	tileMapProps = new TileMap();
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
-	tileMapProps->Setup(10, 10);
-	tileMapProps->AddTexture(textureEnv0);
-	tileMapProps->AddTexture(textureEnv1);
-	tileMapProps->SetTile(4, 2, 1);
-	tileMapProps->SetTile(8, 9, 2);
-	tileMapProps->SetTile(3, 6, 2);
-	tileMapProps->SetTile(7, 1, 2);
+	tileMapProps->Setup(mapSize, mapSize);
+	for (int i = 0; i < propsTexturesCount; i++)
+	{
+		tileMapProps->AddTexture(propsTextures[i]);
+	}
+	//tileMapProps->AddTexture(textureEnv0);
+	//tileMapProps->AddTexture(textureEnv1);
+
+	int propCount = props.size();
+	for (int i = 0; i < propCount; i++)
+	{
+		tileMapProps->SetTile(props[i]->x, props[i]->y, props[i]->id);
+	}
+
 	tileMapProps->material = material2D;
 
-	SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
+	/*SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
 	gameObjectSprite->AddExistingComponent(spr);
 
 	GameObject* t = new GameObject();
-	//t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
 	t->transform.SetPosition(Vector3(1, 0, 0));
 	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
 	t->AddExistingComponent(spr2);
 
 	TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
-	gameObjectSprite->AddExistingComponent(textRenderer);
+	gameObjectSprite->AddExistingComponent(textRenderer);*/
 
 
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
+	camera->SetProjectionSize(2.5f * cameraZoom);
 }
 
 /// <summary>
@@ -127,51 +138,45 @@ void Game::Loop()
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
-	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
 
 	if (InputSystem::GetKey(MOUSE_RIGHT)) {
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.y * cameraZoom/2.8f * 3;
-		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.y / aspect;
-		//vect *= InputSystem::mouseSpeed.y * aspect /128.0;
-		vect *= InputSystem::mouseSpeed.y * 10 / aspect;
+		//vect *= InputSystem::mouseSpeed.y * 10;
+		vect *= InputSystem::mouseSpeed.y * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 
 		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.x * cameraZoom / 2.8f * 3;
-		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.x / aspect;
-		//vect *= InputSystem::mouseSpeed.x * aspect / 128.0;
-		vect *= InputSystem::mouseSpeed.x* 10;
+		//vect *= InputSystem::mouseSpeed.x * 10;
+		vect *= InputSystem::mouseSpeed.x * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 	}
 
 	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
-		vect *= Time::GetDeltaTime() * 2;
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		vect *= Time::GetDeltaTime() * 2;
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
-		vect *= Time::GetDeltaTime() * 2;
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= Time::GetDeltaTime() * 2;
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 
-	if (InputSystem::mouseWheel != 0) 
+	if (InputSystem::mouseWheel != 0)
 	{
 		cameraZoom -= InputSystem::mouseWheel / 3.0f;
 		if (cameraZoom < 1)
@@ -183,7 +188,7 @@ void Game::Loop()
 			cameraZoom = 2.8f;
 		}
 
-		camera->SetProjectionSize(2.5f* cameraZoom);
+		camera->SetProjectionSize(2.5f * cameraZoom);
 	}
 
 	camera->gameObject->transform.SetPosition(newCameraPosition);
@@ -191,7 +196,85 @@ void Game::Loop()
 	std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
 	debugText2 += "Size " + std::to_string(camera->GetProjectionSize());
 	//Debug::Print(debugText2);
-	UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f,0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
+	UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 
 	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
+}
+
+Game::Tile* Game::GetTile(int x, int y)
+{
+	if (tiles == nullptr)
+		return nullptr;
+
+	return &tiles[x * mapSize + y];
+}
+
+void Game::GenerateMap()
+{
+	if (tiles)
+		free(tiles);
+
+	tiles = (Tile*)malloc(mapSize * mapSize * sizeof(Tile));
+
+	//Fill map data
+
+	//Add trees
+	int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
+	for (int i = 0; i < treeCount; i++)
+	{
+		Prop* newProp = new Prop();
+		newProp->id = 16 + rand() % 4;
+		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
+		props.push_back(newProp);
+	}
+
+	//Add rocks
+	int rockCount = minRockCount + rand() % (maxRockCount - minRockCount + 1);
+	for (int i = 0; i < rockCount; i++)
+	{
+		Prop* newProp = new Prop();
+		if (rand() % 2 == 0)
+			newProp->id = 2 + rand() % 4;
+		else
+			newProp->id = 8 + rand() % 4;
+
+		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
+		props.push_back(newProp);
+	}
+
+	//Add emeralds
+	int emeraldCount = minRockEmeraldCount + rand() % (maxRockEmeraldCount - minRockEmeraldCount + 1);
+	for (int i = 0; i < emeraldCount; i++)
+	{
+		Prop* newProp = new Prop();
+		if (rand() % 2 == 0)
+			newProp->id = 6;
+		else
+			newProp->id = 12;
+		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
+		props.push_back(newProp);
+	}
+
+	//Add gold
+	int goldCount = minRockGoldCount + rand() % (maxRockGoldCount - minRockGoldCount + 1);
+	for (int i = 0; i < goldCount; i++)
+	{
+		Prop* newProp = new Prop();
+		if (rand() % 2 == 0)
+			newProp->id = 7;
+		else
+			newProp->id = 13;
+		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
+		props.push_back(newProp);
+	}
+
+	//Add crystal
+	int crystalCount = minCrystalCount + rand() % (maxCrystalCount - minCrystalCount + 1);
+	for (int i = 0; i < crystalCount; i++)
+	{
+		Prop* newProp = new Prop();
+		newProp->id = 14 + rand() % 2;
+		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
+		props.push_back(newProp);
+	}
 }
