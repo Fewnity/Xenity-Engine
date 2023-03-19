@@ -45,7 +45,7 @@ void InputSystem::Read(const SDL_Event event)
 
 		//Get mouse speed
 		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;
-		float ySpeed = -event.motion.yrel / (float)Window::GetHeight() * aspect;
+		float ySpeed = -event.motion.yrel / (float)Window::GetHeight();
 		float xSpeedRaw = event.motion.xrel;
 		float ySpeedRaw = -event.motion.yrel;
 
