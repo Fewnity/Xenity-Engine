@@ -150,15 +150,10 @@ void Shader::SetShaderCameraPosition2D() {
 		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
 
 		glm::mat4 camera = glm::mat4(1.0f);
-		//camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100 / aspect * 1.7777f + Window::GetWidth() / 2.0f,
-		//											-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100 / aspect * 1.7777f + Window::GetHeight()/ 2.0f, 0));
-		
-		//camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x * 100,
-			//-Graphics::usedCamera->gameObject->transform.GetPosition().y * 100, 0));
 
-		//720 /100 = 7.2
-		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x / 7.2f,
-			-Graphics::usedCamera->gameObject->transform.GetPosition().y / 7.2f, 0));
+		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f,
+			-Graphics::usedCamera->gameObject->transform.GetPosition().y / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f, 0));
+
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }

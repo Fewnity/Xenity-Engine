@@ -94,9 +94,12 @@ enum KeyCode
 	LEFT = 83,
 	DOWN = 84,
 	UP = 85,
+
+	MOUSE_LEFT = 86,
+	MOUSE_RIGHT = 87,
 };
 
-#define INPUT_COUNT 86
+#define INPUT_COUNT 88
 
 class Input {
 public:
@@ -118,6 +121,9 @@ public:
 
 	static Vector2 mousePosition;
 	static Vector2 mouseSpeed;
+	static Vector2 mouseSpeedRaw;
+	static float mouseWheel;
+	static bool hideMouse;
 
 private:
 	static void ChangeInputState(const bool pressed, const int keyCode);

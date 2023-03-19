@@ -59,6 +59,8 @@ void Engine::UpdateComponents()
 	}
 }
 
+float angleT = 0;
+
 /// <summary>
 /// Engine loop
 /// </summary>
@@ -68,6 +70,9 @@ void Engine::Loop()
 	game->Init();
 
 	bool running = true;
+	//SDL_SetRelativeMouseMode(SDL_bool::SDL_TRUE);
+	//SDL_HINT_MOUSE_RELATIVE_MODE_WARP(1);
+
 	while (running)
 	{
 		Time::UpdateTime();
@@ -92,7 +97,7 @@ void Engine::Loop()
 				break;
 			}
 		}
-
+		//std::cout << "END EVENT" << std::endl;
 
 		//Clear the OpenGL window
 		glClearColor(0.529f, 0.808f, 0.922f, 1);
@@ -138,23 +143,26 @@ void Engine::Loop()
 		*/
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		//UiManager::RenderTextCanvas(debugText, 0, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(debugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
 
 		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
-		//UiManager::RenderTextCanvas(fpsText, 0.5, 0, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(fpsText, 0.6, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
-		//UiManager::RenderTextCanvas(fpsText, 0.4, 1, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
+		//UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
 
-		std::string performanceDebugText = "DrawCallCountpj: " + std::to_string(Performance::GetDrawCallCount());
-		performanceDebugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
-		performanceDebugText += std::string("\ngp: ");
-		performanceDebugText += std::string("\ngpT: ");
-		performanceDebugText += std::string("\nT: ");
-		//UiManager::RenderTextCanvas(performanceDebugText, 1, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Right, *AssetManager::GetShader(7));
-		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 0.5, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
-		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 0, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
-		//UiManager::RenderTextCanvas(performanceDebugText, 0.5, 1, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
 
+		angleT += Time::GetDeltaTime() * 40;
+		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount());
+		performanceDebugText += std::string("\nUpdated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount());
+
+		UiManager::RenderTextCanvas(performanceDebugText, 1, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
+
+		/*UiManager::RenderTextCanvas("Left", 0, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Right", 1, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Center, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Top Left", 0, 0, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Top Right", 1, 0, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Bottom Left", 0, 1, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Top, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Bottom Right", 1, 1, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Top, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Center", 0.5, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
 		Window::UpdateScreen();
 		Performance::ResetCounters();

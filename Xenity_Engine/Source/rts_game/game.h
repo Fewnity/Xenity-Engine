@@ -17,5 +17,6 @@ private:
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	TileMap* tileMap;
 	TileMap* tileMapProps;
+	float cameraZoom = 1.5f; //[1;2]
 };
 

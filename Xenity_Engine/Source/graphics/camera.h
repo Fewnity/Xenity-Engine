@@ -10,6 +10,8 @@ public:
 	~Camera();
 	void SetFov(const double fov);
 	double GetFov() const;
+	void SetProjectionSize(const double value);
+	double GetProjectionSize() const;
 	double GetNearClippingPlane() const;
 	double GetFarClippingPlane() const;
 	void SetNearClippingPlane(double value);

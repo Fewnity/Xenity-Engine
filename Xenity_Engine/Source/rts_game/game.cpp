@@ -23,6 +23,7 @@
 #include "../tools/curve.h"
 #include "../tools/benchmark.h"
 #include "../time/time.h"
+#include "../ui/window.h"
 using namespace std::chrono;
 
 /// <summary>
@@ -111,7 +112,8 @@ void Game::Init()
 	gameObjectSprite->AddExistingComponent(textRenderer);
 
 
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 /// <summary>
@@ -121,16 +123,33 @@ void Game::Loop()
 {
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
-		SDL_SetRelativeMouseMode(SDL_FALSE);
+		//SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+
+	if (InputSystem::GetKey(MOUSE_RIGHT)) {
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.y * cameraZoom/2.8f * 3;
+		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.y / aspect;
+		//vect *= InputSystem::mouseSpeed.y * aspect /128.0;
+		vect *= InputSystem::mouseSpeed.y * 10 / aspect;
+		newCameraPosition += vect;
+
+		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.x * cameraZoom / 2.8f * 3;
+		//vect *= Time::GetDeltaTime() * InputSystem::mouseSpeed.x / aspect;
+		//vect *= InputSystem::mouseSpeed.x * aspect / 128.0;
+		vect *= InputSystem::mouseSpeed.x* 10;
+		newCameraPosition += vect;
+	}
+
 	if (InputSystem::GetKey(Z))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
 		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
-
 	}
 	if (InputSystem::GetKey(S))
 	{
@@ -140,7 +159,6 @@ void Game::Loop()
 	}
 	if (InputSystem::GetKey(D))
 	{
-
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
 		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
@@ -152,11 +170,28 @@ void Game::Loop()
 		vect *= Time::GetDeltaTime() * 2;
 		newCameraPosition += vect;
 	}
+
+	if (InputSystem::mouseWheel != 0) 
+	{
+		cameraZoom -= InputSystem::mouseWheel / 3.0f;
+		if (cameraZoom < 1)
+		{
+			cameraZoom = 1;
+		}
+		else if (cameraZoom > 2.8f)
+		{
+			cameraZoom = 2.8f;
+		}
+
+		camera->SetProjectionSize(2.5f* cameraZoom);
+	}
+
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
-	std::string debugText2 = std::string("Pos x:") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y:" + std::to_string(cameraGameObject->transform.GetPosition().y) + " z:" + std::to_string(cameraGameObject->transform.GetPosition().z);
-	Debug::Print(debugText2);
-	//UiManager::RenderTextCanvas(debugText2, 0.0f, 80, 20, 0.5f,16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
+	std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
+	debugText2 += "Size " + std::to_string(camera->GetProjectionSize());
+	//Debug::Print(debugText2);
+	UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f,0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 
 	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
 }

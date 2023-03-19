@@ -34,6 +34,16 @@ double Camera::GetFov() const
 	return this->fov;
 }
 
+void Camera::SetProjectionSize(const double value)
+{
+	projectionSize = value;
+}
+
+double Camera::GetProjectionSize() const
+{
+	return projectionSize;
+}
+
 double Camera::GetNearClippingPlane() const
 {
 	return nearClippingPlane;

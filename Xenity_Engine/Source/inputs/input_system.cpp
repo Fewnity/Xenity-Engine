@@ -2,10 +2,15 @@
 #include <fstream>
 #include <map>
 #include "../debug/debug.h"
+#include "../ui/window.h"
 
 Vector2 InputSystem::mousePosition = Vector2();
 Vector2 InputSystem::mouseSpeed = Vector2();
+Vector2 InputSystem::mouseSpeedRaw = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
+float InputSystem::mouseWheel = 0;
+bool InputSystem::hideMouse = false;
+
 
 /// <summary>
 /// Init input system
@@ -19,6 +24,7 @@ void InputSystem::Init()
 	}
 	Debug::Print("---- Input System initiated ----");
 }
+
 
 /// <summary>
 /// Get inputs events
@@ -35,20 +41,51 @@ void InputSystem::Read(const SDL_Event event)
 		mousePosition.x = mouseX;
 		mousePosition.y = mouseY;
 
+		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+
 		//Get mouse speed
-		int xSpeed = event.motion.xrel;
-		int ySpeed = -event.motion.yrel;
+		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;
+		float ySpeed = -event.motion.yrel / (float)Window::GetHeight() * aspect;
+		float xSpeedRaw = event.motion.xrel;
+		float ySpeedRaw = -event.motion.yrel;
+
+		//mouseSpeed.x += xSpeed;
+		//mouseSpeed.y += ySpeed;
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;
+
+		mouseSpeedRaw.x = xSpeedRaw;
+		mouseSpeedRaw.y = ySpeedRaw;
+
+		/*std::cout << "MOUSE X " << event.motion.xrel << std::endl;
+		std::cout << "MOUSE Y " << event.motion.yrel << std::endl;
+		std::cout << "event.motion.state " << event.motion.state << std::endl;
+		std::cout << "Window ID " << event.motion.windowID << std::endl;*/
 		break;
 	}
 
 	case SDL_MOUSEBUTTONDOWN: {
+		if(hideMouse)
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 		switch (event.button.button) {
 		case SDL_BUTTON_RIGHT:
+			SetInput(true, MOUSE_RIGHT);
 			break;
 		case SDL_BUTTON_LEFT:
+			SetInput(true, MOUSE_LEFT);
+			break;
+		}
+		break;
+	}
+
+	case SDL_MOUSEBUTTONUP:
+	{
+		switch (event.button.button) {
+		case SDL_BUTTON_RIGHT:
+			SetInput(false, MOUSE_RIGHT);
+			break;
+		case SDL_BUTTON_LEFT:
+			SetInput(false, MOUSE_LEFT);
 			break;
 		}
 		break;
@@ -62,6 +99,11 @@ void InputSystem::Read(const SDL_Event event)
 		ChangeInputState(false, event.key.keysym.sym);
 		break;
 
+	case SDL_MOUSEWHEEL:
+		//std::cout << "X: " << event.wheel.preciseX << std::endl;
+		std::cout << "Y: " << event.wheel.preciseY << std::endl;
+		mouseWheel = event.wheel.preciseY;
+		break;
 	}
 }
 
@@ -257,6 +299,7 @@ void InputSystem::ClearInputs()
 	}
 	mouseSpeed.x = 0;
 	mouseSpeed.y = 0;
+	mouseWheel = 0;
 }
 
 /// <summary>
