@@ -50,8 +50,6 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	Debug::Print("Initiating game...");
-	Debug::Print("---- Game initiated ----");
 	Engine::Loop();
 	Debug::Print("---- Game loop ended ----");
 

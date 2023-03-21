@@ -69,8 +69,10 @@ float angleT = 0;
 /// </summary>
 void Engine::Loop()
 {
+	Debug::Print("Initiating game...");
 	Game* game = new Game();
 	game->Init();
+	Debug::Print("---- Game initiated ----");
 
 	bool running = true;
 

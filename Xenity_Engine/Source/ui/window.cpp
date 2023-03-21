@@ -11,6 +11,7 @@ SDL_Window* Window::window = nullptr;
 int Window::height = 720;
 int Window::width = 1280;
 //int Window::height = 720;
+float Window::aspect = 0;
 
 const char * ENGINE_NAME = "Xenity Engine";
 
@@ -54,10 +55,12 @@ int Window::InitWindow()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	float borderColor[] = { 1.0f, 1.0f, 0.0f, 0.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); //TODO Move to texture init?
 
 	SDL_GL_SetSwapInterval(1);
+
+	OnResize(width, height);
 
 	Debug::Print("---- Window initiated ----");
 
@@ -74,6 +77,7 @@ void Window::OnResize(const int newWidth, const int newHeight)
 	glViewport(0, 0, newWidth, newHeight);
 	width = newWidth;
 	height = newHeight;
+	aspect = static_cast<float>((width) / static_cast<float>(height));
 }
 
 /// <summary>
@@ -129,6 +133,11 @@ int Window::GetWidth()
 int Window::GetHeight()
 {
 	return height;
+}
+
+float Window::GetAspectRatio()
+{
+	return aspect;
 }
 
 #pragma endregion

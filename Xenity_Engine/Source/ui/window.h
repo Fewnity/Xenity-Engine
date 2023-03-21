@@ -15,7 +15,9 @@ public:
 	static void SetHeight(const int height_);
 	static int GetWidth();
 	static int GetHeight();
+	static float GetAspectRatio();
 
 private:
 	static int width, height;
+	static float aspect;
 };
