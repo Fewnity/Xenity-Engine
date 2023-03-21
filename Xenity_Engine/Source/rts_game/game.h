@@ -19,41 +19,54 @@ class Game
 {
 public:
 class Tile {
+public:
 	int groundTileId = 0; // 0 is no tile
 	Prop* prop = nullptr;
 };
 	void Init();
 	void Loop();
 	Game::Tile* GetTile(int x, int y);
-	void GenerateMap();
 
 private:
+	void GenerateMap();
+	Prop* CreateProp(int id);
+	void LoadGameData();
+	void CreateTileMaps();
+
 	GameObject* cameraGameObject = new GameObject("cameraGameObject");
 
 	Camera* camera = new Camera();
 
 	GameObject* gameObjectSprite = new GameObject("gameObjectSprite");
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
-	TileMap* tileMap;
-	TileMap* tileMapProps;
+	TileMap* tileMap = nullptr;
+	TileMap* tileMapProps = nullptr;
 	float cameraZoom = 1.5f; //[1;2.8]
 	float cameraArrowMoveSpeed = 3;
-	std::vector<Prop*> props;
-	std::vector<Texture*> propsTextures;
 
 	Tile* tiles = nullptr;
 
 	//Map settings
 	int mapSize = 20;
-	int minTreeCount = 5;
-	int maxTreeCount = 6;
-	int minRockCount = 3;
-	int maxRockCount = 6;
-	int minRockEmeraldCount = 3;
+	int minTreeCount = 15;
+	int maxTreeCount = 20;
+	int minRockCount = 8;
+	int maxRockCount = 12;
+	int minRockEmeraldCount = 5;
 	int maxRockEmeraldCount = 6;
-	int minRockGoldCount = 3;
-	int maxRockGoldCount = 6;
-	int minCrystalCount = 3;
-	int maxCrystalCount = 6;
+	int minRockGoldCount = 6;
+	int maxRockGoldCount = 8;
+	int minCrystalCount = 4;
+	int maxCrystalCount = 4;
+
+	//Textures
+	std::vector<Texture*> propsTextures;
+	std::vector<Texture*> tilesTextures;
+	Texture* textureShip = nullptr;
+
+	//Shaders
+
+	//Materials
+	Material* material2D = nullptr;
 };
 

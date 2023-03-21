@@ -24,12 +24,53 @@
 #include "../tools/benchmark.h"
 #include "../time/time.h"
 #include "../ui/window.h"
-using namespace std::chrono;
 
 /// <summary>
 /// Init game
 /// </summary>
 void Game::Init()
+{
+	LoadGameData();
+
+	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
+
+	GenerateMap();
+	CreateTileMaps();
+
+	cameraGameObject->AddExistingComponent(camera);
+	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+
+	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
+
+	SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
+	gameObjectSprite->AddExistingComponent(spr);
+
+	GameObject* t = new GameObject();
+	t->transform.SetPosition(Vector3(1, 1, 0));
+	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
+	t->AddExistingComponent(spr2);
+
+	GameObject* t2 = new GameObject();
+	t2->transform.SetPosition(Vector3(2, 2, 0));
+	SpriteRenderer* spr3 = new SpriteRenderer(textureShip, material2D);
+	t2->AddExistingComponent(spr3);
+
+	GameObject* t3 = new GameObject();
+	t3->transform.SetPosition(Vector3(3, 3, 0));
+	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
+	t3->AddExistingComponent(spr4);
+
+	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
+	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
+	gameObjectSprite->AddExistingComponent(textRenderer);*/
+
+
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+	camera->SetProjectionSize(2.5f * cameraZoom);
+}
+
+void Game::LoadGameData()
 {
 	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
 
@@ -44,11 +85,14 @@ void Game::Init()
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);
 
-	Texture* textureShip = new Texture("ship_0000.png");
+	textureShip = new Texture("ship_0000.png");
 	Texture* textureTile0 = new Texture("rts/Tile/scifiTile_42.png");
 	textureTile0->SetPixelPerUnit(128);
 	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png");
 	textureTile1->SetPixelPerUnit(128);
+
+	tilesTextures.push_back(textureTile0);
+	tilesTextures.push_back(textureTile1);
 
 	for (int i = 0; i < 19; i++)
 	{
@@ -64,68 +108,10 @@ void Game::Init()
 		propsTextures[i]->SetPixelPerUnit(128);
 	}
 
-	cameraGameObject->AddExistingComponent(camera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
-
-	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
-
-	Material* material2D = new Material();
+	material2D = new Material();
 	material2D->shader = shaderStandard2D;
-
-	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
-
-	GenerateMap();
-
-	tileMap = new TileMap();
-	gameObjectTileMap->AddExistingComponent(tileMap);
-	tileMap->Setup(mapSize, mapSize);
-	tileMap->AddTexture(textureTile0);
-	tileMap->AddTexture(textureTile1);
-	for (int x = 0; x < mapSize; x++)
-	{
-		for (int y = 0; y < mapSize; y++)
-		{
-			tileMap->SetTile(x, y, 1);
-		}
-	}
-	tileMap->material = material2D;
-
-	//Props tilemap
-	tileMapProps = new TileMap();
-	gameObjectTileMap->AddExistingComponent(tileMapProps);
-	tileMapProps->Setup(mapSize, mapSize);
-	for (int i = 0; i < propsTexturesCount; i++)
-	{
-		tileMapProps->AddTexture(propsTextures[i]);
-	}
-	//tileMapProps->AddTexture(textureEnv0);
-	//tileMapProps->AddTexture(textureEnv1);
-
-	int propCount = props.size();
-	for (int i = 0; i < propCount; i++)
-	{
-		tileMapProps->SetTile(props[i]->x, props[i]->y, props[i]->id);
-	}
-
-	tileMapProps->material = material2D;
-
-	/*SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
-	gameObjectSprite->AddExistingComponent(spr);
-
-	GameObject* t = new GameObject();
-	t->transform.SetPosition(Vector3(1, 0, 0));
-	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
-	t->AddExistingComponent(spr2);
-
-	TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
-	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
-	gameObjectSprite->AddExistingComponent(textRenderer);*/
-
-
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_SetRelativeMouseMode(SDL_FALSE);
-	camera->SetProjectionSize(2.5f * cameraZoom);
 }
+
 
 /// <summary>
 /// Game loop
@@ -141,14 +127,26 @@ void Game::Loop()
 
 	if (InputSystem::GetKey(MOUSE_RIGHT)) {
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		//vect *= InputSystem::mouseSpeed.y * 10;
 		vect *= InputSystem::mouseSpeed.y * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 
 		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		//vect *= InputSystem::mouseSpeed.x * 10;
 		vect *= InputSystem::mouseSpeed.x * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
+	}
+
+	if (InputSystem::GetKey(MOUSE_LEFT)) {
+		float aspect = Window::GetAspectRatio();
+		std::cout << "Raw X Mouse: " << InputSystem::mousePosition.x << std::endl;
+		std::cout << "Raw Y Mouse: " << InputSystem::mousePosition.y << std::endl;
+
+		Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+
+
+		//float mouseXWorldPosition = (InputSystem::mousePosition.x - Window::GetWidth() / 2) / (Window::GetWidth() / 10.f / aspect / Graphics::usedCamera->GetProjectionSize() * 5.0f) + Graphics::usedCamera->gameObject->transform.GetPosition().x;
+		//float mouseYWorldPosition = -(InputSystem::mousePosition.y - Window::GetHeight() / 2) / (Window::GetHeight() / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f) + Graphics::usedCamera->gameObject->transform.GetPosition().y;
+		std::cout << "In game X Mouse: " << mouseWorldPosition.x << std::endl;
+		std::cout << "In game Y Mouse: " << mouseWorldPosition.y << std::endl;
 	}
 
 	if (InputSystem::GetKey(Z))
@@ -215,66 +213,121 @@ void Game::GenerateMap()
 		free(tiles);
 
 	tiles = (Tile*)malloc(mapSize * mapSize * sizeof(Tile));
-
+	for (int x = 0; x < mapSize; x++)
+	{
+		for (int y = 0; y < mapSize; y++)
+		{
+			Tile* tile = GetTile(x, y);
+			tile->groundTileId = 1;
+			tile->prop = nullptr;
+		}
+	}
 	//Fill map data
 
 	//Add trees
 	int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
 	for (int i = 0; i < treeCount; i++)
 	{
-		Prop* newProp = new Prop();
-		newProp->id = 16 + rand() % 4;
-		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
-		props.push_back(newProp);
+		int id = 16 + rand() % 4;
+		CreateProp(id);
 	}
 
 	//Add rocks
 	int rockCount = minRockCount + rand() % (maxRockCount - minRockCount + 1);
 	for (int i = 0; i < rockCount; i++)
 	{
-		Prop* newProp = new Prop();
+		int id = 0;
 		if (rand() % 2 == 0)
-			newProp->id = 2 + rand() % 4;
+			id = 2 + rand() % 4;
 		else
-			newProp->id = 8 + rand() % 4;
-
-		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
-		props.push_back(newProp);
+			id = 8 + rand() % 4;
+		CreateProp(id);
 	}
 
 	//Add emeralds
 	int emeraldCount = minRockEmeraldCount + rand() % (maxRockEmeraldCount - minRockEmeraldCount + 1);
 	for (int i = 0; i < emeraldCount; i++)
 	{
-		Prop* newProp = new Prop();
+		int id = 0;
 		if (rand() % 2 == 0)
-			newProp->id = 6;
+			id = 6;
 		else
-			newProp->id = 12;
-		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
-		props.push_back(newProp);
+			id = 12;
+		CreateProp(id);
 	}
 
 	//Add gold
 	int goldCount = minRockGoldCount + rand() % (maxRockGoldCount - minRockGoldCount + 1);
 	for (int i = 0; i < goldCount; i++)
 	{
-		Prop* newProp = new Prop();
+		int id = 0;
 		if (rand() % 2 == 0)
-			newProp->id = 7;
+			id = 7;
 		else
-			newProp->id = 13;
-		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
-		props.push_back(newProp);
+			id = 13;
+		CreateProp(id);
 	}
 
 	//Add crystal
 	int crystalCount = minCrystalCount + rand() % (maxCrystalCount - minCrystalCount + 1);
 	for (int i = 0; i < crystalCount; i++)
 	{
-		Prop* newProp = new Prop();
-		newProp->id = 14 + rand() % 2;
-		newProp->SetPosition(rand() % mapSize, rand() % mapSize);
-		props.push_back(newProp);
+		int id = 14 + rand() % 2;
+		CreateProp(id);
+	}
+}
+
+Prop* Game::CreateProp(int id)
+{
+	int x;
+	int y;
+	do
+	{
+		x = rand() % mapSize;
+		y = rand() % mapSize;
+	} while (GetTile(x, y)->prop != nullptr);
+
+	Prop* newProp = new Prop();
+	newProp->id = id;
+
+	Tile* tile = GetTile(x, y);
+	tile->prop = newProp;
+
+	return newProp;
+}
+
+void Game::CreateTileMaps()
+{
+	//Create ground tile map
+	tileMap = new TileMap();
+	gameObjectTileMap->AddExistingComponent(tileMap);
+	tileMap->material = material2D;
+	tileMap->Setup(mapSize, mapSize);
+	tileMap->AddTexture(tilesTextures[0]);
+	tileMap->AddTexture(tilesTextures[1]);
+
+
+	//Create props tilemap
+	tileMapProps = new TileMap();
+	gameObjectTileMap->AddExistingComponent(tileMapProps);
+	tileMapProps->material = material2D;
+	tileMapProps->Setup(mapSize, mapSize);
+
+	int propsTexturesCount = propsTextures.size();
+	for (int i = 0; i < propsTexturesCount; i++)
+	{
+		tileMapProps->AddTexture(propsTextures[i]);
+	}
+
+	for (int x = 0; x < mapSize; x++)
+	{
+		for (int y = 0; y < mapSize; y++)
+		{
+			Tile* tile = GetTile(x, y);
+			tileMap->SetTile(x, y, tile->groundTileId);
+			if (tile->prop != nullptr) {
+				tileMapProps->SetTile(x, y, tile->prop->id);
+			}
+		}
 	}
 }
