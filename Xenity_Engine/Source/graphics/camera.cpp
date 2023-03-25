@@ -16,6 +16,7 @@ Camera::Camera()
 	{
 		Graphics::usedCamera = this;
 	}
+	UpdateProjection();
 }
 
 Camera::~Camera()
@@ -29,6 +30,7 @@ Camera::~Camera()
 void Camera::SetFov(const double fov)
 {
 	this->fov = fov;
+	UpdateProjection();
 }
 
 double Camera::GetFov() const
@@ -39,6 +41,7 @@ double Camera::GetFov() const
 void Camera::SetProjectionSize(const double value)
 {
 	projectionSize = value;
+	UpdateProjection();
 }
 
 double Camera::GetProjectionSize() const
@@ -63,6 +66,7 @@ void Camera::SetNearClippingPlane(double value)
 		farClippingPlane = value + 0.01;
 	}
 	nearClippingPlane = value;
+	UpdateProjection();
 }
 
 void Camera::SetFarClippingPlane(double value)
@@ -72,6 +76,7 @@ void Camera::SetFarClippingPlane(double value)
 		farClippingPlane = value + 0.01;
 	}
 	farClippingPlane = value;
+	UpdateProjection();
 }
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
@@ -88,6 +93,36 @@ Vector2 Camera::ScreenTo2DWorld(int x, int y)
 Vector2 Camera::MouseTo2DWorld()
 {
 	return ScreenTo2DWorld(InputSystem::mousePosition.x, InputSystem::mousePosition.y);
+}
+
+void Camera::UpdateProjection() 
+{
+	if (projectionType == ProjectionTypes::Perspective) {
+		//Projection
+		projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetAspectRatio(), GetNearClippingPlane(), GetFarClippingPlane());
+
+		//invert view X axis
+		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
+		projection = projection * flipX;
+	}
+	else {
+		projection = glm::ortho(-Window::GetAspectRatio() / 2.0f, Window::GetAspectRatio() / 2.0f, -0.5f, 0.5f);
+	}
+}
+
+glm::mat4 Camera::GetProjection()
+{
+	return projection;
+}
+
+void Camera::SetProjectionType(ProjectionTypes type)
+{
+	projectionType = type;
+}
+
+ProjectionTypes Camera::GetProjectionType()
+{
+	return projectionType;
 }
 
 #pragma endregion

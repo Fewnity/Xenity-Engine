@@ -16,12 +16,11 @@ public:
 	~Shader();
 
 	unsigned int GetProgramId();
-	void Use();
+	bool Use();
 	void SetShaderCameraPosition();
 	void SetShaderCameraPosition2D();
-	void SetShaderProjection3D();
 	void SetShaderProjection2DUnscaled();
-	void SetShaderProjection2D();
+	void SetShaderProjection();
 	void SetShaderPosition(const Vector3 position);
 	void SetShaderModel(const glm::mat4 trans);
 	void SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale);

@@ -93,7 +93,7 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 
 	material->Use();
 	material->shader->SetShaderCameraPosition2D();
-	material->shader->SetShaderProjection2D();
+	material->shader->SetShaderProjection();
 	material->shader->SetShaderModel(Vector3(x, y, z), Vector3(xAngle, yAngle, zAngle), Vector3(scaleX / aspect * 1.7777f * w, scaleY / aspect * 1.7777f * h, 1));
 	//return;
 
@@ -148,14 +148,18 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* 
 
 	float sizeFixer = 100 / diviser;
 
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(w, h, 1));
+
 	//Scale
-	transformationMatrix[0].x *= w;
+	/*transformationMatrix[0].x *= w;
 	transformationMatrix[0].y *= h;
 	transformationMatrix[1].x *= w;
-	transformationMatrix[1].y *= h;
+	transformationMatrix[1].y *= h;*/
+
 	//Move
 	transformationMatrix[3].x *= sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;
+
 	UpdateMaterial(material, transformationMatrix);
 
 	// update VBO for each character
@@ -217,7 +221,7 @@ void SpriteManager::UpdateMaterial(Material* material, glm::mat4 transformationM
 		{
 			material->Update();
 			material->shader->SetShaderCameraPosition2D();
-			material->shader->SetShaderProjection2D();
+			material->shader->SetShaderProjection();
 		}
 		material->shader->SetShaderModel(transformationMatrix);
 	}

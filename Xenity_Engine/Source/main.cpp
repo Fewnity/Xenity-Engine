@@ -22,16 +22,10 @@ using namespace std;
  * TODO :
  * Update local position when updating position, rotation and scale
  * 3D text
- * Clean code
  * 3D Sounds
  * Fix transparency order
  * Check mesh/shader destructor
- * Add scale usage in local position calculation
- * Add local scale usage
- * Ray to sphere : 
- * https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection.html
- * Ray to box : 
- * https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
+ * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  */
 
 static void error_callback(int error, const char* description)

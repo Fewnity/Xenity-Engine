@@ -45,13 +45,15 @@ GLuint Shader::GetProgramId()
 /// <summary>
 /// Use shader
 /// </summary>
-void Shader::Use()
+bool Shader::Use()
 {
 	if (Graphics::usedShaderProgram != programId) 
 	{
 		glUseProgram(programId);
 		Graphics::usedShaderProgram = programId;
+		return true;
 	}
+	return false;
 }
 
 #pragma region Data loading
@@ -158,25 +160,6 @@ void Shader::SetShaderCameraPosition2D() {
 	}
 }
 
-
-/// <summary>
-/// Send to the shader the 3D camera projection
-/// </summary>
-void Shader::SetShaderProjection3D() {
-	Use();
-	if (Graphics::usedCamera != nullptr)
-	{
-		//Projection
-		glm::mat4 projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetWidth() / (double)Window::GetHeight(), Graphics::usedCamera->GetNearClippingPlane(), Graphics::usedCamera->GetFarClippingPlane());
-
-		//invert view X axis
-		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
-		projection = projection * flipX;
-
-		glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, false, glm::value_ptr(projection));
-	}
-}
-
 void Shader::SetShaderProjection2DUnscaled() {
 	Use();
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
@@ -186,15 +169,10 @@ void Shader::SetShaderProjection2DUnscaled() {
 /// <summary>
 /// Send to the shader the 2D camera projection
 /// </summary>
-void Shader::SetShaderProjection2D() 
+void Shader::SetShaderProjection() 
 {
 	Use();
-
-	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
-
-	glm::mat4 projection = glm::ortho(-aspect/2.0f, aspect/2.0f, -0.5f, 0.5f);
-
-	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetProjection()));
 }
 
 void Shader::SetShaderPosition(const Vector3 position) 

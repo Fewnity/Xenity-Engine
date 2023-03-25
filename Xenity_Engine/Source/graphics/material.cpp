@@ -4,8 +4,11 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "../debug/performance.h"
+#include "../tools/profiler_benchmark.h"
 
 #pragma region Constructors / Destructor
+
+ProfilerBenchmark* materialUpdateBenchmark = new ProfilerBenchmark("Material update");
 
 Material::Material()
 {
@@ -89,6 +92,14 @@ void Material::SetAttribut(const std::string attribut, const int value)
 void Material::Use()
 {
 	shader->Use();
+	int matCount = AssetManager::GetMaterialCount();
+	for (int i = 0; i < matCount; i++)
+	{
+		Material* mat = AssetManager::GetMaterial(i);
+		if (mat != this && mat->shader == shader) {
+			mat->updated = false;
+		}
+	}
 }
 
 /// <summary>
@@ -96,7 +107,8 @@ void Material::Use()
 /// </summary>
 void Material::Update()
 {
-	if (shader != nullptr) 
+	materialUpdateBenchmark->Start();
+	if (shader != nullptr)
 	{
 		Use();
 		Performance::AddMaterialUpdate();
@@ -112,19 +124,21 @@ void Material::Update()
 			shader->SetShaderAttribut(kv.first, textureIndex);
 			textureIndex++;
 		}
-		for (const auto& kv : uniformsVector3) 
+		for (const auto& kv : uniformsVector3)
+		{
+			shader->SetShaderAttribut(kv.first, kv.second);
+			//std::cout << kv.second.x << kv.second.y << kv.second.z << std::endl;
+		}
+		for (const auto& kv : uniformsInt)
 		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
-		for (const auto& kv : uniformsInt) 
-		{
-			shader->SetShaderAttribut(kv.first, kv.second);
-		}
-		for (const auto& kv : uniformsFloat) 
+		for (const auto& kv : uniformsFloat)
 		{
 			shader->SetShaderAttribut(kv.first, kv.second);
 		}
 
 		updated = true;
 	}
+	materialUpdateBenchmark->Stop();
 }
