@@ -16,11 +16,17 @@
 #include "debug/performance.h"
 #include "ui/TextAlignments.h"
 #include "rts_game/game.h"
+#include "tools/profiler_benchmark.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 float lastTick = 0;
-Benchmark* myBench = new Benchmark();
 
+ProfilerBenchmark* engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
+ProfilerBenchmark* gameLoopBenchmark = new ProfilerBenchmark("Game loop");
+ProfilerBenchmark* componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
+ProfilerBenchmark* drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+
+//ProfilerBenchmark* drawUIBenchmark = new ProfilerBenchmark("UI draw");
 
 /// <summary>
 /// Init engine
@@ -62,8 +68,6 @@ void Engine::UpdateComponents()
 	}
 }
 
-float angleT = 0;
-
 /// <summary>
 /// Engine loop
 /// </summary>
@@ -78,6 +82,8 @@ void Engine::Loop()
 
 	while (running)
 	{
+		engineLoopBenchmark->Start();
+
 		Time::UpdateTime();
 
 		SDL_Event event;
@@ -116,16 +122,19 @@ void Engine::Loop()
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
 
+		gameLoopBenchmark->Start();
 		game->Loop();
+		gameLoopBenchmark->Stop();
+
+		componentsUpdateBenchmark->Start();
 		UpdateComponents();
+		componentsUpdateBenchmark->Stop();
 
 		AssetManager::ResetMaterialsUpdates();
 
-		//myBench->Start();
+		drawIDrawablesBenchmark->Start();
 		Graphics::DrawAllDrawable();
-		//myBench->Stop();
-		//std::cout << myBench->GetMicroSeconds() << " ms" << std::endl;
-
+		drawIDrawablesBenchmark->Stop();
 		glPolygonMode(GL_FRONT, GL_FILL);
 
 		if (InputSystem::GetKeyDown(A))
@@ -133,31 +142,12 @@ void Engine::Loop()
 			EngineSettings::isWireframe = !EngineSettings::isWireframe;
 		}
 
-		/*std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		UiManager::RenderTextCanvas(debugText, 4.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left,  *AssetManager::GetShader(7));
-
-		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
-		UiManager::RenderTextCanvas(fpsText, Window::GetWidth() / 2.0f, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Center, *AssetManager::GetShader(7));
-		
-		std::string performanceDebugText ="DrawCallCount: " + std::to_string(Performance::GetDrawCallCount());
-		performanceDebugText += std::string("\nMaterialUpdate: ") + std::to_string(Performance::GetUpdatedMaterialCount());
-		UiManager::RenderTextCanvas(performanceDebugText, Window::GetWidth()-4, 24, 90, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Right, *AssetManager::GetShader(7));
-		*/
-
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		UiManager::RenderTextCanvas(debugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
+		//std::string debugText = "Wireframe (A): True";
 
 		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
-		//UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
 
-
-		angleT += Time::GetDeltaTime() * 40;
-		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount());
-		performanceDebugText += std::string("\nUpdated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount());
-
-		UiManager::RenderTextCanvas(performanceDebugText, 1, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
-
+		//Draw screen tester
 		/*UiManager::RenderTextCanvas("Left", 0, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Right", 1, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Center, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Top Left", 0, 0, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
@@ -166,7 +156,25 @@ void Engine::Loop()
 		UiManager::RenderTextCanvas("Bottom Right", 1, 1, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Top, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Center", 0.5, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
+		//Draw performance data
+		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount()) + "\n";
+		performanceDebugText += std::string("Updated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount()) + "\n";
+
+		performanceDebugText += std::string("\n--- Profiler (microseconds) --- ") + "\n";
+		//Add profiler text
+		for (const auto& kv : Performance::profilerList)
+		{
+			performanceDebugText += kv.first + ": " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
+		}
+
+		UiManager::RenderTextCanvas(debugText, 1, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas(performanceDebugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0],H_Right, V_Bottom, *AssetManager::GetShader(7));
+		//std::cout << performanceDebugText << "\n";
+
+		engineLoopBenchmark->Stop();
 		Window::UpdateScreen();
+		Performance::Update();
 		Performance::ResetCounters();
 	}
 	delete game;

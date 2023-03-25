@@ -5,7 +5,7 @@
 #include "texture.h"
 #include "material.h"
 #include <glm/ext/matrix_transform.hpp>
-
+#include "../tools/profiler_benchmark.h"
 
 void TileMap::Setup(int width, int height)
 {
@@ -49,7 +49,8 @@ TileMap::Tile* TileMap::GetTile(int x, int y)
 void TileMap::SetTile(int x, int y, int textureId)
 {
 	Tile* tile = GetTile(x, y);
-	tile->textureId = textureId;
+	if (tile)
+		tile->textureId = textureId;
 }
 
 int TileMap::GetWidth()
@@ -62,7 +63,7 @@ int TileMap::GetHeight()
 	return height;
 }
 
-void TileMap::Update() 
+void TileMap::Update()
 {
 	/*for (int x = 0; x < width; x++)
 	{
@@ -82,14 +83,17 @@ void TileMap::Update()
 
 void TileMap::Draw()
 {
-	for (int x = 0; x < width; x++)
+	if (tiles)
 	{
-		for (int y = 0; y < height; y++)
+		for (int x = 0; x < width; x++)
 		{
-			Tile* tile = GetTile(x, y);
-			if(textures[tile->textureId] != nullptr)
-			SpriteManager::RenderSprite(tile->transformationMatrix,
-				textures[tile->textureId], material);
+			for (int y = 0; y < height; y++)
+			{
+				Tile* tile = GetTile(x, y);
+				if (textures[tile->textureId] != nullptr)
+					SpriteManager::RenderSprite(tile->transformationMatrix,
+						textures[tile->textureId], material);
+			}
 		}
 	}
 }

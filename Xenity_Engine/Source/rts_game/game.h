@@ -39,8 +39,10 @@ private:
 
 	GameObject* gameObjectSprite = new GameObject("gameObjectSprite");
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
+	GameObject* gameObjectTileMapShadow = new GameObject("TileMap Shadow");
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;
+	TileMap* tileMapPropsShadow = nullptr;
 	float cameraZoom = 1.5f; //[1;2.8]
 	float cameraArrowMoveSpeed = 3;
 
@@ -68,5 +70,6 @@ private:
 
 	//Materials
 	Material* material2D = nullptr;
+	Material* material2DShadow = nullptr;
 };
 

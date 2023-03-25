@@ -33,6 +33,7 @@ void Game::Init()
 	LoadGameData();
 
 	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
+	gameObjectTileMapShadow->transform.SetPosition(Vector3(0.1f, 0.1f, 0));
 
 	GenerateMap();
 	CreateTileMaps();
@@ -41,6 +42,7 @@ void Game::Init()
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
 
 	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
+
 
 	SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
 	gameObjectSprite->AddExistingComponent(spr);
@@ -67,6 +69,7 @@ void Game::Init()
 
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
+	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * cameraZoom);
 }
 
@@ -110,6 +113,10 @@ void Game::LoadGameData()
 
 	material2D = new Material();
 	material2D->shader = shaderStandard2D;
+	material2D->SetAttribut("color", Vector3(1, 1, 1));
+	material2DShadow = new Material();
+	material2DShadow->shader = shaderStandard2D;
+	material2DShadow->SetAttribut("color", Vector3(0.5f, 0.5f, 0.5f));
 }
 
 
@@ -125,7 +132,8 @@ void Game::Loop()
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
 
-	if (InputSystem::GetKey(MOUSE_RIGHT)) {
+	if (InputSystem::GetKey(MOUSE_RIGHT)) 
+	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
 		vect *= InputSystem::mouseSpeed.y * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
@@ -135,18 +143,19 @@ void Game::Loop()
 		newCameraPosition += vect;
 	}
 
-	if (InputSystem::GetKey(MOUSE_LEFT)) {
-		float aspect = Window::GetAspectRatio();
+	if (InputSystem::GetKeyDown(MOUSE_LEFT))
+	{
 		std::cout << "Raw X Mouse: " << InputSystem::mousePosition.x << std::endl;
 		std::cout << "Raw Y Mouse: " << InputSystem::mousePosition.y << std::endl;
 
 		Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
 
-
-		//float mouseXWorldPosition = (InputSystem::mousePosition.x - Window::GetWidth() / 2) / (Window::GetWidth() / 10.f / aspect / Graphics::usedCamera->GetProjectionSize() * 5.0f) + Graphics::usedCamera->gameObject->transform.GetPosition().x;
-		//float mouseYWorldPosition = -(InputSystem::mousePosition.y - Window::GetHeight() / 2) / (Window::GetHeight() / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f) + Graphics::usedCamera->gameObject->transform.GetPosition().y;
 		std::cout << "In game X Mouse: " << mouseWorldPosition.x << std::endl;
 		std::cout << "In game Y Mouse: " << mouseWorldPosition.y << std::endl;
+
+		std::cout << "In game X Mouse Round: " << round(mouseWorldPosition.x) << std::endl;
+		std::cout << "In game Y Mouse Round: " << round(mouseWorldPosition.y) << std::endl;
+		tileMapProps->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
 	}
 
 	if (InputSystem::GetKey(Z))
@@ -191,10 +200,10 @@ void Game::Loop()
 
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
-	std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
-	debugText2 += "Size " + std::to_string(camera->GetProjectionSize());
+	//std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
+	//debugText2 += "Size " + std::to_string(camera->GetProjectionSize());
 	//Debug::Print(debugText2);
-	UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
+	//UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 
 	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
 }
@@ -306,6 +315,10 @@ void Game::CreateTileMaps()
 	tileMap->AddTexture(tilesTextures[0]);
 	tileMap->AddTexture(tilesTextures[1]);
 
+	tileMapPropsShadow = new TileMap();
+	gameObjectTileMapShadow->AddExistingComponent(tileMapPropsShadow);
+	tileMapPropsShadow->material = material2DShadow;
+	tileMapPropsShadow->Setup(mapSize, mapSize);
 
 	//Create props tilemap
 	tileMapProps = new TileMap();
@@ -317,6 +330,7 @@ void Game::CreateTileMaps()
 	for (int i = 0; i < propsTexturesCount; i++)
 	{
 		tileMapProps->AddTexture(propsTextures[i]);
+		tileMapPropsShadow->AddTexture(propsTextures[i]);
 	}
 
 	for (int x = 0; x < mapSize; x++)
@@ -327,6 +341,7 @@ void Game::CreateTileMaps()
 			tileMap->SetTile(x, y, tile->groundTileId);
 			if (tile->prop != nullptr) {
 				tileMapProps->SetTile(x, y, tile->prop->id);
+				tileMapPropsShadow->SetTile(x, y, tile->prop->id);
 			}
 		}
 	}
