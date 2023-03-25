@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
     <ClCompile Include="Source\debug\performance.cpp" />
     <ClCompile Include="Source\orbital_camera.cpp" />
     <ClCompile Include="Source\rts_game\game.cpp" />
@@ -230,6 +231,8 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\graphics\camera_projection_types.h" />
+    <ClInclude Include="Source\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\orbital_camera.h" />
     <ClInclude Include="Source\rts_game\game.h" />

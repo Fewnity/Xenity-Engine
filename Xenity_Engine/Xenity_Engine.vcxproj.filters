@@ -45,6 +45,7 @@
     <ClCompile Include="Source\debug\performance.cpp" />
     <ClCompile Include="Source\rts_game\game.cpp" />
     <ClCompile Include="Source\graphics\tile_map.cpp" />
+    <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -92,6 +93,8 @@
     <ClInclude Include="Source\ui\TextAlignments.h" />
     <ClInclude Include="Source\rts_game\game.h" />
     <ClInclude Include="Source\graphics\tile_map.h" />
+    <ClInclude Include="Source\tools\profiler_benchmark.h" />
+    <ClInclude Include="Source\graphics\camera_projection_types.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
