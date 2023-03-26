@@ -316,7 +316,7 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 
 	// activate corresponding render state	
 	s.Use();
-	s.SetShaderProjection();
+	s.SetShaderUnscaledProjection();
 	s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
 

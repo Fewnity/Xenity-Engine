@@ -41,7 +41,7 @@ void InputSystem::Read(const SDL_Event event)
 		mousePosition.x = mouseX;
 		mousePosition.y = mouseY;
 
-		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+		float aspect = Window::GetAspectRatio();
 
 		//Get mouse speed
 		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;

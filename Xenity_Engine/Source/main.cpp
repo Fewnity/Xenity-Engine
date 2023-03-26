@@ -20,11 +20,14 @@ using namespace std;
 
 /*
  * TODO :
- * Update local position when updating position, rotation and scale
+ * Create on move event
  * 3D text
  * 3D Sounds
  * Fix transparency order
  * Check mesh/shader destructor
+ * Fix tilemap rotation
+ * Clean sprite manager class
+ * Create color class
  * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  */
 
