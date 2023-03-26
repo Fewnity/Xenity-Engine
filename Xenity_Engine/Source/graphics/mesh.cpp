@@ -257,7 +257,7 @@ void MeshRenderer::UpdateMaterial()
 			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 			material->shader->UpdateLights();
 		}
-		material->shader->SetShaderModel(gameObject->transform.transformationMatrix);
+		material->shader->SetShaderModel(&gameObject->transform.transformationMatrix);
 	}
 }
 

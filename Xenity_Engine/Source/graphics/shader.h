@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "../vectors/vector2.h"
 #include "../vectors/vector3.h"
 #include "../vectors/vector4.h"
 #include "texture.h"
@@ -22,14 +23,16 @@ public:
 	void SetShaderProjection2DUnscaled();
 	void SetShaderProjection();
 	void SetShaderPosition(const Vector3 position);
-	void SetShaderModel(const glm::mat4 trans);
+	void SetShaderModel(const glm::mat4 *trans);
 	void SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale);
 	void SetShaderRotation(const Vector3 eulerAngle);
 	void SetShaderScale(const Vector3 scale);
-	void SetShaderAttribut(const std::string attribut, const Vector3 value);
-	void SetShaderAttribut(const std::string attribut, const Vector4 value);
-	void SetShaderAttribut(const std::string attribut, const float value);
-	void SetShaderAttribut(const std::string attribut, const int value);
+	void SetShaderAttribut(const char* attribut, const Vector2 value);
+	void SetShaderAttribut(const char* attribut, const Vector3 value);
+	void SetShaderAttribut(const char* attribut, Vector4 &value);
+	void SetShaderAttribut(const char* attribut, const float value);
+	void SetShaderAttribut(const char* attribut, const int value);
+
 
 	void UpdateLights();
 
@@ -42,4 +45,6 @@ private:
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;
 	unsigned int programId = 0;
+	unsigned int modelLocation = 0;
+	unsigned int projectionLocation = 0;
 };

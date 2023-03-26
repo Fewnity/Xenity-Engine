@@ -5,6 +5,7 @@
 #include <iostream>
 #include "../debug/performance.h"
 #include "../tools/profiler_benchmark.h"
+#include "graphics.h"
 
 #pragma region Constructors / Destructor
 
@@ -29,9 +30,9 @@ Material::~Material()
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector2</param>
-void Material::SetAttribut(const std::string attribut, const Vector2 value)
+void Material::SetAttribut(const char* attribut, const Vector2 value)
 {
-	uniformsVector2.insert(std::pair <std::string, Vector2>(attribut, value));
+	uniformsVector2.insert(std::pair <const char*, Vector2>(attribut, value));
 }
 
 /// <summary>
@@ -39,9 +40,9 @@ void Material::SetAttribut(const std::string attribut, const Vector2 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector3</param>
-void Material::SetAttribut(const std::string attribut, const Vector3 value)
+void Material::SetAttribut(const char* attribut, const Vector3 value)
 {
-	uniformsVector3.insert(std::pair <std::string, Vector3>(attribut, value));
+	uniformsVector3.insert(std::pair <const char*, Vector3>(attribut, value));
 }
 
 /// <summary>
@@ -49,9 +50,9 @@ void Material::SetAttribut(const std::string attribut, const Vector3 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Vector4</param>
-void Material::SetAttribut(const std::string attribut, const Vector4 value)
+void Material::SetAttribut(const char* attribut, const Vector4 value)
 {
-	uniformsVector4.insert(std::pair <std::string, Vector4>(attribut, value));
+	uniformsVector4.insert(std::pair <const char*, Vector4>(attribut, value));
 }
 
 /// <summary>
@@ -59,9 +60,9 @@ void Material::SetAttribut(const std::string attribut, const Vector4 value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">Texture pointer</param>
-void Material::SetAttribut(const std::string attribut, Texture* value)
+void Material::SetAttribut(const char* attribut, Texture* value)
 {
-	uniformsTextures.insert(std::pair <std::string, Texture*>(attribut, value));
+	uniformsTextures.insert(std::pair <const char*, Texture*>(attribut, value));
 }
 
 /// <summary>
@@ -69,9 +70,9 @@ void Material::SetAttribut(const std::string attribut, Texture* value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">float</param>
-void Material::SetAttribut(const std::string attribut, const float value)
+void Material::SetAttribut(const char* attribut, const float value)
 {
-	uniformsFloat.insert(std::pair <std::string, float>(attribut, value));
+	uniformsFloat.insert(std::pair <const char*, float>(attribut, value));
 }
 
 /// <summary>
@@ -79,9 +80,9 @@ void Material::SetAttribut(const std::string attribut, const float value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">int</param>
-void Material::SetAttribut(const std::string attribut, const int value)
+void Material::SetAttribut(const char* attribut, const int value)
 {
-	uniformsInt.insert(std::pair <std::string, int>(attribut, value));
+	uniformsInt.insert(std::pair <const char*, int>(attribut, value));
 }
 
 #pragma endregion
@@ -91,13 +92,17 @@ void Material::SetAttribut(const std::string attribut, const int value)
 /// </summary>
 void Material::Use()
 {
-	shader->Use();
-	int matCount = AssetManager::GetMaterialCount();
-	for (int i = 0; i < matCount; i++)
+	if (Graphics::usedMaterial != this) 
 	{
-		Material* mat = AssetManager::GetMaterial(i);
-		if (mat != this && mat->shader == shader) {
-			mat->updated = false;
+		Graphics::usedMaterial = this;
+		shader->Use();
+		int matCount = AssetManager::GetMaterialCount();
+		for (int i = 0; i < matCount; i++)
+		{
+			Material* mat = AssetManager::GetMaterial(i);
+			if (mat != this && mat->shader == shader) {
+				mat->updated = false;
+			}
 		}
 	}
 }
@@ -110,7 +115,7 @@ void Material::Update()
 	materialUpdateBenchmark->Start();
 	if (shader != nullptr)
 	{
-		Use();
+		//Use();
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
@@ -124,10 +129,17 @@ void Material::Update()
 			shader->SetShaderAttribut(kv.first, textureIndex);
 			textureIndex++;
 		}
+		for (const auto& kv : uniformsVector2)
+		{
+			shader->SetShaderAttribut(kv.first, kv.second);
+		}
 		for (const auto& kv : uniformsVector3)
 		{
 			shader->SetShaderAttribut(kv.first, kv.second);
-			//std::cout << kv.second.x << kv.second.y << kv.second.z << std::endl;
+		}
+		for (auto& kv : uniformsVector4)
+		{
+			shader->SetShaderAttribut(kv.first, kv.second);
 		}
 		for (const auto& kv : uniformsInt)
 		{

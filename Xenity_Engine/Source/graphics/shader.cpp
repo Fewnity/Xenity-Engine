@@ -103,6 +103,10 @@ void Shader::LoadShader(const std::string vertexFileName, const std::string frag
 	glAttachShader(programId, vertexShaderId);
 	glAttachShader(programId, fragmentShaderId);
 	glLinkProgram(programId);
+	glUseProgram(programId);
+	modelLocation = glGetUniformLocation(programId, "model");
+
+	projectionLocation = glGetUniformLocation(programId, "projection");
 }
 
 #pragma endregion
@@ -149,12 +153,10 @@ void Shader::SetShaderCameraPosition2D() {
 	//Camera position
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
-		float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
-
 		glm::mat4 camera = glm::mat4(1.0f);
-
-		camera = glm::translate(camera, glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f,
-			-Graphics::usedCamera->gameObject->transform.GetPosition().y / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f, 0));
+		Camera* cam = Graphics::usedCamera;
+		camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f / cam->GetProjectionSize() * 5.0f,
+			-cam->gameObject->transform.GetPosition().y / 10.f / cam->GetProjectionSize() * 5.0f, 0));
 
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
@@ -163,7 +165,7 @@ void Shader::SetShaderCameraPosition2D() {
 void Shader::SetShaderProjection2DUnscaled() {
 	Use();
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
-	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
 /// <summary>
@@ -172,7 +174,7 @@ void Shader::SetShaderProjection2DUnscaled() {
 void Shader::SetShaderProjection() 
 {
 	Use();
-	glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetProjection()));
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetProjection()));
 }
 
 void Shader::SetShaderPosition(const Vector3 position) 
@@ -187,10 +189,10 @@ void Shader::SetShaderPosition(const Vector3 position)
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(const glm::mat4 trans)
+void Shader::SetShaderModel(const glm::mat4* trans)
 {
 	Use();
-	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
+	glUniformMatrix4fv(modelLocation, 1, false, glm::value_ptr(*trans));
 }
 
 /// <summary>
@@ -248,24 +250,30 @@ void Shader::SetShaderScale(const Vector3 scale) {
 	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
 }
 
-void Shader::SetShaderAttribut(const std::string attribut, const Vector4 value) {
+
+void Shader::SetShaderAttribut(const char* attribut, Vector4& value) {
 	Use();
-	glUniform4f(glGetUniformLocation(programId, attribut.c_str()), value.x, value.y, value.z, value.w);
+	glUniform4f(glGetUniformLocation(programId, attribut), value.x, value.y, value.z, value.w);
 }
 
-void Shader::SetShaderAttribut(const std::string attribut, const Vector3 value) {
+void Shader::SetShaderAttribut(const char* attribut, const Vector3 value) {
 	Use();
-	glUniform3f(glGetUniformLocation(programId, attribut.c_str()), value.x, value.y, value.z);
+	glUniform3f(glGetUniformLocation(programId, attribut), value.x, value.y, value.z);
 }
 
-void Shader::SetShaderAttribut(const std::string attribut, const float value) {
+void Shader::SetShaderAttribut(const char* attribut, const Vector2 value) {
 	Use();
-	glUniform1f(glGetUniformLocation(programId, attribut.c_str()), value);
+	glUniform2f(glGetUniformLocation(programId, attribut), value.x, value.y);
 }
 
-void Shader::SetShaderAttribut(const std::string attribut, const int value) {
+void Shader::SetShaderAttribut(const char* attribut, const float value) {
 	Use();
-	glUniform1i(glGetUniformLocation(programId, attribut.c_str()), value);
+	glUniform1f(glGetUniformLocation(programId, attribut), value);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const int value) {
+	Use();
+	glUniform1i(glGetUniformLocation(programId, attribut), value);
 }
 
 /// <summary>
@@ -276,11 +284,11 @@ void Shader::SetShaderAttribut(const std::string attribut, const int value) {
 void Shader::SetPointLightData(const Light* light, const int index)
 {
 	std::string baseString = "pointLights[" + std::to_string(index) + "].";
-	SetShaderAttribut(baseString + "color", light->color * light->intensity);
-	SetShaderAttribut(baseString + "position", light->gameObject->transform.GetPosition());
-	SetShaderAttribut(baseString + "constant", lightConstant);
-	SetShaderAttribut(baseString + "linear", light->linear);
-	SetShaderAttribut(baseString + "quadratic", light->quadratic);
+	SetShaderAttribut((baseString + "color").c_str(), light->color * light->intensity);
+	SetShaderAttribut((baseString + "position").c_str(), light->gameObject->transform.GetPosition());
+	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
+	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
 }
 
 /// <summary>
@@ -291,8 +299,8 @@ void Shader::SetPointLightData(const Light* light, const int index)
 void Shader::SetDirectionalLightData(const Light* light, const int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
-	SetShaderAttribut(baseString + "color", light->color);
-	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetForward());
+	SetShaderAttribut((baseString + "color").c_str(), light->color);
+	SetShaderAttribut((baseString + "direction").c_str(), light->gameObject->transform.GetForward());
 }
 
 /// <summary>
@@ -303,14 +311,14 @@ void Shader::SetDirectionalLightData(const Light* light, const int index)
 void Shader::SetSpotLightData(const Light* light, const int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
-	SetShaderAttribut(baseString + "color", light->intensity * light->color);
-	SetShaderAttribut(baseString + "position", light->gameObject->transform.GetPosition());
-	SetShaderAttribut(baseString + "direction", light->gameObject->transform.GetForward());
-	SetShaderAttribut(baseString + "constant", lightConstant);
-	SetShaderAttribut(baseString + "linear", light->linear);
-	SetShaderAttribut(baseString + "quadratic", light->quadratic);
-	SetShaderAttribut(baseString + "cutOff", glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
-	SetShaderAttribut(baseString + "outerCutOff", glm::cos(glm::radians(light->GetSpotAngle())));
+	SetShaderAttribut((baseString + "color").c_str(), light->intensity * light->color);
+	SetShaderAttribut((baseString + "position").c_str(), light->gameObject->transform.GetPosition());
+	SetShaderAttribut((baseString + "direction").c_str(), light->gameObject->transform.GetForward());
+	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
+	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
+	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
+	SetShaderAttribut((baseString + "outerCutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle())));
 }
 
 /// <summary>

@@ -20,4 +20,5 @@ public :
 	static Camera* usedCamera;
 	static int usedShaderProgram;
 	static void DrawAllDrawable();
+	static Material* usedMaterial;
 };
