@@ -29,10 +29,6 @@ void SpriteRenderer::Draw() {
 	if (gameObject != nullptr && material != nullptr && texture != nullptr) 
 	{
 		SpriteManager::RenderSprite(gameObject->transform.transformationMatrix,
-			texture, material);
-		/*SpriteManager::RenderSprite(gameObject->transform,
-									texture->GetWidth(),
-									texture->GetHeight(),
-									texture, material);*/
+			color, texture, material);
 	}
 }

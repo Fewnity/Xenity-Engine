@@ -4,23 +4,29 @@
 #include "../component.h"
 #include <vector>
 #include "../vectors/vector2.h"
-#include "spriteRenderer.h"
+#include "../vectors/vector4.h"
 #include <glm/glm.hpp>
 
 
 class Texture;
 class Material;
+class SpriteBatch;
 
 class TileMap : public Component, public IDrawable
 {
 public:
+	TileMap() = delete;
+	TileMap(Material* material);
 	class Tile 
 	{
 	public:
 		int textureId = 0;
 		glm::mat4 transformationMatrix;
+		Vector2 vertices[4];
+		SpriteBatch* batch = nullptr;
 	private:
 	};
+
 	void Setup(int width, int height);
 	Tile * GetTile(int x, int y);
 	void SetTile(int x, int y, int textureId);
@@ -29,13 +35,11 @@ public:
 	void AddTexture(Texture* texture);
 	void RemoveTexture(Texture* texture);
 	Vector2 spritesScale = Vector2(1,1);
-	Material* material = nullptr;
 
 private:
+	Material* material = nullptr;
 	void Update();
 	void Draw();
-	SpriteRenderer* spriteRenderer = new SpriteRenderer();
-	//GameObject* gameObjectTileMap = new GameObject("@");
 
 	int GetTextureIndex(Texture* texture);
 
@@ -43,6 +47,8 @@ private:
 	int width = 0;
 	int height = 0;
 	Tile* tiles = nullptr;
-
+	Vector4 color = Vector4(1, 1, 1, 1);
+	std::vector<SpriteBatch*> SpriteBatches;
+	bool needUpdateVertices = true;
 };
 

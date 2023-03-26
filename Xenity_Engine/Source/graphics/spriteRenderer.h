@@ -5,6 +5,7 @@ class Material;
 
 #include "../component.h"
 #include "iDrawable.h"
+#include "../vectors/vector4.h"
 
 class SpriteRenderer : public Component, public IDrawable
 {
@@ -13,11 +14,13 @@ class SpriteRenderer : public Component, public IDrawable
 		SpriteRenderer(const Texture* texture, Material* material);
 		~SpriteRenderer();
 
+		void SetSprite(const Texture* texture);
 
-		const Texture* texture = nullptr;
 		Material* material = nullptr;
+		Vector4 color = Vector4(1,1,1,1);
 
 	private:
+		const Texture* texture = nullptr;
 		void Draw();
 };
 

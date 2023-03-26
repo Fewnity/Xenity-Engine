@@ -7,8 +7,17 @@
 #include "../transform.h"
 #include "graphics.h"
 #include "../debug/debug.h"
+#include "../tools/profiler_benchmark.h"
+#include "../time/time.h"
+#include "../debug/performance.h"
 
-unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
+unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVAOSmall, SpriteManager::spriteVBO, SpriteManager::spriteVBOSmall;
+ProfilerBenchmark* spriteBenchmark = new ProfilerBenchmark("Sprites");
+float  SpriteManager::vertices2[6 * 600 * 600][4];
+const Texture* SpriteManager::currentTexture = nullptr;
+
+
+void UpdateMaterial(Material* material, glm::mat4* transformationMatrix);
 
 #pragma region Drawing
 
@@ -20,13 +29,13 @@ unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVBO;
 /// <param name="h">Sprite's heigh</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(Transform transform, float w, float h, const Texture* texture, Material* material) {
+void SpriteManager::RenderSprite(Transform transform, float w, float h, Vector4 color, const Texture* texture, Material* material) {
 	SpriteManager::RenderSprite(transform.GetPosition(),
 		w,
 		h,
 		transform.GetScale(),
 		transform.GetRotation(),
-		texture, material);
+		color, texture, material);
 }
 
 /// <summary>
@@ -39,7 +48,7 @@ void SpriteManager::RenderSprite(Transform transform, float w, float h, const Te
 /// <param name="rotation">Sprite's rotation</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, const Texture* texture, Material* material) {
+void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, Vector4 color, const Texture* texture, Material* material) {
 	SpriteManager::RenderSprite(position.x,
 		position.y,
 		position.z,
@@ -50,7 +59,7 @@ void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 sca
 		rotation.x,
 		rotation.y,
 		rotation.z,
-		texture, material);
+		color, texture, material);
 }
 
 /// <summary>
@@ -68,7 +77,7 @@ void SpriteManager::RenderSprite(Vector3 position, float w, float h, Vector3 sca
 /// <param name="zAngle">Z angle</param>
 /// <param name="texture">Sprite's texture</param>
 /// <param name="s">Sprite's shader</param>
-void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, const Texture* texture, Material* material)
+void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, Vector4 color, const Texture* texture, Material* material)
 {
 	if (texture == nullptr || material == nullptr)
 		return;
@@ -129,13 +138,15 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
+float tim = 0;
 
 //void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, float w, float h, const Texture* texture, Material* material)
-void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* texture, Material* material)
+void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color, const Texture* texture, Material* material)
 {
-	//float diviser = 720;
-	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize()/5.0f;
+	if (texture == nullptr || material == nullptr)
+		return;
+
+	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
 
 	float unitCoef = 100.0f / texture->GetPixelPerUnit();
 	float w = texture->GetWidth() * unitCoef;
@@ -143,38 +154,36 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* 
 	w /= diviser;
 	h /= diviser;
 
-	if (texture == nullptr || material == nullptr)
-		return;
 
 	float sizeFixer = 100 / diviser;
 
-	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(w, h, 1));
+	material->shader->SetShaderAttribut("color", color);
 
 	//Scale
-	/*transformationMatrix[0].x *= w;
-	transformationMatrix[0].y *= h;
-	transformationMatrix[1].x *= w;
-	transformationMatrix[1].y *= h;*/
+	transformationMatrix[0].x *= w;
+	transformationMatrix[0].y *= w;
+	transformationMatrix[1].x *= h;
+	transformationMatrix[1].y *= h;
 
 	//Move
 	transformationMatrix[3].x *= sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;
 
-	UpdateMaterial(material, transformationMatrix);
+	UpdateMaterial(material, &transformationMatrix);
 
-	// update VBO for each character
-	glDisable(GL_DEPTH_TEST);
-	//glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	if (currentTexture != texture)
+	{
+		currentTexture = texture;
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+	}
 
-	// TODO : Optimisation : Do not bind texture if the texture is already in use
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
-
-	glBindVertexArray(spriteVAO);
+	glBindVertexArray(spriteVAOSmall);
+	glBindBuffer(GL_ARRAY_BUFFER, spriteVBOSmall);
 
 	// render quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 }
 
 #pragma endregion
@@ -184,10 +193,11 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, const Texture* 
 /// </summary>
 void SpriteManager::CreateSpriteBuffer()
 {
-	glGenVertexArrays(1, &spriteVAO);
-	glGenBuffers(1, &spriteVBO);
-	glBindVertexArray(spriteVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+	glGenVertexArrays(1, &spriteVAOSmall);
+	glGenBuffers(1, &spriteVBOSmall);
+
+	glBindVertexArray(spriteVAOSmall);
+	glBindBuffer(GL_ARRAY_BUFFER, spriteVBOSmall);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	//Vertices attrib
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
@@ -208,16 +218,277 @@ void SpriteManager::CreateSpriteBuffer()
 	};
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//////////////////////////////////////
+	glGenVertexArrays(1, &spriteVAO);
+	glGenBuffers(1, &spriteVBO);
+	glBindVertexArray(spriteVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 600 * 600 * 4, NULL, GL_DYNAMIC_DRAW);
+	//Vertices attrib
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	//Uv attrib
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
 	glBindVertexArray(0);
 }
 
-void SpriteManager::UpdateMaterial(Material* material, glm::mat4 transformationMatrix)
+void SpriteManager::AddToBatch(const Texture* texture, glm::mat4& transformationMatrix, int index, float x, float y, float scaleX, float scaleY)
+{
+
+	/*float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+
+	float unitCoef = 100.0f / texture->GetPixelPerUnit();
+	float w = texture->GetWidth() * unitCoef;
+	float h = texture->GetHeight() * unitCoef;
+	w /= diviser;
+	h /= diviser;
+
+	if (texture == nullptr)
+		return;
+
+	float sizeFixer = 100 / diviser;
+
+	float x = transformationMatrix[3].x * sizeFixer;
+	float y = transformationMatrix[3].y * sizeFixer;
+
+	float xpos1 = x;
+	float xpos2 = x + w;
+	float ypos1 = y;
+	float ypos2 = y + h;
+
+	xpos1 -= w / 2.0f;
+	xpos2 -= w / 2.0f;
+	ypos1 -= h / 2.0f;
+	ypos2 -= h / 2.0f;
+
+	Vector2 c1 = Vector2(xpos1, ypos2);
+	Vector2 c2 = Vector2(xpos1, ypos1);
+	Vector2 c3 = Vector2(xpos2, ypos1);
+	Vector2 c4 = Vector2(xpos2, ypos2);
+	float cx = (c1.x + c2.x + c3.x + c4.x) / 4.0f;
+	float cy = (c1.y + c2.y + c3.y + c4.y) / 4.0f;
+
+	float angle = 45;
+	//tim += Time::GetDeltaTime() / 100.0f;
+	float angleRad = angle * M_PI / 180.0f;
+
+	float angleCos = cos(angleRad);
+	float angleSin = sin(angleRad);
+	Vector2 c1n = Vector2(cx + (c1.x - cx) * angleCos - (c1.y - cy) * angleSin, cy + (c1.x - cx) * angleSin + (c1.y - cy) * angleCos);
+	Vector2 c2n = Vector2(cx + (c2.x - cx) * angleCos - (c2.y - cy) * angleSin, cy + (c2.x - cx) * angleSin + (c2.y - cy) * angleCos);
+	Vector2 c3n = Vector2(cx + (c3.x - cx) * angleCos - (c3.y - cy) * angleSin, cy + (c3.x - cx) * angleSin + (c3.y - cy) * angleCos);
+	Vector2 c4n = Vector2(cx + (c4.x - cx) * angleCos - (c4.y - cy) * angleSin, cy + (c4.x - cx) * angleSin + (c4.y - cy) * angleCos);
+
+	int realIndex = index * 6;
+	vertices2[realIndex][0] = c1n.x;
+	vertices2[realIndex][1] = c1n.y;
+	vertices2[realIndex][2] = 0.0f;
+	vertices2[realIndex][3] = 0.0f;
+
+	vertices2[realIndex + 1][0] = c2n.x;
+	vertices2[realIndex + 1][1] = c2n.y;
+	vertices2[realIndex + 1][2] = 0.0f;
+	vertices2[realIndex + 1][3] = 1.0f;
+
+	vertices2[realIndex + 2][0] = c3n.x;
+	vertices2[realIndex + 2][1] = c3n.y;
+	vertices2[realIndex + 2][2] = 1.0f;
+	vertices2[realIndex + 2][3] = 1.0f;
+
+	vertices2[realIndex + 3][0] = c1n.x;
+	vertices2[realIndex + 3][1] = c1n.y;
+	vertices2[realIndex + 3][2] = 0.0f;
+	vertices2[realIndex + 3][3] = 0.0f;
+
+	vertices2[realIndex + 4][0] = c3n.x;
+	vertices2[realIndex + 4][1] = c3n.y;
+	vertices2[realIndex + 4][2] = 1;
+	vertices2[realIndex + 4][3] = 1.0f;
+
+	vertices2[realIndex + 5][0] = c4n.x;
+	vertices2[realIndex + 5][1] = c4n.y;
+	vertices2[realIndex + 5][2] = 1.0f;
+	vertices2[realIndex + 5][3] = 0.0f;*/
+
+	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	float sizeFixer = 100 / diviser;
+
+	float unitCoef = 100.0f / texture->GetPixelPerUnit();
+	float w = texture->GetWidth() * unitCoef;
+	float h = texture->GetHeight() * unitCoef;
+	//w /= diviser;
+	//h /= diviser;
+
+	if (texture == nullptr)
+		return;
+
+	x *= 100;
+	y *= 100;
+	//float x = 100*index;
+	//float y = 0;
+
+	float xpos1 = x;
+	float xpos2 = x + w;
+	float ypos1 = y;
+	float ypos2 = y + h;
+
+	xpos1 -= w / 2.0f;
+	xpos2 -= w / 2.0f;
+	ypos1 -= h / 2.0f;
+	ypos2 -= h / 2.0f;
+
+	Vector2 c1 = Vector2(xpos1, ypos2);
+	Vector2 c2 = Vector2(xpos1, ypos1);
+	Vector2 c3 = Vector2(xpos2, ypos1);
+	Vector2 c4 = Vector2(xpos2, ypos2);
+	float cx = (c1.x + c2.x + c3.x + c4.x) / 4.0f;
+	float cy = (c1.y + c2.y + c3.y + c4.y) / 4.0f;
+
+	float angle = 45;
+	//tim += Time::GetDeltaTime() / 100.0f;
+	float angleRad = angle * M_PI / 180.0f;
+
+	float angleCos = cos(angleRad);
+	float angleSin = sin(angleRad);
+	Vector2 c1n = Vector2(cx + (c1.x - cx) * angleCos - (c1.y - cy) * angleSin, cy + (c1.x - cx) * angleSin + (c1.y - cy) * angleCos);
+	Vector2 c2n = Vector2(cx + (c2.x - cx) * angleCos - (c2.y - cy) * angleSin, cy + (c2.x - cx) * angleSin + (c2.y - cy) * angleCos);
+	Vector2 c3n = Vector2(cx + (c3.x - cx) * angleCos - (c3.y - cy) * angleSin, cy + (c3.x - cx) * angleSin + (c3.y - cy) * angleCos);
+	Vector2 c4n = Vector2(cx + (c4.x - cx) * angleCos - (c4.y - cy) * angleSin, cy + (c4.x - cx) * angleSin + (c4.y - cy) * angleCos);
+
+	c1n /= diviser;
+	c2n /= diviser;
+	c3n /= diviser;
+	c4n /= diviser;
+
+	int realIndex = index * 6;
+	vertices2[realIndex][0] = c1n.x;
+	vertices2[realIndex][1] = c1n.y;
+	vertices2[realIndex][2] = 0.0f;
+	vertices2[realIndex][3] = 0.0f;
+
+	vertices2[realIndex + 1][0] = c2n.x;
+	vertices2[realIndex + 1][1] = c2n.y;
+	vertices2[realIndex + 1][2] = 0.0f;
+	vertices2[realIndex + 1][3] = 1.0f;
+
+	vertices2[realIndex + 2][0] = c3n.x;
+	vertices2[realIndex + 2][1] = c3n.y;
+	vertices2[realIndex + 2][2] = 1.0f;
+	vertices2[realIndex + 2][3] = 1.0f;
+
+	vertices2[realIndex + 3][0] = c1n.x;
+	vertices2[realIndex + 3][1] = c1n.y;
+	vertices2[realIndex + 3][2] = 0.0f;
+	vertices2[realIndex + 3][3] = 0.0f;
+
+	vertices2[realIndex + 4][0] = c3n.x;
+	vertices2[realIndex + 4][1] = c3n.y;
+	vertices2[realIndex + 4][2] = 1;
+	vertices2[realIndex + 4][3] = 1.0f;
+
+	vertices2[realIndex + 5][0] = c4n.x;
+	vertices2[realIndex + 5][1] = c4n.y;
+	vertices2[realIndex + 5][2] = 1.0f;
+	vertices2[realIndex + 5][3] = 0.0f;
+
+	/*float vertices[6][4] = {
+		{ c1n.x,     c1n.y,   0.0f, 0.0f },
+		{ c2n.x,     c2n.y,        0.0f, 1.0f },
+		{ c3n.x, c3n.y,       1.0f, 1.0f },
+
+		{ c1n.x,     c1n.y,    0.0f, 0.0f },
+		{ c3n.x, c3n.y,      1.0f, 1.0f },
+		{ c4n.x, c4n.y ,   1.0f, 0.0f }
+	};*/
+}
+
+void SpriteManager::AddToBatch(int index, Vector2 vertices[4])
+{
+	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+
+	int realIndex = index * 6;
+
+	float* addr = vertices2[realIndex];
+
+	addr[0] = vertices[0].x / diviser;
+	addr[1] = vertices[0].y / diviser;
+	addr[2] = 0.0f;
+	addr[3] = 0.0f;
+
+	addr = vertices2[realIndex + 1];
+
+	addr[0] = vertices[1].x / diviser;
+	addr[1] = vertices[1].y / diviser;
+	addr[2] = 0.0f;
+	addr[3] = 1.0f;
+
+	addr = vertices2[realIndex + 2];
+
+	addr[0] = vertices[2].x / diviser;
+	addr[1] = vertices[2].y / diviser;
+	addr[2] = 1.0f;
+	addr[3] = 1.0f;
+
+	addr = vertices2[realIndex + 3];
+
+	addr[0] = vertices[0].x / diviser;
+	addr[1] = vertices[0].y / diviser;
+	addr[2] = 0.0f;
+	addr[3] = 0.0f;
+
+	addr = vertices2[realIndex + 4];
+
+	addr[0] = vertices[2].x / diviser;
+	addr[1] = vertices[2].y / diviser;
+	addr[2] = 1;
+	addr[3] = 1.0f;
+
+	addr = vertices2[realIndex + 5];
+
+	addr[0] = vertices[3].x / diviser;
+	addr[1] = vertices[3].y / diviser;
+	addr[2] = 1.0f;
+	addr[3] = 0.0f;
+}
+
+void SpriteManager::DrawBatch(const Texture* texture, Vector4& color, Material* material)
+{
+	glm::mat4 t = glm::mat4(1);
+	UpdateMaterial(material, &t);
+
+	material->shader->SetShaderAttribut("color", color);
+
+	glDisable(GL_DEPTH_TEST);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+
+	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices2), vertices2);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// render quad
+	glBindVertexArray(spriteVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6 * 600 * 600);
+	glBindVertexArray(spriteVAOSmall);
+}
+
+void SpriteManager::StartDrawing()
+{
+	currentTexture = nullptr;
+	glDisable(GL_DEPTH_TEST);
+	//glBindVertexArray(spriteVAO);
+}
+
+void UpdateMaterial(Material* material, glm::mat4* transformationMatrix)
 {
 	if (material != nullptr && material->shader != nullptr)
 	{
 		material->Use();
-		bool noNeedUpdate = material->updated;
-		if (!noNeedUpdate)
+		if (!material->updated)
 		{
 			material->Update();
 			material->shader->SetShaderCameraPosition2D();
@@ -234,4 +505,112 @@ void SpriteManager::Init() {
 	CreateSpriteBuffer();
 
 	Debug::Print("---- Sprite System initiated ----");
+}
+
+SpriteBatch::SpriteBatch(Material* mat, const Texture* texture)
+{
+	material = mat;
+	this->texture = texture;
+
+	glGenVertexArrays(1, &spriteVAO);
+	glGenBuffers(1, &spriteVBO);
+	glBindVertexArray(spriteVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	//Vertices attrib
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	//Uv attrib
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+}
+
+void SpriteBatch::Draw(Vector4& color)
+{
+	if (verticesCount != 0) {
+		glm::mat4 t = glm::mat4(1);
+		UpdateMaterial(material, &t);
+
+		material->shader->SetShaderAttribut("color", color);
+
+		glDisable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+
+		glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesCount * 4 * sizeof(float), vertices);
+
+		glBindVertexArray(spriteVAO);
+		glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+		Performance::AddDrawCall();
+	}
+
+	index = 0;
+}
+
+void SpriteBatch::AddVertices(Vector2 verticesToAdd[4])
+{
+	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	//float diviser = 1000;
+
+	int realIndex = index * 6 * 4;
+
+	float cx0 = verticesToAdd[0].x / diviser;
+	float cy0 = verticesToAdd[0].y / diviser;
+
+	float cx2 = verticesToAdd[2].x / diviser;
+	float cy2 = verticesToAdd[2].y / diviser;
+
+	vertices[realIndex] = cx0;
+	vertices[realIndex+1] = cy0;
+	vertices[realIndex+2] = 0.0f;
+	vertices[realIndex+3] = 0.0f;
+
+	//
+	vertices[realIndex+4] = verticesToAdd[1].x / diviser;
+	vertices[realIndex+5] = verticesToAdd[1].y / diviser;
+	vertices[realIndex+6] = 0.0f;
+	vertices[realIndex+7] = 1.0f;
+
+
+	vertices[realIndex+8] = cx2;
+	vertices[realIndex+9] = cy2;
+	vertices[realIndex+10] = 1.0f;
+	vertices[realIndex+11] = 1.0f;
+
+
+	vertices[realIndex+12] = cx0;
+	vertices[realIndex+13] = cy0;
+	vertices[realIndex+14] = 0.0f;
+	vertices[realIndex+15] = 0.0f;
+
+
+	vertices[realIndex+16] = cx2;
+	vertices[realIndex+17] = cy2;
+	vertices[realIndex+18] = 1;
+	vertices[realIndex+19] = 1.0f;
+
+	//
+	vertices[realIndex+20] = verticesToAdd[3].x / diviser;
+	vertices[realIndex+21] = verticesToAdd[3].y / diviser;
+	vertices[realIndex+22] = 1.0f;
+	vertices[realIndex+23] = 0.0f;
+
+	index++;
+}
+
+void SpriteBatch::SetBatchSize()
+{
+	if (verticesCount != oldVerticeCount) {
+		if (vertices != nullptr) {
+			free(vertices);
+		}
+		vertices = (float*)malloc(verticesCount * 4 * sizeof(float));
+
+		glBindVertexArray(spriteVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount * 4, NULL, GL_DYNAMIC_DRAW);
+		oldVerticeCount = verticesCount;
+		std::cout << "Batch created: " << verticesCount << std::endl;
+	}
 }
