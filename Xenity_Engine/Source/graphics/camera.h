@@ -21,16 +21,16 @@ public:
 
 	Vector2 ScreenTo2DWorld(int x, int y);
 	Vector2 MouseTo2DWorld();
-	glm::mat4 GetProjection();
+	glm::mat4 &GetProjection();
 	void SetProjectionType(ProjectionTypes type);
 	ProjectionTypes GetProjectionType();
+	void UpdateProjection();
 
 private:
 	double fov = 60.0f; //For 3D
 	double projectionSize = 5; //For 2D
 	double nearClippingPlane = 0.3f;
 	double farClippingPlane = 1000;
-	void UpdateProjection();
 	ProjectionTypes projectionType = Perspective;
 
 	glm::mat4 projection;

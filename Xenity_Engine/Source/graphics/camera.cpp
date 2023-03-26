@@ -82,11 +82,11 @@ void Camera::SetFarClippingPlane(double value)
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
 	float aspect = Window::GetAspectRatio();
-	float cameraX = Graphics::usedCamera->gameObject->transform.GetPosition().x;
-	float cameraY = Graphics::usedCamera->gameObject->transform.GetPosition().y;
+	float cameraX = gameObject->transform.GetPosition().x;
+	float cameraY = gameObject->transform.GetPosition().y;
 
-	float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / Graphics::usedCamera->GetProjectionSize() * 5.0f) + cameraX;
-	float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / Graphics::usedCamera->GetProjectionSize() * 5.0f) + cameraY;
+	float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / projectionSize * 5.0f) + cameraX;
+	float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / projectionSize * 5.0f) + cameraY;
 	return Vector2(vx, vy);
 }
 
@@ -97,20 +97,22 @@ Vector2 Camera::MouseTo2DWorld()
 
 void Camera::UpdateProjection() 
 {
-	if (projectionType == ProjectionTypes::Perspective) {
+	if (projectionType == ProjectionTypes::Perspective) 
+	{
 		//Projection
-		projection = glm::perspective(glm::radians(Graphics::usedCamera->GetFov()), (double)Window::GetAspectRatio(), GetNearClippingPlane(), GetFarClippingPlane());
+		projection = glm::perspective(glm::radians(fov), (double)Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 
 		//invert view X axis
 		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
 		projection = projection * flipX;
 	}
 	else {
-		projection = glm::ortho(-Window::GetAspectRatio() / 2.0f, Window::GetAspectRatio() / 2.0f, -0.5f, 0.5f);
+		float halfAspect = Window::GetAspectRatio() / 2.0f;
+		projection = glm::ortho(-halfAspect, halfAspect, -0.5f, 0.5f);
 	}
 }
 
-glm::mat4 Camera::GetProjection()
+glm::mat4& Camera::GetProjection()
 {
 	return projection;
 }
