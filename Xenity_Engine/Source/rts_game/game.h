@@ -40,6 +40,8 @@ private:
 	GameObject* gameObjectSprite = new GameObject("gameObjectSprite");
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	GameObject* gameObjectTileMapShadow = new GameObject("TileMap Shadow");
+	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
+
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;
 	TileMap* tileMapPropsShadow = nullptr;
@@ -49,7 +51,7 @@ private:
 	Tile* tiles = nullptr;
 
 	//Map settings
-	int mapSize = 20;
+	int mapSize = 200;
 	int minTreeCount = 15;
 	int maxTreeCount = 20;
 	int minRockCount = 8;
@@ -65,6 +67,7 @@ private:
 	std::vector<Texture*> propsTextures;
 	std::vector<Texture*> tilesTextures;
 	Texture* textureShip = nullptr;
+	Texture* crosshair = nullptr;
 
 	//Shaders
 

@@ -97,7 +97,7 @@ void Engine::Loop()
 				running = false;
 				break;
 			case SDL_WINDOWEVENT:
-				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) 
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
 					Window::OnResize(event.window.data1, event.window.data2);
 				}
@@ -112,7 +112,7 @@ void Engine::Loop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Set wireframe
-		if (EngineSettings::isWireframe) 
+		if (EngineSettings::isWireframe)
 		{
 			glLineWidth(2);
 			glPolygonMode(GL_FRONT, GL_LINE);
@@ -160,17 +160,20 @@ void Engine::Loop()
 		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount()) + "\n";
 		performanceDebugText += std::string("Updated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount()) + "\n";
 
-		performanceDebugText += std::string("\n--- Profiler (microseconds) --- ") + "\n";
-		//Add profiler text
-		for (const auto& kv : Performance::profilerList)
+		if (Performance::IsProfilerEnabled()) 
 		{
-			performanceDebugText += kv.first + ": " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
+			performanceDebugText += std::string("\n--- Profiler (microseconds) --- ") + "\n";
+			//Add profiler text
+			for (const auto& kv : Performance::profilerList)
+			{
+				performanceDebugText += kv.first + ": " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
+			}
 		}
 
 		UiManager::RenderTextCanvas(debugText, 1, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(performanceDebugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0],H_Right, V_Bottom, *AssetManager::GetShader(7));
-		//std::cout << performanceDebugText << "\n";
+		UiManager::RenderTextCanvas(performanceDebugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
+		//std::cout << performanceDebugText << std::endl;
 
 		engineLoopBenchmark->Stop();
 		Window::UpdateScreen();
@@ -184,7 +187,7 @@ void Engine::Loop()
 /// 
 /// </summary>
 /// <param name="gameObject"></param>
-void Engine::AddGameObject(GameObject* gameObject) 
+void Engine::AddGameObject(GameObject* gameObject)
 {
 	gameObjects.push_back(gameObject);
 }

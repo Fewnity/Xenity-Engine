@@ -267,7 +267,7 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 }
 
 //Replace float by a class with height and length or make a out param
-std::vector<Vector4> UiManager::GetTextLenght(std::string text, int textLen, Font* font, float scale)
+std::vector<Vector4> UiManager::GetTextLenght(std::string &text, int textLen, Font* font, float scale)
 {
 	std::vector<Vector4> lineLength;
 	lineLength.push_back(Vector4(0, 0, 0, 0));
@@ -309,7 +309,6 @@ std::vector<Vector4> UiManager::GetTextLenght(std::string text, int textLen, Fon
 void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
 {
 	drawUIBenchmark->Start();
-
 	float aspect = Window::GetAspectRatio();
 
 	x = -aspect / 2.0f + (aspect / 2.0f)*(x*2); // Left
@@ -318,7 +317,6 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 	// activate corresponding render state	
 	s.Use();
 	s.SetShaderProjection();
-
 	s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
 

@@ -32,6 +32,7 @@ void Game::Init()
 {
 	LoadGameData();
 
+	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
 	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
 	gameObjectTileMapShadow->transform.SetPosition(Vector3(0.1f, 0.1f, 0));
 
@@ -61,6 +62,13 @@ void Game::Init()
 	t3->transform.SetPosition(Vector3(3, 3, 0));
 	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
 	t3->AddExistingComponent(spr4);
+
+	/*GameObject* gameObjectCrosshair = new GameObject();
+	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
+	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2D);
+	spr5->color = Vector4(0, 1, 1, 0.3);
+	gameObjectCrosshair->AddExistingComponent(spr5);*/
+
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -93,6 +101,8 @@ void Game::LoadGameData()
 	textureTile0->SetPixelPerUnit(128);
 	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png");
 	textureTile1->SetPixelPerUnit(128);
+	crosshair = new Texture("rts/crosshairs/crosshair.png");
+	crosshair->SetPixelPerUnit(128);
 
 	tilesTextures.push_back(textureTile0);
 	tilesTextures.push_back(textureTile1);
@@ -113,10 +123,10 @@ void Game::LoadGameData()
 
 	material2D = new Material();
 	material2D->shader = shaderStandard2D;
-	material2D->SetAttribut("color", Vector3(1, 1, 1));
+	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 	material2DShadow = new Material();
 	material2DShadow->shader = shaderStandard2D;
-	material2DShadow->SetAttribut("color", Vector3(0.5f, 0.5f, 0.5f));
+	//material2DShadow->SetAttribut("color", Vector3(0.5f, 0.5f, 0.5f));
 }
 
 
@@ -155,7 +165,7 @@ void Game::Loop()
 
 		std::cout << "In game X Mouse Round: " << round(mouseWorldPosition.x) << std::endl;
 		std::cout << "In game Y Mouse Round: " << round(mouseWorldPosition.y) << std::endl;
-		tileMapProps->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
+		tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
 	}
 
 	if (InputSystem::GetKey(Z))
@@ -308,29 +318,27 @@ Prop* Game::CreateProp(int id)
 void Game::CreateTileMaps()
 {
 	//Create ground tile map
-	tileMap = new TileMap();
+	tileMap = new TileMap(material2D);
 	gameObjectTileMap->AddExistingComponent(tileMap);
-	tileMap->material = material2D;
 	tileMap->Setup(mapSize, mapSize);
 	tileMap->AddTexture(tilesTextures[0]);
 	tileMap->AddTexture(tilesTextures[1]);
 
-	tileMapPropsShadow = new TileMap();
+	/*tileMapPropsShadow = new TileMap();
 	gameObjectTileMapShadow->AddExistingComponent(tileMapPropsShadow);
 	tileMapPropsShadow->material = material2DShadow;
-	tileMapPropsShadow->Setup(mapSize, mapSize);
+	tileMapPropsShadow->Setup(mapSize, mapSize);*/
 
 	//Create props tilemap
-	tileMapProps = new TileMap();
+	tileMapProps = new TileMap(material2D);
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
-	tileMapProps->material = material2D;
 	tileMapProps->Setup(mapSize, mapSize);
 
 	int propsTexturesCount = propsTextures.size();
 	for (int i = 0; i < propsTexturesCount; i++)
 	{
 		tileMapProps->AddTexture(propsTextures[i]);
-		tileMapPropsShadow->AddTexture(propsTextures[i]);
+		//tileMapPropsShadow->AddTexture(propsTextures[i]);
 	}
 
 	for (int x = 0; x < mapSize; x++)
@@ -341,8 +349,9 @@ void Game::CreateTileMaps()
 			tileMap->SetTile(x, y, tile->groundTileId);
 			if (tile->prop != nullptr) {
 				tileMapProps->SetTile(x, y, tile->prop->id);
-				tileMapPropsShadow->SetTile(x, y, tile->prop->id);
+				//tileMapPropsShadow->SetTile(x, y, tile->prop->id);
 			}
 		}
 	}
+	tileMap->SetTile(1, 1, 2);
 }

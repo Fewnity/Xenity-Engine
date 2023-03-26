@@ -37,7 +37,7 @@ private:
 	static void CreateTextBuffer();
 	static void DeleteFont(Font * font);
 	static void DeleteFont(int index);
-	static std::vector<Vector4> GetTextLenght(std::string text, int textLen, Font* font, float scale);
+	static std::vector<Vector4> GetTextLenght(std::string &text, int textLen, Font* font, float scale);
 	static unsigned int textVAO, textVBO;
 };
 

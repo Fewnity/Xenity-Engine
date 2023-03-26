@@ -109,6 +109,8 @@ void Camera::UpdateProjection()
 	else {
 		float halfAspect = Window::GetAspectRatio() / 2.0f;
 		projection = glm::ortho(-halfAspect, halfAspect, -0.5f, 0.5f);
+		//glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f, 1.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f, 1.0f));
+		//projection = projection / flipX;
 	}
 }
 
