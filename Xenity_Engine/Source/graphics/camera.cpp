@@ -107,16 +107,24 @@ void Camera::UpdateProjection()
 		projection = projection * flipX;
 	}
 	else {
-		float halfAspect = Window::GetAspectRatio() / 2.0f;
-		projection = glm::ortho(-halfAspect, halfAspect, -0.5f, 0.5f);
-		//glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f, 1.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f, 1.0f));
-		//projection = projection / flipX;
+		float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+		float halfOne = 0.5f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+		projection = glm::ortho(-halfAspect, halfAspect, -halfOne, halfOne);
+
+		//Unscaled version for canvas
+		float halfAspectUnscaled = Window::GetAspectRatio() / 2.0f;
+		unscaledProjection = glm::ortho(-halfAspectUnscaled, halfAspectUnscaled, -0.5f, 0.5f);
 	}
 }
 
 glm::mat4& Camera::GetProjection()
 {
 	return projection;
+}
+
+glm::mat4& Camera::GetUnscaledProjection()
+{
+	return unscaledProjection;
 }
 
 void Camera::SetProjectionType(ProjectionTypes type)

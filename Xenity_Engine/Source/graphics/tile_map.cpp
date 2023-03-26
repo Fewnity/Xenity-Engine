@@ -164,7 +164,7 @@ void TileMap::Draw()
 	}
 	if (tiles)
 	{
-		//if (needUpdateVertices) {
+		if (needUpdateVertices) {
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
@@ -186,7 +186,7 @@ void TileMap::Draw()
 			}
 		}
 		//SpriteManager::DrawBatch(textures[1], color, material);
-		//}
+		}
 	}
 	needUpdateVertices = false;
 	for (int i = 0; i < batchCount; i++)

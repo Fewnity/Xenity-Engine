@@ -143,7 +143,6 @@ void Engine::Loop()
 		}
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-		//std::string debugText = "Wireframe (A): True";
 
 		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
 

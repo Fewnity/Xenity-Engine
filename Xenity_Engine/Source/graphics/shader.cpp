@@ -155,17 +155,17 @@ void Shader::SetShaderCameraPosition2D() {
 	{
 		glm::mat4 camera = glm::mat4(1.0f);
 		Camera* cam = Graphics::usedCamera;
-		camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f / cam->GetProjectionSize() * 5.0f,
-			-cam->gameObject->transform.GetPosition().y / 10.f / cam->GetProjectionSize() * 5.0f, 0));
-
+		//camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f / cam->GetProjectionSize() * 5.0f,
+			//-cam->gameObject->transform.GetPosition().y / 10.f / cam->GetProjectionSize() * 5.0f, 0));
+		camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f,
+			-cam->gameObject->transform.GetPosition().y / 10.f, 0));
 		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
 	}
 }
 
-void Shader::SetShaderProjection2DUnscaled() {
+void Shader::SetShaderUnscaledProjection() {
 	Use();
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::GetWidth()), 0.0f, static_cast<float>(Window::GetHeight()));
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetUnscaledProjection()));
 }
 
 /// <summary>

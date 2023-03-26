@@ -22,6 +22,7 @@ public:
 	Vector2 ScreenTo2DWorld(int x, int y);
 	Vector2 MouseTo2DWorld();
 	glm::mat4 &GetProjection();
+	glm::mat4& GetUnscaledProjection();
 	void SetProjectionType(ProjectionTypes type);
 	ProjectionTypes GetProjectionType();
 	void UpdateProjection();
@@ -34,4 +35,5 @@ private:
 	ProjectionTypes projectionType = Perspective;
 
 	glm::mat4 projection;
+	glm::mat4 unscaledProjection;
 };

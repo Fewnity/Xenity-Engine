@@ -146,13 +146,11 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 	if (texture == nullptr || material == nullptr)
 		return;
 
-	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	float diviser = 1000;
 
-	float unitCoef = 100.0f / texture->GetPixelPerUnit();
+	float unitCoef = 100.0f / texture->GetPixelPerUnit() / diviser;
 	float w = texture->GetWidth() * unitCoef;
 	float h = texture->GetHeight() * unitCoef;
-	w /= diviser;
-	h /= diviser;
 
 
 	float sizeFixer = 100 / diviser;
@@ -408,6 +406,7 @@ void SpriteManager::AddToBatch(const Texture* texture, glm::mat4& transformation
 void SpriteManager::AddToBatch(int index, Vector2 vertices[4])
 {
 	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	//float diviser = 500;
 
 	int realIndex = index * 6;
 
@@ -550,8 +549,7 @@ void SpriteBatch::Draw(Vector4& color)
 
 void SpriteBatch::AddVertices(Vector2 verticesToAdd[4])
 {
-	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
-	//float diviser = 1000;
+	float diviser = 1000;
 
 	int realIndex = index * 6 * 4;
 
@@ -611,6 +609,5 @@ void SpriteBatch::SetBatchSize()
 		glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount * 4, NULL, GL_DYNAMIC_DRAW);
 		oldVerticeCount = verticesCount;
-		std::cout << "Batch created: " << verticesCount << std::endl;
 	}
 }

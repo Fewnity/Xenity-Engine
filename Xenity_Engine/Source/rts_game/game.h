@@ -39,14 +39,14 @@ private:
 
 	GameObject* gameObjectSprite = new GameObject("gameObjectSprite");
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
-	GameObject* gameObjectTileMapShadow = new GameObject("TileMap Shadow");
 	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
 
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;
-	TileMap* tileMapPropsShadow = nullptr;
 	float cameraZoom = 1.5f; //[1;2.8]
 	float cameraArrowMoveSpeed = 3;
+
+	Vector2 cursorPosition = Vector2(0, 0);
 
 	Tile* tiles = nullptr;
 

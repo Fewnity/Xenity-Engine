@@ -21,6 +21,7 @@
 #include "../ui/ui_manager.h"
 #include "../tools/shape_spawner.h"
 #include "../tools/curve.h"
+#include "../tools/math.h"
 #include "../tools/benchmark.h"
 #include "../time/time.h"
 #include "../ui/window.h"
@@ -34,7 +35,6 @@ void Game::Init()
 
 	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
 	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
-	gameObjectTileMapShadow->transform.SetPosition(Vector3(0.1f, 0.1f, 0));
 
 	GenerateMap();
 	CreateTileMaps();
@@ -63,11 +63,11 @@ void Game::Init()
 	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
 	t3->AddExistingComponent(spr4);
 
-	/*GameObject* gameObjectCrosshair = new GameObject();
+	gameObjectCrosshair = new GameObject();
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
 	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2D);
-	spr5->color = Vector4(0, 1, 1, 0.3);
-	gameObjectCrosshair->AddExistingComponent(spr5);*/
+	spr5->color = Vector4(0, 0, 0, 0.2f);
+	gameObjectCrosshair->AddExistingComponent(spr5);
 
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
@@ -152,19 +152,15 @@ void Game::Loop()
 		vect *= InputSystem::mouseSpeed.x * 14.2 * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 	}
+	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+
+	//Move cursor
+	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime()*20);
+	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime()*20);
+	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
-		std::cout << "Raw X Mouse: " << InputSystem::mousePosition.x << std::endl;
-		std::cout << "Raw Y Mouse: " << InputSystem::mousePosition.y << std::endl;
-
-		Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
-
-		std::cout << "In game X Mouse: " << mouseWorldPosition.x << std::endl;
-		std::cout << "In game Y Mouse: " << mouseWorldPosition.y << std::endl;
-
-		std::cout << "In game X Mouse Round: " << round(mouseWorldPosition.x) << std::endl;
-		std::cout << "In game Y Mouse Round: " << round(mouseWorldPosition.y) << std::endl;
 		tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
 	}
 
@@ -324,11 +320,6 @@ void Game::CreateTileMaps()
 	tileMap->AddTexture(tilesTextures[0]);
 	tileMap->AddTexture(tilesTextures[1]);
 
-	/*tileMapPropsShadow = new TileMap();
-	gameObjectTileMapShadow->AddExistingComponent(tileMapPropsShadow);
-	tileMapPropsShadow->material = material2DShadow;
-	tileMapPropsShadow->Setup(mapSize, mapSize);*/
-
 	//Create props tilemap
 	tileMapProps = new TileMap(material2D);
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
@@ -338,7 +329,6 @@ void Game::CreateTileMaps()
 	for (int i = 0; i < propsTexturesCount; i++)
 	{
 		tileMapProps->AddTexture(propsTextures[i]);
-		//tileMapPropsShadow->AddTexture(propsTextures[i]);
 	}
 
 	for (int x = 0; x < mapSize; x++)
@@ -349,9 +339,12 @@ void Game::CreateTileMaps()
 			tileMap->SetTile(x, y, tile->groundTileId);
 			if (tile->prop != nullptr) {
 				tileMapProps->SetTile(x, y, tile->prop->id);
-				//tileMapPropsShadow->SetTile(x, y, tile->prop->id);
 			}
 		}
 	}
-	tileMap->SetTile(1, 1, 2);
+
+	tileMap->SetTile(1, 0, 2);
+	tileMap->SetTile(4, 2, 2);
+	tileMap->SetTile(4, 4, 2);
+	tileMap->SetTile(7, 1, 2);
 }
