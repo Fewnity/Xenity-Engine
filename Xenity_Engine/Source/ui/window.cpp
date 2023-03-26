@@ -4,6 +4,7 @@
 #include <stb_image.h>
 #include <GLFW/glfw3.h>
 #include "../debug/debug.h"
+#include "../graphics/graphics.h"
 
 SDL_Window* Window::window = nullptr;
 
@@ -78,6 +79,8 @@ void Window::OnResize(const int newWidth, const int newHeight)
 	width = newWidth;
 	height = newHeight;
 	aspect = static_cast<float>((width) / static_cast<float>(height));
+	if(Graphics::usedCamera)
+	Graphics::usedCamera->UpdateProjection();
 }
 
 /// <summary>
