@@ -8,10 +8,9 @@
 
 SDL_Window* Window::window = nullptr;
 
-//int Window::width = 1500;
-int Window::height = 720;
 int Window::width = 1280;
-//int Window::height = 720;
+int Window::height = 720;
+
 float Window::aspect = 0;
 
 const char * ENGINE_NAME = "Xenity Engine";

@@ -46,6 +46,7 @@
     <ClCompile Include="Source\rts_game\game.cpp" />
     <ClCompile Include="Source\graphics\tile_map.cpp" />
     <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
+    <ClCompile Include="Source\pathfinding\pathfinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Source\graphics\tile_map.h" />
     <ClInclude Include="Source\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\graphics\camera_projection_types.h" />
+    <ClInclude Include="Source\pathfinding\pathfinding.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

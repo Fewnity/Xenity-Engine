@@ -16,6 +16,7 @@
 #include "debug/performance.h"
 #include "ui/TextAlignments.h"
 #include "rts_game/game.h"
+#include "pathfinding/pathfinding.h"
 #include "tools/profiler_benchmark.h"
 
 std::vector<GameObject*> Engine::gameObjects;
@@ -74,7 +75,8 @@ void Engine::UpdateComponents()
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	Game* game = new Game();
+	//Game* game = new Game();
+	PathFinding* game = new PathFinding();
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 

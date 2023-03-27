@@ -114,6 +114,19 @@ void Game::LoadGameData()
 		propsTextures.push_back(textureEnv);
 	}
 
+	for (int i = 0; i < 12; i++)
+	{
+		//Load blue ints
+		std::string unitTextureName = "rts/Unit/blueUnit_" + std::to_string(i + 1) + ".png";
+		Texture* unitT = new Texture(unitTextureName, Texture::Bilinear, true);
+		unitsTextures.push_back(unitT);
+
+		//Load green units
+		unitTextureName = "rts/Unit/greenUnit_" + std::to_string(i + 1) + ".png";
+		unitT = new Texture(unitTextureName, Texture::Bilinear, true);
+		unitsTextures.push_back(unitT);
+	}
+
 	int propsTexturesCount = propsTextures.size();
 	for (int i = 0; i < propsTexturesCount; i++)
 	{
@@ -124,9 +137,6 @@ void Game::LoadGameData()
 	material2D = new Material();
 	material2D->shader = shaderStandard2D;
 	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
-	material2DShadow = new Material();
-	material2DShadow->shader = shaderStandard2D;
-	//material2DShadow->SetAttribut("color", Vector3(0.5f, 0.5f, 0.5f));
 }
 
 

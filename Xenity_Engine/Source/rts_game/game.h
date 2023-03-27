@@ -8,12 +8,28 @@ public:
 	int id = 0;
 	int x = 0;
 	int y = 0;
-	void SetPosition(int x, int y) {
+
+	void SetPosition(int x, int y) 
+	{
 		this->x = x;
 		this->y = y;
 	}
 };
 
+class Unit {
+	Vector2 position = Vector2(0, 0);
+
+};
+
+class UnitData {
+public:
+	//UnitData() = delete;
+	//UnitData(Texture * blueTexture, )
+	Texture* texture[4];
+	float health;
+	float speed;
+	float price;
+};
 
 class Game
 {
@@ -49,6 +65,7 @@ private:
 	Vector2 cursorPosition = Vector2(0, 0);
 
 	Tile* tiles = nullptr;
+	std::vector<UnitData> unitsData;
 
 	//Map settings
 	int mapSize = 200;
@@ -66,6 +83,7 @@ private:
 	//Textures
 	std::vector<Texture*> propsTextures;
 	std::vector<Texture*> tilesTextures;
+	std::vector<Texture*> unitsTextures;
 	Texture* textureShip = nullptr;
 	Texture* crosshair = nullptr;
 
@@ -73,6 +91,5 @@ private:
 
 	//Materials
 	Material* material2D = nullptr;
-	Material* material2DShadow = nullptr;
 };
 

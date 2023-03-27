@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\pathfinding\pathfinding.cpp" />
     <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
     <ClCompile Include="Source\debug\performance.cpp" />
     <ClCompile Include="Source\orbital_camera.cpp" />
@@ -232,6 +233,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\graphics\camera_projection_types.h" />
+    <ClInclude Include="Source\pathfinding\pathfinding.h" />
     <ClInclude Include="Source\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\orbital_camera.h" />
