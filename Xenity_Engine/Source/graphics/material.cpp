@@ -11,8 +11,9 @@
 
 ProfilerBenchmark* materialUpdateBenchmark = new ProfilerBenchmark("Material update");
 
-Material::Material()
+Material::Material(std::string name)
 {
+	this->name = name;
 	AssetManager::AddMaterial(this);
 }
 

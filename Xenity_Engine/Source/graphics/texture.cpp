@@ -11,14 +11,14 @@
 
 #pragma region Constructors / Destructor
 
-Texture::Texture(const std::string filePath)
+Texture::Texture(const std::string filePath, std::string name)
 {
-	CreateTextutre(filePath, Bilinear, true);
+	CreateTextutre(filePath, name, Bilinear, true);
 }
 
-Texture::Texture(const std::string filePath, const Filter filter, const bool useMipMap)
+Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
 {
-	CreateTextutre(filePath, filter, useMipMap);
+	CreateTextutre(filePath, name, filter, useMipMap);
 }
 
 Texture::~Texture()
@@ -37,10 +37,11 @@ Texture::~Texture()
 /// <param name="filePath">File path</param>
 /// <param name="filter">Filter to use</param>
 /// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTextutre(const std::string filePath, const Filter filter, const bool useMipMap)
+void Texture::CreateTextutre(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
+	this->name = name;
 
 	LoadTexture(filePath);
 

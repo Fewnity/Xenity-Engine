@@ -28,8 +28,8 @@ public:
 	};
 
 	Texture() = delete;
-	Texture(const std::string filePath);
-	Texture(const std::string filePath, const Filter filter, const bool useMipMap);
+	Texture(const std::string filePath, std::string name);
+	Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
 
 	~Texture();
 	unsigned int GetTextureId() const;
@@ -40,12 +40,13 @@ public:
 	int GetHeight() const;
 	void SetPixelPerUnit(int value);
 	int GetPixelPerUnit() const;
+	std::string name = "";
 
 private:
 	Filter filter = Bilinear;
 	WrapMode wrapMode = Repeat;
 	bool useMipMap = true;
-	void CreateTextutre(const std::string filePath, const Filter filter, const bool useMipMap);
+	void CreateTextutre(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
 	void LoadTexture(const std::string filePath);
 	unsigned int textureId;
 	int width = 0, height = 0, nrChannels = 0;

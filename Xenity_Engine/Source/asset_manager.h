@@ -32,6 +32,8 @@ public:
 	static Shader* GetShader(const int index);
 	static Material* GetMaterial(const int index);
 	static Texture* GetTexture(const int index);
+	static Material* GetMaterialByName(const std::string name);
+	static Texture* GetTextureByName(const std::string name);
 	static IDrawable* GetDrawable(const int index);
 	static Light* GetLight(const int index);
 	static MeshData* GetMeshData(const int index);

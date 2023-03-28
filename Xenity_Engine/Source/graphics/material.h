@@ -12,7 +12,8 @@ class Shader;
 class Material
 {
 public:
-	Material();
+	Material() = delete;
+	Material(std::string name);
 	~Material();
 
 	void Use();
@@ -26,6 +27,7 @@ public:
 	void SetAttribut(const char* attribut, const float value);
 	void SetAttribut(const char* attribut, const int value);
 	bool updated = false;
+	std::string name = "";
 
 private:
 	std::unordered_map <const char *, Texture*> uniformsTextures;

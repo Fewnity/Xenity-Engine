@@ -27,7 +27,7 @@ Material* AssetManager::defaultUIMaterial = nullptr;
 
 Texture* AssetManager::defaultTexture = nullptr;
 
-void AssetManager::ResetMaterialsUpdates() 
+void AssetManager::ResetMaterialsUpdates()
 {
 	for (int i = 0; i < materialCount; i++)
 	{
@@ -35,13 +35,13 @@ void AssetManager::ResetMaterialsUpdates()
 	}
 }
 
-void AssetManager::Init() 
+void AssetManager::Init()
 {
-	defaultTexture = new Texture("white_square.png");
+	defaultTexture = new Texture("white_square.png", "@Internal_WhiteSquare");
 
 	Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 
-	default3DMaterial = new Material();
+	default3DMaterial = new Material("3D Standard");
 	default3DMaterial->shader = standard3D;
 	default3DMaterial->SetAttribut("material.diffuse", defaultTexture);
 	default3DMaterial->SetAttribut("material.specular", defaultTexture);
@@ -50,12 +50,12 @@ void AssetManager::Init()
 
 	Shader* sprite2D = new Shader("2D/vSprite.shader", "2D/fSprite.shader");
 
-	default2DMaterial = new Material();
+	default2DMaterial = new Material("2D Standard 2");
 	default2DMaterial->shader = sprite2D;
 
 	Shader* ui = new Shader("UI/vUi.shader", "UI/fUi.shader");
 
-	defaultUIMaterial = new Material();
+	defaultUIMaterial = new Material("UI");
 	defaultUIMaterial->shader = ui;
 }
 
@@ -283,9 +283,33 @@ Material* AssetManager::GetMaterial(const int index)
 	return materials[index];
 }
 
+Material* AssetManager::GetMaterialByName(const std::string name)
+{
+	for (int i = 0; i < materialCount; i++)
+	{
+		if (materials[i]->name == name)
+		{
+			return materials[i];
+		}
+	}
+	return nullptr;
+}
+
 Texture* AssetManager::GetTexture(const int index)
 {
 	return textures[index];
+}
+
+Texture* AssetManager::GetTextureByName(const std::string name)
+{
+	for (int i = 0; i < textureCount; i++)
+	{
+		if (textures[i]->name == name) 
+		{
+			return textures[i];
+		}
+	}
+	return nullptr;
 }
 
 IDrawable* AssetManager::GetDrawable(const int index)
