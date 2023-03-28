@@ -103,6 +103,12 @@ void Transform::SetPosition(const Vector3 value)
 
 void Transform::SetLocalPosition(const Vector3 value)
 {
+	if (gameObject->parent == nullptr) 
+	{
+		SetPosition(value);
+		return;
+	}
+
 	if (value != localPosition)
 		isTransformationMatrixDirty = true;
 	else
@@ -134,6 +140,12 @@ void Transform::SetRotation(const Vector3 value)
 
 void Transform::SetLocalRotation(const Vector3 value)
 {
+	if (gameObject->parent == nullptr)
+	{
+		SetRotation(value);
+		return;
+	}
+
 	if (value != localRotation)
 		isTransformationMatrixDirty = true;
 	else
