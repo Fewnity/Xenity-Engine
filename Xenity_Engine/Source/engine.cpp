@@ -20,14 +20,13 @@
 #include "tools/profiler_benchmark.h"
 
 std::vector<GameObject*> Engine::gameObjects;
+int Engine::gameObjectCount = 0;
 float lastTick = 0;
 
 ProfilerBenchmark* engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
 ProfilerBenchmark* gameLoopBenchmark = new ProfilerBenchmark("Game loop");
 ProfilerBenchmark* componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
 ProfilerBenchmark* drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
-
-//ProfilerBenchmark* drawUIBenchmark = new ProfilerBenchmark("UI draw");
 
 /// <summary>
 /// Init engine
@@ -57,15 +56,85 @@ int Engine::Init(const std::string exePath)
 void Engine::UpdateComponents()
 {
 	//Update all gameobjects components
-	int gameObjectCount = gameObjects.size();
-
+	std::vector<Component*> orderedComponents;
+	std::vector<Component*> orderedComponentsToInit;
+	int componentsCount = 0;
+	int componentsToInitCount = 0;
 	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 	{
-		int componentCount = gameObjects[gIndex]->components.size();
-		for (int cIndex = 0; cIndex < componentCount; cIndex++)
+		GameObject* gameObjectToCheck = gameObjects[gIndex];
+		if (gameObjectToCheck->GetActive())
 		{
-			gameObjects[gIndex]->components[cIndex]->Update();
+			int componentCount = gameObjectToCheck->components.size();
+			bool placeFound = false;
+			for (int cIndex = 0; cIndex < componentCount; cIndex++)
+			{
+				Component* componentToCheck = gameObjectToCheck->components[cIndex];
+				if (componentToCheck->GetIsEnabled())
+				{
+					for (int i = 0; i < componentsCount; i++)
+					{
+						//Check if the checked has a higher priority (lower value) than the component in the list
+						if (componentToCheck->updatePriority <= orderedComponents[i]->updatePriority)
+						{
+							orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
+							placeFound = true;
+							break;
+						}
+					}
+					//if the priority is lower than all components's priorities in the list, add it the end of the list
+					if (!placeFound)
+					{
+						orderedComponents.push_back(componentToCheck);
+					}
+					componentsCount++;
+				}
+			}
 		}
+	}
+
+	//Find uninitiated components and order them
+	for (int i = 0; i < componentsCount; i++)
+	{
+		Component* componentToCheck = orderedComponents[i];
+		if (!orderedComponents[i]->initiated)
+		{
+			bool placeFound = false;
+			for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+			{
+				//Check if the checked has a higher priority (lower value) than the component in the list
+				if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+				{
+					orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+					placeFound = true;
+					break;
+				}
+			}
+			//if the priority is lower than all components's priorities in the list, add it the end of the list
+			if (!placeFound)
+			{
+				orderedComponentsToInit.push_back(componentToCheck);
+			}
+			componentsToInitCount++;
+		}
+	}
+
+	//Init components
+	for (int i = 0; i < componentsToInitCount; i++)
+	{
+		orderedComponentsToInit[i]->Awake();
+	}
+
+	for (int i = 0; i < componentsToInitCount; i++)
+	{
+		orderedComponentsToInit[i]->Start();
+		orderedComponentsToInit[i]->initiated = true;
+	}
+
+	//Update components
+	for (int i = 0; i < componentsCount; i++)
+	{
+		orderedComponents[i]->Update();
 	}
 }
 
@@ -75,8 +144,8 @@ void Engine::UpdateComponents()
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	//Game* game = new Game();
-	PathFinding* game = new PathFinding();
+	Game* game = new Game();
+	//PathFinding* game = new PathFinding();
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 
@@ -161,7 +230,7 @@ void Engine::Loop()
 		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount()) + "\n";
 		performanceDebugText += std::string("Updated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount()) + "\n";
 
-		if (Performance::IsProfilerEnabled()) 
+		if (Performance::IsProfilerEnabled())
 		{
 			performanceDebugText += std::string("\n--- Profiler (microseconds) --- ") + "\n";
 			//Add profiler text
@@ -191,6 +260,7 @@ void Engine::Loop()
 void Engine::AddGameObject(GameObject* gameObject)
 {
 	gameObjects.push_back(gameObject);
+	gameObjectCount++;
 }
 
 /// <summary>

@@ -12,6 +12,12 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::Update()
+bool Component::GetIsEnabled()
 {
+	return isEnabled;
+}
+
+void Component::SetIsEnabled(bool isEnabled)
+{
+	this->isEnabled = isEnabled;
 }
