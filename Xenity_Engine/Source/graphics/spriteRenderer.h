@@ -14,7 +14,7 @@ class SpriteRenderer : public Component, public IDrawable
 		SpriteRenderer(const Texture* texture, Material* material);
 		~SpriteRenderer();
 
-		void SetSprite(const Texture* texture);
+		//void SetSprite(const Texture* texture);
 
 		Material* material = nullptr;
 		Vector4 color = Vector4(1,1,1,1);

@@ -28,6 +28,8 @@ using namespace std;
  * Fix tilemap rotation
  * Clean sprite manager class
  * Create color class
+ * Optimise component update system
+ * Link IDrawable and Component for IsEnabled
  * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  */
 

@@ -25,7 +25,8 @@ SpriteRenderer::~SpriteRenderer()
 /// <summary>
 /// Draw sprite
 /// </summary>
-void SpriteRenderer::Draw() {
+void SpriteRenderer::Draw() 
+{
 	if (gameObject != nullptr && material != nullptr && texture != nullptr) 
 	{
 		SpriteManager::RenderSprite(gameObject->transform.transformationMatrix,

@@ -16,20 +16,8 @@ public:
 	}
 };
 
-class Unit {
-	Vector2 position = Vector2(0, 0);
-
-};
-
-class UnitData {
-public:
-	//UnitData() = delete;
-	//UnitData(Texture * blueTexture, )
-	Texture* texture[4];
-	float health;
-	float speed;
-	float price;
-};
+class Unit;
+class UnitData;
 
 class Game
 {
@@ -65,7 +53,8 @@ private:
 	Vector2 cursorPosition = Vector2(0, 0);
 
 	Tile* tiles = nullptr;
-	std::vector<UnitData> unitsData;
+	std::vector<UnitData*> unitsData;
+	std::vector<Unit*> units;
 
 	//Map settings
 	int mapSize = 200;
@@ -83,7 +72,7 @@ private:
 	//Textures
 	std::vector<Texture*> propsTextures;
 	std::vector<Texture*> tilesTextures;
-	std::vector<Texture*> unitsTextures;
+	//std::vector<Texture*> unitsTextures;
 	Texture* textureShip = nullptr;
 	Texture* crosshair = nullptr;
 

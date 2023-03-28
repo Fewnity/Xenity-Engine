@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\monobehaviour.cpp" />
     <ClCompile Include="Source\pathfinding\pathfinding.cpp" />
     <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
     <ClCompile Include="Source\debug\performance.cpp" />
@@ -204,6 +205,8 @@
     <ClCompile Include="Source\graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\graphics\text_renderer.cpp" />
     <ClCompile Include="Source\graphics\tile_map.cpp" />
+    <ClCompile Include="Source\rts_game\unit.cpp" />
+    <ClCompile Include="Source\rts_game\unit_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\2D\fSprite.shader" />
@@ -233,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\graphics\camera_projection_types.h" />
+    <ClInclude Include="Source\monobehaviour.h" />
     <ClInclude Include="Source\pathfinding\pathfinding.h" />
     <ClInclude Include="Source\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\debug\performance.h" />
@@ -280,6 +284,8 @@
     <ClInclude Include="Source\graphics\text_renderer.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\graphics\tile_map.h" />
+    <ClInclude Include="Source\rts_game\unit.h" />
+    <ClInclude Include="Source\rts_game\unit_data.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

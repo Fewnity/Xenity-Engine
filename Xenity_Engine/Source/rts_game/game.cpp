@@ -25,6 +25,8 @@
 #include "../tools/benchmark.h"
 #include "../time/time.h"
 #include "../ui/window.h"
+#include "unit.h"
+#include "unit_data.h"
 
 /// <summary>
 /// Init game
@@ -58,8 +60,14 @@ void Game::Init()
 	SpriteRenderer* spr3 = new SpriteRenderer(textureShip, material2D);
 	t2->AddExistingComponent(spr3);
 
+	Unit* newUnit = new Unit(unitsData[0]);
+	newUnit->updatePriority = 100;
+	GameObject* unitGM = new GameObject("Unit");
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
 	GameObject* t3 = new GameObject();
-	t3->transform.SetPosition(Vector3(3, 3, 0));
+	t3->transform.SetLocalPosition(Vector3(3, 3, 0));
 	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
 	t3->AddExistingComponent(spr4);
 
@@ -68,7 +76,6 @@ void Game::Init()
 	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2D);
 	spr5->color = Vector4(0, 0, 0, 0.2f);
 	gameObjectCrosshair->AddExistingComponent(spr5);
-
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -96,12 +103,12 @@ void Game::LoadGameData()
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);
 
-	textureShip = new Texture("ship_0000.png");
-	Texture* textureTile0 = new Texture("rts/Tile/scifiTile_42.png");
+	textureShip = new Texture("ship_0000.png", "Ship");
+	Texture* textureTile0 = new Texture("rts/Tile/scifiTile_42.png", "Ground0");
 	textureTile0->SetPixelPerUnit(128);
-	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png");
+	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png", "Ground1");
 	textureTile1->SetPixelPerUnit(128);
-	crosshair = new Texture("rts/crosshairs/crosshair.png");
+	crosshair = new Texture("rts/crosshairs/crosshair.png", "Crosshair");
 	crosshair->SetPixelPerUnit(128);
 
 	tilesTextures.push_back(textureTile0);
@@ -110,22 +117,12 @@ void Game::LoadGameData()
 	for (int i = 0; i < 19; i++)
 	{
 		std::string propTextureName = "rts/Environment/scifiEnvironment_" + std::to_string(i + 1) + ".png";
-		Texture* textureEnv = new Texture(propTextureName, Texture::Bilinear, true);
+		Texture* textureEnv = new Texture(propTextureName, "", Texture::Bilinear, true);
 		propsTextures.push_back(textureEnv);
 	}
 
-	for (int i = 0; i < 12; i++)
-	{
-		//Load blue ints
-		std::string unitTextureName = "rts/Unit/blueUnit_" + std::to_string(i + 1) + ".png";
-		Texture* unitT = new Texture(unitTextureName, Texture::Bilinear, true);
-		unitsTextures.push_back(unitT);
-
-		//Load green units
-		unitTextureName = "rts/Unit/greenUnit_" + std::to_string(i + 1) + ".png";
-		unitT = new Texture(unitTextureName, Texture::Bilinear, true);
-		unitsTextures.push_back(unitT);
-	}
+	UnitData* newUnitData = new UnitData(0);
+	unitsData.push_back(newUnitData);
 
 	int propsTexturesCount = propsTextures.size();
 	for (int i = 0; i < propsTexturesCount; i++)
@@ -134,7 +131,7 @@ void Game::LoadGameData()
 		propsTextures[i]->SetPixelPerUnit(128);
 	}
 
-	material2D = new Material();
+	material2D = new Material("2D Standard");
 	material2D->shader = shaderStandard2D;
 	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 }
@@ -152,7 +149,7 @@ void Game::Loop()
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
 
-	if (InputSystem::GetKey(MOUSE_RIGHT)) 
+	if (InputSystem::GetKey(MOUSE_RIGHT))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
 		vect *= InputSystem::mouseSpeed.y * 14.2 * cameraZoom / 2.8f;
@@ -165,8 +162,8 @@ void Game::Loop()
 	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
 
 	//Move cursor
-	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime()*20);
-	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime()*20);
+	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
+	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
 	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
@@ -347,7 +344,8 @@ void Game::CreateTileMaps()
 		{
 			Tile* tile = GetTile(x, y);
 			tileMap->SetTile(x, y, tile->groundTileId);
-			if (tile->prop != nullptr) {
+			if (tile->prop != nullptr)
+			{
 				tileMapProps->SetTile(x, y, tile->prop->id);
 			}
 		}
