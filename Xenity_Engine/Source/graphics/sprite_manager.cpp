@@ -15,7 +15,7 @@ unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVAOSmall, SpriteMana
 ProfilerBenchmark* spriteBenchmark = new ProfilerBenchmark("Sprites");
 float  SpriteManager::vertices2[6 * 600 * 600][4];
 const Texture* SpriteManager::currentTexture = nullptr;
-
+unsigned int SpriteManager::lineVAO, SpriteManager::lineVBO;
 
 void UpdateMaterial(Material* material, glm::mat4* transformationMatrix);
 
@@ -133,12 +133,53 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// render quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Performance::AddDrawCall();
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-float tim = 0;
+void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector4& color, Material* material)
+{
+	glm::mat4 t = glm::mat4(1);
+	UpdateMaterial(material, &t);
+
+	float sizeFixer = 0.1f;
+
+	Vector2 dir = (end - start).normalize();
+
+	start *= sizeFixer;
+	end *= sizeFixer;
+	width *= sizeFixer;
+
+	float fixedXWidth = width / 2.0f * dir.y;
+	float fixedYWidth = width / 2.0f * dir.x;
+	
+	//Create line's vertices and uv
+	float vertices[6][4] = {
+		{ end.x - fixedXWidth,     end.y + fixedYWidth,   0.0f, 0.0f },
+		{ start.x - fixedXWidth ,    start.y + fixedYWidth,        0.0f, 1.0f },
+		{ start.x + fixedXWidth, start.y - fixedYWidth,       1.0f, 1.0f },
+
+		{ end.x - fixedXWidth,     end.y + fixedYWidth,    0.0f, 0.0f },
+		{ start.x + fixedXWidth, start.y - fixedYWidth,      1.0f, 1.0f },
+		{ end.x + fixedXWidth, end.y - fixedYWidth,   1.0f, 0.0f }
+	};
+
+	if (currentTexture != AssetManager::defaultTexture)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, AssetManager::defaultTexture->GetTextureId());
+	}
+
+	glBindVertexArray(lineVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// render quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Performance::AddDrawCall();
+}
 
 //void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, float w, float h, const Texture* texture, Material* material)
 void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color, const Texture* texture, Material* material)
@@ -181,7 +222,7 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 
 	// render quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	Performance::AddDrawCall();
 }
 
 #pragma endregion
@@ -223,6 +264,19 @@ void SpriteManager::CreateSpriteBuffer()
 	glBindVertexArray(spriteVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 600 * 600 * 4, NULL, GL_DYNAMIC_DRAW);
+	//Vertices attrib
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	//Uv attrib
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	//////////////////////////////////////
+	glGenVertexArrays(1, &lineVAO);
+	glGenBuffers(1, &lineVBO);
+	glBindVertexArray(lineVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	//Vertices attrib
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
@@ -472,6 +526,7 @@ void SpriteManager::DrawBatch(const Texture* texture, Vector4& color, Material* 
 	// render quad
 	glBindVertexArray(spriteVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6 * 600 * 600);
+	Performance::AddDrawCall();
 	glBindVertexArray(spriteVAOSmall);
 }
 

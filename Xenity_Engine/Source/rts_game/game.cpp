@@ -15,6 +15,7 @@
 #include <chrono>
 #include <iostream>
 #include "../graphics/spriteRenderer.h"
+#include "../graphics/sprite_manager.h"
 #include "../asset_manager.h"
 #include "../debug/debug.h"
 #include "../graphics/text_renderer.h"
@@ -212,6 +213,9 @@ void Game::Loop()
 	}
 
 	camera->gameObject->transform.SetPosition(newCameraPosition);
+
+
+	//SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, -2), 1, lineColor, material2D);
 
 	//std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
 	//debugText2 += "Size " + std::to_string(camera->GetProjectionSize());

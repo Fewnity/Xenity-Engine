@@ -144,8 +144,8 @@ void Engine::UpdateComponents()
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	//Game* game = new Game();
-	PathFinding* game = new PathFinding();
+	Game* game = new Game();
+	//PathFinding* game = new PathFinding();
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 
@@ -244,6 +244,31 @@ void Engine::Loop()
 		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas(performanceDebugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
 		//std::cout << performanceDebugText << std::endl;
+		Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
+
+		Vector2 arrowStart = Vector2(2, 0);
+		Vector2 arrowEnd = Vector2(0, -2);
+		Vector2 dir = (arrowEnd - arrowStart).normalize();
+		float angle = atan2(dir.x, dir.y);
+		Vector2 leftEnd = arrowEnd - dir / 2 + Vector2(-cos(angle) /4, sin(angle) / 4);
+		Vector2 rightEnd = arrowEnd - dir / 2 + Vector2(cos(angle) / 4, -sin(angle) / 4);
+
+		SpriteManager::Render2DLine(arrowStart, arrowEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard")); //Line
+		SpriteManager::Render2DLine(arrowEnd, leftEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));//Left
+		SpriteManager::Render2DLine(arrowEnd, rightEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));//Right
+
+		//SpriteManager::Render2DLine(arrowEnd, arrowEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+
+		/*SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, 0), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, 0), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
+		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));*/
 
 		engineLoopBenchmark->Stop();
 		Window::UpdateScreen();
