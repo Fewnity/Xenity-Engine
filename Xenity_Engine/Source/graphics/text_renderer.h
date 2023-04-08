@@ -18,7 +18,7 @@ public:
 
 	std::string text;
 	float size = 16;
-	float lineSpacing = 16;
+	float lineSpacing = 0;
 	float characterSpacing = 0;
 
 	Font* font = nullptr;
