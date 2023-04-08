@@ -16,8 +16,6 @@ void main()
 {
 	vec3 ambient = vec3(texture(material.diffuse, TexCoord)) * color.xyz; //Get ambient intensity and color
 	float alpha = texture(material.diffuse, TexCoord).a * color.w;
-	//vec3 ambient = vec3(texture(material.diffuse, TexCoord)); //Get ambient intensity and color
-	//float alpha = texture(material.diffuse, TexCoord).a;
 
 	FragColor = vec4(ambient, alpha); //Add texture color
 }

@@ -13,6 +13,7 @@
 #include FT_FREETYPE_H
 
 unsigned int UiManager::textVAO, UiManager::textVBO;
+unsigned int UiManager::textVAO2, UiManager::textVBO2;
 std::vector<Font*> UiManager::fonts;
 ProfilerBenchmark* drawUIBenchmark = new ProfilerBenchmark("UI draw");
 
@@ -40,6 +41,18 @@ void UiManager::CreateTextBuffer()
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	glGenVertexArrays(1, &textVAO2);
+	glGenBuffers(1, &textVBO2);
+	glBindVertexArray(textVAO2);
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	//Vertices attrib
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	//Uv attrib
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 }
 
 #pragma region Manage fonts
@@ -171,11 +184,124 @@ void DrawCharacter() {
 /// <param name="y">Y position</param>
 /// <param name="scale">Text's scale</param>
 /// <param name="color">Text's color</param>
-void UiManager::RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, Shader& s)
+void UiManager::RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
 {
 	//y = Window::GetHeight() - y;
 
-	float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
+	float fixedX = x;
+	float fixedY = y;
+	x /= 10;
+	y /= 10;
+
+	//RenderTextCanvas(text, fixedX, fixedY, angle, scale, lineSpacing, color, font, horizontalAlignment, verticalAlignment, s);
+
+	drawUIBenchmark->Start();
+	float aspect = Window::GetAspectRatio();
+
+	//x = -aspect / 2.0f + (aspect / 2.0f) * (x * 2); // Left
+	//y = 0.5f - y;
+
+	// activate corresponding render state	
+	s.Use();
+	//s.SetShaderUnscaledProjection();
+	s.SetShaderProjection();
+	s.SetShaderCameraPosition2D();
+	//s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
+	Vector4 col = Vector4(color.x, color.y, color.z, 1);
+	s.SetShaderAttribut("color", col);
+
+	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
+	float startX = x;
+	int textLenght = text.size();
+
+	std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, scale);
+
+	float totalY = 0;
+	int lineCount = lineLength.size();
+	for (int i = 0; i < lineCount; i++)
+	{
+		totalY += lineLength[i].z;
+	}
+
+	int currentLine = 0;
+	float x2 = 0;
+	float y2 = 0;
+
+	y2 += lineLength[currentLine].y / 1000.f / 4.0f; //Set small margin at the top and the bottom of the text
+	y2 -= lineLength[currentLine].z / 1000.f;
+
+	if (verticalAlignment == V_Center)
+	{
+		y2 += totalY / 1000.f / 2.0f; //Used for middle
+	}
+	else if (verticalAlignment == V_Top)
+	{
+		y2 += totalY / 1000.f; //Used for Top
+	}
+
+	//Window::
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(textVAO2);
+
+	for (int i = 0; i < textLenght; i++)
+	{
+		Character ch = font->Characters[text[i]];
+		if (text[i] == '\n')
+		{
+			y2 -= (lineLength[currentLine].z + lineSpacing) / 1000.0f;
+			x2 = 0;
+			currentLine++;
+		}
+		else
+		{
+			float xBearing = ch.Bearing.x * scale;
+			float yBearing = ch.Bearing.y * scale;
+
+			float xpos = 0;
+			if (horizontalAlignment == H_Center)
+				xpos = x2 + (xBearing - lineLength[currentLine].x / 2.0f) / 1000.0f; //Center
+			else if (horizontalAlignment == H_Right)
+				xpos = x2 + xBearing / 720.0f; //H_Right
+			else
+				xpos = x2 + (xBearing - lineLength[currentLine].x) / 1000.0f;//Left
+
+			float w = ch.Size.x * scale;
+			float h = ch.Size.y * scale;
+
+			float ypos = y2 - ((ch.Size.y - ch.Bearing.y) * scale) / 1000.0f;
+
+			//w /= 40.0f;
+			//h /= 40.0f;
+
+			w /= 1000.0f;
+			h /= 1000.0f;
+
+			// update VBO for each character
+			float vertices[6][4] = {
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos,     ypos,       0.0f, 1.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+				{ xpos + w, ypos + h,   1.0f, 0.0f }
+			};
+
+			// render glyph texture over quad
+			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+			// update content of VBO memory
+			glBindBuffer(GL_ARRAY_BUFFER, textVBO2);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			// render quad
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+			x2 += ((ch.Advance >> 6) * scale) / 1000.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
+		}
+	}
+	drawUIBenchmark->Stop();
+
+	/*float aspect = static_cast<float>((Window::GetWidth()) / static_cast<float>(Window::GetHeight()));
 
 	x -= Graphics::usedCamera->gameObject->transform.GetPosition().x;
 	y += Graphics::usedCamera->gameObject->transform.GetPosition().y;
@@ -263,7 +389,7 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 
 	//TODO TO REMOVE
 	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 }
 
 //Replace float by a class with height and length or make a out param
@@ -319,7 +445,6 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 	s.SetShaderUnscaledProjection();
 	s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
-
 	float startX = x;
 	int textLenght = text.size();
 
@@ -348,6 +473,7 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 		y2 += totalY / 1000.f; //Used for Top
 	}
 
+	//Window::
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
