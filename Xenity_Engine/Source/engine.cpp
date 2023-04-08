@@ -27,6 +27,9 @@ ProfilerBenchmark* engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
 ProfilerBenchmark* gameLoopBenchmark = new ProfilerBenchmark("Game loop");
 ProfilerBenchmark* componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
 ProfilerBenchmark* drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+bool Engine::componentsListDirty = true;
+std::vector<Component*> Engine::orderedComponents;
+int Engine::componentsCount = 0;
 
 /// <summary>
 /// Init engine
@@ -56,81 +59,86 @@ int Engine::Init(const std::string exePath)
 void Engine::UpdateComponents()
 {
 	//Update all gameobjects components
-	std::vector<Component*> orderedComponents;
-	std::vector<Component*> orderedComponentsToInit;
-	int componentsCount = 0;
-	int componentsToInitCount = 0;
-	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+	if (componentsListDirty)
 	{
-		GameObject* gameObjectToCheck = gameObjects[gIndex];
-		if (gameObjectToCheck->GetActive())
+		componentsListDirty = false;
+		orderedComponents.clear();
+
+		std::vector<Component*> orderedComponentsToInit;
+		componentsCount = 0;
+		int componentsToInitCount = 0;
+		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 		{
-			int componentCount = gameObjectToCheck->components.size();
-			bool placeFound = false;
-			for (int cIndex = 0; cIndex < componentCount; cIndex++)
+			GameObject* gameObjectToCheck = gameObjects[gIndex];
+			if (gameObjectToCheck->GetActive())
 			{
-				Component* componentToCheck = gameObjectToCheck->components[cIndex];
-				if (componentToCheck->GetIsEnabled())
+				int componentCount = gameObjectToCheck->components.size();
+				bool placeFound = false;
+				for (int cIndex = 0; cIndex < componentCount; cIndex++)
 				{
-					for (int i = 0; i < componentsCount; i++)
+					Component* componentToCheck = gameObjectToCheck->components[cIndex];
+
+					if (componentToCheck->GetIsEnabled())
 					{
-						//Check if the checked has a higher priority (lower value) than the component in the list
-						if (componentToCheck->updatePriority <= orderedComponents[i]->updatePriority)
+						for (int i = 0; i < componentsCount; i++)
 						{
-							orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-							placeFound = true;
-							break;
+							//Check if the checked has a higher priority (lower value) than the component in the list
+							if (componentToCheck->updatePriority <= orderedComponents[i]->updatePriority)
+							{
+								orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
+								placeFound = true;
+								break;
+							}
 						}
+						//if the priority is lower than all components's priorities in the list, add it the end of the list
+						if (!placeFound)
+						{
+							orderedComponents.push_back(componentToCheck);
+						}
+						componentsCount++;
 					}
-					//if the priority is lower than all components's priorities in the list, add it the end of the list
-					if (!placeFound)
-					{
-						orderedComponents.push_back(componentToCheck);
-					}
-					componentsCount++;
 				}
 			}
 		}
-	}
-
-	//Find uninitiated components and order them
-	for (int i = 0; i < componentsCount; i++)
-	{
-		Component* componentToCheck = orderedComponents[i];
-		if (!orderedComponents[i]->initiated)
+		//return;
+		//Find uninitiated components and order them
+		for (int i = 0; i < componentsCount; i++)
 		{
-			bool placeFound = false;
-			for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+			Component* componentToCheck = orderedComponents[i];
+			if (!orderedComponents[i]->initiated)
 			{
-				//Check if the checked has a higher priority (lower value) than the component in the list
-				if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+				bool placeFound = false;
+				for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 				{
-					orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-					placeFound = true;
-					break;
+					//Check if the checked has a higher priority (lower value) than the component in the list
+					if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+					{
+						orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+						placeFound = true;
+						break;
+					}
 				}
+				//if the priority is lower than all components's priorities in the list, add it the end of the list
+				if (!placeFound)
+				{
+					orderedComponentsToInit.push_back(componentToCheck);
+				}
+				componentsToInitCount++;
 			}
-			//if the priority is lower than all components's priorities in the list, add it the end of the list
-			if (!placeFound)
-			{
-				orderedComponentsToInit.push_back(componentToCheck);
-			}
-			componentsToInitCount++;
+		}
+
+		//Init components
+		for (int i = 0; i < componentsToInitCount; i++)
+		{
+			orderedComponentsToInit[i]->Awake();
+		}
+
+		for (int i = 0; i < componentsToInitCount; i++)
+		{
+			orderedComponentsToInit[i]->Start();
+			orderedComponentsToInit[i]->initiated = true;
 		}
 	}
-
-	//Init components
-	for (int i = 0; i < componentsToInitCount; i++)
-	{
-		orderedComponentsToInit[i]->Awake();
-	}
-
-	for (int i = 0; i < componentsToInitCount; i++)
-	{
-		orderedComponentsToInit[i]->Start();
-		orderedComponentsToInit[i]->initiated = true;
-	}
-
 	//Update components
 	for (int i = 0; i < componentsCount; i++)
 	{
@@ -286,6 +294,7 @@ void Engine::AddGameObject(GameObject* gameObject)
 {
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
+	//componentsListDirty = true;
 }
 
 /// <summary>

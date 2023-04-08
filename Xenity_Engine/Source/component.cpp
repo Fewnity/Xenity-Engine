@@ -1,9 +1,11 @@
 #include "component.h"
+#include "engine.h"
 
 #pragma region Constructors / Destructor
 
 Component::Component()
 {
+	Engine::componentsListDirty = true;
 }
 
 Component::~Component()
