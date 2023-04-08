@@ -143,6 +143,7 @@ void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector
 {
 	glm::mat4 t = glm::mat4(1);
 	UpdateMaterial(material, &t);
+	material->shader->SetShaderAttribut("color", color);
 
 	float sizeFixer = 0.1f;
 
@@ -166,11 +167,11 @@ void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector
 		{ end.x + fixedXWidth, end.y - fixedYWidth,   1.0f, 0.0f }
 	};
 
-	if (currentTexture != AssetManager::defaultTexture)
-	{
+	//if (currentTexture != AssetManager::defaultTexture)
+	//{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, AssetManager::defaultTexture->GetTextureId());
-	}
+	//}
 
 	glBindVertexArray(lineVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
@@ -210,12 +211,12 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 
 	UpdateMaterial(material, &transformationMatrix);
 
-	if (currentTexture != texture)
-	{
+	//if (currentTexture != texture)
+	//{
 		currentTexture = texture;
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
-	}
+	//}
 
 	glBindVertexArray(spriteVAOSmall);
 	glBindBuffer(GL_ARRAY_BUFFER, spriteVBOSmall);

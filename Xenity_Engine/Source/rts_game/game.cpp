@@ -100,6 +100,7 @@ void Game::LoadGameData()
 	Shader* shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
+	Shader* shaderStandard2DText = new Shader("vertexStandard2DText.shader", "fragmentStandard2DText.shader");
 
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);

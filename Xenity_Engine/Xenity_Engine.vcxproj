@@ -158,6 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\pathfinding\astar.cpp" />
+    <ClCompile Include="Source\pathfinding\dijkstras.cpp" />
     <ClCompile Include="Source\monobehaviour.cpp" />
     <ClCompile Include="Source\pathfinding\pathfinding.cpp" />
     <ClCompile Include="Source\tools\profiler_benchmark.cpp" />
@@ -224,6 +226,7 @@
     <None Include="Source\shaders\fragment2D.shader" />
     <None Include="Source\shaders\fragmentStandard.shader" />
     <None Include="Source\shaders\fragmentStandard2D.shader" />
+    <None Include="Source\shaders\fragmentStandard2DText.shader" />
     <None Include="Source\shaders\fragmentText.shader" />
     <None Include="Source\shaders\UI\fUi.shader" />
     <None Include="Source\shaders\UI\vUi.shader" />
@@ -232,9 +235,12 @@
     <None Include="Source\shaders\vertex2D.shader" />
     <None Include="Source\shaders\vertexStandard.shader" />
     <None Include="Source\shaders\vertexStandard2D.shader" />
+    <None Include="Source\shaders\vertexStandard2DText.shader" />
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\pathfinding\astar.h" />
+    <ClInclude Include="Source\pathfinding\dijkstras.h" />
     <ClInclude Include="Source\graphics\camera_projection_types.h" />
     <ClInclude Include="Source\monobehaviour.h" />
     <ClInclude Include="Source\pathfinding\pathfinding.h" />
