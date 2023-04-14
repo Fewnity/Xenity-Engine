@@ -18,6 +18,7 @@
 #include "rts_game/game.h"
 #include "pathfinding/pathfinding.h"
 #include "tools/profiler_benchmark.h"
+#include "gameOld.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 int Engine::gameObjectCount = 0;
@@ -153,7 +154,8 @@ void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
 	//Game* game = new Game();
-	PathFinding* game = new PathFinding();
+	//PathFinding* game = new PathFinding();
+	Game3D* game = new Game3D();
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 

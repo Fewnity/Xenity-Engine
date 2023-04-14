@@ -110,12 +110,12 @@ void OrbitalCamera::Update()
 	}
 
 
-	float ySpeed = InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20;;
+	float ySpeed = InputSystem::mouseSpeedRaw.y * Time::GetDeltaTime() * 20;
 	if (cameraStatus == OrbitalCamera::FirstPerson)
 	{
 		ySpeed = -ySpeed;
 	}
-	axis1 += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20;
+	axis1 += InputSystem::mouseSpeedRaw.x * Time::GetDeltaTime() * 20;
 	axis2 += ySpeed;
 
 	int maxAxis = 10;
