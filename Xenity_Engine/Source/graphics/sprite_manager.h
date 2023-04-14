@@ -41,7 +41,6 @@ public:
 	static void AddToBatch(int index, Vector2 vertices[4]);
 	
 	static void DrawBatch(const Texture* texture, Vector4& color, Material* material);
-	static void StartDrawing();
 
 private:
 	static unsigned int spriteVAO, spriteVBO, spriteVAOSmall, spriteVBOSmall;

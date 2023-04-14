@@ -107,6 +107,8 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	//return;
 
 	//glUniform3f(glGetUniformLocation(s->GetProgramId(), "spriteColor"), 1, 1, 1);
+	glDisable(GL_DEPTH_TEST);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(spriteVAO);
 
@@ -167,6 +169,8 @@ void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector
 		{ end.x + fixedXWidth, end.y - fixedYWidth,   1.0f, 0.0f }
 	};
 
+	glDisable(GL_DEPTH_TEST);
+
 	//if (currentTexture != AssetManager::defaultTexture)
 	//{
 		glActiveTexture(GL_TEXTURE0);
@@ -210,7 +214,7 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 	transformationMatrix[3].y *= sizeFixer;
 
 	UpdateMaterial(material, &transformationMatrix);
-
+	glDisable(GL_DEPTH_TEST);
 	//if (currentTexture != texture)
 	//{
 		currentTexture = texture;
@@ -529,13 +533,6 @@ void SpriteManager::DrawBatch(const Texture* texture, Vector4& color, Material* 
 	glDrawArrays(GL_TRIANGLES, 0, 6 * 600 * 600);
 	Performance::AddDrawCall();
 	glBindVertexArray(spriteVAOSmall);
-}
-
-void SpriteManager::StartDrawing()
-{
-	currentTexture = nullptr;
-	glDisable(GL_DEPTH_TEST);
-	//glBindVertexArray(spriteVAO);
 }
 
 void UpdateMaterial(Material* material, glm::mat4* transformationMatrix)

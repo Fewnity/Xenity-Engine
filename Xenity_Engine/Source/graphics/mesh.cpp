@@ -228,6 +228,7 @@ void MeshRenderer::Draw()
 	{
 		if (material != nullptr)
 		{
+			glEnable(GL_DEPTH_TEST);
 			UpdateMaterial();
 			Performance::AddDrawCall();
 			glBindVertexArray(vertexArrayBuffer);
