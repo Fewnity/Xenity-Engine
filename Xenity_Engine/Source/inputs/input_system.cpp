@@ -290,6 +290,8 @@ void InputSystem::ClearInputs()
 	}
 	mouseSpeed.x = 0;
 	mouseSpeed.y = 0;
+	mouseSpeedRaw.x = 0;
+	mouseSpeedRaw.y = 0;
 	mouseWheel = 0;
 }
 
