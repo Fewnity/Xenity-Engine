@@ -23,6 +23,7 @@ using namespace std;
  * Create on move event
  * 3D text
  * 3D Sounds
+ * Disable light when component is disabled
  * Fix transparency order
  * Check mesh/shader destructor
  * Fix tilemap rotation

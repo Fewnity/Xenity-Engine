@@ -101,10 +101,6 @@ void Camera::UpdateProjection()
 	{
 		//Projection
 		projection = glm::perspective(glm::radians(fov), (double)Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
-
-		//invert view X axis
-		glm::mat4 flipX = glm::scale(glm::mat4(1.0f), glm::vec3(-1.0f, 1.0f, 1.0f));
-		projection = projection * flipX;
 	}
 	else {
 		float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;

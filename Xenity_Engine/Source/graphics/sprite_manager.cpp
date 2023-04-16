@@ -210,7 +210,7 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 	transformationMatrix[1].y *= h;
 
 	//Move
-	transformationMatrix[3].x *= sizeFixer;
+	transformationMatrix[3].x *= -sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;
 
 	UpdateMaterial(material, &transformationMatrix);

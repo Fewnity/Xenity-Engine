@@ -61,7 +61,7 @@ void WavefrontLoader::LoadFromRawData(MeshData* mesh, const std::string filePath
 					float x = 0, y = 0;
 					sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
 					textureCordsCount++;
-					tempTexturesCoords.emplace_back(x, y);
+					tempTexturesCoords.emplace_back(x, 1-y);
 				}
 				else if (line[1] == 'n') // Add normal
 				{

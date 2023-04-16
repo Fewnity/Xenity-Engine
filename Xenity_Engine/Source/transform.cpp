@@ -265,7 +265,7 @@ void Transform::UpdateWorldPosition()
 	Math::MultiplyMatrix(scaledLocalPos, gameObject->parent->transform.rotationMatrix, posAfterRotation, 1, 3, 3, 3);
 
 	//Set new child position (with parent's world position added)
-	position = Vector3(posAfterRotation[0] + gameObject->parent->transform.GetPosition().x, posAfterRotation[1] + gameObject->parent->transform.GetPosition().y, posAfterRotation[2] + gameObject->parent->transform.GetPosition().z);
+	position = Vector3(-posAfterRotation[0] + gameObject->parent->transform.GetPosition().x, posAfterRotation[1] + gameObject->parent->transform.GetPosition().y, posAfterRotation[2] + gameObject->parent->transform.GetPosition().z);
 }
 
 void Transform::UpdateTransformationMatrix()
@@ -277,7 +277,7 @@ void Transform::UpdateTransformationMatrix()
 
 	transformationMatrix = glm::mat4(1.0f);
 
-	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(position.x, position.y, position.z));
+	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
