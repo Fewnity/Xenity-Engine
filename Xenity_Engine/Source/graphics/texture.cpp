@@ -64,6 +64,8 @@ void Texture::LoadTexture(const std::string filePath) {
 	if (data) {
 		if (this->nrChannels == 4)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		else if (this->nrChannels == 1)
+			glTexImage2D(GL_TEXTURE_2D, 0, 1, this->width, this->height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
 		else
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
