@@ -28,17 +28,22 @@ private:
 	MeshRenderer* mesh3 = nullptr;
 	MeshRenderer* mesh4 = nullptr;
 	MeshRenderer* mesh5 = nullptr;
+	MeshRenderer* bottle = nullptr;
+	MeshRenderer* chess = nullptr;
 	float animation = 0;
 
 	Light* pointLight = new Light();
+	Light* pointLight2 = new Light();
 	Light* spotLight = new Light();
 	Light* spotLight2 = new Light();
 	Light* directionalLight = new Light();
 	GameObject* pointLightGameObject = new GameObject("pointLightGameObject");
+	GameObject* pointLightGameObject2 = new GameObject("pointLightGameObject2");
 	GameObject* spotLightGameObject = new GameObject("spotLightGameObject");
 	GameObject* spotLight2GameObject = new GameObject("spotLight2GameObject");
 	GameObject* directionalLightGameObject = new GameObject("directionalLightGameObject");
 
 	GameObject* cubeChild = new GameObject("Cube1");
+	float lightAnimation = 0;
 };
 

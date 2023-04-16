@@ -12,7 +12,7 @@
 OrbitalCamera::OrbitalCamera()
 {
 	//Add a wall
-	walls.push_back(Box(Vector3(-1, 0, 0), Vector3(1, 1, 1)));
+	//walls.push_back(Box(Vector3(1, 0, 1), Vector3(1, 1, 1)));
 }
 
 // Optimized Min function
@@ -192,6 +192,8 @@ Vector3 OrbitalCamera::UpdateFpsMode()
 Vector3 OrbitalCamera::UpdateThirdPersonMode(Vector3 cameraOffset)
 {
 	Vector3 pos = target->GetPosition();
+	pos.y += 4;
+	//cameraOffset.y += 2;
 
 	float dis = 0;
 	DetectWalls(&dis, cameraOffset, target->GetPosition());

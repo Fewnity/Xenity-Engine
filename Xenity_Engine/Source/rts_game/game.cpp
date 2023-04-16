@@ -48,10 +48,10 @@ void Game::Init()
 	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
 
 
-	SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
-	gameObjectSprite->AddExistingComponent(spr);
+	//SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
+	//gameObjectSprite->AddExistingComponent(spr);
 
-	GameObject* t = new GameObject();
+	/*GameObject* t = new GameObject();
 	t->transform.SetPosition(Vector3(1, 1, 0));
 	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
 	t->AddExistingComponent(spr2);
@@ -59,18 +59,19 @@ void Game::Init()
 	GameObject* t2 = new GameObject();
 	t2->transform.SetPosition(Vector3(2, 2, 0));
 	SpriteRenderer* spr3 = new SpriteRenderer(textureShip, material2D);
-	t2->AddExistingComponent(spr3);
+	t2->AddExistingComponent(spr3);*/
 
 	Unit* newUnit = new Unit(unitsData[0]);
 	newUnit->updatePriority = 100;
 	GameObject* unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(20, 20, 0));
 	unitGM->AddExistingComponent(newUnit);
 	units.push_back(newUnit);
 
-	GameObject* t3 = new GameObject();
+	/*GameObject* t3 = new GameObject();
 	t3->transform.SetLocalPosition(Vector3(3, 3, 0));
 	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
-	t3->AddExistingComponent(spr4);
+	t3->AddExistingComponent(spr4);*/
 
 	gameObjectCrosshair = new GameObject();
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));

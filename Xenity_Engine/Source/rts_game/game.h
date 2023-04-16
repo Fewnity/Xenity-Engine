@@ -58,16 +58,16 @@ private:
 
 	//Map settings
 	int mapSize = 200;
-	int minTreeCount = 15;
-	int maxTreeCount = 20;
-	int minRockCount = 8;
-	int maxRockCount = 12;
-	int minRockEmeraldCount = 5;
-	int maxRockEmeraldCount = 6;
-	int minRockGoldCount = 6;
-	int maxRockGoldCount = 8;
-	int minCrystalCount = 4;
-	int maxCrystalCount = 4;
+	int minTreeCount = 1500;
+	int maxTreeCount = 2000;
+	int minRockCount = 800;
+	int maxRockCount = 1200;
+	int minRockEmeraldCount = 500;
+	int maxRockEmeraldCount = 600;
+	int minRockGoldCount = 600;
+	int maxRockGoldCount = 800;
+	int minCrystalCount = 400;
+	int maxCrystalCount = 400;
 
 	//Textures
 	std::vector<Texture*> propsTextures;

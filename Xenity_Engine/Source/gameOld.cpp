@@ -64,6 +64,14 @@ void Game3D::Init()
 	Texture* texture6 = new Texture("Wood_Gate_Fortified_metallic.jpg", "Wood_Gate_Fortified_metallic");
 	Texture* texture7 = new Texture("ship_0000.png","ship_0000", Texture::Filter::Point, false);
 
+	Texture* bottleTexture = new Texture("gas_bottle_fire_albedo.png", "gas_bottle_fire_albedo");
+	Texture* bottleMetallicTexture = new Texture("gas_bottle_fire_metallic.png", "gas_bottle_fire_metallic");
+
+	Texture* chessTexture = new Texture("Black_Base_Color.png", "Black_Base_Color");
+	Texture* chessTexture2 = new Texture("Black_Roughness.png", "Black_Roughness");
+
+	Texture* debugTexture = new Texture("debug_uv.png", "debug_uv");
+
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);
 
@@ -74,6 +82,22 @@ void Game3D::Init()
 	newMat->SetAttribut("material.specular", texture6);
 	newMat->SetAttribut("material.shininess", 32.0f);
 	newMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
+
+	Material* bottleMat = new Material("Bottle");
+	bottleMat->shader = shader3;
+	bottleMat->SetAttribut("color", Vector3(1, 1, 1));
+	bottleMat->SetAttribut("material.diffuse", bottleTexture);
+	bottleMat->SetAttribut("material.specular", bottleMetallicTexture);
+	bottleMat->SetAttribut("material.shininess", 32.0f);
+	bottleMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
+
+	Material* chessMat = new Material("Chess");
+	chessMat->shader = shader3;
+	chessMat->SetAttribut("color", Vector3(1, 1, 1));
+	chessMat->SetAttribut("material.diffuse", chessTexture);
+	chessMat->SetAttribut("material.specular", chessTexture2);
+	chessMat->SetAttribut("material.shininess", 32.0f);
+	chessMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	Material* newMat2 = new Material("vStandard2");
 	newMat2->shader = shader3;
@@ -117,10 +141,6 @@ void Game3D::Init()
 	spline->AddSplinePoint(splinePoint2);
 	spline->AddSplinePoint(splinePoint3);*/
 
-	GameObject* box = ShapeSpawner::SpawnCube();
-	box->transform.SetPosition(Vector3(-1, 0, 0));
-	box->transform.SetLocalScale(Vector3(1, 1, 1));
-
 	int splinePointCount = 100;
 	for (int i = 0; i < splinePointCount; i++)
 	{
@@ -134,14 +154,20 @@ void Game3D::Init()
 	mesh3 = new MeshRenderer("CubeTriangulate.obj");
 	mesh4 = new MeshRenderer("ConeTriangulate.obj");
 	mesh5 = new MeshRenderer("CubeTriangulate.obj");
+	bottle = new MeshRenderer("gas_bottle.obj");
+	chess = new MeshRenderer("chess_tower.obj");
 
-	cubeGameObject->AddExistingComponent(mesh3);
-	cubeGameObject->transform.SetPosition(Vector3(2, 0, 0));
-	cubeGameObject->transform.SetRotation(Vector3(0, 0, 10));
-	cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+	//bottle = new MeshRenderer("debug_cube.obj");
+
+	//cubeGameObject->AddExistingComponent(chess);
+	cubeGameObject->AddExistingComponent(bottle);
+	cubeGameObject->transform.SetPosition(Vector3(0, 0, 0));
+	cubeGameObject->transform.SetRotation(Vector3(0, 0, 0));
+	cubeGameObject->transform.SetLocalScale(Vector3(20, 20, 20));
+	//cubeGameObject->transform.SetLocalScale(Vector3(5, 5, 5));
 	//cubeGameObject->transform.SetLocalScale(Vector3(0.1f, 0.1f, 0.1f));
 
-	//GameObject* cubeChild = new GameObject("Cube1");
+	cubeChild->SetActive(false);
 	cubeChild->transform.SetPosition(Vector3(4, 0, 0));
 	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
 	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
@@ -179,36 +205,27 @@ void Game3D::Init()
 	cubeGameObject->transform.SetPosition(Vector3(5, 0, 0));*/
 
 	myGameObject3->AddExistingComponent(mesh5);
-	myGameObject3->transform.SetPosition(Vector3(0, -2, 0));
+	myGameObject3->transform.SetPosition(Vector3(0, -1, 0));
 
-	mesh5->gameObject->transform.SetLocalScale(Vector3(10, 1, 10));
+	myGameObject3->transform.SetLocalScale(Vector3(5, 1, 5));
 
 	mesh->material = newMat;
 	mesh222->material = newMat;
 	mesh3->material = newMat;
+	bottle->material = bottleMat;
+	chess->material = chessMat;
 	mesh4->material = newMat2;
 	mesh5->material = newMat;
 
 	Material* material2D = new Material("shaderStandard2D");
 	material2D->shader = shaderStandard2D;
 
-	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
-
-	SpriteRenderer* spr = new SpriteRenderer(texture7, material2D);
-	gameObjectSprite->AddExistingComponent(spr);
-
-	GameObject* t = new GameObject();
-	t->transform.SetPosition(Vector3(0.32f, 0.32f, 0));
-	SpriteRenderer* spr2 = new SpriteRenderer(texture7, material2D);
-	t->AddExistingComponent(spr2);
-
-	TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
-	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
-	gameObjectSprite->AddExistingComponent(textRenderer);
-
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	pointLightGameObject->AddExistingComponent(pointLight);
-	pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
+	pointLightGameObject2->AddExistingComponent(pointLight2);
+	pointLight->SetupPointLight(Vector3(1, 1, 1), 6, 7);
+	pointLight2->SetupPointLight(Vector3(0, 0, 1), 30, 7);
+	//pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
 
 	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
 	spotLightGameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
@@ -225,6 +242,8 @@ void Game3D::Init()
 	directionalLight->SetupDirectionalLight(Vector3(0.6f, 0.6f, 0.7f), 1);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+	spotLight->intensity = 0;
+	spotLight2->intensity = 0;
 }
 
 /// <summary>
@@ -317,6 +336,9 @@ void Game3D::Loop()
 	//cubeGameObject->transform.SetLocalScale(Vector3(1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
 
 	//cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+	lightAnimation += Time::GetDeltaTime()/3.0f;
+	pointLightGameObject->transform.SetPosition(Vector3(cos(lightAnimation * M_PI * 2) * 3, 1.5, sin(lightAnimation * M_PI * 2)*3));
+	pointLightGameObject2->transform.SetPosition(Vector3(cos((lightAnimation+0.5) * M_PI * 2) * 3, 1.5, sin((lightAnimation+0.5) * M_PI * 2) * 3));
 
 	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20;

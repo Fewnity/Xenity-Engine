@@ -153,9 +153,9 @@ void Engine::UpdateComponents()
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	//Game* game = new Game();
+	Game* game = new Game();
+	//Game3D* game = new Game3D();
 	//PathFinding* game = new PathFinding();
-	Game3D* game = new Game3D();
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 

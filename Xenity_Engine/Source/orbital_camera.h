@@ -51,8 +51,8 @@ public:
 	Transform* camera1 = nullptr;
 	bool GetHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t);;
 	bool DetectWalls(float* distance, Vector3 dir, Vector3 startDir);
-	float currentDistance = 4;
-	float targetDistance = 4;
+	float currentDistance = 3;
+	float targetDistance = 3;
 
 	std::vector<Box> walls;
 };
