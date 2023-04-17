@@ -224,7 +224,7 @@ void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 void MeshRenderer::Draw()
 {
 	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
-	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr)
+	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr && GetIsEnabled())
 	{
 		if (material != nullptr)
 		{

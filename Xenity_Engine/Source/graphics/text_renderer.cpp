@@ -27,7 +27,7 @@ TextRenderer::~TextRenderer()
 /// </summary>
 void TextRenderer::Draw()
 {
-	if (gameObject != nullptr && gameObject->GetActive())
+	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled() && shader != nullptr)
 	{
 		UiManager::RenderText(text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, size, lineSpacing, color, font, horizontalAligment, V_Center, *shader);
 	}
