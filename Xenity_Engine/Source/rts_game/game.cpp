@@ -62,9 +62,20 @@ void Game::Init()
 	t2->AddExistingComponent(spr3);*/
 
 	Unit* newUnit = new Unit(unitsData[0]);
-	newUnit->updatePriority = 100;
 	GameObject* unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(20, 20, 0));
+	unitGM->transform.SetPosition(Vector3(0, 0, 0));
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
+	newUnit = new Unit(unitsData[4]);
+	unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(1, 2, 0));
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
+	newUnit = new Unit(unitsData[10]);
+	unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(1, 1, 0));
 	unitGM->AddExistingComponent(newUnit);
 	units.push_back(newUnit);
 
@@ -124,8 +135,11 @@ void Game::LoadGameData()
 		propsTextures.push_back(textureEnv);
 	}
 
-	UnitData* newUnitData = new UnitData(0);
-	unitsData.push_back(newUnitData);
+	for (int i = 0; i < 12; i++)
+	{
+		UnitData* newUnitData = new UnitData(i, crosshair);
+		unitsData.push_back(newUnitData);
+	}
 
 	int propsTexturesCount = propsTextures.size();
 	for (int i = 0; i < propsTexturesCount; i++)
@@ -148,6 +162,19 @@ void Game::Loop()
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
 		//SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+	if (InputSystem::GetKey(MOUSE_LEFT)) {
+
+		if (InputSystem::GetKeyDown(MOUSE_LEFT))
+		{
+			startSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
+		}
+
+		endSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
+		SpriteManager::Render2DLine(startSelectionPos, endSelectionPos, 1, selectionColor, material2D);
+		if (InputSystem::GetKeyUp(MOUSE_LEFT))
+		{
+		}
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();

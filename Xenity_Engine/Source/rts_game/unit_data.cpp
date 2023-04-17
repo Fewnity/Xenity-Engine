@@ -1,7 +1,7 @@
 #include "unit_data.h"
 #include "../graphics/texture.h"
 
-UnitData::UnitData(int index)
+UnitData::UnitData(int index, Texture* selectionTexture)
 {
 	int textureNameIndex = index + 1;
 	//Load blue ints
@@ -23,4 +23,6 @@ UnitData::UnitData(int index)
 	unitTextureName = "rts/Unit/orangeUnit_" + std::to_string(textureNameIndex) + ".png";
 	textures[3] = new Texture(unitTextureName, "", Texture::Bilinear, true);
 	textures[3]->SetPixelPerUnit(128);
+
+	this->selectionTexture = selectionTexture;
 }

@@ -56,6 +56,11 @@ private:
 	std::vector<UnitData*> unitsData;
 	std::vector<Unit*> units;
 
+	Vector2 startSelectionPos = Vector2(0, 0);
+	Vector2 endSelectionPos = Vector2(0, 0);
+
+	Vector4 selectionColor = Vector4(1, 1, 1, 1);
+
 	//Map settings
 	int mapSize = 200;
 	int minTreeCount = 1500;

@@ -15,10 +15,13 @@ void Unit::Start()
 	GameObject* gmUnitSprite = new GameObject();
 	SpriteRenderer* unitSpriteRenderer = new SpriteRenderer(unitData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
 	gmUnitSprite->AddExistingComponent(unitSpriteRenderer);
+	selectionSpriteRenderer = new SpriteRenderer(unitData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
+	gmUnitSprite->AddExistingComponent(selectionSpriteRenderer);
 	gameObject->AddChild(gmUnitSprite);
 	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0));
 }
 
 void Unit::Update()
 {
+	selectionSpriteRenderer->SetIsEnabled(selected);
 }

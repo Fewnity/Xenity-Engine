@@ -3,6 +3,7 @@
 #include "../monobehaviour.h"
 
 class UnitData;
+class SpriteRenderer;
 
 class Unit : public MonoBehaviour
 {
@@ -14,6 +15,7 @@ public:
 
 	void Start();
 	void Update();
-	
+	bool selected = false;
+	SpriteRenderer* selectionSpriteRenderer = nullptr;
 };
 
