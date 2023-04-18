@@ -141,7 +141,7 @@ void SpriteManager::RenderSprite(float x, float y, float z, float w, float h, fl
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector4& color, Material* material)
+void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector4& color, Material* material)
 {
 	glm::mat4 t = glm::mat4(1);
 	UpdateMaterial(material, &t);
@@ -149,7 +149,7 @@ void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector
 
 	float sizeFixer = 0.1f;
 
-	Vector2 dir = (end - start).normalize();
+	Vector2 dir = (Vector2(end.x, end.y) - Vector2(start.x, start.y)).normalize();
 
 	start *= sizeFixer;
 	end *= sizeFixer;
@@ -159,14 +159,14 @@ void SpriteManager::Render2DLine(Vector2 start, Vector2 end, float width, Vector
 	float fixedYWidth = width / 2.0f * dir.x;
 	
 	//Create line's vertices and uv
-	float vertices[6][4] = {
-		{ end.x - fixedXWidth,     end.y + fixedYWidth,   0.0f, 0.0f },
-		{ start.x - fixedXWidth ,    start.y + fixedYWidth,        0.0f, 1.0f },
-		{ start.x + fixedXWidth, start.y - fixedYWidth,       1.0f, 1.0f },
+	float vertices[6][5] = {
+		{ end.x - fixedXWidth,     end.y + fixedYWidth, end.z,  0.0f, 0.0f },
+		{ start.x - fixedXWidth ,    start.y + fixedYWidth,end.z,        0.0f, 1.0f },
+		{ start.x + fixedXWidth, start.y - fixedYWidth,end.z,       1.0f, 1.0f },
 
-		{ end.x - fixedXWidth,     end.y + fixedYWidth,    0.0f, 0.0f },
-		{ start.x + fixedXWidth, start.y - fixedYWidth,      1.0f, 1.0f },
-		{ end.x + fixedXWidth, end.y - fixedYWidth,   1.0f, 0.0f }
+		{ end.x - fixedXWidth,     end.y + fixedYWidth,end.z,    0.0f, 0.0f },
+		{ start.x + fixedXWidth, start.y - fixedYWidth,end.z,      1.0f, 1.0f },
+		{ end.x + fixedXWidth, end.y - fixedYWidth,end.z,   1.0f, 0.0f }
 	};
 
 	glDisable(GL_DEPTH_TEST);
@@ -281,12 +281,12 @@ void SpriteManager::CreateSpriteBuffer()
 	glGenBuffers(1, &lineVBO);
 	glBindVertexArray(lineVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
 	//Vertices attrib
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
 	glEnableVertexAttribArray(0);
 	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);

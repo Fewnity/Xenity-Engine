@@ -14,6 +14,7 @@ class Shader
 public:
 	Shader() = delete;
 	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath);
+	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath);
 	~Shader();
 
 	unsigned int GetProgramId();
@@ -44,6 +45,8 @@ private:
 
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;
+	unsigned int tessellationShaderId = 0;
+	unsigned int tessellationEvaluationShaderId = 0;
 	unsigned int programId = 0;
 	unsigned int modelLocation = 0;
 	unsigned int projectionLocation = 0;

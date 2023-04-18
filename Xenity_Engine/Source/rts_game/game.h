@@ -2,6 +2,7 @@
 
 #include "../graphics/tile_map.h"
 #include "../graphics/camera.h"
+#include "../graphics/iDrawable.h"
 
 class Prop {
 public:
@@ -19,7 +20,7 @@ public:
 class Unit;
 class UnitData;
 
-class Game
+class Game : public IDrawable
 {
 public:
 class Tile {
@@ -27,8 +28,10 @@ public:
 	int groundTileId = 0; // 0 is no tile
 	Prop* prop = nullptr;
 };
+
 	void Init();
 	void Loop();
+	void Draw();
 	Game::Tile* GetTile(int x, int y);
 
 private:
@@ -60,6 +63,7 @@ private:
 	Vector2 endSelectionPos = Vector2(0, 0);
 
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
+	bool isDragging = false;
 
 	//Map settings
 	int mapSize = 200;
@@ -85,5 +89,6 @@ private:
 
 	//Materials
 	Material* material2D = nullptr;
+	Material* material2DWithZ = nullptr;
 };
 

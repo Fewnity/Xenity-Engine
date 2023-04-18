@@ -113,6 +113,7 @@ void Game::LoadGameData()
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
 	Shader* shaderStandard2DText = new Shader("vertexStandard2DText.shader", "fragmentStandard2DText.shader");
+	Shader* shaderStandard2DWithZ = new Shader("vertexStandard2DZ.shader", "fragmentStandard2DZ.shader");
 
 	SceneGame1* scene = new SceneGame1();
 	SceneManager::LoadScene(scene);
@@ -150,6 +151,10 @@ void Game::LoadGameData()
 
 	material2D = new Material("2D Standard");
 	material2D->shader = shaderStandard2D;
+
+	material2DWithZ = new Material("2D Standard With Z");
+	material2DWithZ->shader = shaderStandard2DWithZ;
+
 	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 }
 
@@ -163,17 +168,19 @@ void Game::Loop()
 	{
 		//SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
-	if (InputSystem::GetKey(MOUSE_LEFT)) {
-
+	if (InputSystem::GetKey(MOUSE_LEFT)) 
+	{
+		isDragging = true;
 		if (InputSystem::GetKeyDown(MOUSE_LEFT))
 		{
 			startSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
 		}
 
 		endSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
-		SpriteManager::Render2DLine(startSelectionPos, endSelectionPos, 1, selectionColor, material2D);
+		
 		if (InputSystem::GetKeyUp(MOUSE_LEFT))
 		{
+			isDragging = false;
 		}
 	}
 
@@ -252,6 +259,13 @@ void Game::Loop()
 	//UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 
 	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
+}
+
+void Game::Draw()
+{
+	if (isDragging) {
+		SpriteManager::Render2DLine(Vector3(startSelectionPos.x, startSelectionPos.y, 11), Vector3(endSelectionPos.x, endSelectionPos.y, 11), 1, selectionColor, material2DWithZ);
+	}
 }
 
 Game::Tile* Game::GetTile(int x, int y)

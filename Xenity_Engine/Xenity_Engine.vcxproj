@@ -227,7 +227,9 @@
     <None Include="Source\shaders\fragmentStandard.shader" />
     <None Include="Source\shaders\fragmentStandard2D.shader" />
     <None Include="Source\shaders\fragmentStandard2DText.shader" />
+    <None Include="Source\shaders\fragmentStandard2DZ.shader" />
     <None Include="Source\shaders\fragmentText.shader" />
+    <None Include="Source\shaders\tessellation.shader" />
     <None Include="Source\shaders\UI\fUi.shader" />
     <None Include="Source\shaders\UI\vUi.shader" />
     <None Include="Source\shaders\vertex.shader" />
@@ -236,6 +238,7 @@
     <None Include="Source\shaders\vertexStandard.shader" />
     <None Include="Source\shaders\vertexStandard2D.shader" />
     <None Include="Source\shaders\vertexStandard2DText.shader" />
+    <None Include="Source\shaders\vertexStandard2DZ.shader" />
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>

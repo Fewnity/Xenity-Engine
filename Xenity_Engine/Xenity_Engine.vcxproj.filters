@@ -141,5 +141,8 @@
     <None Include="Source\shaders\UI\vUi.shader" />
     <None Include="Source\shaders\fragmentStandard2DText.shader" />
     <None Include="Source\shaders\vertexStandard2DText.shader" />
+    <None Include="Source\shaders\fragmentStandard2DZ.shader" />
+    <None Include="Source\shaders\vertexStandard2DZ.shader" />
+    <None Include="Source\shaders\tessellation.shader" />
   </ItemGroup>
 </Project>

@@ -207,9 +207,9 @@ void DrawArrow(Vector2 start, Vector2 end, float width, Vector4& color, Material
 	Vector2 leftEnd = end - dir / 2 + Vector2(-cos(angle) / 4, sin(angle) / 4);
 	Vector2 rightEnd = end - dir / 2 + Vector2(cos(angle) / 4, -sin(angle) / 4);
 
-	SpriteManager::Render2DLine(start, end, 0.05f, color, AssetManager::GetMaterialByName("2D Standard")); //Line
-	SpriteManager::Render2DLine(end, leftEnd, 0.05f, color, AssetManager::GetMaterialByName("2D Standard"));//Left
-	SpriteManager::Render2DLine(end, rightEnd, 0.05f, color, AssetManager::GetMaterialByName("2D Standard"));//Right
+	SpriteManager::Render2DLine(Vector3(start.x, start.y, 0), Vector3(end.x, end.y, 0), 0.05f, color, AssetManager::GetMaterialByName("2D Standard")); //Line
+	SpriteManager::Render2DLine(Vector3(end.x, end.y, 0), Vector3(leftEnd.x, leftEnd.y, 0), 0.05f, color, AssetManager::GetMaterialByName("2D Standard"));//Left
+	SpriteManager::Render2DLine(Vector3(end.x, end.y, 0), Vector3(rightEnd.x, rightEnd.y, 0), 0.05f, color, AssetManager::GetMaterialByName("2D Standard"));//Right
 }
 
 void PathFinding::DrawAStar()
