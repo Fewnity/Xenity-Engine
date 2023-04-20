@@ -19,8 +19,12 @@
 #include "pathfinding/pathfinding.h"
 #include "tools/profiler_benchmark.h"
 #include "gameOld.h"
+#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 std::vector<GameObject*> Engine::gameObjects;
+GameObject* Engine::selectedGameObject = nullptr;
+
 int Engine::gameObjectCount = 0;
 float lastTick = 0;
 
@@ -41,6 +45,7 @@ int Engine::Init(const std::string exePath)
 	/* Initialize libraries */
 	Debug::Init();
 	File::InitFileSystem(exePath);
+
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
 		return -1;
 	}
@@ -51,7 +56,114 @@ int Engine::Init(const std::string exePath)
 	//Init random
 	srand((unsigned int)time(NULL));
 
+
+	ImGui::GetStyle().WindowRounding = 10;
+
+
 	return 0;
+}
+
+void Engine::DrawProfiler()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::Begin("Debug");
+	ImGui::Text("FPS: %d, ImGui: %.1f", (int)(1 / Time::GetUnscaledDeltaTime()), io.Framerate);
+	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
+	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
+
+	if (Performance::IsProfilerEnabled())
+	{
+		//Add profiler texts
+		for (const auto& kv : Performance::profilerList)
+		{
+			ImGui::Text("%s: %ld, avg %ld", kv.first.c_str(), kv.second->GetValue(), kv.second->average);
+		}
+	}
+
+	//ImGui::SliderFloat("float", &cameraZoom, 1.0f, 2.8f);
+
+	ImGui::End();
+}
+
+void Engine::DrawInspector()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::Begin("Inspector");
+	if (selectedGameObject != nullptr) {
+		ImGui::Text("Name %s", selectedGameObject->name.c_str());
+		ImGui::Text("Local Position %f %f %f", selectedGameObject->transform.GetLocalPosition().x, selectedGameObject->transform.GetLocalPosition().y, selectedGameObject->transform.GetLocalPosition().z);
+		ImGui::Text("World Position %f %f %f", selectedGameObject->transform.GetPosition().x, selectedGameObject->transform.GetPosition().y, selectedGameObject->transform.GetPosition().z);
+	}
+	ImGui::End();
+}
+
+void Engine::DrawTreeItem(GameObject* child)
+{
+	int childCount = child->children.size();
+	int flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
+	if (Engine::selectedGameObject == child)
+		flags |= ImGuiTreeNodeFlags_Selected;
+	if (childCount != 0)
+	{
+
+		if (ImGui::TreeNodeEx(child->name.c_str(), flags))
+		{
+			for (int i = 0; i < childCount; i++)
+			{
+				DrawTreeItem(child->children[i]);
+			}
+			ImGui::TreePop();
+		}
+		if (ImGui::IsItemActivated() && ImGui::IsItemClicked())
+		{
+			SetSelectedGameObject(child);
+			std::cout << "HELO" << std::endl;
+		}
+	}
+	else
+	{
+		//ImGui::GetBackgroundDrawList()->AddRectFilled(ImVec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y), ImVec2(ImGui::GetCursorScreenPos().x + 100, ImGui::GetCursorScreenPos().y + 220), ImGui::GetColorU32(ImVec4(1, 0, 0, 1)));
+		ImGui::Indent();
+		ImGui::Text(child->name.c_str());
+		ImGui::Unindent();
+		if (ImGui::IsItemClicked())
+		{
+			SetSelectedGameObject(child);
+		}
+		/*if (ImGui::TreeNodeEx(child->name.c_str(), flags | ImGuiTreeNodeFlags_Leaf))
+		{
+			if (ImGui::IsItemClicked() && ImGui::IsItemActivated() && ImGui::IsItemFocused() && ImGui::IsItemHovered())
+			{
+				SetSelectedGameObject(child);
+				std::cout << "TTT" << std::endl;
+			}
+			ImGui::TreePop();
+		}*/
+	}
+}
+
+void Engine::DrawHierarchy()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::Begin("Hierarchy");
+	//ImGui::SetWindowFontScale(2);
+
+	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
+
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		if (gameObjects[i]->parent == nullptr)
+		{
+			DrawTreeItem(gameObjects[i]);
+		}
+	}
+	ImGui::EndChild();
+
+
+	ImGui::End();
 }
 
 /// <summary>
@@ -147,6 +259,11 @@ void Engine::UpdateComponents()
 	}
 }
 
+void Engine::SetSelectedGameObject(GameObject* newSelected)
+{
+	selectedGameObject = newSelected;
+}
+
 /// <summary>
 /// Engine loop
 /// </summary>
@@ -171,6 +288,7 @@ void Engine::Loop()
 		InputSystem::ClearInputs();
 		while (SDL_PollEvent(&event))
 		{
+			ImGui_ImplSDL2_ProcessEvent(&event);
 			InputSystem::Read(event);
 			switch (event.type)
 			{
@@ -202,6 +320,9 @@ void Engine::Loop()
 		{
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
 
 		gameLoopBenchmark->Start();
 		game->Loop();
@@ -236,24 +357,10 @@ void Engine::Loop()
 		UiManager::RenderTextCanvas("Bottom Right", 1, 1, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Top, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Center", 0.5, 0.5, angleT, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
-		//Draw performance data
-		std::string performanceDebugText = "DrawCall Count: " + std::to_string(Performance::GetDrawCallCount()) + "\n";
-		performanceDebugText += std::string("Updated Materials: ") + std::to_string(Performance::GetUpdatedMaterialCount()) + "\n";
+		DrawProfiler();
+		DrawInspector();
+		DrawHierarchy();
 
-		if (Performance::IsProfilerEnabled())
-		{
-			performanceDebugText += std::string("\n--- Profiler (microseconds) --- ") + "\n";
-			//Add profiler text
-			for (const auto& kv : Performance::profilerList)
-			{
-				performanceDebugText += kv.first + ": " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
-			}
-		}
-
-		//UiManager::RenderTextCanvas(debugText, 1, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(fpsText, 0.5, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas(performanceDebugText, 0, 0, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
-		//std::cout << performanceDebugText << std::endl;
 		Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
 
 		/*Vector2 arrowStart = Vector2(2, 0);
@@ -279,6 +386,10 @@ void Engine::Loop()
 
 		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
 		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));*/
+
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		engineLoopBenchmark->Stop();
 		Window::UpdateScreen();

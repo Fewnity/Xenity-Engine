@@ -3,6 +3,11 @@
 #define GLFW_INCLUDE_NONE
 #include <stb_image.h>
 #include <GLFW/glfw3.h>
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_sdl2.h"
+
 #include "../debug/debug.h"
 #include "../graphics/graphics.h"
 
@@ -37,8 +42,18 @@ int Window::InitWindow()
 
 	window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	SDL_GLContext context = SDL_GL_CreateContext(window);
-	
+
+
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplSDL2_InitForOpenGL(Window::window, context);
+	ImGui_ImplOpenGL3_Init("#version 460");
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	//Use depth management
 	glEnable(GL_DEPTH_TEST);

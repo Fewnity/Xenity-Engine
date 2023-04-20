@@ -5,6 +5,8 @@
 
 #pragma region Constructors / Destructor
 
+#define DEFAULT_GAMEOBJECT_NAME "GameObject"
+
 GameObject::GameObject()
 {
 	Engine::AddGameObject(this);
@@ -16,7 +18,10 @@ GameObject::GameObject()
 /// <param name="name">Do not use "@" alone</param>
 GameObject::GameObject(std::string name)
 {
-	this->name = name;
+	if (name != "")
+		this->name = name;
+	else
+		this->name = DEFAULT_GAMEOBJECT_NAME;
 	Engine::AddGameObject(this);
 }
 

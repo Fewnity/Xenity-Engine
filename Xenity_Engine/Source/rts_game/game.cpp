@@ -7,6 +7,8 @@
 
 #include "unit.h"
 #include "unit_data.h"
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_sdl2.h>
 
 /// <summary>
 /// Init game
@@ -83,9 +85,18 @@ void Game::Init()
 
 
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	//SDL_SetRelativeMouseMode(SDL_FALSE);
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * cameraZoom);
+
+	GameObject* ParentTest = new GameObject("Parent0");
+	GameObject* childTest1 = new GameObject("child0");
+	GameObject* childTest2 = new GameObject("child1");
+	GameObject* childTest3 = new GameObject("child2");
+
+	ParentTest->AddChild(childTest1);
+	ParentTest->AddChild(childTest2);
+	childTest1->AddChild(childTest3);
 }
 
 void Game::LoadGameData()
@@ -240,7 +251,6 @@ void Game::Loop()
 	}
 
 	camera->gameObject->transform.SetPosition(newCameraPosition);
-
 
 	//SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, -2), 1, lineColor, material2D);
 
