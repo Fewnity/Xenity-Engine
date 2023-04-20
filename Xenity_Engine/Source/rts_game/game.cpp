@@ -1,31 +1,10 @@
 #include "game.h"
-#include "../audio/audio_clip.h"
-#include "../gameobject.h"
-#include "../graphics/graphics.h"
-#include "../graphics/mesh.h"
-#include "../graphics/material.h"
-
+#include "../xenity.h"
 #include <SDL2/SDL.h>
-#include "../scene_manager/SceneManager.h"
-#include "../game/sceneGame1.h"
-#include "../lighting/lighting.h"
-#include "../inputs/input_system.h"
-#include "../engine_settings.h"
-#include "../vectors/vector3.h"
 #include <chrono>
 #include <iostream>
-#include "../graphics/spriteRenderer.h"
-#include "../graphics/sprite_manager.h"
-#include "../asset_manager.h"
-#include "../debug/debug.h"
-#include "../graphics/text_renderer.h"
-#include "../ui/ui_manager.h"
-#include "../tools/shape_spawner.h"
-#include "../tools/curve.h"
-#include "../tools/math.h"
-#include "../tools/benchmark.h"
-#include "../time/time.h"
-#include "../ui/window.h"
+
+
 #include "unit.h"
 #include "unit_data.h"
 
@@ -38,6 +17,7 @@ void Game::Init()
 
 	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
 	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
+	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, -1));
 
 	GenerateMap();
 	CreateTileMaps();
@@ -84,11 +64,18 @@ void Game::Init()
 	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
 	t3->AddExistingComponent(spr4);*/
 
-	gameObjectCrosshair = new GameObject();
+	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
+	SpriteRenderer* sprGrad = new SpriteRenderer(gradient, material2DWithZ);
+	sprGrad->color = Vector4(1, 1, 1, 1);
+	gameObjectCrosshair2->AddExistingComponent(sprGrad);
+
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
-	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2D);
+	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2DWithZ);
 	spr5->color = Vector4(0, 0, 0, 0.2f);
 	gameObjectCrosshair->AddExistingComponent(spr5);
+
+
+
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -115,8 +102,8 @@ void Game::LoadGameData()
 	Shader* shaderStandard2DText = new Shader("vertexStandard2DText.shader", "fragmentStandard2DText.shader");
 	Shader* shaderStandard2DWithZ = new Shader("vertexStandard2DZ.shader", "fragmentStandard2DZ.shader");
 
-	SceneGame1* scene = new SceneGame1();
-	SceneManager::LoadScene(scene);
+	//SceneGame1* scene = new SceneGame1();
+	//SceneManager::LoadScene(scene);
 
 	textureShip = new Texture("ship_0000.png", "Ship");
 	Texture* textureTile0 = new Texture("rts/Tile/scifiTile_42.png", "Ground0");
@@ -125,6 +112,9 @@ void Game::LoadGameData()
 	textureTile1->SetPixelPerUnit(128);
 	crosshair = new Texture("rts/crosshairs/crosshair.png", "Crosshair");
 	crosshair->SetPixelPerUnit(128);
+
+
+	gradient = new Texture("gradient.png", "gradient");
 
 	tilesTextures.push_back(textureTile0);
 	tilesTextures.push_back(textureTile1);
@@ -197,6 +187,7 @@ void Game::Loop()
 		newCameraPosition += vect;
 	}
 	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+	gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
 
 	//Move cursor
 	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
@@ -263,8 +254,11 @@ void Game::Loop()
 
 void Game::Draw()
 {
-	if (isDragging) {
-		SpriteManager::Render2DLine(Vector3(startSelectionPos.x, startSelectionPos.y, 11), Vector3(endSelectionPos.x, endSelectionPos.y, 11), 1, selectionColor, material2DWithZ);
+	if (isDragging) 
+	{
+		SpriteManager::Render2DLine(Vector3(startSelectionPos.x, startSelectionPos.y, 0), Vector3(endSelectionPos.x, endSelectionPos.y, 0), 1, selectionColor, material2DWithZ);
+		SpriteManager::Render2DLine(Vector3(startSelectionPos.x + 2, startSelectionPos.y + 2, -5), Vector3(endSelectionPos.x, endSelectionPos.y, -5), 1, selectionColor2, material2DWithZ);
+		SpriteManager::Render2DLine(Vector3(startSelectionPos.x + 2, startSelectionPos.y - 2, 5), Vector3(endSelectionPos.x, endSelectionPos.y, 5), 1, selectionColor2, material2DWithZ);
 	}
 }
 
@@ -274,6 +268,11 @@ Game::Tile* Game::GetTile(int x, int y)
 		return nullptr;
 
 	return &tiles[x * mapSize + y];
+}
+
+int Game::GetDrawPriority()
+{
+	return 0;
 }
 
 void Game::GenerateMap()
@@ -368,14 +367,14 @@ Prop* Game::CreateProp(int id)
 void Game::CreateTileMaps()
 {
 	//Create ground tile map
-	tileMap = new TileMap(material2D);
+	tileMap = new TileMap(material2DWithZ);
 	gameObjectTileMap->AddExistingComponent(tileMap);
 	tileMap->Setup(mapSize, mapSize);
 	tileMap->AddTexture(tilesTextures[0]);
 	tileMap->AddTexture(tilesTextures[1]);
 
 	//Create props tilemap
-	tileMapProps = new TileMap(material2D);
+	tileMapProps = new TileMap(material2DWithZ);
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
 	tileMapProps->Setup(mapSize, mapSize);
 

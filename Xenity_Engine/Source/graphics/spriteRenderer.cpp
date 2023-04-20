@@ -20,6 +20,11 @@ SpriteRenderer::~SpriteRenderer()
 {
 }
 
+int SpriteRenderer::GetDrawPriority()
+{
+	return gameObject->transform.GetPosition().z;
+}
+
 #pragma endregion
 
 /// <summary>

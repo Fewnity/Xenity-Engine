@@ -14,6 +14,11 @@ TileMap::TileMap(Material* material)
 	this->material = material;
 }
 
+int TileMap::GetDrawPriority()
+{
+	return gameObject->transform.GetPosition().z;
+}
+
 void TileMap::Setup(int width, int height)
 {
 	AddTexture(nullptr);

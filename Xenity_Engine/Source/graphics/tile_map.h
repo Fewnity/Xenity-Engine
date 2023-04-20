@@ -27,6 +27,7 @@ public:
 	private:
 	};
 
+	int GetDrawPriority();
 	void Setup(int width, int height);
 	Tile * GetTile(int x, int y);
 	void SetTile(int x, int y, int textureId);

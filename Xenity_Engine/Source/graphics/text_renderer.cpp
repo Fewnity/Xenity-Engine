@@ -20,6 +20,11 @@ TextRenderer::~TextRenderer()
 {
 }
 
+int TextRenderer::GetDrawPriority()
+{
+	return gameObject->transform.GetPosition().z;
+}
+
 #pragma endregion
 
 /// <summary>

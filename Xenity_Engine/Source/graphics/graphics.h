@@ -14,6 +14,9 @@
 #include "camera.h"
 #include "texture.h"
 
+class IDrawable;
+
+
 class Graphics
 {
 public :
@@ -21,4 +24,9 @@ public :
 	static int usedShaderProgram;
 	static void DrawAllDrawable();
 	static Material* usedMaterial;
+	static void OrderDrawables();
+
+	static std::vector<IDrawable*> orderedIDrawable;
+	static int iDrawablesCount;
+
 };

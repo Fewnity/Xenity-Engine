@@ -58,7 +58,6 @@ Shader::Shader(const std::string vertexShaderPath, const std::string fragmentSha
 	glShaderSource(tessellationEvaluationShaderId, 1, &tessellation_evaluation_shader_text, NULL); // Load shader text
 	glCompileShader(tessellationEvaluationShaderId);
 
-	GLint vResult;
 	glGetShaderiv(tessellationEvaluationShaderId, GL_COMPILE_STATUS, &vResult);
 
 	if (vResult == 0)

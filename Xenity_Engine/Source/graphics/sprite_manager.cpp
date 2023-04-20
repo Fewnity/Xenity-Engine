@@ -171,6 +171,8 @@ void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector
 
 	glDisable(GL_DEPTH_TEST);
 
+	//glEnable(GL_DEPTH_TEST);
+
 	//if (currentTexture != AssetManager::defaultTexture)
 	//{
 		glActiveTexture(GL_TEXTURE0);
@@ -215,6 +217,12 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 
 	UpdateMaterial(material, &transformationMatrix);
 	glDisable(GL_DEPTH_TEST);
+	/*glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+
+	// 
 	//if (currentTexture != texture)
 	//{
 		currentTexture = texture;
@@ -520,6 +528,8 @@ void SpriteManager::DrawBatch(const Texture* texture, Vector4& color, Material* 
 	material->shader->SetShaderAttribut("color", color);
 
 	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 
@@ -586,6 +596,8 @@ void SpriteBatch::Draw(Vector4& color)
 		material->shader->SetShaderAttribut("color", color);
 
 		glDisable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 

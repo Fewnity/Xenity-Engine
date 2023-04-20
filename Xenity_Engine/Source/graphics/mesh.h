@@ -30,6 +30,7 @@ public:
 	MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
 	MeshRenderer(const std::string meshpath);
 	~MeshRenderer();
+	int GetDrawPriority();
 
 	Material* material = nullptr;
 

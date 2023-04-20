@@ -52,7 +52,7 @@ void Game3D::Init()
 	Shader* shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
-	Shader* shaderWithTessellation = new Shader("3D/vStandard.shader", "3D/fStandard.shader", "tessellation.shader");
+	Shader* shaderWithTessellation = new Shader("3D/vStandard.shader", "3D/fStandard.shader", "tessellation.shader", "tessellationEvaluation.shader");
 
 	Texture* texture1 = new Texture("Brick.png", "Brick");
 	Texture* texture2 = new Texture("Dry Dirt.png", "Dry Dirt");

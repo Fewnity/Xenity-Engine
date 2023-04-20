@@ -35,6 +35,8 @@ public:
 	Game::Tile* GetTile(int x, int y);
 
 private:
+	int GetDrawPriority();
+
 	void GenerateMap();
 	Prop* CreateProp(int id);
 	void LoadGameData();
@@ -47,6 +49,7 @@ private:
 	GameObject* gameObjectSprite = new GameObject("gameObjectSprite");
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
+	GameObject* gameObjectCrosshair2 = new GameObject("Crosshair2");
 
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;
@@ -63,6 +66,7 @@ private:
 	Vector2 endSelectionPos = Vector2(0, 0);
 
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
+	Vector4 selectionColor2 = Vector4(0, 1, 1, 1);
 	bool isDragging = false;
 
 	//Map settings
@@ -84,6 +88,7 @@ private:
 	//std::vector<Texture*> unitsTextures;
 	Texture* textureShip = nullptr;
 	Texture* crosshair = nullptr;
+	Texture* gradient = nullptr;
 
 	//Shaders
 

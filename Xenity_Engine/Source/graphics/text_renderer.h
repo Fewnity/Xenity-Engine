@@ -20,6 +20,7 @@ public:
 	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
+	int GetDrawPriority();
 
 	Font* font = nullptr;
 	Vector3 color = Vector3(1,1,1); // [0;1]

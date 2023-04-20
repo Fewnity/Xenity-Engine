@@ -240,6 +240,11 @@ void MeshRenderer::Draw()
 	}
 }
 
+int MeshRenderer::GetDrawPriority() 
+{
+	return 0;
+}
+
 /// <summary>
 /// Update mesh's material
 /// </summary>
