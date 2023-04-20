@@ -59,7 +59,7 @@ void File::InitFileSystem(const std::string exePath)
 	//EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
 	
 	//EngineSettings::RootFolder = exePath;
-	int index = exePath.find(R"(\Xenity-Engine\)");
+	int index = (int)exePath.find(R"(\Xenity-Engine\)");
 	EngineSettings::RootFolder = exePath.substr(0, index + 15);
 
 	texturePath = EngineSettings::RootFolder + texturePath;

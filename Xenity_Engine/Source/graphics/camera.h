@@ -10,14 +10,14 @@ class Camera : public Component
 public:
 	Camera();
 	~Camera();
-	void SetFov(const double fov);
-	double GetFov() const;
-	void SetProjectionSize(const double value);
-	double GetProjectionSize() const;
-	double GetNearClippingPlane() const;
-	double GetFarClippingPlane() const;
-	void SetNearClippingPlane(double value);
-	void SetFarClippingPlane(double value);
+	void SetFov(const float fov);
+	float GetFov() const;
+	void SetProjectionSize(const float value);
+	float GetProjectionSize() const;
+	float GetNearClippingPlane() const;
+	float GetFarClippingPlane() const;
+	void SetNearClippingPlane(float value);
+	void SetFarClippingPlane(float value);
 
 	Vector2 ScreenTo2DWorld(int x, int y);
 	Vector2 MouseTo2DWorld();
@@ -28,10 +28,10 @@ public:
 	void UpdateProjection();
 
 private:
-	double fov = 60.0f; //For 3D
-	double projectionSize = 5; //For 2D
-	double nearClippingPlane = 0.3f;
-	double farClippingPlane = 1000;
+	float fov = 60.0f; //For 3D
+	float projectionSize = 5; //For 2D
+	float nearClippingPlane = 0.3f;
+	float farClippingPlane = 1000;
 	ProjectionTypes projectionType = Perspective;
 
 	glm::mat4 projection;

@@ -79,7 +79,7 @@ void WavefrontLoader::LoadFromRawData(MeshData* mesh, const std::string filePath
 			if (count == -1)
 			{
 				count = 0;
-				int lineSize = line.size();
+				int lineSize = (int)line.size();
 				for (int i = 0; i < lineSize - 1; i++)
 				{
 					if (line[i] == '/')
@@ -152,7 +152,7 @@ void WavefrontLoader::LoadFromRawData(MeshData* mesh, const std::string filePath
 	mesh->hasNormal = !hasNoNormals;
 
 	//Push vertices in the right order
-	int vertexIndicesSize = vertexIndices.size();
+	int vertexIndicesSize = (int)vertexIndices.size();
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i] - 1;

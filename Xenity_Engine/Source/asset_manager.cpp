@@ -127,7 +127,7 @@ void AssetManager::AddMeshData(MeshData* meshData)
 /// <param name="shader"></param>
 void AssetManager::RemoveShader(Shader* shader)
 {
-	int shaderCount = shaders.size();
+	int shaderCount = (int)shaders.size();
 	int shaderIndex = 0;
 	bool found = false;
 	for (int i = 0; i < shaderCount; i++)
@@ -149,7 +149,7 @@ void AssetManager::RemoveShader(Shader* shader)
 
 void AssetManager::RemoveMaterial(Material* material)
 {
-	int materialCount = materials.size();
+	int materialCount = (int)materials.size();
 	int materialIndex = 0;
 	bool found = false;
 	for (int i = 0; i < materialCount; i++)
@@ -175,7 +175,7 @@ void AssetManager::RemoveMaterial(Material* material)
 /// <param name="texture"></param>
 void AssetManager::RemoveTexture(Texture* texture)
 {
-	int textureCount = textures.size();
+	int textureCount = (int)textures.size();
 	int textureIndex = 0;
 	bool found = false;
 	for (int i = 0; i < textureCount; i++)
@@ -201,7 +201,7 @@ void AssetManager::RemoveTexture(Texture* texture)
 /// <param name="drawable"></param>
 void AssetManager::RemoveDrawable(IDrawable* drawable)
 {
-	int drawableCount = drawables.size();
+	int drawableCount = (int)drawables.size();
 	int drawableIndex = 0;
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
@@ -227,7 +227,7 @@ void AssetManager::RemoveDrawable(IDrawable* drawable)
 /// <param name="light"></param>
 void AssetManager::RemoveLight(Light* light)
 {
-	int lightCount = lights.size();
+	int lightCount = (int)lights.size();
 	int lightIndex = 0;
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
@@ -249,7 +249,7 @@ void AssetManager::RemoveLight(Light* light)
 
 void AssetManager::RemoveMeshData(MeshData* meshData)
 {
-	int meshDataCount = meshesData.size();
+	int meshDataCount = (int)meshesData.size();
 	int meshDataIndex = 0;
 	bool found = false;
 	for (int i = 0; i < meshDataCount; i++)

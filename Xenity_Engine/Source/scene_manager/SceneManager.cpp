@@ -23,7 +23,7 @@ void SceneManager::UnloadScene(Scene* scene)
 
 void SceneManager::UnloadScenes() 
 {
-	int loadedScenesCount = loadedScenes.size();
+	int loadedScenesCount = (int)loadedScenes.size();
 	for (int i = 0; i < loadedScenesCount; i++)
 	{
 		delete loadedScenes[i];

@@ -127,12 +127,12 @@ Font* UiManager::CreateFont(std::string filePath)
 				texture,
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				face->glyph->advance.x
+				(unsigned int)face->glyph->advance.x
 			};
 			font->Characters[c] = character;
 
-			if (font->maxCharHeight < character.Size.y)
-				font->maxCharHeight = character.Size.y;
+			if (font->maxCharHeight < (float)character.Size.y)
+				font->maxCharHeight = (float)character.Size.y;
 		}
 		catch (...)
 		{
@@ -151,7 +151,7 @@ Font* UiManager::CreateFont(std::string filePath)
 
 void UiManager::DeleteFont(Font* font)
 {
-	int fontCount = fonts.size();
+	int fontCount = (int)fonts.size();
 	for (int i = 0; i < fontCount; i++)
 	{
 		if (fonts[i] == font) {
@@ -212,12 +212,12 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
 	float startX = x;
-	int textLenght = text.size();
+	int textLenght = (int)text.size();
 
 	std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, scale);
 
 	float totalY = 0;
-	int lineCount = lineLength.size();
+	int lineCount = (int)lineLength.size();
 	for (int i = 0; i < lineCount; i++)
 	{
 		totalY += lineLength[i].z;
@@ -399,8 +399,8 @@ std::vector<Vector4> UiManager::GetTextLenght(std::string &text, int textLen, Fo
 	lineLength.push_back(Vector4(0, 0, 0, 0));
 
 	int currentLine = 0;
-	float higherY = 0;
-	float lowerY = 0;
+	int higherY = 0;
+	int lowerY = 0;
 
 	for (int i = 0; i < textLen; i++)
 	{
@@ -418,8 +418,8 @@ std::vector<Vector4> UiManager::GetTextLenght(std::string &text, int textLen, Fo
 		else
 		{
 			lineLength[currentLine].x += (ch.Advance >> 6);
-			if (higherY < ch.Bearing.y)
-				higherY = ch.Bearing.y;
+			if (higherY < (int)ch.Bearing.y)
+				higherY = (int)ch.Bearing.y;
 
 			int low = ch.Size.y - ch.Bearing.y;
 			if (lowerY < low)
@@ -446,12 +446,12 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 	s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
 	float startX = x;
-	int textLenght = text.size();
+	int textLenght = (int)text.size();
 
 	std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, scale);
 	
 	float totalY = 0;
-	int lineCount = lineLength.size();
+	int lineCount = (int)lineLength.size();
 	for (int i = 0; i < lineCount; i++)
 	{
 		totalY += lineLength[i].z;

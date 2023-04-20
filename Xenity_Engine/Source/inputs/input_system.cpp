@@ -4,7 +4,7 @@
 #include "../debug/debug.h"
 #include "../ui/window.h"
 
-Vector2 InputSystem::mousePosition = Vector2();
+Vector2 InputSystem::mousePosition = Vector2(); //TODO : use a Vector2Int
 Vector2 InputSystem::mouseSpeed = Vector2();
 Vector2 InputSystem::mouseSpeedRaw = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
@@ -38,22 +38,22 @@ void InputSystem::Read(const SDL_Event event)
 		//Get mouse position
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
-		mousePosition.x = mouseX;
-		mousePosition.y = mouseY;
+		mousePosition.x = (float)mouseX;
+		mousePosition.y = (float)mouseY;
 
 		float aspect = Window::GetAspectRatio();
 
 		//Get mouse speed
 		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;
 		float ySpeed = -event.motion.yrel / (float)Window::GetHeight();
-		float xSpeedRaw = event.motion.xrel;
-		float ySpeedRaw = -event.motion.yrel;
+		int xSpeedRaw = (int)event.motion.xrel;
+		int ySpeedRaw = (int)-event.motion.yrel;
 
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;
 
-		mouseSpeedRaw.x = xSpeedRaw;
-		mouseSpeedRaw.y = ySpeedRaw;
+		mouseSpeedRaw.x = (float)xSpeedRaw;
+		mouseSpeedRaw.y = (float)ySpeedRaw;
 		break;
 	}
 

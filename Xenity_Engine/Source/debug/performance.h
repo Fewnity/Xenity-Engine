@@ -8,7 +8,7 @@
 class ProfilerValue 
 {
 public:
-	void AddValue(int v) {
+	void AddValue(long long v) {
 		value += v;
 		addedValue += v;
 	}
@@ -17,10 +17,10 @@ public:
 		lastValue = value;
 		value = 0;
 	}
-	int GetValue() {
+	long long GetValue() {
 		return lastValue;
 	}
-	void SetLastValue(int v) {
+	void SetLastValue(long long v) {
 		lastValue = v;
 	}
 	long long average = 0;

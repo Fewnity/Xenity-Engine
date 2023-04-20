@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../vectors/vector3.h";
+#include "../vectors/vector3.h"
 #include "../component.h"
 #include "../asset_manager.h"
 

@@ -69,7 +69,7 @@ void TileMap::SetTile(int x, int y, int textureId)
 			tile->batch->verticesCount -= 6;
 		}
 		tile->textureId = textureId;
-		int batchCount = SpriteBatches.size();
+		int batchCount = (int)SpriteBatches.size();
 		for (int i = 0; i < batchCount; i++)
 		{
 			if (SpriteBatches[i]->texture == textures[tile->textureId]) 
@@ -109,7 +109,7 @@ void TileMap::SetTile(int x, int y, int textureId)
 		float cy = (c1.y + c2.y + c3.y + c4.y) / 4.0f;
 
 		float angle = 0;
-		float angleRad = angle * M_PI / 180.0f;
+		float angleRad = angle * (float)M_PI / 180.0f;
 
 		float angleCos = cos(angleRad);
 		float angleSin = sin(angleRad);
@@ -157,7 +157,7 @@ void TileMap::Update()
 
 void TileMap::Draw()
 {
-	int batchCount = SpriteBatches.size();
+	int batchCount = (int)SpriteBatches.size();
 	for (int i = 0; i < batchCount; i++)
 	{
 		SpriteBatches[i]->SetBatchSize();
@@ -199,7 +199,7 @@ void TileMap::Draw()
 int TileMap::GetTextureIndex(Texture* texture)
 {
 	int textureIndex = -1;
-	int textureCount = textures.size();
+	int textureCount = (int)textures.size();
 	for (int i = 0; i < textureCount; i++)
 	{
 		if (textures[i] == texture) {

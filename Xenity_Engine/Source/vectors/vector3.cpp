@@ -34,7 +34,7 @@ Vector3 Vector3::LookAt(Vector3 from, Vector3 to)
 	float zdis = to.z - from.z;
 	float xzdis = sqrtf(xdis * xdis + zdis * zdis);
 
-	return Vector3((-atan2f(ydis, xzdis)) * 180 / M_PI, (-(atan2f(-xdis, zdis))) * 180 / M_PI, 0);
+	return Vector3((-atan2f(ydis, xzdis)) * 180 / (float)M_PI, (-(atan2f(-xdis, zdis))) * 180 / (float)M_PI, 0);
 }
 
 Vector3 Vector3::Normalise()

@@ -19,7 +19,7 @@ struct Character
 class Font {
 public:
 	~Font();
-	Character Characters[256];
+	Character Characters[256] = {};
 	float maxCharHeight = 0;
 private:
 };

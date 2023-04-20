@@ -370,7 +370,7 @@ void SpriteManager::AddToBatch(const Texture* texture, glm::mat4& transformation
 	vertices2[realIndex + 5][2] = 1.0f;
 	vertices2[realIndex + 5][3] = 0.0f;*/
 
-	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	float diviser = 1000 * (float)Graphics::usedCamera->GetProjectionSize() / 5.0f;
 	float sizeFixer = 100 / diviser;
 
 	float unitCoef = 100.0f / texture->GetPixelPerUnit();
@@ -406,7 +406,7 @@ void SpriteManager::AddToBatch(const Texture* texture, glm::mat4& transformation
 
 	float angle = 45;
 	//tim += Time::GetDeltaTime() / 100.0f;
-	float angleRad = angle * M_PI / 180.0f;
+	float angleRad = angle * (float)M_PI / 180.0f;
 
 	float angleCos = cos(angleRad);
 	float angleSin = sin(angleRad);
@@ -464,7 +464,7 @@ void SpriteManager::AddToBatch(const Texture* texture, glm::mat4& transformation
 
 void SpriteManager::AddToBatch(int index, Vector2 vertices[4])
 {
-	float diviser = 1000 * Graphics::usedCamera->GetProjectionSize() / 5.0f;
+	float diviser = 1000 * (float)Graphics::usedCamera->GetProjectionSize() / 5.0f;
 	//float diviser = 500;
 
 	int realIndex = index * 6;

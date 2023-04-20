@@ -27,53 +27,53 @@ Camera::~Camera()
 
 #pragma region Accessors
 
-void Camera::SetFov(const double fov)
+void Camera::SetFov(const float fov)
 {
 	this->fov = fov;
 	UpdateProjection();
 }
 
-double Camera::GetFov() const
+float Camera::GetFov() const
 {
 	return this->fov;
 }
 
-void Camera::SetProjectionSize(const double value)
+void Camera::SetProjectionSize(const float value)
 {
 	projectionSize = value;
 	UpdateProjection();
 }
 
-double Camera::GetProjectionSize() const
+float Camera::GetProjectionSize() const
 {
 	return projectionSize;
 }
 
-double Camera::GetNearClippingPlane() const
+float Camera::GetNearClippingPlane() const
 {
 	return nearClippingPlane;
 }
 
-double Camera::GetFarClippingPlane() const
+float Camera::GetFarClippingPlane() const
 {
 	return farClippingPlane;
 }
 
-void Camera::SetNearClippingPlane(double value)
+void Camera::SetNearClippingPlane(float value)
 {
 	if (value >= farClippingPlane)
 	{
-		farClippingPlane = value + 0.01;
+		farClippingPlane = value + 0.01f;
 	}
 	nearClippingPlane = value;
 	UpdateProjection();
 }
 
-void Camera::SetFarClippingPlane(double value)
+void Camera::SetFarClippingPlane(float value)
 {
 	if (value <= nearClippingPlane)
 	{
-		farClippingPlane = value + 0.01;
+		farClippingPlane = value + 0.01f;
 	}
 	farClippingPlane = value;
 	UpdateProjection();
@@ -92,7 +92,7 @@ Vector2 Camera::ScreenTo2DWorld(int x, int y)
 
 Vector2 Camera::MouseTo2DWorld()
 {
-	return ScreenTo2DWorld(InputSystem::mousePosition.x, InputSystem::mousePosition.y);
+	return ScreenTo2DWorld((int)InputSystem::mousePosition.x, (int)InputSystem::mousePosition.y);
 }
 
 void Camera::UpdateProjection() 
@@ -100,7 +100,7 @@ void Camera::UpdateProjection()
 	if (projectionType == ProjectionTypes::Perspective) 
 	{
 		//Projection
-		projection = glm::perspective(glm::radians(fov), (double)Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
+		projection = glm::perspective(glm::radians(fov), Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 	}
 	else {
 		float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;

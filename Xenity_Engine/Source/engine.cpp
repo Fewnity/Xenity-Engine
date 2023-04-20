@@ -49,7 +49,7 @@ int Engine::Init(const std::string exePath)
 	AssetManager::Init();
 
 	//Init random
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	return 0;
 }
@@ -73,7 +73,7 @@ void Engine::UpdateComponents()
 			GameObject* gameObjectToCheck = gameObjects[gIndex];
 			if (gameObjectToCheck->GetActive())
 			{
-				int componentCount = gameObjectToCheck->components.size();
+				int componentCount = (int)gameObjectToCheck->components.size();
 				bool placeFound = false;
 				for (int cIndex = 0; cIndex < componentCount; cIndex++)
 				{
@@ -101,7 +101,7 @@ void Engine::UpdateComponents()
 				}
 			}
 		}
-		//return;
+
 		//Find uninitiated components and order them
 		for (int i = 0; i < componentsCount; i++)
 		{

@@ -6,8 +6,8 @@
 
 Vector3 Spline::GetValueAt(const float t) const
 {
-    int curveCount = splinePoints.size() - 1;
-    int currentCurve = floorf(t * curveCount);
+    int curveCount = (int)splinePoints.size() - 1;
+    int currentCurve = (int)floorf(t * curveCount);
     if (currentCurve == curveCount)
         currentCurve--;
 

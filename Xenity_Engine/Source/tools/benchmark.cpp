@@ -17,8 +17,8 @@ void Benchmark::Stop()
 {
 	end_point = high_resolution_clock::now();
 
-	auto start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
-	auto end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
+	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
+	long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 
 	time = end - start;
 }
@@ -27,7 +27,7 @@ void Benchmark::Stop()
 /// Get how many microseconds passed during the benchmark
 /// </summary>
 /// <returns>Microseconds</returns>
-int Benchmark::GetMicroSeconds() const
+long long Benchmark::GetMicroSeconds() const
 {
 	return time;
 }
@@ -36,9 +36,9 @@ int Benchmark::GetMicroSeconds() const
 /// Get how many milliseconds passed during the benchmark
 /// </summary>
 /// <returns>Milliseconds</returns>
-int Benchmark::GetMilliseconds() const
+long long Benchmark::GetMilliseconds() const
 {
-	return time / 1000.0f;
+	return (long long)(time / 1000.0f);
 }
 
 /// <summary>

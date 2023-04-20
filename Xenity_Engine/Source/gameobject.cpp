@@ -111,7 +111,7 @@ std::vector<GameObject*> GameObject::FindGameObjectsByName(const std::string nam
 
 	std::vector<GameObject*> gameObjects = Engine::GetGameObjects();
 
-	int gameObjectCount = gameObjects.size();
+	int gameObjectCount = (int)gameObjects.size();
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
@@ -133,7 +133,7 @@ GameObject* GameObject::FindGameObjectByName(const std::string name)
 	if (name == "@")
 		return nullptr;
 
-	int gameObjectCount = gameObjects.size();
+	int gameObjectCount = (int)gameObjects.size();
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
