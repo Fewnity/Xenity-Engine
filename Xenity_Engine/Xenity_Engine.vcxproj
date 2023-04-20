@@ -230,6 +230,7 @@
     <None Include="Source\shaders\fragmentStandard2DZ.shader" />
     <None Include="Source\shaders\fragmentText.shader" />
     <None Include="Source\shaders\tessellation.shader" />
+    <None Include="Source\shaders\tessellation_evaluation.shader" />
     <None Include="Source\shaders\UI\fUi.shader" />
     <None Include="Source\shaders\UI\vUi.shader" />
     <None Include="Source\shaders\vertex.shader" />

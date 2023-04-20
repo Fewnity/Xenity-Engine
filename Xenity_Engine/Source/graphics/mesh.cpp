@@ -106,7 +106,7 @@ MeshRenderer::~MeshRenderer()
 
 #pragma endregion
 
-void MeshRenderer::SetIDrawbleSettings() 
+void MeshRenderer::SetIDrawbleSettings()
 {
 	invertedTriangles = true;
 }
@@ -212,7 +212,7 @@ void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 	glBufferData(GL_ARRAY_BUFFER, meshData->verticesCount * sizeof(*meshData->vertices), meshData->vertices, GL_STATIC_DRAW);//Put vertice in the array buffer
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData->indicesCount * sizeof(*meshData->indices), meshData->indices, GL_STATIC_DRAW);//Put vertice in the array buffer
 	//glDrawElements(GL_TRIANGLES, meshData->indicesCount, GL_UNSIGNED_INT, 0);
-	
+
 	glBindVertexArray(0);
 }
 
@@ -223,6 +223,8 @@ void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 /// </summary>
 void MeshRenderer::Draw()
 {
+	//glPatchParameteri(GL_PATCH_VERTICES, 3); // For tessellation
+
 	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
 	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr && GetIsEnabled())
 	{
@@ -234,13 +236,16 @@ void MeshRenderer::Draw()
 			glBindVertexArray(vertexArrayBuffer);
 			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
-			glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount);
+			if (material->shader->useTessellation)
+				glDrawArrays(GL_PATCHES, 0, meshData->verticesCount); // For tessellation
+			else
+				glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount); //For no tessellation
 			glBindVertexArray(0);
 		}
 	}
 }
 
-int MeshRenderer::GetDrawPriority() 
+int MeshRenderer::GetDrawPriority()
 {
 	return 0;
 }

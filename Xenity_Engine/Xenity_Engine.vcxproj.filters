@@ -145,5 +145,6 @@
     <None Include="Source\shaders\fragmentStandard2DZ.shader" />
     <None Include="Source\shaders\vertexStandard2DZ.shader" />
     <None Include="Source\shaders\tessellation.shader" />
+    <None Include="Source\shaders\tessellation_evaluation.shader" />
   </ItemGroup>
 </Project>

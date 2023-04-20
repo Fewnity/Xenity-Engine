@@ -16,65 +16,19 @@
 /// <param name="fragmentShaderPath">Fragment shader file path</param>
 Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath)
 {
-	LoadShader(vertexShaderPath, fragmentShaderPath);
-
-	//Link shaders to a program
-	programId = glCreateProgram();
-	glAttachShader(programId, vertexShaderId);
-	glAttachShader(programId, fragmentShaderId);
-	glLinkProgram(programId);
-	glUseProgram(programId);
-	modelLocation = glGetUniformLocation(programId, "model");
-	projectionLocation = glGetUniformLocation(programId, "projection");
-	AssetManager::AddShader(this);
+	LoadShader(vertexShaderPath, Vertex_Shader);
+	LoadShader(fragmentShaderPath, Fragment_Shader);
+	MakeShader();
 }
 
 Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath)
 {
-	LoadShader(vertexShaderPath, fragmentShaderPath);
-	std::string tessellationFilePath = File::shaderPath + tessellationShaderPath;
-	std::string tessellationEvaluationFilePath = File::shaderPath + tessellationEvaluationShaderPath;
-
-
-	//Load vertex shader text
-	std::string tessellation_shader_text_temp = File::ReadText(tessellationFilePath);
-	const char* tessellation_shader_text = tessellation_shader_text_temp.c_str();
-
-	std::string tessellation_evaluation_shader_text_temp = File::ReadText(tessellationEvaluationFilePath);
-	const char* tessellation_evaluation_shader_text = tessellation_evaluation_shader_text_temp.c_str();
-
-	//Create vertex shader
-	tessellationShaderId = glCreateShader(GL_TESS_CONTROL_SHADER);
-	glShaderSource(tessellationShaderId, 1, &tessellation_shader_text, NULL); // Load shader text
-	glCompileShader(tessellationShaderId);
-
-	GLint vResult;
-	glGetShaderiv(tessellationShaderId, GL_COMPILE_STATUS, &vResult);
-
-	if (vResult == 0)
-		Debug::Print("Tessellation control shader error: " + tessellationFilePath);
-
-	tessellationEvaluationShaderId = glCreateShader(GL_TESS_EVALUATION_SHADER);
-	glShaderSource(tessellationEvaluationShaderId, 1, &tessellation_evaluation_shader_text, NULL); // Load shader text
-	glCompileShader(tessellationEvaluationShaderId);
-
-	glGetShaderiv(tessellationEvaluationShaderId, GL_COMPILE_STATUS, &vResult);
-
-	if (vResult == 0)
-		Debug::Print("Tessellation evaluation shader error: " + tessellationEvaluationFilePath);
-
-		//Link shaders to a program
-	programId = glCreateProgram();
-	glAttachShader(programId, vertexShaderId);
-	glAttachShader(programId, tessellationShaderId);
-	glAttachShader(programId, tessellationEvaluationShaderId);
-	glAttachShader(programId, fragmentShaderId);
-	glLinkProgram(programId);
-	glUseProgram(programId);
-	modelLocation = glGetUniformLocation(programId, "model");
-	projectionLocation = glGetUniformLocation(programId, "projection");
-	AssetManager::AddShader(this);
-
+	useTessellation = true;
+	LoadShader(vertexShaderPath, Vertex_Shader);
+	LoadShader(tessellationShaderPath, Tessellation_Control_Shader);
+	LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+	LoadShader(fragmentShaderPath, Fragment_Shader);
+	MakeShader();
 }
 
 /// <summary>
@@ -85,6 +39,10 @@ Shader::~Shader()
 	AssetManager::RemoveShader(this);
 	glDeleteShader(vertexShaderId);
 	glDeleteShader(fragmentShaderId);
+	if (useTessellation) {
+		glDeleteShader(tessellationEvaluationShaderId);
+		glDeleteShader(fragmentShaderId);
+	}
 	glDeleteProgram(programId);
 }
 
@@ -104,7 +62,7 @@ GLuint Shader::GetProgramId()
 /// </summary>
 bool Shader::Use()
 {
-	if (Graphics::usedShaderProgram != programId) 
+	if (Graphics::usedShaderProgram != programId)
 	{
 		glUseProgram(programId);
 		Graphics::usedShaderProgram = programId;
@@ -115,45 +73,86 @@ bool Shader::Use()
 
 #pragma region Data loading
 
-/// <summary>
-/// Load shader files
-/// </summary>
-/// <param name="vertexFileName"></param>
-/// <param name="fragmentFileName"></param>
-void Shader::LoadShader(const std::string vertexFileName, const std::string fragmentFileName) {
+void Shader::LoadShader(const std::string filePath, ShaderType type)
+{
+	std::string path = File::shaderPath + filePath;
+	//Get file data
+	std::string shaderData = File::ReadText(path);
+	const char* shaderDataConst = shaderData.c_str();
 
-	Debug::Print("Compiling shader...");
+	unsigned int* id = nullptr;
+	int compileType = GL_VERTEX_SHADER;
 
-	std::string vertexFilePath = File::shaderPath + vertexFileName;
-	std::string fragmentFilePath = File::shaderPath + fragmentFileName;
+	switch (type)
+	{
+	case Shader::Vertex_Shader:
+		id = &vertexShaderId;
+		compileType = GL_VERTEX_SHADER;
+		break;
+	case Shader::Fragment_Shader:
+		id = &fragmentShaderId;
+		compileType = GL_FRAGMENT_SHADER;
+		break;
+	case Shader::Tessellation_Control_Shader:
+		id = &tessellationShaderId;
+		compileType = GL_TESS_CONTROL_SHADER;
+		break;
+	case Shader::Tessellation_Evaluation_Shader:
+		id = &tessellationEvaluationShaderId;
+		compileType = GL_TESS_EVALUATION_SHADER;
+		break;
+	}
 
-	//Load vertex shader text
-	std::string vertex_shader_text_temp = File::ReadText(vertexFilePath);
-	const char* vertex_shader_text = vertex_shader_text_temp.c_str();
-	//Create vertex shader
-	vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShaderId, 1, &vertex_shader_text, NULL); // Load shader text
-	glCompileShader(vertexShaderId);
+	if (id != nullptr)
+	{
+		//Compile
+		*id = glCreateShader(compileType);
+		glShaderSource(*id, 1, &shaderDataConst, NULL);
+		glCompileShader(*id);
 
-	GLint vResult;
-	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &vResult);
+		GLint vResult;
+		glGetShaderiv(*id, GL_COMPILE_STATUS, &vResult);
 
-	if (vResult == 0)
-		Debug::Print("Vertex shader error: " + vertexFilePath);
 
-	//Load fragment shader text
-	std::string fragment_shader_text_temp = File::ReadText(fragmentFilePath);
-	const char* fragment_shader_text = fragment_shader_text_temp.c_str();
-	//Create fragment shader
-	fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShaderId, 1, &fragment_shader_text, NULL);// Load shader text
-	glCompileShader(fragmentShaderId);
+		//On error
+		if (vResult == 0)
+		{
+			int maxLength = 256;
+			std::vector<GLchar> errorLog(maxLength);
+			glGetShaderInfoLog(tessellationEvaluationShaderId, maxLength, &maxLength, &errorLog[0]);
 
-	GLint fragResult;
-	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &fragResult);
+			std::string shaderError = "Compilation error: ";
+			switch (type)
+			{
+			case Shader::Vertex_Shader:
+				shaderError += "Vertex";
+				break;
+			case Shader::Fragment_Shader:
+				shaderError += "Fragment";
+				break;
+			case Shader::Tessellation_Control_Shader:
+				shaderError += "Tessellation control";
+				break;
+			case Shader::Tessellation_Evaluation_Shader:
+				shaderError += "Tessellation evaluation";
+				break;
+			}
 
-	if (fragResult == 0)
-		Debug::Print("Fragment shader error. Path: " + fragmentFilePath);
+			shaderError += " shader: ";
+			for (int i = 0; i < errorLog.size(); i++)
+			{
+				shaderError += errorLog[i];
+			}
+
+			shaderError += ". File path: " + path;
+			Debug::Print(shaderError);
+		}
+	}
+	else 
+	{
+		std::string shaderError = "Compilation error: Shader type not found. File path: " + path;
+		Debug::Print(shaderError);
+	}
 }
 
 #pragma endregion
@@ -218,13 +217,13 @@ void Shader::SetShaderUnscaledProjection() {
 /// <summary>
 /// Send to the shader the 2D camera projection
 /// </summary>
-void Shader::SetShaderProjection() 
+void Shader::SetShaderProjection()
 {
 	Use();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetProjection()));
 }
 
-void Shader::SetShaderPosition(const Vector3 position) 
+void Shader::SetShaderPosition(const Vector3 position)
 {
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
@@ -316,6 +315,23 @@ void Shader::SetShaderAttribut(const char* attribut, const Vector2 value) {
 void Shader::SetShaderAttribut(const char* attribut, const float value) {
 	Use();
 	glUniform1f(glGetUniformLocation(programId, attribut), value);
+}
+
+void Shader::MakeShader()
+{
+	programId = glCreateProgram();
+	glAttachShader(programId, vertexShaderId);
+	if (useTessellation) 
+	{
+	glAttachShader(programId, tessellationShaderId);
+	glAttachShader(programId, tessellationEvaluationShaderId);
+	}
+	glAttachShader(programId, fragmentShaderId);
+	glLinkProgram(programId);
+	glUseProgram(programId);
+	modelLocation = glGetUniformLocation(programId, "model");
+	projectionLocation = glGetUniformLocation(programId, "projection");
+	AssetManager::AddShader(this);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const int value) {

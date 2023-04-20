@@ -52,7 +52,7 @@ void Game3D::Init()
 	Shader* shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
-	Shader* shaderWithTessellation = new Shader("3D/vStandard.shader", "3D/fStandard.shader", "tessellation.shader", "tessellationEvaluation.shader");
+	Shader* shaderWithTessellation = new Shader("3D/vStandard.shader", "3D/fStandard.shader", "tessellation.shader", "tessellation_evaluation.shader");
 
 	Texture* texture1 = new Texture("Brick.png", "Brick");
 	Texture* texture2 = new Texture("Dry Dirt.png", "Dry Dirt");
@@ -76,7 +76,7 @@ void Game3D::Init()
 	SceneManager::LoadScene(scene);
 
 	Material* newMat = new Material("vStandard");
-	newMat->shader = shaderWithTessellation;
+	newMat->shader = shader3;
 	newMat->SetAttribut("color", Vector3(0, 1, 1));
 	newMat->SetAttribut("material.diffuse", texture5);
 	newMat->SetAttribut("material.specular", texture6);
@@ -84,7 +84,7 @@ void Game3D::Init()
 	newMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	Material* bottleMat = new Material("Bottle");
-	bottleMat->shader = shaderWithTessellation;
+	bottleMat->shader = shader3;
 	bottleMat->SetAttribut("color", Vector3(1, 1, 1));
 	bottleMat->SetAttribut("material.diffuse", bottleTexture);
 	bottleMat->SetAttribut("material.specular", bottleMetallicTexture);
@@ -92,7 +92,7 @@ void Game3D::Init()
 	bottleMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	Material* chessMat = new Material("Chess");
-	chessMat->shader = shaderWithTessellation;
+	chessMat->shader = shader3;
 	chessMat->SetAttribut("color", Vector3(1, 1, 1));
 	chessMat->SetAttribut("material.diffuse", chessTexture);
 	chessMat->SetAttribut("material.specular", chessTexture2);
@@ -100,7 +100,7 @@ void Game3D::Init()
 	chessMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	Material* newMat2 = new Material("vStandard2");
-	newMat2->shader = shaderWithTessellation;
+	newMat2->shader = shader3;
 	newMat2->SetAttribut("color", Vector3(0, 1, 1));
 	newMat2->SetAttribut("material.diffuse", texture5);
 	newMat2->SetAttribut("material.specular", texture6);

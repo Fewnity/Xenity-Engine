@@ -36,9 +36,17 @@ public:
 
 
 	void UpdateLights();
+	bool useTessellation = false;
 
 private:
-	void LoadShader(const std::string vertexPath, const std::string fragmentPath);
+	enum ShaderType {
+		Vertex_Shader,
+		Fragment_Shader,
+		Tessellation_Control_Shader,
+		Tessellation_Evaluation_Shader,
+	};
+	void MakeShader();
+	void LoadShader(const std::string filePath, ShaderType type);
 	void SetPointLightData(const Light* light, const int index);
 	void SetDirectionalLightData(const Light* light, const int index);
 	void SetSpotLightData(const Light* light, const int index);
