@@ -107,6 +107,7 @@
     <ClInclude Include="Source\rts_game\unit_data.h" />
     <ClInclude Include="Source\pathfinding\dijkstras.h" />
     <ClInclude Include="Source\pathfinding\astar.h" />
+    <ClInclude Include="Source\graphics\iDrawableTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

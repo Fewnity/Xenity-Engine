@@ -22,7 +22,7 @@ public:
 	bool hasNormal = false;
 };
 
-class MeshRenderer : public Component, public IDrawable
+class MeshRenderer : public IDrawable
 {
 public:
 	MeshRenderer();

@@ -242,6 +242,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\graphics\iDrawableTypes.h" />
     <ClInclude Include="Source\pathfinding\astar.h" />
     <ClInclude Include="Source\pathfinding\dijkstras.h" />
     <ClInclude Include="Source\graphics\camera_projection_types.h" />

@@ -7,7 +7,7 @@ class Material;
 #include "iDrawable.h"
 #include "../vectors/vector4.h"
 
-class SpriteRenderer : public Component, public IDrawable
+class SpriteRenderer : public IDrawable
 {
 	public:
 		SpriteRenderer();

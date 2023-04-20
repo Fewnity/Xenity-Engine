@@ -1,7 +1,9 @@
 #pragma once
 #include "../asset_manager.h"
+#include "../component.h"
+#include "iDrawableTypes.h"
 
-class IDrawable
+class IDrawable : public Component
 {
 public:
 
@@ -11,6 +13,7 @@ public:
 
 	virtual void Draw() {};
 	int drawPriority = 0;
+	//IDrawableTypes type;
 	bool invertedTriangles = false;
 };
 

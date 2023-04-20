@@ -47,7 +47,7 @@ MeshData::~MeshData()
 /// <summary>
 /// Instantiate an empty mesh
 /// </summary>
-MeshRenderer::MeshRenderer() : Component()
+MeshRenderer::MeshRenderer()
 {
 	meshData = new MeshData();
 	meshData->verticesCount = 0;
@@ -58,7 +58,7 @@ MeshRenderer::MeshRenderer() : Component()
 	SetIDrawbleSettings();
 }
 
-MeshRenderer::MeshRenderer(MeshData* meshData) : Component()
+MeshRenderer::MeshRenderer(MeshData* meshData)
 {
 	LoadFromMeshData(meshData);
 	SetIDrawbleSettings();
@@ -71,7 +71,7 @@ MeshRenderer::MeshRenderer(MeshData* meshData) : Component()
 /// <param name="indices"></param>
 /// <param name="verticesCount"></param>
 /// <param name="indicesCount"></param>
-MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount) : Component()
+MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount)
 {
 	meshData = new MeshData();
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
@@ -87,7 +87,7 @@ MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[],
 /// Instantiate a mesh from a file
 /// </summary>
 /// <param name="meshpath"></param>
-MeshRenderer::MeshRenderer(const std::string meshpath) : Component()
+MeshRenderer::MeshRenderer(const std::string meshpath)
 {
 	LoadFromFile(meshpath);
 	SetIDrawbleSettings();

@@ -9,7 +9,7 @@ class Font;
 class Shader;
 class Vector3;
 
-class TextRenderer : public Component, public IDrawable
+class TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();

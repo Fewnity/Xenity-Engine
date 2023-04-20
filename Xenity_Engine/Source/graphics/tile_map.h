@@ -12,7 +12,7 @@ class Texture;
 class Material;
 class SpriteBatch;
 
-class TileMap : public Component, public IDrawable
+class TileMap : public IDrawable
 {
 public:
 	TileMap() = delete;
