@@ -274,6 +274,10 @@ void InputSystem::ChangeInputState(const bool pressed, const int keyCode)
 	case SDLK_ESCAPE:
 		SetInput(pressed, ESCAPE);
 		break;
+
+	case SDLK_RETURN:
+		SetInput(pressed, RETURN);
+		break;
 	}
 }
 
