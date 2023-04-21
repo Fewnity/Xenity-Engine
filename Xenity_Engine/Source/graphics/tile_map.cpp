@@ -162,42 +162,45 @@ void TileMap::Update()
 
 void TileMap::Draw()
 {
-	int batchCount = (int)SpriteBatches.size();
-	for (int i = 0; i < batchCount; i++)
+	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled())
 	{
-		SpriteBatches[i]->SetBatchSize();
-	}
-	if (tiles)
-	{
-		if (needUpdateVertices) {
-		for (int x = 0; x < width; x++)
+		int batchCount = (int)SpriteBatches.size();
+		for (int i = 0; i < batchCount; i++)
 		{
-			for (int y = 0; y < height; y++)
-			{
-				Tile* tile = GetTile(x, y);
-				if (textures[tile->textureId] != nullptr) 
+			SpriteBatches[i]->SetBatchSize();
+		}
+		if (tiles)
+		{
+			if (needUpdateVertices) {
+				for (int x = 0; x < width; x++)
 				{
-				//SpriteManager::RenderSprite(tile->transformationMatrix,
-						//color, textures[tile->textureId], material);
-				}
-				if(tile->batch != nullptr)
-				{
-					tile->batch->AddVertices(tile->vertices);
-				}
-					
-				//SpriteManager::AddToBatch(textures[1], tile->transformationMatrix, x * height + y, tile->transformationMatrix[3].x, tile->transformationMatrix[3].y, 1, 1);
+					for (int y = 0; y < height; y++)
+					{
+						Tile* tile = GetTile(x, y);
+						if (textures[tile->textureId] != nullptr)
+						{
+							//SpriteManager::RenderSprite(tile->transformationMatrix,
+									//color, textures[tile->textureId], material);
+						}
+						if (tile->batch != nullptr)
+						{
+							tile->batch->AddVertices(tile->vertices);
+						}
 
-				//SpriteManager::AddToBatch(x * height + y, tile->vertices);
+						//SpriteManager::AddToBatch(textures[1], tile->transformationMatrix, x * height + y, tile->transformationMatrix[3].x, tile->transformationMatrix[3].y, 1, 1);
+
+						//SpriteManager::AddToBatch(x * height + y, tile->vertices);
+					}
+				}
+				//SpriteManager::DrawBatch(textures[1], color, material);
 			}
 		}
-		//SpriteManager::DrawBatch(textures[1], color, material);
+		needUpdateVertices = false;
+		for (int i = 0; i < batchCount; i++)
+		{
+			//SpriteBatches[i]->index = 0;
+			SpriteBatches[i]->Draw(color);
 		}
-	}
-	needUpdateVertices = false;
-	for (int i = 0; i < batchCount; i++)
-	{
-		//SpriteBatches[i]->index = 0;
-		SpriteBatches[i]->Draw(color);
 	}
 }
 
