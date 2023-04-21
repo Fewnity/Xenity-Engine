@@ -19,6 +19,7 @@ public:
 
 class Unit;
 class UnitData;
+class LineRenderer;
 
 class Game : public IDrawable
 {
@@ -50,6 +51,14 @@ private:
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
 	GameObject* gameObjectCrosshair2 = new GameObject("Crosshair2");
+
+	GameObject* gameObjectLineRenderers = new GameObject("lineRenderers");
+
+	LineRenderer* lineRendererTop = nullptr;
+	LineRenderer* lineRendererBottom = nullptr;
+	LineRenderer* lineRendererLeft = nullptr;
+	LineRenderer* lineRendererRight = nullptr;
+
 
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;

@@ -57,6 +57,7 @@
 #include "graphics/texture.h"
 #include "graphics/text_renderer.h"
 #include "graphics/tile_map.h"
+#include "graphics/line_renderer.h"
 
 //Files
 #include "file_system/file.h"

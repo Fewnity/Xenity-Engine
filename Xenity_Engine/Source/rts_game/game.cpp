@@ -76,8 +76,20 @@ void Game::Init()
 	spr5->color = Vector4(0, 0, 0, 0.2f);
 	gameObjectCrosshair->AddExistingComponent(spr5);
 
+	lineRendererTop = new LineRenderer(0.1f, material2D);
+	lineRendererBottom = new LineRenderer(0.1f, material2D);
+	lineRendererLeft = new LineRenderer(0.1f, material2D);
+	lineRendererRight = new LineRenderer(0.1f, material2D);
+	Vector4 selectionLineColor = Vector4(0, 0, 0, 0.2f);
+	lineRendererTop->color = selectionLineColor;
+	lineRendererBottom->color = selectionLineColor;
+	lineRendererLeft->color = selectionLineColor;
+	lineRendererRight->color = selectionLineColor;
 
-
+	gameObjectLineRenderers->AddExistingComponent(lineRendererTop);
+	gameObjectLineRenderers->AddExistingComponent(lineRendererBottom);
+	gameObjectLineRenderers->AddExistingComponent(lineRendererLeft);
+	gameObjectLineRenderers->AddExistingComponent(lineRendererRight);
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -175,14 +187,34 @@ void Game::Loop()
 		if (InputSystem::GetKeyDown(MOUSE_LEFT))
 		{
 			startSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
+			lineRendererTop->SetIsEnabled(true);
+			lineRendererBottom->SetIsEnabled(true);
+			lineRendererLeft->SetIsEnabled(true);
+			lineRendererRight->SetIsEnabled(true);
 		}
 
 		endSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
-		
-		if (InputSystem::GetKeyUp(MOUSE_LEFT))
-		{
-			isDragging = false;
-		}
+
+		lineRendererTop->startPosition = Vector3(startSelectionPos.x + lineRendererTop->width, startSelectionPos.y - (lineRendererTop->width / 2.0f), 0);
+		lineRendererTop->endPosition = Vector3(endSelectionPos.x - lineRendererTop->width, startSelectionPos.y - (lineRendererTop->width / 2.0f), 0);
+
+		lineRendererBottom->startPosition = Vector3(startSelectionPos.x + lineRendererBottom->width, endSelectionPos.y + (lineRendererBottom->width / 2.0f), 0);
+		lineRendererBottom->endPosition = Vector3(endSelectionPos.x - lineRendererBottom->width, endSelectionPos.y + (lineRendererBottom->width / 2.0f), 0);
+
+		lineRendererLeft->startPosition = Vector3(startSelectionPos.x + (lineRendererLeft->width / 2.0f), startSelectionPos.y, 0);
+		lineRendererLeft->endPosition = Vector3(startSelectionPos.x + (lineRendererLeft->width / 2.0f), endSelectionPos.y, 0);
+
+		lineRendererRight->startPosition = Vector3(endSelectionPos.x - (lineRendererRight->width / 2.0f), startSelectionPos.y, 0);
+		lineRendererRight->endPosition = Vector3(endSelectionPos.x - (lineRendererRight->width / 2.0f), endSelectionPos.y, 0);
+	}
+
+	if (InputSystem::GetKeyUp(MOUSE_LEFT))
+	{
+		isDragging = false;
+		lineRendererTop->SetIsEnabled(false);
+		lineRendererBottom->SetIsEnabled(false);
+		lineRendererLeft->SetIsEnabled(false);
+		lineRendererRight->SetIsEnabled(false);
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
@@ -190,11 +222,11 @@ void Game::Loop()
 	if (InputSystem::GetKey(MOUSE_RIGHT))
 	{
 		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		vect *= InputSystem::mouseSpeed.y * 14.2 * cameraZoom / 2.8f;
+		vect *= InputSystem::mouseSpeed.y * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 
 		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= InputSystem::mouseSpeed.x * 14.2 * cameraZoom / 2.8f;
+		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 	}
 	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
