@@ -61,6 +61,7 @@
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\graphics\line_renderer.cpp" />
+    <ClCompile Include="editor_ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="Source\graphics\line_renderer.h" />
+    <ClInclude Include="editor_ui.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
