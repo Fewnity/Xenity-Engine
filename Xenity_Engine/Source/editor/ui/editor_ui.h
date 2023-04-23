@@ -6,6 +6,7 @@
 class GameObject;
 class Engine;
 
+
 class EditorUI
 {
 public:
@@ -19,5 +20,8 @@ public:
 	static void DrawTreeItem(GameObject* child);
 	static Engine* engine;
 	static int uiId;
+private:
+	static float nextFpsUpdate;
+	static float lastFps;
 };
 

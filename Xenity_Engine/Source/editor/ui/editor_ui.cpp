@@ -5,6 +5,8 @@
 
 Engine* EditorUI::engine = nullptr;
 int EditorUI::uiId = 0;
+float EditorUI::nextFpsUpdate = 0;
+float EditorUI::lastFps = 0;
 
 void EditorUI::Init()
 {
@@ -65,7 +67,7 @@ void EditorUI::DrawInspector()
 			selectedGameObject->transform.SetLocalScale(localScale);
 		}
 		//ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
-		
+
 		ImGui::Spacing();
 		ImGui::Spacing();
 		int componentCount = selectedGameObject->GetComponentCount();
@@ -189,8 +191,15 @@ void EditorUI::DrawProfiler()
 {
 	ImGuiIO& io = ImGui::GetIO();
 
+	nextFpsUpdate += Time::GetUnscaledDeltaTime();
+
+	if (nextFpsUpdate >= 0.06f) {
+		nextFpsUpdate = 0;
+		lastFps = io.Framerate;
+	}
+
 	ImGui::Begin("Debug");
-	ImGui::Text("FPS: %d, ImGui: %.1f", (int)(1 / Time::GetUnscaledDeltaTime()), io.Framerate);
+	ImGui::Text("FPS: %.1f", lastFps);
 	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
 	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
 
