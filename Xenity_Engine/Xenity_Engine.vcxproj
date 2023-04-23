@@ -158,7 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="editor_ui.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
@@ -253,7 +253,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="editor_ui.h" />
+    <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
     <ClInclude Include="include\imgui\imgui_impl_glfw.h" />
@@ -319,6 +319,7 @@
     <ClInclude Include="Source\graphics\tile_map.h" />
     <ClInclude Include="Source\rts_game\unit.h" />
     <ClInclude Include="Source\rts_game\unit_data.h" />
+    <ClInclude Include="Source\xenity_editor.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

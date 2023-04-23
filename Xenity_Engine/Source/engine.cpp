@@ -19,6 +19,7 @@
 #include "pathfinding/pathfinding.h"
 #include "tools/profiler_benchmark.h"
 #include "gameOld.h"
+#include "editor/ui/editor_ui.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
 
@@ -52,171 +53,12 @@ int Engine::Init(const std::string exePath)
 	InputSystem::Init();
 	SpriteManager::Init();
 	AssetManager::Init();
+	EditorUI::Init();
 
 	//Init random
 	srand((unsigned int)time(NULL));
 
-
-	ImGui::GetStyle().WindowRounding = 10;
-
-
 	return 0;
-}
-
-void Engine::DrawProfiler()
-{
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImGui::Begin("Debug");
-	ImGui::Text("FPS: %d, ImGui: %.1f", (int)(1 / Time::GetUnscaledDeltaTime()), io.Framerate);
-	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
-	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
-
-	if (Performance::IsProfilerEnabled())
-	{
-		//Add profiler texts
-		for (const auto& kv : Performance::profilerList)
-		{
-			ImGui::Text("%s: %ld, avg %ld", kv.first.c_str(), kv.second->GetValue(), kv.second->average);
-		}
-	}
-
-	//ImGui::SliderFloat("float", &cameraZoom, 1.0f, 2.8f);
-
-	ImGui::End();
-}
-
-void Engine::DrawInspector()
-{
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImGui::Begin("Inspector");
-	if (selectedGameObject != nullptr)
-	{
-		char str0[128] = "";
-		sprintf_s(str0, selectedGameObject->name.c_str());
-
-
-		ImGui::InputText("Name ", str0, IM_ARRAYSIZE(str0));
-		if (strcmp(str0, selectedGameObject->name.c_str()) != 0 && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-		{
-			selectedGameObject->name = str0;
-		}
-
-		bool active = selectedGameObject->GetActive();
-		ImGui::Checkbox("Active", &active);
-		if (active != selectedGameObject->GetActive()) 
-		{
-			selectedGameObject->SetActive(active);
-		}
-
-		ImGui::Spacing();
-		ImGui::Text("Local Position:");
-		Vector3 localPos = selectedGameObject->transform.GetLocalPosition();
-		ImGui::InputFloat("x##p", &localPos.x);
-		ImGui::InputFloat("y##p", &localPos.y);
-		ImGui::InputFloat("z##p", &localPos.z);
-		if (localPos != selectedGameObject->transform.GetLocalPosition() && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
-			selectedGameObject->transform.SetLocalPosition(localPos);
-		}
-		ImGui::Text("World Position: %f %f %f", selectedGameObject->transform.GetPosition().x, selectedGameObject->transform.GetPosition().y, selectedGameObject->transform.GetPosition().z);
-
-		ImGui::Spacing();
-		ImGui::Text("Local Rotation:");
-		Vector3 localRot = selectedGameObject->transform.GetLocalRotation();
-		ImGui::InputFloat("x##r", &localRot.x);
-		ImGui::InputFloat("y##r", &localRot.y);
-		ImGui::InputFloat("z##r", &localRot.z);
-		if (localRot != selectedGameObject->transform.GetLocalRotation() && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
-			selectedGameObject->transform.SetLocalRotation(localRot);
-		}
-		ImGui::Text("World Rotation: %f %f %f", selectedGameObject->transform.GetRotation().x, selectedGameObject->transform.GetRotation().y, selectedGameObject->transform.GetRotation().z);
-		ImGui::Spacing();
-
-		ImGui::Text("Local Scale:");
-		Vector3 localScale = selectedGameObject->transform.GetLocalScale();
-		ImGui::InputFloat("x##s", &localScale.x);
-		ImGui::InputFloat("y##s", &localScale.y);
-		ImGui::InputFloat("z##s", &localScale.z);
-		if (localScale != selectedGameObject->transform.GetLocalScale() && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
-			selectedGameObject->transform.SetLocalScale(localScale);
-		}
-		ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
-
-		int componentCount = selectedGameObject->GetComponentCount();
-		ImGui::Text("Components count: %d", componentCount);
-		for (int i = 0; i < componentCount; i++)
-		{
-			std::string componentName = typeid(selectedGameObject->components[i]).name();
-			int nameLenght = componentName.size();
-			bool firstDelete = true;
-			for (int strI = 0; strI < nameLenght; strI++)
-			{
-				if (componentName[strI] == ' ')
-				{
-					if (firstDelete)
-					{
-						componentName.erase(0, strI + 1);
-						strI = 0;
-						firstDelete = false;
-					}
-					else {
-						componentName.erase(strI);
-						break;
-					}
-				}
-			}
-			ImGui::Text("Component: %s", componentName.c_str());
-		}
-	}
-	ImGui::End();
-}
-
-void Engine::DrawTreeItem(GameObject* child)
-{
-	int childCount = child->children.size();
-	int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-	if (Engine::selectedGameObject == child)
-		flags |= ImGuiTreeNodeFlags_Selected;
-
-	if (childCount == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf;
-
-	bool opened = ImGui::TreeNodeEx(child->name.c_str(), flags);
-	if (ImGui::IsItemActivated() && ImGui::IsItemClicked())
-	{
-		SetSelectedGameObject(child);
-	}
-	if (opened)
-	{
-		for (int i = 0; i < childCount; i++)
-		{
-			DrawTreeItem(child->children[i]);
-		}
-		ImGui::TreePop();
-	}
-}
-
-void Engine::DrawHierarchy()
-{
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImGui::Begin("Hierarchy");
-	//ImGui::SetWindowFontScale(2);
-
-	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
-
-	for (int i = 0; i < gameObjectCount; i++)
-	{
-		if (gameObjects[i]->parent == nullptr)
-		{
-			DrawTreeItem(gameObjects[i]);
-		}
-	}
-	ImGui::EndChild();
-
-
-	ImGui::End();
 }
 
 /// <summary>
@@ -376,6 +218,7 @@ void Engine::Loop()
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
+		EditorUI::uiId = 0;
 
 		gameLoopBenchmark->Start();
 		game->Loop();
@@ -402,17 +245,17 @@ void Engine::Loop()
 		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
 
 		//Draw screen tester
-		UiManager::RenderTextCanvas("Left", 0, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
+		/*UiManager::RenderTextCanvas("Left", 0, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Right", 1, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Center, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Top Left", 0, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Top Right", 1, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Bottom Left", 0, 1, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Top, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Bottom Right", 1, 1, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Top, *AssetManager::GetShader(7));
-		UiManager::RenderTextCanvas("Center", 0.5, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));
+		UiManager::RenderTextCanvas("Center", 0.5, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
-		DrawProfiler();
-		DrawInspector();
-		DrawHierarchy();
+		EditorUI::DrawProfiler();
+		EditorUI::DrawInspector();
+		EditorUI::DrawHierarchy();
 
 		Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
 
