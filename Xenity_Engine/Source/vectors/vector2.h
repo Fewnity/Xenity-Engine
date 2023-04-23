@@ -6,11 +6,13 @@ public:
 	Vector2();
 	Vector2(const float x, const float y);
 	Vector2(const float fillValue);
+
 	float x;
 	float y;
 
 	Vector2 normalize();
 	float magnitude();
+	float Distance(const Vector2 a, const Vector2 b);
 };
 
 

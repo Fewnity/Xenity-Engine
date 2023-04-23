@@ -27,7 +27,7 @@ Vector3::Vector3(const float fillValue)
 
 #pragma endregion
 
-Vector3 Vector3::LookAt(Vector3 from, Vector3 to)
+Vector3 Vector3::LookAt(const Vector3 from, const Vector3 to)
 {
 	float xdis = to.x - from.x;
 	float ydis = to.y - from.y;
@@ -50,7 +50,7 @@ Vector3 Vector3::Normalise()
 	}
 }
 
-float Vector3::Distance(Vector3 a, Vector3 b)
+float Vector3::Distance(const Vector3 a, const Vector3 b)
 {
 	float xDis = a.x - b.x;
 	float yDis = a.y - b.y;

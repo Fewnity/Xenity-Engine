@@ -36,6 +36,13 @@ float Vector2::magnitude()
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2));
 }
 
+float Vector2::Distance(const Vector2 a, const Vector2 b)
+{
+	float xDis = a.x - b.x;
+	float yDis = a.y - b.y;
+	return sqrtf(xDis * xDis + yDis * yDis);
+}
+
 #pragma region Operators
 
 Vector2 operator+(const Vector2& left, const Vector2& right)
