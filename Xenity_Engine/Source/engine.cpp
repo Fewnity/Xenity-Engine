@@ -54,6 +54,7 @@ int Engine::Init(const std::string exePath)
 	SpriteManager::Init();
 	AssetManager::Init();
 	EditorUI::Init();
+	Time::Init();
 
 	//Init random
 	srand((unsigned int)time(NULL));

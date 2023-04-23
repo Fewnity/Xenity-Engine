@@ -12,6 +12,7 @@ public:
 	static float GetTimeScale();
 	static void SetTimeScale(float timeScale);
 	static void UpdateTime();
+	static void Init();
 
 private:
 	static float timeScale;
@@ -19,7 +20,5 @@ private:
 	static float deltaTime;
 	static float unscaledTime;
 	static float unscaledDeltaTime;
-
-	static float lastTick;
 };
 

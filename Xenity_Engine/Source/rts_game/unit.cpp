@@ -19,6 +19,7 @@ void Unit::Start()
 	gmUnitSprite->AddExistingComponent(selectionSpriteRenderer);
 	gameObject->AddChild(gmUnitSprite);
 	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0));
+	gmUnitSprite->transform.SetLocalScale(0.8f);
 }
 
 void Unit::Update()
