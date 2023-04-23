@@ -67,6 +67,7 @@ void Game::Init()
 	t3->AddExistingComponent(spr4);*/
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
+	gameObjectCrosshair2->SetActive(false);
 	SpriteRenderer* sprGrad = new SpriteRenderer(gradient, material2DWithZ);
 	sprGrad->color = Vector4(1, 1, 1, 1);
 	gameObjectCrosshair2->AddExistingComponent(sprGrad);
@@ -171,6 +172,23 @@ void Game::LoadGameData()
 	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 }
 
+bool isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax) {
+	return (
+		point.x >= aMin.x &&
+		point.x <= aMax.x &&
+		point.y >= aMin.y &&
+		point.y <= aMax.y
+		);
+}
+
+bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax) {
+	return (
+		aMin.x <= bMax.x &&
+		aMax.x >= bMin.x &&
+		aMin.y <= bMax.y &&
+		aMax.y >= bMin.y
+		);
+}
 
 /// <summary>
 /// Game loop
@@ -191,21 +209,43 @@ void Game::Loop()
 			lineRendererBottom->SetIsEnabled(true);
 			lineRendererLeft->SetIsEnabled(true);
 			lineRendererRight->SetIsEnabled(true);
+			gameObjectCrosshair->SetActive(false);
 		}
 
 		endSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
 
-		lineRendererTop->startPosition = Vector3(startSelectionPos.x + lineRendererTop->width, startSelectionPos.y - (lineRendererTop->width / 2.0f), 0);
-		lineRendererTop->endPosition = Vector3(endSelectionPos.x - lineRendererTop->width, startSelectionPos.y - (lineRendererTop->width / 2.0f), 0);
+		Vector2 finalStartPos = startSelectionPos;
+		Vector2 finalEndPos = endSelectionPos;
+		if (startSelectionPos.x > endSelectionPos.x) {
+			finalEndPos.x = startSelectionPos.x;
+			finalStartPos.x = endSelectionPos.x;
+		}
+		if (startSelectionPos.y > endSelectionPos.y) {
+			finalEndPos.y = startSelectionPos.y;
+			finalStartPos.y = endSelectionPos.y;
+		}
 
-		lineRendererBottom->startPosition = Vector3(startSelectionPos.x + lineRendererBottom->width, endSelectionPos.y + (lineRendererBottom->width / 2.0f), 0);
-		lineRendererBottom->endPosition = Vector3(endSelectionPos.x - lineRendererBottom->width, endSelectionPos.y + (lineRendererBottom->width / 2.0f), 0);
+		lineRendererTop->startPosition = Vector3(finalStartPos.x + lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
+		lineRendererTop->endPosition = Vector3(finalEndPos.x - lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
 
-		lineRendererLeft->startPosition = Vector3(startSelectionPos.x + (lineRendererLeft->width / 2.0f), startSelectionPos.y, 0);
-		lineRendererLeft->endPosition = Vector3(startSelectionPos.x + (lineRendererLeft->width / 2.0f), endSelectionPos.y, 0);
+		lineRendererBottom->startPosition = Vector3(finalStartPos.x + lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
+		lineRendererBottom->endPosition = Vector3(finalEndPos.x - lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
 
-		lineRendererRight->startPosition = Vector3(endSelectionPos.x - (lineRendererRight->width / 2.0f), startSelectionPos.y, 0);
-		lineRendererRight->endPosition = Vector3(endSelectionPos.x - (lineRendererRight->width / 2.0f), endSelectionPos.y, 0);
+		lineRendererLeft->startPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalStartPos.y, 0);
+		lineRendererLeft->endPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalEndPos.y, 0);
+
+		lineRendererRight->startPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalStartPos.y, 0);
+		lineRendererRight->endPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalEndPos.y, 0);
+
+		int unitSize = units.size();
+		for (int i = 0; i < unitSize; i++)
+		{
+			Unit* unit = units[i];
+			unit->selected = false;
+			if (isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) {
+				unit->selected = true;
+			}
+		}
 	}
 
 	if (InputSystem::GetKeyUp(MOUSE_LEFT))
@@ -215,6 +255,7 @@ void Game::Loop()
 		lineRendererBottom->SetIsEnabled(false);
 		lineRendererLeft->SetIsEnabled(false);
 		lineRendererRight->SetIsEnabled(false);
+		gameObjectCrosshair->SetActive(true);
 	}
 
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
@@ -284,24 +325,7 @@ void Game::Loop()
 
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 
-	//SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, -2), 1, lineColor, material2D);
-
-	//std::string debugText2 = std::string("Pos x: ") + std::to_string(cameraGameObject->transform.GetPosition().x) + " y: " + std::to_string(cameraGameObject->transform.GetPosition().y) + " z: " + std::to_string(cameraGameObject->transform.GetPosition().z);
-	//debugText2 += "Size " + std::to_string(camera->GetProjectionSize());
-	//Debug::Print(debugText2);
-	//UiManager::RenderTextCanvas(debugText2, 0.0f, 0.1f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
-
 	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
-}
-
-void Game::Draw()
-{
-	if (isDragging) 
-	{
-		SpriteManager::Render2DLine(Vector3(startSelectionPos.x, startSelectionPos.y, 0), Vector3(endSelectionPos.x, endSelectionPos.y, 0), 1, selectionColor, material2DWithZ);
-		SpriteManager::Render2DLine(Vector3(startSelectionPos.x + 2, startSelectionPos.y + 2, -5), Vector3(endSelectionPos.x, endSelectionPos.y, -5), 1, selectionColor2, material2DWithZ);
-		SpriteManager::Render2DLine(Vector3(startSelectionPos.x + 2, startSelectionPos.y - 2, 5), Vector3(endSelectionPos.x, endSelectionPos.y, 5), 1, selectionColor2, material2DWithZ);
-	}
 }
 
 Game::Tile* Game::GetTile(int x, int y)
@@ -417,6 +441,7 @@ void Game::CreateTileMaps()
 
 	//Create props tilemap
 	tileMapProps = new TileMap(material2DWithZ);
+	tileMapProps->layerOrder = 1;
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
 	tileMapProps->Setup(mapSize, mapSize);
 

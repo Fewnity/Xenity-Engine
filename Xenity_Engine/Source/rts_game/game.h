@@ -21,7 +21,7 @@ class Unit;
 class UnitData;
 class LineRenderer;
 
-class Game : public IDrawable
+class Game
 {
 public:
 class Tile {
@@ -32,7 +32,6 @@ public:
 
 	void Init();
 	void Loop();
-	void Draw();
 	Game::Tile* GetTile(int x, int y);
 
 private:
