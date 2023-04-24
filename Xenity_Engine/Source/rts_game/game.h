@@ -20,6 +20,7 @@ public:
 class Unit;
 class UnitData;
 class LineRenderer;
+class Astar;
 
 class Game
 {
@@ -41,6 +42,13 @@ private:
 	Prop* CreateProp(int id);
 	void LoadGameData();
 	void CreateTileMaps();
+	void SetSelection(bool isSelecting);
+	void UnselectAllUnits();
+	void MoveCamera();
+	void ZoomCamera();
+	void MoveCursor();
+	void SelectUnits();
+	void OnEndDragging();
 
 	GameObject* cameraGameObject = new GameObject("cameraGameObject");
 
@@ -61,7 +69,7 @@ private:
 
 	TileMap* tileMap = nullptr;
 	TileMap* tileMapProps = nullptr;
-	float cameraZoom = 1.5f; //[1;2.8]
+	float cameraZoom = 1.5f; //[0.7;2.8]
 	float cameraArrowMoveSpeed = 3;
 
 	Vector2 cursorPosition = Vector2(0, 0);
@@ -71,10 +79,9 @@ private:
 	std::vector<Unit*> units;
 
 	Vector2 startSelectionPos = Vector2(0, 0);
-	Vector2 endSelectionPos = Vector2(0, 0);
+	Vector2 startMousePosition = Vector2(0, 0);
 
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
-	Vector4 selectionColor2 = Vector4(0, 1, 1, 1);
 	bool isDragging = false;
 
 	//Map settings
@@ -93,7 +100,6 @@ private:
 	//Textures
 	std::vector<Texture*> propsTextures;
 	std::vector<Texture*> tilesTextures;
-	//std::vector<Texture*> unitsTextures;
 	Texture* textureShip = nullptr;
 	Texture* crosshair = nullptr;
 	Texture* gradient = nullptr;
@@ -103,5 +109,6 @@ private:
 	//Materials
 	Material* material2D = nullptr;
 	Material* material2DWithZ = nullptr;
+	Astar *astar = nullptr;
 };
 

@@ -9,6 +9,7 @@
 #include "unit_data.h"
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl2.h>
+#include "../pathfinding/astar.h"
 
 /// <summary>
 /// Init game
@@ -26,9 +27,6 @@ void Game::Init()
 
 	cameraGameObject->AddExistingComponent(camera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
-
-	gameObjectSprite->transform.SetPosition(Vector3(0, 0, 0));
-
 
 	//SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
 	//gameObjectSprite->AddExistingComponent(spr);
@@ -190,74 +188,27 @@ bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax) {
 		);
 }
 
-/// <summary>
-/// Game loop
-/// </summary>
-void Game::Loop()
+void Game::SetSelection(bool isSelecting)
 {
-	if (InputSystem::GetKeyDown(ESCAPE))
+	lineRendererTop->SetIsEnabled(isSelecting);
+	lineRendererBottom->SetIsEnabled(isSelecting);
+	lineRendererLeft->SetIsEnabled(isSelecting);
+	lineRendererRight->SetIsEnabled(isSelecting);
+	gameObjectCrosshair->SetActive(!isSelecting);
+}
+
+void Game::UnselectAllUnits()
+{
+	int unitSize = units.size();
+	for (int i = 0; i < unitSize; i++)
 	{
-		//SDL_SetRelativeMouseMode(SDL_FALSE);
+		Unit* unit = units[i];
+		unit->selected = false;
 	}
-	if (InputSystem::GetKey(MOUSE_LEFT)) 
-	{
-		isDragging = true;
-		if (InputSystem::GetKeyDown(MOUSE_LEFT))
-		{
-			startSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
-			lineRendererTop->SetIsEnabled(true);
-			lineRendererBottom->SetIsEnabled(true);
-			lineRendererLeft->SetIsEnabled(true);
-			lineRendererRight->SetIsEnabled(true);
-			gameObjectCrosshair->SetActive(false);
-		}
+}
 
-		endSelectionPos = Graphics::usedCamera->MouseTo2DWorld();
-
-		Vector2 finalStartPos = startSelectionPos;
-		Vector2 finalEndPos = endSelectionPos;
-		if (startSelectionPos.x > endSelectionPos.x) {
-			finalEndPos.x = startSelectionPos.x;
-			finalStartPos.x = endSelectionPos.x;
-		}
-		if (startSelectionPos.y > endSelectionPos.y) {
-			finalEndPos.y = startSelectionPos.y;
-			finalStartPos.y = endSelectionPos.y;
-		}
-
-		lineRendererTop->startPosition = Vector3(finalStartPos.x + lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
-		lineRendererTop->endPosition = Vector3(finalEndPos.x - lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
-
-		lineRendererBottom->startPosition = Vector3(finalStartPos.x + lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
-		lineRendererBottom->endPosition = Vector3(finalEndPos.x - lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
-
-		lineRendererLeft->startPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalStartPos.y, 0);
-		lineRendererLeft->endPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalEndPos.y, 0);
-
-		lineRendererRight->startPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalStartPos.y, 0);
-		lineRendererRight->endPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalEndPos.y, 0);
-
-		int unitSize = units.size();
-		for (int i = 0; i < unitSize; i++)
-		{
-			Unit* unit = units[i];
-			unit->selected = false;
-			if (isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) {
-				unit->selected = true;
-			}
-		}
-	}
-
-	if (InputSystem::GetKeyUp(MOUSE_LEFT))
-	{
-		isDragging = false;
-		lineRendererTop->SetIsEnabled(false);
-		lineRendererBottom->SetIsEnabled(false);
-		lineRendererLeft->SetIsEnabled(false);
-		lineRendererRight->SetIsEnabled(false);
-		gameObjectCrosshair->SetActive(true);
-	}
-
+void Game::MoveCamera()
+{
 	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
 
 	if (InputSystem::GetKey(MOUSE_RIGHT))
@@ -269,18 +220,6 @@ void Game::Loop()
 		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
 		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
-	}
-	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
-	gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
-
-	//Move cursor
-	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
-	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
-	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
-
-	if (InputSystem::GetKeyDown(MOUSE_LEFT))
-	{
-		tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
 	}
 
 	if (InputSystem::GetKey(Z))
@@ -307,13 +246,17 @@ void Game::Loop()
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
+	camera->gameObject->transform.SetPosition(newCameraPosition);
+}
 
+void Game::ZoomCamera()
+{
 	if (InputSystem::mouseWheel != 0)
 	{
 		cameraZoom -= InputSystem::mouseWheel / 3.0f;
-		if (cameraZoom < 1)
+		if (cameraZoom < 0.7)
 		{
-			cameraZoom = 1;
+			cameraZoom = 0.7;
 		}
 		else if (cameraZoom > 2.8f)
 		{
@@ -322,10 +265,184 @@ void Game::Loop()
 
 		camera->SetProjectionSize(2.5f * cameraZoom);
 	}
+}
 
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+void Game::MoveCursor()
+{
+	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
 
-	//gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
+	gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
+
+	//Move cursor
+	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
+	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
+	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
+}
+
+void Game::SelectUnits()
+{
+	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+
+	Vector2 endSelectionPos = mouseWorldPosition;
+
+	int unitSize = units.size();
+	if (fabs(startSelectionPos.x - endSelectionPos.x) >= 0.2f && fabs(startSelectionPos.y - endSelectionPos.y) >= 0.2f)
+	{
+		isDragging = true;
+		SetSelection(true);
+		Vector2 finalStartPos = startSelectionPos;
+		Vector2 finalEndPos = endSelectionPos;
+
+		if (startSelectionPos.x > endSelectionPos.x)
+		{
+			finalEndPos.x = startSelectionPos.x;
+			finalStartPos.x = endSelectionPos.x;
+		}
+		if (startSelectionPos.y > endSelectionPos.y)
+		{
+			finalEndPos.y = startSelectionPos.y;
+			finalStartPos.y = endSelectionPos.y;
+		}
+
+		lineRendererTop->startPosition = Vector3(finalStartPos.x + lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
+		lineRendererTop->endPosition = Vector3(finalEndPos.x - lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
+
+		lineRendererBottom->startPosition = Vector3(finalStartPos.x + lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
+		lineRendererBottom->endPosition = Vector3(finalEndPos.x - lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
+
+		lineRendererLeft->startPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalStartPos.y, 0);
+		lineRendererLeft->endPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalEndPos.y, 0);
+
+		lineRendererRight->startPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalStartPos.y, 0);
+		lineRendererRight->endPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalEndPos.y, 0);
+
+		for (int i = 0; i < unitSize; i++)
+		{
+			Unit* unit = units[i];
+			unit->selected = false;
+			if (isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) {
+				unit->selected = true;
+			}
+		}
+	}
+	else
+	{
+		SetSelection(false);
+		if (isDragging)
+		{
+			isDragging = false;
+			UnselectAllUnits();
+		}
+	}
+}
+
+void Game::OnEndDragging()
+{
+	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+	if (isDragging == true)
+	{
+		isDragging = false;
+		SetSelection(false);
+	}
+	else
+	{
+		int unitSize = units.size();
+		std::vector<Unit*> unitFound;
+
+		bool foundNewUnit = false;
+		for (int i = 0; i < unitSize; i++)
+		{
+			Unit* unit = units[i];
+			Vector2 unitMin = Vector2(unit->gameObject->transform.GetPosition().x - 0.2, unit->gameObject->transform.GetPosition().y - 0.2);
+			Vector2 unitMax = Vector2(unit->gameObject->transform.GetPosition().x + 0.2, unit->gameObject->transform.GetPosition().y + 0.2);
+
+			if (isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
+			{
+				unitFound.push_back(unit);
+				foundNewUnit = true;
+				break;
+			}
+		}
+
+		if (!foundNewUnit)
+		{
+			for (int i = 0; i < unitSize; i++)
+			{
+				Unit* unit = units[i];
+				if (unit->selected)
+				{
+					astar->SetDestination(Vector2(round(unit->gameObject->transform.GetPosition().x), round(unit->gameObject->transform.GetPosition().y)), Vector2(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
+					astar->Process();
+					unit->path = astar->GetPath();
+				}
+			}
+		}
+		else
+		{
+			if (!InputSystem::GetKey(LEFT_CONTROL))
+			{
+				UnselectAllUnits();
+			}
+			int unitFoundCount = unitFound.size();
+			for (int i = 0; i < unitFoundCount; i++)
+			{
+				unitFound[i]->selected = !unitFound[i]->selected;
+			}
+		}
+	}
+}
+
+/// <summary>
+/// Game loop
+/// </summary>
+void Game::Loop()
+{
+	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+
+	if (InputSystem::GetKeyDown(ESCAPE))
+	{
+		//SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+
+	if (InputSystem::GetKeyDown(MOUSE_LEFT))
+	{
+		startSelectionPos = mouseWorldPosition;
+	}
+
+	if (InputSystem::GetKeyDown(MOUSE_RIGHT))
+	{
+		startMousePosition = InputSystem::mousePosition;
+	}
+
+	if (InputSystem::GetKey(MOUSE_LEFT))
+	{
+		SelectUnits();
+	}
+
+	if (InputSystem::GetKeyUp(MOUSE_RIGHT))
+	{
+		Vector2 endMousePosition = InputSystem::mousePosition;
+		float dis = Vector2::Distance(startMousePosition, endMousePosition);
+
+		if (dis <= 4)
+		{
+			UnselectAllUnits();
+		}
+	}
+
+	if (InputSystem::GetKeyUp(MOUSE_LEFT))
+	{
+		OnEndDragging();
+	}
+
+	if (InputSystem::GetKeyDown(MOUSE_LEFT))
+	{
+		//tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
+	}
+
+	MoveCamera();
+	ZoomCamera();
+	MoveCursor();
 }
 
 Game::Tile* Game::GetTile(int x, int y)
@@ -356,6 +473,12 @@ void Game::GenerateMap()
 			tile->prop = nullptr;
 		}
 	}
+
+	if (astar)
+		delete astar;
+
+	astar = new Astar(mapSize, mapSize);
+	astar->canPassCorners = false;
 	//Fill map data
 
 	//Add trees
@@ -409,8 +532,25 @@ void Game::GenerateMap()
 		int id = 14 + rand() % 2;
 		CreateProp(id);
 	}
+
+	for (int x = 0; x < mapSize; x++)
+	{
+		for (int y = 0; y < mapSize; y++)
+		{
+			Tile* tile = GetTile(x, y);
+			if (tile->prop)
+			{
+				astar->SetTileIsObstacle(x, y, true);
+			}
+		}
+	}
 }
 
+/// <summary>
+/// Create a new prop in a random position
+/// </summary>
+/// <param name="id">Prop id</param>
+/// <returns>Created prop</returns>
 Prop* Game::CreateProp(int id)
 {
 	int x;
@@ -430,6 +570,9 @@ Prop* Game::CreateProp(int id)
 	return newProp;
 }
 
+/// <summary>
+/// Create tilemaps, 
+/// </summary>
 void Game::CreateTileMaps()
 {
 	//Create ground tile map
@@ -451,12 +594,15 @@ void Game::CreateTileMaps()
 		tileMapProps->AddTexture(propsTextures[i]);
 	}
 
+	//Fill tilemaps
 	for (int x = 0; x < mapSize; x++)
 	{
 		for (int y = 0; y < mapSize; y++)
 		{
 			Tile* tile = GetTile(x, y);
 			tileMap->SetTile(x, y, tile->groundTileId);
+
+			//Add prop
 			if (tile->prop != nullptr)
 			{
 				tileMapProps->SetTile(x, y, tile->prop->id);

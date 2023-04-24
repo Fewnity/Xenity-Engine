@@ -2,6 +2,10 @@
 
 #include "../monobehaviour.h"
 
+#include <vector>
+
+class Vector2;
+
 class UnitData;
 class SpriteRenderer;
 
@@ -17,5 +21,7 @@ public:
 	void Update();
 	bool selected = false;
 	SpriteRenderer* selectionSpriteRenderer = nullptr;
+	std::vector<Vector2> path;
+	int currentPathNode = 0;
 };
 
