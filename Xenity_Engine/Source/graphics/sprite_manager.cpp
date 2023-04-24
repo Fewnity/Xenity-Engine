@@ -157,7 +157,7 @@ void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector
 
 	float fixedXWidth = width / 2.0f * dir.y;
 	float fixedYWidth = width / 2.0f * dir.x;
-	
+
 	//Create line's vertices and uv
 	float vertices[6][5] = {
 		{ end.x - fixedXWidth,     end.y + fixedYWidth, end.z,  0.0f, 0.0f },
@@ -175,8 +175,8 @@ void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector
 
 	//if (currentTexture != AssetManager::defaultTexture)
 	//{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, AssetManager::defaultTexture->GetTextureId());
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, AssetManager::defaultTexture->GetTextureId());
 	//}
 
 	glBindVertexArray(lineVAO);
@@ -225,9 +225,9 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 	// 
 	//if (currentTexture != texture)
 	//{
-		currentTexture = texture;
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+	currentTexture = texture;
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 	//}
 
 	glBindVertexArray(spriteVAOSmall);
@@ -625,39 +625,39 @@ void SpriteBatch::AddVertices(Vector2 verticesToAdd[4])
 	float cy2 = verticesToAdd[2].y / diviser;
 
 	vertices[realIndex] = cx0;
-	vertices[realIndex+1] = cy0;
-	vertices[realIndex+2] = 0.0f;
-	vertices[realIndex+3] = 0.0f;
+	vertices[realIndex + 1] = cy0;
+	vertices[realIndex + 2] = 0.0f;
+	vertices[realIndex + 3] = 0.0f;
 
 	//
-	vertices[realIndex+4] = verticesToAdd[1].x / diviser;
-	vertices[realIndex+5] = verticesToAdd[1].y / diviser;
-	vertices[realIndex+6] = 0.0f;
-	vertices[realIndex+7] = 1.0f;
+	vertices[realIndex + 4] = verticesToAdd[1].x / diviser;
+	vertices[realIndex + 5] = verticesToAdd[1].y / diviser;
+	vertices[realIndex + 6] = 0.0f;
+	vertices[realIndex + 7] = 1.0f;
 
 
-	vertices[realIndex+8] = cx2;
-	vertices[realIndex+9] = cy2;
-	vertices[realIndex+10] = 1.0f;
-	vertices[realIndex+11] = 1.0f;
+	vertices[realIndex + 8] = cx2;
+	vertices[realIndex + 9] = cy2;
+	vertices[realIndex + 10] = 1.0f;
+	vertices[realIndex + 11] = 1.0f;
 
 
-	vertices[realIndex+12] = cx0;
-	vertices[realIndex+13] = cy0;
-	vertices[realIndex+14] = 0.0f;
-	vertices[realIndex+15] = 0.0f;
+	vertices[realIndex + 12] = cx0;
+	vertices[realIndex + 13] = cy0;
+	vertices[realIndex + 14] = 0.0f;
+	vertices[realIndex + 15] = 0.0f;
 
 
-	vertices[realIndex+16] = cx2;
-	vertices[realIndex+17] = cy2;
-	vertices[realIndex+18] = 1;
-	vertices[realIndex+19] = 1.0f;
+	vertices[realIndex + 16] = cx2;
+	vertices[realIndex + 17] = cy2;
+	vertices[realIndex + 18] = 1;
+	vertices[realIndex + 19] = 1.0f;
 
 	//
-	vertices[realIndex+20] = verticesToAdd[3].x / diviser;
-	vertices[realIndex+21] = verticesToAdd[3].y / diviser;
-	vertices[realIndex+22] = 1.0f;
-	vertices[realIndex+23] = 0.0f;
+	vertices[realIndex + 20] = verticesToAdd[3].x / diviser;
+	vertices[realIndex + 21] = verticesToAdd[3].y / diviser;
+	vertices[realIndex + 22] = 1.0f;
+	vertices[realIndex + 23] = 0.0f;
 
 	index++;
 }

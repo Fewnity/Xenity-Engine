@@ -10,11 +10,14 @@ int Graphics::iDrawablesCount = 0;
 std::vector<IDrawable*> Graphics::orderedIDrawable;
 ProfilerBenchmark* orderBenchmark = new ProfilerBenchmark("Order Drawables");
 
+bool ordered = false;
+
 /// <summary>
 /// Draw all Drawable elements
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+
 	Graphics::OrderDrawables();
 
 	//glEnable(GL_DEPTH_TEST);
@@ -43,7 +46,7 @@ void Graphics::OrderDrawables()
 	for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
 	{
 		IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-		if (drawableToCheck->gameObject) {
+		//if (drawableToCheck->gameObject) {
 			bool placeFound = false;
 
 			for (int i = 0; i < iDrawablesCount; i++)
@@ -63,7 +66,7 @@ void Graphics::OrderDrawables()
 			}
 			iDrawablesCount++;
 
-		}
+		//}
 	}
 
 	orderBenchmark->Stop();
