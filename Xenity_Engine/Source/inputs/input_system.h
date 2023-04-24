@@ -97,9 +97,14 @@ enum KeyCode
 
 	MOUSE_LEFT = 86,
 	MOUSE_RIGHT = 87,
+
+	LEFT_CONTROL = 88,
+	RIGHT_CONTROL = 89,
+	LEFT_ALT = 90,
+	RIGHT_ALT = 91,
 };
 
-#define INPUT_COUNT 88
+#define INPUT_COUNT 92
 
 class Input {
 public:

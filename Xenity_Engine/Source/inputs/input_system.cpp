@@ -278,6 +278,22 @@ void InputSystem::ChangeInputState(const bool pressed, const int keyCode)
 	case SDLK_RETURN:
 		SetInput(pressed, RETURN);
 		break;
+
+	case SDLK_LCTRL:
+		SetInput(pressed, LEFT_CONTROL);
+		break;
+
+	case SDLK_RCTRL:
+		SetInput(pressed, RIGHT_CONTROL);
+		break;
+
+	case SDLK_LALT:
+		SetInput(pressed, LEFT_ALT);
+		break;
+
+	case SDLK_RALT:
+		SetInput(pressed, RIGHT_ALT);
+		break;
 	}
 }
 
