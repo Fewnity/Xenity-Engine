@@ -22,6 +22,8 @@ void Astar::ResetGrid(bool clearObstacles)
 			tile->g = INT32_MAX;
 			tile->h = 0;
 			tile->f = 0;
+			tile->x = x;
+			tile->y = y;
 			tile->closed = false;
 			if (clearObstacles)
 				tile->isObstacle = false;
@@ -107,7 +109,7 @@ void Astar::ProcessOneStep()
 				{
 					Tile* neighbor1 = GetTile(currentTilePosition.x, y + currentTilePosition.y);
 					Tile* neighbor2 = GetTile(x + currentTilePosition.x, currentTilePosition.y);
-					if (neighbor1->isObstacle && neighbor2->isObstacle) 
+					if (neighbor1->isObstacle || neighbor2->isObstacle) 
 					{
 						continue;
 					}
@@ -147,6 +149,21 @@ void Astar::SetFinalPath()
 		nextTile->isPath = true;
 		nextTile = nextTile->previousTile;
 	}
+}
+
+std::vector<Vector2> Astar::GetPath()
+{
+	std::vector<Vector2> path;
+
+	Tile* nextTile = currentTile;
+
+	while (nextTile != nullptr)
+	{
+		path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
+		nextTile->isPath = true;
+		nextTile = nextTile->previousTile;
+	}
+	return path;
 }
 
 void Astar::SetDestination(Vector2 start, Vector2 end)

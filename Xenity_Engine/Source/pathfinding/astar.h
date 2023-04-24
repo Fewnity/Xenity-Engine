@@ -1,5 +1,6 @@
 #pragma once
 #include "../vectors/vector2.h"
+#include <vector>
 
 class Astar
 {
@@ -10,6 +11,8 @@ public:
 		int g = 0;
 		int h = 0;
 		int f = 0; // = g + h
+		int x = 0;
+		int y = 0;
 		bool closed = false;
 		Tile* previousTile = nullptr;
 		bool isPath = false;
@@ -24,6 +27,7 @@ public:
 	void GetLowestFTile();
 	void ResetGrid(bool clearObstacles);
 	void SetFinalPath();
+	std::vector<Vector2> GetPath();
 
 	int xGridSize = 0;
 	int yGridSize = 0;
