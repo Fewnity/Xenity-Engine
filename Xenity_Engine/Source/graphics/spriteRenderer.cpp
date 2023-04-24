@@ -22,7 +22,7 @@ SpriteRenderer::~SpriteRenderer()
 
 int SpriteRenderer::GetDrawPriority()
 {
-	return gameObject->transform.GetPosition().z;
+	return gameObject->transform.GetPosition().z + layerOrder;
 }
 
 #pragma endregion

@@ -16,6 +16,7 @@ class SpriteRenderer : public IDrawable
 
 		//void SetSprite(const Texture* texture);
 		int GetDrawPriority();
+		int layerOrder = 0;
 
 		Material* material = nullptr;
 		Vector4 color = Vector4(1,1,1,1);
