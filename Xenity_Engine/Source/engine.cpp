@@ -20,6 +20,7 @@
 #include "tools/profiler_benchmark.h"
 #include "gameOld.h"
 #include "editor/ui/editor_ui.h"
+#include "rendering_test/rendering_test_2d.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
 
@@ -166,9 +167,11 @@ void Engine::SetSelectedGameObject(GameObject* newSelected)
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	Game* game = new Game();
+	//Game* game = new Game();
 	//Game3D* game = new Game3D();
 	//PathFinding* game = new PathFinding();
+	RenderingTest2D *game = new RenderingTest2D();
+
 	game->Init();
 	Debug::Print("---- Game initiated ----");
 
@@ -255,10 +258,10 @@ void Engine::Loop()
 		UiManager::RenderTextCanvas("Center", 0.5, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
 		EditorUI::DrawProfiler();
-		EditorUI::DrawInspector();
-		EditorUI::DrawHierarchy();
+		//EditorUI::DrawInspector();
+		//EditorUI::DrawHierarchy();
 
-		Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
+		//Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
 
 		/*Vector2 arrowStart = Vector2(2, 0);
 		Vector2 arrowEnd = Vector2(0, -2);

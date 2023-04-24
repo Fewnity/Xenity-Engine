@@ -62,6 +62,7 @@
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\graphics\line_renderer.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
+    <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Source\graphics\line_renderer.h" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="Source\xenity_editor.h" />
+    <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
