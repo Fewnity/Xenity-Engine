@@ -12,7 +12,7 @@ public:
 
 	Vector2 normalize();
 	float magnitude();
-	float Distance(const Vector2 a, const Vector2 b);
+	static float Distance(const Vector2 a, const Vector2 b);
 };
 
 
