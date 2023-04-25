@@ -30,23 +30,13 @@ class SpriteManager
 {
 public:
 	static void Init();
-	static void RenderSprite(Transform transform, float w, float h, Vector4 color, const Texture* texture, Material* material);
-	static void RenderSprite(Vector3 position, float w, float h, Vector3 scale, Vector3 rotation, Vector4 color, const Texture* texture, Material* material);
-	static void RenderSprite(float x, float y, float z, float w, float h, float scaleX, float scaleY, float xAngle, float yAngle, float zAngle, Vector4 color, const Texture* texture, Material* material);
-	//static void RenderSprite(glm::mat4 transformationMatrix, float w, float h, const Texture* texture, Material* material);
+	static void CreateSpriteBuffer();
 	static void Render2DLine(Vector3 start, Vector3 end, float width, Vector4& color, Material* material);
 	static void RenderSprite(glm::mat4 transformationMatrix, Vector4 &color, const Texture* texture, Material* material);
-	static void CreateSpriteBuffer();
-	static void AddToBatch(const Texture* texture, glm::mat4& transformationMatrix, int index, float x, float y, float scaleX, float scaleY);
-	static void AddToBatch(int index, Vector2 vertices[4]);
-	
-	static void DrawBatch(const Texture* texture, Vector4& color, Material* material);
 
 private:
 	static unsigned int spriteVAO, spriteVBO, spriteVAOSmall, spriteVBOSmall;
 	static unsigned int lineVAO, lineVBO;
-	//static void UpdateMaterial(Material* material, glm::mat4 *transformationMatrix);
-	static float vertices2[6* 600 * 600][4];
 	static const Texture* currentTexture;
 };
 

@@ -25,6 +25,22 @@ Font::~Font()
 	}
 }
 
+/// <summary>
+/// Init Ui Manager
+/// </summary>
+/// <returns></returns>
+int UiManager::Init()
+{
+	//Init librairy
+	CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
+	CreateFont(R"(Xenity_Engine\Source\fonts\alagard.ttf)");
+
+	CreateTextBuffer();
+
+	Debug::Print("---- UI System initiated ----");
+
+	return 0;
+}
 
 /// <summary>
 /// Create vertex buffer for texts
@@ -534,20 +550,3 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 }
 
 #pragma endregion
-
-/// <summary>
-/// Init Ui Manager
-/// </summary>
-/// <returns></returns>
-int UiManager::Init()
-{
-	//Init librairy
-	CreateFont(R"(Xenity_Engine\Source\fonts\Roboto-Regular.ttf)");
-	CreateFont(R"(Xenity_Engine\Source\fonts\alagard.ttf)");
-
-	CreateTextBuffer();
-
-	Debug::Print("---- UI system initiated ----");
-
-	return 0;
-}
