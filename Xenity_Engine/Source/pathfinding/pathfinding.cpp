@@ -104,13 +104,13 @@ void PathFinding::Init()
 	newVisualNodeD->connectedTo.push_back(newVisualNodeA);
 	newVisualNodeD->connectedTo.push_back(newVisualNodeC);
 
-	aStarVisualNodes = (AStarVisualNode*)malloc(astar.xGridSize * astar.yGridSize * sizeof(AStarVisualNode));
+	aStarVisualNodes = (AStarVisualNode*)malloc(astar.GetXGridSize() * astar.GetYGridSize() * sizeof(AStarVisualNode));
 
-	for (int x = 0; x < astar.xGridSize; x++)
+	for (int x = 0; x < astar.GetXGridSize(); x++)
 	{
-		for (int y = 0; y < astar.yGridSize; y++)
+		for (int y = 0; y < astar.GetYGridSize(); y++)
 		{
-			aStarVisualNodes[x * astar.yGridSize + y].Setup(Vector2(x, y), square);
+			aStarVisualNodes[x * astar.GetYGridSize() + y].Setup(Vector2(x, y), square);
 		}
 	}
 
@@ -137,7 +137,7 @@ void PathFinding::Init()
 void PathFinding::RandomiseAStarGrid()
 {
 	processStarted = false;
-	astar.ResetGrid(true);
+	astar.ResetGrid();
 
 	//for (int i = 0; i < 6000; i++)
 	for (int i = 0; i < 3000; i++)
@@ -171,11 +171,11 @@ void PathFinding::SwitchMode()
 		visualNodes[i]->gameobject->SetActive(!showAStar);
 	}
 
-	for (int x = 0; x < astar.xGridSize; x++)
+	for (int x = 0; x < astar.GetXGridSize(); x++)
 	{
-		for (int y = 0; y < astar.yGridSize; y++)
+		for (int y = 0; y < astar.GetYGridSize(); y++)
 		{
-			aStarVisualNodes[x * astar.yGridSize + y].gameobject->SetActive(showAStar);
+			aStarVisualNodes[x * astar.GetYGridSize() + y].gameobject->SetActive(showAStar);
 		}
 	}
 
@@ -224,16 +224,16 @@ void PathFinding::DrawAStar()
 		}
 	}
 
-	for (int x = 0; x < astar.xGridSize; x++)
+	for (int x = 0; x < astar.GetXGridSize(); x++)
 	{
-		for (int y = 0; y < astar.yGridSize; y++)
+		for (int y = 0; y < astar.GetYGridSize(); y++)
 		{
 			Astar::Tile* tile = astar.GetTile(x, y);
-			AStarVisualNode* visualNode = &aStarVisualNodes[x * astar.yGridSize + y];
-			if ((x == astarEndPos.x && y == astarEndPos.y) || (x == astarStartPos.x && y == astarStartPos.y))
-				visualNode->SetColor(5);
-			else if (tile->isObstacle)
+			AStarVisualNode* visualNode = &aStarVisualNodes[x * astar.GetYGridSize() + y];
+			if (tile->isObstacle)
 				visualNode->SetColor(4);
+			else if ((x == astarEndPos.x && y == astarEndPos.y) || (x == astarStartPos.x && y == astarStartPos.y))
+				visualNode->SetColor(5);
 			else if (tile->isPath)
 				visualNode->SetColor(2);
 			else if (tile->closed)
