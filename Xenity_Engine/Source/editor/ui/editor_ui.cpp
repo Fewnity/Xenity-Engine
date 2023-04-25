@@ -11,6 +11,8 @@ float EditorUI::lastFps = 0;
 void EditorUI::Init()
 {
 	ImGui::GetStyle().WindowRounding = 10;
+
+	Debug::Print("---- Editor UI initiated ----");
 }
 
 void EditorUI::DrawInspector()

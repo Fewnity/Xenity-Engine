@@ -60,6 +60,8 @@ int Engine::Init(const std::string exePath)
 	//Init random
 	srand((unsigned int)time(NULL));
 
+	Debug::Print("-------- Engine fully initiated --------");
+
 	return 0;
 }
 

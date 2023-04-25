@@ -57,6 +57,8 @@ void AssetManager::Init()
 
 	defaultUIMaterial = new Material("UI");
 	defaultUIMaterial->shader = ui;
+
+	Debug::Print("---- Asset Manager initiated ----");
 }
 
 #pragma region Add assets

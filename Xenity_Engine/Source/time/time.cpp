@@ -1,5 +1,6 @@
 #include "time.h"
 #include <chrono>
+#include "../debug/debug.h"
 
 float Time::timeScale = 1;
 float Time::time = 0;
@@ -50,6 +51,8 @@ void Time::SetTimeScale(float timeScale)
 void Time::Init() {
 
 	start_point = high_resolution_clock::now();
+
+	Debug::Print("---- Time system initiated ----");
 }
 
 void Time::UpdateTime() 
