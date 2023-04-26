@@ -1,6 +1,8 @@
 #pragma once
 
 #include "gameobject.h"
+#include <map>
+#include <string>
 
 class Component
 {
@@ -15,6 +17,9 @@ public:
 	bool GetIsEnabled();
 	void SetIsEnabled(bool isEnabled);
 	bool initiated = false;
+	std::map<std::string, int*> reflectedInts;
+	std::map<std::string, float*> reflectedFloats;
+	std::string componentName = "Component";
 
 private:
 	bool isEnabled = true;
