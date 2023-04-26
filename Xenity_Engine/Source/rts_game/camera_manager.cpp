@@ -1,0 +1,93 @@
+#include "camera_manager.h"
+#include "../xenity.h"
+#include <string>
+
+CameraManager::CameraManager()
+{
+	reflectedFloats.insert(std::pair<std::string, float*>("Camera Zoom", &cameraZoom));
+	reflectedFloats.insert(std::pair<std::string, float*>("Camera Arrow Move Speed", &cameraArrowMoveSpeed));
+	componentName = "Camera Manager";
+}
+
+void CameraManager::Awake()
+{
+
+}
+
+void CameraManager::Init() 
+{
+	GameObject* cameraGameObject = new GameObject("cameraGameObject");
+	camera = new Camera();
+	cameraGameObject->AddExistingComponent(camera);
+
+	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+
+	camera->SetProjectionType(Orthographic);
+	camera->SetProjectionSize(2.5f * cameraZoom);
+}
+
+void CameraManager::Update()
+{
+	MoveCamera();
+	ZoomCamera();
+}
+
+void CameraManager::MoveCamera()
+{
+	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+
+	if (InputSystem::GetKey(MOUSE_RIGHT))
+	{
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		vect *= InputSystem::mouseSpeed.y * 14.2f * cameraZoom / 2.8f;
+		newCameraPosition += vect;
+
+		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
+		newCameraPosition += vect;
+	}
+
+	if (InputSystem::GetKey(Z))
+	{
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
+		newCameraPosition += vect;
+	}
+	if (InputSystem::GetKey(S))
+	{
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
+		newCameraPosition += vect;
+	}
+	if (InputSystem::GetKey(D))
+	{
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
+		newCameraPosition += vect;
+	}
+	if (InputSystem::GetKey(Q))
+	{
+		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
+		newCameraPosition += vect;
+	}
+	camera->gameObject->transform.SetPosition(newCameraPosition);
+}
+
+void CameraManager::ZoomCamera()
+{
+	if (InputSystem::mouseWheel != 0)
+	{
+		cameraZoom -= InputSystem::mouseWheel / 3.0f;
+		if (cameraZoom < 0.7)
+		{
+			cameraZoom = 0.7;
+		}
+		else if (cameraZoom > 2.8f)
+		{
+			cameraZoom = 2.8f;
+		}
+
+		camera->SetProjectionSize(2.5f * cameraZoom);
+	}
+}

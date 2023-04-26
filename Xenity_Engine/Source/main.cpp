@@ -31,6 +31,7 @@ using namespace std;
  * Create color class
  * Check error in AStar
  * Optimise component update system
+ * Fix children local scale values
  * Check shader destructor : check if delete is needed if a shader can't compile
  * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  * Improvement : When a component is added/remove from a gameobject, just modify the ordered component list in Engine instead of clearing the list (create a function like OnComponentAddedOnGameObject)
@@ -41,10 +42,8 @@ static void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-//int main(void)
 int main(int argc, char* argv[])
 {
-	//std::cout << "Main function : GameObject count " << Engine::gameObjects.size() << std::endl;
 	std::string exePath = argv[0];
 	if (Engine::Init(exePath) != 0)
 	{

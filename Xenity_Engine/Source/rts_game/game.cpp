@@ -10,6 +10,8 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl2.h>
 #include "../pathfinding/astar.h"
+#include "camera_manager.h"
+#include "unit_manager.h"
 
 /// <summary>
 /// Init game
@@ -24,45 +26,17 @@ void Game::Init()
 
 	GenerateMap();
 	CreateTileMaps();
+	GameObject* managersGameObject = new GameObject("Managers");
+	cameraManager = new CameraManager();
+	cameraManager->Init();
+	unitManager = new UnitManager();
+	unitManager->cameraManager = cameraManager;
+	unitManager->game = this;
+	unitManager->LoadUnitData();
+	managersGameObject->AddExistingComponent(cameraManager);
+	managersGameObject->AddExistingComponent(unitManager);
 
-	cameraGameObject->AddExistingComponent(camera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
-
-	//SpriteRenderer* spr = new SpriteRenderer(textureShip, material2D);
-	//gameObjectSprite->AddExistingComponent(spr);
-
-	/*GameObject* t = new GameObject();
-	t->transform.SetPosition(Vector3(1, 1, 0));
-	SpriteRenderer* spr2 = new SpriteRenderer(textureShip, material2D);
-	t->AddExistingComponent(spr2);
-
-	GameObject* t2 = new GameObject();
-	t2->transform.SetPosition(Vector3(2, 2, 0));
-	SpriteRenderer* spr3 = new SpriteRenderer(textureShip, material2D);
-	t2->AddExistingComponent(spr3);*/
-
-	Unit* newUnit = new Unit(unitsData[0]);
-	GameObject* unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(0, 0, 0));
-	unitGM->AddExistingComponent(newUnit);
-	units.push_back(newUnit);
-
-	newUnit = new Unit(unitsData[4]);
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(1, 2, 0));
-	unitGM->AddExistingComponent(newUnit);
-	units.push_back(newUnit);
-
-	newUnit = new Unit(unitsData[10]);
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(1, 1, 0));
-	unitGM->AddExistingComponent(newUnit);
-	units.push_back(newUnit);
-
-	/*GameObject* t3 = new GameObject();
-	t3->transform.SetLocalPosition(Vector3(3, 3, 0));
-	SpriteRenderer* spr4 = new SpriteRenderer(textureShip, material2D);
-	t3->AddExistingComponent(spr4);*/
+	unitManager->SpawnUnits();
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
@@ -97,8 +71,8 @@ void Game::Init()
 
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	//SDL_SetRelativeMouseMode(SDL_FALSE);
-	camera->SetProjectionType(Orthographic);
-	camera->SetProjectionSize(2.5f * cameraZoom);
+	//camera->SetProjectionType(Orthographic);
+	//camera->SetProjectionSize(2.5f * cameraZoom);
 
 	GameObject* ParentTest = new GameObject("Parent0");
 	GameObject* childTest1 = new GameObject("child0");
@@ -148,11 +122,6 @@ void Game::LoadGameData()
 		propsTextures.push_back(textureEnv);
 	}
 
-	for (int i = 0; i < 12; i++)
-	{
-		UnitData* newUnitData = new UnitData(i, crosshair);
-		unitsData.push_back(newUnitData);
-	}
 
 	int propsTexturesCount = propsTextures.size();
 	for (int i = 0; i < propsTexturesCount; i++)
@@ -170,7 +139,8 @@ void Game::LoadGameData()
 	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 }
 
-bool isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax) {
+bool Game::isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax)
+{
 	return (
 		point.x >= aMin.x &&
 		point.x <= aMax.x &&
@@ -179,7 +149,8 @@ bool isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax) {
 		);
 }
 
-bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax) {
+bool Game::intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax) 
+{
 	return (
 		aMin.x <= bMax.x &&
 		aMax.x >= bMin.x &&
@@ -197,79 +168,10 @@ void Game::SetSelection(bool isSelecting)
 	gameObjectCrosshair->SetActive(!isSelecting);
 }
 
-void Game::UnselectAllUnits()
-{
-	int unitSize = units.size();
-	for (int i = 0; i < unitSize; i++)
-	{
-		Unit* unit = units[i];
-		unit->selected = false;
-	}
-}
-
-void Game::MoveCamera()
-{
-	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
-
-	if (InputSystem::GetKey(MOUSE_RIGHT))
-	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		vect *= InputSystem::mouseSpeed.y * 14.2f * cameraZoom / 2.8f;
-		newCameraPosition += vect;
-
-		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
-		newCameraPosition += vect;
-	}
-
-	if (InputSystem::GetKey(Z))
-	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
-		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
-		newCameraPosition += vect;
-	}
-	if (InputSystem::GetKey(S))
-	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
-		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
-		newCameraPosition += vect;
-	}
-	if (InputSystem::GetKey(D))
-	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
-		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
-		newCameraPosition += vect;
-	}
-	if (InputSystem::GetKey(Q))
-	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
-		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
-		newCameraPosition += vect;
-	}
-	camera->gameObject->transform.SetPosition(newCameraPosition);
-}
-
-void Game::ZoomCamera()
-{
-	if (InputSystem::mouseWheel != 0)
-	{
-		cameraZoom -= InputSystem::mouseWheel / 3.0f;
-		if (cameraZoom < 0.7)
-		{
-			cameraZoom = 0.7;
-		}
-		else if (cameraZoom > 2.8f)
-		{
-			cameraZoom = 2.8f;
-		}
-
-		camera->SetProjectionSize(2.5f * cameraZoom);
-	}
-}
 
 void Game::MoveCursor()
 {
-	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
 
@@ -279,66 +181,9 @@ void Game::MoveCursor()
 	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 }
 
-void Game::SelectUnits()
+void Game::OnMouseUp()
 {
-	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
-
-	Vector2 endSelectionPos = mouseWorldPosition;
-
-	int unitSize = units.size();
-	if (fabs(startSelectionPos.x - endSelectionPos.x) >= 0.2f && fabs(startSelectionPos.y - endSelectionPos.y) >= 0.2f)
-	{
-		isDragging = true;
-		SetSelection(true);
-		Vector2 finalStartPos = startSelectionPos;
-		Vector2 finalEndPos = endSelectionPos;
-
-		if (startSelectionPos.x > endSelectionPos.x)
-		{
-			finalEndPos.x = startSelectionPos.x;
-			finalStartPos.x = endSelectionPos.x;
-		}
-		if (startSelectionPos.y > endSelectionPos.y)
-		{
-			finalEndPos.y = startSelectionPos.y;
-			finalStartPos.y = endSelectionPos.y;
-		}
-
-		lineRendererTop->startPosition = Vector3(finalStartPos.x + lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
-		lineRendererTop->endPosition = Vector3(finalEndPos.x - lineRendererTop->width, finalStartPos.y + (lineRendererTop->width / 2.0f), 0);
-
-		lineRendererBottom->startPosition = Vector3(finalStartPos.x + lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
-		lineRendererBottom->endPosition = Vector3(finalEndPos.x - lineRendererBottom->width, finalEndPos.y - (lineRendererBottom->width / 2.0f), 0);
-
-		lineRendererLeft->startPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalStartPos.y, 0);
-		lineRendererLeft->endPosition = Vector3(finalStartPos.x + (lineRendererLeft->width / 2.0f), finalEndPos.y, 0);
-
-		lineRendererRight->startPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalStartPos.y, 0);
-		lineRendererRight->endPosition = Vector3(finalEndPos.x - (lineRendererRight->width / 2.0f), finalEndPos.y, 0);
-
-		for (int i = 0; i < unitSize; i++)
-		{
-			Unit* unit = units[i];
-			unit->selected = false;
-			if (isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) {
-				unit->selected = true;
-			}
-		}
-	}
-	else
-	{
-		SetSelection(false);
-		if (isDragging)
-		{
-			isDragging = false;
-			UnselectAllUnits();
-		}
-	}
-}
-
-void Game::OnEndDragging()
-{
-	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 	if (isDragging == true)
 	{
 		isDragging = false;
@@ -346,49 +191,7 @@ void Game::OnEndDragging()
 	}
 	else
 	{
-		int unitSize = units.size();
-		std::vector<Unit*> unitFound;
-
-		bool foundNewUnit = false;
-		for (int i = 0; i < unitSize; i++)
-		{
-			Unit* unit = units[i];
-			Vector2 unitMin = Vector2(unit->gameObject->transform.GetPosition().x - 0.2, unit->gameObject->transform.GetPosition().y - 0.2);
-			Vector2 unitMax = Vector2(unit->gameObject->transform.GetPosition().x + 0.2, unit->gameObject->transform.GetPosition().y + 0.2);
-
-			if (isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
-			{
-				unitFound.push_back(unit);
-				foundNewUnit = true;
-				break;
-			}
-		}
-
-		if (!foundNewUnit)
-		{
-			for (int i = 0; i < unitSize; i++)
-			{
-				Unit* unit = units[i];
-				if (unit->selected)
-				{
-					astar->SetDestination(Vector2(round(unit->gameObject->transform.GetPosition().x), round(unit->gameObject->transform.GetPosition().y)), Vector2(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
-					astar->Process();
-					unit->path = astar->GetPath();
-				}
-			}
-		}
-		else
-		{
-			if (!InputSystem::GetKey(LEFT_CONTROL))
-			{
-				UnselectAllUnits();
-			}
-			int unitFoundCount = unitFound.size();
-			for (int i = 0; i < unitFoundCount; i++)
-			{
-				unitFound[i]->selected = !unitFound[i]->selected;
-			}
-		}
+		unitManager->OnMouseUp();
 	}
 }
 
@@ -397,7 +200,7 @@ void Game::OnEndDragging()
 /// </summary>
 void Game::Loop()
 {
-	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
+	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
@@ -416,7 +219,7 @@ void Game::Loop()
 
 	if (InputSystem::GetKey(MOUSE_LEFT))
 	{
-		SelectUnits();
+		unitManager->SelectUnits();
 	}
 
 	if (InputSystem::GetKeyUp(MOUSE_RIGHT))
@@ -426,13 +229,13 @@ void Game::Loop()
 
 		if (dis <= 4)
 		{
-			UnselectAllUnits();
+			unitManager->UnselectAllUnits();
 		}
 	}
 
 	if (InputSystem::GetKeyUp(MOUSE_LEFT))
 	{
-		OnEndDragging();
+		OnMouseUp();
 	}
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
@@ -440,8 +243,6 @@ void Game::Loop()
 		//tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
 	}
 
-	MoveCamera();
-	ZoomCamera();
 	MoveCursor();
 }
 
