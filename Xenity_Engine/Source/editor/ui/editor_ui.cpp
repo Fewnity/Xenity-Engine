@@ -68,16 +68,18 @@ void EditorUI::DrawInspector()
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
 			selectedGameObject->transform.SetLocalScale(localScale);
 		}
-		//ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
+		ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
 		int componentCount = selectedGameObject->GetComponentCount();
-		ImGui::Text("Component count: %d", componentCount);
+
 		for (int i = 0; i < componentCount; i++)
 		{
-			std::string componentName = typeid(selectedGameObject->components[i]).name();
-			int nameLenght = componentName.size();
+			Component* comp = selectedGameObject->components[i];
+			std::string componentName = comp->componentName;
+			//std::string componentName = typeid(comp).name();
+			/*int nameLenght = componentName.size();
 			bool firstDelete = true;
 			for (int strI = 0; strI < nameLenght; strI++)
 			{
@@ -94,8 +96,15 @@ void EditorUI::DrawInspector()
 						break;
 					}
 				}
+			}*/
+			ImGui::Text("%s", componentName.c_str());
+			//int intVariableCount = comp->reflectedInts.size();
+			//int floatVariableCount = comp->reflectedFloats.size();
+			for (const auto& kv : comp->reflectedFloats)
+			{
+				DrawFloatInput(kv.first, *kv.second);
 			}
-			ImGui::Text("Component: %s", componentName.c_str());
+
 		}
 	}
 	ImGui::End();
@@ -157,6 +166,24 @@ void EditorUI::DrawTextCentered(std::string text)
 	ImGui::Text(text.c_str());
 }
 
+bool EditorUI::DrawFloatInput(std::string inputName, float& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	//ImGui::SetCursorPosX(150);
+	float oldValue = float(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputFloat(inputName1.c_str(), &value, 0, 0, "%f");
+
+	return value != oldValue;
+}
+
 bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::string name2, std::string name3, Vector3& value)
 {
 	std::string inputName1 = "##" + std::to_string(uiId);
@@ -174,17 +201,17 @@ bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::s
 	float startAvailSize = ImGui::GetContentRegionAvail().x - 150;
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName1.c_str(), &value.x);
+	ImGui::InputFloat(inputName1.c_str(), &value.x, 0, 0, "%f");
 	ImGui::SameLine();
 	ImGui::Text(name2.c_str());
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName2.c_str(), &value.y);
+	ImGui::InputFloat(inputName2.c_str(), &value.y, 0, 0, "%f");
 	ImGui::SameLine();
 	ImGui::Text(name3.c_str());
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName3.c_str(), &value.z);
+	ImGui::InputFloat(inputName3.c_str(), &value.z, 0, 0, "%f");
 
 	return value != oldValue;
 }

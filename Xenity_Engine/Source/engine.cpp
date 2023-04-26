@@ -260,8 +260,8 @@ void Engine::Loop()
 		UiManager::RenderTextCanvas("Center", 0.5, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
 
 		EditorUI::DrawProfiler();
-		//EditorUI::DrawInspector();
-		//EditorUI::DrawHierarchy();
+		EditorUI::DrawInspector();
+		EditorUI::DrawHierarchy();
 
 		//Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
 
