@@ -47,42 +47,42 @@ float Vector2Int::Distance(const Vector2Int a, const Vector2Int b)
 
 Vector2Int operator+(const Vector2Int& left, const Vector2Int& right)
 {
-	return { left.x + right.x, left.y + right.y };
+	return { (int)(left.x + right.x), (int)(left.y + right.y) };
 }
 
 Vector2Int operator-(const Vector2Int& left, const Vector2Int& right)
 {
-	return { left.x - right.x, left.y - right.y };
+	return { (int)(left.x - right.x), (int)(left.y - right.y) };
 }
 
 Vector2Int operator*(const float value, const Vector2Int& vec)
 {
-	return { vec.x * value, vec.y * value };
+	return { (int)(vec.x * value), (int)(vec.y * value)};
 }
 
 Vector2Int operator*(const Vector2Int& left, const Vector2Int& right)
 {
-	return { left.x * right.x, left.y * right.y };
+	return { (int)(left.x * right.x), (int)(left.y * right.y) };
 }
 
 Vector2Int operator*(const Vector2Int& vec, const float value)
 {
-	return { vec.x * value, vec.y * value};
+	return { (int)(vec.x * value), (int)(vec.y * value)};
 }
 
 Vector2Int operator/(const float value, const Vector2Int& vec)
 {
-	return { vec.x / value, vec.y / value };
+	return { (int)(vec.x / value), (int)(vec.y / value) };
 }
 
 Vector2Int operator/(const Vector2Int& vec, const float value)
 {
-	return { vec.x / value, vec.y / value };
+	return { (int)(vec.x / value), (int)(vec.y / value) };
 }
 
 Vector2Int operator/(const Vector2Int& left, const Vector2Int& right)
 {
-	return { left.x / right.x, left.y / right.y };
+	return { (int)(left.x / right.x), (int)(left.y / right.y) };
 }
 
 Vector2Int operator/=(Vector2Int& vec, const float value)

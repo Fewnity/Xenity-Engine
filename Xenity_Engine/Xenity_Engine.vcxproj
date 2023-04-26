@@ -208,6 +208,7 @@
     <ClCompile Include="Source\scene_manager\SceneManager.cpp" />
     <ClCompile Include="Source\tools\math.cpp" />
     <ClCompile Include="Source\vectors\vector2.cpp" />
+    <ClCompile Include="Source\vectors\vector2_int.cpp" />
     <ClCompile Include="Source\vectors\vector3.cpp" />
     <ClCompile Include="Source\vectors\vector4.cpp" />
     <ClCompile Include="Source\ui\window.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="Source\tools\math.h" />
     <ClInclude Include="Source\ui\TextAlignments.h" />
     <ClInclude Include="Source\vectors\vector2.h" />
+    <ClInclude Include="Source\vectors\vector2_int.h" />
     <ClInclude Include="Source\vectors\vector3.h" />
     <ClInclude Include="Source\vectors\vector4.h" />
     <ClInclude Include="Source\ui\window.h" />
