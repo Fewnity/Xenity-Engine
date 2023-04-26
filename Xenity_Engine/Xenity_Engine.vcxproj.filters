@@ -63,6 +63,7 @@
     <ClCompile Include="Source\graphics\line_renderer.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
+    <ClCompile Include="Source\rts_game\camera_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="Source\xenity_editor.h" />
     <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
+    <ClInclude Include="Source\rts_game\camera_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

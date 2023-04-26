@@ -15,6 +15,7 @@
 
 //Vectors
 #include "vectors/vector2.h"
+#include "vectors/vector2_int.h"
 #include "vectors/vector3.h"
 #include "vectors/vector4.h"
 
