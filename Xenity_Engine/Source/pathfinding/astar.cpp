@@ -3,13 +3,55 @@
 #include <corecrt_math.h>
 #include <iostream>
 
+/// <summary>
+/// Grid not initialised
+/// </summary>
+Astar::Astar()
+{
+}
+
+/// <summary>
+/// Grid initialised
+/// </summary>
+/// <param name="xGridSize"></param>
+/// <param name="yGridSize"></param>
 Astar::Astar(int xGridSize, int yGridSize)
 {
-	this->xGridSize = xGridSize;
-	this->yGridSize = yGridSize;
-	grid = (Tile*)malloc(xGridSize * yGridSize * sizeof(Tile));
+	SetGridSize(xGridSize, yGridSize);
+}
 
-	ResetGrid();
+/// <summary>
+/// Set the grid size
+/// </summary>
+/// <param name="xSize">Grid x size</param>
+/// <param name="ySize">Grid y size</param>
+void Astar::SetGridSize(int xSize, int ySize)
+{
+	//Destroy current data
+	DeleteGrid();
+	if (xSize > 0 && ySize > 0) 
+	{
+		xGridSize = xSize;
+		yGridSize = ySize;
+
+		//Create new grid
+		grid = (Tile*)malloc(xGridSize * yGridSize * sizeof(Tile));
+
+		//Fill grid with default values
+		ResetGrid();
+	}
+}
+
+void Astar::DeleteGrid()
+{
+	if (grid)
+		free(grid);
+}
+
+Astar::~Astar()
+{
+	nextTilesToCheck.clear();
+	DeleteGrid();
 }
 
 void Astar::ResetGrid()
@@ -41,24 +83,6 @@ void Astar::ResetGrid(bool clearObstacles)
 	cantAccess = false;
 }
 
-Astar::Tile* Astar::GetTile(int x, int y)
-{
-	if (grid == nullptr || x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
-		return nullptr;
-
-	return &grid[x * yGridSize + y];
-}
-
-Astar::Tile* Astar::GetTileFast(int x, int y)
-{
-	return &grid[x * yGridSize + y];
-}
-
-Astar::Tile* Astar::GetTileUltraFast(int& row, int& col)
-{
-	return &grid[row + col];
-}
-
 void Astar::SetTileIsObstacle(int x, int y, bool isObstacle)
 {
 	Tile* tile = GetTile(x, y);
@@ -69,7 +93,7 @@ void Astar::SetTileIsObstacle(int x, int y, bool isObstacle)
 
 void Astar::GetLowestFTile()
 {
-	int nextTileCount = nextTilesToCheck.size();
+	int nextTileCount = (int)nextTilesToCheck.size();
 	if (nextTileCount != 0) {
 
 		Tile* lowestTile = nextTilesToCheck[0];
@@ -170,32 +194,40 @@ void Astar::SetFinalPath()
 }
 
 /// <summary>
-/// Get found path
+/// Compute pathfinding and get the path
 /// </summary>
-/// <returns></returns>
+/// <returns>Points positions (start and end included) or empty if not path was found</returns>
 std::vector<Vector2> Astar::GetPath()
 {
 	std::vector<Vector2> path;
 
-	Tile* nextTile = currentTile;
-
-	while (nextTile != nullptr)
+	if (endTile->isObstacle)
 	{
-		path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
-		nextTile->isPath = true;
-		nextTile = nextTile->previousTile;
+		cantAccess = true;
 	}
+	else
+	{
+		while (!endTile->closed && !cantAccess)
+		{
+			ProcessOneStep();
+		}
+
+		if (!cantAccess)
+		{
+			//Start from the end
+			Tile* nextTile = currentTile;
+
+			//Navigate to the start tile
+			while (nextTile != nullptr)
+			{
+				path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
+				nextTile->isPath = true;
+				nextTile = nextTile->previousTile;
+			}
+		}
+	}
+
 	return path;
-}
-
-int Astar::GetXGridSize()
-{
-	return xGridSize;
-}
-
-int Astar::GetYGridSize()
-{
-	return yGridSize;
 }
 
 /// <summary>
@@ -215,15 +247,4 @@ void Astar::SetDestination(Vector2 start, Vector2 end)
 	currentTile = GetTile(start.x, start.y);
 	currentTile->closed = true;
 	currentTile->g = 0;
-}
-
-/// <summary>
-/// Start pathfinding procress until a path is found or no path is possible
-/// </summary>
-void Astar::Process()
-{
-	while (!endTile->closed && !cantAccess)
-	{
-		ProcessOneStep();
-	}
 }

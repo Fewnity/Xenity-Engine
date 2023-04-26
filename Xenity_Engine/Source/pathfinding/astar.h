@@ -5,20 +5,28 @@
 class Astar
 {
 public:
-
-	Astar() = delete;
+	Astar();
 	Astar(int xGridSize, int yGridSize);
-	void SetTileIsObstacle(int x, int y, bool isObstacle);
-	void Process();
-	void ResetGrid();
-	std::vector<Vector2> GetPath();
-	int GetXGridSize();
-	int GetYGridSize();
+	~Astar();
 
-	bool cantAccess = false;
+	std::vector<Vector2> GetPath();
+	void SetDestination(Vector2 start, Vector2 end);
+	void SetTileIsObstacle(int x, int y, bool isObstacle);
+	void SetGridSize(int xSize, int ySize);
+	void ResetGrid();
+
+	int GetXGridSize()
+	{
+		return xGridSize;
+	}
+
+	int GetYGridSize()
+	{
+		return yGridSize;
+	}
+
 	bool lowAccuracy = false;
 	bool canPassCorners = false;
-	void SetDestination(Vector2 start, Vector2 end);
 
 	//To move in private
 	class Tile {
@@ -32,24 +40,42 @@ public:
 
 		bool closed = false;
 		Tile* previousTile = nullptr;
-		bool isPath = false;
+		bool isPath = false; // TODO To remove later
 		bool inList = false;
 	};
-	Tile* GetTile(int x, int y);
+	
 	Tile* currentTile = nullptr;
 	Tile* endTile = nullptr;
 	void ProcessOneStep();
+	Tile* GetTile(int x, int y)
+	{
+		if (grid == nullptr || x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
+			return nullptr;
+
+		return &grid[x * yGridSize + y];
+	}
+	bool cantAccess = false;
 
 private:
+	Tile* GetTileFast(int x, int y)
+	{
+		return &grid[x * yGridSize + y];
+	}
+
+	Tile* GetTileUltraFast(int& row, int& col)
+	{
+		return &grid[row + col];
+	}
+
 	void GetLowestFTile();
 	void SetFinalPath();
-	Tile* GetTileFast(int x, int y);
-	Tile* GetTileUltraFast(int& row, int& col);
 	void ResetGrid(bool clearObstacles);
+	void DeleteGrid();
+
 	Tile* grid = nullptr;
 	std::vector<Tile*> nextTilesToCheck;
-	Vector2 startPos;
-	Vector2 endPos;
+	Vector2 startPos = Vector2(0,0);
+	Vector2 endPos = Vector2(0, 0);
 	int xGridSize = 0;
 	int yGridSize = 0;
 };
