@@ -66,6 +66,7 @@
     <ClCompile Include="Source\rts_game\camera_manager.cpp" />
     <ClCompile Include="Source\vectors\vector2_int.cpp" />
     <ClCompile Include="Source\rts_game\unit_manager.cpp" />
+    <ClCompile Include="Source\rts_game\map_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\audio\audio_source.h" />
@@ -139,6 +140,8 @@
     <ClInclude Include="Source\rts_game\camera_manager.h" />
     <ClInclude Include="Source\vectors\vector2_int.h" />
     <ClInclude Include="Source\rts_game\unit_manager.h" />
+    <ClInclude Include="Source\rts_game\map_manager.h" />
+    <ClInclude Include="Source\rts_game\prop.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

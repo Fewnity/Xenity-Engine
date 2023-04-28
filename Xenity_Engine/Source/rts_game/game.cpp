@@ -12,28 +12,38 @@
 #include "../pathfinding/astar.h"
 #include "camera_manager.h"
 #include "unit_manager.h"
+#include "map_manager.h"
+
+Game* Game::game;
+
+Game* Game::GetGame()
+{
+	return game;
+}
 
 /// <summary>
 /// Init game
 /// </summary>
 void Game::Init()
 {
+	game = this;
 	LoadGameData();
 
-	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
-	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
-	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, -1));
-
-	GenerateMap();
-	CreateTileMaps();
 	GameObject* managersGameObject = new GameObject("Managers");
+	mapManager = new MapManager();
+	mapManager->LoadMapData();
+	mapManager->GenerateMap();
+	mapManager->CreateTileMaps();
+	managersGameObject->AddExistingComponent(mapManager);
+
 	cameraManager = new CameraManager();
 	cameraManager->Init();
+	managersGameObject->AddExistingComponent(cameraManager);
+
 	unitManager = new UnitManager();
 	unitManager->cameraManager = cameraManager;
 	unitManager->game = this;
 	unitManager->LoadUnitData();
-	managersGameObject->AddExistingComponent(cameraManager);
 	managersGameObject->AddExistingComponent(unitManager);
 
 	unitManager->SpawnUnits();
@@ -102,33 +112,14 @@ void Game::LoadGameData()
 	//SceneManager::LoadScene(scene);
 
 	textureShip = new Texture("ship_0000.png", "Ship");
-	Texture* textureTile0 = new Texture("rts/Tile/scifiTile_42.png", "Ground0");
-	textureTile0->SetPixelPerUnit(128);
-	Texture* textureTile1 = new Texture("rts/Tile/scifiTile_30.png", "Ground1");
-	textureTile1->SetPixelPerUnit(128);
+	
 	crosshair = new Texture("rts/crosshairs/crosshair.png", "Crosshair");
 	crosshair->SetPixelPerUnit(128);
 
 
 	gradient = new Texture("gradient.png", "gradient");
 
-	tilesTextures.push_back(textureTile0);
-	tilesTextures.push_back(textureTile1);
 
-	for (int i = 0; i < 19; i++)
-	{
-		std::string propTextureName = "rts/Environment/scifiEnvironment_" + std::to_string(i + 1) + ".png";
-		Texture* textureEnv = new Texture(propTextureName, "", Texture::Bilinear, true);
-		propsTextures.push_back(textureEnv);
-	}
-
-
-	int propsTexturesCount = propsTextures.size();
-	for (int i = 0; i < propsTexturesCount; i++)
-	{
-		propsTextures[i]->SetWrapMode(Texture::Clamp);
-		propsTextures[i]->SetPixelPerUnit(128);
-	}
 
 	material2D = new Material("2D Standard");
 	material2D->shader = shaderStandard2D;
@@ -244,175 +235,4 @@ void Game::Loop()
 	}
 
 	MoveCursor();
-}
-
-Game::Tile* Game::GetTile(int x, int y)
-{
-	if (tiles == nullptr)
-		return nullptr;
-
-	return &tiles[x * mapSize + y];
-}
-
-int Game::GetDrawPriority()
-{
-	return 0;
-}
-
-void Game::GenerateMap()
-{
-	if (tiles)
-		free(tiles);
-
-	tiles = (Tile*)malloc(mapSize * mapSize * sizeof(Tile));
-	for (int x = 0; x < mapSize; x++)
-	{
-		for (int y = 0; y < mapSize; y++)
-		{
-			Tile* tile = GetTile(x, y);
-			tile->groundTileId = 1;
-			tile->prop = nullptr;
-		}
-	}
-
-	if (astar)
-		delete astar;
-
-	astar = new Astar(mapSize, mapSize);
-	astar->canPassCorners = false;
-	//Fill map data
-
-	//Add trees
-	int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
-	for (int i = 0; i < treeCount; i++)
-	{
-		int id = 16 + rand() % 4;
-		CreateProp(id);
-	}
-
-	//Add rocks
-	int rockCount = minRockCount + rand() % (maxRockCount - minRockCount + 1);
-	for (int i = 0; i < rockCount; i++)
-	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 2 + rand() % 4;
-		else
-			id = 8 + rand() % 4;
-		CreateProp(id);
-	}
-
-	//Add emeralds
-	int emeraldCount = minRockEmeraldCount + rand() % (maxRockEmeraldCount - minRockEmeraldCount + 1);
-	for (int i = 0; i < emeraldCount; i++)
-	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 6;
-		else
-			id = 12;
-		CreateProp(id);
-	}
-
-	//Add gold
-	int goldCount = minRockGoldCount + rand() % (maxRockGoldCount - minRockGoldCount + 1);
-	for (int i = 0; i < goldCount; i++)
-	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 7;
-		else
-			id = 13;
-		CreateProp(id);
-	}
-
-	//Add crystal
-	int crystalCount = minCrystalCount + rand() % (maxCrystalCount - minCrystalCount + 1);
-	for (int i = 0; i < crystalCount; i++)
-	{
-		int id = 14 + rand() % 2;
-		CreateProp(id);
-	}
-
-	for (int x = 0; x < mapSize; x++)
-	{
-		for (int y = 0; y < mapSize; y++)
-		{
-			Tile* tile = GetTile(x, y);
-			if (tile->prop)
-			{
-				astar->SetTileIsObstacle(x, y, true);
-			}
-		}
-	}
-}
-
-/// <summary>
-/// Create a new prop in a random position
-/// </summary>
-/// <param name="id">Prop id</param>
-/// <returns>Created prop</returns>
-Prop* Game::CreateProp(int id)
-{
-	int x;
-	int y;
-	do
-	{
-		x = rand() % mapSize;
-		y = rand() % mapSize;
-	} while (GetTile(x, y)->prop != nullptr);
-
-	Prop* newProp = new Prop();
-	newProp->id = id;
-
-	Tile* tile = GetTile(x, y);
-	tile->prop = newProp;
-
-	return newProp;
-}
-
-/// <summary>
-/// Create tilemaps, 
-/// </summary>
-void Game::CreateTileMaps()
-{
-	//Create ground tile map
-	tileMap = new TileMap(material2DWithZ);
-	gameObjectTileMap->AddExistingComponent(tileMap);
-	tileMap->Setup(mapSize, mapSize);
-	tileMap->AddTexture(tilesTextures[0]);
-	tileMap->AddTexture(tilesTextures[1]);
-
-	//Create props tilemap
-	tileMapProps = new TileMap(material2DWithZ);
-	tileMapProps->layerOrder = 1;
-	gameObjectTileMap->AddExistingComponent(tileMapProps);
-	tileMapProps->Setup(mapSize, mapSize);
-
-	int propsTexturesCount = propsTextures.size();
-	for (int i = 0; i < propsTexturesCount; i++)
-	{
-		tileMapProps->AddTexture(propsTextures[i]);
-	}
-
-	//Fill tilemaps
-	for (int x = 0; x < mapSize; x++)
-	{
-		for (int y = 0; y < mapSize; y++)
-		{
-			Tile* tile = GetTile(x, y);
-			tileMap->SetTile(x, y, tile->groundTileId);
-
-			//Add prop
-			if (tile->prop != nullptr)
-			{
-				tileMapProps->SetTile(x, y, tile->prop->id);
-			}
-		}
-	}
-
-	tileMap->SetTile(1, 0, 2);
-	tileMap->SetTile(4, 2, 2);
-	tileMap->SetTile(4, 4, 2);
-	tileMap->SetTile(7, 1, 2);
 }

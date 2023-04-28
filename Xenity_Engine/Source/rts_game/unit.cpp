@@ -2,10 +2,15 @@
 #include <iostream>
 #include "../rts_game/unit_data.h"
 #include "../xenity.h"
+#include "../pathfinding/astar.h"
 
-Unit::Unit(UnitData* data)
+Unit::Unit(UnitData* data, MapManager* mapManager)
 {
+	reflectedFloats.insert(std::pair<std::string, float*>("Movement Speed", &movementSpeed));
+	componentName = "Unit";
+
 	unitData = data;
+	this->mapManager = mapManager;
 }
 
 void Unit::Start()
@@ -29,8 +34,8 @@ void Unit::Update()
 	{
 		Vector3 newPos = gameObject->transform.GetPosition();
 		Vector2 dir = (path[currentPathNode] - Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y)).normalize();
-		newPos.x += dir.x * Time::GetDeltaTime();
-		newPos.y += dir.y * Time::GetDeltaTime();
+		newPos.x += dir.x * Time::GetDeltaTime() * movementSpeed;
+		newPos.y += dir.y * Time::GetDeltaTime() * movementSpeed;
 		gameObject->transform.SetPosition(newPos);
 
 		if (Vector2::Distance(Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y), path[currentPathNode]) <= 0.02f)
@@ -42,5 +47,26 @@ void Unit::Update()
 				path.clear();
 			}
 		}
+	}
+}
+
+void Unit::SetDestination(Vector2Int position)
+{
+	mapManager->astar->SetDestination(Vector2(round(gameObject->transform.GetPosition().x), round(gameObject->transform.GetPosition().y)), Vector2(position.x, position.y));
+	path = mapManager->astar->GetPath();
+	int pathCount = path.size();
+	if(pathCount > 1)
+		currentPathNode = 1;
+	else
+		currentPathNode = 0;
+
+	if (destinationTile) 
+	{
+		destinationTile->RemoveUnit(this);
+	}
+	if (path.size() != 0) 
+	{
+		destinationTile = mapManager->GetTile(position.x, position.y);
+		destinationTile->AddUnit(this);
 	}
 }

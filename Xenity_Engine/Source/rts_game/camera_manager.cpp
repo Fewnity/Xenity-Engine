@@ -16,7 +16,7 @@ void CameraManager::Awake()
 
 void CameraManager::Init() 
 {
-	GameObject* cameraGameObject = new GameObject("cameraGameObject");
+	GameObject* cameraGameObject = new GameObject("Camera");
 	camera = new Camera();
 	cameraGameObject->AddExistingComponent(camera);
 

@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\rts_game\map_manager.cpp" />
     <ClCompile Include="Source\rts_game\camera_manager.cpp" />
     <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
@@ -257,6 +258,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\rts_game\map_manager.h" />
     <ClInclude Include="Source\rts_game\camera_manager.h" />
     <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
@@ -277,6 +279,7 @@
     <ClInclude Include="Source\graphics\camera_projection_types.h" />
     <ClInclude Include="Source\monobehaviour.h" />
     <ClInclude Include="Source\pathfinding\pathfinding.h" />
+    <ClInclude Include="Source\rts_game\prop.h" />
     <ClInclude Include="Source\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\debug\performance.h" />
     <ClInclude Include="Source\orbital_camera.h" />

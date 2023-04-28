@@ -5,28 +5,84 @@
 #include "../xenity.h"
 #include "../pathfinding/astar.h"
 #include "game.h"
+#include "map_manager.h"
 
 UnitManager::UnitManager()
 {
+	reflectedInts.insert(std::pair<std::string, int*>("Max Unit Per Tile", &maxUnitPerTile));
+	componentName = "Unit Manager";
+
+	//1 slot
+	UnitPlacement* placement = new UnitPlacement();
+	placement->positions.push_back(Vector2(0,0));
+	unitPlacements.push_back(placement);
+
+	//2 slots
+	placement = new UnitPlacement();
+	placement->positions.push_back(Vector2(0.25f, 0.25f));
+	placement->positions.push_back(Vector2(-0.25f, -0.25f));
+	unitPlacements.push_back(placement);
+
+	//3 slots
+	placement = new UnitPlacement();
+	placement->positions.push_back(Vector2(0.25f, 0.25f));
+	placement->positions.push_back(Vector2(-0.25f, -0.25f));
+	placement->positions.push_back(Vector2(0.0f, 0.0f));
+	unitPlacements.push_back(placement);
+
+	//4 slots
+	placement = new UnitPlacement();
+	placement->positions.push_back(Vector2(0.25f, 0.25f));
+	placement->positions.push_back(Vector2(0.25f, -0.25f));
+	placement->positions.push_back(Vector2(-0.25f, 0.25f));
+	placement->positions.push_back(Vector2(-0.25f, -0.25f));
+	unitPlacements.push_back(placement);
+
+	//5 slots
+	placement = new UnitPlacement();
+	placement->positions.push_back(Vector2(0.25f, 0.25f));
+	placement->positions.push_back(Vector2(0.25f, -0.25f));
+	placement->positions.push_back(Vector2(-0.25f, 0.25f));
+	placement->positions.push_back(Vector2(-0.25f, -0.25f));
+	placement->positions.push_back(Vector2(0.0f, 0.0f));
+	unitPlacements.push_back(placement);
 }
 
 void UnitManager::SpawnUnits()
 {
-	Unit* newUnit = new Unit(unitsData[0]);
+	Unit* newUnit = new Unit(unitsData[0], game->mapManager);
 	GameObject* unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(0, 0, 0));
 	unitGM->AddExistingComponent(newUnit);
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[4]);
+	newUnit = new Unit(unitsData[4], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(1, 2, 0));
 	unitGM->AddExistingComponent(newUnit);
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[10]);
+	newUnit = new Unit(unitsData[10], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(1, 1, 0));
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
+	newUnit = new Unit(unitsData[9], game->mapManager);
+	unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(3, 1, 0));
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
+	newUnit = new Unit(unitsData[8], game->mapManager);
+	unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(3, 2, 0));
+	unitGM->AddExistingComponent(newUnit);
+	units.push_back(newUnit);
+
+	newUnit = new Unit(unitsData[11], game->mapManager);
+	unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(Vector3(3, 3, 0));
 	unitGM->AddExistingComponent(newUnit);
 	units.push_back(newUnit);
 }
@@ -72,7 +128,8 @@ void UnitManager::SelectUnits()
 		{
 			Unit* unit = units[i];
 			unit->selected = false;
-			if (game->isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) {
+			if (game->isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) 
+			{
 				unit->selected = true;
 			}
 		}
@@ -116,8 +173,11 @@ void UnitManager::OnMouseUp()
 			Unit* unit = units[i];
 			if (unit->selected)
 			{
-				game->astar->SetDestination(Vector2(round(unit->gameObject->transform.GetPosition().x), round(unit->gameObject->transform.GetPosition().y)), Vector2(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
-				unit->path = game->astar->GetPath();
+				Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
+				if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y) && Game::GetGame()->mapManager->GetTile(tilePos.x, tilePos.y)->GetUnitCount() < maxUnitPerTile)
+				{
+					unit->SetDestination(tilePos);
+				}
 			}
 		}
 	}
