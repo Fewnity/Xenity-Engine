@@ -104,7 +104,10 @@ void EditorUI::DrawInspector()
 			{
 				DrawFloatInput(kv.first, *kv.second);
 			}
-
+			for (const auto& kv : comp->reflectedInts)
+			{
+				DrawIntInput(kv.first, *kv.second);
+			}
 		}
 	}
 	ImGui::End();
@@ -190,6 +193,23 @@ bool EditorUI::DrawFloatInput(std::string inputName, float& value)
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize);
 	ImGui::InputFloat(inputName1.c_str(), &value, 0, 0, "%f");
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawIntInput(std::string inputName, int& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	int oldValue = int(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputInt(inputName1.c_str(), &value);
 
 	return value != oldValue;
 }

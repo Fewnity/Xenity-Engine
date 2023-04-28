@@ -16,6 +16,7 @@ public:
 	static void DrawHierarchy();
 	static bool DrawVector3Input(std::string inputName, std::string name1, std::string name2, std::string name3, Vector3 &vector3);
 	static bool DrawFloatInput(std::string inputName, float& value);
+	static bool DrawIntInput(std::string inputName, int& value);
 	static void DrawTextCentered(std::string text);
 
 	static void DrawTreeItem(GameObject* child);
