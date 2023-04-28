@@ -120,7 +120,17 @@ void EditorUI::DrawTreeItem(GameObject* child)
 	if (childCount == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf;
 
+	if (child->GetLocalActive()) 
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
+	}
+	else 
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
+	}
+
 	bool opened = ImGui::TreeNodeEx(child->name.c_str(), flags);
+	ImGui::PopStyleColor();
 	if (ImGui::IsItemActivated() && ImGui::IsItemClicked())
 	{
 		engine->SetSelectedGameObject(child);
