@@ -49,11 +49,20 @@ public:
 	void ProcessOneStep();
 	Tile* GetTile(int x, int y)
 	{
-		if (grid == nullptr || x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
+		if (grid == nullptr || !IsValidPosition(x, y))
 			return nullptr;
 
 		return &grid[x * yGridSize + y];
 	}
+
+	bool IsValidPosition(int x, int y)
+	{
+		if (x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
+			return false;
+
+		return true;
+	}
+
 	bool cantAccess = false;
 
 private:

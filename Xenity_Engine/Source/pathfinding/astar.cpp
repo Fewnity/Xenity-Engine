@@ -29,7 +29,7 @@ void Astar::SetGridSize(int xSize, int ySize)
 {
 	//Destroy current data
 	DeleteGrid();
-	if (xSize > 0 && ySize > 0) 
+	if (xSize > 0 && ySize > 0)
 	{
 		xGridSize = xSize;
 		yGridSize = ySize;
@@ -199,30 +199,39 @@ void Astar::SetFinalPath()
 /// <returns>Points positions (start and end included) or empty if not path was found</returns>
 std::vector<Vector2> Astar::GetPath()
 {
+	ResetGrid(false);
 	std::vector<Vector2> path;
 
-	if (endTile->isObstacle)
+	endTile = GetTile(endPos.x, endPos.y);
+	currentTile = GetTile(startPos.x, startPos.y);
+	currentTile->closed = true;
+	currentTile->g = 0;
+
+	if (startPos != endPos)
 	{
-		cantAccess = true;
-	}
-	else
-	{
-		while (!endTile->closed && !cantAccess)
+		if (endTile->isObstacle)
 		{
-			ProcessOneStep();
+			cantAccess = true;
 		}
-
-		if (!cantAccess)
+		else
 		{
-			//Start from the end
-			Tile* nextTile = currentTile;
-
-			//Navigate to the start tile
-			while (nextTile != nullptr)
+			while (!endTile->closed && !cantAccess)
 			{
-				path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
-				nextTile->isPath = true;
-				nextTile = nextTile->previousTile;
+				ProcessOneStep();
+			}
+
+			if (!cantAccess)
+			{
+				//Start from the end
+				Tile* nextTile = currentTile;
+
+				//Navigate to the start tile
+				while (nextTile != nullptr)
+				{
+					path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
+					nextTile->isPath = true;
+					nextTile = nextTile->previousTile;
+				}
 			}
 		}
 	}
@@ -237,14 +246,9 @@ std::vector<Vector2> Astar::GetPath()
 /// <param name="end">End position</param>
 void Astar::SetDestination(Vector2 start, Vector2 end)
 {
-	ResetGrid(false);
-
-	startPos = start;
-	endPos = end;
-
-	endTile = GetTile(end.x, end.y);
-
-	currentTile = GetTile(start.x, start.y);
-	currentTile->closed = true;
-	currentTile->g = 0;
+	if (IsValidPosition(start.x, start.y) && IsValidPosition(end.x, end.y))
+	{
+		startPos = start;
+		endPos = end;
+	}
 }
