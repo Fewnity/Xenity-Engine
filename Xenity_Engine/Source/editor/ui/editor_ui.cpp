@@ -68,7 +68,7 @@ void EditorUI::DrawInspector()
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
 			selectedGameObject->transform.SetLocalScale(localScale);
 		}
-		ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
+		//ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -76,8 +76,10 @@ void EditorUI::DrawInspector()
 
 		for (int i = 0; i < componentCount; i++)
 		{
+			ImGui::Spacing();
+			ImGui::Spacing();
 			Component* comp = selectedGameObject->components[i];
-			std::string componentName = comp->componentName;
+			std::string componentName = "- " + comp->componentName;
 			//std::string componentName = typeid(comp).name();
 			/*int nameLenght = componentName.size();
 			bool firstDelete = true;
@@ -187,7 +189,6 @@ bool EditorUI::DrawFloatInput(std::string inputName, float& value)
 	ImGui::Text(inputName.c_str());
 	float titleWidth = ImGui::GetItemRectSize().x;
 	ImGui::SameLine();
-	//ImGui::SetCursorPosX(150);
 	float oldValue = float(value);
 	float startAvailSize = ImGui::GetContentRegionAvail().x;
 	ImGui::SameLine();
