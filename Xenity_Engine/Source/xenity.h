@@ -1,74 +1,78 @@
 #pragma once
 
-#include "monobehaviour.h"
-#include "component.h"
+#include "engine/monobehaviour.h"
+#include "engine/component.h"
 
-#include "asset_manager.h"
+#include "engine/asset_managent/asset_manager.h"
 
 //Engine
-#include "engine.h"
-#include "engine_settings.h"
+#include "engine/engine.h"
+#include "engine/engine_settings.h"
 
 //GameObjects
-#include "gameobject.h"
-#include "transform.h"
+#include "engine/game_elements/gameobject.h"
+#include "engine/game_elements/transform.h"
 
 //Vectors
-#include "vectors/vector2.h"
-#include "vectors/vector2_int.h"
-#include "vectors/vector3.h"
-#include "vectors/vector4.h"
+#include "engine/vectors/vector2.h"
+#include "engine/vectors/vector2_int.h"
+#include "engine/vectors/vector3.h"
+#include "engine/vectors/vector4.h"
 
 //UI
-#include "ui/window.h"
-#include "ui/ui_manager.h"
-#include "ui/TextAlignments.h"
+#include "engine/ui/window.h"
+#include "engine/graphics/ui/ui_manager.h"
+#include "engine/graphics/ui/TextAlignments.h"
 
 //Tools
-#include "tools/benchmark.h"
-#include "tools/curve.h"
-#include "tools/math.h"
-#include "tools/profiler_benchmark.h"
-#include "tools/shape_spawner.h"
+#include "engine/tools/benchmark.h"
+#include "engine/tools/curve.h"
+#include "engine/tools/math.h"
+#include "engine/tools/profiler_benchmark.h"
+#include "engine/tools/shape_spawner.h"
 
 //Time
-#include "time/time.h"
+#include "engine/time/time.h"
 
 //Scenes
 //#include "scene_manager/scene.h"
 //#include "scene_manager/SceneManager.h"
 
 //Lighting
-#include "lighting/lighting.h"
+#include "engine/lighting/lighting.h"
 
 //inputs
-#include "inputs/input_system.h"
+#include "engine/inputs/input_system.h"
 
 //Graphics
-#include "graphics/camera.h"
-#include "graphics/camera_projection_types.h"
-#include "graphics/graphics.h"
-#include "graphics/iDrawable.h"
-#include "graphics/iDrawableTypes.h"
-#include "graphics/material.h"
-#include "graphics/mesh.h"
-#include "graphics/shader.h"
-#include "graphics/sprite_manager.h"
-#include "graphics/spriteRenderer.h"
-#include "graphics/texture.h"
-#include "graphics/text_renderer.h"
-#include "graphics/tile_map.h"
-#include "graphics/line_renderer.h"
+#include "engine/graphics/camera.h"
+#include "engine/graphics/camera_projection_types.h"
+#include "engine/graphics/graphics.h"
+#include "engine/graphics/iDrawable.h"
+#include "engine/graphics/iDrawableTypes.h"
+#include "engine/graphics/material.h"
+#include "engine/graphics/3d_graphics/mesh.h"
+#include "engine/graphics/shader.h"
+#include "engine/graphics/2d_graphics/sprite_manager.h"
+#include "engine/graphics/2d_graphics/spriteRenderer.h"
+#include "engine/graphics/texture.h"
+#include "engine/graphics/ui/text_renderer.h"
+#include "engine/graphics/2d_graphics/tile_map.h"
+#include "engine/graphics/2d_graphics/line_renderer.h"
+#include "engine/graphics/color/color.h"
 
 //Files
-#include "file_system/file.h"
-//#include "file_system/mesh_loader/wavefront_loader.h"
+#include "engine/file_system/file.h"
 
 //Debug
-#include "debug/debug.h"
-#include "debug/performance.h"
+#include "engine/debug/debug.h"
+#include "engine/debug/performance.h"
 
 //Audio
-#include "audio/audio.h"
-#include "audio/audio_clip.h"
-#include "audio/audio_source.h"
+#include "engine/audio/audio.h"
+#include "engine/audio/audio_clip.h"
+#include "engine/audio/audio_source.h"
+
+//IA
+#include "engine/pathfinding/astar.h"
+//#include "engine/pathfinding/dijkstras.h"

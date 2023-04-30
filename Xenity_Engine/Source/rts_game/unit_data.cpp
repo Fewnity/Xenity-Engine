@@ -1,6 +1,6 @@
 #include "unit_data.h"
-#include "../graphics/texture.h"
-#include "../engine_settings.h"
+#include "../engine/graphics/texture.h"
+#include "../engine/engine_settings.h"
 
 UnitData::UnitData(int index, Texture* selectionTexture)
 {

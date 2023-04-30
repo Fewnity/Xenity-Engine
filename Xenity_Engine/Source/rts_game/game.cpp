@@ -9,7 +9,7 @@
 #include "unit_data.h"
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl2.h>
-#include "../pathfinding/astar.h"
+#include "../engine/pathfinding/astar.h"
 #include "camera_manager.h"
 #include "unit_manager.h"
 #include "map_manager.h"

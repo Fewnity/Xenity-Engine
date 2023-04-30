@@ -1,6 +1,6 @@
 #include "map_manager.h"
 #include "../xenity.h"
-#include "../pathfinding/astar.h"
+#include "../engine/pathfinding/astar.h"
 #include "prop.h"
 #include "game.h"
 #include "unit.h"

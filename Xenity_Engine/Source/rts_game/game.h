@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../graphics/tile_map.h"
-#include "../graphics/camera.h"
-#include "../graphics/iDrawable.h"
+#include "../engine/game_elements/gameobject.h"
+#include "../engine/vectors/vector2.h"
+#include "../engine/vectors/vector4.h"
 
 class Unit;
 class UnitData;
@@ -11,6 +11,8 @@ class Astar;
 class CameraManager;
 class UnitManager;
 class MapManager;
+class Material;
+class Texture;
 
 class Game
 {

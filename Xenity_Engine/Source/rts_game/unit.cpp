@@ -2,7 +2,7 @@
 #include <iostream>
 #include "../rts_game/unit_data.h"
 #include "../xenity.h"
-#include "../pathfinding/astar.h"
+#include "../engine/pathfinding/astar.h"
 
 Unit::Unit(UnitData* data, MapManager* mapManager)
 {

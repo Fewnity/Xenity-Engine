@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../scene_manager/scene.h"
+#include "../engine/scene_manager/scene.h"
 
 class SceneGame1 : public Scene
 {

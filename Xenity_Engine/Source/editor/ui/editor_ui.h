@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../vectors/vector3.h"
+#include "../../engine/vectors/vector3.h"
 #include <string>
 
 class GameObject;

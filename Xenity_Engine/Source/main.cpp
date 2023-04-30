@@ -1,22 +1,17 @@
 #include "main.h"
-#include "graphics/graphics.h"
 #include <SDL2/SDL.h>
 #include <iostream>
 
-#include "gameobject.h"
-#include "ui/window.h"
-
-#include "ui/ui_manager.h"
-#include "file_system/file.h"
-#include "inputs/input_system.h"
-#include "scene_manager/scene.h"
-#include "engine.h"
-
-#include "debug/debug.h"
+#include "xenity.h"
 
 #undef main
 
 using namespace std;
+
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 
 /*
  * TODO :
@@ -32,6 +27,8 @@ using namespace std;
  * Check error in AStar
  * Optimise component update system
  * Fix children local scale values
+ * fix set parent function
+ * Create Engine stop function
  * Check shader destructor : check if delete is needed if a shader can't compile
  * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  * Improvement : When a component is added/remove from a gameobject, just modify the ordered component list in Engine instead of clearing the list (create a function like OnComponentAddedOnGameObject)

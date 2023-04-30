@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../gameobject.h"
-#include "../graphics/camera.h"
+#include "../engine/game_elements/gameobject.h"
+#include "../engine/graphics/camera.h"
 //#include "../graphics/iDrawable.h"
 
 class Material;
