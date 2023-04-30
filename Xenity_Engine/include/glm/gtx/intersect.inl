@@ -108,25 +108,25 @@ namespace glm
 
 		genType Perpendicular = cross(dir, edge2);
 
-		float det = dot(edge1, Perpendicular);
+		typename genType::value_type det = dot(edge1, Perpendicular);
 
 		if (det > -Epsilon && det < Epsilon)
 			return false;
 		typename genType::value_type inv_det = typename genType::value_type(1) / det;
 
-		genType Tengant = orig - vert0;
+		genType Tangent = orig - vert0;
 
-		position.y = dot(Tengant, Perpendicular) * inv_det;
+		position.y = dot(Tangent, Perpendicular) * inv_det;
 		if (position.y < typename genType::value_type(0) || position.y > typename genType::value_type(1))
 			return false;
 
-		genType Cotengant = cross(Tengant, edge1);
+		genType Cotangent = cross(Tangent, edge1);
 
-		position.z = dot(dir, Cotengant) * inv_det;
+		position.z = dot(dir, Cotangent) * inv_det;
 		if (position.z < typename genType::value_type(0) || position.y + position.z > typename genType::value_type(1))
 			return false;
 
-		position.x = dot(edge2, Cotengant) * inv_det;
+		position.x = dot(edge2, Cotangent) * inv_det;
 
 		return true;
 	}
@@ -135,7 +135,7 @@ namespace glm
 	GLM_FUNC_QUALIFIER bool intersectRaySphere
 	(
 		genType const& rayStarting, genType const& rayNormalizedDirection,
-		genType const& sphereCenter, const typename genType::value_type sphereRadiusSquered,
+		genType const& sphereCenter, const typename genType::value_type sphereRadiusSquared,
 		typename genType::value_type & intersectionDistance
 	)
 	{
@@ -143,11 +143,11 @@ namespace glm
 		genType diff = sphereCenter - rayStarting;
 		typename genType::value_type t0 = dot(diff, rayNormalizedDirection);
 		typename genType::value_type dSquared = dot(diff, diff) - t0 * t0;
-		if( dSquared > sphereRadiusSquered )
+		if( dSquared > sphereRadiusSquared )
 		{
 			return false;
 		}
-		typename genType::value_type t1 = sqrt( sphereRadiusSquered - dSquared );
+		typename genType::value_type t1 = sqrt( sphereRadiusSquared - dSquared );
 		intersectionDistance = t0 > t1 + Epsilon ? t0 - t1 : t0 + t1;
 		return intersectionDistance > Epsilon;
 	}

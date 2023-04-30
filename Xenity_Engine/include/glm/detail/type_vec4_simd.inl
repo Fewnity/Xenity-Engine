@@ -304,7 +304,7 @@ namespace detail
 	{
 		static bool call(vec<4, float, Q> const& v1, vec<4, float, Q> const& v2)
 		{
-			return _mm_movemask_ps(_mm_cmpeq_ps(v1.data, v2.data)) != 0;
+			return _mm_movemask_ps(_mm_cmpneq_ps(v1.data, v2.data)) == 0;
 		}
 	};
 
@@ -499,7 +499,7 @@ namespace detail {
 		vec<4, int, Q>
 		call(vec<4, int, Q> const& a, vec<4, int, Q> const& b)
 		{
-			vec<4, uint, Q> Result;
+			vec<4, int, Q> Result;
 			Result.data = vaddq_s32(a.data, b.data);
 			return Result;
 		}
@@ -577,7 +577,20 @@ namespace detail {
 		static vec<4, float, Q> call(vec<4, float, Q> const& a, vec<4, float, Q> const& b)
 		{
 			vec<4, float, Q> Result;
+#if GLM_ARCH & GLM_ARCH_ARMV8_BIT
 			Result.data = vdivq_f32(a.data, b.data);
+#else
+			/* Arm assembler reference:
+			 *
+			 * The Newton-Raphson iteration: x[n+1] = x[n] * (2 - d * x[n])
+			 * converges to (1/d) if x0 is the result of VRECPE applied to d.
+			 *
+			 * Note: The precision usually improves with two interactions, but more than two iterations are not helpful. */
+			float32x4_t x = vrecpeq_f32(b.data);
+			x = vmulq_f32(vrecpsq_f32(b.data, x), x);
+			x = vmulq_f32(vrecpsq_f32(b.data, x), x);
+			Result.data = vmulq_f32(a.data, x);
+#endif
 			return Result;
 		}
 	};
@@ -593,7 +606,7 @@ namespace detail {
 			cmp = vpminq_u32(cmp, cmp);
 			uint32_t r = cmp[0];
 #else
-			uint32x2_t cmpx2 = vpmin_u32(vget_low_f32(cmp), vget_high_f32(cmp));
+			uint32x2_t cmpx2 = vpmin_u32(vget_low_u32(cmp), vget_high_u32(cmp));
 			cmpx2 = vpmin_u32(cmpx2, cmpx2);
 			uint32_t r = cmpx2[0];
 #endif
@@ -612,7 +625,7 @@ namespace detail {
 			cmp = vpminq_u32(cmp, cmp);
 			uint32_t r = cmp[0];
 #else
-			uint32x2_t cmpx2 = vpmin_u32(vget_low_f32(cmp), vget_high_f32(cmp));
+			uint32x2_t cmpx2 = vpmin_u32(vget_low_u32(cmp), vget_high_u32(cmp));
 			cmpx2 = vpmin_u32(cmpx2, cmpx2);
 			uint32_t r = cmpx2[0];
 #endif
@@ -631,7 +644,7 @@ namespace detail {
 			cmp = vpminq_u32(cmp, cmp);
 			uint32_t r = cmp[0];
 #else
-			uint32x2_t cmpx2 = vpmin_u32(vget_low_f32(cmp), vget_high_f32(cmp));
+			uint32x2_t cmpx2 = vpmin_u32(vget_low_u32(cmp), vget_high_u32(cmp));
 			cmpx2 = vpmin_u32(cmpx2, cmpx2);
 			uint32_t r = cmpx2[0];
 #endif
