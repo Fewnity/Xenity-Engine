@@ -158,8 +158,8 @@ void Engine::SetSelectedGameObject(GameObject* newSelected)
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	//Game* game = new Game();
-	Game3D* game = new Game3D();
+	Game* game = new Game();
+	//Game3D* game = new Game3D();
 	//PathFinding* game = new PathFinding();
 	//RenderingTest2D *game = new RenderingTest2D();
 
@@ -210,6 +210,7 @@ void Engine::Loop()
 		{
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
