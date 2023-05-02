@@ -8,34 +8,34 @@ void RenderingTest2D::Init()
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
 
 	SpriteRenderer* gradientSprR = new SpriteRenderer(gradient, material2D);
-	gradientSprR->color = Vector4(1, 1, 1, 1.0f);
+	gradientSprR->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	gradientGameObject->AddExistingComponent(gradientSprR);
 	
 	SpriteRenderer* tileSprR = new SpriteRenderer(textureTile0, material2D);
-	tileSprR->color = Vector4(0.5, 1, 1, 1.0f);
+	tileSprR->color = Color::CreateFromRGBAFloat(0.5, 1, 1, 1.0f);
 	tileGameObject->AddExistingComponent(tileSprR);
 
 	//Static tiles
 	SpriteRenderer* tileSprRB = new SpriteRenderer(textureTile0, material2D);
-	tileSprRB->color = Vector4(1, 1, 1, 1.0f);
+	tileSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	tileSprRB->layerOrder = -1;
 	tileGameObjectBack->AddExistingComponent(tileSprRB);
 	tileGameObjectBack->transform.SetPosition(Vector3(-2, 0, 0));
 
 	SpriteRenderer* tileSprRF = new SpriteRenderer(textureTile0, material2D);
-	tileSprRF->color = Vector4(1, 1, 1, 1.0f);
+	tileSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	tileSprRF->layerOrder = 1;
 	tileGameObjectFront->AddExistingComponent(tileSprRF);
 	tileGameObjectFront->transform.SetPosition(Vector3(2, 0, 0));
 
 	//Static gradients
 	SpriteRenderer* gradientSprRB = new SpriteRenderer(gradient, material2D);
-	gradientSprRB->color = Vector4(1, 1, 1, 1.0f);
+	gradientSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	gradientGameObjectBack->AddExistingComponent(gradientSprRB);
 	gradientGameObjectBack->transform.SetPosition(Vector3(-2, 1, -1));
 
 	SpriteRenderer* gradientSprRF = new SpriteRenderer(gradient, material2D);
-	gradientSprRF->color = Vector4(1, 1, 1, 1.0f);
+	gradientSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	gradientGameObjectFront->AddExistingComponent(gradientSprRF);
 	gradientGameObjectFront->transform.SetPosition(Vector3(2, 1, 1));
 

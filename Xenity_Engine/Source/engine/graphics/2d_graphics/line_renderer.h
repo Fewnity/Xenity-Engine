@@ -7,6 +7,7 @@ class Material;
 #include "../iDrawable.h"
 #include "../../vectors/vector4.h"
 #include "../../vectors/vector3.h"
+#include "../color/color.h"
 
 class LineRenderer : public IDrawable
 {
@@ -19,7 +20,8 @@ class LineRenderer : public IDrawable
 		int GetDrawPriority();
 
 		Material* material = nullptr;
-		Vector4 color = Vector4(1,1,1,1);
+		Color color = Color();
+		//Vector4 color = Vector4(1,1,1,1);
 		Vector3 startPosition = Vector3(0, 0, 0);
 		Vector3 endPosition = Vector3(0, 0, 0);
 		float width = 1;

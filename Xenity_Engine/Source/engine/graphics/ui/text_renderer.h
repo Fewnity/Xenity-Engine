@@ -4,10 +4,10 @@
 #include "../../component.h"
 #include "../iDrawable.h"
 #include "TextAlignments.h"
+#include "../color/color.h"
 
 class Font;
 class Shader;
-class Vector3;
 
 class TextRenderer : public IDrawable
 {
@@ -23,7 +23,7 @@ public:
 	int GetDrawPriority();
 
 	Font* font = nullptr;
-	Vector3 color = Vector3(1,1,1); // [0;1]
+	Color color = Color(); // [0;1]
 	Shader* shader = nullptr;
 	HorizontalAlignment horizontalAligment = H_Center;
 

@@ -195,7 +195,7 @@ void DrawCharacter() {
 /// <param name="y">Y position</param>
 /// <param name="scale">Text's scale</param>
 /// <param name="color">Text's color</param>
-void UiManager::RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
+void UiManager::RenderText(std::string text, float x, float y, float angle, float scale, float lineSpacing, Color color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
 {
 	//y = Window::GetHeight() - y;
 
@@ -218,7 +218,7 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 	s.SetShaderProjection();
 	s.SetShaderCameraPosition2D();
 	//s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
-	Vector4 col = Vector4(color.x, color.y, color.z, 1);
+	Vector4 col = color.GetRGBA().ToVector4();
 	s.SetShaderAttribut("color", col);
 
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
@@ -443,7 +443,7 @@ std::vector<Vector4> UiManager::GetTextLenght(std::string &text, int textLen, Fo
 	return lineLength;
 }
 
-void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Vector3 color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
+void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle, float scale, float lineSpacing, Color color, Font* font, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Shader& s)
 {
 	drawUIBenchmark->Start();
 	float aspect = Window::GetAspectRatio();
@@ -454,7 +454,8 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 	// activate corresponding render state	
 	s.Use();
 	s.SetShaderUnscaledProjection();
-	s.SetShaderAttribut("textColor", Vector3(color.x, color.y, color.z));
+	Vector3 col = Vector3(color.GetRGBA().r, color.GetRGBA().g, color.GetRGBA().b);
+	s.SetShaderAttribut("textColor", col);
 	s.SetShaderModel(Vector3(x, y, 0), Vector3(0, 0, angle), Vector3(1, 1, 1));
 	float startX = x;
 	int textLenght = (int)text.size();

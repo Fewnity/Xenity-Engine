@@ -5,7 +5,7 @@
 #include "../../vectors/vector2.h"
 #include "../../vectors/vector4.h"
 #include <glm/glm.hpp>
-
+#include "../color/color.h"
 
 class Texture;
 class Material;
@@ -48,7 +48,7 @@ private:
 	int width = 0;
 	int height = 0;
 	Tile* tiles = nullptr;
-	Vector4 color = Vector4(1, 1, 1, 1);
+	Color color = Color();
 	std::vector<SpriteBatch*> SpriteBatches;
 	bool needUpdateVertices = true;
 };

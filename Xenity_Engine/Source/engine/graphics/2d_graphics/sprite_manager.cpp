@@ -1,6 +1,6 @@
 #include "sprite_manager.h"
 #include "../../../xenity.h"
-
+#include "../color/color.h"
 #include <glad/glad.h>
 #include <iostream>
 
@@ -12,11 +12,12 @@ void UpdateMaterial(Material* material, glm::mat4* transformationMatrix);
 
 #pragma region Drawing
 
-void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector4& color, Material* material)
+void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Color color, Material* material)
 {
 	glm::mat4 t = glm::mat4(1);
 	UpdateMaterial(material, &t);
-	material->shader->SetShaderAttribut("color", color);
+	Vector4 rgbaColor = color.GetRGBA().ToVector4();
+	material->shader->SetShaderAttribut("color", rgbaColor);
 
 	float sizeFixer = 0.1f;
 
@@ -59,7 +60,7 @@ void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Vector
 	Performance::AddDrawCall();
 }
 
-void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color, const Texture* texture, Material* material)
+void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, const Texture* texture, Material* material)
 {
 	if (texture == nullptr || material == nullptr)
 		return;
@@ -72,8 +73,8 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Vector4& color,
 
 
 	float sizeFixer = 100 / diviser;
-
-	material->shader->SetShaderAttribut("color", color);
+	Vector4 rgbaColor = color.GetRGBA().ToVector4();
+	material->shader->SetShaderAttribut("color", rgbaColor);
 
 	//Scale
 	transformationMatrix[0].x *= w;
@@ -212,13 +213,14 @@ SpriteBatch::SpriteBatch(Material* mat, const Texture* texture)
 	glEnableVertexAttribArray(1);
 }
 
-void SpriteBatch::Draw(Vector4& color)
+void SpriteBatch::Draw(Color color)
 {
 	if (verticesCount != 0) {
 		glm::mat4 t = glm::mat4(1);
 		UpdateMaterial(material, &t);
 
-		material->shader->SetShaderAttribut("color", color);
+		Vector4 rgbaColor = color.GetRGBA().ToVector4();
+		material->shader->SetShaderAttribut("color", rgbaColor);
 
 		glDisable(GL_DEPTH_TEST);
 		//glEnable(GL_DEPTH_TEST);

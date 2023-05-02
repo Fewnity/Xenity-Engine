@@ -178,7 +178,7 @@ void PathFinding::LoadGameData()
 	camera->SetProjectionSize(3);
 }
 
-void DrawArrow(Vector2 start, Vector2 end, float width, Vector4& color, Material* material)
+void DrawArrow(Vector2 start, Vector2 end, float width, Color color, Material* material)
 {
 	Vector2 dir = (end - start).normalize();
 	float angle = atan2(dir.x, dir.y);
@@ -234,7 +234,7 @@ void PathFinding::DrawAStar()
 	else
 		inputsText += "\nCan pass corners mode:\nDisabled (C to change)\n";
 
-	UiManager::RenderTextCanvas(inputsText, 0, 0.5f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
+	UiManager::RenderTextCanvas(inputsText, 0, 0.5f, 0, 0.7f, 0, Color::CreateFromRGBAFloat(0.5f, 0.0f, 0.2f,1), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 }
 
 void PathFinding::DrawDijkstras()
@@ -262,12 +262,12 @@ void PathFinding::DrawDijkstras()
 	std::string sourceToDestText = "Shortest path from A to C\n";
 	sourceToDestText += "step " + std::to_string(aniamationStep) + "/" + std::to_string(dijkstras.pathCount - 1);
 
-	UiManager::RenderTextCanvas(sourceToDestText, 0.5, 0.03f, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
+	UiManager::RenderTextCanvas(sourceToDestText, 0.5, 0.03f, 0, 0.7f, 0, Color::CreateFromRGBAFloat(0.5f, 0.0f, 0.2f, 1), UiManager::fonts[0], H_Center, V_Bottom, *AssetManager::GetShader(7));
 	//UiManager::RenderTextCanvas(finalPath, 0.5, 0.5, 0, 0.7f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));
 
-	Vector4 arrowColor = Vector4(1, 1, 1, 1);
-	Vector4 greenArrowColor = Vector4(0, 1, 0, 1);
-	Vector3 textColor = Vector3(0, 0, 0);
+	Color arrowColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
+	Color greenArrowColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
+	Color textColor = Color::CreateFromRGBAFloat(0, 0, 0, 1);
 
 	//Show graph
 	int visualNodesCount = visualNodes.size();
@@ -379,7 +379,7 @@ VisualNode::VisualNode(Vector2 position, Texture* sprite)
 	gameobject->transform.SetPosition(Vector3(position.x, position.y, 0));
 	SpriteRenderer* spr = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
 	textRenderer = new TextRenderer(UiManager::fonts[0], 0.7f, AssetManager::GetShader(10));
-	textRenderer->color = Vector3(0, 0, 0);
+	textRenderer->color = Color::CreateFromRGBAFloat(0, 0, 0, 1);
 	gameobject->AddExistingComponent(spr);
 	gameobject->AddExistingComponent(textRenderer);
 }
@@ -399,15 +399,15 @@ void AStarVisualNode::Setup(Vector2 position, Texture* sprite)
 void AStarVisualNode::SetColor(int color)
 {
 	if (color == 0)
-		spriteRenderer->color = Vector4(1, 1, 1, 1); // Not scanned
+		spriteRenderer->color = Color::CreateFromRGBAFloat(1, 1, 1, 1); // Not scanned
 	else if (color == 1)
-		spriteRenderer->color = Vector4(1, 0.5, 0.5, 1); //closed
+		spriteRenderer->color = Color::CreateFromRGBAFloat(1, 0.5, 0.5, 1); //closed
 	else if (color == 2)
-		spriteRenderer->color = Vector4(0.5, 1, 0.5, 1); //Final path
+		spriteRenderer->color = Color::CreateFromRGBAFloat(0.5, 1, 0.5, 1); //Final path
 	else if (color == 3)
-		spriteRenderer->color = Vector4(0.5, 0.5, 1, 1); //Scanned but not locked
+		spriteRenderer->color = Color::CreateFromRGBAFloat(0.5, 0.5, 1, 1); //Scanned but not locked
 	else if (color == 4)
-		spriteRenderer->color = Vector4(0, 0, 0, 1); //Obstacle
+		spriteRenderer->color = Color::CreateFromRGBAFloat(0, 0, 0, 1); //Obstacle
 	else if (color == 5)
-		spriteRenderer->color = Vector4(1, 0, 1, 1); //Source and End
+		spriteRenderer->color = Color::CreateFromRGBAFloat(1, 0, 1, 1); //Source and End
 }

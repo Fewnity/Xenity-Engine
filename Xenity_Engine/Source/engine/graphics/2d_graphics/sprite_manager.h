@@ -5,6 +5,7 @@ class Texture;
 class Vector3;
 class Vector2;
 class Vector4;
+class Color;
 class Transform;
 #include <glm/glm.hpp>
 
@@ -12,7 +13,7 @@ class SpriteBatch {
 public:
 	SpriteBatch() = delete;
 	SpriteBatch(Material *mat, const Texture* texture);
-	void Draw(Vector4& color);
+	void Draw(Color color);
 	void AddVertices(Vector2 vertices[4]);
 	void SetBatchSize();
 
@@ -31,8 +32,8 @@ class SpriteManager
 public:
 	static void Init();
 	static void CreateSpriteBuffer();
-	static void Render2DLine(Vector3 start, Vector3 end, float width, Vector4& color, Material* material);
-	static void RenderSprite(glm::mat4 transformationMatrix, Vector4 &color, const Texture* texture, Material* material);
+	static void Render2DLine(Vector3 start, Vector3 end, float width, Color color, Material* material);
+	static void RenderSprite(glm::mat4 transformationMatrix, Color color, const Texture* texture, Material* material);
 
 private:
 	static unsigned int spriteVAO, spriteVBO, spriteVAOSmall, spriteVBOSmall;

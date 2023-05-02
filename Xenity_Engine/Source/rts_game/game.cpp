@@ -1,14 +1,9 @@
 #include "game.h"
 #include "../xenity.h"
-#include <SDL2/SDL.h>
 #include <chrono>
 #include <iostream>
-
-
 #include "unit.h"
 #include "unit_data.h"
-#include <imgui/imgui_impl_opengl3.h>
-#include <imgui/imgui_impl_sdl2.h>
 #include "../engine/pathfinding/astar.h"
 #include "camera_manager.h"
 #include "unit_manager.h"
@@ -51,19 +46,19 @@ void Game::Init()
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
 	SpriteRenderer* sprGrad = new SpriteRenderer(gradient, material2DWithZ);
-	sprGrad->color = Vector4(1, 1, 1, 1);
+	sprGrad->color = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	gameObjectCrosshair2->AddExistingComponent(sprGrad);
 
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
 	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2DWithZ);
-	spr5->color = Vector4(0, 0, 0, 0.2f);
+	spr5->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
 	gameObjectCrosshair->AddExistingComponent(spr5);
 
 	lineRendererTop = new LineRenderer(0.1f, material2D);
 	lineRendererBottom = new LineRenderer(0.1f, material2D);
 	lineRendererLeft = new LineRenderer(0.1f, material2D);
 	lineRendererRight = new LineRenderer(0.1f, material2D);
-	Vector4 selectionLineColor = Vector4(0, 0, 0, 0.2f);
+	Color selectionLineColor = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
 	lineRendererTop->color = selectionLineColor;
 	lineRendererBottom->color = selectionLineColor;
 	lineRendererLeft->color = selectionLineColor;
