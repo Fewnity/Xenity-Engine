@@ -29,6 +29,7 @@ using namespace std;
  * Fix children local scale values
  * fix set parent function
  * Create Engine stop function
+ * Check if sprite facing is correct while batching with negative sprite scales
  * Check shader destructor : check if delete is needed if a shader can't compile
  * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
  * Improvement : When a component is added/remove from a gameobject, just modify the ordered component list in Engine instead of clearing the list (create a function like OnComponentAddedOnGameObject)

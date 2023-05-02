@@ -82,6 +82,15 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, co
 	transformationMatrix[1].x *= h;
 	transformationMatrix[1].y *= h;
 
+	if ((transformationMatrix[1].y < 0 && transformationMatrix[0].x < 0) || (transformationMatrix[1].y > 0 && transformationMatrix[0].x > 0))
+	{
+		glFrontFace(GL_CCW);
+	}
+	else 
+	{
+		glFrontFace(GL_CW);
+	}
+
 	//Move
 	transformationMatrix[3].x *= -sizeFixer;
 	transformationMatrix[3].y *= sizeFixer;
