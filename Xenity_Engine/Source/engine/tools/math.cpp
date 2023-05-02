@@ -72,5 +72,5 @@ float Math::Clamp(float value, float min, float max)
 	{
 		value = max;
 	}
-	return 0.0f;
+	return value;
 }
