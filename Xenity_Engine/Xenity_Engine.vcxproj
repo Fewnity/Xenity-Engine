@@ -161,6 +161,7 @@
     <ClCompile Include="Source\engine\graphics\color\color.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_opengl.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_renderer_canvas.cpp" />
     <ClCompile Include="Source\rts_game\map_manager.cpp" />
     <ClCompile Include="Source\rts_game\camera_manager.cpp" />
     <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Source\engine\graphics\color\color.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_opengl.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
     <ClInclude Include="Source\rts_game\map_manager.h" />
     <ClInclude Include="Source\rts_game\camera_manager.h" />
     <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
