@@ -1,4 +1,6 @@
 #include "vector3.h"
+#include "vector2_int.h"
+#include "vector2.h"
 #include <corecrt_math.h>
 #include <corecrt_math_defines.h>
 
@@ -23,6 +25,20 @@ Vector3::Vector3(const float fillValue)
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
+}
+
+Vector3::Vector3(Vector2Int vect)
+{
+	this->x = vect.x;
+	this->y = vect.y;
+	this->z = 0;
+}
+
+Vector3::Vector3(Vector2 vect)
+{
+	this->x = vect.x;
+	this->y = vect.y;
+	this->z = 0;
 }
 
 #pragma endregion

@@ -1,11 +1,16 @@
 #pragma once
 
+class Vector2Int;
+class Vector2;
+
 class Vector3
 {
 public:
 	Vector3();
 	Vector3(const float x, const float y, const float z);
 	Vector3(const float fillValue);
+	Vector3(Vector2Int vect);
+	Vector3(Vector2 vect);
 
 	float x;
 	float y;
