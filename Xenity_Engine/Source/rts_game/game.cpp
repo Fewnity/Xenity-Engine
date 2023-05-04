@@ -8,6 +8,7 @@
 #include "camera_manager.h"
 #include "unit_manager.h"
 #include "map_manager.h"
+#include "build_manager.h"
 
 Game* Game::game;
 
@@ -25,6 +26,7 @@ void Game::Init()
 	LoadGameData();
 
 	GameObject* managersGameObject = new GameObject("Managers");
+
 	mapManager = new MapManager();
 	mapManager->LoadMapData();
 	mapManager->GenerateMap();
@@ -35,6 +37,13 @@ void Game::Init()
 	cameraManager->Init();
 	managersGameObject->AddExistingComponent(cameraManager);
 
+	buildManager = new BuildManager();
+	buildManager->game = this;
+	buildManager->mapManager = mapManager;
+	buildManager->cameraManager = cameraManager;
+	buildManager->LoadBuildingsData();
+	managersGameObject->AddExistingComponent(buildManager);
+
 	unitManager = new UnitManager();
 	unitManager->cameraManager = cameraManager;
 	unitManager->game = this;
@@ -42,6 +51,8 @@ void Game::Init()
 	managersGameObject->AddExistingComponent(unitManager);
 
 	unitManager->SpawnUnits();
+
+	buildManager->PlaceBuilding(Vector2Int(0, 0));
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
@@ -87,6 +98,20 @@ void Game::Init()
 	ParentTest->AddChild(childTest1);
 	ParentTest->AddChild(childTest2);
 	childTest1->AddChild(childTest3);
+
+	GameObject* canvasGO = new GameObject("Canvas");
+	ressourcesTextRenderer = new TextRendererCanvas(UiManager::fonts[0], 0.8, shaderTextCanvas);
+	ressourcesTextRenderer->horizontalAligment = H_Right;
+	ressourcesTextRenderer->verticalAlignment = V_Bottom;
+	ressourcesTextRenderer->position = Vector3(0, 0, 0);
+	canvasGO->AddExistingComponent(ressourcesTextRenderer);
+
+	modeTextRenderer = new TextRendererCanvas(UiManager::fonts[0], 0.8, shaderTextCanvas);
+	//modeTextRenderer->text = "Mode: Unit management";
+	modeTextRenderer->horizontalAligment = H_Center;
+	modeTextRenderer->verticalAlignment = V_Top;
+	modeTextRenderer->position = Vector3(0.5, 1, 0);
+	canvasGO->AddExistingComponent(modeTextRenderer);
 }
 
 void Game::LoadGameData()
@@ -97,7 +122,7 @@ void Game::LoadGameData()
 
 	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
 	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
-	Shader* shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
+	shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
 	Shader* shader2D = new Shader("vertex2D.shader", "fragment2D.shader");
 	Shader* shaderStandard2D = new Shader("vertexStandard2D.shader", "fragmentStandard2D.shader");
 	Shader* shaderStandard2DText = new Shader("vertexStandard2DText.shader", "fragmentStandard2DText.shader");
@@ -107,7 +132,7 @@ void Game::LoadGameData()
 	//SceneManager::LoadScene(scene);
 
 	textureShip = new Texture("ship_0000.png", "Ship");
-	
+
 	crosshair = new Texture("rts/crosshairs/crosshair.png", "Crosshair");
 	crosshair->SetPixelPerUnit(128);
 
@@ -135,7 +160,7 @@ bool Game::isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax)
 		);
 }
 
-bool Game::intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax) 
+bool Game::intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax)
 {
 	return (
 		aMin.x <= bMax.x &&
@@ -154,6 +179,28 @@ void Game::SetSelection(bool isSelecting)
 	gameObjectCrosshair->SetActive(!isSelecting);
 }
 
+void Game::UpdateRessourcesText()
+{
+	std::string ressourceText = "";
+	ressourceText += "Wood: 0\n";
+	ressourceText += "Stone: 0\n";
+	ressourceText += "Gold: 0\n";
+	ressourceText += "Crystal: 0\n";
+
+	ressourcesTextRenderer->text = ressourceText;
+}
+
+void Game::UpdateModeText()
+{
+	std::string modeText = "Mode: ";
+
+	if (manageMode == ManageUnits)
+		modeText += "Manage units";
+	else if (manageMode == ManageBuildings)
+		modeText += "Manage buildings";
+
+	modeTextRenderer->text = modeText;
+}
 
 void Game::MoveCursor()
 {
@@ -170,14 +217,21 @@ void Game::MoveCursor()
 void Game::OnMouseUp()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-	if (isDragging == true)
+	if (manageMode == ManageUnits)
 	{
-		isDragging = false;
-		SetSelection(false);
+		if (isDragging == true)
+		{
+			isDragging = false;
+			SetSelection(false);
+		}
+		else
+		{
+			unitManager->OnMouseUp();
+		}
 	}
-	else
+	else if (manageMode == ManageBuildings)
 	{
-		unitManager->OnMouseUp();
+		buildManager->OnMouseUp();
 	}
 }
 
@@ -193,6 +247,15 @@ void Game::Loop()
 		//SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
+	if (InputSystem::GetKeyDown(NUM_1))
+	{
+		manageMode = ManageUnits;
+	}
+	else if (InputSystem::GetKeyDown(NUM_2))
+	{
+		manageMode = ManageBuildings;
+	}
+
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
 		startSelectionPos = mouseWorldPosition;
@@ -205,17 +268,21 @@ void Game::Loop()
 
 	if (InputSystem::GetKey(MOUSE_LEFT))
 	{
-		unitManager->SelectUnits();
+		if (manageMode == ManageUnits)
+			unitManager->SelectUnits();
 	}
 
 	if (InputSystem::GetKeyUp(MOUSE_RIGHT))
 	{
 		Vector2 endMousePosition = InputSystem::mousePosition;
-		float dis = Vector2::Distance(startMousePosition, endMousePosition);
-
-		if (dis <= 4)
+		if (manageMode == ManageUnits)
 		{
-			unitManager->UnselectAllUnits();
+			float dis = Vector2::Distance(startMousePosition, endMousePosition);
+
+			if (dis <= 4)
+			{
+				unitManager->UnselectAllUnits();
+			}
 		}
 	}
 
@@ -230,4 +297,6 @@ void Game::Loop()
 	}
 
 	MoveCursor();
+	UpdateRessourcesText();
+	UpdateModeText();
 }

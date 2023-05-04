@@ -10,15 +10,17 @@ class Texture;
 class GameObject;
 class TileMap;
 class Vector2Int;
+class Building;
 
 class MapManager : public MonoBehaviour
 {
 public:
-	MapManager();
-	class Tile {
+	class Tile 
+	{
 	public:
 		int groundTileId = 0; // 0 is no tile
 		Prop* prop = nullptr;
+		Building* building = nullptr;
 		void AddUnit(Unit* unit);
 		void RemoveUnit(Unit* unit);
 		int GetUnitCount();
@@ -27,6 +29,8 @@ public:
 		void UpdateUnitsPositions();
 		std::vector<Unit*> units;
 	};
+
+	MapManager();
 	void Awake();
 	Tile** tiles = nullptr;
 	TileMap* tileMap = nullptr;
@@ -35,6 +39,7 @@ public:
 	void LoadMapData();
 	MapManager::Tile* GetTile(int x, int y);
 	Vector2Int GetTilePosition(MapManager::Tile* tile);
+	bool HasPropAtPosition(int x, int y);
 	bool IsValidPosition(int x, int y);
 	void GenerateMap();
 	void CreateTileMaps();

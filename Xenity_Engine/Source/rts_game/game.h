@@ -13,6 +13,15 @@ class UnitManager;
 class MapManager;
 class Material;
 class Texture;
+class Shader;
+class TextRendererCanvas;
+class BuildManager;
+
+enum ManageMode 
+{
+	ManageUnits,
+	ManageBuildings
+};
 
 class Game
 {
@@ -33,13 +42,19 @@ public:
 	bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax);
 	Texture* crosshair = nullptr;
 	MapManager* mapManager = nullptr;
-	UnitManager* unitManager = nullptr;;
+	BuildManager* buildManager = nullptr;
+	UnitManager* unitManager = nullptr;
+	TextRendererCanvas* ressourcesTextRenderer = nullptr;
+	TextRendererCanvas* modeTextRenderer = nullptr;
+	ManageMode manageMode = ManageMode::ManageUnits;
 
 private:
 	void LoadGameData();
 	void MoveCursor();
 	void OnMouseUp();
-	
+	void UpdateRessourcesText();
+	void UpdateModeText();
+
 	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
 	GameObject* gameObjectCrosshair2 = new GameObject("Sprite test");
 
@@ -49,11 +64,7 @@ private:
 	CameraManager* cameraManager = nullptr;;
 
 	Vector2 cursorPosition = Vector2(0, 0);
-
-
-
 	Vector2 startMousePosition = Vector2(0, 0);
-
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
 
 	//Textures
@@ -62,6 +73,7 @@ private:
 	Texture* gradient = nullptr;
 
 	//Shaders
+	Shader* shaderTextCanvas = nullptr;
 
 	//Materials
 	Material* material2D = nullptr;

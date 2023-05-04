@@ -2,15 +2,13 @@
 
 class Texture;
 
-class UnitData {
+class BuildingData {
 public:
-	UnitData() = delete;
-	UnitData(int index, Texture* selectionTexture);
+	BuildingData() = delete;
+	BuildingData(int index, Texture* selectionTexture);
 
 	Texture* textures[4];
 	Texture* selectionTexture = nullptr;
 	float health = 0;
-	float speed = 0;
 	float price = 0;
-	bool rotateWhenMoving = false;
 };

@@ -14,7 +14,7 @@ UnitManager::UnitManager()
 
 	//1 slot
 	UnitPlacement* placement = new UnitPlacement();
-	placement->positions.push_back(Vector2(0,0));
+	placement->positions.push_back(Vector2(0, 0));
 	unitPlacements.push_back(placement);
 
 	//2 slots
@@ -128,7 +128,7 @@ void UnitManager::SelectUnits()
 		{
 			Unit* unit = units[i];
 			unit->selected = false;
-			if (game->isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos)) 
+			if (game->isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos))
 			{
 				unit->selected = true;
 			}
@@ -166,17 +166,80 @@ void UnitManager::OnMouseUp()
 		}
 	}
 
+	/*std::vector<Unit*> unitsToMove;
+	for (int i = 0; i < unitSize; i++)
+	{
+		Unit* unit = units[i];
+		if (unit->selected)
+		{
+			unitsToMove.push_back(unit);
+		}
+	}*/
 	if (!foundNewUnit)
 	{
-		for (int i = 0; i < unitSize; i++)
+		Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
+		if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y))
 		{
-			Unit* unit = units[i];
-			if (unit->selected)
+			std::vector<MapManager::Tile*> tilesToTest;
+			int offsetSize = 0;
+			tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x, tilePos.y));
+			int currentTileToTest = 0;
+
+			for (int i = 0; i < unitSize; i++)
 			{
-				Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
-				if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y) && Game::GetGame()->mapManager->GetTile(tilePos.x, tilePos.y)->GetUnitCount() < maxUnitPerTile)
+				Unit* unit = units[i];
+				if (unit->selected)
 				{
-					unit->SetDestination(tilePos);
+					bool placed = false;
+					std::cout << "unit" << i << std::endl;
+
+					do
+					{
+
+						if (tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile || unit->destinationTile == tilesToTest[currentTileToTest])
+						{
+							if (unit->destinationTile == tilesToTest[currentTileToTest])
+								std::cout << "UWU" << std::endl;
+							if (tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile)
+								std::cout << "UWU" << tilesToTest[currentTileToTest]->GetUnitCount() << std::endl;
+							unit->SetDestination(Game::GetGame()->mapManager->GetTilePosition(tilesToTest[currentTileToTest]));
+							placed = true;
+						}
+
+						if (!placed)
+						{
+							std::cout << "TILE NOT USABLE" << std::endl;
+							tilesToTest.erase(tilesToTest.begin() + currentTileToTest);
+							offsetSize++;
+							if (tilesToTest.size() == 0)
+							{
+								std::cout << "FINDING NEW TILE" << std::endl;
+								int squareSize = 1 + offsetSize * 2;
+								for (int squareX = 0; squareX < squareSize; squareX++)
+								{
+									for (int squareY = 0; squareY < squareSize; squareY++)
+									{
+										if (squareX == 0 || squareX == squareSize - 1 || squareY == 0 || squareY == squareSize - 1)
+										{
+											int off = (int)(squareSize / 2.0f);
+											std::cout << "TRY: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
+											if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x - off + squareX, tilePos.y - off + squareY) &&
+												!Game::GetGame()->mapManager->HasPropAtPosition(tilePos.x - off + squareX, tilePos.y - off + squareY))
+											{
+												tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x - off + squareX, tilePos.y - off + squareY));
+												std::cout << "ADD: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
+											}
+										}
+
+									}
+								}
+							}
+							std::cout << "FINDING NEW TILE ENDED" << std::endl;
+							//TODO IF tilesToTest.size() == 0
+							currentTileToTest = rand() % tilesToTest.size();
+							std::cout << "NEW TILE TO TEST: " << currentTileToTest << std::endl;
+						}
+					} while (!placed);
 				}
 			}
 		}
@@ -210,6 +273,9 @@ void UnitManager::LoadUnitData()
 	for (int i = 0; i < 12; i++)
 	{
 		UnitData* newUnitData = new UnitData(i, game->crosshair);
+		if (i >= 6)
+			newUnitData->rotateWhenMoving = true;
+
 		unitsData.push_back(newUnitData);
 	}
 }

@@ -4,8 +4,6 @@
 
 UnitData::UnitData(int index, Texture* selectionTexture)
 {
-	EngineSettings::anisotropicLevel = Texture::X0;
-
 	int textureNameIndex = index + 1;
 	//Load blue ints
 	std::string unitTextureName = "rts/Unit/blueUnit_" + std::to_string(textureNameIndex) + ".png";

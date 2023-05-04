@@ -61,6 +61,11 @@ bool MapManager::IsValidPosition(int x, int y)
 	return true;
 }
 
+bool MapManager::HasPropAtPosition(int x, int y)
+{
+	return GetTile(x, y)->prop != nullptr;
+}
+
 Vector2Int MapManager::GetTilePosition(MapManager::Tile* tile)
 {
 	Vector2Int pos = Vector2Int(-1);
@@ -245,10 +250,10 @@ void MapManager::CreateTileMaps()
 		}
 	}
 
-	tileMap->SetTile(1, 0, 2);
+	/*tileMap->SetTile(1, 0, 2);
 	tileMap->SetTile(4, 2, 2);
 	tileMap->SetTile(4, 4, 2);
-	tileMap->SetTile(7, 1, 2);
+	tileMap->SetTile(7, 1, 2);*/
 }
 
 void MapManager::Tile::AddUnit(Unit* unit)

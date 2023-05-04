@@ -28,14 +28,29 @@ void Unit::Start()
 void Unit::Update()
 {
 	selectionSpriteRenderer->SetIsEnabled(selected);
-
 	int pathSize = path.size();
-	if (pathSize != 0) 
+	if (pathSize != 0)
 	{
 		Vector3 newPos = gameObject->transform.GetPosition();
 		Vector2 dir = (path[currentPathNode] - Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y)).normalize();
 		newPos.x += dir.x * Time::GetDeltaTime() * movementSpeed;
 		newPos.y += dir.y * Time::GetDeltaTime() * movementSpeed;
+
+		if (unitData->rotateWhenMoving)
+		{
+			float angle = atan2(dir.x, dir.y);
+			gameObject->transform.SetRotation(Vector3(0, 0, angle * 180 / M_PI - 90));
+
+			if (dir.x < 0)
+			{
+				gameObject->transform.SetLocalScale(Vector3(1, -1, 1));
+			}
+			else
+			{
+				gameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+			}
+		}
+
 		gameObject->transform.SetPosition(newPos);
 
 		if (Vector2::Distance(Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y), path[currentPathNode]) <= 0.02f)
@@ -48,6 +63,16 @@ void Unit::Update()
 			}
 		}
 	}
+	else
+	{
+		if (unitData->rotateWhenMoving)
+		{
+			if (gameObject->transform.GetScale().y < 0)
+				gameObject->transform.SetRotation(Vector3(0, 0, 180));
+			else
+				gameObject->transform.SetRotation(Vector3(0, 0, 0));
+		}
+	}
 }
 
 void Unit::SetDestination(Vector2Int position)
@@ -55,18 +80,22 @@ void Unit::SetDestination(Vector2Int position)
 	mapManager->astar->SetDestination(Vector2(round(gameObject->transform.GetPosition().x), round(gameObject->transform.GetPosition().y)), Vector2(position.x, position.y));
 	path = mapManager->astar->GetPath();
 	int pathCount = path.size();
-	if(pathCount > 1)
+	if (pathCount > 1)
 		currentPathNode = 1;
 	else
 		currentPathNode = 0;
 
-	if (destinationTile) 
+	MapManager::Tile* newTile = mapManager->GetTile(position.x, position.y);
+	if (newTile != destinationTile)
 	{
-		destinationTile->RemoveUnit(this);
-	}
-	if (path.size() != 0) 
-	{
-		destinationTile = mapManager->GetTile(position.x, position.y);
-		destinationTile->AddUnit(this);
+		if (destinationTile)
+		{
+			destinationTile->RemoveUnit(this);
+		}
+		if (path.size() != 0)
+		{
+			destinationTile = newTile;
+			destinationTile->AddUnit(this);
+		}
 	}
 }
