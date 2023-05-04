@@ -21,11 +21,13 @@ public:
 	float lineSpacing = 0;
 	float characterSpacing = 0;
 	int GetDrawPriority();
+	int layerOrder = 0;
 
 	Font* font = nullptr;
-	Color color = Color(); // [0;1]
+	Color color = Color();
 	Shader* shader = nullptr;
 	HorizontalAlignment horizontalAligment = H_Center;
+	VerticalAlignment verticalAlignment = V_Center;
 
 private:
 	void Draw();

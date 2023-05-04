@@ -21,7 +21,7 @@ TextRenderer::~TextRenderer()
 
 int TextRenderer::GetDrawPriority()
 {
-	return gameObject->transform.GetPosition().z;
+	return gameObject->transform.GetPosition().z + layerOrder;
 }
 
 #pragma endregion
@@ -33,6 +33,6 @@ void TextRenderer::Draw()
 {
 	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled() && shader != nullptr)
 	{
-		UiManager::RenderText(text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, size, lineSpacing, color, font, horizontalAligment, V_Center, *shader);
+		UiManager::RenderText(text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
 	}
 }
