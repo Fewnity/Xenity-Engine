@@ -13,12 +13,12 @@
 
 Texture::Texture(const std::string filePath, std::string name)
 {
-	CreateTextutre(filePath, name, Bilinear, true);
+	CreateTexture(filePath, name, Bilinear, true);
 }
 
 Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
 {
-	CreateTextutre(filePath, name, filter, useMipMap);
+	CreateTexture(filePath, name, filter, useMipMap);
 }
 
 Texture::~Texture()
@@ -37,7 +37,7 @@ Texture::~Texture()
 /// <param name="filePath">File path</param>
 /// <param name="filter">Filter to use</param>
 /// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTextutre(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
+void Texture::CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
@@ -52,7 +52,8 @@ void Texture::CreateTextutre(const std::string filePath, std::string name, const
 /// Load texture from a filepath
 /// </summary>
 /// <param name="filePath"></param>
-void Texture::LoadTexture(const std::string filePath) {
+void Texture::LoadTexture(const std::string filePath) 
+{
 	Debug::Print("Loading texture...");
 
 	stbi_set_flip_vertically_on_load(false);

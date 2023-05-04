@@ -46,7 +46,7 @@ private:
 	Filter filter = Bilinear;
 	WrapMode wrapMode = Repeat;
 	bool useMipMap = true;
-	void CreateTextutre(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
+	void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
 	void LoadTexture(const std::string filePath);
 	unsigned int textureId;
 	int width = 0, height = 0, nrChannels = 0;

@@ -238,8 +238,6 @@ void Engine::Loop()
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 
-		std::string fpsText = std::to_string((int)(1 / Time::GetUnscaledDeltaTime())) + " fps";
-
 		//Draw screen tester
 		/*UiManager::RenderTextCanvas("Left", 0, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
 		UiManager::RenderTextCanvas("Right", 1, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Center, *AssetManager::GetShader(7));
