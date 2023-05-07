@@ -71,6 +71,20 @@ void CameraManager::MoveCamera()
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
+
+	float xOffset = 0.5;
+	float yOffset = 0.5;
+
+	if (newCameraPosition.x <= 0 - xOffset)
+		newCameraPosition.x = 0 - xOffset;
+	else if (newCameraPosition.x >= 60 - xOffset)
+		newCameraPosition.x = 60 - xOffset;
+
+	if (newCameraPosition.y <= 0 - yOffset)
+		newCameraPosition.y = 0 - yOffset;
+	else if (newCameraPosition.y >= 60 - yOffset)
+		newCameraPosition.y = 60 - yOffset;
+
 	camera->gameObject->transform.SetPosition(newCameraPosition);
 }
 
@@ -79,13 +93,13 @@ void CameraManager::ZoomCamera()
 	if (InputSystem::mouseWheel != 0)
 	{
 		cameraZoom -= InputSystem::mouseWheel / 3.0f;
-		if (cameraZoom < 0.7)
+		if (cameraZoom < 0.1)
 		{
-			cameraZoom = 0.7;
+			cameraZoom = 0.1;
 		}
-		else if (cameraZoom > 2.8f)
+		else if (cameraZoom > 20.8f)
 		{
-			cameraZoom = 2.8f;
+			cameraZoom = 20.8f;
 		}
 
 		camera->SetProjectionSize(2.5f * cameraZoom);

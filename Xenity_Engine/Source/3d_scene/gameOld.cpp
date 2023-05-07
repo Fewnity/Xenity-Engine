@@ -61,7 +61,7 @@ void Game3D::Init()
 	//SceneManager::LoadScene(scene);
 
 	Material* newMat = new Material("vStandard");
-	newMat->shader = shader3;
+	newMat->shader = shaderWithTessellation;
 	newMat->SetAttribut("color", Vector3(0, 1, 1));
 	newMat->SetAttribut("material.diffuse", texture5);
 	newMat->SetAttribut("material.specular", texture6);
@@ -85,7 +85,7 @@ void Game3D::Init()
 	chessMat->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
 	Material* newMat2 = new Material("vStandard2");
-	newMat2->shader = shader3;
+	newMat2->shader = shaderWithTessellation;
 	newMat2->SetAttribut("color", Vector3(0, 1, 1));
 	newMat2->SetAttribut("material.diffuse", texture5);
 	newMat2->SetAttribut("material.specular", texture6);
@@ -292,11 +292,6 @@ void Game3D::Loop()
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-	}
-
-	if (InputSystem::GetKeyDown(A))
-	{
-		EngineSettings::isWireframe = !EngineSettings::isWireframe;
 	}
 
 	Vector3 cubeNewRotation = cubeGameObject->transform.GetRotation();

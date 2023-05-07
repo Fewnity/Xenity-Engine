@@ -11,6 +11,7 @@ class GameObject;
 class TileMap;
 class Vector2Int;
 class Building;
+class PropData;
 
 class MapManager : public MonoBehaviour
 {
@@ -44,23 +45,22 @@ public:
 	void GenerateMap();
 	void CreateTileMaps();
 	Prop* CreateProp(int id);
+	Prop* CreateProp(int propType, int index);
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	Astar* astar = nullptr;
+	std::vector<PropData*> propsData;
 
 private:
 	//Map settings
-	int mapSize = 200;
-	int minTreeCount = 1500;
-	int maxTreeCount = 2000;
-	int minRockCount = 800;
-	int maxRockCount = 1200;
-	int minRockEmeraldCount = 500;
-	int maxRockEmeraldCount = 600;
-	int minRockGoldCount = 600;
-	int maxRockGoldCount = 800;
-	int minCrystalCount = 400;
-	int maxCrystalCount = 400;
-	std::vector<Texture*> propsTextures;
+	int mapSize = 60;
+	int minTreeCount = 400;
+	int maxTreeCount = 400;
+	int minRockCount = 100;
+	int maxRockCount = 100;
+	int minRockGoldCount = 50;
+	int maxRockGoldCount = 50;
+	int minCrystalCount = 30;
+	int maxCrystalCount = 30;
 	std::vector<Texture*> tilesTextures;
 };
 

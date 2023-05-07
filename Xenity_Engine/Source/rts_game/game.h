@@ -67,6 +67,11 @@ private:
 	Vector2 startMousePosition = Vector2(0, 0);
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
 
+	int wood = 0;
+	int rock = 0;
+	int gold = 0;
+	int crystal = 0;
+
 	//Textures
 
 	Texture* textureShip = nullptr;

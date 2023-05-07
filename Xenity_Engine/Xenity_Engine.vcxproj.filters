@@ -74,6 +74,7 @@
     <ClCompile Include="Source\rts_game\build_manager.cpp" />
     <ClCompile Include="Source\rts_game\building_data.cpp" />
     <ClCompile Include="Source\rts_game\building.cpp" />
+    <ClCompile Include="Source\rts_game\prop_data.cpp" />
     <ClCompile Include="Source\engine\noise\noise.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,8 @@
     <ClInclude Include="Source\rts_game\build_manager.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
+    <ClInclude Include="Source\rts_game\prop_type.h" />
+    <ClInclude Include="Source\rts_game\prop_data.h" />
     <ClInclude Include="Source\engine\noise\noise.h" />
   </ItemGroup>
   <ItemGroup>

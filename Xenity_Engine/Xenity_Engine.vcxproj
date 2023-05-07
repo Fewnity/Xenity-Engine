@@ -163,6 +163,7 @@
     <ClCompile Include="Source\engine\graphics\renderer\renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_renderer_canvas.cpp" />
     <ClCompile Include="Source\engine\noise\noise.cpp" />
+    <ClCompile Include="Source\rts_game\prop_data.cpp" />
     <ClCompile Include="Source\rts_game\building.cpp" />
     <ClCompile Include="Source\rts_game\building_data.cpp" />
     <ClCompile Include="Source\rts_game\build_manager.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
     <ClInclude Include="Source\engine\noise\noise.h" />
+    <ClInclude Include="Source\rts_game\prop_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
     <ClInclude Include="Source\rts_game\build_manager.h" />
@@ -341,6 +343,7 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\spriteRenderer.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
+    <ClInclude Include="Source\rts_game\prop_type.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
     <ClInclude Include="Source\rts_game\unit.h" />

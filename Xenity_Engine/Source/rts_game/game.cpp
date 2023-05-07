@@ -52,7 +52,7 @@ void Game::Init()
 
 	unitManager->SpawnUnits();
 
-	buildManager->PlaceBuilding(Vector2Int(0, 0));
+	//buildManager->PlaceBuilding(Vector2Int(0, 0));
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
@@ -182,10 +182,10 @@ void Game::SetSelection(bool isSelecting)
 void Game::UpdateRessourcesText()
 {
 	std::string ressourceText = "";
-	ressourceText += "Wood: 0\n";
-	ressourceText += "Stone: 0\n";
-	ressourceText += "Gold: 0\n";
-	ressourceText += "Crystal: 0\n";
+	ressourceText += "Wood: " + std::to_string(wood) + "\n";
+	ressourceText += "Stone: " + std::to_string(rock) + "\n";
+	ressourceText += "Gold: " + std::to_string(gold) + "\n";
+	ressourceText += "Crystal: " + std::to_string(crystal) + "\n";
 
 	ressourcesTextRenderer->text = ressourceText;
 }

@@ -10,12 +10,10 @@ BuildManager::BuildManager()
 {
 }
 
-
 void BuildManager::OnMouseUp()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 	PlaceBuilding(Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
-	
 }
 
 void BuildManager::LoadBuildingsData()
@@ -27,12 +25,22 @@ void BuildManager::LoadBuildingsData()
 	}
 }
 
-
 void BuildManager::PlaceBuilding(Vector2Int position)
 {
-	GameObject * buildingGO = new GameObject("Building");
-	Building *building = new Building(buildingsData[0], this);
-	buildingGO->AddExistingComponent(building);
-	buildingGO->transform.SetLocalPosition(position);
-	mapManager->GetTile(position.x, position.y)->building = building;
+	Building::BuildingType type = Building::Miner;
+	bool hasProp = mapManager->HasPropAtPosition(position.x, position.y);
+
+	if (mapManager->IsValidPosition(position.x, position.y))
+	{
+		if (!hasProp && type != Building::Miner || hasProp && type == Building::Miner)
+		{
+			MapManager::Tile* tile = mapManager->GetTile(position.x, position.y);
+
+			GameObject* buildingGO = new GameObject("Building");
+			Building* building = new Building(buildingsData[type], this);
+			buildingGO->AddExistingComponent(building);
+			buildingGO->transform.SetLocalPosition(position);
+			tile->building = building;
+		}
+	}
 }

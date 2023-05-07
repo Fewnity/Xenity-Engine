@@ -224,7 +224,8 @@ SpriteBatch::SpriteBatch(Material* mat, const Texture* texture)
 
 void SpriteBatch::Draw(Color color)
 {
-	if (verticesCount != 0) {
+	if (verticesCount != 0) 
+	{
 		glm::mat4 t = glm::mat4(1);
 		UpdateMaterial(material, &t);
 

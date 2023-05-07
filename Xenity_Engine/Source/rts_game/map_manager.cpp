@@ -5,6 +5,9 @@
 #include "game.h"
 #include "unit.h"
 #include "unit_manager.h"
+#include "prop_data.h"
+
+#include "../engine/noise/noise.h"
 
 MapManager::MapManager()
 {
@@ -28,20 +31,41 @@ void MapManager::LoadMapData()
 	tilesTextures.push_back(textureTile0);
 	tilesTextures.push_back(textureTile1);
 
-	for (int i = 0; i < 19; i++)
-	{
-		std::string propTextureName = "rts/Environment/scifiEnvironment_" + std::to_string(i + 1) + ".png";
-		Texture* textureEnv = new Texture(propTextureName, "", Texture::Bilinear, true);
-		propsTextures.push_back(textureEnv);
-	}
+	PropData* treeData = new PropData();
+	treeData->type = Wood;
+	//treeData->AddPropData(1, "rts/Environment/scifiEnvironment_16.png");
+	//treeData->AddPropData(1, "rts/Environment/scifiEnvironment_17.png");
+	treeData->AddPropData(1, "rts/Environment/scifiEnvironment_18.png");
+	treeData->AddPropData(1, "rts/Environment/scifiEnvironment_19.png");
+	treeData->AddPropData(1, "rts/Environment/scifiEnvironment_21.png");
+	treeData->AddPropData(1, "rts/Environment/scifiEnvironment_22.png");
+	treeData->AddPropData(1, "rts/Environment/scifiEnvironment_23.png");
 
+	PropData* rockData = new PropData();
+	rockData->type = Rock;
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_2.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_3.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_4.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_5.png");
+	/*rockData->AddPropData(1, "rts/Environment/scifiEnvironment_8.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_9.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_10.png");
+	rockData->AddPropData(1, "rts/Environment/scifiEnvironment_11.png");*/
 
-	int propsTexturesCount = propsTextures.size();
-	for (int i = 0; i < propsTexturesCount; i++)
-	{
-		propsTextures[i]->SetWrapMode(Texture::Clamp);
-		propsTextures[i]->SetPixelPerUnit(128);
-	}
+	PropData* goldData = new PropData();
+	goldData->type = Gold;
+	goldData->AddPropData(1, "rts/Environment/scifiEnvironment_7.png");
+	//goldData->AddPropData(1, "rts/Environment/scifiEnvironment_13.png");
+
+	PropData* crystalData = new PropData();
+	crystalData->type = Crystal;
+	crystalData->AddPropData(1, "rts/Environment/scifiEnvironment_14.png");
+	crystalData->AddPropData(1, "rts/Environment/scifiEnvironment_15.png");
+
+	propsData.push_back(treeData);
+	propsData.push_back(rockData);
+	propsData.push_back(goldData);
+	propsData.push_back(crystalData);
 }
 
 MapManager::Tile* MapManager::GetTile(int x, int y)
@@ -93,7 +117,6 @@ void MapManager::GenerateMap()
 			delete[] tiles[i];
 		}
 		delete[] tiles;
-		//free(tiles);
 	}
 
 	tiles = new Tile * [mapSize];
@@ -101,7 +124,6 @@ void MapManager::GenerateMap()
 		tiles[i] = new Tile[mapSize];//ymapSize
 	}
 
-	//tiles = (Tile*)malloc(mapSize * mapSize * sizeof(Tile));
 	for (int x = 0; x < mapSize; x++)
 	{
 		for (int y = 0; y < mapSize; y++)
@@ -121,54 +143,151 @@ void MapManager::GenerateMap()
 
 	//Add trees
 	int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
+	int treeDataCount = propsData[0]->data.size();
 	for (int i = 0; i < treeCount; i++)
 	{
-		int id = 16 + rand() % 4;
-		CreateProp(id);
+		//CreateProp(0, rand() % treeDataCount);
 	}
 
 	//Add rocks
 	int rockCount = minRockCount + rand() % (maxRockCount - minRockCount + 1);
+	int rockDataCount = propsData[1]->data.size();
 	for (int i = 0; i < rockCount; i++)
 	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 2 + rand() % 4;
-		else
-			id = 8 + rand() % 4;
-		CreateProp(id);
-	}
-
-	//Add emeralds
-	int emeraldCount = minRockEmeraldCount + rand() % (maxRockEmeraldCount - minRockEmeraldCount + 1);
-	for (int i = 0; i < emeraldCount; i++)
-	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 6;
-		else
-			id = 12;
-		CreateProp(id);
+		//CreateProp(1, rand() % rockDataCount);
 	}
 
 	//Add gold
 	int goldCount = minRockGoldCount + rand() % (maxRockGoldCount - minRockGoldCount + 1);
+	int goldDataCount = propsData[2]->data.size();
 	for (int i = 0; i < goldCount; i++)
 	{
-		int id = 0;
-		if (rand() % 2 == 0)
-			id = 7;
-		else
-			id = 13;
-		CreateProp(id);
+		//CreateProp(2, rand() % goldDataCount);
 	}
 
 	//Add crystal
 	int crystalCount = minCrystalCount + rand() % (maxCrystalCount - minCrystalCount + 1);
+	int crystalDataCount = propsData[3]->data.size();
 	for (int i = 0; i < crystalCount; i++)
 	{
-		int id = 14 + rand() % 2;
-		CreateProp(id);
+		//CreateProp(3, rand() % crystalDataCount);
+	}
+
+	Vector2 treeOffset1 = Vector2(rand(), rand());
+	Vector2 treeOffset2 = Vector2(rand(), rand());
+	Vector2 rockOffset = Vector2(rand(), rand());
+	Vector2 goldOffset = Vector2(rand(), rand());
+	Vector2 crystalOffset = Vector2(rand(), rand());
+
+	float noiseSize = 10;
+	float levelOffset = 1.7;
+
+	float noiseSize2 = 18;
+	float levelOffset2 = 2;
+
+	float noiseSizeRock = 18;
+	float levelOffsetRock = 1;
+
+	float noiseSizeGold = 18;
+	float levelOffsetGold = 1;
+
+	float noiseSizeCrystal = 18;
+	float levelOffsetCrystal = 1;
+	for (int x = 0; x < mapSize; x++)
+	{
+		for (int y = 0; y < mapSize; y++)
+		{
+			float forest1Noise = Noise::noise2(x / (float)mapSize * noiseSize, y / (float)mapSize * noiseSize);
+			float forest2Noise = Noise::noise2(x / (float)mapSize * noiseSize2, y / (float)mapSize * noiseSize2);
+			float rockNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + rockOffset.x, y / (float)mapSize * noiseSizeCrystal + rockOffset.y);
+			float goldNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + goldOffset.x, y / (float)mapSize * noiseSizeCrystal + goldOffset.y);
+			float crystalNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + crystalOffset.x, y / (float)mapSize * noiseSizeCrystal + crystalOffset.y);
+			if (forest1Noise >= 0.7)
+			{
+				Prop* newProp = new Prop();
+				newProp->data = propsData[0];
+				int dataSize = propsData[0]->data.size();
+				Tile* tile = GetTile(x, y);
+				tile->prop = newProp;
+				tile->prop->id = (int)((forest1Noise - 0.7f) / 0.3f * dataSize * levelOffset);
+				if (tile->prop->id >= dataSize)
+				{
+					tile->prop->id = dataSize - 1;
+				}
+				else if (tile->prop->id < 0)
+				{
+					tile->prop->id = 0;
+				}
+			}
+			else if (forest2Noise >= 0.75)
+			{
+					Prop* newProp = new Prop();
+					newProp->data = propsData[0];
+					int dataSize = propsData[0]->data.size();
+					Tile* tile = GetTile(x, y);
+					tile->prop = newProp;
+					tile->prop->id = (int)((forest2Noise - 0.75f) / 0.25f * dataSize * levelOffset2);
+					if (tile->prop->id >= dataSize)
+					{
+						tile->prop->id = dataSize - 1;
+					}
+					else if (tile->prop->id < 0)
+					{
+						tile->prop->id = 0;
+					}
+			}
+			else if (rockNoise >= 0.8)
+			{
+				Prop* newProp = new Prop();
+				newProp->data = propsData[1];
+				int dataSize = propsData[1]->data.size();
+				Tile* tile = GetTile(x, y);
+				tile->prop = newProp;
+				tile->prop->id = (int)((rockNoise - 0.8f) / 0.2f * dataSize * levelOffsetRock);
+				if (tile->prop->id >= dataSize)
+				{
+					tile->prop->id = dataSize - 1;
+				}
+				else if (tile->prop->id < 0)
+				{
+					tile->prop->id = 0;
+				}
+			}
+			else if (goldNoise >= 0.8)
+			{
+				Prop* newProp = new Prop();
+				newProp->data = propsData[2];
+				int dataSize = propsData[2]->data.size();
+				Tile* tile = GetTile(x, y);
+				tile->prop = newProp;
+				tile->prop->id = (int)((goldNoise - 0.8f) / 0.2f * dataSize * levelOffsetGold);
+				if (tile->prop->id >= dataSize)
+				{
+					tile->prop->id = dataSize - 1;
+				}
+				else if (tile->prop->id < 0)
+				{
+					tile->prop->id = 0;
+				}
+			}
+			else if (crystalNoise >= 0.85)
+			{
+				Prop* newProp = new Prop();
+				newProp->data = propsData[3];
+				int dataSize = propsData[3]->data.size();
+				Tile* tile = GetTile(x, y);
+				tile->prop = newProp;
+				tile->prop->id = (int)((crystalNoise - 0.85f) / 0.15f * dataSize * levelOffsetCrystal);
+				if (tile->prop->id >= dataSize)
+				{
+					tile->prop->id = dataSize - 1;
+				}
+				else if (tile->prop->id < 0)
+				{
+					tile->prop->id = 0;
+				}
+			}
+		}
 	}
 
 	for (int x = 0; x < mapSize; x++)
@@ -209,6 +328,31 @@ Prop* MapManager::CreateProp(int id)
 }
 
 /// <summary>
+/// Create a new prop in a random position
+/// </summary>
+/// <param name="id">Prop id</param>
+/// <returns>Created prop</returns>
+Prop* MapManager::CreateProp(int propType, int index)
+{
+	int x;
+	int y;
+	do
+	{
+		x = rand() % mapSize;
+		y = rand() % mapSize;
+	} while (GetTile(x, y)->prop != nullptr);
+
+	Prop* newProp = new Prop();
+	newProp->data = propsData[propType];
+	newProp->id = index;
+
+	Tile* tile = GetTile(x, y);
+	tile->prop = newProp;
+
+	return newProp;
+}
+
+/// <summary>
 /// Create tilemaps, 
 /// </summary>
 void MapManager::CreateTileMaps()
@@ -228,10 +372,14 @@ void MapManager::CreateTileMaps()
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
 	tileMapProps->Setup(mapSize, mapSize);
 
-	int propsTexturesCount = propsTextures.size();
-	for (int i = 0; i < propsTexturesCount; i++)
+	int propDataSize = propsData.size();
+	for (int i = 0; i < propDataSize; i++)
 	{
-		tileMapProps->AddTexture(propsTextures[i]);
+		int count = propsData[i]->data.size();
+		for (int j = 0; j < count; j++)
+		{
+			tileMapProps->AddTexture(propsData[i]->data[j]->texture);
+		}
 	}
 
 	//Fill tilemaps
@@ -245,7 +393,7 @@ void MapManager::CreateTileMaps()
 			//Add prop
 			if (tile->prop != nullptr)
 			{
-				tileMapProps->SetTile(x, y, tile->prop->id);
+				tileMapProps->SetTile(x, y, tile->prop->data->data[tile->prop->id]->texture);
 			}
 		}
 	}
@@ -285,16 +433,16 @@ void MapManager::Tile::UpdateUnitsPositions()
 {
 	Vector2Int pos = Game::GetGame()->mapManager->GetTilePosition(this);
 	int unitCount = (int)units.size();
-	if (unitCount != 0) 
+	if (unitCount != 0)
 	{
-		UnitPlacement* placement = Game::GetGame()->unitManager->unitPlacements[unitCount-1];
+		UnitPlacement* placement = Game::GetGame()->unitManager->unitPlacements[unitCount - 1];
 		for (int i = 0; i < unitCount; i++)
 		{
 			Unit* unit = units[i];
 			int pathCount = unit->path.size();
 
-			if(pathCount != 0)
-				unit->path.erase(unit->path.end()-1);
+			if (pathCount != 0)
+				unit->path.erase(unit->path.end() - 1);
 
 			unit->path.push_back(Vector2(pos.x + placement->positions[i].x, pos.y + placement->positions[i].y));
 		}
