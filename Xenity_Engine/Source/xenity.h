@@ -78,3 +78,6 @@
 //IA
 #include "engine/pathfinding/astar.h"
 //#include "engine/pathfinding/dijkstras.h"
+
+//Noise
+#include "engine/noise/noise.h"
