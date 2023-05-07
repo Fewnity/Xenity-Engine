@@ -231,10 +231,10 @@ void Engine::Loop()
 		drawIDrawablesBenchmark->Stop();
 		glPolygonMode(GL_FRONT, GL_FILL);
 
-		/*if (InputSystem::GetKeyDown(A))
+		if (InputSystem::GetKeyDown(A))
 		{
 			EngineSettings::isWireframe = !EngineSettings::isWireframe;
-		}*/
+		}
 
 		std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
 
