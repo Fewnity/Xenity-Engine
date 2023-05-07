@@ -62,22 +62,36 @@ TileMap::Tile* TileMap::GetTile(int x, int y)
 	return &tiles[x * height + y];
 }
 
+void TileMap::SetTile(int x, int y, Texture* texture)
+{
+	int textureSize = (int)textures.size();
+	for (int i = 0; i < textureSize; i++)
+	{
+		if (textures[i] == texture) 
+		{
+			SetTile(x, y, i);
+			break;
+		}
+	}
+}
+
 void TileMap::SetTile(int x, int y, int textureId)
 {
 	needUpdateVertices = true;
 	Tile* tile = GetTile(x, y);
 	if (tile)
 	{
-		if (tile->batch != nullptr) {
+		if (tile->batch != nullptr)
+		{
 			tile->batch->verticesCount -= 6;
 		}
 		tile->textureId = textureId;
-		int batchCount = (int)SpriteBatches.size();
+		int batchCount = (int)spriteBatches.size();
 		for (int i = 0; i < batchCount; i++)
 		{
-			if (SpriteBatches[i]->texture == textures[tile->textureId])
+			if (spriteBatches[i]->texture == textures[tile->textureId])
 			{
-				tile->batch = SpriteBatches[i];
+				tile->batch = spriteBatches[i];
 				tile->batch->verticesCount += 6;
 				break;
 			}
@@ -162,10 +176,10 @@ void TileMap::Draw()
 {
 	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled())
 	{
-		int batchCount = (int)SpriteBatches.size();
+		int batchCount = (int)spriteBatches.size();
 		for (int i = 0; i < batchCount; i++)
 		{
-			SpriteBatches[i]->SetBatchSize();
+			spriteBatches[i]->SetBatchSize();
 		}
 		if (tiles)
 		{
@@ -186,7 +200,7 @@ void TileMap::Draw()
 		needUpdateVertices = false;
 		for (int i = 0; i < batchCount; i++)
 		{
-			SpriteBatches[i]->Draw(color);
+			spriteBatches[i]->Draw(color);
 		}
 	}
 }
@@ -212,7 +226,7 @@ void TileMap::AddTexture(Texture* texture)
 		textures.push_back(texture);
 		if (texture != nullptr) {
 			SpriteBatch* newBatch = new SpriteBatch(material, texture);
-			SpriteBatches.push_back(newBatch);
+			spriteBatches.push_back(newBatch);
 		}
 	}
 }

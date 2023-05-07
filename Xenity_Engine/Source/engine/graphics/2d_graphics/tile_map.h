@@ -29,6 +29,7 @@ public:
 	int GetDrawPriority();
 	void Setup(int width, int height);
 	Tile * GetTile(int x, int y);
+	void SetTile(int x, int y, Texture* textureId);
 	void SetTile(int x, int y, int textureId);
 	int GetWidth();
 	int GetHeight();
@@ -49,7 +50,7 @@ private:
 	int height = 0;
 	Tile* tiles = nullptr;
 	Color color = Color();
-	std::vector<SpriteBatch*> SpriteBatches;
+	std::vector<SpriteBatch*> spriteBatches;
 	bool needUpdateVertices = true;
 };
 
