@@ -15,6 +15,14 @@ void EditorUI::Init()
 	Debug::Print("---- Editor UI initiated ----");
 }
 
+void EditorUI::NewFrame()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+	EditorUI::uiId = 0;
+}
+
 void EditorUI::DrawInspector()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -128,11 +136,11 @@ void EditorUI::DrawTreeItem(GameObject* child)
 	if (childCount == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf;
 
-	if (child->GetLocalActive()) 
+	if (child->GetLocalActive())
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
 	}
-	else 
+	else
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 	}

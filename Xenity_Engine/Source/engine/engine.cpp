@@ -211,10 +211,7 @@ void Engine::Loop()
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
 
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
-		ImGui::NewFrame();
-		EditorUI::uiId = 0;
+		EditorUI::NewFrame();
 
 		gameLoopBenchmark->Start();
 		game->Loop();

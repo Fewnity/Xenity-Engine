@@ -11,6 +11,7 @@ class EditorUI
 {
 public:
 	static void Init();
+	static void NewFrame();
 	static void DrawProfiler();
 	static void DrawInspector();
 	static void DrawHierarchy();
