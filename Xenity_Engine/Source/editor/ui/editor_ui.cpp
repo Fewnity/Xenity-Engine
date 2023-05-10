@@ -155,21 +155,21 @@ void EditorUI::DrawTreeItem(GameObject* child)
 
 void EditorUI::DrawHierarchy()
 {
-	ImGuiIO& io = ImGui::GetIO();
-
 	ImGui::Begin("Hierarchy");
 	//ImGui::SetWindowFontScale(2);
-
-	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
-
-	for (int i = 0; i < engine->gameObjectCount; i++)
+	if (!ImGui::IsWindowCollapsed())
 	{
-		if (engine->GetGameObjects()[i]->parent == nullptr)
+		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
+
+		for (int i = 0; i < engine->gameObjectCount; i++)
 		{
-			DrawTreeItem(engine->GetGameObjects()[i]);
+			if (engine->GetGameObjects()[i]->parent == nullptr)
+			{
+				DrawTreeItem(engine->GetGameObjects()[i]);
+			}
 		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 
 
 	ImGui::End();
