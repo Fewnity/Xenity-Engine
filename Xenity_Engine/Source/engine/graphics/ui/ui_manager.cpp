@@ -1,9 +1,8 @@
 #include "ui_manager.h"
 #include "../../../xenity.h"
+#include "../../graphics/renderer/renderer.h"
 
 #include <ft2build.h>
-#include <iostream>
-#include <glad/glad.h>
 
 #include FT_FREETYPE_H
 
@@ -16,7 +15,7 @@ Font::~Font()
 {
 	for (const auto& ch : Characters)
 	{
-		glDeleteTextures(1, &ch.TextureID);
+		Engine::renderer->DeleteTexture(ch.texture);
 	}
 }
 
@@ -42,28 +41,36 @@ int UiManager::Init()
 /// </summary>
 void UiManager::CreateTextBuffer()
 {
-	glGenVertexArrays(1, &textVAO);
-	glGenBuffers(1, &textVBO);
-	glBindVertexArray(textVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-	//Vertices and UV
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	textVAO = Engine::renderer->GenerateVertexArray();
+	textVBO = Engine::renderer->GenerateBuffer();
 
-	glGenVertexArrays(1, &textVAO2);
-	glGenBuffers(1, &textVBO2);
-	glBindVertexArray(textVAO2);
-	glBindBuffer(GL_ARRAY_BUFFER, textVBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	Engine::renderer->BindVertexArray(textVAO);
+	Engine::renderer->BindBuffer(Array_Buffer, textVBO);
+	Engine::renderer->SetBufferSize(Array_Buffer, Dynamic, 6 * 4);
+
+	//Vertices and UV
+
+	Engine::renderer->SetVertexAttribPointer(0, 4, 4, 0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
+
+	Engine::renderer->BindVertexArray(0);
+	Engine::renderer->BindBuffer(Array_Buffer, 0);
+
+	textVAO2 = Engine::renderer->GenerateVertexArray();
+	textVBO2 = Engine::renderer->GenerateBuffer();
+
+	Engine::renderer->BindVertexArray(textVAO2);
+	Engine::renderer->BindBuffer(Array_Buffer, textVBO2);
+
+	Engine::renderer->SetBufferSize(Array_Buffer, Dynamic, 6 * 4);
+	
 	//Vertices attrib
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
+	Engine::renderer->SetVertexAttribPointer(0, 2, 4, 0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
+
 	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	Engine::renderer->SetVertexAttribPointer(1, 2, 4, 2);
+	Engine::renderer->SetVertexAttribArray(true, 1);
 }
 
 #pragma region Manage fonts
@@ -97,8 +104,7 @@ Font* UiManager::CreateFont(std::string filePath)
 
 	//Load glyph
 	FT_Set_Pixel_Sizes(face, 0, 48);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	Engine::renderer->PixelStoreUnpack();
 
 	for (unsigned char c = 0; c < 255; c++)
 	{
@@ -112,26 +118,13 @@ Font* UiManager::CreateFont(std::string filePath)
 			}
 
 			// generate texture
-			unsigned int texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
-			);
+			Texture* texture = new Texture(Engine::renderer->GenerateTextureId(), 1, face->glyph->bitmap.width, face->glyph->bitmap.rows);
+			Engine::renderer->BindTexture(texture);
+			Engine::renderer->SetTextureData(texture, face->glyph->bitmap.buffer);
 
 			// set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			Engine::renderer->SetTextureWrapMode(Texture::ClampToEdge);
+			Engine::renderer->SetTextureFilter(texture, Texture::Bilinear);
 
 			// now store character for later use
 			Character character = {
@@ -147,8 +140,7 @@ Font* UiManager::CreateFont(std::string filePath)
 		}
 		catch (...)
 		{
-			Debug::Print("ERROR: Failed to load Glyph (Try Catch). Path: " + path);
-			//std::cout << "ERROR::" << std::endl;
+			Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
 			return nullptr;
 		}
 	}
@@ -251,8 +243,8 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 	}
 
 	//Window::
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(textVAO2);
+	Engine::renderer->EnableTextureUnit(0);
+	Engine::renderer->BindVertexArray(textVAO2);
 
 	for (int i = 0; i < textLenght; i++)
 	{
@@ -299,13 +291,16 @@ void UiManager::RenderText(std::string text, float x, float y, float angle, floa
 			};
 
 			// render glyph texture over quad
-			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+
+			Engine::renderer->BindTexture(ch.texture);
 			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, textVBO2);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			Engine::renderer->BindBuffer(Array_Buffer, textVBO2);
+			Engine::renderer->SetBufferSubData(Array_Buffer, *vertices, sizeof(vertices));
+			Engine::renderer->BindBuffer(Array_Buffer, 0);
+
 			// render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			Engine::renderer->DrawArray(Triangles, 0, 6);
+
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 			x2 += ((ch.Advance >> 6) * scale) / 1000.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}
@@ -485,9 +480,8 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 		y2 += totalY / 1000.f; //Used for Top
 	}
 
-	//Window::
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(textVAO);
+	Engine::renderer->EnableTextureUnit(0);
+	Engine::renderer->BindVertexArray(textVAO);
 
 	for (int i = 0; i < textLenght; i++)
 	{
@@ -530,14 +524,15 @@ void UiManager::RenderTextCanvas(std::string text, float x, float y, float angle
 				{ xpos + w, ypos + h,   1.0f, 0.0f }
 			};
 
-			// render glyph texture over quad
-			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+			Engine::renderer->BindTexture(ch.texture);
 			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			Engine::renderer->BindBuffer(Array_Buffer, textVBO);
+			Engine::renderer->SetBufferSubData(Array_Buffer, *vertices, sizeof(vertices));
+			Engine::renderer->BindBuffer(Array_Buffer, 0);
+
 			// render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			Engine::renderer->DrawArray(Triangles, 0, 6);
+
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 			x2 += ((ch.Advance >> 6) * scale) / 1000.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}

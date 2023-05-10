@@ -31,12 +31,12 @@ class SpriteManager
 {
 public:
 	static void Init();
-	static void CreateSpriteBuffer();
+	static void CreateSpriteBuffers();
 	static void Render2DLine(Vector3 start, Vector3 end, float width, Color color, Material* material);
 	static void RenderSprite(glm::mat4 transformationMatrix, Color color, const Texture* texture, Material* material);
 
 private:
-	static unsigned int spriteVAO, spriteVBO, spriteVAOSmall, spriteVBOSmall;
+	static unsigned int spriteVAOSmall, spriteVBOSmall;
 	static unsigned int lineVAO, lineVBO;
 	static const Texture* currentTexture;
 };

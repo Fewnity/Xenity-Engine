@@ -1,14 +1,10 @@
 #include "shader.h"
 #include "../../xenity.h"
+#include "../graphics/renderer/renderer.h"
 
 #include <iostream>
 
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -42,20 +38,22 @@ Shader::Shader(const std::string vertexShaderPath, const std::string fragmentSha
 Shader::~Shader()
 {
 	AssetManager::RemoveShader(this);
-	glDeleteShader(vertexShaderId);
-	glDeleteShader(fragmentShaderId);
-	if (useTessellation) {
-		glDeleteShader(tessellationEvaluationShaderId);
-		glDeleteShader(fragmentShaderId);
+	Engine::renderer->DeleteShader(vertexShaderId);
+	Engine::renderer->DeleteShader(fragmentShaderId);
+
+	if (useTessellation) 
+	{
+		Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+		Engine::renderer->DeleteShader(fragmentShaderId);
 	}
-	glDeleteProgram(programId);
+	Engine::renderer->DeleteShaderProgram(programId);
 }
 
 #pragma endregion
 
 #pragma region Getters
 
-GLuint Shader::GetProgramId()
+unsigned int Shader::GetProgramId()
 {
 	return this->programId;
 }
@@ -69,7 +67,7 @@ bool Shader::Use()
 {
 	if (Graphics::usedShaderProgram != programId)
 	{
-		glUseProgram(programId);
+		Engine::renderer->UseShaderProgram(programId);
 		Graphics::usedShaderProgram = programId;
 		return true;
 	}
@@ -86,45 +84,37 @@ void Shader::LoadShader(const std::string filePath, ShaderType type)
 	const char* shaderDataConst = shaderData.c_str();
 
 	unsigned int* id = nullptr;
-	int compileType = GL_VERTEX_SHADER;
 
 	switch (type)
 	{
 	case Shader::Vertex_Shader:
 		id = &vertexShaderId;
-		compileType = GL_VERTEX_SHADER;
 		break;
 	case Shader::Fragment_Shader:
 		id = &fragmentShaderId;
-		compileType = GL_FRAGMENT_SHADER;
 		break;
 	case Shader::Tessellation_Control_Shader:
 		id = &tessellationShaderId;
-		compileType = GL_TESS_CONTROL_SHADER;
 		break;
 	case Shader::Tessellation_Evaluation_Shader:
 		id = &tessellationEvaluationShaderId;
-		compileType = GL_TESS_EVALUATION_SHADER;
 		break;
 	}
 
 	if (id != nullptr)
 	{
 		//Compile
-		*id = glCreateShader(compileType);
-		glShaderSource(*id, 1, &shaderDataConst, NULL);
-		glCompileShader(*id);
+		*id = Engine::renderer->CreateShader(type);
+		Engine::renderer->SetShaderData(*id, shaderDataConst);
+		Engine::renderer->CompileShader(*id);
 
-		GLint vResult;
-		glGetShaderiv(*id, GL_COMPILE_STATUS, &vResult);
 
+		int vResult = Engine::renderer->GetShaderCompilationResult(*id);
 
 		//On error
 		if (vResult == 0)
 		{
-			int maxLength = 256;
-			std::vector<GLchar> errorLog(maxLength);
-			glGetShaderInfoLog(tessellationEvaluationShaderId, maxLength, &maxLength, &errorLog[0]);
+			std::vector<char> errorLog = Engine::renderer->GetCompilationError(*id);
 
 			std::string shaderError = "Compilation error: ";
 			switch (type)
@@ -167,7 +157,8 @@ void Shader::LoadShader(const std::string filePath, ShaderType type)
 /// <summary>
 /// Send to the shader the 3D camera position
 /// </summary>
-void Shader::SetShaderCameraPosition() {
+void Shader::SetShaderCameraPosition() 
+{
 	Use();
 	//Camera position
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
@@ -191,15 +182,16 @@ void Shader::SetShaderCameraPosition() {
 			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
 		else
 			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
-
-		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
+		
+		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
 }
 
 /// <summary>
 /// Send to the shader the 2D camera position
 /// </summary>
-void Shader::SetShaderCameraPosition2D() {
+void Shader::SetShaderCameraPosition2D() 
+{
 	Use();
 	//Camera position
 	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
@@ -210,13 +202,15 @@ void Shader::SetShaderCameraPosition2D() {
 			//-cam->gameObject->transform.GetPosition().y / 10.f / cam->GetProjectionSize() * 5.0f, 0));
 		camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f,
 			-cam->gameObject->transform.GetPosition().y / 10.f, 0));
-		glUniformMatrix4fv(glGetUniformLocation(programId, "camera"), 1, false, glm::value_ptr(camera));
+		
+		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
 }
 
-void Shader::SetShaderUnscaledProjection() {
+void Shader::SetShaderUnscaledProjection() 
+{
 	Use();
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetUnscaledProjection()));
+	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetUnscaledProjection());
 }
 
 /// <summary>
@@ -225,7 +219,7 @@ void Shader::SetShaderUnscaledProjection() {
 void Shader::SetShaderProjection()
 {
 	Use();
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(Graphics::usedCamera->GetProjection()));
+	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetProjection());
 }
 
 void Shader::SetShaderPosition(const Vector3 position)
@@ -233,7 +227,7 @@ void Shader::SetShaderPosition(const Vector3 position)
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
-	glUniformMatrix4fv(glGetUniformLocation(programId, "offset"), 1, false, glm::value_ptr(trans));
+	Engine::renderer->SetShaderAttribut(programId, "offset", trans);
 }
 
 /// <summary>
@@ -243,14 +237,15 @@ void Shader::SetShaderPosition(const Vector3 position)
 void Shader::SetShaderModel(const glm::mat4* trans)
 {
 	Use();
-	glUniformMatrix4fv(modelLocation, 1, false, glm::value_ptr(*trans));
+	Engine::renderer->SetShaderAttribut(programId, "model", *trans);
 }
 
 /// <summary>
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale) {
+void Shader::SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale) 
+{
 	Use();
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(position.x, position.y, position.z));
@@ -266,11 +261,11 @@ void Shader::SetShaderModel(const Vector3 position, const Vector3 eulerAngle, co
 	trans = glm::rotate(trans, glm::radians(eulerAngle.x), glm::vec3(1.0, 0.0, 0.0));
 	trans = glm::rotate(trans, glm::radians(eulerAngle.z), glm::vec3(0.0, 0.0, 1.0));
 	trans = glm::scale(trans, glm::vec3(scale.x, scale.y, scale.z));
-
-	glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, false, glm::value_ptr(trans));
+	Engine::renderer->SetShaderAttribut(programId, "model", trans);
 }
 
-void Shader::SetShaderRotation(const Vector3 eulerAngle) {
+void Shader::SetShaderRotation(const Vector3 eulerAngle) 
+{
 	Use();
 	//Rotation
 	glm::quat MyQuaternion;
@@ -287,61 +282,70 @@ void Shader::SetShaderRotation(const Vector3 eulerAngle) {
 	// Dans GLM l'angle doit être en degrés. Ici, donc, convertissez-le.
 	// MyQuaternion = gtx::quaternion::angleAxis(glm::degrees(RotationAngle), RotationAxis);
 
-	GLuint location = glGetUniformLocation(programId, "rotation");
 	glm::mat4 rotation = glm::toMat4(MyQuaternion);
-	glUniformMatrix4fv(location, 1, false, glm::value_ptr(rotation));
+	Engine::renderer->SetShaderAttribut(programId, "rotation", rotation);
 }
 
-void Shader::SetShaderScale(const Vector3 scale) {
+void Shader::SetShaderScale(const Vector3 scale) 
+{
 	Use();
 	glm::mat3 scaleMat = glm::mat3(glm::vec3(scale.x, 0.0, 0.0),
 		glm::vec3(0.0, scale.y, 0.0),
 		glm::vec3(0.0, 0.0, scale.z));
 
-	glUniformMatrix3fv(glGetUniformLocation(programId, "scale"), 1, false, glm::value_ptr(scaleMat));
+	Engine::renderer->SetShaderAttribut(programId, "scale", scaleMat);
 }
 
 
-void Shader::SetShaderAttribut(const char* attribut, Vector4& value) {
+void Shader::SetShaderAttribut(const char* attribut, const Vector4& value)
+{
 	Use();
-	glUniform4f(glGetUniformLocation(programId, attribut), value.x, value.y, value.z, value.w);
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const Vector3 value) {
+void Shader::SetShaderAttribut(const char* attribut, const Vector3& value) 
+{
 	Use();
-	glUniform3f(glGetUniformLocation(programId, attribut), value.x, value.y, value.z);
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const Vector2 value) {
+void Shader::SetShaderAttribut(const char* attribut, const Vector2& value) 
+{
 	Use();
-	glUniform2f(glGetUniformLocation(programId, attribut), value.x, value.y);
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const float value) {
+void Shader::SetShaderAttribut(const char* attribut, const float& value) 
+{
 	Use();
-	glUniform1f(glGetUniformLocation(programId, attribut), value);
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
+
+void Shader::SetShaderAttribut(const char* attribut, const int& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
 
 void Shader::MakeShader()
 {
-	programId = glCreateProgram();
-	glAttachShader(programId, vertexShaderId);
+	programId = Engine::renderer->CreateShaderProgram();
+	Engine::renderer->AttachShader(programId, vertexShaderId);
+
 	if (useTessellation) 
 	{
-	glAttachShader(programId, tessellationShaderId);
-	glAttachShader(programId, tessellationEvaluationShaderId);
+		Engine::renderer->AttachShader(programId, tessellationShaderId);
+		Engine::renderer->AttachShader(programId, tessellationEvaluationShaderId);
 	}
-	glAttachShader(programId, fragmentShaderId);
-	glLinkProgram(programId);
-	glUseProgram(programId);
-	modelLocation = glGetUniformLocation(programId, "model");
-	projectionLocation = glGetUniformLocation(programId, "projection");
-	AssetManager::AddShader(this);
-}
+	Engine::renderer->AttachShader(programId, fragmentShaderId);
 
-void Shader::SetShaderAttribut(const char* attribut, const int value) {
-	Use();
-	glUniform1i(glGetUniformLocation(programId, attribut), value);
+	Engine::renderer->LinkShaderProgram(programId);
+	Engine::renderer->UseShaderProgram(programId);
+
+	modelLocation = Engine::renderer->GetShaderUniformLocation(programId, "model");
+	projectionLocation = Engine::renderer->GetShaderUniformLocation(programId, "projection");
+	AssetManager::AddShader(this);
 }
 
 /// <summary>

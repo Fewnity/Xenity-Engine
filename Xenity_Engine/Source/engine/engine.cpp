@@ -8,10 +8,8 @@
 #include "../rendering_test/rendering_test_2d.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
-
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "graphics/renderer/renderer.h"
+#include "graphics/renderer/renderer_opengl.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 GameObject* Engine::selectedGameObject = nullptr;
@@ -26,6 +24,7 @@ ProfilerBenchmark* drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
 bool Engine::componentsListDirty = true;
 std::vector<Component*> Engine::orderedComponents;
 int Engine::componentsCount = 0;
+Renderer* Engine::renderer = nullptr;
 
 /// <summary>
 /// Init engine
@@ -37,7 +36,10 @@ int Engine::Init(const std::string exePath)
 	Debug::Init();
 	File::InitFileSystem(exePath);
 
-	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) {
+	renderer = new RendererOpengl();
+
+	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) 
+	{
 		return -1;
 	}
 	InputSystem::Init();
@@ -51,7 +53,14 @@ int Engine::Init(const std::string exePath)
 
 	Debug::Print("-------- Engine fully initiated --------");
 
+	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
+
 	return 0;
+}
+
+void Engine::Stop()
+{
+	renderer->Stop();
 }
 
 /// <summary>
@@ -197,18 +206,18 @@ void Engine::Loop()
 		}
 
 		//Clear the OpenGL window
-		glClearColor(0.529f, 0.808f, 0.922f, 1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		renderer->Clear();
 
 		//Set wireframe
 		if (EngineSettings::isWireframe)
 		{
-			glLineWidth(2);
-			glPolygonMode(GL_FRONT, GL_LINE);
+			renderer->SetLineWidth(2);
+			renderer->SetPolygoneMode(true, Line);
 		}
 		else
 		{
-			glPolygonMode(GL_FRONT, GL_FILL);
+			renderer->SetPolygoneMode(true, Fill);
 		}
 
 		EditorUI::NewFrame();
@@ -226,7 +235,7 @@ void Engine::Loop()
 		drawIDrawablesBenchmark->Start();
 		Graphics::DrawAllDrawable();
 		drawIDrawablesBenchmark->Stop();
-		glPolygonMode(GL_FRONT, GL_FILL);
+		renderer->SetPolygoneMode(true, Fill);
 
 		if (InputSystem::GetKeyDown(A))
 		{
@@ -247,33 +256,6 @@ void Engine::Loop()
 		EditorUI::DrawProfiler();
 		EditorUI::DrawInspector();
 		EditorUI::DrawHierarchy();
-
-		//Vector4 lineColor = Vector4(0.5f, 1.0f, 0.2f, 1.0f);
-
-		/*Vector2 arrowStart = Vector2(2, 0);
-		Vector2 arrowEnd = Vector2(0, -2);
-		Vector2 dir = (arrowEnd - arrowStart).normalize();
-		float angle = atan2(dir.x, dir.y);
-		Vector2 leftEnd = arrowEnd - dir / 2 + Vector2(-cos(angle) /4, sin(angle) / 4);
-		Vector2 rightEnd = arrowEnd - dir / 2 + Vector2(cos(angle) / 4, -sin(angle) / 4);
-
-		SpriteManager::Render2DLine(arrowStart, arrowEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard")); //Line
-		SpriteManager::Render2DLine(arrowEnd, leftEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));//Left
-		SpriteManager::Render2DLine(arrowEnd, rightEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));//Right*/
-
-		//SpriteManager::Render2DLine(arrowEnd, arrowEnd, 0.05f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-
-		/*SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, 0), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(2, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, 0), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(-2, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, -2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));
-		SpriteManager::Render2DLine(Vector2(0, 0), Vector2(0, 2), 0.2f, lineColor, AssetManager::GetMaterialByName("2D Standard"));*/
-
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

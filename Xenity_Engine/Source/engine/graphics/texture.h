@@ -21,15 +21,18 @@ public:
 		X16,
 	};
 
-	enum WrapMode 
-	{
+	enum WrapMode {
+		ClampToEdge,
+		ClampToBorder,
+		MirroredRepeat,
 		Repeat,
-		Clamp,
+		MirrorClampToEdge
 	};
 
 	Texture() = delete;
 	Texture(const std::string filePath, std::string name);
 	Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
+	Texture(const int textureId, const int channelCount, const int width, const int height);
 
 	~Texture();
 	unsigned int GetTextureId() const;
@@ -40,6 +43,9 @@ public:
 	int GetHeight() const;
 	void SetPixelPerUnit(int value);
 	int GetPixelPerUnit() const;
+	int GetChannelCount() const;
+	bool GetUseMipmap() const;
+
 	std::string name = "";
 
 private:

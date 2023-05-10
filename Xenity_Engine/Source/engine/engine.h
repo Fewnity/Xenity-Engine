@@ -1,12 +1,16 @@
 #pragma once
 
-#include "lighting/lighting.h"
-#include "audio/audio.h"
-#include "scene_manager/scene.h"
+#include <string>
+#include <vector>
+
+class Renderer;
+class GameObject;
+class Component;
 
 class Engine {
 public:
 	static int Init(const std::string exePath);
+	static void Stop();
 	static void AddGameObject(GameObject* gameObject);
 	static std::vector<GameObject*> GetGameObjects();
 	static void Loop();
@@ -15,6 +19,7 @@ public:
 	static int componentsCount;
 	static GameObject* selectedGameObject;
 	static int gameObjectCount;
+	static Renderer* renderer;
 
 	static void SetSelectedGameObject(GameObject*);
 private:

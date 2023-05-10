@@ -1,7 +1,7 @@
 #include "material.h"
 #include "../../xenity.h"
+#include "../graphics/renderer/renderer.h"
 
-#include <glad/glad.h>
 #include <iostream>
 
 #pragma region Constructors / Destructor
@@ -98,7 +98,8 @@ void Material::Use()
 		for (int i = 0; i < matCount; i++)
 		{
 			Material* mat = AssetManager::GetMaterial(i);
-			if (mat != this && mat->shader == shader) {
+			if (mat != this && mat->shader == shader) 
+			{
 				mat->updated = false;
 			}
 		}
@@ -122,8 +123,8 @@ void Material::Update()
 		for (const auto& kv : uniformsTextures)
 		{
 			//Enable each textures units
-			glActiveTexture(GL_TEXTURE0 + textureIndex);
-			glBindTexture(GL_TEXTURE_2D, kv.second->GetTextureId());
+			Engine::renderer->EnableTextureUnit(textureIndex);
+			Engine::renderer->BindTexture(kv.second);
 			shader->SetShaderAttribut(kv.first, textureIndex);
 			textureIndex++;
 		}

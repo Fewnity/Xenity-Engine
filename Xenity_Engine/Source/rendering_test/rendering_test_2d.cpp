@@ -64,7 +64,7 @@ void RenderingTest2D::LoadGameData()
 	crosshair->SetPixelPerUnit(128);
 
 	gradient = new Texture("gradient.png", "gradient");
-	gradient->SetWrapMode(Texture::Clamp);
+	gradient->SetWrapMode(Texture::ClampToEdge);
 
 	material2D = new Material("2D Standard");
 	material2D->shader = shaderStandard2D;

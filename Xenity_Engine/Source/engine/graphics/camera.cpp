@@ -7,14 +7,8 @@
 #include "../inputs/input_system.h"
 #include "../ui/window.h"
 
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
 
 #pragma region Constructors / Destructor
 
@@ -111,7 +105,8 @@ void Camera::UpdateProjection()
 		//Projection
 		projection = glm::perspective(glm::radians(fov), Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 	}
-	else {
+	else 
+	{
 		float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
 		float halfOne = 0.5f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
 		projection = glm::ortho(-halfAspect, halfAspect, -halfOne, halfOne);

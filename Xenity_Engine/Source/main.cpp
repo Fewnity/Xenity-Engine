@@ -1,20 +1,15 @@
 #include "main.h"
-#include <SDL2/SDL.h>
 #include <iostream>
 
 #include "xenity.h"
 
-#undef main
-
 using namespace std;
-
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 
 
 /*
  * TODO :
+ * IMPORTANT : Fix text cull when a sprite has a inverted scale (reset opengl value before drawing
+ * SetBufferSize and SetBufferSubData change size system (get vertices size and not byteCount)
  * Create on move event
  * 3D text
  * 3D Sounds
@@ -51,7 +46,6 @@ int main(int argc, char* argv[])
 
 	Engine::Loop();
 	Debug::Print("---- Game loop ended ----");
-
-	glfwTerminate();
+	Engine::Stop();
 	return 0;
 }

@@ -12,6 +12,13 @@ class Light;
 class Shader
 {
 public:
+	enum ShaderType 
+	{
+		Vertex_Shader,
+		Fragment_Shader,
+		Tessellation_Control_Shader,
+		Tessellation_Evaluation_Shader,
+	};
 	Shader() = delete;
 	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath);
 	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath);
@@ -28,23 +35,17 @@ public:
 	void SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale);
 	void SetShaderRotation(const Vector3 eulerAngle);
 	void SetShaderScale(const Vector3 scale);
-	void SetShaderAttribut(const char* attribut, const Vector2 value);
-	void SetShaderAttribut(const char* attribut, const Vector3 value);
-	void SetShaderAttribut(const char* attribut, Vector4 &value);
-	void SetShaderAttribut(const char* attribut, const float value);
-	void SetShaderAttribut(const char* attribut, const int value);
+	void SetShaderAttribut(const char* attribut, const Vector4& value);
+	void SetShaderAttribut(const char* attribut, const Vector3& value);
+	void SetShaderAttribut(const char* attribut, const Vector2& value);
+	void SetShaderAttribut(const char* attribut, const float& value);
+	void SetShaderAttribut(const char* attribut, const int& value);
 
 
 	void UpdateLights();
 	bool useTessellation = false;
 
 private:
-	enum ShaderType {
-		Vertex_Shader,
-		Fragment_Shader,
-		Tessellation_Control_Shader,
-		Tessellation_Evaluation_Shader,
-	};
 	void MakeShader();
 	void LoadShader(const std::string filePath, ShaderType type);
 	void SetPointLightData(const Light* light, const int index);

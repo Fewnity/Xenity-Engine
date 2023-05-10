@@ -8,9 +8,9 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_sdl2.h"
 
-#include "../debug/debug.h"
-#include "../graphics/graphics.h"
-#include "../graphics/camera.h"
+#include "../../xenity.h"
+
+#include "../graphics/renderer/renderer.h"
 
 SDL_Window* Window::window = nullptr;
 
@@ -28,7 +28,7 @@ const char * ENGINE_NAME = "Xenity Engine";
 int Window::InitWindow()
 {
 	/* Initialize the library */
-	if (!glfwInit() && SDL_Init(SDL_INIT_EVERYTHING) != 0)
+	if (!Engine::renderer->Init() && SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		return -1;
 
 	unsigned int center = SDL_WINDOWPOS_CENTERED;
@@ -56,24 +56,20 @@ int Window::InitWindow()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-	//Use depth management
-	glEnable(GL_DEPTH_TEST);
+	Engine::renderer->SetDepthTest(true);
 
 	//0 is our origin, the higher the z, the farther the object
 	glDepthFunc(GL_LESS);
 
-	glEnable(GL_BLEND); //Enable blending.
+	Engine::renderer->SetBlend(true);
 	//glEnable(GL_ALPHA);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 
-	glEnable(GL_CULL_FACE);
+	Engine::renderer->SetCull(true);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	Engine::renderer->SetTextureWrapMode(Texture::WrapMode::MirroredRepeat); //Remove?
 
-	float borderColor[] = { 1.0f, 1.0f, 0.0f, 0.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); //TODO Move to texture init?
-
+	Engine::renderer->SetTextureBorderColor(Color::CreateFromRGBAFloat(1.0f, 1.0f, 0.0f, 0.0f)); //TODO Move to texture init?
 	SDL_GL_SetSwapInterval(1);
 
 	OnResize(width, height);
@@ -90,12 +86,12 @@ int Window::InitWindow()
 /// <param name="newHeight"></param>
 void Window::OnResize(const int newWidth, const int newHeight)
 {
-	glViewport(0, 0, newWidth, newHeight);
 	width = newWidth;
 	height = newHeight;
+	Engine::renderer->SetViewport(0, 0, width, height);
 	aspect = static_cast<float>((width) / static_cast<float>(height));
 	if(Graphics::usedCamera)
-	Graphics::usedCamera->UpdateProjection();
+		Graphics::usedCamera->UpdateProjection();
 }
 
 /// <summary>

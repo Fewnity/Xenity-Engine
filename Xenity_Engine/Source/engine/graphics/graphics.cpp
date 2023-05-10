@@ -1,14 +1,6 @@
 #include "graphics.h"
 #include "../../xenity.h"
-
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
+#include "../graphics/renderer/renderer.h"
 
 Camera* Graphics::usedCamera = nullptr;
 int Graphics::usedShaderProgram = -1;
@@ -24,12 +16,12 @@ bool ordered = false;
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-
+	//if(!ordered)
 	Graphics::OrderDrawables();
-
+	//ordered = true;
 	//glEnable(GL_DEPTH_TEST);
+	Engine::renderer->SetCullFace(Back);
 
-	glCullFace(GL_BACK);
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		orderedIDrawable[i]->Draw();
@@ -54,24 +46,24 @@ void Graphics::OrderDrawables()
 	{
 		IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
 		//if (drawableToCheck->gameObject) {
-			bool placeFound = false;
+		bool placeFound = false;
 
-			for (int i = 0; i < iDrawablesCount; i++)
+		for (int i = 0; i < iDrawablesCount; i++)
+		{
+			//Check if the checked has a higher priority (lower value) than the component in the list
+			if (drawableToCheck->GetDrawPriority() <= orderedIDrawable[i]->GetDrawPriority())
 			{
-				//Check if the checked has a higher priority (lower value) than the component in the list
-				if (drawableToCheck->GetDrawPriority() <= orderedIDrawable[i]->GetDrawPriority())
-				{
-					orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
-					placeFound = true;
-					break;
-				}
+				orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
+				placeFound = true;
+				break;
 			}
-			//if the priority is lower than all components's priorities in the list, add it the end of the list
-			if (!placeFound)
-			{
-				orderedIDrawable.push_back(drawableToCheck);
-			}
-			iDrawablesCount++;
+		}
+		//if the priority is lower than all components's priorities in the list, add it the end of the list
+		if (!placeFound)
+		{
+			orderedIDrawable.push_back(drawableToCheck);
+		}
+		iDrawablesCount++;
 
 		//}
 	}

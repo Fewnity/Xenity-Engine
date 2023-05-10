@@ -1,10 +1,11 @@
 #include "sprite_manager.h"
 #include "../../../xenity.h"
 #include "../color/color.h"
-#include <glad/glad.h>
-#include <iostream>
 
-unsigned int SpriteManager::spriteVAO, SpriteManager::spriteVAOSmall, SpriteManager::spriteVBO, SpriteManager::spriteVBOSmall;
+#include <iostream>
+#include "../../graphics/renderer/renderer.h"
+
+unsigned int SpriteManager::spriteVAOSmall, SpriteManager::spriteVBOSmall;
 const Texture* SpriteManager::currentTexture = nullptr;
 unsigned int SpriteManager::lineVAO, SpriteManager::lineVBO;
 
@@ -41,22 +42,21 @@ void SpriteManager::Render2DLine(Vector3 start, Vector3 end, float width, Color 
 		{ end.x + fixedXWidth, end.y - fixedYWidth,end.z,   1.0f, 0.0f }
 	};
 
-	glDisable(GL_DEPTH_TEST);
-
-	//glEnable(GL_DEPTH_TEST);
+	Engine::renderer->SetDepthTest(false);
 
 	//if (currentTexture != AssetManager::defaultTexture)
 	//{
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, AssetManager::defaultTexture->GetTextureId());
+	Engine::renderer->EnableTextureUnit(0);
+	Engine::renderer->BindTexture(AssetManager::defaultTexture);
 	//}
 
-	glBindVertexArray(lineVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	Engine::renderer->BindVertexArray(lineVAO);
+	Engine::renderer->BindBuffer(Array_Buffer, lineVBO);
+	Engine::renderer->SetBufferSubData(Array_Buffer, *vertices, sizeof(vertices));
+	
+	Engine::renderer->BindBuffer(Array_Buffer, 0);
 	// render quad
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Engine::renderer->DrawArray(Triangles, 0, 6);
 	Performance::AddDrawCall();
 }
 
@@ -71,8 +71,7 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, co
 	float w = texture->GetWidth() * unitCoef;
 	float h = texture->GetHeight() * unitCoef;
 
-
-	float sizeFixer = 100 / diviser;
+	float sizeFixer = 0.1f;
 	Vector4 rgbaColor = color.GetRGBA().ToVector4();
 	material->shader->SetShaderAttribut("color", rgbaColor);
 
@@ -84,11 +83,11 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, co
 
 	if ((transformationMatrix[1].y < 0 && transformationMatrix[0].x < 0) || (transformationMatrix[1].y > 0 && transformationMatrix[0].x > 0))
 	{
-		glFrontFace(GL_CCW);
+		Engine::renderer->SetCullFace(Back);
 	}
 	else 
 	{
-		glFrontFace(GL_CW);
+		Engine::renderer->SetCullFace(Front);
 	}
 
 	//Move
@@ -96,25 +95,21 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, co
 	transformationMatrix[3].y *= sizeFixer;
 
 	UpdateMaterial(material, &transformationMatrix);
-	glDisable(GL_DEPTH_TEST);
-	/*glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+	Engine::renderer->SetDepthTest(false);
 
 	// 
 	//if (currentTexture != texture)
 	//{
 	currentTexture = texture;
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+	Engine::renderer->EnableTextureUnit(0);
+	Engine::renderer->BindTexture(texture);
 	//}
 
-	glBindVertexArray(spriteVAOSmall);
-	glBindBuffer(GL_ARRAY_BUFFER, spriteVBOSmall);
+	Engine::renderer->BindVertexArray(spriteVAOSmall);
+	Engine::renderer->BindBuffer(Array_Buffer, spriteVBOSmall);
 
 	// render quad
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Engine::renderer->DrawArray(Triangles, 0, 6);
 	Performance::AddDrawCall();
 }
 
@@ -123,20 +118,22 @@ void SpriteManager::RenderSprite(glm::mat4 transformationMatrix, Color color, co
 /// <summary>
 /// Create a buffer for sprites
 /// </summary>
-void SpriteManager::CreateSpriteBuffer()
+void SpriteManager::CreateSpriteBuffers()
 {
-	glGenVertexArrays(1, &spriteVAOSmall);
-	glGenBuffers(1, &spriteVBOSmall);
+	spriteVAOSmall = Engine::renderer->GenerateVertexArray();
+	spriteVBOSmall = Engine::renderer->GenerateBuffer();
 
-	glBindVertexArray(spriteVAOSmall);
-	glBindBuffer(GL_ARRAY_BUFFER, spriteVBOSmall);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	Engine::renderer->BindVertexArray(spriteVAOSmall);
+	Engine::renderer->BindBuffer(Array_Buffer, spriteVBOSmall);
+	Engine::renderer->SetBufferSize(Array_Buffer, Dynamic, 6 * 4);
+
 	//Vertices attrib
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
+	Engine::renderer->SetVertexAttribPointer(0, 2, 4, 0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
+
 	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	Engine::renderer->SetVertexAttribPointer(1, 2, 4, 2);
+	Engine::renderer->SetVertexAttribArray(true, 1);
 
 	float x = -0.5f;
 	float vertices[6][4] = {
@@ -148,36 +145,29 @@ void SpriteManager::CreateSpriteBuffer()
 		{ x + 1, x,      1.0f, 1.0f },
 		{ x + 1, x + 1,   1.0f, 0.0f }
 	};
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	Engine::renderer->SetBufferSubData(Array_Buffer, *vertices, sizeof(vertices));
+	Engine::renderer->BindBuffer(Array_Buffer, 0);
 
 	//////////////////////////////////////
-	glGenVertexArrays(1, &spriteVAO);
-	glGenBuffers(1, &spriteVBO);
-	glBindVertexArray(spriteVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 600 * 600 * 4, NULL, GL_DYNAMIC_DRAW);
-	//Vertices attrib
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
 	//////////////////////////////////////
-	glGenVertexArrays(1, &lineVAO);
-	glGenBuffers(1, &lineVBO);
-	glBindVertexArray(lineVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
-	//Vertices attrib
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	lineVAO = Engine::renderer->GenerateVertexArray();
+	lineVBO = Engine::renderer->GenerateBuffer();
 
-	glBindVertexArray(0);
+	Engine::renderer->BindVertexArray(lineVAO);
+	Engine::renderer->BindBuffer(Array_Buffer, lineVBO);
+
+	Engine::renderer->SetBufferSize(Array_Buffer, Dynamic, 6 * 5);
+
+	//Vertices attrib
+	Engine::renderer->SetVertexAttribPointer(0, 3, 5, 0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
+
+	//Uv attrib
+	Engine::renderer->SetVertexAttribPointer(1, 2, 5, 3);
+	Engine::renderer->SetVertexAttribArray(true, 1);
+
+	Engine::renderer->BindVertexArray(0);
 }
 
 void UpdateMaterial(Material* material, glm::mat4* transformationMatrix)
@@ -199,7 +189,7 @@ void UpdateMaterial(Material* material, glm::mat4* transformationMatrix)
 /// Init sprite manager
 /// </summary>
 void SpriteManager::Init() {
-	CreateSpriteBuffer();
+	CreateSpriteBuffers();
 
 	Debug::Print("---- Sprite System initiated ----");
 }
@@ -208,18 +198,21 @@ SpriteBatch::SpriteBatch(Material* mat, const Texture* texture)
 {
 	material = mat;
 	this->texture = texture;
+	spriteVAO = Engine::renderer->GenerateVertexArray();
+	spriteVBO = Engine::renderer->GenerateBuffer();
 
-	glGenVertexArrays(1, &spriteVAO);
-	glGenBuffers(1, &spriteVBO);
-	glBindVertexArray(spriteVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	Engine::renderer->BindVertexArray(spriteVAO);
+	Engine::renderer->BindBuffer(Array_Buffer, spriteVBO);
+
+	Engine::renderer->SetBufferSize(Array_Buffer, Dynamic, 6 * 4);
+
 	//Vertices attrib
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
+	Engine::renderer->SetVertexAttribPointer(0, 2, 4, 0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
+
 	//Uv attrib
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	Engine::renderer->SetVertexAttribPointer(1, 2, 4, 2);
+	Engine::renderer->SetVertexAttribArray(true, 1);
 }
 
 void SpriteBatch::Draw(Color color)
@@ -232,17 +225,17 @@ void SpriteBatch::Draw(Color color)
 		Vector4 rgbaColor = color.GetRGBA().ToVector4();
 		material->shader->SetShaderAttribut("color", rgbaColor);
 
-		glDisable(GL_DEPTH_TEST);
-		//glEnable(GL_DEPTH_TEST);
+		Engine::renderer->SetDepthTest(false);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+		Engine::renderer->EnableTextureUnit(0);
+		Engine::renderer->BindTexture(texture);
 
-		glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesCount * 4 * sizeof(float), vertices);
+		Engine::renderer->BindBuffer(Array_Buffer, spriteVBO);
+		Engine::renderer->SetBufferSubData(Array_Buffer, vertices, verticesCount * 4 * sizeof(float));
 
-		glBindVertexArray(spriteVAO);
-		glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+		Engine::renderer->BindVertexArray(spriteVAO);
+		Engine::renderer->DrawArray(Triangles, 0, verticesCount);
+
 		Performance::AddDrawCall();
 	}
 
@@ -301,15 +294,18 @@ void SpriteBatch::AddVertices(Vector2 verticesToAdd[4])
 
 void SpriteBatch::SetBatchSize()
 {
-	if (verticesCount != oldVerticeCount) {
-		if (vertices != nullptr) {
+	if (verticesCount != oldVerticeCount) 
+	{
+		if (vertices != nullptr) 
+		{
 			free(vertices);
 		}
 		vertices = (float*)malloc(verticesCount * 4 * sizeof(float));
 
-		glBindVertexArray(spriteVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount * 4, NULL, GL_DYNAMIC_DRAW);
+		Engine::renderer->BindVertexArray(spriteVAO);
+		Engine::renderer->BindBuffer(Array_Buffer, spriteVBO);
+		Engine::renderer->SetBufferSize(Array_Buffer,Dynamic, verticesCount * 4);
+
 		oldVerticeCount = verticesCount;
 	}
 }

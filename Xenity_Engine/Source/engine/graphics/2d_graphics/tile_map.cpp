@@ -2,10 +2,9 @@
 #include <corecrt_malloc.h>
 #include "sprite_manager.h"
 #include "../texture.h"
-
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <glm/ext/matrix_transform.hpp>
-#include <SDL2/SDL_stdinc.h>
-
 
 TileMap::TileMap(Material* material)
 {

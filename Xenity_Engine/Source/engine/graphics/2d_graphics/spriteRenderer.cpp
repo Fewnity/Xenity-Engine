@@ -1,9 +1,6 @@
 #include "spriteRenderer.h"
 #include "../../../xenity.h"
 
-#include <iostream>
-
-
 #pragma region Constructors / Destructor
 
 SpriteRenderer::SpriteRenderer()

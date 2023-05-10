@@ -1,12 +1,9 @@
 #include "mesh.h"
 #include "../../../xenity.h"
-
-#include <glad/glad.h>
-#include <cstdio>
-#include <iostream>
-#include <fstream>
-#include <vector>
+#include "../../graphics/renderer/renderer.h"
 #include "../../file_system/mesh_loader/wavefront_loader.h"
+
+#include <vector>
 
 using namespace std;
 
@@ -93,9 +90,9 @@ MeshRenderer::MeshRenderer(const std::string meshpath)
 MeshRenderer::~MeshRenderer()
 {
 	delete meshData;
-	glDeleteVertexArrays(1, &vertexArrayBuffer);
-	glDeleteBuffers(1, &vertexBuffer);
-	glDeleteBuffers(1, &indiceBuffer);
+	Engine::renderer->DeleteVertexArray(vertexArrayBuffer);
+	Engine::renderer->DeleteBuffer(vertexBuffer);
+	Engine::renderer->DeleteBuffer(indiceBuffer);
 }
 
 #pragma endregion
@@ -166,14 +163,14 @@ void MeshRenderer::Update()
 /// <param name="addNormals"></param>
 void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 {
-	glGenVertexArrays(1, &vertexArrayBuffer); //Create a buffer ID for the vertex array buffer
-	glGenBuffers(1, &vertexBuffer);//Create a buffer ID for the vertex buffer
-	glGenBuffers(1, &indiceBuffer);//Create a buffer ID for the indice buffer
+	vertexArrayBuffer = Engine::renderer->GenerateVertexArray(); //Create a buffer ID for the vertex array buffer
+	vertexBuffer = Engine::renderer->GenerateBuffer(); //Create a buffer ID for the vertex buffer
+	indiceBuffer = Engine::renderer->GenerateBuffer(); //Create a buffer ID for the indice buffer
 
-	glBindVertexArray(vertexArrayBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
+	Engine::renderer->BindVertexArray(vertexArrayBuffer);
+	Engine::renderer->BindBuffer(Array_Buffer, vertexBuffer);
+	Engine::renderer->BindBuffer(Element_Array_Buffer, indiceBuffer);
 
 	int finalByteCount = 3;
 	if (addNormals)
@@ -182,32 +179,33 @@ void MeshRenderer::CreateBuffers(const bool addUv, const bool addNormals)
 		finalByteCount += 2;
 
 	int byteOffset = 0;
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)byteOffset);
+	Engine::renderer->SetVertexAttribPointer(0, 3, finalByteCount, byteOffset);
 	//Enable vertex attrib array number 0
-	glEnableVertexAttribArray(0);
+	Engine::renderer->SetVertexAttribArray(true, 0);
 	byteOffset += 3;
 
 	if (addUv)
 	{
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
+		Engine::renderer->SetVertexAttribPointer(1, 2, finalByteCount, byteOffset);
 		//Enable texture coords attrib array number 1
-		glEnableVertexAttribArray(1);
+		Engine::renderer->SetVertexAttribArray(true, 1);
 		byteOffset += 2;
 	}
 
 	if (addNormals)
 	{
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, finalByteCount * sizeof(float), (void*)(byteOffset * sizeof(float)));
+		Engine::renderer->SetVertexAttribPointer(2, 3, finalByteCount, byteOffset);
 		//Enable Normals attrib array number 2
-		glEnableVertexAttribArray(2);
+		Engine::renderer->SetVertexAttribArray(true, 2);
 		byteOffset += 3;
 	}
 
-	glBufferData(GL_ARRAY_BUFFER, meshData->verticesCount * sizeof(*meshData->vertices), meshData->vertices, GL_STATIC_DRAW);//Put vertice in the array buffer
+	Engine::renderer->SetBufferData(Array_Buffer, Static, meshData);
+	
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData->indicesCount * sizeof(*meshData->indices), meshData->indices, GL_STATIC_DRAW);//Put vertice in the array buffer
 	//glDrawElements(GL_TRIANGLES, meshData->indicesCount, GL_UNSIGNED_INT, 0);
 
-	glBindVertexArray(0);
+	Engine::renderer->BindVertexArray(0);
 }
 
 #pragma region Drawing
@@ -224,17 +222,20 @@ void MeshRenderer::Draw()
 	{
 		if (material != nullptr)
 		{
-			glEnable(GL_DEPTH_TEST);
+			Engine::renderer->SetDepthTest(true);
 			UpdateMaterial();
 			Performance::AddDrawCall();
-			glBindVertexArray(vertexArrayBuffer);
-			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //Set the current GL_ARRAY_BUFFER
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer); //Set the current GL_ARRAY_BUFFER
+			Engine::renderer->BindVertexArray(vertexArrayBuffer);
+
+			Engine::renderer->BindBuffer(Array_Buffer, vertexBuffer);
+			Engine::renderer->BindBuffer(Element_Array_Buffer, indiceBuffer);
+
 			if (material->shader->useTessellation)
-				glDrawArrays(GL_PATCHES, 0, meshData->verticesCount); // For tessellation
+				Engine::renderer->DrawArray(Patches, 0, meshData->verticesCount);
 			else
-				glDrawArrays(GL_TRIANGLES, 0, meshData->verticesCount); //For no tessellation
-			glBindVertexArray(0);
+				Engine::renderer->DrawArray(Triangles, 0, meshData->verticesCount);
+
+			Engine::renderer->BindVertexArray(0);
 		}
 	}
 }

@@ -1,8 +1,6 @@
 #include "line_renderer.h"
 #include "../../../xenity.h"
 
-#include <iostream>
-
 #pragma region Constructors / Destructor
 
 LineRenderer::LineRenderer()
