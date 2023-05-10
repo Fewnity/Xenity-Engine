@@ -21,7 +21,7 @@ public:
 	float lineSpacing = 0;
 	float characterSpacing = 0;
 	int GetDrawPriority();
-	int layerOrder = 0;
+	int orderInLayer = 0;
 
 	Font* font = nullptr;
 	Color color = Color();

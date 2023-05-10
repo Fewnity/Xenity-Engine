@@ -13,7 +13,7 @@ TileMap::TileMap(Material* material)
 
 int TileMap::GetDrawPriority()
 {
-	return gameObject->transform.GetPosition().z + layerOrder;
+	return orderInLayer;
 }
 
 void TileMap::Setup(int width, int height)

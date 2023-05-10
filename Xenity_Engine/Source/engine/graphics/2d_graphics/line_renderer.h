@@ -25,6 +25,7 @@ class LineRenderer : public IDrawable
 		Vector3 startPosition = Vector3(0, 0, 0);
 		Vector3 endPosition = Vector3(0, 0, 0);
 		float width = 1;
+		int orderInLayer = 0;
 
 	private:
 		void Draw();

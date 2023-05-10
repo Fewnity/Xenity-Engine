@@ -368,7 +368,7 @@ void MapManager::CreateTileMaps()
 
 	//Create props tilemap
 	tileMapProps = new TileMap(material2DWithZ);
-	tileMapProps->layerOrder = 1;
+	tileMapProps->orderInLayer = 1;
 	gameObjectTileMap->AddExistingComponent(tileMapProps);
 	tileMapProps->Setup(mapSize, mapSize);
 

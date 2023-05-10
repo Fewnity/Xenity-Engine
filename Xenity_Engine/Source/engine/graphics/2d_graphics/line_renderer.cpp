@@ -19,7 +19,7 @@ LineRenderer::~LineRenderer()
 
 int LineRenderer::GetDrawPriority()
 {
-	return gameObject->transform.GetPosition().z;
+	return orderInLayer;
 }
 
 #pragma endregion

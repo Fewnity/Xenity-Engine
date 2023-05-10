@@ -18,13 +18,13 @@ void RenderingTest2D::Init()
 	//Static tiles
 	SpriteRenderer* tileSprRB = new SpriteRenderer(textureTile0, material2D);
 	tileSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	tileSprRB->layerOrder = -1;
+	tileSprRB->orderInLayer = -1;
 	tileGameObjectBack->AddExistingComponent(tileSprRB);
 	tileGameObjectBack->transform.SetPosition(Vector3(-2, 0, 0));
 
 	SpriteRenderer* tileSprRF = new SpriteRenderer(textureTile0, material2D);
 	tileSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	tileSprRF->layerOrder = 1;
+	tileSprRF->orderInLayer = 1;
 	tileGameObjectFront->AddExistingComponent(tileSprRF);
 	tileGameObjectFront->transform.SetPosition(Vector3(2, 0, 0));
 

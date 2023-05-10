@@ -51,7 +51,8 @@ void Graphics::OrderDrawables()
 		for (int i = 0; i < iDrawablesCount; i++)
 		{
 			//Check if the checked has a higher priority (lower value) than the component in the list
-			if (drawableToCheck->GetDrawPriority() <= orderedIDrawable[i]->GetDrawPriority())
+			if (drawableToCheck->GetDrawPriority() < orderedIDrawable[i]->GetDrawPriority() ||
+				(drawableToCheck->GetDrawPriority() == orderedIDrawable[i]->GetDrawPriority() && drawableToCheck->gameObject->transform.GetPosition().z >= orderedIDrawable[i]->gameObject->transform.GetPosition().z))
 			{
 				orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
 				placeFound = true;

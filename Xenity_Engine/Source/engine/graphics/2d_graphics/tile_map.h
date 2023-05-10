@@ -36,7 +36,7 @@ public:
 	void AddTexture(Texture* texture);
 	void RemoveTexture(Texture* texture);
 	Vector2 spritesScale = Vector2(1,1);
-	int layerOrder = 0;
+	int orderInLayer = 0;
 
 private:
 	Material* material = nullptr;

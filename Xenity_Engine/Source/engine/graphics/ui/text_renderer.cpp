@@ -21,7 +21,7 @@ TextRenderer::~TextRenderer()
 
 int TextRenderer::GetDrawPriority()
 {
-	return gameObject->transform.GetPosition().z + layerOrder;
+	return orderInLayer;
 }
 
 #pragma endregion
