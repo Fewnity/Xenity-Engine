@@ -12,6 +12,11 @@ public:
 	virtual void Awake() {}
 	virtual void Start() {}
 	virtual void Update() {}
+	virtual void OnParentChanged() {}
+	virtual void OnPositionChanged() {}
+	//virtual void OnRotationChanged() {}
+	//virtual void OnScaleChanged() {}
+
 	int updatePriority = 5000; //Lower is more priotary
 	GameObject *gameObject = nullptr;
 	bool GetIsEnabled();
