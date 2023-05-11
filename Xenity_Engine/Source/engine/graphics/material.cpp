@@ -98,7 +98,8 @@ void Material::Use()
 		for (int i = 0; i < matCount; i++)
 		{
 			Material* mat = AssetManager::GetMaterial(i);
-			if (mat != this && mat->shader == shader) 
+			//if (mat != this && mat->shader == shader) 
+			if (mat->shader == shader)
 			{
 				mat->updated = false;
 			}
