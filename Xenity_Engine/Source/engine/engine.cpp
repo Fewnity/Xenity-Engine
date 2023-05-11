@@ -22,6 +22,7 @@ ProfilerBenchmark* gameLoopBenchmark = new ProfilerBenchmark("Game loop");
 ProfilerBenchmark* componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
 ProfilerBenchmark* drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
 bool Engine::componentsListDirty = true;
+bool Engine::drawOrderListDirty = true;
 std::vector<Component*> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer* Engine::renderer = nullptr;
@@ -154,6 +155,11 @@ void Engine::UpdateComponents()
 	{
 		orderedComponents[i]->Update();
 	}
+}
+
+void Engine::OnDrawableOrderChanged()
+{
+	drawOrderListDirty = true;
 }
 
 void Engine::SetSelectedGameObject(GameObject* newSelected)

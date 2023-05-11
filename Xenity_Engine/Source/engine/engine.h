@@ -15,12 +15,13 @@ public:
 	static std::vector<GameObject*> GetGameObjects();
 	static void Loop();
 	static bool componentsListDirty;
+	static bool drawOrderListDirty;
 	static std::vector<Component*> orderedComponents;
 	static int componentsCount;
 	static GameObject* selectedGameObject;
 	static int gameObjectCount;
 	static Renderer* renderer;
-
+	static void OnDrawableOrderChanged();
 	static void SetSelectedGameObject(GameObject*);
 private:
 	static std::vector<GameObject*> gameObjects;
