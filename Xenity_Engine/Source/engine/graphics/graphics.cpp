@@ -37,37 +37,44 @@ void Graphics::DrawAllDrawable()
 
 void Graphics::OrderDrawables()
 {
-	orderBenchmark->Start();
-
-	int drawableCount = AssetManager::GetDrawableCount();
-	iDrawablesCount = 0;
-	orderedIDrawable.clear();
-	for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
+	if (Engine::drawOrderListDirty)
 	{
-		IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-		//if (drawableToCheck->gameObject) {
-		bool placeFound = false;
+		//Engine::drawOrderListDirty = false;
 
-		for (int i = 0; i < iDrawablesCount; i++)
+		orderBenchmark->Start();
+
+		int drawableCount = AssetManager::GetDrawableCount();
+		iDrawablesCount = 0;
+		orderedIDrawable.clear();
+		for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
 		{
-			//Check if the checked has a higher priority (lower value) than the component in the list
-			if (drawableToCheck->GetDrawPriority() < orderedIDrawable[i]->GetDrawPriority() ||
-				(drawableToCheck->GetDrawPriority() == orderedIDrawable[i]->GetDrawPriority() && drawableToCheck->gameObject->transform.GetPosition().z >= orderedIDrawable[i]->gameObject->transform.GetPosition().z))
+			IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
+			if (drawableToCheck->gameObject)
 			{
-				orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
-				placeFound = true;
-				break;
+				bool placeFound = false;
+
+				for (int i = 0; i < iDrawablesCount; i++)
+				{
+					//Check if the checked has a higher priority (lower value) than the component in the list
+					if (drawableToCheck->GetDrawPriority() <= orderedIDrawable[i]->GetDrawPriority())
+					{
+						if (drawableToCheck->GetDrawPriority() == orderedIDrawable[i]->GetDrawPriority() && drawableToCheck->gameObject->transform.GetPosition().z >= orderedIDrawable[i]->gameObject->transform.GetPosition().z)
+						{
+							orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
+							placeFound = true;
+							break;
+						}
+					}
+				}
+				//if the priority is lower than all components's priorities in the list, add it the end of the list
+				if (!placeFound)
+				{
+					orderedIDrawable.push_back(drawableToCheck);
+				}
+				iDrawablesCount++;
 			}
 		}
-		//if the priority is lower than all components's priorities in the list, add it the end of the list
-		if (!placeFound)
-		{
-			orderedIDrawable.push_back(drawableToCheck);
-		}
-		iDrawablesCount++;
 
-		//}
+		orderBenchmark->Stop();
 	}
-
-	orderBenchmark->Stop();
 }
