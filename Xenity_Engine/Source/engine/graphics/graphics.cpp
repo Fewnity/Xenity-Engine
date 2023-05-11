@@ -46,26 +46,42 @@ void Graphics::OrderDrawables()
 		int drawableCount = AssetManager::GetDrawableCount();
 		iDrawablesCount = 0;
 		orderedIDrawable.clear();
+
 		for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
 		{
 			IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
 			if (drawableToCheck->gameObject)
 			{
+				float z = drawableToCheck->gameObject->transform.GetPosition().z;
 				bool placeFound = false;
 
 				for (int i = 0; i < iDrawablesCount; i++)
 				{
+					IDrawable* drawable = orderedIDrawable[i];
+					int d1 = drawableToCheck->GetDrawPriority();
+					int d2 = drawable->GetDrawPriority();
+
 					//Check if the checked has a higher priority (lower value) than the component in the list
-					if (drawableToCheck->GetDrawPriority() <= orderedIDrawable[i]->GetDrawPriority())
+					if (d1 <= d2)
 					{
-						if (drawableToCheck->GetDrawPriority() == orderedIDrawable[i]->GetDrawPriority() && drawableToCheck->gameObject->transform.GetPosition().z >= orderedIDrawable[i]->gameObject->transform.GetPosition().z)
+						if (d1 == d2)
 						{
-							orderedIDrawable.insert(orderedIDrawable.begin() + i, drawableToCheck);
+							if (z >= drawable->gameObject->transform.GetPosition().z) 
+							{
+								orderedIDrawable.insert(std::begin(orderedIDrawable) + i, drawableToCheck);
+								placeFound = true;
+								break;
+							}
+						}
+						else 
+						{
+							orderedIDrawable.insert(std::begin(orderedIDrawable) + i, drawableToCheck);
 							placeFound = true;
 							break;
 						}
 					}
 				}
+
 				//if the priority is lower than all components's priorities in the list, add it the end of the list
 				if (!placeFound)
 				{
