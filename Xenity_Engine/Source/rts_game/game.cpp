@@ -63,6 +63,7 @@ void Game::Init()
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
 	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2DWithZ);
 	spr5->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
+	spr5->orderInLayer = 10;
 	gameObjectCrosshair->AddExistingComponent(spr5);
 
 	lineRendererTop = new LineRenderer(0.1f, material2D);
@@ -74,6 +75,11 @@ void Game::Init()
 	lineRendererBottom->color = selectionLineColor;
 	lineRendererLeft->color = selectionLineColor;
 	lineRendererRight->color = selectionLineColor;
+
+	lineRendererTop->orderInLayer = 10;
+	lineRendererBottom->orderInLayer = 10;
+	lineRendererLeft->orderInLayer = 10;
+	lineRendererRight->orderInLayer = 10;
 
 	gameObjectLineRenderers->AddExistingComponent(lineRendererTop);
 	gameObjectLineRenderers->AddExistingComponent(lineRendererBottom);
@@ -107,7 +113,6 @@ void Game::Init()
 	canvasGO->AddExistingComponent(ressourcesTextRenderer);
 
 	modeTextRenderer = new TextRendererCanvas(UiManager::fonts[0], 0.8, shaderTextCanvas);
-	//modeTextRenderer->text = "Mode: Unit management";
 	modeTextRenderer->horizontalAligment = H_Center;
 	modeTextRenderer->verticalAlignment = V_Top;
 	modeTextRenderer->position = Vector3(0.5, 1, 0);

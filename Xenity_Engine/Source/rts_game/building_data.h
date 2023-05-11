@@ -1,5 +1,7 @@
 #pragma once
 
+#include "building_type.h"
+
 class Texture;
 
 class BuildingData {
@@ -11,4 +13,5 @@ public:
 	Texture* selectionTexture = nullptr;
 	float health = 0;
 	float price = 0;
+	BuildingType type;
 };

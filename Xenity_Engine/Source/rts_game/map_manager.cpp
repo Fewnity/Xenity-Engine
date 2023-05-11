@@ -18,7 +18,7 @@ void MapManager::Awake()
 {
 	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
 //gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
-	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, -1));
+	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, 0));
 }
 
 void MapManager::LoadMapData()

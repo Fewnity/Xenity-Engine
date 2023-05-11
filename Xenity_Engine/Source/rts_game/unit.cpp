@@ -17,11 +17,13 @@ void Unit::Start()
 {
 	GameObject* gmUnitSprite = new GameObject();
 	SpriteRenderer* unitSpriteRenderer = new SpriteRenderer(unitData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
+	unitSpriteRenderer->orderInLayer = 3;
 	gmUnitSprite->AddExistingComponent(unitSpriteRenderer);
 	selectionSpriteRenderer = new SpriteRenderer(unitData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
+	selectionSpriteRenderer->orderInLayer = 11;
 	gmUnitSprite->AddExistingComponent(selectionSpriteRenderer);
 	gameObject->AddChild(gmUnitSprite);
-	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0));
+	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0.0f));
 	gmUnitSprite->transform.SetLocalScale(0.5f);
 }
 

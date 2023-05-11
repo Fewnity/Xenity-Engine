@@ -20,7 +20,7 @@ void CameraManager::Init()
 	camera = new Camera();
 	cameraGameObject->AddExistingComponent(camera);
 
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+	camera->gameObject->transform.SetPosition(Vector3(0, 0, 0));
 
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * cameraZoom);

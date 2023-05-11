@@ -274,6 +274,7 @@
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
     <ClInclude Include="Source\engine\noise\noise.h" />
+    <ClInclude Include="Source\rts_game\building_type.h" />
     <ClInclude Include="Source\rts_game\prop_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
