@@ -57,19 +57,16 @@ void GameObject::AddChild(GameObject* newChild)
 	if (add)
 	{
 		children.push_back(newChild);
-		newChild->SetParent(this);
 		childCount++;
+		newChild->parent = this;
+		newChild->transform.OnParentChanged();
+		newChild->UpdateActive(newChild);
 	}
 }
 
 void GameObject::SetParent(GameObject* gameObject)
 {
-	if (gameObject != parent) 
-	{
-		parent = gameObject;
-		transform.OnParentChanged();
-		UpdateActive(this);
-	}
+	gameObject->AddChild(this);
 }
 
 /// <summary>
