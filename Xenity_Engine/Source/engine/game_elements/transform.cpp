@@ -1,5 +1,6 @@
 #include "transform.h"
 #include "gameobject.h"
+#include "../engine.h"
 #include <iostream>
 #include "../tools/math.h"
 #include <glm/gtx/euler_angles.hpp>
@@ -12,9 +13,6 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
-//#include "mutil/quaternion.h"
-
-//#include "qu/hy.h"
 
 #pragma region Constructors
 
@@ -264,6 +262,11 @@ void Transform::UpdateTransformationMatrix()
 {
 	if (!isTransformationMatrixDirty)
 		return;
+
+	/*if (drawableCount != 0)
+	{
+		Engine::drawOrderListDirty = true;
+	}*/
 
 	isTransformationMatrixDirty = false;
 

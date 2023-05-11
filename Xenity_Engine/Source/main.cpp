@@ -10,6 +10,7 @@ using namespace std;
  * TODO :
  * IMPORTANT : Fix text cull when a sprite has a inverted scale (reset opengl value before drawing
  * SetBufferSize and SetBufferSubData change size system (get vertices size and not byteCount)
+ * Optimise GetLocalPositionFromMatrices with references
  * Create on move event
  * 3D text
  * 3D Sounds
@@ -22,7 +23,7 @@ using namespace std;
  * Check error in AStar
  * Optimise component update system
  * Fix children local scale values
- * fix set parent function
+ * Check crash if there is no active camera
  * Create Engine stop function
  * Check if sprite facing is correct while batching with negative sprite scales
  * Check shader destructor : check if delete is needed if a shader can't compile

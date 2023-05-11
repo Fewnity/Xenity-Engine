@@ -92,6 +92,7 @@ void Game3D::Init()
 	newMat2->SetAttribut("material.shininess", 32.0f);
 	newMat2->SetAttribut("ambiantLightColor", Vector3(0.529f, 0.808f, 0.922f));
 
+
 	GameObject* TestGame = new GameObject("MY TEST");
 	/*Benchmark* bench = new Benchmark();
 	bench->Start();
@@ -162,7 +163,8 @@ void Game3D::Init()
 	cubeGameObject->transform.SetPosition(Vector3(0, 0, 0));
 	cubeGameObject->transform.SetRotation(Vector3(45, 45, 45));
 	cubeGameObject->transform.SetLocalScale(Vector3(20, 20, 20));
-	cubeGameObject->AddChild(newShape2);
+	//cubeGameObject->AddChild(newShape2);
+	newShape2->SetParent(cubeGameObject);
 
 	newShape2->transform.SetLocalPosition(Vector3(0.02, 0, 0.02));
 	newShape2->transform.SetLocalRotation(Vector3(0, 0, 0));
@@ -170,8 +172,10 @@ void Game3D::Init()
 	childBottle->transform.SetLocalRotation(Vector3(30, 170.264, -40.264));
 	//childBottle->transform.SetLocalRotation(Vector3(150, -9.7, 139.7));
 	childBottle->transform.SetLocalScale(Vector3(20, 20, 20));
-	cubeGameObject->AddChild(childBottle);
-	childBottle->AddChild(childBottle2);
+	childBottle->SetParent(cubeGameObject);
+	childBottle2->SetParent(childBottle);
+	//cubeGameObject->AddChild(childBottle);
+	//childBottle->AddChild(childBottle2);
 	childBottle2->transform.SetLocalPosition(Vector3(0.0, 0.1, 0.0));
 	childBottle2->transform.SetLocalRotation(Vector3(30, 30, 30));
 	childBottle2->transform.SetLocalScale(Vector3(1, 1, 1));
@@ -267,7 +271,6 @@ void Game3D::Init()
 /// </summary>
 void Game3D::Loop()
 {
-
 	//std::cout << "coneGameobject World: " << coneGameobject->transform.GetScale().x << " " << coneGameobject->transform.GetScale().y << " " << coneGameobject->transform.GetScale().z << " " << std::endl;
 	//std::cout << "coneGameobject Local: " << coneGameobject->transform.GetLocalScale().x << " " << coneGameobject->transform.GetLocalScale().y << " " << coneGameobject->transform.GetLocalScale().z << " " << std::endl;
 
