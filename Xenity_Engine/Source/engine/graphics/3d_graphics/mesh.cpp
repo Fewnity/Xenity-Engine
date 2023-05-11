@@ -250,7 +250,7 @@ int MeshRenderer::GetDrawPriority()
 /// </summary>
 void MeshRenderer::UpdateMaterial()
 {
-	if (material != nullptr && material->shader != nullptr)
+	if (material != nullptr && material->shader != nullptr && Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
 	{
 		material->Use();
 		bool noNeedUpdate = material->updated;
