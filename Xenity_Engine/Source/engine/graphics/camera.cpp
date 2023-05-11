@@ -109,7 +109,7 @@ void Camera::UpdateProjection()
 	{
 		float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
 		float halfOne = 0.5f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
-		projection = glm::ortho(-halfAspect, halfAspect, -halfOne, halfOne);
+		projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 
 		//Unscaled version for canvas
 		float halfAspectUnscaled = Window::GetAspectRatio() / 2.0f;
