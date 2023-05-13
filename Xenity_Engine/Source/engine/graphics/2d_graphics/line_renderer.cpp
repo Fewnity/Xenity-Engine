@@ -5,12 +5,7 @@
 
 LineRenderer::LineRenderer()
 {
-}
-
-LineRenderer::LineRenderer(float width, Material* material)
-{
-	this->width = width;
-	this->material = material;
+	componentName = "Line Renderer";
 }
 
 LineRenderer::~LineRenderer()

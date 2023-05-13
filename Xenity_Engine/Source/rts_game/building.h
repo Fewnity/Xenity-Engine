@@ -15,8 +15,7 @@ class SpriteRenderer;
 class Building : public MonoBehaviour
 {
 public:
-	Building() = delete;
-	Building(BuildingData *data, BuildManager * buildManager);
+	Building();
 
 	BuildingData* buildingData = nullptr;
 

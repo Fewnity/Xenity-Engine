@@ -6,21 +6,27 @@
 #include "prop.h"
 #include "prop_data.h"
 
-Building::Building(BuildingData* data, BuildManager* buildManager)
+Building::Building()
 {
-	buildingData = data;
-
+	componentName = "Building";
 }
 
 void Building::Start()
 {
 	GameObject* gmBuildingSprite = new GameObject();
-	SpriteRenderer* buildingSpriteRenderer = new SpriteRenderer(buildingData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
+	SpriteRenderer* buildingSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
+	buildingSpriteRenderer->texture = buildingData->textures[0];
+	buildingSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
+
+	//SpriteRenderer* buildingSpriteRenderer = new SpriteRenderer(buildingData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
 	buildingSpriteRenderer->orderInLayer = 2;
-	gmBuildingSprite->AddExistingComponent(buildingSpriteRenderer);
-	selectionSpriteRenderer = new SpriteRenderer(buildingData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
+	//gmBuildingSprite->AddExistingComponent(buildingSpriteRenderer);
+	//selectionSpriteRenderer = new SpriteRenderer(buildingData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
+	selectionSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
+	selectionSpriteRenderer->texture = buildingData->selectionTexture;
+	selectionSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	selectionSpriteRenderer->orderInLayer = 11;
-	gmBuildingSprite->AddExistingComponent(selectionSpriteRenderer);
+	//gmBuildingSprite->AddExistingComponent(selectionSpriteRenderer);
 	selectionSpriteRenderer->SetIsEnabled(false);
 	gameObject->AddChild(gmBuildingSprite);
 	gmBuildingSprite->transform.SetLocalPosition(Vector3(0, 0, 0));

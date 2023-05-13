@@ -171,7 +171,8 @@ void PathFinding::SwitchMode()
 
 void PathFinding::LoadGameData()
 {
-	cameraGameObject->AddExistingComponent(camera);
+	camera = cameraGameObject->AddComponent<Camera>();
+	//cameraGameObject->AddExistingComponent(camera);
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
 
 	camera->SetProjectionType(Orthographic);
@@ -377,22 +378,36 @@ VisualNode::VisualNode(Vector2 position, Texture* sprite)
 {
 	gameobject = new GameObject();
 	gameobject->transform.SetPosition(Vector3(position.x, position.y, 0));
-	SpriteRenderer* spr = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
-	textRenderer = new TextRenderer(UiManager::fonts[0], 0.7f, AssetManager::GetShader(10));
+	//SpriteRenderer* spr = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
+	SpriteRenderer* spr = gameobject->AddComponent<SpriteRenderer>();
+	spr->texture = sprite;
+	spr->material = AssetManager::GetMaterialByName("2D Standard");
+	//gameobject->AddExistingComponent(spr);
+	//gameobject->AddExistingComponent(textRenderer);
+
+	textRenderer = gameobject->AddComponent<TextRenderer>();
 	textRenderer->color = Color::CreateFromRGBAFloat(0, 0, 0, 1);
-	gameobject->AddExistingComponent(spr);
-	gameobject->AddExistingComponent(textRenderer);
+	textRenderer->font = UiManager::fonts[0];
+	textRenderer->shader = AssetManager::GetShader(10);
+	textRenderer->size = 0.7f;
+	//textRenderer = new TextRenderer(UiManager::fonts[0], 0.7f, AssetManager::GetShader(10));
 }
 
 void AStarVisualNode::Setup(Vector2 position, Texture* sprite)
 {
 	gameobject = new GameObject();
 	gameobject->transform.SetPosition(Vector3(position.x, position.y, 0));
-	spriteRenderer = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
+	//spriteRenderer = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
+	spriteRenderer = gameobject->AddComponent<SpriteRenderer>();
+	spriteRenderer->texture = sprite;
+	spriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
+
 	//textRenderer = new TextRenderer(UiManager::fonts[0], 0.6f, AssetManager::GetShader(10));
 	//textRenderer->color = Vector3(0, 0, 0);
 	//textRenderer->text = "00 00\n\n00";
-	gameobject->AddExistingComponent(spriteRenderer);
+	//gameobject->AddExistingComponent(spriteRenderer);
+	//spriteRenderer = gameobject->AddComponent<TextRenderer>();
+
 	//gameobject->AddExistingComponent(textRenderer);
 }
 

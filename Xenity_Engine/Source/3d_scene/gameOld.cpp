@@ -108,13 +108,11 @@ void Game3D::Init()
 	GameObject* Camera1Point = new GameObject("Camera1Point");
 	Camera1Point->transform.SetPosition(Vector3(4, 4, 4));
 
-	cameraGameObject->AddExistingComponent(camera);
-	//cameraGameObject->AddExistingComponent(orbitalCamera);
+	camera = cameraGameObject->AddComponent<Camera>();
+
+
 	camera->gameObject->transform.SetPosition(Vector3(0, 2, -4));
 	cameraGameObject->transform.SetLocalScale(Vector3(0, 0, 0));
-	//orbitalCamera->target = &cubeGameObject->transform;
-	//orbitalCamera->camera = camera;
-	//orbitalCamera->camera1 = &Camera1Point->transform;
 
 	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
 
@@ -137,13 +135,13 @@ void Game3D::Init()
 
 	//newShape->GetComponent<MeshRenderer>()->material = newMat;
 
-	mesh3 = new MeshRenderer("CubeTriangulate.obj");
-	mesh4 = new MeshRenderer("ConeTriangulate.obj");
-	mesh5 = new MeshRenderer("CubeTriangulate.obj");
-	bottle = new MeshRenderer("gas_bottle.obj");
-	bottle2 = new MeshRenderer("gas_bottle.obj");
-	bottle3 = new MeshRenderer("gas_bottle.obj");
-	chess = new MeshRenderer("chess_tower.obj");
+	//mesh3 = new MeshRenderer("CubeTriangulate.obj");
+	//mesh4 = new MeshRenderer("ConeTriangulate.obj");
+	//mesh5 = new MeshRenderer("CubeTriangulate.obj");
+	//bottle = new MeshRenderer("gas_bottle.obj");
+	//bottle2 = new MeshRenderer("gas_bottle.obj");
+	//bottle3 = new MeshRenderer("gas_bottle.obj");
+	//chess = new MeshRenderer("chess_tower.obj");
 
 	//bottle = new MeshRenderer("debug_cube.obj");
 
@@ -157,9 +155,20 @@ void Game3D::Init()
 
 	GameObject* childBottle = new GameObject("UWU");
 	GameObject* childBottle2 = new GameObject();
-	cubeGameObject->AddExistingComponent(bottle);
-	childBottle->AddExistingComponent(bottle2);
-	childBottle2->AddExistingComponent(bottle3);
+
+	bottle = cubeGameObject->AddComponent<MeshRenderer>();
+	bottle2 = childBottle->AddComponent<MeshRenderer>();
+	bottle3 = childBottle2->AddComponent<MeshRenderer>();
+	mesh5 = myGameObject3->AddComponent<MeshRenderer>();
+
+	bottle->LoadFromFile("gas_bottle.obj");
+	bottle2->LoadFromFile("gas_bottle.obj");
+	bottle3->LoadFromFile("gas_bottle.obj");
+	mesh5->LoadFromFile("CubeTriangulate.obj");
+
+	//cubeGameObject->AddExistingComponent(bottle);
+	//childBottle->AddExistingComponent(bottle2);
+	//childBottle2->AddExistingComponent(bottle3);
 	cubeGameObject->transform.SetPosition(Vector3(0, 0, 0));
 	cubeGameObject->transform.SetRotation(Vector3(45, 45, 45));
 	cubeGameObject->transform.SetLocalScale(Vector3(20, 20, 20));
@@ -190,7 +199,7 @@ void Game3D::Init()
 	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
 	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
 	//cubeGameObject->AddChild(cubeChild);
-	MeshRenderer* mesh = static_cast<MeshRenderer*>(cubeChild->AddComponent<MeshRenderer>());
+	MeshRenderer* mesh = cubeChild->AddComponent<MeshRenderer>();
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
 	GameObject* cubeChild2 = new GameObject("Cube2");
@@ -198,8 +207,11 @@ void Game3D::Init()
 	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
 	cubeChild2->transform.SetLocalScale(Vector3(1.5f, 1.5f, 1.5f));
 	cubeChild->AddChild(cubeChild2);
-	MeshRenderer* mesh222 = static_cast<MeshRenderer*>(cubeChild2->AddComponent<MeshRenderer>());
+	MeshRenderer* mesh222 = cubeChild2->AddComponent<MeshRenderer>();
+	//MeshRenderer* mesh222 = cubeChild2->AddComponent<MeshRenderer>();
 	mesh222->LoadFromFile("CubeTriangulate.obj");
+
+	//Vector3* mesh2322 = static_cast<Vector3*>(cubeChild2->AddComponent<Vector3>());
 
 	//cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
 	//cubeChild->SetParent(nullptr);
@@ -222,43 +234,48 @@ void Game3D::Init()
 
 	cubeGameObject->transform.SetPosition(Vector3(5, 0, 0));*/
 
-	myGameObject3->AddExistingComponent(mesh5);
+	//myGameObject3->AddExistingComponent(mesh5);
 	myGameObject3->transform.SetPosition(Vector3(0, -1, 0));
 
 	myGameObject3->transform.SetLocalScale(Vector3(5, 1, 5));
 
 	mesh->material = newMat;
 	mesh222->material = newMat;
-	mesh3->material = newMat;
+	//mesh3->material = newMat;
 	bottle->material = bottleMat;
 	bottle2->material = bottleMat;
 	bottle3->material = bottleMat;
-	chess->material = chessMat;
-	mesh4->material = newMat2;
+	//chess->material = chessMat;
+	//mesh4->material = newMat2;
 	mesh5->material = newMat;
 
 	Material* material2D = new Material("shaderStandard2D");
 	material2D->shader = shaderStandard2D;
 
 	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
-	pointLightGameObject->AddExistingComponent(pointLight);
-	pointLightGameObject2->AddExistingComponent(pointLight2);
+	//pointLightGameObject->AddExistingComponent(pointLight);
+	pointLight = pointLightGameObject->AddComponent<Light>();
+	pointLight2 = pointLightGameObject2->AddComponent<Light>();
+	//pointLightGameObject2->AddExistingComponent(pointLight2);
 	pointLight->SetupPointLight(Vector3(1, 1, 1), 6, 7);
 	pointLight2->SetupPointLight(Vector3(0, 0, 1), 30, 7);
 	//pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
 
 	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
 	spotLightGameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
-	spotLightGameObject->AddExistingComponent(spotLight);
+	//spotLightGameObject->AddExistingComponent(spotLight);
+	spotLight = spotLightGameObject->AddComponent<Light>();
 	spotLight->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 0);
 
 	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
 	spotLight2GameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
-	spotLight2GameObject->AddExistingComponent(spotLight2);
+	//spotLight2GameObject->AddExistingComponent(spotLight2);
+	spotLight2 = spotLight2GameObject->AddComponent<Light>();
 	spotLight2->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 1);
 
 	directionalLightGameObject->transform.SetRotation(Vector3(45.0f, 45.0f, 0.0f));
-	directionalLightGameObject->AddExistingComponent(directionalLight);
+	//directionalLightGameObject->AddExistingComponent(directionalLight);
+	directionalLight = directionalLightGameObject->AddComponent<Light>();
 	directionalLight->SetupDirectionalLight(Vector3(0.6f, 0.6f, 0.7f), 1);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);

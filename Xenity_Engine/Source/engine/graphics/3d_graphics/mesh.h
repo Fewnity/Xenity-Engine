@@ -26,9 +26,9 @@ class MeshRenderer : public IDrawable
 {
 public:
 	MeshRenderer();
-	MeshRenderer(MeshData* meshData);
-	MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
-	MeshRenderer(const std::string meshpath);
+	//MeshRenderer(MeshData* meshData);
+	//MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount);
+	//MeshRenderer(const std::string meshpath);
 	~MeshRenderer();
 	int GetDrawPriority();
 

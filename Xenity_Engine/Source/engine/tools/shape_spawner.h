@@ -21,6 +21,6 @@ public:
 	static Vector3 defaultScale;
 
 private:
-	static GameObject* Spawn(MeshRenderer* mesh, std::string name);
+	static GameObject* Spawn(GameObject* gameObject);
 };
 

@@ -21,27 +21,26 @@ public:
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;
-	void OnTransformMove();
 
 	//void SetChildrenWorldPositions();
 
 	void AddChild(GameObject* gameObject);
 	void SetParent(GameObject* gameObject);
-	void AddExistingComponent(Component* component);
 
 	template <typename T>
-	Component* AddComponent()
+	T* AddComponent()
 	{
 		Component* newC = new T();
 		AddExistingComponent(newC);
-		return newC;
+		return dynamic_cast<T*>(newC);
 	}
 
 	template <typename T>
 	T* GetComponent() {
 		for (int i = 0; i < componentCount; i++)
 		{
-			if (T* result = dynamic_cast<T*>(components[i])) {
+			if (T* result = dynamic_cast<T*>(components[i])) 
+			{
 				return result;
 			}
 		}
@@ -65,6 +64,7 @@ public:
 	}
 
 private:
+	void AddExistingComponent(Component* component);
 	void UpdateActive(GameObject * changed);
 
 	bool active = true;

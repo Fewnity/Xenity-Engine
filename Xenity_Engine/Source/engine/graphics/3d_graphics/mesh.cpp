@@ -40,18 +40,19 @@ MeshData::~MeshData()
 /// </summary>
 MeshRenderer::MeshRenderer()
 {
-	meshData = new MeshData();
+	componentName = "Mesh Renderer";
+	/*meshData = new MeshData();
 	meshData->verticesCount = 0;
 	meshData->vertices = (float*)calloc(meshData->verticesCount, sizeof(float));
 	meshData->indicesCount = 0;
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
-	CreateBuffers(true, true);
+	CreateBuffers(true, true);*/
 }
 
-MeshRenderer::MeshRenderer(MeshData* meshData)
+/*MeshRenderer::MeshRenderer(MeshData* meshData)
 {
 	LoadFromMeshData(meshData);
-}
+}*/
 
 /// <summary>
 /// Instantiate a mesh from a vertices and indices lists
@@ -60,7 +61,7 @@ MeshRenderer::MeshRenderer(MeshData* meshData)
 /// <param name="indices"></param>
 /// <param name="verticesCount"></param>
 /// <param name="indicesCount"></param>
-MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount)
+/*MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[], const int verticesCount, const int indicesCount)
 {
 	meshData = new MeshData();
 	meshData->verticesCount = verticesCount / sizeof(*vertices);
@@ -69,16 +70,16 @@ MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[],
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
 	LoadFromRawData(vertices, indices);
 	CreateBuffers(true, true);
-}
+}*/
 
 /// <summary>
 /// Instantiate a mesh from a file
 /// </summary>
 /// <param name="meshpath"></param>
-MeshRenderer::MeshRenderer(const std::string meshpath)
+/*MeshRenderer::MeshRenderer(const std::string meshpath)
 {
 	LoadFromFile(meshpath);
-}
+}*/
 
 /// <summary>
 /// Destructor

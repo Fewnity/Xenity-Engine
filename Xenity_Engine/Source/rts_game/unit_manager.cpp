@@ -50,40 +50,47 @@ UnitManager::UnitManager()
 
 void UnitManager::SpawnUnits()
 {
-	Unit* newUnit = new Unit(unitsData[0], game->mapManager);
+	Unit* newUnit = nullptr;
 	GameObject* unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(0, 0, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[0];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[4], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(1, 2, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[4];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[10], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(1, 1, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[10];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[9], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(3, 1, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[9];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[8], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(3, 2, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[8];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 
-	newUnit = new Unit(unitsData[11], game->mapManager);
 	unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(3, 3, 0));
-	unitGM->AddExistingComponent(newUnit);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[11];
+	newUnit->mapManager = game->mapManager;
 	units.push_back(newUnit);
 }
 

@@ -78,8 +78,12 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 	if (componentToAdd == nullptr)
 		return;
 
+	components.push_back(componentToAdd);
+	componentToAdd->gameObject = this;
+	componentCount++;
+
 	//Check if the component to add is alrady a component of this gameobject
-	bool add = true;
+	/*bool add = true;
 	for (int i = 0; i < componentCount; i++)
 	{
 		if (components[i] == componentToAdd)
@@ -94,7 +98,7 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 		components.push_back(componentToAdd);
 		componentToAdd->gameObject = this;
 		componentCount++;
-	}
+	}*/
 }
 
 #pragma region Find GameObjects

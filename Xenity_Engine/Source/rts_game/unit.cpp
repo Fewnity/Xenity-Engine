@@ -4,24 +4,26 @@
 #include "../xenity.h"
 #include "../engine/pathfinding/astar.h"
 
-Unit::Unit(UnitData* data, MapManager* mapManager)
+Unit::Unit()
 {
 	reflectedFloats.insert(std::pair<std::string, float*>("Movement Speed", &movementSpeed));
 	componentName = "Unit";
-
-	unitData = data;
-	this->mapManager = mapManager;
 }
 
 void Unit::Start()
 {
 	GameObject* gmUnitSprite = new GameObject();
-	SpriteRenderer* unitSpriteRenderer = new SpriteRenderer(unitData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
+
+	SpriteRenderer* unitSpriteRenderer = gmUnitSprite->AddComponent<SpriteRenderer>();
+	unitSpriteRenderer->texture = unitData->textures[0];
+	unitSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	unitSpriteRenderer->orderInLayer = 3;
-	gmUnitSprite->AddExistingComponent(unitSpriteRenderer);
-	selectionSpriteRenderer = new SpriteRenderer(unitData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
+
+	selectionSpriteRenderer = gmUnitSprite->AddComponent<SpriteRenderer>();
+	selectionSpriteRenderer->texture = unitData->selectionTexture;
+	selectionSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	selectionSpriteRenderer->orderInLayer = 11;
-	gmUnitSprite->AddExistingComponent(selectionSpriteRenderer);
+
 	gameObject->AddChild(gmUnitSprite);
 	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0.0f));
 	gmUnitSprite->transform.SetLocalScale(0.5f);

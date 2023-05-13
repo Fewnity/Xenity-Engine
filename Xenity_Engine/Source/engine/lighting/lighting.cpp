@@ -7,6 +7,7 @@
 
 Light::Light()
 {
+	componentName = "Light";
 	AssetManager::AddLight(this);
 }
 

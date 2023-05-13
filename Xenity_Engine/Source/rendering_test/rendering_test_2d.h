@@ -16,7 +16,8 @@ public:
 
 private:
 	GameObject* cameraGameObject = new GameObject("cameraGameObject");
-	Camera* camera = new Camera();
+	//Camera* camera = new Camera();
+	Camera* camera = nullptr;
 	Material* material2D = nullptr;
 	Material* material2DWithZ = nullptr;
 	Texture* crosshair = nullptr;

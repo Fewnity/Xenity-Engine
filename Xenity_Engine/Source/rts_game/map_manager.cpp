@@ -360,16 +360,17 @@ void MapManager::CreateTileMaps()
 	Material* material2DWithZ = AssetManager::GetMaterialByName("2D Standard With Z");
 
 	//Create ground tile map
-	tileMap = new TileMap(material2DWithZ);
-	gameObjectTileMap->AddExistingComponent(tileMap);
+	tileMap = gameObjectTileMap->AddComponent<Tilemap>();
+	tileMap->material = material2DWithZ;
+
 	tileMap->Setup(mapSize, mapSize);
 	tileMap->AddTexture(tilesTextures[0]);
 	tileMap->AddTexture(tilesTextures[1]);
 
 	//Create props tilemap
-	tileMapProps = new TileMap(material2DWithZ);
+	tileMapProps = gameObjectTileMap->AddComponent<Tilemap>();
+	tileMapProps->material = material2DWithZ;
 	tileMapProps->orderInLayer = 1;
-	gameObjectTileMap->AddExistingComponent(tileMapProps);
 	tileMapProps->Setup(mapSize, mapSize);
 
 	int propDataSize = propsData.size();

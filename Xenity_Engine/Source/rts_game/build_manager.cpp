@@ -9,6 +9,7 @@
 
 BuildManager::BuildManager()
 {
+	componentName = "Build Manager";
 }
 
 void BuildManager::OnMouseUp()
@@ -30,10 +31,10 @@ void BuildManager::LoadBuildingsData()
 	buildingsData[BuildingType::Miner]->type = BuildingType::Miner;
 	buildingsData[BuildingType::Storage]->type = BuildingType::Storage;
 
-	for (int i = 0; i < 3000; i++)
+	/*for (int i = 0; i < 3000; i++)
 	{
 		PlaceBuilding(Vector2Int(5, 0));
-	}
+	}*/
 }
 
 void BuildManager::PlaceBuilding(Vector2Int position)
@@ -48,9 +49,9 @@ void BuildManager::PlaceBuilding(Vector2Int position)
 			MapManager::Tile* tile = mapManager->GetTile(position.x, position.y);
 
 			GameObject* buildingGO = new GameObject("Building");
-			Building* building = new Building(buildingsData[type], this);
+			Building* building = buildingGO->AddComponent<Building>();
+			building->buildingData = buildingsData[type];
 			building->tile = tile;
-			buildingGO->AddExistingComponent(building);
 			buildingGO->transform.SetLocalPosition(position);
 			tile->building = building;
 		}

@@ -45,7 +45,7 @@ private:
 	AStarVisualNode* aStarVisualNodes = nullptr;
 
 	GameObject* cameraGameObject = new GameObject("cameraGameObject");
-	Camera* camera = new Camera();
+	Camera* camera = nullptr;
 	Material* material2D = nullptr;
 	Dijkstras dijkstras = Dijkstras(4);
 	Astar astar = Astar(80, 80);

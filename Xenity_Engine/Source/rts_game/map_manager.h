@@ -8,7 +8,7 @@ class Unit;
 class Astar;
 class Texture;
 class GameObject;
-class TileMap;
+class Tilemap;
 class Vector2Int;
 class Building;
 class PropData;
@@ -34,8 +34,8 @@ public:
 	MapManager();
 	void Awake();
 	Tile** tiles = nullptr;
-	TileMap* tileMap = nullptr;
-	TileMap* tileMapProps = nullptr;
+	Tilemap* tileMap = nullptr;
+	Tilemap* tileMapProps = nullptr;
 
 	void LoadMapData();
 	MapManager::Tile* GetTile(int x, int y);

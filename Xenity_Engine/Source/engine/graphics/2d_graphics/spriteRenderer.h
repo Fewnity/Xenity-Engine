@@ -11,18 +11,16 @@ class SpriteRenderer : public IDrawable
 {
 	public:
 		SpriteRenderer();
-		SpriteRenderer(const Texture* texture, Material* material);
 		~SpriteRenderer();
 
-		//void SetSprite(const Texture* texture);
 		int GetDrawPriority();
 		int orderInLayer = 0;
 
 		Material* material = nullptr;
+		Texture* texture = nullptr;
 		Color color = Color();
 
 	private:
-		const Texture* texture = nullptr;
 		void Draw();
 };
 

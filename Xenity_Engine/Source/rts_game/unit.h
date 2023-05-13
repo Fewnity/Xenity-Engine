@@ -15,8 +15,8 @@ class SpriteRenderer;
 class Unit : public MonoBehaviour
 {
 public:
-	Unit() = delete;
-	Unit(UnitData *data, MapManager * mapManager);
+	Unit();
+	//Unit(UnitData *data, MapManager * mapManager);
 
 	UnitData* unitData = nullptr;
 

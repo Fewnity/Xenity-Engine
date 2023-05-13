@@ -6,17 +6,17 @@
 #include <math.h>
 #include <glm/ext/matrix_transform.hpp>
 
-TileMap::TileMap(Material* material)
+Tilemap::Tilemap()
 {
-	this->material = material;
+	componentName = "Tilemap";
 }
 
-int TileMap::GetDrawPriority()
+int Tilemap::GetDrawPriority()
 {
 	return orderInLayer;
 }
 
-void TileMap::Setup(int width, int height)
+void Tilemap::Setup(int width, int height)
 {
 	AddTexture(nullptr);
 
@@ -53,7 +53,7 @@ void TileMap::Setup(int width, int height)
 	}
 }
 
-TileMap::Tile* TileMap::GetTile(int x, int y)
+Tilemap::Tile* Tilemap::GetTile(int x, int y)
 {
 	if (tiles == nullptr || x < 0 || y < 0 || x >= height || y >= height)
 		return nullptr;
@@ -61,7 +61,7 @@ TileMap::Tile* TileMap::GetTile(int x, int y)
 	return &tiles[x * height + y];
 }
 
-void TileMap::SetTile(int x, int y, Texture* texture)
+void Tilemap::SetTile(int x, int y, Texture* texture)
 {
 	int textureSize = (int)textures.size();
 	for (int i = 0; i < textureSize; i++)
@@ -74,7 +74,7 @@ void TileMap::SetTile(int x, int y, Texture* texture)
 	}
 }
 
-void TileMap::SetTile(int x, int y, int textureId)
+void Tilemap::SetTile(int x, int y, int textureId)
 {
 	needUpdateVertices = true;
 	Tile* tile = GetTile(x, y);
@@ -143,17 +143,17 @@ void TileMap::SetTile(int x, int y, int textureId)
 	}
 }
 
-int TileMap::GetWidth()
+int Tilemap::GetWidth()
 {
 	return width;
 }
 
-int TileMap::GetHeight()
+int Tilemap::GetHeight()
 {
 	return height;
 }
 
-void TileMap::Update()
+void Tilemap::Update()
 {
 	/*for (int x = 0; x < width; x++)
 	{
@@ -171,7 +171,7 @@ void TileMap::Update()
 	}*/
 }
 
-void TileMap::Draw()
+void Tilemap::Draw()
 {
 	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled())
 	{
@@ -204,7 +204,7 @@ void TileMap::Draw()
 	}
 }
 
-int TileMap::GetTextureIndex(Texture* texture)
+int Tilemap::GetTextureIndex(Texture* texture)
 {
 	int textureIndex = -1;
 	int textureCount = (int)textures.size();
@@ -218,7 +218,7 @@ int TileMap::GetTextureIndex(Texture* texture)
 	return textureIndex;
 }
 
-void TileMap::AddTexture(Texture* texture)
+void Tilemap::AddTexture(Texture* texture)
 {
 	if (GetTextureIndex(texture) == -1)
 	{
@@ -230,7 +230,7 @@ void TileMap::AddTexture(Texture* texture)
 	}
 }
 
-void TileMap::RemoveTexture(Texture* texture)
+void Tilemap::RemoveTexture(Texture* texture)
 {
 	int index = GetTextureIndex(texture);
 	if (index != -1)

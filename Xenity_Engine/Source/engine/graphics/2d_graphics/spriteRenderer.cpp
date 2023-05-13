@@ -5,12 +5,7 @@
 
 SpriteRenderer::SpriteRenderer()
 {
-}
-
-SpriteRenderer::SpriteRenderer(const Texture* texture, Material* material)
-{
-	this->texture = texture;
-	this->material = material;
+	componentName = "Sprite Renderer";
 }
 
 SpriteRenderer::~SpriteRenderer()

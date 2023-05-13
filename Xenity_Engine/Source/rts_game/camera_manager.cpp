@@ -17,8 +17,7 @@ void CameraManager::Awake()
 void CameraManager::Init() 
 {
 	GameObject* cameraGameObject = new GameObject("Camera");
-	camera = new Camera();
-	cameraGameObject->AddExistingComponent(camera);
+	camera = cameraGameObject->AddComponent<Camera>();
 
 	camera->gameObject->transform.SetPosition(Vector3(0, 0, 0));
 

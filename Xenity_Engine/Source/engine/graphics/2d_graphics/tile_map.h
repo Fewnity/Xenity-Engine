@@ -11,11 +11,11 @@ class Texture;
 class Material;
 class SpriteBatch;
 
-class TileMap : public IDrawable
+class Tilemap : public IDrawable
 {
 public:
-	TileMap() = delete;
-	TileMap(Material* material);
+	Tilemap();
+
 	class Tile 
 	{
 	public:
@@ -37,9 +37,9 @@ public:
 	void RemoveTexture(Texture* texture);
 	Vector2 spritesScale = Vector2(1,1);
 	int orderInLayer = 0;
+	Material* material = nullptr;
 
 private:
-	Material* material = nullptr;
 	void Update();
 	void Draw();
 

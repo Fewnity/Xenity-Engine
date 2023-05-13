@@ -27,64 +27,51 @@ void Game::Init()
 
 	GameObject* managersGameObject = new GameObject("Managers");
 
-	mapManager = new MapManager();
+	mapManager = managersGameObject->AddComponent<MapManager>();
 	mapManager->LoadMapData();
 	mapManager->GenerateMap();
 	mapManager->CreateTileMaps();
-	managersGameObject->AddExistingComponent(mapManager);
 
-	cameraManager = new CameraManager();
+	cameraManager = managersGameObject->AddComponent<CameraManager>();
 	cameraManager->Init();
-	managersGameObject->AddExistingComponent(cameraManager);
 
-	buildManager = new BuildManager();
+	buildManager = managersGameObject->AddComponent<BuildManager>();
 	buildManager->game = this;
 	buildManager->mapManager = mapManager;
 	buildManager->cameraManager = cameraManager;
 	buildManager->LoadBuildingsData();
-	managersGameObject->AddExistingComponent(buildManager);
 
-	unitManager = new UnitManager();
+	unitManager = managersGameObject->AddComponent<UnitManager>();
 	unitManager->cameraManager = cameraManager;
 	unitManager->game = this;
 	unitManager->LoadUnitData();
-	managersGameObject->AddExistingComponent(unitManager);
-
 	unitManager->SpawnUnits();
-
-	//buildManager->PlaceBuilding(Vector2Int(0, 0));
 
 	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
-	SpriteRenderer* sprGrad = new SpriteRenderer(gradient, material2DWithZ);
+	SpriteRenderer* sprGrad = gameObjectCrosshair2->AddComponent<SpriteRenderer>();
+	sprGrad->texture = gradient;
+	sprGrad->material = material2DWithZ;
 	sprGrad->color = Color::CreateFromRGBAFloat(1, 1, 1, 1);
-	gameObjectCrosshair2->AddExistingComponent(sprGrad);
 
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
-	SpriteRenderer* spr5 = new SpriteRenderer(crosshair, material2DWithZ);
+	SpriteRenderer* spr5 = gameObjectCrosshair->AddComponent<SpriteRenderer>();
+	sprGrad->texture = crosshair;
+	sprGrad->material = material2DWithZ;
+
 	spr5->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
 	spr5->orderInLayer = 10;
-	gameObjectCrosshair->AddExistingComponent(spr5);
 
-	lineRendererTop = new LineRenderer(0.1f, material2D);
-	lineRendererBottom = new LineRenderer(0.1f, material2D);
-	lineRendererLeft = new LineRenderer(0.1f, material2D);
-	lineRendererRight = new LineRenderer(0.1f, material2D);
 	Color selectionLineColor = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
-	lineRendererTop->color = selectionLineColor;
-	lineRendererBottom->color = selectionLineColor;
-	lineRendererLeft->color = selectionLineColor;
-	lineRendererRight->color = selectionLineColor;
+	lineRendererTop = gameObjectLineRenderers->AddComponent<LineRenderer>();
+	lineRendererBottom = gameObjectLineRenderers->AddComponent<LineRenderer>();
+	lineRendererLeft = gameObjectLineRenderers->AddComponent<LineRenderer>();
+	lineRendererRight = gameObjectLineRenderers->AddComponent<LineRenderer>();
 
-	lineRendererTop->orderInLayer = 10;
-	lineRendererBottom->orderInLayer = 10;
-	lineRendererLeft->orderInLayer = 10;
-	lineRendererRight->orderInLayer = 10;
-
-	gameObjectLineRenderers->AddExistingComponent(lineRendererTop);
-	gameObjectLineRenderers->AddExistingComponent(lineRendererBottom);
-	gameObjectLineRenderers->AddExistingComponent(lineRendererLeft);
-	gameObjectLineRenderers->AddExistingComponent(lineRendererRight);
+	lineRendererTop->width = lineRendererBottom->width = lineRendererLeft->width = lineRendererRight->width = 0.1f;
+	lineRendererTop->material = lineRendererBottom->material = lineRendererLeft->material = lineRendererRight->material = material2D;
+	lineRendererTop->color = lineRendererBottom->color = lineRendererLeft->color =lineRendererRight->color = selectionLineColor;
+	lineRendererTop->orderInLayer = lineRendererBottom->orderInLayer = lineRendererLeft->orderInLayer = lineRendererRight->orderInLayer = 10;
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -106,17 +93,21 @@ void Game::Init()
 	childTest1->AddChild(childTest3);
 
 	GameObject* canvasGO = new GameObject("Canvas");
-	ressourcesTextRenderer = new TextRendererCanvas(UiManager::fonts[0], 0.8, shaderTextCanvas);
+	ressourcesTextRenderer = canvasGO->AddComponent< TextRendererCanvas>();
+	ressourcesTextRenderer->font = UiManager::fonts[0];
+	ressourcesTextRenderer->size = 0.8f;
+	ressourcesTextRenderer->shader = shaderTextCanvas;
 	ressourcesTextRenderer->horizontalAligment = H_Right;
 	ressourcesTextRenderer->verticalAlignment = V_Bottom;
 	ressourcesTextRenderer->position = Vector3(0, 0, 0);
-	canvasGO->AddExistingComponent(ressourcesTextRenderer);
 
-	modeTextRenderer = new TextRendererCanvas(UiManager::fonts[0], 0.8, shaderTextCanvas);
+	modeTextRenderer = canvasGO->AddComponent< TextRendererCanvas>();
+	modeTextRenderer->font = UiManager::fonts[0];
+	modeTextRenderer->size = 0.8f;
+	modeTextRenderer->shader = shaderTextCanvas;
 	modeTextRenderer->horizontalAligment = H_Center;
 	modeTextRenderer->verticalAlignment = V_Top;
 	modeTextRenderer->position = Vector3(0.5, 1, 0);
-	canvasGO->AddExistingComponent(modeTextRenderer);
 }
 
 void Game::LoadGameData()
