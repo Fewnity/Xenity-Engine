@@ -54,7 +54,8 @@ void EditorUI::DrawInspector()
 		Vector3 localPos = selectedGameObject->transform.GetLocalPosition();
 		bool changed = DrawVector3Input("Local Position", "X", "Y", "Z", localPos);
 
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
+		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		{
 			selectedGameObject->transform.SetLocalPosition(localPos);
 		}
 		ImGui::Text("World Position: %f %f %f", selectedGameObject->transform.GetPosition().x, selectedGameObject->transform.GetPosition().y, selectedGameObject->transform.GetPosition().z);

@@ -21,6 +21,8 @@ public:
 	std::vector<Component*> components;
 
 	GameObject* parent = nullptr;
+	void OnTransformMove();
+
 	//void SetChildrenWorldPositions();
 
 	void AddChild(GameObject* gameObject);
@@ -57,12 +59,14 @@ public:
 		return childCount;
 	}
 
-	int GetComponentCount() {
+	int GetComponentCount() 
+	{
 		return componentCount;
 	}
 
 private:
 	void UpdateActive(GameObject * changed);
+
 	bool active = true;
 	bool localActive = true;
 	int childCount = 0;

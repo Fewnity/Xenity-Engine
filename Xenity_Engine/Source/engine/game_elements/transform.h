@@ -35,6 +35,7 @@ public:
 	void SetChildrenWorldPositions();
 	void OnParentChanged();
 	glm::mat4 transformationMatrix;
+	bool movedLastFrame = true;
 
 private:
 	void UpdateTransformationMatrix();

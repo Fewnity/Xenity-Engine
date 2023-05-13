@@ -91,8 +91,10 @@ Vector3 Transform::GetDown() const
 
 void Transform::SetPosition(const Vector3 value)
 {
-	if (value != position)
+	if (value != position) 
+	{
 		isTransformationMatrixDirty = true;
+	}
 	else
 		return;
 
@@ -215,6 +217,7 @@ void Transform::SetChildrenWorldPositions()
 
 void Transform::UpdateWorldValues()
 {
+	movedLastFrame = true;
 	UpdateWorldPosition();
 	UpdateWorldRotation();
 	UpdateWorldScale();

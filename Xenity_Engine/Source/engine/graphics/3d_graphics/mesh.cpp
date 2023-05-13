@@ -46,13 +46,11 @@ MeshRenderer::MeshRenderer()
 	meshData->indicesCount = 0;
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
 	CreateBuffers(true, true);
-	SetIDrawbleSettings();
 }
 
 MeshRenderer::MeshRenderer(MeshData* meshData)
 {
 	LoadFromMeshData(meshData);
-	SetIDrawbleSettings();
 }
 
 /// <summary>
@@ -71,7 +69,6 @@ MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[],
 	meshData->indices = (unsigned int*)calloc(meshData->indicesCount, sizeof(unsigned int));
 	LoadFromRawData(vertices, indices);
 	CreateBuffers(true, true);
-	SetIDrawbleSettings();
 }
 
 /// <summary>
@@ -81,7 +78,6 @@ MeshRenderer::MeshRenderer(const float vertices[], const unsigned int indices[],
 MeshRenderer::MeshRenderer(const std::string meshpath)
 {
 	LoadFromFile(meshpath);
-	SetIDrawbleSettings();
 }
 
 /// <summary>
@@ -96,11 +92,6 @@ MeshRenderer::~MeshRenderer()
 }
 
 #pragma endregion
-
-void MeshRenderer::SetIDrawbleSettings()
-{
-	invertedTriangles = true;
-}
 
 #pragma region Data loading
 

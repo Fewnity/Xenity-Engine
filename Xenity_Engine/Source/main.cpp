@@ -11,7 +11,8 @@ using namespace std;
  * IMPORTANT : Fix text cull when a sprite has a inverted scale (reset opengl value before drawing
  * SetBufferSize and SetBufferSubData change size system (get vertices size and not byteCount)
  * Optimise GetLocalPositionFromMatrices with references
- * Create on move event
+ * Use unordered map for orderedIDrawable with key is order in layer
+ * Remove the possibility to add an existing component to a gameobject and ask for a gameobject in the components constructor
  * 3D text
  * 3D Sounds
  * Disable light when component is disabled

@@ -13,7 +13,7 @@ public:
 	virtual void Start() {}
 	virtual void Update() {}
 	virtual void OnParentChanged() {}
-	virtual void OnPositionChanged() {}
+
 	//virtual void OnRotationChanged() {}
 	//virtual void OnScaleChanged() {}
 
