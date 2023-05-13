@@ -1,18 +1,22 @@
 #pragma once
 
 #include "../engine/component.h"
+#include "../engine/vectors/vector3.h"
 #include <vector>
 
 class Camera;
 class Transform;
 
-class Box {
+class Box 
+{
 public:
-	Box() {
+	Box() 
+	{
 
 	}
 
-	Box(Vector3 position, Vector3 scale){
+	Box(Vector3 position, Vector3 scale)
+	{
 		this->position = position;
 		this->scale = scale;
 	}

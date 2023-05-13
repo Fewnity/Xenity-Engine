@@ -22,7 +22,6 @@
 //UI
 #include "engine/ui/window.h"
 
-
 //Tools
 #include "engine/tools/benchmark.h"
 #include "engine/tools/curve.h"

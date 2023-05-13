@@ -1,12 +1,9 @@
 #pragma once
 
-#include "game_elements/gameobject.h"
+#include "component.h"
 
 class MonoBehaviour : public Component
 {
 public:
-	MonoBehaviour()
-	{
-		this->updatePriority = 1000;
-	}
+	MonoBehaviour();
 };

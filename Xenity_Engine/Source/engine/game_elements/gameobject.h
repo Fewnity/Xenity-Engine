@@ -5,7 +5,6 @@
 #include "transform.h"
 #include <memory>
 
-class GameObject;
 class Component;
 #include "../component.h"
 

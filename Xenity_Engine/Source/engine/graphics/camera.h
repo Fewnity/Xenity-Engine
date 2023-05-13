@@ -4,6 +4,7 @@
 #include "../component.h"
 #include "../vectors/vector2.h"
 #include "camera_projection_types.h"
+#include <glm/glm.hpp>
 
 class Camera : public Component
 {

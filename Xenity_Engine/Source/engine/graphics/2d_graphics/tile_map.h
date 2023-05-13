@@ -6,6 +6,7 @@
 #include "../../vectors/vector4.h"
 #include <glm/glm.hpp>
 #include "../color/color.h"
+#include "../../game_elements/gameobject.h"
 
 class Texture;
 class Material;

@@ -2,12 +2,12 @@
 
 #include <vector>
 #include "../engine/monobehaviour.h"
+#include "../engine/game_elements/gameobject.h"
 
 class Prop;
 class Unit;
 class Astar;
 class Texture;
-class GameObject;
 class Tilemap;
 class Vector2Int;
 class Building;

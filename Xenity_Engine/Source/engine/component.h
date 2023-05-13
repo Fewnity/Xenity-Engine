@@ -1,8 +1,10 @@
 #pragma once
 
-#include "game_elements/gameobject.h"
+//#include "game_elements/gameobject.h"
 #include <map>
 #include <string>
+
+class GameObject;
 
 class Component
 {

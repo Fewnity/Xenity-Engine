@@ -7,7 +7,8 @@
 #include "../inputs/input_system.h"
 #include "../ui/window.h"
 
-#include <glm/glm.hpp>
+#include "../game_elements/gameobject.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #pragma region Constructors / Destructor
