@@ -31,7 +31,7 @@ int TextRendererCanvas::GetDrawPriority()
 /// </summary>
 void TextRendererCanvas::Draw()
 {
-	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled() && shader != nullptr)
+	if (gameObject->GetLocalActive() && GetIsEnabled() && shader != nullptr)
 	{
 		UiManager::RenderTextCanvas(text, position.x, position.y, position.z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
 	}

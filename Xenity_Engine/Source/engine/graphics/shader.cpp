@@ -161,7 +161,7 @@ void Shader::SetShaderCameraPosition()
 {
 	Use();
 	//Camera position
-	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
+	if (Graphics::usedCamera != nullptr)
 	{
 		Vector3 lookDirection = Graphics::usedCamera->gameObject->transform.GetForward();
 
@@ -194,7 +194,7 @@ void Shader::SetShaderCameraPosition2D()
 {
 	Use();
 	//Camera position
-	if (Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
+	if (Graphics::usedCamera != nullptr)
 	{
 		glm::mat4 camera = glm::mat4(1.0f);
 		Camera* cam = Graphics::usedCamera;

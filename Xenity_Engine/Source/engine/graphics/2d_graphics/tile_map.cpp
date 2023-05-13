@@ -173,7 +173,7 @@ void Tilemap::Update()
 
 void Tilemap::Draw()
 {
-	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled())
+	if (gameObject->GetLocalActive() && GetIsEnabled())
 	{
 		int batchCount = (int)spriteBatches.size();
 		for (int i = 0; i < batchCount; i++)

@@ -84,17 +84,14 @@ void Graphics::OrderDrawables()
 		for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
 		{
 			IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-			if (drawableToCheck->gameObject)
-			{
-				OrderOneDrawable(drawableToCheck);
-				iDrawablesCount++;
-			}
+			OrderOneDrawable(drawableToCheck);
+			iDrawablesCount++;
 		}
 	}
 	orderBenchmark->Stop();
 }
 
-void Graphics::AddDrawable(IDrawable* drawableToPlace) 
+void Graphics::AddDrawable(IDrawable* drawableToPlace)
 {
 	OrderOneDrawable(drawableToPlace);
 }

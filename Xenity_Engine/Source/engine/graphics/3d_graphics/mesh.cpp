@@ -210,7 +210,7 @@ void MeshRenderer::Draw()
 	//glPatchParameteri(GL_PATCH_VERTICES, 3); // For tessellation
 
 	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
-	if (gameObject != nullptr && gameObject->GetLocalActive() && meshData != nullptr && GetIsEnabled())
+	if (gameObject->GetLocalActive() && meshData != nullptr && GetIsEnabled())
 	{
 		if (material != nullptr)
 		{
@@ -242,7 +242,7 @@ int MeshRenderer::GetDrawPriority()
 /// </summary>
 void MeshRenderer::UpdateMaterial()
 {
-	if (material != nullptr && material->shader != nullptr && Graphics::usedCamera != nullptr && Graphics::usedCamera->gameObject != nullptr)
+	if (material != nullptr && material->shader != nullptr && Graphics::usedCamera != nullptr)
 	{
 		material->Use();
 		bool noNeedUpdate = material->updated;

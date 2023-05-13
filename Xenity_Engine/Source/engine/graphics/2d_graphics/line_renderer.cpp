@@ -24,7 +24,7 @@ int LineRenderer::GetDrawPriority()
 /// </summary>
 void LineRenderer::Draw()
 {
-	if (gameObject != nullptr && gameObject->GetLocalActive() && GetIsEnabled() && material != nullptr)
+	if (gameObject->GetLocalActive() && GetIsEnabled() && material != nullptr)
 	{
 		SpriteManager::Render2DLine(startPosition, endPosition, width, color, material);
 	}
