@@ -79,7 +79,8 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 		return;
 
 	components.push_back(componentToAdd);
-	componentToAdd->gameObject = this;
+	componentToAdd->SetGameObject(this);
+	//componentToAdd->gameObject = this;
 	componentCount++;
 
 	//Check if the component to add is alrady a component of this gameobject

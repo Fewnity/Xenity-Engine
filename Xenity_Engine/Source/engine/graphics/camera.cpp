@@ -88,8 +88,8 @@ void Camera::SetFarClippingPlane(float value)
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
 	float aspect = Window::GetAspectRatio();
-	float cameraX = gameObject->transform.GetPosition().x;
-	float cameraY = gameObject->transform.GetPosition().y;
+	float cameraX = GetGameObject()->transform.GetPosition().x;
+	float cameraY = GetGameObject()->transform.GetPosition().y;
 
 	float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / projectionSize * 5.0f) + cameraX;
 	float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / projectionSize * 5.0f) + cameraY;

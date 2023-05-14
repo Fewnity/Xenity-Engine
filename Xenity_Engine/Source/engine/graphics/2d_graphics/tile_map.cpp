@@ -37,7 +37,7 @@ void Tilemap::Setup(int width, int height)
 			//tile->spriteRenderer = new SpriteRendererNoTransform();
 			//tile->spriteRenderer->material = material;
 			tile->transformationMatrix = glm::mat4(1.0f);
-			tile->transformationMatrix = gameObject->transform.transformationMatrix;
+			tile->transformationMatrix = GetGameObject()->transform.transformationMatrix;
 
 			//tile->transformationMatrix *= gameObject->transform.transformationMatrix;
 
@@ -173,7 +173,7 @@ void Tilemap::Update()
 
 void Tilemap::Draw()
 {
-	if (gameObject->GetLocalActive() && GetIsEnabled())
+	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
 	{
 		int batchCount = (int)spriteBatches.size();
 		for (int i = 0; i < batchCount; i++)

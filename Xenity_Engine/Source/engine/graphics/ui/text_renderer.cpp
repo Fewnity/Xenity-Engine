@@ -31,8 +31,8 @@ int TextRenderer::GetDrawPriority()
 /// </summary>
 void TextRenderer::Draw()
 {
-	if (gameObject->GetLocalActive() && GetIsEnabled() && shader != nullptr)
+	if (GetGameObject()->GetLocalActive() && GetIsEnabled() && shader != nullptr)
 	{
-		UiManager::RenderText(text, gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y, gameObject->transform.GetRotation().z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
+		UiManager::RenderText(text, GetGameObject()->transform.GetPosition().x, GetGameObject()->transform.GetPosition().y, GetGameObject()->transform.GetRotation().z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
 	}
 }

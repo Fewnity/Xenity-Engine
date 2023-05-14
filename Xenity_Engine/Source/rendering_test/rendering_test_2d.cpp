@@ -6,7 +6,7 @@ void RenderingTest2D::Init()
 	LoadGameData();
 	camera = cameraGameObject->AddComponent<Camera>();
 	//cameraGameObject->AddExistingComponent(camera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+	camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
 
 	SpriteRenderer* gradientSprR = gradientGameObject->AddComponent<SpriteRenderer>();
 	gradientSprR->texture = gradient;
@@ -28,7 +28,7 @@ void RenderingTest2D::Init()
 	tileSprRB->texture = textureTile0;
 	tileSprRB->material = material2D;
 	tileSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	tileSprRB->orderInLayer = -1;
+	tileSprRB->SetOrderInLayer(-1);
 	//tileGameObjectBack->AddExistingComponent(tileSprRB);
 	tileGameObjectBack->transform.SetPosition(Vector3(-2, 0, 0));
 
@@ -37,7 +37,7 @@ void RenderingTest2D::Init()
 	tileSprRF->texture = textureTile0;
 	tileSprRF->material = material2D;
 	tileSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	tileSprRF->orderInLayer = 1;
+	tileSprRF->SetOrderInLayer(1);
 	//tileGameObjectFront->AddExistingComponent(tileSprRF);
 	tileGameObjectFront->transform.SetPosition(Vector3(2, 0, 0));
 
@@ -100,30 +100,30 @@ void RenderingTest2D::Loop()
 
 	//Move camera
 	float cameraArrowMoveSpeed = 3;
-	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
 }

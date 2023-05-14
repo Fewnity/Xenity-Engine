@@ -14,7 +14,17 @@ class SpriteRenderer : public IDrawable
 		~SpriteRenderer();
 
 		int GetDrawPriority();
-		int orderInLayer = 0;
+
+		void SetOrderInLayer(int orderInLayer) 
+		{
+			this->orderInLayer = orderInLayer;
+			needReorder = true;
+		}
+
+		int GetOrderInLayer() const
+		{
+			return orderInLayer;
+		}
 
 		Material* material = nullptr;
 		Texture* texture = nullptr;
@@ -22,5 +32,6 @@ class SpriteRenderer : public IDrawable
 
 	private:
 		void Draw();
+		int orderInLayer = 0;
 };
 

@@ -163,11 +163,11 @@ void Shader::SetShaderCameraPosition()
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
-		Vector3 lookDirection = Graphics::usedCamera->gameObject->transform.GetForward();
+		Vector3 lookDirection = Graphics::usedCamera->GetGameObject()->transform.GetForward();
 
-		lookDirection = lookDirection + Graphics::usedCamera->gameObject->transform.GetPosition();
+		lookDirection = lookDirection + Graphics::usedCamera->GetGameObject()->transform.GetPosition();
 
-		float xAngle = Graphics::usedCamera->gameObject->transform.GetRotation().x;
+		float xAngle = Graphics::usedCamera->GetGameObject()->transform.GetRotation().x;
 		while (xAngle < -90)
 		{
 			xAngle += 360;
@@ -179,9 +179,9 @@ void Shader::SetShaderCameraPosition()
 
 		glm::mat4 camera;
 		if (xAngle > 90 || xAngle < -90)
-			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
+			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->GetGameObject()->transform.GetPosition().x, Graphics::usedCamera->GetGameObject()->transform.GetPosition().y, Graphics::usedCamera->GetGameObject()->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
 		else
-			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->gameObject->transform.GetPosition().x, Graphics::usedCamera->gameObject->transform.GetPosition().y, Graphics::usedCamera->gameObject->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
+			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera->GetGameObject()->transform.GetPosition().x, Graphics::usedCamera->GetGameObject()->transform.GetPosition().y, Graphics::usedCamera->GetGameObject()->transform.GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
 		
 		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
@@ -200,8 +200,8 @@ void Shader::SetShaderCameraPosition2D()
 		Camera* cam = Graphics::usedCamera;
 		//camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f / cam->GetProjectionSize() * 5.0f,
 			//-cam->gameObject->transform.GetPosition().y / 10.f / cam->GetProjectionSize() * 5.0f, 0));
-		camera = glm::translate(camera, glm::vec3(-cam->gameObject->transform.GetPosition().x / 10.f,
-			-cam->gameObject->transform.GetPosition().y / 10.f, 0));
+		camera = glm::translate(camera, glm::vec3(-cam->GetGameObject()->transform.GetPosition().x / 10.f,
+			-cam->GetGameObject()->transform.GetPosition().y / 10.f, 0));
 		
 		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
@@ -357,7 +357,7 @@ void Shader::SetPointLightData(const Light* light, const int index)
 {
 	std::string baseString = "pointLights[" + std::to_string(index) + "].";
 	SetShaderAttribut((baseString + "color").c_str(), light->color * light->intensity);
-	SetShaderAttribut((baseString + "position").c_str(), light->gameObject->transform.GetPosition());
+	SetShaderAttribut((baseString + "position").c_str(), light->GetGameObject()->transform.GetPosition());
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
 	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
 	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
@@ -372,7 +372,7 @@ void Shader::SetDirectionalLightData(const Light* light, const int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 	SetShaderAttribut((baseString + "color").c_str(), light->color);
-	SetShaderAttribut((baseString + "direction").c_str(), light->gameObject->transform.GetForward());
+	SetShaderAttribut((baseString + "direction").c_str(), light->GetGameObject()->transform.GetForward());
 }
 
 /// <summary>
@@ -384,8 +384,8 @@ void Shader::SetSpotLightData(const Light* light, const int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	SetShaderAttribut((baseString + "color").c_str(), light->intensity * light->color);
-	SetShaderAttribut((baseString + "position").c_str(), light->gameObject->transform.GetPosition());
-	SetShaderAttribut((baseString + "direction").c_str(), light->gameObject->transform.GetForward());
+	SetShaderAttribut((baseString + "position").c_str(), light->GetGameObject()->transform.GetPosition());
+	SetShaderAttribut((baseString + "direction").c_str(), light->GetGameObject()->transform.GetForward());
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
 	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
 	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);

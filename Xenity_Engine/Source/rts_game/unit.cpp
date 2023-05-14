@@ -17,14 +17,14 @@ void Unit::Start()
 	SpriteRenderer* unitSpriteRenderer = gmUnitSprite->AddComponent<SpriteRenderer>();
 	unitSpriteRenderer->texture = unitData->textures[0];
 	unitSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
-	unitSpriteRenderer->orderInLayer = 3;
+	unitSpriteRenderer->SetOrderInLayer(3);
 
 	selectionSpriteRenderer = gmUnitSprite->AddComponent<SpriteRenderer>();
 	selectionSpriteRenderer->texture = unitData->selectionTexture;
 	selectionSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
-	selectionSpriteRenderer->orderInLayer = 11;
+	selectionSpriteRenderer->SetOrderInLayer(11);
 
-	gameObject->AddChild(gmUnitSprite);
+	GetGameObject()->AddChild(gmUnitSprite);
 	gmUnitSprite->transform.SetLocalPosition(Vector3(0, 0, 0.0f));
 	gmUnitSprite->transform.SetLocalScale(0.5f);
 }
@@ -35,29 +35,29 @@ void Unit::Update()
 	int pathSize = path.size();
 	if (pathSize != 0)
 	{
-		Vector3 newPos = gameObject->transform.GetPosition();
-		Vector2 dir = (path[currentPathNode] - Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y)).normalize();
+		Vector3 newPos = GetGameObject()->transform.GetPosition();
+		Vector2 dir = (path[currentPathNode] - Vector2(GetGameObject()->transform.GetPosition().x, GetGameObject()->transform.GetPosition().y)).normalize();
 		newPos.x += dir.x * Time::GetDeltaTime() * movementSpeed;
 		newPos.y += dir.y * Time::GetDeltaTime() * movementSpeed;
 
 		if (unitData->rotateWhenMoving)
 		{
 			float angle = atan2(dir.x, dir.y);
-			gameObject->transform.SetRotation(Vector3(0, 0, angle * 180 / M_PI - 90));
+			GetGameObject()->transform.SetRotation(Vector3(0, 0, angle * 180 / M_PI - 90));
 
 			if (dir.x < 0)
 			{
-				gameObject->transform.SetLocalScale(Vector3(1, -1, 1));
+				GetGameObject()->transform.SetLocalScale(Vector3(1, -1, 1));
 			}
 			else
 			{
-				gameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+				GetGameObject()->transform.SetLocalScale(Vector3(1, 1, 1));
 			}
 		}
 
-		gameObject->transform.SetPosition(newPos);
+		GetGameObject()->transform.SetPosition(newPos);
 
-		if (Vector2::Distance(Vector2(gameObject->transform.GetPosition().x, gameObject->transform.GetPosition().y), path[currentPathNode]) <= 0.02f)
+		if (Vector2::Distance(Vector2(GetGameObject()->transform.GetPosition().x, GetGameObject()->transform.GetPosition().y), path[currentPathNode]) <= 0.02f)
 		{
 			currentPathNode++;
 			if (currentPathNode == pathSize)
@@ -71,17 +71,17 @@ void Unit::Update()
 	{
 		if (unitData->rotateWhenMoving)
 		{
-			if (gameObject->transform.GetScale().y < 0)
-				gameObject->transform.SetRotation(Vector3(0, 0, 180));
+			if (GetGameObject()->transform.GetScale().y < 0)
+				GetGameObject()->transform.SetRotation(Vector3(0, 0, 180));
 			else
-				gameObject->transform.SetRotation(Vector3(0, 0, 0));
+				GetGameObject()->transform.SetRotation(Vector3(0, 0, 0));
 		}
 	}
 }
 
 void Unit::SetDestination(Vector2Int position)
 {
-	mapManager->astar->SetDestination(Vector2(round(gameObject->transform.GetPosition().x), round(gameObject->transform.GetPosition().y)), Vector2(position.x, position.y));
+	mapManager->astar->SetDestination(Vector2(round(GetGameObject()->transform.GetPosition().x), round(GetGameObject()->transform.GetPosition().y)), Vector2(position.x, position.y));
 	path = mapManager->astar->GetPath();
 	int pathCount = path.size();
 	if (pathCount > 1)

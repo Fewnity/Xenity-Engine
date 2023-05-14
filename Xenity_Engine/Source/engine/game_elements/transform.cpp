@@ -203,6 +203,7 @@ void Transform::OnParentChanged()
 
 void Transform::SetChildrenWorldPositions()
 {
+	movedLastFrame = true;
 	UpdateTransformationMatrix();
 
 	int childCount = gameObject->GetChildrenCount();

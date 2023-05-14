@@ -10,6 +10,7 @@ class Component
 {
 public:
 	Component();
+
 	virtual ~Component();
 	virtual void Awake() {}
 	virtual void Start() {}
@@ -17,7 +18,6 @@ public:
 	//virtual void OnParentChanged() {}
 
 	int updatePriority = 5000; //Lower is more priotary
-	GameObject *gameObject = nullptr;
 	bool GetIsEnabled();
 	void SetIsEnabled(bool isEnabled);
 	bool initiated = false;
@@ -25,6 +25,14 @@ public:
 	std::map<std::string, float*> reflectedFloats;
 	std::string componentName = "Component";
 
+	void SetGameObject(GameObject* go);
+
+	GameObject* GetGameObject() const
+	{
+		return gameObject;
+	}
+
 private:
+	GameObject *gameObject = nullptr;
 	bool isEnabled = true;
 };

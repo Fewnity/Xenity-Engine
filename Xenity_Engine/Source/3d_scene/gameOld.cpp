@@ -111,7 +111,7 @@ void Game3D::Init()
 	camera = cameraGameObject->AddComponent<Camera>();
 
 
-	camera->gameObject->transform.SetPosition(Vector3(0, 2, -4));
+	camera->GetGameObject()->transform.SetPosition(Vector3(0, 2, -4));
 	cameraGameObject->transform.SetLocalScale(Vector3(0, 0, 0));
 
 	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
@@ -315,36 +315,36 @@ void Game3D::Loop()
 	}
 
 	Vector3 cubeNewRotation = cubeGameObject->transform.GetRotation();
-	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
 
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetForward();
 		vect *= Time::GetDeltaTime() * 2;
 		//newCameraPosition += vect;
 		cubeNewRotation.x += Time::GetDeltaTime() * 20;
 	}
 	if (InputSystem::GetKey(S)) {
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetForward();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetForward();
 		vect *= Time::GetDeltaTime() * 2;
 		//newCameraPosition -= vect;
 		cubeNewRotation.x += -Time::GetDeltaTime() * 20;
 	}
 	if (InputSystem::GetKey(D)) {
 
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
 		vect *= Time::GetDeltaTime() * 2;
 		cubeNewRotation.z += Time::GetDeltaTime() * 20;
 		//newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q)) {
 
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
 		vect *= Time::GetDeltaTime() * 2;
 		cubeNewRotation.z += -Time::GetDeltaTime() * 20;
 		//newCameraPosition += vect;
 	}
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
 
 	//Animation
 	animation = SDL_GetTicks() / 500.0f;
@@ -360,14 +360,14 @@ void Game3D::Loop()
 	pointLightGameObject->transform.SetPosition(Vector3(cos(lightAnimation * M_PI * 2) * 3, 1.5, sin(lightAnimation * M_PI * 2)*3));
 	pointLightGameObject2->transform.SetPosition(Vector3(cos((lightAnimation+0.5) * M_PI * 2) * 3, 1.5, sin((lightAnimation+0.5) * M_PI * 2) * 3));
 
-	Vector3 newCameraRotation = camera->gameObject->transform.GetRotation();
+	Vector3 newCameraRotation = camera->GetGameObject()->transform.GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeedRaw.y * Time::GetDeltaTime() * 20;
 	float yInputToAdd = InputSystem::mouseSpeedRaw.x * Time::GetDeltaTime() * 20;
 
 	newCameraRotation.x += xInputToAdd;
 	newCameraRotation.y += yInputToAdd;
 
-	camera->gameObject->transform.SetRotation(newCameraRotation);
+	camera->GetGameObject()->transform.SetRotation(newCameraRotation);
 
 	//Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
 	Vector3 mesh4NewRotation = cubeChild->transform.GetRotation();

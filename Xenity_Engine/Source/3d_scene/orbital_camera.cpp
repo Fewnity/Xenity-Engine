@@ -157,15 +157,15 @@ void OrbitalCamera::LerpMovements(Vector3 lerpTarget, Vector3 cameraOffset)
 	if (cameraStatus == OrbitalCamera::ThirdPerson)
 	{
 		Vector3 LerpPos = cameraWithoutOffset + cameraOffset * currentDistance;
-		gameObject->transform.SetPosition(LerpPos);
+		GetGameObject()->transform.SetPosition(LerpPos);
 	}
 	else 
 	{
-		gameObject->transform.SetPosition(lerpTarget);
+		GetGameObject()->transform.SetPosition(lerpTarget);
 	}
 
-	Vector3 angles = Vector3::LookAt(gameObject->transform.GetPosition(), target->GetPosition());
-	gameObject->transform.SetRotation(angles);
+	Vector3 angles = Vector3::LookAt(GetGameObject()->transform.GetPosition(), target->GetPosition());
+	GetGameObject()->transform.SetRotation(angles);
 }
 
 void OrbitalCamera::LookAtFirstPerson(Vector3 target) {
@@ -174,8 +174,8 @@ void OrbitalCamera::LookAtFirstPerson(Vector3 target) {
 	offset = Math::GetDirectionFromAngles(axis1, axis2);
 
 	Vector3 angles = Vector3::LookAt(Vector3(0), offset * 5);
-	gameObject->transform.SetRotation(angles);
-	gameObject->transform.SetPosition(target);
+	GetGameObject()->transform.SetRotation(angles);
+	GetGameObject()->transform.SetPosition(target);
 }
 
 Vector3 OrbitalCamera::UpdateFpsMode()

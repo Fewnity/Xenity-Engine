@@ -21,7 +21,6 @@ public:
 	static GameObject* selectedGameObject;
 	static int gameObjectCount;
 	static Renderer* renderer;
-	static void OnDrawableOrderChanged();
 	static void SetSelectedGameObject(GameObject*);
 private:
 	static std::vector<GameObject*> gameObjects;

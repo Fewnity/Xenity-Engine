@@ -19,7 +19,7 @@ void CameraManager::Init()
 	GameObject* cameraGameObject = new GameObject("Camera");
 	camera = cameraGameObject->AddComponent<Camera>();
 
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, 0));
+	camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, 0));
 
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * cameraZoom);
@@ -33,40 +33,40 @@ void CameraManager::Update()
 
 void CameraManager::MoveCamera()
 {
-	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
 
 	if (InputSystem::GetKey(MOUSE_RIGHT))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
 		vect *= InputSystem::mouseSpeed.y * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 
-		vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
 		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 	}
 
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
@@ -84,7 +84,7 @@ void CameraManager::MoveCamera()
 	else if (newCameraPosition.y >= 60 - yOffset)
 		newCameraPosition.y = 60 - yOffset;
 
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
 }
 
 void CameraManager::ZoomCamera()

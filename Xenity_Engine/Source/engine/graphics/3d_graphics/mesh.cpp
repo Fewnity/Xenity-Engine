@@ -210,7 +210,7 @@ void MeshRenderer::Draw()
 	//glPatchParameteri(GL_PATCH_VERTICES, 3); // For tessellation
 
 	//Draw the mesh only if the mesh is on an active gameobject and if the mesh data is not null
-	if (gameObject->GetLocalActive() && meshData != nullptr && GetIsEnabled())
+	if (GetGameObject()->GetLocalActive() && meshData != nullptr && GetIsEnabled())
 	{
 		if (material != nullptr)
 		{
@@ -251,11 +251,11 @@ void MeshRenderer::UpdateMaterial()
 			material->Update();
 			material->shader->SetShaderCameraPosition();
 			material->shader->SetShaderProjection();
-			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->gameObject->transform.GetPosition());
+			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->GetGameObject()->transform.GetPosition());
 			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 			material->shader->UpdateLights();
 		}
-		material->shader->SetShaderModel(&gameObject->transform.transformationMatrix);
+		material->shader->SetShaderModel(&GetGameObject()->transform.transformationMatrix);
 	}
 }
 

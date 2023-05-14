@@ -45,16 +45,20 @@ void Graphics::OrderDrawables()
 	{
 		IDrawable* drawableToCheck = orderedIDrawable[iDrawIndex];
 		//IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-		if (drawableToCheck->gameObject->transform.movedLastFrame)
+		if (drawableToCheck->GetGameObject()->transform.movedLastFrame || drawableToCheck->needReorder)
 		{
+			if (drawableToCheck->GetGameObject()->name == "Building Sprite") 
+			{
+				std::cout << drawableToCheck->GetGameObject()->transform.movedLastFrame << " " << drawableToCheck->needReorder << std::endl;
+			}
 			gameobjectScanBenchmark->Start();
-			drawableToCheck->gameObject->transform.movedLastFrame = false;
+			drawableToCheck->GetGameObject()->transform.movedLastFrame = false;
+			drawableToCheck->needReorder = false;
 			orderedIDrawable.erase(orderedIDrawable.begin() + iDrawIndex);
 			iDrawablesCount--;
 			drawableCount--;
 			iDrawIndex--;
 			OrderOneDrawable(drawableToCheck);
-			iDrawablesCount++;
 			gameobjectScanBenchmark->Stop();
 		}
 	}
@@ -85,7 +89,6 @@ void Graphics::OrderDrawables()
 		{
 			IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
 			OrderOneDrawable(drawableToCheck);
-			iDrawablesCount++;
 		}
 	}
 	orderBenchmark->Stop();
@@ -93,12 +96,13 @@ void Graphics::OrderDrawables()
 
 void Graphics::AddDrawable(IDrawable* drawableToPlace)
 {
+	std::cout << "AddDrawable" << std::endl;
 	OrderOneDrawable(drawableToPlace);
 }
 
 void Graphics::OrderOneDrawable(IDrawable* drawableToPlace)
 {
-	float z = drawableToPlace->gameObject->transform.GetPosition().z;
+	float z = drawableToPlace->GetGameObject()->transform.GetPosition().z;
 	bool placeFound = false;
 
 	for (int i = 0; i < iDrawablesCount; i++)
@@ -112,7 +116,7 @@ void Graphics::OrderOneDrawable(IDrawable* drawableToPlace)
 		{
 			if (d1 == d2)
 			{
-				if (z >= drawable->gameObject->transform.GetPosition().z)
+				if (z >= drawable->GetGameObject()->transform.GetPosition().z)
 				{
 					orderedIDrawable.insert(std::begin(orderedIDrawable) + i, drawableToPlace);
 					placeFound = true;
@@ -133,4 +137,6 @@ void Graphics::OrderOneDrawable(IDrawable* drawableToPlace)
 	{
 		orderedIDrawable.push_back(drawableToPlace);
 	}
+	iDrawablesCount++;
+	//std::cout << "PLACE " << drawableToPlace->GetGameObject()->name << " " << placeFound << std::endl;
 }

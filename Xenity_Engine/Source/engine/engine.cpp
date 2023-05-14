@@ -150,16 +150,12 @@ void Engine::UpdateComponents()
 			orderedComponentsToInit[i]->initiated = true;
 		}
 	}
+
 	//Update components
 	for (int i = 0; i < componentsCount; i++)
 	{
 		orderedComponents[i]->Update();
 	}
-}
-
-void Engine::OnDrawableOrderChanged()
-{
-	drawOrderListDirty = true;
 }
 
 void Engine::SetSelectedGameObject(GameObject* newSelected)

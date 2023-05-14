@@ -135,7 +135,7 @@ void UnitManager::SelectUnits()
 		{
 			Unit* unit = units[i];
 			unit->selected = false;
-			if (game->isPointInsideAABB(Vector2(unit->gameObject->transform.GetPosition().x, unit->gameObject->transform.GetPosition().y), finalStartPos, finalEndPos))
+			if (game->isPointInsideAABB(Vector2(unit->GetGameObject()->transform.GetPosition().x, unit->GetGameObject()->transform.GetPosition().y), finalStartPos, finalEndPos))
 			{
 				unit->selected = true;
 			}
@@ -162,8 +162,8 @@ void UnitManager::OnMouseUp()
 	for (int i = 0; i < unitSize; i++)
 	{
 		Unit* unit = units[i];
-		Vector2 unitMin = Vector2(unit->gameObject->transform.GetPosition().x - 0.2, unit->gameObject->transform.GetPosition().y - 0.2);
-		Vector2 unitMax = Vector2(unit->gameObject->transform.GetPosition().x + 0.2, unit->gameObject->transform.GetPosition().y + 0.2);
+		Vector2 unitMin = Vector2(unit->GetGameObject()->transform.GetPosition().x - 0.2, unit->GetGameObject()->transform.GetPosition().y - 0.2);
+		Vector2 unitMax = Vector2(unit->GetGameObject()->transform.GetPosition().x + 0.2, unit->GetGameObject()->transform.GetPosition().y + 0.2);
 
 		if (game->isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
 		{
@@ -173,15 +173,6 @@ void UnitManager::OnMouseUp()
 		}
 	}
 
-	/*std::vector<Unit*> unitsToMove;
-	for (int i = 0; i < unitSize; i++)
-	{
-		Unit* unit = units[i];
-		if (unit->selected)
-		{
-			unitsToMove.push_back(unit);
-		}
-	}*/
 	if (!foundNewUnit)
 	{
 		Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));

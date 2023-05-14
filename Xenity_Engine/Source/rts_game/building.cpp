@@ -13,22 +13,20 @@ Building::Building()
 
 void Building::Start()
 {
-	GameObject* gmBuildingSprite = new GameObject();
+	std::cout << "UWU" << std::endl;
+
+	GameObject* gmBuildingSprite = new GameObject("Building Sprite");
 	SpriteRenderer* buildingSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
 	buildingSpriteRenderer->texture = buildingData->textures[0];
 	buildingSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
+	buildingSpriteRenderer->SetOrderInLayer(2);
 
-	//SpriteRenderer* buildingSpriteRenderer = new SpriteRenderer(buildingData->textures[0], AssetManager::GetMaterialByName("2D Standard"));
-	buildingSpriteRenderer->orderInLayer = 2;
-	//gmBuildingSprite->AddExistingComponent(buildingSpriteRenderer);
-	//selectionSpriteRenderer = new SpriteRenderer(buildingData->selectionTexture, AssetManager::GetMaterialByName("2D Standard"));
 	selectionSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
 	selectionSpriteRenderer->texture = buildingData->selectionTexture;
 	selectionSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
-	selectionSpriteRenderer->orderInLayer = 11;
-	//gmBuildingSprite->AddExistingComponent(selectionSpriteRenderer);
+	selectionSpriteRenderer->SetOrderInLayer(11);
 	selectionSpriteRenderer->SetIsEnabled(false);
-	gameObject->AddChild(gmBuildingSprite);
+	GetGameObject()->AddChild(gmBuildingSprite);
 	gmBuildingSprite->transform.SetLocalPosition(Vector3(0, 0, 0));
 	gmBuildingSprite->transform.SetLocalScale(1.0f);
 }

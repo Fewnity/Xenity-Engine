@@ -21,7 +21,6 @@ public:
 	float lineSpacing = 0;
 	float characterSpacing = 0;
 	int GetDrawPriority();
-	int orderInLayer = 0;
 
 	Font* font = nullptr;
 	Color color = Color();
@@ -29,8 +28,20 @@ public:
 	HorizontalAlignment horizontalAligment = H_Center;
 	VerticalAlignment verticalAlignment = V_Center;
 
+	void SetOrderInLayer(int orderInLayer)
+	{
+		this->orderInLayer = orderInLayer;
+		needReorder = true;
+	}
+
+	int GetOrderInLayer() const
+	{
+		return orderInLayer;
+	}
+
 private:
 	void Draw();
+	int orderInLayer = 0;
 
 };
 

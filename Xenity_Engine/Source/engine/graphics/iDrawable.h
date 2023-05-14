@@ -14,6 +14,6 @@ public:
 	virtual void Draw() {};
 	//IDrawableTypes type;
 	virtual int GetDrawPriority() = 0;
-
+	bool needReorder = false;
 };
 

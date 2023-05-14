@@ -37,10 +37,21 @@ public:
 	void AddTexture(Texture* texture);
 	void RemoveTexture(Texture* texture);
 	Vector2 spritesScale = Vector2(1,1);
-	int orderInLayer = 0;
 	Material* material = nullptr;
 
+	void SetOrderInLayer(int orderInLayer)
+	{
+		this->orderInLayer = orderInLayer;
+		needReorder = true;
+	}
+
+	int GetOrderInLayer() const
+	{
+		return orderInLayer;
+	}
+
 private:
+	int orderInLayer = 0;
 	void Update();
 	void Draw();
 

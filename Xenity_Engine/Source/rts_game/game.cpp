@@ -56,11 +56,11 @@ void Game::Init()
 
 	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
 	SpriteRenderer* spr5 = gameObjectCrosshair->AddComponent<SpriteRenderer>();
-	sprGrad->texture = crosshair;
-	sprGrad->material = material2DWithZ;
+	spr5->texture = crosshair;
+	spr5->material = material2DWithZ;
 
 	spr5->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
-	spr5->orderInLayer = 10;
+	spr5->SetOrderInLayer(10);
 
 	Color selectionLineColor = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
 	lineRendererTop = gameObjectLineRenderers->AddComponent<LineRenderer>();
@@ -70,8 +70,11 @@ void Game::Init()
 
 	lineRendererTop->width = lineRendererBottom->width = lineRendererLeft->width = lineRendererRight->width = 0.1f;
 	lineRendererTop->material = lineRendererBottom->material = lineRendererLeft->material = lineRendererRight->material = material2D;
-	lineRendererTop->color = lineRendererBottom->color = lineRendererLeft->color =lineRendererRight->color = selectionLineColor;
-	lineRendererTop->orderInLayer = lineRendererBottom->orderInLayer = lineRendererLeft->orderInLayer = lineRendererRight->orderInLayer = 10;
+	lineRendererTop->color = lineRendererBottom->color = lineRendererLeft->color = lineRendererRight->color = selectionLineColor;
+	lineRendererTop->SetOrderInLayer(10);
+	lineRendererBottom->SetOrderInLayer(10);
+	lineRendererLeft->SetOrderInLayer(10);
+	lineRendererRight->SetOrderInLayer(10);
 
 	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
 	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
@@ -202,12 +205,12 @@ void Game::MoveCursor()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
-	gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
+	//gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
 
 	//Move cursor
 	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
 	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
-	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
+	//gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 }
 
 void Game::OnMouseUp()

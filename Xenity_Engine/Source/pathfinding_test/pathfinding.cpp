@@ -160,12 +160,12 @@ void PathFinding::SwitchMode()
 	if (showAStar)
 	{
 		camera->SetProjectionSize(40);
-		camera->gameObject->transform.SetPosition(Vector3(20, 39.5f, -10));
+		camera->GetGameObject()->transform.SetPosition(Vector3(20, 39.5f, -10));
 	}
 	else
 	{
 		camera->SetProjectionSize(3);
-		camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+		camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
 	}
 }
 
@@ -173,7 +173,7 @@ void PathFinding::LoadGameData()
 {
 	camera = cameraGameObject->AddComponent<Camera>();
 	//cameraGameObject->AddExistingComponent(camera);
-	camera->gameObject->transform.SetPosition(Vector3(0, 0, -10));
+	camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
 
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(3);
@@ -346,32 +346,32 @@ void PathFinding::Loop()
 
 	//Move camera
 	float cameraArrowMoveSpeed = 10;
-	Vector3 newCameraPosition = camera->gameObject->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->gameObject->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
-	camera->gameObject->transform.SetPosition(newCameraPosition);
+	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
 }
 
 VisualNode::VisualNode(Vector2 position, Texture* sprite)

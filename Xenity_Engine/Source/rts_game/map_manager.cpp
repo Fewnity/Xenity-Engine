@@ -17,7 +17,7 @@ MapManager::MapManager()
 void MapManager::Awake()
 {
 	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
-//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
+	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
 	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, 0));
 }
 
@@ -370,7 +370,7 @@ void MapManager::CreateTileMaps()
 	//Create props tilemap
 	tileMapProps = gameObjectTileMap->AddComponent<Tilemap>();
 	tileMapProps->material = material2DWithZ;
-	tileMapProps->orderInLayer = 1;
+	tileMapProps->SetOrderInLayer(1);
 	tileMapProps->Setup(mapSize, mapSize);
 
 	int propDataSize = propsData.size();

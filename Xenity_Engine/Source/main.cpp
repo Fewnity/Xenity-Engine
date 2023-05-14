@@ -12,15 +12,12 @@ using namespace std;
  * SetBufferSize and SetBufferSubData change size system (get vertices size and not byteCount)
  * Optimise GetLocalPositionFromMatrices with references
  * Use unordered map for orderedIDrawable with key is order in layer
- * Remove the possibility to add an existing component to a gameobject and ask for a gameobject in the components constructor
  * 3D text
  * 3D Sounds
  * Disable light when component is disabled
- * Fix transparency order
  * Check mesh/shader destructor
  * Fix tilemap rotation
  * Clean sprite manager class
- * Create color class
  * Check error in AStar
  * Optimise component update system
  * Fix children local scale values

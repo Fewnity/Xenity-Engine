@@ -23,9 +23,20 @@ class LineRenderer : public IDrawable
 		Vector3 startPosition = Vector3(0, 0, 0);
 		Vector3 endPosition = Vector3(0, 0, 0);
 		float width = 1;
-		int orderInLayer = 0;
+
+		void SetOrderInLayer(int orderInLayer)
+		{
+			this->orderInLayer = orderInLayer;
+			needReorder = true;
+		}
+
+		int GetOrderInLayer() const
+		{
+			return orderInLayer;
+		}
 
 	private:
 		void Draw();
+		int orderInLayer = 0;
 };
 
