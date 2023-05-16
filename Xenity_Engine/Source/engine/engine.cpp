@@ -235,6 +235,15 @@ void Engine::Loop()
 		drawIDrawablesBenchmark->Stop();
 		renderer->SetPolygoneMode(true, Fill);
 
+		for (int i = 0; i < Engine::gameObjectCount; i++)
+		{
+			GameObject* go = gameObjects[i];
+			if (go->transform.movedLastFrame)
+			{
+				go->transform.movedLastFrame = false;
+			}
+		}
+
 		if (InputSystem::GetKeyDown(A))
 		{
 			EngineSettings::isWireframe = !EngineSettings::isWireframe;
