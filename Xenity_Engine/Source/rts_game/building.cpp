@@ -13,8 +13,6 @@ Building::Building()
 
 void Building::Start()
 {
-	std::cout << "UWU" << std::endl;
-
 	GameObject* gmBuildingSprite = new GameObject("Building Sprite");
 	SpriteRenderer* buildingSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
 	buildingSpriteRenderer->texture = buildingData->textures[0];

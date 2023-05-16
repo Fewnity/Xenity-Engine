@@ -47,10 +47,6 @@ void Graphics::OrderDrawables()
 		//IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
 		if (drawableToCheck->GetGameObject()->transform.movedLastFrame || drawableToCheck->needReorder)
 		{
-			if (drawableToCheck->GetGameObject()->name == "Building Sprite") 
-			{
-				std::cout << drawableToCheck->GetGameObject()->transform.movedLastFrame << " " << drawableToCheck->needReorder << std::endl;
-			}
 			gameobjectScanBenchmark->Start();
 			drawableToCheck->GetGameObject()->transform.movedLastFrame = false;
 			drawableToCheck->needReorder = false;
@@ -62,19 +58,6 @@ void Graphics::OrderDrawables()
 			gameobjectScanBenchmark->Stop();
 		}
 	}
-	/*gameobjectScanBenchmark->Start();
-	std::vector<GameObject*> allGo = Engine::GetGameObjects();
-	for (int i = 0; i < Engine::gameObjectCount; i++)
-	{
-		GameObject* go = allGo[i];
-		if(go->transform.movedLastFrame)
-		{
-			go->transform.movedLastFrame = false;
-			//std::cout << go->name << std::endl;
-			Engine::drawOrderListDirty = true;
-		}
-	}
-	gameobjectScanBenchmark->Stop();*/
 
 	//bool needReorder = 
 	drawableCount = AssetManager::GetDrawableCount();
@@ -96,7 +79,6 @@ void Graphics::OrderDrawables()
 
 void Graphics::AddDrawable(IDrawable* drawableToPlace)
 {
-	std::cout << "AddDrawable" << std::endl;
 	OrderOneDrawable(drawableToPlace);
 }
 
@@ -138,5 +120,4 @@ void Graphics::OrderOneDrawable(IDrawable* drawableToPlace)
 		orderedIDrawable.push_back(drawableToPlace);
 	}
 	iDrawablesCount++;
-	//std::cout << "PLACE " << drawableToPlace->GetGameObject()->name << " " << placeFound << std::endl;
 }

@@ -9,7 +9,7 @@ public:
 	int id = 0;
 	int x = 0;
 	int y = 0;
-	//PropType type = PropType::Wood;
+
 	PropData* data = nullptr;
 
 	void SetPosition(int x, int y)
