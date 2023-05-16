@@ -139,10 +139,6 @@ void Engine::UpdateComponents()
 		}
 
 		//Init components
-		for (int i = 0; i < componentsToInitCount; i++)
-		{
-			orderedComponentsToInit[i]->Awake();
-		}
 
 		for (int i = 0; i < componentsToInitCount; i++)
 		{

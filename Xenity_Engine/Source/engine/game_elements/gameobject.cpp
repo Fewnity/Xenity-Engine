@@ -100,6 +100,7 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 		componentToAdd->gameObject = this;
 		componentCount++;
 	}*/
+	componentToAdd->Awake();
 }
 
 #pragma region Find GameObjects
