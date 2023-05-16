@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "map_manager.h"
+#include "team_enum.h"
 
 class Vector2;
 class Vector2Int;
@@ -29,6 +30,7 @@ public:
 	std::vector<Vector2> path;
 	MapManager::Tile* destinationTile = nullptr;
 	MapManager* mapManager = nullptr;
+	TeamColor color = Blue;
 
 	int currentPathNode = 0;
 	float movementSpeed = 1;

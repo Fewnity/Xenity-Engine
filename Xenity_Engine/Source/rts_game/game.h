@@ -16,11 +16,13 @@ class Texture;
 class Shader;
 class TextRendererCanvas;
 class BuildManager;
+class TeamManager;
 
 enum ManageMode 
 {
 	ManageUnits,
-	ManageBuildings
+	ManageBuildings,
+	SpawnUnit,
 };
 
 class Game
@@ -44,6 +46,8 @@ public:
 	MapManager* mapManager = nullptr;
 	BuildManager* buildManager = nullptr;
 	UnitManager* unitManager = nullptr;
+	TeamManager* teamManager = nullptr;
+
 	TextRendererCanvas* ressourcesTextRenderer = nullptr;
 	TextRendererCanvas* modeTextRenderer = nullptr;
 	ManageMode manageMode = ManageMode::ManageUnits;

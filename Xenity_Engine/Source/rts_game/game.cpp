@@ -9,6 +9,7 @@
 #include "unit_manager.h"
 #include "map_manager.h"
 #include "build_manager.h"
+#include "team_manager.h"
 
 Game* Game::game;
 
@@ -26,6 +27,8 @@ void Game::Init()
 	LoadGameData();
 
 	GameObject* managersGameObject = new GameObject("Managers");
+
+	teamManager = managersGameObject->AddComponent<TeamManager>();
 
 	mapManager = managersGameObject->AddComponent<MapManager>();
 	mapManager->LoadMapData();
@@ -197,6 +200,8 @@ void Game::UpdateModeText()
 		modeText += "Manage units";
 	else if (manageMode == ManageBuildings)
 		modeText += "Manage buildings";
+	else if (manageMode == SpawnUnit)
+		modeText += "Spawn unit";
 
 	modeTextRenderer->text = modeText;
 }
@@ -210,12 +215,12 @@ void Game::MoveCursor()
 	//Move cursor
 	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
 	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
-	//gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
+	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 }
 
 void Game::OnMouseUp()
 {
-	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
+	/*Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 	if (manageMode == ManageUnits)
 	{
 		if (isDragging == true)
@@ -232,6 +237,13 @@ void Game::OnMouseUp()
 	{
 		buildManager->OnMouseUp();
 	}
+	else if (manageMode == SpawnUnit)
+	{
+		buildManager->OnMouseUp();
+	}*/
+
+	unitManager->OnMouseUp();
+	buildManager->OnMouseUp();
 }
 
 /// <summary>
@@ -253,6 +265,10 @@ void Game::Loop()
 	else if (InputSystem::GetKeyDown(NUM_2))
 	{
 		manageMode = ManageBuildings;
+	}
+	else if (InputSystem::GetKeyDown(NUM_3))
+	{
+		manageMode = SpawnUnit;
 	}
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))

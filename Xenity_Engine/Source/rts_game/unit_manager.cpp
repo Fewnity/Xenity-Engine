@@ -48,9 +48,37 @@ UnitManager::UnitManager()
 	unitPlacements.push_back(placement);
 }
 
-void UnitManager::SpawnUnits()
+void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 {
 	Unit* newUnit = nullptr;
+	GameObject* unitGM = new GameObject("Unit");
+	unitGM->transform.SetPosition(position);
+	newUnit = unitGM->AddComponent<Unit>();
+	newUnit->unitData = unitsData[unitId];
+	newUnit->color = color;
+	newUnit->mapManager = game->mapManager;
+	units.push_back(newUnit);
+
+	if (game->mapManager->IsValidPosition(position.x, position.y))
+	{
+		game->mapManager->GetTile(position.x, position.y)->AddUnit(newUnit);
+	}
+}
+
+void UnitManager::SpawnUnits()
+{
+	SpawnUnit(Vector2Int(0, 0), Blue, 0);
+	SpawnUnit(Vector2Int(0, 0), Blue, 0);
+
+	SpawnUnit(Vector2Int(1, 2), Blue, 4);
+	SpawnUnit(Vector2Int(1, 1), Blue, 10);
+	SpawnUnit(Vector2Int(3, 1), Blue, 9);
+	SpawnUnit(Vector2Int(3, 2), Blue, 8);
+	SpawnUnit(Vector2Int(3, 3), Blue, 11);
+
+	SpawnUnit(Vector2Int(0, 1), Orange, 0);
+
+	/*Unit* newUnit = nullptr;
 	GameObject* unitGM = new GameObject("Unit");
 	unitGM->transform.SetPosition(Vector3(0, 0, 0));
 	newUnit = unitGM->AddComponent<Unit>();
@@ -91,7 +119,7 @@ void UnitManager::SpawnUnits()
 	newUnit = unitGM->AddComponent<Unit>();
 	newUnit->unitData = unitsData[11];
 	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
+	units.push_back(newUnit);*/
 }
 
 void UnitManager::SelectUnits()
@@ -154,110 +182,121 @@ void UnitManager::SelectUnits()
 
 void UnitManager::OnMouseUp()
 {
-	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-	int unitSize = units.size();
-	std::vector<Unit*> unitFound;
-
-	bool foundNewUnit = false;
-	for (int i = 0; i < unitSize; i++)
+	if (game->manageMode == ManageUnits)
 	{
-		Unit* unit = units[i];
-		Vector2 unitMin = Vector2(unit->GetGameObject()->transform.GetPosition().x - 0.2, unit->GetGameObject()->transform.GetPosition().y - 0.2);
-		Vector2 unitMax = Vector2(unit->GetGameObject()->transform.GetPosition().x + 0.2, unit->GetGameObject()->transform.GetPosition().y + 0.2);
-
-		if (game->isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
+		if (game->isDragging == true)
 		{
-			unitFound.push_back(unit);
-			foundNewUnit = true;
-			break;
+			game->isDragging = false;
+			game->SetSelection(false);
 		}
-	}
-
-	if (!foundNewUnit)
-	{
-		Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
-		if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y))
+		else
 		{
-			std::vector<MapManager::Tile*> tilesToTest;
-			int offsetSize = 0;
-			tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x, tilePos.y));
-			int currentTileToTest = 0;
-			bool stop = false;
+			Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
+			int unitSize = units.size();
+			std::vector<Unit*> unitFound;
+
+			bool foundNewUnit = false;
 			for (int i = 0; i < unitSize; i++)
 			{
 				Unit* unit = units[i];
-				if (unit->selected)
+				Vector2 unitMin = Vector2(unit->GetGameObject()->transform.GetPosition().x - 0.2, unit->GetGameObject()->transform.GetPosition().y - 0.2);
+				Vector2 unitMax = Vector2(unit->GetGameObject()->transform.GetPosition().x + 0.2, unit->GetGameObject()->transform.GetPosition().y + 0.2);
+
+				if (game->isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
 				{
-					bool placed = false;
-					//std::cout << "unit" << i << std::endl;
+					unitFound.push_back(unit);
+					foundNewUnit = true;
+					break;
+				}
+			}
 
-					do
+			if (!foundNewUnit)
+			{
+				Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
+				if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y))
+				{
+					std::vector<MapManager::Tile*> tilesToTest;
+					int offsetSize = 0;
+					tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x, tilePos.y));
+					int currentTileToTest = 0;
+					bool stop = false;
+					for (int i = 0; i < unitSize; i++)
 					{
-						if ((tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile || unit->destinationTile == tilesToTest[currentTileToTest]) && tilesToTest[currentTileToTest]->prop == nullptr)
+						Unit* unit = units[i];
+						if (unit->selected)
 						{
-							/*if (unit->destinationTile == tilesToTest[currentTileToTest])
-								std::cout << "UWU" << std::endl;
-							if (tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile)
-								std::cout << "UWU" << tilesToTest[currentTileToTest]->GetUnitCount() << std::endl;*/
-							if (unit->destinationTile != tilesToTest[currentTileToTest])
-								unit->SetDestination(Game::GetGame()->mapManager->GetTilePosition(tilesToTest[currentTileToTest]));
-							placed = true;
-						}
+							bool placed = false;
+							//std::cout << "unit" << i << std::endl;
 
-						if (!placed)
-						{
-							//std::cout << "TILE NOT USABLE" << std::endl;
-							tilesToTest.erase(tilesToTest.begin() + currentTileToTest);
-							offsetSize++;
-							if (tilesToTest.size() == 0)
+							do
 							{
-								//std::cout << "FINDING NEW TILE" << std::endl;
-								int squareSize = 1 + offsetSize * 2;
-								for (int squareX = 0; squareX < squareSize; squareX++)
+								if ((tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile || unit->destinationTile == tilesToTest[currentTileToTest]) && tilesToTest[currentTileToTest]->prop == nullptr)
 								{
-									for (int squareY = 0; squareY < squareSize; squareY++)
+									/*if (unit->destinationTile == tilesToTest[currentTileToTest])
+										std::cout << "UWU" << std::endl;
+									if (tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile)
+										std::cout << "UWU" << tilesToTest[currentTileToTest]->GetUnitCount() << std::endl;*/
+									if (unit->destinationTile != tilesToTest[currentTileToTest])
+										unit->SetDestination(Game::GetGame()->mapManager->GetTilePosition(tilesToTest[currentTileToTest]));
+									placed = true;
+								}
+
+								if (!placed)
+								{
+									//std::cout << "TILE NOT USABLE" << std::endl;
+									tilesToTest.erase(tilesToTest.begin() + currentTileToTest);
+									offsetSize++;
+									if (tilesToTest.size() == 0)
 									{
-										if (squareX == 0 || squareX == squareSize - 1 || squareY == 0 || squareY == squareSize - 1)
+										//std::cout << "FINDING NEW TILE" << std::endl;
+										int squareSize = 1 + offsetSize * 2;
+										for (int squareX = 0; squareX < squareSize; squareX++)
 										{
-											int off = (int)(squareSize / 2.0f);
-											//std::cout << "TRY: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
-											if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x - off + squareX, tilePos.y - off + squareY) &&
-												!Game::GetGame()->mapManager->HasPropAtPosition(tilePos.x - off + squareX, tilePos.y - off + squareY))
+											for (int squareY = 0; squareY < squareSize; squareY++)
 											{
-												tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x - off + squareX, tilePos.y - off + squareY));
-												//std::cout << "ADD: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
+												if (squareX == 0 || squareX == squareSize - 1 || squareY == 0 || squareY == squareSize - 1)
+												{
+													int off = (int)(squareSize / 2.0f);
+													//std::cout << "TRY: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
+													if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x - off + squareX, tilePos.y - off + squareY) &&
+														!Game::GetGame()->mapManager->HasPropAtPosition(tilePos.x - off + squareX, tilePos.y - off + squareY))
+													{
+														tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x - off + squareX, tilePos.y - off + squareY));
+														//std::cout << "ADD: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
+													}
+												}
+
 											}
 										}
-
 									}
+									//std::cout << "FINDING NEW TILE ENDED" << std::endl;
+									//TODO IF tilesToTest.size() == 0
+									if (tilesToTest.size() == 0) {
+										stop = true;
+										break;
+									}
+									currentTileToTest = rand() % tilesToTest.size();
+									//std::cout << "NEW TILE TO TEST: " << currentTileToTest << std::endl;
 								}
-							}
-							//std::cout << "FINDING NEW TILE ENDED" << std::endl;
-							//TODO IF tilesToTest.size() == 0
-							if (tilesToTest.size() == 0) {
-								stop = true;
-								break;
-							}
-							currentTileToTest = rand() % tilesToTest.size();
-							//std::cout << "NEW TILE TO TEST: " << currentTileToTest << std::endl;
+							} while (!placed);
 						}
-					} while (!placed);
+						if (stop)
+							break;
+					}
 				}
-				if (stop)
-					break;
 			}
-		}
-	}
-	else
-	{
-		if (!InputSystem::GetKey(LEFT_CONTROL))
-		{
-			UnselectAllUnits();
-		}
-		int unitFoundCount = unitFound.size();
-		for (int i = 0; i < unitFoundCount; i++)
-		{
-			unitFound[i]->selected = !unitFound[i]->selected;
+			else
+			{
+				if (!InputSystem::GetKey(LEFT_CONTROL))
+				{
+					UnselectAllUnits();
+				}
+				int unitFoundCount = unitFound.size();
+				for (int i = 0; i < unitFoundCount; i++)
+				{
+					unitFound[i]->selected = !unitFound[i]->selected;
+				}
+			}
 		}
 	}
 }

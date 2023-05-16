@@ -5,7 +5,7 @@
 #include "game.h"
 #include "map_manager.h"
 #include "building.h"
-#include "building_type.h"
+#include "building_type_enum.h"
 
 BuildManager::BuildManager()
 {
@@ -14,8 +14,11 @@ BuildManager::BuildManager()
 
 void BuildManager::OnMouseUp()
 {
-	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-	PlaceBuilding(Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
+	if (game->manageMode == ManageBuildings) 
+	{
+		Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
+		PlaceBuilding(Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y)));
+	}
 }
 
 void BuildManager::LoadBuildingsData()

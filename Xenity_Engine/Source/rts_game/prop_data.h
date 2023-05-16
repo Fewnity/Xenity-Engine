@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "prop_type.h"
+#include "prop_type_enum.h"
 
 class Texture;
 

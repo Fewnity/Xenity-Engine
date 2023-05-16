@@ -1,6 +1,6 @@
 #pragma once
 
-#include "building_type.h"
+#include "building_type_enum.h"
 
 class Texture;
 

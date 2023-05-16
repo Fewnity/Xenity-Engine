@@ -1,6 +1,7 @@
 #pragma once
 
-#include "prop_type.h"
+#include "prop_type_enum.h"
+
 class PropData;
 
 class Prop 

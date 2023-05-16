@@ -15,7 +15,7 @@ void Unit::Start()
 	GameObject* gmUnitSprite = new GameObject();
 
 	SpriteRenderer* unitSpriteRenderer = gmUnitSprite->AddComponent<SpriteRenderer>();
-	unitSpriteRenderer->texture = unitData->textures[0];
+	unitSpriteRenderer->texture = unitData->textures[color];
 	unitSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	unitSpriteRenderer->SetOrderInLayer(3);
 

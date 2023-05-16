@@ -234,6 +234,7 @@
     <ClCompile Include="Source\rts_game\unit.cpp" />
     <ClCompile Include="Source\rts_game\unit_data.cpp" />
     <ClCompile Include="Source\rts_game\unit_manager.cpp" />
+    <ClCompile Include="Source\rts_game\team_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\2D\fSprite.shader" />
@@ -274,7 +275,7 @@
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
     <ClInclude Include="Source\engine\noise\noise.h" />
-    <ClInclude Include="Source\rts_game\building_type.h" />
+    <ClInclude Include="Source\rts_game\building_type_enum.h" />
     <ClInclude Include="Source\rts_game\prop_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
@@ -346,13 +347,15 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\spriteRenderer.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
-    <ClInclude Include="Source\rts_game\prop_type.h" />
+    <ClInclude Include="Source\rts_game\prop_type_enum.h" />
+    <ClInclude Include="Source\rts_game\team_enum.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
     <ClInclude Include="Source\rts_game\unit.h" />
     <ClInclude Include="Source\rts_game\unit_data.h" />
     <ClInclude Include="Source\xenity_editor.h" />
     <ClInclude Include="Source\rts_game\unit_manager.h" />
+    <ClInclude Include="Source\rts_game\team_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
