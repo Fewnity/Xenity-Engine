@@ -16,10 +16,11 @@ public:
 class TeamManager : public MonoBehaviour
 {
 public:
-	void CreateTeam(TeamColor color);
+	void CreateTeam(TeamColor color, bool isLocalPlayer);
 	void ClearTeams();
 	Team* GetTeamFromColor(TeamColor color);
 	Team* GetTeamFromIndex(int index);
+	Team* localPlayerTeam = nullptr;
 
 private:
 	std::vector<Team*> teams;

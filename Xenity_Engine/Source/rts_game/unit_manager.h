@@ -22,7 +22,7 @@ class UnitManager : public MonoBehaviour
 public:
 	UnitManager();
 	std::vector<UnitData*> unitsData;
-	std::vector<Unit*> units;
+	//std::vector<Unit*> units;
 	std::vector<UnitPlacement*> unitPlacements;
 	
 	void SpawnUnit(Vector2Int position, TeamColor color, int unitId);

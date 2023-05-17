@@ -6,6 +6,7 @@
 #include "../engine/pathfinding/astar.h"
 #include "game.h"
 #include "map_manager.h"
+#include "team_manager.h"
 
 UnitManager::UnitManager()
 {
@@ -57,8 +58,8 @@ void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 	newUnit->unitData = unitsData[unitId];
 	newUnit->color = color;
 	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
+	//units.push_back(newUnit);
+	game->teamManager->GetTeamFromColor(color)->units.push_back(newUnit);
 	if (game->mapManager->IsValidPosition(position.x, position.y))
 	{
 		game->mapManager->GetTile(position.x, position.y)->AddUnit(newUnit);
