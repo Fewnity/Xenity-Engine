@@ -27,7 +27,7 @@ Team* TeamManager::GetTeamFromColor(TeamColor color)
 	int teamCount = teams.size();
 	for (int i = 0; i < teamCount; i++)
 	{
-		if (teams[i]->color = color)
+		if (teams[i]->color == color)
 		{
 			team = teams[i];
 			break;

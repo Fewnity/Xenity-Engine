@@ -29,6 +29,8 @@ void Game::Init()
 	GameObject* managersGameObject = new GameObject("Managers");
 
 	teamManager = managersGameObject->AddComponent<TeamManager>();
+	teamManager->CreateTeam(Blue, true);
+	teamManager->CreateTeam(Orange, false);
 
 	mapManager = managersGameObject->AddComponent<MapManager>();
 	mapManager->LoadMapData();

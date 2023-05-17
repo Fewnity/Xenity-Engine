@@ -51,18 +51,22 @@ UnitManager::UnitManager()
 
 void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 {
-	Unit* newUnit = nullptr;
-	GameObject* unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(position);
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[unitId];
-	newUnit->color = color;
-	newUnit->mapManager = game->mapManager;
-	//units.push_back(newUnit);
-	game->teamManager->GetTeamFromColor(color)->units.push_back(newUnit);
-	if (game->mapManager->IsValidPosition(position.x, position.y))
+	Team* team = game->teamManager->GetTeamFromColor(color);
+	if (team)
 	{
-		game->mapManager->GetTile(position.x, position.y)->AddUnit(newUnit);
+		Unit* newUnit = nullptr;
+		GameObject* unitGM = new GameObject("Unit");
+		unitGM->transform.SetPosition(position);
+		newUnit = unitGM->AddComponent<Unit>();
+		newUnit->unitData = unitsData[unitId];
+		newUnit->color = color;
+		newUnit->mapManager = game->mapManager;
+
+		game->teamManager->GetTeamFromColor(color)->units.push_back(newUnit);
+		if (game->mapManager->IsValidPosition(position.x, position.y))
+		{
+			game->mapManager->GetTile(position.x, position.y)->AddUnit(newUnit);
+		}
 	}
 }
 
@@ -70,7 +74,6 @@ void UnitManager::SpawnUnits()
 {
 	SpawnUnit(Vector2Int(0, 0), Blue, 0);
 	SpawnUnit(Vector2Int(0, 0), Blue, 0);
-
 	SpawnUnit(Vector2Int(1, 2), Blue, 4);
 	SpawnUnit(Vector2Int(1, 1), Blue, 10);
 	SpawnUnit(Vector2Int(3, 1), Blue, 9);
@@ -78,49 +81,6 @@ void UnitManager::SpawnUnits()
 	SpawnUnit(Vector2Int(3, 3), Blue, 11);
 
 	SpawnUnit(Vector2Int(0, 1), Orange, 0);
-
-	/*Unit* newUnit = nullptr;
-	GameObject* unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(0, 0, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[0];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(1, 2, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[4];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(1, 1, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[10];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(3, 1, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[9];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(3, 2, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[8];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);
-
-	unitGM = new GameObject("Unit");
-	unitGM->transform.SetPosition(Vector3(3, 3, 0));
-	newUnit = unitGM->AddComponent<Unit>();
-	newUnit->unitData = unitsData[11];
-	newUnit->mapManager = game->mapManager;
-	units.push_back(newUnit);*/
 }
 
 void UnitManager::SelectUnits()
