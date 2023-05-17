@@ -129,7 +129,8 @@ void UnitManager::SelectUnits()
 
 	Vector2 endSelectionPos = mouseWorldPosition;
 
-	int unitSize = units.size();
+	int unitSize = game->teamManager->localPlayerTeam->units.size();
+	//int unitSize = units.size();
 	if (fabs(game->startSelectionPos.x - endSelectionPos.x) >= 0.2f && fabs(game->startSelectionPos.y - endSelectionPos.y) >= 0.2f)
 	{
 		game->isDragging = true;
@@ -162,7 +163,7 @@ void UnitManager::SelectUnits()
 
 		for (int i = 0; i < unitSize; i++)
 		{
-			Unit* unit = units[i];
+			Unit* unit = game->teamManager->localPlayerTeam->units[i];
 			unit->selected = false;
 			if (game->isPointInsideAABB(Vector2(unit->GetGameObject()->transform.GetPosition().x, unit->GetGameObject()->transform.GetPosition().y), finalStartPos, finalEndPos))
 			{
@@ -193,13 +194,14 @@ void UnitManager::OnMouseUp()
 		else
 		{
 			Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-			int unitSize = units.size();
+			int unitSize = game->teamManager->localPlayerTeam->units.size();
+
 			std::vector<Unit*> unitFound;
 
 			bool foundNewUnit = false;
 			for (int i = 0; i < unitSize; i++)
 			{
-				Unit* unit = units[i];
+				Unit* unit = game->teamManager->localPlayerTeam->units[i];
 				Vector2 unitMin = Vector2(unit->GetGameObject()->transform.GetPosition().x - 0.2, unit->GetGameObject()->transform.GetPosition().y - 0.2);
 				Vector2 unitMax = Vector2(unit->GetGameObject()->transform.GetPosition().x + 0.2, unit->GetGameObject()->transform.GetPosition().y + 0.2);
 
@@ -223,7 +225,7 @@ void UnitManager::OnMouseUp()
 					bool stop = false;
 					for (int i = 0; i < unitSize; i++)
 					{
-						Unit* unit = units[i];
+						Unit* unit = game->teamManager->localPlayerTeam->units[i];
 						if (unit->selected)
 						{
 							bool placed = false;
@@ -304,10 +306,10 @@ void UnitManager::OnMouseUp()
 
 void UnitManager::UnselectAllUnits()
 {
-	int unitSize = units.size();
+	int unitSize = game->teamManager->localPlayerTeam->units.size();
 	for (int i = 0; i < unitSize; i++)
 	{
-		Unit* unit = units[i];
+		Unit* unit = game->teamManager->localPlayerTeam->units[i];
 		unit->selected = false;
 	}
 }
