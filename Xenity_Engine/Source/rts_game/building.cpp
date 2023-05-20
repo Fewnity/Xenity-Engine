@@ -25,8 +25,8 @@ void Building::Start()
 	selectionSpriteRenderer->SetOrderInLayer(11);
 	selectionSpriteRenderer->SetIsEnabled(false);
 	GetGameObject()->AddChild(gmBuildingSprite);
-	gmBuildingSprite->transform.SetLocalPosition(Vector3(0, 0, 0));
-	gmBuildingSprite->transform.SetLocalScale(1.0f);
+	gmBuildingSprite->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
+	gmBuildingSprite->GetTransform()->SetLocalScale(1.0f);
 }
 
 void Building::Update()

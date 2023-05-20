@@ -39,19 +39,19 @@ SplinePoint* Spline::CreateSplinePoint(const Vector3 position)
     SplinePoint* point = new SplinePoint();
 
     GameObject* parent = new GameObject();
-    parent->transform.SetPosition(position);
+    parent->GetTransform()->SetPosition(position);
 
     GameObject* next = new GameObject();
     parent->AddChild(next);
-    next->transform.SetLocalPosition(Vector3(0.5f, 0, 0));
+    next->GetTransform()->SetLocalPosition(Vector3(0.5f, 0, 0));
 
     GameObject* before = new GameObject();
     parent->AddChild(before);
-    before->transform.SetLocalPosition(Vector3(-0.5f, 0, 0));
+    before->GetTransform()->SetLocalPosition(Vector3(-0.5f, 0, 0));
 
-    point->parent = &parent->transform;
-    point->next = &next->transform;
-    point->before = &before->transform;
+    point->parent = parent->GetTransform();
+    point->next = next->GetTransform();
+    point->before = before->GetTransform();
 
     return point;
 }

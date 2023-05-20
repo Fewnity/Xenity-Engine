@@ -5,11 +5,11 @@
 #include "unit.h"
 #include "unit_data.h"
 #include "../engine/pathfinding/astar.h"
-#include "camera_manager.h"
-#include "unit_manager.h"
-#include "map_manager.h"
-#include "build_manager.h"
-#include "team_manager.h"
+#include "managers/camera_manager.h"
+#include "managers/unit_manager.h"
+#include "managers/map_manager.h"
+#include "managers/build_manager.h"
+#include "managers/team_manager.h"
 
 Game* Game::game;
 
@@ -52,14 +52,14 @@ void Game::Init()
 	unitManager->LoadUnitData();
 	unitManager->SpawnUnits();
 
-	gameObjectCrosshair2->transform.SetPosition(Vector3(0, 0, 0));
+	gameObjectCrosshair2->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	gameObjectCrosshair2->SetActive(false);
 	SpriteRenderer* sprGrad = gameObjectCrosshair2->AddComponent<SpriteRenderer>();
 	sprGrad->texture = gradient;
 	sprGrad->material = material2DWithZ;
 	sprGrad->color = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 
-	gameObjectCrosshair->transform.SetPosition(Vector3(0, 0, 0));
+	gameObjectCrosshair->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	SpriteRenderer* spr5 = gameObjectCrosshair->AddComponent<SpriteRenderer>();
 	spr5->texture = crosshair;
 	spr5->material = material2DWithZ;
@@ -115,7 +115,7 @@ void Game::Init()
 	modeTextRenderer->shader = shaderTextCanvas;
 	modeTextRenderer->horizontalAligment = H_Center;
 	modeTextRenderer->verticalAlignment = V_Top;
-	modeTextRenderer->position = Vector3(0.5, 1, 0);
+	modeTextRenderer->position = Vector3(0.5f, 1, 0);
 }
 
 void Game::LoadGameData()
@@ -212,12 +212,12 @@ void Game::MoveCursor()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
-	//gameObjectCrosshair2->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
+	//gameObjectCrosshair2->GetTransform()->SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
 
 	//Move cursor
 	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
 	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
-	gameObjectCrosshair->transform.SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
+	gameObjectCrosshair->GetTransform()->SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
 }
 
 void Game::OnMouseUp()

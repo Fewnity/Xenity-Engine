@@ -139,7 +139,6 @@ void Engine::UpdateComponents()
 		}
 
 		//Init components
-
 		for (int i = 0; i < componentsToInitCount; i++)
 		{
 			orderedComponentsToInit[i]->Start();
@@ -165,9 +164,9 @@ void Engine::SetSelectedGameObject(GameObject* newSelected)
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	Game* game = new Game();
+	//Game* game = new Game();
 	//Game3D* game = new Game3D();
-	//PathFinding* game = new PathFinding();
+	PathFinding* game = new PathFinding();
 	//RenderingTest2D *game = new RenderingTest2D();
 
 	game->Init();
@@ -238,9 +237,9 @@ void Engine::Loop()
 		for (int i = 0; i < Engine::gameObjectCount; i++)
 		{
 			GameObject* go = gameObjects[i];
-			if (go->transform.movedLastFrame)
+			if (go->GetTransform()->movedLastFrame)
 			{
-				go->transform.movedLastFrame = false;
+				go->GetTransform()->movedLastFrame = false;
 			}
 		}
 

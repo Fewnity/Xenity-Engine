@@ -251,11 +251,11 @@ void MeshRenderer::UpdateMaterial()
 			material->Update();
 			material->shader->SetShaderCameraPosition();
 			material->shader->SetShaderProjection();
-			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->GetGameObject()->transform.GetPosition());
+			material->shader->SetShaderAttribut("cameraPos", Graphics::usedCamera->GetTransform()->GetPosition());
 			material->shader->SetShaderAttribut("offsetPosition", Vector3(0, 0, 0));
 			material->shader->UpdateLights();
 		}
-		material->shader->SetShaderModel(&GetGameObject()->transform.transformationMatrix);
+		material->shader->SetShaderModel(&GetTransform()->transformationMatrix);
 	}
 }
 

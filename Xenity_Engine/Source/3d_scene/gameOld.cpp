@@ -98,21 +98,21 @@ void Game3D::Init()
 	bench->Start();
 	for (int i = 0; i < 500000; i++)
 	{
-		TestGame->transform.SetPosition(Vector3(4, i, 4));
-		TestGame->transform.SetRotation(Vector3(60, i, 40));
-		TestGame->transform.SetLocalScale(Vector3(3, i, 3));
+		TestGame->GetTransform()->SetPosition(Vector3(4, i, 4));
+		TestGame->GetTransform()->SetRotation(Vector3(60, i, 40));
+		TestGame->GetTransform()->SetLocalScale(Vector3(3, i, 3));
 	}
 	bench->Stop();
 	std::cout << bench->GetMicroSeconds() << std::endl;*/
 
 	GameObject* Camera1Point = new GameObject("Camera1Point");
-	Camera1Point->transform.SetPosition(Vector3(4, 4, 4));
+	Camera1Point->GetTransform()->SetPosition(Vector3(4, 4, 4));
 
 	camera = cameraGameObject->AddComponent<Camera>();
 
 
-	camera->GetGameObject()->transform.SetPosition(Vector3(0, 2, -4));
-	cameraGameObject->transform.SetLocalScale(Vector3(0, 0, 0));
+	camera->GetTransform()->SetPosition(Vector3(0, 2, -4));
+	cameraGameObject->GetTransform()->SetLocalScale(Vector3(0, 0, 0));
 
 	ShapeSpawner::defaultScale = Vector3(0.1f, 0.1f, 0.1f);
 
@@ -130,7 +130,7 @@ void Game3D::Init()
 	{
 		float t = i / (float)splinePointCount;
 		//GameObject* newShape = ShapeSpawner::SpawnSphere();
-		//newShape->transform.SetPosition(spline->GetValueAt(t));
+		//newShape->GetTransform()->SetPosition(spline->GetValueAt(t));
 	}
 
 	//newShape->GetComponent<MeshRenderer>()->material = newMat;
@@ -147,11 +147,11 @@ void Game3D::Init()
 
 	//cubeGameObject->AddExistingComponent(chess);
 	GameObject* newShape = ShapeSpawner::SpawnSphere();
-	newShape->transform.SetPosition(Vector3(1, 0, 2));
+	newShape->GetTransform()->SetPosition(Vector3(1, 0, 2));
 
 	GameObject* newShape2 = ShapeSpawner::SpawnCube();
-	//newShape2->transform.SetPosition(Vector3(1, 0, 1));
-	newShape2->transform.SetLocalScale(Vector3(1, 1, 1));
+	//newShape2->GetTransform()->SetPosition(Vector3(1, 0, 1));
+	newShape2->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 
 	GameObject* childBottle = new GameObject("UWU");
 	GameObject* childBottle2 = new GameObject();
@@ -169,43 +169,43 @@ void Game3D::Init()
 	//cubeGameObject->AddExistingComponent(bottle);
 	//childBottle->AddExistingComponent(bottle2);
 	//childBottle2->AddExistingComponent(bottle3);
-	cubeGameObject->transform.SetPosition(Vector3(0, 0, 0));
-	cubeGameObject->transform.SetRotation(Vector3(45, 45, 45));
-	cubeGameObject->transform.SetLocalScale(Vector3(20, 20, 20));
+	cubeGameObject->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	cubeGameObject->GetTransform()->SetRotation(Vector3(45, 45, 45));
+	cubeGameObject->GetTransform()->SetLocalScale(Vector3(20, 20, 20));
 	//cubeGameObject->AddChild(newShape2);
 	newShape2->SetParent(cubeGameObject);
 
-	newShape2->transform.SetLocalPosition(Vector3(0.02, 0, 0.02));
-	newShape2->transform.SetLocalRotation(Vector3(0, 0, 0));
-	childBottle->transform.SetLocalPosition(Vector3(6.121321, -1.242641, 4.12132));
-	childBottle->transform.SetLocalRotation(Vector3(30, 170.264, -40.264));
-	//childBottle->transform.SetLocalRotation(Vector3(150, -9.7, 139.7));
-	childBottle->transform.SetLocalScale(Vector3(20, 20, 20));
+	newShape2->GetTransform()->SetLocalPosition(Vector3(0.02, 0, 0.02));
+	newShape2->GetTransform()->SetLocalRotation(Vector3(0, 0, 0));
+	childBottle->GetTransform()->SetLocalPosition(Vector3(6.121321, -1.242641, 4.12132));
+	childBottle->GetTransform()->SetLocalRotation(Vector3(30, 170.264, -40.264));
+	//childBottle->GetTransform()->SetLocalRotation(Vector3(150, -9.7, 139.7));
+	childBottle->GetTransform()->SetLocalScale(Vector3(20, 20, 20));
 	childBottle->SetParent(cubeGameObject);
 	childBottle2->SetParent(childBottle);
 	//cubeGameObject->AddChild(childBottle);
 	//childBottle->AddChild(childBottle2);
-	childBottle2->transform.SetLocalPosition(Vector3(0.0, 0.1, 0.0));
-	childBottle2->transform.SetLocalRotation(Vector3(30, 30, 30));
-	childBottle2->transform.SetLocalScale(Vector3(1, 1, 1));
+	childBottle2->GetTransform()->SetLocalPosition(Vector3(0.0, 0.1, 0.0));
+	childBottle2->GetTransform()->SetLocalRotation(Vector3(30, 30, 30));
+	childBottle2->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 
 	//newShape2->SetParent(cubeGameObject);
 
-	//cubeGameObject->transform.SetLocalScale(Vector3(5, 5, 5));
-	//cubeGameObject->transform.SetLocalScale(Vector3(0.1f, 0.1f, 0.1f));
+	//cubeGameObject->GetTransform()->SetLocalScale(Vector3(5, 5, 5));
+	//cubeGameObject->GetTransform()->SetLocalScale(Vector3(0.1f, 0.1f, 0.1f));
 
 	cubeChild->SetActive(false);
-	cubeChild->transform.SetPosition(Vector3(4, 0, 0));
-	cubeChild->transform.SetRotation(Vector3(0, 0, 20));
-	cubeChild->transform.SetLocalScale(Vector3(1, 1, 1));
+	cubeChild->GetTransform()->SetPosition(Vector3(4, 0, 0));
+	cubeChild->GetTransform()->SetRotation(Vector3(0, 0, 20));
+	cubeChild->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 	//cubeGameObject->AddChild(cubeChild);
 	MeshRenderer* mesh = cubeChild->AddComponent<MeshRenderer>();
 	mesh->LoadFromFile("CubeTriangulate.obj");
 
 	GameObject* cubeChild2 = new GameObject("Cube2");
-	cubeChild2->transform.SetPosition(Vector3(6.5, 0, 0));
-	cubeChild2->transform.SetRotation(Vector3(0, 0, 10));
-	cubeChild2->transform.SetLocalScale(Vector3(1.5f, 1.5f, 1.5f));
+	cubeChild2->GetTransform()->SetPosition(Vector3(6.5, 0, 0));
+	cubeChild2->GetTransform()->SetRotation(Vector3(0, 0, 10));
+	cubeChild2->GetTransform()->SetLocalScale(Vector3(1.5f, 1.5f, 1.5f));
 	cubeChild->AddChild(cubeChild2);
 	MeshRenderer* mesh222 = cubeChild2->AddComponent<MeshRenderer>();
 	//MeshRenderer* mesh222 = cubeChild2->AddComponent<MeshRenderer>();
@@ -213,31 +213,31 @@ void Game3D::Init()
 
 	//Vector3* mesh2322 = static_cast<Vector3*>(cubeChild2->AddComponent<Vector3>());
 
-	//cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+	//cubeGameObject->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 	//cubeChild->SetParent(nullptr);
 
 	/*cubeGameObject->AddExistingComponent(mesh3);
-	cubeGameObject->transform.SetPosition(Vector3(1, 0, 0));
-	//cubeGameObject->transform.SetScale(Vector3(10, 0.5, 0.5));
+	cubeGameObject->GetTransform()->SetPosition(Vector3(1, 0, 0));
+	//cubeGameObject->GetTransform()->SetScale(Vector3(10, 0.5, 0.5));
 	GameObject* cubeChild = new GameObject();
-	cubeChild->transform.SetLocalPosition(Vector3(1, 1, 0));
+	cubeChild->GetTransform()->SetLocalPosition(Vector3(1, 1, 0));
 	cubeGameObject->AddChild(cubeChild);
 	MeshRenderer * mesh = static_cast<MeshRenderer*>(cubeChild->AddComponent<MeshRenderer>());
 	mesh->LoadFromFile("ConeTriangulate.obj");
 
 	coneGameobject->AddExistingComponent(mesh4);
-	coneGameobject->transform.SetPosition(Vector3(0, 0, 0));
-	coneGameobject->transform.SetLocalScale(Vector3(2, 2, 2));
+	coneGameobject->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	coneGameobject->GetTransform()->SetLocalScale(Vector3(2, 2, 2));
 
 	coneGameobject->AddChild(cubeGameObject);
 	coneGameobject->name = "Cone";
 
-	cubeGameObject->transform.SetPosition(Vector3(5, 0, 0));*/
+	cubeGameObject->GetTransform()->SetPosition(Vector3(5, 0, 0));*/
 
 	//myGameObject3->AddExistingComponent(mesh5);
-	myGameObject3->transform.SetPosition(Vector3(0, -1, 0));
+	myGameObject3->GetTransform()->SetPosition(Vector3(0, -1, 0));
 
-	myGameObject3->transform.SetLocalScale(Vector3(5, 1, 5));
+	myGameObject3->GetTransform()->SetLocalScale(Vector3(5, 1, 5));
 
 	mesh->material = newMat;
 	mesh222->material = newMat;
@@ -252,7 +252,7 @@ void Game3D::Init()
 	Material* material2D = new Material("shaderStandard2D");
 	material2D->shader = shaderStandard2D;
 
-	pointLightGameObject->transform.SetPosition(Vector3(1.5f, 1.5, 1.5f));
+	pointLightGameObject->GetTransform()->SetPosition(Vector3(1.5f, 1.5, 1.5f));
 	//pointLightGameObject->AddExistingComponent(pointLight);
 	pointLight = pointLightGameObject->AddComponent<Light>();
 	pointLight2 = pointLightGameObject2->AddComponent<Light>();
@@ -261,19 +261,19 @@ void Game3D::Init()
 	pointLight2->SetupPointLight(Vector3(0, 0, 1), 30, 7);
 	//pointLight->SetupPointLight(Vector3(1, 0.1f, 0.1f), 10, 7);
 
-	spotLightGameObject->transform.SetPosition(Vector3(0, 3, 0));
-	spotLightGameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
+	spotLightGameObject->GetTransform()->SetPosition(Vector3(0, 3, 0));
+	spotLightGameObject->GetTransform()->SetRotation(Vector3(90.0f, 0.0f, 0.0f));
 	//spotLightGameObject->AddExistingComponent(spotLight);
 	spotLight = spotLightGameObject->AddComponent<Light>();
 	spotLight->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 0);
 
-	spotLight2GameObject->transform.SetPosition(Vector3(5, 3, 0));
-	spotLight2GameObject->transform.SetRotation(Vector3(90.0f, 0.0f, 0.0f));
+	spotLight2GameObject->GetTransform()->SetPosition(Vector3(5, 3, 0));
+	spotLight2GameObject->GetTransform()->SetRotation(Vector3(90.0f, 0.0f, 0.0f));
 	//spotLight2GameObject->AddExistingComponent(spotLight2);
 	spotLight2 = spotLight2GameObject->AddComponent<Light>();
 	spotLight2->SetupSpotLight(Vector3(0.05f, 0.05f, 1), 200, 7, 17, 1);
 
-	directionalLightGameObject->transform.SetRotation(Vector3(45.0f, 45.0f, 0.0f));
+	directionalLightGameObject->GetTransform()->SetRotation(Vector3(45.0f, 45.0f, 0.0f));
 	//directionalLightGameObject->AddExistingComponent(directionalLight);
 	directionalLight = directionalLightGameObject->AddComponent<Light>();
 	directionalLight->SetupDirectionalLight(Vector3(0.6f, 0.6f, 0.7f), 1);
@@ -288,63 +288,63 @@ void Game3D::Init()
 /// </summary>
 void Game3D::Loop()
 {
-	//std::cout << "coneGameobject World: " << coneGameobject->transform.GetScale().x << " " << coneGameobject->transform.GetScale().y << " " << coneGameobject->transform.GetScale().z << " " << std::endl;
-	//std::cout << "coneGameobject Local: " << coneGameobject->transform.GetLocalScale().x << " " << coneGameobject->transform.GetLocalScale().y << " " << coneGameobject->transform.GetLocalScale().z << " " << std::endl;
+	//std::cout << "coneGameobject World: " << coneGameobject->GetTransform()->GetScale().x << " " << coneGameobject->GetTransform()->GetScale().y << " " << coneGameobject->GetTransform()->GetScale().z << " " << std::endl;
+	//std::cout << "coneGameobject Local: " << coneGameobject->GetTransform()->GetLocalScale().x << " " << coneGameobject->GetTransform()->GetLocalScale().y << " " << coneGameobject->GetTransform()->GetLocalScale().z << " " << std::endl;
 
-	/*std::cout << "cubeGameObject World: " << cubeGameObject->transform.GetScale().x << " " << cubeGameObject->transform.GetScale().y << " " << cubeGameObject->transform.GetScale().z << " " << std::endl;
-	std::cout << "cubeGameObject Local: " << cubeGameObject->transform.GetLocalScale().x << " " << cubeGameObject->transform.GetLocalScale().y << " " << cubeGameObject->transform.GetLocalScale().z << " " << std::endl;
+	/*std::cout << "cubeGameObject World: " << cubeGameObject->GetTransform()->GetScale().x << " " << cubeGameObject->GetTransform()->GetScale().y << " " << cubeGameObject->GetTransform()->GetScale().z << " " << std::endl;
+	std::cout << "cubeGameObject Local: " << cubeGameObject->GetTransform()->GetLocalScale().x << " " << cubeGameObject->GetTransform()->GetLocalScale().y << " " << cubeGameObject->GetTransform()->GetLocalScale().z << " " << std::endl;
 
-	std::cout << "cubeGameObjectChild World: " << cubeGameObject->children[0]->transform.GetScale().x << " " << cubeGameObject->children[0]->transform.GetScale().y << " " << cubeGameObject->children[0]->transform.GetScale().z << " " << std::endl;
-	std::cout << "cubeGameObjectChild Local: " << cubeGameObject->children[0]->transform.GetLocalScale().x << " " << cubeGameObject->children[0]->transform.GetLocalScale().y << " " << cubeGameObject->children[0]->transform.GetLocalScale().z << " " << std::endl;
+	std::cout << "cubeGameObjectChild World: " << cubeGameObject->children[0]->GetTransform()->GetScale().x << " " << cubeGameObject->children[0]->GetTransform()->GetScale().y << " " << cubeGameObject->children[0]->GetTransform()->GetScale().z << " " << std::endl;
+	std::cout << "cubeGameObjectChild Local: " << cubeGameObject->children[0]->GetTransform()->GetLocalScale().x << " " << cubeGameObject->children[0]->GetTransform()->GetLocalScale().y << " " << cubeGameObject->children[0]->GetTransform()->GetLocalScale().z << " " << std::endl;
 	*/
 
-	//std::cout << "cube World: " << cubeGameObject->transform.GetPosition().x << " " << cubeGameObject->transform.GetPosition().y << " " << cubeGameObject->transform.GetPosition().z << " " << std::endl;
-	//std::cout << "cube Local: " << cubeGameObject->transform.GetLocalPosition().x << " " << cubeGameObject->transform.GetLocalPosition().y << " " << cubeGameObject->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube World: " << cubeGameObject->GetTransform()->GetPosition().x << " " << cubeGameObject->GetTransform()->GetPosition().y << " " << cubeGameObject->GetTransform()->GetPosition().z << " " << std::endl;
+	//std::cout << "cube Local: " << cubeGameObject->GetTransform()->GetLocalPosition().x << " " << cubeGameObject->GetTransform()->GetLocalPosition().y << " " << cubeGameObject->GetTransform()->GetLocalPosition().z << " " << std::endl;
 
-	//std::cout << "cube child1 World: " << cubeGameObject->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->transform.GetPosition().z << " " << std::endl;
-	//std::cout << "cube child1 Local: " << cubeGameObject->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube child1 World: " << cubeGameObject->children[0]->GetTransform()->GetPosition().x << " " << cubeGameObject->children[0]->GetTransform()->GetPosition().y << " " << cubeGameObject->children[0]->GetTransform()->GetPosition().z << " " << std::endl;
+	//std::cout << "cube child1 Local: " << cubeGameObject->children[0]->GetTransform()->GetLocalPosition().x << " " << cubeGameObject->children[0]->GetTransform()->GetLocalPosition().y << " " << cubeGameObject->children[0]->GetTransform()->GetLocalPosition().z << " " << std::endl;
 
-	//std::cout << "cube child2 World: " << cubeGameObject->children[0]->children[0]->transform.GetPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetPosition().z << " " << std::endl;
-	//std::cout << "cube child2 Local: " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().x << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().y << " " << cubeGameObject->children[0]->children[0]->transform.GetLocalPosition().z << " " << std::endl;
+	//std::cout << "cube child2 World: " << cubeGameObject->children[0]->children[0]->GetTransform()->GetPosition().x << " " << cubeGameObject->children[0]->children[0]->GetTransform()->GetPosition().y << " " << cubeGameObject->children[0]->children[0]->GetTransform()->GetPosition().z << " " << std::endl;
+	//std::cout << "cube child2 Local: " << cubeGameObject->children[0]->children[0]->GetTransform()->GetLocalPosition().x << " " << cubeGameObject->children[0]->children[0]->GetTransform()->GetLocalPosition().y << " " << cubeGameObject->children[0]->children[0]->GetTransform()->GetLocalPosition().z << " " << std::endl;
 
-	//std::cout << "cubeGameObject: " << cubeGameObject->transform.GetLocalScale().x << std::endl;
+	//std::cout << "cubeGameObject: " << cubeGameObject->GetTransform()->GetLocalScale().x << std::endl;
 
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
-	Vector3 cubeNewRotation = cubeGameObject->transform.GetRotation();
-	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
+	Vector3 cubeNewRotation = cubeGameObject->GetTransform()->GetRotation();
+	Vector3 newCameraPosition = camera->GetTransform()->GetPosition();
 
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetForward();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetForward();
 		vect *= Time::GetDeltaTime() * 2;
 		//newCameraPosition += vect;
 		cubeNewRotation.x += Time::GetDeltaTime() * 20;
 	}
 	if (InputSystem::GetKey(S)) {
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetForward();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetForward();
 		vect *= Time::GetDeltaTime() * 2;
 		//newCameraPosition -= vect;
 		cubeNewRotation.x += -Time::GetDeltaTime() * 20;
 	}
 	if (InputSystem::GetKey(D)) {
 
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetRight();
 		vect *= Time::GetDeltaTime() * 2;
 		cubeNewRotation.z += Time::GetDeltaTime() * 20;
 		//newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q)) {
 
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetLeft();
 		vect *= Time::GetDeltaTime() * 2;
 		cubeNewRotation.z += -Time::GetDeltaTime() * 20;
 		//newCameraPosition += vect;
 	}
-	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
+	camera->GetTransform()->SetPosition(newCameraPosition);
 
 	//Animation
 	animation = SDL_GetTicks() / 500.0f;
@@ -352,61 +352,61 @@ void Game3D::Loop()
 	animation /= 10.0f;
 
 	//if(cubeChild->parent != nullptr)
-	//cubeChild->transform.SetLocalScale(Vector3(1 + sin(animation)/2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
-	//cubeGameObject->transform.SetLocalScale(Vector3(1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
+	//cubeChild->GetTransform()->SetLocalScale(Vector3(1 + sin(animation)/2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
+	//cubeGameObject->GetTransform()->SetLocalScale(Vector3(1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f, 1 + sin(animation) / 2.0f));
 
-	//cubeGameObject->transform.SetLocalScale(Vector3(1, 1, 1));
+	//cubeGameObject->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 	lightAnimation += Time::GetDeltaTime()/3.0f;
-	pointLightGameObject->transform.SetPosition(Vector3(cos(lightAnimation * M_PI * 2) * 3, 1.5, sin(lightAnimation * M_PI * 2)*3));
-	pointLightGameObject2->transform.SetPosition(Vector3(cos((lightAnimation+0.5) * M_PI * 2) * 3, 1.5, sin((lightAnimation+0.5) * M_PI * 2) * 3));
+	pointLightGameObject->GetTransform()->SetPosition(Vector3(cos(lightAnimation * M_PI * 2) * 3, 1.5, sin(lightAnimation * M_PI * 2)*3));
+	pointLightGameObject2->GetTransform()->SetPosition(Vector3(cos((lightAnimation+0.5) * M_PI * 2) * 3, 1.5, sin((lightAnimation+0.5) * M_PI * 2) * 3));
 
-	Vector3 newCameraRotation = camera->GetGameObject()->transform.GetRotation();
+	Vector3 newCameraRotation = camera->GetTransform()->GetRotation();
 	float xInputToAdd = -InputSystem::mouseSpeedRaw.y * Time::GetDeltaTime() * 20;
 	float yInputToAdd = InputSystem::mouseSpeedRaw.x * Time::GetDeltaTime() * 20;
 
 	newCameraRotation.x += xInputToAdd;
 	newCameraRotation.y += yInputToAdd;
 
-	camera->GetGameObject()->transform.SetRotation(newCameraRotation);
+	camera->GetTransform()->SetRotation(newCameraRotation);
 
-	//Vector3 mesh4NewRotation = mesh4->gameObject->transform.GetRotation();
-	Vector3 mesh4NewRotation = cubeChild->transform.GetRotation();
-	Vector3 cubeNewPosition = cubeGameObject->transform.GetPosition();
-	//Vector3 cubeNewRotation = cubeGameObject->transform.GetRotation();
+	//Vector3 mesh4NewRotation = mesh4->gameObject->GetTransform()->GetRotation();
+	Vector3 mesh4NewRotation = cubeChild->GetTransform()->GetRotation();
+	Vector3 cubeNewPosition = cubeGameObject->GetTransform()->GetPosition();
+	//Vector3 cubeNewRotation = cubeGameObject->GetTransform()->GetRotation();
 	if (InputSystem::GetKey(UP))
 	{
-		Vector3 vect = cubeGameObject->transform.GetForward();
-		//Vector3 vect = Graphics::usedCamera->gameObject->transform.GetUp();
+		Vector3 vect = cubeGameObject->GetTransform()->GetForward();
+		//Vector3 vect = Graphics::usedCamera->gameObject->GetTransform()->GetUp();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition += vect;
 
 	}
 	if (InputSystem::GetKey(DOWN)) {
-		Vector3 vect = cubeGameObject->transform.GetForward();
+		Vector3 vect = cubeGameObject->GetTransform()->GetForward();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition -= vect;
 	}
 	if (InputSystem::GetKey(RIGHT)) {
 
-		Vector3 vect = cubeGameObject->transform.GetRight();
+		Vector3 vect = cubeGameObject->GetTransform()->GetRight();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition += vect;
 	}
 	if (InputSystem::GetKey(LEFT)) {
 
-		Vector3 vect = cubeGameObject->transform.GetLeft();
+		Vector3 vect = cubeGameObject->GetTransform()->GetLeft();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition += vect;
 	}
 	if (InputSystem::GetKey(L)) {
 
-		Vector3 vect = cubeGameObject->transform.GetUp();
+		Vector3 vect = cubeGameObject->GetTransform()->GetUp();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition += vect;
 	}
 	if (InputSystem::GetKey(M)) {
 
-		Vector3 vect = cubeGameObject->transform.GetDown();
+		Vector3 vect = cubeGameObject->GetTransform()->GetDown();
 		vect *= Time::GetDeltaTime() * 5;
 		cubeNewPosition += vect;
 	}
@@ -435,16 +435,16 @@ void Game3D::Loop()
 	{
 		mesh4NewRotation.z += Time::GetDeltaTime() * 25;
 	}*/
-	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
-	//cubeChild->transform.SetRotation(mesh4NewRotation);
+	//cubeGameObject->GetTransform()->SetRotation(mesh4NewRotation);
+	//cubeChild->GetTransform()->SetRotation(mesh4NewRotation);
 
 	if (InputSystem::GetKeyDown(SPACE)) {
 		cubeChild->SetParent(nullptr);
 	}
 
-	//std::cout << cubeChild->transform.GetLocalPosition().x << std::endl;
+	//std::cout << cubeChild->GetTransform()->GetLocalPosition().x << std::endl;
 
-	//cubeGameObject->transform.SetLocalRotation(cubeGameObject->transform.GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
+	//cubeGameObject->GetTransform()->SetLocalRotation(cubeGameObject->GetTransform()->GetLocalRotation() + Vector3(10,0,0) * EngineSettings::deltaTime);
 
 	if (InputSystem::GetKey(V))
 	{
@@ -463,34 +463,34 @@ void Game3D::Loop()
 		}
 	}
 
-	//cubeGameObject->transform.SetRotation(mesh4NewRotation);
-	cubeGameObject->transform.SetPosition(cubeNewPosition);
-	cubeGameObject->transform.SetRotation(cubeNewRotation);
+	//cubeGameObject->GetTransform()->SetRotation(mesh4NewRotation);
+	cubeGameObject->GetTransform()->SetPosition(cubeNewPosition);
+	cubeGameObject->GetTransform()->SetRotation(cubeNewRotation);
 
-	/*std::string debugText = std::string("Cube0 Position x:") + std::to_string(cubeGameObject->transform.GetPosition().x) + " y:" + std::to_string(cubeGameObject->transform.GetPosition().y) + " z:" + std::to_string(cubeGameObject->transform.GetPosition().z);
-	debugText += std::string("\nCube0 Local Position x:") + std::to_string(cubeGameObject->transform.GetLocalPosition().x) + " y:" + std::to_string(cubeGameObject->transform.GetLocalPosition().y) + " z:" + std::to_string(cubeGameObject->transform.GetLocalPosition().z);
+	/*std::string debugText = std::string("Cube0 Position x:") + std::to_string(cubeGameObject->GetTransform()->GetPosition().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetPosition().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetPosition().z);
+	debugText += std::string("\nCube0 Local Position x:") + std::to_string(cubeGameObject->GetTransform()->GetLocalPosition().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetLocalPosition().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetLocalPosition().z);
 
-	debugText += std::string("\nCube0 Rotation x:") + std::to_string(cubeGameObject->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetRotation().z);
-	debugText += std::string("\nCube0 Local Rotation x:") + std::to_string(cubeGameObject->transform.GetLocalRotation().x) + " y:" + std::to_string(cubeGameObject->transform.GetLocalRotation().y) + " z:" + std::to_string(cubeGameObject->transform.GetLocalRotation().z);
+	debugText += std::string("\nCube0 Rotation x:") + std::to_string(cubeGameObject->GetTransform()->GetRotation().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetRotation().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetRotation().z);
+	debugText += std::string("\nCube0 Local Rotation x:") + std::to_string(cubeGameObject->GetTransform()->GetLocalRotation().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetLocalRotation().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetLocalRotation().z);
 
-	debugText += std::string("\nCube0 Scale x:") + std::to_string(cubeGameObject->transform.GetScale().x) + " y:" + std::to_string(cubeGameObject->transform.GetScale().y) + " z:" + std::to_string(cubeGameObject->transform.GetScale().z);
-	debugText += std::string("\nCube0 Local Scale x:") + std::to_string(cubeGameObject->transform.GetLocalScale().x) + " y:" + std::to_string(cubeGameObject->transform.GetLocalScale().y) + " z:" + std::to_string(cubeGameObject->transform.GetLocalScale().z);
+	debugText += std::string("\nCube0 Scale x:") + std::to_string(cubeGameObject->GetTransform()->GetScale().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetScale().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetScale().z);
+	debugText += std::string("\nCube0 Local Scale x:") + std::to_string(cubeGameObject->GetTransform()->GetLocalScale().x) + " y:" + std::to_string(cubeGameObject->GetTransform()->GetLocalScale().y) + " z:" + std::to_string(cubeGameObject->GetTransform()->GetLocalScale().z);
 
-	debugText += std::string("\n\nCube1 Position x:") + std::to_string(cubeChild->transform.GetPosition().x) + " y:" + std::to_string(cubeChild->transform.GetPosition().y) + " z:" + std::to_string(cubeChild->transform.GetPosition().z);
-	debugText += std::string("\nCube1 Local Position x:") + std::to_string(cubeChild->transform.GetLocalPosition().x) + " y:" + std::to_string(cubeChild->transform.GetLocalPosition().y) + " z:" + std::to_string(cubeChild->transform.GetLocalPosition().z);
+	debugText += std::string("\n\nCube1 Position x:") + std::to_string(cubeChild->GetTransform()->GetPosition().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetPosition().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetPosition().z);
+	debugText += std::string("\nCube1 Local Position x:") + std::to_string(cubeChild->GetTransform()->GetLocalPosition().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetLocalPosition().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetLocalPosition().z);
 
-	debugText += std::string("\nCube1 Rotation x:") + std::to_string(cubeChild->transform.GetRotation().x) + " y:" + std::to_string(cubeChild->transform.GetRotation().y) + " z:" + std::to_string(cubeChild->transform.GetRotation().z);
-	debugText += std::string("\nCube1 Local Rotation x:") + std::to_string(cubeChild->transform.GetLocalRotation().x) + " y:" + std::to_string(cubeChild->transform.GetLocalRotation().y) + " z:" + std::to_string(cubeChild->transform.GetLocalRotation().z);
+	debugText += std::string("\nCube1 Rotation x:") + std::to_string(cubeChild->GetTransform()->GetRotation().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetRotation().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetRotation().z);
+	debugText += std::string("\nCube1 Local Rotation x:") + std::to_string(cubeChild->GetTransform()->GetLocalRotation().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetLocalRotation().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetLocalRotation().z);
 
-	debugText += std::string("\nCube1 Scale x:") + std::to_string(cubeChild->transform.GetScale().x) + " y:" + std::to_string(cubeChild->transform.GetScale().y) + " z:" + std::to_string(cubeChild->transform.GetScale().z);
-	debugText += std::string("\nCube1 Local Scale x:") + std::to_string(cubeChild->transform.GetLocalScale().x) + " y:" + std::to_string(cubeChild->transform.GetLocalScale().y) + " z:" + std::to_string(cubeChild->transform.GetLocalScale().z);
+	debugText += std::string("\nCube1 Scale x:") + std::to_string(cubeChild->GetTransform()->GetScale().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetScale().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetScale().z);
+	debugText += std::string("\nCube1 Local Scale x:") + std::to_string(cubeChild->GetTransform()->GetLocalScale().x) + " y:" + std::to_string(cubeChild->GetTransform()->GetLocalScale().y) + " z:" + std::to_string(cubeChild->GetTransform()->GetLocalScale().z);
 
 	UiManager::RenderTextCanvas(debugText, 0.0f, 50, 20, 0.5f, 16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));*/
 
-	//std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->transform.GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->transform.GetRotation().z);
+	//std::string debugText2 = std::string("Cube1 Rotation x:") + std::to_string(cubeGameObject->children[0]->GetTransform()->GetRotation().x) + " y:" + std::to_string(cubeGameObject->children[0]->GetTransform()->GetRotation().y) + " z:" + std::to_string(cubeGameObject->children[0]->GetTransform()->GetRotation().z);
 	//UiManager::RenderTextCanvas(debugText2, 0.0f, 80, 20, 0.5f,16, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], HorizontalAlignment::H_Left, *AssetManager::GetShader(7));
 
-	gameObjectSprite->transform.SetRotation(Vector3(0, 0, gameObjectSprite->transform.GetRotation().z + Time::GetDeltaTime() * 10));
+	gameObjectSprite->GetTransform()->SetRotation(Vector3(0, 0, gameObjectSprite->GetTransform()->GetRotation().z + Time::GetDeltaTime() * 10));
 
-	//mesh4->gameObject->transform.SetRotation(mesh4NewRotation);
+	//mesh4->gameObject->GetTransform()->SetRotation(mesh4NewRotation);
 }

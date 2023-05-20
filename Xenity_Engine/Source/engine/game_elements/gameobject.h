@@ -15,7 +15,6 @@ public:
 	GameObject(std::string name);
 	~GameObject();
 	std::string name = "gameObject";
-	Transform transform = Transform(this);
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
 
@@ -62,7 +61,13 @@ public:
 		return componentCount;
 	}
 
+	Transform* GetTransform() 
+	{
+		return &transform;
+	}
+
 private:
+	Transform transform = Transform(this);
 	void AddExistingComponent(Component* component);
 	void UpdateActive(GameObject * changed);
 

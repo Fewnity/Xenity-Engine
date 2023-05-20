@@ -1,10 +1,9 @@
 #include "unit_manager.h"
-#include "unit.h"
-#include "unit_data.h"
+#include "../unit.h"
+#include "../unit_data.h"
 #include "camera_manager.h"
-#include "../xenity.h"
-#include "../engine/pathfinding/astar.h"
-#include "game.h"
+#include "../../xenity.h"
+#include "../game.h"
 #include "map_manager.h"
 #include "team_manager.h"
 
@@ -56,7 +55,7 @@ void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 	{
 		Unit* newUnit = nullptr;
 		GameObject* unitGM = new GameObject("Unit");
-		unitGM->transform.SetPosition(position);
+		unitGM->GetTransform()->SetPosition(position);
 		newUnit = unitGM->AddComponent<Unit>();
 		newUnit->unitData = unitsData[unitId];
 		newUnit->color = color;
@@ -72,15 +71,17 @@ void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 
 void UnitManager::SpawnUnits()
 {
+	SpawnUnit(Vector2Int(0, 0), Blue, 1);
 	SpawnUnit(Vector2Int(0, 0), Blue, 0);
-	SpawnUnit(Vector2Int(0, 0), Blue, 0);
-	SpawnUnit(Vector2Int(1, 2), Blue, 4);
-	SpawnUnit(Vector2Int(1, 1), Blue, 10);
+	SpawnUnit(Vector2Int(1, 2), Blue, 1);
+	SpawnUnit(Vector2Int(1, 1), Blue, 3);
 	SpawnUnit(Vector2Int(3, 1), Blue, 9);
-	SpawnUnit(Vector2Int(3, 2), Blue, 8);
-	SpawnUnit(Vector2Int(3, 3), Blue, 11);
+	SpawnUnit(Vector2Int(3, 2), Blue, 9);
+	SpawnUnit(Vector2Int(3, 3), Blue, 3);
 
 	SpawnUnit(Vector2Int(0, 1), Orange, 0);
+	SpawnUnit(Vector2Int(0, 1), Orange, 9);
+	SpawnUnit(Vector2Int(0, 1), Orange, 3);
 }
 
 void UnitManager::SelectUnits()
@@ -90,7 +91,6 @@ void UnitManager::SelectUnits()
 	Vector2 endSelectionPos = mouseWorldPosition;
 
 	int unitSize = game->teamManager->localPlayerTeam->units.size();
-	//int unitSize = units.size();
 	if (fabs(game->startSelectionPos.x - endSelectionPos.x) >= 0.2f && fabs(game->startSelectionPos.y - endSelectionPos.y) >= 0.2f)
 	{
 		game->isDragging = true;
@@ -125,7 +125,7 @@ void UnitManager::SelectUnits()
 		{
 			Unit* unit = game->teamManager->localPlayerTeam->units[i];
 			unit->selected = false;
-			if (game->isPointInsideAABB(Vector2(unit->GetGameObject()->transform.GetPosition().x, unit->GetGameObject()->transform.GetPosition().y), finalStartPos, finalEndPos))
+			if (game->isPointInsideAABB(Vector2(unit->GetTransform()->GetPosition().x, unit->GetTransform()->GetPosition().y), finalStartPos, finalEndPos))
 			{
 				unit->selected = true;
 			}
@@ -144,6 +144,7 @@ void UnitManager::SelectUnits()
 
 void UnitManager::OnMouseUp()
 {
+	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 	if (game->manageMode == ManageUnits)
 	{
 		if (game->isDragging == true)
@@ -153,7 +154,6 @@ void UnitManager::OnMouseUp()
 		}
 		else
 		{
-			Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 			int unitSize = game->teamManager->localPlayerTeam->units.size();
 
 			std::vector<Unit*> unitFound;
@@ -162,8 +162,8 @@ void UnitManager::OnMouseUp()
 			for (int i = 0; i < unitSize; i++)
 			{
 				Unit* unit = game->teamManager->localPlayerTeam->units[i];
-				Vector2 unitMin = Vector2(unit->GetGameObject()->transform.GetPosition().x - 0.2, unit->GetGameObject()->transform.GetPosition().y - 0.2);
-				Vector2 unitMax = Vector2(unit->GetGameObject()->transform.GetPosition().x + 0.2, unit->GetGameObject()->transform.GetPosition().y + 0.2);
+				Vector2 unitMin = Vector2(unit->GetTransform()->GetPosition().x - 0.2, unit->GetTransform()->GetPosition().y - 0.2);
+				Vector2 unitMax = Vector2(unit->GetTransform()->GetPosition().x + 0.2, unit->GetTransform()->GetPosition().y + 0.2);
 
 				if (game->isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
 				{
@@ -262,6 +262,11 @@ void UnitManager::OnMouseUp()
 			}
 		}
 	}
+	else if (game->manageMode == ManageMode::SpawnUnit)
+	{
+		Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
+		SpawnUnit(tilePos, game->teamManager->localPlayerTeam->color, 0);
+	}
 }
 
 void UnitManager::UnselectAllUnits()
@@ -284,4 +289,32 @@ void UnitManager::LoadUnitData()
 
 		unitsData.push_back(newUnitData);
 	}
+
+	UnitData* unit = unitsData[0];
+	unit->name = "Worker";
+	unit->health = 10;
+	unit->fireRate = 1;
+	unit->movementSpeed = 1;
+	unit->used = true;
+
+	unit = unitsData[1];
+	unit->name = "Soldier";
+	unit->health = 20;
+	unit->fireRate = 1;
+	unit->movementSpeed = 1;
+	unit->used = true;
+
+	unit = unitsData[3];
+	unit->name = "Bazooka";
+	unit->health = 20;
+	unit->fireRate = 1;
+	unit->movementSpeed = 0.6f;
+	unit->used = true;
+
+	unit = unitsData[9];
+	unit->name = "Tank";
+	unit->health = 200;
+	unit->fireRate = 1;
+	unit->movementSpeed = 0.8f;
+	unit->used = true;
 }

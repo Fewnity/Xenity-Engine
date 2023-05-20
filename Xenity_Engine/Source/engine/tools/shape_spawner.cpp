@@ -68,8 +68,8 @@ GameObject* ShapeSpawner::SpawnCylinder()
 
 GameObject* ShapeSpawner::Spawn(GameObject* gameObject)
 {
-    gameObject->transform.SetPosition(defaultPosition);
-    gameObject->transform.SetRotation(defaultRotation);
-    gameObject->transform.SetLocalScale(defaultScale);
+    gameObject->GetTransform()->SetPosition(defaultPosition);
+    gameObject->GetTransform()->SetRotation(defaultRotation);
+    gameObject->GetTransform()->SetLocalScale(defaultScale);
     return gameObject;
 }

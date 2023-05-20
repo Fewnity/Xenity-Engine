@@ -160,20 +160,19 @@ void PathFinding::SwitchMode()
 	if (showAStar)
 	{
 		camera->SetProjectionSize(40);
-		camera->GetGameObject()->transform.SetPosition(Vector3(20, 39.5f, -10));
+		camera->GetTransform()->SetPosition(Vector3(20, 39.5f, -10));
 	}
 	else
 	{
 		camera->SetProjectionSize(3);
-		camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
+		camera->GetTransform()->SetPosition(Vector3(0, 0, -10));
 	}
 }
 
 void PathFinding::LoadGameData()
 {
 	camera = cameraGameObject->AddComponent<Camera>();
-	//cameraGameObject->AddExistingComponent(camera);
-	camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
+	camera->GetTransform()->SetPosition(Vector3(0, 0, -10));
 
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(3);
@@ -274,13 +273,13 @@ void PathFinding::DrawDijkstras()
 	int visualNodesCount = visualNodes.size();
 	for (int i = 0; i < visualNodesCount; i++)
 	{
-		float startX = visualNodes[i]->gameobject->transform.GetPosition().x;
-		float startY = visualNodes[i]->gameobject->transform.GetPosition().y;
+		float startX = visualNodes[i]->gameobject->GetTransform()->GetPosition().x;
+		float startY = visualNodes[i]->gameobject->GetTransform()->GetPosition().y;
 		int visualNodesConnectionCount = visualNodes[i]->connectedTo.size();
 		for (int j = 0; j < visualNodesConnectionCount; j++)
 		{
-			float endX = visualNodes[i]->connectedTo[j]->gameobject->transform.GetPosition().x;
-			float endY = visualNodes[i]->connectedTo[j]->gameobject->transform.GetPosition().y;
+			float endX = visualNodes[i]->connectedTo[j]->gameobject->GetTransform()->GetPosition().x;
+			float endY = visualNodes[i]->connectedTo[j]->gameobject->GetTransform()->GetPosition().y;
 			Vector2 dir = (Vector2(endX, endY) - Vector2(startX, startY)).normalize();
 			Vector2 dir2 = (Vector2(endX, endY) - Vector2(startX, startY));
 			Vector2 textPos = Vector2(startX, startY) + dir2 / 2.0f;
@@ -298,11 +297,11 @@ void PathFinding::DrawDijkstras()
 		int startIndex = dijkstras.usedPath[i];
 		int endIndex = dijkstras.usedPath[i + 1];
 
-		float startX = visualNodes[startIndex]->gameobject->transform.GetPosition().x;
-		float startY = visualNodes[startIndex]->gameobject->transform.GetPosition().y;
+		float startX = visualNodes[startIndex]->gameobject->GetTransform()->GetPosition().x;
+		float startY = visualNodes[startIndex]->gameobject->GetTransform()->GetPosition().y;
 
-		float endX = visualNodes[endIndex]->gameobject->transform.GetPosition().x;
-		float endY = visualNodes[endIndex]->gameobject->transform.GetPosition().y;
+		float endX = visualNodes[endIndex]->gameobject->GetTransform()->GetPosition().x;
+		float endY = visualNodes[endIndex]->gameobject->GetTransform()->GetPosition().y;
 		Vector2 dir = (Vector2(endX, endY) - Vector2(startX, startY)).normalize();
 
 		DrawArrow(Vector2(startX, startY) + dir * 0.25f, Vector2(endX, endY) - dir * 0.25f, 0.05f, greenArrowColor, AssetManager::GetMaterialByName("2D Standard"));
@@ -346,38 +345,38 @@ void PathFinding::Loop()
 
 	//Move camera
 	float cameraArrowMoveSpeed = 10;
-	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetTransform()->GetPosition();
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetUp();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
-	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
+	camera->GetTransform()->SetPosition(newCameraPosition);
 }
 
 VisualNode::VisualNode(Vector2 position, Texture* sprite)
 {
 	gameobject = new GameObject();
-	gameobject->transform.SetPosition(Vector3(position.x, position.y, 0));
+	gameobject->GetTransform()->SetPosition(Vector3(position.x, position.y, 0));
 	//SpriteRenderer* spr = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
 	SpriteRenderer* spr = gameobject->AddComponent<SpriteRenderer>();
 	spr->texture = sprite;
@@ -396,7 +395,7 @@ VisualNode::VisualNode(Vector2 position, Texture* sprite)
 void AStarVisualNode::Setup(Vector2 position, Texture* sprite)
 {
 	gameobject = new GameObject();
-	gameobject->transform.SetPosition(Vector3(position.x, position.y, 0));
+	gameobject->GetTransform()->SetPosition(Vector3(position.x, position.y, 0));
 	//spriteRenderer = new SpriteRenderer(sprite, AssetManager::GetMaterialByName("2D Standard"));
 	spriteRenderer = gameobject->AddComponent<SpriteRenderer>();
 	spriteRenderer->texture = sprite;

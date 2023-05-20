@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../engine/monobehaviour.h"
+#include "../../engine/monobehaviour.h"
 #include <vector>
-#include "team_enum.h"
+#include "../team_enum.h"
 
 class Unit;
 class UnitData;
@@ -34,6 +34,7 @@ public:
 	Game* game = nullptr;
 	void OnMouseUp();
 	int maxUnitPerTile = 5;
+	int selectedUnitData = 9;
 
 private:
 };

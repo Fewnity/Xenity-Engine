@@ -1,11 +1,11 @@
 #include "build_manager.h"
-#include "building_data.h"
+#include "../building_data.h"
 #include "camera_manager.h"
-#include "../xenity.h"
-#include "game.h"
+#include "../../xenity.h"
+#include "../game.h"
 #include "map_manager.h"
-#include "building.h"
-#include "building_type_enum.h"
+#include "../building.h"
+#include "../building_type_enum.h"
 
 BuildManager::BuildManager()
 {
@@ -55,7 +55,7 @@ void BuildManager::PlaceBuilding(Vector2Int position)
 			Building* building = buildingGO->AddComponent<Building>();
 			building->buildingData = buildingsData[type];
 			building->tile = tile;
-			buildingGO->transform.SetLocalPosition(position);
+			buildingGO->GetTransform()->SetLocalPosition(position);
 			tile->building = building;
 		}
 	}

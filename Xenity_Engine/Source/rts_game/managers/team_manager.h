@@ -1,8 +1,8 @@
 #pragma once
 
-#include "team_enum.h"
+#include "../team_enum.h"
 #include <vector>
-#include "../engine/monobehaviour.h"
+#include "../../engine/monobehaviour.h"
 
 class Unit;
 

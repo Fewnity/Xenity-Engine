@@ -26,7 +26,7 @@ void SpriteRenderer::Draw()
 {
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled() && material != nullptr && texture != nullptr)
 	{
-		SpriteManager::RenderSprite(GetGameObject()->transform.transformationMatrix,
+		SpriteManager::RenderSprite(GetTransform()->transformationMatrix,
 			color, texture, material);
 	}
 }

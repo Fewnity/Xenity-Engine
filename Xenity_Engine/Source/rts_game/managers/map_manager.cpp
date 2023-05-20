@@ -1,13 +1,13 @@
 #include "map_manager.h"
-#include "../xenity.h"
-#include "../engine/pathfinding/astar.h"
-#include "prop.h"
-#include "game.h"
-#include "unit.h"
+#include "../../xenity.h"
+#include "../../engine/pathfinding/astar.h"
+#include "../prop.h"
+#include "../game.h"
+#include "../unit.h"
 #include "unit_manager.h"
-#include "prop_data.h"
+#include "../prop_data.h"
 
-#include "../engine/noise/noise.h"
+#include "../../engine/noise/noise.h"
 
 MapManager::MapManager()
 {
@@ -16,9 +16,9 @@ MapManager::MapManager()
 
 void MapManager::Awake()
 {
-	//gameObjectTileMap->transform.SetLocalScale(Vector3(2, 1, 1));
-	//gameObjectTileMap->transform.SetRotation(Vector3(0,0,45));
-	gameObjectTileMap->transform.SetPosition(Vector3(0, 0, 0));
+	//gameObjectTileMap->GetTransform()->SetLocalScale(Vector3(2, 1, 1));
+	//gameObjectTileMap->GetTransform()->SetRotation(Vector3(0,0,45));
+	gameObjectTileMap->GetTransform()->SetPosition(Vector3(0, 0, 0));
 }
 
 void MapManager::LoadMapData()

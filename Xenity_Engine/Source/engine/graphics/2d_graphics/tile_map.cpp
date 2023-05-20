@@ -37,9 +37,9 @@ void Tilemap::Setup(int width, int height)
 			//tile->spriteRenderer = new SpriteRendererNoTransform();
 			//tile->spriteRenderer->material = material;
 			tile->transformationMatrix = glm::mat4(1.0f);
-			tile->transformationMatrix = GetGameObject()->transform.transformationMatrix;
+			tile->transformationMatrix = GetTransform()->transformationMatrix;
 
-			//tile->transformationMatrix *= gameObject->transform.transformationMatrix;
+			//tile->transformationMatrix *= gameObject->GetTransform()->transformationMatrix;
 
 			tile->transformationMatrix = glm::translate(tile->transformationMatrix, glm::vec3(x, y, 0));
 
@@ -162,9 +162,9 @@ void Tilemap::Update()
 			Tile* tile = GetTile(x, y);
 			tile->textureId = 0;
 			tile->transformationMatrix = glm::mat4(1.0f);
-			tile->transformationMatrix = gameObject->transform.transformationMatrix;
+			tile->transformationMatrix = gameObject->GetTransform()->transformationMatrix;
 
-			//tile->transformationMatrix *= gameObject->transform.transformationMatrix;
+			//tile->transformationMatrix *= gameObject->GetTransform()->transformationMatrix;
 
 			tile->transformationMatrix = glm::translate(tile->transformationMatrix, glm::vec3(x, y, 0));
 		}

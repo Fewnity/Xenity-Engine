@@ -55,6 +55,9 @@ public:
 	int rock = 0;
 	int gold = 0;
 	int crystal = 0;
+	//Materials
+	Material* material2D = nullptr;
+	Material* material2DWithZ = nullptr;
 
 private:
 	void LoadGameData();
@@ -83,8 +86,5 @@ private:
 	//Shaders
 	Shader* shaderTextCanvas = nullptr;
 
-	//Materials
-	Material* material2D = nullptr;
-	Material* material2DWithZ = nullptr;
 };
 

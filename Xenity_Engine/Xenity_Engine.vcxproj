@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\rts_game\bullet.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\engine\graphics\color\color.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_opengl.cpp" />
@@ -167,9 +168,9 @@
     <ClCompile Include="Source\rts_game\prop_data.cpp" />
     <ClCompile Include="Source\rts_game\building.cpp" />
     <ClCompile Include="Source\rts_game\building_data.cpp" />
-    <ClCompile Include="Source\rts_game\build_manager.cpp" />
-    <ClCompile Include="Source\rts_game\map_manager.cpp" />
-    <ClCompile Include="Source\rts_game\camera_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\build_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\map_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\camera_manager.cpp" />
     <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
@@ -233,8 +234,8 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\rts_game\unit.cpp" />
     <ClCompile Include="Source\rts_game\unit_data.cpp" />
-    <ClCompile Include="Source\rts_game\unit_manager.cpp" />
-    <ClCompile Include="Source\rts_game\team_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\unit_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\team_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\2D\fSprite.shader" />
@@ -269,6 +270,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\rts_game\bullet.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />
     <ClInclude Include="Source\engine\graphics\color\color.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_opengl.h" />
@@ -279,9 +281,9 @@
     <ClInclude Include="Source\rts_game\prop_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
-    <ClInclude Include="Source\rts_game\build_manager.h" />
-    <ClInclude Include="Source\rts_game\map_manager.h" />
-    <ClInclude Include="Source\rts_game\camera_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\build_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\map_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\camera_manager.h" />
     <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
@@ -354,8 +356,8 @@
     <ClInclude Include="Source\rts_game\unit.h" />
     <ClInclude Include="Source\rts_game\unit_data.h" />
     <ClInclude Include="Source\xenity_editor.h" />
-    <ClInclude Include="Source\rts_game\unit_manager.h" />
-    <ClInclude Include="Source\rts_game\team_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\unit_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\team_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

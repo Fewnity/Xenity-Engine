@@ -63,21 +63,22 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="Source\rendering_test\rendering_test_2d.cpp" />
-    <ClCompile Include="Source\rts_game\camera_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\camera_manager.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2_int.cpp" />
-    <ClCompile Include="Source\rts_game\unit_manager.cpp" />
-    <ClCompile Include="Source\rts_game\map_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\unit_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\map_manager.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_opengl.cpp" />
     <ClCompile Include="Source\engine\graphics\color\color.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_renderer_canvas.cpp" />
-    <ClCompile Include="Source\rts_game\build_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\build_manager.cpp" />
     <ClCompile Include="Source\rts_game\building_data.cpp" />
     <ClCompile Include="Source\rts_game\building.cpp" />
     <ClCompile Include="Source\rts_game\prop_data.cpp" />
     <ClCompile Include="Source\engine\noise\noise.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
-    <ClCompile Include="Source\rts_game\team_manager.cpp" />
+    <ClCompile Include="Source\rts_game\managers\team_manager.cpp" />
+    <ClCompile Include="Source\rts_game\bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\audio\audio_source.h" />
@@ -148,16 +149,16 @@
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="Source\xenity_editor.h" />
     <ClInclude Include="Source\rendering_test\rendering_test_2d.h" />
-    <ClInclude Include="Source\rts_game\camera_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\camera_manager.h" />
     <ClInclude Include="Source\engine\vectors\vector2_int.h" />
-    <ClInclude Include="Source\rts_game\unit_manager.h" />
-    <ClInclude Include="Source\rts_game\map_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\unit_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\map_manager.h" />
     <ClInclude Include="Source\rts_game\prop.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_opengl.h" />
     <ClInclude Include="Source\engine\graphics\color\color.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
-    <ClInclude Include="Source\rts_game\build_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\build_manager.h" />
     <ClInclude Include="Source\rts_game\building_data.h" />
     <ClInclude Include="Source\rts_game\building.h" />
     <ClInclude Include="Source\rts_game\prop_type_enum.h" />
@@ -166,7 +167,8 @@
     <ClInclude Include="Source\rts_game\building_type_enum.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />
     <ClInclude Include="Source\rts_game\team_enum.h" />
-    <ClInclude Include="Source\rts_game\team_manager.h" />
+    <ClInclude Include="Source\rts_game\managers\team_manager.h" />
+    <ClInclude Include="Source\rts_game\bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

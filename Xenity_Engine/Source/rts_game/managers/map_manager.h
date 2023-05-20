@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "../engine/monobehaviour.h"
-#include "../engine/game_elements/gameobject.h"
+#include "../../engine/monobehaviour.h"
+#include "../../engine/game_elements/gameobject.h"
 
 class Prop;
 class Unit;

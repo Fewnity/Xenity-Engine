@@ -5,58 +5,45 @@ void RenderingTest2D::Init()
 {
 	LoadGameData();
 	camera = cameraGameObject->AddComponent<Camera>();
-	//cameraGameObject->AddExistingComponent(camera);
-	camera->GetGameObject()->transform.SetPosition(Vector3(0, 0, -10));
+	camera->GetTransform()->SetPosition(Vector3(0, 0, -10));
 
 	SpriteRenderer* gradientSprR = gradientGameObject->AddComponent<SpriteRenderer>();
 	gradientSprR->texture = gradient;
 	gradientSprR->material = material2D;
-	//SpriteRenderer* gradientSprR = new SpriteRenderer(gradient, material2D);
 	gradientSprR->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	//gradientGameObject->AddExistingComponent(gradientSprR);
 	
 	SpriteRenderer* tileSprR = tileGameObject->AddComponent<SpriteRenderer>();
 	tileSprR->texture = textureTile0;
 	tileSprR->material = material2D;
-	//SpriteRenderer* tileSprR = new SpriteRenderer(textureTile0, material2D);
 	tileSprR->color = Color::CreateFromRGBAFloat(0.5, 1, 1, 1.0f);
-	//tileGameObject->AddExistingComponent(tileSprR);
 
 	//Static tiles
-	//SpriteRenderer* tileSprRB = new SpriteRenderer(textureTile0, material2D);
 	SpriteRenderer* tileSprRB = tileGameObjectBack->AddComponent<SpriteRenderer>();
 	tileSprRB->texture = textureTile0;
 	tileSprRB->material = material2D;
 	tileSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	tileSprRB->SetOrderInLayer(-1);
-	//tileGameObjectBack->AddExistingComponent(tileSprRB);
-	tileGameObjectBack->transform.SetPosition(Vector3(-2, 0, 0));
+	tileGameObjectBack->GetTransform()->SetPosition(Vector3(-2, 0, 0));
 
-	//SpriteRenderer* tileSprRF = new SpriteRenderer(textureTile0, material2D);
 	SpriteRenderer* tileSprRF = tileGameObjectFront->AddComponent<SpriteRenderer>();
 	tileSprRF->texture = textureTile0;
 	tileSprRF->material = material2D;
 	tileSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
 	tileSprRF->SetOrderInLayer(1);
-	//tileGameObjectFront->AddExistingComponent(tileSprRF);
-	tileGameObjectFront->transform.SetPosition(Vector3(2, 0, 0));
+	tileGameObjectFront->GetTransform()->SetPosition(Vector3(2, 0, 0));
 
 	//Static gradients
-	//SpriteRenderer* gradientSprRB = new SpriteRenderer(gradient, material2D);
 	SpriteRenderer* gradientSprRB = gradientGameObjectBack->AddComponent<SpriteRenderer>();
 	gradientSprRB->texture = gradient;
 	gradientSprRB->material = material2D;
 	gradientSprRB->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	//gradientGameObjectBack->AddExistingComponent(gradientSprRB);
-	gradientGameObjectBack->transform.SetPosition(Vector3(-2, 1, -1));
+	gradientGameObjectBack->GetTransform()->SetPosition(Vector3(-2, 1, -1));
 
-	//SpriteRenderer* gradientSprRF = new SpriteRenderer(gradient, material2D);
 	SpriteRenderer* gradientSprRF = gradientGameObjectFront->AddComponent<SpriteRenderer>();
 	gradientSprRF->texture = gradient;
 	gradientSprRF->material = material2D;
 	gradientSprRF->color = Color::CreateFromRGBAFloat(1, 1, 1, 1.0f);
-	//gradientGameObjectFront->AddExistingComponent(gradientSprRF);
-	gradientGameObjectFront->transform.SetPosition(Vector3(2, 1, 1));
+	gradientGameObjectFront->GetTransform()->SetPosition(Vector3(2, 1, 1));
 
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * 1);
@@ -95,35 +82,35 @@ void RenderingTest2D::LoadGameData()
 void RenderingTest2D::Loop()
 {
 	Vector2 mouseWorldPosition = camera->MouseTo2DWorld();
-	gradientGameObject->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y+0.5, 0));
-	tileGameObject->transform.SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y-0.5, 0));
+	gradientGameObject->GetTransform()->SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y+0.5, 0));
+	tileGameObject->GetTransform()->SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y-0.5, 0));
 
 	//Move camera
 	float cameraArrowMoveSpeed = 3;
-	Vector3 newCameraPosition = camera->GetGameObject()->transform.GetPosition();
+	Vector3 newCameraPosition = camera->GetTransform()->GetPosition();
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetUp();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetDown();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetRight();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->GetGameObject()->transform.GetLeft();
+		Vector3 vect = Graphics::usedCamera->GetTransform()->GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
-	camera->GetGameObject()->transform.SetPosition(newCameraPosition);
+	camera->GetTransform()->SetPosition(newCameraPosition);
 }

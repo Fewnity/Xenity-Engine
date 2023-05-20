@@ -4,8 +4,8 @@
 
 #include <vector>
 
-#include "build_manager.h"
-#include "map_manager.h"
+#include "managers/build_manager.h"
+#include "managers/map_manager.h"
 
 class Vector2;
 class Vector2Int;

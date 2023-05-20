@@ -51,36 +51,36 @@ void EditorUI::DrawInspector()
 
 		ImGui::Spacing();
 		ImGui::Spacing();
-		Vector3 localPos = selectedGameObject->transform.GetLocalPosition();
+		Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
 		bool changed = DrawVector3Input("Local Position", "X", "Y", "Z", localPos);
 
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 		{
-			selectedGameObject->transform.SetLocalPosition(localPos);
+			selectedGameObject->GetTransform()->SetLocalPosition(localPos);
 		}
-		ImGui::Text("World Position: %f %f %f", selectedGameObject->transform.GetPosition().x, selectedGameObject->transform.GetPosition().y, selectedGameObject->transform.GetPosition().z);
-		ImGui::Text("World Matrix: \n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f", selectedGameObject->transform.transformationMatrix[0].x, selectedGameObject->transform.transformationMatrix[0].y, selectedGameObject->transform.transformationMatrix[0].z, selectedGameObject->transform.transformationMatrix[0].w,
-			selectedGameObject->transform.transformationMatrix[1].x, selectedGameObject->transform.transformationMatrix[1].y, selectedGameObject->transform.transformationMatrix[1].z, selectedGameObject->transform.transformationMatrix[1].w,
-			selectedGameObject->transform.transformationMatrix[2].x, selectedGameObject->transform.transformationMatrix[2].y, selectedGameObject->transform.transformationMatrix[2].z, selectedGameObject->transform.transformationMatrix[2].w,
-			selectedGameObject->transform.transformationMatrix[3].x, selectedGameObject->transform.transformationMatrix[3].y, selectedGameObject->transform.transformationMatrix[3].z, selectedGameObject->transform.transformationMatrix[3].w);
+		ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
+		ImGui::Text("World Matrix: \n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f", selectedGameObject->GetTransform()->transformationMatrix[0].x, selectedGameObject->GetTransform()->transformationMatrix[0].y, selectedGameObject->GetTransform()->transformationMatrix[0].z, selectedGameObject->GetTransform()->transformationMatrix[0].w,
+			selectedGameObject->GetTransform()->transformationMatrix[1].x, selectedGameObject->GetTransform()->transformationMatrix[1].y, selectedGameObject->GetTransform()->transformationMatrix[1].z, selectedGameObject->GetTransform()->transformationMatrix[1].w,
+			selectedGameObject->GetTransform()->transformationMatrix[2].x, selectedGameObject->GetTransform()->transformationMatrix[2].y, selectedGameObject->GetTransform()->transformationMatrix[2].z, selectedGameObject->GetTransform()->transformationMatrix[2].w,
+			selectedGameObject->GetTransform()->transformationMatrix[3].x, selectedGameObject->GetTransform()->transformationMatrix[3].y, selectedGameObject->GetTransform()->transformationMatrix[3].z, selectedGameObject->GetTransform()->transformationMatrix[3].w);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
-		Vector3 localRot = selectedGameObject->transform.GetLocalRotation();
+		Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
 		changed = DrawVector3Input("Local Rotation", "X", "Y", "Z", localRot);
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
-			selectedGameObject->transform.SetLocalRotation(localRot);
+			selectedGameObject->GetTransform()->SetLocalRotation(localRot);
 		}
-		ImGui::Text("World Rotation: %f %f %f", selectedGameObject->transform.GetRotation().x, selectedGameObject->transform.GetRotation().y, selectedGameObject->transform.GetRotation().z);
+		ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
 		ImGui::Spacing();
 		ImGui::Spacing();
 
-		Vector3 localScale = selectedGameObject->transform.GetLocalScale();
+		Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
 		changed = DrawVector3Input("Local Scale", "X", "Y", "Z", localScale);
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
-			selectedGameObject->transform.SetLocalScale(localScale);
+			selectedGameObject->GetTransform()->SetLocalScale(localScale);
 		}
-		ImGui::Text("World Scale: %f %f %f", selectedGameObject->transform.GetScale().x, selectedGameObject->transform.GetScale().y, selectedGameObject->transform.GetScale().z);
+		ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
