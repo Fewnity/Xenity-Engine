@@ -6,6 +6,7 @@
 #include "TextAlignments.h"
 #include "../color/color.h"
 #include "../../vectors/vector3.h"
+#include "../../engine.h"
 
 class Font;
 class Shader;
@@ -21,7 +22,7 @@ public:
 	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
-	int GetDrawPriority();
+	int GetDrawPriority() const;
 
 	Font* font = nullptr;
 	Color color = Color(); // [0;1]
@@ -32,7 +33,7 @@ public:
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
-		needReorder = true;
+		Engine::drawOrderListDirty = true;
 	}
 
 	int GetOrderInLayer() const

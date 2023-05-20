@@ -232,7 +232,7 @@ void MeshRenderer::Draw()
 	}
 }
 
-int MeshRenderer::GetDrawPriority()
+int MeshRenderer::GetDrawPriority() const
 {
 	return 0;
 }

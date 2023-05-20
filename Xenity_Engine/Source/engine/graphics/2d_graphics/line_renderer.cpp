@@ -12,7 +12,7 @@ LineRenderer::~LineRenderer()
 {
 }
 
-int LineRenderer::GetDrawPriority()
+int LineRenderer::GetDrawPriority() const
 {
 	return orderInLayer;
 }

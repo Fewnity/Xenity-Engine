@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "../../xenity.h"
 #include "../graphics/renderer/renderer.h"
+#include <algorithm>
 
 Camera* Graphics::usedCamera = nullptr;
 int Graphics::usedShaderProgram = -1;
@@ -10,114 +11,62 @@ std::vector<IDrawable*> Graphics::orderedIDrawable;
 ProfilerBenchmark* orderBenchmark = new ProfilerBenchmark("Order Drawables");
 ProfilerBenchmark* gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
-bool ordered = false;
-
 /// <summary>
 /// Draw all Drawable elements
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-	//if(!ordered)
 	Graphics::OrderDrawables();
-	//ordered = true;
-	//glEnable(GL_DEPTH_TEST);
 	Engine::renderer->SetCullFace(Back);
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		orderedIDrawable[i]->Draw();
 	}
-	/*int drawableCount = AssetManager::GetDrawableCount();
-	for (int i = 0; i < drawableCount; i++)
-	{
-		IDrawable* drawable = AssetManager::GetDrawable(i);
+}
 
-		drawable->Draw();
-	}*/
+bool spriteComparator(const IDrawable* t1, const IDrawable* t2)
+{
+	const int priority1 = t1->GetDrawPriority();
+	const int priority2 = t2->GetDrawPriority();
+
+	if (priority1 <= priority2)
+	{
+		if (priority1 == priority2)
+		{
+			return t1->GetTransform()->GetPosition().z > t2->GetTransform()->GetPosition().z;
+		}
+		return true;
+	}
+	return false;
+	//return (t1->GetDrawPriority() < t2->GetDrawPriority()) || (t1->GetDrawPriority() == t2->GetDrawPriority() && t1->GetGameObject()->transform.GetPosition().z > t2->GetGameObject()->transform.GetPosition().z);
 }
 
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
-	int drawableCount = orderedIDrawable.size();
-	//int drawableCount = AssetManager::GetDrawableCount();
-	for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
+	gameobjectScanBenchmark->Start();
+	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		IDrawable* drawableToCheck = orderedIDrawable[iDrawIndex];
-		//IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-		if (drawableToCheck->GetGameObject()->transform.movedLastFrame || drawableToCheck->needReorder)
+		if (drawableToCheck->GetTransform()->movedLastFrame)
 		{
-			gameobjectScanBenchmark->Start();
-			drawableToCheck->GetGameObject()->transform.movedLastFrame = false;
-			drawableToCheck->needReorder = false;
-			orderedIDrawable.erase(orderedIDrawable.begin() + iDrawIndex);
-			iDrawablesCount--;
-			drawableCount--;
-			iDrawIndex--;
-			OrderOneDrawable(drawableToCheck);
-			gameobjectScanBenchmark->Stop();
+			Engine::drawOrderListDirty = true;
+			break;
 		}
 	}
+	gameobjectScanBenchmark->Stop();
 
-	//bool needReorder = 
-	drawableCount = AssetManager::GetDrawableCount();
 	if (Engine::drawOrderListDirty)
 	{
+		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
 		Engine::drawOrderListDirty = false;
-
-		iDrawablesCount = 0;
-		orderedIDrawable.clear();
-
-		for (int iDrawIndex = 0; iDrawIndex < drawableCount; iDrawIndex++)
-		{
-			IDrawable* drawableToCheck = AssetManager::GetDrawable(iDrawIndex);
-			OrderOneDrawable(drawableToCheck);
-		}
 	}
 	orderBenchmark->Stop();
 }
 
 void Graphics::AddDrawable(IDrawable* drawableToPlace)
 {
-	OrderOneDrawable(drawableToPlace);
-}
-
-void Graphics::OrderOneDrawable(IDrawable* drawableToPlace)
-{
-	float z = drawableToPlace->GetGameObject()->transform.GetPosition().z;
-	bool placeFound = false;
-
-	for (int i = 0; i < iDrawablesCount; i++)
-	{
-		IDrawable* drawable = orderedIDrawable[i];
-		int d1 = drawableToPlace->GetDrawPriority();
-		int d2 = drawable->GetDrawPriority();
-
-		//Check if the checked has a higher priority (lower value) than the component in the list
-		if (d1 <= d2)
-		{
-			if (d1 == d2)
-			{
-				if (z >= drawable->GetGameObject()->transform.GetPosition().z)
-				{
-					orderedIDrawable.insert(std::begin(orderedIDrawable) + i, drawableToPlace);
-					placeFound = true;
-					break;
-				}
-			}
-			else
-			{
-				orderedIDrawable.insert(std::begin(orderedIDrawable) + i, drawableToPlace);
-				placeFound = true;
-				break;
-			}
-		}
-	}
-
-	//if the priority is lower than all components's priorities in the list, add it the end of the list
-	if (!placeFound)
-	{
-		orderedIDrawable.push_back(drawableToPlace);
-	}
+	orderedIDrawable.push_back(drawableToPlace);
 	iDrawablesCount++;
 }

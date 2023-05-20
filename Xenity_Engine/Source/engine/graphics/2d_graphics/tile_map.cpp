@@ -11,7 +11,7 @@ Tilemap::Tilemap()
 	componentName = "Tilemap";
 }
 
-int Tilemap::GetDrawPriority()
+int Tilemap::GetDrawPriority() const
 {
 	return orderInLayer;
 }

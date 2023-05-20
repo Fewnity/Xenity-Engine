@@ -6,6 +6,7 @@ class Material;
 #include "../../component.h"
 #include "../iDrawable.h"
 #include "../color/color.h"
+#include "../../engine.h"
 
 class SpriteRenderer : public IDrawable
 {
@@ -13,12 +14,12 @@ class SpriteRenderer : public IDrawable
 		SpriteRenderer();
 		~SpriteRenderer();
 
-		int GetDrawPriority();
+		int GetDrawPriority() const;
 
 		void SetOrderInLayer(int orderInLayer) 
 		{
 			this->orderInLayer = orderInLayer;
-			needReorder = true;
+			Engine::drawOrderListDirty = true;
 		}
 
 		int GetOrderInLayer() const

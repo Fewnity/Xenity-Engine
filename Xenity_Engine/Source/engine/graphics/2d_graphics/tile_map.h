@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include "../color/color.h"
 #include "../../game_elements/gameobject.h"
+#include "../../engine.h"
 
 class Texture;
 class Material;
@@ -27,7 +28,7 @@ public:
 	private:
 	};
 
-	int GetDrawPriority();
+	int GetDrawPriority() const;
 	void Setup(int width, int height);
 	Tile * GetTile(int x, int y);
 	void SetTile(int x, int y, Texture* textureId);
@@ -42,7 +43,7 @@ public:
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
-		needReorder = true;
+		Engine::drawOrderListDirty = true;
 	}
 
 	int GetOrderInLayer() const

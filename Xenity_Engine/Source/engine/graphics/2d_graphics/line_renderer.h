@@ -8,6 +8,7 @@ class Material;
 #include "../../vectors/vector4.h"
 #include "../../vectors/vector3.h"
 #include "../color/color.h"
+#include "../../engine.h"
 
 class LineRenderer : public IDrawable
 {
@@ -15,7 +16,7 @@ class LineRenderer : public IDrawable
 		LineRenderer();
 		~LineRenderer();
 
-		int GetDrawPriority();
+		int GetDrawPriority() const;
 
 		Material* material = nullptr;
 		Color color = Color();
@@ -27,7 +28,7 @@ class LineRenderer : public IDrawable
 		void SetOrderInLayer(int orderInLayer)
 		{
 			this->orderInLayer = orderInLayer;
-			needReorder = true;
+			Engine::drawOrderListDirty = true;
 		}
 
 		int GetOrderInLayer() const

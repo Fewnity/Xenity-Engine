@@ -5,6 +5,7 @@
 #include <string>
 
 class GameObject;
+class Transform;
 
 class Component
 {
@@ -32,7 +33,13 @@ public:
 		return gameObject;
 	}
 
+	Transform* GetTransform() const
+	{
+		return transform;
+	}
+
 private:
 	GameObject *gameObject = nullptr;
+	Transform* transform = nullptr;
 	bool isEnabled = true;
 };

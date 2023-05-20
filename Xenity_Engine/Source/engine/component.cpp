@@ -31,6 +31,7 @@ void Component::SetGameObject(GameObject* go)
 	}
 
 	this->gameObject = go;
+	this->transform = &go->transform;
 
 	if (firstUse)
 	{

@@ -12,7 +12,7 @@ SpriteRenderer::~SpriteRenderer()
 {
 }
 
-int SpriteRenderer::GetDrawPriority()
+int SpriteRenderer::GetDrawPriority() const
 {
 	return orderInLayer;
 }

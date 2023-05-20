@@ -6,6 +6,7 @@
 
 TextRenderer::TextRenderer()
 {
+	componentName = "Text Renderer";
 }
 
 TextRenderer::TextRenderer(Font* font, float size, Shader* shader)
@@ -19,7 +20,7 @@ TextRenderer::~TextRenderer()
 {
 }
 
-int TextRenderer::GetDrawPriority()
+int TextRenderer::GetDrawPriority() const
 {
 	return orderInLayer;
 }

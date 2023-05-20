@@ -6,6 +6,7 @@
 
 TextRendererCanvas::TextRendererCanvas()
 {
+	componentName = "Canvas Text Renderer";
 }
 
 TextRendererCanvas::TextRendererCanvas(Font* font, float size, Shader* shader)
@@ -19,7 +20,7 @@ TextRendererCanvas::~TextRendererCanvas()
 {
 }
 
-int TextRendererCanvas::GetDrawPriority()
+int TextRendererCanvas::GetDrawPriority() const
 {
 	return orderInLayer;
 }
