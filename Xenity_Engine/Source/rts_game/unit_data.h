@@ -7,10 +7,11 @@ class Texture;
 class UnitData {
 public:
 	UnitData() = delete;
-	UnitData(int index, Texture* selectionTexture);
+	UnitData(int index, Texture* selectionTexture, Texture* bulletTexture);
 
 	Texture* textures[4];
 	Texture* selectionTexture = nullptr;
+	Texture* bulletTexture = nullptr;
 	float health = 0;
 	float speed = 0;
 	float price = 0;

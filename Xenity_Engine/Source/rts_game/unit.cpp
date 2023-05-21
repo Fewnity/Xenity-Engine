@@ -128,9 +128,10 @@ void Unit::SetDestination(Vector2Int position)
 
 void Unit::Shoot() 
 {
-	GameObject* bullet = new GameObject("Bullet");
-	bullet->AddComponent<Bullet>();
-	//bullet->GetTransform();
+	GameObject* bulletGO = new GameObject("Bullet");
+	Bullet * bullet = bulletGO->AddComponent<Bullet>();
+	bulletGO->GetTransform()->SetPosition(GetTransform()->GetPosition());
+	bullet->unitData = unitData;
 }
 
 void Unit::UpdateLifeBar()

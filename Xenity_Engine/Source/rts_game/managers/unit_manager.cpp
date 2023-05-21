@@ -281,9 +281,10 @@ void UnitManager::UnselectAllUnits()
 
 void UnitManager::LoadUnitData()
 {
+	Texture* bulletTexture = new Texture("rts/bullet.png", "Bullet");
 	for (int i = 0; i < 12; i++)
 	{
-		UnitData* newUnitData = new UnitData(i, game->crosshair);
+		UnitData* newUnitData = new UnitData(i, game->crosshair, bulletTexture);
 		if (i >= 6)
 			newUnitData->rotateWhenMoving = true;
 

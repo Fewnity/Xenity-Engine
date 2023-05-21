@@ -164,9 +164,9 @@ void Engine::SetSelectedGameObject(GameObject* newSelected)
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	//Game* game = new Game();
+	Game* game = new Game();
 	//Game3D* game = new Game3D();
-	PathFinding* game = new PathFinding();
+	//PathFinding* game = new PathFinding();
 	//RenderingTest2D *game = new RenderingTest2D();
 
 	game->Init();

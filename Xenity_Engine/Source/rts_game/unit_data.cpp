@@ -2,7 +2,7 @@
 #include "../engine/graphics/texture.h"
 #include "../engine/engine_settings.h"
 
-UnitData::UnitData(int index, Texture* selectionTexture)
+UnitData::UnitData(int index, Texture* selectionTexture, Texture* bulletTexture)
 {
 	int textureNameIndex = index + 1;
 	//Load blue ints
@@ -26,4 +26,5 @@ UnitData::UnitData(int index, Texture* selectionTexture)
 	textures[3]->SetPixelPerUnit(128);
 
 	this->selectionTexture = selectionTexture;
+	this->bulletTexture = bulletTexture;
 }

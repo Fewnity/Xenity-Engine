@@ -4,7 +4,7 @@
 #include "../engine/vectors/vector2.h"
 
 class SpriteRenderer;
-
+class UnitData;
 
 class Bullet : public MonoBehaviour
 {
@@ -15,6 +15,6 @@ public:
 
 	SpriteRenderer* spriteRenderer = nullptr;
 	Vector2 direction = Vector2(0, 0);
-	float speed = 0;
+	UnitData* unitData = nullptr;
 };
 
