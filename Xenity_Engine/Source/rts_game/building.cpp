@@ -13,24 +13,26 @@ Building::Building()
 
 void Building::Start()
 {
+	//Create building sprite
 	GameObject* gmBuildingSprite = new GameObject("Building Sprite");
+	GetGameObject()->AddChild(gmBuildingSprite);
+	gmBuildingSprite->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
 	SpriteRenderer* buildingSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
 	buildingSpriteRenderer->texture = buildingData->textures[0];
 	buildingSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	buildingSpriteRenderer->SetOrderInLayer(2);
 
+	//Create selection sprite
 	selectionSpriteRenderer = gmBuildingSprite->AddComponent<SpriteRenderer>();
 	selectionSpriteRenderer->texture = buildingData->selectionTexture;
 	selectionSpriteRenderer->material = AssetManager::GetMaterialByName("2D Standard");
 	selectionSpriteRenderer->SetOrderInLayer(11);
 	selectionSpriteRenderer->SetIsEnabled(false);
-	GetGameObject()->AddChild(gmBuildingSprite);
-	gmBuildingSprite->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
-	gmBuildingSprite->GetTransform()->SetLocalScale(1.0f);
 }
 
 void Building::Update()
 {
+	//If the building is a miner, mine some ressources
 	if (buildingData->type == BuildingType::Miner)
 	{
 		miningTimer += Time::GetDeltaTime();

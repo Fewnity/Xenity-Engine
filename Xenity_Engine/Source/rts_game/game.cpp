@@ -13,11 +13,6 @@
 
 Game* Game::game;
 
-Game* Game::GetGame()
-{
-	return game;
-}
-
 /// <summary>
 /// Init game
 /// </summary>
@@ -28,45 +23,44 @@ void Game::Init()
 
 	GameObject* managersGameObject = new GameObject("Managers");
 
+	//Create Team Manager
 	teamManager = managersGameObject->AddComponent<TeamManager>();
 	teamManager->CreateTeam(Blue, true);
 	teamManager->CreateTeam(Orange, false);
 
+	//Create Map Manager
 	mapManager = managersGameObject->AddComponent<MapManager>();
 	mapManager->LoadMapData();
 	mapManager->GenerateMap();
 	mapManager->CreateTileMaps();
 
+	//Create Camera Manager
 	cameraManager = managersGameObject->AddComponent<CameraManager>();
 	cameraManager->Init();
 
+	//Create Build Manager
 	buildManager = managersGameObject->AddComponent<BuildManager>();
 	buildManager->game = this;
 	buildManager->mapManager = mapManager;
 	buildManager->cameraManager = cameraManager;
 	buildManager->LoadBuildingsData();
 
+	//Create Unit Manager
 	unitManager = managersGameObject->AddComponent<UnitManager>();
 	unitManager->cameraManager = cameraManager;
 	unitManager->game = this;
-	unitManager->LoadUnitData();
+	unitManager->LoadUnitsData();
 	unitManager->SpawnUnits();
 
-	gameObjectCrosshair2->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	gameObjectCrosshair2->SetActive(false);
-	SpriteRenderer* sprGrad = gameObjectCrosshair2->AddComponent<SpriteRenderer>();
-	sprGrad->texture = gradient;
-	sprGrad->material = material2DWithZ;
-	sprGrad->color = Color::CreateFromRGBAFloat(1, 1, 1, 1);
-
+	//Create crosshair
 	gameObjectCrosshair->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	SpriteRenderer* spr5 = gameObjectCrosshair->AddComponent<SpriteRenderer>();
-	spr5->texture = crosshair;
-	spr5->material = material2DWithZ;
+	SpriteRenderer* crosshairSprRenderer = gameObjectCrosshair->AddComponent<SpriteRenderer>();
+	crosshairSprRenderer->texture = crosshair;
+	crosshairSprRenderer->material = material2DWithZ;
+	crosshairSprRenderer->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
+	crosshairSprRenderer->SetOrderInLayer(10);
 
-	spr5->color = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
-	spr5->SetOrderInLayer(10);
-
+	//Create lines for selection
 	Color selectionLineColor = Color::CreateFromRGBAFloat(0, 0, 0, 0.2f);
 	lineRendererTop = gameObjectLineRenderers->AddComponent<LineRenderer>();
 	lineRendererBottom = gameObjectLineRenderers->AddComponent<LineRenderer>();
@@ -81,27 +75,10 @@ void Game::Init()
 	lineRendererLeft->SetOrderInLayer(10);
 	lineRendererRight->SetOrderInLayer(10);
 
-	/*TextRenderer* textRenderer = new TextRenderer(UiManager::fonts[0], 5, shaderText);
-	textRenderer->text = "Salut à tous les amissssss\nzefzefizeifb ezfibzef";
-	gameObjectSprite->AddExistingComponent(textRenderer);*/
-
-
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	//SDL_SetRelativeMouseMode(SDL_FALSE);
-	//camera->SetProjectionType(Orthographic);
-	//camera->SetProjectionSize(2.5f * cameraZoom);
-
-	GameObject* ParentTest = new GameObject("Parent0");
-	GameObject* childTest1 = new GameObject("child0");
-	GameObject* childTest2 = new GameObject("child1");
-	GameObject* childTest3 = new GameObject("child2");
-
-	ParentTest->AddChild(childTest1);
-	ParentTest->AddChild(childTest2);
-	childTest1->AddChild(childTest3);
-
+	//Create canvas
 	GameObject* canvasGO = new GameObject("Canvas");
-	ressourcesTextRenderer = canvasGO->AddComponent< TextRendererCanvas>();
+	//Add the ressources text to the canvas
+	ressourcesTextRenderer = canvasGO->AddComponent<TextRendererCanvas>();
 	ressourcesTextRenderer->font = UiManager::fonts[0];
 	ressourcesTextRenderer->size = 0.8f;
 	ressourcesTextRenderer->shader = shaderTextCanvas;
@@ -109,7 +86,8 @@ void Game::Init()
 	ressourcesTextRenderer->verticalAlignment = V_Bottom;
 	ressourcesTextRenderer->position = Vector3(0, 0, 0);
 
-	modeTextRenderer = canvasGO->AddComponent< TextRendererCanvas>();
+	//Add the game mode text to the canvas
+	modeTextRenderer = canvasGO->AddComponent<TextRendererCanvas>();
 	modeTextRenderer->font = UiManager::fonts[0];
 	modeTextRenderer->size = 0.8f;
 	modeTextRenderer->shader = shaderTextCanvas;
@@ -120,10 +98,9 @@ void Game::Init()
 
 void Game::LoadGameData()
 {
+	//Load shaders
 	Shader* shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-
 	Shader* shader3 = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
-
 	Shader* shader2 = new Shader("vertex2.shader", "fragment2.shader");
 	Shader* shaderText = new Shader("vertexText.shader", "fragmentText.shader");
 	shaderTextCanvas = new Shader("vertexTextCanvas.shader", "fragmentTextCanvas.shader");
@@ -132,26 +109,17 @@ void Game::LoadGameData()
 	Shader* shaderStandard2DText = new Shader("vertexStandard2DText.shader", "fragmentStandard2DText.shader");
 	Shader* shaderStandard2DWithZ = new Shader("vertexStandard2DZ.shader", "fragmentStandard2DZ.shader");
 
-	//SceneGame1* scene = new SceneGame1();
-	//SceneManager::LoadScene(scene);
-
+	//load textures
 	textureShip = new Texture("ship_0000.png", "Ship");
-
 	crosshair = new Texture("rts/crosshairs/crosshair.png", "Crosshair");
 	crosshair->SetPixelPerUnit(128);
-
-
 	gradient = new Texture("gradient.png", "gradient");
 
-
-
+	//Create materials
 	material2D = new Material("2D Standard");
 	material2D->shader = shaderStandard2D;
-
 	material2DWithZ = new Material("2D Standard With Z");
 	material2DWithZ->shader = shaderStandard2DWithZ;
-
-	//material2D->SetAttribut("color", Vector4(1, 0, 1,1));
 }
 
 bool Game::isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax)
@@ -174,7 +142,11 @@ bool Game::intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax)
 		);
 }
 
-void Game::SetSelection(bool isSelecting)
+/// <summary>
+/// Disable / Enable selection UI
+/// </summary>
+/// <param name="isSelecting"></param>
+void Game::SetSelectionUI(bool isSelecting)
 {
 	lineRendererTop->SetIsEnabled(isSelecting);
 	lineRendererBottom->SetIsEnabled(isSelecting);
@@ -183,6 +155,9 @@ void Game::SetSelection(bool isSelecting)
 	gameObjectCrosshair->SetActive(!isSelecting);
 }
 
+/// <summary>
+/// Update ressources text
+/// </summary>
 void Game::UpdateRessourcesText()
 {
 	std::string ressourceText = "";
@@ -194,6 +169,9 @@ void Game::UpdateRessourcesText()
 	ressourcesTextRenderer->text = ressourceText;
 }
 
+/// <summary>
+/// Update game mode text
+/// </summary>
 void Game::UpdateModeText()
 {
 	std::string modeText = "Mode: ";
@@ -208,13 +186,12 @@ void Game::UpdateModeText()
 	modeTextRenderer->text = modeText;
 }
 
+/// <summary>
+/// Move cursor
+/// </summary>
 void Game::MoveCursor()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-
-	//gameObjectCrosshair2->GetTransform()->SetPosition(Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 1));
-
-	//Move cursor
 	cursorPosition.x = Math::Lerp(cursorPosition.x, round(mouseWorldPosition.x), Time::GetUnscaledDeltaTime() * 20);
 	cursorPosition.y = Math::Lerp(cursorPosition.y, round(mouseWorldPosition.y), Time::GetUnscaledDeltaTime() * 20);
 	gameObjectCrosshair->GetTransform()->SetPosition(Vector3(cursorPosition.x, cursorPosition.y, 0));
@@ -222,44 +199,20 @@ void Game::MoveCursor()
 
 void Game::OnMouseUp()
 {
-	/*Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-	if (manageMode == ManageUnits)
-	{
-		if (isDragging == true)
-		{
-			isDragging = false;
-			SetSelection(false);
-		}
-		else
-		{
-			unitManager->OnMouseUp();
-		}
-	}
-	else if (manageMode == ManageBuildings)
-	{
-		buildManager->OnMouseUp();
-	}
-	else if (manageMode == SpawnUnit)
-	{
-		buildManager->OnMouseUp();
-	}*/
-
 	unitManager->OnMouseUp();
 	buildManager->OnMouseUp();
 }
 
 /// <summary>
-/// Game loop
+/// Check if the player is doing something with the keyboard
 /// </summary>
-void Game::Loop()
+void Game::CheckKeyboardInput()
 {
-	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
-
 	if (InputSystem::GetKeyDown(ESCAPE))
 	{
-		//SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
+	// Change mode
 	if (InputSystem::GetKeyDown(NUM_1))
 	{
 		manageMode = ManageUnits;
@@ -272,25 +225,31 @@ void Game::Loop()
 	{
 		manageMode = SpawnUnit;
 	}
+}
+
+/// <summary>
+/// Check if the player is doing something with the mouse
+/// </summary>
+void Game::CheckMouseInput() 
+{
+	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
 		startSelectionPos = mouseWorldPosition;
 	}
-
-	if (InputSystem::GetKeyDown(MOUSE_RIGHT))
-	{
-		startMousePosition = InputSystem::mousePosition;
-	}
-
 	if (InputSystem::GetKey(MOUSE_LEFT))
 	{
 		if (manageMode == ManageUnits)
 			unitManager->SelectUnits();
 	}
-
+	if (InputSystem::GetKeyDown(MOUSE_RIGHT))
+	{
+		startMousePosition = InputSystem::mousePosition;
+	}
 	if (InputSystem::GetKeyUp(MOUSE_RIGHT))
 	{
+		//Unselect all units if the player don't want to move the camera
 		Vector2 endMousePosition = InputSystem::mousePosition;
 		if (manageMode == ManageUnits)
 		{
@@ -302,17 +261,19 @@ void Game::Loop()
 			}
 		}
 	}
-
 	if (InputSystem::GetKeyUp(MOUSE_LEFT))
 	{
 		OnMouseUp();
 	}
+}
 
-	if (InputSystem::GetKeyDown(MOUSE_LEFT))
-	{
-		//tileMap->SetTile(round(mouseWorldPosition.x), round(mouseWorldPosition.y), 2);
-	}
-
+/// <summary>
+/// Game loop
+/// </summary>
+void Game::Loop()
+{
+	CheckKeyboardInput();
+	CheckMouseInput();
 	MoveCursor();
 	UpdateRessourcesText();
 	UpdateModeText();

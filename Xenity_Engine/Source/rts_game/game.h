@@ -29,28 +29,32 @@ class Game
 {
 public:
 	static Game* game;
-	static Game* GetGame();
+	static Game* GetGame()
+	{
+		return game;
+	}
 
 	void Init();
 	void Loop();
+
+	void SetSelectionUI(bool isSelecting);
+	bool isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax);
+	bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax);
+
 	Vector2 startSelectionPos = Vector2(0, 0);
 	bool isDragging = false;
 	LineRenderer* lineRendererTop = nullptr;
 	LineRenderer* lineRendererBottom = nullptr;
 	LineRenderer* lineRendererLeft = nullptr;
 	LineRenderer* lineRendererRight = nullptr;
-	void SetSelection(bool isSelecting);
-	bool isPointInsideAABB(Vector2 point, Vector2 aMin, Vector2 aMax);
-	bool intersect(Vector2 aMin, Vector2 aMax, Vector2 bMin, Vector2 bMax);
 	Texture* crosshair = nullptr;
 	MapManager* mapManager = nullptr;
 	BuildManager* buildManager = nullptr;
 	UnitManager* unitManager = nullptr;
 	TeamManager* teamManager = nullptr;
 
-	TextRendererCanvas* ressourcesTextRenderer = nullptr;
-	TextRendererCanvas* modeTextRenderer = nullptr;
 	ManageMode manageMode = ManageMode::ManageUnits;
+
 	int wood = 0;
 	int rock = 0;
 	int gold = 0;
@@ -60,6 +64,8 @@ public:
 	Material* material2DWithZ = nullptr;
 
 private:
+	void CheckMouseInput();
+	void CheckKeyboardInput();
 	void LoadGameData();
 	void MoveCursor();
 	void OnMouseUp();
@@ -67,10 +73,7 @@ private:
 	void UpdateModeText();
 
 	GameObject* gameObjectCrosshair = new GameObject("Crosshair");
-	GameObject* gameObjectCrosshair2 = new GameObject("Sprite test");
-
 	GameObject* gameObjectLineRenderers = new GameObject("Lines");
-
 
 	CameraManager* cameraManager = nullptr;;
 
@@ -78,13 +81,17 @@ private:
 	Vector2 startMousePosition = Vector2(0, 0);
 	Vector4 selectionColor = Vector4(1, 1, 1, 1);
 
-	//Textures
 
+	//Components
+	TextRendererCanvas* ressourcesTextRenderer = nullptr;
+	TextRendererCanvas* modeTextRenderer = nullptr;
+
+
+	//Textures
 	Texture* textureShip = nullptr;
 	Texture* gradient = nullptr;
 
 	//Shaders
 	Shader* shaderTextCanvas = nullptr;
-
 };
 

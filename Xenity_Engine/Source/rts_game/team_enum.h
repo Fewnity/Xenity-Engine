@@ -1,6 +1,7 @@
 #pragma once
 
-enum TeamColor {
+enum TeamColor 
+{
 	Blue = 0,
 	Green = 1,
 	Grey = 2,

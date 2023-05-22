@@ -18,6 +18,7 @@ public:
 	float damage = 0;
 	float fireRate = 0;
 	float movementSpeed = 0;
+	float bulletSpeed = 0;
 	bool rotateWhenMoving = false;
 	std::string name = "";
 	bool used = false;

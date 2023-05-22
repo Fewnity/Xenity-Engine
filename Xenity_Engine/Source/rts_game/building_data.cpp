@@ -1,11 +1,10 @@
 #include "building_data.h"
-#include "../engine/graphics/texture.h"
-#include "../engine/engine_settings.h"
+#include "../xenity.h"
 
 BuildingData::BuildingData(int index, Texture* selectionTexture)
 {
 	int textureNameIndex = index + 1;
-	//Load blue ints
+	//Load blue units
 	std::string buildingTextureName = "rts/Structure/blueStructure_" + std::to_string(textureNameIndex) + ".png";
 	textures[0] = new Texture(buildingTextureName, "", Texture::Bilinear, false);
 	textures[0]->SetPixelPerUnit(128);

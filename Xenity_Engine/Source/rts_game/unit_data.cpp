@@ -5,7 +5,7 @@
 UnitData::UnitData(int index, Texture* selectionTexture, Texture* bulletTexture)
 {
 	int textureNameIndex = index + 1;
-	//Load blue ints
+	//Load blue units
 	std::string unitTextureName = "rts/Unit/blueUnit_" + std::to_string(textureNameIndex) + ".png";
 	textures[0] = new Texture(unitTextureName, "", Texture::Point, false);
 	textures[0]->SetPixelPerUnit(128);

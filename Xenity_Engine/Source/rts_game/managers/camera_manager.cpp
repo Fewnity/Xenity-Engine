@@ -9,18 +9,14 @@ CameraManager::CameraManager()
 	componentName = "Camera Manager";
 }
 
-void CameraManager::Awake()
-{
-
-}
-
 void CameraManager::Init() 
 {
-	GameObject* cameraGameObject = new GameObject("Camera");
+	GameObject * cameraGameObject = new GameObject("Camera");
+	cameraTransform = cameraGameObject->GetTransform();
+	cameraTransform->SetPosition(Vector3(0, 0, 0));
+	
+	//Create camera
 	camera = cameraGameObject->AddComponent<Camera>();
-
-	camera->GetTransform()->SetPosition(Vector3(0, 0, 0));
-
 	camera->SetProjectionType(Orthographic);
 	camera->SetProjectionSize(2.5f * cameraZoom);
 }
@@ -28,49 +24,52 @@ void CameraManager::Init()
 void CameraManager::Update()
 {
 	MoveCamera();
-	ZoomCamera();
+	CheckCameraZoom();
 }
 
 void CameraManager::MoveCamera()
 {
-	Vector3 newCameraPosition = camera->GetTransform()->GetPosition();
+	Vector3 newCameraPosition = cameraTransform->GetPosition();
 
+	//Move camera when using mouse
 	if (InputSystem::GetKey(MOUSE_RIGHT))
 	{
-		Vector3 vect = Graphics::usedCamera->GetTransform()->GetDown();
+		Vector3 vect = cameraTransform->GetDown();
 		vect *= InputSystem::mouseSpeed.y * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 
-		vect = Graphics::usedCamera->GetTransform()->GetLeft();
+		vect = cameraTransform->GetLeft();
 		vect *= InputSystem::mouseSpeed.x * 14.2f * cameraZoom / 2.8f;
 		newCameraPosition += vect;
 	}
 
+	//Move camera when using keyboard
 	if (InputSystem::GetKey(Z))
 	{
-		Vector3 vect = Graphics::usedCamera->GetTransform()->GetUp();
+		Vector3 vect = cameraTransform->GetUp();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(S))
 	{
-		Vector3 vect = Graphics::usedCamera->GetTransform()->GetDown();
+		Vector3 vect = cameraTransform->GetDown();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(D))
 	{
-		Vector3 vect = Graphics::usedCamera->GetTransform()->GetRight();
+		Vector3 vect = cameraTransform->GetRight();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 	if (InputSystem::GetKey(Q))
 	{
-		Vector3 vect = Graphics::usedCamera->GetTransform()->GetLeft();
+		Vector3 vect = cameraTransform->GetLeft();
 		vect *= Time::GetDeltaTime() * cameraArrowMoveSpeed;
 		newCameraPosition += vect;
 	}
 
+	//Clamp camera position
 	float xOffset = 0.5;
 	float yOffset = 0.5;
 
@@ -87,8 +86,12 @@ void CameraManager::MoveCamera()
 	camera->GetTransform()->SetPosition(newCameraPosition);
 }
 
-void CameraManager::ZoomCamera()
+/// <summary>
+/// Change camera zoom
+/// </summary>
+void CameraManager::CheckCameraZoom()
 {
+	//Change zoom if the mouse wheel is used
 	if (InputSystem::mouseWheel != 0)
 	{
 		cameraZoom -= InputSystem::mouseWheel / 3.0f;

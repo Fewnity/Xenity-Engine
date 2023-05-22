@@ -13,5 +13,5 @@ public:
 	Texture* selectionTexture = nullptr;
 	float health = 0;
 	float price = 0;
-	BuildingType type;
+	BuildingType type = BuildingType::Miner;
 };

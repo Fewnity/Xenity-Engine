@@ -4,10 +4,13 @@
 
 void PropData::AddPropData(float miningRate, std::string textureName)
 {
+	//Set prop data
+	//Level 0
 	Data* newData= new Data();
 	newData->miningRate = miningRate;
 	newData->texture = new Texture(textureName, "", Texture::Point, false);
 	newData->texture->SetPixelPerUnit(128);
 	newData->texture->SetWrapMode(Texture::ClampToEdge);
+
 	data.push_back(newData);
 }

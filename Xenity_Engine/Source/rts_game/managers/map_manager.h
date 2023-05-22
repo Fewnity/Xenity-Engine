@@ -33,10 +33,6 @@ public:
 
 	MapManager();
 	void Awake();
-	Tile** tiles = nullptr;
-	Tilemap* tileMap = nullptr;
-	Tilemap* tileMapProps = nullptr;
-
 	void LoadMapData();
 	MapManager::Tile* GetTile(int x, int y);
 	Vector2Int GetTilePosition(MapManager::Tile* tile);
@@ -46,6 +42,11 @@ public:
 	void CreateTileMaps();
 	Prop* CreateProp(int id);
 	Prop* CreateProp(int propType, int index);
+
+	Tile** tiles = nullptr;
+	Tilemap* tileMap = nullptr;
+	Tilemap* tileMapProps = nullptr;
+
 	GameObject* gameObjectTileMap = new GameObject("TileMap");
 	Astar* astar = nullptr;
 	std::vector<PropData*> propsData;

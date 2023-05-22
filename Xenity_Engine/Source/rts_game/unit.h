@@ -9,7 +9,6 @@
 
 class Vector2;
 class Vector2Int;
-
 class UnitData;
 class SpriteRenderer;
 
@@ -17,7 +16,6 @@ class Unit : public MonoBehaviour
 {
 public:
 	Unit();
-	//Unit(UnitData *data, MapManager * mapManager);
 
 	UnitData* unitData = nullptr;
 
@@ -27,19 +25,23 @@ public:
 	void UpdateLifeBar();
 	void Shoot();
 
+	MapManager* mapManager = nullptr;
+
 	bool selected = false;
 	SpriteRenderer* selectionSpriteRenderer = nullptr;
 	GameObject* lifeBarGO = nullptr;
 	SpriteRenderer* lifeBarSprRenderer = nullptr;
 	GameObject* gmUnitSprite = nullptr;
 
+	TeamColor color = Blue;
+	float currentHealth = 0;
+
+	// Shooting
 	Unit* target = nullptr;
+
+	// Pathfinding
+	int currentPathNode = 0;
 	std::vector<Vector2> path;
 	MapManager::Tile* destinationTile = nullptr;
-	MapManager* mapManager = nullptr;
-	TeamColor color = Blue;
-
-	int currentPathNode = 0;
-	float currentHealth = 0;
 };
 

@@ -21,18 +21,19 @@ class UnitManager : public MonoBehaviour
 {
 public:
 	UnitManager();
-	std::vector<UnitData*> unitsData;
-	//std::vector<Unit*> units;
-	std::vector<UnitPlacement*> unitPlacements;
 	
+	void Awake();
 	void SpawnUnit(Vector2Int position, TeamColor color, int unitId);
 	void SpawnUnits();
 	void UnselectAllUnits();
-	void LoadUnitData();
+	void LoadUnitsData();
 	void SelectUnits();
+	void OnMouseUp();
+
+	std::vector<UnitData*> unitsData;
+	std::vector<UnitPlacement*> unitPlacements;
 	CameraManager* cameraManager = nullptr;
 	Game* game = nullptr;
-	void OnMouseUp();
 	int maxUnitPerTile = 5;
 	int selectedUnitData = 9;
 

@@ -68,28 +68,50 @@ void MapManager::LoadMapData()
 	propsData.push_back(crystalData);
 }
 
+/// <summary>
+/// Get tile
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <returns></returns>
 MapManager::Tile* MapManager::GetTile(int x, int y)
 {
 	if (tiles == nullptr)
 		return nullptr;
 
-	//return tiles[x * mapSize + y];
 	return &tiles[x][y];
 }
 
+/// <summary>
+/// Check if the position is out of the map
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <returns></returns>
 bool MapManager::IsValidPosition(int x, int y)
 {
-	if (x < 0 || y < 0 || x >= mapSize || y >= mapSize)
+	if (x >= mapSize || y >= mapSize || x < 0 || y < 0)
 		return false;
 
 	return true;
 }
 
+/// <summary>
+/// Check if a tile has a prop at position
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <returns></returns>
 bool MapManager::HasPropAtPosition(int x, int y)
 {
 	return GetTile(x, y)->prop != nullptr;
 }
 
+/// <summary>
+/// Get the position of a tile
+/// </summary>
+/// <param name="tile"></param>
+/// <returns></returns>
 Vector2Int MapManager::GetTilePosition(MapManager::Tile* tile)
 {
 	Vector2Int pos = Vector2Int(-1);
@@ -108,22 +130,29 @@ Vector2Int MapManager::GetTilePosition(MapManager::Tile* tile)
 	return pos;
 }
 
+/// <summary>
+/// Generate map
+/// </summary>
 void MapManager::GenerateMap()
 {
+	//Empty tiles if tiles already exist
 	if (tiles)
 	{
-		// Libérer la mémoire allouée pour le tableau
-		for (int i = 0; i < mapSize; ++i) {
+		for (int i = 0; i < mapSize; ++i)
+		{
 			delete[] tiles[i];
 		}
 		delete[] tiles;
 	}
 
+	//Create tiles in memory
 	tiles = new Tile * [mapSize];
-	for (int i = 0; i < mapSize; ++i) { //ymapSize
-		tiles[i] = new Tile[mapSize];//ymapSize
+	for (int i = 0; i < mapSize; ++i)
+	{
+		tiles[i] = new Tile[mapSize];
 	}
 
+	//Fill tiles
 	for (int x = 0; x < mapSize; x++)
 	{
 		for (int y = 0; y < mapSize; y++)
@@ -134,15 +163,18 @@ void MapManager::GenerateMap()
 		}
 	}
 
+	//Delete astar if astar already exists
 	if (astar)
 		delete astar;
 
+	//Create astar
 	astar = new Astar(mapSize, mapSize);
 	astar->canPassCorners = false;
+
 	//Fill map data
 
 	//Add trees
-	int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
+	/*int treeCount = minTreeCount + rand() % (maxTreeCount - minTreeCount + 1);
 	int treeDataCount = propsData[0]->data.size();
 	for (int i = 0; i < treeCount; i++)
 	{
@@ -171,7 +203,7 @@ void MapManager::GenerateMap()
 	for (int i = 0; i < crystalCount; i++)
 	{
 		//CreateProp(3, rand() % crystalDataCount);
-	}
+	}*/
 
 	Vector2 treeOffset1 = Vector2(rand(), rand());
 	Vector2 treeOffset2 = Vector2(rand(), rand());
@@ -198,10 +230,6 @@ void MapManager::GenerateMap()
 		for (int y = 0; y < mapSize; y++)
 		{
 			float forest1Noise = Noise::noise2(x / (float)mapSize * noiseSize, y / (float)mapSize * noiseSize);
-			float forest2Noise = Noise::noise2(x / (float)mapSize * noiseSize2, y / (float)mapSize * noiseSize2);
-			float rockNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + rockOffset.x, y / (float)mapSize * noiseSizeCrystal + rockOffset.y);
-			float goldNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + goldOffset.x, y / (float)mapSize * noiseSizeCrystal + goldOffset.y);
-			float crystalNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + crystalOffset.x, y / (float)mapSize * noiseSizeCrystal + crystalOffset.y);
 			if (forest1Noise >= 0.7)
 			{
 				Prop* newProp = new Prop();
@@ -219,8 +247,11 @@ void MapManager::GenerateMap()
 					tile->prop->id = 0;
 				}
 			}
-			else if (forest2Noise >= 0.75)
+			else
 			{
+				float forest2Noise = Noise::noise2(x / (float)mapSize * noiseSize2, y / (float)mapSize * noiseSize2);
+				if (forest2Noise >= 0.75)
+				{
 					Prop* newProp = new Prop();
 					newProp->data = propsData[0];
 					int dataSize = propsData[0]->data.size();
@@ -235,61 +266,76 @@ void MapManager::GenerateMap()
 					{
 						tile->prop->id = 0;
 					}
-			}
-			else if (rockNoise >= 0.8)
-			{
-				Prop* newProp = new Prop();
-				newProp->data = propsData[1];
-				int dataSize = propsData[1]->data.size();
-				Tile* tile = GetTile(x, y);
-				tile->prop = newProp;
-				tile->prop->id = (int)((rockNoise - 0.8f) / 0.2f * dataSize * levelOffsetRock);
-				if (tile->prop->id >= dataSize)
-				{
-					tile->prop->id = dataSize - 1;
 				}
-				else if (tile->prop->id < 0)
+				else
 				{
-					tile->prop->id = 0;
-				}
-			}
-			else if (goldNoise >= 0.8)
-			{
-				Prop* newProp = new Prop();
-				newProp->data = propsData[2];
-				int dataSize = propsData[2]->data.size();
-				Tile* tile = GetTile(x, y);
-				tile->prop = newProp;
-				tile->prop->id = (int)((goldNoise - 0.8f) / 0.2f * dataSize * levelOffsetGold);
-				if (tile->prop->id >= dataSize)
-				{
-					tile->prop->id = dataSize - 1;
-				}
-				else if (tile->prop->id < 0)
-				{
-					tile->prop->id = 0;
-				}
-			}
-			else if (crystalNoise >= 0.85)
-			{
-				Prop* newProp = new Prop();
-				newProp->data = propsData[3];
-				int dataSize = propsData[3]->data.size();
-				Tile* tile = GetTile(x, y);
-				tile->prop = newProp;
-				tile->prop->id = (int)((crystalNoise - 0.85f) / 0.15f * dataSize * levelOffsetCrystal);
-				if (tile->prop->id >= dataSize)
-				{
-					tile->prop->id = dataSize - 1;
-				}
-				else if (tile->prop->id < 0)
-				{
-					tile->prop->id = 0;
+					float rockNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + rockOffset.x, y / (float)mapSize * noiseSizeCrystal + rockOffset.y);
+					if (rockNoise >= 0.8)
+					{
+						Prop* newProp = new Prop();
+						newProp->data = propsData[1];
+						int dataSize = propsData[1]->data.size();
+						Tile* tile = GetTile(x, y);
+						tile->prop = newProp;
+						tile->prop->id = (int)((rockNoise - 0.8f) / 0.2f * dataSize * levelOffsetRock);
+						if (tile->prop->id >= dataSize)
+						{
+							tile->prop->id = dataSize - 1;
+						}
+						else if (tile->prop->id < 0)
+						{
+							tile->prop->id = 0;
+						}
+					}
+					else
+					{
+						float goldNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + goldOffset.x, y / (float)mapSize * noiseSizeCrystal + goldOffset.y);
+						if (goldNoise >= 0.8)
+						{
+							Prop* newProp = new Prop();
+							newProp->data = propsData[2];
+							int dataSize = propsData[2]->data.size();
+							Tile* tile = GetTile(x, y);
+							tile->prop = newProp;
+							tile->prop->id = (int)((goldNoise - 0.8f) / 0.2f * dataSize * levelOffsetGold);
+							if (tile->prop->id >= dataSize)
+							{
+								tile->prop->id = dataSize - 1;
+							}
+							else if (tile->prop->id < 0)
+							{
+								tile->prop->id = 0;
+							}
+						}
+						else
+						{
+							float crystalNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + crystalOffset.x, y / (float)mapSize * noiseSizeCrystal + crystalOffset.y);
+							if (crystalNoise >= 0.85)
+							{
+								Prop* newProp = new Prop();
+								newProp->data = propsData[3];
+								int dataSize = propsData[3]->data.size();
+								Tile* tile = GetTile(x, y);
+								tile->prop = newProp;
+								tile->prop->id = (int)((crystalNoise - 0.85f) / 0.15f * dataSize * levelOffsetCrystal);
+								if (tile->prop->id >= dataSize)
+								{
+									tile->prop->id = dataSize - 1;
+								}
+								else if (tile->prop->id < 0)
+								{
+									tile->prop->id = 0;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
+
+	//Place obstacles in astar
 	for (int x = 0; x < mapSize; x++)
 	{
 		for (int y = 0; y < mapSize; y++)
@@ -398,19 +444,22 @@ void MapManager::CreateTileMaps()
 			}
 		}
 	}
-
-	/*tileMap->SetTile(1, 0, 2);
-	tileMap->SetTile(4, 2, 2);
-	tileMap->SetTile(4, 4, 2);
-	tileMap->SetTile(7, 1, 2);*/
 }
 
+/// <summary>
+/// Add unit in a tile
+/// </summary>
+/// <param name="unit"></param>
 void MapManager::Tile::AddUnit(Unit* unit)
 {
 	units.push_back(unit);
 	UpdateUnitsPositions();
 }
 
+/// <summary>
+/// Remove unit from the tile
+/// </summary>
+/// <param name="unit"></param>
 void MapManager::Tile::RemoveUnit(Unit* unit)
 {
 	int unitCount = (int)units.size();
@@ -430,18 +479,22 @@ int MapManager::Tile::GetUnitCount()
 	return units.size();
 }
 
+/// <summary>
+/// Update units position in the tile
+/// </summary>
 void MapManager::Tile::UpdateUnitsPositions()
 {
-	Vector2Int pos = Game::GetGame()->mapManager->GetTilePosition(this);
 	int unitCount = (int)units.size();
 	if (unitCount != 0)
 	{
+		Vector2Int pos = Game::GetGame()->mapManager->GetTilePosition(this);
 		UnitPlacement* placement = Game::GetGame()->unitManager->unitPlacements[unitCount - 1];
 		for (int i = 0; i < unitCount; i++)
 		{
 			Unit* unit = units[i];
 			int pathCount = unit->path.size();
 
+			//Remove old last path node (old tile)
 			if (pathCount != 0)
 				unit->path.erase(unit->path.end() - 1);
 

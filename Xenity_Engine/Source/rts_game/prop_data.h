@@ -6,15 +6,18 @@
 
 class Texture;
 
-class PropData {
+class PropData 
+{
 public:
-	class Data {
+	class Data 
+	{
 	public:
 		float miningRate = 1;
 		Texture* texture = nullptr;
 	};
 
+	void AddPropData(float miningRate, std::string textureName);	
+
 	PropType type = PropType::Wood;
 	std::vector<Data*> data;
-	void AddPropData(float miningRate, std::string textureName);	
 };

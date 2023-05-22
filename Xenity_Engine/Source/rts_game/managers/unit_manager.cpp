@@ -11,6 +11,11 @@ UnitManager::UnitManager()
 {
 	reflectedInts.insert(std::pair<std::string, int*>("Max Unit Per Tile", &maxUnitPerTile));
 	componentName = "Unit Manager";
+}
+
+void UnitManager::Awake()
+{
+	//Create all placement layout
 
 	//1 slot
 	UnitPlacement* placement = new UnitPlacement();
@@ -48,6 +53,12 @@ UnitManager::UnitManager()
 	unitPlacements.push_back(placement);
 }
 
+/// <summary>
+/// Spawn an unit
+/// </summary>
+/// <param name="position"></param>
+/// <param name="color"></param>
+/// <param name="unitId"></param>
 void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 {
 	Team* team = game->teamManager->GetTeamFromColor(color);
@@ -61,7 +72,7 @@ void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 		newUnit->color = color;
 		newUnit->mapManager = game->mapManager;
 
-		game->teamManager->GetTeamFromColor(color)->units.push_back(newUnit);
+		team->units.push_back(newUnit);
 		if (game->mapManager->IsValidPosition(position.x, position.y))
 		{
 			game->mapManager->GetTile(position.x, position.y)->AddUnit(newUnit);
@@ -69,6 +80,9 @@ void UnitManager::SpawnUnit(Vector2Int position, TeamColor color, int unitId)
 	}
 }
 
+/// <summary>
+/// Spawn units (For testing)
+/// </summary>
 void UnitManager::SpawnUnits()
 {
 	SpawnUnit(Vector2Int(0, 0), Blue, 1);
@@ -84,20 +98,23 @@ void UnitManager::SpawnUnits()
 	SpawnUnit(Vector2Int(0, 1), Orange, 3);
 }
 
+/// <summary>
+/// Select units from mouse
+/// </summary>
 void UnitManager::SelectUnits()
 {
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 
 	Vector2 endSelectionPos = mouseWorldPosition;
 
-	int unitSize = game->teamManager->localPlayerTeam->units.size();
 	if (fabs(game->startSelectionPos.x - endSelectionPos.x) >= 0.2f && fabs(game->startSelectionPos.y - endSelectionPos.y) >= 0.2f)
 	{
 		game->isDragging = true;
-		game->SetSelection(true);
+		game->SetSelectionUI(true);
 		Vector2 finalStartPos = game->startSelectionPos;
 		Vector2 finalEndPos = endSelectionPos;
 
+		//Invert End and Start position to avoid weird corners
 		if (game->startSelectionPos.x > endSelectionPos.x)
 		{
 			finalEndPos.x = game->startSelectionPos.x;
@@ -109,6 +126,7 @@ void UnitManager::SelectUnits()
 			finalStartPos.y = endSelectionPos.y;
 		}
 
+		//Set line renderer positions
 		game->lineRendererTop->startPosition = Vector3(finalStartPos.x + game->lineRendererTop->width, finalStartPos.y + (game->lineRendererTop->width / 2.0f), 0);
 		game->lineRendererTop->endPosition = Vector3(finalEndPos.x - game->lineRendererTop->width, finalStartPos.y + (game->lineRendererTop->width / 2.0f), 0);
 
@@ -121,6 +139,8 @@ void UnitManager::SelectUnits()
 		game->lineRendererRight->startPosition = Vector3(finalEndPos.x - (game->lineRendererRight->width / 2.0f), finalStartPos.y, 0);
 		game->lineRendererRight->endPosition = Vector3(finalEndPos.x - (game->lineRendererRight->width / 2.0f), finalEndPos.y, 0);
 
+		int unitSize = game->teamManager->localPlayerTeam->units.size();
+		//Check if units are in the selection zone
 		for (int i = 0; i < unitSize; i++)
 		{
 			Unit* unit = game->teamManager->localPlayerTeam->units[i];
@@ -133,7 +153,7 @@ void UnitManager::SelectUnits()
 	}
 	else
 	{
-		game->SetSelection(false);
+		game->SetSelectionUI(false);
 		if (game->isDragging)
 		{
 			game->isDragging = false;
@@ -147,18 +167,17 @@ void UnitManager::OnMouseUp()
 	Vector2 mouseWorldPosition = cameraManager->camera->MouseTo2DWorld();
 	if (game->manageMode == ManageUnits)
 	{
-		if (game->isDragging == true)
+		if (game->isDragging == true) //If the player was dragging the mouse to select unit
 		{
+			//Disable dragging UI
 			game->isDragging = false;
-			game->SetSelection(false);
+			game->SetSelectionUI(false);
 		}
-		else
+		else //If the player only clicks, check if he wants to select an unit or to move selected units
 		{
+			//Check if the player clicks on an unit
 			int unitSize = game->teamManager->localPlayerTeam->units.size();
-
-			std::vector<Unit*> unitFound;
-
-			bool foundNewUnit = false;
+			Unit* unitFound = nullptr;
 			for (int i = 0; i < unitSize; i++)
 			{
 				Unit* unit = game->teamManager->localPlayerTeam->units[i];
@@ -167,14 +186,14 @@ void UnitManager::OnMouseUp()
 
 				if (game->isPointInsideAABB(Vector2(mouseWorldPosition.x, mouseWorldPosition.y), unitMin, unitMax))
 				{
-					unitFound.push_back(unit);
-					foundNewUnit = true;
+					unitFound = unit;
 					break;
 				}
 			}
 
-			if (!foundNewUnit)
+			if (!unitFound) //If no unit has been clicked
 			{
+				//Try to place units at the cursor position
 				Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
 				if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x, tilePos.y))
 				{
@@ -189,29 +208,27 @@ void UnitManager::OnMouseUp()
 						if (unit->selected)
 						{
 							bool placed = false;
-							//std::cout << "unit" << i << std::endl;
 
 							do
 							{
+								//If the tile is not fully filled
 								if ((tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile || unit->destinationTile == tilesToTest[currentTileToTest]) && tilesToTest[currentTileToTest]->prop == nullptr)
 								{
-									/*if (unit->destinationTile == tilesToTest[currentTileToTest])
-										std::cout << "UWU" << std::endl;
-									if (tilesToTest[currentTileToTest]->GetUnitCount() < maxUnitPerTile)
-										std::cout << "UWU" << tilesToTest[currentTileToTest]->GetUnitCount() << std::endl;*/
+									//Set the current unit new destination
 									if (unit->destinationTile != tilesToTest[currentTileToTest])
 										unit->SetDestination(Game::GetGame()->mapManager->GetTilePosition(tilesToTest[currentTileToTest]));
 									placed = true;
 								}
 
+								//If the unit wasn't able to be placed
 								if (!placed)
 								{
-									//std::cout << "TILE NOT USABLE" << std::endl;
+									//Remove the fully filled tile
 									tilesToTest.erase(tilesToTest.begin() + currentTileToTest);
 									offsetSize++;
+									//Try to take another tile
 									if (tilesToTest.size() == 0)
 									{
-										//std::cout << "FINDING NEW TILE" << std::endl;
 										int squareSize = 1 + offsetSize * 2;
 										for (int squareX = 0; squareX < squareSize; squareX++)
 										{
@@ -220,26 +237,22 @@ void UnitManager::OnMouseUp()
 												if (squareX == 0 || squareX == squareSize - 1 || squareY == 0 || squareY == squareSize - 1)
 												{
 													int off = (int)(squareSize / 2.0f);
-													//std::cout << "TRY: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
 													if (Game::GetGame()->mapManager->IsValidPosition(tilePos.x - off + squareX, tilePos.y - off + squareY) &&
 														!Game::GetGame()->mapManager->HasPropAtPosition(tilePos.x - off + squareX, tilePos.y - off + squareY))
 													{
 														tilesToTest.push_back(Game::GetGame()->mapManager->GetTile(tilePos.x - off + squareX, tilePos.y - off + squareY));
-														//std::cout << "ADD: " << (tilePos.x - off + squareX) << "; " << (tilePos.y - off + squareY) << std::endl;
 													}
 												}
 
 											}
 										}
 									}
-									//std::cout << "FINDING NEW TILE ENDED" << std::endl;
-									//TODO IF tilesToTest.size() == 0
-									if (tilesToTest.size() == 0) {
+									if (tilesToTest.size() == 0)
+									{
 										stop = true;
 										break;
 									}
 									currentTileToTest = rand() % tilesToTest.size();
-									//std::cout << "NEW TILE TO TEST: " << currentTileToTest << std::endl;
 								}
 							} while (!placed);
 						}
@@ -254,21 +267,21 @@ void UnitManager::OnMouseUp()
 				{
 					UnselectAllUnits();
 				}
-				int unitFoundCount = unitFound.size();
-				for (int i = 0; i < unitFoundCount; i++)
-				{
-					unitFound[i]->selected = !unitFound[i]->selected;
-				}
+				unitFound->selected = !unitFound->selected;
 			}
 		}
 	}
 	else if (game->manageMode == ManageMode::SpawnUnit)
 	{
+		//Spawn a new unit at cursor position
 		Vector2Int tilePos = Vector2Int(round(mouseWorldPosition.x), round(mouseWorldPosition.y));
 		SpawnUnit(tilePos, game->teamManager->localPlayerTeam->color, 0);
 	}
 }
 
+/// <summary>
+/// Unselect all unitys
+/// </summary>
 void UnitManager::UnselectAllUnits()
 {
 	int unitSize = game->teamManager->localPlayerTeam->units.size();
@@ -279,7 +292,10 @@ void UnitManager::UnselectAllUnits()
 	}
 }
 
-void UnitManager::LoadUnitData()
+/// <summary>
+/// Load units data
+/// </summary>
+void UnitManager::LoadUnitsData()
 {
 	Texture* bulletTexture = new Texture("rts/bullet.png", "Bullet");
 	for (int i = 0; i < 12; i++)
@@ -294,12 +310,14 @@ void UnitManager::LoadUnitData()
 	UnitData* unit = unitsData[0];
 	unit->name = "Worker";
 	unit->health = 10;
+	unit->bulletSpeed = 1;
 	unit->fireRate = 1;
 	unit->movementSpeed = 1;
 	unit->used = true;
 
 	unit = unitsData[1];
 	unit->name = "Soldier";
+	unit->bulletSpeed = 1;
 	unit->health = 20;
 	unit->fireRate = 1;
 	unit->movementSpeed = 1;
@@ -307,6 +325,7 @@ void UnitManager::LoadUnitData()
 
 	unit = unitsData[3];
 	unit->name = "Bazooka";
+	unit->bulletSpeed = 1;
 	unit->health = 20;
 	unit->fireRate = 1;
 	unit->movementSpeed = 0.6f;
@@ -314,6 +333,7 @@ void UnitManager::LoadUnitData()
 
 	unit = unitsData[9];
 	unit->name = "Tank";
+	unit->bulletSpeed = 1;
 	unit->health = 200;
 	unit->fireRate = 1;
 	unit->movementSpeed = 0.8f;

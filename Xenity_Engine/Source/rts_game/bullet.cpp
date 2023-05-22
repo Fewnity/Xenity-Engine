@@ -11,6 +11,7 @@ Bullet::Bullet()
 
 void Bullet::Start()
 {
+	//Create bullet sprite
 	spriteRenderer = GetGameObject()->AddComponent<SpriteRenderer>();
 	spriteRenderer->texture = unitData->bulletTexture;
 	spriteRenderer->material = Game::GetGame()->material2DWithZ;
@@ -19,7 +20,8 @@ void Bullet::Start()
 
 void Bullet::Update()
 {
+	//Move the bullet
 	Vector3 newPos = GetTransform()->GetPosition();
-	newPos += direction * 1 * Time::GetDeltaTime();
+	newPos += direction * unitData->bulletSpeed * Time::GetDeltaTime();
 	GetTransform()->SetPosition(newPos);
 }

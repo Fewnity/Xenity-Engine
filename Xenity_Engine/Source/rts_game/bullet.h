@@ -10,6 +10,7 @@ class Bullet : public MonoBehaviour
 {
 public:
 	Bullet();
+
 	void Start();
 	void Update();
 
