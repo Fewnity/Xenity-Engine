@@ -38,6 +38,7 @@ public:
 	Vector2Int GetTilePosition(MapManager::Tile* tile);
 	bool HasPropAtPosition(int x, int y);
 	bool IsValidPosition(int x, int y);
+	void PlaceProp(int dataIndex, Vector2Int position, float noise, float noiseStartLevel, float noiseMultiplier);
 	void GenerateMap();
 	void CreateTileMaps();
 	Prop* CreateProp(int id);

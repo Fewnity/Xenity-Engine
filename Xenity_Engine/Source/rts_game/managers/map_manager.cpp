@@ -130,6 +130,24 @@ Vector2Int MapManager::GetTilePosition(MapManager::Tile* tile)
 	return pos;
 }
 
+void MapManager::PlaceProp(int dataIndex, Vector2Int position, float noise, float noiseStartLevel, float noiseMultiplier) 
+{
+	Prop* newProp = new Prop();
+	newProp->data = propsData[dataIndex];
+	int dataSize = propsData[dataIndex]->data.size();
+	Tile* tile = GetTile(position.x, position.y);
+	tile->prop = newProp;
+	tile->prop->id = (int)((noise - noiseStartLevel) / (1- noiseStartLevel) * dataSize * noiseMultiplier);
+	if (tile->prop->id >= dataSize)
+	{
+		tile->prop->id = dataSize - 1;
+	}
+	else if (tile->prop->id < 0)
+	{
+		tile->prop->id = 0;
+	}
+}
+
 /// <summary>
 /// Generate map
 /// </summary>
@@ -230,102 +248,37 @@ void MapManager::GenerateMap()
 		for (int y = 0; y < mapSize; y++)
 		{
 			float forest1Noise = Noise::noise2(x / (float)mapSize * noiseSize, y / (float)mapSize * noiseSize);
-			if (forest1Noise >= 0.7)
+			if (forest1Noise >= 0.7f) //Place Big forest
 			{
-				Prop* newProp = new Prop();
-				newProp->data = propsData[0];
-				int dataSize = propsData[0]->data.size();
-				Tile* tile = GetTile(x, y);
-				tile->prop = newProp;
-				tile->prop->id = (int)((forest1Noise - 0.7f) / 0.3f * dataSize * levelOffset);
-				if (tile->prop->id >= dataSize)
-				{
-					tile->prop->id = dataSize - 1;
-				}
-				else if (tile->prop->id < 0)
-				{
-					tile->prop->id = 0;
-				}
+				PlaceProp(0, Vector2Int(x, y), forest1Noise, 0.7f, levelOffset);
 			}
 			else
 			{
 				float forest2Noise = Noise::noise2(x / (float)mapSize * noiseSize2, y / (float)mapSize * noiseSize2);
-				if (forest2Noise >= 0.75)
+				if (forest2Noise >= 0.75f) //Place little forest
 				{
-					Prop* newProp = new Prop();
-					newProp->data = propsData[0];
-					int dataSize = propsData[0]->data.size();
-					Tile* tile = GetTile(x, y);
-					tile->prop = newProp;
-					tile->prop->id = (int)((forest2Noise - 0.75f) / 0.25f * dataSize * levelOffset2);
-					if (tile->prop->id >= dataSize)
-					{
-						tile->prop->id = dataSize - 1;
-					}
-					else if (tile->prop->id < 0)
-					{
-						tile->prop->id = 0;
-					}
+					PlaceProp(0, Vector2Int(x, y), forest2Noise, 0.75f, levelOffset2);
 				}
 				else
 				{
-					float rockNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + rockOffset.x, y / (float)mapSize * noiseSizeCrystal + rockOffset.y);
-					if (rockNoise >= 0.8)
+					float rockNoise = Noise::noise2(x / (float)mapSize * noiseSizeRock + rockOffset.x, y / (float)mapSize * noiseSizeRock + rockOffset.y);
+					if (rockNoise >= 0.8f) //Place rocks
 					{
-						Prop* newProp = new Prop();
-						newProp->data = propsData[1];
-						int dataSize = propsData[1]->data.size();
-						Tile* tile = GetTile(x, y);
-						tile->prop = newProp;
-						tile->prop->id = (int)((rockNoise - 0.8f) / 0.2f * dataSize * levelOffsetRock);
-						if (tile->prop->id >= dataSize)
-						{
-							tile->prop->id = dataSize - 1;
-						}
-						else if (tile->prop->id < 0)
-						{
-							tile->prop->id = 0;
-						}
+						PlaceProp(1, Vector2Int(x, y), rockNoise, 0.8f, levelOffsetRock);
 					}
 					else
 					{
-						float goldNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + goldOffset.x, y / (float)mapSize * noiseSizeCrystal + goldOffset.y);
-						if (goldNoise >= 0.8)
+						float goldNoise = Noise::noise2(x / (float)mapSize * noiseSizeGold + goldOffset.x, y / (float)mapSize * noiseSizeGold + goldOffset.y);
+						if (goldNoise >= 0.8f) //Place gold
 						{
-							Prop* newProp = new Prop();
-							newProp->data = propsData[2];
-							int dataSize = propsData[2]->data.size();
-							Tile* tile = GetTile(x, y);
-							tile->prop = newProp;
-							tile->prop->id = (int)((goldNoise - 0.8f) / 0.2f * dataSize * levelOffsetGold);
-							if (tile->prop->id >= dataSize)
-							{
-								tile->prop->id = dataSize - 1;
-							}
-							else if (tile->prop->id < 0)
-							{
-								tile->prop->id = 0;
-							}
+							PlaceProp(2, Vector2Int(x, y), goldNoise, 0.8f, levelOffsetGold);
 						}
 						else
 						{
 							float crystalNoise = Noise::noise2(x / (float)mapSize * noiseSizeCrystal + crystalOffset.x, y / (float)mapSize * noiseSizeCrystal + crystalOffset.y);
-							if (crystalNoise >= 0.85)
+							if (crystalNoise >= 0.85f) //Place crystal
 							{
-								Prop* newProp = new Prop();
-								newProp->data = propsData[3];
-								int dataSize = propsData[3]->data.size();
-								Tile* tile = GetTile(x, y);
-								tile->prop = newProp;
-								tile->prop->id = (int)((crystalNoise - 0.85f) / 0.15f * dataSize * levelOffsetCrystal);
-								if (tile->prop->id >= dataSize)
-								{
-									tile->prop->id = dataSize - 1;
-								}
-								else if (tile->prop->id < 0)
-								{
-									tile->prop->id = 0;
-								}
+								PlaceProp(3, Vector2Int(x, y), crystalNoise, 0.85f, levelOffsetCrystal);
 							}
 						}
 					}
