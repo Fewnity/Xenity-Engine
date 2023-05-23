@@ -7,6 +7,9 @@ class Renderer;
 class GameObject;
 class Component;
 
+void Destroy(GameObject* gameObject);
+void Destroy(Component* component);
+
 class Engine {
 public:
 	static int Init(const std::string exePath);

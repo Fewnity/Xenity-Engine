@@ -151,6 +151,7 @@ void Unit::Shoot()
 	Bullet* bullet = bulletGO->AddComponent<Bullet>();
 	bulletGO->GetTransform()->SetPosition(GetTransform()->GetPosition());
 	bullet->unitData = unitData;
+	Destroy(bullet);
 }
 
 /// <summary>

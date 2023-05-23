@@ -293,3 +293,13 @@ std::vector<GameObject*> Engine::GetGameObjects()
 {
 	return std::vector<GameObject*>(gameObjects);
 }
+
+void Destroy(GameObject* gameObject)
+{
+	delete gameObject;
+}
+
+void Destroy(Component* component)
+{
+	component->GetGameObject()->RemoveComponent(component);
+}
