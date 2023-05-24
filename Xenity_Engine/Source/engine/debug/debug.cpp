@@ -1,6 +1,5 @@
 #include "debug.h"
 
-
 std::ofstream Debug::debugFile;
 
 /**

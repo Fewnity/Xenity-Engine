@@ -1,50 +1,70 @@
+#ifdef __PSP__
+// #define __PSP__
+#elif __vita__
+#define __VITA__
+#endif
+
 #include "main.h"
-#include <iostream>
 
 #include "xenity.h"
 
-using namespace std;
+// PSP
+#ifdef __PSP__
+#include "psp/callbacks.h"
+#include <pspdisplay.h>
+#include <pspgu.h>
+PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 1);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+#endif
 
+// PSVITA
+#ifdef __VITA__
+#include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/threadmgr.h>
+#include <psp2/display.h>
+#include <psp2/pgf.h>
 
-/*
- * TODO :
- * IMPORTANT : Fix text cull when a sprite has a inverted scale (reset opengl value before drawing
- * SetBufferSize and SetBufferSubData change size system (get vertices size and not byteCount)
- * Optimise GetLocalPositionFromMatrices with references
- * Use unordered map for orderedIDrawable with key is order in layer
- * 3D text
- * 3D Sounds
- * Disable light when component is disabled
- * Check mesh/shader destructor
- * Fix tilemap rotation
- * Clean sprite manager class
- * Check error in AStar
- * Optimise component update system
- * Fix children local scale values
- * Check crash if there is no active camera
- * Create Engine stop function
- * Check if sprite facing is correct while batching with negative sprite scales
- * Check shader destructor : check if delete is needed if a shader can't compile
- * Performance problem : if a material "A" is used, then a material with the same shader is used, then go back to the material "A", the values are reupdated
- * Improvement : When a component is added/remove from a gameobject, just modify the ordered component list in Engine instead of clearing the list (create a function like OnComponentAddedOnGameObject)
- */
+#include <vita2d.h>
+// #include <cstdio>
+#endif
 
-static void error_callback(int error, const char* description)
+// int main(int argc, char *argv[])
+int main()
 {
-	fprintf(stderr, "Error: %s\n", description);
-}
+#ifdef __PSP__
+	SetupCallbacks();
+	pspDebugScreenInit(); // initialize the debug screen
 
-int main(int argc, char* argv[])
-{
-	std::string exePath = argv[0];
-	if (Engine::Init(exePath) != 0)
+	pspDebugScreenPrintf("Hello PSP!\n");
+	// Debug::Print("Hello PSP!");
+
+	while (true)
 	{
-		Debug::Print("Engine failed to init");
-		return -1;
+		sceDisplayWaitVblankStart(); // wait for vblank
+	}
+#endif
+
+#ifdef __VITA__
+	vita2d_pgf *pgf;
+	vita2d_init();
+	vita2d_set_clear_color(RGBA8(0, 0, 0, 255));
+	pgf = vita2d_load_default_pgf();
+
+	while (true)
+	{
+		vita2d_start_drawing();
+		vita2d_clear_screen();
+		// Debug::Print("Hello PsVita!");
+		vita2d_pgf_draw_text(pgf, 0, 30, RGBA8(255, 255, 255, 255), 1.0f, "Hello PsVita2!");
+
+		vita2d_end_drawing();
+		vita2d_swap_buffers();
 	}
 
-	Engine::Loop();
-	Debug::Print("---- Game loop ended ----");
-	Engine::Stop();
+	vita2d_fini();
+	vita2d_free_pgf(pgf);
+
+	sceKernelExitProcess(0);
+#endif
 	return 0;
 }

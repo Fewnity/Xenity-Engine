@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(hello)
+
+# Add any additional include paths here
+include_directories(
+    include/
+)
+
+# Spécifiez le répertoire contenant vos fichiers source
+set(SOURCES_DIR "Source")
+
+# Recherchez tous les fichiers .cpp dans le répertoire et ses sous-répertoires
+file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp")
+
+# Ajoutez les fichiers source à l'exécutable
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+)

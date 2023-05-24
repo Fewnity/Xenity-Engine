@@ -1,0 +1,18 @@
+TARGET = XenityEngine
+OBJS = main.o psp/callbacks.o
+ 
+CFLAGS = -lstdc++
+CXXFLAGS = $(CFLAGS) -std=gnu++17 -fno-exceptions -fno-rtti -lstdc++
+ASFLAGS = $(CFLAGS)
+
+# INCDIR = ../include
+LIBDIR =
+LDFLAGS =
+LIBS= -lpspgum -lpspgu -lm
+ 
+EXTRA_TARGETS = EBOOT.PBP
+PSP_EBOOT_TITLE = XenityEngine
+#PSP_EBOOT_ICON = ICON0.PNG 
+ 
+PSPSDK=$(shell psp-config --pspsdk-path)
+include $(PSPSDK)/lib/build.mak
