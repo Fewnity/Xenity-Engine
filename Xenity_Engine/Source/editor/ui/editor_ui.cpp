@@ -1,8 +1,5 @@
 #include "editor_ui.h"
 #include "../../xenity.h"
-#include <imgui/imgui_impl_sdl2.h>
-#include <imgui/imgui_impl_opengl3.h>
-
 Engine* EditorUI::engine = nullptr;
 int EditorUI::uiId = 0;
 float EditorUI::nextFpsUpdate = 0;
@@ -10,22 +7,22 @@ float EditorUI::lastFps = 0;
 
 void EditorUI::Init()
 {
-	ImGui::GetStyle().WindowRounding = 10;
+	//ImGui::GetStyle().WindowRounding = 10;
 
 	Debug::Print("---- Editor UI initiated ----");
 }
 
 void EditorUI::NewFrame()
 {
-	ImGui_ImplOpenGL3_NewFrame();
+	/*ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame();
+	ImGui::NewFrame();*/
 	EditorUI::uiId = 0;
 }
 
 void EditorUI::DrawInspector()
 {
-	ImGuiIO& io = ImGui::GetIO();
+	/*ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Inspector");
 	GameObject* selectedGameObject = engine->selectedGameObject;
@@ -93,24 +90,7 @@ void EditorUI::DrawInspector()
 			Component* comp = selectedGameObject->components[i];
 			std::string componentName = "- " + comp->componentName;
 			//std::string componentName = typeid(comp).name();
-			/*int nameLenght = componentName.size();
-			bool firstDelete = true;
-			for (int strI = 0; strI < nameLenght; strI++)
-			{
-				if (componentName[strI] == ' ')
-				{
-					if (firstDelete)
-					{
-						componentName.erase(0, strI + 1);
-						strI = 0;
-						firstDelete = false;
-					}
-					else {
-						componentName.erase(strI);
-						break;
-					}
-				}
-			}*/
+
 			ImGui::Text("%s", componentName.c_str());
 			//int intVariableCount = comp->reflectedInts.size();
 			//int floatVariableCount = comp->reflectedFloats.size();
@@ -124,12 +104,12 @@ void EditorUI::DrawInspector()
 			}
 		}
 	}
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void EditorUI::DrawTreeItem(GameObject* child)
 {
-	int childCount = child->children.size();
+	/*int childCount = child->children.size();
 	int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 	if (Engine::selectedGameObject == child)
 		flags |= ImGuiTreeNodeFlags_Selected;
@@ -159,12 +139,12 @@ void EditorUI::DrawTreeItem(GameObject* child)
 			DrawTreeItem(child->children[i]);
 		}
 		ImGui::TreePop();
-	}
+	}*/
 }
 
 void EditorUI::DrawHierarchy()
 {
-	ImGui::Begin("Hierarchy");
+	/*ImGui::Begin("Hierarchy");
 	//ImGui::SetWindowFontScale(2);
 	if (!ImGui::IsWindowCollapsed())
 	{
@@ -181,21 +161,21 @@ void EditorUI::DrawHierarchy()
 	}
 
 
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void EditorUI::DrawTextCentered(std::string text)
 {
-	float windowWidth = ImGui::GetWindowSize().x;
+	/*float windowWidth = ImGui::GetWindowSize().x;
 	float textWidth = ImGui::CalcTextSize(text.c_str()).x;
 
 	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-	ImGui::Text(text.c_str());
+	ImGui::Text(text.c_str());*/
 }
 
 bool EditorUI::DrawFloatInput(std::string inputName, float& value)
 {
-	std::string inputName1 = "##" + std::to_string(uiId);
+	/*std::string inputName1 = "##" + std::to_string(uiId);
 	uiId += 1;
 
 	ImGui::Text(inputName.c_str());
@@ -207,12 +187,13 @@ bool EditorUI::DrawFloatInput(std::string inputName, float& value)
 	ImGui::SetNextItemWidth(startAvailSize);
 	ImGui::InputFloat(inputName1.c_str(), &value, 0, 0, "%f");
 
-	return value != oldValue;
+	return value != oldValue;*/
+	return false;
 }
 
 bool EditorUI::DrawIntInput(std::string inputName, int& value)
 {
-	std::string inputName1 = "##" + std::to_string(uiId);
+	/*std::string inputName1 = "##" + std::to_string(uiId);
 	uiId += 1;
 
 	ImGui::Text(inputName.c_str());
@@ -224,12 +205,13 @@ bool EditorUI::DrawIntInput(std::string inputName, int& value)
 	ImGui::SetNextItemWidth(startAvailSize);
 	ImGui::InputInt(inputName1.c_str(), &value);
 
-	return value != oldValue;
+	return value != oldValue;*/
+	return false;
 }
 
 bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::string name2, std::string name3, Vector3& value)
 {
-	std::string inputName1 = "##" + std::to_string(uiId);
+	/*std::string inputName1 = "##" + std::to_string(uiId);
 	std::string inputName2 = "##" + std::to_string(uiId + 1);
 	std::string inputName3 = "##" + std::to_string(uiId + 2);
 	uiId += 3;
@@ -256,12 +238,13 @@ bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::s
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
 	ImGui::InputFloat(inputName3.c_str(), &value.z, 0, 0, "%f");
 
-	return value != oldValue;
+	return value != oldValue;*/
+	return false;
 }
 
 void EditorUI::DrawProfiler()
 {
-	ImGuiIO& io = ImGui::GetIO();
+	/*ImGuiIO& io = ImGui::GetIO();
 
 	nextFpsUpdate += Time::GetUnscaledDeltaTime();
 
@@ -286,5 +269,5 @@ void EditorUI::DrawProfiler()
 
 	//ImGui::SliderFloat("float", &cameraZoom, 1.0f, 2.8f);
 
-	ImGui::End();
+	ImGui::End();*/
 }

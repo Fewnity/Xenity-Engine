@@ -1,14 +1,14 @@
 #include "audio.h"
 #include "../debug/debug.h"
 
-ISoundEngine* Audio::engine = nullptr;
+//ISoundEngine* Audio::engine = nullptr;
 
 int Audio::Init()
 {
-	engine = createIrrKlangDevice();
+	//engine = createIrrKlangDevice();
 
-	if (!engine)
-		return 1; // error starting up the engine
+	//if (!engine)
+		//return 1; // error starting up the engine
 
 	Debug::Print("---- Audio System initiated ----");
 

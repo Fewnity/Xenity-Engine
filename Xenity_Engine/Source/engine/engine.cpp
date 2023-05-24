@@ -6,10 +6,11 @@
 #include "../pathfinding_test/pathfinding.h"
 #include "../3d_scene/gameOld.h"
 #include "../rendering_test/rendering_test_2d.h"
-#include <imgui/imgui_impl_sdl2.h>
-#include <imgui/imgui_impl_opengl3.h>
+//#include <imgui/imgui_impl_sdl2.h>
+//#include <imgui/imgui_impl_opengl3.h>
 #include "graphics/renderer/renderer.h"
-#include "graphics/renderer/renderer_opengl.h"
+//#include "graphics/renderer/renderer_opengl.h"
+#include "graphics/renderer/renderer_psp.h"
 
 std::vector<GameObject*> Engine::gameObjects;
 GameObject* Engine::selectedGameObject = nullptr;
@@ -37,7 +38,8 @@ int Engine::Init(const std::string exePath)
 	Debug::Init();
 	File::InitFileSystem(exePath);
 
-	renderer = new RendererOpengl();
+	//renderer = new RendererOpengl();
+	renderer = new RendererPSP();
 
 	if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0) 
 	{
@@ -184,7 +186,7 @@ void Engine::Loop()
 		InputSystem::ClearInputs();
 		while (SDL_PollEvent(&event))
 		{
-			ImGui_ImplSDL2_ProcessEvent(&event);
+			//ImGui_ImplSDL2_ProcessEvent(&event);
 			InputSystem::Read(event);
 			switch (event.type)
 			{
@@ -263,8 +265,8 @@ void Engine::Loop()
 		EditorUI::DrawInspector();
 		EditorUI::DrawHierarchy();
 
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		//ImGui::Render();
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		engineLoopBenchmark->Stop();
 		Window::UpdateScreen();

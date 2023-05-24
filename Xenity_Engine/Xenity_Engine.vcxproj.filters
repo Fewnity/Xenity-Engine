@@ -79,6 +79,7 @@
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\rts_game\managers\team_manager.cpp" />
     <ClCompile Include="Source\rts_game\bullet.cpp" />
+    <ClCompile Include="Source\engine\graphics\renderer\renderer_psp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\audio\audio_source.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Source\rts_game\team_enum.h" />
     <ClInclude Include="Source\rts_game\managers\team_manager.h" />
     <ClInclude Include="Source\rts_game\bullet.h" />
+    <ClInclude Include="Source\engine\graphics\renderer\renderer_psp.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
