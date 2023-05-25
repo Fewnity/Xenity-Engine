@@ -1,0 +1,9 @@
+Create Build folder
+cd build
+psp-cmake -DMODE=psp ..
+or
+cmake -DMODE=psvita ..
+or
+cmake -DMODE=windows ..
+
+cmake --build .

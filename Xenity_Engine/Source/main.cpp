@@ -1,9 +1,3 @@
-#ifdef __PSP__
-// #define __PSP__
-#elif __vita__
-#define __VITA__
-#endif
-
 #include "main.h"
 
 #include "xenity.h"
@@ -12,59 +6,171 @@
 #ifdef __PSP__
 #include "psp/callbacks.h"
 #include <pspdisplay.h>
-#include <pspgu.h>
-PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 1);
+#include "psp/graphics/graphics.h"
+// #include <pspgu.h>
+
+PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+
 #endif
 
 // PSVITA
-#ifdef __VITA__
+#ifdef __vita__
 #include <psp2/kernel/processmgr.h>
-#include <psp2/kernel/threadmgr.h>
+#include "psvita/graphics/graphics.h"
+// #include <psp2/kernel/clib.h>
+//  #include <psp2/kernel/threadmgr.h>
 #include <psp2/display.h>
-#include <psp2/pgf.h>
 
-#include <vita2d.h>
-// #include <cstdio>
 #endif
 
-// int main(int argc, char *argv[])
-int main()
+int main(int argc, char *argv[])
 {
 #ifdef __PSP__
 	SetupCallbacks();
-	pspDebugScreenInit(); // initialize the debug screen
-
-	pspDebugScreenPrintf("Hello PSP!\n");
-	// Debug::Print("Hello PSP!");
-
-	while (true)
-	{
-		sceDisplayWaitVblankStart(); // wait for vblank
-	}
 #endif
 
-#ifdef __VITA__
-	vita2d_pgf *pgf;
-	vita2d_init();
-	vita2d_set_clear_color(RGBA8(0, 0, 0, 255));
-	pgf = vita2d_load_default_pgf();
+	// std::string exePath = argv[0];
+	std::string exePath = "";
+	if (Engine::Init(exePath) != 0)
+	{
+		Debug::Print("Engine failed to init");
+		return -1;
+	}
+	// Debug::Print("argv: " + exePath);
+
+	// Engine::Loop();
+	// Debug::Print("---- Game loop ended ----");
+	// Engine::Stop();
+
+	Vector2 v2 = Vector2(0);
+	Vector2Int v2i = Vector2Int(0);
+	Vector3 v3 = Vector3(0);
+	Vector4 v4 = Vector4(0);
+	GameObject *go = new GameObject();
+	Debug::Print(std::to_string(Noise::noise2(0.6f, 0)));
+	Color blue = Color::CreateFromRGBAFloat(0, 0, 1, 1);
+	CrossGraphicsInit();
 
 	while (true)
 	{
-		vita2d_start_drawing();
-		vita2d_clear_screen();
-		// Debug::Print("Hello PsVita!");
-		vita2d_pgf_draw_text(pgf, 0, 30, RGBA8(255, 255, 255, 255), 1.0f, "Hello PsVita2!");
+#ifdef __PSP__
+		sceDisplayWaitVblankStart();
+#endif
 
-		vita2d_end_drawing();
-		vita2d_swap_buffers();
+		InputSystem::ClearInputs();
+		InputSystem::Read();
+
+		if (InputSystem::GetKeyDown(SQUARE))
+		{
+			Debug::Print("SQUARE DOWN");
+		}
+		if (InputSystem::GetKeyUp(SQUARE))
+		{
+			Debug::Print("SQUARE UP");
+		}
+		if (InputSystem::GetKeyDown(CIRCLE))
+		{
+			Debug::Print("CIRCLE DOWN");
+		}
+		if (InputSystem::GetKeyUp(CIRCLE))
+		{
+			Debug::Print("CIRCLE UP");
+		}
+		if (InputSystem::GetKeyUp(TRIANGLE))
+		{
+			Debug::Print("TRIANGLE UP");
+		}
+		if (InputSystem::GetKeyDown(TRIANGLE))
+		{
+			Debug::Print("TRIANGLE DOWN");
+		}
+		if (InputSystem::GetKeyUp(CROSS))
+		{
+			Debug::Print("CROSS UP");
+		}
+		if (InputSystem::GetKeyDown(CROSS))
+		{
+			Debug::Print("CROSS DOWN");
+		}
+
+		if (InputSystem::GetKeyDown(START))
+		{
+			Debug::Print("START DOWN");
+		}
+		if (InputSystem::GetKeyUp(START))
+		{
+			Debug::Print("START UP");
+		}
+		if (InputSystem::GetKeyDown(SELECT))
+		{
+			Debug::Print("SELECT DOWN");
+		}
+		if (InputSystem::GetKeyUp(SELECT))
+		{
+			Debug::Print("SELECT UP");
+		}
+
+		if (InputSystem::GetKeyUp(LTRIGGER1))
+		{
+			Debug::Print("LTRIGGER1 UP");
+		}
+		if (InputSystem::GetKeyDown(LTRIGGER1))
+		{
+			Debug::Print("LTRIGGER1 DOWN");
+		}
+		if (InputSystem::GetKeyUp(RTRIGGER1))
+		{
+			Debug::Print("RTRIGGER1 UP");
+		}
+		if (InputSystem::GetKeyDown(RTRIGGER1))
+		{
+			Debug::Print("RTRIGGER1 DOWN");
+		}
+
+		if (InputSystem::GetKeyDown(RIGHT))
+		{
+			Debug::Print("RIGHT DOWN");
+		}
+		if (InputSystem::GetKeyUp(RIGHT))
+		{
+			Debug::Print("RIGHT UP");
+		}
+		if (InputSystem::GetKeyDown(LEFT))
+		{
+			Debug::Print("LEFT DOWN");
+		}
+		if (InputSystem::GetKeyUp(LEFT))
+		{
+			Debug::Print("LEFT UP");
+		}
+		if (InputSystem::GetKeyUp(DOWN))
+		{
+			Debug::Print("DOWN UP");
+		}
+		if (InputSystem::GetKeyDown(DOWN))
+		{
+			Debug::Print("DOWN DOWN");
+		}
+		if (InputSystem::GetKeyUp(UP))
+		{
+			Debug::Print("UP UP");
+		}
+		if (InputSystem::GetKeyDown(UP))
+		{
+			Debug::Print("UP DOWN");
+		}
+
+		// std::string analogStick = "Stick X =" + std::to_string(((pad.Lx - 128) / 256.0) * 2) + ", Y =" + std::to_string(((pad.Ly - 128) / 256.0) * 2);
+
+#ifdef __vita__
+		sceKernelDelayThread(16000);
+#endif
 	}
 
-	vita2d_fini();
-	vita2d_free_pgf(pgf);
-
+#ifdef __vita__
 	sceKernelExitProcess(0);
 #endif
+
 	return 0;
 }
