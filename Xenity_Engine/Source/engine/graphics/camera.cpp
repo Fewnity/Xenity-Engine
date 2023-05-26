@@ -7,21 +7,27 @@ void Camera::Apply()
 {
     glMatrixMode(GL_VIEW);
     glLoadIdentity();
-
-    ScePspFVector3 v = {x, y, z};
     gluRotateX(pitch / 180.0f * 3.14159f);
-    gluRotateY(yaw / 180.0f * 3.14159f);
-    gluTranslate(&v);
+
+    gluRotateY((yaw + 180) / 180.0f * 3.14159f);
+    // glTranslatef(x, y, z);
+    glTranslatef(x, y, -z);
 
     glMatrixMode(GL_MODEL);
     glLoadIdentity();
 }
 #endif
 
-#ifdef __psvita__
-
+#ifdef __vita__
+#include <vitaGL.h>
 void Camera::Apply()
 {
+    // glLoadIdentity();
+    // gluRotateX(pitch / 180.0f * 3.14159f);
+
+    // gluRotateY((yaw + 180) / 180.0f * 3.14159f);
+    // glTranslatef(x, y, -z);
+    gluLookAt(x, y, z, x, y, z + 1, 0, 1, 0);
 }
 
 #endif

@@ -26,7 +26,7 @@
 #include "engine/tools/benchmark.h"
 #include "engine/tools/curve.h"
 #include "engine/tools/math.h"
-// #include "engine/tools/profiler_benchmark.h"
+#include "engine/tools/profiler_benchmark.h"
 // #include "engine/tools/shape_spawner.h"
 
 // // Time
@@ -44,7 +44,7 @@
 
 // // Graphics
 // #include "engine/graphics/camera.h"
-// #include "engine/graphics/camera_projection_types.h"
+#include "engine/graphics/camera_projection_types.h"
 #include "engine/graphics/graphics.h"
 #include "engine/graphics/iDrawable.h"
 // #include "engine/graphics/shader.h"
@@ -67,7 +67,7 @@
 
 // // Debug
 #include "engine/debug/debug.h"
-// #include "engine/debug/performance.h"
+#include "engine/debug/performance.h"
 
 // // Audio
 // #include "engine/audio/audio.h"
@@ -75,8 +75,8 @@
 // #include "engine/audio/audio_source.h"
 
 // // IA
-// #include "engine/pathfinding/astar.h"
-// // #include "engine/pathfinding/dijkstras.h"
+#include "engine/pathfinding/astar.h"
+// #include "engine/pathfinding/dijkstras.h"
 
 // // Noise
 #include "engine/noise/noise.h"

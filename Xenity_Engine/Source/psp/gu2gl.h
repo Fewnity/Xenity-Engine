@@ -355,6 +355,11 @@ extern "C"
 	void *getStaticVramBuffer(unsigned int width, unsigned int height, unsigned int psm);
 	void *getStaticVramTexture(unsigned int width, unsigned int height, unsigned int psm);
 	void glBlendFunc(int src, int dest);
+	void glTranslatef(float x, float y, float z);
+	// void glRotatef(float angle, float x, float y, float z);
+	void glRotatefZYX(float z, float y, float x);
+	void glRotatefXYZ(float x, float y, float z);
+	void glScalef(float z, float y, float x);
 
 #define glEnable sceGuEnable
 #define glDisable sceGuDisable
@@ -437,9 +442,9 @@ extern "C"
 #define gluRotateY sceGumRotateY
 #define gluRotateZ sceGumRotateZ
 #define gluRotateXYZ sceGumRotateXYZ
-#define gluRotateZYX sceGumRotateZYX
-#define gluScale sceGumScale
-#define gluTranslate sceGumTranslate
+// #define gluRotateZYX sceGumRotateZYX
+// #define gluScale sceGumScale
+// #define gluTranslate sceGumTranslate
 #define gluFullInverse sceGumFullInverse
 #define gluFastInverse sceGumFastInverse
 
@@ -480,6 +485,31 @@ extern "C"
 	void glBlendFunc(int src, int dest)
 	{
 		sceGuBlendFunc(GL_ADD, src, dest, 0, 0);
+	}
+
+	void glTranslatef(float x, float y, float z)
+	{
+		ScePspFVector3 v = {x, y, z};
+		sceGumTranslate(&v);
+	}
+
+#define gluScale sceGumScale
+	void glRotatefZYX(float z, float y, float x)
+	{
+		ScePspFVector3 v = {z, y, x};
+		sceGumRotateZYX(&v);
+	}
+
+	void glRotatefXYZ(float x, float y, float z)
+	{
+		ScePspFVector3 v = {x, y, z};
+		sceGumRotateXYZ(&v);
+	}
+
+	void glScalef(float x, float y, float z)
+	{
+		ScePspFVector3 v = {x, y, z};
+		sceGumScale(&v);
 	}
 
 	void guglTerm()

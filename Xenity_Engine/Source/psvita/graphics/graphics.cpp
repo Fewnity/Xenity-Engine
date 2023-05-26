@@ -9,9 +9,6 @@
 #include "../../engine/graphics/camera.h"
 #include <string.h>
 
-Texture *texture = nullptr;
-Camera *camera = nullptr;
-
 void CrossGraphicsInit()
 {
     vglInit(0x100000);
@@ -30,13 +27,6 @@ void CrossGraphicsInit()
     glDepthFunc(GL_LESS);
 
     glEnable(GL_TEXTURE_2D);
-
-    camera = new Camera();
-    camera->x = 0;
-    camera->y = 0;
-    camera->z = 0;
-    camera->yaw = 0.0f;
-    camera->pitch = 0.0f;
 }
 
 void CrossGraphicsLoop()

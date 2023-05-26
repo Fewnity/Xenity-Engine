@@ -6,8 +6,8 @@
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
-
 std::ofstream Debug::debugFile;
+
 // FILE *file;
 /**
  * @brief Write text in the debug file

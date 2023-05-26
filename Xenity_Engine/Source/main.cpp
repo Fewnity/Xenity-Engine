@@ -9,7 +9,6 @@
 #include "psp/callbacks.h"
 #include <pspdisplay.h>
 #include "psp/graphics/graphics.h"
-// #include <pspgu.h>
 
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -28,10 +27,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 #include "engine/graphics/texture.h"
 
-// #include <string>
-
-// auto str = std::string("Hello");
-
 int main(int argc, char *argv[])
 {
 #ifdef __PSP__
@@ -45,10 +40,8 @@ int main(int argc, char *argv[])
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-	// Debug::Print("argv: " + exePath);
-	// std::string str2 = "hello";
-	// Debug::Print("str " + str);
-	// Debug::Print("str2" + str2);
+	CrossGraphicsInit();
+	InitSpriteManager();
 
 	// Engine::Loop();
 	// Debug::Print("---- Game loop ended ----");
@@ -62,23 +55,26 @@ int main(int argc, char *argv[])
 	Debug::Print(std::to_string(Noise::noise2(0.6f, 0)));
 	// Debug::Print(std::to_string(Time::GetTime()));
 	Color blue = Color::CreateFromRGBAFloat(0, 0, 1, 1);
-	CrossGraphicsInit();
 
 	Texture *texture = new Texture();
 	texture->Load("container.jpg", 1);
-	bool drawed = true;
 
 	while (true)
 	{
-		StartDraw();
-
 		Time::UpdateTime();
-		// CrossGraphicsLoop();
 		InputSystem::ClearInputs();
 		InputSystem::Read();
 
-		if ((int)Time::GetTime() % 2 == 0)
-			DrawSprite(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), texture);
+		StartDraw();
+		// if ((int)Time::GetTime() % 2 == 0)
+		// DrawSprite(Vector3(0, 0, -1), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
+		// DrawSprite(Vector3(sin(Time::GetTime()) / 2.0f, sin((Time::GetTime()) * 2) / 4.0f, -1),
+		// 		   Vector3(0, 0, 0),
+		// 		   Vector3(1 * (1 + sin(Time::GetTime()) / 2.0f), 1 * (1 + sin(Time::GetTime() + 1.4f) / 2.0f), 1), texture);
+
+		DrawSprite(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
+		DrawSprite(Vector3(2.56f, 2.56f, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
+		DrawSprite(Vector3(0, 2.81, -4.36), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
 
 		if (InputSystem::GetKeyDown(SQUARE))
 		{
