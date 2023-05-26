@@ -23,21 +23,21 @@
 // #include "engine/ui/window.h"
 
 // // Tools
-// #include "engine/tools/benchmark.h"
-// #include "engine/tools/curve.h"
-// #include "engine/tools/math.h"
+#include "engine/tools/benchmark.h"
+#include "engine/tools/curve.h"
+#include "engine/tools/math.h"
 // #include "engine/tools/profiler_benchmark.h"
 // #include "engine/tools/shape_spawner.h"
 
 // // Time
-// #include "engine/time/time.h"
+#include "engine/time/time.h"
 
 // // Scenes
 // // #include "scene_manager/scene.h"
 // // #include "scene_manager/SceneManager.h"
 
 // // Lighting
-// #include "engine/lighting/lighting.h"
+#include "engine/lighting/lighting.h"
 
 // // inputs
 #include "engine/inputs/input_system.h"
@@ -50,9 +50,9 @@
 // #include "engine/graphics/shader.h"
 // #include "engine/graphics/material.h"
 #include "engine/graphics/iDrawableTypes.h"
-// #include "engine/graphics/texture.h"
+#include "engine/graphics/texture.h"
 // #include "engine/graphics/3d_graphics/mesh.h"
-// #include "engine/graphics/2d_graphics/sprite_manager.h"
+#include "engine/graphics/2d_graphics/sprite_manager.h"
 // #include "engine/graphics/2d_graphics/spriteRenderer.h"
 // #include "engine/graphics/2d_graphics/tile_map.h"
 // #include "engine/graphics/2d_graphics/line_renderer.h"

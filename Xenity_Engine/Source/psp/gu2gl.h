@@ -354,6 +354,7 @@ extern "C"
 
 	void *getStaticVramBuffer(unsigned int width, unsigned int height, unsigned int psm);
 	void *getStaticVramTexture(unsigned int width, unsigned int height, unsigned int psm);
+	void glBlendFunc(int src, int dest);
 
 #define glEnable sceGuEnable
 #define glDisable sceGuDisable
@@ -386,7 +387,8 @@ extern "C"
 #define glAlphaFunc sceGuAlphaFunc
 #define glAmbient sceGuAmbient
 #define glAmbientColor sceGuAmbientColor
-#define glBlendFunc sceGuBlendFunc
+	// #define glBlendFunc sceGuBlendFunc
+
 #define glMaterial sceGuMaterial
 #define glModelColor sceGuModelColor
 #define glStencilFunc sceGuStencilFunc
@@ -474,6 +476,11 @@ extern "C"
 		sceDisplayWaitVblankStart();
 		sceGuDisplay(GU_TRUE);
 	};
+
+	void glBlendFunc(int src, int dest)
+	{
+		sceGuBlendFunc(GL_ADD, src, dest, 0, 0);
+	}
 
 	void guglTerm()
 	{

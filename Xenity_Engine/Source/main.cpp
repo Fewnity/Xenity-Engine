@@ -1,5 +1,7 @@
 #include "main.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "xenity.h"
 
 // PSP
@@ -24,6 +26,12 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 #endif
 
+#include "engine/graphics/texture.h"
+
+// #include <string>
+
+// auto str = std::string("Hello");
+
 int main(int argc, char *argv[])
 {
 #ifdef __PSP__
@@ -38,6 +46,9 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	// Debug::Print("argv: " + exePath);
+	// std::string str2 = "hello";
+	// Debug::Print("str " + str);
+	// Debug::Print("str2" + str2);
 
 	// Engine::Loop();
 	// Debug::Print("---- Game loop ended ----");
@@ -49,17 +60,25 @@ int main(int argc, char *argv[])
 	Vector4 v4 = Vector4(0);
 	GameObject *go = new GameObject();
 	Debug::Print(std::to_string(Noise::noise2(0.6f, 0)));
+	// Debug::Print(std::to_string(Time::GetTime()));
 	Color blue = Color::CreateFromRGBAFloat(0, 0, 1, 1);
 	CrossGraphicsInit();
 
+	Texture *texture = new Texture();
+	texture->Load("container.jpg", 1);
+	bool drawed = true;
+
 	while (true)
 	{
-#ifdef __PSP__
-		sceDisplayWaitVblankStart();
-#endif
+		StartDraw();
 
+		Time::UpdateTime();
+		// CrossGraphicsLoop();
 		InputSystem::ClearInputs();
 		InputSystem::Read();
+
+		if ((int)Time::GetTime() % 2 == 0)
+			DrawSprite(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), texture);
 
 		if (InputSystem::GetKeyDown(SQUARE))
 		{
@@ -162,12 +181,12 @@ int main(int argc, char *argv[])
 		}
 
 		// std::string analogStick = "Stick X =" + std::to_string(((pad.Lx - 128) / 256.0) * 2) + ", Y =" + std::to_string(((pad.Ly - 128) / 256.0) * 2);
-
+		EndDraw();
 #ifdef __vita__
 		sceKernelDelayThread(16000);
 #endif
 	}
-
+	CrossGraphicsStop();
 #ifdef __vita__
 	sceKernelExitProcess(0);
 #endif

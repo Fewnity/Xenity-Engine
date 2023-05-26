@@ -16,9 +16,9 @@ void Debug::Print(std::string text)
 {
     text += '\n';
 #ifdef __PSP__
-    PspDebugPrint(text);
+    // PspDebugPrint(text);
 #elif __vita__
-    PsVitaDebugPrint(text);
+    // PsVitaDebugPrint(text);
     debugFile << text;
     debugFile.flush();
 #else
@@ -38,14 +38,14 @@ void Debug::Init()
 {
     // debugFile = std::ofstream();
 #ifdef __PSP__
-    PspDebugInit();
+    // PspDebugInit();
     // file = fopen("xenity_engine_debug.txt", "a");
     // fprintf(file, "uwu\n");
     // fclose(fp);
     // file.write("uwu");
     //  debugFile.open("ms0:/xenity_engine_debug.txt");
 #elif __vita__
-    PsVitaDebugInit();
+    // PsVitaDebugInit();
     sceIoMkdir("ux0:/data/xenity_engine", 0777);
     debugFile.open("ux0:data/xenity_engine/xenity_engine_debug.txt");
 #else

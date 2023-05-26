@@ -36,7 +36,6 @@ int Engine::Init(const std::string exePath)
 	/* Initialize libraries */
 	Debug::Init();
 	File::InitFileSystem(exePath);
-	// Debug::Print("-------- File System Not implemented --------");
 
 	// renderer = new RendererOpengl();
 
@@ -49,15 +48,13 @@ int Engine::Init(const std::string exePath)
 	// 	return -1;
 	// }
 	InputSystem::Init();
-	// SpriteManager::Init();
-	// AssetManager::Init();
-	// EditorUI::Init();
-	// Time::Init();
-
 	Debug::Print("-------- Sprite Manager Not implemented --------");
+	// SpriteManager::Init();
 	Debug::Print("-------- Asset Manager Not implemented --------");
+	// AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
-	Debug::Print("-------- Time Not implemented --------");
+	// EditorUI::Init();
+	Time::Init();
 
 	// Init random
 	srand((unsigned int)time(NULL));
