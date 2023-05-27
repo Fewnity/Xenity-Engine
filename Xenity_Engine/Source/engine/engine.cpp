@@ -8,8 +8,12 @@
 //  #include "../rendering_test/rendering_test_2d.h"
 //  #include <imgui/imgui_impl_sdl2.h>
 //  #include <imgui/imgui_impl_opengl3.h>
-//  #include "graphics/renderer/renderer.h"
-//  #include "graphics/renderer/renderer_opengl.h"
+#include "graphics/renderer/renderer.h"
+#include "graphics/renderer/renderer_opengl.h"
+
+#ifdef __PSP__
+#include "../psp/gu2gl.h"
+#endif
 
 std::vector<GameObject *> Engine::gameObjects;
 GameObject *Engine::selectedGameObject = nullptr;
@@ -25,7 +29,7 @@ bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
 std::vector<Component *> Engine::orderedComponents;
 int Engine::componentsCount = 0;
-// Renderer *Engine::renderer = nullptr;
+Renderer *Engine::renderer = nullptr;
 
 GameObject *cameraGO = nullptr;
 
@@ -39,7 +43,18 @@ int Engine::Init(const std::string exePath)
 	Debug::Init();
 	File::InitFileSystem(exePath);
 
-	// renderer = new RendererOpengl();
+	renderer = new RendererOpengl();
+
+	renderer->Init();
+
+#ifdef __PSP__
+	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
+#elif __vita__
+	Window::SetResolution(960, 544);
+#else
+	Debug::Print("-------- RESOLUTION Not implemented --------");
+	Window::SetResolution(-1, -1);
+#endif
 
 	Debug::Print("-------- Window Not implemented --------");
 	Debug::Print("-------- UI Manager Not implemented --------");
@@ -63,14 +78,14 @@ int Engine::Init(const std::string exePath)
 
 	Debug::Print("-------- Engine fully initiated --------");
 
-	// renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
+	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
 	return 0;
 }
 
 void Engine::Stop()
 {
-	// renderer->Stop();
+	renderer->Stop();
 }
 
 /// <summary>

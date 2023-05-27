@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <malloc.h>
 #include "../camera.h"
+#include "../renderer/renderer.h"
 
 #ifdef __PSP__
 #include <pspkernel.h>
@@ -86,16 +87,13 @@ void DrawMeshData(MeshData *meshData)
 
 void SpriteManager::StartDraw()
 {
-#ifdef __PSP__
-    PspStartFrame();
-#endif
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    Engine::renderer->NewFrame();
+    Engine::renderer->Clear();
 }
 
 void SpriteManager::EndDraw()
 {
-    CrossGraphicsSwapBuffer();
+    Engine::renderer->EndFrame();
 }
 
 void ResetTransform()
@@ -146,6 +144,7 @@ void SpriteManager::Init()
 #endif
     cameraGo = new GameObject("Camera");
     camera = cameraGo->AddComponent<Camera>();
+    // camera->SetProjectionType(Orthographic);
 }
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
@@ -157,7 +156,7 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     glEnable(GL_TEXTURE_2D);
 
 #ifdef __PSP__
-    camera->Apply(); // PSP
+    camera->Apply(); // PSP TODO : Try to apply once before all draw calls
 #endif
 
     // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 1000.0f;

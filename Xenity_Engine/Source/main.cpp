@@ -186,7 +186,6 @@ int main(int argc, char *argv[])
 	// 		sceKernelDelayThread(16000);
 	// #endif
 	// 	}
-	CrossGraphicsStop();
 #ifdef __vita__
 	sceKernelExitProcess(0);
 #endif

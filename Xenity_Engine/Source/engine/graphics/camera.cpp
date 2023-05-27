@@ -4,6 +4,8 @@
 #include <math.h>
 #include "graphics.h"
 #include "../tools/math.h"
+#include "../engine.h"
+#include "renderer/renderer.h"
 // #include "../inputs/input_system.h"
 // #include "../ui/window.h"
 
@@ -134,6 +136,15 @@ void Camera::Apply()
 
 void Camera::UpdateProjection()
 {
+	if (projectionType == ProjectionTypes::Perspective)
+	{
+		Engine::renderer->SetProjection3D(fov, nearClippingPlane, farClippingPlane);
+	}
+	else
+	{
+		Engine::renderer->SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
+	}
+
 	// if (projectionType == ProjectionTypes::Perspective)
 	// {
 	// 	// Projection
@@ -164,6 +175,7 @@ glm::mat4 &Camera::GetUnscaledProjection()
 void Camera::SetProjectionType(ProjectionTypes type)
 {
 	projectionType = type;
+	UpdateProjection();
 }
 
 ProjectionTypes Camera::GetProjectionType()

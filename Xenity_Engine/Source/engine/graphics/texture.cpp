@@ -76,7 +76,7 @@ void Texture::Bind()
 
 void Texture::Load(const char *filename, const int vram)
 {
-    int width, height, nrChannels;
+    int nrChannels;
     stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *texData = stbi_load(filename, &width, &height,
                                        &nrChannels, STBI_rgb_alpha);
@@ -89,8 +89,6 @@ void Texture::Load(const char *filename, const int vram)
         return;
     }
 
-    width = width;
-    height = height;
     pW = pow2(width);
     pH = pow2(height);
 

@@ -20,7 +20,7 @@
 #include "engine/vectors/vector4.h"
 
 // // UI
-// #include "engine/ui/window.h"
+#include "engine/ui/window.h"
 
 // // Tools
 #include "engine/tools/benchmark.h"
