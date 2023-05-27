@@ -1,6 +1,6 @@
 #include "sprite_manager.h"
+#include "../../../xenity.h"
 #include "../texture.h"
-#include "../../vectors/vector3.h"
 #include <cstdlib>
 #include <malloc.h>
 #include "../camera.h"
@@ -84,7 +84,7 @@ void DrawMeshData(MeshData *meshData)
 #endif
 }
 
-void StartDraw()
+void SpriteManager::StartDraw()
 {
 #ifdef __PSP__
     PspStartFrame();
@@ -93,7 +93,7 @@ void StartDraw()
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void EndDraw()
+void SpriteManager::EndDraw()
 {
     CrossGraphicsSwapBuffer();
 }
@@ -124,57 +124,58 @@ void SetScale(float x, float y, float z)
     glScalef(x, y, z);
 }
 
-Camera *camera;
+Camera *camera = nullptr;
+GameObject *cameraGo = nullptr;
+MeshData *spriteMeshData = nullptr;
 
-void InitSpriteManager()
+void SpriteManager::Init()
 {
-    camera = new Camera();
-    camera->x = 4;
-    camera->y = 0;
-    camera->z = -10;
-    camera->yaw = 10;
-    camera->pitch = 0;
-}
-
-void DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
-{
-    MeshData *vData = new MeshData(4, 6);
-    vData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f, -0.5f, 0.0f, 0);
-    vData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f, -0.5f, 0.0f, 1);
-    vData->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f, 0.5f, 0.0f, 2);
-    vData->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f, 0.5f, 0.0f, 3);
-    vData->indices[0] = 0;
-    vData->indices[1] = 2;
-    vData->indices[2] = 1;
-    vData->indices[3] = 2;
-    vData->indices[4] = 0;
-    vData->indices[5] = 3;
+    spriteMeshData = new MeshData(4, 6);
+    spriteMeshData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f, -0.5f, 0.0f, 0);
+    spriteMeshData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f, -0.5f, 0.0f, 1);
+    spriteMeshData->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f, 0.5f, 0.0f, 2);
+    spriteMeshData->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f, 0.5f, 0.0f, 3);
+    spriteMeshData->indices[0] = 0;
+    spriteMeshData->indices[1] = 2;
+    spriteMeshData->indices[2] = 1;
+    spriteMeshData->indices[3] = 2;
+    spriteMeshData->indices[4] = 0;
+    spriteMeshData->indices[5] = 3;
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
-    float positionCoef = 0.1f;
+    cameraGo = new GameObject("Camera");
+    camera = cameraGo->AddComponent<Camera>();
+}
+
+void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
+{
     // Set settings
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
 
-    camera->Apply();
+#ifdef __PSP__
+    camera->Apply(); // PSP
+#endif
 
     // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 1000.0f;
     float scaleCoef = (100.0f / 100.0f) / 1000.0f;
-    float w = 256 * scaleCoef;
-    float h = 256 * scaleCoef;
+    float w = texture->width * scaleCoef;
+    float h = texture->height * scaleCoef;
 
     ResetTransform();
+#ifdef __vita__
+    camera->Apply(); // PSVITA
+#endif
+
     SetPosition(-position.x, position.y, position.z);
     SetRotation(rotation.x, rotation.y + 180, rotation.z);
-    // SetScale(scale.x * w, scale.y * h, 1);
-    // SetScale(scale.x / w, scale.y / h, 1);
     SetScale(scale.x / (w * 1.5), scale.y / (h * 1.5), 1);
 
     texture->Bind();
-    DrawMeshData(vData);
+    DrawMeshData(spriteMeshData);
 
-    delete (vData);
+    // delete (spriteMeshData);
 }

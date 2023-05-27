@@ -25,7 +25,11 @@ public:
     unsigned int index_count = 0;
 };
 
-void StartDraw();
-void EndDraw();
-void DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture);
-void InitSpriteManager();
+class SpriteManager
+{
+public:
+    static void StartDraw();
+    static void EndDraw();
+    static void DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture);
+    static void Init();
+};

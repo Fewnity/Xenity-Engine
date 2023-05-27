@@ -19,6 +19,8 @@
 // Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
 // Vector2 InputSystem::mouseSpeed = Vector2();
 // Vector2 InputSystem::mouseSpeedRaw = Vector2();
+Vector2 InputSystem::leftJoystick = Vector2();
+Vector2 InputSystem::rightJoystick = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::hideMouse = false;
@@ -49,6 +51,12 @@ void InputSystem::Init()
 void InputSystem::Read()
 {
 	InputPad pad = CrossGetInputPad();
+
+	leftJoystick.x = pad.lx;
+	leftJoystick.y = pad.ly;
+
+	rightJoystick.x = pad.rx;
+	rightJoystick.y = pad.ry;
 
 	auto mapE = keyMap.end();
 

@@ -7,7 +7,7 @@ float Time::time = 0;
 float Time::unscaledTime = 0;
 float Time::deltaTime = 0;
 float Time::unscaledDeltaTime = 0;
-std::chrono::time_point< std::chrono::high_resolution_clock> start_point, end_point;
+std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_point;
 
 using namespace std::chrono;
 
@@ -48,14 +48,15 @@ void Time::SetTimeScale(float timeScale)
 
 #pragma endregion
 
-void Time::Init() {
+void Time::Init()
+{
 
 	start_point = high_resolution_clock::now();
 
-	Debug::Print("---- Time system initiated ----");
+	Debug::Print("-------- Time system initiated --------");
 }
 
-void Time::UpdateTime() 
+void Time::UpdateTime()
 {
 	end_point = high_resolution_clock::now();
 	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();

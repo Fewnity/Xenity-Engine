@@ -3,7 +3,7 @@
 #include "engine/monobehaviour.h"
 #include "engine/component.h"
 
-// #include "engine/asset_managent/asset_manager.h"
+#include "engine/asset_managent/asset_manager.h"
 
 // // Engine
 #include "engine/engine.h"
@@ -43,7 +43,7 @@
 #include "engine/inputs/input_system.h"
 
 // // Graphics
-// #include "engine/graphics/camera.h"
+#include "engine/graphics/camera.h"
 #include "engine/graphics/camera_projection_types.h"
 #include "engine/graphics/graphics.h"
 #include "engine/graphics/iDrawable.h"
@@ -53,14 +53,14 @@
 #include "engine/graphics/texture.h"
 // #include "engine/graphics/3d_graphics/mesh.h"
 #include "engine/graphics/2d_graphics/sprite_manager.h"
-// #include "engine/graphics/2d_graphics/spriteRenderer.h"
+#include "engine/graphics/2d_graphics/sprite_renderer.h"
 // #include "engine/graphics/2d_graphics/tile_map.h"
 // #include "engine/graphics/2d_graphics/line_renderer.h"
 #include "engine/graphics/color/color.h"
 // #include "engine/graphics/ui/text_renderer.h"
 // #include "engine/graphics/ui/ui_manager.h"
 // #include "engine/graphics/ui/text_renderer_canvas.h"
-// #include "engine/graphics/ui/TextAlignments.h"
+#include "engine/graphics/ui/TextAlignments.h"
 
 // // Files
 #include "engine/file_system/file.h"

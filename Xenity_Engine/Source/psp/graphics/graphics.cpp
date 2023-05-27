@@ -28,6 +28,11 @@ void CrossGraphicsInit()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     // glOrtho(-16.0f / 9.0f, 16.0f / 9.0f, -1.0f, 1.0f, -10.0f, 10.0f);
+
+    float halfRatio = (480.0f / 272.0f) / 2.0f * 10;
+    float halfOne = 0.5f * 10;
+
+    // glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, 0.1f, 100.0f);
     glPerspective(60, (float)PSP_SCR_WIDTH / (float)PSP_SCR_HEIGHT, 0.06f, 100);
 
     glMatrixMode(GL_VIEW);

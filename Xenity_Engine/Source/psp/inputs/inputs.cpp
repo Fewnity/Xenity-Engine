@@ -37,8 +37,18 @@ InputPad CrossGetInputPad()
     // sceCtrlPeekBufferPositive(0, &ctrl, 1);
     sceCtrlReadBufferPositive(&ctrl, 1);
     pad.buttons = ctrl.Buttons;
-    pad.lx = ctrl.Lx;
-    pad.ly = ctrl.Ly;
+
+    pad.lx = ((ctrl.Lx - 128) / 256.0) * 2;
+    pad.ly = ((ctrl.Ly - 128) / 256.0) * 2;
+
+    if (pad.lx < 0.2 && pad.lx > -0.2)
+    {
+        pad.lx = 0;
+    }
+    if (pad.ly < 0.2 && pad.ly > -0.2)
+    {
+        pad.ly = 0;
+    }
     return pad;
 }
 

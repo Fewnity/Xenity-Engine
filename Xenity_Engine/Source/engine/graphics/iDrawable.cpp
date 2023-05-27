@@ -4,10 +4,10 @@
 
 IDrawable::IDrawable()
 {
-	// AssetManager::AddDrawable(this);
+	AssetManager::AddDrawable(this);
 }
 
 IDrawable::~IDrawable()
 {
-	// AssetManager::RemoveDrawable(this);
+	AssetManager::RemoveDrawable(this);
 }

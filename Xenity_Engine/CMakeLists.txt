@@ -105,6 +105,8 @@ target_link_libraries(${PROJECT_NAME}
   SceDisplay_stub 
   ScePgf_stub 
   SceSysmodule_stub
+  SceUsbSerial_stub
+  SceUsbd_stub 
   zip 
   z 
   vitashark 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Texture
 {
 public:
@@ -12,4 +14,5 @@ public:
     void *data;
 
     unsigned int id;
+    std::string name = "";
 };

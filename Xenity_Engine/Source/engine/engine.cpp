@@ -27,6 +27,8 @@ std::vector<Component *> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 // Renderer *Engine::renderer = nullptr;
 
+GameObject *cameraGO = nullptr;
+
 /// <summary>
 /// Init engine
 /// </summary>
@@ -49,9 +51,9 @@ int Engine::Init(const std::string exePath)
 	// }
 	InputSystem::Init();
 	Debug::Print("-------- Sprite Manager Not implemented --------");
-	// SpriteManager::Init();
-	Debug::Print("-------- Asset Manager Not implemented --------");
-	// AssetManager::Init();
+	SpriteManager::Init();
+	// Debug::Print("-------- Asset Manager Not implemented --------");
+	AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
 	// EditorUI::Init();
 	Time::Init();
@@ -165,6 +167,44 @@ void Engine::SetSelectedGameObject(GameObject *newSelected)
 	selectedGameObject = newSelected;
 }
 
+void GameInit()
+{
+	Texture *texture = new Texture();
+	texture->Load("container.jpg", 1);
+	cameraGO = GameObject::FindGameObjectByName("Camera");
+	cameraGO->GetTransform()->SetPosition(Vector3(0, 0, -10));
+	cameraGO->GetTransform()->SetRotation(Vector3(0, 10, 0));
+
+	GameObject *spriteGo0 = new GameObject();
+	GameObject *spriteGo1 = new GameObject();
+	GameObject *spriteGo2 = new GameObject();
+	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
+	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81, -4.36));
+
+	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
+	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
+	SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
+	ps0->texture = texture;
+	ps1->texture = texture;
+	ps2->texture = texture;
+}
+
+void GameLoop()
+{
+	// Rotate camera
+	Vector3 rot = cameraGO->GetTransform()->GetRotation();
+	rot.x += InputSystem::leftJoystick.y;
+	rot.y += InputSystem::leftJoystick.x;
+	cameraGO->GetTransform()->SetRotation(rot);
+
+	// Move camera
+	Vector3 pos = cameraGO->GetTransform()->GetPosition();
+	pos.x += InputSystem::rightJoystick.x / 5.0f;
+	pos.z -= InputSystem::rightJoystick.y / 5.0f;
+	cameraGO->GetTransform()->SetPosition(pos);
+}
+
 /// <summary>
 /// Engine loop
 /// </summary>
@@ -177,9 +217,42 @@ void Engine::Loop()
 	// RenderingTest2D *game = new RenderingTest2D();
 
 	// game->Init();
-	Debug::Print("---- Game initiated ----");
+	GameInit();
+	Debug::Print("-------- Game initiated --------");
 
 	bool running = true;
+
+	int lastTime = 0;
+
+	while (running)
+	{
+		Time::UpdateTime();
+		InputSystem::ClearInputs();
+		InputSystem::Read();
+
+		GameLoop();
+		UpdateComponents();
+
+		Graphics::DrawAllDrawable();
+
+		for (int i = 0; i < Engine::gameObjectCount; i++)
+		{
+			GameObject *go = gameObjects[i];
+			if (go->GetTransform()->movedLastFrame)
+			{
+				go->GetTransform()->movedLastFrame = false;
+			}
+		}
+
+		if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
+		{
+			lastTime = (int)Time::GetTime();
+			Debug::Print("FPS: " + std::to_string(1.0f / Time::GetUnscaledDeltaTime()));
+		}
+
+		// Performance::Update();
+		// 	Performance::ResetCounters();
+	}
 
 	// while (running)
 	// {

@@ -2,7 +2,7 @@
 
 #include <map>
 // #include <SDL2/SDL_events.h>
-// #include "../vectors/vector2.h"
+#include "../vectors/vector2.h"
 
 enum KeyCode
 {
@@ -135,6 +135,8 @@ public:
 	static bool GetKeyUp(const KeyCode keyCode);
 	static void ClearInputs();
 
+	static Vector2 leftJoystick;
+	static Vector2 rightJoystick;
 	// static Vector2 mousePosition;
 	// static Vector2 mouseSpeed;
 	// static Vector2 mouseSpeedRaw;

@@ -19,10 +19,12 @@ void Graphics::DrawAllDrawable()
 	Graphics::OrderDrawables();
 	// Engine::renderer->SetCullFace(Back);
 
+	SpriteManager::StartDraw();
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		orderedIDrawable[i]->Draw();
 	}
+	SpriteManager::EndDraw();
 }
 
 bool spriteComparator(const IDrawable *t1, const IDrawable *t2)

@@ -22,6 +22,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // #include <psp2/kernel/clib.h>
 //  #include <psp2/kernel/threadmgr.h>
 #include <psp2/display.h>
+// #include <psp2/usbserial.h>
+// #include <psp2/usbd.h>
 
 #endif
 
@@ -41,147 +43,149 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	CrossGraphicsInit();
-	InitSpriteManager();
+	// SpriteManager::Init();
 
-	// Engine::Loop();
-	// Debug::Print("---- Game loop ended ----");
-	// Engine::Stop();
+	// int lastTime = 0;
 
-	Vector2 v2 = Vector2(0);
-	Vector2Int v2i = Vector2Int(0);
-	Vector3 v3 = Vector3(0);
-	Vector4 v4 = Vector4(0);
-	GameObject *go = new GameObject();
-	Debug::Print(std::to_string(Noise::noise2(0.6f, 0)));
-	// Debug::Print(std::to_string(Time::GetTime()));
-	Color blue = Color::CreateFromRGBAFloat(0, 0, 1, 1);
+	Engine::Loop();
+	Debug::Print("---- Game loop ended ----");
+	Engine::Stop();
 
-	Texture *texture = new Texture();
-	texture->Load("container.jpg", 1);
+	// 	// cameraGO->GetTransform()->SetRotation(Vector3(27.014, -11.887, 83.2110));
+	// 	while (true)
+	// 	{
+	// 		Time::UpdateTime();
+	// 		InputSystem::ClearInputs();
+	// 		InputSystem::Read();
 
-	while (true)
-	{
-		Time::UpdateTime();
-		InputSystem::ClearInputs();
-		InputSystem::Read();
+	// 		// Rotate camera
+	// 		Vector3 rot = cameraGO->GetTransform()->GetRotation();
+	// 		rot.x += InputSystem::leftJoystick.y;
+	// 		rot.y += InputSystem::leftJoystick.x;
+	// 		cameraGO->GetTransform()->SetRotation(rot);
 
-		StartDraw();
-		// if ((int)Time::GetTime() % 2 == 0)
-		// DrawSprite(Vector3(0, 0, -1), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
-		// DrawSprite(Vector3(sin(Time::GetTime()) / 2.0f, sin((Time::GetTime()) * 2) / 4.0f, -1),
-		// 		   Vector3(0, 0, 0),
-		// 		   Vector3(1 * (1 + sin(Time::GetTime()) / 2.0f), 1 * (1 + sin(Time::GetTime() + 1.4f) / 2.0f), 1), texture);
+	// 		// Move camera
+	// 		Vector3 pos = cameraGO->GetTransform()->GetPosition();
+	// 		pos.x += InputSystem::rightJoystick.x / 5.0f;
+	// 		pos.z -= InputSystem::rightJoystick.y / 5.0f;
+	// 		cameraGO->GetTransform()->SetPosition(pos);
 
-		DrawSprite(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
-		DrawSprite(Vector3(2.56f, 2.56f, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
-		DrawSprite(Vector3(0, 2.81, -4.36), Vector3(0, 0, 0), Vector3(1, 1, 1), texture);
+	// 		SpriteManager::StartDraw();
 
-		if (InputSystem::GetKeyDown(SQUARE))
-		{
-			Debug::Print("SQUARE DOWN");
-		}
-		if (InputSystem::GetKeyUp(SQUARE))
-		{
-			Debug::Print("SQUARE UP");
-		}
-		if (InputSystem::GetKeyDown(CIRCLE))
-		{
-			Debug::Print("CIRCLE DOWN");
-		}
-		if (InputSystem::GetKeyUp(CIRCLE))
-		{
-			Debug::Print("CIRCLE UP");
-		}
-		if (InputSystem::GetKeyUp(TRIANGLE))
-		{
-			Debug::Print("TRIANGLE UP");
-		}
-		if (InputSystem::GetKeyDown(TRIANGLE))
-		{
-			Debug::Print("TRIANGLE DOWN");
-		}
-		if (InputSystem::GetKeyUp(CROSS))
-		{
-			Debug::Print("CROSS UP");
-		}
-		if (InputSystem::GetKeyDown(CROSS))
-		{
-			Debug::Print("CROSS DOWN");
-		}
+	// 		Graphics::DrawAllDrawable();
 
-		if (InputSystem::GetKeyDown(START))
-		{
-			Debug::Print("START DOWN");
-		}
-		if (InputSystem::GetKeyUp(START))
-		{
-			Debug::Print("START UP");
-		}
-		if (InputSystem::GetKeyDown(SELECT))
-		{
-			Debug::Print("SELECT DOWN");
-		}
-		if (InputSystem::GetKeyUp(SELECT))
-		{
-			Debug::Print("SELECT UP");
-		}
+	// 		if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
+	// 		{
+	// 			lastTime = (int)Time::GetTime();
+	// 			Debug::Print("FPS: " + std::to_string(1.0f / Time::GetUnscaledDeltaTime()));
+	// 		}
 
-		if (InputSystem::GetKeyUp(LTRIGGER1))
-		{
-			Debug::Print("LTRIGGER1 UP");
-		}
-		if (InputSystem::GetKeyDown(LTRIGGER1))
-		{
-			Debug::Print("LTRIGGER1 DOWN");
-		}
-		if (InputSystem::GetKeyUp(RTRIGGER1))
-		{
-			Debug::Print("RTRIGGER1 UP");
-		}
-		if (InputSystem::GetKeyDown(RTRIGGER1))
-		{
-			Debug::Print("RTRIGGER1 DOWN");
-		}
+	// 		if (InputSystem::GetKeyDown(SQUARE))
+	// 		{
+	// 			Debug::Print("SQUARE DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(SQUARE))
+	// 		{
+	// 			Debug::Print("SQUARE UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(CIRCLE))
+	// 		{
+	// 			Debug::Print("CIRCLE DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(CIRCLE))
+	// 		{
+	// 			Debug::Print("CIRCLE UP");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(TRIANGLE))
+	// 		{
+	// 			Debug::Print("TRIANGLE UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(TRIANGLE))
+	// 		{
+	// 			Debug::Print("TRIANGLE DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(CROSS))
+	// 		{
+	// 			Debug::Print("CROSS UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(CROSS))
+	// 		{
+	// 			Debug::Print("CROSS DOWN");
+	// 		}
 
-		if (InputSystem::GetKeyDown(RIGHT))
-		{
-			Debug::Print("RIGHT DOWN");
-		}
-		if (InputSystem::GetKeyUp(RIGHT))
-		{
-			Debug::Print("RIGHT UP");
-		}
-		if (InputSystem::GetKeyDown(LEFT))
-		{
-			Debug::Print("LEFT DOWN");
-		}
-		if (InputSystem::GetKeyUp(LEFT))
-		{
-			Debug::Print("LEFT UP");
-		}
-		if (InputSystem::GetKeyUp(DOWN))
-		{
-			Debug::Print("DOWN UP");
-		}
-		if (InputSystem::GetKeyDown(DOWN))
-		{
-			Debug::Print("DOWN DOWN");
-		}
-		if (InputSystem::GetKeyUp(UP))
-		{
-			Debug::Print("UP UP");
-		}
-		if (InputSystem::GetKeyDown(UP))
-		{
-			Debug::Print("UP DOWN");
-		}
+	// 		if (InputSystem::GetKeyDown(START))
+	// 		{
+	// 			Debug::Print("START DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(START))
+	// 		{
+	// 			Debug::Print("START UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(SELECT))
+	// 		{
+	// 			Debug::Print("SELECT DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(SELECT))
+	// 		{
+	// 			Debug::Print("SELECT UP");
+	// 		}
 
-		// std::string analogStick = "Stick X =" + std::to_string(((pad.Lx - 128) / 256.0) * 2) + ", Y =" + std::to_string(((pad.Ly - 128) / 256.0) * 2);
-		EndDraw();
-#ifdef __vita__
-		sceKernelDelayThread(16000);
-#endif
-	}
+	// 		if (InputSystem::GetKeyUp(LTRIGGER1))
+	// 		{
+	// 			Debug::Print("LTRIGGER1 UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(LTRIGGER1))
+	// 		{
+	// 			Debug::Print("LTRIGGER1 DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(RTRIGGER1))
+	// 		{
+	// 			Debug::Print("RTRIGGER1 UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(RTRIGGER1))
+	// 		{
+	// 			Debug::Print("RTRIGGER1 DOWN");
+	// 		}
+
+	// 		if (InputSystem::GetKeyDown(RIGHT))
+	// 		{
+	// 			Debug::Print("RIGHT DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(RIGHT))
+	// 		{
+	// 			Debug::Print("RIGHT UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(LEFT))
+	// 		{
+	// 			Debug::Print("LEFT DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(LEFT))
+	// 		{
+	// 			Debug::Print("LEFT UP");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(DOWN))
+	// 		{
+	// 			Debug::Print("DOWN UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(DOWN))
+	// 		{
+	// 			Debug::Print("DOWN DOWN");
+	// 		}
+	// 		if (InputSystem::GetKeyUp(UP))
+	// 		{
+	// 			Debug::Print("UP UP");
+	// 		}
+	// 		if (InputSystem::GetKeyDown(UP))
+	// 		{
+	// 			Debug::Print("UP DOWN");
+	// 		}
+
+	// 		// std::string analogStick = "Stick X =" + std::to_string(((pad.Lx - 128) / 256.0) * 2) + ", Y =" + std::to_string(((pad.Ly - 128) / 256.0) * 2);
+	// 		SpriteManager::EndDraw();
+	// #ifdef __vita__
+	// 		sceKernelDelayThread(16000);
+	// #endif
+	// 	}
 	CrossGraphicsStop();
 #ifdef __vita__
 	sceKernelExitProcess(0);
