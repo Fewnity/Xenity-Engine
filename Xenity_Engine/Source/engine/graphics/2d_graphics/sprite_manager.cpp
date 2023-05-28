@@ -17,6 +17,11 @@
 #include "../../../psvita/graphics/graphics.h"
 #endif
 
+#include <ft2build.h>
+
+// #include <freetype2/ft2build.h>
+#include FT_FREETYPE_H
+
 MeshData::MeshData(unsigned int vcount, unsigned int index_count)
 {
     // data = (Vertex *)memalign(16, sizeof(Vertex) * vcount);
@@ -96,32 +101,6 @@ void SpriteManager::EndDraw()
     Engine::renderer->EndFrame();
 }
 
-void ResetTransform()
-{
-    glLoadIdentity();
-}
-
-void SetPosition(float x, float y, float z)
-{
-    glTranslatef(x, y, z);
-}
-
-void SetRotation(float x, float y, float z)
-{
-#ifdef __PSP__
-    glRotatefXYZ(x * 3.14159265359 / 180.0f, y * 3.14159265359 / 180.0f, z * 3.14159265359 / 180.0f);
-#elif __vita__
-    glRotatef(z, 0, 0, 1);
-    glRotatef(y, 0, 1, 0);
-    glRotatef(x, 1, 0, 0);
-#endif
-}
-
-void SetScale(float x, float y, float z)
-{
-    glScalef(x, y, z);
-}
-
 Camera *camera = nullptr;
 GameObject *cameraGo = nullptr;
 MeshData *spriteMeshData = nullptr;
@@ -149,32 +128,120 @@ void SpriteManager::Init()
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
+    // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 100.0f;
+    float scaleCoef = (100.0f / 100.0f) / 100.0f;
+    float w = texture->width * scaleCoef;
+    float h = texture->height * scaleCoef;
+
     // Set settings
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
 
-#ifdef __PSP__
-    camera->Apply(); // PSP TODO : Try to apply once before all draw calls
-#endif
+    Engine::renderer->SetCameraPosition(camera);
 
-    // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 1000.0f;
-    float scaleCoef = (100.0f / 100.0f) / 1000.0f;
-    float w = texture->width * scaleCoef;
-    float h = texture->height * scaleCoef;
-
-    ResetTransform();
-#ifdef __vita__
-    camera->Apply(); // PSVITA
-#endif
-
-    SetPosition(-position.x, position.y, position.z);
-    SetRotation(rotation.x, rotation.y + 180, rotation.z);
-    SetScale(scale.x / (w * 1.5), scale.y / (h * 1.5), 1);
+    Vector3 pos = Vector3(-position.x, position.y, position.z);
+    Vector3 rot = Vector3(rotation.x, rotation.y + 180, rotation.z);
+    // Vector3 scl = Vector3(scale.x / (w * 1.5), scale.y / (h * 1.5), 1);
+    Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
+    Engine::renderer->SetTransform(pos, rot, scl);
 
     texture->Bind();
+    // UiManager::fonts[0]->Characters[5].texture->Bind();
     DrawMeshData(spriteMeshData);
 
     // delete (spriteMeshData);
+}
+
+std::vector<Font *> UiManager::fonts;
+
+int UiManager::Init()
+{
+    return 0;
+}
+
+/// <summary>
+/// Load a font
+/// </summary>
+/// <param name="filePath"></param>
+/// <returns></returns>
+Font *UiManager::CreateFont(std::string filePath)
+{
+    return nullptr;
+    Debug::Print("Loading font...");
+
+    Font *font = new Font();
+
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+    {
+        Debug::Print("ERROR: Could not init FreeType Library");
+        return nullptr;
+    }
+
+    // Load font
+    FT_Face face;
+    std::string path = EngineSettings::RootFolder + filePath;
+    if (FT_New_Face(ft, path.c_str(), 0, &face))
+    {
+        Debug::Print("ERROR: Failed to load font. Path: " + path);
+        return nullptr;
+    }
+
+    // Load glyph
+    FT_Set_Pixel_Sizes(face, 0, 48);
+    // Engine::renderer->PixelStoreUnpack();
+
+    for (unsigned char c = 0; c < 10; c++)
+    {
+        try
+        {
+            // load character glyph
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
+            {
+                Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
+                continue;
+            }
+
+            // Texture *texture = new Texture();
+            // texture->width = face->glyph->bitmap.width;
+            // texture->height = face->glyph->bitmap.rows;
+            // texture->SetData(face->glyph->bitmap.buffer, 0);
+
+            // generate texture
+            // Texture *texture = new Texture(Engine::renderer->GenerateTextureId(), 1, face->glyph->bitmap.width, face->glyph->bitmap.rows);
+            // // Engine::renderer->BindTexture(texture);
+            // // Engine::renderer->SetTextureData(texture, face->glyph->bitmap.buffer);
+
+            // // // set texture options
+            // // Engine::renderer->SetTextureWrapMode(Texture::ClampToEdge);
+            // // Engine::renderer->SetTextureFilter(texture, Texture::Bilinear);
+
+            // now store character for later use
+            // Character character = {
+            //     texture,
+            //     glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+            //     glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+            //     (unsigned int)face->glyph->advance.x};
+            // font->Characters[c] = character;
+
+            // if (font->maxCharHeight < (float)character.Size.y)
+            //     font->maxCharHeight = (float)character.Size.y;
+
+            // Debug::Print("x " + std::to_string(texture->width) + ", " + std::to_string(texture->pW));
+        }
+        catch (...)
+        {
+            Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
+            return nullptr;
+        }
+    }
+    Debug::Print("Font loaded");
+
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+
+    fonts.push_back(font);
+    return font;
 }

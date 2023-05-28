@@ -569,9 +569,9 @@ extern "C"
 		}
 	}
 
+	static unsigned int staticOffset = 0;
 	void *getStaticVramBuffer(unsigned int width, unsigned int height, unsigned int psm)
 	{
-		static unsigned int staticOffset = 0;
 		unsigned int memSize = getMemorySize(width, height, psm);
 		void *result = (void *)staticOffset;
 		staticOffset += memSize;

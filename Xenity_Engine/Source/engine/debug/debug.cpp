@@ -1,12 +1,15 @@
 #include "debug.h"
+#include "../file_system/file_system.h"
 
 #ifdef __PSP__
+#include <pspkernel.h>
 #include "../../psp/debug/debug.h"
 #elif __vita__
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
 std::ofstream Debug::debugFile;
+File *file = nullptr;
 
 // FILE *file;
 /**
@@ -17,15 +20,14 @@ void Debug::Print(std::string text)
     text += '\n';
 #ifdef __PSP__
     // PspDebugPrint(text);
+    file->Write(text);
 #elif __vita__
     // PsVitaDebugPrint(text);
     debugFile << text;
     debugFile.flush();
 #else
-    // debugFile << text << '\n';
     debugFile << text;
     debugFile.flush();
-    // std::cout << text << std::endl;
     std::cout << text;
 #endif
 }
@@ -36,14 +38,10 @@ void Debug::Print(std::string text)
  */
 void Debug::Init()
 {
-    // debugFile = std::ofstream();
 #ifdef __PSP__
     // PspDebugInit();
-    // file = fopen("xenity_engine_debug.txt", "a");
-    // fprintf(file, "uwu\n");
-    // fclose(fp);
-    // file.write("uwu");
-    //  debugFile.open("ms0:/xenity_engine_debug.txt");
+    FileSystem::DeleteFile("xenity_engine_debug.txt");
+    file = new File("xenity_engine_debug.txt");
 #elif __vita__
     // PsVitaDebugInit();
     sceIoMkdir("ux0:/data/xenity_engine", 0777);

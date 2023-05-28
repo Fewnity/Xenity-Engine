@@ -46,9 +46,12 @@ if(MODE STREQUAL "psp")
 message(STATUS "BUILD PSP")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexceptions")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    png
+    jpeg
     pspgu
     pspgum
     pspctrl
@@ -57,6 +60,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     m
     pspge
     stdc++
+    freetype
+    bz2
+    z
 )
 
 # Create an EBOOT.PBP file

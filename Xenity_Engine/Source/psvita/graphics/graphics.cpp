@@ -6,8 +6,8 @@
 
 void CrossGraphicsInit()
 {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
 }
 
 #endif

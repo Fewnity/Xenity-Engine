@@ -32,6 +32,10 @@ int RendererOpengl::Init()
 #else
 	result = glfwInit();
 #endif
+
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_FRONT);
+
 	return result;
 }
 
@@ -82,6 +86,12 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 	float halfRatio = ((float)Window::GetWidth() / (float)Window::GetHeight()) / 2.0f * 10;
 	float halfOne = 0.5f * 10;
 	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, 0.1f, 100.0f);
+
+	// #ifdef __PSP__
+	// 	glMatrixMode(GL_MODEL);
+	// #else
+	// 	glMatrixMode(GL_MODELVIEW);
+	// #endif
 }
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane)
@@ -93,6 +103,59 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 #elif __vita__
 	gluPerspective(fov, (float)Window::GetWidth() / (float)(float)Window::GetHeight(), nearClippingPlane, farClippingPlane);
 #endif
+
+	// #ifdef __PSP__
+	// 	glMatrixMode(GL_MODEL);
+	// #else
+	// 	glMatrixMode(GL_MODELVIEW);
+	// #endif
+}
+
+void RendererOpengl::SetCameraPosition(Camera *camera)
+{
+	Transform *trans = camera->GetTransform();
+#ifdef __PSP__
+	glMatrixMode(GL_VIEW);
+	glLoadIdentity();
+
+	gluRotateZ((-trans->GetRotation().z) / 180.0f * 3.14159f);
+	gluRotateX(trans->GetRotation().x / 180.0f * 3.14159f);
+	gluRotateY((trans->GetRotation().y + 180) / 180.0f * 3.14159f);
+
+	glTranslatef(trans->GetPosition().x, -trans->GetPosition().y, -trans->GetPosition().z);
+#else
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glRotatef(-trans->GetRotation().z, 0, 0, 1);
+	glRotatef(trans->GetRotation().x, 1, 0, 0);
+	glRotatef(trans->GetRotation().y + 180, 0, 1, 0);
+	glTranslatef(trans->GetPosition().x, -trans->GetPosition().y, -trans->GetPosition().z);
+#endif
+}
+
+void RendererOpengl::ResetTransform()
+{
+}
+
+void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale)
+{
+#ifdef __PSP__
+	glMatrixMode(GL_MODEL);
+	glLoadIdentity();
+#else
+	glMatrixMode(GL_MODELVIEW);
+#endif
+	glTranslatef(position.x, position.y, position.z);
+
+#ifdef __PSP__
+	glRotatefXYZ(rotation.x * 3.14159265359 / 180.0f, rotation.y * 3.14159265359 / 180.0f, rotation.z * 3.14159265359 / 180.0f);
+#elif __vita__
+	glRotatef(rotation.z, 0, 0, 1);
+	glRotatef(rotation.y, 0, 1, 0);
+	glRotatef(rotation.x, 1, 0, 0);
+#endif
+
+	glScalef(scale.x, scale.y, scale.z);
 }
 
 void RendererOpengl::Clear()

@@ -76,6 +76,9 @@ void Texture::Bind()
 
 void Texture::Load(const char *filename, const int vram)
 {
+    int OutBytesPerPixel = 4;
+    int ColorMode = GU_PSM_8888;
+
     int nrChannels;
     stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *texData = stbi_load(filename, &width, &height,
@@ -92,6 +95,44 @@ void Texture::Load(const char *filename, const int vram)
     pW = pow2(width);
     pH = pow2(height);
 
+    unsigned int *dataBuffer = (unsigned int *)memalign(16, pH * pW * OutBytesPerPixel);
+
+    // Copy to Data Buffer
+    copy_texture_data(dataBuffer, texData, pW, width, height);
+
+    // Free STB Data
+    stbi_image_free(texData);
+
+    unsigned int *swizzled_pixels = NULL;
+    if (vram)
+    {
+        swizzled_pixels = (unsigned int *)getStaticVramTexture(pW, pH, ColorMode);
+    }
+    else
+    {
+        size_t size = pH * pW * OutBytesPerPixel;
+        swizzled_pixels = (unsigned int *)memalign(16, size);
+    }
+
+    swizzle_fast((u8 *)swizzled_pixels, (const u8 *)dataBuffer, pW * OutBytesPerPixel, pH);
+
+    free(dataBuffer);
+    data = swizzled_pixels;
+
+    sceKernelDcacheWritebackInvalidateAll();
+
+    // return tex;
+    // SetData(texData, vram);
+    // stbi_image_free(texData);
+}
+
+#endif
+
+void Texture::SetData(const unsigned char *texData, int vram)
+{
+    pW = pow2(width);
+    pH = pow2(height);
+
     unsigned int *dataBuffer =
         (unsigned int *)memalign(16, pH * pW * 4);
 
@@ -99,7 +140,7 @@ void Texture::Load(const char *filename, const int vram)
     copy_texture_data(dataBuffer, texData, pW, width, height);
 
     // Free STB Data
-    stbi_image_free(texData);
+    // stbi_image_free(texData);
 
     unsigned int *swizzled_pixels = NULL;
     size_t size = pH * pW * 4;
@@ -118,11 +159,10 @@ void Texture::Load(const char *filename, const int vram)
     data = swizzled_pixels;
 
     sceKernelDcacheWritebackInvalidateAll();
-
-    // return tex;
+    // glGenTextures(1, &id);
+    // Bind();
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
-
-#endif
 
 #ifdef __vita__
 

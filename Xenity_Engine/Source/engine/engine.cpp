@@ -41,7 +41,7 @@ int Engine::Init(const std::string exePath)
 {
 	/* Initialize libraries */
 	Debug::Init();
-	File::InitFileSystem(exePath);
+	FileSystem::InitFileSystem(exePath);
 
 	renderer = new RendererOpengl();
 
@@ -65,8 +65,9 @@ int Engine::Init(const std::string exePath)
 	// 	return -1;
 	// }
 	InputSystem::Init();
-	Debug::Print("-------- Sprite Manager Not implemented --------");
+	// Debug::Print("-------- Sprite Manager Not implemented --------");
 	SpriteManager::Init();
+	UiManager::CreateFont("Roboto-Regular.ttf");
 	// Debug::Print("-------- Asset Manager Not implemented --------");
 	AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
@@ -185,39 +186,61 @@ void Engine::SetSelectedGameObject(GameObject *newSelected)
 void GameInit()
 {
 	Texture *texture = new Texture();
-	texture->Load("container.jpg", 1);
+	texture->Load("container.jpg", 0);
+	Texture *texture2 = new Texture();
+	texture2->Load("Stone512.jpg", 0);
+	Texture *texture3 = new Texture();
+	texture3->Load("Stone512.jpg", 0);
+	Texture *texture4 = new Texture();
+	texture4->Load("Stone512.jpg", 0);
+	Texture *texture5 = new Texture();
+	texture5->Load("Stone512.jpg", 0);
+	Texture *texture6 = new Texture();
+	texture6->Load("Stone512.jpg", 0);
+	Texture *texture7 = new Texture();
+	texture7->Load("Stone512.jpg", 0);
+
+	// texture2->Load("Stone256.jpg", 1);
 	cameraGO = GameObject::FindGameObjectByName("Camera");
-	cameraGO->GetTransform()->SetPosition(Vector3(0, 0, -10));
-	cameraGO->GetTransform()->SetRotation(Vector3(0, 10, 0));
+	cameraGO->GetTransform()->SetPosition(Vector3(0, 2.81f, -10));
+	cameraGO->GetTransform()->SetRotation(Vector3(0, 0, 0));
 
 	GameObject *spriteGo0 = new GameObject();
 	GameObject *spriteGo1 = new GameObject();
 	GameObject *spriteGo2 = new GameObject();
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
-	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81, -4.36));
+	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81f, -4.36f));
 
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
-	ps0->texture = texture;
-	ps1->texture = texture;
+	ps0->texture = texture7;
+	ps1->texture = texture2;
 	ps2->texture = texture;
 }
 
 void GameLoop()
 {
+#ifdef __PSP__
 	// Rotate camera
 	Vector3 rot = cameraGO->GetTransform()->GetRotation();
 	rot.x += InputSystem::leftJoystick.y;
 	rot.y += InputSystem::leftJoystick.x;
 	cameraGO->GetTransform()->SetRotation(rot);
+#else
+	// Rotate camera
+	Vector3 rot = cameraGO->GetTransform()->GetRotation();
+	rot.x += InputSystem::rightJoystick.y * 1.5f;
+	rot.y += InputSystem::rightJoystick.x * 1.5f;
+	cameraGO->GetTransform()->SetRotation(rot);
 
 	// Move camera
 	Vector3 pos = cameraGO->GetTransform()->GetPosition();
-	pos.x += InputSystem::rightJoystick.x / 5.0f;
-	pos.z -= InputSystem::rightJoystick.y / 5.0f;
+	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f);
+	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f);
 	cameraGO->GetTransform()->SetPosition(pos);
+#endif
 }
 
 /// <summary>

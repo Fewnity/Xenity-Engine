@@ -9,6 +9,7 @@ class Color;
 class Vector4;
 class Vector3;
 class Vector2;
+class Camera;
 // class MeshData;
 
 enum PolygoneFillMode
@@ -54,5 +55,8 @@ public:
 	virtual void SetClearColor(Color color) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane) = 0;
+	virtual void SetCameraPosition(Camera *camera) = 0;
+	virtual void ResetTransform() = 0;
+	virtual void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale) = 0;
 	virtual void Clear() = 0;
 };
