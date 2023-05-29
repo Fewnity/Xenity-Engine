@@ -1,14 +1,22 @@
 #include "texture.h"
 
 #include "../../../include/stb_image.h"
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "../../../include/stb_image_resize.h"
 #include <malloc.h>
 #include <string>
 #include "../debug/debug.h"
 
+#ifdef __vita__
+#include <vitaGL.h>
+#endif
+
 #ifdef __PSP__
 #include "../../psp/gu2gl.h"
 #include <pspkernel.h>
+#endif
 
+#ifdef __PSP__
 void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigned int height)
 {
     unsigned int blockx, blocky;
@@ -67,22 +75,26 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 void Texture::Bind()
 {
     // Specifics for psp
-    glTexMode(GU_PSM_8888, 0, 0, 1);
+    glTexMode(type, 0, 0, 1);
+    // glTexMode(type, 0, 0, 0);
     glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
     glTexFilter(GL_NEAREST, GL_NEAREST);
     glTexWrap(GL_REPEAT, GL_REPEAT);
     glTexImage(0, pW, pH, pW, data);
+    // glTexImage(0, width, height, width, data);
 }
 
 void Texture::Load(const char *filename, const int vram)
 {
     int OutBytesPerPixel = 4;
     int ColorMode = GU_PSM_8888;
+    type = GU_PSM_8888;
 
     int nrChannels;
     stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *texData = stbi_load(filename, &width, &height,
                                        &nrChannels, STBI_rgb_alpha);
+
 
     if (!texData)
     {
@@ -94,15 +106,22 @@ void Texture::Load(const char *filename, const int vram)
 
     pW = pow2(width);
     pH = pow2(height);
+// sceKernelDcacheWritebackInvalidateAll();
+unsigned char *texData2 = (unsigned char *)malloc(pW * pH * 4);
+stbir_resize_uint8(texData, width, height, 0, texData2, pW, pH, 0, 4);
+
+    // pW = pow2(width);
+    // pH = pow2(height);
 
     unsigned int *dataBuffer = (unsigned int *)memalign(16, pH * pW * OutBytesPerPixel);
 
     // Copy to Data Buffer
-    copy_texture_data(dataBuffer, texData, pW, width, height);
-
+    // copy_texture_data(dataBuffer, texData, pW, width, height);
+copy_texture_data(dataBuffer, texData2, pW, pW, pH);
+free(texData2);
     // Free STB Data
     stbi_image_free(texData);
-
+// sceKernelDcacheWritebackInvalidateAll();
     unsigned int *swizzled_pixels = NULL;
     if (vram)
     {
@@ -121,6 +140,8 @@ void Texture::Load(const char *filename, const int vram)
 
     sceKernelDcacheWritebackInvalidateAll();
 
+Debug::Print("Texture:  " + std::to_string(width) + ", " + std::to_string(height)+ " " + std::to_string(pW) + ", " + std::to_string(pH));
+
     // return tex;
     // SetData(texData, vram);
     // stbi_image_free(texData);
@@ -130,43 +151,55 @@ void Texture::Load(const char *filename, const int vram)
 
 void Texture::SetData(const unsigned char *texData, int vram)
 {
+    #ifdef __PSP__
+    type = GU_PSM_8888;
+    int bCount = 4;
+
     pW = pow2(width);
     pH = pow2(height);
 
     unsigned int *dataBuffer =
-        (unsigned int *)memalign(16, pH * pW * 4);
+        (unsigned int *)memalign(16, pH * pW * bCount);
 
     // Copy to Data Buffer
-    copy_texture_data(dataBuffer, texData, pW, width, height);
-
-    // Free STB Data
-    // stbi_image_free(texData);
+    copy_texture_data(dataBuffer, texData, pW, pW, pH);
 
     unsigned int *swizzled_pixels = NULL;
-    size_t size = pH * pW * 4;
+    size_t size = pH * pW * bCount;
     if (vram)
     {
-        swizzled_pixels = (unsigned int *)getStaticVramTexture(pW, pH, GU_PSM_8888);
+        swizzled_pixels = (unsigned int *)getStaticVramTexture(pW, pH, type);
     }
     else
     {
         swizzled_pixels = (unsigned int *)memalign(16, size);
     }
 
-    swizzle_fast((u8 *)swizzled_pixels, (const u8 *)dataBuffer, pW * 4, pH);
+    swizzle_fast((u8 *)swizzled_pixels, (const u8 *)dataBuffer, pW * bCount, pH);
 
+    // data = dataBuffer;
     free(dataBuffer);
     data = swizzled_pixels;
 
     sceKernelDcacheWritebackInvalidateAll();
-    // glGenTextures(1, &id);
-    // Bind();
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    #endif
+    #ifdef __vita__
+
+    unsigned char *test = (unsigned char *)malloc(sizeof(unsigned char) * width * height * 1);
+    for (int i = 0; i < width * height; i++)
+    {
+        test[i] = texData[i];
+    }
+    
+    glGenTextures(1, &id);
+    Bind();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, test);
+    #endif
 }
 
 #ifdef __vita__
 
-#include <vitaGL.h>
 
 void Texture::Bind()
 {
@@ -179,7 +212,9 @@ void Texture::Load(const char *filename, const int vram)
     // unsigned char *buffer = stbi_load("app0:texture.bmp", &width, &height,
     //                                   &nrChannels, 3);
     stbi_set_flip_vertically_on_load(GL_TRUE);
-    unsigned char *buffer = stbi_load("ux0:container.jpg", &width, &height,
+    std::string path = "ux0:";
+    path+= filename;
+    unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
                                       &nrChannels, 3);
     if (!buffer)
     {

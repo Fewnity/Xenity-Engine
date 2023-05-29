@@ -14,7 +14,8 @@ public:
     // Specific to psp
     unsigned int pW, pH;
     void *data;
-
+    int type;
+    
     unsigned int id;
     std::string name = "";
 };

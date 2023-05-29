@@ -188,19 +188,23 @@ void GameInit()
 	Texture *texture = new Texture();
 	texture->Load("container.jpg", 0);
 	Texture *texture2 = new Texture();
-	texture2->Load("Stone512.jpg", 0);
+	texture2->Load("B.jpg", 0);
 	Texture *texture3 = new Texture();
-	texture3->Load("Stone512.jpg", 0);
+	texture3->Load("B2.jpg", 0);
 	Texture *texture4 = new Texture();
-	texture4->Load("Stone512.jpg", 0);
-	Texture *texture5 = new Texture();
-	texture5->Load("Stone512.jpg", 0);
-	Texture *texture6 = new Texture();
-	texture6->Load("Stone512.jpg", 0);
-	Texture *texture7 = new Texture();
-	texture7->Load("Stone512.jpg", 0);
+	texture4->Load("Stone256.jpg", 0);
+	// texture2->Load("Stone512.jpg", 0);
+	// Texture *texture3 = new Texture();
+	// texture3->Load("Stone512.jpg", 0);
+	// Texture *texture4 = new Texture();
+	// texture4->Load("Stone512.jpg", 0);
+	// Texture *texture5 = new Texture();
+	// texture5->Load("Stone512.jpg", 0);
+	// Texture *texture6 = new Texture();
+	// texture6->Load("Stone512.jpg", 0);
+	// Texture *texture7 = new Texture();
+	// texture7->Load("Stone512.jpg", 0);
 
-	// texture2->Load("Stone256.jpg", 1);
 	cameraGO = GameObject::FindGameObjectByName("Camera");
 	cameraGO->GetTransform()->SetPosition(Vector3(0, 2.81f, -10));
 	cameraGO->GetTransform()->SetRotation(Vector3(0, 0, 0));
@@ -215,9 +219,9 @@ void GameInit()
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
-	ps0->texture = texture7;
+	ps0->texture = texture;
 	ps1->texture = texture2;
-	ps2->texture = texture;
+	ps2->texture = texture4;
 }
 
 void GameLoop()

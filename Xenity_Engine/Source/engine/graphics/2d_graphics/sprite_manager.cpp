@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include "../camera.h"
 #include "../renderer/renderer.h"
+#include "../../../../include/stb_image_resize.h"
 
 #ifdef __PSP__
 #include <pspkernel.h>
@@ -19,7 +20,8 @@
 
 #include <ft2build.h>
 
-// #include <freetype2/ft2build.h>
+// #include <freetype/ft2build.h>
+// #include FT_CACHE_H
 #include FT_FREETYPE_H
 
 MeshData::MeshData(unsigned int vcount, unsigned int index_count)
@@ -128,6 +130,7 @@ void SpriteManager::Init()
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
+    // texture = UiManager::fonts[0]->Characters[65].texture;
     // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 100.0f;
     float scaleCoef = (100.0f / 100.0f) / 100.0f;
     float w = texture->width * scaleCoef;
@@ -143,15 +146,11 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
     Vector3 pos = Vector3(-position.x, position.y, position.z);
     Vector3 rot = Vector3(rotation.x, rotation.y + 180, rotation.z);
-    // Vector3 scl = Vector3(scale.x / (w * 1.5), scale.y / (h * 1.5), 1);
     Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
     Engine::renderer->SetTransform(pos, rot, scl);
 
     texture->Bind();
-    // UiManager::fonts[0]->Characters[5].texture->Bind();
     DrawMeshData(spriteMeshData);
-
-    // delete (spriteMeshData);
 }
 
 std::vector<Font *> UiManager::fonts;
@@ -161,6 +160,16 @@ int UiManager::Init()
     return 0;
 }
 
+unsigned int pow22(const unsigned int value)
+{
+    unsigned int poweroftwo = 1;
+    while (poweroftwo < value)
+    {
+        poweroftwo <<= 1;
+    }
+    return poweroftwo;
+}
+
 /// <summary>
 /// Load a font
 /// </summary>
@@ -168,7 +177,7 @@ int UiManager::Init()
 /// <returns></returns>
 Font *UiManager::CreateFont(std::string filePath)
 {
-    return nullptr;
+    //return nullptr;
     Debug::Print("Loading font...");
 
     Font *font = new Font();
@@ -182,18 +191,26 @@ Font *UiManager::CreateFont(std::string filePath)
 
     // Load font
     FT_Face face;
-    std::string path = EngineSettings::RootFolder + filePath;
+    // std::string path = EngineSettings::RootFolder + filePath;
+    std::string path;
+    #ifdef __vita__
+    path = "ux0:";
+    #endif
+    path += EngineSettings::RootFolder + filePath;
     if (FT_New_Face(ft, path.c_str(), 0, &face))
     {
         Debug::Print("ERROR: Failed to load font. Path: " + path);
         return nullptr;
     }
 
+    // 34, 64
+
     // Load glyph
     FT_Set_Pixel_Sizes(face, 0, 48);
     // Engine::renderer->PixelStoreUnpack();
+    // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    for (unsigned char c = 0; c < 10; c++)
+    for (unsigned char c = 0; c < 100; c++)
     {
         try
         {
@@ -203,33 +220,54 @@ Font *UiManager::CreateFont(std::string filePath)
                 Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
                 continue;
             }
+            Texture *texture = new Texture();
 
-            // Texture *texture = new Texture();
-            // texture->width = face->glyph->bitmap.width;
-            // texture->height = face->glyph->bitmap.rows;
-            // texture->SetData(face->glyph->bitmap.buffer, 0);
+#ifdef __PSP__
+            int pW = pow22(face->glyph->bitmap.width);
+            int pH = pow22(face->glyph->bitmap.rows);
 
-            // generate texture
-            // Texture *texture = new Texture(Engine::renderer->GenerateTextureId(), 1, face->glyph->bitmap.width, face->glyph->bitmap.rows);
-            // // Engine::renderer->BindTexture(texture);
-            // // Engine::renderer->SetTextureData(texture, face->glyph->bitmap.buffer);
+            unsigned char *test = (unsigned char *)malloc(sizeof(unsigned char) * pW * pH * 4);
+            if(face->glyph->bitmap.width != 0 && face->glyph->bitmap.rows != 0)
+            {
+                // Debug::Print("a " +  std::to_string(c) + " " + std::to_string(face->glyph->bitmap.width) + ", " + std::to_string(face->glyph->bitmap.rows));
+                unsigned char *texData2 = (unsigned char *)malloc(pW * pH * 1);
+                stbir_resize_uint8(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, texData2, pW, pH, 0, 1);
+                int size = pW * pH;
+                for (int i = 0; i < size; i++)
+                {
+                    int off = size - i - 1;
+                    test[0+i*4] = texData2[off];
+                    test[1+i*4] = texData2[off];
+                    test[2+i*4] = texData2[off];
+                    test[3+i*4] = texData2[off];
+                }
+                free(texData2);
+            }
+#endif
 
-            // // // set texture options
-            // // Engine::renderer->SetTextureWrapMode(Texture::ClampToEdge);
-            // // Engine::renderer->SetTextureFilter(texture, Texture::Bilinear);
+            texture->width = face->glyph->bitmap.width;
+            texture->height = face->glyph->bitmap.rows;
+
+            #ifdef __PSP__
+            texture->SetData(test, 0);
+            free(test);
+            sceKernelDcacheWritebackInvalidateAll();
+            #else
+            texture->SetData(face->glyph->bitmap.buffer, 0);
+            #endif
 
             // now store character for later use
-            // Character character = {
-            //     texture,
-            //     glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            //     glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            //     (unsigned int)face->glyph->advance.x};
-            // font->Characters[c] = character;
+            Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                (unsigned int)face->glyph->advance.x};
+            font->Characters[c] = character;
 
-            // if (font->maxCharHeight < (float)character.Size.y)
-            //     font->maxCharHeight = (float)character.Size.y;
+            if (font->maxCharHeight < (float)character.Size.y)
+                font->maxCharHeight = (float)character.Size.y;
 
-            // Debug::Print("x " + std::to_string(texture->width) + ", " + std::to_string(texture->pW));
+            // Debug::Print("b " +  std::to_string(c) + " " + std::to_string(texture->pW) + ", " + std::to_string(texture->pH));
         }
         catch (...)
         {
