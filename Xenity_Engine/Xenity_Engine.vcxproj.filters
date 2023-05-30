@@ -80,6 +80,9 @@
     <ClCompile Include="Source\rts_game\managers\team_manager.cpp" />
     <ClCompile Include="Source\rts_game\bullet.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_psp.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_manager.cpp" />
+    <ClCompile Include="Source\engine\graphics\3d_graphics\mesh_data.cpp" />
+    <ClCompile Include="Source\engine\graphics\3d_graphics\mesh_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\audio\audio_source.h" />
@@ -171,6 +174,9 @@
     <ClInclude Include="Source\rts_game\managers\team_manager.h" />
     <ClInclude Include="Source\rts_game\bullet.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_psp.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_manager.h" />
+    <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_data.h" />
+    <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
