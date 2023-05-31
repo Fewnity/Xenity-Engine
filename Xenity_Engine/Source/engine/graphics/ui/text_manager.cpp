@@ -161,12 +161,13 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
             else if (horizontalAlignment == H_Center)
                 nextMove.x -= lineLength[line].x / 100.0f / 2.0f;
 
-            nextMove.y = -lineLength[line].z / 100.0f;
+            nextMove.y += -lineLength[line].z / 100.0f;
             // nextMove.y = -0.5;
         }
         else
         {
             float yOff = (ch->Size.y - ch->Bearing.y) / 100.0f;
+            // float yOff = 0;
             // TextManager::CreateCharacterMesh(ch);
             DrawCharacter(Vector3(nextMove.x, nextMove.y - yOff, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), ch->texture, ch);
             x += nextMove.x;
