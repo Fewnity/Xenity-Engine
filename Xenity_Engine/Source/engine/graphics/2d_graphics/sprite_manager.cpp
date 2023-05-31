@@ -7,17 +7,14 @@
 #include "../camera.h"
 #include "../renderer/renderer.h"
 #include "../../../../include/stb_image_resize.h"
-#include "../3d_graphics/mesh_data.h"
 
 #ifdef __PSP__
 #include <pspkernel.h>
 #include "../../../psp/gu2gl.h"
-#include "../../../psp/graphics/graphics.h"
 #endif
 
 #ifdef __vita__
 #include <vitaGL.h>
-#include "../../../psvita/graphics/graphics.h"
 #endif
 
 Camera *camera = nullptr;
@@ -47,10 +44,10 @@ void SpriteManager::Init()
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
-    // texture = UiManager::fonts[0]->Characters[65].texture;
+    // texture = TextManager::fonts[0]->Characters[65].texture;
     // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 100.0f;
     float scaleCoef = (100.0f / 100.0f) / 100.0f;
-    //float scaleCoef = (1.0f / 100.0f); //?
+    // float scaleCoef = (1.0f / 100.0f); //?
 
     float w = texture->width * scaleCoef;
     float h = texture->height * scaleCoef;

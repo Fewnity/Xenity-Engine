@@ -4,15 +4,13 @@
 #ifdef __PSP__
 #include <pspkernel.h>
 #include "../../../psp/gu2gl.h"
-#include "../../../psp/graphics/graphics.h"
 #endif
 
 #ifdef __vita__
 #include <vitaGL.h>
-#include "../../../psvita/graphics/graphics.h"
 #endif
 
-void MeshManager::DrawMeshData(MeshData* meshData)
+void MeshManager::DrawMeshData(MeshData *meshData)
 {
 #ifdef __PSP__
     // glDrawElements(GL_TRIANGLES, GL_INDEX_16BIT | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, 6, meshData->indices, meshData->data);

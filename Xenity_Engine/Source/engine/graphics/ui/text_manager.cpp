@@ -4,44 +4,30 @@
 #ifdef __PSP__
 #include <pspkernel.h>
 #include "../../../psp/gu2gl.h"
-#include "../../../psp/graphics/graphics.h"
 #endif
 
 #ifdef __vita__
 #include <vitaGL.h>
-#include "../../../psvita/graphics/graphics.h"
 #endif
 
 #include <ft2build.h>
-
-// #include <freetype/ft2build.h>
+#include "../../../../include/stb_image_resize.h"
 
 #include FT_FREETYPE_H
 
-
-std::vector<Font*> TextManager::fonts;
-
-unsigned int pow22(const unsigned int value)
-{
-    unsigned int poweroftwo = 1;
-    while (poweroftwo < value)
-    {
-        poweroftwo <<= 1;
-    }
-    return poweroftwo;
-}
+std::vector<Font *> TextManager::fonts;
 
 /// <summary>
 /// Load a font
 /// </summary>
 /// <param name="filePath"></param>
 /// <returns></returns>
-Font* TextManager::CreateFont(std::string filePath)
+Font *TextManager::CreateFont(std::string filePath)
 {
-    //return nullptr;
+    // return nullptr;
     Debug::Print("Loading font...");
 
-    Font* font = new Font();
+    Font *font = new Font();
 
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
@@ -64,8 +50,6 @@ Font* TextManager::CreateFont(std::string filePath)
         return nullptr;
     }
 
-    // 34, 64
-
     // Load glyph
     FT_Set_Pixel_Sizes(face, 0, 48);
     // Engine::renderer->PixelStoreUnpack();
@@ -81,26 +65,25 @@ Font* TextManager::CreateFont(std::string filePath)
                 Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
                 continue;
             }
-            Texture* texture = new Texture();
+            Texture *texture = new Texture();
 
 #ifdef __PSP__
-            int pW = pow22(face->glyph->bitmap.width);
-            int pH = pow22(face->glyph->bitmap.rows);
+            int pW = Math::pow2(face->glyph->bitmap.width);
+            int pH = Math::pow2(face->glyph->bitmap.rows);
 
-            unsigned char* test = (unsigned char*)malloc(sizeof(unsigned char) * pW * pH * 4);
+            unsigned char *test = (unsigned char *)malloc(sizeof(unsigned char) * pW * pH * 4);
             if (face->glyph->bitmap.width != 0 && face->glyph->bitmap.rows != 0)
             {
                 // Debug::Print("a " +  std::to_string(c) + " " + std::to_string(face->glyph->bitmap.width) + ", " + std::to_string(face->glyph->bitmap.rows));
-                unsigned char* texData2 = (unsigned char*)malloc(pW * pH * 1);
+                unsigned char *texData2 = (unsigned char *)malloc(pW * pH * 1);
                 stbir_resize_uint8(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, texData2, pW, pH, 0, 1);
                 int size = pW * pH;
                 for (int i = 0; i < size; i++)
                 {
-                    int off = size - i - 1;
-                    test[0 + i * 4] = texData2[off];
-                    test[1 + i * 4] = texData2[off];
-                    test[2 + i * 4] = texData2[off];
-                    test[3 + i * 4] = texData2[off];
+                    test[0 + i * 4] = texData2[i];
+                    test[1 + i * 4] = texData2[i];
+                    test[2 + i * 4] = texData2[i];
+                    test[3 + i * 4] = texData2[i];
                 }
                 free(texData2);
             }
@@ -110,11 +93,11 @@ Font* TextManager::CreateFont(std::string filePath)
             texture->height = face->glyph->bitmap.rows;
 
 #ifdef __PSP__
-            texture->SetData(test, 0);
+            texture->SetData(test, 0, false);
             free(test);
             sceKernelDcacheWritebackInvalidateAll();
 #else
-            texture->SetData(face->glyph->bitmap.buffer, 0);
+            texture->SetData(face->glyph->bitmap.buffer, 0, false);
 #endif
 
             // now store character for later use
@@ -122,7 +105,7 @@ Font* TextManager::CreateFont(std::string filePath)
                 texture,
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                (unsigned int)face->glyph->advance.x };
+                (unsigned int)face->glyph->advance.x};
             font->Characters[c] = character;
 
             if (font->maxCharHeight < (float)character.Size.y)

@@ -4,6 +4,6 @@ class MeshData;
 
 class MeshManager {
 public:
-	void DrawMeshData(MeshData* meshData);
+	static void DrawMeshData(MeshData* meshData);
 private:
 };

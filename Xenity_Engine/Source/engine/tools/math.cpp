@@ -28,6 +28,16 @@ void Math::MultiplyMatrix(const float *A, const float *B, float *result, int rA,
 	}
 }
 
+unsigned int Math::pow2(const unsigned int value)
+{
+	unsigned int poweroftwo = 1;
+	while (poweroftwo < value)
+	{
+		poweroftwo <<= 1;
+	}
+	return poweroftwo;
+}
+
 Vector3 Math::GetDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();

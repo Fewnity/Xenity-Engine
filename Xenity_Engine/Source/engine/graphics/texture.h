@@ -9,13 +9,15 @@ public:
     void Load(const char *filename, const int vram);
     int width, height;
 
-    void SetData(const unsigned char *data, int vram);
+    void SetData(const unsigned char *data, int vram, bool needResize);
 
-    // Specific to psp
-    unsigned int pW, pH;
-    void *data;
+#ifdef __PSP__
+    unsigned int pW = 0;
+    unsigned int pH = 0;
+    void *data = nullptr;
     int type;
-    
+#endif
+
     unsigned int id;
     std::string name = "";
 };

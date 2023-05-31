@@ -67,7 +67,7 @@ int Engine::Init(const std::string exePath)
 	InputSystem::Init();
 	// Debug::Print("-------- Sprite Manager Not implemented --------");
 	SpriteManager::Init();
-	UiManager::CreateFont("Roboto-Regular.ttf");
+	TextManager::CreateFont("Roboto-Regular.ttf");
 	// Debug::Print("-------- Asset Manager Not implemented --------");
 	AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
@@ -212,16 +212,20 @@ void GameInit()
 	GameObject *spriteGo0 = new GameObject();
 	GameObject *spriteGo1 = new GameObject();
 	GameObject *spriteGo2 = new GameObject();
+	GameObject *spriteGo3 = new GameObject();
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
 	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81f, -4.36f));
+	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
 
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
+	SpriteRenderer *ps3 = spriteGo3->AddComponent<SpriteRenderer>();
 	ps0->texture = texture;
 	ps1->texture = texture2;
 	ps2->texture = texture4;
+	ps3->texture = TextManager::fonts[0]->Characters[65].texture;
 }
 
 void GameLoop()
