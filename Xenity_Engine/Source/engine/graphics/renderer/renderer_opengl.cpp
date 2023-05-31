@@ -137,11 +137,12 @@ void RendererOpengl::ResetTransform()
 {
 }
 
-void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale)
+void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform)
 {
 #ifdef __PSP__
 	glMatrixMode(GL_MODEL);
-	glLoadIdentity();
+	if (resetTransform)
+		glLoadIdentity();
 #else
 	glMatrixMode(GL_MODELVIEW);
 #endif

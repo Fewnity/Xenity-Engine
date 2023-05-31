@@ -75,11 +75,10 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
     int byteCount = pW * pH * bytePerPixel;
 
     unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
-
     if (needResize)
     {
         unsigned char *resizedData = (unsigned char *)malloc(byteCount);
-        stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, 4);
+        stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, bytePerPixel);
         copy_texture_data(dataBuffer, resizedData, pW, pW, pH);
     }
     else
@@ -130,13 +129,14 @@ void Texture::Bind()
 
 void Texture::Load(const char *filename, const int vram)
 {
-    int nrChannels;
-    stbi_set_flip_vertically_on_load(GL_TRUE);
     std::string path = "";
 #ifdef __vita__
     path += "ux0:";
 #endif
     path += filename;
+
+    int nrChannels;
+    stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
                                       &nrChannels, 4);
     if (!buffer)
@@ -161,5 +161,6 @@ void Texture::Load(const char *filename, const int vram)
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 #endif
+
     stbi_image_free(buffer);
 }

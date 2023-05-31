@@ -15,6 +15,6 @@ public:
 	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane);
 	void SetCameraPosition(Camera *camera);
 	void ResetTransform();
-	void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale);
+	void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform);
 	void Clear();
 };
