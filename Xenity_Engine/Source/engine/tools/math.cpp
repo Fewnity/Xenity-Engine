@@ -38,6 +38,18 @@ unsigned int Math::pow2(const unsigned int value)
 	return poweroftwo;
 }
 
+unsigned int Math::pow2Lower(const unsigned int value)
+{
+	unsigned int poweroftwo = 1;
+	unsigned int lastPower = poweroftwo;
+	while (poweroftwo < value)
+	{
+		lastPower = poweroftwo;
+		poweroftwo <<= 1;
+	}
+	return lastPower;
+}
+
 Vector3 Math::GetDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();

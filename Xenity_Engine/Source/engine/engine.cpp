@@ -189,16 +189,17 @@ GameObject *spriteGo4 = nullptr;
 
 void GameInit()
 {
-	Texture *texture = new Texture();
-	texture->Load("container.jpg", 0);
-	Texture *texture2 = new Texture();
-	texture2->Load("B.jpg", 0);
-	Texture *texture3 = new Texture();
-	texture3->Load("B2.jpg", 0);
-	Texture *texture4 = new Texture();
-	texture4->Load("Stone256.jpg", 0);
-	Texture *texture5 = new Texture();
-	texture5->Load("dot.jpg", 0);
+	Texture *texture = new Texture("container.jpg", "Container");
+	texture->SetFilter(Texture::Point);
+	texture->SetWrapMode(Texture::ClampToEdge);
+	// Texture *texture2 = new Texture();
+	// texture2->Load("B.jpg", 0);
+	// Texture *texture3 = new Texture();
+	// texture3->Load("B2.jpg", 0);
+	// Texture *texture4 = new Texture();
+	// texture4->Load("Stone256.jpg", 0);
+	Texture *texture5 = new Texture("dot.jpg", "Dot");
+	// texture5->Load("dot.jpg", 0);
 	// texture2->Load("Stone512.jpg", 0);
 	// Texture *texture3 = new Texture();
 	// texture3->Load("Stone512.jpg", 0);
@@ -222,17 +223,18 @@ void GameInit()
 	spriteGo4 = new GameObject();
 
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
+	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
+	// spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
 	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81f, -4.36f));
 	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
 
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
-	// SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
+	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	// SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
 	// SpriteRenderer *ps3 = spriteGo3->AddComponent<SpriteRenderer>();
 	ps0->texture = texture5;
-	// ps1->texture = texture2;
+	ps1->texture = texture;
 	// ps2->texture = texture4;
 	// ps3->texture = TextManager::fonts[0]->Characters[65].texture;
 

@@ -14,50 +14,24 @@
 #endif
 
 #include <ft2build.h>
+
 #include "../../../../include/stb_image_resize.h"
 
 #include FT_FREETYPE_H
 
 std::vector<Font *> TextManager::fonts;
 
-// MeshData *TextManager::spriteMeshData = nullptr;
-
-// Texture *ttexture;
-
 void TextManager::Init()
 {
-    // ttexture = new Texture();
-    // ttexture->Load("container.jpg", 0);
-    //     spriteMeshData = new MeshData(4, 6);
-    //     spriteMeshData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f, -0.5f, 0.0f, 0);
-    //     spriteMeshData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f, -0.5f, 0.0f, 1);
-    //     spriteMeshData->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f, 0.5f, 0.0f, 2);
-    //     spriteMeshData->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f, 0.5f, 0.0f, 3);
-    //     spriteMeshData->indices[0] = 0;
-    //     spriteMeshData->indices[1] = 2;
-    //     spriteMeshData->indices[2] = 1;
-    //     spriteMeshData->indices[3] = 2;
-    //     spriteMeshData->indices[4] = 0;
-    //     spriteMeshData->indices[5] = 3;
-    // #ifdef __PSP__
-    //     sceKernelDcacheWritebackInvalidateAll(); // Very important
-    // #endif
 }
 
 void TextManager::CreateCharacterMesh(Character *chara)
 {
-    // if (spriteMeshData)
-    //     delete spriteMeshData;
-
-    float scaleCoef = (100.0f / 100.0f) / 100.0f;
-    float w = chara->texture->width * scaleCoef;
-    float h = chara->texture->height * scaleCoef;
+    float scaleCoef = (1.0f / chara->texture->GetPixelPerUnit());
+    float w = chara->texture->GetWidth() * scaleCoef;
+    float h = chara->texture->GetHeight() * scaleCoef;
 
     chara->mesh = new MeshData(4, 6);
-    // spriteMeshData->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f * w, -0.5f * h, 0.0f, 0);
-    // spriteMeshData->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f * w, -0.5f * h, 0.0f, 1);
-    // spriteMeshData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f * w, 0.5f * h, 0.0f, 2);
-    // spriteMeshData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f * w, 0.5f * h, 0.0f, 3);
 
     chara->mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0, 0, 0.0f, 0);
     chara->mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 1 * w, 0, 0.0f, 1);
@@ -78,12 +52,9 @@ void TextManager::CreateCharacterMesh(Character *chara)
 void TextManager::DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch)
 {
     // texture = TextManager::fonts[0]->Characters[65].texture;
-    // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 100.0f;
-    // float scaleCoef = (1.0f / 100.0f); //?
-
-    float scaleCoef = (100.0f / 100.0f) / 100.0f;
-    float w = texture->width * scaleCoef;
-    float h = texture->height * scaleCoef;
+    float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+    float w = texture->GetWidth() * scaleCoef;
+    float h = texture->GetHeight() * scaleCoef;
 
     // Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
@@ -100,8 +71,7 @@ void TextManager::DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scal
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
 
-    texture->Bind();
-    // ttexture->Bind();
+    Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(ch->mesh);
 }
 
@@ -225,7 +195,6 @@ Font *TextManager::CreateFont(std::string filePath)
                 Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
                 continue;
             }
-            Texture *texture = new Texture();
 
 #ifdef __PSP__
             int pW = Math::pow2(face->glyph->bitmap.width);
@@ -236,7 +205,9 @@ Font *TextManager::CreateFont(std::string filePath)
             {
                 // Debug::Print("a " +  std::to_string(c) + " " + std::to_string(face->glyph->bitmap.width) + ", " + std::to_string(face->glyph->bitmap.rows));
                 unsigned char *texData2 = (unsigned char *)malloc(pW * pH * 1);
-                stbir_resize_uint8(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, texData2, pW, pH, 0, 1);
+                // stbir_resize_uint8(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, texData2, pW, pH, 0, 1);
+                stbir_resize_uint8_generic(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0,
+                                           texData2, pW, pH, 0, 1, -1, 0, STBIR_EDGE_CLAMP, STBIR_FILTER_DEFAULT, STBIR_COLORSPACE_SRGB, NULL);
 
                 int size = pW * pH;
                 for (int i = 0; i < size; i++)
@@ -250,16 +221,22 @@ Font *TextManager::CreateFont(std::string filePath)
             }
 #endif
 
-            texture->width = face->glyph->bitmap.width;
-            texture->height = face->glyph->bitmap.rows;
+            // Texture *texture = new Texture();
+            // texture->width = face->glyph->bitmap.width;
+            // texture->height = face->glyph->bitmap.rows;
 
 #ifdef __PSP__
-            texture->SetData(test, 0, false);
+            Texture *texture = new Texture(test, 4, face->glyph->bitmap.width, face->glyph->bitmap.rows);
+            // texture->SetData(test, 0, false);
             free(test);
             sceKernelDcacheWritebackInvalidateAll();
 #else
-            texture->SetData(face->glyph->bitmap.buffer, 0, false);
+            Texture *texture = new Texture(face->glyph->bitmap.buffer, 4, face->glyph->bitmap.width, face->glyph->bitmap.rows);
+            // texture->SetData(face->glyph->bitmap.buffer, 0, false);
 #endif
+
+            texture->SetFilter(Texture::Point);
+            texture->SetWrapMode(Texture::ClampToEdge);
 
             // now store character for later use
             Character character = {

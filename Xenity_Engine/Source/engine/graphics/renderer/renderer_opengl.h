@@ -16,5 +16,16 @@ public:
 	void SetCameraPosition(Camera *camera);
 	void ResetTransform();
 	void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform);
+	void BindTexture(Texture *texture);
+	void ApplyTextureFilters(Texture *texture);
 	void Clear();
+
+private:
+	// int GetBufferTypeEnum(BufferType bufferType);
+	// int GetBufferModeEnum(BufferMode bufferMode);
+	int GetWrapModeEnum(Texture::WrapMode wrapMode);
+	// int GetCullFaceEnum(CullFace face);
+	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
+	// int GetShaderTypeEnum(Shader::ShaderType shaderType);
+	// int GetDrawModeEnum(DrawMode drawMode);
 };

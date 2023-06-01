@@ -16,6 +16,58 @@
 #include <pspkernel.h>
 #endif
 
+Texture::Texture(const std::string filePath, std::string name)
+{
+    CreateTexture(filePath, name, Bilinear, true);
+}
+
+Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
+{
+    CreateTexture(filePath, name, filter, useMipMap);
+}
+
+Texture::Texture(const int textureId, const int channelCount, const int width, const int height)
+{
+    this->textureId = textureId;
+    this->nrChannels = channelCount;
+    this->width = width;
+    this->height = height;
+    useMipMap = false;
+}
+
+Texture::Texture(unsigned char *data, const int channelCount, const int width, const int height)
+{
+    // this->textureId = textureId;
+    this->nrChannels = channelCount;
+    this->width = width;
+    this->height = height;
+    useMipMap = false;
+    SetData(data, 0, false);
+}
+
+Texture::~Texture()
+{
+    AssetManager::RemoveTexture(this);
+    // Engine::renderer->DeleteTexture(this);
+}
+
+/// <summary>
+/// Create the texture from the file path and texture settings
+/// </summary>
+/// <param name="filePath">File path</param>
+/// <param name="filter">Filter to use</param>
+/// <param name="useMipMap">Will texture use mipmap</param>
+void Texture::CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
+{
+    this->filter = filter;
+    this->useMipMap = useMipMap;
+    this->name = name;
+
+    LoadTexture(filePath);
+
+    AssetManager::AddTexture(this);
+}
+
 #ifdef __PSP__
 void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigned int height)
 {
@@ -107,27 +159,27 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
 #endif
 
 #ifdef __vita__
-    glGenTextures(1, &id);
-    Bind();
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texData);
 #endif
 }
 
-void Texture::Bind()
-{
-#ifdef __PSP__
-    glTexMode(type, 0, 0, 1);
-    glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
-    glTexFilter(GL_NEAREST, GL_NEAREST);
-    glTexWrap(GL_REPEAT, GL_REPEAT);
-    glTexImage(0, pW, pH, pW, data);
-#endif
-#ifdef __vita__
-    glBindTexture(GL_TEXTURE_2D, id);
-#endif
-}
+// void Texture::Bind()
+// {
+// #ifdef __PSP__
+//     glTexMode(type, 0, 0, 1);
+//     glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
+//     glTexFilter(GL_NEAREST, GL_NEAREST);
+//     glTexWrap(GL_REPEAT, GL_REPEAT);
+//     glTexImage(0, pW, pH, pW, data);
+// #endif
+// #ifdef __vita__
+//     glBindTexture(GL_TEXTURE_2D, textureId);
+// #endif
+// }
 
-void Texture::Load(const char *filename, const int vram)
+void Texture::LoadTexture(const std::string filename)
 {
     std::string path = "";
 #ifdef __vita__
@@ -152,15 +204,94 @@ void Texture::Load(const char *filename, const int vram)
     }
 
 #ifdef __PSP__
+    int vram = 0;
     SetData(buffer, vram, true);
 #endif
 
 #ifdef __vita__
-    glGenTextures(1, &id);
-    Bind();
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 #endif
 
     stbi_image_free(buffer);
+}
+
+/// <summary>
+/// Set texture's filter
+/// </summary>
+/// <param name="filter"></param>
+void Texture::SetFilter(const Filter filter)
+{
+    this->filter = filter;
+    UpdateTextureFilter();
+}
+
+void Texture::SetWrapMode(const WrapMode mode)
+{
+    wrapMode = mode;
+    UpdateTextureFilter();
+}
+
+int Texture::GetWidth() const
+{
+    return width;
+}
+
+int Texture::GetHeight() const
+{
+    return height;
+}
+
+void Texture::SetPixelPerUnit(int value)
+{
+    pixelPerUnit = value;
+}
+
+int Texture::GetPixelPerUnit() const
+{
+    return pixelPerUnit;
+}
+
+int Texture::GetChannelCount() const
+{
+    return nrChannels;
+}
+
+bool Texture::GetUseMipmap() const
+{
+    return useMipMap;
+}
+
+/// <summary>
+/// Get texture id
+/// </summary>
+/// <returns></returns>
+unsigned int Texture::GetTextureId() const
+{
+    return textureId;
+}
+
+Texture::Filter Texture::GetFilter() const
+{
+    return filter;
+}
+
+Texture::WrapMode Texture::GetWrapMode() const
+{
+    return wrapMode;
+}
+
+#pragma endregion
+
+/// <summary>
+/// Update texture if the filter has changed
+/// </summary>
+void Texture::UpdateTextureFilter()
+{
+    // Engine::renderer->BindTexture(this);
+    // Engine::renderer->SetTextureFilter(this, filter);
+    // Engine::renderer->SetTextureWrapMode(wrapMode);
+    // Engine::renderer->SetAnisotropyLevel(EngineSettings::anisotropicLevel);
 }

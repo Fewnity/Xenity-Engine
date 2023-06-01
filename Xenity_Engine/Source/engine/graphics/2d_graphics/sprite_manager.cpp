@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include "../camera.h"
 #include "../renderer/renderer.h"
+
 #include "../../../../include/stb_image_resize.h"
 
 #ifdef __PSP__
@@ -45,12 +46,10 @@ void SpriteManager::Init()
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
     // texture = TextManager::fonts[0]->Characters[65].texture;
-    // float scaleCoef = 100.0f / texture->GetPixelPerUnit() / 100.0f;
-    float scaleCoef = (100.0f / 100.0f) / 100.0f;
-    // float scaleCoef = (1.0f / 100.0f); //?
+    float scaleCoef = (1.0f / texture->GetPixelPerUnit());
 
-    float w = texture->width * scaleCoef;
-    float h = texture->height * scaleCoef;
+    float w = texture->GetWidth() * scaleCoef;
+    float h = texture->GetHeight() * scaleCoef;
 
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
@@ -65,6 +64,6 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
 
-    texture->Bind();
+    Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(spriteMeshData);
 }

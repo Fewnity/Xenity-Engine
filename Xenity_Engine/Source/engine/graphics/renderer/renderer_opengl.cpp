@@ -159,8 +159,212 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 	glScalef(scale.x, scale.y, scale.z);
 }
 
+void RendererOpengl::BindTexture(Texture *texture)
+{
+#ifdef __PSP__
+	glTexMode(texture->type, 0, 0, 1);
+	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
+
+	// glTexWrap(GL_REPEAT, GL_REPEAT);
+	// glTexWrap(GL_CLAMP, GL_CLAMP);
+	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data);
+	ApplyTextureFilters(texture);
+
+#endif
+#ifdef __vita__
+	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+	ApplyTextureFilters(texture);
+#endif
+}
+
+void RendererOpengl::ApplyTextureFilters(Texture *texture)
+{
+	int minFilterValue = 0;
+	int magfilterValue = 0;
+	if (texture->GetFilter() == Texture::Bilinear)
+	{
+		if (texture->GetUseMipmap())
+		{
+			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			minFilterValue = GL_LINEAR;
+		}
+		else
+		{
+			minFilterValue = GL_LINEAR;
+		}
+		magfilterValue = GL_LINEAR;
+	}
+	else if (texture->GetFilter() == Texture::Point)
+	{
+		if (texture->GetUseMipmap())
+		{
+			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			minFilterValue = GL_NEAREST;
+		}
+		else
+		{
+			minFilterValue = GL_NEAREST;
+		}
+		magfilterValue = GL_NEAREST;
+	}
+	int wrap = GetWrapModeEnum(texture->GetWrapMode());
+
+	// glTexFilter(minFilterValue, magfilterValue);
+	// glTexWrap(wrap, wrap);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterValue);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
+}
+
 void RendererOpengl::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
 	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
+
+// int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
+// {
+// 	int type = GL_REPEAT;
+// 	switch (bufferType)
+// 	{
+// 	case Array_Buffer:
+// 		type = GL_ARRAY_BUFFER;
+// 		break;
+// 	case Element_Array_Buffer:
+// 		type = GL_ELEMENT_ARRAY_BUFFER;
+// 		break;
+// 	}
+// 	return type;
+// }
+
+// int RendererOpengl::GetBufferModeEnum(BufferMode bufferMode)
+// {
+// 	int mode = GL_STATIC_DRAW;
+// 	switch (bufferMode)
+// 	{
+// 	case Static:
+// 		mode = GL_STATIC_DRAW;
+// 		break;
+// 	case Dynamic:
+// 		mode = GL_DYNAMIC_DRAW;
+// 		break;
+// 	}
+// 	return mode;
+// }
+
+int RendererOpengl::GetWrapModeEnum(Texture::WrapMode wrapMode)
+{
+	int mode = GL_REPEAT;
+	switch (wrapMode)
+	{
+	case Texture::WrapMode::ClampToEdge:
+	case Texture::WrapMode::ClampToBorder:
+		mode = GL_CLAMP;
+		break;
+	case Texture::WrapMode::Repeat:
+		mode = GL_REPEAT;
+		break;
+
+		// case Texture::WrapMode::ClampToEdge:
+		// 	mode = GL_CLAMP_TO_EDGE;
+		// 	break;
+		// case Texture::WrapMode::ClampToBorder:
+		// 	mode = GL_CLAMP_TO_BORDER;
+		// 	break;
+		// case Texture::WrapMode::MirroredRepeat:
+		// 	mode = GL_MIRRORED_REPEAT;
+		// 	break;
+		// case Texture::WrapMode::Repeat:
+		// 	mode = GL_REPEAT;
+		// 	break;
+		// case Texture::WrapMode::MirrorClampToEdge:
+		// 	mode = GL_MIRROR_CLAMP_TO_EDGE;
+		// 	break;
+	}
+	return mode;
+}
+
+// int RendererOpengl::GetCullFaceEnum(CullFace face)
+// {
+// 	int side = GL_BACK;
+// 	switch (face)
+// 	{
+// 	case Front:
+// 		side = GL_FRONT;
+// 		break;
+// 	case Back:
+// 		side = GL_BACK;
+// 		break;
+// 	case Front_And_Back:
+// 		side = GL_FRONT_AND_BACK;
+// 		break;
+// 	}
+// 	return side;
+// }
+
+// float RendererOpengl::GetAnisotropicValueEnum(Texture::AnisotropicLevel level)
+// {
+// 	float anisotropicValue = 16;
+// 	switch (level)
+// 	{
+// 	case Texture::X0:
+// 		anisotropicValue = 1;
+// 		break;
+// 	case Texture::X2:
+// 		anisotropicValue = 2;
+// 		break;
+// 	case Texture::X4:
+// 		anisotropicValue = 4;
+// 		break;
+// 	case Texture::X8:
+// 		anisotropicValue = 8;
+// 		break;
+// 	case Texture::X16:
+// 		anisotropicValue = 16;
+// 		break;
+// 	}
+// 	return anisotropicValue;
+// }
+
+// int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
+// {
+// 	int compileType = GL_VERTEX_SHADER;
+// 	switch (shaderType)
+// 	{
+// 	case Shader::Vertex_Shader:
+// 		compileType = GL_VERTEX_SHADER;
+// 		break;
+// 	case Shader::Fragment_Shader:
+// 		compileType = GL_FRAGMENT_SHADER;
+// 		break;
+// 	case Shader::Tessellation_Control_Shader:
+// 		compileType = GL_TESS_CONTROL_SHADER;
+// 		break;
+// 	case Shader::Tessellation_Evaluation_Shader:
+// 		compileType = GL_TESS_EVALUATION_SHADER;
+// 		break;
+// 	}
+// 	return compileType;
+// }
+
+// int RendererOpengl::GetDrawModeEnum(DrawMode drawMode)
+// {
+// 	int mode = GL_TRIANGLES;
+// 	switch (drawMode)
+// 	{
+// 	case Patches:
+// 		mode = GL_PATCHES;
+// 		break;
+// 	case Triangles:
+// 		mode = GL_TRIANGLES;
+// 		break;
+// 	case Quads:
+// 		mode = GL_QUADS;
+// 		break;
+// 	}
+
+// 	return mode;
+// }
