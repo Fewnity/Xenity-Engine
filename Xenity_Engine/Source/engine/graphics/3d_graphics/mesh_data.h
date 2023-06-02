@@ -16,8 +16,10 @@ public:
 
     void AddVertice(float u, float v, unsigned int color, float x, float y, float z, int indice);
 
-    Vertex* data = nullptr;
+    Vertex *data = nullptr;
 
-    unsigned int* indices = nullptr;
+    unsigned int *indices = nullptr;
     unsigned int index_count = 0;
+    bool hasUv = false;
+    bool hasNormal = false;
 };

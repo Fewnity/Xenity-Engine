@@ -2,6 +2,7 @@
 #include "../../xenity.h"
 #include "../graphics/renderer/renderer.h"
 #include <algorithm>
+#include "../file_system/mesh_loader/wavefront_loader.h"
 
 Camera *Graphics::usedCamera = nullptr;
 int Graphics::usedShaderProgram = -1;
@@ -11,11 +12,20 @@ std::vector<IDrawable *> Graphics::orderedIDrawable;
 // ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
+bool loaded = false;
+MeshData *cubeData = nullptr;
+
 /// <summary>
 /// Draw all Drawable elements
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+	if (!loaded)
+	{
+		cubeData = WavefrontLoader::LoadFromRawData("CubeTriangulateNoNormals.obj");
+		loaded = true;
+	}
+
 	Graphics::OrderDrawables();
 	// Engine::renderer->SetCullFace(Back);
 

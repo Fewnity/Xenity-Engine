@@ -10,9 +10,13 @@
 #include "../engine_settings.h"
 #include "../debug/debug.h"
 
-#define TEXTURE_PATH R"(Xenity_Engine\Source\images\)"
-#define SHADER_PATH R"(Xenity_Engine\Source\images\)"
-#define PATH_PATH R"(Xenity_Engine\Source\images\)"
+// #define TEXTURE_PATH R"(Xenity_Engine\Source\images\)"
+// #define SHADER_PATH R"(Xenity_Engine\Source\images\)"
+// #define MODEL_PATH R"(Xenity_Engine\Source\images\)"
+
+#define TEXTURE_PATH R"(images\)"
+#define SHADER_PATH R"(shaders\)"
+#define MODEL_PATH R"(models\)"
 
 std::string FileSystem::texturePath;
 std::string FileSystem::shaderPath;
@@ -117,10 +121,16 @@ void FileSystem::InitFileSystem(const std::string exePath)
 	// EngineSettings::RootFolder = exePath;
 	// int index = (int)exePath.find(R"(\Xenity-Engine\)");
 	// EngineSettings::RootFolder = exePath.substr(0, index + 15);
+	EngineSettings::RootFolder = "";
 
-	texturePath = EngineSettings::RootFolder + TEXTURE_PATH;
-	shaderPath = EngineSettings::RootFolder + SHADER_PATH;
-	modelsPath = EngineSettings::RootFolder + PATH_PATH;
+	texturePath = EngineSettings::RootFolder;
+	texturePath += TEXTURE_PATH;
+
+	shaderPath = EngineSettings::RootFolder;
+	shaderPath += SHADER_PATH;
+
+	modelsPath = EngineSettings::RootFolder;
+	modelsPath += MODEL_PATH;
 
 	Debug::Print("-------- File System initiated --------");
 	// gamePath += R"(Debug\)"; //TODO remove this

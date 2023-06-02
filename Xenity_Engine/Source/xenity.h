@@ -54,7 +54,7 @@
 // #include "engine/graphics/material.h"
 #include "engine/graphics/iDrawableTypes.h"
 #include "engine/graphics/texture.h"
-// #include "engine/graphics/3d_graphics/mesh.h"
+#include "engine/graphics/3d_graphics/mesh_renderer.h"
 #include "engine/graphics/3d_graphics/mesh_manager.h"
 #include "engine/graphics/2d_graphics/sprite_manager.h"
 #include "engine/graphics/2d_graphics/sprite_renderer.h"

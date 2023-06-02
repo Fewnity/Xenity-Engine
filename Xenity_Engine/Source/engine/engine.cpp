@@ -10,6 +10,7 @@
 //  #include <imgui/imgui_impl_opengl3.h>
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
+#include "file_system/mesh_loader/wavefront_loader.h"
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -191,6 +192,7 @@ TextRendererCanvas *debugTextRenderer = nullptr;
 
 void GameInit()
 {
+
 	Texture *texture = new Texture("container.jpg", "Container");
 	texture->SetFilter(Texture::Point);
 	texture->SetWrapMode(Texture::ClampToEdge);
@@ -198,8 +200,8 @@ void GameInit()
 	// texture2->Load("B.jpg", 0);
 	// Texture *texture3 = new Texture();
 	// texture3->Load("B2.jpg", 0);
-	// Texture *texture4 = new Texture();
-	// texture4->Load("Stone256.jpg", 0);
+	// Texture *texture4 = new Texture("Stone256.jpg", "stone");
+
 	Texture *texture5 = new Texture("dot.jpg", "Dot");
 	// texture5->Load("dot.jpg", 0);
 	// texture2->Load("Stone512.jpg", 0);
@@ -228,7 +230,7 @@ void GameInit()
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
 	// spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
-	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81f, -4.36f));
+	spriteGo2->GetTransform()->SetPosition(Vector3(0, 0.81f, -0.36f));
 	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, -4));
@@ -247,10 +249,10 @@ void GameInit()
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
 
-	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
-	// debugTextRenderer->text = "Hello\nWorld";
-	debugTextRenderer->horizontalAligment = H_Left;
-	debugTextRenderer->verticalAlignment = V_Top;
+	// debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
+	// // debugTextRenderer->text = "Hello\nWorld";
+	// debugTextRenderer->horizontalAligment = H_Left;
+	// debugTextRenderer->verticalAlignment = V_Top;
 }
 
 void GameLoop()
@@ -321,7 +323,7 @@ void Engine::Loop()
 
 		std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
 		std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4);
-		debugTextRenderer->text = debugText;
+		// debugTextRenderer->text = debugText;
 		if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
 		{
 			lastTime = (int)Time::GetTime();
