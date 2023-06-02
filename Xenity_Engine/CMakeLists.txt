@@ -49,6 +49,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexceptions")
 
+include_directories(${PSPDEV}/psp/include/freetype2)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     png
     jpeg
@@ -96,8 +98,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
 
+include_directories(${VITASDK}/arm-vita-eabi/include)
+
 # Library to link to (drop the -l prefix). This will mostly be stubs.
 target_link_libraries(${PROJECT_NAME}
+freetype
+png
+  z
   vitaGL 
   vita2d 
   SceLibKernel_stub 
@@ -114,13 +121,11 @@ target_link_libraries(${PROJECT_NAME}
   SceUsbSerial_stub
   SceUsbd_stub 
   zip 
-  z 
   vitashark 
   SceShaccCgExt 
   taihen_stub SceShaccCg_stub
   SceKernelDmacMgr_stub 
   SceCtrl_stub 
-  freetype
   stdc++
   pthread
 )
