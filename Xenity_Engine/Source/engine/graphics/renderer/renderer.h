@@ -57,6 +57,7 @@ public:
 	virtual void SetClearColor(Color color) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane) = 0;
+	virtual void ResetView() = 0;
 	virtual void SetCameraPosition(Camera *camera) = 0;
 	virtual void ResetTransform() = 0;
 	virtual void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform) = 0;

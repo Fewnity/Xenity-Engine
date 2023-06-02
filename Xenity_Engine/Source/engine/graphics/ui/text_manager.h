@@ -36,7 +36,8 @@ class TextManager
 public:
     static void Init();
     static Font *CreateFont(std::string filePath);
-    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform);
+    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas);
+    // static void DrawTextCanvas(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform);
     static void DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch);
     static std::vector<Font *> fonts;
     static void CreateCharacterMesh(Character *chara);

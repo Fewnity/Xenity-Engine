@@ -105,35 +105,6 @@ Vector2 Camera::MouseTo2DWorld()
 	// return ScreenTo2DWorld((int)InputSystem::mousePosition.x, (int)InputSystem::mousePosition.y);
 }
 
-#ifdef __PSP__
-#include "../../psp/gu2gl.h"
-void Camera::Apply()
-{
-	// glMatrixMode(GL_VIEW);
-	// glLoadIdentity();
-
-	// gluRotateZ((-GetTransform()->GetRotation().z) / 180.0f * 3.14159f);
-	// gluRotateX(GetTransform()->GetRotation().x / 180.0f * 3.14159f);
-	// gluRotateY((GetTransform()->GetRotation().y + 180) / 180.0f * 3.14159f);
-
-	// glTranslatef(GetTransform()->GetPosition().x, -GetTransform()->GetPosition().y, -GetTransform()->GetPosition().z);
-
-	// glMatrixMode(GL_MODEL);
-	// glLoadIdentity();
-}
-#endif
-
-#ifdef __vita__
-#include <vitaGL.h>
-void Camera::Apply()
-{
-	// glRotatef(-GetTransform()->GetRotation().z, 0, 0, 1);
-	// glRotatef(GetTransform()->GetRotation().x, 1, 0, 0);
-	// glRotatef(GetTransform()->GetRotation().y + 180, 0, 1, 0);
-	// glTranslatef(GetTransform()->GetPosition().x, -GetTransform()->GetPosition().y, -GetTransform()->GetPosition().z);
-}
-#endif
-
 void Camera::UpdateProjection()
 {
 	if (projectionType == ProjectionTypes::Perspective)

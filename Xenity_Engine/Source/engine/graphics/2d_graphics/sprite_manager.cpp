@@ -51,6 +51,7 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     float w = texture->GetWidth() * scaleCoef;
     float h = texture->GetHeight() * scaleCoef;
 
+    Graphics::usedCamera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
     Vector3 pos = Vector3(-position.x, position.y, position.z);

@@ -27,7 +27,6 @@ public:
 	void SetProjectionType(ProjectionTypes type);
 	ProjectionTypes GetProjectionType();
 	void UpdateProjection();
-	void Apply();
 
 private:
 	float fov = 60.0f;		  // For 3D

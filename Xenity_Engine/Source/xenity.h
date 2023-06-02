@@ -63,8 +63,7 @@
 #include "engine/graphics/color/color.h"
 #include "engine/graphics/ui/text_manager.h"
 #include "engine/graphics/ui/text_renderer.h"
-// #include "engine/graphics/ui/ui_manager.h"
-// #include "engine/graphics/ui/text_renderer_canvas.h"
+#include "engine/graphics/ui/text_renderer_canvas.h"
 #include "engine/graphics/ui/TextAlignments.h"
 
 // // Files

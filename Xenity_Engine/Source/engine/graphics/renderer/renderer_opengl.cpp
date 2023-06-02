@@ -83,15 +83,9 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	float halfRatio = ((float)Window::GetWidth() / (float)Window::GetHeight()) / 2.0f * 10;
+	float halfRatio = Window::GetAspectRatio() / 2.0f * 10;
 	float halfOne = 0.5f * 10;
 	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, 0.1f, 100.0f);
-
-	// #ifdef __PSP__
-	// 	glMatrixMode(GL_MODEL);
-	// #else
-	// 	glMatrixMode(GL_MODELVIEW);
-	// #endif
 }
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane)
@@ -99,16 +93,23 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #ifdef __PSP__
-	glPerspective(fov, (float)Window::GetWidth() / (float)(float)Window::GetHeight(), 0.06f, 100);
+	glPerspective(fov, Window::GetAspectRatio(), 0.06f, 100);
 #elif __vita__
-	gluPerspective(fov, (float)Window::GetWidth() / (float)(float)Window::GetHeight(), nearClippingPlane, farClippingPlane);
+	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #endif
+}
 
-	// #ifdef __PSP__
-	// 	glMatrixMode(GL_MODEL);
-	// #else
-	// 	glMatrixMode(GL_MODELVIEW);
-	// #endif
+void RendererOpengl::ResetView()
+{
+#ifdef __PSP__
+	glMatrixMode(GL_VIEW);
+	glLoadIdentity();
+	gluRotateY((0 + 180) / 180.0f * 3.14159f);
+#else
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glRotatef(0 + 180, 0, 1, 0);
+#endif
 }
 
 void RendererOpengl::SetCameraPosition(Camera *camera)

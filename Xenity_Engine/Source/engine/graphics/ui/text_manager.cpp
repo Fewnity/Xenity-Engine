@@ -75,7 +75,7 @@ void TextManager::DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scal
     MeshManager::DrawMeshData(ch->mesh);
 }
 
-void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform)
+void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas)
 {
     Font *font = fonts[0];
     int textLenght = (int)text.size();
@@ -85,10 +85,33 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
 
     std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, 1);
 
-    Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-    Vector3 pos = Vector3(0, 0, 0);
+    float canvasOffset = 0;
+    if (!canvas)
+    {
+        Graphics::usedCamera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+    }
+    else
+    {
+        Engine::renderer->SetProjection2D(1, 0.03, 100);
+        Engine::renderer->ResetView();
+        canvasOffset = 1;
+    }
+
+    Vector3 pos;
+    if (!canvas)
+    {
+        pos = transform->GetPosition();
+    }
+    else
+    {
+        float xOff = (-Window::GetAspectRatio() * 5) + (transform->GetPosition().x * (Window::GetAspectRatio() * 10));
+        float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
+        pos = Vector3(-xOff, -yOff, canvasOffset);
+    }
+    // Vector3 pos = transform->GetPosition() + Vector3(0, 0, canvasOffset);
     Vector3 rot = Vector3(transform->GetRotation().x, transform->GetRotation().y + 180, transform->GetRotation().z);
-    Vector3 scl = Vector3(1, 1, 1);
+    Vector3 scl = transform->GetScale();
     Engine::renderer->SetTransform(pos, rot, scl, true);
 
     Vector2 nextMove = Vector2(0);
@@ -233,21 +256,15 @@ Font *TextManager::CreateFont(std::string filePath)
             }
 #endif
 
-            // Texture *texture = new Texture();
-            // texture->width = face->glyph->bitmap.width;
-            // texture->height = face->glyph->bitmap.rows;
-
 #ifdef __PSP__
             Texture *texture = new Texture(test, 4, face->glyph->bitmap.width, face->glyph->bitmap.rows);
-            // texture->SetData(test, 0, false);
             free(test);
             sceKernelDcacheWritebackInvalidateAll();
 #else
             Texture *texture = new Texture(face->glyph->bitmap.buffer, 4, face->glyph->bitmap.width, face->glyph->bitmap.rows);
-            // texture->SetData(face->glyph->bitmap.buffer, 0, false);
 #endif
 
-            texture->SetFilter(Texture::Point);
+            texture->SetFilter(Texture::Bilinear);
             texture->SetWrapMode(Texture::ClampToEdge);
 
             // now store character for later use

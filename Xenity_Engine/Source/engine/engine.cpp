@@ -187,6 +187,8 @@ void Engine::SetSelectedGameObject(GameObject *newSelected)
 
 GameObject *spriteGo4 = nullptr;
 
+TextRendererCanvas *debugTextRenderer = nullptr;
+
 void GameInit()
 {
 	Texture *texture = new Texture("container.jpg", "Container");
@@ -221,6 +223,7 @@ void GameInit()
 	GameObject *spriteGo2 = new GameObject();
 	GameObject *spriteGo3 = new GameObject();
 	spriteGo4 = new GameObject();
+	GameObject *spriteGo5 = new GameObject();
 
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
@@ -228,6 +231,7 @@ void GameInit()
 	spriteGo2->GetTransform()->SetPosition(Vector3(0, 2.81f, -4.36f));
 	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, -4));
 
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
@@ -242,6 +246,11 @@ void GameInit()
 	tr->text = "Salut.\nComment ca va?q\nca va bien!\nOk!oooo";
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
+
+	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
+	// debugTextRenderer->text = "Hello\nWorld";
+	debugTextRenderer->horizontalAligment = H_Left;
+	debugTextRenderer->verticalAlignment = V_Top;
 }
 
 void GameLoop()
@@ -310,10 +319,13 @@ void Engine::Loop()
 			}
 		}
 
+		std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
+		std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4);
+		debugTextRenderer->text = debugText;
 		if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
 		{
 			lastTime = (int)Time::GetTime();
-			Debug::Print("FPS: " + std::to_string(1.0f / Time::GetUnscaledDeltaTime()));
+			Debug::Print(debugText);
 		}
 
 		// Performance::Update();

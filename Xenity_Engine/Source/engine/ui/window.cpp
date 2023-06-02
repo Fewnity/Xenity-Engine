@@ -28,5 +28,5 @@ float Window::GetAspectRatio()
 
 void Window::UpdateAspectRatio()
 {
-    aspect = width / height;
+    aspect = (float)width / (float)height;
 }
