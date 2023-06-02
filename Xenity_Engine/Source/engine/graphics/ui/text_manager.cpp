@@ -210,11 +210,23 @@ Font *TextManager::CreateFont(std::string filePath)
                                            texData2, pW, pH, 0, 1, -1, 0, STBIR_EDGE_CLAMP, STBIR_FILTER_DEFAULT, STBIR_COLORSPACE_SRGB, NULL);
 
                 int size = pW * pH;
+                bool noAlpha = false;
                 for (int i = 0; i < size; i++)
                 {
-                    test[0 + i * 4] = texData2[i];
-                    test[1 + i * 4] = texData2[i];
-                    test[2 + i * 4] = texData2[i];
+                    if (noAlpha)
+                    {
+                        if (texData2[i] < 150)
+                        {
+                            texData2[i] = 0;
+                        }
+                        else
+                        {
+                            texData2[i] = 255;
+                        }
+                    }
+                    test[0 + i * 4] = 255;
+                    test[1 + i * 4] = 255;
+                    test[2 + i * 4] = 255;
                     test[3 + i * 4] = texData2[i];
                 }
                 free(texData2);

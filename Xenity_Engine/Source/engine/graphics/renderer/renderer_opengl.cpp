@@ -209,14 +209,16 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	}
 	int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
-	// glTexFilter(minFilterValue, magfilterValue);
-	// glTexWrap(wrap, wrap);
-
+#ifdef __PSP__
+	glTexFilter(minFilterValue, magfilterValue);
+	glTexWrap(wrap, wrap);
+#else
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterValue);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
+#endif
 }
 
 void RendererOpengl::Clear()

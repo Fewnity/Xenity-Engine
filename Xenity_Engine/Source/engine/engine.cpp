@@ -68,8 +68,8 @@ int Engine::Init(const std::string exePath)
 	// Debug::Print("-------- Sprite Manager Not implemented --------");
 	SpriteManager::Init();
 	TextManager::Init();
-	// TextManager::CreateFont("Roboto-Regular.ttf");
-	TextManager::CreateFont("Minecraftia-Regular.ttf");
+	TextManager::CreateFont("Roboto-Regular.ttf");
+	// TextManager::CreateFont("Minecraftia-Regular.ttf");
 	// Debug::Print("-------- Asset Manager Not implemented --------");
 	AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
