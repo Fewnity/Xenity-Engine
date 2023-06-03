@@ -40,7 +40,7 @@ void Debug::Init()
 {
 #ifdef __PSP__
     // PspDebugInit();
-    FileSystem::DeleteFile("xenity_engine_debug.txt");
+    FileSystem::fileSystem->DeleteFile("xenity_engine_debug.txt");
     file = new File("xenity_engine_debug.txt");
 #elif __vita__
     // PsVitaDebugInit();

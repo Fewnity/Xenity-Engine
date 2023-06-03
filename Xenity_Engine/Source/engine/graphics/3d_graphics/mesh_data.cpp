@@ -8,7 +8,7 @@
 MeshData::MeshData(unsigned int vcount, unsigned int index_count)
 {
     data = (Vertex *)memalign(16, sizeof(Vertex) * vcount);
-    // data = (Vertex*)malloc(sizeof(Vertex) * vcount);
+    // data = (Vertex *)malloc(sizeof(Vertex) * vcount);
     if (data == nullptr)
     {
         return;

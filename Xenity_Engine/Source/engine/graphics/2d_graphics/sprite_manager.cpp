@@ -40,6 +40,7 @@ void SpriteManager::Init()
 #endif
     cameraGo = new GameObject("Camera");
     camera = cameraGo->AddComponent<Camera>();
+    camera->SetFarClippingPlane(100);
     // camera->SetProjectionType(Orthographic);
 }
 
@@ -55,12 +56,13 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
     Vector3 pos = Vector3(-position.x, position.y, position.z);
-    Vector3 rot = Vector3(rotation.x, rotation.y + 180, rotation.z);
+    Vector3 rot = Vector3(rotation.x, rotation.y, rotation.z);
     Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
     Engine::renderer->SetTransform(pos, rot, scl, true);
 
     // Set settings
     glDisable(GL_DEPTH_TEST);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);

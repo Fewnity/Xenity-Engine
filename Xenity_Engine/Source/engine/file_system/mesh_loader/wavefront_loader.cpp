@@ -15,7 +15,12 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 {
 	Debug::Print("Loading mesh...");
 
-	std::string finalpath = FileSystem::modelsPath;
+	std::string finalpath = "";
+#ifdef __vita__
+	finalpath += "ux0:";
+#endif
+	finalpath += FileSystem::fileSystem->modelsPath;
+
 	// Open file
 	ifstream file;
 	file.open(finalpath + filePath);
@@ -117,6 +122,12 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 				hasNoNormals = true;
 				sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 																								// sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
+
+				// mesh->AddVertice(
+				// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
+				// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, vertexIndex);
+
+				// mesh->indices[i] = vertexIndex;
 			}
 			else if (count == 6)
 			{
@@ -153,7 +164,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	if (!hasNoUv)
 		byteCount += 2;
 
-	MeshData *mesh = new MeshData(verticesCount, indicesCount);
+	MeshData *mesh = new MeshData(indicesCount, indicesCount);
 
 	Debug::Print("verticesCount" + std::to_string(verticesCount) + " " + std::to_string(indicesCount));
 
@@ -166,8 +177,35 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	mesh->hasUv = !hasNoUv;
 	mesh->hasNormal = !hasNoNormals;
 
+	for (int i = 0; i < indicesCount; i++)
+	{
+		// mesh->indices[i] = vertexIndices[i] - 1;
+	}
+
+	// int test = 0;
+	// for (int i = 0; i < verticesCount; i++)
+	// {
+	// 	mesh->AddVertice(
+	// 		tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
+	// 		0xFFFFFFFF, tempVertices.at(i).x, tempVertices.at(i).y, tempVertices.at(i).z, vertexIndex);
+
+	// 	/* code */
+	// }
+
 	// Push vertices in the right order
 	int vertexIndicesSize = (int)vertexIndices.size();
+	int i2 = 0;
+	int i3 = 0;
+	int i4 = 0;
+	// vertexIndicesSize /= 3;
+
+	// for (int i = 0; i < verticesCount; i++)
+	// {
+	// 	mesh->AddVertice(
+	// 		tempTexturesCoords.at(0).x, tempTexturesCoords.at(0).y,
+	// 		0xFFFFFFFF, tempVertices.at(i).x, tempVertices.at(i).y, tempVertices.at(i).z, i);
+	// }
+
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i] - 1;
@@ -175,10 +213,22 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 		unsigned int normalIndices = normalsIndices[i] - 1;
 		int test = 0;
 		int index = i * byteCount;
+
 		// (float u, float v, unsigned int color, float x, float y, float z, int indice);
 		mesh->AddVertice(
 			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
 			0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+
+		mesh->indices[i] = i;
+
+		// Debug::Print("U" + std::to_string(tempTexturesCoords.at(textureIndex).x) + " V" + std::to_string(tempTexturesCoords.at(textureIndex).y) + " i" + std::to_string(vertexIndex));
+
+		// mesh->data[vertexIndex].u = tempTexturesCoords.at(textureIndex).x;
+		// mesh->data[vertexIndex].v = tempTexturesCoords.at(textureIndex).y;
+
+		// mesh->AddVertice(
+		// 	tempTexturesCoords.at(0).x, tempTexturesCoords.at(i2++).y,
+		// 	0xFFFFFFFF, tempVertices.at(i3++).x, tempVertices.at(i3++).y, tempVertices.at(i3++).z, i);
 
 		// mesh->vertices[index] = tempVertices.at(vertexIndex).x;
 		// mesh->vertices[index + ++test] = tempVertices.at(vertexIndex).y;

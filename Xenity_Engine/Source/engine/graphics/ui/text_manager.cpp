@@ -27,16 +27,19 @@ void TextManager::Init()
 
 void TextManager::CreateCharacterMesh(Character *chara)
 {
+    // if (chara->texture == nullptr || chara->texture->GetWidth() == 0 || chara->texture->GetHeight() == 0)
+    //     return;
+
     float scaleCoef = (1.0f / chara->texture->GetPixelPerUnit());
     float w = chara->texture->GetWidth() * scaleCoef;
     float h = chara->texture->GetHeight() * scaleCoef;
 
     chara->mesh = new MeshData(4, 6);
 
-    chara->mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0, 0, 0.0f, 0);
-    chara->mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 1 * w, 0, 0.0f, 1);
-    chara->mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 1 * w, 1 * h, 0.0f, 2);
-    chara->mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0 * w, 1 * h, 0.0f, 3);
+    chara->mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 1 * w, 0, 0.0f, 0);
+    chara->mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0, 0, 0.0f, 1);
+    chara->mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0, 1 * h, 0.0f, 2);
+    chara->mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 1 * w, 1 * h, 0.0f, 3);
 
     chara->mesh->indices[0] = 0;
     chara->mesh->indices[1] = 2;
@@ -49,24 +52,27 @@ void TextManager::CreateCharacterMesh(Character *chara)
 #endif
 }
 
-void TextManager::DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch)
+void TextManager::DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch, bool for3D)
 {
-    // texture = TextManager::fonts[0]->Characters[65].texture;
-    float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-    float w = texture->GetWidth() * scaleCoef;
-    float h = texture->GetHeight() * scaleCoef;
-
-    // Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-
     Vector3 pos = Vector3(position.x, position.y, 0);
-    // Vector3 rot = Vector3(rotation.x, rotation.y + 180, rotation.z);
     Vector3 rot = Vector3(0, 0, 0);
-    // Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
     Vector3 scl = Vector3(1, 1, 1);
+
     Engine::renderer->SetTransform(pos, rot, scl, false);
 
+    // if (ch->mesh == nullptr)
+    // {
+    //     return;
+    // }
+
     // Set settings
-    glDisable(GL_DEPTH_TEST);
+    if (for3D)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+
+    // glDepthMask(GL_FALSE);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
@@ -110,8 +116,9 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
         pos = Vector3(-xOff, -yOff, canvasOffset);
     }
     // Vector3 pos = transform->GetPosition() + Vector3(0, 0, canvasOffset);
-    Vector3 rot = Vector3(transform->GetRotation().x, transform->GetRotation().y + 180, transform->GetRotation().z);
+    Vector3 rot = Vector3(transform->GetRotation().x, transform->GetRotation().y, transform->GetRotation().z);
     Vector3 scl = transform->GetScale();
+    scl.x = -scl.x;
     Engine::renderer->SetTransform(pos, rot, scl, true);
 
     Vector2 nextMove = Vector2(0);
@@ -141,10 +148,11 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
         nextMove.y += totalY / 100.0f;
     }
 
+    // return;
     for (int i = 0; i < textLenght; i++)
     {
         char c = text[i];
-        Character *ch = &font->Characters[c];
+        Character *ch = font->Characters[c];
         if (c == '\n')
         {
             line++;
@@ -162,10 +170,11 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
             float yOff = (ch->Size.y - ch->Bearing.y) / 100.0f;
             // float yOff = 0;
             // TextManager::CreateCharacterMesh(ch);
-            DrawCharacter(Vector3(nextMove.x, nextMove.y - yOff, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), ch->texture, ch);
+            DrawCharacter(Vector3(nextMove.x, nextMove.y - yOff, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), ch->texture, ch, !canvas);
             x += nextMove.x;
             nextMove.x = ((ch->Advance >> 6)) / 100.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
             nextMove.y = yOff;
+            // Debug::Print("i" + std::to_string((int)c));
         }
     }
 }
@@ -268,16 +277,17 @@ Font *TextManager::CreateFont(std::string filePath)
             texture->SetWrapMode(Texture::ClampToEdge);
 
             // now store character for later use
-            Character character = {
-                texture,
-                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                (unsigned int)face->glyph->advance.x};
-            TextManager::CreateCharacterMesh(&character);
+            Character *character = new Character();
+            character->texture = texture;
+            character->Size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+            character->Bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
+            character->Advance = (unsigned int)face->glyph->advance.x;
+
+            TextManager::CreateCharacterMesh(character);
             font->Characters[c] = character;
 
-            if (font->maxCharHeight < (float)character.Size.y)
-                font->maxCharHeight = (float)character.Size.y;
+            if (font->maxCharHeight < (float)character->Size.y)
+                font->maxCharHeight = (float)character->Size.y;
 
             // Debug::Print("b " +  std::to_string(c) + " " + std::to_string(texture->pW) + ", " + std::to_string(texture->pH));
         }
@@ -307,7 +317,7 @@ std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, 
 
     for (int i = 0; i < textLen; i++)
     {
-        Character ch = font->Characters[text[i]];
+        Character *ch = font->Characters[text[i]];
         if (text[i] == '\n')
         {
             lineLength[currentLine].y = (higherY - lowerY) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
@@ -320,11 +330,11 @@ std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, 
         }
         else
         {
-            lineLength[currentLine].x += (ch.Advance >> 6);
-            if (higherY < (int)ch.Bearing.y)
-                higherY = (int)ch.Bearing.y;
+            lineLength[currentLine].x += (ch->Advance >> 6);
+            if (higherY < (int)ch->Bearing.y)
+                higherY = (int)ch->Bearing.y;
 
-            int low = ch.Size.y - ch.Bearing.y;
+            int low = ch->Size.y - ch->Bearing.y;
             if (lowerY < low)
                 lowerY = low;
         }

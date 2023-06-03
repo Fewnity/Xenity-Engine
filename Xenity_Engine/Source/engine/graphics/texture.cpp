@@ -187,7 +187,6 @@ void Texture::LoadTexture(const std::string filename)
 #endif
     path += filename;
 
-    int nrChannels;
     stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
                                       &nrChannels, 4);

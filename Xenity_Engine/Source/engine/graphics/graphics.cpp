@@ -3,6 +3,7 @@
 #include "../graphics/renderer/renderer.h"
 #include <algorithm>
 #include "../file_system/mesh_loader/wavefront_loader.h"
+#include "3d_graphics/mesh_data.h"
 
 Camera *Graphics::usedCamera = nullptr;
 int Graphics::usedShaderProgram = -1;
@@ -14,6 +15,7 @@ std::vector<IDrawable *> Graphics::orderedIDrawable;
 
 bool loaded = false;
 MeshData *cubeData = nullptr;
+Texture *texture2 = nullptr;
 
 /// <summary>
 /// Draw all Drawable elements
@@ -22,15 +24,18 @@ void Graphics::DrawAllDrawable()
 {
 	if (!loaded)
 	{
-		cubeData = WavefrontLoader::LoadFromRawData("CubeTriangulateNoNormals.obj");
+		cubeData = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
+
 		loaded = true;
+		texture2 = new Texture("container.jpg", "Container");
 	}
 
 	Graphics::OrderDrawables();
-	// Engine::renderer->SetCullFace(Back);
 
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
+	MeshManager::DrawMesh(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), texture2, cubeData);
+
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		orderedIDrawable[i]->Draw();

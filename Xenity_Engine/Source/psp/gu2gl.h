@@ -464,12 +464,12 @@ extern "C"
 		sceGuDepthBuffer(zbp, PSP_BUF_WIDTH);
 		sceGuOffset(2048 - (PSP_SCR_WIDTH / 2), 2048 - (PSP_SCR_HEIGHT / 2));
 		sceGuViewport(2048, 2048, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
-		sceGuDepthRange(65535, 0);
+		sceGuDepthRange(0, 65535);
 		sceGuScissor(0, 0, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 		sceGuEnable(GU_SCISSOR_TEST);
-		sceGuDepthFunc(GU_GEQUAL);
+		sceGuDepthFunc(GU_LESS);
 		sceGuEnable(GU_DEPTH_TEST);
-		sceGuFrontFace(GU_CW);
+		sceGuFrontFace(GU_CCW);
 		sceGuShadeModel(GU_SMOOTH);
 		sceGuEnable(GU_CULL_FACE);
 		// sceGuDisable(GU_CULL_FACE);
@@ -520,7 +520,8 @@ extern "C"
 	void guglStartFrame(void *list, int dialog)
 	{
 		sceGuStart(GU_DIRECT, list);
-
+		// sceGuClearColor(0);
+		// sceGuClearDepth(1);
 		if (dialog)
 		{
 			sceGuFinish();

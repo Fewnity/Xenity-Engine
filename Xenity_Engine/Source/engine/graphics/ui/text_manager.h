@@ -12,20 +12,21 @@ class MeshData;
 class Vector3;
 class Texture;
 
-struct Character
+class Character
 {
-    Texture *texture;     // Glyph texture
-    glm::ivec2 Size;      // Size of glyph
-    glm::ivec2 Bearing;   // Offset from baseline to left/top of glyph
-    unsigned int Advance; // Offset to advance to next glyph
-    MeshData *mesh;
+public:
+    Texture *texture = nullptr; // Glyph texture
+    glm::ivec2 Size;            // Size of glyph
+    glm::ivec2 Bearing;         // Offset from baseline to left/top of glyph
+    unsigned int Advance = 0;   // Offset to advance to next glyph
+    MeshData *mesh = nullptr;
 };
 
 class Font
 {
 public:
     ~Font();
-    Character Characters[256] = {};
+    Character *Characters[256] = {};
     float maxCharHeight = 0;
 
 private:
@@ -38,7 +39,7 @@ public:
     static Font *CreateFont(std::string filePath);
     static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas);
     // static void DrawTextCanvas(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform);
-    static void DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch);
+    static void DrawCharacter(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Character *ch, bool for3D);
     static std::vector<Font *> fonts;
     static void CreateCharacterMesh(Character *chara);
 

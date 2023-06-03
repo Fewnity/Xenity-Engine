@@ -4,9 +4,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../../include/stb_image.h"
 
-#include <iostream>
-#include <fstream>
-
 #include "../engine_settings.h"
 #include "../debug/debug.h"
 
@@ -18,9 +15,11 @@
 #define SHADER_PATH R"(shaders\)"
 #define MODEL_PATH R"(models\)"
 
-std::string FileSystem::texturePath;
-std::string FileSystem::shaderPath;
-std::string FileSystem::modelsPath;
+// std::string FileSystem::texturePath;
+// std::string FileSystem::shaderPath;
+// std::string FileSystem::modelsPath;
+
+FileSystem *FileSystem::fileSystem = nullptr;
 
 #pragma region File
 
@@ -121,15 +120,23 @@ void FileSystem::InitFileSystem(const std::string exePath)
 	// EngineSettings::RootFolder = exePath;
 	// int index = (int)exePath.find(R"(\Xenity-Engine\)");
 	// EngineSettings::RootFolder = exePath.substr(0, index + 15);
-	EngineSettings::RootFolder = "";
-
-	texturePath = EngineSettings::RootFolder;
+	Debug::Print("-------- File System A --------");
+	// EngineSettings::RootFolder = "";
+	Debug::Print("-------- File System B --------");
+	texturePath = "";
+	Debug::Print("-------- File System B2 --------");
 	texturePath += TEXTURE_PATH;
 
-	shaderPath = EngineSettings::RootFolder;
+	Debug::Print("-------- File System C --------");
+
+	shaderPath = "";
+	Debug::Print("-------- File System C2 --------");
 	shaderPath += SHADER_PATH;
 
-	modelsPath = EngineSettings::RootFolder;
+	Debug::Print("-------- File System D --------");
+
+	modelsPath = "";
+	Debug::Print("-------- File System D2 --------");
 	modelsPath += MODEL_PATH;
 
 	Debug::Print("-------- File System initiated --------");

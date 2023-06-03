@@ -31,17 +31,23 @@ private:
 class FileSystem
 {
 public:
-	static unsigned char *LoadTextureData(const std::string filePath, int &width, int &height, int &nrChannels);
-	static std::string ReadText(const std::string path);
-	static void InitFileSystem(const std::string exePath);
-	static std::string GetGamePath();
+	FileSystem()
+	{
+		this->fileSystem = this;
+	}
+	static FileSystem *fileSystem;
 
-	static File *OpenFile(const std::string path);
-	static void CloseFile(File *file);
-	static void WriteInFile(File *file, const std::string data);
-	static void DeleteFile(const std::string path);
+	unsigned char *LoadTextureData(const std::string filePath, int &width, int &height, int &nrChannels);
+	std::string ReadText(const std::string path);
+	void InitFileSystem(const std::string exePath);
+	std::string GetGamePath();
 
-	static std::string texturePath;
-	static std::string shaderPath;
-	static std::string modelsPath;
+	File *OpenFile(const std::string path);
+	void CloseFile(File *file);
+	void WriteInFile(File *file, const std::string data);
+	void DeleteFile(const std::string path);
+
+	std::string texturePath = "";
+	std::string shaderPath = "";
+	std::string modelsPath = "";
 };

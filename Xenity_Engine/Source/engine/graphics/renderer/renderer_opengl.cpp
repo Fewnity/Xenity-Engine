@@ -33,8 +33,12 @@ int RendererOpengl::Init()
 	result = glfwInit();
 #endif
 
-	// glEnable(GL_CULL_FACE);
-	// glCullFace(GL_FRONT);
+#ifdef __vita__
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	// glCullFace(GL_BACK);
+#endif
 
 	return result;
 }
@@ -85,7 +89,7 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 	glLoadIdentity();
 	float halfRatio = Window::GetAspectRatio() / 2.0f * 10;
 	float halfOne = 0.5f * 10;
-	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, 0.1f, 100.0f);
+	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane)
@@ -93,7 +97,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #ifdef __PSP__
-	glPerspective(fov, Window::GetAspectRatio(), 0.06f, 100);
+	glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #elif __vita__
 	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #endif
