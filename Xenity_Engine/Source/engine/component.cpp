@@ -18,11 +18,12 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(GameObject* go)
+void Component::SetGameObject(GameObject *go)
 {
 	if (go == nullptr)
 		return;
 
+	// Check if the component has been just instanciated
 	bool firstUse = false;
 	if (gameObject == nullptr)
 	{
@@ -35,7 +36,8 @@ void Component::SetGameObject(GameObject* go)
 
 	if (firstUse)
 	{
-		if (IDrawable* result = dynamic_cast<IDrawable*>(this))
+		// If the component is a drawble, add to the drawable list
+		if (IDrawable *result = dynamic_cast<IDrawable *>(this))
 		{
 			Graphics::AddDrawable(result);
 		}

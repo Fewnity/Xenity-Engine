@@ -61,6 +61,7 @@ public:
 	virtual void SetCameraPosition(Camera *camera) = 0;
 	virtual void ResetTransform() = 0;
 	virtual void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform) = 0;
+	virtual void MoveTransform(Vector3 position) = 0;
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
 	virtual void Clear() = 0;

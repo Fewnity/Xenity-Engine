@@ -5,26 +5,30 @@
 #include <iostream>
 #include <unordered_map>
 
-class ProfilerValue 
+class ProfilerValue
 {
 public:
-	void AddValue(long long v) {
+	void AddValue(long long v)
+	{
 		value += v;
 		addedValue += v;
 	}
-	void ResetValue() 
+	void ResetValue()
 	{
 		lastValue = value;
 		value = 0;
 	}
-	long long GetValue() {
+	long long GetValue()
+	{
 		return lastValue;
 	}
-	void SetLastValue(long long v) {
+	void SetLastValue(long long v)
+	{
 		lastValue = v;
 	}
 	long long average = 0;
 	long long addedValue = 0;
+
 private:
 	long long lastValue = 0;
 	long long value = 0;
@@ -33,20 +37,21 @@ private:
 class Performance
 {
 public:
+	static void Init();
 	static void ResetCounters();
 	static void AddDrawCall();
 	static void AddMaterialUpdate();
 	static int GetDrawCallCount();
 	static int GetUpdatedMaterialCount();
-	static std::unordered_map<std::string, ProfilerValue*> profilerList;
+	static std::unordered_map<std::string, ProfilerValue *> profilerList;
 	static void Update();
 	static void EnableProfiler(bool enable);
 	static bool IsProfilerEnabled();
 
 private:
-	
 	static void ResetProfiler();
 	static int drawCallCount;
+	static int LastDrawCallCount;
 	static int updatedMaterialCount;
 
 	static int tickCount;

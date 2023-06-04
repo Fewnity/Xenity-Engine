@@ -166,8 +166,6 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 
 	MeshData *mesh = new MeshData(indicesCount, indicesCount);
 
-	Debug::Print("verticesCount" + std::to_string(verticesCount) + " " + std::to_string(indicesCount));
-
 	// Alloc memory for vertices and indices
 	// mesh->verticesCount = indicesCount * (byteCount);
 	// mesh->vertices = (float *)calloc(mesh->verticesCount, sizeof(float));
@@ -177,34 +175,11 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	mesh->hasUv = !hasNoUv;
 	mesh->hasNormal = !hasNoNormals;
 
-	for (int i = 0; i < indicesCount; i++)
-	{
-		// mesh->indices[i] = vertexIndices[i] - 1;
-	}
-
-	// int test = 0;
-	// for (int i = 0; i < verticesCount; i++)
-	// {
-	// 	mesh->AddVertice(
-	// 		tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
-	// 		0xFFFFFFFF, tempVertices.at(i).x, tempVertices.at(i).y, tempVertices.at(i).z, vertexIndex);
-
-	// 	/* code */
-	// }
-
 	// Push vertices in the right order
 	int vertexIndicesSize = (int)vertexIndices.size();
 	int i2 = 0;
 	int i3 = 0;
 	int i4 = 0;
-	// vertexIndicesSize /= 3;
-
-	// for (int i = 0; i < verticesCount; i++)
-	// {
-	// 	mesh->AddVertice(
-	// 		tempTexturesCoords.at(0).x, tempTexturesCoords.at(0).y,
-	// 		0xFFFFFFFF, tempVertices.at(i).x, tempVertices.at(i).y, tempVertices.at(i).z, i);
-	// }
 
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
@@ -220,11 +195,6 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 			0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 
 		mesh->indices[i] = i;
-
-		// Debug::Print("U" + std::to_string(tempTexturesCoords.at(textureIndex).x) + " V" + std::to_string(tempTexturesCoords.at(textureIndex).y) + " i" + std::to_string(vertexIndex));
-
-		// mesh->data[vertexIndex].u = tempTexturesCoords.at(textureIndex).x;
-		// mesh->data[vertexIndex].v = tempTexturesCoords.at(textureIndex).y;
 
 		// mesh->AddVertice(
 		// 	tempTexturesCoords.at(0).x, tempTexturesCoords.at(i2++).y,

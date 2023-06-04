@@ -10,7 +10,7 @@
 Light::Light()
 {
 	componentName = "Light";
-	// AssetManager::AddLight(this);
+	AssetManager::AddLight(this);
 }
 
 Light::~Light()

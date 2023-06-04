@@ -118,17 +118,21 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 
 void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
 {
+
+    // The psp needs a pow2 sized texture
 #ifdef __PSP__
     type = GU_PSM_8888;
     int bytePerPixel = 4;
 
+    // Get pow2 size
     pW = Math::pow2(width);
     pH = Math::pow2(height);
-    int byteCount = pW * pH * bytePerPixel;
 
+    int byteCount = pW * pH * bytePerPixel;
     unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
     if (needResize)
     {
+        // Resize image data to the pow2 resolution if needed
         unsigned char *resizedData = (unsigned char *)malloc(byteCount);
         stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, bytePerPixel);
         copy_texture_data(dataBuffer, resizedData, pW, pW, pH);
@@ -139,20 +143,19 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
         copy_texture_data(dataBuffer, texData, pW, pW, pH);
     }
 
-    unsigned int *swizzled_pixels = NULL;
+    // Allocate memory in ram or vram
     if (vram)
     {
-        swizzled_pixels = (unsigned int *)getStaticVramTexture(pW, pH, type);
+        data = (unsigned int *)getStaticVramTexture(pW, pH, type);
     }
     else
     {
-        swizzled_pixels = (unsigned int *)memalign(16, byteCount);
+        data = (unsigned int *)memalign(16, byteCount);
     }
 
-    swizzle_fast((u8 *)swizzled_pixels, (const u8 *)dataBuffer, pW * bytePerPixel, pH);
+    // Place image data in the memory
+    swizzle_fast((u8 *)data, (const u8 *)dataBuffer, pW * bytePerPixel, pH);
     free(dataBuffer);
-
-    data = swizzled_pixels;
 
     sceKernelDcacheWritebackInvalidateAll();
 
@@ -165,20 +168,6 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
 #endif
 }
 
-// void Texture::Bind()
-// {
-// #ifdef __PSP__
-//     glTexMode(type, 0, 0, 1);
-//     glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
-//     glTexFilter(GL_NEAREST, GL_NEAREST);
-//     glTexWrap(GL_REPEAT, GL_REPEAT);
-//     glTexImage(0, pW, pH, pW, data);
-// #endif
-// #ifdef __vita__
-//     glBindTexture(GL_TEXTURE_2D, textureId);
-// #endif
-// }
-
 void Texture::LoadTexture(const std::string filename)
 {
     std::string path = "";
@@ -187,6 +176,7 @@ void Texture::LoadTexture(const std::string filename)
 #endif
     path += filename;
 
+    // Load image with stb_image
     stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
                                       &nrChannels, 4);

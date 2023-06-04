@@ -6,33 +6,19 @@
 
 // PSP
 #ifdef __PSP__
-#include "psp/callbacks.h"
-#include <pspdisplay.h>
-
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-
 #endif
 
-// PSVITA
-#ifdef __vita__
-#include <psp2/kernel/processmgr.h>
-// #include <psp2/kernel/clib.h>
-//  #include <psp2/kernel/threadmgr.h>
-#include <psp2/display.h>
-// #include <psp2/usbserial.h>
-// #include <psp2/usbd.h>
-
-#endif
-
-#include "engine/graphics/texture.h"
+/*
+Tilemap
+Touch for psvita
+Sprite color
+Text color
+*/
 
 int main(int argc, char *argv[])
 {
-#ifdef __PSP__
-	SetupCallbacks();
-#endif
-
 	// std::string exePath = argv[0];
 	std::string exePath = "";
 	if (Engine::Init(exePath) != 0)
@@ -40,114 +26,10 @@ int main(int argc, char *argv[])
 		Debug::Print("Engine failed to init");
 		return -1;
 	}
-	// SpriteManager::Init();
 
 	Engine::Loop();
 	Debug::Print("---- Game loop ended ----");
 	Engine::Stop();
-
-	// 		if (InputSystem::GetKeyDown(SQUARE))
-	// 		{
-	// 			Debug::Print("SQUARE DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(SQUARE))
-	// 		{
-	// 			Debug::Print("SQUARE UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(CIRCLE))
-	// 		{
-	// 			Debug::Print("CIRCLE DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(CIRCLE))
-	// 		{
-	// 			Debug::Print("CIRCLE UP");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(TRIANGLE))
-	// 		{
-	// 			Debug::Print("TRIANGLE UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(TRIANGLE))
-	// 		{
-	// 			Debug::Print("TRIANGLE DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(CROSS))
-	// 		{
-	// 			Debug::Print("CROSS UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(CROSS))
-	// 		{
-	// 			Debug::Print("CROSS DOWN");
-	// 		}
-
-	// 		if (InputSystem::GetKeyDown(START))
-	// 		{
-	// 			Debug::Print("START DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(START))
-	// 		{
-	// 			Debug::Print("START UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(SELECT))
-	// 		{
-	// 			Debug::Print("SELECT DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(SELECT))
-	// 		{
-	// 			Debug::Print("SELECT UP");
-	// 		}
-
-	// 		if (InputSystem::GetKeyUp(LTRIGGER1))
-	// 		{
-	// 			Debug::Print("LTRIGGER1 UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(LTRIGGER1))
-	// 		{
-	// 			Debug::Print("LTRIGGER1 DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(RTRIGGER1))
-	// 		{
-	// 			Debug::Print("RTRIGGER1 UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(RTRIGGER1))
-	// 		{
-	// 			Debug::Print("RTRIGGER1 DOWN");
-	// 		}
-
-	// 		if (InputSystem::GetKeyDown(RIGHT))
-	// 		{
-	// 			Debug::Print("RIGHT DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(RIGHT))
-	// 		{
-	// 			Debug::Print("RIGHT UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(LEFT))
-	// 		{
-	// 			Debug::Print("LEFT DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(LEFT))
-	// 		{
-	// 			Debug::Print("LEFT UP");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(DOWN))
-	// 		{
-	// 			Debug::Print("DOWN UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(DOWN))
-	// 		{
-	// 			Debug::Print("DOWN DOWN");
-	// 		}
-	// 		if (InputSystem::GetKeyUp(UP))
-	// 		{
-	// 			Debug::Print("UP UP");
-	// 		}
-	// 		if (InputSystem::GetKeyDown(UP))
-	// 		{
-	// 			Debug::Print("UP DOWN");
-	// 		}
-#ifdef __vita__
-	sceKernelExitProcess(0);
-#endif
 
 	return 0;
 }

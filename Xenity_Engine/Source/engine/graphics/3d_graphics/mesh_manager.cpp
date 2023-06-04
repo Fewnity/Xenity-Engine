@@ -4,7 +4,6 @@
 #include "../renderer/renderer.h"
 
 #ifdef __PSP__
-#include <pspkernel.h>
 #include "../../../psp/gu2gl.h"
 #endif
 
@@ -12,8 +11,16 @@
 #include <vitaGL.h>
 #endif
 
+ProfilerBenchmark *meshBenchmark = nullptr;
+
+void MeshManager::Init()
+{
+    meshBenchmark = new ProfilerBenchmark("Mesh");
+}
+
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData)
 {
+    meshBenchmark->Start();
     Graphics::usedCamera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
@@ -26,9 +33,11 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
-    if (texture != nullptr)
-        Engine::renderer->BindTexture(texture);
+
+    Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(meshData);
+
+    meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMeshData(MeshData *meshData)

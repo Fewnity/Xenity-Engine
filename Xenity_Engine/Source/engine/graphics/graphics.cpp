@@ -22,6 +22,8 @@ Texture *texture2 = nullptr;
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+	TextManager::ClearTexts();
+
 	if (!loaded)
 	{
 		cubeData = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");

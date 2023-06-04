@@ -164,6 +164,16 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 	glScalef(scale.x, scale.y, scale.z);
 }
 
+void RendererOpengl::MoveTransform(Vector3 position)
+{
+#ifdef __PSP__
+	glMatrixMode(GL_MODEL);
+#else
+	glMatrixMode(GL_MODELVIEW);
+#endif
+	glTranslatef(position.x, position.y, position.z);
+}
+
 void RendererOpengl::BindTexture(Texture *texture)
 {
 #ifdef __PSP__

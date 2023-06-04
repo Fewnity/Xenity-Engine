@@ -22,8 +22,12 @@ Camera *camera = nullptr;
 GameObject *cameraGo = nullptr;
 MeshData *spriteMeshData = nullptr;
 
+ProfilerBenchmark *spriteBenchmark = nullptr;
+
 void SpriteManager::Init()
 {
+    spriteBenchmark = new ProfilerBenchmark("Sprite");
+
     spriteMeshData = new MeshData(4, 6);
     spriteMeshData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f, -0.5f, 0.0f, 0);
     spriteMeshData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f, -0.5f, 0.0f, 1);
@@ -46,7 +50,9 @@ void SpriteManager::Init()
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
-    // texture = TextManager::fonts[0]->Characters[65].texture;
+    spriteBenchmark->Start();
+    // texture = TextManager::fonts[0]->fontAtlas;
+
     float scaleCoef = (1.0f / texture->GetPixelPerUnit());
 
     float w = texture->GetWidth() * scaleCoef;
@@ -69,4 +75,6 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
     Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(spriteMeshData);
+
+    spriteBenchmark->Stop();
 }

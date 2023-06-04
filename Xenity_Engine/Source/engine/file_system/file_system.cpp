@@ -120,23 +120,15 @@ void FileSystem::InitFileSystem(const std::string exePath)
 	// EngineSettings::RootFolder = exePath;
 	// int index = (int)exePath.find(R"(\Xenity-Engine\)");
 	// EngineSettings::RootFolder = exePath.substr(0, index + 15);
-	Debug::Print("-------- File System A --------");
 	// EngineSettings::RootFolder = "";
-	Debug::Print("-------- File System B --------");
+
 	texturePath = "";
-	Debug::Print("-------- File System B2 --------");
 	texturePath += TEXTURE_PATH;
 
-	Debug::Print("-------- File System C --------");
-
 	shaderPath = "";
-	Debug::Print("-------- File System C2 --------");
 	shaderPath += SHADER_PATH;
 
-	Debug::Print("-------- File System D --------");
-
 	modelsPath = "";
-	Debug::Print("-------- File System D2 --------");
 	modelsPath += MODEL_PATH;
 
 	Debug::Print("-------- File System initiated --------");

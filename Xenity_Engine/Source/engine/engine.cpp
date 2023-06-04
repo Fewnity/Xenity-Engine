@@ -3,6 +3,7 @@
 // #include "../xenity_editor.h"
 //  #include <SDL2/SDL.h>
 //  #include "../rts_game/game.h"
+#include "../game_test/game.h"
 //  #include "../pathfinding_test/pathfinding.h"
 //  #include "../3d_scene/gameOld.h"
 //  #include "../rendering_test/rendering_test_2d.h"
@@ -14,6 +15,9 @@
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
+#include "../psp/callbacks.h"
+#elif __vita__
+#include <psp2/kernel/processmgr.h>
 #endif
 
 std::vector<GameObject *> Engine::gameObjects;
@@ -22,17 +26,16 @@ GameObject *Engine::selectedGameObject = nullptr;
 int Engine::gameObjectCount = 0;
 float lastTick = 0;
 
-// ProfilerBenchmark *engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
-// ProfilerBenchmark *gameLoopBenchmark = new ProfilerBenchmark("Game loop");
-// ProfilerBenchmark *componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
-// ProfilerBenchmark *drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+ProfilerBenchmark *engineLoopBenchmark = nullptr;
+ProfilerBenchmark *gameLoopBenchmark = nullptr;
+ProfilerBenchmark *componentsUpdateBenchmark = nullptr;
+ProfilerBenchmark *drawIDrawablesBenchmark = nullptr;
+
 bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
 std::vector<Component *> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer *Engine::renderer = nullptr;
-
-GameObject *cameraGO = nullptr;
 
 /// <summary>
 /// Init engine
@@ -40,8 +43,13 @@ GameObject *cameraGO = nullptr;
 /// <returns></returns>
 int Engine::Init(const std::string exePath)
 {
+#ifdef __PSP__
+	SetupCallbacks();
+#endif
+
 	/* Initialize libraries */
 	Debug::Init();
+	Performance::Init();
 	new FileSystem();
 	FileSystem::fileSystem->InitFileSystem(exePath);
 	// FileSystem::InitFileSystem(exePath);
@@ -68,12 +76,11 @@ int Engine::Init(const std::string exePath)
 	// 	return -1;
 	// }
 	InputSystem::Init();
-	// Debug::Print("-------- Sprite Manager Not implemented --------");
 	SpriteManager::Init();
+	MeshManager::Init();
 	TextManager::Init();
 	TextManager::CreateFont("Roboto-Regular.ttf");
 	// TextManager::CreateFont("Minecraftia-Regular.ttf");
-	// Debug::Print("-------- Asset Manager Not implemented --------");
 	AssetManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
 	// EditorUI::Init();
@@ -86,12 +93,20 @@ int Engine::Init(const std::string exePath)
 
 	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
+	engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
+	gameLoopBenchmark = new ProfilerBenchmark("Game loop");
+	componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
+	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+
 	return 0;
 }
 
 void Engine::Stop()
 {
 	renderer->Stop();
+#ifdef __vita__
+	sceKernelExitProcess(0);
+#endif
 }
 
 /// <summary>
@@ -188,152 +203,43 @@ void Engine::SetSelectedGameObject(GameObject *newSelected)
 	selectedGameObject = newSelected;
 }
 
-GameObject *spriteGo4 = nullptr;
-
-TextRendererCanvas *debugTextRenderer = nullptr;
-
-void GameInit()
-{
-
-	Texture *texture = new Texture("container.jpg", "Container");
-	texture->SetFilter(Texture::Point);
-	texture->SetWrapMode(Texture::ClampToEdge);
-	// Texture *texture2 = new Texture();
-	// texture2->Load("B.jpg", 0);
-	// Texture *texture3 = new Texture();
-	// texture3->Load("B2.jpg", 0);
-	// Texture *texture4 = new Texture("Stone256.jpg", "stone");
-
-	Texture *texture5 = new Texture("dot.jpg", "Dot");
-	// texture5->Load("dot.jpg", 0);
-	// texture2->Load("Stone512.jpg", 0);
-	// Texture *texture3 = new Texture();
-	// texture3->Load("Stone512.jpg", 0);
-	// Texture *texture4 = new Texture();
-	// texture4->Load("Stone512.jpg", 0);
-	// Texture *texture5 = new Texture();
-	// texture5->Load("Stone512.jpg", 0);
-	// Texture *texture6 = new Texture();
-	// texture6->Load("Stone512.jpg", 0);
-	// Texture *texture7 = new Texture();
-	// texture7->Load("Stone512.jpg", 0);
-
-	cameraGO = GameObject::FindGameObjectByName("Camera");
-	cameraGO->GetTransform()->SetPosition(Vector3(0, 0, -5));
-	cameraGO->GetTransform()->SetRotation(Vector3(0, 0, 0));
-
-	GameObject *spriteGo0 = new GameObject();
-	GameObject *spriteGo1 = new GameObject();
-	GameObject *spriteGo2 = new GameObject();
-	GameObject *spriteGo3 = new GameObject();
-	spriteGo4 = new GameObject();
-	GameObject *spriteGo5 = new GameObject();
-	GameObject *spriteGo6 = new GameObject();
-
-	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
-	// spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
-	spriteGo2->GetTransform()->SetPosition(Vector3(0, 0.81f, -0.36f));
-	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
-	spriteGo4->GetTransform()->SetPosition(Vector3(-1, 0, 0));
-	spriteGo5->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo6->GetTransform()->SetPosition(Vector3(0, 0, 0));
-
-	spriteGo4->GetTransform()->SetRotation(Vector3(0, 90, 0));
-	spriteGo6->GetTransform()->SetRotation(Vector3(0, 90, 0));
-
-	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
-	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
-	// SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
-	// SpriteRenderer *ps3 = spriteGo3->AddComponent<SpriteRenderer>();
-	ps0->texture = texture5;
-	ps1->texture = texture;
-	// ps2->texture = texture4;
-	// ps3->texture = TextManager::fonts[0]->Characters[65].texture;
-
-	TextRenderer *tr = spriteGo4->AddComponent<TextRenderer>();
-	tr->text = "Salut.\nComment ca va?q\nca va bien!\nOk!oooo";
-	tr->horizontalAligment = H_Right;
-	tr->verticalAlignment = V_Bottom;
-
-	TextRenderer *tr2 = spriteGo6->AddComponent<TextRenderer>();
-	tr2->text = "WWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWW";
-	tr2->horizontalAligment = H_Right;
-	tr2->verticalAlignment = V_Bottom;
-
-	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
-	debugTextRenderer->horizontalAligment = H_Left;
-	debugTextRenderer->verticalAlignment = V_Top;
-}
-
-void GameLoop()
-{
-	Vector3 rot = cameraGO->GetTransform()->GetRotation();
-	Vector3 pos = cameraGO->GetTransform()->GetPosition();
-#ifdef __PSP__
-	// Rotate camera
-	if (InputSystem::GetKey(TRIANGLE))
-		rot.x += -1.5f;
-	else if (InputSystem::GetKey(CROSS))
-		rot.x += 1.5f;
-
-	if (InputSystem::GetKey(CIRCLE))
-		rot.y += 1.5f;
-	else if (InputSystem::GetKey(SQUARE))
-		rot.y += -1.5f;
-
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f);
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f);
-
-#else
-	// Rotate camera
-	rot.x += InputSystem::rightJoystick.y * 1.5f;
-	rot.y += InputSystem::rightJoystick.x * 1.5f;
-
-	// Move camera
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f);
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f);
-#endif
-
-	if (InputSystem::GetKey(UP))
-		pos.y -= (-1 / 7.0f);
-	else if (InputSystem::GetKey(DOWN))
-		pos.y -= (1 / 7.0f);
-
-	cameraGO->GetTransform()->SetPosition(pos);
-	cameraGO->GetTransform()->SetRotation(rot);
-}
-
 /// <summary>
 /// Engine loop
 /// </summary>
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	// Game *game = new Game();
-	// Game3D* game = new Game3D();
-	// PathFinding* game = new PathFinding();
-	// RenderingTest2D *game = new RenderingTest2D();
+	Game *game = new Game();
 
-	// game->Init();
-	GameInit();
+	game->Start();
+
 	Debug::Print("-------- Game initiated --------");
 
 	bool running = true;
 
-	int lastTime = 0;
-
 	while (running)
 	{
+		engineLoopBenchmark->Start();
+		// Update time and inputs
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
 		InputSystem::Read();
 
-		GameLoop();
+		gameLoopBenchmark->Start();
+		// Game loop
+		game->Update();
+		gameLoopBenchmark->Stop();
+
+		componentsUpdateBenchmark->Start();
+		// Update all components
 		UpdateComponents();
+		componentsUpdateBenchmark->Stop();
 
+		drawIDrawablesBenchmark->Start();
 		Graphics::DrawAllDrawable();
+		drawIDrawablesBenchmark->Stop();
 
+		// Reset moved state of all transforms
 		for (int i = 0; i < Engine::gameObjectCount; i++)
 		{
 			GameObject *go = gameObjects[i];
@@ -342,18 +248,10 @@ void Engine::Loop()
 				go->GetTransform()->movedLastFrame = false;
 			}
 		}
+		engineLoopBenchmark->Stop();
 
-		std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
-		std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4);
-		debugTextRenderer->text = debugText;
-		if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
-		{
-			lastTime = (int)Time::GetTime();
-			Debug::Print(debugText);
-		}
-
-		// Performance::Update();
-		// 	Performance::ResetCounters();
+		Performance::Update();
+		Performance::ResetCounters();
 	}
 
 	// while (running)
