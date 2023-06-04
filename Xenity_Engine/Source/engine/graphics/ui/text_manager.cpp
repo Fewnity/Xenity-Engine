@@ -20,10 +20,8 @@
 #include FT_FREETYPE_H
 
 std::vector<Font *> TextManager::fonts;
-
-ProfilerBenchmark *textBenchmark = nullptr;
-
 std::vector<MeshData *> TextManager::meshes;
+ProfilerBenchmark *textBenchmark = nullptr;
 
 void TextManager::Init()
 {
@@ -57,29 +55,8 @@ void TextManager::ClearTexts()
     meshes.clear();
 }
 
-void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas)
+void TextManager::SetTextPosition(Transform *transform, bool canvas)
 {
-    textBenchmark->Start();
-    Font *font = fonts[0];
-    int textLenght = (int)text.size();
-
-    // Get the size of the text
-    std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, 1);
-
-    // Set projection
-    float canvasOffset = 0;
-    if (!canvas)
-    {
-        Graphics::usedCamera->UpdateProjection();
-        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-    }
-    else
-    {
-        Engine::renderer->SetProjection2D(1, 0.03f, 100);
-        Engine::renderer->ResetView();
-        canvasOffset = 1;
-    }
-
     // Set text scale and pivot position/rotation
     Vector3 pos;
     if (!canvas)
@@ -90,13 +67,43 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     {
         float xOff = (-Window::GetAspectRatio() * 5) + (transform->GetPosition().x * (Window::GetAspectRatio() * 10));
         float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
-        pos = Vector3(-xOff, -yOff, canvasOffset);
+        pos = Vector3(-xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
     }
 
     Vector3 rot = transform->GetRotation();
     Vector3 scl = transform->GetScale();
     scl.x = -scl.x;
     Engine::renderer->SetTransform(pos, rot, scl, true);
+}
+
+// void GenerateMesh()
+
+void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas)
+{
+    textBenchmark->Start();
+    int textLenght = (int)text.size();
+
+    if (textLenght == 0)
+        return;
+
+    // Set projection
+    if (!canvas)
+    {
+        Graphics::usedCamera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+    }
+    else
+    {
+        Engine::renderer->SetProjection2D(1, 0.03f, 100);
+        Engine::renderer->ResetView();
+    }
+
+    SetTextPosition(transform, canvas);
+
+    Font *font = fonts[0];
+
+    // Get the size of the text
+    std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, 1);
 
     // Set text start offset
     float totalY = 0;
@@ -359,4 +366,46 @@ std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, 
     lineLength[currentLine].y = (higherY - lowerY) * scale;
     lineLength[currentLine].z = font->maxCharHeight * scale;
     return lineLength;
+}
+
+TextInfo *TextManager::GetTextLenght2(std::string &text, int textLen, Font *font, float scale)
+{
+    TextInfo *textInfos = new TextInfo();
+    // textInfos->linesInfo.push_back(LineInfo());
+
+    std::vector<Vector4> lineLength;
+    lineLength.push_back(Vector4(0, 0, 0, 0));
+
+    int currentLine = 0;
+    float higherY = 0;
+    float lowerY = 0;
+
+    for (int i = 0; i < textLen; i++)
+    {
+        Character *ch = font->Characters[text[i]];
+        if (text[i] == '\n')
+        {
+            lineLength[currentLine].x *= scale;
+            lineLength[currentLine].y = (higherY - lowerY) * scale;
+            lineLength[currentLine].z = font->maxCharHeight * scale;
+            lineLength.push_back(Vector4(0, 0, 0, 0));
+            currentLine++;
+            higherY = 0;
+            lowerY = 0;
+        }
+        else
+        {
+            lineLength[currentLine].x += ch->rightAdvance;
+            if (higherY < ch->rightBearing.y)
+                higherY = ch->rightBearing.y;
+
+            float low = ch->rightSize.y - ch->rightBearing.y;
+            if (lowerY < low)
+                lowerY = low;
+        }
+    }
+    lineLength[currentLine].x *= scale;
+    lineLength[currentLine].y = (higherY - lowerY) * scale;
+    lineLength[currentLine].z = font->maxCharHeight * scale;
+    return textInfos;
 }
