@@ -42,15 +42,17 @@ private:
 
 class LineInfo
 {
-    float lenght;
-    float y1;
-    float y2;
+public:
+    float lenght = 0;
+    float y1 = 0;
 };
 
 class TextInfo
 {
+public:
     std::vector<LineInfo> linesInfo;
-    float maxLineHeight;
+    float maxLineHeight = 0;
+    int lineCount = 0;
 };
 
 class TextManager
@@ -70,8 +72,7 @@ private:
     static void SetTextPosition(Transform *transform, bool canvas);
     static void DrawTextMesh(MeshData *mesh, bool for3D);
     static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
-    static std::vector<Vector4> GetTextLenght(std::string &text, int textLen, Font *font, float scale);
-    static TextInfo *GetTextLenght2(std::string &text, int textLen, Font *font, float scale);
+    static TextInfo GetTextLenght(std::string &text, int textLen, Font *font, float scale);
 
     static std::vector<MeshData *> meshes;
 };

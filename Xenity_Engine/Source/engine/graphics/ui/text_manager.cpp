@@ -103,30 +103,29 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     Font *font = fonts[0];
 
     // Get the size of the text
-    std::vector<Vector4> lineLength = GetTextLenght(text, textLenght, font, 1);
+    TextInfo textInfo = GetTextLenght(text, textLenght, font, 1);
 
     // Set text start offset
     float totalY = 0;
-    int lineCount = (int)lineLength.size();
-    for (int i = 0; i < lineCount; i++)
+    for (int i = 0; i < textInfo.lineCount; i++)
     {
-        totalY += lineLength[i].z;
+        totalY += textInfo.maxLineHeight;
     }
 
     float x = 0;
     float y = 0;
     int line = 0;
     if (horizontalAlignment == H_Left)
-        x = -lineLength[line].x;
+        x = -textInfo.linesInfo[line].lenght;
     else if (horizontalAlignment == H_Center)
-        x = -lineLength[line].x / 2.0f;
+        x = -textInfo.linesInfo[line].lenght * 0.5f;
 
-    y = lineLength[line].y / 4.0f;
-    y += -lineLength[line].z;
+    y = textInfo.linesInfo[line].y1 * 0.25f;
+    y += -textInfo.maxLineHeight;
 
     if (verticalAlignment == V_Center)
     {
-        y += totalY / 2.0f;
+        y += totalY * 0.5f;
     }
     else if (verticalAlignment == V_Top)
     {
@@ -134,7 +133,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     }
 
     // Create empty mesh
-    int charCountToDraw = textLenght - (lineCount - 1);
+    int charCountToDraw = textLenght - (textInfo.lineCount - 1);
     MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw);
     meshes.push_back(mesh);
 
@@ -149,19 +148,19 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
             line++;
 
             if (horizontalAlignment == H_Left)
-                x = -lineLength[line].x;
+                x = -textInfo.linesInfo[line].lenght;
             else if (horizontalAlignment == H_Center)
-                x = -lineLength[line].x / 2.0f;
+                x = -textInfo.linesInfo[line].lenght * 0.5f;
             else
                 x = 0;
 
-            y += -lineLength[line].z;
+            y += -textInfo.maxLineHeight;
         }
         else
         {
             AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
             drawnCharIndex++;
-            x += ch->rightAdvance; // bitshift by 6 to get value in pixels (2^6 = 64)
+            x += ch->rightAdvance;
         }
     }
 
@@ -329,10 +328,10 @@ Font *TextManager::CreateFont(std::string filePath)
     return font;
 }
 
-std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, Font *font, float scale)
+TextInfo TextManager::GetTextLenght(std::string &text, int textLen, Font *font, float scale)
 {
-    std::vector<Vector4> lineLength;
-    lineLength.push_back(Vector4(0, 0, 0, 0));
+    TextInfo textInfos = TextInfo();
+    textInfos.linesInfo.push_back(LineInfo());
 
     int currentLine = 0;
     float higherY = 0;
@@ -343,17 +342,16 @@ std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, 
         Character *ch = font->Characters[text[i]];
         if (text[i] == '\n')
         {
-            lineLength[currentLine].x *= scale;
-            lineLength[currentLine].y = (higherY - lowerY) * scale;
-            lineLength[currentLine].z = font->maxCharHeight * scale;
-            lineLength.push_back(Vector4(0, 0, 0, 0));
+            textInfos.linesInfo[currentLine].lenght *= scale;
+            textInfos.linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
+            textInfos.linesInfo.push_back(LineInfo());
             currentLine++;
             higherY = 0;
             lowerY = 0;
         }
         else
         {
-            lineLength[currentLine].x += ch->rightAdvance;
+            textInfos.linesInfo[currentLine].lenght += ch->rightAdvance;
             if (higherY < ch->rightBearing.y)
                 higherY = ch->rightBearing.y;
 
@@ -362,50 +360,11 @@ std::vector<Vector4> TextManager::GetTextLenght(std::string &text, int textLen, 
                 lowerY = low;
         }
     }
-    lineLength[currentLine].x *= scale;
-    lineLength[currentLine].y = (higherY - lowerY) * scale;
-    lineLength[currentLine].z = font->maxCharHeight * scale;
-    return lineLength;
-}
+    textInfos.linesInfo[currentLine].lenght *= scale;
+    textInfos.linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
 
-TextInfo *TextManager::GetTextLenght2(std::string &text, int textLen, Font *font, float scale)
-{
-    TextInfo *textInfos = new TextInfo();
-    // textInfos->linesInfo.push_back(LineInfo());
+    textInfos.maxLineHeight = font->maxCharHeight * scale;
+    textInfos.lineCount = currentLine + 1;
 
-    std::vector<Vector4> lineLength;
-    lineLength.push_back(Vector4(0, 0, 0, 0));
-
-    int currentLine = 0;
-    float higherY = 0;
-    float lowerY = 0;
-
-    for (int i = 0; i < textLen; i++)
-    {
-        Character *ch = font->Characters[text[i]];
-        if (text[i] == '\n')
-        {
-            lineLength[currentLine].x *= scale;
-            lineLength[currentLine].y = (higherY - lowerY) * scale;
-            lineLength[currentLine].z = font->maxCharHeight * scale;
-            lineLength.push_back(Vector4(0, 0, 0, 0));
-            currentLine++;
-            higherY = 0;
-            lowerY = 0;
-        }
-        else
-        {
-            lineLength[currentLine].x += ch->rightAdvance;
-            if (higherY < ch->rightBearing.y)
-                higherY = ch->rightBearing.y;
-
-            float low = ch->rightSize.y - ch->rightBearing.y;
-            if (lowerY < low)
-                lowerY = low;
-        }
-    }
-    lineLength[currentLine].x *= scale;
-    lineLength[currentLine].y = (higherY - lowerY) * scale;
-    lineLength[currentLine].z = font->maxCharHeight * scale;
     return textInfos;
 }
