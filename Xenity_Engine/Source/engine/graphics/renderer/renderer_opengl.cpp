@@ -154,11 +154,14 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 	glTranslatef(position.x, position.y, position.z);
 
 #ifdef __PSP__
-	glRotatefXYZ(rotation.x * 3.14159265359 / 180.0f, rotation.y * 3.14159265359 / 180.0f, rotation.z * 3.14159265359 / 180.0f);
+	gluRotateY(-rotation.y * 3.14159265359 / 180.0f);
+	gluRotateX(rotation.x * 3.14159265359 / 180.0f);
+	gluRotateZ(-rotation.z * 3.14159265359 / 180.0f);
+
 #elif __vita__
-	glRotatef(rotation.z, 0, 0, 1);
-	glRotatef(rotation.y, 0, 1, 0);
+	glRotatef(-rotation.y, 0, 1, 0);
 	glRotatef(rotation.x, 1, 0, 0);
+	glRotatef(-rotation.z, 0, 0, 1);
 #endif
 
 	glScalef(scale.x, scale.y, scale.z);
@@ -179,12 +182,8 @@ void RendererOpengl::BindTexture(Texture *texture)
 #ifdef __PSP__
 	glTexMode(texture->type, 0, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
-
-	// glTexWrap(GL_REPEAT, GL_REPEAT);
-	// glTexWrap(GL_CLAMP, GL_CLAMP);
 	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data);
 	ApplyTextureFilters(texture);
-
 #endif
 #ifdef __vita__
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
