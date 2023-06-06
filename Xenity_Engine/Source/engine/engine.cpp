@@ -85,6 +85,7 @@ int Engine::Init(const std::string exePath)
 	Debug::Print("-------- Editor UI Not implemented --------");
 	// EditorUI::Init();
 	Time::Init();
+	Graphics::Init();
 
 	// Init random
 	srand((unsigned int)time(NULL));

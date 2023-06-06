@@ -16,10 +16,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count)
 
     // indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
     indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
-    // indices = (unsigned short *)malloc(sizeof(unsigned short) * index_count);
 
-    // indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
-    //  mesh->indices = memalign(16, sizeof(u16) * index_count);
     if (indices == nullptr)
     {
         return;
@@ -27,6 +24,10 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count)
 
     this->index_count = index_count;
 }
+
+// MeshData::MeshData(std::string filePath)
+// {
+// }
 
 void MeshData::AddVertice(float u, float v, unsigned int color, float x, float y, float z, int indice)
 {

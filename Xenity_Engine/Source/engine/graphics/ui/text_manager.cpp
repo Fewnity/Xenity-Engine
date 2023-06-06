@@ -230,8 +230,9 @@ Font *TextManager::CreateFont(std::string filePath)
         return nullptr;
     }
 
+    int charPixelHeight = 48;
     // Load glyph
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, charPixelHeight);
     // Engine::renderer->PixelStoreUnpack();
     // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -277,13 +278,13 @@ Font *TextManager::CreateFont(std::string filePath)
             if (xOffset + face->glyph->bitmap.width >= atlasSize)
             {
                 xOffset = 0;
-                yOffset += 48;
+                yOffset += charPixelHeight;
             }
 
             character->uvOffet = Vector2(xOffset / (float)atlasSize, yOffset / (float)atlasSize);
             character->uv = Vector2((xOffset + face->glyph->bitmap.width) / (float)atlasSize, (yOffset + face->glyph->bitmap.rows) / (float)atlasSize);
 
-            if (c >= 32)
+            if (c >= 32) // Do not render invisible chars
             {
                 int textureXOffset = xOffset * channelCount;
                 for (int fW = 0; fW < face->glyph->bitmap.rows; fW++)

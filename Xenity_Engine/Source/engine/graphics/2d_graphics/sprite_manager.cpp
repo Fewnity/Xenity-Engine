@@ -44,6 +44,7 @@ void SpriteManager::Init()
 #endif
     cameraGo = new GameObject("Camera");
     camera = cameraGo->AddComponent<Camera>();
+    // camera->SetNearClippingPlane(0.1);
     camera->SetFarClippingPlane(100);
     // camera->SetProjectionType(Orthographic);
 }

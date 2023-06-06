@@ -18,7 +18,7 @@ void MeshManager::Init()
     meshBenchmark = new ProfilerBenchmark("Mesh");
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth)
 {
     meshBenchmark->Start();
     Graphics::usedCamera->UpdateProjection();
@@ -30,7 +30,11 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     Engine::renderer->SetTransform(pos, rot, scl, true);
 
     // Set settings
-    glEnable(GL_DEPTH_TEST);
+    if (useDepth)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+
     glDisable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
 

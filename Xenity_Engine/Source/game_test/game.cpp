@@ -1,5 +1,7 @@
 #include "game.h"
 #include "../xenity.h"
+#include "../engine/file_system/mesh_loader/wavefront_loader.h"
+#include "../engine/graphics/3d_graphics/mesh_data.h"
 
 #ifdef __vita__
 #include <psp2/touch.h>
@@ -33,48 +35,37 @@ void Game::Start()
 
 	GameObject *spriteGo0 = new GameObject();
 	GameObject *spriteGo1 = new GameObject();
-	GameObject *spriteGo2 = new GameObject();
-	GameObject *spriteGo3 = new GameObject();
 	spriteGo4 = new GameObject();
 	GameObject *spriteGo5 = new GameObject();
 	GameObject *spriteGo6 = new GameObject();
 
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
-	// spriteGo1->GetTransform()->SetPosition(Vector3(2.56f, 2.56f, 0));
-	spriteGo2->GetTransform()->SetPosition(Vector3(0, 0.81f, -0.36f));
-	spriteGo3->GetTransform()->SetPosition(Vector3(4.56f, 2.56f, 0));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
-	spriteGo6->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	// spriteGo4->GetTransform()->SetRotation(Vector3(45, 45, 45));
 
-	// spriteGo4->GetTransform()->SetRotation(Vector3(0, 90, 0));
-	// spriteGo6->GetTransform()->SetRotation(Vector3(0, 90, 0));
+	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
+	spriteGo6->GetTransform()->SetPosition(Vector3(0, 2.5f, 0));
 
 	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
-	// SpriteRenderer *ps2 = spriteGo2->AddComponent<SpriteRenderer>();
-	// SpriteRenderer *ps3 = spriteGo3->AddComponent<SpriteRenderer>();
 	ps0->texture = texture5;
 	ps1->texture = texture;
-	// ps2->texture = texture4;
-	// ps3->texture = TextManager::fonts[0]->Characters[65].texture;
 
-	TextRenderer *tr = spriteGo4->AddComponent<TextRenderer>();
-	tr->text = "Salut.\nComment ca va?q\nca va bien!\nOk!oooo";
+	TextRenderer *tr = spriteGo6->AddComponent<TextRenderer>();
+	tr->text = "Hello\nWorld!";
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
 
-	// TextRenderer *tr2 = spriteGo6->AddComponent<TextRenderer>();
-	// tr2->text = "WWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWW";
-	// tr2->horizontalAligment = H_Right;
-	// tr2->verticalAlignment = V_Bottom;
-
 	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
-	// debugTextRenderer->horizontalAligment = H_Center;
-	// debugTextRenderer->verticalAlignment = V_Center;
 	debugTextRenderer->horizontalAligment = H_Left;
 	debugTextRenderer->verticalAlignment = V_Top;
+
+	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
+	MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
+	MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
+	meshRenderer->meshData = mesh;
+	meshRenderer->texture = texture;
 }
 
 void Game::LoadGameData()
@@ -136,18 +127,19 @@ void Game::Update()
 	// 	/* code */
 	// }
 
-	// debugTextRenderer->text = "";
 	for (const auto &kv : Performance::profilerList)
 	{
 		debugText += kv.first + " " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
 	}
 
-	// debugTextRenderer->text = "WWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\nWWWWWWWWWWWWWWWWWWWWWW\n";
 	debugTextRenderer->text = debugText;
-	// debugTextRenderer->text = "ABC";
 	if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
 	{
 		lastTime = (int)Time::GetTime();
 		Debug::Print(debugText);
 	}
+
+	Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
+	meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;
+	spriteGo4->GetTransform()->SetRotation(meshRot);
 }

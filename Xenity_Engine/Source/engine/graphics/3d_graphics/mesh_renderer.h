@@ -1,51 +1,20 @@
-// #pragma once
+#pragma once
 
-// #include "../../component.h"
-// #include "../iDrawable.h"
+#include "../iDrawable.h"
 
-// class MeshData;
+class MeshData;
+class Texture;
 
-// // class Shader;
-// // class Material;
+class MeshRenderer : public IDrawable
+{
+public:
+    MeshRenderer();
+    ~MeshRenderer();
+    int GetDrawPriority() const;
 
-// // class MeshData
-// // {
-// // public:
-// // 	MeshData();
-// // 	MeshData(const std::string path);
-// // 	~MeshData();
+    MeshData *meshData = nullptr;
+    Texture *texture = nullptr;
 
-// // 	std::string filePath = "";
-// // 	float *vertices = nullptr;
-// // 	unsigned int *indices = nullptr;
-// // 	int verticesCount = 0;
-// // 	int indicesCount = 0;
-// // 	bool hasUv = false;
-// // 	bool hasNormal = false;
-// // };
-
-// class MeshRenderer : public IDrawable
-// {
-// public:
-// 	MeshRenderer();
-// 	~MeshRenderer();
-// 	int GetDrawPriority() const;
-
-// 	// Material *material = nullptr;
-
-// 	void LoadFromFile(const std::string meshpath);
-// 	void LoadFromRawData(const float vertices[], const unsigned int indices[]);
-// 	void CreateBuffers(const bool addUv, const bool addNormals);
-
-// private:
-// 	void Draw();
-// 	void Update();
-// 	void UpdateMaterial();
-// 	void LoadFromMeshData(MeshData *meshData);
-
-// 	// unsigned int vertexArrayBuffer = 0;
-// 	// unsigned int vertexBuffer = 0;
-// 	// unsigned int indiceBuffer = 0;
-// 	MeshData *meshData = nullptr;
-// 	// MeshData* meshData = new MeshData();
-// };
+private:
+    void Draw();
+};
