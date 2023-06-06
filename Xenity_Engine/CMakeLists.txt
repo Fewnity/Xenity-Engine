@@ -81,6 +81,7 @@ message(STATUS "BUILD PSVITA")
 # This line adds Vita helper macros, must go after project definition in order
 # to build Vita specific artifacts (self/vpk).
 include("${VITASDK}/share/vita.cmake" REQUIRED)
+include_directories(${VITASDK}/arm-vita-eabi/include/freetype2)
 
 ## Configuration options for this app
 # Display name (under bubble in LiveArea)
