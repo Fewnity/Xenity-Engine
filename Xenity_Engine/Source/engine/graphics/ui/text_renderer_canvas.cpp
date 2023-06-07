@@ -7,6 +7,8 @@
 TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "Canvas Text Renderer";
+
+	type = Draw_UI;
 }
 
 // TextRendererCanvas::TextRendererCanvas(Font *font, float size, Shader *shader)
@@ -22,7 +24,7 @@ TextRendererCanvas::~TextRendererCanvas()
 
 int TextRendererCanvas::GetDrawPriority() const
 {
-	return orderInLayer;
+	return 5000 + orderInLayer;
 }
 
 #pragma endregion
