@@ -10,6 +10,8 @@ int Graphics::usedShaderProgram = -1;
 Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
 std::vector<IDrawable *> Graphics::orderedIDrawable;
+SkyBox *Graphics::skybox = nullptr;
+
 // ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
@@ -23,31 +25,53 @@ GameObject *cameraGO2 = nullptr;
 
 MeshData *skyPlane = nullptr;
 
-Texture *back = nullptr;
-Texture *down = nullptr;
-Texture *front = nullptr;
-Texture *left = nullptr;
-Texture *right = nullptr;
-Texture *up = nullptr;
+SkyBox::SkyBox(Texture *front, Texture *back, Texture *up, Texture *down, Texture *left, Texture *right)
+{
+	this->front = front;
+	this->back = back;
+	this->up = up;
+	this->down = down;
+	this->left = left;
+	this->right = right;
+}
+
+void Graphics::SetSkybox(SkyBox *skybox_)
+{
+	skybox = skybox_;
+}
 
 void Graphics::Init()
 {
-	cameraGO2 = GameObject::FindGameObjectByName("Camera");
+	// Texture *back = new Texture("sky6_BK_low.jpg", "sky6_BK_low");
+	// back->SetWrapMode(Texture::ClampToEdge);
+	// Texture *down = new Texture("sky6_DN_low.jpg", "sky6_DN_low");
+	// down->SetWrapMode(Texture::ClampToEdge);
+	// Texture *front = new Texture("sky6_FR_low.jpg", "sky6_FR_low");
+	// front->SetWrapMode(Texture::ClampToEdge);
+	// Texture *left = new Texture("sky6_LF_low.jpg", "sky6_LF_low");
+	// left->SetWrapMode(Texture::ClampToEdge);
+	// Texture *right = new Texture("sky6_RT_low.jpg", "sky6_RT_low");
+	// right->SetWrapMode(Texture::ClampToEdge);
+	// Texture *up = new Texture("sky6_UP_low.jpg", "sky6_UP_low");
+	// up->SetWrapMode(Texture::ClampToEdge);
 
-	back = new Texture("sky6_BK_low.jpg", "sky6_BK_low");
-	back->SetWrapMode(Texture::ClampToEdge);
-	down = new Texture("sky6_DN_low.jpg", "sky6_DN_low");
-	down->SetWrapMode(Texture::ClampToEdge);
-	front = new Texture("sky6_FR_low.jpg", "sky6_FR_low");
-	front->SetWrapMode(Texture::ClampToEdge);
-	left = new Texture("sky6_LF_low.jpg", "sky6_LF_low");
-	left->SetWrapMode(Texture::ClampToEdge);
-	right = new Texture("sky6_RT_low.jpg", "sky6_RT_low");
-	right->SetWrapMode(Texture::ClampToEdge);
-	up = new Texture("sky6_UP_low.jpg", "sky6_UP_low");
-	up->SetWrapMode(Texture::ClampToEdge);
+	// Texture *back = new Texture("space_back.png", "space_back");
+	// back->SetWrapMode(Texture::ClampToEdge);
+	// Texture *down = new Texture("space_down.png", "space_down");
+	// down->SetWrapMode(Texture::ClampToEdge);
+	// Texture *front = new Texture("space_front.png", "space_front");
+	// front->SetWrapMode(Texture::ClampToEdge);
+	// Texture *left = new Texture("space_left.png", "space_left");
+	// left->SetWrapMode(Texture::ClampToEdge);
+	// Texture *right = new Texture("space_right.png", "space_right");
+	// right->SetWrapMode(Texture::ClampToEdge);
+	// Texture *up = new Texture("space_up.png", "space_up");
+	// up->SetWrapMode(Texture::ClampToEdge);
 
-	skyPlane = WavefrontLoader::LoadFromRawData("Plane2Triangulate.obj");
+	// SkyBox *skybox = new SkyBox(front, back, up, down, left, right);
+	// SetSkybox(skybox);
+
+	// skyPlane = WavefrontLoader::LoadFromRawData("Plane2Triangulate.obj");
 }
 
 /// <summary>
@@ -55,7 +79,7 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-	Vector3 camPos = cameraGO2->GetTransform()->GetPosition();
+	Vector3 camPos = usedCamera->GetTransform()->GetPosition();
 	TextManager::ClearTexts();
 
 	Graphics::OrderDrawables();
@@ -63,12 +87,13 @@ void Graphics::DrawAllDrawable()
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
 
-	MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 0, 0), Vector3(10, 10, 10), down, skyPlane, false);
-	MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 0, 0), Vector3(10, 10, 10), up, skyPlane, false);
-	MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(10, 10, 10), front, skyPlane, false);
-	MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(10, 10, 10), back, skyPlane, false);
-	MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(10, 10, 10), left, skyPlane, false);
-	MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(10, 10, 10), right, skyPlane, false);
+	float scale = 10.01f;
+	// MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false);
+	// MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false);
+	// MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false);
+	// MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false);
+	// MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false);
+	// MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false);
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
@@ -88,10 +113,11 @@ bool spriteComparator(const IDrawable *t1, const IDrawable *t2)
 		{
 			return t1->GetTransform()->GetPosition().z > t2->GetTransform()->GetPosition().z;
 		}
+
 		return true;
 	}
+
 	return false;
-	// return (t1->GetDrawPriority() < t2->GetDrawPriority()) || (t1->GetDrawPriority() == t2->GetDrawPriority() && t1->GetGameObject()->transform.GetPosition().z > t2->GetGameObject()->transform.GetPosition().z);
 }
 
 void Graphics::OrderDrawables()
