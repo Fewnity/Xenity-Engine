@@ -20,6 +20,9 @@ void MeshManager::Init()
 
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth)
 {
+    if (meshData->index_count == 0)
+        return;
+
     meshBenchmark->Start();
     Graphics::usedCamera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
@@ -48,6 +51,9 @@ void MeshManager::DrawMeshData(MeshData *meshData)
 {
 #ifdef __PSP__
     // glDrawElements(GL_TRIANGLES, GL_INDEX_16BIT | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, 6, meshData->indices, meshData->data);
+    // if (meshData->isQuad)
+    //     glDrawElements(GL_SPRITES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+    // else
     glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
 #endif
 
@@ -66,4 +72,5 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     // glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 #endif
+    Performance::AddDrawCall();
 }

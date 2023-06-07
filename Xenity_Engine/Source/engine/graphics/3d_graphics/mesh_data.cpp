@@ -3,6 +3,7 @@
 
 #ifdef __PSP__
 #include <pspkernel.h>
+#include <vram.h>
 #endif
 
 MeshData::MeshData(unsigned int vcount, unsigned int index_count)
@@ -17,12 +18,15 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count)
     // indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
     indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
 
+    // indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
+
     if (indices == nullptr)
     {
         return;
     }
 
     this->index_count = index_count;
+    this->vertice_count = vcount;
 }
 
 // MeshData::MeshData(std::string filePath)
@@ -31,6 +35,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count)
 
 void MeshData::AddVertice(float u, float v, unsigned int color, float x, float y, float z, int indice)
 {
+
     Vertex vert = {
         .u = u,
         .v = v,

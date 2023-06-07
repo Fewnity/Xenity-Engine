@@ -58,6 +58,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspgum
     pspctrl
     pspdebug
+    pspvram
+    psppower
     pspdisplay
     m
     pspge
@@ -121,6 +123,7 @@ png
   SceSysmodule_stub
   SceUsbSerial_stub
   SceUsbd_stub 
+  SceTouch_stub
   zip 
   vitashark 
   SceShaccCgExt 
