@@ -448,20 +448,27 @@ extern "C"
 #define gluFullInverse sceGumFullInverse
 #define gluFastInverse sceGumFastInverse
 
+#include <vram.h>
+
 /// IMPLEMENTATION
 #ifdef GUGL_IMPLEMENTATION
 	void guglInit(void *list)
 	{
-		void *fbp0 = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_8888);
-		void *fbp1 = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_8888);
-		void *zbp = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_4444);
+
+		// void *fbp0 = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_8888);
+		// void *fbp1 = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_8888);
+		// void *zbp = getStaticVramBuffer(PSP_BUF_WIDTH, PSP_SCR_HEIGHT, GU_PSM_4444);
+
+		void *fbp0 = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * 4);
+		void *fbp1 = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * 4);
+		void *zbp = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * 2);
 
 		sceGuInit();
 
 		sceGuStart(GU_DIRECT, list);
-		sceGuDrawBuffer(GU_PSM_8888, fbp0, PSP_BUF_WIDTH);
-		sceGuDispBuffer(PSP_SCR_WIDTH, PSP_SCR_HEIGHT, fbp1, PSP_BUF_WIDTH);
-		sceGuDepthBuffer(zbp, PSP_BUF_WIDTH);
+		sceGuDrawBuffer(GU_PSM_8888, vrelptr(fbp0), PSP_BUF_WIDTH);
+		sceGuDispBuffer(PSP_SCR_WIDTH, PSP_SCR_HEIGHT, vrelptr(fbp1), PSP_BUF_WIDTH);
+		sceGuDepthBuffer(vrelptr(zbp), PSP_BUF_WIDTH);
 		sceGuOffset(2048 - (PSP_SCR_WIDTH / 2), 2048 - (PSP_SCR_HEIGHT / 2));
 		sceGuViewport(2048, 2048, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 		sceGuDepthRange(0, 65535);

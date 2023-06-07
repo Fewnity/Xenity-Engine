@@ -14,6 +14,7 @@
 #ifdef __PSP__
 #include "../../psp/gu2gl.h"
 #include <pspkernel.h>
+#include <vram.h>
 #endif
 
 Texture::Texture(const std::string filePath, std::string name)
@@ -118,7 +119,7 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 
 void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
 {
-
+    sceGeEdramSetSize(4096);
     // The psp needs a pow2 sized texture
 #ifdef __PSP__
     type = GU_PSM_8888;
@@ -140,7 +141,7 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
     else
     {
         // Copy to Data Buffer
-        copy_texture_data(dataBuffer, texData, pW, pW, pH);
+        copy_texture_data(dataBuffer, texData, pW, width, height);
     }
 
     // Allocate memory in ram or vram
@@ -150,9 +151,10 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
     }
     else
     {
+        // data = vramalloc(byteCount);
         data = (unsigned int *)memalign(16, byteCount);
     }
-
+    Debug::Print("" + std::to_string(byteCount) + ", " + std::to_string(pW) + ", " + std::to_string(pH));
     // Place image data in the memory
     swizzle_fast((u8 *)data, (const u8 *)dataBuffer, pW * bytePerPixel, pH);
     free(dataBuffer);
@@ -194,7 +196,7 @@ void Texture::LoadTexture(const std::string filename)
 
 #ifdef __PSP__
     int vram = 0;
-    SetData(buffer, vram, true);
+    SetData(buffer, vram, false);
 #endif
 
 #ifdef __vita__
