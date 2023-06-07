@@ -42,7 +42,7 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
     glEnable(GL_TEXTURE_2D);
 
     MeshManager::DrawMeshData(mesh);
-    Performance::AddDrawCall();
+    // Performance::AddDrawCall();
 }
 
 void TextManager::ClearTexts()

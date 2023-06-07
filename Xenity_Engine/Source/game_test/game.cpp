@@ -24,14 +24,20 @@ void Game::Start()
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_FRONT);
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 
-	Texture *texture = new Texture("container.jpg", "Container");
-	texture->SetFilter(Texture::Point);
-	texture->SetWrapMode(Texture::ClampToEdge);
-	Texture *texture5 = new Texture("dot.jpg", "Dot");
+	// Texture *texture = new Texture("container.jpg", "Container");
+	// Texture *texture = new Texture("Dry Dirt.png", "Dry Dirt");
+	// texture->SetFilter(Texture::Point);
+	// texture->SetWrapMode(Texture::ClampToEdge);
+	// texture->SetWrapMode(Texture::Repeat);
+	// Texture *texture5 = new Texture("dot.jpg", "Dot");
+
+	cameraPivot = new GameObject();
+	cameraPivot->GetTransform()->SetPosition(Vector3(0, 0, 0));
 
 	cameraGO = GameObject::FindGameObjectByName("Camera");
-	cameraGO->GetTransform()->SetPosition(Vector3(0, 0, -5));
-	cameraGO->GetTransform()->SetRotation(Vector3(0, 0, 0));
+	cameraGO->SetParent(cameraPivot);
+	cameraGO->GetTransform()->SetLocalPosition(Vector3(0, 0, -13));
+	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
 	GameObject *spriteGo0 = new GameObject();
 	GameObject *spriteGo1 = new GameObject();
@@ -40,17 +46,18 @@ void Game::Start()
 	GameObject *spriteGo6 = new GameObject();
 
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo1->GetTransform()->SetPosition(Vector3(-2, 0, -2));
+	spriteGo1->GetTransform()->SetPosition(Vector3(-5, 0, -2));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	spriteGo4->GetTransform()->SetLocalScale(Vector3(5, 5, 5));
 	// spriteGo4->GetTransform()->SetRotation(Vector3(45, 45, 45));
 
 	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
 	spriteGo6->GetTransform()->SetPosition(Vector3(0, 2.5f, 0));
 
-	SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
-	SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
-	ps0->texture = texture5;
-	ps1->texture = texture;
+	// SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
+	// SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
+	// ps0->texture = texture5;
+	// ps1->texture = texture;
 
 	TextRenderer *tr = spriteGo6->AddComponent<TextRenderer>();
 	tr->text = "Hello\nWorld!";
@@ -62,10 +69,40 @@ void Game::Start()
 	debugTextRenderer->verticalAlignment = V_Top;
 
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
-	MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
-	MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
-	meshRenderer->meshData = mesh;
-	meshRenderer->texture = texture;
+	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
+	MeshData *mesh = WavefrontLoader::LoadFromRawData("sphere.obj");
+	// MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
+	// meshRenderer->meshData = mesh;
+	// meshRenderer->texture = texture;
+
+	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
+	// meshRenderer->meshData = mesh;
+	// meshRenderer->texture = texture;
+
+	Texture *tile0 = new Texture("scifiTile_16.png", "scifiTile_16");
+	// Texture *tile1 = new Texture("scifiTile_30.png", "scifiTile_30");
+	// Texture *tile2 = new Texture("scifiTile_41.png", "scifiTile_41");
+
+	tilemapGO = new GameObject();
+	tilemap = spriteGo4->AddComponent<Tilemap>();
+	int tilemapSize = 50;
+	tilemap->Setup(tilemapSize, tilemapSize);
+	tilemap->AddTexture(tile0);
+	// tilemap->AddTexture(tile1);
+	// tilemap->AddTexture(tile2);
+
+	// tilemap->SetTile(0, 0, 1);
+	// tilemap->SetTile(1, 0, 1);
+	// tilemap->SetTile(2, 0, 1);
+	// tilemap->SetTile(1, 1, 2);
+
+	for (int x = 0; x < tilemapSize; x++)
+	{
+		for (int y = 0; y < tilemapSize; y++)
+		{
+			tilemap->SetTile(x, y, 1);
+		}
+	}
 }
 
 void Game::LoadGameData()
@@ -74,14 +111,63 @@ void Game::LoadGameData()
 
 int lastTime = 0;
 
+// void RotateAround(Transform *trans, Vector3 targetPosition, Vector3 axis, float angle)
+// {
+// 	// axis.x = -axis.x;
+// 	// axis.z = -axis.z;
+// 	// Vector3 targetPosition = Vector3(0,0,0);
+// 	// Convertir l'angle en radians
+// 	float radAngle = angle * (3.14159f / 180.0f);
+
+// 	// Calculer la position du vecteur à tourner par rapport à la cible
+// 	Vector3 direction = trans->GetPosition() - targetPosition;
+
+// 	// Calculer la matrice de rotation
+// 	float cosTheta = cos(radAngle);
+// 	float sinTheta = sin(radAngle);
+
+// 	float x = direction.x;
+// 	float y = direction.y;
+// 	float z = direction.z;
+// 	float xPrime = (cosTheta + (1 - cosTheta) * axis.x * axis.x) * x +
+// 				   ((1 - cosTheta) * axis.x * axis.y - axis.z * sinTheta) * y +
+// 				   ((1 - cosTheta) * axis.x * axis.z + axis.y * sinTheta) * z;
+
+// 	float yPrime = ((1 - cosTheta) * axis.x * axis.y + axis.z * sinTheta) * x +
+// 				   (cosTheta + (1 - cosTheta) * axis.y * axis.y) * y +
+// 				   ((1 - cosTheta) * axis.y * axis.z - axis.x * sinTheta) * z;
+
+// 	float zPrime = ((1 - cosTheta) * axis.x * axis.z - axis.y * sinTheta) * x +
+// 				   ((1 - cosTheta) * axis.y * axis.z + axis.x * sinTheta) * y +
+// 				   (cosTheta + (1 - cosTheta) * axis.z * axis.z) * z;
+
+// 	// axis.y = -axis.y;
+// 	trans->SetPosition(targetPosition + Vector3(xPrime, yPrime, zPrime));
+// 	// trans->SetRotation(trans->GetRotation() + axis * angle);
+
+// 	// Mettre à jour la position du vecteur après rotation
+// 	// return targetPosition + Vector3(xPrime, yPrime, zPrime);
+// }
+
 /// <summary>
 /// Game loop
 /// </summary>
 void Game::Update()
 {
 	Vector3 rot = cameraGO->GetTransform()->GetRotation();
+	// Vector3 rot = cameraPivot->GetTransform()->GetRotation();
 	Vector3 pos = cameraGO->GetTransform()->GetPosition();
 #ifdef __PSP__
+	// rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + InputSystem::leftJoystick.y * cameraPivot->GetTransform()->GetLeft();
+
+	// rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetForward() + -InputSystem::leftJoystick.y * Vector3(1, 0, 0);
+
+	// rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + -InputSystem::leftJoystick.y * Vector3(1, 0, 0);
+
+	// RotateAround(cameraGO->GetTransform(), Vector3(0, 0, 0), cameraGO->GetTransform()->GetUp(), -InputSystem::leftJoystick.x * Time::GetDeltaTime() * 10);
+	//  pos = RotateAround(pos, Vector3(0, 0, 0), Vector3(0, 0, 1), -InputSystem::leftJoystick.y);
+	// RotateAround(cameraGO->GetTransform(), Vector3(0, 0, 0), cameraGO->GetTransform()->GetRight(), -InputSystem::leftJoystick.y * Time::GetDeltaTime() * 10);
+
 	// Rotate camera
 	if (InputSystem::GetKey(TRIANGLE))
 		rot.x += -1.5f;
@@ -111,20 +197,25 @@ void Game::Update()
 		pos.y -= (1 / 7.0f);
 
 	cameraGO->GetTransform()->SetPosition(pos);
+	// cameraGO->GetTransform()->SetRotation(Vector3::LookAt(pos, Vector3(0, 0, 0)));
 	cameraGO->GetTransform()->SetRotation(rot);
+	// cameraPivot->GetTransform()->SetRotation(rot);
 
 	std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
 	std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4) + "\n";
 	debugText += "DrawCall " + std::to_string(Performance::GetDrawCallCount()) + "\n";
+	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
+	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
+	// debugText += "right: " + std::to_string(cameraGO->GetTransform()->GetRight().x) + " " + std::to_string(cameraGO->GetTransform()->GetRight().y) + " " + std::to_string(cameraGO->GetTransform()->GetRight().z);
+
 	// for (int screen = 0; screen < SCE_TOUCH_PORT_MAX_NUM; screen++)
 	// {
 	// 	sceTouchPeek(screen, &touch[screen], 1);
 	// 	debugText += "screen: " + std::to_string(screen) + "\n";
-	// 	for (int finger = 0; finger < SCE_TOUCH_MAX_REPORT; finger++)
+	// 	for (int finger = 0; finger < 6; finger++)
 	// 	{
-	// 		debugText += "finger: " + std::to_string(finger) + ", " + std::to_string(touch[screen].report[finger].x) + ", " + std::to_string(touch[screen].report[finger].y) + "\n";
+	// 		debugText += "finger: " + std::to_string(finger) + ", " + std::to_string(touch[screen].report[finger].x) + ", " + std::to_string(touch[screen].report[finger].y) + ", force: " + std::to_string(touch[screen].report[finger].force) + "\n";
 	// 	}
-	// 	/* code */
 	// }
 
 	for (const auto &kv : Performance::profilerList)
@@ -139,7 +230,7 @@ void Game::Update()
 		Debug::Print(debugText);
 	}
 
-	Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
-	meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;
-	spriteGo4->GetTransform()->SetRotation(meshRot);
+	// Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
+	// meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;
+	// spriteGo4->GetTransform()->SetRotation(meshRot);
 }

@@ -2,6 +2,7 @@
 
 class GameObject;
 class TextRendererCanvas;
+class Tilemap;
 
 class Game
 {
@@ -20,4 +21,9 @@ private:
 	GameObject *spriteGo4 = nullptr;
 	TextRendererCanvas *debugTextRenderer = nullptr;
 	GameObject *cameraGO = nullptr;
+
+	GameObject *cameraPivot = nullptr;
+
+	GameObject *tilemapGO = nullptr;
+	Tilemap *tilemap = nullptr;
 };

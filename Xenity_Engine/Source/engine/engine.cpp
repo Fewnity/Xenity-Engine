@@ -67,14 +67,13 @@ int Engine::Init(const std::string exePath)
 	Window::SetResolution(-1, -1);
 #endif
 
-	Debug::Print("-------- Window Not implemented --------");
-	Debug::Print("-------- UI Manager Not implemented --------");
 	Debug::Print("-------- Audio Not implemented --------");
 
 	// if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0)
 	// {
 	// 	return -1;
 	// }
+	Graphics::Init();
 	InputSystem::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
@@ -85,7 +84,6 @@ int Engine::Init(const std::string exePath)
 	Debug::Print("-------- Editor UI Not implemented --------");
 	// EditorUI::Init();
 	Time::Init();
-	Graphics::Init();
 
 	// Init random
 	srand((unsigned int)time(NULL));
