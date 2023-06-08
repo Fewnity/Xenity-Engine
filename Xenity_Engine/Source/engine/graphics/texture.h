@@ -37,7 +37,7 @@ public:
 
     ~Texture();
 
-    void SetData(const unsigned char *data, int vram, bool needResize);
+    void SetData(const unsigned char *data);
 
     unsigned int GetTextureId() const;
     void UpdateTextureFilter();

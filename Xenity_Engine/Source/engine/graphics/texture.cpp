@@ -43,7 +43,7 @@ Texture::Texture(unsigned char *data, const int channelCount, const int width, c
     this->width = width;
     this->height = height;
     useMipMap = false;
-    SetData(data, 0, false);
+    SetData(data);
 }
 
 Texture::~Texture()
@@ -117,17 +117,25 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 
 #endif
 
-void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
+void Texture::SetData(const unsigned char *texData)
 {
     sceGeEdramSetSize(4096);
     // The psp needs a pow2 sized texture
 #ifdef __PSP__
+    bool vram = true;
+    bool needResize = false;
+
     type = GU_PSM_8888;
     int bytePerPixel = 4;
 
     // Get pow2 size
     pW = Math::pow2(width);
     pH = Math::pow2(height);
+
+    if (width != pW || height != pH)
+    {
+        needResize = true;
+    }
 
     int byteCount = pW * pH * bytePerPixel;
     unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
@@ -141,17 +149,22 @@ void Texture::SetData(const unsigned char *texData, int vram, bool needResize)
     else
     {
         // Copy to Data Buffer
-        copy_texture_data(dataBuffer, texData, pW, width, height);
+        copy_texture_data(dataBuffer, texData, pW, pW, pH);
+    }
+
+    if (pW > 256 || pH > 256)
+    {
+        vram = false;
     }
 
     // Allocate memory in ram or vram
     if (vram)
     {
-        data = (unsigned int *)getStaticVramTexture(pW, pH, type);
+        // data = (unsigned int *)getStaticVramTexture(pW, pH, type);
+        data = vramalloc(byteCount);
     }
     else
     {
-        // data = vramalloc(byteCount);
         data = (unsigned int *)memalign(16, byteCount);
     }
     Debug::Print("" + std::to_string(byteCount) + ", " + std::to_string(pW) + ", " + std::to_string(pH));
@@ -195,8 +208,7 @@ void Texture::LoadTexture(const std::string filename)
     }
 
 #ifdef __PSP__
-    int vram = 0;
-    SetData(buffer, vram, false);
+    SetData(buffer);
 #endif
 
 #ifdef __vita__
