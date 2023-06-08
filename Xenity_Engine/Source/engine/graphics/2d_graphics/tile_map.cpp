@@ -1,5 +1,6 @@
 #include "tile_map.h"
 #include <malloc.h>
+#include "../../../xenity.h"
 #include "../3d_graphics/mesh_manager.h"
 #include "sprite_manager.h"
 #include "../3d_graphics/mesh_data.h"
@@ -121,10 +122,10 @@ void Tilemap::Draw()
 						int indiceOff = mesh->index_count;
 						int verticeOff = mesh->vertice_count;
 
-						mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-						mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
-						mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
-						mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+						mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
+						mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
+						mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
+						mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
 
 						mesh->indices[0 + indiceOff] = 0 + verticeOff;
 						mesh->indices[1 + indiceOff] = 2 + verticeOff;
@@ -152,7 +153,7 @@ void Tilemap::Draw()
 		int meshCount = meshes.size();
 		for (int i = 0; i < meshCount; i++)
 		{
-			MeshManager::DrawMesh(Vector3(0), Vector3(0), Vector3(1), textures[i], meshes[i], false);
+			MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[i], meshes[i], false);
 		}
 	}
 }
