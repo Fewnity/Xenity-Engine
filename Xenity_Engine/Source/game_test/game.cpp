@@ -25,10 +25,10 @@ void Game::Start()
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
-	// Texture *texture = new Texture("Dry Dirt.png", "Dry Dirt");
-	// texture->SetFilter(Texture::Point);
+	Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
+	texture->SetFilter(Texture::Point);
 	// texture->SetWrapMode(Texture::ClampToEdge);
-	// texture->SetWrapMode(Texture::Repeat);
+	texture->SetWrapMode(Texture::Repeat);
 	// Texture *texture5 = new Texture("dot.jpg", "Dot");
 
 	cameraPivot = new GameObject();
@@ -70,7 +70,7 @@ void Game::Start()
 
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
-	MeshData *mesh = WavefrontLoader::LoadFromRawData("sphere.obj");
+	// MeshData *mesh = WavefrontLoader::LoadFromRawData("sphere.obj");
 	// MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;
 	// meshRenderer->texture = texture;
@@ -84,10 +84,11 @@ void Game::Start()
 	// Texture *tile2 = new Texture("scifiTile_41.png", "scifiTile_41");
 
 	tilemapGO = new GameObject();
-	tilemap = spriteGo4->AddComponent<Tilemap>();
+	tilemap = tilemapGO->AddComponent<Tilemap>();
 	int tilemapSize = 50;
 	tilemap->Setup(tilemapSize, tilemapSize);
-	tilemap->AddTexture(tile0);
+	// tilemap->AddTexture(tile0);
+	tilemap->AddTexture(texture);
 	// tilemap->AddTexture(tile1);
 	// tilemap->AddTexture(tile2);
 

@@ -11,6 +11,7 @@
 
 #ifdef __PSP__
 #include <pspkernel.h>
+#include <psppower.h>
 #include "../../../psp/gu2gl.h"
 #endif
 
@@ -26,6 +27,7 @@ ProfilerBenchmark *spriteBenchmark = nullptr;
 
 void SpriteManager::Init()
 {
+    scePowerSetClockFrequency(333, 333, 167);
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
     spriteMeshData = new MeshData(4, 6);

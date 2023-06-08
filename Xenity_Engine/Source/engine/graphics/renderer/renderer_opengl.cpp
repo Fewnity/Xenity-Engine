@@ -182,13 +182,18 @@ void RendererOpengl::BindTexture(Texture *texture)
 #ifdef __PSP__
 	glTexMode(texture->type, 0, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
+	// sceGuTexOffset(0.0f, 0.0f);
+	// sceGuTexLevelMode(GU_TEXTURE_AUTO, 0.0f);
+	sceGuTexFilter(GU_NEAREST_MIPMAP_NEAREST, GU_NEAREST);
 	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data);
-	ApplyTextureFilters(texture);
+
+	// glTexImage(1, 8, 8, 8, texture->data);
+
 #endif
 #ifdef __vita__
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
-	ApplyTextureFilters(texture);
 #endif
+	ApplyTextureFilters(texture);
 }
 
 void RendererOpengl::ApplyTextureFilters(Texture *texture)
@@ -199,12 +204,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
-			minFilterValue = GL_LINEAR;
+			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			// minFilterValue = GL_LINEAR;
 		}
 		else
 		{
-			minFilterValue = GL_LINEAR;
+			// minFilterValue = GL_LINEAR;
+			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
 		}
 		magfilterValue = GL_LINEAR;
 	}
@@ -212,12 +218,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
-			minFilterValue = GL_NEAREST;
+			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			// minFilterValue = GL_NEAREST;
 		}
 		else
 		{
-			minFilterValue = GL_NEAREST;
+			// minFilterValue = GL_NEAREST;
+			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
 		}
 		magfilterValue = GL_NEAREST;
 	}

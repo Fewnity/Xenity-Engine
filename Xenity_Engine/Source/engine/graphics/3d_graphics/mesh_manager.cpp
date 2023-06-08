@@ -23,7 +23,7 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     if (meshData->index_count == 0)
         return;
 
-    meshBenchmark->Start();
+    // meshBenchmark->Start();
     Graphics::usedCamera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
@@ -40,11 +40,13 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
 
     glDisable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
+    // glDisable(GL_TEXTURE_2D);
 
     Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(meshData);
+    // glDisable(GU_TEXTURE_2D);
 
-    meshBenchmark->Stop();
+    // meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMeshData(MeshData *meshData)
@@ -54,7 +56,10 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     // if (meshData->isQuad)
     //     glDrawElements(GL_SPRITES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
     // else
-    glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+
+    sceGuColor(GU_RGBA(255, 255, 255, 255));
+    glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+    // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
 #endif
 
 #ifdef __vita__

@@ -39,7 +39,7 @@ void MeshData::AddVertice(float u, float v, unsigned int color, float x, float y
     Vertex vert = {
         .u = u,
         .v = v,
-        .color = color,
+        // .color = color,
         .x = x,
         .y = y,
         .z = z};
