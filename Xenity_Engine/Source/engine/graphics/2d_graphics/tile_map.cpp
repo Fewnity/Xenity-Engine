@@ -9,6 +9,8 @@
 #include <math.h>
 #include <glm/ext/matrix_transform.hpp>
 
+#define DEFAULT_CHUNK_SIZE 10
+
 Tilemap::Tilemap()
 {
 	componentName = "Tilemap";
@@ -21,8 +23,14 @@ int Tilemap::GetDrawPriority() const
 
 void Tilemap::Setup(int width, int height)
 {
+	Setup(width, height, DEFAULT_CHUNK_SIZE);
+}
+
+void Tilemap::Setup(int width, int height, int chunkSize)
+{
 	this->width = width;
 	this->height = height;
+	this->chunkSize = chunkSize;
 
 	if (tiles != nullptr)
 		free(tiles);
@@ -37,6 +45,16 @@ void Tilemap::Setup(int width, int height)
 		{
 			Tile *tile = GetTile(x, y);
 			tile->textureId = 0;
+		}
+	}
+
+	int chunkCount = ceil(width / (float)chunkSize);
+	for (int x = 0; x < chunkCount; x++)
+	{
+		for (int y = 0; y < chunkCount; y++)
+		{
+			TilemapChunk *chunk = new TilemapChunk();
+			chunks.push_back(chunk);
 		}
 	}
 }
@@ -87,27 +105,37 @@ void Tilemap::Draw()
 {
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
 	{
+		int textureSize = (int)textures.size() - 1;
+		int chunkCount = ceil(width / (float)chunkSize);
 		if (dirtyMeshes)
 		{
 			dirtyMeshes = false;
-			// Delete old meshes
-			int meshSize = (int)meshes.size();
-			for (int i = 0; i < meshSize; i++)
+			for (int x = 0; x < chunkCount; x++)
 			{
-				delete meshes[i];
-				meshes.erase(meshes.begin() + i);
+				for (int y = 0; y < chunkCount; y++)
+				{
+					int meshSize = (int)chunks[x + y * chunkCount]->meshes.size();
+					for (int i = 0; i < meshSize; i++)
+					{
+						delete chunks[x + y * chunkCount]->meshes[i];
+					}
+					chunks[x + y * chunkCount]->meshes.clear();
+				}
 			}
-			meshes.clear();
 
-			// Create new empty meshes
-			int textureSize = (int)textures.size();
-			for (int i = 0; i < textureSize; i++)
+			for (int x = 0; x < chunkCount; x++)
 			{
-				MeshData *mesh = new MeshData(4 * width * height, 6 * width * height);
-				mesh->index_count = 0;
-				mesh->vertice_count = 0;
-				mesh->isQuad = true;
-				meshes.push_back(mesh);
+				for (int y = 0; y < chunkCount; y++)
+				{
+					for (int i = 0; i < textureSize; i++)
+					{
+						MeshData *mesh = new MeshData(6 * chunkSize * chunkSize, 6 * chunkSize * chunkSize); //////////////////////////////////////////CHANGE BY CHUNK SIZE
+						mesh->index_count = 0;
+						mesh->vertice_count = 0;
+						mesh->hasIndices = useIndices;
+						chunks[x + y * chunkCount]->meshes.push_back(mesh);
+					}
+				}
 			}
 
 			// Fill meshes
@@ -118,42 +146,65 @@ void Tilemap::Draw()
 					Tile *tile = GetTile(x, y);
 					if (tile->textureId != 0)
 					{
-						MeshData *mesh = meshes[tile->textureId];
+						int xChunk = floor(x / (float)chunkSize);
+						int yChunk = floor(y / (float)chunkSize);
+						MeshData *mesh = chunks[xChunk + yChunk * chunkCount]->meshes[tile->textureId - 1];
 						int indiceOff = mesh->index_count;
 						int verticeOff = mesh->vertice_count;
 
-						mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-						mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
-						mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
-						mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+						if (!useIndices)
+						{
+							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
+							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 1 + verticeOff);
+							mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 2 + verticeOff);
 
-						mesh->indices[0 + indiceOff] = 0 + verticeOff;
-						mesh->indices[1 + indiceOff] = 2 + verticeOff;
-						mesh->indices[2 + indiceOff] = 1 + verticeOff;
-						mesh->indices[3 + indiceOff] = 2 + verticeOff;
-						mesh->indices[4 + indiceOff] = 0 + verticeOff;
-						mesh->indices[5 + indiceOff] = 3 + verticeOff;
+							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 4 + verticeOff);
+							mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 5 + verticeOff);
 
-						mesh->index_count += 6;
+							mesh->vertice_count += 6;
+						}
+						else
+						{
+							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
+							mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
+							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
+							mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
 
-						// mesh->indices[0 + indiceOff] = 0 + verticeOff;
-						// mesh->indices[1 + indiceOff] = 2 + verticeOff;
-						// mesh->indices[2 + indiceOff] = 1 + verticeOff;
-						// mesh->indices[3 + indiceOff] = 2 + verticeOff;
-						// mesh->indices[4 + indiceOff] = 0 + verticeOff;
-						// mesh->indices[5 + indiceOff] = 3 + verticeOff;
-
-						// mesh->index_count += 6;
-						mesh->vertice_count += 4;
+							mesh->indices[0 + indiceOff] = 0 + verticeOff;
+							mesh->indices[1 + indiceOff] = 2 + verticeOff;
+							mesh->indices[2 + indiceOff] = 1 + verticeOff;
+							mesh->indices[3 + indiceOff] = 2 + verticeOff;
+							mesh->indices[4 + indiceOff] = 0 + verticeOff;
+							mesh->indices[5 + indiceOff] = 3 + verticeOff;
+							mesh->index_count += 6;
+							mesh->vertice_count += 4;
+						}
 					}
 				}
 			}
 		}
+		Vector3 pos = Graphics::usedCamera->GetTransform()->GetPosition();
 
-		int meshCount = meshes.size();
-		for (int i = 0; i < meshCount; i++)
+		float s = Graphics::usedCamera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
+		float s2 = Graphics::usedCamera->GetProjectionSize() + chunkSize;
+
+		for (int x = 0; x < chunkCount; x++)
 		{
-			MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[i], meshes[i], false);
+			if (x * (float)chunkSize <= pos.x + s && x * (float)chunkSize >= pos.x - s)
+			{
+				for (int y = 0; y < chunkCount; y++)
+				{
+					if (y * (float)chunkSize <= pos.y + s2 && y * (float)chunkSize >= pos.y - s2)
+					{
+
+						for (int textureI = 0; textureI < textureSize; textureI++)
+						{
+							MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
+						}
+					}
+				}
+			}
 		}
 	}
 }

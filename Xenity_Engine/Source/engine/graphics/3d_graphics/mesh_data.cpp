@@ -16,7 +16,8 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count)
     }
 
     // indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
-    indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
+    // indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
+    indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
 
     // indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
 

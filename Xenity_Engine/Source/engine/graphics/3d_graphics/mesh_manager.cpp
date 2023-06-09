@@ -20,7 +20,7 @@ void MeshManager::Init()
 
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth)
 {
-    if (meshData->index_count == 0)
+    if ((meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
         return;
 
     // meshBenchmark->Start();
@@ -58,8 +58,13 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     // else
 
     sceGuColor(GU_RGBA(255, 255, 255, 255));
-    glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
-    // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+    // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+    if (!meshData->hasIndices)
+        glDrawElements(GL_TRIANGLES, GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->vertice_count, 0, meshData->data);
+    else
+        glDrawElements(GL_TRIANGLES, GL_INDEX_16BIT | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+
+        // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
 #endif
 
 #ifdef __vita__
@@ -72,7 +77,14 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     // glColorPointer(1, GL_UNSIGNED_INT, stride, &vData->data[0].color);
     glVertexPointer(3, GL_FLOAT, stride, &meshData->data[0].x);
 
-    glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_INT, meshData->indices);
+    // glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_INT, meshData->indices);
+
+    if (!meshData->hasIndices)
+        // glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
+        glDrawElements(GL_TRIANGLES, meshData->vertice_count, GL_UNSIGNED_SHORT, 0);
+    else
+        glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_SHORT, meshData->indices);
+
     glDisableClientState(GL_VERTEX_ARRAY);
     // glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);

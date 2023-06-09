@@ -4,15 +4,18 @@
 #include <vector>
 #include "../../vectors/vector2.h"
 #include "../../vectors/vector4.h"
-#include <glm/glm.hpp>
 #include "../color/color.h"
 #include "../../game_elements/gameobject.h"
 #include "../../engine.h"
 
 class Texture;
 class MeshData;
-// class Material;
-// class SpriteBatch;
+
+class TilemapChunk
+{
+public:
+	std::vector<MeshData *> meshes;
+};
 
 class Tilemap : public IDrawable
 {
@@ -23,15 +26,11 @@ public:
 	{
 	public:
 		int textureId = 0;
-		// glm::mat4 transformationMatrix;
-		// Vector2 vertices[4];
-		// SpriteBatch *batch = nullptr;
-
-	private:
 	};
 
 	int GetDrawPriority() const;
 	void Setup(int width, int height);
+	void Setup(int width, int height, int chunkSize);
 	Tile *GetTile(int x, int y);
 	void SetTile(int x, int y, Texture *textureId);
 	void SetTile(int x, int y, int textureId);
@@ -41,7 +40,6 @@ public:
 	void RemoveTexture(Texture *texture);
 	Vector2 spritesScale = Vector2(1, 1);
 	bool dirtyMeshes = false;
-	// Material *material = nullptr;
 
 	void SetOrderInLayer(int orderInLayer)
 	{
@@ -55,17 +53,19 @@ public:
 	}
 
 private:
+	int chunkSize = 0;
+
 	int orderInLayer = 0;
 	void Draw();
 
 	int GetTextureIndex(Texture *texture);
 
 	std::vector<Texture *> textures;
-	std::vector<MeshData *> meshes;
+	std::vector<TilemapChunk *> chunks;
 	int width = 0;
 	int height = 0;
 	Tile *tiles = nullptr;
 	Color color = Color();
-	// std::vector<SpriteBatch *> spriteBatches;
 	bool needUpdateVertices = true;
+	bool useIndices = false;
 };
