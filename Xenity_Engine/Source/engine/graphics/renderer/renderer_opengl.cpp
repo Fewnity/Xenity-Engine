@@ -87,8 +87,8 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	float halfRatio = Window::GetAspectRatio() / 2.0f * 10;
-	float halfOne = 0.5f * 10;
+	float halfRatio = Window::GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+	float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
@@ -184,7 +184,7 @@ void RendererOpengl::BindTexture(Texture *texture)
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
 	// sceGuTexOffset(0.0f, 0.0f);
 	// sceGuTexLevelMode(GU_TEXTURE_AUTO, 0.0f);
-	sceGuTexFilter(GU_NEAREST_MIPMAP_NEAREST, GU_NEAREST);
+	// sceGuTexFilter(GU_NEAREST_MIPMAP_NEAREST, GU_NEAREST);
 	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data);
 
 	// glTexImage(1, 8, 8, 8, texture->data);
@@ -204,13 +204,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
-			// minFilterValue = GL_LINEAR;
+			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			minFilterValue = GL_LINEAR;
 		}
 		else
 		{
-			// minFilterValue = GL_LINEAR;
-			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			minFilterValue = GL_LINEAR;
+			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
 		}
 		magfilterValue = GL_LINEAR;
 	}
@@ -218,13 +218,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
-			// minFilterValue = GL_NEAREST;
+			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			minFilterValue = GL_NEAREST;
 		}
 		else
 		{
-			// minFilterValue = GL_NEAREST;
-			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			minFilterValue = GL_NEAREST;
+			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
 		}
 		magfilterValue = GL_NEAREST;
 	}

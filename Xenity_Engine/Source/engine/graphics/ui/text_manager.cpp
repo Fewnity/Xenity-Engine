@@ -94,7 +94,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     }
     else
     {
-        Engine::renderer->SetProjection2D(1, 0.03f, 100);
+        Engine::renderer->SetProjection2D(5, 0.03f, 100);
         Engine::renderer->ResetView();
     }
 
