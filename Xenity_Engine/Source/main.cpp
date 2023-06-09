@@ -11,7 +11,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #endif
 
 /*
-Tilemap
+Fix UI Projection size
 Touch for psvita
 Sprite color
 Text color

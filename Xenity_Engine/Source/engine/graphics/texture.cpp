@@ -119,7 +119,7 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 
 void Texture::SetData(const unsigned char *texData)
 {
-    sceGeEdramSetSize(4096);
+    // sceGeEdramSetSize(4096);
     // The psp needs a pow2 sized texture
 #ifdef __PSP__
     bool vram = true;

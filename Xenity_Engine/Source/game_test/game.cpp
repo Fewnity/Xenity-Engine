@@ -25,17 +25,17 @@ void Game::Start()
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
-	Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
-	texture->SetFilter(Texture::Point);
-	// texture->SetWrapMode(Texture::ClampToEdge);
-	texture->SetWrapMode(Texture::Repeat);
+	// Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
+	// texture->SetFilter(Texture::Point);
+	// // texture->SetWrapMode(Texture::ClampToEdge);
+	// texture->SetWrapMode(Texture::Repeat);
+
 	// Texture *texture5 = new Texture("dot.jpg", "Dot");
 
 	cameraPivot = new GameObject();
 	cameraPivot->GetTransform()->SetPosition(Vector3(0, 0, 0));
 
 	cameraGO = GameObject::FindGameObjectByName("Camera");
-	cameraGO->SetParent(cameraPivot);
 	cameraGO->GetTransform()->SetLocalPosition(Vector3(0, 0, -13));
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
@@ -79,23 +79,18 @@ void Game::Start()
 	// meshRenderer->meshData = mesh;
 	// meshRenderer->texture = texture;
 
+	// Texture *tile0 = new Texture("scifiTile_16_low2.png", "scifiTile_16");
 	Texture *tile0 = new Texture("scifiTile_16.png", "scifiTile_16");
+	// Texture *tile0 = new Texture("scifiTile_16_low2.png", "scifiTile_16");
+	// tile0->SetFilter(Texture::Point);
 	// Texture *tile1 = new Texture("scifiTile_30.png", "scifiTile_30");
 	// Texture *tile2 = new Texture("scifiTile_41.png", "scifiTile_41");
 
 	tilemapGO = new GameObject();
 	tilemap = tilemapGO->AddComponent<Tilemap>();
-	int tilemapSize = 50;
+	int tilemapSize = 100;
 	tilemap->Setup(tilemapSize, tilemapSize);
-	// tilemap->AddTexture(tile0);
-	tilemap->AddTexture(texture);
-	// tilemap->AddTexture(tile1);
-	// tilemap->AddTexture(tile2);
-
-	// tilemap->SetTile(0, 0, 1);
-	// tilemap->SetTile(1, 0, 1);
-	// tilemap->SetTile(2, 0, 1);
-	// tilemap->SetTile(1, 1, 2);
+	tilemap->AddTexture(tile0);
 
 	for (int x = 0; x < tilemapSize; x++)
 	{
@@ -171,31 +166,31 @@ void Game::Update()
 
 	// Rotate camera
 	if (InputSystem::GetKey(TRIANGLE))
-		rot.x += -1.5f;
+		rot.x += -1.5f * Time::GetDeltaTime() * 30;
 	else if (InputSystem::GetKey(CROSS))
-		rot.x += 1.5f;
+		rot.x += 1.5f * Time::GetDeltaTime() * 30;
 
 	if (InputSystem::GetKey(CIRCLE))
-		rot.y += 1.5f;
+		rot.y += 1.5f * Time::GetDeltaTime() * 30;
 	else if (InputSystem::GetKey(SQUARE))
-		rot.y += -1.5f;
+		rot.y += -1.5f * Time::GetDeltaTime() * 30;
 
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f);
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f);
+	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #else
 	// Rotate camera
-	rot.x += InputSystem::rightJoystick.y * 1.5f;
-	rot.y += InputSystem::rightJoystick.x * 1.5f;
+	rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 30;
+	rot.y += InputSystem::rightJoystick.x * 1.5f * Time::GetDeltaTime() * 30;
 
 	// Move camera
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f);
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f);
+	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #endif
 
 	if (InputSystem::GetKey(UP))
-		pos.y -= (-1 / 7.0f);
+		pos.y -= (-1 / 7.0f) * Time::GetDeltaTime() * 30;
 	else if (InputSystem::GetKey(DOWN))
-		pos.y -= (1 / 7.0f);
+		pos.y -= (1 / 7.0f) * Time::GetDeltaTime() * 30;
 
 	cameraGO->GetTransform()->SetPosition(pos);
 	// cameraGO->GetTransform()->SetRotation(Vector3::LookAt(pos, Vector3(0, 0, 0)));
@@ -207,7 +202,7 @@ void Game::Update()
 	debugText += "DrawCall " + std::to_string(Performance::GetDrawCallCount()) + "\n";
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
-	// debugText += "right: " + std::to_string(cameraGO->GetTransform()->GetRight().x) + " " + std::to_string(cameraGO->GetTransform()->GetRight().y) + " " + std::to_string(cameraGO->GetTransform()->GetRight().z);
+	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";
 
 	// for (int screen = 0; screen < SCE_TOUCH_PORT_MAX_NUM; screen++)
 	// {
@@ -225,11 +220,11 @@ void Game::Update()
 	}
 
 	debugTextRenderer->text = debugText;
-	if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
-	{
-		lastTime = (int)Time::GetTime();
-		Debug::Print(debugText);
-	}
+	// if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
+	// {
+	// 	lastTime = (int)Time::GetTime();
+	// 	Debug::Print(debugText);
+	// }
 
 	// Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
 	// meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;

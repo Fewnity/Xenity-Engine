@@ -27,7 +27,7 @@ ProfilerBenchmark *spriteBenchmark = nullptr;
 
 void SpriteManager::Init()
 {
-    scePowerSetClockFrequency(333, 333, 167);
+    // scePowerSetClockFrequency(333, 333, 167);
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
     spriteMeshData = new MeshData(4, 6);
@@ -48,7 +48,8 @@ void SpriteManager::Init()
     camera = cameraGo->AddComponent<Camera>();
     // camera->SetNearClippingPlane(0.1);
     camera->SetFarClippingPlane(100);
-    // camera->SetProjectionType(Orthographic);
+    camera->SetProjectionSize(5.0f);
+    camera->SetProjectionType(Orthographic);
 }
 
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
