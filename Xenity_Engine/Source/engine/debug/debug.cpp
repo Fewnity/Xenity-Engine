@@ -4,14 +4,14 @@
 #ifdef __PSP__
 #include <pspkernel.h>
 #include "../../psp/debug/debug.h"
+File *file = nullptr;
 #elif __vita__
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
-std::ofstream Debug::debugFile;
-File *file = nullptr;
 
-// FILE *file;
+std::ofstream Debug::debugFile;
+
 /**
  * @brief Write text in the debug file
  */

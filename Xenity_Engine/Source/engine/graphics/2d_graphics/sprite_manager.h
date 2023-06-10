@@ -1,13 +1,8 @@
 #pragma once
 
 class Vector3;
-
-class Vector4;
 class MeshData;
 class Texture;
-#include <glm/glm.hpp>
-#include <vector>
-#include <string>
 
 class SpriteManager
 {

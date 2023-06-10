@@ -2,10 +2,10 @@
 
 #include "../../vectors/vector4.h"
 
-class RGBA 
+class RGBA
 {
 public:
-	RGBA(float r, float g, float b, float a) 
+	RGBA(float r, float g, float b, float a)
 	{
 		this->r = r;
 		this->a = a;
@@ -36,4 +36,3 @@ private:
 	unsigned int rgbaInt;
 	unsigned int abgrInt;
 };
-

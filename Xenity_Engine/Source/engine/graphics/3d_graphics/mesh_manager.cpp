@@ -13,11 +13,25 @@
 
 ProfilerBenchmark *meshBenchmark = nullptr;
 
+/**
+ * @brief Init Mesh Manager
+ *
+ */
 void MeshManager::Init()
 {
     meshBenchmark = new ProfilerBenchmark("Mesh");
 }
 
+/**
+ * @brief Draw a Mesh
+ *
+ * @param position
+ * @param rotation
+ * @param scale
+ * @param texture
+ * @param meshData
+ * @param useDepth
+ */
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth)
 {
     if ((meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
@@ -49,6 +63,11 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     // meshBenchmark->Stop();
 }
 
+/**
+ * @brief Draw Mesh data
+ *
+ * @param meshData
+ */
 void MeshManager::DrawMeshData(MeshData *meshData)
 {
 #ifdef __PSP__

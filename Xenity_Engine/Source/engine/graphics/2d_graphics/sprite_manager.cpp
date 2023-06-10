@@ -1,10 +1,8 @@
 #include "sprite_manager.h"
 #include "../../../xenity.h"
-#include "../texture.h"
 #include "../3d_graphics/mesh_data.h"
 #include <cstdlib>
 #include <malloc.h>
-#include "../camera.h"
 #include "../renderer/renderer.h"
 
 #include "../../../../include/stb_image_resize.h"
@@ -19,12 +17,14 @@
 #include <vitaGL.h>
 #endif
 
-Camera *camera = nullptr;
-GameObject *cameraGo = nullptr;
 MeshData *SpriteManager::spriteMeshData = nullptr;
 
 ProfilerBenchmark *spriteBenchmark = nullptr;
 
+/**
+ * @brief Init the Sprite Manager
+ *
+ */
 void SpriteManager::Init()
 {
     // scePowerSetClockFrequency(333, 333, 167);
@@ -50,27 +50,30 @@ void SpriteManager::Init()
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
-    cameraGo = new GameObject("Camera");
-    camera = cameraGo->AddComponent<Camera>();
-    // camera->SetNearClippingPlane(0.1);
-    camera->SetFarClippingPlane(100);
-    camera->SetProjectionSize(5.0f);
-    camera->SetProjectionType(Orthographic);
 }
 
+/**
+ * @brief Draw a sprite
+ *
+ * @param position Sprite position (center)
+ * @param rotation Sprite rotation
+ * @param scale Sprite scale
+ * @param texture Texture
+ */
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
 {
     spriteBenchmark->Start();
     // texture = TextManager::fonts[0]->fontAtlas;
 
+    // Get sprite scale from texture size
     float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-
     float w = texture->GetWidth() * scaleCoef;
     float h = texture->GetHeight() * scaleCoef;
 
     Graphics::usedCamera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
+    // Move/Rotate/Scale the sprite
     Vector3 pos = Vector3(-position.x, position.y, position.z);
     Vector3 rot = Vector3(rotation.x, rotation.y, rotation.z);
     Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
@@ -78,11 +81,11 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
     // Set settings
     glDisable(GL_DEPTH_TEST);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
 
+    // Draw the sprite
     Engine::renderer->BindTexture(texture);
     MeshManager::DrawMeshData(spriteMeshData);
 

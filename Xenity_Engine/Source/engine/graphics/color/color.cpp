@@ -2,6 +2,15 @@
 #include "../../tools/math.h"
 #include <math.h>
 
+/**
+ * @brief Create color from RGBA
+ *
+ * @param r Red [0;255]
+ * @param g Green [0;255]
+ * @param b Blue [0;255]
+ * @param a Alpha [0;255]
+ * @return Color
+ */
 Color Color::CreateFromRGBA(int r, int g, int b, int a)
 {
 	Color color = Color();
@@ -9,6 +18,15 @@ Color Color::CreateFromRGBA(int r, int g, int b, int a)
 	return color;
 }
 
+/**
+ * @brief Create color from RGBA float
+ *
+ * @param r Red [0.0f;1.0f]
+ * @param g Green [0.0f;1.0f]
+ * @param b Blue [0.0f;1.0f]
+ * @param a Alpha [0.0f;1.0f]
+ * @return Color
+ */
 Color Color::CreateFromRGBAFloat(float r, float g, float b, float a)
 {
 	Color color = Color();
@@ -16,6 +34,14 @@ Color Color::CreateFromRGBAFloat(float r, float g, float b, float a)
 	return color;
 }
 
+/**
+ * @brief Set color from RGBA
+ *
+ * @param r Red [0;255]
+ * @param g Green [0;255]
+ * @param b Blue [0;255]
+ * @param a Alpha [0;255]
+ */
 void Color::SetFromRGBA(int r, int g, int b, int a)
 {
 	rgba.r = (int)round(Math::Clamp(r / 255.0f, 0, 1));
@@ -26,6 +52,14 @@ void Color::SetFromRGBA(int r, int g, int b, int a)
 	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
 }
 
+/**
+ * @brief Set color from RGBA float
+ *
+ * @param r Red [0.0f;1.0f]
+ * @param g Green [0.0f;1.0f]
+ * @param b Blue [0.0f;1.0f]
+ * @param a Alpha [0.0f;1.0f]
+ */
 void Color::SetFromRGBAfloat(float r, float g, float b, float a)
 {
 	rgba.r = Math::Clamp(r, 0, 1);
@@ -46,11 +80,21 @@ unsigned int Color::GetUnsignedIntABGR()
 	return abgrInt;
 }
 
+/**
+ * @brief
+ *
+ * @return RGBA
+ */
 RGBA Color::GetRGBA()
 {
 	return rgba;
 }
 
+/**
+ * @brief
+ *
+ * @return Vector4
+ */
 Vector4 RGBA::ToVector4()
 {
 	return Vector4(r, g, b, a);

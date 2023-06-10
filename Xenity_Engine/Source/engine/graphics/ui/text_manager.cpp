@@ -23,12 +23,22 @@ std::vector<Font *> TextManager::fonts;
 std::vector<MeshData *> TextManager::meshes;
 ProfilerBenchmark *textBenchmark = nullptr;
 
+/**
+ * @brief Init text manager
+ *
+ */
 void TextManager::Init()
 {
     meshes = std::vector<MeshData *>();
     textBenchmark = new ProfilerBenchmark("Text");
 }
 
+/**
+ * @brief Draw mesh
+ *
+ * @param mesh Mesh data
+ * @param for3D 3D text mode
+ */
 void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
 {
     // Set settings
@@ -44,6 +54,10 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
     MeshManager::DrawMeshData(mesh);
 }
 
+/**
+ * @brief Delete texts meshes
+ *
+ */
 void TextManager::ClearTexts()
 {
     int meshCount = meshes.size();
@@ -54,6 +68,12 @@ void TextManager::ClearTexts()
     meshes.clear();
 }
 
+/**
+ * @brief Set the text mesh position
+ *
+ * @param transform
+ * @param canvas
+ */
 void TextManager::SetTextPosition(Transform *transform, bool canvas)
 {
     // Set text scale and pivot position/rotation
@@ -75,8 +95,15 @@ void TextManager::SetTextPosition(Transform *transform, bool canvas)
     Engine::renderer->SetTransform(pos, rot, scl, true);
 }
 
-// void GenerateMesh()
-
+/**
+ * @brief Draw text
+ *
+ * @param text String to draw
+ * @param horizontalAlignment Horizontal Alignment
+ * @param verticalAlignment Vertical Alignment
+ * @param transform Transform
+ * @param canvas Is for canvas
+ */
 void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas)
 {
     textBenchmark->Start();
@@ -179,6 +206,15 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     textBenchmark->Stop();
 }
 
+/**
+ * @brief Add a char to the mesh
+ *
+ * @param mesh Mesh to modify
+ * @param ch Char to add
+ * @param x Char X position
+ * @param y Char Y position
+ * @param letterIndex Letter index in the string
+ */
 void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex)
 {
     int indice = letterIndex * 4;
@@ -337,6 +373,15 @@ Font *TextManager::CreateFont(std::string filePath)
     return font;
 }
 
+/**
+ * @brief Get informations about the text
+ *
+ * @param text Text to analyse
+ * @param textLen Lenght of the text
+ * @param font Used font
+ * @param scale Scale of the text
+ * @return TextInfo
+ */
 TextInfo TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
 {
     TextInfo textInfos = TextInfo();

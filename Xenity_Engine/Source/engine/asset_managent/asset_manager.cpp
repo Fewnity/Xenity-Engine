@@ -30,6 +30,10 @@ Texture *AssetManager::defaultTexture = nullptr;
 // 	}
 // }
 
+/**
+ * @brief Init
+ *
+ */
 void AssetManager::Init()
 {
 	// defaultTexture = new Texture("white_square.png", "@Internal_WhiteSquare");

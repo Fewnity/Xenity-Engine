@@ -19,6 +19,13 @@ void Game::Start()
 	game = this;
 	LoadGameData();
 
+	cameraGO = new GameObject("Camera");
+	Camera *camera = cameraGO->AddComponent<Camera>();
+	// camera->SetNearClippingPlane(0.1);
+	camera->SetFarClippingPlane(100);
+	camera->SetProjectionSize(5.0f);
+	camera->SetProjectionType(Orthographic);
+
 	// sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START);
 	// sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_START);
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_FRONT);
@@ -35,7 +42,6 @@ void Game::Start()
 	cameraPivot = new GameObject();
 	cameraPivot->GetTransform()->SetPosition(Vector3(0, 0, 0));
 
-	cameraGO = GameObject::FindGameObjectByName("Camera");
 	cameraGO->GetTransform()->SetLocalPosition(Vector3(0, 0, -13));
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 

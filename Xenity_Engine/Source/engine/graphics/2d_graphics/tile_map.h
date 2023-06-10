@@ -2,10 +2,7 @@
 
 #include "../iDrawable.h"
 #include <vector>
-#include "../../vectors/vector2.h"
-#include "../../vectors/vector4.h"
 #include "../color/color.h"
-#include "../../game_elements/gameobject.h"
 #include "../../engine.h"
 
 class Texture;

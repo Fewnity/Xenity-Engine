@@ -24,10 +24,9 @@ int SpriteRenderer::GetDrawPriority() const
 /// </summary>
 void SpriteRenderer::Draw()
 {
-	if (GetGameObject()->GetLocalActive() && GetIsEnabled() /*&& material != nullptr*/ && texture != nullptr)
+	// Draw the sprite only if there is a texture and if the component/gameobject is active
+	if (GetGameObject()->GetLocalActive() && GetIsEnabled() && texture != nullptr)
 	{
-		// SpriteManager::RenderSprite(GetTransform()->transformationMatrix,
-		// 							color, texture, material);
 		SpriteManager::DrawSprite(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetScale(), texture);
 	}
 }
