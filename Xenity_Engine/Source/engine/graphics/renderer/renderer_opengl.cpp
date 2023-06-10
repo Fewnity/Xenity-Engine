@@ -72,14 +72,11 @@ void RendererOpengl::EndFrame()
 
 void RendererOpengl::SetClearColor(Color color)
 {
+	RGBA rgba = color.GetRGBA();
 #ifdef __PSP__
-	// Convert float RGBA color to unsigned int ABGR color
-	RGBA vec4Color = color.GetRGBA();
-	unsigned int ABGR = ((int)(vec4Color.a * 256) << 24) + ((int)(vec4Color.b * 256) << 16) + ((int)(vec4Color.g * 256) << 8) + ((int)(vec4Color.r * 256) << 0);
-	glClearColor(ABGR);
+	glClearColor(color.GetUnsignedIntABGR());
 #else
-	RGBA vec4Color = color.GetRGBA();
-	glClearColor(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
 #endif
 }
 
