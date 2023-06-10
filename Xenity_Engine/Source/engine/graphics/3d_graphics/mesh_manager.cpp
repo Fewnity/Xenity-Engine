@@ -57,37 +57,71 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     //     glDrawElements(GL_SPRITES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
     // else
 
-    sceGuColor(GU_RGBA(255, 255, 255, 255));
+    // sceGuColor(GU_RGBA(255, 255, 255, 255));
     // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
-    if (!meshData->hasIndices)
-        glDrawElements(GL_TRIANGLES, GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->vertice_count, 0, meshData->data);
+    int params = 0;
+
+    if (meshData->hasIndices)
+    {
+        params |= GL_INDEX_16BIT;
+    }
+    params |= GL_TEXTURE_32BITF;
+    if (meshData->hasColor)
+        params |= GL_COLOR_8888;
     else
-        glDrawElements(GL_TRIANGLES, GL_INDEX_16BIT | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
+    {
+        sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
+    }
+    params |= GL_VERTEX_32BITF;
+    params |= GL_TRANSFORM_3D;
+
+    if (!meshData->hasIndices)
+        glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
+    else
+        glDrawElements(GL_TRIANGLES, params, meshData->index_count, meshData->indices, meshData->data);
 
         // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
 #endif
 
 #ifdef __vita__
     glEnableClientState(GL_VERTEX_ARRAY);
-    // glEnableClientState(GL_COLOR_ARRAY);
+    if (meshData->hasColor)
+        glEnableClientState(GL_COLOR_ARRAY);
+    else
+    {
+        RGBA rgba = meshData->unifiedColor.GetRGBA();
+        glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
+    }
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    int stride = sizeof(Vertex);
-    glTexCoordPointer(2, GL_FLOAT, stride, &meshData->data[0].u);
-    // glColorPointer(1, GL_UNSIGNED_INT, stride, &vData->data[0].color);
-    glVertexPointer(3, GL_FLOAT, stride, &meshData->data[0].x);
-
-    // glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_INT, meshData->indices);
+    if (meshData->hasColor)
+    {
+        int stride = sizeof(Vertex);
+        glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].u);
+        glColorPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].r);
+        glVertexPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].x);
+    }
+    else
+    {
+        int stride = sizeof(VertexNoColor);
+        glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].u);
+        glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].x);
+    }
 
     if (!meshData->hasIndices)
-        // glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
-        glDrawElements(GL_TRIANGLES, meshData->vertice_count, GL_UNSIGNED_SHORT, 0);
+    {
+        glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
+    }
     else
+    {
         glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_SHORT, meshData->indices);
+    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
-    // glDisableClientState(GL_COLOR_ARRAY);
+    if (meshData->hasColor)
+        glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 #endif
     Performance::AddDrawCall();
 }

@@ -11,12 +11,6 @@
 class Texture;
 class MeshData;
 
-class TilemapChunk
-{
-public:
-	std::vector<MeshData *> meshes;
-};
-
 class Tilemap : public IDrawable
 {
 public:
@@ -34,12 +28,18 @@ public:
 	Tile *GetTile(int x, int y);
 	void SetTile(int x, int y, Texture *textureId);
 	void SetTile(int x, int y, int textureId);
-	int GetWidth();
-	int GetHeight();
 	void AddTexture(Texture *texture);
 	void RemoveTexture(Texture *texture);
-	Vector2 spritesScale = Vector2(1, 1);
-	bool dirtyMeshes = false;
+
+	int GetWidth()
+	{
+		return width;
+	}
+
+	int GetHeight()
+	{
+		return height;
+	}
 
 	void SetOrderInLayer(int orderInLayer)
 	{
@@ -53,11 +53,20 @@ public:
 	}
 
 private:
+	class TilemapChunk
+	{
+	public:
+		std::vector<MeshData *> meshes;
+	};
 	int chunkSize = 0;
+	bool dirtyMeshes = false;
 
 	int orderInLayer = 0;
 	void Draw();
 
+	void FillChunks();
+	void CreateChunksMeshes();
+	void DrawChunks();
 	int GetTextureIndex(Texture *texture);
 
 	std::vector<Texture *> textures;
@@ -68,4 +77,7 @@ private:
 	Color color = Color();
 	bool needUpdateVertices = true;
 	bool useIndices = false;
+
+	int textureSize;
+	int chunkCount;
 };

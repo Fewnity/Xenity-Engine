@@ -3,6 +3,7 @@
 class Vector3;
 
 class Vector4;
+class MeshData;
 class Texture;
 #include <glm/glm.hpp>
 #include <vector>
@@ -13,4 +14,7 @@ class SpriteManager
 public:
     static void DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture);
     static void Init();
+
+private:
+    static MeshData *spriteMeshData;
 };

@@ -123,7 +123,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 				sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 																								// sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 
-				// mesh->AddVertice(
+				// mesh->AddVertex(
 				// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
 				// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, vertexIndex);
 
@@ -164,7 +164,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	if (!hasNoUv)
 		byteCount += 2;
 
-	MeshData *mesh = new MeshData(indicesCount, indicesCount);
+	MeshData *mesh = new MeshData(indicesCount, indicesCount, false);
 
 	// Alloc memory for vertices and indices
 	// mesh->verticesCount = indicesCount * (byteCount);
@@ -180,7 +180,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	int i2 = 0;
 	int i3 = 0;
 	int i4 = 0;
-
+	Color color = Color::CreateFromRGBA(255, 255, 255, 255);
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i] - 1;
@@ -190,13 +190,16 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 		int index = i * byteCount;
 
 		// (float u, float v, unsigned int color, float x, float y, float z, int indice);
-		mesh->AddVertice(
+		// mesh->AddVertex(
+		// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
+		// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+		mesh->AddVertex(
 			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
-			0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+			color, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 
 		mesh->indices[i] = i;
 
-		// mesh->AddVertice(
+		// mesh->AddVertex(
 		// 	tempTexturesCoords.at(0).x, tempTexturesCoords.at(i2++).y,
 		// 	0xFFFFFFFF, tempVertices.at(i3++).x, tempVertices.at(i3++).y, tempVertices.at(i3++).z, i);
 

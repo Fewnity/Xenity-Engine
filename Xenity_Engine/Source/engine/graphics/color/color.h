@@ -28,8 +28,12 @@ public:
 	void SetFromRGBA(int r, int g, int b, int a);
 	void SetFromRGBAfloat(float r, float g, float b, float a);
 	RGBA GetRGBA();
+	unsigned int GetUnsignedIntRGBA();
+	unsigned int GetUnsignedIntABGR();
 
 private:
 	RGBA rgba = RGBA(1, 1, 1, 1);
+	unsigned int rgbaInt;
+	unsigned int abgrInt;
 };
 

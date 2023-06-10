@@ -21,7 +21,7 @@
 
 Camera *camera = nullptr;
 GameObject *cameraGo = nullptr;
-MeshData *spriteMeshData = nullptr;
+MeshData *SpriteManager::spriteMeshData = nullptr;
 
 ProfilerBenchmark *spriteBenchmark = nullptr;
 
@@ -30,17 +30,23 @@ void SpriteManager::Init()
     // scePowerSetClockFrequency(333, 333, 167);
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
-    spriteMeshData = new MeshData(4, 6);
-    spriteMeshData->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, -0.5f, -0.5f, 0.0f, 0);
-    spriteMeshData->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, 0.5f, -0.5f, 0.0f, 1);
-    spriteMeshData->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, 0.5f, 0.5f, 0.0f, 2);
-    spriteMeshData->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, -0.5f, 0.5f, 0.0f, 3);
+    Color color = Color::CreateFromRGBA(255, 255, 255, 255);
+
+    // Create sprite mesh
+    spriteMeshData = new MeshData(4, 6, false);
+    spriteMeshData->AddVertex(0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0);
+    spriteMeshData->AddVertex(1.0f, 0.0f, 0.5f, -0.5f, 0.0f, 1);
+    spriteMeshData->AddVertex(1.0f, 1.0f, 0.5f, 0.5f, 0.0f, 2);
+    spriteMeshData->AddVertex(0.0f, 1.0f, -0.5f, 0.5f, 0.0f, 3);
     spriteMeshData->indices[0] = 0;
     spriteMeshData->indices[1] = 2;
     spriteMeshData->indices[2] = 1;
     spriteMeshData->indices[3] = 2;
     spriteMeshData->indices[4] = 0;
     spriteMeshData->indices[5] = 3;
+
+    spriteMeshData->unifiedColor = color;
+
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif

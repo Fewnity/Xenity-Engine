@@ -2,10 +2,22 @@
 
 #include <string>
 
+#include "../color/color.h"
+
 struct Vertex
 {
     float u, v;
-    // unsigned int color;
+#ifdef __PSP__
+    unsigned int color;
+#else
+    float r, g, b, a;
+#endif
+    float x, y, z;
+};
+
+struct VertexNoColor
+{
+    float u, v;
     float x, y, z;
 };
 
@@ -13,13 +25,17 @@ class MeshData
 {
 public:
     MeshData() = delete;
-    MeshData(unsigned int vcount, unsigned int index_count);
+    MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor);
     // MeshData(std::string filePath);
     ~MeshData();
 
-    void AddVertice(float u, float v, unsigned int color, float x, float y, float z, int indice);
+    // void AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index);
+    void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
+    void AddVertex(float u, float v, float x, float y, float z, int index);
 
-    Vertex *data = nullptr;
+    void *data = nullptr;
+    // VertexNoColor *dataNoColor = nullptr;
+
     // unsigned int *indices = nullptr;
     unsigned short *indices = nullptr;
 
@@ -28,6 +44,8 @@ public:
     unsigned int index_count = 0;
     bool hasUv = false;
     bool hasNormal = false;
-    bool isQuad = false;
+    bool hasColor = true;
     bool hasIndices = true;
+    bool isQuad = false;
+    Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 };

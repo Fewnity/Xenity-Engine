@@ -30,13 +30,26 @@ void Tilemap::Setup(int width, int height, int chunkSize)
 {
 	this->width = width;
 	this->height = height;
+
+	// Verify chunk size
+	if (chunkSize <= 0)
+	{
+		chunkSize = 1;
+	}
+	else if (chunkSize > width || chunkSize > height)
+	{
+		chunkSize = std::min(width, height);
+	}
+
 	this->chunkSize = chunkSize;
 
 	if (tiles != nullptr)
 		free(tiles);
 
+	// Add empty texture to make empty tiles
 	AddTexture(nullptr);
 
+	// Alloc tiles and set texture to empty
 	tiles = (Tile *)malloc(width * height * sizeof(Tile));
 
 	for (int x = 0; x < width; x++)
@@ -48,7 +61,8 @@ void Tilemap::Setup(int width, int height, int chunkSize)
 		}
 	}
 
-	int chunkCount = ceil(width / (float)chunkSize);
+	// Create chunk
+	chunkCount = ceil(width / (float)chunkSize);
 	for (int x = 0; x < chunkCount; x++)
 	{
 		for (int y = 0; y < chunkCount; y++)
@@ -82,126 +96,160 @@ void Tilemap::SetTile(int x, int y, Texture *texture)
 
 void Tilemap::SetTile(int x, int y, int textureId)
 {
-	needUpdateVertices = true;
 	Tile *tile = GetTile(x, y);
 	if (tile)
 	{
+		needUpdateVertices = true;
 		tile->textureId = textureId;
 		dirtyMeshes = true;
 	}
 }
 
-int Tilemap::GetWidth()
+/**
+ * @brief Fill all chunks meshes
+ *
+ */
+void Tilemap::FillChunks()
 {
-	return width;
+	// Fill meshes
+	for (int x = 0; x < width; x++)
+	{
+		int xChunk = floor(x / (float)chunkSize);
+		for (int y = 0; y < height; y++)
+		{
+			Tile *tile = GetTile(x, y);
+			if (tile->textureId != 0)
+			{
+				int yChunk = floor(y / (float)chunkSize);
+				MeshData *mesh = chunks[xChunk + yChunk * chunkCount]->meshes[tile->textureId - 1];
+				int indiceOff = mesh->index_count;
+				int verticeOff = mesh->vertice_count;
+
+				if (!useIndices)
+				{
+					// Create tile with vertices only
+					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
+					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 1 + verticeOff);
+					mesh->AddVertex(0.0f, 1.0f, 0.5f - x, -0.5f + y, 0.0f, 2 + verticeOff);
+
+					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 4 + verticeOff);
+					mesh->AddVertex(1.0f, 0.0f, -0.5f - x, 0.5f + y, 0.0f, 5 + verticeOff);
+
+					mesh->vertice_count += 6;
+				}
+				else
+				{
+					// Create tile with vertices and indices
+					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
+					mesh->AddVertex(0.0f, 1.0f, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
+					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
+					mesh->AddVertex(1.0f, 0.0f, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+
+					mesh->indices[0 + indiceOff] = 0 + verticeOff;
+					mesh->indices[1 + indiceOff] = 2 + verticeOff;
+					mesh->indices[2 + indiceOff] = 1 + verticeOff;
+					mesh->indices[3 + indiceOff] = 2 + verticeOff;
+					mesh->indices[4 + indiceOff] = 0 + verticeOff;
+					mesh->indices[5 + indiceOff] = 3 + verticeOff;
+					mesh->index_count += 6;
+					mesh->vertice_count += 4;
+				}
+			}
+		}
+	}
 }
 
-int Tilemap::GetHeight()
+/**
+ * @brief Delete and create new meshes for each chunk
+ *
+ */
+void Tilemap::CreateChunksMeshes()
 {
-	return height;
+	Color color = Color::CreateFromRGBA(0, 255, 255, 255);
+
+	// Set vertices and indices per tile
+	int verticesPerTile = 4;
+	int indicesPerTile = 6;
+	if (!useIndices)
+	{
+		verticesPerTile = 6;
+		indicesPerTile = 0;
+	}
+
+	for (int x = 0; x < chunkCount; x++)
+	{
+		for (int y = 0; y < chunkCount; y++)
+		{
+			TilemapChunk *chunk = chunks[x + y * chunkCount];
+
+			// Delete chunk meshes
+			int meshSize = (int)chunk->meshes.size();
+			for (int i = 0; i < meshSize; i++)
+			{
+				delete chunk->meshes[i];
+			}
+			chunk->meshes.clear();
+
+			// Create new meshes
+			for (int i = 0; i < textureSize; i++)
+			{
+				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false);
+				mesh->index_count = 0;
+				mesh->vertice_count = 0;
+				mesh->hasIndices = useIndices;
+				mesh->unifiedColor = color;
+				chunk->meshes.push_back(mesh);
+			}
+		}
+	}
 }
 
 void Tilemap::Draw()
 {
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
 	{
-		int textureSize = (int)textures.size() - 1;
-		int chunkCount = ceil(width / (float)chunkSize);
 		if (dirtyMeshes)
 		{
 			dirtyMeshes = false;
-			for (int x = 0; x < chunkCount; x++)
-			{
-				for (int y = 0; y < chunkCount; y++)
-				{
-					int meshSize = (int)chunks[x + y * chunkCount]->meshes.size();
-					for (int i = 0; i < meshSize; i++)
-					{
-						delete chunks[x + y * chunkCount]->meshes[i];
-					}
-					chunks[x + y * chunkCount]->meshes.clear();
-				}
-			}
 
-			for (int x = 0; x < chunkCount; x++)
-			{
-				for (int y = 0; y < chunkCount; y++)
-				{
-					for (int i = 0; i < textureSize; i++)
-					{
-						MeshData *mesh = new MeshData(6 * chunkSize * chunkSize, 6 * chunkSize * chunkSize); //////////////////////////////////////////CHANGE BY CHUNK SIZE
-						mesh->index_count = 0;
-						mesh->vertice_count = 0;
-						mesh->hasIndices = useIndices;
-						chunks[x + y * chunkCount]->meshes.push_back(mesh);
-					}
-				}
-			}
-
-			// Fill meshes
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					Tile *tile = GetTile(x, y);
-					if (tile->textureId != 0)
-					{
-						int xChunk = floor(x / (float)chunkSize);
-						int yChunk = floor(y / (float)chunkSize);
-						MeshData *mesh = chunks[xChunk + yChunk * chunkCount]->meshes[tile->textureId - 1];
-						int indiceOff = mesh->index_count;
-						int verticeOff = mesh->vertice_count;
-
-						if (!useIndices)
-						{
-							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 1 + verticeOff);
-							mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 2 + verticeOff);
-
-							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
-							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 4 + verticeOff);
-							mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 5 + verticeOff);
-
-							mesh->vertice_count += 6;
-						}
-						else
-						{
-							mesh->AddVertice(1.0f, 1.0f, 0xFFFFFFFF, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-							mesh->AddVertice(0.0f, 1.0f, 0xFFFFFFFF, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
-							mesh->AddVertice(0.0f, 0.0f, 0xFFFFFFFF, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
-							mesh->AddVertice(1.0f, 0.0f, 0xFFFFFFFF, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
-
-							mesh->indices[0 + indiceOff] = 0 + verticeOff;
-							mesh->indices[1 + indiceOff] = 2 + verticeOff;
-							mesh->indices[2 + indiceOff] = 1 + verticeOff;
-							mesh->indices[3 + indiceOff] = 2 + verticeOff;
-							mesh->indices[4 + indiceOff] = 0 + verticeOff;
-							mesh->indices[5 + indiceOff] = 3 + verticeOff;
-							mesh->index_count += 6;
-							mesh->vertice_count += 4;
-						}
-					}
-				}
-			}
+			CreateChunksMeshes();
+			FillChunks();
 		}
-		Vector3 pos = Graphics::usedCamera->GetTransform()->GetPosition();
 
-		float s = Graphics::usedCamera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
-		float s2 = Graphics::usedCamera->GetProjectionSize() + chunkSize;
+		DrawChunks();
+	}
+}
 
-		for (int x = 0; x < chunkCount; x++)
+/**
+ * @brief Draw visible chunks
+ *
+ */
+void Tilemap::DrawChunks()
+{
+	Vector3 cameraPos = Graphics::usedCamera->GetTransform()->GetPosition();
+
+	float xArea = Graphics::usedCamera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
+	float yArea = Graphics::usedCamera->GetProjectionSize() + chunkSize;
+
+	float xChunkPosition;
+	float yChunkPosition;
+
+	// For each chunk, check if the camera can see it
+	for (int x = 0; x < chunkCount; x++)
+	{
+		xChunkPosition = x * (float)chunkSize;
+		if (xChunkPosition <= cameraPos.x + xArea && xChunkPosition >= cameraPos.x - xArea)
 		{
-			if (x * (float)chunkSize <= pos.x + s && x * (float)chunkSize >= pos.x - s)
+			for (int y = 0; y < chunkCount; y++)
 			{
-				for (int y = 0; y < chunkCount; y++)
+				yChunkPosition = y * (float)chunkSize;
+				if (yChunkPosition <= cameraPos.y + yArea && yChunkPosition >= cameraPos.y - yArea)
 				{
-					if (y * (float)chunkSize <= pos.y + s2 && y * (float)chunkSize >= pos.y - s2)
+					// Draw each texture
+					for (int textureI = 0; textureI < textureSize; textureI++)
 					{
-
-						for (int textureI = 0; textureI < textureSize; textureI++)
-						{
-							MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
-						}
+						MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
 					}
 				}
 			}
@@ -229,6 +277,7 @@ void Tilemap::AddTexture(Texture *texture)
 	if (GetTextureIndex(texture) == -1)
 	{
 		textures.push_back(texture);
+		textureSize = (int)textures.size() - 1;
 	}
 }
 
@@ -240,5 +289,6 @@ void Tilemap::RemoveTexture(Texture *texture)
 		// delete meshes[index];
 		// meshes.erase(meshes.begin() + index);
 		textures.erase(textures.begin() + index);
+		textureSize = (int)textures.size() - 1;
 	}
 }

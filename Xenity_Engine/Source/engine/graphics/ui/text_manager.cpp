@@ -42,7 +42,6 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
     glEnable(GL_TEXTURE_2D);
 
     MeshManager::DrawMeshData(mesh);
-    // Performance::AddDrawCall();
 }
 
 void TextManager::ClearTexts()
@@ -84,26 +83,15 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     int textLenght = (int)text.size();
 
     if (textLenght == 0)
+    {
+        textBenchmark->Stop();
         return;
-
-    // Set projection
-    if (!canvas)
-    {
-        Graphics::usedCamera->UpdateProjection();
-        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
     }
-    else
-    {
-        Engine::renderer->SetProjection2D(5, 0.03f, 100);
-        Engine::renderer->ResetView();
-    }
-
-    SetTextPosition(transform, canvas);
 
     Font *font = fonts[0];
 
     // Get the size of the text
-    TextInfo textInfo = GetTextLenght(text, textLenght, font, 1);
+    TextInfo textInfo = GetTextInfomations(text, textLenght, font, 1);
 
     // Set text start offset
     float totalY = 0;
@@ -134,7 +122,11 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
 
     // Create empty mesh
     int charCountToDraw = textLenght - (textInfo.lineCount - 1);
-    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw);
+    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false);
+
+    Color color = Color::CreateFromRGBA(255, 0, 255, 255);
+    mesh->unifiedColor = color;
+
     meshes.push_back(mesh);
 
     int drawnCharIndex = 0;
@@ -168,6 +160,20 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
+    // Set projection
+    if (!canvas)
+    {
+        Graphics::usedCamera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+    }
+    else
+    {
+        Engine::renderer->SetProjection2D(5, 0.03f, 100);
+        Engine::renderer->ResetView();
+    }
+
+    SetTextPosition(transform, canvas);
+
     Engine::renderer->BindTexture(font->fontAtlas);
     DrawTextMesh(mesh, !canvas);
     textBenchmark->Stop();
@@ -181,13 +187,15 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
     float w = ch->rightSize.x;
     float h = ch->rightSize.y;
 
-    unsigned int charColor = 0xFFFFFFFF;
+    // unsigned int charColor = 0xFFFFFFFF;
+    // Color charColor = Color::CreateFromRGBA(255, 0, 255, 255);
+
     float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
 
-    mesh->AddVertice(ch->uv.x, ch->uv.y, charColor, w + x, fixedY, 0, indice);
-    mesh->AddVertice(ch->uvOffet.x, ch->uv.y, charColor, x, fixedY, 0, 1 + indice);
-    mesh->AddVertice(ch->uvOffet.x, ch->uvOffet.y, charColor, x, h + fixedY, 0, 2 + indice);
-    mesh->AddVertice(ch->uv.x, ch->uvOffet.y, charColor, w + x, h + fixedY, 0, 3 + indice);
+    mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice);
+    mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice);
+    mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice);
+    mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice);
 
     mesh->indices[0 + indiceIndex] = 0 + indice;
     mesh->indices[1 + indiceIndex] = 2 + indice;
@@ -329,7 +337,7 @@ Font *TextManager::CreateFont(std::string filePath)
     return font;
 }
 
-TextInfo TextManager::GetTextLenght(std::string &text, int textLen, Font *font, float scale)
+TextInfo TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
 {
     TextInfo textInfos = TextInfo();
     textInfos.linesInfo.push_back(LineInfo());

@@ -72,7 +72,7 @@ private:
     static void SetTextPosition(Transform *transform, bool canvas);
     static void DrawTextMesh(MeshData *mesh, bool for3D);
     static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
-    static TextInfo GetTextLenght(std::string &text, int textLen, Font *font, float scale);
+    static TextInfo GetTextInfomations(std::string &text, int textLen, Font *font, float scale);
 
     static std::vector<MeshData *> meshes;
 };
