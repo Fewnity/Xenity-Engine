@@ -104,7 +104,7 @@ void TextManager::SetTextPosition(Transform *transform, bool canvas)
  * @param transform Transform
  * @param canvas Is for canvas
  */
-void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas)
+void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, Color color, bool canvas)
 {
     textBenchmark->Start();
     int textLenght = (int)text.size();
@@ -150,10 +150,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     // Create empty mesh
     int charCountToDraw = textLenght - (textInfo.lineCount - 1);
     MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false);
-
-    Color color = Color::CreateFromRGBA(255, 0, 255, 255);
     mesh->unifiedColor = color;
-
     meshes.push_back(mesh);
 
     int drawnCharIndex = 0;
@@ -356,7 +353,7 @@ Font *TextManager::CreateFont(std::string filePath)
         }
     }
 
-    font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize);
+    font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize, false);
     font->fontAtlas->SetFilter(Texture::Bilinear);
     font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
 

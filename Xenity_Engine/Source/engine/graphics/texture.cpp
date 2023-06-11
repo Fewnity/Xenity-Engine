@@ -17,31 +17,36 @@
 #include <vram.h>
 #endif
 
-Texture::Texture(const std::string filePath, std::string name)
+Texture::Texture(const std::string filePath, std::string name, bool loadInVram)
 {
-    CreateTexture(filePath, name, Bilinear, true);
+    this->inVram = loadInVram;
+    CreateTexture(filePath, name, Bilinear, false);
 }
 
-Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
+Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram)
 {
+    this->inVram = loadInVram;
     CreateTexture(filePath, name, filter, useMipMap);
 }
 
-Texture::Texture(const int textureId, const int channelCount, const int width, const int height)
+Texture::Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
 {
     this->textureId = textureId;
     this->nrChannels = channelCount;
     this->width = width;
     this->height = height;
+    this->inVram = loadInVram;
     useMipMap = false;
 }
 
-Texture::Texture(unsigned char *data, const int channelCount, const int width, const int height)
+Texture::Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram)
 {
     // this->textureId = textureId;
     this->nrChannels = channelCount;
     this->width = width;
     this->height = height;
+    this->inVram = loadInVram;
+
     useMipMap = false;
     SetData(data);
 }
@@ -115,6 +120,56 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
     }
 }
 
+void Texture::SetTextureLevel(int level, const unsigned char *texData)
+{
+    // bool vram = false;
+    bool needResize = false;
+    int bytePerPixel = 4;
+    // int diviser = 1 * (level + 1);
+    int diviser = (int)pow(2, level);
+    // Debug::Print("i " + std::to_string(level) + " " + std::to_string(diviser));
+
+    // Debug::Print("i " + std::to_string(level) + " " + std::to_string(diviser) + " " + std::to_string(pow(2, level)));
+
+    int resizedPW = pW / diviser;
+    int resizedPH = pH / diviser;
+
+    int byteCount = (resizedPW * resizedPH) * bytePerPixel;
+
+    unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
+
+    if (level != 0 || (width != pW || height != pH))
+    {
+        needResize = true;
+    }
+
+    if (needResize)
+    {
+        unsigned char *resizedData = (unsigned char *)malloc(byteCount);
+        stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, bytePerPixel);
+        copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPW, resizedPH);
+        free(resizedData);
+    }
+    else
+    {
+        copy_texture_data(dataBuffer, texData, pW, pW, pH);
+    }
+
+    if (resizedPW > 256 || resizedPH > 256)
+        inVram = false;
+
+    // Allocate memory in ram or vram
+    if (inVram)
+        data.push_back(vramalloc(byteCount));
+    else
+        data.push_back((unsigned int *)memalign(16, byteCount));
+
+    // Place image data in the memory
+    swizzle_fast((u8 *)data[level], (const u8 *)dataBuffer, resizedPW * bytePerPixel, resizedPH);
+    free(dataBuffer);
+    sceKernelDcacheWritebackInvalidateAll();
+}
+
 #endif
 
 void Texture::SetData(const unsigned char *texData)
@@ -122,57 +177,68 @@ void Texture::SetData(const unsigned char *texData)
     // sceGeEdramSetSize(4096);
     // The psp needs a pow2 sized texture
 #ifdef __PSP__
-    bool vram = true;
-    bool needResize = false;
-
     type = GU_PSM_8888;
-    int bytePerPixel = 4;
 
     // Get pow2 size
     pW = Math::pow2(width);
     pH = Math::pow2(height);
 
-    if (width != pW || height != pH)
+    // if (width != pW || height != pH)
+    //     needResize = true;
+
+    SetTextureLevel(0, texData);
+    if (useMipMap)
     {
-        needResize = true;
+        SetTextureLevel(1, texData);
+        // SetTextureLevel(2, texData);
+        // SetTextureLevel(3, texData);
+        mipmaplevelCount = 1;
     }
 
-    int byteCount = pW * pH * bytePerPixel;
-    unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
-    if (needResize)
-    {
-        // Resize image data to the pow2 resolution if needed
-        unsigned char *resizedData = (unsigned char *)malloc(byteCount);
-        stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, bytePerPixel);
-        copy_texture_data(dataBuffer, resizedData, pW, pW, pH);
-    }
-    else
-    {
-        // Copy to Data Buffer
-        copy_texture_data(dataBuffer, texData, pW, pW, pH);
-    }
+    // int byteCount = pW * pH * bytePerPixel;
+    // unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
+    // unsigned int *dataBuffer2 = (unsigned int *)memalign(16, byteCount / 4);
+    // if (needResize)
+    // {
+    //     // Resize image data to the pow2 resolution if needed
+    //     unsigned char *resizedData = (unsigned char *)malloc(byteCount);
+    //     stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, bytePerPixel);
+    //     copy_texture_data(dataBuffer, resizedData, pW, pW, pH);
+    //     free(resizedData);
+    // }
+    // else
+    // {
+    //     // Copy to Data Buffer
+    //     copy_texture_data(dataBuffer, texData, pW, pW, pH);
+    // }
 
-    if (pW > 256 || pH > 256)
-    {
-        vram = false;
-    }
+    // unsigned char *resizedData = (unsigned char *)malloc(byteCount / 4);
+    // stbir_resize_uint8(texData, width, height, 0, resizedData, pW / 2, pH / 2, 0, bytePerPixel);
+    // copy_texture_data(dataBuffer2, resizedData, pW / 2, pW / 2, pH / 2);
+    // free(resizedData);
 
-    // Allocate memory in ram or vram
-    if (vram)
-    {
-        // data = (unsigned int *)getStaticVramTexture(pW, pH, type);
-        data = vramalloc(byteCount);
-    }
-    else
-    {
-        data = (unsigned int *)memalign(16, byteCount);
-    }
-    Debug::Print("" + std::to_string(byteCount) + ", " + std::to_string(pW) + ", " + std::to_string(pH));
-    // Place image data in the memory
-    swizzle_fast((u8 *)data, (const u8 *)dataBuffer, pW * bytePerPixel, pH);
-    free(dataBuffer);
+    // if (pW > 256 || pH > 256)
+    //     vram = false;
 
-    sceKernelDcacheWritebackInvalidateAll();
+    // // Allocate memory in ram or vram
+    // if (vram)
+    // {
+    //     data.push_back(vramalloc(byteCount));
+    //     data.push_back(vramalloc(byteCount / 4));
+    // }
+    // else
+    // {
+    //     data.push_back((unsigned int *)memalign(16, byteCount));
+    //     data.push_back((unsigned int *)memalign(16, byteCount / 4));
+    // }
+
+    // // Place image data in the memory
+    // swizzle_fast((u8 *)data[0], (const u8 *)dataBuffer, pW * bytePerPixel, pH);
+    // swizzle_fast((u8 *)data[1], (const u8 *)dataBuffer2, pW / 2 * bytePerPixel, pH / 2);
+    // free(dataBuffer);
+    // free(dataBuffer2);
+
+    // sceKernelDcacheWritebackInvalidateAll();
 
 #endif
 

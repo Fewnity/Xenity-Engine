@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class Texture
 {
@@ -30,10 +31,10 @@ public:
     };
 
     Texture() = delete;
-    Texture(const std::string filePath, std::string name);
-    Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
-    Texture(const int textureId, const int channelCount, const int width, const int height);
-    Texture(unsigned char *data, const int channelCount, const int width, const int height);
+    Texture(const std::string filePath, std::string name, bool loadInVram);
+    Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram);
+    Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
+    Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
 
     ~Texture();
 
@@ -53,9 +54,16 @@ public:
     Texture::WrapMode GetWrapMode() const;
 
     std::string name = "";
+    int mipmaplevelCount = 0;
+    bool useMipMap = false;
+    bool inVram = true;
 
 #ifdef __PSP__
-    void *data = nullptr;
+    void SetTextureLevel(int level, const unsigned char *texData);
+
+    std::vector<void *> data;
+    // void *data = nullptr;
+    // void *data2 = nullptr;
     unsigned int pW = 0;
     unsigned int pH = 0;
     int type;
@@ -64,7 +72,6 @@ public:
 private:
     Filter filter = Bilinear;
     WrapMode wrapMode = Repeat;
-    bool useMipMap = true;
     void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
     void LoadTexture(const std::string filePath);
     unsigned int textureId;

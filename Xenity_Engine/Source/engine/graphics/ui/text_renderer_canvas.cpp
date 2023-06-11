@@ -36,7 +36,7 @@ void TextRendererCanvas::Draw()
 {
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled() /* && shader != nullptr*/)
 	{
-		TextManager::DrawText(text, horizontalAligment, verticalAlignment, GetTransform(), true);
+		TextManager::DrawText(text, horizontalAligment, verticalAlignment, GetTransform(), color, true);
 		// UiManager::RenderTextCanvas(text, position.x, position.y, position.z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
 	}
 }

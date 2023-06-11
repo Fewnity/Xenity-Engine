@@ -2,6 +2,7 @@
 #include "mesh_data.h"
 #include "../../../xenity.h"
 #include "../renderer/renderer.h"
+#include "../../file_system/mesh_loader/wavefront_loader.h"
 
 #ifdef __PSP__
 #include "../../../psp/gu2gl.h"
@@ -20,6 +21,11 @@ ProfilerBenchmark *meshBenchmark = nullptr;
 void MeshManager::Init()
 {
     meshBenchmark = new ProfilerBenchmark("Mesh");
+}
+
+MeshData *MeshManager::LoadMesh(std::string path)
+{
+    return WavefrontLoader::LoadFromRawData(path);
 }
 
 /**
@@ -71,13 +77,6 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
 void MeshManager::DrawMeshData(MeshData *meshData)
 {
 #ifdef __PSP__
-    // glDrawElements(GL_TRIANGLES, GL_INDEX_16BIT | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, 6, meshData->indices, meshData->data);
-    // if (meshData->isQuad)
-    //     glDrawElements(GL_SPRITES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
-    // else
-
-    // sceGuColor(GU_RGBA(255, 255, 255, 255));
-    // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
     int params = 0;
 
     if (meshData->hasIndices)
@@ -86,7 +85,9 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     }
     params |= GL_TEXTURE_32BITF;
     if (meshData->hasColor)
+    {
         params |= GL_COLOR_8888;
+    }
     else
     {
         sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
@@ -95,17 +96,22 @@ void MeshManager::DrawMeshData(MeshData *meshData)
     params |= GL_TRANSFORM_3D;
 
     if (!meshData->hasIndices)
+    {
         glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
+    }
     else
+    {
         glDrawElements(GL_TRIANGLES, params, meshData->index_count, meshData->indices, meshData->data);
+    }
 
-        // glDrawElements(GL_TRIANGLES, GL_INDEX_BITS | GL_TEXTURE_32BITF | GL_COLOR_8888 | GL_VERTEX_32BITF | GL_TRANSFORM_3D, meshData->index_count, meshData->indices, meshData->data);
 #endif
 
 #ifdef __vita__
     glEnableClientState(GL_VERTEX_ARRAY);
     if (meshData->hasColor)
+    {
         glEnableClientState(GL_COLOR_ARRAY);
+    }
     else
     {
         RGBA rgba = meshData->unifiedColor.GetRGBA();
@@ -138,7 +144,9 @@ void MeshManager::DrawMeshData(MeshData *meshData)
 
     glDisableClientState(GL_VERTEX_ARRAY);
     if (meshData->hasColor)
+    {
         glDisableClientState(GL_COLOR_ARRAY);
+    }
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 #endif

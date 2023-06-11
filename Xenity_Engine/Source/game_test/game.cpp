@@ -3,6 +3,8 @@
 #include "../engine/file_system/mesh_loader/wavefront_loader.h"
 #include "../engine/graphics/3d_graphics/mesh_data.h"
 
+#include <string.h>
+
 #ifdef __vita__
 #include <psp2/touch.h>
 #endif
@@ -21,10 +23,10 @@ void Game::Start()
 
 	cameraGO = new GameObject("Camera");
 	Camera *camera = cameraGO->AddComponent<Camera>();
-	// camera->SetNearClippingPlane(0.1);
-	camera->SetFarClippingPlane(100);
+	camera->SetNearClippingPlane(0.2f);
+	camera->SetFarClippingPlane(50);
 	camera->SetProjectionSize(5.0f);
-	camera->SetProjectionType(Orthographic);
+	// camera->SetProjectionType(Orthographic);
 
 	// sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START);
 	// sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_START);
@@ -32,6 +34,8 @@ void Game::Start()
 	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
+	Texture *texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
+
 	// Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
 	// texture->SetFilter(Texture::Point);
 	// // texture->SetWrapMode(Texture::ClampToEdge);
@@ -54,7 +58,7 @@ void Game::Start()
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(-5, 0, -2));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo4->GetTransform()->SetLocalScale(Vector3(5, 5, 5));
+	spriteGo4->GetTransform()->SetLocalScale(Vector3(50, 50, 50));
 	// spriteGo4->GetTransform()->SetRotation(Vector3(45, 45, 45));
 
 	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
@@ -69,42 +73,45 @@ void Game::Start()
 	tr->text = "Hello\nWorld!";
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
+	// tr->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
 	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
 	debugTextRenderer->horizontalAligment = H_Left;
 	debugTextRenderer->verticalAlignment = V_Top;
+	// debugTextRenderer->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
-	// MeshData *mesh = WavefrontLoader::LoadFromRawData("sphere.obj");
-	// MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
-	// meshRenderer->meshData = mesh;
-	// meshRenderer->texture = texture;
+	MeshData *mesh = WavefrontLoader::LoadFromRawData("DustPartsTest256.obj");
+	MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
+	meshRenderer->meshData = mesh;
+	meshRenderer->texture = texture;
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;
 	// meshRenderer->texture = texture;
 
 	// Texture *tile0 = new Texture("scifiTile_16_low2.png", "scifiTile_16");
-	Texture *tile0 = new Texture("scifiTile_16.png", "scifiTile_16");
-	// Texture *tile0 = new Texture("scifiTile_16_low2.png", "scifiTile_16");
-	// tile0->SetFilter(Texture::Point);
-	// Texture *tile1 = new Texture("scifiTile_30.png", "scifiTile_30");
-	// Texture *tile2 = new Texture("scifiTile_41.png", "scifiTile_41");
+	// Texture *tile0 = new Texture("scifiTile_16.png", "scifiTile_16");
+	// // Texture *tile0 = new Texture("scifiTile_16_low2.png", "scifiTile_16");
+	// // tile0->SetFilter(Texture::Point);
+	// // Texture *tile1 = new Texture("scifiTile_30.png", "scifiTile_30");
+	// // Texture *tile2 = new Texture("scifiTile_41.png", "scifiTile_41");
 
-	tilemapGO = new GameObject();
-	tilemap = tilemapGO->AddComponent<Tilemap>();
-	int tilemapSize = 100;
-	tilemap->Setup(tilemapSize, tilemapSize);
-	tilemap->AddTexture(tile0);
+	// tilemapGO = new GameObject();
+	// tilemap = tilemapGO->AddComponent<Tilemap>();
+	// int tilemapSize = 100;
+	// tilemap->Setup(tilemapSize, tilemapSize);
+	// tilemap->AddTexture(tile0);
+	// // tilemap->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
-	for (int x = 0; x < tilemapSize; x++)
-	{
-		for (int y = 0; y < tilemapSize; y++)
-		{
-			tilemap->SetTile(x, y, 1);
-		}
-	}
+	// for (int x = 0; x < tilemapSize; x++)
+	// {
+	// 	for (int y = 0; y < tilemapSize; y++)
+	// 	{
+	// 		tilemap->SetTile(x, y, 1);
+	// 	}
+	// }
 }
 
 void Game::LoadGameData()
@@ -210,20 +217,23 @@ void Game::Update()
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
 	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";
 
+	// memset(touch, 0, sizeof(SceTouchData) * 2);
 	// for (int screen = 0; screen < SCE_TOUCH_PORT_MAX_NUM; screen++)
 	// {
-	// 	sceTouchPeek(screen, &touch[screen], 1);
-	// 	debugText += "screen: " + std::to_string(screen) + "\n";
-	// 	for (int finger = 0; finger < 6; finger++)
+	// 	if (sceTouchPeek(screen, &touch[screen], 1) == 1)
 	// 	{
-	// 		debugText += "finger: " + std::to_string(finger) + ", " + std::to_string(touch[screen].report[finger].x) + ", " + std::to_string(touch[screen].report[finger].y) + ", force: " + std::to_string(touch[screen].report[finger].force) + "\n";
+	// 		debugText += "screen: " + std::to_string(screen) + "\n";
+	// 		for (int finger = 0; finger < touch[screen].reportNum; finger++)
+	// 		{
+	// 			debugText += "finger: " + std::to_string(finger) + ", " + std::to_string(touch[screen].report[finger].x) + ", " + std::to_string(touch[screen].report[finger].y) + ", force: " + std::to_string(touch[screen].report[finger].force) + "\n";
+	// 		}
 	// 	}
 	// }
 
-	for (const auto &kv : Performance::profilerList)
-	{
-		debugText += kv.first + " " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
-	}
+	// for (const auto &kv : Performance::profilerList)
+	// {
+	// 	debugText += kv.first + " " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
+	// }
 
 	debugTextRenderer->text = debugText;
 	// if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)

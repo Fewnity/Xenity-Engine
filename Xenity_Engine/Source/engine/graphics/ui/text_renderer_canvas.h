@@ -25,10 +25,14 @@ public:
 	int GetDrawPriority() const;
 
 	Font *font = nullptr;
-	Color color = Color(); // [0;1]
 	// Shader *shader = nullptr;
 	HorizontalAlignment horizontalAligment = H_Center;
 	VerticalAlignment verticalAlignment = V_Center;
+
+	void SetColor(Color color)
+	{
+		this->color = color;
+	}
 
 	void SetOrderInLayer(int orderInLayer)
 	{
@@ -42,6 +46,7 @@ public:
 	}
 
 private:
+	Color color = Color();
 	void Draw();
 	int orderInLayer = 0;
 };

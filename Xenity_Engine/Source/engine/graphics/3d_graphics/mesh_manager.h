@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class MeshData;
 class Vector3;
 class Texture;
@@ -10,6 +12,7 @@ public:
 	static void Init();
 	static void DrawMeshData(MeshData *meshData);
 	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth);
+	static MeshData *LoadMesh(std::string path);
 
 private:
 };

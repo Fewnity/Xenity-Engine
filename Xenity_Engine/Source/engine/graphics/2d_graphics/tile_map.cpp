@@ -194,14 +194,31 @@ void Tilemap::FillChunks()
 	}
 }
 
+void Tilemap::SetColor(Color color)
+{
+	this->color = color;
+	for (int x = 0; x < chunkCount; x++)
+	{
+		for (int y = 0; y < chunkCount; y++)
+		{
+			TilemapChunk *chunk = chunks[x + y * chunkCount];
+
+			// Delete chunk meshes
+			int meshSize = (int)chunk->meshes.size();
+			for (int i = 0; i < meshSize; i++)
+			{
+				chunk->meshes[i]->unifiedColor = this->color;
+			}
+		}
+	}
+}
+
 /**
  * @brief Delete and create new meshes for each chunk
  *
  */
 void Tilemap::CreateChunksMeshes()
 {
-	Color color = Color::CreateFromRGBA(0, 255, 255, 255);
-
 	// Set vertices and indices per tile
 	int verticesPerTile = 4;
 	int indicesPerTile = 6;

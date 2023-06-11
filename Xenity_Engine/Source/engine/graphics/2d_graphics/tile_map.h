@@ -49,6 +49,8 @@ public:
 		return orderInLayer;
 	}
 
+	void SetColor(Color color);
+
 private:
 	class TilemapChunk
 	{

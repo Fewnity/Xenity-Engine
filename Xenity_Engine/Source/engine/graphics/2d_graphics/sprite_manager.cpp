@@ -30,8 +30,6 @@ void SpriteManager::Init()
     // scePowerSetClockFrequency(333, 333, 167);
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
-    Color color = Color::CreateFromRGBA(255, 255, 255, 255);
-
     // Create sprite mesh
     spriteMeshData = new MeshData(4, 6, false);
     spriteMeshData->AddVertex(0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0);
@@ -44,8 +42,6 @@ void SpriteManager::Init()
     spriteMeshData->indices[3] = 2;
     spriteMeshData->indices[4] = 0;
     spriteMeshData->indices[5] = 3;
-
-    spriteMeshData->unifiedColor = color;
 
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
@@ -60,10 +56,12 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture)
+void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color)
 {
     spriteBenchmark->Start();
     // texture = TextManager::fonts[0]->fontAtlas;
+
+    spriteMeshData->unifiedColor = color;
 
     // Get sprite scale from texture size
     float scaleCoef = (1.0f / texture->GetPixelPerUnit());

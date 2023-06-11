@@ -180,7 +180,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	int i2 = 0;
 	int i3 = 0;
 	int i4 = 0;
-	Color color = Color::CreateFromRGBA(255, 255, 255, 255);
+
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i] - 1;
@@ -194,8 +194,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 		// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
 		// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 		mesh->AddVertex(
-			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
-			color, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 
 		mesh->indices[i] = i;
 

@@ -16,7 +16,6 @@
  */
 MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor)
 {
-    // useVertexColor = true;
     // Allocate memory for mesh data
     hasColor = useVertexColor;
 

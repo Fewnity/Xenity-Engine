@@ -177,14 +177,18 @@ void RendererOpengl::MoveTransform(Vector3 position)
 void RendererOpengl::BindTexture(Texture *texture)
 {
 #ifdef __PSP__
-	glTexMode(texture->type, 0, 0, 1);
+	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
-	// sceGuTexOffset(0.0f, 0.0f);
-	// sceGuTexLevelMode(GU_TEXTURE_AUTO, 0.0f);
-	// sceGuTexFilter(GU_NEAREST_MIPMAP_NEAREST, GU_NEAREST);
-	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data);
+	if (texture->useMipMap)
+		sceGuTexLevelMode(GU_TEXTURE_AUTO, 0); // Greater is lower quality
 
-	// glTexImage(1, 8, 8, 8, texture->data);
+	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
+	if (texture->useMipMap)
+	{
+		glTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
+		// glTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
+		// glTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
+	}
 
 #endif
 #ifdef __vita__
@@ -201,13 +205,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
-			minFilterValue = GL_LINEAR;
+			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			// minFilterValue = GL_LINEAR;
 		}
 		else
 		{
-			minFilterValue = GL_LINEAR;
-			// minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			// minFilterValue = GL_LINEAR;
+			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
 		}
 		magfilterValue = GL_LINEAR;
 	}
@@ -215,13 +219,13 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	{
 		if (texture->GetUseMipmap())
 		{
-			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
-			minFilterValue = GL_NEAREST;
+			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			// minFilterValue = GL_NEAREST;
 		}
 		else
 		{
-			minFilterValue = GL_NEAREST;
-			// minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			// minFilterValue = GL_NEAREST;
+			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
 		}
 		magfilterValue = GL_NEAREST;
 	}

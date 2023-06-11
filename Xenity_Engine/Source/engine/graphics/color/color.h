@@ -33,6 +33,6 @@ public:
 
 private:
 	RGBA rgba = RGBA(1, 1, 1, 1);
-	unsigned int rgbaInt;
-	unsigned int abgrInt;
+	unsigned int rgbaInt = 0xFFFFFFFF;
+	unsigned int abgrInt = 0xFFFFFFFF;
 };

@@ -12,6 +12,7 @@ class Transform;
 class MeshData;
 class Vector3;
 class Texture;
+class Color;
 
 class Character
 {
@@ -63,7 +64,7 @@ public:
     static void DeleteFont(Font *font);
     static void DeleteFont(int index);
 
-    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, bool canvas);
+    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, Color color, bool canvas);
     static void ClearTexts();
 
     static std::vector<Font *> fonts;

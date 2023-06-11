@@ -29,9 +29,14 @@ public:
 
 	// Material* material = nullptr;
 	Texture *texture = nullptr;
-	Color color = Color();
+
+	void SetColor(Color color)
+	{
+		this->color = color;
+	}
 
 private:
+	Color color = Color();
 	void Draw();
 	int orderInLayer = 0;
 };
