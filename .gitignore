@@ -11,6 +11,15 @@
 *.sln.docstates
 *.vscode
 
+Xenity_Engine/build/CMakeFiles/
+Xenity_Engine/build/cmake_install.cmake
+Xenity_Engine/build/CMakeCache.txt
+Xenity_Engine/build/Makefile
+Xenity_Engine/build/PARAM.SFO
+Xenity_Engine/build/EBOOT.PBP
+Xenity_Engine/build/hello
+Xenity_Engine/buildvita/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
