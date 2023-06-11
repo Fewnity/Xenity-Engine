@@ -30,7 +30,7 @@
 #include "engine/tools/curve.h"
 #include "engine/tools/math.h"
 #include "engine/tools/profiler_benchmark.h"
-// #include "engine/tools/shape_spawner.h"
+#include "engine/tools/shape_spawner.h"
 
 // // Time
 #include "engine/time/time.h"
