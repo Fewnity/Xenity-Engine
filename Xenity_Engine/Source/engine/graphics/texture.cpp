@@ -205,6 +205,8 @@ void Texture::SetData(const unsigned char *texData)
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texData);
+    if (useMipMap)
+        glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 }
 
@@ -243,6 +245,8 @@ void Texture::LoadTexture(const std::string filename)
     glBindTexture(GL_TEXTURE_2D, textureId);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    if (useMipMap)
+        glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 
     stbi_image_free(buffer);

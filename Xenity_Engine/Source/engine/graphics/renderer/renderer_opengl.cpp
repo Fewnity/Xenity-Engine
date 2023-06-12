@@ -182,6 +182,8 @@ void RendererOpengl::BindTexture(Texture *texture)
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
 	if (texture->useMipMap)
 		sceGuTexLevelMode(GU_TEXTURE_AUTO, 0); // Greater is lower quality
+	// sceGuTexLevelMode(GL_TEXTURE_CONST, 1); // Set mipmap level to use
+	// sceGuTexLevelMode(GL_TEXTURE_SLOPE, 2); //??? has no effect
 
 	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
 	if (texture->useMipMap)
@@ -200,19 +202,17 @@ void RendererOpengl::BindTexture(Texture *texture)
 
 void RendererOpengl::ApplyTextureFilters(Texture *texture)
 {
-	int minFilterValue = 0;
-	int magfilterValue = 0;
+	int minFilterValue = GL_LINEAR;
+	int magfilterValue = GL_LINEAR;
 	if (texture->GetFilter() == Texture::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
 			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
-			// minFilterValue = GL_LINEAR;
 		}
 		else
 		{
-			// minFilterValue = GL_LINEAR;
-			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			minFilterValue = GL_LINEAR;
 		}
 		magfilterValue = GL_LINEAR;
 	}
@@ -221,12 +221,10 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 		if (texture->GetUseMipmap())
 		{
 			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
-			// minFilterValue = GL_NEAREST;
 		}
 		else
 		{
-			// minFilterValue = GL_NEAREST;
-			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			minFilterValue = GL_NEAREST;
 		}
 		magfilterValue = GL_NEAREST;
 	}

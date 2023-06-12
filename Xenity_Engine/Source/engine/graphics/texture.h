@@ -62,8 +62,6 @@ public:
     void SetTextureLevel(int level, const unsigned char *texData);
 
     std::vector<void *> data;
-    // void *data = nullptr;
-    // void *data2 = nullptr;
     unsigned int pW = 0;
     unsigned int pH = 0;
     int type;
