@@ -32,10 +32,10 @@ void SpriteManager::Init()
 
     // Create sprite mesh
     spriteMeshData = new MeshData(4, 6, false);
-    spriteMeshData->AddVertex(0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0);
-    spriteMeshData->AddVertex(1.0f, 0.0f, 0.5f, -0.5f, 0.0f, 1);
-    spriteMeshData->AddVertex(1.0f, 1.0f, 0.5f, 0.5f, 0.0f, 2);
-    spriteMeshData->AddVertex(0.0f, 1.0f, -0.5f, 0.5f, 0.0f, 3);
+    spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
+    spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
+    spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
+    spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
     spriteMeshData->indices[0] = 0;
     spriteMeshData->indices[1] = 2;
     spriteMeshData->indices[2] = 1;
