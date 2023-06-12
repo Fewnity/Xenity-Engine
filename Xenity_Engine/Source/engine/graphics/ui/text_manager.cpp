@@ -39,11 +39,11 @@ void TextManager::Init()
  * @param mesh Mesh data
  * @param for3D 3D text mode
  */
-void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
+void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces)
 {
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
-    renderSettings.invertFaces = false;
+    renderSettings.invertFaces = invertFaces;
     renderSettings.useBlend = true;
     renderSettings.useDepth = for3D;
     renderSettings.useTexture = true;
@@ -195,7 +195,12 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     SetTextPosition(transform, canvas);
 
     Engine::renderer->BindTexture(font->fontAtlas);
-    DrawTextMesh(mesh, !canvas);
+
+    bool invertFaces = false;
+    if (transform->GetScale().x * transform->GetScale().y < 0)
+        invertFaces = true;
+
+    DrawTextMesh(mesh, !canvas, invertFaces);
     textBenchmark->Stop();
 }
 

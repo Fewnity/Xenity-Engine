@@ -51,7 +51,10 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
 
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
-    renderSettings.invertFaces = false;
+    if (scale.x * scale.y * scale.z < 0)
+        renderSettings.invertFaces = true;
+    else
+        renderSettings.invertFaces = false;
     renderSettings.useBlend = false;
     renderSettings.useDepth = useDepth;
     renderSettings.useTexture = true;

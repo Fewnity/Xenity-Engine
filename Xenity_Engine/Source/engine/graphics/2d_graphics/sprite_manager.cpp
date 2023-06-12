@@ -77,7 +77,12 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
-    renderSettings.invertFaces = false;
+
+    if (scale.x * scale.y < 0)
+        renderSettings.invertFaces = true;
+    else
+        renderSettings.invertFaces = false;
+
     renderSettings.useBlend = true;
     renderSettings.useDepth = false;
     renderSettings.useTexture = true;
