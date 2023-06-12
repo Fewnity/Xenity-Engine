@@ -122,7 +122,6 @@ void copy_texture_data(void *dest, const void *src, const int pW, const int widt
 
 void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
-    // bool vram = false;
     bool needResize = false;
     int bytePerPixel = 4;
     int diviser = (int)pow(2, level);
@@ -162,7 +161,6 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
         if (!newData)
         {
             Debug::PrintWarning("No more free vram");
-
             newData = (unsigned int *)memalign(16, byteCount);
             inVram = false;
         }
@@ -192,9 +190,6 @@ void Texture::SetData(const unsigned char *texData)
     pW = Math::pow2(width);
     pH = Math::pow2(height);
 
-    // if (width != pW || height != pH)
-    //     needResize = true;
-
     SetTextureLevel(0, texData);
     if (useMipMap)
     {
@@ -221,23 +216,23 @@ void Texture::LoadTexture(const std::string filename)
 #endif
     path += filename;
 
+    std::string debugText = "Loading texture: ";
+    debugText += filename;
+    Debug::Print(debugText);
+
     // Load image with stb_image
     // stbi_set_flip_vertically_on_load(GL_TRUE);
     unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
                                       &nrChannels, 4);
     if (!buffer)
     {
-        std::string t = "Failed to load texture: ";
-        t += filename;
-        Debug::Print(t);
+        debugText = "Failed to load texture: ";
+        debugText += filename;
+        Debug::Print(debugText);
         return;
     }
-    else
-    {
-        std::string t = "Loading texture: ";
-        t += filename;
-        Debug::Print(t);
-    }
+
+    Debug::Print(std::to_string(nrChannels));
 
 #ifdef __PSP__
     SetData(buffer);
