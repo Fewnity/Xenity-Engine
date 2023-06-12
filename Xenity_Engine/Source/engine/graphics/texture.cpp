@@ -125,11 +125,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
     // bool vram = false;
     bool needResize = false;
     int bytePerPixel = 4;
-    // int diviser = 1 * (level + 1);
     int diviser = (int)pow(2, level);
-    // Debug::Print("i " + std::to_string(level) + " " + std::to_string(diviser));
-
-    // Debug::Print("i " + std::to_string(level) + " " + std::to_string(diviser) + " " + std::to_string(pow(2, level)));
 
     int resizedPW = pW / diviser;
     int resizedPH = pH / diviser;
@@ -160,9 +156,22 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 
     // Allocate memory in ram or vram
     if (inVram)
-        data.push_back(vramalloc(byteCount));
+    {
+        unsigned int *newData = (unsigned int *)vramalloc(byteCount);
+        // If there is no more free vram
+        if (!newData)
+        {
+            Debug::PrintWarning("No more free vram");
+
+            newData = (unsigned int *)memalign(16, byteCount);
+            inVram = false;
+        }
+        data.push_back((unsigned int *)newData);
+    }
     else
+    {
         data.push_back((unsigned int *)memalign(16, byteCount));
+    }
 
     // Place image data in the memory
     swizzle_fast((u8 *)data[level], (const u8 *)dataBuffer, resizedPW * bytePerPixel, resizedPH);
@@ -195,51 +204,6 @@ void Texture::SetData(const unsigned char *texData)
         mipmaplevelCount = 1;
     }
 
-    // int byteCount = pW * pH * bytePerPixel;
-    // unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
-    // unsigned int *dataBuffer2 = (unsigned int *)memalign(16, byteCount / 4);
-    // if (needResize)
-    // {
-    //     // Resize image data to the pow2 resolution if needed
-    //     unsigned char *resizedData = (unsigned char *)malloc(byteCount);
-    //     stbir_resize_uint8(texData, width, height, 0, resizedData, pW, pH, 0, bytePerPixel);
-    //     copy_texture_data(dataBuffer, resizedData, pW, pW, pH);
-    //     free(resizedData);
-    // }
-    // else
-    // {
-    //     // Copy to Data Buffer
-    //     copy_texture_data(dataBuffer, texData, pW, pW, pH);
-    // }
-
-    // unsigned char *resizedData = (unsigned char *)malloc(byteCount / 4);
-    // stbir_resize_uint8(texData, width, height, 0, resizedData, pW / 2, pH / 2, 0, bytePerPixel);
-    // copy_texture_data(dataBuffer2, resizedData, pW / 2, pW / 2, pH / 2);
-    // free(resizedData);
-
-    // if (pW > 256 || pH > 256)
-    //     vram = false;
-
-    // // Allocate memory in ram or vram
-    // if (vram)
-    // {
-    //     data.push_back(vramalloc(byteCount));
-    //     data.push_back(vramalloc(byteCount / 4));
-    // }
-    // else
-    // {
-    //     data.push_back((unsigned int *)memalign(16, byteCount));
-    //     data.push_back((unsigned int *)memalign(16, byteCount / 4));
-    // }
-
-    // // Place image data in the memory
-    // swizzle_fast((u8 *)data[0], (const u8 *)dataBuffer, pW * bytePerPixel, pH);
-    // swizzle_fast((u8 *)data[1], (const u8 *)dataBuffer2, pW / 2 * bytePerPixel, pH / 2);
-    // free(dataBuffer);
-    // free(dataBuffer2);
-
-    // sceKernelDcacheWritebackInvalidateAll();
-
 #endif
 
 #ifdef __vita__
@@ -270,7 +234,9 @@ void Texture::LoadTexture(const std::string filename)
     }
     else
     {
-        Debug::Print("Texture Found");
+        std::string t = "Loading texture: ";
+        t += filename;
+        Debug::Print(t);
     }
 
 #ifdef __PSP__
