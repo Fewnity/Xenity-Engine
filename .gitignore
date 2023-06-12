@@ -112,6 +112,8 @@ StyleCopReport.xml
 *.pdb
 *.recipe
 
+!Xenity_Engine/build/models/*.obj
+
 # Chutzpah Test files
 _Chutzpah*
 
