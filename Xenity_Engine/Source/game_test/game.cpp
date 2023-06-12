@@ -86,6 +86,7 @@ void Game::Start()
 	MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
 	meshRenderer->meshData = mesh;
 	meshRenderer->texture = texture;
+	mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;
@@ -179,21 +180,21 @@ void Game::Update()
 
 	// Rotate camera
 	if (InputSystem::GetKey(TRIANGLE))
-		rot.x += -1.5f * Time::GetDeltaTime() * 30;
+		rot.x += -1.5f * Time::GetDeltaTime() * 50;
 	else if (InputSystem::GetKey(CROSS))
-		rot.x += 1.5f * Time::GetDeltaTime() * 30;
+		rot.x += 1.5f * Time::GetDeltaTime() * 50;
 
 	if (InputSystem::GetKey(CIRCLE))
-		rot.y += 1.5f * Time::GetDeltaTime() * 30;
+		rot.y += 1.5f * Time::GetDeltaTime() * 50;
 	else if (InputSystem::GetKey(SQUARE))
-		rot.y += -1.5f * Time::GetDeltaTime() * 30;
+		rot.y += -1.5f * Time::GetDeltaTime() * 50;
 
 	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #else
 	// Rotate camera
-	rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 30;
-	rot.y += InputSystem::rightJoystick.x * 1.5f * Time::GetDeltaTime() * 30;
+	rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 50;
+	rot.y += InputSystem::rightJoystick.x * 1.5f * Time::GetDeltaTime() * 50;
 
 	// Move camera
 	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;

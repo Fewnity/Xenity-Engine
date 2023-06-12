@@ -13,13 +13,14 @@ using namespace std;
 
 MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 {
-	Debug::Print("Loading mesh...");
 
 	std::string finalpath = "";
 #ifdef __vita__
 	finalpath += "ux0:";
 #endif
 	finalpath += FileSystem::fileSystem->modelsPath;
+
+	Debug::Print("Loading mesh: " + finalpath + filePath);
 
 	// Open file
 	ifstream file;

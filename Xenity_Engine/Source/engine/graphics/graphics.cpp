@@ -42,30 +42,30 @@ void Graphics::SetSkybox(SkyBox *skybox_)
 
 void Graphics::Init()
 {
-	// Texture *back = new Texture("sky6_BK_low.jpg", "sky6_BK_low");
+	// Texture *back = new Texture("space_back.png", "space_back", false);
 	// back->SetWrapMode(Texture::ClampToEdge);
-	// Texture *down = new Texture("sky6_DN_low.jpg", "sky6_DN_low");
+	// Texture *down = new Texture("space_down.png", "space_down", false);
 	// down->SetWrapMode(Texture::ClampToEdge);
-	// Texture *front = new Texture("sky6_FR_low.jpg", "sky6_FR_low");
+	// Texture *front = new Texture("space_front.png", "space_front", false);
 	// front->SetWrapMode(Texture::ClampToEdge);
-	// Texture *left = new Texture("sky6_LF_low.jpg", "sky6_LF_low");
+	// Texture *left = new Texture("space_left.png", "space_left", false);
 	// left->SetWrapMode(Texture::ClampToEdge);
-	// Texture *right = new Texture("sky6_RT_low.jpg", "sky6_RT_low");
+	// Texture *right = new Texture("space_right.png", "space_right", false);
 	// right->SetWrapMode(Texture::ClampToEdge);
-	// Texture *up = new Texture("sky6_UP_low.jpg", "sky6_UP_low");
+	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture *back = new Texture("space_back.png", "space_back", false);
+	Texture *back = new Texture("sunset_back.png", "sunset_back", false);
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture *down = new Texture("space_down.png", "space_down", false);
+	Texture *down = new Texture("sunset_down.png", "sunset_down", false);
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture *front = new Texture("space_front.png", "space_front", false);
+	Texture *front = new Texture("sunset_front.png", "sunset_front", false);
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture *left = new Texture("space_left.png", "space_left", false);
+	Texture *left = new Texture("sunset_left.png", "sunset_left", false);
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture *right = new Texture("space_right.png", "space_right", false);
+	Texture *right = new Texture("sunset_right.png", "sunset_right", false);
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture *up = new Texture("space_up.png", "space_up", false);
+	Texture *up = new Texture("sunset_up.png", "sunset_up", false);
 	up->SetWrapMode(Texture::ClampToEdge);
 
 	SkyBox *skybox = new SkyBox(front, back, up, down, left, right);
