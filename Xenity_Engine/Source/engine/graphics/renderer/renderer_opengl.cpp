@@ -1,6 +1,7 @@
 #include "renderer_opengl.h"
 
 #include "../../../xenity.h"
+#include "../3d_graphics/mesh_data.h"
 
 // #include <glad/glad.h>
 // #define GLFW_INCLUDE_NONE
@@ -148,7 +149,7 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 #else
 	glMatrixMode(GL_MODELVIEW);
 #endif
-	glTranslatef(position.x, position.y, position.z);
+	glTranslatef(-position.x, position.y, position.z);
 
 #ifdef __PSP__
 	gluRotateY(-rotation.y * 3.14159265359 / 180.0f);
@@ -171,7 +172,7 @@ void RendererOpengl::MoveTransform(Vector3 position)
 #else
 	glMatrixMode(GL_MODELVIEW);
 #endif
-	glTranslatef(position.x, position.y, position.z);
+	glTranslatef(-position.x, position.y, position.z);
 }
 
 void RendererOpengl::BindTexture(Texture *texture)
@@ -241,6 +242,115 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterValue);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
 #endif
+}
+
+void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings)
+{
+	if (settings.invertFaces)
+	{
+		glFrontFace(GL_CW);
+	}
+	else
+	{
+		glFrontFace(GL_CCW);
+	}
+
+	if (settings.useDepth)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	if (settings.useBlend)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	else
+	{
+		glDisable(GL_BLEND);
+	}
+
+	glEnable(GL_TEXTURE_2D);
+
+#ifdef __PSP__
+	int params = 0;
+
+	if (meshData->hasIndices)
+	{
+		params |= GL_INDEX_16BIT;
+	}
+	params |= GL_TEXTURE_32BITF;
+	if (meshData->hasColor)
+	{
+		params |= GL_COLOR_8888;
+	}
+	else
+	{
+		sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
+	}
+	params |= GL_VERTEX_32BITF;
+	params |= GL_TRANSFORM_3D;
+
+	if (!meshData->hasIndices)
+	{
+		glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
+	}
+	else
+	{
+		glDrawElements(GL_TRIANGLES, params, meshData->index_count, meshData->indices, meshData->data);
+	}
+
+#endif
+
+#ifdef __vita__
+	glEnableClientState(GL_VERTEX_ARRAY);
+	if (meshData->hasColor)
+	{
+		glEnableClientState(GL_COLOR_ARRAY);
+	}
+	else
+	{
+		RGBA rgba = meshData->unifiedColor.GetRGBA();
+		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
+	}
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	if (meshData->hasColor)
+	{
+		int stride = sizeof(Vertex);
+		glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].u);
+		glColorPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].r);
+		glVertexPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].x);
+	}
+	else
+	{
+		int stride = sizeof(VertexNoColor);
+		glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].u);
+		glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].x);
+	}
+
+	if (!meshData->hasIndices)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
+	}
+	else
+	{
+		glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_SHORT, meshData->indices);
+	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	if (meshData->hasColor)
+	{
+		glDisableClientState(GL_COLOR_ARRAY);
+	}
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+#endif
+	Performance::AddDrawCall();
 }
 
 void RendererOpengl::Clear()

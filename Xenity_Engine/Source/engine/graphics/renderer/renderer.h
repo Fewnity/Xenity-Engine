@@ -11,8 +11,16 @@ class Vector3;
 class Vector2;
 class Camera;
 class Texture;
+class MeshData;
 
-// class MeshData;
+class RenderingSettings
+{
+public:
+	bool useDepth = false;
+	bool useBlend = false;
+	bool invertFaces = false;
+	bool useTexture = true;
+};
 
 enum PolygoneFillMode
 {
@@ -64,5 +72,6 @@ public:
 	virtual void MoveTransform(Vector3 position) = 0;
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
+	virtual void DrawMeshData(MeshData *meshData, RenderingSettings settings) = 0;
 	virtual void Clear() = 0;
 };

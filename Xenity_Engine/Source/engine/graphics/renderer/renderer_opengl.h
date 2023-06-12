@@ -20,6 +20,7 @@ public:
 	void MoveTransform(Vector3 position);
 	void BindTexture(Texture *texture);
 	void ApplyTextureFilters(Texture *texture);
+	void DrawMeshData(MeshData *meshData, RenderingSettings settings);
 	void Clear();
 
 private:

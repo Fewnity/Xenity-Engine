@@ -41,17 +41,14 @@ void TextManager::Init()
  */
 void TextManager::DrawTextMesh(MeshData *mesh, bool for3D)
 {
-    // Set settings
-    if (for3D)
-        glEnable(GL_DEPTH_TEST);
-    else
-        glDisable(GL_DEPTH_TEST);
+    // Set draw settings
+    RenderingSettings renderSettings = RenderingSettings();
+    renderSettings.invertFaces = false;
+    renderSettings.useBlend = true;
+    renderSettings.useDepth = for3D;
+    renderSettings.useTexture = true;
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_TEXTURE_2D);
-
-    MeshManager::DrawMeshData(mesh);
+    Engine::renderer->DrawMeshData(mesh, renderSettings);
 }
 
 /**
@@ -86,13 +83,12 @@ void TextManager::SetTextPosition(Transform *transform, bool canvas)
     {
         float xOff = (-Window::GetAspectRatio() * 5) + (transform->GetPosition().x * (Window::GetAspectRatio() * 10));
         float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
-        pos = Vector3(-xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+        pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
     }
 
-    Vector3 rot = transform->GetRotation();
     Vector3 scl = transform->GetScale();
     scl.x = -scl.x;
-    Engine::renderer->SetTransform(pos, rot, scl, true);
+    Engine::renderer->SetTransform(pos, transform->GetRotation(), scl, true);
 }
 
 /**

@@ -72,20 +72,19 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
     // Move/Rotate/Scale the sprite
-    Vector3 pos = Vector3(-position.x, position.y, position.z);
-    Vector3 rot = Vector3(rotation.x, rotation.y, rotation.z);
     Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
-    Engine::renderer->SetTransform(pos, rot, scl, true);
+    Engine::renderer->SetTransform(position, rotation, scl, true);
 
-    // Set settings
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_TEXTURE_2D);
+    // Set draw settings
+    RenderingSettings renderSettings = RenderingSettings();
+    renderSettings.invertFaces = false;
+    renderSettings.useBlend = true;
+    renderSettings.useDepth = false;
+    renderSettings.useTexture = true;
 
     // Draw the sprite
     Engine::renderer->BindTexture(texture);
-    MeshManager::DrawMeshData(spriteMeshData);
+    Engine::renderer->DrawMeshData(spriteMeshData, renderSettings);
 
     spriteBenchmark->Stop();
 }
