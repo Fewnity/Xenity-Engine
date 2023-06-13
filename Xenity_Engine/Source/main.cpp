@@ -12,10 +12,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
-
-Touch for psvita
-Sprite color
-Text color
+Touch : Add input state : Begin, Hold and End
 Text scale
 */
 

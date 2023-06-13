@@ -6,12 +6,10 @@
 #include <string.h>
 
 #ifdef __vita__
-#include <psp2/touch.h>
+
 #endif
 
 Game *Game::game;
-
-// SceTouchData touch[SCE_TOUCH_PORT_MAX_NUM];
 
 /// <summary>
 /// Init game
@@ -23,18 +21,15 @@ void Game::Start()
 
 	cameraGO = new GameObject("Camera");
 	Camera *camera = cameraGO->AddComponent<Camera>();
-	camera->SetNearClippingPlane(0.2f);
-	camera->SetFarClippingPlane(50);
+	camera->SetNearClippingPlane(0.4f);
+	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
+	camera->SetFov(70);
 	// camera->SetProjectionType(Orthographic);
-
-	// sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START);
-	// sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_START);
-	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_FRONT);
-	// sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
 	Texture *texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
+	// Texture *texture2 = new Texture("blueStructure_2.png", "blueStructure_2", Texture::Point, false, true);
 
 	// Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
 	// texture->SetFilter(Texture::Point);
@@ -58,16 +53,19 @@ void Game::Start()
 	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1->GetTransform()->SetPosition(Vector3(-5, 0, -2));
 	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo4->GetTransform()->SetLocalScale(Vector3(50, 50, 50));
+	spriteGo4->GetTransform()->SetLocalScale(Vector3(50, 50, -50));
 	// spriteGo4->GetTransform()->SetRotation(Vector3(45, 45, 45));
 
 	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
 	spriteGo6->GetTransform()->SetPosition(Vector3(0, 2.5f, 0));
+	spriteGo6->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
+	spriteGo0->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
 
 	// SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
+	// ps0->texture = texture;
+
 	// SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
-	// ps0->texture = texture5;
-	// ps1->texture = texture;
+	// ps1->texture = texture2;
 
 	TextRenderer *tr = spriteGo6->AddComponent<TextRenderer>();
 	tr->text = "Hello\nWorld!";
@@ -218,16 +216,14 @@ void Game::Update()
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
 	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";
 
-	// memset(touch, 0, sizeof(SceTouchData) * 2);
-	// for (int screen = 0; screen < SCE_TOUCH_PORT_MAX_NUM; screen++)
+	// for (int i = 0; i < InputSystem::GetTouchScreenCount(); i++)
 	// {
-	// 	if (sceTouchPeek(screen, &touch[screen], 1) == 1)
+	// 	int touchCount = InputSystem::GetTouchCount(i);
+	// 	debugText += "screen " + std::to_string(i) + " touch count: " + std::to_string(touchCount) + "\n";
+	// 	for (int touchI = 0; touchI < touchCount; touchI++)
 	// 	{
-	// 		debugText += "screen: " + std::to_string(screen) + "\n";
-	// 		for (int finger = 0; finger < touch[screen].reportNum; finger++)
-	// 		{
-	// 			debugText += "finger: " + std::to_string(finger) + ", " + std::to_string(touch[screen].report[finger].x) + ", " + std::to_string(touch[screen].report[finger].y) + ", force: " + std::to_string(touch[screen].report[finger].force) + "\n";
-	// 		}
+	// 		Touch touch = InputSystem::GetTouch(touchI, i);
+	// 		debugText += "Touch " + std::to_string(touchI) + " x: " + std::to_string(touch.position.x) + " y: " + std::to_string(touch.position.y) + " id: " + std::to_string(touch.fingerId) + "\n";
 	// 	}
 	// }
 

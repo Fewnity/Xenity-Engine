@@ -480,17 +480,20 @@ extern "C"
 		sceGuDepthBuffer(vrelptr(zbp), PSP_BUF_WIDTH);
 		sceGuOffset(2048 - (PSP_SCR_WIDTH / 2), 2048 - (PSP_SCR_HEIGHT / 2));
 		sceGuViewport(2048, 2048, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
-		sceGuDepthRange(0, 65535);
+
+		sceGuDepthRange(100, 65535);
 		sceGuScissor(0, 0, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 		sceGuEnable(GU_SCISSOR_TEST);
-		sceGuDepthFunc(GU_LESS);
+		sceGuDisable(GU_CLIP_PLANES);
+
+		sceGuDepthFunc(GU_LEQUAL);
 		sceGuEnable(GU_DEPTH_TEST);
 		sceGuFrontFace(GU_CCW);
 		sceGuShadeModel(GU_SMOOTH);
 		sceGuEnable(GU_CULL_FACE);
-		// sceGuDisable(GU_CULL_FACE);
 		sceGuEnable(GU_TEXTURE_2D);
 		sceGuEnable(GU_CLIP_PLANES);
+
 		sceGuFinish();
 		sceGuSync(0, 0);
 
