@@ -3,6 +3,7 @@
 #include <map>
 #include <unordered_map>
 #include <vector>
+#include "input_touch_raw.h"
 
 #include "../debug/debug.h"
 
@@ -25,6 +26,7 @@ Input InputSystem::inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::hideMouse = false;
 std::map<int, Input *> InputSystem::keyMap;
+std::vector<InputSystem::TouchScreen *> InputSystem::screens;
 
 /// <summary>
 /// Init input system
@@ -41,7 +43,39 @@ void InputSystem::Init()
 	CrossAddInputs(keyMap, inputs);
 	CrossInputsInit();
 
+#ifdef __vita__
+	screens.push_back(new InputSystem::TouchScreen());
+	screens.push_back(new InputSystem::TouchScreen());
+#endif
+
 	Debug::Print("-------- Input System initiated --------");
+}
+
+int InputSystem::GetTouchScreenCount()
+{
+	return screens.size();
+}
+
+int InputSystem::GetTouchCount(const int screenIndex)
+{
+	int screenCount = screens.size();
+
+	if (screenCount <= screenIndex)
+		return 0;
+
+	return screens[screenIndex]->touches.size();
+}
+
+Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
+{
+	int screenCount = screens.size();
+
+	if (screenCount <= screenIndex)
+		return Touch();
+	else if (screens[screenIndex]->touches.size() <= touchIndex)
+		return Touch();
+
+	return screens[screenIndex]->touches[touchIndex];
 }
 
 /// <summary>
@@ -50,8 +84,71 @@ void InputSystem::Init()
 /// <param name="event"></param>
 void InputSystem::Read()
 {
-	InputPad pad = CrossGetInputPad();
+	int screenCount = screens.size();
+	std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
+	int touchesRawCount = touchesRaw.size();
 
+	for (int touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
+	{
+		TouchRaw touchRaw = touchesRaw[touchRawI];
+		TouchScreen *screen = screens[touchRaw.screenIndex];
+		bool newInput = true;
+		int foundInputIndex = -1;
+
+		int fingerId = touchRaw.fingerId;
+
+		for (int touchI = 0; touchI < screen->touches.size(); touchI++)
+		{
+			if (screen->touches[touchI].fingerId == fingerId)
+			{
+				newInput = false;
+				screen->updated[touchI] = true;
+				foundInputIndex = touchI;
+				break;
+			}
+		}
+
+		// If the input begins
+		if (newInput)
+		{
+			Touch newTouch = Touch();
+			newTouch.fingerId = touchRaw.fingerId;
+			newTouch.position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
+			newTouch.force = 0; // Not implemented
+			screen->touches.push_back(newTouch);
+			screen->updated.push_back(true);
+		}
+		else // If the input is held, update it
+		{
+			screen->touches[foundInputIndex].position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
+			screen->touches[foundInputIndex].force = 0; // Not implemented
+		}
+	}
+
+	// Remove not updated inputs
+	for (int screenIndex = 0; screenIndex < screenCount; screenIndex++)
+	{
+		TouchScreen *screen = screens[screenIndex];
+		int touchCount = screen->updated.size();
+		for (int updatedI = 0; updatedI < touchCount; updatedI++)
+		{
+			// if the input has not been updated last frame
+			if (!screen->updated[updatedI])
+			{
+				// Remove the input from the list
+				screen->touches.erase(screen->touches.begin() + updatedI);
+				screen->updated.erase(screen->updated.begin() + updatedI);
+				updatedI--;
+				touchCount--;
+			}
+			else
+			{
+				screen->updated[updatedI] = false;
+			}
+		}
+	}
+
+	InputPad pad = CrossGetInputPad();
 	leftJoystick.x = pad.lx;
 	leftJoystick.y = pad.ly;
 

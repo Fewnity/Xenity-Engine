@@ -3,6 +3,8 @@
 #include <map>
 // #include <SDL2/SDL_events.h>
 #include "../vectors/vector2.h"
+#include "../vectors/vector2_int.h"
+#include <vector>
 
 enum KeyCode
 {
@@ -125,6 +127,15 @@ public:
 	bool held = false;
 };
 
+class Touch
+{
+public:
+	Vector2Int position = Vector2Int(0);
+	Vector2Int startPosition = Vector2Int(0);
+	int fingerId = -1;
+	float force = 0;
+};
+
 class InputSystem
 {
 public:
@@ -134,6 +145,9 @@ public:
 	static bool GetKey(const KeyCode keyCode);
 	static bool GetKeyUp(const KeyCode keyCode);
 	static void ClearInputs();
+	static int GetTouchScreenCount();
+	static int GetTouchCount(const int screenIndex);
+	static Touch GetTouch(const int touchIndex, const int screenIndex);
 
 	static Vector2 leftJoystick;
 	static Vector2 rightJoystick;
@@ -144,6 +158,12 @@ public:
 	static bool hideMouse;
 
 private:
+	class TouchScreen
+	{
+	public:
+		std::vector<Touch> touches;
+		std::vector<bool> updated;
+	};
 	static void ChangeInputState(const bool pressed, const int keyCode);
 	static void SetInput(const bool pressed, const int keyCode);
 	static void SetInputPressed(const int keyCode);
@@ -152,5 +172,5 @@ private:
 
 	static Input inputs[INPUT_COUNT];
 	static std::map<int, Input *> keyMap;
-	// Map
+	static std::vector<TouchScreen *> screens;
 };

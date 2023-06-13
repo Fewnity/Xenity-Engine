@@ -4,6 +4,7 @@
 
 #include <pspctrl.h>
 #include "../../engine/inputs/input_system.h"
+#include "../../engine/inputs/input_touch_raw.h"
 #include "../../engine/debug/debug.h"
 
 SceCtrlData ctrl;
@@ -34,22 +35,28 @@ void CrossInputsInit()
 InputPad CrossGetInputPad()
 {
     InputPad pad = InputPad();
-    // sceCtrlPeekBufferPositive(0, &ctrl, 1);
     sceCtrlReadBufferPositive(&ctrl, 1);
     pad.buttons = ctrl.Buttons;
 
-    pad.lx = ((ctrl.Lx - 128) / 256.0) * 2;
-    pad.ly = ((ctrl.Ly - 128) / 256.0) * 2;
+    pad.lx = ((ctrl.Lx - 128) / 256.0f) * 2;
+    pad.ly = ((ctrl.Ly - 128) / 256.0f) * 2;
 
-    if (pad.lx < 0.2 && pad.lx > -0.2)
+    if (pad.lx < 0.2f && pad.lx > -0.2f)
     {
         pad.lx = 0;
     }
-    if (pad.ly < 0.2 && pad.ly > -0.2)
+    if (pad.ly < 0.2f && pad.ly > -0.2f)
     {
         pad.ly = 0;
     }
     return pad;
+}
+
+std::vector<TouchRaw> CrossUpdateTouch()
+{
+    // Should be empty
+    std::vector<TouchRaw> touchesRaw;
+    return touchesRaw;
 }
 
 #endif
