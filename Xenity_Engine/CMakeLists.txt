@@ -61,6 +61,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspvram
     psppower
     pspdisplay
+    pspaudiolib
+    pspaudio
     m
     pspge
     stdc++
@@ -124,6 +126,7 @@ png
   SceUsbSerial_stub
   SceUsbd_stub 
   SceTouch_stub
+  SceAudio_stub
   zip 
   vitashark 
   SceShaccCgExt 
