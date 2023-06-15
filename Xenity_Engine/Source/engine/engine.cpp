@@ -55,8 +55,9 @@ int Engine::Init(const std::string exePath)
 	// FileSystem::InitFileSystem(exePath);
 
 	renderer = new RendererOpengl();
-
 	renderer->Init();
+
+	Window::Init();
 
 #ifdef __PSP__
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
@@ -64,7 +65,8 @@ int Engine::Init(const std::string exePath)
 	Window::SetResolution(960, 544);
 #else
 	Debug::Print("-------- RESOLUTION Not implemented --------");
-	Window::SetResolution(-1, -1);
+	//Window::SetResolution(-1, -1);
+	Window::SetResolution(1280, 720);
 #endif
 
 	Debug::Print("-------- Audio Not implemented --------");
@@ -224,6 +226,27 @@ void Engine::Loop()
 		InputSystem::ClearInputs();
 		InputSystem::Read();
 
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			//ImGui_ImplSDL2_ProcessEvent(&event);
+			//InputSystem::Read(event);
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				running = false;
+				break;
+			case SDL_WINDOWEVENT:
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				{
+					//Window::OnResize(event.window.data1, event.window.data2);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
 		gameLoopBenchmark->Start();
 		// Game loop
 		game->Update();
@@ -235,6 +258,8 @@ void Engine::Loop()
 		componentsUpdateBenchmark->Stop();
 
 		drawIDrawablesBenchmark->Start();
+		Window::UpdateScreen();
+		//Debug::Print("UPDATE");
 		Graphics::DrawAllDrawable();
 		drawIDrawablesBenchmark->Stop();
 

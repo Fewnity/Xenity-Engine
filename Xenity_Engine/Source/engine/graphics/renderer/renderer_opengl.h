@@ -10,6 +10,7 @@ public:
 	void Stop();
 	void NewFrame();
 	void EndFrame();
+	void SetViewport(int x, int y, int width, int height);
 	void SetClearColor(Color color);
 	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane);
 	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane);
@@ -21,6 +22,8 @@ public:
 	void BindTexture(Texture *texture);
 	void ApplyTextureFilters(Texture *texture);
 	void DrawMeshData(MeshData *meshData, RenderingSettings settings);
+	unsigned int CreateNewTexture();
+	void SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer);
 	void Clear();
 
 private:

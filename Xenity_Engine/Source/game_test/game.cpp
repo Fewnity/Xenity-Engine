@@ -23,7 +23,7 @@
 
 Game *Game::game;
 
-drmp3 mp3;
+/*drmp3 mp3;
 drmp3_int16 *pDecodedInterleavedPCMFrames;
 // drwav_int16 *pDecodedInterleavedPCMFrames;
 int seekPosition = 0;
@@ -32,7 +32,7 @@ int size = 2048;
 int freq = 7;
 int mode = SCE_AUDIO_OUT_MODE_STEREO;
 int vol = SCE_AUDIO_VOLUME_0DB;
-int port;
+int port;*/
 
 typedef struct
 {
@@ -48,10 +48,10 @@ void audioCallback(void *buf, unsigned int length, void *userdata)
 
 	for (int i = 0; i < length; i++)
 	{
-		ubuf[i].l = pDecodedInterleavedPCMFrames[seekPosition];
+		/*ubuf[i].l = pDecodedInterleavedPCMFrames[seekPosition];
 		seekPosition++;
 		ubuf[i].r = pDecodedInterleavedPCMFrames[seekPosition];
-		seekPosition++;
+		seekPosition++;*/
 
 		// ubuf[i].l = pDecodedInterleavedPCMFrames[0 + i * 2];
 		// seekPosition++;
@@ -106,7 +106,7 @@ void Game::Start()
 	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
-	// camera->SetProjectionType(Orthographic);
+	//camera->SetProjectionType(Orthographic);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
 	Texture *texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
@@ -193,10 +193,10 @@ void Game::Start()
 	// 	}
 	// }
 
-	int freqs[] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
+	/*int freqs[] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
 	port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_BGM, size, freqs[freq], (SceAudioOutMode)mode);
 	int volA[2] = {vol, vol};
-	sceAudioOutSetVolume(port, (SceAudioOutChannelFlag)(SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volA);
+	sceAudioOutSetVolume(port, (SceAudioOutChannelFlag)(SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volA);*/
 
 	// drwav wav;
 	// if (!drwav_init_file(&wav, "Special_Needs.wav", NULL))
@@ -208,11 +208,11 @@ void Game::Start()
 	// size_t numberOfSamplesActuallyDecoded = drwav_read_pcm_frames_s16(&wav, wav.totalPCMFrameCount, pDecodedInterleavedPCMFrames);
 
 	// MP3
-	if (!drmp3_init_file(&mp3, "ux0:Special_Needs_low.mp3", NULL))
+	/*if (!drmp3_init_file(&mp3, "ux0:Special_Needs_low.mp3", NULL))
 	{
 		Debug::Print("AUDIO ERROR");
 		// Failed to open file
-	}
+	}*/
 	// int frameCount = drmp3_get_pcm_frame_count(&mp3) / 10;
 	// pDecodedInterleavedPCMFrames = (drmp3_int16 *)malloc(frameCount * mp3.channels * sizeof(drmp3_int16));
 	// if (!pDecodedInterleavedPCMFrames)

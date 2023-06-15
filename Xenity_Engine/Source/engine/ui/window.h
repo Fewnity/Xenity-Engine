@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+
 class Window
 {
 public:
@@ -7,6 +9,9 @@ public:
     static int GetWidth();
     static int GetHeight();
     static float GetAspectRatio();
+    static void Init();
+    static void UpdateScreen();
+    static SDL_Window* window;
 
 private:
     static void UpdateAspectRatio();

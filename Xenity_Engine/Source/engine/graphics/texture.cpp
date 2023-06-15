@@ -1,6 +1,8 @@
 #include "texture.h"
 #include "../../xenity.h"
 
+#include "renderer/renderer.h"
+
 #include "../../../include/stb_image.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "../../../include/stb_image_resize.h"
@@ -74,7 +76,7 @@ void Texture::CreateTexture(const std::string filePath, std::string name, const 
     AssetManager::AddTexture(this);
 }
 
-#ifdef __PSP__
+#if defined(__PSP__)
 void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigned int height)
 {
     unsigned int blockx, blocky;
@@ -183,7 +185,7 @@ void Texture::SetData(const unsigned char *texData)
 {
     // sceGeEdramSetSize(4096);
     // The psp needs a pow2 sized texture
-#ifdef __PSP__
+#if defined(__PSP__)
     type = GU_PSM_8888;
 
     // Get pow2 size
@@ -201,19 +203,25 @@ void Texture::SetData(const unsigned char *texData)
 
 #endif
 
-#ifdef __vita__
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texData);
-    if (useMipMap)
-        glGenerateMipmap(GL_TEXTURE_2D);
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+    //glGenTextures(1, &textureId);
+    //glBindTexture(GL_TEXTURE_2D, textureId);
+    textureId = Engine::renderer->CreateNewTexture();
+    Engine::renderer->BindTexture(this);
+
+    unsigned int alpha = 0x1906;
+    Engine::renderer->SetTextureData(this, alpha, texData);
+
+    //glTexImage2D(GL_TEXTURE_2D, 0, alpha, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texData);
+    //if (useMipMap)
+        //glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 }
 
 void Texture::LoadTexture(const std::string filename)
 {
     std::string path = "";
-#ifdef __vita__
+#if defined(__vita__)
     path += "ux0:";
 #endif
     path += filename;
@@ -233,20 +241,23 @@ void Texture::LoadTexture(const std::string filename)
         Debug::Print(debugText);
         return;
     }
-
-    Debug::Print(std::to_string(nrChannels));
-
-#ifdef __PSP__
+#if defined(__PSP__)
     SetData(buffer);
 #endif
 
-#ifdef __vita__
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+   // glGenTextures(1, &textureId);
+    textureId = Engine::renderer->CreateNewTexture();
+    Engine::renderer->BindTexture(this);
+    //glBindTexture(GL_TEXTURE_2D, textureId);
+
+    unsigned int rgba = 0x1908;
+    Engine::renderer->SetTextureData(this, rgba, buffer);
+
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    if (useMipMap)
-        glGenerateMipmap(GL_TEXTURE_2D);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    //if (useMipMap)
+        //glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 
     stbi_image_free(buffer);

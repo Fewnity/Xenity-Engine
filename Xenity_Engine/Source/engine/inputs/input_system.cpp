@@ -11,6 +11,8 @@
 #include "../../psvita/inputs/inputs.h"
 #elif __PSP__
 #include "../../psp/inputs/inputs.h"
+#else
+#include "../../windows/inputs/inputs.h"
 #endif
 
 #include "input_pad.h"

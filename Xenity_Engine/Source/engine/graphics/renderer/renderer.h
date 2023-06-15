@@ -62,6 +62,7 @@ public:
 	virtual void Stop() = 0;
 	virtual void NewFrame() = 0;
 	virtual void EndFrame() = 0;
+	virtual void SetViewport(int x, int y, int width, int height) = 0;
 	virtual void SetClearColor(Color color) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane) = 0;
@@ -73,5 +74,7 @@ public:
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
 	virtual void DrawMeshData(MeshData *meshData, RenderingSettings settings) = 0;
+	virtual unsigned int CreateNewTexture() = 0;
+	virtual void SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer) = 0;
 	virtual void Clear() = 0;
 };

@@ -3,19 +3,19 @@
 #include "../../../xenity.h"
 #include "../3d_graphics/mesh_data.h"
 
-// #include <glad/glad.h>
-// #define GLFW_INCLUDE_NONE
-// #include <GLFW/glfw3.h>
-// #include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+//#include <glm/gtc/type_ptr.hpp>
 
-#ifdef __PSP__
+#if defined(__PSP__)
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>
 #define GUGL_IMPLEMENTATION
 #include "../../../psp/gu2gl.h"
 #endif
 
-#ifdef __vita__
+#if defined(__vita__)
 #include <vitaGL.h>
 #endif
 
@@ -26,15 +26,15 @@ RendererOpengl::RendererOpengl()
 int RendererOpengl::Init()
 {
 	int result = 1;
-#ifdef __PSP__
+#if defined(__PSP__)
 	guglInit(list);
-#elif __vita__
+#elif defined(__vita__)
 	result = vglInit(0x100000);
-#else
+#else defined(_WIN32) || defined(_WIN64)
 	result = glfwInit();
 #endif
 
-#ifdef __vita__
+#if defined(__vita__) /*|| defined(_WIN32) || defined(_WIN64)*/
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
@@ -46,9 +46,9 @@ int RendererOpengl::Init()
 
 void RendererOpengl::Stop()
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	guglTerm();
-#elif __vita__
+#elif defined(__vita__)
 	vglEnd();
 #else
 	glfwTerminate();
@@ -57,24 +57,29 @@ void RendererOpengl::Stop()
 
 void RendererOpengl::NewFrame()
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	guglStartFrame(list, GL_FALSE);
 #endif
 }
 
 void RendererOpengl::EndFrame()
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	guglSwapBuffers(GL_TRUE, GL_FALSE);
-#elif __vita__
+#elif defined(__vita__)
 	vglSwapBuffers(GL_FALSE);
 #endif
+}
+
+void RendererOpengl::SetViewport(int x, int y, int width, int height)
+{
+	glViewport(x, y, width, height);
 }
 
 void RendererOpengl::SetClearColor(Color color)
 {
 	RGBA rgba = color.GetRGBA();
-#ifdef __PSP__
+#if defined(__PSP__)
 	glClearColor(color.GetUnsignedIntABGR());
 #else
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
@@ -94,16 +99,24 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-#ifdef __PSP__
+#if defined(__PSP__)
 	glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
-#elif __vita__
+#elif defined(_WIN32) || defined(_WIN64)
+	GLfloat zNear = nearClippingPlane;
+	GLfloat zFar = farClippingPlane;
+	GLfloat aspect = Window::GetAspectRatio();
+	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
+	GLfloat fW = fH * aspect;
+	glFrustum(-fW, fW, -fH, fH, zNear, zFar);
+	//glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
+#elif defined(__vita__)
 	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #endif
 }
 
 void RendererOpengl::ResetView()
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	glMatrixMode(GL_VIEW);
 	glLoadIdentity();
 	gluRotateY((0 + 180) / 180.0f * 3.14159f);
@@ -117,7 +130,7 @@ void RendererOpengl::ResetView()
 void RendererOpengl::SetCameraPosition(Camera *camera)
 {
 	Transform *trans = camera->GetTransform();
-#ifdef __PSP__
+#if defined(__PSP__)
 	glMatrixMode(GL_VIEW);
 	glLoadIdentity();
 
@@ -142,7 +155,7 @@ void RendererOpengl::ResetTransform()
 
 void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	glMatrixMode(GL_MODEL);
 	if (resetTransform)
 		glLoadIdentity();
@@ -151,12 +164,11 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 #endif
 	glTranslatef(-position.x, position.y, position.z);
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	gluRotateY(-rotation.y * 3.14159265359 / 180.0f);
 	gluRotateX(rotation.x * 3.14159265359 / 180.0f);
 	gluRotateZ(-rotation.z * 3.14159265359 / 180.0f);
-
-#elif __vita__
+#else
 	glRotatef(-rotation.y, 0, 1, 0);
 	glRotatef(rotation.x, 1, 0, 0);
 	glRotatef(-rotation.z, 0, 0, 1);
@@ -167,7 +179,7 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 
 void RendererOpengl::MoveTransform(Vector3 position)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	glMatrixMode(GL_MODEL);
 #else
 	glMatrixMode(GL_MODELVIEW);
@@ -177,7 +189,7 @@ void RendererOpengl::MoveTransform(Vector3 position)
 
 void RendererOpengl::BindTexture(Texture *texture)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
 	if (texture->useMipMap)
@@ -193,8 +205,7 @@ void RendererOpengl::BindTexture(Texture *texture)
 		// glTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
 	}
 
-#endif
-#ifdef __vita__
+#else
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 #endif
 	ApplyTextureFilters(texture);
@@ -230,7 +241,7 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 	}
 	int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	glTexFilter(minFilterValue, magfilterValue);
 	glTexWrap(wrap, wrap);
 #else
@@ -274,7 +285,7 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 
 	glEnable(GL_TEXTURE_2D);
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	int params = 0;
 
 	if (meshData->hasIndices)
@@ -302,9 +313,7 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 		glDrawElements(GL_TRIANGLES, params, meshData->index_count, meshData->indices, meshData->data);
 	}
 
-#endif
-
-#ifdef __vita__
+#else
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (meshData->hasColor)
 	{
@@ -349,6 +358,20 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 
 #endif
 	Performance::AddDrawCall();
+}
+
+unsigned int RendererOpengl::CreateNewTexture()
+{
+	unsigned int textureId;
+	glGenTextures(1, &textureId);
+	return textureId;
+}
+
+void RendererOpengl::SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer)
+{
+	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
+	if (texture->useMipMap)
+		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void RendererOpengl::Clear()
