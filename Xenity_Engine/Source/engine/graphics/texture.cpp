@@ -204,17 +204,10 @@ void Texture::SetData(const unsigned char *texData)
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-    //glGenTextures(1, &textureId);
-    //glBindTexture(GL_TEXTURE_2D, textureId);
     textureId = Engine::renderer->CreateNewTexture();
     Engine::renderer->BindTexture(this);
-
     unsigned int alpha = 0x1906;
     Engine::renderer->SetTextureData(this, alpha, texData);
-
-    //glTexImage2D(GL_TEXTURE_2D, 0, alpha, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texData);
-    //if (useMipMap)
-        //glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 }
 
@@ -246,18 +239,11 @@ void Texture::LoadTexture(const std::string filename)
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-   // glGenTextures(1, &textureId);
     textureId = Engine::renderer->CreateNewTexture();
     Engine::renderer->BindTexture(this);
-    //glBindTexture(GL_TEXTURE_2D, textureId);
 
     unsigned int rgba = 0x1908;
     Engine::renderer->SetTextureData(this, rgba, buffer);
-
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    //if (useMipMap)
-        //glGenerateMipmap(GL_TEXTURE_2D);
 #endif
 
     stbi_image_free(buffer);

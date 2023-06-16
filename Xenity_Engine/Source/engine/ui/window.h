@@ -1,6 +1,7 @@
 #pragma once
-
+#if defined(_WIN32) || defined(_WIN64)
 #include <SDL2/SDL.h>
+#endif
 
 class Window
 {
@@ -11,8 +12,9 @@ public:
     static float GetAspectRatio();
     static void Init();
     static void UpdateScreen();
-    static SDL_Window* window;
-
+#if defined(_WIN32) || defined(_WIN64)
+    static SDL_Window *window;
+#endif
 private:
     static void UpdateAspectRatio();
     static int width, height;

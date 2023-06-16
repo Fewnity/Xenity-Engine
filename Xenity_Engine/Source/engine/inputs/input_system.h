@@ -2,7 +2,10 @@
 
 #include <map>
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <SDL2/SDL_events.h>
+#endif
+
 #include "../vectors/vector2.h"
 #include "../vectors/vector2_int.h"
 #include <vector>
@@ -142,7 +145,9 @@ class InputSystem
 public:
 	static void Init();
 	static void Read();
+#if defined(_WIN32) || defined(_WIN64)
 	static void Read(const SDL_Event event);
+#endif
 	static bool GetKeyDown(const KeyCode keyCode);
 	static bool GetKey(const KeyCode keyCode);
 	static bool GetKeyUp(const KeyCode keyCode);

@@ -65,7 +65,7 @@ int Engine::Init(const std::string exePath)
 	Window::SetResolution(960, 544);
 #else
 	Debug::Print("-------- RESOLUTION Not implemented --------");
-	//Window::SetResolution(-1, -1);
+	// Window::SetResolution(-1, -1);
 	Window::SetResolution(1280, 720);
 #endif
 
@@ -224,12 +224,13 @@ void Engine::Loop()
 		// Update time and inputs
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
-		//InputSystem::Read();
+		// InputSystem::Read();
 
+#if defined(_WIN32) || defined(_WIN64)
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			//ImGui_ImplSDL2_ProcessEvent(&event);
+			// ImGui_ImplSDL2_ProcessEvent(&event);
 			InputSystem::Read(event);
 			switch (event.type)
 			{
@@ -239,15 +240,17 @@ void Engine::Loop()
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					//Window::OnResize(event.window.data1, event.window.data2);
+					Window::SetResolution(event.window.data1, event.window.data2);
 				}
 				break;
 			default:
 				break;
 			}
 		}
-
-		//EditorUI::NewFrame();
+#else
+		InputSystem::Read();
+#endif
+		// EditorUI::NewFrame();
 
 		gameLoopBenchmark->Start();
 		// Game loop
@@ -261,7 +264,7 @@ void Engine::Loop()
 
 		drawIDrawablesBenchmark->Start();
 		Window::UpdateScreen();
-		//Debug::Print("UPDATE");
+
 		Graphics::DrawAllDrawable();
 		drawIDrawablesBenchmark->Stop();
 

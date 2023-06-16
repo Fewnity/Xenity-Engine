@@ -59,8 +59,11 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 			if (line[1] == ' ') // Add vertice
 			{
 				float x = 0, y = 0, z = 0;
-				 sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
-				//sscanf(line.c_str(), "v %f %f %f\n", &x, &y, &z);
+#if defined(_WIN32) || defined(_WIN64)
+				sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
+#elif defined(__PSP__) || defined(__vita__)
+				sscanf(line.c_str(), "v %f %f %f\n", &x, &y, &z);
+#endif
 				verticesCount++;
 				tempVertices.emplace_back(x, y, z);
 			}
@@ -69,16 +72,22 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 				if (line[1] == 't') // Add texture coordinate (UV)
 				{
 					float x = 0, y = 0;
-					 sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
-					//sscanf(line.c_str(), "vt %f %f\n", &x, &y);
+#if defined(_WIN32) || defined(_WIN64)
+					sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
+#elif defined(__PSP__) || defined(__vita__)
+					sscanf(line.c_str(), "vt %f %f\n", &x, &y);
+#endif
 					textureCordsCount++;
 					tempTexturesCoords.emplace_back(x, 1 - y);
 				}
 				else if (line[1] == 'n') // Add normal
 				{
 					float x = 0, y = 0, z = 0;
-					 sscanf_s(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
-					//sscanf(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
+#if defined(_WIN32) || defined(_WIN64)
+					sscanf_s(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
+#elif defined(__PSP__) || defined(__vita__)
+					sscanf(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
+#endif
 					normalsCount++;
 					tempNormals.emplace_back(x, y, z);
 				}
@@ -113,17 +122,22 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 			int vn1 = 0, vn2 = 0, vn3 = 0;
 			if (count == 0)
 			{
-				 sscanf_s(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
-				//sscanf(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
+#if defined(_WIN32) || defined(_WIN64)
+				sscanf_s(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
+#elif defined(__PSP__) || defined(__vita__)
+				sscanf(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3);														   // For no uv no normals
+#endif
 				hasNoNormals = true;
 				hasNoUv = true;
 			}
 			else if (count == 3)
 			{
 				hasNoNormals = true;
-				//sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
-																								 sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
-
+#if defined(_WIN32) || defined(_WIN64)
+				sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
+#elif defined(__PSP__) || defined(__vita__)
+				sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3);								   // For no normals
+#endif
 				// mesh->AddVertex(
 				// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
 				// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, vertexIndex);
@@ -133,11 +147,17 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 			else if (count == 6)
 			{
 				if (hasNoUv)
-					 sscanf_s(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3); // For no uv
-					//sscanf(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3); // For no uv
+#if defined(_WIN32) || defined(_WIN64)
+					sscanf_s(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3); // For no uv
+#elif defined(__PSP__) || defined(__vita__)
+					sscanf(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3);						   // For no uv
+#endif
 				else
-					 sscanf_s(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
-					//sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
+#if defined(_WIN32) || defined(_WIN64)
+					sscanf_s(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
+#elif defined(__PSP__) || defined(__vita__)
+					sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
+#endif
 			}
 
 			indicesCount += 3;

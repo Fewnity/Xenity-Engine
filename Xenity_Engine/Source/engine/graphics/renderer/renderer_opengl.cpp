@@ -3,10 +3,11 @@
 #include "../../../xenity.h"
 #include "../3d_graphics/mesh_data.h"
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-//#include <glm/gtc/type_ptr.hpp>
+#endif
 
 #if defined(__PSP__)
 static unsigned int __attribute__((aligned(16))) list[262144];
@@ -30,7 +31,7 @@ int RendererOpengl::Init()
 	guglInit(list);
 #elif defined(__vita__)
 	result = vglInit(0x100000);
-#else defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64)
 	result = glfwInit();
 #endif
 
@@ -108,7 +109,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
 	GLfloat fW = fH * aspect;
 	glFrustum(-fW, fW, -fH, fH, zNear, zFar);
-	//glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
+	// glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #elif defined(__vita__)
 	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #endif
@@ -193,7 +194,7 @@ void RendererOpengl::BindTexture(Texture *texture)
 	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
 	if (texture->useMipMap)
-		sceGuTexLevelMode(GU_TEXTURE_AUTO, 0); // Greater is lower quality
+		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
 	// sceGuTexLevelMode(GL_TEXTURE_CONST, 1); // Set mipmap level to use
 	// sceGuTexLevelMode(GL_TEXTURE_SLOPE, 2); //??? has no effect
 
@@ -209,8 +210,8 @@ void RendererOpengl::BindTexture(Texture *texture)
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 #endif
 	ApplyTextureFilters(texture);
-	float borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	float borderColor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 void RendererOpengl::ApplyTextureFilters(Texture *texture)
@@ -364,16 +365,21 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 
 unsigned int RendererOpengl::CreateNewTexture()
 {
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	unsigned int textureId;
 	glGenTextures(1, &textureId);
 	return textureId;
+#endif
+	return 0;
 }
 
-void RendererOpengl::SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer)
+void RendererOpengl::SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer)
 {
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
 	if (texture->useMipMap)
 		glGenerateMipmap(GL_TEXTURE_2D);
+#endif
 }
 
 void RendererOpengl::Clear()

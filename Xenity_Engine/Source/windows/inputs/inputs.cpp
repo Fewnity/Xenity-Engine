@@ -1,6 +1,6 @@
 #include "inputs.h"
 
-//#ifdef __PSP__
+#if defined(_WIN32) || defined(_WIN64)
 
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"
@@ -64,7 +64,7 @@ void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs)
     keyMap[SDLK_F10] = &inputs[F10];
     keyMap[SDLK_F11] = &inputs[F11];
     keyMap[SDLK_F12] = &inputs[F12];
-    //TODO: Add to F24
+    // TODO: Add to F24
 
     keyMap[SDLK_CAPSLOCK] = &inputs[CAPSLOCK];
     keyMap[SDLK_SPACE] = &inputs[SPACE];
@@ -78,13 +78,12 @@ void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs)
 
 void CrossInputsInit()
 {
-
 }
 
 InputPad CrossGetInputPad()
 {
     InputPad pad = InputPad();
-   
+
     return pad;
 }
 
@@ -95,4 +94,4 @@ std::vector<TouchRaw> CrossUpdateTouch()
     return touchesRaw;
 }
 
-//#endif
+#endif

@@ -1,14 +1,17 @@
 #include "window.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
+#endif
 #include "../engine.h"
 #include "../graphics/renderer/renderer.h"
 
 int Window::width = 1280;
 int Window::height = 720;
 float Window::aspect = 0;
-
-const char* ENGINE_NAME = "Xenity Engine";
-SDL_Window* Window::window = nullptr;
+const char *ENGINE_NAME = "Xenity Engine";
+#if defined(_WIN32) || defined(_WIN64)
+SDL_Window *Window::window = nullptr;
+#endif
 
 void Window::SetResolution(const int width_, const int height_)
 {
@@ -35,17 +38,21 @@ float Window::GetAspectRatio()
 
 void Window::Init()
 {
+#if defined(_WIN32) || defined(_WIN64)
     SDL_Init(SDL_INIT_EVERYTHING);
     unsigned int center = SDL_WINDOWPOS_CENTERED;
     window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     SDL_GLContext context = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
+#endif
 }
 
 void Window::UpdateScreen()
 {
+#if defined(_WIN32) || defined(_WIN64)
     SDL_GL_SwapWindow(window);
+#endif
 }
 
 void Window::UpdateAspectRatio()

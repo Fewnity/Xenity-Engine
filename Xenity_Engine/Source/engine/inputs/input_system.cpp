@@ -80,12 +80,14 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 	return screens[screenIndex]->touches[touchIndex];
 }
 
+#if defined(_WIN32) || defined(_WIN64)
 void InputSystem::Read(const SDL_Event event)
 {
 	switch (event.type)
 	{
-	case SDL_MOUSEMOTION: {
-		//Get mouse position
+	case SDL_MOUSEMOTION:
+	{
+		// Get mouse position
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 		mousePosition.x = (float)mouseX;
@@ -93,7 +95,7 @@ void InputSystem::Read(const SDL_Event event)
 
 		float aspect = Window::GetAspectRatio();
 
-		//Get mouse speed
+		// Get mouse speed
 		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;
 		float ySpeed = -event.motion.yrel / (float)Window::GetHeight();
 		int xSpeedRaw = (int)event.motion.xrel;
@@ -107,10 +109,12 @@ void InputSystem::Read(const SDL_Event event)
 		break;
 	}
 
-	case SDL_MOUSEBUTTONDOWN: {
+	case SDL_MOUSEBUTTONDOWN:
+	{
 		if (hideMouse)
 			SDL_SetRelativeMouseMode(SDL_TRUE);
-		switch (event.button.button) {
+		switch (event.button.button)
+		{
 		case SDL_BUTTON_RIGHT:
 			SetInput(true, MOUSE_RIGHT);
 			break;
@@ -123,7 +127,8 @@ void InputSystem::Read(const SDL_Event event)
 
 	case SDL_MOUSEBUTTONUP:
 	{
-		switch (event.button.button) {
+		switch (event.button.button)
+		{
 		case SDL_BUTTON_RIGHT:
 			SetInput(false, MOUSE_RIGHT);
 			break;
@@ -141,9 +146,9 @@ void InputSystem::Read(const SDL_Event event)
 			if (event.key.keysym.sym == mapB->first) // If the input is pressed
 				if (!mapB->second->held)
 					SetInput(true, mapB->second->code);
-					break;
+		break;
 
-		//ChangeInputState(true, event.key.keysym.sym);
+		// ChangeInputState(true, event.key.keysym.sym);
 		break;
 	}
 
@@ -154,8 +159,8 @@ void InputSystem::Read(const SDL_Event event)
 			if (event.key.keysym.sym == mapB->first) // If the input is pressed
 				if (mapB->second->held)
 					SetInput(false, mapB->second->code);
-				
-		//ChangeInputState(false, event.key.keysym.sym);
+
+		// ChangeInputState(false, event.key.keysym.sym);
 		break;
 	}
 
@@ -164,6 +169,7 @@ void InputSystem::Read(const SDL_Event event)
 		break;
 	}
 }
+#endif
 
 /// <summary>
 /// Get inputs events
