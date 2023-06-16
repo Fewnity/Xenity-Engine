@@ -313,7 +313,7 @@ void Game::Update()
 
 	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
-#else
+#elif defined(__vita__)
 	// Rotate camera
 	rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 50;
 	rot.y += InputSystem::rightJoystick.x * 1.5f * Time::GetDeltaTime() * 50;
@@ -321,12 +321,31 @@ void Game::Update()
 	// Move camera
 	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
+#elif defined(_WIN32) || defined(_WIN64)
+
+	rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 5000;
+	rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 5000;
+
+	float fwd = 0;
+	float side = 0;
+	if (InputSystem::GetKey(UP))
+		fwd = -1;
+	else if (InputSystem::GetKey(DOWN))
+		fwd = 1;
+
+	if (InputSystem::GetKey(RIGHT))
+		side = 1;
+	else if (InputSystem::GetKey(LEFT))
+		side = -1;
+
+	pos -= cameraGO->GetTransform()->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO->GetTransform()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 #endif
 
-	if (InputSystem::GetKey(UP))
+	/*if (InputSystem::GetKey(UP))
 		pos.y -= (-1 / 7.0f) * Time::GetDeltaTime() * 30;
 	else if (InputSystem::GetKey(DOWN))
-		pos.y -= (1 / 7.0f) * Time::GetDeltaTime() * 30;
+		pos.y -= (1 / 7.0f) * Time::GetDeltaTime() * 30;*/
 
 	cameraGO->GetTransform()->SetPosition(pos);
 	// cameraGO->GetTransform()->SetRotation(Vector3::LookAt(pos, Vector3(0, 0, 0)));
@@ -336,6 +355,16 @@ void Game::Update()
 	std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
 	std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4) + "\n";
 	debugText += "DrawCall " + std::to_string(Performance::GetDrawCallCount()) + "\n";
+
+	if (InputSystem::GetKey(UP))
+		debugText += "UP";
+	if (InputSystem::GetKey(DOWN))
+		debugText += "DOWN";
+	if (InputSystem::GetKey(LEFT))
+		debugText += "LEFT";
+	if (InputSystem::GetKey(RIGHT))
+		debugText += "RIGHT";
+
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
 	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";

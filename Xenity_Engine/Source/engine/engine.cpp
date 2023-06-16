@@ -224,13 +224,13 @@ void Engine::Loop()
 		// Update time and inputs
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
-		InputSystem::Read();
+		//InputSystem::Read();
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
 			//ImGui_ImplSDL2_ProcessEvent(&event);
-			//InputSystem::Read(event);
+			InputSystem::Read(event);
 			switch (event.type)
 			{
 			case SDL_QUIT:
@@ -246,6 +246,8 @@ void Engine::Loop()
 				break;
 			}
 		}
+
+		//EditorUI::NewFrame();
 
 		gameLoopBenchmark->Start();
 		// Game loop
@@ -274,107 +276,17 @@ void Engine::Loop()
 		}
 		engineLoopBenchmark->Stop();
 
+		// 	EditorUI::DrawProfiler();
+		// 	EditorUI::DrawInspector();
+		// 	EditorUI::DrawHierarchy();
+
+		// 	ImGui::Render();
+		// 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		Performance::Update();
 		Performance::ResetCounters();
 	}
 
-	// while (running)
-	// {
-	// 	engineLoopBenchmark->Start();
-
-	// 	Time::UpdateTime();
-
-	// 	SDL_Event event;
-	// 	InputSystem::ClearInputs();
-	// 	while (SDL_PollEvent(&event))
-	// 	{
-	// 		ImGui_ImplSDL2_ProcessEvent(&event);
-	// 		InputSystem::Read(event);
-	// 		switch (event.type)
-	// 		{
-	// 		case SDL_QUIT:
-	// 			running = false;
-	// 			break;
-	// 		case SDL_WINDOWEVENT:
-	// 			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-	// 			{
-	// 				Window::OnResize(event.window.data1, event.window.data2);
-	// 			}
-	// 			break;
-	// 		default:
-	// 			break;
-	// 		}
-	// 	}
-
-	// 	// Clear the OpenGL window
-
-	// 	renderer->Clear();
-
-	// 	// Set wireframe
-	// 	if (EngineSettings::isWireframe)
-	// 	{
-	// 		renderer->SetLineWidth(2);
-	// 		renderer->SetPolygoneMode(true, Line);
-	// 	}
-	// 	else
-	// 	{
-	// 		renderer->SetPolygoneMode(true, Fill);
-	// 	}
-
-	// 	EditorUI::NewFrame();
-
-	// 	gameLoopBenchmark->Start();
-	// 	game->Loop();
-	// 	gameLoopBenchmark->Stop();
-
-	// 	componentsUpdateBenchmark->Start();
-	// 	UpdateComponents();
-	// 	componentsUpdateBenchmark->Stop();
-
-	// 	AssetManager::ResetMaterialsUpdates();
-
-	// 	drawIDrawablesBenchmark->Start();
-	// 	Graphics::DrawAllDrawable();
-	// 	drawIDrawablesBenchmark->Stop();
-	// 	renderer->SetPolygoneMode(true, Fill);
-
-	// 	for (int i = 0; i < Engine::gameObjectCount; i++)
-	// 	{
-	// 		GameObject *go = gameObjects[i];
-	// 		if (go->GetTransform()->movedLastFrame)
-	// 		{
-	// 			go->GetTransform()->movedLastFrame = false;
-	// 		}
-	// 	}
-
-	// 	if (InputSystem::GetKeyDown(A))
-	// 	{
-	// 		EngineSettings::isWireframe = !EngineSettings::isWireframe;
-	// 	}
-
-	// 	std::string debugText = std::string("Wireframe (A): ") + (EngineSettings::isWireframe ? "True" : "False");
-
-	// 	// Draw screen tester
-	// 	/*UiManager::RenderTextCanvas("Left", 0, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Center, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Right", 1, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Center, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Top Left", 0, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Bottom, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Top Right", 1, 0, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Bottom, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Bottom Left", 0, 1, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Right, V_Top, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Bottom Right", 1, 1, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Left, V_Top, *AssetManager::GetShader(7));
-	// 	UiManager::RenderTextCanvas("Center", 0.5, 0.5, 0, 0.5f, 0, Vector3(0.5f, 0.0f, 0.2f), UiManager::fonts[0], H_Center, V_Center, *AssetManager::GetShader(7));*/
-
-	// 	EditorUI::DrawProfiler();
-	// 	EditorUI::DrawInspector();
-	// 	EditorUI::DrawHierarchy();
-
-	// 	ImGui::Render();
-	// 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-	// 	engineLoopBenchmark->Stop();
-	// 	Window::UpdateScreen();
-	// 	Performance::Update();
-	// 	Performance::ResetCounters();
-	// }
 	// delete game;
 }
 

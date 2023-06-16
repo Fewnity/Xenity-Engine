@@ -1,7 +1,8 @@
 #pragma once
 
 #include <map>
-// #include <SDL2/SDL_events.h>
+
+#include <SDL2/SDL_events.h>
 #include "../vectors/vector2.h"
 #include "../vectors/vector2_int.h"
 #include <vector>
@@ -141,6 +142,7 @@ class InputSystem
 public:
 	static void Init();
 	static void Read();
+	static void Read(const SDL_Event event);
 	static bool GetKeyDown(const KeyCode keyCode);
 	static bool GetKey(const KeyCode keyCode);
 	static bool GetKeyUp(const KeyCode keyCode);
@@ -151,9 +153,9 @@ public:
 
 	static Vector2 leftJoystick;
 	static Vector2 rightJoystick;
-	// static Vector2 mousePosition;
-	// static Vector2 mouseSpeed;
-	// static Vector2 mouseSpeedRaw;
+	static Vector2 mousePosition;
+	static Vector2 mouseSpeed;
+	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
 	static bool hideMouse;
 

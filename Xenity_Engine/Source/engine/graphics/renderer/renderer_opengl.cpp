@@ -209,6 +209,8 @@ void RendererOpengl::BindTexture(Texture *texture)
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 #endif
 	ApplyTextureFilters(texture);
+	float borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 void RendererOpengl::ApplyTextureFilters(Texture *texture)
@@ -417,7 +419,11 @@ int RendererOpengl::GetWrapModeEnum(Texture::WrapMode wrapMode)
 	{
 	case Texture::WrapMode::ClampToEdge:
 	case Texture::WrapMode::ClampToBorder:
+#if defined(_WIN32) || defined(_WIN64)
+		mode = GL_CLAMP_TO_EDGE;
+#else
 		mode = GL_CLAMP;
+#endif
 		break;
 	case Texture::WrapMode::Repeat:
 		mode = GL_REPEAT;
