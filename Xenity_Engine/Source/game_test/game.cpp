@@ -106,7 +106,7 @@ void Game::Start()
 	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
-	//camera->SetProjectionType(Orthographic);
+	// camera->SetProjectionType(Orthographic);
 
 	// Texture *texture = new Texture("container.jpg", "Container");
 	Texture *texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
@@ -126,10 +126,10 @@ void Game::Start()
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
 	std::weak_ptr<GameObject> spriteGo0 = CreateGameObject();
-	std::weak_ptr < GameObject>spriteGo1 = CreateGameObject();
+	std::weak_ptr<GameObject> spriteGo1 = CreateGameObject();
 	spriteGo4 = CreateGameObject();
-	std::weak_ptr < GameObject>spriteGo5 = CreateGameObject();
-	std::weak_ptr < GameObject>spriteGo6 = CreateGameObject();
+	std::weak_ptr<GameObject> spriteGo5 = CreateGameObject();
+	std::weak_ptr<GameObject> spriteGo6 = CreateGameObject();
 
 	spriteGo0.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
 	spriteGo1.lock()->GetTransform().lock()->SetPosition(Vector3(-5, 0, -2));
@@ -313,16 +313,16 @@ void Game::Update()
 	else if (InputSystem::GetKey(SQUARE))
 		rot.y += -1.5f * Time::GetDeltaTime() * 50;
 
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #elif defined(__vita__)
 	// Rotate camera
 	rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 50;
 	rot.y += InputSystem::rightJoystick.x * 1.5f * Time::GetDeltaTime() * 50;
 
 	// Move camera
-	pos -= cameraGO->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
-	pos -= cameraGO->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #elif defined(_WIN32) || defined(_WIN64)
 
 	rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 5000;
