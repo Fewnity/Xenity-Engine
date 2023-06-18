@@ -11,7 +11,7 @@ using namespace std;
 /// </summary>
 MeshRenderer::MeshRenderer()
 {
-    componentName = "Mesh Renderer";
+	componentName = "Mesh Renderer";
 }
 
 /// <summary>
@@ -23,10 +23,17 @@ MeshRenderer::~MeshRenderer()
 
 int MeshRenderer::GetDrawPriority() const
 {
-    return 0;
+	return 0;
 }
 
 void MeshRenderer::Draw()
 {
-    MeshManager::DrawMesh(GetTransform().lock()->GetPosition(), GetTransform().lock()->GetRotation(), GetTransform().lock()->GetScale(), texture, meshData, true);
+	if (auto gameObject = GetGameObject().lock())
+	{
+		if (gameObject->GetLocalActive() && GetIsEnabled())
+		{
+			auto transform = GetTransform().lock();
+			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, meshData, true);
+		}
+	}
 }

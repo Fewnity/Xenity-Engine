@@ -262,17 +262,20 @@ void Tilemap::CreateChunksMeshes()
  */
 void Tilemap::Draw()
 {
-	if (GetGameObject().lock()->GetLocalActive() && GetIsEnabled())
+	if (auto gameObject = GetGameObject().lock())
 	{
-		if (dirtyMeshes)
+		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
-			dirtyMeshes = false;
+			if (dirtyMeshes)
+			{
+				dirtyMeshes = false;
 
-			CreateChunksMeshes();
-			FillChunks();
+				CreateChunksMeshes();
+				FillChunks();
+			}
+
+			DrawChunks();
 		}
-
-		DrawChunks();
 	}
 }
 
@@ -290,6 +293,8 @@ void Tilemap::DrawChunks()
 	float xChunkPosition;
 	float yChunkPosition;
 
+	auto transform = GetTransform().lock();
+
 	// For each chunk, check if the camera can see it
 	for (int x = 0; x < chunkCount; x++)
 	{
@@ -301,10 +306,11 @@ void Tilemap::DrawChunks()
 				yChunkPosition = y * (float)chunkSize;
 				if (yChunkPosition <= cameraPos.y + yArea && yChunkPosition >= cameraPos.y - yArea)
 				{
+					TilemapChunk* chunk = chunks[x + y * chunkCount];
 					// Draw each texture
 					for (int textureI = 0; textureI < textureSize; textureI++)
 					{
-						MeshManager::DrawMesh(GetTransform().lock()->GetPosition(), GetTransform().lock()->GetRotation(), GetTransform().lock()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
+						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false);
 					}
 				}
 			}

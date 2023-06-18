@@ -167,7 +167,9 @@ void Game::Start()
 	meshRenderer->texture = texture;
 	mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
 
-	Destroy(spriteGo4);
+	//spriteGo4.lock()->SetActive(false);
+
+	//Destroy(spriteGo4);
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;

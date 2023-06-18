@@ -16,9 +16,14 @@ Vector3 Spline::GetValueAt(const float t) const
 
     Vector3 result = Vector3();
 
-    result.x = powf(1 - tVal, 3) * splinePoints[0 + currentCurve]->parent.lock()->GetPosition().x + 3 * powf((1 - tVal), 2) * tVal * splinePoints[0 + currentCurve]->next.lock()->GetPosition().x + 3 * (1 - tVal) * powf(tVal, 2) * splinePoints[1 + currentCurve]->before.lock()->GetPosition().x + powf(tVal, 3) * splinePoints[1 + currentCurve]->parent.lock()->GetPosition().x;
-    result.y = powf(1 - tVal, 3) * splinePoints[0 + currentCurve]->parent.lock()->GetPosition().y + 3 * powf((1 - tVal), 2) * tVal * splinePoints[0 + currentCurve]->next.lock()->GetPosition().y + 3 * (1 - tVal) * powf(tVal, 2) * splinePoints[1 + currentCurve]->before.lock()->GetPosition().y + powf(tVal, 3) * splinePoints[1 + currentCurve]->parent.lock()->GetPosition().y;
-    result.z = powf(1 - tVal, 3) * splinePoints[0 + currentCurve]->parent.lock()->GetPosition().z + 3 * powf((1 - tVal), 2) * tVal * splinePoints[0 + currentCurve]->next.lock()->GetPosition().z + 3 * (1 - tVal) * powf(tVal, 2) * splinePoints[1 + currentCurve]->before.lock()->GetPosition().z + powf(tVal, 3) * splinePoints[1 + currentCurve]->parent.lock()->GetPosition().z;
+    auto parentTransform = splinePoints[0 + currentCurve]->parent.lock();
+    auto nextTransform = splinePoints[0 + currentCurve]->next.lock();
+    auto beforeTransform = splinePoints[1 + currentCurve]->before.lock();
+    auto parent2Transform =  splinePoints[1 + currentCurve]->parent.lock();
+
+    result.x = powf(1 - tVal, 3) * parentTransform->GetPosition().x + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().x + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().x + powf(tVal, 3) * parent2Transform->GetPosition().x;
+    result.y = powf(1 - tVal, 3) * parentTransform->GetPosition().y + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().y + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().y + powf(tVal, 3) * parent2Transform->GetPosition().y;
+    result.z = powf(1 - tVal, 3) * parentTransform->GetPosition().z + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().z + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().z + powf(tVal, 3) * parent2Transform->GetPosition().z;
 
     return result;
 }
@@ -27,20 +32,20 @@ SplinePoint *Spline::CreateSplinePoint(const Vector3 position)
 {
     SplinePoint *point = new SplinePoint();
 
-    std::weak_ptr<GameObject> parent = CreateGameObject();
-    parent.lock()->GetTransform().lock()->SetPosition(position);
+    auto parent = CreateGameObject().lock();
+    parent->GetTransform().lock()->SetPosition(position);
 
-    std::weak_ptr<GameObject>next = CreateGameObject();
-    parent.lock()->AddChild(next);
-    next.lock()->GetTransform().lock()->SetLocalPosition(Vector3(0.5f, 0, 0));
+    auto next = CreateGameObject().lock();
+    parent->AddChild(next);
+    next->GetTransform().lock()->SetLocalPosition(Vector3(0.5f, 0, 0));
 
-    std::weak_ptr<GameObject>before = CreateGameObject();
-    parent.lock()->AddChild(before);
-    before.lock()->GetTransform().lock()->SetLocalPosition(Vector3(-0.5f, 0, 0));
+    auto before = CreateGameObject().lock();
+    parent->AddChild(before);
+    before->GetTransform().lock()->SetLocalPosition(Vector3(-0.5f, 0, 0));
 
-    point->parent = parent.lock()->GetTransform();
-    point->next = next.lock()->GetTransform();
-    point->before = before.lock()->GetTransform();
+    point->parent = parent->GetTransform();
+    point->next = next->GetTransform();
+    point->before = before->GetTransform();
 
     return point;
 }

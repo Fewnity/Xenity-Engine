@@ -65,24 +65,24 @@ void GameObject::Setup()
 /// <param name="gameObject"></param>
 void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 {
-	//Check if the child to add is alrady a child of this gameobject
-	bool add = true;
-	//int childCount = children.size();
-	for (int i = 0; i < childCount; i++)
+	if (auto newChild = weakNewChild.lock())
 	{
-		if (children[i].lock() == weakNewChild.lock())
+		//Check if the child to add is alrady a child of this gameobject
+		bool add = true;
+		//int childCount = children.size();
+		for (int i = 0; i < childCount; i++)
 		{
-			add = false;
-			break;
+			if (children[i].lock() == newChild)
+			{
+				add = false;
+				break;
+			}
 		}
-	}
 
-	if (add)
-	{
-		children.push_back(weakNewChild);
-		childCount++;
-		if (auto newChild = weakNewChild.lock()) 
+		if (add)
 		{
+			children.push_back(weakNewChild);
+			childCount++;
 			//newChild->parent = std::weak_ptr<GameObject>(this);
 			newChild->parent = shared_from_this();
 			newChild->transform->OnParentChanged();
@@ -184,7 +184,7 @@ void GameObject::SetActive(const bool active)
 	if (active != this->active)
 	{
 		this->active = active;
-		//UpdateActive(this);
+		UpdateActive(shared_from_this());
 	}
 }
 
@@ -196,41 +196,43 @@ void GameObject::SetActive(const bool active)
 /// <param name="changed"></param>
 void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 {
-	//if (auto changed = weakChanged.lock())
-	//{
-	//	bool lastLocalActive = localActive;
-	//	if (!changed->GetActive() || (!changed->GetLocalActive() && weakChanged != this)) //if the new parent's state is false, set local active to false
-	//	{
-	//		localActive = false;
-	//	}
-	//	else if (active)
-	//	{
-	//		bool newActive = true;
-	//		std::weak_ptr<GameObject> gmToCheck = parent;
-	//		/*while (gmToCheck != nullptr)
-	//		{
-	//			if (!gmToCheck->GetActive() || !gmToCheck->GetLocalActive()) //If a parent is disabled, set local active to false
-	//			{
-	//				newActive = false;
-	//				break;
-	//			}
-	//			if (gmToCheck == changed)
-	//			{
-	//				break;
-	//			}
-	//			gmToCheck = gmToCheck->parent;
-	//		}*/
-	//		localActive = newActive;
-	//	}
+	if (auto changed = weakChanged.lock())
+	{
+		bool lastLocalActive = localActive;
+		if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) //if the new parent's state is false, set local active to false
+		{
+			localActive = false;
+		}
+		else if (active)
+		{
+			bool newActive = true;
+			std::weak_ptr<GameObject> gmToCheck = parent;
+			while (!gmToCheck.expired())
+			{
+				auto gm = gmToCheck.lock();
 
-	//	//If the gameobject has changed his state
-	//	if (lastLocalActive != localActive)
-	//	{
-	//		//Update children
-	//		for (int i = 0; i < childCount; i++)
-	//		{
-	//			children[i]->UpdateActive(changed);
-	//		}
-	//	}
-	//}
+				if (!gm->GetActive() || !gm->GetLocalActive()) //If a parent is disabled, set local active to false
+				{
+					newActive = false;
+					break;
+				}
+				if (gm == changed)
+				{
+					break;
+				}
+				gmToCheck = gm->parent;
+			}
+			localActive = newActive;
+		}
+
+		//If the gameobject has changed his state
+		if (lastLocalActive != localActive)
+		{
+			//Update children
+			for (int i = 0; i < childCount; i++)
+			{
+				children[i].lock()->UpdateActive(changed);
+			}
+		}
+	}
 }
