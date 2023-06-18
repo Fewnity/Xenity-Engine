@@ -9,5 +9,6 @@ IDrawable::IDrawable()
 
 IDrawable::~IDrawable()
 {
+	Graphics::RemoveDrawable(this);
 	AssetManager::RemoveDrawable(this);
 }

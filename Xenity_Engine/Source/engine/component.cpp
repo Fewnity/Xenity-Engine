@@ -18,21 +18,21 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(GameObject *go)
+void Component::SetGameObject(std::weak_ptr<GameObject>go)
 {
-	if (go == nullptr)
+	if (go.expired())
 		return;
 
 	// Check if the component has been just instanciated
 	bool firstUse = false;
-	if (gameObject == nullptr)
+	if (gameObject.expired())
 	{
 		Engine::componentsListDirty = true;
 		firstUse = true;
 	}
 
 	this->gameObject = go;
-	this->transform = go->GetTransform();
+	this->transform = go.lock()->GetTransform();
 
 	if (firstUse)
 	{

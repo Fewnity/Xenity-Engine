@@ -8,22 +8,25 @@
 class Component;
 #include "../component.h"
 
-class GameObject
+class GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
 	GameObject(std::string name);
 	~GameObject();
+	void Setup();
+
 	std::string name = "gameObject";
-	std::vector<GameObject*> children;
+	std::vector<std::weak_ptr<GameObject>> children;
 	std::vector<Component*> components;
 
-	GameObject* parent = nullptr;
+	std::weak_ptr<GameObject> parent;
 
 	//void SetChildrenWorldPositions();
 
-	void AddChild(GameObject* gameObject);
-	void SetParent(GameObject* gameObject);
+	void AddChild(std::weak_ptr<GameObject> gameObject);
+	void SetParent(std::weak_ptr<GameObject> gameObject);
+	bool waitingForDestroy = false;
 
 	template <typename T>
 	T* AddComponent()
@@ -35,17 +38,22 @@ public:
 
 	void RemoveComponent(Component* component)
 	{
-		GameObject* gameOject = component->GetGameObject();
+		if (!component->waitingForDestroy)
+		{
+			component->waitingForDestroy = true;
+			componentCount--;
+		}
+		/*std::weak_ptr<GameObject> gameOject = component->GetGameObject();
 		for (int i = 0; i < componentCount; i++)
 		{
-			if (gameOject->components[i] == component)
+			if (gameOject.lock()->components[i] == component)
 			{
-				gameOject->components.erase(gameOject->components.begin() + i);
+				gameOject.lock()->components.erase(gameOject.lock()->components.begin() + i);
 				delete component;
 				componentCount--;
 				break;
 			}
-		}
+		}*/
 	}
 
 	template <typename T>
@@ -59,8 +67,8 @@ public:
 		}
 	}
 
-	static GameObject* FindGameObjectByName(const std::string name);
-	static std::vector<GameObject*> FindGameObjectsByName(const std::string name);
+	static std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
+	static std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
 	bool GetActive() const;
 	bool GetLocalActive() const;
@@ -76,15 +84,15 @@ public:
 		return componentCount;
 	}
 
-	Transform* GetTransform()
+	std::weak_ptr<Transform> GetTransform()
 	{
-		return &transform;
+		return transform;
 	}
 
 private:
-	Transform transform = Transform(this);
+	std::shared_ptr<Transform> transform;
 	void AddExistingComponent(Component* component);
-	void UpdateActive(GameObject* changed);
+	void UpdateActive(std::weak_ptr<GameObject> changed);
 
 	bool active = true;
 	bool localActive = true;

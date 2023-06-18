@@ -100,8 +100,8 @@ void Game::Start()
 	game = this;
 	LoadGameData();
 
-	cameraGO = new GameObject("Camera");
-	Camera *camera = cameraGO->AddComponent<Camera>();
+	cameraGO = CreateGameObject("Camera");
+	Camera *camera = cameraGO.lock()->AddComponent<Camera>();
 	camera->SetNearClippingPlane(0.4f);
 	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
@@ -119,28 +119,28 @@ void Game::Start()
 
 	// Texture *texture5 = new Texture("dot.jpg", "Dot");
 
-	cameraPivot = new GameObject();
-	cameraPivot->GetTransform()->SetPosition(Vector3(0, 0, 0));
+	cameraPivot = CreateGameObject();
+	cameraPivot.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
 
-	cameraGO->GetTransform()->SetLocalPosition(Vector3(0, 0, -13));
+	cameraGO.lock()->GetTransform().lock()->SetLocalPosition(Vector3(0, 0, -13));
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
-	GameObject *spriteGo0 = new GameObject();
-	GameObject *spriteGo1 = new GameObject();
-	spriteGo4 = new GameObject();
-	GameObject *spriteGo5 = new GameObject();
-	GameObject *spriteGo6 = new GameObject();
+	std::weak_ptr<GameObject> spriteGo0 = CreateGameObject();
+	std::weak_ptr < GameObject>spriteGo1 = CreateGameObject();
+	spriteGo4 = CreateGameObject();
+	std::weak_ptr < GameObject>spriteGo5 = CreateGameObject();
+	std::weak_ptr < GameObject>spriteGo6 = CreateGameObject();
 
-	spriteGo0->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo1->GetTransform()->SetPosition(Vector3(-5, 0, -2));
-	spriteGo4->GetTransform()->SetPosition(Vector3(0, 0, 0));
-	spriteGo4->GetTransform()->SetLocalScale(Vector3(50, 50, -50));
+	spriteGo0.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
+	spriteGo1.lock()->GetTransform().lock()->SetPosition(Vector3(-5, 0, -2));
+	spriteGo4.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
+	spriteGo4.lock()->GetTransform().lock()->SetLocalScale(Vector3(50, 50, -50));
 	// spriteGo4->GetTransform()->SetRotation(Vector3(45, 45, 45));
 
-	spriteGo5->GetTransform()->SetPosition(Vector3(1, 1, 0));
-	spriteGo6->GetTransform()->SetPosition(Vector3(0, 2.5f, 0));
-	spriteGo6->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
-	spriteGo0->GetTransform()->SetLocalScale(Vector3(1, 1, 1));
+	spriteGo5.lock()->GetTransform().lock()->SetPosition(Vector3(1, 1, 0));
+	spriteGo6.lock()->GetTransform().lock()->SetPosition(Vector3(0, 2.5f, 0));
+	spriteGo6.lock()->GetTransform().lock()->SetLocalScale(Vector3(1, 1, 1));
+	spriteGo0.lock()->GetTransform().lock()->SetLocalScale(Vector3(1, 1, 1));
 
 	// SpriteRenderer *ps0 = spriteGo0->AddComponent<SpriteRenderer>();
 	// ps0->texture = texture;
@@ -148,13 +148,13 @@ void Game::Start()
 	// SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	// ps1->texture = texture2;
 
-	TextRenderer *tr = spriteGo6->AddComponent<TextRenderer>();
+	TextRenderer *tr = spriteGo6.lock()->AddComponent<TextRenderer>();
 	tr->text = "Hello\nWorld!";
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
 	// tr->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
-	debugTextRenderer = spriteGo5->AddComponent<TextRendererCanvas>();
+	debugTextRenderer = spriteGo5.lock()->AddComponent<TextRendererCanvas>();
 	debugTextRenderer->horizontalAligment = H_Left;
 	debugTextRenderer->verticalAlignment = V_Top;
 	// debugTextRenderer->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
@@ -162,10 +162,12 @@ void Game::Start()
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
 	MeshData *mesh = WavefrontLoader::LoadFromRawData("DustPartsTest256.obj");
-	MeshRenderer *meshRenderer = spriteGo4->AddComponent<MeshRenderer>();
+	MeshRenderer *meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>();
 	meshRenderer->meshData = mesh;
 	meshRenderer->texture = texture;
 	mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
+
+	Destroy(spriteGo4);
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;
@@ -286,9 +288,9 @@ int lastTime = 0;
 /// </summary>
 void Game::Update()
 {
-	Vector3 rot = cameraGO->GetTransform()->GetRotation();
+	Vector3 rot = cameraGO.lock()->GetTransform().lock()->GetRotation();
 	// Vector3 rot = cameraPivot->GetTransform()->GetRotation();
-	Vector3 pos = cameraGO->GetTransform()->GetPosition();
+	Vector3 pos = cameraGO.lock()->GetTransform().lock()->GetPosition();
 #ifdef __PSP__
 	// rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + InputSystem::leftJoystick.y * cameraPivot->GetTransform()->GetLeft();
 
@@ -338,8 +340,8 @@ void Game::Update()
 	else if (InputSystem::GetKey(LEFT))
 		side = -1;
 
-	pos -= cameraGO->GetTransform()->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
-	pos -= cameraGO->GetTransform()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform().lock()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 #endif
 
 	/*if (InputSystem::GetKey(UP))
@@ -347,9 +349,9 @@ void Game::Update()
 	else if (InputSystem::GetKey(DOWN))
 		pos.y -= (1 / 7.0f) * Time::GetDeltaTime() * 30;*/
 
-	cameraGO->GetTransform()->SetPosition(pos);
+	cameraGO.lock()->GetTransform().lock()->SetPosition(pos);
 	// cameraGO->GetTransform()->SetRotation(Vector3::LookAt(pos, Vector3(0, 0, 0)));
-	cameraGO->GetTransform()->SetRotation(rot);
+	cameraGO.lock()->GetTransform().lock()->SetRotation(rot);
 	// cameraPivot->GetTransform()->SetRotation(rot);
 
 	std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());

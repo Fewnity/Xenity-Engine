@@ -31,6 +31,7 @@ public:
 	static void OrderDrawables();
 	static void OrderOneDrawable(IDrawable *drawable);
 	static void AddDrawable(IDrawable *drawableToPlace);
+	static void RemoveDrawable(IDrawable* drawableToPlace);
 
 	static std::vector<IDrawable *> orderedIDrawable;
 	static int iDrawablesCount;

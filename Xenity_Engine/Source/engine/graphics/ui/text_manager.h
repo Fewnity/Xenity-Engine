@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "TextAlignments.h"
 #include "../../vectors/vector2.h"
+#include <memory>
 
 class Texture;
 class Vector4;
@@ -64,13 +65,13 @@ public:
     static void DeleteFont(Font *font);
     static void DeleteFont(int index);
 
-    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, Color color, bool canvas);
+    static void DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas);
     static void ClearTexts();
 
     static std::vector<Font *> fonts;
 
 private:
-    static void SetTextPosition(Transform *transform, bool canvas);
+    static void SetTextPosition(std::weak_ptr<Transform>transform, bool canvas);
     static void DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces);
     static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
     static TextInfo GetTextInfomations(std::string &text, int textLen, Font *font, float scale);

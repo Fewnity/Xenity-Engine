@@ -2,6 +2,7 @@
 
 #include "../vectors/vector3.h"
 #include <glm/glm.hpp>
+#include <memory>
 
 class GameObject;
 
@@ -10,7 +11,7 @@ class Transform
 
 public:
 	Transform() = delete;
-	Transform(GameObject* gameObject);
+	Transform(std::weak_ptr<GameObject> gameObject);
 
 	Vector3 GetPosition() const;
 	Vector3 GetLocalPosition() const;
@@ -50,7 +51,7 @@ private:
 	Vector3 localRotation = Vector3(0);//Euler angle
 	Vector3 scale = Vector3(1);
 	Vector3 localScale = Vector3(1);
-	GameObject* gameObject = nullptr;
+	std::weak_ptr<GameObject> gameObject;
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 	Vector3 GetLocalPositionFromMatrices(glm::mat4 childMatrix, glm::mat4 parentMatrix);
 	Vector3 GetLocalRotationFromWorldRotations(Vector3 childWorldRotation, Vector3 parentWorldRotation);

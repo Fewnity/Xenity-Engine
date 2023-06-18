@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class GameObject;
 class TextRendererCanvas;
 class Tilemap;
@@ -18,12 +20,12 @@ public:
 	void LoadGameData();
 
 private:
-	GameObject *spriteGo4 = nullptr;
+	std::weak_ptr < GameObject>spriteGo4;
 	TextRendererCanvas *debugTextRenderer = nullptr;
-	GameObject *cameraGO = nullptr;
+	std::weak_ptr < GameObject>cameraGO;
 
-	GameObject *cameraPivot = nullptr;
+	std::weak_ptr < GameObject>cameraPivot;
 
-	GameObject *tilemapGO = nullptr;
+	std::weak_ptr < GameObject>tilemapGO;
 	Tilemap *tilemap = nullptr;
 };

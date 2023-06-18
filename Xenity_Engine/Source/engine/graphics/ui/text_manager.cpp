@@ -71,24 +71,24 @@ void TextManager::ClearTexts()
  * @param transform
  * @param canvas
  */
-void TextManager::SetTextPosition(Transform *transform, bool canvas)
+void TextManager::SetTextPosition(std::weak_ptr<Transform>transform, bool canvas)
 {
     // Set text scale and pivot position/rotation
     Vector3 pos;
     if (!canvas)
     {
-        pos = transform->GetPosition();
+        pos = transform.lock()->GetPosition();
     }
     else
     {
-        float xOff = (-Window::GetAspectRatio() * 5) + (transform->GetPosition().x * (Window::GetAspectRatio() * 10));
-        float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
+        float xOff = (-Window::GetAspectRatio() * 5) + (transform.lock()->GetPosition().x * (Window::GetAspectRatio() * 10));
+        float yOff = (-1 * 5) + (transform.lock()->GetPosition().y * (1 * 10));
         pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
     }
 
-    Vector3 scl = transform->GetScale();
+    Vector3 scl = transform.lock()->GetScale();
     scl.x = -scl.x;
-    Engine::renderer->SetTransform(pos, transform->GetRotation(), scl, true);
+    Engine::renderer->SetTransform(pos, transform.lock()->GetRotation(), scl, true);
 }
 
 /**
@@ -100,7 +100,7 @@ void TextManager::SetTextPosition(Transform *transform, bool canvas)
  * @param transform Transform
  * @param canvas Is for canvas
  */
-void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Transform *transform, Color color, bool canvas)
+void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas)
 {
     textBenchmark->Start();
     int textLenght = (int)text.size();
@@ -197,7 +197,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
     Engine::renderer->BindTexture(font->fontAtlas);
 
     bool invertFaces = false;
-    if (transform->GetScale().x * transform->GetScale().y < 0)
+    if (transform.lock()->GetScale().x * transform.lock()->GetScale().y < 0)
         invertFaces = true;
 
     DrawTextMesh(mesh, !canvas, invertFaces);

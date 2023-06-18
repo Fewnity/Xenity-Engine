@@ -32,7 +32,7 @@ int TextRenderer::GetDrawPriority() const
 /// </summary>
 void TextRenderer::Draw()
 {
-	if (GetGameObject()->GetLocalActive() && GetIsEnabled() /*&& shader != nullptr*/)
+	if (GetGameObject().lock()->GetLocalActive() && GetIsEnabled() /*&& shader != nullptr*/)
 	{
 		TextManager::DrawText(text, horizontalAligment, verticalAlignment, GetTransform(), color, false);
 		// UiManager::RenderText(text, GetTransform()->GetPosition().x, GetTransform()->GetPosition().y, GetTransform()->GetRotation().z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);

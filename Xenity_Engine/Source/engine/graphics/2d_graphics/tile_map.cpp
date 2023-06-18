@@ -262,7 +262,7 @@ void Tilemap::CreateChunksMeshes()
  */
 void Tilemap::Draw()
 {
-	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
+	if (GetGameObject().lock()->GetLocalActive() && GetIsEnabled())
 	{
 		if (dirtyMeshes)
 		{
@@ -282,7 +282,7 @@ void Tilemap::Draw()
  */
 void Tilemap::DrawChunks()
 {
-	Vector3 cameraPos = Graphics::usedCamera->GetTransform()->GetPosition();
+	Vector3 cameraPos = Graphics::usedCamera->GetTransform().lock()->GetPosition();
 
 	float xArea = Graphics::usedCamera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
 	float yArea = Graphics::usedCamera->GetProjectionSize() + chunkSize;
@@ -304,7 +304,7 @@ void Tilemap::DrawChunks()
 					// Draw each texture
 					for (int textureI = 0; textureI < textureSize; textureI++)
 					{
-						MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
+						MeshManager::DrawMesh(GetTransform().lock()->GetPosition(), GetTransform().lock()->GetRotation(), GetTransform().lock()->GetLocalScale(), textures[textureI + 1], chunks[x + y * chunkCount]->meshes[textureI], false);
 					}
 				}
 			}

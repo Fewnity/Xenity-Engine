@@ -28,5 +28,5 @@ int MeshRenderer::GetDrawPriority() const
 
 void MeshRenderer::Draw()
 {
-    MeshManager::DrawMesh(GetTransform()->GetPosition(), GetTransform()->GetRotation(), GetTransform()->GetScale(), texture, meshData, true);
+    MeshManager::DrawMesh(GetTransform().lock()->GetPosition(), GetTransform().lock()->GetRotation(), GetTransform().lock()->GetScale(), texture, meshData, true);
 }

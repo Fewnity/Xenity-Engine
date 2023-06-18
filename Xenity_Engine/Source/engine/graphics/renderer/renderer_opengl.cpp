@@ -20,6 +20,8 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #include <vitaGL.h>
 #endif
 
+#include <memory>
+
 RendererOpengl::RendererOpengl()
 {
 }
@@ -130,23 +132,23 @@ void RendererOpengl::ResetView()
 
 void RendererOpengl::SetCameraPosition(Camera *camera)
 {
-	Transform *trans = camera->GetTransform();
+	std::weak_ptr<Transform> trans = camera->GetTransform();
 #if defined(__PSP__)
 	glMatrixMode(GL_VIEW);
 	glLoadIdentity();
 
-	gluRotateZ((-trans->GetRotation().z) / 180.0f * 3.14159f);
-	gluRotateX(trans->GetRotation().x / 180.0f * 3.14159f);
-	gluRotateY((trans->GetRotation().y + 180) / 180.0f * 3.14159f);
+	gluRotateZ((-trans.lock()->GetRotation().z) / 180.0f * 3.14159f);
+	gluRotateX(trans.lock()->GetRotation().x / 180.0f * 3.14159f);
+	gluRotateY((trans.lock()->GetRotation().y + 180) / 180.0f * 3.14159f);
 
-	glTranslatef(trans->GetPosition().x, -trans->GetPosition().y, -trans->GetPosition().z);
+	glTranslatef(trans.lock()->GetPosition().x, -trans.lock()->GetPosition().y, -trans.lock()->GetPosition().z);
 #else
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(-trans->GetRotation().z, 0, 0, 1);
-	glRotatef(trans->GetRotation().x, 1, 0, 0);
-	glRotatef(trans->GetRotation().y + 180, 0, 1, 0);
-	glTranslatef(trans->GetPosition().x, -trans->GetPosition().y, -trans->GetPosition().z);
+	glRotatef(-trans.lock()->GetRotation().z, 0, 0, 1);
+	glRotatef(trans.lock()->GetRotation().x, 1, 0, 0);
+	glRotatef(trans.lock()->GetRotation().y + 180, 0, 1, 0);
+	glTranslatef(trans.lock()->GetPosition().x, -trans.lock()->GetPosition().y, -trans.lock()->GetPosition().z);
 #endif
 }
 

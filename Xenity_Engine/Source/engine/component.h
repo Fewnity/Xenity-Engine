@@ -3,6 +3,7 @@
 //#include "game_elements/gameobject.h"
 #include <map>
 #include <string>
+#include <memory>
 
 class GameObject;
 class Transform;
@@ -26,20 +27,22 @@ public:
 	std::map<std::string, float*> reflectedFloats;
 	std::string componentName = "Component";
 
-	void SetGameObject(GameObject* go);
+	bool waitingForDestroy = false;
 
-	GameObject* GetGameObject() const
+	void SetGameObject(std::weak_ptr<GameObject> go);
+
+	std::weak_ptr <GameObject> GetGameObject() const
 	{
 		return gameObject;
 	}
 
-	Transform* GetTransform() const
+	std::weak_ptr <Transform> GetTransform() const
 	{
 		return transform;
 	}
 
 private:
-	GameObject *gameObject = nullptr;
-	Transform* transform = nullptr;
+	std::weak_ptr <GameObject>gameObject;
+	std::weak_ptr <Transform> transform;
 	bool isEnabled = true;
 };

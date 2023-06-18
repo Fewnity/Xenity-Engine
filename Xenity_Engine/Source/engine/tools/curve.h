@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "../vectors/vector3.h"
+#include <memory>
 
 class Transform;
 class GameObject;
@@ -9,9 +10,9 @@ class GameObject;
 class SplinePoint
 {
 public:
-    Transform* parent;
-    Transform* before;
-    Transform* next;
+    std::weak_ptr<Transform> parent;
+    std::weak_ptr<Transform> before;
+    std::weak_ptr<Transform> next;
 };
 
 class Spline

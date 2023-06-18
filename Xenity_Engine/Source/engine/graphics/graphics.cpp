@@ -79,7 +79,7 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-	Vector3 camPos = usedCamera->GetTransform()->GetPosition();
+	Vector3 camPos = usedCamera->GetTransform().lock()->GetPosition();
 	TextManager::ClearTexts();
 
 	Graphics::OrderDrawables();
@@ -111,7 +111,7 @@ bool spriteComparator(const IDrawable *t1, const IDrawable *t2)
 	{
 		if (priority1 == priority2)
 		{
-			return t1->GetTransform()->GetPosition().z > t2->GetTransform()->GetPosition().z;
+			return t1->GetTransform().lock()->GetPosition().z > t2->GetTransform().lock()->GetPosition().z;
 		}
 
 		return true;
@@ -127,7 +127,7 @@ void Graphics::OrderDrawables()
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		IDrawable *drawableToCheck = orderedIDrawable[iDrawIndex];
-		if (drawableToCheck->GetTransform()->movedLastFrame)
+		if (drawableToCheck->GetTransform().lock()->movedLastFrame)
 		{
 			Engine::drawOrderListDirty = true;
 			break;
@@ -147,4 +147,17 @@ void Graphics::AddDrawable(IDrawable *drawableToPlace)
 {
 	orderedIDrawable.push_back(drawableToPlace);
 	iDrawablesCount++;
+}
+
+void Graphics::RemoveDrawable(IDrawable* drawableToPlace)
+{
+	for (int i = 0; i < iDrawablesCount; i++)
+	{
+		if (orderedIDrawable[i] == drawableToPlace)
+		{
+			orderedIDrawable.erase(orderedIDrawable.begin() + i);
+			iDrawablesCount--;
+			break;
+		}
+	}
 }
