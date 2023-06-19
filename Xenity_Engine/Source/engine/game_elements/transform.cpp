@@ -309,21 +309,22 @@ void Transform::UpdateTransformationMatrix()
 void Transform::UpdateWorldScale()
 {
 	scale = localScale;
-	/*if (auto parentGm = gameObject.lock()->parent.lock())
+	auto lockGameObject = gameObject.lock();
+	if (auto parentGm = lockGameObject->parent.lock())
 	{
 		while (parentGm != nullptr)
 		{
-			scale = scale * parentGm->GetTransform()->localScale;
-			parentGm = parentGm->parent;
+			scale = scale * parentGm->GetTransform().lock()->localScale;
+			parentGm = parentGm->parent.lock();
 		}
 
-		int childCount = gameObject.lock()->GetChildrenCount();
+		int childCount = lockGameObject->GetChildrenCount();
 		for (int i = 0; i < childCount; i++)
 		{
-			GameObject* child = gameObject->children[i];
-			child->GetTransform()->UpdateWorldScale();
+			auto child = lockGameObject->children[i].lock();
+			child->GetTransform().lock()->UpdateWorldScale();
 		}
-	}*/
+	}
 }
 
 Vector3 Transform::GetLocalPositionFromMatrices(glm::mat4 childMatrix, glm::mat4 parentMatrix)
