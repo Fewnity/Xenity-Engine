@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "game_elements/gameobject.h"
 #include <map>
 #include <string>
 #include <memory>
@@ -8,7 +7,7 @@
 class GameObject;
 class Transform;
 
-class Component
+class Component : public std::enable_shared_from_this<Component>
 {
 public:
 	Component();

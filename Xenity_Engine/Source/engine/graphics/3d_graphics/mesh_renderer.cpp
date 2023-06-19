@@ -1,6 +1,5 @@
 #include "mesh_renderer.h"
 #include "../../../xenity.h"
-#include "../../graphics/renderer/renderer.h"
 
 using namespace std;
 

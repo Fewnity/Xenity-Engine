@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 class IDrawable;
@@ -29,11 +30,10 @@ public:
 	static void DrawAllDrawable();
 	static Material *usedMaterial;
 	static void OrderDrawables();
-	static void OrderOneDrawable(IDrawable *drawable);
-	static void AddDrawable(IDrawable *drawableToPlace);
-	static void RemoveDrawable(IDrawable* drawableToPlace);
+	static void AddDrawable(std::weak_ptr < IDrawable>drawableToPlace);
+	static void RemoveDrawable(std::weak_ptr < IDrawable> drawableToPlace);
 
-	static std::vector<IDrawable *> orderedIDrawable;
+	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 	static int iDrawablesCount;
 
 	static SkyBox *skybox;

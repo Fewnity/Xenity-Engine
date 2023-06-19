@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "../../xenity.h"
 #include "../graphics/renderer/renderer.h"
+#include "../graphics/renderer/renderer_opengl.h"
 #include <algorithm>
 #include "../file_system/mesh_loader/wavefront_loader.h"
 #include "../graphics/3d_graphics/mesh_data.h"
@@ -9,7 +10,7 @@ Camera *Graphics::usedCamera = nullptr;
 int Graphics::usedShaderProgram = -1;
 Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
-std::vector<IDrawable *> Graphics::orderedIDrawable;
+std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 SkyBox *Graphics::skybox = nullptr;
 
 // ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
@@ -72,6 +73,8 @@ void Graphics::Init()
 	SetSkybox(skybox);
 
 	skyPlane = WavefrontLoader::LoadFromRawData("Plane2Triangulate.obj");
+
+	Debug::Print("-------- Graphics initiated --------");
 }
 
 /// <summary>
@@ -97,21 +100,21 @@ void Graphics::DrawAllDrawable()
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		orderedIDrawable[i]->Draw();
+		orderedIDrawable[i].lock()->Draw();
 	}
 	Engine::renderer->EndFrame();
 }
 
-bool spriteComparator(const IDrawable *t1, const IDrawable *t2)
+bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr < IDrawable>t2)
 {
-	const int priority1 = t1->GetDrawPriority();
-	const int priority2 = t2->GetDrawPriority();
+	const int priority1 = t1.lock()->GetDrawPriority();
+	const int priority2 = t2.lock()->GetDrawPriority();
 
 	if (priority1 <= priority2)
 	{
 		if (priority1 == priority2)
 		{
-			return t1->GetTransform().lock()->GetPosition().z > t2->GetTransform().lock()->GetPosition().z;
+			return t1.lock()->GetTransform().lock()->GetPosition().z > t2.lock()->GetTransform().lock()->GetPosition().z;
 		}
 
 		return true;
@@ -126,8 +129,8 @@ void Graphics::OrderDrawables()
 	// gameobjectScanBenchmark->Start();
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
-		IDrawable *drawableToCheck = orderedIDrawable[iDrawIndex];
-		if (drawableToCheck->GetTransform().lock()->movedLastFrame)
+		std::weak_ptr <IDrawable>drawableToCheck = orderedIDrawable[iDrawIndex];
+		if (drawableToCheck.lock()->GetTransform().lock()->movedLastFrame)
 		{
 			Engine::drawOrderListDirty = true;
 			break;
@@ -143,17 +146,18 @@ void Graphics::OrderDrawables()
 	// orderBenchmark->Stop();
 }
 
-void Graphics::AddDrawable(IDrawable *drawableToPlace)
+void Graphics::AddDrawable(std::weak_ptr <IDrawable >drawableToPlace)
 {
 	orderedIDrawable.push_back(drawableToPlace);
 	iDrawablesCount++;
 }
 
-void Graphics::RemoveDrawable(IDrawable* drawableToPlace)
+void Graphics::RemoveDrawable(std::weak_ptr <IDrawable> drawableToPlace)
 {
+	iDrawablesCount = orderedIDrawable.size();
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i] == drawableToPlace)
+		if (orderedIDrawable[i].lock() == drawableToPlace.lock())
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;

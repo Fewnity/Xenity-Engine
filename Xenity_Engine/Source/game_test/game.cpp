@@ -101,7 +101,7 @@ void Game::Start()
 	LoadGameData();
 
 	cameraGO = CreateGameObject("Camera");
-	Camera *camera = cameraGO.lock()->AddComponent<Camera>();
+	auto camera = cameraGO.lock()->AddComponent<Camera>().lock();
 	camera->SetNearClippingPlane(0.4f);
 	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
@@ -122,6 +122,7 @@ void Game::Start()
 	cameraPivot = CreateGameObject();
 	cameraPivot.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
 
+	//return;
 	cameraGO.lock()->GetTransform().lock()->SetLocalPosition(Vector3(0, 0, -13));
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
@@ -148,27 +149,27 @@ void Game::Start()
 	// SpriteRenderer *ps1 = spriteGo1->AddComponent<SpriteRenderer>();
 	// ps1->texture = texture2;
 
-	TextRenderer *tr = spriteGo6.lock()->AddComponent<TextRenderer>();
+	auto tr = spriteGo6.lock()->AddComponent<TextRenderer>().lock();
 	tr->text = "Hello\nWorld!";
 	tr->horizontalAligment = H_Right;
 	tr->verticalAlignment = V_Bottom;
 	// tr->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
 	debugTextRenderer = spriteGo5.lock()->AddComponent<TextRendererCanvas>();
-	debugTextRenderer->horizontalAligment = H_Left;
-	debugTextRenderer->verticalAlignment = V_Top;
+	debugTextRenderer.lock()->horizontalAligment = H_Left;
+	debugTextRenderer.lock()->verticalAlignment = V_Top;
 	// debugTextRenderer->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
 	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
 	MeshData *mesh = WavefrontLoader::LoadFromRawData("DustPartsTest256.obj");
-	MeshRenderer *meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>();
+	auto meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>().lock();
 	meshRenderer->meshData = mesh;
 	meshRenderer->texture = texture;
 	mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
 
+	//Destroy(meshRenderer);
 	//spriteGo4.lock()->SetActive(false);
-
 	//Destroy(spriteGo4);
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
@@ -290,6 +291,7 @@ int lastTime = 0;
 /// </summary>
 void Game::Update()
 {
+	//return;
 	Vector3 rot = cameraGO.lock()->GetTransform().lock()->GetRotation();
 	// Vector3 rot = cameraPivot->GetTransform()->GetRotation();
 	Vector3 pos = cameraGO.lock()->GetTransform().lock()->GetPosition();
@@ -389,7 +391,7 @@ void Game::Update()
 	// 	debugText += kv.first + " " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
 	// }
 
-	debugTextRenderer->text = debugText;
+	debugTextRenderer.lock()->text = debugText;
 	// if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
 	// {
 	// 	lastTime = (int)Time::GetTime();

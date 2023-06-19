@@ -5,7 +5,7 @@
 // std::vector<Shader*> AssetManager::shaders;
 // std::vector<Material*> AssetManager::materials;
 std::vector<Texture *> AssetManager::textures;
-std::vector<IDrawable *> AssetManager::drawables;
+std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<Light *> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
 
@@ -92,7 +92,7 @@ void AssetManager::AddTexture(Texture *texture)
 /// Add a drawable in the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::AddDrawable(IDrawable *drawable)
+void AssetManager::AddDrawable(std::weak_ptr<IDrawable>drawable)
 {
 	drawables.push_back(drawable);
 	drawableCount++;
@@ -200,14 +200,14 @@ void AssetManager::RemoveTexture(Texture *texture)
 /// Remove a drawable from the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::RemoveDrawable(IDrawable *drawable)
+void AssetManager::RemoveDrawable(std::weak_ptr < IDrawable>drawable)
 {
 	int drawableCount = (int)drawables.size();
 	int drawableIndex = 0;
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
 	{
-		if (drawables[i] == drawable)
+		if (drawables[i].lock() == drawable.lock())
 		{
 			found = true;
 			drawableIndex = i;
@@ -313,7 +313,7 @@ Texture *AssetManager::GetTextureByName(const std::string name)
 	return nullptr;
 }
 
-IDrawable *AssetManager::GetDrawable(const int index)
+std::weak_ptr <IDrawable>AssetManager::GetDrawable(const int index)
 {
 	return drawables[index];
 }

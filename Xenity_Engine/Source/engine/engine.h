@@ -9,9 +9,7 @@ class GameObject;
 class Component;
 
 void Destroy(std::weak_ptr<GameObject> gameObject);
-void Destroy(Component* component);
-std::weak_ptr<GameObject> CreateGameObject();
-std::weak_ptr<GameObject> CreateGameObject(std::string name);
+void Destroy(std::weak_ptr<Component> component);
 
 class Engine {
 public:
@@ -22,7 +20,7 @@ public:
 	static void Loop();
 	static bool componentsListDirty;
 	static bool drawOrderListDirty;
-	static std::vector<Component*> orderedComponents;
+	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static int gameObjectCount;
@@ -30,7 +28,7 @@ public:
 	static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
-	static std::vector<Component*> componentsToDestroy;
+	static std::vector<std::weak_ptr <Component>> componentsToDestroy;
 
 private:
 	static void UpdateComponents();

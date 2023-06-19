@@ -29,12 +29,11 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	// Print error if the file can't be read
 	if (file.fail())
 	{
-		Debug::Print("Mesh loading error. Path: " + finalpath + filePath);
+		Debug::PrintError("Mesh loading error. Path: " + finalpath + filePath);
 
 		return nullptr;
 		// std::cout << "\033[31mModel load error. Path : \"" << finalpath + filePath << "\"\033[0m" << std::endl;
 	}
-	Debug::Print("Mesh loading started");
 	int verticesCount = 0;
 	int indicesCount = 0;
 	int normalsCount = 0;

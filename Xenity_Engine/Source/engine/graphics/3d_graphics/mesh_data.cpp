@@ -33,7 +33,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	// data = (Vertex *)malloc(sizeof(Vertex) * vcount);
 	if (data == nullptr)
 	{
-		Debug::Print("No memory for Vertex");
+		Debug::PrintWarning("No memory for Vertex");
 		return;
 	}
 
@@ -46,7 +46,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 #endif
 	if (indices == nullptr)
 	{
-		Debug::Print("No memory for Indices");
+		Debug::PrintError("No memory for Indices");
 		return;
 	}
 

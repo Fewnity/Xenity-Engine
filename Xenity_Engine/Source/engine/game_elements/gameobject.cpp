@@ -2,13 +2,34 @@
 #include "../engine.h"
 #include <iostream>
 #include "../debug/debug.h"
+#include "../graphics/graphics.h"
+#include "../asset_managent/asset_manager.h"
+#include "../graphics/iDrawable.h"
 
 #pragma region Constructors / Destructor
 
 #define DEFAULT_GAMEOBJECT_NAME "GameObject"
 
+std::weak_ptr<GameObject> CreateGameObject()
+{
+	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>();
+	Engine::AddGameObject(newGameObject);
+	newGameObject->Setup();
+	return std::weak_ptr<GameObject>(newGameObject);
+}
+
+std::weak_ptr<GameObject> CreateGameObject(std::string name)
+{
+	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
+	Engine::AddGameObject(newGameObject);
+	newGameObject->Setup();
+	return std::weak_ptr<GameObject>(newGameObject);
+}
+
+
 GameObject::GameObject()
 {
+	this->name = DEFAULT_GAMEOBJECT_NAME;
 	//Engine::AddGameObject(this);
 }
 
@@ -27,29 +48,15 @@ GameObject::GameObject(std::string name)
 
 GameObject::~GameObject()
 {
-	int componentCount = components.size();
 	for (int i = 0; i < componentCount; i++)
 	{
-		/*int componentToDestroyCount = Engine::componentsToDestroy.size();
-		for (int i2 = 0; i2 < componentToDestroyCount; i2++)
+		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(components[i]))
 		{
-			if (Engine::componentsToDestroy[i2] == components[i])
-			{
-				Engine::componentsToDestroy.erase(Engine::componentsToDestroy.begin() + i2);
-			}
-		}*/
-		//delete components[i];
-		components[i]->waitingForDestroy = true;
+			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(components[i]));
+			AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(components[i]));
+		}
 	}
-	this->componentCount = 0;
 	components.clear();
-	//Engine::gameObjectCount--;
-
-	/*for (int i = 0; i < componentCount; i++)
-	{
-		delete components[i];
-	}
-	components.clear();*/
 }
 
 void GameObject::Setup()
@@ -58,6 +65,41 @@ void GameObject::Setup()
 }
 
 #pragma endregion
+
+void GameObject::RemoveComponent(std::weak_ptr <Component> weakComponent)
+{
+	if (auto component = weakComponent.lock())
+	{
+		if (!component->waitingForDestroy)
+		{
+			component->waitingForDestroy = true;
+			Engine::componentsToDestroy.push_back(component);
+			/*if (auto drawable = std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()))
+			{
+				Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()));
+				AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()));
+			}*/
+		}
+	}
+}
+
+void GameObject::RemoveComponentInternal(std::shared_ptr<Component> sharedComponent)
+{
+	for (int i2 = 0; i2 < componentCount; i2++)
+	{
+		if (components[i2] == sharedComponent)
+		{
+			if (auto drawable = std::dynamic_pointer_cast<IDrawable>(sharedComponent))
+			{
+				Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
+				AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
+			}
+			components.erase(components.begin() + i2);
+			componentCount--;
+			break;
+		}
+	}
+}
 
 /// <summary>
 /// Add a child the the gameobject
@@ -69,7 +111,6 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 	{
 		//Check if the child to add is alrady a child of this gameobject
 		bool add = true;
-		//int childCount = children.size();
 		for (int i = 0; i < childCount; i++)
 		{
 			if (children[i].lock() == newChild)
@@ -83,7 +124,6 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 		{
 			children.push_back(weakNewChild);
 			childCount++;
-			//newChild->parent = std::weak_ptr<GameObject>(this);
 			newChild->parent = shared_from_this();
 			newChild->transform->OnParentChanged();
 			newChild->UpdateActive(newChild);
@@ -93,16 +133,16 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 
 void GameObject::SetParent(std::weak_ptr<GameObject> gameObject)
 {
-	//gameObject->AddChild(this);
+	gameObject.lock()->AddChild(shared_from_this());
 }
 
 /// <summary>
 /// Add an existing component
 /// </summary>
 /// <param name="component"></param>
-void GameObject::AddExistingComponent(Component* componentToAdd)
+void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 {
-	if (componentToAdd == nullptr)
+	if (!componentToAdd.get())
 		return;
 
 	components.push_back(componentToAdd);
@@ -118,7 +158,7 @@ void GameObject::AddExistingComponent(Component* componentToAdd)
 /// </summary>
 /// <param name="name">GameObjects's name</param>
 /// <returns></returns>
-std::vector<std::weak_ptr<GameObject>> GameObject::FindGameObjectsByName(const std::string name)
+std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name)
 {
 	std::vector<std::weak_ptr<GameObject>> foundGameObjects;
 
@@ -145,7 +185,7 @@ std::vector<std::weak_ptr<GameObject>> GameObject::FindGameObjectsByName(const s
 /// </summary>
 /// <param name="name">GameObject's name</param>
 /// <returns>GameObject pointer or nullptr if no one is found</returns>
-std::weak_ptr<GameObject> GameObject::FindGameObjectByName(const std::string name)
+std::weak_ptr<GameObject> FindGameObjectByName(const std::string name)
 {
 	std::vector<std::weak_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
 

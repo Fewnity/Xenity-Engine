@@ -8,6 +8,11 @@
 class Component;
 #include "../component.h"
 
+std::weak_ptr<GameObject> CreateGameObject();
+std::weak_ptr<GameObject> CreateGameObject(std::string name);
+std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
+std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
+
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
@@ -16,48 +21,31 @@ public:
 	~GameObject();
 	void Setup();
 
-	std::string name = "gameObject";
+	std::string name = "";
 	std::vector<std::weak_ptr<GameObject>> children;
-	std::vector<Component*> components;
+	std::vector<std::shared_ptr<Component>> components;
 
 	std::weak_ptr<GameObject> parent;
-
-	//void SetChildrenWorldPositions();
 
 	void AddChild(std::weak_ptr<GameObject> gameObject);
 	void SetParent(std::weak_ptr<GameObject> gameObject);
 	bool waitingForDestroy = false;
 
 	template <typename T>
-	T* AddComponent()
+	std::weak_ptr<T> AddComponent()
 	{
-		Component* newC = new T();
+		std::shared_ptr<Component> newC = std::make_shared<T>();
 		AddExistingComponent(newC);
-		return dynamic_cast<T*>(newC);
+		return std::weak_ptr<T>(std::dynamic_pointer_cast<T>(newC));
 	}
 
-	void RemoveComponent(Component* component)
-	{
-		if (!component->waitingForDestroy)
-		{
-			component->waitingForDestroy = true;
-			componentCount--;
-		}
-		/*std::weak_ptr<GameObject> gameOject = component->GetGameObject();
-		for (int i = 0; i < componentCount; i++)
-		{
-			if (gameOject.lock()->components[i] == component)
-			{
-				gameOject.lock()->components.erase(gameOject.lock()->components.begin() + i);
-				delete component;
-				componentCount--;
-				break;
-			}
-		}*/
-	}
+	void RemoveComponent(std::weak_ptr <Component> weakComponent);
+
+	void RemoveComponentInternal(std::shared_ptr<Component> sharedComponent);
 
 	template <typename T>
-	T* GetComponent() {
+	T* GetComponent() 
+	{
 		for (int i = 0; i < componentCount; i++)
 		{
 			if (T* result = dynamic_cast<T*>(components[i]))
@@ -91,7 +79,7 @@ public:
 
 private:
 	std::shared_ptr<Transform> transform;
-	void AddExistingComponent(Component* component);
+	void AddExistingComponent(std::shared_ptr <Component> component);
 	void UpdateActive(std::weak_ptr<GameObject> changed);
 
 	bool active = true;

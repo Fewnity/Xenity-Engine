@@ -17,8 +17,10 @@ std::ofstream Debug::debugFile;
  */
 void Debug::PrintError(std::string text)
 {
-    std::string newString = "[ERROR] " + text;
-    Print(newString);
+    text += '\n';
+    std::string newString = "\033[31m[ERROR] " + text;
+    PrintInConsole(newString);
+    PrintInFile(text);
 }
 
 /**
@@ -26,8 +28,35 @@ void Debug::PrintError(std::string text)
  */
 void Debug::PrintWarning(std::string text)
 {
-    std::string newString = "[WARNING] " + text;
-    Print(newString);
+    text += '\n';
+    std::string newString = "\033[33m[WARNING] " + text;
+    PrintInConsole(newString);
+    PrintInFile(text);
+}
+
+void Debug::PrintInConsole(std::string text)
+{
+#ifdef __PSP__
+    // PspDebugPrint(text);
+#elif __vita__
+    // PsVitaDebugPrint(text);
+#else
+    std::cout << text;
+#endif
+}
+
+void Debug::PrintInFile(std::string text)
+{
+#ifdef __PSP__
+    if (file)
+        file->Write(text);
+#elif __vita__
+    debugFile << text;
+    debugFile.flush();
+#else
+    debugFile << text;
+    debugFile.flush();
+#endif
 }
 
 /**
@@ -36,19 +65,9 @@ void Debug::PrintWarning(std::string text)
 void Debug::Print(std::string text)
 {
     text += '\n';
-#ifdef __PSP__
-    // PspDebugPrint(text);
-    if (file)
-        file->Write(text);
-#elif __vita__
-    // PsVitaDebugPrint(text);
-    debugFile << text;
-    debugFile.flush();
-#else
-    std::cout << text;
-    debugFile << text;
-    debugFile.flush();
-#endif
+    std::string newString = "\033[37m" + text;
+    PrintInConsole(newString);
+    PrintInFile(text);
 }
 
 /**

@@ -5,6 +5,7 @@
 #include "graphics/iDrawable.h"
 #include "graphics/graphics.h"
 #include "game_elements/gameobject.h"
+#include "asset_managent/asset_manager.h"
 
 #pragma region Constructors / Destructor
 
@@ -37,9 +38,10 @@ void Component::SetGameObject(std::weak_ptr<GameObject>go)
 	if (firstUse)
 	{
 		// If the component is a drawble, add to the drawable list
-		if (IDrawable *result = dynamic_cast<IDrawable *>(this))
+		if (auto result = std::dynamic_pointer_cast<IDrawable>(shared_from_this()))
 		{
 			Graphics::AddDrawable(result);
+			AssetManager::AddDrawable(result);
 		}
 	}
 }

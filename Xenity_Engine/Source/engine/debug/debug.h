@@ -14,4 +14,6 @@ public:
     static void PrintWarning(std::string text);
 
 private:
+    static void PrintInConsole(std::string text);
+    static void PrintInFile(std::string text);
 };

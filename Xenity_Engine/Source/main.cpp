@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	std::string exePath = "";
 	if (Engine::Init(exePath) != 0)
 	{
-		Debug::Print("Engine failed to init");
+		Debug::PrintError("Engine failed to init");
 		return -1;
 	}
 

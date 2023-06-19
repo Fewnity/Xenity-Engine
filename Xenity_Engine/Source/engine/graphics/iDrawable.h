@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../component.h"
 #include "iDrawableTypes.h"
 

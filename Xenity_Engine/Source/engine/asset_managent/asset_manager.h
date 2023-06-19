@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <memory>
 
 // class Shader;
 class Texture;
@@ -18,14 +19,14 @@ public:
 	// static void AddShader(Shader *shader);
 	// static void AddMaterial(Material *material);
 	static void AddTexture(Texture *texture);
-	static void AddDrawable(IDrawable *drawable);
+	static void AddDrawable(std::weak_ptr < IDrawable>drawable);
 	static void AddLight(Light *light);
 	// static void AddMeshData(MeshData *meshData);
 
 	// static void RemoveShader(Shader *shader);
 	// static void RemoveMaterial(Material *material);
 	static void RemoveTexture(Texture *texture);
-	static void RemoveDrawable(IDrawable *drawable);
+	static void RemoveDrawable(std::weak_ptr <IDrawable>drawable);
 	static void RemoveLight(Light *light);
 	// static void RemoveMeshData(MeshData *meshData);
 
@@ -34,7 +35,7 @@ public:
 	static Texture *GetTexture(const int index);
 	// static Material *GetMaterialByName(const std::string name);
 	static Texture *GetTextureByName(const std::string name);
-	static IDrawable *GetDrawable(const int index);
+	static std::weak_ptr < IDrawable>GetDrawable(const int index);
 	static Light *GetLight(const int index);
 	// static MeshData *GetMeshData(const int index);
 	// static MeshData *GetMeshData(const std::string path);
@@ -63,7 +64,7 @@ private:
 	// static std::vector<Shader *> shaders;
 	// static std::vector<Material *> materials;
 	static std::vector<Texture *> textures;
-	static std::vector<IDrawable *> drawables;
+	static std::vector<std::weak_ptr<IDrawable>> drawables;
 	static std::vector<Light *> lights;
 	// static std::vector<MeshData *> meshesData;
 };

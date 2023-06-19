@@ -256,7 +256,7 @@ Font *TextManager::CreateFont(std::string filePath)
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
     {
-        Debug::Print("ERROR: Could not init FreeType Library");
+        Debug::PrintError("Could not init FreeType Library");
         return nullptr;
     }
 
@@ -270,7 +270,7 @@ Font *TextManager::CreateFont(std::string filePath)
     path += EngineSettings::RootFolder + filePath;
     if (FT_New_Face(ft, path.c_str(), 0, &face))
     {
-        Debug::Print("ERROR: Failed to load font. Path: " + path);
+        Debug::PrintError("Failed to load font. Path: " + path);
         return nullptr;
     }
 
@@ -298,7 +298,7 @@ Font *TextManager::CreateFont(std::string filePath)
             // load character glyph
             if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
             {
-                Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
+                Debug::PrintError("Failed to load Glyph. Path: " + path);
                 continue;
             }
 
@@ -351,7 +351,7 @@ Font *TextManager::CreateFont(std::string filePath)
         }
         catch (...)
         {
-            Debug::Print("ERROR: Failed to load Glyph. Path: " + path);
+            Debug::PrintError("Failed to load Glyph. Path: " + path);
             return nullptr;
         }
     }

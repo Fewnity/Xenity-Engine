@@ -17,7 +17,7 @@
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
-std::vector<Component*> Engine::componentsToDestroy;
+std::vector<std::weak_ptr<Component>> Engine::componentsToDestroy;
 
 std::weak_ptr<GameObject> Engine::selectedGameObject;
 
@@ -31,7 +31,7 @@ ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
 
 bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
-std::vector<Component*> Engine::orderedComponents;
+std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer* Engine::renderer = nullptr;
 
@@ -52,10 +52,8 @@ int Engine::Init(const std::string exePath)
 	FileSystem::fileSystem->InitFileSystem(exePath);
 	// FileSystem::InitFileSystem(exePath);
 
-	renderer = new RendererOpengl();
-	renderer->Init();
-
-
+	Engine::renderer = new RendererOpengl();
+	Engine::renderer->Init();
 #ifdef __PSP__
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 #elif __vita__
@@ -64,14 +62,13 @@ int Engine::Init(const std::string exePath)
 	Window::SetResolution(1280, 720);
 #endif
 	Window::Init();
-
+	Graphics::Init();
 	Debug::Print("-------- Audio Not implemented --------");
 
 	// if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0)
 	// {
 	// 	return -1;
 	// }
-	Graphics::Init();
 	InputSystem::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
@@ -117,7 +114,7 @@ void Engine::UpdateComponents()
 		componentsListDirty = false;
 		orderedComponents.clear();
 
-		std::vector<Component*> orderedComponentsToInit;
+		std::vector<std::weak_ptr <Component>> orderedComponentsToInit;
 		componentsCount = 0;
 		int componentsToInitCount = 0;
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
@@ -133,26 +130,28 @@ void Engine::UpdateComponents()
 					bool placeFound = false;
 					for (int cIndex = 0; cIndex < componentCount; cIndex++)
 					{
-						Component* componentToCheck = gameObjectToCheck->components[cIndex];
-
-						if (componentToCheck->GetIsEnabled())
+						std::weak_ptr <Component> weakComponentToCheck = gameObjectToCheck->components[cIndex];
+						if (auto componentToCheck = weakComponentToCheck.lock())
 						{
-							for (int i = 0; i < componentsCount; i++)
+							if (componentToCheck->GetIsEnabled())
 							{
-								// Check if the checked has a higher priority (lower value) than the component in the list
-								if (componentToCheck->updatePriority <= orderedComponents[i]->updatePriority)
+								for (int i = 0; i < componentsCount; i++)
 								{
-									orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-									placeFound = true;
-									break;
+									// Check if the checked has a higher priority (lower value) than the component in the list
+									if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
+									{
+										orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
+										placeFound = true;
+										break;
+									}
 								}
+								// if the priority is lower than all components's priorities in the list, add it the end of the list
+								if (!placeFound)
+								{
+									orderedComponents.push_back(componentToCheck);
+								}
+								componentsCount++;
 							}
-							// if the priority is lower than all components's priorities in the list, add it the end of the list
-							if (!placeFound)
-							{
-								orderedComponents.push_back(componentToCheck);
-							}
-							componentsCount++;
 						}
 					}
 				}
@@ -162,41 +161,51 @@ void Engine::UpdateComponents()
 		// Find uninitiated components and order them
 		for (int i = 0; i < componentsCount; i++)
 		{
-			Component* componentToCheck = orderedComponents[i];
-			if (!orderedComponents[i]->initiated)
-			{
-				bool placeFound = false;
-				for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+			if (auto componentToCheck = orderedComponents[i].lock()) {
+				if (!componentToCheck->initiated)
 				{
-					// Check if the checked has a higher priority (lower value) than the component in the list
-					if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+					bool placeFound = false;
+					for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 					{
-						orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-						placeFound = true;
-						break;
+						// Check if the checked has a higher priority (lower value) than the component in the list
+						if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex].lock()->updatePriority)
+						{
+							orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+							placeFound = true;
+							break;
+						}
 					}
+					// if the priority is lower than all components's priorities in the list, add it the end of the list
+					if (!placeFound)
+					{
+						orderedComponentsToInit.push_back(componentToCheck);
+					}
+					componentsToInitCount++;
 				}
-				// if the priority is lower than all components's priorities in the list, add it the end of the list
-				if (!placeFound)
-				{
-					orderedComponentsToInit.push_back(componentToCheck);
-				}
-				componentsToInitCount++;
 			}
 		}
 
 		// Init components
 		for (int i = 0; i < componentsToInitCount; i++)
 		{
-			orderedComponentsToInit[i]->Start();
-			orderedComponentsToInit[i]->initiated = true;
+			orderedComponentsToInit[i].lock()->Start();
+			orderedComponentsToInit[i].lock()->initiated = true;
 		}
 	}
 
 	// Update components
 	for (int i = 0; i < componentsCount; i++)
 	{
-		orderedComponents[i]->Update();
+		if (auto component = orderedComponents[i].lock())
+		{
+			component->Update();
+		}
+		else
+		{
+			orderedComponents.erase(orderedComponents.begin() + i);
+			i--;
+			componentsCount--;
+		}
 	}
 
 	int gameObjectToDestroyCount = gameObjectsToDestroy.size();
@@ -216,17 +225,28 @@ void Engine::UpdateComponents()
 	}
 	gameObjectsToDestroy.clear();
 
-	for (int i = 0; i < componentsCount; i++)
+	int componentToDestroyCount = componentsToDestroy.size();
+	for (int i = 0; i < componentToDestroyCount; i++)
 	{
-		Component* component = orderedComponents[i];
-		if (component->waitingForDestroy)
+		if (auto component = componentsToDestroy[i].lock())
 		{
-			delete component;
+			component->GetGameObject().lock()->RemoveComponentInternal(component);
+		}
+	}
+	componentsToDestroy.clear();
+
+	/*for (int i = 0; i < componentsCount; i++)
+	{
+		std::weak_ptr <Component> component = orderedComponents[i];
+		if (component.lock()->waitingForDestroy)
+		{
+			//delete component;
+			//component.lock()->GetGameObject().lock()->components
 			orderedComponents.erase(orderedComponents.begin() + i);
 			componentsCount--;
 			i--;
 		}
-	}
+	}*/
 
 }
 
@@ -323,10 +343,10 @@ void Engine::Loop()
 
 		Performance::Update();
 		Performance::ResetCounters();
-	}
+		}
 
 	// delete game;
-}
+	}
 
 /// <summary>
 ///
@@ -355,37 +375,10 @@ void Destroy(std::weak_ptr <GameObject> gameObject)
 		Engine::gameObjectsToDestroy.push_back(gameObject);
 		gameObject.lock()->waitingForDestroy = true;
 	}
-
-	/*for (int i = 0; i < Engine::gameObjectCount; i++)
-	{
-		if (Engine::gameObjects[i] == gameObject.lock())
-		{
-			Engine::gameObjects.erase(Engine::gameObjects.begin() + i);
-			Engine::gameObjectCount--;
-			Engine::componentsListDirty = true;
-			break;
-		}
-	}*/
-	//delete gameObject;
 }
 
-void Destroy(Component* component)
+void Destroy(std::weak_ptr <Component> weakComponent)
 {
-	component->GetGameObject().lock()->RemoveComponent(component);
-}
-
-std::weak_ptr<GameObject> CreateGameObject()
-{
-	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>();
-	Engine::AddGameObject(newGameObject);
-	newGameObject->Setup();
-	return std::weak_ptr<GameObject>(newGameObject);
-}
-
-std::weak_ptr<GameObject> CreateGameObject(std::string name)
-{
-	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
-	Engine::AddGameObject(newGameObject);
-	newGameObject->Setup();
-	return std::weak_ptr<GameObject>(newGameObject);
+	if (auto component = weakComponent.lock())
+		component->GetGameObject().lock()->RemoveComponent(weakComponent);
 }
