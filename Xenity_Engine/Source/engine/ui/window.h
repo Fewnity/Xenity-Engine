@@ -19,4 +19,5 @@ private:
     static void UpdateAspectRatio();
     static int width, height;
     static float aspect;
+    static void OnResize();
 };

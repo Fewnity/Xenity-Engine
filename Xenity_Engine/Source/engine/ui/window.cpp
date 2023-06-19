@@ -5,8 +5,8 @@
 #include "../engine.h"
 #include "../graphics/renderer/renderer.h"
 
-int Window::width = 1280;
-int Window::height = 720;
+int Window::width = 0;
+int Window::height = 0;
 float Window::aspect = 0;
 const char *ENGINE_NAME = "Xenity Engine";
 #if defined(_WIN32) || defined(_WIN64)
@@ -17,6 +17,14 @@ void Window::SetResolution(const int width_, const int height_)
 {
     width = width_;
     height = height_;
+#if defined(_WIN32) || defined(_WIN64)
+    if(window != nullptr)
+#endif
+    OnResize();
+}
+
+void Window::OnResize()
+{
     UpdateAspectRatio();
     Engine::renderer->SetViewport(0, 0, width, height);
 }
@@ -45,6 +53,7 @@ void Window::Init()
     SDL_GLContext context = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
+    OnResize();
 #endif
 }
 

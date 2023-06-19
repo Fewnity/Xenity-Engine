@@ -55,17 +55,15 @@ int Engine::Init(const std::string exePath)
 	renderer = new RendererOpengl();
 	renderer->Init();
 
-	Window::Init();
 
 #ifdef __PSP__
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 #elif __vita__
 	Window::SetResolution(960, 544);
 #else
-	Debug::Print("-------- RESOLUTION Not implemented --------");
-	// Window::SetResolution(-1, -1);
 	Window::SetResolution(1280, 720);
 #endif
+	Window::Init();
 
 	Debug::Print("-------- Audio Not implemented --------");
 
