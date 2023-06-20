@@ -1,6 +1,5 @@
 #include "game.h"
 #include "../xenity.h"
-#include "../engine/file_system/mesh_loader/wavefront_loader.h"
 #include "../engine/graphics/3d_graphics/mesh_data.h"
 
 #include <string.h>
@@ -160,9 +159,9 @@ void Game::Start()
 	debugTextRenderer.lock()->verticalAlignment = V_Top;
 	// debugTextRenderer->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
 
-	// MeshData *mesh = WavefrontLoader::LoadFromRawData("testcube.obj");
-	// MeshData *mesh = WavefrontLoader::LoadFromRawData("DonutTriangulate.obj");
-	MeshData *mesh = WavefrontLoader::LoadFromRawData("DustPartsTest256.obj");
+	// MeshData *mesh = MeshManager::LoadMesh("testcube.obj");
+	// MeshData *mesh = MeshManager::LoadMesh("DonutTriangulate.obj");
+	MeshData *mesh = MeshManager::LoadMesh("DustPartsTest256.obj");
 	auto meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>().lock();
 	meshRenderer->meshData = mesh;
 	meshRenderer->texture = texture;
@@ -329,8 +328,8 @@ void Game::Update()
 	pos -= cameraGO.lock()->GetTransform().lock()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #elif defined(_WIN32) || defined(_WIN64)
 
-	rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 5000;
-	rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 5000;
+	rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 10000;
+	rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 10000;
 
 	float fwd = 0;
 	float side = 0;

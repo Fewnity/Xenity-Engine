@@ -162,7 +162,8 @@ public:
 	static Vector2 mouseSpeed;
 	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
-	static bool hideMouse;
+	static void HideMouse();
+	static void ShowMouse();
 
 private:
 	class TouchScreen

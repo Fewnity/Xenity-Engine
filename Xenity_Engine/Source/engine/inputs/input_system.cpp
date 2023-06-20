@@ -27,15 +27,15 @@ Vector2 InputSystem::rightJoystick = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::hideMouse = false;
-std::map<int, Input *> InputSystem::keyMap;
-std::vector<InputSystem::TouchScreen *> InputSystem::screens;
+std::map<int, Input*> InputSystem::keyMap;
+std::vector<InputSystem::TouchScreen*> InputSystem::screens;
 
 /// <summary>
 /// Init input system
 /// </summary>
 void InputSystem::Init()
 {
-	keyMap = std::map<int, Input *>();
+	keyMap = std::map<int, Input*>();
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		inputs[i] = Input();
@@ -51,6 +51,20 @@ void InputSystem::Init()
 #endif
 
 	Debug::Print("-------- Input System initiated --------");
+}
+
+void InputSystem::HideMouse()
+{
+#if defined(_WIN32) || defined(_WIN64)
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+#endif
+}
+
+void InputSystem::ShowMouse()
+{
+#if defined(_WIN32) || defined(_WIN64)
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+#endif
 }
 
 int InputSystem::GetTouchScreenCount()
@@ -184,7 +198,7 @@ void InputSystem::Read()
 	for (int touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
 	{
 		TouchRaw touchRaw = touchesRaw[touchRawI];
-		TouchScreen *screen = screens[touchRaw.screenIndex];
+		TouchScreen* screen = screens[touchRaw.screenIndex];
 		bool newInput = true;
 		int foundInputIndex = -1;
 
@@ -221,7 +235,7 @@ void InputSystem::Read()
 	// Remove not updated inputs
 	for (int screenIndex = 0; screenIndex < screenCount; screenIndex++)
 	{
-		TouchScreen *screen = screens[screenIndex];
+		TouchScreen* screen = screens[screenIndex];
 		int touchCount = screen->updated.size();
 		for (int updatedI = 0; updatedI < touchCount; updatedI++)
 		{
