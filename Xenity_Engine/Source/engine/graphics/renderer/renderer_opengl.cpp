@@ -31,20 +31,28 @@ int RendererOpengl::Init()
 	int result = 1;
 #if defined(__PSP__)
 	guglInit(list);
+	maxLightCount = 4;
 #elif defined(__vita__)
 	result = vglInit(0x100000);
 #elif defined(_WIN32) || defined(_WIN64)
 	result = glfwInit();
 #endif
 
-#if defined(__vita__) /*|| defined(_WIN32) || defined(_WIN64)*/
+	return result;
+}
+
+void RendererOpengl::Setup()
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glEnable(GL_NORMALIZE);
+#endif
+
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	// glCullFace(GL_BACK);
 #endif
-
-	return result;
 }
 
 void RendererOpengl::Stop()
@@ -151,6 +159,7 @@ void RendererOpengl::SetCameraPosition(Camera *camera)
 	glRotatef(transform->GetRotation().y + 180, 0, 1, 0);
 	glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
 #endif
+	Setlights(camera);
 }
 
 void RendererOpengl::ResetTransform()
@@ -289,6 +298,15 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 		glDisable(GL_BLEND);
 	}
 
+	if (settings.useLighting)
+	{
+		glEnable(GL_LIGHTING);
+	}
+	else
+	{
+		glDisable(GL_LIGHTING);
+	}
+
 	glEnable(GL_TEXTURE_2D);
 
 #if defined(__PSP__)
@@ -306,6 +324,10 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 	else
 	{
 		sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
+	}
+	if (meshData->hasNormal)
+	{
+		params |= GU_NORMAL_32BITF;
 	}
 	params |= GL_VERTEX_32BITF;
 	params |= GL_TRANSFORM_3D;
@@ -330,6 +352,11 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 		RGBA rgba = meshData->unifiedColor.GetRGBA();
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
+	if (meshData->hasNormal)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
+	}
+
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	if (meshData->hasColor)
@@ -338,6 +365,13 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 		glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].u);
 		glColorPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].r);
 		glVertexPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].x);
+	}
+	else if (meshData->hasNormal)
+	{
+		int stride = sizeof(VertexNormalsNoColor);
+		glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].u);
+		glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].normX);
+		glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].x);
 	}
 	else
 	{
@@ -359,6 +393,10 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 	if (meshData->hasColor)
 	{
 		glDisableClientState(GL_COLOR_ARRAY);
+	}
+	if (meshData->hasNormal)
+	{
+		glDisableClientState(GL_NORMAL_ARRAY);
 	}
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -383,6 +421,78 @@ void RendererOpengl::SetTextureData(Texture *texture, unsigned int textureType, 
 	if (texture->useMipMap)
 		glGenerateMipmap(GL_TEXTURE_2D);
 #endif
+}
+
+void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation)
+{
+#if defined(__vita__)
+	return;
+#endif
+
+	if (lightIndex >= maxLightCount)
+		return;
+
+	RGBA rgba = color.GetRGBA();
+
+	glEnable(GL_LIGHT0 + lightIndex);
+
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+
+	float lightAttenuation[] = {attenuation};
+	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
+
+	// Create light components
+	float ambientLight[] = {rgba.r, rgba.g, rgba.b, 1.0f};
+	float diffuseLight[] = {rgba.r, rgba.g, rgba.b, 1.0f};
+	float specularLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+	float position[] = {lightPosition.x, lightPosition.y, lightPosition.z, 1};
+
+	// Assign created components to GL_LIGHT0
+	if (type == Light::Directional)
+		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, ambientLight);
+	else
+		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, diffuseLight);
+	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, specularLight);
+	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
+#elif defined(__PSP__)
+
+	ScePspFVector3 pos = {lightPosition.x, lightPosition.y, lightPosition.z};
+	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+	if (type == Light::Directional)
+		sceGuLightColor(lightIndex, GU_AMBIENT, color.GetUnsignedIntABGR());
+	else
+		sceGuLightColor(lightIndex, GU_DIFFUSE, color.GetUnsignedIntABGR());
+	// sceGuLightColor(0, GU_SPECULAR, 0xffffffff);
+	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
+#endif
+}
+
+void RendererOpengl::DisableAllLight()
+{
+	for (int lightIndex = 0; lightIndex < maxLightCount; lightIndex++)
+	{
+		glDisable(GL_LIGHT0 + lightIndex);
+	}
+}
+
+void RendererOpengl::Setlights(Camera *camera)
+{
+	auto transform = camera->GetTransform().lock();
+
+	DisableAllLight();
+	int lightCount = AssetManager::GetLightCount();
+	for (int i = 0; i < lightCount; i++)
+	{
+		auto light = AssetManager::GetLight(i).lock();
+		if (light->type == Light::Directional)
+		{
+			Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform().lock()->GetRotation().y, -light->GetTransform().lock()->GetRotation().x) * 1000;
+			SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, 1, light->color, light->type, light->quadratic);
+		}
+		else
+			SetLight(i, light->GetTransform().lock()->GetPosition(), 1, light->color, light->type, light->quadratic);
+	}
 }
 
 void RendererOpengl::Clear()

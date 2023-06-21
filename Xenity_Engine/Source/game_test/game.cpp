@@ -1,7 +1,7 @@
 #include "game.h"
 #include "../xenity.h"
 #include "../engine/graphics/3d_graphics/mesh_data.h"
-
+#include "../engine/graphics/renderer/renderer.h"
 #include <string.h>
 #include <thread>
 
@@ -102,7 +102,7 @@ void Game::Start()
 	cameraGO = CreateGameObject("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>().lock();
 	camera->SetNearClippingPlane(0.4f);
-	camera->SetFarClippingPlane(30);
+	camera->SetFarClippingPlane(300);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
 	// camera->SetProjectionType(Orthographic);
@@ -121,7 +121,7 @@ void Game::Start()
 	cameraPivot = CreateGameObject();
 	cameraPivot.lock()->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
 
-	//return;
+	// return;
 	cameraGO.lock()->GetTransform().lock()->SetLocalPosition(Vector3(0, 0, -13));
 	// cameraGO->GetTransform()->SetRotation(Vector3(20, 45, 45));
 
@@ -165,11 +165,12 @@ void Game::Start()
 	auto meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>().lock();
 	meshRenderer->meshData = mesh;
 	meshRenderer->texture = texture;
-	mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
+	// mesh->unifiedColor = Color::CreateFromRGBA(255, 218, 208, 255);
+	mesh->unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
-	//Destroy(meshRenderer);
-	//spriteGo4.lock()->SetActive(false);
-	//Destroy(spriteGo4);
+	// Destroy(meshRenderer);
+	// spriteGo4.lock()->SetActive(false);
+	// Destroy(spriteGo4);
 
 	// meshRenderer = spriteGo1->AddComponent<MeshRenderer>();
 	// meshRenderer->meshData = mesh;
@@ -239,6 +240,20 @@ void Game::Start()
 	// pspAudioSetChannelCallback(0, audioCallback, NULL);
 
 	// drwav_uninit(&wav);
+	InputSystem::HideMouse();
+
+	std::weak_ptr<GameObject> gmLight0 = CreateGameObject();
+	auto light0 = gmLight0.lock()->AddComponent<Light>().lock();
+	// light0->SetupPointLight(Color::CreateFromRGBAFloat(1, 0,0,0), 1, 10);
+	// light0->SetupDirectionalLight(Color::CreateFromRGBA(255, 218, 208, 1), 1);
+	light0->SetupDirectionalLight(Color::CreateFromRGBA(50, 20, 20, 1), 1);
+	light0->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
+	light0->GetTransform().lock()->SetRotation(Vector3(45, 45, 0));
+
+	std::weak_ptr<GameObject> gmLight1 = CreateGameObject();
+	auto light1 = gmLight1.lock()->AddComponent<Light>().lock();
+	light1->SetupPointLight(Color::CreateFromRGBAFloat(1, 0, 0, 1), 1, 10);
+	light1->GetTransform().lock()->SetPosition(Vector3(0, 0, -2));
 }
 
 void Game::LoadGameData()
@@ -290,10 +305,11 @@ int lastTime = 0;
 /// </summary>
 void Game::Update()
 {
-	//return;
+	// return;
 	Vector3 rot = cameraGO.lock()->GetTransform().lock()->GetRotation();
 	// Vector3 rot = cameraPivot->GetTransform()->GetRotation();
 	Vector3 pos = cameraGO.lock()->GetTransform().lock()->GetPosition();
+	// Engine::renderer->SetLight(pos);
 #ifdef __PSP__
 	// rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + InputSystem::leftJoystick.y * cameraPivot->GetTransform()->GetLeft();
 
@@ -360,15 +376,7 @@ void Game::Update()
 	std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
 	std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4) + "\n";
 	debugText += "DrawCall " + std::to_string(Performance::GetDrawCallCount()) + "\n";
-
-	if (InputSystem::GetKey(UP))
-		debugText += "UP";
-	if (InputSystem::GetKey(DOWN))
-		debugText += "DOWN";
-	if (InputSystem::GetKey(LEFT))
-		debugText += "LEFT";
-	if (InputSystem::GetKey(RIGHT))
-		debugText += "RIGHT";
+	debugText += "x " + std::to_string(pos.x) + " y " + std::to_string(pos.y) + " z " + std::to_string(pos.z) + "\n";
 
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";

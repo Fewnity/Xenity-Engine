@@ -47,6 +47,7 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces)
     renderSettings.useBlend = true;
     renderSettings.useDepth = for3D;
     renderSettings.useTexture = true;
+    renderSettings.useLighting = for3D;
 
     Engine::renderer->DrawMeshData(mesh, renderSettings);
 }
@@ -146,7 +147,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
 
     // Create empty mesh
     int charCountToDraw = textLenght - (textInfo.lineCount - 1);
-    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false);
+    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
     mesh->unifiedColor = color;
     meshes.push_back(mesh);
 

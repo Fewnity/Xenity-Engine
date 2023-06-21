@@ -21,17 +21,25 @@ struct VertexNoColor
     float x, y, z;
 };
 
+struct VertexNormalsNoColor
+{
+    float u, v;
+    float normX, normY, normZ;
+    float x, y, z;
+};
+
 class MeshData
 {
 public:
     MeshData() = delete;
-    MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor);
+    MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
     // MeshData(std::string filePath);
     ~MeshData();
 
     // void AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index);
     void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
     void AddVertex(float u, float v, float x, float y, float z, int index);
+    void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index);
 
     void *data = nullptr;
     // VertexNoColor *dataNoColor = nullptr;

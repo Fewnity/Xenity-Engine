@@ -62,6 +62,7 @@ int Engine::Init(const std::string exePath)
 	Window::SetResolution(1280, 720);
 #endif
 	Window::Init();
+	Engine::renderer->Setup();
 	Graphics::Init();
 	Debug::Print("-------- Audio Not implemented --------");
 

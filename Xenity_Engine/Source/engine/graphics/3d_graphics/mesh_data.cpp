@@ -14,21 +14,26 @@
  * @param vcount
  * @param index_count
  */
-MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor)
+MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals)
 {
 	// Allocate memory for mesh data
 	hasColor = useVertexColor;
+	hasNormal = useNormals;
 
 #ifdef __PSP__
 	if (useVertexColor)
-		data = (Vertex*)memalign(16, sizeof(Vertex) * vcount);
+		data = (Vertex *)memalign(16, sizeof(Vertex) * vcount);
+	else if (useNormals)
+		data = (VertexNormalsNoColor *)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	else
-		data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+		data = (VertexNoColor *)memalign(16, sizeof(VertexNoColor) * vcount);
 #else
 	if (useVertexColor)
-		data = (Vertex*)malloc(sizeof(Vertex) * vcount);
+		data = (Vertex *)malloc(sizeof(Vertex) * vcount);
+	else if (useNormals)
+		data = (VertexNormalsNoColor *)malloc(sizeof(VertexNormalsNoColor) * vcount);
 	else
-		data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
+		data = (VertexNoColor *)malloc(sizeof(VertexNoColor) * vcount);
 #endif
 	// data = (Vertex *)malloc(sizeof(Vertex) * vcount);
 	if (data == nullptr)
@@ -40,9 +45,9 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	// indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
 	// indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
 #ifdef __PSP__
-	indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+	indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
 #else
-	indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+	indices = (unsigned short *)malloc(sizeof(unsigned short) * index_count);
 #endif
 	if (indices == nullptr)
 	{
@@ -69,7 +74,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
  * @param z Z position
  * @param index Vertex index
  */
- // void MeshData::AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index)
+// void MeshData::AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index)
 void MeshData::AddVertex(float u, float v, Color color, float x, float y, float z, int index)
 {
 	RGBA rgba = color.GetRGBA();
@@ -87,22 +92,8 @@ void MeshData::AddVertex(float u, float v, Color color, float x, float y, float 
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
-	/*Vertex vert = {
-		.u = u,
-		.v = v,
-#ifdef __PSP__
-		.color = color.GetUnsignedIntABGR(),
-#else
-		.r = rgba.r,
-		.g = rgba.g,
-		.b = rgba.b,
-		.a = rgba.a,
-#endif
-		.x = x,
-		.y = y,
-		.z = z};*/
 
-	((Vertex*)data)[index] = vert;
+	((Vertex *)data)[index] = vert;
 }
 
 void MeshData::AddVertex(float u, float v, float x, float y, float z, int index)
@@ -113,14 +104,23 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index)
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
-	/*VertexNoColor vert = {
-		.u = u,
-		.v = v,
-		.x = x,
-		.y = y,
-		.z = z };*/
 
-	((VertexNoColor*)data)[index] = vert;
+	((VertexNoColor *)data)[index] = vert;
+}
+
+void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index)
+{
+	VertexNormalsNoColor vert;
+	vert.u = u;
+	vert.v = v;
+	vert.normX = nx;
+	vert.normY = ny;
+	vert.normZ = nz;
+	vert.x = x;
+	vert.y = y;
+	vert.z = z;
+
+	((VertexNormalsNoColor *)data)[index] = vert;
 }
 
 /**

@@ -10,7 +10,6 @@
 Light::Light()
 {
 	componentName = "Light";
-	AssetManager::AddLight(this);
 }
 
 Light::~Light()
@@ -27,7 +26,7 @@ Light::~Light()
 /// <param name="color"></param>
 /// <param name="intensity"></param>
 /// <param name="range"></param>
-void Light::SetupPointLight(const Vector3 color, const float intensity, const float range)
+void Light::SetupPointLight(const Color color, const float intensity, const float range)
 {
 	type = Light::Point;
 
@@ -41,12 +40,14 @@ void Light::SetupPointLight(const Vector3 color, const float intensity, const fl
 /// </summary>
 /// <param name="color"></param>
 /// <param name="intensity"></param>
-void Light::SetupDirectionalLight(const Vector3 color, const float intensity)
+void Light::SetupDirectionalLight(const Color color, const float intensity)
 {
 	type = Light::Directional;
 
 	this->color = color;
 	this->intensity = intensity;
+	quadratic = 0;
+	linear = 0;
 }
 
 /// <summary>
@@ -56,7 +57,7 @@ void Light::SetupDirectionalLight(const Vector3 color, const float intensity)
 /// <param name="intensity"></param>
 /// <param name="range"></param>
 /// <param name="angle"></param>
-void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle)
+void Light::SetupSpotLight(const Color color, const float intensity, const float range, const float angle)
 {
 	SetupSpotLight(color, intensity, range, angle, spotSmoothness);
 }
@@ -68,7 +69,7 @@ void Light::SetupSpotLight(const Vector3 color, const float intensity, const flo
 /// <param name="intensity"></param>
 /// <param name="range"></param>
 /// <param name="angle"></param>
-void Light::SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle, const float smoothness)
+void Light::SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness)
 {
 	type = Light::Spot;
 
@@ -154,7 +155,8 @@ float Light::GetSpotSmoothness() const
 void Light::SetRange(float value)
 {
 	range = value;
-	UpdateLightValues();
+	if(type != Directional)
+		UpdateLightValues();
 }
 
 #pragma endregion

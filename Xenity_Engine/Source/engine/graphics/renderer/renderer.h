@@ -4,6 +4,7 @@
 // #include "../shader.h"
 // #include <glm/glm.hpp>
 #include <vector>
+#include "../../lighting/lighting.h"
 
 class Color;
 class Vector4;
@@ -20,6 +21,7 @@ public:
 	bool useBlend = false;
 	bool invertFaces = false;
 	bool useTexture = true;
+	bool useLighting = true;
 };
 
 enum PolygoneFillMode
@@ -59,6 +61,7 @@ class Renderer
 public:
 	Renderer();
 	virtual int Init() = 0;
+	virtual void Setup() = 0;
 	virtual void Stop() = 0;
 	virtual void NewFrame() = 0;
 	virtual void EndFrame() = 0;
@@ -77,4 +80,8 @@ public:
 	virtual unsigned int CreateNewTexture() = 0;
 	virtual void SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer) = 0;
 	virtual void Clear() = 0;
+
+private:
+	virtual void Setlights(Camera* camera) = 0;
+	virtual void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
 };

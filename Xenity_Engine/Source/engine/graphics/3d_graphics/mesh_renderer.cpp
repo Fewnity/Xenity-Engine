@@ -32,7 +32,7 @@ void MeshRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			auto transform = GetTransform().lock();
-			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, meshData, true);
+			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, meshData, true, true);
 		}
 	}
 }

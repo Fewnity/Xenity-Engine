@@ -1,12 +1,14 @@
 #pragma once
 
 #include "renderer.h"
+#include "../../lighting/lighting.h"
 
 class RendererOpengl : public Renderer
 {
 public:
 	RendererOpengl();
 	int Init();
+	void Setup();
 	void Stop();
 	void NewFrame();
 	void EndFrame();
@@ -30,6 +32,10 @@ private:
 	// int GetBufferTypeEnum(BufferType bufferType);
 	// int GetBufferModeEnum(BufferMode bufferMode);
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);
+	int maxLightCount = 8;
+	void DisableAllLight();
+	void Setlights(Camera* camera);
+	void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation);
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	// int GetShaderTypeEnum(Shader::ShaderType shaderType);

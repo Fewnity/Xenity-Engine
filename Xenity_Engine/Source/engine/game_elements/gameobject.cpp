@@ -5,6 +5,7 @@
 #include "../graphics/graphics.h"
 #include "../asset_managent/asset_manager.h"
 #include "../graphics/iDrawable.h"
+#include "../lighting/lighting.h"
 
 #pragma region Constructors / Destructor
 
@@ -26,15 +27,14 @@ std::weak_ptr<GameObject> CreateGameObject(std::string name)
 	return std::weak_ptr<GameObject>(newGameObject);
 }
 
-
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
-	//Engine::AddGameObject(this);
+	// Engine::AddGameObject(this);
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="name">Do not use "@" alone</param>
 GameObject::GameObject(std::string name)
@@ -43,7 +43,7 @@ GameObject::GameObject(std::string name)
 		this->name = name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
-	//Engine::AddGameObject(this);
+	// Engine::AddGameObject(this);
 }
 
 GameObject::~GameObject()
@@ -52,8 +52,12 @@ GameObject::~GameObject()
 	{
 		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(components[i]))
 		{
-			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(components[i]));
-			AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(components[i]));
+			Graphics::RemoveDrawable(drawable);
+			AssetManager::RemoveDrawable(drawable);
+		}
+		else if (auto light = std::dynamic_pointer_cast<Light>(components[i]))
+		{
+			AssetManager::RemoveLight(light);
 		}
 	}
 	components.clear();
@@ -66,7 +70,7 @@ void GameObject::Setup()
 
 #pragma endregion
 
-void GameObject::RemoveComponent(std::weak_ptr <Component> weakComponent)
+void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
 	{
@@ -74,11 +78,6 @@ void GameObject::RemoveComponent(std::weak_ptr <Component> weakComponent)
 		{
 			component->waitingForDestroy = true;
 			Engine::componentsToDestroy.push_back(component);
-			/*if (auto drawable = std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()))
-			{
-				Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()));
-				AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(weakComponent.lock()));
-			}*/
 		}
 	}
 }
@@ -109,7 +108,7 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 {
 	if (auto newChild = weakNewChild.lock())
 	{
-		//Check if the child to add is alrady a child of this gameobject
+		// Check if the child to add is alrady a child of this gameobject
 		bool add = true;
 		for (int i = 0; i < childCount; i++)
 		{
@@ -239,7 +238,7 @@ void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 	if (auto changed = weakChanged.lock())
 	{
 		bool lastLocalActive = localActive;
-		if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) //if the new parent's state is false, set local active to false
+		if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
 		{
 			localActive = false;
 		}
@@ -251,7 +250,7 @@ void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 			{
 				auto gm = gmToCheck.lock();
 
-				if (!gm->GetActive() || !gm->GetLocalActive()) //If a parent is disabled, set local active to false
+				if (!gm->GetActive() || !gm->GetLocalActive()) // If a parent is disabled, set local active to false
 				{
 					newActive = false;
 					break;
@@ -265,10 +264,10 @@ void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 			localActive = newActive;
 		}
 
-		//If the gameobject has changed his state
+		// If the gameobject has changed his state
 		if (lastLocalActive != localActive)
 		{
-			//Update children
+			// Update children
 			for (int i = 0; i < childCount; i++)
 			{
 				children[i].lock()->UpdateActive(changed);

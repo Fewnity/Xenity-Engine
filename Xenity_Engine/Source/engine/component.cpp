@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "graphics/iDrawable.h"
+#include "lighting/lighting.h"
 #include "graphics/graphics.h"
 #include "game_elements/gameobject.h"
 #include "asset_managent/asset_manager.h"
@@ -42,6 +43,10 @@ void Component::SetGameObject(std::weak_ptr<GameObject>go)
 		{
 			Graphics::AddDrawable(result);
 			AssetManager::AddDrawable(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<Light>(shared_from_this()))
+		{
+			AssetManager::AddLight(result);
 		}
 	}
 }

@@ -245,7 +245,7 @@ void Tilemap::CreateChunksMeshes()
 			// Create new meshes
 			for (int i = 0; i < textureSize; i++)
 			{
-				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false);
+				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false);
 				mesh->index_count = 0;
 				mesh->vertice_count = 0;
 				mesh->hasIndices = useIndices;
@@ -310,7 +310,7 @@ void Tilemap::DrawChunks()
 					// Draw each texture
 					for (int textureI = 0; textureI < textureSize; textureI++)
 					{
-						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false);
+						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false, false);
 					}
 				}
 			}

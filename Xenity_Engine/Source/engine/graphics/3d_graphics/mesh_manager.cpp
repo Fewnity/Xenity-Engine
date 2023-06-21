@@ -38,7 +38,7 @@ MeshData *MeshManager::LoadMesh(std::string path)
  * @param meshData
  * @param useDepth
  */
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth, bool useLighting)
 {
     if ((meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
         return;
@@ -58,6 +58,7 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     renderSettings.useBlend = false;
     renderSettings.useDepth = useDepth;
     renderSettings.useTexture = true;
+    renderSettings.useLighting = useLighting;
 
     Engine::renderer->BindTexture(texture);
     Engine::renderer->DrawMeshData(meshData, renderSettings);

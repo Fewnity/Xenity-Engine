@@ -184,7 +184,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	if (!hasNoUv)
 		byteCount += 2;
 
-	MeshData *mesh = new MeshData(indicesCount, indicesCount, false);
+	MeshData *mesh = new MeshData(indicesCount, indicesCount, false, !hasNoNormals);
 
 	// Alloc memory for vertices and indices
 	// mesh->verticesCount = indicesCount * (byteCount);
@@ -213,8 +213,14 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 		// mesh->AddVertex(
 		// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
 		// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+		if(!mesh->hasNormal)
 		mesh->AddVertex(
 			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+		else
+			mesh->AddVertex(
+				tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempNormals.at(normalIndices).x, tempNormals.at(normalIndices).y, tempNormals.at(normalIndices).z,
+				tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
+
 
 		mesh->indices[i] = i;
 

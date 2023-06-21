@@ -6,7 +6,7 @@
 // std::vector<Material*> AssetManager::materials;
 std::vector<Texture *> AssetManager::textures;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
-std::vector<Light *> AssetManager::lights;
+std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
 
 // int AssetManager::shaderCount = 0;
@@ -92,7 +92,7 @@ void AssetManager::AddTexture(Texture *texture)
 /// Add a drawable in the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::AddDrawable(std::weak_ptr<IDrawable>drawable)
+void AssetManager::AddDrawable(std::weak_ptr<IDrawable> drawable)
 {
 	drawables.push_back(drawable);
 	drawableCount++;
@@ -102,7 +102,7 @@ void AssetManager::AddDrawable(std::weak_ptr<IDrawable>drawable)
 /// Add a light in the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::AddLight(Light *light)
+void AssetManager::AddLight(std::weak_ptr<Light> light)
 {
 	lights.push_back(light);
 	lightCount++;
@@ -200,7 +200,7 @@ void AssetManager::RemoveTexture(Texture *texture)
 /// Remove a drawable from the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::RemoveDrawable(std::weak_ptr < IDrawable>drawable)
+void AssetManager::RemoveDrawable(std::weak_ptr<IDrawable> drawable)
 {
 	int drawableCount = (int)drawables.size();
 	int drawableIndex = 0;
@@ -226,14 +226,14 @@ void AssetManager::RemoveDrawable(std::weak_ptr < IDrawable>drawable)
 /// Remove a light from the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::RemoveLight(Light *light)
+void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 {
 	int lightCount = (int)lights.size();
 	int lightIndex = 0;
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
 	{
-		if (lights[i] == light)
+		if (lights[i].lock() == light.lock())
 		{
 			found = true;
 			lightIndex = i;
@@ -313,12 +313,12 @@ Texture *AssetManager::GetTextureByName(const std::string name)
 	return nullptr;
 }
 
-std::weak_ptr <IDrawable>AssetManager::GetDrawable(const int index)
+std::weak_ptr<IDrawable> AssetManager::GetDrawable(const int index)
 {
 	return drawables[index];
 }
 
-Light *AssetManager::GetLight(const int index)
+std::weak_ptr<Light> AssetManager::GetLight(const int index)
 {
 	return lights[index];
 }

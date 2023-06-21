@@ -2,6 +2,7 @@
 
 #include "../vectors/vector3.h"
 #include "../component.h"
+#include "../graphics/color/color.h"
 
 class lighting
 {
@@ -23,17 +24,17 @@ public:
 	};
 
 	LightType type = Directional;
-	Vector3 color = Vector3();
+	Color color = Color();
 	float intensity = 0;
 
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
 
-	void SetupPointLight(const Vector3 color, float intensity, const float range);
-	void SetupDirectionalLight(const Vector3 color, const float intensity);
-	void SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle);
-	void SetupSpotLight(const Vector3 color, const float intensity, const float range, const float angle, const float smoothness);
+	void SetupPointLight(const Color color, float intensity, const float range);
+	void SetupDirectionalLight(const Color color, const float intensity);
+	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle);
+	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness);
 
 	void UpdateLightValues();
 	void SetRange(float value);

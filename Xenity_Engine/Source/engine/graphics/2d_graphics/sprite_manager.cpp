@@ -31,7 +31,7 @@ void SpriteManager::Init()
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
     // Create sprite mesh
-    spriteMeshData = new MeshData(4, 6, false);
+    spriteMeshData = new MeshData(4, 6, false, false);
     spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
     spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
     spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
