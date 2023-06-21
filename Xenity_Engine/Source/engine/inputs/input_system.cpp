@@ -26,7 +26,7 @@ Vector2 InputSystem::leftJoystick = Vector2();
 Vector2 InputSystem::rightJoystick = Vector2();
 Input InputSystem::inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
-bool InputSystem::hideMouse = false;
+bool InputSystem::hidedMouse = false;
 std::map<int, Input*> InputSystem::keyMap;
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
 
@@ -58,6 +58,7 @@ void InputSystem::HideMouse()
 #if defined(_WIN32) || defined(_WIN64)
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
+	hidedMouse = true;
 }
 
 void InputSystem::ShowMouse()
@@ -65,6 +66,7 @@ void InputSystem::ShowMouse()
 #if defined(_WIN32) || defined(_WIN64)
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 #endif
+	hidedMouse = false;
 }
 
 int InputSystem::GetTouchScreenCount()
@@ -125,8 +127,8 @@ void InputSystem::Read(const SDL_Event event)
 
 	case SDL_MOUSEBUTTONDOWN:
 	{
-		if (hideMouse)
-			SDL_SetRelativeMouseMode(SDL_TRUE);
+		if (hidedMouse)
+			HideMouse();
 		switch (event.button.button)
 		{
 		case SDL_BUTTON_RIGHT:

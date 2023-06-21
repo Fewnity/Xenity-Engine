@@ -178,6 +178,7 @@ private:
 	static void SetInputReleased(const int keyCode);
 	static void SetInputInactive(const int keyCode);
 
+	static bool hidedMouse;
 	static Input inputs[INPUT_COUNT];
 	static std::map<int, Input *> keyMap;
 	static std::vector<TouchScreen *> screens;
