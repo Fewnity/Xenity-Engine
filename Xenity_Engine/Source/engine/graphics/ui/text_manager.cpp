@@ -276,12 +276,14 @@ Font *TextManager::CreateFont(std::string filePath)
     }
 
     int charPixelHeight = 48;
+    // int charPixelHeight = 21;
     // Load glyph
     FT_Set_Pixel_Sizes(face, 0, charPixelHeight);
     // Engine::renderer->PixelStoreUnpack();
     // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     int atlasSize = 512;
+    // int atlasSize = 256;
     int channelCount = 1;
 #ifdef __PSP__
     channelCount = 4;
@@ -307,12 +309,9 @@ Font *TextManager::CreateFont(std::string filePath)
             Character *character = new Character();
             character->Size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
             character->Bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
-
             character->rightSize = Vector2(face->glyph->bitmap.width * 0.01f, face->glyph->bitmap.rows * 0.01f);
             character->rightBearing = Vector2(face->glyph->bitmap_left * 0.01f, face->glyph->bitmap_top * 0.01f);
-
             character->Advance = (unsigned int)face->glyph->advance.x;
-
             character->rightAdvance = (face->glyph->advance.x >> 6) * 0.01f;
 
             font->Characters[c] = character;
@@ -360,6 +359,7 @@ Font *TextManager::CreateFont(std::string filePath)
     font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize, false);
     font->fontAtlas->SetFilter(Texture::Bilinear);
     font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
+    free(atlas);
 
     Debug::Print("Font loaded");
 
