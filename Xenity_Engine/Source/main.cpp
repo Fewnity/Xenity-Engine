@@ -11,7 +11,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
 
 /*
-Fix Transform::UpdateWorldScale
+Add materials
+Add shaders
+Add sounds
+Add line renderer
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold and End
 Text scale
@@ -28,7 +31,7 @@ int main(int argc, char *argv[])
 	}
 
 	Engine::Loop();
-	Debug::Print("---- Game loop ended ----");
+	Debug::Print("-------- Game loop ended --------");
 	Engine::Stop();
 
 	return 0;

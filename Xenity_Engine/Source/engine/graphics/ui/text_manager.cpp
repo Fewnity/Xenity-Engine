@@ -224,9 +224,6 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
     float w = ch->rightSize.x;
     float h = ch->rightSize.y;
 
-    // unsigned int charColor = 0xFFFFFFFF;
-    // Color charColor = Color::CreateFromRGBA(255, 0, 255, 255);
-
     float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
 
     mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice);
@@ -249,7 +246,6 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
 /// <returns></returns>
 Font *TextManager::CreateFont(std::string filePath)
 {
-    // return nullptr;
     Debug::Print("Loading font...");
 
     Font *font = new Font();
@@ -359,9 +355,8 @@ Font *TextManager::CreateFont(std::string filePath)
     font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize, false);
     font->fontAtlas->SetFilter(Texture::Bilinear);
     font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
+    
     free(atlas);
-
-    Debug::Print("Font loaded");
 
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
@@ -371,6 +366,9 @@ Font *TextManager::CreateFont(std::string filePath)
 #endif
 
     fonts.push_back(font);
+
+    Debug::Print("Font loaded");
+
     return font;
 }
 
