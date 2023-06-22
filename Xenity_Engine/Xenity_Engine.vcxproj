@@ -158,6 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
+    <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
     <ClCompile Include="Source\engine\file_system\file_system.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\3d_graphics\mesh_data.cpp" />
@@ -247,6 +249,8 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\audio\audio_clip.h" />
+    <ClInclude Include="Source\engine\audio\audio_manager.h" />
     <ClInclude Include="Source\engine\file_system\file_system.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_renderer.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_data.h" />

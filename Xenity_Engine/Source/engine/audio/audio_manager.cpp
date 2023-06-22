@@ -26,18 +26,18 @@ int seekPosition = 0;
 bool needNewReed = false;
 bool needNewReed2 = false;
 
-#ifdef __vita__
+#if defined(__vita__)
 int size = 2048;
 int freq = 7;
 int mode = SCE_AUDIO_OUT_MODE_STEREO;
 int vol = SCE_AUDIO_VOLUME_0DB;
 int port;
 #endif
+
 typedef struct
 {
     short l, r;
 } sample_t;
-int l = 0;
 
 int buffSize = 1024 * 16;
 
@@ -63,12 +63,12 @@ void audioCallback(void *buf, unsigned int length, void *userdata)
         }
     }
 }
-
+#if defined(__PSP__) || defined(__vita__)
 int audio_thread(SceSize args, void *argp)
 {
     while (true)
     {
-#ifdef __PSP__
+#if defined(__PSP__)
         if (needNewReed)
         {
             drmp3_uint64 framesRead = drmp3_read_pcm_frames_s16(&mp3, buffSize / 4, pDecodedInterleavedPCMFrames);
@@ -125,6 +125,7 @@ int audio_thread2(SceSize args, void *argp)
 #endif
     }
 }
+#endif
 
 void AudioManager::Update()
 {

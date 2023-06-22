@@ -56,6 +56,8 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_renderer.cpp" />
     <ClCompile Include="Source\engine\file_system\file_system.cpp" />
     <ClCompile Include="Source\game_test\game.cpp" />
+    <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
+    <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -121,6 +123,8 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_renderer.h" />
     <ClInclude Include="Source\engine\file_system\file_system.h" />
     <ClInclude Include="Source\game_test\game.h" />
+    <ClInclude Include="Source\engine\audio\audio_clip.h" />
+    <ClInclude Include="Source\engine\audio\audio_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
