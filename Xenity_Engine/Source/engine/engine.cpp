@@ -11,8 +11,10 @@
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
 #include "../psp/callbacks.h"
+#include <psppower.h>
 #elif __vita__
 #include <psp2/kernel/processmgr.h>
+#include <psp2/power.h>
 #endif
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
@@ -24,16 +26,16 @@ std::weak_ptr<GameObject> Engine::selectedGameObject;
 int Engine::gameObjectCount = 0;
 float lastTick = 0;
 
-ProfilerBenchmark* engineLoopBenchmark = nullptr;
-ProfilerBenchmark* gameLoopBenchmark = nullptr;
-ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
-ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
+ProfilerBenchmark *engineLoopBenchmark = nullptr;
+ProfilerBenchmark *gameLoopBenchmark = nullptr;
+ProfilerBenchmark *componentsUpdateBenchmark = nullptr;
+ProfilerBenchmark *drawIDrawablesBenchmark = nullptr;
 
 bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
-Renderer* Engine::renderer = nullptr;
+Renderer *Engine::renderer = nullptr;
 
 /// <summary>
 /// Init engine
@@ -41,8 +43,14 @@ Renderer* Engine::renderer = nullptr;
 /// <returns></returns>
 int Engine::Init(const std::string exePath)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	SetupCallbacks();
+	scePowerSetClockFrequency(333, 333, 166);
+#elif defined(__vita__)
+	scePowerSetArmClockFrequency(444);
+	scePowerSetBusClockFrequency(222);
+	scePowerSetGpuClockFrequency(222);
+	scePowerSetGpuXbarClockFrequency(166);
 #endif
 
 	/* Initialize libraries */
@@ -115,7 +123,7 @@ void Engine::UpdateComponents()
 		componentsListDirty = false;
 		orderedComponents.clear();
 
-		std::vector<std::weak_ptr <Component>> orderedComponentsToInit;
+		std::vector<std::weak_ptr<Component>> orderedComponentsToInit;
 		componentsCount = 0;
 		int componentsToInitCount = 0;
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
@@ -124,14 +132,14 @@ void Engine::UpdateComponents()
 			if (auto gameObjectToCheck = weakGameObjectToCheck.lock())
 			{
 
-				//GameObject *gameObjectToCheck = gameObjects[gIndex];
+				// GameObject *gameObjectToCheck = gameObjects[gIndex];
 				if (gameObjectToCheck->GetActive())
 				{
 					int componentCount = (int)gameObjectToCheck->components.size();
 					bool placeFound = false;
 					for (int cIndex = 0; cIndex < componentCount; cIndex++)
 					{
-						std::weak_ptr <Component> weakComponentToCheck = gameObjectToCheck->components[cIndex];
+						std::weak_ptr<Component> weakComponentToCheck = gameObjectToCheck->components[cIndex];
 						if (auto componentToCheck = weakComponentToCheck.lock())
 						{
 							if (componentToCheck->GetIsEnabled())
@@ -162,7 +170,8 @@ void Engine::UpdateComponents()
 		// Find uninitiated components and order them
 		for (int i = 0; i < componentsCount; i++)
 		{
-			if (auto componentToCheck = orderedComponents[i].lock()) {
+			if (auto componentToCheck = orderedComponents[i].lock())
+			{
 				if (!componentToCheck->initiated)
 				{
 					bool placeFound = false;
@@ -221,7 +230,7 @@ void Engine::UpdateComponents()
 				break;
 			}
 		}
-		//delete gameObjectsToDestroy[i];
+		// delete gameObjectsToDestroy[i];
 		gameObjectCount--;
 	}
 	gameObjectsToDestroy.clear();
@@ -248,10 +257,9 @@ void Engine::UpdateComponents()
 			i--;
 		}
 	}*/
-
 }
 
-void Engine::SetSelectedGameObject(std::weak_ptr<GameObject>newSelected)
+void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 {
 	selectedGameObject = newSelected;
 }
@@ -262,7 +270,7 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject>newSelected)
 void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
-	Game* game = new Game();
+	Game *game = new Game();
 
 	game->Start();
 
@@ -325,7 +333,7 @@ void Engine::Loop()
 		{
 			std::weak_ptr<GameObject> weakGO = gameObjects[i];
 			if (auto go = weakGO.lock())
-				//GameObject *go = gameObjects[i];
+			// GameObject *go = gameObjects[i];
 			{
 				if (go->GetTransform().lock()->movedLastFrame)
 				{
@@ -344,16 +352,16 @@ void Engine::Loop()
 
 		Performance::Update();
 		Performance::ResetCounters();
-		}
+	}
 
 	// delete game;
-	}
+}
 
 /// <summary>
 ///
 /// </summary>
 /// <param name="gameObject"></param>
-void Engine::AddGameObject(std::shared_ptr<GameObject>gameObject)
+void Engine::AddGameObject(std::shared_ptr<GameObject> gameObject)
 {
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
@@ -369,7 +377,7 @@ std::vector<std::weak_ptr<GameObject>> Engine::GetGameObjects()
 	return std::vector<std::weak_ptr<GameObject>>();
 }
 
-void Destroy(std::weak_ptr <GameObject> gameObject)
+void Destroy(std::weak_ptr<GameObject> gameObject)
 {
 	if (!gameObject.lock()->waitingForDestroy)
 	{
@@ -378,7 +386,7 @@ void Destroy(std::weak_ptr <GameObject> gameObject)
 	}
 }
 
-void Destroy(std::weak_ptr <Component> weakComponent)
+void Destroy(std::weak_ptr<Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
 		component->GetGameObject().lock()->RemoveComponent(weakComponent);

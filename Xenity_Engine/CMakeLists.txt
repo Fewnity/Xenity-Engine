@@ -113,6 +113,7 @@ png
   vitaGL 
   vita2d 
   SceLibKernel_stub 
+  ScePower_stub
   SceAppMgr_stub 
   SceAppUtil_stub 
   mathneon
