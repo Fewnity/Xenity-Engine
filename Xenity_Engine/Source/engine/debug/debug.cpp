@@ -11,6 +11,7 @@ File *file = nullptr;
 #endif
 
 std::ofstream Debug::debugFile;
+std::string Debug::debugText = "";
 
 /**
  * Print an error in the console and the debug file
@@ -21,6 +22,7 @@ void Debug::PrintError(std::string text)
     std::string newString = "\033[31m[ERROR] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
+    debugText += text;
 }
 
 /**
@@ -32,6 +34,7 @@ void Debug::PrintWarning(std::string text)
     std::string newString = "\033[33m[WARNING] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
+    debugText += text;
 }
 
 void Debug::PrintInConsole(std::string text)
@@ -68,6 +71,7 @@ void Debug::Print(std::string text)
     std::string newString = "\033[37m" + text;
     PrintInConsole(newString);
     PrintInFile(text);
+    debugText += text;
 }
 
 /**
@@ -76,6 +80,7 @@ void Debug::Print(std::string text)
  */
 void Debug::Init()
 {
+    debugText = "";
 #ifdef __PSP__
     // PspDebugInit();
     // Delete old debug file
@@ -84,13 +89,14 @@ void Debug::Init()
     file = new File("xenity_engine_debug.txt");
 #elif __vita__
     // PsVitaDebugInit();
-    // Create folder
+    //  Create folder
     sceIoMkdir("ux0:/data/xenity_engine", 0777);
     // Init debug file
     debugFile.open("ux0:data/xenity_engine/xenity_engine_debug.txt");
 #else
     // Init debug file
     debugFile.open("xenity_engine_debug.txt");
+
 #endif
     Print("-------- Debug initiated --------");
 }
