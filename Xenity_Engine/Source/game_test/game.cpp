@@ -4,92 +4,20 @@
 #include "../engine/graphics/renderer/renderer.h"
 #include <string.h>
 #include <thread>
+#include <malloc.h>
 
 #ifdef __PSP__
-#include <pspaudiolib.h>
-#include <pspaudio.h>
+#include <pspkernel.h>
+#include <psppower.h>
 #endif
 
 #ifdef __vita__
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
+#include <psp2/power.h>
 #endif
 
-#define DR_WAV_IMPLEMENTATION
-#include "dr_wav.h"
-#define DR_MP3_IMPLEMENTATION
-#include "dr_mp3.h"
-
 Game *Game::game;
-
-/*drmp3 mp3;
-drmp3_int16 *pDecodedInterleavedPCMFrames;
-// drwav_int16 *pDecodedInterleavedPCMFrames;
-int seekPosition = 0;
-int size = 2048;
-// int size = 2048 * 2;
-int freq = 7;
-int mode = SCE_AUDIO_OUT_MODE_STEREO;
-int vol = SCE_AUDIO_VOLUME_0DB;
-int port;*/
-
-typedef struct
-{
-	short l, r;
-} sample_t;
-
-void audioCallback(void *buf, unsigned int length, void *userdata)
-{
-	sample_t *ubuf = (sample_t *)buf;
-
-	// drmp3_int16 *pDecodedInterleavedPCMFrames = (drwav_int16 *)malloc(length * mp3.channels * sizeof(drmp3_int16));
-	// drmp3_uint64 framesRead = drmp3_read_pcm_frames_s16(&mp3, length, pDecodedInterleavedPCMFrames);
-
-	for (int i = 0; i < length; i++)
-	{
-		/*ubuf[i].l = pDecodedInterleavedPCMFrames[seekPosition];
-		seekPosition++;
-		ubuf[i].r = pDecodedInterleavedPCMFrames[seekPosition];
-		seekPosition++;*/
-
-		// ubuf[i].l = pDecodedInterleavedPCMFrames[0 + i * 2];
-		// seekPosition++;
-		// ubuf[i].r = pDecodedInterleavedPCMFrames[1 + i * 2];
-		// seekPosition++;
-
-		// ubuf[i].l = (rand() % 65536) / 10;
-		// ubuf[i].r = (rand() % 65536) / 10;
-	}
-	// free(pDecodedInterleavedPCMFrames);
-}
-
-// int audio_thread(SceSize args, void *argp)
-// {
-// 	while (true)
-// 	{
-// 		/* code */
-// 		if (sceAudioOutGetRestSample(port) == 0)
-// 		{
-// 			int16_t wave_buf[SCE_AUDIO_MAX_LEN] = {0};
-
-// 			drmp3_int16 *pDecodedInterleavedPCMFrames2 = (drwav_int16 *)malloc(size * mp3.channels * sizeof(drmp3_int16));
-// 			drmp3_uint64 framesRead = drmp3_read_pcm_frames_s16(&mp3, size, pDecodedInterleavedPCMFrames2);
-// 			seekPosition = 0;
-
-// 			for (int i = 0; i < size; i++)
-// 			{
-// 				wave_buf[i * 2] = pDecodedInterleavedPCMFrames2[seekPosition];
-// 				seekPosition++;
-// 				wave_buf[1 + i * 2] = pDecodedInterleavedPCMFrames2[seekPosition];
-// 				seekPosition++;
-// 				// wave_buf[i] = pDecodedInterleavedPCMFrames[]
-// 				// wave_buf[i] = rand() % 65536;
-// 			}
-// 			sceAudioOutOutput(port, wave_buf);
-// 			free(pDecodedInterleavedPCMFrames2);
-// 		}
-// 	}
-// }
 
 /// <summary>
 /// Init game
@@ -198,46 +126,7 @@ void Game::Start()
 	// 	}
 	// }
 
-	/*int freqs[] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
-	port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_BGM, size, freqs[freq], (SceAudioOutMode)mode);
-	int volA[2] = {vol, vol};
-	sceAudioOutSetVolume(port, (SceAudioOutChannelFlag)(SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volA);*/
-
-	// drwav wav;
-	// if (!drwav_init_file(&wav, "Special_Needs.wav", NULL))
-	// {
-	// 	Debug::Print("AUDIO ERROR");
-	// 	// Error opening WAV file.
-	// }
-	// pDecodedInterleavedPCMFrames = (drwav_int16 *)malloc(wav.totalPCMFrameCount * wav.channels * sizeof(drwav_int16));
-	// size_t numberOfSamplesActuallyDecoded = drwav_read_pcm_frames_s16(&wav, wav.totalPCMFrameCount, pDecodedInterleavedPCMFrames);
-
-	// MP3
-	/*if (!drmp3_init_file(&mp3, "ux0:Special_Needs_low.mp3", NULL))
-	{
-		Debug::Print("AUDIO ERROR");
-		// Failed to open file
-	}*/
-	// int frameCount = drmp3_get_pcm_frame_count(&mp3) / 10;
-	// pDecodedInterleavedPCMFrames = (drmp3_int16 *)malloc(frameCount * mp3.channels * sizeof(drmp3_int16));
-	// if (!pDecodedInterleavedPCMFrames)
-	// {
-	// 	Debug::Print("AUDIO NO MEME");
-	// }
-	// else
-	// {
-	// 	Debug::Print("AUDIO MEM");
-	// 	drmp3_uint64 framesRead = drmp3_read_pcm_frames_s16(&mp3, frameCount, pDecodedInterleavedPCMFrames);
-	// }
-
-	// std::thread t(audio_thread);
-	// t.join();
-
-	// SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x400000, 0, 0, NULL);
-	// if (thd_id >= 0)
-	// 	sceKernelStartThread(thd_id, 0, NULL);
-	// pspAudioInit();
-	// pspAudioSetChannelCallback(0, audioCallback, NULL);
+	AudioManager::Init();
 
 	// drwav_uninit(&wav);
 	InputSystem::HideMouse();
@@ -246,9 +135,9 @@ void Game::Start()
 	auto light0 = gmLight0.lock()->AddComponent<Light>().lock();
 	// light0->SetupPointLight(Color::CreateFromRGBAFloat(1, 0,0,0), 1, 10);
 	// light0->SetupDirectionalLight(Color::CreateFromRGBA(255, 218, 208, 1), 1);
-	light0->SetupDirectionalLight(Color::CreateFromRGBA(50, 20, 20, 1), 1);
+	light0->SetupDirectionalLight(Color::CreateFromRGBA(70, 40, 40, 1), 1);
 	light0->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
-	light0->GetTransform().lock()->SetRotation(Vector3(45, 45, 0));
+	light0->GetTransform().lock()->SetRotation(Vector3(0, 0, 0));
 
 	std::weak_ptr<GameObject> gmLight1 = CreateGameObject();
 	auto light1 = gmLight1.lock()->AddComponent<Light>().lock();
@@ -377,7 +266,11 @@ void Game::Update()
 	std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4) + "\n";
 	debugText += "DrawCall " + std::to_string(Performance::GetDrawCallCount()) + "\n";
 	debugText += "x " + std::to_string(pos.x) + " y " + std::to_string(pos.y) + " z " + std::to_string(pos.z) + "\n";
-
+#if defined(__PSP__)
+	debugText += "clock: CPU " + std::to_string(scePowerGetCpuClockFrequencyInt()) + ", BUS " + std::to_string(scePowerGetBusClockFrequencyInt());
+#elif defined(__vita__)
+	debugText += "clock: ARM " + std::to_string(scePowerGetArmClockFrequency()) + ", BUS " + std::to_string(scePowerGetBusClockFrequency()) + ", GPU " + std::to_string(scePowerGetGpuClockFrequency()) + ", GPU Xbar " + std::to_string(scePowerGetGpuXbarClockFrequency());
+#endif
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
 	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";
@@ -398,12 +291,14 @@ void Game::Update()
 	// 	debugText += kv.first + " " + std::to_string(kv.second->GetValue()) + ", avg: " + std::to_string(kv.second->average) + "\n";
 	// }
 
+	// debugTextRenderer.lock()->text = Debug::debugText;
 	debugTextRenderer.lock()->text = debugText;
-	// if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
-	// {
-	// 	lastTime = (int)Time::GetTime();
-	// 	Debug::Print(debugText);
-	// }
+
+	//  if ((int)Time::GetTime() % 2 == 0 && (int)Time::GetTime() != lastTime)
+	//  {
+	//  	lastTime = (int)Time::GetTime();
+	//  	Debug::Print(debugText);
+	//  }
 
 	// Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
 	// meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;
