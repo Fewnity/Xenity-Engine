@@ -50,8 +50,10 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
             PlayedSound *sound = channel->playedSounds[soundIndex];
             if (sound->safeAudioSource.GetIsPlaying())
             {
-                buffer[i * 2] = MixSoundToBuffer(buffer[i * 2], sound->buffer[sound->seekPosition]);
-                buffer[1 + i * 2] = MixSoundToBuffer(buffer[1 + i * 2], sound->buffer[sound->seekPosition + 1]);
+                float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->safeAudioSource.GetPanning())) * 2;
+                float rightPan = std::max(0.0f, std::min(0.5f, sound->safeAudioSource.GetPanning())) * 2;
+                buffer[i * 2] = MixSoundToBuffer(buffer[i * 2], sound->buffer[sound->seekPosition] * sound->safeAudioSource.GetVolume() * leftPan);
+                buffer[1 + i * 2] = MixSoundToBuffer(buffer[1 + i * 2], sound->buffer[sound->seekPosition + 1] * sound->safeAudioSource.GetVolume() * rightPan);
 
                 sound->seekNext += ((float)sound->safeAudioSource.audioClip->GetFrenquency());
 

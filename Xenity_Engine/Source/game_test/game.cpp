@@ -211,11 +211,15 @@ int lastTime = 0;
 void Game::Update()
 {
 	if (InputSystem::GetKeyDown(CROSS))
-		myAudioSource.lock()->Play();
+		// myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() + 0.1);
+		myAudioSource.lock()->SetPanning(myAudioSource.lock()->GetPanning() + 0.1);
+	// myAudioSource.lock()->Play();
 	else if (InputSystem::GetKeyDown(CIRCLE))
-		myAudioSource.lock()->Pause();
-	else if (InputSystem::GetKeyDown(TRIANGLE))
-		Destroy(myAudioSource);
+		// myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() - 0.1);
+		myAudioSource.lock()->SetPanning(myAudioSource.lock()->GetPanning() - 0.1);
+	// myAudioSource.lock()->Pause();
+	// else if (InputSystem::GetKeyDown(TRIANGLE))
+	// Destroy(myAudioSource);
 
 	// return;
 	Vector3 rot = cameraGO.lock()->GetTransform().lock()->GetRotation();
@@ -294,6 +298,9 @@ void Game::Update()
 #elif defined(__vita__)
 	debugText += "clock: ARM " + std::to_string(scePowerGetArmClockFrequency()) + ", BUS " + std::to_string(scePowerGetBusClockFrequency()) + ", GPU " + std::to_string(scePowerGetGpuClockFrequency()) + ", GPU Xbar " + std::to_string(scePowerGetGpuXbarClockFrequency());
 #endif
+
+	debugText += "Audio: Volume: " + std::to_string(myAudioSource.lock()->GetVolume()) + ", Panning: " + std::to_string(myAudioSource.lock()->GetPanning());
+
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
 	// debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";

@@ -16,28 +16,11 @@ public:
 
     AudioClip *audioClip = nullptr;
 
-    void SetVolume(float volume)
-    {
-        if (volume > 1)
-            volume = 1;
-        else if (volume < 0)
-            volume = 0;
-        this->volume = volume;
-    }
+    void SetVolume(float volume);
 
-    void SetPanning(float panning)
-    {
-        if (panning > 1)
-            panning = 1;
-        else if (panning < 0)
-            panning = 0;
-        this->pan = panning;
-    }
+    void SetPanning(float panning);
 
-    void SetLoop(bool isLooping)
-    {
-        this->loop = isLooping;
-    }
+    void SetLoop(bool isLooping);
 
     float GetVolume()
     {
