@@ -29,8 +29,8 @@ void Game::Start()
 
 	cameraGO = CreateGameObject("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>().lock();
-	camera->SetNearClippingPlane(0.4f);
-	camera->SetFarClippingPlane(300);
+	camera->SetNearClippingPlane(0.2f);
+	camera->SetFarClippingPlane(30);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
 	// camera->SetProjectionType(Orthographic);
@@ -126,16 +126,13 @@ void Game::Start()
 	// 	}
 	// }
 
-	AudioManager::Init();
-
-	// drwav_uninit(&wav);
 	InputSystem::HideMouse();
 
 	std::weak_ptr<GameObject> gmLight0 = CreateGameObject();
 	auto light0 = gmLight0.lock()->AddComponent<Light>().lock();
 	// light0->SetupPointLight(Color::CreateFromRGBAFloat(1, 0,0,0), 1, 10);
 	// light0->SetupDirectionalLight(Color::CreateFromRGBA(255, 218, 208, 1), 1);
-	light0->SetupDirectionalLight(Color::CreateFromRGBA(70, 40, 40, 1), 1);
+	light0->SetupDirectionalLight(Color::CreateFromRGBA(130, 70, 70, 1), 1);
 	light0->GetTransform().lock()->SetPosition(Vector3(0, 0, 0));
 	light0->GetTransform().lock()->SetRotation(Vector3(0, 0, 0));
 
@@ -143,6 +140,25 @@ void Game::Start()
 	auto light1 = gmLight1.lock()->AddComponent<Light>().lock();
 	light1->SetupPointLight(Color::CreateFromRGBAFloat(1, 0, 0, 1), 1, 10);
 	light1->GetTransform().lock()->SetPosition(Vector3(0, 0, -2));
+
+	AudioClip *audioClip1 = new AudioClip("Special_Needs.wav");
+	std::weak_ptr<GameObject> gmAudio1 = CreateGameObject();
+	myAudioSource = gmAudio1.lock()->AddComponent<AudioSource>().lock();
+	myAudioSource.lock()->audioClip = audioClip1;
+	myAudioSource.lock()->Play();
+
+	AudioClip *audioClip0 = new AudioClip("Wind.wav");
+	// AudioClip *audioClip0 = new AudioClip("Special_Needs_44100.mp3");
+	std::weak_ptr<GameObject> gmAudio0 = CreateGameObject("gmAudio0");
+	if (auto gmAudio0Lock = gmAudio0.lock())
+	{
+		auto audioSource0 = gmAudio0Lock->AddComponent<AudioSource>().lock();
+		if (audioSource0)
+		{
+			audioSource0->audioClip = audioClip0;
+			audioSource0->Play();
+		}
+	}
 }
 
 void Game::LoadGameData()
@@ -194,6 +210,13 @@ int lastTime = 0;
 /// </summary>
 void Game::Update()
 {
+	if (InputSystem::GetKeyDown(CROSS))
+		myAudioSource.lock()->Play();
+	else if (InputSystem::GetKeyDown(CIRCLE))
+		myAudioSource.lock()->Pause();
+	else if (InputSystem::GetKeyDown(TRIANGLE))
+		Destroy(myAudioSource);
+
 	// return;
 	Vector3 rot = cameraGO.lock()->GetTransform().lock()->GetRotation();
 	// Vector3 rot = cameraPivot->GetTransform()->GetRotation();

@@ -1,11 +1,11 @@
 #include "debug.h"
 #include "../file_system/file_system.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
 #include "../../psp/debug/debug.h"
 File *file = nullptr;
-#elif __vita__
+#elif defined(__vita__)
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
@@ -22,7 +22,7 @@ void Debug::PrintError(std::string text)
     std::string newString = "\033[31m[ERROR] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    debugText += text;
+    // debugText += text;
 }
 
 /**
@@ -34,14 +34,14 @@ void Debug::PrintWarning(std::string text)
     std::string newString = "\033[33m[WARNING] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    debugText += text;
+    // debugText += text;
 }
 
 void Debug::PrintInConsole(std::string text)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
     // PspDebugPrint(text);
-#elif __vita__
+#elif defined(__vita__)
     // PsVitaDebugPrint(text);
 #else
     std::cout << text;
@@ -50,10 +50,10 @@ void Debug::PrintInConsole(std::string text)
 
 void Debug::PrintInFile(std::string text)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
     if (file)
         file->Write(text);
-#elif __vita__
+#elif defined(__vita__)
     debugFile << text;
     debugFile.flush();
 #else
@@ -71,7 +71,7 @@ void Debug::Print(std::string text)
     std::string newString = "\033[37m" + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    debugText += text;
+    // debugText += text;
 }
 
 /**
@@ -80,14 +80,14 @@ void Debug::Print(std::string text)
  */
 void Debug::Init()
 {
-    debugText = "";
-#ifdef __PSP__
+    // debugText = "";
+#if defined(__PSP__)
     // PspDebugInit();
     // Delete old debug file
     FileSystem::fileSystem->DeleteFile("xenity_engine_debug.txt");
     // Init debug file
     file = new File("xenity_engine_debug.txt");
-#elif __vita__
+#elif defined(__vita__)
     // PsVitaDebugInit();
     //  Create folder
     sceIoMkdir("ux0:/data/xenity_engine", 0777);

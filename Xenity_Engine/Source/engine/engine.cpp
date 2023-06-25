@@ -7,6 +7,7 @@
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
 #include "file_system/mesh_loader/wavefront_loader.h"
+#include "audio/audio_manager.h"
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -85,6 +86,7 @@ int Engine::Init(const std::string exePath)
 	TextManager::CreateFont("Roboto-Regular.ttf");
 	// TextManager::CreateFont("Minecraftia-Regular.ttf");
 	AssetManager::Init();
+	AudioManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
 	// EditorUI::Init();
 	Time::Init();

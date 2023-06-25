@@ -5,6 +5,7 @@
 class GameObject;
 class TextRendererCanvas;
 class Tilemap;
+class AudioSource;
 
 class Game
 {
@@ -26,4 +27,5 @@ private:
 	std::weak_ptr<GameObject> cameraPivot;
 	std::weak_ptr<GameObject> tilemapGO;
 	std::weak_ptr<Tilemap> tilemap;
+	std::weak_ptr<AudioSource> myAudioSource;
 };

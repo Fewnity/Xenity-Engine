@@ -4,6 +4,8 @@
 
 #include "graphics/iDrawable.h"
 #include "lighting/lighting.h"
+#include "audio/audio_source.h"
+#include "audio/audio_manager.h"
 #include "graphics/graphics.h"
 #include "game_elements/gameobject.h"
 #include "asset_managent/asset_manager.h"
@@ -20,7 +22,7 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(std::weak_ptr<GameObject>go)
+void Component::SetGameObject(std::weak_ptr<GameObject> go)
 {
 	if (go.expired())
 		return;
@@ -47,6 +49,10 @@ void Component::SetGameObject(std::weak_ptr<GameObject>go)
 		else if (auto result = std::dynamic_pointer_cast<Light>(shared_from_this()))
 		{
 			AssetManager::AddLight(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<AudioSource>(shared_from_this()))
+		{
+			AudioManager::AddAudioSource(result);
 		}
 	}
 }

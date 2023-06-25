@@ -5,6 +5,8 @@
 #include "../graphics/graphics.h"
 #include "../asset_managent/asset_manager.h"
 #include "../graphics/iDrawable.h"
+#include "../audio/audio_source.h"
+#include "../audio/audio_manager.h"
 #include "../lighting/lighting.h"
 
 #pragma region Constructors / Destructor
@@ -59,6 +61,10 @@ GameObject::~GameObject()
 		{
 			AssetManager::RemoveLight(light);
 		}
+		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(components[i]))
+		{
+			AudioManager::RemoveAudioSource(audioSource);
+		}
 	}
 	components.clear();
 }
@@ -92,6 +98,14 @@ void GameObject::RemoveComponentInternal(std::shared_ptr<Component> sharedCompon
 			{
 				Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
 				AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
+			}
+			else if (auto light = std::dynamic_pointer_cast<Light>(sharedComponent))
+			{
+				AssetManager::RemoveLight(light);
+			}
+			else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(sharedComponent))
+			{
+				AudioManager::RemoveAudioSource(audioSource);
 			}
 			components.erase(components.begin() + i2);
 			componentCount--;
