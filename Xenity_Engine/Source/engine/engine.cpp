@@ -133,8 +133,6 @@ void Engine::UpdateComponents()
 			std::weak_ptr<GameObject> weakGameObjectToCheck = gameObjects[gIndex];
 			if (auto gameObjectToCheck = weakGameObjectToCheck.lock())
 			{
-
-				// GameObject *gameObjectToCheck = gameObjects[gIndex];
 				if (gameObjectToCheck->GetActive())
 				{
 					int componentCount = (int)gameObjectToCheck->components.size();
@@ -273,9 +271,9 @@ void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
 	Game *game = new Game();
-
+	AudioManager::myMutex->audioMutex.lock();
 	game->Start();
-
+	AudioManager::myMutex->audioMutex.unlock();
 	Debug::Print("-------- Game initiated --------");
 
 	bool running = true;
@@ -316,12 +314,16 @@ void Engine::Loop()
 
 		gameLoopBenchmark->Start();
 		// Game loop
+		AudioManager::myMutex->audioMutex.lock();
 		game->Update();
+		AudioManager::myMutex->audioMutex.unlock();
 		gameLoopBenchmark->Stop();
 
 		componentsUpdateBenchmark->Start();
 		// Update all components
+		AudioManager::myMutex->audioMutex.lock();
 		UpdateComponents();
+		AudioManager::myMutex->audioMutex.unlock();
 		componentsUpdateBenchmark->Stop();
 
 		drawIDrawablesBenchmark->Start();

@@ -40,6 +40,12 @@ AudioClip::AudioClip(std::string filePath)
             Debug::Print("Audio clip data: " + std::to_string(mp3.channels) + " " + std::to_string(mp3.sampleRate));
         }
     }
+
+    if (type == Mp3)
+        sampleCount = drmp3_get_pcm_frame_count(&mp3);
+    else if (type == Wav)
+        sampleCount = wav.totalPCMFrameCount;
+
     //////////////////////////////////// OGG
     // int channels, sample_rate;
     // short *data;
@@ -93,4 +99,28 @@ int AudioClip::GetFrenquency()
         rate = wav.sampleRate;
 
     return rate;
+}
+
+int64_t AudioClip::GetSampleCount()
+{
+    return sampleCount;
+}
+
+int64_t AudioClip::GetSeekPosition()
+{
+    int seekPos = 0;
+    if (type == Mp3)
+        seekPos = mp3.currentPCMFrame;
+    else if (type == Wav)
+        seekPos = wav.readCursorInPCMFrames;
+
+    return seekPos;
+}
+
+void AudioClip::ResetSeek()
+{
+    if (type == Mp3)
+        drmp3_seek_to_pcm_frame(&mp3, 0);
+    else if (type == Wav)
+        drwav_seek_to_pcm_frame(&wav, 0);
 }

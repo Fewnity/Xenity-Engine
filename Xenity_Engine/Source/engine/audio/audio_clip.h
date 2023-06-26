@@ -23,9 +23,13 @@ public:
     void FillBuffer(int size, int bufferOffset, short *buff);
     short *GetBuffer(int size);
     int GetFrenquency();
+    int64_t GetSampleCount();
+    void ResetSeek();
+    int64_t GetSeekPosition();
 
 private:
     AudioType type = Null;
     drmp3 mp3;
     drwav wav;
+    int64_t sampleCount = 0;
 };

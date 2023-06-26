@@ -22,6 +22,7 @@ class AudioSource;
 class PlayedSound
 {
 public:
+    ~PlayedSound();
     AudioClip *audioClip = nullptr;
     AudioSource safeAudioSource;
     std::weak_ptr<AudioSource> audioSource;
