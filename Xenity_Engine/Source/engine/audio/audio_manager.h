@@ -17,20 +17,25 @@
 #define SOUND_FREQUENCY 44100
 
 class AudioClip;
+class AudioClipStream;
 class AudioSource;
 
 class PlayedSound
 {
 public:
     ~PlayedSound();
-    AudioClip *audioClip = nullptr;
-    AudioSource safeAudioSource;
-    std::weak_ptr<AudioSource> audioSource;
+    AudioClipStream *audioClipStream = nullptr;
+    std::shared_ptr<AudioSource> audioSource;
     short *buffer = nullptr;
     int seekNext = 0;
     int seekPosition = 0;
     bool needNewRead = false;
     bool needNewRead2 = false;
+
+    float volume = 1;
+    float pan = 0.5;
+    bool loop = true;
+    bool isPlaying = false;
 };
 
 class Channel
@@ -39,7 +44,7 @@ public:
     Channel();
     int port;
 
-    std::vector<PlayedSound *> playedSounds;
+    std::vector<std::shared_ptr<PlayedSound>> playedSounds;
 
 private:
 #if defined(__vita__)
@@ -53,6 +58,24 @@ class MyMutex
 {
 public:
     std::mutex audioMutex;
+    int mutexid;
+    void Lock()
+    {
+#if defined(__vita__)
+        sceKernelLockMutex(mutexid, 1, nullptr);
+#else
+        audioMutex.lock();
+#endif
+    }
+
+    void Unlock()
+    {
+#if defined(__vita__)
+        sceKernelUnlockMutex(mutexid, 1);
+#else
+        audioMutex.unlock();
+#endif
+    }
 };
 
 class AudioManager
@@ -62,8 +85,10 @@ public:
     static std::vector<Channel *> channels;
     static int channelCount;
     static void RemoveAudioSource(std::weak_ptr<AudioSource> audioSource);
-    static void AddAudioSource(std::weak_ptr<AudioSource> audioSource);
-    static void UpdateAudioSource(std::weak_ptr<AudioSource> audioSource);
+
+    static void Update();
+    static void PlayAudioSource(std::weak_ptr<AudioSource> audioSource);
+    static void StopAudioSource(std::weak_ptr<AudioSource> audioSource);
     static bool isAdding;
     static MyMutex *myMutex;
 

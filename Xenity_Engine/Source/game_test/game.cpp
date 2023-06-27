@@ -144,9 +144,18 @@ void Game::Start()
 	light1->SetupPointLight(Color::CreateFromRGBAFloat(1, 0, 0, 1), 1, 10);
 	light1->GetTransform().lock()->SetPosition(Vector3(0, 0, -2));
 
-	AudioClip *audioClip0 = new AudioClip("trap_loop.mp3");
+	// AudioClip *audioClip1 = new AudioClip("Special_Needs.wav");
+	AudioClip *audioClip1 = new AudioClip("trap_loop.mp3");
+	// AudioClip *audioClip1 = new AudioClip("Wind.wav");
+	std::weak_ptr<GameObject> gmAudio1 = CreateGameObject();
+	myAudioSource = gmAudio1.lock()->AddComponent<AudioSource>().lock();
+	myAudioSource.lock()->audioClip = audioClip1;
+	myAudioSource.lock()->Play();
+
+	// AudioClip *audioClip0 = new AudioClip("trap_loop.mp3");
 	// AudioClip *audioClip0 = new AudioClip("Wind.wav");
 	// AudioClip *audioClip0 = new AudioClip("Special_Needs_44100.mp3");
+	AudioClip *audioClip0 = new AudioClip("Special_Needs.wav");
 	std::weak_ptr<GameObject> gmAudio0 = CreateGameObject("gmAudio0");
 	if (auto gmAudio0Lock = gmAudio0.lock())
 	{
@@ -157,13 +166,6 @@ void Game::Start()
 			audioSource0->Play();
 		}
 	}
-
-	// AudioClip *audioClip1 = new AudioClip("Special_Needs.wav");
-	AudioClip *audioClip1 = new AudioClip("Wind.wav");
-	std::weak_ptr<GameObject> gmAudio1 = CreateGameObject();
-	myAudioSource = gmAudio1.lock()->AddComponent<AudioSource>().lock();
-	myAudioSource.lock()->audioClip = audioClip1;
-	myAudioSource.lock()->Play();
 }
 
 void Game::LoadGameData()
@@ -226,6 +228,8 @@ void Game::Update()
 			// myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() - 0.1);
 			myAudioSourceNotLock->SetPanning(myAudioSourceNotLock->GetPanning() - 0.1);
 		// myAudioSource.lock()->Pause();
+		else if (InputSystem::GetKeyDown(SQUARE))
+			myAudioSource.lock()->Stop();
 		else if (InputSystem::GetKeyDown(TRIANGLE))
 			Destroy(myAudioSource);
 	}
@@ -304,13 +308,16 @@ void Game::Update()
 	debugText += "x " + std::to_string(pos.x) + " y " + std::to_string(pos.y) + " z " + std::to_string(pos.z) + "\n";
 #if defined(__PSP__)
 	debugText += "clock: CPU " + std::to_string(scePowerGetCpuClockFrequencyInt()) + ", BUS " + std::to_string(scePowerGetBusClockFrequencyInt()) + "\n";
+	// debugText += "Memory " + std::to_string(pspSdkTotalFreeUserMemSize()) + " bytes, " + std::to_string(pspSdkTotalFreeUserMemSize() / 1000) + " kbytes" + "\n";
+	// debugText += "Video Memory: Free:" + std::to_string(vmemavail()) + " bytes, Total:" + std::to_string(sceGeEdramGetSize()) + "\n";
+
 #elif defined(__vita__)
 	debugText += "clock: ARM " + std::to_string(scePowerGetArmClockFrequency()) + ", BUS " + std::to_string(scePowerGetBusClockFrequency()) + ", GPU " + std::to_string(scePowerGetGpuClockFrequency()) + ", GPU Xbar " + std::to_string(scePowerGetGpuXbarClockFrequency()) + "\n";
 #endif
 	if (auto myAudioSourceNotLock = myAudioSource.lock())
 	{
 		debugText += "Audio: Volume: " + std::to_string(myAudioSourceNotLock->GetVolume()) + ", Panning: " + std::to_string(myAudioSourceNotLock->GetPanning()) + "\n";
-		debugText += "Audio: seek pos: " + std::to_string(myAudioSourceNotLock->audioClip->GetSeekPosition()) + ", Panning: " + std::to_string(myAudioSourceNotLock->audioClip->GetSampleCount());
+		// debugText += "Audio: seek pos: " + std::to_string(myAudioSourceNotLock->audioClip->GetSeekPosition()) + ", Panning: " + std::to_string(myAudioSourceNotLock->audioClip->GetSampleCount());
 	}
 	// debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
 	// debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";

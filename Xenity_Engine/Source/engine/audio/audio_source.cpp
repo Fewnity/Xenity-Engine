@@ -17,7 +17,6 @@ void AudioSource::SetVolume(float volume)
     else if (volume < 0)
         volume = 0;
     this->volume = volume;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::SetPanning(float panning)
@@ -27,35 +26,31 @@ void AudioSource::SetPanning(float panning)
     else if (panning < 0)
         panning = 0;
     this->pan = panning;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::SetLoop(bool isLooping)
 {
     this->loop = isLooping;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::Play()
 {
     isPlaying = true;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+    AudioManager::PlayAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::Resume()
 {
     isPlaying = true;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::Pause()
 {
     isPlaying = false;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }
 
 void AudioSource::Stop()
 {
     isPlaying = false;
-    AudioManager::UpdateAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+    AudioManager::StopAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
 }

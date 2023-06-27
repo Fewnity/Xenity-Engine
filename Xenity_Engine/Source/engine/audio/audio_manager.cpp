@@ -1,5 +1,6 @@
 #include "audio_manager.h"
 #include "audio_clip.h"
+#include "audio_clip_stream.h"
 
 #include "../../xenity.h"
 
@@ -42,42 +43,47 @@ short MixSoundToBuffer(short bufferValue, short soundValue)
 
 void FillChannelBuffer(short *buffer, int length, Channel *channel)
 {
+    for (int i = 0; i < length; i++)
+    {
+        int leftBufferIndex = i * 2;
+        int rightBufferIndex = 1 + i * 2;
+        buffer[leftBufferIndex] = 0;
+        buffer[rightBufferIndex] = 0;
+    }
+
+    AudioManager::myMutex->Lock();
+
     int playedSoundsCount = channel->playedSounds.size();
-    bool bufferCleared = false;
     for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
     {
-        PlayedSound *sound = channel->playedSounds[soundIndex];
-        float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->safeAudioSource.GetPanning())) * 2;
-        float rightPan = std::max(0.0f, std::min(0.5f, sound->safeAudioSource.GetPanning())) * 2;
-        float leftVolume = sound->safeAudioSource.GetVolume() * leftPan;
-        float rightVolume = sound->safeAudioSource.GetVolume() * rightPan;
+        auto sound = channel->playedSounds[soundIndex];
 
-        if (sound->safeAudioSource.GetIsPlaying())
+        float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->pan)) * 2;
+        float rightPan = std::max(0.0f, std::min(0.5f, sound->pan)) * 2;
+        float leftVolume = sound->volume * leftPan;
+        float rightVolume = sound->volume * rightPan;
+        bool isPlaying = sound->isPlaying;
+
+        if (isPlaying)
         {
             for (int i = 0; i < length; i++)
             {
                 int leftBufferIndex = i * 2;
                 int rightBufferIndex = 1 + i * 2;
 
-                if (!bufferCleared)
-                {
-                    buffer[leftBufferIndex] = 0;
-                    buffer[rightBufferIndex] = 0;
-                }
-
                 buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], sound->buffer[sound->seekPosition] * leftVolume);
                 buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], sound->buffer[sound->seekPosition + 1] * rightVolume);
 
-                sound->seekNext += sound->safeAudioSource.audioClip->GetFrenquency();
+                sound->seekNext += sound->audioClipStream->GetFrenquency();
 
                 while (sound->seekNext >= SOUND_FREQUENCY)
                 {
                     sound->seekNext -= SOUND_FREQUENCY;
                     sound->seekPosition += 2;
 
-                    if (sound->safeAudioSource.audioClip != nullptr && (sound->safeAudioSource.audioClip->GetSeekPosition() >= sound->safeAudioSource.audioClip->GetSampleCount()))
+                    if (sound->audioClipStream->GetSeekPosition() >= sound->audioClipStream->GetSampleCount())
                     {
-                        sound->safeAudioSource.audioClip->ResetSeek();
+                        sound->audioClipStream->ResetSeek();
                         sound->seekPosition = 0;
                     }
                     else if (sound->seekPosition == halfBuffSize)
@@ -91,9 +97,9 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
                     }
                 }
             }
-            bufferCleared = true;
         }
     }
+    AudioManager::myMutex->Unlock();
 }
 
 #if defined(__PSP__)
@@ -101,7 +107,6 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
 void audioCallback(void *buf, unsigned int length, void *userdata)
 {
     Channel *channel = AudioManager::channels[(int)userdata];
-
     FillChannelBuffer((short *)buf, length, channel);
 }
 #endif
@@ -111,7 +116,6 @@ int audio_thread(SceSize args, void *argp)
 {
     while (true)
     {
-        AudioManager::myMutex->audioMutex.lock();
         for (int i = 0; i < AudioManager::channelCount; i++)
         {
             Channel *channel = AudioManager::channels[i];
@@ -122,8 +126,6 @@ int audio_thread(SceSize args, void *argp)
                 sceAudioOutOutput(channel->port, wave_buf);
             }
         }
-        AudioManager::myMutex->audioMutex.unlock();
-        // std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 #endif
@@ -132,36 +134,45 @@ int fillAudioBufferThread(SceSize args, void *argp)
 {
     while (true)
     {
-        AudioManager::myMutex->audioMutex.lock();
         for (int i = 0; i < AudioManager::channelCount; i++)
         {
             Channel *channel = AudioManager::channels[i];
 
+            AudioManager::myMutex->Lock();
             int playedSoundsCount = channel->playedSounds.size();
             for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
             {
-                PlayedSound *sound = channel->playedSounds[soundIndex];
-                if (sound->safeAudioSource.audioClip != nullptr)
+                auto sound = channel->playedSounds[soundIndex];
+                if (sound->needNewRead)
                 {
-                    if (sound->needNewRead)
-                    {
-                        sound->safeAudioSource.audioClip->FillBuffer(quarterBuffSize, 0, sound->buffer);
-                        sound->needNewRead = false;
-                    }
-                    else if (sound->needNewRead2)
-                    {
-
-                        sound->safeAudioSource.audioClip->FillBuffer(quarterBuffSize, halfBuffSize, sound->buffer);
-                        sound->needNewRead2 = false;
-                    }
+                    sound->audioClipStream->FillBuffer(quarterBuffSize, 0, sound->buffer);
+                    sound->needNewRead = false;
+                }
+                else if (sound->needNewRead2)
+                {
+                    sound->audioClipStream->FillBuffer(quarterBuffSize, halfBuffSize, sound->buffer);
+                    sound->needNewRead2 = false;
                 }
             }
+            AudioManager::myMutex->Unlock();
         }
-        AudioManager::myMutex->audioMutex.unlock();
-        // std::this_thread::sleep_for(std::chrono::milliseconds(10));
-#if defined(__PSP__)
-        sceKernelDelayThread(10);
-#endif
+
+        if (Engine::valueFree)
+        {
+            AudioManager::myMutex->Lock();
+            Channel *channel = AudioManager::channels[0];
+            int count = channel->playedSounds.size();
+            for (int i = 0; i < count; i++)
+            {
+                auto playedSound = channel->playedSounds[i];
+                playedSound->volume = playedSound->audioSource->GetVolume();
+                playedSound->pan = playedSound->audioSource->GetPanning();
+                playedSound->isPlaying = playedSound->audioSource->GetIsPlaying();
+            }
+            AudioManager::myMutex->Unlock();
+        }
+
+        sceKernelDelayThread(1);
     }
 }
 
@@ -180,16 +191,10 @@ void AudioManager::Init()
     halfBuffSize = buffSize / 2;
     quarterBuffSize = buffSize / 4;
 
-    // AudioClip *music0 = new AudioClip("Special_Needs_22050.mp3");
-    // AudioClip *music0 = new AudioClip("Special_Needs_32000.mp3");
-    // AudioClip *music0 = new AudioClip("Special_Needs_44100.mp3");
-    // AudioClip *music0 = new AudioClip("Special_Needs_48000.mp3");
-    // AudioClip *music0 = new AudioClip("Special_Needs_88200.wav");
-    // AudioClip *music0 = new AudioClip("Wind.mp3");
-    // AudioClip *music0 = new AudioClip("Wind.wav");
-    // AudioClip *music1 = new AudioClip("Ambient Vol 3.mp3");
     myMutex = new MyMutex();
-
+#if defined(__vita__)
+    myMutex->mutexid = sceKernelCreateMutex("MyMutex", 0, 1, NULL);
+#endif
     Channel *newChannel = new Channel();
     channels.push_back(newChannel);
     channelCount++;
@@ -217,52 +222,63 @@ void AudioManager::Init()
 #endif
 }
 
+void AudioManager::Update()
+{
+}
+
 PlayedSound::~PlayedSound()
 {
+    delete audioClipStream;
     if (buffer)
         free(buffer);
 }
 
-/// <summary>
-/// Add an audio source in the audio source list
-/// </summary>
-/// <param name="light"></param>
-void AudioManager::AddAudioSource(std::weak_ptr<AudioSource> audioSource)
+void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
 {
-    PlayedSound *newPlayedSound = new PlayedSound();
-    newPlayedSound->buffer = (short *)calloc(buffSize / 2 * 2, sizeof(short));
-    newPlayedSound->audioSource = audioSource;
-    newPlayedSound->safeAudioSource = AudioSource(*audioSource.lock());
-    newPlayedSound->seekPosition = 0;
-    newPlayedSound->needNewRead = true;
-    newPlayedSound->needNewRead2 = true;
-    channels[0]->playedSounds.push_back(newPlayedSound);
-}
-
-void AudioManager::UpdateAudioSource(std::weak_ptr<AudioSource> audioSource)
-{
+    AudioManager::myMutex->Lock();
     Channel *channel = channels[0];
+    bool found = false;
     if (auto as = audioSource.lock())
     {
+        if (as->audioClip == nullptr)
+            return;
+
         int count = channel->playedSounds.size();
         for (int i = 0; i < count; i++)
         {
-            PlayedSound *playedSound = channel->playedSounds[i];
-            if (playedSound->audioSource.lock() == as)
+            auto playedSound = channel->playedSounds[i];
+            if (playedSound->audioSource == as)
             {
-                playedSound->safeAudioSource = AudioSource(*as);
+                found = true;
                 break;
             }
         }
     }
+
+    if (!found)
+    {
+        std::shared_ptr<PlayedSound> newPlayedSound = std::make_shared<PlayedSound>();
+        newPlayedSound->buffer = (short *)calloc(buffSize / 2 * 2, sizeof(short));
+        AudioClipStream *newAudioClipStream = new AudioClipStream();
+        newPlayedSound->audioClipStream = newAudioClipStream;
+        newAudioClipStream->OpenStream(audioSource.lock()->audioClip->filePath);
+        newPlayedSound->audioSource = audioSource.lock();
+        newPlayedSound->seekPosition = 0;
+        newPlayedSound->needNewRead = true;
+        newPlayedSound->needNewRead2 = true;
+
+        newPlayedSound->volume = newPlayedSound->audioSource->GetVolume();
+        newPlayedSound->pan = newPlayedSound->audioSource->GetPanning();
+        newPlayedSound->isPlaying = newPlayedSound->audioSource->GetIsPlaying();
+        newPlayedSound->loop = true;
+        channels[0]->playedSounds.push_back(newPlayedSound);
+        AudioManager::myMutex->Unlock();
+    }
 }
 
-/// <summary>
-/// Remove an audio source from the audio source list
-/// </summary>
-/// <param name="light"></param>
-void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
+void AudioManager::StopAudioSource(std::weak_ptr<AudioSource> audioSource)
 {
+    AudioManager::myMutex->Lock();
     int audioSourceIndex = 0;
     bool found = false;
     Channel *channel = channels[0];
@@ -272,7 +288,7 @@ void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
         int count = channel->playedSounds.size();
         for (int i = 0; i < count; i++)
         {
-            if (channel->playedSounds[i]->audioSource.lock() == as)
+            if (channel->playedSounds[i]->audioSource == as)
             {
                 audioSourceIndex = i;
                 found = true;
@@ -283,7 +299,39 @@ void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
 
     if (found)
     {
-        delete channel->playedSounds[audioSourceIndex];
         channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
     }
+    AudioManager::myMutex->Unlock();
+}
+
+/// <summary>
+/// Remove an audio source from the audio source list
+/// </summary>
+/// <param name="light"></param>
+void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
+{
+    AudioManager::myMutex->Lock();
+    int audioSourceIndex = 0;
+    bool found = false;
+    Channel *channel = channels[0];
+
+    if (auto as = audioSource.lock())
+    {
+        int count = channel->playedSounds.size();
+        for (int i = 0; i < count; i++)
+        {
+            if (channel->playedSounds[i]->audioSource == as)
+            {
+                audioSourceIndex = i;
+                found = true;
+                break;
+            }
+        }
+    }
+
+    if (found)
+    {
+        channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
+    }
+    AudioManager::myMutex->Unlock();
 }

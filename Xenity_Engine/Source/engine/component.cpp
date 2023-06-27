@@ -22,21 +22,21 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(std::weak_ptr<GameObject> go)
+void Component::SetGameObject(std::weak_ptr<GameObject> newGameObject)
 {
-	if (go.expired())
+	if (newGameObject.expired())
 		return;
 
 	// Check if the component has been just instanciated
 	bool firstUse = false;
-	if (gameObject.expired())
+	if (this->gameObject.expired())
 	{
 		Engine::componentsListDirty = true;
 		firstUse = true;
 	}
 
-	this->gameObject = go;
-	this->transform = go.lock()->GetTransform();
+	this->gameObject = newGameObject;
+	this->transform = newGameObject.lock()->GetTransform();
 
 	if (firstUse)
 	{
@@ -49,10 +49,6 @@ void Component::SetGameObject(std::weak_ptr<GameObject> go)
 		else if (auto result = std::dynamic_pointer_cast<Light>(shared_from_this()))
 		{
 			AssetManager::AddLight(result);
-		}
-		else if (auto result = std::dynamic_pointer_cast<AudioSource>(shared_from_this()))
-		{
-			AudioManager::AddAudioSource(result);
 		}
 	}
 }

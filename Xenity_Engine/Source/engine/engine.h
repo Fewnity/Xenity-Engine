@@ -11,7 +11,8 @@ class Component;
 void Destroy(std::weak_ptr<GameObject> gameObject);
 void Destroy(std::weak_ptr<Component> component);
 
-class Engine {
+class Engine
+{
 public:
 	static int Init(const std::string exePath);
 	static void Stop();
@@ -24,11 +25,12 @@ public:
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static int gameObjectCount;
-	static Renderer* renderer;
+	static Renderer *renderer;
 	static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
-	static std::vector<std::weak_ptr <Component>> componentsToDestroy;
+	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
+	static bool valueFree;
 
 private:
 	static void UpdateComponents();

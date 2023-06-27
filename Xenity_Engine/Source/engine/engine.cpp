@@ -13,6 +13,7 @@
 #include "../psp/gu2gl.h"
 #include "../psp/callbacks.h"
 #include <psppower.h>
+#include <pspge.h>
 #elif __vita__
 #include <psp2/kernel/processmgr.h>
 #include <psp2/power.h>
@@ -37,6 +38,7 @@ bool Engine::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer *Engine::renderer = nullptr;
+bool Engine::valueFree = true;
 
 /// <summary>
 /// Init engine
@@ -47,6 +49,7 @@ int Engine::Init(const std::string exePath)
 #if defined(__PSP__)
 	SetupCallbacks();
 	scePowerSetClockFrequency(333, 333, 166);
+
 #elif defined(__vita__)
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
@@ -63,6 +66,7 @@ int Engine::Init(const std::string exePath)
 
 	Engine::renderer = new RendererOpengl();
 	Engine::renderer->Init();
+
 #ifdef __PSP__
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 #elif __vita__
@@ -72,6 +76,16 @@ int Engine::Init(const std::string exePath)
 #endif
 	Window::Init();
 	Engine::renderer->Setup();
+#if defined(__PSP__)
+	if (sceGeEdramSetSize(0x400000) == 0)
+	{
+		Debug::Print("---------------- sceGeEdramSetSize ok --------");
+	}
+	else
+	{
+		Debug::Print("---------------- sceGeEdramSetSize ERROR --------");
+	}
+#endif
 	Graphics::Init();
 	Debug::Print("-------- Audio Not implemented --------");
 
@@ -271,9 +285,11 @@ void Engine::Loop()
 {
 	Debug::Print("Initiating game...");
 	Game *game = new Game();
-	AudioManager::myMutex->audioMutex.lock();
+
+	valueFree = false;
 	game->Start();
-	AudioManager::myMutex->audioMutex.unlock();
+	valueFree = true;
+
 	Debug::Print("-------- Game initiated --------");
 
 	bool running = true;
@@ -312,19 +328,25 @@ void Engine::Loop()
 #endif
 		// EditorUI::NewFrame();
 
-		gameLoopBenchmark->Start();
 		// Game loop
-		AudioManager::myMutex->audioMutex.lock();
+		gameLoopBenchmark->Start();
+
+		valueFree = false;
 		game->Update();
-		AudioManager::myMutex->audioMutex.unlock();
+		valueFree = true;
+
 		gameLoopBenchmark->Stop();
 
-		componentsUpdateBenchmark->Start();
 		// Update all components
-		AudioManager::myMutex->audioMutex.lock();
+		componentsUpdateBenchmark->Start();
+
+		valueFree = false;
 		UpdateComponents();
-		AudioManager::myMutex->audioMutex.unlock();
+		valueFree = true;
+
 		componentsUpdateBenchmark->Stop();
+
+		AudioManager::Update();
 
 		drawIDrawablesBenchmark->Start();
 		Window::UpdateScreen();
