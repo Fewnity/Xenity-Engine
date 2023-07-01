@@ -45,10 +45,14 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 if(MODE STREQUAL "psp")
 message(STATUS "BUILD PSP")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -D_PSP_FW_VERSION=660")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -D_PSP_FW_VERSION=660 -LARGE_MEMORY=1")
+
+# add_definitions("-DPSP_FW_VERSION=500")
+# add_definitions("-DPSP_FW_VERSION=500")
+add_definitions("-LARGE_MEMORY=1")
 
 include_directories(${PSPDEV}/psp/include/freetype2)
 
@@ -64,6 +68,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspdisplay
     pspaudiolib
     pspaudio
+    pspnet
+    pspnet_apctl
+    pspnet_resolver
+    psputility
     m
     pspge
     stdc++
@@ -79,6 +87,7 @@ create_pbp_file(
     BACKGROUND_PATH NULL
     PREVIEW_PATH NULL
     TITLE ${APP_NAME}
+    BUILD_PRX 1
 )
 elseif(MODE STREQUAL "psvita")
 message(STATUS "BUILD PSVITA")
@@ -130,6 +139,7 @@ png
   SceUsbd_stub 
   SceTouch_stub
   SceAudio_stub
+  SceNet_stub
   zip 
   vitashark 
   SceShaccCgExt 

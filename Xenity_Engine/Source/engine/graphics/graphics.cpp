@@ -94,6 +94,10 @@ void Graphics::DrawAllDrawable()
 	{
 		orderedIDrawable[i].lock()->Draw();
 	}
+
+	if (NetworkManager::needDrawMenu)
+		NetworkManager::DrawNetworkSetupMenu();
+
 	Engine::renderer->EndFrame();
 }
 

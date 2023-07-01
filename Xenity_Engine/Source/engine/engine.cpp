@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "engine_settings.h"
 #include "../xenity.h"
 // #include "../xenity_editor.h"
 #include "../game_test/game.h"
@@ -8,6 +9,7 @@
 #include "graphics/renderer/renderer_opengl.h"
 #include "file_system/mesh_loader/wavefront_loader.h"
 #include "audio/audio_manager.h"
+#include "network/network.h"
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -58,7 +60,9 @@ int Engine::Init(const std::string exePath)
 #endif
 
 	/* Initialize libraries */
+	NetworkManager::Init();
 	Debug::Init();
+
 	Performance::Init();
 	new FileSystem();
 	FileSystem::fileSystem->InitFileSystem(exePath);
@@ -300,7 +304,8 @@ void Engine::Loop()
 		// Update time and inputs
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
-		// InputSystem::Read();
+		NetworkManager::Update();
+		Debug::Update();
 
 #if defined(_WIN32) || defined(_WIN64)
 		SDL_Event event;

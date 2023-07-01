@@ -1,5 +1,6 @@
 #include "debug.h"
 #include "../file_system/file_system.h"
+#include "../network/network.h"
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -12,17 +13,19 @@ File *file = nullptr;
 
 std::ofstream Debug::debugFile;
 std::string Debug::debugText = "";
+Socket *Debug::socket;
 
 /**
  * Print an error in the console and the debug file
  */
 void Debug::PrintError(std::string text)
 {
+    PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[31m[ERROR] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    // debugText += text;
+    debugText += text;
 }
 
 /**
@@ -30,11 +33,12 @@ void Debug::PrintError(std::string text)
  */
 void Debug::PrintWarning(std::string text)
 {
+    PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[33m[WARNING] " + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    // debugText += text;
+    debugText += text;
 }
 
 void Debug::PrintInConsole(std::string text)
@@ -67,11 +71,27 @@ void Debug::PrintInFile(std::string text)
  */
 void Debug::Print(std::string text)
 {
+    PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[37m" + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    // debugText += text;
+    debugText += text;
+}
+
+void Debug::PrintInOnlineConsole(std::string text)
+{
+    if (socket)
+    {
+        text += char(3);
+        socket->SendData(text);
+    }
+}
+
+void Debug::ConnectToOnlineConsole()
+{
+    Debug::Print("Connect to online console...");
+    socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
 }
 
 /**
@@ -80,7 +100,6 @@ void Debug::Print(std::string text)
  */
 void Debug::Init()
 {
-    // debugText = "";
 #if defined(__PSP__)
     // PspDebugInit();
     // Delete old debug file
@@ -99,4 +118,8 @@ void Debug::Init()
 
 #endif
     Print("-------- Debug initiated --------");
+}
+
+void Debug::Update()
+{
 }

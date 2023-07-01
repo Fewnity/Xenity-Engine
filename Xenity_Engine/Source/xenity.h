@@ -84,3 +84,5 @@
 // Noise
 #include "engine/noise/noise.h"
 
+// Network
+#include "engine/network/network.h"
