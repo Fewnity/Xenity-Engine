@@ -171,8 +171,7 @@ int fillAudioBufferThread(SceSize args, void *argp)
             }
             AudioManager::myMutex->Unlock();
         }
-
-        sceKernelDelayThread(1);
+        sceKernelDelayThread(16);
     }
 }
 
@@ -272,8 +271,8 @@ void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
         newPlayedSound->isPlaying = newPlayedSound->audioSource->GetIsPlaying();
         newPlayedSound->loop = true;
         channels[0]->playedSounds.push_back(newPlayedSound);
-        AudioManager::myMutex->Unlock();
     }
+    AudioManager::myMutex->Unlock();
 }
 
 void AudioManager::StopAudioSource(std::weak_ptr<AudioSource> audioSource)
