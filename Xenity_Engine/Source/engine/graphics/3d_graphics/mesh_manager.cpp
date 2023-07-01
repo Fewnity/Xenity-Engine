@@ -21,6 +21,7 @@ ProfilerBenchmark *meshBenchmark = nullptr;
 void MeshManager::Init()
 {
     meshBenchmark = new ProfilerBenchmark("Mesh");
+    Debug::Print("-------- Mesh Manager initiated --------");
 }
 
 MeshData *MeshManager::LoadMesh(std::string path)

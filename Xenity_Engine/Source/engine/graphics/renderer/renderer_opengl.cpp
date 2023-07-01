@@ -38,6 +38,8 @@ int RendererOpengl::Init()
 	result = glfwInit();
 #endif
 
+	Debug::Print("-------- OpenGL Renderer initiated --------");
+
 	return result;
 }
 

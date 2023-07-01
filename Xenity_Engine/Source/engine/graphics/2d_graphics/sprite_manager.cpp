@@ -27,7 +27,6 @@ ProfilerBenchmark *spriteBenchmark = nullptr;
  */
 void SpriteManager::Init()
 {
-    // scePowerSetClockFrequency(333, 333, 167);
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
     // Create sprite mesh
@@ -46,6 +45,8 @@ void SpriteManager::Init()
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
+
+    Debug::Print("-------- Sprite Manager initiated --------");
 }
 
 /**

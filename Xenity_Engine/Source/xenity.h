@@ -32,20 +32,20 @@
 #include "engine/tools/profiler_benchmark.h"
 #include "engine/tools/shape_spawner.h"
 
-// // Time
+// Time
 #include "engine/time/time.h"
 
-// // Scenes
+// Scenes
 // // #include "scene_manager/scene.h"
 // // #include "scene_manager/SceneManager.h"
 
-// // Lighting
+// Lighting
 #include "engine/lighting/lighting.h"
 
-// // inputs
+// inputs
 #include "engine/inputs/input_system.h"
 
-// // Graphics
+// Graphics
 #include "engine/graphics/camera.h"
 #include "engine/graphics/camera_projection_types.h"
 #include "engine/graphics/graphics.h"
@@ -66,20 +66,21 @@
 #include "engine/graphics/ui/text_renderer_canvas.h"
 #include "engine/graphics/ui/TextAlignments.h"
 
-// // Files
+// Files
 #include "engine/file_system/file_system.h"
 
-// // Debug
+// Debug
 #include "engine/debug/debug.h"
 #include "engine/debug/performance.h"
 
-// // Audio
+// Audio
 #include "engine/audio/audio_clip.h"
 #include "engine/audio/audio_source.h"
 
-// // IA
+// IA
 #include "engine/pathfinding/astar.h"
 // #include "engine/pathfinding/dijkstras.h"
 
-// // Noise
+// Noise
 #include "engine/noise/noise.h"
+

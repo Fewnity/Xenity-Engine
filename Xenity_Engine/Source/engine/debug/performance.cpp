@@ -1,5 +1,6 @@
 #include "performance.h"
 #include "../time/time.h"
+#include "../debug/debug.h"
 
 int Performance::drawCallCount = 0;
 int Performance::updatedMaterialCount = 0;
@@ -18,7 +19,7 @@ int Performance::LastDrawCallCount = 0;
  */
 void Performance::Init()
 {
-	profilerList = std::unordered_map<std::string, ProfilerValue *>();
+	Debug::Print("-------- Profiler initiated --------");
 }
 
 /**

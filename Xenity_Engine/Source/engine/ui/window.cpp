@@ -4,6 +4,7 @@
 #endif
 #include "../engine.h"
 #include "../graphics/renderer/renderer.h"
+#include "../debug/debug.h"
 
 int Window::width = 0;
 int Window::height = 0;
@@ -18,9 +19,9 @@ void Window::SetResolution(const int width_, const int height_)
     width = width_;
     height = height_;
 #if defined(_WIN32) || defined(_WIN64)
-    if(window != nullptr)
+    if (window != nullptr)
 #endif
-    OnResize();
+        OnResize();
 }
 
 void Window::OnResize()
@@ -55,6 +56,7 @@ void Window::Init()
     SDL_GL_SetSwapInterval(1);
     OnResize();
 #endif
+    Debug::Print("-------- Window initiated --------");
 }
 
 void Window::UpdateScreen()
