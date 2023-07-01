@@ -58,6 +58,9 @@
     <ClCompile Include="Source\game_test\game.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
     <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
+    <ClCompile Include="Source\engine\audio\audio_source.cpp" />
+    <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
+    <ClCompile Include="Source\engine\network\network.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -125,6 +128,9 @@
     <ClInclude Include="Source\game_test\game.h" />
     <ClInclude Include="Source\engine\audio\audio_clip.h" />
     <ClInclude Include="Source\engine\audio\audio_manager.h" />
+    <ClInclude Include="Source\engine\audio\audio_source.h" />
+    <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />
+    <ClInclude Include="Source\engine\network\network.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

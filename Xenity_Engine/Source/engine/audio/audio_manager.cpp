@@ -135,7 +135,11 @@ int audio_thread(SceSize args, void *argp)
 }
 #endif
 
+#if defined(__vita__) || defined(__PSP__)
 int fillAudioBufferThread(SceSize args, void *argp)
+#else
+int fillAudioBufferThread()
+#endif
 {
     while (true)
     {
@@ -180,9 +184,12 @@ int fillAudioBufferThread(SceSize args, void *argp)
             }
             AudioManager::myMutex->Unlock();
         }
+#if defined(__vita__) || defined(__PSP__)
         sceKernelDelayThread(16);
+#endif
     }
 }
+
 
 Channel::Channel()
 {

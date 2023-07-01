@@ -2,10 +2,23 @@
 
 #include "../debug/debug.h"
 
+#if defined(__vita__) || defined(__PSP__)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#elif defined(LINUX)
+#include <sys/socket.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include <unistd.h>
+#else // WINDOWS
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#endif
+
 #include <fcntl.h>
 #include <cstring>
 
@@ -25,9 +38,9 @@
 #include "../../psp/gu2gl.h"
 pspUtilityNetconfData NetworkManager::pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
-bool NetworkManager::done = false;
 int NetworkManager::result = -1;
 #endif
+bool NetworkManager::done = false;
 
 std::vector<Socket *> NetworkManager::sockets;
 bool NetworkManager::needDrawMenu = true;
@@ -56,7 +69,8 @@ void NetworkManager::Init()
     pspNetworkData.adhocparam = &adhocparam;
 
     sceUtilityNetconfInitStart(&pspNetworkData);
-#elif defined(__vita__)
+//#elif defined(__vita__)
+#else
     Debug::ConnectToOnlineConsole();
 #endif
 }
@@ -145,10 +159,12 @@ Socket *NetworkManager::CreateSocket(std::string address, int port)
     struct sockaddr_in serv_addr;
 
     // memset(recvBuff, '0', sizeof(recvBuff));
+    WSADATA WSAData;
+    WSAStartup(MAKEWORD(2, 0), &WSAData);
 
     if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        Debug::Print("\n Error : Could not create socket");
+        Debug::PrintError("Could not create socket");
         return nullptr;
     }
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -158,20 +174,25 @@ Socket *NetworkManager::CreateSocket(std::string address, int port)
 
     if (inet_pton(AF_INET, address.c_str(), &serv_addr.sin_addr) <= 0)
     {
-        Debug::Print("\n inet_pton error occured");
+        Debug::PrintError("inet_pton error occured");
         return nullptr;
     }
     if (connect(newSocketId, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        Debug::Print("\n Error : Connect Failed");
+        Debug::PrintError("Connect Failed");
         return nullptr;
     }
+#if defined(_WIN32) || defined(_WIN64)
+    unsigned long nonblocking_long = false ? 0 : 1;
+    ioctlsocket(newSocketId, FIONBIO, &nonblocking_long);
+#else
     int i = 1;
-    if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char *)&i, sizeof(i)) < 0)
+    if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)
     {
         Debug::Print("Failed to change socket flags");
         return nullptr;
     }
+#endif
 
     Socket *myNewSocket = new Socket(newSocketId);
     return myNewSocket;
