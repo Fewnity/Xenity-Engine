@@ -300,7 +300,7 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 		glDisable(GL_BLEND);
 	}
 
-	if (settings.useLighting)
+	if (EngineSettings::useLighting && settings.useLighting)
 	{
 		glEnable(GL_LIGHTING);
 	}

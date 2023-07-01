@@ -10,6 +10,7 @@ File *file = nullptr;
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
+#include "../engine_settings.h"
 
 std::ofstream Debug::debugFile;
 std::string Debug::debugText = "";
@@ -20,6 +21,9 @@ Socket *Debug::socket;
  */
 void Debug::PrintError(std::string text)
 {
+    if (!EngineSettings::useDebugger)
+        return;
+
     PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[31m[ERROR] " + text;
@@ -33,6 +37,9 @@ void Debug::PrintError(std::string text)
  */
 void Debug::PrintWarning(std::string text)
 {
+    if (!EngineSettings::useDebugger)
+        return;
+
     PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[33m[WARNING] " + text;
@@ -71,6 +78,9 @@ void Debug::PrintInFile(std::string text)
  */
 void Debug::Print(std::string text)
 {
+    if (!EngineSettings::useDebugger)
+        return;
+
     PrintInOnlineConsole(text);
     text += '\n';
     std::string newString = "\033[37m" + text;
@@ -90,6 +100,9 @@ void Debug::PrintInOnlineConsole(std::string text)
 
 void Debug::ConnectToOnlineConsole()
 {
+    if (EngineSettings::useOnlineDebugger)
+        return;
+
     Debug::Print("Connect to online console...");
     socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
 }
@@ -100,6 +113,9 @@ void Debug::ConnectToOnlineConsole()
  */
 void Debug::Init()
 {
+    if (!EngineSettings::useDebugger)
+        return;
+
 #if defined(__PSP__)
     // PspDebugInit();
     // Delete old debug file

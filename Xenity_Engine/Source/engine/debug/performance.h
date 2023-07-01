@@ -45,8 +45,6 @@ public:
 	static int GetUpdatedMaterialCount();
 	static std::unordered_map<std::string, ProfilerValue *> profilerList;
 	static void Update();
-	static void EnableProfiler(bool enable);
-	static bool IsProfilerEnabled();
 
 private:
 	static void ResetProfiler();
@@ -56,5 +54,4 @@ private:
 
 	static int tickCount;
 	static float averageCoolDown;
-	static bool profilerEnabled;
 };

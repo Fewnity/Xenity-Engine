@@ -1,6 +1,7 @@
 #include "profiler_benchmark.h"
 
 #include "../debug/performance.h"
+#include "../engine_settings.h"
 
 ProfilerBenchmark::ProfilerBenchmark(std::string name)
 {
@@ -18,14 +19,14 @@ ProfilerBenchmark::~ProfilerBenchmark()
 
 void ProfilerBenchmark::Start()
 {
-	if (Performance::IsProfilerEnabled())
+	if (EngineSettings::useProfiler)
 		bench->Start();
 }
 
 void ProfilerBenchmark::Stop()
 {
 	bench->Stop();
-	if (Performance::IsProfilerEnabled())
+	if (EngineSettings::useProfiler)
 	{
 		profilerValue->AddValue(bench->GetMicroSeconds());
 	}

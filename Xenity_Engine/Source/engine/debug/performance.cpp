@@ -1,12 +1,12 @@
 #include "performance.h"
 #include "../time/time.h"
 #include "../debug/debug.h"
+#include "../engine_settings.h"
 
 int Performance::drawCallCount = 0;
 int Performance::updatedMaterialCount = 0;
 std::unordered_map<std::string, ProfilerValue *> Performance::profilerList;
 
-bool Performance::profilerEnabled = true;
 int Performance::tickCount = 0;
 float Performance::averageCoolDown = 0;
 int Performance::LastDrawCallCount = 0;
@@ -82,39 +82,21 @@ int Performance::GetUpdatedMaterialCount()
  */
 void Performance::Update()
 {
-	tickCount++;
-	averageCoolDown += Time::GetUnscaledDeltaTime();
-	if (averageCoolDown >= 1)
+	if (EngineSettings::useProfiler)
 	{
-		for (auto &kv : Performance::profilerList)
+		tickCount++;
+		averageCoolDown += Time::GetUnscaledDeltaTime();
+		if (averageCoolDown >= 1)
 		{
-			kv.second->average = kv.second->addedValue / tickCount;
-			kv.second->addedValue = 0;
+			for (auto& kv : Performance::profilerList)
+			{
+				kv.second->average = kv.second->addedValue / tickCount;
+				kv.second->addedValue = 0;
+			}
+			averageCoolDown = 0;
+			tickCount = 0;
 		}
-		averageCoolDown = 0;
-		tickCount = 0;
 	}
-}
-
-/**
- * @brief Enable or disable the profiler
- *
- * @param enable
- */
-void Performance::EnableProfiler(bool enable)
-{
-	profilerEnabled = enable;
-}
-
-/**
- * @brief Get if the profiler is enabled or disabled
- *
- * @return true
- * @return false
- */
-bool Performance::IsProfilerEnabled()
-{
-	return profilerEnabled;
 }
 
 /**
