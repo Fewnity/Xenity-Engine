@@ -28,6 +28,9 @@ int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex *AudioManager::myMutex = nullptr;
 
+ProfilerBenchmark *audioBenchmark = nullptr;
+ProfilerBenchmark *audioBenchmark2 = nullptr;
+
 #define audiosize 2048
 
 short MixSoundToBuffer(short bufferValue, short soundValue)
@@ -106,8 +109,10 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
 
 void audioCallback(void *buf, unsigned int length, void *userdata)
 {
+    audioBenchmark2->Start();
     Channel *channel = AudioManager::channels[(int)userdata];
     FillChannelBuffer((short *)buf, length, channel);
+    audioBenchmark2->Stop();
 }
 #endif
 
@@ -145,13 +150,17 @@ int fillAudioBufferThread(SceSize args, void *argp)
                 auto sound = channel->playedSounds[soundIndex];
                 if (sound->needNewRead)
                 {
+                    audioBenchmark->Start();
                     sound->audioClipStream->FillBuffer(quarterBuffSize, 0, sound->buffer);
                     sound->needNewRead = false;
+                    audioBenchmark->Stop();
                 }
                 else if (sound->needNewRead2)
                 {
+                    audioBenchmark->Start();
                     sound->audioClipStream->FillBuffer(quarterBuffSize, halfBuffSize, sound->buffer);
                     sound->needNewRead2 = false;
+                    audioBenchmark->Stop();
                 }
             }
             AudioManager::myMutex->Unlock();
@@ -187,6 +196,8 @@ Channel::Channel()
 
 void AudioManager::Init()
 {
+    audioBenchmark = new ProfilerBenchmark("Audio");
+    audioBenchmark2 = new ProfilerBenchmark("Audio2");
     halfBuffSize = buffSize / 2;
     quarterBuffSize = buffSize / 4;
 
