@@ -272,6 +272,16 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 
 void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings)
 {
+	GLfloat material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+	GLfloat material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
+	GLfloat material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* NOT default value */
+	GLfloat material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+	//glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+	//glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
+	//glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
+
 	if (settings.invertFaces)
 	{
 		glFrontFace(GL_CW);
@@ -443,19 +453,29 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	float lightAttenuation[] = {attenuation};
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
 
-	// Create light components
-	float ambientLight[] = {rgba.r, rgba.g, rgba.b, 1.0f};
-	float diffuseLight[] = {rgba.r, rgba.g, rgba.b, 1.0f};
-	float specularLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
+	float typeIntensity = 1;
+	if (type == Light::Directional)
+		typeIntensity = 5;
+	else if (type == Light::Point)
+		typeIntensity = 2;
+
+	float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
+	float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	float position[] = {lightPosition.x, lightPosition.y, lightPosition.z, 1};
 
 	// Assign created components to GL_LIGHT0
-	if (type == Light::Directional)
-		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, ambientLight);
-	else
-		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, specularLight);
+	if (type == Light::Directional) 
+	{
+		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, lightColor);
+		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, zeroLight);
+	}
+	else 
+	{
+		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, zeroLight);
+		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, lightColor);
+	}
+	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, zeroLight);
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
 #elif defined(__PSP__)
 
@@ -490,10 +510,10 @@ void RendererOpengl::Setlights(Camera *camera)
 		if (light->type == Light::Directional)
 		{
 			Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform().lock()->GetRotation().y, -light->GetTransform().lock()->GetRotation().x) * 1000;
-			SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, 1, light->color, light->type, light->quadratic);
+			SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
 		}
 		else
-			SetLight(i, light->GetTransform().lock()->GetPosition(), 1, light->color, light->type, light->quadratic);
+			SetLight(i, light->GetTransform().lock()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
 	}
 }
 
