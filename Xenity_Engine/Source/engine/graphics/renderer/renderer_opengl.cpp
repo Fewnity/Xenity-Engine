@@ -272,15 +272,16 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 
 void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings)
 {
-	GLfloat material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-	GLfloat material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-	GLfloat material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* NOT default value */
-	GLfloat material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-	//glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-	//glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-	//glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
-	//glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
+	float material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};  /* default value */
+	float material_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};  /* default value */
+	float material_specular[] = {0.0f, 0.0f, 0.0f, 1.0f}; /* NOT default value */
+	float material_emission[] = {0.0f, 0.0f, 0.0f, 1.0f}; /* default value */
+	// glMaterial(GL_DIFFUSE, 0xFFFFFFFF);
+	//  glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+	//  glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+	//  glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+	//  glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
+	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
 
 	if (settings.invertFaces)
 	{
@@ -459,18 +460,18 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	else if (type == Light::Point)
 		typeIntensity = 2;
 
-	float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
-	float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float lightColor[] = {rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f};
+	float zeroLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
 	float position[] = {lightPosition.x, lightPosition.y, lightPosition.z, 1};
 
 	// Assign created components to GL_LIGHT0
-	if (type == Light::Directional) 
+	if (type == Light::Directional)
 	{
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, lightColor);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, zeroLight);
 	}
-	else 
+	else
 	{
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, zeroLight);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, lightColor);
@@ -478,14 +479,20 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, zeroLight);
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
 #elif defined(__PSP__)
-
+	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
 	ScePspFVector3 pos = {lightPosition.x, lightPosition.y, lightPosition.z};
 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
 	if (type == Light::Directional)
+	{
 		sceGuLightColor(lightIndex, GU_AMBIENT, color.GetUnsignedIntABGR());
+		sceGuLightColor(lightIndex, GU_DIFFUSE, 0x00000000);
+	}
 	else
+	{
 		sceGuLightColor(lightIndex, GU_DIFFUSE, color.GetUnsignedIntABGR());
-	// sceGuLightColor(0, GU_SPECULAR, 0xffffffff);
+		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
+	}
+	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
 	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
 #endif
 }
