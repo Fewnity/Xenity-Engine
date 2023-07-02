@@ -69,7 +69,7 @@ void NetworkManager::Init()
     pspNetworkData.adhocparam = &adhocparam;
 
     sceUtilityNetconfInitStart(&pspNetworkData);
-//#elif defined(__vita__)
+// #elif defined(__vita__)
 #else
     Debug::ConnectToOnlineConsole();
 #endif
@@ -158,10 +158,11 @@ Socket *NetworkManager::CreateSocket(std::string address, int port)
 
     struct sockaddr_in serv_addr;
 
-    // memset(recvBuff, '0', sizeof(recvBuff));
+// memset(recvBuff, '0', sizeof(recvBuff));
+#if defined(_WIN32) || defined(_WIN64)
     WSADATA WSAData;
     WSAStartup(MAKEWORD(2, 0), &WSAData);
-
+#endif
     if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         Debug::PrintError("Could not create socket");
@@ -187,7 +188,7 @@ Socket *NetworkManager::CreateSocket(std::string address, int port)
     ioctlsocket(newSocketId, FIONBIO, &nonblocking_long);
 #else
     int i = 1;
-    if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)
+    if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char *)&i, sizeof(i)) < 0)
     {
         Debug::Print("Failed to change socket flags");
         return nullptr;
