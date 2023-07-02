@@ -23,6 +23,8 @@ public:
 class Color
 {
 public:
+	static Color CreateFromRGB(int r, int g, int b, int a);
+	static Color CreateFromRGBFloat(float r, float g, float b, float a);
 	static Color CreateFromRGBA(int r, int g, int b, int a);
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 	void SetFromRGBA(int r, int g, int b, int a);

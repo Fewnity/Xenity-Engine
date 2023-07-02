@@ -4,6 +4,36 @@
 #include "../../debug/debug.h"
 
 /**
+ * @brief Create color from RGB
+ *
+ * @param r Red [0;255]
+ * @param g Green [0;255]
+ * @param b Blue [0;255]
+ * @return Color
+ */
+Color Color::CreateFromRGB(int r, int g, int b, int a)
+{
+	Color color = Color();
+	color.SetFromRGBA(r, g, b, 255);
+	return color;
+}
+
+/**
+ * @brief Create color from RGB float
+ *
+ * @param r Red [0.0f;1.0f]
+ * @param g Green [0.0f;1.0f]
+ * @param b Blue [0.0f;1.0f]
+ * @return Color
+ */
+Color Color::CreateFromRGBFloat(float r, float g, float b, float a)
+{
+	Color color = Color();
+	color.SetFromRGBAfloat(r, g, b, 1);
+	return color;
+}
+
+/**
  * @brief Create color from RGBA
  *
  * @param r Red [0;255]
