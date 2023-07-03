@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "graphics/iDrawable.h"
+#include "graphics/camera.h"
 #include "lighting/lighting.h"
 #include "audio/audio_source.h"
 #include "audio/audio_manager.h"
@@ -49,6 +50,11 @@ void Component::SetGameObject(std::weak_ptr<GameObject> newGameObject)
 		else if (auto result = std::dynamic_pointer_cast<Light>(shared_from_this()))
 		{
 			AssetManager::AddLight(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<Camera>(shared_from_this()))
+		{
+			if (Graphics::usedCamera.expired())
+				Graphics::usedCamera = std::dynamic_pointer_cast<Camera>(shared_from_this());
 		}
 	}
 }

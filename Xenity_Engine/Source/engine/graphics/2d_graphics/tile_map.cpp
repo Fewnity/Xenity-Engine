@@ -180,7 +180,6 @@ void Tilemap::FillChunks()
 				else
 				{
 					// Create tile with vertices and indices
-					
 
 					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff);
 					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff);
@@ -292,32 +291,35 @@ void Tilemap::Draw()
  */
 void Tilemap::DrawChunks()
 {
-	Vector3 cameraPos = Graphics::usedCamera->GetTransform().lock()->GetPosition();
-
-	float xArea = Graphics::usedCamera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
-	float yArea = Graphics::usedCamera->GetProjectionSize() + chunkSize;
-
-	float xChunkPosition;
-	float yChunkPosition;
-
-	auto transform = GetTransform().lock();
-
-	// For each chunk, check if the camera can see it
-	for (int x = 0; x < chunkCount; x++)
+	if (auto camera = Graphics::usedCamera.lock())
 	{
-		xChunkPosition = x * (float)chunkSize;
-		if (xChunkPosition <= cameraPos.x + xArea && xChunkPosition >= cameraPos.x - xArea)
+		Vector3 cameraPos = camera->GetTransform().lock()->GetPosition();
+
+		float xArea = camera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
+		float yArea = camera->GetProjectionSize() + chunkSize;
+
+		float xChunkPosition;
+		float yChunkPosition;
+
+		auto transform = GetTransform().lock();
+
+		// For each chunk, check if the camera can see it
+		for (int x = 0; x < chunkCount; x++)
 		{
-			for (int y = 0; y < chunkCount; y++)
+			xChunkPosition = x * (float)chunkSize;
+			if (xChunkPosition <= cameraPos.x + xArea && xChunkPosition >= cameraPos.x - xArea)
 			{
-				yChunkPosition = y * (float)chunkSize;
-				if (yChunkPosition <= cameraPos.y + yArea && yChunkPosition >= cameraPos.y - yArea)
+				for (int y = 0; y < chunkCount; y++)
 				{
-					TilemapChunk* chunk = chunks[x + y * chunkCount];
-					// Draw each texture
-					for (int textureI = 0; textureI < textureSize; textureI++)
+					yChunkPosition = y * (float)chunkSize;
+					if (yChunkPosition <= cameraPos.y + yArea && yChunkPosition >= cameraPos.y - yArea)
 					{
-						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false, true, false);
+						TilemapChunk *chunk = chunks[x + y * chunkCount];
+						// Draw each texture
+						for (int textureI = 0; textureI < textureSize; textureI++)
+						{
+							MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false, true, false);
+						}
 					}
 				}
 			}

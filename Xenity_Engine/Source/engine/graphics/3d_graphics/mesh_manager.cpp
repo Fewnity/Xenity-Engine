@@ -44,8 +44,12 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     if ((meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
         return;
 
+    auto camera = Graphics::usedCamera.lock();
+    if (!camera)
+        return;
+
     // meshBenchmark->Start();
-    Graphics::usedCamera->UpdateProjection();
+    camera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
     Engine::renderer->SetTransform(position, rotation, scale, true);

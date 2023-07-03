@@ -70,7 +70,7 @@ public:
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void ResetView() = 0;
-	virtual void SetCameraPosition(Camera *camera) = 0;
+	virtual void SetCameraPosition(std::weak_ptr<Camera> camera) = 0;
 	virtual void ResetTransform() = 0;
 	virtual void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform) = 0;
 	virtual void MoveTransform(Vector3 position) = 0;
@@ -78,10 +78,10 @@ public:
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
 	virtual void DrawMeshData(MeshData *meshData, RenderingSettings settings) = 0;
 	virtual unsigned int CreateNewTexture() = 0;
-	virtual void SetTextureData(Texture* texture, unsigned int textureType, const unsigned char* buffer) = 0;
+	virtual void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer) = 0;
 	virtual void Clear() = 0;
 
 private:
-	virtual void Setlights(Camera* camera) = 0;
+	virtual void Setlights(std::weak_ptr<Camera> camera) = 0;
 	virtual void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
 };

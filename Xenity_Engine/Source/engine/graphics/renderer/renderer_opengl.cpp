@@ -140,28 +140,31 @@ void RendererOpengl::ResetView()
 #endif
 }
 
-void RendererOpengl::SetCameraPosition(Camera *camera)
+void RendererOpengl::SetCameraPosition(std::weak_ptr<Camera> camera)
 {
-	auto transform = camera->GetTransform().lock();
+	if (auto cameraLock = camera.lock())
+	{
+		auto transform = cameraLock->GetTransform().lock();
 
 #if defined(__PSP__)
-	glMatrixMode(GL_VIEW);
-	glLoadIdentity();
+		glMatrixMode(GL_VIEW);
+		glLoadIdentity();
 
-	gluRotateZ((-transform->GetRotation().z) / 180.0f * 3.14159f);
-	gluRotateX(transform->GetRotation().x / 180.0f * 3.14159f);
-	gluRotateY((transform->GetRotation().y + 180) / 180.0f * 3.14159f);
+		gluRotateZ((-transform->GetRotation().z) / 180.0f * 3.14159f);
+		gluRotateX(transform->GetRotation().x / 180.0f * 3.14159f);
+		gluRotateY((transform->GetRotation().y + 180) / 180.0f * 3.14159f);
 
-	glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
+		glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
 #else
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glRotatef(-transform->GetRotation().z, 0, 0, 1);
-	glRotatef(transform->GetRotation().x, 1, 0, 0);
-	glRotatef(transform->GetRotation().y + 180, 0, 1, 0);
-	glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glRotatef(-transform->GetRotation().z, 0, 0, 1);
+		glRotatef(transform->GetRotation().x, 1, 0, 0);
+		glRotatef(transform->GetRotation().y + 180, 0, 1, 0);
+		glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
 #endif
-	Setlights(camera);
+		Setlights(camera);
+	}
 }
 
 void RendererOpengl::ResetTransform()
@@ -505,22 +508,25 @@ void RendererOpengl::DisableAllLight()
 	}
 }
 
-void RendererOpengl::Setlights(Camera *camera)
+void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 {
-	auto transform = camera->GetTransform().lock();
-
-	DisableAllLight();
-	int lightCount = AssetManager::GetLightCount();
-	for (int i = 0; i < lightCount; i++)
+	if (auto cameraLock = camera.lock())
 	{
-		auto light = AssetManager::GetLight(i).lock();
-		if (light->type == Light::Directional)
+		auto transform = cameraLock->GetTransform().lock();
+
+		DisableAllLight();
+		int lightCount = AssetManager::GetLightCount();
+		for (int i = 0; i < lightCount; i++)
 		{
-			Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform().lock()->GetRotation().y, -light->GetTransform().lock()->GetRotation().x) * 1000;
-			SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
+			auto light = AssetManager::GetLight(i).lock();
+			if (light->type == Light::Directional)
+			{
+				Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform().lock()->GetRotation().y, -light->GetTransform().lock()->GetRotation().x) * 1000;
+				SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
+			}
+			else
+				SetLight(i, light->GetTransform().lock()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
 		}
-		else
-			SetLight(i, light->GetTransform().lock()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
 	}
 }
 

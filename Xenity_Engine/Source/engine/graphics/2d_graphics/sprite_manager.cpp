@@ -60,38 +60,40 @@ void SpriteManager::Init()
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color)
 {
     spriteBenchmark->Start();
-    // texture = TextManager::fonts[0]->fontAtlas;
+    if (auto camera = Graphics::usedCamera.lock())
+    {
+        // texture = TextManager::fonts[0]->fontAtlas;
 
-    spriteMeshData->unifiedColor = color;
+        spriteMeshData->unifiedColor = color;
 
-    // Get sprite scale from texture size
-    float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-    float w = texture->GetWidth() * scaleCoef;
-    float h = texture->GetHeight() * scaleCoef;
+        // Get sprite scale from texture size
+        float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+        float w = texture->GetWidth() * scaleCoef;
+        float h = texture->GetHeight() * scaleCoef;
 
-    Graphics::usedCamera->UpdateProjection();
-    Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+        camera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 
-    // Move/Rotate/Scale the sprite
-    Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
-    Engine::renderer->SetTransform(position, rotation, scl, true);
+        // Move/Rotate/Scale the sprite
+        Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
+        Engine::renderer->SetTransform(position, rotation, scl, true);
 
-    // Set draw settings
-    RenderingSettings renderSettings = RenderingSettings();
+        // Set draw settings
+        RenderingSettings renderSettings = RenderingSettings();
 
-    if (scale.x * scale.y < 0)
-        renderSettings.invertFaces = true;
-    else
-        renderSettings.invertFaces = false;
+        if (scale.x * scale.y < 0)
+            renderSettings.invertFaces = true;
+        else
+            renderSettings.invertFaces = false;
 
-    renderSettings.useBlend = true;
-    renderSettings.useDepth = false;
-    renderSettings.useTexture = true;
-    renderSettings.useLighting = false;
+        renderSettings.useBlend = true;
+        renderSettings.useDepth = false;
+        renderSettings.useTexture = true;
+        renderSettings.useLighting = false;
 
-    // Draw the sprite
-    Engine::renderer->BindTexture(texture);
-    Engine::renderer->DrawMeshData(spriteMeshData, renderSettings);
-
+        // Draw the sprite
+        Engine::renderer->BindTexture(texture);
+        Engine::renderer->DrawMeshData(spriteMeshData, renderSettings);
+    }
     spriteBenchmark->Stop();
 }

@@ -6,9 +6,9 @@
 #include "../file_system/mesh_loader/wavefront_loader.h"
 #include "../graphics/3d_graphics/mesh_data.h"
 
-Camera *Graphics::usedCamera = nullptr;
-int Graphics::usedShaderProgram = -1;
-Material *Graphics::usedMaterial = nullptr;
+std::weak_ptr<Camera> Graphics::usedCamera;
+// int Graphics::usedShaderProgram = -1;
+// Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 SkyBox *Graphics::skybox = nullptr;
@@ -74,25 +74,31 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-	Vector3 camPos = usedCamera->GetTransform().lock()->GetPosition();
-	TextManager::ClearTexts();
 
 	Graphics::OrderDrawables();
 
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
 
-	float scale = 10.01f;
-	MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
-	MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
-	MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
-	MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
-	MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
-	MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
-
-	for (int i = 0; i < iDrawablesCount; i++)
+	if (auto usedCameraLock = usedCamera.lock())
 	{
-		orderedIDrawable[i].lock()->Draw();
+		Vector3 camPos = usedCameraLock->GetTransform().lock()->GetPosition();
+		TextManager::ClearTexts();
+		if (skybox)
+		{
+			float scale = 10.01f;
+			MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
+			MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
+			MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
+			MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
+			MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
+			MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
+		}
+
+		for (int i = 0; i < iDrawablesCount; i++)
+		{
+			orderedIDrawable[i].lock()->Draw();
+		}
 	}
 
 	if (NetworkManager::needDrawMenu)

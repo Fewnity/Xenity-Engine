@@ -23,15 +23,15 @@ public:
 class Graphics
 {
 public:
-	static Camera *usedCamera;
-	static int usedShaderProgram;
+	static std::weak_ptr<Camera> usedCamera;
+	// static int usedShaderProgram;
 	static void SetSkybox(SkyBox *skybox_);
 	static void Init();
 	static void DrawAllDrawable();
-	static Material *usedMaterial;
+	// static Material *usedMaterial;
 	static void OrderDrawables();
-	static void AddDrawable(std::weak_ptr < IDrawable>drawableToPlace);
-	static void RemoveDrawable(std::weak_ptr < IDrawable> drawableToPlace);
+	static void AddDrawable(std::weak_ptr<IDrawable> drawableToPlace);
+	static void RemoveDrawable(std::weak_ptr<IDrawable> drawableToPlace);
 
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 	static int iDrawablesCount;

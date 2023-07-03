@@ -104,107 +104,110 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
  */
 void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas)
 {
-    textBenchmark->Start();
-    int textLenght = (int)text.size();
-
-    if (textLenght == 0)
+    if (auto cameraLock = Graphics::usedCamera.lock())
     {
-        textBenchmark->Stop();
-        return;
-    }
+        textBenchmark->Start();
+        int textLenght = (int)text.size();
 
-    Font *font = fonts[0];
-
-    // Get the size of the text
-    TextInfo textInfo = GetTextInfomations(text, textLenght, font, 1);
-
-    // Set text start offset
-    float totalY = 0;
-    for (int i = 0; i < textInfo.lineCount; i++)
-    {
-        totalY += textInfo.maxLineHeight;
-    }
-
-    float x = 0;
-    float y = 0;
-    int line = 0;
-    if (horizontalAlignment == H_Left)
-        x = -textInfo.linesInfo[line].lenght;
-    else if (horizontalAlignment == H_Center)
-        x = -textInfo.linesInfo[line].lenght * 0.5f;
-
-    y = textInfo.linesInfo[line].y1 * 0.25f;
-    y += -textInfo.maxLineHeight;
-
-    if (verticalAlignment == V_Center)
-    {
-        y += totalY * 0.5f;
-    }
-    else if (verticalAlignment == V_Top)
-    {
-        y += totalY;
-    }
-
-    // Create empty mesh
-    int charCountToDraw = textLenght - (textInfo.lineCount - 1);
-    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
-    mesh->unifiedColor = color;
-    meshes.push_back(mesh);
-
-    int drawnCharIndex = 0;
-    for (int i = 0; i < textLenght; i++)
-    {
-        char c = text[i];
-        Character *ch = font->Characters[c];
-
-        if (c == '\n')
+        if (textLenght == 0)
         {
-            line++;
+            textBenchmark->Stop();
+            return;
+        }
 
-            if (horizontalAlignment == H_Left)
-                x = -textInfo.linesInfo[line].lenght;
-            else if (horizontalAlignment == H_Center)
-                x = -textInfo.linesInfo[line].lenght * 0.5f;
+        Font *font = fonts[0];
+
+        // Get the size of the text
+        TextInfo textInfo = GetTextInfomations(text, textLenght, font, 1);
+
+        // Set text start offset
+        float totalY = 0;
+        for (int i = 0; i < textInfo.lineCount; i++)
+        {
+            totalY += textInfo.maxLineHeight;
+        }
+
+        float x = 0;
+        float y = 0;
+        int line = 0;
+        if (horizontalAlignment == H_Left)
+            x = -textInfo.linesInfo[line].lenght;
+        else if (horizontalAlignment == H_Center)
+            x = -textInfo.linesInfo[line].lenght * 0.5f;
+
+        y = textInfo.linesInfo[line].y1 * 0.25f;
+        y += -textInfo.maxLineHeight;
+
+        if (verticalAlignment == V_Center)
+        {
+            y += totalY * 0.5f;
+        }
+        else if (verticalAlignment == V_Top)
+        {
+            y += totalY;
+        }
+
+        // Create empty mesh
+        int charCountToDraw = textLenght - (textInfo.lineCount - 1);
+        MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
+        mesh->unifiedColor = color;
+        meshes.push_back(mesh);
+
+        int drawnCharIndex = 0;
+        for (int i = 0; i < textLenght; i++)
+        {
+            char c = text[i];
+            Character *ch = font->Characters[c];
+
+            if (c == '\n')
+            {
+                line++;
+
+                if (horizontalAlignment == H_Left)
+                    x = -textInfo.linesInfo[line].lenght;
+                else if (horizontalAlignment == H_Center)
+                    x = -textInfo.linesInfo[line].lenght * 0.5f;
+                else
+                    x = 0;
+
+                y += -textInfo.maxLineHeight;
+            }
             else
-                x = 0;
+            {
+                AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
+                drawnCharIndex++;
+                x += ch->rightAdvance;
+            }
+        }
 
-            y += -textInfo.maxLineHeight;
+#ifdef __PSP__
+        sceKernelDcacheWritebackInvalidateAll(); // Very important
+#endif
+
+        // Set projection
+        if (!canvas)
+        {
+            cameraLock->UpdateProjection();
+            Engine::renderer->SetCameraPosition(Graphics::usedCamera);
         }
         else
         {
-            AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
-            drawnCharIndex++;
-            x += ch->rightAdvance;
+            Engine::renderer->SetProjection2D(5, 0.03f, 100);
+            Engine::renderer->ResetView();
         }
+
+        auto transform = weakTransform.lock();
+        SetTextPosition(transform, canvas);
+
+        Engine::renderer->BindTexture(font->fontAtlas);
+
+        bool invertFaces = false;
+        if (transform->GetScale().x * transform->GetScale().y < 0)
+            invertFaces = true;
+
+        DrawTextMesh(mesh, !canvas, invertFaces);
+        textBenchmark->Stop();
     }
-
-#ifdef __PSP__
-    sceKernelDcacheWritebackInvalidateAll(); // Very important
-#endif
-
-    // Set projection
-    if (!canvas)
-    {
-        Graphics::usedCamera->UpdateProjection();
-        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-    }
-    else
-    {
-        Engine::renderer->SetProjection2D(5, 0.03f, 100);
-        Engine::renderer->ResetView();
-    }
-
-    auto transform = weakTransform.lock();
-    SetTextPosition(transform, canvas);
-
-    Engine::renderer->BindTexture(font->fontAtlas);
-
-    bool invertFaces = false;
-    if (transform->GetScale().x * transform->GetScale().y < 0)
-        invertFaces = true;
-
-    DrawTextMesh(mesh, !canvas, invertFaces);
-    textBenchmark->Stop();
 }
 
 /**
@@ -355,7 +358,7 @@ Font *TextManager::CreateFont(std::string filePath)
     font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize, false);
     font->fontAtlas->SetFilter(Texture::Bilinear);
     font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
-    
+
     free(atlas);
 
     FT_Done_Face(face);

@@ -20,10 +20,6 @@ Camera::Camera()
 	componentName = "Camera";
 
 	this->fov = 60;
-	if (Graphics::usedCamera == nullptr)
-	{
-		Graphics::usedCamera = this;
-	}
 	UpdateProjection();
 }
 
