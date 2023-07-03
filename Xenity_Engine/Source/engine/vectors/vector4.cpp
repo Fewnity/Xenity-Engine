@@ -1,7 +1,9 @@
 #include "vector4.h"
 
 #define _USE_MATH_DEFINES
+#if defined(__PSP__)
 #undef __STRICT_ANSI__
+#endif
 #include <cmath>
 
 #pragma region Constructors / Destructor
@@ -31,6 +33,21 @@ Vector4::Vector4(const float fillValue)
 }
 
 #pragma endregion
+
+Vector4 Vector4::Normalise()
+{
+	float ls = this->x * this->x + this->y * this->y + this->z * this->z + this->w * this->w;
+	float length;
+	if (ls != 0)
+	{
+		length = sqrtf(ls);
+		return Vector4(this->x / length, this->y / length, this->z / length, this->w / length);
+	}
+	else
+	{
+		return Vector4(0, 0, 0, 0);
+	}
+}
 
 #pragma region Operators
 

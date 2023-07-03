@@ -1,7 +1,9 @@
 #include "vector2_int.h"
 
 #define _USE_MATH_DEFINES
+#if defined(__PSP__)
 #undef __STRICT_ANSI__
+#endif
 #include <cmath>
 
 #pragma region Constructors

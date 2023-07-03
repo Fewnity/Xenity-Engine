@@ -1,16 +1,21 @@
 #pragma once
 
+class Vector3;
+class Vector2Int;
+
 class Vector2
 {
 public:
 	Vector2();
 	Vector2(const float x, const float y);
 	Vector2(const float fillValue);
+	Vector2(const Vector3 vect3);
+	Vector2(const Vector2Int vect2Int);
 
 	float x;
 	float y;
 
-	Vector2 normalize();
+	Vector2 Normalize();
 	float magnitude();
 	static float Distance(const Vector2 a, const Vector2 b);
 };

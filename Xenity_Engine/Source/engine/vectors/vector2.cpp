@@ -1,7 +1,11 @@
 #include "vector2.h"
+#include "vector2_int.h"
+#include "vector3.h"
 
 #define _USE_MATH_DEFINES
+#if defined(__PSP__)
 #undef __STRICT_ANSI__
+#endif
 #include <cmath>
 
 #pragma region Constructors
@@ -24,10 +28,22 @@ Vector2::Vector2(const float fillValue)
 	this->y = fillValue;
 }
 
+Vector2::Vector2(const Vector3 vect3)
+{
+	this->x = vect3.x;
+	this->y = vect3.y;
+}
+
+Vector2::Vector2(const Vector2Int vect2Int)
+{
+	this->x = vect2Int.x;
+	this->y = vect2Int.y;
+}
+
 #pragma endregion
 
 // From https://github.com/microsoft/referencesource/blob/5697c29004a34d80acdaf5742d7e699022c64ecd/System.Numerics/System/Numerics/Vector2.cs
-Vector2 Vector2::normalize()
+Vector2 Vector2::Normalize()
 {
 	float ls = this->x * this->x + this->y * this->y;
 	float invNorm = 0;

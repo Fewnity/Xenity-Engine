@@ -6,6 +6,7 @@ public:
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);
 	Vector4(const float fillValue);
+	Vector4 Normalise();
 	float x;
 	float y;
 	float z;
