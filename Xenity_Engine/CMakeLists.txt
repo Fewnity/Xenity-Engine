@@ -57,8 +57,14 @@ add_definitions("-LARGE_MEMORY=1")
 include_directories(${PSPDEV}/psp/include/freetype2)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    stdc++
     png
     jpeg
+    m
+    pspge
+    freetype
+    bz2
+    z
     pspgu
     pspgum
     pspctrl
@@ -72,12 +78,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspnet_apctl
     pspnet_resolver
     psputility
-    m
-    pspge
-    stdc++
-    freetype
-    bz2
-    z
 )
 
 # Create an EBOOT.PBP file
