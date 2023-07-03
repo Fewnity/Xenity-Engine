@@ -16,6 +16,7 @@ public:
 	class Tile
 	{
 	public:
+		Texture* texture = nullptr;
 		int textureId = 0;
 	};
 

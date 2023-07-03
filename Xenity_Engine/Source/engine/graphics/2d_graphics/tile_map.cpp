@@ -310,7 +310,7 @@ void Tilemap::DrawChunks()
 					// Draw each texture
 					for (int textureI = 0; textureI < textureSize; textureI++)
 					{
-						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false, false);
+						MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetLocalScale(), textures[textureI + 1], chunk->meshes[textureI], false, true, false);
 					}
 				}
 			}

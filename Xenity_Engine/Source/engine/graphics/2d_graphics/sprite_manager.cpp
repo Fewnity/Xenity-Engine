@@ -87,6 +87,7 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     renderSettings.useBlend = true;
     renderSettings.useDepth = false;
     renderSettings.useTexture = true;
+    renderSettings.useLighting = false;
 
     // Draw the sprite
     Engine::renderer->BindTexture(texture);

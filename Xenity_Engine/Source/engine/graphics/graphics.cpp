@@ -83,12 +83,12 @@ void Graphics::DrawAllDrawable()
 	Engine::renderer->Clear();
 
 	float scale = 10.01f;
-	MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false);
-	MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false);
-	MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false);
-	MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false);
-	MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false);
-	MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false);
+	MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
+	MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
+	MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
+	MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
+	MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
+	MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
