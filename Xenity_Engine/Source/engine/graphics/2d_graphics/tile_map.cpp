@@ -159,26 +159,33 @@ void Tilemap::FillChunks()
 				int indiceOff = mesh->index_count;
 				int verticeOff = mesh->vertice_count;
 
+				float unitCoef = 100.0f / textures[tile->textureId]->GetPixelPerUnit();
+				float w = textures[tile->textureId]->GetWidth() * unitCoef;
+				float h = textures[tile->textureId]->GetHeight() * unitCoef;
+				Vector2 spriteSize = Vector2(0.5 * w / 100.0f, 0.5f * h / 100.0f);
+
 				if (!useIndices)
 				{
 					// Create tile with vertices only
-					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 1 + verticeOff);
-					mesh->AddVertex(0.0f, 1.0f, 0.5f - x, -0.5f + y, 0.0f, 2 + verticeOff);
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 1 + verticeOff);
+					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 2 + verticeOff);
 
-					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
-					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 4 + verticeOff);
-					mesh->AddVertex(1.0f, 0.0f, -0.5f - x, 0.5f + y, 0.0f, 5 + verticeOff);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff);
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 4 + verticeOff);
+					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 5 + verticeOff);
 
 					mesh->vertice_count += 6;
 				}
 				else
 				{
 					// Create tile with vertices and indices
-					mesh->AddVertex(1.0f, 1.0f, -0.5f - x, -0.5f + y, 0.0f, 0 + verticeOff);
-					mesh->AddVertex(0.0f, 1.0f, 0.5f - x, -0.5f + y, 0.0f, 1 + verticeOff);
-					mesh->AddVertex(0.0f, 0.0f, 0.5f - x, 0.5f + y, 0.0f, 2 + verticeOff);
-					mesh->AddVertex(1.0f, 0.0f, -0.5f - x, 0.5f + y, 0.0f, 3 + verticeOff);
+					
+
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff);
+					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff);
+					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff);
 
 					mesh->indices[0 + indiceOff] = 0 + verticeOff;
 					mesh->indices[1 + indiceOff] = 2 + verticeOff;
