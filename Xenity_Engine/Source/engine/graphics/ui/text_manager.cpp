@@ -20,7 +20,6 @@
 #include FT_FREETYPE_H
 
 std::vector<Font *> TextManager::fonts;
-std::vector<MeshData *> TextManager::meshes;
 ProfilerBenchmark *textBenchmark = nullptr;
 
 /**
@@ -29,7 +28,6 @@ ProfilerBenchmark *textBenchmark = nullptr;
  */
 void TextManager::Init()
 {
-    meshes = std::vector<MeshData *>();
     textBenchmark = new ProfilerBenchmark("Text");
 }
 
@@ -50,20 +48,6 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces)
     renderSettings.useLighting = for3D;
 
     Engine::renderer->DrawMeshData(mesh, renderSettings);
-}
-
-/**
- * @brief Delete texts meshes
- *
- */
-void TextManager::ClearTexts()
-{
-    int meshCount = meshes.size();
-    for (int meshIndex = 0; meshIndex < meshCount; meshIndex++)
-    {
-        delete meshes[meshIndex];
-    }
-    meshes.clear();
 }
 
 /**
@@ -90,7 +74,86 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
 
     Vector3 scl = transform->GetScale();
     scl.x = -scl.x;
-    Engine::renderer->SetTransform(pos, transform->GetRotation(), scl, true);
+    Vector3 rot = transform->GetRotation();
+    Engine::renderer->SetTransform(pos, rot, scl, true);
+}
+
+MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color)
+{
+    textBenchmark->Start();
+    int textLenght = (int)text.size();
+
+    // if (textLenght == 0)
+    // {
+    //     textBenchmark->Stop();
+    //     return;
+    // }
+
+    // Set text start offset
+    float totalY = 0;
+    for (int i = 0; i < textInfo->lineCount; i++)
+    {
+        totalY += textInfo->maxLineHeight;
+    }
+
+    float x = 0;
+    float y = 0;
+    int line = 0;
+    if (horizontalAlignment == H_Left)
+        x = -textInfo->linesInfo[line].lenght;
+    else if (horizontalAlignment == H_Center)
+        x = -textInfo->linesInfo[line].lenght * 0.5f;
+
+    y = textInfo->linesInfo[line].y1 * 0.25f;
+    y += -textInfo->maxLineHeight;
+
+    if (verticalAlignment == V_Center)
+    {
+        y += totalY * 0.5f;
+    }
+    else if (verticalAlignment == V_Top)
+    {
+        y += totalY;
+    }
+
+    // Create empty mesh
+    int charCountToDraw = textLenght - (textInfo->lineCount - 1);
+    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
+    mesh->unifiedColor = color;
+
+    int drawnCharIndex = 0;
+    Font *font = fonts[0];
+    for (int i = 0; i < textLenght; i++)
+    {
+        char c = text[i];
+        Character *ch = font->Characters[c];
+
+        if (c == '\n')
+        {
+            line++;
+
+            if (horizontalAlignment == H_Left)
+                x = -textInfo->linesInfo[line].lenght;
+            else if (horizontalAlignment == H_Center)
+                x = -textInfo->linesInfo[line].lenght * 0.5f;
+            else
+                x = 0;
+
+            y += -textInfo->maxLineHeight;
+        }
+        else
+        {
+            AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
+            drawnCharIndex++;
+            x += ch->rightAdvance;
+        }
+    }
+
+#ifdef __PSP__
+    sceKernelDcacheWritebackInvalidateAll(); // Very important
+#endif
+    textBenchmark->Stop();
+    return mesh;
 }
 
 /**
@@ -102,87 +165,11 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
  * @param transform Transform
  * @param canvas Is for canvas
  */
-void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas)
+void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh)
 {
     if (auto cameraLock = Graphics::usedCamera.lock())
     {
         textBenchmark->Start();
-        int textLenght = (int)text.size();
-
-        if (textLenght == 0)
-        {
-            textBenchmark->Stop();
-            return;
-        }
-
-        Font *font = fonts[0];
-
-        // Get the size of the text
-        TextInfo textInfo = GetTextInfomations(text, textLenght, font, 1);
-
-        // Set text start offset
-        float totalY = 0;
-        for (int i = 0; i < textInfo.lineCount; i++)
-        {
-            totalY += textInfo.maxLineHeight;
-        }
-
-        float x = 0;
-        float y = 0;
-        int line = 0;
-        if (horizontalAlignment == H_Left)
-            x = -textInfo.linesInfo[line].lenght;
-        else if (horizontalAlignment == H_Center)
-            x = -textInfo.linesInfo[line].lenght * 0.5f;
-
-        y = textInfo.linesInfo[line].y1 * 0.25f;
-        y += -textInfo.maxLineHeight;
-
-        if (verticalAlignment == V_Center)
-        {
-            y += totalY * 0.5f;
-        }
-        else if (verticalAlignment == V_Top)
-        {
-            y += totalY;
-        }
-
-        // Create empty mesh
-        int charCountToDraw = textLenght - (textInfo.lineCount - 1);
-        MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
-        mesh->unifiedColor = color;
-        meshes.push_back(mesh);
-
-        int drawnCharIndex = 0;
-        for (int i = 0; i < textLenght; i++)
-        {
-            char c = text[i];
-            Character *ch = font->Characters[c];
-
-            if (c == '\n')
-            {
-                line++;
-
-                if (horizontalAlignment == H_Left)
-                    x = -textInfo.linesInfo[line].lenght;
-                else if (horizontalAlignment == H_Center)
-                    x = -textInfo.linesInfo[line].lenght * 0.5f;
-                else
-                    x = 0;
-
-                y += -textInfo.maxLineHeight;
-            }
-            else
-            {
-                AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
-                drawnCharIndex++;
-                x += ch->rightAdvance;
-            }
-        }
-
-#ifdef __PSP__
-        sceKernelDcacheWritebackInvalidateAll(); // Very important
-#endif
 
         // Set projection
         if (!canvas)
@@ -198,7 +185,7 @@ void TextManager::DrawText(std::string text, HorizontalAlignment horizontalAlign
 
         auto transform = weakTransform.lock();
         SetTextPosition(transform, canvas);
-
+        Font *font = fonts[0];
         Engine::renderer->BindTexture(font->fontAtlas);
 
         bool invertFaces = false;
@@ -384,10 +371,10 @@ Font *TextManager::CreateFont(std::string filePath)
  * @param scale Scale of the text
  * @return TextInfo
  */
-TextInfo TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
+TextInfo *TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
 {
-    TextInfo textInfos = TextInfo();
-    textInfos.linesInfo.push_back(LineInfo());
+    TextInfo *textInfos = new TextInfo();
+    textInfos->linesInfo.push_back(LineInfo());
 
     int currentLine = 0;
     float higherY = 0;
@@ -398,16 +385,16 @@ TextInfo TextManager::GetTextInfomations(std::string &text, int textLen, Font *f
         Character *ch = font->Characters[text[i]];
         if (text[i] == '\n')
         {
-            textInfos.linesInfo[currentLine].lenght *= scale;
-            textInfos.linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
-            textInfos.linesInfo.push_back(LineInfo());
+            textInfos->linesInfo[currentLine].lenght *= scale;
+            textInfos->linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
+            textInfos->linesInfo.push_back(LineInfo());
             currentLine++;
             higherY = 0;
             lowerY = 0;
         }
         else
         {
-            textInfos.linesInfo[currentLine].lenght += ch->rightAdvance;
+            textInfos->linesInfo[currentLine].lenght += ch->rightAdvance;
             if (higherY < ch->rightBearing.y)
                 higherY = ch->rightBearing.y;
 
@@ -416,11 +403,11 @@ TextInfo TextManager::GetTextInfomations(std::string &text, int textLen, Font *f
                 lowerY = low;
         }
     }
-    textInfos.linesInfo[currentLine].lenght *= scale;
-    textInfos.linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
+    textInfos->linesInfo[currentLine].lenght *= scale;
+    textInfos->linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
 
-    textInfos.maxLineHeight = font->maxCharHeight * scale;
-    textInfos.lineCount = currentLine + 1;
+    textInfos->maxLineHeight = font->maxCharHeight * scale;
+    textInfos->lineCount = currentLine + 1;
 
     return textInfos;
 }

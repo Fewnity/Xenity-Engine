@@ -1,6 +1,7 @@
 #include "text_renderer_canvas.h"
 
 #include "../../../xenity.h"
+#include "../../graphics/3d_graphics/mesh_data.h"
 
 #pragma region Constructors / Destructor
 
@@ -29,6 +30,24 @@ int TextRendererCanvas::GetDrawPriority() const
 
 #pragma endregion
 
+void TextRendererCanvas::SetText(std::string text)
+{
+	if (this->text != text)
+	{
+		this->text = text;
+		isTextInfoDirty = true;
+	}
+}
+
+void TextRendererCanvas::SetFont(Font *font)
+{
+	if (this->font != font)
+	{
+		this->font = font;
+		isTextInfoDirty = true;
+	}
+}
+
 /// <summary>
 /// Draw text
 /// </summary>
@@ -36,7 +55,16 @@ void TextRendererCanvas::Draw()
 {
 	if (GetGameObject().lock()->GetLocalActive() && GetIsEnabled() /* && shader != nullptr*/)
 	{
-		TextManager::DrawText(text, horizontalAligment, verticalAlignment, GetTransform(), color, true);
-		// UiManager::RenderTextCanvas(text, position.x, position.y, position.z, size, lineSpacing, color, font, horizontalAligment, verticalAlignment, *shader);
+		if (isTextInfoDirty)
+		{
+			if (textInfo)
+				delete textInfo;
+			if (mesh)
+				delete mesh;
+			textInfo = TextManager::GetTextInfomations(text, text.size(), font, 1);
+			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color);
+			isTextInfoDirty = false;
+		}
+		TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, true, mesh);
 	}
 }

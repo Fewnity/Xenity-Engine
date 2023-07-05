@@ -9,6 +9,8 @@
 #include "../../engine.h"
 
 class Font;
+class TextInfo;
+class MeshData;
 // class Shader;
 
 class TextRendererCanvas : public IDrawable
@@ -18,15 +20,13 @@ public:
 	// TextRendererCanvas(Font* font, float size, Shader* shader);
 	~TextRendererCanvas();
 	Vector3 position = Vector3(0, 0, 0);
-	std::string text;
 	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
 	int GetDrawPriority() const;
 
-	Font *font = nullptr;
 	// Shader *shader = nullptr;
-	HorizontalAlignment horizontalAligment = H_Center;
+	HorizontalAlignment horizontalAlignment = H_Center;
 	VerticalAlignment verticalAlignment = V_Center;
 
 	void SetColor(Color color)
@@ -45,8 +45,16 @@ public:
 		return orderInLayer;
 	}
 
+	void SetText(std::string text);
+	void SetFont(Font *font);
+
 private:
+	std::string text;
 	Color color = Color();
 	void Draw();
 	int orderInLayer = 0;
+	TextInfo *textInfo = nullptr;
+	Font *font = nullptr;
+	bool isTextInfoDirty = true;
+	MeshData *mesh = nullptr;
 };

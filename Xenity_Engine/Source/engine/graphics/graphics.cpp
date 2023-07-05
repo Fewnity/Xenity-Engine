@@ -84,7 +84,7 @@ void Graphics::DrawAllDrawable()
 	if (auto usedCameraLock = usedCamera.lock())
 	{
 		Vector3 camPos = usedCameraLock->GetTransform().lock()->GetPosition();
-		TextManager::ClearTexts();
+
 		if (skybox)
 		{
 			float scale = 10.01f;
