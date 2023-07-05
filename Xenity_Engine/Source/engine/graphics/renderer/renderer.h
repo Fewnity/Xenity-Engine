@@ -2,7 +2,7 @@
 
 #include "../texture.h"
 // #include "../shader.h"
-// #include <glm/glm.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 #include "../../lighting/lighting.h"
 
@@ -73,6 +73,7 @@ public:
 	virtual void SetCameraPosition(std::weak_ptr<Camera> camera) = 0;
 	virtual void ResetTransform() = 0;
 	virtual void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform) = 0;
+	virtual void SetTransform(glm::mat4 &mat) = 0;
 	virtual void MoveTransform(Vector3 position) = 0;
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;

@@ -20,6 +20,7 @@ public:
 	void SetCameraPosition(std::weak_ptr<Camera> camera);
 	void ResetTransform();
 	void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform);
+	void SetTransform(glm::mat4 &mat);
 	void MoveTransform(Vector3 position);
 	void BindTexture(Texture *texture);
 	void ApplyTextureFilters(Texture *texture);
