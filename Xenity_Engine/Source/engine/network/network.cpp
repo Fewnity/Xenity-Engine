@@ -1,6 +1,7 @@
 #include "network.h"
 
 #include "../debug/debug.h"
+#include "../engine_settings.h"
 
 #if defined(__vita__) || defined(__PSP__)
 #include <sys/socket.h>
@@ -69,9 +70,11 @@ void NetworkManager::Init()
     pspNetworkData.adhocparam = &adhocparam;
 
     sceUtilityNetconfInitStart(&pspNetworkData);
-// #elif defined(__vita__)
 #else
-    Debug::ConnectToOnlineConsole();
+    if (EngineSettings::useOnlineDebugger)
+    {
+        Debug::ConnectToOnlineConsole();
+    }
 #endif
 }
 
@@ -127,7 +130,10 @@ void NetworkManager::DrawNetworkSetupMenu()
             Debug::Print("Network setup: " + std::to_string(result));
             if (result == 0)
             {
-                Debug::ConnectToOnlineConsole();
+                if (EngineSettings::useOnlineDebugger)
+                {
+                    Debug::ConnectToOnlineConsole();
+                }
             }
             done = true;
         }

@@ -100,9 +100,6 @@ void Debug::PrintInOnlineConsole(std::string text)
 
 void Debug::ConnectToOnlineConsole()
 {
-    if (EngineSettings::useOnlineDebugger)
-        return;
-
     Debug::Print("Connect to online console...");
     socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
 }
