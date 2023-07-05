@@ -78,7 +78,7 @@ void RendererOpengl::NewFrame()
 void RendererOpengl::EndFrame()
 {
 #if defined(__PSP__)
-	guglSwapBuffers(GL_TRUE, GL_FALSE);
+	guglSwapBuffers(GL_FALSE, GL_FALSE);
 #elif defined(__vita__)
 	vglSwapBuffers(GL_FALSE);
 #endif
