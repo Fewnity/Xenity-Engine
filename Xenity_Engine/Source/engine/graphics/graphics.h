@@ -24,6 +24,8 @@ class Graphics
 {
 public:
 	static std::weak_ptr<Camera> usedCamera;
+	static bool needUpdateCamera; // TODO change this when usedCamera is changed
+
 	// static int usedShaderProgram;
 	static void SetSkybox(SkyBox *skybox_);
 	static void Init();

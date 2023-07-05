@@ -6,6 +6,8 @@
 #include "../renderer/renderer.h"
 
 #include "../../../../include/stb_image_resize.h"
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #ifdef __PSP__
 #include <pspkernel.h>
@@ -57,7 +59,7 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color)
+void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color, std::weak_ptr<Transform> transform)
 {
     spriteBenchmark->Start();
     if (auto camera = Graphics::usedCamera.lock())
@@ -71,12 +73,27 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
         float w = texture->GetWidth() * scaleCoef;
         float h = texture->GetHeight() * scaleCoef;
 
+#if defined(__PSP__)
+        if (Graphics::needUpdateCamera)
+        {
+            camera->UpdateProjection();
+            Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+            Graphics::needUpdateCamera = false;
+        }
+#else
         camera->UpdateProjection();
         Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+#endif
 
-        // Move/Rotate/Scale the sprite
+// Move/Rotate/Scale the sprite
+#if defined(__PSP__)
+        glm::mat4 mat = transform.lock()->transformationMatrix;
+        mat = glm::scale(mat, glm::vec3(w, h, 1));
+        Engine::renderer->SetTransform(mat);
+#else
         Vector3 scl = Vector3(scale.x * w, scale.y * h, 1);
         Engine::renderer->SetTransform(position, rotation, scl, true);
+#endif
 
         // Set draw settings
         RenderingSettings renderSettings = RenderingSettings();

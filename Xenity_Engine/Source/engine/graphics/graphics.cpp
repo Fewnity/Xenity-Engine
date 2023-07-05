@@ -7,6 +7,7 @@
 #include "../graphics/3d_graphics/mesh_data.h"
 
 std::weak_ptr<Camera> Graphics::usedCamera;
+bool Graphics::needUpdateCamera = true;
 // int Graphics::usedShaderProgram = -1;
 // Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
