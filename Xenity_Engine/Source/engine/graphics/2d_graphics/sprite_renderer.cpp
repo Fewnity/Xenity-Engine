@@ -24,12 +24,12 @@ int SpriteRenderer::GetDrawPriority() const
 /// </summary>
 void SpriteRenderer::Draw()
 {
-	if (auto gameObject = GetGameObject().lock())
+	if (auto gameObject = GetGameObject())
 	{
 		// Draw the sprite only if there is a texture and if the component/gameobject is active
 		if (gameObject->GetLocalActive() && GetIsEnabled() && texture != nullptr)
 		{
-			auto transform = GetTransform().lock();
+			auto transform = GetTransform();
 			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, color, transform);
 		}
 	}

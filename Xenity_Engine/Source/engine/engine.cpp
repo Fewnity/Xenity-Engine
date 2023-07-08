@@ -2,7 +2,8 @@
 #include "engine_settings.h"
 #include "../xenity.h"
 // #include "../xenity_editor.h"
-#include "../game_test/game.h"
+// #include "../game_test/game.h"
+#include "../rts_game/game.h"
 //  #include <imgui/imgui_impl_sdl2.h>
 //  #include <imgui/imgui_impl_opengl3.h>
 #include "graphics/renderer/renderer.h"
@@ -226,7 +227,8 @@ void Engine::UpdateComponents()
 	{
 		if (auto component = orderedComponents[i].lock())
 		{
-			component->Update();
+			if(component->GetGameObject()->GetLocalActive())
+				component->Update();
 		}
 		else
 		{
@@ -248,7 +250,6 @@ void Engine::UpdateComponents()
 				break;
 			}
 		}
-		// delete gameObjectsToDestroy[i];
 		gameObjectCount--;
 	}
 	gameObjectsToDestroy.clear();
@@ -258,23 +259,10 @@ void Engine::UpdateComponents()
 	{
 		if (auto component = componentsToDestroy[i].lock())
 		{
-			component->GetGameObject().lock()->RemoveComponentInternal(component);
+			component->GetGameObject()->InternalDestroyComponent(component);
 		}
 	}
 	componentsToDestroy.clear();
-
-	/*for (int i = 0; i < componentsCount; i++)
-	{
-		std::weak_ptr <Component> component = orderedComponents[i];
-		if (component.lock()->waitingForDestroy)
-		{
-			//delete component;
-			//component.lock()->GetGameObject().lock()->components
-			orderedComponents.erase(orderedComponents.begin() + i);
-			componentsCount--;
-			i--;
-		}
-	}*/
 }
 
 void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
@@ -366,9 +354,9 @@ void Engine::Loop()
 			if (auto go = weakGO.lock())
 			// GameObject *go = gameObjects[i];
 			{
-				if (go->GetTransform().lock()->movedLastFrame)
+				if (go->GetTransform()->movedLastFrame)
 				{
-					go->GetTransform().lock()->movedLastFrame = false;
+					go->GetTransform()->movedLastFrame = false;
 				}
 			}
 		}
@@ -408,17 +396,56 @@ std::vector<std::weak_ptr<GameObject>> Engine::GetGameObjects()
 	return std::vector<std::weak_ptr<GameObject>>();
 }
 
+template <typename T>
+bool IsValid(std::weak_ptr<T> pointer) 
+{
+	bool valid = true;
+	if (auto lockPointer = pointer.lock()) 
+	{
+		if (auto component = std::dynamic_pointer_cast<Component>(pointer))
+		{
+			if (component->waitingForDestroy)
+			{
+				valid = false;
+			}
+		}
+		else if (auto gameObject = std::dynamic_pointer_cast<GameObject>(pointer))
+		{
+			if (gameObject->waitingForDestroy)
+			{
+				valid = false;
+			}
+		}
+	}
+	else 
+	{
+		valid = false;
+	}
+	return valid;
+}
+
+void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)
+{
+	auto gameObjectLock = gameObject.lock();
+	Engine::gameObjectsToDestroy.push_back(gameObject);
+	gameObjectLock->waitingForDestroy = true;
+	int childCount = gameObjectLock->GetChildrenCount();
+	for (int i = 0; i < childCount; i++)
+	{
+		DestroyGameObjectAndChild(gameObjectLock->children[i]);
+	}
+}
+
 void Destroy(std::weak_ptr<GameObject> gameObject)
 {
 	if (!gameObject.lock()->waitingForDestroy)
 	{
-		Engine::gameObjectsToDestroy.push_back(gameObject);
-		gameObject.lock()->waitingForDestroy = true;
+		DestroyGameObjectAndChild(gameObject);
 	}
 }
 
 void Destroy(std::weak_ptr<Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
-		component->GetGameObject().lock()->RemoveComponent(weakComponent);
+		component->GetGameObject()->RemoveComponent(weakComponent);
 }

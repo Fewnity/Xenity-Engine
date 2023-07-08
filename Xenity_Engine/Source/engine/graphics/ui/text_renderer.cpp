@@ -51,7 +51,7 @@ void TextRenderer::SetFont(Font *font)
 /// </summary>
 void TextRenderer::Draw()
 {
-	if (GetGameObject().lock()->GetLocalActive() && GetIsEnabled() /*&& shader != nullptr*/)
+	if (GetGameObject()->GetLocalActive() && GetIsEnabled() /*&& shader != nullptr*/)
 	{
 		if (isTextInfoDirty)
 		{

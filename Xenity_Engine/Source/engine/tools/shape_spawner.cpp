@@ -9,8 +9,8 @@ using namespace std;
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCube()
 {
-	auto gameObject = CreateGameObject("Cube").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Cube");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/CubeTriangulate.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -19,8 +19,8 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCube()
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnSphere()
 {
-	auto gameObject = CreateGameObject("Sphere").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Sphere");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/SphereTriangulateSmooth.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -29,8 +29,8 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnSphere()
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCone()
 {
-	auto gameObject = CreateGameObject("Cone").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Cone");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/ConeTriangulateSmooth.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -39,8 +39,8 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCone()
 
 std::weak_ptr <GameObject >ShapeSpawner::SpawnDonut()
 {
-	auto gameObject = CreateGameObject("Donut").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Donut");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/DonutTriangulateSmooth.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -49,8 +49,8 @@ std::weak_ptr <GameObject >ShapeSpawner::SpawnDonut()
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnPlane()
 {
-	auto gameObject = CreateGameObject("Plane").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Plane");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/PlaneTriangulate.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -59,8 +59,8 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnPlane()
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 {
-	auto gameObject = CreateGameObject("Cylinder").lock();
-	auto mesh = gameObject->AddComponent<MeshRenderer>().lock();
+	auto gameObject = CreateGameObject("Cylinder");
+	auto mesh = gameObject->AddComponent<MeshRenderer>();
 	mesh->meshData = MeshManager::LoadMesh("Basic/CylinderTriangulateSmooth.obj");
 
 	// mesh->material = AssetManager::default3DMaterial;
@@ -69,7 +69,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 
 std::weak_ptr <GameObject>ShapeSpawner::Spawn(std::weak_ptr <GameObject> gameObject)
 {
-	auto transform = gameObject.lock()->GetTransform().lock();
+	auto transform = gameObject.lock()->GetTransform();
 	transform->SetPosition(defaultPosition);
 	transform->SetRotation(defaultRotation);
 	transform->SetLocalScale(defaultScale);

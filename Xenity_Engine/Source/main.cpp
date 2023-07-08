@@ -12,16 +12,18 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 Add materials
+Add async texture loading
 Add shaders
-Add sounds
-Add line renderer
+Add sounds on windows
+Add unit tests
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
-Touch : Add input state : Begin, Hold and End
+Touch : Add input state : Begin, Hold (and End?)
 Text scale
 */
 
 int main(int argc, char *argv[])
 {
+	// Init engine
 	// std::string exePath = argv[0];
 	std::string exePath = "";
 	if (Engine::Init(exePath) != 0)
@@ -30,6 +32,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	// Engine and game loop
 	Engine::Loop();
 	Debug::Print("-------- Game loop ended --------");
 	Engine::Stop();

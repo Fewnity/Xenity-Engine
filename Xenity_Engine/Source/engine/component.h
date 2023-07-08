@@ -31,14 +31,14 @@ public:
 
 	void SetGameObject(std::weak_ptr<GameObject> go);
 
-	std::weak_ptr <GameObject> GetGameObject() const
+	std::shared_ptr <GameObject> GetGameObject() const
 	{
-		return gameObject;
+		return gameObject.lock();
 	}
 
-	std::weak_ptr <Transform> GetTransform() const
+	std::shared_ptr <Transform> GetTransform() const
 	{
-		return transform;
+		return transform.lock();
 	}
 
 private:

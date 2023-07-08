@@ -106,7 +106,7 @@ void Transform::SetPosition(const Vector3 value)
 	}
 	else
 	{
-		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->parent.lock()->GetTransform().lock()->transformationMatrix);
+		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->parent.lock()->GetTransform()->transformationMatrix);
 	}
 
 	SetChildrenWorldPositions();
@@ -120,10 +120,12 @@ void Transform::SetLocalPosition(const Vector3 value)
 		return;
 	}
 
-	if (value != localPosition)
+	isTransformationMatrixDirty = true;
+
+	/*if (value != localPosition)
 		isTransformationMatrixDirty = true;
 	else
-		return;
+		return;*/
 
 	localPosition = value;
 	UpdateWorldValues();
@@ -144,7 +146,7 @@ void Transform::SetRotation(const Vector3 value)
 	}
 	else
 	{
-		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->parent.lock()->GetTransform().lock()->GetRotation());
+		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->parent.lock()->GetTransform()->GetRotation());
 	}
 
 	SetChildrenWorldPositions();
@@ -158,10 +160,12 @@ void Transform::SetLocalRotation(const Vector3 value)
 		return;
 	}
 
-	if (value != localRotation)
+	/*if (value != localRotation)
 		isTransformationMatrixDirty = true;
 	else
-		return;
+		return;*/
+
+	isTransformationMatrixDirty = true;
 
 	localRotation = value;
 	UpdateWorldValues();
@@ -169,10 +173,12 @@ void Transform::SetLocalRotation(const Vector3 value)
 
 void Transform::SetLocalScale(const Vector3 value)
 {
-	if (value != localScale)
+	isTransformationMatrixDirty = true;
+
+	/*if (value != localScale)
 		isTransformationMatrixDirty = true;
 	else
-		return;
+		return;*/
 
 	localScale = value;
 	UpdateWorldValues();
@@ -187,7 +193,7 @@ void Transform::OnParentChanged()
 	auto gm = gameObject.lock();
 	if (gm->parent.expired())
 	{
-		auto parentTransform = gm->parent.lock()->GetTransform().lock();
+		auto parentTransform = gm->parent.lock()->GetTransform();
 		//----- Set new local scale
 		localScale = scale / parentTransform->scale;
 
@@ -217,7 +223,7 @@ void Transform::SetChildrenWorldPositions()
 	//For each children
 	for (int i = 0; i < childCount; i++)
 	{
-		auto transform = gm->children[i].lock()->GetTransform().lock();
+		auto transform = gm->children[i].lock()->GetTransform();
 		transform->isTransformationMatrixDirty = true;
 		transform->UpdateWorldValues();
 	}
@@ -239,7 +245,7 @@ void Transform::UpdateWorldRotation()
 	if (gm->parent.expired())
 		return;
 
-	auto parentTransform = gm->parent.lock()->GetTransform().lock();
+	auto parentTransform = gm->parent.lock()->GetTransform();
 	glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentTransform->GetRotation().z, parentTransform->GetRotation().x, parentTransform->GetRotation().y)));
 	glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(GetLocalRotation().z, GetLocalRotation().x, GetLocalRotation().y)));
 
@@ -261,7 +267,7 @@ void Transform::UpdateWorldPosition()
 	if (gm->parent.expired())
 		return;
 
-	auto parentTransform = gm->parent.lock()->GetTransform().lock();
+	auto parentTransform = gm->parent.lock()->GetTransform();
 
 	//Get child local position
 	float scaledLocalPos[3] = { (GetLocalPosition().x * parentTransform->GetScale().x), -(GetLocalPosition().y * parentTransform->GetScale().y), -(GetLocalPosition().z * parentTransform->GetScale().z) };
@@ -314,7 +320,7 @@ void Transform::UpdateWorldScale()
 	{
 		while (parentGm != nullptr)
 		{
-			scale = scale * parentGm->GetTransform().lock()->localScale;
+			scale = scale * parentGm->GetTransform()->localScale;
 			parentGm = parentGm->parent.lock();
 		}
 
@@ -322,7 +328,7 @@ void Transform::UpdateWorldScale()
 		for (int i = 0; i < childCount; i++)
 		{
 			auto child = lockGameObject->children[i].lock();
-			child->GetTransform().lock()->UpdateWorldScale();
+			child->GetTransform()->UpdateWorldScale();
 		}
 	}
 }

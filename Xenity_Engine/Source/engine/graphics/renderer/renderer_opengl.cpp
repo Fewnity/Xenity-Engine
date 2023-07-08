@@ -144,7 +144,7 @@ void RendererOpengl::SetCameraPosition(std::weak_ptr<Camera> camera)
 {
 	if (auto cameraLock = camera.lock())
 	{
-		auto transform = cameraLock->GetTransform().lock();
+		auto transform = cameraLock->GetTransform();
 
 #if defined(__PSP__)
 		glMatrixMode(GL_VIEW);
@@ -551,7 +551,7 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 {
 	if (auto cameraLock = camera.lock())
 	{
-		auto transform = cameraLock->GetTransform().lock();
+		auto transform = cameraLock->GetTransform();
 
 		DisableAllLight();
 		int lightCount = AssetManager::GetLightCount();
@@ -560,11 +560,11 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 			auto light = AssetManager::GetLight(i).lock();
 			if (light->type == Light::Directional)
 			{
-				Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform().lock()->GetRotation().y, -light->GetTransform().lock()->GetRotation().x) * 1000;
+				Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
 				SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
 			}
 			else
-				SetLight(i, light->GetTransform().lock()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
+				SetLight(i, light->GetTransform()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
 		}
 	}
 }

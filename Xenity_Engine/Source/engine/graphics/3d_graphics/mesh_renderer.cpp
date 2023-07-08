@@ -27,11 +27,11 @@ int MeshRenderer::GetDrawPriority() const
 
 void MeshRenderer::Draw()
 {
-	if (auto gameObject = GetGameObject().lock())
+	if (auto gameObject = GetGameObject())
 	{
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
-			auto transform = GetTransform().lock();
+			auto transform = GetTransform();
 			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, meshData, true, false, true);
 		}
 	}

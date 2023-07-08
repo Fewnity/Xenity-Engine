@@ -32,16 +32,16 @@ SplinePoint *Spline::CreateSplinePoint(const Vector3 position)
 {
     SplinePoint *point = new SplinePoint();
 
-    auto parent = CreateGameObject().lock();
-    parent->GetTransform().lock()->SetPosition(position);
+    auto parent = CreateGameObject();
+    parent->GetTransform()->SetPosition(position);
 
-    auto next = CreateGameObject().lock();
+    auto next = CreateGameObject();
     parent->AddChild(next);
-    next->GetTransform().lock()->SetLocalPosition(Vector3(0.5f, 0, 0));
+    next->GetTransform()->SetLocalPosition(Vector3(0.5f, 0, 0));
 
-    auto before = CreateGameObject().lock();
+    auto before = CreateGameObject();
     parent->AddChild(before);
-    before->GetTransform().lock()->SetLocalPosition(Vector3(-0.5f, 0, 0));
+    before->GetTransform()->SetLocalPosition(Vector3(-0.5f, 0, 0));
 
     point->parent = parent->GetTransform();
     point->next = next->GetTransform();

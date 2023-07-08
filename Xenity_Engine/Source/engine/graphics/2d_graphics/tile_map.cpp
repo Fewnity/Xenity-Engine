@@ -268,7 +268,7 @@ void Tilemap::CreateChunksMeshes()
  */
 void Tilemap::Draw()
 {
-	if (auto gameObject = GetGameObject().lock())
+	if (auto gameObject = GetGameObject())
 	{
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
@@ -293,7 +293,7 @@ void Tilemap::DrawChunks()
 {
 	if (auto camera = Graphics::usedCamera.lock())
 	{
-		Vector3 cameraPos = camera->GetTransform().lock()->GetPosition();
+		Vector3 cameraPos = camera->GetTransform()->GetPosition();
 
 		float xArea = camera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
 		float yArea = camera->GetProjectionSize() + chunkSize;
@@ -301,7 +301,7 @@ void Tilemap::DrawChunks()
 		float xChunkPosition;
 		float yChunkPosition;
 
-		auto transform = GetTransform().lock();
+		auto transform = GetTransform();
 
 		// For each chunk, check if the camera can see it
 		for (int x = 0; x < chunkCount; x++)

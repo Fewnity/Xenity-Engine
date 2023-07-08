@@ -83,7 +83,7 @@ void Graphics::DrawAllDrawable()
 
 	if (auto usedCameraLock = usedCamera.lock())
 	{
-		Vector3 camPos = usedCameraLock->GetTransform().lock()->GetPosition();
+		Vector3 camPos = usedCameraLock->GetTransform()->GetPosition();
 
 		if (skybox)
 		{
@@ -117,7 +117,7 @@ bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr<IDr
 	{
 		if (priority1 == priority2)
 		{
-			return t1.lock()->GetTransform().lock()->GetPosition().z > t2.lock()->GetTransform().lock()->GetPosition().z;
+			return t1.lock()->GetTransform()->GetPosition().z > t2.lock()->GetTransform()->GetPosition().z;
 		}
 
 		return true;
@@ -133,7 +133,7 @@ void Graphics::OrderDrawables()
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		std::weak_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex];
-		if (drawableToCheck.lock()->GetTransform().lock()->movedLastFrame)
+		if (drawableToCheck.lock()->GetTransform()->movedLastFrame)
 		{
 			Engine::drawOrderListDirty = true;
 			break;

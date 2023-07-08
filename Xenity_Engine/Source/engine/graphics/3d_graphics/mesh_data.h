@@ -33,21 +33,18 @@ class MeshData
 public:
     MeshData() = delete;
     MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
-    // MeshData(std::string filePath);
+
     ~MeshData();
 
-    // void AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index);
+
     void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
     void AddVertex(float u, float v, float x, float y, float z, int index);
     void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index);
 
     void *data = nullptr;
-    // VertexNoColor *dataNoColor = nullptr;
 
-    // unsigned int *indices = nullptr;
     unsigned short *indices = nullptr;
 
-    // unsigned short *indices = nullptr;
     unsigned int vertice_count = 0;
     unsigned int index_count = 0;
     bool hasUv = false;

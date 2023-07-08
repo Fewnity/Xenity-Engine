@@ -44,7 +44,7 @@ void SpriteManager::Init()
     spriteMeshData->indices[4] = 0;
     spriteMeshData->indices[5] = 3;
 
-#ifdef __PSP__
+#if defined(__PSP__)
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 

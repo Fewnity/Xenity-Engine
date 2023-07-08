@@ -13,26 +13,25 @@
 
 #define DEFAULT_GAMEOBJECT_NAME "GameObject"
 
-std::weak_ptr<GameObject> CreateGameObject()
+std::shared_ptr<GameObject> CreateGameObject()
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>();
 	Engine::AddGameObject(newGameObject);
 	newGameObject->Setup();
-	return std::weak_ptr<GameObject>(newGameObject);
+	return newGameObject;
 }
 
-std::weak_ptr<GameObject> CreateGameObject(std::string name)
+std::shared_ptr<GameObject> CreateGameObject(std::string name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
 	Engine::AddGameObject(newGameObject);
 	newGameObject->Setup();
-	return std::weak_ptr<GameObject>(newGameObject);
+	return newGameObject;
 }
 
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
-	// Engine::AddGameObject(this);
 }
 
 /// <summary>
@@ -45,26 +44,13 @@ GameObject::GameObject(std::string name)
 		this->name = name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
-	// Engine::AddGameObject(this);
 }
 
 GameObject::~GameObject()
 {
 	for (int i = 0; i < componentCount; i++)
 	{
-		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(components[i]))
-		{
-			Graphics::RemoveDrawable(drawable);
-			AssetManager::RemoveDrawable(drawable);
-		}
-		else if (auto light = std::dynamic_pointer_cast<Light>(components[i]))
-		{
-			AssetManager::RemoveLight(light);
-		}
-		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(components[i]))
-		{
-			AudioManager::RemoveAudioSource(audioSource);
-		}
+		InternalDestroyComponent(components[i]);
 	}
 	components.clear();
 }
@@ -76,6 +62,26 @@ void GameObject::Setup()
 
 #pragma endregion
 
+void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponent) 
+{
+	if (auto component = weakComponent.lock())
+	{
+		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
+		{
+			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
+			AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
+		}
+		else if (auto light = std::dynamic_pointer_cast<Light>(component))
+		{
+			AssetManager::RemoveLight(light);
+		}
+		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(component))
+		{
+			AudioManager::RemoveAudioSource(audioSource);
+		}
+	}
+}
+
 void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
@@ -84,32 +90,15 @@ void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 		{
 			component->waitingForDestroy = true;
 			Engine::componentsToDestroy.push_back(component);
-		}
-	}
-}
-
-void GameObject::RemoveComponentInternal(std::shared_ptr<Component> sharedComponent)
-{
-	for (int i2 = 0; i2 < componentCount; i2++)
-	{
-		if (components[i2] == sharedComponent)
-		{
-			if (auto drawable = std::dynamic_pointer_cast<IDrawable>(sharedComponent))
+			for (int i2 = 0; i2 < componentCount; i2++)
 			{
-				Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
-				AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(sharedComponent));
+				if (components[i2] == component)
+				{
+					components.erase(components.begin() + i2);
+					componentCount--;
+					break;
+				}
 			}
-			else if (auto light = std::dynamic_pointer_cast<Light>(sharedComponent))
-			{
-				AssetManager::RemoveLight(light);
-			}
-			else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(sharedComponent))
-			{
-				AudioManager::RemoveAudioSource(audioSource);
-			}
-			components.erase(components.begin() + i2);
-			componentCount--;
-			break;
 		}
 	}
 }

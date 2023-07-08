@@ -8,8 +8,8 @@
 class Component;
 #include "../component.h"
 
-std::weak_ptr<GameObject> CreateGameObject();
-std::weak_ptr<GameObject> CreateGameObject(std::string name);
+std::shared_ptr<GameObject> CreateGameObject();
+std::shared_ptr<GameObject> CreateGameObject(std::string name);
 std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
 std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
@@ -32,27 +32,27 @@ public:
 	bool waitingForDestroy = false;
 
 	template <typename T>
-	std::weak_ptr<T> AddComponent()
+	std::shared_ptr<T> AddComponent()
 	{
 		std::shared_ptr<Component> newC = std::make_shared<T>();
 		AddExistingComponent(newC);
-		return std::weak_ptr<T>(std::dynamic_pointer_cast<T>(newC));
+		return std::shared_ptr<T>(std::dynamic_pointer_cast<T>(newC));
 	}
 
 	void RemoveComponent(std::weak_ptr <Component> weakComponent);
-
-	void RemoveComponentInternal(std::shared_ptr<Component> sharedComponent);
+	void InternalDestroyComponent(std::weak_ptr <Component> weakComponent);
 
 	template <typename T>
-	T* GetComponent() 
+	std::weak_ptr<T> GetComponent()
 	{
 		for (int i = 0; i < componentCount; i++)
 		{
-			if (T* result = dynamic_cast<T*>(components[i]))
+			if (auto result = std::dynamic_pointer_cast<T>(components[i]))
 			{
 				return result;
 			}
 		}
+		return std::weak_ptr<T>();
 	}
 
 	static std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
@@ -72,7 +72,7 @@ public:
 		return componentCount;
 	}
 
-	std::weak_ptr<Transform> GetTransform()
+	std::shared_ptr<Transform> GetTransform()
 	{
 		return transform;
 	}
