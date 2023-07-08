@@ -75,15 +75,20 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+	auto camera = usedCamera.lock();
+	if (!camera) 
+	{
+		Debug::PrintWarning("[Graphics::DrawAllDrawable] There is no camera for rendering");
+	}
 
 	Graphics::OrderDrawables();
 
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
 
-	if (auto usedCameraLock = usedCamera.lock())
+	if (camera)
 	{
-		Vector3 camPos = usedCameraLock->GetTransform()->GetPosition();
+		Vector3 camPos = camera->GetTransform()->GetPosition();
 
 		if (skybox)
 		{
