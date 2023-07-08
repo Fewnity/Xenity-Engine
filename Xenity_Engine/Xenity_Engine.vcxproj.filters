@@ -61,6 +61,7 @@
     <ClCompile Include="Source\engine\audio\audio_source.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
     <ClCompile Include="Source\engine\network\network.cpp" />
+    <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Source\engine\audio\audio_source.h" />
     <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />
     <ClInclude Include="Source\engine\network\network.h" />
+    <ClInclude Include="Source\engine\graphics\2d_graphics\line_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

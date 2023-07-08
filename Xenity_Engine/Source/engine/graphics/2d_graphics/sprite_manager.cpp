@@ -114,3 +114,38 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
     }
     spriteBenchmark->Stop();
 }
+
+void SpriteManager::Render2DLine(MeshData* meshData) 
+{
+    if (auto camera = Graphics::usedCamera.lock())
+    {
+#if defined(__PSP__)
+        if (Graphics::needUpdateCamera)
+        {
+            camera->UpdateProjection();
+            Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+            Graphics::needUpdateCamera = false;
+        }
+#else
+        camera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+#endif
+
+        Vector3 zero = Vector3(0);
+        Vector3 one = Vector3(1);
+
+        Engine::renderer->SetTransform(zero, zero, one, true);
+
+        // Set draw settings
+        RenderingSettings renderSettings = RenderingSettings();
+
+        renderSettings.invertFaces = true;
+        renderSettings.useBlend = true;
+        renderSettings.useDepth = false;
+        renderSettings.useTexture = true;
+        renderSettings.useLighting = false;
+
+        Engine::renderer->BindTexture(AssetManager::defaultTexture);
+        Engine::renderer->DrawMeshData(meshData, renderSettings);
+    }
+}
