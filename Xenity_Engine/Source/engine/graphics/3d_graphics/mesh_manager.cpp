@@ -41,8 +41,14 @@ MeshData *MeshManager::LoadMesh(std::string path)
  */
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth, bool useBlend, bool useLighting)
 {
-    if ((meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
+    if (!meshData || (meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
         return;
+
+    if (!texture || !texture->IsValid())
+    {
+        Debug::PrintError("[MeshManager::DrawMesh] Invalid texture");
+        return;
+    }
 
     auto camera = Graphics::usedCamera.lock();
     if (!camera)

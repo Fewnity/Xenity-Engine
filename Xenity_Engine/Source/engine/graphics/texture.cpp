@@ -21,42 +21,46 @@
 
 Texture::Texture(const std::string filePath, std::string name, bool loadInVram)
 {
-    this->inVram = loadInVram;
-    CreateTexture(filePath, name, Bilinear, false);
+	this->inVram = loadInVram;
+	CreateTexture(filePath, name, Bilinear, false);
 }
 
 Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram)
 {
-    this->inVram = loadInVram;
-    CreateTexture(filePath, name, filter, useMipMap);
+	this->inVram = loadInVram;
+	CreateTexture(filePath, name, filter, useMipMap);
 }
 
 Texture::Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
 {
-    this->textureId = textureId;
-    this->nrChannels = channelCount;
-    this->width = width;
-    this->height = height;
-    this->inVram = loadInVram;
-    useMipMap = false;
+	this->textureId = textureId;
+	this->nrChannels = channelCount;
+	this->width = width;
+	this->height = height;
+	this->inVram = loadInVram;
+	useMipMap = false;
 }
 
-Texture::Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram)
+Texture::Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
 {
-    // this->textureId = textureId;
-    this->nrChannels = channelCount;
-    this->width = width;
-    this->height = height;
-    this->inVram = loadInVram;
+	// this->textureId = textureId;
+	this->nrChannels = channelCount;
+	this->width = width;
+	this->height = height;
+	this->inVram = loadInVram;
 
-    useMipMap = false;
-    SetData(data);
+	useMipMap = false;
+	if (data != nullptr)
+	{
+		SetData(data);
+		isValid = true;
+	}
 }
 
 Texture::~Texture()
 {
-    AssetManager::RemoveTexture(this);
-    // Engine::renderer->DeleteTexture(this);
+	AssetManager::RemoveTexture(this);
+	// Engine::renderer->DeleteTexture(this);
 }
 
 /// <summary>
@@ -67,186 +71,186 @@ Texture::~Texture()
 /// <param name="useMipMap">Will texture use mipmap</param>
 void Texture::CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
 {
-    this->filter = filter;
-    this->useMipMap = useMipMap;
-    this->name = name;
+	this->filter = filter;
+	this->useMipMap = useMipMap;
+	this->name = name;
 
-    LoadTexture(filePath);
+	LoadTexture(filePath);
 
-    AssetManager::AddTexture(this);
+	AssetManager::AddTexture(this);
 }
 
 #if defined(__PSP__)
-void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigned int height)
+void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height)
 {
-    unsigned int blockx, blocky;
-    unsigned int j;
+	unsigned int blockx, blocky;
+	unsigned int j;
 
-    unsigned int width_blocks = (width / 16);
-    unsigned int height_blocks = (height / 8);
+	unsigned int width_blocks = (width / 16);
+	unsigned int height_blocks = (height / 8);
 
-    unsigned int src_pitch = (width - 16) / 4;
-    unsigned int src_row = width * 8;
+	unsigned int src_pitch = (width - 16) / 4;
+	unsigned int src_row = width * 8;
 
-    const u8 *ysrc = in;
-    u32 *dst = (u32 *)out;
+	const u8* ysrc = in;
+	u32* dst = (u32*)out;
 
-    for (blocky = 0; blocky < height_blocks; ++blocky)
-    {
-        const u8 *xsrc = ysrc;
-        for (blockx = 0; blockx < width_blocks; ++blockx)
-        {
-            const u32 *src = (u32 *)xsrc;
-            for (j = 0; j < 8; ++j)
-            {
-                *(dst++) = *(src++);
-                *(dst++) = *(src++);
-                *(dst++) = *(src++);
-                *(dst++) = *(src++);
-                src += src_pitch;
-            }
-            xsrc += 16;
-        }
-        ysrc += src_row;
-    }
+	for (blocky = 0; blocky < height_blocks; ++blocky)
+	{
+		const u8* xsrc = ysrc;
+		for (blockx = 0; blockx < width_blocks; ++blockx)
+		{
+			const u32* src = (u32*)xsrc;
+			for (j = 0; j < 8; ++j)
+			{
+				*(dst++) = *(src++);
+				*(dst++) = *(src++);
+				*(dst++) = *(src++);
+				*(dst++) = *(src++);
+				src += src_pitch;
+			}
+			xsrc += 16;
+		}
+		ysrc += src_row;
+	}
 }
 
-void copy_texture_data(void *dest, const void *src, const int pW, const int width, const int height)
+void copy_texture_data(void* dest, const void* src, const int pW, const int width, const int height)
 {
-    for (unsigned int y = 0; y < height; y++)
-    {
-        for (unsigned int x = 0; x < width; x++)
-        {
-            ((unsigned int *)dest)[x + y * pW] = ((unsigned int *)src)[x + y * width];
-        }
-    }
+	for (unsigned int y = 0; y < height; y++)
+	{
+		for (unsigned int x = 0; x < width; x++)
+		{
+			((unsigned int*)dest)[x + y * pW] = ((unsigned int*)src)[x + y * width];
+		}
+	}
 }
 
-void Texture::SetTextureLevel(int level, const unsigned char *texData)
+void Texture::SetTextureLevel(int level, const unsigned char* texData)
 {
-    bool needResize = false;
-    int bytePerPixel = 4;
-    int diviser = (int)pow(2, level);
+	bool needResize = false;
+	int bytePerPixel = 4;
+	int diviser = (int)pow(2, level);
 
-    int resizedPW = pW / diviser;
-    int resizedPH = pH / diviser;
+	int resizedPW = pW / diviser;
+	int resizedPH = pH / diviser;
 
-    int byteCount = (resizedPW * resizedPH) * bytePerPixel;
+	int byteCount = (resizedPW * resizedPH) * bytePerPixel;
 
-    unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
+	unsigned int* dataBuffer = (unsigned int*)memalign(16, byteCount);
 
-    if (level != 0 || (width != pW || height != pH))
-    {
-        needResize = true;
-    }
+	if (level != 0 || (width != pW || height != pH))
+	{
+		needResize = true;
+	}
 
-    if (needResize)
-    {
-        unsigned char *resizedData = (unsigned char *)malloc(byteCount);
-        stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, bytePerPixel);
-        copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPW, resizedPH);
-        free(resizedData);
-    }
-    else
-    {
-        copy_texture_data(dataBuffer, texData, pW, pW, pH);
-    }
+	if (needResize)
+	{
+		unsigned char* resizedData = (unsigned char*)malloc(byteCount);
+		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, bytePerPixel);
+		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPW, resizedPH);
+		free(resizedData);
+	}
+	else
+	{
+		copy_texture_data(dataBuffer, texData, pW, pW, pH);
+	}
 
-    if (resizedPW > 256 || resizedPH > 256)
-        inVram = false;
+	if (resizedPW > 256 || resizedPH > 256)
+		inVram = false;
 
-    // Allocate memory in ram or vram
-    if (inVram)
-    {
-        unsigned int *newData = (unsigned int *)vramalloc(byteCount);
-        // If there is no more free vram
-        if (!newData)
-        {
-            Debug::PrintWarning("No more free vram");
-            newData = (unsigned int *)memalign(16, byteCount);
-            inVram = false;
-        }
-        data.push_back((unsigned int *)newData);
-    }
-    else
-    {
-        data.push_back((unsigned int *)memalign(16, byteCount));
-    }
+	// Allocate memory in ram or vram
+	if (inVram)
+	{
+		unsigned int* newData = (unsigned int*)vramalloc(byteCount);
+		// If there is no more free vram
+		if (!newData)
+		{
+			Debug::PrintWarning("No more free vram");
+			newData = (unsigned int*)memalign(16, byteCount);
+			inVram = false;
+		}
+		data.push_back((unsigned int*)newData);
+	}
+	else
+	{
+		data.push_back((unsigned int*)memalign(16, byteCount));
+	}
 
-    // Place image data in the memory
-    swizzle_fast((u8 *)data[level], (const u8 *)dataBuffer, resizedPW * bytePerPixel, resizedPH);
-    free(dataBuffer);
-    sceKernelDcacheWritebackInvalidateAll();
+	// Place image data in the memory
+	swizzle_fast((u8*)data[level], (const u8*)dataBuffer, resizedPW * bytePerPixel, resizedPH);
+	free(dataBuffer);
+	sceKernelDcacheWritebackInvalidateAll();
 }
 
 #endif
 
-void Texture::SetData(const unsigned char *texData)
+void Texture::SetData(const unsigned char* texData)
 {
-    // sceGeEdramSetSize(4096);
-    // The psp needs a pow2 sized texture
+	// sceGeEdramSetSize(4096);
+	// The psp needs a pow2 sized texture
 #if defined(__PSP__)
-    type = GU_PSM_8888;
+	type = GU_PSM_8888;
 
-    // Get pow2 size
-    pW = Math::pow2(width);
-    pH = Math::pow2(height);
+	// Get pow2 size
+	pW = Math::pow2(width);
+	pH = Math::pow2(height);
 
-    SetTextureLevel(0, texData);
-    if (useMipMap)
-    {
-        SetTextureLevel(1, texData);
-        // SetTextureLevel(2, texData);
-        // SetTextureLevel(3, texData);
-        mipmaplevelCount = 1;
-    }
+	SetTextureLevel(0, texData);
+	if (useMipMap)
+	{
+		SetTextureLevel(1, texData);
+		// SetTextureLevel(2, texData);
+		// SetTextureLevel(3, texData);
+		mipmaplevelCount = 1;
+	}
 
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-    textureId = Engine::renderer->CreateNewTexture();
-    Engine::renderer->BindTexture(this);
-    unsigned int alpha = 0x1906;
-    Engine::renderer->SetTextureData(this, alpha, texData);
+	textureId = Engine::renderer->CreateNewTexture();
+	Engine::renderer->BindTexture(this);
+	unsigned int alpha = 0x1906;
+	Engine::renderer->SetTextureData(this, alpha, texData);
 #endif
 }
 
 void Texture::LoadTexture(const std::string filename)
 {
-    std::string path = "";
+	std::string path = "";
 #if defined(__vita__)
-    path += "ux0:";
+	path += "ux0:";
 #endif
-    path += filename;
+	path += filename;
 
-    std::string debugText = "Loading texture: ";
-    debugText += filename;
-    Debug::Print(debugText);
+	std::string debugText = "Loading texture: ";
+	debugText += filename;
+	Debug::Print(debugText);
 
-    // Load image with stb_image
-    // stbi_set_flip_vertically_on_load(GL_TRUE);
-    unsigned char *buffer = stbi_load(path.c_str(), &width, &height,
-                                      &nrChannels, 4);
-    if (!buffer)
-    {
-        debugText = "Failed to load texture: ";
-        debugText += filename;
-        Debug::Print(debugText);
-        return;
-    }
+	// Load image with stb_image
+	// stbi_set_flip_vertically_on_load(GL_TRUE);
+	unsigned char* buffer = stbi_load(path.c_str(), &width, &height,
+		&nrChannels, 4);
+	if (!buffer)
+	{
+		debugText = "Failed to load texture: ";
+		debugText += filename;
+		Debug::Print(debugText);
+		return;
+	}
 #if defined(__PSP__)
-    SetData(buffer);
+	SetData(buffer);
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-    textureId = Engine::renderer->CreateNewTexture();
-    Engine::renderer->BindTexture(this);
-
-    unsigned int rgba = 0x1908;
-    Engine::renderer->SetTextureData(this, rgba, buffer);
+	textureId = Engine::renderer->CreateNewTexture();
+	Engine::renderer->BindTexture(this);
+	unsigned int rgba = 0x1908;
+	Engine::renderer->SetTextureData(this, rgba, buffer);
 #endif
 
-    stbi_image_free(buffer);
+	stbi_image_free(buffer);
+	isValid = true;
 }
 
 /// <summary>
@@ -255,44 +259,44 @@ void Texture::LoadTexture(const std::string filename)
 /// <param name="filter"></param>
 void Texture::SetFilter(const Filter filter)
 {
-    this->filter = filter;
-    UpdateTextureFilter();
+	this->filter = filter;
+	UpdateTextureFilter();
 }
 
 void Texture::SetWrapMode(const WrapMode mode)
 {
-    wrapMode = mode;
-    UpdateTextureFilter();
+	wrapMode = mode;
+	UpdateTextureFilter();
 }
 
 int Texture::GetWidth() const
 {
-    return width;
+	return width;
 }
 
 int Texture::GetHeight() const
 {
-    return height;
+	return height;
 }
 
 void Texture::SetPixelPerUnit(int value)
 {
-    pixelPerUnit = value;
+	pixelPerUnit = value;
 }
 
 int Texture::GetPixelPerUnit() const
 {
-    return pixelPerUnit;
+	return pixelPerUnit;
 }
 
 int Texture::GetChannelCount() const
 {
-    return nrChannels;
+	return nrChannels;
 }
 
 bool Texture::GetUseMipmap() const
 {
-    return useMipMap;
+	return useMipMap;
 }
 
 /// <summary>
@@ -301,17 +305,17 @@ bool Texture::GetUseMipmap() const
 /// <returns></returns>
 unsigned int Texture::GetTextureId() const
 {
-    return textureId;
+	return textureId;
 }
 
 Texture::Filter Texture::GetFilter() const
 {
-    return filter;
+	return filter;
 }
 
 Texture::WrapMode Texture::GetWrapMode() const
 {
-    return wrapMode;
+	return wrapMode;
 }
 
 #pragma endregion
@@ -321,8 +325,8 @@ Texture::WrapMode Texture::GetWrapMode() const
 /// </summary>
 void Texture::UpdateTextureFilter()
 {
-    // Engine::renderer->BindTexture(this);
-    // Engine::renderer->SetTextureFilter(this, filter);
-    // Engine::renderer->SetTextureWrapMode(wrapMode);
-    // Engine::renderer->SetAnisotropyLevel(EngineSettings::anisotropicLevel);
+	// Engine::renderer->BindTexture(this);
+	// Engine::renderer->SetTextureFilter(this, filter);
+	// Engine::renderer->SetTextureWrapMode(wrapMode);
+	// Engine::renderer->SetAnisotropyLevel(EngineSettings::anisotropicLevel);
 }

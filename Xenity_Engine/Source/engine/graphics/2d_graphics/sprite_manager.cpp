@@ -61,6 +61,12 @@ void SpriteManager::Init()
  */
 void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color, std::weak_ptr<Transform> transform)
 {
+    if (!texture || !texture->IsValid())
+    {
+        Debug::PrintError("[SpriteManager::DrawSprite] Invalid texture");
+        return;
+    }
+
     spriteBenchmark->Start();
     if (auto camera = Graphics::usedCamera.lock())
     {
@@ -117,6 +123,13 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
 void SpriteManager::Render2DLine(MeshData* meshData) 
 {
+    if (!AssetManager::defaultTexture || !AssetManager::defaultTexture->IsValid())
+    {
+        Debug::PrintError("[SpriteManager::Render2DLine] Invalid texture");
+        return;
+}
+
+    spriteBenchmark->Start();
     if (auto camera = Graphics::usedCamera.lock())
     {
 #if defined(__PSP__)
@@ -148,4 +161,5 @@ void SpriteManager::Render2DLine(MeshData* meshData)
         Engine::renderer->BindTexture(AssetManager::defaultTexture);
         Engine::renderer->DrawMeshData(meshData, renderSettings);
     }
+    spriteBenchmark->Stop();
 }

@@ -58,6 +58,11 @@ public:
     bool useMipMap = false;
     bool inVram = true;
 
+    bool IsValid()
+    {
+        return isValid;
+    };
+
 #ifdef __PSP__
     void SetTextureLevel(int level, const unsigned char *texData);
 
@@ -76,4 +81,5 @@ private:
     int width = 0, height = 0, nrChannels = 0;
 
     int pixelPerUnit = 100;
+    bool isValid = false;
 };

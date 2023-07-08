@@ -167,6 +167,14 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
  */
 void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh)
 {
+    Font *font = fonts[0];
+
+    if (!font->fontAtlas || !font->fontAtlas->IsValid())
+    {
+        Debug::PrintError("[TextManager::DrawText] Invalid texture");
+        return;
+    }
+
     if (auto cameraLock = Graphics::usedCamera.lock())
     {
         textBenchmark->Start();
@@ -185,7 +193,6 @@ void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlig
 
         auto transform = weakTransform.lock();
         SetTextPosition(transform, canvas);
-        Font *font = fonts[0];
         Engine::renderer->BindTexture(font->fontAtlas);
 
         bool invertFaces = false;
