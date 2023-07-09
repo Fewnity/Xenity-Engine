@@ -113,7 +113,7 @@ int Engine::Init(const std::string exePath)
 	// Init random
 	srand((unsigned int)time(NULL));
 
-	Debug::Print("-------- Engine fully initiated --------");
+	Debug::Print("-------- Engine fully initiated --------\n");
 
 	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
@@ -275,7 +275,8 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 /// </summary>
 void Engine::Loop()
 {
-	Debug::Print("Initiating game...");
+	Debug::Print("-------- Initiating game --------");
+
 	Game *game = new Game();
 
 	valueFree = false;

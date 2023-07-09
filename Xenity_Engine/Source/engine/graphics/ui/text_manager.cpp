@@ -243,7 +243,13 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
 /// <returns></returns>
 Font *TextManager::CreateFont(std::string filePath)
 {
-    Debug::Print("Loading font...");
+    std::string path;
+#ifdef __vita__
+    path = "ux0:";
+#endif
+    path += EngineSettings::RootFolder + filePath;
+
+    Debug::Print("Loading font: " + path);
 
     Font *font = new Font();
 
@@ -256,15 +262,10 @@ Font *TextManager::CreateFont(std::string filePath)
 
     // Load font
     FT_Face face;
-    // std::string path = EngineSettings::RootFolder + filePath;
-    std::string path;
-#ifdef __vita__
-    path = "ux0:";
-#endif
-    path += EngineSettings::RootFolder + filePath;
+
     if (FT_New_Face(ft, path.c_str(), 0, &face))
     {
-        Debug::PrintError("Failed to load font. Path: " + path);
+        Debug::PrintError("Failed to load font");
         return nullptr;
     }
 

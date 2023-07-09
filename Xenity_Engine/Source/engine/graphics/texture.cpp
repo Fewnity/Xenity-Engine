@@ -233,8 +233,7 @@ void Texture::LoadTexture(const std::string filename)
 		&nrChannels, 4);
 	if (!buffer)
 	{
-		debugText = "Failed to load texture: ";
-		debugText += filename;
+		debugText = "Failed to load texture";
 		Debug::Print(debugText);
 		return;
 	}
@@ -251,6 +250,7 @@ void Texture::LoadTexture(const std::string filename)
 
 	stbi_image_free(buffer);
 	isValid = true;
+	Debug::Print("Texture loaded");
 }
 
 /// <summary>
