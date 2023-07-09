@@ -7,6 +7,6 @@ std::string EngineSettings::RootFolder = "";
 bool EngineSettings::useProfiler = true;
 bool EngineSettings::useLighting = true;
 bool EngineSettings::useDebugger = true;
-bool EngineSettings::useOnlineDebugger = true;
+bool EngineSettings::useOnlineDebugger = false;
 
 // Texture::AnisotropicLevel EngineSettings::anisotropicLevel = Texture::AnisotropicLevel::X16;
