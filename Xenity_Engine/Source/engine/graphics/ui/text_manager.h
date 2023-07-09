@@ -65,11 +65,11 @@ public:
     static void DeleteFont(Font *font);
     static void DeleteFont(int index);
 
-    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, MeshData *mesh);
+    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, MeshData *mesh, Font* font);
 
     static std::vector<Font *> fonts;
     static TextInfo *GetTextInfomations(std::string &text, int textLen, Font *font, float scale);
-    static MeshData *CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color);
+    static MeshData *CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font* font);
 
 private:
     static void SetTextPosition(std::weak_ptr<Transform> transform, bool canvas);

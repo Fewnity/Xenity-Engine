@@ -60,9 +60,9 @@ void TextRenderer::Draw()
 			if (mesh)
 				delete mesh;
 			textInfo = TextManager::GetTextInfomations(text, text.size(), font, 1);
-			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color);
+			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font);
 			isTextInfoDirty = false;
 		}
-		TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh);
+		TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font);
 	}
 }

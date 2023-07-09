@@ -78,8 +78,11 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
     Engine::renderer->SetTransform(pos, rot, scl, true);
 }
 
-MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color)
+MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font * font)
 {
+    if (!font)
+        return nullptr;
+
     textBenchmark->Start();
     int textLenght = (int)text.size();
 
@@ -122,7 +125,6 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
     mesh->unifiedColor = color;
 
     int drawnCharIndex = 0;
-    Font *font = fonts[0];
     for (int i = 0; i < textLenght; i++)
     {
         char c = text[i];
@@ -165,10 +167,13 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
  * @param transform Transform
  * @param canvas Is for canvas
  */
-void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh)
+void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh, Font* font)
 {
-    Font *font = fonts[0];
-
+    if (!font) 
+    {
+        Debug::PrintError("[TextManager::DrawText] Invalid font");
+        return;
+    }
     if (!font->fontAtlas || !font->fontAtlas->IsValid())
     {
         Debug::PrintError("[TextManager::DrawText] Invalid texture");
@@ -384,6 +389,9 @@ Font *TextManager::CreateFont(std::string filePath)
 TextInfo *TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
 {
     TextInfo *textInfos = new TextInfo();
+    if (!font)
+        return textInfos;
+
     textInfos->linesInfo.push_back(LineInfo());
 
     int currentLine = 0;
