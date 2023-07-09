@@ -2,8 +2,7 @@
 #include "engine_settings.h"
 #include "../xenity.h"
 // #include "../xenity_editor.h"
-// #include "../game_test/game.h"
-#include "../rts_game/game.h"
+#include "../game_test/game.h"
 //  #include <imgui/imgui_impl_sdl2.h>
 //  #include <imgui/imgui_impl_opengl3.h>
 #include "graphics/renderer/renderer.h"
