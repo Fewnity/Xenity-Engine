@@ -397,34 +397,6 @@ std::vector<std::weak_ptr<GameObject>> Engine::GetGameObjects()
 	return std::vector<std::weak_ptr<GameObject>>();
 }
 
-template <typename T>
-bool IsValid(std::weak_ptr<T> pointer) 
-{
-	bool valid = true;
-	if (auto lockPointer = pointer.lock()) 
-	{
-		if (auto component = std::dynamic_pointer_cast<Component>(pointer))
-		{
-			if (component->waitingForDestroy)
-			{
-				valid = false;
-			}
-		}
-		else if (auto gameObject = std::dynamic_pointer_cast<GameObject>(pointer))
-		{
-			if (gameObject->waitingForDestroy)
-			{
-				valid = false;
-			}
-		}
-	}
-	else 
-	{
-		valid = false;
-	}
-	return valid;
-}
-
 void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)
 {
 	auto gameObjectLock = gameObject.lock();

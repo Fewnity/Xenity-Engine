@@ -12,6 +12,7 @@ class Transform
 public:
 	Transform() = delete;
 	Transform(std::weak_ptr<GameObject> gameObject);
+	virtual ~Transform() = default;
 
 	Vector3 GetPosition() const;
 	Vector3 GetLocalPosition() const;
@@ -37,6 +38,11 @@ public:
 	void OnParentChanged();
 	glm::mat4 transformationMatrix;
 	bool movedLastFrame = true;
+
+	std::shared_ptr<GameObject> GetGameObject()
+	{
+		return gameObject.lock();
+	}
 
 private:
 	void UpdateTransformationMatrix();
