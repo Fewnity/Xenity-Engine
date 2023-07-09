@@ -184,11 +184,13 @@ void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlig
         {
             cameraLock->UpdateProjection();
             Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+            Graphics::needUpdateCamera = false;
         }
         else
         {
             Engine::renderer->SetProjection2D(5, 0.03f, 100);
             Engine::renderer->ResetView();
+            Graphics::needUpdateCamera = true;
         }
 
         auto transform = weakTransform.lock();

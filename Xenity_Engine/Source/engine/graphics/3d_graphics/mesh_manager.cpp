@@ -55,8 +55,17 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
         return;
 
     // meshBenchmark->Start();
+#if defined(__PSP__)
+    if (Graphics::needUpdateCamera)
+    {
+        camera->UpdateProjection();
+        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+        Graphics::needUpdateCamera = false;
+    }
+#else
     camera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+#endif
 
     Engine::renderer->SetTransform(position, rotation, scale, true);
 

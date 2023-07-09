@@ -88,6 +88,7 @@ void Graphics::DrawAllDrawable()
 
 	if (camera)
 	{
+		needUpdateCamera = true;
 		Vector3 camPos = camera->GetTransform()->GetPosition();
 
 		if (skybox)
