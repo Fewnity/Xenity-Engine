@@ -176,7 +176,6 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 /// <param name="texture"></param>
 void AssetManager::RemoveTexture(Texture *texture)
 {
-	int textureCount = (int)textures.size();
 	int textureIndex = 0;
 	bool found = false;
 	for (int i = 0; i < textureCount; i++)
@@ -202,7 +201,6 @@ void AssetManager::RemoveTexture(Texture *texture)
 /// <param name="drawable"></param>
 void AssetManager::RemoveDrawable(std::weak_ptr<IDrawable> drawable)
 {
-	int drawableCount = (int)drawables.size();
 	int drawableIndex = 0;
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
@@ -228,7 +226,6 @@ void AssetManager::RemoveDrawable(std::weak_ptr<IDrawable> drawable)
 /// <param name="light"></param>
 void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 {
-	int lightCount = (int)lights.size();
 	int lightIndex = 0;
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
