@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <string>
@@ -12,7 +20,7 @@
 #include <psputils.h>
 #endif
 
-class Socket
+class API Socket
 {
 public:
     Socket() = delete;
@@ -28,7 +36,7 @@ private:
     int socketId = -1;
 };
 
-class NetworkManager
+class API NetworkManager
 {
 public:
     static void Init();

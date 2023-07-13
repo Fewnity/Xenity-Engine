@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <fstream>
@@ -6,7 +14,7 @@
 
 class Socket;
 
-class Debug
+class API Debug
 {
 public:
     static void Init();
@@ -17,7 +25,7 @@ public:
     static void Update();
     static void ConnectToOnlineConsole();
 
-    static std::string GetDebugString() 
+    static std::string GetDebugString()
     {
         return debugText;
     }

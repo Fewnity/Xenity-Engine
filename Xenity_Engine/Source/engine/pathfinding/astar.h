@@ -1,8 +1,16 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 #include "../vectors/vector2.h"
 #include <vector>
 
-class Astar
+class API Astar
 {
 public:
 	Astar();

@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <string>
@@ -7,13 +15,14 @@
 
 class Component;
 #include "../component.h"
+#include "../debug/debug.h"
 
-std::shared_ptr<GameObject> CreateGameObject();
-std::shared_ptr<GameObject> CreateGameObject(std::string name);
-std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
-std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
+API std::shared_ptr<GameObject> CreateGameObject();
+API std::shared_ptr<GameObject> CreateGameObject(std::string name);
+API std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
+API std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
-class GameObject : public std::enable_shared_from_this<GameObject>
+class API GameObject : public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();

@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 #include <string>
 
@@ -13,7 +21,7 @@ class TextInfo;
 class MeshData;
 // class Shader;
 
-class TextRendererCanvas : public IDrawable
+class API TextRendererCanvas : public IDrawable
 {
 public:
 	TextRendererCanvas();

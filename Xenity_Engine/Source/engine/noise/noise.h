@@ -1,7 +1,15 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <time.h>
-class Noise 
+class API Noise
 {
 public:
 static float grad1(int hash, float x);

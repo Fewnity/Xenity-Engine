@@ -6,21 +6,20 @@
 #include <thread>
 #include <malloc.h>
 #include "../engine/audio/audio_manager.h"
-#ifdef __PSP__
+
+#if defined(__PSP__)
 #include <pspkernel.h>
 #include <psppower.h>
 #include <pspsdk.h>
 #include <vram.h>
 #include <pspge.h>
-#endif
-
-#ifdef __vita__
+#elif defined(__vita__)
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
 #include <psp2/power.h>
 #endif
 
-Game *Game::game;
+Game* Game::game;
 
 /// <summary>
 /// Init game
@@ -39,7 +38,7 @@ void Game::Start()
     // camera->SetProjectionType(Orthographic);
 
     // Texture *texture = new Texture("container.jpg", "Container");
-    Texture *texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
+    Texture* texture = new Texture("Atlas.bmp", "Atlas", Texture::Point, true, true);
     // Texture *texture2 = new Texture("blueStructure_2.png", "blueStructure_2", Texture::Point, false, true);
 
     // Texture *texture = new Texture("Dry Dirt_low.png", "Dry Dirt");
@@ -94,7 +93,7 @@ void Game::Start()
 
     // MeshData *mesh = MeshManager::LoadMesh("testcube.obj");
     // MeshData *mesh = MeshManager::LoadMesh("DonutTriangulate.obj");
-    MeshData *mesh = MeshManager::LoadMesh("DustPartsTest256.obj");
+    MeshData* mesh = MeshManager::LoadMesh("DustPartsTest256.obj");
     auto meshRenderer = spriteGo4.lock()->AddComponent<MeshRenderer>();
     meshRenderer->meshData = mesh;
     meshRenderer->texture = texture;
@@ -147,7 +146,7 @@ void Game::Start()
     light1->GetTransform()->SetPosition(Vector3(0, 0, -2));
 
     // AudioClip *audioClip1 = new AudioClip("Special_Needs.wav");
-    AudioClip *audioClip1 = new AudioClip("trap_loop.mp3");
+    AudioClip* audioClip1 = new AudioClip("trap_loop.mp3");
     // AudioClip *audioClip1 = new AudioClip("Wind.wav");
     std::weak_ptr<GameObject> gmAudio1 = CreateGameObject();
     myAudioSource = gmAudio1.lock()->AddComponent<AudioSource>();
@@ -157,7 +156,7 @@ void Game::Start()
     // AudioClip *audioClip0 = new AudioClip("trap_loop.mp3");
     // AudioClip *audioClip0 = new AudioClip("Wind.wav");
     // AudioClip *audioClip0 = new AudioClip("Special_Needs_44100.mp3");
-    AudioClip *audioClip0 = new AudioClip("Special_Needs.wav");
+    AudioClip* audioClip0 = new AudioClip("Special_Needs.wav");
     std::weak_ptr<GameObject> gmAudio0 = CreateGameObject("gmAudio0");
     if (auto gmAudio0Lock = gmAudio0.lock())
     {
@@ -184,7 +183,7 @@ int lastTime = 0;
 // 	// Convertir l'angle en radians
 // 	float radAngle = angle * (3.14159f / 180.0f);
 
-// 	// Calculer la position du vecteur Ã  tourner par rapport Ã  la cible
+// 	// Calculer la position du vecteur à tourner par rapport à la cible
 // 	Vector3 direction = trans->GetPosition() - targetPosition;
 
 // 	// Calculer la matrice de rotation
@@ -210,7 +209,7 @@ int lastTime = 0;
 // 	trans->SetPosition(targetPosition + Vector3(xPrime, yPrime, zPrime));
 // 	// trans->SetRotation(trans->GetRotation() + axis * angle);
 
-// 	// Mettre Ã  jour la position du vecteur aprÃ¨s rotation
+// 	// Mettre à jour la position du vecteur après rotation
 // 	// return targetPosition + Vector3(xPrime, yPrime, zPrime);
 // }
 
@@ -353,4 +352,9 @@ void Game::Update()
     // Vector3 meshRot = spriteGo4->GetTransform()->GetRotation();
     // meshRot += spriteGo4->GetTransform()->GetLeft() * 2 + spriteGo4->GetTransform()->GetForward() * 3;
     // spriteGo4->GetTransform()->SetRotation(meshRot);
+}
+
+GameInterface* CreateGame()
+{
+    return new Game();
 }

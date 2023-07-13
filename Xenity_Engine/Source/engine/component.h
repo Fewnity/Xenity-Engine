@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <map>
@@ -8,7 +16,7 @@ class GameObject;
 class Transform;
 
 
-class Component : public std::enable_shared_from_this<Component>
+class API Component : public std::enable_shared_from_this<Component>
 {
 public:
 	Component();

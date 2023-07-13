@@ -2,7 +2,6 @@
 #include "engine_settings.h"
 #include "../xenity.h"
 // #include "../xenity_editor.h"
-#include "../game_test/game.h"
 //  #include <imgui/imgui_impl_sdl2.h>
 //  #include <imgui/imgui_impl_opengl3.h>
 #include "graphics/renderer/renderer.h"
@@ -10,6 +9,12 @@
 #include "file_system/mesh_loader/wavefront_loader.h"
 #include "audio/audio_manager.h"
 #include "network/network.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include "dynamic_lib/dynamic_lib.h"
+#else
+#include "../game_test/game.h"
+#endif
+#include "game_interface.h"
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -226,8 +231,10 @@ void Engine::UpdateComponents()
 	{
 		if (auto component = orderedComponents[i].lock())
 		{
-			if(component->GetGameObject()->GetLocalActive())
+			if (component->GetGameObject()->GetLocalActive())
+			{
 				component->Update();
+			}
 		}
 		else
 		{
@@ -276,10 +283,16 @@ void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
 
-	Game *game = new Game();
+#if defined(_WIN32) || defined(_WIN64)
+	DynamicLibrary::LoadGameLibrary("game");
+	GameInterface *game = DynamicLibrary::CreateGame();
+#else
+	GameInterface *game = new Game();
+#endif
 
 	valueFree = false;
-	game->Start();
+	if (game)
+		game->Start();
 	valueFree = true;
 
 	Debug::Print("-------- Game initiated --------");
@@ -319,13 +332,42 @@ void Engine::Loop()
 #else
 		InputSystem::Read();
 #endif
-		// EditorUI::NewFrame();
+// EditorUI::NewFrame();
+#if defined(_WIN32) || defined(_WIN64)
+		if (InputSystem::GetKeyDown(R))
+		{
+			delete game;
+			game = nullptr;
+			Graphics::orderedIDrawable.clear();
+			Graphics::usedCamera.reset();
 
+			orderedComponents.clear();
+			gameObjectsToDestroy.clear();
+			componentsToDestroy.clear();
+			gameObjects.clear();
+			componentsCount = 0;
+			gameObjectCount = 0;
+			DynamicLibrary::UnloadGameLibrary();
+			DynamicLibrary::CompileGame();
+			DynamicLibrary::LoadGameLibrary("game");
+			game = DynamicLibrary::CreateGame();
+			if (game)
+			{
+				Debug::Print("Game compilation done");
+				game->Start();
+			}
+			else 
+			{
+				Debug::Print("Game compilation failed");
+			}
+		}
+#endif
 		// Game loop
 		gameLoopBenchmark->Start();
 
 		valueFree = false;
-		game->Update();
+		if (game)
+			game->Update();
 		valueFree = true;
 
 		gameLoopBenchmark->Stop();

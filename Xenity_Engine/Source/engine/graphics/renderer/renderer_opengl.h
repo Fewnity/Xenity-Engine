@@ -1,9 +1,18 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
+
 #pragma once
 
 #include "renderer.h"
 #include "../../lighting/lighting.h"
 
-class RendererOpengl : public Renderer
+class API RendererOpengl : public Renderer
 {
 public:
 	RendererOpengl();

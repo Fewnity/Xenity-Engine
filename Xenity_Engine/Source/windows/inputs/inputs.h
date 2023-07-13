@@ -1,6 +1,14 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
-//#ifdef __PSP__
+#if defined(_WIN32) || defined(_WIN64)
 
 #include <map>
 #include <string>
@@ -11,9 +19,9 @@ class Input;
 class Touch;
 class TouchRaw;
 
-void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs);
-void CrossInputsInit();
-InputPad CrossGetInputPad();
-std::vector<TouchRaw> CrossUpdateTouch();
+API void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs);
+API void CrossInputsInit();
+API InputPad CrossGetInputPad();
+API std::vector<TouchRaw> CrossUpdateTouch();
 
-//#endif
+#endif

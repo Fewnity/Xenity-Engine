@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <fstream>
@@ -5,7 +13,7 @@
 #include <iostream>
 #include <unordered_map>
 
-class ProfilerValue
+class API ProfilerValue
 {
 public:
 	void AddValue(long long v)
@@ -34,7 +42,7 @@ private:
 	long long value = 0;
 };
 
-class Performance
+class API Performance
 {
 public:
 	static void Init();

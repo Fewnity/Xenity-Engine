@@ -1,6 +1,14 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
-class Vector2Int
+class API Vector2Int
 {
 public:
 	Vector2Int();
@@ -16,24 +24,24 @@ public:
 };
 
 
-Vector2Int operator+(const Vector2Int& left, const Vector2Int& right);
-Vector2Int operator-(const Vector2Int& left, const Vector2Int& right);
-Vector2Int operator*(const Vector2Int& vec, const float value);
-Vector2Int operator*(const float value, const Vector2Int& vec);
-Vector2Int operator*(const Vector2Int& left, const Vector2Int& right);
-Vector2Int operator/(const Vector2Int& left, const Vector2Int& right);
-Vector2Int operator/(const Vector2Int& vec, const float value);
-Vector2Int operator/(const float value, const Vector2Int& vec);
+API Vector2Int operator+(const Vector2Int& left, const Vector2Int& right);
+API Vector2Int operator-(const Vector2Int& left, const Vector2Int& right);
+API Vector2Int operator*(const Vector2Int& vec, const float value);
+API Vector2Int operator*(const float value, const Vector2Int& vec);
+API Vector2Int operator*(const Vector2Int& left, const Vector2Int& right);
+API Vector2Int operator/(const Vector2Int& left, const Vector2Int& right);
+API Vector2Int operator/(const Vector2Int& vec, const float value);
+API Vector2Int operator/(const float value, const Vector2Int& vec);
 
-Vector2Int operator/=(Vector2Int& vec, const float value);
-Vector2Int operator*=(Vector2Int& vec, const float value);
-Vector2Int operator+=(Vector2Int& vec, const float value);
-Vector2Int operator-=(Vector2Int& vec, const float value);
+API Vector2Int operator/=(Vector2Int& vec, const float value);
+API Vector2Int operator*=(Vector2Int& vec, const float value);
+API Vector2Int operator+=(Vector2Int& vec, const float value);
+API Vector2Int operator-=(Vector2Int& vec, const float value);
 
-Vector2Int operator/=(Vector2Int& vec, const Vector2Int& vecRight);
-Vector2Int operator*=(Vector2Int& vec, const Vector2Int& vecRight);
-Vector2Int operator+=(Vector2Int& vec, const Vector2Int& vecRight);
-Vector2Int operator-=(Vector2Int& vec, const Vector2Int& vecRight);
+API Vector2Int operator/=(Vector2Int& vec, const Vector2Int& vecRight);
+API Vector2Int operator*=(Vector2Int& vec, const Vector2Int& vecRight);
+API Vector2Int operator+=(Vector2Int& vec, const Vector2Int& vecRight);
+API Vector2Int operator-=(Vector2Int& vec, const Vector2Int& vecRight);
 
-bool operator==(const Vector2Int& left, const Vector2Int& right);
-bool operator!=(const Vector2Int& left, const Vector2Int& right);
+API bool operator==(const Vector2Int& left, const Vector2Int& right);
+API bool operator!=(const Vector2Int& left, const Vector2Int& right);

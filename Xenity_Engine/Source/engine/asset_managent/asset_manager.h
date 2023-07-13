@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 #include <vector>
 #include <string>
@@ -10,7 +18,7 @@ class Light;
 // class Material;
 // class MeshData;
 
-class AssetManager
+class API AssetManager
 {
 public:
 	static void Init();

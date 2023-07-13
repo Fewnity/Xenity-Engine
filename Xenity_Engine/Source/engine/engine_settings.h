@@ -1,9 +1,17 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <string>
 // #include "graphics/texture.h"
 
-class EngineSettings
+class API EngineSettings
 {
 public:
 	static bool isWireframe;

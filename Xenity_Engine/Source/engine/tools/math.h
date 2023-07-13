@@ -1,8 +1,16 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 class Vector3;
 
-class Math
+class API Math
 {
 public:
 	static void MultiplyMatrix(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB);

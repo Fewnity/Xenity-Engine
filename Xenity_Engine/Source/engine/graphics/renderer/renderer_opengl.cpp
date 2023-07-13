@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#define GLFW_DLL
 #endif
 
 #if defined(__PSP__)

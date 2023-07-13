@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <map>
@@ -122,7 +130,7 @@ enum KeyCode
 
 #define INPUT_COUNT 100
 
-class Input
+class API Input
 {
 public:
 	KeyCode code;
@@ -131,7 +139,7 @@ public:
 	bool held = false;
 };
 
-class Touch
+class API Touch
 {
 public:
 	Vector2Int position = Vector2Int(0);
@@ -140,7 +148,7 @@ public:
 	float force = 0;
 };
 
-class InputSystem
+class API InputSystem
 {
 public:
 	static void Init();

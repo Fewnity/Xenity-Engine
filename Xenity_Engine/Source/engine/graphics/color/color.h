@@ -1,8 +1,16 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include "../../vectors/vector4.h"
 
-class RGBA
+class API RGBA
 {
 public:
 	RGBA(float r, float g, float b, float a)
@@ -20,7 +28,7 @@ public:
 	float a = 1;
 };
 
-class Color
+class API Color
 {
 public:
 	static Color CreateFromRGB(int r, int g, int b, int a);

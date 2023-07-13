@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <memory>
@@ -8,7 +16,7 @@ class Material;
 class Camera;
 class Texture;
 
-class SkyBox
+class API SkyBox
 {
 public:
 	SkyBox(Texture *front, Texture *back, Texture *up, Texture *down, Texture *left, Texture *right);
@@ -20,7 +28,7 @@ public:
 	Texture *right = nullptr;
 };
 
-class Graphics
+class API Graphics
 {
 public:
 	static std::weak_ptr<Camera> usedCamera;

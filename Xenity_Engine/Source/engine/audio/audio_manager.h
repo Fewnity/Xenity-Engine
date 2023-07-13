@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <vector>
@@ -20,7 +28,7 @@ class AudioClip;
 class AudioClipStream;
 class AudioSource;
 
-class PlayedSound
+class API PlayedSound
 {
 public:
     ~PlayedSound();
@@ -38,7 +46,7 @@ public:
     bool isPlaying = false;
 };
 
-class Channel
+class API Channel
 {
 public:
     Channel();
@@ -54,7 +62,7 @@ private:
 #endif
 };
 
-class MyMutex
+class API MyMutex
 {
 public:
     std::mutex audioMutex;
@@ -78,7 +86,7 @@ public:
     }
 };
 
-class AudioManager
+class API AudioManager
 {
 public:
     static void Init();

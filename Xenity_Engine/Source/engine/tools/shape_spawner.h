@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <string>
@@ -6,7 +14,7 @@
 class GameObject;
 class Vector3;
 
-class ShapeSpawner
+class API ShapeSpawner
 {
 public:
 	static std::weak_ptr <GameObject> SpawnCube();

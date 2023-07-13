@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <vector>
@@ -15,7 +23,7 @@ class Vector3;
 class Texture;
 class Color;
 
-class Character
+class API Character
 {
 public:
     glm::ivec2 Size;          // Size of glyph
@@ -31,7 +39,7 @@ public:
     Vector2 uvOffet;
 };
 
-class Font
+class API Font
 {
 public:
     ~Font();
@@ -42,14 +50,14 @@ public:
 private:
 };
 
-class LineInfo
+class API LineInfo
 {
 public:
     float lenght = 0;
     float y1 = 0;
 };
 
-class TextInfo
+class API TextInfo
 {
 public:
     std::vector<LineInfo> linesInfo;
@@ -57,7 +65,7 @@ public:
     int lineCount = 0;
 };
 
-class TextManager
+class API TextManager
 {
 public:
     static void Init();

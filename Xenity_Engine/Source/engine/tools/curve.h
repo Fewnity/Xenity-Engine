@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <vector>
@@ -7,7 +15,7 @@
 class Transform;
 class GameObject;
 
-class SplinePoint
+class API SplinePoint
 {
 public:
     std::weak_ptr<Transform> parent;
@@ -15,7 +23,7 @@ public:
     std::weak_ptr<Transform> next;
 };
 
-class Spline
+class API Spline
 {
 public:
     SplinePoint* CreateSplinePoint(const Vector3 position);

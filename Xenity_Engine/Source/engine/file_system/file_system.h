@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #ifdef __PSP__
@@ -6,7 +14,7 @@
 
 #include <string>
 
-class File
+class API File
 {
 public:
 	File() = delete;
@@ -28,7 +36,7 @@ private:
 #endif
 };
 
-class FileSystem
+class API FileSystem
 {
 public:
 	FileSystem()

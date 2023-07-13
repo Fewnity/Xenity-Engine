@@ -21,6 +21,8 @@ Touch : Add input state : Begin, Hold (and End?)
 Text scale
 */
 
+#undef main
+
 int main(int argc, char *argv[])
 {
 	// Init engine

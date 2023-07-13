@@ -1,9 +1,17 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 class Vector2Int;
 class Vector2;
 
-class Vector3
+class API Vector3
 {
 public:
 	Vector3();
@@ -23,25 +31,25 @@ public:
 };
 
 
-Vector3 operator+(const Vector3& left, const Vector3& right);
-Vector3 operator-(const Vector3& left, const Vector3& right);
-Vector3 operator-(const Vector3& vec);
-Vector3 operator*(const Vector3& vec, const float value);
-Vector3 operator*(const float value, const Vector3& vec);
-Vector3 operator*(const Vector3& left, const Vector3& right);
-Vector3 operator/(const Vector3& left, const Vector3& right);
-Vector3 operator/(const Vector3& vec, const float value);
-Vector3 operator/(const float value, const Vector3& vec);
+API Vector3 operator+(const Vector3& left, const Vector3& right);
+API Vector3 operator-(const Vector3& left, const Vector3& right);
+API Vector3 operator-(const Vector3& vec);
+API Vector3 operator*(const Vector3& vec, const float value);
+API Vector3 operator*(const float value, const Vector3& vec);
+API Vector3 operator*(const Vector3& left, const Vector3& right);
+API Vector3 operator/(const Vector3& left, const Vector3& right);
+API Vector3 operator/(const Vector3& vec, const float value);
+API Vector3 operator/(const float value, const Vector3& vec);
 
-Vector3 operator/=(Vector3& vec, const float value);
-Vector3 operator*=(Vector3& vec, const float value);
-Vector3 operator+=(Vector3& vec, const float value);
-Vector3 operator-=(Vector3& vec, const float value);
+API Vector3 operator/=(Vector3& vec, const float value);
+API Vector3 operator*=(Vector3& vec, const float value);
+API Vector3 operator+=(Vector3& vec, const float value);
+API Vector3 operator-=(Vector3& vec, const float value);
 
-Vector3 operator/=(Vector3& vec, const Vector3& vecRight);
-Vector3 operator*=(Vector3& vec, const Vector3& vecRight);
-Vector3 operator+=(Vector3& vec, const Vector3& vecRight);
-Vector3 operator-=(Vector3& vec, const Vector3& vecRight);
+API Vector3 operator/=(Vector3& vec, const Vector3& vecRight);
+API Vector3 operator*=(Vector3& vec, const Vector3& vecRight);
+API Vector3 operator+=(Vector3& vec, const Vector3& vecRight);
+API Vector3 operator-=(Vector3& vec, const Vector3& vecRight);
 
-bool operator==(const Vector3& left, const Vector3& right);
-bool operator!=(const Vector3& left, const Vector3& right);
+API bool operator==(const Vector3& left, const Vector3& right);
+API bool operator!=(const Vector3& left, const Vector3& right);

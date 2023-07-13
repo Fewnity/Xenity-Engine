@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include "../texture.h"
@@ -56,7 +64,7 @@ enum DrawMode
 	Quads,
 };
 
-class Renderer
+class API Renderer
 {
 public:
 	Renderer();

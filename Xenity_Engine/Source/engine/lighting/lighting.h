@@ -1,15 +1,23 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include "../vectors/vector3.h"
 #include "../component.h"
 #include "../graphics/color/color.h"
 
-class lighting
+class API lighting
 {
 };
 const float lightConstant = 1;
 
-class Light : public Component
+class API Light : public Component
 {
 public:
 

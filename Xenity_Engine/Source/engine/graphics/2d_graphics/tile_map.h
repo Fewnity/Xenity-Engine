@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include "../iDrawable.h"
@@ -8,7 +16,7 @@
 class Texture;
 class MeshData;
 
-class Tilemap : public IDrawable
+class API Tilemap : public IDrawable
 {
 public:
 	Tilemap();

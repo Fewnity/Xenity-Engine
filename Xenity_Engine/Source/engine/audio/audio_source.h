@@ -1,10 +1,18 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include "../component.h"
 
 class AudioClip;
 
-class AudioSource : public Component
+class API AudioSource : public Component
 {
 public:
     AudioSource();

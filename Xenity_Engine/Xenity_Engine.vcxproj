@@ -162,6 +162,7 @@
     <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
     <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
     <ClCompile Include="Source\engine\audio\audio_source.cpp" />
+    <ClCompile Include="Source\engine\dynamic_lib\dynamic_lib.cpp" />
     <ClCompile Include="Source\engine\file_system\file_system.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_renderer.cpp" />
@@ -257,7 +258,9 @@
     <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />
     <ClInclude Include="Source\engine\audio\audio_manager.h" />
     <ClInclude Include="Source\engine\audio\audio_source.h" />
+    <ClInclude Include="Source\engine\dynamic_lib\dynamic_lib.h" />
     <ClInclude Include="Source\engine\file_system\file_system.h" />
+    <ClInclude Include="Source\engine\game_interface.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\line_renderer.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_renderer.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_data.h" />
