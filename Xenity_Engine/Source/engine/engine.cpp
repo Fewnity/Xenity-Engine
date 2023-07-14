@@ -419,7 +419,7 @@ void Engine::Loop()
 		Performance::ResetCounters();
 	}
 
-	// delete game;
+	delete game;
 }
 
 /// <summary>
