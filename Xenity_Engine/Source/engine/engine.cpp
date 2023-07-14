@@ -348,6 +348,7 @@ void Engine::Loop()
 			gameObjects.clear();
 			componentsCount = 0;
 			gameObjectCount = 0;
+			Engine::selectedGameObject.reset();
 			DynamicLibrary::UnloadGameLibrary();
 			DynamicLibrary::CompileGame();
 			DynamicLibrary::LoadGameLibrary("game");
