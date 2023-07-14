@@ -62,6 +62,8 @@
     <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
     <ClCompile Include="Source\engine\network\network.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
+    <ClCompile Include="Source\engine\dynamic_lib\dynamic_lib.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -133,6 +135,9 @@
     <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />
     <ClInclude Include="Source\engine\network\network.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\line_renderer.h" />
+    <ClInclude Include="Source\engine\dynamic_lib\dynamic_lib.h" />
+    <ClInclude Include="Source\engine\game_interface.h" />
+    <ClInclude Include="Source\editor\ui\editor_ui.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

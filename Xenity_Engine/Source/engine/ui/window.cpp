@@ -1,7 +1,11 @@
 #include "window.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_sdl2.h"
 #endif
+
 #include "../engine.h"
 #include "../graphics/renderer/renderer.h"
 #include "../debug/debug.h"
@@ -55,6 +59,16 @@ void Window::Init()
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
     OnResize();
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplSDL2_InitForOpenGL(Window::window, context);
+    ImGui_ImplOpenGL3_Init("#version 460");
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
 #endif
     Debug::Print("-------- Window initiated --------");
 }

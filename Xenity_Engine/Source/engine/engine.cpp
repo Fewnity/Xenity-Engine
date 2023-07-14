@@ -1,16 +1,17 @@
 #include "engine.h"
 #include "engine_settings.h"
 #include "../xenity.h"
-// #include "../xenity_editor.h"
-//  #include <imgui/imgui_impl_sdl2.h>
-//  #include <imgui/imgui_impl_opengl3.h>
+#include "../xenity_editor.h"
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
 #include "file_system/mesh_loader/wavefront_loader.h"
 #include "audio/audio_manager.h"
 #include "network/network.h"
+
 #if defined(_WIN32) || defined(_WIN64)
 #include "dynamic_lib/dynamic_lib.h"
+#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_opengl3.h>
 #else
 #include "../game_test/game.h"
 #endif
@@ -111,7 +112,7 @@ int Engine::Init(const std::string exePath)
 	AssetManager::Init();
 	AudioManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
-	// EditorUI::Init();
+	EditorUI::Init();
 	Time::Init();
 
 	// Init random
@@ -312,7 +313,7 @@ void Engine::Loop()
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			// ImGui_ImplSDL2_ProcessEvent(&event);
+			ImGui_ImplSDL2_ProcessEvent(&event);
 			InputSystem::Read(event);
 			switch (event.type)
 			{
@@ -332,7 +333,7 @@ void Engine::Loop()
 #else
 		InputSystem::Read();
 #endif
-// EditorUI::NewFrame();
+
 #if defined(_WIN32) || defined(_WIN64)
 		if (InputSystem::GetKeyDown(R))
 		{
@@ -404,12 +405,14 @@ void Engine::Loop()
 		}
 		engineLoopBenchmark->Stop();
 
-		// 	EditorUI::DrawProfiler();
-		// 	EditorUI::DrawInspector();
-		// 	EditorUI::DrawHierarchy();
-
-		// 	ImGui::Render();
-		// 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#if defined(_WIN32) || defined(_WIN64)
+		EditorUI::NewFrame();
+		EditorUI::DrawProfiler();
+		EditorUI::DrawInspector();
+		EditorUI::DrawHierarchy();
+		EditorUI::DrawMainMenuBar();
+		EditorUI::Render();
+#endif
 
 		Performance::Update();
 		Performance::ResetCounters();
