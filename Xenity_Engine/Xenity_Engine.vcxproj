@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
@@ -256,6 +257,8 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\imgui\imgui_stdlib.h" />
+    <ClInclude Include="include\json.hpp" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="Source\engine\audio\audio_clip.h" />
     <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />

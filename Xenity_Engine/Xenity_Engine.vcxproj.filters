@@ -64,6 +64,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
     <ClCompile Include="Source\engine\dynamic_lib\dynamic_lib.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
+    <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -138,6 +139,8 @@
     <ClInclude Include="Source\engine\dynamic_lib\dynamic_lib.h" />
     <ClInclude Include="Source\engine\game_interface.h" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
+    <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="include\imgui\imgui_stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
