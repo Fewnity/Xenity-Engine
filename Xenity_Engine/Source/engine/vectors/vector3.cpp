@@ -1,12 +1,13 @@
-#include "vector3.h"
-#include "vector2_int.h"
-#include "vector2.h"
-
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
 #undef __STRICT_ANSI__
 #endif
+
 #include <cmath>
+#include "vector3.h"
+#include "vector2_int.h"
+#include "vector2.h"
+
 
 #pragma region Constructors / Destructor
 

@@ -1,9 +1,12 @@
+#define _USE_MATH_DEFINES
+#if defined(__PSP__) || defined(__vita__)
+#undef __STRICT_ANSI__
+#endif
+#include <cmath>
+
 #include "math.h"
 #include "../vectors/vector3.h"
 
-#define _USE_MATH_DEFINES
-#undef __STRICT_ANSI__
-#include <cmath>
 
 void Math::MultiplyMatrix(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB)
 {

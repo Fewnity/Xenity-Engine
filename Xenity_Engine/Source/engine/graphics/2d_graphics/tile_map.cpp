@@ -5,7 +5,11 @@
 #include "sprite_manager.h"
 #include "../3d_graphics/mesh_data.h"
 #include "../texture.h"
+
 #define _USE_MATH_DEFINES
+#if defined(__PSP__) || defined(__vita__)
+#undef __STRICT_ANSI__
+#endif
 #include <math.h>
 
 #define DEFAULT_CHUNK_SIZE 10
