@@ -262,8 +262,8 @@ void Game::Update()
     else if (InputSystem::GetKey(SQUARE))
         rot.y += -1.5f * Time::GetDeltaTime() * 50;
 
-    pos -= cameraGO.lock()->GetTransform().lock()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
-    pos -= cameraGO.lock()->GetTransform().lock()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
+    pos -= cameraGO.lock()->GetTransform()->GetForward() * (InputSystem::leftJoystick.y / 7.0f) * Time::GetDeltaTime() * 30;
+    pos -= cameraGO.lock()->GetTransform()->GetLeft() * (InputSystem::leftJoystick.x / 7.0f) * Time::GetDeltaTime() * 30;
 #elif defined(__vita__)
     // Rotate camera
     rot.x += InputSystem::rightJoystick.y * 1.5f * Time::GetDeltaTime() * 50;
