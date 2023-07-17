@@ -65,6 +65,7 @@
     <ClCompile Include="Source\engine\dynamic_lib\dynamic_lib.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
     <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="Source\engine\reflection\reflection.cpp" />
     <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\imgui\imgui_stdlib.h" />
+    <ClInclude Include="Source\engine\reflection\reflection.h" />
     <ClInclude Include="Source\engine\unique_id\unique_id.h" />
   </ItemGroup>
   <ItemGroup>
