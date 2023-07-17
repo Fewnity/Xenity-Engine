@@ -46,6 +46,10 @@ public:
         return isPlaying;
     }
 
+    bool GetIsLooping() {
+        return loop;
+    }
+
 private:
     float volume = 1;
     float pan = 0.5;
