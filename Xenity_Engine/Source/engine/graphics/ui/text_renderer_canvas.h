@@ -25,7 +25,6 @@ class API TextRendererCanvas : public IDrawable
 {
 public:
 	TextRendererCanvas();
-	// TextRendererCanvas(Font* font, float size, Shader* shader);
 	~TextRendererCanvas();
 	void SetReflection();
 	Vector3 position = Vector3(0, 0, 0);
