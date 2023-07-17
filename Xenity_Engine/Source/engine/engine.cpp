@@ -16,6 +16,7 @@
 #include "../game_test/game.h"
 #endif
 #include "game_interface.h"
+#include "class_registry/class_registry.h"
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -64,6 +65,27 @@ int Engine::Init(const std::string exePath)
 	scePowerSetGpuClockFrequency(222);
 	scePowerSetGpuXbarClockFrequency(166);
 #endif
+
+	ClassRegistry::AddComponentClass("Light", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<Light>(); });
+	ClassRegistry::AddComponentClass("Camera", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<Camera>(); });
+	ClassRegistry::AddComponentClass("TextRendererCanvas", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<TextRendererCanvas>(); });
+	ClassRegistry::AddComponentClass("TextRenderer", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<TextRenderer>(); });
+	ClassRegistry::AddComponentClass("MeshRenderer", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<MeshRenderer>(); });
+	ClassRegistry::AddComponentClass("Tilemap", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<Tilemap>(); });
+	ClassRegistry::AddComponentClass("SpriteRenderer", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<SpriteRenderer>(); });
+	ClassRegistry::AddComponentClass("LineRenderer", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<LineRenderer>(); });
+	ClassRegistry::AddComponentClass("AudioSource", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<AudioSource>(); });
+	ClassRegistry::AddComponentClass("TestComponent", [](std::shared_ptr<GameObject> go)
+									 { return go->AddComponent<TestComponent>(); });
 
 	/* Initialize libraries */
 	NetworkManager::Init();
