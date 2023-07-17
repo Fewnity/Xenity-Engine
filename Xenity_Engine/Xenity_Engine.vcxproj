@@ -223,6 +223,7 @@
     <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\windows\inputs\inputs.cpp" />
+    <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\shaders\2D\fSprite.shader" />
@@ -331,6 +332,7 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
     <ClInclude Include="Source\xenity_editor.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_manager.h" />
+    <ClInclude Include="Source\engine\unique_id\unique_id.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
