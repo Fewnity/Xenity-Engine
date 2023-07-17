@@ -13,14 +13,16 @@
 #endif
 
 #include <string>
+#include <fstream>
 
 class API File
 {
 public:
 	File() = delete;
-	File(const std::string path);
+	File(std::string path);
 
 	void Write(const std::string data);
+	std::string ReadAll();
 	void Close();
 
 	std::string GetPath() const
@@ -33,6 +35,8 @@ private:
 
 #ifdef __PSP__
 	SceUID fileId;
+#else
+	std::fstream file;
 #endif
 };
 
@@ -53,6 +57,7 @@ public:
 	File *OpenFile(const std::string path);
 	void CloseFile(File *file);
 	void WriteInFile(File *file, const std::string data);
+	std::string ReadAllFile(File* file);
 	void DeleteFile(const std::string path);
 
 	std::string texturePath = "";

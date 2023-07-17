@@ -15,6 +15,8 @@
 #define SHADER_PATH R"(shaders\)"
 #define MODEL_PATH R"(models\)"
 
+#define PSVITA_PATH R"(ux0:data\xenity_engine\)"
+
 // std::string FileSystem::texturePath;
 // std::string FileSystem::shaderPath;
 // std::string FileSystem::modelsPath;
@@ -23,22 +25,45 @@ FileSystem *FileSystem::fileSystem = nullptr;
 
 #pragma region File
 
-File::File(const std::string path)
+File::File(std::string path)
 {
+#if defined(__vita__)
+	path = PSVITA_PATH + path;
+#endif
+
 	this->path = path;
-#ifdef __PSP__
+#if defined(__PSP__)
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR | PSP_O_CREAT, 0777);
+#else
+	file.open(path, std::fstream::in | std::fstream::out | std::fstream::trunc);
 #endif
 }
 
 void File::Write(const std::string data)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR | PSP_O_CREAT, 0777);
 	sceIoLseek(fileId, 0, SEEK_END);
 	int b = sceIoWrite(fileId, data.c_str(), data.size());
 	sceIoClose(fileId);
+#else
+	file << data;
 #endif
+}
+
+std::string File::ReadAll()
+{
+	std::string allText = "";
+#if defined(__PSP__)
+#else
+	std::streamoff size = file.tellg();
+	char* memblock = new char[size];
+	file.seekg(0, std::ios::beg);
+	file.read(memblock, size);
+	allText = memblock;
+	delete[] memblock;
+#endif
+	return allText;
 }
 
 void File::Close()
@@ -68,7 +93,8 @@ std::string FileSystem::ReadText(const std::string path)
 	// Print error if the file can't be read
 	if (file.fail())
 	{
-		std::cout << "\033[31mShader read error. Path : \"" << path << "\"\033[0m" << std::endl;
+		std::string errorText = "File read error. Path: " + path;
+		Debug::PrintError(errorText);
 	}
 
 	// Read file
@@ -103,7 +129,7 @@ void FileSystem::WriteInFile(File *file, const std::string data)
 
 void FileSystem::DeleteFile(const std::string path)
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	sceIoRemove(path.c_str());
 #endif
 }
