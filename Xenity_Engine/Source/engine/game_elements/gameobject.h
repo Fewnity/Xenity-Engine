@@ -17,13 +17,14 @@ class Component;
 #include "../component.h"
 #include "../debug/debug.h"
 #include "../reflection/reflection.h"
+#include "../unique_id/unique_id.h"
 
 API std::shared_ptr<GameObject> CreateGameObject();
 API std::shared_ptr<GameObject> CreateGameObject(std::string name);
 API std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
 API std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
-class API GameObject : public std::enable_shared_from_this<GameObject>
+class API GameObject : public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
