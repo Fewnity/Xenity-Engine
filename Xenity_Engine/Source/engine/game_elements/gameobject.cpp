@@ -62,7 +62,7 @@ void GameObject::Setup()
 
 #pragma endregion
 
-void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponent) 
+void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
 	{
@@ -160,24 +160,21 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 /// </summary>
 /// <param name="name">GameObjects's name</param>
 /// <returns></returns>
-std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name)
+std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name)
 {
-	std::vector<std::weak_ptr<GameObject>> foundGameObjects;
+	std::vector<std::shared_ptr<GameObject>> foundGameObjects;
 
 	if (name == "@")
 		return foundGameObjects;
 
-	std::vector<std::weak_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
 
 	int gameObjectCount = (int)gameObjects.size();
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		if (auto gameObject = gameObjects[i].lock())
-		{
-			if (gameObject->name == name)
-				foundGameObjects.push_back(gameObject);
-		}
+		if (gameObjects[i]->name == name)
+			foundGameObjects.push_back(gameObjects[i]);
 	}
 	return foundGameObjects;
 }
@@ -187,24 +184,35 @@ std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string n
 /// </summary>
 /// <param name="name">GameObject's name</param>
 /// <returns>GameObject pointer or nullptr if no one is found</returns>
-std::weak_ptr<GameObject> FindGameObjectByName(const std::string name)
+std::shared_ptr<GameObject> FindGameObjectByName(const std::string name)
 {
-	std::vector<std::weak_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
 
 	if (name == "@")
-		return std::weak_ptr<GameObject>();
+		return std::shared_ptr<GameObject>();
 
 	int gameObjectCount = (int)gameObjects.size();
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		if (auto gameObject = gameObjects[i].lock())
-		{
-			if (gameObject->name == name)
-				return gameObject;
-		}
+		if (gameObjects[i]->name == name)
+			return gameObjects[i];
 	}
-	return std::weak_ptr<GameObject>();
+	return std::shared_ptr<GameObject>();
+}
+
+API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
+{
+	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+
+	int gameObjectCount = (int)gameObjects.size();
+
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		if (gameObjects[i]->GetUniqueId() == id)
+			return gameObjects[i];
+	}
+	return std::shared_ptr<GameObject>();
 }
 
 #pragma endregion
