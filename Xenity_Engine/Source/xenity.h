@@ -86,3 +86,5 @@
 
 // Network
 #include "engine/network/network.h"
+
+#include "engine/test_component.h"
