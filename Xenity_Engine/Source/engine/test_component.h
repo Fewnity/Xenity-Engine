@@ -4,6 +4,7 @@
 
 #include "component.h"
 
+#include "lighting/lighting.h"
 #include "vectors/vector2.h"
 #include "vectors/vector2_int.h"
 #include "vectors/vector3.h"
@@ -24,8 +25,14 @@ class TestComponent : public Component
 public:
 	TestComponent();
 	void SetReflection();
+	void Start();
+	void Update();
 
 	CustomClass myCustomClass = CustomClass();
+
+	std::weak_ptr<Light> myComponent;
+	std::weak_ptr<GameObject> myGameObject;
+	std::weak_ptr<Transform> myTransform;
 
 	Vector2 vec2 = Vector2(0);
 	Vector2Int vec2Int = Vector2Int(0);
@@ -34,8 +41,8 @@ public:
 
 	Color color;
 
-	float myFloat =0;
-	int myInt =0;
+	float myFloat = 0;
+	int myInt = 0;
 	double myDouble = 0;
 	std::string myString ="";
 };

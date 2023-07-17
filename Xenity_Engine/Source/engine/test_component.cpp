@@ -1,4 +1,7 @@
 #include "test_component.h"
+#include "debug/debug.h"
+#include "../xenity.h"
+#include <memory>
 
 TestComponent::TestComponent() 
 {
@@ -9,6 +12,10 @@ TestComponent::TestComponent()
 void TestComponent::SetReflection()
 {
 	reflectedVariables["myCustomClass"] = &myCustomClass;
+
+	reflectedVariables["myComponent"] = &myComponent;
+	reflectedVariables["myGameObject"] = &myGameObject;
+	reflectedVariables["myTransform"] = &myTransform;
 
 	reflectedVariables["vec2"] = &vec2;
 	reflectedVariables["vec2Int"] = &vec2Int;
@@ -21,6 +28,14 @@ void TestComponent::SetReflection()
 	reflectedVariables["myInt"] = &myInt;
 	reflectedVariables["myDouble"] = &myDouble;
 	reflectedVariables["myString"] = &myString;
+}
+
+void TestComponent::Start()
+{
+}
+
+void TestComponent::Update()
+{
 }
 
 CustomClass::CustomClass()
