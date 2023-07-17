@@ -24,6 +24,7 @@ class API TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();
+	void SetReflection();
 	// TextRenderer(Font* font, float size, Shader* shader);
 	// TextRenderer(Font* font, float size, Shader* shader);
 	~TextRenderer();

@@ -21,6 +21,7 @@ class API SpriteRenderer : public IDrawable
 public:
 	SpriteRenderer();
 	~SpriteRenderer();
+	void SetReflection();
 
 	int GetDrawPriority() const;
 

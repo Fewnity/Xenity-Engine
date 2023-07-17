@@ -19,6 +19,7 @@ class API Camera : public Component
 public:
 	Camera();
 	~Camera();
+	void SetReflection();
 	void SetFov(const float fov);
 	float GetFov() const;
 	void SetProjectionSize(const float value);

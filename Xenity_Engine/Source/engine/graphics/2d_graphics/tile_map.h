@@ -20,6 +20,7 @@ class API Tilemap : public IDrawable
 {
 public:
 	Tilemap();
+	void SetReflection();
 
 	class Tile
 	{

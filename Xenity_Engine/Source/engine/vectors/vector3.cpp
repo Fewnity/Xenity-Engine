@@ -11,11 +11,19 @@
 
 #pragma region Constructors / Destructor
 
+void Vector3::SetReflection()
+{
+	reflectedVariables["x"] = &x;
+	reflectedVariables["y"] = &y;
+	reflectedVariables["z"] = &z;
+}
+
 Vector3::Vector3()
 {
 	this->x = 0;
 	this->y = 0;
 	this->z = 0;
+	SetReflection();
 }
 
 Vector3::Vector3(const float x, const float y, const float z)
@@ -23,6 +31,7 @@ Vector3::Vector3(const float x, const float y, const float z)
 	this->x = x;
 	this->y = y;
 	this->z = z;
+	SetReflection();
 }
 
 Vector3::Vector3(const float fillValue)
@@ -30,6 +39,7 @@ Vector3::Vector3(const float fillValue)
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
+	SetReflection();
 }
 
 Vector3::Vector3(Vector2Int vect)
@@ -37,6 +47,7 @@ Vector3::Vector3(Vector2Int vect)
 	this->x = vect.x;
 	this->y = vect.y;
 	this->z = 0;
+	SetReflection();
 }
 
 Vector3::Vector3(Vector2 vect)
@@ -44,6 +55,7 @@ Vector3::Vector3(Vector2 vect)
 	this->x = vect.x;
 	this->y = vect.y;
 	this->z = 0;
+	SetReflection();
 }
 
 #pragma endregion

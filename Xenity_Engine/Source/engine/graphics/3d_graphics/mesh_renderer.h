@@ -18,6 +18,7 @@ class API MeshRenderer : public IDrawable
 public:
     MeshRenderer();
     ~MeshRenderer();
+    void SetReflection();
     int GetDrawPriority() const;
 
     MeshData *meshData = nullptr;

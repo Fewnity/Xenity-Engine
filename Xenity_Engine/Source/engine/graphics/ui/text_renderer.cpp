@@ -7,7 +7,13 @@
 
 TextRenderer::TextRenderer()
 {
-	componentName = "Text Renderer";
+	componentName = "TextRenderer";
+	SetReflection();
+}
+
+void TextRenderer::SetReflection()
+{
+	reflectedVariables["text"] = &text;
 }
 
 // TextRenderer::TextRenderer(Font *font, float size, Shader *shader)

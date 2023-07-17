@@ -10,7 +10,14 @@ using namespace std;
 /// </summary>
 MeshRenderer::MeshRenderer()
 {
-	componentName = "Mesh Renderer";
+	componentName = "MeshRenderer";
+	SetReflection();
+}
+
+void MeshRenderer::SetReflection()
+{
+	reflectedVariables["meshData"] = &meshData;
+	reflectedVariables["texture"] = &texture;
 }
 
 /// <summary>

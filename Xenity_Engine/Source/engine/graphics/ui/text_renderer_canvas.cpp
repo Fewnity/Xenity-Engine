@@ -7,9 +7,15 @@
 
 TextRendererCanvas::TextRendererCanvas()
 {
-	componentName = "Canvas Text Renderer";
+	componentName = "TextRendererCanvas";
+	SetReflection();
 
 	type = Draw_UI;
+}
+
+void TextRendererCanvas::SetReflection()
+{
+	reflectedVariables["text"] = &text;
 }
 
 // TextRendererCanvas::TextRendererCanvas(Font *font, float size, Shader *shader)

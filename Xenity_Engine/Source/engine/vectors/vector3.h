@@ -8,12 +8,16 @@
 
 #pragma once
 
+#include "../reflection/reflection.h"
+
 class Vector2Int;
 class Vector2;
 
-class API Vector3
+class API Vector3 : public Reflection
 {
 public:
+	void SetReflection();
+
 	Vector3();
 	Vector3(const float x, const float y, const float z);
 	Vector3(const float fillValue);

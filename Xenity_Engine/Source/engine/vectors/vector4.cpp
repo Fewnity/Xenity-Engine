@@ -8,12 +8,21 @@
 
 #pragma region Constructors / Destructor
 
+void Vector4::SetReflection()
+{
+	reflectedVariables["x"] = &x;
+	reflectedVariables["y"] = &y;
+	reflectedVariables["z"] = &z;
+	reflectedVariables["w"] = &w;
+}
+
 Vector4::Vector4()
 {
 	this->x = 0;
 	this->y = 0;
 	this->z = 0;
 	this->w = 0;
+	SetReflection();
 }
 
 Vector4::Vector4(const float x, const float y, const float z, const float w)
@@ -22,6 +31,7 @@ Vector4::Vector4(const float x, const float y, const float z, const float w)
 	this->y = y;
 	this->z = z;
 	this->w = w;
+	SetReflection();
 }
 
 Vector4::Vector4(const float fillValue)
@@ -30,6 +40,7 @@ Vector4::Vector4(const float fillValue)
 	this->y = fillValue;
 	this->z = fillValue;
 	this->w = fillValue;
+	SetReflection();
 }
 
 #pragma endregion

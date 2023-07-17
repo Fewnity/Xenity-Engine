@@ -24,6 +24,7 @@ class API LineRenderer : public IDrawable
 	public:
 		LineRenderer();
 		~LineRenderer();
+		void SetReflection();
 
 		int GetDrawPriority() const;
 

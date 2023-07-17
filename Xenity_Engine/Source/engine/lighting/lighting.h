@@ -23,6 +23,7 @@ public:
 
 	Light();
 	~Light();
+	void SetReflection();
 
 	enum LightType
 	{

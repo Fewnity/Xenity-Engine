@@ -12,6 +12,16 @@
 Light::Light()
 {
 	componentName = "Light";
+	SetReflection();
+}
+
+void Light::SetReflection()
+{
+	reflectedVariables["intensity"] = &intensity;
+	reflectedVariables["range"] = &range;
+	reflectedVariables["spotAngle"] = &spotAngle;
+	reflectedVariables["spotSmoothness"] = &spotSmoothness;
+	reflectedVariables["color"] = &color;
 }
 
 Light::~Light()

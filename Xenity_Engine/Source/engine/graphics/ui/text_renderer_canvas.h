@@ -27,6 +27,7 @@ public:
 	TextRendererCanvas();
 	// TextRendererCanvas(Font* font, float size, Shader* shader);
 	~TextRendererCanvas();
+	void SetReflection();
 	Vector3 position = Vector3(0, 0, 0);
 	float size = 16;
 	float lineSpacing = 0;

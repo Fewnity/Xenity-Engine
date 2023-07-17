@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <map>
 #include <string>
 #include <memory>
+#include "reflection/reflection.h"
+#include "unique_id/unique_id.h"
 
 class GameObject;
 class Transform;
 
-
-class API Component : public std::enable_shared_from_this<Component>
+class API Component : public UniqueId, public Reflection, public std::enable_shared_from_this<Component>
 {
 public:
 	Component();
@@ -31,9 +31,6 @@ public:
 	bool GetIsEnabled();
 	void SetIsEnabled(bool isEnabled);
 	bool initiated = false;
-	std::map<std::string, int*> reflectedInts;
-	std::map<std::string, float*> reflectedFloats;
-	std::string componentName = "Component";
 
 	bool waitingForDestroy = false;
 
@@ -48,6 +45,14 @@ public:
 	{
 		return transform.lock();
 	}
+
+	std::string GetComponentName() 
+	{
+		return componentName;
+	}
+
+protected:
+	std::string componentName = "";
 
 private:
 	std::weak_ptr <GameObject>gameObject;

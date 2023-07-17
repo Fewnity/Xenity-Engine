@@ -11,9 +11,13 @@
 class Vector3;
 class Vector2Int;
 
-class API Vector2
+#include "../reflection/reflection.h"
+
+class API Vector2: public Reflection
 {
 public:
+	void SetReflection();
+
 	Vector2();
 	Vector2(const float x, const float y);
 	Vector2(const float fillValue);

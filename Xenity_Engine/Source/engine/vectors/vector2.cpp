@@ -10,34 +10,45 @@
 
 #pragma region Constructors
 
+void Vector2::SetReflection()
+{
+	reflectedVariables["x"] = &x;
+	reflectedVariables["y"] = &y;
+}
+
 Vector2::Vector2()
 {
 	this->x = 0;
 	this->y = 0;
+	SetReflection();
 }
 
 Vector2::Vector2(const float x, const float y)
 {
 	this->x = x;
 	this->y = y;
+	SetReflection();
 }
 
 Vector2::Vector2(const float fillValue)
 {
 	this->x = fillValue;
 	this->y = fillValue;
+	SetReflection();
 }
 
 Vector2::Vector2(const Vector3 vect3)
 {
 	this->x = vect3.x;
 	this->y = vect3.y;
+	SetReflection();
 }
 
 Vector2::Vector2(const Vector2Int vect2Int)
 {
 	this->x = vect2Int.x;
 	this->y = vect2Int.y;
+	SetReflection();
 }
 
 #pragma endregion

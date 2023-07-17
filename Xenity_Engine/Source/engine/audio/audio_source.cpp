@@ -1,9 +1,21 @@
 #include "audio_source.h"
 #include "audio_manager.h"
+#include "../engine.h"
+#include "../../xenity.h"
 
 AudioSource::AudioSource()
 {
-    componentName = "Audio Source";
+    componentName = "AudioSource";
+    SetReflection();
+}
+
+void AudioSource::SetReflection()
+{
+    componentName = "AudioSource";
+    reflectedVariables["volume"] = &volume;
+    reflectedVariables["pan"] = &pan;
+    reflectedVariables["isPlaying"] = &isPlaying;
+    reflectedVariables["loop"] = &loop;
 }
 
 AudioSource::~AudioSource()

@@ -6,7 +6,16 @@
 
 LineRenderer::LineRenderer()
 {
-	componentName = "Line Renderer";
+	componentName = "LineRenderer";
+	SetReflection();
+}
+
+void LineRenderer::SetReflection()
+{
+	reflectedVariables["color"] = &color;
+	reflectedVariables["startPosition"] = &startPosition;
+	reflectedVariables["endPosition"] = &endPosition;
+	reflectedVariables["width"] = &width;
 }
 
 LineRenderer::~LineRenderer()

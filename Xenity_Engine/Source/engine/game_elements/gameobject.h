@@ -16,6 +16,7 @@
 class Component;
 #include "../component.h"
 #include "../debug/debug.h"
+#include "../reflection/reflection.h"
 
 API std::shared_ptr<GameObject> CreateGameObject();
 API std::shared_ptr<GameObject> CreateGameObject(std::string name);

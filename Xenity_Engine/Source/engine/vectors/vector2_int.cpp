@@ -8,22 +8,31 @@
 
 #pragma region Constructors
 
+void Vector2Int::SetReflection()
+{
+	reflectedVariables["x"] = &x;
+	reflectedVariables["y"] = &y;
+}
+
 Vector2Int::Vector2Int()
 {
 	this->x = 0;
 	this->y = 0;
+	SetReflection();
 }
 
 Vector2Int::Vector2Int(const int x, const int y)
 {
 	this->x = x;
 	this->y = y;
+	SetReflection();
 }
 
 Vector2Int::Vector2Int(const int fillValue)
 {
 	this->x = fillValue;
 	this->y = fillValue;
+	SetReflection();
 }
 
 #pragma endregion

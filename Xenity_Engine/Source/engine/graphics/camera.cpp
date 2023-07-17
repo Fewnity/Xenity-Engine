@@ -20,9 +20,18 @@
 Camera::Camera()
 {
 	componentName = "Camera";
+	SetReflection();
 
 	this->fov = 60;
 	UpdateProjection();
+}
+
+void Camera::SetReflection()
+{
+	reflectedVariables["fov"] = &fov;
+	reflectedVariables["projectionSize"] = &projectionSize;
+	reflectedVariables["nearClippingPlane"] = &nearClippingPlane;
+	reflectedVariables["farClippingPlane"] = &farClippingPlane;
 }
 
 Camera::~Camera()

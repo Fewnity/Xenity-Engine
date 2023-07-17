@@ -5,7 +5,14 @@
 
 SpriteRenderer::SpriteRenderer()
 {
-	componentName = "Sprite Renderer";
+	componentName = "SpriteRenderer";
+	SetReflection();
+}
+
+void SpriteRenderer::SetReflection()
+{
+	reflectedVariables["color"] = &color;
+	reflectedVariables["texture"] = &texture;
 }
 
 SpriteRenderer::~SpriteRenderer()

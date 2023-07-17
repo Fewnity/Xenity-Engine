@@ -8,9 +8,13 @@
 
 #pragma once
 
-class API Vector2Int
+#include "../reflection/reflection.h"
+
+class API Vector2Int : public Reflection
 {
 public:
+	void SetReflection();
+
 	Vector2Int();
 	Vector2Int(const int x, const int y);
 	Vector2Int(const int fillValue);

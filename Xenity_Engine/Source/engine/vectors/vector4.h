@@ -8,9 +8,13 @@
 
 #pragma once
 
-class API Vector4
+#include "../reflection/reflection.h"
+
+class API Vector4 : public Reflection
 {
 public:
+	void SetReflection();
+
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);
 	Vector4(const float fillValue);

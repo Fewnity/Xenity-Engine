@@ -17,6 +17,14 @@
 Tilemap::Tilemap()
 {
 	componentName = "Tilemap";
+	SetReflection();
+}
+
+void Tilemap::SetReflection()
+{
+	reflectedVariables["width"] = &width;
+	reflectedVariables["height"] = &height;
+	reflectedVariables["color"] = &color;
 }
 
 int Tilemap::GetDrawPriority() const

@@ -11,6 +11,17 @@
  * @param b Blue [0;255]
  * @return Color
  */
+
+Color::Color()
+{
+	SetReflection();
+}
+
+void Color::SetReflection()
+{
+	reflectedVariables["rgba"] = &rgba;
+}
+
 Color Color::CreateFromRGB(int r, int g, int b, int a)
 {
 	Color color = Color();
@@ -119,6 +130,14 @@ unsigned int Color::GetUnsignedIntABGR()
 RGBA Color::GetRGBA()
 {
 	return rgba;
+}
+
+void RGBA::SetReflection()
+{
+	reflectedVariables["r"] = &r;
+	reflectedVariables["g"] = &g;
+	reflectedVariables["b"] = &b;
+	reflectedVariables["a"] = &a;
 }
 
 /**

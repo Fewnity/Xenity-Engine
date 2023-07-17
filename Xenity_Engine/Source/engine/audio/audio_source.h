@@ -17,6 +17,7 @@ class API AudioSource : public Component
 public:
     AudioSource();
     ~AudioSource();
+    void SetReflection();
     void Play();
     void Resume();
     void Pause();
