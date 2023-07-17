@@ -130,7 +130,7 @@ void Game::Start()
     // 	}
     // }
 
-    InputSystem::HideMouse();
+    // InputSystem::HideMouse();
 
     std::weak_ptr<GameObject> gmLight0 = CreateGameObject();
     auto light0 = gmLight0.lock()->AddComponent<Light>();
@@ -237,19 +237,8 @@ void Game::Update()
 
     // return;
     Vector3 rot = cameraGO.lock()->GetTransform()->GetRotation();
-    // Vector3 rot = cameraPivot->GetTransform()->GetRotation();
     Vector3 pos = cameraGO.lock()->GetTransform()->GetPosition();
-    // Engine::renderer->SetLight(pos);
 #ifdef __PSP__
-    // rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + InputSystem::leftJoystick.y * cameraPivot->GetTransform()->GetLeft();
-
-    // rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetForward() + -InputSystem::leftJoystick.y * Vector3(1, 0, 0);
-
-    // rot += -InputSystem::leftJoystick.x * cameraPivot->GetTransform()->GetUp() + -InputSystem::leftJoystick.y * Vector3(1, 0, 0);
-
-    // RotateAround(cameraGO->GetTransform(), Vector3(0, 0, 0), cameraGO->GetTransform()->GetUp(), -InputSystem::leftJoystick.x * Time::GetDeltaTime() * 10);
-    //  pos = RotateAround(pos, Vector3(0, 0, 0), Vector3(0, 0, 1), -InputSystem::leftJoystick.y);
-    // RotateAround(cameraGO->GetTransform(), Vector3(0, 0, 0), cameraGO->GetTransform()->GetRight(), -InputSystem::leftJoystick.y * Time::GetDeltaTime() * 10);
 
     // Rotate camera
     if (InputSystem::GetKey(TRIANGLE))
@@ -293,15 +282,8 @@ void Game::Update()
     pos -= cameraGO.lock()->GetTransform()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 #endif
 
-    /*if (InputSystem::GetKey(UP))
-        pos.y -= (-1 / 7.0f) * Time::GetDeltaTime() * 30;
-    else if (InputSystem::GetKey(DOWN))
-        pos.y -= (1 / 7.0f) * Time::GetDeltaTime() * 30;*/
-
     cameraGO.lock()->GetTransform()->SetPosition(pos);
-    // cameraGO->GetTransform()->SetRotation(Vector3::LookAt(pos, Vector3(0, 0, 0)));
     cameraGO.lock()->GetTransform()->SetRotation(rot);
-    // cameraPivot->GetTransform()->SetRotation(rot);
 
     std::string fpsText = std::to_string(1.0f / Time::GetUnscaledDeltaTime());
     std::string debugText = "FPS: " + fpsText.substr(0, fpsText.size() - 4) + "\n";
@@ -320,20 +302,6 @@ void Game::Update()
         debugText += "Audio: Volume: " + std::to_string(myAudioSourceNotLock->GetVolume()) + ", Panning: " + std::to_string(myAudioSourceNotLock->GetPanning()) + "\n";
         // debugText += "Audio: seek pos: " + std::to_string(myAudioSourceNotLock->audioClip->GetSeekPosition()) + ", Panning: " + std::to_string(myAudioSourceNotLock->audioClip->GetSampleCount());
     }
-    // debugText += "pos: " + std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + "\n";
-    // debugText += "rot: " + std::to_string(rot.x) + " " + std::to_string(rot.y) + " " + std::to_string(rot.z) + "\n";
-    // debugText += "pos: " + std::to_string(cameraGO->GetTransform()->GetPosition().x) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().y) + " " + std::to_string(cameraGO->GetTransform()->GetPosition().z) + "\n";
-
-    // for (int i = 0; i < InputSystem::GetTouchScreenCount(); i++)
-    // {
-    // 	int touchCount = InputSystem::GetTouchCount(i);
-    // 	debugText += "screen " + std::to_string(i) + " touch count: " + std::to_string(touchCount) + "\n";
-    // 	for (int touchI = 0; touchI < touchCount; touchI++)
-    // 	{
-    // 		Touch touch = InputSystem::GetTouch(touchI, i);
-    // 		debugText += "Touch " + std::to_string(touchI) + " x: " + std::to_string(touch.position.x) + " y: " + std::to_string(touch.position.y) + " id: " + std::to_string(touch.fingerId) + "\n";
-    // 	}
-    // }
 
     // for (const auto &kv : Performance::profilerList)
     // {
