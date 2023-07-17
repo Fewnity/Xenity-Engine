@@ -13,12 +13,10 @@ void DynamicLibrary::LoadGameLibrary(std::string libraryName)
 {
 	libraryName += ".dll";
 
-	// library = LoadLibrary((LPCWSTR)libraryName.c_str()); //Visual Studio
-	library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
+	library = LoadLibrary((LPCWSTR)libraryName.c_str()); //Visual Studio
+	//library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
 	if (library != NULL)
-	{
 		Debug::Print("Library found");
-	}
 	else
 		Debug::PrintError("Library not found");
 }

@@ -64,6 +64,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\line_renderer.cpp" />
     <ClCompile Include="Source\engine\dynamic_lib\dynamic_lib.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
+    <ClCompile Include="Source\editor\editor.cpp" />
     <ClCompile Include="Source\engine\class_registry\class_registry.cpp" />
     <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Source\engine\dynamic_lib\dynamic_lib.h" />
     <ClInclude Include="Source\engine\game_interface.h" />
     <ClInclude Include="Source\editor\ui\editor_ui.h" />
+    <ClInclude Include="Source\editor\editor.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="Source\engine\class_registry\class_registry.h" />
     <ClInclude Include="include\imgui\imgui_stdlib.h" />

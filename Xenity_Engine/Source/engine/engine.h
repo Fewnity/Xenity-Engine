@@ -67,17 +67,21 @@ public:
 	API static int Init(const std::string exePath);
 	API static void Stop();
 	API static void AddGameObject(std::shared_ptr<GameObject> gameObject);
-	API static std::vector<std::weak_ptr<GameObject>> GetGameObjects();
+	API static void AddGameObjectEditor(std::shared_ptr<GameObject> gameObject);
+	API static std::vector<std::shared_ptr<GameObject>> GetGameObjects();
 	API static void Loop();
+
 	static bool componentsListDirty;
 	static bool drawOrderListDirty;
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static int gameObjectCount;
+	static int gameObjectEditorCount;
 	static Renderer *renderer;
 	API static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
+	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
 	static bool valueFree;

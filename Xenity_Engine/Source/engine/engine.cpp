@@ -27,15 +27,17 @@
 #include <psp2/kernel/processmgr.h>
 #include <psp2/power.h>
 #endif
+#include "../editor/editor.h"
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
+std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
 std::vector<std::weak_ptr<Component>> Engine::componentsToDestroy;
 
 std::weak_ptr<GameObject> Engine::selectedGameObject;
 
 int Engine::gameObjectCount = 0;
-float lastTick = 0;
+int Engine::gameObjectEditorCount = 0;
 
 ProfilerBenchmark *engineLoopBenchmark = nullptr;
 ProfilerBenchmark *gameLoopBenchmark = nullptr;
@@ -121,10 +123,6 @@ int Engine::Init(const std::string exePath)
 	Graphics::Init();
 	Debug::Print("-------- Audio Not implemented --------");
 
-	// if (Window::InitWindow() != 0 || UiManager::Init() != 0 || Audio::Init() != 0)
-	// {
-	// 	return -1;
-	// }
 	InputSystem::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
@@ -134,11 +132,15 @@ int Engine::Init(const std::string exePath)
 	AssetManager::Init();
 	AudioManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
+#if defined(_WIN32) || defined(_WIN64)
 	EditorUI::Init();
+#endif
 	Time::Init();
 
 	// Init random
 	srand((unsigned int)time(NULL));
+
+	Editor::Start();
 
 	Debug::Print("-------- Engine fully initiated --------\n");
 
@@ -305,13 +307,15 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
-
+	GameInterface *game = nullptr;
 #if defined(_WIN32) || defined(_WIN64)
-	DynamicLibrary::LoadGameLibrary("game");
-	GameInterface *game = DynamicLibrary::CreateGame();
+	// DynamicLibrary::LoadGameLibrary("game");
+	// game = DynamicLibrary::CreateGame();
 #else
-	GameInterface *game = new Game();
+	// game = new Game();
 #endif
+	// std::cout << typeid(Game).name() << "\t" << std::endl;
+	// std::cout << typeid(Game).hash_code() << "\t" << std::endl;
 
 	valueFree = false;
 	if (game)
@@ -380,7 +384,7 @@ void Engine::Loop()
 				Debug::Print("Game compilation done");
 				game->Start();
 			}
-			else 
+			else
 			{
 				Debug::Print("Game compilation failed");
 			}
@@ -390,6 +394,7 @@ void Engine::Loop()
 		gameLoopBenchmark->Start();
 
 		valueFree = false;
+		Editor::Update();
 		if (game)
 			game->Update();
 		valueFree = true;
@@ -418,7 +423,6 @@ void Engine::Loop()
 		{
 			std::weak_ptr<GameObject> weakGO = gameObjects[i];
 			if (auto go = weakGO.lock())
-			// GameObject *go = gameObjects[i];
 			{
 				if (go->GetTransform()->movedLastFrame)
 				{
@@ -458,10 +462,22 @@ void Engine::AddGameObject(std::shared_ptr<GameObject> gameObject)
 /// <summary>
 ///
 /// </summary>
-/// <returns></returns>
-std::vector<std::weak_ptr<GameObject>> Engine::GetGameObjects()
+/// <param name="gameObject"></param>
+void Engine::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
 {
-	return std::vector<std::weak_ptr<GameObject>>();
+	gameObjectsEditor.push_back(gameObject);
+	gameObjectEditorCount++;
+	// componentsListDirty = true;
+}
+
+/// <summary>
+///
+/// </summary>
+/// <returns></returns>
+std::vector<std::shared_ptr<GameObject>> Engine::GetGameObjects()
+{
+	return std::vector<std::shared_ptr<GameObject>>(Engine::gameObjects);
+	//return std::vector<std::weak_ptr<GameObject>>();
 }
 
 void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)

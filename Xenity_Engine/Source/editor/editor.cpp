@@ -1,0 +1,269 @@
+#include "editor.h"
+#include "../xenity.h"
+#include "../xenity_editor.h"
+#include <functional>
+#include "../engine/class_registry/class_registry.h"
+
+using json = nlohmann::json;
+
+std::weak_ptr<GameObject> Editor::cameraGO;
+
+std::vector<std::shared_ptr<Component>> Editor::allCreatedComponents;
+int allCreatedComponentsCount = 0;
+
+void Editor::JsonToReflection(json j, Reflection* component)
+{
+	for (auto& kv : j["Values"].items())
+	{
+		if (component->reflectedVariables.contains(kv.key()))
+		{
+			if (kv.value().is_object())
+			{
+				Variable& variableRef = component->reflectedVariables[kv.key()];
+				if (auto valuePtr = std::get_if<Reflection*>(&variableRef))
+				{
+					JsonToReflection(kv.value(), *valuePtr);
+				}
+				//std::cout << kv.key() << " is an object!" << "\n";
+			}
+			else
+			{
+				Variable& variableRef = component->reflectedVariables[kv.key()];
+				if (auto valuePtr = std::get_if<int*>(&variableRef))
+					**valuePtr = kv.value();
+				else if (auto valuePtr = std::get_if<float*>(&variableRef))
+					**valuePtr = kv.value();
+				else if (auto valuePtr = std::get_if<double*>(&variableRef))
+					**valuePtr = kv.value();
+				else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
+					**valuePtr = kv.value();
+				else if (auto valuePtr = std::get_if<bool*>(&variableRef))
+					**valuePtr = kv.value();
+				else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject>*>(&variableRef))
+				{
+					auto go = FindGameObjectById(kv.value());
+					**valuePtr = go;
+				}
+				else if (auto valuePtr = std::get_if<std::weak_ptr<Transform>*>(&variableRef))
+				{
+					auto go = FindGameObjectById(kv.value());
+					**valuePtr = go->GetTransform();
+				}
+				else if (auto valuePtr = std::get_if<void*>(&variableRef))
+				{
+					std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
+
+					for (int compI = 0; compI < allCreatedComponentsCount; compI++)
+					{
+						if (allCreatedComponents[compI]->GetUniqueId() == kv.value())
+						{
+							*weakC = allCreatedComponents[compI];
+							break;
+						}
+					}
+				}
+			}
+		}
+		// std::cout << kv.key() << " : " << kv.value() << "\n";
+	}
+}
+
+void Editor::Start()
+{
+	cameraGO = CreateGameObjectEditor("Camera");
+	auto camera = cameraGO.lock()->AddComponent<Camera>();
+	camera->SetNearClippingPlane(0.2f);
+	camera->SetFarClippingPlane(30);
+	camera->SetProjectionSize(5.0f);
+	camera->SetFov(70);
+
+	std::string jsonString = FileSystem::fileSystem->ReadText("scene.txt");
+	std::string jsonString2 = "Json: " + jsonString;
+	//Debug::Print(jsonString2);
+	json data = json::parse(jsonString);
+
+	//Create all GameObjects and Components
+	for (auto& kv : data["GameObjects"].items())
+	{
+		auto go = CreateGameObject(kv.value()["Name"]);
+		go->SetUniqueId(std::stoull(kv.key()));
+		for (auto& kv2 : kv.value()["Components"].items())
+		{
+			auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
+			comp->SetUniqueId(std::stoull(kv2.key()));
+			allCreatedComponents.push_back(comp);
+		}
+	}
+
+	allCreatedComponentsCount = allCreatedComponents.size();
+
+	//Bind Components values and GameObjects childs
+	for (auto& kv : data["GameObjects"].items())
+	{
+		auto go = FindGameObjectById(std::stoull(kv.key()));
+		for (auto& kv2 : kv.value()["Components"].items())
+		{
+			int componentCount = go->GetComponentCount();
+			for (int compI = 0; compI < componentCount; compI++)
+			{
+				if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
+				{
+					JsonToReflection(kv2.value(), (Reflection*)go->components[compI].get());
+					break;
+				}
+			}
+		}
+		if (go)
+		{
+			for (auto& kv2 : kv.value()["Childs"].items())
+			{
+				auto goChild = FindGameObjectById(kv2.value());
+				if (goChild)
+				{
+					goChild->SetParent(go);
+				}
+			}
+		}
+	}
+	allCreatedComponents.clear();
+	allCreatedComponentsCount = 0;
+	// File *file = new File("scene.txt");
+}
+
+void Editor::Update()
+{
+	Vector3 rot = cameraGO.lock()->GetTransform()->GetRotation();
+	Vector3 pos = cameraGO.lock()->GetTransform()->GetPosition();
+
+	if (InputSystem::GetKey(MOUSE_RIGHT))
+	{
+		rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
+		rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;
+	}
+
+	float fwd = 0;
+	float side = 0;
+	if (InputSystem::GetKey(UP))
+		fwd = -1;
+	else if (InputSystem::GetKey(DOWN))
+		fwd = 1;
+
+	if (InputSystem::GetKey(RIGHT))
+		side = 1;
+	else if (InputSystem::GetKey(LEFT))
+		side = -1;
+
+	pos -= cameraGO.lock()->GetTransform()->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraGO.lock()->GetTransform()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+
+	cameraGO.lock()->GetTransform()->SetPosition(pos);
+	cameraGO.lock()->GetTransform()->SetRotation(rot);
+}
+
+void Editor::CreateEmpty()
+{
+	auto go = CreateGameObject();
+	Engine::SetSelectedGameObject(go);
+}
+
+void Editor::CreateEmptyChild()
+{
+	auto go = CreateGameObject();
+	go->SetParent(Engine::selectedGameObject);
+	Engine::SetSelectedGameObject(go);
+}
+
+#pragma region Save
+
+json Editor::ReflectiveToJson(Reflection* relection)
+{
+	json j2;
+	if (relection == nullptr)
+	{
+		return j2;
+	}
+
+	for (const auto& kv : relection->reflectedVariables)
+	{
+		Variable& variableRef = relection->reflectedVariables[kv.first];
+		if (auto valuePtr = std::get_if<int*>(&variableRef))
+			j2[kv.first] = **valuePtr;
+		else if (auto valuePtr = std::get_if<float*>(&variableRef))
+			j2[kv.first] = **valuePtr;
+		else if (auto valuePtr = std::get_if<double*>(&variableRef))
+			j2[kv.first] = **valuePtr;
+		else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
+			j2[kv.first] = **valuePtr;
+		else if (auto valuePtr = std::get_if<bool*>(&variableRef))
+			j2[kv.first] = **valuePtr;
+		else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject> *>(&variableRef))
+		{
+			if (auto lockValue = (**valuePtr).lock())
+				j2[kv.first] = lockValue->GetUniqueId();
+		}
+		else if (auto valuePtr = std::get_if<std::weak_ptr<Transform> *>(&variableRef))
+		{
+			if (auto lockValue = (**valuePtr).lock())
+				j2[kv.first] = lockValue->GetGameObject()->GetUniqueId();
+		}
+		else if (auto valuePtr = std::get_if<Reflection*>(&variableRef))
+		{
+			j2[kv.first]["Values"] = ReflectiveToJson((Reflection*)(*valuePtr));
+		}
+		else if (auto valuePtr = std::get_if<void*>(&variableRef))
+		{
+			std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
+			if (auto lockValue = weakC->lock())
+			{
+				j2[kv.first] = lockValue->GetUniqueId();
+			}
+		}
+	}
+	return j2;
+}
+
+void Editor::SaveScene()
+{
+	json j;
+	int gameObjectCount = Engine::gameObjectCount;
+	for (int goI = 0; goI < gameObjectCount; goI++)
+	{
+		auto go = Engine::gameObjects[goI];
+		std::string goName = go->name;
+		std::string goId = std::to_string(go->GetUniqueId());
+
+		j["GameObjects"][goId]["Name"] = goName;
+		Vector3 pos = go->GetTransform()->GetLocalPosition();
+		Vector3 rot = go->GetTransform()->GetLocalRotation();
+		Vector3 scale = go->GetTransform()->GetLocalScale();
+		j["GameObjects"][goId]["Transform"]["localPosition"] = ReflectiveToJson(&pos);
+		j["GameObjects"][goId]["Transform"]["localRotation"] = ReflectiveToJson(&rot);
+		j["GameObjects"][goId]["Transform"]["localScale"] = ReflectiveToJson(&scale);
+
+		std::vector<uint64_t> ids;
+		int childCount = go->GetChildrenCount();
+		for (int childI = 0; childI < childCount; childI++)
+		{
+			ids.push_back(go->children[childI].lock()->GetUniqueId());
+		}
+		j["GameObjects"][goId]["Childs"] = ids;
+
+		int componentCount = go->GetComponentCount();
+		for (int componentI = 0; componentI < componentCount; componentI++)
+		{
+			auto component = go->components[componentI];
+			std::string compName = component->GetComponentName();
+			std::string compId = std::to_string(component->GetUniqueId());
+			j["GameObjects"][goId]["Components"][compId]["Type"] = compName;
+			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectiveToJson(&(*component));
+		}
+	}
+
+	std::string s = j.dump(2);
+	std::cout << s << std::endl;
+	File* file = new File("scene2.txt");
+	file->Write(s);
+	delete file;
+}
+
+#pragma endregion

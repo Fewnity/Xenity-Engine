@@ -21,6 +21,7 @@ class Component;
 
 API std::shared_ptr<GameObject> CreateGameObject();
 API std::shared_ptr<GameObject> CreateGameObject(std::string name);
+API std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name);
 API std::shared_ptr<GameObject> FindGameObjectByName(const std::string name);
 API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name);

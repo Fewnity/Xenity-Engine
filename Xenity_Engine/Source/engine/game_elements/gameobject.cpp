@@ -29,6 +29,14 @@ std::shared_ptr<GameObject> CreateGameObject(std::string name)
 	return newGameObject;
 }
 
+std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name)
+{
+	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
+	Engine::AddGameObjectEditor(newGameObject);
+	newGameObject->Setup();
+	return newGameObject;
+}
+
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;

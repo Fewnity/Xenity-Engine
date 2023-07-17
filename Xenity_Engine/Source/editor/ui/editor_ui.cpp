@@ -1,9 +1,13 @@
 #if defined(_WIN32) || defined(_WIN64)
+
 #include "editor_ui.h"
+#include "../editor.h"
 #include "../../xenity.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_stdlib.h>
 #include "../../engine/tools/shape_spawner.h"
+#include <variant>
 
 Engine* EditorUI::engine = nullptr;
 int EditorUI::uiId = 0;
@@ -30,6 +34,7 @@ void EditorUI::DrawInspector()
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Inspector");
+
 	auto selectedGameObject = engine->selectedGameObject.lock();
 	if (selectedGameObject)
 	{
@@ -54,22 +59,22 @@ void EditorUI::DrawInspector()
 		ImGui::Spacing();
 		ImGui::Spacing();
 		Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
-		bool changed = DrawVector3Input("Local Position", "X", "Y", "Z", localPos);
+		bool changed = DrawInput("Local Position", localPos);
 
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 		{
 			selectedGameObject->GetTransform()->SetLocalPosition(localPos);
 		}
 		ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
-		ImGui::Text("World Matrix: \n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f", selectedGameObject->GetTransform()->transformationMatrix[0].x, selectedGameObject->GetTransform()->transformationMatrix[0].y, selectedGameObject->GetTransform()->transformationMatrix[0].z, selectedGameObject->GetTransform()->transformationMatrix[0].w,
+		/*ImGui::Text("World Matrix: \n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f", selectedGameObject->GetTransform()->transformationMatrix[0].x, selectedGameObject->GetTransform()->transformationMatrix[0].y, selectedGameObject->GetTransform()->transformationMatrix[0].z, selectedGameObject->GetTransform()->transformationMatrix[0].w,
 			selectedGameObject->GetTransform()->transformationMatrix[1].x, selectedGameObject->GetTransform()->transformationMatrix[1].y, selectedGameObject->GetTransform()->transformationMatrix[1].z, selectedGameObject->GetTransform()->transformationMatrix[1].w,
 			selectedGameObject->GetTransform()->transformationMatrix[2].x, selectedGameObject->GetTransform()->transformationMatrix[2].y, selectedGameObject->GetTransform()->transformationMatrix[2].z, selectedGameObject->GetTransform()->transformationMatrix[2].w,
 			selectedGameObject->GetTransform()->transformationMatrix[3].x, selectedGameObject->GetTransform()->transformationMatrix[3].y, selectedGameObject->GetTransform()->transformationMatrix[3].z, selectedGameObject->GetTransform()->transformationMatrix[3].w);
-
+			*/
 		ImGui::Spacing();
 		ImGui::Spacing();
 		Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
-		changed = DrawVector3Input("Local Rotation", "X", "Y", "Z", localRot);
+		changed = DrawInput("Local Rotation", localRot);
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
 			selectedGameObject->GetTransform()->SetLocalRotation(localRot);
 		}
@@ -78,7 +83,7 @@ void EditorUI::DrawInspector()
 		ImGui::Spacing();
 
 		Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
-		changed = DrawVector3Input("Local Scale", "X", "Y", "Z", localScale);
+		changed = DrawInput("Local Scale", localScale);
 		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT))) {
 			selectedGameObject->GetTransform()->SetLocalScale(localScale);
 		}
@@ -93,36 +98,45 @@ void EditorUI::DrawInspector()
 			ImGui::Spacing();
 			ImGui::Spacing();
 			auto comp = selectedGameObject->components[i];
-			std::string componentName = "- " + comp->componentName;
-			//std::string componentName = typeid(comp).name();
-			/*int nameLenght = componentName.size();
-			bool firstDelete = true;
-			for (int strI = 0; strI < nameLenght; strI++)
+			std::string componentName = "- " + comp->GetComponentName();
+
+			ImGui::Text("%s", componentName.c_str());
+
+			for (const auto& kv : comp->reflectedVariables)
 			{
-				if (componentName[strI] == ' ')
+				Variable& variableRef = comp->reflectedVariables[kv.first];
+				if (auto valuePtr = std::get_if<int*>(&variableRef))
+					DrawInput(kv.first, **valuePtr);
+				else if (auto valuePtr = std::get_if<float*>(&variableRef))
+					DrawInput(kv.first, **valuePtr);
+				else if (auto valuePtr = std::get_if<double*>(&variableRef))
+					DrawInput(kv.first, **valuePtr);
+				else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
+					DrawInput(kv.first, **valuePtr);
+				else if (auto valuePtr = std::get_if<bool*>(&variableRef))
+					DrawInput(kv.first, **valuePtr);
+				else if (auto valuePtr = std::get_if<Reflection*>(&variableRef)) 
 				{
-					if (firstDelete)
+					if (auto val = dynamic_cast<Vector2*>(*valuePtr)) 
 					{
-						componentName.erase(0, strI + 1);
-						strI = 0;
-						firstDelete = false;
+						DrawInput(kv.first, *val);
+					}else if (auto val = dynamic_cast<Vector2Int*>(*valuePtr))
+					{
+						DrawInput(kv.first, *val);
 					}
-					else {
-						componentName.erase(strI);
-						break;
+					else if (auto val = dynamic_cast<Vector3*>(*valuePtr))
+					{
+						DrawInput(kv.first, *val);
+					}
+					else if (auto val = dynamic_cast<Vector4*>(*valuePtr))
+					{
+						DrawInput(kv.first, *val);
+					}
+					else if (auto val = dynamic_cast<Color*>(*valuePtr))
+					{
+						DrawInput(kv.first, *val);
 					}
 				}
-			}*/
-			ImGui::Text("%s", componentName.c_str());
-			//int intVariableCount = comp->reflectedInts.size();
-			//int floatVariableCount = comp->reflectedFloats.size();
-			for (const auto& kv : comp->reflectedFloats)
-			{
-				DrawFloatInput(kv.first, *kv.second);
-			}
-			for (const auto& kv : comp->reflectedInts)
-			{
-				DrawIntInput(kv.first, *kv.second);
 			}
 		}
 	}
@@ -192,12 +206,13 @@ void EditorUI::DrawHierarchy()
 		ImGui::EndChild();
 	}
 
-
 	ImGui::End();
 }
 
 void EditorUI::DrawMainMenuBar()
 {
+	bool hasSelectedGameObject = !Engine::selectedGameObject.expired();
+
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
@@ -212,7 +227,7 @@ void EditorUI::DrawMainMenuBar()
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
-			Debug::PrintWarning("(File/Save Scene) Unimplemented button");
+			Editor::SaveScene();
 		}
 		if (ImGui::MenuItem("Build Game"))
 		{
@@ -224,23 +239,19 @@ void EditorUI::DrawMainMenuBar()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("GameObjects"))
+	if (ImGui::BeginMenu("GameObject"))
 	{
-		if (ImGui::MenuItem("Create Empty Parent"))
+		if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
 		{
-			Debug::PrintWarning("(GameObjects/Create Empty Parent) Unimplemented button");
+			Debug::PrintWarning("(GameObject/Create Empty Parent) Unimplemented button");
 		}
-		if (ImGui::MenuItem("Create Empty Child"))
+		if (ImGui::MenuItem("Create Empty Child", nullptr, nullptr, hasSelectedGameObject))
 		{
-			Debug::PrintWarning("(GameObjects/Create Empty Child) Unimplemented button");
+			Editor::CreateEmptyChild();
 		}
 		if (ImGui::MenuItem("Create Empty"))
 		{
-			Debug::PrintWarning("(GameObjects/Create Empty) Unimplemented button");
-		}
-		if (ImGui::MenuItem("Cube"))
-		{
-			ShapeSpawner::SpawnCube();
+			Editor::CreateEmpty();
 		}
 		if (ImGui::BeginMenu("3D Objects"))
 		{
@@ -276,49 +287,57 @@ void EditorUI::DrawMainMenuBar()
 	{
 		if (ImGui::BeginMenu("Mesh"))
 		{
-			if (ImGui::MenuItem("Mesh Renderer"))
+			if (ImGui::MenuItem("Mesh Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Mesh/Mesh Renderer) Unimplemented button");
+				Editor::AddComponentToSelection<MeshRenderer>();
 			}
-			if (ImGui::MenuItem("Text Mesh"))
+			if (ImGui::MenuItem("Text Mesh", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Mesh/Text Mesh) Unimplemented button");
+				Editor::AddComponentToSelection<TextRenderer>();
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Audio"))
 		{
-			if (ImGui::MenuItem("Audio Source"))
+			if (ImGui::MenuItem("Audio Source", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Audio/Audio Source) Unimplemented button");
+				Editor::AddComponentToSelection<AudioSource>();
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Rendering"))
 		{
-			if (ImGui::MenuItem("Camera"))
+			if (ImGui::MenuItem("Camera", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Rendering/Camera) Unimplemented button");
+				Editor::AddComponentToSelection<Camera>();
 			}
-			if (ImGui::MenuItem("Light"))
+			if (ImGui::MenuItem("Light", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Rendering/Light) Unimplemented button");
+				Editor::AddComponentToSelection<Light>();
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Tilemap"))
 		{
-			if (ImGui::MenuItem("Tilemap"))
+			if (ImGui::MenuItem("Tilemap", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/Tilemap/Tilemap) Unimplemented button");
+				Editor::AddComponentToSelection<Tilemap>();
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("UI"))
 		{
-			if (ImGui::MenuItem("Text Renderer"))
+			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Debug::PrintWarning("(Component/UI/Text Renderer) Unimplemented button");
+				Editor::AddComponentToSelection<TextRendererCanvas>();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Other"))
+		{
+			if (ImGui::MenuItem("Test Component", nullptr, nullptr, hasSelectedGameObject))
+			{
+				Editor::AddComponentToSelection<TestComponent>();
 			}
 			ImGui::EndMenu();
 		}
@@ -348,16 +367,7 @@ void EditorUI::DrawMainMenuBar()
 	ImGui::EndMainMenuBar();
 }
 
-void EditorUI::DrawTextCentered(std::string text)
-{
-	float windowWidth = ImGui::GetWindowSize().x;
-	float textWidth = ImGui::CalcTextSize(text.c_str()).x;
-
-	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-	ImGui::Text(text.c_str());
-}
-
-bool EditorUI::DrawFloatInput(std::string inputName, float& value)
+bool EditorUI::DrawInput(std::string inputName, Color& value)
 {
 	std::string inputName1 = "##" + std::to_string(uiId);
 	uiId += 1;
@@ -365,34 +375,84 @@ bool EditorUI::DrawFloatInput(std::string inputName, float& value)
 	ImGui::Text(inputName.c_str());
 	float titleWidth = ImGui::GetItemRectSize().x;
 	ImGui::SameLine();
-	float oldValue = float(value);
+	ImGui::SetCursorPosX(150);
+	Vector4 vec4 = value.GetRGBA().ToVector4();
+	ImVec4 color = ImVec4(vec4.x, vec4.y, vec4.z, vec4.w);
 	float startAvailSize = ImGui::GetContentRegionAvail().x;
-	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize);
-	ImGui::InputFloat(inputName1.c_str(), &value, 0, 0, "%f");
 
-	return value != oldValue;
+	ImGui::ColorEdit4(inputName1.c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs);
+	value.SetFromRGBAfloat(color.x, color.y, color.z, color.w);
+	bool valueChanged = false;
+	if (vec4.x != color.x || vec4.y != color.y || vec4.z != color.z || vec4.w != color.w)
+		valueChanged = true;
+
+	return valueChanged;
 }
 
-bool EditorUI::DrawIntInput(std::string inputName, int& value)
+bool EditorUI::DrawInput(std::string inputName, Vector2& value)
 {
+	std::string name1 = "X";
+	std::string name2 = "Y";
 	std::string inputName1 = "##" + std::to_string(uiId);
-	uiId += 1;
+	std::string inputName2 = "##" + std::to_string(uiId + 1);
+	uiId += 2;
 
 	ImGui::Text(inputName.c_str());
-	float titleWidth = ImGui::GetItemRectSize().x;
+	//float titleWidth = ImGui::GetItemRectSize().x;
 	ImGui::SameLine();
-	int oldValue = int(value);
-	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	ImGui::SetCursorPosX(150);
+	Vector2 oldValue = Vector2(value);
+	ImGui::Text(name1.c_str());
+	float textWidth = ImGui::GetItemRectSize().x * 2;
+	float startAvailSize = ImGui::GetContentRegionAvail().x - 150;
 	ImGui::SameLine();
-	ImGui::SetNextItemWidth(startAvailSize);
-	ImGui::InputInt(inputName1.c_str(), &value);
+	ImGui::SetNextItemWidth(startAvailSize / 2.0f - textWidth);
+	ImGui::InputFloat(inputName1.c_str(), &value.x, 0, 0, "%.4f");
+
+	ImGui::SameLine();
+	ImGui::Text(name2.c_str());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 2.0f - textWidth);
+	ImGui::InputFloat(inputName2.c_str(), &value.y, 0, 0, "%.4f");
 
 	return value != oldValue;
 }
 
-bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::string name2, std::string name3, Vector3& value)
+bool EditorUI::DrawInput(std::string inputName, Vector2Int& value)
 {
+	std::string name1 = "X";
+	std::string name2 = "Y";
+	std::string inputName1 = "##" + std::to_string(uiId);
+	std::string inputName2 = "##" + std::to_string(uiId + 1);
+	uiId += 2;
+
+	ImGui::Text(inputName.c_str());
+	//float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	Vector2Int oldValue = Vector2Int(value);
+	ImGui::Text(name1.c_str());
+	float textWidth = ImGui::GetItemRectSize().x * 2;
+	float startAvailSize = ImGui::GetContentRegionAvail().x - 150;
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 2.0f - textWidth);
+	ImGui::InputInt(inputName1.c_str(), &value.x, 0, 0);
+
+	ImGui::SameLine();
+	ImGui::Text(name2.c_str());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 2.0f - textWidth);
+	ImGui::InputInt(inputName2.c_str(), &value.y, 0, 0);
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, Vector3& value)
+{
+	std::string name1 = "X";
+	std::string name2 = "Y";
+	std::string name3 = "Z";
 	std::string inputName1 = "##" + std::to_string(uiId);
 	std::string inputName2 = "##" + std::to_string(uiId + 1);
 	std::string inputName3 = "##" + std::to_string(uiId + 2);
@@ -408,17 +468,163 @@ bool EditorUI::DrawVector3Input(std::string inputName, std::string name1, std::s
 	float startAvailSize = ImGui::GetContentRegionAvail().x - 150;
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName1.c_str(), &value.x, 0, 0, "%f");
+	ImGui::InputFloat(inputName1.c_str(), &value.x, 0, 0, "%.4f");
+
 	ImGui::SameLine();
 	ImGui::Text(name2.c_str());
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName2.c_str(), &value.y, 0, 0, "%f");
+	ImGui::InputFloat(inputName2.c_str(), &value.y, 0, 0, "%.4f");
+
 	ImGui::SameLine();
 	ImGui::Text(name3.c_str());
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(startAvailSize / 3.0f - textWidth);
-	ImGui::InputFloat(inputName3.c_str(), &value.z, 0, 0, "%f");
+	ImGui::InputFloat(inputName3.c_str(), &value.z, 0, 0, "%.4f");
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, Vector4& value)
+{
+	std::string name1 = "X";
+	std::string name2 = "Y";
+	std::string name3 = "Z";
+	std::string name4 = "W";
+	std::string inputName1 = "##" + std::to_string(uiId);
+	std::string inputName2 = "##" + std::to_string(uiId + 1);
+	std::string inputName3 = "##" + std::to_string(uiId + 2);
+	std::string inputName4 = "##" + std::to_string(uiId + 3);
+	uiId += 4;
+
+	ImGui::Text(inputName.c_str());
+	//float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	Vector4 oldValue = Vector4(value);
+	ImGui::Text(name1.c_str());
+	float textWidth = ImGui::GetItemRectSize().x * 4;
+	float startAvailSize = ImGui::GetContentRegionAvail().x - 150;
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 4.0f - textWidth);
+	ImGui::InputFloat(inputName1.c_str(), &value.x, 0, 0, "%.4f");
+
+	ImGui::SameLine();
+	ImGui::Text(name2.c_str());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 4.0f - textWidth);
+	ImGui::InputFloat(inputName2.c_str(), &value.y, 0, 0, "%.4f");
+
+	ImGui::SameLine();
+	ImGui::Text(name3.c_str());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 4.0f - textWidth);
+	ImGui::InputFloat(inputName3.c_str(), &value.z, 0, 0, "%.4f");
+
+	ImGui::SameLine();
+	ImGui::Text(name4.c_str());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize / 4.0f - textWidth);
+	ImGui::InputFloat(inputName4.c_str(), &value.w, 0, 0, "%.4f");
+
+	return value != oldValue;
+}
+
+void EditorUI::DrawTextCentered(std::string text)
+{
+	float windowWidth = ImGui::GetWindowSize().x;
+	float textWidth = ImGui::CalcTextSize(text.c_str()).x;
+
+	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+	ImGui::Text(text.c_str());
+}
+
+bool EditorUI::DrawInput(std::string inputName, float& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	float oldValue = float(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputFloat(inputName1.c_str(), &value, 0, 0, "%.4f");
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, double& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	double oldValue = double(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputDouble(inputName1.c_str(), &value, 0, 0, "%0.8f");
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, std::string& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	std::string oldValue = std::string(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputText(inputName1.c_str(), &value);
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, int& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	int oldValue = int(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::InputInt(inputName1.c_str(), &value);
+
+	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, bool& value)
+{
+	std::string inputName1 = "##" + std::to_string(uiId);
+	uiId += 1;
+
+	ImGui::Text(inputName.c_str());
+	float titleWidth = ImGui::GetItemRectSize().x;
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(150);
+	bool oldValue = bool(value);
+	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(startAvailSize);
+	ImGui::Checkbox(inputName1.c_str(), &value);
 
 	return value != oldValue;
 }

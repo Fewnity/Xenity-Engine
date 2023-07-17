@@ -16,6 +16,7 @@ Add async texture loading
 Add shaders
 Add sounds on windows
 Add unit tests
+Fix uniqueID when loading a new scene (set id to the max find in the file)
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)
 Text scale
