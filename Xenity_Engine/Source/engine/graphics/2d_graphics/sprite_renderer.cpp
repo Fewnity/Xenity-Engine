@@ -6,13 +6,21 @@
 SpriteRenderer::SpriteRenderer()
 {
 	componentName = "SpriteRenderer";
-	SetReflection();
+	//SetReflection();
 }
 
-void SpriteRenderer::SetReflection()
+/*void SpriteRenderer::SetReflection()
 {
 	reflectedVariables["color"] = &color;
 	reflectedVariables["texture"] = &texture;
+}*/
+
+std::unordered_map<std::string, Variable> SpriteRenderer::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["color"] = color;
+	reflectedVariables["texture"] = texture;
+	return reflectedVariables;
 }
 
 SpriteRenderer::~SpriteRenderer()

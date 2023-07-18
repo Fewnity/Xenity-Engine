@@ -8,31 +8,39 @@
 
 #pragma region Constructors
 
-void Vector2Int::SetReflection()
+/*void Vector2Int::SetReflection()
 {
 	reflectedVariables["x"] = &x;
 	reflectedVariables["y"] = &y;
+}*/
+
+std::unordered_map<std::string, Variable> Vector2Int::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["x"] = x;
+	reflectedVariables["y"] = y;
+	return reflectedVariables;
 }
 
 Vector2Int::Vector2Int()
 {
 	this->x = 0;
 	this->y = 0;
-	SetReflection();
+	//SetReflection();
 }
 
 Vector2Int::Vector2Int(const int x, const int y)
 {
 	this->x = x;
 	this->y = y;
-	SetReflection();
+	//SetReflection();
 }
 
 Vector2Int::Vector2Int(const int fillValue)
 {
 	this->x = fillValue;
 	this->y = fillValue;
-	SetReflection();
+	//SetReflection();
 }
 
 #pragma endregion

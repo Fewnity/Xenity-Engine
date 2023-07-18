@@ -13,7 +13,8 @@
 class API Vector4 : public Reflection
 {
 public:
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);

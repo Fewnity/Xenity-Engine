@@ -8,14 +8,21 @@
 TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "TextRendererCanvas";
-	SetReflection();
+	//SetReflection();
 
 	type = Draw_UI;
 }
 
-void TextRendererCanvas::SetReflection()
+/*void TextRendererCanvas::SetReflection()
 {
 	reflectedVariables["text"] = &text;
+}*/
+
+std::unordered_map<std::string, Variable> TextRendererCanvas::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["text"] = text;
+	return reflectedVariables;
 }
 
 // TextRendererCanvas::TextRendererCanvas(Font *font, float size, Shader *shader)

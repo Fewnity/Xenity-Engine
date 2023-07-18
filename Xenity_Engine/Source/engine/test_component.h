@@ -15,8 +15,8 @@ class CustomClass : public Reflection
 {
 public:
 	CustomClass();
-	void SetReflection();
-
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 	float myCustomFloat = 0;
 };
 
@@ -24,7 +24,8 @@ class TestComponent : public Component
 {
 public:
 	TestComponent();
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 	void Start();
 	void Update();
 
@@ -37,6 +38,9 @@ public:
 	Vector2 vec2 = Vector2(0);
 	Vector2Int vec2Int = Vector2Int(0);
 	Vector3 vec3 = Vector3(0);
+	Vector3 vec3_2 = Vector3(0);
+	Vector3 vec3_3 = Vector3(0);
+	Vector3* vec3_32 = nullptr;
 	Vector4 vec4 = Vector4(0);
 
 	Color color;

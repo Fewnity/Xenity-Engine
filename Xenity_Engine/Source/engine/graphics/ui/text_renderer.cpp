@@ -8,12 +8,19 @@
 TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
-	SetReflection();
+	//SetReflection();
 }
 
-void TextRenderer::SetReflection()
+/*void TextRenderer::SetReflection()
 {
 	reflectedVariables["text"] = &text;
+}*/
+
+std::unordered_map<std::string, Variable> TextRenderer::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["text"] = text;
+	return reflectedVariables;
 }
 
 // TextRenderer::TextRenderer(Font *font, float size, Shader *shader)

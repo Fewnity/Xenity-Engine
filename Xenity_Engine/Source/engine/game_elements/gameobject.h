@@ -26,11 +26,14 @@ API std::shared_ptr<GameObject> FindGameObjectByName(const std::string name);
 API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
-class API GameObject : public UniqueId, public std::enable_shared_from_this<GameObject>
+class API GameObject : public Reflection, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
 	GameObject(std::string name);
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
+
 	virtual ~GameObject();
 	void Setup();
 

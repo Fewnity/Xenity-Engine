@@ -17,7 +17,9 @@ class API AudioSource : public Component
 public:
     AudioSource();
     ~AudioSource();
-    void SetReflection();
+    //void SetReflection();
+
+    std::unordered_map<std::string, Variable> GetReflection();
     void Play();
     void Resume();
     void Pause();

@@ -19,6 +19,23 @@ Transform::Transform(std::weak_ptr<GameObject> gameObject)
 {
 	this->gameObject = gameObject;
 	UpdateTransformationMatrix();
+	//SetReflection();
+}
+
+/*void Transform::SetReflection()
+{
+	reflectedVariables["localPosition"] = localPosition;
+	reflectedVariables["localRotation"] = localRotation;
+	reflectedVariables["localScale"] = localScale;
+}*/
+
+std::unordered_map<std::string, Variable> Transform::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["localPosition"] = localPosition;
+	reflectedVariables["localRotation"] = localRotation;
+	reflectedVariables["localScale"] = localScale;
+	return reflectedVariables;
 }
 
 #pragma endregion
@@ -191,7 +208,7 @@ void Transform::SetLocalScale(const Vector3 value)
 void Transform::OnParentChanged()
 {
 	auto gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (!gm->parent.expired())
 	{
 		auto parentTransform = gm->parent.lock()->GetTransform();
 		//----- Set new local scale
@@ -242,8 +259,11 @@ void Transform::UpdateWorldValues()
 void Transform::UpdateWorldRotation()
 {
 	auto gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (gm->parent.expired()) 
+	{
+		rotation = localRotation;
 		return;
+	}
 
 	auto parentTransform = gm->parent.lock()->GetTransform();
 	glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentTransform->GetRotation().z, parentTransform->GetRotation().x, parentTransform->GetRotation().y)));
@@ -265,7 +285,10 @@ void Transform::UpdateWorldPosition()
 {
 	auto gm = gameObject.lock();
 	if (gm->parent.expired())
+	{
+		position = localPosition;
 		return;
+	}
 
 	auto parentTransform = gm->parent.lock()->GetTransform();
 

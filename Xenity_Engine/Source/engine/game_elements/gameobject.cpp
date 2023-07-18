@@ -40,6 +40,7 @@ std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name)
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
+	//SetReflection();
 }
 
 /// <summary>
@@ -52,6 +53,21 @@ GameObject::GameObject(std::string name)
 		this->name = name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
+	//SetReflection();
+}
+
+/*void GameObject::SetReflection()
+{
+	reflectedVariables["name"] = &name;
+	reflectedVariables["active"] = &active;
+}*/
+
+std::unordered_map<std::string, Variable> GameObject::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["name"] = name;
+	reflectedVariables["active"] = active;
+	return reflectedVariables;
 }
 
 GameObject::~GameObject()

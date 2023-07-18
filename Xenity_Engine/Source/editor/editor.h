@@ -16,8 +16,8 @@ public:
 	static void CreateEmpty();
 	static void CreateEmptyChild();
 	static void SaveScene();
-	static void JsonToReflection(nlohmann::json j, Reflection* component);
-	static nlohmann::json ReflectiveToJson(Reflection* relection);
+	static void JsonToReflection(nlohmann::json j, Reflection& component);
+	static nlohmann::json ReflectiveToJson(Reflection& relection);
 
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()

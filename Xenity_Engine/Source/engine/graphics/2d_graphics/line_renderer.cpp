@@ -7,15 +7,25 @@
 LineRenderer::LineRenderer()
 {
 	componentName = "LineRenderer";
-	SetReflection();
+	//SetReflection();
 }
 
-void LineRenderer::SetReflection()
+/*void LineRenderer::SetReflection()
 {
 	reflectedVariables["color"] = &color;
 	reflectedVariables["startPosition"] = &startPosition;
 	reflectedVariables["endPosition"] = &endPosition;
 	reflectedVariables["width"] = &width;
+}*/
+
+std::unordered_map<std::string, Variable> LineRenderer::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["color"] = color;
+	reflectedVariables["startPosition"] = startPosition;
+	reflectedVariables["endPosition"] = endPosition;
+	reflectedVariables["width"] = width;
+	return reflectedVariables;
 }
 
 LineRenderer::~LineRenderer()

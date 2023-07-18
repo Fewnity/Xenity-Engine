@@ -20,18 +20,28 @@
 Camera::Camera()
 {
 	componentName = "Camera";
-	SetReflection();
+	//SetReflection();
 
 	this->fov = 60;
 	UpdateProjection();
 }
 
-void Camera::SetReflection()
+/*void Camera::SetReflection()
 {
 	reflectedVariables["fov"] = &fov;
 	reflectedVariables["projectionSize"] = &projectionSize;
 	reflectedVariables["nearClippingPlane"] = &nearClippingPlane;
 	reflectedVariables["farClippingPlane"] = &farClippingPlane;
+}*/
+
+std::unordered_map<std::string, Variable> Camera::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["fov"] = fov;
+	reflectedVariables["projectionSize"] = projectionSize;
+	reflectedVariables["nearClippingPlane"] = nearClippingPlane;
+	reflectedVariables["farClippingPlane"] = farClippingPlane;
+	return reflectedVariables;
 }
 
 Camera::~Camera()

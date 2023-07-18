@@ -8,12 +8,22 @@
 
 #pragma region Constructors / Destructor
 
-void Vector4::SetReflection()
+/*void Vector4::SetReflection()
 {
-	reflectedVariables["x"] = &x;
-	reflectedVariables["y"] = &y;
-	reflectedVariables["z"] = &z;
-	reflectedVariables["w"] = &w;
+	reflectedVariables["x"] = x;
+	reflectedVariables["y"] = y;
+	reflectedVariables["z"] = z;
+	reflectedVariables["w"] = w;
+}*/
+
+std::unordered_map<std::string, Variable> Vector4::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["x"] = x;
+	reflectedVariables["y"] = y;
+	reflectedVariables["z"] = z;
+	reflectedVariables["w"] = w;
+	return reflectedVariables;
 }
 
 Vector4::Vector4()
@@ -22,7 +32,7 @@ Vector4::Vector4()
 	this->y = 0;
 	this->z = 0;
 	this->w = 0;
-	SetReflection();
+	//SetReflection();
 }
 
 Vector4::Vector4(const float x, const float y, const float z, const float w)
@@ -31,7 +41,7 @@ Vector4::Vector4(const float x, const float y, const float z, const float w)
 	this->y = y;
 	this->z = z;
 	this->w = w;
-	SetReflection();
+	//SetReflection();
 }
 
 Vector4::Vector4(const float fillValue)
@@ -40,7 +50,7 @@ Vector4::Vector4(const float fillValue)
 	this->y = fillValue;
 	this->z = fillValue;
 	this->w = fillValue;
-	SetReflection();
+	//SetReflection();
 }
 
 #pragma endregion

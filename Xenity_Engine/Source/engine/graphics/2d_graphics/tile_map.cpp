@@ -17,14 +17,23 @@
 Tilemap::Tilemap()
 {
 	componentName = "Tilemap";
-	SetReflection();
+	//SetReflection();
 }
 
-void Tilemap::SetReflection()
+/*void Tilemap::SetReflection()
 {
 	reflectedVariables["width"] = &width;
 	reflectedVariables["height"] = &height;
 	reflectedVariables["color"] = &color;
+}*/
+
+std::unordered_map<std::string, Variable> Tilemap::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["width"] = width;
+	reflectedVariables["height"] = height;
+	reflectedVariables["color"] = color;
+	return reflectedVariables;
 }
 
 int Tilemap::GetDrawPriority() const

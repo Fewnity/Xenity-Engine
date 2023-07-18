@@ -12,21 +12,33 @@
 Light::Light()
 {
 	componentName = "Light";
-	SetReflection();
+	//SetReflection();
 }
 
-void Light::SetReflection()
+/*void Light::SetReflection()
 {
-	reflectedVariables["intensity"] = &intensity;
-	reflectedVariables["range"] = &range;
-	reflectedVariables["spotAngle"] = &spotAngle;
-	reflectedVariables["spotSmoothness"] = &spotSmoothness;
-	reflectedVariables["color"] = &color;
-}
+	reflectedVariables["intensity"] = intensity;
+	reflectedVariables["range"] = range;
+	reflectedVariables["spotAngle"] = spotAngle;
+	reflectedVariables["spotSmoothness"] = spotSmoothness;
+	reflectedVariables["color"] = color;
+}*/
 
 Light::~Light()
 {
 }
+
+std::unordered_map<std::string, Variable> Light::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["intensity"] = intensity;
+	reflectedVariables["range"] = range;
+	reflectedVariables["spotAngle"] = spotAngle;
+	reflectedVariables["spotSmoothness"] = spotSmoothness;
+	reflectedVariables["color"] = color;
+	return reflectedVariables;
+}
+
 
 #pragma endregion
 

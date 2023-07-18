@@ -67,6 +67,9 @@ int Engine::Init(const std::string exePath)
 	scePowerSetGpuClockFrequency(222);
 	scePowerSetGpuXbarClockFrequency(166);
 #endif
+	new FileSystem();
+	FileSystem::fileSystem->InitFileSystem(exePath);
+	Debug::Init();
 
 	ClassRegistry::AddComponentClass("Light", [](std::shared_ptr<GameObject> go)
 									 { return go->AddComponent<Light>(); });
@@ -91,11 +94,8 @@ int Engine::Init(const std::string exePath)
 
 	/* Initialize libraries */
 	NetworkManager::Init();
-	Debug::Init();
 
 	Performance::Init();
-	new FileSystem();
-	FileSystem::fileSystem->InitFileSystem(exePath);
 	// FileSystem::InitFileSystem(exePath);
 
 	Engine::renderer = new RendererOpengl();

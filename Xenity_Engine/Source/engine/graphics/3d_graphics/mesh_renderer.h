@@ -18,7 +18,8 @@ class API MeshRenderer : public IDrawable
 public:
     MeshRenderer();
     ~MeshRenderer();
-    void SetReflection();
+    //void SetReflection();
+    std::unordered_map<std::string, Variable> GetReflection();
     int GetDrawPriority() const;
 
     MeshData *meshData = nullptr;

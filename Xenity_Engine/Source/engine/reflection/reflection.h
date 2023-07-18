@@ -12,12 +12,13 @@ class Texture;
 class MeshData;
 class Reflection;
 
-#define Variable std::variant<int*, double*, float*, bool*, std::string*, Reflection*, void*, std::weak_ptr<GameObject>*, std::weak_ptr<Transform>*, Texture**, MeshData**>
+#define Variable std::variant<void*, std::reference_wrapper<int>, std::reference_wrapper<double>, std::reference_wrapper<float>, /*float*,*/ std::reference_wrapper<bool>, std::reference_wrapper<std::string>, std::reference_wrapper<Reflection>, std::weak_ptr<GameObject>*, std::weak_ptr<Transform>*, std::reference_wrapper<Texture*>, std::reference_wrapper<MeshData*>>
 
 class Reflection
 {
 public:
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	virtual void SetReflection() = 0;
+	//std::unordered_map<std::string, Variable> reflectedVariables;
+	//virtual void SetReflection() = 0;
+	virtual std::unordered_map<std::string, Variable> GetReflection() = 0;
 };
 

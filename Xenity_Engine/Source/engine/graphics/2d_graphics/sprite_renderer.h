@@ -21,7 +21,8 @@ class API SpriteRenderer : public IDrawable
 public:
 	SpriteRenderer();
 	~SpriteRenderer();
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 
 	int GetDrawPriority() const;
 

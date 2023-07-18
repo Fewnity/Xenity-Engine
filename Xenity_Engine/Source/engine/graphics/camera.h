@@ -19,7 +19,10 @@ class API Camera : public Component
 public:
 	Camera();
 	~Camera();
-	void SetReflection();
+	//void SetReflection();
+
+	std::unordered_map<std::string, Variable> GetReflection();
+
 	void SetFov(const float fov);
 	float GetFov() const;
 	void SetProjectionSize(const float value);

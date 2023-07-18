@@ -14,10 +14,11 @@
 class API RGBA : public Reflection
 {
 public:
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 	RGBA() 
 	{
-		SetReflection();
+		//SetReflection();
 	}
 
 	RGBA(float r, float g, float b, float a)
@@ -26,7 +27,7 @@ public:
 		this->a = a;
 		this->b = b;
 		this->a = a;
-		SetReflection();
+		//SetReflection();
 	}
 	Vector4 ToVector4();
 
@@ -40,7 +41,8 @@ class API Color : public Reflection
 {
 public:
 	Color();
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 	static Color CreateFromRGB(int r, int g, int b, int a);
 	static Color CreateFromRGBFloat(float r, float g, float b, float a);
 	static Color CreateFromRGBA(int r, int g, int b, int a);

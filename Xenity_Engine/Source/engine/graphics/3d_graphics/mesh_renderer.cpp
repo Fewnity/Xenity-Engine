@@ -11,13 +11,21 @@ using namespace std;
 MeshRenderer::MeshRenderer()
 {
 	componentName = "MeshRenderer";
-	SetReflection();
+	//SetReflection();
 }
 
-void MeshRenderer::SetReflection()
+/*void MeshRenderer::SetReflection()
 {
 	reflectedVariables["meshData"] = &meshData;
 	reflectedVariables["texture"] = &texture;
+}*/
+
+std::unordered_map<std::string, Variable> MeshRenderer::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["meshData"] = meshData;
+	reflectedVariables["texture"] = texture;
+	return reflectedVariables;
 }
 
 /// <summary>

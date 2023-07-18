@@ -6,16 +6,26 @@
 AudioSource::AudioSource()
 {
     componentName = "AudioSource";
-    SetReflection();
+    //SetReflection();
 }
 
-void AudioSource::SetReflection()
+/*void AudioSource::SetReflection()
 {
     componentName = "AudioSource";
     reflectedVariables["volume"] = &volume;
     reflectedVariables["pan"] = &pan;
     reflectedVariables["isPlaying"] = &isPlaying;
     reflectedVariables["loop"] = &loop;
+}*/
+
+std::unordered_map<std::string, Variable> AudioSource::GetReflection()
+{
+    std::unordered_map<std::string, Variable> reflectedVariables;
+    reflectedVariables["volume"] = volume;
+    reflectedVariables["pan"] = pan;
+    reflectedVariables["isPlaying"] = isPlaying;
+    reflectedVariables["loop"] = loop;
+    return reflectedVariables;
 }
 
 AudioSource::~AudioSource()

@@ -14,12 +14,19 @@
 
 Color::Color()
 {
-	SetReflection();
+	//SetReflection();
 }
 
-void Color::SetReflection()
+/*void Color::SetReflection()
 {
-	reflectedVariables["rgba"] = &rgba;
+	reflectedVariables["rgba"] = rgba;
+}*/
+
+std::unordered_map<std::string, Variable> Color::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["rgba"] = rgba;
+	return reflectedVariables;
 }
 
 Color Color::CreateFromRGB(int r, int g, int b, int a)
@@ -132,12 +139,22 @@ RGBA Color::GetRGBA()
 	return rgba;
 }
 
-void RGBA::SetReflection()
+/*void RGBA::SetReflection()
 {
-	reflectedVariables["r"] = &r;
-	reflectedVariables["g"] = &g;
-	reflectedVariables["b"] = &b;
-	reflectedVariables["a"] = &a;
+	reflectedVariables["r"] = r;
+	reflectedVariables["g"] = g;
+	reflectedVariables["b"] = b;
+	reflectedVariables["a"] = a;
+}*/
+
+std::unordered_map<std::string, Variable> RGBA::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables["r"] = r;
+	reflectedVariables["g"] = g;
+	reflectedVariables["b"] = b;
+	reflectedVariables["a"] = a;
+	return reflectedVariables;
 }
 
 /**

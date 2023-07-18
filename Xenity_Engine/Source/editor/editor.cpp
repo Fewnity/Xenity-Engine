@@ -11,34 +11,34 @@ std::weak_ptr<GameObject> Editor::cameraGO;
 std::vector<std::shared_ptr<Component>> Editor::allCreatedComponents;
 int allCreatedComponentsCount = 0;
 
-void Editor::JsonToReflection(json j, Reflection* component)
+void Editor::JsonToReflection(json j, Reflection& component)
 {
 	for (auto& kv : j["Values"].items())
 	{
-		if (component->reflectedVariables.contains(kv.key()))
+		auto t = component.GetReflection();
+		if (t.contains(kv.key()))
 		{
+			Variable& variableRef = t[kv.key()];
 			if (kv.value().is_object())
 			{
-				Variable& variableRef = component->reflectedVariables[kv.key()];
-				if (auto valuePtr = std::get_if<Reflection*>(&variableRef))
-				{
-					JsonToReflection(kv.value(), *valuePtr);
-				}
 				//std::cout << kv.key() << " is an object!" << "\n";
+				if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+				{
+					JsonToReflection(kv.value(), valuePtr->get());
+				}
 			}
 			else
 			{
-				Variable& variableRef = component->reflectedVariables[kv.key()];
-				if (auto valuePtr = std::get_if<int*>(&variableRef))
-					**valuePtr = kv.value();
-				else if (auto valuePtr = std::get_if<float*>(&variableRef))
-					**valuePtr = kv.value();
-				else if (auto valuePtr = std::get_if<double*>(&variableRef))
-					**valuePtr = kv.value();
-				else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
-					**valuePtr = kv.value();
-				else if (auto valuePtr = std::get_if<bool*>(&variableRef))
-					**valuePtr = kv.value();
+				if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
+					valuePtr->get() = kv.value();
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
+					valuePtr->get() = kv.value();
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))
+					valuePtr->get() = kv.value();
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
+					valuePtr->get() = kv.value();
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
+					valuePtr->get() = kv.value();
 				else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject>*>(&variableRef))
 				{
 					auto go = FindGameObjectById(kv.value());
@@ -85,8 +85,9 @@ void Editor::Start()
 	//Create all GameObjects and Components
 	for (auto& kv : data["GameObjects"].items())
 	{
-		auto go = CreateGameObject(kv.value()["Name"]);
+		auto go = CreateGameObject();
 		go->SetUniqueId(std::stoull(kv.key()));
+		JsonToReflection(kv.value(), *go.get());
 		for (auto& kv2 : kv.value()["Components"].items())
 		{
 			auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
@@ -101,18 +102,6 @@ void Editor::Start()
 	for (auto& kv : data["GameObjects"].items())
 	{
 		auto go = FindGameObjectById(std::stoull(kv.key()));
-		for (auto& kv2 : kv.value()["Components"].items())
-		{
-			int componentCount = go->GetComponentCount();
-			for (int compI = 0; compI < componentCount; compI++)
-			{
-				if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
-				{
-					JsonToReflection(kv2.value(), (Reflection*)go->components[compI].get());
-					break;
-				}
-			}
-		}
 		if (go)
 		{
 			for (auto& kv2 : kv.value()["Childs"].items())
@@ -121,6 +110,23 @@ void Editor::Start()
 				if (goChild)
 				{
 					goChild->SetParent(go);
+				}
+			}
+		}
+
+		JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
+		go->GetTransform()->isTransformationMatrixDirty = true;
+		go->GetTransform()->UpdateWorldValues();
+
+		for (auto& kv2 : kv.value()["Components"].items())
+		{
+			int componentCount = go->GetComponentCount();
+			for (int compI = 0; compI < componentCount; compI++)
+			{
+				if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
+				{
+					JsonToReflection(kv2.value(), *go->components[compI].get());
+					break;
 				}
 			}
 		}
@@ -175,27 +181,27 @@ void Editor::CreateEmptyChild()
 
 #pragma region Save
 
-json Editor::ReflectiveToJson(Reflection* relection)
+json Editor::ReflectiveToJson(Reflection& relection)
 {
 	json j2;
-	if (relection == nullptr)
+	/*if (relection == nullptr)
 	{
 		return j2;
-	}
-
-	for (const auto& kv : relection->reflectedVariables)
+	}*/
+	auto t = relection.GetReflection();
+	for (const auto& kv :t)
 	{
-		Variable& variableRef = relection->reflectedVariables[kv.first];
-		if (auto valuePtr = std::get_if<int*>(&variableRef))
-			j2[kv.first] = **valuePtr;
-		else if (auto valuePtr = std::get_if<float*>(&variableRef))
-			j2[kv.first] = **valuePtr;
-		else if (auto valuePtr = std::get_if<double*>(&variableRef))
-			j2[kv.first] = **valuePtr;
-		else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
-			j2[kv.first] = **valuePtr;
-		else if (auto valuePtr = std::get_if<bool*>(&variableRef))
-			j2[kv.first] = **valuePtr;
+		Variable& variableRef = t[kv.first];
+		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
+			j2[kv.first] = valuePtr->get();
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
+			j2[kv.first] = valuePtr->get();
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))
+			j2[kv.first] = valuePtr->get();
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
+			j2[kv.first] = valuePtr->get();
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
+			j2[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject> *>(&variableRef))
 		{
 			if (auto lockValue = (**valuePtr).lock())
@@ -206,9 +212,9 @@ json Editor::ReflectiveToJson(Reflection* relection)
 			if (auto lockValue = (**valuePtr).lock())
 				j2[kv.first] = lockValue->GetGameObject()->GetUniqueId();
 		}
-		else if (auto valuePtr = std::get_if<Reflection*>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
-			j2[kv.first]["Values"] = ReflectiveToJson((Reflection*)(*valuePtr));
+			j2[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
 		}
 		else if (auto valuePtr = std::get_if<void*>(&variableRef))
 		{
@@ -232,13 +238,19 @@ void Editor::SaveScene()
 		std::string goName = go->name;
 		std::string goId = std::to_string(go->GetUniqueId());
 
-		j["GameObjects"][goId]["Name"] = goName;
-		Vector3 pos = go->GetTransform()->GetLocalPosition();
+		//j["GameObjects"][goId]["Name"] = goName;
+		/*Vector3 pos = go->GetTransform()->GetLocalPosition();
 		Vector3 rot = go->GetTransform()->GetLocalRotation();
 		Vector3 scale = go->GetTransform()->GetLocalScale();
 		j["GameObjects"][goId]["Transform"]["localPosition"] = ReflectiveToJson(&pos);
 		j["GameObjects"][goId]["Transform"]["localRotation"] = ReflectiveToJson(&rot);
-		j["GameObjects"][goId]["Transform"]["localScale"] = ReflectiveToJson(&scale);
+		j["GameObjects"][goId]["Transform"]["localScale"] = ReflectiveToJson(&scale);*/
+
+		j["GameObjects"][goId]["Transform"]["Values"] = ReflectiveToJson(*go->GetTransform().get());
+		//std::cout << go->GetTransform()->GetLocalPosition().x << std::endl;
+		//std::cout << ReflectiveToJson(*go->GetTransform().get()).dump(2) << std::endl;
+
+		j["GameObjects"][goId]["Values"] = ReflectiveToJson(*go.get());
 
 		std::vector<uint64_t> ids;
 		int childCount = go->GetChildrenCount();
@@ -255,12 +267,12 @@ void Editor::SaveScene()
 			std::string compName = component->GetComponentName();
 			std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = compName;
-			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectiveToJson(&(*component));
+			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectiveToJson((*component.get()));
 		}
 	}
 
 	std::string s = j.dump(2);
-	std::cout << s << std::endl;
+	//std::cout << s << std::endl;
 	File* file = new File("scene2.txt");
 	file->Write(s);
 	delete file;

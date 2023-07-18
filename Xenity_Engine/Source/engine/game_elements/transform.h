@@ -14,12 +14,17 @@
 
 class GameObject;
 
-class API Transform
+class API Transform : public Reflection
 {
 
 public:
 	Transform() = delete;
 	Transform(std::weak_ptr<GameObject> gameObject);
+	//void SetReflection();
+
+	std::unordered_map<std::string, Variable> GetReflection();
+	
+
 	virtual ~Transform() = default;
 
 	Vector3 GetPosition() const;
@@ -52,9 +57,11 @@ public:
 		return gameObject.lock();
 	}
 
+	void UpdateWorldValues();
+	bool isTransformationMatrixDirty = true;
+
 private:
 	void UpdateTransformationMatrix();
-	void UpdateWorldValues();
 	void UpdateWorldPosition();
 	void UpdateWorldRotation();
 	void UpdateWorldScale();
@@ -70,6 +77,5 @@ private:
 	Vector3 GetLocalPositionFromMatrices(glm::mat4 childMatrix, glm::mat4 parentMatrix);
 	Vector3 GetLocalRotationFromWorldRotations(Vector3 childWorldRotation, Vector3 parentWorldRotation);
 
-	bool isTransformationMatrixDirty = true;
 };
 

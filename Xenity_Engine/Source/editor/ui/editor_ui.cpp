@@ -102,37 +102,47 @@ void EditorUI::DrawInspector()
 
 			ImGui::Text("%s", componentName.c_str());
 
-			for (const auto& kv : comp->reflectedVariables)
+			auto t = comp->GetReflection();
+			for (const auto& kv : t)
 			{
-				Variable& variableRef = comp->reflectedVariables[kv.first];
-				if (auto valuePtr = std::get_if<int*>(&variableRef))
-					DrawInput(kv.first, **valuePtr);
-				else if (auto valuePtr = std::get_if<float*>(&variableRef))
-					DrawInput(kv.first, **valuePtr);
-				else if (auto valuePtr = std::get_if<double*>(&variableRef))
-					DrawInput(kv.first, **valuePtr);
-				else if (auto valuePtr = std::get_if<std::string*>(&variableRef))
-					DrawInput(kv.first, **valuePtr);
-				else if (auto valuePtr = std::get_if<bool*>(&variableRef))
-					DrawInput(kv.first, **valuePtr);
-				else if (auto valuePtr = std::get_if<Reflection*>(&variableRef)) 
+				Variable& variableRef = t[kv.first];
+				if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
+					DrawInput(kv.first, valuePtr->get());
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
+					DrawInput(kv.first, valuePtr->get());
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))
+					DrawInput(kv.first, valuePtr->get());
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
+					DrawInput(kv.first, valuePtr->get());
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
+					DrawInput(kv.first, valuePtr->get());
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 				{
-					if (auto val = dynamic_cast<Vector2*>(*valuePtr)) 
+					//auto t2 = valuePtr->get().GetReflection();
+					//for (const auto& kv2 : t2)
+					//{
+					//	Variable& variableRef2 = t2[kv2.first];
+					//	if (auto val = std::get_if<std::reference_wrapper<float>>(&variableRef2))
+					//	{
+					//		DrawInput(kv.first, *val);
+					//	}
+					//}
+					if (auto val = dynamic_cast<Vector2*>(&valuePtr->get()))
 					{
 						DrawInput(kv.first, *val);
-					}else if (auto val = dynamic_cast<Vector2Int*>(*valuePtr))
+					}else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get()))
 					{
 						DrawInput(kv.first, *val);
 					}
-					else if (auto val = dynamic_cast<Vector3*>(*valuePtr))
+					else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get()))
 					{
 						DrawInput(kv.first, *val);
 					}
-					else if (auto val = dynamic_cast<Vector4*>(*valuePtr))
+					else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get()))
 					{
 						DrawInput(kv.first, *val);
 					}
-					else if (auto val = dynamic_cast<Color*>(*valuePtr))
+					else if (auto val = dynamic_cast<Color*>(&valuePtr->get()))
 					{
 						DrawInput(kv.first, *val);
 					}

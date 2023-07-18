@@ -26,7 +26,10 @@ class API TextRendererCanvas : public IDrawable
 public:
 	TextRendererCanvas();
 	~TextRendererCanvas();
-	void SetReflection();
+	//void SetReflection();
+
+	std::unordered_map<std::string, Variable> GetReflection();
+
 	Vector3 position = Vector3(0, 0, 0);
 	float size = 16;
 	float lineSpacing = 0;

@@ -23,7 +23,8 @@ public:
 
 	Light();
 	~Light();
-	void SetReflection();
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
 
 	enum LightType
 	{
