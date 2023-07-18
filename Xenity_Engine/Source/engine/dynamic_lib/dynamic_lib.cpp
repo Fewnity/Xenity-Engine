@@ -38,7 +38,6 @@ void DynamicLibrary::UnloadGameLibrary()
 
 void DynamicLibrary::CompileGame()
 {
-	// dllName += ".dll";
 	std::string command;
 	command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build";																		   // Go in the compiler folder
 	command += " && vcvarsamd64_x86.bat";																																	   // Start the compiler
@@ -46,7 +45,6 @@ void DynamicLibrary::CompileGame()
 	command += " && cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";																					   // Go in the game project folder
 	command += " && cl /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
 	command += " >nul";
-	// Debug::Print(command);
 	system(command.c_str());
 }
 
