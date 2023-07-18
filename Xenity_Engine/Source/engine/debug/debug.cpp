@@ -64,12 +64,12 @@ void Debug::PrintInFile(std::string text)
 #if defined(__PSP__)
     if (file)
         file->Write(text);
-#elif defined(__vita__)
-    debugFile << text;
-    debugFile.flush();
 #else
-    debugFile << text;
-    debugFile.flush();
+    if (debugFile.is_open()) 
+    {
+        debugFile << text;
+        debugFile.flush();
+    }
 #endif
 }
 
