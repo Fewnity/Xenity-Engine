@@ -18,6 +18,9 @@ void EditorUI::Init()
 {
 	ImGui::GetStyle().WindowRounding = 10;
 
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 15);
+
 	Debug::Print("---- Editor UI initiated ----");
 }
 
