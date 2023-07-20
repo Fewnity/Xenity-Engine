@@ -249,7 +249,7 @@ void EditorUI::DrawMainMenuBar()
 		}
 		if (ImGui::MenuItem("Exit"))
 		{
-			Debug::PrintWarning("(File/Exit) Unimplemented button");
+			Engine::Quit();
 		}
 		ImGui::EndMenu();
 	}

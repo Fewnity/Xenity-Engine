@@ -50,6 +50,7 @@ std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer *Engine::renderer = nullptr;
 bool Engine::valueFree = true;
+bool Engine::isRunning = true;
 
 /// <summary>
 /// Init engine
@@ -160,6 +161,11 @@ void Engine::Stop()
 #ifdef __vita__
 	sceKernelExitProcess(0);
 #endif
+}
+
+void Engine::Quit()
+{
+	isRunning = false;
 }
 
 /// <summary>
@@ -324,9 +330,8 @@ void Engine::Loop()
 
 	Debug::Print("-------- Game initiated --------");
 
-	bool running = true;
 
-	while (running)
+	while (isRunning)
 	{
 		engineLoopBenchmark->Start();
 		// Update time and inputs
@@ -344,7 +349,7 @@ void Engine::Loop()
 			switch (event.type)
 			{
 			case SDL_QUIT:
-				running = false;
+				isRunning = false;
 				break;
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)

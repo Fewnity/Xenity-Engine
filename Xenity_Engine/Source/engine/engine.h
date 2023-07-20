@@ -85,7 +85,9 @@ public:
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
 	static bool valueFree;
+	API static void Quit();
 
 private:
 	API static void UpdateComponents();
+	static bool isRunning;
 };
