@@ -6,6 +6,7 @@
 
 // PSP
 #ifdef __PSP__
+#include "pspkernel.h"
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
