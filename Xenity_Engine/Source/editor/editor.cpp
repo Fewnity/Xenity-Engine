@@ -184,10 +184,6 @@ void Editor::CreateEmptyChild()
 json Editor::ReflectiveToJson(Reflection& relection)
 {
 	json j2;
-	/*if (relection == nullptr)
-	{
-		return j2;
-	}*/
 	auto t = relection.GetReflection();
 	for (const auto& kv :t)
 	{
@@ -238,18 +234,7 @@ void Editor::SaveScene()
 		std::string goName = go->name;
 		std::string goId = std::to_string(go->GetUniqueId());
 
-		//j["GameObjects"][goId]["Name"] = goName;
-		/*Vector3 pos = go->GetTransform()->GetLocalPosition();
-		Vector3 rot = go->GetTransform()->GetLocalRotation();
-		Vector3 scale = go->GetTransform()->GetLocalScale();
-		j["GameObjects"][goId]["Transform"]["localPosition"] = ReflectiveToJson(&pos);
-		j["GameObjects"][goId]["Transform"]["localRotation"] = ReflectiveToJson(&rot);
-		j["GameObjects"][goId]["Transform"]["localScale"] = ReflectiveToJson(&scale);*/
-
 		j["GameObjects"][goId]["Transform"]["Values"] = ReflectiveToJson(*go->GetTransform().get());
-		//std::cout << go->GetTransform()->GetLocalPosition().x << std::endl;
-		//std::cout << ReflectiveToJson(*go->GetTransform().get()).dump(2) << std::endl;
-
 		j["GameObjects"][goId]["Values"] = ReflectiveToJson(*go.get());
 
 		std::vector<uint64_t> ids;
