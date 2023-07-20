@@ -77,63 +77,78 @@ void Editor::Start()
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
 
-	std::string jsonString = FileSystem::fileSystem->ReadText("scene.txt");
-	std::string jsonString2 = "Json: " + jsonString;
-	//Debug::Print(jsonString2);
-	json data = json::parse(jsonString);
-
-	//Create all GameObjects and Components
-	for (auto& kv : data["GameObjects"].items())
+	File *jsonFile = new File("scene.txt");
+	bool isOpen = jsonFile->Open(false);
+	if (isOpen)
 	{
-		auto go = CreateGameObject();
-		go->SetUniqueId(std::stoull(kv.key()));
-		JsonToReflection(kv.value(), *go.get());
-		for (auto& kv2 : kv.value()["Components"].items())
+		std::string jsonString = jsonFile->ReadAll();
+		jsonFile->Close();
+
+		json data;
+		try
 		{
-			auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
-			comp->SetUniqueId(std::stoull(kv2.key()));
-			allCreatedComponents.push_back(comp);
+			data = json::parse(jsonString);
 		}
-	}
-
-	allCreatedComponentsCount = allCreatedComponents.size();
-
-	//Bind Components values and GameObjects childs
-	for (auto& kv : data["GameObjects"].items())
-	{
-		auto go = FindGameObjectById(std::stoull(kv.key()));
-		if (go)
+		catch (const std::exception &)
 		{
-			for (auto& kv2 : kv.value()["Childs"].items())
+			Debug::PrintError("Scene file error");
+			return;
+		}
+
+		// Create all GameObjects and Components
+		for (auto &kv : data["GameObjects"].items())
+		{
+			auto go = CreateGameObject();
+			go->SetUniqueId(std::stoull(kv.key()));
+			JsonToReflection(kv.value(), *go.get());
+			for (auto &kv2 : kv.value()["Components"].items())
 			{
-				auto goChild = FindGameObjectById(kv2.value());
-				if (goChild)
-				{
-					goChild->SetParent(go);
-				}
+				auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
+				comp->SetUniqueId(std::stoull(kv2.key()));
+				allCreatedComponents.push_back(comp);
 			}
 		}
 
-		JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
-		go->GetTransform()->isTransformationMatrixDirty = true;
-		go->GetTransform()->UpdateWorldValues();
+		allCreatedComponentsCount = allCreatedComponents.size();
 
-		for (auto& kv2 : kv.value()["Components"].items())
+		// Bind Components values and GameObjects childs
+		for (auto &kv : data["GameObjects"].items())
 		{
-			int componentCount = go->GetComponentCount();
-			for (int compI = 0; compI < componentCount; compI++)
+			auto go = FindGameObjectById(std::stoull(kv.key()));
+			if (go)
 			{
-				if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
+				for (auto &kv2 : kv.value()["Childs"].items())
 				{
-					JsonToReflection(kv2.value(), *go->components[compI].get());
-					break;
+					auto goChild = FindGameObjectById(kv2.value());
+					if (goChild)
+					{
+						goChild->SetParent(go);
+					}
+				}
+			}
+
+			JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
+			go->GetTransform()->isTransformationMatrixDirty = true;
+			go->GetTransform()->UpdateWorldValues();
+
+			for (auto &kv2 : kv.value()["Components"].items())
+			{
+				int componentCount = go->GetComponentCount();
+				for (int compI = 0; compI < componentCount; compI++)
+				{
+					if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
+					{
+						JsonToReflection(kv2.value(), *go->components[compI].get());
+						break;
+					}
 				}
 			}
 		}
+		allCreatedComponents.clear();
+		allCreatedComponentsCount = 0;
 	}
-	allCreatedComponents.clear();
-	allCreatedComponentsCount = 0;
-	// File *file = new File("scene.txt");
+	delete jsonFile;
+	SaveScene();
 }
 
 void Editor::Update()
@@ -257,9 +272,11 @@ void Editor::SaveScene()
 	}
 
 	std::string s = j.dump(2);
-	//std::cout << s << std::endl;
-	File* file = new File("scene2.txt");
+	// std::cout << s << std::endl;
+	File *file = new File("scene2.txt");
+	file->Open(true);
 	file->Write(s);
+	file->Close();
 	delete file;
 }
 

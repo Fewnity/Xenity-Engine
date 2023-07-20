@@ -8,6 +8,10 @@
 TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
+
+	if (TextManager::fonts.size() != 0)
+		font = TextManager::fonts[0];
+
 	//SetReflection();
 }
 
