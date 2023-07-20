@@ -433,12 +433,7 @@ void Engine::Loop()
 		engineLoopBenchmark->Stop();
 
 #if defined(_WIN32) || defined(_WIN64)
-		EditorUI::NewFrame();
-		EditorUI::DrawProfiler();
-		EditorUI::DrawInspector();
-		EditorUI::DrawHierarchy();
-		EditorUI::DrawMainMenuBar();
-		EditorUI::Render();
+		EditorUI::Draw();
 #endif
 
 		Performance::Update();

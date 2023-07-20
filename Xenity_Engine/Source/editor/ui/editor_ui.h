@@ -16,15 +16,17 @@ class EditorUI
 {
 public:
 	static void Init();
+	static void Draw();
+
+
+private:
 	static void NewFrame();
 	static void Render();
-
 	static void DrawProfiler();
 	static void DrawInspector();
 	static void DrawHierarchy();
 	static void DrawMainMenuBar();
 
-private:
 	static void DrawTextCentered(std::string text);
 	static bool DrawInput(std::string inputName, Color& value);
 	static bool DrawInput(std::string inputName, Vector2& value);

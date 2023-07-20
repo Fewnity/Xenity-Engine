@@ -29,6 +29,22 @@ void EditorUI::Init()
 	Debug::Print("---- Editor UI initiated ----");
 }
 
+void EditorUI::Draw()
+{
+	NewFrame();
+	if (showProfiler)
+	{
+		DrawProfiler();
+	}
+	if (showEditor)
+	{
+		DrawInspector();
+		DrawHierarchy();
+	}
+	DrawMainMenuBar();
+	Render();
+}
+
 #pragma endregion
 
 #pragma region Update
@@ -59,159 +75,152 @@ void EditorUI::Render()
 
 void EditorUI::DrawInspector()
 {
-	if (showEditor)
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	//Create Window
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, 20), 0, ImVec2(1, 0));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
+	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
+	auto selectedGameObject = Engine::selectedGameObject.lock();
+	if (selectedGameObject)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		char str0[128] = "";
+		sprintf_s(str0, selectedGameObject->name.c_str());
 
-		//Create Window
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
-		ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, 20), 0, ImVec2(1, 0));
-		ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
-		ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
-		auto selectedGameObject = Engine::selectedGameObject.lock();
-		if (selectedGameObject)
+		//Active checkbox
+		bool active = selectedGameObject->GetActive();
+		ImGui::Checkbox("##Active", &active);
+
+		//Name input
+		ImGui::SameLine();
+		ImGui::InputText("##Name ", str0, IM_ARRAYSIZE(str0));
+
+		//Apply new values if changed
+		if (strcmp(str0, selectedGameObject->name.c_str()) != 0 && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 		{
-			char str0[128] = "";
-			sprintf_s(str0, selectedGameObject->name.c_str());
+			selectedGameObject->name = str0;
+		}
+		if (active != selectedGameObject->GetActive())
+		{
+			selectedGameObject->SetActive(active);
+		}
 
-			//Active checkbox
-			bool active = selectedGameObject->GetActive();
-			ImGui::Checkbox("##Active", &active);
+		//Local position input
+		ImGui::Spacing();
+		ImGui::Spacing();
+		Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
+		bool changed = DrawInput("Local Position", localPos);
 
-			//Name input
-			ImGui::SameLine();
-			ImGui::InputText("##Name ", str0, IM_ARRAYSIZE(str0));
+		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		{
+			selectedGameObject->GetTransform()->SetLocalPosition(localPos);
+		}
+		ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
 
-			//Apply new values if changed
-			if (strcmp(str0, selectedGameObject->name.c_str()) != 0 && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedGameObject->name = str0;
-			}
-			if (active != selectedGameObject->GetActive())
-			{
-				selectedGameObject->SetActive(active);
-			}
+		//Local rotation input
+		ImGui::Spacing();
+		ImGui::Spacing();
+		Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
+		changed = DrawInput("Local Rotation", localRot);
+		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		{
+			selectedGameObject->GetTransform()->SetLocalRotation(localRot);
+		}
+		ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
 
-			//Local position input
-			ImGui::Spacing();
-			ImGui::Spacing();
-			Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
-			bool changed = DrawInput("Local Position", localPos);
+		//Local scale input
+		ImGui::Spacing();
+		ImGui::Spacing();
+		Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
+		changed = DrawInput("Local Scale", localScale);
+		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		{
+			selectedGameObject->GetTransform()->SetLocalScale(localScale);
+		}
+		ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
 
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedGameObject->GetTransform()->SetLocalPosition(localPos);
-			}
-			ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
+		//Component list
+		ImGui::Spacing();
+		ImGui::Separator();
 
-			//Local rotation input
-			ImGui::Spacing();
-			ImGui::Spacing();
-			Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
-			changed = DrawInput("Local Rotation", localRot);
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedGameObject->GetTransform()->SetLocalRotation(localRot);
-			}
-			ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
-
-			//Local scale input
-			ImGui::Spacing();
-			ImGui::Spacing();
-			Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
-			changed = DrawInput("Local Scale", localScale);
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedGameObject->GetTransform()->SetLocalScale(localScale);
-			}
-			ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
-
-			//Component list
-			ImGui::Spacing();
+		int componentCount = selectedGameObject->GetComponentCount();
+		for (int i = 0; i < componentCount; i++)
+		{
+			auto comp = selectedGameObject->components[i];
+			//Draw component title
+			std::string componentName = "- " + comp->GetComponentName();
+			ImGui::Text("%s", componentName.c_str());
 			ImGui::Separator();
 
-			int componentCount = selectedGameObject->GetComponentCount();
-			for (int i = 0; i < componentCount; i++)
-			{
-				auto comp = selectedGameObject->components[i];
-				//Draw component title
-				std::string componentName = "- " + comp->GetComponentName();
-				ImGui::Text("%s", componentName.c_str());
-				ImGui::Separator();
+			//Draw component variables
+			DrawReflection(*comp);
 
-				//Draw component variables
-				DrawReflection(*comp);
-
-				ImGui::Separator();
-			}
+			ImGui::Separator();
 		}
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 void EditorUI::DrawHierarchy()
 {
-	if (showEditor)
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(ImVec2(0, 20));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
+
+	ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
+	//ImGui::SetWindowFontScale(2);
+	if (!ImGui::IsWindowCollapsed())
 	{
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
-		ImGui::SetNextWindowPos(ImVec2(0, 20));
-		ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
+		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
-		ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
-		//ImGui::SetWindowFontScale(2);
-		if (!ImGui::IsWindowCollapsed())
+		//Add in the list only gameobject without parent
+		for (int i = 0; i < Engine::gameObjectCount; i++)
 		{
-			ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
-
-			//Add in the list only gameobject without parent
-			for (int i = 0; i < Engine::gameObjectCount; i++)
+			if (Engine::gameObjects[i]->parent.lock() == nullptr)
 			{
-				if (Engine::gameObjects[i]->parent.lock() == nullptr)
-				{
-					DrawTreeItem(Engine::gameObjects[i]);
-				}
+				DrawTreeItem(Engine::gameObjects[i]);
 			}
-			ImGui::EndChild();
 		}
-
-		ImGui::End();
+		ImGui::EndChild();
 	}
+
+	ImGui::End();
 }
 
 void EditorUI::DrawProfiler()
 {
-	if (showProfiler)
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	//Update timer to slowly update framerate
+	nextFpsUpdate += Time::GetUnscaledDeltaTime();
+	if (nextFpsUpdate >= 0.06f)
 	{
-		ImGuiIO& io = ImGui::GetIO();
-
-		//Update timer to slowly update framerate
-		nextFpsUpdate += Time::GetUnscaledDeltaTime();
-		if (nextFpsUpdate >= 0.06f)
-		{
-			nextFpsUpdate = 0;
-			lastFps = io.Framerate;
-		}
-
-		ImGui::Begin("Debug");
-		ImGui::Text("FPS: %.1f", lastFps);
-		ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
-		ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
-
-		if (EngineSettings::useProfiler)
-		{
-			//Add profiler texts
-			for (const auto& kv : Performance::profilerList)
-			{
-				ImGui::Text("%s: %ld, avg %ld", kv.first.c_str(), kv.second->GetValue(), kv.second->average);
-			}
-		}
-		else
-		{
-			ImGui::Text("Profiler disabled");
-		}
-
-		ImGui::End();
+		nextFpsUpdate = 0;
+		lastFps = io.Framerate;
 	}
+
+	ImGui::Begin("Debug");
+	ImGui::Text("FPS: %.1f", lastFps);
+	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
+	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
+
+	if (EngineSettings::useProfiler)
+	{
+		//Add profiler texts
+		for (const auto& kv : Performance::profilerList)
+		{
+			ImGui::Text("%s: %ld, avg %ld", kv.first.c_str(), kv.second->GetValue(), kv.second->average);
+		}
+	}
+	else
+	{
+		ImGui::Text("Profiler disabled");
+	}
+
+	ImGui::End();
 }
 
 void EditorUI::DrawMainMenuBar()
