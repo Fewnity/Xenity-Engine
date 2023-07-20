@@ -5,14 +5,13 @@
 #if defined(__PSP__)
 #include <pspkernel.h>
 #include "../../psp/debug/debug.h"
-File *file = nullptr;
 #elif defined(__vita__)
 #include "../../psvita/debug/debug.h"
 #include <psp2/io/stat.h>
 #endif
 #include "../engine_settings.h"
 
-std::ofstream Debug::debugFile;
+File *file = nullptr;
 std::string Debug::debugText = "";
 Socket *Debug::socket;
 
@@ -61,16 +60,8 @@ void Debug::PrintInConsole(std::string text)
 
 void Debug::PrintInFile(std::string text)
 {
-#if defined(__PSP__)
     if (file)
         file->Write(text);
-#else
-    if (debugFile.is_open()) 
-    {
-        debugFile << text;
-        debugFile.flush();
-    }
-#endif
 }
 
 /**
@@ -113,23 +104,10 @@ void Debug::Init()
     if (!EngineSettings::useDebugger)
         return;
 
-#if defined(__PSP__)
-    // PspDebugInit();
-    // Delete old debug file
     FileSystem::fileSystem->DeleteFile("xenity_engine_debug.txt");
-    // Init debug file
     file = new File("xenity_engine_debug.txt");
-#elif defined(__vita__)
-    // PsVitaDebugInit();
-    //  Create folder
-    sceIoMkdir("ux0:/data/xenity_engine", 0777);
-    // Init debug file
-    debugFile.open("ux0:data/xenity_engine/xenity_engine_debug.txt");
-#else
-    // Init debug file
-    debugFile.open("xenity_engine_debug.txt");
+    file->Open(true);
 
-#endif
     Print("-------- Debug initiated --------");
 }
 

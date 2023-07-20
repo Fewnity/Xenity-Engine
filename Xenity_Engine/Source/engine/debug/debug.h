@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <fstream>
 #include <string>
 #include <iostream>
 
@@ -30,7 +29,6 @@ public:
     }
 
 private:
-    static std::ofstream debugFile;
     static std::string debugText;
     static void PrintInOnlineConsole(std::string text);
     static void PrintInConsole(std::string text);

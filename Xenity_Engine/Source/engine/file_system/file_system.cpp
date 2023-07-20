@@ -6,10 +6,11 @@
 
 #include "../engine_settings.h"
 #include "../debug/debug.h"
+#include <filesystem>
 
-// #define TEXTURE_PATH R"(Xenity_Engine\Source\images\)"
-// #define SHADER_PATH R"(Xenity_Engine\Source\images\)"
-// #define MODEL_PATH R"(Xenity_Engine\Source\images\)"
+#if defined(__vita__)
+#include <psp2/io/stat.h>
+#endif
 
 #define TEXTURE_PATH R"(images\)"
 #define SHADER_PATH R"(shaders\)"
@@ -17,11 +18,7 @@
 
 #define PSVITA_PATH R"(ux0:data\xenity_engine\)"
 
-// std::string FileSystem::texturePath;
-// std::string FileSystem::shaderPath;
-// std::string FileSystem::modelsPath;
-
-FileSystem *FileSystem::fileSystem = nullptr;
+FileSystem* FileSystem::fileSystem = nullptr;
 
 #pragma region File
 
@@ -32,22 +29,25 @@ File::File(std::string path)
 #endif
 
 	this->path = path;
-#if defined(__PSP__)
-	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR | PSP_O_CREAT, 0777);
-#else
-	file.open(path, std::fstream::in | std::fstream::out | std::fstream::trunc);
-#endif
 }
 
 void File::Write(const std::string data)
 {
 #if defined(__PSP__)
-	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR | PSP_O_CREAT, 0777);
-	sceIoLseek(fileId, 0, SEEK_END);
-	int b = sceIoWrite(fileId, data.c_str(), data.size());
-	sceIoClose(fileId);
+	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR, 0777);
+	if (fileId >= 0)
+	{
+		sceIoLseek(fileId, 0, SEEK_END);
+		int b = sceIoWrite(fileId, data.c_str(), data.size());
+		sceIoClose(fileId);
+	}
 #else
-	file << data;
+	if (file.is_open())
+	{
+		file.seekg(0, std::ios_base::end);
+		file << data;
+		file.flush();
+	}
 #endif
 }
 
@@ -55,82 +55,152 @@ std::string File::ReadAll()
 {
 	std::string allText = "";
 #if defined(__PSP__)
+	int pos = sceIoLseek(fileId, 0, SEEK_END);
+	sceIoLseek(fileId, 0, SEEK_SET);
+	char* data = new char[pos];
+	sceIoRead(fileId, data, pos);
+	allText = data;
+	delete[] data;
 #else
-	std::streamoff size = file.tellg();
-	char* memblock = new char[size];
-	file.seekg(0, std::ios::beg);
-	file.read(memblock, size);
-	allText = memblock;
-	delete[] memblock;
+	file.seekg(0, std::ios_base::beg);
+	std::string tempText;
+	while (getline(file, tempText))
+	{
+		allText += tempText;
+	}
 #endif
 	return allText;
 }
 
+bool File::Open(bool createFileIfNotFound)
+{
+	bool isOpen = false;
+#if defined(__PSP__)
+	int params = PSP_O_RDWR;
+	if (createFileIfNotFound)
+		params = params | PSP_O_CREAT;
+	fileId = sceIoOpen(path.c_str(), params, 0777);
+	if (fileId >= 0)
+	{
+		isOpen = true;
+	}
+#else
+	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+
+	file.open(path, params);
+
+	if (!file.is_open())
+	{
+		if (createFileIfNotFound)
+		{
+			params = params | std::fstream::trunc;
+			file.open(path, params);
+			if (!file.is_open())
+			{
+				Debug::PrintError("Fail while opening and creating file (file.is_open())");
+			}
+			else
+			{
+				isOpen = true;
+			}
+		}
+		else
+		{
+			Debug::PrintError("Fail while opening file (file.is_open())");
+		}
+	}
+	else
+	{
+		isOpen = true;
+	}
+#endif
+	return isOpen;
+}
+
 void File::Close()
 {
-#ifdef __PSP__
+#if defined(__PSP__)
 	sceIoClose(fileId);
+#else
+	file.close();
 #endif
+}
+
+#pragma endregion
+
+#pragma region Directory
+
+Directory::Directory(std::string path)
+{
+	this->path = path;
+	FileSystem::fileSystem->FillDirectory(this);
+}
+
+Directory::~Directory()
+{
+	int subDirCount = (int)subdirectories.size();
+	for (int i = 0; i < subDirCount; i++)
+	{
+		delete subdirectories[i];
+	}
+	subdirectories.clear();
+	int fileount = (int)files.size();
+	for (int i = 0; i < fileount; i++)
+	{
+		delete files[i];
+	}
+	files.clear();
+}
+
+void FileSystem::FillDirectory(Directory* directory)
+{
+	for (const auto& file : std::filesystem::directory_iterator(directory->path))
+	{
+		if (file.is_directory())
+		{
+			Directory* newDirectory = nullptr;
+			try
+			{
+				newDirectory = new Directory(file.path().string());
+				directory->subdirectories.push_back(newDirectory);
+			}
+			catch (const std::exception&)
+			{
+				if (newDirectory != nullptr)
+					delete newDirectory;
+			}
+		}
+		else if (file.is_regular_file())
+		{
+			File* newFile = nullptr;
+			try
+			{
+				std::string p = file.path().string();
+				p = file.path().string();
+				newFile = new File(p);
+				directory->files.push_back(newFile);
+			}
+			catch (const std::exception&)
+			{
+				if (newFile != nullptr)
+					delete newFile;
+			}
+		}
+	}
 }
 
 #pragma endregion
 
 #pragma region Read/Input
 
-unsigned char *FileSystem::LoadTextureData(const std::string filePath, int &width, int &height, int &nrChannels)
-{
-	unsigned char *data = stbi_load((texturePath + filePath).c_str(), &width, &height, &nrChannels, 0);
-	return data;
-}
-
-std::string FileSystem::ReadText(const std::string path)
-{
-	// Open file
-	std::ifstream file;
-	// file.open(finalpath + path);
-	file.open(path);
-
-	// Print error if the file can't be read
-	if (file.fail())
-	{
-		std::string errorText = "File read error. Path: " + path;
-		Debug::PrintError(errorText);
-	}
-
-	// Read file
-	std::string text = "", line;
-	while (getline(file, line))
-	{
-		text += line + '\n';
-	}
-
-	// Close the file
-	file.close();
-
-	return text;
-}
-
 #pragma endregion
-
-File *FileSystem::OpenFile(const std::string path)
-{
-	return new File(path);
-}
-
-void FileSystem::CloseFile(File *file)
-{
-	file->Close();
-}
-
-void FileSystem::WriteInFile(File *file, const std::string data)
-{
-	file->Write(data);
-}
 
 void FileSystem::DeleteFile(const std::string path)
 {
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
+#else
+	remove(path.c_str());
 #endif
 }
 
@@ -157,8 +227,12 @@ void FileSystem::InitFileSystem(const std::string exePath)
 	modelsPath = "";
 	modelsPath += MODEL_PATH;
 
-	Debug::Print("-------- File System initiated --------");
-	// gamePath += R"(Debug\)"; //TODO remove this
+#if defined(__vita__)
+	sceIoMkdir("ux0:/data/xenity_engine", 0777);
+#endif
+
+	// Debug::Print("-------- File System initiated --------");
+	//  gamePath += R"(Debug\)"; //TODO remove this
 }
 
 std::string FileSystem::GetGamePath()
