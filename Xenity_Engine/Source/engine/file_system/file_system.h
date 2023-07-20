@@ -44,6 +44,7 @@ class API File
 public:
 	File() = delete;
 	File(std::string path);
+	~File();
 
 	void Write(const std::string data);
 	std::string ReadAll();

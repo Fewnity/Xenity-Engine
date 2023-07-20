@@ -31,6 +31,15 @@ File::File(std::string path)
 	this->path = path;
 }
 
+File::~File()
+{
+#if defined(__PSP__)
+	sceIoClose(fileId);
+#else
+	Close();
+#endif
+}
+
 void File::Write(const std::string data)
 {
 #if defined(__PSP__)
@@ -122,7 +131,10 @@ void File::Close()
 #if defined(__PSP__)
 	sceIoClose(fileId);
 #else
-	file.close();
+	if (file.is_open())
+	{
+		file.close();
+	}
 #endif
 }
 
