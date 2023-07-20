@@ -15,6 +15,7 @@ float EditorUI::nextFpsUpdate = 0;
 float EditorUI::lastFps = 0;
 bool EditorUI::showProfiler = true;
 bool EditorUI::showEditor = true;
+bool EditorUI::showEngineSettings = false;
 
 #pragma region Initialisation
 
@@ -32,6 +33,7 @@ void EditorUI::Init()
 void EditorUI::Draw()
 {
 	NewFrame();
+	DrawMainMenuBar();
 	if (showProfiler)
 	{
 		DrawProfiler();
@@ -41,7 +43,10 @@ void EditorUI::Draw()
 		DrawInspector();
 		DrawHierarchy();
 	}
-	DrawMainMenuBar();
+	if (showEngineSettings) 
+	{
+		DrawEngineSettings();
+	}
 	Render();
 }
 
@@ -75,7 +80,6 @@ void EditorUI::Render()
 
 void EditorUI::DrawInspector()
 {
-
 	ImGuiIO& io = ImGui::GetIO();
 
 	//Create Window
@@ -171,8 +175,8 @@ void EditorUI::DrawHierarchy()
 
 	ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
 	//ImGui::SetWindowFontScale(2);
-	if (!ImGui::IsWindowCollapsed())
-	{
+	//if (!ImGui::IsWindowCollapsed())
+	//{
 		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
 		//Add in the list only gameobject without parent
@@ -184,7 +188,7 @@ void EditorUI::DrawHierarchy()
 			}
 		}
 		ImGui::EndChild();
-	}
+	//}
 
 	ImGui::End();
 }
@@ -385,11 +389,42 @@ void EditorUI::DrawMainMenuBar()
 		ImGui::Checkbox(GenerateItemId().c_str(), &showEditor);
 		ImGui::SameLine();
 		ImGui::Text("Show Editor");
-
+		if (ImGui::MenuItem("Engine Settings"))
+		{
+			showEngineSettings = true;
+		}
 		ImGui::EndMenu();
 	}
 
 	ImGui::EndMainMenuBar();
+}
+
+void EditorUI::DrawEngineSettings()
+{
+	ImGui::Begin("Enigne Settings", &showEngineSettings, ImGuiWindowFlags_NoCollapse);
+
+	ImGui::Checkbox(GenerateItemId().c_str(), &EngineSettings::useProfiler);
+	ImGui::SameLine();
+	ImGui::TextWrapped("Use Profiler");
+
+	ImGui::Checkbox(GenerateItemId().c_str(), &EngineSettings::useLighting);
+	ImGui::SameLine();
+	ImGui::TextWrapped("Use Lighting");
+
+	ImGui::Checkbox(GenerateItemId().c_str(), &EngineSettings::useDebugger);
+	ImGui::SameLine();
+	ImGui::TextWrapped("Use Debugger (Print logs in the console and in the file)");
+
+	ImGui::Checkbox(GenerateItemId().c_str(), &EngineSettings::useOnlineDebugger);
+	ImGui::SameLine();
+	ImGui::TextWrapped("Use Online Debugger (Print logs to an online console)");
+
+	if(ImGui::Button("Save"))
+	{
+		Debug::PrintWarning("(DrawEngineSettings [Save]) Unimplemented button");
+	}
+
+	ImGui::End();
 }
 
 #pragma endregion

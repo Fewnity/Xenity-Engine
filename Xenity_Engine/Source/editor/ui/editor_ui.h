@@ -26,6 +26,7 @@ private:
 	static void DrawInspector();
 	static void DrawHierarchy();
 	static void DrawMainMenuBar();
+	static void DrawEngineSettings();
 
 	static void DrawTextCentered(std::string text);
 	static bool DrawInput(std::string inputName, Color& value);
@@ -50,5 +51,7 @@ private:
 	static float lastFps;
 	static bool showProfiler;
 	static bool showEditor;
+	static bool showEngineSettings;
+
 };
 #endif
