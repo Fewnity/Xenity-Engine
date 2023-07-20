@@ -80,5 +80,6 @@ std::unordered_map<std::string, Variable> CustomClass::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
 	reflectedVariables["myCustomFloat"] = myCustomFloat;
+	reflectedVariables["myCustomFloat2"] = myCustomFloat2;
 	return reflectedVariables;
 }

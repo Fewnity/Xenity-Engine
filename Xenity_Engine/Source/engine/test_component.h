@@ -18,6 +18,7 @@ public:
 	//void SetReflection();
 	std::unordered_map<std::string, Variable> GetReflection();
 	float myCustomFloat = 0;
+	float myCustomFloat2 = 0;
 };
 
 class TestComponent : public Component
