@@ -54,8 +54,8 @@ Vector2::Vector2(const Vector3 vect3)
 
 Vector2::Vector2(const Vector2Int vect2Int)
 {
-	this->x = vect2Int.x;
-	this->y = vect2Int.y;
+	this->x = (float)vect2Int.x;
+	this->y = (float)vect2Int.y;
 	//SetReflection();
 }
 

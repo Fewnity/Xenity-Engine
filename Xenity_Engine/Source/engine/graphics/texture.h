@@ -85,7 +85,7 @@ private:
     WrapMode wrapMode = Repeat;
     void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
     void LoadTexture(const std::string filePath);
-    unsigned int textureId;
+    unsigned int textureId = -1;
     int width = 0, height = 0, nrChannels = 0;
 
     int pixelPerUnit = 100;

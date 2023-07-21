@@ -105,7 +105,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 					if (line[i] == '/')
 					{
 						count++;
-						if (line[i + 1] == '/')
+						if (line[(size_t)i + 1] == '/')
 						{
 
 							count = 6;

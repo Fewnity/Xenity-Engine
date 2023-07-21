@@ -108,7 +108,7 @@ int64_t AudioClipStream::GetSampleCount()
 
 int64_t AudioClipStream::GetSeekPosition()
 {
-    int seekPos = 0;
+    uint64_t seekPos = 0;
     if (type == Mp3)
         seekPos = mp3.currentPCMFrame;
     else if (type == Wav)

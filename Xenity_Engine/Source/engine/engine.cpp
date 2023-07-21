@@ -275,7 +275,7 @@ void Engine::UpdateComponents()
 		}
 	}
 
-	int gameObjectToDestroyCount = gameObjectsToDestroy.size();
+	int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
 	for (int i = 0; i < gameObjectToDestroyCount; i++)
 	{
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
@@ -291,7 +291,7 @@ void Engine::UpdateComponents()
 	}
 	gameObjectsToDestroy.clear();
 
-	int componentToDestroyCount = componentsToDestroy.size();
+	int componentToDestroyCount = (int)componentsToDestroy.size();
 	for (int i = 0; i < componentToDestroyCount; i++)
 	{
 		if (auto component = componentsToDestroy[i].lock())

@@ -80,7 +80,7 @@ void NetworkManager::Init()
 
 void NetworkManager::Update()
 {
-    int socketCount = sockets.size();
+    int socketCount = (int)sockets.size();
     for (int i = 0; i < socketCount; i++)
     {
         sockets[i]->Update();
@@ -110,7 +110,7 @@ void Socket::SendData(std::string text)
     if (socketId < 0)
         return;
 
-    int InfoLentgh = text.size();
+    int InfoLentgh = (int)text.size();
     send(socketId, text.c_str(), InfoLentgh, 0); // Send data to server
 }
 
@@ -167,7 +167,12 @@ Socket *NetworkManager::CreateSocket(std::string address, int port)
 // memset(recvBuff, '0', sizeof(recvBuff));
 #if defined(_WIN32) || defined(_WIN64)
     WSADATA WSAData;
-    WSAStartup(MAKEWORD(2, 0), &WSAData);
+    int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
+    if (startupResult != 0) 
+    {
+        Debug::PrintError("Could not start win socket");
+        return nullptr;
+    }
 #endif
     if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {

@@ -109,7 +109,7 @@ void Editor::Start()
 			}
 		}
 
-		allCreatedComponentsCount = allCreatedComponents.size();
+		allCreatedComponentsCount = (int)allCreatedComponents.size();
 
 		// Bind Components values and GameObjects childs
 		for (auto &kv : data["GameObjects"].items())

@@ -39,7 +39,7 @@ void Astar::SetGridSize(int xSize, int ySize)
 		yGridSize = ySize;
 
 		// Create new grid
-		grid = (Tile *)malloc(xGridSize * yGridSize * sizeof(Tile));
+		grid = (Tile *)malloc((size_t)xGridSize * yGridSize * sizeof(Tile));
 
 		// Fill grid with default values
 		ResetGrid();
@@ -207,8 +207,8 @@ std::vector<Vector2> Astar::GetPath()
 	ResetGrid(false);
 	std::vector<Vector2> path;
 
-	endTile = GetTile(endPos.x, endPos.y);
-	currentTile = GetTile(startPos.x, startPos.y);
+	endTile = GetTile((int)endPos.x, (int)endPos.y);
+	currentTile = GetTile((int)startPos.x, (int)startPos.y);
 	currentTile->closed = true;
 	currentTile->g = 0;
 
@@ -233,7 +233,7 @@ std::vector<Vector2> Astar::GetPath()
 				// Navigate to the start tile
 				while (nextTile != nullptr)
 				{
-					path.insert(path.begin(), Vector2(nextTile->x, nextTile->y));
+					path.insert(path.begin(), Vector2((float)nextTile->x, (float)nextTile->y));
 					nextTile->isPath = true;
 					nextTile = nextTile->previousTile;
 				}
@@ -251,7 +251,7 @@ std::vector<Vector2> Astar::GetPath()
 /// <param name="end">End position</param>
 void Astar::SetDestination(Vector2 start, Vector2 end)
 {
-	if (IsValidPosition(start.x, start.y) && IsValidPosition(end.x, end.y))
+	if (IsValidPosition((int)start.x, (int)start.y) && IsValidPosition((int)end.x, (int)end.y))
 	{
 		startPos = start;
 		endPos = end;

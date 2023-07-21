@@ -36,7 +36,7 @@ public:
     std::shared_ptr<AudioSource> audioSource;
     short *buffer = nullptr;
     int seekNext = 0;
-    int seekPosition = 0;
+    uint64_t seekPosition = 0;
     bool needNewRead = false;
     bool needNewRead2 = false;
 
@@ -50,7 +50,7 @@ class API Channel
 {
 public:
     Channel();
-    int port;
+    int port = 0;
 
     std::vector<std::shared_ptr<PlayedSound>> playedSounds;
 
@@ -66,7 +66,9 @@ class API MyMutex
 {
 public:
     std::mutex audioMutex;
-    int mutexid;
+#if defined(__vita__)
+    int mutexid = -1;
+#endif
     void Lock()
     {
 #if defined(__vita__)

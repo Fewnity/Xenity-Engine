@@ -20,6 +20,7 @@
 
 enum KeyCode
 {
+	EMPTY = -1,
 	RETURN = 0,
 	ESCAPE = 1,
 	BACKSPACE = 2,
@@ -128,12 +129,12 @@ enum KeyCode
 	RTRIGGER1 = 99,
 };
 
-#define INPUT_COUNT 100
+#define INPUT_COUNT 101
 
 class API Input
 {
 public:
-	KeyCode code;
+	KeyCode code = EMPTY;
 	bool pressed = false;
 	bool released = false;
 	bool held = false;

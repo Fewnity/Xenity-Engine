@@ -443,7 +443,7 @@ void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 	auto childLock = child.lock();
 	if (childLock)
 	{
-		int childCount = childLock->children.size();
+		int childCount = (int)childLock->children.size();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 		if (Engine::selectedGameObject.lock() == childLock)
 			flags |= ImGuiTreeNodeFlags_Selected;

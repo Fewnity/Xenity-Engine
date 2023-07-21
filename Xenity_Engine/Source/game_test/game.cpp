@@ -222,12 +222,12 @@ void Game::Update()
     {
 
         if (InputSystem::GetKeyDown(CROSS))
-            // myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() + 0.1);
-            myAudioSourceNotLock->SetPanning(myAudioSourceNotLock->GetPanning() + 0.1);
+            // myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() + 0.1f);
+            myAudioSourceNotLock->SetPanning(myAudioSourceNotLock->GetPanning() + 0.1f);
         // myAudioSource.lock()->Play();
         else if (InputSystem::GetKeyDown(CIRCLE))
-            // myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() - 0.1);
-            myAudioSourceNotLock->SetPanning(myAudioSourceNotLock->GetPanning() - 0.1);
+            // myAudioSource.lock()->SetVolume(myAudioSource.lock()->GetVolume() - 0.1f);
+            myAudioSourceNotLock->SetPanning(myAudioSourceNotLock->GetPanning() - 0.1f);
         // myAudioSource.lock()->Pause();
         else if (InputSystem::GetKeyDown(SQUARE))
             myAudioSource.lock()->Stop();

@@ -62,7 +62,7 @@ void Time::UpdateTime()
 	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
 	long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 
-	float tempDeltaTime = (end - start) / 1000000.0;
+	float tempDeltaTime = (end - start) / 1000000.0f;
 
 	deltaTime = tempDeltaTime * timeScale;
 	unscaledDeltaTime = tempDeltaTime;

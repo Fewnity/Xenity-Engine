@@ -71,22 +71,22 @@ void InputSystem::ShowMouse()
 
 int InputSystem::GetTouchScreenCount()
 {
-	return screens.size();
+	return (int)screens.size();
 }
 
 int InputSystem::GetTouchCount(const int screenIndex)
 {
-	int screenCount = screens.size();
+	int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
 		return 0;
 
-	return screens[screenIndex]->touches.size();
+	return (int)screens[screenIndex]->touches.size();
 }
 
 Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 {
-	int screenCount = screens.size();
+	int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
 		return Touch();
@@ -193,9 +193,9 @@ void InputSystem::Read(const SDL_Event event)
 /// <param name="event"></param>
 void InputSystem::Read()
 {
-	int screenCount = screens.size();
+	int screenCount = (int)screens.size();
 	std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
-	int touchesRawCount = touchesRaw.size();
+	int touchesRawCount = (int)touchesRaw.size();
 
 	for (int touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
 	{
@@ -238,7 +238,7 @@ void InputSystem::Read()
 	for (int screenIndex = 0; screenIndex < screenCount; screenIndex++)
 	{
 		TouchScreen* screen = screens[screenIndex];
-		int touchCount = screen->updated.size();
+		int touchCount = (int)screen->updated.size();
 		for (int updatedI = 0; updatedI < touchCount; updatedI++)
 		{
 			// if the input has not been updated last frame

@@ -290,7 +290,7 @@ Font *TextManager::CreateFont(std::string filePath)
     channelCount = 4;
 #endif
 
-    unsigned char *atlas = (unsigned char *)calloc(atlasSize * atlasSize * channelCount, sizeof(unsigned char));
+    unsigned char *atlas = (unsigned char *)calloc((size_t)atlasSize * atlasSize * channelCount, sizeof(unsigned char));
 
     int xOffset = 0;
     int yOffset = 0;
@@ -320,7 +320,7 @@ Font *TextManager::CreateFont(std::string filePath)
             if (font->maxCharHeight < (float)character->rightSize.y)
                 font->maxCharHeight = (float)character->rightSize.y;
 
-            if (xOffset + face->glyph->bitmap.width >= atlasSize)
+            if (int(xOffset + face->glyph->bitmap.width) >= atlasSize)
             {
                 xOffset = 0;
                 yOffset += charPixelHeight;
@@ -332,9 +332,9 @@ Font *TextManager::CreateFont(std::string filePath)
             if (c >= 32) // Do not render invisible chars
             {
                 int textureXOffset = xOffset * channelCount;
-                for (int fW = 0; fW < face->glyph->bitmap.rows; fW++)
+                for (int fW = 0; fW < (int)face->glyph->bitmap.rows; fW++)
                 {
-                    for (int fH = 0; fH < face->glyph->bitmap.width; fH++)
+                    for (int fH = 0; fH < (int)face->glyph->bitmap.width; fH++)
                     {
                         int atlasOffset = (fH * channelCount) + (fW * atlasSize * channelCount) + textureXOffset + yOffset * atlasSize * channelCount;
 #ifdef __PSP__

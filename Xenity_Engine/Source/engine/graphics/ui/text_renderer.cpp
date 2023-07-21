@@ -76,7 +76,7 @@ void TextRenderer::Draw()
 				delete textInfo;
 			if (mesh)
 				delete mesh;
-			textInfo = TextManager::GetTextInfomations(text, text.size(), font, 1);
+			textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);
 			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font);
 			isTextInfoDirty = false;
 		}

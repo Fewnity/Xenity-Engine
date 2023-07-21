@@ -103,7 +103,7 @@ unsigned char perm[] = {151, 160, 137, 91, 90, 15,
 float Noise::grad1(int hash, float x)
 {
 	int h = hash & 15;
-	float grad = 1.0 + (h & 7); // Gradient value 1.0, 2.0, ..., 8.0
+	float grad = float(1.0 + (h & 7)); // Gradient value 1.0, 2.0, ..., 8.0
 	if (h & 8)
 		grad = -grad;  // and a random sign for the gradient
 	return (grad * x); // Multiply the gradient with the distance

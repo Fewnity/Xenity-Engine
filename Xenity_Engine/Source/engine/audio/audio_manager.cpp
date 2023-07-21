@@ -56,7 +56,7 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
 
     AudioManager::myMutex->Lock();
 
-    int playedSoundsCount = channel->playedSounds.size();
+    int playedSoundsCount = (int)channel->playedSounds.size();
     for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
     {
         auto sound = channel->playedSounds[soundIndex];
@@ -74,8 +74,8 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
                 int leftBufferIndex = i * 2;
                 int rightBufferIndex = 1 + i * 2;
 
-                buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], sound->buffer[sound->seekPosition] * leftVolume);
-                buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], sound->buffer[sound->seekPosition + 1] * rightVolume);
+                buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
+                buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition + 1] * rightVolume));
 
                 sound->seekNext += sound->audioClipStream->GetFrenquency();
 
@@ -148,7 +148,7 @@ int fillAudioBufferThread()
             Channel *channel = AudioManager::channels[i];
 
             AudioManager::myMutex->Lock();
-            int playedSoundsCount = channel->playedSounds.size();
+            int playedSoundsCount = (int)channel->playedSounds.size();
             for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
             {
                 auto sound = channel->playedSounds[soundIndex];
@@ -174,7 +174,7 @@ int fillAudioBufferThread()
         {
             AudioManager::myMutex->Lock();
             Channel *channel = AudioManager::channels[0];
-            int count = channel->playedSounds.size();
+            int count = (int)channel->playedSounds.size();
             for (int i = 0; i < count; i++)
             {
                 auto playedSound = channel->playedSounds[i];
@@ -260,7 +260,7 @@ void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
         if (as->audioClip == nullptr)
             return;
 
-        int count = channel->playedSounds.size();
+        int count = (int)channel->playedSounds.size();
         for (int i = 0; i < count; i++)
         {
             auto playedSound = channel->playedSounds[i];
@@ -275,7 +275,7 @@ void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
     if (!found)
     {
         std::shared_ptr<PlayedSound> newPlayedSound = std::make_shared<PlayedSound>();
-        newPlayedSound->buffer = (short *)calloc(buffSize / 2 * 2, sizeof(short));
+        newPlayedSound->buffer = (short *)calloc((size_t)buffSize / 2 * 2, sizeof(short));
         AudioClipStream *newAudioClipStream = new AudioClipStream();
         newPlayedSound->audioClipStream = newAudioClipStream;
         newAudioClipStream->OpenStream(audioSource.lock()->audioClip->filePath);
@@ -302,7 +302,7 @@ void AudioManager::StopAudioSource(std::weak_ptr<AudioSource> audioSource)
 
     if (auto as = audioSource.lock())
     {
-        int count = channel->playedSounds.size();
+        int count = (int)channel->playedSounds.size();
         for (int i = 0; i < count; i++)
         {
             if (channel->playedSounds[i]->audioSource == as)
@@ -334,7 +334,7 @@ void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
 
     if (auto as = audioSource.lock())
     {
-        int count = channel->playedSounds.size();
+        int count = (int)channel->playedSounds.size();
         for (int i = 0; i < count; i++)
         {
             if (channel->playedSounds[i]->audioSource == as)

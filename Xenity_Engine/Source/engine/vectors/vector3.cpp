@@ -54,8 +54,8 @@ Vector3::Vector3(const float fillValue)
 
 Vector3::Vector3(Vector2Int vect)
 {
-	this->x = vect.x;
-	this->y = vect.y;
+	this->x = (float)vect.x;
+	this->y = (float)vect.y;
 	this->z = 0;
 	//SetReflection();
 }

@@ -163,7 +163,7 @@ void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToPlace)
 
 void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToPlace)
 {
-	iDrawablesCount = orderedIDrawable.size();
+	iDrawablesCount = (int)orderedIDrawable.size(); // TODO remove?
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		if (orderedIDrawable[i].lock() == drawableToPlace.lock())
