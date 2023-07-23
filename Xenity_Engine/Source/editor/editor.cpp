@@ -274,7 +274,8 @@ void Editor::SaveScene()
 
 	std::string s = j.dump(2);
 	// std::cout << s << std::endl;
-	File *file = new File("scene2.txt");
+	FileSystem::fileSystem->DeleteFile("scene2.txt");
+	File* file = new File("scene2.txt");
 	file->Open(true);
 	file->Write(s);
 	file->Close();
