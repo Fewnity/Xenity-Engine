@@ -73,8 +73,8 @@ void Editor::Start()
 {
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
-	camera->SetNearClippingPlane(0.2f);
-	camera->SetFarClippingPlane(30);
+	camera->SetNearClippingPlane(0.01f);
+	camera->SetFarClippingPlane(500);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
 
