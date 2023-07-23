@@ -23,7 +23,7 @@ TextRenderer::TextRenderer()
 std::unordered_map<std::string, Variable> TextRenderer::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["text"] = text;
+	reflectedVariables.insert_or_assign("text", text);
 	return reflectedVariables;
 }
 

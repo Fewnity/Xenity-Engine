@@ -37,10 +37,10 @@ Camera::Camera()
 std::unordered_map<std::string, Variable> Camera::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["fov"] = fov;
-	reflectedVariables["projectionSize"] = projectionSize;
-	reflectedVariables["nearClippingPlane"] = nearClippingPlane;
-	reflectedVariables["farClippingPlane"] = farClippingPlane;
+	reflectedVariables.insert_or_assign("fov", fov);
+	reflectedVariables.insert_or_assign("projectionSize", projectionSize);
+	reflectedVariables.insert_or_assign("nearClippingPlane", nearClippingPlane);
+	reflectedVariables.insert_or_assign("farClippingPlane", farClippingPlane);
 	return reflectedVariables;
 }
 

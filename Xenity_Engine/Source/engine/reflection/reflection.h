@@ -11,8 +11,11 @@ class Color;
 class Texture;
 class MeshData;
 class Reflection;
+class Component;
+class FileReference;
+class AudioClip;
 
-#define Variable std::variant<void*, std::reference_wrapper<int>, std::reference_wrapper<double>, std::reference_wrapper<float>, /*float*,*/ std::reference_wrapper<bool>, std::reference_wrapper<std::string>, std::reference_wrapper<Reflection>, std::weak_ptr<GameObject>*, std::weak_ptr<Transform>*, std::reference_wrapper<Texture*>, std::reference_wrapper<MeshData*>>
+#define Variable std::variant<std::reference_wrapper<std::weak_ptr<Component>>, std::reference_wrapper<int>, std::reference_wrapper<double>, std::reference_wrapper<float>, /*float*,*/ std::reference_wrapper<bool>, std::reference_wrapper<std::string>, std::reference_wrapper<Reflection>, std::weak_ptr<GameObject>*, std::weak_ptr<Transform>*, std::reference_wrapper<Texture*>, std::reference_wrapper<MeshData*>, std::reference_wrapper<AudioClip*>>
 
 class Reflection
 {

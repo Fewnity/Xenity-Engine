@@ -31,11 +31,11 @@ Light::~Light()
 std::unordered_map<std::string, Variable> Light::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["intensity"] = intensity;
-	reflectedVariables["range"] = range;
-	reflectedVariables["spotAngle"] = spotAngle;
-	reflectedVariables["spotSmoothness"] = spotSmoothness;
-	reflectedVariables["color"] = color;
+	reflectedVariables.insert_or_assign("intensity", intensity);
+	reflectedVariables.insert_or_assign("range", range);
+	reflectedVariables.insert_or_assign("spotAngle", spotAngle);
+	reflectedVariables.insert_or_assign("spotSmoothness", spotSmoothness);
+	reflectedVariables.insert_or_assign("color", color);
 	return reflectedVariables;
 }
 

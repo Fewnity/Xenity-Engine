@@ -23,8 +23,8 @@ MeshRenderer::MeshRenderer()
 std::unordered_map<std::string, Variable> MeshRenderer::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["meshData"] = meshData;
-	reflectedVariables["texture"] = texture;
+	reflectedVariables.insert_or_assign("meshData", meshData);
+	reflectedVariables.insert_or_assign("texture", texture);
 	return reflectedVariables;
 }
 

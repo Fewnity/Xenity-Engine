@@ -10,8 +10,10 @@
 
 #include <string>
 #include <vector>
+#include "../file_system/file_reference.h"
+#include "../reflection/reflection.h"
 
-class API Texture
+class API Texture : public FileReference, public Reflection
 {
 public:
     enum Filter
@@ -43,6 +45,7 @@ public:
     Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram);
     Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
     Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
+    std::unordered_map<std::string, Variable> GetReflection();
 
     ~Texture();
 

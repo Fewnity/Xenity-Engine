@@ -57,6 +57,13 @@ Texture::Texture(unsigned char* data, const int channelCount, const int width, c
 	}
 }
 
+std::unordered_map<std::string, Variable> Texture::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables.insert_or_assign("fileId", fileId);
+	return reflectedVariables;
+}
+
 Texture::~Texture()
 {
 	AssetManager::RemoveTexture(this);

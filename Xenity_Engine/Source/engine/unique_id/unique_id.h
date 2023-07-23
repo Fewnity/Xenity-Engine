@@ -5,6 +5,7 @@ class UniqueId
 {
 public:
 	UniqueId();
+	UniqueId(bool forFile);
 
 	uint64_t GetUniqueId()
 	{
@@ -16,9 +17,11 @@ public:
 		uniqueId = id;
 	}
 
-private:
-	uint64_t uniqueId;
+	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;
-	static uint64_t GenerateUniqueId();
+	uint64_t GenerateUniqueId();
+private:
+	bool forFile = false;
+	uint64_t uniqueId;
 };
 

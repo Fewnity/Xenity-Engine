@@ -21,10 +21,12 @@ AudioSource::AudioSource()
 std::unordered_map<std::string, Variable> AudioSource::GetReflection()
 {
     std::unordered_map<std::string, Variable> reflectedVariables;
-    reflectedVariables["volume"] = volume;
-    reflectedVariables["pan"] = pan;
-    reflectedVariables["isPlaying"] = isPlaying;
-    reflectedVariables["loop"] = loop;
+    reflectedVariables.insert_or_assign("volume", volume);
+    reflectedVariables.insert_or_assign("pan", pan);
+    reflectedVariables.insert_or_assign("isPlaying", isPlaying);
+    reflectedVariables.insert_or_assign("loop", loop);
+    reflectedVariables.insert_or_assign("aiClipClipCCl", audioClip);
+    //reflectedVariables.insert_or_assign("audioClipClipCCl", audioClip);
     return reflectedVariables;
 }
 

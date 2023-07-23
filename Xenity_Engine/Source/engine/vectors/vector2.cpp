@@ -19,8 +19,8 @@
 std::unordered_map<std::string, Variable> Vector2::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["x"] = x;
-	reflectedVariables["y"] = y;
+	reflectedVariables.insert_or_assign("x", x);
+	reflectedVariables.insert_or_assign("y", y);
 	return reflectedVariables;
 }
 

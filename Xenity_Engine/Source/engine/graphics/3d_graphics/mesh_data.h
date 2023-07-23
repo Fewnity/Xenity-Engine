@@ -11,6 +11,8 @@
 #include <string>
 
 #include "../color/color.h"
+#include "../../file_system/file_reference.h"
+#include "../../reflection/reflection.h"
 
 struct Vertex
 {
@@ -36,12 +38,12 @@ struct VertexNormalsNoColor
     float x, y, z;
 };
 
-class API MeshData
+class API MeshData : public FileReference, public Reflection
 {
 public:
     MeshData() = delete;
     MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
-
+    std::unordered_map<std::string, Variable> GetReflection();
     ~MeshData();
 
 

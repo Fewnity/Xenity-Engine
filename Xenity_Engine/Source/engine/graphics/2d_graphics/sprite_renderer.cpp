@@ -18,8 +18,8 @@ SpriteRenderer::SpriteRenderer()
 std::unordered_map<std::string, Variable> SpriteRenderer::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["color"] = color;
-	reflectedVariables["texture"] = texture;
+	reflectedVariables.insert_or_assign("color", color);
+	reflectedVariables.insert_or_assign("texture", texture);
 	return reflectedVariables;
 }
 

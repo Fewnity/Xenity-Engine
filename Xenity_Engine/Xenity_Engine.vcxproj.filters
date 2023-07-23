@@ -70,6 +70,7 @@
     <ClCompile Include="Source\engine\reflection\reflection.cpp" />
     <ClCompile Include="Source\engine\test_component.cpp" />
     <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_reference.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Source\engine\reflection\reflection.h" />
     <ClInclude Include="Source\engine\test_component.h" />
     <ClInclude Include="Source\engine\unique_id\unique_id.h" />
+    <ClInclude Include="Source\engine\file_system\file_reference.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

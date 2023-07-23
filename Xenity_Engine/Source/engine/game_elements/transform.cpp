@@ -32,9 +32,9 @@ Transform::Transform(std::weak_ptr<GameObject> gameObject)
 std::unordered_map<std::string, Variable> Transform::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["localPosition"] = localPosition;
-	reflectedVariables["localRotation"] = localRotation;
-	reflectedVariables["localScale"] = localScale;
+	reflectedVariables.insert_or_assign("localPosition", localPosition);
+	reflectedVariables.insert_or_assign("localRotation", localRotation);
+	reflectedVariables.insert_or_assign("localScale", localScale);
 	return reflectedVariables;
 }
 

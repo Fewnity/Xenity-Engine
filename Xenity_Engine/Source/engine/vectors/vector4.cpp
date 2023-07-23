@@ -19,10 +19,10 @@
 std::unordered_map<std::string, Variable> Vector4::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["x"] = x;
-	reflectedVariables["y"] = y;
-	reflectedVariables["z"] = z;
-	reflectedVariables["w"] = w;
+	reflectedVariables.insert_or_assign("x", x);
+	reflectedVariables.insert_or_assign("y", y);
+	reflectedVariables.insert_or_assign("z", z);
+	reflectedVariables.insert_or_assign("w", w);
 	return reflectedVariables;
 }
 

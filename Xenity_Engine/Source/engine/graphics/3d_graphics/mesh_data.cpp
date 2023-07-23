@@ -63,6 +63,13 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 // {
 // }
 
+std::unordered_map<std::string, Variable> MeshData::GetReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables.insert_or_assign("fileId", fileId);
+	return reflectedVariables;
+}
+
 /**
  * @brief Add a vertice to the mesh
  *

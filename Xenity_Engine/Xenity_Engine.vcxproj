@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\file_system\file_reference.cpp" />
     <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection.cpp" />
     <ClCompile Include="Source\engine\class_registry\class_registry.cpp" />
@@ -262,6 +263,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\file_system\file_reference.h" />
     <ClInclude Include="include\imgui\imgui_stdlib.h" />
     <ClInclude Include="Source\engine\reflection\reflection.h" />
     <ClInclude Include="Source\engine\class_registry\class_registry.h" />

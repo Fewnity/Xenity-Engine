@@ -30,9 +30,9 @@ Tilemap::Tilemap()
 std::unordered_map<std::string, Variable> Tilemap::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables["width"] = width;
-	reflectedVariables["height"] = height;
-	reflectedVariables["color"] = color;
+	reflectedVariables.insert_or_assign("width", width);
+	reflectedVariables.insert_or_assign("height", height);
+	reflectedVariables.insert_or_assign("color", color);
 	return reflectedVariables;
 }
 

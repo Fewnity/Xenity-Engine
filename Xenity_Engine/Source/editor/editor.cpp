@@ -3,6 +3,7 @@
 #include "../xenity_editor.h"
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
+#include "../engine/file_system/file_reference.h"
 
 using json = nlohmann::json;
 
@@ -49,7 +50,7 @@ void Editor::JsonToReflection(json j, Reflection& component)
 					auto go = FindGameObjectById(kv.value());
 					**valuePtr = go->GetTransform();
 				}
-				else if (auto valuePtr = std::get_if<void*>(&variableRef))
+				/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 				{
 					std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
 
@@ -61,7 +62,7 @@ void Editor::JsonToReflection(json j, Reflection& component)
 							break;
 						}
 					}
-				}
+				}*/
 			}
 		}
 		// std::cout << kv.key() << " : " << kv.value() << "\n";
@@ -202,7 +203,7 @@ json Editor::ReflectiveToJson(Reflection& relection)
 	auto t = relection.GetReflection();
 	for (const auto& kv :t)
 	{
-		Variable& variableRef = t[kv.first];
+		Variable& variableRef = t.at(kv.first);
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
 			j2[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
@@ -227,14 +228,14 @@ json Editor::ReflectiveToJson(Reflection& relection)
 		{
 			j2[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
 		}
-		else if (auto valuePtr = std::get_if<void*>(&variableRef))
+		/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 		{
 			std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
 			if (auto lockValue = weakC->lock())
 			{
 				j2[kv.first] = lockValue->GetUniqueId();
 			}
-		}
+		}*/
 	}
 	return j2;
 }
