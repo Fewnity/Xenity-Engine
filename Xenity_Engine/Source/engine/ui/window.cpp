@@ -54,11 +54,12 @@ void Window::Init()
 #if defined(_WIN32) || defined(_WIN64)
     SDL_Init(SDL_INIT_EVERYTHING);
     unsigned int center = SDL_WINDOWPOS_CENTERED;
-    window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     SDL_GLContext context = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
     OnResize();
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
