@@ -11,6 +11,8 @@ class Vector3;
 class Vector4;
 class Color;
 class Reflection;
+class Texture;
+class FileReference;
 
 class EditorUI
 {
@@ -20,6 +22,8 @@ public:
 
 
 private:
+	static std::string GetPrettyVariableName(std::string variableName);
+
 	static void NewFrame();
 	static void Render();
 	static void DrawProfiler();
@@ -27,8 +31,11 @@ private:
 	static void DrawHierarchy();
 	static void DrawMainMenuBar();
 	static void DrawEngineSettings();
+	static void DrawFileExplorer();
 
 	static void DrawTextCentered(std::string text);
+	static bool DrawInputButton(std::string inputName, std::string text);
+	static bool DragDropTarget(std::string name, FileReference*& ref);
 	static bool DrawInput(std::string inputName, Color& value);
 	static bool DrawInput(std::string inputName, Vector2& value);
 	static bool DrawInput(std::string inputName, Vector2Int& value);
@@ -52,6 +59,8 @@ private:
 	static bool showProfiler;
 	static bool showEditor;
 	static bool showEngineSettings;
-
+private:
+	static Texture* folderIcon;
+	static Texture* fileIcon;
 };
 #endif

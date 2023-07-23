@@ -16,6 +16,8 @@ float EditorUI::lastFps = 0;
 bool EditorUI::showProfiler = true;
 bool EditorUI::showEditor = true;
 bool EditorUI::showEngineSettings = false;
+Texture* EditorUI::folderIcon = nullptr;
+Texture* EditorUI::fileIcon = nullptr;
 
 #pragma region Initialisation
 
@@ -26,6 +28,9 @@ void EditorUI::Init()
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 15);
+
+	fileIcon = new Texture("icons/text.png", "", true);
+	folderIcon = new Texture("icons/folder.png", "", true);
 
 	Debug::Print("---- Editor UI initiated ----");
 }
@@ -42,8 +47,9 @@ void EditorUI::Draw()
 	{
 		DrawInspector();
 		DrawHierarchy();
+		DrawFileExplorer();
 	}
-	if (showEngineSettings) 
+	if (showEngineSettings)
 	{
 		DrawEngineSettings();
 	}
@@ -53,6 +59,31 @@ void EditorUI::Draw()
 #pragma endregion
 
 #pragma region Update
+
+std::string EditorUI::GetPrettyVariableName(std::string variableName)
+{
+	variableName[0] = toupper(variableName[0]);
+	int nameSize = variableName.size();
+	bool addSpace = false;
+	for (int i = 1; i < nameSize - 1; i++)
+	{
+		if (isupper(variableName[i]))
+		{
+			if (addSpace)
+				addSpace = false;
+			else
+				addSpace = true;
+		}
+		else if (addSpace)
+		{
+			variableName.insert(i - 1, " ");
+			nameSize++;
+			i++;
+			addSpace = false;
+		}
+	}
+	return variableName;
+}
 
 /**
 * Create a new frame for the editor's UI
@@ -177,17 +208,17 @@ void EditorUI::DrawHierarchy()
 	//ImGui::SetWindowFontScale(2);
 	//if (!ImGui::IsWindowCollapsed())
 	//{
-		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
+	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
-		//Add in the list only gameobject without parent
-		for (int i = 0; i < Engine::gameObjectCount; i++)
+	//Add in the list only gameobject without parent
+	for (int i = 0; i < Engine::gameObjectCount; i++)
+	{
+		if (Engine::gameObjects[i]->parent.lock() == nullptr)
 		{
-			if (Engine::gameObjects[i]->parent.lock() == nullptr)
-			{
-				DrawTreeItem(Engine::gameObjects[i]);
-			}
+			DrawTreeItem(Engine::gameObjects[i]);
 		}
-		ImGui::EndChild();
+	}
+	ImGui::EndChild();
 	//}
 
 	ImGui::End();
@@ -427,6 +458,83 @@ void EditorUI::DrawEngineSettings()
 	ImGui::End();
 }
 
+void EditorUI::DrawFileExplorer()
+{
+	ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
+
+	float width = ImGui::GetContentRegionAvail().x;
+	int colCount = width / 100;
+	if (colCount <= 0)
+		colCount = 1;
+
+	int fileCount = Editor::fileRefs.size();
+	int currentCol = 0;
+	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
+	{
+		int offset = ImGui::GetCursorPosX();
+		for (int i = 0; i < fileCount; i++)
+		{
+			if (currentCol == 0)
+				ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(currentCol);
+
+			currentCol++;
+			currentCol %= colCount;
+
+			FileReference* file = Editor::fileRefs[i];
+			std::string fileName = file->file->GetFileName();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
+
+			ImGui::BeginGroup();
+			int cursorPos = ImGui::GetCursorPosX();
+			int availWidth = ImGui::GetContentRegionAvail().x;
+			ImGui::SetCursorPosX(cursorPos + (availWidth - 64) / 2.0f - offset / 2.0f);
+
+			unsigned int textureId = fileIcon->GetTextureId();
+			int fileType = file->fileType;
+			if (fileType == File_Texture)
+			{
+				Texture* tex = (Texture*)file;
+				textureId = tex->GetTextureId();
+			}
+			if (ImGui::ImageButton(GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(64, 64)))
+			{
+
+			}
+
+			float windowWidth = ImGui::GetContentRegionAvail().x;
+			float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
+			if (textWidth <= availWidth)
+			{
+				ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
+				ImGui::Text(fileName.c_str());
+			}
+			else
+			{
+				ImGui::TextWrapped(fileName.c_str());
+			}
+
+			ImGui::EndGroup();
+
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+			{
+				std::string payloadName = "Files" + std::to_string(fileType);
+				ImGui::SetDragDropPayload(payloadName.c_str(), file, sizeof(FileReference));
+				ImGui::ImageButton(GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(64, 64));
+				ImGui::TextWrapped(fileName.c_str());
+				ImGui::EndDragDropSource();
+			}
+			ImGui::PopStyleColor(3);
+		}
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+}
+
 #pragma endregion
 
 #pragma region Low Level Draw Functions
@@ -482,32 +590,74 @@ void EditorUI::DrawReflection(Reflection& reflection)
 	auto t = reflection.GetReflection();
 	for (const auto& kv : t)
 	{
-		Variable& variableRef = t[kv.first];
-		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
-			DrawInput(kv.first, valuePtr->get());
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
-			DrawInput(kv.first, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))
-			DrawInput(kv.first, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
-			DrawInput(kv.first, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
-			DrawInput(kv.first, valuePtr->get());
+		std::string variableName = GetPrettyVariableName(kv.first);
+
+		Variable& variableRef = t.at(kv.first);
+		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
+			DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
+			DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))// Supported basic type
+			DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
+			DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
+			DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
-			if (auto val = dynamic_cast<Vector2*>(&valuePtr->get()))
-				DrawInput(kv.first, *val);
-			else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get()))
-				DrawInput(kv.first, *val);
-			else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get()))
-				DrawInput(kv.first, *val);
-			else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get()))
-				DrawInput(kv.first, *val);
-			else if (auto val = dynamic_cast<Color*>(&valuePtr->get()))
-				DrawInput(kv.first, *val);
-			else
-			{
+			if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
+				DrawInput(variableName, *val);
+			else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
+				DrawInput(variableName, *val);
+			else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
+				DrawInput(variableName, *val);
+			else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
+				DrawInput(variableName, *val);
+			else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
+				DrawInput(variableName, *val);
+			else //Basic draw
 				DrawReflection(valuePtr->get());
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+		{
+			std::string inputText = "Empty MeshData...";
+			if (valuePtr->get() != nullptr)
+				inputText = valuePtr->get()->file->GetFileName();
+
+			DrawInputButton(variableName, inputText);
+			FileReference* ref = nullptr;
+			std::string payloadName = "Files" + std::to_string(FileType::File_Mesh);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get() = (MeshData*)ref;
+			}
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+		{
+			std::string inputText = "Empty Audio...";
+			if (valuePtr->get() != nullptr)
+				inputText = valuePtr->get()->file->GetFileName();
+
+			DrawInputButton(variableName, inputText);
+			FileReference* ref = nullptr;
+			std::string payloadName = "Files" + std::to_string(FileType::File_Audio);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get() = (AudioClip*)ref;
+			}
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+		{
+			std::string inputText = "Empty Texture...";
+			if (valuePtr->get() != nullptr)
+				inputText = valuePtr->get()->file->GetFileName();
+
+			DrawInputButton(variableName, inputText);
+			FileReference* ref = nullptr;
+			std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get() = (Texture*)ref;
 			}
 		}
 	}
@@ -537,6 +687,38 @@ void EditorUI::DrawTextCentered(std::string text)
 	float textWidth = ImGui::CalcTextSize(text.c_str()).x;
 	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
 	ImGui::Text(text.c_str());
+}
+
+bool EditorUI::DrawInputButton(std::string inputName, std::string text)
+{
+	DrawInputTitle(inputName);
+	ImGui::Button(text.c_str(), ImVec2(-1, 0));
+	return false;
+}
+
+bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			FileReference* movedFile = (FileReference*)payload->Data;
+			Debug::Print(movedFile->file->GetPath());
+
+			int c = Editor::fileRefs.size();
+			for (int i = 0; i < c; i++)
+			{
+				if (Editor::fileRefs[i]->fileId == movedFile->fileId)
+				{
+					ref = Editor::fileRefs[i];
+					return true;
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
 }
 
 void EditorUI::DrawInputTitle(std::string title)

@@ -4,6 +4,7 @@
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
 #include "../engine/file_system/file_reference.h"
+#include "../engine/file_system/mesh_loader/wavefront_loader.h";
 
 using json = nlohmann::json;
 
@@ -19,7 +20,7 @@ void Editor::JsonToReflection(json j, Reflection& component)
 		auto t = component.GetReflection();
 		if (t.contains(kv.key()))
 		{
-			Variable& variableRef = t[kv.key()];
+			Variable& variableRef = t.at(kv.key());
 			if (kv.value().is_object())
 			{
 				//std::cout << kv.key() << " is an object!" << "\n";
@@ -50,6 +51,30 @@ void Editor::JsonToReflection(json j, Reflection& component)
 					auto go = FindGameObjectById(kv.value());
 					**valuePtr = go->GetTransform();
 				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+				{
+					int fileId = kv.value();
+					int c = Editor::fileRefs.size();
+					for (int i = 0; i < c; i++)
+					{
+						if (Editor::fileRefs[i]->fileId == fileId)
+						{
+							valuePtr->get() = (Texture*)(Editor::fileRefs[i]);
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+				{
+					int fileId = kv.value();
+					int c = Editor::fileRefs.size();
+					for (int i = 0; i < c; i++)
+					{
+						if (Editor::fileRefs[i]->fileId == fileId)
+						{
+							valuePtr->get() = (MeshData*)(Editor::fileRefs[i]);
+						}
+					}
+				}
 				/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 				{
 					std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
@@ -69,8 +94,118 @@ void Editor::JsonToReflection(json j, Reflection& component)
 	}
 }
 
+std::vector<FileReference*> Editor::fileRefs;
+
 void Editor::Start()
 {
+	Directory* projectDirectory = new Directory("C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\project");
+	std::vector<File*> allFoundFiles;
+	std::vector<File*> projectFiles = projectDirectory->GetAllFiles();
+	std::vector<File*> texturesFiles;
+	std::vector<File*> meshFiles;
+	std::vector<File*> audioFiles;
+
+	int fileCount = (int)projectFiles.size();
+	for (int i = 0; i < fileCount; i++)
+	{
+		File* file = projectFiles[i];
+		std::string ext = projectFiles[i]->GetFileExtention();
+
+		if (ext == ".png" || ext == ".jpg" || ext == ".bmp")
+		{
+			texturesFiles.push_back(file);
+		}
+		else if (ext == ".wav" || ext == ".mp3")
+		{
+			audioFiles.push_back(file);
+		}
+		else if (ext == ".obj")
+		{
+			meshFiles.push_back(file);
+		}
+		else
+		{
+			continue;
+		}
+		allFoundFiles.push_back(file);
+	}
+	int allFoundFileCount = (int)allFoundFiles.size();
+	std::vector<File*> fileWithoutMeta;
+	int fileWithoutMetaCount = 0;
+	uint64_t biggestId = 0;
+	for (int i = 0; i < allFoundFileCount; i++)
+	{
+		File* metaFile = new File(allFoundFiles[i]->GetPath() + ".meta");
+		if (!metaFile->CheckIfExist())
+		{
+			fileWithoutMeta.push_back(metaFile);
+			fileWithoutMetaCount++;
+		}
+		else
+		{
+			//Read meta
+			if (metaFile->Open(false))
+			{
+				std::string jsonString = metaFile->ReadAll();
+				metaFile->Close();
+
+				json data;
+				data = json::parse(jsonString);
+				uint64_t id = data["id"];
+				if (id > biggestId)
+					biggestId = id;
+				allFoundFiles[i]->SetUniqueId(id);
+			}
+			delete metaFile;
+		}
+	}
+	UniqueId::lastFileUniqueId = biggestId;
+	for (int i = 0; i < fileWithoutMetaCount; i++)
+	{
+		File* file = fileWithoutMeta[i];
+		file->SetUniqueId(file->GenerateUniqueId());
+		file->Open(true);
+		json metaData;
+		metaData["id"] = file->GetUniqueId();
+		file->Write(metaData.dump(0));
+		file->Close();
+		delete file;
+	}
+
+	int textureCount = (int)texturesFiles.size();
+	for (int i = 0; i < textureCount; i++)
+	{
+		FileReference* texture = new Texture(texturesFiles[i]->GetPath(), texturesFiles[i]->GetPath(), true);
+		texture->fileId = texturesFiles[i]->GetUniqueId();
+		texture->file = texturesFiles[i];
+		texture->fileType = File_Texture;
+		fileRefs.push_back(texture);
+	}
+	int meshCount = (int)meshFiles.size();
+	for (int i = 0; i < meshCount; i++)
+	{
+		FileReference* mesh = WavefrontLoader::LoadFromRawData(meshFiles[i]->GetPath());
+		mesh->fileId = meshFiles[i]->GetUniqueId();
+		mesh->file = meshFiles[i];
+		mesh->fileType = File_Mesh;
+		fileRefs.push_back(mesh);
+	}
+	int audioCount = (int)audioFiles.size();
+	for (int i = 0; i < audioCount; i++)
+	{
+		FileReference* audioClip = new AudioClip(audioFiles[i]->GetPath());
+		audioClip->fileId = audioFiles[i]->GetUniqueId();
+		audioClip->file = audioFiles[i];
+		audioClip->fileType = File_Audio;
+		fileRefs.push_back(audioClip);
+	}
+
+	projectFiles.clear();
+	texturesFiles.clear();
+	meshFiles.clear();
+	audioFiles.clear();
+	allFoundFiles.clear();
+
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
 	camera->SetNearClippingPlane(0.01f);
@@ -227,6 +362,26 @@ json Editor::ReflectiveToJson(Reflection& relection)
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
 			j2[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
+		{
+			if (auto lockValue = (valuePtr->get()).lock())
+			j2[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				j2[kv.first] = (valuePtr->get())->fileId;
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				j2[kv.first] = (valuePtr->get())->fileId;
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				j2[kv.first] = (valuePtr->get())->fileId;
 		}
 		/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 		{

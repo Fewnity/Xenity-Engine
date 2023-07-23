@@ -7,6 +7,7 @@
 
 class Component;
 class Reflection;
+class FileReference;
 
 class Editor
 {
@@ -18,6 +19,7 @@ public:
 	static void SaveScene();
 	static void JsonToReflection(nlohmann::json j, Reflection& component);
 	static nlohmann::json ReflectiveToJson(Reflection& relection);
+	static std::vector<FileReference*> fileRefs;
 
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
