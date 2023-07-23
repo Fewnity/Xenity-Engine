@@ -320,8 +320,6 @@ void Engine::Loop()
 #else
 	// game = new Game();
 #endif
-	// std::cout << typeid(Game).name() << "\t" << std::endl;
-	// std::cout << typeid(Game).hash_code() << "\t" << std::endl;
 
 	valueFree = false;
 	if (game)
@@ -438,7 +436,8 @@ void Engine::Loop()
 		engineLoopBenchmark->Stop();
 
 #if defined(_WIN32) || defined(_WIN64)
-		EditorUI::Draw();
+		//EditorUI::Draw();
+		Editor::Draw();
 #endif
 
 		Performance::Update();

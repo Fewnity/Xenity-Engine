@@ -14,6 +14,7 @@ class Editor
 public:
 	static void Start();
 	static void Update();
+	static void Draw();
 	static void CreateEmpty();
 	static void CreateEmptyChild();
 	static void SaveScene();

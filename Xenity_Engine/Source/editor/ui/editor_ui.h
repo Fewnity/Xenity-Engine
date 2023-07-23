@@ -19,19 +19,10 @@ class EditorUI
 public:
 	static void Init();
 	static void Draw();
-
-
-private:
-	static std::string GetPrettyVariableName(std::string variableName);
-
 	static void NewFrame();
 	static void Render();
-	static void DrawProfiler();
-	static void DrawInspector();
-	static void DrawHierarchy();
-	static void DrawMainMenuBar();
-	static void DrawEngineSettings();
-	static void DrawFileExplorer();
+
+	static std::string GetPrettyVariableName(std::string variableName);
 
 	static void DrawTextCentered(std::string text);
 	static bool DrawInputButton(std::string inputName, std::string text);
@@ -47,20 +38,18 @@ private:
 	static bool DrawInput(std::string inputName, int& value);
 	static bool DrawInput(std::string inputName, bool& value);
 	static void DrawTreeItem(std::weak_ptr<GameObject> child);
-	static int uiId;
 	static void DrawInputTitle(std::string title);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
-	static std::string GenerateItemId();
 	static void DrawReflection(Reflection& reflection);
 
-	static float nextFpsUpdate;
-	static float lastFps;
+	static std::string GenerateItemId();
 	static bool showProfiler;
 	static bool showEditor;
 	static bool showEngineSettings;
-private:
 	static Texture* folderIcon;
 	static Texture* fileIcon;
+private:
+	static int uiId;
 };
 #endif

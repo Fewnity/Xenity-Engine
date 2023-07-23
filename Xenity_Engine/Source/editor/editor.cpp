@@ -1,6 +1,14 @@
 #include "editor.h"
 #include "../xenity.h"
 #include "../xenity_editor.h"
+
+#include "ui/menus/engine_settings_menu.h"
+#include "ui/menus/file_explorer_menu.h"
+#include "ui/menus/hierarchy_menu.h"
+#include "ui/menus/inspector_menu.h"
+#include "ui/menus/main_bar_menu.h"
+#include "ui/menus/profiler_menu.h"
+
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
 #include "../engine/file_system/file_reference.h"
@@ -12,6 +20,13 @@ std::weak_ptr<GameObject> Editor::cameraGO;
 
 std::vector<std::shared_ptr<Component>> Editor::allCreatedComponents;
 int allCreatedComponentsCount = 0;
+
+EngineSettingsMenu* engineSettings = nullptr;
+FileExplorerMenu* fileExplorer = nullptr;
+HierarchyMenu* hierarchy = nullptr;
+InspectorMenu* inspector = nullptr;
+MainBarMenu* mainBar = nullptr;
+ProfilerMenu* profiler = nullptr;
 
 void Editor::JsonToReflection(json j, Reflection& component)
 {
@@ -98,6 +113,20 @@ std::vector<FileReference*> Editor::fileRefs;
 
 void Editor::Start()
 {
+	engineSettings = new EngineSettingsMenu();
+	fileExplorer = new FileExplorerMenu();
+	hierarchy = new HierarchyMenu();
+	inspector = new InspectorMenu();
+	mainBar = new MainBarMenu();
+	profiler = new ProfilerMenu();
+
+	engineSettings->Init();
+	fileExplorer->Init();
+	hierarchy->Init();
+	inspector->Init();
+	mainBar->Init();
+	profiler->Init();
+
 	Directory* projectDirectory = new Directory("C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\project");
 	std::vector<File*> allFoundFiles;
 	std::vector<File*> projectFiles = projectDirectory->GetAllFiles();
@@ -314,6 +343,18 @@ void Editor::Update()
 
 	cameraGO.lock()->GetTransform()->SetPosition(pos);
 	cameraGO.lock()->GetTransform()->SetRotation(rot);
+}
+
+void Editor::Draw()
+{
+	EditorUI::NewFrame();
+	engineSettings->Draw();
+	fileExplorer->Draw();
+	hierarchy->Draw();
+	inspector->Draw();
+	mainBar->Draw();
+	profiler->Draw();
+	EditorUI::Render();
 }
 
 void Editor::CreateEmpty()

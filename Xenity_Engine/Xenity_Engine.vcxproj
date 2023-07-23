@@ -159,6 +159,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\ui\menus\engine_settings_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\file_explorer_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\hierarchy_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\inspector_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\main_bar_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\profiler_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\menu.cpp" />
     <ClCompile Include="Source\engine\file_system\file_reference.cpp" />
     <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection.cpp" />
@@ -263,6 +270,13 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\ui\menus\engine_settings_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\file_explorer_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\hierarchy_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\inspector_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\main_bar_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\profiler_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\menu.h" />
     <ClInclude Include="Source\engine\file_system\file_reference.h" />
     <ClInclude Include="include\imgui\imgui_stdlib.h" />
     <ClInclude Include="Source\engine\reflection\reflection.h" />
