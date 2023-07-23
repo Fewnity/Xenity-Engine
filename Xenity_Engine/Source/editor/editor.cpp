@@ -284,7 +284,6 @@ void Editor::Start()
 		allCreatedComponentsCount = 0;
 	}
 	delete jsonFile;
-	SaveScene();
 }
 
 void Editor::Update()
