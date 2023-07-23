@@ -29,6 +29,11 @@ File::File(std::string path) : UniqueId(true)
 #endif
 
 	this->path = path;
+
+	//std::cout << path << std::endl;
+	int pointIndex = path.find_last_of(".");
+	pathExtention = path.substr(pointIndex);
+	//std::cout << pathExtention << std::endl;
 }
 
 File::~File()
@@ -73,12 +78,39 @@ std::string File::ReadAll()
 #else
 	file.seekg(0, std::ios_base::beg);
 	std::string tempText;
+
 	while (getline(file, tempText))
 	{
 		allText += tempText;
 	}
 #endif
 	return allText;
+}
+
+bool File::CheckIfExist()
+{
+	bool exists = false;
+#if defined(__PSP__)
+	int params = PSP_O_RDWR;
+	if (createFileIfNotFound)
+		params = params | PSP_O_CREAT;
+	fileId = sceIoOpen(path.c_str(), params, 0777);
+	if (fileId >= 0)
+	{
+		exists = true;
+	}
+	sceIoClose(fileId);
+#else
+	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+	file.open(path, params);
+
+	if (file.is_open())
+	{
+		exists = true;
+	}
+	file.close();
+#endif
+	return exists;
 }
 
 bool File::Open(bool createFileIfNotFound)
@@ -138,6 +170,18 @@ void File::Close()
 #endif
 }
 
+std::string File::GetFileName() const
+{
+	if (path.size() == 0)
+		return "";
+
+	int lastSlashPos = path.find_last_of("\\");
+	if (lastSlashPos == -1)
+		lastSlashPos = 0;
+	std::string fileName = path.substr(lastSlashPos + 1);
+	return fileName;
+}
+
 #pragma endregion
 
 #pragma region Directory
@@ -156,12 +200,35 @@ Directory::~Directory()
 		delete subdirectories[i];
 	}
 	subdirectories.clear();
+
 	int fileount = (int)files.size();
 	for (int i = 0; i < fileount; i++)
 	{
 		delete files[i];
 	}
 	files.clear();
+}
+
+void AddDirectoryFiles(std::vector<File*>& vector, Directory* directory)
+{
+	int fileCount = (int)directory->files.size();
+	for (int i = 0; i < fileCount; i++)
+	{
+		vector.push_back(directory->files[i]);
+	}
+
+	int directoryCount = (int)directory->subdirectories.size();
+	for (int i = 0; i < directoryCount; i++)
+	{
+		AddDirectoryFiles(vector, directory->subdirectories[i]);
+	}
+}
+
+std::vector<File*> Directory::GetAllFiles()
+{
+	std::vector<File*> vector;
+	AddDirectoryFiles(vector, this);
+	return vector;
 }
 
 void FileSystem::FillDirectory(Directory* directory)

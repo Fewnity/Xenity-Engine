@@ -50,6 +50,7 @@ public:
 	void Write(const std::string data);
 	std::string ReadAll();
 	// Return isOpen
+	bool CheckIfExist();
 	bool Open(bool createFileIfNotFound);
 	void Close();
 
@@ -58,8 +59,16 @@ public:
 		return path;
 	}
 
+	std::string GetFileName() const;
+
+	std::string GetFileExtention() const
+	{
+		return pathExtention;
+	}
+
 private:
 	std::string path = "";
+	std::string pathExtention = "";
 #if defined(__PSP__)
 	SceUID fileId;
 #else
@@ -73,6 +82,7 @@ public:
 	Directory() = delete;
 	Directory(std::string path);
 	~Directory();
+	std::vector<File*> GetAllFiles();
 	std::string path = "";
 	std::vector<Directory *> subdirectories;
 	std::vector<File *> files;
