@@ -35,7 +35,7 @@ public:
 
 	LightType type = Directional;
 	Color color = Color();
-	float intensity = 0;
+	float intensity = 1;
 
 	//Spot and point light
 	float linear = 0;
