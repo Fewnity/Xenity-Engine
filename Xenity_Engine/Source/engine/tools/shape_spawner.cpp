@@ -11,7 +11,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCube()
 {
 	auto gameObject = CreateGameObject("Cube");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/CubeTriangulate.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/CubeTriangulate.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);
@@ -21,7 +21,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnSphere()
 {
 	auto gameObject = CreateGameObject("Sphere");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/SphereTriangulateSmooth.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/SphereTriangulateSmooth.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);
@@ -31,7 +31,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCone()
 {
 	auto gameObject = CreateGameObject("Cone");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/ConeTriangulateSmooth.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/ConeTriangulateSmooth.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);
@@ -41,7 +41,7 @@ std::weak_ptr <GameObject >ShapeSpawner::SpawnDonut()
 {
 	auto gameObject = CreateGameObject("Donut");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/DonutTriangulateSmooth.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/DonutTriangulateSmooth.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);
@@ -51,7 +51,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnPlane()
 {
 	auto gameObject = CreateGameObject("Plane");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/PlaneTriangulate.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/PlaneTriangulate.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);
@@ -61,7 +61,7 @@ std::weak_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 {
 	auto gameObject = CreateGameObject("Cylinder");
 	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("Basic/CylinderTriangulateSmooth.obj");
+	mesh->meshData = MeshManager::LoadMesh("models/Basic/CylinderTriangulateSmooth.obj");
 	mesh->texture = AssetManager::defaultTexture;
 	// mesh->material = AssetManager::default3DMaterial;
 	return Spawn(gameObject);

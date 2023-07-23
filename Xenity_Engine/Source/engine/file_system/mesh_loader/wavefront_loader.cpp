@@ -18,7 +18,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 #ifdef __vita__
 	finalpath += "ux0:";
 #endif
-	finalpath += FileSystem::fileSystem->modelsPath;
+	//finalpath += FileSystem::fileSystem->modelsPath;
 
 	Debug::Print("Loading mesh: " + finalpath + filePath);
 
