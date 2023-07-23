@@ -22,7 +22,7 @@ FileSystem* FileSystem::fileSystem = nullptr;
 
 #pragma region File
 
-File::File(std::string path)
+File::File(std::string path) : UniqueId(true)
 {
 #if defined(__vita__)
 	path = PSVITA_PATH + path;
@@ -142,7 +142,7 @@ void File::Close()
 
 #pragma region Directory
 
-Directory::Directory(std::string path)
+Directory::Directory(std::string path) : UniqueId(true)
 {
 	this->path = path;
 	FileSystem::fileSystem->FillDirectory(this);

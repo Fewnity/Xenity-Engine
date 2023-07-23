@@ -12,6 +12,7 @@
 #include <pspkernel.h>
 #endif
 
+#include "../unique_id/unique_id.h"
 #include <string>
 #include <fstream>
 #include <vector>
@@ -39,7 +40,7 @@ public:
 	std::string modelsPath = "";
 };
 
-class API File
+class API File : public UniqueId
 {
 public:
 	File() = delete;
@@ -66,7 +67,7 @@ private:
 #endif
 };
 
-class API Directory
+class API Directory : public UniqueId
 {
 public:
 	Directory() = delete;
