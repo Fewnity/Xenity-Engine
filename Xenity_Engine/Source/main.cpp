@@ -12,6 +12,17 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
 
 /*
+Add Drag and Drop for GameObjects
+Add Drag and Drop for Components
+Bind compilation buttons
+Add scene files
+Add unselect button
+Add unbind file variable button
+Add right click on files to remove files
+Add folder to file explorer
+Improve file explorer code
+Add file settings in the meta
+
 Add materials
 Add async texture loading
 Add shaders
