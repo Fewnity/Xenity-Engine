@@ -49,7 +49,14 @@ public:
 	static bool showEngineSettings;
 	static Texture* folderIcon;
 	static Texture* fileIcon;
+
+	static float GetUiScale() 
+	{
+		return uiScale;
+	}
 private:
 	static int uiId;
+	static float uiScale;
+	static void UpdateUIScale();
 };
 #endif

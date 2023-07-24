@@ -11,16 +11,17 @@ void FileExplorerMenu::Init()
 
 void FileExplorerMenu::Draw()
 {
+	float iconSize = 64 * EditorUI::GetUiScale();
 	ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
 
 	float width = ImGui::GetContentRegionAvail().x;
-	int colCount = width / 100;
+	int colCount = width / (100 * EditorUI::GetUiScale());
 	if (colCount <= 0)
 		colCount = 1;
 
 	int fileCount = Editor::fileRefs.size();
 	int currentCol = 0;
-	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
+	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None | ImGuiTableFlags_Borders))
 	{
 		int offset = ImGui::GetCursorPosX();
 		for (int i = 0; i < fileCount; i++)
@@ -42,7 +43,7 @@ void FileExplorerMenu::Draw()
 			ImGui::BeginGroup();
 			int cursorPos = ImGui::GetCursorPosX();
 			int availWidth = ImGui::GetContentRegionAvail().x;
-			ImGui::SetCursorPosX(cursorPos + (availWidth - 64) / 2.0f - offset / 2.0f);
+			ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
 			unsigned int textureId = EditorUI::fileIcon->GetTextureId();
 			int fileType = file->fileType;
@@ -51,7 +52,7 @@ void FileExplorerMenu::Draw()
 				Texture* tex = (Texture*)file;
 				textureId = tex->GetTextureId();
 			}
-			if (ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(64, 64)))
+			if (ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize)))
 			{
 
 			}
@@ -74,7 +75,7 @@ void FileExplorerMenu::Draw()
 			{
 				std::string payloadName = "Files" + std::to_string(fileType);
 				ImGui::SetDragDropPayload(payloadName.c_str(), file, sizeof(FileReference));
-				ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(64, 64));
+				ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
 				ImGui::TextWrapped(fileName.c_str());
 				ImGui::EndDragDropSource();
 			}

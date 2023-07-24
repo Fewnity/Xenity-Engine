@@ -14,8 +14,10 @@ void InspectorMenu::Draw()
 
 	//Create Window
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, 20), 0, ImVec2(1, 0));
-	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
+
+	float topOffset = 20 * EditorUI::GetUiScale();
+	ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, topOffset), 0, ImVec2(1, 0));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - topOffset), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - topOffset));
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
 	auto selectedGameObject = Engine::selectedGameObject.lock();
 	if (selectedGameObject)

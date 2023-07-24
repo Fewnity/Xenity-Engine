@@ -16,6 +16,7 @@ bool EditorUI::showEditor = true;
 bool EditorUI::showEngineSettings = false;
 Texture* EditorUI::folderIcon = nullptr;
 Texture* EditorUI::fileIcon = nullptr;
+float EditorUI::uiScale = 1;
 
 #pragma region Initialisation
 
@@ -25,7 +26,7 @@ void EditorUI::Init()
 	ImGui::GetStyle().WindowRounding = 10;
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 15);
+	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
 
 	fileIcon = new Texture("icons/text.png", "", true);
 	folderIcon = new Texture("icons/folder.png", "", true);
@@ -73,10 +74,43 @@ std::string EditorUI::GetPrettyVariableName(std::string variableName)
 */
 void EditorUI::NewFrame()
 {
+	EditorUI::UpdateUIScale();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 	uiId = 0;
+}
+
+void EditorUI::UpdateUIScale()
+{
+	ImGuiIO& io = ImGui::GetIO();
+	//float y = io.DisplaySize.y;
+
+	SDL_DisplayMode DM;
+	int index = SDL_GetWindowDisplayIndex(Window::window);
+	float oldUiScale = uiScale;
+	if (index >= 0)
+	{
+		float dpi = 0;
+		float unused;
+		int result = SDL_GetDisplayDPI(index, &dpi, &unused, &unused);
+		if (result == 0)
+		{
+			uiScale = dpi / 96.0f;
+		}
+		else
+		{
+			SDL_GetCurrentDisplayMode(index, &DM);
+			auto y = DM.h;
+			uiScale = y / 1080.0f;
+		}
+	}
+
+	if (oldUiScale != uiScale)
+	{
+		//io.Fonts->Clear();
+		ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
+	}
 }
 
 /**

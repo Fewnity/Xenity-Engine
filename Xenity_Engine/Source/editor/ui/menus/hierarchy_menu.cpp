@@ -10,8 +10,9 @@ void HierarchyMenu::Init()
 void HierarchyMenu::Draw()
 {
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(ImVec2(0, 20));
-	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - 20), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - 20));
+	float topOffset = 20 * EditorUI::GetUiScale();
+	ImGui::SetNextWindowPos(ImVec2(0, topOffset));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - topOffset), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - topOffset));
 
 	ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
 	//ImGui::SetWindowFontScale(2);
