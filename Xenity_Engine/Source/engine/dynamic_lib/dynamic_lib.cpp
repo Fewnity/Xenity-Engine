@@ -43,7 +43,8 @@ void DynamicLibrary::CompileGame()
 	command += " && vcvarsamd64_x86.bat";																																	   // Start the compiler
 	command += " >nul";
 	command += " && cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";																					   // Go in the game project folder
-	command += " && cl /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
+	//command += " && cl /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
+	command += " && cl /std:c++20 /EHsc /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
 	command += " >nul";
 	system(command.c_str());
 }
