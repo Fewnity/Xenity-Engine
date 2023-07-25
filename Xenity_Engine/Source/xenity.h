@@ -6,7 +6,7 @@
 #include "engine/monobehaviour.h"
 #include "engine/component.h"
 
-#include "engine/asset_managent/asset_manager.h"
+#include "engine/asset_management/asset_manager.h"
 
 // // Engine
 #include "engine/engine.h"
