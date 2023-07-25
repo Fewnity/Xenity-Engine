@@ -209,9 +209,19 @@ void EditorUI::DrawReflection(Reflection& reflection)
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
 		{
-			std::string inputText = "Empty MeshData...";
-			if (valuePtr->get() != nullptr)
-				inputText = valuePtr->get()->file->GetFileName();
+			std::string inputText = "None (MeshData)";
+			auto ptr = valuePtr->get();
+			if (ptr != nullptr)
+			{
+				if (ptr->file != nullptr)
+					inputText = ptr->file->GetFileName();
+				else
+					inputText = "Filled but invalid file reference (MeshData)";
+
+				inputText += " " + std::to_string(ptr->fileId) + " ";
+				if (ptr->file)
+					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			}
 
 			DrawInputButton(variableName, inputText);
 			FileReference* ref = nullptr;
@@ -223,9 +233,19 @@ void EditorUI::DrawReflection(Reflection& reflection)
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
 		{
-			std::string inputText = "Empty Audio...";
-			if (valuePtr->get() != nullptr)
-				inputText = valuePtr->get()->file->GetFileName();
+			std::string inputText = "None (AudioClip)";
+			auto ptr = valuePtr->get();
+			if (ptr != nullptr)
+			{
+				if (ptr->file != nullptr)
+					inputText = ptr->file->GetFileName();
+				else
+					inputText = "Filled but invalid file reference (AudioClip)";
+
+				inputText += " " + std::to_string(ptr->fileId) + " ";
+				if (ptr->file)
+					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			}
 
 			DrawInputButton(variableName, inputText);
 			FileReference* ref = nullptr;
@@ -237,9 +257,19 @@ void EditorUI::DrawReflection(Reflection& reflection)
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
 		{
-			std::string inputText = "Empty Texture...";
-			if (valuePtr->get() != nullptr)
-				inputText = valuePtr->get()->file->GetFileName();
+			std::string inputText = "None (Texture)";
+			auto ptr = valuePtr->get();
+			if (ptr != nullptr)
+			{
+				if (ptr->file != nullptr)
+					inputText = ptr->file->GetFileName();
+				else
+					inputText = "Filled but invalid file reference (Texture)";
+
+				inputText += " " + std::to_string(ptr->fileId) + " ";
+				if (ptr->file)
+					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			}
 
 			DrawInputButton(variableName, inputText);
 			FileReference* ref = nullptr;
