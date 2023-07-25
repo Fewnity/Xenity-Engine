@@ -78,6 +78,8 @@
     <ClCompile Include="Source\editor\ui\menus\main_bar_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_settings_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\file_explorer_menu.cpp" />
+    <ClCompile Include="Source\engine\scene_management\scene.cpp" />
+    <ClCompile Include="Source\engine\scene_management\scene_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -167,6 +169,8 @@
     <ClInclude Include="Source\editor\ui\menus\main_bar_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\engine_settings_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\file_explorer_menu.h" />
+    <ClInclude Include="Source\engine\scene_management\scene.h" />
+    <ClInclude Include="Source\engine\scene_management\scene_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -35,7 +35,6 @@ public:
 		}
 	}
 private:
-	static std::vector<std::shared_ptr<Component>> allCreatedComponents;
 	static std::weak_ptr<GameObject> cameraGO;
 };
 

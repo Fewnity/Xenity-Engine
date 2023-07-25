@@ -18,9 +18,6 @@ using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
 
-std::vector<std::shared_ptr<Component>> Editor::allCreatedComponents;
-int allCreatedComponentsCount = 0;
-
 EngineSettingsMenu* engineSettings = nullptr;
 FileExplorerMenu* fileExplorer = nullptr;
 HierarchyMenu* hierarchy = nullptr;
@@ -111,6 +108,11 @@ void Editor::JsonToReflection(json j, Reflection& component)
 
 std::vector<FileReference*> Editor::fileRefs;
 
+struct PairFile {
+	File* file;
+	File* meta;
+};
+
 void Editor::Start()
 {
 	engineSettings = new EngineSettingsMenu();
@@ -133,6 +135,7 @@ void Editor::Start()
 	std::vector<File*> texturesFiles;
 	std::vector<File*> meshFiles;
 	std::vector<File*> audioFiles;
+	std::vector<File*> sceneFiles;
 
 	int fileCount = (int)projectFiles.size();
 	for (int i = 0; i < fileCount; i++)
@@ -152,6 +155,10 @@ void Editor::Start()
 		{
 			meshFiles.push_back(file);
 		}
+		else if (ext == ".xen")
+		{
+			sceneFiles.push_back(file);
+		}
 		else
 		{
 			continue;
@@ -159,7 +166,8 @@ void Editor::Start()
 		allFoundFiles.push_back(file);
 	}
 	int allFoundFileCount = (int)allFoundFiles.size();
-	std::vector<File*> fileWithoutMeta;
+	//std::vector<File*> fileWithoutMeta;
+	std::vector<PairFile> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = 0;
 	for (int i = 0; i < allFoundFileCount; i++)
@@ -167,7 +175,10 @@ void Editor::Start()
 		File* metaFile = new File(allFoundFiles[i]->GetPath() + ".meta");
 		if (!metaFile->CheckIfExist())
 		{
-			fileWithoutMeta.push_back(metaFile);
+			PairFile pair;
+			pair.file = allFoundFiles[i];
+			pair.meta = metaFile;
+			fileWithoutMeta.push_back(pair);
 			fileWithoutMetaCount++;
 		}
 		else
@@ -191,14 +202,15 @@ void Editor::Start()
 	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
-		File* file = fileWithoutMeta[i];
-		file->SetUniqueId(file->GenerateUniqueId());
-		file->Open(true);
+		PairFile pair = fileWithoutMeta[i];
+		int id = pair.file->GenerateUniqueId();
+		pair.file->SetUniqueId(id);
+		pair.meta->Open(true);
 		json metaData;
-		metaData["id"] = file->GetUniqueId();
-		file->Write(metaData.dump(0));
-		file->Close();
-		delete file;
+		metaData["id"] = id;
+		pair.meta->Write(metaData.dump(0));
+		pair.meta->Close();
+		delete pair.meta;
 	}
 
 	int textureCount = (int)texturesFiles.size();
@@ -228,11 +240,21 @@ void Editor::Start()
 		audioClip->fileType = File_Audio;
 		fileRefs.push_back(audioClip);
 	}
+	int sceneCount = (int)sceneFiles.size();
+	for (int i = 0; i < sceneCount; i++)
+	{
+		FileReference* scene = new Scene(sceneFiles[i]->GetPath());
+		scene->fileId = sceneFiles[i]->GetUniqueId();
+		scene->file = sceneFiles[i];
+		scene->fileType = File_Scene;
+		fileRefs.push_back(scene);
+	}
 
 	projectFiles.clear();
 	texturesFiles.clear();
 	meshFiles.clear();
 	audioFiles.clear();
+	sceneFiles.clear();
 	allFoundFiles.clear();
 
 	cameraGO = CreateGameObjectEditor("Camera");
@@ -241,78 +263,6 @@ void Editor::Start()
 	camera->SetFarClippingPlane(500);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
-
-	File *jsonFile = new File("scene.txt");
-	bool isOpen = jsonFile->Open(false);
-	if (isOpen)
-	{
-		std::string jsonString = jsonFile->ReadAll();
-		jsonFile->Close();
-
-		json data;
-		try
-		{
-			data = json::parse(jsonString);
-		}
-		catch (const std::exception &)
-		{
-			Debug::PrintError("Scene file error");
-			return;
-		}
-
-		// Create all GameObjects and Components
-		for (auto &kv : data["GameObjects"].items())
-		{
-			auto go = CreateGameObject();
-			go->SetUniqueId(std::stoull(kv.key()));
-			JsonToReflection(kv.value(), *go.get());
-			for (auto &kv2 : kv.value()["Components"].items())
-			{
-				auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
-				comp->SetUniqueId(std::stoull(kv2.key()));
-				allCreatedComponents.push_back(comp);
-			}
-		}
-
-		allCreatedComponentsCount = (int)allCreatedComponents.size();
-
-		// Bind Components values and GameObjects childs
-		for (auto &kv : data["GameObjects"].items())
-		{
-			auto go = FindGameObjectById(std::stoull(kv.key()));
-			if (go)
-			{
-				for (auto &kv2 : kv.value()["Childs"].items())
-				{
-					auto goChild = FindGameObjectById(kv2.value());
-					if (goChild)
-					{
-						goChild->SetParent(go);
-					}
-				}
-			}
-
-			JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
-			go->GetTransform()->isTransformationMatrixDirty = true;
-			go->GetTransform()->UpdateWorldValues();
-
-			for (auto &kv2 : kv.value()["Components"].items())
-			{
-				int componentCount = go->GetComponentCount();
-				for (int compI = 0; compI < componentCount; compI++)
-				{
-					if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
-					{
-						JsonToReflection(kv2.value(), *go->components[compI].get());
-						break;
-					}
-				}
-			}
-		}
-		allCreatedComponents.clear();
-		allCreatedComponentsCount = 0;
-	}
-	delete jsonFile;
 }
 
 void Editor::Update()

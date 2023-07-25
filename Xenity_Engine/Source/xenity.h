@@ -36,8 +36,8 @@
 #include "engine/time/time.h"
 
 // Scenes
-// // #include "scene_manager/scene.h"
-// // #include "scene_manager/SceneManager.h"
+#include "engine/scene_management/scene.h"
+// #include "scene_manager/SceneManager.h"
 
 // Lighting
 #include "engine/lighting/lighting.h"
