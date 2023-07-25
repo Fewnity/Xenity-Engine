@@ -3,7 +3,7 @@
 #include <iostream>
 #include "../debug/debug.h"
 #include "../graphics/graphics.h"
-#include "../asset_managent/asset_manager.h"
+#include "../asset_management/asset_manager.h"
 #include "../graphics/iDrawable.h"
 #include "../audio/audio_source.h"
 #include "../audio/audio_manager.h"

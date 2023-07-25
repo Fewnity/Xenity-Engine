@@ -9,7 +9,7 @@
 #include "audio/audio_manager.h"
 #include "graphics/graphics.h"
 #include "game_elements/gameobject.h"
-#include "asset_managent/asset_manager.h"
+#include "asset_management/asset_manager.h"
 
 #pragma region Constructors / Destructor
 

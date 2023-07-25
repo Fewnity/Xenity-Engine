@@ -16,7 +16,7 @@
     <ClCompile Include="Source\engine\graphics\texture.cpp" />
     <ClCompile Include="Source\engine\game_elements\transform.cpp" />
     <ClCompile Include="Source\engine\engine.cpp" />
-    <ClCompile Include="Source\engine\asset_managent\asset_manager.cpp" />
+    <ClCompile Include="Source\engine\asset_management\asset_manager.cpp" />
     <ClCompile Include="Source\engine\engine_settings.cpp" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\wavefront_loader.cpp" />
     <ClCompile Include="Source\engine\graphics\iDrawable.cpp" />
@@ -96,7 +96,7 @@
     <ClInclude Include="Source\engine\ui\window.h" />
     <ClInclude Include="Source\engine\graphics\texture.h" />
     <ClInclude Include="Source\engine\game_elements\transform.h" />
-    <ClInclude Include="Source\engine\asset_managent\asset_manager.h" />
+    <ClInclude Include="Source\engine\asset_management\asset_manager.h" />
     <ClInclude Include="Source\engine\engine_settings.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\engine\graphics\iDrawable.h" />

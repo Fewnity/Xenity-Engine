@@ -212,7 +212,7 @@
     <ClCompile Include="Source\engine\debug\debug.cpp" />
     <ClCompile Include="Source\engine\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\engine\engine_settings.cpp" />
-    <ClCompile Include="Source\engine\asset_managent\asset_manager.cpp" />
+    <ClCompile Include="Source\engine\asset_management\asset_manager.cpp" />
     <ClCompile Include="Source\engine\engine.cpp" />
     <ClCompile Include="Source\engine\component.cpp" />
     <ClCompile Include="Source\engine\game_elements\gameobject.cpp" />
@@ -332,7 +332,7 @@
     <ClInclude Include="Source\engine\debug\debug.h" />
     <ClInclude Include="Source\engine\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine\engine_settings.h" />
-    <ClInclude Include="Source\engine\asset_managent\asset_manager.h" />
+    <ClInclude Include="Source\engine\asset_management\asset_manager.h" />
     <ClInclude Include="Source\engine\component.h" />
     <ClInclude Include="Source\engine\game_elements\gameobject.h" />
     <ClInclude Include="Source\engine\lighting\lighting.h" />
