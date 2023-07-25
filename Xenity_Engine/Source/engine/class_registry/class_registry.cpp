@@ -10,5 +10,12 @@ void ClassRegistry::AddComponentClass(std::string name, std::function<std::share
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(std::string name, std::shared_ptr<GameObject> gameObject)
 {
-	return nameToComponent[name](gameObject);
+	if (nameToComponent.find(name) != nameToComponent.end()) 
+	{
+		return nameToComponent[name](gameObject);
+	}
+	else 
+	{
+		return std::shared_ptr<Component>();
+	}
 }

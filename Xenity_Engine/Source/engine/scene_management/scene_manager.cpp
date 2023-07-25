@@ -37,9 +37,17 @@ void SceneManager::LoadScene(Scene* scene)
 			Editor::JsonToReflection(kv.value(), *go.get());
 			for (auto& kv2 : kv.value()["Components"].items())
 			{
-				auto comp = ClassRegistry::AddComponentFromName(kv2.value()["Type"], go);
-				comp->SetUniqueId(std::stoull(kv2.key()));
-				allCreatedComponents.push_back(comp);
+				std::string className = kv2.value()["Type"];
+				auto comp = ClassRegistry::AddComponentFromName(className, go);
+				if (comp) 
+				{
+					comp->SetUniqueId(std::stoull(kv2.key()));
+					allCreatedComponents.push_back(comp);
+				}
+				else 
+				{
+					Debug::PrintWarning("Class " + className + " not found in the scene");
+				}
 			}
 		}
 
