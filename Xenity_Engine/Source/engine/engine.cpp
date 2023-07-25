@@ -368,16 +368,7 @@ void Engine::Loop()
 		{
 			delete game;
 			game = nullptr;
-			Graphics::orderedIDrawable.clear();
-			Graphics::usedCamera.reset();
-
-			orderedComponents.clear();
-			gameObjectsToDestroy.clear();
-			componentsToDestroy.clear();
-			gameObjects.clear();
-			componentsCount = 0;
-			gameObjectCount = 0;
-			Engine::selectedGameObject.reset();
+			EmptyScene();
 			DynamicLibrary::UnloadGameLibrary();
 			DynamicLibrary::CompileGame();
 			DynamicLibrary::LoadGameLibrary("game");
@@ -389,7 +380,7 @@ void Engine::Loop()
 			}
 			else
 			{
-				Debug::Print("Game compilation failed");
+				Debug::PrintError("Game compilation failed");
 			}
 		}
 #endif
@@ -445,6 +436,20 @@ void Engine::Loop()
 	}
 
 	delete game;
+}
+
+void Engine::EmptyScene()
+{
+	Graphics::orderedIDrawable.clear();
+	//Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
+
+	orderedComponents.clear();
+	gameObjectsToDestroy.clear();
+	componentsToDestroy.clear();
+	gameObjects.clear();
+	componentsCount = 0;
+	gameObjectCount = 0;
+	Engine::selectedGameObject.reset();
 }
 
 /// <summary>
