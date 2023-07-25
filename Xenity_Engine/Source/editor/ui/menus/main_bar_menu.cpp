@@ -3,6 +3,7 @@
 #include "../../../xenity.h"
 #include "../editor_ui.h"
 #include "../../editor.h"
+#include "../../../engine/class_registry/class_registry.h"
 
 void MainBarMenu::Init()
 {
@@ -140,6 +141,19 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("All"))
+		{
+			std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
+			int componentCount = componentNames.size();
+			for (int i = 0; i < componentCount; i++)
+			{
+				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
+				{
+					ClassRegistry::AddComponentFromName(componentNames[i], Engine::selectedGameObject.lock());
+				}
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Game")) //Draw Game menu
@@ -158,7 +172,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Hot Reload Game"))
 		{
-			Debug::PrintWarning("(Game/Hot Reload Game) Unimplemented button");
+			Engine::CompileGame();
 		}
 		ImGui::EndMenu();
 	}
