@@ -49,6 +49,7 @@ public:
 	static bool showEngineSettings;
 	static Texture* folderIcon;
 	static Texture* fileIcon;
+	static Texture* sceneIcon;
 
 	static float GetUiScale() 
 	{

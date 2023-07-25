@@ -16,6 +16,7 @@ bool EditorUI::showEditor = true;
 bool EditorUI::showEngineSettings = false;
 Texture* EditorUI::folderIcon = nullptr;
 Texture* EditorUI::fileIcon = nullptr;
+Texture* EditorUI::sceneIcon = nullptr;
 float EditorUI::uiScale = 1;
 
 #pragma region Initialisation
@@ -30,6 +31,7 @@ void EditorUI::Init()
 
 	fileIcon = new Texture("icons/text.png", "", true);
 	folderIcon = new Texture("icons/folder.png", "", true);
+	sceneIcon = new Texture("icons/belt.png", "", true);
 
 	Debug::Print("---- Editor UI initiated ----");
 }
