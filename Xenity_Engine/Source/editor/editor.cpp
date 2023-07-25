@@ -166,7 +166,6 @@ void Editor::Start()
 		allFoundFiles.push_back(file);
 	}
 	int allFoundFileCount = (int)allFoundFiles.size();
-	//std::vector<File*> fileWithoutMeta;
 	std::vector<PairFile> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = 0;
@@ -298,12 +297,21 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
-	engineSettings->Draw();
-	fileExplorer->Draw();
-	hierarchy->Draw();
-	inspector->Draw();
+	if (EditorUI::showEngineSettings)
+	{
+		engineSettings->Draw();
+	}
+	if (EditorUI::showEditor)
+	{
+		fileExplorer->Draw();
+		hierarchy->Draw();
+		inspector->Draw();
+	}
 	mainBar->Draw();
-	profiler->Draw();
+	if (EditorUI::showProfiler)
+	{
+		profiler->Draw();
+	}
 	EditorUI::Render();
 }
 
@@ -356,7 +364,7 @@ json Editor::ReflectiveToJson(Reflection& relection)
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
 			if (auto lockValue = (valuePtr->get()).lock())
-			j2[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
+				j2[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
 		{
