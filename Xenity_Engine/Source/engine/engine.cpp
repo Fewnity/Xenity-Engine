@@ -51,6 +51,7 @@ int Engine::componentsCount = 0;
 Renderer *Engine::renderer = nullptr;
 bool Engine::valueFree = true;
 bool Engine::isRunning = true;
+GameInterface* Engine::game = nullptr;
 
 /// <summary>
 /// Init engine
@@ -72,26 +73,7 @@ int Engine::Init(const std::string exePath)
 	FileSystem::fileSystem->InitFileSystem(exePath);
 	Debug::Init();
 
-	ClassRegistry::AddComponentClass("Light", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<Light>(); });
-	ClassRegistry::AddComponentClass("Camera", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<Camera>(); });
-	ClassRegistry::AddComponentClass("TextRendererCanvas", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<TextRendererCanvas>(); });
-	ClassRegistry::AddComponentClass("TextRenderer", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<TextRenderer>(); });
-	ClassRegistry::AddComponentClass("MeshRenderer", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<MeshRenderer>(); });
-	ClassRegistry::AddComponentClass("Tilemap", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<Tilemap>(); });
-	ClassRegistry::AddComponentClass("SpriteRenderer", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<SpriteRenderer>(); });
-	ClassRegistry::AddComponentClass("LineRenderer", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<LineRenderer>(); });
-	ClassRegistry::AddComponentClass("AudioSource", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<AudioSource>(); });
-	ClassRegistry::AddComponentClass("TestComponent", [](std::shared_ptr<GameObject> go)
-									 { return go->AddComponent<TestComponent>(); });
+	RegisterEngineComponents();
 
 	/* Initialize libraries */
 	NetworkManager::Init();
@@ -153,6 +135,30 @@ int Engine::Init(const std::string exePath)
 	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
 
 	return 0;
+}
+
+void Engine::RegisterEngineComponents()
+{
+	ClassRegistry::AddComponentClass("Light", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<Light>(); });
+	ClassRegistry::AddComponentClass("Camera", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<Camera>(); });
+	ClassRegistry::AddComponentClass("TextRendererCanvas", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<TextRendererCanvas>(); });
+	ClassRegistry::AddComponentClass("TextRenderer", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<TextRenderer>(); });
+	ClassRegistry::AddComponentClass("MeshRenderer", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<MeshRenderer>(); });
+	ClassRegistry::AddComponentClass("Tilemap", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<Tilemap>(); });
+	ClassRegistry::AddComponentClass("SpriteRenderer", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<SpriteRenderer>(); });
+	ClassRegistry::AddComponentClass("LineRenderer", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<LineRenderer>(); });
+	ClassRegistry::AddComponentClass("AudioSource", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<AudioSource>(); });
+	ClassRegistry::AddComponentClass("TestComponent", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<TestComponent>(); });
 }
 
 void Engine::Stop()
@@ -313,7 +319,6 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
-	GameInterface *game = nullptr;
 #if defined(_WIN32) || defined(_WIN64)
 	// DynamicLibrary::LoadGameLibrary("game");
 	// game = DynamicLibrary::CreateGame();
@@ -363,27 +368,6 @@ void Engine::Loop()
 		InputSystem::Read();
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
-		if (InputSystem::GetKeyDown(R))
-		{
-			delete game;
-			game = nullptr;
-			EmptyScene();
-			DynamicLibrary::UnloadGameLibrary();
-			DynamicLibrary::CompileGame();
-			DynamicLibrary::LoadGameLibrary("game");
-			game = DynamicLibrary::CreateGame();
-			if (game)
-			{
-				Debug::Print("Game compilation done");
-				game->Start();
-			}
-			else
-			{
-				Debug::PrintError("Game compilation failed");
-			}
-		}
-#endif
 		// Game loop
 		gameLoopBenchmark->Start();
 
@@ -438,10 +422,33 @@ void Engine::Loop()
 	delete game;
 }
 
+void Engine::CompileGame() 
+{
+	delete game;
+	game = nullptr;
+	EmptyScene();
+
+	ClassRegistry::Reset();
+	RegisterEngineComponents();
+	DynamicLibrary::UnloadGameLibrary();
+	DynamicLibrary::CompileGame();
+	DynamicLibrary::LoadGameLibrary("game");
+	game = DynamicLibrary::CreateGame();
+	if (game)
+	{
+		Debug::Print("Game compilation done");
+		game->Start();
+	}
+	else
+	{
+		Debug::PrintError("Game compilation failed");
+	}
+}
+
 void Engine::EmptyScene()
 {
 	Graphics::orderedIDrawable.clear();
-	//Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
+	Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
 
 	orderedComponents.clear();
 	gameObjectsToDestroy.clear();

@@ -16,6 +16,7 @@ class Renderer;
 class GameObject;
 class Component;
 class Transform;
+class GameInterface;
 
 API void Destroy(std::weak_ptr<GameObject> gameObject);
 API void Destroy(std::weak_ptr<Component> component);
@@ -87,8 +88,11 @@ public:
 	static bool valueFree;
 	API static void Quit();
 	API static void EmptyScene();
+	API static void CompileGame();
+	API static void RegisterEngineComponents();
 
 private:
+	static GameInterface* game;
 	API static void UpdateComponents();
 	static bool isRunning;
 };
