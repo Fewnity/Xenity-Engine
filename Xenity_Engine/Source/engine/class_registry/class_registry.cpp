@@ -19,3 +19,18 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(std::string name,
 		return std::shared_ptr<Component>();
 	}
 }
+
+std::vector<std::string> ClassRegistry::GetComponentNames()
+{
+	std::vector<std::string> names;
+	for (auto& kv : nameToComponent)
+	{
+		names.push_back(kv.first);
+	}
+	return names;
+}
+
+void ClassRegistry::Reset()
+{
+	nameToComponent.clear();
+}
