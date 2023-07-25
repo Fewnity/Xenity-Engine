@@ -175,10 +175,14 @@ std::string File::GetFileName() const
 	if (path.size() == 0)
 		return "";
 
-	int lastSlashPos = path.find_last_of("\\");
+	int lastSlashPos = path.find_last_of('\\');
 	if (lastSlashPos == -1)
 		lastSlashPos = 0;
 	std::string fileName = path.substr(lastSlashPos + 1);
+	int nextPointPos = fileName.find_first_of('.');
+	if (nextPointPos == -1)
+		nextPointPos = INT32_MAX;
+	fileName = fileName.substr(0, nextPointPos);
 	return fileName;
 }
 
