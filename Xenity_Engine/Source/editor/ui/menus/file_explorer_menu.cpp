@@ -3,7 +3,7 @@
 #include "../../../xenity.h"
 #include "../../editor.h"
 #include "../editor_ui.h"
-
+#include "../../../engine/scene_management/scene_manager.h"
 
 void FileExplorerMenu::Init()
 {
@@ -21,7 +21,7 @@ void FileExplorerMenu::Draw()
 
 	int fileCount = Editor::fileRefs.size();
 	int currentCol = 0;
-	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None | ImGuiTableFlags_Borders))
+	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
 	{
 		int offset = ImGui::GetCursorPosX();
 		for (int i = 0; i < fileCount; i++)
@@ -52,9 +52,21 @@ void FileExplorerMenu::Draw()
 				Texture* tex = (Texture*)file;
 				textureId = tex->GetTextureId();
 			}
-			if (ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize)))
+			else if (fileType == File_Scene)
 			{
-
+				textureId = EditorUI::sceneIcon->GetTextureId();
+			}
+			bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
+			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
+			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+			{
+				if (doubleClicked)
+				{
+					if (file->fileType == File_Scene) 
+					{
+						SceneManager::LoadScene((Scene*)file);
+					}
+				}
 			}
 
 			float windowWidth = ImGui::GetContentRegionAvail().x;
