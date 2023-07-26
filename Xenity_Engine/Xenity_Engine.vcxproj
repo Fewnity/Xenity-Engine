@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene_manager.cpp" />
@@ -273,6 +274,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\asset_management\project_manager.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\scene_management\scene.h" />
     <ClInclude Include="Source\engine\scene_management\scene_manager.h" />

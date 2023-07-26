@@ -9,6 +9,7 @@
 #include "../../engine/tools/shape_spawner.h"
 #include <variant>
 #include <imgui/imgui_internal.h>
+#include "../../engine/asset_management/project_manager.h"
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;
@@ -17,6 +18,8 @@ bool EditorUI::showEngineSettings = false;
 Texture* EditorUI::folderIcon = nullptr;
 Texture* EditorUI::fileIcon = nullptr;
 Texture* EditorUI::sceneIcon = nullptr;
+Texture* EditorUI::imageIcon = nullptr;
+
 float EditorUI::uiScale = 1;
 
 #pragma region Initialisation
@@ -32,6 +35,7 @@ void EditorUI::Init()
 	fileIcon = new Texture("icons/text.png", "", true);
 	folderIcon = new Texture("icons/folder.png", "", true);
 	sceneIcon = new Texture("icons/belt.png", "", true);
+	imageIcon = new Texture("icons/image.png", "", true);
 
 	Debug::Print("---- Editor UI initiated ----");
 }
@@ -324,14 +328,12 @@ bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
 		{
 			FileReference* movedFile = (FileReference*)payload->Data;
 
-			int c = Editor::fileRefs.size();
-			for (int i = 0; i < c; i++)
+			FileReference* file = ProjectManager::GetFileReferenceById(movedFile->fileId);
+			if (file)
 			{
-				if (Editor::fileRefs[i]->fileId == movedFile->fileId)
-				{
-					ref = Editor::fileRefs[i];
-					return true;
-				}
+				file->LoadFileReference();
+				ref = file;
+				return true;
 			}
 		}
 		ImGui::EndDragDropTarget();

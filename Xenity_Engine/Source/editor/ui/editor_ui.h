@@ -50,6 +50,7 @@ public:
 	static Texture* folderIcon;
 	static Texture* fileIcon;
 	static Texture* sceneIcon;
+	static Texture* imageIcon;
 
 	static float GetUiScale() 
 	{

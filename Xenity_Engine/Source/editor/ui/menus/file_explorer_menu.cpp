@@ -4,6 +4,7 @@
 #include "../../editor.h"
 #include "../editor_ui.h"
 #include "../../../engine/scene_management/scene_manager.h"
+#include "../../../engine/asset_management/project_manager.h"
 
 void FileExplorerMenu::Init()
 {
@@ -19,12 +20,11 @@ void FileExplorerMenu::Draw()
 	if (colCount <= 0)
 		colCount = 1;
 
-	int fileCount = Editor::fileRefs.size();
 	int currentCol = 0;
 	if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
 	{
 		int offset = ImGui::GetCursorPosX();
-		for (int i = 0; i < fileCount; i++)
+		for (auto kv : ProjectManager::projectFilesRef)
 		{
 			if (currentCol == 0)
 				ImGui::TableNextRow();
@@ -33,7 +33,7 @@ void FileExplorerMenu::Draw()
 			currentCol++;
 			currentCol %= colCount;
 
-			FileReference* file = Editor::fileRefs[i];
+			FileReference* file = kv.second;
 			std::string fileName = file->file->GetFileName();
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
@@ -50,7 +50,8 @@ void FileExplorerMenu::Draw()
 			if (fileType == File_Texture)
 			{
 				Texture* tex = (Texture*)file;
-				textureId = tex->GetTextureId();
+				//textureId = tex->GetTextureId();
+				textureId = EditorUI::imageIcon->GetTextureId();
 			}
 			else if (fileType == File_Scene)
 			{
