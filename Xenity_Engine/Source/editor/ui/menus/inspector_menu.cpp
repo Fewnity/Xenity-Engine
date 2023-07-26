@@ -43,8 +43,10 @@ void InspectorMenu::Draw()
 			selectedGameObject->SetActive(active);
 		}
 
-		//Local position input
 		ImGui::Spacing();
+		ImGui::Separator();
+
+		//Local position input
 		ImGui::Spacing();
 		Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
 		bool changed = EditorUI::DrawInput("Local Position", localPos);
@@ -53,7 +55,7 @@ void InspectorMenu::Draw()
 		{
 			selectedGameObject->GetTransform()->SetLocalPosition(localPos);
 		}
-		ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
+		//ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
 
 		//Local rotation input
 		ImGui::Spacing();
@@ -64,7 +66,7 @@ void InspectorMenu::Draw()
 		{
 			selectedGameObject->GetTransform()->SetLocalRotation(localRot);
 		}
-		ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
+		//ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
 
 		//Local scale input
 		ImGui::Spacing();
@@ -75,7 +77,7 @@ void InspectorMenu::Draw()
 		{
 			selectedGameObject->GetTransform()->SetLocalScale(localScale);
 		}
-		ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
+		//ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
 
 		//Component list
 		ImGui::Spacing();
