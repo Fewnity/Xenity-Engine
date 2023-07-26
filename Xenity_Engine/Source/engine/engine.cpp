@@ -411,7 +411,6 @@ void Engine::Loop()
 		engineLoopBenchmark->Stop();
 
 #if defined(_WIN32) || defined(_WIN64)
-		//EditorUI::Draw();
 		Editor::Draw();
 #endif
 
@@ -467,7 +466,6 @@ void Engine::AddGameObject(std::shared_ptr<GameObject> gameObject)
 {
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
-	// componentsListDirty = true;
 }
 
 /// <summary>
@@ -478,7 +476,6 @@ void Engine::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
 {
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;
-	// componentsListDirty = true;
 }
 
 /// <summary>
@@ -488,7 +485,6 @@ void Engine::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
 std::vector<std::shared_ptr<GameObject>> Engine::GetGameObjects()
 {
 	return std::vector<std::shared_ptr<GameObject>>(Engine::gameObjects);
-	//return std::vector<std::weak_ptr<GameObject>>();
 }
 
 void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)

@@ -323,7 +323,6 @@ bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			FileReference* movedFile = (FileReference*)payload->Data;
-			Debug::Print(movedFile->file->GetPath());
 
 			int c = Editor::fileRefs.size();
 			for (int i = 0; i < c; i++)
