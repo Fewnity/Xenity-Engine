@@ -19,7 +19,7 @@ public:
 
 	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;
-	uint64_t GenerateUniqueId();
+	static uint64_t GenerateUniqueId(bool forFile);
 private:
 	bool forFile = false;
 	uint64_t uniqueId;

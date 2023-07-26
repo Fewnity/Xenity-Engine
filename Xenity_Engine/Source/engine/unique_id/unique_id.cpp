@@ -7,16 +7,16 @@ uint64_t UniqueId::lastFileUniqueId = 0;
 UniqueId::UniqueId()
 {
 	this->forFile = false;
-	this->uniqueId = GenerateUniqueId();
+	this->uniqueId = GenerateUniqueId(forFile);
 }
 
 UniqueId::UniqueId(bool forFile)
 {
 	this->forFile = forFile;
-	this->uniqueId = GenerateUniqueId();
+	this->uniqueId = GenerateUniqueId(forFile);
 }
 
-uint64_t UniqueId::GenerateUniqueId()
+uint64_t UniqueId::GenerateUniqueId(bool forFile)
 {
 	if (forFile) 
 	{
