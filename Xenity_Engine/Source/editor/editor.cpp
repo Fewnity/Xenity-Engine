@@ -266,8 +266,9 @@ void Editor::Start()
 
 void Editor::Update()
 {
-	Vector3 rot = cameraGO.lock()->GetTransform()->GetRotation();
-	Vector3 pos = cameraGO.lock()->GetTransform()->GetPosition();
+	auto cameraTrans = cameraGO.lock()->GetTransform();
+	Vector3 rot = cameraTrans->GetRotation();
+	Vector3 pos = cameraTrans->GetPosition();
 
 	if (InputSystem::GetKey(MOUSE_RIGHT))
 	{
@@ -287,11 +288,11 @@ void Editor::Update()
 	else if (InputSystem::GetKey(LEFT))
 		side = -1;
 
-	pos -= cameraGO.lock()->GetTransform()->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
-	pos -= cameraGO.lock()->GetTransform()->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+	pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 
-	cameraGO.lock()->GetTransform()->SetPosition(pos);
-	cameraGO.lock()->GetTransform()->SetRotation(rot);
+	cameraTrans->SetPosition(pos);
+	cameraTrans->SetRotation(rot);
 }
 
 void Editor::Draw()
