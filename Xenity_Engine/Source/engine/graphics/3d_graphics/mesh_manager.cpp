@@ -26,7 +26,12 @@ void MeshManager::Init()
 
 MeshData *MeshManager::LoadMesh(std::string path)
 {
-    return WavefrontLoader::LoadFromRawData(path);
+    MeshData * mesh = new MeshData();
+    mesh->fileId = UniqueId::GenerateUniqueId(true);
+    mesh->file = new File(path);
+    mesh->fileType = File_Mesh;
+    WavefrontLoader::LoadFromRawData(mesh);
+    return mesh;
 }
 
 /**

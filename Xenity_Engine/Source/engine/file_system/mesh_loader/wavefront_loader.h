@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include <string>
 
 class MeshData;
 
 class API WavefrontLoader
 {
 public:
-	static MeshData *LoadFromRawData(const std::string filePath);
+	static bool LoadFromRawData(MeshData* mesh);
 };

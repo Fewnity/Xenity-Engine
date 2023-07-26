@@ -1,6 +1,7 @@
 #include "wavefront_loader.h"
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 #include "../../../xenity.h"
 #include "../../graphics/3d_graphics/mesh_data.h"
@@ -11,27 +12,26 @@
 
 using namespace std;
 
-MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
+bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 {
-
 	std::string finalpath = "";
 #ifdef __vita__
 	finalpath += "ux0:";
 #endif
 	//finalpath += FileSystem::fileSystem->modelsPath;
-
-	Debug::Print("Loading mesh: " + finalpath + filePath);
+	finalpath += mesh->file->GetPath();
+	Debug::Print("Loading mesh: " + finalpath);
 
 	// Open file
 	ifstream file;
-	file.open(finalpath + filePath);
+	file.open(finalpath);
 
 	// Print error if the file can't be read
 	if (file.fail())
 	{
-		Debug::PrintError("Mesh loading error. Path: " + finalpath + filePath);
+		Debug::PrintError("Mesh loading error. Path: " + finalpath);
 
-		return nullptr;
+		return false;
 		// std::cout << "\033[31mModel load error. Path : \"" << finalpath + filePath << "\"\033[0m" << std::endl;
 	}
 	int verticesCount = 0;
@@ -184,13 +184,7 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 	if (!hasNoUv)
 		byteCount += 2;
 
-	MeshData *mesh = new MeshData(indicesCount, indicesCount, false, !hasNoNormals);
-
-	// Alloc memory for vertices and indices
-	// mesh->verticesCount = indicesCount * (byteCount);
-	// mesh->vertices = (float *)calloc(mesh->verticesCount, sizeof(float));
-	// mesh->indicesCount = indicesCount;
-	// mesh->indices = (unsigned int *)calloc(mesh->indicesCount, sizeof(unsigned int));
+	mesh->AllocMesh(indicesCount, indicesCount, false, !hasNoNormals);
 
 	mesh->hasUv = !hasNoUv;
 	mesh->hasNormal = !hasNoNormals;
@@ -209,10 +203,6 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 		int test = 0;
 		int index = i * byteCount;
 
-		// (float u, float v, unsigned int color, float x, float y, float z, int indice);
-		// mesh->AddVertex(
-		// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
-		// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 		if(!mesh->hasNormal)
 		mesh->AddVertex(
 			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
@@ -221,32 +211,11 @@ MeshData *WavefrontLoader::LoadFromRawData(const std::string filePath)
 				tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempNormals.at(normalIndices).x, tempNormals.at(normalIndices).y, tempNormals.at(normalIndices).z,
 				tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
 
-
 		mesh->indices[i] = i;
-
-		// mesh->AddVertex(
-		// 	tempTexturesCoords.at(0).x, tempTexturesCoords.at(i2++).y,
-		// 	0xFFFFFFFF, tempVertices.at(i3++).x, tempVertices.at(i3++).y, tempVertices.at(i3++).z, i);
-
-		// mesh->vertices[index] = tempVertices.at(vertexIndex).x;
-		// mesh->vertices[index + ++test] = tempVertices.at(vertexIndex).y;
-		// mesh->vertices[index + ++test] = tempVertices.at(vertexIndex).z;
-		// if (!hasNoUv)
-		// {
-		// 	mesh->vertices[index + ++test] = tempTexturesCoords.at(textureIndex).x;
-		// 	mesh->vertices[index + ++test] = tempTexturesCoords.at(textureIndex).y;
-		// }
-		// if (!hasNoNormals)
-		// {
-		// 	mesh->vertices[index + ++test] = tempNormals.at(normalIndices).x;
-		// 	mesh->vertices[index + ++test] = tempNormals.at(normalIndices).y;
-		// 	mesh->vertices[index + ++test] = tempNormals.at(normalIndices).z;
-		// }
 	}
 
 #ifdef __PSP__
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
-
-	return mesh;
+	return true;
 }

@@ -65,7 +65,7 @@ void Graphics::Init()
 	SkyBox *skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
 
-	skyPlane = WavefrontLoader::LoadFromRawData("models/Plane2Triangulate.obj");
+	skyPlane = MeshManager::LoadMesh("models/Plane2Triangulate.obj");
 
 	Debug::Print("-------- Graphics initiated --------");
 }
