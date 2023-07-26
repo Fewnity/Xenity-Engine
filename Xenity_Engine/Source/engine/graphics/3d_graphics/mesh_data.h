@@ -41,11 +41,14 @@ struct VertexNormalsNoColor
 class API MeshData : public FileReference, public Reflection
 {
 public:
-    MeshData() = delete;
+    MeshData();
+    //MeshData() = delete;
     MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
     std::unordered_map<std::string, Variable> GetReflection();
     ~MeshData();
-
+    void LoadFileReference();
+    void UnloadFileReference();
+    void AllocMesh(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
 
     void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
     void AddVertex(float u, float v, float x, float y, float z, int index);
@@ -63,4 +66,6 @@ public:
     bool hasIndices = true;
     bool isQuad = false;
     Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+private:
+    void Unload();
 };

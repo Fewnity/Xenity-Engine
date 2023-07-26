@@ -17,5 +17,14 @@ public:
 	int fileId = 0;
 	File* file = nullptr;
 	FileType fileType = File_Other;
+	virtual void LoadFileReference() 
+	{
+		isLoaded = true;
+	}
+	virtual void UnloadFileReference()
+	{
+		isLoaded = false;
+	}
+	bool isLoaded = false;
 };
 

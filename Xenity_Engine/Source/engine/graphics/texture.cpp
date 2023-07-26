@@ -19,6 +19,10 @@
 #include <vram.h>
 #endif
 
+Texture::Texture()
+{
+}
+
 Texture::Texture(const std::string filePath, std::string name, bool loadInVram)
 {
 	this->inVram = loadInVram;
@@ -68,6 +72,20 @@ Texture::~Texture()
 {
 	AssetManager::RemoveTexture(this);
 	// Engine::renderer->DeleteTexture(this);
+}
+
+void Texture::LoadFileReference()
+{
+	if (!isLoaded) 
+	{
+		isLoaded = true;
+		CreateTexture(file->GetPath(), file->GetPath(), filter, useMipMap);
+	}
+}
+
+void Texture::UnloadFileReference()
+{
+	Unload();
 }
 
 /// <summary>
@@ -258,6 +276,11 @@ void Texture::LoadTexture(const std::string filename)
 	stbi_image_free(buffer);
 	isValid = true;
 	Debug::Print("Texture loaded");
+}
+
+void Texture::Unload()
+{
+	//Engine::renderer->DeleteTexture(this);
 }
 
 /// <summary>

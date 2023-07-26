@@ -7,6 +7,11 @@
 #include <pspkernel.h>
 #include <vram.h>
 #endif
+#include "../../file_system/mesh_loader/wavefront_loader.h"
+
+MeshData::MeshData()
+{
+}
 
 /**
  * @brief Constructor
@@ -16,47 +21,7 @@
  */
 MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals)
 {
-	// Allocate memory for mesh data
-	hasColor = useVertexColor;
-	hasNormal = useNormals;
-
-#ifdef __PSP__
-	if (useVertexColor)
-		data = (Vertex *)memalign(16, sizeof(Vertex) * vcount);
-	else if (useNormals)
-		data = (VertexNormalsNoColor *)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
-	else
-		data = (VertexNoColor *)memalign(16, sizeof(VertexNoColor) * vcount);
-#else
-	if (useVertexColor)
-		data = (Vertex *)malloc(sizeof(Vertex) * vcount);
-	else if (useNormals)
-		data = (VertexNormalsNoColor *)malloc(sizeof(VertexNormalsNoColor) * vcount);
-	else
-		data = (VertexNoColor *)malloc(sizeof(VertexNoColor) * vcount);
-#endif
-	// data = (Vertex *)malloc(sizeof(Vertex) * vcount);
-	if (data == nullptr)
-	{
-		Debug::PrintWarning("No memory for Vertex");
-		return;
-	}
-
-	// indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
-	// indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
-#ifdef __PSP__
-	indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
-#else
-	indices = (unsigned short *)malloc(sizeof(unsigned short) * index_count);
-#endif
-	if (indices == nullptr)
-	{
-		Debug::PrintError("No memory for Indices");
-		return;
-	}
-
-	this->index_count = index_count;
-	this->vertice_count = vcount;
+	AllocMesh(vcount, index_count, useVertexColor, useNormals);
 }
 
 // MeshData::MeshData(std::string filePath)
@@ -130,14 +95,78 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	((VertexNormalsNoColor *)data)[index] = vert;
 }
 
+void MeshData::Unload()
+{
+	if (data)
+		free(data);
+	if (indices)
+		free(indices);
+}
+
 /**
  * @brief Destructor
  *
  */
 MeshData::~MeshData()
 {
-	if (data)
-		free(data);
-	if (indices)
-		free(indices);
+	Unload();
+}
+
+void MeshData::LoadFileReference()
+{
+	if (!isLoaded)
+	{
+		isLoaded = true;
+		WavefrontLoader::LoadFromRawData(this);
+	}
+}
+
+void MeshData::UnloadFileReference()
+{
+	Unload();
+}
+
+void MeshData::AllocMesh(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals)
+{
+	// Allocate memory for mesh data
+	hasColor = useVertexColor;
+	hasNormal = useNormals;
+
+#ifdef __PSP__
+	if (useVertexColor)
+		data = (Vertex*)memalign(16, sizeof(Vertex) * vcount);
+	else if (useNormals)
+		data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+	else
+		data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+#else
+	if (useVertexColor)
+		data = (Vertex*)malloc(sizeof(Vertex) * vcount);
+	else if (useNormals)
+		data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
+	else
+		data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
+#endif
+	// data = (Vertex *)malloc(sizeof(Vertex) * vcount);
+	if (data == nullptr)
+	{
+		Debug::PrintWarning("No memory for Vertex");
+		return;
+	}
+
+	// indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
+	// indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
+#ifdef __PSP__
+	indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+#else
+	indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+#endif
+	if (indices == nullptr)
+	{
+		Debug::PrintError("No memory for Indices");
+		return;
+	}
+
+	this->index_count = index_count;
+	this->vertice_count = vcount;
 }

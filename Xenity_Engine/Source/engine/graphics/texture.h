@@ -40,7 +40,7 @@ public:
         MirrorClampToEdge
     };
 
-    Texture() = delete;
+    Texture();
     Texture(const std::string filePath, std::string name, bool loadInVram);
     Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram);
     Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
@@ -48,6 +48,9 @@ public:
     std::unordered_map<std::string, Variable> GetReflection();
 
     ~Texture();
+
+    void LoadFileReference();
+    void UnloadFileReference();
 
     void SetData(const unsigned char *data);
 
@@ -88,6 +91,7 @@ private:
     WrapMode wrapMode = Repeat;
     void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
     void LoadTexture(const std::string filePath);
+    void Unload();
     unsigned int textureId = -1;
     int width = 0, height = 0, nrChannels = 0;
 
