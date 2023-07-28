@@ -178,14 +178,13 @@ void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 	}
 }
 
-void EditorUI::DrawReflection(Reflection& reflection)
+void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap) 
 {
-	auto t = reflection.GetReflection();
-	for (const auto& kv : t)
+	for (const auto& kv : myMap)
 	{
 		std::string variableName = GetPrettyVariableName(kv.first);
 
-		Variable& variableRef = t.at(kv.first);
+		Variable variableRef = kv.second;
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
 			DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
@@ -284,6 +283,12 @@ void EditorUI::DrawReflection(Reflection& reflection)
 			}
 		}
 	}
+}
+
+void EditorUI::DrawReflection(Reflection& reflection)
+{
+	auto t = reflection.GetReflection();
+	DrawMap(t);
 }
 
 void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value)

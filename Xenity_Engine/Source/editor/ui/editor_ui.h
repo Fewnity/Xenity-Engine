@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include "../../engine/reflection/reflection.h"
 
 class GameObject;
 class Vector2;
@@ -42,6 +43,7 @@ public:
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
 	static void DrawReflection(Reflection& reflection);
+	static void DrawMap(std::unordered_map<std::string, Variable> myMap);
 
 	static std::string GenerateItemId();
 	static bool showProfiler;

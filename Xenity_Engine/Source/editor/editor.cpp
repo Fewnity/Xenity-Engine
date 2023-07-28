@@ -26,11 +26,13 @@ InspectorMenu* inspector = nullptr;
 MainBarMenu* mainBar = nullptr;
 ProfilerMenu* profiler = nullptr;
 
-void Editor::JsonToReflection(json j, Reflection& component)
+
+void Editor::JsonToMap(std::unordered_map<std::string, Variable> t, json json)
 {
-	for (auto& kv : j["Values"].items())
+	for (auto& kv : json["Values"].items())
 	{
-		auto t = component.GetReflection();
+		//auto t = component.GetReflection();
+		//JsonToMap(t, kv.s)
 		if (t.contains(kv.key()))
 		{
 			Variable& variableRef = t.at(kv.key());
@@ -78,7 +80,7 @@ void Editor::JsonToReflection(json j, Reflection& component)
 				{
 					int fileId = kv.value();
 					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
-					if (file) 
+					if (file)
 					{
 						file->LoadFileReference();
 						valuePtr->get() = (MeshData*)file;
@@ -101,6 +103,12 @@ void Editor::JsonToReflection(json j, Reflection& component)
 		}
 		// std::cout << kv.key() << " : " << kv.value() << "\n";
 	}
+}
+
+void Editor::JsonToReflection(json j, Reflection& component)
+{
+	auto myMap = component.GetReflection();
+	JsonToMap(myMap, j);
 }
 
 void Editor::Start()
@@ -196,56 +204,55 @@ void Editor::CreateEmptyChild()
 
 #pragma region Save
 
-json Editor::ReflectiveToJson(Reflection& relection)
+json Editor::MapToJson(std::unordered_map<std::string, Variable> theMap, json json2)
 {
-	json j2;
-	auto t = relection.GetReflection();
-	for (const auto& kv :t)
+	json json;
+	for (const auto& kv : theMap)
 	{
-		Variable& variableRef = t.at(kv.first);
+		Variable& variableRef = theMap.at(kv.first);
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
-			j2[kv.first] = valuePtr->get();
+			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
-			j2[kv.first] = valuePtr->get();
+			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))
-			j2[kv.first] = valuePtr->get();
+			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
-			j2[kv.first] = valuePtr->get();
+			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
-			j2[kv.first] = valuePtr->get();
+			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject> *>(&variableRef))
 		{
 			if (auto lockValue = (**valuePtr).lock())
-				j2[kv.first] = lockValue->GetUniqueId();
+				json[kv.first] = lockValue->GetUniqueId();
 		}
 		else if (auto valuePtr = std::get_if<std::weak_ptr<Transform> *>(&variableRef))
 		{
 			if (auto lockValue = (**valuePtr).lock())
-				j2[kv.first] = lockValue->GetGameObject()->GetUniqueId();
+				json[kv.first] = lockValue->GetGameObject()->GetUniqueId();
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
-			j2[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
+			json[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
 			if (auto lockValue = (valuePtr->get()).lock())
-				j2[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
+				json[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				j2[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = (valuePtr->get())->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				j2[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = (valuePtr->get())->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				j2[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = (valuePtr->get())->fileId;
 		}
 		/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 		{
@@ -256,6 +263,14 @@ json Editor::ReflectiveToJson(Reflection& relection)
 			}
 		}*/
 	}
+	return json;
+}
+
+json Editor::ReflectiveToJson(Reflection& relection)
+{
+	json j2;
+	auto t = relection.GetReflection();
+	j2 = MapToJson(t, j2);
 	return j2;
 }
 
