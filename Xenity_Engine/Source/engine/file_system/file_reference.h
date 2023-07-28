@@ -16,7 +16,7 @@ enum FileType
 class FileReference
 {
 public:
-	int fileId = 0;
+	uint64_t fileId = 0;
 	File* file = nullptr;
 	FileType fileType = File_Other;
 	virtual void LoadFileReference() 
