@@ -22,6 +22,8 @@ Add right click on files to remove files
 Add folder to file explorer
 Improve file explorer code
 Add file settings in the meta
+Automatic file unload system
+Re add delete texture function in renderer
 
 Add materials
 Add async texture loading
