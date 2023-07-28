@@ -9,10 +9,12 @@ class ProjectManager
 {
 public:
 	static void LoadProject();
-	static std::unordered_map<int, FileReference*> projectFilesRef;
-	static FileReference* GetFileReferenceById(int id);
+	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
+	static FileReference* GetFileReferenceById(uint64_t id);
+	static void SaveMetaFile(FileReference* fileReference);
 
 private:
+	static void LoadMetaFile(FileReference* fileReference);
 	struct PairFile {
 		File* file;
 		File* meta;

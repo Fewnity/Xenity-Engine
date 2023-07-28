@@ -1,10 +1,11 @@
 #include "project_manager.h"
 #include "../../xenity.h"
+#include "../../xenity_editor.h"
 #include <json.hpp>
 
 using json = nlohmann::json;
 
-std::unordered_map<int, FileReference*> ProjectManager::projectFilesRef;
+std::unordered_map<uint64_t, FileReference*> ProjectManager::projectFilesRef;
 
 void ProjectManager::LoadProject()
 {
@@ -130,6 +131,8 @@ void ProjectManager::LoadProject()
 			fileRef->file = kv.first;
 			fileRef->fileType = kv.second;
 			projectFilesRef[fileRef->fileId] = fileRef;
+			LoadMetaFile(fileRef);
+			SaveMetaFile(fileRef);
 		}
 	}
 
@@ -139,7 +142,7 @@ void ProjectManager::LoadProject()
 	compatibleFiles.clear();
 }
 
-FileReference* ProjectManager::GetFileReferenceById(int id)
+FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
 {
 	FileReference* fileRef = nullptr;
 	auto it = projectFilesRef.find(id);
@@ -148,4 +151,42 @@ FileReference* ProjectManager::GetFileReferenceById(int id)
 		fileRef = it->second;
 	}
 	return fileRef;
+}
+
+void ProjectManager::SaveMetaFile(FileReference* fileReference)
+{
+	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + ".meta");
+	json metaData;
+	metaData["id"] = fileReference->fileId;
+	metaData["Values"] = Editor::MapToJson(fileReference->GetMetaReflection(), metaData);
+
+	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
+	metaFile->Open(true);
+	metaFile->Write(metaData.dump(0));
+	metaFile->Close();
+	delete metaFile;
+}
+
+void ProjectManager::LoadMetaFile(FileReference* fileReference)
+{
+	std::string jsonString = "";
+	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
+	metaFile->Open(true);
+	jsonString = metaFile->ReadAll();
+	metaFile->Close();
+	delete metaFile;
+
+	json metaData;
+	try
+	{
+		metaData = json::parse(jsonString);
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintError("Meta file error");
+		return;
+	}
+
+	Editor::JsonToMap(fileReference->GetMetaReflection(), metaData);
+
 }
