@@ -35,6 +35,7 @@ std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
 std::vector<std::weak_ptr<Component>> Engine::componentsToDestroy;
 
 std::weak_ptr<GameObject> Engine::selectedGameObject;
+FileReference* Engine::selectedFileReference = nullptr;
 
 int Engine::gameObjectCount = 0;
 int Engine::gameObjectEditorCount = 0;

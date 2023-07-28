@@ -3,6 +3,7 @@
 #include "../../../xenity.h"
 #include "../editor_ui.h"
 #include "../../editor.h"
+#include "../../../engine/asset_management/project_manager.h"
 
 void InspectorMenu::Init()
 {
@@ -19,8 +20,24 @@ void InspectorMenu::Draw()
 	ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, topOffset), 0, ImVec2(1, 0));
 	ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - topOffset), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - topOffset));
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
+
 	auto selectedGameObject = Engine::selectedGameObject.lock();
-	if (selectedGameObject)
+	FileReference* selectedFileReference = Engine::selectedFileReference;
+
+	if (selectedFileReference) 
+	{
+		std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtention();
+		ImGui::Text(fileNameExt.c_str());
+		ImGui::Separator();
+
+		EditorUI::DrawMap(selectedFileReference->GetMetaReflection());
+
+		if(ImGui::Button("Apply")) 
+		{
+			ProjectManager::SaveMetaFile(selectedFileReference);
+		}
+	}
+	else if (selectedGameObject)
 	{
 		char str0[128] = "";
 		sprintf_s(str0, selectedGameObject->name.c_str());

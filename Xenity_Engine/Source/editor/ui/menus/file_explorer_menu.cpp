@@ -59,7 +59,7 @@ void FileExplorerMenu::Draw()
 			}
 			bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
-			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+			if (ImGui::IsItemHovered() && ((ImGui::IsMouseClicked(0) && doubleClicked) || ImGui::IsMouseReleased(0)))
 			{
 				if (doubleClicked)
 				{
@@ -67,6 +67,11 @@ void FileExplorerMenu::Draw()
 					{
 						SceneManager::LoadScene((Scene*)file);
 					}
+				}
+				else 
+				{
+					Engine::selectedFileReference = file;
+					Engine::selectedGameObject.reset();
 				}
 			}
 

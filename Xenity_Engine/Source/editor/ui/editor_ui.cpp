@@ -142,6 +142,7 @@ std::string EditorUI::GenerateItemId()
 void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 {
 	auto childLock = child.lock();
+
 	if (childLock)
 	{
 		int childCount = (int)childLock->children.size();
@@ -163,9 +164,11 @@ void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 
 		bool opened = ImGui::TreeNodeEx(childLock->name.c_str(), flags);
 		ImGui::PopStyleColor();
-		if (ImGui::IsItemActivated() && ImGui::IsItemClicked())
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
 		{
 			Engine::SetSelectedGameObject(child);
+			Engine::selectedFileReference = nullptr;
 		}
 		if (opened)
 		{

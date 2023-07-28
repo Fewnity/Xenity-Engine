@@ -17,6 +17,7 @@ class GameObject;
 class Component;
 class Transform;
 class GameInterface;
+class FileReference;
 
 API void Destroy(std::weak_ptr<GameObject> gameObject);
 API void Destroy(std::weak_ptr<Component> component);
@@ -77,6 +78,7 @@ public:
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
+	static FileReference* selectedFileReference;
 	static int gameObjectCount;
 	static int gameObjectEditorCount;
 	static Renderer *renderer;
