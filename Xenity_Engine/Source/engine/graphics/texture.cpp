@@ -68,6 +68,17 @@ std::unordered_map<std::string, Variable> Texture::GetReflection()
 	return reflectedVariables;
 }
 
+std::unordered_map<std::string, Variable> Texture::GetMetaReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables.insert_or_assign("inVram", inVram);
+	reflectedVariables.insert_or_assign("useMipMap", useMipMap);
+	reflectedVariables.insert_or_assign("mipmaplevelCount", mipmaplevelCount);
+	reflectedVariables.insert_or_assign("filter", (int&)filter);
+	reflectedVariables.insert_or_assign("wrapMode", (int&)wrapMode);
+	return reflectedVariables;
+}
+
 Texture::~Texture()
 {
 	AssetManager::RemoveTexture(this);

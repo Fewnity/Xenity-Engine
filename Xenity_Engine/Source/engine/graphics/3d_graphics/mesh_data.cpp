@@ -35,6 +35,13 @@ std::unordered_map<std::string, Variable> MeshData::GetReflection()
 	return reflectedVariables;
 }
 
+
+std::unordered_map<std::string, Variable> MeshData::GetMetaReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	return reflectedVariables;
+}
+
 /**
  * @brief Add a vertice to the mesh
  *

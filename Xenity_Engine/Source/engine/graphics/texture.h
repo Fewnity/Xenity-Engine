@@ -46,6 +46,7 @@ public:
     Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
     Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
     std::unordered_map<std::string, Variable> GetReflection();
+    std::unordered_map<std::string, Variable> GetMetaReflection();
 
     ~Texture();
 

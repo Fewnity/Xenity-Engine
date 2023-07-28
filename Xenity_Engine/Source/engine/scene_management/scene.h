@@ -11,11 +11,13 @@
 #include "../file_system/file_reference.h"
 #include <string>
 
-class API Scene : public FileReference
+class API Scene : public FileReference, public Reflection
 {
 public:
 	Scene() = delete;
 	Scene(std::string filePath);
+	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, Variable> GetMetaReflection();
 private:
 };
 

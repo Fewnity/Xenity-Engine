@@ -11,3 +11,9 @@ std::unordered_map<std::string, Variable> AudioClip::GetReflection()
 	reflectedVariables.insert_or_assign("fileId", fileId);
 	return reflectedVariables;
 }
+
+std::unordered_map<std::string, Variable> AudioClip::GetMetaReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	return reflectedVariables;
+}

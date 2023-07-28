@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../engine/reflection/reflection.h"
+
 class File;
 
 enum FileType
@@ -25,6 +27,7 @@ public:
 	{
 		isLoaded = false;
 	}
+	virtual std::unordered_map<std::string, Variable> GetMetaReflection() = 0;
 	bool isLoaded = false;
 };
 

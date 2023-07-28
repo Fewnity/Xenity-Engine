@@ -12,7 +12,7 @@
 
 #include "../color/color.h"
 #include "../../file_system/file_reference.h"
-#include "../../reflection/reflection.h"
+
 
 struct Vertex
 {
@@ -38,13 +38,14 @@ struct VertexNormalsNoColor
     float x, y, z;
 };
 
-class API MeshData : public FileReference, public Reflection
+class API MeshData : public FileReference
 {
 public:
     MeshData();
     //MeshData() = delete;
     MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
     std::unordered_map<std::string, Variable> GetReflection();
+    std::unordered_map<std::string, Variable> GetMetaReflection();
     ~MeshData();
     void LoadFileReference();
     void UnloadFileReference();
