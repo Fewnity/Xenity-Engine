@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(std::string filePath)
+Scene::Scene()
 {
 }
 
