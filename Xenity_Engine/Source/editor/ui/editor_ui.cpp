@@ -33,10 +33,13 @@ void EditorUI::Init()
 	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
 
 	fileIcon = new Texture("icons/text.png", "", true);
+	fileIcon->SetWrapMode(Texture::ClampToEdge);
 	folderIcon = new Texture("icons/folder.png", "", true);
+	folderIcon->SetWrapMode(Texture::ClampToEdge);
 	sceneIcon = new Texture("icons/belt.png", "", true);
+	sceneIcon->SetWrapMode(Texture::ClampToEdge);
 	imageIcon = new Texture("icons/image.png", "", true);
-
+	imageIcon->SetWrapMode(Texture::ClampToEdge);
 	Debug::Print("---- Editor UI initiated ----");
 }
 
@@ -137,6 +140,39 @@ std::string EditorUI::GenerateItemId()
 	std::string itemId = "##" + std::to_string(uiId);
 	uiId++;
 	return itemId;
+}
+
+void EditorUI::DrawTreeItem(ProjectDirectory * projectDir)
+{
+	if (projectDir)
+	{
+		int childCount = (int)projectDir->subdirectories.size();
+		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
+		if (Engine::currentProjectDirectory == projectDir)
+			flags |= ImGuiTreeNodeFlags_Selected;
+
+		if (childCount == 0)
+			flags |= ImGuiTreeNodeFlags_Leaf;
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
+
+		bool opened = ImGui::TreeNodeEx(projectDir->GetFolderName().c_str(), flags);
+		ImGui::PopStyleColor();
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
+		{
+			Engine::currentProjectDirectory = projectDir;
+			Engine::selectedFileReference = nullptr;
+		}
+		if (opened)
+		{
+			for (int i = 0; i < childCount; i++)
+			{
+				DrawTreeItem(projectDir->subdirectories[i]);
+			}
+			ImGui::TreePop();
+		}
+	}
 }
 
 void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)

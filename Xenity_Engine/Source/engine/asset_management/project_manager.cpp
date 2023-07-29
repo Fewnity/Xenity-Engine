@@ -6,13 +6,36 @@
 using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileReference*> ProjectManager::projectFilesRef;
+ProjectDirectory* ProjectManager::projectDirectory = nullptr;
+
+void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
+{
+	int dirCount = projectDirectoryBase->subdirectories.size();
+	for (auto kv : ProjectManager::projectFilesRef)
+	{
+		if (realProjectDirectory->path == kv.second->file->GetFolderPath())
+		{
+			realProjectDirectory->files.push_back(kv.second);
+		}
+	}
+	for (int i = 0; i < dirCount; i++)
+	{
+		ProjectDirectory* newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->path);
+		realProjectDirectory->subdirectories.push_back(newDir);
+		SetProjectDirectory(projectDirectoryBase->subdirectories[i], newDir);
+	}
+}
 
 void ProjectManager::LoadProject()
 {
-	//Get all files of the project
-	Directory* projectDirectory = new Directory("C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\project");
-	std::vector<File*> projectFiles = projectDirectory->GetAllFiles();
+	std::string projectPath = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\project\\";
 
+	//Get all files of the project
+	Directory* projectDirectoryBase = new Directory(projectPath);
+	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles();
+
+	projectDirectory = new ProjectDirectory(projectPath);
+	Engine::currentProjectDirectory = projectDirectory;
 	std::vector<File*> allFoundFiles;
 	std::unordered_map<File*, FileType> compatibleFiles;
 
@@ -55,19 +78,17 @@ void ProjectManager::LoadProject()
 		allFoundFileCount++;
 	}
 
-	std::vector<PairFile> fileWithoutMeta;
+	std::vector<File*> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = 0;
 	for (int i = 0; i < allFoundFileCount; i++)
 	{
-		File* metaFile = new File(allFoundFiles[i]->GetPath() + ".meta");
+		File* file = allFoundFiles[i];
+		File* metaFile = new File(file->GetPath() + ".meta");
 		if (!metaFile->CheckIfExist()) //If there is not meta for this file
 		{
 			//Create one later
-			PairFile pair;
-			pair.file = allFoundFiles[i];
-			pair.meta = metaFile;
-			fileWithoutMeta.push_back(pair);
+			fileWithoutMeta.push_back(file);
 			fileWithoutMetaCount++;
 		}
 		else // Or read meta file
@@ -82,27 +103,18 @@ void ProjectManager::LoadProject()
 				uint64_t id = data["id"];
 				if (id > biggestId)
 					biggestId = id;
-				allFoundFiles[i]->SetUniqueId(id);
+				file->SetUniqueId(id);
 			}
 			delete metaFile;
 		}
 	}
 
-	//Create meta
+	//Set new files ids
 	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
-		PairFile pair = fileWithoutMeta[i];
-		int id = pair.file->GenerateUniqueId(true);
-		pair.file->SetUniqueId(id);
-		pair.meta->Open(true);
-
-		//Create json
-		json metaData;
-		metaData["id"] = id;
-		pair.meta->Write(metaData.dump(0));
-		pair.meta->Close();
-		delete pair.meta;
+		uint64_t id = UniqueId::GenerateUniqueId(true);
+		fileWithoutMeta[i]->SetUniqueId(id);
 	}
 
 	//Create empty textures, meshes...
@@ -121,7 +133,7 @@ void ProjectManager::LoadProject()
 			fileRef = new Texture();
 			break;
 		case File_Scene:
-			fileRef = new Scene(kv.first->GetPath());
+			fileRef = new Scene();
 			break;
 		}
 
@@ -135,6 +147,8 @@ void ProjectManager::LoadProject()
 			SaveMetaFile(fileRef);
 		}
 	}
+
+	SetProjectDirectory(projectDirectoryBase, projectDirectory);
 
 	projectFiles.clear();
 	allFoundFiles.clear();
@@ -169,24 +183,40 @@ void ProjectManager::SaveMetaFile(FileReference* fileReference)
 
 void ProjectManager::LoadMetaFile(FileReference* fileReference)
 {
-	std::string jsonString = "";
 	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
-	metaFile->Open(true);
-	jsonString = metaFile->ReadAll();
-	metaFile->Close();
-	delete metaFile;
-
-	json metaData;
-	try
+	if (metaFile->CheckIfExist())
 	{
-		metaData = json::parse(jsonString);
-	}
-	catch (const std::exception&)
-	{
-		Debug::PrintError("Meta file error");
-		return;
-	}
+		std::string jsonString = "";
+		metaFile->Open(true);
+		jsonString = metaFile->ReadAll();
+		metaFile->Close();
+		delete metaFile;
 
-	Editor::JsonToMap(fileReference->GetMetaReflection(), metaData);
+		json metaData;
+		try
+		{
+			metaData = json::parse(jsonString);
+		}
+		catch (const std::exception&)
+		{
+			Debug::PrintError("Meta file error");
+			return;
+		}
 
+		Editor::JsonToMap(fileReference->GetMetaReflection(), metaData);
+	}
+}
+
+std::string ProjectDirectory::GetFolderName()
+{
+	if (path.size() == 0)
+		return "";
+	int textLen = path.size();
+
+	int lastSlashPos = path.find_last_of('\\', textLen - 2);
+	if (lastSlashPos == -1)
+		lastSlashPos = 0;
+	std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
+
+	return fileName;
 }

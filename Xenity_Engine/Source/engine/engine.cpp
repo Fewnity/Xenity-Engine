@@ -29,6 +29,8 @@
 #endif
 #include "../editor/editor.h"
 
+#include "asset_management/project_manager.h"
+
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
@@ -36,6 +38,7 @@ std::vector<std::weak_ptr<Component>> Engine::componentsToDestroy;
 
 std::weak_ptr<GameObject> Engine::selectedGameObject;
 FileReference* Engine::selectedFileReference = nullptr;
+ProjectDirectory* Engine::currentProjectDirectory = nullptr;
 
 int Engine::gameObjectCount = 0;
 int Engine::gameObjectEditorCount = 0;

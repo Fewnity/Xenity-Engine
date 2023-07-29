@@ -14,6 +14,7 @@ class Color;
 class Reflection;
 class Texture;
 class FileReference;
+class ProjectDirectory;
 
 class EditorUI
 {
@@ -39,6 +40,7 @@ public:
 	static bool DrawInput(std::string inputName, int& value);
 	static bool DrawInput(std::string inputName, bool& value);
 	static void DrawTreeItem(std::weak_ptr<GameObject> child);
+	static void DrawTreeItem(ProjectDirectory* projectDir);
 	static void DrawInputTitle(std::string title);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
