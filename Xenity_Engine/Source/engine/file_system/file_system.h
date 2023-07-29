@@ -59,6 +59,8 @@ public:
 		return path;
 	}
 
+	std::string GetFolderPath() const;
+
 	std::string GetFileName() const;
 
 	std::string GetFileExtention() const
@@ -83,6 +85,7 @@ public:
 	Directory(std::string path);
 	~Directory();
 	std::vector<File*> GetAllFiles();
+	std::vector<File*> GetAllDirectory();
 	std::string path = "";
 	std::vector<Directory *> subdirectories;
 	std::vector<File *> files;

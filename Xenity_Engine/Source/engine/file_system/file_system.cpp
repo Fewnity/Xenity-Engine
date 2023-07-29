@@ -170,6 +170,19 @@ void File::Close()
 #endif
 }
 
+std::string File::GetFolderPath() const
+{
+	if (path.size() == 0)
+		return "";
+
+	int lastSlashPos = path.find_last_of('\\');
+	if (lastSlashPos == -1)
+		lastSlashPos = 0;
+	std::string fileName = path.substr(0, lastSlashPos + 1);
+
+	return fileName;
+}
+
 std::string File::GetFileName() const
 {
 	if (path.size() == 0)
@@ -244,7 +257,7 @@ void FileSystem::FillDirectory(Directory* directory)
 			Directory* newDirectory = nullptr;
 			try
 			{
-				newDirectory = new Directory(file.path().string());
+				newDirectory = new Directory(file.path().string() + "\\");
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception&)
