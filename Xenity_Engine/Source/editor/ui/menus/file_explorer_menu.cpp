@@ -19,8 +19,6 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	currentCol++;
 	currentCol %= colCount;
 
-	//FileReference* file = Engine::currentProjectDirectory->files[i];
-
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
@@ -111,10 +109,12 @@ void FileExplorerMenu::Draw()
 	float iconSize = 64 * EditorUI::GetUiScale();
 	ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
 
+	float height = ImGui::GetContentRegionAvail().y;
+
 	int offset = ImGui::GetCursorPosX();
-	if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable))
+	if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 	{
-		ImGui::TableNextRow();
+		ImGui::TableNextRow(0, height);
 		ImGui::TableSetColumnIndex(0);
 		EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
 
@@ -148,7 +148,6 @@ void FileExplorerMenu::Draw()
 		}
 		ImGui::EndTable();
 	}
-	/**/
 
 	ImGui::End();
 }
