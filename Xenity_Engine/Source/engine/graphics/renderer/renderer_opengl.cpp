@@ -470,6 +470,12 @@ unsigned int RendererOpengl::CreateNewTexture()
 	return 0;
 }
 
+void RendererOpengl::DeleteTexture(Texture* texture)
+{
+	unsigned int val = texture->GetTextureId();
+	glDeleteTextures(1, &val);
+}
+
 void RendererOpengl::SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)

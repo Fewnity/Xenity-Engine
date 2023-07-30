@@ -35,6 +35,7 @@ public:
 	void ApplyTextureFilters(Texture *texture);
 	void DrawMeshData(MeshData *meshData, RenderingSettings settings);
 	unsigned int CreateNewTexture();
+	void DeleteTexture(Texture* texture);
 	void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer);
 	void Clear();
 
