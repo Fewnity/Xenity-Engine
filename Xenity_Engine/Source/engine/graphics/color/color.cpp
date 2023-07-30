@@ -29,7 +29,7 @@ std::unordered_map<std::string, Variable> Color::GetReflection()
 	return reflectedVariables;
 }
 
-Color Color::CreateFromRGB(int r, int g, int b, int a)
+Color Color::CreateFromRGB(int r, int g, int b)
 {
 	Color color = Color();
 	color.SetFromRGBA(r, g, b, 255);
@@ -44,7 +44,7 @@ Color Color::CreateFromRGB(int r, int g, int b, int a)
  * @param b Blue [0.0f;1.0f]
  * @return Color
  */
-Color Color::CreateFromRGBFloat(float r, float g, float b, float a)
+Color Color::CreateFromRGBFloat(float r, float g, float b)
 {
 	Color color = Color();
 	color.SetFromRGBAfloat(r, g, b, 1);

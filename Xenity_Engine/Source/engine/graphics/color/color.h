@@ -43,8 +43,8 @@ public:
 	Color();
 	//void SetReflection();
 	std::unordered_map<std::string, Variable> GetReflection();
-	static Color CreateFromRGB(int r, int g, int b, int a);
-	static Color CreateFromRGBFloat(float r, float g, float b, float a);
+	static Color CreateFromRGB(int r, int g, int b);
+	static Color CreateFromRGBFloat(float r, float g, float b);
 	static Color CreateFromRGBA(int r, int g, int b, int a);
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 	void SetFromRGBA(int r, int g, int b, int a);
