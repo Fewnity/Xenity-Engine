@@ -8,6 +8,7 @@
 #include "ui/menus/inspector_menu.h"
 #include "ui/menus/main_bar_menu.h"
 #include "ui/menus/profiler_menu.h"
+#include "ui/menus/game_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -25,7 +26,7 @@ HierarchyMenu* hierarchy = nullptr;
 InspectorMenu* inspector = nullptr;
 MainBarMenu* mainBar = nullptr;
 ProfilerMenu* profiler = nullptr;
-
+GameMenu* gameMenu = nullptr;
 
 void Editor::JsonToMap(std::unordered_map<std::string, Variable> t, json json)
 {
@@ -119,6 +120,7 @@ void Editor::Start()
 	inspector = new InspectorMenu();
 	mainBar = new MainBarMenu();
 	profiler = new ProfilerMenu();
+	gameMenu = new GameMenu();
 
 	engineSettings->Init();
 	fileExplorer->Init();
@@ -126,6 +128,7 @@ void Editor::Start()
 	inspector->Init();
 	mainBar->Init();
 	profiler->Init();
+	gameMenu->Init();
 
 	ProjectManager::LoadProject();
 
@@ -186,6 +189,7 @@ void Editor::Draw()
 	{
 		profiler->Draw();
 	}
+	gameMenu->Draw();
 	EditorUI::Render();
 }
 

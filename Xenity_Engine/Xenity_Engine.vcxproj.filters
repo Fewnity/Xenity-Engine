@@ -82,6 +82,7 @@
     <ClCompile Include="Source\engine\scene_management\scene_manager.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Source\engine\scene_management\scene_manager.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
+    <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
