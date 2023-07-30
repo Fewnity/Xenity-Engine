@@ -21,5 +21,7 @@ public:
 	static bool useLighting;
 	static bool useDebugger;
 	static bool useOnlineDebugger;
+	static void SaveEngineSettings();
+	static void LoadEngineSettings();
 	// static Texture::AnisotropicLevel anisotropicLevel;
 };

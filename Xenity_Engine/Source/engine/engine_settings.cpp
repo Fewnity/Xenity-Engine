@@ -10,3 +10,11 @@ bool EngineSettings::useDebugger = true;
 bool EngineSettings::useOnlineDebugger = false;
 
 // Texture::AnisotropicLevel EngineSettings::anisotropicLevel = Texture::AnisotropicLevel::X16;
+
+void EngineSettings::SaveEngineSettings()
+{
+}
+
+void EngineSettings::LoadEngineSettings()
+{
+}
