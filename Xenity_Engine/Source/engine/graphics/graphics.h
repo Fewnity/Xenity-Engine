@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <vector>
+#include "../vectors/vector2_int.h"
 
 class IDrawable;
 class Material;
@@ -42,9 +43,18 @@ public:
 	static void OrderDrawables();
 	static void AddDrawable(std::weak_ptr<IDrawable> drawableToPlace);
 	static void RemoveDrawable(std::weak_ptr<IDrawable> drawableToPlace);
+	static void ChangeFrameBufferSize(Vector2Int resolution);
+	static void UpdaterameBuffer();
 
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 	static int iDrawablesCount;
 
 	static SkyBox *skybox;
+	static unsigned int framebuffer;
+	static unsigned int depthframebuffer;
+	static unsigned int framebufferTexture;
+	static Vector2Int framebufferSize;
+	static bool needFremeBufferUpdate;
+private:
+
 };

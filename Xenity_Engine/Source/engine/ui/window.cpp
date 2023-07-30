@@ -31,7 +31,7 @@ void Window::SetResolution(const int width_, const int height_)
 void Window::OnResize()
 {
     UpdateAspectRatio();
-    Engine::renderer->SetViewport(0, 0, width, height);
+    //Engine::renderer->SetViewport(0, 0, width, height);
 }
 
 int Window::GetWidth()

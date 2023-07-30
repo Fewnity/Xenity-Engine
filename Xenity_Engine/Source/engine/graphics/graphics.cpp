@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "../file_system/mesh_loader/wavefront_loader.h"
 #include "../graphics/3d_graphics/mesh_data.h"
+#include <glad/glad.h>
 
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
@@ -12,14 +13,18 @@ bool Graphics::needUpdateCamera = true;
 // Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
-SkyBox *Graphics::skybox = nullptr;
-
+SkyBox* Graphics::skybox = nullptr;
+unsigned int Graphics::framebuffer;
+unsigned int Graphics::depthframebuffer = -1;
+unsigned int Graphics::framebufferTexture = -1;
+Vector2Int Graphics::framebufferSize;
+bool Graphics::needFremeBufferUpdate = true;
 // ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
-MeshData *skyPlane = nullptr;
+MeshData* skyPlane = nullptr;
 
-SkyBox::SkyBox(Texture *front, Texture *back, Texture *up, Texture *down, Texture *left, Texture *right)
+SkyBox::SkyBox(Texture* front, Texture* back, Texture* up, Texture* down, Texture* left, Texture* right)
 {
 	this->front = front;
 	this->back = back;
@@ -29,13 +34,65 @@ SkyBox::SkyBox(Texture *front, Texture *back, Texture *up, Texture *down, Textur
 	this->right = right;
 }
 
-void Graphics::SetSkybox(SkyBox *skybox_)
+void Graphics::SetSkybox(SkyBox* skybox_)
 {
 	skybox = skybox_;
 }
 
+void Graphics::UpdaterameBuffer()
+{
+	if (needFremeBufferUpdate)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		if (framebufferTexture >= 0)
+		{
+			glDeleteTextures(1, &framebufferTexture);
+		}
+		if (depthframebuffer >= 0)
+		{
+			glDeleteRenderbuffers(1, &depthframebuffer);
+		}
+
+		glGenTextures(1, &framebufferTexture);
+		glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, framebufferSize.x, framebufferSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glGenRenderbuffers(1, &depthframebuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, framebufferSize.x, framebufferSize.y);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
+		glViewport(0, 0, framebufferSize.x, framebufferSize.y);
+		Window::SetResolution(framebufferSize.x, framebufferSize.y);
+		needFremeBufferUpdate = false;
+	}
+}
+
+void Graphics::ChangeFrameBufferSize(Vector2Int resolution)
+{
+	if (framebufferSize != resolution)
+	{
+		framebufferSize = resolution;
+		needFremeBufferUpdate = true;
+	}
+}
+
 void Graphics::Init()
 {
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	ChangeFrameBufferSize(Vector2Int(1920, 1080));
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Debug::PrintError("FrameBuffer incomplet");
+	}
+
 	// Texture *back = new Texture("space_back.png", "space_back", false);
 	// back->SetWrapMode(Texture::ClampToEdge);
 	// Texture *down = new Texture("space_down.png", "space_down", false);
@@ -49,20 +106,20 @@ void Graphics::Init()
 	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture *back = new Texture("sunset_back.png", "sunset_back", false);
+	Texture* back = new Texture("sunset_back.png", "sunset_back", false);
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture *down = new Texture("sunset_down.png", "sunset_down", false);
+	Texture* down = new Texture("sunset_down.png", "sunset_down", false);
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture *front = new Texture("sunset_front.png", "sunset_front", false);
+	Texture* front = new Texture("sunset_front.png", "sunset_front", false);
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture *left = new Texture("sunset_left.png", "sunset_left", false);
+	Texture* left = new Texture("sunset_left.png", "sunset_left", false);
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture *right = new Texture("sunset_right.png", "sunset_right", false);
+	Texture* right = new Texture("sunset_right.png", "sunset_right", false);
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture *up = new Texture("sunset_up.png", "sunset_up", false);
+	Texture* up = new Texture("sunset_up.png", "sunset_up", false);
 	up->SetWrapMode(Texture::ClampToEdge);
 
-	SkyBox *skybox = new SkyBox(front, back, up, down, left, right);
+	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
 
 	skyPlane = MeshManager::LoadMesh("models/Plane2Triangulate.obj");
@@ -75,14 +132,17 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
+
 	auto camera = usedCamera.lock();
-	if (!camera) 
+	if (!camera)
 	{
 		Debug::PrintWarning("[Graphics::DrawAllDrawable] There is no camera for rendering");
 	}
 
 	Graphics::OrderDrawables();
 
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	UpdaterameBuffer();
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
 
@@ -111,6 +171,9 @@ void Graphics::DrawAllDrawable()
 	if (NetworkManager::needDrawMenu)
 		NetworkManager::DrawNetworkSetupMenu();
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	Engine::renderer->Clear();
+	Engine::renderer->SetClearColor(Color::CreateFromRGB(15, 16, 16));
 	Engine::renderer->EndFrame();
 }
 
