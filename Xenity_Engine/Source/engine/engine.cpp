@@ -361,7 +361,12 @@ void Engine::Loop()
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					Window::SetResolution(event.window.data1, event.window.data2);
+					if(event.window.windowID == SDL_GetWindowID(Window::window))
+						Window::SetResolution(event.window.data1, event.window.data2);
+				}
+				else if (event.window.event == SDL_WINDOWEVENT_CLOSE) 
+				{
+					isRunning = false;
 				}
 				break;
 			default:
