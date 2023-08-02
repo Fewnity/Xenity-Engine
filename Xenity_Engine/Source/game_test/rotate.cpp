@@ -12,7 +12,9 @@ void Rotate::Start()
 
 void Rotate::Update()
 {
-	Debug::Print("Rotate::UpdateRotate");
+	Vector3 rotation = GetTransform()->GetRotation();
+	rotation.y += Time::GetDeltaTime() * 5;
+	GetTransform()->SetRotation(rotation);
 }
 
 std::unordered_map<std::string, Variable> Rotate::GetReflection()
