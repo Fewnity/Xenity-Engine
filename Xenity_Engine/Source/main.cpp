@@ -25,6 +25,10 @@ Add file settings in the meta
 Automatic file unload system
 Re add delete texture function in renderer
 
+Compile game and remove editor things
+Add play mode
+Have more than one camera
+
 Add materials
 Add async texture loading
 Add shaders
