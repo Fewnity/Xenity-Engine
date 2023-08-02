@@ -83,16 +83,13 @@ void Graphics::ChangeFrameBufferSize(Vector2Int resolution)
 
 void Graphics::Init()
 {
+#if defined(EDITOR)
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	ChangeFrameBufferSize(Vector2Int(1920, 1080));
 
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		Debug::PrintError("FrameBuffer incomplet");
-	}
-
+#endif
 	// Texture *back = new Texture("space_back.png", "space_back", false);
 	// back->SetWrapMode(Texture::ClampToEdge);
 	// Texture *down = new Texture("space_down.png", "space_down", false);
@@ -140,9 +137,10 @@ void Graphics::DrawAllDrawable()
 	}
 
 	Graphics::OrderDrawables();
-
+#if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	UpdaterameBuffer();
+#endif
 	Engine::renderer->NewFrame();
 	Engine::renderer->Clear();
 
@@ -171,9 +169,11 @@ void Graphics::DrawAllDrawable()
 	if (NetworkManager::needDrawMenu)
 		NetworkManager::DrawNetworkSetupMenu();
 
+#if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Engine::renderer->Clear();
 	Engine::renderer->SetClearColor(Color::CreateFromRGB(15, 16, 16));
+#endif
 	Engine::renderer->EndFrame();
 }
 
