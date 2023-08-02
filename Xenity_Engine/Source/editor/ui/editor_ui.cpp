@@ -116,11 +116,11 @@ void EditorUI::UpdateUIScale()
 		}
 	}
 
-	if (oldUiScale != uiScale)
-	{
+	//if (oldUiScale != uiScale)
+	//{
 		//io.Fonts->Clear();
 		ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
-	}
+	//}
 }
 
 /**
