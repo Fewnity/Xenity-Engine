@@ -4,6 +4,7 @@
 #include "../editor_ui.h"
 #include "../../editor.h"
 #include "../../../engine/class_registry/class_registry.h"
+#include "../../../engine/dynamic_lib/dynamic_lib.h"
 
 void MainBarMenu::Init()
 {
@@ -29,9 +30,14 @@ void MainBarMenu::Draw()
 		{
 			Editor::SaveScene();
 		}
-		if (ImGui::MenuItem("Build Game"))
+		if (ImGui::MenuItem("Build"))
 		{
-			Debug::PrintWarning("(File/Build Game) Unimplemented button");
+			Engine::BuildGame();
+		}
+		if (ImGui::MenuItem("Build And Run"))
+		{
+			DynamicLibrary::CompileGame(BuildType::BuildAndRunGame);
+			//Engine::CompileGame(BuildAndRunGame);
 		}
 		if (ImGui::MenuItem("Exit"))
 		{
@@ -160,15 +166,15 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Play Game"))
 		{
-			Debug::PrintWarning("(File/Play Game) Unimplemented button");
+			Engine::SetGameState(GameState::Playing);
 		}
 		if (ImGui::MenuItem("Pause Game"))
 		{
-			Debug::PrintWarning("(File/Pause Game) Unimplemented button");
+			Engine::SetGameState(GameState::Paused);
 		}
 		if (ImGui::MenuItem("Stop Game"))
 		{
-			Debug::PrintWarning("(File/Stop Game) Unimplemented button");
+			Engine::SetGameState(GameState::Stopped);
 		}
 		if (ImGui::MenuItem("Hot Reload Game"))
 		{

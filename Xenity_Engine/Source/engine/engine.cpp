@@ -1,3 +1,4 @@
+//#define EDITOR
 #include "engine.h"
 #include "engine_settings.h"
 #include "../xenity.h"
@@ -16,7 +17,9 @@
 #include "../game_test/game.h"
 #endif
 #include "game_interface.h"
+#include "../game_test/game.h"
 #include "class_registry/class_registry.h"
+
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -56,6 +59,7 @@ Renderer *Engine::renderer = nullptr;
 bool Engine::valueFree = true;
 bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
+GameState Engine::gameState = Stopped;
 
 /// <summary>
 /// Init engine
@@ -165,6 +169,11 @@ void Engine::RegisterEngineComponents()
 		{ return go->AddComponent<TestComponent>(); });
 }
 
+void Engine::SetGameState(GameState _gameState)
+{
+	gameState = _gameState;
+}
+
 void Engine::Stop()
 {
 	renderer->Stop();
@@ -183,133 +192,136 @@ void Engine::Quit()
 /// </summary>
 void Engine::UpdateComponents()
 {
-	// Update all gameobjects components
-	if (componentsListDirty)
+	if (gameState == GameState::Playing) 
 	{
-		componentsListDirty = false;
-		orderedComponents.clear();
-
-		std::vector<std::weak_ptr<Component>> orderedComponentsToInit;
-		componentsCount = 0;
-		int componentsToInitCount = 0;
-		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+		// Update all gameobjects components
+		if (componentsListDirty)
 		{
-			std::weak_ptr<GameObject> weakGameObjectToCheck = gameObjects[gIndex];
-			if (auto gameObjectToCheck = weakGameObjectToCheck.lock())
+			componentsListDirty = false;
+			orderedComponents.clear();
+
+			std::vector<std::weak_ptr<Component>> orderedComponentsToInit;
+			componentsCount = 0;
+			int componentsToInitCount = 0;
+			for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 			{
-				if (gameObjectToCheck->GetActive())
+				std::weak_ptr<GameObject> weakGameObjectToCheck = gameObjects[gIndex];
+				if (auto gameObjectToCheck = weakGameObjectToCheck.lock())
 				{
-					int componentCount = (int)gameObjectToCheck->components.size();
-					bool placeFound = false;
-					for (int cIndex = 0; cIndex < componentCount; cIndex++)
+					if (gameObjectToCheck->GetActive())
 					{
-						std::weak_ptr<Component> weakComponentToCheck = gameObjectToCheck->components[cIndex];
-						if (auto componentToCheck = weakComponentToCheck.lock())
+						int componentCount = (int)gameObjectToCheck->components.size();
+						bool placeFound = false;
+						for (int cIndex = 0; cIndex < componentCount; cIndex++)
 						{
-							if (componentToCheck->GetIsEnabled())
+							std::weak_ptr<Component> weakComponentToCheck = gameObjectToCheck->components[cIndex];
+							if (auto componentToCheck = weakComponentToCheck.lock())
 							{
-								for (int i = 0; i < componentsCount; i++)
+								if (componentToCheck->GetIsEnabled())
 								{
-									// Check if the checked has a higher priority (lower value) than the component in the list
-									if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
+									for (int i = 0; i < componentsCount; i++)
 									{
-										orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-										placeFound = true;
-										break;
+										// Check if the checked has a higher priority (lower value) than the component in the list
+										if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
+										{
+											orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
+											placeFound = true;
+											break;
+										}
 									}
+									// if the priority is lower than all components's priorities in the list, add it the end of the list
+									if (!placeFound)
+									{
+										orderedComponents.push_back(componentToCheck);
+									}
+									componentsCount++;
 								}
-								// if the priority is lower than all components's priorities in the list, add it the end of the list
-								if (!placeFound)
-								{
-									orderedComponents.push_back(componentToCheck);
-								}
-								componentsCount++;
 							}
 						}
 					}
 				}
 			}
-		}
 
-		// Find uninitiated components and order them
-		for (int i = 0; i < componentsCount; i++)
-		{
-			if (auto componentToCheck = orderedComponents[i].lock())
+			// Find uninitiated components and order them
+			for (int i = 0; i < componentsCount; i++)
 			{
-				if (!componentToCheck->initiated)
+				if (auto componentToCheck = orderedComponents[i].lock())
 				{
-					bool placeFound = false;
-					for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+					if (!componentToCheck->initiated)
 					{
-						// Check if the checked has a higher priority (lower value) than the component in the list
-						if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex].lock()->updatePriority)
+						bool placeFound = false;
+						for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 						{
-							orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-							placeFound = true;
-							break;
+							// Check if the checked has a higher priority (lower value) than the component in the list
+							if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex].lock()->updatePriority)
+							{
+								orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+								placeFound = true;
+								break;
+							}
 						}
+						// if the priority is lower than all components's priorities in the list, add it the end of the list
+						if (!placeFound)
+						{
+							orderedComponentsToInit.push_back(componentToCheck);
+						}
+						componentsToInitCount++;
 					}
-					// if the priority is lower than all components's priorities in the list, add it the end of the list
-					if (!placeFound)
-					{
-						orderedComponentsToInit.push_back(componentToCheck);
-					}
-					componentsToInitCount++;
 				}
 			}
-		}
 
-		// Init components
-		for (int i = 0; i < componentsToInitCount; i++)
-		{
-			orderedComponentsToInit[i].lock()->Start();
-			orderedComponentsToInit[i].lock()->initiated = true;
-		}
-	}
-
-	// Update components
-	for (int i = 0; i < componentsCount; i++)
-	{
-		if (auto component = orderedComponents[i].lock())
-		{
-			if (component->GetGameObject()->GetLocalActive())
+			// Init components
+			for (int i = 0; i < componentsToInitCount; i++)
 			{
-				component->Update();
+				orderedComponentsToInit[i].lock()->Start();
+				orderedComponentsToInit[i].lock()->initiated = true;
 			}
 		}
-		else
-		{
-			orderedComponents.erase(orderedComponents.begin() + i);
-			i--;
-			componentsCount--;
-		}
-	}
 
-	int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
-	for (int i = 0; i < gameObjectToDestroyCount; i++)
-	{
-		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+		// Update components
+		for (int i = 0; i < componentsCount; i++)
 		{
-			std::weak_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
-			if (gameObjectToCheck.lock() == gameObjectsToDestroy[i].lock())
+			if (auto component = orderedComponents[i].lock())
 			{
-				gameObjects.erase(gameObjects.begin() + gIndex);
-				break;
+				if (component->GetGameObject()->GetLocalActive())
+				{
+					component->Update();
+				}
+			}
+			else
+			{
+				orderedComponents.erase(orderedComponents.begin() + i);
+				i--;
+				componentsCount--;
 			}
 		}
-		gameObjectCount--;
-	}
-	gameObjectsToDestroy.clear();
 
-	int componentToDestroyCount = (int)componentsToDestroy.size();
-	for (int i = 0; i < componentToDestroyCount; i++)
-	{
-		if (auto component = componentsToDestroy[i].lock())
+		int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
+		for (int i = 0; i < gameObjectToDestroyCount; i++)
 		{
-			component->GetGameObject()->InternalDestroyComponent(component);
+			for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+			{
+				std::weak_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
+				if (gameObjectToCheck.lock() == gameObjectsToDestroy[i].lock())
+				{
+					gameObjects.erase(gameObjects.begin() + gIndex);
+					break;
+				}
+			}
+			gameObjectCount--;
 		}
+		gameObjectsToDestroy.clear();
+
+		int componentToDestroyCount = (int)componentsToDestroy.size();
+		for (int i = 0; i < componentToDestroyCount; i++)
+		{
+			if (auto component = componentsToDestroy[i].lock())
+			{
+				component->GetGameObject()->InternalDestroyComponent(component);
+			}
+		}
+		componentsToDestroy.clear();
 	}
-	componentsToDestroy.clear();
 }
 
 void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
@@ -324,11 +336,16 @@ void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
 #if defined(_WIN32) || defined(_WIN64)
-	// DynamicLibrary::LoadGameLibrary("game");
-	// game = DynamicLibrary::CreateGame();
+#if defined(EDITOR)
+	DynamicLibrary::LoadGameLibrary("game_editor");
 #else
-	// game = new Game();
+	DynamicLibrary::LoadGameLibrary("game");
 #endif
+	game = DynamicLibrary::CreateGame();
+#else
+	//game = new Game();
+#endif
+	//game = new Game();
 
 	valueFree = false;
 	if (game)
@@ -419,7 +436,7 @@ void Engine::Loop()
 		}
 		engineLoopBenchmark->Stop();
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
 		Editor::Draw();
 #endif
 
@@ -428,6 +445,11 @@ void Engine::Loop()
 	}
 
 	delete game;
+}
+
+void Engine::BuildGame() 
+{
+	DynamicLibrary::CompileGame(BuildType::BuildGame);
 }
 
 void Engine::CompileGame() 
@@ -439,8 +461,8 @@ void Engine::CompileGame()
 	ClassRegistry::Reset();
 	RegisterEngineComponents();
 	DynamicLibrary::UnloadGameLibrary();
-	DynamicLibrary::CompileGame();
-	DynamicLibrary::LoadGameLibrary("game");
+	DynamicLibrary::CompileGame(EditorHotReloading);
+	DynamicLibrary::LoadGameLibrary("game_editor");
 	game = DynamicLibrary::CreateGame();
 	if (game)
 	{

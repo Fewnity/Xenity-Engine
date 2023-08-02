@@ -4,9 +4,10 @@
 #include <iostream>
 #include <windows.h>
 #include "../debug/debug.h"
+#include <thread>
 
-typedef void(__cdecl *MYPROC2)();
-typedef GameInterface *(__cdecl *CreateGameFunction)();
+typedef void(__cdecl* MYPROC2)();
+typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
 
 void DynamicLibrary::LoadGameLibrary(std::string libraryName)
@@ -36,22 +37,97 @@ void DynamicLibrary::UnloadGameLibrary()
 	}
 }
 
-void DynamicLibrary::CompileGame()
+void DynamicLibrary::StartGame()
 {
-	std::string command;
-	command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build";																		   // Go in the compiler folder
-	command += " && vcvarsamd64_x86.bat";																																	   // Start the compiler
-	command += " >nul";
-	command += " && cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";																					   // Go in the game project folder
-	//command += " && cl /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
-	command += " && cl /std:c++20 /EHsc /DIMPORT -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp engine.lib /link /out:game.dll"; // Start compilation
-	command += " >nul";
-	system(command.c_str());
+	system("C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\Game.exe");
 }
 
-GameInterface *DynamicLibrary::CreateGame()
+std::string DynamicLibrary::GetStartCompilerCommand()
 {
-	GameInterface *gameInterface = nullptr;
+	std::string command;
+	command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"; // Go to the compiler folder
+	command += " && vcvarsamd64_x86.bat"; // Start the compiler
+	//command += " >nul";	// Mute output
+	return command;
+}
+
+std::string DynamicLibrary::GetAddNextCommand()
+{
+	std::string command = " && ";
+	return command;
+}
+
+std::string DynamicLibrary::GetNavToEngineFolderCommand() 
+{
+	std::string command = "cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";
+	return command;
+}
+
+void DynamicLibrary::CompileGame(BuildType buildType)
+{
+	std::string command;
+	command = GetStartCompilerCommand();
+	command += GetAddNextCommand();
+	command += GetNavToEngineFolderCommand();
+
+	//command += " && cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";																					   // Go in the game project folder
+
+	command += " && cl /std:c++20 /EHsc /DIMPORT"; // Start compilation
+	if (buildType == EditorHotReloading)
+	{
+		command += " /DEDITOR";
+	}
+	command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp";
+	if (buildType != EditorHotReloading)
+	{
+		command += " engine_game.lib";
+	}
+	else
+	{
+		command += " engine_editor.lib";
+	}
+	command += " /link";
+	if (buildType != EditorHotReloading)
+	{
+		command += " /implib:game.lib";
+	}
+	else
+	{
+		command += " /implib:game_editor.lib";
+	}
+	//command += " >nul";
+	if (buildType != EditorHotReloading)
+	{
+		command += " /out:game.dll";
+		//command += " >nul";
+		command += " && cl /FeGame.exe /std:c++20 /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
+		//command += " >nul";
+	}
+	else
+	{
+		command += " /out:game_editor.dll";
+	}
+
+	int buildResult = system(command.c_str());
+	if (buildResult == 0)
+	{
+		Debug::Print("Game compiled successfully!");
+		if (buildType == BuildAndRunGame)
+		{
+			auto t = std::thread(StartGame);
+			t.detach();
+		}
+	}
+	else
+	{
+		Debug::PrintError("Unable to compile : " + command);
+	}
+
+}
+
+GameInterface* DynamicLibrary::CreateGame()
+{
+	GameInterface* gameInterface = nullptr;
 	if (library != NULL)
 	{
 		CreateGameFunction ProcAdd = (CreateGameFunction)GetProcAddress(library, "CreateGame");

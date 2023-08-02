@@ -12,12 +12,22 @@
 
 class GameInterface;
 
+enum BuildType {
+	EditorHotReloading,
+	BuildGame,
+	BuildAndRunGame,
+};
+
 class API DynamicLibrary
 {
 public:
 	static void LoadGameLibrary(std::string libraryName);
 	static void UnloadGameLibrary();
-	static void CompileGame();
+	static void CompileGame(BuildType buildType);
+	static void StartGame();
 	static GameInterface *CreateGame();
+	static std::string GetStartCompilerCommand();
+	static std::string GetAddNextCommand();
+	static std::string GetNavToEngineFolderCommand();
 };
 #endif
