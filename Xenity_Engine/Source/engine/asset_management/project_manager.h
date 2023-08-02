@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <unordered_map>
@@ -7,7 +15,7 @@
 class FileReference;
 class File;
 
-class ProjectDirectory 
+class API ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
@@ -21,7 +29,7 @@ public:
 	std::vector<FileReference*> files;
 };
 
-class ProjectManager
+class API ProjectManager
 {
 public:
 
@@ -30,10 +38,21 @@ public:
 	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
 	static FileReference* GetFileReferenceById(uint64_t id);
 	static void SaveMetaFile(FileReference* fileReference);
+	static void LoadProjectSettings();
+	static void SaveProjectSettigs();
+	static std::string GetProjectName() {
+		return projectName;
+	}
+	static std::string GetGameName() {
+		return gameName;
+	}
 
 private:
 	static void LoadMetaFile(FileReference* fileReference);
-	struct PairFile {
+	static std::string projectName;
+	static std::string gameName;
+	struct PairFile 
+	{
 		File* file;
 		File* meta;
 	};

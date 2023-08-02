@@ -7,6 +7,8 @@ using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileReference*> ProjectManager::projectFilesRef;
 ProjectDirectory* ProjectManager::projectDirectory = nullptr;
+std::string ProjectManager::projectName = "";
+std::string ProjectManager::gameName = "";
 
 void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
 {
@@ -165,6 +167,16 @@ FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
 		fileRef = it->second;
 	}
 	return fileRef;
+}
+
+void ProjectManager::LoadProjectSettings() 
+{
+
+}
+
+void ProjectManager::SaveProjectSettigs() 
+{
+
 }
 
 void ProjectManager::SaveMetaFile(FileReference* fileReference)
