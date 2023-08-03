@@ -14,8 +14,11 @@ void DynamicLibrary::LoadGameLibrary(std::string libraryName)
 {
 	libraryName += ".dll";
 
+#if defined(VISUAL_STUDIO)
 	library = LoadLibrary((LPCWSTR)libraryName.c_str()); //Visual Studio
-	//library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
+#else
+	library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
+#endif
 	if (library != NULL)
 		Debug::Print("Library found");
 	else
@@ -63,16 +66,10 @@ std::string DynamicLibrary::GetNavToEngineFolderCommand()
 	return command;
 }
 
-void DynamicLibrary::CompileGame(BuildType buildType)
+std::string DynamicLibrary::GetCompileGameLibCommand(BuildType buildType)
 {
-	std::string command;
-	command = GetStartCompilerCommand();
-	command += GetAddNextCommand();
-	command += GetNavToEngineFolderCommand();
-
-	//command += " && cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";																					   // Go in the game project folder
-
-	command += " && cl /std:c++20 /EHsc /DIMPORT"; // Start compilation
+	std::string command = "";
+	command += "cl /std:c++20 /MP /EHsc /DIMPORT"; // Start compilation
 	if (buildType == EditorHotReloading)
 	{
 		command += " /DEDITOR";
@@ -89,24 +86,36 @@ void DynamicLibrary::CompileGame(BuildType buildType)
 	command += " /link";
 	if (buildType != EditorHotReloading)
 	{
-		command += " /implib:game.lib";
+		command += " /implib:game.lib /out:game.dll";
 	}
 	else
 	{
-		command += " /implib:game_editor.lib";
+		command += " /implib:game_editor.lib /out:game_editor.dll";
 	}
-	//command += " >nul";
+	//command += " >nul"; // Mute output
+	return command;
+}
+
+std::string DynamicLibrary::GetCompileGameExeCommand() 
+{
+	std::string command;
+	command = "cl /FeGame.exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
+	//command += " >nul"; // Mute output
+	return command;
+}
+
+void DynamicLibrary::CompileGame(BuildType buildType)
+{
+	std::string command;
+	command = GetStartCompilerCommand();
+	command += GetAddNextCommand();
+	command += GetNavToEngineFolderCommand();
+	command += GetAddNextCommand();
+	command += GetCompileGameLibCommand(buildType);
+	command += GetAddNextCommand();
+
 	if (buildType != EditorHotReloading)
-	{
-		command += " /out:game.dll";
-		//command += " >nul";
-		command += " && cl /FeGame.exe /std:c++20 /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
-		//command += " >nul";
-	}
-	else
-	{
-		command += " /out:game_editor.dll";
-	}
+		command += GetCompileGameExeCommand();
 
 	int buildResult = system(command.c_str());
 	if (buildResult == 0)
@@ -122,7 +131,6 @@ void DynamicLibrary::CompileGame(BuildType buildType)
 	{
 		Debug::PrintError("Unable to compile : " + command);
 	}
-
 }
 
 GameInterface* DynamicLibrary::CreateGame()
@@ -137,12 +145,12 @@ GameInterface* DynamicLibrary::CreateGame()
 		}
 		else
 		{
-			std::cout << "[ERROR] Cannot create game" << std::endl;
+			Debug::PrintError("Cannot create gam");
 		}
 	}
 	else
 	{
-		std::cout << "[ERROR] Cannot create game" << std::endl;
+		Debug::PrintError("Cannot create game");
 	}
 
 	return gameInterface;

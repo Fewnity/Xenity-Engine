@@ -29,5 +29,7 @@ public:
 	static std::string GetStartCompilerCommand();
 	static std::string GetAddNextCommand();
 	static std::string GetNavToEngineFolderCommand();
+	static std::string GetCompileGameLibCommand(BuildType buildType);
+	static std::string GetCompileGameExeCommand();
 };
 #endif
