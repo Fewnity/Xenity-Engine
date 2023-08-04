@@ -99,9 +99,7 @@ bool File::CheckIfExist()
 {
 	bool exists = false;
 #if defined(__PSP__)
-	int params = PSP_O_RDWR;
-	if (createFileIfNotFound)
-		params = params | PSP_O_CREAT;
+	int params = PSP_O_RDONLY;
 	fileId = sceIoOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{
