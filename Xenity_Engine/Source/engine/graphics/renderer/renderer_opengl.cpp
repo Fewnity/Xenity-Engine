@@ -470,10 +470,13 @@ unsigned int RendererOpengl::CreateNewTexture()
 	return 0;
 }
 
-void RendererOpengl::DeleteTexture(Texture* texture)
+void RendererOpengl::DeleteTexture(Texture *texture)
 {
+#if defined(__PSP__)
+#else
 	unsigned int val = texture->GetTextureId();
 	glDeleteTextures(1, &val);
+#endif
 }
 
 void RendererOpengl::SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer)
