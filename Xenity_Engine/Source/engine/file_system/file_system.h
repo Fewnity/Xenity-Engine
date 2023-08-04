@@ -88,9 +88,20 @@ public:
 	Directory() = delete;
 	Directory(std::string path);
 	~Directory();
-	std::vector<File*> GetAllFiles();
-	std::vector<File*> GetAllDirectory();
-	std::string path = "";
+	std::vector<File *> GetAllFiles();
+	std::vector<File *> GetAllDirectory();
 	std::vector<Directory *> subdirectories;
 	std::vector<File *> files;
+
+	std::string GetPath() const
+	{
+#if defined(__vita__)
+		return path.substr(4);
+#else
+		return path;
+#endif
+	}
+
+private:
+	std::string path = "";
 };

@@ -22,7 +22,7 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 	}
 	for (int i = 0; i < dirCount; i++)
 	{
-		ProjectDirectory* newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->path);
+		ProjectDirectory *newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
 		realProjectDirectory->subdirectories.push_back(newDir);
 		SetProjectDirectory(projectDirectoryBase->subdirectories[i], newDir);
 	}
