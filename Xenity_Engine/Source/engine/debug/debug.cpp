@@ -104,8 +104,12 @@ void Debug::Init()
     if (!EngineSettings::useDebugger)
         return;
 
-    FileSystem::fileSystem->DeleteFile("xenity_engine_debug.txt");
-    file = new File("xenity_engine_debug.txt");
+    std::string fileName = "xenity_engine_debug.txt";
+#if defined(__vita__)
+    fileName = "data\\xenity_engine\\" + fileName;
+#endif
+    FileSystem::fileSystem->DeleteFile(fileName);
+    file = new File(fileName);
     file->Open(true);
 
     Print("-------- Debug initiated --------");
