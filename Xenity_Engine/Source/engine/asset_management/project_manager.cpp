@@ -2,6 +2,7 @@
 #include "../../xenity.h"
 #include "../../xenity_editor.h"
 #include <json.hpp>
+#include "../reflection/reflection_utils.h"
 
 using json = nlohmann::json;
 
