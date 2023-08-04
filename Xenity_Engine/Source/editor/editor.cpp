@@ -13,7 +13,7 @@
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
 #include "../engine/file_system/file_reference.h"
-#include "../engine/file_system/mesh_loader/wavefront_loader.h";
+#include "../engine/file_system/mesh_loader/wavefront_loader.h"
 #include "../engine/asset_management/project_manager.h"
 #include "../engine/reflection/reflection_utils.h"
 
