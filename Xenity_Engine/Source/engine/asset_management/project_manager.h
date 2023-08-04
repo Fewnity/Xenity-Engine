@@ -11,9 +11,11 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include "../reflection/reflection.h"
 
 class FileReference;
 class File;
+class Scene;
 
 class API ProjectDirectory
 {
@@ -61,6 +63,7 @@ private:
 	static void LoadMetaFile(FileReference* fileReference);
 	static std::string projectName;
 	static std::string gameName;
+	static Scene* startScene;
 	struct PairFile 
 	{
 		File* file;

@@ -33,6 +33,7 @@
 #endif
 
 #include "asset_management/project_manager.h"
+#include "scene_management/scene_manager.h"
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
@@ -343,9 +344,12 @@ void Engine::Loop()
 #endif
 	game = DynamicLibrary::CreateGame();
 #else
-	//game = new Game();
+	game = new Game();
 #endif
-	//game = new Game();
+	// game = new Game();
+
+	ProjectManager::LoadProject();
+	SetGameState(Playing);
 
 	valueFree = false;
 	if (game)
@@ -354,6 +358,24 @@ void Engine::Loop()
 
 	Debug::Print("-------- Game initiated --------");
 
+	if (ProjectManager::GetStartScene())
+	{
+		Debug::Print("Start Scene Set");
+		FileReference *file = ProjectManager::GetFileReferenceById(ProjectManager::GetStartScene()->fileId);
+		if (file)
+		{
+			Debug::Print("Start Scene file found");
+			SceneManager::LoadScene((Scene *)file);
+		}
+		else
+		{
+			Debug::Print("No Start Scene file");
+		}
+	}
+	else
+	{
+		Debug::Print("No Start Scene");
+	}
 
 	while (isRunning)
 	{
