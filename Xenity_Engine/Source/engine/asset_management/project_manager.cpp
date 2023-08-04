@@ -11,6 +11,7 @@ ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
 Scene *ProjectManager::startScene = nullptr;
+std::string projectPath = "project\\";
 
 void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
 {
@@ -32,7 +33,6 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 
 void ProjectManager::LoadProject()
 {
-	std::string projectPath = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\project\\";
 
 	//Get all files of the project
 	Directory* projectDirectoryBase = new Directory(projectPath);
