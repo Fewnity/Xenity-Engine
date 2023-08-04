@@ -38,6 +38,8 @@ set(SOURCES_DIR "Source")
 # Recherchez tous les fichiers .cpp dans le répertoire et ses sous-répertoires
 file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c")
 
+list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
+
 # Ajoutez les fichiers source à l'exécutable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
