@@ -19,10 +19,7 @@ public:
 	static void CreateEmpty();
 	static void CreateEmptyChild();
 	static void SaveScene();
-	static void JsonToReflection(nlohmann::json j, Reflection& component);
-	static nlohmann::json ReflectiveToJson(Reflection& relection);
-	static nlohmann::json MapToJson(std::unordered_map<std::string, Variable> theMap, nlohmann::json json);
-	static void JsonToMap(std::unordered_map<std::string, Variable>, nlohmann::json json);
+
 
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
