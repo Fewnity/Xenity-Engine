@@ -83,6 +83,8 @@
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
+    <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -177,6 +179,8 @@
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
+    <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

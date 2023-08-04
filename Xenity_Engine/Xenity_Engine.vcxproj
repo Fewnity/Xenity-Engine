@@ -123,12 +123,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;VISUAL_STUDIO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,7 +160,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene.cpp" />
@@ -275,7 +278,9 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\scene_management\scene.h" />

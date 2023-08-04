@@ -1,7 +1,9 @@
+#if defined(EDITOR)
 #include "editor.h"
 #include "../xenity.h"
 #include "../xenity_editor.h"
 
+#include "ui/menus/project_settings_menu.h"
 #include "ui/menus/engine_settings_menu.h"
 #include "ui/menus/file_explorer_menu.h"
 #include "ui/menus/hierarchy_menu.h"
@@ -21,6 +23,7 @@ using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
 
+ProjectSettingsMenu* projectSettings = nullptr;
 EngineSettingsMenu* engineSettings = nullptr;
 FileExplorerMenu* fileExplorer = nullptr;
 HierarchyMenu* hierarchy = nullptr;
@@ -32,6 +35,7 @@ GameMenu* gameMenu = nullptr;
 
 void Editor::Start()
 {
+	projectSettings = new ProjectSettingsMenu();
 	engineSettings = new EngineSettingsMenu();
 	fileExplorer = new FileExplorerMenu();
 	hierarchy = new HierarchyMenu();
@@ -40,6 +44,7 @@ void Editor::Start()
 	profiler = new ProfilerMenu();
 	gameMenu = new GameMenu();
 
+	projectSettings->Init();
 	engineSettings->Init();
 	fileExplorer->Init();
 	hierarchy->Init();
@@ -47,8 +52,6 @@ void Editor::Start()
 	mainBar->Init();
 	profiler->Init();
 	gameMenu->Init();
-
-	ProjectManager::LoadProject();
 
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
@@ -92,6 +95,10 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
+	if (EditorUI::showProjectsSettings) 
+	{
+		projectSettings->Draw();
+	}
 	if (EditorUI::showEngineSettings)
 	{
 		engineSettings->Draw();
@@ -169,3 +176,4 @@ void Editor::SaveScene()
 }
 
 #pragma endregion
+#endif

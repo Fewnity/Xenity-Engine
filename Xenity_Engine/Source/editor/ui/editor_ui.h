@@ -51,6 +51,7 @@ public:
 	static bool showProfiler;
 	static bool showEditor;
 	static bool showEngineSettings;
+	static bool showProjectsSettings;
 	static Texture* folderIcon;
 	static Texture* fileIcon;
 	static Texture* sceneIcon;

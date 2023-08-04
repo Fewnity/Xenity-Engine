@@ -194,6 +194,10 @@ void MainBarMenu::Draw()
 		{
 			EditorUI::showEngineSettings = true;
 		}
+		if (ImGui::MenuItem("Project Settings"))
+		{
+			EditorUI::showProjectsSettings = true;
+		}
 		ImGui::EndMenu();
 	}
 

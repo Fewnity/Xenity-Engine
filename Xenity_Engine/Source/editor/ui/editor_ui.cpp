@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
 
 #include "editor_ui.h"
 #include "../editor.h"
@@ -15,6 +15,7 @@ int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;
 bool EditorUI::showEditor = true;
 bool EditorUI::showEngineSettings = false;
+bool EditorUI::showProjectsSettings = false;
 Texture* EditorUI::folderIcon = nullptr;
 Texture* EditorUI::fileIcon = nullptr;
 Texture* EditorUI::sceneIcon = nullptr;

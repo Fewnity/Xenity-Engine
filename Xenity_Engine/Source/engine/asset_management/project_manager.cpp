@@ -274,3 +274,12 @@ std::string ProjectDirectory::GetFolderName()
 
 	return fileName;
 }
+
+std::unordered_map<std::string, Variable> ProjectManager::GetProjetSettingsReflection()
+{
+	std::unordered_map<std::string, Variable> reflectedVariables;
+	reflectedVariables.insert_or_assign("projectName", projectName);
+	reflectedVariables.insert_or_assign("gameName", gameName);
+	reflectedVariables.insert_or_assign("startScene", startScene);
+	return reflectedVariables;
+}
