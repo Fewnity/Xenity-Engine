@@ -40,7 +40,10 @@ File::File(std::string path) : UniqueId(true)
 File::~File()
 {
 #if defined(__PSP__)
-	sceIoClose(fileId);
+	if (fileId >= 0)
+	{
+		sceIoClose(fileId);
+	}
 #else
 	Close();
 #endif
@@ -55,6 +58,7 @@ void File::Write(const std::string data)
 		sceIoLseek(fileId, 0, SEEK_END);
 		int b = sceIoWrite(fileId, data.c_str(), data.size());
 		sceIoClose(fileId);
+		fileId = -1;
 	}
 #else
 	if (file.is_open())
@@ -105,8 +109,9 @@ bool File::CheckIfExist()
 	if (fileId >= 0)
 	{
 		exists = true;
+		sceIoClose(fileId);
+		fileId = -1;
 	}
-	sceIoClose(fileId);
 #else
 	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
 	file.open(path, params);
@@ -131,6 +136,8 @@ bool File::Open(bool createFileIfNotFound)
 	if (fileId >= 0)
 	{
 		isOpen = true;
+		sceIoClose(fileId);
+		fileId = -1;
 	}
 #else
 	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
@@ -168,7 +175,11 @@ bool File::Open(bool createFileIfNotFound)
 void File::Close()
 {
 #if defined(__PSP__)
-	sceIoClose(fileId);
+	if (fileId >= 0)
+	{
+		sceIoClose(fileId);
+		fileId = -1;
+	}
 #else
 	if (file.is_open())
 	{
