@@ -184,7 +184,7 @@ void ProjectManager::SaveMetaFile(FileReference* fileReference)
 	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + ".meta");
 	json metaData;
 	metaData["id"] = fileReference->fileId;
-	metaData["Values"] = Editor::MapToJson(fileReference->GetMetaReflection(), metaData);
+	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection(), metaData);
 
 	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
 	metaFile->Open(true);
@@ -215,7 +215,7 @@ void ProjectManager::LoadMetaFile(FileReference* fileReference)
 			return;
 		}
 
-		Editor::JsonToMap(fileReference->GetMetaReflection(), metaData);
+		ReflectionUtils::JsonToMap(fileReference->GetMetaReflection(), metaData);
 	}
 }
 

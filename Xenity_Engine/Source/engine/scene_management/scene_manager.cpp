@@ -2,6 +2,7 @@
 #include "../../xenity.h"
 #include "../../editor/editor.h"
 #include "../class_registry/class_registry.h"
+#include "../reflection/reflection_utils.h"
 
 using json = nlohmann::json;
 
@@ -34,7 +35,7 @@ void SceneManager::LoadScene(Scene* scene)
 		{
 			auto go = CreateGameObject();
 			go->SetUniqueId(std::stoull(kv.key()));
-			Editor::JsonToReflection(kv.value(), *go.get());
+			ReflectionUtils::JsonToReflection(kv.value(), *go.get());
 			for (auto& kv2 : kv.value()["Components"].items())
 			{
 				std::string className = kv2.value()["Type"];
@@ -69,7 +70,7 @@ void SceneManager::LoadScene(Scene* scene)
 				}
 			}
 
-			Editor::JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
+			ReflectionUtils::JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
 			go->GetTransform()->isTransformationMatrixDirty = true;
 			go->GetTransform()->UpdateWorldValues();
 
@@ -80,7 +81,7 @@ void SceneManager::LoadScene(Scene* scene)
 				{
 					if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
 					{
-						Editor::JsonToReflection(kv2.value(), *go->components[compI].get());
+						ReflectionUtils::JsonToReflection(kv2.value(), *go->components[compI].get());
 						break;
 					}
 				}
