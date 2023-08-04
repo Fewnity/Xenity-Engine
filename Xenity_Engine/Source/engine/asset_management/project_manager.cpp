@@ -148,7 +148,9 @@ void ProjectManager::LoadProject()
 			fileRef->fileType = kv.second;
 			projectFilesRef[fileRef->fileId] = fileRef;
 			LoadMetaFile(fileRef);
+#if defined(EDITOR)
 			SaveMetaFile(fileRef);
+#endif
 		}
 	}
 
@@ -158,6 +160,11 @@ void ProjectManager::LoadProject()
 	allFoundFiles.clear();
 	fileWithoutMeta.clear();
 	compatibleFiles.clear();
+
+	LoadProjectSettings();
+#if defined(EDITOR)
+	SaveProjectSettigs();
+#endif
 }
 
 FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
