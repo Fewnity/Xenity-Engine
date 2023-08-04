@@ -330,6 +330,30 @@ void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valuePtr->get() = (Texture*)ref;
 			}
 		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<Scene*>>(&variableRef))
+		{
+			std::string inputText = "None (Scene)";
+			auto ptr = valuePtr->get();
+			if (ptr != nullptr)
+			{
+				if (ptr->file != nullptr)
+					inputText = ptr->file->GetFileName();
+				else
+					inputText = "Filled but invalid file reference (Scene)";
+
+				inputText += " " + std::to_string(ptr->fileId) + " ";
+				if (ptr->file)
+					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			}
+
+			DrawInputButton(variableName, inputText);
+			FileReference* ref = nullptr;
+			std::string payloadName = "Files" + std::to_string(FileType::File_Scene);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get() = (Scene*)ref;
+			}
+		}
 	}
 }
 
