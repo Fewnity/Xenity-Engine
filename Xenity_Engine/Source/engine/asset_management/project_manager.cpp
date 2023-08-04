@@ -10,6 +10,7 @@ std::unordered_map<uint64_t, FileReference*> ProjectManager::projectFilesRef;
 ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
+Scene *ProjectManager::startScene = nullptr;
 
 void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
 {
@@ -172,12 +173,42 @@ FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
 
 void ProjectManager::LoadProjectSettings() 
 {
+	File *projectFile = new File(projectPath + "project_settings.json");
+	if (projectFile->CheckIfExist())
+	{
+		std::string jsonString = "";
+		projectFile->Open(true);
+		jsonString = projectFile->ReadAll();
+		projectFile->Close();
+		delete projectFile;
 
+		json projectData;
+		try
+		{
+			projectData = json::parse(jsonString);
+		}
+		catch (const std::exception &)
+		{
+			Debug::PrintError("Meta file error");
+			return;
+		}
+
+		ReflectionUtils::JsonToMap(GetProjetSettingsReflection(), projectData);
+	}
 }
 
 void ProjectManager::SaveProjectSettigs() 
 {
+	FileSystem::fileSystem->DeleteFile(projectPath + "project_settings.json");
+	json projectData;
 
+	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection(), projectData);
+
+	File *projectFile = new File(projectPath + "project_settings.json");
+	projectFile->Open(true);
+	projectFile->Write(projectData.dump(0));
+	projectFile->Close();
+	delete projectFile;
 }
 
 void ProjectManager::SaveMetaFile(FileReference* fileReference)

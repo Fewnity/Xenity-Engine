@@ -40,11 +40,21 @@ public:
 	static void SaveMetaFile(FileReference* fileReference);
 	static void LoadProjectSettings();
 	static void SaveProjectSettigs();
-	static std::string GetProjectName() {
+	static std::unordered_map<std::string, Variable> GetProjetSettingsReflection();
+
+	static std::string GetProjectName() 
+	{
 		return projectName;
 	}
-	static std::string GetGameName() {
+
+	static std::string GetGameName() 
+	{
 		return gameName;
+	}
+
+	static Scene* GetStartScene() 
+	{
+		return startScene;
 	}
 
 private:
