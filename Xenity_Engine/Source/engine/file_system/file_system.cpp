@@ -256,17 +256,82 @@ std::vector<File*> Directory::GetAllFiles()
 
 void FileSystem::FillDirectory(Directory* directory)
 {
-	for (const auto& file : std::filesystem::directory_iterator(directory->path))
+#if defined(__PSP__)
+	DIR *dir = opendir(directory->GetPath().c_str());
+	if (dir == NULL)
 	{
-		if (file.is_directory())
+		//Debug::PrintError("Impossible d'ouvrir le dossier");
+		return;
+	}
+	struct dirent *ent;
+	while ((ent = readdir(dir)) != NULL)
+	{
+		std::string found = "";
+		found += ent->d_name;
+		if (found == "." || found == "..")
+			continue;
+
+		std::string fullPath = directory->GetPath() + found;
+		struct stat statbuf;
+		if (stat(fullPath.c_str(), &statbuf) == -1)
 		{
-			Directory* newDirectory = nullptr;
+			// Debug::PrintError("Erreur lors de l'appel à stat");
+			continue;
+		}
+
+		if (S_ISREG(statbuf.st_mode))
+		{
+			File *newFile = nullptr;
 			try
 			{
-				newDirectory = new Directory(file.path().string() + "\\");
+				newFile = new File(fullPath);
+				directory->files.push_back(newFile);
+			}
+			catch (const std::exception &)
+			{
+				if (newFile != nullptr)
+					delete newFile;
+			}
+		}
+		else if (S_ISDIR(statbuf.st_mode))
+		{
+			Directory *newDirectory = nullptr;
+			try
+			{
+				newDirectory = new Directory(fullPath + "\\");
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
+			{
+				if (newDirectory != nullptr)
+					delete newDirectory;
+			}
+		}
+
+		// printf("%s\n", ent->d_name);
+	}
+	closedir(dir);
+#else
+	std::string dirPath = directory->GetPath();
+#if defined(__vita__)
+	dirPath = PSVITA_BASE_DIR + dirPath;
+#endif
+	for (const auto &file : std::filesystem::directory_iterator(dirPath))
+	{
+
+		if (file.is_directory())
+		{
+			Directory *newDirectory = nullptr;
+			try
+			{
+			std::string path = file.path().string();
+#if defined(__vita__)
+			path = path.substr(4);
+#endif
+				newDirectory = new Directory(path + "\\");
+				directory->subdirectories.push_back(newDirectory);
+			}
+			catch (const std::exception &)
 			{
 				if (newDirectory != nullptr)
 					delete newDirectory;
@@ -274,21 +339,25 @@ void FileSystem::FillDirectory(Directory* directory)
 		}
 		else if (file.is_regular_file())
 		{
-			File* newFile = nullptr;
+			File *newFile = nullptr;
 			try
 			{
-				std::string p = file.path().string();
-				p = file.path().string();
+			std::string path = file.path().string();
+#if defined(__vita__)
+			path = path.substr(4);
+#endif
+				std::string p = path;
 				newFile = new File(p);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 				if (newFile != nullptr)
 					delete newFile;
 			}
 		}
 	}
+#endif
 }
 
 #pragma endregion
