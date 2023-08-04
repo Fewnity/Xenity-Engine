@@ -69,12 +69,20 @@ std::string File::ReadAll()
 {
 	std::string allText = "";
 #if defined(__PSP__)
-	int pos = sceIoLseek(fileId, 0, SEEK_END);
-	sceIoLseek(fileId, 0, SEEK_SET);
-	char* data = new char[pos];
-	sceIoRead(fileId, data, pos);
-	allText = data;
-	delete[] data;
+	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR, 0777);
+	if (fileId >= 0)
+	{
+		int pos = sceIoLseek(fileId, 0, SEEK_END);
+		sceIoLseek(fileId, 0, SEEK_SET);
+		char *data = new char[pos + 1];
+		data[pos] = 0;
+		sceIoRead(fileId, data, pos);
+		allText = data;
+		delete[] data;
+
+		sceIoClose(fileId);
+		fileId = -1;
+	}
 #else
 	file.seekg(0, std::ios_base::beg);
 	std::string tempText;
