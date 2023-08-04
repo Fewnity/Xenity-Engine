@@ -32,13 +32,9 @@ File::File(std::string path) : UniqueId(true)
 	// path = PSVITA_PATH + path;
 	path = PSVITA_BASE_DIR + path;
 #endif
-
 	this->path = path;
-
-	//std::cout << path << std::endl;
 	int pointIndex = path.find_last_of(".");
 	pathExtention = path.substr(pointIndex);
-	//std::cout << pathExtention << std::endl;
 }
 
 File::~File()
