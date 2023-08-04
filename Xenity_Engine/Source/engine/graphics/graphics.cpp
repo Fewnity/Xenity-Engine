@@ -5,7 +5,10 @@
 #include <algorithm>
 #include "../file_system/mesh_loader/wavefront_loader.h"
 #include "../graphics/3d_graphics/mesh_data.h"
+
+#if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
+#endif
 
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
@@ -41,6 +44,7 @@ void Graphics::SetSkybox(SkyBox* skybox_)
 
 void Graphics::UpdaterameBuffer()
 {
+#if defined(_WIN32) || defined(_WIN64)
 	if (needFremeBufferUpdate)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -70,6 +74,7 @@ void Graphics::UpdaterameBuffer()
 		Window::SetResolution(framebufferSize.x, framebufferSize.y);
 		needFremeBufferUpdate = false;
 	}
+#endif
 }
 
 void Graphics::ChangeFrameBufferSize(Vector2Int resolution)
