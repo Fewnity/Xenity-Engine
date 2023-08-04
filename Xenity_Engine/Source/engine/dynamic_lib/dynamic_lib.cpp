@@ -5,6 +5,7 @@
 #include <windows.h>
 #include "../debug/debug.h"
 #include <thread>
+#include "../asset_management/project_manager.h"
 
 typedef void(__cdecl* MYPROC2)();
 typedef GameInterface* (__cdecl* CreateGameFunction)();
@@ -42,7 +43,9 @@ void DynamicLibrary::UnloadGameLibrary()
 
 void DynamicLibrary::StartGame()
 {
-	system("C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\Game.exe");
+	std::string fileName = ProjectManager::GetGameName();
+	std::string command = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\" + fileName + ".exe";
+	system(command.c_str());
 }
 
 std::string DynamicLibrary::GetStartCompilerCommand()
@@ -99,7 +102,8 @@ std::string DynamicLibrary::GetCompileGameLibCommand(BuildType buildType)
 std::string DynamicLibrary::GetCompileGameExeCommand() 
 {
 	std::string command;
-	command = "cl /FeGame.exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
+	std::string fileName = ProjectManager::GetGameName();
+	command = "cl /Fe" + fileName + ".exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
 	//command += " >nul"; // Mute output
 	return command;
 }
@@ -112,10 +116,12 @@ void DynamicLibrary::CompileGame(BuildType buildType)
 	command += GetNavToEngineFolderCommand();
 	command += GetAddNextCommand();
 	command += GetCompileGameLibCommand(buildType);
-	command += GetAddNextCommand();
 
 	if (buildType != EditorHotReloading)
+	{
+		command += GetAddNextCommand();
 		command += GetCompileGameExeCommand();
+	}
 
 	int buildResult = system(command.c_str());
 	if (buildResult == 0)
