@@ -17,6 +17,7 @@
 #define MODEL_PATH R"(models\)"
 
 #define PSVITA_PATH R"(ux0:data\xenity_engine\)"
+#define PSVITA_BASE_DIR "ux0:"
 
 FileSystem* FileSystem::fileSystem = nullptr;
 
@@ -25,7 +26,8 @@ FileSystem* FileSystem::fileSystem = nullptr;
 File::File(std::string path) : UniqueId(true)
 {
 #if defined(__vita__)
-	path = PSVITA_PATH + path;
+	// path = PSVITA_PATH + path;
+	path = PSVITA_BASE_DIR + path;
 #endif
 
 	this->path = path;
@@ -184,7 +186,11 @@ std::string File::GetFolderPath() const
 	int lastSlashPos = path.find_last_of('\\');
 	if (lastSlashPos == -1)
 		lastSlashPos = 0;
+#if defined(__vita__)
+	std::string fileName = path.substr(4, lastSlashPos + 1);
+#else
 	std::string fileName = path.substr(0, lastSlashPos + 1);
+#endif
 
 	return fileName;
 }
@@ -211,6 +217,9 @@ std::string File::GetFileName() const
 
 Directory::Directory(std::string path) : UniqueId(true)
 {
+#if defined(__vita__)
+	path = PSVITA_BASE_DIR + path;
+#endif
 	this->path = path;
 	FileSystem::fileSystem->FillDirectory(this);
 }
@@ -368,10 +377,14 @@ void FileSystem::FillDirectory(Directory* directory)
 
 void FileSystem::DeleteFile(const std::string path)
 {
+	std::string newPath = path;
+#if defined(__vita__)
+	newPath = PSVITA_BASE_DIR + path;
+#endif
 #if defined(__PSP__)
-	sceIoRemove(path.c_str());
+	sceIoRemove(newPath.c_str());
 #else
-	remove(path.c_str());
+	remove(newPath.c_str());
 #endif
 }
 
