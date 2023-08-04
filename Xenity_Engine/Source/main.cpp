@@ -14,20 +14,19 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 /*
 Add Drag and Drop for GameObjects
 Add Drag and Drop for Components
-Bind compilation buttons
-Add scene files
 Add unselect button
 Add unbind file variable button
 Add right click on files to remove files
-Add folder to file explorer
 Improve file explorer code
-Add file settings in the meta
 Automatic file unload system
 Re add delete texture function in renderer
 
-Compile game and remove editor things
+Check how to use WSL
+Add a system to copy editor files and game files to wsl
+Add a system to Create Makefile folder and Makefile file
 Add play mode
 Have more than one camera
+Fix debug warning and Error in file
 
 Add materials
 Add async texture loading
