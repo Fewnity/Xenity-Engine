@@ -162,11 +162,14 @@ void ProjectManager::LoadProject()
 
 FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
 {
-	FileReference* fileRef = nullptr;
-	auto it = projectFilesRef.find(id);
-	if (it != projectFilesRef.end())
+	FileReference *fileRef = nullptr;
+	if (id != -1)
 	{
-		fileRef = it->second;
+		auto it = projectFilesRef.find(id);
+		if (it != projectFilesRef.end())
+		{
+			fileRef = it->second;
+		}
 	}
 	return fileRef;
 }
