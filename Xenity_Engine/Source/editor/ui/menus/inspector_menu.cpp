@@ -25,17 +25,21 @@ void InspectorMenu::Draw()
 	auto selectedGameObject = Engine::selectedGameObject.lock();
 	FileReference* selectedFileReference = Engine::selectedFileReference;
 
-	if (selectedFileReference) 
+	if (selectedFileReference)
 	{
 		std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtention();
 		ImGui::Text(fileNameExt.c_str());
 		ImGui::Separator();
 
-		EditorUI::DrawMap(selectedFileReference->GetMetaReflection());
-
-		if(ImGui::Button("Apply")) 
+		auto metaReflection = selectedFileReference->GetMetaReflection();
+		if (metaReflection.size() != 0)
 		{
-			ProjectManager::SaveMetaFile(selectedFileReference);
+			EditorUI::DrawMap(selectedFileReference->GetMetaReflection());
+
+			if (ImGui::Button("Apply"))
+			{
+				ProjectManager::SaveMetaFile(selectedFileReference);
+			}
 		}
 	}
 	else if (selectedGameObject)
