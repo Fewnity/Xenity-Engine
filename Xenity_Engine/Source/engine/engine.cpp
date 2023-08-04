@@ -1,25 +1,26 @@
-//#define EDITOR
+// #define EDITOR
 #include "engine.h"
 #include "engine_settings.h"
 #include "../xenity.h"
-#include "../xenity_editor.h"
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
 #include "file_system/mesh_loader/wavefront_loader.h"
 #include "audio/audio_manager.h"
 #include "network/network.h"
+#include "dynamic_lib/dynamic_lib.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
 #include "dynamic_lib/dynamic_lib.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include "../editor/editor.h"
+#include "../xenity_editor.h"
 #else
 #include "../game_test/game.h"
 #endif
 #include "game_interface.h"
-#include "../game_test/game.h"
+// #include "../game_test/game.h"
 #include "class_registry/class_registry.h"
-
 
 #ifdef __PSP__
 #include "../psp/gu2gl.h"
@@ -30,7 +31,6 @@
 #include <psp2/kernel/processmgr.h>
 #include <psp2/power.h>
 #endif
-#include "../editor/editor.h"
 
 #include "asset_management/project_manager.h"
 
@@ -123,16 +123,16 @@ int Engine::Init(const std::string exePath)
 	AssetManager::Init();
 	AudioManager::Init();
 	Debug::Print("-------- Editor UI Not implemented --------");
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
 	EditorUI::Init();
 #endif
 	Time::Init();
 
 	// Init random
 	srand((unsigned int)time(NULL));
-
+#if defined(EDITOR)
 	Editor::Start();
-
+#endif
 	Debug::Print("-------- Engine fully initiated --------\n");
 
 	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
@@ -368,7 +368,9 @@ void Engine::Loop()
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
+#if defined(EDITOR)
 			ImGui_ImplSDL2_ProcessEvent(&event);
+#endif
 			InputSystem::Read(event);
 			switch (event.type)
 			{
@@ -398,7 +400,9 @@ void Engine::Loop()
 		gameLoopBenchmark->Start();
 
 		valueFree = false;
+#if defined(EDITOR)
 		Editor::Update();
+#endif
 		if (game)
 			game->Update();
 		valueFree = true;
@@ -449,11 +453,14 @@ void Engine::Loop()
 
 void Engine::BuildGame() 
 {
+#if defined(_WIN32) || defined(_WIN64)
 	DynamicLibrary::CompileGame(BuildType::BuildGame);
+#endif
 }
 
 void Engine::CompileGame() 
 {
+#if defined(_WIN32) || defined(_WIN64)
 	delete game;
 	game = nullptr;
 	EmptyScene();
@@ -473,6 +480,7 @@ void Engine::CompileGame()
 	{
 		Debug::PrintError("Game compilation failed");
 	}
+#endif
 }
 
 void Engine::EmptyScene()
