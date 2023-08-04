@@ -7,7 +7,10 @@
 #include "../engine_settings.h"
 #include "../debug/debug.h"
 #include <filesystem>
-
+#if defined(__PSP__)
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
 #if defined(__vita__)
 #include <psp2/io/stat.h>
 #endif
