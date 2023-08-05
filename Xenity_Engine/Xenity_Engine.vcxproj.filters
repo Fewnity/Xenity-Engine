@@ -85,6 +85,8 @@
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
+    <ClCompile Include="Source\editor\compiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -181,6 +183,9 @@
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
     <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
+    <ClInclude Include="Source\engine\platform.h" />
+    <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
+    <ClInclude Include="Source\editor\compiler.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

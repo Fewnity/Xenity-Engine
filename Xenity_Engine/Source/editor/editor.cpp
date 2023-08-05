@@ -11,6 +11,7 @@
 #include "ui/menus/main_bar_menu.h"
 #include "ui/menus/profiler_menu.h"
 #include "ui/menus/game_menu.h"
+#include "ui/menus/compiling_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -23,15 +24,15 @@ using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
 
-ProjectSettingsMenu* projectSettings = nullptr;
-EngineSettingsMenu* engineSettings = nullptr;
-FileExplorerMenu* fileExplorer = nullptr;
-HierarchyMenu* hierarchy = nullptr;
-InspectorMenu* inspector = nullptr;
-MainBarMenu* mainBar = nullptr;
-ProfilerMenu* profiler = nullptr;
-GameMenu* gameMenu = nullptr;
-
+ProjectSettingsMenu* Editor::projectSettings = nullptr;
+EngineSettingsMenu* Editor::engineSettings = nullptr;
+FileExplorerMenu* Editor::fileExplorer = nullptr;
+HierarchyMenu* Editor::hierarchy = nullptr;
+InspectorMenu* Editor::inspector = nullptr;
+MainBarMenu* Editor::mainBar = nullptr;
+ProfilerMenu* Editor::profiler = nullptr;
+GameMenu* Editor::gameMenu = nullptr;
+CompilingMenu* Editor::compilingMenu = nullptr;
 
 void Editor::Start()
 {
@@ -43,6 +44,7 @@ void Editor::Start()
 	mainBar = new MainBarMenu();
 	profiler = new ProfilerMenu();
 	gameMenu = new GameMenu();
+	compilingMenu = new CompilingMenu();
 
 	projectSettings->Init();
 	engineSettings->Init();
@@ -114,6 +116,7 @@ void Editor::Draw()
 	{
 		profiler->Draw();
 	}
+	compilingMenu->Draw();
 	gameMenu->Draw();
 	EditorUI::Render();
 }

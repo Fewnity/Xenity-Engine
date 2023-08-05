@@ -10,6 +10,10 @@
 #include <variant>
 #include <imgui/imgui_internal.h>
 #include "../../engine/asset_management/project_manager.h"
+#include <Windows.h>
+//#include <Commdlg.h>
+#include <ShObjIdl.h>
+//#include <ShObjIdl.h>
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;
@@ -150,6 +154,70 @@ std::string EditorUI::GenerateItemId()
 	std::string itemId = "##" + std::to_string(uiId);
 	uiId++;
 	return itemId;
+}
+
+std::string EditorUI::OpenFolderDialog(std::string title)
+{
+	std::string path = "";
+
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+	IFileOpenDialog* pFileOpen;
+
+	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
+
+	if (SUCCEEDED(hr)) {
+		DWORD dwOptions;
+		pFileOpen->GetOptions(&dwOptions);
+
+		/*COMDLG_FILTERSPEC fileTypes[] = {
+			{ L"Json Files and csv", L"*.json;*.dat" },
+	{ L"Json Files", L"*.json" },
+	{ L"CSV Files", L"*.*" }
+		};
+		pFileOpen->SetFileTypes(ARRAYSIZE(fileTypes), fileTypes);*/
+		pFileOpen->SetOptions(dwOptions | FOS_PICKFOLDERS);
+
+		// Initializing an object of wstring
+		std::wstring tempTitle = std::wstring(title.begin(), title.end());
+
+		// Applying c_str() method on temp
+		LPCWSTR wideString = tempTitle.c_str();
+
+		pFileOpen->SetTitle(tempTitle.c_str());
+		hr = pFileOpen->Show(NULL);
+
+		if (SUCCEEDED(hr)) 
+		{
+			IShellItem* pItem;
+			hr = pFileOpen->GetResult(&pItem);
+			if (SUCCEEDED(hr)) 
+			{
+				PWSTR pszFolderPath;
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
+				if (SUCCEEDED(hr)) 
+				{
+					std::wstringstream ss;
+					ss << pszFolderPath;
+					std::wstring wst = ss.str();
+					path = std::string(wst.begin(), wst.end());
+					CoTaskMemFree(pszFolderPath);
+				}
+				pItem->Release();
+			}
+		}
+		
+		pFileOpen->Release();
+	}
+
+	CoUninitialize();
+
+	return path;
+}
+
+std::string EditorUI::OpenFileDialog()
+{
+	return std::string();
 }
 
 void EditorUI::DrawTreeItem(ProjectDirectory * projectDir)

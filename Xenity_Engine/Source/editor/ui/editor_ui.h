@@ -47,6 +47,9 @@ public:
 	static void DrawReflection(Reflection& reflection);
 	static void DrawMap(std::unordered_map<std::string, Variable> myMap);
 
+	static std::string OpenFolderDialog(std::string title);
+	static std::string OpenFileDialog();
+
 	static std::string GenerateItemId();
 	static bool showProfiler;
 	static bool showEditor;

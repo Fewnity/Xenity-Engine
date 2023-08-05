@@ -5,17 +5,25 @@
 #include "../../editor.h"
 #include "../../../engine/class_registry/class_registry.h"
 #include "../../../engine/dynamic_lib/dynamic_lib.h"
+#include "compiling_menu.h"
+#include "../../compiler.h"
+
+#include <Windows.h>
+#include <Commdlg.h>
+#include <ShObjIdl.h>
 
 void MainBarMenu::Init()
 {
 }
 
+static bool IsOpen = true;
 void MainBarMenu::Draw()
 {
 	bool hasSelectedGameObject = !Engine::selectedGameObject.expired();
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
+
 	if (ImGui::BeginMenu("File")) //Draw File menu
 	{
 		if (ImGui::MenuItem("New Scene"))
@@ -30,14 +38,29 @@ void MainBarMenu::Draw()
 		{
 			Editor::SaveScene();
 		}
-		if (ImGui::MenuItem("Build"))
+		if (ImGui::MenuItem("Open Project"))
 		{
-			Engine::BuildGame();
+			Debug::PrintWarning("(File/Open Project) Unimplemented button");
+		}
+		if (ImGui::MenuItem("Build for Windows"))
+		{
+			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
+			Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildGame, exportPath);
+		}
+		if (ImGui::MenuItem("Build for PSP"))
+		{
+			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
+			Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildGame, exportPath);
+		}
+		if (ImGui::MenuItem("Build for PsVita"))
+		{
+			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
+			Compiler::CompileGameThreaded(Platform::P_PsVita, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build And Run"))
 		{
-			DynamicLibrary::CompileGame(BuildType::BuildAndRunGame);
-			//Engine::CompileGame(BuildAndRunGame);
+			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
+			Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildAndRunGame, exportPath);
 		}
 		if (ImGui::MenuItem("Exit"))
 		{
@@ -178,7 +201,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Hot Reload Game"))
 		{
-			Engine::CompileGame();
+			Compiler::HotReloadGame();
 		}
 		ImGui::EndMenu();
 	}

@@ -9,6 +9,15 @@
 class Component;
 class Reflection;
 class FileReference;
+class ProjectSettingsMenu;
+class EngineSettingsMenu;
+class FileExplorerMenu;
+class HierarchyMenu;
+class InspectorMenu;
+class MainBarMenu;
+class ProfilerMenu;
+class GameMenu;
+class CompilingMenu;
 
 class Editor
 {
@@ -33,7 +42,16 @@ public:
 			return nullptr;
 		}
 	}
+	static CompilingMenu* compilingMenu;
 private:
+	static ProjectSettingsMenu* projectSettings;
+	static EngineSettingsMenu* engineSettings;
+	static FileExplorerMenu* fileExplorer;
+	static HierarchyMenu* hierarchy;
+	static InspectorMenu* inspector;
+	static MainBarMenu* mainBar;
+	static ProfilerMenu* profiler;
+	static GameMenu* gameMenu;
 	static std::weak_ptr<GameObject> cameraGO;
 };
 

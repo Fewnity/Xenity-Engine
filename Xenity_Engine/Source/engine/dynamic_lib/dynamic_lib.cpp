@@ -6,6 +6,7 @@
 #include "../debug/debug.h"
 #include <thread>
 #include "../asset_management/project_manager.h"
+#include <filesystem>
 
 typedef void(__cdecl* MYPROC2)();
 typedef GameInterface* (__cdecl* CreateGameFunction)();
@@ -38,104 +39,6 @@ void DynamicLibrary::UnloadGameLibrary()
 		{
 			Debug::PrintError("Library cannot be freed");
 		}
-	}
-}
-
-void DynamicLibrary::StartGame()
-{
-	std::string fileName = ProjectManager::GetGameName();
-	std::string command = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\" + fileName + ".exe";
-	system(command.c_str());
-}
-
-std::string DynamicLibrary::GetStartCompilerCommand()
-{
-	std::string command;
-	command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"; // Go to the compiler folder
-	command += " && vcvarsamd64_x86.bat"; // Start the compiler
-	//command += " >nul";	// Mute output
-	return command;
-}
-
-std::string DynamicLibrary::GetAddNextCommand()
-{
-	std::string command = " && ";
-	return command;
-}
-
-std::string DynamicLibrary::GetNavToEngineFolderCommand() 
-{
-	std::string command = "cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";
-	return command;
-}
-
-std::string DynamicLibrary::GetCompileGameLibCommand(BuildType buildType)
-{
-	std::string command = "";
-	command += "cl /std:c++20 /MP /EHsc /DIMPORT"; // Start compilation
-	if (buildType == EditorHotReloading)
-	{
-		command += " /DEDITOR";
-	}
-	command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp";
-	if (buildType != EditorHotReloading)
-	{
-		command += " engine_game.lib";
-	}
-	else
-	{
-		command += " engine_editor.lib";
-	}
-	command += " /link";
-	if (buildType != EditorHotReloading)
-	{
-		command += " /implib:game.lib /out:game.dll";
-	}
-	else
-	{
-		command += " /implib:game_editor.lib /out:game_editor.dll";
-	}
-	//command += " >nul"; // Mute output
-	return command;
-}
-
-std::string DynamicLibrary::GetCompileGameExeCommand() 
-{
-	std::string command;
-	std::string fileName = ProjectManager::GetGameName();
-	command = "cl /Fe" + fileName + ".exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
-	//command += " >nul"; // Mute output
-	return command;
-}
-
-void DynamicLibrary::CompileGame(BuildType buildType)
-{
-	std::string command;
-	command = GetStartCompilerCommand();
-	command += GetAddNextCommand();
-	command += GetNavToEngineFolderCommand();
-	command += GetAddNextCommand();
-	command += GetCompileGameLibCommand(buildType);
-
-	if (buildType != EditorHotReloading)
-	{
-		command += GetAddNextCommand();
-		command += GetCompileGameExeCommand();
-	}
-
-	int buildResult = system(command.c_str());
-	if (buildResult == 0)
-	{
-		Debug::Print("Game compiled successfully!");
-		if (buildType == BuildAndRunGame)
-		{
-			auto t = std::thread(StartGame);
-			t.detach();
-		}
-	}
-	else
-	{
-		Debug::PrintError("Unable to compile : " + command);
 	}
 }
 
