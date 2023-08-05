@@ -268,8 +268,7 @@ std::string ProjectDirectory::GetFolderName()
 	int textLen = path.size();
 
 	int lastSlashPos = path.find_last_of('\\', textLen - 2);
-	if (lastSlashPos == -1)
-		lastSlashPos = 0;
+
 	std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
 
 	return fileName;
