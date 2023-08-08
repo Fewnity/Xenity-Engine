@@ -201,6 +201,7 @@ std::string EditorUI::OpenFolderDialog(std::string title)
 					ss << pszFolderPath;
 					std::wstring wst = ss.str();
 					path = std::string(wst.begin(), wst.end());
+					path += "\\";
 					CoTaskMemFree(pszFolderPath);
 				}
 				pItem->Release();
