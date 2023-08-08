@@ -337,7 +337,6 @@ void FileSystem::FillDirectory(Directory* directory)
 #endif
 	for (const auto &file : std::filesystem::directory_iterator(dirPath))
 	{
-
 		if (file.is_directory())
 		{
 			Directory *newDirectory = nullptr;
