@@ -19,7 +19,7 @@ void AudioClipStream::OpenStream(std::string filePath)
         if (!drwav_init_file(&wav, filePath.c_str(), NULL))
         {
             // Error opening WAV file.
-            Debug::Print("AUDIO ERROR" + filePath);
+            Debug::PrintError("AUDIO ERROR" + filePath);
         }
         else
         {
@@ -32,7 +32,7 @@ void AudioClipStream::OpenStream(std::string filePath)
         if (!drmp3_init_file(&mp3, filePath.c_str(), NULL))
         {
             // Error opening MP3 file.
-            Debug::Print("AUDIO ERROR: " + filePath);
+            Debug::PrintError("AUDIO ERROR: " + filePath);
         }
         else
         {

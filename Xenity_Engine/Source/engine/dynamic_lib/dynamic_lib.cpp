@@ -54,7 +54,7 @@ GameInterface* DynamicLibrary::CreateGame()
 		}
 		else
 		{
-			Debug::PrintError("Cannot create gam");
+			Debug::PrintError("Cannot create game");
 		}
 	}
 	else
