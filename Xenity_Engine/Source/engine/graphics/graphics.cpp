@@ -108,23 +108,23 @@ void Graphics::Init()
 	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture* back = new Texture("sunset_back.png", "sunset_back", false);
+	Texture* back = new Texture("assets/sunset_back.png", "sunset_back", false);
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture* down = new Texture("sunset_down.png", "sunset_down", false);
+	Texture* down = new Texture("assets/sunset_down.png", "sunset_down", false);
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture* front = new Texture("sunset_front.png", "sunset_front", false);
+	Texture* front = new Texture("assets/sunset_front.png", "sunset_front", false);
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture* left = new Texture("sunset_left.png", "sunset_left", false);
+	Texture* left = new Texture("assets/sunset_left.png", "sunset_left", false);
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture* right = new Texture("sunset_right.png", "sunset_right", false);
+	Texture* right = new Texture("assets/sunset_right.png", "sunset_right", false);
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture* up = new Texture("sunset_up.png", "sunset_up", false);
+	Texture* up = new Texture("assets/sunset_up.png", "sunset_up", false);
 	up->SetWrapMode(Texture::ClampToEdge);
 
 	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
 
-	skyPlane = MeshManager::LoadMesh("models/Plane2Triangulate.obj");
+	skyPlane = MeshManager::LoadMesh("engine_assets/models/Plane2Triangulate.obj");
 
 	Debug::Print("-------- Graphics initiated --------");
 }
