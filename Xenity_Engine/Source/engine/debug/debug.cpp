@@ -25,9 +25,10 @@ void Debug::PrintError(std::string text)
 
     PrintInOnlineConsole(text);
     text += '\n';
-    std::string newString = "\033[31m[ERROR] " + text;
-    PrintInConsole(newString);
-    PrintInFile(text);
+    std::string textWithoutColor = "[ERROR] " + text;
+    std::string textWithColor = "\033[31m" + textWithoutColor;
+    PrintInConsole(textWithColor);
+    PrintInFile(textWithoutColor);
     debugText += text;
 }
 
@@ -41,9 +42,10 @@ void Debug::PrintWarning(std::string text)
 
     PrintInOnlineConsole(text);
     text += '\n';
-    std::string newString = "\033[33m[WARNING] " + text;
-    PrintInConsole(newString);
-    PrintInFile(text);
+    std::string textWithoutColor = "[WARNING] " + text;
+    std::string textWithColor = "\033[33m" + textWithoutColor;
+    PrintInConsole(textWithColor);
+    PrintInFile(textWithoutColor);
     debugText += text;
 }
 
