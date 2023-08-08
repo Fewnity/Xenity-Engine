@@ -270,7 +270,7 @@ void Texture::LoadTexture(const std::string filename)
 	if (!buffer)
 	{
 		debugText = "Failed to load texture";
-		Debug::Print(debugText);
+		Debug::PrintError(debugText);
 		return;
 	}
 #if defined(__PSP__)
