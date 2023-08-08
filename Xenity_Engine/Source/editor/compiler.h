@@ -21,6 +21,6 @@ private:
 	static std::string GetNavToEngineFolderCommand();
 	static std::string GetCompileGameLibCommand(BuildType buildType);
 	static std::string GetCompileGameExeCommand();
-	static void StartGame();
+	static void StartGame(Platform platform, std::string exportPath);
 };
 

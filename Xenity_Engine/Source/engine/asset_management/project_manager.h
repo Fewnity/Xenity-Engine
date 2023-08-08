@@ -8,6 +8,8 @@
 
 #pragma once
 
+#define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
+
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -36,7 +38,7 @@ class API ProjectManager
 public:
 
 	static ProjectDirectory* projectDirectory;
-	static void LoadProject();
+	static void LoadProject(std::string projectPathToLoad);
 	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
 	static FileReference* GetFileReferenceById(uint64_t id);
 	static void SaveMetaFile(FileReference* fileReference);
@@ -59,11 +61,29 @@ public:
 		return startScene;
 	}
 
+	static std::string GetProjectFolderPath() 
+	{
+		return projectFolderPath;
+	}
+
+	static std::string GetAssetFolderPath()
+	{
+		return assetFolderPath;
+	}
+
+	static std::string GetEngineAssetFolderPath()
+	{
+		return engineAssetsFolderPath;
+	}
+
 private:
 	static void LoadMetaFile(FileReference* fileReference);
 	static std::string projectName;
 	static std::string gameName;
 	static Scene* startScene;
+	static std::string projectFolderPath;
+	static std::string engineAssetsFolderPath;
+	static std::string assetFolderPath;
 	struct PairFile 
 	{
 		File* file;

@@ -11,7 +11,9 @@ ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
 Scene *ProjectManager::startScene = nullptr;
-std::string projectPath = "project\\";
+std::string ProjectManager::projectFolderPath = "";
+std::string ProjectManager::assetFolderPath = "";
+std::string ProjectManager::engineAssetsFolderPath = "";
 
 void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
 {
@@ -31,14 +33,19 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 	}
 }
 
-void ProjectManager::LoadProject()
+void ProjectManager::LoadProject(std::string projectPathToLoad)
 {
+	Debug::Print("Loading project: " + projectPathToLoad);
+
+	projectFolderPath = projectPathToLoad;
+	assetFolderPath = projectPathToLoad + "assets\\";
+	engineAssetsFolderPath = ".\\engine_assets\\";
 
 	//Get all files of the project
-	Directory* projectDirectoryBase = new Directory(projectPath);
+	Directory* projectDirectoryBase = new Directory(assetFolderPath);
 	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles();
 
-	projectDirectory = new ProjectDirectory(projectPath);
+	projectDirectory = new ProjectDirectory(assetFolderPath);
 	Engine::currentProjectDirectory = projectDirectory;
 	std::vector<File*> allFoundFiles;
 	std::unordered_map<File*, FileType> compatibleFiles;
@@ -165,6 +172,7 @@ void ProjectManager::LoadProject()
 #if defined(EDITOR)
 	SaveProjectSettigs();
 #endif
+	Debug::Print("Project loaded");
 }
 
 FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
@@ -183,7 +191,7 @@ FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
 
 void ProjectManager::LoadProjectSettings() 
 {
-	File *projectFile = new File(projectPath + "project_settings.json");
+	File *projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";
@@ -209,12 +217,12 @@ void ProjectManager::LoadProjectSettings()
 
 void ProjectManager::SaveProjectSettigs() 
 {
-	FileSystem::fileSystem->DeleteFile(projectPath + "project_settings.json");
+	FileSystem::fileSystem->DeleteFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection(), projectData);
 
-	File *projectFile = new File(projectPath + "project_settings.json");
+	File *projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	projectFile->Open(true);
 	projectFile->Write(projectData.dump(0));
 	projectFile->Close();

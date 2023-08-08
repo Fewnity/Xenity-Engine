@@ -18,6 +18,7 @@
 #else
 #include "../game_test/game.h"
 #endif
+
 #include "game_interface.h"
 // #include "../game_test/game.h"
 #include "class_registry/class_registry.h"
@@ -34,6 +35,7 @@
 
 #include "asset_management/project_manager.h"
 #include "scene_management/scene_manager.h"
+#include "../editor/compiler.h"
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
@@ -85,7 +87,7 @@ int Engine::Init(const std::string exePath)
 	RegisterEngineComponents();
 
 	/* Initialize libraries */
-	NetworkManager::Init();
+	//NetworkManager::Init();
 
 	Performance::Init();
 	// FileSystem::InitFileSystem(exePath);
@@ -336,9 +338,18 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
+#if defined(EDITOR)
+	SetGameState(Stopped);
+	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
+#else
+	SetGameState(Playing);
+	std::string projectPath = ".\\";
+#endif
+	ProjectManager::LoadProject(projectPath);
+
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary("game_editor");
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
 #else
 	DynamicLibrary::LoadGameLibrary("game");
 #endif
@@ -346,10 +357,7 @@ void Engine::Loop()
 #else
 	game = new Game();
 #endif
-	// game = new Game();
 
-	ProjectManager::LoadProject();
-	SetGameState(Playing);
 
 	valueFree = false;
 	if (game)
@@ -376,7 +384,9 @@ void Engine::Loop()
 	{
 		Debug::Print("No Start Scene");
 	}
-
+/*#if defined(EDITOR)
+	DynamicLibrary::CopyProjectToWSL();
+#endif*/
 	while (isRunning)
 	{
 		engineLoopBenchmark->Start();
@@ -471,38 +481,6 @@ void Engine::Loop()
 	}
 
 	delete game;
-}
-
-void Engine::BuildGame() 
-{
-#if defined(_WIN32) || defined(_WIN64)
-	DynamicLibrary::CompileGame(BuildType::BuildGame);
-#endif
-}
-
-void Engine::CompileGame() 
-{
-#if defined(_WIN32) || defined(_WIN64)
-	delete game;
-	game = nullptr;
-	EmptyScene();
-
-	ClassRegistry::Reset();
-	RegisterEngineComponents();
-	DynamicLibrary::UnloadGameLibrary();
-	DynamicLibrary::CompileGame(EditorHotReloading);
-	DynamicLibrary::LoadGameLibrary("game_editor");
-	game = DynamicLibrary::CreateGame();
-	if (game)
-	{
-		Debug::Print("Game compilation done");
-		game->Start();
-	}
-	else
-	{
-		Debug::PrintError("Game compilation failed");
-	}
-#endif
 }
 
 void Engine::EmptyScene()

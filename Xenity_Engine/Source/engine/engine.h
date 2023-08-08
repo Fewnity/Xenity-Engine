@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "platform.h"
 
 class Renderer;
 class GameObject;
@@ -99,12 +100,10 @@ public:
 	static bool valueFree;
 	API static void Quit();
 	API static void EmptyScene();
-	API static void CompileGame();
-	API static void BuildGame();
 	API static void RegisterEngineComponents();
 	API static void SetGameState(GameState _gameState);
-private:
 	static GameInterface* game;
+private:
 	API static void UpdateComponents();
 	static bool isRunning;
 	static GameState gameState;

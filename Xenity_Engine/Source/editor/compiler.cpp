@@ -10,6 +10,10 @@
 #include "ui/menus/compiling_menu.h"
 #include <filesystem>
 
+#define ENGINE_PATH "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\"
+
+std::string tempCompileFolderPath = "";
+
 void Compiler::CompileInWSL(Platform platform, std::string exportPath)
 {
 	int r1 = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
@@ -36,29 +40,31 @@ void Compiler::CompileInWSL(Platform platform, std::string exportPath)
 	Debug::Print(std::to_string(r5));
 	Debug::Print(std::to_string(r6));
 	Debug::Print(std::to_string(r7));*/
-
-	exportPath = exportPath.erase(1, 1);
-	int pathSize = exportPath.size();
+	std::string compileFolderPath = exportPath;
+	compileFolderPath = compileFolderPath.erase(1, 1);
+	int pathSize = compileFolderPath.size();
 	for (int i = 0; i < pathSize; i++)
 	{
-		if (exportPath[i] == '\\')
+		if (compileFolderPath[i] == '\\')
 		{
-			exportPath[i] = '/';
+			compileFolderPath[i] = '/';
 		}
 	}
-	exportPath[0] = tolower(exportPath[0]);
-	exportPath = "/mnt/" + exportPath;
+	compileFolderPath[0] = tolower(compileFolderPath[0]);
+	compileFolderPath = "/mnt/" + compileFolderPath;
 	std::string copyGameCommand;
 	if (platform == P_PSP)
-		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/EBOOT.PBP\" \"" + exportPath + "/EBOOT.PBP\"'";
+		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/EBOOT.PBP\" \"" + compileFolderPath + "/EBOOT.PBP\"'";
 	else if (platform == P_PsVita)
-		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + exportPath + "/hello.vpk\"'";
+		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
 	//Debug::Print(copyGameCommand);
 	int r8 = system(copyGameCommand.c_str());
-	std::string copyGameCommand2;
-	copyGameCommand2 = "wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/project \"" + exportPath + "\"'";
-	system(copyGameCommand2.c_str());
+
+	std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+	std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+	std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+
 	//Debug::Print(std::to_string(r8));
 }
 
@@ -79,7 +85,9 @@ std::string Compiler::GetAddNextCommand()
 
 std::string Compiler::GetNavToEngineFolderCommand()
 {
-	std::string command = "cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";
+	//std::string tempBuildFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
+	std::string command = "cd " + tempCompileFolderPath;
+	//std::string command = "cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";
 	return command;
 }
 
@@ -91,7 +99,10 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 	{
 		command += " /DEDITOR";
 	}
-	command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp";
+	//std::string tempBuildFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\source\\";
+	std::string folder = tempCompileFolderPath + "source\\";
+	command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD \"" + folder + "\*.cpp\"";
+	//command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp";
 	if (buildType != EditorHotReloading)
 	{
 		command += " engine_game.lib";
@@ -117,7 +128,8 @@ std::string Compiler::GetCompileGameExeCommand()
 {
 	std::string command;
 	std::string fileName = ProjectManager::GetGameName();
-	command = "cl /Fe" + fileName + ".exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
+	//command = "cl /Fe" + fileName + ".exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
+	command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" main.cpp engine_game.lib"; //Buid game exe
 	//command += " >nul"; // Mute output
 	return command;
 }
@@ -131,15 +143,71 @@ void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, std::
 
 void Compiler::CompileGame(Platform platform, BuildType buildType, std::string exportPath)
 {
+	tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
+	if (buildType == EditorHotReloading)
+	{
+		tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "hot_reloading_data\\";
+	}
+
+	std::filesystem::remove_all(tempCompileFolderPath);
+	std::filesystem::create_directory(tempCompileFolderPath);
+	// Remove all files in the export folder
+	//std::filesystem::remove_all(exportPath);
+	//std::filesystem::create_directory(exportPath);
+
 	if (platform == P_Windows)
 	{
+		if (buildType == EditorHotReloading)
+		{
+			std::string engineLibPath = ENGINE_PATH + std::string("engine_editor.lib");
+			std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_editor.lib", std::filesystem::copy_options::overwrite_existing);
+
+			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+		}
+		else
+		{
+			// Copy engine lib to the temp build folder
+			std::string engineLibPath = ENGINE_PATH + std::string("engine_game.lib");
+			std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_game.lib", std::filesystem::copy_options::overwrite_existing);
+
+			// Copy all DLLs to the export folder
+			std::string engineDllPath = ENGINE_PATH + std::string("engine_game.dll");
+			std::filesystem::copy_file(engineDllPath, exportPath + "engine_game.dll", std::filesystem::copy_options::overwrite_existing);
+			std::string sdlDllPath = ENGINE_PATH + std::string("SDL2.dll");
+			std::filesystem::copy_file(sdlDllPath, exportPath + "SDL2.dll", std::filesystem::copy_options::overwrite_existing);
+			std::string glfwDllPath = ENGINE_PATH + std::string("glfw3.dll");
+			std::filesystem::copy_file(glfwDllPath, exportPath + "glfw3.dll", std::filesystem::copy_options::overwrite_existing);
+
+			// Copy engine headers to the temp build folder
+			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+
+			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.cpp"), tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
+			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.h"), tempCompileFolderPath + "main.h", std::filesystem::copy_options::overwrite_existing);
+		}
+		std::filesystem::create_directory(tempCompileFolderPath + "source\\");
+
+		for (const auto& file : std::filesystem::directory_iterator(ProjectManager::GetAssetFolderPath()))
+		{
+			if (file.is_regular_file())
+			{
+				std::string ext = file.path().extension().string();
+				if (ext == ".h" || ext == ".hpp" || ext == ".c" || ext == ".cpp")
+				{
+					std::string path = file.path().string();
+					std::string fileName = file.path().filename().string();
+					std::filesystem::copy_file(path, tempCompileFolderPath + "source\\" + fileName, std::filesystem::copy_options::overwrite_existing);
+				}
+			}
+		}
+
 		std::string command;
 		command = GetStartCompilerCommand();
 		command += GetAddNextCommand();
 		command += GetNavToEngineFolderCommand();
 		command += GetAddNextCommand();
 		command += GetCompileGameLibCommand(buildType);
-
 		if (buildType != EditorHotReloading)
 		{
 			command += GetAddNextCommand();
@@ -150,9 +218,22 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, std::string e
 		if (buildResult == 0)
 		{
 			Debug::Print("Game compiled successfully!");
+			if (buildType == EditorHotReloading)
+			{
+				std::filesystem::copy_file(tempCompileFolderPath + "game_editor.dll", ProjectManager::GetProjectFolderPath() + "\\game_editor.dll", std::filesystem::copy_options::overwrite_existing);
+			}
+			else
+			{
+				std::filesystem::copy_file(tempCompileFolderPath + ProjectManager::GetGameName() + ".exe", exportPath + ProjectManager::GetGameName() + ".exe", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(tempCompileFolderPath + "game.dll", exportPath + "game.dll", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+			}
+			std::filesystem::remove_all(tempCompileFolderPath);
 			if (buildType == BuildAndRunGame)
 			{
-				auto t = std::thread(StartGame);
+				auto t = std::thread(StartGame, platform, exportPath);
 				t.detach();
 			}
 		}
@@ -164,15 +245,29 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, std::string e
 	else
 	{
 		CompileInWSL(platform, exportPath);
+		if (buildType == BuildAndRunGame)
+		{
+			auto t = std::thread(StartGame, platform, exportPath);
+			t.detach();
+		}
 	}
+
 	Editor::compilingMenu->ClosePopup();
 }
 
-void Compiler::StartGame()
+void Compiler::StartGame(Platform platform, std::string exportPath)
 {
-	std::string fileName = ProjectManager::GetGameName();
-	std::string command = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\" + fileName + ".exe";
-	system(command.c_str());
+	if (platform == Platform::P_Windows) 
+	{
+		std::string fileName = ProjectManager::GetGameName();
+		std::string command = "\"" + exportPath + fileName + ".exe\"";
+		system(command.c_str());
+	}
+	else if (platform == Platform::P_PSP)
+	{
+		std::string command = "(\"C:\\Program Files\\PPSSPP\\PPSSPPWindows.exe\" \"" + exportPath + "EBOOT.PBP\")";
+		system(command.c_str());
+	}
 }
 
 void Compiler::HotReloadGame()
@@ -186,7 +281,7 @@ void Compiler::HotReloadGame()
 	Engine::RegisterEngineComponents();
 	DynamicLibrary::UnloadGameLibrary();
 	Compiler::CompileGame(Platform::P_Windows, EditorHotReloading, "");
-	DynamicLibrary::LoadGameLibrary("game_editor");
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
 	Engine::game = DynamicLibrary::CreateGame();
 	if (Engine::game)
 	{
