@@ -24,9 +24,9 @@ void Compiler::CompileInWSL(Platform platform, std::string exportPath)
 	int r6 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'");
 	int r7 = 1;
 	if (platform == P_PSP)
-		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && psp-cmake -DMODE=psp .. && cmake --build .\"");
+		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && psp-cmake -DMODE=psp .. && cmake --build . -j12\"");
 	else if (platform == P_PsVita)
-		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && cmake -DMODE=psvita .. && cmake --build .\"");
+		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && cmake -DMODE=psvita .. && cmake --build . -j12\"");
 
 	if (r7 != 0)
 	{
