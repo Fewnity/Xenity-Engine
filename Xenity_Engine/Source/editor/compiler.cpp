@@ -85,9 +85,7 @@ std::string Compiler::GetAddNextCommand()
 
 std::string Compiler::GetNavToEngineFolderCommand()
 {
-	//std::string tempBuildFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
 	std::string command = "cd " + tempCompileFolderPath;
-	//std::string command = "cd C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine";
 	return command;
 }
 
@@ -99,10 +97,8 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 	{
 		command += " /DEDITOR";
 	}
-	//std::string tempBuildFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\source\\";
 	std::string folder = tempCompileFolderPath + "source\\";
 	command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD \"" + folder + "\*.cpp\"";
-	//command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD Source/game_test/\*.cpp";
 	if (buildType != EditorHotReloading)
 	{
 		command += " engine_game.lib";
@@ -128,7 +124,6 @@ std::string Compiler::GetCompileGameExeCommand()
 {
 	std::string command;
 	std::string fileName = ProjectManager::GetGameName();
-	//command = "cl /Fe" + fileName + ".exe /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" Source/main.cpp engine_game.lib"; //Buid game exe
 	command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" main.cpp engine_game.lib"; //Buid game exe
 	//command += " >nul"; // Mute output
 	return command;

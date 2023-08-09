@@ -21,12 +21,15 @@ Improve file explorer code
 Automatic file unload system
 Re add delete texture function in renderer
 
-Check how to use WSL
-Add a system to copy editor files and game files to wsl
 Add a system to Create Makefile folder and Makefile file
-Add play mode
+Improve play mode (Save before play, reload scene on stop)
 Have more than one camera
 Fix debug warning and Error in file
+Packing asset system
+Multi texture per models obj loader
+
+Find why ./ point to another location when lauched from a cmd without "cd"
+Detect the number of cpu core for cmake
 
 Add materials
 Add async texture loading
