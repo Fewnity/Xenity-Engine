@@ -260,7 +260,8 @@ void Compiler::StartGame(Platform platform, std::string exportPath)
 	if (platform == Platform::P_Windows) 
 	{
 		std::string fileName = ProjectManager::GetGameName();
-		std::string command = "\"" + exportPath + fileName + ".exe\"";
+		std::string command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";
+
 		system(command.c_str());
 	}
 	else if (platform == Platform::P_PSP)
