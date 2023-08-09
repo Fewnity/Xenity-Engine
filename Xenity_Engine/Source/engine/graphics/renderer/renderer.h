@@ -76,7 +76,7 @@ public:
 	virtual void SetViewport(int x, int y, int width, int height) = 0;
 	virtual void SetClearColor(Color color) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
-	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane) = 0;
+	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) = 0;
 	virtual void ResetView() = 0;
 	virtual void SetCameraPosition(std::weak_ptr<Camera> camera) = 0;
 	virtual void ResetTransform() = 0;

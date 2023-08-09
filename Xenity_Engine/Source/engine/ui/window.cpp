@@ -9,6 +9,8 @@
 #include "../engine.h"
 #include "../graphics/renderer/renderer.h"
 #include "../debug/debug.h"
+#include "../graphics/graphics.h"
+#include "../graphics/camera.h"
 
 int Window::width = 0;
 int Window::height = 0;
@@ -32,7 +34,11 @@ void Window::OnResize()
 {
     UpdateAspectRatio();
 #if !defined(EDITOR)
-    Engine::renderer->SetViewport(0, 0, width, height);
+    int cameraCount = Graphics::cameras.size();
+    for (int i = 0; i < cameraCount; i++)
+    {
+        Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(width, height));
+    }
 #endif
 }
 

@@ -24,7 +24,7 @@ public:
 	void SetViewport(int x, int y, int width, int height);
 	void SetClearColor(Color color);
 	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane);
-	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane);
+	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect);
 	void ResetView();
 	void SetCameraPosition(std::weak_ptr<Camera> camera);
 	void ResetTransform();

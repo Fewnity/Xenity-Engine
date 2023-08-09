@@ -8,6 +8,7 @@
 #include "audio/audio_manager.h"
 #include "network/network.h"
 #include "dynamic_lib/dynamic_lib.h"
+#include "graphics/camera.h"
 
 #if defined(EDITOR)
 #include "dynamic_lib/dynamic_lib.h"
@@ -384,9 +385,7 @@ void Engine::Loop()
 	{
 		Debug::Print("No Start Scene");
 	}
-/*#if defined(EDITOR)
-	DynamicLibrary::CopyProjectToWSL();
-#endif*/
+
 	while (isRunning)
 	{
 		engineLoopBenchmark->Start();
@@ -412,8 +411,8 @@ void Engine::Loop()
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					if(event.window.windowID == SDL_GetWindowID(Window::window))
 						Window::SetResolution(event.window.data1, event.window.data2);
+					//if(event.window.windowID == SDL_GetWindowID(Window::window))
 				}
 				else if (event.window.event == SDL_WINDOWEVENT_CLOSE) 
 				{
@@ -487,7 +486,16 @@ void Engine::EmptyScene()
 {
 	Graphics::orderedIDrawable.clear();
 	Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
-
+	int cameraCount = Graphics::cameras.size();
+	for (int i = 0; i < cameraCount; i++)
+	{
+		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->isEditor)
+		{
+			Graphics::cameras.erase(Graphics::cameras.begin() + i);
+			i--;
+			cameraCount--;
+		}
+	}
 	orderedComponents.clear();
 	gameObjectsToDestroy.clear();
 	componentsToDestroy.clear();

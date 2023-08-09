@@ -10,6 +10,7 @@
 #include <glad/glad.h>
 #endif
 
+std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
 // int Graphics::usedShaderProgram = -1;
@@ -17,11 +18,7 @@ bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 SkyBox* Graphics::skybox = nullptr;
-unsigned int Graphics::framebuffer;
-unsigned int Graphics::depthframebuffer = -1;
-unsigned int Graphics::framebufferTexture = -1;
-Vector2Int Graphics::framebufferSize;
-bool Graphics::needFremeBufferUpdate = true;
+
 // ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
@@ -42,59 +39,8 @@ void Graphics::SetSkybox(SkyBox* skybox_)
 	skybox = skybox_;
 }
 
-void Graphics::UpdaterameBuffer()
-{
-#if defined(_WIN32) || defined(_WIN64)
-	if (needFremeBufferUpdate)
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		if (framebufferTexture >= 0)
-		{
-			glDeleteTextures(1, &framebufferTexture);
-		}
-		if (depthframebuffer >= 0)
-		{
-			glDeleteRenderbuffers(1, &depthframebuffer);
-		}
-
-		glGenTextures(1, &framebufferTexture);
-		glBindTexture(GL_TEXTURE_2D, framebufferTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, framebufferSize.x, framebufferSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glGenRenderbuffers(1, &depthframebuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, framebufferSize.x, framebufferSize.y);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
-		glViewport(0, 0, framebufferSize.x, framebufferSize.y);
-		Window::SetResolution(framebufferSize.x, framebufferSize.y);
-		needFremeBufferUpdate = false;
-	}
-#endif
-}
-
-void Graphics::ChangeFrameBufferSize(Vector2Int resolution)
-{
-	if (framebufferSize != resolution)
-	{
-		framebufferSize = resolution;
-		needFremeBufferUpdate = true;
-	}
-}
-
 void Graphics::Init()
 {
-#if defined(EDITOR)
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-	ChangeFrameBufferSize(Vector2Int(1920, 1080));
-
-#endif
 	// Texture *back = new Texture("space_back.png", "space_back", false);
 	// back->SetWrapMode(Texture::ClampToEdge);
 	// Texture *down = new Texture("space_down.png", "space_down", false);
@@ -135,39 +81,45 @@ void Graphics::Init()
 void Graphics::DrawAllDrawable()
 {
 
-	auto camera = usedCamera.lock();
+	/*auto camera = usedCamera.lock();
 	if (!camera)
 	{
 		Debug::PrintWarning("[Graphics::DrawAllDrawable] There is no camera for rendering");
-	}
+	}*/
 
 	Graphics::OrderDrawables();
-#if defined(EDITOR)
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	UpdaterameBuffer();
-#endif
+
 	Engine::renderer->NewFrame();
-	Engine::renderer->Clear();
 
-	if (camera)
+	int cameraCount = cameras.size();
+
+	for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
-		needUpdateCamera = true;
-		Vector3 camPos = camera->GetTransform()->GetPosition();
-
-		if (skybox)
+		usedCamera = cameras[cameraIndex];
+		auto camera = usedCamera.lock();
+		if (camera && camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
 		{
-			float scale = 10.01f;
-			MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
-			MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
-			MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
-			MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
-			MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
-			MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
-		}
+			needUpdateCamera = true;
+			camera->BindFrameBuffer();
+			Engine::renderer->Clear();
 
-		for (int i = 0; i < iDrawablesCount; i++)
-		{
-			orderedIDrawable[i].lock()->Draw();
+			Vector3 camPos = camera->GetTransform()->GetPosition();
+
+			if (skybox)
+			{
+				float scale = 10.01f;
+				MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
+			}
+
+			for (int i = 0; i < iDrawablesCount; i++)
+			{
+				orderedIDrawable[i].lock()->Draw();
+			}
 		}
 	}
 

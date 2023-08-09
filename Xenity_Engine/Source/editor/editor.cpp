@@ -11,6 +11,7 @@
 #include "ui/menus/main_bar_menu.h"
 #include "ui/menus/profiler_menu.h"
 #include "ui/menus/game_menu.h"
+#include "ui/menus/scene_menu.h"
 #include "ui/menus/compiling_menu.h"
 
 #include <functional>
@@ -32,6 +33,7 @@ InspectorMenu* Editor::inspector = nullptr;
 MainBarMenu* Editor::mainBar = nullptr;
 ProfilerMenu* Editor::profiler = nullptr;
 GameMenu* Editor::gameMenu = nullptr;
+SceneMenu* Editor::sceneMenu = nullptr;
 CompilingMenu* Editor::compilingMenu = nullptr;
 
 void Editor::Start()
@@ -44,6 +46,7 @@ void Editor::Start()
 	mainBar = new MainBarMenu();
 	profiler = new ProfilerMenu();
 	gameMenu = new GameMenu();
+	sceneMenu = new SceneMenu();
 	compilingMenu = new CompilingMenu();
 
 	projectSettings->Init();
@@ -54,6 +57,7 @@ void Editor::Start()
 	mainBar->Init();
 	profiler->Init();
 	gameMenu->Init();
+	sceneMenu->Init();
 
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
@@ -61,6 +65,7 @@ void Editor::Start()
 	camera->SetFarClippingPlane(500);
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
+	camera->isEditor = true;
 }
 
 void Editor::Update()
@@ -118,6 +123,7 @@ void Editor::Draw()
 	}
 	compilingMenu->Draw();
 	gameMenu->Draw();
+	sceneMenu->Draw();
 	EditorUI::Render();
 }
 

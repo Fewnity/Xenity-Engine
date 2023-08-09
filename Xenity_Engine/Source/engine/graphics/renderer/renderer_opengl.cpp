@@ -104,12 +104,12 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	float halfRatio = Window::GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+	float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
 	float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
-void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane)
+void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -118,7 +118,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 #elif defined(_WIN32) || defined(_WIN64)
 	GLfloat zNear = nearClippingPlane;
 	GLfloat zFar = farClippingPlane;
-	GLfloat aspect = Window::GetAspectRatio();
+	//GLfloat aspect = Graphics::usedCamera.lock()->GetAspectRatio();
 	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
 	GLfloat fW = fH * aspect;
 	glFrustum(-fW, fW, -fH, fH, zNear, zFar);

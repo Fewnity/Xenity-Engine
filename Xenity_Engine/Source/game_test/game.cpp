@@ -47,7 +47,6 @@ void Game::LoadGameData()
 /// </summary>
 void Game::Update()
 {
-    //Debug::Print("Game::Update");
 }
 
 GameInterface* CreateGame()

@@ -14,6 +14,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../inputs/input_system.h"
 #include "../ui/window.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <glad/glad.h>
+#endif
 
 #pragma region Constructors / Destructor
 
@@ -24,6 +27,12 @@ Camera::Camera()
 
 	this->fov = 60;
 	UpdateProjection();
+
+#if defined(EDITOR)
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+#endif
+	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
 }
 
 /*void Camera::SetReflection()
@@ -106,12 +115,14 @@ void Camera::SetFarClippingPlane(float value)
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
-	 float aspect = Window::GetAspectRatio();
+	 //float aspect = Window::GetAspectRatio();
 	 float cameraX = GetTransform()->GetPosition().x;
 	 float cameraY = GetTransform()->GetPosition().y;
 
-	 float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / projectionSize * 5.0f) + cameraX;
-	 float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / projectionSize * 5.0f) + cameraY;
+	 //float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / projectionSize * 5.0f) + cameraX;
+	 //float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / projectionSize * 5.0f) + cameraY;
+	 float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + cameraX;
+	 float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + cameraY;
 	 return Vector2(vx, vy);
 }
 
@@ -124,7 +135,7 @@ void Camera::UpdateProjection()
 {
 	if (projectionType == ProjectionTypes::Perspective)
 	{
-		Engine::renderer->SetProjection3D(fov, nearClippingPlane, farClippingPlane);
+		Engine::renderer->SetProjection3D(fov, nearClippingPlane, farClippingPlane, aspect);
 	}
 	else
 	{
@@ -167,6 +178,75 @@ void Camera::SetProjectionType(ProjectionTypes type)
 ProjectionTypes Camera::GetProjectionType()
 {
 	return projectionType;
+}
+
+
+void Camera::UpdaterameBuffer()
+{
+#if defined(_WIN32) || defined(_WIN64)
+	if (needFremeBufferUpdate)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		if (framebufferTexture >= 0)
+		{
+			glDeleteTextures(1, &framebufferTexture);
+		}
+		if (depthframebuffer >= 0)
+		{
+			glDeleteRenderbuffers(1, &depthframebuffer);
+		}
+
+		glGenTextures(1, &framebufferTexture);
+		glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, framebufferSize.x, framebufferSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glGenRenderbuffers(1, &depthframebuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, framebufferSize.x, framebufferSize.y);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
+		//Window::SetResolution(framebufferSize.x, framebufferSize.y);
+		needFremeBufferUpdate = false;
+	}
+#endif
+}
+
+void Camera::ChangeFrameBufferSize(Vector2Int resolution)
+{
+	if (framebufferSize != resolution)
+	{
+		width = resolution.x;
+		height = resolution.y;
+		aspect = (float)width / (float)height;
+
+		framebufferSize = resolution;
+		needFremeBufferUpdate = true;
+		UpdateProjection();
+#if defined(__PSP__)
+		Engine::renderer->SetViewport(0, 0, width, height);
+#endif
+	}
+}
+
+void Camera::BindFrameBuffer() 
+{
+#if defined(_WIN32) || defined(_WIN64)
+	if(framebuffer != -1)
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+#endif
+	UpdaterameBuffer();
+
+#if !defined(EDITOR)
+#if !defined(__PSP__)
+	Engine::renderer->SetViewport(0, 0, width, height);
+#endif
+#else
+	glViewport(0, 0, framebufferSize.x, framebufferSize.y);
+#endif
 }
 
 #pragma endregion

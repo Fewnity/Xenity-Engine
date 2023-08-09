@@ -67,7 +67,7 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
     }
     else
     {
-        float xOff = (-Window::GetAspectRatio() * 5) + (transform->GetPosition().x * (Window::GetAspectRatio() * 10));
+        float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
         float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
         pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
     }

@@ -87,6 +87,7 @@
     <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
     <ClCompile Include="Source\editor\compiler.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Source\engine\platform.h" />
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
     <ClInclude Include="Source\editor\compiler.h" />
+    <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

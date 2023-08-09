@@ -32,6 +32,7 @@ public:
 class API Graphics
 {
 public:
+	static std::vector<std::weak_ptr<Camera>> cameras;
 	static std::weak_ptr<Camera> usedCamera;
 	static bool needUpdateCamera; // TODO change this when usedCamera is changed
 
@@ -43,18 +44,11 @@ public:
 	static void OrderDrawables();
 	static void AddDrawable(std::weak_ptr<IDrawable> drawableToPlace);
 	static void RemoveDrawable(std::weak_ptr<IDrawable> drawableToPlace);
-	static void ChangeFrameBufferSize(Vector2Int resolution);
-	static void UpdaterameBuffer();
 
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 	static int iDrawablesCount;
 
 	static SkyBox *skybox;
-	static unsigned int framebuffer;
-	static unsigned int depthframebuffer;
-	static unsigned int framebufferTexture;
-	static Vector2Int framebufferSize;
-	static bool needFremeBufferUpdate;
 private:
 
 };

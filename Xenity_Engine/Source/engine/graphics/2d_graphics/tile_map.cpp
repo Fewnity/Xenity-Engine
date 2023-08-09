@@ -316,7 +316,7 @@ void Tilemap::DrawChunks()
 	{
 		Vector3 cameraPos = camera->GetTransform()->GetPosition();
 
-		float xArea = camera->GetProjectionSize() * Window::GetAspectRatio() + chunkSize;
+		float xArea = camera->GetProjectionSize() * Graphics::usedCamera.lock()->GetAspectRatio() + chunkSize;
 		float yArea = camera->GetProjectionSize() + chunkSize;
 
 		float xChunkPosition;

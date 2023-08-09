@@ -11,6 +11,7 @@
 #include "../vectors/vector3.h"
 #include "../component.h"
 #include "../vectors/vector2.h"
+#include "../vectors/vector2_int.h"
 #include "camera_projection_types.h"
 #include <glm/glm.hpp>
 
@@ -39,8 +40,31 @@ public:
 	void SetProjectionType(ProjectionTypes type);
 	ProjectionTypes GetProjectionType();
 	void UpdateProjection();
+	void ChangeFrameBufferSize(Vector2Int resolution);
+	void UpdaterameBuffer();
+	void BindFrameBuffer();
 
+	int GetWidth()
+	{
+		return width;
+	}
+
+	int GetHeight()
+	{
+		return height;
+	}
+
+	float GetAspectRatio()
+	{
+		return aspect;
+	}
+
+	Vector2Int framebufferSize;
+	bool isEditor = false;
+	unsigned int framebufferTexture = -1;
 private:
+	int width, height;
+	float aspect;
 	float fov = 60.0f;		  // For 3D
 	float projectionSize = 5; // For 2D
 	float nearClippingPlane = 0.3f;
@@ -49,4 +73,8 @@ private:
 
 	glm::mat4 projection;
 	glm::mat4 unscaledProjection;
+
+	unsigned int framebuffer = -1;
+	unsigned int depthframebuffer = -1;
+	bool needFremeBufferUpdate = true;
 };

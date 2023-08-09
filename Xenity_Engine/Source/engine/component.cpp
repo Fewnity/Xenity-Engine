@@ -53,8 +53,7 @@ void Component::SetGameObject(std::weak_ptr<GameObject> newGameObject)
 		}
 		else if (auto result = std::dynamic_pointer_cast<Camera>(shared_from_this()))
 		{
-			if (Graphics::usedCamera.expired())
-				Graphics::usedCamera = std::dynamic_pointer_cast<Camera>(shared_from_this());
+			Graphics::cameras.push_back(std::dynamic_pointer_cast<Camera>(shared_from_this()));
 		}
 	}
 }

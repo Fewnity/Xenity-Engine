@@ -5,7 +5,7 @@
 #include <vector>
 #include "../ui/window.h"
 #include "input_touch_raw.h"
-
+#include "../graphics/camera.h"
 #include "../debug/debug.h"
 
 #ifdef __vita__
@@ -17,6 +17,7 @@
 #endif
 
 #include "input_pad.h"
+#include "../graphics/graphics.h"
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
 Vector2 InputSystem::mouseSpeed = Vector2();
@@ -109,19 +110,26 @@ void InputSystem::Read(const SDL_Event event)
 		mousePosition.x = (float)mouseX;
 		mousePosition.y = (float)mouseY;
 
-		float aspect = Window::GetAspectRatio();
+		float xSpeed = 0;
+		float ySpeed = 0;
+		int xSpeedRaw = 0;
+		int ySpeedRaw = 0;
+		if (Graphics::usedCamera.lock())
+		{
+			// Get mouse speed
+			float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
+			xSpeed = event.motion.xrel / (float)Graphics::usedCamera.lock()->GetWidth() * aspect;
+			ySpeed = -event.motion.yrel / (float)Graphics::usedCamera.lock()->GetHeight();
+			xSpeedRaw = (int)event.motion.xrel;
+			ySpeedRaw = (int)-event.motion.yrel;
 
-		// Get mouse speed
-		float xSpeed = event.motion.xrel / (float)Window::GetWidth() * aspect;
-		float ySpeed = -event.motion.yrel / (float)Window::GetHeight();
-		int xSpeedRaw = (int)event.motion.xrel;
-		int ySpeedRaw = (int)-event.motion.yrel;
-
+		}
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;
 
 		mouseSpeedRaw.x = (float)xSpeedRaw;
 		mouseSpeedRaw.y = (float)ySpeedRaw;
+
 		break;
 	}
 

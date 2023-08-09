@@ -17,8 +17,8 @@ class InspectorMenu;
 class MainBarMenu;
 class ProfilerMenu;
 class GameMenu;
+class SceneMenu;
 class CompilingMenu;
-
 class Editor
 {
 public:
@@ -52,6 +52,7 @@ private:
 	static MainBarMenu* mainBar;
 	static ProfilerMenu* profiler;
 	static GameMenu* gameMenu;
+	static SceneMenu* sceneMenu;
 	static std::weak_ptr<GameObject> cameraGO;
 };
 
