@@ -120,7 +120,7 @@ void SceneMenu::Draw()
 	ImVec2 size = ImGui::GetContentRegionAvail();
 
 	ImVec2 startCursorPos = ImGui::GetCursorPos();
-	if (InputSystem::GetKeyDown(MOUSE_RIGHT))
+	if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
 	{
 		ImGui::SetWindowFocus();
 	}

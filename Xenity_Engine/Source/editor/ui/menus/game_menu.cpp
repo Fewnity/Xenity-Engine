@@ -34,7 +34,7 @@ void GameMenu::Draw()
 		windowName = "Game (No camera)###Game";
 	}
 	ImGui::Begin(windowName.c_str());
-	if (InputSystem::GetKeyDown(MOUSE_RIGHT))
+	if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
 	{
 		ImGui::SetWindowFocus();
 	}
