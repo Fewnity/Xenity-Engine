@@ -20,5 +20,7 @@ public:
 	void Draw();
 private:
 	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem item, std::string itemName);
+	int CheckOpenRightClickPopupFile(FileExplorerItem* fileExplorer, std::string id);
+	bool fileHovered = false;
 };
 

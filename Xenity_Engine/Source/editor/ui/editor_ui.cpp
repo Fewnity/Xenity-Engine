@@ -222,8 +222,9 @@ std::string EditorUI::OpenFileDialog()
 	return std::string();
 }
 
-void EditorUI::DrawTreeItem(ProjectDirectory * projectDir)
+bool EditorUI::DrawTreeItem(ProjectDirectory * projectDir)
 {
+	bool objectClicked = false;
 	if (projectDir)
 	{
 		int childCount = (int)projectDir->subdirectories.size();
@@ -242,21 +243,25 @@ void EditorUI::DrawTreeItem(ProjectDirectory * projectDir)
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
 		{
 			Engine::currentProjectDirectory = projectDir;
-			Engine::selectedFileReference = nullptr;
+			objectClicked = true;
 		}
 		if (opened)
 		{
 			for (int i = 0; i < childCount; i++)
 			{
-				DrawTreeItem(projectDir->subdirectories[i]);
+				bool clickedTemp = DrawTreeItem(projectDir->subdirectories[i]);
+				if (clickedTemp)
+					objectClicked = true;
 			}
 			ImGui::TreePop();
 		}
 	}
+	return objectClicked;
 }
 
-void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
+bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 {
+	bool objectClicked = false;
 	auto childLock = child.lock();
 
 	if (childLock)
@@ -285,16 +290,20 @@ void EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 		{
 			Engine::SetSelectedGameObject(child);
 			Engine::selectedFileReference = nullptr;
+			objectClicked = true;
 		}
 		if (opened)
 		{
 			for (int i = 0; i < childCount; i++)
 			{
-				DrawTreeItem(childLock->children[i]);
+				bool clickedTemp = DrawTreeItem(childLock->children[i]);
+				if (clickedTemp)
+					objectClicked = true;
 			}
 			ImGui::TreePop();
 		}
 	}
+	return objectClicked;
 }
 
 void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap) 

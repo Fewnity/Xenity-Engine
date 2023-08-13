@@ -49,7 +49,20 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
-	if (ImGui::IsItemHovered() && ((ImGui::IsMouseClicked(0) && doubleClicked) || ImGui::IsMouseReleased(0)))
+	std::string popupId = "RightClick";
+	if (item.file) {
+		popupId += std::to_string(item.file->fileId);
+	}
+	else {
+		popupId += item.directory->GetFolderName();
+	}
+	CheckOpenRightClickPopupFile(&item, popupId);
+	bool hovered = ImGui::IsItemHovered();
+	if (hovered)
+	{
+		fileHovered = true;
+	}
+	if (hovered && ((ImGui::IsMouseClicked(0) && doubleClicked) || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))))
 	{
 		if (doubleClicked)
 		{
@@ -72,7 +85,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 			{
 				Engine::selectedFileReference = item.file;
 			}
-			
+
 			Engine::selectedGameObject.reset();
 		}
 	}
@@ -90,6 +103,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	}
 
 	ImGui::EndGroup();
+
 	if (isFile)
 	{
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -104,8 +118,55 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PopStyleColor(3);
 }
 
+int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem* fileExplorer, std::string id)
+{
+	int state = 0;
+	//std::string id = EditorUI::GenerateItemId();
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+	{
+		ImGui::OpenPopup(id.c_str());
+		state = 1;
+	}
+
+	if (ImGui::BeginPopup(id.c_str()))
+	{
+		if (state == 0)
+			state = 2;
+		fileHovered = true;
+
+		if (ImGui::Button("Create folder"))
+		{
+
+		}
+		if (fileExplorer && ImGui::Button("Open"))
+		{
+
+		}
+		if (fileExplorer && ImGui::Button("Show in Explorer"))
+		{
+
+		}
+		if (!fileExplorer && ImGui::Button("Open folder in Explorer"))
+		{
+
+		}
+		if (ImGui::Button("Refresh"))
+		{
+
+		}
+		if (fileExplorer && ImGui::Button("Delete"))
+		{
+
+		}
+		ImGui::EndPopup();
+	}
+	return state;
+}
+
 void FileExplorerMenu::Draw()
 {
+	fileHovered = false;
+
 	float iconSize = 64 * EditorUI::GetUiScale();
 	ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
 
@@ -116,7 +177,11 @@ void FileExplorerMenu::Draw()
 	{
 		ImGui::TableNextRow(0, height);
 		ImGui::TableSetColumnIndex(0);
-		EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
+		bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
+		if (treeItemClicked)
+		{
+			fileHovered = true;
+		}
 
 		ImGui::TableSetColumnIndex(1);
 		float width = ImGui::GetContentRegionAvail().x;
@@ -147,6 +212,17 @@ void FileExplorerMenu::Draw()
 			ImGui::EndTable();
 		}
 		ImGui::EndTable();
+
+		// Unselect file or open the popup if background is clicked
+		if (!fileHovered)
+		{
+			int result = CheckOpenRightClickPopupFile(nullptr, "backgroundClick");
+			if ((result == 0 && (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) || result != 0)
+			{
+				if(ImGui::IsWindowHovered())
+					Engine::selectedFileReference = nullptr;
+			}
+		}
 	}
 
 	ImGui::End();
