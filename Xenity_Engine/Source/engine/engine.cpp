@@ -436,6 +436,7 @@ void Engine::Loop()
 #endif
 		if (game)
 			game->Update();
+
 		valueFree = true;
 
 		gameLoopBenchmark->Stop();

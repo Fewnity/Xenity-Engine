@@ -191,17 +191,11 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 
 	// Push vertices in the right order
 	int vertexIndicesSize = (int)vertexIndices.size();
-	int i2 = 0;
-	int i3 = 0;
-	int i4 = 0;
-
 	for (int i = 0; i < vertexIndicesSize; i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i] - 1;
 		unsigned int textureIndex = textureIndices[i] - 1;
 		unsigned int normalIndices = normalsIndices[i] - 1;
-		int test = 0;
-		int index = i * byteCount;
 
 		if(!mesh->hasNormal)
 		mesh->AddVertex(
