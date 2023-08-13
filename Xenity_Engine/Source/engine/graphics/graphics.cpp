@@ -23,7 +23,10 @@ SkyBox* Graphics::skybox = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 MeshData* skyPlane = nullptr;
-MeshData* dirArrows = nullptr;
+MeshData* rightArrow = nullptr;
+MeshData* upArrow = nullptr;
+MeshData* forwardArrow = nullptr;
+Texture* toolArrowsTexture = nullptr;
 
 SkyBox::SkyBox(Texture* front, Texture* back, Texture* up, Texture* down, Texture* left, Texture* right)
 {
@@ -72,7 +75,14 @@ void Graphics::Init()
 	SetSkybox(skybox);
 
 	skyPlane = MeshManager::LoadMesh("test_project\\assets\\models\\Plane2Triangulate.obj");
-	dirArrows = MeshManager::LoadMesh("test_project\\assets\\dir arrows.obj");
+
+	rightArrow = MeshManager::LoadMesh("test_project\\assets\\right_arrow.obj");
+	upArrow = MeshManager::LoadMesh("test_project\\assets\\up_arrow.obj");
+	forwardArrow = MeshManager::LoadMesh("test_project\\assets\\forward_arrow.obj");
+
+	toolArrowsTexture = new Texture("test_project\\engine_assets\\tool_arrows_colors.png", "@Internal_tool_arrows_colors", true);
+	toolArrowsTexture->SetFilter(Texture::Point);
+
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -125,7 +135,9 @@ void Graphics::DrawAllDrawable()
 				Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
 				float dist = Vector3::Distance(selectedGOPos, camPos);
 				dist /= 40;
-				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), AssetManager::defaultTexture, dirArrows, false, false, false);
+				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, rightArrow, false, false, false);
+				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, upArrow, false, false, false);
+				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, forwardArrow, false, false, false);
 			}
 		}
 	}
