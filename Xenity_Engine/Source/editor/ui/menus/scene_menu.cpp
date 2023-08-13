@@ -186,7 +186,7 @@ void SceneMenu::Draw()
 					{
 						// Get start object value
 						if (toolMode == Tool_Move)
-							startObjectValue = selectedGoTransform->GetLocalPosition();
+							startObjectValue = selectedGoTransform->GetPosition();
 						else if (toolMode == Tool_Rotate)
 							startObjectValue = selectedGoTransform->GetRotation();
 						else if (toolMode == Tool_Scale)
@@ -298,7 +298,7 @@ void SceneMenu::Draw()
 
 						//Set object position/rotation/scale
 						if (toolMode == Tool_Move)
-							selectedGoTransform->SetLocalPosition(startObjectValue + objectOffset);
+							selectedGoTransform->SetPosition(startObjectValue + objectOffset);
 						else if (toolMode == Tool_Rotate)
 						{
 							/*if (side == 0)
