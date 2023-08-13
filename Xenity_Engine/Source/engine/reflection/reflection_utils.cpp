@@ -100,7 +100,7 @@ void ReflectionUtils::JsonToReflection(json j, Reflection& component)
 	JsonToMap(myMap, j);
 }
 
-json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap, json json2)
+json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap)
 {
 	json json;
 	for (const auto& kv : theMap)
@@ -171,6 +171,6 @@ json ReflectionUtils::ReflectiveToJson(Reflection& relection)
 {
 	json j2;
 	auto t = relection.GetReflection();
-	j2 = MapToJson(t, j2);
+	j2 = MapToJson(t);
 	return j2;
 }

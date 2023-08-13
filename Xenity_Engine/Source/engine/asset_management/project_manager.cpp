@@ -220,7 +220,7 @@ void ProjectManager::SaveProjectSettigs()
 	FileSystem::fileSystem->DeleteFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	json projectData;
 
-	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection(), projectData);
+	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection());
 
 	File *projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	projectFile->Open(true);
@@ -234,7 +234,7 @@ void ProjectManager::SaveMetaFile(FileReference* fileReference)
 	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + ".meta");
 	json metaData;
 	metaData["id"] = fileReference->fileId;
-	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection(), metaData);
+	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
 
 	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
 	metaFile->Open(true);

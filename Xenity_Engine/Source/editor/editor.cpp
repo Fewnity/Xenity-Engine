@@ -98,6 +98,12 @@ void Editor::Update()
 
 	cameraTrans->SetPosition(pos);
 	cameraTrans->SetRotation(rot);
+
+	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
+	{
+		if (Engine::selectedGameObject.lock())
+			DuplicateGameObject(Engine::selectedGameObject.lock());
+	}
 }
 
 void Editor::Draw()
@@ -183,6 +189,30 @@ void Editor::SaveScene()
 	file->Write(s);
 	file->Close();
 	delete file;
+}
+
+void Editor::DuplicateGameObject(std::shared_ptr<GameObject> gameObject)
+{
+	std::shared_ptr<GameObject> newGameObject = CreateGameObject(gameObject->name);
+
+	auto selectedGO = Engine::selectedGameObject.lock();
+	if (selectedGO)
+	{
+		if(selectedGO->parent.lock())
+			newGameObject->SetParent(selectedGO->parent);
+	}
+
+	int componentCount = gameObject->components.size();
+	for (int i = 0; i < componentCount; i++)
+	{
+		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(gameObject->components[i]->GetComponentName(), newGameObject);
+		auto newReflection = newComponent->GetReflection();
+		auto reflectionToCopy = gameObject->components[i]->GetReflection();
+
+		json copiedValues;
+		copiedValues["Values"] = ReflectionUtils::MapToJson(reflectionToCopy);
+		ReflectionUtils::JsonToMap(newReflection, copiedValues);
+	}
 }
 
 #pragma endregion

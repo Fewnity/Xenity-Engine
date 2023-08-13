@@ -19,6 +19,7 @@ class ProfilerMenu;
 class GameMenu;
 class SceneMenu;
 class CompilingMenu;
+
 class Editor
 {
 public:
@@ -28,7 +29,7 @@ public:
 	static void CreateEmpty();
 	static void CreateEmptyChild();
 	static void SaveScene();
-
+	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
 
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
