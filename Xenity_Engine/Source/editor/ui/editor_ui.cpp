@@ -35,6 +35,7 @@ void EditorUI::Init()
 	ImGui::GetStyle().WindowRounding = 10;
 
 	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigWindowsMoveFromTitleBarOnly = true;
 	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
 
 	fileIcon = new Texture("icons/text.png", "", true);
