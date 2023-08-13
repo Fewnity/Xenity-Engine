@@ -21,12 +21,12 @@ Improve file explorer code
 Automatic file unload system
 Re add delete texture function in renderer
 
-Add a system to Create Makefile folder and Makefile file
 Improve play mode (Save before play, reload scene on stop)
-Have more than one camera
-Fix debug warning and Error in file
+Add transparency setting on textures
 Packing asset system
 Multi texture per models obj loader
+Add a tool to rotate selected gameobject
+Add color to the tool arrows
 
 Find why ./ point to another location when lauched from a cmd without "cd"
 Detect the number of cpu core for cmake
