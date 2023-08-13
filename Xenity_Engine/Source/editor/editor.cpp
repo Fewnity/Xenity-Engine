@@ -83,15 +83,18 @@ void Editor::Update()
 
 	float fwd = 0;
 	float side = 0;
-	if (InputSystem::GetKey(UP))
-		fwd = -1;
-	else if (InputSystem::GetKey(DOWN))
-		fwd = 1;
+	if (sceneMenu->isFocused)
+	{
+		if (InputSystem::GetKey(UP))
+			fwd = -1;
+		else if (InputSystem::GetKey(DOWN))
+			fwd = 1;
 
-	if (InputSystem::GetKey(RIGHT))
-		side = 1;
-	else if (InputSystem::GetKey(LEFT))
-		side = -1;
+		if (InputSystem::GetKey(RIGHT))
+			side = 1;
+		else if (InputSystem::GetKey(LEFT))
+			side = -1;
+	}
 
 	pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;

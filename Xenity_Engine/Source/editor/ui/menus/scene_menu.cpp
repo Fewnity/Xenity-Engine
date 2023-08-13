@@ -335,6 +335,7 @@ void SceneMenu::Draw()
 	// Get some values for inputs
 	windowPosition = Vector2Int(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 	mousePosition = Vector2Int(ImGui::GetMousePos().x, ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y));
+	isFocused = ImGui::IsWindowFocused();
 
 	// List tool modes
 	ImGui::SetCursorPos(startCursorPos);

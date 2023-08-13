@@ -9,6 +9,7 @@ public:
 	void Init();
 	void Draw();
 	bool isHovered = false;
+	bool isFocused = false;
 	Vector2Int windowSize = Vector2Int(0);
 	Vector2Int windowPosition = Vector2Int(0);
 	Vector2Int mousePosition = Vector2Int(0);
