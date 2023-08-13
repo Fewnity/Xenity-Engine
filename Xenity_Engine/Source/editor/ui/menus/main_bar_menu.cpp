@@ -167,6 +167,14 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("2D"))
+		{
+			if (ImGui::MenuItem("Sprite Renderer", nullptr, nullptr, hasSelectedGameObject))
+			{
+				Editor::AddComponentToSelection<SpriteRenderer>();
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("Other"))
 		{
 			if (ImGui::MenuItem("Test Component", nullptr, nullptr, hasSelectedGameObject))

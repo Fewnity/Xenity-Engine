@@ -43,6 +43,8 @@ public:
 		}
 	}
 	static CompilingMenu* compilingMenu;
+	static GameMenu* gameMenu;
+	static SceneMenu* sceneMenu;
 private:
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;
@@ -51,8 +53,6 @@ private:
 	static InspectorMenu* inspector;
 	static MainBarMenu* mainBar;
 	static ProfilerMenu* profiler;
-	static GameMenu* gameMenu;
-	static SceneMenu* sceneMenu;
 	static std::weak_ptr<GameObject> cameraGO;
 };
 

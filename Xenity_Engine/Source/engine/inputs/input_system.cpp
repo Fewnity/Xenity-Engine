@@ -19,6 +19,12 @@
 #include "input_pad.h"
 #include "../graphics/graphics.h"
 
+#if defined(EDITOR)
+#include "../../editor/ui/menus/game_menu.h"
+#include "../../editor/ui/menus/scene_menu.h"
+#include "../../xenity_editor.h"
+#endif
+
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
 Vector2 InputSystem::mouseSpeed = Vector2();
 Vector2 InputSystem::mouseSpeedRaw = Vector2();
@@ -104,25 +110,54 @@ void InputSystem::Read(const SDL_Event event)
 	{
 	case SDL_MOUSEMOTION:
 	{
+		//event.motion.x
 		// Get mouse position
+#if !defined(EDITOR)
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 		mousePosition.x = (float)mouseX;
 		mousePosition.y = (float)mouseY;
-
+#else
+		if (Editor::gameMenu->isHovered)
+		{
+			mousePosition.x = Editor::gameMenu->mousePosition.x - Editor::gameMenu->windowPosition.x;
+			mousePosition.y = Editor::gameMenu->mousePosition.y - Editor::gameMenu->windowPosition.y;
+		}
+		else {
+			//mousePosition = Vector2(0);
+		}
+#endif	
 		float xSpeed = 0;
 		float ySpeed = 0;
 		int xSpeedRaw = 0;
 		int ySpeedRaw = 0;
 		if (Graphics::usedCamera.lock())
 		{
+			float a = 0;
+			int w = 0;
+			int h = 0;
+			if (Editor::gameMenu->isHovered)
+			{
+				w = Editor::gameMenu->windowSize.x;
+				h = Editor::gameMenu->windowSize.y;
+			}
+			else if (Editor::sceneMenu->isHovered) 
+			{
+				w = Editor::sceneMenu->windowSize.x;
+				h = Editor::sceneMenu->windowSize.y;
+			}
+			else 
+			{
+				//float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
+				w = Graphics::usedCamera.lock()->GetWidth();
+				h = Graphics::usedCamera.lock()->GetHeight();
+			}
+			a = (float)w / (float)h;
 			// Get mouse speed
-			float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
-			xSpeed = event.motion.xrel / (float)Graphics::usedCamera.lock()->GetWidth() * aspect;
-			ySpeed = -event.motion.yrel / (float)Graphics::usedCamera.lock()->GetHeight();
+			xSpeed = event.motion.xrel / (float)w * a;
+			ySpeed = -event.motion.yrel / (float)h;
 			xSpeedRaw = (int)event.motion.xrel;
 			ySpeedRaw = (int)-event.motion.yrel;
-
 		}
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;

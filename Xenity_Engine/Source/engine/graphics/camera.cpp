@@ -141,22 +141,23 @@ void Camera::UpdateProjection()
 	{
 		Engine::renderer->SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
 	}
+#if defined(EDITOR)
+	 if (projectionType == ProjectionTypes::Perspective)
+	 {
+	 	// Projection
+	 	projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+	 }
+	 else
+	 {
+	 	float halfAspect = Window::GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
+	 	float halfOne = 0.5f * GetProjectionSize() / 5.0f;
+	 	projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 
-	// if (projectionType == ProjectionTypes::Perspective)
-	// {
-	// 	// Projection
-	// 	projection = glm::perspective(glm::radians(fov), Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
-	// }
-	// else
-	// {
-	// 	float halfAspect = Window::GetAspectRatio() / 2.0f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
-	// 	float halfOne = 0.5f * Graphics::usedCamera->GetProjectionSize() / 5.0f;
-	// 	projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-
-	// 	// Unscaled version for canvas
-	// 	float halfAspectUnscaled = Window::GetAspectRatio() / 2.0f;
-	// 	unscaledProjection = glm::ortho(-halfAspectUnscaled, halfAspectUnscaled, -0.5f, 0.5f);
-	// }
+	 	// Unscaled version for canvas
+	 	float halfAspectUnscaled = Window::GetAspectRatio() / 2.0f;
+	 	unscaledProjection = glm::ortho(-halfAspectUnscaled, halfAspectUnscaled, -0.5f, 0.5f);
+	 }
+#endif
 }
 
 glm::mat4 &Camera::GetProjection()

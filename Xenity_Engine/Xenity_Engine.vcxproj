@@ -282,6 +282,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\editor\compiler.h" />
+    <ClInclude Include="Source\editor\tool_mode.h" />
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
     <ClInclude Include="Source\engine\platform.h" />

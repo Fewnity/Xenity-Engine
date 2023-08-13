@@ -62,6 +62,8 @@ public:
 	Vector2Int framebufferSize;
 	bool isEditor = false;
 	unsigned int framebufferTexture = -1;
+	glm::mat4 projection;
+	glm::mat4 unscaledProjection;
 private:
 	int width, height;
 	float aspect;
@@ -70,9 +72,6 @@ private:
 	float nearClippingPlane = 0.3f;
 	float farClippingPlane = 1000;
 	ProjectionTypes projectionType = Perspective;
-
-	glm::mat4 projection;
-	glm::mat4 unscaledProjection;
 
 	unsigned int framebuffer = -1;
 	unsigned int depthframebuffer = -1;

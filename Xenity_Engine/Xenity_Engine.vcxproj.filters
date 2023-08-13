@@ -188,6 +188,7 @@
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
     <ClInclude Include="Source\editor\compiler.h" />
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
+    <ClInclude Include="Source\editor\tool_mode.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

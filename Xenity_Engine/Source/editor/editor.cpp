@@ -66,6 +66,7 @@ void Editor::Start()
 	camera->SetProjectionSize(5.0f);
 	camera->SetFov(70);
 	camera->isEditor = true;
+	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
 }
 
 void Editor::Update()
@@ -74,7 +75,7 @@ void Editor::Update()
 	Vector3 rot = cameraTrans->GetRotation();
 	Vector3 pos = cameraTrans->GetPosition();
 
-	if (InputSystem::GetKey(MOUSE_RIGHT))
+	if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
 	{
 		rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
 		rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;

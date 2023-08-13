@@ -23,6 +23,7 @@ SkyBox* Graphics::skybox = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 MeshData* skyPlane = nullptr;
+MeshData* dirArrows = nullptr;
 
 SkyBox::SkyBox(Texture* front, Texture* back, Texture* up, Texture* down, Texture* left, Texture* right)
 {
@@ -54,24 +55,24 @@ void Graphics::Init()
 	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture* back = new Texture("assets/sunset_back.png", "sunset_back", false);
+	Texture* back = new Texture("test_project\\assets\\sunset_back.png", "sunset_back", false);
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture* down = new Texture("assets/sunset_down.png", "sunset_down", false);
+	Texture* down = new Texture("test_project\\assets\\sunset_down.png", "sunset_down", false);
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture* front = new Texture("assets/sunset_front.png", "sunset_front", false);
+	Texture* front = new Texture("test_project\\assets\\sunset_front.png", "sunset_front", false);
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture* left = new Texture("assets/sunset_left.png", "sunset_left", false);
+	Texture* left = new Texture("test_project\\assets\\sunset_left.png", "sunset_left", false);
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture* right = new Texture("assets/sunset_right.png", "sunset_right", false);
+	Texture* right = new Texture("test_project\\assets\\sunset_right.png", "sunset_right", false);
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture* up = new Texture("assets/sunset_up.png", "sunset_up", false);
+	Texture* up = new Texture("test_project\\assets\\sunset_up.png", "sunset_up", false);
 	up->SetWrapMode(Texture::ClampToEdge);
 
 	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
 
-	skyPlane = MeshManager::LoadMesh("engine_assets/models/Plane2Triangulate.obj");
-
+	skyPlane = MeshManager::LoadMesh("test_project\\assets\\models\\Plane2Triangulate.obj");
+	dirArrows = MeshManager::LoadMesh("test_project\\assets\\dir arrows.obj");
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -80,7 +81,6 @@ void Graphics::Init()
 /// </summary>
 void Graphics::DrawAllDrawable()
 {
-
 	/*auto camera = usedCamera.lock();
 	if (!camera)
 	{
@@ -115,10 +115,17 @@ void Graphics::DrawAllDrawable()
 				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
 				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
 			}
-
 			for (int i = 0; i < iDrawablesCount; i++)
 			{
 				orderedIDrawable[i].lock()->Draw();
+			}
+			if (camera->isEditor && Engine::selectedGameObject.lock())
+			{
+				Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
+				Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
+				float dist = Vector3::Distance(selectedGOPos, camPos);
+				dist /= 40;
+				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), AssetManager::defaultTexture, dirArrows, false, false, false);
 			}
 		}
 	}
