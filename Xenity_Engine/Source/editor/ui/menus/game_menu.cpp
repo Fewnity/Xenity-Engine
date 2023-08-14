@@ -53,8 +53,27 @@ void GameMenu::Draw()
 			isHovered = false;
 		}
 	}
+	else
+	{
+		//Increase font size
+		ImFont* font = ImGui::GetFont();
+		font->Scale *= 2;
+		ImGui::PushFont(font);
 
-	//windowSize = Vector2Int(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+		//Draw text
+		std::string noCamText = "There is no camera";
+		ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+		float offY = ImGui::GetCursorPosY();
+		ImGui::SetCursorPos(ImVec2((size.x - textSize.x) / 2.0f, (size.y + offY) /2.0f));
+		ImGui::Text(noCamText.c_str());
+		ImGui::PopFont();
+
+		//Reset font
+		font->Scale /= 2.0f;
+		ImGui::PushFont(font);
+		ImGui::PopFont();
+	}
+
 	windowPosition = Vector2Int(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 	mousePosition = Vector2Int(ImGui::GetMousePos().x, ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y));
 
