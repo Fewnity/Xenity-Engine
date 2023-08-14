@@ -347,7 +347,7 @@ void SceneMenu::Draw()
 
 void SceneMenu::DrawToolWindow()
 {
-	if (ImGui::CollapsingHeader("header", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	if (ImGui::CollapsingHeader("Tool mode", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		SetButtonColor(toolMode == Tool_MoveCamera);
 		if (ImGui::Button("Move camera"))
