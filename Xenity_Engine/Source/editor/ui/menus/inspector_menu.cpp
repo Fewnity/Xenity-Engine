@@ -115,7 +115,10 @@ void InspectorMenu::Draw()
 			ImGui::Separator();
 
 			//Draw component variables
-			EditorUI::DrawReflection(*comp);
+			if (EditorUI::DrawReflection(*comp))
+			{
+				comp->OnReflectionUpdated();
+			}
 
 			ImGui::Separator();
 		}

@@ -40,6 +40,12 @@ std::unordered_map<std::string, Variable> Light::GetReflection()
 	return reflectedVariables;
 }
 
+void Light::OnReflectionUpdated()
+{
+	SetRange(range);
+	SetSpotAngle(spotAngle);
+	SetSpotSmoothness(spotSmoothness);
+}
 
 #pragma endregion
 

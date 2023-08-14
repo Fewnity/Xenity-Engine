@@ -85,6 +85,7 @@ void SceneManager::LoadScene(Scene* scene)
 					if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
 					{
 						ReflectionUtils::JsonToReflection(kv2.value(), *go->components[compI].get());
+						go->components[compI]->OnReflectionUpdated();
 						break;
 					}
 				}

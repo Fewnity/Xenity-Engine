@@ -24,5 +24,6 @@ public:
 	//std::unordered_map<std::string, Variable> reflectedVariables;
 	//virtual void SetReflection() = 0;
 	virtual std::unordered_map<std::string, Variable> GetReflection() = 0;
+	virtual void OnReflectionUpdated() {};
 };
 
