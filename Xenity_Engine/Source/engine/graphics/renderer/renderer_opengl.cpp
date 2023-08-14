@@ -515,7 +515,7 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	float lightColor[] = {rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f};
 	float zeroLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
-	float position[] = {lightPosition.x, lightPosition.y, lightPosition.z, 1};
+	float position[] = {-lightPosition.x, lightPosition.y, lightPosition.z, 1};
 
 	// Assign created components to GL_LIGHT0
 	if (type == Light::Directional)
