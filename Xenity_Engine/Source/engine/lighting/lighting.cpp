@@ -36,6 +36,7 @@ std::unordered_map<std::string, Variable> Light::GetReflection()
 	reflectedVariables.insert_or_assign("spotAngle", spotAngle);
 	reflectedVariables.insert_or_assign("spotSmoothness", spotSmoothness);
 	reflectedVariables.insert_or_assign("color", color);
+	reflectedVariables.insert_or_assign("type", (int&)type);
 	return reflectedVariables;
 }
 
