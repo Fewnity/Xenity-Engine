@@ -10,6 +10,22 @@ void FileExplorerMenu::Init()
 {
 }
 
+void FileExplorerMenu::OpenItem(FileExplorerItem& item)
+{
+	if (item.file)
+	{
+		if (item.file->fileType == File_Scene)
+		{
+			SceneManager::LoadScene((Scene*)item.file);
+		}
+	}
+	else if(item.directory)
+	{
+		Engine::currentProjectDirectory = item.directory;
+		Engine::selectedFileReference = nullptr;
+	}
+}
+
 void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem item, std::string itemName)
 {
 	if (currentCol == 0)
@@ -50,13 +66,15 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
 	std::string popupId = "RightClick";
-	if (item.file) {
+	if (item.file) 
+	{
 		popupId += std::to_string(item.file->fileId);
 	}
-	else {
+	else 
+	{
 		popupId += item.directory->GetFolderName();
 	}
-	CheckOpenRightClickPopupFile(&item, popupId);
+	CheckOpenRightClickPopupFile(item, true, popupId);
 	bool hovered = ImGui::IsItemHovered();
 	if (hovered)
 	{
@@ -66,18 +84,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	{
 		if (doubleClicked)
 		{
-			if (isFile)
-			{
-				if (item.file->fileType == File_Scene)
-				{
-					SceneManager::LoadScene((Scene*)item.file);
-				}
-			}
-			else
-			{
-				Engine::currentProjectDirectory = item.directory;
-				Engine::selectedFileReference = nullptr;
-			}
+			OpenItem(item);
 		}
 		else
 		{
@@ -118,7 +125,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PopStyleColor(3);
 }
 
-int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem* fileExplorer, std::string id)
+int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, std::string id)
 {
 	int state = 0;
 	//std::string id = EditorUI::GenerateItemId();
@@ -136,27 +143,45 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem* fileExplore
 
 		if (ImGui::Button("Create folder"))
 		{
-
+			FileSystem::fileSystem->CreateDirectory(fileExplorerItem.directory->path + "\\new Folder");
+			ImGui::CloseCurrentPopup();
 		}
-		if (fileExplorer && ImGui::Button("Open"))
+		if (itemSelected && ImGui::Button("Open"))
 		{
-
+			OpenItem(fileExplorerItem);
+			ImGui::CloseCurrentPopup();
 		}
-		if (fileExplorer && ImGui::Button("Show in Explorer"))
+		if ((itemSelected && ImGui::Button("Show in Explorer")) || (!itemSelected && ImGui::Button("Open folder in Explorer")))
 		{
+			std::string command = "explorer.exe ";
+			if (itemSelected)
+			{
+				command += "/select, \"";
+			}
+			else 
+			{
+				command += "\"";
+			}
+			if (fileExplorerItem.file)
+				command += fileExplorerItem.file->file->GetPath();
+			else
+				command += fileExplorerItem.directory->path;
+			command += "\"";
 
-		}
-		if (!fileExplorer && ImGui::Button("Open folder in Explorer"))
-		{
+			system(command.c_str());
 
+			ImGui::CloseCurrentPopup();
 		}
 		if (ImGui::Button("Refresh"))
 		{
-
+			ProjectManager::LoadProject(ProjectManager::GetProjectFolderPath());
+			ImGui::CloseCurrentPopup();
 		}
-		if (fileExplorer && ImGui::Button("Delete"))
+		if (itemSelected && ImGui::Button("Delete"))
 		{
-
+			if (fileExplorerItem.file)
+				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
+			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
 	}
@@ -216,7 +241,10 @@ void FileExplorerMenu::Draw()
 		// Unselect file or open the popup if background is clicked
 		if (!fileHovered)
 		{
-			int result = CheckOpenRightClickPopupFile(nullptr, "backgroundClick");
+			ProjectDirectory* currentDir = Engine::currentProjectDirectory;
+			FileExplorerItem item;
+			item.directory = currentDir;
+			int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick");
 			if ((result == 0 && (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) || result != 0)
 			{
 				if(ImGui::IsWindowHovered())
