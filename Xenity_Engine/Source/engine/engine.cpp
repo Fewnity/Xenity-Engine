@@ -37,6 +37,7 @@
 #include "asset_management/project_manager.h"
 #include "scene_management/scene_manager.h"
 #include "../editor/compiler.h"
+#include "../unit_tests/unit_test_manager.h"
 
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
@@ -145,6 +146,8 @@ int Engine::Init(const std::string exePath)
 	gameLoopBenchmark = new ProfilerBenchmark("Game loop");
 	componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
 	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+
+	UnitTestManager::StartAllTests();
 
 	return 0;
 }

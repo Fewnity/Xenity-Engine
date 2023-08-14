@@ -244,6 +244,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
     <ClCompile Include="Source\windows\inputs\inputs.cpp" />
     <ClCompile Include="Source\engine\test_component.cpp" />
     <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
@@ -373,6 +374,7 @@
     <ClInclude Include="Source\engine\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
+    <ClInclude Include="Source\unit_tests\unit_test_manager.h" />
     <ClInclude Include="Source\windows\inputs\inputs.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
