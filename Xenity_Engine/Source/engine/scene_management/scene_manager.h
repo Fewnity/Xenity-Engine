@@ -10,6 +10,7 @@ class SceneManager
 {
 public:
 	static void LoadScene(Scene *scene);
+	static void SaveScene();
 	static Scene* openedScene;
 private:
 	static std::vector<std::shared_ptr<Component>> allCreatedComponents;

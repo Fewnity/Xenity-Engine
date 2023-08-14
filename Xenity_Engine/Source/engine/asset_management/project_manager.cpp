@@ -116,8 +116,8 @@ void ProjectManager::LoadProject(std::string projectPathToLoad)
 					biggestId = id;
 				file->SetUniqueId(id);
 			}
-			delete metaFile;
 		}
+		delete metaFile;
 	}
 
 	//Set new files ids

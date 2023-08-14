@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include <Commdlg.h>
 #include <ShObjIdl.h>
+#include "../../../engine/scene_management/scene_manager.h"
 
 void MainBarMenu::Init()
 {
@@ -36,7 +37,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
-			Editor::SaveScene();
+			SceneManager::SaveScene();
 		}
 		if (ImGui::MenuItem("Open Project"))
 		{

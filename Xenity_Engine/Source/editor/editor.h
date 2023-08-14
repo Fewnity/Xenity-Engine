@@ -28,7 +28,6 @@ public:
 	static void Draw();
 	static void CreateEmpty();
 	static void CreateEmptyChild();
-	static void SaveScene();
 	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
 
 	template <typename T>
