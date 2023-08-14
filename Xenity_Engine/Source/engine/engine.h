@@ -102,6 +102,12 @@ public:
 	API static void EmptyScene();
 	API static void RegisterEngineComponents();
 	API static void SetGameState(GameState _gameState);
+
+	API static GameState GetGameState() 
+	{
+		return gameState;
+	}
+
 	static GameInterface* game;
 private:
 	API static void UpdateComponents();
