@@ -44,8 +44,8 @@ public:
 	static void DrawInputTitle(std::string title);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
-	static void DrawReflection(Reflection& reflection);
-	static void DrawMap(std::unordered_map<std::string, Variable> myMap);
+	static bool DrawReflection(Reflection& reflection);
+	static bool DrawMap(std::unordered_map<std::string, Variable> myMap);
 
 	static std::string OpenFolderDialog(std::string title);
 	static std::string OpenFileDialog();

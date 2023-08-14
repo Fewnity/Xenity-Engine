@@ -306,35 +306,38 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 	return objectClicked;
 }
 
-void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap) 
+bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap) 
 {
+
+	bool valueChanged = false;
 	for (const auto& kv : myMap)
 	{
+		bool valueChangedTemp = false;
 		std::string variableName = GetPrettyVariableName(kv.first);
 
 		Variable variableRef = kv.second;
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
-			DrawInput(variableName, valuePtr->get());
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
-			DrawInput(variableName, valuePtr->get());
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))// Supported basic type
-			DrawInput(variableName, valuePtr->get());
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
-			DrawInput(variableName, valuePtr->get());
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
-			DrawInput(variableName, valuePtr->get());
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
 			if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
-				DrawInput(variableName, *val);
+				valueChangedTemp = DrawInput(variableName, *val);
 			else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
-				DrawInput(variableName, *val);
+				valueChangedTemp = DrawInput(variableName, *val);
 			else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
-				DrawInput(variableName, *val);
+				valueChangedTemp = DrawInput(variableName, *val);
 			else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
-				DrawInput(variableName, *val);
+				valueChangedTemp = DrawInput(variableName, *val);
 			else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
-				DrawInput(variableName, *val);
+				valueChangedTemp = DrawInput(variableName, *val);
 			else //Basic draw
 				DrawReflection(valuePtr->get());
 		}
@@ -360,6 +363,7 @@ void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get() = (MeshData*)ref;
+				valueChangedTemp = true;
 			}
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
@@ -384,6 +388,7 @@ void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get() = (AudioClip*)ref;
+				valueChangedTemp = true;
 			}
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
@@ -408,6 +413,7 @@ void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get() = (Texture*)ref;
+				valueChangedTemp = true;
 			}
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Scene*>>(&variableRef))
@@ -432,15 +438,21 @@ void EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get() = (Scene*)ref;
+				valueChangedTemp = true;
 			}
 		}
+		if (valueChangedTemp) 
+		{
+			valueChanged = true;
+		}
 	}
+	return valueChanged;
 }
 
-void EditorUI::DrawReflection(Reflection& reflection)
+bool EditorUI::DrawReflection(Reflection& reflection)
 {
 	auto t = reflection.GetReflection();
-	DrawMap(t);
+	return DrawMap(t);
 }
 
 void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value)
