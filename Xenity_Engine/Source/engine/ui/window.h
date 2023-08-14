@@ -12,6 +12,7 @@ public:
     static float GetAspectRatio();
     static void Init();
     static void UpdateScreen();
+    static void UpdateWindowTitle();
 #if defined(_WIN32) || defined(_WIN64)
     static SDL_Window *window;
 #endif

@@ -504,6 +504,7 @@ void Engine::EmptyScene()
 	componentsCount = 0;
 	gameObjectCount = 0;
 	Engine::selectedGameObject.reset();
+	SceneManager::openedScene = nullptr;
 }
 
 /// <summary>

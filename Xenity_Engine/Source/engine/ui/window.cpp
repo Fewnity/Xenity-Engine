@@ -11,11 +11,15 @@
 #include "../debug/debug.h"
 #include "../graphics/graphics.h"
 #include "../graphics/camera.h"
+#include "../scene_management/scene_manager.h"
+#include "../scene_management/scene.h"
+#include "../file_system/file_system.h"
+#include "../asset_management/project_manager.h"
 
 int Window::width = 0;
 int Window::height = 0;
 float Window::aspect = 0;
-const char *ENGINE_NAME = "Xenity Engine";
+const char *ENGINE_NAME = "Xenity Engine"; //TODO : To move
 #if defined(_WIN32) || defined(_WIN64)
 SDL_Window *Window::window = nullptr;
 #endif
@@ -63,6 +67,7 @@ void Window::Init()
     SDL_Init(SDL_INIT_EVERYTHING);
     unsigned int center = SDL_WINDOWPOS_CENTERED;
     window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    //SDL_SetWindowTitle()
     SDL_GLContext context = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
@@ -80,6 +85,7 @@ void Window::Init()
     ImGui_ImplSDL2_InitForOpenGL(Window::window, context);
     ImGui_ImplOpenGL3_Init("#version 460");
 
+    UpdateWindowTitle();
 #endif
     Debug::Print("-------- Window initiated --------");
 }
@@ -89,6 +95,17 @@ void Window::UpdateScreen()
 #if defined(_WIN32) || defined(_WIN64)
     SDL_GL_SwapWindow(window);
 #endif
+}
+
+void Window::UpdateWindowTitle()
+{
+    std::string newTitle = "" + ProjectManager::GetProjectName() + " - ";
+    if (SceneManager::openedScene) 
+    {
+        newTitle += SceneManager::openedScene->file->GetFileName();
+    }
+    newTitle += std::string(" - ") + ENGINE_NAME + " 0.1";
+    SDL_SetWindowTitle(window, newTitle.c_str());
 }
 
 void Window::UpdateAspectRatio()

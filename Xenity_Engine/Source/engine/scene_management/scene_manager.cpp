@@ -8,6 +8,7 @@ using json = nlohmann::json;
 
 std::vector<std::shared_ptr<Component>> SceneManager::allCreatedComponents;
 int SceneManager::allCreatedComponentsCount = 0;
+Scene* SceneManager::openedScene = nullptr;
 
 void SceneManager::LoadScene(Scene* scene)
 {
@@ -29,7 +30,9 @@ void SceneManager::LoadScene(Scene* scene)
 			Debug::PrintError("Scene file error");
 			return;
 		}
+
 		Engine::EmptyScene();
+
 		// Create all GameObjects and Components
 		for (auto& kv : data["GameObjects"].items())
 		{
@@ -87,8 +90,9 @@ void SceneManager::LoadScene(Scene* scene)
 				}
 			}
 		}
+		openedScene = scene;
 		allCreatedComponents.clear();
 		allCreatedComponentsCount = 0;
 	}
-	//delete jsonFile;
+	Window::UpdateWindowTitle();
 }
