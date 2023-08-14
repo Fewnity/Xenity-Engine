@@ -532,7 +532,7 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
 #elif defined(__PSP__)
 	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
-	ScePspFVector3 pos = {lightPosition.x, lightPosition.y, lightPosition.z};
+	ScePspFVector3 pos = {-lightPosition.x, lightPosition.y, lightPosition.z};
 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
 	if (type == Light::Directional)
 	{
