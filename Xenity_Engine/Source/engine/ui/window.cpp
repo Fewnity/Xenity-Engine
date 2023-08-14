@@ -67,12 +67,10 @@ void Window::Init()
     SDL_Init(SDL_INIT_EVERYTHING);
     unsigned int center = SDL_WINDOWPOS_CENTERED;
     window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
-    //SDL_SetWindowTitle()
     SDL_GLContext context = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
     OnResize();
-    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -99,6 +97,7 @@ void Window::UpdateScreen()
 
 void Window::UpdateWindowTitle()
 {
+#if defined(_WIN32) || defined(_WIN64)
     std::string newTitle = "" + ProjectManager::GetProjectName() + " - ";
     if (SceneManager::openedScene) 
     {
@@ -106,6 +105,17 @@ void Window::UpdateWindowTitle()
     }
     newTitle += std::string(" - ") + ENGINE_NAME + " 0.1";
     SDL_SetWindowTitle(window, newTitle.c_str());
+#endif
+}
+
+void Window::SetFullScreenMode(bool enable)
+{
+#if defined(_WIN32) || defined(_WIN64)
+    if(enable)
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    else
+        SDL_SetWindowFullscreen(window, 0);
+#endif
 }
 
 void Window::UpdateAspectRatio()

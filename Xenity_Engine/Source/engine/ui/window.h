@@ -16,6 +16,8 @@ public:
 #if defined(_WIN32) || defined(_WIN64)
     static SDL_Window *window;
 #endif
+    static void SetFullScreenMode(bool enable);
+
 private:
     static void UpdateAspectRatio();
     static int width, height;
