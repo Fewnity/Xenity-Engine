@@ -20,6 +20,7 @@
 #include "../engine/file_system/mesh_loader/wavefront_loader.h"
 #include "../engine/asset_management/project_manager.h"
 #include "../engine/reflection/reflection_utils.h"
+#include "../engine/scene_management/scene_manager.h"
 
 using json = nlohmann::json;
 
@@ -186,8 +187,9 @@ void Editor::SaveScene()
 
 	std::string s = j.dump(2);
 	// std::cout << s << std::endl;
-	FileSystem::fileSystem->DeleteFile("scene2.txt");
-	File* file = new File("scene2.txt");
+	std::string openedScenePath = SceneManager::openedScene->file->GetPath();
+	FileSystem::fileSystem->DeleteFile(openedScenePath);
+	File* file = new File(openedScenePath);
 	file->Open(true);
 	file->Write(s);
 	file->Close();
