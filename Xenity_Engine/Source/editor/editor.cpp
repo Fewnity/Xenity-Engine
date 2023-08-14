@@ -108,6 +108,14 @@ void Editor::Update()
 		if (Engine::selectedGameObject.lock())
 			DuplicateGameObject(Engine::selectedGameObject.lock());
 	}
+
+	if (Engine::GetGameState() == GameState::Stopped) 
+	{
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S))) 
+		{
+			SaveScene();
+		}
+	}
 }
 
 void Editor::Draw()
