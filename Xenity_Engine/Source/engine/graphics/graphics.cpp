@@ -58,31 +58,32 @@ void Graphics::Init()
 	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture* back = new Texture("test_project\\assets\\sunset_back.png", "sunset_back", false);
+	Texture* back = new Texture("assets\\sunset_back.png", "sunset_back", false);
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture* down = new Texture("test_project\\assets\\sunset_down.png", "sunset_down", false);
+	Texture* down = new Texture("assets\\sunset_down.png", "sunset_down", false);
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture* front = new Texture("test_project\\assets\\sunset_front.png", "sunset_front", false);
+	Texture* front = new Texture("assets\\sunset_front.png", "sunset_front", false);
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture* left = new Texture("test_project\\assets\\sunset_left.png", "sunset_left", false);
+	Texture* left = new Texture("assets\\sunset_left.png", "sunset_left", false);
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture* right = new Texture("test_project\\assets\\sunset_right.png", "sunset_right", false);
+	Texture* right = new Texture("assets\\sunset_right.png", "sunset_right", false);
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture* up = new Texture("test_project\\assets\\sunset_up.png", "sunset_up", false);
+	Texture* up = new Texture("assets\\sunset_up.png", "sunset_up", false);
 	up->SetWrapMode(Texture::ClampToEdge);
 
 	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
 
-	skyPlane = MeshManager::LoadMesh("test_project\\assets\\models\\Plane2Triangulate.obj");
+	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
 
-	rightArrow = MeshManager::LoadMesh("test_project\\assets\\right_arrow.obj");
-	upArrow = MeshManager::LoadMesh("test_project\\assets\\up_arrow.obj");
-	forwardArrow = MeshManager::LoadMesh("test_project\\assets\\forward_arrow.obj");
+#if defined(EDITOR)
+	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
+	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
+	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
 
-	toolArrowsTexture = new Texture("test_project\\engine_assets\\tool_arrows_colors.png", "@Internal_tool_arrows_colors", true);
+	toolArrowsTexture = new Texture("engine_assets\\tool_arrows_colors.png", "@Internal_tool_arrows_colors", true);
 	toolArrowsTexture->SetFilter(Texture::Point);
-
+#endif
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -129,6 +130,8 @@ void Graphics::DrawAllDrawable()
 			{
 				orderedIDrawable[i].lock()->Draw();
 			}
+
+#if defined(EDITOR)
 			if (camera->isEditor && Engine::selectedGameObject.lock())
 			{
 				Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
@@ -139,6 +142,7 @@ void Graphics::DrawAllDrawable()
 				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, upArrow, false, false, false);
 				MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, forwardArrow, false, false, false);
 			}
+#endif
 		}
 	}
 

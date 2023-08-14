@@ -36,7 +36,7 @@ Texture *AssetManager::defaultTexture = nullptr;
  */
 void AssetManager::Init()
 {
-	defaultTexture = new Texture("test_project\\engine_assets\\default_texture.png", "@Internal_default_texture", true);
+	defaultTexture = new Texture("engine_assets\\default_texture.png", "@Internal_default_texture", true);
 
 	// Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 
