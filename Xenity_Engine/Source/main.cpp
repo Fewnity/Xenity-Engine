@@ -12,22 +12,27 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
 
 /*
+For tomorrow
+Add OnReflectionUpdate function
+Improve play mode (Create scene backup before play, restore scene on stop)
+Add unit tests
+Check Psp light x position
+Implement functions of right click file popup
+Add Ctrl + S to save scene
+
 Add Drag and Drop for GameObjects
 Add Drag and Drop for Components
 Add unselect button
 Add unbind file variable button
-Add right click on files to remove files
 Improve file explorer code
 Automatic file unload system
 Re add delete texture function in renderer
 
-Improve play mode (Save before play, reload scene on stop)
 Add transparency setting on textures
 Packing asset system
 Multi texture per models obj loader
 Add a tool to rotate selected gameobject
-Add color to the tool arrows
-
+Fix tool with child and parent negative scale
 Find why ./ point to another location when lauched from a cmd without "cd"
 Detect the number of cpu core for cmake
 
@@ -35,7 +40,6 @@ Add materials
 Add async texture loading
 Add shaders
 Add sounds on windows
-Add unit tests
 Fix uniqueID when loading a new scene (set id to the max find in the file)
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)
