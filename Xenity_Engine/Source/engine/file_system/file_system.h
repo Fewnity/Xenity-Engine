@@ -32,6 +32,7 @@ public:
 	void InitFileSystem(const std::string exePath);
 	std::string GetGamePath();
 
+	void CreateDirectory(std::string path);
 	void DeleteFile(const std::string path);
 	void FillDirectory(Directory *directory);
 

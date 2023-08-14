@@ -384,6 +384,14 @@ void FileSystem::FillDirectory(Directory* directory)
 
 #pragma endregion
 
+void FileSystem::CreateDirectory(std::string path)
+{
+#if defined(__vita__)
+	path = PSVITA_BASE_DIR + path;
+#endif
+	std::filesystem::create_directory(path);
+}
+
 void FileSystem::DeleteFile(const std::string path)
 {
 	std::string newPath = path;
