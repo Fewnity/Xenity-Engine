@@ -30,21 +30,23 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 	if (file.fail())
 	{
 		Debug::PrintError("Mesh loading error. Path: " + finalpath);
-
 		return false;
-		// std::cout << "\033[31mModel load error. Path : \"" << finalpath + filePath << "\"\033[0m" << std::endl;
 	}
+
+	bool verticesFound = false;
+	bool currentMeshFilled = false;
+
+	std::vector<SubMesh> submeshes;
+	//std::vector<Data> submeshesData;
+	int currentSubMesh = -1;
+
 	int verticesCount = 0;
-	int indicesCount = 0;
 	int normalsCount = 0;
 	int textureCordsCount = 0;
 
 	vector<Vector3> tempVertices;
 	vector<Vector2> tempTexturesCoords;
 	vector<Vector3> tempNormals;
-	vector<int> vertexIndices;
-	vector<int> textureIndices;
-	vector<int> normalsIndices;
 	bool hasNoUv = false;
 	bool hasNoNormals = false;
 	int count = -1;
@@ -57,6 +59,16 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 		{
 			if (line[1] == ' ') // Add vertice
 			{
+				if (!verticesFound)
+				{
+					Debug::PrintWarning("New data found A");
+					verticesFound = true;
+					currentMeshFilled = false;
+
+					submeshes.push_back(SubMesh());
+					currentSubMesh++;
+				}
+
 				float x = 0, y = 0, z = 0;
 #if defined(_WIN32) || defined(_WIN64)
 				sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
@@ -68,6 +80,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 			}
 			else if (line[2] == ' ')
 			{
+				verticesFound = false;
 				if (line[1] == 't') // Add texture coordinate (UV)
 				{
 					float x = 0, y = 0;
@@ -94,6 +107,8 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 		}
 		else if (line[0] == 'f' && line[1] == ' ') // Add indices
 		{
+			verticesFound = false;
+			currentMeshFilled = true;
 			// Find the number of param
 			// int count = 0;
 			if (count == -1)
@@ -124,7 +139,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 #if defined(_WIN32) || defined(_WIN64)
 				sscanf_s(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
 #elif defined(__PSP__) || defined(__vita__)
-				sscanf(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3);														   // For no uv no normals
+				sscanf(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
 #endif
 				hasNoNormals = true;
 				hasNoUv = true;
@@ -135,13 +150,8 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 #if defined(_WIN32) || defined(_WIN64)
 				sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 #elif defined(__PSP__) || defined(__vita__)
-				sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3);								   // For no normals
+				sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 #endif
-				// mesh->AddVertex(
-				// 	tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
-				// 	0xFFFFFFFF, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, vertexIndex);
-
-				// mesh->indices[i] = vertexIndex;
 			}
 			else if (count == 6)
 			{
@@ -159,55 +169,102 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 #endif
 			}
 
-			indicesCount += 3;
+			submeshes[currentSubMesh].indicesCount += 3;
 
-			vertexIndices.push_back(v1);
-			vertexIndices.push_back(v2);
-			vertexIndices.push_back(v3);
+			submeshes[currentSubMesh].vertexIndices.push_back(v1);
+			submeshes[currentSubMesh].vertexIndices.push_back(v2);
+			submeshes[currentSubMesh].vertexIndices.push_back(v3);
 
-			textureIndices.push_back(vt1);
-			textureIndices.push_back(vt2);
-			textureIndices.push_back(vt3);
+			submeshes[currentSubMesh].textureIndices.push_back(vt1);
+			submeshes[currentSubMesh].textureIndices.push_back(vt2);
+			submeshes[currentSubMesh].textureIndices.push_back(vt3);
 
-			normalsIndices.push_back(vn1);
-			normalsIndices.push_back(vn2);
-			normalsIndices.push_back(vn3);
+			submeshes[currentSubMesh].normalsIndices.push_back(vn1);
+			submeshes[currentSubMesh].normalsIndices.push_back(vn2);
+			submeshes[currentSubMesh].normalsIndices.push_back(vn3);
+		}
+		else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e')
+		{
+			if (!verticesFound && currentMeshFilled)
+			{
+				currentMeshFilled = false;
+
+				submeshes.push_back(SubMesh());
+				currentSubMesh++;
+
+				Debug::PrintWarning("New submesh found B");
+			}
 		}
 	}
+
+	std::string smC = "subMeshCount " + std::to_string(currentSubMesh+1);
+	Debug::PrintWarning(smC);
 
 	// Close the file
 	file.close();
 
-	int byteCount = 3;
-	if (!hasNoNormals)
-		byteCount += 3;
-	if (!hasNoUv)
-		byteCount += 2;
-
-	mesh->AllocMesh(indicesCount, indicesCount, false, !hasNoNormals);
-
 	mesh->hasUv = !hasNoUv;
 	mesh->hasNormal = !hasNoNormals;
+	mesh->hasColor = false;
 
-	// Push vertices in the right order
-	int vertexIndicesSize = (int)vertexIndices.size();
-	for (int i = 0; i < vertexIndicesSize; i++)
+	int indiceCount = 0;
+	for (int i = 0; i < currentSubMesh + 1; i++)
 	{
-		unsigned int vertexIndex = vertexIndices[i] - 1;
-		unsigned int textureIndex = textureIndices[i] - 1;
-		unsigned int normalIndices = normalsIndices[i] - 1;
-
-		if(!mesh->hasNormal)
-		mesh->AddVertex(
-			tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
-		else
-			mesh->AddVertex(
-				tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y, tempNormals.at(normalIndices).x, tempNormals.at(normalIndices).y, tempNormals.at(normalIndices).z,
-				tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, i);
-
-		mesh->indices[i] = i;
+		indiceCount += submeshes[i].indicesCount;
 	}
 
+	mesh->AllocData(indiceCount);
+
+	for (int i = 0; i < currentSubMesh+1; i++)
+	{
+		mesh->AllocSubMesh(submeshes[i].indicesCount);
+	}
+	int totalIndice = 0;
+
+	for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
+	{
+		// Push vertices in the right order
+		int vertexIndicesSize = (int)submeshes[subMeshIndex].vertexIndices.size();
+		for (int i = 0; i < vertexIndicesSize; i++)
+		{
+			unsigned int vertexIndex = submeshes[subMeshIndex].vertexIndices[i] - 1;
+			unsigned int textureIndex = submeshes[subMeshIndex].textureIndices[i] - 1;
+			unsigned int normalIndices = submeshes[subMeshIndex].normalsIndices[i] - 1;
+
+			if (!mesh->hasNormal)
+			{
+				if (!mesh->hasUv)
+				{
+					mesh->AddVertex(
+						tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, totalIndice);
+				}
+				else
+				{
+					mesh->AddVertex(
+						tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
+						tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, totalIndice);
+				}
+			}
+			else
+			{
+				if (!mesh->hasUv)
+				{
+					mesh->AddVertex(
+						tempNormals.at(normalIndices).x, tempNormals.at(normalIndices).y, tempNormals.at(normalIndices).z,
+						tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, totalIndice);
+				}
+				else
+				{
+					mesh->AddVertex(
+						tempTexturesCoords.at(textureIndex).x, tempTexturesCoords.at(textureIndex).y,
+						tempNormals.at(normalIndices).x, tempNormals.at(normalIndices).y, tempNormals.at(normalIndices).z,
+						tempVertices.at(vertexIndex).x, tempVertices.at(vertexIndex).y, tempVertices.at(vertexIndex).z, totalIndice);
+				}
+			}
+			mesh->subMeshes[subMeshIndex]->indices[i] = totalIndice;
+			totalIndice++;
+		}
+	}
 #ifdef __PSP__
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif

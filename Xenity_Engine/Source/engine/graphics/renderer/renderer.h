@@ -13,6 +13,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "../../lighting/lighting.h"
+#include <vector>
 
 class Color;
 class Vector4;
@@ -85,7 +86,7 @@ public:
 	virtual void MoveTransform(Vector3 position) = 0;
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
-	virtual void DrawMeshData(MeshData *meshData, RenderingSettings settings) = 0;
+	virtual void DrawMeshData(MeshData *meshData, std::vector<Texture*> textures, RenderingSettings settings) = 0;
 	virtual unsigned int CreateNewTexture() = 0;
 	virtual void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer) = 0;
 	virtual void Clear() = 0;

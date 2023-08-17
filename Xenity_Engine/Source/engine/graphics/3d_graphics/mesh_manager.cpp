@@ -44,16 +44,16 @@ MeshData *MeshManager::LoadMesh(std::string path)
  * @param meshData
  * @param useDepth
  */
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, MeshData *meshData, bool useDepth, bool useBlend, bool useLighting)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector<Texture*> textures, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
 {
-    if (!meshData || (meshData->hasIndices && meshData->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
+    if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
         return;
 
-    if (!texture || !texture->IsValid())
+    /*if (texture.size() || !texture->IsValid())
     {
         Debug::PrintError("[MeshManager::DrawMesh] Invalid texture");
         return;
-    }
+    }*/
 
     auto camera = Graphics::usedCamera.lock();
     if (!camera)
@@ -86,8 +86,15 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Te
     renderSettings.useTexture = true;
     renderSettings.useLighting = useLighting;
 
-    Engine::renderer->BindTexture(texture);
-    Engine::renderer->DrawMeshData(meshData, renderSettings);
+    //Engine::renderer->BindTexture(texture);
+    Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
 
     // meshBenchmark->Stop();
+}
+
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture* texture, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
+{
+    std::vector<Texture*> textures;
+    textures.push_back(texture);
+    DrawMesh(position, rotation, scale, textures, meshData, useDepth, useBlend, useLighting);
 }

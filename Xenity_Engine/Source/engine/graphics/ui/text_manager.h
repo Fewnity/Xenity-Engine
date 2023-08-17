@@ -81,7 +81,7 @@ public:
 
 private:
     static void SetTextPosition(std::weak_ptr<Transform> transform, bool canvas);
-    static void DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces);
+    static void DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture);
     static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
 
     static std::vector<MeshData *> meshes;

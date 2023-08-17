@@ -313,7 +313,7 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 #endif
 }
 
-void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings)
+void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> textures, RenderingSettings settings)
 {
 	float material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};  /* default value */
 	float material_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};  /* default value */
@@ -365,6 +365,8 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 
 	glEnable(GL_TEXTURE_2D);
 
+	int subMeshCount = meshData->subMeshCount;
+	int textureCount = textures.size();
 #if defined(__PSP__)
 	int params = 0;
 
@@ -388,15 +390,23 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 	params |= GL_VERTEX_32BITF;
 	params |= GL_TRANSFORM_3D;
 
-	if (!meshData->hasIndices)
+	for (int i = 0; i < subMeshCount; i++)
 	{
-		glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
-	}
-	else
-	{
-		glDrawElements(GL_TRIANGLES, params, meshData->index_count, meshData->indices, meshData->data);
-	}
+		if (i == textureCount)
+			break;
+		if (textures[i] == nullptr)
+			continue;
+		BindTexture(textures[i]);
 
+		if (!meshData->hasIndices)
+		{
+			glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, params, meshData->subMeshes[i]->index_count, meshData->subMeshes[i]->indices, meshData->data);
+		}
+	}
 #else
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (meshData->hasColor)
@@ -415,36 +425,66 @@ void RendererOpengl::DrawMeshData(MeshData *meshData, RenderingSettings settings
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	if (meshData->hasColor)
+	for (int i = 0; i < subMeshCount; i++)
 	{
-		int stride = sizeof(Vertex);
-		glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].u);
-		glColorPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].r);
-		glVertexPointer(3, GL_FLOAT, stride, &((Vertex *)meshData->data)[0].x);
-	}
-	else if (meshData->hasNormal)
-	{
-		int stride = sizeof(VertexNormalsNoColor);
-		glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].u);
-		glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].normX);
-		glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor *)meshData->data)[0].x);
-	}
-	else
-	{
-		int stride = sizeof(VertexNoColor);
-		glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].u);
-		glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor *)meshData->data)[0].x);
-	}
+		if (i == textureCount)
+			break;
 
-	if (!meshData->hasIndices)
-	{
-		glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
-	}
-	else
-	{
-		glDrawElements(GL_TRIANGLES, meshData->index_count, GL_UNSIGNED_SHORT, meshData->indices);
-	}
+		if (textures[i] == nullptr)
+			continue;
+		BindTexture(textures[i]);
+		if (meshData->vertice_count == 0)
+			continue;
+		if (!meshData->hasNormal)
+		{
+			if (!meshData->hasUv)
+			{
+				int stride = sizeof(VertexNoColorNoUv);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColorNoUv*)meshData->data)[0].x);
+			}
+			else
+			{
+				if (meshData->hasColor)
+				{
+					int stride = sizeof(Vertex);
+					glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].u);
+					glColorPointer(3, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].r);
+					glVertexPointer(3, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].x);
+				}
+				else
+				{
+					int stride = sizeof(VertexNoColor);
+					glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor*)meshData->data)[0].u);
+					glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor*)meshData->data)[0].x);
+				}
+			}
+		}
+		else
+		{
+			if (!meshData->hasUv)
+			{
+				int stride = sizeof(VertexNormalsNoColorNoUv);
+				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)meshData->data)[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)meshData->data)[0].x);
+			}
+			else
+			{
+				int stride = sizeof(VertexNormalsNoColor);
+				glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].u);
+				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].x);
+			}
+		}
 
+		if (!meshData->hasIndices)
+		{
+			glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, meshData->subMeshes[i]->index_count, GL_UNSIGNED_SHORT, meshData->subMeshes[i]->indices);
+		}
+	}
 	glDisableClientState(GL_VERTEX_ARRAY);
 	if (meshData->hasColor)
 	{

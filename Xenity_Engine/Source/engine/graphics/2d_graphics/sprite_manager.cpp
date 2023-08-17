@@ -32,17 +32,17 @@ void SpriteManager::Init()
     spriteBenchmark = new ProfilerBenchmark("Sprite");
 
     // Create sprite mesh
-    spriteMeshData = new MeshData(4, 6, false, false);
+    spriteMeshData = new MeshData(4, 6, false, false, true);
     spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
     spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
     spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
     spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
-    spriteMeshData->indices[0] = 0;
-    spriteMeshData->indices[1] = 2;
-    spriteMeshData->indices[2] = 1;
-    spriteMeshData->indices[3] = 2;
-    spriteMeshData->indices[4] = 0;
-    spriteMeshData->indices[5] = 3;
+    spriteMeshData->subMeshes[0]->indices[0] = 0;
+    spriteMeshData->subMeshes[0]->indices[1] = 2;
+    spriteMeshData->subMeshes[0]->indices[2] = 1;
+    spriteMeshData->subMeshes[0]->indices[3] = 2;
+    spriteMeshData->subMeshes[0]->indices[4] = 0;
+    spriteMeshData->subMeshes[0]->indices[5] = 3;
 
 #if defined(__PSP__)
     sceKernelDcacheWritebackInvalidateAll(); // Very important
@@ -115,8 +115,10 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
         renderSettings.useLighting = false;
 
         // Draw the sprite
-        Engine::renderer->BindTexture(texture);
-        Engine::renderer->DrawMeshData(spriteMeshData, renderSettings);
+        //Engine::renderer->BindTexture(texture);
+        std::vector<Texture*> textures;
+        textures.push_back(texture);
+        Engine::renderer->DrawMeshData(spriteMeshData, textures,  renderSettings);
     }
     spriteBenchmark->Stop();
 }
@@ -158,8 +160,9 @@ void SpriteManager::Render2DLine(MeshData* meshData)
         renderSettings.useTexture = true;
         renderSettings.useLighting = false;
 
-        Engine::renderer->BindTexture(AssetManager::defaultTexture);
-        Engine::renderer->DrawMeshData(meshData, renderSettings);
+        std::vector<Texture*> textures;
+        textures.push_back(AssetManager::defaultTexture);
+        Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
     }
     spriteBenchmark->Stop();
 }

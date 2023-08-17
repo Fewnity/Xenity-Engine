@@ -136,6 +136,7 @@ void InputSystem::Read(const SDL_Event event)
 			float a = 0;
 			int w = 0;
 			int h = 0;
+#if defined(EDITOR)
 			if (Editor::gameMenu->isHovered)
 			{
 				w = Editor::gameMenu->windowSize.x;
@@ -152,6 +153,11 @@ void InputSystem::Read(const SDL_Event event)
 				w = Graphics::usedCamera.lock()->GetWidth();
 				h = Graphics::usedCamera.lock()->GetHeight();
 			}
+#else
+			w = Graphics::usedCamera.lock()->GetWidth();
+			h = Graphics::usedCamera.lock()->GetHeight();
+#endif
+
 			a = (float)w / (float)h;
 			// Get mouse speed
 			xSpeed = event.motion.xrel / (float)w * a;

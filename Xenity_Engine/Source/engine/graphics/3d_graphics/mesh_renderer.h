@@ -24,7 +24,6 @@ public:
     int GetDrawPriority() const;
 
     MeshData *meshData = nullptr;
-    Texture *texture = nullptr;
     std::vector<Texture*> textures;
 
 private:

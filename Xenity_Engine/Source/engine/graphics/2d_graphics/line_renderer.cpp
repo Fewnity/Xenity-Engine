@@ -67,18 +67,18 @@ void LineRenderer::Draw()
 			float fixedXWidth = width2 / 2.0f * dir.y;
 			float fixedYWidth = width2 / 2.0f * dir.x;
 
-			meshData = new MeshData(4, 6, false, false);
+			meshData = new MeshData(4, 6, false, false, true);
 			meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0);
 			meshData->AddVertex(0.0f, 0.0f, end.x - fixedXWidth, end.y - fixedYWidth, 0.0f, 1);
 			meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2);
 			meshData->AddVertex(0.0f, 1.0f, start.x + fixedXWidth, start.y + fixedYWidth, 0.0f, 3);
 
-			meshData->indices[0] = 0;
-			meshData->indices[1] = 2;
-			meshData->indices[2] = 1;
-			meshData->indices[3] = 2;
-			meshData->indices[4] = 0;
-			meshData->indices[5] = 3;
+			meshData->subMeshes[0]->indices[0] = 0;
+			meshData->subMeshes[0]->indices[1] = 2;
+			meshData->subMeshes[0]->indices[2] = 1;
+			meshData->subMeshes[0]->indices[3] = 2;
+			meshData->subMeshes[0]->indices[4] = 0;
+			meshData->subMeshes[0]->indices[5] = 3;
 
 #if defined(__PSP__)
 			sceKernelDcacheWritebackInvalidateAll(); // Very important

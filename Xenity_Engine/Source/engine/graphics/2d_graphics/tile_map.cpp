@@ -177,7 +177,7 @@ void Tilemap::FillChunks()
 			{
 				int yChunk = (int)floor(y / (float)chunkSize);
 				MeshData *mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
-				int indiceOff = mesh->index_count;
+				int indiceOff = mesh->subMeshes[0]->index_count;
 				int verticeOff = mesh->vertice_count;
 
 				float unitCoef = 100.0f / textures[tile->textureId]->GetPixelPerUnit();
@@ -207,13 +207,13 @@ void Tilemap::FillChunks()
 					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff);
 					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff);
 
-					mesh->indices[0 + indiceOff] = 0 + verticeOff;
-					mesh->indices[1 + indiceOff] = 2 + verticeOff;
-					mesh->indices[2 + indiceOff] = 1 + verticeOff;
-					mesh->indices[3 + indiceOff] = 2 + verticeOff;
-					mesh->indices[4 + indiceOff] = 0 + verticeOff;
-					mesh->indices[5 + indiceOff] = 3 + verticeOff;
-					mesh->index_count += 6;
+					mesh->subMeshes[0]->indices[0 + indiceOff] = 0 + verticeOff;
+					mesh->subMeshes[0]->indices[1 + indiceOff] = 2 + verticeOff;
+					mesh->subMeshes[0]->indices[2 + indiceOff] = 1 + verticeOff;
+					mesh->subMeshes[0]->indices[3 + indiceOff] = 2 + verticeOff;
+					mesh->subMeshes[0]->indices[4 + indiceOff] = 0 + verticeOff;
+					mesh->subMeshes[0]->indices[5 + indiceOff] = 3 + verticeOff;
+					mesh->subMeshes[0]->index_count += 6;
 					mesh->vertice_count += 4;
 				}
 			}
@@ -272,8 +272,8 @@ void Tilemap::CreateChunksMeshes()
 			// Create new meshes
 			for (int i = 0; i < textureSize; i++)
 			{
-				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false);
-				mesh->index_count = 0;
+				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false, true);
+				mesh->subMeshes[0]->index_count = 0;
 				mesh->vertice_count = 0;
 				mesh->hasIndices = useIndices;
 				mesh->unifiedColor = color;

@@ -37,7 +37,7 @@ void TextManager::Init()
  * @param mesh Mesh data
  * @param for3D 3D text mode
  */
-void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces)
+void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture)
 {
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
@@ -47,7 +47,9 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces)
     renderSettings.useTexture = true;
     renderSettings.useLighting = for3D;
 
-    Engine::renderer->DrawMeshData(mesh, renderSettings);
+    std::vector<Texture*> textures;
+    textures.push_back(texture);
+    Engine::renderer->DrawMeshData(mesh, textures, renderSettings);
 }
 
 /**
@@ -121,7 +123,7 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
 
     // Create empty mesh
     int charCountToDraw = textLenght - (textInfo->lineCount - 1);
-    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false);
+    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
     mesh->unifiedColor = color;
 
     int drawnCharIndex = 0;
@@ -200,13 +202,13 @@ void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlig
 
         auto transform = weakTransform.lock();
         SetTextPosition(transform, canvas);
-        Engine::renderer->BindTexture(font->fontAtlas);
+        //Engine::renderer->BindTexture(font->fontAtlas);
 
         bool invertFaces = false;
         if (transform->GetScale().x * transform->GetScale().y < 0)
             invertFaces = true;
 
-        DrawTextMesh(mesh, !canvas, invertFaces);
+        DrawTextMesh(mesh, !canvas, invertFaces, font->fontAtlas);
         textBenchmark->Stop();
     }
 }
@@ -235,12 +237,12 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
     mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice);
     mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice);
 
-    mesh->indices[0 + indiceIndex] = 0 + indice;
-    mesh->indices[1 + indiceIndex] = 2 + indice;
-    mesh->indices[2 + indiceIndex] = 1 + indice;
-    mesh->indices[3 + indiceIndex] = 2 + indice;
-    mesh->indices[4 + indiceIndex] = 0 + indice;
-    mesh->indices[5 + indiceIndex] = 3 + indice;
+    mesh->subMeshes[0]->indices[0 + indiceIndex] = 0 + indice;
+    mesh->subMeshes[0]->indices[1 + indiceIndex] = 2 + indice;
+    mesh->subMeshes[0]->indices[2 + indiceIndex] = 1 + indice;
+    mesh->subMeshes[0]->indices[3 + indiceIndex] = 2 + indice;
+    mesh->subMeshes[0]->indices[4 + indiceIndex] = 0 + indice;
+    mesh->subMeshes[0]->indices[5 + indiceIndex] = 3 + indice;
 }
 
 /// <summary>

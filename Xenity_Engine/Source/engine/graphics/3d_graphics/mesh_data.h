@@ -12,61 +12,88 @@
 
 #include "../color/color.h"
 #include "../../file_system/file_reference.h"
-
+#include <vector>
 
 struct Vertex
 {
-    float u, v;
+	float u, v;
 #ifdef __PSP__
-    unsigned int color;
+	unsigned int color;
 #else
-    float r, g, b, a;
+	float r, g, b, a;
 #endif
-    float x, y, z;
+	float x, y, z;
 };
 
 struct VertexNoColor
 {
-    float u, v;
-    float x, y, z;
+	float u, v;
+	float x, y, z;
+};
+
+struct VertexNoColorNoUv
+{
+	float x, y, z;
 };
 
 struct VertexNormalsNoColor
 {
-    float u, v;
-    float normX, normY, normZ;
-    float x, y, z;
+	float u, v;
+	float normX, normY, normZ;
+	float x, y, z;
+};
+
+struct VertexNormalsNoColorNoUv
+{
+	float normX, normY, normZ;
+	float x, y, z;
 };
 
 class API MeshData : public FileReference
 {
 public:
-    MeshData();
-    //MeshData() = delete;
-    MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
-    std::unordered_map<std::string, Variable> GetReflection();
-    std::unordered_map<std::string, Variable> GetMetaReflection();
-    ~MeshData();
-    void LoadFileReference();
-    void UnloadFileReference();
-    void AllocMesh(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals);
+	class SubMesh
+	{
+	public:
+		SubMesh() = default;
+		unsigned int index_count = 0;
+		unsigned short* indices = nullptr;
+	};
+	MeshData();
+	//MeshData() = delete;
+	MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
+	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, Variable> GetMetaReflection();
+	~MeshData();
+	void LoadFileReference();
+	void UnloadFileReference();
+	void AllocSubMesh(unsigned int index_count);
+	void AllocData(unsigned int vcount);
 
-    void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
-    void AddVertex(float u, float v, float x, float y, float z, int index);
-    void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index);
+	void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
+	void AddVertex(float x, float y, float z, int index);
+	void AddVertex(float u, float v, float x, float y, float z, int index);
+	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index);
+	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index);
 
-    void *data = nullptr;
+	std::vector<SubMesh*> subMeshes;
 
-    unsigned short *indices = nullptr;
+	int subMeshCount  = 0;
+	unsigned int vertice_count = 0;
+	void* data = nullptr;
 
-    unsigned int vertice_count = 0;
-    unsigned int index_count = 0;
-    bool hasUv = false;
-    bool hasNormal = false;
-    bool hasColor = true;
-    bool hasIndices = true;
-    bool isQuad = false;
-    Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+	/*void* data = nullptr;
+
+	unsigned short* indices = nullptr;
+
+	unsigned int vertice_count = 0;
+	unsigned int index_count = 0;*/
+	bool hasUv = false;
+	bool hasNormal = false;
+	bool hasColor = true;
+	bool hasIndices = true;
+	bool isQuad = false;
+	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 private:
-    void Unload();
+	void Unload();
 };

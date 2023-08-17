@@ -33,7 +33,7 @@ public:
 	void MoveTransform(Vector3 position);
 	void BindTexture(Texture *texture);
 	void ApplyTextureFilters(Texture *texture);
-	void DrawMeshData(MeshData *meshData, RenderingSettings settings);
+	void DrawMeshData(MeshData *meshData, std::vector<Texture*> textures, RenderingSettings settings);
 	unsigned int CreateNewTexture();
 	void DeleteTexture(Texture* texture);
 	void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer);

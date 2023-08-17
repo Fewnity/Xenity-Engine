@@ -24,7 +24,6 @@ std::unordered_map<std::string, Variable> MeshRenderer::GetReflection()
 {
 	std::unordered_map<std::string, Variable> reflectedVariables;
 	reflectedVariables.insert_or_assign("meshData", meshData);
-	reflectedVariables.insert_or_assign("texture", texture);
 	reflectedVariables.insert_or_assign("textures", textures);
 	return reflectedVariables;
 }
@@ -48,7 +47,8 @@ void MeshRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			auto transform = GetTransform();
-			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, meshData, true, false, true);
+
+			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), textures, meshData, true, false, true);
 		}
 	}
 }

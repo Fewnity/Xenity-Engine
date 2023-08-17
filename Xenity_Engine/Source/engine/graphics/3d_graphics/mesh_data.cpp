@@ -19,9 +19,24 @@ MeshData::MeshData()
  * @param vcount
  * @param index_count
  */
-MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals)
+MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
 {
-	AllocMesh(vcount, index_count, useVertexColor, useNormals);
+	this->hasUv = useUV;
+	this->hasNormal = useNormals;
+	this->hasColor = useVertexColor;
+	/*this->subMeshData.push_back(new MeshData::Data());
+	this->subMeshDataCount++;
+	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
+	newSubMesh->data = this->subMeshData[0];
+	newSubMesh->data->hasUv = useUV;
+	newSubMesh->data->hasNormal = useNormals;
+	newSubMesh->data->hasColor = useVertexColor;
+	this->subMeshes.push_back(newSubMesh);
+	this->subMeshCount++;
+
+	AllocMesh(vcount, index_count, 0);*/
+	AllocData(vcount);
+	AllocSubMesh(index_count);
 }
 
 // MeshData::MeshData(std::string filePath)
@@ -53,7 +68,6 @@ std::unordered_map<std::string, Variable> MeshData::GetMetaReflection()
  * @param z Z position
  * @param index Vertex index
  */
-// void MeshData::AddVertex(float u, float v, unsigned int color, float x, float y, float z, int index)
 void MeshData::AddVertex(float u, float v, Color color, float x, float y, float z, int index)
 {
 	RGBA rgba = color.GetRGBA();
@@ -73,6 +87,16 @@ void MeshData::AddVertex(float u, float v, Color color, float x, float y, float 
 	vert.z = z;
 
 	((Vertex *)data)[index] = vert;
+}
+
+void MeshData::AddVertex(float x, float y, float z, int index)
+{
+	VertexNoColorNoUv vert;
+	vert.x = x;
+	vert.y = y;
+	vert.z = z;
+
+	((VertexNoColorNoUv*)data)[index] = vert;
 }
 
 void MeshData::AddVertex(float u, float v, float x, float y, float z, int index)
@@ -102,12 +126,25 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	((VertexNormalsNoColor *)data)[index] = vert;
 }
 
+void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, int index)
+{
+	VertexNormalsNoColorNoUv vert;
+	vert.normX = nx;
+	vert.normY = ny;
+	vert.normZ = nz;
+	vert.x = x;
+	vert.y = y;
+	vert.z = z;
+
+	((VertexNormalsNoColorNoUv*)data)[index] = vert;
+}
+
 void MeshData::Unload()
 {
-	if (data)
+	/*if (data)
 		free(data);
 	if (indices)
-		free(indices);
+		free(indices);*/
 }
 
 /**
@@ -133,23 +170,19 @@ void MeshData::UnloadFileReference()
 	Unload();
 }
 
-void MeshData::AllocMesh(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals)
+void MeshData::AllocData(unsigned int vcount)
 {
-	// Allocate memory for mesh data
-	hasColor = useVertexColor;
-	hasNormal = useNormals;
-
 #ifdef __PSP__
-	if (useVertexColor)
+	if (hasColor)
 		data = (Vertex*)memalign(16, sizeof(Vertex) * vcount);
-	else if (useNormals)
+	else if (hasNormal)
 		data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	else
 		data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
 #else
-	if (useVertexColor)
+	if (hasColor)
 		data = (Vertex*)malloc(sizeof(Vertex) * vcount);
-	else if (useNormals)
+	else if (hasNormal)
 		data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
 	else
 		data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
@@ -161,19 +194,66 @@ void MeshData::AllocMesh(unsigned int vcount, unsigned int index_count, bool use
 		return;
 	}
 
+	vertice_count = vcount;
+}
+
+void MeshData::AllocSubMesh(unsigned int index_count)
+{
+	// Allocate memory for mesh data
+	//hasColor = useVertexColor;
+	//hasNormal = useNormals;
+
+	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
+
+#ifdef __PSP__
+	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+#else
+	newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+#endif
+		if (newSubMesh->indices == nullptr)
+		{
+			Debug::PrintError("No memory for Indices");
+			return;
+		}
+		newSubMesh->index_count = index_count;
+	subMeshes.push_back(newSubMesh);
+		subMeshCount++;
+
+/*#ifdef __PSP__
+	if (hasColor)
+		subMeshData[subMeshDataIndex]->data = (Vertex*)memalign(16, sizeof(Vertex) * vcount);
+	else if (hasNormal)
+		subMeshData[subMeshDataIndex]->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+	else
+		subMeshData[subMeshDataIndex]->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+#else
+	if (hasColor)
+		subMeshData[subMeshDataIndex]->data = (Vertex*)malloc(sizeof(Vertex) * vcount);
+	else if (hasNormal)
+		subMeshData[subMeshDataIndex]->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
+	else
+		subMeshData[subMeshDataIndex]->data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
+#endif
+	// data = (Vertex *)malloc(sizeof(Vertex) * vcount);
+	if (subMeshData[subMeshDataIndex]->data == nullptr)
+	{
+		Debug::PrintWarning("No memory for Vertex");
+		return;
+	}
+
 	// indices = (unsigned int *)malloc(sizeof(unsigned int) * index_count);
 	// indices = (unsigned int *)memalign(16, sizeof(unsigned int) * index_count);
 #ifdef __PSP__
-	indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+	subMeshData[subMeshDataIndex]->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
 #else
-	indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+	subMeshData[subMeshDataIndex]->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
 #endif
-	if (indices == nullptr)
+	if (subMeshData[subMeshDataIndex]->indices == nullptr)
 	{
 		Debug::PrintError("No memory for Indices");
 		return;
 	}
 
-	this->index_count = index_count;
-	this->vertice_count = vcount;
+	subMeshData[subMeshDataIndex]->index_count = index_count;
+	subMeshData[subMeshDataIndex]->vertice_count = vcount;*/
 }
