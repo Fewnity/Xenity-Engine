@@ -179,6 +179,17 @@ void Engine::RegisterEngineComponents()
 void Engine::SetGameState(GameState _gameState)
 {
 	gameState = _gameState;
+	switch (_gameState)
+	{
+	case Stopped:
+		SceneManager::RestoreScene();
+		break;
+	case Paused:
+		break;
+	case Playing:
+		SceneManager::SaveScene(true);
+		break;
+	}
 }
 
 void Engine::Stop()
