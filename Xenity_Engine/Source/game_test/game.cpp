@@ -1,11 +1,5 @@
 #include "game.h"
 #include "../xenity.h"
-#include "../engine/graphics/3d_graphics/mesh_data.h"
-#include "../engine/graphics/renderer/renderer.h"
-#include <string.h>
-#include <thread>
-#include <malloc.h>
-#include "../engine/audio/audio_manager.h"
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -20,6 +14,7 @@
 #endif
 #include "../engine/class_registry/class_registry.h"
 #include "rotate.h"
+#include "free_move.h"
 
 Game* Game::game;
 
@@ -33,6 +28,8 @@ void Game::Start()
 
     ClassRegistry::AddComponentClass("Rotate", [](std::shared_ptr<GameObject> go)
         { return go->AddComponent<Rotate>(); });
+    ClassRegistry::AddComponentClass("FreeMove", [](std::shared_ptr<GameObject> go)
+        { return go->AddComponent<FreeMove>(); });
 
     Debug::Print("Game::Start");
 }
