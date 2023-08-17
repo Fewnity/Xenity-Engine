@@ -4,11 +4,9 @@
 #include "../xenity.h"
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
-#include "file_system/mesh_loader/wavefront_loader.h"
 #include "audio/audio_manager.h"
 #include "network/network.h"
 #include "dynamic_lib/dynamic_lib.h"
-#include "graphics/camera.h"
 
 #if defined(EDITOR)
 #include "dynamic_lib/dynamic_lib.h"
@@ -425,7 +423,7 @@ void Engine::Loop()
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-						Window::SetResolution(event.window.data1, event.window.data2);
+					Window::SetResolution(event.window.data1, event.window.data2);
 					//if(event.window.windowID == SDL_GetWindowID(Window::window))
 				}
 				else if (event.window.event == SDL_WINDOWEVENT_CLOSE) 
