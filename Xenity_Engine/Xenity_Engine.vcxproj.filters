@@ -89,6 +89,7 @@
     <ClCompile Include="Source\editor\compiler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
+    <ClCompile Include="Source\game_test\free_move.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
     <ClInclude Include="Source\editor\tool_mode.h" />
     <ClInclude Include="Source\unit_tests\unit_test_manager.h" />
+    <ClInclude Include="Source\game_test\free_move.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
