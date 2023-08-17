@@ -543,7 +543,10 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 
-	float lightAttenuation[] = {attenuation};
+	float lightAttenuation[1] = { attenuation };
+	if (type == Light::Directional)
+		lightAttenuation[0] = { 0 };
+
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
 
 	float typeIntensity = 1;
@@ -585,6 +588,8 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	}
 	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
+	if (type == Light::Directional)
+		attenuation = 0;
 	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
 #endif
 }
