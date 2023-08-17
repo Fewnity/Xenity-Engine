@@ -37,7 +37,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
-			SceneManager::SaveScene();
+			SceneManager::SaveScene(false);
 		}
 		if (ImGui::MenuItem("Open Project"))
 		{
