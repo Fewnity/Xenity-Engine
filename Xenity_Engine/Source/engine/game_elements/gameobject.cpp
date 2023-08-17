@@ -310,3 +310,8 @@ void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 		}
 	}
 }
+
+void GameObject::OnReflectionUpdated()
+{
+	UpdateActive(shared_from_this());
+}

@@ -76,6 +76,7 @@ void SceneManager::LoadScene(json jsonData)
 		auto go = CreateGameObject();
 		go->SetUniqueId(std::stoull(kv.key()));
 		ReflectionUtils::JsonToReflection(kv.value(), *go.get());
+		go->OnReflectionUpdated();
 		for (auto& kv2 : kv.value()["Components"].items())
 		{
 			std::string className = kv2.value()["Type"];
