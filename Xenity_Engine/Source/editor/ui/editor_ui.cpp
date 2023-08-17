@@ -441,7 +441,40 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valueChangedTemp = true;
 			}
 		}
-		if (valueChangedTemp) 
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+		{
+			int vectorSize = valuePtr->get().size();
+			for (int vectorI = 0; vectorI < vectorSize; vectorI++)
+			{
+				std::string inputText = "None (Texture)";
+				auto ptr = valuePtr->get()[vectorI];
+				if (ptr != nullptr)
+				{
+					if (ptr->file != nullptr)
+						inputText = ptr->file->GetFileName();
+					else
+						inputText = "Filled but invalid file reference (Texture)";
+
+					inputText += " " + std::to_string(ptr->fileId) + " ";
+					if (ptr->file)
+						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+				}
+
+				DrawInputButton(variableName, inputText);
+				FileReference* ref = nullptr;
+				std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
+				if (DragDropTarget(payloadName, ref))
+				{
+					valuePtr->get()[vectorI] = (Texture*)ref;
+					valueChangedTemp = true;
+				}
+			}
+			if(ImGui::Button("Add Texture"))
+			{
+				valuePtr->get().push_back(nullptr);
+			}
+		}
+		if (valueChangedTemp)
 		{
 			valueChanged = true;
 		}

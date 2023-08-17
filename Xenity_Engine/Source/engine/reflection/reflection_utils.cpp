@@ -10,8 +10,6 @@ void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, jso
 {
 	for (auto& kv : json["Values"].items())
 	{
-		//auto t = component.GetReflection();
-		//JsonToMap(t, kv.s)
 		if (t.contains(kv.key()))
 		{
 			Variable& variableRef = t.at(kv.key());
@@ -73,6 +71,35 @@ void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, jso
 					{
 						file->LoadFileReference();
 						valuePtr->get() = (Scene*)file;
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+				{
+					int arraySize = kv.value().size();
+					Debug::Print("Try Load Texture* vector");
+					std::cout << arraySize << std::endl;
+
+					int vectorSize = valuePtr->get().size();
+					for (int i = 0; i < arraySize; i++)
+					{
+						FileReference* file = nullptr;
+						if (!kv.value().at(i).is_null())
+						{
+							int fileId = kv.value().at(i);
+							file = ProjectManager::GetFileReferenceById(fileId);
+							if(file)
+								file->LoadFileReference();
+						}
+						if (i < vectorSize - 1)
+						{
+							valuePtr->get()[i] = (Texture*)file;
+							Debug::Print("Change value");
+						}
+						else
+						{
+							valuePtr->get().push_back((Texture*)file);
+							Debug::Print("Add value");
+						}
 					}
 				}
 				/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
@@ -154,6 +181,16 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = (valuePtr->get())->fileId;
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+		{
+			Debug::Print("Try Save Texture* vector");
+			int s = valuePtr->get().size();
+			for (int i = 0; i < s; i++)
+			{
+				if (valuePtr->get().at(i))
+					json[kv.first][i] = valuePtr->get().at(i)->fileId;
+			}
 		}
 		/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
 		{

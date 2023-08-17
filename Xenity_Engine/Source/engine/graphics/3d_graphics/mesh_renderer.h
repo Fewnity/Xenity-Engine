@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../iDrawable.h"
+#include <vector>
 
 class MeshData;
 class Texture;
@@ -24,6 +25,7 @@ public:
 
     MeshData *meshData = nullptr;
     Texture *texture = nullptr;
+    std::vector<Texture*> textures;
 
 private:
     void Draw();
