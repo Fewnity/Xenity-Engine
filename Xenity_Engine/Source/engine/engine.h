@@ -97,7 +97,7 @@ public:
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
-	static bool valueFree;
+	static bool canUpdateAudio;
 	API static void Quit();
 	API static void RegisterEngineComponents();
 	API static void SetGameState(GameState _gameState);
@@ -112,6 +112,7 @@ private:
 	API static void UpdateComponents();
 	API static void SetMaxCpuSpeed();
 	API static int LoadGameProject();
+	API static void CheckEvents();
 
 	static bool isRunning;
 	static GameState gameState;

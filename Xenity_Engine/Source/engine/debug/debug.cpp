@@ -124,7 +124,3 @@ int Debug::Init()
     Print("-------- Debug initiated --------");
     return 0;
 }
-
-void Debug::Update()
-{
-}

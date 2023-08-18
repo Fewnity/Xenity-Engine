@@ -170,7 +170,7 @@ int fillAudioBufferThread()
             AudioManager::myMutex->Unlock();
         }
 
-        if (Engine::valueFree)
+        if (Engine::canUpdateAudio)
         {
             AudioManager::myMutex->Lock();
             Channel *channel = AudioManager::channels[0];

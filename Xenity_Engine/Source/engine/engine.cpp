@@ -53,13 +53,15 @@ ProfilerBenchmark* engineLoopBenchmark = nullptr;
 ProfilerBenchmark* gameLoopBenchmark = nullptr;
 ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
 ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
+ProfilerBenchmark* editorUpdateBenchmark = nullptr;
+ProfilerBenchmark* editorDrawBenchmark = nullptr;
 
 bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer* Engine::renderer = nullptr;
-bool Engine::valueFree = true;
+bool Engine::canUpdateAudio = true;
 bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
 GameState Engine::gameState = Stopped;
@@ -158,13 +160,144 @@ int Engine::Init()
 	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
 	engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
-	gameLoopBenchmark = new ProfilerBenchmark("Game loop");
+	gameLoopBenchmark = new ProfilerBenchmark("Game update");
 	componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
 	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
+	editorUpdateBenchmark = new ProfilerBenchmark("Editor update");
+	editorDrawBenchmark = new ProfilerBenchmark("Editor draw");
 
 	UnitTestManager::StartAllTests();
 
 	return 0;
+}
+
+void Engine::CheckEvents()
+{
+#if defined(_WIN32) || defined(_WIN64)
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+#if defined(EDITOR)
+		ImGui_ImplSDL2_ProcessEvent(&event);
+#endif
+		InputSystem::Read(event);
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			isRunning = false;
+			break;
+		case SDL_WINDOWEVENT:
+			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+			{
+				Window::SetResolution(event.window.data1, event.window.data2);
+				//if(event.window.windowID == SDL_GetWindowID(Window::window))
+			}
+			else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+			{
+				isRunning = false;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+#endif
+}
+
+/// <summary>
+/// Engine loop
+/// </summary>
+void Engine::Loop()
+{
+	Debug::Print("-------- Initiating game --------");
+
+	// Ask a project to load or load game
+	int projectLoadResult = LoadGameProject();
+	if (projectLoadResult != 0)
+	{
+		return;
+	}
+
+	// Fill class registery
+	if (game)
+		game->Start();
+
+	Debug::Print("-------- Game initiated --------");
+
+	// Load start scene
+	canUpdateAudio = false;
+	if (ProjectManager::GetStartScene())
+	{
+		SceneManager::LoadScene(ProjectManager::GetStartScene());
+	}
+	canUpdateAudio = true;
+
+	while (isRunning)
+	{
+		engineLoopBenchmark->Start();
+		// Update time, inputs and network
+		Time::UpdateTime();
+		InputSystem::ClearInputs();
+		NetworkManager::Update();
+
+#if defined(_WIN32) || defined(_WIN64)
+		Engine::CheckEvents();
+#else
+		InputSystem::Read();
+#endif
+
+		canUpdateAudio = false;
+#if defined(EDITOR)
+		editorUpdateBenchmark->Start();
+		Editor::Update();
+		editorUpdateBenchmark->Stop();
+#endif
+
+		// Game loop
+		if (game)
+		{
+			gameLoopBenchmark->Start();
+			game->Update();
+			gameLoopBenchmark->Stop();
+		}
+
+		// Update all components
+		componentsUpdateBenchmark->Start();
+		UpdateComponents();
+		componentsUpdateBenchmark->Stop();
+		canUpdateAudio = true;
+
+		Window::UpdateScreen();
+
+		drawIDrawablesBenchmark->Start();
+		Graphics::DrawAllDrawable();
+		drawIDrawablesBenchmark->Stop();
+
+		// Reset moved state of all transforms
+		for (int i = 0; i < Engine::gameObjectCount; i++)
+		{
+			std::weak_ptr<GameObject> weakGO = gameObjects[i];
+			if (auto go = weakGO.lock())
+			{
+				if (go->GetTransform()->movedLastFrame)
+				{
+					go->GetTransform()->movedLastFrame = false;
+				}
+			}
+		}
+
+#if defined(EDITOR)
+		editorDrawBenchmark->Start();
+		Editor::Draw();
+		editorDrawBenchmark->Stop();
+#endif
+		engineLoopBenchmark->Stop();
+
+		Performance::Update();
+		Performance::ResetCounters();
+	}
+
+	delete game;
 }
 
 void Engine::RegisterEngineComponents()
@@ -233,6 +366,42 @@ void Engine::Stop()
 void Engine::Quit()
 {
 	isRunning = false;
+}
+
+void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
+{
+	selectedGameObject = newSelected;
+}
+
+int Engine::LoadGameProject()
+{
+#if defined(EDITOR)
+	SetGameState(Stopped);
+	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
+	if (projectPath == "")
+	{
+		Debug::PrintWarning("Project Path empty!");
+		return -1;
+	}
+#else
+	SetGameState(Playing);
+	std::string projectPath = ".\\";
+#endif
+	ProjectManager::LoadProject(projectPath);
+
+	// Load game DLL
+#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+#else
+	DynamicLibrary::LoadGameLibrary("game");
+#endif
+	game = DynamicLibrary::CreateGame();
+#else
+	game = new Game();
+#endif
+
+	return 0;
 }
 
 /// <summary>
@@ -371,162 +540,6 @@ void Engine::UpdateComponents()
 		componentsToDestroy.clear();
 	}
 }
-
-void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
-{
-	selectedGameObject = newSelected;
-}
-
-int Engine::LoadGameProject() 
-{
-#if defined(EDITOR)
-	SetGameState(Stopped);
-	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
-	if (projectPath == "")
-	{
-		Debug::PrintWarning("Project Path empty!");
-		return -1;
-	}
-#else
-	SetGameState(Playing);
-	std::string projectPath = ".\\";
-#endif
-	ProjectManager::LoadProject(projectPath);
-
-	// Load game DLL
-#if defined(_WIN32) || defined(_WIN64)
-#if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-#else
-	DynamicLibrary::LoadGameLibrary("game");
-#endif
-	game = DynamicLibrary::CreateGame();
-#else
-	game = new Game();
-#endif
-
-	return 0;
-}
-
-/// <summary>
-/// Engine loop
-/// </summary>
-void Engine::Loop()
-{
-	Debug::Print("-------- Initiating game --------");
-	int projectLoadResult = LoadGameProject();
-	if (projectLoadResult != 0) 
-	{
-		return;
-	}
-
-	// Fill class registery
-	if (game)
-		game->Start();
-
-	Debug::Print("-------- Game initiated --------");
-
-	valueFree = false;
-	if (ProjectManager::GetStartScene())
-	{
-		SceneManager::LoadScene(ProjectManager::GetStartScene());
-	}
-	valueFree = true;
-
-	while (isRunning)
-	{
-		engineLoopBenchmark->Start();
-		// Update time and inputs
-		Time::UpdateTime();
-		InputSystem::ClearInputs();
-		NetworkManager::Update();
-		Debug::Update();
-
-#if defined(_WIN32) || defined(_WIN64)
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-#if defined(EDITOR)
-			ImGui_ImplSDL2_ProcessEvent(&event);
-#endif
-			InputSystem::Read(event);
-			switch (event.type)
-			{
-			case SDL_QUIT:
-				isRunning = false;
-				break;
-			case SDL_WINDOWEVENT:
-				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-				{
-					Window::SetResolution(event.window.data1, event.window.data2);
-					//if(event.window.windowID == SDL_GetWindowID(Window::window))
-				}
-				else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
-				{
-					isRunning = false;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-#else
-		InputSystem::Read();
-#endif
-
-		// Game loop
-		gameLoopBenchmark->Start();
-
-		valueFree = false;
-#if defined(EDITOR)
-		Editor::Update();
-#endif
-		if (game)
-			game->Update();
-
-		valueFree = true;
-
-		gameLoopBenchmark->Stop();
-
-		// Update all components
-		componentsUpdateBenchmark->Start();
-
-		valueFree = false;
-		UpdateComponents();
-		valueFree = true;
-
-		componentsUpdateBenchmark->Stop();
-
-		drawIDrawablesBenchmark->Start();
-		Window::UpdateScreen();
-
-		Graphics::DrawAllDrawable();
-		drawIDrawablesBenchmark->Stop();
-
-		// Reset moved state of all transforms
-		for (int i = 0; i < Engine::gameObjectCount; i++)
-		{
-			std::weak_ptr<GameObject> weakGO = gameObjects[i];
-			if (auto go = weakGO.lock())
-			{
-				if (go->GetTransform()->movedLastFrame)
-				{
-					go->GetTransform()->movedLastFrame = false;
-				}
-			}
-		}
-		engineLoopBenchmark->Stop();
-
-#if defined(EDITOR)
-		Editor::Draw();
-#endif
-
-		Performance::Update();
-		Performance::ResetCounters();
-		}
-
-	delete game;
-	}
 
 /// <summary>
 ///

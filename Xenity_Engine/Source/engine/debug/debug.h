@@ -20,7 +20,6 @@ public:
     static void Print(std::string text);
     static void PrintError(std::string text);
     static void PrintWarning(std::string text);
-    static void Update();
     static void ConnectToOnlineConsole();
 
     static std::string GetDebugString()
