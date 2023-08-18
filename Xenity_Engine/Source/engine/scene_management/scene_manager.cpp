@@ -68,7 +68,7 @@ void SceneManager::RestoreScene()
 
 void SceneManager::LoadScene(json jsonData)
 {
-	Engine::EmptyScene();
+	EmptyScene();
 
 	// Create all GameObjects and Components
 	for (auto& kv : jsonData["GameObjects"].items())
@@ -158,4 +158,27 @@ void SceneManager::LoadScene(Scene* scene)
 			return;
 		}
 	}
+}
+
+void SceneManager::EmptyScene()
+{
+	Graphics::orderedIDrawable.clear();
+	Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
+	int cameraCount = Graphics::cameras.size();
+	for (int i = 0; i < cameraCount; i++)
+	{
+		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->isEditor)
+		{
+			Graphics::cameras.erase(Graphics::cameras.begin() + i);
+			i--;
+			cameraCount--;
+		}
+	}
+	Engine::orderedComponents.clear();
+	Engine::gameObjectsToDestroy.clear();
+	Engine::componentsToDestroy.clear();
+	Engine::gameObjects.clear();
+	Engine::componentsCount = 0;
+	Engine::gameObjectCount = 0;
+	Engine::selectedGameObject.reset();
 }

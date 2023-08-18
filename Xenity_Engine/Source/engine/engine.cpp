@@ -528,29 +528,6 @@ void Engine::Loop()
 	delete game;
 	}
 
-void Engine::EmptyScene()
-{
-	Graphics::orderedIDrawable.clear();
-	Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
-	int cameraCount = Graphics::cameras.size();
-	for (int i = 0; i < cameraCount; i++)
-	{
-		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->isEditor)
-		{
-			Graphics::cameras.erase(Graphics::cameras.begin() + i);
-			i--;
-			cameraCount--;
-		}
-	}
-	orderedComponents.clear();
-	gameObjectsToDestroy.clear();
-	componentsToDestroy.clear();
-	gameObjects.clear();
-	componentsCount = 0;
-	gameObjectCount = 0;
-	Engine::selectedGameObject.reset();
-}
-
 /// <summary>
 ///
 /// </summary>

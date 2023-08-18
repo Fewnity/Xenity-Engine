@@ -13,6 +13,7 @@ public:
 	static void LoadScene(Scene *scene);
 	static void SaveScene(bool saveForPlayState);
 	static void RestoreScene();
+	static void EmptyScene();
 	static Scene* openedScene;
 private:
 	static void LoadScene(nlohmann::json jsonData);

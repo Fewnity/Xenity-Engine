@@ -99,7 +99,6 @@ public:
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
 	static bool valueFree;
 	API static void Quit();
-	API static void EmptyScene();
 	API static void RegisterEngineComponents();
 	API static void SetGameState(GameState _gameState);
 

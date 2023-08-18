@@ -9,6 +9,7 @@
 #include "../xenity_editor.h"
 #include "ui/menus/compiling_menu.h"
 #include <filesystem>
+#include "../engine/scene_management/scene_manager.h"
 
 #define ENGINE_PATH "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\"
 
@@ -271,7 +272,7 @@ void Compiler::HotReloadGame()
 #if defined(_WIN32) || defined(_WIN64)
 	delete Engine::game;
 	Engine::game = nullptr;
-	Engine::EmptyScene();
+	SceneManager::EmptyScene();
 
 	ClassRegistry::Reset();
 	Engine::RegisterEngineComponents();
