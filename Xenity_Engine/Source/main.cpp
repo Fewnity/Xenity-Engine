@@ -45,9 +45,7 @@ Text scale
 int main(int argc, char *argv[])
 {
 	// Init engine
-	// std::string exePath = argv[0];
-	std::string exePath = "";
-	if (Engine::Init(exePath) != 0)
+	if (Engine::Init() != 0)
 	{
 		Debug::PrintError("Engine failed to init");
 		return -1;

@@ -15,10 +15,6 @@
 #include <psp2/io/stat.h>
 #endif
 
-#define TEXTURE_PATH R"(images\)"
-#define SHADER_PATH R"(shaders\)"
-#define MODEL_PATH R"(models\)"
-
 #define PSVITA_PATH R"(ux0:data\xenity_engine\)"
 #define PSVITA_BASE_DIR "ux0:"
 
@@ -409,25 +405,8 @@ void FileSystem::DeleteFile(const std::string path)
 
 #pragma endregion
 
-void FileSystem::InitFileSystem(const std::string exePath)
+void FileSystem::InitFileSystem()
 {
-	// EngineSettings::RootFolder = R"(C:\Users\gregory.machefer\Documents\GitHub\Xenity-Engine\)";
-	// EngineSettings::RootFolder = R"(C:\Users\elect\Documents\GitHub\Xenity-Engine\)";
-
-	// EngineSettings::RootFolder = exePath;
-	// int index = (int)exePath.find(R"(\Xenity-Engine\)");
-	// EngineSettings::RootFolder = exePath.substr(0, index + 15);
-	// EngineSettings::RootFolder = "";
-
-	texturePath = "";
-	texturePath += TEXTURE_PATH;
-
-	shaderPath = "";
-	shaderPath += SHADER_PATH;
-
-	modelsPath = "";
-	modelsPath += MODEL_PATH;
-
 #if defined(__vita__)
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
 #endif

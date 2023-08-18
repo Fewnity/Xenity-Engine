@@ -29,16 +29,12 @@ public:
 	}
 	static FileSystem *fileSystem;
 
-	void InitFileSystem(const std::string exePath);
+	void InitFileSystem();
 	std::string GetGamePath();
 
 	void CreateDirectory(std::string path);
 	void DeleteFile(const std::string path);
 	void FillDirectory(Directory *directory);
-
-	std::string texturePath = "";
-	std::string shaderPath = "";
-	std::string modelsPath = "";
 };
 
 class API File : public UniqueId

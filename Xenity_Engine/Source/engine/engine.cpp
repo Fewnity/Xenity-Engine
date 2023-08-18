@@ -68,7 +68,7 @@ GameState Engine::gameState = Stopped;
 /// Init engine
 /// </summary>
 /// <returns></returns>
-int Engine::Init(const std::string exePath)
+int Engine::Init()
 {
 #if defined(__PSP__)
 	SetupCallbacks();
@@ -81,7 +81,7 @@ int Engine::Init(const std::string exePath)
 	scePowerSetGpuXbarClockFrequency(166);
 #endif
 	new FileSystem();
-	FileSystem::fileSystem->InitFileSystem(exePath);
+	FileSystem::fileSystem->InitFileSystem();
 	Debug::Init();
 
 	RegisterEngineComponents();

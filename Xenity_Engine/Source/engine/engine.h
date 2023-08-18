@@ -75,7 +75,7 @@ enum GameState
 class Engine
 {
 public:
-	API static int Init(const std::string exePath);
+	API static int Init();
 	API static void Stop();
 	API static void AddGameObject(std::shared_ptr<GameObject> gameObject);
 	API static void AddGameObjectEditor(std::shared_ptr<GameObject> gameObject);
