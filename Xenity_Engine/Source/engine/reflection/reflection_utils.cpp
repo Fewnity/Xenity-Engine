@@ -76,8 +76,6 @@ void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, jso
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
 				{
 					int arraySize = kv.value().size();
-					Debug::Print("Try Load Texture* vector");
-					std::cout << arraySize << std::endl;
 
 					int vectorSize = valuePtr->get().size();
 					for (int i = 0; i < arraySize; i++)
@@ -93,12 +91,10 @@ void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, jso
 						if (i < vectorSize - 1)
 						{
 							valuePtr->get()[i] = (Texture*)file;
-							Debug::Print("Change value");
 						}
 						else
 						{
 							valuePtr->get().push_back((Texture*)file);
-							Debug::Print("Add value");
 						}
 					}
 				}
@@ -184,7 +180,6 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
 		{
-			Debug::Print("Try Save Texture* vector");
 			int s = valuePtr->get().size();
 			for (int i = 0; i < s; i++)
 			{
