@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 	// Init engine
 	if (Engine::Init() != 0)
 	{
-		Debug::PrintError("Engine failed to init");
+		Debug::PrintError("-------- Engine failed to init --------");
 		return -1;
 	}
 
