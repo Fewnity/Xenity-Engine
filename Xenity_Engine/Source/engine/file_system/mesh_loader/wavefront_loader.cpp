@@ -57,7 +57,6 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 			{
 				if (!verticesFound)
 				{
-					Debug::PrintWarning("New data found A");
 					verticesFound = true;
 					currentMeshFilled = false;
 
@@ -190,13 +189,9 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 				currentSubMesh++;
 				currentSubMeshPtr = submeshes[currentSubMesh];
 
-				Debug::PrintWarning("New submesh found B");
 			}
 		}
 	}
-
-	std::string smC = "subMeshCount " + std::to_string(currentSubMesh+1);
-	Debug::PrintWarning(smC);
 
 	// Close the file
 	file.close();
@@ -209,9 +204,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 	{
 		mesh->AllocSubMesh(submeshes[i]->indicesCount, submeshes[i]->indicesCount);
 	}
-	//return false;
-	int totalIndice = 0;
-	//return true;
+
 	for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
 	{
 		// Push vertices in the right order
@@ -221,7 +214,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 			unsigned int vertexIndex = submeshes[subMeshIndex]->vertexIndices[i] - 1;
 			unsigned int textureIndex = submeshes[subMeshIndex]->textureIndices[i] - 1;
 			unsigned int normalIndices = submeshes[subMeshIndex]->normalsIndices[i] - 1;
-			//continue;
+
 			if (!mesh->hasNormal)
 			{
 				if (!mesh->hasUv)
@@ -255,7 +248,6 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 				}
 			}
 			mesh->subMeshes[subMeshIndex]->indices[i] = i;
-			//totalIndice++;
 		}
 	}
 #ifdef __PSP__
