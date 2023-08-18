@@ -16,7 +16,7 @@ class Socket;
 class API Debug
 {
 public:
-    static void Init();
+    static int Init();
     static void Print(std::string text);
     static void PrintError(std::string text);
     static void PrintWarning(std::string text);

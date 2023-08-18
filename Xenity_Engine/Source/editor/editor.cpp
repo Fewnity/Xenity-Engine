@@ -37,7 +37,7 @@ GameMenu* Editor::gameMenu = nullptr;
 SceneMenu* Editor::sceneMenu = nullptr;
 CompilingMenu* Editor::compilingMenu = nullptr;
 
-void Editor::Start()
+void Editor::Init()
 {
 	projectSettings = new ProjectSettingsMenu();
 	engineSettings = new EngineSettingsMenu();

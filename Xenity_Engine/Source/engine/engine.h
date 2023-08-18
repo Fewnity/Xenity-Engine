@@ -111,6 +111,7 @@ public:
 	static GameInterface* game;
 private:
 	API static void UpdateComponents();
+	API static void SetMaxCpuSpeed();
 	static bool isRunning;
 	static GameState gameState;
 };

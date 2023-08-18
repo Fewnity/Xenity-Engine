@@ -29,7 +29,7 @@ public:
 	}
 	static FileSystem *fileSystem;
 
-	void InitFileSystem();
+	int InitFileSystem();
 	std::string GetGamePath();
 
 	void CreateDirectory(std::string path);

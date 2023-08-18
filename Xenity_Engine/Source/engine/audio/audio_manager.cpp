@@ -236,6 +236,8 @@ void AudioManager::Init()
         sceKernelStartThread(thd_id2, 0, 0);
         sceKernelStartThread(thd_id, 0, 0);
     }
+#elif defined(_WIN32) || defined(_WIN64)
+    Debug::Print("-------- Audio Not implemented --------");
 #endif
 }
 

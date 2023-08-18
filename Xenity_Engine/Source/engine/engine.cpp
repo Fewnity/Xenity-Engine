@@ -49,16 +49,16 @@ ProjectDirectory* Engine::currentProjectDirectory = nullptr;
 int Engine::gameObjectCount = 0;
 int Engine::gameObjectEditorCount = 0;
 
-ProfilerBenchmark *engineLoopBenchmark = nullptr;
-ProfilerBenchmark *gameLoopBenchmark = nullptr;
-ProfilerBenchmark *componentsUpdateBenchmark = nullptr;
-ProfilerBenchmark *drawIDrawablesBenchmark = nullptr;
+ProfilerBenchmark* engineLoopBenchmark = nullptr;
+ProfilerBenchmark* gameLoopBenchmark = nullptr;
+ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
+ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
 
 bool Engine::componentsListDirty = true;
 bool Engine::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
-Renderer *Engine::renderer = nullptr;
+Renderer* Engine::renderer = nullptr;
 bool Engine::valueFree = true;
 bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
@@ -70,19 +70,27 @@ GameState Engine::gameState = Stopped;
 /// <returns></returns>
 int Engine::Init()
 {
-#if defined(__PSP__)
-	SetupCallbacks();
-	scePowerSetClockFrequency(333, 333, 166);
+	// Init random
+	srand((unsigned int)time(NULL));
 
-#elif defined(__vita__)
-	scePowerSetArmClockFrequency(444);
-	scePowerSetBusClockFrequency(222);
-	scePowerSetGpuClockFrequency(222);
-	scePowerSetGpuXbarClockFrequency(166);
-#endif
+	// Setup game console CPU speed
+	SetMaxCpuSpeed();
+
+	//------------------------------------------ Init File System
 	new FileSystem();
-	FileSystem::fileSystem->InitFileSystem();
-	Debug::Init();
+	int fileSystemInitResult = FileSystem::fileSystem->InitFileSystem();
+	if (fileSystemInitResult != 0)
+	{
+		return -1;
+	}
+
+	//------------------------------------------ Init Debug
+	int debugInitResult = Debug::Init();
+	if (debugInitResult != 0)
+	{
+		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------");
+		//Not a critical module, do not stop the engine
+	}
 
 	RegisterEngineComponents();
 
@@ -90,11 +98,17 @@ int Engine::Init()
 	//NetworkManager::Init();
 
 	Performance::Init();
-	// FileSystem::InitFileSystem(exePath);
 
+	//------------------------------------------ Init renderer
 	Engine::renderer = new RendererOpengl();
-	Engine::renderer->Init();
+	int rendererInitResult = Engine::renderer->Init();
+	if (rendererInitResult != 0)
+	{
+		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------");
+		return -1;
+	}
 
+	//------------------------------------------ Init Window
 #ifdef __PSP__
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 #elif __vita__
@@ -102,39 +116,42 @@ int Engine::Init()
 #else
 	Window::SetResolution(1280, 720);
 #endif
-	Window::Init();
+	int windowInitResult = Window::Init();
+	if (windowInitResult != 0)
+	{
+		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------");
+		return -1;
+	}
 	Engine::renderer->Setup();
-#if defined(__PSP__)
-	if (sceGeEdramSetSize(0x400000) == 0)
-	{
-		Debug::Print("---------------- sceGeEdramSetSize ok --------");
-	}
-	else
-	{
-		Debug::Print("---------------- sceGeEdramSetSize ERROR --------");
-	}
-#endif
-	Graphics::Init();
-	Debug::Print("-------- Audio Not implemented --------");
 
+	// Not working
+	/*#if defined(__PSP__)
+		if (sceGeEdramSetSize(0x400000) == 0)
+		{
+			Debug::Print("-------- sceGeEdramSetSize ok --------");
+		}
+		else
+		{
+			Debug::PrintWarnign("-------- sceGeEdramSetSize ERROR --------");
+		}
+	#endif*/
+
+
+	//------------------------------------------ Init other things
+	Graphics::Init();
 	InputSystem::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
 	TextManager::Init();
 	TextManager::CreateFont("Roboto Regular.ttf");
-	// TextManager::CreateFont("Minecraftia-Regular.ttf");
 	AssetManager::Init();
 	AudioManager::Init();
-	Debug::Print("-------- Editor UI Not implemented --------");
 #if defined(EDITOR)
 	EditorUI::Init();
 #endif
 	Time::Init();
-
-	// Init random
-	srand((unsigned int)time(NULL));
 #if defined(EDITOR)
-	Editor::Start();
+	Editor::Init();
 #endif
 	Debug::Print("-------- Engine fully initiated --------\n");
 
@@ -174,9 +191,23 @@ void Engine::RegisterEngineComponents()
 		{ return go->AddComponent<TestComponent>(); });
 }
 
+void Engine::SetMaxCpuSpeed()
+{
+#if defined(__PSP__)
+	SetupCallbacks();
+	scePowerSetClockFrequency(333, 333, 166);
+#elif defined(__vita__)
+	scePowerSetArmClockFrequency(444);
+	scePowerSetBusClockFrequency(222);
+	scePowerSetGpuClockFrequency(222);
+	scePowerSetGpuXbarClockFrequency(166);
+#endif
+}
+
 void Engine::SetGameState(GameState _gameState)
 {
 	gameState = _gameState;
+#if defined(EDITOR)
 	switch (_gameState)
 	{
 	case Stopped:
@@ -188,6 +219,7 @@ void Engine::SetGameState(GameState _gameState)
 		SceneManager::SaveScene(true);
 		break;
 	}
+#endif
 }
 
 void Engine::Stop()
@@ -208,7 +240,7 @@ void Engine::Quit()
 /// </summary>
 void Engine::UpdateComponents()
 {
-	if (gameState == GameState::Playing) 
+	if (gameState == GameState::Playing)
 	{
 		// Update all gameobjects components
 		if (componentsListDirty)
@@ -354,6 +386,11 @@ void Engine::Loop()
 #if defined(EDITOR)
 	SetGameState(Stopped);
 	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
+	if (projectPath == "") 
+	{
+		Debug::PrintWarning("Project Path empty!");
+		return;
+	}
 #else
 	SetGameState(Playing);
 	std::string projectPath = ".\\";
@@ -382,11 +419,11 @@ void Engine::Loop()
 	if (ProjectManager::GetStartScene())
 	{
 		Debug::Print("Start Scene Set");
-		FileReference *file = ProjectManager::GetFileReferenceById(ProjectManager::GetStartScene()->fileId);
+		FileReference* file = ProjectManager::GetFileReferenceById(ProjectManager::GetStartScene()->fileId);
 		if (file)
 		{
 			Debug::Print("Start Scene file found");
-			SceneManager::LoadScene((Scene *)file);
+			SceneManager::LoadScene((Scene*)file);
 		}
 		else
 		{
@@ -426,7 +463,7 @@ void Engine::Loop()
 					Window::SetResolution(event.window.data1, event.window.data2);
 					//if(event.window.windowID == SDL_GetWindowID(Window::window))
 				}
-				else if (event.window.event == SDL_WINDOWEVENT_CLOSE) 
+				else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
 				{
 					isRunning = false;
 				}
@@ -490,10 +527,10 @@ void Engine::Loop()
 
 		Performance::Update();
 		Performance::ResetCounters();
-	}
+		}
 
 	delete game;
-}
+	}
 
 void Engine::EmptyScene()
 {

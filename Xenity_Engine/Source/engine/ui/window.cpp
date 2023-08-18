@@ -61,13 +61,31 @@ float Window::GetAspectRatio()
     return aspect;
 }
 
-void Window::Init()
+int Window::Init()
 {
 #if defined(_WIN32) || defined(_WIN64)
-    SDL_Init(SDL_INIT_EVERYTHING);
+    //  Init SDL
+    int sdlInitResult = SDL_Init(SDL_INIT_EVERYTHING);
+    if (sdlInitResult != 0) 
+    {
+        return WND_ERROR_SDL_INIT;
+    }
+
+    // Create SDL Window
     unsigned int center = SDL_WINDOWPOS_CENTERED;
     window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    if (window == nullptr) 
+    {
+        return WND_ERROR_SDL_CREATE_WINDOW;
+    }
+
+    // Create OpenGL Context
     SDL_GLContext context = SDL_GL_CreateContext(window);
+    if (context == nullptr) 
+    {
+        return WND_ERROR_SDL_GL_CONTEXT;
+    }
+
     gladLoadGLLoader(SDL_GL_GetProcAddress);
     SDL_GL_SetSwapInterval(1);
     OnResize();
@@ -86,6 +104,7 @@ void Window::Init()
     UpdateWindowTitle();
 #endif
     Debug::Print("-------- Window initiated --------");
+    return 0;
 }
 
 void Window::UpdateScreen()

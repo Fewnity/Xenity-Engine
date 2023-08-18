@@ -35,11 +35,19 @@ int RendererOpengl::Init()
 	maxLightCount = 4;
 #elif defined(__vita__)
 	result = vglInit(0x100000);
+	if (result == 0)
+		result = 1;
 #elif defined(_WIN32) || defined(_WIN64)
 	result = glfwInit();
 #endif
 
 	Debug::Print("-------- OpenGL Renderer initiated --------");
+
+	// 0 is used to say "OK"
+	if (result == 1)
+		result = 0;
+	else
+		result = -1;
 
 	return result;
 }

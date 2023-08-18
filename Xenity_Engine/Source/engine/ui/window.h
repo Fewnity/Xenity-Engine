@@ -3,6 +3,13 @@
 #include <SDL2/SDL.h>
 #endif
 
+enum WindowError
+{
+    WND_ERROR_SDL_INIT = -1,
+    WND_ERROR_SDL_CREATE_WINDOW = -2,
+    WND_ERROR_SDL_GL_CONTEXT = -3
+};
+
 class Window
 {
 public:
@@ -10,7 +17,7 @@ public:
     static int GetWidth();
     static int GetHeight();
     static float GetAspectRatio();
-    static void Init();
+    static int Init();
     static void UpdateScreen();
     static void UpdateWindowTitle();
 #if defined(_WIN32) || defined(_WIN64)

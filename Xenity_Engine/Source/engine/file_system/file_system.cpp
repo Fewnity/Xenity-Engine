@@ -412,14 +412,14 @@ void FileSystem::DeleteFile(const std::string path)
 
 #pragma endregion
 
-void FileSystem::InitFileSystem()
+int FileSystem::InitFileSystem()
 {
 #if defined(__vita__)
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
 #endif
 
-	// Debug::Print("-------- File System initiated --------");
-	//  gamePath += R"(Debug\)"; //TODO remove this
+	Debug::Print("-------- File System initiated --------");
+	return 0;
 }
 
 std::string FileSystem::GetGamePath()

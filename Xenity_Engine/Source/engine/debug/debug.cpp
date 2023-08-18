@@ -101,20 +101,28 @@ void Debug::ConnectToOnlineConsole()
  * @brief Init debug system (call once)
  *
  */
-void Debug::Init()
+int Debug::Init()
 {
     if (!EngineSettings::useDebugger)
-        return;
+        return 0;
 
     std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
     fileName = "data\\xenity_engine\\" + fileName;
 #endif
     FileSystem::fileSystem->DeleteFile(fileName);
+
     file = new File(fileName);
     file->Open(true);
 
+    if (!file->CheckIfExist())
+    {
+        Print("-------- Debug file not created --------");
+        return -1;
+    }
+
     Print("-------- Debug initiated --------");
+    return 0;
 }
 
 void Debug::Update()
