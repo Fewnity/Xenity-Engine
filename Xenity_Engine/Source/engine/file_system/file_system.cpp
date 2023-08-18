@@ -109,14 +109,21 @@ bool File::CheckIfExist()
 		fileId = -1;
 	}
 #else
-	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
-	file.open(path, params);
-
-	if (file.is_open())
+	if (file.is_open()) 
 	{
 		exists = true;
 	}
-	file.close();
+	else 
+	{
+		std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+		file.open(path, params);
+
+		if (file.is_open())
+		{
+			exists = true;
+		}
+		file.close();
+	}
 #endif
 	return exists;
 }
