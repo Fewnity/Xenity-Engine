@@ -377,19 +377,15 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 	selectedGameObject = newSelected;
 }
 
-/// <summary>
-/// Engine loop
-/// </summary>
-void Engine::Loop()
+int Engine::LoadGameProject() 
 {
-	Debug::Print("-------- Initiating game --------");
 #if defined(EDITOR)
 	SetGameState(Stopped);
 	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
-	if (projectPath == "") 
+	if (projectPath == "")
 	{
 		Debug::PrintWarning("Project Path empty!");
-		return;
+		return -1;
 	}
 #else
 	SetGameState(Playing);
@@ -397,6 +393,7 @@ void Engine::Loop()
 #endif
 	ProjectManager::LoadProject(projectPath);
 
+	// Load game DLL
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
@@ -408,32 +405,33 @@ void Engine::Loop()
 	game = new Game();
 #endif
 
+	return 0;
+}
 
-	valueFree = false;
+/// <summary>
+/// Engine loop
+/// </summary>
+void Engine::Loop()
+{
+	Debug::Print("-------- Initiating game --------");
+	int projectLoadResult = LoadGameProject();
+	if (projectLoadResult != 0) 
+	{
+		return;
+	}
+
+	// Fill class registery
 	if (game)
 		game->Start();
-	valueFree = true;
 
 	Debug::Print("-------- Game initiated --------");
 
+	valueFree = false;
 	if (ProjectManager::GetStartScene())
 	{
-		Debug::Print("Start Scene Set");
-		FileReference* file = ProjectManager::GetFileReferenceById(ProjectManager::GetStartScene()->fileId);
-		if (file)
-		{
-			Debug::Print("Start Scene file found");
-			SceneManager::LoadScene((Scene*)file);
-		}
-		else
-		{
-			Debug::Print("No Start Scene file");
-		}
+		SceneManager::LoadScene(ProjectManager::GetStartScene());
 	}
-	else
-	{
-		Debug::Print("No Start Scene");
-	}
+	valueFree = true;
 
 	while (isRunning)
 	{
@@ -553,7 +551,6 @@ void Engine::EmptyScene()
 	componentsCount = 0;
 	gameObjectCount = 0;
 	Engine::selectedGameObject.reset();
-	SceneManager::openedScene = nullptr;
 }
 
 /// <summary>

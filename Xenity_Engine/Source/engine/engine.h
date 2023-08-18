@@ -112,6 +112,8 @@ public:
 private:
 	API static void UpdateComponents();
 	API static void SetMaxCpuSpeed();
+	API static int LoadGameProject();
+
 	static bool isRunning;
 	static GameState gameState;
 };

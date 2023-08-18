@@ -132,8 +132,6 @@ void SceneManager::LoadScene(json jsonData)
 
 	allCreatedComponents.clear();
 	allCreatedComponentsCount = 0;
-
-	Window::UpdateWindowTitle();
 }
 
 void SceneManager::LoadScene(Scene* scene)
@@ -152,6 +150,7 @@ void SceneManager::LoadScene(Scene* scene)
 			data = json::parse(jsonString);
 			LoadScene(data);
 			openedScene = scene;
+			Window::UpdateWindowTitle();
 		}
 		catch (const std::exception&)
 		{
