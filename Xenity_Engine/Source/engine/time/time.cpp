@@ -50,19 +50,17 @@ void Time::SetTimeScale(float timeScale)
 
 void Time::Init()
 {
-
 	start_point = high_resolution_clock::now();
-
+	end_point = high_resolution_clock::now();
 	Debug::Print("-------- Time system initiated --------");
 }
 
 void Time::UpdateTime()
 {
-	end_point = high_resolution_clock::now();
-	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
-	long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
-
-	float tempDeltaTime = (end - start) / 1000000.0f;
+	long long start = time_point_cast<milliseconds>(start_point).time_since_epoch().count();
+	long long end = time_point_cast<milliseconds>(end_point).time_since_epoch().count();
+	end_point = start_point;
+	float tempDeltaTime = (start - end) / 1000.0f;
 
 	deltaTime = tempDeltaTime * timeScale;
 	unscaledDeltaTime = tempDeltaTime;
