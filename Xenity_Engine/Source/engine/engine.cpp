@@ -497,8 +497,6 @@ void Engine::Loop()
 
 		componentsUpdateBenchmark->Stop();
 
-		AudioManager::Update();
-
 		drawIDrawablesBenchmark->Start();
 		Window::UpdateScreen();
 

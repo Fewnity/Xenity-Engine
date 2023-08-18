@@ -241,10 +241,6 @@ void AudioManager::Init()
 #endif
 }
 
-void AudioManager::Update()
-{
-}
-
 PlayedSound::~PlayedSound()
 {
     delete audioClipStream;

@@ -96,7 +96,6 @@ public:
     static int channelCount;
     static void RemoveAudioSource(std::weak_ptr<AudioSource> audioSource);
 
-    static void Update();
     static void PlayAudioSource(std::weak_ptr<AudioSource> audioSource);
     static void StopAudioSource(std::weak_ptr<AudioSource> audioSource);
     static bool isAdding;
