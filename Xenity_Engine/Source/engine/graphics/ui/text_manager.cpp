@@ -232,10 +232,10 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
 
     float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
 
-    mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice);
-    mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice);
-    mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice);
-    mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice);
+    mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice,0);
+    mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice,0);
+    mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice,0);
+    mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice,0);
 
     mesh->subMeshes[0]->indices[0 + indiceIndex] = 0 + indice;
     mesh->subMeshes[0]->indices[1 + indiceIndex] = 2 + indice;

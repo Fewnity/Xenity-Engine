@@ -12,13 +12,13 @@
 
 class MeshData;
 class Vector3;
+class Vector2;
 
 class API WavefrontLoader
 {
 public:
 	static bool LoadFromRawData(MeshData* mesh);
 private:
-
 	class SubMesh
 	{
 	public:
@@ -28,5 +28,8 @@ private:
 		std::vector<int> normalsIndices;
 		int dataId = -1;
 		int indicesCount = 0;
+		int verticesCount = 0;
+		int normalsCount = 0;
+		int textureCordsCount = 0;
 	};
 };

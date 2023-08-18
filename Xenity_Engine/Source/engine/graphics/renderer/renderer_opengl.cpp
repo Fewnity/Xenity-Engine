@@ -397,14 +397,15 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		if (textures[i] == nullptr)
 			continue;
 		BindTexture(textures[i]);
+		MeshData::SubMesh* subMesh = meshData->subMeshes[i];
 
 		if (!meshData->hasIndices)
 		{
-			glDrawElements(GL_TRIANGLES, params, meshData->vertice_count, 0, meshData->data);
+			glDrawElements(GL_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, params, meshData->subMeshes[i]->index_count, meshData->subMeshes[i]->indices, meshData->data);
+			glDrawElements(GL_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
 		}
 	}
 #else
@@ -432,30 +433,34 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 
 		if (textures[i] == nullptr)
 			continue;
-		BindTexture(textures[i]);
-		if (meshData->vertice_count == 0)
+		
+		MeshData::SubMesh* subMesh = meshData->subMeshes[i];
+		
+		if (subMesh->vertice_count == 0)
 			continue;
+
+		BindTexture(textures[i]);
 		if (!meshData->hasNormal)
 		{
 			if (!meshData->hasUv)
 			{
 				int stride = sizeof(VertexNoColorNoUv);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColorNoUv*)meshData->data)[0].x);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColorNoUv*)subMesh->data)[0].x);
 			}
 			else
 			{
 				if (meshData->hasColor)
 				{
 					int stride = sizeof(Vertex);
-					glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].u);
-					glColorPointer(3, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].r);
-					glVertexPointer(3, GL_FLOAT, stride, &((Vertex*)meshData->data)[0].x);
+					glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].u);
+					glColorPointer(3, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].r);
+					glVertexPointer(3, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].x);
 				}
 				else
 				{
 					int stride = sizeof(VertexNoColor);
-					glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor*)meshData->data)[0].u);
-					glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor*)meshData->data)[0].x);
+					glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor*)subMesh->data)[0].u);
+					glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor*)subMesh->data)[0].x);
 				}
 			}
 		}
@@ -464,25 +469,25 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 			if (!meshData->hasUv)
 			{
 				int stride = sizeof(VertexNormalsNoColorNoUv);
-				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)meshData->data)[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)meshData->data)[0].x);
+				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)subMesh->data)[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)subMesh->data)[0].x);
 			}
 			else
 			{
 				int stride = sizeof(VertexNormalsNoColor);
-				glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].u);
-				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor*)meshData->data)[0].x);
+				glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].u);
+				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].x);
 			}
 		}
 
 		if (!meshData->hasIndices)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, meshData->vertice_count);
+			glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, meshData->subMeshes[i]->index_count, GL_UNSIGNED_SHORT, meshData->subMeshes[i]->indices);
+			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, subMesh->indices);
 		}
 	}
 	glDisableClientState(GL_VERTEX_ARRAY);

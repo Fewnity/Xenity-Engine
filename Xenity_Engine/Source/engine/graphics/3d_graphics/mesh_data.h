@@ -58,6 +58,8 @@ public:
 		SubMesh() = default;
 		unsigned int index_count = 0;
 		unsigned short* indices = nullptr;
+		unsigned int vertice_count = 0;
+		void* data = nullptr;
 	};
 	MeshData();
 	//MeshData() = delete;
@@ -67,27 +69,17 @@ public:
 	~MeshData();
 	void LoadFileReference();
 	void UnloadFileReference();
-	void AllocSubMesh(unsigned int index_count);
-	void AllocData(unsigned int vcount);
+	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
-	void AddVertex(float u, float v, Color color, float x, float y, float z, int index);
-	void AddVertex(float x, float y, float z, int index);
-	void AddVertex(float u, float v, float x, float y, float z, int index);
-	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index);
-	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index);
+	void AddVertex(float u, float v, Color color, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
 	std::vector<SubMesh*> subMeshes;
 
 	int subMeshCount  = 0;
-	unsigned int vertice_count = 0;
-	void* data = nullptr;
-
-	/*void* data = nullptr;
-
-	unsigned short* indices = nullptr;
-
-	unsigned int vertice_count = 0;
-	unsigned int index_count = 0;*/
 	bool hasUv = false;
 	bool hasNormal = false;
 	bool hasColor = true;

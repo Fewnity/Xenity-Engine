@@ -46,7 +46,8 @@ MeshData *MeshManager::LoadMesh(std::string path)
  */
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector<Texture*> textures, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
 {
-    if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->vertice_count == 0))
+    //if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->subMeshes[0]->vertice_count == 0))
+    if (!meshData)
         return;
 
     /*if (texture.size() || !texture->IsValid())
