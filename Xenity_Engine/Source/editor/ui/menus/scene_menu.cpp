@@ -88,7 +88,7 @@ Vector3 GetNearestPoint(Vector3 linePos1, Vector3 lineDir1, Vector3 linePos2, Ve
 
 void SceneMenu::Draw()
 {
-	if (InputSystem::GetKeyDown(E))
+	/*if (InputSystem::GetKeyDown(E))
 	{
 		cube1 = ShapeSpawner::SpawnCube();
 		cube2 = ShapeSpawner::SpawnCube();
@@ -97,7 +97,7 @@ void SceneMenu::Draw()
 		cube1.lock()->GetTransform()->SetLocalScale(Vector3(0.05));
 		cube2.lock()->GetTransform()->SetLocalScale(Vector3(0.15));
 		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
-	}
+	}*/
 	//Get the editor camera
 	int cameraCount = Graphics::cameras.size();
 	std::shared_ptr<Camera> camera;
