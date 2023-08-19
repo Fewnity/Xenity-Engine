@@ -7,28 +7,10 @@
 #include <cmath>
 #include <cstdint>
 
-/// <summary>
-/// Grid not initialised
-/// </summary>
 Astar::Astar()
 {
 }
 
-/// <summary>
-/// Grid initialised
-/// </summary>
-/// <param name="xGridSize"></param>
-/// <param name="yGridSize"></param>
-Astar::Astar(int xGridSize, int yGridSize)
-{
-	SetGridSize(xGridSize, yGridSize);
-}
-
-/// <summary>
-/// Set the grid size
-/// </summary>
-/// <param name="xSize">Grid x size</param>
-/// <param name="ySize">Grid y size</param>
 void Astar::SetGridSize(int xSize, int ySize)
 {
 	// Destroy current data
@@ -79,7 +61,6 @@ void Astar::ResetGrid(bool clearObstacles)
 			tile->inList = false;
 			if (clearObstacles)
 				tile->isObstacle = false;
-			tile->isPath = false;
 			tile->previousTile = nullptr;
 		}
 	}
@@ -186,22 +167,16 @@ void Astar::SetFinalPath()
 		for (int y = 0; y < yGridSize; y++)
 		{
 			Tile *t = GetTileFast(x, y);
-			t->isPath = false;
 		}
 	}
 
 	Tile *nextTile = currentTile;
 	while (nextTile != nullptr)
 	{
-		nextTile->isPath = true;
 		nextTile = nextTile->previousTile;
 	}
 }
 
-/// <summary>
-/// Compute pathfinding and get the path
-/// </summary>
-/// <returns>Points positions (start and end included) or empty if not path was found</returns>
 std::vector<Vector2> Astar::GetPath()
 {
 	ResetGrid(false);
@@ -234,7 +209,6 @@ std::vector<Vector2> Astar::GetPath()
 				while (nextTile != nullptr)
 				{
 					path.insert(path.begin(), Vector2((float)nextTile->x, (float)nextTile->y));
-					nextTile->isPath = true;
 					nextTile = nextTile->previousTile;
 				}
 			}
@@ -244,11 +218,6 @@ std::vector<Vector2> Astar::GetPath()
 	return path;
 }
 
-/// <summary>
-/// Set pathfinding start position and end position
-/// </summary>
-/// <param name="start">Start position</param>
-/// <param name="end">End position</param>
 void Astar::SetDestination(Vector2 start, Vector2 end)
 {
 	if (IsValidPosition((int)start.x, (int)start.y) && IsValidPosition((int)end.x, (int)end.y))
