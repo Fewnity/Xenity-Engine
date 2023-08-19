@@ -87,7 +87,7 @@ Texture::~Texture()
 
 void Texture::LoadFileReference()
 {
-	if (!isLoaded) 
+	if (!isLoaded)
 	{
 		isLoaded = true;
 		CreateTexture(file->GetPath(), file->GetPath(), filter, useMipMap);
@@ -151,13 +151,80 @@ void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigne
 	}
 }
 
-void copy_texture_data(void* dest, const void* src, const int pW, const int width, const int height)
+// See https://github.com/pspdev/pspsdk/blob/master/src/debug/scr_printf.c
+void copy_texture_data(void* dest, const void* src, int width, int height, const int destType, const int srcType)
 {
-	for (unsigned int y = 0; y < height; y++)
+	if (destType == srcType)
 	{
-		for (unsigned int x = 0; x < width; x++)
+		if (srcType == GU_PSM_4444 || srcType == GU_PSM_5650 || srcType == GU_PSM_5551)
 		{
-			((unsigned int*)dest)[x + y * pW] = ((unsigned int*)src)[x + y * width];
+			height /= 2;
+		}
+		for (unsigned int y = 0; y < height; y++)
+		{
+			for (unsigned int x = 0; x < width; x++)
+			{
+				((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
+			}
+		}
+	}
+	else
+	{
+		if (srcType == GU_PSM_8888 && destType == GU_PSM_4444)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint16_t r = (srcPixel >> 24) & 0xFF;
+					uint16_t g = (srcPixel >> 16) & 0xFF;
+					uint16_t b = (srcPixel >> 8) & 0xFF;
+					uint16_t a = srcPixel & 0xFF;
+
+					uint16_t destPixel = (r >> 4) << 12 | (g >> 4) << 8 | (b >> 4) << 4 | (a >> 4);
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
+		}
+		else if (srcType == GU_PSM_8888 && destType == GU_PSM_5650)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint16_t r = (srcPixel >> 19) & 0x1F;
+					uint16_t g = (srcPixel >> 10) & 0x3F;
+					uint16_t b = (srcPixel >> 3) & 0x1F;
+
+					uint16_t destPixel = b | (g << 5) | (r << 11);
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
+		}
+		else if (srcType == GU_PSM_8888 && destType == GU_PSM_5551)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint16_t a = (srcPixel >> 24) ? 0x8000 : 0;
+					uint16_t b = (srcPixel >> 19) & 0x1F;
+					uint16_t g = (srcPixel >> 11) & 0x1F;
+					uint16_t r = (srcPixel >> 3) & 0x1F;
+
+					uint16_t destPixel = a | r | (g << 5) | (b << 10);
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
 		}
 	}
 }
@@ -165,7 +232,8 @@ void copy_texture_data(void* dest, const void* src, const int pW, const int widt
 void Texture::SetTextureLevel(int level, const unsigned char* texData)
 {
 	bool needResize = false;
-	int bytePerPixel = 4;
+	int bytePerPixel = getColorByteCount(type);
+
 	int diviser = (int)pow(2, level);
 
 	int resizedPW = pW / diviser;
@@ -182,14 +250,14 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 
 	if (needResize)
 	{
-		unsigned char* resizedData = (unsigned char*)malloc(byteCount);
-		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, bytePerPixel);
-		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPW, resizedPH);
+		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH)*4);
+		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
+		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, GU_PSM_8888);
 		free(resizedData);
 	}
 	else
 	{
-		copy_texture_data(dataBuffer, texData, pW, pW, pH);
+		copy_texture_data(dataBuffer, texData, pW, pH, type, GU_PSM_8888);
 	}
 
 	if (resizedPW > 256 || resizedPH > 256)
@@ -226,7 +294,10 @@ void Texture::SetData(const unsigned char* texData)
 	// sceGeEdramSetSize(4096);
 	// The psp needs a pow2 sized texture
 #if defined(__PSP__)
-	type = GU_PSM_8888;
+	//type = GU_PSM_8888;
+	//type = GU_PSM_4444;
+	//type = GU_PSM_5650;
+	type = GU_PSM_5551;
 
 	// Get pow2 size
 	pW = Math::pow2(width);
