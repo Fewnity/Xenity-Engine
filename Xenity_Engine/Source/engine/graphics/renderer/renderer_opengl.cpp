@@ -8,16 +8,12 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #define GLFW_DLL
-#endif
-
-#if defined(__PSP__)
+#elif defined(__PSP__)
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>
 #define GUGL_IMPLEMENTATION
 #include "../../../psp/gu2gl.h"
-#endif
-
-#if defined(__vita__)
+#elif defined(__vita__)
 #include <vitaGL.h>
 #endif
 
