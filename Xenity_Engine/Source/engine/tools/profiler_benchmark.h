@@ -6,22 +6,32 @@
 #define API
 #endif
 
-
 #pragma once
 
 #include "benchmark.h"
 #include <string>
+
+class ProfilerValue;
 
 class API ProfilerBenchmark
 {
 public:
 	ProfilerBenchmark(std::string name);
 	~ProfilerBenchmark();
+
+	/**
+	* Start the benchmark
+	*/
 	void Start();
+
+	/**
+	* Add the elapsed time since the Start call to the profiler
+	*/
 	void Stop();
+
 private:
 	Benchmark* bench = new Benchmark();
 
-	class ProfilerValue* profilerValue = nullptr;
+	ProfilerValue* profilerValue = nullptr;
 };
 
