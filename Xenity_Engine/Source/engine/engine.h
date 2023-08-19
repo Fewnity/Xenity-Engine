@@ -21,15 +21,28 @@ class GameInterface;
 class FileReference;
 class ProjectDirectory;
 
+/**
+* Destroy a gameObject
+*/
 API void Destroy(std::weak_ptr<GameObject> gameObject);
+
+/**
+* Destroy a component
+*/
 API void Destroy(std::weak_ptr<Component> component);
 
+/**
+* Check if a GameObject or a Component is valid
+*/
 template <typename T>
 bool IsValid(std::shared_ptr<T> pointer)
 {
 	return IsValid(std::weak_ptr<T>(pointer));
 }
 
+/**
+* Check of a GameObject or a Component is valid
+*/
 template <typename T>
 bool IsValid(std::weak_ptr<T> pointer)
 {

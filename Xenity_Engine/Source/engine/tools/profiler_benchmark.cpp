@@ -5,6 +5,7 @@
 
 ProfilerBenchmark::ProfilerBenchmark(std::string name)
 {
+	//If the profiler is new, created a new one
 	if (Performance::profilerList.count(name) == 0) 
 	{
 		Performance::profilerList[name] = new ProfilerValue();
