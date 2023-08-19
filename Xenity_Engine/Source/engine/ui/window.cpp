@@ -142,9 +142,9 @@ void Window::UpdateWindowTitle()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	std::string newTitle = "" + ProjectManager::GetProjectName() + " - ";
-	if (SceneManager::openedScene)
+	if (SceneManager::GetOpenedScene())
 	{
-		newTitle += SceneManager::openedScene->file->GetFileName();
+		newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
 	}
 	newTitle += std::string(" - ") + ENGINE_NAME + " 0.1";
 	SDL_SetWindowTitle(window, newTitle.c_str());
