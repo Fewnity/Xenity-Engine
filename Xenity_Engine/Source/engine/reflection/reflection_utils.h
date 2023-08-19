@@ -7,9 +7,31 @@
 class ReflectionUtils
 {
 public:
-	static void JsonToReflection(nlohmann::json j, Reflection& component);
-	static nlohmann::json ReflectiveToJson(Reflection& relection);
+
+	/**
+	* Fill Reflection from Json data
+	* @param j Json data
+	* @param reflection Reflection 
+	*/
+	static void JsonToReflection(nlohmann::json j, Reflection& reflection);
+
+	/**
+	* Fill Reflection map from Json data
+	* @param json Json data
+	* @param theMap The Reflection map to fill
+	*/
+	static void JsonToMap(nlohmann::json json, std::unordered_map<std::string, Variable> theMap);
+
+	/**
+	* Create Json data from Reflection
+	* @param reflection Reflection
+	*/
+	static nlohmann::json ReflectionToJson(Reflection& reflection);
+
+	/**
+	* Create Json data from Reflection map
+	* @param theMap The Reflection map
+	*/
 	static nlohmann::json MapToJson(std::unordered_map<std::string, Variable> theMap);
-	static void JsonToMap(std::unordered_map<std::string, Variable>, nlohmann::json json);
 };
 

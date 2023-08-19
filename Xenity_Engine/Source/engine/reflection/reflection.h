@@ -24,10 +24,15 @@ class Reflection
 public:
 	//std::unordered_map<std::string, Variable> reflectedVariables;
 	//virtual void SetReflection() = 0;
-	virtual std::unordered_map<std::string, Variable> GetReflection() { 
-		std::unordered_map<std::string, Variable> map;
-		return map;
-	};
+
+	/**
+	* Get all child class variables references
+	*/
+	virtual std::unordered_map<std::string, Variable> GetReflection() = 0;
+
+	/**
+	* Called when a variable is updated
+	*/
 	virtual void OnReflectionUpdated() {};
 };
 

@@ -211,7 +211,7 @@ void ProjectManager::LoadProjectSettings()
 			return;
 		}
 
-		ReflectionUtils::JsonToMap(GetProjetSettingsReflection(), projectData);
+		ReflectionUtils::JsonToMap(projectData, GetProjetSettingsReflection());
 	}
 }
 
@@ -265,7 +265,7 @@ void ProjectManager::LoadMetaFile(FileReference* fileReference)
 			return;
 		}
 
-		ReflectionUtils::JsonToMap(fileReference->GetMetaReflection(), metaData);
+		ReflectionUtils::JsonToMap(metaData, fileReference->GetMetaReflection());
 	}
 }
 

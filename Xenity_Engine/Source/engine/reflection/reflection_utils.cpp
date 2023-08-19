@@ -6,13 +6,13 @@
 
 using json = nlohmann::json;
 
-void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, json json)
+void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Variable> theMap)
 {
 	for (auto& kv : json["Values"].items())
 	{
-		if (t.contains(kv.key()))
+		if (theMap.contains(kv.key()))
 		{
-			Variable& variableRef = t.at(kv.key());
+			Variable& variableRef = theMap.at(kv.key());
 			if (kv.value().is_object())
 			{
 				//std::cout << kv.key() << " is an object!" << "\n";
@@ -117,10 +117,10 @@ void ReflectionUtils::JsonToMap(std::unordered_map<std::string, Variable> t, jso
 	}
 }
 
-void ReflectionUtils::JsonToReflection(json j, Reflection& component)
+void ReflectionUtils::JsonToReflection(json j, Reflection& reflection)
 {
-	auto myMap = component.GetReflection();
-	JsonToMap(myMap, j);
+	auto myMap = reflection.GetReflection();
+	JsonToMap(j, myMap);
 }
 
 json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap)
@@ -151,12 +151,12 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
-			json[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
+			json[kv.first]["Values"] = ReflectionToJson(valuePtr->get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
 			if (auto lockValue = (valuePtr->get()).lock())
-				json[kv.first]["Values"] = ReflectiveToJson(*lockValue.get());
+				json[kv.first]["Values"] = ReflectionToJson(*lockValue.get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
 		{
@@ -199,10 +199,10 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 	return json;
 }
 
-json ReflectionUtils::ReflectiveToJson(Reflection& relection)
+json ReflectionUtils::ReflectionToJson(Reflection& reflection)
 {
 	json j2;
-	auto t = relection.GetReflection();
+	auto t = reflection.GetReflection();
 	j2 = MapToJson(t);
 	return j2;
 }

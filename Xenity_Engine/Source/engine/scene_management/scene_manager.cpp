@@ -22,8 +22,8 @@ void SceneManager::SaveScene(bool saveForPlayState)
 		std::string goName = go->name;
 		std::string goId = std::to_string(go->GetUniqueId());
 
-		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
-		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectiveToJson(*go.get());
+		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectionToJson(*go->GetTransform().get());
+		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectionToJson(*go.get());
 
 		std::vector<uint64_t> ids;
 		int childCount = go->GetChildrenCount();
@@ -40,7 +40,7 @@ void SceneManager::SaveScene(bool saveForPlayState)
 			std::string compName = component->GetComponentName();
 			std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = compName;
-			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
+			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
 		}
 	}
 	if (saveForPlayState) 
