@@ -45,10 +45,10 @@ unsigned int Math::pow2Lower(const unsigned int value)
 {
 	unsigned int poweroftwo = 1;
 	unsigned int lastPower = poweroftwo;
-	while (poweroftwo < value)
+	while ((poweroftwo << 1) <= value)
 	{
-		lastPower = poweroftwo;
 		poweroftwo <<= 1;
+		lastPower = poweroftwo;
 	}
 	return lastPower;
 }
