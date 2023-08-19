@@ -297,7 +297,7 @@ void Transform::UpdateWorldPosition()
 
 	//Create the matrix which store the new child's world position (wihtout parent's world position added)
 	float posAfterRotation[3];
-	Math::MultiplyMatrix(scaledLocalPos, parentTransform->rotationMatrix, posAfterRotation, 1, 3, 3, 3);
+	Math::MultiplyMatrices(scaledLocalPos, parentTransform->rotationMatrix, posAfterRotation, 1, 3, 3, 3);
 
 	//Set new child position (with parent's world position added)
 	position = Vector3(posAfterRotation[0] + parentTransform->GetPosition().x, (-posAfterRotation[1] + parentTransform->GetPosition().y), (-posAfterRotation[2] + parentTransform->GetPosition().z));

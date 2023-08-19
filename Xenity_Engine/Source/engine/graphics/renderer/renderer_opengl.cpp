@@ -624,7 +624,7 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 			auto light = AssetManager::GetLight(i).lock();
 			if (light->type == Light::Directional)
 			{
-				Vector3 dir = Math::GetDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
+				Vector3 dir = Math::Get3DDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
 				SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
 			}
 			else

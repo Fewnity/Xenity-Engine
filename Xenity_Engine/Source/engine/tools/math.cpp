@@ -5,10 +5,12 @@
 #include <cmath>
 
 #include "math.h"
+#include "../vectors/vector4.h"
 #include "../vectors/vector3.h"
+#include "../vectors/vector2_int.h"
+#include "../vectors/vector2.h"
 
-
-void Math::MultiplyMatrix(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB)
+void Math::MultiplyMatrices(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
 	{
@@ -31,8 +33,11 @@ void Math::MultiplyMatrix(const float *A, const float *B, float *result, int rA,
 	}
 }
 
-unsigned int Math::pow2(const unsigned int value)
+unsigned int Math::nextPow2(const unsigned int value)
 {
+	if (value <= 0)
+		return 0;
+
 	unsigned int poweroftwo = 1;
 	while (poweroftwo < value)
 	{
@@ -41,8 +46,11 @@ unsigned int Math::pow2(const unsigned int value)
 	return poweroftwo;
 }
 
-unsigned int Math::pow2Lower(const unsigned int value)
+unsigned int Math::previousPow2(const unsigned int value)
 {
+	if (value <= 0)
+		return 0;
+
 	unsigned int poweroftwo = 1;
 	unsigned int lastPower = poweroftwo;
 	while ((poweroftwo << 1) <= value)
@@ -53,7 +61,7 @@ unsigned int Math::pow2Lower(const unsigned int value)
 	return lastPower;
 }
 
-Vector3 Math::GetDirectionFromAngles(const float angleA, const float angleB)
+Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();
 	float TempS = angleA / 180.0f * (float)M_PI;
@@ -70,17 +78,16 @@ Vector3 Math::GetDirectionFromAngles(const float angleA, const float angleB)
 	return direction;
 }
 
-Vector3 Math::GetDirectionFromAngle(const float angleA)
+Vector2 Math::Get2DDirectionFromAngle(const float angleA)
 {
-	Vector3 direction = Vector3();
+	Vector2 direction = Vector2();
 	float TempS = angleA / 180.0f * (float)M_PI;
 
 	float cosTempS = cosf(TempS);
 	float SinTempS = sinf(TempS);
 
 	direction.x = cosTempS;
-	direction.y = 0;
-	direction.z = -SinTempS;
+	direction.y = -SinTempS;
 	return direction;
 }
 

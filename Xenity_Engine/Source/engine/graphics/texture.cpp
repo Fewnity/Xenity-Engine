@@ -300,8 +300,8 @@ void Texture::SetData(const unsigned char* texData)
 	type = GU_PSM_5551;
 
 	// Get pow2 size
-	pW = Math::pow2(width);
-	pH = Math::pow2(height);
+	pW = Math::nextPow2(width);
+	pH = Math::nextPow2(height);
 
 	SetTextureLevel(0, texData);
 	if (useMipMap)
