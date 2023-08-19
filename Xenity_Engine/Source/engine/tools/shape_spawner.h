@@ -24,10 +24,10 @@ public:
 	static std::weak_ptr <GameObject> SpawnPlane();
 	static std::weak_ptr <GameObject> SpawnCylinder();
 
+
+private:
 	static Vector3 defaultPosition;
 	static Vector3 defaultRotation;
 	static Vector3 defaultScale;
-
-private:
 	static std::weak_ptr <GameObject> Spawn(std::weak_ptr <GameObject> gameObject);
 };
