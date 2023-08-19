@@ -7,6 +7,7 @@
 #include "../graphics/iDrawable.h"
 #include "../audio/audio_source.h"
 #include "../audio/audio_manager.h"
+#include "../graphics/camera.h"
 #include "../lighting/lighting.h"
 
 #pragma region Constructors / Destructor
@@ -90,6 +91,7 @@ void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponen
 {
 	if (auto component = weakComponent.lock())
 	{
+		//------------------------------------------------------------------------ Include the component to compile
 		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
 		{
 			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
@@ -102,6 +104,18 @@ void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponen
 		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(component))
 		{
 			AudioManager::RemoveAudioSource(audioSource);
+		}
+		else if (auto camera = std::dynamic_pointer_cast<Camera>(component))
+		{
+			int cameraCount = Graphics::cameras.size();
+			for (int i = 0; i < cameraCount; i++)
+			{
+				auto cam = Graphics::cameras[i].lock();
+				if (cam && cam == camera)
+				{
+					Graphics::cameras.erase(Graphics::cameras.begin() + i);
+				}
+			}
 		}
 	}
 }
