@@ -25,7 +25,7 @@ public:
 	void Start();
 
 	/**
-	* Add the elapsed time since the Start call to the profiler
+	* Add the elapsed time since the last Start call to the profiler
 	*/
 	void Stop();
 
