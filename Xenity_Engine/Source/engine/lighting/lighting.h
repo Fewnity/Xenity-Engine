@@ -20,13 +20,6 @@ const float lightConstant = 1;
 class API Light : public Component
 {
 public:
-
-	Light();
-	~Light();
-	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
-	void OnReflectionUpdated();
-
 	enum LightType
 	{
 		Directional,
@@ -34,30 +27,97 @@ public:
 		Spot,
 	};
 
+	Light();
+	~Light();
+
+	//void SetReflection();
+	std::unordered_map<std::string, Variable> GetReflection();
+	void OnReflectionUpdated();
+
+	/**
+	* Setup the light as a point light
+	* @param color Light color
+	* @param intensity Light intensity
+	* @param range Light Range (Greater or equals to 0)
+	*/
+	void SetupPointLight(const Color color, float intensity, const float range);
+
+	/**
+	* Setup the light as a directional light
+	* @param color Light color
+	* @param intensity Light intensity
+	*/
+	void SetupDirectionalLight(const Color color, const float intensity);
+
+	/**
+	* Setup the light as a spot light
+	* @param color Light color
+	* @param intensity Light intensity
+	* @param range Light Range (Greater or equals to 0)
+	* @param angle Spot angle [0;179]
+	*/
+	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle);
+
+	/**
+	* Setup the light as a point light
+	* @param color Light color
+	* @param intensity Light intensity
+	* @param range Light Range (Greater or equals to 0)
+	* @param angle Spot angle [0;179]
+	* @param smoothness Spot smoothness [0;1]
+	*/
+	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness);
+
+	/**
+	* Set light range
+	* @param value Light range (Greater or equals to 0)
+	*/
+	void SetRange(float value);
+
+	/**
+	* Set light range
+	* @param value Light range
+	*/
+	float GetRange() const;
+
+	/**
+	* Set spot angle
+	* @param value Spot angle [0;179]
+	*/
+	void SetSpotAngle(float angle);
+
+	/**
+	* Set spot smoothness
+	* @param value Spot smoothness [0;1]
+	*/
+	void SetSpotSmoothness(float smoothness);
+
+	/**
+	* Get spot angle
+	*/
+	float GetSpotAngle() const;
+
+	/**
+	* Get spot smoothness
+	*/
+	float GetSpotSmoothness() const;
+
 	LightType type = Directional;
 	Color color = Color();
 	float intensity = 1;
 
+	//// Internal
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
 
-	void SetupPointLight(const Color color, float intensity, const float range);
-	void SetupDirectionalLight(const Color color, const float intensity);
-	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle);
-	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness);
-
-	void UpdateLightValues();
-	void SetRange(float value);
-	float GetRange() const;
-
-
-	void SetSpotAngle(float angle);
-	void SetSpotSmoothness(float smoothness);
-	float GetSpotAngle() const;
-	float GetSpotSmoothness() const;
-
 private:
+
+	/**
+	* Calculate light values
+	*/
+	void UpdateLightValues();
+
 	//Spot and point light
 	float range = 10;
 	//For spot light
