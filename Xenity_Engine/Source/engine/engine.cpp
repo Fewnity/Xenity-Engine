@@ -512,7 +512,7 @@ void Engine::UpdateComponents()
 				componentsCount--;
 			}
 		}
-
+	}
 		int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
 		for (int i = 0; i < gameObjectToDestroyCount; i++)
 		{
@@ -538,7 +538,7 @@ void Engine::UpdateComponents()
 			}
 		}
 		componentsToDestroy.clear();
-	}
+	
 }
 
 /// <summary>

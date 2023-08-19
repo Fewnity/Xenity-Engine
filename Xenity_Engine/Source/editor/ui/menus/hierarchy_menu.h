@@ -7,5 +7,6 @@ class HierarchyMenu : public Menu
 public:
 	void Init();
 	void Draw();
+	bool isFocused = false;
 };
 

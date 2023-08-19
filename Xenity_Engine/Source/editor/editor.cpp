@@ -109,6 +109,15 @@ void Editor::Update()
 			DuplicateGameObject(Engine::selectedGameObject.lock());
 	}
 
+	if (InputSystem::GetKey(DELETE))
+	{
+		if (sceneMenu->isFocused || hierarchy->isFocused) 
+		{
+			if (Engine::selectedGameObject.lock())
+				Destroy(Engine::selectedGameObject.lock());
+		}
+	}
+
 	if (Engine::GetGameState() == GameState::Stopped) 
 	{
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S))) 
