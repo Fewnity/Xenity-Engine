@@ -96,7 +96,7 @@ void Editor::Update()
 		else if (InputSystem::GetKey(LEFT))
 			side = -1;
 	}
-
+	fwd -= InputSystem::mouseWheel * 6;
 	pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 
