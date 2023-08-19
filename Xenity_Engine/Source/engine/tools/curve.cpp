@@ -21,9 +21,22 @@ Vector3 Spline::GetValueAt(const float t) const
     auto beforeTransform = splinePoints[1 + currentCurve]->before.lock();
     auto parent2Transform =  splinePoints[1 + currentCurve]->parent.lock();
 
-    result.x = powf(1 - tVal, 3) * parentTransform->GetPosition().x + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().x + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().x + powf(tVal, 3) * parent2Transform->GetPosition().x;
-    result.y = powf(1 - tVal, 3) * parentTransform->GetPosition().y + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().y + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().y + powf(tVal, 3) * parent2Transform->GetPosition().y;
-    result.z = powf(1 - tVal, 3) * parentTransform->GetPosition().z + 3 * powf((1 - tVal), 2) * tVal * nextTransform->GetPosition().z + 3 * (1 - tVal) * powf(tVal, 2) * beforeTransform->GetPosition().z + powf(tVal, 3) * parent2Transform->GetPosition().z;
+    if (parentTransform && nextTransform && beforeTransform && parent2Transform) 
+    {
+        Vector3 parentPos = parentTransform->GetPosition();
+        Vector3 nextTransformPos = nextTransform->GetPosition();
+        Vector3 beforeTransformPos = beforeTransform->GetPosition();
+        Vector3 parent2TransformPos = parent2Transform->GetPosition();
+
+        float pow1 = powf(1 - tVal, 3);
+        float pow2 = powf((1 - tVal), 2);
+        float pow3 = powf(tVal, 2);
+        float pow4 = powf(tVal, 3);
+
+        result.x = pow1 * parentPos.x + 3 * pow2 * tVal * nextTransformPos.x + 3 * (1 - tVal) * pow3 * beforeTransformPos.x + pow4 * parent2TransformPos.x;
+        result.y = pow1 * parentPos.y + 3 * pow2 * tVal * nextTransformPos.y + 3 * (1 - tVal) * pow3 * beforeTransformPos.y + pow4 * parent2TransformPos.y;
+        result.z = pow1 * parentPos.z + 3 * pow2 * tVal * nextTransformPos.z + 3 * (1 - tVal) * pow3 * beforeTransformPos.z + pow4 * parent2TransformPos.z;
+    }
 
     return result;
 }
