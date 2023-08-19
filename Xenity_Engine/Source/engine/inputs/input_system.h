@@ -153,18 +153,75 @@ public:
 class API InputSystem
 {
 public:
+
+	/**
+	* Init input system
+	*/
 	static void Init();
+
+	/**
+	* Read input events
+	*/
 	static void Read();
 #if defined(_WIN32) || defined(_WIN64)
+
+	/**
+	* Read input events
+	* @parem event SDL event
+	*/
 	static void Read(const SDL_Event event);
 #endif
+
+	/**
+	* Return true if the key has just been pressed
+	* @param Key code to check
+	*/
 	static bool GetKeyDown(const KeyCode keyCode);
+
+	/**
+	* Return true if the key is held
+	* @param Key code to check
+	*/
 	static bool GetKey(const KeyCode keyCode);
+
+	/**
+	* Return true if the key has just been released
+	* @param Key code to check
+	*/
 	static bool GetKeyUp(const KeyCode keyCode);
+
+	/**
+	* Set all keys states to inactive
+	*/
 	static void ClearInputs();
+
+	/**
+	* Get how many touch screens the device has
+	*/
 	static int GetTouchScreenCount();
+
+	/**
+	* Get how many touch inputs the screen has
+	* @param screenIndex Screen index
+	*/
 	static int GetTouchCount(const int screenIndex);
+
+	/**
+	* Get touch data
+	* @param touchIndex Touch index
+	* @param screenIndex Screen index
+	*/
 	static Touch GetTouch(const int touchIndex, const int screenIndex);
+
+	/**
+	* Hide mouse
+	*/
+	static void HideMouse();
+
+	/**
+	* Show mouse
+	*/
+	static void ShowMouse();
 
 	static Vector2 leftJoystick;
 	static Vector2 rightJoystick;
@@ -172,8 +229,6 @@ public:
 	static Vector2 mouseSpeed;
 	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
-	static void HideMouse();
-	static void ShowMouse();
 
 private:
 	class TouchScreen
@@ -182,11 +237,31 @@ private:
 		std::vector<Touch> touches;
 		std::vector<bool> updated;
 	};
-	static void ChangeInputState(const bool pressed, const int keyCode);
-	static void SetInput(const bool pressed, const int keyCode);
-	static void SetInputPressed(const int keyCode);
-	static void SetInputReleased(const int keyCode);
-	static void SetInputInactive(const int keyCode);
+
+	/**
+	*
+	*/
+	static void ChangeInputState(const bool pressed, const KeyCode keyCode);
+
+	/**
+	* Set inputs state
+	*/
+	static void SetInput(const bool pressed, const KeyCode keyCode);
+
+	/**
+	* Set an input as pressed
+	*/
+	static void SetInputPressed(const KeyCode keyCode);
+
+	/**
+	* Set an input as released
+	*/
+	static void SetInputReleased(const KeyCode keyCode);
+
+	/**
+	* Set an input states to false
+	*/
+	static void SetInputInactive(const KeyCode keyCode);
 
 	static bool hidedMouse;
 	static Input inputs[INPUT_COUNT];

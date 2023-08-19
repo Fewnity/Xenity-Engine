@@ -37,9 +37,6 @@ bool InputSystem::hidedMouse = false;
 std::map<int, Input*> InputSystem::keyMap;
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
 
-/// <summary>
-/// Init input system
-/// </summary>
 void InputSystem::Init()
 {
 	keyMap = std::map<int, Input*>();
@@ -236,10 +233,6 @@ void InputSystem::Read(const SDL_Event event)
 }
 #endif
 
-/// <summary>
-/// Get inputs events
-/// </summary>
-/// <param name="event"></param>
 void InputSystem::Read()
 {
 	int screenCount = (int)screens.size();
@@ -334,23 +327,17 @@ void InputSystem::Read()
 	}
 }
 
-// std::map<int, int> keyMap; // TODO : To use later
-//  To use like that : SetInput(pressed, keyMap.at(keyCode));
-
-void InputSystem::ChangeInputState(const bool pressed, const int keyCode)
+void InputSystem::ChangeInputState(const bool pressed, const KeyCode keyCode)
 {
 }
 
 #pragma region Change inputs states
 
-/// <summary>
-/// Set all keys states to inactive
-/// </summary>
 void InputSystem::ClearInputs()
 {
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
-		SetInputInactive(i);
+		SetInputInactive((KeyCode)i);
 	}
 	mouseSpeed.x = 0;
 	mouseSpeed.y = 0;
@@ -359,12 +346,7 @@ void InputSystem::ClearInputs()
 	mouseWheel = 0;
 }
 
-/// <summary>
-/// Set inputs state
-/// </summary>
-/// <param name="pressed"></param>
-/// <param name="keyCode"></param>
-void InputSystem::SetInput(const bool pressed, const int keyCode)
+void InputSystem::SetInput(const bool pressed, const KeyCode keyCode)
 {
 	if (pressed)
 		SetInputPressed(keyCode);
@@ -372,11 +354,7 @@ void InputSystem::SetInput(const bool pressed, const int keyCode)
 		SetInputReleased(keyCode);
 }
 
-/// <summary>
-/// Set an input as pressed
-/// </summary>
-/// <param name="keyCode"></param>
-void InputSystem::SetInputPressed(const int keyCode)
+void InputSystem::SetInputPressed(const KeyCode keyCode)
 {
 	if (!inputs[keyCode].held)
 	{
@@ -385,21 +363,13 @@ void InputSystem::SetInputPressed(const int keyCode)
 	}
 }
 
-/// <summary>
-/// Set an input as released
-/// </summary>
-/// <param name="keyCode"></param>
-void InputSystem::SetInputReleased(const int keyCode)
+void InputSystem::SetInputReleased(const KeyCode keyCode)
 {
 	inputs[keyCode].released = true;
 	inputs[keyCode].held = false;
 }
 
-/// <summary>
-/// Set an input states to false
-/// </summary>
-/// <param name="keyCode"></param>
-void InputSystem::SetInputInactive(const int keyCode)
+void InputSystem::SetInputInactive(const KeyCode keyCode)
 {
 	inputs[keyCode].pressed = false;
 	inputs[keyCode].released = false;
@@ -409,33 +379,18 @@ void InputSystem::SetInputInactive(const int keyCode)
 
 #pragma region Getters
 
-/// <summary>
-/// Return if the key has just been pressed
-/// </summary>
-/// <param name="keyCode"></param>
-/// <returns></returns>
 bool InputSystem::GetKeyDown(const KeyCode keyCode)
 {
 	// return false;
 	return inputs[keyCode].pressed;
 }
 
-/// <summary>
-/// Return if the key is hold
-/// </summary>
-/// <param name="keyCode"></param>
-/// <returns></returns>
 bool InputSystem::GetKey(const KeyCode keyCode)
 {
 	// return false;
 	return inputs[keyCode].held;
 }
 
-/// <summary>
-/// Return if the key has just been released
-/// </summary>
-/// <param name="keyCode"></param>
-/// <returns></returns>
 bool InputSystem::GetKeyUp(const KeyCode keyCode)
 {
 	// return false;
