@@ -358,7 +358,11 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		glDisable(GL_BLEND);
 	}
 
+#if defined(__PSP__)
+	if (EngineSettings::useLighting && settings.useLighting && !settings.useBlend)
+#else
 	if (EngineSettings::useLighting && settings.useLighting)
+#endif
 	{
 		glEnable(GL_LIGHTING);
 	}
