@@ -4,20 +4,14 @@
 #include "../renderer/renderer.h"
 #include "../../file_system/mesh_loader/wavefront_loader.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include "../../../psp/gu2gl.h"
-#endif
-
-#ifdef __vita__
+#elif defined(__vita__)
 #include <vitaGL.h>
 #endif
 
 ProfilerBenchmark *meshBenchmark = nullptr;
 
-/**
- * @brief Init Mesh Manager
- *
- */
 void MeshManager::Init()
 {
     meshBenchmark = new ProfilerBenchmark("Mesh");
@@ -34,16 +28,6 @@ MeshData *MeshManager::LoadMesh(std::string path)
     return mesh;
 }
 
-/**
- * @brief Draw a Mesh
- *
- * @param position
- * @param rotation
- * @param scale
- * @param texture
- * @param meshData
- * @param useDepth
- */
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector<Texture*> textures, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
 {
     //if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->subMeshes[0]->vertice_count == 0))
