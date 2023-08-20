@@ -67,14 +67,77 @@ public:
 	std::unordered_map<std::string, Variable> GetReflection();
 	std::unordered_map<std::string, Variable> GetMetaReflection();
 	~MeshData();
+
 	void LoadFileReference();
+
 	void UnloadFileReference();
+
+	/**
+	* Alloc memory for a new submesh
+	*/
 	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
+	/**
+	* Add a vertex to a submesh
+	* @param u U Axis texture coordinate
+	* @param v V Axis texture coordinate
+	* @param color Vertex color
+	* @param x Vertex X position
+	* @param y Vertex Y position
+	* @param z Vertex Z position
+	* @param index Vertex index
+	* @param subMeshIndex Submesh index
+	*/
 	void AddVertex(float u, float v, Color color, float x, float y, float z, int index, int subMeshIndex);
+
+	/**
+	* Add a vertex to a submesh
+	* @param x Vertex X position
+	* @param y Vertex Y position
+	* @param z Vertex Z position
+	* @param index Vertex index
+	* @param subMeshIndex Submesh index
+	*/
 	void AddVertex(float x, float y, float z, int index, int subMeshIndex);
+
+	/**
+	* Add a vertex to a submesh
+	* @param u U Axis texture coordinate
+	* @param v V Axis texture coordinate
+	* @param x Vertex X position
+	* @param y Vertex Y position
+	* @param z Vertex Z position
+	* @param index Vertex index
+	* @param subMeshIndex Submesh index
+	*/
 	void AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex);
+
+	/**
+	* Add a vertex to a submesh
+	* @param u U Axis texture coordinate
+	* @param v V Axis texture coordinate
+	* @param nx Normal X direction
+	* @param ny Normal Y direction
+	* @param nz Normal Z direction
+	* @param x Vertex X position
+	* @param y Vertex Y position
+	* @param z Vertex Z position
+	* @param index Vertex index
+	* @param subMeshIndex Submesh index
+	*/
 	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
+
+	/**
+	* Add a vertex to a submesh
+	* @param nx Normal X direction
+	* @param ny Normal Y direction
+	* @param nz Normal Z direction
+	* @param x Vertex X position
+	* @param y Vertex Y position
+	* @param z Vertex Z position
+	* @param index Vertex index
+	* @param subMeshIndex Submesh index
+	*/
 	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
 	std::vector<SubMesh*> subMeshes;
