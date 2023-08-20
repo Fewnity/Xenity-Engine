@@ -43,14 +43,72 @@ public:
 	Color();
 	//void SetReflection();
 	std::unordered_map<std::string, Variable> GetReflection();
+
+	/**
+	* Create color from RGB
+	* @param r Red level [0;255]
+	* @param g Green level [0;255]
+	* @param b Blue level [0;255]
+	*/
 	static Color CreateFromRGB(int r, int g, int b);
+
+	/**
+	* Create color from float RGB
+	* @param r Red level [0;1]
+	* @param g Green level [0;1]
+	* @param b Blue level [0;1]
+	*/
 	static Color CreateFromRGBFloat(float r, float g, float b);
+
+	/**
+	* Create color from RGBA
+	* @param r Red level [0;255]
+	* @param g Green level [0;255]
+	* @param b Blue level [0;255]
+	* @param a Alpha level [0;255]
+	*/
 	static Color CreateFromRGBA(int r, int g, int b, int a);
+
+	/**
+	* Create color from float RGBA
+	* @param r Red level [0;1]
+	* @param g Green level [0;1]
+	* @param b Blue level [0;1]
+	* @param a Alpha level [0;1]
+	*/
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
+
+	/**
+	* Set color from RGBA
+	* @param r Red level [0;255]
+	* @param g Green level [0;255]
+	* @param b Blue level [0;255]
+	* @param a Alpha level [0;255]
+	*/
 	void SetFromRGBA(int r, int g, int b, int a);
+
+	/**
+	* Set color from float RGBA
+	* @param r Red level [0;1]
+	* @param g Green level [0;1]
+	* @param b Blue level [0;1]
+	* @param a Alpha level [0;1]
+	*/
 	void SetFromRGBAfloat(float r, float g, float b, float a);
+
+	/**
+	* Get RGBA
+	*/
 	RGBA GetRGBA();
+
+	/**
+	* Get RGBA value as an unsigned int
+	*/
 	unsigned int GetUnsignedIntRGBA();
+
+	/**
+	* Get ABGR value as an unsigned int
+	*/
 	unsigned int GetUnsignedIntABGR();
 
 private:
