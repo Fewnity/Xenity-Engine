@@ -68,20 +68,84 @@ public:
 class API TextManager
 {
 public:
+
+    /**
+    * [Internal] Init text manager
+    */
     static void Init();
+
+    /**
+    * Create font
+    * @filePath Font file path
+    */
     static Font *CreateFont(std::string filePath);
+
     //static void DeleteFont(Font *font);
     //static void DeleteFont(int index);
 
+    /**
+    * Draw a text
+    * @param text Text
+    * @param textInfo Text info
+    * @param horizontalAlignment Horizontal alignment
+    * @param verticalAlignment Vertical alignment
+    * @param transform Transform
+    * @param color Color
+    * @param canvas Is for canvas
+    * @param mesh Mesh
+    * @param font Font
+    */
     static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, MeshData *mesh, Font* font);
 
-    static std::vector<Font *> fonts;
+    /**
+    * Get informations about a text
+    * @param text Text
+    * @param textLen Text lenght
+    * @param font Font
+    * @param scale Test scale
+    */
     static TextInfo *GetTextInfomations(std::string &text, int textLen, Font *font, float scale);
+    
+    /**
+    * Create a mesh from a text
+    * @param text Text
+    * @param textInfo Text informations
+    * @param horizontalAlignment Horizontal alignment
+    * @param verticalAlignment Vertical alignment
+    * @param color Color
+    * @param font Font
+    */
     static MeshData *CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font* font);
+    
+    static std::vector<Font *> fonts;
 
 private:
+
+    /**
+    * @brief Set the text mesh position
+    *
+    * @param transform
+    * @param canvas
+    */
     static void SetTextPosition(std::weak_ptr<Transform> transform, bool canvas);
+
+    /**
+    * Draw mesh
+    *
+    * @param mesh Mesh data
+    * @param for3D 3D text mode
+    */
     static void DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture);
+
+    /**
+    * @brief Add a char to the mesh
+    *
+    * @param mesh Mesh to modify
+    * @param ch Char to add
+    * @param x Char X position
+    * @param y Char Y position
+    * @param letterIndex Letter index in the string
+    */
     static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
 
     static std::vector<MeshData *> meshes;

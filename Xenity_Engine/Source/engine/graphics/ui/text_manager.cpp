@@ -4,12 +4,10 @@
 
 #include "../renderer/renderer.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
 #include "../../../psp/gu2gl.h"
-#endif
-
-#ifdef __vita__
+#elif defined(__vita__)
 #include <vitaGL.h>
 #endif
 
@@ -31,12 +29,6 @@ void TextManager::Init()
     textBenchmark = new ProfilerBenchmark("Text");
 }
 
-/**
- * @brief Draw mesh
- *
- * @param mesh Mesh data
- * @param for3D 3D text mode
- */
 void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture)
 {
     // Set draw settings
@@ -52,12 +44,6 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Tex
     Engine::renderer->DrawMeshData(mesh, textures, renderSettings);
 }
 
-/**
- * @brief Set the text mesh position
- *
- * @param transform
- * @param canvas
- */
 void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool canvas)
 {
     auto transform = weakTransform.lock();
@@ -160,15 +146,6 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
     return mesh;
 }
 
-/**
- * @brief Draw text
- *
- * @param text String to draw
- * @param horizontalAlignment Horizontal Alignment
- * @param verticalAlignment Vertical Alignment
- * @param transform Transform
- * @param canvas Is for canvas
- */
 void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh, Font* font)
 {
     if (!font) 
@@ -213,15 +190,6 @@ void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlig
     }
 }
 
-/**
- * @brief Add a char to the mesh
- *
- * @param mesh Mesh to modify
- * @param ch Char to add
- * @param x Char X position
- * @param y Char Y position
- * @param letterIndex Letter index in the string
- */
 void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex)
 {
     int indice = letterIndex * 4;
@@ -245,11 +213,6 @@ void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y,
     mesh->subMeshes[0]->indices[5 + indiceIndex] = 3 + indice;
 }
 
-/// <summary>
-/// Load a font
-/// </summary>
-/// <param name="filePath"></param>
-/// <returns></returns>
 Font *TextManager::CreateFont(std::string filePath)
 {
     std::string path;
@@ -379,15 +342,6 @@ Font *TextManager::CreateFont(std::string filePath)
     return font;
 }
 
-/**
- * @brief Get informations about the text
- *
- * @param text Text to analyse
- * @param textLen Lenght of the text
- * @param font Used font
- * @param scale Scale of the text
- * @return TextInfo
- */
 TextInfo *TextManager::GetTextInfomations(std::string &text, int textLen, Font *font, float scale)
 {
     TextInfo *textInfos = new TextInfo();
