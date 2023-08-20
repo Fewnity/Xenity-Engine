@@ -41,10 +41,33 @@ public:
     };
 
     Texture();
+
+    /**
+    * Load texture from a path
+    * @param filePath File path
+    * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
+    */
     Texture(const std::string filePath, std::string name, bool loadInVram);
+
+    /**
+    * Load texture from a path
+    * @param filePath File path
+    * @param filter Texture filter
+    * @param useMipMap Use mip map
+    * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
+    */
     Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram);
+
+    /**
+    * [Internal]
+    */
     Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
+
+    /**
+    * [Internal]
+    */
     Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
+
     std::unordered_map<std::string, Variable> GetReflection();
     std::unordered_map<std::string, Variable> GetMetaReflection();
 
@@ -53,19 +76,73 @@ public:
     void LoadFileReference();
     void UnloadFileReference();
 
+    /**
+    * Set texture data
+    * @param data Texture data
+    */
     void SetData(const unsigned char *data);
 
+    /**
+    * Get texture ID
+    */
     unsigned int GetTextureId() const;
+
+    /**
+    * Update texture if a filter changed
+    */
     void UpdateTextureFilter();
+
+    /**
+    * Set texture filter
+    * @param filter Filter
+    */
     void SetFilter(const Filter filter);
+
+    /**
+    * Set texture wrap mode
+    * @param mode Wrap mode
+    */
     void SetWrapMode(const WrapMode mode);
+
+    /**
+    * Get texture width
+    */
     int GetWidth() const;
+
+    /**
+    * Get texture height
+    */
     int GetHeight() const;
+
+    /**
+    * Set texture pixel per unit
+    * @param value Pixel per unit
+    */
     void SetPixelPerUnit(int value);
+
+    /**
+    * Get texture pixel per unit
+    */
     int GetPixelPerUnit() const;
+
+    /**
+    * Get texture channel count
+    */
     int GetChannelCount() const;
+
+    /**
+    * Get if the texture is using mipmap
+    */
     bool GetUseMipmap() const;
+
+    /**
+    * Get texture filter
+    */
     Texture::Filter GetFilter() const;
+
+    /**
+    * Get texture wrap mode
+    */
     Texture::WrapMode GetWrapMode() const;
 
     std::string name = "";
@@ -73,12 +150,20 @@ public:
     bool useMipMap = false;
     bool inVram = true;
 
+    /**
+    * Return if the texture is valid
+    */
     bool IsValid()
     {
         return isValid;
     };
 
 #ifdef __PSP__
+    /**
+    * Create texture data for a mipmap level
+    * @param level Mipmap level
+    * @param texData Base texture data
+    */
     void SetTextureLevel(int level, const unsigned char *texData);
 
     std::vector<void *> data;
@@ -88,11 +173,27 @@ public:
 #endif
 
 private:
+
+    /**
+    * Create the texture from a file path
+    * @param filePath File path
+    * @param filter Texture filter
+    * @param useMipMap Use mip map
+    */
+    void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
+
+    /**
+    * Load texture data
+    */
+    void LoadTexture(const std::string filePath);
+
+    /**
+    * Unload texture data
+    */
+    void Unload();
+
     Filter filter = Bilinear;
     WrapMode wrapMode = Repeat;
-    void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
-    void LoadTexture(const std::string filePath);
-    void Unload();
     unsigned int textureId = -1;
     int width = 0, height = 0, nrChannels = 0;
 

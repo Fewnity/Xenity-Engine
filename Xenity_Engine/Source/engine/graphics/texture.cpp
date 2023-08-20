@@ -9,11 +9,9 @@
 #include <malloc.h>
 #include <string>
 
-#ifdef __vita__
+#if defined(__vita__)
 #include <vitaGL.h>
-#endif
-
-#ifdef __PSP__
+#elif defined(__PSP__)
 #include "../../psp/gu2gl.h"
 #include <pspkernel.h>
 #include <vram.h>
