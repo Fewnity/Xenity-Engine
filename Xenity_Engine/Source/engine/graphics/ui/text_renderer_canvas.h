@@ -40,29 +40,49 @@ public:
 	HorizontalAlignment horizontalAlignment = H_Center;
 	VerticalAlignment verticalAlignment = V_Center;
 
+	/**
+	* Set text color
+	* @param color Color
+	*/
 	void SetColor(Color color)
 	{
 		this->color = color;
 	}
 
+	/**
+	* Set order in layer
+	* @param orderInLayer Order in layer
+	*/
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
 		Engine::drawOrderListDirty = true;
 	}
 
+	/**
+	* Get order in layer
+	*/
 	int GetOrderInLayer() const
 	{
 		return orderInLayer;
 	}
 
+	/**
+	* Set text
+	* @param text Text
+	*/
 	void SetText(std::string text);
+
+	/**
+	* Set text font
+	* @param font Font
+	*/
 	void SetFont(Font *font);
 
 private:
+	void Draw();
 	std::string text;
 	Color color = Color();
-	void Draw();
 	int orderInLayer = 0;
 	TextInfo *textInfo = nullptr;
 	Font *font = nullptr;
