@@ -182,7 +182,7 @@ ProjectionTypes Camera::GetProjectionType()
 }
 
 
-void Camera::UpdaterameBuffer()
+void Camera::UpdateFrameBuffer()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	if (needFremeBufferUpdate)
@@ -239,7 +239,7 @@ void Camera::BindFrameBuffer()
 	if(framebuffer != -1)
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 #endif
-	UpdaterameBuffer();
+	UpdateFrameBuffer();
 
 #if !defined(EDITOR)
 #if !defined(__PSP__)
