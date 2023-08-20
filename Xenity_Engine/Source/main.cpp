@@ -29,6 +29,7 @@ Add a tool to rotate selected gameobject
 Fix tool with child and parent negative scale
 Find why ./ point to another location when lauched from a cmd without "cd"
 Detect the number of cpu core for cmake
+Use scene backup system for hotrealoding
 
 Add materials
 Add async texture loading
@@ -38,6 +39,7 @@ Fix uniqueID when loading a new scene (set id to the max find in the file)
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)
 Text scale
+nextPow2 and previousPow2 fix with negative number
 */
 
 #undef main
