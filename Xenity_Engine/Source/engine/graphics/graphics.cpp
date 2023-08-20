@@ -87,9 +87,6 @@ void Graphics::Init()
 	Debug::Print("-------- Graphics initiated --------");
 }
 
-/// <summary>
-/// Draw all Drawable elements
-/// </summary>
 void Graphics::DrawAllDrawable()
 {
 	/*auto camera = usedCamera.lock();
@@ -198,18 +195,18 @@ void Graphics::OrderDrawables()
 	// orderBenchmark->Stop();
 }
 
-void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToPlace)
+void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToAdd)
 {
-	orderedIDrawable.push_back(drawableToPlace);
+	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
 }
 
-void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToPlace)
+void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove)
 {
 	iDrawablesCount = (int)orderedIDrawable.size(); // TODO remove?
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i].lock() == drawableToPlace.lock())
+		if (orderedIDrawable[i].lock() == drawableToRemove.lock())
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
