@@ -29,6 +29,7 @@ public:
 	//void SetReflection();
 
 	std::unordered_map<std::string, Variable> GetReflection();
+	void OnReflectionUpdated();
 
 	Vector3 position = Vector3(0, 0, 0);
 	float size = 16;

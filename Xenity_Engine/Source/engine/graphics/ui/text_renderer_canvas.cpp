@@ -29,6 +29,11 @@ std::unordered_map<std::string, Variable> TextRendererCanvas::GetReflection()
 	return reflectedVariables;
 }
 
+void TextRendererCanvas::OnReflectionUpdated()
+{
+	isTextInfoDirty = true;
+}
+
 // TextRendererCanvas::TextRendererCanvas(Font *font, float size, Shader *shader)
 // {
 // 	this->font = font;

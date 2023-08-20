@@ -26,6 +26,7 @@ public:
 	TextRenderer();
 	//void SetReflection();
 	std::unordered_map<std::string, Variable> GetReflection();
+	void OnReflectionUpdated();
 	// TextRenderer(Font* font, float size, Shader* shader);
 	// TextRenderer(Font* font, float size, Shader* shader);
 	~TextRenderer();
