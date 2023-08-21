@@ -41,7 +41,7 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 	}
 }
 
-void ProjectManager::LoadProject(std::string projectPathToLoad)
+bool ProjectManager::LoadProject(std::string projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
@@ -53,7 +53,7 @@ void ProjectManager::LoadProject(std::string projectPathToLoad)
 	Directory* projectDirectoryBase = new Directory(assetFolderPath);
 	if (!projectDirectoryBase->CheckIfExist())
 	{
-		return;
+		return projectLoaded;
 	}
 
 	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles();
@@ -209,6 +209,7 @@ void ProjectManager::LoadProject(std::string projectPathToLoad)
 
 	Debug::Print("Project loaded");
 	projectLoaded = true;
+	return projectLoaded;
 }
 
 FileReference* ProjectManager::GetFileReferenceById(uint64_t id)

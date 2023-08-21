@@ -38,7 +38,7 @@ class API ProjectManager
 public:
 
 	static ProjectDirectory* projectDirectory;
-	static void LoadProject(std::string projectPathToLoad);
+	static bool LoadProject(std::string projectPathToLoad);
 	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
 	static FileReference* GetFileReferenceById(uint64_t id);
 	static void SaveMetaFile(FileReference* fileReference);
