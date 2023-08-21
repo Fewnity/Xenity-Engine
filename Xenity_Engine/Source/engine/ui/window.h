@@ -16,6 +16,9 @@ public:
     static void SetResolution(const int width_, const int height_);
     static int GetWidth();
     static int GetHeight();
+
+    static int GetTitleBarHeight();
+
     static float GetAspectRatio();
     static int Init();
     static void UpdateScreen();

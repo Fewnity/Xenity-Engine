@@ -39,6 +39,7 @@ void Window::SetResolution(const int width_, const int height_)
 void Window::OnResize()
 {
 	UpdateAspectRatio();
+
 #if !defined(EDITOR)
 	int cameraCount = Graphics::cameras.size();
 	for (int i = 0; i < cameraCount; i++)
@@ -56,6 +57,15 @@ int Window::GetWidth()
 int Window::GetHeight()
 {
 	return height;
+}
+
+int Window::GetTitleBarHeight()
+{
+	int size = 0;
+#if defined(_WIN32) || defined(_WIN64)
+	SDL_GetWindowBordersSize(window, &size, 0, 0, 0);
+#endif
+	return size;
 }
 
 float Window::GetAspectRatio()
