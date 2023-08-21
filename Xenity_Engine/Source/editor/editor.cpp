@@ -82,20 +82,20 @@ void Editor::Init()
 
 void Editor::Update()
 {
-	auto cameraTrans = cameraGO.lock()->GetTransform();
-	Vector3 rot = cameraTrans->GetRotation();
-	Vector3 pos = cameraTrans->GetPosition();
-
-	if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
-	{
-		rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
-		rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;
-	}
-
-	float fwd = 0;
-	float side = 0;
 	if (sceneMenu->isFocused)
 	{
+		auto cameraTrans = cameraGO.lock()->GetTransform();
+		Vector3 rot = cameraTrans->GetRotation();
+		Vector3 pos = cameraTrans->GetPosition();
+
+		if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
+		{
+			rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
+			rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;
+		}
+
+		float fwd = 0;
+		float side = 0;
 		if (InputSystem::GetKey(UP))
 			fwd = -1;
 		else if (InputSystem::GetKey(DOWN))
@@ -105,13 +105,16 @@ void Editor::Update()
 			side = 1;
 		else if (InputSystem::GetKey(LEFT))
 			side = -1;
-	}
-	fwd -= InputSystem::mouseWheel * 6;
-	pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
-	pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
 
-	cameraTrans->SetPosition(pos);
-	cameraTrans->SetRotation(rot);
+		if(sceneMenu->isHovered)
+			fwd -= InputSystem::mouseWheel * 6;
+
+		pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+		pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+
+		cameraTrans->SetPosition(pos);
+		cameraTrans->SetRotation(rot);
+	}
 
 	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 	{
