@@ -90,10 +90,5 @@ private:
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;
 	static std::string assetFolderPath;
-	struct PairFile 
-	{
-		File* file;
-		File* meta;
-	};
 };
 

@@ -44,13 +44,18 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 void ProjectManager::LoadProject(std::string projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
-
+	projectLoaded = false;
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets\\";
 	engineAssetsFolderPath = ".\\engine_assets\\";
 
 	//Get all files of the project
 	Directory* projectDirectoryBase = new Directory(assetFolderPath);
+	if (!projectDirectoryBase->CheckIfExist())
+	{
+		return;
+	}
+
 	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles();
 
 	projectDirectory = new ProjectDirectory(assetFolderPath);
