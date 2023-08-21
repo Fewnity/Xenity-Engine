@@ -234,7 +234,6 @@ Directory::Directory(std::string path) : UniqueId(true)
 	path = PSVITA_BASE_DIR + path;
 #endif
 	this->path = path;
-	FileSystem::fileSystem->FillDirectory(this);
 }
 
 Directory::~Directory()
@@ -271,6 +270,7 @@ void AddDirectoryFiles(std::vector<File*>& vector, Directory* directory)
 
 std::vector<File*> Directory::GetAllFiles()
 {
+	FileSystem::fileSystem->FillDirectory(this);
 	std::vector<File*> vector;
 	AddDirectoryFiles(vector, this);
 	return vector;
@@ -297,6 +297,22 @@ bool Directory::CheckIfExist()
 
 void FileSystem::FillDirectory(Directory* directory)
 {
+	int directoryFilesCount = directory->files.size();
+	for (int i = 0; i < directoryFilesCount; i++)
+	{
+		delete directory->files[i];
+	}
+	int directorySubDirectoryCount = directory->subdirectories.size();
+	for (int i = 0; i < directorySubDirectoryCount; i++)
+	{
+		delete directory->subdirectories[i];
+	}
+	directory->files.clear();
+	directory->subdirectories.clear();
+	if (!directory->CheckIfExist()) 
+	{
+		return;
+	}
 #if defined(__PSP__)
 	DIR *dir = opendir(directory->GetPath().c_str());
 	if (dir == NULL)
@@ -340,6 +356,7 @@ void FileSystem::FillDirectory(Directory* directory)
 			try
 			{
 				newDirectory = new Directory(fullPath + "\\");
+				newDirectory->GetAllFiles();
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception &)
@@ -369,6 +386,7 @@ void FileSystem::FillDirectory(Directory* directory)
 			path = path.substr(4);
 #endif
 				newDirectory = new Directory(path + "\\");
+				newDirectory->GetAllFiles();
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception &)
