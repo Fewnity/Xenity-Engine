@@ -3,6 +3,13 @@
 #include "../../xenity_editor.h"
 #include <json.hpp>
 #include "../reflection/reflection_utils.h"
+#include "../dynamic_lib/dynamic_lib.h"
+#include "../scene_management/scene_manager.h"
+#include "../game_interface.h"
+
+#if !defined(EDITOR)
+#include "../../game_test/game.h"
+#endif
 
 using json = nlohmann::json;
 
@@ -173,6 +180,28 @@ void ProjectManager::LoadProject(std::string projectPathToLoad)
 #if defined(EDITOR)
 	SaveProjectSettigs();
 #endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+#else
+	DynamicLibrary::LoadGameLibrary("game");
+#endif
+	Engine::game = DynamicLibrary::CreateGame();
+#else
+	Engine::game = new Game();
+#endif
+
+	// Fill class registery
+	if (Engine::game)
+		Engine::game->Start();
+
+	// Load start scene
+	if (ProjectManager::GetStartScene())
+	{
+		SceneManager::LoadScene(ProjectManager::GetStartScene());
+	}
+
 	Debug::Print("Project loaded");
 	projectLoaded = true;
 }

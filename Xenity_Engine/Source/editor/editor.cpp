@@ -13,6 +13,7 @@
 #include "ui/menus/game_menu.h"
 #include "ui/menus/scene_menu.h"
 #include "ui/menus/compiling_menu.h"
+#include "ui/menus/select_project_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -36,6 +37,7 @@ ProfilerMenu* Editor::profiler = nullptr;
 GameMenu* Editor::gameMenu = nullptr;
 SceneMenu* Editor::sceneMenu = nullptr;
 CompilingMenu* Editor::compilingMenu = nullptr;
+SelectProjectMenu* Editor::selectProjectMenu = nullptr;
 
 void Editor::Init()
 {
@@ -49,6 +51,7 @@ void Editor::Init()
 	gameMenu = new GameMenu();
 	sceneMenu = new SceneMenu();
 	compilingMenu = new CompilingMenu();
+	selectProjectMenu = new SelectProjectMenu();
 
 	projectSettings->Init();
 	engineSettings->Init();
@@ -59,6 +62,7 @@ void Editor::Init()
 	profiler->Init();
 	gameMenu->Init();
 	sceneMenu->Init();
+	selectProjectMenu->Init();
 
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
@@ -111,16 +115,16 @@ void Editor::Update()
 
 	if (InputSystem::GetKey(DELETE))
 	{
-		if (sceneMenu->isFocused || hierarchy->isFocused) 
+		if (sceneMenu->isFocused || hierarchy->isFocused)
 		{
 			if (Engine::selectedGameObject.lock())
 				Destroy(Engine::selectedGameObject.lock());
 		}
 	}
 
-	if (Engine::GetGameState() == GameState::Stopped) 
+	if (Engine::GetGameState() == GameState::Stopped)
 	{
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S))) 
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
 		{
 			SceneManager::SaveScene(false);
 		}
@@ -130,28 +134,35 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
-	if (EditorUI::showProjectsSettings) 
+	if (!ProjectManager::GetIsProjectLoaded())
 	{
-		projectSettings->Draw();
+		selectProjectMenu->Draw();
 	}
-	if (EditorUI::showEngineSettings)
+	else
 	{
-		engineSettings->Draw();
+		if (EditorUI::showProjectsSettings)
+		{
+			projectSettings->Draw();
+		}
+		if (EditorUI::showEngineSettings)
+		{
+			engineSettings->Draw();
+		}
+		if (EditorUI::showEditor)
+		{
+			fileExplorer->Draw();
+			hierarchy->Draw();
+			inspector->Draw();
+		}
+		mainBar->Draw();
+		if (EditorUI::showProfiler)
+		{
+			profiler->Draw();
+		}
+		compilingMenu->Draw();
+		gameMenu->Draw();
+		sceneMenu->Draw();
 	}
-	if (EditorUI::showEditor)
-	{
-		fileExplorer->Draw();
-		hierarchy->Draw();
-		inspector->Draw();
-	}
-	mainBar->Draw();
-	if (EditorUI::showProfiler)
-	{
-		profiler->Draw();
-	}
-	compilingMenu->Draw();
-	gameMenu->Draw();
-	sceneMenu->Draw();
 	EditorUI::Render();
 }
 
@@ -177,7 +188,7 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> gameObject)
 	auto selectedGO = Engine::selectedGameObject.lock();
 	if (selectedGO)
 	{
-		if(selectedGO->parent.lock())
+		if (selectedGO->parent.lock())
 			newGameObject->SetParent(selectedGO->parent);
 	}
 

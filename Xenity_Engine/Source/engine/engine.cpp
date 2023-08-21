@@ -14,12 +14,10 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include "../editor/editor.h"
 #include "../xenity_editor.h"
-#else
-#include "../game_test/game.h"
+#include <glad/glad.h>
 #endif
 
 #include "game_interface.h"
-// #include "../game_test/game.h"
 #include "class_registry/class_registry.h"
 
 #ifdef __PSP__
@@ -189,8 +187,10 @@ void Engine::CheckEvents()
 		case SDL_WINDOWEVENT:
 			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 			{
-				Window::SetResolution(event.window.data1, event.window.data2);
-				//if(event.window.windowID == SDL_GetWindowID(Window::window))
+#if defined(EDITOR)
+				if (event.window.windowID == SDL_GetWindowID(Window::window))
+#endif
+					Window::SetResolution(event.window.data1, event.window.data2);
 			}
 			else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
 			{
@@ -211,26 +211,15 @@ void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
 
-	// Ask a project to load or load game
-	int projectLoadResult = LoadGameProject();
+#if !defined(EDITOR)
+	canUpdateAudio = false;
+	int projectLoadResult = LoadGame();
+	canUpdateAudio = true;
 	if (projectLoadResult != 0)
 	{
 		return;
 	}
-
-	// Fill class registery
-	if (game)
-		game->Start();
-
-	Debug::Print("-------- Game initiated --------");
-
-	// Load start scene
-	canUpdateAudio = false;
-	if (ProjectManager::GetStartScene())
-	{
-		SceneManager::LoadScene(ProjectManager::GetStartScene());
-	}
-	canUpdateAudio = true;
+#endif
 
 	while (isRunning)
 	{
@@ -252,38 +241,45 @@ void Engine::Loop()
 		Editor::Update();
 		editorUpdateBenchmark->Stop();
 #endif
-
-		// Game loop
-		if (game)
+		if (ProjectManager::GetIsProjectLoaded())
 		{
-			gameLoopBenchmark->Start();
-			game->Update();
-			gameLoopBenchmark->Stop();
-		}
-
-		// Update all components
-		componentsUpdateBenchmark->Start();
-		UpdateComponents();
-		componentsUpdateBenchmark->Stop();
-		canUpdateAudio = true;
-
-		Window::UpdateScreen();
-
-		drawIDrawablesBenchmark->Start();
-		Graphics::DrawAllDrawable();
-		drawIDrawablesBenchmark->Stop();
-
-		// Reset moved state of all transforms
-		for (int i = 0; i < Engine::gameObjectCount; i++)
-		{
-			std::weak_ptr<GameObject> weakGO = gameObjects[i];
-			if (auto go = weakGO.lock())
+			// Game loop
+			if (game)
 			{
-				if (go->GetTransform()->movedLastFrame)
+				gameLoopBenchmark->Start();
+				game->Update();
+				gameLoopBenchmark->Stop();
+			}
+
+			// Update all components
+			componentsUpdateBenchmark->Start();
+			UpdateComponents();
+			componentsUpdateBenchmark->Stop();
+			canUpdateAudio = true;
+
+			drawIDrawablesBenchmark->Start();
+			Graphics::DrawAllDrawable();
+			drawIDrawablesBenchmark->Stop();
+
+			// Reset moved state of all transforms
+			for (int i = 0; i < Engine::gameObjectCount; i++)
+			{
+				std::weak_ptr<GameObject> weakGO = gameObjects[i];
+				if (auto go = weakGO.lock())
 				{
-					go->GetTransform()->movedLastFrame = false;
+					if (go->GetTransform()->movedLastFrame)
+					{
+						go->GetTransform()->movedLastFrame = false;
+					}
 				}
 			}
+		}
+		else 
+		{
+#if defined(EDITOR)
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			Engine::renderer->Clear();
+#endif
 		}
 
 #if defined(EDITOR)
@@ -291,6 +287,7 @@ void Engine::Loop()
 		Editor::Draw();
 		editorDrawBenchmark->Stop();
 #endif
+		Window::UpdateScreen();
 		engineLoopBenchmark->Stop();
 
 		Performance::Update();
@@ -373,33 +370,10 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 	selectedGameObject = newSelected;
 }
 
-int Engine::LoadGameProject()
+int Engine::LoadGame()
 {
-#if defined(EDITOR)
-	SetGameState(Stopped);
-	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
-	if (projectPath == "")
-	{
-		Debug::PrintWarning("Project Path empty!");
-		return -1;
-	}
-#else
 	SetGameState(Playing);
-	std::string projectPath = ".\\";
-#endif
-	ProjectManager::LoadProject(projectPath);
-
-	// Load game DLL
-#if defined(_WIN32) || defined(_WIN64)
-#if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-#else
-	DynamicLibrary::LoadGameLibrary("game");
-#endif
-	game = DynamicLibrary::CreateGame();
-#else
-	game = new Game();
-#endif
+	ProjectManager::LoadProject(".\\");
 
 	return 0;
 }
@@ -513,32 +487,32 @@ void Engine::UpdateComponents()
 			}
 		}
 	}
-		int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
-		for (int i = 0; i < gameObjectToDestroyCount; i++)
+	int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
+	for (int i = 0; i < gameObjectToDestroyCount; i++)
+	{
+		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 		{
-			for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
+			std::weak_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
+			if (gameObjectToCheck.lock() == gameObjectsToDestroy[i].lock())
 			{
-				std::weak_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
-				if (gameObjectToCheck.lock() == gameObjectsToDestroy[i].lock())
-				{
-					gameObjects.erase(gameObjects.begin() + gIndex);
-					break;
-				}
+				gameObjects.erase(gameObjects.begin() + gIndex);
+				break;
 			}
-			gameObjectCount--;
 		}
-		gameObjectsToDestroy.clear();
+		gameObjectCount--;
+	}
+	gameObjectsToDestroy.clear();
 
-		int componentToDestroyCount = (int)componentsToDestroy.size();
-		for (int i = 0; i < componentToDestroyCount; i++)
+	int componentToDestroyCount = (int)componentsToDestroy.size();
+	for (int i = 0; i < componentToDestroyCount; i++)
+	{
+		if (auto component = componentsToDestroy[i].lock())
 		{
-			if (auto component = componentsToDestroy[i].lock())
-			{
-				component->GetGameObject()->InternalDestroyComponent(component);
-			}
+			component->GetGameObject()->InternalDestroyComponent(component);
 		}
-		componentsToDestroy.clear();
-	
+	}
+	componentsToDestroy.clear();
+
 }
 
 /// <summary>
