@@ -14,6 +14,7 @@
 #include "ui/menus/scene_menu.h"
 #include "ui/menus/compiling_menu.h"
 #include "ui/menus/select_project_menu.h"
+#include "ui/menus/create_project_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -27,6 +28,8 @@ using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
 
+MenuNames Editor::currentMenu = Menu_Select_Project;
+
 ProjectSettingsMenu* Editor::projectSettings = nullptr;
 EngineSettingsMenu* Editor::engineSettings = nullptr;
 FileExplorerMenu* Editor::fileExplorer = nullptr;
@@ -38,6 +41,7 @@ GameMenu* Editor::gameMenu = nullptr;
 SceneMenu* Editor::sceneMenu = nullptr;
 CompilingMenu* Editor::compilingMenu = nullptr;
 SelectProjectMenu* Editor::selectProjectMenu = nullptr;
+CreateProjectMenu* Editor::createProjectMenu = nullptr;
 
 void Editor::Init()
 {
@@ -52,6 +56,7 @@ void Editor::Init()
 	sceneMenu = new SceneMenu();
 	compilingMenu = new CompilingMenu();
 	selectProjectMenu = new SelectProjectMenu();
+	createProjectMenu = new CreateProjectMenu();
 
 	projectSettings->Init();
 	engineSettings->Init();
@@ -63,6 +68,7 @@ void Editor::Init()
 	gameMenu->Init();
 	sceneMenu->Init();
 	selectProjectMenu->Init();
+	createProjectMenu->Init();
 
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
@@ -134,10 +140,20 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
+
+	if (currentMenu == Menu_Create_Project) 
+	{
+		createProjectMenu->Draw();
+	}
+	else if (currentMenu == Menu_Select_Project) 
+	{
+		selectProjectMenu->Draw();
+	}
+
 	if (!ProjectManager::GetIsProjectLoaded())
 	{
-		EditorUI::SetRoundedCorner(0);
-		selectProjectMenu->Draw();
+		//EditorUI::SetRoundedCorner(0);
+		//selectProjectMenu->Draw();
 	}
 	else
 	{

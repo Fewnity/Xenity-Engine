@@ -38,6 +38,7 @@ class API ProjectManager
 public:
 
 	static ProjectDirectory* projectDirectory;
+	static bool CreateProject(std::string name, std::string folderPath);
 	static bool LoadProject(std::string projectPathToLoad);
 	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
 	static FileReference* GetFileReferenceById(uint64_t id);

@@ -20,6 +20,14 @@ class GameMenu;
 class SceneMenu;
 class CompilingMenu;
 class SelectProjectMenu;
+class CreateProjectMenu;
+
+enum MenuNames
+{
+	Menu_Select_Project,
+	Menu_Create_Project,
+	Menu_Editor
+};
 
 class Editor
 {
@@ -30,6 +38,7 @@ public:
 	static void CreateEmpty();
 	static void CreateEmptyChild();
 	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
+	static MenuNames currentMenu;
 
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
@@ -55,6 +64,7 @@ private:
 	static MainBarMenu* mainBar;
 	static ProfilerMenu* profiler;
 	static SelectProjectMenu* selectProjectMenu;
+	static CreateProjectMenu* createProjectMenu;
 	static std::weak_ptr<GameObject> cameraGO;
 };
 

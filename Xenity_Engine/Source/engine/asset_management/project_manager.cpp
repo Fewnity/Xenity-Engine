@@ -41,6 +41,14 @@ void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* real
 	}
 }
 
+bool ProjectManager::CreateProject(std::string name, std::string folderPath)
+{
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
+
+	return LoadProject(folderPath + name + "\\");
+}
+
 bool ProjectManager::LoadProject(std::string projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);

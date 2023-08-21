@@ -1,6 +1,7 @@
 #include "select_project_menu.h"
 #include <imgui/imgui.h>
 #include "../../../xenity.h"
+#include "../../../xenity_editor.h"
 #include "../editor_ui.h"
 #include "../../../engine/asset_management/project_manager.h"
 
@@ -39,7 +40,7 @@ void SelectProjectMenu::Draw()
 	ImGui::PushFont(font);
 	if (ImGui::Button("Create project")) 
 	{
-
+		Editor::currentMenu = Menu_Create_Project;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load project"))
@@ -47,7 +48,14 @@ void SelectProjectMenu::Draw()
 		std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
 		if (projectPath != "")
 		{
-			ProjectManager::LoadProject(projectPath);
+			if (ProjectManager::LoadProject(projectPath)) 
+			{
+				Editor::currentMenu = Menu_Editor;
+			}
+			else 
+			{
+
+			}
 		}
 	}
 	ImGui::PopFont();
