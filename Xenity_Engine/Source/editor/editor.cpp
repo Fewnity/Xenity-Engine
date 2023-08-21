@@ -136,10 +136,12 @@ void Editor::Draw()
 	EditorUI::NewFrame();
 	if (!ProjectManager::GetIsProjectLoaded())
 	{
+		EditorUI::SetRoundedCorner(0);
 		selectProjectMenu->Draw();
 	}
 	else
 	{
+		EditorUI::SetRoundedCorner(10);
 		if (EditorUI::showProjectsSettings)
 		{
 			projectSettings->Draw();

@@ -31,9 +31,6 @@ float EditorUI::uiScale = 1;
 
 void EditorUI::Init()
 {
-	//Set round corners
-	ImGui::GetStyle().WindowRounding = 10;
-
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
 	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
