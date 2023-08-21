@@ -14,6 +14,7 @@ Scene *ProjectManager::startScene = nullptr;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
+bool ProjectManager::projectLoaded;
 
 void SetProjectDirectory(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
 {
@@ -173,6 +174,7 @@ void ProjectManager::LoadProject(std::string projectPathToLoad)
 	SaveProjectSettigs();
 #endif
 	Debug::Print("Project loaded");
+	projectLoaded = true;
 }
 
 FileReference* ProjectManager::GetFileReferenceById(uint64_t id)

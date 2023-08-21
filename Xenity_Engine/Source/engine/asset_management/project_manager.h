@@ -76,8 +76,14 @@ public:
 		return engineAssetsFolderPath;
 	}
 
+	static bool GetIsProjectLoaded() 
+	{
+		return projectLoaded;
+	}
+
 private:
 	static void LoadMetaFile(FileReference* fileReference);
+	static bool projectLoaded;
 	static std::string projectName;
 	static std::string gameName;
 	static Scene* startScene;
