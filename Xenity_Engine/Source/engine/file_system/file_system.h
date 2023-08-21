@@ -86,7 +86,7 @@ public:
 	Directory(std::string path);
 	~Directory();
 	std::vector<File *> GetAllFiles();
-	std::vector<File *> GetAllDirectory();
+	bool CheckIfExist();
 	std::vector<Directory *> subdirectories;
 	std::vector<File *> files;
 

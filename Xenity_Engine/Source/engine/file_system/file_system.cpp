@@ -276,6 +276,25 @@ std::vector<File*> Directory::GetAllFiles()
 	return vector;
 }
 
+bool Directory::CheckIfExist()
+{
+	bool exists = false;
+#if defined(__PSP__)
+	DIR* dir = opendir(this->path.c_str());
+	if (dir == NULL)
+	{
+		exists = false;
+	}
+	else {
+		closedir(dir);
+		exists = true;
+	}
+#else
+	exists = std::filesystem::exists(this->path);
+#endif
+	return exists;
+}
+
 void FileSystem::FillDirectory(Directory* directory)
 {
 #if defined(__PSP__)
