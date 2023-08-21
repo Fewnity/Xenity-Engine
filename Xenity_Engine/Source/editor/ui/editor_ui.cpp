@@ -549,7 +549,7 @@ void EditorUI::DrawInputTitle(std::string title)
 {
 	ImGui::Text(title.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 	ImGui::SetNextItemWidth(-1);
 }
 
@@ -597,7 +597,7 @@ bool EditorUI::DrawInput(std::string inputName, Color& value)
 {
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 	Vector4 vec4 = value.GetRGBA().ToVector4();
 	ImVec4 color = ImVec4(vec4.x, vec4.y, vec4.z, vec4.w);
 	float startAvailSize = ImGui::GetContentRegionAvail().x;
@@ -619,7 +619,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector2& value)
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 
 	if (ImGui::BeginTable("table", 2, 0))
 	{
@@ -638,7 +638,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector2Int& value)
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 
 	if (ImGui::BeginTable("table", 2, 0))
 	{
@@ -657,7 +657,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector3& value)
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 
 	if (ImGui::BeginTable("table", 3, 0))
 	{
@@ -677,7 +677,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector4& value)
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(150);
+	ImGui::SetCursorPosX(150 * uiScale);
 
 	if (ImGui::BeginTable("table", 4, 0))
 	{
