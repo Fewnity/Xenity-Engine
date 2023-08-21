@@ -23,6 +23,7 @@ public:
 	static void Draw();
 	static void NewFrame();
 	static void Render();
+	static void SetRoundedCorner(int value);
 
 	static std::string GetPrettyVariableName(std::string variableName);
 

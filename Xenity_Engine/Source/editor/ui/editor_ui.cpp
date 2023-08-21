@@ -146,6 +146,11 @@ void EditorUI::Render()
 	}
 }
 
+void EditorUI::SetRoundedCorner(int value)
+{
+	ImGui::GetStyle().WindowRounding = value;
+}
+
 #pragma endregion
 
 #pragma region Low Level Draw Functions
