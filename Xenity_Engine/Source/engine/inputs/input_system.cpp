@@ -183,6 +183,9 @@ void InputSystem::Read(const SDL_Event event)
 		case SDL_BUTTON_LEFT:
 			SetInput(true, MOUSE_LEFT);
 			break;
+		case SDL_BUTTON_MIDDLE:
+			SetInput(true, MOUSE_MIDDLE);
+			break;
 		}
 		break;
 	}
@@ -196,6 +199,9 @@ void InputSystem::Read(const SDL_Event event)
 			break;
 		case SDL_BUTTON_LEFT:
 			SetInput(false, MOUSE_LEFT);
+			break;
+		case SDL_BUTTON_MIDDLE:
+			SetInput(false, MOUSE_MIDDLE);
 			break;
 		}
 		break;

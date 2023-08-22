@@ -128,9 +128,10 @@ enum KeyCode
 	LTRIGGER1 = 98,
 	RTRIGGER1 = 99,
 	DELETE = 100,
+	MOUSE_MIDDLE = 101,
 };
 
-#define INPUT_COUNT 102 // Number = Last Enum + 2
+#define INPUT_COUNT 103 // Number = Last Enum + 2
 
 class API Input
 {
