@@ -162,7 +162,9 @@
   <ItemGroup>
     <ClCompile Include="Source\editor\compiler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\select_project_menu.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
@@ -286,7 +288,9 @@
     <ClInclude Include="Source\editor\compiler.h" />
     <ClInclude Include="Source\editor\tool_mode.h" />
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\create_project_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\select_project_menu.h" />
     <ClInclude Include="Source\engine\platform.h" />
     <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
