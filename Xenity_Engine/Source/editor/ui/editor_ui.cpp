@@ -122,7 +122,7 @@ void EditorUI::UpdateUIScale()
 	//if (oldUiScale != uiScale)
 	//{
 		//io.Fonts->Clear();
-		ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
+	ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
 	//}
 }
 
@@ -190,15 +190,15 @@ std::string EditorUI::OpenFolderDialog(std::string title)
 		pFileOpen->SetTitle(tempTitle.c_str());
 		hr = pFileOpen->Show(NULL);
 
-		if (SUCCEEDED(hr)) 
+		if (SUCCEEDED(hr))
 		{
 			IShellItem* pItem;
 			hr = pFileOpen->GetResult(&pItem);
-			if (SUCCEEDED(hr)) 
+			if (SUCCEEDED(hr))
 			{
 				PWSTR pszFolderPath;
 				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
-				if (SUCCEEDED(hr)) 
+				if (SUCCEEDED(hr))
 				{
 					std::wstringstream ss;
 					ss << pszFolderPath;
@@ -210,7 +210,7 @@ std::string EditorUI::OpenFolderDialog(std::string title)
 				pItem->Release();
 			}
 		}
-		
+
 		pFileOpen->Release();
 	}
 
@@ -219,12 +219,184 @@ std::string EditorUI::OpenFolderDialog(std::string title)
 	return path;
 }
 
-std::string EditorUI::OpenFileDialog()
+std::string EditorUI::OpenFileDialog(std::string title)
 {
-	return std::string();
+	std::string path = "";
+
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+	IFileSaveDialog* pFileOpen;
+
+	HRESULT hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
+
+	if (SUCCEEDED(hr)) 
+	{
+		DWORD dwOptions;
+		pFileOpen->GetOptions(&dwOptions);
+
+		/*COMDLG_FILTERSPEC fileTypes[] = {
+			{ L"Json Files and csv", L"*.json;*.dat" },
+	{ L"Json Files", L"*.json" },
+	{ L"CSV Files", L"*.*" }
+		};*/
+
+		COMDLG_FILTERSPEC fileTypes[] = {
+			{ L"Scene", L"*.xen" },
+			//{ L"Scene2", L"*.xen2" },
+		};
+
+		//pFileOpen->SetFileTypes(ARRAYSIZE(fileTypes), fileTypes);
+		//pFileOpen->SetOptions(dwOptions | FOS_CREATEPROMPT);
+
+
+
+		// Initializing an object of wstring
+		std::string title = title;
+		std::wstring tempTitle = std::wstring(title.begin(), title.end());
+
+		// Applying c_str() method on temp
+		LPCWSTR wideString = tempTitle.c_str();
+
+		pFileOpen->SetTitle(tempTitle.c_str());
+		hr = pFileOpen->Show(NULL);
+
+		if (SUCCEEDED(hr))
+		{
+			IShellItem* pItem;
+			hr = pFileOpen->GetResult(&pItem);
+			if (SUCCEEDED(hr))
+			{
+				PWSTR pszFolderPath;
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
+
+				if (SUCCEEDED(hr))
+				{
+					unsigned int fileTypeIndex = 0;
+					hr = pFileOpen->GetFileTypeIndex(&fileTypeIndex);
+					fileTypeIndex--; // The index starts at 1
+					if (SUCCEEDED(hr)) 
+					{
+						std::wstringstream ss;
+						ss << pszFolderPath;
+						std::wstring wst = ss.str();
+
+						path = std::string(wst.begin(), wst.end());
+						CoTaskMemFree(pszFolderPath);
+					}
+				}
+				pItem->Release();
+			}
+		}
+
+		pFileOpen->Release();
+	}
+
+	CoUninitialize();
+
+	return path;
 }
 
-bool EditorUI::DrawTreeItem(ProjectDirectory * projectDir)
+std::string EditorUI::SaveFileDialog(std::string title)
+{
+	std::string path = "";
+
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+	IFileSaveDialog* pFileOpen;
+
+	HRESULT hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
+
+	if (SUCCEEDED(hr)) 
+	{
+		DWORD dwOptions;
+		pFileOpen->GetOptions(&dwOptions);
+
+		/*COMDLG_FILTERSPEC fileTypes[] = {
+			{ L"Json Files and csv", L"*.json;*.dat" },
+	{ L"Json Files", L"*.json" },
+	{ L"CSV Files", L"*.*" }
+		};*/
+
+		COMDLG_FILTERSPEC fileTypes[] = 
+		{
+			{ L"Scene", L"*.xen" },
+			//{ L"Scene2", L"*.xen2" },
+		};
+
+		pFileOpen->SetFileTypes(ARRAYSIZE(fileTypes), fileTypes);
+		//pFileOpen->SetOptions(dwOptions | FOS_CREATEPROMPT);
+
+
+
+		// Initializing an object of wstring
+		std::string title = title;
+		std::wstring tempTitle = std::wstring(title.begin(), title.end());
+
+		// Applying c_str() method on temp
+		LPCWSTR wideString = tempTitle.c_str();
+
+		pFileOpen->SetTitle(tempTitle.c_str());
+		hr = pFileOpen->Show(NULL);
+
+		if (SUCCEEDED(hr))
+		{
+			IShellItem* pItem;
+			hr = pFileOpen->GetResult(&pItem);
+			if (SUCCEEDED(hr))
+			{
+				PWSTR pszFolderPath;
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
+
+				if (SUCCEEDED(hr))
+				{
+					unsigned int fileTypeIndex = 0;
+					hr = pFileOpen->GetFileTypeIndex(&fileTypeIndex);
+					fileTypeIndex--; // The index starts at 1
+					if (SUCCEEDED(hr)) 
+					{
+						std::wstringstream ss;
+						ss << pszFolderPath;
+						std::wstring wst = ss.str();
+
+						std::wstring fileExtChoosed = fileTypes[fileTypeIndex].pszSpec;
+						fileExtChoosed = fileExtChoosed.substr(1);
+
+						int pathSize = wst.size();
+						int extSize = fileExtChoosed.size();
+
+						std::wstring endOfTheFile = wst.substr(pathSize - extSize);
+
+						bool foundExt = true;
+						for (int i2 = 0; i2 < extSize; i2++)
+						{
+							if (endOfTheFile[i2] != fileExtChoosed[i2])
+							{
+								foundExt = false;
+								break;
+							}
+						}
+						if (!foundExt)
+						{
+							wst += fileExtChoosed;
+						}
+
+						path = std::string(wst.begin(), wst.end());
+						CoTaskMemFree(pszFolderPath);
+					}
+				}
+				pItem->Release();
+			}
+		}
+
+		pFileOpen->Release();
+	}
+
+	CoUninitialize();
+
+	return path;
+}
+
+bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 {
 	bool objectClicked = false;
 	if (projectDir)
@@ -308,7 +480,7 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 	return objectClicked;
 }
 
-bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap) 
+bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 {
 
 	bool valueChanged = false;
@@ -471,7 +643,7 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					valueChangedTemp = true;
 				}
 			}
-			if(ImGui::Button("Add Texture"))
+			if (ImGui::Button("Add Texture"))
 			{
 				valuePtr->get().push_back(nullptr);
 			}

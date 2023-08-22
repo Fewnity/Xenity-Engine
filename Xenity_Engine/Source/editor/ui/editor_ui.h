@@ -49,7 +49,8 @@ public:
 	static bool DrawMap(std::unordered_map<std::string, Variable> myMap);
 
 	static std::string OpenFolderDialog(std::string title);
-	static std::string OpenFileDialog();
+	static std::string OpenFileDialog(std::string title);
+	static std::string SaveFileDialog(std::string title);
 
 	static std::string GenerateItemId();
 	static bool showProfiler;
