@@ -223,6 +223,7 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> gameObject)
 		json copiedValues;
 		copiedValues["Values"] = ReflectionUtils::MapToJson(reflectionToCopy);
 		ReflectionUtils::JsonToMap(copiedValues, newReflection);
+		newComponent->OnReflectionUpdated();
 	}
 }
 
