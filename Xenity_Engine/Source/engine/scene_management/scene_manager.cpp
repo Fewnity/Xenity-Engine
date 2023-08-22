@@ -1,6 +1,6 @@
 #include "scene_manager.h"
 #include "../../xenity.h"
-#include "../../editor/editor.h"
+#include "../../xenity_editor.h"
 #include "../class_registry/class_registry.h"
 #include "../reflection/reflection_utils.h"
 
@@ -43,21 +43,32 @@ void SceneManager::SaveScene(bool saveForPlayState)
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
 		}
 	}
-	if (saveForPlayState) 
+	if (saveForPlayState)
 	{
 		savedSceneData = j;
 	}
 	else
 	{
 		std::string s = j.dump(2);
-		// std::cout << s << std::endl;
-		std::string openedScenePath = SceneManager::openedScene->file->GetPath();
-		FileSystem::fileSystem->DeleteFile(openedScenePath);
-		File* file = new File(openedScenePath);
-		file->Open(true);
-		file->Write(s);
-		file->Close();
-		delete file;
+		std::string path = "";
+		if (SceneManager::openedScene)
+		{
+			path = SceneManager::openedScene->file->GetPath();
+		}
+		else 
+		{
+			path = EditorUI::SaveFileDialog("Save scene");
+		}
+
+		if (path != "") 
+		{
+			FileSystem::fileSystem->DeleteFile(path);
+			File* file = new File(path);
+			file->Open(true);
+			file->Write(s);
+			file->Close();
+			delete file;
+		}
 	}
 }
 
