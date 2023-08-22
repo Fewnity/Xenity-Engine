@@ -95,6 +95,7 @@ void Editor::Update()
 		}
 
 		float fwd = 0;
+		float up = 0;
 		float side = 0;
 		if (InputSystem::GetKey(UP))
 			fwd = -1;
@@ -109,8 +110,15 @@ void Editor::Update()
 		if(sceneMenu->isHovered)
 			fwd -= InputSystem::mouseWheel * 6;
 
+		if (InputSystem::GetKey(MOUSE_MIDDLE)) 
+		{
+			up += InputSystem::InputSystem::mouseSpeed.y * 100;
+			side -= InputSystem::InputSystem::mouseSpeed.x * 100;
+		}
+
 		pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
 		pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+		pos -= cameraTrans->GetUp() * (up / 7.0f) * Time::GetDeltaTime() * 30;
 
 		cameraTrans->SetPosition(pos);
 		cameraTrans->SetRotation(rot);
