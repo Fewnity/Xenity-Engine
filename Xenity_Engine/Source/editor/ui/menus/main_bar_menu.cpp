@@ -37,7 +37,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
-			SceneManager::SaveScene(false);
+			SceneManager::SaveScene(SaveSceneToFile);
 		}
 		if (ImGui::MenuItem("Open Project"))
 		{
@@ -76,6 +76,15 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Exit"))
 		{
 			Engine::Quit();
+		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Edit")) //Draw File menu
+	{
+		if (ImGui::MenuItem("Unselect"))
+		{
+			Engine::selectedFileReference = nullptr;
+			Engine::selectedGameObject.reset();
 		}
 		ImGui::EndMenu();
 	}
