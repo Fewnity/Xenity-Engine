@@ -14,7 +14,7 @@
 
 class GameObject;
 
-class API Transform : public Reflection
+class API Transform : public Reflection, public std::enable_shared_from_this<Transform>
 {
 
 public:
