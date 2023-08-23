@@ -6,8 +6,6 @@
 
 using json = nlohmann::json;
 
-std::vector<std::shared_ptr<Component>> SceneManager::allCreatedComponents;
-int SceneManager::allCreatedComponentsCount = 0;
 Scene* SceneManager::openedScene = nullptr;
 
 json savedSceneData;
@@ -95,7 +93,6 @@ void SceneManager::LoadScene(json jsonData)
 			if (comp)
 			{
 				comp->SetUniqueId(std::stoull(kv2.key()));
-				allCreatedComponents.push_back(comp);
 			}
 			else
 			{
@@ -103,8 +100,6 @@ void SceneManager::LoadScene(json jsonData)
 			}
 		}
 	}
-
-	allCreatedComponentsCount = (int)allCreatedComponents.size();
 
 	// Bind Components values and GameObjects childs
 	for (auto& kv : jsonData["GameObjects"].items())
@@ -140,9 +135,6 @@ void SceneManager::LoadScene(json jsonData)
 			}
 		}
 	}
-
-	allCreatedComponents.clear();
-	allCreatedComponentsCount = 0;
 }
 
 void SceneManager::LoadScene(Scene* scene)

@@ -52,7 +52,5 @@ public:
 private:
 	static Scene* openedScene;
 	static void LoadScene(nlohmann::json jsonData);
-	static std::vector<std::shared_ptr<Component>> allCreatedComponents;
-	static int allCreatedComponentsCount;
 };
 
