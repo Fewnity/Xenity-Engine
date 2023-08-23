@@ -38,6 +38,22 @@ std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name)
 	return newGameObject;
 }
 
+std::shared_ptr<Component> FindComponentById(const uint64_t id)
+{
+	for (int i = 0; i < Engine::gameObjectCount; i++)
+	{
+		int componentCount = Engine::gameObjects[i]->GetComponentCount();
+		for (int compI = 0; compI < componentCount; compI++)
+		{
+			if (Engine::gameObjects[i]->components[compI]->GetUniqueId() == id)
+			{
+				return Engine::gameObjects[i]->components[compI];
+			}
+		}
+	}
+	return std::shared_ptr<Component>();
+}
+
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
