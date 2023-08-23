@@ -461,7 +461,6 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
 			std::string payloadName = "GameObject";
-			Engine::selectedGameObject = childLock;
 			ImGui::SetDragDropPayload(payloadName.c_str(), childLock.get(), sizeof(GameObject));
 			ImGui::Text(childLock->name.c_str());
 			ImGui::EndDragDropSource();
@@ -553,7 +552,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 			}
 
-			DrawInputButton(variableName, inputText);
+			if (DrawInputButton(variableName, inputText, true) == 2) 
+			{
+				valuePtr->get() = nullptr;
+			}
+
 			FileReference* ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Mesh);
 			if (DragDropTarget(payloadName, ref))
@@ -578,7 +581,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 			}
 
-			DrawInputButton(variableName, inputText);
+			if (DrawInputButton(variableName, inputText, true) == 2)
+			{
+				valuePtr->get() = nullptr;
+			}
+
 			FileReference* ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Audio);
 			if (DragDropTarget(payloadName, ref))
@@ -603,7 +610,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 			}
 
-			DrawInputButton(variableName, inputText);
+			if (DrawInputButton(variableName, inputText, true) == 2)
+			{
+				valuePtr->get() = nullptr;
+			}
+
 			FileReference* ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
 			if (DragDropTarget(payloadName, ref))
@@ -628,7 +639,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 			}
 
-			DrawInputButton(variableName, inputText);
+			if (DrawInputButton(variableName, inputText, true) == 2)
+			{
+				valuePtr->get() = nullptr;
+			}
+
 			FileReference* ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Scene);
 			if (DragDropTarget(payloadName, ref))
@@ -656,7 +671,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 				}
 
-				DrawInputButton(variableName, inputText);
+				if (DrawInputButton(variableName, inputText, true) == 2)
+				{
+					valuePtr->get()[vectorI] = nullptr;
+				}
+
 				FileReference* ref = nullptr;
 				std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
 				if (DragDropTarget(payloadName, ref))
@@ -668,6 +687,14 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			if (ImGui::Button("Add Texture"))
 			{
 				valuePtr->get().push_back(nullptr);
+			}
+			if (ImGui::Button("Remove Texture"))
+			{
+				int textureSize = valuePtr->get().size();
+				if (textureSize != 0) 
+				{
+					valuePtr->get().erase(valuePtr->get().begin() + textureSize -1);
+				}
 			}
 		}
 		if (valueChangedTemp)
@@ -710,11 +737,32 @@ void EditorUI::DrawTextCentered(std::string text)
 	ImGui::Text(text.c_str());
 }
 
-bool EditorUI::DrawInputButton(std::string inputName, std::string text)
+int EditorUI::DrawInputButton(std::string inputName, std::string text, bool addUnbindButton)
 {
+	int returnValue = 0;
 	DrawInputTitle(inputName);
-	ImGui::Button(text.c_str(), ImVec2(-1, 0));
-	return false;
+	float w = ImGui::GetContentRegionAvail().x;
+	if (addUnbindButton) 
+	{
+		w -= 25 * uiScale;
+	}
+	ImGui::BeginGroup();
+	std::string id = text + GenerateItemId();
+	if (ImGui::Button(id.c_str(), ImVec2(w, 0)))
+	{
+		returnValue = 1;
+	}
+	if (addUnbindButton)
+	{
+		ImGui::SameLine();
+		std::string id2 = "X" + GenerateItemId();
+		if (ImGui::Button(id2.c_str()))
+		{
+			returnValue = 2;
+		}
+	}
+	ImGui::EndGroup();
+	return returnValue;
 }
 
 bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
@@ -859,7 +907,11 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Component>& value)
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	DrawInputButton(inputName, inputText);
+	if (DrawInputButton(inputName, inputText, true) == 2)
+	{
+		value.reset();
+	}
+
 	Component* ref = nullptr;
 	std::string payloadName = "Component";
 	if (DragDropTarget(payloadName, ref))
@@ -882,7 +934,11 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Transform>& value)
 		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
 	}
 
-	DrawInputButton(inputName, inputText);
+	if (DrawInputButton(inputName, inputText, true) == 2)
+	{
+		value.reset();
+	}
+
 	Transform* ref = nullptr;
 	std::string payloadName = "Transform";
 	if (DragDropTarget(payloadName, ref))
@@ -905,7 +961,11 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<GameObject>& value
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	DrawInputButton(inputName, inputText);
+	if (DrawInputButton(inputName, inputText, true) == 2)
+	{
+		value.reset();
+	}
+
 	GameObject* ref = nullptr;
 	std::string payloadName = "GameObject";
 	if (DragDropTarget(payloadName, ref))

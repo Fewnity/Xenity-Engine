@@ -30,7 +30,7 @@ public:
 	static std::string GetPrettyVariableName(std::string variableName);
 
 	static void DrawTextCentered(std::string text);
-	static bool DrawInputButton(std::string inputName, std::string text);
+	static int DrawInputButton(std::string inputName, std::string text, bool addUnbindButton);
 	static bool DragDropTarget(std::string name, FileReference*& ref);
 	static bool DragDropTarget(std::string name, Component*& ref);
 	static bool DragDropTarget(std::string name, GameObject*& ref);
