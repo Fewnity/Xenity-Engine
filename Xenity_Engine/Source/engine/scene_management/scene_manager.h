@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <vector>
@@ -7,7 +15,14 @@
 class Scene;
 class Component;
 
-class SceneManager
+enum SaveSceneType
+{
+	SaveSceneToFile,
+	SaveSceneForPlayState,
+	SaveSceneForHotReloading,
+};
+
+class API SceneManager
 {
 public:
 
@@ -17,16 +32,19 @@ public:
 	*/
 	static void LoadScene(Scene *scene);
 
+#if defined(EDITOR)
 	/**
 	* [Internal] Save scene
 	* @param saveForPlayState If false, save scene as a file; If true, save scene as a backup to reload it later
 	*/
-	static void SaveScene(bool saveForPlayState);
+	static void SaveScene(SaveSceneType saveType);
+#endif
 
 	/**
 	* [Internal] Restore the saved scene backup
 	*/
 	static void RestoreScene();
+	static void RestoreSceneHotReloading();
 
 	/**
 	* [Internal] Clear scene

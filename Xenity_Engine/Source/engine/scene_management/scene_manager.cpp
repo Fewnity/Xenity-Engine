@@ -9,8 +9,10 @@ using json = nlohmann::json;
 Scene* SceneManager::openedScene = nullptr;
 
 json savedSceneData;
+json savedSceneDataHotReloading;
 
-void SceneManager::SaveScene(bool saveForPlayState)
+#if defined(EDITOR)
+void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	json j;
 	int gameObjectCount = Engine::gameObjectCount;
@@ -41,9 +43,14 @@ void SceneManager::SaveScene(bool saveForPlayState)
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
 		}
 	}
-	if (saveForPlayState)
+
+	if (saveType == SaveSceneForPlayState)
 	{
 		savedSceneData = j;
+	}
+	else if (saveType == SaveSceneForHotReloading)
+	{
+		savedSceneDataHotReloading = j;
 	}
 	else
 	{
@@ -69,10 +76,16 @@ void SceneManager::SaveScene(bool saveForPlayState)
 		}
 	}
 }
+#endif
 
 void SceneManager::RestoreScene()
 {
 	LoadScene(savedSceneData);
+}
+
+void SceneManager::RestoreSceneHotReloading()
+{
+	LoadScene(savedSceneDataHotReloading);
 }
 
 void SceneManager::LoadScene(json jsonData)
@@ -166,7 +179,7 @@ void SceneManager::LoadScene(Scene* scene)
 void SceneManager::EmptyScene()
 {
 	Graphics::orderedIDrawable.clear();
-	Graphics::usedCamera.reset(); //TODO RE ENABLE THIS
+	Graphics::usedCamera.reset();
 	int cameraCount = Graphics::cameras.size();
 	for (int i = 0; i < cameraCount; i++)
 	{

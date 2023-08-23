@@ -272,6 +272,8 @@ void Compiler::HotReloadGame()
 #if defined(_WIN32) || defined(_WIN64)
 	delete Engine::game;
 	Engine::game = nullptr;
+
+	SceneManager::SaveScene(SaveSceneForHotReloading);
 	SceneManager::EmptyScene();
 
 	ClassRegistry::Reset();
@@ -284,6 +286,7 @@ void Compiler::HotReloadGame()
 	{
 		Debug::Print("Game compilation done");
 		Engine::game->Start();
+		SceneManager::RestoreSceneHotReloading();
 	}
 	else
 	{

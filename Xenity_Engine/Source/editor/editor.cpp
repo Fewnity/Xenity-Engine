@@ -143,7 +143,7 @@ void Editor::Update()
 	{
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
 		{
-			SceneManager::SaveScene(false);
+			SceneManager::SaveScene(SaveSceneToFile);
 		}
 	}
 }

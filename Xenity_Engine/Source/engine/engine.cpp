@@ -346,7 +346,7 @@ void Engine::SetGameState(GameState _gameState)
 	case Paused:
 		break;
 	case Playing:
-		SceneManager::SaveScene(true);
+		SceneManager::SaveScene(SaveSceneForPlayState);
 		break;
 	}
 #endif
