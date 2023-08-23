@@ -70,57 +70,72 @@ void InspectorMenu::Draw()
 
 		//Local position input
 		ImGui::Spacing();
-		Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
-		bool changed = EditorUI::DrawInput("Local Position", localPos);
-
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
-			selectedGameObject->GetTransform()->SetLocalPosition(localPos);
-		}
-		//ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+			{
+				std::string payloadName = "Transform";
+				ImGui::SetDragDropPayload(payloadName.c_str(), selectedGameObject->GetTransform().get(), sizeof(Transform));
+				ImGui::Text("Transform");
+				ImGui::EndDragDropSource();
+			}
+			Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
+			bool changed = EditorUI::DrawInput("Local Position", localPos);
 
-		//Local rotation input
-		ImGui::Spacing();
-		ImGui::Spacing();
-		Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
-		changed = EditorUI::DrawInput("Local Rotation", localRot);
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-		{
-			selectedGameObject->GetTransform()->SetLocalRotation(localRot);
-		}
-		//ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
+			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+			{
+				selectedGameObject->GetTransform()->SetLocalPosition(localPos);
+			}
+			//ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
 
-		//Local scale input
-		ImGui::Spacing();
-		ImGui::Spacing();
-		Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
-		changed = EditorUI::DrawInput("Local Scale", localScale);
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-		{
-			selectedGameObject->GetTransform()->SetLocalScale(localScale);
+			//Local rotation input
+			ImGui::Spacing();
+			ImGui::Spacing();
+			Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
+			changed = EditorUI::DrawInput("Local Rotation", localRot);
+			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+			{
+				selectedGameObject->GetTransform()->SetLocalRotation(localRot);
+			}
+			//ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
+
+			//Local scale input
+			ImGui::Spacing();
+			ImGui::Spacing();
+			Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
+			changed = EditorUI::DrawInput("Local Scale", localScale);
+			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+			{
+				selectedGameObject->GetTransform()->SetLocalScale(localScale);
+			}
+			//ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
+		ImGui::Separator();
 		}
-		//ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
 
 		//Component list
-		ImGui::Spacing();
-		ImGui::Separator();
-
 		int componentCount = selectedGameObject->GetComponentCount();
 		for (int i = 0; i < componentCount; i++)
 		{
 			auto comp = selectedGameObject->components[i];
 			//Draw component title
-			std::string componentName = "- " + comp->GetComponentName();
-			ImGui::Text("%s", componentName.c_str());
-			ImGui::Separator();
-
-			//Draw component variables
-			if (EditorUI::DrawReflection(*comp))
+			if (ImGui::CollapsingHeader(comp->GetComponentName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				comp->OnReflectionUpdated();
-			}
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+				{
+					std::string payloadName = "Component";
+					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
+					ImGui::Text("%s", comp->GetComponentName().c_str());
+					ImGui::EndDragDropSource();
+				}
 
-			ImGui::Separator();
+				//Draw component variables
+				if (EditorUI::DrawReflection(*comp))
+				{
+					comp->OnReflectionUpdated();
+				}
+
+				ImGui::Separator();
+			}
 		}
 	}
 	ImGui::End();

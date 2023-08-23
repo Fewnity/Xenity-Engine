@@ -15,7 +15,6 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 			Variable& variableRef = theMap.at(kv.key());
 			if (kv.value().is_object())
 			{
-				//std::cout << kv.key() << " is an object!" << "\n";
 				if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 				{
 					JsonToReflection(kv.value(), valuePtr->get());
@@ -33,15 +32,20 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 					valuePtr->get() = kv.value();
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
 					valuePtr->get() = kv.value();
-				else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject>*>(&variableRef))
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 				{
-					auto go = FindGameObjectById(kv.value());
-					**valuePtr = go;
+					auto comp = FindComponentById(kv.value());
+					valuePtr->get() = comp;
 				}
-				else if (auto valuePtr = std::get_if<std::weak_ptr<Transform>*>(&variableRef))
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef))
 				{
 					auto go = FindGameObjectById(kv.value());
-					**valuePtr = go->GetTransform();
+					valuePtr->get() = go;
+				}
+				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef))
+				{
+					auto go = FindGameObjectById(kv.value());
+					valuePtr->get() = go->GetTransform();
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
 				{
@@ -98,22 +102,8 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 						}
 					}
 				}
-				/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
-				{
-					std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
-
-					for (int compI = 0; compI < allCreatedComponentsCount; compI++)
-					{
-						if (allCreatedComponents[compI]->GetUniqueId() == kv.value())
-						{
-							*weakC = allCreatedComponents[compI];
-							break;
-						}
-					}
-				}*/
 			}
 		}
-		// std::cout << kv.key() << " : " << kv.value() << "\n";
 	}
 }
 
@@ -139,14 +129,14 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
 			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if<std::weak_ptr<GameObject> *>(&variableRef))
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject> >>(&variableRef))
 		{
-			if (auto lockValue = (**valuePtr).lock())
+			if (auto lockValue = (valuePtr->get()).lock())
 				json[kv.first] = lockValue->GetUniqueId();
 		}
-		else if (auto valuePtr = std::get_if<std::weak_ptr<Transform> *>(&variableRef))
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform> >>(&variableRef))
 		{
-			if (auto lockValue = (**valuePtr).lock())
+			if (auto lockValue = (valuePtr->get()).lock())
 				json[kv.first] = lockValue->GetGameObject()->GetUniqueId();
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
@@ -155,8 +145,8 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
-			if (auto lockValue = (valuePtr->get()).lock())
-				json[kv.first]["Values"] = ReflectionToJson(*lockValue.get());
+			if (auto lockValue = (valuePtr->get()).lock()) 
+				json[kv.first] = lockValue->GetUniqueId();
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
 		{
@@ -187,14 +177,6 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 					json[kv.first][i] = valuePtr->get().at(i)->fileId;
 			}
 		}
-		/*else if (auto valuePtr = std::get_if<void*>(&variableRef))
-		{
-			std::weak_ptr<Component>* weakC = (std::weak_ptr<Component>*)(*valuePtr);
-			if (auto lockValue = weakC->lock())
-			{
-				j2[kv.first] = lockValue->GetUniqueId();
-			}
-		}*/
 	}
 	return json;
 }

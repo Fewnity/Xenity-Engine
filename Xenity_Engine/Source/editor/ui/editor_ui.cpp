@@ -458,13 +458,29 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 		}
 
 		bool opened = ImGui::TreeNodeEx(childLock->name.c_str(), flags);
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			std::string payloadName = "GameObject";
+			Engine::selectedGameObject = childLock;
+			ImGui::SetDragDropPayload(payloadName.c_str(), childLock.get(), sizeof(GameObject));
+			ImGui::Text(childLock->name.c_str());
+			ImGui::EndDragDropSource();
+		}
 		ImGui::PopStyleColor();
 
-		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
+		GameObject* droppedGameObject = nullptr;
+		if (DragDropTarget("GameObject", droppedGameObject))
 		{
-			Engine::SetSelectedGameObject(child);
-			Engine::selectedFileReference = nullptr;
-			objectClicked = true;
+			droppedGameObject->SetParent(childLock);
+		}
+		else
+		{
+			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
+			{
+				Engine::SetSelectedGameObject(child);
+				Engine::selectedFileReference = nullptr;
+				objectClicked = true;
+			}
 		}
 		if (opened)
 		{
@@ -499,6 +515,12 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
 			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
+			valueChangedTemp = DrawInput(variableName, valuePtr->get());
+		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
 			valueChangedTemp = DrawInput(variableName, valuePtr->get());
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 		{
@@ -717,6 +739,66 @@ bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
 	return false;
 }
 
+bool EditorUI::DragDropTarget(std::string name, Component*& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			Component* comp = ((Component*)payload->Data);
+
+			if (comp)
+			{
+				ref = comp;
+				return true;
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
+}
+
+bool EditorUI::DragDropTarget(std::string name, GameObject*& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			GameObject* gameObject = ((GameObject*)payload->Data);
+
+			if (gameObject)
+			{
+				ref = gameObject;
+				return true;
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
+}
+
+bool EditorUI::DragDropTarget(std::string name, Transform*& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			Transform* trans = ((Transform*)payload->Data);
+
+			if (trans)
+			{
+				ref = trans;
+				return true;
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
+}
+
 void EditorUI::DrawInputTitle(std::string title)
 {
 	ImGui::Text(title.c_str());
@@ -763,6 +845,75 @@ bool EditorUI::DrawInput(std::string inputName, bool& value)
 	bool oldValue = bool(value);
 	ImGui::Checkbox(GenerateItemId().c_str(), &value);
 	return value != oldValue;
+}
+
+bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Component>& value)
+{
+	std::shared_ptr<Component> oldValue = value.lock();
+
+	std::string inputText = "None (Component)";
+	auto ptr = value.lock();
+	if (ptr != nullptr)
+	{
+		inputText = ptr->GetGameObject()->name;
+		inputText += " " + std::to_string(ptr->GetUniqueId());
+	}
+
+	DrawInputButton(inputName, inputText);
+	Component* ref = nullptr;
+	std::string payloadName = "Component";
+	if (DragDropTarget(payloadName, ref))
+	{
+		value = ref->shared_from_this();
+	}
+
+	return oldValue != value.lock();
+}
+
+bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Transform>& value)
+{
+	std::shared_ptr<Transform> oldValue = value.lock();
+
+	std::string inputText = "None (Transform)";
+	auto ptr = value.lock();
+	if (ptr != nullptr)
+	{
+		inputText = ptr->GetGameObject()->name;
+		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
+	}
+
+	DrawInputButton(inputName, inputText);
+	Transform* ref = nullptr;
+	std::string payloadName = "Transform";
+	if (DragDropTarget(payloadName, ref))
+	{
+		value = ref->shared_from_this();
+	}
+
+	return oldValue != value.lock();
+}
+
+bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<GameObject>& value)
+{
+	std::shared_ptr<GameObject> oldValue = value.lock();
+
+	std::string inputText = "None (GameObject)";
+	auto ptr = value.lock();
+	if (ptr != nullptr)
+	{
+		inputText = ptr->name;
+		inputText += " " + std::to_string(ptr->GetUniqueId());
+	}
+
+	DrawInputButton(inputName, inputText);
+	GameObject* ref = nullptr;
+	std::string payloadName = "GameObject";
+	if (DragDropTarget(payloadName, ref))
+	{
+		value = ref->shared_from_this();
+	}
+
+	return oldValue != value.lock();
 }
 
 bool EditorUI::DrawInput(std::string inputName, Color& value)

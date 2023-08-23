@@ -15,6 +15,8 @@ class Reflection;
 class Texture;
 class FileReference;
 class ProjectDirectory;
+class Component;
+class Transform;
 
 class EditorUI
 {
@@ -30,6 +32,10 @@ public:
 	static void DrawTextCentered(std::string text);
 	static bool DrawInputButton(std::string inputName, std::string text);
 	static bool DragDropTarget(std::string name, FileReference*& ref);
+	static bool DragDropTarget(std::string name, Component*& ref);
+	static bool DragDropTarget(std::string name, GameObject*& ref);
+	static bool DragDropTarget(std::string name, Transform*& ref);
+
 	static bool DrawInput(std::string inputName, Color& value);
 	static bool DrawInput(std::string inputName, Vector2& value);
 	static bool DrawInput(std::string inputName, Vector2Int& value);
@@ -40,6 +46,9 @@ public:
 	static bool DrawInput(std::string inputName, std::string& value);
 	static bool DrawInput(std::string inputName, int& value);
 	static bool DrawInput(std::string inputName, bool& value);
+	static bool DrawInput(std::string inputName, std::weak_ptr<Component>& value);
+	static bool DrawInput(std::string inputName, std::weak_ptr<GameObject>& value);
+	static bool DrawInput(std::string inputName, std::weak_ptr<Transform>& value);
 	static bool DrawTreeItem(std::weak_ptr<GameObject> child);
 	static bool DrawTreeItem(ProjectDirectory* projectDir);
 	static void DrawInputTitle(std::string title);
