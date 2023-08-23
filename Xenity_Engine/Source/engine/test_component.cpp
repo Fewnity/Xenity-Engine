@@ -38,8 +38,8 @@ std::unordered_map<std::string, Variable> TestComponent::GetReflection()
 	reflectedVariables.insert_or_assign("myCustomClass", myCustomClass);
 
 	reflectedVariables.insert_or_assign("myComponent", (std::weak_ptr<Component>&)myComponent);
-	reflectedVariables.insert_or_assign("myGameObject", &myGameObject);
-	reflectedVariables.insert_or_assign("myTransform", &myTransform);
+	reflectedVariables.insert_or_assign("myGameObject", myGameObject);
+	reflectedVariables.insert_or_assign("myTransform", myTransform);
 
 	reflectedVariables.insert_or_assign("vec2", vec2);
 	reflectedVariables.insert_or_assign("vec2Int", vec2Int);
