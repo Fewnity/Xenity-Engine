@@ -72,9 +72,6 @@ public:
 		return std::weak_ptr<T>();
 	}
 
-	static std::weak_ptr<GameObject> FindGameObjectByName(const std::string name);
-	static std::vector<std::weak_ptr<GameObject>> FindGameObjectsByName(const std::string name);
-
 	bool GetActive() const;
 	bool GetLocalActive() const;
 	void SetActive(const bool active);
