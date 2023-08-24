@@ -27,6 +27,10 @@ public:
 	{
 		this->path = path;
 	}
+
+	/**
+	* Get folder name
+	*/
 	std::string GetFolderName();
 	std::string path = "";
 	std::vector<ProjectDirectory*> subdirectories;
@@ -37,50 +41,104 @@ class API ProjectManager
 {
 public:
 
-	static ProjectDirectory* projectDirectory;
+	/**
+	* Create a project
+	* @param name Name of the project
+	* @param folderPath Project folder parent
+	*/
 	static bool CreateProject(std::string name, std::string folderPath);
+
+	/**
+	* Load a project
+	* @param projectPathToLoad Project path
+	*/
 	static bool LoadProject(std::string projectPathToLoad);
-	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
+
+
+	/**
+	* Get file reference by Id
+	* @param id File reference Id
+	*/
 	static FileReference* GetFileReferenceById(uint64_t id);
+
+	/**
+	* Save the meta file of a file reference
+	*/
 	static void SaveMetaFile(FileReference* fileReference);
+
+	/**
+	* Load project settings
+	*/
 	static void LoadProjectSettings();
+
+	/**
+	* Save project settings
+	*/
 	static void SaveProjectSettigs();
+
+	/**
+	* Get reflection of project settings
+	*/
 	static std::unordered_map<std::string, Variable> GetProjetSettingsReflection();
 
+	/**
+	* Get project name
+	*/
 	static std::string GetProjectName() 
 	{
 		return projectName;
 	}
 
+	/**
+	* Get game name
+	*/
 	static std::string GetGameName() 
 	{
 		return gameName;
 	}
 
+	/**
+	* Get game start scene
+	*/
 	static Scene* GetStartScene() 
 	{
 		return startScene;
 	}
 
+	/**
+	* Get project folder path
+	*/
 	static std::string GetProjectFolderPath() 
 	{
 		return projectFolderPath;
 	}
 
+	/**
+	* Get asset folder path
+	*/
 	static std::string GetAssetFolderPath()
 	{
 		return assetFolderPath;
 	}
 
+	/**
+	* Get engine asset folder path
+	*/
 	static std::string GetEngineAssetFolderPath()
 	{
 		return engineAssetsFolderPath;
 	}
 
+	/**
+	* Get if the project is loaded
+	*/
 	static bool GetIsProjectLoaded() 
 	{
 		return projectLoaded;
 	}
+
+	static ProjectDirectory* projectDirectory;
+	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
 
 private:
 	static void LoadMetaFile(FileReference* fileReference);
