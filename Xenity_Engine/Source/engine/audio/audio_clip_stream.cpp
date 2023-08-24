@@ -90,7 +90,7 @@ short *AudioClipStream::GetBuffer(int size)
     return buff;
 }
 
-int AudioClipStream::GetFrenquency()
+int AudioClipStream::GetFrequency()
 {
     int rate = 0;
     if (type == Mp3)

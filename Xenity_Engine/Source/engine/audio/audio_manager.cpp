@@ -77,7 +77,7 @@ void FillChannelBuffer(short *buffer, int length, Channel *channel)
                 buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
                 buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition + 1] * rightVolume));
 
-                sound->seekNext += sound->audioClipStream->GetFrenquency();
+                sound->seekNext += sound->audioClipStream->GetFrequency();
 
                 while (sound->seekNext >= SOUND_FREQUENCY)
                 {

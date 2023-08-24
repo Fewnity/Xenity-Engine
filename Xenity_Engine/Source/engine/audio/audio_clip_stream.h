@@ -29,7 +29,7 @@ public:
     ~AudioClipStream();
     void FillBuffer(int size, int bufferOffset, short *buff);
     short *GetBuffer(int size);
-    int GetFrenquency();
+    int GetFrequency();
     int64_t GetSampleCount();
     void ResetSeek();
     int64_t GetSeekPosition();
