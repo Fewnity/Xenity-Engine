@@ -35,7 +35,7 @@ public:
 #if defined(EDITOR)
 	/**
 	* [Internal] Save scene
-	* @param saveForPlayState If false, save scene as a file; If true, save scene as a backup to reload it later
+	* @param saveType If SaveSceneToFile, save scene as a file; If SaveSceneForPlayState/SaveSceneForHotReloading, save scene as a backup to reload it later
 	*/
 	static void SaveScene(SaveSceneType saveType);
 #endif
@@ -44,6 +44,10 @@ public:
 	* [Internal] Restore the saved scene backup
 	*/
 	static void RestoreScene();
+
+	/**
+	* [Internal] Restore the saved scene backup for hot reloading
+	*/
 	static void RestoreSceneHotReloading();
 
 	/**
