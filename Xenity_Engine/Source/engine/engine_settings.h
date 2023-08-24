@@ -14,6 +14,17 @@
 class API EngineSettings
 {
 public:
+	
+	/**
+	* Save engine settings
+	*/
+	static void SaveEngineSettings();
+	
+	/**
+	* Load engine settings
+	*/
+	static void LoadEngineSettings();
+
 	static bool isWireframe;
 	static int maxLightCount;
 	static std::string RootFolder;
@@ -21,7 +32,5 @@ public:
 	static bool useLighting;
 	static bool useDebugger;
 	static bool useOnlineDebugger;
-	static void SaveEngineSettings();
-	static void LoadEngineSettings();
 	// static Texture::AnisotropicLevel anisotropicLevel;
 };
