@@ -17,8 +17,20 @@ class GameInterface;
 class API DynamicLibrary
 {
 public:
+
+	/**
+	* Load a game DLL
+	*/
 	static void LoadGameLibrary(std::string libraryName);
+	
+	/**
+	* Unload the game DLL
+	*/
 	static void UnloadGameLibrary();
+	
+	/**
+	* Create a game interface from the DLL
+	*/
 	static GameInterface *CreateGame();
 private:
 
