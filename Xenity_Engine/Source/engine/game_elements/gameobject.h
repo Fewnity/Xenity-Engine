@@ -19,12 +19,45 @@ class Component;
 #include "../reflection/reflection.h"
 #include "../unique_id/unique_id.h"
 
+/**
+* Create a GameObject with the default name
+*/
 API std::shared_ptr<GameObject> CreateGameObject();
+
+/**
+* Create a GameObject
+* @param name GameObject name
+*/
 API std::shared_ptr<GameObject> CreateGameObject(std::string name);
+
+/**
+* Create a GameObject not visible in the hierarchy
+* @param name GameObject name
+*/
 API std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name);
+
+/**
+* Find a GameObject with a name
+* @param name GameObject name
+*/
 API std::shared_ptr<GameObject> FindGameObjectByName(const std::string name);
+
+/**
+* Find a GameObject with an id
+* @param id GameObject id
+*/
 API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
+
+/**
+* Find a component with an id
+* @param id Component id
+*/
 API std::shared_ptr<Component> FindComponentById(const uint64_t id);
+
+/**
+* Find GameObjects with a name
+* @param name GameObjects name
+*/
 API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name);
 
 class API GameObject : public Reflection, public UniqueId, public std::enable_shared_from_this<GameObject>
@@ -37,6 +70,10 @@ public:
 	void OnReflectionUpdated();
 
 	virtual ~GameObject();
+
+	/**
+	* [Internal] Setup the GameObject
+	*/
 	void Setup();
 
 	std::string name = "";
@@ -45,10 +82,22 @@ public:
 
 	std::weak_ptr<GameObject> parent;
 
+	/**
+	* Add a child to the GameObject
+	* @param gameObject Child to add
+	*/
 	void AddChild(std::weak_ptr<GameObject> gameObject);
+
+	/**
+	* Set GameObject's parent
+	* @param gameObject New parent
+	*/
 	void SetParent(std::weak_ptr<GameObject> gameObject);
 	bool waitingForDestroy = false;
 
+	/**
+	* Add a component
+	*/
 	template <typename T>
 	std::shared_ptr<T> AddComponent()
 	{
@@ -57,9 +106,19 @@ public:
 		return std::shared_ptr<T>(std::dynamic_pointer_cast<T>(newC));
 	}
 
+	/**
+	* Remove a component
+	*/
 	void RemoveComponent(std::weak_ptr <Component> weakComponent);
+
+	/**
+	* Destroy a component
+	*/
 	void InternalDestroyComponent(std::weak_ptr <Component> weakComponent);
 
+	/**
+	* Get a component
+	*/
 	template <typename T>
 	std::weak_ptr<T> GetComponent()
 	{
@@ -73,20 +132,40 @@ public:
 		return std::weak_ptr<T>();
 	}
 
+	/**
+	* Get if the GameObject is marked as active
+	*/
 	bool GetActive() const;
+
+	/**
+	* Get if the GameObject is active based on his parents
+	*/
 	bool GetLocalActive() const;
+
+	/**
+	* Set GameObject as active or not
+	*/
 	void SetActive(const bool active);
 
+	/**
+	* Get children count
+	*/
 	int GetChildrenCount()
 	{
 		return childCount;
 	}
 
+	/**
+	* Get component count
+	*/
 	int GetComponentCount()
 	{
 		return componentCount;
 	}
 
+	/**
+	* Get transform
+	*/
 	std::shared_ptr<Transform> GetTransform()
 	{
 		return transform;
@@ -94,7 +173,15 @@ public:
 
 private:
 	std::shared_ptr<Transform> transform;
+
+	/**
+	* Add an existing component
+	*/
 	void AddExistingComponent(std::shared_ptr <Component> component);
+
+	/**
+	* Update local active value
+	*/
 	void UpdateActive(std::weak_ptr<GameObject> changed);
 
 	bool active = true;

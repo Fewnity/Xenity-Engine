@@ -60,10 +60,6 @@ GameObject::GameObject()
 	//SetReflection();
 }
 
-/// <summary>
-///
-/// </summary>
-/// <param name="name">Do not use "@" alone</param>
 GameObject::GameObject(std::string name)
 {
 	if (name != "")
@@ -157,10 +153,6 @@ void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 	}
 }
 
-/// <summary>
-/// Add a child the the gameobject
-/// </summary>
-/// <param name="gameObject"></param>
 void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 {
 	if (auto newChild = weakNewChild.lock())
@@ -192,10 +184,6 @@ void GameObject::SetParent(std::weak_ptr<GameObject> gameObject)
 	gameObject.lock()->AddChild(shared_from_this());
 }
 
-/// <summary>
-/// Add an existing component
-/// </summary>
-/// <param name="component"></param>
 void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 {
 	if (!componentToAdd.get())
@@ -209,11 +197,6 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 
 #pragma region Find GameObjects
 
-/// <summary>
-/// Find all gameobjects with a specific name
-/// </summary>
-/// <param name="name">GameObjects's name</param>
-/// <returns></returns>
 std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name)
 {
 	std::vector<std::shared_ptr<GameObject>> foundGameObjects;
@@ -233,11 +216,6 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 	return foundGameObjects;
 }
 
-/// <summary>
-/// Find a gameobject with a specific name
-/// </summary>
-/// <param name="name">GameObject's name</param>
-/// <returns>GameObject pointer or nullptr if no one is found</returns>
 std::shared_ptr<GameObject> FindGameObjectByName(const std::string name)
 {
 	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
@@ -255,7 +233,7 @@ std::shared_ptr<GameObject> FindGameObjectByName(const std::string name)
 	return std::shared_ptr<GameObject>();
 }
 
-API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
+std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 {
 	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
 
@@ -294,10 +272,6 @@ void GameObject::SetActive(const bool active)
 
 #pragma endregion
 
-/// <summary>
-/// Update gameobject active state. Set the local active value depending of gameobject's parents active state
-/// </summary>
-/// <param name="changed"></param>
 void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
 {
 	if (auto changed = weakChanged.lock())
