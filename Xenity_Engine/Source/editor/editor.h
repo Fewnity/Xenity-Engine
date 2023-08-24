@@ -32,14 +32,40 @@ enum MenuNames
 class Editor
 {
 public:
-	static void Init();
-	static void Update();
-	static void Draw();
-	static void CreateEmpty();
-	static void CreateEmptyChild();
-	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
-	static MenuNames currentMenu;
 
+	/**
+	* Init editor (Create menus, camera...)
+	*/
+	static void Init();
+
+	/**
+	* Update editor (to call each frame)
+	*/
+	static void Update();
+
+	/**
+	* Draw editor menus
+	*/
+	static void Draw();
+
+	/**
+	* Create an empty GameObject
+	*/
+	static void CreateEmpty();
+
+	/**
+	* Create an Empty GameObject and set his parent
+	*/
+	static void CreateEmptyChild();
+
+	/**
+	* Create a new GameObject from another
+	*/
+	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
+
+	/**
+	* Add a component to the selected GameObject
+	*/
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
 	{
@@ -52,6 +78,8 @@ public:
 			return nullptr;
 		}
 	}
+
+	static MenuNames currentMenu;
 	static CompilingMenu* compilingMenu;
 	static GameMenu* gameMenu;
 	static SceneMenu* sceneMenu;
