@@ -69,6 +69,10 @@ public:
 #if defined(__vita__)
     int mutexid = -1;
 #endif
+
+    /**
+    * Lock mutex
+    */
     void Lock()
     {
 #if defined(__vita__)
@@ -78,6 +82,9 @@ public:
 #endif
     }
 
+    /**
+    * Unlock mutex
+    */
     void Unlock()
     {
 #if defined(__vita__)
@@ -91,14 +98,33 @@ public:
 class API AudioManager
 {
 public:
+
+    /**
+    * Init audio manager
+    */
     static void Init();
-    static std::vector<Channel *> channels;
-    static int channelCount;
+
+    /**
+    * Remove an audio source
+    * @param audioSource Audio source
+    */
     static void RemoveAudioSource(std::weak_ptr<AudioSource> audioSource);
 
+    /**
+    * Play an audio source
+    * @param audioSource Audio source
+    */
     static void PlayAudioSource(std::weak_ptr<AudioSource> audioSource);
+
+    /**
+    * Stop an audio source
+    * @param audioSource Audio source
+    */
     static void StopAudioSource(std::weak_ptr<AudioSource> audioSource);
+
     static bool isAdding;
+    static std::vector<Channel *> channels;
+    static int channelCount;
     static MyMutex *myMutex;
 
 private:
