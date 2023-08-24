@@ -13,19 +13,11 @@ int Performance::LastDrawCallCount = 0;
 
 #pragma region Update values
 
-/**
- * @brief Init the profilier
- *
- */
 void Performance::Init()
 {
 	Debug::Print("-------- Profiler initiated --------");
 }
 
-/**
- * @brief Reset all counters
- *
- */
 void Performance::ResetCounters()
 {
 	LastDrawCallCount = drawCallCount;
@@ -34,19 +26,11 @@ void Performance::ResetCounters()
 	ResetProfiler();
 }
 
-/**
- * @brief Add one to the draw call counter
- *
- */
 void Performance::AddDrawCall()
 {
 	drawCallCount++;
 }
 
-/**
- * @brief Add one to the updated material counter
- *
- */
 void Performance::AddMaterialUpdate()
 {
 	updatedMaterialCount++;
@@ -56,30 +40,16 @@ void Performance::AddMaterialUpdate()
 
 #pragma region Getters
 
-/**
- * @brief Get the nomber of drawcall during this frame
- *
- * @return int
- */
 int Performance::GetDrawCallCount()
 {
 	return LastDrawCallCount;
 }
 
-/**
- * @brief Get the nomber of updated material during this frame
- *
- * @return int
- */
 int Performance::GetUpdatedMaterialCount()
 {
 	return updatedMaterialCount;
 }
 
-/**
- * @brief Update profiler
- *
- */
 void Performance::Update()
 {
 	if (EngineSettings::useProfiler)
@@ -99,10 +69,6 @@ void Performance::Update()
 	}
 }
 
-/**
- * @brief Reset profiler values
- *
- */
 void Performance::ResetProfiler()
 {
 	for (auto &kv : Performance::profilerList)
