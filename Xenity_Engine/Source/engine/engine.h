@@ -88,13 +88,70 @@ enum GameState
 class Engine
 {
 public:
+
+	/**
+	* Init Engine
+	*/
 	API static int Init();
+
+	/**
+	* Stop engine
+	*/
 	API static void Stop();
+
+	/**
+	* Add a component into the game
+	* @param gameObject GameObject to add
+	*/
 	API static void AddGameObject(std::shared_ptr<GameObject> gameObject);
+
+	/**
+	* Add a component into the engine only (Not visible from the game)
+	* @param gameObject GameObject to add
+	*/
 	API static void AddGameObjectEditor(std::shared_ptr<GameObject> gameObject);
+
+	/**
+	* Get all GameObjects
+	*/
 	API static std::vector<std::shared_ptr<GameObject>> GetGameObjects();
+
+	/**
+	* Engine loop
+	*/
 	API static void Loop();
 
+	/**
+	* Set selected GameObject
+	* @param go New selected GameObject
+	*/
+	API static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
+
+	/**
+	* Quit game
+	*/
+	API static void Quit();
+
+	/**
+	* Register all engine components
+	*/
+	API static void RegisterEngineComponents();
+
+	/**
+	* Set game state
+	* @param _gameState New game state
+	*/
+	API static void SetGameState(GameState _gameState);
+
+	/**
+	* Get game state
+	*/
+	API static GameState GetGameState() 
+	{
+		return gameState;
+	}
+
+	static GameInterface* game;
 	static bool componentsListDirty;
 	static bool drawOrderListDirty;
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
@@ -105,26 +162,32 @@ public:
 	static int gameObjectCount;
 	static int gameObjectEditorCount;
 	static Renderer *renderer;
-	API static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
 	static bool canUpdateAudio;
-	API static void Quit();
-	API static void RegisterEngineComponents();
-	API static void SetGameState(GameState _gameState);
 
-	API static GameState GetGameState() 
-	{
-		return gameState;
-	}
-
-	static GameInterface* game;
 private:
+
+	/**
+	* Update all active components
+	*/
 	API static void UpdateComponents();
+
+	/**
+	* Set Cpu speed to the max (PSP and PsVita)
+	*/
 	API static void SetMaxCpuSpeed();
+
+	/**
+	* Load and start game (Executed when compiled as a game build)
+	*/
 	API static int LoadGame();
+
+	/**
+	* Check event (SDL)
+	*/
 	API static void CheckEvents();
 
 	static bool isRunning;

@@ -64,10 +64,6 @@ bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
 GameState Engine::gameState = Stopped;
 
-/// <summary>
-/// Init engine
-/// </summary>
-/// <returns></returns>
 int Engine::Init()
 {
 	// Init random
@@ -204,9 +200,6 @@ void Engine::CheckEvents()
 #endif
 }
 
-/// <summary>
-/// Engine loop
-/// </summary>
 void Engine::Loop()
 {
 	Debug::Print("-------- Initiating game --------");
@@ -378,9 +371,6 @@ int Engine::LoadGame()
 	return 0;
 }
 
-/// <summary>
-/// Update all components
-/// </summary>
 void Engine::UpdateComponents()
 {
 	if (gameState == GameState::Playing)
@@ -515,30 +505,18 @@ void Engine::UpdateComponents()
 
 }
 
-/// <summary>
-///
-/// </summary>
-/// <param name="gameObject"></param>
 void Engine::AddGameObject(std::shared_ptr<GameObject> gameObject)
 {
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
 }
 
-/// <summary>
-///
-/// </summary>
-/// <param name="gameObject"></param>
 void Engine::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
 {
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;
 }
 
-/// <summary>
-///
-/// </summary>
-/// <returns></returns>
 std::vector<std::shared_ptr<GameObject>> Engine::GetGameObjects()
 {
 	return std::vector<std::shared_ptr<GameObject>>(Engine::gameObjects);
