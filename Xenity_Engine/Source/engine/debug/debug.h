@@ -16,21 +16,63 @@ class Socket;
 class API Debug
 {
 public:
+
+    /**
+    * Init debug system
+    */
     static int Init();
+    
+    /**
+    * Print a text
+    * @param text Text to print
+    */
     static void Print(std::string text);
+    
+    /**
+    * Print an error
+    * @param text Text to print
+    */
     static void PrintError(std::string text);
+    
+    /**
+    * Print a warning
+    * @param text Text to print
+    */
     static void PrintWarning(std::string text);
+    
+    /**
+    * Connect the game to an online debug console
+    */
     static void ConnectToOnlineConsole();
 
+    /**
+    * Get all the debug text into a string
+    */
     static std::string GetDebugString()
     {
         return debugText;
     }
 
 private:
-    static std::string debugText;
+    
+    /**
+    * Send text via the socket to the online debug console
+    * @param text Text to send
+    */
     static void PrintInOnlineConsole(std::string text);
+    
+    /**
+    * Print text to the cmd
+    * @param text Text to print
+    */
     static void PrintInConsole(std::string text);
+    
+    /**
+    * Write text to the debug file
+    * @param text Text to write
+    */
     static void PrintInFile(std::string text);
+
+    static std::string debugText;
     static Socket *socket;
 };
