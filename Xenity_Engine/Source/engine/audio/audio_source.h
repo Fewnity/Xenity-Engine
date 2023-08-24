@@ -20,35 +20,73 @@ public:
     //void SetReflection();
 
     std::unordered_map<std::string, Variable> GetReflection();
+
+    /**
+    * Play audio
+    */
     void Play();
+
+    /**
+    * Resume audio
+    */
     void Resume();
+
+    /**
+    * Pause audio
+    */
     void Pause();
+
+    /**
+    * Stop audio
+    */
     void Stop();
 
     AudioClip *audioClip = nullptr;
 
+    /**
+    * Set volume
+    */
     void SetVolume(float volume);
 
+    /**
+    * Set panning
+    */
     void SetPanning(float panning);
 
+    /**
+    * Set is looping
+    */
     void SetLoop(bool isLooping);
 
+    /**
+    * Get volume
+    */
     float GetVolume()
     {
         return volume;
     }
 
+    /**
+    * Get panning
+    */
     float GetPanning()
     {
         return pan;
     }
 
+    /**
+    * Get is playing
+    */
     bool GetIsPlaying()
     {
         return isPlaying;
     }
 
-    bool GetIsLooping() {
+    /**
+    * Get is looping
+    */
+    bool GetIsLooping() 
+    {
         return loop;
     }
 
