@@ -12,38 +12,64 @@
 #include <vector>
 
 #if defined(__PSP__)
-#include <pspnet.h>
-#include <pspnet_apctl.h>
-#include <pspnet_inet.h>
-#include <pspnet_resolver.h>
 #include <psputility.h>
-#include <psputils.h>
 #endif
 
 class API Socket
 {
 public:
+
     Socket() = delete;
     Socket(int socketId)
     {
         this->socketId = socketId;
     }
+
+    /**
+    * Send data
+    */
     void SendData(std::string text);
+
+    /**
+    * Read data from the socket
+    */
     void Update();
-    std::string incommingData;
+
+    /**
+    * Return recieved data during this frame
+    */
+    std::string GetIncommingData() 
+    {
+        return incommingData;
+    }
 
 private:
+    std::string incommingData;
     int socketId = -1;
 };
 
 class API NetworkManager
 {
 public:
+
+    /**
+    * [Internal] Init network manager
+    */
     static void Init();
 
-    // static void ConnectToConsole();
+    /**
+    * [Internal] Update all sockets (To call every frame)
+    */
     static void Update();
+
+    /**
+    * [Internal] Create a socket
+    */
     static Socket *CreateSocket(std::string address, int port);
+
+    /**
+    * [Internal] draw network setup menu for the PSP
+    */
     static void DrawNetworkSetupMenu();
 
     static bool needDrawMenu;
