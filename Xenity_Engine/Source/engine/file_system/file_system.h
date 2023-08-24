@@ -29,11 +29,32 @@ public:
 	}
 	static FileSystem *fileSystem;
 
+	/**
+	* Init file system
+	*/
 	int InitFileSystem();
+
+	/**
+	* Get game path
+	*/
 	std::string GetGamePath();
 
+	/**
+	* Create a directory
+	* @param path Directory path
+	*/
 	void CreateDirectory(std::string path);
+
+	/**
+	* Delete a file
+	* @param path File path
+	*/
 	void DeleteFile(const std::string path);
+
+	/**
+	* Get all files of a directory and fill it
+	* @param directory Directory to fill
+	*/
 	void FillDirectory(Directory *directory);
 };
 
@@ -44,13 +65,35 @@ public:
 	File(std::string path);
 	~File();
 
+	/**
+	* Write data into the file
+	*/
 	void Write(const std::string data);
+
+	/**
+	* Read all the file
+	*/
 	std::string ReadAll();
-	// Return isOpen
+	
+	/**
+	* Check if the file exists
+	*/
 	bool CheckIfExist();
+
+	/**
+	* Open the file
+	* @param createFileIfNotFound If true, create the file if not found
+	*/
 	bool Open(bool createFileIfNotFound);
+
+	/**
+	* Close file
+	*/
 	void Close();
 
+	/**
+	* Get file path
+	*/
 	std::string GetPath() const
 	{
 #if defined(__vita__)
@@ -60,10 +103,19 @@ public:
 #endif
 	}
 
+	/**
+	* Get file's folder path
+	*/
 	std::string GetFolderPath() const;
 
+	/**
+	* Get file name
+	*/
 	std::string GetFileName() const;
 
+	/**
+	* Get file extension (dot included)
+	*/
 	std::string GetFileExtention() const
 	{
 		return pathExtention;
@@ -85,11 +137,22 @@ public:
 	Directory() = delete;
 	Directory(std::string path);
 	~Directory();
+
+	/**
+	* Get all the files of the directory !!! (All files need to be deleted with delete()) !!!
+	*/
 	std::vector<File *> GetAllFiles();
+
+	/**
+	* Check if the directory exists
+	*/
 	bool CheckIfExist();
 	std::vector<Directory *> subdirectories;
 	std::vector<File *> files;
 
+	/**
+	* Get directory path
+	*/
 	std::string GetPath() const
 	{
 #if defined(__vita__)

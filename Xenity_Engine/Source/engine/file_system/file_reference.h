@@ -16,18 +16,31 @@ enum FileType
 class FileReference
 {
 public:
-	uint64_t fileId = 0;
-	File* file = nullptr;
-	FileType fileType = File_Other;
+
+	/**
+	* Load the file
+	*/
 	virtual void LoadFileReference() 
 	{
 		isLoaded = true;
 	}
+
+	/**
+	* Unload the file
+	*/
 	virtual void UnloadFileReference()
 	{
 		isLoaded = false;
 	}
+
+	/**
+	* Get reflection of the file meta
+	*/
 	virtual std::unordered_map<std::string, Variable> GetMetaReflection() = 0;
+
+	uint64_t fileId = 0;
+	File* file = nullptr;
+	FileType fileType = File_Other;
 	bool isLoaded = false;
 };
 
