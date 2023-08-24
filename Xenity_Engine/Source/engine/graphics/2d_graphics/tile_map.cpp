@@ -41,24 +41,11 @@ int Tilemap::GetDrawPriority() const
 	return orderInLayer;
 }
 
-/**
- * @brief Setup the Tilemap before usage (chunkSize to default)
- *
- * @param width Tilemap width
- * @param height Tilemap height
- */
 void Tilemap::Setup(int width, int height)
 {
 	Setup(width, height, DEFAULT_CHUNK_SIZE);
 }
 
-/**
- * @brief Setup the Tilemap before usage
- *
- * @param width Tilemap width
- * @param height Tilemap height
- * @param chunkSize Size of a chunk
- */
 void Tilemap::Setup(int width, int height, int chunkSize)
 {
 	this->width = width;
@@ -106,13 +93,6 @@ void Tilemap::Setup(int width, int height, int chunkSize)
 	}
 }
 
-/**
- * @brief Return tile at position (nullptr if out of bound)
- *
- * @param x Tile X position
- * @param y Tile Y position
- * @return Tilemap::Tile*
- */
 Tilemap::Tile *Tilemap::GetTile(int x, int y)
 {
 	if (tiles == nullptr || x < 0 || y < 0 || x >= height || y >= height)
@@ -121,13 +101,6 @@ Tilemap::Tile *Tilemap::GetTile(int x, int y)
 	return &tiles[x * height + y];
 }
 
-/**
- * @brief Set tile texture (slower)
- *
- * @param x Tile X position
- * @param y Tile Y position
- * @param texture Texture to use or nullptr to clear tile (Texture needs to be added before, see Tilemap::AddTexture)
- */
 void Tilemap::SetTile(int x, int y, Texture *texture)
 {
 	int textureSize = (int)textures.size();
@@ -141,13 +114,6 @@ void Tilemap::SetTile(int x, int y, Texture *texture)
 	}
 }
 
-/**
- * @brief Set tile texture
- *
- * @param x Tile X position
- * @param y Tile Y position
- * @param textureId Texture id to use or 0 to clear tile (Texture needs to be added before, see Tilemap::AddTexture)
- */
 void Tilemap::SetTile(int x, int y, int textureId)
 {
 	Tile *tile = GetTile(x, y);
@@ -160,10 +126,6 @@ void Tilemap::SetTile(int x, int y, int textureId)
 	}
 }
 
-/**
- * @brief Fill all chunks meshes
- *
- */
 void Tilemap::FillChunks()
 {
 	// Fill meshes
@@ -242,10 +204,6 @@ void Tilemap::SetColor(Color color)
 	}
 }
 
-/**
- * @brief Delete and create new meshes for each chunk
- *
- */
 void Tilemap::CreateChunksMeshes()
 {
 	// Set vertices and indices per tile
@@ -285,10 +243,6 @@ void Tilemap::CreateChunksMeshes()
 	}
 }
 
-/**
- * @brief Draw tile map
- *
- */
 void Tilemap::Draw()
 {
 	if (auto gameObject = GetGameObject())
@@ -308,10 +262,6 @@ void Tilemap::Draw()
 	}
 }
 
-/**
- * @brief Draw visible chunks
- *
- */
 void Tilemap::DrawChunks()
 {
 	if (auto camera = Graphics::usedCamera.lock())
@@ -350,12 +300,6 @@ void Tilemap::DrawChunks()
 	}
 }
 
-/**
- * @brief Get texture index
- *
- * @param texture
- * @return int Texture index
- */
 int Tilemap::GetTextureIndex(Texture *texture)
 {
 	int textureIndex = -1;
@@ -371,11 +315,6 @@ int Tilemap::GetTextureIndex(Texture *texture)
 	return textureIndex;
 }
 
-/**
- * @brief Add a texture to the Tilemap's texture list
- *
- * @param texture Texture to add
- */
 void Tilemap::AddTexture(Texture *texture)
 {
 	if (GetTextureIndex(texture) == -1)
@@ -385,11 +324,6 @@ void Tilemap::AddTexture(Texture *texture)
 	}
 }
 
-/**
- * @brief Remove a texture from the Tilemap's texture list
- *
- * @param texture Texture to remove
- */
 void Tilemap::RemoveTexture(Texture *texture)
 {
 	int index = GetTextureIndex(texture);
