@@ -79,17 +79,6 @@ void AudioClipStream::FillBuffer(int size, int bufferOffset, short *buff)
         drwav_read_pcm_frames_s16(&wav, size, buff + (bufferOffset));
 }
 
-short *AudioClipStream::GetBuffer(int size)
-{
-    short *buff = (short *)malloc(size * sizeof(short));
-    if (type == Mp3)
-        drmp3_read_pcm_frames_s16(&mp3, size, buff);
-    else if (type == Wav)
-        drwav_read_pcm_frames_s16(&wav, size, buff);
-
-    return buff;
-}
-
 int AudioClipStream::GetFrequency()
 {
     int rate = 0;

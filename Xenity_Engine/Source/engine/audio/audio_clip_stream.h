@@ -27,11 +27,30 @@ class API AudioClipStream
 public:
     void OpenStream(std::string fileName);
     ~AudioClipStream();
+
+    /**
+    * Fill audio buffer
+    */
     void FillBuffer(int size, int bufferOffset, short *buff);
-    short *GetBuffer(int size);
+
+    /**
+    * Get audio clip frequency
+    */
     int GetFrequency();
+
+    /**
+    * Get audio clip sample count
+    */
     int64_t GetSampleCount();
+
+    /**
+    * Reset seek position
+    */
     void ResetSeek();
+
+    /**
+    * Get seek position
+    */
     int64_t GetSeekPosition();
 
 private:
