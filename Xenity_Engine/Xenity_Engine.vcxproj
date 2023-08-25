@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\code_file.cpp" />
     <ClCompile Include="Source\editor\compiler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp" />
@@ -285,6 +286,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\code_file.h" />
     <ClInclude Include="Source\editor\compiler.h" />
     <ClInclude Include="Source\editor\tool_mode.h" />
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
