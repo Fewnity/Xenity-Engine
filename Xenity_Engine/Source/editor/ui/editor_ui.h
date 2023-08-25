@@ -70,6 +70,9 @@ public:
 	static Texture* fileIcon;
 	static Texture* sceneIcon;
 	static Texture* imageIcon;
+	static Texture* meshIcon;
+	static Texture* codeIcon;
+	static Texture* headerIcon;
 
 	static float GetUiScale() 
 	{

@@ -11,6 +11,7 @@ enum FileType
 	File_Mesh,
 	File_Texture,
 	File_Scene,
+	File_Code,
 };
 
 class FileReference

@@ -1,0 +1,22 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
+#pragma once
+
+#include "../engine/file_system/file_reference.h"
+#include "../engine/reflection/reflection.h"
+
+class CodeFile : public FileReference, public Reflection
+{
+public:
+	CodeFile(std::string fileExtension);
+	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map < std::string, Variable> GetMetaReflection();
+	bool isHeader = false;
+};
+

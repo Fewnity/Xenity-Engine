@@ -6,6 +6,7 @@
 #include "../dynamic_lib/dynamic_lib.h"
 #include "../scene_management/scene_manager.h"
 #include "../game_interface.h"
+#include "../../editor/code_file.h"
 
 #if !defined(EDITOR)
 #include "../../game_test/game.h"
@@ -102,6 +103,10 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 		{
 			compatibleFiles[file] = File_Scene;
 		}
+		else if (ext == ".h" || ext == ".cpp") //If the file is a scene
+		{
+			compatibleFiles[file] = File_Code;
+		}
 		else
 		{
 			continue;
@@ -167,6 +172,9 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 		case File_Scene:
 			fileRef = new Scene();
 			break;
+		case File_Code:
+			fileRef = new CodeFile(kv.first->GetFileExtension());
+			break;
 		}
 
 		if (fileRef)
@@ -179,6 +187,10 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 #if defined(EDITOR)
 			SaveMetaFile(fileRef);
 #endif
+		}
+		else 
+		{
+			Debug::PrintError("[ProjectManager::LoadProject] Supported file not created");
 		}
 	}
 

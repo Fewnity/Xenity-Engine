@@ -24,6 +24,9 @@ Texture* EditorUI::folderIcon = nullptr;
 Texture* EditorUI::fileIcon = nullptr;
 Texture* EditorUI::sceneIcon = nullptr;
 Texture* EditorUI::imageIcon = nullptr;
+Texture* EditorUI::meshIcon = nullptr;
+Texture* EditorUI::codeIcon = nullptr;
+Texture* EditorUI::headerIcon = nullptr;
 
 float EditorUI::uiScale = 1;
 
@@ -43,6 +46,13 @@ void EditorUI::Init()
 	sceneIcon->SetWrapMode(Texture::ClampToEdge);
 	imageIcon = new Texture("icons/image.png", "", true);
 	imageIcon->SetWrapMode(Texture::ClampToEdge);
+	meshIcon = new Texture("icons/3d.png", "", true);
+	meshIcon->SetWrapMode(Texture::ClampToEdge);
+	codeIcon = new Texture("icons/code.png", "", true);
+	codeIcon->SetWrapMode(Texture::ClampToEdge);
+	headerIcon = new Texture("icons/header.png", "", true);
+	headerIcon->SetWrapMode(Texture::ClampToEdge);
+
 	Debug::Print("---- Editor UI initiated ----");
 }
 

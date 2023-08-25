@@ -5,6 +5,7 @@
 #include "../editor_ui.h"
 #include "../../../engine/scene_management/scene_manager.h"
 #include "../../../engine/asset_management/project_manager.h"
+#include "../../code_file.h"
 
 void FileExplorerMenu::Init()
 {
@@ -17,6 +18,11 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 		if (item.file->fileType == File_Scene)
 		{
 			SceneManager::LoadScene((Scene*)item.file);
+		}
+		else if (item.file->fileType == File_Code)
+		{
+			std::string command = "code \"" + item.file->file->GetPath() + "\"";
+			system(command.c_str());
 		}
 	}
 	else if(item.directory)
@@ -62,9 +68,20 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			textureId = EditorUI::sceneIcon->GetTextureId();
 		}
+		else if (fileType == File_Code)
+		{
+			if(((CodeFile*)item.file)->isHeader)
+				textureId = EditorUI::headerIcon->GetTextureId();
+			else
+				textureId = EditorUI::codeIcon->GetTextureId();
+		}
+		else if (fileType == File_Mesh)
+		{
+			textureId = EditorUI::meshIcon->GetTextureId();
+		}
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	std::string popupId = "RightClick";
 	if (item.file) 
 	{
