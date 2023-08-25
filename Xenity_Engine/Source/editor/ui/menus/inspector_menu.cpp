@@ -109,7 +109,7 @@ void InspectorMenu::Draw()
 				selectedGameObject->GetTransform()->SetLocalScale(localScale);
 			}
 			//ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
-		ImGui::Separator();
+			ImGui::Separator();
 		}
 
 		//Component list
@@ -118,7 +118,19 @@ void InspectorMenu::Draw()
 		{
 			auto comp = selectedGameObject->components[i];
 			//Draw component title
-			if (ImGui::CollapsingHeader(comp->GetComponentName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+
+			float cursorY = ImGui::GetCursorPosY();
+
+			bool isEnable = comp->GetIsEnabled();
+			ImGui::SetCursorPosX(35);
+			ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+			if (comp->GetIsEnabled() != isEnable)
+			{
+				comp->SetIsEnabled(isEnable);
+			}
+			ImGui::SetCursorPosY(cursorY);
+
+			if (ImGui::CollapsingHeader(EditorUI::GenerateItemId().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{
@@ -136,6 +148,10 @@ void InspectorMenu::Draw()
 
 				ImGui::Separator();
 			}
+
+			ImGui::SetCursorPosX(65);
+			ImGui::SetCursorPosY(cursorY + 4);
+			ImGui::Text(comp->GetComponentName().c_str());
 		}
 	}
 	ImGui::End();
