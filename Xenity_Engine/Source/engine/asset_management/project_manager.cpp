@@ -79,7 +79,7 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 		File* file = projectFiles[i];
 
 		//Get the extention in lowercase
-		std::string ext = file->GetFileExtention();
+		std::string ext = file->GetFileExtension();
 		int extLen = ext.size();
 		for (int i = 1; i < extLen; i++)
 		{

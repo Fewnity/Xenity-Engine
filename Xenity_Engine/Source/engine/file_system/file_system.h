@@ -116,7 +116,7 @@ public:
 	/**
 	* Get file extension (dot included)
 	*/
-	std::string GetFileExtention() const
+	std::string GetFileExtension() const
 	{
 		return pathExtention;
 	}

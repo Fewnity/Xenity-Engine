@@ -27,7 +27,7 @@ void InspectorMenu::Draw()
 
 	if (selectedFileReference)
 	{
-		std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtention();
+		std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
 		ImGui::Text(fileNameExt.c_str());
 		ImGui::Separator();
 
