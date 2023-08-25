@@ -623,16 +623,25 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 
 		DisableAllLight();
 		int lightCount = AssetManager::GetLightCount();
+		int usedLightCount = 0;
 		for (int i = 0; i < lightCount; i++)
 		{
 			auto light = AssetManager::GetLight(i).lock();
-			if (light->type == Light::Directional)
+			if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive()) 
 			{
-				Vector3 dir = Math::Get3DDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
-				SetLight(i, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
+				if (light->type == Light::Directional)
+				{
+					Vector3 dir = Math::Get3DDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
+					SetLight(usedLightCount, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
+				}
+				else
+				{
+					SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
+				}
+				usedLightCount++;
+				if (usedLightCount == maxLightCount)
+					break;
 			}
-			else
-				SetLight(i, light->GetTransform()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
 		}
 	}
 }
