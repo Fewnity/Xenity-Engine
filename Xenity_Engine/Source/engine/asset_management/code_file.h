@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../engine/file_system/file_reference.h"
-#include "../engine/reflection/reflection.h"
+#include "../file_system/file_reference.h"
+#include "../reflection/reflection.h"
 
 class CodeFile : public FileReference, public Reflection
 {

@@ -6,7 +6,7 @@
 #include "../dynamic_lib/dynamic_lib.h"
 #include "../scene_management/scene_manager.h"
 #include "../game_interface.h"
-#include "../../editor/code_file.h"
+#include "code_file.h"
 
 #if !defined(EDITOR)
 #include "../../game_test/game.h"

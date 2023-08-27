@@ -5,7 +5,7 @@
 #include "../editor_ui.h"
 #include "../../../engine/scene_management/scene_manager.h"
 #include "../../../engine/asset_management/project_manager.h"
-#include "../../code_file.h"
+#include "../../../engine/asset_management/code_file.h"
 
 void FileExplorerMenu::Init()
 {
