@@ -300,6 +300,45 @@ void ProjectManager::SaveMetaFile(FileReference* fileReference)
 	delete metaFile;
 }
 
+std::vector<ProjectListItem> ProjectManager::GetProjectsList()
+{
+	std::vector<ProjectListItem> projects;
+	File* file = new File("projects.json");
+	bool isOpen = file->Open(false);
+	if (isOpen) 
+	{
+		json j;
+		j = json::parse(file->ReadAll());
+
+		int projectCount = j.size();
+		for (int i = 0; i < projectCount; i++)
+		{
+			ProjectListItem projectItem;
+			projectItem.name = j[i]["name"];
+			projectItem.path = j[i]["path"];
+			projects.push_back(projectItem);
+		}
+	}
+	file->Close();
+	return projects;
+}
+
+void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
+{
+	int projectSize = projects.size();
+	json j;
+	for (int i = 0; i < projectSize; i++)
+	{
+		j[i]["name"] = projects[i].name;
+		j[i]["path"] = projects[i].path;
+	}
+	FileSystem::fileSystem->DeleteFile("projects.json");
+	File* file = new File("projects.json");
+	file->Open(true);
+	file->Write(j.dump(3));
+	file->Close();
+}
+
 void ProjectManager::LoadMetaFile(FileReference* fileReference)
 {
 	File* metaFile = new File(fileReference->file->GetPath() + ".meta");

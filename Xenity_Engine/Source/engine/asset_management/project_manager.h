@@ -37,6 +37,13 @@ public:
 	std::vector<FileReference*> files;
 };
 
+class ProjectListItem 
+{
+public:
+	std::string name;
+	std::string path;
+};
+
 class API ProjectManager
 {
 public:
@@ -136,6 +143,16 @@ public:
 	{
 		return projectLoaded;
 	}
+
+	/**
+	* Get opened projects list
+	*/
+	static std::vector<ProjectListItem> GetProjectsList();
+	
+	/**
+	* Save opened projects list
+	*/
+	static void SaveProjectsList(std::vector<ProjectListItem> projects);
 
 	static ProjectDirectory* projectDirectory;
 	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;

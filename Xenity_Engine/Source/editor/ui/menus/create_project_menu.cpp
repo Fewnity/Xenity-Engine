@@ -99,6 +99,12 @@ void CreateProjectMenu::Draw()
 				bool creationResult = ProjectManager::CreateProject(projectName, projectParentDir);
 				if (creationResult)
 				{
+					std::vector<ProjectListItem> projectsList = ProjectManager::GetProjectsList();
+					ProjectListItem newProjectListItem;
+					newProjectListItem.name = projectName;
+					newProjectListItem.path = projectParentDir + projectName + "\\";
+					projectsList.push_back(newProjectListItem);
+					ProjectManager::SaveProjectsList(projectsList);
 					Editor::currentMenu = Menu_Editor;
 				}
 			}
