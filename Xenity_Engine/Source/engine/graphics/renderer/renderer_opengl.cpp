@@ -2,6 +2,7 @@
 
 #include "../../../xenity.h"
 #include "../3d_graphics/mesh_data.h"
+#include "../../tools/profiler_benchmark.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
@@ -19,8 +20,18 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 
 #include <memory>
 
+ProfilerBenchmark* applySettingsBenchmark = nullptr;
+ProfilerBenchmark* mesh2Benchmark = nullptr;
+
+bool invertedFaces = true;
+bool useDepth = true;
+bool useBlend = false;
+bool useLighting = false;
+
 RendererOpengl::RendererOpengl()
 {
+	applySettingsBenchmark = new ProfilerBenchmark("Draw", "Settings");
+	mesh2Benchmark = new ProfilerBenchmark("Draw", "mesh");
 }
 
 int RendererOpengl::Init()
@@ -330,32 +341,57 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	//  glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
 	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
 
+	applySettingsBenchmark->Start();
 	if (settings.invertFaces)
 	{
-		glFrontFace(GL_CW);
+		if(!invertedFaces)
+		{
+			glFrontFace(GL_CW);
+			invertedFaces = true;
+		}
 	}
 	else
 	{
-		glFrontFace(GL_CCW);
+		if (invertedFaces)
+		{
+			glFrontFace(GL_CCW);
+			invertedFaces = false;
+		}
 	}
 
 	if (settings.useDepth)
 	{
-		glEnable(GL_DEPTH_TEST);
+		if (!useDepth) 
+		{
+			glEnable(GL_DEPTH_TEST);
+			useDepth = true;
+		}
 	}
 	else
 	{
-		glDisable(GL_DEPTH_TEST);
+		if (useDepth)
+		{
+			glDisable(GL_DEPTH_TEST);
+			useDepth = false;
+		}
 	}
 
 	if (settings.useBlend)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		if (!useBlend)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			useBlend = true;
+		}
 	}
 	else
 	{
-		glDisable(GL_BLEND);
+		if (useBlend)
+		{
+			glDisable(GL_BLEND);
+			useBlend = false;
+		}
 	}
 
 #if defined(__PSP__)
@@ -364,14 +400,23 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	if (EngineSettings::useLighting && settings.useLighting)
 #endif
 	{
-		glEnable(GL_LIGHTING);
+		if (!useLighting)
+		{
+			glEnable(GL_LIGHTING);
+			useLighting = true;
+		}
 	}
 	else
 	{
-		glDisable(GL_LIGHTING);
+		if (useLighting)
+		{
+			glDisable(GL_LIGHTING);
+			useLighting = false;
+		}
 	}
 
 	glEnable(GL_TEXTURE_2D);
+	applySettingsBenchmark->Stop();
 
 	int subMeshCount = meshData->subMeshCount;
 	int textureCount = textures.size();
@@ -417,13 +462,30 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		}
 	}
 #else
+	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
+
+	applySettingsBenchmark->Start();
 	glEnableClientState(GL_VERTEX_ARRAY);
+	if (meshData->hasUv)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
+	else 
+	{
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
 	if (meshData->hasColor)
 	{
 		glEnableClientState(GL_COLOR_ARRAY);
 	}
 	else
 	{
+		glDisableClientState(GL_COLOR_ARRAY);
 		RGBA rgba = meshData->unifiedColor.GetRGBA();
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
@@ -431,9 +493,14 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
 	}
+	else 
+	{
+		glDisableClientState(GL_NORMAL_ARRAY);
+	}
 
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
+	applySettingsBenchmark->Stop();
+	MeshData::SubMesh* subMesh = nullptr;
+	int stride = 0;
 	for (int i = 0; i < subMeshCount; i++)
 	{
 		if (i == textureCount)
@@ -442,33 +509,37 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		if (textures[i] == nullptr)
 			continue;
 		
-		MeshData::SubMesh* subMesh = meshData->subMeshes[i];
+		subMesh = meshData->subMeshes[i];
 		
 		if (subMesh->vertice_count == 0)
 			continue;
 
 		BindTexture(textures[i]);
+
 		if (!meshData->hasNormal)
 		{
 			if (!meshData->hasUv)
 			{
-				int stride = sizeof(VertexNoColorNoUv);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColorNoUv*)subMesh->data)[0].x);
+				stride = sizeof(VertexNoColorNoUv);
+				VertexNoColorNoUv* data = (VertexNoColorNoUv *)subMesh->data;
+				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 			}
 			else
 			{
 				if (meshData->hasColor)
 				{
-					int stride = sizeof(Vertex);
-					glTexCoordPointer(2, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].u);
-					glColorPointer(3, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].r);
-					glVertexPointer(3, GL_FLOAT, stride, &((Vertex*)subMesh->data)[0].x);
+					stride = sizeof(Vertex);
+					Vertex* data = (Vertex*)subMesh->data;
+					glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+					glColorPointer(3, GL_FLOAT, stride, &data[0].r);
+					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 				}
 				else
 				{
-					int stride = sizeof(VertexNoColor);
-					glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNoColor*)subMesh->data)[0].u);
-					glVertexPointer(3, GL_FLOAT, stride, &((VertexNoColor*)subMesh->data)[0].x);
+					stride = sizeof(VertexNoColor);
+					VertexNoColor* data = (VertexNoColor*)subMesh->data;
+					glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 				}
 			}
 		}
@@ -476,19 +547,22 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		{
 			if (!meshData->hasUv)
 			{
-				int stride = sizeof(VertexNormalsNoColorNoUv);
-				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)subMesh->data)[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColorNoUv*)subMesh->data)[0].x);
+				stride = sizeof(VertexNormalsNoColorNoUv);
+				VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
+				glNormalPointer(GL_FLOAT, stride, &data[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 			}
 			else
 			{
-				int stride = sizeof(VertexNormalsNoColor);
-				glTexCoordPointer(2, GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].u);
-				glNormalPointer(GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &((VertexNormalsNoColor*)subMesh->data)[0].x);
+				stride = sizeof(VertexNormalsNoColor);
+				VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
+				glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+				glNormalPointer(GL_FLOAT, stride, &data[0].normX);
+				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 			}
 		}
 
+		mesh2Benchmark->Start();
 		if (!meshData->hasIndices)
 		{
 			glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
@@ -497,17 +571,8 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 		{
 			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, subMesh->indices);
 		}
+		mesh2Benchmark->Stop();
 	}
-	glDisableClientState(GL_VERTEX_ARRAY);
-	if (meshData->hasColor)
-	{
-		glDisableClientState(GL_COLOR_ARRAY);
-	}
-	if (meshData->hasNormal)
-	{
-		glDisableClientState(GL_NORMAL_ARRAY);
-	}
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 #endif
 	Performance::AddDrawCall();
