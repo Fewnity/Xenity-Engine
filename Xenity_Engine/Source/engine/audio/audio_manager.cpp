@@ -203,8 +203,8 @@ Channel::Channel()
 
 void AudioManager::Init()
 {
-    audioBenchmark = new ProfilerBenchmark("Audio");
-    audioBenchmark2 = new ProfilerBenchmark("Audio2");
+    audioBenchmark = new ProfilerBenchmark("Audio", "Audio");
+    audioBenchmark2 = new ProfilerBenchmark("Audio", "Sub");
     halfBuffSize = buffSize / 2;
     quarterBuffSize = buffSize / 4;
 

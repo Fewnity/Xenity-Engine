@@ -3,14 +3,18 @@
 #include "../debug/performance.h"
 #include "../engine_settings.h"
 
-ProfilerBenchmark::ProfilerBenchmark(std::string name)
+ProfilerBenchmark::ProfilerBenchmark(std::string category, std::string name)
 {
 	//If the profiler is new, created a new one
-	if (Performance::profilerList.count(name) == 0) 
+	if (Performance::profilerCategories.count(category) == 0)
 	{
-		Performance::profilerList[name] = new ProfilerValue();
+		Performance::profilerCategories[category] = new ProfilerCategory();
 	}
-	profilerValue = Performance::profilerList[name];
+	if (Performance::profilerCategories[category]->profilerList.count(name) == 0)
+	{
+		Performance::profilerCategories[category]->profilerList[name] = new ProfilerValue();
+	}
+	profilerValue = Performance::profilerCategories[category]->profilerList[name];
 }
 
 ProfilerBenchmark::~ProfilerBenchmark()

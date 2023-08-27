@@ -29,7 +29,7 @@ ProfilerBenchmark *spriteBenchmark = nullptr;
  */
 void SpriteManager::Init()
 {
-    spriteBenchmark = new ProfilerBenchmark("Sprite");
+    spriteBenchmark = new ProfilerBenchmark("Sprite", "Sprite");
 
     // Create sprite mesh
     spriteMeshData = new MeshData(4, 6, false, false, true);

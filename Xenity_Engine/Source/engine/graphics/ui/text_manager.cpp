@@ -26,7 +26,7 @@ ProfilerBenchmark *textBenchmark = nullptr;
  */
 void TextManager::Init()
 {
-    textBenchmark = new ProfilerBenchmark("Text");
+    textBenchmark = new ProfilerBenchmark("Text", "Text");
 }
 
 void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture)

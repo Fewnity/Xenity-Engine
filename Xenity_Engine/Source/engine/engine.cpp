@@ -48,7 +48,7 @@ int Engine::gameObjectCount = 0;
 int Engine::gameObjectEditorCount = 0;
 
 ProfilerBenchmark* engineLoopBenchmark = nullptr;
-ProfilerBenchmark* gameLoopBenchmark = nullptr;
+//ProfilerBenchmark* gameLoopBenchmark = nullptr;
 ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
 ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
 ProfilerBenchmark* editorUpdateBenchmark = nullptr;
@@ -153,12 +153,12 @@ int Engine::Init()
 
 	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
-	engineLoopBenchmark = new ProfilerBenchmark("Engine loop");
-	gameLoopBenchmark = new ProfilerBenchmark("Game update");
-	componentsUpdateBenchmark = new ProfilerBenchmark("Components update");
-	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw");
-	editorUpdateBenchmark = new ProfilerBenchmark("Editor update");
-	editorDrawBenchmark = new ProfilerBenchmark("Editor draw");
+	engineLoopBenchmark = new ProfilerBenchmark("Engine loop", "Engine loop");
+	//gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
+	componentsUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Components update");
+	drawIDrawablesBenchmark = new ProfilerBenchmark("Engine loop", "Draw");
+	editorUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Editor update");
+	editorDrawBenchmark = new ProfilerBenchmark("Engine loop", "Editor draw");
 
 	UnitTestManager::StartAllTests();
 
@@ -237,12 +237,12 @@ void Engine::Loop()
 		if (ProjectManager::GetIsProjectLoaded())
 		{
 			// Game loop
-			if (game)
+			/*if (game)
 			{
 				gameLoopBenchmark->Start();
 				game->Update();
 				gameLoopBenchmark->Stop();
-			}
+			}*/
 
 			// Update all components
 			componentsUpdateBenchmark->Start();

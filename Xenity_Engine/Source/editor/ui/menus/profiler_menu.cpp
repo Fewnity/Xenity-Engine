@@ -1,6 +1,7 @@
 #include "profiler_menu.h"
 #include <imgui/imgui.h>
 #include "../../../xenity.h"
+#include "../../../xenity_editor.h"
 
 void ProfilerMenu::Init()
 {
@@ -35,9 +36,21 @@ void ProfilerMenu::Draw()
 	if (EngineSettings::useProfiler)
 	{
 		//Add profiler texts
-		for (const auto& kv : Performance::profilerList)
+		for (const auto& kv : Performance::profilerCategories)
 		{
-			ImGui::Text("%s: %ld, avg %ld", kv.first.c_str(), kv.second->GetValue(), kv.second->average);
+			std::string title = kv.first;
+			title += ": " + std::to_string(kv.second->profilerList[kv.first]->GetValue())+ ", avg " + std::to_string(kv.second->profilerList[kv.first]->average);
+			title += "###" + kv.first;
+			if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+			{
+				for (const auto& kv2 : kv.second->profilerList)
+				{
+					if (kv2.first == kv.first)
+						continue;
+					ImGui::SetCursorPosX(20);
+					ImGui::Text("%s: %ld, avg %ld", kv2.first.c_str(), kv2.second->GetValue(), kv2.second->average);
+				}
+			}
 		}
 	}
 	else

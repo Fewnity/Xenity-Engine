@@ -5,7 +5,7 @@
 
 int Performance::drawCallCount = 0;
 int Performance::updatedMaterialCount = 0;
-std::unordered_map<std::string, ProfilerValue *> Performance::profilerList;
+std::unordered_map<std::string, ProfilerCategory*> Performance::profilerCategories;
 
 int Performance::tickCount = 0;
 float Performance::averageCoolDown = 0;
@@ -58,10 +58,13 @@ void Performance::Update()
 		averageCoolDown += Time::GetUnscaledDeltaTime();
 		if (averageCoolDown >= 1)
 		{
-			for (auto& kv : Performance::profilerList)
+			for (auto& kv : Performance::profilerCategories)
 			{
-				kv.second->average = kv.second->addedValue / tickCount;
-				kv.second->addedValue = 0;
+				for (auto& kv2 : kv.second->profilerList)
+				{
+					kv2.second->average = kv2.second->addedValue / tickCount;
+					kv2.second->addedValue = 0;
+				}
 			}
 			averageCoolDown = 0;
 			tickCount = 0;
@@ -71,9 +74,12 @@ void Performance::Update()
 
 void Performance::ResetProfiler()
 {
-	for (auto &kv : Performance::profilerList)
+	for (auto& kv : Performance::profilerCategories)
 	{
-		kv.second->ResetValue();
+		for (auto& kv2 : kv.second->profilerList)
+		{
+			kv2.second->ResetValue();
+		}
 	}
 }
 

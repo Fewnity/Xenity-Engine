@@ -14,7 +14,7 @@ ProfilerBenchmark *meshBenchmark = nullptr;
 
 void MeshManager::Init()
 {
-    meshBenchmark = new ProfilerBenchmark("Mesh");
+    meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
     Debug::Print("-------- Mesh Manager initiated --------");
 }
 

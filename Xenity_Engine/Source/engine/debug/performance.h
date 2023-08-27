@@ -42,6 +42,12 @@ private:
 	long long value = 0;
 };
 
+class API ProfilerCategory 
+{
+public:
+	std::unordered_map<std::string, ProfilerValue*> profilerList;
+};
+
 class API Performance
 {
 public:
@@ -81,7 +87,7 @@ public:
 	*/
 	static void Update();
 
-	static std::unordered_map<std::string, ProfilerValue *> profilerList;
+	static std::unordered_map<std::string, ProfilerCategory*> profilerCategories;
 private:
 
 	/**
