@@ -286,7 +286,9 @@ void Engine::Loop()
 		Performance::Update();
 		Performance::ResetCounters();
 	}
-
+#if defined(_WIN32) || defined(_WIN64)
+	ImGui::SaveIniSettingsToDisk("imgui.ini");
+#endif
 	delete game;
 }
 
