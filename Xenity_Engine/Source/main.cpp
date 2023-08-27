@@ -13,15 +13,14 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 For tomorrow
+Preview part in inspector
+Improve profiler
 
-Add Drag and Drop for GameObjects
-Add Drag and Drop for Components
-Add unselect button
-Add unbind file variable button
+Add more unit tests
+
 Improve file explorer code
 Automatic file unload system
 Re add delete texture function in renderer
-Test Add OnReflectionUpdate function
 Fix mouse speed at high fps
 Add transparency setting on textures
 Packing asset system
@@ -29,7 +28,9 @@ Add a tool to rotate selected gameobject
 Fix tool with child and parent negative scale
 Find why ./ point to another location when lauched from a cmd without "cd"
 Detect the number of cpu core for cmake
-Use scene backup system for hotrealoding
+Create console window
+Check FileSystem::GetGamePath 
+Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 
 Add materials
 Add async texture loading
