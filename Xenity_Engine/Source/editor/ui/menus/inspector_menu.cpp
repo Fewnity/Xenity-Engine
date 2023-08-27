@@ -34,7 +34,7 @@ void InspectorMenu::Draw()
 		auto metaReflection = selectedFileReference->GetMetaReflection();
 		if (metaReflection.size() != 0)
 		{
-			EditorUI::DrawMap(selectedFileReference->GetMetaReflection());
+			EditorUI::DrawMap(metaReflection);
 
 			if (ImGui::Button("Apply"))
 			{
