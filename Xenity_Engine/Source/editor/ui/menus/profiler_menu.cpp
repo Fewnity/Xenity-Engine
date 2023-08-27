@@ -6,6 +6,9 @@ void ProfilerMenu::Init()
 {
 }
 
+#define FPS_HISTORY_SIZE 400
+float fpsHistory[FPS_HISTORY_SIZE] = { 0 };
+
 void ProfilerMenu::Draw()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -18,8 +21,14 @@ void ProfilerMenu::Draw()
 		lastFps = io.Framerate;
 	}
 
+	for (int i = 0; i < FPS_HISTORY_SIZE -1; i++)
+	{
+		fpsHistory[i] = fpsHistory[i + 1];
+	}
+	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
 	ImGui::Begin("Debug");
-	ImGui::Text("FPS: %.1f", lastFps);
+	std::string fpsText = "FPS: " + std::to_string(lastFps) +"###FPS_COUNTER";
+	ImGui::PlotLines(fpsText.c_str(), fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
 	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
 	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
 
