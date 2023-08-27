@@ -39,8 +39,11 @@ void ProfilerMenu::Draw()
 		for (const auto& kv : Performance::profilerCategories)
 		{
 			std::string title = kv.first;
-			title += ": " + std::to_string(kv.second->profilerList[kv.first]->GetValue())+ ", avg " + std::to_string(kv.second->profilerList[kv.first]->average);
-			title += "###" + kv.first;
+			if (kv.second->profilerList.count(kv.first) != 0) 
+			{
+				title += ": " + std::to_string(kv.second->profilerList[kv.first]->GetValue())+ ", avg " + std::to_string(kv.second->profilerList[kv.first]->average);
+			}
+				title += "###" + kv.first;
 			if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
 				for (const auto& kv2 : kv.second->profilerList)
