@@ -11,10 +11,16 @@
 #endif
 
 ProfilerBenchmark *meshBenchmark = nullptr;
+ProfilerBenchmark* meshCameraBenchmark = nullptr;
+ProfilerBenchmark* meshTransformBenchmark = nullptr;
+ProfilerBenchmark* meshDrawBenchmark = nullptr;
 
 void MeshManager::Init()
 {
     meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
+    meshCameraBenchmark = new ProfilerBenchmark("Mesh", "Camera update");
+    meshTransformBenchmark = new ProfilerBenchmark("Mesh", "Transform update");
+    meshDrawBenchmark = new ProfilerBenchmark("Mesh", "Draw");
     Debug::Print("-------- Mesh Manager initiated --------");
 }
 
@@ -44,7 +50,8 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
     if (!camera)
         return;
 
-    // meshBenchmark->Start();
+    meshBenchmark->Start();
+    meshCameraBenchmark->Start();
 #if defined(__PSP__)
     if (Graphics::needUpdateCamera)
     {
@@ -56,8 +63,11 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
     camera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 #endif
+    meshCameraBenchmark->Stop();
 
+    meshTransformBenchmark->Start();
     Engine::renderer->SetTransform(position, rotation, scale, true);
+    meshTransformBenchmark->Stop();
 
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
@@ -71,10 +81,11 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
     renderSettings.useTexture = true;
     renderSettings.useLighting = useLighting;
 
-    //Engine::renderer->BindTexture(texture);
+    meshDrawBenchmark->Start();
     Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
+    meshDrawBenchmark->Stop();
 
-    // meshBenchmark->Stop();
+    meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture* texture, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
