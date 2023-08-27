@@ -196,8 +196,11 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		}
 		if (itemSelected && ImGui::Button("Delete"))
 		{
-			if (fileExplorerItem.file)
+			if (fileExplorerItem.file) 
+			{
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
+				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath()+".meta");
+			}
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
