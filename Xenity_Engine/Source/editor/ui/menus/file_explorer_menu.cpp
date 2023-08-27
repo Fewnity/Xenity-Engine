@@ -200,6 +200,11 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			{
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath()+".meta");
+				ProjectManager::LoadProject(ProjectManager::GetProjectFolderPath());
+				if (Engine::selectedFileReference == fileExplorerItem.file) 
+				{
+					Engine::selectedFileReference = nullptr;
+				}
 			}
 			ImGui::CloseCurrentPopup();
 		}

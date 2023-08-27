@@ -53,6 +53,13 @@ bool ProjectManager::CreateProject(std::string name, std::string folderPath)
 bool ProjectManager::LoadProject(std::string projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
+
+	for (auto fileRef : projectFilesRef)
+	{
+		delete fileRef.second;
+	}
+	projectFilesRef.clear();
+
 	projectLoaded = false;
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets\\";
