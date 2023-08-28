@@ -113,6 +113,7 @@ void Graphics::DrawAllDrawable()
 
 			Vector3 camPos = camera->GetTransform()->GetPosition();
 
+			camera->UpdateProjection();
 			if (skybox)
 			{
 				float scale = 10.01f;
@@ -123,12 +124,40 @@ void Graphics::DrawAllDrawable()
 				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
 				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
 			}
+
+			IDrawableTypes currentMode = Draw_3D;
 			for (int i = 0; i < iDrawablesCount; i++)
 			{
-				orderedIDrawable[i].lock()->Draw();
+				std::shared_ptr<IDrawable> drawable = orderedIDrawable[i].lock();
+				if (drawable->type != currentMode) 
+				{
+					currentMode = drawable->type;
+					if (currentMode == Draw_UI) 
+					{
+						Engine::renderer->SetProjection2D(5, 0.03f, 100);
+					}
+				}
+				drawable->Draw();
 			}
 
 #if defined(EDITOR)
+			if (currentMode != Draw_3D) 
+			{
+				currentMode = Draw_3D;
+				camera->UpdateProjection();
+			}
+			Engine::renderer->ResetTransform();
+			Engine::renderer->SetCameraPosition(camera);
+			Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+			for (int z = -50 + camPos.z; z < 50 + camPos.z; z++)
+			{
+				Engine::renderer->DrawLine(Vector3(-50 - camPos.x, 0, z), Vector3(50 - camPos.x, 0, z), color);
+			}
+			for (int x = -50 + camPos.x; x < 50 + camPos.x; x++)
+			{
+				Engine::renderer->DrawLine(Vector3(-x, 0, -50 + camPos.z), Vector3(-x, 0, 50 + camPos.z), color);
+			}
+
 			if (camera->isEditor && Engine::selectedGameObject.lock())
 			{
 				Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
@@ -158,6 +187,15 @@ bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr<IDr
 {
 	const int priority1 = t1.lock()->GetDrawPriority();
 	const int priority2 = t2.lock()->GetDrawPriority();
+
+	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D) 
+	{
+		return false;
+	}
+	if (t2.lock()->type == Draw_UI && t1.lock()->type != Draw_UI)
+	{
+		return true;
+	}
 
 	if (priority1 <= priority2)
 	{
@@ -199,6 +237,7 @@ void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
+	Engine::drawOrderListDirty = true;
 }
 
 void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove)

@@ -87,7 +87,6 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
             Graphics::needUpdateCamera = false;
         }
 #else
-        camera->UpdateProjection();
         Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 #endif
 
@@ -142,7 +141,6 @@ void SpriteManager::Render2DLine(MeshData* meshData)
             Graphics::needUpdateCamera = false;
         }
 #else
-        camera->UpdateProjection();
         Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 #endif
 

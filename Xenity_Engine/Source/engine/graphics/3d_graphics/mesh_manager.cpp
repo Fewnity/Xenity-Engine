@@ -60,7 +60,6 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
         Graphics::needUpdateCamera = false;
     }
 #else
-    camera->UpdateProjection();
     Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 #endif
     meshCameraBenchmark->Stop();
