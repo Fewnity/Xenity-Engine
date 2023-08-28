@@ -55,6 +55,20 @@ std::unordered_map<std::string, Variable> Camera::GetReflection()
 
 Camera::~Camera()
 {
+#if defined(EDITOR)
+	if (framebuffer >= 0) 
+	{
+		glDeleteFramebuffers(1, &framebuffer);
+	}
+	if (framebufferTexture >= 0)
+	{
+		glDeleteTextures(1, &framebufferTexture);
+	}
+	if (depthframebuffer >= 0)
+	{
+		glDeleteRenderbuffers(1, &depthframebuffer);
+	}
+#endif
 }
 
 #pragma endregion
