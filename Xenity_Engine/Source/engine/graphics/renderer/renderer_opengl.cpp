@@ -23,11 +23,6 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 ProfilerBenchmark* applySettingsBenchmark = nullptr;
 ProfilerBenchmark* mesh2Benchmark = nullptr;
 
-bool invertedFaces = true;
-bool useDepth = true;
-bool useBlend = false;
-bool useLighting = false;
-
 RendererOpengl::RendererOpengl()
 {
 	applySettingsBenchmark = new ProfilerBenchmark("Draw", "Settings");
@@ -185,8 +180,7 @@ void RendererOpengl::ResetTransform()
 {
 #if defined(__PSP__)
 	glMatrixMode(GL_MODEL);
-	if (resetTransform)
-		glLoadIdentity();
+	glLoadIdentity();
 #else
 	glMatrixMode(GL_MODELVIEW);
 #endif
@@ -267,6 +261,7 @@ void RendererOpengl::MoveTransform(Vector3 position)
 
 void RendererOpengl::BindTexture(Texture *texture)
 {
+
 #if defined(__PSP__)
 	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
@@ -349,54 +344,30 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	applySettingsBenchmark->Start();
 	if (settings.invertFaces)
 	{
-		if(!invertedFaces)
-		{
 			glFrontFace(GL_CW);
-			invertedFaces = true;
-		}
 	}
 	else
 	{
-		if (invertedFaces)
-		{
 			glFrontFace(GL_CCW);
-			invertedFaces = false;
-		}
 	}
 
 	if (settings.useDepth)
 	{
-		if (!useDepth) 
-		{
 			glEnable(GL_DEPTH_TEST);
-			useDepth = true;
-		}
 	}
 	else
 	{
-		if (useDepth)
-		{
 			glDisable(GL_DEPTH_TEST);
-			useDepth = false;
-		}
 	}
 
 	if (settings.useBlend)
 	{
-		if (!useBlend)
-		{
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			useBlend = true;
-		}
 	}
 	else
 	{
-		if (useBlend)
-		{
 			glDisable(GL_BLEND);
-			useBlend = false;
-		}
 	}
 
 #if defined(__PSP__)
@@ -405,19 +376,11 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	if (EngineSettings::useLighting && settings.useLighting)
 #endif
 	{
-		if (!useLighting)
-		{
 			glEnable(GL_LIGHTING);
-			useLighting = true;
-		}
 	}
 	else
 	{
-		if (useLighting)
-		{
 			glDisable(GL_LIGHTING);
-			useLighting = false;
-		}
 	}
 
 	glEnable(GL_TEXTURE_2D);
@@ -588,11 +551,8 @@ void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_DEPTH_TEST);
-	useDepth = true;
 	glEnable(GL_BLEND);
-	useBlend = true;
 	glDisable(GL_LIGHTING);
-	useLighting = false;
 	glDisable(GL_TEXTURE_2D);
 
 	VertexNoColorNoUv ver[2];
