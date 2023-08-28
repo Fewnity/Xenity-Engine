@@ -126,6 +126,7 @@ void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponen
 				if (cam && cam == camera)
 				{
 					Graphics::cameras.erase(Graphics::cameras.begin() + i);
+					break;
 				}
 			}
 		}
