@@ -92,7 +92,7 @@
     <ClCompile Include="Source\game_test\free_move.cpp" />
     <ClCompile Include="Source\editor\ui\menus\select_project_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp" />
-    <ClCompile Include="Source\editor\code_file.cpp" />
+    <ClCompile Include="Source\engine\asset_management\code_file.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -198,7 +198,7 @@
     <ClInclude Include="Source\game_test\free_move.h" />
     <ClInclude Include="Source\editor\ui\menus\select_project_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\create_project_menu.h" />
-    <ClInclude Include="Source\editor\code_file.h" />
+    <ClInclude Include="Source\engine\asset_management\code_file.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
