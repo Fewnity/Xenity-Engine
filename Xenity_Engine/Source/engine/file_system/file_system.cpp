@@ -91,6 +91,7 @@ std::string File::ReadAll()
 	while (getline(file, tempText))
 	{
 		allText += tempText;
+		allText += "\n";
 	}
 #endif
 	return allText;
