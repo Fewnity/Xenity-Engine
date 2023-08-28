@@ -5,6 +5,9 @@
 #include "../../editor.h"
 #include "../../../engine/asset_management/project_manager.h"
 
+FileReference* loadedPreview = nullptr;
+std::string previewText = "";
+
 void InspectorMenu::Init()
 {
 }
@@ -13,15 +16,7 @@ void InspectorMenu::Draw()
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	//Create Window
-	//ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-	//float topOffset = 20 * EditorUI::GetUiScale();
-	//ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, topOffset), 0, ImVec2(1, 0));
-	//ImGui::SetNextWindowSizeConstraints(ImVec2(50, viewport->Size.y - topOffset), ImVec2(viewport->Size.x / 2.0f, viewport->Size.y - topOffset));
-
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
-
 	auto selectedGameObject = Engine::selectedGameObject.lock();
 	FileReference* selectedFileReference = Engine::selectedFileReference;
 
@@ -148,11 +143,50 @@ void InspectorMenu::Draw()
 
 				ImGui::Separator();
 			}
-
+			float lastCursorY = ImGui::GetCursorPosY();
 			ImGui::SetCursorPosX(65);
 			ImGui::SetCursorPosY(cursorY + 4);
 			ImGui::Text(comp->GetComponentName().c_str());
+			ImGui::SetCursorPosY(lastCursorY);
 		}
 	}
+
+	if (Engine::selectedFileReference)
+	{
+		ImVec2 availSize = ImGui::GetContentRegionAvail();
+		float sizeY = availSize.x;
+		if (availSize.x > availSize.y)
+			sizeY = availSize.y;
+
+		if (loadedPreview != Engine::selectedFileReference)
+		{
+			loadedPreview = Engine::selectedFileReference;
+			previewText = "";
+			switch (loadedPreview->fileType)
+			{
+			case File_Code:
+				loadedPreview->file->Open(false);
+				previewText = loadedPreview->file->ReadAll();
+				loadedPreview->file->Close();
+				break;
+			}
+		}
+
+		if (previewText != "") 
+		{
+			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10;
+		}
+
+		ImGui::Text("Preview:");
+		ImGui::BeginChild("Preview", ImVec2(0, sizeY), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		if (previewText != "")
+			ImGui::Text(previewText.c_str());
+		else
+			ImGui::Text("No preview available");
+
+		ImGui::EndChild();
+	}
+
 	ImGui::End();
 }
