@@ -86,6 +86,7 @@ public:
 	virtual void MoveTransform(Vector3 position) = 0;
 	virtual void BindTexture(Texture *texture) = 0;
 	virtual void ApplyTextureFilters(Texture *texture) = 0;
+	virtual void DeleteTexture(Texture* texture) = 0;
 	virtual void DrawMeshData(MeshData *meshData, std::vector<Texture*> textures, RenderingSettings settings) = 0;
 	virtual void DrawLine(Vector3 a, Vector3 b, Color& color) = 0;
 	virtual unsigned int CreateNewTexture() = 0;
