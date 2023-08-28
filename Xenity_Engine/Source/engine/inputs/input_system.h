@@ -240,11 +240,6 @@ private:
 	};
 
 	/**
-	*
-	*/
-	static void ChangeInputState(const bool pressed, const KeyCode keyCode);
-
-	/**
 	* Set inputs state
 	*/
 	static void SetInput(const bool pressed, const KeyCode keyCode);

@@ -209,26 +209,15 @@ void InputSystem::Read(const SDL_Event event)
 
 	case SDL_KEYDOWN:
 	{
-		auto mapE = keyMap.end();
-		for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
-			if (event.key.keysym.sym == mapB->first) // If the input is pressed
-				if (!mapB->second->held)
-					SetInput(true, mapB->second->code);
-		break;
-
-		// ChangeInputState(true, event.key.keysym.sym);
+		if(keyMap.count(event.key.keysym.sym) != 0)
+			SetInput(true, keyMap[event.key.keysym.sym]->code);
 		break;
 	}
 
 	case SDL_KEYUP:
 	{
-		auto mapE = keyMap.end();
-		for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
-			if (event.key.keysym.sym == mapB->first) // If the input is pressed
-				if (mapB->second->held)
-					SetInput(false, mapB->second->code);
-
-		// ChangeInputState(false, event.key.keysym.sym);
+		if (keyMap.count(event.key.keysym.sym) != 0)
+			SetInput(false, keyMap[event.key.keysym.sym]->code);
 		break;
 	}
 
@@ -333,10 +322,6 @@ void InputSystem::Read()
 	}
 }
 
-void InputSystem::ChangeInputState(const bool pressed, const KeyCode keyCode)
-{
-}
-
 #pragma region Change inputs states
 
 void InputSystem::ClearInputs()
@@ -387,19 +372,16 @@ void InputSystem::SetInputInactive(const KeyCode keyCode)
 
 bool InputSystem::GetKeyDown(const KeyCode keyCode)
 {
-	// return false;
 	return inputs[keyCode].pressed;
 }
 
 bool InputSystem::GetKey(const KeyCode keyCode)
 {
-	// return false;
 	return inputs[keyCode].held;
 }
 
 bool InputSystem::GetKeyUp(const KeyCode keyCode)
 {
-	// return false;
 	return inputs[keyCode].released;
 }
 
