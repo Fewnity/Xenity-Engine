@@ -18,13 +18,14 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	int gameObjectCount = Engine::gameObjectCount;
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		auto go = Engine::gameObjects[goI];
-		std::string goName = go->name;
+		auto &go = Engine::gameObjects[goI];
 		std::string goId = std::to_string(go->GetUniqueId());
 
+		// Save GameObject's and Transform's values
 		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectionToJson(*go->GetTransform().get());
 		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectionToJson(*go.get());
 
+		// Save GameObject's childs ids
 		std::vector<uint64_t> ids;
 		int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
@@ -33,13 +34,13 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		}
 		j["GameObjects"][goId]["Childs"] = ids;
 
+		// Save components values
 		int componentCount = go->GetComponentCount();
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
-			auto component = go->components[componentI];
-			std::string compName = component->GetComponentName();
+			auto &component = go->components[componentI];
 			std::string compId = std::to_string(component->GetUniqueId());
-			j["GameObjects"][goId]["Components"][compId]["Type"] = compName;
+			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
 		}
 	}
@@ -54,7 +55,9 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	}
 	else
 	{
-		std::string s = j.dump(2);
+		std::string jsonData = j.dump(2);
+
+		// Get scene path
 		std::string path = "";
 		if (SceneManager::openedScene)
 		{
@@ -65,12 +68,13 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			path = EditorUI::SaveFileDialog("Save scene");
 		}
 
+		// If there is no error, save the file
 		if (path != "") 
 		{
 			FileSystem::fileSystem->DeleteFile(path);
 			File* file = new File(path);
 			file->Open(true);
-			file->Write(s);
+			file->Write(jsonData);
 			file->Close();
 			delete file;
 		}
@@ -92,24 +96,32 @@ void SceneManager::LoadScene(json jsonData)
 {
 	EmptyScene();
 
-	// Create all GameObjects and Components
-	for (auto& kv : jsonData["GameObjects"].items())
+	while (AssetManager::GetFileReferenceCount() != 0) 
 	{
-		auto go = CreateGameObject();
-		go->SetUniqueId(std::stoull(kv.key()));
-		ReflectionUtils::JsonToReflection(kv.value(), *go.get());
-		go->OnReflectionUpdated();
-		for (auto& kv2 : kv.value()["Components"].items())
+		FileReference* fileRef = AssetManager::GetFileReference(0);
+		fileRef->UnloadFileReference();
+	}
+
+	// Create all GameObjects and Components
+	for (auto& gameObjectKV : jsonData["GameObjects"].items())
+	{
+		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+		newGameObject->SetUniqueId(std::stoull(gameObjectKV.key()));
+		ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
+		newGameObject->OnReflectionUpdated();
+
+		// Create components
+		for (auto& componentKV : gameObjectKV.value()["Components"].items())
 		{
-			std::string className = kv2.value()["Type"];
-			auto comp = ClassRegistry::AddComponentFromName(className, go);
+			std::string componentName = componentKV.value()["Type"];
+			std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
 			if (comp)
 			{
-				comp->SetUniqueId(std::stoull(kv2.key()));
+				comp->SetUniqueId(std::stoull(componentKV.key()));
 			}
 			else
 			{
-				Debug::PrintWarning("Class " + className + " not found in the scene");
+				Debug::PrintWarning("Class " + componentName + " not found in the scene");
 			}
 		}
 	}
@@ -139,10 +151,11 @@ void SceneManager::LoadScene(json jsonData)
 			int componentCount = go->GetComponentCount();
 			for (int compI = 0; compI < componentCount; compI++)
 			{
-				if (go->components[compI]->GetUniqueId() == std::stoull(kv2.key()))
+				std::shared_ptr<Component> component = go->components[compI];
+				if (component->GetUniqueId() == std::stoull(kv2.key()))
 				{
-					ReflectionUtils::JsonToReflection(kv2.value(), *go->components[compI].get());
-					go->components[compI]->OnReflectionUpdated();
+					ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
+					component->OnReflectionUpdated();
 					break;
 				}
 			}
