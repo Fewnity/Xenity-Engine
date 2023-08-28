@@ -48,11 +48,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 
 	// Read file
 	std::string line;
-	SubMesh *currentSubMeshPtr = nullptr;
-	int v1 = 0, v2 = 0, v3 = 0;
-	int vt1 = 0, vt2 = 0, vt3 = 0;
-	int vn1 = 0, vn2 = 0, vn3 = 0;
-	float x = 0, y = 0, z = 0;
+	SubMesh* currentSubMeshPtr = nullptr;
 
 	while (std::getline(file, line))
 	{
@@ -70,36 +66,39 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 					currentSubMeshPtr = submeshes[currentSubMesh];
 				}
 
+				float x = 0, y = 0, z = 0;
 #if defined(_WIN32) || defined(_WIN64)
 				sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
 #elif defined(__PSP__) || defined(__vita__)
 				sscanf(line.c_str(), "v %f %f %f\n", &x, &y, &z);
 #endif
 				currentSubMeshPtr->verticesCount++;
-				tempVertices.emplace_back(x, y, z);
+				tempVertices.push_back(Vector3(x, y, z));
 			}
 			else if (line[2] == ' ')
 			{
 				verticesFound = false;
 				if (line[1] == 't') // Add texture coordinate (UV)
 				{
+					float x = 0, y = 0;
 #if defined(_WIN32) || defined(_WIN64)
 					sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
 #elif defined(__PSP__) || defined(__vita__)
 					sscanf(line.c_str(), "vt %f %f\n", &x, &y);
 #endif
 					currentSubMeshPtr->textureCordsCount++;
-					tempTexturesCoords.emplace_back(x, 1 - y);
+					tempTexturesCoords.push_back(Vector2(x, 1 - y));
 				}
 				else if (line[1] == 'n') // Add normal
 				{
+					float x = 0, y = 0, z = 0;
 #if defined(_WIN32) || defined(_WIN64)
 					sscanf_s(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
 #elif defined(__PSP__) || defined(__vita__)
 					sscanf(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
 #endif
 					currentSubMeshPtr->normalsCount++;
-					tempNormals.emplace_back(x, y, z);
+					tempNormals.push_back(Vector3(x, y, z));
 				}
 			}
 		}
@@ -129,6 +128,9 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 				}
 			}
 
+			int v1 = 0, v2 = 0, v3 = 0;
+			int vt1 = 0, vt2 = 0, vt3 = 0;
+			int vn1 = 0, vn2 = 0, vn3 = 0;
 			if (count == 0)
 			{
 #if defined(_WIN32) || defined(_WIN64)
@@ -200,9 +202,10 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 	mesh->hasNormal = !hasNoNormals;
 	mesh->hasColor = false;
 
-	for (int i = 0; i < currentSubMesh+1; i++)
+	for (int i = 0; i < currentSubMesh + 1; i++)
 	{
-		mesh->AllocSubMesh(submeshes[i]->indicesCount, submeshes[i]->indicesCount);
+		SubMesh* sub = submeshes[i];
+		mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
 	}
 
 	for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
@@ -214,7 +217,6 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 		{
 			unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
 			unsigned int textureIndex = submesh->textureIndices[i] - 1;
-			unsigned int normalIndices = submesh->normalsIndices[i] - 1;
 
 			Vector3& vertice = tempVertices.at(vertexIndex);
 			if (!mesh->hasNormal)
@@ -234,6 +236,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 			}
 			else
 			{
+				unsigned int normalIndices = submesh->normalsIndices[i] - 1;
 				Vector3& normal = tempNormals.at(normalIndices);
 				if (!mesh->hasUv)
 				{
@@ -248,7 +251,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 						uv.x, uv.y,
 						normal.x, normal.y, normal.z,
 						vertice.x, vertice.y, vertice.z, i, subMeshIndex);
-				
+
 				}
 			}
 			mesh->subMeshes[subMeshIndex]->indices[i] = i;
@@ -258,6 +261,9 @@ bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
 	// Free memory
 	for (int i = 0; i < currentSubMesh + 1; i++)
 	{
+		submeshes[i]->vertexIndices.clear();
+		submeshes[i]->textureIndices.clear();
+		submeshes[i]->normalsIndices.clear();
 		delete submeshes[i];
 	}
 	submeshes.clear();
