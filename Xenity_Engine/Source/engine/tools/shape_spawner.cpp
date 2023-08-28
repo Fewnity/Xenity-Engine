@@ -1,77 +1,57 @@
 #include "shape_spawner.h"
 #include "../../xenity.h"
 
+using namespace std;
+
 Vector3 ShapeSpawner::defaultPosition = Vector3(0, 0, 0);
 Vector3 ShapeSpawner::defaultRotation = Vector3(0, 0, 0);
 Vector3 ShapeSpawner::defaultScale = Vector3(1, 1, 1);
 
-using namespace std;
-
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCube()
 {
-	auto gameObject = CreateGameObject("Cube");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/CubeTriangulate.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Cube", "models/Basic/CubeTriangulate.obj");
 }
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnSphere()
 {
-	auto gameObject = CreateGameObject("Sphere");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/SphereTriangulateSmooth.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Sphere", "models/Basic/SphereTriangulateSmooth.obj");
 }
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCone()
 {
-	auto gameObject = CreateGameObject("Cone");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/ConeTriangulateSmooth.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Cone", "models/Basic/ConeTriangulateSmooth.obj");
 }
 
 std::weak_ptr <GameObject >ShapeSpawner::SpawnDonut()
 {
-	auto gameObject = CreateGameObject("Donut");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/DonutTriangulateSmooth.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Donut", "models/Basic/DonutTriangulateSmooth.obj");
 }
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnPlane()
 {
-	auto gameObject = CreateGameObject("Plane");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/PlaneTriangulate.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Plane", "models/Basic/PlaneTriangulate.obj");
 }
 
 std::weak_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 {
-	auto gameObject = CreateGameObject("Cylinder");
-	auto mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh("models/Basic/CylinderTriangulateSmooth.obj");
-	mesh->textures.push_back(AssetManager::defaultTexture);
-	// mesh->material = AssetManager::default3DMaterial;
-	return Spawn(gameObject);
+	return MakeMesh("Cylinder", "models/Basic/CylinderTriangulateSmooth.obj");
 }
 
-std::weak_ptr <GameObject>ShapeSpawner::Spawn(std::weak_ptr <GameObject> gameObject)
+std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(std::string gameObjectName, std::string meshFilePath)
 {
-	auto transform = gameObject.lock()->GetTransform();
+	std::shared_ptr<GameObject> gameObject = CreateGameObject(gameObjectName);
+	std::shared_ptr<MeshRenderer> mesh = gameObject->AddComponent<MeshRenderer>();
+	mesh->meshData = MeshManager::LoadMesh(meshFilePath);
+	mesh->textures.push_back(AssetManager::defaultTexture);
+	SetDefaultValues(gameObject);
+	// mesh->material = AssetManager::default3DMaterial;
+	return gameObject;
+}
+
+void ShapeSpawner::SetDefaultValues(std::shared_ptr <GameObject> gameObject)
+{
+	auto transform = gameObject->GetTransform();
 	transform->SetPosition(defaultPosition);
 	transform->SetRotation(defaultRotation);
 	transform->SetLocalScale(defaultScale);
-	return gameObject;
 }

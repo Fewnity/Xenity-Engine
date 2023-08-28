@@ -50,8 +50,13 @@ public:
 
 
 private:
+	/**
+	* Create a GameObject and add a MeshRenderer to it
+	*/
+	static std::shared_ptr<GameObject> MakeMesh(std::string gameObjectName, std::string meshFilePath);
+
 	static Vector3 defaultPosition;
 	static Vector3 defaultRotation;
 	static Vector3 defaultScale;
-	static std::weak_ptr <GameObject> Spawn(std::weak_ptr <GameObject> gameObject);
+	static void SetDefaultValues(std::shared_ptr <GameObject> gameObject);
 };
