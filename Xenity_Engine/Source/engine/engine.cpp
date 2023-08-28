@@ -236,14 +236,6 @@ void Engine::Loop()
 #endif
 		if (ProjectManager::GetIsProjectLoaded())
 		{
-			// Game loop
-			/*if (game)
-			{
-				gameLoopBenchmark->Start();
-				game->Update();
-				gameLoopBenchmark->Stop();
-			}*/
-
 			// Update all components
 			componentsUpdateBenchmark->Start();
 			UpdateComponents();
@@ -393,7 +385,8 @@ void Engine::UpdateComponents()
 				{
 					if (gameObjectToCheck->GetActive())
 					{
-						int componentCount = (int)gameObjectToCheck->components.size();
+						int componentCount = (int)gameObjectToCheck->GetComponentCount();
+						//int componentCount = (int)gameObjectToCheck->components.size();
 						bool placeFound = false;
 						for (int cIndex = 0; cIndex < componentCount; cIndex++)
 						{
