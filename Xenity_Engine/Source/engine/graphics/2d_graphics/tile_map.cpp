@@ -17,6 +17,7 @@
 Tilemap::Tilemap()
 {
 	componentName = "Tilemap";
+	type = Draw_2D;
 	//SetReflection();
 }
 

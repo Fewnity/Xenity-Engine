@@ -11,6 +11,7 @@ using namespace std;
 MeshRenderer::MeshRenderer()
 {
 	componentName = "MeshRenderer";
+	type = Draw_3D;
 	//SetReflection();
 }
 

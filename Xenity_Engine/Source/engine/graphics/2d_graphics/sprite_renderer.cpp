@@ -6,6 +6,7 @@
 SpriteRenderer::SpriteRenderer()
 {
 	componentName = "SpriteRenderer";
+	type = Draw_2D;
 	//SetReflection();
 }
 

@@ -8,7 +8,7 @@
 TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "TextRendererCanvas";
-
+	type = Draw_UI;
 	if(TextManager::fonts.size() != 0)
 		font = TextManager::fonts[0];
 

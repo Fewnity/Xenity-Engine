@@ -8,7 +8,7 @@
 TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
-
+	type = Draw_3D;
 	if (TextManager::fonts.size() != 0)
 		font = TextManager::fonts[0];
 

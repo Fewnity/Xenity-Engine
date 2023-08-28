@@ -7,6 +7,7 @@
 LineRenderer::LineRenderer()
 {
 	componentName = "LineRenderer";
+	type = Draw_2D;
 	//SetReflection();
 }
 
