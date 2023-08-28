@@ -5,6 +5,7 @@
 
 ProfilerBenchmark::ProfilerBenchmark(std::string category, std::string name)
 {
+#if defined(EDITOR)
 	//If the profiler is new, created a new one
 	if (Performance::profilerCategories.count(category) == 0)
 	{
@@ -15,6 +16,7 @@ ProfilerBenchmark::ProfilerBenchmark(std::string category, std::string name)
 		Performance::profilerCategories[category]->profilerList[name] = new ProfilerValue();
 	}
 	profilerValue = Performance::profilerCategories[category]->profilerList[name];
+#endif
 }
 
 ProfilerBenchmark::~ProfilerBenchmark()
@@ -24,15 +26,19 @@ ProfilerBenchmark::~ProfilerBenchmark()
 
 void ProfilerBenchmark::Start()
 {
+#if defined(EDITOR)
 	if (EngineSettings::useProfiler)
 		bench->Start();
+#endif
 }
 
 void ProfilerBenchmark::Stop()
 {
+#if defined(EDITOR)
 	bench->Stop();
 	if (EngineSettings::useProfiler)
 	{
 		profilerValue->AddValue(bench->GetMicroSeconds());
 	}
+#endif
 }
