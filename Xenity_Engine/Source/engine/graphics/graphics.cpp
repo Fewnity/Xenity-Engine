@@ -19,7 +19,7 @@ int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 SkyBox* Graphics::skybox = nullptr;
 
-// ProfilerBenchmark *orderBenchmark = new ProfilerBenchmark("Order Drawables");
+ProfilerBenchmark* orderBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 MeshData* skyPlane = nullptr;
@@ -84,6 +84,9 @@ void Graphics::Init()
 	toolArrowsTexture = new Texture("engine_assets\\tool_arrows_colors.png", "@Internal_tool_arrows_colors", true);
 	toolArrowsTexture->SetFilter(Texture::Point);
 #endif
+
+	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
+
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -212,8 +215,7 @@ bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr<IDr
 
 void Graphics::OrderDrawables()
 {
-	// orderBenchmark->Start();
-	// gameobjectScanBenchmark->Start();
+	orderBenchmark->Start();
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		std::weak_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex];
@@ -223,14 +225,13 @@ void Graphics::OrderDrawables()
 			break;
 		}
 	}
-	// gameobjectScanBenchmark->Stop();
 
 	if (Engine::drawOrderListDirty)
 	{
 		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
 		Engine::drawOrderListDirty = false;
 	}
-	// orderBenchmark->Stop();
+	orderBenchmark->Stop();
 }
 
 void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToAdd)
