@@ -185,6 +185,13 @@ void RendererOpengl::SetCameraPosition(std::weak_ptr<Camera> camera)
 
 void RendererOpengl::ResetTransform()
 {
+#if defined(__PSP__)
+	glMatrixMode(GL_MODEL);
+	if (resetTransform)
+		glLoadIdentity();
+#else
+	glMatrixMode(GL_MODELVIEW);
+#endif
 }
 
 void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform)
