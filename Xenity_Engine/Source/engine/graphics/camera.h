@@ -162,5 +162,5 @@ private:
 
 	unsigned int framebuffer = -1;
 	unsigned int depthframebuffer = -1;
-	bool needFremeBufferUpdate = true;
+	bool needFrameBufferUpdate = true;
 };

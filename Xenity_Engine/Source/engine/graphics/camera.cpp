@@ -199,7 +199,7 @@ ProjectionTypes Camera::GetProjectionType()
 void Camera::UpdateFrameBuffer()
 {
 #if defined(_WIN32) || defined(_WIN64)
-	if (needFremeBufferUpdate)
+	if (needFrameBufferUpdate)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		if (framebufferTexture >= 0)
@@ -225,7 +225,7 @@ void Camera::UpdateFrameBuffer()
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
 		//Window::SetResolution(framebufferSize.x, framebufferSize.y);
-		needFremeBufferUpdate = false;
+		needFrameBufferUpdate = false;
 	}
 #endif
 }
@@ -239,7 +239,7 @@ void Camera::ChangeFrameBufferSize(Vector2Int resolution)
 		aspect = (float)width / (float)height;
 
 		framebufferSize = resolution;
-		needFremeBufferUpdate = true;
+		needFrameBufferUpdate = true;
 		UpdateProjection();
 #if defined(__PSP__)
 		Engine::renderer->SetViewport(0, 0, width, height);
