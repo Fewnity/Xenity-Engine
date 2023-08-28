@@ -34,6 +34,7 @@ public:
 	void BindTexture(Texture *texture);
 	void ApplyTextureFilters(Texture *texture);
 	void DrawMeshData(MeshData *meshData, std::vector<Texture*> textures, RenderingSettings settings);
+	void DrawLine(Vector3 a, Vector3 bn, Color& color);
 	unsigned int CreateNewTexture();
 	void DeleteTexture(Texture* texture);
 	void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer);

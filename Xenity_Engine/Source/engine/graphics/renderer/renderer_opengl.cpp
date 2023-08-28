@@ -584,6 +584,39 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	Performance::AddDrawCall();
 }
 
+void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glEnable(GL_DEPTH_TEST);
+	useDepth = true;
+	glEnable(GL_BLEND);
+	useBlend = true;
+	glDisable(GL_LIGHTING);
+	useLighting = false;
+	glDisable(GL_TEXTURE_2D);
+
+	VertexNoColorNoUv ver[2];
+	ver[0].x = a.x;
+	ver[0].y = a.y;
+	ver[0].z = a.z;
+
+	ver[1].x = b.x;
+	ver[1].y = b.y;
+	ver[1].z = b.z;
+	int stride = sizeof(VertexNoColorNoUv);
+	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+
+	Vector4 vec4Color = color.GetRGBA().ToVector4();
+	glColor4f(vec4Color.x, vec4Color.y, vec4Color.z, vec4Color.w);
+	glDrawArrays(GL_LINES, 0, 2);
+#endif
+}
+
 unsigned int RendererOpengl::CreateNewTexture()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
