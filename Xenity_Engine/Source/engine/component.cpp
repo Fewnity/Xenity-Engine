@@ -41,19 +41,20 @@ void Component::SetGameObject(std::weak_ptr<GameObject> newGameObject)
 
 	if (firstUse)
 	{
+		std::shared_ptr<Component> thisShared = shared_from_this();
 		// If the component is a drawble, add to the drawable list
-		if (auto result = std::dynamic_pointer_cast<IDrawable>(shared_from_this()))
+		if (auto result = std::dynamic_pointer_cast<IDrawable>(thisShared))
 		{
 			Graphics::AddDrawable(result);
 			AssetManager::AddDrawable(result);
 		}
-		else if (auto result = std::dynamic_pointer_cast<Light>(shared_from_this()))
+		else if (auto result = std::dynamic_pointer_cast<Light>(thisShared))
 		{
 			AssetManager::AddLight(result);
 		}
-		else if (auto result = std::dynamic_pointer_cast<Camera>(shared_from_this()))
+		else if (auto result = std::dynamic_pointer_cast<Camera>(thisShared))
 		{
-			Graphics::cameras.push_back(std::dynamic_pointer_cast<Camera>(shared_from_this()));
+			Graphics::cameras.push_back(result);
 		}
 	}
 }
