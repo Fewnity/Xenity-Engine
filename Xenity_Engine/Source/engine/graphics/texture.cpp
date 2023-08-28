@@ -88,13 +88,19 @@ void Texture::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
+		AssetManager::AddFileReference(this);
 		CreateTexture(file->GetPath(), file->GetPath(), filter, useMipMap);
 	}
 }
 
 void Texture::UnloadFileReference()
 {
-	Unload();
+	if (isLoaded)
+	{
+		isLoaded = false;
+		AssetManager::RemoveFileReference(this);
+		Unload();
+	}
 }
 
 /// <summary>
@@ -360,7 +366,7 @@ void Texture::LoadTexture(const std::string filename)
 
 void Texture::Unload()
 {
-	//Engine::renderer->DeleteTexture(this);
+	Engine::renderer->DeleteTexture(this);
 }
 
 /// <summary>

@@ -8,6 +8,7 @@
 #include <vram.h>
 #endif
 #include "../../file_system/mesh_loader/wavefront_loader.h"
+#include "../../asset_management/asset_manager.h"
 
 MeshData::MeshData()
 {
@@ -142,6 +143,7 @@ void MeshData::Unload()
 		}
 	}
 	subMeshes.clear();
+	subMeshCount = 0;
 }
 
 /**
@@ -158,13 +160,19 @@ void MeshData::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
+		AssetManager::AddFileReference(this);
 		WavefrontLoader::LoadFromRawData(this);
 	}
 }
 
 void MeshData::UnloadFileReference()
 {
-	Unload();
+	if (isLoaded)
+	{
+		isLoaded = false;
+		AssetManager::RemoveFileReference(this);
+		Unload();
+	}
 }
 
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)

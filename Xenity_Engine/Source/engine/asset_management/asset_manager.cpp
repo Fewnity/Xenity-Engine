@@ -1,10 +1,12 @@
 #include "asset_manager.h"
 
 #include "../../xenity.h"
+#include "../../engine/file_system/file_reference.h"
 
 // std::vector<Shader*> AssetManager::shaders;
 // std::vector<Material*> AssetManager::materials;
 std::vector<Texture *> AssetManager::textures;
+std::vector<FileReference*> AssetManager::fileReferences;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
@@ -12,6 +14,7 @@ std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // int AssetManager::shaderCount = 0;
 // int AssetManager::materialCount = 0;
 int AssetManager::textureCount = 0;
+int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
 // int AssetManager::meshDataCount = 0;
@@ -86,6 +89,12 @@ void AssetManager::AddTexture(Texture *texture)
 {
 	textures.push_back(texture);
 	textureCount++;
+}
+
+void AssetManager::AddFileReference(FileReference* fileReference)
+{
+	fileReferences.push_back(fileReference);
+	fileReferenceCount++;
 }
 
 /// <summary>
@@ -195,6 +204,27 @@ void AssetManager::RemoveTexture(Texture *texture)
 	}
 }
 
+void AssetManager::RemoveFileReference(FileReference* fileReference)
+{
+	int fileReferenceIndex = 0;
+	bool found = false;
+	for (int i = 0; i < fileReferenceCount; i++)
+	{
+		if (fileReferences[i] == fileReference)
+		{
+			found = true;
+			fileReferenceIndex = i;
+			break;
+		}
+	}
+
+	if (found)
+	{
+		fileReferences.erase(fileReferences.begin() + fileReferenceIndex);
+		fileReferenceCount--;
+	}
+}
+
 /// <summary>
 /// Remove a drawable from the drawable list
 /// </summary>
@@ -298,6 +328,11 @@ Texture *AssetManager::GetTexture(const int index)
 	return textures[index];
 }
 
+FileReference* AssetManager::GetFileReference(const int index)
+{
+	return fileReferences[index];
+}
+
 Texture *AssetManager::GetTextureByName(const std::string name)
 {
 	for (int i = 0; i < textureCount; i++)
@@ -354,6 +389,11 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 int AssetManager::GetTextureCount()
 {
 	return textureCount;
+}
+
+int AssetManager::GetFileReferenceCount()
+{
+	return fileReferenceCount;
 }
 
 int AssetManager::GetDrawableCount()

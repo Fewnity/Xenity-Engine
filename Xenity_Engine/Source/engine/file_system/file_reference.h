@@ -24,6 +24,7 @@ public:
 	virtual void LoadFileReference() 
 	{
 		isLoaded = true;
+		//AssetManager::AddFileReference(this);
 	}
 
 	/**
@@ -32,6 +33,7 @@ public:
 	virtual void UnloadFileReference()
 	{
 		isLoaded = false;
+		//AssetManager::RemoveFileReference(this);
 	}
 
 	/**
