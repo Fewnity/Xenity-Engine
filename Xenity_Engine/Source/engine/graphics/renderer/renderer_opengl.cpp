@@ -133,11 +133,9 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 #elif defined(_WIN32) || defined(_WIN64)
 	GLfloat zNear = nearClippingPlane;
 	GLfloat zFar = farClippingPlane;
-	//GLfloat aspect = Graphics::usedCamera.lock()->GetAspectRatio();
 	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
 	GLfloat fW = fH * aspect;
 	glFrustum(-fW, fW, -fH, fH, zNear, zFar);
-	// glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #elif defined(__vita__)
 	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 #endif
@@ -148,11 +146,11 @@ void RendererOpengl::ResetView()
 #if defined(__PSP__)
 	glMatrixMode(GL_VIEW);
 	glLoadIdentity();
-	gluRotateY((0 + 180) / 180.0f * 3.14159f);
+	gluRotateY(180 / 180.0f * 3.14159f);
 #else
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(0 + 180, 0, 1, 0);
+	glRotatef(180, 0, 1, 0);
 #endif
 }
 
@@ -582,6 +580,7 @@ void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> text
 	}
 
 #endif
+
 	Performance::AddDrawCall();
 }
 
