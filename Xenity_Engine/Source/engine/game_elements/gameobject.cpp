@@ -42,12 +42,13 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 {
 	for (int i = 0; i < Engine::gameObjectCount; i++)
 	{
-		int componentCount = Engine::gameObjects[i]->GetComponentCount();
+		std::shared_ptr<GameObject> gameobject = Engine::gameObjects[i];
+		int componentCount = gameobject->GetComponentCount();
 		for (int compI = 0; compI < componentCount; compI++)
 		{
-			if (Engine::gameObjects[i]->components[compI]->GetUniqueId() == id)
+			if (gameobject->components[compI]->GetUniqueId() == id)
 			{
-				return Engine::gameObjects[i]->components[compI];
+				return gameobject->components[compI];
 			}
 		}
 	}
