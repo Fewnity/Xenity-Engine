@@ -129,11 +129,7 @@ void Camera::SetFarClippingPlane(float value)
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
-	 //float aspect = Window::GetAspectRatio();
 	 Vector3 camPos = GetTransform()->GetPosition();
-
-	 //float vx = (x - Window::GetWidth() / 2.0f) / (Window::GetWidth() / 10.f / aspect / projectionSize * 5.0f) + cameraX;
-	 //float vy = -(y - Window::GetHeight() / 2.0f) / (Window::GetHeight() / 10.f / projectionSize * 5.0f) + cameraY;
 	 float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
 	 float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
 	 return Vector2(vx, vy);
