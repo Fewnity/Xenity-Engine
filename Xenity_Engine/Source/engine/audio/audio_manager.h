@@ -102,7 +102,12 @@ public:
     /**
     * Init audio manager
     */
-    static void Init();
+    static int Init();
+
+    /**
+    * Unload audio manager
+    */
+    static void Stop();
 
     /**
     * Remove an audio source

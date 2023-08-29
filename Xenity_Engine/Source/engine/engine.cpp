@@ -342,6 +342,7 @@ void Engine::SetGameState(GameState _gameState)
 void Engine::Stop()
 {
 	renderer->Stop();
+	AudioManager::Stop();
 #ifdef __vita__
 	sceKernelExitProcess(0);
 #endif

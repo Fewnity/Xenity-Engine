@@ -135,7 +135,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

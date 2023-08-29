@@ -151,6 +151,11 @@ public:
 		return gameState;
 	}
 
+	static bool IsRunning()
+	{
+		return isRunning;
+	}
+
 	static GameInterface* game;
 	static bool componentsListDirty;
 	static bool drawOrderListDirty;
