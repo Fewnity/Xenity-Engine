@@ -77,6 +77,16 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 						valuePtr->get() = (Scene*)file;
 					}
 				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+				{
+					int fileId = kv.value();
+					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
+					if (file)
+					{
+						file->LoadFileReference();
+						valuePtr->get() = (AudioClip*)file;
+					}
+				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
 				{
 					int arraySize = kv.value().size();
