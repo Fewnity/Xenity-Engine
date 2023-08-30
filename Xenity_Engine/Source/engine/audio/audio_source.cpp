@@ -24,14 +24,20 @@ std::unordered_map<std::string, Variable> AudioSource::GetReflection()
     reflectedVariables.insert_or_assign("volume", volume);
     reflectedVariables.insert_or_assign("pan", pan);
     reflectedVariables.insert_or_assign("isPlaying", isPlaying);
+    reflectedVariables.insert_or_assign("playOnAwake", playOnAwake);
     reflectedVariables.insert_or_assign("loop", loop);
-    reflectedVariables.insert_or_assign("aiClipClipCCl", audioClip);
-    //reflectedVariables.insert_or_assign("audioClipClipCCl", audioClip);
+    reflectedVariables.insert_or_assign("audioClip", audioClip);
     return reflectedVariables;
 }
 
 AudioSource::~AudioSource()
 {
+}
+
+void AudioSource::Awake() 
+{
+    if(playOnAwake)
+        Play();
 }
 
 void AudioSource::SetVolume(float volume)
@@ -59,8 +65,11 @@ void AudioSource::SetLoop(bool isLooping)
 
 void AudioSource::Play()
 {
-    isPlaying = true;
-    AudioManager::PlayAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+    if (audioClip != nullptr) 
+    {
+        isPlaying = true;
+        AudioManager::PlayAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+    }
 }
 
 void AudioSource::Resume()

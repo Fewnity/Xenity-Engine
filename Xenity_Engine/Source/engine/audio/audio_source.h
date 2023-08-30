@@ -21,6 +21,8 @@ public:
 
     std::unordered_map<std::string, Variable> GetReflection();
 
+    void Awake();
+
     /**
     * Play audio
     */
@@ -95,4 +97,5 @@ private:
     float pan = 0.5;
     bool loop = true;
     bool isPlaying = false;
+    bool playOnAwake = true;
 };
