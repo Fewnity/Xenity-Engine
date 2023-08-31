@@ -51,6 +51,7 @@ public:
 	*/
 	void SetIsEnabled(bool isEnabled);
 	bool initiated = false;
+	bool isAwakeCalled = false;
 
 	bool waitingForDestroy = false;
 

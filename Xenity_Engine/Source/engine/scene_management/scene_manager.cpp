@@ -94,6 +94,10 @@ void SceneManager::RestoreSceneHotReloading()
 
 void SceneManager::LoadScene(json jsonData)
 {
+#if !defined(EDITOR)
+	Engine::SetGameState(Starting);
+#endif
+	
 	EmptyScene();
 
 	while (AssetManager::GetFileReferenceCount() != 0) 
@@ -101,6 +105,8 @@ void SceneManager::LoadScene(json jsonData)
 		FileReference* fileRef = AssetManager::GetFileReference(0);
 		fileRef->UnloadFileReference();
 	}
+
+	std::vector<std::shared_ptr<Component>> allComponents;
 
 	// Create all GameObjects and Components
 	for (auto& gameObjectKV : jsonData["GameObjects"].items())
@@ -115,6 +121,7 @@ void SceneManager::LoadScene(json jsonData)
 		{
 			std::string componentName = componentKV.value()["Type"];
 			std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
+			allComponents.push_back(comp);
 			if (comp)
 			{
 				comp->SetUniqueId(std::stoull(componentKV.key()));
@@ -161,6 +168,54 @@ void SceneManager::LoadScene(json jsonData)
 			}
 		}
 	}
+
+	// Call Awake on Components
+	if (Engine::GetGameState() == Starting) 
+	{
+		std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
+		int componentsCount = allComponents.size();
+		int componentsToInitCount = 0;
+
+		// Find uninitiated components and order them
+		for (int i = 0; i < componentsCount; i++)
+		{
+			if (auto componentToCheck = allComponents[i])
+			{
+				if (!componentToCheck->initiated)
+				{
+					bool placeFound = false;
+					for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+					{
+						// Check if the checked has a higher priority (lower value) than the component in the list
+						if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+						{
+							orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+							placeFound = true;
+							break;
+						}
+					}
+					// if the priority is lower than all components's priorities in the list, add it the end of the list
+					if (!placeFound)
+					{
+						orderedComponentsToInit.push_back(componentToCheck);
+					}
+					componentsToInitCount++;
+				}
+			}
+		}
+
+		for (int i = 0; i < componentsToInitCount; i++)
+		{
+			if (!orderedComponentsToInit[i]->isAwakeCalled && orderedComponentsToInit[i]->GetGameObject()->GetLocalActive())
+			{
+				orderedComponentsToInit[i]->Awake();
+				orderedComponentsToInit[i]->isAwakeCalled = true;
+			}
+		}
+	}
+#if !defined(EDITOR)
+	Engine::SetGameState(Playing);
+#endif
 }
 
 void SceneManager::LoadScene(Scene* scene)

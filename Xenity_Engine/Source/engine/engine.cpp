@@ -240,6 +240,7 @@ void Engine::Loop()
 			componentsUpdateBenchmark->Start();
 			UpdateComponents();
 			componentsUpdateBenchmark->Stop();
+
 			canUpdateAudio = true;
 
 			drawIDrawablesBenchmark->Start();
@@ -259,7 +260,7 @@ void Engine::Loop()
 				}
 			}
 		}
-		else 
+		else
 		{
 #if defined(EDITOR)
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -323,19 +324,21 @@ void Engine::SetMaxCpuSpeed()
 
 void Engine::SetGameState(GameState _gameState)
 {
-	gameState = _gameState;
 #if defined(EDITOR)
-	switch (_gameState)
+	if (_gameState == Playing)
 	{
-	case Stopped:
-		SceneManager::RestoreScene();
-		break;
-	case Paused:
-		break;
-	case Playing:
+		gameState = Starting;
 		SceneManager::SaveScene(SaveSceneForPlayState);
-		break;
+		SceneManager::RestoreScene();
+		gameState = _gameState;
 	}
+	else if (_gameState == Stopped)
+	{
+		gameState = _gameState;
+		SceneManager::RestoreScene();
+	}
+#else
+	gameState = _gameState;
 #endif
 }
 
@@ -360,9 +363,7 @@ void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
 
 int Engine::LoadGame()
 {
-	SetGameState(Playing);
 	ProjectManager::LoadProject(".\\");
-
 	return 0;
 }
 
@@ -387,7 +388,6 @@ void Engine::UpdateComponents()
 					if (gameObjectToCheck->GetActive())
 					{
 						int componentCount = (int)gameObjectToCheck->GetComponentCount();
-						//int componentCount = (int)gameObjectToCheck->components.size();
 						bool placeFound = false;
 						for (int cIndex = 0; cIndex < componentCount; cIndex++)
 						{

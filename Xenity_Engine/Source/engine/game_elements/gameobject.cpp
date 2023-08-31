@@ -194,7 +194,11 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	componentCount++;
-	componentToAdd->Awake();
+	if (Engine::GetGameState() == Playing && GetLocalActive()) 
+	{
+		componentToAdd->Awake();
+		componentToAdd->isAwakeCalled = true;
+	}
 }
 
 #pragma region Find GameObjects

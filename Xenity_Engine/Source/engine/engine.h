@@ -82,6 +82,7 @@ enum GameState
 {
 	Stopped,
 	Paused,
+	Starting,
 	Playing
 };
 
