@@ -76,6 +76,11 @@ public:
 	std::string ReadAll();
 	
 	/**
+	* Read all the file in binary mode (Need to free the pointer after 
+	*/
+	unsigned char* ReadAllBinary(int& size);
+
+	/**
 	* Check if the file exists
 	*/
 	bool CheckIfExist();

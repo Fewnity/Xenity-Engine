@@ -66,11 +66,37 @@ void File::Write(const std::string data)
 #endif
 }
 
+unsigned char * File::ReadAllBinary(int &size)
+{
+	char* data = nullptr;
+#if defined(__PSP__)
+	fileId = sceIoOpen(path.c_str(), PSP_O_RDONLY, 0);
+	if (fileId >= 0)
+	{
+		SceIoStat file_stat;
+		sceIoGetstat(path.c_str(), &file_stat);
+		sceIoLseek(fileId, 0, SEEK_SET);
+		data = new char[file_stat.st_size + 1];
+		sceIoRead(fileId, data, file_stat.st_size);
+		size = file_stat.st_size;
+	}
+#else
+
+	file.seekg(0, std::ios_base::end);
+	int pos = file.tellg();
+	file.seekg(0, std::ios_base::beg);
+	data = new char[pos];
+	file.read(data, pos);
+	size = pos;
+#endif
+	return (unsigned char*)data;
+}
+
 std::string File::ReadAll()
 {
 	std::string allText = "";
 #if defined(__PSP__)
-	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR, 0777);
+	fileId = sceIoOpen(path.c_str(), PSP_O_RDONLY, 0);
 	if (fileId >= 0)
 	{
 		int pos = sceIoLseek(fileId, 0, SEEK_END);
@@ -87,7 +113,6 @@ std::string File::ReadAll()
 #else
 	file.seekg(0, std::ios_base::beg);
 	std::string tempText;
-
 	while (getline(file, tempText))
 	{
 		allText += tempText;
@@ -144,7 +169,7 @@ bool File::Open(bool createFileIfNotFound)
 		fileId = -1;
 	}
 #else
-	std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+	std::ios_base::openmode params = std::fstream::binary | std::fstream::in | std::fstream::out;
 
 	file.open(path, params);
 
