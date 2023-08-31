@@ -84,16 +84,30 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 				int leftBufferIndex = i * 2;
 				int rightBufferIndex = 1 + i * 2;
 
-				buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
-				buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition + 1] * rightVolume));
+				if (sound->audioClipStream->GetChannelCount() == 2) 
+				{
+					buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
+					buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition + 1] * rightVolume));
+				}
+				else 
+				{
+					buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
+					buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition] * rightVolume));
+				}
 
 				sound->seekNext += sound->audioClipStream->GetFrequency();
 
 				while (sound->seekNext >= SOUND_FREQUENCY)
 				{
 					sound->seekNext -= SOUND_FREQUENCY;
-					sound->seekPosition += 2;
-
+					if (sound->audioClipStream->GetChannelCount() == 2)
+					{
+						sound->seekPosition += 2;
+					}
+					else 
+					{
+						sound->seekPosition += 1;
+					}
 					if (sound->audioClipStream->GetSeekPosition() >= sound->audioClipStream->GetSampleCount())
 					{
 						sound->audioClipStream->ResetSeek();
@@ -199,17 +213,24 @@ int fillAudioBufferThread()
 			for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 			{
 				auto sound = channel->playedSounds[soundIndex];
+
+				int bufferSizeToUse = quarterBuffSize;
+				if (sound->audioClipStream->GetChannelCount() == 1) 
+				{
+					bufferSizeToUse = halfBuffSize;
+				}
+
 				if (sound->needNewRead)
 				{
 					audioBenchmark->Start();
-					sound->audioClipStream->FillBuffer(quarterBuffSize, 0, sound->buffer);
+					sound->audioClipStream->FillBuffer(bufferSizeToUse, 0, sound->buffer);
 					sound->needNewRead = false;
 					audioBenchmark->Stop();
 				}
 				else if (sound->needNewRead2)
 				{
 					audioBenchmark->Start();
-					sound->audioClipStream->FillBuffer(quarterBuffSize, halfBuffSize, sound->buffer);
+					sound->audioClipStream->FillBuffer(bufferSizeToUse, halfBuffSize, sound->buffer);
 					sound->needNewRead2 = false;
 					audioBenchmark->Stop();
 				}

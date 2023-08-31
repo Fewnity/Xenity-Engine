@@ -53,9 +53,15 @@ public:
     */
     int64_t GetSeekPosition();
 
+    int GetChannelCount() 
+    {
+        return channelCount;
+    }
+
 private:
     AudioType type = Null;
     drmp3 mp3;
     drwav wav;
     int64_t sampleCount = 0;
+    int channelCount = 0;
 };

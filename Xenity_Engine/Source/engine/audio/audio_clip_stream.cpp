@@ -24,6 +24,7 @@ void AudioClipStream::OpenStream(std::string filePath)
         else
         {
             type = Wav;
+            channelCount = wav.channels;
             Debug::Print("Audio clip data: " + std::to_string(wav.channels) + " " + std::to_string(wav.sampleRate));
         }
     }
@@ -37,6 +38,7 @@ void AudioClipStream::OpenStream(std::string filePath)
         else
         {
             type = Mp3;
+            channelCount = mp3.channels;
             Debug::Print("Audio clip data: " + std::to_string(mp3.channels) + " " + std::to_string(mp3.sampleRate));
         }
     }
