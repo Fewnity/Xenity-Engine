@@ -80,7 +80,7 @@ void TextRenderer::Draw()
 			if (textInfo)
 				delete textInfo;
 			if (mesh)
-				delete mesh;
+				mesh.reset();
 			textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);
 			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font);
 			isTextInfoDirty = false;

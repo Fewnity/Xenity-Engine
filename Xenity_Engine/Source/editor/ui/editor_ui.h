@@ -18,6 +18,18 @@ class ProjectDirectory;
 class Component;
 class Transform;
 
+enum IconName 
+{
+	Icon_Folder,
+	Icon_File,
+	Icon_Scene,
+	Icon_Image,
+	Icon_Mesh,
+	Icon_Code,
+	Icon_Header,
+	Icon_Count,
+};
+
 class EditorUI
 {
 public:
@@ -31,7 +43,7 @@ public:
 
 	static void DrawTextCentered(std::string text);
 	static int DrawInputButton(std::string inputName, std::string text, bool addUnbindButton);
-	static bool DragDropTarget(std::string name, FileReference*& ref);
+	static bool DragDropTarget(std::string name, std::shared_ptr <FileReference>& ref);
 	static bool DragDropTarget(std::string name, Component*& ref);
 	static bool DragDropTarget(std::string name, GameObject*& ref);
 	static bool DragDropTarget(std::string name, Transform*& ref);
@@ -66,13 +78,7 @@ public:
 	static bool showEditor;
 	static bool showEngineSettings;
 	static bool showProjectsSettings;
-	static Texture* folderIcon;
-	static Texture* fileIcon;
-	static Texture* sceneIcon;
-	static Texture* imageIcon;
-	static Texture* meshIcon;
-	static Texture* codeIcon;
-	static Texture* headerIcon;
+	static std::vector<std::shared_ptr<Texture>> icons;
 
 	static float GetUiScale() 
 	{

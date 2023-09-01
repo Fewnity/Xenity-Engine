@@ -20,13 +20,8 @@ bool EditorUI::showProfiler = true;
 bool EditorUI::showEditor = true;
 bool EditorUI::showEngineSettings = false;
 bool EditorUI::showProjectsSettings = false;
-Texture* EditorUI::folderIcon = nullptr;
-Texture* EditorUI::fileIcon = nullptr;
-Texture* EditorUI::sceneIcon = nullptr;
-Texture* EditorUI::imageIcon = nullptr;
-Texture* EditorUI::meshIcon = nullptr;
-Texture* EditorUI::codeIcon = nullptr;
-Texture* EditorUI::headerIcon = nullptr;
+
+std::vector<std::shared_ptr<Texture>>  EditorUI::icons;
 
 float EditorUI::uiScale = 1;
 
@@ -38,20 +33,50 @@ void EditorUI::Init()
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
 	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
 
-	fileIcon = new Texture("icons/text.png", "", true);
+	for (int i = 0; i < Icon_Count; i++)
+	{
+		icons.push_back(std::shared_ptr<Texture>());
+	}
+
+	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture("icons/text.png", true);
+	fileIcon->file = new File("icons/text.png");
 	fileIcon->SetWrapMode(Texture::ClampToEdge);
-	folderIcon = new Texture("icons/folder.png", "", true);
+	icons[Icon_File] = fileIcon;
+
+	std::shared_ptr<Texture> folderIcon = Texture::MakeTexture("icons/folder.png", true);
+	folderIcon->file = new File("icons/folder.png");
 	folderIcon->SetWrapMode(Texture::ClampToEdge);
-	sceneIcon = new Texture("icons/belt.png", "", true);
+	icons[Icon_Folder] = folderIcon;
+
+	std::shared_ptr<Texture> sceneIcon = Texture::MakeTexture("icons/belt.png", true);
+	sceneIcon->file = new File("icons/belt.png");
 	sceneIcon->SetWrapMode(Texture::ClampToEdge);
-	imageIcon = new Texture("icons/image.png", "", true);
+	icons[Icon_Scene] = sceneIcon;
+
+	std::shared_ptr<Texture> imageIcon = Texture::MakeTexture("icons/image.png", true);
+	imageIcon->file = new File("icons/image.png");
 	imageIcon->SetWrapMode(Texture::ClampToEdge);
-	meshIcon = new Texture("icons/3d.png", "", true);
+	icons[Icon_Image] = imageIcon;
+
+	std::shared_ptr<Texture> meshIcon = Texture::MakeTexture("icons/3d.png", true);
+	meshIcon->file = new File("icons/3d.png");
 	meshIcon->SetWrapMode(Texture::ClampToEdge);
-	codeIcon = new Texture("icons/code.png", "", true);
+	icons[Icon_Mesh] = meshIcon;
+
+	std::shared_ptr<Texture> codeIcon = Texture::MakeTexture("icons/code.png", true);
+	codeIcon->file = new File("icons/code.png");
 	codeIcon->SetWrapMode(Texture::ClampToEdge);
-	headerIcon = new Texture("icons/header.png", "", true);
+	icons[Icon_Code] = codeIcon;
+
+	std::shared_ptr<Texture> headerIcon = Texture::MakeTexture("icons/header.png", true);
+	headerIcon->file = new File("icons/header.png");
 	headerIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Header] = headerIcon;
+
+	for (int i = 0; i < Icon_Count; i++)
+	{
+		icons[i]->LoadFileReference();
+	}
 
 	Debug::Print("---- Editor UI initiated ----");
 }
@@ -546,7 +571,7 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 			else //Basic draw
 				DrawReflection(valuePtr->get());
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 		{
 			std::string inputText = "None (MeshData)";
 			auto ptr = valuePtr->get();
@@ -567,15 +592,15 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valuePtr->get() = nullptr;
 			}
 
-			FileReference* ref = nullptr;
+			std::shared_ptr < FileReference> ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Mesh);
 			if (DragDropTarget(payloadName, ref))
 			{
-				valuePtr->get() = (MeshData*)ref;
+				valuePtr->get() = std::dynamic_pointer_cast<MeshData>(ref);
 				valueChangedTemp = true;
 			}
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 		{
 			std::string inputText = "None (AudioClip)";
 			auto ptr = valuePtr->get();
@@ -596,15 +621,15 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valuePtr->get() = nullptr;
 			}
 
-			FileReference* ref = nullptr;
+			std::shared_ptr <FileReference> ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Audio);
 			if (DragDropTarget(payloadName, ref))
 			{
-				valuePtr->get() = (AudioClip*)ref;
+				valuePtr->get() = std::dynamic_pointer_cast<AudioClip>(ref);
 				valueChangedTemp = true;
 			}
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 		{
 			std::string inputText = "None (Texture)";
 			auto ptr = valuePtr->get();
@@ -625,15 +650,15 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valuePtr->get() = nullptr;
 			}
 
-			FileReference* ref = nullptr;
+			std::shared_ptr <FileReference> ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
 			if (DragDropTarget(payloadName, ref))
 			{
-				valuePtr->get() = (Texture*)ref;
+				valuePtr->get() = std::dynamic_pointer_cast<Texture>(ref);
 				valueChangedTemp = true;
 			}
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Scene*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 		{
 			std::string inputText = "None (Scene)";
 			auto ptr = valuePtr->get();
@@ -654,15 +679,15 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 				valuePtr->get() = nullptr;
 			}
 
-			FileReference* ref = nullptr;
+			std::shared_ptr <FileReference> ref = nullptr;
 			std::string payloadName = "Files" + std::to_string(FileType::File_Scene);
 			if (DragDropTarget(payloadName, ref))
 			{
-				valuePtr->get() = (Scene*)ref;
+				valuePtr->get() = std::dynamic_pointer_cast<Scene>(ref);
 				valueChangedTemp = true;
 			}
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
 			int vectorSize = valuePtr->get().size();
 			for (int vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -686,11 +711,11 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 					valuePtr->get()[vectorI] = nullptr;
 				}
 
-				FileReference* ref = nullptr;
+				std::shared_ptr <FileReference> ref = nullptr;
 				std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
 				if (DragDropTarget(payloadName, ref))
 				{
-					valuePtr->get()[vectorI] = (Texture*)ref;
+					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<Texture>(ref);
 					valueChangedTemp = true;
 				}
 			}
@@ -775,7 +800,7 @@ int EditorUI::DrawInputButton(std::string inputName, std::string text, bool addU
 	return returnValue;
 }
 
-bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
+bool EditorUI::DragDropTarget(std::string name, std::shared_ptr <FileReference>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -784,7 +809,7 @@ bool EditorUI::DragDropTarget(std::string name, FileReference*& ref)
 		{
 			FileReference* movedFile = (FileReference*)payload->Data;
 
-			FileReference* file = ProjectManager::GetFileReferenceById(movedFile->fileId);
+			std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(movedFile->fileId);
 			if (file)
 			{
 				file->LoadFileReference();

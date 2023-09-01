@@ -15,6 +15,7 @@ class Texture;
 #include "../iDrawable.h"
 #include "../color/color.h"
 #include "../../engine.h"
+#include <memory>
 
 class API SpriteRenderer : public IDrawable
 {
@@ -38,7 +39,7 @@ public:
 	}
 
 	// Material* material = nullptr;
-	Texture *texture = nullptr;
+	std::shared_ptr <Texture> texture = nullptr;
 
 	void SetColor(Color color)
 	{

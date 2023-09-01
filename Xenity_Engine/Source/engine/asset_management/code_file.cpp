@@ -1,4 +1,5 @@
 #include "code_file.h"
+#include "asset_manager.h"
 
 CodeFile::CodeFile(std::string fileExtension)
 {
@@ -10,6 +11,13 @@ CodeFile::CodeFile(std::string fileExtension)
 	{
 		isHeader = false;
 	}
+}
+
+std::shared_ptr<CodeFile> CodeFile::MakeScene(std::string fileExtension)
+{
+	std::shared_ptr<CodeFile> newFileRef = std::make_shared<CodeFile>(fileExtension);
+	AssetManager::AddFileReference2(newFileRef);
+	return newFileRef;
 }
 
 std::unordered_map<std::string, Variable> CodeFile::GetReflection()

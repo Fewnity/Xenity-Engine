@@ -6,7 +6,7 @@
 
 using json = nlohmann::json;
 
-Scene* SceneManager::openedScene = nullptr;
+std::shared_ptr<Scene> SceneManager::openedScene = nullptr;
 
 json savedSceneData;
 json savedSceneDataHotReloading;
@@ -100,11 +100,11 @@ void SceneManager::LoadScene(json jsonData)
 	
 	EmptyScene();
 
-	while (AssetManager::GetFileReferenceCount() != 0) 
+	/*while (AssetManager::GetFileReferenceCount() != 0)
 	{
 		FileReference* fileRef = AssetManager::GetFileReference(0);
 		fileRef->UnloadFileReference();
-	}
+	}*/
 
 	std::vector<std::shared_ptr<Component>> allComponents;
 
@@ -218,7 +218,7 @@ void SceneManager::LoadScene(json jsonData)
 #endif
 }
 
-void SceneManager::LoadScene(Scene* scene)
+void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 {
 	Debug::Print("Loading scene...");
 	File* jsonFile = scene->file;

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 class MeshData;
 class Vector3;
@@ -35,7 +36,7 @@ public:
 	* @param useBlend Is depth for drawing
 	* @param useLighting Is depth for drawing
 	*/
-	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector<Texture*>textures, MeshData *meshData, bool useDepth, bool useBlend, bool useLighting);
+	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>>textures, std::shared_ptr < MeshData> meshData, bool useDepth, bool useBlend, bool useLighting);
 	
 	/**
 	* Draw a mesh with a signem submesh
@@ -48,13 +49,13 @@ public:
 	* @param useBlend Is depth for drawing
 	* @param useLighting Is depth for drawing
 	*/
-	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture*texture, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting);
+	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr<Texture> texture, std::shared_ptr<MeshData> meshData, bool useDepth, bool useBlend, bool useLighting);
 	
 	/**
 	* Load a mesh from a file path
 	* @param path File path
 	*/
-	static MeshData *LoadMesh(std::string path);
+	static std::shared_ptr <MeshData> LoadMesh(std::string path);
 
 private:
 };

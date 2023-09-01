@@ -163,7 +163,7 @@ public:
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
-	static FileReference* selectedFileReference;
+	static std::shared_ptr<FileReference> selectedFileReference;
 	static ProjectDirectory* currentProjectDirectory;
 	static int gameObjectCount;
 	static int gameObjectEditorCount;

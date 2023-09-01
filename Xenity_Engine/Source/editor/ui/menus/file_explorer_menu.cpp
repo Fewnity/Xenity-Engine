@@ -17,7 +17,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	{
 		if (item.file->fileType == File_Scene)
 		{
-			SceneManager::LoadScene((Scene*)item.file);
+			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
 		else if (item.file->fileType == File_Code)
 		{
@@ -50,34 +50,35 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	int availWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
-	unsigned int textureId = EditorUI::fileIcon->GetTextureId();
+	unsigned int textureId = EditorUI::icons[Icon_File]->GetTextureId();
 	if (!isFile)
 	{
-		textureId = EditorUI::folderIcon->GetTextureId();
+		textureId = EditorUI::icons[Icon_Folder]->GetTextureId();
 	}
 	else
 	{
 		int fileType = item.file->fileType;
 		if (fileType == File_Texture)
 		{
-			Texture* tex = (Texture*)item.file;
+			std::shared_ptr<Texture> tex = std::dynamic_pointer_cast<Texture>(item.file);
 			//textureId = tex->GetTextureId();
-			textureId = EditorUI::imageIcon->GetTextureId();
+			textureId = EditorUI::icons[Icon_Image]->GetTextureId();
 		}
 		else if (fileType == File_Scene)
 		{
-			textureId = EditorUI::sceneIcon->GetTextureId();
+			textureId = EditorUI::icons[Icon_Scene]->GetTextureId();
 		}
 		else if (fileType == File_Code)
 		{
-			if(((CodeFile*)item.file)->isHeader)
-				textureId = EditorUI::headerIcon->GetTextureId();
+			if(std::dynamic_pointer_cast<CodeFile>(item.file)->isHeader)
+			//if(((CodeFile*)item.file)->isHeader)
+				textureId = EditorUI::icons[Icon_Header]->GetTextureId();
 			else
-				textureId = EditorUI::codeIcon->GetTextureId();
+				textureId = EditorUI::icons[Icon_Code]->GetTextureId();
 		}
 		else if (fileType == File_Mesh)
 		{
-			textureId = EditorUI::meshIcon->GetTextureId();
+			textureId = EditorUI::icons[Icon_Mesh]->GetTextureId();
 		}
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
@@ -133,7 +134,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
 			std::string payloadName = "Files" + std::to_string(item.file->fileType);
-			ImGui::SetDragDropPayload(payloadName.c_str(), item.file, sizeof(FileReference));
+			ImGui::SetDragDropPayload(payloadName.c_str(), item.file.get(), sizeof(FileReference));
 			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
 			ImGui::TextWrapped(itemName.c_str());
 			ImGui::EndDragDropSource();

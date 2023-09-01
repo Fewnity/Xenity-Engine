@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <memory>
 #include "../reflection/reflection.h"
 
 class FileReference;
@@ -34,7 +35,7 @@ public:
 	std::string GetFolderName();
 	std::string path = "";
 	std::vector<ProjectDirectory*> subdirectories;
-	std::vector<FileReference*> files;
+	std::vector<std::shared_ptr<FileReference>> files;
 };
 
 class ProjectListItem 
@@ -66,12 +67,12 @@ public:
 	* Get file reference by Id
 	* @param id File reference Id
 	*/
-	static FileReference* GetFileReferenceById(uint64_t id);
+	static std::shared_ptr<FileReference> GetFileReferenceById(uint64_t id);
 
 	/**
 	* Save the meta file of a file reference
 	*/
-	static void SaveMetaFile(FileReference* fileReference);
+	static void SaveMetaFile(std::shared_ptr<FileReference> fileReference);
 
 	/**
 	* Load project settings
@@ -107,7 +108,7 @@ public:
 	/**
 	* Get game start scene
 	*/
-	static Scene* GetStartScene() 
+	static std::shared_ptr<Scene> GetStartScene() 
 	{
 		return startScene;
 	}
@@ -155,14 +156,14 @@ public:
 	static void SaveProjectsList(std::vector<ProjectListItem> projects);
 
 	static ProjectDirectory* projectDirectory;
-	static std::unordered_map<uint64_t, FileReference*> projectFilesRef;
+	static std::unordered_map<uint64_t, std::shared_ptr<FileReference>> projectFilesRef;
 
 private:
-	static void LoadMetaFile(FileReference* fileReference);
+	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
 	static bool projectLoaded;
 	static std::string projectName;
 	static std::string gameName;
-	static Scene* startScene;
+	static std::shared_ptr<Scene> startScene;
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;
 	static std::string assetFolderPath;

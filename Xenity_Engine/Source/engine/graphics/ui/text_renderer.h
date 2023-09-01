@@ -87,5 +87,5 @@ private:
 	int orderInLayer = 0;
 	TextInfo *textInfo = nullptr;
 	bool isTextInfoDirty = true;
-	MeshData *mesh = nullptr;
+	std::shared_ptr <MeshData> mesh = nullptr;
 };

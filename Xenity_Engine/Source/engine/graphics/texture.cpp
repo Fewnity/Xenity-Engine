@@ -21,16 +21,16 @@ Texture::Texture()
 {
 }
 
-Texture::Texture(const std::string filePath, std::string name, bool loadInVram)
+Texture::Texture(const std::string filePath, bool loadInVram)
 {
 	this->inVram = loadInVram;
-	CreateTexture(filePath, name, Bilinear, false);
+	//CreateTexture(filePath, Bilinear, false);
 }
 
-Texture::Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram)
+Texture::Texture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram)
 {
 	this->inVram = loadInVram;
-	CreateTexture(filePath, name, filter, useMipMap);
+	//CreateTexture(filePath, filter, useMipMap);
 }
 
 Texture::Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
@@ -54,7 +54,7 @@ Texture::Texture(unsigned char* data, const int channelCount, const int width, c
 	useMipMap = false;
 	if (data != nullptr)
 	{
-		SetData(data);
+		//SetData(data);
 		isValid = true;
 	}
 }
@@ -77,9 +77,46 @@ std::unordered_map<std::string, Variable> Texture::GetMetaReflection()
 	return reflectedVariables;
 }
 
+std::shared_ptr<Texture> Texture::MakeTexture()
+{
+	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>();
+	AssetManager::AddFileReference2(newTexture);
+	return newTexture;
+}
+
+std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, bool loadInVram)
+{
+	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, loadInVram);
+	AssetManager::AddFileReference2(newTexture);
+	return newTexture;
+}
+
+std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram)
+{
+	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, filter, useMipMap, loadInVram);
+	AssetManager::AddFileReference2(newTexture);
+	return newTexture;
+}
+
+std::shared_ptr<Texture> Texture::MakeTexture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
+{
+	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureId, channelCount, width, height, loadInVram);
+	AssetManager::AddFileReference2(newTexture);
+	return newTexture;
+}
+
+std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
+{
+	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
+	AssetManager::AddFileReference2(newTexture);
+	return newTexture;
+}
+
+
 Texture::~Texture()
 {
-	AssetManager::RemoveTexture(this);
+	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
+	UnloadFileReference();
 	// Engine::renderer->DeleteTexture(this);
 }
 
@@ -88,8 +125,8 @@ void Texture::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		AssetManager::AddFileReference(this);
-		CreateTexture(file->GetPath(), file->GetPath(), filter, useMipMap);
+		//AssetManager::AddFileReference(this);
+		CreateTexture(file->GetPath(), filter, useMipMap);
 	}
 }
 
@@ -98,7 +135,7 @@ void Texture::UnloadFileReference()
 	if (isLoaded)
 	{
 		isLoaded = false;
-		AssetManager::RemoveFileReference(this);
+		//AssetManager::RemoveFileReference(this);
 		Unload();
 	}
 }
@@ -109,15 +146,12 @@ void Texture::UnloadFileReference()
 /// <param name="filePath">File path</param>
 /// <param name="filter">Filter to use</param>
 /// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap)
+void Texture::CreateTexture(const std::string filePath, const Filter filter, const bool useMipMap)
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
-	this->name = name;
 
 	LoadTexture(filePath);
-
-	AssetManager::AddTexture(this);
 }
 
 #if defined(__PSP__)
@@ -320,9 +354,9 @@ void Texture::SetData(const unsigned char* texData)
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(this);
+	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
 	unsigned int alpha = 0x1906;
-	Engine::renderer->SetTextureData(this, alpha, texData);
+	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), alpha, texData);
 #endif
 }
 
@@ -337,11 +371,21 @@ void Texture::LoadTexture(const std::string filename)
 	std::string debugText = "Loading texture: ";
 	debugText += filename;
 	Debug::Print(debugText);
+	
+	int fileBufferSize  = 0;
+	//File* myFile = new File(filename);
+	file->Open(false);
+	unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
+	file->Close();
+	//delete myFile;
 
 	// Load image with stb_image
 	// stbi_set_flip_vertically_on_load(GL_TRUE);
-	unsigned char* buffer = stbi_load(path.c_str(), &width, &height,
+	unsigned char* buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
 		&nrChannels, 4);
+
+	free(fileData);
+
 	if (!buffer)
 	{
 		debugText = "Failed to load texture";
@@ -354,14 +398,15 @@ void Texture::LoadTexture(const std::string filename)
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(this);
+	std::cout << textureId << std::endl;
+	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
 	unsigned int rgba = 0x1908;
-	Engine::renderer->SetTextureData(this, rgba, buffer);
+	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), rgba, buffer);
 #endif
 
 	stbi_image_free(buffer);
 	isValid = true;
-	Debug::Print("Texture loaded");
+	//Debug::Print("Texture loaded");
 }
 
 void Texture::Unload()

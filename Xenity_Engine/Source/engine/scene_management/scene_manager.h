@@ -30,7 +30,7 @@ public:
 	* Load a scene
 	* @param scene Load scene
 	*/
-	static void LoadScene(Scene *scene);
+	static void LoadScene(std::shared_ptr<Scene>scene);
 
 #if defined(EDITOR)
 	/**
@@ -58,7 +58,7 @@ public:
 	/**
 	* [Internal] Get opened scene
 	*/
-	static Scene* GetOpenedScene() 
+	static std::shared_ptr<Scene> GetOpenedScene()
 	{
 		return openedScene;
 	}
@@ -66,13 +66,13 @@ public:
 	/**
 	* [Internal] Set opened scene
 	*/
-	static void SetOpenedScene(Scene* _openedScene)
+	static void SetOpenedScene(std::shared_ptr<Scene> _openedScene)
 	{
 		openedScene = _openedScene;
 	}
 
 private:
-	static Scene* openedScene;
+	static std::shared_ptr<Scene> openedScene;
 	static void LoadScene(nlohmann::json jsonData);
 };
 

@@ -2,6 +2,7 @@
 
 #include "menu.h"
 #include <string>
+#include <memory>
 
 class FileReference;
 class ProjectDirectory;
@@ -9,7 +10,7 @@ class ProjectDirectory;
 class FileExplorerItem 
 {
 public:
-	FileReference* file = nullptr;
+	std::shared_ptr<FileReference> file = nullptr;
 	ProjectDirectory* directory = nullptr;
 };
 

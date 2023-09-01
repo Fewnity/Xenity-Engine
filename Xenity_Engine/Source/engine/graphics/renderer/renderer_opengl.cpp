@@ -259,7 +259,7 @@ void RendererOpengl::MoveTransform(Vector3 position)
 	glTranslatef(-position.x, position.y, position.z);
 }
 
-void RendererOpengl::BindTexture(Texture *texture)
+void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 {
 
 #if defined(__PSP__)
@@ -286,7 +286,7 @@ void RendererOpengl::BindTexture(Texture *texture)
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
-void RendererOpengl::ApplyTextureFilters(Texture *texture)
+void RendererOpengl::ApplyTextureFilters(std::shared_ptr <Texture >texture)
 {
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
@@ -328,7 +328,7 @@ void RendererOpengl::ApplyTextureFilters(Texture *texture)
 #endif
 }
 
-void RendererOpengl::DrawMeshData(MeshData* meshData, std::vector<Texture*> textures, RenderingSettings settings)
+void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vector< std::shared_ptr<Texture>> textures, RenderingSettings settings)
 {
 	float material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};  /* default value */
 	float material_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};  /* default value */
@@ -587,7 +587,7 @@ unsigned int RendererOpengl::CreateNewTexture()
 	return 0;
 }
 
-void RendererOpengl::DeleteTexture(Texture *texture)
+void RendererOpengl::DeleteTexture(Texture* texture)
 {
 #if defined(__PSP__)
 #else
@@ -596,7 +596,7 @@ void RendererOpengl::DeleteTexture(Texture *texture)
 #endif
 }
 
-void RendererOpengl::SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer)
+void RendererOpengl::SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);

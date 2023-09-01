@@ -29,7 +29,7 @@ void TextManager::Init()
     textBenchmark = new ProfilerBenchmark("Text", "Text");
 }
 
-void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture)
+void TextManager::DrawTextMesh(std::shared_ptr<MeshData> mesh, bool for3D, bool invertFaces, std::shared_ptr <Texture> texture)
 {
     // Set draw settings
     RenderingSettings renderSettings = RenderingSettings();
@@ -39,7 +39,7 @@ void TextManager::DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Tex
     renderSettings.useTexture = true;
     renderSettings.useLighting = for3D;
 
-    std::vector<Texture*> textures;
+    std::vector< std::shared_ptr<Texture>> textures;
     textures.push_back(texture);
     Engine::renderer->DrawMeshData(mesh, textures, renderSettings);
 }
@@ -66,7 +66,7 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
     Engine::renderer->SetTransform(pos, rot, scl, true);
 }
 
-MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font * font)
+std::shared_ptr <MeshData> TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font * font)
 {
     if (!font)
         return nullptr;
@@ -109,7 +109,8 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
 
     // Create empty mesh
     int charCountToDraw = textLenght - (textInfo->lineCount - 1);
-    MeshData *mesh = new MeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
+    std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
+
     mesh->unifiedColor = color;
 
     int drawnCharIndex = 0;
@@ -146,7 +147,7 @@ MeshData *TextManager::CreateMesh(std::string &text, TextInfo *textInfo, Horizon
     return mesh;
 }
 
-void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, MeshData *mesh, Font* font)
+void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, Font* font)
 {
     if (!font) 
     {
@@ -187,7 +188,7 @@ void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlig
     }
 }
 
-void TextManager::AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex)
+void TextManager::AddCharToMesh(std::shared_ptr <MeshData > mesh, Character *ch, float x, float y, int letterIndex)
 {
     int indice = letterIndex * 4;
     int indiceIndex = letterIndex * 6;
@@ -319,7 +320,8 @@ Font *TextManager::CreateFont(std::string filePath)
         }
     }
 
-    font->fontAtlas = new Texture(atlas, channelCount, atlasSize, atlasSize, false);
+    font->fontAtlas = Texture::MakeTexture(atlas, channelCount, atlasSize, atlasSize, false);
+    font->fontAtlas->SetData(atlas);
     font->fontAtlas->SetFilter(Texture::Bilinear);
     font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
 

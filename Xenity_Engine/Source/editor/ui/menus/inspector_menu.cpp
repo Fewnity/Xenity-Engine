@@ -5,7 +5,7 @@
 #include "../../editor.h"
 #include "../../../engine/asset_management/project_manager.h"
 
-FileReference* loadedPreview = nullptr;
+std::shared_ptr<FileReference> loadedPreview = nullptr;
 std::string previewText = "";
 
 void InspectorMenu::Init()
@@ -18,7 +18,7 @@ void InspectorMenu::Draw()
 
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
 	auto selectedGameObject = Engine::selectedGameObject.lock();
-	FileReference* selectedFileReference = Engine::selectedFileReference;
+	std::shared_ptr<FileReference> selectedFileReference = Engine::selectedFileReference;
 
 	if (selectedFileReference)
 	{

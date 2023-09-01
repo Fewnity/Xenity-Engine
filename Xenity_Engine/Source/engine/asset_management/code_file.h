@@ -17,6 +17,7 @@ public:
 	CodeFile(std::string fileExtension);
 	std::unordered_map<std::string, Variable> GetReflection();
 	std::unordered_map < std::string, Variable> GetMetaReflection();
+	static std::shared_ptr<CodeFile> MakeScene(std::string fileExtension);
 	bool isHeader = false;
 };
 

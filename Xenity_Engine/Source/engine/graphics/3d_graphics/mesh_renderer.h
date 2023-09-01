@@ -10,7 +10,7 @@
 
 #include "../iDrawable.h"
 #include <vector>
-
+#include <memory>
 class MeshData;
 class Texture;
 
@@ -23,8 +23,8 @@ public:
     std::unordered_map<std::string, Variable> GetReflection();
     int GetDrawPriority() const;
 
-    MeshData *meshData = nullptr;
-    std::vector<Texture*> textures;
+    std::shared_ptr <MeshData> meshData = nullptr;
+    std::vector< std::shared_ptr<Texture>> textures;
 
 private:
     void Draw();

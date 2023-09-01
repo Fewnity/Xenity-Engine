@@ -24,9 +24,9 @@ void MeshManager::Init()
     Debug::Print("-------- Mesh Manager initiated --------");
 }
 
-MeshData *MeshManager::LoadMesh(std::string path)
+std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
 {
-    MeshData * mesh = new MeshData();
+    std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
     mesh->fileId = UniqueId::GenerateUniqueId(true);
     mesh->file = new File(path);
     mesh->fileType = File_Mesh;
@@ -34,7 +34,7 @@ MeshData *MeshManager::LoadMesh(std::string path)
     return mesh;
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector<Texture*> textures, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, bool useDepth, bool useBlend, bool useLighting)
 {
     //if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->subMeshes[0]->vertice_count == 0))
     if (!meshData)
@@ -87,9 +87,9 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
     meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, Texture* texture, MeshData* meshData, bool useDepth, bool useBlend, bool useLighting)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, bool useDepth, bool useBlend, bool useLighting)
 {
-    std::vector<Texture*> textures;
+    std::vector< std::shared_ptr<Texture>> textures;
     textures.push_back(texture);
     DrawMesh(position, rotation, scale, textures, meshData, useDepth, useBlend, useLighting);
 }

@@ -31,13 +31,13 @@ public:
 	void SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform);
 	void SetTransform(glm::mat4 &mat);
 	void MoveTransform(Vector3 position);
-	void BindTexture(Texture *texture);
-	void ApplyTextureFilters(Texture *texture);
-	void DrawMeshData(MeshData *meshData, std::vector<Texture*> textures, RenderingSettings settings);
+	void BindTexture(std::shared_ptr <Texture> texture);
+	void ApplyTextureFilters(std::shared_ptr <Texture> texture);
+	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings settings);
 	void DrawLine(Vector3 a, Vector3 bn, Color& color);
 	unsigned int CreateNewTexture();
 	void DeleteTexture(Texture* texture);
-	void SetTextureData(Texture *texture, unsigned int textureType, const unsigned char *buffer);
+	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer);
 	void Clear();
 
 private:

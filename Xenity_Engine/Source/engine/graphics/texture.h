@@ -47,7 +47,7 @@ public:
     * @param filePath File path
     * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
     */
-    Texture(const std::string filePath, std::string name, bool loadInVram);
+    Texture(const std::string filePath, bool loadInVram);
 
     /**
     * Load texture from a path
@@ -56,7 +56,7 @@ public:
     * @param useMipMap Use mip map
     * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
     */
-    Texture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap, bool loadInVram);
+    Texture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram);
 
     /**
     * [Internal]
@@ -70,6 +70,12 @@ public:
 
     std::unordered_map<std::string, Variable> GetReflection();
     std::unordered_map<std::string, Variable> GetMetaReflection();
+
+    static std::shared_ptr<Texture> MakeTexture();
+    static std::shared_ptr<Texture> MakeTexture(const std::string filePath, bool loadInVram);
+    static std::shared_ptr<Texture> MakeTexture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram);
+    static std::shared_ptr<Texture> MakeTexture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
+    static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
     ~Texture();
 
@@ -145,7 +151,6 @@ public:
     */
     Texture::WrapMode GetWrapMode() const;
 
-    std::string name = "";
     int mipmaplevelCount = 0;
     bool useMipMap = false;
     bool inVram = true;
@@ -180,7 +185,7 @@ private:
     * @param filter Texture filter
     * @param useMipMap Use mip map
     */
-    void CreateTexture(const std::string filePath, std::string name, const Filter filter, const bool useMipMap);
+    void CreateTexture(const std::string filePath, const Filter filter, const bool useMipMap);
 
     /**
     * Load texture data

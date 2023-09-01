@@ -5,16 +5,15 @@
 
 // std::vector<Shader*> AssetManager::shaders;
 // std::vector<Material*> AssetManager::materials;
-std::vector<Texture *> AssetManager::textures;
-std::vector<FileReference*> AssetManager::fileReferences;
+
+std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences2;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
 
 // int AssetManager::shaderCount = 0;
 // int AssetManager::materialCount = 0;
-int AssetManager::textureCount = 0;
-int AssetManager::fileReferenceCount = 0;
+int AssetManager::fileReferenceCount2 = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
 // int AssetManager::meshDataCount = 0;
@@ -23,7 +22,7 @@ int AssetManager::lightCount = 0;
 // Material* AssetManager::default2DMaterial = nullptr;
 // Material* AssetManager::defaultUIMaterial = nullptr;
 
-Texture *AssetManager::defaultTexture = nullptr;
+std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
 
 // void AssetManager::ResetMaterialsUpdates()
 // {
@@ -39,8 +38,9 @@ Texture *AssetManager::defaultTexture = nullptr;
  */
 void AssetManager::Init()
 {
-	defaultTexture = new Texture("engine_assets\\default_texture.png", "@Internal_default_texture", true);
-
+	defaultTexture = Texture::MakeTexture("engine_assets\\default_texture.png", true);
+	defaultTexture->file = new File("engine_assets\\default_texture.png");
+	defaultTexture->LoadFileReference();
 	// Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 
 	// default3DMaterial = new Material("3D Standard");
@@ -81,20 +81,18 @@ void AssetManager::Init()
 // 	materialCount++;
 // }
 
-/// <summary>
-/// Add a texture in the texture list
-/// </summary>
-/// <param name="texture"></param>
-void AssetManager::AddTexture(Texture *texture)
+void AssetManager::AddFileReference2(std::shared_ptr<FileReference> fileReference)
 {
-	textures.push_back(texture);
-	textureCount++;
-}
-
-void AssetManager::AddFileReference(FileReference* fileReference)
-{
-	fileReferences.push_back(fileReference);
-	fileReferenceCount++;
+	for (int i = 0; i < fileReferenceCount2; i++)
+	{
+		if (fileReferences2[i] == fileReference) 
+		{
+			Debug::Print("OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			return;
+		}
+	}
+	fileReferences2.push_back(fileReference);
+	fileReferenceCount2++;
 }
 
 /// <summary>
@@ -179,38 +177,13 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 // 	}
 // }
 
-/// <summary>
-/// Remove a texture from the texture list
-/// </summary>
-/// <param name="texture"></param>
-void AssetManager::RemoveTexture(Texture *texture)
-{
-	int textureIndex = 0;
-	bool found = false;
-	for (int i = 0; i < textureCount; i++)
-	{
-		if (textures[i] == texture)
-		{
-			found = true;
-			textureIndex = i;
-			break;
-		}
-	}
-
-	if (found)
-	{
-		textures.erase(textures.begin() + textureIndex);
-		textureCount--;
-	}
-}
-
-void AssetManager::RemoveFileReference(FileReference* fileReference)
+void AssetManager::RemoveFileReference2(std::shared_ptr<FileReference> fileReference)
 {
 	int fileReferenceIndex = 0;
 	bool found = false;
-	for (int i = 0; i < fileReferenceCount; i++)
+	for (int i = 0; i < fileReferenceCount2; i++)
 	{
-		if (fileReferences[i] == fileReference)
+		if (fileReferences2[i] == fileReference)
 		{
 			found = true;
 			fileReferenceIndex = i;
@@ -220,8 +193,8 @@ void AssetManager::RemoveFileReference(FileReference* fileReference)
 
 	if (found)
 	{
-		fileReferences.erase(fileReferences.begin() + fileReferenceIndex);
-		fileReferenceCount--;
+		fileReferences2.erase(fileReferences2.begin() + fileReferenceIndex);
+		fileReferenceCount2--;
 	}
 }
 
@@ -323,26 +296,9 @@ void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 // 	return nullptr;
 // }
 
-Texture *AssetManager::GetTexture(const int index)
+std::shared_ptr<FileReference> AssetManager::GetFileReference2(const int index)
 {
-	return textures[index];
-}
-
-FileReference* AssetManager::GetFileReference(const int index)
-{
-	return fileReferences[index];
-}
-
-Texture *AssetManager::GetTextureByName(const std::string name)
-{
-	for (int i = 0; i < textureCount; i++)
-	{
-		if (textures[i]->name == name)
-		{
-			return textures[i];
-		}
-	}
-	return nullptr;
+	return fileReferences2[index];
 }
 
 std::weak_ptr<IDrawable> AssetManager::GetDrawable(const int index)
@@ -386,14 +342,9 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 // 	return materialCount;
 // }
 
-int AssetManager::GetTextureCount()
+int AssetManager::GetFileReferenceCount2()
 {
-	return textureCount;
-}
-
-int AssetManager::GetFileReferenceCount()
-{
-	return fileReferenceCount;
+	return fileReferenceCount2;
 }
 
 int AssetManager::GetDrawableCount()

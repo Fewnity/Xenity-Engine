@@ -88,5 +88,5 @@ private:
 	TextInfo *textInfo = nullptr;
 	Font *font = nullptr;
 	bool isTextInfoDirty = true;
-	MeshData *mesh = nullptr;
+	std::shared_ptr<MeshData> mesh = nullptr;
 };

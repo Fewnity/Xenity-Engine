@@ -47,54 +47,54 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 					auto go = FindGameObjectById(kv.value());
 					valuePtr->get() = go->GetTransform();
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 				{
 					int fileId = kv.value();
-					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
+					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
 					if (file)
 					{
 						file->LoadFileReference();
-						valuePtr->get() = (Texture*)file;
+						valuePtr->get() = std::dynamic_pointer_cast<Texture>(file);
 					}
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{
 					int fileId = kv.value();
-					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
+					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
 					if (file)
 					{
 						file->LoadFileReference();
-						valuePtr->get() = (MeshData*)file;
+						valuePtr->get() = std::dynamic_pointer_cast<MeshData>(file);
 					}
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<Scene*>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 				{
 					int fileId = kv.value();
-					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
+					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
 					if (file)
 					{
 						file->LoadFileReference();
-						valuePtr->get() = (Scene*)file;
+						valuePtr->get() = std::dynamic_pointer_cast<Scene>(file);
 					}
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 				{
 					int fileId = kv.value();
-					FileReference* file = ProjectManager::GetFileReferenceById(fileId);
+					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
 					if (file)
 					{
 						file->LoadFileReference();
-						valuePtr->get() = (AudioClip*)file;
+						valuePtr->get() = std::dynamic_pointer_cast<AudioClip>(file);
 					}
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
 					int arraySize = kv.value().size();
 
 					int vectorSize = valuePtr->get().size();
 					for (int i = 0; i < arraySize; i++)
 					{
-						FileReference* file = nullptr;
+						std::shared_ptr<FileReference> file = nullptr;
 						if (!kv.value().at(i).is_null())
 						{
 							int fileId = kv.value().at(i);
@@ -104,11 +104,11 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 						}
 						if (i < vectorSize - 1)
 						{
-							valuePtr->get()[i] = (Texture*)file;
+							valuePtr->get()[i] = std::dynamic_pointer_cast<Texture>(file);
 						}
 						else
 						{
-							valuePtr->get().push_back((Texture*)file);
+							valuePtr->get().push_back(std::dynamic_pointer_cast<Texture>(file));
 						}
 					}
 				}
@@ -158,27 +158,27 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 			if (auto lockValue = (valuePtr->get()).lock()) 
 				json[kv.first] = lockValue->GetUniqueId();
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<MeshData*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = (valuePtr->get())->fileId;
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<AudioClip*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = (valuePtr->get())->fileId;
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Texture*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = (valuePtr->get())->fileId;
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Scene*>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = (valuePtr->get())->fileId;
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<Texture*>>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
 			int s = valuePtr->get().size();
 			for (int i = 0; i < s; i++)

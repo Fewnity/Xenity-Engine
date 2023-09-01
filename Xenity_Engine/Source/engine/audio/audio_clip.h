@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"
 
@@ -20,6 +21,6 @@ public:
     std::unordered_map<std::string, Variable> GetReflection();
     std::unordered_map<std::string, Variable> GetMetaReflection();
     std::string filePath = "";
-
+    static std::shared_ptr<AudioClip> MakeAudioClip(std::string filePath);
 private:
 };

@@ -29,6 +29,20 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	AllocSubMesh(vcount, index_count);
 }
 
+std::shared_ptr<MeshData> MeshData::MakeMeshData()
+{
+	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
+	AssetManager::AddFileReference2(newFileRef);
+	return newFileRef;
+}
+
+std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
+{
+	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>(vcount, index_count, useVertexColor, useNormals, useUV);
+	AssetManager::AddFileReference2(newFileRef);
+	return newFileRef;
+}
+
 // MeshData::MeshData(std::string filePath)
 // {
 // }
@@ -160,8 +174,8 @@ void MeshData::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		AssetManager::AddFileReference(this);
-		WavefrontLoader::LoadFromRawData(this);
+		//AssetManager::AddFileReference(this);
+		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 	}
 }
 
@@ -170,7 +184,7 @@ void MeshData::UnloadFileReference()
 	if (isLoaded)
 	{
 		isLoaded = false;
-		AssetManager::RemoveFileReference(this);
+		//AssetManager::RemoveFileReference(this);
 		Unload();
 	}
 }

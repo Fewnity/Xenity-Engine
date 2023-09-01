@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../engine/reflection/reflection.h"
+#include <memory>
 
 class File;
 
@@ -14,10 +15,10 @@ enum FileType
 	File_Code,
 };
 
-class FileReference
+class FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
-
+	FileReference(){}
 	/**
 	* Load the file
 	*/
@@ -39,7 +40,9 @@ public:
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual std::unordered_map<std::string, Variable> GetMetaReflection() = 0;
+	virtual std::unordered_map<std::string, Variable> GetMetaReflection() {
+		return std::unordered_map<std::string, Variable>();
+	}
 
 	uint64_t fileId = 0;
 	File* file = nullptr;

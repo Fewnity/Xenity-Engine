@@ -45,7 +45,7 @@ public:
     ~Font();
     Character *Characters[256] = {};
     float maxCharHeight = 0;
-    Texture *fontAtlas = nullptr;
+    std::shared_ptr <Texture> fontAtlas = nullptr;
 
 private:
 };
@@ -95,7 +95,7 @@ public:
     * @param mesh Mesh
     * @param font Font
     */
-    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, MeshData *mesh, Font* font);
+    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, Font* font);
 
     /**
     * Get informations about a text
@@ -115,7 +115,7 @@ public:
     * @param color Color
     * @param font Font
     */
-    static MeshData *CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font* font);
+    static std::shared_ptr <MeshData> CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font* font);
     
     static std::vector<Font *> fonts;
 
@@ -135,7 +135,7 @@ private:
     * @param mesh Mesh data
     * @param for3D 3D text mode
     */
-    static void DrawTextMesh(MeshData *mesh, bool for3D, bool invertFaces, Texture* texture);
+    static void DrawTextMesh(std::shared_ptr <MeshData> mesh, bool for3D, bool invertFaces, std::shared_ptr <Texture> texture);
 
     /**
     * @brief Add a char to the mesh
@@ -146,7 +146,7 @@ private:
     * @param y Char Y position
     * @param letterIndex Letter index in the string
     */
-    static void AddCharToMesh(MeshData *mesh, Character *ch, float x, float y, int letterIndex);
+    static void AddCharToMesh(std::shared_ptr<MeshData> mesh, Character *ch, float x, float y, int letterIndex);
 
-    static std::vector<MeshData *> meshes;
+    static std::vector<std::shared_ptr<MeshData>> meshes;
 };

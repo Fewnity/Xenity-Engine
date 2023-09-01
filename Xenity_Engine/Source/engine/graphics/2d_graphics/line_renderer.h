@@ -50,6 +50,6 @@ class API LineRenderer : public IDrawable
 	private:
 		void Draw();
 		int orderInLayer = 0;
-		MeshData* meshData = nullptr;
+		std::shared_ptr <MeshData> meshData = nullptr;
 };
 

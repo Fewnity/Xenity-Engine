@@ -22,13 +22,13 @@ SkyBox* Graphics::skybox = nullptr;
 ProfilerBenchmark* orderBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
-MeshData* skyPlane = nullptr;
-MeshData* rightArrow = nullptr;
-MeshData* upArrow = nullptr;
-MeshData* forwardArrow = nullptr;
-Texture* toolArrowsTexture = nullptr;
+std::shared_ptr <MeshData> skyPlane = nullptr;
+std::shared_ptr <MeshData> rightArrow = nullptr;
+std::shared_ptr <MeshData> upArrow = nullptr;
+std::shared_ptr <MeshData> forwardArrow = nullptr;
+std::shared_ptr <Texture> toolArrowsTexture = nullptr;
 
-SkyBox::SkyBox(Texture* front, Texture* back, Texture* up, Texture* down, Texture* left, Texture* right)
+SkyBox::SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture>back, std::shared_ptr<Texture> up, std::shared_ptr<Texture>down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right)
 {
 	this->front = front;
 	this->back = back;
@@ -58,18 +58,31 @@ void Graphics::Init()
 	// Texture *up = new Texture("space_up.png", "space_up", false);
 	// up->SetWrapMode(Texture::ClampToEdge);
 
-	Texture* back = new Texture("assets\\sunset_back.png", "sunset_back", false);
+	std::shared_ptr<Texture> back = Texture::MakeTexture("assets\\sunset_back.png", false);
+	back->file = new File("assets\\sunset_back.png");
 	back->SetWrapMode(Texture::ClampToEdge);
-	Texture* down = new Texture("assets\\sunset_down.png", "sunset_down", false);
+	std::shared_ptr<Texture> down = Texture::MakeTexture("assets\\sunset_down.png", false);
+	down->file = new File("assets\\sunset_down.png");
 	down->SetWrapMode(Texture::ClampToEdge);
-	Texture* front = new Texture("assets\\sunset_front.png", "sunset_front", false);
+	std::shared_ptr<Texture> front = Texture::MakeTexture("assets\\sunset_front.png", false);
+	front->file = new File("assets\\sunset_front.png");
 	front->SetWrapMode(Texture::ClampToEdge);
-	Texture* left = new Texture("assets\\sunset_left.png", "sunset_left", false);
+	std::shared_ptr<Texture> left = Texture::MakeTexture("assets\\sunset_left.png", false);
+	left->file = new File("assets\\sunset_left.png");
 	left->SetWrapMode(Texture::ClampToEdge);
-	Texture* right = new Texture("assets\\sunset_right.png", "sunset_right", false);
+	std::shared_ptr<Texture> right = Texture::MakeTexture("assets\\sunset_right.png", false);
+	right->file = new File("assets\\sunset_right.png");
 	right->SetWrapMode(Texture::ClampToEdge);
-	Texture* up = new Texture("assets\\sunset_up.png", "sunset_up", false);
+	std::shared_ptr<Texture> up = Texture::MakeTexture("assets\\sunset_up.png", false);
+	up->file = new File("assets\\sunset_up.png");
 	up->SetWrapMode(Texture::ClampToEdge);
+
+	back->LoadFileReference();
+	down->LoadFileReference();
+	front->LoadFileReference();
+	left->LoadFileReference();
+	right->LoadFileReference();
+	up->LoadFileReference();
 
 	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
 	SetSkybox(skybox);
@@ -81,8 +94,10 @@ void Graphics::Init()
 	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
 	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
 
-	toolArrowsTexture = new Texture("engine_assets\\tool_arrows_colors.png", "@Internal_tool_arrows_colors", true);
+	toolArrowsTexture = Texture::MakeTexture("engine_assets\\tool_arrows_colors.png", true);
+	toolArrowsTexture->file = new File("engine_assets\\tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Texture::Point);
+	toolArrowsTexture->LoadFileReference();
 #endif
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");

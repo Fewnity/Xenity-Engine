@@ -29,13 +29,13 @@ public:
 	* @param left Left face
 	* @param right Right face
 	*/
-	SkyBox(Texture *front, Texture *back, Texture *up, Texture *down, Texture *left, Texture *right);
-	Texture *front = nullptr;
-	Texture *back = nullptr;
-	Texture *up = nullptr;
-	Texture *down = nullptr;
-	Texture *left = nullptr;
-	Texture *right = nullptr;
+	SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture> back, std::shared_ptr<Texture> up, std::shared_ptr<Texture> down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right);
+	std::shared_ptr<Texture> front = nullptr;
+	std::shared_ptr<Texture> back = nullptr;
+	std::shared_ptr<Texture> up = nullptr;
+	std::shared_ptr<Texture> down = nullptr;
+	std::shared_ptr<Texture> left = nullptr;
+	std::shared_ptr<Texture> right = nullptr;
 };
 
 class API Graphics

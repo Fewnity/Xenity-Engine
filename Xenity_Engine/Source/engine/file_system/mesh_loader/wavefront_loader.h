@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 class MeshData;
 class Vector3;
@@ -17,7 +18,7 @@ class Vector2;
 class API WavefrontLoader
 {
 public:
-	static bool LoadFromRawData(MeshData* mesh);
+	static bool LoadFromRawData(std::shared_ptr <MeshData> mesh);
 private:
 	class SubMesh
 	{

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../component.h"
+#include <memory>
 
 class AudioClip;
 
@@ -43,7 +44,7 @@ public:
     */
     void Stop();
 
-    AudioClip *audioClip = nullptr;
+    std::shared_ptr<AudioClip> audioClip = nullptr;
 
     /**
     * Set volume

@@ -14,11 +14,11 @@
 
 using json = nlohmann::json;
 
-std::unordered_map<uint64_t, FileReference*> ProjectManager::projectFilesRef;
+std::unordered_map<uint64_t, std::shared_ptr<FileReference>> ProjectManager::projectFilesRef;
 ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
-Scene *ProjectManager::startScene = nullptr;
+std::shared_ptr<Scene> ProjectManager::startScene = nullptr;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
@@ -56,7 +56,8 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 
 	for (auto fileRef : projectFilesRef)
 	{
-		delete fileRef.second;
+		fileRef.second.reset();
+		//delete fileRef.second;
 	}
 	projectFilesRef.clear();
 
@@ -164,23 +165,23 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 	//Create empty textures, meshes...
 	for (auto kv : compatibleFiles)
 	{
-		FileReference* fileRef = nullptr;
+		std::shared_ptr<FileReference> fileRef = nullptr;
 		switch (kv.second)
 		{
 		case File_Audio:
-			fileRef = new AudioClip(kv.first->GetPath());
+			fileRef = AudioClip::MakeAudioClip(kv.first->GetPath());
 			break;
 		case File_Mesh:
-			fileRef = new MeshData();
+			fileRef = MeshData::MakeMeshData();
 			break;
 		case File_Texture:
-			fileRef = new Texture();
+			fileRef = Texture::MakeTexture();
 			break;
 		case File_Scene:
-			fileRef = new Scene();
+			fileRef = Scene::MakeScene();
 			break;
 		case File_Code:
-			fileRef = new CodeFile(kv.first->GetFileExtension());
+			fileRef = CodeFile::MakeScene(kv.first->GetFileExtension());
 			break;
 		}
 
@@ -239,9 +240,9 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 	return projectLoaded;
 }
 
-FileReference* ProjectManager::GetFileReferenceById(uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 {
-	FileReference *fileRef = nullptr;
+	std::shared_ptr<FileReference> fileRef = nullptr;
 	if (id != -1)
 	{
 		auto it = projectFilesRef.find(id);
@@ -293,7 +294,7 @@ void ProjectManager::SaveProjectSettigs()
 	delete projectFile;
 }
 
-void ProjectManager::SaveMetaFile(FileReference* fileReference)
+void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 {
 	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + ".meta");
 	json metaData;
@@ -346,7 +347,7 @@ void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
 	file->Close();
 }
 
-void ProjectManager::LoadMetaFile(FileReference* fileReference)
+void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 {
 	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
 	if (metaFile->CheckIfExist())

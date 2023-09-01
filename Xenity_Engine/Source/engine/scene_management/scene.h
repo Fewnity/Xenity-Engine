@@ -17,6 +17,7 @@ public:
 	Scene();
 	std::unordered_map<std::string, Variable> GetReflection();
 	std::unordered_map<std::string, Variable> GetMetaReflection();
+	static std::shared_ptr<Scene> MakeScene();
 private:
 };
 

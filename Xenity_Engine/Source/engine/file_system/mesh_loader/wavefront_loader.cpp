@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool WavefrontLoader::LoadFromRawData(MeshData* mesh)
+bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 {
 	std::string finalpath = "";
 #ifdef __vita__

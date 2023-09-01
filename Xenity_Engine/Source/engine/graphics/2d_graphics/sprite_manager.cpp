@@ -19,7 +19,7 @@
 #include <vitaGL.h>
 #endif
 
-MeshData *SpriteManager::spriteMeshData = nullptr;
+std::shared_ptr <MeshData> SpriteManager::spriteMeshData = nullptr;
 
 ProfilerBenchmark *spriteBenchmark = nullptr;
 
@@ -32,7 +32,7 @@ void SpriteManager::Init()
     spriteBenchmark = new ProfilerBenchmark("Sprite", "Sprite");
 
     // Create sprite mesh
-    spriteMeshData = new MeshData(4, 6, false, false, true);
+    spriteMeshData = MeshData::MakeMeshData(4, 6, false, false, true);
     spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0,0);
     spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1,0);
     spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2,0);
@@ -59,7 +59,7 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, Texture *texture, Color color, std::weak_ptr<Transform> transform)
+void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, Color color, std::weak_ptr<Transform> transform)
 {
     if (!texture || !texture->IsValid())
     {
@@ -115,14 +115,14 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
 
         // Draw the sprite
         //Engine::renderer->BindTexture(texture);
-        std::vector<Texture*> textures;
+        std::vector<std::shared_ptr<Texture>> textures;
         textures.push_back(texture);
         Engine::renderer->DrawMeshData(spriteMeshData, textures,  renderSettings);
     }
     spriteBenchmark->Stop();
 }
 
-void SpriteManager::Render2DLine(MeshData* meshData) 
+void SpriteManager::Render2DLine(std::shared_ptr <MeshData> meshData)
 {
     if (!AssetManager::defaultTexture || !AssetManager::defaultTexture->IsValid())
     {
@@ -158,7 +158,7 @@ void SpriteManager::Render2DLine(MeshData* meshData)
         renderSettings.useTexture = true;
         renderSettings.useLighting = false;
 
-        std::vector<Texture*> textures;
+        std::vector<std::shared_ptr<Texture>> textures;
         textures.push_back(AssetManager::defaultTexture);
         Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
     }

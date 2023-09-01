@@ -23,7 +23,7 @@ std::unordered_map<std::string, Variable> AudioSource::GetReflection()
     std::unordered_map<std::string, Variable> reflectedVariables;
     reflectedVariables.insert_or_assign("volume", volume);
     reflectedVariables.insert_or_assign("pan", pan);
-    reflectedVariables.insert_or_assign("isPlaying", isPlaying);
+    //reflectedVariables.insert_or_assign("isPlaying", isPlaying);
     reflectedVariables.insert_or_assign("playOnAwake", playOnAwake);
     reflectedVariables.insert_or_assign("loop", loop);
     reflectedVariables.insert_or_assign("audioClip", audioClip);
@@ -74,7 +74,10 @@ void AudioSource::Play()
 
 void AudioSource::Resume()
 {
-    isPlaying = true;
+    if (audioClip != nullptr)
+    {
+        isPlaying = true;
+    }
 }
 
 void AudioSource::Pause()

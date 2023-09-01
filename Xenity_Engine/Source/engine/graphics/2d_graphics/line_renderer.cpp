@@ -51,7 +51,7 @@ void LineRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			if (meshData)
-				delete meshData;
+				meshData.reset();
 
 			//float sizeFixer = 0.1f;
 			float sizeFixer = 1.0f;
@@ -68,7 +68,7 @@ void LineRenderer::Draw()
 			float fixedXWidth = width2 / 2.0f * dir.y;
 			float fixedYWidth = width2 / 2.0f * dir.x;
 
-			meshData = new MeshData(4, 6, false, false, true);
+			meshData = MeshData::MakeMeshData(4, 6, false, false, true);
 			meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0, 0);
 			meshData->AddVertex(0.0f, 0.0f, end.x - fixedXWidth, end.y - fixedYWidth, 0.0f, 1, 0);
 			meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2, 0);
