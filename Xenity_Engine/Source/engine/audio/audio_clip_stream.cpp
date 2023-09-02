@@ -14,7 +14,13 @@ void AudioClipStream::OpenStream(std::string filePath)
     filePath = "ux0:" + filePath;
 #endif
     Debug::Print("Loading audio clip: " + filePath);
-    if (filePath.substr(filePath.size() - 3) == "wav")
+    std::string lowerExt = filePath.substr(filePath.size() - 3);
+    int pathSize = lowerExt.size();
+    for (int i = 0; i < pathSize; i++)
+    {
+        lowerExt[i] = tolower(lowerExt[i]);
+    }
+    if (lowerExt == "wav")
     {
         if (!drwav_init_file(&wav, filePath.c_str(), NULL))
         {
@@ -28,7 +34,7 @@ void AudioClipStream::OpenStream(std::string filePath)
             Debug::Print("Audio clip data: " + std::to_string(wav.channels) + " " + std::to_string(wav.sampleRate));
         }
     }
-    else if (filePath.substr(filePath.size() - 3) == "mp3")
+    else if (lowerExt == "mp3")
     {
         if (!drmp3_init_file(&mp3, filePath.c_str(), NULL))
         {
@@ -41,6 +47,10 @@ void AudioClipStream::OpenStream(std::string filePath)
             channelCount = mp3.channels;
             Debug::Print("Audio clip data: " + std::to_string(mp3.channels) + " " + std::to_string(mp3.sampleRate));
         }
+    }
+    else 
+    {
+        Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + filePath);
     }
 
     if (type == Mp3)
