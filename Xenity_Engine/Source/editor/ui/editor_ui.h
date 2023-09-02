@@ -27,6 +27,7 @@ enum IconName
 	Icon_Mesh,
 	Icon_Code,
 	Icon_Header,
+	Icon_Audio,
 	Icon_Count,
 };
 

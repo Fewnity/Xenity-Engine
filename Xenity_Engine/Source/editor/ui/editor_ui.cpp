@@ -73,6 +73,11 @@ void EditorUI::Init()
 	headerIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Header] = headerIcon;
 
+	std::shared_ptr<Texture> audioIcon = Texture::MakeTexture("icons/audio.png", true);
+	audioIcon->file = new File("icons/audio.png");
+	audioIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Audio] = audioIcon;
+
 	for (int i = 0; i < Icon_Count; i++)
 	{
 		icons[i]->LoadFileReference();
