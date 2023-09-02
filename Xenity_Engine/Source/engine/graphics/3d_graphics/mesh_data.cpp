@@ -174,7 +174,6 @@ void MeshData::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		//AssetManager::AddFileReference(this);
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 	}
 }
@@ -184,7 +183,6 @@ void MeshData::UnloadFileReference()
 	if (isLoaded)
 	{
 		isLoaded = false;
-		//AssetManager::RemoveFileReference(this);
 		Unload();
 	}
 }

@@ -162,39 +162,6 @@ int Engine::Init()
 
 	UnitTestManager::StartAllTests();
 
-	/*std::shared_ptr<Texture> myTex = Texture::MakeTexture("C:\\Users\\elect\\Desktop\\Game Project\\assets\\sunset_right.png", true);
-
-	int useCount = myTex.use_count();
-	int useCount3 = AssetManager::GetFileReference2(0).use_count();
-	myTex.reset();
-	int useCount2 = AssetManager::GetFileReference2(0).use_count();
-
-	for (int i = 0; i < AssetManager::GetFileReferenceCount2(); i++)
-	{
-		if (AssetManager::GetFileReference2(i).use_count() == 2) 
-		{
-			AssetManager::RemoveFileReference2(AssetManager::GetFileReference2(i));
-		}
-	}*/
-
-	//std::shared_ptr<FileReference> myFileRef = std::shared_ptr<FileReference>();
-	/*std::vector<std::shared_ptr<FileReference>> myFileRefs;
-	int refCount = -1;
-	int refCount2 = -1;
-	if (true) 
-	{
-		std::shared_ptr<Texture> myTex = std::make_shared<Texture>("C:\\Users\\elect\\Desktop\\Game Project\\assets\\sunset_right.png", true);
-		myFileRefs.push_back(std::make_shared<FileReference>(myTex));
-		//myFileRefs.push_back(std::dynamic_pointer_cast<FileReference>(myTex));
-		if (myTex)
-		{
-			Debug::Print("Salut");
-			refCount = myFileRefs[0].use_count();
-			myTex.reset();
-			refCount2 = myFileRefs[0].use_count();
-		}
-	}*/
-	std::cout << sizeof(FileReference) << std::endl;
 	return 0;
 }
 

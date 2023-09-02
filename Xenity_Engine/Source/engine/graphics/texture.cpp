@@ -117,7 +117,6 @@ Texture::~Texture()
 {
 	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
 	UnloadFileReference();
-	// Engine::renderer->DeleteTexture(this);
 }
 
 void Texture::LoadFileReference()
@@ -125,7 +124,6 @@ void Texture::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		//AssetManager::AddFileReference(this);
 		CreateTexture(file->GetPath(), filter, useMipMap);
 	}
 }
@@ -135,7 +133,6 @@ void Texture::UnloadFileReference()
 	if (isLoaded)
 	{
 		isLoaded = false;
-		//AssetManager::RemoveFileReference(this);
 		Unload();
 	}
 }
