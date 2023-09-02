@@ -3,6 +3,7 @@
 #include "audio_clip_stream.h"
 
 #include "../../xenity.h"
+#include <cstring>
 
 #if defined(__PSP__)
 #include <pspaudiolib.h>
@@ -65,7 +66,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	int playedSoundsCount = (int)channel->playedSounds.size();
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
-		auto sound = channel->playedSounds[soundIndex];
+		auto& sound = channel->playedSounds[soundIndex];
 #if defined(_WIN32) || defined(_WIN64)
 		float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
 		float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
@@ -76,31 +77,40 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 		float leftVolume = sound->volume * leftPan;
 		float rightVolume = sound->volume * rightPan;
 		bool isPlaying = sound->isPlaying;
+		int channelCount = sound->audioClipStream->GetChannelCount();
+		short* rightBuf = nullptr;
+		short* leftBuf = nullptr;
+		int frequency = sound->audioClipStream->GetFrequency();
+		int sampleCount = sound->audioClipStream->GetSampleCount();
+		int leftBufferIndex = 0;
+		int rightBufferIndex = 0;
+		short* soundBuffer = sound->buffer;
 
 		if (isPlaying)
 		{
 			for (int i = 0; i < length; i++)
 			{
-				int leftBufferIndex = i * 2;
-				int rightBufferIndex = 1 + i * 2;
-
-				if (sound->audioClipStream->GetChannelCount() == 2) 
+				leftBufferIndex = i * 2;
+				rightBufferIndex = 1 + i * 2;
+				leftBuf = &buffer[leftBufferIndex];
+				rightBuf = &buffer[rightBufferIndex];
+				if (channelCount == 2)
 				{
-					buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
-					buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition + 1] * rightVolume));
+					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->seekPosition] * leftVolume));
+					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->seekPosition + 1] * rightVolume));
 				}
 				else 
 				{
-					buffer[leftBufferIndex] = MixSoundToBuffer(buffer[leftBufferIndex], (short)(sound->buffer[sound->seekPosition] * leftVolume));
-					buffer[rightBufferIndex] = MixSoundToBuffer(buffer[rightBufferIndex], (short)(sound->buffer[sound->seekPosition] * rightVolume));
+					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->seekPosition] * leftVolume));
+					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->seekPosition] * rightVolume));
 				}
 
-				sound->seekNext += sound->audioClipStream->GetFrequency();
+				sound->seekNext += frequency;
 
 				while (sound->seekNext >= SOUND_FREQUENCY)
 				{
 					sound->seekNext -= SOUND_FREQUENCY;
-					if (sound->audioClipStream->GetChannelCount() == 2)
+					if (channelCount == 2)
 					{
 						sound->seekPosition += 2;
 					}
@@ -108,7 +118,8 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 					{
 						sound->seekPosition += 1;
 					}
-					if (sound->audioClipStream->GetSeekPosition() >= sound->audioClipStream->GetSampleCount())
+
+					if (sound->audioClipStream->GetSeekPosition() >= sampleCount)
 					{
 						sound->audioClipStream->ResetSeek();
 						sound->seekPosition = 0;
@@ -212,7 +223,7 @@ int fillAudioBufferThread()
 			int playedSoundsCount = (int)channel->playedSounds.size();
 			for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 			{
-				auto sound = channel->playedSounds[soundIndex];
+				auto& sound = channel->playedSounds[soundIndex];
 
 				int bufferSizeToUse = quarterBuffSize;
 				if (sound->audioClipStream->GetChannelCount() == 1) 
@@ -245,7 +256,7 @@ int fillAudioBufferThread()
 			int count = (int)channel->playedSounds.size();
 			for (int i = 0; i < count; i++)
 			{
-				auto playedSound = channel->playedSounds[i];
+				auto& playedSound = channel->playedSounds[i];
 				playedSound->volume = playedSound->audioSource->GetVolume();
 				playedSound->pan = playedSound->audioSource->GetPanning();
 				playedSound->isPlaying = playedSound->audioSource->GetIsPlaying();
