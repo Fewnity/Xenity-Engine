@@ -28,7 +28,7 @@ void HierarchyMenu::Draw()
 	if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
 	{
 		Engine::selectedGameObject.reset();
-		Engine::selectedFileReference = nullptr;
+		Engine::SetSelectedFileReference(nullptr);
 	}
 	ImGui::EndChild();
 

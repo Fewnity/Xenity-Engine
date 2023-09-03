@@ -443,7 +443,7 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 	{
 		int childCount = (int)projectDir->subdirectories.size();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-		if (Engine::currentProjectDirectory == projectDir)
+		if (Engine::GetCurrentProjectDirectory() == projectDir)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
@@ -456,7 +456,7 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
 		{
-			Engine::currentProjectDirectory = projectDir;
+			Engine::SetCurrentProjectDirectory(projectDir);
 			objectClicked = true;
 		}
 		if (opened)
@@ -517,7 +517,7 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
 			{
 				Engine::SetSelectedGameObject(child);
-				Engine::selectedFileReference = nullptr;
+				Engine::SetSelectedFileReference(nullptr);
 				objectClicked = true;
 			}
 		}

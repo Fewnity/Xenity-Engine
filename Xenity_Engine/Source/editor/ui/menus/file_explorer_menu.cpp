@@ -27,8 +27,8 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	}
 	else if(item.directory)
 	{
-		Engine::currentProjectDirectory = item.directory;
-		Engine::selectedFileReference = nullptr;
+		Engine::SetCurrentProjectDirectory(item.directory);
+		Engine::SetSelectedFileReference(nullptr);
 	}
 }
 
@@ -61,8 +61,11 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		if (fileType == File_Texture)
 		{
 			std::shared_ptr<Texture> tex = std::dynamic_pointer_cast<Texture>(item.file);
-			//textureId = tex->GetTextureId();
-			textureId = EditorUI::icons[Icon_Image]->GetTextureId();
+			textureId = tex->GetTextureId();
+			if (textureId == 0) 
+			{
+				textureId = EditorUI::icons[Icon_Image]->GetTextureId();
+			}
 		}
 		else if (fileType == File_Scene)
 		{
@@ -71,7 +74,6 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		else if (fileType == File_Code)
 		{
 			if(std::dynamic_pointer_cast<CodeFile>(item.file)->isHeader)
-			//if(((CodeFile*)item.file)->isHeader)
 				textureId = EditorUI::icons[Icon_Header]->GetTextureId();
 			else
 				textureId = EditorUI::icons[Icon_Code]->GetTextureId();
@@ -112,7 +114,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			if (isFile)
 			{
-				Engine::selectedFileReference = item.file;
+				Engine::SetSelectedFileReference(item.file);
 			}
 
 			Engine::selectedGameObject.reset();
@@ -150,7 +152,6 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, std::string id)
 {
 	int state = 0;
-	//std::string id = EditorUI::GenerateItemId();
 	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
 	{
 		ImGui::OpenPopup(id.c_str());
@@ -206,9 +207,9 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath()+".meta");
 				ProjectManager::LoadProject(ProjectManager::GetProjectFolderPath());
-				if (Engine::selectedFileReference == fileExplorerItem.file) 
+				if (Engine::GetSelectedFileReference() == fileExplorerItem.file)
 				{
-					Engine::selectedFileReference = nullptr;
+					Engine::SetSelectedFileReference(nullptr);
 				}
 			}
 			ImGui::CloseCurrentPopup();
@@ -247,10 +248,10 @@ void FileExplorerMenu::Draw()
 		int currentCol = 0;
 		if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
 		{
-			ProjectDirectory* currentDir = Engine::currentProjectDirectory;
+			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
 			int folderCount = currentDir->subdirectories.size();
 			int fileCount = currentDir->files.size();
-
+			std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
 			for (int i = 0; i < folderCount; i++)
 			{
 				FileExplorerItem item;
@@ -261,7 +262,7 @@ void FileExplorerMenu::Draw()
 			for (int i = 0; i < fileCount; i++)
 			{
 				FileExplorerItem item;
-				item.file = currentDir->files[i];
+				item.file = filesRefs[i];
 				DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, item.file->file->GetFileName());
 			}
 			ImGui::EndTable();
@@ -271,14 +272,14 @@ void FileExplorerMenu::Draw()
 		// Unselect file or open the popup if background is clicked
 		if (!fileHovered)
 		{
-			ProjectDirectory* currentDir = Engine::currentProjectDirectory;
+			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
 			FileExplorerItem item;
 			item.directory = currentDir;
 			int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick");
 			if ((result == 0 && (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) || result != 0)
 			{
 				if(ImGui::IsWindowHovered())
-					Engine::selectedFileReference = nullptr;
+					Engine::SetSelectedFileReference(nullptr);
 			}
 		}
 	}

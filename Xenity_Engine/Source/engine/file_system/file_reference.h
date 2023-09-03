@@ -44,7 +44,7 @@ public:
 		return std::unordered_map<std::string, Variable>();
 	}
 
-	uint64_t fileId = 0;
+	uint64_t fileId = -1;
 	File* file = nullptr;
 	FileType fileType = File_Other;
 	bool isLoaded = false;

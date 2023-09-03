@@ -13,14 +13,19 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 For tomorrow
-Preview part in inspector
-Improve profiler
+Preview part in inspector : Add audio and mesh preview
+Add find function for child only in a gameobject
+Finish optimise LoadScene
+Create lighting tab and add skybox to it
+Fix Awake : Call awake when a gameobject was disabled and the enabled
+Apply texture filter before drawing imgui images
+Fix audio when closing the editor
+Fix error when unloading files (check if engine is running)
 
 Add more unit tests
+PSP Texture problem since : Free texture and mesh data on unload
 
-Improve file explorer code
-Automatic file unload system
-Re add delete texture function in renderer
+Add delete texture function in renderer for psp
 Fix mouse speed at high fps
 Add transparency setting on textures
 Packing asset system
@@ -35,7 +40,6 @@ Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 Add materials
 Add async texture loading
 Add shaders
-Add sounds on windows
 Fix uniqueID when loading a new scene (set id to the max find in the file)
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)

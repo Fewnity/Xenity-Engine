@@ -157,14 +157,17 @@ public:
 		return isRunning;
 	}
 
+	static void SetCurrentProjectDirectory(ProjectDirectory* dir);
+	static ProjectDirectory* GetCurrentProjectDirectory();
+	static void SetSelectedFileReference(std::shared_ptr<FileReference> fileReference);
+	static std::shared_ptr<FileReference> GetSelectedFileReference();
+
 	static GameInterface* game;
 	static bool componentsListDirty;
 	static bool drawOrderListDirty;
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static std::weak_ptr<GameObject> selectedGameObject;
-	static std::shared_ptr<FileReference> selectedFileReference;
-	static ProjectDirectory* currentProjectDirectory;
 	static int gameObjectCount;
 	static int gameObjectEditorCount;
 	static Renderer *renderer;
@@ -175,6 +178,8 @@ public:
 	static bool canUpdateAudio;
 
 private:
+	static std::shared_ptr<FileReference> selectedFileReference;
+	static ProjectDirectory* currentProjectDirectory;
 
 	/**
 	* Update all active components

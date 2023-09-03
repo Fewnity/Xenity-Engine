@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include "../color/color.h"
 #include "../../debug/debug.h"
+#include "../../engine.h"
 
 #ifdef __PSP__
 #include <pspkernel.h>
@@ -180,10 +181,13 @@ void MeshData::LoadFileReference()
 
 void MeshData::UnloadFileReference()
 {
-	if (isLoaded)
+	if (Engine::IsRunning())
 	{
-		isLoaded = false;
-		Unload();
+		if (isLoaded)
+		{
+			isLoaded = false;
+			Unload();
+		}
 	}
 }
 

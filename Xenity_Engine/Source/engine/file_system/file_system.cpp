@@ -294,9 +294,9 @@ void AddDirectoryFiles(std::vector<File*>& vector, Directory* directory)
 	}
 }
 
-std::vector<File*> Directory::GetAllFiles()
+std::vector<File*> Directory::GetAllFiles(bool recursive)
 {
-	FileSystem::fileSystem->FillDirectory(this);
+	FileSystem::fileSystem->FillDirectory(this, recursive);
 	std::vector<File*> vector;
 	AddDirectoryFiles(vector, this);
 	return vector;
@@ -321,7 +321,7 @@ bool Directory::CheckIfExist()
 	return exists;
 }
 
-void FileSystem::FillDirectory(Directory* directory)
+void FileSystem::FillDirectory(Directory* directory, bool recursive)
 {
 	int directoryFilesCount = directory->files.size();
 	for (int i = 0; i < directoryFilesCount; i++)
@@ -343,7 +343,6 @@ void FileSystem::FillDirectory(Directory* directory)
 	DIR *dir = opendir(directory->GetPath().c_str());
 	if (dir == NULL)
 	{
-		//Debug::PrintError("Impossible d'ouvrir le dossier");
 		return;
 	}
 	struct dirent *ent;
@@ -358,7 +357,6 @@ void FileSystem::FillDirectory(Directory* directory)
 		struct stat statbuf;
 		if (stat(fullPath.c_str(), &statbuf) == -1)
 		{
-			// Debug::PrintError("Erreur lors de l'appel à stat");
 			continue;
 		}
 
@@ -382,7 +380,8 @@ void FileSystem::FillDirectory(Directory* directory)
 			try
 			{
 				newDirectory = new Directory(fullPath + "\\");
-				newDirectory->GetAllFiles();
+				if(recursive)
+					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception &)
@@ -391,8 +390,6 @@ void FileSystem::FillDirectory(Directory* directory)
 					delete newDirectory;
 			}
 		}
-
-		// printf("%s\n", ent->d_name);
 	}
 	closedir(dir);
 #else
@@ -407,12 +404,13 @@ void FileSystem::FillDirectory(Directory* directory)
 			Directory *newDirectory = nullptr;
 			try
 			{
-			std::string path = file.path().string();
+				std::string path = file.path().string();
 #if defined(__vita__)
 			path = path.substr(4);
 #endif
 				newDirectory = new Directory(path + "\\");
-				newDirectory->GetAllFiles();
+				if(recursive)
+					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception &)

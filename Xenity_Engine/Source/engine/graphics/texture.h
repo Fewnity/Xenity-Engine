@@ -199,7 +199,7 @@ private:
 
     Filter filter = Bilinear;
     WrapMode wrapMode = Repeat;
-    unsigned int textureId = -1;
+    unsigned int textureId = 0;
     int width = 0, height = 0, nrChannels = 0;
 
     int pixelPerUnit = 100;

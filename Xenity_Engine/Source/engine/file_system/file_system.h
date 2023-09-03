@@ -55,7 +55,7 @@ public:
 	* Get all files of a directory and fill it
 	* @param directory Directory to fill
 	*/
-	void FillDirectory(Directory *directory);
+	void FillDirectory(Directory *directory, bool recursive);
 };
 
 class API File : public UniqueId
@@ -146,7 +146,7 @@ public:
 	/**
 	* Get all the files of the directory !!! (All files need to be deleted with delete()) !!!
 	*/
-	std::vector<File *> GetAllFiles();
+	std::vector<File *> GetAllFiles(bool recursive);
 
 	/**
 	* Check if the directory exists

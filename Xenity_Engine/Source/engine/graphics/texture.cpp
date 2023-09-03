@@ -115,8 +115,10 @@ std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int cha
 
 Texture::~Texture()
 {
-	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
-	UnloadFileReference();
+	
+		Debug::Print("Texture::~Texture()" + std::to_string(textureId));
+		UnloadFileReference();
+
 }
 
 void Texture::LoadFileReference()
@@ -130,10 +132,14 @@ void Texture::LoadFileReference()
 
 void Texture::UnloadFileReference()
 {
-	if (isLoaded)
+	if (Engine::IsRunning())
 	{
-		isLoaded = false;
-		Unload();
+		Debug::Print("Unload");
+		if (isLoaded)
+		{
+			isLoaded = false;
+			Unload();
+		}
 	}
 }
 

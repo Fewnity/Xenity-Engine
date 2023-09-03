@@ -83,7 +83,7 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Unselect"))
 		{
-			Engine::selectedFileReference = nullptr;
+			Engine::SetSelectedFileReference(nullptr);
 			Engine::selectedGameObject.reset();
 		}
 		ImGui::EndMenu();

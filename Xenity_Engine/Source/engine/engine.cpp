@@ -15,6 +15,7 @@
 #include "../editor/editor.h"
 #include "../xenity_editor.h"
 #include <glad/glad.h>
+#include "../editor/ui/menus/inspector_menu.h"
 #endif
 
 #include "game_interface.h"
@@ -236,13 +237,17 @@ void Engine::Loop()
 #endif
 		if (ProjectManager::GetIsProjectLoaded())
 		{
-			for (int i = 0; i < AssetManager::GetFileReferenceCount2(); i++)
+			int fileRefCount = AssetManager::GetFileReferenceCount2();
+			for (int i = 0; i < fileRefCount; i++)
 			{
-				int refCount = AssetManager::GetFileReference2(i).use_count();
+				std::weak_ptr<FileReference> fileRef = AssetManager::GetFileReference2(i);
+				int refCount = fileRef.lock().use_count();
 				if (refCount == 2)
 				{
-					AssetManager::RemoveFileReference2(AssetManager::GetFileReference2(i));
+					AssetManager::RemoveFileReference2(fileRef.lock());
+					fileRef.reset();
 					i--;
+					fileRefCount--;
 				}
 			}
 
@@ -346,10 +351,41 @@ void Engine::SetGameState(GameState _gameState)
 	{
 		gameState = _gameState;
 		SceneManager::RestoreScene();
-	}
+}
 #else
 	gameState = _gameState;
 #endif
+}
+
+void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
+{
+	if (currentProjectDirectory)
+		currentProjectDirectory->files.clear();
+	currentProjectDirectory = dir;
+	ProjectManager::FillProjectDirectory(currentProjectDirectory);
+	int itemCount = currentProjectDirectory->files.size();
+	for (int i = 0; i < itemCount; i++)
+	{
+		currentProjectDirectory->files[i]->LoadFileReference();
+	}
+}
+
+ProjectDirectory* Engine::GetCurrentProjectDirectory()
+{
+	return currentProjectDirectory;
+}
+
+void Engine::SetSelectedFileReference(std::shared_ptr<FileReference> fileReference)
+{
+	selectedFileReference = fileReference;
+#if  defined(EDITOR)
+	Editor::inspector->loadedPreview = nullptr;
+#endif
+}
+
+std::shared_ptr<FileReference> Engine::GetSelectedFileReference()
+{
+	return selectedFileReference;
 }
 
 void Engine::Stop()

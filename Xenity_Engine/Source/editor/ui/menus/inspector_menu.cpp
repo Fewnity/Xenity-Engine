@@ -5,9 +5,6 @@
 #include "../../editor.h"
 #include "../../../engine/asset_management/project_manager.h"
 
-std::shared_ptr<FileReference> loadedPreview = nullptr;
-std::string previewText = "";
-
 void InspectorMenu::Init()
 {
 }
@@ -18,7 +15,7 @@ void InspectorMenu::Draw()
 
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
 	auto selectedGameObject = Engine::selectedGameObject.lock();
-	std::shared_ptr<FileReference> selectedFileReference = Engine::selectedFileReference;
+	std::shared_ptr<FileReference> selectedFileReference = Engine::GetSelectedFileReference();
 
 	if (selectedFileReference)
 	{
@@ -151,16 +148,17 @@ void InspectorMenu::Draw()
 		}
 	}
 
-	if (Engine::selectedFileReference)
+	if (Engine::GetSelectedFileReference())
 	{
 		ImVec2 availSize = ImGui::GetContentRegionAvail();
 		float sizeY = availSize.x;
 		if (availSize.x > availSize.y)
 			sizeY = availSize.y;
 
-		if (loadedPreview != Engine::selectedFileReference)
+		int textureId = 0;
+		if (loadedPreview != Engine::GetSelectedFileReference())
 		{
-			loadedPreview = Engine::selectedFileReference;
+			loadedPreview = Engine::GetSelectedFileReference();
 			previewText = "";
 			switch (loadedPreview->fileType)
 			{
@@ -171,17 +169,39 @@ void InspectorMenu::Draw()
 				break;
 			}
 		}
+		if (loadedPreview->fileType == File_Texture) 
+		{
+			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
+		}
 
 		if (previewText != "") 
 		{
 			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10;
 		}
+		
 
 		ImGui::Text("Preview:");
 		ImGui::BeginChild("Preview", ImVec2(0, sizeY), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		if (previewText != "")
+		if (previewText != "") 
+		{
 			ImGui::Text(previewText.c_str());
+		}
+		else if (textureId != 0)
+		{
+			ImVec2 availArea = ImGui::GetContentRegionAvail();
+			ImGui::Image((ImTextureID)textureId, availArea);
+
+			// Print texture resolution
+			std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(Engine::GetSelectedFileReference());
+			std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
+			ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
+			ImVec2 textPos;
+			textPos.x = availArea.x / 2.0f - textSize.x / 2.0f + ImGui::GetCursorPosX();
+			textPos.y = availArea.y - textSize.y / 2.0f;
+			ImGui::SetCursorPos(textPos);
+			ImGui::Text(text.c_str());
+		}
 		else
 			ImGui::Text("No preview available");
 

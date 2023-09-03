@@ -83,12 +83,12 @@ public:
 	static CompilingMenu* compilingMenu;
 	static GameMenu* gameMenu;
 	static SceneMenu* sceneMenu;
+	static InspectorMenu* inspector;
 private:
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;
 	static FileExplorerMenu* fileExplorer;
 	static HierarchyMenu* hierarchy;
-	static InspectorMenu* inspector;
 	static MainBarMenu* mainBar;
 	static ProfilerMenu* profiler;
 	static SelectProjectMenu* selectProjectMenu;

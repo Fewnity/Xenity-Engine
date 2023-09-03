@@ -19,6 +19,7 @@
 class FileReference;
 class File;
 class Scene;
+class Directory;
 
 class API ProjectDirectory
 {
@@ -156,8 +157,10 @@ public:
 	static void SaveProjectsList(std::vector<ProjectListItem> projects);
 
 	static ProjectDirectory* projectDirectory;
-	static std::unordered_map<uint64_t, std::shared_ptr<FileReference>> projectFilesRef;
-
+	static std::unordered_map<uint64_t, std::string> projectFilesIds;
+	static void FillProjectDirectory(ProjectDirectory* realProjectDirectory);
+	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);
+	static Directory* projectDirectoryBase;
 private:
 	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
 	static bool projectLoaded;
