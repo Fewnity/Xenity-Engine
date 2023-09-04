@@ -33,14 +33,14 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 std::shared_ptr<MeshData> MeshData::MakeMeshData()
 {
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
-	AssetManager::AddFileReference2(newFileRef);
+	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }
 
 std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
 {
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>(vcount, index_count, useVertexColor, useNormals, useUV);
-	AssetManager::AddFileReference2(newFileRef);
+	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }
 

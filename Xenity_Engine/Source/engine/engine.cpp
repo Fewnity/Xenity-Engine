@@ -237,14 +237,14 @@ void Engine::Loop()
 #endif
 		if (ProjectManager::GetIsProjectLoaded())
 		{
-			int fileRefCount = AssetManager::GetFileReferenceCount2();
+			int fileRefCount = AssetManager::GetFileReferenceCount();
 			for (int i = 0; i < fileRefCount; i++)
 			{
-				std::weak_ptr<FileReference> fileRef = AssetManager::GetFileReference2(i);
+				std::weak_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
 				int refCount = fileRef.lock().use_count();
 				if (refCount == 2)
 				{
-					AssetManager::RemoveFileReference2(fileRef.lock());
+					AssetManager::RemoveFileReference(fileRef.lock());
 					fileRef.reset();
 					i--;
 					fileRefCount--;

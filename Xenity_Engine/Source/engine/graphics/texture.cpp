@@ -80,35 +80,35 @@ std::unordered_map<std::string, Variable> Texture::GetMetaReflection()
 std::shared_ptr<Texture> Texture::MakeTexture()
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>();
-	AssetManager::AddFileReference2(newTexture);
+	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
 
 std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, bool loadInVram)
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, loadInVram);
-	AssetManager::AddFileReference2(newTexture);
+	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
 
 std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram)
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, filter, useMipMap, loadInVram);
-	AssetManager::AddFileReference2(newTexture);
+	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
 
 std::shared_ptr<Texture> Texture::MakeTexture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureId, channelCount, width, height, loadInVram);
-	AssetManager::AddFileReference2(newTexture);
+	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
 
 std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
-	AssetManager::AddFileReference2(newTexture);
+	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
 

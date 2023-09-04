@@ -16,7 +16,7 @@ CodeFile::CodeFile(std::string fileExtension)
 std::shared_ptr<CodeFile> CodeFile::MakeScene(std::string fileExtension)
 {
 	std::shared_ptr<CodeFile> newFileRef = std::make_shared<CodeFile>(fileExtension);
-	AssetManager::AddFileReference2(newFileRef);
+	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }
 

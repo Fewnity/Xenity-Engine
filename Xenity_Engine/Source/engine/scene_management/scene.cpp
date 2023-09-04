@@ -21,6 +21,6 @@ std::unordered_map<std::string, Variable> Scene::GetMetaReflection()
 std::shared_ptr<Scene> Scene::MakeScene()
 {
 	std::shared_ptr<Scene> newFileRef = std::make_shared<Scene>();
-	AssetManager::AddFileReference2(newFileRef);
+	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

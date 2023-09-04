@@ -6,14 +6,14 @@
 // std::vector<Shader*> AssetManager::shaders;
 // std::vector<Material*> AssetManager::materials;
 
-std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences2;
+std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
 
 // int AssetManager::shaderCount = 0;
 // int AssetManager::materialCount = 0;
-int AssetManager::fileReferenceCount2 = 0;
+int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
 // int AssetManager::meshDataCount = 0;
@@ -81,18 +81,18 @@ void AssetManager::Init()
 // 	materialCount++;
 // }
 
-void AssetManager::AddFileReference2(std::shared_ptr<FileReference> fileReference)
+void AssetManager::AddFileReference(std::shared_ptr<FileReference> fileReference)
 {
-	for (int i = 0; i < fileReferenceCount2; i++)
+	for (int i = 0; i < fileReferenceCount; i++)
 	{
-		if (fileReferences2[i] == fileReference) 
+		if (fileReferences[i] == fileReference) 
 		{
 			Debug::Print("OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			return;
 		}
 	}
-	fileReferences2.push_back(fileReference);
-	fileReferenceCount2++;
+	fileReferences.push_back(fileReference);
+	fileReferenceCount++;
 }
 
 /// <summary>
@@ -177,13 +177,13 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 // 	}
 // }
 
-void AssetManager::RemoveFileReference2(std::shared_ptr<FileReference> fileReference)
+void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileReference)
 {
 	int fileReferenceIndex = 0;
 	bool found = false;
-	for (int i = 0; i < fileReferenceCount2; i++)
+	for (int i = 0; i < fileReferenceCount; i++)
 	{
-		if (fileReferences2[i] == fileReference)
+		if (fileReferences[i] == fileReference)
 		{
 			found = true;
 			fileReferenceIndex = i;
@@ -193,8 +193,8 @@ void AssetManager::RemoveFileReference2(std::shared_ptr<FileReference> fileRefer
 
 	if (found)
 	{
-		fileReferences2.erase(fileReferences2.begin() + fileReferenceIndex);
-		fileReferenceCount2--;
+		fileReferences.erase(fileReferences.begin() + fileReferenceIndex);
+		fileReferenceCount--;
 	}
 }
 
@@ -296,9 +296,9 @@ void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 // 	return nullptr;
 // }
 
-std::shared_ptr<FileReference> AssetManager::GetFileReference2(const int index)
+std::shared_ptr<FileReference> AssetManager::GetFileReference(const int index)
 {
-	return fileReferences2[index];
+	return fileReferences[index];
 }
 
 std::weak_ptr<IDrawable> AssetManager::GetDrawable(const int index)
@@ -342,9 +342,9 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 // 	return materialCount;
 // }
 
-int AssetManager::GetFileReferenceCount2()
+int AssetManager::GetFileReferenceCount()
 {
-	return fileReferenceCount2;
+	return fileReferenceCount;
 }
 
 int AssetManager::GetDrawableCount()

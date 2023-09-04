@@ -222,12 +222,12 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
-	int fileRefCount = AssetManager::GetFileReferenceCount2();
+	int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
-		if (AssetManager::GetFileReference2(i)->fileId == id) 
+		if (AssetManager::GetFileReference(i)->fileId == id) 
 		{
-			fileRef = AssetManager::GetFileReference2(i);
+			fileRef = AssetManager::GetFileReference(i);
 		}
 	}
 

@@ -67,10 +67,10 @@ void ProfilerMenu::Draw()
 
 	if (ImGui::CollapsingHeader("Files", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		for (int i = 0; i < AssetManager::GetFileReferenceCount2(); i++)
+		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
 			//std::string t = "";
-			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference2(i);
+			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
 			if (!fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);
@@ -81,10 +81,10 @@ void ProfilerMenu::Draw()
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");
-		for (int i = 0; i < AssetManager::GetFileReferenceCount2(); i++)
+		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
 			//std::string t = "";
-			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference2(i);
+			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
 			if (fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);

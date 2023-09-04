@@ -22,6 +22,6 @@ std::unordered_map<std::string, Variable> AudioClip::GetMetaReflection()
 std::shared_ptr<AudioClip> AudioClip::MakeAudioClip(std::string filePath)
 {
 	std::shared_ptr<AudioClip> newFileRef = std::make_shared<AudioClip>(filePath);
-	AssetManager::AddFileReference2(newFileRef);
+	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

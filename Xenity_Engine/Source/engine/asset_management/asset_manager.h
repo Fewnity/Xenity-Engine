@@ -27,21 +27,21 @@ public:
 
 	// static void AddShader(Shader *shader);
 	// static void AddMaterial(Material *material);
-	static void AddFileReference2(std::shared_ptr <FileReference> fileReference);
+	static void AddFileReference(std::shared_ptr <FileReference> fileReference);
 	static void AddDrawable(std::weak_ptr<IDrawable> drawable);
 	static void AddLight(std::weak_ptr<Light> light);
 	// static void AddMeshData(MeshData *meshData);
 
 	// static void RemoveShader(Shader *shader);
 	// static void RemoveMaterial(Material *material);
-	static void RemoveFileReference2(std::shared_ptr <FileReference> fileReference);
+	static void RemoveFileReference(std::shared_ptr <FileReference> fileReference);
 	static void RemoveDrawable(std::weak_ptr<IDrawable> drawable);
 	static void RemoveLight(std::weak_ptr<Light> light);
 	// static void RemoveMeshData(MeshData *meshData);
 
 	// static Shader *GetShader(const int index);
 	// static Material *GetMaterial(const int index);
-	static std::shared_ptr<FileReference> GetFileReference2(const int index);
+	static std::shared_ptr<FileReference> GetFileReference(const int index);
 	// static Material *GetMaterialByName(const std::string name);
 	static std::weak_ptr<IDrawable> GetDrawable(const int index);
 	static std::weak_ptr<Light> GetLight(const int index);
@@ -50,7 +50,7 @@ public:
 
 	// static int GetShaderCount();
 	// static int GetMaterialCount();
-	static int GetFileReferenceCount2();
+	static int GetFileReferenceCount();
 	static int GetDrawableCount();
 	static int GetLightCount();
 	// static int GetMeshDataCount();
@@ -64,14 +64,14 @@ public:
 private:
 	// static int shaderCount;
 	// static int materialCount;
-	static int fileReferenceCount2;
+	static int fileReferenceCount;
 	static int drawableCount;
 	static int lightCount;
 	// static int meshDataCount;
 
 	// static std::vector<Shader *> shaders;
 	// static std::vector<Material *> materials;
-	static std::vector<std::shared_ptr<FileReference>> fileReferences2;
+	static std::vector<std::shared_ptr<FileReference>> fileReferences;
 	static std::vector<std::weak_ptr<IDrawable>> drawables;
 	static std::vector<std::weak_ptr<Light>> lights;
 	// static std::vector<MeshData *> meshesData;
