@@ -6,6 +6,17 @@
 
 using json = nlohmann::json;
 
+template <typename T>
+void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* valuePtr)
+{
+	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
+	if (file)
+	{
+		file->LoadFileReference();
+		valuePtr->get() = std::dynamic_pointer_cast<T>(file);
+	}
+}
+
 void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Variable> theMap)
 {
 	for (auto& kv : json["Values"].items())
@@ -49,43 +60,19 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 				{
-					int fileId = kv.value();
-					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
-					if (file)
-					{
-						file->LoadFileReference();
-						valuePtr->get() = std::dynamic_pointer_cast<Texture>(file);
-					}
+					FillFileReference<Texture>(kv.value(), valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{
-					int fileId = kv.value();
-					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
-					if (file)
-					{
-						file->LoadFileReference();
-						valuePtr->get() = std::dynamic_pointer_cast<MeshData>(file);
-					}
+					FillFileReference<MeshData>(kv.value(), valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 				{
-					int fileId = kv.value();
-					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
-					if (file)
-					{
-						file->LoadFileReference();
-						valuePtr->get() = std::dynamic_pointer_cast<Scene>(file);
-					}
+					FillFileReference<Scene>(kv.value(), valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 				{
-					int fileId = kv.value();
-					std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
-					if (file)
-					{
-						file->LoadFileReference();
-						valuePtr->get() = std::dynamic_pointer_cast<AudioClip>(file);
-					}
+					FillFileReference<AudioClip>(kv.value(), valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
@@ -161,22 +148,22 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				json[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = valuePtr->get()->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				json[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = valuePtr->get()->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				json[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = valuePtr->get()->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
-				json[kv.first] = (valuePtr->get())->fileId;
+				json[kv.first] = valuePtr->get()->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{

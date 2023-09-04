@@ -33,5 +33,9 @@ public:
 	* @param theMap The Reflection map
 	*/
 	static nlohmann::json MapToJson(std::unordered_map<std::string, Variable> theMap);
+
+private:
+	template <typename T>
+	static void FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* valuePtr);
 };
 

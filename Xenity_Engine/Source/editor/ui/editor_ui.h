@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include "../../engine/reflection/reflection.h"
+#include "../../engine/file_system/file_reference.h"
 
 class GameObject;
 class Vector2;
@@ -89,5 +90,7 @@ private:
 	static int uiId;
 	static float uiScale;
 	static void UpdateUIScale();
+	template <typename T>
+	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName);
 };
 #endif

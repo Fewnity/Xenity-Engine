@@ -96,6 +96,39 @@ void EditorUI::Draw()
 
 #pragma region Update
 
+template <typename T>
+void EditorUI::DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool &valueChangedTemp, std::string &variableName)
+{
+	std::string inputText = "None ("+ className +")";
+	auto ptr = valuePtr->get();
+	if (ptr != nullptr)
+	{
+		if (ptr->file != nullptr)
+			inputText = ptr->file->GetFileName();
+		else
+			inputText = "Filled but invalid file reference ("+ className +")";
+
+		inputText += " " + std::to_string(ptr->fileId) + " ";
+		if (ptr->file)
+			inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+	}
+
+	if (DrawInputButton(variableName, inputText, true) == 2)
+	{
+		valuePtr->get() = nullptr;
+	}
+
+	std::shared_ptr <FileReference> ref = nullptr;
+	std::string payloadName = "Files" + std::to_string(fileType);
+	if (DragDropTarget(payloadName, ref))
+	{
+		valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
+		valueChangedTemp = true;
+	}
+}
+
+
+
 std::string EditorUI::GetPrettyVariableName(std::string variableName)
 {
 	variableName[0] = toupper(variableName[0]);
@@ -154,8 +187,7 @@ void EditorUI::UpdateUIScale()
 		else
 		{
 			SDL_GetCurrentDisplayMode(index, &DM);
-			auto y = DM.h;
-			uiScale = y / 1080.0f;
+			uiScale = DM.h / 1080.0f;
 		}
 	}
 
@@ -578,119 +610,19 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 		{
-			std::string inputText = "None (MeshData)";
-			auto ptr = valuePtr->get();
-			if (ptr != nullptr)
-			{
-				if (ptr->file != nullptr)
-					inputText = ptr->file->GetFileName();
-				else
-					inputText = "Filled but invalid file reference (MeshData)";
-
-				inputText += " " + std::to_string(ptr->fileId) + " ";
-				if (ptr->file)
-					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-			}
-
-			if (DrawInputButton(variableName, inputText, true) == 2) 
-			{
-				valuePtr->get() = nullptr;
-			}
-
-			std::shared_ptr < FileReference> ref = nullptr;
-			std::string payloadName = "Files" + std::to_string(FileType::File_Mesh);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get() = std::dynamic_pointer_cast<MeshData>(ref);
-				valueChangedTemp = true;
-			}
+			DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 		{
-			std::string inputText = "None (AudioClip)";
-			auto ptr = valuePtr->get();
-			if (ptr != nullptr)
-			{
-				if (ptr->file != nullptr)
-					inputText = ptr->file->GetFileName();
-				else
-					inputText = "Filled but invalid file reference (AudioClip)";
-
-				inputText += " " + std::to_string(ptr->fileId) + " ";
-				if (ptr->file)
-					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-			}
-
-			if (DrawInputButton(variableName, inputText, true) == 2)
-			{
-				valuePtr->get() = nullptr;
-			}
-
-			std::shared_ptr <FileReference> ref = nullptr;
-			std::string payloadName = "Files" + std::to_string(FileType::File_Audio);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get() = std::dynamic_pointer_cast<AudioClip>(ref);
-				valueChangedTemp = true;
-			}
+			DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 		{
-			std::string inputText = "None (Texture)";
-			auto ptr = valuePtr->get();
-			if (ptr != nullptr)
-			{
-				if (ptr->file != nullptr)
-					inputText = ptr->file->GetFileName();
-				else
-					inputText = "Filled but invalid file reference (Texture)";
-
-				inputText += " " + std::to_string(ptr->fileId) + " ";
-				if (ptr->file)
-					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-			}
-
-			if (DrawInputButton(variableName, inputText, true) == 2)
-			{
-				valuePtr->get() = nullptr;
-			}
-
-			std::shared_ptr <FileReference> ref = nullptr;
-			std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get() = std::dynamic_pointer_cast<Texture>(ref);
-				valueChangedTemp = true;
-			}
+			DrawFileReference(FileType::File_Texture,"Texture", valuePtr, valueChangedTemp, variableName);
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 		{
-			std::string inputText = "None (Scene)";
-			auto ptr = valuePtr->get();
-			if (ptr != nullptr)
-			{
-				if (ptr->file != nullptr)
-					inputText = ptr->file->GetFileName();
-				else
-					inputText = "Filled but invalid file reference (Scene)";
-
-				inputText += " " + std::to_string(ptr->fileId) + " ";
-				if (ptr->file)
-					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-			}
-
-			if (DrawInputButton(variableName, inputText, true) == 2)
-			{
-				valuePtr->get() = nullptr;
-			}
-
-			std::shared_ptr <FileReference> ref = nullptr;
-			std::string payloadName = "Files" + std::to_string(FileType::File_Scene);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get() = std::dynamic_pointer_cast<Scene>(ref);
-				valueChangedTemp = true;
-			}
+			DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
