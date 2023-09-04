@@ -45,19 +45,6 @@ void Graphics::SetSkybox(SkyBox* skybox_)
 
 void Graphics::Init()
 {
-	// Texture *back = new Texture("space_back.png", "space_back", false);
-	// back->SetWrapMode(Texture::ClampToEdge);
-	// Texture *down = new Texture("space_down.png", "space_down", false);
-	// down->SetWrapMode(Texture::ClampToEdge);
-	// Texture *front = new Texture("space_front.png", "space_front", false);
-	// front->SetWrapMode(Texture::ClampToEdge);
-	// Texture *left = new Texture("space_left.png", "space_left", false);
-	// left->SetWrapMode(Texture::ClampToEdge);
-	// Texture *right = new Texture("space_right.png", "space_right", false);
-	// right->SetWrapMode(Texture::ClampToEdge);
-	// Texture *up = new Texture("space_up.png", "space_up", false);
-	// up->SetWrapMode(Texture::ClampToEdge);
-
 	std::shared_ptr<Texture> back = Texture::MakeTexture("assets\\sunset_back.png", false);
 	back->file = new File("assets\\sunset_back.png");
 	back->SetWrapMode(Texture::ClampToEdge);
@@ -134,13 +121,14 @@ void Graphics::DrawAllDrawable()
 			camera->UpdateProjection();
 			if (skybox)
 			{
-				float scale = 10.01f;
-				MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), Vector3(scale), skybox->down, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), Vector3(scale), skybox->up, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), Vector3(scale), skybox->front, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), Vector3(scale), skybox->back, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), Vector3(scale), skybox->left, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), Vector3(scale), skybox->right, skyPlane, false, false, false);
+				float scaleF = 10.01f;
+				Vector3 scale = Vector3(scaleF);
+				MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), scale, skybox->down, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), scale, skybox->up, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), scale, skybox->front, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), scale, skybox->back, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), scale, skybox->left, skyPlane, false, false, false);
+				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), scale, skybox->right, skyPlane, false, false, false);
 			}
 
 			IDrawableTypes currentMode = Draw_3D;
@@ -180,25 +168,28 @@ void Graphics::DrawAllDrawable()
 				else //if (gridAxis == 2)
 					distance = abs(camPos.z);
 
-				// Get the coef for grid size by using the camera distance
+				// Get the coef for grid lineCount by using the camera distance
 				int coef = 1;
 				while (coef < distance / 10)
 				{
 					coef *= 10;
 				}
 
+				if (distance < 0.7f)
+					distance = 0.7f;
+
 				float lineLenght = 20 * distance;
-				float size = 20 * distance / coef;
+				float lineCount = lineLenght / coef;
 
 				if (gridAxis == 0)
 				{
 					// For XZ
-					for (int z = -size + camPos.z / coef; z < size + camPos.z / coef; z++)
+					for (int z = -lineCount + camPos.z / coef; z < lineCount + camPos.z / coef; z++)
 					{
 						float zPos = z * coef;
 						Engine::renderer->DrawLine(Vector3(-lineLenght - camPos.x, 0, zPos), Vector3(lineLenght - camPos.x, 0, zPos), color);
 					}
-					for (int x = -size + camPos.x / coef; x < size + camPos.x / coef; x++)
+					for (int x = -lineCount + camPos.x / coef; x < lineCount + camPos.x / coef; x++)
 					{
 						float xPos = -x * coef;
 						Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + camPos.z), Vector3(xPos, 0, lineLenght + camPos.z), color);
@@ -207,12 +198,12 @@ void Graphics::DrawAllDrawable()
 				else if (gridAxis == 1)
 				{
 					//For YZ
-					for (int z = -size + camPos.z / coef; z < size + camPos.z / coef; z++)
+					for (int z = -lineCount + camPos.z / coef; z < lineCount + camPos.z / coef; z++)
 					{
 						float zPos = z * coef;
 						Engine::renderer->DrawLine(Vector3(0, -lineLenght - camPos.y, zPos), Vector3(0, lineLenght - camPos.y, zPos), color);
 					}
-					for (int y = -size + camPos.y / coef; y < size + camPos.y / coef; y++)
+					for (int y = -lineCount + camPos.y / coef; y < lineCount + camPos.y / coef; y++)
 					{
 						float yPos = -y * coef;
 						Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + camPos.z), Vector3(0, yPos, lineLenght + camPos.z), color);
@@ -221,12 +212,12 @@ void Graphics::DrawAllDrawable()
 				else if (gridAxis == 2)
 				{
 					// For XY
-					for (int x = -size + camPos.x / coef; x < size + camPos.x / coef; x++)
+					for (int x = -lineCount + camPos.x / coef; x < lineCount + camPos.x / coef; x++)
 					{
 						float xPos = x * coef;
 						Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - camPos.y, 0), Vector3(xPos, lineLenght - camPos.y, 0), color);
 					}
-					for (int y = -size + camPos.y / coef; y < size + camPos.y / coef; y++)
+					for (int y = -lineCount + camPos.y / coef; y < lineCount + camPos.y / coef; y++)
 					{
 						float yPos = -y * coef;
 						Engine::renderer->DrawLine(Vector3(-lineLenght + camPos.x, yPos, 0), Vector3(lineLenght + camPos.x, yPos, 0), color);
@@ -240,9 +231,10 @@ void Graphics::DrawAllDrawable()
 					Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
 					float dist = Vector3::Distance(selectedGOPos, camPos);
 					dist /= 40;
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, rightArrow, false, false, false);
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, upArrow, false, false, false);
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, Vector3(dist, dist, dist), toolArrowsTexture, forwardArrow, false, false, false);
+					Vector3 scale = Vector3(dist);
+					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, false, false, false);
+					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, false, false, false);
+					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, false, false, false);
 				}
 			}
 #endif

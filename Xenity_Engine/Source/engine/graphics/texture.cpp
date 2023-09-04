@@ -376,11 +376,9 @@ void Texture::LoadTexture(const std::string filename)
 	Debug::Print(debugText);
 	
 	int fileBufferSize  = 0;
-	//File* myFile = new File(filename);
 	file->Open(false);
 	unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
 	file->Close();
-	//delete myFile;
 
 	// Load image with stb_image
 	// stbi_set_flip_vertically_on_load(GL_TRUE);
@@ -401,7 +399,6 @@ void Texture::LoadTexture(const std::string filename)
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
-	std::cout << textureId << std::endl;
 	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
 	unsigned int rgba = 0x1908;
 	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), rgba, buffer);
