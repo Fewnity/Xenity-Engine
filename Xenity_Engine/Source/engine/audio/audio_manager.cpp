@@ -219,6 +219,7 @@ int fillAudioBufferThread()
 
 			if (!Engine::IsRunning())
 				return 0;
+
 			AudioManager::myMutex->Lock();
 			int playedSoundsCount = (int)channel->playedSounds.size();
 			for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
@@ -318,10 +319,6 @@ int AudioManager::Init()
 		sceKernelStartThread(thd_id, 0, 0);
 	}
 #elif defined(_WIN32) || defined(_WIN64)
-	std::thread sendAudioThread = std::thread(audio_thread);
-	sendAudioThread.detach();
-	std::thread fillBufferThread = std::thread(fillAudioBufferThread);
-	fillBufferThread.detach();
 
 	// Ouvrir le fichier audio WAV
 	WAVEFORMATEX waveFormat;
@@ -346,6 +343,10 @@ int AudioManager::Init()
 		waveHdr[i].dwFlags = WHDR_DONE;
 	}
 
+	std::thread sendAudioThread = std::thread(audio_thread);
+	sendAudioThread.detach();
+	std::thread fillBufferThread = std::thread(fillAudioBufferThread);
+	fillBufferThread.detach();
 #endif
 	return 0;
 }
@@ -353,10 +354,18 @@ int AudioManager::Init()
 void AudioManager::Stop()
 {
 #if defined(_WIN32) || defined(_WIN64)
+
+	// Stop WaveOut
+	waveOutReset(hWaveOut);
+	waveOutUnprepareHeader(hWaveOut, &waveHdr[0], sizeof(WAVEHDR));
+	waveOutUnprepareHeader(hWaveOut, &waveHdr[1], sizeof(WAVEHDR));
+	waveOutClose(hWaveOut);
+
 	if(audioData)
 		free (audioData);
 	if (audioData2)
 		free(audioData2);
+
 #endif
 }
 
