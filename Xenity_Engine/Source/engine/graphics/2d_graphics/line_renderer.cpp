@@ -19,13 +19,13 @@ LineRenderer::LineRenderer()
 	reflectedVariables["width"] = &width;
 }*/
 
-std::unordered_map<std::string, Variable> LineRenderer::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> LineRenderer::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("color", color);
-	reflectedVariables.insert_or_assign("startPosition", startPosition);
-	reflectedVariables.insert_or_assign("endPosition", endPosition);
-	reflectedVariables.insert_or_assign("width", width);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
+	Reflection::AddReflectionVariable(reflectedVariables, startPosition, "startPosition", true);
+	Reflection::AddReflectionVariable(reflectedVariables, endPosition, "endPosition", true);
+	Reflection::AddReflectionVariable(reflectedVariables, width, "width", true);
 	return reflectedVariables;
 }
 

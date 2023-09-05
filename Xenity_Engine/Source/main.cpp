@@ -21,6 +21,8 @@ Fix Awake : Call awake when a gameobject was disabled and the enabled
 Apply texture filter before drawing imgui images
 Fix audio when closing the editor
 Fix error when unloading files (check if engine is running)
+Add filter to file dialog
+https://github.com/nzp-team/dquakeplus/blob/main/source/psp/video_hardware_dxtn.cpp
 
 Add more unit tests
 PSP Texture problem since : Free texture and mesh data on unload

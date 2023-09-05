@@ -20,14 +20,14 @@ std::shared_ptr<CodeFile> CodeFile::MakeScene(std::string fileExtension)
 	return newFileRef;
 }
 
-std::unordered_map<std::string, Variable> CodeFile::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> CodeFile::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, Variable> CodeFile::GetMetaReflection()
+std::unordered_map<std::string, ReflectionEntry> CodeFile::GetMetaReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }

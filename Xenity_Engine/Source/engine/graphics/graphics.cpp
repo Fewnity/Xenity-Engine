@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "../file_system/mesh_loader/wavefront_loader.h"
 #include "../graphics/3d_graphics/mesh_data.h"
+#include "skybox.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
@@ -17,7 +18,7 @@ bool Graphics::needUpdateCamera = true;
 // Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
-SkyBox* Graphics::skybox = nullptr;
+std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 
 ProfilerBenchmark* orderBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
@@ -28,52 +29,21 @@ std::shared_ptr <MeshData> upArrow = nullptr;
 std::shared_ptr <MeshData> forwardArrow = nullptr;
 std::shared_ptr <Texture> toolArrowsTexture = nullptr;
 
-SkyBox::SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture>back, std::shared_ptr<Texture> up, std::shared_ptr<Texture>down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right)
-{
-	this->front = front;
-	this->back = back;
-	this->up = up;
-	this->down = down;
-	this->left = left;
-	this->right = right;
-}
 
-void Graphics::SetSkybox(SkyBox* skybox_)
+void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 {
 	skybox = skybox_;
 }
 
+std::unordered_map<std::string, ReflectionEntry> Graphics::GetLightingSettingsReflection()
+{
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skybox, "skybox", true);
+	return reflectedVariables;
+}
+
 void Graphics::Init()
 {
-	std::shared_ptr<Texture> back = Texture::MakeTexture("assets\\sunset_back.png", false);
-	back->file = new File("assets\\sunset_back.png");
-	back->SetWrapMode(Texture::ClampToEdge);
-	std::shared_ptr<Texture> down = Texture::MakeTexture("assets\\sunset_down.png", false);
-	down->file = new File("assets\\sunset_down.png");
-	down->SetWrapMode(Texture::ClampToEdge);
-	std::shared_ptr<Texture> front = Texture::MakeTexture("assets\\sunset_front.png", false);
-	front->file = new File("assets\\sunset_front.png");
-	front->SetWrapMode(Texture::ClampToEdge);
-	std::shared_ptr<Texture> left = Texture::MakeTexture("assets\\sunset_left.png", false);
-	left->file = new File("assets\\sunset_left.png");
-	left->SetWrapMode(Texture::ClampToEdge);
-	std::shared_ptr<Texture> right = Texture::MakeTexture("assets\\sunset_right.png", false);
-	right->file = new File("assets\\sunset_right.png");
-	right->SetWrapMode(Texture::ClampToEdge);
-	std::shared_ptr<Texture> up = Texture::MakeTexture("assets\\sunset_up.png", false);
-	up->file = new File("assets\\sunset_up.png");
-	up->SetWrapMode(Texture::ClampToEdge);
-
-	back->LoadFileReference();
-	down->LoadFileReference();
-	front->LoadFileReference();
-	left->LoadFileReference();
-	right->LoadFileReference();
-	up->LoadFileReference();
-
-	SkyBox* skybox = new SkyBox(front, back, up, down, left, right);
-	SetSkybox(skybox);
-
 	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
 
 #if defined(EDITOR)

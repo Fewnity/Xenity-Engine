@@ -16,27 +16,7 @@ class IDrawable;
 class Material;
 class Camera;
 class Texture;
-
-class API SkyBox
-{
-public:
-	/**
-	* Create a skybox
-	* @param front Front face
-	* @param back Back face
-	* @param up Up face
-	* @param down Down face
-	* @param left Left face
-	* @param right Right face
-	*/
-	SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture> back, std::shared_ptr<Texture> up, std::shared_ptr<Texture> down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right);
-	std::shared_ptr<Texture> front = nullptr;
-	std::shared_ptr<Texture> back = nullptr;
-	std::shared_ptr<Texture> up = nullptr;
-	std::shared_ptr<Texture> down = nullptr;
-	std::shared_ptr<Texture> left = nullptr;
-	std::shared_ptr<Texture> right = nullptr;
-};
+class SkyBox;
 
 class API Graphics
 {
@@ -50,7 +30,9 @@ public:
 	/**
 	* Set skybox
 	*/
-	static void SetSkybox(SkyBox *skybox_);
+	static void SetSkybox(std::shared_ptr <SkyBox> skybox_);
+
+	static std::unordered_map<std::string, ReflectionEntry> GetLightingSettingsReflection();
 
 	/**
 	* Draw all Drawable elements
@@ -80,7 +62,7 @@ public:
 
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 
-	static SkyBox *skybox;
+	static std::shared_ptr <SkyBox> skybox;
 
 	// static int usedShaderProgram;
 	// static Material *usedMaterial;

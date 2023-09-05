@@ -15,6 +15,7 @@
 #include "ui/menus/compiling_menu.h"
 #include "ui/menus/select_project_menu.h"
 #include "ui/menus/create_project_menu.h"
+#include "ui/menus/lighting_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -42,6 +43,7 @@ SceneMenu* Editor::sceneMenu = nullptr;
 CompilingMenu* Editor::compilingMenu = nullptr;
 SelectProjectMenu* Editor::selectProjectMenu = nullptr;
 CreateProjectMenu* Editor::createProjectMenu = nullptr;
+LightingMenu* Editor::lightingMenu = nullptr;
 
 void Editor::Init()
 {
@@ -57,6 +59,7 @@ void Editor::Init()
 	compilingMenu = new CompilingMenu();
 	selectProjectMenu = new SelectProjectMenu();
 	createProjectMenu = new CreateProjectMenu();
+	lightingMenu = new LightingMenu();
 
 	projectSettings->Init();
 	engineSettings->Init();
@@ -69,6 +72,7 @@ void Editor::Init()
 	sceneMenu->Init();
 	selectProjectMenu->Init();
 	createProjectMenu->Init();
+	lightingMenu->Init();
 
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
@@ -185,6 +189,7 @@ void Editor::Draw()
 		compilingMenu->Draw();
 		gameMenu->Draw();
 		sceneMenu->Draw();
+		lightingMenu->Draw();
 	}
 	EditorUI::Render();
 }

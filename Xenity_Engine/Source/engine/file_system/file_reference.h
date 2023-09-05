@@ -13,6 +13,8 @@ enum FileType
 	File_Texture,
 	File_Scene,
 	File_Code,
+	File_Skybox,
+	File_Material,
 };
 
 class FileReference : public std::enable_shared_from_this<FileReference>
@@ -24,7 +26,7 @@ public:
 	*/
 	virtual void LoadFileReference() 
 	{
-		isLoaded = true;
+		//isLoaded = true;
 		//AssetManager::AddFileReference(this);
 	}
 
@@ -33,15 +35,15 @@ public:
 	*/
 	virtual void UnloadFileReference()
 	{
-		isLoaded = false;
+		//isLoaded = false;
 		//AssetManager::RemoveFileReference(this);
 	}
 
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual std::unordered_map<std::string, Variable> GetMetaReflection() {
-		return std::unordered_map<std::string, Variable>();
+	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() {
+		return std::unordered_map<std::string, ReflectionEntry>();
 	}
 
 	uint64_t fileId = -1;

@@ -16,13 +16,13 @@
 	reflectedVariables["w"] = w;
 }*/
 
-std::unordered_map<std::string, Variable> Vector4::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Vector4::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("x", x);
-	reflectedVariables.insert_or_assign("y", y);
-	reflectedVariables.insert_or_assign("z", z);
-	reflectedVariables.insert_or_assign("w", w);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, x, "x", true);
+	Reflection::AddReflectionVariable(reflectedVariables, y, "y", true);
+	Reflection::AddReflectionVariable(reflectedVariables, z, "z", true);
+	Reflection::AddReflectionVariable(reflectedVariables, w, "w", true);
 	return reflectedVariables;
 }
 

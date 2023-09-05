@@ -22,7 +22,7 @@ public:
 	Transform(std::weak_ptr<GameObject> gameObject);
 	//void SetReflection();
 
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	
 
 	virtual ~Transform() = default;

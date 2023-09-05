@@ -15,8 +15,8 @@ class API Scene : public FileReference, public Reflection
 {
 public:
 	Scene();
-	std::unordered_map<std::string, Variable> GetReflection();
-	std::unordered_map<std::string, Variable> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
 	static std::shared_ptr<Scene> MakeScene();
 private:
 };

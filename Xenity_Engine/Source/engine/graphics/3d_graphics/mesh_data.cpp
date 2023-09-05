@@ -48,17 +48,17 @@ std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned i
 // {
 // }
 
-std::unordered_map<std::string, Variable> MeshData::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> MeshData::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("fileId", fileId);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
 
-std::unordered_map<std::string, Variable> MeshData::GetMetaReflection()
+std::unordered_map<std::string, ReflectionEntry> MeshData::GetMetaReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 

@@ -76,11 +76,11 @@ GameObject::GameObject(std::string name)
 	reflectedVariables["active"] = &active;
 }*/
 
-std::unordered_map<std::string, Variable> GameObject::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> GameObject::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("name",name);
-	reflectedVariables.insert_or_assign("active", active);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, name, "name", true);
+	Reflection::AddReflectionVariable(reflectedVariables, active, "active", true);
 	return reflectedVariables;
 }
 

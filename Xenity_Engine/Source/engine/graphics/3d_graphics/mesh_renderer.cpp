@@ -21,11 +21,11 @@ MeshRenderer::MeshRenderer()
 	reflectedVariables["texture"] = &texture;
 }*/
 
-std::unordered_map<std::string, Variable> MeshRenderer::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> MeshRenderer::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("meshData", meshData);
-	reflectedVariables.insert_or_assign("textures", textures);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, meshData, "meshData", true);
+	Reflection::AddReflectionVariable(reflectedVariables, textures, "textures", true);
 	return reflectedVariables;
 }
 

@@ -66,7 +66,7 @@ public:
 	GameObject();
 	GameObject(std::string name);
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void OnReflectionUpdated();
 
 	virtual ~GameObject();

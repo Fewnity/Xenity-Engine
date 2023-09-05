@@ -20,7 +20,7 @@ public:
 	* @param json Json data
 	* @param theMap The Reflection map to fill
 	*/
-	static void JsonToMap(nlohmann::json json, std::unordered_map<std::string, Variable> theMap);
+	static void JsonToMap(nlohmann::json json, std::unordered_map<std::string, ReflectionEntry> theMap);
 
 	/**
 	* Create Json data from Reflection
@@ -32,7 +32,7 @@ public:
 	* Create Json data from Reflection map
 	* @param theMap The Reflection map
 	*/
-	static nlohmann::json MapToJson(std::unordered_map<std::string, Variable> theMap);
+	static nlohmann::json MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap);
 
 private:
 	template <typename T>

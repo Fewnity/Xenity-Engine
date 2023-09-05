@@ -59,21 +59,22 @@ Texture::Texture(unsigned char* data, const int channelCount, const int width, c
 	}
 }
 
-std::unordered_map<std::string, Variable> Texture::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Texture::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("fileId", fileId);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, Variable> Texture::GetMetaReflection()
+std::unordered_map<std::string, ReflectionEntry> Texture::GetMetaReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("inVram", inVram);
-	reflectedVariables.insert_or_assign("useMipMap", useMipMap);
-	reflectedVariables.insert_or_assign("mipmaplevelCount", mipmaplevelCount);
-	reflectedVariables.insert_or_assign("filter", (int&)filter);
-	reflectedVariables.insert_or_assign("wrapMode", (int&)wrapMode);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, inVram, "inVram", true);
+	Reflection::AddReflectionVariable(reflectedVariables, useMipMap, "useMipMap", true);
+	Reflection::AddReflectionVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+	Reflection::AddReflectionVariable(reflectedVariables, (int&)filter, "filter", true);
+	Reflection::AddReflectionVariable(reflectedVariables, (int&)wrapMode, "wrapMode", true);
+	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 

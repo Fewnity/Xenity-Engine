@@ -17,9 +17,9 @@ void Rotate::Update()
 	GetTransform()->SetRotation(rotation);
 }
 
-std::unordered_map<std::string, Variable> Rotate::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Rotate::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 

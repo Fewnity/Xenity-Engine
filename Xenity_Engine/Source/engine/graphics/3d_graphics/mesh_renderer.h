@@ -20,7 +20,7 @@ public:
     MeshRenderer();
     ~MeshRenderer();
     //void SetReflection();
-    std::unordered_map<std::string, Variable> GetReflection();
+    std::unordered_map<std::string, ReflectionEntry> GetReflection();
     int GetDrawPriority() const;
 
     std::shared_ptr <MeshData> meshData = nullptr;

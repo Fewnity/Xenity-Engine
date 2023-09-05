@@ -67,8 +67,8 @@ public:
 
 	static std::shared_ptr<MeshData> MakeMeshData();
 	static std::shared_ptr<MeshData> MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
-	std::unordered_map<std::string, Variable> GetReflection();
-	std::unordered_map<std::string, Variable> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
 	~MeshData();
 
 	void LoadFileReference();

@@ -18,15 +18,14 @@ AudioSource::AudioSource()
     reflectedVariables["loop"] = &loop;
 }*/
 
-std::unordered_map<std::string, Variable> AudioSource::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> AudioSource::GetReflection()
 {
-    std::unordered_map<std::string, Variable> reflectedVariables;
-    reflectedVariables.insert_or_assign("volume", volume);
-    reflectedVariables.insert_or_assign("pan", pan);
-    //reflectedVariables.insert_or_assign("isPlaying", isPlaying);
-    reflectedVariables.insert_or_assign("playOnAwake", playOnAwake);
-    reflectedVariables.insert_or_assign("loop", loop);
-    reflectedVariables.insert_or_assign("audioClip", audioClip);
+    std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+    Reflection::AddReflectionVariable(reflectedVariables, volume, "volume", true);
+    Reflection::AddReflectionVariable(reflectedVariables, pan, "pan", true);
+    Reflection::AddReflectionVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
+    Reflection::AddReflectionVariable(reflectedVariables, loop, "loop", true);
+    Reflection::AddReflectionVariable(reflectedVariables, audioClip, "audioClip", true);
     return reflectedVariables;
 }
 

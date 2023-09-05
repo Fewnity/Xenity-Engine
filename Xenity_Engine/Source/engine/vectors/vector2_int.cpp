@@ -14,11 +14,11 @@
 	reflectedVariables["y"] = &y;
 }*/
 
-std::unordered_map<std::string, Variable> Vector2Int::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Vector2Int::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("x", x);
-	reflectedVariables.insert_or_assign("y", y);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, x, "x", true);
+	Reflection::AddReflectionVariable(reflectedVariables, y, "y", true);
 	return reflectedVariables;
 }
 

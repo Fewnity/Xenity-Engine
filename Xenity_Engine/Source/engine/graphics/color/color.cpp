@@ -22,10 +22,10 @@ Color::Color()
 	reflectedVariables["rgba"] = rgba;
 }*/
 
-std::unordered_map<std::string, Variable> Color::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Color::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("rgba", rgba);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, rgba, "rgba", true);
 	return reflectedVariables;
 }
 
@@ -100,13 +100,13 @@ RGBA Color::GetRGBA()
 	reflectedVariables["a"] = a;
 }*/
 
-std::unordered_map<std::string, Variable> RGBA::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("r", r);
-	reflectedVariables.insert_or_assign("g", g);
-	reflectedVariables.insert_or_assign("b", b);
-	reflectedVariables.insert_or_assign("a", a);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, r, "r", true);
+	Reflection::AddReflectionVariable(reflectedVariables, g, "g", true);
+	Reflection::AddReflectionVariable(reflectedVariables, b, "b", true);
+	Reflection::AddReflectionVariable(reflectedVariables, a, "a", true);
 	return reflectedVariables;
 }
 

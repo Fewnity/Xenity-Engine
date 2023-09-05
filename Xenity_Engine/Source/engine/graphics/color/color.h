@@ -15,7 +15,7 @@ class API RGBA : public Reflection
 {
 public:
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	RGBA() 
 	{
 		//SetReflection();
@@ -42,7 +42,7 @@ class API Color : public Reflection
 public:
 	Color();
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 
 	/**
 	* Create color from RGB

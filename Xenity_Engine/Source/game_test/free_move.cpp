@@ -38,9 +38,9 @@ void FreeMove::Update()
 	cameraTrans->SetRotation(rot);
 }
 
-std::unordered_map<std::string, Variable> FreeMove::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> FreeMove::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 

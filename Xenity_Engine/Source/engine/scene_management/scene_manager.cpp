@@ -43,6 +43,8 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
 		}
+
+		j["Lighting"]["Values"] = ReflectionUtils::MapToJson(Graphics::GetLightingSettingsReflection());
 	}
 
 	if (saveType == SaveSceneForPlayState)
@@ -213,6 +215,9 @@ void SceneManager::LoadScene(json jsonData)
 			}
 		}
 	}
+
+	ReflectionUtils::JsonToMap(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
+
 #if !defined(EDITOR)
 	Engine::SetGameState(Playing);
 #endif

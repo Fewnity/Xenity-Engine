@@ -25,7 +25,7 @@ class API LineRenderer : public IDrawable
 		LineRenderer();
 		~LineRenderer();
 		//void SetReflection();
-		std::unordered_map<std::string, Variable> GetReflection();
+		std::unordered_map<std::string, ReflectionEntry> GetReflection();
 
 		int GetDrawPriority() const;
 

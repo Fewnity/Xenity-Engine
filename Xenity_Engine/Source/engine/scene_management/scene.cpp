@@ -5,16 +5,16 @@ Scene::Scene()
 {
 }
 
-std::unordered_map<std::string, Variable> Scene::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Scene::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("fileId", fileId);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, Variable> Scene::GetMetaReflection()
+std::unordered_map<std::string, ReflectionEntry> Scene::GetMetaReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 

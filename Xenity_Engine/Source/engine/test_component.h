@@ -11,12 +11,14 @@
 #include "vectors/vector4.h"
 #include "graphics/color/color.h"
 
+class MeshRenderer;
+
 class CustomClass : public Reflection 
 {
 public:
 	CustomClass();
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	float myCustomFloat = 0;
 	float myCustomFloat2 = 0;
 };
@@ -26,13 +28,13 @@ class TestComponent : public Component
 public:
 	TestComponent();
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void Start();
 	void Update();
 
 	CustomClass myCustomClass = CustomClass();
 
-	std::weak_ptr<Light> myComponent;
+	std::weak_ptr<MeshRenderer> myComponent;
 	std::weak_ptr<GameObject> myGameObject;
 	std::weak_ptr<Transform> myTransform;
 

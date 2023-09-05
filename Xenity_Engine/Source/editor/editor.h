@@ -21,6 +21,7 @@ class SceneMenu;
 class CompilingMenu;
 class SelectProjectMenu;
 class CreateProjectMenu;
+class LightingMenu;
 
 enum MenuNames
 {
@@ -84,6 +85,7 @@ public:
 	static GameMenu* gameMenu;
 	static SceneMenu* sceneMenu;
 	static InspectorMenu* inspector;
+	static LightingMenu* lightingMenu;
 private:
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;

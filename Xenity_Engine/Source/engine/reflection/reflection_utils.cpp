@@ -17,13 +17,13 @@ void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<
 	}
 }
 
-void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Variable> theMap)
+void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, ReflectionEntry> theMap)
 {
 	for (auto& kv : json["Values"].items())
 	{
 		if (theMap.contains(kv.key()))
 		{
-			Variable& variableRef = theMap.at(kv.key());
+			Variable& variableRef = theMap.at(kv.key()).variable.value();
 			if (kv.value().is_object())
 			{
 				if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
@@ -74,6 +74,10 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Varia
 				{
 					FillFileReference<AudioClip>(kv.value(), valuePtr);
 				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
+				{
+					FillFileReference<SkyBox>(kv.value(), valuePtr);
+				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
 					int arraySize = kv.value().size();
@@ -110,12 +114,12 @@ void ReflectionUtils::JsonToReflection(json j, Reflection& reflection)
 	JsonToMap(j, myMap);
 }
 
-json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap)
+json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap)
 {
 	json json;
 	for (const auto& kv : theMap)
 	{
-		Variable& variableRef = theMap.at(kv.first);
+		Variable& variableRef = theMap.at(kv.first).variable.value();
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
 			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
@@ -165,13 +169,18 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, Variable> theMap
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = valuePtr->get()->fileId;
 		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				json[kv.first] = valuePtr->get()->fileId;
+		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
-			int s = valuePtr->get().size();
-			for (int i = 0; i < s; i++)
+			int vectorSize = valuePtr->get().size();
+			for (int vIndex = 0; vIndex < vectorSize; vIndex++)
 			{
-				if (valuePtr->get().at(i))
-					json[kv.first][i] = valuePtr->get().at(i)->fileId;
+				if (valuePtr->get().at(vIndex))
+					json[kv.first][vIndex] = valuePtr->get().at(vIndex)->fileId;
 			}
 		}
 	}

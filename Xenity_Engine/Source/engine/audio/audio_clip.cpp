@@ -6,16 +6,16 @@ AudioClip::AudioClip(std::string filePath)
     this->filePath = filePath;
 }
 
-std::unordered_map<std::string, Variable> AudioClip::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> AudioClip::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("fileId", fileId);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, Variable> AudioClip::GetMetaReflection()
+std::unordered_map<std::string, ReflectionEntry> AudioClip::GetMetaReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	return reflectedVariables;
 }
 

@@ -18,7 +18,7 @@ class API Vector3 : public Reflection
 public:
 	//void SetReflection();
 
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	//Reflection* parentReflection = nullptr;
 
 	Vector3();

@@ -25,7 +25,7 @@ class API TextRenderer : public IDrawable
 public:
 	TextRenderer();
 	//void SetReflection();
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void OnReflectionUpdated();
 	// TextRenderer(Font* font, float size, Shader* shader);
 	// TextRenderer(Font* font, float size, Shader* shader);

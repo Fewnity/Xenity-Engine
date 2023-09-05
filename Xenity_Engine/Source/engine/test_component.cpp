@@ -32,28 +32,30 @@ TestComponent::TestComponent()
 	reflectedVariables["myString"] = &myString;
 }*/
 
-std::unordered_map<std::string, Variable> TestComponent::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> TestComponent::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("myCustomClass", myCustomClass);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 
-	reflectedVariables.insert_or_assign("myComponent", (std::weak_ptr<Component>&)myComponent);
-	reflectedVariables.insert_or_assign("myGameObject", myGameObject);
-	reflectedVariables.insert_or_assign("myTransform", myTransform);
+	Reflection::AddReflectionVariable(reflectedVariables, myCustomClass, "myCustomClass", true);
 
-	reflectedVariables.insert_or_assign("vec2", vec2);
-	reflectedVariables.insert_or_assign("vec2Int", vec2Int);
-	reflectedVariables.insert_or_assign("vec3", vec3);
-	reflectedVariables.insert_or_assign("vec3_2", vec3_2);
-	reflectedVariables.insert_or_assign("vec3_3", vec3_3);
-	reflectedVariables.insert_or_assign("vec4", vec4);
+	Reflection::AddReflectionVariable(reflectedVariables, (std::weak_ptr<Component>&)myComponent, "myComponent", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myGameObject, "myGameObject", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myTransform, "myTransform", true);
 
-	reflectedVariables.insert_or_assign("color", color);
+	Reflection::AddReflectionVariable(reflectedVariables, vec2, "vec2", true);
+	Reflection::AddReflectionVariable(reflectedVariables, vec2Int, "vec2Int", true);
+	Reflection::AddReflectionVariable(reflectedVariables, vec3, "vec3", true);
+	Reflection::AddReflectionVariable(reflectedVariables, vec3_2, "vec3_2", true);
+	Reflection::AddReflectionVariable(reflectedVariables, vec3_3, "vec3_3", true);
+	Reflection::AddReflectionVariable(reflectedVariables, vec4, "vec4", true);
 
-	reflectedVariables.insert_or_assign("myFloat", myFloat);
-	reflectedVariables.insert_or_assign("myInt", myInt);
-	reflectedVariables.insert_or_assign("myDouble", myDouble);
-	reflectedVariables.insert_or_assign("myString", myString);
+	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
+
+	Reflection::AddReflectionVariable(reflectedVariables, myFloat, "myFloat", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myInt, "myInt", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myDouble, "myDouble", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myString, "myString", true);
+
 	return reflectedVariables;
 }
 
@@ -76,10 +78,10 @@ CustomClass::CustomClass()
 	reflectedVariables["myCustomFloat"] = myCustomFloat;
 }*/
 
-std::unordered_map<std::string, Variable> CustomClass::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> CustomClass::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("myCustomFloat", myCustomFloat);
-	reflectedVariables.insert_or_assign("myCustomFloat2", myCustomFloat2);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, myCustomFloat, "myCustomFloat", true);
+	Reflection::AddReflectionVariable(reflectedVariables, myCustomFloat2, "myCustomFloat2", true);
 	return reflectedVariables;
 }

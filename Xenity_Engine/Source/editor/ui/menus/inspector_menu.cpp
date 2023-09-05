@@ -23,7 +23,21 @@ void InspectorMenu::Draw()
 		ImGui::Text(fileNameExt.c_str());
 		ImGui::Separator();
 
+		auto reflection = std::dynamic_pointer_cast<Reflection>(selectedFileReference);
+
 		auto metaReflection = selectedFileReference->GetMetaReflection();
+		if (reflection) 
+		{
+			auto reflectionList = reflection->GetReflection();
+			if (reflectionList.size() != 0)
+			{
+				bool changed = EditorUI::DrawMap(reflectionList);
+				if (changed) 
+				{
+					reflection->OnReflectionUpdated();
+				}
+			}
+		}
 		if (metaReflection.size() != 0)
 		{
 			EditorUI::DrawMap(metaReflection);

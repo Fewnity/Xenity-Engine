@@ -18,6 +18,7 @@ class FileReference;
 class ProjectDirectory;
 class Component;
 class Transform;
+class SkyBox;
 
 enum IconName 
 {
@@ -29,6 +30,7 @@ enum IconName
 	Icon_Code,
 	Icon_Header,
 	Icon_Audio,
+	Icon_Sky,
 	Icon_Count,
 };
 
@@ -63,13 +65,15 @@ public:
 	static bool DrawInput(std::string inputName, std::weak_ptr<Component>& value);
 	static bool DrawInput(std::string inputName, std::weak_ptr<GameObject>& value);
 	static bool DrawInput(std::string inputName, std::weak_ptr<Transform>& value);
+	static bool DrawInput(std::string inputName, std::shared_ptr<SkyBox>& value);
+
 	static bool DrawTreeItem(std::weak_ptr<GameObject> child);
 	static bool DrawTreeItem(ProjectDirectory* projectDir);
 	static void DrawInputTitle(std::string title);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
 	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
 	static bool DrawReflection(Reflection& reflection);
-	static bool DrawMap(std::unordered_map<std::string, Variable> myMap);
+	static bool DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap);
 
 	static std::string OpenFolderDialog(std::string title);
 	static std::string OpenFileDialog(std::string title);
@@ -86,11 +90,11 @@ public:
 	{
 		return uiScale;
 	}
+	template <typename T>
+	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName);
 private:
 	static int uiId;
 	static float uiScale;
 	static void UpdateUIScale();
-	template <typename T>
-	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName);
 };
 #endif

@@ -28,7 +28,7 @@ public:
 	~TextRendererCanvas();
 	//void SetReflection();
 
-	std::unordered_map<std::string, Variable> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void OnReflectionUpdated();
 
 	Vector3 position = Vector3(0, 0, 0);

@@ -19,12 +19,12 @@
 	reflectedVariables["z"] = z;
 }*/
 
-std::unordered_map<std::string, Variable> Vector3::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Vector3::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("x", x);
-	reflectedVariables.insert_or_assign("y", y);
-	reflectedVariables.insert_or_assign("z", z);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, x, "x", true);
+	Reflection::AddReflectionVariable(reflectedVariables, y, "y", true);
+	Reflection::AddReflectionVariable(reflectedVariables, z, "z", true);
 	return reflectedVariables;
 }
 

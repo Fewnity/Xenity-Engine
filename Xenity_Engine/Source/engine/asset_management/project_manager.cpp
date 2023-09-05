@@ -7,6 +7,7 @@
 #include "../scene_management/scene_manager.h"
 #include "../game_interface.h"
 #include "code_file.h"
+#include "../graphics/skybox.h"
 
 #if !defined(EDITOR)
 #include "../../game_test/game.h"
@@ -89,6 +90,10 @@ FileType GetFileType(std::string extension)
 	else if (extension == ".h" || extension == ".cpp") //If the file is a scene
 	{
 		fileType = File_Code;
+	}
+	else if (extension == ".sky") //If the file is a scene
+	{
+		fileType = File_Skybox;
 	}
 
 	return fileType;
@@ -179,9 +184,10 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 		projectFilesIds[kv.first->GetUniqueId()] = kv.first->GetPath();
 	}
 
+#if defined(EDITOR)
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
-	FillProjectDirectory(projectDirectory);
 	Engine::SetCurrentProjectDirectory(projectDirectory);
+#endif
 
 	projectFiles.clear();
 	allFoundFiles.clear();
@@ -252,6 +258,9 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 		case File_Code:
 			fileRef = CodeFile::MakeScene(file->GetFileExtension());
 			break;
+		case File_Skybox:
+			fileRef = SkyBox::MakeSkyBox();
+			break;
 		}
 
 		if (fileRef)
@@ -263,16 +272,11 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 #if defined(EDITOR)
 			SaveMetaFile(fileRef);
 #endif
+			if (type == File_Skybox)
+				fileRef->LoadFileReference();
 		}
 	}
-	/*if (id != -1)
-	{
-		auto it = projectFilesRef.find(id);
-		if (it != projectFilesRef.end())
-		{
-			fileRef = it->second;
-		}
-	}*/
+
 	return fileRef;
 }
 
@@ -408,11 +412,11 @@ std::string ProjectDirectory::GetFolderName()
 	return fileName;
 }
 
-std::unordered_map<std::string, Variable> ProjectManager::GetProjetSettingsReflection()
+std::unordered_map<std::string, ReflectionEntry> ProjectManager::GetProjetSettingsReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("projectName", projectName);
-	reflectedVariables.insert_or_assign("gameName", gameName);
-	reflectedVariables.insert_or_assign("startScene", startScene);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, projectName, "projectName", true);
+	Reflection::AddReflectionVariable(reflectedVariables, gameName, "gameName", true);
+	Reflection::AddReflectionVariable(reflectedVariables, startScene, "startScene", true);
 	return reflectedVariables;
 }

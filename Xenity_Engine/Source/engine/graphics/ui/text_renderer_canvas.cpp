@@ -22,10 +22,10 @@ TextRendererCanvas::TextRendererCanvas()
 	reflectedVariables["text"] = &text;
 }*/
 
-std::unordered_map<std::string, Variable> TextRendererCanvas::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("text", text);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, text, "text", true);
 	return reflectedVariables;
 }
 

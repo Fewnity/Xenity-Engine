@@ -28,12 +28,12 @@ Tilemap::Tilemap()
 	reflectedVariables["color"] = &color;
 }*/
 
-std::unordered_map<std::string, Variable> Tilemap::GetReflection()
+std::unordered_map<std::string, ReflectionEntry> Tilemap::GetReflection()
 {
-	std::unordered_map<std::string, Variable> reflectedVariables;
-	reflectedVariables.insert_or_assign("width", width);
-	reflectedVariables.insert_or_assign("height", height);
-	reflectedVariables.insert_or_assign("color", color);
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, width, "width", true);
+	Reflection::AddReflectionVariable(reflectedVariables, height, "height", true);
+	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
 	return reflectedVariables;
 }
 

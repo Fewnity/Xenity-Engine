@@ -77,7 +77,7 @@ void ProfilerMenu::Draw()
 				if (fileRef->file)
 					ImGui::Text("File%d isLoaded:%d useCount:%d : %s", fileRef->fileId, fileRef->isLoaded, fileRef.use_count(), fileRef->file->GetFileName().c_str());
 				else
-					ImGui::Text("missing file isLoaded:%d useCount:%d", fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("missing file isLoaded:%d type:%d useCount:%d", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");

@@ -14,6 +14,7 @@
 //#include <Commdlg.h>
 #include <ShObjIdl.h>
 //#include <ShObjIdl.h>
+#include "../../engine/graphics/skybox.h"
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;
@@ -77,6 +78,11 @@ void EditorUI::Init()
 	audioIcon->file = new File("icons/audio.png");
 	audioIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Audio] = audioIcon;
+
+	std::shared_ptr<Texture> audioSky = Texture::MakeTexture("icons/sky.png", true);
+	audioSky->file = new File("icons/sky.png");
+	audioSky->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Sky] = audioSky;
 
 	for (int i = 0; i < Icon_Count; i++)
 	{
@@ -567,111 +573,113 @@ bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
 	return objectClicked;
 }
 
-bool EditorUI::DrawMap(std::unordered_map<std::string, Variable> myMap)
+bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 {
-
 	bool valueChanged = false;
 	for (const auto& kv : myMap)
 	{
 		bool valueChangedTemp = false;
 		std::string variableName = GetPrettyVariableName(kv.first);
-
-		Variable variableRef = kv.second;
-		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))// Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
-			valueChangedTemp = DrawInput(variableName, valuePtr->get());
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+		ReflectionEntry reflectionEntry = kv.second;
+		if (reflectionEntry.isPublic) 
 		{
-			if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
-				valueChangedTemp = DrawInput(variableName, *val);
-			else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
-				valueChangedTemp = DrawInput(variableName, *val);
-			else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
-				valueChangedTemp = DrawInput(variableName, *val);
-			else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
-				valueChangedTemp = DrawInput(variableName, *val);
-			else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
-				valueChangedTemp = DrawInput(variableName, *val);
-			else //Basic draw
-				DrawReflection(valuePtr->get());
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
-		{
-			DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
-		{
-			DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
-		{
-			DrawFileReference(FileType::File_Texture,"Texture", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
-		{
-			DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
-		{
-			int vectorSize = valuePtr->get().size();
-			for (int vectorI = 0; vectorI < vectorSize; vectorI++)
+			Variable variableRef = kv.second.variable.value();
+			if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))// Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
+				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 			{
-				std::string inputText = "None (Texture)";
-				auto ptr = valuePtr->get()[vectorI];
-				if (ptr != nullptr)
+				if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
+					valueChangedTemp = DrawInput(variableName, *val);
+				else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
+					valueChangedTemp = DrawInput(variableName, *val);
+				else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
+					valueChangedTemp = DrawInput(variableName, *val);
+				else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
+					valueChangedTemp = DrawInput(variableName, *val);
+				else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
+					valueChangedTemp = DrawInput(variableName, *val);
+				else //Basic draw
+					DrawReflection(valuePtr->get());
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Texture,"Texture", valuePtr, valueChangedTemp, variableName);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
+			{
+				int vectorSize = valuePtr->get().size();
+				for (int vectorI = 0; vectorI < vectorSize; vectorI++)
 				{
-					if (ptr->file != nullptr)
-						inputText = ptr->file->GetFileName();
-					else
-						inputText = "Filled but invalid file reference (Texture)";
+					std::string inputText = "None (Texture)";
+					auto ptr = valuePtr->get()[vectorI];
+					if (ptr != nullptr)
+					{
+						if (ptr->file != nullptr)
+							inputText = ptr->file->GetFileName();
+						else
+							inputText = "Filled but invalid file reference (Texture)";
 
-					inputText += " " + std::to_string(ptr->fileId) + " ";
-					if (ptr->file)
-						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+						inputText += " " + std::to_string(ptr->fileId) + " ";
+						if (ptr->file)
+							inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+					}
+
+					if (DrawInputButton(variableName, inputText, true) == 2)
+					{
+						valuePtr->get()[vectorI] = nullptr;
+					}
+
+					std::shared_ptr <FileReference> ref = nullptr;
+					std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
+					if (DragDropTarget(payloadName, ref))
+					{
+						valuePtr->get()[vectorI] = std::dynamic_pointer_cast<Texture>(ref);
+						valueChangedTemp = true;
+					}
 				}
-
-				if (DrawInputButton(variableName, inputText, true) == 2)
+				if (ImGui::Button("Add Texture"))
 				{
-					valuePtr->get()[vectorI] = nullptr;
+					valuePtr->get().push_back(nullptr);
 				}
-
-				std::shared_ptr <FileReference> ref = nullptr;
-				std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
-				if (DragDropTarget(payloadName, ref))
+				if (ImGui::Button("Remove Texture"))
 				{
-					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<Texture>(ref);
-					valueChangedTemp = true;
+					int textureSize = valuePtr->get().size();
+					if (textureSize != 0) 
+					{
+						valuePtr->get().erase(valuePtr->get().begin() + textureSize -1);
+					}
 				}
 			}
-			if (ImGui::Button("Add Texture"))
+			if (valueChangedTemp)
 			{
-				valuePtr->get().push_back(nullptr);
+				valueChanged = true;
 			}
-			if (ImGui::Button("Remove Texture"))
-			{
-				int textureSize = valuePtr->get().size();
-				if (textureSize != 0) 
-				{
-					valuePtr->get().erase(valuePtr->get().begin() + textureSize -1);
-				}
-			}
-		}
-		if (valueChangedTemp)
-		{
-			valueChanged = true;
 		}
 	}
 	return valueChanged;
@@ -946,6 +954,14 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<GameObject>& value
 	}
 
 	return oldValue != value.lock();
+}
+
+bool EditorUI::DrawInput(std::string inputName, std::shared_ptr<SkyBox>& value)
+{
+	bool changed = false;
+	auto ref = std::ref(value);
+	DrawFileReference(File_Skybox, "Skybox", &ref, changed, inputName);
+	return changed;
 }
 
 bool EditorUI::DrawInput(std::string inputName, Color& value)
