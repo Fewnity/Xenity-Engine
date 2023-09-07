@@ -13,7 +13,6 @@ void LightingMenu::Draw()
 {
 	ImGui::Begin("Lighting");
 	ImGui::Text("Lighting");
-	bool changed = false;
 	EditorUI::DrawInput("Skybox", Graphics::skybox);
 	ImGui::End();
 }
