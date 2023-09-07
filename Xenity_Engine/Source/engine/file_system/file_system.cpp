@@ -462,10 +462,11 @@ void FileSystem::DeleteFile(const std::string path)
 #if defined(__vita__)
 	newPath = PSVITA_BASE_DIR + path;
 #endif
+
 #if defined(__PSP__)
 	sceIoRemove(newPath.c_str());
 #else
-	remove(newPath.c_str());
+	std::filesystem::remove_all(newPath.c_str());
 #endif
 }
 
