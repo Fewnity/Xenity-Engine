@@ -168,17 +168,40 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			state = 2;
 		fileHovered = true;
 
-		if (ImGui::Button("Create folder"))
+		if (ImGui::BeginMenu("Create")) 
 		{
-			FileSystem::fileSystem->CreateDirectory(fileExplorerItem.directory->path + "\\new Folder");
-			ImGui::CloseCurrentPopup();
+			if (ImGui::MenuItem("Folder"))
+			{
+				FileSystem::fileSystem->CreateDirectory(fileExplorerItem.directory->path + "\\new Folder");
+				ImGui::CloseCurrentPopup();
+				ProjectManager::RefreshProjectDirectory();
+			}
+			if (ImGui::MenuItem("Scene"))
+			{
+				File* newFile = new File(fileExplorerItem.directory->path + "\\newScene.xen");
+				newFile->Open(true);
+				newFile->Close();
+				delete newFile;
+				ImGui::CloseCurrentPopup();
+				ProjectManager::RefreshProjectDirectory();
+			}
+			if (ImGui::MenuItem("Skybox"))
+			{
+				File* newFile = new File(fileExplorerItem.directory->path + "\\newSkybox.sky");
+				newFile->Open(true);
+				newFile->Close();
+				delete newFile;
+				ImGui::CloseCurrentPopup();
+				ProjectManager::RefreshProjectDirectory();
+			}
+			ImGui::EndMenu();
 		}
-		if (itemSelected && ImGui::Button("Open"))
+		if (itemSelected && ImGui::MenuItem("Open"))
 		{
 			OpenItem(fileExplorerItem);
 			ImGui::CloseCurrentPopup();
 		}
-		if ((itemSelected && ImGui::Button("Show in Explorer")) || (!itemSelected && ImGui::Button("Open folder in Explorer")))
+		if ((itemSelected && ImGui::MenuItem("Show in Explorer")) || (!itemSelected && ImGui::MenuItem("Open folder in Explorer")))
 		{
 			std::string command = "explorer.exe ";
 			if (itemSelected)
@@ -199,23 +222,27 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 
 			ImGui::CloseCurrentPopup();
 		}
-		if (ImGui::Button("Refresh"))
+		if (ImGui::MenuItem("Refresh"))
 		{
-			ProjectManager::LoadProject(ProjectManager::GetProjectFolderPath());
+			ProjectManager::RefreshProjectDirectory();
 			ImGui::CloseCurrentPopup();
 		}
-		if (itemSelected && ImGui::Button("Delete"))
+		if (itemSelected && ImGui::MenuItem("Delete"))
 		{
 			if (fileExplorerItem.file) 
 			{
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath()+".meta");
-				ProjectManager::LoadProject(ProjectManager::GetProjectFolderPath());
 				if (Engine::GetSelectedFileReference() == fileExplorerItem.file)
 				{
 					Engine::SetSelectedFileReference(nullptr);
 				}
 			}
+			else if (fileExplorerItem.directory)
+			{
+				FileSystem::fileSystem->DeleteFile(fileExplorerItem.directory->path);
+			}
+			ProjectManager::RefreshProjectDirectory();
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
@@ -256,6 +283,7 @@ void FileExplorerMenu::Draw()
 			int folderCount = currentDir->subdirectories.size();
 			int fileCount = currentDir->files.size();
 			std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
+			
 			for (int i = 0; i < folderCount; i++)
 			{
 				FileExplorerItem item;
