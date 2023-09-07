@@ -56,8 +56,11 @@ void SkyBox::LoadFileReference()
 	file->Open(true);
 	std::string jsonString = file->ReadAll();
 	file->Close();
-	myJson = json::parse(jsonString);
-	ReflectionUtils::JsonToMap(myJson, GetReflection());
+	if (jsonString != "")
+	{
+		myJson = json::parse(jsonString);
+		ReflectionUtils::JsonToMap(myJson, GetReflection());
+	}
 }
 
 std::shared_ptr<SkyBox> SkyBox::MakeSkyBox()
