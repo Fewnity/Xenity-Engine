@@ -236,7 +236,8 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 		json data;
 		try
 		{
-			data = json::parse(jsonString);
+			if(jsonString != "")
+				data = json::parse(jsonString);
 			LoadScene(data);
 			openedScene = scene;
 			Window::UpdateWindowTitle();
