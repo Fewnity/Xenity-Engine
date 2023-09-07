@@ -583,6 +583,9 @@ extern "C"
 
 		case GU_PSM_8888:
 		case GU_PSM_T32:
+		case GU_PSM_DXT1:
+		case GU_PSM_DXT3:
+		case GU_PSM_DXT5:
 			return 4;
 
 		default:
@@ -608,6 +611,9 @@ extern "C"
 
 		case GU_PSM_8888:
 		case GU_PSM_T32:
+		case GU_PSM_DXT1:
+		case GU_PSM_DXT3:
+		case GU_PSM_DXT5:
 			return 4 * width * height;
 
 		default:

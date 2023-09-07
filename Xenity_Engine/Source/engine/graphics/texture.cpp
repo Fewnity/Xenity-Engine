@@ -13,6 +13,7 @@
 #include <vitaGL.h>
 #elif defined(__PSP__)
 #include "../../psp/gu2gl.h"
+#include "../../psp/video_hardware_dxtn.h"
 #include <pspkernel.h>
 #include <vram.h>
 #endif
@@ -116,10 +117,8 @@ std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int cha
 
 Texture::~Texture()
 {
-	
-		Debug::Print("Texture::~Texture()" + std::to_string(textureId));
-		UnloadFileReference();
-
+	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
+	UnloadFileReference();
 }
 
 void Texture::LoadFileReference()
@@ -196,6 +195,13 @@ void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigne
 // See https://github.com/pspdev/pspsdk/blob/master/src/debug/scr_printf.c
 void copy_texture_data(void* dest, const void* src, int width, int height, const int destType, const int srcType)
 {
+	/*for (unsigned int y = 0; y < height; y++)
+	{
+		for (unsigned int x = 0; x < width; x++)
+		{
+			((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
+		}
+	}*/
 	if (destType == srcType)
 	{
 		if (srcType == GU_PSM_4444 || srcType == GU_PSM_5650 || srcType == GU_PSM_5551)
@@ -308,7 +314,7 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 	// Allocate memory in ram or vram
 	if (inVram)
 	{
-		unsigned int* newData = (unsigned int*)vramalloc(byteCount);
+		unsigned int* newData = (unsigned int*)vramalloc(byteCount); // Divide by 8 when dxt1, by 4 when dxt3 and dxt5
 		// If there is no more free vram
 		if (!newData)
 		{
@@ -322,9 +328,11 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 	{
 		data.push_back((unsigned int*)memalign(16, byteCount));
 	}
+	//tx_compress_dxtn(4, resizedPW, resizedPH, (const unsigned char*)dataBuffer, type, (unsigned char*)data[level]);
 
 	// Place image data in the memory
 	swizzle_fast((u8*)data[level], (const u8*)dataBuffer, resizedPW * bytePerPixel, resizedPH);
+	//copy_texture_data(data[level], dataBuffer, pW, pH, type, type);
 	free(dataBuffer);
 	sceKernelDcacheWritebackInvalidateAll();
 }
@@ -340,6 +348,9 @@ void Texture::SetData(const unsigned char* texData)
 	//type = GU_PSM_4444;
 	//type = GU_PSM_5650;
 	type = GU_PSM_5551;
+	//type = GU_PSM_DXT5;
+	//type = GU_PSM_DXT3;
+	//type = GU_PSM_DXT1;
 
 	// Get pow2 size
 	pW = Math::nextPow2(width);
