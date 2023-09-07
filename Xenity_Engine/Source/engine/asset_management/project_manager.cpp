@@ -26,98 +26,38 @@ std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded;
 Directory* ProjectManager::projectDirectoryBase = nullptr;
 
-void ProjectManager::CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
+ProjectDirectory *ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath)
 {
-	int dirCount = projectDirectoryBase->subdirectories.size();
+	int dirCount = directoryToCheck->subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
 	{
-		ProjectDirectory *newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
-		realProjectDirectory->subdirectories.push_back(newDir);
-		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
-	}
-}
-
-void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory)
-{
-	realProjectDirectory->files.clear();
-
-	for (auto& kv : ProjectManager::projectFilesIds)
-	{
-		File* file = new File(kv.second);
-
-		if (realProjectDirectory->path == file->GetFolderPath())
+		if (directoryToCheck->subdirectories[i]->path == directoryPath)
 		{
-			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
+			return directoryToCheck->subdirectories[i];
 		}
-		delete file;
+		else 
+		{
+			ProjectDirectory* child = FindProjectDirectory(directoryToCheck->subdirectories[i], directoryPath);
+			if(child)
+				return child;
+		}
 	}
+	return nullptr;
 }
 
-bool ProjectManager::CreateProject(std::string name, std::string folderPath)
+void ProjectManager::FindAllProjectFiles()
 {
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
+	std::string oldPath;
+	if (Engine::GetCurrentProjectDirectory())
+		oldPath = Engine::GetCurrentProjectDirectory()->path;
 
-	return LoadProject(folderPath + name + "\\");
-}
-
-FileType GetFileType(std::string extension) 
-{
-	FileType fileType = File_Other;
-
-	int extLen = extension.size();
-	for (int i = 1; i < extLen; i++)
-	{
-		extension[i] = tolower(extension[i]);
-	}
-
-	if (extension == ".png" || extension == ".jpg" || extension == ".bmp") //If the file is an image
-	{
-		fileType = File_Texture;
-	}
-	else if (extension == ".wav" || extension == ".mp3") //If the file is a sound/music
-	{
-		fileType = File_Audio;
-	}
-	else if (extension == ".obj") //If the file is a 3D object
-	{
-		fileType = File_Mesh;
-	}
-	else if (extension == ".xen") //If the file is a scene
-	{
-		fileType = File_Scene;
-	}
-	else if (extension == ".h" || extension == ".cpp") //If the file is a scene
-	{
-		fileType = File_Code;
-	}
-	else if (extension == ".sky") //If the file is a scene
-	{
-		fileType = File_Skybox;
-	}
-
-	return fileType;
-}
-
-bool ProjectManager::LoadProject(std::string projectPathToLoad)
-{
-	Debug::Print("Loading project: " + projectPathToLoad);
-
-	projectFilesIds.clear();
-
-	projectLoaded = false;
-	projectFolderPath = projectPathToLoad;
-	assetFolderPath = projectPathToLoad + "assets\\";
-	engineAssetsFolderPath = ".\\engine_assets\\";
+	Engine::SetCurrentProjectDirectory(nullptr);
 
 	//Get all files of the project
-	projectDirectoryBase = new Directory(assetFolderPath);
-	if (!projectDirectoryBase->CheckIfExist())
-	{
-		return projectLoaded;
-	}
-
+	projectFilesIds.clear();
 	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles(true);
+	if (projectDirectory)
+		delete projectDirectory;
 
 	projectDirectory = new ProjectDirectory(assetFolderPath);
 
@@ -186,13 +126,113 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 
 #if defined(EDITOR)
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
-	Engine::SetCurrentProjectDirectory(projectDirectory);
+	ProjectDirectory* lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
+	if (lastOpenedDir)
+		Engine::SetCurrentProjectDirectory(lastOpenedDir);
+	else
+		Engine::SetCurrentProjectDirectory(projectDirectory);
 #endif
 
 	projectFiles.clear();
 	allFoundFiles.clear();
 	fileWithoutMeta.clear();
 	compatibleFiles.clear();
+}
+
+void ProjectManager::CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
+{
+	int dirCount = projectDirectoryBase->subdirectories.size();
+	for (int i = 0; i < dirCount; i++)
+	{
+		ProjectDirectory *newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
+		realProjectDirectory->subdirectories.push_back(newDir);
+		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
+	}
+}
+
+void ProjectManager::RefreshProjectDirectory()
+{
+	FindAllProjectFiles();
+}
+
+void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory)
+{
+	realProjectDirectory->files.clear();
+
+	for (auto& kv : ProjectManager::projectFilesIds)
+	{
+		File* file = new File(kv.second);
+
+		if (realProjectDirectory->path == file->GetFolderPath())
+		{
+			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
+		}
+		delete file;
+	}
+}
+
+bool ProjectManager::CreateProject(std::string name, std::string folderPath)
+{
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
+
+	return LoadProject(folderPath + name + "\\");
+}
+
+FileType ProjectManager::GetFileType(std::string extension)
+{
+	FileType fileType = File_Other;
+
+	int extLen = extension.size();
+	for (int i = 1; i < extLen; i++)
+	{
+		extension[i] = tolower(extension[i]);
+	}
+
+	if (extension == ".png" || extension == ".jpg" || extension == ".bmp") //If the file is an image
+	{
+		fileType = File_Texture;
+	}
+	else if (extension == ".wav" || extension == ".mp3") //If the file is a sound/music
+	{
+		fileType = File_Audio;
+	}
+	else if (extension == ".obj") //If the file is a 3D object
+	{
+		fileType = File_Mesh;
+	}
+	else if (extension == ".xen") //If the file is a scene
+	{
+		fileType = File_Scene;
+	}
+	else if (extension == ".h" || extension == ".cpp") //If the file is a scene
+	{
+		fileType = File_Code;
+	}
+	else if (extension == ".sky") //If the file is a scene
+	{
+		fileType = File_Skybox;
+	}
+
+	return fileType;
+}
+
+bool ProjectManager::LoadProject(std::string projectPathToLoad)
+{
+	Debug::Print("Loading project: " + projectPathToLoad);
+	projectLoaded = false;
+
+	projectFolderPath = projectPathToLoad;
+	assetFolderPath = projectPathToLoad + "assets\\";
+	engineAssetsFolderPath = ".\\engine_assets\\";
+
+	projectDirectoryBase = new Directory(assetFolderPath);
+	if (!projectDirectoryBase->CheckIfExist())
+	{
+		return projectLoaded;
+	}
+
+	FindAllProjectFiles();
 
 	LoadProjectSettings();
 #if defined(EDITOR)
@@ -397,6 +437,16 @@ void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 
 		ReflectionUtils::JsonToMap(metaData, fileReference->GetMetaReflection());
 	}
+}
+
+ProjectDirectory::~ProjectDirectory()
+{
+	int dirCount = subdirectories.size();
+	for (int i = 0; i < dirCount; i++)
+	{
+		delete subdirectories[i];
+	}
+	subdirectories.clear();
 }
 
 std::string ProjectDirectory::GetFolderName()

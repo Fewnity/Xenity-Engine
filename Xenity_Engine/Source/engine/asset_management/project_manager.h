@@ -15,6 +15,7 @@
 #include <string>
 #include <memory>
 #include "../reflection/reflection.h"
+#include "../file_system/file_reference.h"
 
 class FileReference;
 class File;
@@ -29,6 +30,7 @@ public:
 	{
 		this->path = path;
 	}
+	~ProjectDirectory();
 
 	/**
 	* Get folder name
@@ -160,7 +162,12 @@ public:
 	static std::unordered_map<uint64_t, std::string> projectFilesIds;
 	static void FillProjectDirectory(ProjectDirectory* realProjectDirectory);
 	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);
+	static void RefreshProjectDirectory();
+	static void FindAllProjectFiles();
+	static ProjectDirectory* FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath);
 	static Directory* projectDirectoryBase;
+	static FileType GetFileType(std::string extension);
+
 private:
 	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
 	static bool projectLoaded;

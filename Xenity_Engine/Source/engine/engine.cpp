@@ -351,7 +351,7 @@ void Engine::SetGameState(GameState _gameState)
 	{
 		gameState = _gameState;
 		SceneManager::RestoreScene();
-}
+	}
 #else
 	gameState = _gameState;
 #endif
@@ -362,11 +362,14 @@ void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
 	if (currentProjectDirectory)
 		currentProjectDirectory->files.clear();
 	currentProjectDirectory = dir;
-	ProjectManager::FillProjectDirectory(currentProjectDirectory);
-	int itemCount = currentProjectDirectory->files.size();
-	for (int i = 0; i < itemCount; i++)
+	if (currentProjectDirectory)
 	{
-		currentProjectDirectory->files[i]->LoadFileReference();
+		ProjectManager::FillProjectDirectory(currentProjectDirectory);
+		int itemCount = currentProjectDirectory->files.size();
+		for (int i = 0; i < itemCount; i++)
+		{
+			currentProjectDirectory->files[i]->LoadFileReference();
+		}
 	}
 }
 
