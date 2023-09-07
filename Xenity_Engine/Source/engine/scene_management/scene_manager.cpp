@@ -102,12 +102,6 @@ void SceneManager::LoadScene(json jsonData)
 	
 	EmptyScene();
 
-	/*while (AssetManager::GetFileReferenceCount() != 0)
-	{
-		FileReference* fileRef = AssetManager::GetFileReference(0);
-		fileRef->UnloadFileReference();
-	}*/
-
 	std::vector<std::shared_ptr<Component>> allComponents;
 
 	// Create all GameObjects and Components
