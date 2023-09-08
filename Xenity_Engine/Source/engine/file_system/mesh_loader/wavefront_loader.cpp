@@ -271,5 +271,8 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #ifdef __PSP__
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
+
+	mesh->isValid = true;
+
 	return true;
 }

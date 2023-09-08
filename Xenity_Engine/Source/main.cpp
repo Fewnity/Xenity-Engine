@@ -16,16 +16,16 @@ For tomorrow
 Preview part in inspector : Add audio and mesh preview
 Add find function for child only in a gameobject
 Finish optimise LoadScene
-Create lighting tab and add skybox to it
 Fix Awake : Call awake when a gameobject was disabled and the enabled
 Apply texture filter before drawing imgui images
-Fix audio when closing the editor
-Fix error when unloading files (check if engine is running)
 Add filter to file dialog
-https://github.com/nzp-team/dquakeplus/blob/main/source/psp/video_hardware_dxtn.cpp
+Use weak instead of Shared for files
+Add Create Skybox/Scene functions
+Add ability to rename folder and files
+Add abitily to move file into a folder
+Add LOD
 
 Add more unit tests
-PSP Texture problem since : Free texture and mesh data on unload
 
 Add delete texture function in renderer for psp
 Fix mouse speed at high fps
@@ -40,7 +40,6 @@ Check FileSystem::GetGamePath
 Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 
 Add materials
-Add async texture loading
 Add shaders
 Fix uniqueID when loading a new scene (set id to the max find in the file)
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)

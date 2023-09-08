@@ -39,10 +39,16 @@ public:
 		//AssetManager::RemoveFileReference(this);
 	}
 
+	virtual void OnLoadFileReferenceFinished() 
+	{
+
+	}
+
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() {
+	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() 
+	{
 		return std::unordered_map<std::string, ReflectionEntry>();
 	}
 

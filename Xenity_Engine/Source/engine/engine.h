@@ -12,6 +12,7 @@
 #include <vector>
 #include <memory>
 #include "platform.h"
+#include <mutex>
 
 class Renderer;
 class GameObject;
@@ -20,6 +21,7 @@ class Transform;
 class GameInterface;
 class FileReference;
 class ProjectDirectory;
+class Texture;
 
 /**
 * Destroy a gameObject
@@ -176,6 +178,8 @@ public:
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
 	static bool canUpdateAudio;
+	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
+	static std::mutex threadLoadingMutex;
 
 private:
 	static std::shared_ptr<FileReference> selectedFileReference;

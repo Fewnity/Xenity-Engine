@@ -36,6 +36,9 @@
 #include "../editor/compiler.h"
 #include "../unit_tests/unit_test_manager.h"
 
+std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
+std::mutex Engine::threadLoadingMutex;
+
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
@@ -218,6 +221,18 @@ void Engine::Loop()
 	while (isRunning)
 	{
 		engineLoopBenchmark->Start();
+
+#if defined(EDITOR)
+		threadLoadingMutex.lock();
+		int threadFileCount = threadLoadedFiles.size();
+		for (int i = 0; i < threadFileCount; i++)
+		{
+			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
+		}
+		threadLoadedFiles.clear();
+		threadLoadingMutex.unlock();
+#endif
+
 		// Update time, inputs and network
 		Time::UpdateTime();
 		InputSystem::ClearInputs();

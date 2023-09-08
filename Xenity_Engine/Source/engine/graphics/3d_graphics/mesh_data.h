@@ -72,7 +72,7 @@ public:
 	~MeshData();
 
 	void LoadFileReference();
-
+	void OnLoadFileReferenceFinished();
 	void UnloadFileReference();
 
 	/**
@@ -152,6 +152,7 @@ public:
 	bool hasIndices = true;
 	bool isQuad = false;
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+	bool isValid = true;
 private:
 	void Unload();
 };

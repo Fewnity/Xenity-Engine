@@ -16,6 +16,8 @@
 #include "../../psp/video_hardware_dxtn.h"
 #include <pspkernel.h>
 #include <vram.h>
+#else
+#include <thread>
 #endif
 
 Texture::Texture()
@@ -126,7 +128,13 @@ void Texture::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
+#if defined(EDITOR)
+		std::thread threadLoading = std::thread(&Texture::CreateTexture,this, file->GetPath(), filter, useMipMap);
+		threadLoading.detach();
+#else
 		CreateTexture(file->GetPath(), filter, useMipMap);
+		OnLoadFileReferenceFinished();
+#endif
 	}
 }
 
@@ -337,7 +345,21 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 	sceKernelDcacheWritebackInvalidateAll();
 }
 
+
 #endif
+
+void Texture::OnLoadFileReferenceFinished()
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	textureId = Engine::renderer->CreateNewTexture();
+	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
+	unsigned int rgba = 0x1908;
+	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), rgba, buffer);
+#endif
+
+	stbi_image_free(buffer);
+	isValid = true;
+}
 
 void Texture::SetData(const unsigned char* texData)
 {
@@ -394,7 +416,7 @@ void Texture::LoadTexture(const std::string filename)
 
 	// Load image with stb_image
 	// stbi_set_flip_vertically_on_load(GL_TRUE);
-	unsigned char* buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+	buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
 		&nrChannels, 4);
 
 	free(fileData);
@@ -409,15 +431,11 @@ void Texture::LoadTexture(const std::string filename)
 	SetData(buffer);
 #endif
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
-	unsigned int rgba = 0x1908;
-	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), rgba, buffer);
+#if defined(EDITOR)
+	Engine::threadLoadingMutex.lock();
+	Engine::threadLoadedFiles.push_back(shared_from_this());
+	Engine::threadLoadingMutex.unlock();
 #endif
-
-	stbi_image_free(buffer);
-	isValid = true;
 	//Debug::Print("Texture loaded");
 }
 

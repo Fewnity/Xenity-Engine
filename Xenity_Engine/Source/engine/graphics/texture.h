@@ -80,6 +80,7 @@ public:
     ~Texture();
 
     void LoadFileReference();
+    void OnLoadFileReferenceFinished();
     void UnloadFileReference();
 
     /**
@@ -163,7 +164,7 @@ public:
         return isValid;
     };
 
-#ifdef __PSP__
+#if defined(__PSP__)
     /**
     * Create texture data for a mipmap level
     * @param level Mipmap level
@@ -204,4 +205,5 @@ private:
 
     int pixelPerUnit = 100;
     bool isValid = false;
+    unsigned char* buffer;
 };

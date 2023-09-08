@@ -466,7 +466,14 @@ void FileSystem::DeleteFile(const std::string path)
 #if defined(__PSP__)
 	sceIoRemove(newPath.c_str());
 #else
-	std::filesystem::remove_all(newPath.c_str());
+	try
+	{
+		std::filesystem::remove_all(newPath.c_str());
+	}
+	catch (const std::exception&)
+	{
+
+	}
 #endif
 }
 

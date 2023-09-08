@@ -175,8 +175,20 @@ void MeshData::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
+		isValid = false;
+
+#if defined(EDITOR)
+		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		threadLoading.detach();
+#else
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+#endif
 	}
+}
+
+void MeshData::OnLoadFileReferenceFinished()
+{
+	isValid = true;
 }
 
 void MeshData::UnloadFileReference()
@@ -186,6 +198,7 @@ void MeshData::UnloadFileReference()
 		if (isLoaded)
 		{
 			isLoaded = false;
+			isValid = false;
 			Unload();
 		}
 	}

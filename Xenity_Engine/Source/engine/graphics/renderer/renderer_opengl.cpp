@@ -415,6 +415,8 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	{
 		if (i == textureCount)
 			break;
+		if (!meshData->isValid)
+			continue;
 		if (textures[i] == nullptr)
 			continue;
 		BindTexture(textures[i]);
@@ -480,6 +482,9 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 		subMesh = meshData->subMeshes[i];
 		
 		if (subMesh->vertice_count == 0)
+			continue;
+
+		if(!meshData->isValid)
 			continue;
 
 		BindTexture(textures[i]);
