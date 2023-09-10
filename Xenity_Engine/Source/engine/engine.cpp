@@ -63,7 +63,7 @@ bool Engine::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
 int Engine::componentsCount = 0;
 Renderer* Engine::renderer = nullptr;
-bool Engine::canUpdateAudio = true;
+bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
 GameState Engine::gameState = Stopped;
@@ -209,15 +209,14 @@ void Engine::Loop()
 	Debug::Print("-------- Initiating game --------");
 
 #if !defined(EDITOR)
-	canUpdateAudio = false;
 	int projectLoadResult = LoadGame();
-	canUpdateAudio = true;
 	if (projectLoadResult != 0)
 	{
 		return;
 	}
 #endif
 
+	canUpdateAudio = true;
 	while (isRunning)
 	{
 		engineLoopBenchmark->Start();

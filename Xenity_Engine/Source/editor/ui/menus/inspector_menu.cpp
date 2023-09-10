@@ -4,6 +4,9 @@
 #include "../editor_ui.h"
 #include "../../editor.h"
 #include "../../../engine/asset_management/project_manager.h"
+#include "../../../engine/audio/audio_manager.h"
+#include "../../../engine/audio/audio_clip_stream.h"
+#include <imgui/imgui_impl_opengl3.h>
 
 void InspectorMenu::Init()
 {
@@ -14,6 +17,7 @@ void InspectorMenu::Draw()
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
+
 	auto selectedGameObject = Engine::selectedGameObject.lock();
 	std::shared_ptr<FileReference> selectedFileReference = Engine::GetSelectedFileReference();
 
@@ -26,13 +30,13 @@ void InspectorMenu::Draw()
 		auto reflection = std::dynamic_pointer_cast<Reflection>(selectedFileReference);
 
 		auto metaReflection = selectedFileReference->GetMetaReflection();
-		if (reflection) 
+		if (reflection)
 		{
 			auto reflectionList = reflection->GetReflection();
 			if (reflectionList.size() != 0)
 			{
 				bool changed = EditorUI::DrawMap(reflectionList);
-				if (changed) 
+				if (changed)
 				{
 					reflection->OnReflectionUpdated();
 				}
@@ -162,46 +166,57 @@ void InspectorMenu::Draw()
 		}
 	}
 
+	DrawFilePreview();
+
+	ImGui::End();
+}
+
+void InspectorMenu::DrawFilePreview()
+{
 	if (Engine::GetSelectedFileReference())
 	{
+		ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+
+		//Get preview area available size
 		ImVec2 availSize = ImGui::GetContentRegionAvail();
 		float sizeY = availSize.x;
 		if (availSize.x > availSize.y)
 			sizeY = availSize.y;
 
 		int textureId = 0;
+		// If the selected file needs to be loaded for preview
 		if (loadedPreview != Engine::GetSelectedFileReference())
 		{
 			loadedPreview = Engine::GetSelectedFileReference();
 			previewText = "";
-			switch (loadedPreview->fileType)
+			// Read text file
+			if (loadedPreview->fileType == File_Code)
 			{
-			case File_Code:
 				loadedPreview->file->Open(false);
 				previewText = loadedPreview->file->ReadAll();
 				loadedPreview->file->Close();
-				break;
 			}
 		}
-		if (loadedPreview->fileType == File_Texture) 
+		// If the file is a texture, get the texture id
+		if (loadedPreview->fileType == File_Texture)
 		{
 			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
 		}
 
-		if (previewText != "") 
+		// If the preview is a text, calculate the texte size
+		if (previewText != "")
 		{
-			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10;
+			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10; // + 10 to avoid the hided last line in some text
 		}
-		
 
 		ImGui::Text("Preview:");
 		ImGui::BeginChild("Preview", ImVec2(0, sizeY), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		if (previewText != "") 
+		if (previewText != "") // Draw text preview
 		{
-			ImGui::Text(previewText.c_str());
+			ImGui::TextWrapped(previewText.c_str());
 		}
-		else if (textureId != 0)
+		else if (textureId != 0) // Draw image preview
 		{
 			ImVec2 availArea = ImGui::GetContentRegionAvail();
 			ImGui::Image((ImTextureID)textureId, availArea);
@@ -216,11 +231,111 @@ void InspectorMenu::Draw()
 			ImGui::SetCursorPos(textPos);
 			ImGui::Text(text.c_str());
 		}
+		else if (loadedPreview->fileType == File_Audio) // Draw audio preview
+		{
+			int playedSoundCount = AudioManager::channels[0]->playedSounds.size();
+			AudioClipStream* stream = nullptr;
+			for (int i = 0; i < playedSoundCount; i++)
+			{
+				if (AudioManager::channels[0]->playedSounds[i]->audioSource == Editor::audioSource.lock())
+				{
+					// Get audio stream
+					stream = AudioManager::channels[0]->playedSounds[i]->audioClipStream;
+					break;
+				}
+			}
+
+			// Draw Play/Stop button
+			if (stream)
+			{
+				if (Editor::audioSource.lock()->GetIsPlaying())
+				{
+					if (ImGui::Button("Pause audio"))
+					{
+						Editor::audioSource.lock()->Pause();
+					}
+				}
+				else
+				{
+					if (ImGui::Button("Resume audio"))
+					{
+						Editor::audioSource.lock()->Resume();
+					}
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Stop audio"))
+				{
+					Editor::audioSource.lock()->Stop();
+				}
+			}
+			else
+			{
+				if (ImGui::Button("Play audio"))
+				{
+					Editor::audioSource.lock()->Stop();
+					Editor::audioSource.lock()->audioClip = std::dynamic_pointer_cast<AudioClip>(loadedPreview);
+					Editor::audioSource.lock()->Play();
+				}
+			}
+
+			if (stream)
+			{
+				// Get audio stream info
+				float seekPos = stream->GetSeekPosition() / (double)stream->GetSampleCount();
+				float totalTime = stream->GetSampleCount() / (double)stream->GetFrequency();
+
+				// Draw current time
+				ImVec2 availSize = ImGui::GetContentRegionAvail();
+				ImVec2 cursorPos = ImGui::GetCursorPos();
+				std::string currentTimeText = std::to_string(((int)(totalTime * seekPos * 1000)) / 1000.0f);
+				ImVec2 infoTextSize2 = ImGui::CalcTextSize(currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
+				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize2.x / 2 + cursorPos.x);
+				ImGui::Text("%ss", currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
+
+				cursorPos = ImGui::GetCursorPos();
+				ImVec2 mousePos = ImGui::GetMousePos();
+				ImVec2 windowPos = ImGui::GetWindowPos();
+
+				// Move cursor when user is clicking on the timeline
+				float normalisedPos = ((mousePos.x - windowPos.x - cursorPos.x) / (float)(availSize.x));
+				int mouseYPos = mousePos.y - windowPos.y;
+				bool isMouseXPosOk = normalisedPos >= 0 && normalisedPos <= 1;
+				bool isMouseYPosOk = mouseYPos >= cursorPos.y && mouseYPos <= cursorPos.y + 50;
+
+				if (ImGui::IsMouseClicked(0) && isMouseXPosOk && isMouseYPosOk)
+				{
+					if (normalisedPos < 0)
+						normalisedPos = 0;
+					else if (normalisedPos > 1)
+							normalisedPos = 1;
+					stream->SetSeek(stream->GetSampleCount() * normalisedPos);
+				}
+
+				// Draw audio cursor
+				draw_list->AddLine(ImVec2(cursorPos.x + availSize.x * seekPos + windowPos.x, cursorPos.y + windowPos.y), ImVec2(cursorPos.x + availSize.x * seekPos + windowPos.x, cursorPos.y + 50 + windowPos.y), IM_COL32(255, 255, 255, 255));
+				ImGui::SetCursorPosY(cursorPos.y + 50);
+
+				// Draw audio info text
+				std::string channelText = "Stereo";
+				if (stream->GetChannelCount() == 1)
+					channelText = "Mono";
+
+				std::string audioTypeText = "Waveform";
+				if (stream->GetAudioType() == AudioType::Mp3) 
+				{
+					audioTypeText = "Mp3";
+				}
+
+				std::string totalTimeText = std::to_string(((int)(totalTime * 1000)) / 1000.0f);
+				std::string infoText = audioTypeText + ", " +std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
+				ImVec2 infoTextSize = ImGui::CalcTextSize(infoText.c_str());
+				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize.x / 2 + cursorPos.x);
+				ImGui::Text("%s", infoText.c_str());
+			}
+		}
 		else
 			ImGui::Text("No preview available");
 
 		ImGui::EndChild();
 	}
-
-	ImGui::End();
 }

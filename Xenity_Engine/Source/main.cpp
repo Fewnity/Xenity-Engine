@@ -13,7 +13,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 For tomorrow
-Preview part in inspector : Add audio and mesh preview
+Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
 Finish optimise LoadScene
 Fix Awake : Call awake when a gameobject was disabled and the enabled
@@ -24,6 +24,7 @@ Add Create Skybox/Scene functions
 Add ability to rename folder and files
 Add abitily to move file into a folder
 Add LOD
+Add fog
 
 Add more unit tests
 

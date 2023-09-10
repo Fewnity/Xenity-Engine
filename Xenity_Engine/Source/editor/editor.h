@@ -22,6 +22,7 @@ class CompilingMenu;
 class SelectProjectMenu;
 class CreateProjectMenu;
 class LightingMenu;
+class AudioSource;
 
 enum MenuNames
 {
@@ -86,6 +87,7 @@ public:
 	static SceneMenu* sceneMenu;
 	static InspectorMenu* inspector;
 	static LightingMenu* lightingMenu;
+	static std::weak_ptr<AudioSource> audioSource;
 private:
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;

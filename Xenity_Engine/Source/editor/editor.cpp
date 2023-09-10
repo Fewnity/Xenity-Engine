@@ -28,6 +28,7 @@
 using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
+std::weak_ptr<AudioSource> Editor::audioSource;
 
 MenuNames Editor::currentMenu = Menu_Select_Project;
 
@@ -82,6 +83,9 @@ void Editor::Init()
 	camera->SetFov(70);
 	camera->isEditor = true;
 	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
+
+	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
+	audioSource = audioSourceGO->AddComponent<AudioSource>();
 }
 
 void Editor::Update()

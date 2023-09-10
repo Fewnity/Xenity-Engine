@@ -13,6 +13,7 @@ public:
 	void Draw();
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
 private:
+	void DrawFilePreview();
 	std::string previewText = "";
 };
 
