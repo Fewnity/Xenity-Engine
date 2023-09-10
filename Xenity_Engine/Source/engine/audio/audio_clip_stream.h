@@ -48,6 +48,8 @@ public:
     */
     void ResetSeek();
 
+    void SetSeek(uint64_t seekPosition);
+
     /**
     * Get seek position
     */
@@ -56,6 +58,11 @@ public:
     int GetChannelCount() 
     {
         return channelCount;
+    }
+
+    AudioType GetAudioType() 
+    {
+        return type;
     }
 
 private:

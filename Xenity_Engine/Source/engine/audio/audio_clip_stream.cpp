@@ -125,3 +125,11 @@ void AudioClipStream::ResetSeek()
     else if (type == Wav)
         drwav_seek_to_pcm_frame(&wav, 0);
 }
+
+void AudioClipStream::SetSeek(uint64_t seekPosition)
+{
+    if (type == Mp3)
+        drmp3_seek_to_pcm_frame(&mp3, seekPosition);
+    else if (type == Wav)
+        drwav_seek_to_pcm_frame(&wav, seekPosition);
+}
