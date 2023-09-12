@@ -17,6 +17,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
 #endif
+#include "../asset_management/asset_manager.h"
 
 #pragma region Constructors / Destructor
 
@@ -33,6 +34,7 @@ Camera::Camera()
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 #endif
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
+	AssetManager::AddReflection(this);
 }
 
 /*void Camera::SetReflection()
@@ -69,6 +71,7 @@ Camera::~Camera()
 		glDeleteRenderbuffers(1, &depthframebuffer);
 	}
 #endif
+	AssetManager::RemoveReflection(this);
 }
 
 #pragma endregion

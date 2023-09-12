@@ -3,9 +3,11 @@
 #include "../../xenity.h"
 #include "../../engine/file_system/file_reference.h"
 
+bool initialised = false;
+
 // std::vector<Shader*> AssetManager::shaders;
 // std::vector<Material*> AssetManager::materials;
-
+std::vector<Reflection*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
@@ -13,6 +15,7 @@ std::vector<std::weak_ptr<Light>> AssetManager::lights;
 
 // int AssetManager::shaderCount = 0;
 // int AssetManager::materialCount = 0;
+int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
@@ -38,6 +41,7 @@ std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
  */
 void AssetManager::Init()
 {
+	initialised = true;
 	defaultTexture = Texture::MakeTexture("engine_assets\\default_texture.png", true);
 	defaultTexture->file = new File("engine_assets\\default_texture.png");
 	defaultTexture->LoadFileReference();
@@ -81,11 +85,22 @@ void AssetManager::Init()
 // 	materialCount++;
 // }
 
+void AssetManager::AddReflection(Reflection* reflection)
+{
+#if defined(EDITOR)
+	if (initialised)
+	{
+		reflections.push_back(reflection);
+		reflectionCount++;
+	}
+#endif
+}
+
 void AssetManager::AddFileReference(std::shared_ptr<FileReference> fileReference)
 {
 	for (int i = 0; i < fileReferenceCount; i++)
 	{
-		if (fileReferences[i] == fileReference) 
+		if (fileReferences[i] == fileReference)
 		{
 			Debug::Print("OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			return;
@@ -176,6 +191,91 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 // 		materialCount--;
 // 	}
 // }
+
+void AssetManager::RemoveReflection(Reflection* reflection)
+{
+#if defined(EDITOR)
+	if (initialised)
+	{
+		int reflectionIndex = 0;
+		bool found = false;
+		for (int i = 0; i < reflectionCount; i++)
+		{
+			if (reflections[i] == reflection)
+			{
+				found = true;
+				reflectionIndex = i;
+				break;
+			}
+		}
+
+		if (found)
+		{
+			reflections.erase(reflections.begin() + reflectionIndex);
+			reflectionCount--;
+		}
+	}
+#endif
+}
+
+void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference) 
+{
+	RemoveFileReference(fileReference);
+	for (int i = 0; i < reflectionCount; i++)
+	{
+		auto map = reflections[i]->GetReflection();
+		for (auto& kv : map)
+		{
+			Variable& variableRef = kv.second.variable.value();
+			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
+			{
+				int vectorSize = valuePtr->get().size();
+				for (int i = 0; i < vectorSize; i++)
+				{
+					if (valuePtr->get()[i] == fileReference)
+					{
+						valuePtr->get()[i].reset();
+					}
+				}
+			}
+		}
+	}
+}
 
 void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileReference)
 {
@@ -296,6 +396,11 @@ void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 // 	return nullptr;
 // }
 
+Reflection* AssetManager::GetReflection(const int index)
+{
+	return reflections[index];
+}
+
 std::shared_ptr<FileReference> AssetManager::GetFileReference(const int index)
 {
 	return fileReferences[index];
@@ -341,6 +446,11 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 // {
 // 	return materialCount;
 // }
+
+int AssetManager::GetReflectionCount()
+{
+	return reflectionCount;
+}
 
 int AssetManager::GetFileReferenceCount()
 {

@@ -12,6 +12,7 @@
 Light::Light()
 {
 	componentName = "Light";
+	AssetManager::AddReflection(this);
 	//SetReflection();
 }
 
@@ -26,6 +27,7 @@ Light::Light()
 
 Light::~Light()
 {
+	AssetManager::RemoveReflection(this);
 }
 
 std::unordered_map<std::string, ReflectionEntry> Light::GetReflection()

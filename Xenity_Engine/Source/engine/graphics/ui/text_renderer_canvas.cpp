@@ -15,6 +15,7 @@ TextRendererCanvas::TextRendererCanvas()
 	//SetReflection();
 
 	type = Draw_UI;
+	AssetManager::AddReflection(this);
 }
 
 /*void TextRendererCanvas::SetReflection()
@@ -43,6 +44,7 @@ void TextRendererCanvas::OnReflectionUpdated()
 
 TextRendererCanvas::~TextRendererCanvas()
 {
+	AssetManager::RemoveReflection(this);
 }
 
 int TextRendererCanvas::GetDrawPriority() const

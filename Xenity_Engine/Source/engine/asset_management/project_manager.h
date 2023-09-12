@@ -159,6 +159,7 @@ public:
 	static void SaveProjectsList(std::vector<ProjectListItem> projects);
 
 	static ProjectDirectory* projectDirectory;
+	static std::unordered_map<uint64_t, bool> oldProjectFilesIds;
 	static std::unordered_map<uint64_t, std::string> projectFilesIds;
 	static void FillProjectDirectory(ProjectDirectory* realProjectDirectory);
 	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);

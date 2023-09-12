@@ -20,6 +20,7 @@ class API Tilemap : public IDrawable
 {
 public:
 	Tilemap();
+	~Tilemap();
 	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 

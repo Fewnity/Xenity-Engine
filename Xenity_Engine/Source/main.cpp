@@ -12,34 +12,35 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
 
 /*
-For tomorrow
-Preview part in inspector : Add mesh preview
-Add find function for child only in a gameobject
-Finish optimise LoadScene
-Fix Awake : Call awake when a gameobject was disabled and the enabled
-Apply texture filter before drawing imgui images
-Add filter to file dialog
-Use weak instead of Shared for files
+
+To do quick:
 Add Create Skybox/Scene functions
 Add ability to rename folder and files
-Add abitily to move file into a folder
-Add LOD
 Add fog
+Add font file
+Add right click on component to delete it
 
+To do soon:
+Fix Awake : Call awake when a gameobject was disabled and the enabled
+Add filter to file dialog
+Add abitily to move file into a folder
 Add more unit tests
-
 Add delete texture function in renderer for psp
+Create console window
+
+To do in a long time 
+Apply texture filter before drawing imgui images
+Add LOD
 Fix mouse speed at high fps
 Add transparency setting on textures
 Packing asset system
 Add a tool to rotate selected gameobject
 Fix tool with child and parent negative scale
-Find why ./ point to another location when lauched from a cmd without "cd"
 Detect the number of cpu core for cmake
-Create console window
 Check FileSystem::GetGamePath 
 Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
-
+Preview part in inspector : Add mesh preview
+Add find function for child only in a gameobject
 Add materials
 Add shaders
 Fix uniqueID when loading a new scene (set id to the max find in the file)

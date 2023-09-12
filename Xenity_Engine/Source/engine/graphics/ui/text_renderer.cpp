@@ -12,6 +12,7 @@ TextRenderer::TextRenderer()
 	if (TextManager::fonts.size() != 0)
 		font = TextManager::fonts[0];
 
+	AssetManager::AddReflection(this);
 	//SetReflection();
 }
 
@@ -41,6 +42,7 @@ void TextRenderer::OnReflectionUpdated()
 
 TextRenderer::~TextRenderer()
 {
+	AssetManager::RemoveReflection(this);
 }
 
 int TextRenderer::GetDrawPriority() const

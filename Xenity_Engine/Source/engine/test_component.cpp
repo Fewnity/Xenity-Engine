@@ -6,7 +6,13 @@
 TestComponent::TestComponent()
 {
 	componentName = "TestComponent";
+	AssetManager::AddReflection(this);
 	//SetReflection();
+}
+
+TestComponent::~TestComponent()
+{
+	AssetManager::RemoveReflection(this);
 }
 
 /*void TestComponent::SetReflection()

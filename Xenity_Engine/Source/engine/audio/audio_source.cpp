@@ -6,6 +6,7 @@
 AudioSource::AudioSource()
 {
     componentName = "AudioSource";
+    AssetManager::AddReflection(this);
     //SetReflection();
 }
 
@@ -31,6 +32,7 @@ std::unordered_map<std::string, ReflectionEntry> AudioSource::GetReflection()
 
 AudioSource::~AudioSource()
 {
+    AssetManager::RemoveReflection(this);
 }
 
 void AudioSource::Awake() 

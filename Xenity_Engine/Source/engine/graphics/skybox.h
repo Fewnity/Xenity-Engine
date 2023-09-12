@@ -20,6 +20,7 @@ class API SkyBox : public FileReference, public Reflection, public std::enable_s
 public:
 
 	SkyBox();
+	~SkyBox();
 
 	/**
 	* Create a skybox

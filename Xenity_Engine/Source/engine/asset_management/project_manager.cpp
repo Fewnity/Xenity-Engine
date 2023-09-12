@@ -15,6 +15,7 @@
 
 using json = nlohmann::json;
 
+std::unordered_map<uint64_t, bool> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, std::string> ProjectManager::projectFilesIds;
 ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
@@ -26,7 +27,7 @@ std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded;
 Directory* ProjectManager::projectDirectoryBase = nullptr;
 
-ProjectDirectory *ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath)
+ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath)
 {
 	int dirCount = directoryToCheck->subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
@@ -35,10 +36,10 @@ ProjectDirectory *ProjectManager::FindProjectDirectory(ProjectDirectory* directo
 		{
 			return directoryToCheck->subdirectories[i];
 		}
-		else 
+		else
 		{
 			ProjectDirectory* child = FindProjectDirectory(directoryToCheck->subdirectories[i], directoryPath);
-			if(child)
+			if (child)
 				return child;
 		}
 	}
@@ -52,6 +53,11 @@ void ProjectManager::FindAllProjectFiles()
 		oldPath = Engine::GetCurrentProjectDirectory()->path;
 
 	Engine::SetCurrentProjectDirectory(nullptr);
+
+	for (auto& kv : projectFilesIds)
+	{
+		oldProjectFilesIds[kv.first] = false;
+	}
 
 	//Get all files of the project
 	projectFilesIds.clear();
@@ -124,6 +130,23 @@ void ProjectManager::FindAllProjectFiles()
 		projectFilesIds[kv.first->GetUniqueId()] = kv.first->GetPath();
 	}
 
+	for (auto& kv : projectFilesIds)
+	{
+		if (oldProjectFilesIds.contains(kv.first)) 
+		{
+			oldProjectFilesIds[kv.first] = true;
+		}
+	}
+
+	for (auto& kv : oldProjectFilesIds)
+	{
+		if (!kv.second) 
+		{
+			AssetManager::ForceDeleteFileReference(GetFileReferenceById(kv.first));
+			Debug::Print("File not found: " + std::to_string(kv.first));
+		}
+	}
+
 #if defined(EDITOR)
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
 	ProjectDirectory* lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
@@ -133,6 +156,7 @@ void ProjectManager::FindAllProjectFiles()
 		Engine::SetCurrentProjectDirectory(projectDirectory);
 #endif
 
+	oldProjectFilesIds.clear();
 	projectFiles.clear();
 	allFoundFiles.clear();
 	fileWithoutMeta.clear();
@@ -144,7 +168,7 @@ void ProjectManager::CreateProjectDirectories(Directory* projectDirectoryBase, P
 	int dirCount = projectDirectoryBase->subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
 	{
-		ProjectDirectory *newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
+		ProjectDirectory* newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
 		realProjectDirectory->subdirectories.push_back(newDir);
 		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
 	}
@@ -271,58 +295,61 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
-		if (AssetManager::GetFileReference(i)->fileId == id) 
+		if (AssetManager::GetFileReference(i)->fileId == id)
 		{
 			fileRef = AssetManager::GetFileReference(i);
 		}
 	}
 
-	if (fileRef == nullptr) 
+	if (fileRef == nullptr)
 	{
-		File* file = new File(projectFilesIds[id]);
-		FileType type = GetFileType(file->GetFileExtension());
-		switch (type)
+		if (projectFilesIds.contains(id))
 		{
-		case File_Audio:
-			fileRef = AudioClip::MakeAudioClip(file->GetPath());
-			break;
-		case File_Mesh:
-			fileRef = MeshData::MakeMeshData();
-			break;
-		case File_Texture:
-			fileRef = Texture::MakeTexture();
-			break;
-		case File_Scene:
-			fileRef = Scene::MakeScene();
-			break;
-		case File_Code:
-			fileRef = CodeFile::MakeScene(file->GetFileExtension());
-			break;
-		case File_Skybox:
-			fileRef = SkyBox::MakeSkyBox();
-			break;
-		}
+			File* file = new File(projectFilesIds[id]);
+			FileType type = GetFileType(file->GetFileExtension());
+			switch (type)
+			{
+			case File_Audio:
+				fileRef = AudioClip::MakeAudioClip(file->GetPath());
+				break;
+			case File_Mesh:
+				fileRef = MeshData::MakeMeshData();
+				break;
+			case File_Texture:
+				fileRef = Texture::MakeTexture();
+				break;
+			case File_Scene:
+				fileRef = Scene::MakeScene();
+				break;
+			case File_Code:
+				fileRef = CodeFile::MakeScene(file->GetFileExtension());
+				break;
+			case File_Skybox:
+				fileRef = SkyBox::MakeSkyBox();
+				break;
+			}
 
-		if (fileRef)
-		{
-			fileRef->fileId = id;
-			fileRef->file = file;
-			fileRef->fileType = type;
-			LoadMetaFile(fileRef);
+			if (fileRef)
+			{
+				fileRef->fileId = id;
+				fileRef->file = file;
+				fileRef->fileType = type;
+				LoadMetaFile(fileRef);
 #if defined(EDITOR)
-			SaveMetaFile(fileRef);
+				SaveMetaFile(fileRef);
 #endif
-			if (type == File_Skybox)
-				fileRef->LoadFileReference();
+				if (type == File_Skybox)
+					fileRef->LoadFileReference();
+			}
 		}
 	}
 
 	return fileRef;
 }
 
-void ProjectManager::LoadProjectSettings() 
+void ProjectManager::LoadProjectSettings()
 {
-	File *projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	File* projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";
@@ -336,7 +363,7 @@ void ProjectManager::LoadProjectSettings()
 		{
 			projectData = json::parse(jsonString);
 		}
-		catch (const std::exception &)
+		catch (const std::exception&)
 		{
 			Debug::PrintError("Meta file error");
 			return;
@@ -346,14 +373,14 @@ void ProjectManager::LoadProjectSettings()
 	}
 }
 
-void ProjectManager::SaveProjectSettigs() 
+void ProjectManager::SaveProjectSettigs()
 {
 	FileSystem::fileSystem->DeleteFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection());
 
-	File *projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	File* projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	projectFile->Open(true);
 	projectFile->Write(projectData.dump(0));
 	projectFile->Close();
@@ -379,7 +406,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	std::vector<ProjectListItem> projects;
 	File* file = new File("projects.json");
 	bool isOpen = file->Open(false);
-	if (isOpen) 
+	if (isOpen)
 	{
 		json j;
 		j = json::parse(file->ReadAll());

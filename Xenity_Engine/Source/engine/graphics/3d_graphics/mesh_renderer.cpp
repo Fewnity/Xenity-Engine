@@ -12,6 +12,7 @@ MeshRenderer::MeshRenderer()
 {
 	componentName = "MeshRenderer";
 	type = Draw_3D;
+	AssetManager::AddReflection(this);
 	//SetReflection();
 }
 
@@ -34,6 +35,7 @@ std::unordered_map<std::string, ReflectionEntry> MeshRenderer::GetReflection()
 /// </summary>
 MeshRenderer::~MeshRenderer()
 {
+	AssetManager::RemoveReflection(this);
 }
 
 int MeshRenderer::GetDrawPriority() const

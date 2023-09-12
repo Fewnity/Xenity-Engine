@@ -9,6 +9,12 @@ using json = nlohmann::json;
 
 SkyBox::SkyBox()
 {
+	AssetManager::AddReflection(this);
+}
+
+SkyBox::~SkyBox()
+{
+	AssetManager::RemoveReflection(this);
 }
 
 SkyBox::SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture>back, std::shared_ptr<Texture> up, std::shared_ptr<Texture>down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right)

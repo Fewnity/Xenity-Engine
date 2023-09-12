@@ -7,6 +7,7 @@ SpriteRenderer::SpriteRenderer()
 {
 	componentName = "SpriteRenderer";
 	type = Draw_2D;
+	AssetManager::AddReflection(this);
 	//SetReflection();
 }
 
@@ -26,6 +27,7 @@ std::unordered_map<std::string, ReflectionEntry> SpriteRenderer::GetReflection()
 
 SpriteRenderer::~SpriteRenderer()
 {
+	AssetManager::RemoveReflection(this);
 }
 
 int SpriteRenderer::GetDrawPriority() const

@@ -27,6 +27,8 @@ class TestComponent : public Component
 {
 public:
 	TestComponent();
+	~TestComponent();
+
 	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void Start();
