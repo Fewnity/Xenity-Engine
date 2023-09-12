@@ -92,6 +92,8 @@ public:
 	virtual unsigned int CreateNewTexture() = 0;
 	virtual void SetTextureData(std::shared_ptr < Texture >texture, unsigned int textureType, const unsigned char *buffer) = 0;
 	virtual void Clear() = 0;
+	virtual void SetFog(bool active) = 0;
+	virtual void SetFogValues(float start, float end, Color color) = 0;
 
 private:
 	virtual void Setlights(std::weak_ptr<Camera> camera) = 0;

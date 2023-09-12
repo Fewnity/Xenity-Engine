@@ -193,7 +193,10 @@ void Editor::Draw()
 		compilingMenu->Draw();
 		gameMenu->Draw();
 		sceneMenu->Draw();
-		lightingMenu->Draw();
+		if (EditorUI::showLightingSettings)
+		{
+			lightingMenu->Draw();
+		}
 	}
 	EditorUI::Render();
 }

@@ -29,6 +29,10 @@ std::shared_ptr <MeshData> upArrow = nullptr;
 std::shared_ptr <MeshData> forwardArrow = nullptr;
 std::shared_ptr <Texture> toolArrowsTexture = nullptr;
 
+bool Graphics::isFogEnabled;
+float Graphics::fogStart = 0;
+float Graphics::fogEnd = 10;
+Color Graphics::fogColor;
 
 void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 {
@@ -39,7 +43,17 @@ std::unordered_map<std::string, ReflectionEntry> Graphics::GetLightingSettingsRe
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skybox, "skybox", true);
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::isFogEnabled, "isFogEnabled", true);
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogStart, "fogStart", true);
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogEnd, "fogEnd", true);
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogColor, "fogColor", true);
 	return reflectedVariables;
+}
+
+void Graphics::OnLightingSettingsReflectionUpdate()
+{
+	Engine::renderer->SetFog(isFogEnabled);
+	Engine::renderer->SetFogValues(fogStart, fogEnd, fogColor);
 }
 
 void Graphics::Init()
@@ -58,7 +72,6 @@ void Graphics::Init()
 #endif
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
-
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -91,6 +104,7 @@ void Graphics::DrawAllDrawable()
 			camera->UpdateProjection();
 			if (skybox)
 			{
+				Engine::renderer->SetFog(false);
 				float scaleF = 10.01f;
 				Vector3 scale = Vector3(scaleF);
 				MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), scale, skybox->down, skyPlane, false, false, false);
@@ -100,7 +114,7 @@ void Graphics::DrawAllDrawable()
 				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), scale, skybox->left, skyPlane, false, false, false);
 				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), scale, skybox->right, skyPlane, false, false, false);
 			}
-
+			Engine::renderer->SetFog(isFogEnabled);
 			IDrawableTypes currentMode = Draw_3D;
 			for (int i = 0; i < iDrawablesCount; i++)
 			{

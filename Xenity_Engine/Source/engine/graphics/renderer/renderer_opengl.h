@@ -39,6 +39,8 @@ public:
 	void DeleteTexture(Texture* texture);
 	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer);
 	void Clear();
+	void SetFog(bool active);
+	void SetFogValues(float start, float end, Color color);
 
 private:
 	// int GetBufferTypeEnum(BufferType bufferType);
@@ -48,6 +50,10 @@ private:
 	void DisableAllLight();
 	void Setlights(std::weak_ptr<Camera> camera);
 	void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation);
+
+	float fogStart = 0;
+	float fogEnd = 10;
+	Color fogColor;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	// int GetShaderTypeEnum(Shader::ShaderType shaderType);

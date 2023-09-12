@@ -33,6 +33,7 @@ public:
 	static void SetSkybox(std::shared_ptr <SkyBox> skybox_);
 
 	static std::unordered_map<std::string, ReflectionEntry> GetLightingSettingsReflection();
+	static void OnLightingSettingsReflectionUpdate();
 
 	/**
 	* Draw all Drawable elements
@@ -63,6 +64,11 @@ public:
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 
 	static std::shared_ptr <SkyBox> skybox;
+
+	static bool isFogEnabled;
+	static float fogStart;
+	static float fogEnd;
+	static Color fogColor;
 
 	// static int usedShaderProgram;
 	// static Material *usedMaterial;

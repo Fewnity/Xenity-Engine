@@ -84,6 +84,7 @@ public:
 	static bool showEditor;
 	static bool showEngineSettings;
 	static bool showProjectsSettings;
+	static bool showLightingSettings;
 	static std::vector<std::shared_ptr<Texture>> icons;
 
 	static float GetUiScale() 

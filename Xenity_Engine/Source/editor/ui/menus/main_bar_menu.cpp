@@ -249,6 +249,10 @@ void MainBarMenu::Draw()
 		{
 			EditorUI::showProjectsSettings = true;
 		}
+		if (ImGui::MenuItem("Lighting Settings"))
+		{
+			EditorUI::showLightingSettings = true;
+		}
 		ImGui::EndMenu();
 	}
 

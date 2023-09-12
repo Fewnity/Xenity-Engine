@@ -211,6 +211,7 @@ void SceneManager::LoadScene(json jsonData)
 	}
 
 	ReflectionUtils::JsonToMap(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
+	Graphics::OnLightingSettingsReflectionUpdate();
 
 #if !defined(EDITOR)
 	Engine::SetGameState(Playing);

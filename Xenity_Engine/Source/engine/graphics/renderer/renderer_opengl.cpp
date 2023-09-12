@@ -64,6 +64,14 @@ void RendererOpengl::Setup()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
+
+	/*glEnable(GL_FOG);
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	glFogi(GL_FOG_MODE, GL_EXP);
+	glFogi(GL_FOG_MODE, GL_EXP2);
+	glFogf(GL_FOG_DENSITY, 1.0f);
+	glFogf(GL_FOG_START, 0.0f);
+	glFogf(GL_FOG_END, 3.0f);*/
 	// glCullFace(GL_BACK);
 #endif
 }
@@ -720,6 +728,42 @@ void RendererOpengl::Clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
 	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
+
+void RendererOpengl::SetFog(bool active)
+{
+	if(active)
+		glEnable(GL_FOG);
+	else
+		glDisable(GL_FOG);
+
+#if defined(__PSP__)
+	if (active)
+		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntRGBA());
+#endif
+}
+
+void RendererOpengl::SetFogValues(float start, float end, Color color)
+{
+	fogStart = start;
+	fogEnd = end;
+	fogColor = color;
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	//glFogi(GL_FOG_MODE, GL_EXP);
+	//glFogi(GL_FOG_MODE, GL_EXP2);
+	glFogf(GL_FOG_DENSITY, 1.0f);
+	glFogf(GL_FOG_START, start);
+	glFogf(GL_FOG_END, end);
+	RGBA rgba = color.GetRGBA();
+	float floatColor[] = { rgba.r, rgba.g, rgba.b, 1.0f };
+
+	glFogfv(GL_FOG_COLOR, floatColor);
+#elif defined(__PSP__)
+	sceGuFog(start, end, color.GetUnsignedIntRGBA());
+#endif
+}
+
+
 
 // int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 // {
