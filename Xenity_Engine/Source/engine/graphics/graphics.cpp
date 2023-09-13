@@ -268,8 +268,8 @@ void Graphics::OrderDrawables()
 	orderBenchmark->Start();
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
-		std::weak_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex];
-		if (drawableToCheck.lock()->GetTransform()->movedLastFrame)
+		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
+		if (drawableToCheck && drawableToCheck->GetTransform()->movedLastFrame)
 		{
 			Engine::drawOrderListDirty = true;
 			break;

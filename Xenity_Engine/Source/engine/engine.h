@@ -176,7 +176,7 @@ public:
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
-	static std::vector<std::weak_ptr<Component>> componentsToDestroy;
+	static std::vector<std::shared_ptr<Component>> componentsToDestroy;
 	static bool canUpdateAudio;
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
 	static std::mutex threadLoadingMutex;

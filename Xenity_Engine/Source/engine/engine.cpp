@@ -42,7 +42,7 @@ std::mutex Engine::threadLoadingMutex;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
 std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
-std::vector<std::weak_ptr<Component>> Engine::componentsToDestroy;
+std::vector<std::shared_ptr<Component>> Engine::componentsToDestroy;
 
 std::weak_ptr<GameObject> Engine::selectedGameObject;
 std::shared_ptr<FileReference> Engine::selectedFileReference = nullptr;
@@ -555,7 +555,8 @@ void Engine::UpdateComponents()
 	int componentToDestroyCount = (int)componentsToDestroy.size();
 	for (int i = 0; i < componentToDestroyCount; i++)
 	{
-		if (auto component = componentsToDestroy[i].lock())
+		std::shared_ptr<Component> component = componentsToDestroy[i];
+		if (component)
 		{
 			component->GetGameObject()->InternalDestroyComponent(component);
 		}
