@@ -193,12 +193,7 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 			Destroy(component);
 			componentCount--;
 			componentIndex--;
-			/*if (ImGui::MenuItem("Component"))
-			{
-			}*/
-			//component.reset();
 			ImGui::CloseCurrentPopup();
-			//ImGui::EndMenu();
 		}
 		ImGui::EndPopup();
 	}
