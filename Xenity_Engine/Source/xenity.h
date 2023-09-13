@@ -1,6 +1,3 @@
-// #define __PSP__
-// #define __vita__
-
 #pragma once
 
 #include "engine/monobehaviour.h"
@@ -8,24 +5,24 @@
 
 #include "engine/asset_management/asset_manager.h"
 
-// // Engine
+// Engine
 #include "engine/engine.h"
 #include "engine/engine_settings.h"
 
-// // GameObjects
+// GameObjects
 #include "engine/game_elements/gameobject.h"
 #include "engine/game_elements/transform.h"
 
-// // Vectors
+// Vectors
 #include "engine/vectors/vector2.h"
 #include "engine/vectors/vector2_int.h"
 #include "engine/vectors/vector3.h"
 #include "engine/vectors/vector4.h"
 
-// // UI
+// UI
 #include "engine/ui/window.h"
 
-// // Tools
+// Tools
 #include "engine/tools/benchmark.h"
 #include "engine/tools/curve.h"
 #include "engine/tools/math.h"
@@ -65,6 +62,7 @@
 #include "engine/graphics/color/color.h"
 #include "engine/graphics/ui/text_manager.h"
 #include "engine/graphics/ui/text_renderer.h"
+#include "engine/graphics/ui/font.h"
 #include "engine/graphics/ui/text_renderer_canvas.h"
 #include "engine/graphics/ui/TextAlignments.h"
 

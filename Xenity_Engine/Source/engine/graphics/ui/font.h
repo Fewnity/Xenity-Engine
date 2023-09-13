@@ -1,0 +1,24 @@
+#pragma once
+
+#include <memory>
+#include "../../file_system/file_reference.h"
+#include "../../reflection/reflection.h"
+#include "text_manager.h"
+
+class Texture;
+
+class API Font : public FileReference, public Reflection
+{
+public:
+    ~Font();
+    std::shared_ptr <Texture> fontAtlas = nullptr;
+    static std::shared_ptr<Font> MakeFont();
+    std::unordered_map<std::string, ReflectionEntry> GetReflection();
+    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+    void OnReflectionUpdated();
+    void LoadFileReference();
+    Character* Characters[256] = {};
+    float maxCharHeight = 0;
+private:
+    bool CreateFont(std::shared_ptr<Font> font, std::string filePath);
+};

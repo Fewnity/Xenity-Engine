@@ -31,6 +31,7 @@ enum IconName
 	Icon_Header,
 	Icon_Audio,
 	Icon_Sky,
+	Icon_Font,
 	Icon_Count,
 };
 

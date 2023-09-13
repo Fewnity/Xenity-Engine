@@ -9,8 +9,6 @@ TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
 	type = Draw_3D;
-	if (TextManager::fonts.size() != 0)
-		font = TextManager::fonts[0];
 
 	AssetManager::AddReflection(this);
 	//SetReflection();
@@ -25,6 +23,7 @@ std::unordered_map<std::string, ReflectionEntry> TextRenderer::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, text, "text", true);
+	Reflection::AddReflectionVariable(reflectedVariables, font, "font", true);
 	return reflectedVariables;
 }
 
@@ -61,7 +60,7 @@ void TextRenderer::SetText(std::string text)
 	}
 }
 
-void TextRenderer::SetFont(Font *font)
+void TextRenderer::SetFont(std::shared_ptr<Font> font)
 {
 	if (this->font != font)
 	{

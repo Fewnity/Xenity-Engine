@@ -80,6 +80,11 @@ void EditorUI::Init()
 	audioIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Audio] = audioIcon;
 
+	std::shared_ptr<Texture> fontIcon = Texture::MakeTexture("icons/font.png", true);
+	fontIcon->file = new File("icons/font.png");
+	fontIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Font] = fontIcon;
+
 	std::shared_ptr<Texture> audioSky = Texture::MakeTexture("icons/sky.png", true);
 	audioSky->file = new File("icons/sky.png");
 	audioSky->SetWrapMode(Texture::ClampToEdge);
@@ -632,13 +637,17 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 			{
 				DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
+			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
 				int vectorSize = valuePtr->get().size();
 				for (int vectorI = 0; vectorI < vectorSize; vectorI++)
 				{
 					std::string inputText = "None (Texture)";
-					auto ptr = valuePtr->get()[vectorI];
+					auto &ptr = valuePtr->get()[vectorI];
 					if (ptr != nullptr)
 					{
 						if (ptr->file != nullptr)

@@ -143,7 +143,6 @@ int Engine::Init()
 	SpriteManager::Init();
 	MeshManager::Init();
 	TextManager::Init();
-	TextManager::CreateFont("Roboto Regular.ttf");
 	AssetManager::Init();
 	AudioManager::Init();
 #if defined(EDITOR)

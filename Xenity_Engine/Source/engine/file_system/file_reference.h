@@ -14,6 +14,7 @@ enum FileType
 	File_Scene,
 	File_Code,
 	File_Skybox,
+	File_Font,
 	File_Material,
 };
 

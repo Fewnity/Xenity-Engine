@@ -14,14 +14,16 @@
 #include "TextAlignments.h"
 #include "../../vectors/vector2.h"
 #include <memory>
+#include "../../file_system/file_reference.h"
+#include "../../reflection/reflection.h"
 
 class Texture;
 class Vector4;
 class Transform;
 class MeshData;
 class Vector3;
-class Texture;
 class Color;
+class Font;
 
 class API Character
 {
@@ -37,17 +39,6 @@ public:
 
     Vector2 uv = Vector2(0);
     Vector2 uvOffet = Vector2(0);
-};
-
-class API Font
-{
-public:
-    ~Font();
-    Character *Characters[256] = {};
-    float maxCharHeight = 0;
-    std::shared_ptr <Texture> fontAtlas = nullptr;
-
-private:
 };
 
 class API LineInfo
@@ -78,10 +69,7 @@ public:
     * Create font
     * @filePath Font file path
     */
-    static Font *CreateFont(std::string filePath);
-
-    //static void DeleteFont(Font *font);
-    //static void DeleteFont(int index);
+    //static bool CreateFont(std::shared_ptr<Font>, std::string filePath);
 
     /**
     * Draw a text
@@ -95,7 +83,7 @@ public:
     * @param mesh Mesh
     * @param font Font
     */
-    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, Font* font);
+    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font);
 
     /**
     * Get informations about a text
@@ -104,7 +92,7 @@ public:
     * @param font Font
     * @param scale Test scale
     */
-    static TextInfo *GetTextInfomations(std::string &text, int textLen, Font *font, float scale);
+    static TextInfo *GetTextInfomations(std::string &text, int textLen, std::shared_ptr<Font> font, float scale);
     
     /**
     * Create a mesh from a text
@@ -115,9 +103,7 @@ public:
     * @param color Color
     * @param font Font
     */
-    static std::shared_ptr <MeshData> CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, Font* font);
-    
-    static std::vector<Font *> fonts;
+    static std::shared_ptr <MeshData> CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, std::shared_ptr<Font> font);
 
 private:
 

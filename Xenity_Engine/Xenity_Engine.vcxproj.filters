@@ -96,6 +96,7 @@
     <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Source\editor\ui\menus\lighting_menu.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />
     <ClInclude Include="Source\psp\video_hardware_dxtn.h" />
+    <ClInclude Include="Source\engine\graphics\ui\font.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

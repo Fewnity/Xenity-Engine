@@ -90,6 +90,10 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			textureId = EditorUI::icons[Icon_Sky]->GetTextureId();
 		}
+		else if (fileType == File_Font)
+		{
+			textureId = EditorUI::icons[Icon_Font]->GetTextureId();
+		}
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));

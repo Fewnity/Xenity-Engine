@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp" />
     <ClCompile Include="Source\engine\asset_management\code_file.cpp" />
@@ -289,6 +290,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\graphics\ui\font.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />
     <ClInclude Include="Source\editor\ui\menus\lighting_menu.h" />
     <ClInclude Include="Source\engine\asset_management\code_file.h" />

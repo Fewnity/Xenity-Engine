@@ -237,6 +237,10 @@ FileType ProjectManager::GetFileType(std::string extension)
 	{
 		fileType = File_Skybox;
 	}
+	else if (extension == ".ttf") //If the file is a scene
+	{
+		fileType = File_Font;
+	}
 
 	return fileType;
 }
@@ -326,6 +330,9 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 				break;
 			case File_Skybox:
 				fileRef = SkyBox::MakeSkyBox();
+				break;
+			case File_Font:
+				fileRef = Font::MakeFont();
 				break;
 			}
 

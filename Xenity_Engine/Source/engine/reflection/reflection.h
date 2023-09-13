@@ -18,10 +18,28 @@ class FileReference;
 class AudioClip;
 class Scene;
 class SkyBox;
+class Font;
 
 //#define Variable std::variant<std::reference_wrapper<std::weak_ptr<Component>>, std::reference_wrapper<int>, std::reference_wrapper<uint64_t>, std::reference_wrapper<double>, std::reference_wrapper<float>, /*float*,*/ std::reference_wrapper<bool>, std::reference_wrapper<std::string>, std::reference_wrapper<Reflection>, std::reference_wrapper<std::weak_ptr<GameObject>>, std::reference_wrapper<std::weak_ptr<Transform>>, std::reference_wrapper<std::shared_ptr<Texture>>, std::reference_wrapper<std::shared_ptr<MeshData>>, std::reference_wrapper<std::shared_ptr<AudioClip>>, std::reference_wrapper<std::shared_ptr<Scene>>, std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>
 
-typedef std::variant<std::reference_wrapper<std::weak_ptr<Component>>, std::reference_wrapper<int>, std::reference_wrapper<uint64_t>, std::reference_wrapper<double>, std::reference_wrapper<float>, std::reference_wrapper<bool>, std::reference_wrapper<std::string>, std::reference_wrapper<Reflection>, std::reference_wrapper<std::weak_ptr<GameObject>>, std::reference_wrapper<std::weak_ptr<Transform>>, std::reference_wrapper<std::shared_ptr<Texture>>, std::reference_wrapper<std::shared_ptr<MeshData>>, std::reference_wrapper<std::shared_ptr<AudioClip>>, std::reference_wrapper<std::shared_ptr<Scene>>, std::reference_wrapper<std::shared_ptr<SkyBox>>, std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>> Variable;
+typedef std::variant<
+	std::reference_wrapper<std::weak_ptr<Component>>,
+	std::reference_wrapper<int>,
+	std::reference_wrapper<uint64_t>,
+	std::reference_wrapper<double>,
+	std::reference_wrapper<float>,
+	std::reference_wrapper<bool>,
+	std::reference_wrapper<std::string>,
+	std::reference_wrapper<Reflection>,
+	std::reference_wrapper<std::weak_ptr<GameObject>>,
+	std::reference_wrapper<std::weak_ptr<Transform>>,
+	std::reference_wrapper<std::shared_ptr<Texture>>,
+	std::reference_wrapper<std::shared_ptr<MeshData>>,
+	std::reference_wrapper<std::shared_ptr<AudioClip>>,
+	std::reference_wrapper<std::shared_ptr<Scene>>,
+	std::reference_wrapper<std::shared_ptr<SkyBox>>,
+	std::reference_wrapper<std::shared_ptr<Font>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>> Variable;
 
 class ReflectionEntry 
 {

@@ -16,7 +16,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 To do quick:
 Add Create Skybox/Scene functions
 Add ability to rename folder and files
-Add font file
+Create Text renderer canvas using text renderer as a parent
 
 To do soon:
 Fix Awake : Call awake when a gameobject was disabled and the enabled

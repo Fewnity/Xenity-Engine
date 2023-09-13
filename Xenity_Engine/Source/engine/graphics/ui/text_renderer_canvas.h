@@ -78,15 +78,15 @@ public:
 	* Set text font
 	* @param font Font
 	*/
-	void SetFont(Font *font);
+	void SetFont(std::shared_ptr<Font> font);
 
 private:
 	void Draw();
+	std::shared_ptr<Font> font;
 	std::string text;
 	Color color = Color();
 	int orderInLayer = 0;
 	TextInfo *textInfo = nullptr;
-	Font *font = nullptr;
 	bool isTextInfoDirty = true;
 	std::shared_ptr<MeshData> mesh = nullptr;
 };

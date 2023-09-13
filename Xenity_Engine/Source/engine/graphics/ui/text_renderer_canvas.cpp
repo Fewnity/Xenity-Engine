@@ -9,8 +9,6 @@ TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "TextRendererCanvas";
 	type = Draw_UI;
-	if(TextManager::fonts.size() != 0)
-		font = TextManager::fonts[0];
 
 	//SetReflection();
 
@@ -27,6 +25,7 @@ std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflecti
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, text, "text", true);
+	Reflection::AddReflectionVariable(reflectedVariables, font, "font", true);
 	return reflectedVariables;
 }
 
@@ -63,7 +62,7 @@ void TextRendererCanvas::SetText(std::string text)
 	}
 }
 
-void TextRendererCanvas::SetFont(Font *font)
+void TextRendererCanvas::SetFont(std::shared_ptr<Font> font)
 {
 	if (this->font != font)
 	{
