@@ -565,8 +565,10 @@ void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color)
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	VertexNoColorNoUv ver[2];
 	ver[0].x = a.x;
@@ -584,8 +586,8 @@ void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	Vector4 vec4Color = color.GetRGBA().ToVector4();
-	glColor4f(vec4Color.x, vec4Color.y, vec4Color.z, vec4Color.w);
+	RGBA vec4Color = color.GetRGBA();
+	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glDrawArrays(GL_LINES, 0, 2);
 #endif
 }
