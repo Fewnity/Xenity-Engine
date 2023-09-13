@@ -16,9 +16,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 To do quick:
 Add Create Skybox/Scene functions
 Add ability to rename folder and files
-Add fog
 Add font file
-Add right click on component to delete it
 
 To do soon:
 Fix Awake : Call awake when a gameobject was disabled and the enabled

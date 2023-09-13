@@ -5,6 +5,7 @@
 #include <string>
 
 class FileReference;
+class Component;
 
 class InspectorMenu : public Menu
 {
@@ -12,6 +13,7 @@ public:
 	void Init();
 	void Draw();
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
+	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int &componentIndex, std::string id);
 private:
 	void DrawFilePreview();
 	std::string previewText = "";

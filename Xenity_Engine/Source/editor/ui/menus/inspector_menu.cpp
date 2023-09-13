@@ -126,7 +126,7 @@ void InspectorMenu::Draw()
 		int componentCount = selectedGameObject->GetComponentCount();
 		for (int i = 0; i < componentCount; i++)
 		{
-			auto comp = selectedGameObject->components[i];
+			auto& comp = selectedGameObject->components[i];
 			//Draw component title
 
 			float cursorY = ImGui::GetCursorPosY();
@@ -142,21 +142,25 @@ void InspectorMenu::Draw()
 
 			if (ImGui::CollapsingHeader(EditorUI::GenerateItemId().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+				CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
+				if (!comp->waitingForDestroy)
 				{
-					std::string payloadName = "Component";
-					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
-					ImGui::Text("%s", comp->GetComponentName().c_str());
-					ImGui::EndDragDropSource();
-				}
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+					{
+						std::string payloadName = "Component";
+						ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
+						ImGui::Text("%s", comp->GetComponentName().c_str());
+						ImGui::EndDragDropSource();
+					}
 
-				//Draw component variables
-				if (EditorUI::DrawReflection(*comp))
-				{
-					comp->OnReflectionUpdated();
-				}
+					//Draw component variables
+					if (EditorUI::DrawReflection(*comp))
+					{
+						comp->OnReflectionUpdated();
+					}
 
-				ImGui::Separator();
+					ImGui::Separator();
+				}
 			}
 			float lastCursorY = ImGui::GetCursorPosY();
 			ImGui::SetCursorPosX(65);
@@ -169,6 +173,36 @@ void InspectorMenu::Draw()
 	DrawFilePreview();
 
 	ImGui::End();
+}
+
+int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, std::string id)
+{
+	int state = 0;
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+	{
+		ImGui::OpenPopup(id.c_str());
+		state = 1;
+	}
+
+	if (ImGui::BeginPopup(id.c_str()))
+	{
+		if (state == 0)
+			state = 2;
+		if (ImGui::MenuItem("Delete"))
+		{
+			Destroy(component);
+			componentCount--;
+			componentIndex--;
+			/*if (ImGui::MenuItem("Component"))
+			{
+			}*/
+			//component.reset();
+			ImGui::CloseCurrentPopup();
+			//ImGui::EndMenu();
+		}
+		ImGui::EndPopup();
+	}
+	return state;
 }
 
 void InspectorMenu::DrawFilePreview()
@@ -307,7 +341,7 @@ void InspectorMenu::DrawFilePreview()
 					if (normalisedPos < 0)
 						normalisedPos = 0;
 					else if (normalisedPos > 1)
-							normalisedPos = 1;
+						normalisedPos = 1;
 					stream->SetSeek(stream->GetSampleCount() * normalisedPos);
 				}
 
@@ -321,13 +355,13 @@ void InspectorMenu::DrawFilePreview()
 					channelText = "Mono";
 
 				std::string audioTypeText = "Waveform";
-				if (stream->GetAudioType() == AudioType::Mp3) 
+				if (stream->GetAudioType() == AudioType::Mp3)
 				{
 					audioTypeText = "Mp3";
 				}
 
 				std::string totalTimeText = std::to_string(((int)(totalTime * 1000)) / 1000.0f);
-				std::string infoText = audioTypeText + ", " +std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
+				std::string infoText = audioTypeText + ", " + std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
 				ImVec2 infoTextSize = ImGui::CalcTextSize(infoText.c_str());
 				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize.x / 2 + cursorPos.x);
 				ImGui::Text("%s", infoText.c_str());
