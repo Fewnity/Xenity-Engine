@@ -46,7 +46,11 @@ void Font::OnReflectionUpdated()
 
 void Font::LoadFileReference()
 {
-    CreateFont(std::dynamic_pointer_cast<Font>(shared_from_this()), "Roboto Regular.ttf");
+    if (!isLoaded)
+    {
+        isLoaded = true;
+        CreateFont(std::dynamic_pointer_cast<Font>(shared_from_this()), file->GetPath());
+    }
 }
 
 bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
