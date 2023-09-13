@@ -136,6 +136,9 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string &text, TextInfo *
 
 void TextManager::DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font)
 {
+    if (!font)
+        return;
+
     if (!font->fontAtlas || !font->fontAtlas->IsValid())
     {
         Debug::PrintError("[TextManager::DrawText] Invalid font");
