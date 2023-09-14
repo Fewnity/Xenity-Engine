@@ -27,6 +27,7 @@ void ProfilerMenu::Draw()
 		fpsHistory[i] = fpsHistory[i + 1];
 	}
 	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
+
 	ImGui::Begin("Debug");
 	std::string fpsText = "FPS: " + std::to_string(lastFps) + "###FPS_COUNTER";
 	ImGui::PlotLines(fpsText.c_str(), fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
@@ -35,7 +36,6 @@ void ProfilerMenu::Draw()
 
 	if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-
 		if (EngineSettings::useProfiler)
 		{
 			//Add profiler texts
@@ -69,27 +69,33 @@ void ProfilerMenu::Draw()
 	{
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
-			//std::string t = "";
 			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
-			if (!fileRef->isLoaded)
+			if (fileRef && !fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
-					ImGui::Text("File%d isLoaded:%d useCount:%d : %s", fileRef->fileId, fileRef->isLoaded, fileRef.use_count(), fileRef->file->GetFileName().c_str());
+				{
+					ImGui::Text("File%d isLoaded:%d useCount:%d :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::SameLine();
+					ImGui::Text("%s", fileRef->file->GetFileName().c_str());
+				}
 				else
-					ImGui::Text("missing file isLoaded:%d type:%d useCount:%d", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
+					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%d", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
-			//std::string t = "";
 			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
-			if (fileRef->isLoaded)
+			if (fileRef && fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
-					ImGui::Text("File%d isLoaded:%d useCount:%d : %s", fileRef->fileId, fileRef->isLoaded, fileRef.use_count(), fileRef->file->GetFileName().c_str());
+				{
+					ImGui::Text("File%d isLoaded:%d useCount:%d :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::SameLine();
+					ImGui::Text("%s", fileRef->file->GetFileName().c_str());
+				}
 				else
 					ImGui::Text("missing file isLoaded:%d useCount:%d", fileRef->isLoaded, fileRef.use_count());
 			}
