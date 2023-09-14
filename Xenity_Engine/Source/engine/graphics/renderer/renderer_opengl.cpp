@@ -737,10 +737,9 @@ void RendererOpengl::SetFog(bool active)
 		glEnable(GL_FOG);
 	else
 		glDisable(GL_FOG);
-
 #if defined(__PSP__)
 	if (active)
-		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntRGBA());
+		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 #endif
 }
 
@@ -761,7 +760,7 @@ void RendererOpengl::SetFogValues(float start, float end, Color color)
 
 	glFogfv(GL_FOG_COLOR, floatColor);
 #elif defined(__PSP__)
-	sceGuFog(start, end, color.GetUnsignedIntRGBA());
+	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 #endif
 }
 

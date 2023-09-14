@@ -29,6 +29,11 @@ std::unordered_map<std::string, ReflectionEntry> Color::GetReflection()
 	return reflectedVariables;
 }
 
+void Color::OnReflectionUpdated()
+{
+	Color::UpdateUnsignedInts();
+}
+
 Color Color::CreateFromRGB(int r, int g, int b)
 {
 	Color color = Color();
@@ -73,6 +78,12 @@ void Color::SetFromRGBAfloat(float r, float g, float b, float a)
 	rgba.g = Math::Clamp(g, 0, 1);
 	rgba.b = Math::Clamp(b, 0, 1);
 	rgba.a = Math::Clamp(a, 0, 1);
+	rgbaInt = ((int)(rgba.r * 255) << 24) + ((int)(rgba.g * 255) << 16) + ((int)(rgba.b * 255) << 8) + ((int)(rgba.a * 255) << 0);
+	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
+}
+
+void Color::UpdateUnsignedInts()
+{
 	rgbaInt = ((int)(rgba.r * 255) << 24) + ((int)(rgba.g * 255) << 16) + ((int)(rgba.b * 255) << 8) + ((int)(rgba.a * 255) << 0);
 	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
 }

@@ -110,7 +110,6 @@ void SceneManager::LoadScene(json jsonData)
 		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 		newGameObject->SetUniqueId(std::stoull(gameObjectKV.key()));
 		ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
-		newGameObject->OnReflectionUpdated();
 
 		// Create components
 		for (auto& componentKV : gameObjectKV.value()["Components"].items())
@@ -158,7 +157,6 @@ void SceneManager::LoadScene(json jsonData)
 				if (component->GetUniqueId() == std::stoull(kv2.key()))
 				{
 					ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
-					component->OnReflectionUpdated();
 					break;
 				}
 			}

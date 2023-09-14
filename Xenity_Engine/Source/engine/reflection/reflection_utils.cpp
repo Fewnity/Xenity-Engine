@@ -116,6 +116,7 @@ void ReflectionUtils::JsonToReflection(json j, Reflection& reflection)
 {
 	auto myMap = reflection.GetReflection();
 	JsonToMap(j, myMap);
+	reflection.OnReflectionUpdated();
 }
 
 json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap)

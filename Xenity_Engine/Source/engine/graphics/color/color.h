@@ -43,6 +43,7 @@ public:
 	Color();
 	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	void OnReflectionUpdated();
 
 	/**
 	* Create color from RGB
@@ -112,6 +113,8 @@ public:
 	unsigned int GetUnsignedIntABGR();
 
 private:
+	void UpdateUnsignedInts();
+
 	RGBA rgba = RGBA(1, 1, 1, 1);
 	unsigned int rgbaInt = 0xFFFFFFFF;
 	unsigned int abgrInt = 0xFFFFFFFF;
