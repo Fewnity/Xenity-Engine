@@ -133,6 +133,7 @@ void Graphics::DrawAllDrawable()
 #if defined(EDITOR)
 			if (camera->isEditor)
 			{
+				Engine::renderer->SetFog(false);
 				//Draw editor scene grid
 				if (currentMode != Draw_3D)
 				{
