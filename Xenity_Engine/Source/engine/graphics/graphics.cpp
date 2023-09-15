@@ -33,6 +33,7 @@ bool Graphics::isFogEnabled;
 float Graphics::fogStart = 0;
 float Graphics::fogEnd = 10;
 Color Graphics::fogColor;
+Color Graphics::skyColor;
 
 void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 {
@@ -43,6 +44,7 @@ std::unordered_map<std::string, ReflectionEntry> Graphics::GetLightingSettingsRe
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skybox, "skybox", true);
+	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skyColor, "skyColor", true);
 	Reflection::AddReflectionVariable(reflectedVariables, Graphics::isFogEnabled, "isFogEnabled", true);
 	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogStart, "fogStart", true);
 	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogEnd, "fogEnd", true);
@@ -72,6 +74,9 @@ void Graphics::Init()
 #endif
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
+
+	skyColor = Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1);
+
 	Debug::Print("-------- Graphics initiated --------");
 }
 
@@ -97,6 +102,7 @@ void Graphics::DrawAllDrawable()
 		{
 			needUpdateCamera = true;
 			camera->BindFrameBuffer();
+			Engine::renderer->SetClearColor(skyColor);
 			Engine::renderer->Clear();
 
 			Vector3 camPos = camera->GetTransform()->GetPosition();

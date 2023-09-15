@@ -11,12 +11,19 @@ void LightingMenu::Init()
 
 void LightingMenu::Draw()
 {
+	bool changed = false;
 	ImGui::Begin("Lighting", &EditorUI::showLightingSettings, ImGuiWindowFlags_NoCollapse);
 	ImGui::Text("Lighting");
+	ImGui::Separator();
 	EditorUI::DrawInput("Skybox", Graphics::skybox);
+
+	if (EditorUI::DrawInput("Color", Graphics::skyColor))
+		changed = true;
+
+	ImGui::Spacing();
+	ImGui::Separator();
 	ImGui::Text("Fog");
-	
-	bool changed = false;
+	ImGui::Separator();
 	if (EditorUI::DrawInput("Enabled", Graphics::isFogEnabled))
 		changed = true;
 	if (EditorUI::DrawInput("Start", Graphics::fogStart))

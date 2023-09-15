@@ -69,6 +69,7 @@ public:
 	static float fogStart;
 	static float fogEnd;
 	static Color fogColor;
+	static Color skyColor;
 
 	// static int usedShaderProgram;
 	// static Material *usedMaterial;

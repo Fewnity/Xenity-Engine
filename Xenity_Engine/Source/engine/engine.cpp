@@ -154,7 +154,6 @@ int Engine::Init()
 #endif
 	Debug::Print("-------- Engine fully initiated --------\n");
 
-	renderer->SetClearColor(Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1));
 
 	engineLoopBenchmark = new ProfilerBenchmark("Engine loop", "Engine loop");
 	//gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
