@@ -43,7 +43,7 @@ void AssetManager::Init()
 {
 	initialised = true;
 	defaultTexture = Texture::MakeTexture("engine_assets\\default_texture.png", true);
-	defaultTexture->file = new File("engine_assets\\default_texture.png");
+	defaultTexture->file = FileSystem::MakeFile("engine_assets\\default_texture.png");
 	defaultTexture->LoadFileReference();
 	// Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 
@@ -275,6 +275,12 @@ void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileR
 			}
 		}
 	}
+}
+
+void AssetManager::RemoveAllFileReferences()
+{
+	fileReferences.clear();
+	fileReferenceCount = 0;
 }
 
 void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileReference)

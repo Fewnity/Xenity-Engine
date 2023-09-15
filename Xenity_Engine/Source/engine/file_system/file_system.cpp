@@ -270,16 +270,10 @@ Directory::~Directory()
 		delete subdirectories[i];
 	}
 	subdirectories.clear();
-
-	int fileount = (int)files.size();
-	for (int i = 0; i < fileount; i++)
-	{
-		delete files[i];
-	}
 	files.clear();
 }
 
-void AddDirectoryFiles(std::vector<File*>& vector, Directory* directory)
+void AddDirectoryFiles(std::vector<std::shared_ptr<File>>& vector, Directory* directory)
 {
 	int fileCount = (int)directory->files.size();
 	for (int i = 0; i < fileCount; i++)
@@ -294,10 +288,10 @@ void AddDirectoryFiles(std::vector<File*>& vector, Directory* directory)
 	}
 }
 
-std::vector<File*> Directory::GetAllFiles(bool recursive)
+std::vector<std::shared_ptr<File>> Directory::GetAllFiles(bool recursive)
 {
 	FileSystem::fileSystem->FillDirectory(this, recursive);
-	std::vector<File*> vector;
+	std::vector<std::shared_ptr<File>> vector;
 	AddDirectoryFiles(vector, this);
 	return vector;
 }
@@ -323,11 +317,6 @@ bool Directory::CheckIfExist()
 
 void FileSystem::FillDirectory(Directory* directory, bool recursive)
 {
-	int directoryFilesCount = directory->files.size();
-	for (int i = 0; i < directoryFilesCount; i++)
-	{
-		delete directory->files[i];
-	}
 	int directorySubDirectoryCount = directory->subdirectories.size();
 	for (int i = 0; i < directorySubDirectoryCount; i++)
 	{
@@ -362,16 +351,14 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 
 		if (S_ISREG(statbuf.st_mode))
 		{
-			File *newFile = nullptr;
+			std::shared_ptr<File> newFile = nullptr;
 			try
 			{
-				newFile = new File(fullPath);
+				newFile = FileSystem::MakeFile(fullPath);
 				directory->files.push_back(newFile);
 			}
 			catch (const std::exception &)
 			{
-				if (newFile != nullptr)
-					delete newFile;
 			}
 		}
 		else if (S_ISDIR(statbuf.st_mode))
@@ -421,25 +408,63 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 		}
 		else if (file.is_regular_file())
 		{
-			File *newFile = nullptr;
+			std::shared_ptr<File> newFile = nullptr;
 			try
 			{
 			std::string path = file.path().string();
 #if defined(__vita__)
 			path = path.substr(4);
 #endif
-				std::string p = path;
-				newFile = new File(p);
+				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
 			}
 			catch (const std::exception &)
 			{
-				if (newFile != nullptr)
-					delete newFile;
 			}
 		}
 	}
 #endif
+}
+
+bool FileSystem::Rename(const std::string path, const std::string newPath)
+{
+	bool success = true;
+	try
+	{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	std::filesystem::rename(path, newPath);
+#endif
+	}
+	catch (const std::exception&)
+	{
+		success = false;
+	}
+	return success;
+}
+
+std::vector< std::shared_ptr<File>> files;
+
+std::shared_ptr<File> FileSystem::MakeFile(std::string path)
+{
+	std::shared_ptr<File> file;
+
+	int fileCount = files.size();
+	for (int i = 0; i < fileCount; i++)
+	{
+		if (files[i]->GetPath() == path)
+		{
+			file = files[i];
+			break;
+		}
+	}
+
+	if (!file) 
+	{
+		file = std::make_shared<File>(path);
+		files.push_back(file);
+	}
+
+	return file;
 }
 
 #pragma endregion

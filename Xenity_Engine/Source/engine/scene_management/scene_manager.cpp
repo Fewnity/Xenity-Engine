@@ -74,11 +74,10 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		if (path != "") 
 		{
 			FileSystem::fileSystem->DeleteFile(path);
-			File* file = new File(path);
+			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			file->Open(true);
 			file->Write(jsonData);
 			file->Close();
-			delete file;
 		}
 	}
 }
@@ -219,7 +218,7 @@ void SceneManager::LoadScene(json jsonData)
 void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 {
 	Debug::Print("Loading scene...");
-	File* jsonFile = scene->file;
+	std::shared_ptr<File> jsonFile = scene->file;
 	bool isOpen = jsonFile->Open(false);
 	if (isOpen)
 	{

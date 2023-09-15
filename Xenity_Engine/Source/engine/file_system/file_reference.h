@@ -54,7 +54,7 @@ public:
 	}
 
 	uint64_t fileId = -1;
-	File* file = nullptr;
+	std::shared_ptr<File> file = nullptr;
 	FileType fileType = File_Other;
 	bool isLoaded = false;
 };

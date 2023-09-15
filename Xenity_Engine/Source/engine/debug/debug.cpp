@@ -11,7 +11,7 @@
 #endif
 #include "../engine_settings.h"
 
-File *file = nullptr;
+std::shared_ptr<File> file = nullptr;
 std::string Debug::debugText = "";
 Socket *Debug::socket;
 
@@ -62,7 +62,7 @@ void Debug::PrintInConsole(std::string text)
 
 void Debug::PrintInFile(std::string text)
 {
-    if (file)
+    if (file && file.use_count() == 2)
         file->Write(text);
 }
 
@@ -112,7 +112,7 @@ int Debug::Init()
 #endif
     FileSystem::fileSystem->DeleteFile(fileName);
 
-    file = new File(fileName);
+    file = FileSystem::MakeFile(fileName);
     file->Open(true);
 
     if (!file->CheckIfExist())

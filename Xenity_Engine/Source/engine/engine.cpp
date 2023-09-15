@@ -219,7 +219,6 @@ void Engine::Loop()
 	while (isRunning)
 	{
 		engineLoopBenchmark->Start();
-
 #if defined(EDITOR)
 		threadLoadingMutex.lock();
 		int threadFileCount = threadLoadedFiles.size();

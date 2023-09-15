@@ -1,5 +1,6 @@
 #include "file_explorer_menu.h"
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 #include "../../../xenity.h"
 #include "../../editor.h"
 #include "../editor_ui.h"
@@ -25,15 +26,21 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 			system(command.c_str());
 		}
 	}
-	else if(item.directory)
+	else if (item.directory)
 	{
 		Engine::SetCurrentProjectDirectory(item.directory);
 		Engine::SetSelectedFileReference(nullptr);
 	}
 }
 
-void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem item, std::string itemName)
+void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex)
 {
+	std::string itemName;
+	if (isFile)
+		itemName = item.file->file->GetFileName();
+	else
+		itemName = item.directory->GetFolderName();
+
 	if (currentCol == 0)
 		ImGui::TableNextRow();
 	ImGui::TableSetColumnIndex(currentCol);
@@ -106,7 +113,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	{
 		popupId += item.directory->GetFolderName();
 	}
-	CheckOpenRightClickPopupFile(item, true, popupId);
+	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
 	bool hovered = ImGui::IsItemHovered();
 	if (hovered)
 	{
@@ -131,14 +138,30 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 	float windowWidth = ImGui::GetContentRegionAvail().x;
 	float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
-	if (textWidth <= availWidth)
+	if ((fileToRename == item.file && item.file) || (directoryToRename == item.directory && item.directory))
 	{
-		ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
-		ImGui::Text(itemName.c_str());
+		if (!focusSet) 
+		{
+			ImGui::SetKeyboardFocusHere();
+			focusSet = true;
+		}
+		ImGui::InputText(EditorUI::GenerateItemId().c_str(), &renamingString, ImGuiInputTextFlags_AutoSelectAll);
+		if (ImGui::IsItemClicked()) 
+		{
+			ignoreClose = true;
+		}
 	}
 	else
 	{
-		ImGui::TextWrapped(itemName.c_str());
+		if (textWidth <= availWidth)
+		{
+			ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
+			ImGui::Text(itemName.c_str());
+		}
+		else
+		{
+			ImGui::TextWrapped(itemName.c_str());
+		}
 	}
 
 	ImGui::EndGroup();
@@ -157,7 +180,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PopStyleColor(3);
 }
 
-int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, std::string id)
+int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, std::string id, int itemIndex)
 {
 	int state = 0;
 	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
@@ -172,7 +195,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			state = 2;
 		fileHovered = true;
 
-		if (ImGui::BeginMenu("Create")) 
+		if (ImGui::BeginMenu("Create"))
 		{
 			if (ImGui::MenuItem("Folder"))
 			{
@@ -182,23 +205,32 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				File* newFile = new File(fileExplorerItem.directory->path + "\\newScene.xen");
+				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newScene.xen");
 				newFile->Open(true);
 				newFile->Close();
-				delete newFile;
 				ImGui::CloseCurrentPopup();
 				ProjectManager::RefreshProjectDirectory();
 			}
 			if (ImGui::MenuItem("Skybox"))
 			{
-				File* newFile = new File(fileExplorerItem.directory->path + "\\newSkybox.sky");
+				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newSkybox.sky");
 				newFile->Open(true);
 				newFile->Close();
-				delete newFile;
 				ImGui::CloseCurrentPopup();
 				ProjectManager::RefreshProjectDirectory();
 			}
 			ImGui::EndMenu();
+		}
+		if (itemSelected && ImGui::MenuItem("Rename"))
+		{
+			fileToRename = fileExplorerItem.file;
+			directoryToRename = fileExplorerItem.directory;
+			if (fileToRename)
+				renamingString = fileToRename->file->GetFileName();
+			if (directoryToRename)
+				renamingString = directoryToRename->GetFolderName();
+
+			ImGui::CloseCurrentPopup();
 		}
 		if (itemSelected && ImGui::MenuItem("Open"))
 		{
@@ -212,7 +244,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			{
 				command += "/select, \"";
 			}
-			else 
+			else
 			{
 				command += "\"";
 			}
@@ -233,10 +265,10 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		}
 		if (itemSelected && ImGui::MenuItem("Delete"))
 		{
-			if (fileExplorerItem.file) 
+			if (fileExplorerItem.file)
 			{
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
-				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath()+".meta");
+				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath() + ".meta");
 				if (Engine::GetSelectedFileReference() == fileExplorerItem.file)
 				{
 					Engine::SetSelectedFileReference(nullptr);
@@ -281,25 +313,28 @@ void FileExplorerMenu::Draw()
 			colCount = 1;
 
 		int currentCol = 0;
+		int itemIndex = 0;
 		if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
 		{
 			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
 			int folderCount = currentDir->subdirectories.size();
 			int fileCount = currentDir->files.size();
 			std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
-			
+
 			for (int i = 0; i < folderCount; i++)
 			{
 				FileExplorerItem item;
 				item.directory = currentDir->subdirectories[i];
-				DrawExplorerItem(iconSize, currentCol, colCount, false, offset, item, item.directory->GetFolderName());
+				DrawExplorerItem(iconSize, currentCol, colCount, false, offset, item, itemIndex);
+				itemIndex++;
 			}
 
 			for (int i = 0; i < fileCount; i++)
 			{
 				FileExplorerItem item;
 				item.file = filesRefs[i];
-				DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, item.file->file->GetFileName());
+				DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, itemIndex);
+				itemIndex++;
 			}
 			ImGui::EndTable();
 		}
@@ -311,14 +346,60 @@ void FileExplorerMenu::Draw()
 			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
 			FileExplorerItem item;
 			item.directory = currentDir;
-			int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick");
+			int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
 			if ((result == 0 && (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) || result != 0)
 			{
-				if(ImGui::IsWindowHovered())
-					Engine::SetSelectedFileReference(nullptr);
+				if (ignoreClose)
+				{
+					ignoreClose = false;
+				}
+				else
+				{
+					if (result == 0)
+					{
+						Rename();
+					}
+					if (ImGui::IsWindowHovered())
+						Engine::SetSelectedFileReference(nullptr);
+				}
 			}
+		}
+		if (InputSystem::GetKeyDown(RETURN)) 
+		{
+			Rename();
 		}
 	}
 
 	ImGui::End();
+}
+
+void FileExplorerMenu::Rename()
+{
+	bool needUpdate = false;
+	if (renamingString != "" && fileToRename)
+	{
+		needUpdate = true;
+
+		bool success = false;
+		success = FileSystem::fileSystem->Rename(fileToRename->file->GetPath(), fileToRename->file->GetFolderPath() + renamingString + fileToRename->file->GetFileExtension());
+		if(success)
+			FileSystem::fileSystem->Rename(fileToRename->file->GetPath() + ".meta", fileToRename->file->GetFolderPath() + renamingString + fileToRename->file->GetFileExtension() + ".meta");
+	}
+	else if (renamingString != "" && directoryToRename)
+	{
+		needUpdate = true;
+
+		bool success = false;
+		std::string parentPath = directoryToRename->path;
+		int lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
+		parentPath = parentPath.substr(0, lastSlash) + "\\";
+		success = FileSystem::fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
+	}
+
+	fileToRename.reset();
+	directoryToRename = nullptr;
+	focusSet = false;
+
+	if(needUpdate)
+		ProjectManager::RefreshProjectDirectory();
 }

@@ -27,7 +27,7 @@ void MeshManager::Init()
 std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
 {
     std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
-    mesh->file = new File(path);
+    mesh->file = FileSystem::MakeFile(path);
     mesh->fileType = File_Mesh;
     WavefrontLoader::LoadFromRawData(mesh);
     return mesh;

@@ -66,7 +66,7 @@ void Graphics::Init()
 	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
 
 	toolArrowsTexture = Texture::MakeTexture("engine_assets\\tool_arrows_colors.png", true);
-	toolArrowsTexture->file = new File("engine_assets\\tool_arrows_colors.png");
+	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Texture::Point);
 	toolArrowsTexture->LoadFileReference();
 #endif

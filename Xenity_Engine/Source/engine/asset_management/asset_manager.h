@@ -37,6 +37,7 @@ public:
 	// static void RemoveShader(Shader *shader);
 	// static void RemoveMaterial(Material *material);
 	static void RemoveReflection(Reflection* reflection);
+	static void RemoveAllFileReferences();
 	static void RemoveFileReference(std::shared_ptr <FileReference> fileReference);
 	static void RemoveDrawable(std::weak_ptr<IDrawable> drawable);
 	static void RemoveLight(std::weak_ptr<Light> light);

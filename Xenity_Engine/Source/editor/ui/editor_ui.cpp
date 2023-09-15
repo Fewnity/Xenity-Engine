@@ -41,52 +41,52 @@ void EditorUI::Init()
 	}
 
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture("icons/text.png", true);
-	fileIcon->file = new File("icons/text.png");
+	fileIcon->file = FileSystem::MakeFile("icons/text.png");
 	fileIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_File] = fileIcon;
 
 	std::shared_ptr<Texture> folderIcon = Texture::MakeTexture("icons/folder.png", true);
-	folderIcon->file = new File("icons/folder.png");
+	folderIcon->file = FileSystem::MakeFile("icons/folder.png");
 	folderIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Folder] = folderIcon;
 
 	std::shared_ptr<Texture> sceneIcon = Texture::MakeTexture("icons/belt.png", true);
-	sceneIcon->file = new File("icons/belt.png");
+	sceneIcon->file = FileSystem::MakeFile("icons/belt.png");
 	sceneIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Scene] = sceneIcon;
 
 	std::shared_ptr<Texture> imageIcon = Texture::MakeTexture("icons/image.png", true);
-	imageIcon->file = new File("icons/image.png");
+	imageIcon->file = FileSystem::MakeFile("icons/image.png");
 	imageIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Image] = imageIcon;
 
 	std::shared_ptr<Texture> meshIcon = Texture::MakeTexture("icons/3d.png", true);
-	meshIcon->file = new File("icons/3d.png");
+	meshIcon->file = FileSystem::MakeFile("icons/3d.png");
 	meshIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Mesh] = meshIcon;
 
 	std::shared_ptr<Texture> codeIcon = Texture::MakeTexture("icons/code.png", true);
-	codeIcon->file = new File("icons/code.png");
+	codeIcon->file = FileSystem::MakeFile("icons/code.png");
 	codeIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Code] = codeIcon;
 
 	std::shared_ptr<Texture> headerIcon = Texture::MakeTexture("icons/header.png", true);
-	headerIcon->file = new File("icons/header.png");
+	headerIcon->file = FileSystem::MakeFile("icons/header.png");
 	headerIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Header] = headerIcon;
 
 	std::shared_ptr<Texture> audioIcon = Texture::MakeTexture("icons/audio.png", true);
-	audioIcon->file = new File("icons/audio.png");
+	audioIcon->file = FileSystem::MakeFile("icons/audio.png");
 	audioIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Audio] = audioIcon;
 
 	std::shared_ptr<Texture> fontIcon = Texture::MakeTexture("icons/font.png", true);
-	fontIcon->file = new File("icons/font.png");
+	fontIcon->file = FileSystem::MakeFile("icons/font.png");
 	fontIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Font] = fontIcon;
 
 	std::shared_ptr<Texture> audioSky = Texture::MakeTexture("icons/sky.png", true);
-	audioSky->file = new File("icons/sky.png");
+	audioSky->file = FileSystem::MakeFile("icons/sky.png");
 	audioSky->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Sky] = audioSky;
 

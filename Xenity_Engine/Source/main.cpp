@@ -12,13 +12,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #endif
 
 /*
-
-To do quick:
+--- To do quick:
 Add Create Skybox/Scene functions
-Add ability to rename folder and files
-Create Text renderer canvas using text renderer as a parent
 
-To do soon:
+--- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and the enabled
 Add filter to file dialog
 Add abitily to move file into a folder
@@ -26,7 +23,7 @@ Add more unit tests
 Add delete texture function in renderer for psp
 Create console window
 
-To do in a long time 
+--- To do in a long time 
 Apply texture filter before drawing imgui images
 Add LOD
 Fix mouse speed at high fps
@@ -41,7 +38,7 @@ Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
 Add materials
 Add shaders
-Fix uniqueID when loading a new scene (set id to the max find in the file)
+Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)
 Text scale

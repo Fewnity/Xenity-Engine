@@ -15,8 +15,8 @@
 
 using json = nlohmann::json;
 
-std::unordered_map<uint64_t, bool> ProjectManager::oldProjectFilesIds;
-std::unordered_map<uint64_t, std::string> ProjectManager::projectFilesIds;
+std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
+std::unordered_map<uint64_t, FileAndPath> ProjectManager::projectFilesIds;
 ProjectDirectory* ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
@@ -32,15 +32,16 @@ ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directo
 	int dirCount = directoryToCheck->subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
 	{
-		if (directoryToCheck->subdirectories[i]->path == directoryPath)
+		ProjectDirectory* subDir = directoryToCheck->subdirectories[i];
+		if (subDir->path == directoryPath)
 		{
-			return directoryToCheck->subdirectories[i];
+			return subDir;
 		}
 		else
 		{
-			ProjectDirectory* child = FindProjectDirectory(directoryToCheck->subdirectories[i], directoryPath);
-			if (child)
-				return child;
+			ProjectDirectory* foundSubDir = FindProjectDirectory(subDir, directoryPath);
+			if (foundSubDir)
+				return foundSubDir;
 		}
 	}
 	return nullptr;
@@ -56,26 +57,28 @@ void ProjectManager::FindAllProjectFiles()
 
 	for (auto& kv : projectFilesIds)
 	{
-		oldProjectFilesIds[kv.first] = false;
+		FileChange fileChange = FileChange();
+		fileChange.path = kv.second.path;
+		oldProjectFilesIds[kv.first] = fileChange;
 	}
 
-	//Get all files of the project
 	projectFilesIds.clear();
-	std::vector<File*> projectFiles = projectDirectoryBase->GetAllFiles(true);
+	//Get all files of the project
+	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
 	if (projectDirectory)
 		delete projectDirectory;
 
 	projectDirectory = new ProjectDirectory(assetFolderPath);
 
-	std::vector<File*> allFoundFiles;
-	std::unordered_map<File*, FileType> compatibleFiles;
+	std::vector<std::shared_ptr<File>> allFoundFiles;
+	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
 
 	//Get all files supported by the engine
 	int fileCount = (int)projectFiles.size();
 	int allFoundFileCount = 0;
 	for (int i = 0; i < fileCount; i++)
 	{
-		File* file = projectFiles[i];
+		std::shared_ptr<File> file = projectFiles[i];
 		FileType fileType = GetFileType(file->GetFileExtension());
 
 		if (fileType != File_Other)
@@ -86,13 +89,13 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
-	std::vector<File*> fileWithoutMeta;
+	std::vector<std::shared_ptr<File>> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = 0;
 	for (int i = 0; i < allFoundFileCount; i++)
 	{
-		File* file = allFoundFiles[i];
-		File* metaFile = new File(file->GetPath() + ".meta");
+		std::shared_ptr<File> file = allFoundFiles[i];
+		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + ".meta");
 		if (!metaFile->CheckIfExist()) //If there is not meta for this file
 		{
 			//Create one later
@@ -114,8 +117,8 @@ void ProjectManager::FindAllProjectFiles()
 				file->SetUniqueId(id);
 			}
 		}
-		delete metaFile;
 	}
+
 
 	//Set new files ids
 	UniqueId::lastFileUniqueId = biggestId;
@@ -125,27 +128,47 @@ void ProjectManager::FindAllProjectFiles()
 		fileWithoutMeta[i]->SetUniqueId(id);
 	}
 
+
 	for (auto& kv : compatibleFiles)
 	{
-		projectFilesIds[kv.first->GetUniqueId()] = kv.first->GetPath();
+		FileAndPath fileAndPath = FileAndPath();
+		fileAndPath.file = kv.first;
+		fileAndPath.path = kv.first->GetPath();
+		projectFilesIds[kv.first->GetUniqueId()] = fileAndPath;
 	}
 
 	for (auto& kv : projectFilesIds)
 	{
-		if (oldProjectFilesIds.contains(kv.first)) 
+		CreateFilReference(kv.second.path, kv.first);
+	}
+
+	for (auto& kv : projectFilesIds)
+	{
+		bool contains = oldProjectFilesIds.contains(kv.first);
+		if (contains)
 		{
-			oldProjectFilesIds[kv.first] = true;
+			oldProjectFilesIds[kv.first].hasBeenDeleted = false;
+		}
+		if (contains && oldProjectFilesIds[kv.first].path != kv.second.path)
+		{
+			oldProjectFilesIds[kv.first].hasChanged = true;
 		}
 	}
 
 	for (auto& kv : oldProjectFilesIds)
 	{
-		if (!kv.second) 
+		if (kv.second.hasChanged) 
+		{
+			GetFileReferenceById(kv.first)->file = projectFilesIds[kv.first].file;
+			Debug::Print("File renamed: " + std::to_string(kv.first));
+		}
+		else if (kv.second.hasBeenDeleted)
 		{
 			AssetManager::ForceDeleteFileReference(GetFileReferenceById(kv.first));
 			Debug::Print("File not found: " + std::to_string(kv.first));
 		}
 	}
+
 
 #if defined(EDITOR)
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
@@ -185,13 +208,10 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory
 
 	for (auto& kv : ProjectManager::projectFilesIds)
 	{
-		File* file = new File(kv.second);
-
-		if (realProjectDirectory->path == file->GetFolderPath())
+		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
 		{
 			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}
-		delete file;
 	}
 }
 
@@ -299,9 +319,11 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
-		if (AssetManager::GetFileReference(i)->fileId == id)
+		std::shared_ptr<FileReference> tempFileRef = AssetManager::GetFileReference(i);
+		if (tempFileRef->fileId == id)
 		{
-			fileRef = AssetManager::GetFileReference(i);
+			fileRef = tempFileRef;
+			break;
 		}
 	}
 
@@ -309,43 +331,10 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	{
 		if (projectFilesIds.contains(id))
 		{
-			File* file = new File(projectFilesIds[id]);
-			FileType type = GetFileType(file->GetFileExtension());
-			switch (type)
-			{
-			case File_Audio:
-				fileRef = AudioClip::MakeAudioClip(file->GetPath());
-				break;
-			case File_Mesh:
-				fileRef = MeshData::MakeMeshData();
-				break;
-			case File_Texture:
-				fileRef = Texture::MakeTexture();
-				break;
-			case File_Scene:
-				fileRef = Scene::MakeScene();
-				break;
-			case File_Code:
-				fileRef = CodeFile::MakeScene(file->GetFileExtension());
-				break;
-			case File_Skybox:
-				fileRef = SkyBox::MakeSkyBox();
-				break;
-			case File_Font:
-				fileRef = Font::MakeFont();
-				break;
-			}
-
+			fileRef = CreateFilReference(projectFilesIds[id].path, id);
 			if (fileRef)
 			{
-				fileRef->fileId = id;
-				fileRef->file = file;
-				fileRef->fileType = type;
-				LoadMetaFile(fileRef);
-#if defined(EDITOR)
-				SaveMetaFile(fileRef);
-#endif
-				if (type == File_Skybox)
+				if (fileRef->fileType == File_Skybox)
 					fileRef->LoadFileReference();
 			}
 		}
@@ -356,14 +345,13 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 
 void ProjectManager::LoadProjectSettings()
 {
-	File* projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";
 		projectFile->Open(true);
 		jsonString = projectFile->ReadAll();
 		projectFile->Close();
-		delete projectFile;
 
 		json projectData;
 		try
@@ -387,11 +375,10 @@ void ProjectManager::SaveProjectSettigs()
 
 	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection());
 
-	File* projectFile = new File(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
 	projectFile->Open(true);
 	projectFile->Write(projectData.dump(0));
 	projectFile->Close();
-	delete projectFile;
 }
 
 void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
@@ -401,17 +388,16 @@ void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 	metaData["id"] = fileReference->fileId;
 	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
 
-	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + ".meta");
 	metaFile->Open(true);
 	metaFile->Write(metaData.dump(0));
 	metaFile->Close();
-	delete metaFile;
 }
 
 std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 {
 	std::vector<ProjectListItem> projects;
-	File* file = new File("projects.json");
+	std::shared_ptr<File> file = FileSystem::MakeFile("projects.json");
 	bool isOpen = file->Open(false);
 	if (isOpen)
 	{
@@ -441,22 +427,66 @@ void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
 		j[i]["path"] = projects[i].path;
 	}
 	FileSystem::fileSystem->DeleteFile("projects.json");
-	File* file = new File("projects.json");
+	std::shared_ptr<File> file = FileSystem::MakeFile("projects.json");
 	file->Open(true);
 	file->Write(j.dump(3));
 	file->Close();
 }
 
+std::shared_ptr<FileReference> ProjectManager::CreateFilReference(std::string path, int id)
+{
+	std::shared_ptr<FileReference> fileRef = nullptr;
+	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	FileType type = GetFileType(file->GetFileExtension());
+	switch (type)
+	{
+	case File_Audio:
+		fileRef = AudioClip::MakeAudioClip(file->GetPath());
+		break;
+	case File_Mesh:
+		fileRef = MeshData::MakeMeshData();
+		break;
+	case File_Texture:
+		fileRef = Texture::MakeTexture();
+		break;
+	case File_Scene:
+		fileRef = Scene::MakeScene();
+		break;
+	case File_Code:
+		fileRef = CodeFile::MakeScene(file->GetFileExtension());
+		break;
+	case File_Skybox:
+		fileRef = SkyBox::MakeSkyBox();
+		break;
+	case File_Font:
+		fileRef = Font::MakeFont();
+		break;
+	}
+
+	if (fileRef)
+	{
+		fileRef->fileId = id;
+		fileRef->file = file;
+		fileRef->fileType = type;
+		LoadMetaFile(fileRef);
+#if defined(EDITOR)
+		SaveMetaFile(fileRef);
+#endif
+		//if (type == File_Skybox)
+			//fileRef->LoadFileReference();
+	}
+	return fileRef;
+}
+
 void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 {
-	File* metaFile = new File(fileReference->file->GetPath() + ".meta");
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + ".meta");
 	if (metaFile->CheckIfExist())
 	{
 		std::string jsonString = "";
 		metaFile->Open(true);
 		jsonString = metaFile->ReadAll();
 		metaFile->Close();
-		delete metaFile;
 
 		json metaData;
 		try

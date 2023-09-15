@@ -16,6 +16,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 class Directory;
 class File;
@@ -56,6 +57,10 @@ public:
 	* @param directory Directory to fill
 	*/
 	void FillDirectory(Directory *directory, bool recursive);
+
+	bool Rename(const std::string path, const std::string newPath);
+
+	static std::shared_ptr<File> MakeFile(std::string path);
 };
 
 class API File : public UniqueId
@@ -146,14 +151,14 @@ public:
 	/**
 	* Get all the files of the directory !!! (All files need to be deleted with delete()) !!!
 	*/
-	std::vector<File *> GetAllFiles(bool recursive);
+	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
 
 	/**
 	* Check if the directory exists
 	*/
 	bool CheckIfExist();
 	std::vector<Directory *> subdirectories;
-	std::vector<File *> files;
+	std::vector<std::shared_ptr<File>> files;
 
 	/**
 	* Get directory path

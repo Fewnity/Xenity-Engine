@@ -48,6 +48,21 @@ public:
 	std::string path;
 };
 
+class FileAndPath 
+{
+public:
+	std::string path;
+	std::shared_ptr<File> file;
+};
+
+class FileChange
+{
+public:
+	bool hasChanged = false;
+	bool hasBeenDeleted = true;
+	std::string path;
+};
+
 class API ProjectManager
 {
 public:
@@ -159,8 +174,8 @@ public:
 	static void SaveProjectsList(std::vector<ProjectListItem> projects);
 
 	static ProjectDirectory* projectDirectory;
-	static std::unordered_map<uint64_t, bool> oldProjectFilesIds;
-	static std::unordered_map<uint64_t, std::string> projectFilesIds;
+	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
+	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
 	static void FillProjectDirectory(ProjectDirectory* realProjectDirectory);
 	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);
 	static void RefreshProjectDirectory();
@@ -170,6 +185,7 @@ public:
 	static FileType GetFileType(std::string extension);
 
 private:
+	static std::shared_ptr<FileReference> CreateFilReference(std::string path, int id);
 	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
 	static bool projectLoaded;
 	static std::string projectName;
