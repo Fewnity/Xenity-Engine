@@ -17,6 +17,7 @@ class Material;
 class Camera;
 class Texture;
 class SkyBox;
+class Vector3;
 
 class API Graphics
 {
@@ -75,5 +76,7 @@ public:
 	// static Material *usedMaterial;
 private:
 	static int iDrawablesCount;
-
+	static void DrawSkybox(Vector3& cameraPosition);
+	static void DrawEditorGrid(Vector3& cameraPosition);
+	static void DrawEditorTool(Vector3& cameraPosition);
 };

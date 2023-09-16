@@ -19,6 +19,12 @@ public:
     void LoadFileReference();
     Character* Characters[256] = {};
     float maxCharHeight = 0;
+
+    std::shared_ptr<Font> GetThisShared() 
+    {
+       return std::dynamic_pointer_cast<Font>(shared_from_this());
+    }
+
 private:
     bool CreateFont(std::shared_ptr<Font> font, std::string filePath);
 };

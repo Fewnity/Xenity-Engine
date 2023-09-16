@@ -181,14 +181,31 @@ public:
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
 	static std::mutex threadLoadingMutex;
 
+	/**
+	* Destroy a component
+	*/
+	API static void RemoveComponentReferences(std::weak_ptr <Component> weakComponent);
+
 private:
 	static std::shared_ptr<FileReference> selectedFileReference;
 	static ProjectDirectory* currentProjectDirectory;
+
+	API static void CreateBenchmarks();
 
 	/**
 	* Update all active components
 	*/
 	API static void UpdateComponents();
+
+	API static void OrderComponents();
+	API static void InitialiseComponents();
+	API static void RemoveDestroyedGameObjects();
+	API static void RemoveDestroyedComponents();
+
+	API static void RemoveUnusedFiles();
+
+	API static void FinishThreadedFileLoading();
+	API static void ResetTransformsStates();
 
 	/**
 	* Set Cpu speed to the max (PSP and PsVita)

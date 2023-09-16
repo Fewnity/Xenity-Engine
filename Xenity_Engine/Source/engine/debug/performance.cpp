@@ -55,15 +55,17 @@ void Performance::Update()
 	if (EngineSettings::useProfiler)
 	{
 		tickCount++;
+
+		// Update profiler average values
 		averageCoolDown += Time::GetUnscaledDeltaTime();
 		if (averageCoolDown >= 1)
 		{
-			for (auto& kv : Performance::profilerCategories)
+			for (auto& categoryKV : Performance::profilerCategories)
 			{
-				for (auto& kv2 : kv.second->profilerList)
+				for (auto& profilerValueKV : categoryKV.second->profilerList)
 				{
-					kv2.second->average = kv2.second->addedValue / tickCount;
-					kv2.second->addedValue = 0;
+					profilerValueKV.second->average = profilerValueKV.second->addedValue / tickCount;
+					profilerValueKV.second->addedValue = 0;
 				}
 			}
 			averageCoolDown = 0;
@@ -74,11 +76,11 @@ void Performance::Update()
 
 void Performance::ResetProfiler()
 {
-	for (auto& kv : Performance::profilerCategories)
+	for (auto& categoryKV : Performance::profilerCategories)
 	{
-		for (auto& kv2 : kv.second->profilerList)
+		for (auto& profilerValueKV : categoryKV.second->profilerList)
 		{
-			kv2.second->ResetValue();
+			profilerValueKV.second->ResetValue();
 		}
 	}
 }

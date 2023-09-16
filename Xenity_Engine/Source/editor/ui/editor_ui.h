@@ -92,8 +92,38 @@ public:
 	{
 		return uiScale;
 	}
+
 	template <typename T>
-	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName);
+	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName)
+	{
+		std::string inputText = "None (" + className + ")";
+		auto ptr = valuePtr->get();
+		if (ptr != nullptr)
+		{
+			if (ptr->file != nullptr)
+				inputText = ptr->file->GetFileName();
+			else
+				inputText = "Filled but invalid file reference (" + className + ")";
+
+			inputText += " " + std::to_string(ptr->fileId) + " ";
+			if (ptr->file)
+				inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+		}
+
+		if (DrawInputButton(variableName, inputText, true) == 2)
+		{
+			valuePtr->get() = nullptr;
+		}
+
+		std::shared_ptr <FileReference> ref = nullptr;
+		std::string payloadName = "Files" + std::to_string(fileType);
+		if (DragDropTarget(payloadName, ref))
+		{
+			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
+			valueChangedTemp = true;
+		}
+	}
+
 private:
 	static int uiId;
 	static float uiScale;

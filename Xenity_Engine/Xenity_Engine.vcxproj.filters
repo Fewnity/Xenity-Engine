@@ -97,6 +97,11 @@
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_inputs.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_drag_drop.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_map.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

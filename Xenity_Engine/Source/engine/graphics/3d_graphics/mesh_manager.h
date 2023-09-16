@@ -32,9 +32,9 @@ public:
 	* @param scale Mesh scale
 	* @param textures Submeshes textures
 	* @param meshData Mesh data
-	* @param useDepth Is depth for drawing
-	* @param useBlend Is depth for drawing
-	* @param useLighting Is depth for drawing
+	* @param useDepth Use depth for drawing
+	* @param useBlend Use blend for drawing
+	* @param useLighting Use lighting for drawing
 	*/
 	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>>textures, std::shared_ptr < MeshData> meshData, bool useDepth, bool useBlend, bool useLighting);
 	

@@ -69,7 +69,7 @@ void AudioSource::Play()
     if (audioClip != nullptr) 
     {
         isPlaying = true;
-        AudioManager::PlayAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+        AudioManager::PlayAudioSource(GetThisShared());
     }
 }
 
@@ -89,5 +89,5 @@ void AudioSource::Pause()
 void AudioSource::Stop()
 {
     isPlaying = false;
-    AudioManager::StopAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+    AudioManager::StopAudioSource(GetThisShared());
 }

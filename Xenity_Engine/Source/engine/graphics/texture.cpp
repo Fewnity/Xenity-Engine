@@ -352,9 +352,9 @@ void Texture::OnLoadFileReferenceFinished()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
+	Engine::renderer->BindTexture(GetThisShared());
 	unsigned int rgba = 0x1908;
-	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), rgba, buffer);
+	Engine::renderer->SetTextureData(GetThisShared(), rgba, buffer);
 #endif
 
 	stbi_image_free(buffer);
@@ -391,9 +391,9 @@ void Texture::SetData(const unsigned char* texData)
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(std::dynamic_pointer_cast<Texture>(shared_from_this()));
+	Engine::renderer->BindTexture(GetThisShared());
 	unsigned int alpha = 0x1906;
-	Engine::renderer->SetTextureData(std::dynamic_pointer_cast<Texture>(shared_from_this()), alpha, texData);
+	Engine::renderer->SetTextureData(GetThisShared(), alpha, texData);
 #endif
 }
 

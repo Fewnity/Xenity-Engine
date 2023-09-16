@@ -29,16 +29,21 @@ Directory* ProjectManager::projectDirectoryBase = nullptr;
 
 ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath)
 {
+	if (!directoryToCheck)
+		return nullptr;
+
 	int dirCount = directoryToCheck->subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
 	{
 		ProjectDirectory* subDir = directoryToCheck->subdirectories[i];
+		// Check if the sub directory is the directory to find
 		if (subDir->path == directoryPath)
 		{
 			return subDir;
 		}
 		else
 		{
+			// Start recursive to search in the sub directory
 			ProjectDirectory* foundSubDir = FindProjectDirectory(subDir, directoryPath);
 			if (foundSubDir)
 				return foundSubDir;
@@ -49,7 +54,8 @@ ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directo
 
 void ProjectManager::FindAllProjectFiles()
 {
-	std::string oldPath;
+	// Keep in memory the old opened directory path to re-open it later
+	std::string oldPath = "";
 	if (Engine::GetCurrentProjectDirectory())
 		oldPath = Engine::GetCurrentProjectDirectory()->path;
 
@@ -95,7 +101,7 @@ void ProjectManager::FindAllProjectFiles()
 	for (int i = 0; i < allFoundFileCount; i++)
 	{
 		std::shared_ptr<File> file = allFoundFiles[i];
-		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + ".meta");
+		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 		if (!metaFile->CheckIfExist()) //If there is not meta for this file
 		{
 			//Create one later
@@ -249,15 +255,15 @@ FileType ProjectManager::GetFileType(std::string extension)
 	{
 		fileType = File_Scene;
 	}
-	else if (extension == ".h" || extension == ".cpp") //If the file is a scene
+	else if (extension == ".h" || extension == ".cpp") //If the file is a code file/header
 	{
 		fileType = File_Code;
 	}
-	else if (extension == ".sky") //If the file is a scene
+	else if (extension == ".sky") //If the file is a skybox
 	{
 		fileType = File_Skybox;
 	}
-	else if (extension == ".ttf") //If the file is a scene
+	else if (extension == ".ttf") //If the file is a font
 	{
 		fileType = File_Font;
 	}
@@ -287,16 +293,17 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 	SaveProjectSettigs();
 #endif
 
+	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
 #else
 	DynamicLibrary::LoadGameLibrary("game");
-#endif
+#endif // defined(EDITOR)
 	Engine::game = DynamicLibrary::CreateGame();
 #else
 	Engine::game = new Game();
-#endif
+#endif //  defined(_WIN32) || defined(_WIN64)
 
 	// Fill class registery
 	if (Engine::game)
@@ -316,6 +323,8 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
+
+	// Find if the File Reference is already instanciated
 	int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
@@ -327,6 +336,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 		}
 	}
 
+	// If the file is not instanciated, create the File Reference
 	if (fileRef == nullptr)
 	{
 		if (projectFilesIds.contains(id))
@@ -349,10 +359,13 @@ void ProjectManager::LoadProjectSettings()
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";
+
+		// Read file
 		projectFile->Open(true);
 		jsonString = projectFile->ReadAll();
 		projectFile->Close();
 
+		// Parse Json
 		json projectData;
 		try
 		{
@@ -364,6 +377,7 @@ void ProjectManager::LoadProjectSettings()
 			return;
 		}
 
+		// Change settings
 		ReflectionUtils::JsonToMap(projectData, GetProjetSettingsReflection());
 	}
 }
@@ -383,12 +397,12 @@ void ProjectManager::SaveProjectSettigs()
 
 void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 {
-	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + ".meta");
+	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
 	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
 
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + ".meta");
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + META_EXTENSION);
 	metaFile->Open(true);
 	metaFile->Write(metaData.dump(0));
 	metaFile->Close();
@@ -397,7 +411,7 @@ void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 {
 	std::vector<ProjectListItem> projects;
-	std::shared_ptr<File> file = FileSystem::MakeFile("projects.json");
+	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	bool isOpen = file->Open(false);
 	if (isOpen)
 	{
@@ -426,8 +440,8 @@ void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::fileSystem->DeleteFile("projects.json");
-	std::shared_ptr<File> file = FileSystem::MakeFile("projects.json");
+	FileSystem::fileSystem->DeleteFile(PROJECTS_LIST_FILE);
+	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	file->Open(true);
 	file->Write(j.dump(3));
 	file->Close();
@@ -472,15 +486,13 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(std::string pa
 #if defined(EDITOR)
 		SaveMetaFile(fileRef);
 #endif
-		//if (type == File_Skybox)
-			//fileRef->LoadFileReference();
 	}
 	return fileRef;
 }
 
 void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 {
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + ".meta");
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + META_EXTENSION);
 	if (metaFile->CheckIfExist())
 	{
 		std::string jsonString = "";

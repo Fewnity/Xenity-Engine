@@ -1,14 +1,9 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include "dynamic_lib.h"
 #include "../game_interface.h"
-#include <iostream>
 #include <windows.h>
 #include "../debug/debug.h"
-#include <thread>
-#include "../asset_management/project_manager.h"
-#include <filesystem>
 
-typedef void(__cdecl* MYPROC2)();
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
 
@@ -17,7 +12,7 @@ void DynamicLibrary::LoadGameLibrary(std::string libraryName)
 	libraryName += ".dll";
 
 #if defined(VISUAL_STUDIO)
-	library = LoadLibrary((LPCWSTR)libraryName.c_str()); //Visual Studio
+	library = LoadLibrary((LPCWSTR)libraryName.c_str()); // Visual Studio
 #else
 	library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
 #endif
@@ -47,6 +42,7 @@ GameInterface* DynamicLibrary::CreateGame()
 	GameInterface* gameInterface = nullptr;
 	if (library != NULL)
 	{
+		// Find the "CreateGame" function
 		CreateGameFunction ProcAdd = (CreateGameFunction)GetProcAddress(library, "CreateGame");
 		if (ProcAdd)
 		{

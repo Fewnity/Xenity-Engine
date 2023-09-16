@@ -28,8 +28,7 @@ int currentBuffer = 0;
 #endif
 
 bool AudioManager::isAdding = false;
-int AudioManager::channelCount = 0;
-std::vector<Channel*> AudioManager::channels;
+Channel* AudioManager::channel;
 int buffSize = 1024 * 16;
 int halfBuffSize = 0;
 int quarterBuffSize = 0;
@@ -99,7 +98,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->seekPosition] * leftVolume));
 					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->seekPosition + 1] * rightVolume));
 				}
-				else 
+				else
 				{
 					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->seekPosition] * leftVolume));
 					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->seekPosition] * rightVolume));
@@ -114,7 +113,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 					{
 						sound->seekPosition += 2;
 					}
-					else 
+					else
 					{
 						sound->seekPosition += 1;
 					}
@@ -144,8 +143,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 void audioCallback(void* buf, unsigned int length, void* userdata)
 {
 	audioBenchmark2->Start();
-	Channel* channel = AudioManager::channels[(int)userdata];
-	FillChannelBuffer((short*)buf, length, channel);
+	FillChannelBuffer((short*)buf, length, AudioManager::channel);
 	audioBenchmark2->Stop();
 }
 #endif
@@ -155,15 +153,11 @@ int audio_thread(SceSize args, void* argp)
 {
 	while (true)
 	{
-		for (int i = 0; i < AudioManager::channelCount; i++)
+		if (sceAudioOutGetRestSample(AudioManager::channel->port) == 0)
 		{
-			Channel* channel = AudioManager::channels[i];
-			if (sceAudioOutGetRestSample(channel->port) == 0)
-			{
-				int16_t wave_buf[audiosize * 2] = { 0 };
-				FillChannelBuffer((short*)wave_buf, audiosize, channel);
-				sceAudioOutOutput(channel->port, wave_buf);
-			}
+			int16_t wave_buf[audiosize * 2] = { 0 };
+			FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
+			sceAudioOutOutput(AudioManager::channel->port, wave_buf);
 		}
 	}
 }
@@ -181,17 +175,17 @@ int audio_thread()
 		if (w->dwFlags & WHDR_DONE)
 		{
 			waveOutUnprepareHeader(hWaveOut, w, sizeof(WAVEHDR));
-			if (audioData == nullptr) 
+			if (audioData == nullptr)
 			{
 				audioData = (short*)malloc(sizeof(short) * buffSize);
 				audioData2 = (short*)malloc(sizeof(short) * buffSize);
 			}
 			short* buffToUse = audioData;
-			if(currentBuffer == 1)
+			if (currentBuffer == 1)
 				buffToUse = audioData2;
-			
-			Channel* channel = AudioManager::channels[0];
-			FillChannelBuffer((short*)buffToUse, quarterBuffSize, channel);
+
+
+			FillChannelBuffer((short*)buffToUse, quarterBuffSize, AudioManager::channel);
 			w->lpData = reinterpret_cast<LPSTR>(buffToUse); // audioData est votre tableau d'échantillons audio
 			w->dwBufferLength = buffSize; // dataSize est la taille des données audio
 			w->dwFlags = 0;
@@ -213,51 +207,46 @@ int fillAudioBufferThread()
 {
 	while (true)
 	{
-		for (int i = 0; i < AudioManager::channelCount; i++)
+		if (!Engine::IsRunning())
+			return 0;
+
+		AudioManager::myMutex->Lock();
+		int playedSoundsCount = (int)AudioManager::channel->playedSounds.size();
+		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
-			Channel* channel = AudioManager::channels[i];
+			auto& sound = AudioManager::channel->playedSounds[soundIndex];
 
-			if (!Engine::IsRunning())
-				return 0;
-
-			AudioManager::myMutex->Lock();
-			int playedSoundsCount = (int)channel->playedSounds.size();
-			for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
+			int bufferSizeToUse = quarterBuffSize;
+			if (sound->audioClipStream->GetChannelCount() == 1)
 			{
-				auto& sound = channel->playedSounds[soundIndex];
-
-				int bufferSizeToUse = quarterBuffSize;
-				if (sound->audioClipStream->GetChannelCount() == 1) 
-				{
-					bufferSizeToUse = halfBuffSize;
-				}
-
-				if (sound->needNewRead)
-				{
-					audioBenchmark->Start();
-					sound->audioClipStream->FillBuffer(bufferSizeToUse, 0, sound->buffer);
-					sound->needNewRead = false;
-					audioBenchmark->Stop();
-				}
-				else if (sound->needNewRead2)
-				{
-					audioBenchmark->Start();
-					sound->audioClipStream->FillBuffer(bufferSizeToUse, halfBuffSize, sound->buffer);
-					sound->needNewRead2 = false;
-					audioBenchmark->Stop();
-				}
+				bufferSizeToUse = halfBuffSize;
 			}
-			AudioManager::myMutex->Unlock();
+
+			if (sound->needNewRead)
+			{
+				audioBenchmark->Start();
+				sound->audioClipStream->FillBuffer(bufferSizeToUse, 0, sound->buffer);
+				sound->needNewRead = false;
+				audioBenchmark->Stop();
+			}
+			else if (sound->needNewRead2)
+			{
+				audioBenchmark->Start();
+				sound->audioClipStream->FillBuffer(bufferSizeToUse, halfBuffSize, sound->buffer);
+				sound->needNewRead2 = false;
+				audioBenchmark->Stop();
+			}
 		}
+		AudioManager::myMutex->Unlock();
+
 
 		if (Engine::canUpdateAudio)
 		{
 			AudioManager::myMutex->Lock();
-			Channel* channel = AudioManager::channels[0];
-			int count = (int)channel->playedSounds.size();
+			int count = (int)AudioManager::channel->playedSounds.size();
 			for (int i = 0; i < count; i++)
 			{
-				auto& playedSound = channel->playedSounds[i];
+				auto& playedSound = AudioManager::channel->playedSounds[i];
 				playedSound->volume = playedSound->audioSource->GetVolume();
 				playedSound->pan = playedSound->audioSource->GetPanning();
 				playedSound->isPlaying = playedSound->audioSource->GetIsPlaying();
@@ -267,9 +256,9 @@ int fillAudioBufferThread()
 #if defined(__vita__) || defined(__PSP__)
 		sceKernelDelayThread(16);
 #else
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
-		}
+	}
 	}
 
 
@@ -294,16 +283,11 @@ int AudioManager::Init()
 #if defined(__vita__)
 	myMutex->mutexid = sceKernelCreateMutex("MyMutex", 0, 1, NULL);
 #endif
-	Channel* newChannel = new Channel();
-	channels.push_back(newChannel);
-	channelCount++;
+	channel = new Channel();
 
 #if defined(__PSP__)
 	pspAudioInit();
-	for (int i = 0; i < channelCount; i++)
-	{
-		pspAudioSetChannelCallback(i, audioCallback, (void*)i);
-	}
+	pspAudioSetChannelCallback(0, audioCallback, (void*)0);
 
 	SceUID thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
 	if (thd_id >= 0)
@@ -330,7 +314,7 @@ int AudioManager::Init()
 	waveFormat.wBitsPerSample = 16;
 	waveFormat.cbSize = 0;
 
-	if (waveOutOpen(&hWaveOut, WAVE_MAPPER, &waveFormat, CALLBACK_NULL, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR) 
+	if (waveOutOpen(&hWaveOut, WAVE_MAPPER, &waveFormat, CALLBACK_NULL, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR)
 	{
 		return -1;
 	}
@@ -361,8 +345,8 @@ void AudioManager::Stop()
 	waveOutUnprepareHeader(hWaveOut, &waveHdr[1], sizeof(WAVEHDR));
 	waveOutClose(hWaveOut);
 
-	if(audioData)
-		free (audioData);
+	if (audioData)
+		free(audioData);
 	if (audioData2)
 		free(audioData2);
 
@@ -379,7 +363,6 @@ PlayedSound::~PlayedSound()
 void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
 {
 	AudioManager::myMutex->Lock();
-	Channel* channel = channels[0];
 	bool found = false;
 	if (auto as = audioSource.lock())
 	{
@@ -414,7 +397,7 @@ void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
 		newPlayedSound->pan = newPlayedSound->audioSource->GetPanning();
 		newPlayedSound->isPlaying = newPlayedSound->audioSource->GetIsPlaying();
 		newPlayedSound->loop = true;
-		channels[0]->playedSounds.push_back(newPlayedSound);
+		channel->playedSounds.push_back(newPlayedSound);
 	}
 	AudioManager::myMutex->Unlock();
 }
@@ -424,7 +407,6 @@ void AudioManager::StopAudioSource(std::weak_ptr<AudioSource> audioSource)
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
-	Channel* channel = channels[0];
 
 	if (auto as = audioSource.lock())
 	{
@@ -456,7 +438,6 @@ void AudioManager::RemoveAudioSource(std::weak_ptr<AudioSource> audioSource)
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
-	Channel* channel = channels[0];
 
 	if (auto as = audioSource.lock())
 	{

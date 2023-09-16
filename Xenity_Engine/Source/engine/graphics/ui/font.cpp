@@ -49,7 +49,7 @@ void Font::LoadFileReference()
     if (!isLoaded)
     {
         isLoaded = true;
-        CreateFont(std::dynamic_pointer_cast<Font>(shared_from_this()), file->GetPath());
+        CreateFont(GetThisShared(), file->GetPath());
     }
 }
 

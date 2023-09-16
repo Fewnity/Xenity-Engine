@@ -485,7 +485,6 @@ extern "C"
 		sceGuDepthRange(100, 65535);
 		sceGuScissor(0, 0, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 		sceGuEnable(GU_SCISSOR_TEST);
-		sceGuDisable(GU_CLIP_PLANES);
 
 		sceGuDepthFunc(GU_LEQUAL);
 		sceGuEnable(GU_DEPTH_TEST);

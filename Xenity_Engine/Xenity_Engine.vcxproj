@@ -160,6 +160,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_drag_drop.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_inputs.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_map.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp" />

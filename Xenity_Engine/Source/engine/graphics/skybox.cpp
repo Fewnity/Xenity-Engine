@@ -53,7 +53,6 @@ void SkyBox::OnReflectionUpdated()
 	file->Open(true);
 	file->Write(myJson.dump(0));
 	file->Close();
-	Debug::Print(myJson.dump(3));
 }
 
 void SkyBox::LoadFileReference()

@@ -29,6 +29,10 @@ public:
 		this->a = a;
 		//SetReflection();
 	}
+
+	/**
+	* Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
+	*/
 	Vector4 ToVector4();
 
 	float r = 1;
@@ -55,9 +59,9 @@ public:
 
 	/**
 	* Create color from float RGB
-	* @param r Red level [0;1]
-	* @param g Green level [0;1]
-	* @param b Blue level [0;1]
+	* @param r Red level [0.0f;1.0f]
+	* @param g Green level [0.0f;1.0f]
+	* @param b Blue level [0.0f;1.0f]
 	*/
 	static Color CreateFromRGBFloat(float r, float g, float b);
 
@@ -72,10 +76,10 @@ public:
 
 	/**
 	* Create color from float RGBA
-	* @param r Red level [0;1]
-	* @param g Green level [0;1]
-	* @param b Blue level [0;1]
-	* @param a Alpha level [0;1]
+	* @param r Red level [0.0f;1.0f]
+	* @param g Green level [0.0f;1.0f]
+	* @param b Blue level [0.0f;1.0f]
+	* @param a Alpha level [0.0f;1.0f]
 	*/
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 

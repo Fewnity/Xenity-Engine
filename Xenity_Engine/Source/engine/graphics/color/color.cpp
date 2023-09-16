@@ -44,7 +44,7 @@ Color Color::CreateFromRGB(int r, int g, int b)
 Color Color::CreateFromRGBFloat(float r, float g, float b)
 {
 	Color color = Color();
-	color.SetFromRGBAfloat(r, g, b, 1);
+	color.SetFromRGBAfloat(r, g, b, 1.0f);
 	return color;
 }
 

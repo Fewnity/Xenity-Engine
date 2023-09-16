@@ -128,9 +128,8 @@ public:
     static void StopAudioSource(std::weak_ptr<AudioSource> audioSource);
 
     static bool isAdding;
-    static std::vector<Channel *> channels;
-    static int channelCount;
-    static MyMutex *myMutex;
+    static Channel* channel;
+    static MyMutex* myMutex;
 
 private:
 };

@@ -93,6 +93,11 @@ public:
         return loop;
     }
 
+    std::shared_ptr<AudioSource> GetThisShared()
+    {
+        return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
+    }
+
 private:
     float volume = 1;
     float pan = 0.5;

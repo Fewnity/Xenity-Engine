@@ -262,14 +262,14 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (loadedPreview->fileType == File_Audio) // Draw audio preview
 		{
-			int playedSoundCount = AudioManager::channels[0]->playedSounds.size();
+			int playedSoundCount = AudioManager::channel->playedSounds.size();
 			AudioClipStream* stream = nullptr;
 			for (int i = 0; i < playedSoundCount; i++)
 			{
-				if (AudioManager::channels[0]->playedSounds[i]->audioSource == Editor::audioSource.lock())
+				if (AudioManager::channel->playedSounds[i]->audioSource == Editor::audioSource.lock())
 				{
 					// Get audio stream
-					stream = AudioManager::channels[0]->playedSounds[i]->audioClipStream;
+					stream = AudioManager::channel->playedSounds[i]->audioClipStream;
 					break;
 				}
 			}

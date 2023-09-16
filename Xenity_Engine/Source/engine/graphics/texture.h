@@ -164,6 +164,11 @@ public:
         return isValid;
     };
 
+    std::shared_ptr<Texture> GetThisShared() 
+    {
+        return std::dynamic_pointer_cast<Texture>(shared_from_this());
+    }
+
 #if defined(__PSP__)
     /**
     * Create texture data for a mipmap level

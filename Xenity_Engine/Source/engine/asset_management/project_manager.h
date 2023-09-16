@@ -22,6 +22,9 @@ class File;
 class Scene;
 class Directory;
 
+#define META_EXTENSION ".meta"
+#define PROJECTS_LIST_FILE "projects.json"
+
 class API ProjectDirectory
 {
 public:
@@ -180,6 +183,10 @@ public:
 	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);
 	static void RefreshProjectDirectory();
 	static void FindAllProjectFiles();
+
+	/**
+	* Find and get a project directory from a path and a parent directory
+	*/
 	static ProjectDirectory* FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath);
 	static Directory* projectDirectoryBase;
 	static FileType GetFileType(std::string extension);

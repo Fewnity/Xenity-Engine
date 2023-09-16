@@ -262,6 +262,13 @@ void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileR
 					valuePtr->get().reset();
 				}
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
+			{
+				if (valuePtr->get() == fileReference)
+				{
+					valuePtr->get().reset();
+				}
+			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
 				int vectorSize = valuePtr->get().size();

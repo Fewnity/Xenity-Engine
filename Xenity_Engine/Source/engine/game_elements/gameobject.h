@@ -112,11 +112,6 @@ public:
 	void RemoveComponent(std::weak_ptr <Component> weakComponent);
 
 	/**
-	* Destroy a component
-	*/
-	void InternalDestroyComponent(std::weak_ptr <Component> weakComponent);
-
-	/**
 	* Get a component
 	*/
 	template <typename T>

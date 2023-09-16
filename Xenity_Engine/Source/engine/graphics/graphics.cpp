@@ -108,18 +108,8 @@ void Graphics::DrawAllDrawable()
 			Vector3 camPos = camera->GetTransform()->GetPosition();
 
 			camera->UpdateProjection();
-			if (skybox)
-			{
-				Engine::renderer->SetFog(false);
-				float scaleF = 10.01f;
-				Vector3 scale = Vector3(scaleF);
-				MeshManager::DrawMesh(Vector3(0, -5, 0) + camPos, Vector3(0, 180, 0), scale, skybox->down, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 5, 0) + camPos, Vector3(180, 180, 0), scale, skybox->up, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 0, 5) + camPos, Vector3(90, 0, 180), scale, skybox->front, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(0, 0, -5) + camPos, Vector3(90, 0, 0), scale, skybox->back, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(5, 0, 0) + camPos, Vector3(90, -90, 0), scale, skybox->left, skyPlane, false, false, false);
-				MeshManager::DrawMesh(Vector3(-5, 0, 0) + camPos, Vector3(90, 0, -90), scale, skybox->right, skyPlane, false, false, false);
-			}
+			DrawSkybox(camPos);
+
 			Engine::renderer->SetFog(isFogEnabled);
 			IDrawableTypes currentMode = Draw_3D;
 			for (int i = 0; i < iDrawablesCount; i++)
@@ -148,85 +138,9 @@ void Graphics::DrawAllDrawable()
 				}
 				Engine::renderer->ResetTransform();
 				Engine::renderer->SetCameraPosition(camera);
-				Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
-
-				int gridAxis = 0;
-				float distance;
-				if (gridAxis == 0)
-					distance = abs(camPos.y);
-				else if (gridAxis == 1)
-					distance = abs(camPos.x);
-				else //if (gridAxis == 2)
-					distance = abs(camPos.z);
-
-				// Get the coef for grid lineCount by using the camera distance
-				int coef = 1;
-				while (coef < distance / 10)
-				{
-					coef *= 10;
-				}
-
-				if (distance < 0.7f)
-					distance = 0.7f;
-
-				float lineLenght = 20 * distance;
-				float lineCount = lineLenght / coef;
-
-				if (gridAxis == 0)
-				{
-					// For XZ
-					for (int z = -lineCount + camPos.z / coef; z < lineCount + camPos.z / coef; z++)
-					{
-						float zPos = z * coef;
-						Engine::renderer->DrawLine(Vector3(-lineLenght - camPos.x, 0, zPos), Vector3(lineLenght - camPos.x, 0, zPos), color);
-					}
-					for (int x = -lineCount + camPos.x / coef; x < lineCount + camPos.x / coef; x++)
-					{
-						float xPos = -x * coef;
-						Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + camPos.z), Vector3(xPos, 0, lineLenght + camPos.z), color);
-					}
-				}
-				else if (gridAxis == 1)
-				{
-					//For YZ
-					for (int z = -lineCount + camPos.z / coef; z < lineCount + camPos.z / coef; z++)
-					{
-						float zPos = z * coef;
-						Engine::renderer->DrawLine(Vector3(0, -lineLenght - camPos.y, zPos), Vector3(0, lineLenght - camPos.y, zPos), color);
-					}
-					for (int y = -lineCount + camPos.y / coef; y < lineCount + camPos.y / coef; y++)
-					{
-						float yPos = -y * coef;
-						Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + camPos.z), Vector3(0, yPos, lineLenght + camPos.z), color);
-					}
-				}
-				else if (gridAxis == 2)
-				{
-					// For XY
-					for (int x = -lineCount + camPos.x / coef; x < lineCount + camPos.x / coef; x++)
-					{
-						float xPos = x * coef;
-						Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - camPos.y, 0), Vector3(xPos, lineLenght - camPos.y, 0), color);
-					}
-					for (int y = -lineCount + camPos.y / coef; y < lineCount + camPos.y / coef; y++)
-					{
-						float yPos = -y * coef;
-						Engine::renderer->DrawLine(Vector3(-lineLenght + camPos.x, yPos, 0), Vector3(lineLenght + camPos.x, yPos, 0), color);
-					}
-				}
-
-				// Draw tool
-				if (Engine::selectedGameObject.lock())
-				{
-					Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
-					Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
-					float dist = Vector3::Distance(selectedGOPos, camPos);
-					dist /= 40;
-					Vector3 scale = Vector3(dist);
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, false, false, false);
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, false, false, false);
-					MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, false, false, false);
-				}
+				
+				DrawEditorGrid(camPos);
+				DrawEditorTool(camPos);
 			}
 #endif
 		}
@@ -309,5 +223,107 @@ void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove)
 			iDrawablesCount--;
 			break;
 		}
+	}
+}
+
+void Graphics::DrawSkybox(Vector3 & cameraPosition)
+{
+	if (skybox)
+	{
+		Engine::renderer->SetFog(false);
+		float scaleF = 10.01f;
+		Vector3 scale = Vector3(scaleF);
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, false, false, false);
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, false, false, false);
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, false, false, false);
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, false, false, false);
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, false, false, false);
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, false, false, false);
+	}
+}
+
+void Graphics::DrawEditorGrid(Vector3& cameraPosition)
+{
+	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+
+	int gridAxis = 0;
+	float distance;
+	if (gridAxis == 0)
+		distance = abs(cameraPosition.y);
+	else if (gridAxis == 1)
+		distance = abs(cameraPosition.x);
+	else //if (gridAxis == 2)
+		distance = abs(cameraPosition.z);
+
+	// Get the coef for grid lineCount by using the camera distance
+	int coef = 1;
+	while (coef < distance / 10)
+	{
+		coef *= 10;
+	}
+
+	if (distance < 0.7f)
+		distance = 0.7f;
+
+	float lineLenght = 20 * distance;
+	float lineCount = lineLenght / coef;
+
+	if (gridAxis == 0)
+	{
+		// For XZ
+		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
+		{
+			float zPos = z * coef;
+			Engine::renderer->DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color);
+		}
+		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
+		{
+			float xPos = -x * coef;
+			Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color);
+		}
+	}
+	else if (gridAxis == 1)
+	{
+		//For YZ
+		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
+		{
+			float zPos = z * coef;
+			Engine::renderer->DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color);
+		}
+		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
+		{
+			float yPos = -y * coef;
+			Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color);
+		}
+	}
+	else if (gridAxis == 2)
+	{
+		// For XY
+		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
+		{
+			float xPos = x * coef;
+			Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color);
+		}
+		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
+		{
+			float yPos = -y * coef;
+			Engine::renderer->DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color);
+		}
+	}
+}
+
+void Graphics::DrawEditorTool(Vector3& cameraPosition)
+{
+	// Draw tool
+	if (Engine::selectedGameObject.lock())
+	{
+		Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
+		Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
+		float dist = Vector3::Distance(selectedGOPos, cameraPosition);
+		dist /= 40;
+		Vector3 scale = Vector3(dist);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, false, false, false);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, false, false, false);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, false, false, false);
 	}
 }

@@ -88,7 +88,7 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < componentCount; i++)
 	{
-		InternalDestroyComponent(components[i]);
+		Engine::RemoveComponentReferences(components[i]);
 	}
 	components.clear();
 }
@@ -100,53 +100,22 @@ void GameObject::Setup()
 
 #pragma endregion
 
-void GameObject::InternalDestroyComponent(std::weak_ptr <Component> weakComponent)
-{
-	if (auto component = weakComponent.lock())
-	{
-		//------------------------------------------------------------------------ Include the component to compile
-		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
-		{
-			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
-			AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
-		}
-		else if (auto light = std::dynamic_pointer_cast<Light>(component))
-		{
-			AssetManager::RemoveLight(light);
-		}
-		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(component))
-		{
-			AudioManager::RemoveAudioSource(audioSource);
-		}
-		else if (auto camera = std::dynamic_pointer_cast<Camera>(component))
-		{
-			int cameraCount = Graphics::cameras.size();
-			for (int i = 0; i < cameraCount; i++)
-			{
-				auto cam = Graphics::cameras[i].lock();
-				if (cam && cam == camera)
-				{
-					Graphics::cameras.erase(Graphics::cameras.begin() + i);
-					break;
-				}
-			}
-		}
-	}
-}
-
 void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 {
 	if (auto component = weakComponent.lock())
 	{
+		// If the component is not already waiting for destroy
 		if (!component->waitingForDestroy)
 		{
 			component->waitingForDestroy = true;
 			Engine::componentsToDestroy.push_back(component);
-			for (int i2 = 0; i2 < componentCount; i2++)
+
+			// Remove the component from the gameobject's components list
+			for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
 			{
-				if (components[i2] == component)
+				if (components[componentIndex] == component)
 				{
-					components.erase(components.begin() + i2);
+					components.erase(components.begin() + componentIndex);
 					componentCount--;
 					break;
 				}
