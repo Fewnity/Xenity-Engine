@@ -92,7 +92,7 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
 		{
-			Debug::PrintWarning("(GameObject/Create Empty Parent) Unimplemented button");
+			Editor::CreateEmptyParent();
 		}
 		if (ImGui::MenuItem("Create Empty Child", nullptr, nullptr, hasSelectedGameObject))
 		{

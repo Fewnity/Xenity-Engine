@@ -210,7 +210,30 @@ void Editor::CreateEmpty()
 void Editor::CreateEmptyChild()
 {
 	auto go = CreateGameObject();
+	auto transform = go->GetTransform();
 	go->SetParent(Engine::selectedGameObject);
+	transform->SetLocalPosition(Vector3(0));
+	transform->SetLocalRotation(Vector3(0));
+	transform->SetLocalScale(Vector3(1));
+
+	Engine::SetSelectedGameObject(go);
+}
+
+void Editor::CreateEmptyParent()
+{
+	auto go = CreateGameObject();
+	auto transform = go->GetTransform();
+	auto selectedTransform = Engine::selectedGameObject.lock()->GetTransform();
+	transform->SetPosition(selectedTransform->GetPosition());
+	transform->SetRotation(selectedTransform->GetRotation());
+	transform->SetLocalScale(selectedTransform->GetScale());
+
+	if (Engine::selectedGameObject.lock()->parent.lock())
+	{
+		go->SetParent(Engine::selectedGameObject.lock()->parent.lock());
+	}
+	Engine::selectedGameObject.lock()->SetParent(go);
+
 	Engine::SetSelectedGameObject(go);
 }
 

@@ -14,6 +14,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 /*
 --- To do quick:
 Add Create Skybox/Scene functions
+Add a return button in Create project menu
+Fix Set parent function
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and the enabled
@@ -24,7 +26,6 @@ Add delete texture function in renderer for psp
 Create console window
 
 --- To do in a long time 
-Apply texture filter before drawing imgui images
 Add LOD
 Fix mouse speed at high fps
 Add transparency setting on textures

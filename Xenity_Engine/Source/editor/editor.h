@@ -61,6 +61,11 @@ public:
 	static void CreateEmptyChild();
 
 	/**
+	* Create an Empty GameObject and set his parent and his child
+	*/
+	static void CreateEmptyParent();
+
+	/**
 	* Create a new GameObject from another
 	*/
 	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
