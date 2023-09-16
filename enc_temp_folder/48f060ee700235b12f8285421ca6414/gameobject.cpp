@@ -128,17 +128,15 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 {
 	if (auto newChild = weakNewChild.lock())
 	{
-		// Remove the new child from his old parent's children list
-		if (newChild->parent.lock()) 
-		{
-			std::shared_ptr<GameObject> oldParent = newChild->parent.lock();
-			int parentChildCount = oldParent->childCount;
+		if (newChild->parent.lock()) {
+
+			int parentChildCount = newChild->parent.lock()->childCount;
 			for (int i = 0; i < parentChildCount; i++)
 			{
-				if (oldParent->children[i].lock() == newChild)
+				if (newChild->parent.lock()->children[i].lock() == newChild) 
 				{
-					oldParent->children.erase(oldParent->children.begin() + i);
-					oldParent->childCount--;
+					newChild->parent.lock()->children.erase(newChild->parent.lock()->children.begin() + i);
+					newChild->parent.lock()->childCount--;
 					break;
 				}
 			}
