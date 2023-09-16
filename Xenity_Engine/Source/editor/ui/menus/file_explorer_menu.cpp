@@ -7,6 +7,7 @@
 #include "../../../engine/scene_management/scene_manager.h"
 #include "../../../engine/asset_management/project_manager.h"
 #include "../../../engine/asset_management/code_file.h"
+#include "../../../engine/graphics/renderer/renderer.h"
 
 void FileExplorerMenu::Init()
 {
@@ -57,53 +58,53 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	int availWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
-	unsigned int textureId = EditorUI::icons[Icon_File]->GetTextureId();
+	std::shared_ptr<Texture> tex = EditorUI::icons[Icon_File];
 	if (!isFile)
 	{
-		textureId = EditorUI::icons[Icon_Folder]->GetTextureId();
+		tex = EditorUI::icons[Icon_Folder];
 	}
 	else
 	{
 		int fileType = item.file->fileType;
 		if (fileType == File_Texture)
 		{
-			std::shared_ptr<Texture> tex = std::dynamic_pointer_cast<Texture>(item.file);
-			textureId = tex->GetTextureId();
-			if (textureId == 0) 
+			tex = std::dynamic_pointer_cast<Texture>(item.file);
+			if (tex->GetTextureId() == 0)
 			{
-				textureId = EditorUI::icons[Icon_Image]->GetTextureId();
+				tex = EditorUI::icons[Icon_Image];
 			}
 		}
 		else if (fileType == File_Scene)
 		{
-			textureId = EditorUI::icons[Icon_Scene]->GetTextureId();
+			tex = EditorUI::icons[Icon_Scene];
 		}
 		else if (fileType == File_Code)
 		{
 			if(std::dynamic_pointer_cast<CodeFile>(item.file)->isHeader)
-				textureId = EditorUI::icons[Icon_Header]->GetTextureId();
+				tex = EditorUI::icons[Icon_Header];
 			else
-				textureId = EditorUI::icons[Icon_Code]->GetTextureId();
+				tex = EditorUI::icons[Icon_Code];
 		}
 		else if (fileType == File_Mesh)
 		{
-			textureId = EditorUI::icons[Icon_Mesh]->GetTextureId();
+			tex = EditorUI::icons[Icon_Mesh];
 		}
 		else if (fileType == File_Audio)
 		{
-			textureId = EditorUI::icons[Icon_Audio]->GetTextureId();
+			tex = EditorUI::icons[Icon_Audio];
 		}
 		else if (fileType == File_Skybox)
 		{
-			textureId = EditorUI::icons[Icon_Sky]->GetTextureId();
+			tex = EditorUI::icons[Icon_Sky];
 		}
 		else if (fileType == File_Font)
 		{
-			textureId = EditorUI::icons[Icon_Font]->GetTextureId();
+			tex = EditorUI::icons[Icon_Font];
 		}
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	Engine::renderer->BindTexture(tex);
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)tex->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	std::string popupId = "RightClick";
 	if (item.file) 
 	{
@@ -172,7 +173,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			std::string payloadName = "Files" + std::to_string(item.file->fileType);
 			ImGui::SetDragDropPayload(payloadName.c_str(), item.file.get(), sizeof(FileReference));
-			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)textureId, ImVec2(iconSize, iconSize));
+			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)tex->GetTextureId(), ImVec2(iconSize, iconSize));
 			ImGui::TextWrapped(itemName.c_str());
 			ImGui::EndDragDropSource();
 		}

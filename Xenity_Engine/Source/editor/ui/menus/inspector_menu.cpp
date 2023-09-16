@@ -7,6 +7,7 @@
 #include "../../../engine/audio/audio_manager.h"
 #include "../../../engine/audio/audio_clip_stream.h"
 #include <imgui/imgui_impl_opengl3.h>
+#include "../../../engine/graphics/renderer/renderer.h"
 
 void InspectorMenu::Init()
 {
@@ -247,11 +248,12 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (textureId != 0) // Draw image preview
 		{
+			std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
 			ImVec2 availArea = ImGui::GetContentRegionAvail();
+			Engine::renderer->BindTexture(texture);
 			ImGui::Image((ImTextureID)textureId, availArea);
 
 			// Print texture resolution
-			std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(Engine::GetSelectedFileReference());
 			std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
 			ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
 			ImVec2 textPos;

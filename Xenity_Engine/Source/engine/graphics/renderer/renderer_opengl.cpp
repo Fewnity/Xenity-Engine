@@ -269,7 +269,6 @@ void RendererOpengl::MoveTransform(Vector3 position)
 
 void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 {
-
 #if defined(__PSP__)
 	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
