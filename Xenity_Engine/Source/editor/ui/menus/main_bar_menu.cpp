@@ -30,7 +30,7 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("New Scene"))
 		{
-			Debug::PrintWarning("(File/New Scene) Unimplemented button");
+			SceneManager::EmptyScene();
 		}
 		if (ImGui::MenuItem("Open Scene"))
 		{

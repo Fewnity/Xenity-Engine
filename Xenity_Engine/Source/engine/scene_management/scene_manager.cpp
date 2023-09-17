@@ -3,6 +3,7 @@
 #include "../../xenity_editor.h"
 #include "../class_registry/class_registry.h"
 #include "../reflection/reflection_utils.h"
+#include "../asset_management/project_manager.h"
 
 using json = nlohmann::json;
 
@@ -78,6 +79,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			file->Open(true);
 			file->Write(jsonData);
 			file->Close();
+			ProjectManager::RefreshProjectDirectory();
 		}
 	}
 }
@@ -244,6 +246,7 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 
 void SceneManager::EmptyScene()
 {
+	openedScene.reset();
 	Graphics::orderedIDrawable.clear();
 	Graphics::usedCamera.reset();
 	int cameraCount = Graphics::cameras.size();
@@ -263,4 +266,5 @@ void SceneManager::EmptyScene()
 	Engine::componentsCount = 0;
 	Engine::gameObjectCount = 0;
 	Engine::selectedGameObject.reset();
+	Window::UpdateWindowTitle();
 }

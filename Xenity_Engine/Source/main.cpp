@@ -13,11 +13,9 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 --- To do quick:
-Add Create Skybox/Scene functions
-Add a close project button
 
 --- To do soon:
-Fix Awake : Call awake when a gameobject was disabled and the enabled
+Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
 Add abitily to move file into a folder
 Add more unit tests

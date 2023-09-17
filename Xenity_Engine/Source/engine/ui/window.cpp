@@ -156,6 +156,10 @@ void Window::UpdateWindowTitle()
 	{
 		newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
 	}
+	else 
+	{
+		newTitle += "Empty Scene";
+	}
 	newTitle += std::string(" - ") + ENGINE_NAME + " 0.1";
 	SDL_SetWindowTitle(window, newTitle.c_str());
 #endif
