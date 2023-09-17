@@ -84,10 +84,25 @@ void EditorUI::Init()
 	fontIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Font] = fontIcon;
 
-	std::shared_ptr<Texture> audioSky = Texture::MakeTexture("icons/sky.png", true);
-	audioSky->file = FileSystem::MakeFile("icons/sky.png");
-	audioSky->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Sky] = audioSky;
+	std::shared_ptr<Texture> skyIcon = Texture::MakeTexture("icons/sky.png", true);
+	skyIcon->file = FileSystem::MakeFile("icons/sky.png");
+	skyIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Sky] = skyIcon;
+
+	std::shared_ptr<Texture> audioSourceIcon = Texture::MakeTexture("icons/audio_source.png", true);
+	audioSourceIcon->file = FileSystem::MakeFile("icons/audio_source.png");
+	audioSourceIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Audio_Source] = audioSourceIcon;
+
+	std::shared_ptr<Texture> lightIcon = Texture::MakeTexture("icons/light.png", true);
+	lightIcon->file = FileSystem::MakeFile("icons/light.png");
+	lightIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Light] = lightIcon;
+
+	std::shared_ptr<Texture> cameraIcon = Texture::MakeTexture("icons/camera.png", true);
+	cameraIcon->file = FileSystem::MakeFile("icons/camera.png");
+	cameraIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Camera] = cameraIcon;
 
 	for (int i = 0; i < Icon_Count; i++)
 	{
