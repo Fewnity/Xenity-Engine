@@ -57,6 +57,7 @@
 #include "engine/graphics/3d_graphics/mesh_manager.h"
 #include "engine/graphics/2d_graphics/sprite_manager.h"
 #include "engine/graphics/2d_graphics/sprite_renderer.h"
+#include "engine/graphics/2d_graphics/billboard_renderer.h"
 #include "engine/graphics/2d_graphics/tile_map.h"
 #include "engine/graphics/2d_graphics/line_renderer.h"
 #include "engine/graphics/color/color.h"

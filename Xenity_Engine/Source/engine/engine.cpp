@@ -35,6 +35,7 @@
 #include "scene_management/scene_manager.h"
 #include "../editor/compiler.h"
 #include "../unit_tests/unit_test_manager.h"
+#include "graphics/2d_graphics/billboard_renderer.h"
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
@@ -299,6 +300,8 @@ void Engine::RegisterEngineComponents()
 		{ return go->AddComponent<Tilemap>(); });
 	ClassRegistry::AddComponentClass("SpriteRenderer", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<SpriteRenderer>(); });
+	ClassRegistry::AddComponentClass("BillboardRenderer", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<BillboardRenderer>(); });
 	ClassRegistry::AddComponentClass("LineRenderer", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<LineRenderer>(); });
 	ClassRegistry::AddComponentClass("AudioSource", [](std::shared_ptr<GameObject> go)

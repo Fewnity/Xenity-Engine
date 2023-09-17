@@ -102,6 +102,7 @@
     <ClCompile Include="Source\editor\ui\editor_ui_map.cpp" />
     <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp" />
+    <ClCompile Include="Source\engine\graphics\2d_graphics\billboard_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Source\engine\graphics\skybox.h" />
     <ClInclude Include="Source\psp\video_hardware_dxtn.h" />
     <ClInclude Include="Source\engine\graphics\ui\font.h" />
+    <ClInclude Include="Source\engine\graphics\2d_graphics\billboard_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
