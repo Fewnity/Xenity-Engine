@@ -122,9 +122,9 @@ void Graphics::DrawAllDrawable()
 
 			Engine::renderer->SetFog(isFogEnabled);
 			IDrawableTypes currentMode = Draw_3D;
-			for (int i = 0; i < iDrawablesCount; i++)
+			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
-				std::shared_ptr<IDrawable> drawable = orderedIDrawable[i].lock();
+				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
 				if (drawable->type != currentMode) 
 				{
 					currentMode = drawable->type;

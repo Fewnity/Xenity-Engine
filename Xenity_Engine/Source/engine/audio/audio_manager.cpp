@@ -175,11 +175,7 @@ int audio_thread()
 		if (w->dwFlags & WHDR_DONE)
 		{
 			waveOutUnprepareHeader(hWaveOut, w, sizeof(WAVEHDR));
-			if (audioData == nullptr)
-			{
-				audioData = (short*)malloc(sizeof(short) * buffSize);
-				audioData2 = (short*)malloc(sizeof(short) * buffSize);
-			}
+
 			short* buffToUse = audioData;
 			if (currentBuffer == 1)
 				buffToUse = audioData2;
@@ -259,7 +255,7 @@ int fillAudioBufferThread()
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
 	}
-	}
+}
 
 
 Channel::Channel()
@@ -303,6 +299,8 @@ int AudioManager::Init()
 		sceKernelStartThread(thd_id, 0, 0);
 	}
 #elif defined(_WIN32) || defined(_WIN64)
+	audioData = (short*)malloc(sizeof(short) * buffSize);
+	audioData2 = (short*)malloc(sizeof(short) * buffSize);
 
 	// Ouvrir le fichier audio WAV
 	WAVEFORMATEX waveFormat;
@@ -372,7 +370,7 @@ void AudioManager::PlayAudioSource(std::weak_ptr<AudioSource> audioSource)
 		int count = (int)channel->playedSounds.size();
 		for (int i = 0; i < count; i++)
 		{
-			auto playedSound = channel->playedSounds[i];
+			auto& playedSound = channel->playedSounds[i];
 			if (playedSound->audioSource == as)
 			{
 				found = true;

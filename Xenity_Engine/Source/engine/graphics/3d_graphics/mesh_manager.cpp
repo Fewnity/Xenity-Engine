@@ -45,7 +45,7 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
         return;
     }*/
 
-    auto camera = Graphics::usedCamera.lock();
+    std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
     if (!camera)
         return;
 

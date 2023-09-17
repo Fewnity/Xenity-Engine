@@ -117,9 +117,9 @@ void SceneManager::LoadScene(json jsonData)
 		{
 			std::string componentName = componentKV.value()["Type"];
 			std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
-			allComponents.push_back(comp);
 			if (comp)
 			{
+				allComponents.push_back(comp);
 				comp->SetUniqueId(std::stoull(componentKV.key()));
 			}
 			else
@@ -201,10 +201,11 @@ void SceneManager::LoadScene(json jsonData)
 
 		for (int i = 0; i < componentsToInitCount; i++)
 		{
-			if (!orderedComponentsToInit[i]->isAwakeCalled && orderedComponentsToInit[i]->GetGameObject()->GetLocalActive())
+			std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
+			if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->GetLocalActive())
 			{
-				orderedComponentsToInit[i]->Awake();
-				orderedComponentsToInit[i]->isAwakeCalled = true;
+				componentToInit->Awake();
+				componentToInit->isAwakeCalled = true;
 			}
 		}
 	}

@@ -39,7 +39,6 @@ void CreateProjectMenu::Draw()
 	//Draw text
 	std::string noCamText = "Create a project";
 	ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
-	float offY = ImGui::GetCursorPosY();
 	ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
 	ImGui::Text(noCamText.c_str());
 
