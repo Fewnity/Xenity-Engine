@@ -320,6 +320,26 @@ bool ProjectManager::LoadProject(std::string projectPathToLoad)
 	return projectLoaded;
 }
 
+void ProjectManager::UnloadProject()
+{
+	Engine::SetCurrentProjectDirectory(nullptr);
+	SceneManager::SetOpenedScene(nullptr);
+	SceneManager::EmptyScene();
+	Graphics::SetDefaultValues();
+
+	startScene.reset();
+	delete projectDirectoryBase;
+	projectDirectoryBase = nullptr;
+	delete projectDirectory;
+	projectDirectory = nullptr;
+	projectFilesIds.clear();
+	oldProjectFilesIds.clear();
+	projectLoaded = false;
+	projectName = "";
+	gameName = "";
+	Window::UpdateWindowTitle();
+}
+
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;

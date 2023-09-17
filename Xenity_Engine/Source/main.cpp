@@ -14,8 +14,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 /*
 --- To do quick:
 Add Create Skybox/Scene functions
-Add a return button in Create project menu
-Fix Set parent function
+Add a close project button
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and the enabled

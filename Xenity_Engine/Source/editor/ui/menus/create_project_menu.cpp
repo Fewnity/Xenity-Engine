@@ -24,7 +24,16 @@ void CreateProjectMenu::Draw()
 	//Increase font size
 	ImFont* font = ImGui::GetFont();
 	float oldScale = font->Scale;
-	font->Scale *= 2;
+	font->Scale *= 1.5;
+	ImGui::PushFont(font);
+
+	if (ImGui::Button("Back")) 
+	{
+		Editor::currentMenu = Menu_Select_Project;
+	}
+	ImGui::PopFont();
+
+	font->Scale = oldScale * 2.0f;
 	ImGui::PushFont(font);
 
 	//Draw text

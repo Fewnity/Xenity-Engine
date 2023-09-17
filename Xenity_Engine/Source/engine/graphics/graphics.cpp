@@ -75,9 +75,19 @@ void Graphics::Init()
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
 
-	skyColor = Color::CreateFromRGBAFloat(0.529f, 0.808f, 0.922f, 1);
+	SetDefaultValues();
 
 	Debug::Print("-------- Graphics initiated --------");
+}
+
+void Graphics::SetDefaultValues()
+{
+	isFogEnabled = false;
+	fogStart = 10;
+	fogEnd = 50;
+	fogColor = Color::CreateFromRGB(152,152,152);
+	skyColor = Color::CreateFromRGB(25, 25, 25);
+	skybox.reset();
 }
 
 void Graphics::DrawAllDrawable()

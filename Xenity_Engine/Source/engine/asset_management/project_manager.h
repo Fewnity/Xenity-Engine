@@ -83,6 +83,7 @@ public:
 	*/
 	static bool LoadProject(std::string projectPathToLoad);
 
+	static void UnloadProject();
 
 	/**
 	* Get file reference by Id

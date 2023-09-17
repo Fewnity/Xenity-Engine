@@ -12,6 +12,7 @@
 #include <Commdlg.h>
 #include <ShObjIdl.h>
 #include "../../../engine/scene_management/scene_manager.h"
+#include "../../../engine/asset_management/project_manager.h"
 
 void MainBarMenu::Init()
 {
@@ -25,7 +26,7 @@ void MainBarMenu::Draw()
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
 
-	if (ImGui::BeginMenu("File")) //Draw File menu
+	if (ImGui::BeginMenu("File")) // ----------------------------------- Draw File menu
 	{
 		if (ImGui::MenuItem("New Scene"))
 		{
@@ -38,10 +39,6 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Save Scene"))
 		{
 			SceneManager::SaveScene(SaveSceneToFile);
-		}
-		if (ImGui::MenuItem("Open Project"))
-		{
-			Debug::PrintWarning("(File/Open Project) Unimplemented button");
 		}
 		if (ImGui::MenuItem("Build for Windows"))
 		{
@@ -73,13 +70,18 @@ void MainBarMenu::Draw()
 			if(exportPath != "")
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
 		}
+		if (ImGui::MenuItem("Close project"))
+		{
+			ProjectManager::UnloadProject();
+			Editor::currentMenu = Menu_Select_Project;
+		}
 		if (ImGui::MenuItem("Exit"))
 		{
 			Engine::Quit();
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Edit")) //Draw File menu
+	if (ImGui::BeginMenu("Edit")) // ----------------------------------- Draw File menu
 	{
 		if (ImGui::MenuItem("Unselect"))
 		{
@@ -88,7 +90,7 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("GameObject")) //Draw GameObject menu
+	if (ImGui::BeginMenu("GameObject")) // ----------------------------------- Draw GameObject menu
 	{
 		if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
 		{
@@ -132,7 +134,7 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Component")) //Draw Component menu
+	if (ImGui::BeginMenu("Component")) // ----------------------------------- Draw Component menu
 	{
 		if (ImGui::BeginMenu("Mesh"))
 		{
@@ -213,7 +215,7 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Game")) //Draw Game menu
+	if (ImGui::BeginMenu("Game")) // ----------------------------------- Draw Game menu
 	{
 		if (ImGui::MenuItem("Play Game"))
 		{
@@ -233,7 +235,7 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Window")) //Draw Window menu
+	if (ImGui::BeginMenu("Window")) // ----------------------------------- Draw Window menu
 	{
 		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EditorUI::showProfiler);
 		ImGui::SameLine();

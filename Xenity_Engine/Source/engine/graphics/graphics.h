@@ -27,6 +27,7 @@ public:
 	* Init graphics (Load skybox, load some meshes)
 	*/
 	static void Init();
+	static void SetDefaultValues();
 
 	/**
 	* Set skybox
