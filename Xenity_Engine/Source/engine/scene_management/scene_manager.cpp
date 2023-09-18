@@ -17,6 +17,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	json j;
 	int gameObjectCount = Engine::gameObjectCount;
+
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
 		auto &go = Engine::gameObjects[goI];
@@ -104,12 +105,18 @@ void SceneManager::LoadScene(json jsonData)
 	EmptyScene();
 
 	std::vector<std::shared_ptr<Component>> allComponents;
+	uint64_t biggestId = 0;
 
 	// Create all GameObjects and Components
 	for (auto& gameObjectKV : jsonData["GameObjects"].items())
 	{
 		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-		newGameObject->SetUniqueId(std::stoull(gameObjectKV.key()));
+		uint64_t id = std::stoull(gameObjectKV.key());
+		newGameObject->SetUniqueId(id);
+		if (id >= biggestId) 
+		{
+			biggestId = id;
+		}
 		ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
 
 		// Create components
@@ -128,6 +135,8 @@ void SceneManager::LoadScene(json jsonData)
 			}
 		}
 	}
+
+	UniqueId::lastUniqueId = biggestId;
 
 	// Bind Components values and GameObjects childs
 	for (auto& kv : jsonData["GameObjects"].items())
