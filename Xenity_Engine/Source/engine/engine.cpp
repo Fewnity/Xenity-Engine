@@ -149,6 +149,7 @@ int Engine::Init()
 
 	//Init Editor
 #if defined(EDITOR)
+	Gizmo::Init();
 	EditorUI::Init();
 	Editor::Init();
 #endif
@@ -414,25 +415,25 @@ void Engine::CreateBenchmarks()
 
 void Engine::UpdateComponents()
 {
+	// Order components and initialise new components
+	if (componentsListDirty)
+	{
+		componentsListDirty = false;
+		orderedComponents.clear();
+
+		componentsCount = 0;
+		OrderComponents();
+		InitialiseComponents();
+	}
+
 	if (gameState == GameState::Playing)
 	{
-		// Order components and initialise new components
-		if (componentsListDirty)
-		{
-			componentsListDirty = false;
-			orderedComponents.clear();
-
-			componentsCount = 0;
-			OrderComponents();
-			InitialiseComponents();
-		}
-
 		// Update components
 		for (int i = 0; i < componentsCount; i++)
 		{
 			if (auto component = orderedComponents[i].lock())
 			{
-				if (component->GetGameObject()->GetLocalActive())
+				if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 				{
 					component->Update();
 				}
@@ -463,25 +464,22 @@ void Engine::OrderComponents()
 					std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->components[cIndex];
 					if (componentToCheck)
 					{
-						if (componentToCheck->GetIsEnabled())
+						for (int i = 0; i < componentsCount; i++)
 						{
-							for (int i = 0; i < componentsCount; i++)
+							// Check if the checked has a higher priority (lower value) than the component in the list
+							if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
 							{
-								// Check if the checked has a higher priority (lower value) than the component in the list
-								if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
-								{
-									orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-									placeFound = true;
-									break;
-								}
+								orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
+								placeFound = true;
+								break;
 							}
-							// if the priority is lower than all components's priorities in the list, add it the end of the list
-							if (!placeFound)
-							{
-								orderedComponents.push_back(componentToCheck);
-							}
-							componentsCount++;
 						}
+						// if the priority is lower than all components's priorities in the list, add it the end of the list
+						if (!placeFound)
+						{
+							orderedComponents.push_back(componentToCheck);
+						}
+						componentsCount++;
 					}
 				}
 			}
@@ -498,24 +496,9 @@ void Engine::InitialiseComponents()
 	{
 		if (auto componentToCheck = orderedComponents[i].lock())
 		{
-			if (!componentToCheck->initiated)
+			if (!componentToCheck->initiated && componentToCheck->GetIsEnabled())
 			{
-				bool placeFound = false;
-				for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
-				{
-					// Check if the checked has a higher priority (lower value) than the component in the list
-					if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
-					{
-						orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-						placeFound = true;
-						break;
-					}
-				}
-				// if the priority is lower than all components's priorities in the list, add it the end of the list
-				if (!placeFound)
-				{
-					orderedComponentsToInit.push_back(componentToCheck);
-				}
+				orderedComponentsToInit.push_back(componentToCheck);
 				componentsToInitCount++;
 			}
 		}

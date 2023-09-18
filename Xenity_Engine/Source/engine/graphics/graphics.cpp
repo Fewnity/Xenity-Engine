@@ -150,6 +150,18 @@ void Graphics::DrawAllDrawable()
 				Engine::renderer->SetCameraPosition(camera);
 				
 				DrawEditorGrid(camPos);
+
+				for (int i = 0; i < Engine::componentsCount; i++)
+				{
+					if (auto component = Engine::orderedComponents[i].lock())
+					{
+						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
+						{
+							component->OnDrawGizmos();
+						}
+					}
+				}
+
 				DrawEditorTool(camPos);
 			}
 #endif
@@ -277,6 +289,11 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 
 	float lineLenght = 20 * distance;
 	float lineCount = lineLenght / coef;
+	RenderingSettings renderSettings = RenderingSettings();
+	renderSettings.useBlend = true;
+	renderSettings.useDepth = true;
+	renderSettings.useLighting = false;
+	renderSettings.useTexture = false;
 
 	if (gridAxis == 0)
 	{
@@ -284,12 +301,12 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
 			float zPos = z * coef;
-			Engine::renderer->DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color);
+			Engine::renderer->DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
 		}
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
 			float xPos = -x * coef;
-			Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color);
+			Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 1)
@@ -298,12 +315,12 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
 			float zPos = z * coef;
-			Engine::renderer->DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color);
+			Engine::renderer->DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
 			float yPos = -y * coef;
-			Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color);
+			Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 2)
@@ -312,12 +329,12 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
 			float xPos = x * coef;
-			Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color);
+			Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
 			float yPos = -y * coef;
-			Engine::renderer->DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color);
+			Engine::renderer->DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
 		}
 	}
 }

@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\gizmo.cpp" />
     <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui_drag_drop.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui_inputs.cpp" />
@@ -296,6 +297,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\gizmo.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\billboard_renderer.h" />
     <ClInclude Include="Source\engine\graphics\ui\font.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />

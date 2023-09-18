@@ -218,7 +218,7 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 	glScalef(scale.x, scale.y, scale.z);
 }
 
-void RendererOpengl::SetTransform(glm::mat4 &mat)
+void RendererOpengl::SetTransform(glm::mat4& mat)
 {
 #if defined(__PSP__)
 	ScePspFMatrix4 matrix;
@@ -253,7 +253,7 @@ void RendererOpengl::SetTransform(glm::mat4 &mat)
 			mat2[i][j] = mat[i][j];
 		}
 	}
-	glMultMatrixf((GLfloat *)mat2);
+	glMultMatrixf((GLfloat*)mat2);
 #endif
 }
 
@@ -289,7 +289,7 @@ void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 #endif
 	ApplyTextureFilters(texture);
-	float borderColor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+	float borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
@@ -335,12 +335,12 @@ void RendererOpengl::ApplyTextureFilters(std::shared_ptr <Texture >texture)
 #endif
 }
 
-void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vector< std::shared_ptr<Texture>> textures, RenderingSettings settings)
+void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vector< std::shared_ptr<Texture>> textures, RenderingSettings& settings)
 {
-	float material_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};  /* default value */
-	float material_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};  /* default value */
-	float material_specular[] = {0.0f, 0.0f, 0.0f, 1.0f}; /* NOT default value */
-	float material_emission[] = {0.0f, 0.0f, 0.0f, 1.0f}; /* default value */
+	float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+	float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
+	float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
+	float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
 	// glMaterial(GL_DIFFUSE, 0xFFFFFFFF);
 	//  glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
 	//  glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -351,30 +351,30 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	applySettingsBenchmark->Start();
 	if (settings.invertFaces)
 	{
-			glFrontFace(GL_CW);
+		glFrontFace(GL_CW);
 	}
 	else
 	{
-			glFrontFace(GL_CCW);
+		glFrontFace(GL_CCW);
 	}
 
 	if (settings.useDepth)
 	{
-			glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 	}
 	else
 	{
-			glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 	}
 
 	if (settings.useBlend)
 	{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	else
 	{
-			glDisable(GL_BLEND);
+		glDisable(GL_BLEND);
 	}
 
 #if defined(__PSP__)
@@ -383,11 +383,11 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	if (EngineSettings::useLighting && settings.useLighting)
 #endif
 	{
-			glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHTING);
 	}
 	else
 	{
-			glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
 	}
 
 	glEnable(GL_TEXTURE_2D);
@@ -452,7 +452,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
-	else 
+	else
 	{
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
@@ -470,7 +470,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
 	}
-	else 
+	else
 	{
 		glDisableClientState(GL_NORMAL_ARRAY);
 	}
@@ -485,13 +485,13 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 
 		if (textures[i] == nullptr)
 			continue;
-		
+
 		subMesh = meshData->subMeshes[i];
-		
+
 		if (subMesh->vertice_count == 0)
 			continue;
 
-		if(!meshData->isValid)
+		if (!meshData->isValid)
 			continue;
 
 		BindTexture(textures[i]);
@@ -501,7 +501,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 			if (!meshData->hasUv)
 			{
 				stride = sizeof(VertexNoColorNoUv);
-				VertexNoColorNoUv* data = (VertexNoColorNoUv *)subMesh->data;
+				VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
 				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 			}
 			else
@@ -559,10 +559,14 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	Performance::AddDrawCall();
 }
 
-void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color)
+void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSettings& settings)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	glEnable(GL_DEPTH_TEST);
+	if(settings.useDepth)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_LIGHTING);
@@ -610,7 +614,7 @@ void RendererOpengl::DeleteTexture(Texture* texture)
 #endif
 }
 
-void RendererOpengl::SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer)
+void RendererOpengl::SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char* buffer)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
@@ -646,10 +650,10 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	else if (type == Light::Point)
 		typeIntensity = 2;
 
-	float lightColor[] = {rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f};
-	float zeroLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
+	float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
+	float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	float position[] = {-lightPosition.x, lightPosition.y, lightPosition.z, 1};
+	float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
 
 	// Assign created components to GL_LIGHT0
 	if (type == Light::Directional)
@@ -666,7 +670,7 @@ void RendererOpengl::SetLight(int lightIndex, Vector3 lightPosition, float inten
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
 #elif defined(__PSP__)
 	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
-	ScePspFVector3 pos = {-lightPosition.x, lightPosition.y, lightPosition.z};
+	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
 	if (type == Light::Directional)
 	{
@@ -705,7 +709,7 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 		for (int i = 0; i < lightCount; i++)
 		{
 			auto light = AssetManager::GetLight(i).lock();
-			if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive()) 
+			if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 			{
 				if (light->type == Light::Directional)
 				{
@@ -732,7 +736,7 @@ void RendererOpengl::Clear()
 
 void RendererOpengl::SetFog(bool active)
 {
-	if(active)
+	if (active)
 		glEnable(GL_FOG);
 	else
 		glDisable(GL_FOG);

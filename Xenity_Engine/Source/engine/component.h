@@ -39,6 +39,8 @@ public:
 	virtual void Update() {}
 	//virtual void OnParentChanged() {}
 
+	virtual void OnDrawGizmos() {};
+
 	int updatePriority = 5000; //Lower is more priotary
 	
 	/**

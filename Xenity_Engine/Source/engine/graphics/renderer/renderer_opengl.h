@@ -33,8 +33,8 @@ public:
 	void MoveTransform(Vector3 position);
 	void BindTexture(std::shared_ptr <Texture> texture);
 	void ApplyTextureFilters(std::shared_ptr <Texture> texture);
-	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings settings);
-	void DrawLine(Vector3 a, Vector3 bn, Color& color);
+	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings);
+	void DrawLine(Vector3 a, Vector3 bn, Color& color, RenderingSettings& settings);
 	unsigned int CreateNewTexture();
 	void DeleteTexture(Texture* texture);
 	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer);

@@ -87,8 +87,8 @@ public:
 	virtual void BindTexture(std::shared_ptr <Texture> texture) = 0;
 	virtual void ApplyTextureFilters(std::shared_ptr<Texture> texture) = 0;
 	virtual void DeleteTexture(Texture* texture) = 0;
-	virtual void DrawMeshData(std::shared_ptr<MeshData >meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings settings) = 0;
-	virtual void DrawLine(Vector3 a, Vector3 b, Color& color) = 0;
+	virtual void DrawMeshData(std::shared_ptr<MeshData >meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) = 0;
+	virtual void DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSettings& settings) = 0;
 	virtual unsigned int CreateNewTexture() = 0;
 	virtual void SetTextureData(std::shared_ptr < Texture >texture, unsigned int textureType, const unsigned char *buffer) = 0;
 	virtual void Clear() = 0;
