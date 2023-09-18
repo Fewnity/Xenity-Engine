@@ -1,6 +1,10 @@
 #include "lighting.h"
 #include "../../xenity.h"
 
+#if defined(EDITOR)
+#include "../../xenity_editor.h"
+#endif
+
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
 #undef __STRICT_ANSI__
@@ -91,6 +95,22 @@ void Light::SetupSpotLight(const Color color, const float intensity, const float
 #pragma endregion
 
 #pragma region Accessors
+
+void Light::OnDrawGizmos()
+{
+#if defined(EDITOR)
+	auto transform = GetTransform();
+	float distance = Vector3::Distance(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetPosition());
+	float alpha = 1;
+	if (distance <= 1.3f)
+		alpha = distance - 0.3f;
+
+	Color newColor = color;
+	RGBA rgba = newColor.GetRGBA();
+	newColor.SetFromRGBAfloat(rgba.r, rgba.g, rgba.b, alpha);
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Light], newColor, transform);
+#endif
+}
 
 void Light::UpdateLightValues()
 {

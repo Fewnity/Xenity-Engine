@@ -12,9 +12,6 @@
 #include "../component.h"
 #include "../graphics/color/color.h"
 
-class API lighting
-{
-};
 const float lightConstant = 1;
 
 class API Light : public Component
@@ -110,6 +107,8 @@ public:
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
+
+	void OnDrawGizmos();
 
 private:
 

@@ -2,6 +2,7 @@
 #include "audio_manager.h"
 #include "../engine.h"
 #include "../../xenity.h"
+#include "../../editor/ui/editor_ui.h"
 
 AudioSource::AudioSource()
 {
@@ -90,4 +91,17 @@ void AudioSource::Stop()
 {
     isPlaying = false;
     AudioManager::StopAudioSource(GetThisShared());
+}
+
+void AudioSource::OnDrawGizmos()
+{
+#if defined(EDITOR)
+    auto transform = GetTransform();
+    float distance = Vector3::Distance(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetPosition());
+    float alpha = 1;
+    if (distance <= 1.3f)
+        alpha = distance - 0.3f;
+
+    SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBAFloat(1, 1, 1, alpha), transform);
+#endif
 }

@@ -122,6 +122,8 @@ public:
 	*/
 	void BindFrameBuffer();
 
+	void OnDrawGizmos();
+
 	/**
 	* Get view width in pixel
 	*/
