@@ -126,7 +126,7 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string &text, TextInfo *
             x += ch->rightAdvance;
         }
     }
-
+    mesh->SendDataToGpu();
 #ifdef __PSP__
     sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif

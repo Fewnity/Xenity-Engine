@@ -273,6 +273,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #endif
 
 	mesh->isValid = true;
+	mesh->SendDataToGpu();
 
 	return true;
 }

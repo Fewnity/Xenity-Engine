@@ -447,6 +447,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 
 	applySettingsBenchmark->Start();
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (meshData->hasUv)
 	{
@@ -488,6 +489,8 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 
 		subMesh = meshData->subMeshes[i];
 
+		glBindBuffer(GL_ARRAY_BUFFER, subMesh->VBO);
+
 		if (subMesh->vertice_count == 0)
 			continue;
 
@@ -502,7 +505,9 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 			{
 				stride = sizeof(VertexNoColorNoUv);
 				VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
-				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+
+				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
 			}
 			else
 			{
@@ -510,16 +515,23 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 				{
 					stride = sizeof(Vertex);
 					Vertex* data = (Vertex*)subMesh->data;
-					glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+					/*glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					glColorPointer(3, GL_FLOAT, stride, &data[0].r);
-					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);*/
+
+					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
+					glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
+					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
 				}
 				else
 				{
 					stride = sizeof(VertexNoColor);
 					VertexNoColor* data = (VertexNoColor*)subMesh->data;
-					glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
-					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+					//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+					//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+
+					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
+					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
 				}
 			}
 		}
@@ -529,28 +541,40 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 			{
 				stride = sizeof(VertexNormalsNoColorNoUv);
 				VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
-				glNormalPointer(GL_FLOAT, stride, &data[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
+				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+
+				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
+				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
 			}
 			else
 			{
 				stride = sizeof(VertexNormalsNoColor);
 				VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
-				glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
-				glNormalPointer(GL_FLOAT, stride, &data[0].normX);
-				glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+				//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
+				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
+				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
+
+				glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
+				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
+				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
 			}
 		}
 
 		mesh2Benchmark->Start();
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, subMesh->EBO);
+
 		if (!meshData->hasIndices)
 		{
 			glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, subMesh->indices);
+			//glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, subMesh->indices);
+			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, 0);
 		}
+
 		mesh2Benchmark->Stop();
 	}
 
@@ -562,7 +586,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSettings& settings)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	if(settings.useDepth)
+	if (settings.useDepth)
 		glEnable(GL_DEPTH_TEST);
 	else
 		glDisable(GL_DEPTH_TEST);
@@ -767,22 +791,89 @@ void RendererOpengl::SetFogValues(float start, float end, Color color)
 #endif
 }
 
+unsigned int RendererOpengl::CreateBuffer()
+{
+	unsigned int id = 0;
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glGenBuffers(1, &id);
+#endif
+	return id;
+}
+
+void RendererOpengl::BindBuffer(BufferType type, unsigned int bufferId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	int t = GetBufferTypeEnum(type);
+	glBindBuffer(t, bufferId);
+#endif
+}
+
+void RendererOpengl::DeleteBuffer(unsigned int bufferId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glDeleteBuffers(1, &bufferId);
+#endif
+}
+
+void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	for (int i = 0; i < meshData->subMeshCount; i++)
+	{
+		MeshData::SubMesh* newSubMesh = meshData->subMeshes[i];
+
+		glBindBuffer(GL_ARRAY_BUFFER, newSubMesh->VBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
+
+		if (!meshData->hasNormal)
+		{
+			if (!meshData->hasUv)
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNoColorNoUv) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
+			}
+			else
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNoColor) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
+			}
+		}
+		else
+		{
+			if (!meshData->hasUv)
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalsNoColorNoUv) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
+			}
+			else
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalsNoColor) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
+			}
+		}
+
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+#endif
+}
 
 
-// int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
-// {
-// 	int type = GL_REPEAT;
-// 	switch (bufferType)
-// 	{
-// 	case Array_Buffer:
-// 		type = GL_ARRAY_BUFFER;
-// 		break;
-// 	case Element_Array_Buffer:
-// 		type = GL_ELEMENT_ARRAY_BUFFER;
-// 		break;
-// 	}
-// 	return type;
-// }
+
+int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	int type = GL_REPEAT;
+	switch (bufferType)
+	{
+	case Array_Buffer:
+		type = GL_ARRAY_BUFFER;
+		break;
+	case Element_Array_Buffer:
+		type = GL_ELEMENT_ARRAY_BUFFER;
+		break;
+	}
+	return type;
+#endif
+	return 0;
+}
 
 // int RendererOpengl::GetBufferModeEnum(BufferMode bufferMode)
 // {

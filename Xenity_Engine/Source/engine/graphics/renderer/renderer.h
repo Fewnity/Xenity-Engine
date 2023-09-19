@@ -95,6 +95,11 @@ public:
 	virtual void SetFog(bool active) = 0;
 	virtual void SetFogValues(float start, float end, Color color) = 0;
 
+	virtual unsigned CreateBuffer() = 0;
+	virtual void BindBuffer(BufferType type, unsigned int bufferId) = 0;
+	virtual void DeleteBuffer(unsigned int bufferId) = 0;
+	virtual void UploadMeshData(std::shared_ptr<MeshData> meshData) = 0;
+
 private:
 	virtual void Setlights(std::weak_ptr<Camera> camera) = 0;
 	virtual void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;

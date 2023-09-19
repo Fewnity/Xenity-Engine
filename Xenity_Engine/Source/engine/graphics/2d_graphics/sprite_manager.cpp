@@ -43,6 +43,7 @@ void SpriteManager::Init()
     spriteMeshData->subMeshes[0]->indices[3] = 2;
     spriteMeshData->subMeshes[0]->indices[4] = 0;
     spriteMeshData->subMeshes[0]->indices[5] = 3;
+    spriteMeshData->SendDataToGpu();
 
 #if defined(__PSP__)
     sceKernelDcacheWritebackInvalidateAll(); // Very important

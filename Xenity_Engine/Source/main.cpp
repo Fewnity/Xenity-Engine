@@ -21,6 +21,7 @@ Add abitily to move file into a folder
 Add more unit tests
 Add delete texture function in renderer for psp
 Create console window
+RGBA or RGB in vertex color?
 
 --- To do in a long time 
 Add LOD

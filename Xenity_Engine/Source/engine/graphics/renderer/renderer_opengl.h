@@ -42,8 +42,14 @@ public:
 	void SetFog(bool active);
 	void SetFogValues(float start, float end, Color color);
 
+	unsigned int CreateBuffer();
+	void BindBuffer(BufferType type, unsigned int bufferId);
+	void DeleteBuffer(unsigned int bufferId);
+
+	void UploadMeshData(std::shared_ptr<MeshData> meshData);
+
 private:
-	// int GetBufferTypeEnum(BufferType bufferType);
+	int GetBufferTypeEnum(BufferType bufferType);
 	// int GetBufferModeEnum(BufferMode bufferMode);
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);
 	int maxLightCount = 8;

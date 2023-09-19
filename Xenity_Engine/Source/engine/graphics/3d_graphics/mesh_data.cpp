@@ -10,6 +10,9 @@
 #endif
 #include "../../file_system/mesh_loader/wavefront_loader.h"
 #include "../../asset_management/asset_manager.h"
+#include "../../graphics/renderer/renderer.h"
+
+#include <glad/glad.h>
 
 MeshData::MeshData()
 {
@@ -144,6 +147,11 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	((VertexNormalsNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
 }
 
+void MeshData::SendDataToGpu()
+{
+	Engine::renderer->UploadMeshData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+}
+
 void MeshData::Unload()
 {
 	for (int i = 0; i < subMeshCount; i++)
@@ -178,8 +186,9 @@ void MeshData::LoadFileReference()
 		isValid = false;
 
 #if defined(EDITOR)
-		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-		threadLoading.detach();
+		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		//std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		//threadLoading.detach();
 #else
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 #endif
@@ -207,6 +216,9 @@ void MeshData::UnloadFileReference()
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
+
+	newSubMesh->VBO = Engine::renderer->CreateBuffer();
+	newSubMesh->EBO = Engine::renderer->CreateBuffer();
 
 #ifdef __PSP__
 	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
@@ -239,16 +251,24 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (!hasNormal) 
 	{
 		if (!hasUv)
+		{
 			newSubMesh->data = (VertexNoColorNoUv*)malloc(sizeof(VertexNoColorNoUv) * vcount);
+		}
 		else
+		{
 			newSubMesh->data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
+		}
 	}
 	else
 	{
 		if (!hasUv)
+		{
 			newSubMesh->data = (VertexNormalsNoColorNoUv*)malloc(sizeof(VertexNormalsNoColorNoUv) * vcount);
+		}
 		else
+		{
 			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
+		}
 	}
 
 #endif
@@ -257,10 +277,11 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		Debug::PrintWarning("No memory for Vertex");
 		return;
 	}
-
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 
 	subMeshes.push_back(newSubMesh);
 	subMeshCount++;
+
 }

@@ -60,6 +60,10 @@ public:
 		unsigned short* indices = nullptr;
 		unsigned int vertice_count = 0;
 		void* data = nullptr;
+
+		unsigned int VBO;
+		unsigned int EBO;
+		unsigned int VAO;
 	};
 	MeshData();
 	//MeshData() = delete;
@@ -144,6 +148,9 @@ public:
 	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
 	std::vector<SubMesh*> subMeshes;
+
+	void SendDataToGpu();
+
 
 	int subMeshCount  = 0;
 	bool hasUv = false;
