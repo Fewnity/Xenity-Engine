@@ -102,6 +102,6 @@ void AudioSource::OnDrawGizmos()
     if (distance <= 1.3f)
         alpha = distance - 0.3f;
 
-    SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBAFloat(1, 1, 1, alpha), transform);
+    SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBAFloat(1, 1, 1, alpha));
 #endif
 }

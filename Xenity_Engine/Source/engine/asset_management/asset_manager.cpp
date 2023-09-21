@@ -6,7 +6,7 @@
 bool initialised = false;
 
 // std::vector<Shader*> AssetManager::shaders;
-// std::vector<Material*> AssetManager::materials;
+std::vector<Material*> AssetManager::materials;
 std::vector<Reflection*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
@@ -14,7 +14,7 @@ std::vector<std::weak_ptr<Light>> AssetManager::lights;
 // std::vector<MeshData*> AssetManager::meshesData;
 
 // int AssetManager::shaderCount = 0;
-// int AssetManager::materialCount = 0;
+int AssetManager::materialCount = 0;
 int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
@@ -79,11 +79,11 @@ void AssetManager::Init()
 // 	shaderCount++;
 // }
 
-// void AssetManager::AddMaterial(Material *material)
-// {
-// 	materials.push_back(material);
-// 	materialCount++;
-// }
+ void AssetManager::AddMaterial(Material *material)
+ {
+ 	materials.push_back(material);
+ 	materialCount++;
+ }
 
 void AssetManager::AddReflection(Reflection* reflection)
 {
@@ -170,27 +170,27 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 // 	}
 // }
 
-// void AssetManager::RemoveMaterial(Material *material)
-// {
-// 	int materialCount = (int)materials.size();
-// 	int materialIndex = 0;
-// 	bool found = false;
-// 	for (int i = 0; i < materialCount; i++)
-// 	{
-// 		if (materials[i] == material)
-// 		{
-// 			found = true;
-// 			materialIndex = i;
-// 			break;
-// 		}
-// 	}
+ void AssetManager::RemoveMaterial(Material *material)
+ {
+ 	int materialCount = (int)materials.size();
+ 	int materialIndex = 0;
+ 	bool found = false;
+ 	for (int i = 0; i < materialCount; i++)
+ 	{
+ 		if (materials[i] == material)
+ 		{
+ 			found = true;
+ 			materialIndex = i;
+ 			break;
+ 		}
+ 	}
 
-// 	if (found)
-// 	{
-// 		materials.erase(materials.begin() + materialIndex);
-// 		materialCount--;
-// 	}
-// }
+ 	if (found)
+ 	{
+ 		materials.erase(materials.begin() + materialIndex);
+ 		materialCount--;
+ 	}
+ }
 
 void AssetManager::RemoveReflection(Reflection* reflection)
 {
@@ -392,10 +392,10 @@ void AssetManager::RemoveLight(std::weak_ptr<Light> light)
 // 	return shaders[index];
 // }
 
-// Material *AssetManager::GetMaterial(const int index)
-// {
-// 	return materials[index];
-// }
+ Material *AssetManager::GetMaterial(const int index)
+ {
+ 	return materials[index];
+ }
 
 // Material *AssetManager::GetMaterialByName(const std::string name)
 // {
@@ -455,10 +455,10 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 // 	return shaderCount;
 // }
 
-// int AssetManager::GetMaterialCount()
-// {
-// 	return materialCount;
-// }
+ int AssetManager::GetMaterialCount()
+ {
+ 	return materialCount;
+ }
 
 int AssetManager::GetReflectionCount()
 {

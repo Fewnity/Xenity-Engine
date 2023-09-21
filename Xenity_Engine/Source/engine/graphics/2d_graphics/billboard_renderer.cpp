@@ -48,7 +48,7 @@ void BillboardRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			auto transform = GetTransform();
-			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), texture, color, transform);
+			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), texture, color);
 		}
 	}
 }

@@ -79,7 +79,7 @@ void Debug::Print(std::string text)
     std::string newString = "\033[37m" + text;
     PrintInConsole(newString);
     PrintInFile(text);
-    debugText += text;
+    //debugText += text;
 }
 
 void Debug::PrintInOnlineConsole(std::string text)

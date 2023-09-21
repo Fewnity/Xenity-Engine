@@ -18,6 +18,7 @@ class Camera;
 class Texture;
 class SkyBox;
 class Vector3;
+class Shader;
 
 class API Graphics
 {
@@ -72,9 +73,9 @@ public:
 	static float fogEnd;
 	static Color fogColor;
 	static Color skyColor;
-
+	static Shader* currentShader;
+	static Material *currentMaterial;
 	// static int usedShaderProgram;
-	// static Material *usedMaterial;
 private:
 	static int iDrawablesCount;
 	static void DrawSkybox(Vector3& cameraPosition);

@@ -21,6 +21,7 @@ std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 
 ProfilerBenchmark* orderBenchmark = nullptr;
+ProfilerBenchmark* shaderBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
@@ -34,6 +35,15 @@ float Graphics::fogStart = 0;
 float Graphics::fogEnd = 10;
 Color Graphics::fogColor;
 Color Graphics::skyColor;
+Shader* Graphics::currentShader = nullptr;
+Material* Graphics::currentMaterial = nullptr;
+
+/*std::shared_ptr <GameObject> skyGoTop = nullptr;
+std::shared_ptr <GameObject> skyGoBottom = nullptr;
+std::shared_ptr <GameObject> skyGoLeft = nullptr;
+std::shared_ptr <GameObject> skyGoRight = nullptr;
+std::shared_ptr <GameObject> skyGoFront = nullptr;
+std::shared_ptr <GameObject> skyGoBack = nullptr;*/
 
 void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 {
@@ -74,6 +84,7 @@ void Graphics::Init()
 #endif
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
+	shaderBenchmark = new ProfilerBenchmark("Draw", "Shader");
 
 	SetDefaultValues();
 
@@ -85,7 +96,7 @@ void Graphics::SetDefaultValues()
 	isFogEnabled = false;
 	fogStart = 10;
 	fogEnd = 50;
-	fogColor = Color::CreateFromRGB(152,152,152);
+	fogColor = Color::CreateFromRGB(152, 152, 152);
 	skyColor = Color::CreateFromRGB(25, 25, 25);
 	skybox.reset();
 }
@@ -118,6 +129,23 @@ void Graphics::DrawAllDrawable()
 			Vector3 camPos = camera->GetTransform()->GetPosition();
 
 			camera->UpdateProjection();
+			shaderBenchmark->Start();
+			if (!Engine::UseOpenGLFixedFunctions)
+			{
+				/*Engine::shader->SetShaderCameraPosition();
+				Engine::shader->SetShaderProjection();
+				Engine::shader->SetShaderAttribut("ambientStrength", 0);
+				Engine::shader->SetShaderAttribut("material.ambient", Vector3(0, 0, 0));
+				Engine::shader->UpdateLights();
+
+				Engine::unlitShader->SetShaderCameraPosition();
+				Engine::unlitShader->SetShaderProjection();
+				Engine::unlitShader->SetShaderAttribut("ambientStrength", 1);
+				Engine::unlitShader->SetShaderAttribut("material.ambient", Vector3(1, 1, 1));*/
+			}
+
+			shaderBenchmark->Stop();
+
 			DrawSkybox(camPos);
 
 			Engine::renderer->SetFog(isFogEnabled);
@@ -125,12 +153,22 @@ void Graphics::DrawAllDrawable()
 			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
-				if (drawable->type != currentMode) 
+				if (drawable->type != currentMode)
 				{
 					currentMode = drawable->type;
-					if (currentMode == Draw_UI) 
+					if (currentMode == Draw_UI)
 					{
-						Engine::renderer->SetProjection2D(5, 0.03f, 100);
+						if (!Engine::UseOpenGLFixedFunctions)
+						{
+							//Engine::unlitMaterial->Use();
+							/*Engine::unlitShader->Use();
+							Engine::unlitShader->SetShaderCameraPositionCanvas();
+							Engine::unlitShader->SetShaderProjectionCanvas();*/
+						}
+						else
+						{
+							Engine::renderer->SetProjection2D(5, 0.03f, 100);
+						}
 					}
 				}
 				drawable->Draw();
@@ -146,10 +184,26 @@ void Graphics::DrawAllDrawable()
 					currentMode = Draw_3D;
 					camera->UpdateProjection();
 				}
+
 				Engine::renderer->ResetTransform();
 				Engine::renderer->SetCameraPosition(camera);
-				
+
+				Engine::renderer->BindBuffer(BufferType::Array_Buffer, 0);
+				Engine::renderer->BindBuffer(BufferType::Element_Array_Buffer, 0);
+
+				if (!Engine::UseOpenGLFixedFunctions)
+				{
+					Engine::renderer->UseShaderProgram(0);
+					Graphics::currentShader = nullptr;
+					Graphics::currentMaterial = nullptr;
+				}
+				Engine::renderer->SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
 				DrawEditorGrid(camPos);
+
+				if (!Engine::UseOpenGLFixedFunctions)
+				{
+					Engine::unlitMaterial->Use();
+				}
 
 				for (int i = 0; i < Engine::componentsCount; i++)
 				{
@@ -173,8 +227,8 @@ void Graphics::DrawAllDrawable()
 
 #if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	Engine::renderer->Clear();
 	Engine::renderer->SetClearColor(Color::CreateFromRGB(15, 16, 16));
+	Engine::renderer->Clear();
 #endif
 	Engine::renderer->EndFrame();
 }
@@ -184,7 +238,7 @@ bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr<IDr
 	const int priority1 = t1.lock()->GetDrawPriority();
 	const int priority2 = t2.lock()->GetDrawPriority();
 
-	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D) 
+	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D)
 	{
 		return false;
 	}
@@ -248,25 +302,50 @@ void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove)
 	}
 }
 
-void Graphics::DrawSkybox(Vector3 & cameraPosition)
+void Graphics::DrawSkybox(Vector3& cameraPosition)
 {
 	if (skybox)
 	{
 		Engine::renderer->SetFog(false);
 		float scaleF = 10.01f;
 		Vector3 scale = Vector3(scaleF);
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, false, false, false);
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, false, false, false);
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, false, false, false);
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, false, false, false);
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, false, false, false);
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, false, false, false);
+
+		RenderingSettings renderSettings = RenderingSettings();
+		renderSettings.invertFaces = false;
+		renderSettings.useBlend = false;
+		renderSettings.useDepth = false;
+		renderSettings.useTexture = true;
+		renderSettings.useLighting = false;
+
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, Engine::unlitMaterial);
 	}
 }
 
 void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 {
 	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+
+	/*glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);*/
 
 	int gridAxis = 0;
 	float distance;
@@ -349,8 +428,15 @@ void Graphics::DrawEditorTool(Vector3& cameraPosition)
 		float dist = Vector3::Distance(selectedGOPos, cameraPosition);
 		dist /= 40;
 		Vector3 scale = Vector3(dist);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, false, false, false);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, false, false, false);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, false, false, false);
+
+		RenderingSettings renderSettings = RenderingSettings();
+		renderSettings.invertFaces = false;
+		renderSettings.useBlend = false;
+		renderSettings.useDepth = false;
+		renderSettings.useTexture = true;
+		renderSettings.useLighting = false;
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, renderSettings, Engine::unlitMaterial);
 	}
 }

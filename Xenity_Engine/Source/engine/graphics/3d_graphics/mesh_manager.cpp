@@ -10,85 +10,134 @@
 #include <vitaGL.h>
 #endif
 
-ProfilerBenchmark *meshBenchmark = nullptr;
+ProfilerBenchmark* meshBenchmark = nullptr;
 ProfilerBenchmark* meshCameraBenchmark = nullptr;
 ProfilerBenchmark* meshTransformBenchmark = nullptr;
 ProfilerBenchmark* meshDrawBenchmark = nullptr;
 
 void MeshManager::Init()
 {
-    meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
-    meshCameraBenchmark = new ProfilerBenchmark("Mesh", "Camera update");
-    meshTransformBenchmark = new ProfilerBenchmark("Mesh", "Transform update");
-    meshDrawBenchmark = new ProfilerBenchmark("Mesh", "Draw");
-    Debug::Print("-------- Mesh Manager initiated --------");
+	meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
+	meshCameraBenchmark = new ProfilerBenchmark("Mesh", "Camera update");
+	meshTransformBenchmark = new ProfilerBenchmark("Mesh", "Transform update");
+	meshDrawBenchmark = new ProfilerBenchmark("Mesh", "Draw");
+	Debug::Print("-------- Mesh Manager initiated --------");
 }
 
 std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
 {
-    std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
-    mesh->file = FileSystem::MakeFile(path);
-    mesh->fileType = File_Mesh;
-    WavefrontLoader::LoadFromRawData(mesh);
-    return mesh;
+	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
+	mesh->file = FileSystem::MakeFile(path);
+	mesh->fileType = File_Mesh;
+	WavefrontLoader::LoadFromRawData(mesh);
+	return mesh;
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, bool useDepth, bool useBlend, bool useLighting)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, Material* material)
 {
-    //if (!meshData || (meshData->hasIndices && meshData->subMeshes[0]->index_count == 0) || (!meshData->hasIndices && meshData->subMeshes[0]->vertice_count == 0))
-    if (!meshData)
-        return;
+	if (!meshData)
+		return;
 
-    /*if (texture.size() || !texture->IsValid())
-    {
-        Debug::PrintError("[MeshManager::DrawMesh] Invalid texture");
-        return;
-    }*/
+	material->Use();
 
-    std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
-    if (!camera)
-        return;
+	if (!Engine::UseOpenGLFixedFunctions)
+		Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scale);
 
-    meshBenchmark->Start();
-    meshCameraBenchmark->Start();
+	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
+	if (!camera)
+		return;
+
+	meshBenchmark->Start();
+	meshCameraBenchmark->Start();
 #if defined(__PSP__)
-    if (Graphics::needUpdateCamera)
-    {
-        camera->UpdateProjection();
-        Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-        Graphics::needUpdateCamera = false;
-    }
+	if (Graphics::needUpdateCamera)
+	{
+		camera->UpdateProjection();
+		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+		Graphics::needUpdateCamera = false;
+	}
 #else
-    Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+	if (Engine::UseOpenGLFixedFunctions)
+		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 #endif
-    meshCameraBenchmark->Stop();
+	meshCameraBenchmark->Stop();
 
-    meshTransformBenchmark->Start();
-    Engine::renderer->SetTransform(position, rotation, scale, true);
-    meshTransformBenchmark->Stop();
+	meshTransformBenchmark->Start();
+	if (Engine::UseOpenGLFixedFunctions)
+		Engine::renderer->SetTransform(position, rotation, scale, true);
 
-    // Set draw settings
-    RenderingSettings renderSettings = RenderingSettings();
-    if (scale.x * scale.y * scale.z < 0)
-        renderSettings.invertFaces = true;
-    else
-        renderSettings.invertFaces = false;
+	meshTransformBenchmark->Stop();
 
-    renderSettings.useBlend = useBlend;
-    renderSettings.useDepth = useDepth;
-    renderSettings.useTexture = true;
-    renderSettings.useLighting = useLighting;
+	// Set draw settings
+	if (scale.x * scale.y * scale.z < 0)
+		renderSettings.invertFaces = !renderSettings.invertFaces;
 
-    meshDrawBenchmark->Start();
-    Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
-    meshDrawBenchmark->Stop();
+	meshDrawBenchmark->Start();
+	Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
+	meshDrawBenchmark->Stop();
 
-    meshBenchmark->Stop();
+	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, bool useDepth, bool useBlend, bool useLighting)
+void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std::shared_ptr<Texture>> textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, Material* material)
 {
-    std::vector< std::shared_ptr<Texture>> textures;
-    textures.push_back(texture);
-    DrawMesh(position, rotation, scale, textures, meshData, useDepth, useBlend, useLighting);
+	if (!meshData)
+		return;
+
+	if (!Engine::UseOpenGLFixedFunctions)
+		material->Use();
+
+	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
+	if (!camera)
+		return;
+
+	meshBenchmark->Start();
+	meshCameraBenchmark->Start();
+#if defined(__PSP__)
+	if (Graphics::needUpdateCamera)
+	{
+		camera->UpdateProjection();
+		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+		Graphics::needUpdateCamera = false;
+	}
+#else
+	if (!Engine::UseOpenGLFixedFunctions)
+	{
+		Graphics::currentShader->SetShaderModel(&transform->transformationMatrix);
+	}
+	else
+		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+
+#endif
+	meshCameraBenchmark->Stop();
+
+	meshTransformBenchmark->Start();
+	Vector3 scale = transform->GetScale();
+
+	if (Engine::UseOpenGLFixedFunctions)
+	{
+		Vector3 position = transform->GetPosition();
+		Vector3 rotation = transform->GetRotation();
+		//Engine::renderer->SetTransform(position, rotation, scale, true);
+		Engine::renderer->SetTransform(transform->transformationMatrix);
+	}
+
+	meshTransformBenchmark->Stop();
+	// Set draw settings
+
+	if (scale.x * scale.y * scale.z < 0)
+		renderSettings.invertFaces = !renderSettings.invertFaces;
+
+	meshDrawBenchmark->Start();
+	Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
+	meshDrawBenchmark->Stop();
+
+	meshBenchmark->Stop();
+}
+
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, Material* material)
+{
+	std::vector< std::shared_ptr<Texture>> textures;
+	textures.push_back(texture);
+	DrawMesh(position, rotation, scale, textures, meshData, renderSettings, material);
 }

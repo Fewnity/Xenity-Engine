@@ -11,10 +11,14 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <glm/glm.hpp>
 
 class MeshData;
 class Vector3;
 class Texture;
+class Transform;
+class RenderingSettings;
+class Material;
 
 class API MeshManager
 {
@@ -36,8 +40,9 @@ public:
 	* @param useBlend Use blend for drawing
 	* @param useLighting Use lighting for drawing
 	*/
-	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>>textures, std::shared_ptr < MeshData> meshData, bool useDepth, bool useBlend, bool useLighting);
-	
+	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>>textures, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, Material* material);
+	static void DrawMesh(std::shared_ptr<Transform> transform, std::vector< std::shared_ptr<Texture>>textures, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, Material* material);
+
 	/**
 	* Draw a mesh with a signem submesh
 	* @param position Mesh position
@@ -49,7 +54,7 @@ public:
 	* @param useBlend Is depth for drawing
 	* @param useLighting Is depth for drawing
 	*/
-	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr<Texture> texture, std::shared_ptr<MeshData> meshData, bool useDepth, bool useBlend, bool useLighting);
+	static void DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr<Texture> texture, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, Material* material);
 	
 	/**
 	* Load a mesh from a file path

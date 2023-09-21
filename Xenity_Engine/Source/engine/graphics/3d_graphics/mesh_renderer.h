@@ -13,6 +13,7 @@
 #include <memory>
 class MeshData;
 class Texture;
+class Material;
 
 class API MeshRenderer : public IDrawable
 {
@@ -25,7 +26,7 @@ public:
 
     std::shared_ptr <MeshData> meshData = nullptr;
     std::vector< std::shared_ptr<Texture>> textures;
-
+    Material* material;
 private:
     void Draw();
 };

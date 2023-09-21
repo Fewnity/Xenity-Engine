@@ -20,6 +20,10 @@
 #include <thread>
 #endif
 
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#include <glad/glad.h>
+#endif
+
 Texture::Texture()
 {
 }
@@ -392,8 +396,9 @@ void Texture::SetData(const unsigned char* texData)
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::renderer->CreateNewTexture();
 	Engine::renderer->BindTexture(GetThisShared());
-	unsigned int alpha = 0x1906;
-	Engine::renderer->SetTextureData(GetThisShared(), alpha, texData);
+	//unsigned int alpha = 0x1906;
+
+	Engine::renderer->SetTextureData(GetThisShared(), GL_LUMINANCE_ALPHA, texData);
 #endif
 }
 

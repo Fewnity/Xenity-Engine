@@ -19,6 +19,7 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #endif
 
 #include <memory>
+#include <glm/gtc/type_ptr.hpp>
 
 ProfilerBenchmark* applySettingsBenchmark = nullptr;
 ProfilerBenchmark* mesh2Benchmark = nullptr;
@@ -73,6 +74,20 @@ void RendererOpengl::Setup()
 	glFogf(GL_FOG_START, 0.0f);
 	glFogf(GL_FOG_END, 3.0f);*/
 	// glCullFace(GL_BACK);
+
+	if (!Engine::UseOpenGLFixedFunctions) 
+	{
+		Engine::shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
+		Engine::standardMaterial = new Material("Standard");
+		Engine::standardMaterial->shader = Engine::shader;
+		Engine::standardMaterial->useLighting = true;
+
+		Engine::unlitShader = new Shader("vertexUnlitStandard.shader", "fragmentUnlitStandard.shader");
+		Engine::unlitMaterial = new Material("Unlit Standard");
+		Engine::unlitMaterial->shader = Engine::unlitShader;
+		Engine::unlitMaterial->SetAttribut("material.ambient", Vector3(1, 1, 1));
+	}
+
 #endif
 }
 
@@ -223,18 +238,18 @@ void RendererOpengl::SetTransform(glm::mat4& mat)
 #if defined(__PSP__)
 	ScePspFMatrix4 matrix;
 	matrix.x.x = mat[0][0];
-	matrix.x.y = -mat[1][0];
+	matrix.x.y = mat[1][0];
 	matrix.x.z = -mat[2][0];
 	matrix.x.w = mat[3][0];
 
-	matrix.y.x = -mat[0][1];
+	matrix.y.x = mat[0][1];
 	matrix.y.y = mat[1][1];
-	matrix.y.z = -mat[2][1];
+	matrix.y.z = mat[2][1];
 	matrix.y.w = mat[3][1];
 
-	matrix.z.x = -mat[0][2];
-	matrix.z.y = -mat[1][2];
-	matrix.z.z = mat[2][2];
+	matrix.z.x = mat[0][2];
+	matrix.z.y = mat[1][2];
+	matrix.z.z = -mat[2][2];
 	matrix.z.w = mat[3][2];
 
 	matrix.w.x = mat[3][0];
@@ -244,6 +259,17 @@ void RendererOpengl::SetTransform(glm::mat4& mat)
 
 	sceGuSetMatrix(GU_MODEL, &matrix);
 #elif defined(__vita)
+	glMatrixMode(GL_MODELVIEW);
+	float mat2[4][4];
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			mat2[i][j] = mat[i][j];
+		}
+	}
+	glMultMatrixf((GLfloat*)mat2);
+#else
 	glMatrixMode(GL_MODELVIEW);
 	float mat2[4][4];
 	for (int i = 0; i < 4; i++)
@@ -289,8 +315,8 @@ void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
 #endif
 	ApplyTextureFilters(texture);
-	float borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 void RendererOpengl::ApplyTextureFilters(std::shared_ptr <Texture >texture)
@@ -335,7 +361,7 @@ void RendererOpengl::ApplyTextureFilters(std::shared_ptr <Texture >texture)
 #endif
 }
 
-void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vector< std::shared_ptr<Texture>> textures, RenderingSettings& settings)
+void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector< std::shared_ptr<Texture>> textures, RenderingSettings& settings)
 {
 	float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
 	float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
@@ -508,6 +534,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
 				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
+				return;
 			}
 			else
 			{
@@ -522,6 +549,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
 					glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
 					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
+					return;
 				}
 				else
 				{
@@ -530,8 +558,20 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 					//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
-					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
-					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
+					if (Engine::UseOpenGLFixedFunctions)
+					{
+						glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
+						glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
+					}
+					else
+					{
+						glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
+						glEnableVertexAttribArray(0);
+						glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
+						glEnableVertexAttribArray(1);
+						glEnableVertexAttribArray(2);
+					}
+					//glEnableVertexAttribArray(2);
 				}
 			}
 		}
@@ -546,6 +586,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 
 				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
 				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
+				//return;
 			}
 			else
 			{
@@ -554,10 +595,21 @@ void RendererOpengl::DrawMeshData(std::shared_ptr < MeshData> meshData, std::vec
 				//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
-
-				glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
-				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
-				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
+				if (Engine::UseOpenGLFixedFunctions)
+				{
+					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
+					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
+					glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
+				}
+				else
+				{
+					glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, x));
+					glEnableVertexAttribArray(0);
+					glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, u));
+					glEnableVertexAttribArray(1);
+					glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, normX));
+					glEnableVertexAttribArray(2);
+				}
 			}
 		}
 
@@ -597,6 +649,15 @@ void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSetti
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+
 	VertexNoColorNoUv ver[2];
 	ver[0].x = a.x;
 	ver[0].y = a.y;
@@ -607,11 +668,6 @@ void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSetti
 	ver[1].z = b.z;
 	int stride = sizeof(VertexNoColorNoUv);
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
 
 	RGBA vec4Color = color.GetRGBA();
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
@@ -855,7 +911,150 @@ void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
 #endif
 }
 
+unsigned int RendererOpengl::CreateShader(Shader::ShaderType type)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	int compileType = GetShaderTypeEnum(type);
+	return glCreateShader(compileType);
+#endif
+	return 0;
+}
 
+unsigned int RendererOpengl::CreateShaderProgram()
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	return glCreateProgram();
+#endif
+	return 0;
+}
+
+void RendererOpengl::CompileShader(unsigned int shaderId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glCompileShader(shaderId);
+#endif
+}
+
+int RendererOpengl::GetShaderCompilationResult(unsigned int shaderId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	GLint vResult;
+	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &vResult);
+	return (int)vResult;
+#endif
+	return 0;
+}
+
+std::vector<char> RendererOpengl::GetCompilationError(unsigned int shaderId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	int maxLength = 256;
+	std::vector<char> errorLog(maxLength);
+	glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
+	return errorLog;
+#endif
+	return std::vector<char>();
+}
+
+void RendererOpengl::SetShaderData(unsigned int shaderId, const char* data)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glShaderSource(shaderId, 1, &data, NULL);
+#endif
+}
+
+void RendererOpengl::DeleteShader(unsigned int shaderId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glDeleteShader(shaderId);
+#endif
+}
+
+void RendererOpengl::DeleteShaderProgram(unsigned int programId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glDeleteProgram(programId);
+#endif
+}
+
+void RendererOpengl::LinkShaderProgram(unsigned int programId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glLinkProgram(programId);
+#endif
+}
+
+void RendererOpengl::UseShaderProgram(unsigned int programId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUseProgram(programId);
+#endif
+}
+
+unsigned int RendererOpengl::GetShaderUniformLocation(unsigned int programId, const char* name)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	return glGetUniformLocation(programId, name);
+#endif
+	return 0;
+}
+
+void RendererOpengl::AttachShader(unsigned int programId, unsigned int shaderId)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glAttachShader(programId, shaderId);
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniform4f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z, value.w);
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniform3f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z);
+#endif
+
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniform2f(GetShaderUniformLocation(programId, attribut), value.x, value.y);
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const float value)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniform1f(GetShaderUniformLocation(programId, attribut), value);
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const int value)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniform1i(GetShaderUniformLocation(programId, attribut), value);
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniformMatrix4fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
+#endif
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	glUniformMatrix3fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
+#endif
+}
 
 int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 {
@@ -968,26 +1167,31 @@ int RendererOpengl::GetWrapModeEnum(Texture::WrapMode wrapMode)
 // 	return anisotropicValue;
 // }
 
-// int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
-// {
-// 	int compileType = GL_VERTEX_SHADER;
-// 	switch (shaderType)
-// 	{
-// 	case Shader::Vertex_Shader:
-// 		compileType = GL_VERTEX_SHADER;
-// 		break;
-// 	case Shader::Fragment_Shader:
-// 		compileType = GL_FRAGMENT_SHADER;
-// 		break;
-// 	case Shader::Tessellation_Control_Shader:
-// 		compileType = GL_TESS_CONTROL_SHADER;
-// 		break;
-// 	case Shader::Tessellation_Evaluation_Shader:
-// 		compileType = GL_TESS_EVALUATION_SHADER;
-// 		break;
-// 	}
-// 	return compileType;
-// }
+int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+	int compileType = GL_VERTEX_SHADER;
+	switch (shaderType)
+	{
+	case Shader::Vertex_Shader:
+		compileType = GL_VERTEX_SHADER;
+		break;
+	case Shader::Fragment_Shader:
+		compileType = GL_FRAGMENT_SHADER;
+		break;
+#if !defined(__vita__)
+	case Shader::Tessellation_Control_Shader:
+		compileType = GL_TESS_CONTROL_SHADER;
+		break;
+	case Shader::Tessellation_Evaluation_Shader:
+		compileType = GL_TESS_EVALUATION_SHADER;
+		break;
+#endif
+	}
+	return compileType;
+#endif
+	return 0;
+}
 
 // int RendererOpengl::GetDrawModeEnum(DrawMode drawMode)
 // {

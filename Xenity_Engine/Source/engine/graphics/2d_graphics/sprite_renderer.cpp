@@ -48,7 +48,7 @@ void SpriteRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			auto transform = GetTransform();
-			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), texture, color, transform);
+			SpriteManager::DrawSprite(transform, texture, color);
 		}
 	}
 }

@@ -17,7 +17,7 @@ class IDrawable;
 class Light;
 class FileReference;
 class Reflection;
-// class Material;
+ class Material;
 // class MeshData;
 
 class API AssetManager
@@ -27,7 +27,7 @@ public:
 	// static void ResetMaterialsUpdates();
 
 	// static void AddShader(Shader *shader);
-	// static void AddMaterial(Material *material);
+	 static void AddMaterial(Material *material);
 	static void AddReflection(Reflection* reflection);
 	static void AddFileReference(std::shared_ptr <FileReference> fileReference);
 	static void AddDrawable(std::weak_ptr<IDrawable> drawable);
@@ -35,7 +35,7 @@ public:
 	// static void AddMeshData(MeshData *meshData);
 
 	// static void RemoveShader(Shader *shader);
-	// static void RemoveMaterial(Material *material);
+	 static void RemoveMaterial(Material *material);
 	static void RemoveReflection(Reflection* reflection);
 	static void RemoveAllFileReferences();
 	static void RemoveFileReference(std::shared_ptr <FileReference> fileReference);
@@ -45,7 +45,7 @@ public:
 	// static void RemoveMeshData(MeshData *meshData);
 
 	// static Shader *GetShader(const int index);
-	// static Material *GetMaterial(const int index);
+	 static Material *GetMaterial(const int index);
 	static Reflection* GetReflection(const int index);
 	static std::shared_ptr<FileReference> GetFileReference(const int index);
 	// static Material *GetMaterialByName(const std::string name);
@@ -55,7 +55,7 @@ public:
 	// static MeshData *GetMeshData(const std::string path);
 
 	// static int GetShaderCount();
-	// static int GetMaterialCount();
+	 static int GetMaterialCount();
 	static int GetReflectionCount();
 	static int GetFileReferenceCount();
 	static int GetDrawableCount();
@@ -69,7 +69,7 @@ public:
 	static std::shared_ptr <Texture> defaultTexture;
 private:
 	// static int shaderCount;
-	// static int materialCount;
+	 static int materialCount;
 	static int reflectionCount;
 	static int fileReferenceCount;
 	static int drawableCount;
@@ -77,7 +77,7 @@ private:
 	// static int meshDataCount;
 
 	// static std::vector<Shader *> shaders;
-	// static std::vector<Material *> materials;
+	 static std::vector<Material *> materials;
 	static std::vector<Reflection*> reflections;
 	static std::vector<std::shared_ptr<FileReference>> fileReferences;
 	static std::vector<std::weak_ptr<IDrawable>> drawables;

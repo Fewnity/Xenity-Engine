@@ -14,6 +14,7 @@
 #include <vector>
 #include "../../lighting/lighting.h"
 #include <memory>
+#include "../shader.h"
 
 class Color;
 class Vector4;
@@ -99,6 +100,29 @@ public:
 	virtual void BindBuffer(BufferType type, unsigned int bufferId) = 0;
 	virtual void DeleteBuffer(unsigned int bufferId) = 0;
 	virtual void UploadMeshData(std::shared_ptr<MeshData> meshData) = 0;
+
+	//Shader
+	virtual unsigned int CreateShader(Shader::ShaderType type) = 0;
+	virtual unsigned int CreateShaderProgram() = 0;
+	virtual void CompileShader(unsigned int shaderId) = 0;
+	virtual int GetShaderCompilationResult(unsigned int shaderId) = 0;
+	virtual std::vector<char> GetCompilationError(unsigned int shaderId) = 0;
+	virtual void SetShaderData(unsigned int shaderId, const char* data) = 0;
+	virtual void DeleteShader(unsigned int shaderId) = 0;
+	virtual void DeleteShaderProgram(unsigned int programId) = 0;
+	virtual void LinkShaderProgram(unsigned int programId) = 0;
+
+	virtual void UseShaderProgram(unsigned int programId) = 0;
+	virtual unsigned int GetShaderUniformLocation(unsigned int programId, const char* name) = 0;
+	virtual void AttachShader(unsigned int programId, unsigned int shaderId) = 0;
+
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const float value) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) = 0;
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) = 0;
 
 private:
 	virtual void Setlights(std::weak_ptr<Camera> camera) = 0;

@@ -88,7 +88,7 @@ bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
 
     int atlasSize = 512;
     // int atlasSize = 256;
-    int channelCount = 1;
+    int channelCount = 2;
 #ifdef __PSP__
     channelCount = 4;
 #endif
@@ -146,7 +146,9 @@ bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
                         atlas[atlasOffset + 2] = 255;
                         atlas[atlasOffset + 3] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 #else
-                        atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+                        //atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+                        atlas[atlasOffset] = 255;
+                        atlas[atlasOffset+1] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 #endif
                     }
                 }

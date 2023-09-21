@@ -48,6 +48,30 @@ public:
 
 	void UploadMeshData(std::shared_ptr<MeshData> meshData);
 
+	//Shader
+	unsigned int CreateShader(Shader::ShaderType type);
+	unsigned int CreateShaderProgram();
+	void CompileShader(unsigned int shaderId);
+	int GetShaderCompilationResult(unsigned int shaderId);
+	std::vector<char> GetCompilationError(unsigned int shaderId);
+	void SetShaderData(unsigned int shaderId, const char* data);
+	void DeleteShader(unsigned int shaderId);
+	void DeleteShaderProgram(unsigned int programId);
+	void LinkShaderProgram(unsigned int programId);
+
+	void UseShaderProgram(unsigned int programId);
+	unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
+	void AttachShader(unsigned int programId, unsigned int shaderId);
+
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const float value);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans);
+
+
 private:
 	int GetBufferTypeEnum(BufferType bufferType);
 	// int GetBufferModeEnum(BufferMode bufferMode);
@@ -62,6 +86,6 @@ private:
 	Color fogColor;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
-	// int GetShaderTypeEnum(Shader::ShaderType shaderType);
+	int GetShaderTypeEnum(Shader::ShaderType shaderType);
 	// int GetDrawModeEnum(DrawMode drawMode);
 };

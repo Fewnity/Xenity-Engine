@@ -1,0 +1,406 @@
+#define _USE_MATH_DEFINES
+#if defined(__PSP__) || defined(__vita__)
+#undef __STRICT_ANSI__
+#endif
+#include <cmath>
+
+#include "shader.h"
+#include "../../xenity.h"
+#include "../graphics/renderer/renderer.h"
+
+#include <iostream>
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#pragma region Constructors / Destructor
+
+/// <summary>
+/// Instantiate shader from files
+/// </summary>
+/// <param name="vertexShaderPath">Vertex shader file path</param>
+/// <param name="fragmentShaderPath">Fragment shader file path</param>
+Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath)
+{
+	LoadShader(vertexShaderPath, Vertex_Shader);
+	LoadShader(fragmentShaderPath, Fragment_Shader);
+	MakeShader();
+}
+
+Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath)
+{
+	useTessellation = true;
+	LoadShader(vertexShaderPath, Vertex_Shader);
+	LoadShader(tessellationShaderPath, Tessellation_Control_Shader);
+	LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+	LoadShader(fragmentShaderPath, Fragment_Shader);
+	MakeShader();
+}
+
+/// <summary>
+/// Shader destructor
+/// </summary>
+Shader::~Shader()
+{
+	Engine::renderer->DeleteShader(vertexShaderId);
+	Engine::renderer->DeleteShader(fragmentShaderId);
+
+	if (useTessellation)
+	{
+		Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+		Engine::renderer->DeleteShader(fragmentShaderId);
+	}
+	Engine::renderer->DeleteShaderProgram(programId);
+}
+
+#pragma endregion
+
+#pragma region Getters
+
+unsigned int Shader::GetProgramId()
+{
+	return this->programId;
+}
+
+#pragma endregion
+
+unsigned int usedShaderProgram = 0;
+
+/// <summary>
+/// Use shader
+/// </summary>
+bool Shader::Use()
+{
+	if (Graphics::currentShader != this)
+	{
+		Engine::renderer->UseShaderProgram(programId);
+		Graphics::currentShader = this;
+		return true;
+	}
+	return false;
+}
+
+#pragma region Data loading
+
+void Shader::LoadShader(const std::string filePath, ShaderType type)
+{
+	std::string path = "shaders\\" + filePath;
+	//Get file data
+	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	file->Open(false);
+	std::string shaderData = file->ReadAll();
+	file->Close();
+	const char* shaderDataConst = shaderData.c_str();
+
+	unsigned int* id = nullptr;
+
+	switch (type)
+	{
+	case Shader::Vertex_Shader:
+		id = &vertexShaderId;
+		break;
+	case Shader::Fragment_Shader:
+		id = &fragmentShaderId;
+		break;
+	case Shader::Tessellation_Control_Shader:
+		id = &tessellationShaderId;
+		break;
+	case Shader::Tessellation_Evaluation_Shader:
+		id = &tessellationEvaluationShaderId;
+		break;
+	}
+
+	if (id != nullptr)
+	{
+		//Compile
+		*id = Engine::renderer->CreateShader(type);
+		Engine::renderer->SetShaderData(*id, shaderDataConst);
+		Engine::renderer->CompileShader(*id);
+
+		int vResult = Engine::renderer->GetShaderCompilationResult(*id);
+
+		//On error
+		if (vResult == 0)
+		{
+			std::vector<char> errorLog = Engine::renderer->GetCompilationError(*id);
+
+			std::string shaderError = "Compilation error: ";
+			switch (type)
+			{
+			case Shader::Vertex_Shader:
+				shaderError += "Vertex";
+				break;
+			case Shader::Fragment_Shader:
+				shaderError += "Fragment";
+				break;
+			case Shader::Tessellation_Control_Shader:
+				shaderError += "Tessellation control";
+				break;
+			case Shader::Tessellation_Evaluation_Shader:
+				shaderError += "Tessellation evaluation";
+				break;
+			}
+
+			shaderError += " shader: ";
+			for (int i = 0; i < errorLog.size(); i++)
+			{
+				shaderError += errorLog[i];
+			}
+
+			shaderError += ". File path: " + path;
+			Debug::Print(shaderError);
+		}
+	}
+	else
+	{
+		std::string shaderError = "Compilation error: Shader type not found. File path: " + path;
+		Debug::Print(shaderError);
+	}
+}
+
+#pragma endregion
+
+#pragma region Uniform setters
+
+/// <summary>
+/// Send to the shader the 3D camera position
+/// </summary>
+void Shader::SetShaderCameraPosition()
+{
+	Use();
+	//Camera position
+	if (Graphics::usedCamera.lock() != nullptr)
+	{
+		Vector3 lookDirection = Graphics::usedCamera.lock()->GetTransform()->GetForward();
+
+		lookDirection = lookDirection + Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+
+		float xAngle = Graphics::usedCamera.lock()->GetTransform()->GetRotation().x;
+		while (xAngle < -90)
+		{
+			xAngle += 360;
+		}
+		while (xAngle > 360 - 90)
+		{
+			xAngle -= 360;
+		}
+
+		glm::mat4 camera;
+		if (xAngle > 90 || xAngle < -90)
+			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera.lock()->GetTransform()->GetPosition().x, Graphics::usedCamera.lock()->GetTransform()->GetPosition().y, Graphics::usedCamera.lock()->GetTransform()->GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
+		else
+			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera.lock()->GetTransform()->GetPosition().x, Graphics::usedCamera.lock()->GetTransform()->GetPosition().y, Graphics::usedCamera.lock()->GetTransform()->GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
+
+		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
+	}
+}
+
+/// <summary>
+/// Send to the shader the 2D camera position
+/// </summary>
+void Shader::SetShaderCameraPositionCanvas()
+{
+	Use();
+	//Camera position
+	glm::mat4 camera = glm::mat4(1.0f);
+	camera = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+
+	Engine::renderer->SetShaderAttribut(programId, "camera", camera);
+}
+
+/// <summary>
+/// Send to the shader the 2D camera projection
+/// </summary>
+void Shader::SetShaderProjection()
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetProjection());
+}
+
+void Shader::SetShaderProjectionCanvas()
+{
+	Use();
+	float size = 5;
+	float halfAspect = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * size / 5.0f;
+	float halfOne = 0.5f * 10 * size / 5.0f;
+	glm::mat4 projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
+	Engine::renderer->SetShaderAttribut(programId, "projection", projection);
+}
+
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
+void Shader::SetShaderModel(const glm::mat4* trans)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, "model", *trans);
+}
+
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
+void Shader::SetShaderModel(const Vector3 position, const Vector3 rotation, const Vector3 scale)
+{
+	Use();
+	glm::mat4 transformationMatrix = glm::mat4(1.0f);
+	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
+
+	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+	Engine::renderer->SetShaderAttribut(programId, "model", transformationMatrix);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const Vector4& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const Vector3& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const Vector2& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const float& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
+void Shader::SetShaderAttribut(const char* attribut, const int& value)
+{
+	Use();
+	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+}
+
+
+void Shader::MakeShader()
+{
+	programId = Engine::renderer->CreateShaderProgram();
+	Engine::renderer->AttachShader(programId, vertexShaderId);
+
+	if (useTessellation)
+	{
+		Engine::renderer->AttachShader(programId, tessellationShaderId);
+		Engine::renderer->AttachShader(programId, tessellationEvaluationShaderId);
+	}
+	Engine::renderer->AttachShader(programId, fragmentShaderId);
+
+	Engine::renderer->LinkShaderProgram(programId);
+	Engine::renderer->UseShaderProgram(programId);
+
+	modelLocation = Engine::renderer->GetShaderUniformLocation(programId, "model");
+	projectionLocation = Engine::renderer->GetShaderUniformLocation(programId, "projection");
+}
+
+/// <summary>
+/// Send to the shader the point light data
+/// </summary>
+/// <param name="light">Point light</param>
+/// <param name="index">Shader's point light index</param>
+void Shader::SetPointLightData(std::shared_ptr<Light> light, const int index)
+{
+	std::string baseString = "pointLights[" + std::to_string(index) + "].";
+
+	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+	Vector3 pos = light->GetTransform()->GetPosition();
+	pos.x = -pos.x;
+	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->intensity);
+	SetShaderAttribut((baseString + "position").c_str(), pos);
+	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
+	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
+}
+
+/// <summary>
+/// Send to the shader the directional light data
+/// </summary>
+/// <param name="light">Directional light</param>
+/// <param name="index">Shader's directional light index</param>
+void Shader::SetDirectionalLightData(std::shared_ptr<Light> light, const int index)
+{
+	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
+
+	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+
+	SetShaderAttribut((baseString + "color").c_str(), light->intensity * lightColor);
+	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
+}
+
+/// <summary>
+/// Send to the shader the spot light data
+/// </summary>
+/// <param name="light">Spot light</param>
+/// <param name="index">Shader's spot light index</param>
+void Shader::SetSpotLightData(std::shared_ptr<Light> light, const int index)
+{
+	std::string baseString = "spotLights[" + std::to_string(index) + "].";
+	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+
+	Vector3 pos = light->GetTransform()->GetPosition();
+	pos.x = -pos.x;
+
+	SetShaderAttribut((baseString + "color").c_str(), light->intensity * lightColor);
+	SetShaderAttribut((baseString + "position").c_str(), pos);
+	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
+	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
+	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
+	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
+	SetShaderAttribut((baseString + "outerCutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle())));
+}
+
+/// <summary>
+/// Send lights data to the shader
+/// </summary>
+void Shader::UpdateLights()
+{
+	int lightCount = AssetManager::GetLightCount();
+	int directionalUsed = 0;
+	int pointUsed = 0;
+	int spotUsed = 0;
+
+	//For each lights
+	for (int lightI = 0; lightI < lightCount; lightI++)
+	{
+		std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
+		if (light->type == Light::Directional)
+		{
+			SetDirectionalLightData(light, directionalUsed);
+			directionalUsed++;
+		}
+		else if (light->type == Light::Point)
+		{
+			SetPointLightData(light, pointUsed);
+			pointUsed++;
+		}
+		else if (light->type == Light::Spot)
+		{
+			SetSpotLightData(light, spotUsed);
+			spotUsed++;
+		}
+	}
+	//SetShaderAttribut("usedPointLightCount", 0);
+	//SetShaderAttribut("usedSpotLightCount", 0);
+	//SetShaderAttribut("usedDirectionalLightCount", 0);
+	SetShaderAttribut("usedPointLightCount", pointUsed);
+	SetShaderAttribut("usedSpotLightCount", spotUsed);
+	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
+}
+
+#pragma endregion

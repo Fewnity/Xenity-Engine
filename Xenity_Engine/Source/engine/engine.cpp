@@ -69,8 +69,18 @@ bool Engine::isRunning = true;
 GameInterface* Engine::game = nullptr;
 GameState Engine::gameState = Stopped;
 
+Shader* Engine::shader = nullptr;
+Shader* Engine::unlitShader = nullptr;
+Material* Engine::standardMaterial = nullptr;
+Material* Engine::unlitMaterial = nullptr;
+
+bool Engine::UseOpenGLFixedFunctions = false;
+
 int Engine::Init()
 {
+#if defined(__PSP__)
+	UseOpenGLFixedFunctions = true;
+#endif
 	// Init random
 	srand((unsigned int)time(NULL));
 

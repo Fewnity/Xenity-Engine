@@ -108,7 +108,7 @@ void Light::OnDrawGizmos()
 	Color newColor = color;
 	RGBA rgba = newColor.GetRGBA();
 	newColor.SetFromRGBAfloat(rgba.r, rgba.g, rgba.b, alpha);
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Light], newColor, transform);
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Light], newColor);
 #endif
 }
 

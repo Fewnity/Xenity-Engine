@@ -13,6 +13,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 --- To do quick:
+Check Setlights(camera);
+Change Opened scene on save
+Texture filter system
+Fix psp set transform with matrix
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

@@ -1,5 +1,6 @@
 #include "mesh_renderer.h"
 #include "../../../xenity.h"
+#include "../renderer/renderer.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ MeshRenderer::MeshRenderer()
 	componentName = "MeshRenderer";
 	type = Draw_3D;
 	AssetManager::AddReflection(this);
+	material = Engine::standardMaterial;
 	//SetReflection();
 }
 
@@ -49,9 +51,13 @@ void MeshRenderer::Draw()
 	{
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
-			auto transform = GetTransform();
-
-			MeshManager::DrawMesh(transform->GetPosition(), transform->GetRotation(), transform->GetScale(), textures, meshData, true, false, true);
+			RenderingSettings renderSettings = RenderingSettings();
+			renderSettings.invertFaces = false;
+			renderSettings.useBlend = false;
+			renderSettings.useDepth = true;
+			renderSettings.useTexture = true;
+			renderSettings.useLighting = true;
+			MeshManager::DrawMesh(GetTransform(), textures, meshData, renderSettings, material);
 		}
 	}
 }

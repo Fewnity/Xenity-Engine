@@ -22,6 +22,8 @@ class GameInterface;
 class FileReference;
 class ProjectDirectory;
 class Texture;
+class Shader;
+class Material;
 
 /**
 * Destroy a gameObject
@@ -180,6 +182,12 @@ public:
 	static bool canUpdateAudio;
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
 	static std::mutex threadLoadingMutex;
+	static Shader* shader;
+	static Shader* unlitShader;
+	static Material* standardMaterial;
+	static Material* unlitMaterial;
+
+	static bool UseOpenGLFixedFunctions;
 
 	/**
 	* Destroy a component

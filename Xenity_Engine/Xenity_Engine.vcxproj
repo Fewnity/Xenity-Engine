@@ -167,6 +167,8 @@
     <ClCompile Include="Source\editor\ui\editor_ui_map.cpp" />
     <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\billboard_renderer.cpp" />
+    <ClCompile Include="Source\engine\graphics\material.cpp" />
+    <ClCompile Include="Source\engine\graphics\shader.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp" />
@@ -299,6 +301,8 @@
   <ItemGroup>
     <ClInclude Include="Source\editor\gizmo.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\billboard_renderer.h" />
+    <ClInclude Include="Source\engine\graphics\material.h" />
+    <ClInclude Include="Source\engine\graphics\shader.h" />
     <ClInclude Include="Source\engine\graphics\ui\font.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />
     <ClInclude Include="Source\editor\ui\menus\lighting_menu.h" />

@@ -217,9 +217,6 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
 
-	newSubMesh->VBO = Engine::renderer->CreateBuffer();
-	newSubMesh->EBO = Engine::renderer->CreateBuffer();
-
 #ifdef __PSP__
 	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
 #else
@@ -251,24 +248,16 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (!hasNormal) 
 	{
 		if (!hasUv)
-		{
 			newSubMesh->data = (VertexNoColorNoUv*)malloc(sizeof(VertexNoColorNoUv) * vcount);
-		}
 		else
-		{
 			newSubMesh->data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
-		}
 	}
 	else
 	{
 		if (!hasUv)
-		{
 			newSubMesh->data = (VertexNormalsNoColorNoUv*)malloc(sizeof(VertexNormalsNoColorNoUv) * vcount);
-		}
 		else
-		{
 			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
-		}
 	}
 
 #endif
@@ -277,11 +266,13 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		Debug::PrintWarning("No memory for Vertex");
 		return;
 	}
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 
 	subMeshes.push_back(newSubMesh);
 	subMeshCount++;
 
+	newSubMesh->VBO = Engine::renderer->CreateBuffer();
+	newSubMesh->EBO = Engine::renderer->CreateBuffer();
 }
