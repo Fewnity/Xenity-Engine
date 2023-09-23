@@ -54,7 +54,6 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
 		Engine::renderer->SetTransform(pos, rot, scl, true);
 	else
 		Graphics::currentShader->SetShaderModel(pos, rot, scl);
-		//Graphics::currentShader->SetShaderModel(pos, rot, scl);
 }
 
 std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, std::shared_ptr<Font> font)
@@ -138,9 +137,8 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 	return mesh;
 }
 
-void TextManager::DrawText(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font)
+void TextManager::DrawText(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material)
 {
-	//return;
 	if (!font)
 		return;
 
@@ -152,6 +150,9 @@ void TextManager::DrawText(std::string& text, TextInfo* textInfo, HorizontalAlig
 
 	if (auto cameraLock = Graphics::usedCamera.lock())
 	{
+		if (!Engine::UseOpenGLFixedFunctions)
+			material->Use();
+
 		textBenchmark->Start();
 
 		// Set projection

@@ -35,6 +35,8 @@ enum IconName
 	Icon_Audio_Source,
 	Icon_Light,
 	Icon_Camera,
+	Icon_Material,
+	Icon_Shader,
 	Icon_Count,
 };
 

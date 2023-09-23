@@ -267,6 +267,14 @@ FileType ProjectManager::GetFileType(std::string extension)
 	{
 		fileType = File_Font;
 	}
+	else if (extension == ".mat") //If the file is a font
+	{
+		fileType = File_Material;
+	}
+	else if (extension == ".shader") //If the file is a font
+	{
+		fileType = File_Shader;
+	}
 
 	return fileType;
 }
@@ -494,6 +502,12 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(std::string pa
 		break;
 	case File_Font:
 		fileRef = Font::MakeFont();
+		break;
+	case File_Material:
+		fileRef = Material::MakeMaterial();
+		break;
+	case File_Shader:
+		fileRef = Shader::MakeShader();
 		break;
 	}
 

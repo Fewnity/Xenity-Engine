@@ -26,7 +26,7 @@ public:
 
     std::shared_ptr <MeshData> meshData = nullptr;
     std::vector< std::shared_ptr<Texture>> textures;
-    Material* material;
+    std::shared_ptr <Material> material;
 private:
     void Draw();
 };

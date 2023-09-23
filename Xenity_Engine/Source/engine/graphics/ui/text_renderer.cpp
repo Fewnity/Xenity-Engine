@@ -11,19 +11,15 @@ TextRenderer::TextRenderer()
 	type = Draw_3D;
 
 	AssetManager::AddReflection(this);
-	//SetReflection();
+	material = Engine::standardMaterial;
 }
-
-/*void TextRenderer::SetReflection()
-{
-	reflectedVariables["text"] = &text;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> TextRenderer::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, text, "text", true);
 	Reflection::AddReflectionVariable(reflectedVariables, font, "font", true);
+	Reflection::AddReflectionVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
 }
 
@@ -31,13 +27,6 @@ void TextRenderer::OnReflectionUpdated()
 {
 	isTextInfoDirty = true;
 }
-
-// TextRenderer::TextRenderer(Font *font, float size, Shader *shader)
-// {
-// 	this->font = font;
-// 	this->size = size;
-// 	this->shader = shader;
-// }
 
 TextRenderer::~TextRenderer()
 {
@@ -86,6 +75,6 @@ void TextRenderer::Draw()
 			mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font);
 			isTextInfoDirty = false;
 		}
-		TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font);
+		TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
 	}
 }

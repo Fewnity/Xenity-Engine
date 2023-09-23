@@ -36,7 +36,7 @@ public:
 	float characterSpacing = 0;
 	int GetDrawPriority() const;
 
-	// Shader *shader = nullptr;
+	std::shared_ptr<Material> material = nullptr;
 	HorizontalAlignment horizontalAlignment = H_Center;
 	VerticalAlignment verticalAlignment = V_Center;
 

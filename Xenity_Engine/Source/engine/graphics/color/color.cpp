@@ -14,13 +14,7 @@
 
 Color::Color()
 {
-	//SetReflection();
 }
-
-/*void Color::SetReflection()
-{
-	reflectedVariables["rgba"] = rgba;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> Color::GetReflection()
 {
@@ -102,14 +96,6 @@ RGBA Color::GetRGBA()
 {
 	return rgba;
 }
-
-/*void RGBA::SetReflection()
-{
-	reflectedVariables["r"] = r;
-	reflectedVariables["g"] = g;
-	reflectedVariables["b"] = b;
-	reflectedVariables["a"] = a;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
 {

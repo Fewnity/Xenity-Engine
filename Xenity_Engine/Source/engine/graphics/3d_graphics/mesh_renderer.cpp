@@ -15,20 +15,14 @@ MeshRenderer::MeshRenderer()
 	type = Draw_3D;
 	AssetManager::AddReflection(this);
 	material = Engine::standardMaterial;
-	//SetReflection();
 }
-
-/*void MeshRenderer::SetReflection()
-{
-	reflectedVariables["meshData"] = &meshData;
-	reflectedVariables["texture"] = &texture;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> MeshRenderer::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
 	Reflection::AddReflectionVariable(reflectedVariables, meshData, "meshData", true);
 	Reflection::AddReflectionVariable(reflectedVariables, textures, "textures", true);
+	Reflection::AddReflectionVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
 }
 

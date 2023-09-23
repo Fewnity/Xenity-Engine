@@ -6,10 +6,13 @@
 #include "../vectors/vector4.h"
 #include "texture.h"
 #include <glm/glm.hpp>
+#include "../file_system/file_reference.h"
+#include "../reflection/reflection.h"
+#include <memory>
 
 class Light;
 
-class Shader
+class Shader : public FileReference, public Reflection
 {
 public:
 	enum ShaderType 
@@ -19,10 +22,14 @@ public:
 		Tessellation_Control_Shader,
 		Tessellation_Evaluation_Shader,
 	};
-	Shader() = delete;
-	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath);
-	Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath);
+
+	Shader();
 	~Shader();
+
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+
+	void LoadFileReference();
 
 	unsigned int GetProgramId();
 	bool Use();
@@ -42,8 +49,10 @@ public:
 	void UpdateLights();
 	bool useTessellation = false;
 
+	static std::shared_ptr<Shader> MakeShader();
+
 private:
-	void MakeShader();
+	void BuildShader();
 	void LoadShader(const std::string filePath, ShaderType type);
 	void SetPointLightData(std::shared_ptr<Light> light, const int index);
 	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);

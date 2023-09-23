@@ -58,7 +58,6 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
-	//SetReflection();
 }
 
 GameObject::GameObject(std::string name)
@@ -67,14 +66,7 @@ GameObject::GameObject(std::string name)
 		this->name = name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
-	//SetReflection();
 }
-
-/*void GameObject::SetReflection()
-{
-	reflectedVariables["name"] = &name;
-	reflectedVariables["active"] = &active;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> GameObject::GetReflection()
 {

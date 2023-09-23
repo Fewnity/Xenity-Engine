@@ -29,7 +29,6 @@
 Camera::Camera()
 {
 	componentName = "Camera";
-	//SetReflection();
 
 	this->fov = 60;
 	UpdateProjection();
@@ -41,14 +40,6 @@ Camera::Camera()
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
 	AssetManager::AddReflection(this);
 }
-
-/*void Camera::SetReflection()
-{
-	reflectedVariables["fov"] = &fov;
-	reflectedVariables["projectionSize"] = &projectionSize;
-	reflectedVariables["nearClippingPlane"] = &nearClippingPlane;
-	reflectedVariables["farClippingPlane"] = &farClippingPlane;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
 {
@@ -284,7 +275,7 @@ void Camera::OnDrawGizmos()
 	if (distance <= 1.3f)
 		alpha = distance - 0.3f;
 
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBAFloat(1, 1, 1, alpha));
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBAFloat(1, 1, 1, alpha), Engine::unlitMaterial);
 
 	if (Engine::selectedGameObject.lock() && Engine::selectedGameObject.lock() == GetGameObject())
 	{

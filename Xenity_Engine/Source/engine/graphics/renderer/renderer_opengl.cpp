@@ -77,15 +77,27 @@ void RendererOpengl::Setup()
 
 	if (!Engine::UseOpenGLFixedFunctions) 
 	{
-		Engine::shader = new Shader("vertexStandard.shader", "fragmentStandard.shader");
-		Engine::standardMaterial = new Material("Standard");
+		Engine::shader = Shader::MakeShader();
+		Engine::shader->file = FileSystem::MakeFile("shaders/standard.shader");
+
+		Engine::unlitShader = Shader::MakeShader();
+		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
+
+		Engine::standardMaterial = Material::MakeMaterial();
+		Engine::standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
 		Engine::standardMaterial->shader = Engine::shader;
 		Engine::standardMaterial->useLighting = true;
 
-		Engine::unlitShader = new Shader("vertexUnlitStandard.shader", "fragmentUnlitStandard.shader");
-		Engine::unlitMaterial = new Material("Unlit Standard");
+		Engine::unlitMaterial = Material::MakeMaterial();
+		Engine::unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
 		Engine::unlitMaterial->shader = Engine::unlitShader;
-		Engine::unlitMaterial->SetAttribut("material.ambient", Vector3(1, 1, 1));
+		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
+
+		Engine::shader->LoadFileReference();
+		Engine::unlitShader->LoadFileReference();
+
+		Engine::standardMaterial->LoadFileReference();
+		Engine::unlitMaterial->LoadFileReference();
 	}
 
 #endif
@@ -258,17 +270,6 @@ void RendererOpengl::SetTransform(glm::mat4& mat)
 	matrix.w.w = mat[3][3];
 
 	sceGuSetMatrix(GU_MODEL, &matrix);
-#elif defined(__vita)
-	glMatrixMode(GL_MODELVIEW);
-	float mat2[4][4];
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			mat2[i][j] = mat[i][j];
-		}
-	}
-	glMultMatrixf((GLfloat*)mat2);
 #else
 	glMatrixMode(GL_MODELVIEW);
 	float mat2[4][4];

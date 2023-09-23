@@ -16,6 +16,7 @@ enum FileType
 	File_Skybox,
 	File_Font,
 	File_Material,
+	File_Shader,
 };
 
 class FileReference : public std::enable_shared_from_this<FileReference>

@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include "../vectors/vector2_int.h"
+#include "iDrawableTypes.h"
 
 class IDrawable;
 class Material;
@@ -73,9 +74,10 @@ public:
 	static float fogEnd;
 	static Color fogColor;
 	static Color skyColor;
-	static Shader* currentShader;
-	static Material *currentMaterial;
-	// static int usedShaderProgram;
+	static std::shared_ptr <Shader> currentShader;
+	static std::shared_ptr <Material> currentMaterial;
+	static IDrawableTypes currentMode;
+
 private:
 	static int iDrawablesCount;
 	static void DrawSkybox(Vector3& cameraPosition);

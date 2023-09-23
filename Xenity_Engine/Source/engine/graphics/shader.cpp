@@ -13,29 +13,14 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 #pragma region Constructors / Destructor
 
-/// <summary>
-/// Instantiate shader from files
-/// </summary>
-/// <param name="vertexShaderPath">Vertex shader file path</param>
-/// <param name="fragmentShaderPath">Fragment shader file path</param>
-Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath)
+Shader::Shader()
 {
-	LoadShader(vertexShaderPath, Vertex_Shader);
-	LoadShader(fragmentShaderPath, Fragment_Shader);
-	MakeShader();
-}
-
-Shader::Shader(const std::string vertexShaderPath, const std::string fragmentShaderPath, const std::string tessellationShaderPath, const std::string tessellationEvaluationShaderPath)
-{
-	useTessellation = true;
-	LoadShader(vertexShaderPath, Vertex_Shader);
-	LoadShader(tessellationShaderPath, Tessellation_Control_Shader);
-	LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
-	LoadShader(fragmentShaderPath, Fragment_Shader);
-	MakeShader();
 }
 
 /// <summary>
@@ -52,6 +37,75 @@ Shader::~Shader()
 		Engine::renderer->DeleteShader(fragmentShaderId);
 	}
 	Engine::renderer->DeleteShaderProgram(programId);
+}
+
+std::unordered_map<std::string, ReflectionEntry> Shader::GetReflection()
+{
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	return reflectedVariables;
+}
+
+std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
+{
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	return reflectedVariables;
+}
+
+void Shader::LoadFileReference()
+{
+	file->Open(false);
+	std::string shaderText = file->ReadAll();
+	file->Close();
+	int textSize = shaderText.size();
+
+	int fragmentPos = -1;
+	int fragmentStartPos = -1;
+
+	int vertexPos = -1;
+	int vertexStartPos = -1;
+
+	if (textSize != 0)
+	{
+		for (int i = 0; i < textSize-1; i++)
+		{
+			if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
+			{
+				fragmentPos = i;
+				for (int j = i+1; j < textSize; j++)
+				{
+					if (shaderText[j] == '}') 
+					{
+						fragmentStartPos = j + 2;
+						break;
+					}
+				}
+			}
+			else if (shaderText[i] == '{' && shaderText[i + 1] == 'v')
+			{
+				for (int j = i + 1; j < textSize; j++)
+				{
+					vertexPos = i;
+					if (shaderText[j] == '}')
+					{
+						vertexStartPos = j + 2;
+						break;
+					}
+				}
+			}
+		}
+
+		std::string fragShaderData = shaderText.substr(fragmentStartPos);
+		std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
+
+		LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
+		LoadShader(fragShaderData, ShaderType::Fragment_Shader);
+
+		//useTessellation = true;
+		//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+		//LoadShader(fragmentShaderPath, Fragment_Shader);
+
+		BuildShader();
+	}
 }
 
 #pragma endregion
@@ -72,10 +126,10 @@ unsigned int usedShaderProgram = 0;
 /// </summary>
 bool Shader::Use()
 {
-	if (Graphics::currentShader != this)
+	if (Graphics::currentShader != shared_from_this())
 	{
 		Engine::renderer->UseShaderProgram(programId);
-		Graphics::currentShader = this;
+		Graphics::currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
 		return true;
 	}
 	return false;
@@ -83,14 +137,8 @@ bool Shader::Use()
 
 #pragma region Data loading
 
-void Shader::LoadShader(const std::string filePath, ShaderType type)
+void Shader::LoadShader(const std::string shaderData, ShaderType type)
 {
-	std::string path = "shaders\\" + filePath;
-	//Get file data
-	std::shared_ptr<File> file = FileSystem::MakeFile(path);
-	file->Open(false);
-	std::string shaderData = file->ReadAll();
-	file->Close();
 	const char* shaderDataConst = shaderData.c_str();
 
 	unsigned int* id = nullptr;
@@ -148,14 +196,14 @@ void Shader::LoadShader(const std::string filePath, ShaderType type)
 				shaderError += errorLog[i];
 			}
 
-			shaderError += ". File path: " + path;
-			Debug::Print(shaderError);
+			shaderError += ". File path: " + shaderData;
+			Debug::PrintError(shaderError);
 		}
 	}
 	else
 	{
-		std::string shaderError = "Compilation error: Shader type not found. File path: " + path;
-		Debug::Print(shaderError);
+		std::string shaderError = "Compilation error: Shader type not found. File path: " + shaderData;
+		Debug::PrintError(shaderError);
 	}
 }
 
@@ -173,8 +221,8 @@ void Shader::SetShaderCameraPosition()
 	if (Graphics::usedCamera.lock() != nullptr)
 	{
 		Vector3 lookDirection = Graphics::usedCamera.lock()->GetTransform()->GetForward();
-
-		lookDirection = lookDirection + Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+		Vector3 camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+		lookDirection = lookDirection + camPos;
 
 		float xAngle = Graphics::usedCamera.lock()->GetTransform()->GetRotation().x;
 		while (xAngle < -90)
@@ -188,9 +236,9 @@ void Shader::SetShaderCameraPosition()
 
 		glm::mat4 camera;
 		if (xAngle > 90 || xAngle < -90)
-			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera.lock()->GetTransform()->GetPosition().x, Graphics::usedCamera.lock()->GetTransform()->GetPosition().y, Graphics::usedCamera.lock()->GetTransform()->GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
+			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
 		else
-			camera = glm::lookAt(glm::vec3(-Graphics::usedCamera.lock()->GetTransform()->GetPosition().x, Graphics::usedCamera.lock()->GetTransform()->GetPosition().y, Graphics::usedCamera.lock()->GetTransform()->GetPosition().z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
+			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
 
 		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
@@ -202,7 +250,7 @@ void Shader::SetShaderCameraPosition()
 void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
-	//Camera position
+
 	glm::mat4 camera = glm::mat4(1.0f);
 	camera = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
 
@@ -286,7 +334,7 @@ void Shader::SetShaderAttribut(const char* attribut, const int& value)
 }
 
 
-void Shader::MakeShader()
+void Shader::BuildShader()
 {
 	programId = Engine::renderer->CreateShaderProgram();
 	Engine::renderer->AttachShader(programId, vertexShaderId);
@@ -401,6 +449,13 @@ void Shader::UpdateLights()
 	SetShaderAttribut("usedPointLightCount", pointUsed);
 	SetShaderAttribut("usedSpotLightCount", spotUsed);
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
+}
+
+std::shared_ptr<Shader> Shader::MakeShader()
+{
+	std::shared_ptr<Shader> newFileRef = std::make_shared<Shader>();
+	AssetManager::AddFileReference(newFileRef);
+	return newFileRef;
 }
 
 #pragma endregion

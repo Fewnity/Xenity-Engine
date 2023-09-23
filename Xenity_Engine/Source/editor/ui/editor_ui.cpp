@@ -104,6 +104,16 @@ void EditorUI::Init()
 	cameraIcon->SetWrapMode(Texture::ClampToEdge);
 	icons[Icon_Camera] = cameraIcon;
 
+	std::shared_ptr<Texture> materialIcon = Texture::MakeTexture("icons/material.png", true);
+	materialIcon->file = FileSystem::MakeFile("icons/material.png");
+	materialIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Material] = materialIcon;
+
+	std::shared_ptr<Texture> shaderIcon = Texture::MakeTexture("icons/shader.png", true);
+	shaderIcon->file = FileSystem::MakeFile("icons/shader.png");
+	shaderIcon->SetWrapMode(Texture::ClampToEdge);
+	icons[Icon_Shader] = shaderIcon;
+
 	for (int i = 0; i < Icon_Count; i++)
 	{
 		icons[i]->LoadFileReference();

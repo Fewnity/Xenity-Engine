@@ -8,14 +8,8 @@ BillboardRenderer::BillboardRenderer()
 	componentName = "BillboardRenderer";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	//SetReflection();
+	material = Engine::standardMaterial;
 }
-
-/*void SpriteRenderer::SetReflection()
-{
-	reflectedVariables["color"] = &color;
-	reflectedVariables["texture"] = &texture;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> BillboardRenderer::GetReflection()
 {
@@ -48,7 +42,7 @@ void BillboardRenderer::Draw()
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
 			auto transform = GetTransform();
-			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), texture, color);
+			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), texture, color, material);
 		}
 	}
 }

@@ -8,17 +8,7 @@ AudioSource::AudioSource()
 {
     componentName = "AudioSource";
     AssetManager::AddReflection(this);
-    //SetReflection();
 }
-
-/*void AudioSource::SetReflection()
-{
-    componentName = "AudioSource";
-    reflectedVariables["volume"] = &volume;
-    reflectedVariables["pan"] = &pan;
-    reflectedVariables["isPlaying"] = &isPlaying;
-    reflectedVariables["loop"] = &loop;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> AudioSource::GetReflection()
 {
@@ -102,6 +92,6 @@ void AudioSource::OnDrawGizmos()
     if (distance <= 1.3f)
         alpha = distance - 0.3f;
 
-    SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBAFloat(1, 1, 1, alpha));
+    SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBAFloat(1, 1, 1, alpha), Engine::unlitMaterial);
 #endif
 }

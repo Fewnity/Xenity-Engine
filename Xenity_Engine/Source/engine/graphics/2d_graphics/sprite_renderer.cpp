@@ -8,14 +8,8 @@ SpriteRenderer::SpriteRenderer()
 	componentName = "SpriteRenderer";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	//SetReflection();
+	material = Engine::standardMaterial;
 }
-
-/*void SpriteRenderer::SetReflection()
-{
-	reflectedVariables["color"] = &color;
-	reflectedVariables["texture"] = &texture;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> SpriteRenderer::GetReflection()
 {
@@ -47,8 +41,7 @@ void SpriteRenderer::Draw()
 		// Draw the sprite only if there is a texture and if the component/gameobject is active
 		if (gameObject->GetLocalActive() && GetIsEnabled())
 		{
-			auto transform = GetTransform();
-			SpriteManager::DrawSprite(transform, texture, color);
+			SpriteManager::DrawSprite(GetTransform(), texture, color, material);
 		}
 	}
 }

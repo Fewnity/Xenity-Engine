@@ -182,10 +182,10 @@ public:
 	static bool canUpdateAudio;
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
 	static std::mutex threadLoadingMutex;
-	static Shader* shader;
-	static Shader* unlitShader;
-	static Material* standardMaterial;
-	static Material* unlitMaterial;
+	static std::shared_ptr<Shader> shader;
+	static std::shared_ptr<Shader> unlitShader;
+	static std::shared_ptr<Material> standardMaterial;
+	static std::shared_ptr<Material> unlitMaterial;
 
 	static bool UseOpenGLFixedFunctions;
 

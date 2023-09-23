@@ -17,17 +17,7 @@ Light::Light()
 {
 	componentName = "Light";
 	AssetManager::AddReflection(this);
-	//SetReflection();
 }
-
-/*void Light::SetReflection()
-{
-	reflectedVariables["intensity"] = intensity;
-	reflectedVariables["range"] = range;
-	reflectedVariables["spotAngle"] = spotAngle;
-	reflectedVariables["spotSmoothness"] = spotSmoothness;
-	reflectedVariables["color"] = color;
-}*/
 
 Light::~Light()
 {
@@ -108,7 +98,7 @@ void Light::OnDrawGizmos()
 	Color newColor = color;
 	RGBA rgba = newColor.GetRGBA();
 	newColor.SetFromRGBAfloat(rgba.r, rgba.g, rgba.b, alpha);
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Light], newColor);
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Light], newColor, Engine::unlitMaterial);
 #endif
 }
 

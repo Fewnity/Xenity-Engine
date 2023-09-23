@@ -101,6 +101,14 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			tex = EditorUI::icons[Icon_Font];
 		}
+		else if (fileType == File_Material)
+		{
+			tex = EditorUI::icons[Icon_Material];
+		}
+		else if (fileType == File_Shader)
+		{
+			tex = EditorUI::icons[Icon_Shader];
+		}
 	}
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::renderer->BindTexture(tex);

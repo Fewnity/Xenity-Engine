@@ -77,6 +77,14 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 			{
 				DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
+			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
 				int vectorSize = valuePtr->get().size();

@@ -19,20 +19,12 @@ Tilemap::Tilemap()
 	componentName = "Tilemap";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	//SetReflection();
 }
 
 Tilemap::~Tilemap()
 {
 	AssetManager::RemoveReflection(this);
 }
-
-/*void Tilemap::SetReflection()
-{
-	reflectedVariables["width"] = &width;
-	reflectedVariables["height"] = &height;
-	reflectedVariables["color"] = &color;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> Tilemap::GetReflection()
 {

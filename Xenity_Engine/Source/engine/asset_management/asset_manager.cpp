@@ -172,7 +172,6 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 
  void AssetManager::RemoveMaterial(Material *material)
  {
- 	int materialCount = (int)materials.size();
  	int materialIndex = 0;
  	bool found = false;
  	for (int i = 0; i < materialCount; i++)

@@ -5,21 +5,31 @@
 
 class Texture;
 class Shader;
+class Camera;
+
 #include "../vectors/vector2.h"
 #include "../vectors/vector3.h"
 #include "../vectors/vector4.h"
+#include "../file_system/file_reference.h"
+#include "../reflection/reflection.h"
+#include "iDrawableTypes.h"
+#include <memory>
 
-class Material
+class Material : public FileReference, public Reflection
 {
 public:
-	Material() = delete;
-	Material(std::string name);
+	Material();
 	~Material();
 
 	void Use();
-	void Update();
 
-	Shader* shader = nullptr;
+	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+	void OnReflectionUpdated();
+
+	void LoadFileReference();
+
+	std::shared_ptr<Shader> shader = nullptr;
 	void SetAttribut(const char* attribut, const Vector2 value);
 	void SetAttribut(const char* attribut, const Vector3 value);
 	void SetAttribut(const char* attribut, const Vector4 value);
@@ -27,10 +37,14 @@ public:
 	void SetAttribut(const char* attribut, const float value);
 	void SetAttribut(const char* attribut, const int value);
 	bool updated = false;
-	std::string name = "";
 	bool useLighting = false;
 
+	static std::shared_ptr<Material> MakeMaterial();
+	std::weak_ptr<Camera> lastUsedCamera;
+	IDrawableTypes lastUpdatedType = Draw_3D;
+
 private:
+	void Update();
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> uniformsVector2;
 	std::unordered_map <const char*, Vector3> uniformsVector3;

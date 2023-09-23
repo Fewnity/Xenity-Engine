@@ -14,8 +14,6 @@
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
-// int Graphics::usedShaderProgram = -1;
-// Material *Graphics::usedMaterial = nullptr;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
@@ -35,8 +33,9 @@ float Graphics::fogStart = 0;
 float Graphics::fogEnd = 10;
 Color Graphics::fogColor;
 Color Graphics::skyColor;
-Shader* Graphics::currentShader = nullptr;
-Material* Graphics::currentMaterial = nullptr;
+std::shared_ptr <Shader> Graphics::currentShader = nullptr;
+std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
+IDrawableTypes Graphics::currentMode = Draw_3D;
 
 /*std::shared_ptr <GameObject> skyGoTop = nullptr;
 std::shared_ptr <GameObject> skyGoBottom = nullptr;
@@ -121,6 +120,15 @@ void Graphics::DrawAllDrawable()
 		auto camera = usedCamera.lock();
 		if (camera && camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
 		{
+			int matCount = AssetManager::GetMaterialCount();
+			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
+			{
+				Material* mat = AssetManager::GetMaterial(materialIndex);
+				mat->updated = false;
+			}
+
+			currentMode = Draw_3D;
+
 			needUpdateCamera = true;
 			camera->BindFrameBuffer();
 			Engine::renderer->SetClearColor(skyColor);
@@ -130,26 +138,13 @@ void Graphics::DrawAllDrawable()
 
 			camera->UpdateProjection();
 			shaderBenchmark->Start();
-			if (!Engine::UseOpenGLFixedFunctions)
-			{
-				/*Engine::shader->SetShaderCameraPosition();
-				Engine::shader->SetShaderProjection();
-				Engine::shader->SetShaderAttribut("ambientStrength", 0);
-				Engine::shader->SetShaderAttribut("material.ambient", Vector3(0, 0, 0));
-				Engine::shader->UpdateLights();
-
-				Engine::unlitShader->SetShaderCameraPosition();
-				Engine::unlitShader->SetShaderProjection();
-				Engine::unlitShader->SetShaderAttribut("ambientStrength", 1);
-				Engine::unlitShader->SetShaderAttribut("material.ambient", Vector3(1, 1, 1));*/
-			}
 
 			shaderBenchmark->Stop();
 
 			DrawSkybox(camPos);
 
 			Engine::renderer->SetFog(isFogEnabled);
-			IDrawableTypes currentMode = Draw_3D;
+
 			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
@@ -158,14 +153,7 @@ void Graphics::DrawAllDrawable()
 					currentMode = drawable->type;
 					if (currentMode == Draw_UI)
 					{
-						if (!Engine::UseOpenGLFixedFunctions)
-						{
-							//Engine::unlitMaterial->Use();
-							/*Engine::unlitShader->Use();
-							Engine::unlitShader->SetShaderCameraPositionCanvas();
-							Engine::unlitShader->SetShaderProjectionCanvas();*/
-						}
-						else
+						if (Engine::UseOpenGLFixedFunctions)
 						{
 							Engine::renderer->SetProjection2D(5, 0.03f, 100);
 						}
@@ -197,13 +185,9 @@ void Graphics::DrawAllDrawable()
 					Graphics::currentShader = nullptr;
 					Graphics::currentMaterial = nullptr;
 				}
+
 				Engine::renderer->SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
 				DrawEditorGrid(camPos);
-
-				if (!Engine::UseOpenGLFixedFunctions)
-				{
-					Engine::unlitMaterial->Use();
-				}
 
 				for (int i = 0; i < Engine::componentsCount; i++)
 				{

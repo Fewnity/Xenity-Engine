@@ -82,6 +82,14 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Refle
 				{
 					FillFileReference<Font>(kv.value(), valuePtr);
 				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
+				{
+					FillFileReference<Shader>(kv.value(), valuePtr);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
+				{
+					FillFileReference<Material>(kv.value(), valuePtr);
+				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
 					int arraySize = kv.value().size();
@@ -180,6 +188,16 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 				json[kv.first] = valuePtr->get()->fileId;
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				json[kv.first] = valuePtr->get()->fileId;
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
+		{
+			if (valuePtr->get() != nullptr)
+				json[kv.first] = valuePtr->get()->fileId;
+		}
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
 		{
 			if (valuePtr->get() != nullptr)
 				json[kv.first] = valuePtr->get()->fileId;

@@ -3,14 +3,18 @@
 #include "../graphics/renderer/renderer.h"
 
 #include <iostream>
+#include <json.hpp>
+#include "../reflection/reflection_utils.h"
+
+using json = nlohmann::json;
 
 #pragma region Constructors / Destructor
 
 //ProfilerBenchmark* materialUpdateBenchmark = new ProfilerBenchmark("Material update");
 
-Material::Material(std::string name)
+Material::Material()
 {
-	this->name = name;
+	SetAttribut("color", Vector3(1, 1, 1));
 	AssetManager::AddMaterial(this);
 }
 
@@ -83,6 +87,13 @@ void Material::SetAttribut(const char* attribut, const int value)
 	uniformsInt.insert(std::pair <const char*, int>(attribut, value));
 }
 
+std::shared_ptr<Material> Material::MakeMaterial()
+{
+	std::shared_ptr<Material> newFileRef = std::make_shared<Material>();
+	AssetManager::AddFileReference(newFileRef);
+	return newFileRef;
+}
+
 #pragma endregion
 
 /// <summary>
@@ -90,21 +101,27 @@ void Material::SetAttribut(const char* attribut, const int value)
 /// </summary>
 void Material::Use()
 {
-	if (Graphics::currentMaterial != this)
+	bool matChanged = Graphics::currentMaterial != shared_from_this();
+	bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
+	bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
+
+	if (matChanged || cameraChanged || drawTypeChanged)
 	{
-		Graphics::currentMaterial = this;
+		lastUsedCamera = Graphics::usedCamera;
+		lastUpdatedType = Graphics::currentMode;
+		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
 		shader->Use();
 		Update();
-		/*int matCount = AssetManager::GetMaterialCount();
+
+		int matCount = AssetManager::GetMaterialCount();
 		for (int i = 0; i < matCount; i++)
 		{
 			Material* mat = AssetManager::GetMaterial(i);
-			//if (mat != this && mat->shader == shader) 
-			if (mat->shader == shader)
+			if (mat->shader == shader && mat != this)
 			{
 				mat->updated = false;
 			}
-		}*/
+		}
 	}
 }
 
@@ -116,48 +133,94 @@ void Material::Update()
 	//materialUpdateBenchmark->Start();
 	if (shader != nullptr)
 	{
-		//Use();
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
-
-		shader->SetShaderCameraPosition();
-		shader->SetShaderProjection();
-
-		if(useLighting)
-			shader->UpdateLights();
-
-		int textureIndex = 0;
-		/*for (const auto& kv : uniformsTextures)
+		if (Graphics::currentMode == Draw_UI)
 		{
-			//Enable each textures units
-			Engine::renderer->EnableTextureUnit(textureIndex);
-			Engine::renderer->BindTexture(kv.second);
-			shader->SetShaderAttribut(kv.first, textureIndex);
-			textureIndex++;
-		}*/
-		for (const auto& kv : uniformsVector2)
-		{
-			shader->SetShaderAttribut(kv.first, kv.second);
+			shader->SetShaderCameraPositionCanvas();
+			shader->SetShaderProjectionCanvas();
 		}
-		for (const auto& kv : uniformsVector3)
+		else
 		{
-			shader->SetShaderAttribut(kv.first, kv.second);
-		}
-		for (auto& kv : uniformsVector4)
-		{
-			shader->SetShaderAttribut(kv.first, kv.second);
-		}
-		for (const auto& kv : uniformsInt)
-		{
-			shader->SetShaderAttribut(kv.first, kv.second);
-		}
-		for (const auto& kv : uniformsFloat)
-		{
-			shader->SetShaderAttribut(kv.first, kv.second);
+			shader->SetShaderCameraPosition();
+			shader->SetShaderProjection();
 		}
 
-		updated = true;
+		if (!updated)
+		{
+			if (useLighting)
+				shader->UpdateLights();
+
+			int textureIndex = 0;
+			/*for (const auto& kv : uniformsTextures)
+			{
+				//Enable each textures units
+				Engine::renderer->EnableTextureUnit(textureIndex);
+				Engine::renderer->BindTexture(kv.second);
+				shader->SetShaderAttribut(kv.first, textureIndex);
+				textureIndex++;
+			}*/
+			for (const auto& kv : uniformsVector2)
+			{
+				shader->SetShaderAttribut(kv.first, kv.second);
+			}
+			for (const auto& kv : uniformsVector3)
+			{
+				shader->SetShaderAttribut(kv.first, kv.second);
+			}
+			for (auto& kv : uniformsVector4)
+			{
+				shader->SetShaderAttribut(kv.first, kv.second);
+			}
+			for (const auto& kv : uniformsInt)
+			{
+				shader->SetShaderAttribut(kv.first, kv.second);
+			}
+			for (const auto& kv : uniformsFloat)
+			{
+				shader->SetShaderAttribut(kv.first, kv.second);
+			}
+
+			updated = true;
+		}
 	}
 	//materialUpdateBenchmark->Stop();
+}
+
+std::unordered_map<std::string, ReflectionEntry> Material::GetReflection()
+{
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	Reflection::AddReflectionVariable(reflectedVariables, shader, "shader", true);
+	Reflection::AddReflectionVariable(reflectedVariables, useLighting, "useLighting", true);
+	return reflectedVariables;
+}
+
+std::unordered_map<std::string, ReflectionEntry> Material::GetMetaReflection()
+{
+	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	return reflectedVariables;
+}
+
+void Material::OnReflectionUpdated()
+{
+	json myJson;
+	myJson["Values"] = ReflectionUtils::MapToJson(GetReflection());
+	FileSystem::fileSystem->DeleteFile(file->GetPath());
+	file->Open(true);
+	file->Write(myJson.dump(0));
+	file->Close();
+}
+
+void Material::LoadFileReference()
+{
+	json myJson;
+	file->Open(true);
+	std::string jsonString = file->ReadAll();
+	file->Close();
+	if (jsonString != "")
+	{
+		myJson = json::parse(jsonString);
+		ReflectionUtils::JsonToMap(myJson, GetReflection());
+	}
 }

@@ -17,6 +17,11 @@ Check Setlights(camera);
 Change Opened scene on save
 Texture filter system
 Fix psp set transform with matrix
+Add map reflection support
+Make shader for psvita
+Fix all errors of cppcheck
+Update shaders projection/position when using new camera and when switching to UI mode
+Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
@@ -39,8 +44,6 @@ Check FileSystem::GetGamePath
 Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
-Add materials
-Add shaders
 Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)

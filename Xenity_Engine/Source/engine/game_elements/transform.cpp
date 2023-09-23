@@ -19,15 +19,7 @@ Transform::Transform(std::weak_ptr<GameObject> gameObject)
 {
 	this->gameObject = gameObject;
 	UpdateTransformationMatrix();
-	//SetReflection();
 }
-
-/*void Transform::SetReflection()
-{
-	reflectedVariables["localPosition"] = localPosition;
-	reflectedVariables["localRotation"] = localRotation;
-	reflectedVariables["localScale"] = localScale;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> Transform::GetReflection()
 {

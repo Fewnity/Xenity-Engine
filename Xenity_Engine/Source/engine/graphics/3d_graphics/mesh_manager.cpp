@@ -33,19 +33,21 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
 	return mesh;
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, Material* material)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	if (!meshData)
 		return;
 
-	material->Use();
-
-	if (!Engine::UseOpenGLFixedFunctions)
-		Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scale);
-
 	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
 	if (!camera)
 		return;
+
+
+	if (!Engine::UseOpenGLFixedFunctions)
+	{
+		material->Use();
+		Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scale);
+	}
 
 	meshBenchmark->Start();
 	meshCameraBenchmark->Start();
@@ -55,7 +57,7 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
 		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
-	}
+}
 #else
 	if (Engine::UseOpenGLFixedFunctions)
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
@@ -79,17 +81,17 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std::shared_ptr<Texture>> textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, Material* material)
+void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std::shared_ptr<Texture>> textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	if (!meshData)
 		return;
 
-	if (!Engine::UseOpenGLFixedFunctions)
-		material->Use();
-
 	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
 	if (!camera)
 		return;
+
+	if (!Engine::UseOpenGLFixedFunctions)
+		material->Use();
 
 	meshBenchmark->Start();
 	meshCameraBenchmark->Start();
@@ -99,7 +101,7 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std
 		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
-	}
+}
 #else
 	if (!Engine::UseOpenGLFixedFunctions)
 	{
@@ -116,10 +118,13 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std
 
 	if (Engine::UseOpenGLFixedFunctions)
 	{
+#if defined(__PSP__)
 		Vector3 position = transform->GetPosition();
 		Vector3 rotation = transform->GetRotation();
-		//Engine::renderer->SetTransform(position, rotation, scale, true);
+		Engine::renderer->SetTransform(position, rotation, scale, true);
+#else
 		Engine::renderer->SetTransform(transform->transformationMatrix);
+#endif
 	}
 
 	meshTransformBenchmark->Stop();
@@ -135,7 +140,7 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, Material* material)
+void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	std::vector< std::shared_ptr<Texture>> textures;
 	textures.push_back(texture);

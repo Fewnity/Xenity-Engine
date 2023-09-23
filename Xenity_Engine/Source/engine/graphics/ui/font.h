@@ -13,8 +13,10 @@ public:
     ~Font();
     std::shared_ptr <Texture> fontAtlas = nullptr;
     static std::shared_ptr<Font> MakeFont();
+
     std::unordered_map<std::string, ReflectionEntry> GetReflection();
     std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+
     void OnReflectionUpdated();
     void LoadFileReference();
     Character* Characters[256] = {};

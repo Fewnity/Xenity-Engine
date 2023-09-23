@@ -8,16 +8,7 @@ LineRenderer::LineRenderer()
 {
 	componentName = "LineRenderer";
 	type = Draw_2D;
-	//SetReflection();
 }
-
-/*void LineRenderer::SetReflection()
-{
-	reflectedVariables["color"] = &color;
-	reflectedVariables["startPosition"] = &startPosition;
-	reflectedVariables["endPosition"] = &endPosition;
-	reflectedVariables["width"] = &width;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> LineRenderer::GetReflection()
 {

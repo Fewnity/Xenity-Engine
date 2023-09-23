@@ -24,6 +24,7 @@ class MeshData;
 class Vector3;
 class Color;
 class Font;
+class Material;
 
 class API Character
 {
@@ -83,7 +84,7 @@ public:
     * @param mesh Mesh
     * @param font Font
     */
-    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font);
+    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material);
 
     /**
     * Get informations about a text
