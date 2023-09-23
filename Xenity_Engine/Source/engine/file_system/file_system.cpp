@@ -239,14 +239,27 @@ std::string File::GetFileName() const
 	if (path.size() == 0)
 		return "";
 
+	// Remove all folders from path
+	int finalPos = 0;
 	int lastSlashPos = path.find_last_of('\\');
-	if (lastSlashPos == -1)
-		lastSlashPos = 0;
-	std::string fileName = path.substr(lastSlashPos + 1);
+	int lastSlashPos2 = path.find_last_of('/');
+
+	if (lastSlashPos != -1 || lastSlashPos2 != -1) 
+	{
+		if(lastSlashPos2 > lastSlashPos)
+			finalPos = lastSlashPos2 + 1;
+		else
+			finalPos = lastSlashPos + 1;
+	}
+
+	std::string fileName = path.substr(finalPos);
+
+	// Remove file extension from path
 	int nextPointPos = fileName.find_first_of('.');
 	if (nextPointPos == -1)
 		nextPointPos = INT32_MAX;
 	fileName = fileName.substr(0, nextPointPos);
+
 	return fileName;
 }
 
