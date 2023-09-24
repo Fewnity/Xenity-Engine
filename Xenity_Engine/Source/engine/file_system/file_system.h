@@ -166,11 +166,12 @@ public:
 	*/
 	std::string GetPath() const
 	{
-#if defined(__vita__)
+		return path;
+/*#if defined(__vita__)
 		return path.substr(4);
 #else
 		return path;
-#endif
+#endif*/
 	}
 
 private:

@@ -26,10 +26,10 @@ public:
 	Shader();
 	~Shader();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 
-	void LoadFileReference();
+	void LoadFileReference() override;
 
 	unsigned int GetProgramId();
 	bool Use();
@@ -44,7 +44,6 @@ public:
 	void SetShaderAttribut(const char* attribut, const Vector2& value);
 	void SetShaderAttribut(const char* attribut, float value);
 	void SetShaderAttribut(const char* attribut, int value);
-
 
 	void UpdateLights();
 	bool useTessellation = false;

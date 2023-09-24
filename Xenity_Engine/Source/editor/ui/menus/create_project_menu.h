@@ -15,8 +15,8 @@ enum CreateProjectError
 class CreateProjectMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 private:
 	std::string projectName;
 	std::string projectParentDir;

@@ -5,7 +5,7 @@
 class EngineSettingsMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 };
 

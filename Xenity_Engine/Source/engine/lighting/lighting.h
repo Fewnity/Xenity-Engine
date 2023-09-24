@@ -28,8 +28,8 @@ public:
 	~Light();
 
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	void OnReflectionUpdated();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* Setup the light as a point light

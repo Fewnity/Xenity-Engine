@@ -14,11 +14,11 @@ public:
     std::shared_ptr <Texture> fontAtlas = nullptr;
     static std::shared_ptr<Font> MakeFont();
 
-    std::unordered_map<std::string, ReflectionEntry> GetReflection();
-    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 
-    void OnReflectionUpdated();
-    void LoadFileReference();
+    void OnReflectionUpdated() override;
+    void LoadFileReference() override;
     Character* Characters[256] = {};
     float maxCharHeight = 0;
 

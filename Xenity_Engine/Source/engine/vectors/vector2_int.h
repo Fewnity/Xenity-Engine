@@ -13,8 +13,7 @@
 class API Vector2Int : public Reflection
 {
 public:
-	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	Vector2Int();
 	Vector2Int(const int x, const int y);

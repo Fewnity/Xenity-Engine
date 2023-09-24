@@ -6,8 +6,8 @@
 class SceneMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 	bool isHovered = false;
 	bool isFocused = false;
 	Vector2Int windowSize = Vector2Int(0);

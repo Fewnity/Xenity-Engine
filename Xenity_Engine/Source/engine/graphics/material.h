@@ -23,11 +23,11 @@ public:
 
 	void Use();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
-	void OnReflectionUpdated();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	void OnReflectionUpdated() override;
 
-	void LoadFileReference();
+	void LoadFileReference() override;
 
 	std::shared_ptr<Shader> shader = nullptr;
 	void SetAttribut(const char* attribut, const Vector2& value);

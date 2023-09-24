@@ -16,8 +16,7 @@ class Vector2Int;
 class API Vector2: public Reflection
 {
 public:
-	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	Vector2();
 	Vector2(const float x, const float y);

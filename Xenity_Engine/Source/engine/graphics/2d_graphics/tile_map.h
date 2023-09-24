@@ -22,7 +22,7 @@ public:
 	Tilemap();
 	~Tilemap();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	class Tile
 	{
@@ -31,7 +31,7 @@ public:
 		int textureId = 0;
 	};
 
-	int GetDrawPriority() const;
+	int GetDrawPriority() const override;
 
 	/**
 	* @brief Setup the Tilemap before usage (chunkSize to default)
@@ -135,7 +135,7 @@ private:
 	bool dirtyMeshes = false;
 
 	int orderInLayer = 0;
-	void Draw();
+	void Draw() override;
 
 	/**
 	* @brief Fill all chunks meshes

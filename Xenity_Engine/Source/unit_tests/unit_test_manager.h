@@ -36,7 +36,7 @@ public:
 	AddVectorTest() = delete;
 	AddVectorTest(const std::string& name) : UnitTest(name){ }
 
-	bool Start(std::string& errorOut);
+	bool Start(std::string& errorOut) override;
 };
 
 class MinusVectorTest : public UnitTest
@@ -45,7 +45,7 @@ public:
 	MinusVectorTest() = delete;
 	MinusVectorTest(const std::string& name) : UnitTest(name) { }
 
-	bool Start(std::string& errorOut);
+	bool Start(std::string& errorOut) override;
 };
 
 class MultiplyVectorTest : public UnitTest
@@ -54,7 +54,7 @@ public:
 	MultiplyVectorTest() = delete;
 	MultiplyVectorTest(const std::string& name) : UnitTest(name) { }
 
-	bool Start(std::string& errorOut);
+	bool Start(std::string& errorOut) override;
 };
 
 class DivideVectorTest : public UnitTest
@@ -63,7 +63,7 @@ public:
 	DivideVectorTest() = delete;
 	DivideVectorTest(const std::string& name) : UnitTest(name) { }
 
-	bool Start(std::string& errorOut);
+	bool Start(std::string& errorOut) override;
 };
 
 class NormaliseVectorTest : public UnitTest
@@ -72,5 +72,5 @@ public:
 	NormaliseVectorTest() = delete;
 	NormaliseVectorTest(const std::string& name) : UnitTest(name) { }
 
-	bool Start(std::string& errorOut);
+	bool Start(std::string& errorOut) override;
 };

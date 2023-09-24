@@ -39,11 +39,11 @@ public:
 	std::shared_ptr<Texture> down = nullptr;
 	std::shared_ptr<Texture> left = nullptr;
 	std::shared_ptr<Texture> right = nullptr;
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 	static std::shared_ptr<SkyBox> MakeSkyBox();
-	void OnReflectionUpdated();
-	void LoadFileReference();
+	void OnReflectionUpdated() override;
+	void LoadFileReference() override;
 
 private:
 };

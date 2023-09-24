@@ -15,8 +15,8 @@ class CodeFile : public FileReference, public Reflection
 {
 public:
 	CodeFile(const std::string& fileExtension);
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	std::unordered_map < std::string, ReflectionEntry> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map < std::string, ReflectionEntry> GetMetaReflection() override;
 	static std::shared_ptr<CodeFile> MakeScene(const std::string& fileExtension);
 	bool isHeader = false;
 };

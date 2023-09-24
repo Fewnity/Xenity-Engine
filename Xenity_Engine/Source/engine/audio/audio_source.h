@@ -20,7 +20,7 @@ public:
     ~AudioSource();
     //void SetReflection();
 
-    std::unordered_map<std::string, ReflectionEntry> GetReflection();
+    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
     void Awake();
 
@@ -98,7 +98,7 @@ public:
         return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
     }
 
-    void OnDrawGizmos();
+    void OnDrawGizmos() override;
 
 private:
     float volume = 1;

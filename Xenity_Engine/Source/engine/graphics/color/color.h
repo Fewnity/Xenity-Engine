@@ -15,7 +15,7 @@ class API RGBA : public Reflection
 {
 public:
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	RGBA() = delete;
 
 	RGBA(float r, float g, float b, float a)
@@ -42,8 +42,8 @@ class API Color : public Reflection
 public:
 	Color();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	void OnReflectionUpdated();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* Create color from RGB

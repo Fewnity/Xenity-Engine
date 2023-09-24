@@ -16,60 +16,60 @@ class API RendererOpengl : public Renderer
 {
 public:
 	RendererOpengl();
-	int Init();
-	void Setup();
-	void Stop();
-	void NewFrame();
-	void EndFrame();
-	void SetViewport(int x, int y, int width, int height);
-	void SetClearColor(const Color& color);
-	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane);
-	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect);
-	void ResetView();
-	void SetCameraPosition(std::weak_ptr<Camera> camera);
-	void ResetTransform();
-	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform);
-	void SetTransform(const glm::mat4 &mat);
-	void MoveTransform(const Vector3& position);
-	void BindTexture(std::shared_ptr <Texture> texture);
-	void ApplyTextureFilters(std::shared_ptr <Texture> texture);
-	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings);
-	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings);
-	unsigned int CreateNewTexture();
-	void DeleteTexture(Texture* texture);
-	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer);
-	void Clear();
-	void SetFog(bool active);
-	void SetFogValues(float start, float end, Color color);
+	int Init() override;
+	void Setup() override;
+	void Stop() override;
+	void NewFrame() override;
+	void EndFrame() override;
+	void SetViewport(int x, int y, int width, int height) override;
+	void SetClearColor(const Color& color) override;
+	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) override;
+	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) override;
+	void ResetView() override;
+	void SetCameraPosition(std::weak_ptr<Camera> camera) override;
+	void ResetTransform() override;
+	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
+	void SetTransform(const glm::mat4 &mat) override;
+	void MoveTransform(const Vector3& position) override;
+	void BindTexture(std::shared_ptr <Texture> texture) override;
+	void ApplyTextureFilters(std::shared_ptr <Texture> texture) override;
+	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) override;
+	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
+	unsigned int CreateNewTexture() override;
+	void DeleteTexture(Texture* texture) override;
+	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer) override;
+	void Clear() override;
+	void SetFog(bool active) override;
+	void SetFogValues(float start, float end, Color color) override;
 
-	unsigned int CreateBuffer();
-	void BindBuffer(BufferType type, unsigned int bufferId);
-	void DeleteBuffer(unsigned int bufferId);
+	unsigned int CreateBuffer() override;
+	void BindBuffer(BufferType type, unsigned int bufferId) override;
+	void DeleteBuffer(unsigned int bufferId) override;
 
-	void UploadMeshData(std::shared_ptr<MeshData> meshData);
+	void UploadMeshData(std::shared_ptr<MeshData> meshData) override;
 
 	//Shader
-	unsigned int CreateShader(Shader::ShaderType type);
-	unsigned int CreateShaderProgram();
-	void CompileShader(unsigned int shaderId);
-	int GetShaderCompilationResult(unsigned int shaderId);
-	std::vector<char> GetCompilationError(unsigned int shaderId);
-	void SetShaderData(unsigned int shaderId, const char* data);
-	void DeleteShader(unsigned int shaderId);
-	void DeleteShaderProgram(unsigned int programId);
-	void LinkShaderProgram(unsigned int programId);
+	unsigned int CreateShader(Shader::ShaderType type) override;
+	unsigned int CreateShaderProgram() override;
+	void CompileShader(unsigned int shaderId) override;
+	int GetShaderCompilationResult(unsigned int shaderId) override;
+	std::vector<char> GetCompilationError(unsigned int shaderId) override;
+	void SetShaderData(unsigned int shaderId, const char* data) override;
+	void DeleteShader(unsigned int shaderId) override;
+	void DeleteShaderProgram(unsigned int programId) override;
+	void LinkShaderProgram(unsigned int programId) override;
 
-	void UseShaderProgram(unsigned int programId);
-	unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
-	void AttachShader(unsigned int programId, unsigned int shaderId);
+	void UseShaderProgram(unsigned int programId) override;
+	unsigned int GetShaderUniformLocation(unsigned int programId, const char* name) override;
+	void AttachShader(unsigned int programId, unsigned int shaderId) override;
 
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const float value);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans);
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans);
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const float value) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
+	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
 
 
 private:

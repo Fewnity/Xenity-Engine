@@ -19,23 +19,21 @@
 class Font;
 class TextInfo;
 class MeshData;
-// class Shader;
 
 class API TextRendererCanvas : public IDrawable
 {
 public:
 	TextRendererCanvas();
 	~TextRendererCanvas();
-	//void SetReflection();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	void OnReflectionUpdated();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	void OnReflectionUpdated() override;
 
 	Vector3 position = Vector3(0, 0, 0);
 	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
-	int GetDrawPriority() const;
+	int GetDrawPriority() const override;
 
 	std::shared_ptr<Material> material = nullptr;
 	HorizontalAlignment horizontalAlignment = H_Center;
@@ -81,7 +79,7 @@ public:
 	void SetFont(std::shared_ptr<Font> font);
 
 private:
-	void Draw();
+	void Draw() override;
 	std::shared_ptr<Font> font;
 	std::string text;
 	Color color = Color();

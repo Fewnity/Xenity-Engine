@@ -23,9 +23,9 @@ public:
 	SpriteRenderer();
 	~SpriteRenderer();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
-	int GetDrawPriority() const;
+	int GetDrawPriority() const override;
 
 	void SetOrderInLayer(int orderInLayer)
 	{

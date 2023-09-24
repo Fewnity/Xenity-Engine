@@ -26,8 +26,8 @@ public:
 		return game;
 	}
 
-	void Start();
-	void Update();
+	void Start() override;
+	void Update() override;
 
 private:
 	void LoadGameData();

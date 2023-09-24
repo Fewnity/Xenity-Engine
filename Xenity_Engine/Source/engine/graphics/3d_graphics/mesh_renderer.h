@@ -21,12 +21,12 @@ public:
     MeshRenderer();
     ~MeshRenderer();
     //void SetReflection();
-    std::unordered_map<std::string, ReflectionEntry> GetReflection();
-    int GetDrawPriority() const;
+    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+    int GetDrawPriority() const override;
 
     std::shared_ptr <MeshData> meshData = nullptr;
     std::vector< std::shared_ptr<Texture>> textures;
     std::shared_ptr <Material> material;
 private:
-    void Draw();
+    void Draw() override;
 };

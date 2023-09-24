@@ -49,7 +49,7 @@ struct VertexNormalsNoColorNoUv
 	float x, y, z;
 };
 
-class API MeshData : public FileReference
+class API MeshData : public FileReference, public Reflection
 {
 public:
 	class SubMesh
@@ -71,13 +71,13 @@ public:
 
 	static std::shared_ptr<MeshData> MakeMeshData();
 	static std::shared_ptr<MeshData> MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 	~MeshData();
 
-	void LoadFileReference();
-	void OnLoadFileReferenceFinished();
-	void UnloadFileReference();
+	void LoadFileReference() override;
+	void OnLoadFileReferenceFinished() override;
+	void UnloadFileReference() override;
 
 	/**
 	* Alloc memory for a new submesh

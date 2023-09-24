@@ -23,9 +23,9 @@ public:
 	BillboardRenderer();
 	~BillboardRenderer();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
-	int GetDrawPriority() const;
+	int GetDrawPriority() const override;
 
 	void SetOrderInLayer(int orderInLayer)
 	{
@@ -33,7 +33,7 @@ public:
 		Engine::drawOrderListDirty = true;
 	}
 
-	int GetOrderInLayer() const
+	int GetOrderInLayer() const 
 	{
 		return orderInLayer;
 	}
@@ -48,6 +48,6 @@ public:
 
 private:
 	Color color = Color();
-	void Draw();
+	void Draw() override;
 	int orderInLayer = 0;
 };

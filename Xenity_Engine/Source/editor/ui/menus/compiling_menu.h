@@ -5,8 +5,8 @@
 class CompilingMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 	void OpenPopup();
 	void ClosePopup();
 private:

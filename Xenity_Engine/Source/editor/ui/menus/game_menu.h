@@ -6,8 +6,8 @@
 class GameMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 	bool isHovered = false;
 	Vector2Int windowSize = Vector2Int(0);
 	Vector2Int windowPosition = Vector2Int(0);

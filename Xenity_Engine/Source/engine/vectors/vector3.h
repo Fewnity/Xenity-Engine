@@ -16,10 +16,7 @@ class Vector2;
 class API Vector3 : public Reflection
 {
 public:
-	//void SetReflection();
-
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	//Reflection* parentReflection = nullptr;
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	Vector3();
 	Vector3(const float x, const float y, const float z);

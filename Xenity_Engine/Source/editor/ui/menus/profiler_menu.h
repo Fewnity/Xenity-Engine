@@ -5,8 +5,8 @@
 class ProfilerMenu : public Menu
 {
 public:
-	void Init();
-	void Draw();
+	void Init() override;
+	void Draw() override;
 private:
 	float nextFpsUpdate = 0;
 	float lastFps = 0;

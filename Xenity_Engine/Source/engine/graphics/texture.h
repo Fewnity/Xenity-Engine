@@ -47,17 +47,17 @@ public:
     */
     Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
 
-    std::unordered_map<std::string, ReflectionEntry> GetReflection();
-    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
+    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 
     static std::shared_ptr<Texture> MakeTexture();
     static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
     ~Texture();
 
-    void LoadFileReference();
-    void OnLoadFileReferenceFinished();
-    void UnloadFileReference();
+    void LoadFileReference() override;
+    void OnLoadFileReferenceFinished() override;
+    void UnloadFileReference() override;
 
     /**
     * Set texture data
@@ -138,7 +138,7 @@ public:
     bool IsValid()
     {
         return isValid;
-    };
+    }
 
     std::shared_ptr<Texture> GetThisShared() 
     {
