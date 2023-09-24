@@ -30,9 +30,9 @@ public:
 	~TestComponent();
 
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	void Start();
-	void Update();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	void Start() override;
+	void Update() override;
 
 	CustomClass myCustomClass = CustomClass();
 

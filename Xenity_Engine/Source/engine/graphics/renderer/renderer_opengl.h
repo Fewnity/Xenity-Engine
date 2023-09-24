@@ -78,8 +78,8 @@ private:
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);
 	int maxLightCount = 8;
 	void DisableAllLight();
-	void Setlights(std::weak_ptr<Camera> camera);
-	void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation);
+	void Setlights(std::weak_ptr<Camera> camera) override;
+	void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) override;
 
 	float fogStart = 0;
 	float fogEnd = 10;

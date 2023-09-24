@@ -61,7 +61,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	Engine::SetCurrentProjectDirectory(nullptr);
 
-	for (auto& kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
 		fileChange.path = kv.second.path;

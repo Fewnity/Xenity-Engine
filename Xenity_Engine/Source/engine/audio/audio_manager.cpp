@@ -245,7 +245,7 @@ int fillAudioBufferThread()
 			int count = (int)AudioManager::channel->playedSounds.size();
 			for (int i = 0; i < count; i++)
 			{
-				auto& playedSound = AudioManager::channel->playedSounds[i];
+				const auto& playedSound = AudioManager::channel->playedSounds[i];
 				std::shared_ptr<AudioSource> audioSource = playedSound->audioSource;
 				playedSound->volume = audioSource->GetVolume();
 				playedSound->pan = audioSource->GetPanning();
@@ -378,7 +378,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 	int count = (int)channel->playedSounds.size();
 	for (int i = 0; i < count; i++)
 	{
-		auto& playedSound = channel->playedSounds[i];
+		const auto& playedSound = channel->playedSounds[i];
 		if (playedSound->audioSource == sharedAudioSource)
 		{
 			found = true;

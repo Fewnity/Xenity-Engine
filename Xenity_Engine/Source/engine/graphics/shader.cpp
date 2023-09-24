@@ -58,14 +58,14 @@ void Shader::LoadFileReference()
 	file->Close();
 	int textSize = shaderText.size();
 
-	int fragmentPos = -1;
-	int fragmentStartPos = -1;
-
-	int vertexPos = -1;
-	int vertexStartPos = -1;
-
 	if (textSize != 0)
 	{
+		int fragmentPos = -1;
+		int fragmentStartPos = -1;
+
+		int vertexPos = -1;
+		int vertexStartPos = -1;
+
 		for (int i = 0; i < textSize - 1; i++)
 		{
 			if (shaderText[i] == '{' && shaderText[i + 1] == 'f')

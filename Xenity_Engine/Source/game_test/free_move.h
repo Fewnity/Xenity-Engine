@@ -7,9 +7,9 @@ class FreeMove : public MonoBehaviour
 {
 public:
 	FreeMove();
-	void Start();
-	void Update();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	void Start() override;
+	void Update() override;
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 private:
 };
 

@@ -48,6 +48,6 @@ public:
 
 private:
 	Color color = Color();
-	void Draw();
+	void Draw() override;
 	int orderInLayer = 0;
 };

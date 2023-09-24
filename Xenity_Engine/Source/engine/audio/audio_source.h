@@ -22,7 +22,7 @@ public:
 
     std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
-    void Awake();
+    void Awake() override;
 
     /**
     * Play audio
