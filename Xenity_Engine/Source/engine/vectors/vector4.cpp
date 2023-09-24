@@ -71,47 +71,47 @@ Vector4 Vector4::Normalise()
 
 #pragma region Operators
 
-Vector4 operator+(const Vector4 &left, const Vector4 &right)
+Vector4 operator+(const Vector4& left, const Vector4& right)
 {
-	return {left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w};
+	return { left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w };
 }
 
-Vector4 operator-(const Vector4 &left, const Vector4 &right)
+Vector4 operator-(const Vector4& left, const Vector4& right)
 {
-	return {left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w};
+	return { left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
 }
 
-Vector4 operator*(const float value, const Vector4 &vec)
+Vector4 operator*(const float value, const Vector4& vec)
 {
-	return {vec.x * value, vec.y * value, vec.z * value, vec.w * value};
+	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
 
-Vector4 operator*(const Vector4 &left, const Vector4 &right)
+Vector4 operator*(const Vector4& left, const Vector4& right)
 {
-	return {left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w};
+	return { left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w };
 }
 
-Vector4 operator*(const Vector4 &vec, const float value)
+Vector4 operator*(const Vector4& vec, const float value)
 {
-	return {vec.x * value, vec.y * value, vec.z * value, vec.w * value};
+	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
 
-Vector4 operator/(const float value, const Vector4 &vec)
+Vector4 operator/(const float value, const Vector4& vec)
 {
-	return {vec.x / value, vec.y / value, vec.z / value, vec.w / value};
+	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
 
-Vector4 operator/(const Vector4 &vec, const float value)
+Vector4 operator/(const Vector4& vec, const float value)
 {
-	return {vec.x / value, vec.y / value, vec.z / value, vec.w / value};
+	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
 
-Vector4 operator/(const Vector4 &left, const Vector4 &right)
+Vector4 operator/(const Vector4& left, const Vector4& right)
 {
-	return {left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w};
+	return { left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w };
 }
 
-Vector4 operator/=(Vector4 &vec, const float value)
+Vector4 operator/=(Vector4& vec, const float value)
 {
 	vec.x /= value;
 	vec.y /= value;
@@ -120,7 +120,7 @@ Vector4 operator/=(Vector4 &vec, const float value)
 	return vec;
 }
 
-Vector4 operator*=(Vector4 &vec, const float value)
+Vector4 operator*=(Vector4& vec, const float value)
 {
 	vec.x *= value;
 	vec.y *= value;
@@ -129,7 +129,7 @@ Vector4 operator*=(Vector4 &vec, const float value)
 	return vec;
 }
 
-Vector4 operator+=(Vector4 &vec, const float value)
+Vector4 operator+=(Vector4& vec, const float value)
 {
 	vec.x += value;
 	vec.y += value;
@@ -138,7 +138,7 @@ Vector4 operator+=(Vector4 &vec, const float value)
 	return vec;
 }
 
-Vector4 operator-=(Vector4 &vec, const float value)
+Vector4 operator-=(Vector4& vec, const float value)
 {
 	vec.x -= value;
 	vec.y -= value;
@@ -147,7 +147,7 @@ Vector4 operator-=(Vector4 &vec, const float value)
 	return vec;
 }
 
-Vector4 operator/=(Vector4 &vec, const Vector4 &vecRight)
+Vector4 operator/=(Vector4& vec, const Vector4& vecRight)
 {
 	vec.x /= vecRight.x;
 	vec.y /= vecRight.y;
@@ -156,7 +156,7 @@ Vector4 operator/=(Vector4 &vec, const Vector4 &vecRight)
 	return vec;
 }
 
-Vector4 operator*=(Vector4 &vec, const Vector4 &vecRight)
+Vector4 operator*=(Vector4& vec, const Vector4& vecRight)
 {
 	vec.x *= vecRight.x;
 	vec.y *= vecRight.y;
@@ -165,7 +165,7 @@ Vector4 operator*=(Vector4 &vec, const Vector4 &vecRight)
 	return vec;
 }
 
-Vector4 operator+=(Vector4 &vec, const Vector4 &vecRight)
+Vector4 operator+=(Vector4& vec, const Vector4& vecRight)
 {
 	vec.x += vecRight.x;
 	vec.y += vecRight.y;
@@ -174,7 +174,7 @@ Vector4 operator+=(Vector4 &vec, const Vector4 &vecRight)
 	return vec;
 }
 
-Vector4 operator-=(Vector4 &vec, const Vector4 &vecRight)
+Vector4 operator-=(Vector4& vec, const Vector4& vecRight)
 {
 	vec.x -= vecRight.x;
 	vec.y -= vecRight.y;
@@ -183,12 +183,12 @@ Vector4 operator-=(Vector4 &vec, const Vector4 &vecRight)
 	return vec;
 }
 
-bool operator==(const Vector4 &left, const Vector4 &right)
+bool operator==(const Vector4& left, const Vector4& right)
 {
 	return left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
 }
 
-bool operator!=(const Vector4 &left, const Vector4 &right)
+bool operator!=(const Vector4& left, const Vector4& right)
 {
 	return left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w;
 }

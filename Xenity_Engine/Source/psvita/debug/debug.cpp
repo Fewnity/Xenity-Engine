@@ -9,7 +9,7 @@
  */
 void PsVitaDebugPrint(std::string text)
 {
-    psvDebugScreenPrintf(text.c_str());
+	psvDebugScreenPrintf(text.c_str());
 }
 
 /**
@@ -18,7 +18,7 @@ void PsVitaDebugPrint(std::string text)
  */
 void PsVitaDebugInit()
 {
-    psvDebugScreenInit();
-    psvDebugScreenSetFont(psvDebugScreenScaleFont2x(psvDebugScreenGetFont()));
+	psvDebugScreenInit();
+	psvDebugScreenSetFont(psvDebugScreenScaleFont2x(psvDebugScreenGetFont()));
 }
 #endif

@@ -11,7 +11,7 @@ public:
 	/**
 	* Fill Reflection from Json data
 	* @param j Json data
-	* @param reflection Reflection 
+	* @param reflection Reflection
 	*/
 	static void JsonToReflection(const nlohmann::json& j, Reflection& reflection);
 

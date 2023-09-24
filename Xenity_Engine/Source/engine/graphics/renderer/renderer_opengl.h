@@ -29,7 +29,7 @@ public:
 	void SetCameraPosition(std::weak_ptr<Camera> camera) override;
 	void ResetTransform() override;
 	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
-	void SetTransform(const glm::mat4 &mat) override;
+	void SetTransform(const glm::mat4& mat) override;
 	void MoveTransform(const Vector3& position) override;
 	void BindTexture(std::shared_ptr <Texture> texture) override;
 	void ApplyTextureFilters(std::shared_ptr <Texture> texture) override;
@@ -37,7 +37,7 @@ public:
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
 	unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture* texture) override;
-	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char *buffer) override;
+	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char* buffer) override;
 	void Clear() override;
 	void SetFog(bool active) override;
 	void SetFogValues(float start, float end, Color color) override;

@@ -83,12 +83,12 @@ public:
 	/**
 	* Get projection matrix
 	*/
-	glm::mat4 &GetProjection();
+	glm::mat4& GetProjection();
 
 	/**
 	* Get projection matrix without Clipping Planes values
 	*/
-	glm::mat4 &GetUnscaledProjection();
+	glm::mat4& GetUnscaledProjection();
 
 	/**
 	* Set projection type

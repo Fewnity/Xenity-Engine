@@ -1,6 +1,6 @@
 #pragma once
 
-enum ToolMode 
+enum ToolMode
 {
 	Tool_MoveCamera,
 	Tool_Move,

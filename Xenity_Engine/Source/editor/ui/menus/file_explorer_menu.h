@@ -7,7 +7,7 @@
 class FileReference;
 class ProjectDirectory;
 
-class FileExplorerItem 
+class FileExplorerItem
 {
 public:
 	std::shared_ptr<FileReference> file = nullptr;

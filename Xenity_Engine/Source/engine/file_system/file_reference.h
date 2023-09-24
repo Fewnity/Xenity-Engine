@@ -26,7 +26,7 @@ public:
 	/**
 	* Load the file
 	*/
-	virtual void LoadFileReference() 
+	virtual void LoadFileReference()
 	{
 		//isLoaded = true;
 		//AssetManager::AddFileReference(this);
@@ -41,7 +41,7 @@ public:
 		//AssetManager::RemoveFileReference(this);
 	}
 
-	virtual void OnLoadFileReferenceFinished() 
+	virtual void OnLoadFileReferenceFinished()
 	{
 
 	}
@@ -49,7 +49,7 @@ public:
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() 
+	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection()
 	{
 		return std::unordered_map<std::string, ReflectionEntry>();
 	}

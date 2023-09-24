@@ -152,7 +152,7 @@ public:
 	void SendDataToGpu();
 
 
-	int subMeshCount  = 0;
+	int subMeshCount = 0;
 	bool hasUv = false;
 	bool hasNormal = false;
 	bool hasColor = true;

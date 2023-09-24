@@ -259,7 +259,7 @@ void SceneMenu::Draw()
 						else
 							side = -1;*/
 
-						//std::cout << side << std::endl;
+							//std::cout << side << std::endl;
 					}
 
 					if (InputSystem::GetKey(MOUSE_LEFT) && side != Side_None)

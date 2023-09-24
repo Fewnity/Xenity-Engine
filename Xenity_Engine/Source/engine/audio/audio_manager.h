@@ -31,105 +31,105 @@ class AudioSource;
 class API PlayedSound
 {
 public:
-    ~PlayedSound();
-    AudioClipStream *audioClipStream = nullptr;
-    std::shared_ptr<AudioSource> audioSource;
-    short *buffer = nullptr;
-    int seekNext = 0;
-    uint64_t seekPosition = 0;
-    bool needNewRead = false;
-    bool needNewRead2 = false;
+	~PlayedSound();
+	AudioClipStream* audioClipStream = nullptr;
+	std::shared_ptr<AudioSource> audioSource;
+	short* buffer = nullptr;
+	int seekNext = 0;
+	uint64_t seekPosition = 0;
+	bool needNewRead = false;
+	bool needNewRead2 = false;
 
-    float volume = 1;
-    float pan = 0.5;
-    bool loop = true;
-    bool isPlaying = false;
+	float volume = 1;
+	float pan = 0.5;
+	bool loop = true;
+	bool isPlaying = false;
 };
 
 class API Channel
 {
 public:
-    Channel();
-    int port = 0;
+	Channel();
+	int port = 0;
 
-    std::vector<std::shared_ptr<PlayedSound>> playedSounds;
+	std::vector<std::shared_ptr<PlayedSound>> playedSounds;
 
 private:
 #if defined(__vita__)
-    int freq = 7;
-    int mode = SCE_AUDIO_OUT_MODE_STEREO;
-    int vol = SCE_AUDIO_VOLUME_0DB;
+	int freq = 7;
+	int mode = SCE_AUDIO_OUT_MODE_STEREO;
+	int vol = SCE_AUDIO_VOLUME_0DB;
 #endif
 };
 
 class API MyMutex
 {
 public:
-    std::mutex audioMutex;
+	std::mutex audioMutex;
 #if defined(__vita__)
-    int mutexid = -1;
+	int mutexid = -1;
 #endif
 
-    /**
-    * Lock mutex
-    */
-    void Lock()
-    {
+	/**
+	* Lock mutex
+	*/
+	void Lock()
+	{
 #if defined(__vita__)
-        sceKernelLockMutex(mutexid, 1, nullptr);
+		sceKernelLockMutex(mutexid, 1, nullptr);
 #else
-        audioMutex.lock();
+		audioMutex.lock();
 #endif
-    }
+	}
 
-    /**
-    * Unlock mutex
-    */
-    void Unlock()
-    {
+	/**
+	* Unlock mutex
+	*/
+	void Unlock()
+	{
 #if defined(__vita__)
-        sceKernelUnlockMutex(mutexid, 1);
+		sceKernelUnlockMutex(mutexid, 1);
 #else
-        audioMutex.unlock();
+		audioMutex.unlock();
 #endif
-    }
+	}
 };
 
 class API AudioManager
 {
 public:
 
-    /**
-    * Init audio manager
-    */
-    static int Init();
+	/**
+	* Init audio manager
+	*/
+	static int Init();
 
-    /**
-    * Unload audio manager
-    */
-    static void Stop();
+	/**
+	* Unload audio manager
+	*/
+	static void Stop();
 
-    /**
-    * Remove an audio source
-    * @param audioSource Audio source
-    */
-    static void RemoveAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	/**
+	* Remove an audio source
+	* @param audioSource Audio source
+	*/
+	static void RemoveAudioSource(const std::weak_ptr<AudioSource>& audioSource);
 
-    /**
-    * Play an audio source
-    * @param audioSource Audio source
-    */
-    static void PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	/**
+	* Play an audio source
+	* @param audioSource Audio source
+	*/
+	static void PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource);
 
-    /**
-    * Stop an audio source
-    * @param audioSource Audio source
-    */
-    static void StopAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	/**
+	* Stop an audio source
+	* @param audioSource Audio source
+	*/
+	static void StopAudioSource(const std::weak_ptr<AudioSource>& audioSource);
 
-    static bool isAdding;
-    static Channel* channel;
-    static MyMutex* myMutex;
+	static bool isAdding;
+	static Channel* channel;
+	static MyMutex* myMutex;
 
 private:
 };

@@ -27,7 +27,7 @@ void UnitTestManager::StartAllTests()
 	Debug::Print("------ Unit Tests finished! ------");
 }
 
-void UnitTestManager::TryTest(UnitTest* test) 
+void UnitTestManager::TryTest(UnitTest* test)
 {
 	std::string errorOut = "";
 	bool testResult = test->Start(errorOut);
@@ -64,10 +64,10 @@ bool AddVectorTest::Start(std::string& errorOut)
 	}
 
 	//Test Vector3
-	Vector3 v3a = Vector3(1,4.5f,6);
+	Vector3 v3a = Vector3(1, 4.5f, 6);
 	Vector3 v3b = Vector3(3, 1, -2);
 
-	if (!Compare(v3a + v3b, Vector3(4,5.5f,4)))
+	if (!Compare(v3a + v3b, Vector3(4, 5.5f, 4)))
 	{
 		errorOut = "Bad Vector3 addition";
 		return false;
@@ -199,7 +199,7 @@ bool DivideVectorTest::Start(std::string& errorOut)
 	}
 
 	//Test Vector3
-	Vector3 v3a = Vector3(6,3, 6);
+	Vector3 v3a = Vector3(6, 3, 6);
 	Vector3 v3b = Vector3(2, 2, 3);
 
 	if (!Compare(v3a / v3b, Vector3(3, 1.5f, 2)))
@@ -212,7 +212,7 @@ bool DivideVectorTest::Start(std::string& errorOut)
 	Vector4 v4a = Vector4(6, 3, 6, 0);
 	Vector4 v4b = Vector4(2, 2, 3, 5);
 
-	if (!Compare(v4a / v4b, Vector4(3, 1.5f,2, 0)))
+	if (!Compare(v4a / v4b, Vector4(3, 1.5f, 2, 0)))
 	{
 		errorOut = "Bad Vector4 division";
 		return false;
@@ -244,7 +244,7 @@ bool NormaliseVectorTest::Start(std::string& errorOut)
 	if (!Compare(v4a.Normalise(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f)))
 	{
 		errorOut = "Bad Vector4 normalisation";
-	return false;
+		return false;
 	}
 
 	return true;

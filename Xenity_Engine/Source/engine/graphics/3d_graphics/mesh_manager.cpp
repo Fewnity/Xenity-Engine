@@ -57,7 +57,7 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
-}
+	}
 #else
 	if (Engine::UseOpenGLFixedFunctions)
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
@@ -81,7 +81,7 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vector<std::shared_ptr<Texture>> &textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	if (!meshData)
 		return;
@@ -101,7 +101,7 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
-}
+	}
 #else
 	if (!Engine::UseOpenGLFixedFunctions)
 	{

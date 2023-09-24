@@ -10,135 +10,135 @@
 
 void AudioClipStream::OpenStream(const std::string& filePath)
 {
-    std::string finalPath = filePath;
+	std::string finalPath = filePath;
 #if defined(__vita__)
-    finalPath = "ux0:" + finalPath;
+	finalPath = "ux0:" + finalPath;
 #endif
-    Debug::Print("Loading audio clip: " + finalPath);
-    std::string lowerExt = finalPath.substr(finalPath.size() - 3);
-    int pathSize = lowerExt.size();
-    for (int i = 0; i < pathSize; i++)
-    {
-        lowerExt[i] = tolower(lowerExt[i]);
-    }
-    if (lowerExt == "wav")
-    {
-        wav = new drwav();
-        if (!drwav_init_file(wav, finalPath.c_str(), NULL))
-        {
-            // Error opening WAV file.
-            Debug::PrintError("AUDIO ERROR" + finalPath);
-        }
-        else
-        {
-            type = Wav;
-            channelCount = wav->channels;
-            Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate));
-        }
-    }
-    else if (lowerExt == "mp3")
-    {
-        mp3 = new drmp3();
-        if (!drmp3_init_file(mp3, finalPath.c_str(), NULL))
-        {
-            // Error opening MP3 file.
-            Debug::PrintError("AUDIO ERROR: " + finalPath);
-        }
-        else
-        {
-            type = Mp3;
-            channelCount = mp3->channels;
-            Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate));
-        }
-    }
-    else 
-    {
-        Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + finalPath);
-    }
+	Debug::Print("Loading audio clip: " + finalPath);
+	std::string lowerExt = finalPath.substr(finalPath.size() - 3);
+	int pathSize = lowerExt.size();
+	for (int i = 0; i < pathSize; i++)
+	{
+		lowerExt[i] = tolower(lowerExt[i]);
+	}
+	if (lowerExt == "wav")
+	{
+		wav = new drwav();
+		if (!drwav_init_file(wav, finalPath.c_str(), NULL))
+		{
+			// Error opening WAV file.
+			Debug::PrintError("AUDIO ERROR" + finalPath);
+		}
+		else
+		{
+			type = Wav;
+			channelCount = wav->channels;
+			Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate));
+		}
+	}
+	else if (lowerExt == "mp3")
+	{
+		mp3 = new drmp3();
+		if (!drmp3_init_file(mp3, finalPath.c_str(), NULL))
+		{
+			// Error opening MP3 file.
+			Debug::PrintError("AUDIO ERROR: " + finalPath);
+		}
+		else
+		{
+			type = Mp3;
+			channelCount = mp3->channels;
+			Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate));
+		}
+	}
+	else
+	{
+		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + finalPath);
+	}
 
-    if (type == Mp3)
-        sampleCount = drmp3_get_pcm_frame_count(mp3);
-    else if (type == Wav)
-        sampleCount = wav->totalPCMFrameCount;
+	if (type == Mp3)
+		sampleCount = drmp3_get_pcm_frame_count(mp3);
+	else if (type == Wav)
+		sampleCount = wav->totalPCMFrameCount;
 
-    //////////////////////////////////// OGG
-    // int channels, sample_rate;
-    // short *data;
-    // stb_vorbis *stream = stb_vorbis_open_filename("Special_Needs_low.ogg", NULL, NULL);
-    // stb_vorbis_info info = stb_vorbis_get_info(stream);
-    // int samples = stb_vorbis_stream_length_in_samples(stream) * info.channels;
-    // int chunk = 65536;
-    // pDecodedInterleavedPCMFrames = (drmp3_int16 *)malloc(samples * info.channels * sizeof(drmp3_int16));
-    // stb_vorbis_get_samples_short_interleaved(stream, info.channels, pDecodedInterleavedPCMFrames, chunk * 10);
-    // // int frame = stb_vorbis_decode_filename("Special_Needs_low.ogg", &channels, &sample_rate, &data);
-    // Debug::Print("DATA" + std::to_string(info.channels) + " " + std::to_string(info.sample_rate) + " " + " " + std::to_string(samples));
-    // for (int i = 0; i < chunk; i++)
-    // {
-    // 	pDecodedInterleavedPCMFrames[i] = data[i];
-    // }
+	//////////////////////////////////// OGG
+	// int channels, sample_rate;
+	// short *data;
+	// stb_vorbis *stream = stb_vorbis_open_filename("Special_Needs_low.ogg", NULL, NULL);
+	// stb_vorbis_info info = stb_vorbis_get_info(stream);
+	// int samples = stb_vorbis_stream_length_in_samples(stream) * info.channels;
+	// int chunk = 65536;
+	// pDecodedInterleavedPCMFrames = (drmp3_int16 *)malloc(samples * info.channels * sizeof(drmp3_int16));
+	// stb_vorbis_get_samples_short_interleaved(stream, info.channels, pDecodedInterleavedPCMFrames, chunk * 10);
+	// // int frame = stb_vorbis_decode_filename("Special_Needs_low.ogg", &channels, &sample_rate, &data);
+	// Debug::Print("DATA" + std::to_string(info.channels) + " " + std::to_string(info.sample_rate) + " " + " " + std::to_string(samples));
+	// for (int i = 0; i < chunk; i++)
+	// {
+	// 	pDecodedInterleavedPCMFrames[i] = data[i];
+	// }
 }
 
 AudioClipStream::~AudioClipStream()
 {
-    if (type == Mp3) 
-    {
-        drmp3_uninit(mp3);
-        delete mp3;
-    }
-    else if (type == Wav) 
-    {
-        drwav_uninit(wav);
-        delete wav;
-    }
+	if (type == Mp3)
+	{
+		drmp3_uninit(mp3);
+		delete mp3;
+	}
+	else if (type == Wav)
+	{
+		drwav_uninit(wav);
+		delete wav;
+	}
 }
 
-void AudioClipStream::FillBuffer(int size, int bufferOffset, short *buff)
+void AudioClipStream::FillBuffer(int size, int bufferOffset, short* buff)
 {
-    if (type == Mp3)
-        drmp3_read_pcm_frames_s16(mp3, size, buff + (bufferOffset));
-    else if (type == Wav)
-        drwav_read_pcm_frames_s16(wav, size, buff + (bufferOffset));
+	if (type == Mp3)
+		drmp3_read_pcm_frames_s16(mp3, size, buff + (bufferOffset));
+	else if (type == Wav)
+		drwav_read_pcm_frames_s16(wav, size, buff + (bufferOffset));
 }
 
 int AudioClipStream::GetFrequency()
 {
-    int rate = 0;
-    if (type == Mp3)
-        rate = mp3->sampleRate;
-    else if (type == Wav)
-        rate = wav->sampleRate;
+	int rate = 0;
+	if (type == Mp3)
+		rate = mp3->sampleRate;
+	else if (type == Wav)
+		rate = wav->sampleRate;
 
-    return rate;
+	return rate;
 }
 
 int64_t AudioClipStream::GetSampleCount()
 {
-    return sampleCount;
+	return sampleCount;
 }
 
 int64_t AudioClipStream::GetSeekPosition()
 {
-    uint64_t seekPos = 0;
-    if (type == Mp3)
-        seekPos = mp3->currentPCMFrame;
-    else if (type == Wav)
-        seekPos = wav->readCursorInPCMFrames;
+	uint64_t seekPos = 0;
+	if (type == Mp3)
+		seekPos = mp3->currentPCMFrame;
+	else if (type == Wav)
+		seekPos = wav->readCursorInPCMFrames;
 
-    return seekPos;
+	return seekPos;
 }
 
 void AudioClipStream::ResetSeek()
 {
-    if (type == Mp3)
-        drmp3_seek_to_pcm_frame(mp3, 0);
-    else if (type == Wav)
-        drwav_seek_to_pcm_frame(wav, 0);
+	if (type == Mp3)
+		drmp3_seek_to_pcm_frame(mp3, 0);
+	else if (type == Wav)
+		drwav_seek_to_pcm_frame(wav, 0);
 }
 
 void AudioClipStream::SetSeek(uint64_t seekPosition)
 {
-    if (type == Mp3)
-        drmp3_seek_to_pcm_frame(mp3, seekPosition);
-    else if (type == Wav)
-        drwav_seek_to_pcm_frame(wav, seekPosition);
+	if (type == Mp3)
+		drmp3_seek_to_pcm_frame(mp3, seekPosition);
+	else if (type == Wav)
+		drwav_seek_to_pcm_frame(wav, seekPosition);
 }

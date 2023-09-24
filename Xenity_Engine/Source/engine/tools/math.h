@@ -27,7 +27,7 @@ public:
 	* @param rB Row Count of B
 	* @param cB Column Count of B
 	*/
-	static void MultiplyMatrices(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB);
+	static void MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB);
 
 	/**
 	* Get the next power of 2 of the given value (if the value is not itself a power of two)

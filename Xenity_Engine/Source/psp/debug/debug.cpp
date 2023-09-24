@@ -9,7 +9,7 @@
  */
 void PspDebugPrint(std::string text)
 {
-    pspDebugScreenPrintf(text.c_str());
+	pspDebugScreenPrintf(text.c_str());
 }
 
 /**
@@ -18,7 +18,7 @@ void PspDebugPrint(std::string text)
  */
 void PspDebugInit()
 {
-    pspDebugScreenInit(); // initialize the debug screen
+	pspDebugScreenInit(); // initialize the debug screen
 }
 
 #endif

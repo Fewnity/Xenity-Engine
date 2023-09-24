@@ -111,7 +111,7 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 						valuePtr->get()[vectorI] = nullptr;
 					}
 
-					if (firstDraw) 
+					if (firstDraw)
 					{
 						tempVariableName.clear();
 						firstDraw = false;

@@ -163,7 +163,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	for (const auto& kv : oldProjectFilesIds)
 	{
-		if (kv.second.hasChanged) 
+		if (kv.second.hasChanged)
 		{
 			GetFileReferenceById(kv.first)->file = projectFilesIds[kv.first].file;
 			Debug::Print("File renamed: " + std::to_string(kv.first));

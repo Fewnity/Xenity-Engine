@@ -14,12 +14,12 @@
 class API EngineSettings
 {
 public:
-	
+
 	/**
 	* Save engine settings
 	*/
 	static void SaveEngineSettings();
-	
+
 	/**
 	* Load engine settings
 	*/

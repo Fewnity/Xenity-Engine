@@ -23,7 +23,7 @@ public:
 	//void SetReflection();
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	
+
 
 	virtual ~Transform() = default;
 
@@ -176,7 +176,7 @@ private:
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
 	/**
-	* Get localPosition from matrices 
+	* Get localPosition from matrices
 	*/
 	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix);
 

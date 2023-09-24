@@ -44,14 +44,14 @@ public:
 	std::vector<std::shared_ptr<FileReference>> files;
 };
 
-class ProjectListItem 
+class ProjectListItem
 {
 public:
 	std::string name;
 	std::string path;
 };
 
-class FileAndPath 
+class FileAndPath
 {
 public:
 	std::string path;
@@ -114,7 +114,7 @@ public:
 	/**
 	* Get project name
 	*/
-	static std::string GetProjectName() 
+	static std::string GetProjectName()
 	{
 		return projectName;
 	}
@@ -122,7 +122,7 @@ public:
 	/**
 	* Get game name
 	*/
-	static std::string GetGameName() 
+	static std::string GetGameName()
 	{
 		return gameName;
 	}
@@ -130,7 +130,7 @@ public:
 	/**
 	* Get game start scene
 	*/
-	static std::shared_ptr<Scene> GetStartScene() 
+	static std::shared_ptr<Scene> GetStartScene()
 	{
 		return startScene;
 	}
@@ -138,7 +138,7 @@ public:
 	/**
 	* Get project folder path
 	*/
-	static std::string GetProjectFolderPath() 
+	static std::string GetProjectFolderPath()
 	{
 		return projectFolderPath;
 	}
@@ -162,7 +162,7 @@ public:
 	/**
 	* Get if the project is loaded
 	*/
-	static bool GetIsProjectLoaded() 
+	static bool GetIsProjectLoaded()
 	{
 		return projectLoaded;
 	}
@@ -171,7 +171,7 @@ public:
 	* Get opened projects list
 	*/
 	static std::vector<ProjectListItem> GetProjectsList();
-	
+
 	/**
 	* Save opened projects list
 	*/

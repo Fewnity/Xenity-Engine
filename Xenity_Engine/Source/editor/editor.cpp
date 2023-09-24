@@ -115,10 +115,10 @@ void Editor::Update()
 		else if (InputSystem::GetKey(LEFT))
 			side = -1;
 
-		if(sceneMenu->isHovered)
+		if (sceneMenu->isHovered)
 			fwd -= InputSystem::mouseWheel * 6;
 
-		if (InputSystem::GetKey(MOUSE_MIDDLE)) 
+		if (InputSystem::GetKey(MOUSE_MIDDLE))
 		{
 			up += InputSystem::InputSystem::mouseSpeed.y * 100;
 			side -= InputSystem::InputSystem::mouseSpeed.x * 100;
@@ -160,15 +160,15 @@ void Editor::Draw()
 {
 	EditorUI::NewFrame();
 
-	if (currentMenu == Menu_Create_Project) 
+	if (currentMenu == Menu_Create_Project)
 	{
 		createProjectMenu->Draw();
 	}
-	else if (currentMenu == Menu_Select_Project) 
+	else if (currentMenu == Menu_Select_Project)
 	{
 		selectProjectMenu->Draw();
 	}
-	else 
+	else
 	{
 		EditorUI::SetRoundedCorner(10);
 		if (EditorUI::showProjectsSettings)

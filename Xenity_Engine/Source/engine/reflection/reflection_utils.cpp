@@ -24,7 +24,7 @@ void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string
 		if (theMap.contains(kv.key()))
 		{
 			Variable& variableRef = theMap.at(kv.key()).variable.value();
-			auto &kvValue = kv.value();
+			auto& kvValue = kv.value();
 			if (kvValue.is_object())
 			{
 				if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
@@ -103,7 +103,7 @@ void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string
 						{
 							int fileId = kvValue.at(i);
 							file = ProjectManager::GetFileReferenceById(fileId);
-							if(file)
+							if (file)
 								file->LoadFileReference();
 						}
 						if (i < vectorSize - 1)
@@ -160,7 +160,7 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
-			if (auto lockValue = (valuePtr->get()).lock()) 
+			if (auto lockValue = (valuePtr->get()).lock())
 				json[kv.first] = lockValue->GetUniqueId();
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))

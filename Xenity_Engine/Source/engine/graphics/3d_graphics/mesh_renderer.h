@@ -18,15 +18,15 @@ class Material;
 class API MeshRenderer : public IDrawable
 {
 public:
-    MeshRenderer();
-    ~MeshRenderer();
-    //void SetReflection();
-    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-    int GetDrawPriority() const override;
+	MeshRenderer();
+	~MeshRenderer();
+	//void SetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	int GetDrawPriority() const override;
 
-    std::shared_ptr <MeshData> meshData = nullptr;
-    std::vector< std::shared_ptr<Texture>> textures;
-    std::shared_ptr <Material> material;
+	std::shared_ptr <MeshData> meshData = nullptr;
+	std::vector< std::shared_ptr<Texture>> textures;
+	std::shared_ptr <Material> material;
 private:
-    void Draw() override;
+	void Draw() override;
 };

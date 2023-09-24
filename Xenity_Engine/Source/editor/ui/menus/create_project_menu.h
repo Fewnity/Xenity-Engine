@@ -3,7 +3,7 @@
 #include "menu.h"
 #include <string>
 
-enum CreateProjectError 
+enum CreateProjectError
 {
 	NO_ERROR,
 	ERROR_UNKNOWN,

@@ -82,7 +82,7 @@ private:
 	std::string text;
 	Color color = Color();
 	int orderInLayer = 0;
-	TextInfo *textInfo = nullptr;
+	TextInfo* textInfo = nullptr;
 	bool isTextInfoDirty = true;
 	std::shared_ptr <MeshData> mesh = nullptr;
 };

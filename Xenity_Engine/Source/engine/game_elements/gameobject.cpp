@@ -121,7 +121,7 @@ void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 	if (auto newChild = weakNewChild.lock())
 	{
 		// Remove the new child from his old parent's children list
-		if (newChild->parent.lock()) 
+		if (newChild->parent.lock())
 		{
 			std::shared_ptr<GameObject> oldParent = newChild->parent.lock();
 			int parentChildCount = oldParent->childCount;
@@ -171,7 +171,7 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	componentCount++;
-	if (Engine::GetGameState() == Playing && GetLocalActive()) 
+	if (Engine::GetGameState() == Playing && GetLocalActive())
 	{
 		componentToAdd->Awake();
 		componentToAdd->isAwakeCalled = true;

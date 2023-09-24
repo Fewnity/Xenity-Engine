@@ -17,14 +17,14 @@ void FreeMove::Update()
 	Vector3 pos = cameraTrans->GetPosition();
 
 	if (InputSystem::GetKey(TRIANGLE))
-		rot.x += -1 * Time::GetDeltaTime()*60;
+		rot.x += -1 * Time::GetDeltaTime() * 60;
 	else if (InputSystem::GetKey(CROSS))
-		rot.x += 1 * Time::GetDeltaTime()*60;
+		rot.x += 1 * Time::GetDeltaTime() * 60;
 
 	if (InputSystem::GetKey(CIRCLE))
-		rot.y += 1 * Time::GetDeltaTime()*60;
+		rot.y += 1 * Time::GetDeltaTime() * 60;
 	else if (InputSystem::GetKey(SQUARE))
-		rot.y += -1 * Time::GetDeltaTime()*60;
+		rot.y += -1 * Time::GetDeltaTime() * 60;
 
 	float fwd = 0;
 	float side = 0;

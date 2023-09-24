@@ -82,7 +82,7 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 	return valid;
 }
 
-enum GameState 
+enum GameState
 {
 	Stopped,
 	Paused,
@@ -151,7 +151,7 @@ public:
 	/**
 	* Get game state
 	*/
-	API static GameState GetGameState() 
+	API static GameState GetGameState()
 	{
 		return gameState;
 	}
@@ -174,7 +174,7 @@ public:
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static int gameObjectCount;
 	static int gameObjectEditorCount;
-	static Renderer *renderer;
+	static Renderer* renderer;
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;

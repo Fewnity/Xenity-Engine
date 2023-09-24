@@ -123,7 +123,7 @@ void Camera::SetFarClippingPlane(float value)
 	{
 		farClippingPlane = value + 0.01f;
 	}
-	else 
+	else
 	{
 		farClippingPlane = value;
 	}

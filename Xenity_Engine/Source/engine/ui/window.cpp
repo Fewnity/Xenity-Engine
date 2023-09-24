@@ -156,7 +156,7 @@ void Window::UpdateWindowTitle()
 	{
 		newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
 	}
-	else 
+	else
 	{
 		newTitle += "Empty Scene";
 	}

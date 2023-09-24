@@ -251,7 +251,7 @@ void Transform::UpdateWorldValues()
 void Transform::UpdateWorldRotation()
 {
 	auto gm = gameObject.lock();
-	if (gm->parent.expired()) 
+	if (gm->parent.expired())
 	{
 		rotation = localRotation;
 		return;

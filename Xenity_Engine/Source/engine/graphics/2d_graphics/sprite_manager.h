@@ -19,31 +19,31 @@ class Material;
 class API SpriteManager
 {
 public:
-    
-    /**
-    * Init sprite manager
-    */
-    static void Init();
 
-    /**
-    * Draw a sprite
-    * @param position Sprite's position
-    * @param rotation Sprite's roation
-    * @param scale Sprite's scale
-    * @param texture Sprite's texture
-    * @param color Sprite's color
-    * @param transform Sprite's transform
-    */
-    //static void DrawSprite(std::shared_ptr<Texture> texture, Color color, std::shared_ptr<Transform> transform);
-    static void DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
-    static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+	/**
+	* Init sprite manager
+	*/
+	static void Init();
 
-    /**
-    * Render a 2D line
-    * @param meshData Mesh data
-    */
-    static void Render2DLine(std::shared_ptr <MeshData> meshData);
+	/**
+	* Draw a sprite
+	* @param position Sprite's position
+	* @param rotation Sprite's roation
+	* @param scale Sprite's scale
+	* @param texture Sprite's texture
+	* @param color Sprite's color
+	* @param transform Sprite's transform
+	*/
+	//static void DrawSprite(std::shared_ptr<Texture> texture, Color color, std::shared_ptr<Transform> transform);
+	static void DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+	static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+
+	/**
+	* Render a 2D line
+	* @param meshData Mesh data
+	*/
+	static void Render2DLine(std::shared_ptr <MeshData> meshData);
 
 private:
-    static std::shared_ptr <MeshData> spriteMeshData;
+	static std::shared_ptr <MeshData> spriteMeshData;
 };

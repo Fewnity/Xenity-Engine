@@ -15,7 +15,7 @@ class Light;
 class Shader : public FileReference, public Reflection
 {
 public:
-	enum ShaderType 
+	enum ShaderType
 	{
 		Vertex_Shader,
 		Fragment_Shader,
@@ -37,7 +37,7 @@ public:
 	void SetShaderCameraPositionCanvas();
 	void SetShaderProjection();
 	void SetShaderProjectionCanvas();
-	void SetShaderModel(const glm::mat4 &trans);
+	void SetShaderModel(const glm::mat4& trans);
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale);
 	void SetShaderAttribut(const char* attribut, const Vector4& value);
 	void SetShaderAttribut(const char* attribut, const Vector3& value);

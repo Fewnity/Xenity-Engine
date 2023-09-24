@@ -149,7 +149,7 @@ void Light::SetRange(float value)
 		value = 0;
 
 	range = value;
-	if(type != Directional)
+	if (type != Directional)
 		UpdateLightValues();
 }
 

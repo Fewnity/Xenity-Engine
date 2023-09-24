@@ -1,6 +1,6 @@
 #pragma once
 
-enum IDrawableTypes 
+enum IDrawableTypes
 {
 	Draw_3D,
 	Draw_2D,

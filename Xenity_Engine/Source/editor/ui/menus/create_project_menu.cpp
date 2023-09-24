@@ -27,7 +27,7 @@ void CreateProjectMenu::Draw()
 	font->Scale *= 1.5;
 	ImGui::PushFont(font);
 
-	if (ImGui::Button("Back")) 
+	if (ImGui::Button("Back"))
 	{
 		Editor::currentMenu = Menu_Select_Project;
 	}

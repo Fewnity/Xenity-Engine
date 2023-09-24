@@ -77,7 +77,7 @@ public:
 
 private:
 
-	class Tile 
+	class Tile
 	{
 	public:
 		bool isObstacle = false;
@@ -157,7 +157,7 @@ private:
 
 	Tile* grid = nullptr;
 	std::vector<Tile*> nextTilesToCheck;
-	Vector2 startPos = Vector2(0,0);
+	Vector2 startPos = Vector2(0, 0);
 	Vector2 endPos = Vector2(0, 0);
 	Tile* currentTile = nullptr;
 	Tile* endTile = nullptr;

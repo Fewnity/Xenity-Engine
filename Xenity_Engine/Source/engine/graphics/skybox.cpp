@@ -45,7 +45,7 @@ std::unordered_map<std::string, ReflectionEntry> SkyBox::GetMetaReflection()
 	return reflectedVariables;
 }
 
-void SkyBox::OnReflectionUpdated() 
+void SkyBox::OnReflectionUpdated()
 {
 	json myJson;
 	myJson["Values"] = ReflectionUtils::MapToJson(GetReflection());

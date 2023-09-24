@@ -10,7 +10,7 @@
 #include "../vectors/vector2_int.h"
 #include "../vectors/vector2.h"
 
-void Math::MultiplyMatrices(const float *A, const float *B, float *result, int rA, int cA, int rB, int cB)
+void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
 	{

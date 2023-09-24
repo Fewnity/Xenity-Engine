@@ -14,7 +14,7 @@ public:
 		return valueA == valueB;
 	}
 
-	std::string GetName() 
+	std::string GetName()
 	{
 		return name;
 	}
@@ -23,7 +23,7 @@ private:
 	std::string name;
 };
 
-class UnitTestManager 
+class UnitTestManager
 {
 public:
 	static void StartAllTests();
@@ -34,7 +34,7 @@ class AddVectorTest : public UnitTest
 {
 public:
 	AddVectorTest() = delete;
-	AddVectorTest(const std::string& name) : UnitTest(name){ }
+	AddVectorTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };

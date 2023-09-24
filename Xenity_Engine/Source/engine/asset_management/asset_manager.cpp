@@ -86,11 +86,11 @@ void AssetManager::Init()
 // 	shaderCount++;
 // }
 
- void AssetManager::AddMaterial(Material *material)
- {
- 	materials.push_back(material);
- 	materialCount++;
- }
+void AssetManager::AddMaterial(Material* material)
+{
+	materials.push_back(material);
+	materialCount++;
+}
 
 void AssetManager::AddReflection(Reflection* reflection)
 {
@@ -177,26 +177,26 @@ void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 // 	}
 // }
 
- void AssetManager::RemoveMaterial(const Material *material)
- {
- 	int materialIndex = 0;
- 	bool found = false;
- 	for (int i = 0; i < materialCount; i++)
- 	{
- 		if (materials[i] == material)
- 		{
- 			found = true;
- 			materialIndex = i;
- 			break;
- 		}
- 	}
+void AssetManager::RemoveMaterial(const Material* material)
+{
+	int materialIndex = 0;
+	bool found = false;
+	for (int i = 0; i < materialCount; i++)
+	{
+		if (materials[i] == material)
+		{
+			found = true;
+			materialIndex = i;
+			break;
+		}
+	}
 
- 	if (found)
- 	{
- 		materials.erase(materials.begin() + materialIndex);
- 		materialCount--;
- 	}
- }
+	if (found)
+	{
+		materials.erase(materials.begin() + materialIndex);
+		materialCount--;
+	}
+}
 
 void AssetManager::RemoveReflection(const Reflection* reflection)
 {
@@ -224,7 +224,7 @@ void AssetManager::RemoveReflection(const Reflection* reflection)
 #endif
 }
 
-void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference) 
+void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference)
 {
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
@@ -398,10 +398,10 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 // 	return shaders[index];
 // }
 
- Material *AssetManager::GetMaterial(const int index)
- {
- 	return materials[index];
- }
+Material* AssetManager::GetMaterial(const int index)
+{
+	return materials[index];
+}
 
 // Material *AssetManager::GetMaterialByName(const std::string name)
 // {
@@ -461,10 +461,10 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 // 	return shaderCount;
 // }
 
- int AssetManager::GetMaterialCount()
- {
- 	return materialCount;
- }
+int AssetManager::GetMaterialCount()
+{
+	return materialCount;
+}
 
 int AssetManager::GetReflectionCount()
 {

@@ -3,7 +3,7 @@
 class GameInterface
 {
 public:
-    virtual ~GameInterface() = default;
-    virtual void Start() = 0;
-    virtual void Update() = 0;
+	virtual ~GameInterface() = default;
+	virtual void Start() = 0;
+	virtual void Update() = 0;
 };

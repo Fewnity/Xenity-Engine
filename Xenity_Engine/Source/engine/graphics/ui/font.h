@@ -10,23 +10,23 @@ class Texture;
 class API Font : public FileReference, public Reflection
 {
 public:
-    ~Font();
-    std::shared_ptr <Texture> fontAtlas = nullptr;
-    static std::shared_ptr<Font> MakeFont();
+	~Font();
+	std::shared_ptr <Texture> fontAtlas = nullptr;
+	static std::shared_ptr<Font> MakeFont();
 
-    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-    std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 
-    void OnReflectionUpdated() override;
-    void LoadFileReference() override;
-    Character* Characters[256] = {};
-    float maxCharHeight = 0;
+	void OnReflectionUpdated() override;
+	void LoadFileReference() override;
+	Character* Characters[256] = {};
+	float maxCharHeight = 0;
 
-    std::shared_ptr<Font> GetThisShared() 
-    {
-       return std::dynamic_pointer_cast<Font>(shared_from_this());
-    }
+	std::shared_ptr<Font> GetThisShared()
+	{
+		return std::dynamic_pointer_cast<Font>(shared_from_this());
+	}
 
 private:
-    bool CreateFont(std::shared_ptr<Font> font, const std::string& filePath);
+	bool CreateFont(std::shared_ptr<Font> font, const std::string& filePath);
 };

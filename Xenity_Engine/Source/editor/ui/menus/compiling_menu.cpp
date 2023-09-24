@@ -10,7 +10,7 @@ void CompilingMenu::Init()
 
 void CompilingMenu::Draw()
 {
-	if (popupState == 2) 
+	if (popupState == 2)
 	{
 		popupState = 1;
 		ImGui::OpenPopup("Compiling...");

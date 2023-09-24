@@ -13,7 +13,7 @@ class Vector2Int;
 
 #include "../reflection/reflection.h"
 
-class API Vector2: public Reflection
+class API Vector2 : public Reflection
 {
 public:
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;

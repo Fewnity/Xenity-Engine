@@ -91,7 +91,7 @@ void Texture::LoadFileReference()
 	{
 		isLoaded = true;
 #if defined(EDITOR)
-		std::thread threadLoading = std::thread(&Texture::CreateTexture,this, filter, useMipMap);
+		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, filter, useMipMap);
 		threadLoading.detach();
 #else
 		CreateTexture(filter, useMipMap);
@@ -268,7 +268,7 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 
 	if (needResize)
 	{
-		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH)*4);
+		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH) * 4);
 		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
 		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, GU_PSM_8888);
 		free(resizedData);
@@ -373,8 +373,8 @@ void Texture::LoadTexture()
 	std::string debugText = "Loading texture: ";
 	debugText += path;
 	Debug::Print(debugText);
-	
-	int fileBufferSize  = 0;
+
+	int fileBufferSize = 0;
 	file->Open(false);
 	unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
 	file->Close();

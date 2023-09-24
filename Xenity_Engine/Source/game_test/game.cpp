@@ -23,15 +23,15 @@ Game* Game::game;
 /// </summary>
 void Game::Start()
 {
-    game = this;
-    LoadGameData();
+	game = this;
+	LoadGameData();
 
-    ClassRegistry::AddComponentClass("Rotate", [](std::shared_ptr<GameObject> go)
-        { return go->AddComponent<Rotate>(); });
-    ClassRegistry::AddComponentClass("FreeMove", [](std::shared_ptr<GameObject> go)
-        { return go->AddComponent<FreeMove>(); });
+	ClassRegistry::AddComponentClass("Rotate", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<Rotate>(); });
+	ClassRegistry::AddComponentClass("FreeMove", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<FreeMove>(); });
 
-    Debug::Print("Game::Start");
+	Debug::Print("Game::Start");
 }
 
 void Game::LoadGameData()
@@ -48,5 +48,5 @@ void Game::Update()
 
 GameInterface* CreateGame()
 {
-    return new Game();
+	return new Game();
 }

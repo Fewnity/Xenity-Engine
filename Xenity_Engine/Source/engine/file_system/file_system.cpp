@@ -65,7 +65,7 @@ void File::Write(const std::string& data)
 #endif
 }
 
-unsigned char * File::ReadAllBinary(int &size)
+unsigned char* File::ReadAllBinary(int& size)
 {
 	char* data = nullptr;
 #if defined(__PSP__)
@@ -100,7 +100,7 @@ std::string File::ReadAll()
 	{
 		int pos = sceIoLseek(fileId, 0, SEEK_END);
 		sceIoLseek(fileId, 0, SEEK_SET);
-		char *data = new char[pos + 1];
+		char* data = new char[pos + 1];
 		data[pos] = 0;
 		sceIoRead(fileId, data, pos);
 		allText = data;
@@ -134,11 +134,11 @@ bool File::CheckIfExist()
 		fileId = -1;
 	}
 #else
-	if (file.is_open()) 
+	if (file.is_open())
 	{
 		exists = true;
 	}
-	else 
+	else
 	{
 		std::ios_base::openmode params = std::fstream::in | std::fstream::out;
 		file.open(path, params);
@@ -243,9 +243,9 @@ std::string File::GetFileName() const
 	int lastSlashPos = path.find_last_of('\\');
 	int lastSlashPos2 = path.find_last_of('/');
 
-	if (lastSlashPos != -1 || lastSlashPos2 != -1) 
+	if (lastSlashPos != -1 || lastSlashPos2 != -1)
 	{
-		if(lastSlashPos2 > lastSlashPos)
+		if (lastSlashPos2 > lastSlashPos)
 			finalPos = lastSlashPos2 + 1;
 		else
 			finalPos = lastSlashPos + 1;
@@ -336,17 +336,17 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 	}
 	directory->files.clear();
 	directory->subdirectories.clear();
-	if (!directory->CheckIfExist()) 
+	if (!directory->CheckIfExist())
 	{
 		return;
 	}
 #if defined(__PSP__)
-	DIR *dir = opendir(directory->GetPath().c_str());
+	DIR* dir = opendir(directory->GetPath().c_str());
 	if (dir == NULL)
 	{
 		return;
 	}
-	struct dirent *ent;
+	struct dirent* ent;
 	while ((ent = readdir(dir)) != NULL)
 	{
 		std::string found = "";
@@ -369,21 +369,21 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 				newFile = FileSystem::MakeFile(fullPath);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 			}
 		}
 		else if (S_ISDIR(statbuf.st_mode))
 		{
-			Directory *newDirectory = nullptr;
+			Directory* newDirectory = nullptr;
 			try
 			{
 				newDirectory = new Directory(fullPath + "\\");
-				if(recursive)
+				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 				if (newDirectory != nullptr)
 					delete newDirectory;
@@ -396,23 +396,23 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 #if defined(__vita__)
 	dirPath = PSVITA_BASE_DIR + dirPath;
 #endif
-	for (const auto &file : std::filesystem::directory_iterator(dirPath))
+	for (const auto& file : std::filesystem::directory_iterator(dirPath))
 	{
 		if (file.is_directory())
 		{
-			Directory *newDirectory = nullptr;
+			Directory* newDirectory = nullptr;
 			try
 			{
 				std::string path = file.path().string();
 #if defined(__vita__)
-			path = path.substr(4);
+				path = path.substr(4);
 #endif
 				newDirectory = new Directory(path + "\\");
-				if(recursive)
+				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 				if (newDirectory != nullptr)
 					delete newDirectory;
@@ -423,14 +423,14 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 			std::shared_ptr<File> newFile = nullptr;
 			try
 			{
-			std::string path = file.path().string();
+				std::string path = file.path().string();
 #if defined(__vita__)
-			path = path.substr(4);
+				path = path.substr(4);
 #endif
 				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 			}
 		}
@@ -444,7 +444,7 @@ bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 	try
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	std::filesystem::rename(path, newPath);
+		std::filesystem::rename(path, newPath);
 #endif
 	}
 	catch (const std::exception&)
@@ -470,7 +470,7 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 		}
 	}
 
-	if (!file) 
+	if (!file)
 	{
 		file = std::make_shared<File>(path);
 		files.push_back(file);

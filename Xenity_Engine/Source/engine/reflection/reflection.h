@@ -45,7 +45,7 @@ typedef std::variant<
 	std::reference_wrapper<std::shared_ptr<Material>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>> Variable;
 
-class ReflectionEntry 
+class ReflectionEntry
 {
 public:
 	ReflectionEntry() = default;
@@ -71,7 +71,7 @@ public:
 	*/
 	virtual void OnReflectionUpdated() {};
 
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, const Variable& variable, const std::string& variableName, bool isPublic);
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, const Variable& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic);
+	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry>& map, const Variable& variable, const std::string& variableName, bool isPublic);
+	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry>& map, const Variable& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic);
 };
 

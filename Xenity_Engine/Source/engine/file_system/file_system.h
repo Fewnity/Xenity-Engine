@@ -28,7 +28,7 @@ public:
 	{
 		this->fileSystem = this;
 	}
-	static FileSystem *fileSystem;
+	static FileSystem* fileSystem;
 
 	/**
 	* Init file system
@@ -56,7 +56,7 @@ public:
 	* Get all files of a directory and fill it
 	* @param directory Directory to fill
 	*/
-	void FillDirectory(Directory *directory, bool recursive);
+	void FillDirectory(Directory* directory, bool recursive);
 
 	bool Rename(const std::string& path, const std::string& newPath);
 
@@ -79,9 +79,9 @@ public:
 	* Read all the file
 	*/
 	std::string ReadAll();
-	
+
 	/**
-	* Read all the file in binary mode (Need to free the pointer after 
+	* Read all the file in binary mode (Need to free the pointer after
 	*/
 	unsigned char* ReadAllBinary(int& size);
 
@@ -106,11 +106,11 @@ public:
 	*/
 	std::string GetPath() const
 	{
-/*#if defined(__vita__)
-		return path.substr(4);
-#else
-		return path;
-#endif*/
+		/*#if defined(__vita__)
+				return path.substr(4);
+		#else
+				return path;
+		#endif*/
 		return path;
 	}
 
@@ -158,7 +158,7 @@ public:
 	* Check if the directory exists
 	*/
 	bool CheckIfExist();
-	std::vector<Directory *> subdirectories;
+	std::vector<Directory*> subdirectories;
 	std::vector<std::shared_ptr<File>> files;
 
 	/**
@@ -167,11 +167,11 @@ public:
 	std::string GetPath() const
 	{
 		return path;
-/*#if defined(__vita__)
-		return path.substr(4);
-#else
-		return path;
-#endif*/
+		/*#if defined(__vita__)
+				return path.substr(4);
+		#else
+				return path;
+		#endif*/
 	}
 
 private:

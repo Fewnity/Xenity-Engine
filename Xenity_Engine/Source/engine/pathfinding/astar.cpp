@@ -21,7 +21,7 @@ void Astar::SetGridSize(int xSize, int ySize)
 		yGridSize = ySize;
 
 		// Create new grid
-		grid = (Tile *)malloc((size_t)xGridSize * yGridSize * sizeof(Tile));
+		grid = (Tile*)malloc((size_t)xGridSize * yGridSize * sizeof(Tile));
 
 		// Fill grid with default values
 		ResetGrid();
@@ -51,7 +51,7 @@ void Astar::ResetGrid(bool clearObstacles)
 	{
 		for (int y = 0; y < yGridSize; y++)
 		{
-			Tile *tile = GetTileFast(x, y);
+			Tile* tile = GetTileFast(x, y);
 			tile->g = INT32_MAX;
 			tile->h = 0;
 			tile->f = 0;
@@ -70,7 +70,7 @@ void Astar::ResetGrid(bool clearObstacles)
 
 void Astar::SetTileIsObstacle(int x, int y, bool isObstacle)
 {
-	Tile *tile = GetTile(x, y);
+	Tile* tile = GetTile(x, y);
 
 	if (tile)
 		tile->isObstacle = isObstacle;
@@ -82,12 +82,12 @@ void Astar::GetLowestFTile()
 	if (nextTileCount != 0)
 	{
 
-		Tile *lowestTile = nextTilesToCheck[0];
+		Tile* lowestTile = nextTilesToCheck[0];
 		int index = 0;
 
 		for (int i = 1; i < nextTileCount; i++)
 		{
-			Tile *tile = nextTilesToCheck[i];
+			Tile* tile = nextTilesToCheck[i];
 
 			if (lowestTile->f > tile->f)
 			{
@@ -120,7 +120,7 @@ void Astar::ProcessOneStep()
 	{
 		for (int y = -1; y < 2; y++)
 		{
-			Tile *tile = GetTile(x + currentTile->x, y + currentTile->y);
+			Tile* tile = GetTile(x + currentTile->x, y + currentTile->y);
 			if (tile == currentTile || tile == nullptr || tile->closed || tile->isObstacle)
 				continue;
 
@@ -129,8 +129,8 @@ void Astar::ProcessOneStep()
 			{
 				if (!canPassCorners)
 				{
-					Tile *neighbor1 = GetTile(currentTile->x, y + currentTile->y);
-					Tile *neighbor2 = GetTile(x + currentTile->x, currentTile->y);
+					Tile* neighbor1 = GetTile(currentTile->x, y + currentTile->y);
+					Tile* neighbor2 = GetTile(x + currentTile->x, currentTile->y);
 					if (neighbor1->isObstacle || neighbor2->isObstacle)
 					{
 						continue;
@@ -166,11 +166,11 @@ void Astar::SetFinalPath()
 	{
 		for (int y = 0; y < yGridSize; y++)
 		{
-			Tile *t = GetTileFast(x, y);
+			Tile* t = GetTileFast(x, y);
 		}
 	}
 
-	Tile *nextTile = currentTile;
+	Tile* nextTile = currentTile;
 	while (nextTile != nullptr)
 	{
 		nextTile = nextTile->previousTile;
@@ -203,7 +203,7 @@ std::vector<Vector2> Astar::GetPath()
 			if (!cantAccess)
 			{
 				// Start from the end
-				Tile *nextTile = currentTile;
+				Tile* nextTile = currentTile;
 
 				// Navigate to the start tile
 				while (nextTile != nullptr)

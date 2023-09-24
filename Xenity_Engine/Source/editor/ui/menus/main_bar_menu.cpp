@@ -67,7 +67,7 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Build And Run on PSP"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
-			if(!exportPath.empty())
+			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
 		}
 		if (ImGui::MenuItem("Close project"))

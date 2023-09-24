@@ -2,7 +2,7 @@
 #include "../engine/platform.h"
 #include <string>
 
-enum BuildType 
+enum BuildType
 {
 	EditorHotReloading,
 	BuildGame,
@@ -20,13 +20,13 @@ public:
 	* @param exportPath Folder location for the build
 	*/
 	static void CompileGameThreaded(Platform platform, BuildType buildType, std::string exportPath);
-	
+
 	/**
 	* Start hot reloading
 	*/
 	static void HotReloadGame();
 private:
-	
+
 	/**
 	* Compile the game code
 	* @param platform Platform target
@@ -34,40 +34,40 @@ private:
 	* @param exportPath Folder location for the build
 	*/
 	static void CompileGame(Platform platform, BuildType buildType, const std::string& exportPath);
-	
+
 	/**
 	* Compile the game code in WSL for PSP or PsVita
 	* @param platform Platform target
 	* @param exportPath Folder location for the build
 	*/
 	static void CompileInWSL(Platform platform, const std::string& exportPath);
-	
+
 	/**
 	* Get the command to start the compiler
 	*/
 	static std::string GetStartCompilerCommand();
-	
+
 	/**
 	* Get the command to add another command
 	*/
 	static std::string GetAddNextCommand();
-	
+
 	/**
 	* Get the command to navigate to the engine folder
 	*/
 	static std::string GetNavToEngineFolderCommand();
-	
+
 	/**
 	* Get the command to compile the game as a dynamic library
 	* @param buildType
 	*/
 	static std::string GetCompileGameLibCommand(BuildType buildType);
-	
+
 	/**
 	* Get the command to compile the game as an executable file
 	*/
 	static std::string GetCompileGameExeCommand();
-	
+
 	/**
 	* Start game for build and run (PsVita not supported)
 	* @param buildType

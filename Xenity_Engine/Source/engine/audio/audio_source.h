@@ -16,94 +16,94 @@ class AudioClip;
 class API AudioSource : public Component
 {
 public:
-    AudioSource();
-    ~AudioSource();
-    //void SetReflection();
+	AudioSource();
+	~AudioSource();
+	//void SetReflection();
 
-    std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
-    void Awake() override;
+	void Awake() override;
 
-    /**
-    * Play audio
-    */
-    void Play();
+	/**
+	* Play audio
+	*/
+	void Play();
 
-    /**
-    * Resume audio
-    */
-    void Resume();
+	/**
+	* Resume audio
+	*/
+	void Resume();
 
-    /**
-    * Pause audio
-    */
-    void Pause();
+	/**
+	* Pause audio
+	*/
+	void Pause();
 
-    /**
-    * Stop audio
-    */
-    void Stop();
+	/**
+	* Stop audio
+	*/
+	void Stop();
 
-    std::shared_ptr<AudioClip> audioClip = nullptr;
+	std::shared_ptr<AudioClip> audioClip = nullptr;
 
-    /**
-    * Set volume
-    */
-    void SetVolume(float _volume);
+	/**
+	* Set volume
+	*/
+	void SetVolume(float _volume);
 
-    /**
-    * Set panning
-    */
-    void SetPanning(float panning);
+	/**
+	* Set panning
+	*/
+	void SetPanning(float panning);
 
-    /**
-    * Set is looping
-    */
-    void SetLoop(bool isLooping);
+	/**
+	* Set is looping
+	*/
+	void SetLoop(bool isLooping);
 
-    /**
-    * Get volume
-    */
-    float GetVolume()
-    {
-        return volume;
-    }
+	/**
+	* Get volume
+	*/
+	float GetVolume()
+	{
+		return volume;
+	}
 
-    /**
-    * Get panning
-    */
-    float GetPanning()
-    {
-        return pan;
-    }
+	/**
+	* Get panning
+	*/
+	float GetPanning()
+	{
+		return pan;
+	}
 
-    /**
-    * Get is playing
-    */
-    bool GetIsPlaying()
-    {
-        return isPlaying;
-    }
+	/**
+	* Get is playing
+	*/
+	bool GetIsPlaying()
+	{
+		return isPlaying;
+	}
 
-    /**
-    * Get is looping
-    */
-    bool GetIsLooping() 
-    {
-        return loop;
-    }
+	/**
+	* Get is looping
+	*/
+	bool GetIsLooping()
+	{
+		return loop;
+	}
 
-    std::shared_ptr<AudioSource> GetThisShared()
-    {
-        return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
-    }
+	std::shared_ptr<AudioSource> GetThisShared()
+	{
+		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
+	}
 
-    void OnDrawGizmos() override;
+	void OnDrawGizmos() override;
 
 private:
-    float volume = 1;
-    float pan = 0.5;
-    bool loop = true;
-    bool isPlaying = false;
-    bool playOnAwake = true;
+	float volume = 1;
+	float pan = 0.5;
+	bool loop = true;
+	bool isPlaying = false;
+	bool playOnAwake = true;
 };

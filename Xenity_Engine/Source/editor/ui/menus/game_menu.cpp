@@ -39,7 +39,7 @@ void GameMenu::Draw()
 		ImGui::SetWindowFocus();
 	}
 	ImVec2 size = ImGui::GetContentRegionAvail();
-	if(camera.lock())
+	if (camera.lock())
 	{
 		camera.lock()->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
 		ImGui::Image((ImTextureID)camera.lock()->framebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
@@ -48,7 +48,7 @@ void GameMenu::Draw()
 		{
 			isHovered = true;
 		}
-		else 
+		else
 		{
 			isHovered = false;
 		}
@@ -64,7 +64,7 @@ void GameMenu::Draw()
 		std::string noCamText = "There is no camera";
 		ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
 		float offY = ImGui::GetCursorPosY();
-		ImGui::SetCursorPos(ImVec2((size.x - textSize.x) / 2.0f, (size.y + offY) /2.0f));
+		ImGui::SetCursorPos(ImVec2((size.x - textSize.x) / 2.0f, (size.y + offY) / 2.0f));
 		ImGui::Text(noCamText.c_str());
 		ImGui::PopFont();
 

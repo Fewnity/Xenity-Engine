@@ -13,7 +13,7 @@ public:
 	void Init() override;
 	void Draw() override;
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
-	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int &componentIndex, const std::string& id);
+	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
 private:
 	void DrawFilePreview();
 	std::string previewText = "";

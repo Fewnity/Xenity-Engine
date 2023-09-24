@@ -261,6 +261,6 @@ private:
 
 	static bool hidedMouse;
 	static Input inputs[INPUT_COUNT];
-	static std::map<int, Input *> keyMap;
-	static std::vector<TouchScreen *> screens;
+	static std::map<int, Input*> keyMap;
+	static std::vector<TouchScreen*> screens;
 };

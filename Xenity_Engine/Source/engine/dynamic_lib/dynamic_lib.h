@@ -22,16 +22,16 @@ public:
 	* Load a game DLL
 	*/
 	static void LoadGameLibrary(const std::string& libraryName);
-	
+
 	/**
 	* Unload the game DLL
 	*/
 	static void UnloadGameLibrary();
-	
+
 	/**
 	* Create a game interface from the DLL
 	*/
-	static GameInterface *CreateGame();
+	static GameInterface* CreateGame();
 private:
 
 };

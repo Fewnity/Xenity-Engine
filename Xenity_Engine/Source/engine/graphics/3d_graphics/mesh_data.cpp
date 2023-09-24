@@ -242,7 +242,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 			newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	}
 #else
-	if (!hasNormal) 
+	if (!hasNormal)
 	{
 		if (!hasUv)
 			newSubMesh->data = (VertexNoColorNoUv*)malloc(sizeof(VertexNoColorNoUv) * vcount);
@@ -261,11 +261,11 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (newSubMesh->data == nullptr)
 	{
 		Debug::PrintWarning("No memory for Vertex");
-		free (newSubMesh->indices);
+		free(newSubMesh->indices);
 		delete newSubMesh;
 		return;
 	}
-	
+
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 

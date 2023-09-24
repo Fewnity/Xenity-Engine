@@ -19,66 +19,66 @@ class API Socket
 {
 public:
 
-    Socket() = delete;
-    Socket(int socketId)
-    {
-        this->socketId = socketId;
-    }
+	Socket() = delete;
+	Socket(int socketId)
+	{
+		this->socketId = socketId;
+	}
 
-    /**
-    * Send data
-    */
-    void SendData(const std::string& text);
+	/**
+	* Send data
+	*/
+	void SendData(const std::string& text);
 
-    /**
-    * Read data from the socket
-    */
-    void Update();
+	/**
+	* Read data from the socket
+	*/
+	void Update();
 
-    /**
-    * Return recieved data during this frame
-    */
-    std::string GetIncommingData() 
-    {
-        return incommingData;
-    }
+	/**
+	* Return recieved data during this frame
+	*/
+	std::string GetIncommingData()
+	{
+		return incommingData;
+	}
 
 private:
-    std::string incommingData;
-    int socketId = -1;
+	std::string incommingData;
+	int socketId = -1;
 };
 
 class API NetworkManager
 {
 public:
 
-    /**
-    * [Internal] Init network manager
-    */
-    static void Init();
+	/**
+	* [Internal] Init network manager
+	*/
+	static void Init();
 
-    /**
-    * [Internal] Update all sockets (To call every frame)
-    */
-    static void Update();
+	/**
+	* [Internal] Update all sockets (To call every frame)
+	*/
+	static void Update();
 
-    /**
-    * [Internal] Create a socket
-    */
-    static Socket *CreateSocket(const std::string& address, int port);
+	/**
+	* [Internal] Create a socket
+	*/
+	static Socket* CreateSocket(const std::string& address, int port);
 
-    /**
-    * [Internal] draw network setup menu for the PSP
-    */
-    static void DrawNetworkSetupMenu();
+	/**
+	* [Internal] draw network setup menu for the PSP
+	*/
+	static void DrawNetworkSetupMenu();
 
-    static bool needDrawMenu;
+	static bool needDrawMenu;
 #if defined(__PSP__)
-    static pspUtilityNetconfData pspNetworkData;
-    static int result;
+	static pspUtilityNetconfData pspNetworkData;
+	static int result;
 #endif
-    static bool done;
+	static bool done;
 
 private:
-    static std::vector<Socket *> sockets;
+	static std::vector<Socket*> sockets;
 };

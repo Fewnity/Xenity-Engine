@@ -19,7 +19,7 @@ class Input;
 class Touch;
 class TouchRaw;
 
-API void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs);
+API void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs);
 API void CrossInputsInit();
 API InputPad CrossGetInputPad();
 API std::vector<TouchRaw> CrossUpdateTouch();

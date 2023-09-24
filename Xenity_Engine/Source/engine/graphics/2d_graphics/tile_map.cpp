@@ -69,13 +69,13 @@ void Tilemap::Setup(int _width, int _height, int _chunkSize)
 	AddTexture(nullptr);
 
 	// Alloc tiles and set texture to empty
-	tiles = (Tile *)malloc((size_t)_width * _height * sizeof(Tile));
+	tiles = (Tile*)malloc((size_t)_width * _height * sizeof(Tile));
 
 	for (int x = 0; x < _width; x++)
 	{
 		for (int y = 0; y < _height; y++)
 		{
-			Tile *tile = GetTile(x, y);
+			Tile* tile = GetTile(x, y);
 			tile->textureId = 0;
 		}
 	}
@@ -86,13 +86,13 @@ void Tilemap::Setup(int _width, int _height, int _chunkSize)
 	{
 		for (int y = 0; y < chunkCount; y++)
 		{
-			TilemapChunk *chunk = new TilemapChunk();
+			TilemapChunk* chunk = new TilemapChunk();
 			chunks.push_back(chunk);
 		}
 	}
 }
 
-Tilemap::Tile *Tilemap::GetTile(int x, int y)
+Tilemap::Tile* Tilemap::GetTile(int x, int y)
 {
 	if (tiles == nullptr || x < 0 || y < 0 || x >= height || y >= height)
 		return nullptr;
@@ -100,7 +100,7 @@ Tilemap::Tile *Tilemap::GetTile(int x, int y)
 	return &tiles[x * height + y];
 }
 
-void Tilemap::SetTile(int x, int y, Texture *texture)
+void Tilemap::SetTile(int x, int y, Texture* texture)
 {
 	int _textureSize = (int)textures.size();
 	for (int i = 0; i < _textureSize; i++)
@@ -115,7 +115,7 @@ void Tilemap::SetTile(int x, int y, Texture *texture)
 
 void Tilemap::SetTile(int x, int y, int textureId)
 {
-	Tile *tile = GetTile(x, y);
+	Tile* tile = GetTile(x, y);
 	// If the tile exists
 	if (tile)
 	{
@@ -133,11 +133,11 @@ void Tilemap::FillChunks()
 		int xChunk = (int)floor(x / (float)chunkSize);
 		for (int y = 0; y < height; y++)
 		{
-			Tile *tile = GetTile(x, y);
+			Tile* tile = GetTile(x, y);
 			if (tile->textureId != 0)
 			{
 				int yChunk = (int)floor(y / (float)chunkSize);
-				MeshData *mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
+				MeshData* mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
 				MeshData::SubMesh* subMesh = mesh->subMeshes[0];
 
 				int indiceOff = subMesh->index_count;
@@ -151,13 +151,13 @@ void Tilemap::FillChunks()
 				if (!useIndices)
 				{
 					// Create tile with vertices only
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff,0);
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 1 + verticeOff,0);
-					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 2 + verticeOff,0);
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff, 0);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 1 + verticeOff, 0);
+					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 2 + verticeOff, 0);
 
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff,0);
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 4 + verticeOff,0);
-					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 5 + verticeOff,0);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff, 0);
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 4 + verticeOff, 0);
+					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 5 + verticeOff, 0);
 
 					subMesh->vertice_count += 6;
 				}
@@ -165,10 +165,10 @@ void Tilemap::FillChunks()
 				{
 					// Create tile with vertices and indices
 
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff,0);
-					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff,0);
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff,0);
-					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff,0);
+					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff, 0);
+					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff, 0);
+					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff, 0);
+					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff, 0);
 
 					subMesh->indices[0 + indiceOff] = 0 + verticeOff;
 					subMesh->indices[1 + indiceOff] = 2 + verticeOff;
@@ -191,7 +191,7 @@ void Tilemap::SetColor(const Color& color)
 	{
 		for (int y = 0; y < chunkCount; y++)
 		{
-			TilemapChunk *chunk = chunks[(size_t)x + (size_t)y * chunkCount];
+			TilemapChunk* chunk = chunks[(size_t)x + (size_t)y * chunkCount];
 
 			// Delete chunk meshes
 			int meshSize = (int)chunk->meshes.size();
@@ -218,7 +218,7 @@ void Tilemap::CreateChunksMeshes()
 	{
 		for (int y = 0; y < chunkCount; y++)
 		{
-			TilemapChunk *chunk = chunks[(size_t)x + (size_t)y * chunkCount];
+			TilemapChunk* chunk = chunks[(size_t)x + (size_t)y * chunkCount];
 
 			// Delete chunk meshes
 			int meshSize = (int)chunk->meshes.size();
@@ -231,7 +231,7 @@ void Tilemap::CreateChunksMeshes()
 			// Create new meshes
 			for (int i = 0; i < textureSize; i++)
 			{
-				MeshData *mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false, true);
+				MeshData* mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false, true);
 				mesh->subMeshes[0]->index_count = 0;
 				mesh->subMeshes[0]->vertice_count = 0;
 				mesh->hasIndices = useIndices;
@@ -286,7 +286,7 @@ void Tilemap::DrawChunks()
 					yChunkPosition = y * (float)chunkSize;
 					if (yChunkPosition <= cameraPos.y + yArea && yChunkPosition >= cameraPos.y - yArea)
 					{
-						TilemapChunk *chunk = chunks[(size_t)x + (size_t)y * chunkCount];
+						TilemapChunk* chunk = chunks[(size_t)x + (size_t)y * chunkCount];
 						// Draw each texture
 						for (int textureI = 0; textureI < textureSize; textureI++)
 						{
@@ -299,7 +299,7 @@ void Tilemap::DrawChunks()
 	}
 }
 
-int Tilemap::GetTextureIndex(Texture *texture)
+int Tilemap::GetTextureIndex(Texture* texture)
 {
 	int textureIndex = -1;
 	int textureCount = (int)textures.size();
@@ -314,7 +314,7 @@ int Tilemap::GetTextureIndex(Texture *texture)
 	return textureIndex;
 }
 
-void Tilemap::AddTexture(Texture *texture)
+void Tilemap::AddTexture(Texture* texture)
 {
 	if (GetTextureIndex(texture) == -1)
 	{
@@ -323,7 +323,7 @@ void Tilemap::AddTexture(Texture *texture)
 	}
 }
 
-void Tilemap::RemoveTexture(Texture *texture)
+void Tilemap::RemoveTexture(Texture* texture)
 {
 	int index = GetTextureIndex(texture);
 	if (index != -1)

@@ -3,11 +3,11 @@
 
 CodeFile::CodeFile(const std::string& fileExtension)
 {
-	if (fileExtension == ".h") 
+	if (fileExtension == ".h")
 	{
 		isHeader = true;
 	}
-	else 
+	else
 	{
 		isHeader = false;
 	}

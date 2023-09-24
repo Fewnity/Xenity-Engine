@@ -21,35 +21,35 @@ class MeshData;
 
 class API LineRenderer : public IDrawable
 {
-	public:
-		LineRenderer();
-		~LineRenderer();
-		//void SetReflection();
-		std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+public:
+	LineRenderer();
+	~LineRenderer();
+	//void SetReflection();
+	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
-		int GetDrawPriority() const override;
+	int GetDrawPriority() const override;
 
-		//Material* material = nullptr;
-		Color color = Color();
+	//Material* material = nullptr;
+	Color color = Color();
 
-		Vector3 startPosition = Vector3(0, 0, 0);
-		Vector3 endPosition = Vector3(0, 0, 0);
-		float width = 1;
+	Vector3 startPosition = Vector3(0, 0, 0);
+	Vector3 endPosition = Vector3(0, 0, 0);
+	float width = 1;
 
-		void SetOrderInLayer(int orderInLayer)
-		{
-			this->orderInLayer = orderInLayer;
-			Engine::drawOrderListDirty = true;
-		}
+	void SetOrderInLayer(int orderInLayer)
+	{
+		this->orderInLayer = orderInLayer;
+		Engine::drawOrderListDirty = true;
+	}
 
-		int GetOrderInLayer() const
-		{
-			return orderInLayer;
-		}
+	int GetOrderInLayer() const
+	{
+		return orderInLayer;
+	}
 
-	private:
-		void Draw() override;
-		int orderInLayer = 0;
-		std::shared_ptr <MeshData> meshData = nullptr;
+private:
+	void Draw() override;
+	int orderInLayer = 0;
+	std::shared_ptr <MeshData> meshData = nullptr;
 };
 

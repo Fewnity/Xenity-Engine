@@ -13,7 +13,7 @@
 
 class MeshRenderer;
 
-class CustomClass : public Reflection 
+class CustomClass : public Reflection
 {
 public:
 	CustomClass();
@@ -53,6 +53,6 @@ public:
 	float myFloat = 0;
 	int myInt = 0;
 	double myDouble = 0;
-	std::string myString ="";
+	std::string myString = "";
 };
 

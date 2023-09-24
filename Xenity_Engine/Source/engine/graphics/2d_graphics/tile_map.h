@@ -57,7 +57,7 @@ public:
 	* @param y Tile Y position
 	* @return Tilemap::Tile*
 	*/
-	Tile *GetTile(int x, int y);
+	Tile* GetTile(int x, int y);
 
 	/**
 	* @brief Set tile texture (slower)
@@ -66,7 +66,7 @@ public:
 	* @param y Tile Y position
 	* @param texture Texture to use or nullptr to clear tile (Texture needs to be added before, see Tilemap::AddTexture)
 	*/
-	void SetTile(int x, int y, Texture *textureId);
+	void SetTile(int x, int y, Texture* textureId);
 
 	/**
 	* @brief Set tile texture
@@ -82,14 +82,14 @@ public:
 	*
 	* @param texture Texture to add
 	*/
-	void AddTexture(Texture *texture);
+	void AddTexture(Texture* texture);
 
 	/**
 	* @brief Remove a texture from the Tilemap's texture list
 	*
 	* @param texture Texture to remove
 	*/
-	void RemoveTexture(Texture *texture);
+	void RemoveTexture(Texture* texture);
 
 	/**
 	* Get tile map width (column)
@@ -129,7 +129,7 @@ private:
 	class TilemapChunk
 	{
 	public:
-		std::vector<MeshData *> meshes;
+		std::vector<MeshData*> meshes;
 	};
 	int chunkSize = 0;
 	bool dirtyMeshes = false;
@@ -161,13 +161,13 @@ private:
 	* @param texture
 	* @return int Texture index
 	*/
-	int GetTextureIndex(Texture *texture);
+	int GetTextureIndex(Texture* texture);
 
-	std::vector<Texture *> textures;
-	std::vector<TilemapChunk *> chunks;
+	std::vector<Texture*> textures;
+	std::vector<TilemapChunk*> chunks;
 	int width = 0;
 	int height = 0;
-	Tile *tiles = nullptr;
+	Tile* tiles = nullptr;
 	Color color = Color();
 	bool needUpdateVertices = true;
 	bool useIndices = false;

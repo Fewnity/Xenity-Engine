@@ -42,7 +42,7 @@ private:
 	long long value = 0;
 };
 
-class API ProfilerCategory 
+class API ProfilerCategory
 {
 public:
 	std::unordered_map<std::string, ProfilerValue*> profilerList;
@@ -56,32 +56,32 @@ public:
 	* Init profiler
 	*/
 	static void Init();
-	
+
 	/**
 	* Reset counters and profiler (To call every frame)
 	*/
 	static void ResetCounters();
-	
+
 	/**
 	* Add one to the draw call counter
 	*/
 	static void AddDrawCall();
-	
+
 	/**
 	* Add one to the updated material counter
 	*/
 	static void AddMaterialUpdate();
-	
+
 	/**
 	* Get draw call count
 	*/
 	static int GetDrawCallCount();
-	
+
 	/**
 	* Get updated material count
 	*/
 	static int GetUpdatedMaterialCount();
-	
+
 	/**
 	* Update the profiler (To call every frame)
 	*/

@@ -83,7 +83,7 @@ public:
 	virtual void SetCameraPosition(std::weak_ptr<Camera> camera) = 0;
 	virtual void ResetTransform() = 0;
 	virtual void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) = 0;
-	virtual void SetTransform(const glm::mat4 &mat) = 0;
+	virtual void SetTransform(const glm::mat4& mat) = 0;
 	virtual void MoveTransform(const Vector3& position) = 0;
 	virtual void BindTexture(std::shared_ptr <Texture> texture) = 0;
 	virtual void ApplyTextureFilters(std::shared_ptr<Texture> texture) = 0;
@@ -91,7 +91,7 @@ public:
 	virtual void DrawMeshData(std::shared_ptr<MeshData >meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 	virtual unsigned int CreateNewTexture() = 0;
-	virtual void SetTextureData(std::shared_ptr < Texture >texture, unsigned int textureType, const unsigned char *buffer) = 0;
+	virtual void SetTextureData(std::shared_ptr < Texture >texture, unsigned int textureType, const unsigned char* buffer) = 0;
 	virtual void Clear() = 0;
 	virtual void SetFog(bool active) = 0;
 	virtual void SetFogValues(float start, float end, Color color) = 0;

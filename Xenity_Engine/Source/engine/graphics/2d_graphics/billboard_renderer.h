@@ -33,7 +33,7 @@ public:
 		Engine::drawOrderListDirty = true;
 	}
 
-	int GetOrderInLayer() const 
+	int GetOrderInLayer() const
 	{
 		return orderInLayer;
 	}

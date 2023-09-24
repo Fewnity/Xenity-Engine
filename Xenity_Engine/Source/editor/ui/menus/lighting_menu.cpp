@@ -33,7 +33,7 @@ void LightingMenu::Draw()
 	if (EditorUI::DrawInput("Color", Graphics::fogColor))
 		changed = true;
 
-	if (changed) 
+	if (changed)
 	{
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}

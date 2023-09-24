@@ -27,7 +27,7 @@
 
 #include "noise.h"
 
-// This is the new and improved, C(2) continuous interpolant
+ // This is the new and improved, C(2) continuous interpolant
 #define FADE(t) (t * t * t * (t * (t * 6 - 15) + 10))
 
 #define FASTFLOOR(x) (((int)(x) < (x)) ? ((int)x) : ((int)x - 1))
@@ -53,7 +53,7 @@
  * A vector-valued noise over 3D accesses it 96 times, and a
  * float-valued 4D noise 64 times. We want this to fit in the cache!
  */
-unsigned char perm[] = {151, 160, 137, 91, 90, 15,
+unsigned char perm[] = { 151, 160, 137, 91, 90, 15,
 						131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23,
 						190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33,
 						88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166,
@@ -78,7 +78,7 @@ unsigned char perm[] = {151, 160, 137, 91, 90, 15,
 						129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228,
 						251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107,
 						49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254,
-						138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180};
+						138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180 };
 
 //---------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ float Noise::grad3(int hash, float x, float y, float z)
 	int h = hash & 15;		 // Convert low 4 bits of hash code into 12 simple
 	float u = h < 8 ? x : y; // gradient directions, and compute dot product.
 	float v = h < 4 ? y : h == 12 || h == 14 ? x
-											 : z; // Fix repeats at h = 12 to 15
+		: z; // Fix repeats at h = 12 to 15
 	return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
 }
 
@@ -443,7 +443,7 @@ float Noise::noise4(float x, float y, float z, float w)
  */
 
 float Noise::pnoise4(float x, float y, float z, float w,
-			  int px, int py, int pz, int pw)
+	int px, int py, int pz, int pw)
 {
 	int ix0, iy0, iz0, iw0, ix1, iy1, iz1, iw1;
 	float fx0, fy0, fz0, fw0, fx1, fy1, fz1, fw1;

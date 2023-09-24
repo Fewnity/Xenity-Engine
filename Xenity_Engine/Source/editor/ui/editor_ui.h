@@ -20,7 +20,7 @@ class Component;
 class Transform;
 class SkyBox;
 
-enum IconName 
+enum IconName
 {
 	Icon_Folder,
 	Icon_File,
@@ -61,7 +61,7 @@ public:
 	static bool DrawInput(const std::string& inputName, Color& value);
 	static bool DrawInput(const std::string& inputName, Vector2& value);
 	static bool DrawInput(const std::string& inputName, Vector2Int& value);
-	static bool DrawInput(const std::string& inputName, Vector3 & value);
+	static bool DrawInput(const std::string& inputName, Vector3& value);
 	static bool DrawInput(const std::string& inputName, Vector4& value);
 	static bool DrawInput(const std::string& inputName, float& value);
 	static bool DrawInput(const std::string& inputName, double& value);
@@ -93,7 +93,7 @@ public:
 	static bool showLightingSettings;
 	static std::vector<std::shared_ptr<Texture>> icons;
 
-	static float GetUiScale() 
+	static float GetUiScale()
 	{
 		return uiScale;
 	}

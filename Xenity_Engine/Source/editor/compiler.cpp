@@ -253,7 +253,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
-	if (platform == Platform::P_Windows) 
+	if (platform == Platform::P_Windows)
 	{
 		std::string fileName = ProjectManager::GetGameName();
 		std::string command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";

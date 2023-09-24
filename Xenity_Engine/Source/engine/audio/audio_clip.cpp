@@ -3,7 +3,7 @@
 
 AudioClip::AudioClip(const std::string& filePath)
 {
-    this->filePath = filePath;
+	this->filePath = filePath;
 }
 
 std::unordered_map<std::string, ReflectionEntry> AudioClip::GetReflection()

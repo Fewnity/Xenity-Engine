@@ -13,23 +13,23 @@
 
 std::shared_ptr<File> file = nullptr;
 std::string Debug::debugText = "";
-Socket *Debug::socket;
+Socket* Debug::socket;
 
 /**
  * Print an error in the console and the debug file
  */
 void Debug::PrintError(const std::string& text)
 {
-    if (!EngineSettings::useDebugger)
-        return;
+	if (!EngineSettings::useDebugger)
+		return;
 
-    PrintInOnlineConsole(text);
-    std::string finalText = text + '\n';
-    std::string textWithoutColor = "[ERROR] " + finalText;
-    std::string textWithColor = "\033[31m" + textWithoutColor;
-    PrintInConsole(textWithColor);
-    PrintInFile(textWithoutColor);
-    debugText += finalText;
+	PrintInOnlineConsole(text);
+	std::string finalText = text + '\n';
+	std::string textWithoutColor = "[ERROR] " + finalText;
+	std::string textWithColor = "\033[31m" + textWithoutColor;
+	PrintInConsole(textWithColor);
+	PrintInFile(textWithoutColor);
+	debugText += finalText;
 }
 
 /**
@@ -37,33 +37,33 @@ void Debug::PrintError(const std::string& text)
  */
 void Debug::PrintWarning(const std::string& text)
 {
-    if (!EngineSettings::useDebugger)
-        return;
+	if (!EngineSettings::useDebugger)
+		return;
 
-    PrintInOnlineConsole(text);
-    std::string finalText = text + '\n';
-    std::string textWithoutColor = "[WARNING] " + finalText;
-    std::string textWithColor = "\033[33m" + textWithoutColor;
-    PrintInConsole(textWithColor);
-    PrintInFile(textWithoutColor);
-    debugText += finalText;
+	PrintInOnlineConsole(text);
+	std::string finalText = text + '\n';
+	std::string textWithoutColor = "[WARNING] " + finalText;
+	std::string textWithColor = "\033[33m" + textWithoutColor;
+	PrintInConsole(textWithColor);
+	PrintInFile(textWithoutColor);
+	debugText += finalText;
 }
 
 void Debug::PrintInConsole(const std::string& text)
 {
 #if defined(__PSP__)
-    // PspDebugPrint(text);
+	// PspDebugPrint(text);
 #elif defined(__vita__)
-    // PsVitaDebugPrint(text);
+	// PsVitaDebugPrint(text);
 #else
-    std::cout << text;
+	std::cout << text;
 #endif
 }
 
 void Debug::PrintInFile(const std::string& text)
 {
-    if (file && file.use_count() == 2)
-        file->Write(text);
+	if (file && file.use_count() == 2)
+		file->Write(text);
 }
 
 /**
@@ -71,30 +71,30 @@ void Debug::PrintInFile(const std::string& text)
  */
 void Debug::Print(const std::string& text)
 {
-    if (!EngineSettings::useDebugger)
-        return;
+	if (!EngineSettings::useDebugger)
+		return;
 
-    PrintInOnlineConsole(text);
-    std::string finalText = text + '\n';
-    std::string newString = "\033[37m" + finalText;
-    PrintInConsole(newString);
-    PrintInFile(finalText);
-    //debugText += finalText;
+	PrintInOnlineConsole(text);
+	std::string finalText = text + '\n';
+	std::string newString = "\033[37m" + finalText;
+	PrintInConsole(newString);
+	PrintInFile(finalText);
+	//debugText += finalText;
 }
 
 void Debug::PrintInOnlineConsole(const std::string& text)
 {
-    if (socket)
-    {
-        std::string finalText = text + char(3);
-        socket->SendData(finalText);
-    }
+	if (socket)
+	{
+		std::string finalText = text + char(3);
+		socket->SendData(finalText);
+	}
 }
 
 void Debug::ConnectToOnlineConsole()
 {
-    Debug::Print("Connect to online console...");
-    socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
+	Debug::Print("Connect to online console...");
+	socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
 }
 
 /**
@@ -103,24 +103,24 @@ void Debug::ConnectToOnlineConsole()
  */
 int Debug::Init()
 {
-    if (!EngineSettings::useDebugger)
-        return 0;
+	if (!EngineSettings::useDebugger)
+		return 0;
 
-    std::string fileName = "xenity_engine_debug.txt";
+	std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
-    fileName = "data\\xenity_engine\\" + fileName;
+	fileName = "data\\xenity_engine\\" + fileName;
 #endif
-    FileSystem::fileSystem->DeleteFile(fileName);
+	FileSystem::fileSystem->DeleteFile(fileName);
 
-    file = FileSystem::MakeFile(fileName);
-    file->Open(true);
+	file = FileSystem::MakeFile(fileName);
+	file->Open(true);
 
-    if (!file->CheckIfExist())
-    {
-        Print("-------- Debug file not created --------");
-        return -1;
-    }
+	if (!file->CheckIfExist())
+	{
+		Print("-------- Debug file not created --------");
+		return -1;
+	}
 
-    Print("-------- Debug initiated --------");
-    return 0;
+	Print("-------- Debug initiated --------");
+	return 0;
 }

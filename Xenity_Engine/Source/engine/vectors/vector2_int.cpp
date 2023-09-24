@@ -70,108 +70,108 @@ float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)
 
 #pragma region Operators
 
-Vector2Int operator+(const Vector2Int &left, const Vector2Int &right)
+Vector2Int operator+(const Vector2Int& left, const Vector2Int& right)
 {
-	return {(int)(left.x + right.x), (int)(left.y + right.y)};
+	return { (int)(left.x + right.x), (int)(left.y + right.y) };
 }
 
-Vector2Int operator-(const Vector2Int &left, const Vector2Int &right)
+Vector2Int operator-(const Vector2Int& left, const Vector2Int& right)
 {
-	return {(int)(left.x - right.x), (int)(left.y - right.y)};
+	return { (int)(left.x - right.x), (int)(left.y - right.y) };
 }
 
-Vector2Int operator*(const float value, const Vector2Int &vec)
+Vector2Int operator*(const float value, const Vector2Int& vec)
 {
-	return {(int)(vec.x * value), (int)(vec.y * value)};
+	return { (int)(vec.x * value), (int)(vec.y * value) };
 }
 
-Vector2Int operator*(const Vector2Int &left, const Vector2Int &right)
+Vector2Int operator*(const Vector2Int& left, const Vector2Int& right)
 {
-	return {(int)(left.x * right.x), (int)(left.y * right.y)};
+	return { (int)(left.x * right.x), (int)(left.y * right.y) };
 }
 
-Vector2Int operator*(const Vector2Int &vec, const float value)
+Vector2Int operator*(const Vector2Int& vec, const float value)
 {
-	return {(int)(vec.x * value), (int)(vec.y * value)};
+	return { (int)(vec.x * value), (int)(vec.y * value) };
 }
 
-Vector2Int operator/(const float value, const Vector2Int &vec)
+Vector2Int operator/(const float value, const Vector2Int& vec)
 {
-	return {(int)(vec.x / value), (int)(vec.y / value)};
+	return { (int)(vec.x / value), (int)(vec.y / value) };
 }
 
-Vector2Int operator/(const Vector2Int &vec, const float value)
+Vector2Int operator/(const Vector2Int& vec, const float value)
 {
-	return {(int)(vec.x / value), (int)(vec.y / value)};
+	return { (int)(vec.x / value), (int)(vec.y / value) };
 }
 
-Vector2Int operator/(const Vector2Int &left, const Vector2Int &right)
+Vector2Int operator/(const Vector2Int& left, const Vector2Int& right)
 {
-	return {(int)(left.x / right.x), (int)(left.y / right.y)};
+	return { (int)(left.x / right.x), (int)(left.y / right.y) };
 }
 
-Vector2Int operator/=(Vector2Int &vec, const float value)
+Vector2Int operator/=(Vector2Int& vec, const float value)
 {
 	vec.x /= (int)value;
 	vec.y /= (int)value;
 	return vec;
 }
 
-Vector2Int operator*=(Vector2Int &vec, const float value)
+Vector2Int operator*=(Vector2Int& vec, const float value)
 {
 	vec.x *= (int)value;
 	vec.y *= (int)value;
 	return vec;
 }
 
-Vector2Int operator+=(Vector2Int &vec, const float value)
+Vector2Int operator+=(Vector2Int& vec, const float value)
 {
 	vec.x += (int)value;
 	vec.y += (int)value;
 	return vec;
 }
 
-Vector2Int operator-=(Vector2Int &vec, const float value)
+Vector2Int operator-=(Vector2Int& vec, const float value)
 {
 	vec.x -= (int)value;
 	vec.y -= (int)value;
 	return vec;
 }
 
-Vector2Int operator/=(Vector2Int &vec, const Vector2Int &vecRight)
+Vector2Int operator/=(Vector2Int& vec, const Vector2Int& vecRight)
 {
 	vec.x /= vecRight.x;
 	vec.y /= vecRight.y;
 	return vec;
 }
 
-Vector2Int operator*=(Vector2Int &vec, const Vector2Int &vecRight)
+Vector2Int operator*=(Vector2Int& vec, const Vector2Int& vecRight)
 {
 	vec.x *= vecRight.x;
 	vec.y *= vecRight.y;
 	return vec;
 }
 
-Vector2Int operator+=(Vector2Int &vec, const Vector2Int &vecRight)
+Vector2Int operator+=(Vector2Int& vec, const Vector2Int& vecRight)
 {
 	vec.x += vecRight.x;
 	vec.y += vecRight.y;
 	return vec;
 }
 
-Vector2Int operator-=(Vector2Int &vec, const Vector2Int &vecRight)
+Vector2Int operator-=(Vector2Int& vec, const Vector2Int& vecRight)
 {
 	vec.x -= vecRight.x;
 	vec.y -= vecRight.y;
 	return vec;
 }
 
-bool operator==(const Vector2Int &left, const Vector2Int &right)
+bool operator==(const Vector2Int& left, const Vector2Int& right)
 {
 	return left.x == right.x && left.y == right.y;
 }
 
-bool operator!=(const Vector2Int &left, const Vector2Int &right)
+bool operator!=(const Vector2Int& left, const Vector2Int& right)
 {
 	return left.x != right.x || left.y != right.y;
 }

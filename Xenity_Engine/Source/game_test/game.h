@@ -20,8 +20,8 @@ class AudioSource;
 class Game : public GameInterface
 {
 public:
-	static Game *game;
-	static Game *GetGame()
+	static Game* game;
+	static Game* GetGame()
 	{
 		return game;
 	}

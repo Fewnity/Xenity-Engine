@@ -26,6 +26,7 @@ use shared folder and fix crash when deleting folder
 Fix material crash on play
 Check if material is null
 Material::SetAttribut check emplace, try_emplace?
+Check sprite manager vitagl
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
@@ -36,7 +37,7 @@ Add delete texture function in renderer for psp
 Create console window
 RGBA or RGB in vertex color?
 
---- To do in a long time 
+--- To do in a long time
 Add LOD
 Fix mouse speed at high fps
 Add transparency setting on textures
@@ -44,7 +45,7 @@ Packing asset system
 Add a tool to rotate selected gameobject
 Fix tool with child and parent negative scale
 Detect the number of cpu core for cmake
-Check FileSystem::GetGamePath 
+Check FileSystem::GetGamePath
 Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
@@ -56,7 +57,7 @@ Text scale
 
 #undef main
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	// Init engine
 	if (Engine::Init() != 0)

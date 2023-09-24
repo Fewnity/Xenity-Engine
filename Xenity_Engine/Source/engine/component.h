@@ -22,12 +22,12 @@ public:
 	Component();
 
 	virtual ~Component();
-	
+
 	/**
 	* Function called once before Start() at the creation of the component
 	*/
 	virtual void Awake() {}
-	
+
 	/**
 	* Function called once after Awake() at the creation of the component
 	*/
@@ -42,12 +42,12 @@ public:
 	virtual void OnDrawGizmos() {};
 
 	int updatePriority = 5000; //Lower is more priotary
-	
+
 	/**
 	* Get if the component is enabled
 	*/
 	bool GetIsEnabled();
-	
+
 	/**
 	* Enable or disable the component
 	*/
@@ -81,7 +81,7 @@ public:
 	/**
 	* Get component's name
 	*/
-	std::string GetComponentName() 
+	std::string GetComponentName()
 	{
 		return componentName;
 	}

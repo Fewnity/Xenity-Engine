@@ -18,31 +18,31 @@ class GameObject;
 class API SplinePoint
 {
 public:
-    std::weak_ptr<Transform> parent;
-    std::weak_ptr<Transform> before;
-    std::weak_ptr<Transform> next;
+	std::weak_ptr<Transform> parent;
+	std::weak_ptr<Transform> before;
+	std::weak_ptr<Transform> next;
 };
 
 class API Spline
 {
 public:
-    /**
-    * Create a spline point
-    * @param position Position of the point
-    */
-    SplinePoint* CreateSplinePoint(const Vector3& position);
+	/**
+	* Create a spline point
+	* @param position Position of the point
+	*/
+	SplinePoint* CreateSplinePoint(const Vector3& position);
 
-    /**
-    * Add a point to the spline
-    * @param point Point of the spline
-    */
-    void AddSplinePoint(SplinePoint* point);
+	/**
+	* Add a point to the spline
+	* @param point Point of the spline
+	*/
+	void AddSplinePoint(SplinePoint* point);
 
-    /**
-    * Get spline value at t
-    * @param t [0;1]
-    */
-    Vector3 GetValueAt(const float t) const;
+	/**
+	* Get spline value at t
+	* @param t [0;1]
+	*/
+	Vector3 GetValueAt(const float t) const;
 private:
-    std::vector<SplinePoint*> splinePoints;
+	std::vector<SplinePoint*> splinePoints;
 };

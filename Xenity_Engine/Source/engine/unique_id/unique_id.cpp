@@ -18,12 +18,12 @@ UniqueId::UniqueId(bool _forFile)
 
 uint64_t UniqueId::GenerateUniqueId(bool forFile)
 {
-	if (forFile) 
+	if (forFile)
 	{
 		lastFileUniqueId++;
 		return lastFileUniqueId;
 	}
-	else 
+	else
 	{
 		lastUniqueId++;
 		return lastUniqueId;
