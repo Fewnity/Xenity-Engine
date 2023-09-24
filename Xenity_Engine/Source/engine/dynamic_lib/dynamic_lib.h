@@ -21,7 +21,7 @@ public:
 	/**
 	* Load a game DLL
 	*/
-	static void LoadGameLibrary(std::string libraryName);
+	static void LoadGameLibrary(const std::string& libraryName);
 	
 	/**
 	* Unload the game DLL

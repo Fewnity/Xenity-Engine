@@ -35,8 +35,9 @@ public:
     * @param transform Sprite's transform
     */
     //static void DrawSprite(std::shared_ptr<Texture> texture, Color color, std::shared_ptr<Transform> transform);
-    static void DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, Color color, std::shared_ptr <Material> material);
-    static void DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr <Texture> texture, Color color, std::shared_ptr <Material> material);
+    static void DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+    static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+
     /**
     * Render a 2D line
     * @param meshData Mesh data

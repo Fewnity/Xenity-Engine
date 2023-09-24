@@ -5,7 +5,7 @@ class UniqueId
 {
 public:
 	UniqueId();
-	UniqueId(bool forFile);
+	UniqueId(bool _forFile);
 
 	/**
 	* Get unique Id

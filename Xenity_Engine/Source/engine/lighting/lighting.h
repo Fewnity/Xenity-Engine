@@ -37,14 +37,14 @@ public:
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
 	*/
-	void SetupPointLight(const Color color, float intensity, const float range);
+	void SetupPointLight(const Color& color, float _intensity, const float _range);
 
 	/**
 	* Setup the light as a directional light
 	* @param color Light color
 	* @param intensity Light intensity
 	*/
-	void SetupDirectionalLight(const Color color, const float intensity);
+	void SetupDirectionalLight(const Color& color, const float _intensity);
 
 	/**
 	* Setup the light as a spot light
@@ -53,7 +53,7 @@ public:
 	* @param range Light Range (Greater or equals to 0)
 	* @param angle Spot angle [0;179]
 	*/
-	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle);
+	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle);
 
 	/**
 	* Setup the light as a point light
@@ -63,7 +63,7 @@ public:
 	* @param angle Spot angle [0;179]
 	* @param smoothness Spot smoothness [0;1]
 	*/
-	void SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness);
+	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle, const float _smoothness);
 
 	/**
 	* Set light range

@@ -17,90 +17,91 @@ void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<
 	}
 }
 
-void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, ReflectionEntry> theMap)
+void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string, ReflectionEntry> theMap)
 {
 	for (auto& kv : json["Values"].items())
 	{
 		if (theMap.contains(kv.key()))
 		{
 			Variable& variableRef = theMap.at(kv.key()).variable.value();
-			if (kv.value().is_object())
+			auto &kvValue = kv.value();
+			if (kvValue.is_object())
 			{
 				if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 				{
-					JsonToReflection(kv.value(), valuePtr->get());
+					JsonToReflection(kvValue, valuePtr->get());
 				}
 			}
 			else
 			{
 				if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
-					valuePtr->get() = kv.value();
+					valuePtr->get() = kvValue;
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
-					valuePtr->get() = kv.value();
+					valuePtr->get() = kvValue;
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))
-					valuePtr->get() = kv.value();
+					valuePtr->get() = kvValue;
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
-					valuePtr->get() = kv.value();
+					valuePtr->get() = kvValue;
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
-					valuePtr->get() = kv.value();
+					valuePtr->get() = kvValue;
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 				{
-					auto comp = FindComponentById(kv.value());
+					auto comp = FindComponentById(kvValue);
 					valuePtr->get() = comp;
 				}
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef))
 				{
-					auto go = FindGameObjectById(kv.value());
+					auto go = FindGameObjectById(kvValue);
 					valuePtr->get() = go;
 				}
 				else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef))
 				{
-					auto go = FindGameObjectById(kv.value());
+					auto go = FindGameObjectById(kvValue);
 					valuePtr->get() = go->GetTransform();
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
 				{
-					FillFileReference<Texture>(kv.value(), valuePtr);
+					FillFileReference<Texture>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{
-					FillFileReference<MeshData>(kv.value(), valuePtr);
+					FillFileReference<MeshData>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
 				{
-					FillFileReference<Scene>(kv.value(), valuePtr);
+					FillFileReference<Scene>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
 				{
-					FillFileReference<AudioClip>(kv.value(), valuePtr);
+					FillFileReference<AudioClip>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
 				{
-					FillFileReference<SkyBox>(kv.value(), valuePtr);
+					FillFileReference<SkyBox>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
 				{
-					FillFileReference<Font>(kv.value(), valuePtr);
+					FillFileReference<Font>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
 				{
-					FillFileReference<Shader>(kv.value(), valuePtr);
+					FillFileReference<Shader>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
 				{
-					FillFileReference<Material>(kv.value(), valuePtr);
+					FillFileReference<Material>(kvValue, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
-					int arraySize = kv.value().size();
+					int arraySize = kvValue.size();
 
 					int vectorSize = valuePtr->get().size();
 					for (int i = 0; i < arraySize; i++)
 					{
 						std::shared_ptr<FileReference> file = nullptr;
-						if (!kv.value().at(i).is_null())
+						if (!kvValue.at(i).is_null())
 						{
-							int fileId = kv.value().at(i);
+							int fileId = kvValue.at(i);
 							file = ProjectManager::GetFileReferenceById(fileId);
 							if(file)
 								file->LoadFileReference();
@@ -120,7 +121,7 @@ void ReflectionUtils::JsonToMap(json json, std::unordered_map<std::string, Refle
 	}
 }
 
-void ReflectionUtils::JsonToReflection(json j, Reflection& reflection)
+void ReflectionUtils::JsonToReflection(const json& j, Reflection& reflection)
 {
 	auto myMap = reflection.GetReflection();
 	JsonToMap(j, myMap);
@@ -204,11 +205,12 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
-			int vectorSize = valuePtr->get().size();
+			const std::vector <std::shared_ptr<Texture>>& getVal = valuePtr->get();
+			int vectorSize = getVal.size();
 			for (int vIndex = 0; vIndex < vectorSize; vIndex++)
 			{
-				if (valuePtr->get().at(vIndex))
-					json[kv.first][vIndex] = valuePtr->get().at(vIndex)->fileId;
+				if (getVal.at(vIndex))
+					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
 			}
 		}
 	}

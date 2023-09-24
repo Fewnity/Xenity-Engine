@@ -25,7 +25,7 @@ enum AudioType
 class API AudioClipStream
 {
 public:
-    void OpenStream(std::string fileName);
+    void OpenStream(const std::string& fileName);
     ~AudioClipStream();
 
     /**
@@ -67,8 +67,8 @@ public:
 
 private:
     AudioType type = Null;
-    drmp3 mp3;
-    drwav wav;
+    drmp3* mp3 = nullptr;
+    drwav* wav = nullptr;
     int64_t sampleCount = 0;
     int channelCount = 0;
 };

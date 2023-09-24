@@ -46,14 +46,14 @@ void SceneMenu::SetButtonColor(bool isSelected)
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
 }
 
-float Dot(Vector3 a, Vector3 b)
+float Dot(const Vector3& a, const Vector3& b)
 {
 	float f;
 	f = a.x * b.x + a.y * b.y + a.z * b.z;
 	return f;
 }
 
-Vector3 CrossProduct(Vector3 a, Vector3 b)
+Vector3 CrossProduct(const Vector3& a, const Vector3& b)
 {
 	Vector3 c;
 	c.x = a.y * b.z - a.z * b.y;
@@ -62,7 +62,7 @@ Vector3 CrossProduct(Vector3 a, Vector3 b)
 	return c;
 }
 
-Vector3 GetNearestPoint(Vector3 linePos1, Vector3 lineDir1, Vector3 linePos2, Vector3 lineDir2)
+Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2)
 {
 	Vector3 ClosestPoint;
 	if (lineDir2 != Vector3(0))
@@ -131,12 +131,13 @@ void SceneMenu::Draw()
 		windowSize = Vector2Int(size.x, size.y);
 		if (ImGui::IsItemHovered())
 		{
+			std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 			isHovered = true;
 
 			//------------------------------------------------------------------------- Detect user inputs to apply tool's behaviour on the selected gameobject
 
 			// Calculate camera matrix without translate
-			Vector3 cameraRotation = camera->GetTransform()->GetRotation();
+			Vector3 cameraRotation = cameraTransform->GetRotation();
 			glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 			cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 			cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -163,8 +164,8 @@ void SceneMenu::Draw()
 				// Move the camera if the mouse left button is held
 				if (InputSystem::GetKey(MOUSE_LEFT))
 				{
-					Vector3 newPos = camera->GetTransform()->GetPosition() + (oldWorldMousePosition - worldMousePosition) * cameraHandMoveSpeed;
-					camera->GetTransform()->SetPosition(newPos);
+					Vector3 newPos = cameraTransform->GetPosition() + (oldWorldMousePosition - worldMousePosition) * cameraHandMoveSpeed;
+					cameraTransform->SetPosition(newPos);
 				}
 			}
 			else
@@ -174,7 +175,7 @@ void SceneMenu::Draw()
 				{
 					auto selectedGoTransform = selectedGO->GetTransform();
 
-					Vector3 camPos = camera->GetTransform()->GetPosition();
+					Vector3 camPos = cameraTransform->GetPosition();
 					Vector3 objectPos = selectedGoTransform->GetPosition();
 
 					// Get selected gameObject directions
@@ -204,9 +205,9 @@ void SceneMenu::Draw()
 
 						if (cube1.lock())
 						{
-							cube1.lock()->GetTransform()->SetPosition(rightClosestPoint);
-							cube2.lock()->GetTransform()->SetPosition(upClosestPoint);
-							cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
+							//cube1.lock()->GetTransform()->SetPosition(rightClosestPoint);
+							//cube2.lock()->GetTransform()->SetPosition(upClosestPoint);
+							//cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
 						}
 
 						// Get the distance between the gameobject and the closest point of the camera's direction

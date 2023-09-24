@@ -22,7 +22,7 @@ enum FileType
 class FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
-	FileReference(){}
+	FileReference() = default;
 	/**
 	* Load the file
 	*/

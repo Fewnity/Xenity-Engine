@@ -37,13 +37,13 @@ public:
 	void SetShaderCameraPositionCanvas();
 	void SetShaderProjection();
 	void SetShaderProjectionCanvas();
-	void SetShaderModel(const glm::mat4 *trans);
-	void SetShaderModel(const Vector3 position, const Vector3 eulerAngle, const Vector3 scale);
+	void SetShaderModel(const glm::mat4 &trans);
+	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale);
 	void SetShaderAttribut(const char* attribut, const Vector4& value);
 	void SetShaderAttribut(const char* attribut, const Vector3& value);
 	void SetShaderAttribut(const char* attribut, const Vector2& value);
-	void SetShaderAttribut(const char* attribut, const float& value);
-	void SetShaderAttribut(const char* attribut, const int& value);
+	void SetShaderAttribut(const char* attribut, float value);
+	void SetShaderAttribut(const char* attribut, int value);
 
 
 	void UpdateLights();
@@ -53,7 +53,7 @@ public:
 
 private:
 	void BuildShader();
-	void LoadShader(const std::string filePath, ShaderType type);
+	void LoadShader(const std::string& filePath, ShaderType type);
 	void SetPointLightData(std::shared_ptr<Light> light, const int index);
 	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);
 	void SetSpotLightData(std::shared_ptr<Light> light, const int index);

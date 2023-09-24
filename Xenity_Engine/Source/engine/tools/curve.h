@@ -30,7 +30,7 @@ public:
     * Create a spline point
     * @param position Position of the point
     */
-    SplinePoint* CreateSplinePoint(const Vector3 position);
+    SplinePoint* CreateSplinePoint(const Vector3& position);
 
     /**
     * Add a point to the spline

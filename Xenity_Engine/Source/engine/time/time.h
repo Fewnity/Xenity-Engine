@@ -53,7 +53,7 @@ public:
 	* Set time scale
 	* @param timeScale Time scale (minium 0)
 	*/
-	static void SetTimeScale(float timeScale);
+	static void SetTimeScale(float _timeScale);
 
 private:
 	static float timeScale;

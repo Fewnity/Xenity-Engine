@@ -76,7 +76,7 @@ void Graphics::Init()
 	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
 	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
 
-	toolArrowsTexture = Texture::MakeTexture("engine_assets\\tool_arrows_colors.png", true);
+	toolArrowsTexture = Texture::MakeTexture();
 	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Texture::Point);
 	toolArrowsTexture->LoadFileReference();
@@ -217,7 +217,7 @@ void Graphics::DrawAllDrawable()
 	Engine::renderer->EndFrame();
 }
 
-bool spriteComparator(const std::weak_ptr<IDrawable> t1, const std::weak_ptr<IDrawable> t2)
+bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
 {
 	const int priority1 = t1.lock()->GetDrawPriority();
 	const int priority2 = t2.lock()->GetDrawPriority();
@@ -265,14 +265,14 @@ void Graphics::OrderDrawables()
 	orderBenchmark->Stop();
 }
 
-void Graphics::AddDrawable(std::weak_ptr<IDrawable> drawableToAdd)
+void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
 	Engine::drawOrderListDirty = true;
 }
 
-void Graphics::RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove)
+void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 {
 	iDrawablesCount = (int)orderedIDrawable.size(); // TODO remove?
 	for (int i = 0; i < iDrawablesCount; i++)
@@ -363,12 +363,12 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 		// For XZ
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
-			float zPos = z * coef;
+			int zPos = z * coef;
 			Engine::renderer->DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
 		}
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
-			float xPos = -x * coef;
+			int xPos = -x * coef;
 			Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
@@ -391,12 +391,12 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 		// For XY
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
-			float xPos = x * coef;
+			int xPos = x * coef;
 			Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
-			float yPos = -y * coef;
+			int yPos = -y * coef;
 			Engine::renderer->DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
 		}
 	}

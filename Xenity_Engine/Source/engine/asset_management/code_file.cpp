@@ -1,7 +1,7 @@
 #include "code_file.h"
 #include "asset_manager.h"
 
-CodeFile::CodeFile(std::string fileExtension)
+CodeFile::CodeFile(const std::string& fileExtension)
 {
 	if (fileExtension == ".h") 
 	{
@@ -13,7 +13,7 @@ CodeFile::CodeFile(std::string fileExtension)
 	}
 }
 
-std::shared_ptr<CodeFile> CodeFile::MakeScene(std::string fileExtension)
+std::shared_ptr<CodeFile> CodeFile::MakeScene(const std::string& fileExtension)
 {
 	std::shared_ptr<CodeFile> newFileRef = std::make_shared<CodeFile>(fileExtension);
 	AssetManager::AddFileReference(newFileRef);

@@ -13,14 +13,14 @@ public:
 	* @param j Json data
 	* @param reflection Reflection 
 	*/
-	static void JsonToReflection(nlohmann::json j, Reflection& reflection);
+	static void JsonToReflection(const nlohmann::json& j, Reflection& reflection);
 
 	/**
 	* Fill Reflection map from Json data
 	* @param json Json data
 	* @param theMap The Reflection map to fill
 	*/
-	static void JsonToMap(nlohmann::json json, std::unordered_map<std::string, ReflectionEntry> theMap);
+	static void JsonToMap(const nlohmann::json& json, std::unordered_map<std::string, ReflectionEntry> theMap);
 
 	/**
 	* Create Json data from Reflection

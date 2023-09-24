@@ -7,8 +7,8 @@ class Gizmo
 {
 public:
 	static void Init();
-	static void DrawLine(Vector3 a, Vector3 b);
-	static void SetColor(Color newColor);
+	static void DrawLine(const Vector3& a, const Vector3& b);
+	static void SetColor(const Color& newColor);
 private:
 	static Color color;
 };

@@ -31,8 +31,8 @@ public:
 	float y;
 	float z;
 
-	static Vector3 LookAt(const Vector3 from, const Vector3 to);
-	static float Distance(const Vector3 a, const Vector3 b);
+	static Vector3 LookAt(const Vector3& from, const Vector3& to);
+	static float Distance(const Vector3& a, const Vector3& b);
 	Vector3 Normalise();
 
 };

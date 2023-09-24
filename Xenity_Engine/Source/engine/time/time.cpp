@@ -38,12 +38,12 @@ float Time::GetTimeScale()
 	return timeScale;
 }
 
-void Time::SetTimeScale(float timeScale)
+void Time::SetTimeScale(float _timeScale)
 {
-	if (timeScale < 0)
-		timeScale = 0;
+	if (_timeScale < 0)
+		_timeScale = 0;
 
-	Time::timeScale = timeScale;
+	Time::timeScale = _timeScale;
 }
 
 #pragma endregion

@@ -72,8 +72,9 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #elif defined(__PSP__) || defined(__vita__)
 				sscanf(line.c_str(), "v %f %f %f\n", &x, &y, &z);
 #endif
-				currentSubMeshPtr->verticesCount++;
-				tempVertices.push_back(Vector3(x, y, z));
+				if (currentSubMeshPtr)
+					currentSubMeshPtr->verticesCount++;
+				tempVertices.emplace_back(Vector3(x, y, z));
 			}
 			else if (line[2] == ' ')
 			{
@@ -86,8 +87,9 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #elif defined(__PSP__) || defined(__vita__)
 					sscanf(line.c_str(), "vt %f %f\n", &x, &y);
 #endif
-					currentSubMeshPtr->textureCordsCount++;
-					tempTexturesCoords.push_back(Vector2(x, 1 - y));
+					if (currentSubMeshPtr)
+						currentSubMeshPtr->textureCordsCount++;
+					tempTexturesCoords.emplace_back(Vector2(x, 1 - y));
 				}
 				else if (line[1] == 'n') // Add normal
 				{
@@ -97,8 +99,9 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #elif defined(__PSP__) || defined(__vita__)
 					sscanf(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
 #endif
-					currentSubMeshPtr->normalsCount++;
-					tempNormals.push_back(Vector3(x, y, z));
+					if (currentSubMeshPtr)
+						currentSubMeshPtr->normalsCount++;
+					tempNormals.emplace_back(Vector3(x, y, z));
 				}
 			}
 		}
@@ -166,19 +169,22 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 #endif
 			}
 
-			currentSubMeshPtr->indicesCount += 3;
+			if (currentSubMeshPtr)
+			{
+				currentSubMeshPtr->indicesCount += 3;
 
-			currentSubMeshPtr->vertexIndices.push_back(v1);
-			currentSubMeshPtr->vertexIndices.push_back(v2);
-			currentSubMeshPtr->vertexIndices.push_back(v3);
+				currentSubMeshPtr->vertexIndices.push_back(v1);
+				currentSubMeshPtr->vertexIndices.push_back(v2);
+				currentSubMeshPtr->vertexIndices.push_back(v3);
 
-			currentSubMeshPtr->textureIndices.push_back(vt1);
-			currentSubMeshPtr->textureIndices.push_back(vt2);
-			currentSubMeshPtr->textureIndices.push_back(vt3);
+				currentSubMeshPtr->textureIndices.push_back(vt1);
+				currentSubMeshPtr->textureIndices.push_back(vt2);
+				currentSubMeshPtr->textureIndices.push_back(vt3);
 
-			currentSubMeshPtr->normalsIndices.push_back(vn1);
-			currentSubMeshPtr->normalsIndices.push_back(vn2);
-			currentSubMeshPtr->normalsIndices.push_back(vn3);
+				currentSubMeshPtr->normalsIndices.push_back(vn1);
+				currentSubMeshPtr->normalsIndices.push_back(vn2);
+				currentSubMeshPtr->normalsIndices.push_back(vn3);
+			}
 		}
 		else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e')
 		{
@@ -204,13 +210,13 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 
 	for (int i = 0; i < currentSubMesh + 1; i++)
 	{
-		SubMesh* sub = submeshes[i];
+		const SubMesh* sub = submeshes[i];
 		mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
 	}
 
 	for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
 	{
-		SubMesh* submesh = submeshes[subMeshIndex];
+		const SubMesh* submesh = submeshes[subMeshIndex];
 		// Push vertices in the right order
 		int vertexIndicesSize = (int)submesh->vertexIndices.size();
 		for (int i = 0; i < vertexIndicesSize; i++)
@@ -218,7 +224,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 			unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
 			unsigned int textureIndex = submesh->textureIndices[i] - 1;
 
-			Vector3& vertice = tempVertices.at(vertexIndex);
+			const Vector3& vertice = tempVertices.at(vertexIndex);
 			if (!mesh->hasNormal)
 			{
 				if (!mesh->hasUv)
@@ -228,7 +234,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 				}
 				else
 				{
-					Vector2& uv = tempTexturesCoords.at(textureIndex);
+					const Vector2& uv = tempTexturesCoords.at(textureIndex);
 					mesh->AddVertex(
 						uv.x, uv.y,
 						vertice.x, vertice.y, vertice.z, i, subMeshIndex);
@@ -237,7 +243,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 			else
 			{
 				unsigned int normalIndices = submesh->normalsIndices[i] - 1;
-				Vector3& normal = tempNormals.at(normalIndices);
+				const Vector3& normal = tempNormals.at(normalIndices);
 				if (!mesh->hasUv)
 				{
 					mesh->AddVertex(
@@ -246,7 +252,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 				}
 				else
 				{
-					Vector2& uv = tempTexturesCoords.at(textureIndex);
+					const Vector2& uv = tempTexturesCoords.at(textureIndex);
 					mesh->AddVertex(
 						uv.x, uv.y,
 						normal.x, normal.y, normal.z,

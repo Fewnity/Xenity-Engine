@@ -101,7 +101,7 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 }
 
 #if defined(_WIN32) || defined(_WIN64)
-void InputSystem::Read(const SDL_Event event)
+void InputSystem::Read(const SDL_Event& event)
 {
 	switch (event.type)
 	{

@@ -28,19 +28,19 @@ API std::shared_ptr<GameObject> CreateGameObject();
 * Create a GameObject
 * @param name GameObject name
 */
-API std::shared_ptr<GameObject> CreateGameObject(std::string name);
+API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
 /**
 * Create a GameObject not visible in the hierarchy
 * @param name GameObject name
 */
-API std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name);
+API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
 
 /**
 * Find a GameObject with a name
 * @param name GameObject name
 */
-API std::shared_ptr<GameObject> FindGameObjectByName(const std::string name);
+API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
 
 /**
 * Find a GameObject with an id
@@ -58,13 +58,13 @@ API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 * Find GameObjects with a name
 * @param name GameObjects name
 */
-API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name);
+API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
 
 class API GameObject : public Reflection, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
-	GameObject(std::string name);
+	GameObject(const std::string& name);
 	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	void OnReflectionUpdated();
@@ -86,13 +86,13 @@ public:
 	* Add a child to the GameObject
 	* @param gameObject Child to add
 	*/
-	void AddChild(std::weak_ptr<GameObject> gameObject);
+	void AddChild(const std::weak_ptr<GameObject>& gameObject);
 
 	/**
 	* Set GameObject's parent
 	* @param gameObject New parent
 	*/
-	void SetParent(std::weak_ptr<GameObject> gameObject);
+	void SetParent(const std::weak_ptr<GameObject>& gameObject);
 	bool waitingForDestroy = false;
 
 	/**
@@ -109,7 +109,7 @@ public:
 	/**
 	* Remove a component
 	*/
-	void RemoveComponent(std::weak_ptr <Component> weakComponent);
+	void RemoveComponent(const std::weak_ptr <Component>& weakComponent);
 
 	/**
 	* Get a component
@@ -177,7 +177,7 @@ private:
 	/**
 	* Update local active value
 	*/
-	void UpdateActive(std::weak_ptr<GameObject> changed);
+	void UpdateActive(const std::weak_ptr<GameObject>& changed);
 
 	bool active = true;
 	bool localActive = true;

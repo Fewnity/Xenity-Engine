@@ -41,7 +41,7 @@ public:
 	std::shared_ptr <Material> material = nullptr;
 	std::shared_ptr <Texture> texture = nullptr;
 
-	void SetColor(Color color)
+	void SetColor(const Color& color)
 	{
 		this->color = color;
 	}

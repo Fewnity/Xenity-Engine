@@ -61,7 +61,7 @@ float Vector2Int::magnitude()
 	return sqrtf(powf((float)this->x, 2) + powf((float)this->y, 2));
 }
 
-float Vector2Int::Distance(const Vector2Int a, const Vector2Int b)
+float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)
 {
 	float xDis = (float)(a.x - b.x);
 	float yDis = (float)(a.y - b.y);

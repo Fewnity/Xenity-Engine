@@ -95,7 +95,7 @@ void Socket::Update()
     char recvBuff[1024];
     int recvd_len;
 
-    incommingData = "";
+    incommingData.clear();
 
     // Read a maximum of 1022 char in one loop
     while ((recvd_len = recv(socketId, recvBuff, 1023, 0)) > 0) // if recv returns 0, the socket has been closed. (Sometimes yes, sometimes not, lol)
@@ -105,7 +105,7 @@ void Socket::Update()
     }
 }
 
-void Socket::SendData(std::string text)
+void Socket::SendData(const std::string& text)
 {
     if (socketId < 0)
         return;
@@ -157,7 +157,7 @@ void NetworkManager::DrawNetworkSetupMenu()
     }
 }
 
-Socket *NetworkManager::CreateSocket(std::string address, int port)
+Socket *NetworkManager::CreateSocket(const std::string& address, int port)
 {
     // return nullptr;
     int newSocketId = 1;

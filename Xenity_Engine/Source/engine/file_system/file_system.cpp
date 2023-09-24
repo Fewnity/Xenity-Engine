@@ -22,14 +22,13 @@ FileSystem* FileSystem::fileSystem = nullptr;
 
 #pragma region File
 
-File::File(std::string path) : UniqueId(true)
+File::File(std::string _path) : UniqueId(true)
 {
 #if defined(__vita__)
-	// path = PSVITA_PATH + path;
-	path = PSVITA_BASE_DIR + path;
+	_path = PSVITA_BASE_DIR + _path;
 #endif
-	this->path = path;
-	int pointIndex = path.find_last_of(".");
+	this->path = _path;
+	int pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 }
 
@@ -45,7 +44,7 @@ File::~File()
 #endif
 }
 
-void File::Write(const std::string data)
+void File::Write(const std::string& data)
 {
 #if defined(__PSP__)
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR, 0777);
@@ -267,12 +266,12 @@ std::string File::GetFileName() const
 
 #pragma region Directory
 
-Directory::Directory(std::string path) : UniqueId(true)
+Directory::Directory(std::string _path) : UniqueId(true)
 {
 #if defined(__vita__)
-	path = PSVITA_BASE_DIR + path;
+	_path = PSVITA_BASE_DIR + _path;
 #endif
-	this->path = path;
+	this->path = _path;
 }
 
 Directory::~Directory()
@@ -439,7 +438,7 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 #endif
 }
 
-bool FileSystem::Rename(const std::string path, const std::string newPath)
+bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 {
 	bool success = true;
 	try
@@ -457,7 +456,7 @@ bool FileSystem::Rename(const std::string path, const std::string newPath)
 
 std::vector< std::shared_ptr<File>> files;
 
-std::shared_ptr<File> FileSystem::MakeFile(std::string path)
+std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 {
 	std::shared_ptr<File> file;
 
@@ -486,15 +485,16 @@ std::shared_ptr<File> FileSystem::MakeFile(std::string path)
 
 #pragma endregion
 
-void FileSystem::CreateDirectory(std::string path)
+void FileSystem::CreateDirectory(const std::string& path)
 {
+	std::string finalPath = path;
 #if defined(__vita__)
-	path = PSVITA_BASE_DIR + path;
+	finalPath = PSVITA_BASE_DIR + finalPath;
 #endif
-	std::filesystem::create_directory(path);
+	std::filesystem::create_directory(finalPath);
 }
 
-void FileSystem::DeleteFile(const std::string path)
+void FileSystem::DeleteFile(const std::string& path)
 {
 	std::string newPath = path;
 #if defined(__vita__)

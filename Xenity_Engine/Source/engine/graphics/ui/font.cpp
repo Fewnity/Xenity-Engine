@@ -53,7 +53,7 @@ void Font::LoadFileReference()
     }
 }
 
-bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
+bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 {
     std::string path;
 #ifdef __vita__
@@ -94,6 +94,10 @@ bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
 #endif
 
     unsigned char* atlas = (unsigned char*)calloc((size_t)atlasSize * atlasSize * channelCount, sizeof(unsigned char));
+    if (!atlas) 
+    {
+        return false;
+    }
 
     int xOffset = 0;
     int yOffset = 0;
@@ -158,14 +162,16 @@ bool Font::CreateFont(std::shared_ptr<Font> font, std::string filePath)
         catch (...)
         {
             Debug::PrintError("Failed to load Glyph. Path: " + path);
+            free(atlas);
             return false;
         }
     }
 
-    font->fontAtlas = Texture::MakeTexture(atlas, channelCount, atlasSize, atlasSize, false);
-    font->fontAtlas->SetData(atlas);
-    font->fontAtlas->SetFilter(Texture::Bilinear);
-    font->fontAtlas->SetWrapMode(Texture::ClampToEdge);
+    std::shared_ptr<Texture> newAtlas = Texture::MakeTexture(atlas, channelCount, atlasSize, atlasSize, false);
+    font->fontAtlas = newAtlas;
+    newAtlas->SetData(atlas);
+    newAtlas->SetFilter(Texture::Bilinear);
+    newAtlas->SetWrapMode(Texture::ClampToEdge);
 
     free(atlas);
 

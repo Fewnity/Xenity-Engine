@@ -20,34 +20,14 @@
 #include <thread>
 #endif
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
+#elif defined(__vita__)
+#include <vitaGL.h>
 #endif
 
 Texture::Texture()
 {
-}
-
-Texture::Texture(const std::string filePath, bool loadInVram)
-{
-	this->inVram = loadInVram;
-	//CreateTexture(filePath, Bilinear, false);
-}
-
-Texture::Texture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram)
-{
-	this->inVram = loadInVram;
-	//CreateTexture(filePath, filter, useMipMap);
-}
-
-Texture::Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
-{
-	this->textureId = textureId;
-	this->nrChannels = channelCount;
-	this->width = width;
-	this->height = height;
-	this->inVram = loadInVram;
-	useMipMap = false;
 }
 
 Texture::Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
@@ -92,34 +72,12 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 	return newTexture;
 }
 
-std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, bool loadInVram)
-{
-	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, loadInVram);
-	AssetManager::AddFileReference(newTexture);
-	return newTexture;
-}
-
-std::shared_ptr<Texture> Texture::MakeTexture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram)
-{
-	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(filePath, filter, useMipMap, loadInVram);
-	AssetManager::AddFileReference(newTexture);
-	return newTexture;
-}
-
-std::shared_ptr<Texture> Texture::MakeTexture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram)
-{
-	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureId, channelCount, width, height, loadInVram);
-	AssetManager::AddFileReference(newTexture);
-	return newTexture;
-}
-
 std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
 	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
-
 
 Texture::~Texture()
 {
@@ -133,10 +91,10 @@ void Texture::LoadFileReference()
 	{
 		isLoaded = true;
 #if defined(EDITOR)
-		std::thread threadLoading = std::thread(&Texture::CreateTexture,this, file->GetPath(), filter, useMipMap);
+		std::thread threadLoading = std::thread(&Texture::CreateTexture,this, filter, useMipMap);
 		threadLoading.detach();
 #else
-		CreateTexture(file->GetPath(), filter, useMipMap);
+		CreateTexture(filter, useMipMap);
 		OnLoadFileReferenceFinished();
 #endif
 	}
@@ -161,12 +119,12 @@ void Texture::UnloadFileReference()
 /// <param name="filePath">File path</param>
 /// <param name="filter">Filter to use</param>
 /// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTexture(const std::string filePath, const Filter filter, const bool useMipMap)
+void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 {
 	this->filter = filter;
 	this->useMipMap = useMipMap;
 
-	LoadTexture(filePath);
+	LoadTexture();
 }
 
 #if defined(__PSP__)
@@ -402,16 +360,18 @@ void Texture::SetData(const unsigned char* texData)
 #endif
 }
 
-void Texture::LoadTexture(const std::string filename)
+void Texture::LoadTexture()
 {
-	std::string path = "";
+	/*std::string path = "";
 #if defined(__vita__)
 	path += "ux0:";
 #endif
-	path += filename;
+	path += filename;*/
+
+	std::string path = file->GetPath();
 
 	std::string debugText = "Loading texture: ";
-	debugText += filename;
+	debugText += path;
 	Debug::Print(debugText);
 	
 	int fileBufferSize  = 0;

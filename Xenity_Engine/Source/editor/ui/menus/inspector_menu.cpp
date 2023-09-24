@@ -1,5 +1,6 @@
 #include "inspector_menu.h"
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 #include "../../../xenity.h"
 #include "../editor_ui.h"
 #include "../../editor.h"
@@ -55,8 +56,7 @@ void InspectorMenu::Draw()
 	}
 	else if (selectedGameObject)
 	{
-		char str0[128] = "";
-		sprintf_s(str0, selectedGameObject->name.c_str());
+		std::string str0 = selectedGameObject->name;
 
 		//Active checkbox
 		bool active = selectedGameObject->GetActive();
@@ -64,10 +64,10 @@ void InspectorMenu::Draw()
 
 		//Name input
 		ImGui::SameLine();
-		ImGui::InputText("##Name ", str0, IM_ARRAYSIZE(str0));
+		ImGui::InputText("##Name ", &str0);
 
 		//Apply new values if changed
-		if (strcmp(str0, selectedGameObject->name.c_str()) != 0 && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 		{
 			selectedGameObject->name = str0;
 		}
@@ -83,43 +83,44 @@ void InspectorMenu::Draw()
 		ImGui::Spacing();
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
+			std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 			{
 				std::string payloadName = "Transform";
-				ImGui::SetDragDropPayload(payloadName.c_str(), selectedGameObject->GetTransform().get(), sizeof(Transform));
+				ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
 				ImGui::Text("Transform");
 				ImGui::EndDragDropSource();
 			}
-			Vector3 localPos = selectedGameObject->GetTransform()->GetLocalPosition();
+			Vector3 localPos = selectedTransform->GetLocalPosition();
 			bool changed = EditorUI::DrawInput("Local Position", localPos);
 
 			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 			{
-				selectedGameObject->GetTransform()->SetLocalPosition(localPos);
+				selectedTransform->SetLocalPosition(localPos);
 			}
-			//ImGui::Text("World Position: %f %f %f", selectedGameObject->GetTransform()->GetPosition().x, selectedGameObject->GetTransform()->GetPosition().y, selectedGameObject->GetTransform()->GetPosition().z);
+			//ImGui::Text("World Position: %f %f %f", selectedTransform->GetPosition().x, selectedTransform->GetPosition().y, selectedTransform->GetPosition().z);
 
 			//Local rotation input
 			ImGui::Spacing();
 			ImGui::Spacing();
-			Vector3 localRot = selectedGameObject->GetTransform()->GetLocalRotation();
+			Vector3 localRot = selectedTransform->GetLocalRotation();
 			changed = EditorUI::DrawInput("Local Rotation", localRot);
 			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 			{
-				selectedGameObject->GetTransform()->SetLocalRotation(localRot);
+				selectedTransform->SetLocalRotation(localRot);
 			}
-			//ImGui::Text("World Rotation: %f %f %f", selectedGameObject->GetTransform()->GetRotation().x, selectedGameObject->GetTransform()->GetRotation().y, selectedGameObject->GetTransform()->GetRotation().z);
+			//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);
 
 			//Local scale input
 			ImGui::Spacing();
 			ImGui::Spacing();
-			Vector3 localScale = selectedGameObject->GetTransform()->GetLocalScale();
+			Vector3 localScale = selectedTransform->GetLocalScale();
 			changed = EditorUI::DrawInput("Local Scale", localScale);
 			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 			{
-				selectedGameObject->GetTransform()->SetLocalScale(localScale);
+				selectedTransform->SetLocalScale(localScale);
 			}
-			//ImGui::Text("World Scale: %f %f %f", selectedGameObject->GetTransform()->GetScale().x, selectedGameObject->GetTransform()->GetScale().y, selectedGameObject->GetTransform()->GetScale().z);
+			//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
 			ImGui::Separator();
 		}
 
@@ -176,7 +177,7 @@ void InspectorMenu::Draw()
 	ImGui::End();
 }
 
-int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, std::string id)
+int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)
 {
 	int state = 0;
 	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
@@ -218,13 +219,14 @@ void InspectorMenu::DrawFilePreview()
 		if (loadedPreview != Engine::GetSelectedFileReference())
 		{
 			loadedPreview = Engine::GetSelectedFileReference();
-			previewText = "";
+			previewText.clear();
 			// Read text file
 			if (loadedPreview->fileType == File_Code)
 			{
-				loadedPreview->file->Open(false);
-				previewText = loadedPreview->file->ReadAll();
-				loadedPreview->file->Close();
+				std::shared_ptr<File> file = loadedPreview->file;
+				file->Open(false);
+				previewText = file->ReadAll();
+				file->Close();
 			}
 		}
 		// If the file is a texture, get the texture id
@@ -234,7 +236,7 @@ void InspectorMenu::DrawFilePreview()
 		}
 
 		// If the preview is a text, calculate the texte size
-		if (previewText != "")
+		if (!previewText.empty())
 		{
 			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10; // + 10 to avoid the hided last line in some text
 		}
@@ -242,7 +244,7 @@ void InspectorMenu::DrawFilePreview()
 		ImGui::Text("Preview:");
 		ImGui::BeginChild("Preview", ImVec2(0, sizeY), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		if (previewText != "") // Draw text preview
+		if (!previewText.empty()) // Draw text preview
 		{
 			ImGui::TextWrapped(previewText.c_str());
 		}
@@ -303,9 +305,13 @@ void InspectorMenu::DrawFilePreview()
 			{
 				if (ImGui::Button("Play audio"))
 				{
-					Editor::audioSource.lock()->Stop();
-					Editor::audioSource.lock()->audioClip = std::dynamic_pointer_cast<AudioClip>(loadedPreview);
-					Editor::audioSource.lock()->Play();
+					std::shared_ptr<AudioSource> audioSource = Editor::audioSource.lock();
+					if (audioSource)
+					{
+						audioSource->Stop();
+						audioSource->audioClip = std::dynamic_pointer_cast<AudioClip>(loadedPreview);
+						audioSource->Play();
+					}
 				}
 			}
 
@@ -316,7 +322,7 @@ void InspectorMenu::DrawFilePreview()
 				float totalTime = stream->GetSampleCount() / (double)stream->GetFrequency();
 
 				// Draw current time
-				ImVec2 availSize = ImGui::GetContentRegionAvail();
+				availSize = ImGui::GetContentRegionAvail();
 				ImVec2 cursorPos = ImGui::GetCursorPos();
 				std::string currentTimeText = std::to_string(((int)(totalTime * seekPos * 1000)) / 1000.0f);
 				ImVec2 infoTextSize2 = ImGui::CalcTextSize(currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());

@@ -62,7 +62,7 @@ public:
 	* Set text color
 	* @param color Color
 	*/
-	void SetColor(Color color)
+	void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
@@ -71,7 +71,7 @@ public:
 	* Set text
 	* @param text Text
 	*/
-	void SetText(std::string text);
+	void SetText(const std::string& text);
 
 	/**
 	* Set text font

@@ -44,13 +44,13 @@ public:
 	* Create a directory
 	* @param path Directory path
 	*/
-	void CreateDirectory(std::string path);
+	void CreateDirectory(const std::string& path);
 
 	/**
 	* Delete a file
 	* @param path File path
 	*/
-	void DeleteFile(const std::string path);
+	void DeleteFile(const std::string& path);
 
 	/**
 	* Get all files of a directory and fill it
@@ -58,22 +58,22 @@ public:
 	*/
 	void FillDirectory(Directory *directory, bool recursive);
 
-	bool Rename(const std::string path, const std::string newPath);
+	bool Rename(const std::string& path, const std::string& newPath);
 
-	static std::shared_ptr<File> MakeFile(std::string path);
+	static std::shared_ptr<File> MakeFile(const std::string& path);
 };
 
 class API File : public UniqueId
 {
 public:
 	File() = delete;
-	File(std::string path);
+	File(std::string _path);
 	~File();
 
 	/**
 	* Write data into the file
 	*/
-	void Write(const std::string data);
+	void Write(const std::string& data);
 
 	/**
 	* Read all the file
@@ -106,11 +106,12 @@ public:
 	*/
 	std::string GetPath() const
 	{
-#if defined(__vita__)
+/*#if defined(__vita__)
 		return path.substr(4);
 #else
 		return path;
-#endif
+#endif*/
+		return path;
 	}
 
 	/**
@@ -145,7 +146,7 @@ class API Directory : public UniqueId
 {
 public:
 	Directory() = delete;
-	Directory(std::string path);
+	Directory(std::string _path);
 	~Directory();
 
 	/**

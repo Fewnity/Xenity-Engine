@@ -110,7 +110,7 @@ public:
 	* Change Frame buffer size in pixel
 	* @param
 	*/
-	void ChangeFrameBufferSize(Vector2Int resolution);
+	void ChangeFrameBufferSize(const Vector2Int& resolution);
 
 	/**
 	* Update FrameBuffer

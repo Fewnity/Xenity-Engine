@@ -45,14 +45,14 @@ Vector2::Vector2(const float fillValue)
 	//SetReflection();
 }
 
-Vector2::Vector2(const Vector3 vect3)
+Vector2::Vector2(const Vector3& vect3)
 {
 	this->x = vect3.x;
 	this->y = vect3.y;
 	//SetReflection();
 }
 
-Vector2::Vector2(const Vector2Int vect2Int)
+Vector2::Vector2(const Vector2Int& vect2Int)
 {
 	this->x = (float)vect2Int.x;
 	this->y = (float)vect2Int.y;
@@ -77,7 +77,7 @@ float Vector2::magnitude()
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2));
 }
 
-float Vector2::Distance(const Vector2 a, const Vector2 b)
+float Vector2::Distance(const Vector2& a, const Vector2& b)
 {
 	float xDis = a.x - b.x;
 	float yDis = a.y - b.y;

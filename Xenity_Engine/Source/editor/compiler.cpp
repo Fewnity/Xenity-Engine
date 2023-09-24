@@ -15,7 +15,7 @@
 
 std::string tempCompileFolderPath = "";
 
-void Compiler::CompileInWSL(Platform platform, std::string exportPath)
+void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 {
 	int r1 = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 	int r2 = system("wsl sh -c 'mkdir ~/XenityTestProject'");
@@ -137,7 +137,7 @@ void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, std::
 	t.detach();
 }
 
-void Compiler::CompileGame(Platform platform, BuildType buildType, std::string exportPath)
+void Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
 	if (buildType == EditorHotReloading)
@@ -251,7 +251,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, std::string e
 	Editor::compilingMenu->ClosePopup();
 }
 
-void Compiler::StartGame(Platform platform, std::string exportPath)
+void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
 	if (platform == Platform::P_Windows) 
 	{

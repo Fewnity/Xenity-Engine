@@ -22,6 +22,10 @@ Make shader for psvita
 Fix all errors of cppcheck
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
+use shared folder and fix crash when deleting folder
+Fix material crash on play
+Check if material is null
+Material::SetAttribut check emplace, try_emplace?
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
@@ -48,7 +52,6 @@ Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add input state : Begin, Hold (and End?)
 Text scale
-nextPow2 and previousPow2 fix with negative number
 */
 
 #undef main

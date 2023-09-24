@@ -43,27 +43,6 @@ public:
     Texture();
 
     /**
-    * Load texture from a path
-    * @param filePath File path
-    * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
-    */
-    Texture(const std::string filePath, bool loadInVram);
-
-    /**
-    * Load texture from a path
-    * @param filePath File path
-    * @param filter Texture filter
-    * @param useMipMap Use mip map
-    * @param loadInVram [PSP Specific] Load the texture into the vram (faster rendering), best is to enable on heavily used textures
-    */
-    Texture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram);
-
-    /**
-    * [Internal]
-    */
-    Texture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
-
-    /**
     * [Internal]
     */
     Texture(unsigned char *data, const int channelCount, const int width, const int height, bool loadInVram);
@@ -72,9 +51,6 @@ public:
     std::unordered_map<std::string, ReflectionEntry> GetMetaReflection();
 
     static std::shared_ptr<Texture> MakeTexture();
-    static std::shared_ptr<Texture> MakeTexture(const std::string filePath, bool loadInVram);
-    static std::shared_ptr<Texture> MakeTexture(const std::string filePath, const Filter filter, const bool useMipMap, bool loadInVram);
-    static std::shared_ptr<Texture> MakeTexture(const int textureId, const int channelCount, const int width, const int height, bool loadInVram);
     static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
     ~Texture();
@@ -191,12 +167,12 @@ private:
     * @param filter Texture filter
     * @param useMipMap Use mip map
     */
-    void CreateTexture(const std::string filePath, const Filter filter, const bool useMipMap);
+    void CreateTexture(const Filter filter, const bool useMipMap);
 
     /**
     * Load texture data
     */
-    void LoadTexture(const std::string filePath);
+    void LoadTexture();
 
     /**
     * Unload texture data
@@ -210,5 +186,5 @@ private:
 
     int pixelPerUnit = 100;
     bool isValid = false;
-    unsigned char* buffer;
+    unsigned char* buffer = nullptr;
 };

@@ -32,13 +32,13 @@ void AudioSource::Awake()
         Play();
 }
 
-void AudioSource::SetVolume(float volume)
+void AudioSource::SetVolume(float _volume)
 {
-    if (volume > 1)
-        volume = 1;
-    else if (volume < 0)
-        volume = 0;
-    this->volume = volume;
+    if (_volume > 1)
+        _volume = 1;
+    else if (_volume < 0)
+       _volume = 0;
+    this->volume = _volume;
 }
 
 void AudioSource::SetPanning(float panning)

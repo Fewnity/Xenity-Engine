@@ -75,31 +75,6 @@ void RendererOpengl::Setup()
 	glFogf(GL_FOG_END, 3.0f);*/
 	// glCullFace(GL_BACK);
 
-	if (!Engine::UseOpenGLFixedFunctions) 
-	{
-		Engine::shader = Shader::MakeShader();
-		Engine::shader->file = FileSystem::MakeFile("shaders/standard.shader");
-
-		Engine::unlitShader = Shader::MakeShader();
-		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
-
-		Engine::standardMaterial = Material::MakeMaterial();
-		Engine::standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
-		Engine::standardMaterial->shader = Engine::shader;
-		Engine::standardMaterial->useLighting = true;
-
-		Engine::unlitMaterial = Material::MakeMaterial();
-		Engine::unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
-		Engine::unlitMaterial->shader = Engine::unlitShader;
-		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
-
-		Engine::shader->LoadFileReference();
-		Engine::unlitShader->LoadFileReference();
-
-		Engine::standardMaterial->LoadFileReference();
-		Engine::unlitMaterial->LoadFileReference();
-	}
-
 #endif
 }
 
@@ -135,12 +110,12 @@ void RendererOpengl::SetViewport(int x, int y, int width, int height)
 	glViewport(x, y, width, height);
 }
 
-void RendererOpengl::SetClearColor(Color color)
+void RendererOpengl::SetClearColor(const Color& color)
 {
-	RGBA rgba = color.GetRGBA();
 #if defined(__PSP__)
 	glClearColor(color.GetUnsignedIntABGR());
 #else
+	RGBA rgba = color.GetRGBA();
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
 #endif
 }
@@ -189,23 +164,24 @@ void RendererOpengl::SetCameraPosition(std::weak_ptr<Camera> camera)
 	if (auto cameraLock = camera.lock())
 	{
 		auto transform = cameraLock->GetTransform();
-
+		Vector3 position = transform->GetPosition();
+		Vector3 rotation = transform->GetRotation();
 #if defined(__PSP__)
 		glMatrixMode(GL_VIEW);
 		glLoadIdentity();
 
-		gluRotateZ((-transform->GetRotation().z) / 180.0f * 3.14159f);
-		gluRotateX(transform->GetRotation().x / 180.0f * 3.14159f);
-		gluRotateY((transform->GetRotation().y + 180) / 180.0f * 3.14159f);
+		gluRotateZ((-rotation.z) / 180.0f * 3.14159f);
+		gluRotateX(rotation.x / 180.0f * 3.14159f);
+		gluRotateY((rotation.y + 180) / 180.0f * 3.14159f);
 
-		glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
+		glTranslatef(position.x, -position.y, -position.z);
 #else
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glRotatef(-transform->GetRotation().z, 0, 0, 1);
-		glRotatef(transform->GetRotation().x, 1, 0, 0);
-		glRotatef(transform->GetRotation().y + 180, 0, 1, 0);
-		glTranslatef(transform->GetPosition().x, -transform->GetPosition().y, -transform->GetPosition().z);
+		glRotatef(-rotation.z, 0, 0, 1);
+		glRotatef(rotation.x, 1, 0, 0);
+		glRotatef(rotation.y + 180, 0, 1, 0);
+		glTranslatef(position.x, -position.y, -position.z);
 #endif
 		Setlights(camera);
 	}
@@ -221,7 +197,7 @@ void RendererOpengl::ResetTransform()
 #endif
 }
 
-void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 scale, bool resetTransform)
+void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
 {
 #if defined(__PSP__)
 	glMatrixMode(GL_MODEL);
@@ -245,7 +221,7 @@ void RendererOpengl::SetTransform(Vector3 position, Vector3 rotation, Vector3 sc
 	glScalef(scale.x, scale.y, scale.z);
 }
 
-void RendererOpengl::SetTransform(glm::mat4& mat)
+void RendererOpengl::SetTransform(const glm::mat4& mat)
 {
 #if defined(__PSP__)
 	ScePspFMatrix4 matrix;
@@ -284,7 +260,7 @@ void RendererOpengl::SetTransform(glm::mat4& mat)
 #endif
 }
 
-void RendererOpengl::MoveTransform(Vector3 position)
+void RendererOpengl::MoveTransform(const Vector3& position)
 {
 #if defined(__PSP__)
 	glMatrixMode(GL_MODEL);
@@ -531,7 +507,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			if (!meshData->hasUv)
 			{
 				stride = sizeof(VertexNoColorNoUv);
-				VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
+				const VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
 				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
@@ -542,7 +518,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 				if (meshData->hasColor)
 				{
 					stride = sizeof(Vertex);
-					Vertex* data = (Vertex*)subMesh->data;
+					const Vertex* data = (Vertex*)subMesh->data;
 					/*glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					glColorPointer(3, GL_FLOAT, stride, &data[0].r);
 					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);*/
@@ -555,7 +531,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 				else
 				{
 					stride = sizeof(VertexNoColor);
-					VertexNoColor* data = (VertexNoColor*)subMesh->data;
+					const VertexNoColor* data = (VertexNoColor*)subMesh->data;
 					//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
@@ -581,7 +557,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			if (!meshData->hasUv)
 			{
 				stride = sizeof(VertexNormalsNoColorNoUv);
-				VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
+				const VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
 				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
@@ -592,7 +568,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			else
 			{
 				stride = sizeof(VertexNormalsNoColor);
-				VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
+				const VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
 				//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
@@ -636,7 +612,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 	Performance::AddDrawCall();
 }
 
-void RendererOpengl::DrawLine(Vector3 a, Vector3 b, Color& color, RenderingSettings& settings)
+void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	if (settings.useDepth)
@@ -782,7 +758,7 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 {
 	if (auto cameraLock = camera.lock())
 	{
-		auto transform = cameraLock->GetTransform();
+		auto cameraTransform = cameraLock->GetTransform();
 
 		DisableAllLight();
 		int lightCount = AssetManager::GetLightCount();
@@ -792,10 +768,12 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 			auto light = AssetManager::GetLight(i).lock();
 			if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 			{
+				Vector3 lightRotation = light->GetTransform()->GetRotation();
+				Vector3 cameraPosition = cameraTransform->GetPosition();
 				if (light->type == Light::Directional)
 				{
-					Vector3 dir = Math::Get3DDirectionFromAngles(-light->GetTransform()->GetRotation().y, -light->GetTransform()->GetRotation().x) * 1000;
-					SetLight(usedLightCount, Vector3(-transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z) + dir, light->intensity, light->color, light->type, light->quadratic);
+					Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
+					SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->intensity, light->color, light->type, light->quadratic);
 				}
 				else
 				{

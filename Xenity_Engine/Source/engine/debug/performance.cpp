@@ -60,9 +60,9 @@ void Performance::Update()
 		averageCoolDown += Time::GetUnscaledDeltaTime();
 		if (averageCoolDown >= 1)
 		{
-			for (auto& categoryKV : Performance::profilerCategories)
+			for (const auto& categoryKV : Performance::profilerCategories)
 			{
-				for (auto& profilerValueKV : categoryKV.second->profilerList)
+				for (const auto& profilerValueKV : categoryKV.second->profilerList)
 				{
 					profilerValueKV.second->average = profilerValueKV.second->addedValue / tickCount;
 					profilerValueKV.second->addedValue = 0;
@@ -76,9 +76,9 @@ void Performance::Update()
 
 void Performance::ResetProfiler()
 {
-	for (auto& categoryKV : Performance::profilerCategories)
+	for (const auto& categoryKV : Performance::profilerCategories)
 	{
-		for (auto& profilerValueKV : categoryKV.second->profilerList)
+		for (const auto& profilerValueKV : categoryKV.second->profilerList)
 		{
 			profilerValueKV.second->ResetValue();
 		}

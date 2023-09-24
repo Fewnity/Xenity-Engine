@@ -223,16 +223,17 @@ void Editor::CreateEmptyParent()
 {
 	auto go = CreateGameObject();
 	auto transform = go->GetTransform();
-	auto selectedTransform = Engine::selectedGameObject.lock()->GetTransform();
+	std::shared_ptr<GameObject> selectGameObject = Engine::selectedGameObject.lock();
+	auto selectedTransform = selectGameObject->GetTransform();
 	transform->SetPosition(selectedTransform->GetPosition());
 	transform->SetRotation(selectedTransform->GetRotation());
 	transform->SetLocalScale(selectedTransform->GetScale());
 
-	if (Engine::selectedGameObject.lock()->parent.lock())
+	if (selectGameObject->parent.lock())
 	{
-		go->SetParent(Engine::selectedGameObject.lock()->parent.lock());
+		go->SetParent(selectGameObject->parent.lock());
 	}
-	Engine::selectedGameObject.lock()->SetParent(go);
+	selectGameObject->SetParent(go);
 
 	Engine::SetSelectedGameObject(go);
 }

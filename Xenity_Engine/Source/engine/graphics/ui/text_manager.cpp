@@ -31,9 +31,8 @@ void TextManager::DrawTextMesh(std::shared_ptr<MeshData> mesh, bool for3D, bool 
 	Engine::renderer->DrawMeshData(mesh, textures, renderSettings);
 }
 
-void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool canvas)
+void TextManager::SetTextPosition(std::shared_ptr<Transform> transform, bool canvas)
 {
-	auto transform = weakTransform.lock();
 	// Set text scale and pivot position/rotation
 	Vector3 pos;
 	if (!canvas)
@@ -56,7 +55,7 @@ void TextManager::SetTextPosition(std::weak_ptr<Transform> weakTransform, bool c
 		Graphics::currentShader->SetShaderModel(pos, rot, scl);
 }
 
-std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, std::shared_ptr<Font> font)
+std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, std::shared_ptr<Font> font)
 {
 	if (!font)
 		return nullptr;
@@ -137,7 +136,7 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 	return mesh;
 }
 
-void TextManager::DrawText(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> weakTransform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material)
+void TextManager::DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::shared_ptr<Transform> transform, const Color& color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material)
 {
 	if (!font)
 		return;
@@ -170,7 +169,6 @@ void TextManager::DrawText(std::string& text, TextInfo* textInfo, HorizontalAlig
 			}
 		}
 
-		auto transform = weakTransform.lock();
 		SetTextPosition(transform, canvas);
 
 		bool invertFaces = false;
@@ -213,7 +211,7 @@ TextInfo* TextManager::GetTextInfomations(std::string& text, int textLen, std::s
 	if (!font)
 		return textInfos;
 
-	textInfos->linesInfo.push_back(LineInfo());
+	textInfos->linesInfo.emplace_back(LineInfo());
 
 	int currentLine = 0;
 	float higherY = 0;
@@ -226,7 +224,7 @@ TextInfo* TextManager::GetTextInfomations(std::string& text, int textLen, std::s
 		{
 			textInfos->linesInfo[currentLine].lenght *= scale;
 			textInfos->linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
-			textInfos->linesInfo.push_back(LineInfo());
+			textInfos->linesInfo.emplace_back(LineInfo());
 			currentLine++;
 			higherY = 0;
 			lowerY = 0;

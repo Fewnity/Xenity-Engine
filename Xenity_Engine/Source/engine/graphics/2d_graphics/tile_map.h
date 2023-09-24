@@ -39,7 +39,7 @@ public:
 	* @param width Tilemap width
 	* @param height Tilemap height
 	*/
-	void Setup(int width, int height);
+	void Setup(int _width, int _height);
 
 	/**
 	* @brief Setup the Tilemap before usage
@@ -48,7 +48,7 @@ public:
 	* @param height Tilemap height
 	* @param chunkSize Size of a chunk
 	*/
-	void Setup(int width, int height, int chunkSize);
+	void Setup(int _width, int _height, int _chunkSize);
 
 	/**
 	* @brief Return tile at position (nullptr if out of bound)
@@ -123,7 +123,7 @@ public:
 	/**
 	* Set tilemap global color
 	*/
-	void SetColor(Color color);
+	void SetColor(const Color& color);
 
 private:
 	class TilemapChunk

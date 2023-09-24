@@ -402,7 +402,7 @@ void Engine::Quit()
 	isRunning = false;
 }
 
-void Engine::SetSelectedGameObject(std::weak_ptr<GameObject> newSelected)
+void Engine::SetSelectedGameObject(const std::weak_ptr<GameObject>& newSelected)
 {
 	selectedGameObject = newSelected;
 }
@@ -556,7 +556,7 @@ void Engine::RemoveDestroyedComponents()
 	componentsToDestroy.clear();
 }
 
-void Engine::RemoveComponentReferences(std::weak_ptr <Component> weakComponent)
+void Engine::RemoveComponentReferences(const std::weak_ptr <Component>& weakComponent)
 {
 	// Check if the component is a special class and remove other references
 	if (auto component = weakComponent.lock())
@@ -652,7 +652,7 @@ std::vector<std::shared_ptr<GameObject>> Engine::GetGameObjects()
 	return std::vector<std::shared_ptr<GameObject>>(Engine::gameObjects);
 }
 
-void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)
+void DestroyGameObjectAndChild(const std::weak_ptr<GameObject>& gameObject)
 {
 	std::shared_ptr<GameObject> gameObjectLock = gameObject.lock();
 	Engine::gameObjectsToDestroy.push_back(gameObject);
@@ -664,7 +664,7 @@ void DestroyGameObjectAndChild(std::weak_ptr<GameObject> gameObject)
 	}
 }
 
-void Destroy(std::weak_ptr<GameObject> gameObject)
+void Destroy(const std::weak_ptr<GameObject>& gameObject)
 {
 	if (!gameObject.lock()->waitingForDestroy)
 	{
@@ -672,7 +672,7 @@ void Destroy(std::weak_ptr<GameObject> gameObject)
 	}
 }
 
-void Destroy(std::weak_ptr<Component> weakComponent)
+void Destroy(const std::weak_ptr<Component>& weakComponent)
 {
 	// Remove the component from the his parent's components list
 	if (auto component = weakComponent.lock())

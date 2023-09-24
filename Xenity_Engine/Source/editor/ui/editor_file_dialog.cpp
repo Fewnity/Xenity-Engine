@@ -15,7 +15,7 @@
 #include <ShObjIdl.h>
 #include "../../engine/graphics/skybox.h"
 
-std::string EditorUI::OpenFolderDialog(std::string title)
+std::string EditorUI::OpenFolderDialog(const std::string& title)
 {
 	std::string path = "";
 
@@ -75,7 +75,7 @@ std::string EditorUI::OpenFolderDialog(std::string title)
 	return path;
 }
 
-std::string EditorUI::OpenFileDialog(std::string title)
+std::string EditorUI::OpenFileDialog(const std::string& title)
 {
 	std::string path = "";
 
@@ -107,7 +107,6 @@ std::string EditorUI::OpenFileDialog(std::string title)
 
 
 		// Initializing an object of wstring
-		std::string title = title;
 		std::wstring tempTitle = std::wstring(title.begin(), title.end());
 
 		// Applying c_str() method on temp
@@ -152,7 +151,7 @@ std::string EditorUI::OpenFileDialog(std::string title)
 	return path;
 }
 
-std::string EditorUI::SaveFileDialog(std::string title)
+std::string EditorUI::SaveFileDialog(const std::string& title)
 {
 	std::string path = "";
 
@@ -185,7 +184,6 @@ std::string EditorUI::SaveFileDialog(std::string title)
 
 
 		// Initializing an object of wstring
-		std::string title = title;
 		std::wstring tempTitle = std::wstring(title.begin(), title.end());
 
 		// Applying c_str() method on temp

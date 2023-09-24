@@ -3,7 +3,7 @@
 #include "../debug/performance.h"
 #include "../engine_settings.h"
 
-ProfilerBenchmark::ProfilerBenchmark(std::string category, std::string name)
+ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::string& name)
 {
 #if defined(EDITOR)
 	//If the profiler is new, created a new one

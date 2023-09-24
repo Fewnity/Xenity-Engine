@@ -7,37 +7,37 @@ Vector3 ShapeSpawner::defaultPosition = Vector3(0, 0, 0);
 Vector3 ShapeSpawner::defaultRotation = Vector3(0, 0, 0);
 Vector3 ShapeSpawner::defaultScale = Vector3(1, 1, 1);
 
-std::weak_ptr <GameObject>ShapeSpawner::SpawnCube()
+std::shared_ptr <GameObject>ShapeSpawner::SpawnCube()
 {
 	return MakeMesh("Cube", "models/Basic/CubeTriangulate.obj");
 }
 
-std::weak_ptr <GameObject>ShapeSpawner::SpawnSphere()
+std::shared_ptr <GameObject>ShapeSpawner::SpawnSphere()
 {
 	return MakeMesh("Sphere", "models/Basic/SphereTriangulateSmooth.obj");
 }
 
-std::weak_ptr <GameObject>ShapeSpawner::SpawnCone()
+std::shared_ptr <GameObject>ShapeSpawner::SpawnCone()
 {
 	return MakeMesh("Cone", "models/Basic/ConeTriangulateSmooth.obj");
 }
 
-std::weak_ptr <GameObject >ShapeSpawner::SpawnDonut()
+std::shared_ptr <GameObject >ShapeSpawner::SpawnDonut()
 {
 	return MakeMesh("Donut", "models/Basic/DonutTriangulateSmooth.obj");
 }
 
-std::weak_ptr <GameObject>ShapeSpawner::SpawnPlane()
+std::shared_ptr <GameObject>ShapeSpawner::SpawnPlane()
 {
 	return MakeMesh("Plane", "models/Basic/PlaneTriangulate.obj");
 }
 
-std::weak_ptr <GameObject>ShapeSpawner::SpawnCylinder()
+std::shared_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 {
 	return MakeMesh("Cylinder", "models/Basic/CylinderTriangulateSmooth.obj");
 }
 
-std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(std::string gameObjectName, std::string meshFilePath)
+std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath)
 {
 	std::shared_ptr<GameObject> gameObject = CreateGameObject(gameObjectName);
 	std::shared_ptr<MeshRenderer> mesh = gameObject->AddComponent<MeshRenderer>();

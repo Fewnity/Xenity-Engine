@@ -55,15 +55,15 @@ std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
 Camera::~Camera()
 {
 #if defined(EDITOR)
-	if (framebuffer >= 0)
+	if (framebuffer != -1)
 	{
 		glDeleteFramebuffers(1, &framebuffer);
 	}
-	if (framebufferTexture >= 0)
+	if (framebufferTexture != -1)
 	{
 		glDeleteTextures(1, &framebufferTexture);
 	}
-	if (depthframebuffer >= 0)
+	if (depthframebuffer != -1)
 	{
 		glDeleteRenderbuffers(1, &depthframebuffer);
 	}
@@ -123,7 +123,10 @@ void Camera::SetFarClippingPlane(float value)
 	{
 		farClippingPlane = value + 0.01f;
 	}
-	farClippingPlane = value;
+	else 
+	{
+		farClippingPlane = value;
+	}
 	UpdateProjection();
 }
 
@@ -204,11 +207,11 @@ void Camera::UpdateFrameBuffer()
 	if (needFrameBufferUpdate)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		if (framebufferTexture >= 0)
+		if (framebufferTexture != -1)
 		{
 			glDeleteTextures(1, &framebufferTexture);
 		}
-		if (depthframebuffer >= 0)
+		if (depthframebuffer != -1)
 		{
 			glDeleteRenderbuffers(1, &depthframebuffer);
 		}
@@ -232,7 +235,7 @@ void Camera::UpdateFrameBuffer()
 #endif
 }
 
-void Camera::ChangeFrameBufferSize(Vector2Int resolution)
+void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 {
 	if (framebufferSize != resolution)
 	{

@@ -47,39 +47,39 @@ void Light::OnReflectionUpdated()
 
 #pragma region Quick light setup
 
-void Light::SetupPointLight(const Color color, const float intensity, const float range)
+void Light::SetupPointLight(const Color& _color, const float _intensity, const float _range)
 {
-	type = Light::Point;
+	this->type = Light::Point;
 
-	this->color = color;
-	this->intensity = intensity;
-	SetRange(range);
+	this->color = _color;
+	this->intensity = _intensity;
+	SetRange(_range);
 }
 
-void Light::SetupDirectionalLight(const Color color, const float intensity)
+void Light::SetupDirectionalLight(const Color& _color, const float _intensity)
 {
-	type = Light::Directional;
+	this->type = Light::Directional;
 
-	this->color = color;
-	this->intensity = intensity;
-	quadratic = 0;
-	linear = 0;
+	this->color = _color;
+	this->intensity = _intensity;
+	this->quadratic = 0;
+	this->linear = 0;
 }
 
-void Light::SetupSpotLight(const Color color, const float intensity, const float range, const float angle)
+void Light::SetupSpotLight(const Color& _color, const float _intensity, const float _range, const float _angle)
 {
-	SetupSpotLight(color, intensity, range, angle, spotSmoothness);
+	SetupSpotLight(_color, _intensity, _range, _angle, spotSmoothness);
 }
 
-void Light::SetupSpotLight(const Color color, const float intensity, const float range, const float angle, const float smoothness)
+void Light::SetupSpotLight(const Color& _color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
-	type = Light::Spot;
+	this->type = Light::Spot;
 
-	this->color = color;
-	this->intensity = intensity;
-	SetRange(range);
-	SetSpotAngle(angle);
-	SetSpotSmoothness(smoothness);
+	this->color = _color;
+	this->intensity = _intensity;
+	SetRange(_range);
+	SetSpotAngle(_angle);
+	SetSpotSmoothness(_smoothness);
 }
 
 #pragma endregion

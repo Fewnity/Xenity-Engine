@@ -82,21 +82,6 @@ void Color::UpdateUnsignedInts()
 	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
 }
 
-unsigned int Color::GetUnsignedIntRGBA()
-{
-	return rgbaInt;
-}
-
-unsigned int Color::GetUnsignedIntABGR()
-{
-	return abgrInt;
-}
-
-RGBA Color::GetRGBA()
-{
-	return rgba;
-}
-
 std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;

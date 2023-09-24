@@ -20,7 +20,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		auto &go = Engine::gameObjects[goI];
+		auto& go = Engine::gameObjects[goI];
 		std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
@@ -40,7 +40,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		int componentCount = go->GetComponentCount();
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
-			auto &component = go->components[componentI];
+			auto& component = go->components[componentI];
 			std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
@@ -59,22 +59,21 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	}
 	else
 	{
-		std::string jsonData = j.dump(2);
-
 		// Get scene path
 		std::string path = "";
 		if (SceneManager::openedScene)
 		{
 			path = SceneManager::openedScene->file->GetPath();
 		}
-		else 
+		else
 		{
 			path = EditorUI::SaveFileDialog("Save scene");
 		}
 
 		// If there is no error, save the file
-		if (path != "") 
+		if (!path.empty())
 		{
+			std::string jsonData = j.dump(2);
 			FileSystem::fileSystem->DeleteFile(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			file->Open(true);
@@ -96,12 +95,12 @@ void SceneManager::RestoreSceneHotReloading()
 	LoadScene(savedSceneDataHotReloading);
 }
 
-void SceneManager::LoadScene(json jsonData)
+void SceneManager::LoadScene(const json& jsonData)
 {
 #if !defined(EDITOR)
 	Engine::SetGameState(Starting);
 #endif
-	
+
 	EmptyScene();
 
 	std::vector<std::shared_ptr<Component>> allComponents;
@@ -113,7 +112,7 @@ void SceneManager::LoadScene(json jsonData)
 		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 		uint64_t id = std::stoull(gameObjectKV.key());
 		newGameObject->SetUniqueId(id);
-		if (id >= biggestId) 
+		if (id >= biggestId)
 		{
 			biggestId = id;
 		}
@@ -152,29 +151,31 @@ void SceneManager::LoadScene(json jsonData)
 					goChild->SetParent(go);
 				}
 			}
-		}
 
-		ReflectionUtils::JsonToReflection(kv.value()["Transform"], *go->GetTransform().get());
-		go->GetTransform()->isTransformationMatrixDirty = true;
-		go->GetTransform()->UpdateWorldValues();
+			std::shared_ptr<Transform> transform = go->GetTransform();
+			ReflectionUtils::JsonToReflection(kv.value()["Transform"], *transform.get());
+			transform->isTransformationMatrixDirty = true;
+			transform->UpdateWorldValues();
 
-		for (auto& kv2 : kv.value()["Components"].items())
-		{
-			int componentCount = go->GetComponentCount();
-			for (int compI = 0; compI < componentCount; compI++)
+			for (auto& kv2 : kv.value()["Components"].items())
 			{
-				std::shared_ptr<Component> component = go->components[compI];
-				if (component->GetUniqueId() == std::stoull(kv2.key()))
+				int componentCount = go->GetComponentCount();
+				for (int compI = 0; compI < componentCount; compI++)
 				{
-					ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
-					break;
+					std::shared_ptr<Component> component = go->components[compI];
+					if (component->GetUniqueId() == std::stoull(kv2.key()))
+					{
+						ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
+						break;
+					}
 				}
 			}
 		}
+
 	}
 
 	// Call Awake on Components
-	if (Engine::GetGameState() == Starting) 
+	if (Engine::GetGameState() == Starting)
 	{
 		std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
 		int componentsCount = allComponents.size();
@@ -240,7 +241,7 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 		json data;
 		try
 		{
-			if(jsonString != "")
+			if (!jsonString.empty())
 				data = json::parse(jsonString);
 			LoadScene(data);
 			openedScene = scene;

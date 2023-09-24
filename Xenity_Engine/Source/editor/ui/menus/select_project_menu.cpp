@@ -33,7 +33,7 @@ void SelectProjectMenu::Draw()
 	//Draw text
 	std::string noCamText = "Projects";
 	ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
-	float offY = ImGui::GetCursorPosY();
+
 	ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
 	ImGui::Text(noCamText.c_str());
 
@@ -54,7 +54,6 @@ void SelectProjectMenu::Draw()
 			if (ProjectManager::LoadProject(projectPath))
 			{
 				// Check if the project is already in the opened projects list
-				std::vector<ProjectListItem> projectsList = ProjectManager::GetProjectsList();
 				bool projectAlreadyInList = false;
 				int projectsCount = projectsList.size();
 				for (int i = 0; i < projectsCount; i++)

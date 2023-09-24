@@ -58,10 +58,9 @@ Vector4::Vector4(const float fillValue)
 Vector4 Vector4::Normalise()
 {
 	float ls = this->x * this->x + this->y * this->y + this->z * this->z + this->w * this->w;
-	float length;
 	if (ls != 0)
 	{
-		length = sqrtf(ls);
+		float length = sqrtf(ls);
 		return Vector4(this->x / length, this->y / length, this->z / length, this->w / length);
 	}
 	else

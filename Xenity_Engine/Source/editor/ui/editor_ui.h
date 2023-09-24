@@ -51,39 +51,39 @@ public:
 
 	static std::string GetPrettyVariableName(std::string variableName);
 
-	static void DrawTextCentered(std::string text);
-	static int DrawInputButton(std::string inputName, std::string text, bool addUnbindButton);
-	static bool DragDropTarget(std::string name, std::shared_ptr <FileReference>& ref);
-	static bool DragDropTarget(std::string name, Component*& ref);
-	static bool DragDropTarget(std::string name, GameObject*& ref);
-	static bool DragDropTarget(std::string name, Transform*& ref);
+	static void DrawTextCentered(const std::string& text);
+	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref);
+	static bool DragDropTarget(const std::string& name, Component*& ref);
+	static bool DragDropTarget(const std::string& name, GameObject*& ref);
+	static bool DragDropTarget(const std::string& name, Transform*& ref);
 
-	static bool DrawInput(std::string inputName, Color& value);
-	static bool DrawInput(std::string inputName, Vector2& value);
-	static bool DrawInput(std::string inputName, Vector2Int& value);
-	static bool DrawInput(std::string inputName, Vector3 & value);
-	static bool DrawInput(std::string inputName, Vector4& value);
-	static bool DrawInput(std::string inputName, float& value);
-	static bool DrawInput(std::string inputName, double& value);
-	static bool DrawInput(std::string inputName, std::string& value);
-	static bool DrawInput(std::string inputName, int& value);
-	static bool DrawInput(std::string inputName, bool& value);
-	static bool DrawInput(std::string inputName, std::weak_ptr<Component>& value);
-	static bool DrawInput(std::string inputName, std::weak_ptr<GameObject>& value);
-	static bool DrawInput(std::string inputName, std::weak_ptr<Transform>& value);
-	static bool DrawInput(std::string inputName, std::shared_ptr<SkyBox>& value);
+	static bool DrawInput(const std::string& inputName, Color& value);
+	static bool DrawInput(const std::string& inputName, Vector2& value);
+	static bool DrawInput(const std::string& inputName, Vector2Int& value);
+	static bool DrawInput(const std::string& inputName, Vector3 & value);
+	static bool DrawInput(const std::string& inputName, Vector4& value);
+	static bool DrawInput(const std::string& inputName, float& value);
+	static bool DrawInput(const std::string& inputName, double& value);
+	static bool DrawInput(const std::string& inputName, std::string& value);
+	static bool DrawInput(const std::string& inputName, int& value);
+	static bool DrawInput(const std::string& inputName, bool& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value);
+	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
-	static bool DrawTreeItem(std::weak_ptr<GameObject> child);
+	static bool DrawTreeItem(const std::weak_ptr<GameObject>& child);
 	static bool DrawTreeItem(ProjectDirectory* projectDir);
-	static void DrawInputTitle(std::string title);
-	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value);
-	static void DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value);
+	static void DrawInputTitle(const std::string& title);
+	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
+	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);
 	static bool DrawReflection(Reflection& reflection);
-	static bool DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap);
+	static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap);
 
-	static std::string OpenFolderDialog(std::string title);
-	static std::string OpenFileDialog(std::string title);
-	static std::string SaveFileDialog(std::string title);
+	static std::string OpenFolderDialog(const std::string& title);
+	static std::string OpenFileDialog(const std::string& title);
+	static std::string SaveFileDialog(const std::string& title);
 
 	static std::string GenerateItemId();
 	static bool showProfiler;
@@ -99,7 +99,7 @@ public:
 	}
 
 	template <typename T>
-	static void DrawFileReference(FileType fileType, std::string className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, std::string& variableName)
+	static void DrawFileReference(FileType fileType, const std::string& className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
 	{
 		std::string inputText = "None (" + className + ")";
 		auto ptr = valuePtr->get();

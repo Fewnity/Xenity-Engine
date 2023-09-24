@@ -15,7 +15,7 @@
 #include <ShObjIdl.h>
 #include "../../engine/graphics/skybox.h"
 
-void EditorUI::DrawInputTitle(std::string title)
+void EditorUI::DrawInputTitle(const std::string& title)
 {
 	ImGui::Text(title.c_str());
 	ImGui::SameLine();
@@ -23,7 +23,7 @@ void EditorUI::DrawInputTitle(std::string title)
 	ImGui::SetNextItemWidth(-1);
 }
 
-bool EditorUI::DrawInput(std::string inputName, float& value)
+bool EditorUI::DrawInput(const std::string& inputName, float& value)
 {
 	DrawInputTitle(inputName);
 	float oldValue = float(value);
@@ -31,7 +31,7 @@ bool EditorUI::DrawInput(std::string inputName, float& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, double& value)
+bool EditorUI::DrawInput(const std::string& inputName, double& value)
 {
 	DrawInputTitle(inputName);
 	double oldValue = double(value);
@@ -39,7 +39,7 @@ bool EditorUI::DrawInput(std::string inputName, double& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, std::string& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::string& value)
 {
 	DrawInputTitle(inputName);
 	std::string oldValue = std::string(value);
@@ -47,7 +47,7 @@ bool EditorUI::DrawInput(std::string inputName, std::string& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, int& value)
+bool EditorUI::DrawInput(const std::string& inputName, int& value)
 {
 	DrawInputTitle(inputName);
 	int oldValue = int(value);
@@ -55,7 +55,7 @@ bool EditorUI::DrawInput(std::string inputName, int& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, bool& value)
+bool EditorUI::DrawInput(const std::string& inputName, bool& value)
 {
 	DrawInputTitle(inputName);
 	bool oldValue = bool(value);
@@ -63,7 +63,7 @@ bool EditorUI::DrawInput(std::string inputName, bool& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Component>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>& value)
 {
 	std::shared_ptr<Component> oldValue = value.lock();
 
@@ -90,7 +90,7 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Component>& value)
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Transform>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value)
 {
 	std::shared_ptr<Transform> oldValue = value.lock();
 
@@ -117,7 +117,7 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<Transform>& value)
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<GameObject>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value)
 {
 	std::shared_ptr<GameObject> oldValue = value.lock();
 
@@ -144,7 +144,7 @@ bool EditorUI::DrawInput(std::string inputName, std::weak_ptr<GameObject>& value
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(std::string inputName, std::shared_ptr<SkyBox>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value)
 {
 	bool changed = false;
 	auto ref = std::ref(value);
@@ -152,7 +152,7 @@ bool EditorUI::DrawInput(std::string inputName, std::shared_ptr<SkyBox>& value)
 	return changed;
 }
 
-bool EditorUI::DrawInput(std::string inputName, Color& value)
+bool EditorUI::DrawInput(const std::string& inputName, Color& value)
 {
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -172,7 +172,7 @@ bool EditorUI::DrawInput(std::string inputName, Color& value)
 	return valueChanged;
 }
 
-bool EditorUI::DrawInput(std::string inputName, Vector2& value)
+bool EditorUI::DrawInput(const std::string& inputName, Vector2& value)
 {
 	Vector2 oldValue = Vector2(value);
 
@@ -191,7 +191,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector2& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, Vector2Int& value)
+bool EditorUI::DrawInput(const std::string& inputName, Vector2Int& value)
 {
 	Vector2Int oldValue = Vector2Int(value);
 
@@ -210,7 +210,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector2Int& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, Vector3& value)
+bool EditorUI::DrawInput(const std::string& inputName, Vector3& value)
 {
 	Vector3 oldValue = Vector3(value);
 
@@ -230,7 +230,7 @@ bool EditorUI::DrawInput(std::string inputName, Vector3& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(std::string inputName, Vector4& value)
+bool EditorUI::DrawInput(const std::string& inputName, Vector4& value)
 {
 	Vector4 oldValue = Vector4(value);
 

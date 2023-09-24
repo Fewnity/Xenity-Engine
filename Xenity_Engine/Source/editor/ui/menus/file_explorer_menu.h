@@ -21,7 +21,7 @@ public:
 	void Draw();
 private:
 	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex);
-	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, std::string id, int itemIndex);
+	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex);
 	bool fileHovered = false;
 	void OpenItem(FileExplorerItem& item);
 	std::string renamingString = "";

@@ -30,17 +30,17 @@ public:
 	 static void AddMaterial(Material *material);
 	static void AddReflection(Reflection* reflection);
 	static void AddFileReference(std::shared_ptr <FileReference> fileReference);
-	static void AddDrawable(std::weak_ptr<IDrawable> drawable);
-	static void AddLight(std::weak_ptr<Light> light);
+	static void AddDrawable(const std::weak_ptr<IDrawable>& drawable);
+	static void AddLight(const std::weak_ptr<Light>& light);
 	// static void AddMeshData(MeshData *meshData);
 
 	// static void RemoveShader(Shader *shader);
-	 static void RemoveMaterial(Material *material);
-	static void RemoveReflection(Reflection* reflection);
+	 static void RemoveMaterial(const Material *material);
+	static void RemoveReflection(const Reflection* reflection);
 	static void RemoveAllFileReferences();
 	static void RemoveFileReference(std::shared_ptr <FileReference> fileReference);
-	static void RemoveDrawable(std::weak_ptr<IDrawable> drawable);
-	static void RemoveLight(std::weak_ptr<Light> light);
+	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawable);
+	static void RemoveLight(const std::weak_ptr<Light>& light);
 	static void ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference);
 	// static void RemoveMeshData(MeshData *meshData);
 

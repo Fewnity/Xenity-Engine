@@ -28,7 +28,7 @@ public:
     /**
     * Send data
     */
-    void SendData(std::string text);
+    void SendData(const std::string& text);
 
     /**
     * Read data from the socket
@@ -65,7 +65,7 @@ public:
     /**
     * [Internal] Create a socket
     */
-    static Socket *CreateSocket(std::string address, int port);
+    static Socket *CreateSocket(const std::string& address, int port);
 
     /**
     * [Internal] draw network setup menu for the PSP

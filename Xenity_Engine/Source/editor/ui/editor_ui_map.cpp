@@ -15,16 +15,16 @@
 #include <ShObjIdl.h>
 #include "../../engine/graphics/skybox.h"
 
-bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
+bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap)
 {
 	bool valueChanged = false;
 	for (const auto& kv : myMap)
 	{
-		bool valueChangedTemp = false;
 		std::string variableName = GetPrettyVariableName(kv.first);
 		ReflectionEntry reflectionEntry = kv.second;
 		if (reflectionEntry.isPublic)
 		{
+			bool valueChangedTemp = false;
 			Variable variableRef = kv.second.variable.value();
 			if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef)) // Supported basic type
 				valueChangedTemp = DrawInput(variableName, valuePtr->get());
@@ -93,7 +93,7 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 				for (int vectorI = 0; vectorI < vectorSize; vectorI++)
 				{
 					std::string inputText = "None (Texture)";
-					auto& ptr = valuePtr->get()[vectorI];
+					const auto& ptr = valuePtr->get()[vectorI];
 					if (ptr != nullptr)
 					{
 						if (ptr->file != nullptr)
@@ -113,7 +113,7 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 
 					if (firstDraw) 
 					{
-						tempVariableName = "";
+						tempVariableName.clear();
 						firstDraw = false;
 					}
 
@@ -147,7 +147,7 @@ bool EditorUI::DrawMap(std::unordered_map<std::string, ReflectionEntry> myMap)
 	return valueChanged;
 }
 
-void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int columnIndex, float& value)
+void EditorUI::DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value)
 {
 	ImGui::TableSetColumnIndex(columnIndex);
 	ImGui::Text(inputName.c_str());
@@ -156,7 +156,7 @@ void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int co
 	ImGui::InputFloat(inputId.c_str(), &value, 0, 0, "%.4f");
 }
 
-void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int columnIndex, int& value)
+void EditorUI::DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value)
 {
 	ImGui::TableSetColumnIndex(columnIndex);
 	ImGui::Text(inputName.c_str());
@@ -165,7 +165,7 @@ void EditorUI::DrawTableInput(std::string inputName, std::string inputId, int co
 	ImGui::InputInt(inputId.c_str(), &value, 0, 0);
 }
 
-int EditorUI::DrawInputButton(std::string inputName, std::string text, bool addUnbindButton)
+int EditorUI::DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton)
 {
 	int returnValue = 0;
 	DrawInputTitle(inputName);

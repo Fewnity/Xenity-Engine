@@ -61,9 +61,9 @@ public:
 		unsigned int vertice_count = 0;
 		void* data = nullptr;
 
-		unsigned int VBO;
-		unsigned int EBO;
-		unsigned int VAO;
+		unsigned int VBO = 0;
+		unsigned int EBO = 0;
+		unsigned int VAO = 0;
 	};
 	MeshData();
 	//MeshData() = delete;
@@ -95,7 +95,7 @@ public:
 	* @param index Vertex index
 	* @param subMeshIndex Submesh index
 	*/
-	void AddVertex(float u, float v, Color color, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
 	* Add a vertex to a submesh

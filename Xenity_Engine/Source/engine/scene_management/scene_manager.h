@@ -73,6 +73,6 @@ public:
 
 private:
 	static std::shared_ptr<Scene> openedScene;
-	static void LoadScene(nlohmann::json jsonData);
+	static void LoadScene(const nlohmann::json& jsonData);
 };
 

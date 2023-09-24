@@ -21,39 +21,39 @@ public:
 	/**
 	* Spawn a cube
 	*/
-	static std::weak_ptr <GameObject> SpawnCube();
+	static std::shared_ptr <GameObject> SpawnCube();
 
 	/**
 	* Spawn a sphere
 	*/
-	static std::weak_ptr <GameObject> SpawnSphere();
+	static std::shared_ptr <GameObject> SpawnSphere();
 
 	/**
 	* Spawn a cone
 	*/
-	static std::weak_ptr <GameObject> SpawnCone();
+	static std::shared_ptr <GameObject> SpawnCone();
 
 	/**
 	* Spawn a donut
 	*/
-	static std::weak_ptr <GameObject> SpawnDonut();
+	static std::shared_ptr <GameObject> SpawnDonut();
 
 	/**
 	* Spawn a plane
 	*/
-	static std::weak_ptr <GameObject> SpawnPlane();
+	static std::shared_ptr <GameObject> SpawnPlane();
 
 	/**
 	* Spawn a cylinder
 	*/
-	static std::weak_ptr <GameObject> SpawnCylinder();
+	static std::shared_ptr <GameObject> SpawnCylinder();
 
 
 private:
 	/**
 	* Create a GameObject and add a MeshRenderer to it
 	*/
-	static std::shared_ptr<GameObject> MakeMesh(std::string gameObjectName, std::string meshFilePath);
+	static std::shared_ptr<GameObject> MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath);
 
 	static Vector3 defaultPosition;
 	static Vector3 defaultRotation;

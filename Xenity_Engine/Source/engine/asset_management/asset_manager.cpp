@@ -42,27 +42,34 @@ std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
 void AssetManager::Init()
 {
 	initialised = true;
-	defaultTexture = Texture::MakeTexture("engine_assets\\default_texture.png", true);
+	defaultTexture = Texture::MakeTexture();
 	defaultTexture->file = FileSystem::MakeFile("engine_assets\\default_texture.png");
 	defaultTexture->LoadFileReference();
-	// Shader* standard3D = new Shader("3D/vStandard.shader", "3D/fStandard.shader");
 
-	// default3DMaterial = new Material("3D Standard");
-	// default3DMaterial->shader = standard3D;
-	// default3DMaterial->SetAttribut("material.diffuse", defaultTexture);
-	// default3DMaterial->SetAttribut("material.specular", defaultTexture);
-	// default3DMaterial->SetAttribut("material.shininess", 32.0f);
-	// default3DMaterial->SetAttribut("ambiantLightColor", Vector3(0.7f, 0.7f, 0.7f));
+	if (!Engine::UseOpenGLFixedFunctions)
+	{
+		Engine::shader = Shader::MakeShader();
+		Engine::shader->file = FileSystem::MakeFile("shaders/standard.shader");
 
-	// Shader* sprite2D = new Shader("2D/vSprite.shader", "2D/fSprite.shader");
+		Engine::unlitShader = Shader::MakeShader();
+		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
 
-	// default2DMaterial = new Material("2D Standard 2");
-	// default2DMaterial->shader = sprite2D;
+		Engine::standardMaterial = Material::MakeMaterial();
+		Engine::standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
+		Engine::standardMaterial->shader = Engine::shader;
+		Engine::standardMaterial->useLighting = true;
 
-	// Shader* ui = new Shader("UI/vUi.shader", "UI/fUi.shader");
+		Engine::unlitMaterial = Material::MakeMaterial();
+		Engine::unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
+		Engine::unlitMaterial->shader = Engine::unlitShader;
+		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
 
-	// defaultUIMaterial = new Material("UI");
-	// defaultUIMaterial->shader = ui;
+		Engine::shader->LoadFileReference();
+		Engine::unlitShader->LoadFileReference();
+
+		Engine::standardMaterial->LoadFileReference();
+		Engine::unlitMaterial->LoadFileReference();
+	}
 
 	Debug::Print("-------- Asset Manager initiated --------");
 }
@@ -114,7 +121,7 @@ void AssetManager::AddFileReference(std::shared_ptr<FileReference> fileReference
 /// Add a drawable in the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::AddDrawable(std::weak_ptr<IDrawable> drawable)
+void AssetManager::AddDrawable(const std::weak_ptr<IDrawable>& drawable)
 {
 	drawables.push_back(drawable);
 	drawableCount++;
@@ -124,7 +131,7 @@ void AssetManager::AddDrawable(std::weak_ptr<IDrawable> drawable)
 /// Add a light in the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::AddLight(std::weak_ptr<Light> light)
+void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 {
 	lights.push_back(light);
 	lightCount++;
@@ -170,7 +177,7 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
 // 	}
 // }
 
- void AssetManager::RemoveMaterial(Material *material)
+ void AssetManager::RemoveMaterial(const Material *material)
  {
  	int materialIndex = 0;
  	bool found = false;
@@ -191,7 +198,7 @@ void AssetManager::AddLight(std::weak_ptr<Light> light)
  	}
  }
 
-void AssetManager::RemoveReflection(Reflection* reflection)
+void AssetManager::RemoveReflection(const Reflection* reflection)
 {
 #if defined(EDITOR)
 	if (initialised)
@@ -220,9 +227,9 @@ void AssetManager::RemoveReflection(Reflection* reflection)
 void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference) 
 {
 	RemoveFileReference(fileReference);
-	for (int i = 0; i < reflectionCount; i++)
+	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
 	{
-		auto map = reflections[i]->GetReflection();
+		auto map = reflections[reflectionIndex]->GetReflection();
 		for (auto& kv : map)
 		{
 			Variable& variableRef = kv.second.variable.value();
@@ -314,7 +321,7 @@ void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileRefere
 /// Remove a drawable from the drawable list
 /// </summary>
 /// <param name="drawable"></param>
-void AssetManager::RemoveDrawable(std::weak_ptr<IDrawable> drawable)
+void AssetManager::RemoveDrawable(const std::weak_ptr<IDrawable>& drawable)
 {
 	int drawableIndex = 0;
 	bool found = false;
@@ -339,7 +346,7 @@ void AssetManager::RemoveDrawable(std::weak_ptr<IDrawable> drawable)
 /// Remove a light from the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::RemoveLight(std::weak_ptr<Light> light)
+void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 {
 	int lightIndex = 0;
 	bool found = false;

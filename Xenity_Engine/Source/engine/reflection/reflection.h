@@ -48,7 +48,7 @@ typedef std::variant<
 class ReflectionEntry 
 {
 public:
-	ReflectionEntry() { }
+	ReflectionEntry() = default;
 	std::optional<Variable> variable;
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
@@ -71,7 +71,7 @@ public:
 	*/
 	virtual void OnReflectionUpdated() {};
 
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, Variable variable, std::string variableName, bool isPublic);
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, Variable variable, std::string variableName, bool visibleInFileInspector, bool isPublic);
+	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, const Variable& variable, const std::string& variableName, bool isPublic);
+	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry> &map, const Variable& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic);
 };
 

@@ -49,7 +49,7 @@ public:
     /**
     * Set volume
     */
-    void SetVolume(float volume);
+    void SetVolume(float _volume);
 
     /**
     * Set panning

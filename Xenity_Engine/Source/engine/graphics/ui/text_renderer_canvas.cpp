@@ -40,7 +40,7 @@ int TextRendererCanvas::GetDrawPriority() const
 
 #pragma endregion
 
-void TextRendererCanvas::SetText(std::string text)
+void TextRendererCanvas::SetText(const std::string& text)
 {
 	if (this->text != text)
 	{

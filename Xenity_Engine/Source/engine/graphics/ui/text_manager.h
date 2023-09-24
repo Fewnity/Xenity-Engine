@@ -84,7 +84,7 @@ public:
     * @param mesh Mesh
     * @param font Font
     */
-    static void DrawText(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::weak_ptr<Transform> transform, Color color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material);
+    static void DrawText(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::shared_ptr<Transform> transform, const Color& color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material);
 
     /**
     * Get informations about a text
@@ -104,7 +104,7 @@ public:
     * @param color Color
     * @param font Font
     */
-    static std::shared_ptr <MeshData> CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color color, std::shared_ptr<Font> font);
+    static std::shared_ptr <MeshData> CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, std::shared_ptr<Font> font);
 
 private:
 
@@ -114,7 +114,7 @@ private:
     * @param transform
     * @param canvas
     */
-    static void SetTextPosition(std::weak_ptr<Transform> transform, bool canvas);
+    static void SetTextPosition(std::shared_ptr<Transform> transform, bool canvas);
 
     /**
     * Draw mesh

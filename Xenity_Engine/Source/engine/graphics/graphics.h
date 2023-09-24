@@ -53,13 +53,13 @@ public:
 	* Add a drawable
 	* @param drawableToAdd Drawable to add
 	*/
-	static void AddDrawable(std::weak_ptr<IDrawable> drawableToAdd);
+	static void AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd);
 
 	/**
 	* Remove a drawable
 	* @param drawableToRemove Drawable to remove
 	*/
-	static void RemoveDrawable(std::weak_ptr<IDrawable> drawableToRemove);
+	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove);
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	static std::weak_ptr<Camera> usedCamera;

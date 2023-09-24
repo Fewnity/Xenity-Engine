@@ -66,14 +66,14 @@ void Shader::LoadFileReference()
 
 	if (textSize != 0)
 	{
-		for (int i = 0; i < textSize-1; i++)
+		for (int i = 0; i < textSize - 1; i++)
 		{
 			if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
 			{
 				fragmentPos = i;
-				for (int j = i+1; j < textSize; j++)
+				for (int j = i + 1; j < textSize; j++)
 				{
-					if (shaderText[j] == '}') 
+					if (shaderText[j] == '}')
 					{
 						fragmentStartPos = j + 2;
 						break;
@@ -94,17 +94,20 @@ void Shader::LoadFileReference()
 			}
 		}
 
-		std::string fragShaderData = shaderText.substr(fragmentStartPos);
-		std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
+		if (vertexPos != -1 && fragmentPos != -1)
+		{
+			std::string fragShaderData = shaderText.substr(fragmentStartPos);
+			std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
 
-		LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
-		LoadShader(fragShaderData, ShaderType::Fragment_Shader);
+			LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
+			LoadShader(fragShaderData, ShaderType::Fragment_Shader);
 
-		//useTessellation = true;
-		//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
-		//LoadShader(fragmentShaderPath, Fragment_Shader);
+			//useTessellation = true;
+			//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+			//LoadShader(fragmentShaderPath, Fragment_Shader);
 
-		BuildShader();
+			BuildShader();
+		}
 	}
 }
 
@@ -137,7 +140,7 @@ bool Shader::Use()
 
 #pragma region Data loading
 
-void Shader::LoadShader(const std::string shaderData, ShaderType type)
+void Shader::LoadShader(const std::string& shaderData, ShaderType type)
 {
 	const char* shaderDataConst = shaderData.c_str();
 
@@ -220,11 +223,12 @@ void Shader::SetShaderCameraPosition()
 	//Camera position
 	if (Graphics::usedCamera.lock() != nullptr)
 	{
-		Vector3 lookDirection = Graphics::usedCamera.lock()->GetTransform()->GetForward();
-		Vector3 camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+		std::shared_ptr<Transform> transform = Graphics::usedCamera.lock()->GetTransform();
+		Vector3 lookDirection = transform->GetForward();
+		Vector3 camPos = transform->GetPosition();
 		lookDirection = lookDirection + camPos;
 
-		float xAngle = Graphics::usedCamera.lock()->GetTransform()->GetRotation().x;
+		float xAngle = transform->GetRotation().x;
 		while (xAngle < -90)
 		{
 			xAngle += 360;
@@ -251,7 +255,7 @@ void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
 
-	glm::mat4 camera = glm::mat4(1.0f);
+	glm::mat4 camera;
 	camera = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
 
 	Engine::renderer->SetShaderAttribut(programId, "camera", camera);
@@ -280,17 +284,17 @@ void Shader::SetShaderProjectionCanvas()
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(const glm::mat4* trans)
+void Shader::SetShaderModel(const glm::mat4& trans)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, "model", *trans);
+	Engine::renderer->SetShaderAttribut(programId, "model", trans);
 }
 
 /// <summary>
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void Shader::SetShaderModel(const Vector3 position, const Vector3 rotation, const Vector3 scale)
+void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
 	Use();
 	glm::mat4 transformationMatrix = glm::mat4(1.0f);
@@ -321,13 +325,13 @@ void Shader::SetShaderAttribut(const char* attribut, const Vector2& value)
 	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const float& value)
+void Shader::SetShaderAttribut(const char* attribut, float value)
 {
 	Use();
 	Engine::renderer->SetShaderAttribut(programId, attribut, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const int& value)
+void Shader::SetShaderAttribut(const char* attribut, int value)
 {
 	Use();
 	Engine::renderer->SetShaderAttribut(programId, attribut, value);

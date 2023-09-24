@@ -16,7 +16,7 @@ class ProfilerValue;
 class API ProfilerBenchmark
 {
 public:
-	ProfilerBenchmark(std::string category, std::string name);
+	ProfilerBenchmark(const std::string& category, const std::string& name);
 	~ProfilerBenchmark();
 
 	/**

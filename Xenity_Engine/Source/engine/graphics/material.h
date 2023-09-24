@@ -30,12 +30,12 @@ public:
 	void LoadFileReference();
 
 	std::shared_ptr<Shader> shader = nullptr;
-	void SetAttribut(const char* attribut, const Vector2 value);
-	void SetAttribut(const char* attribut, const Vector3 value);
-	void SetAttribut(const char* attribut, const Vector4 value);
+	void SetAttribut(const char* attribut, const Vector2& value);
+	void SetAttribut(const char* attribut, const Vector3& value);
+	void SetAttribut(const char* attribut, const Vector4& value);
 	//void SetAttribut(const char* attribut, Texture* value);
-	void SetAttribut(const char* attribut, const float value);
-	void SetAttribut(const char* attribut, const int value);
+	void SetAttribut(const char* attribut, const float& value);
+	void SetAttribut(const char* attribut, const int& value);
 	bool updated = false;
 	bool useLighting = false;
 

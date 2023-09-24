@@ -52,7 +52,7 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 	return objectClicked;
 }
 
-bool EditorUI::DrawTreeItem(std::weak_ptr<GameObject> child)
+bool EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 {
 	bool objectClicked = false;
 	auto childLock = child.lock();

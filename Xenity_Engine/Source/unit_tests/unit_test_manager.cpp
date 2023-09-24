@@ -1,7 +1,7 @@
 #include "unit_test_manager.h"
 #include "../xenity.h"
 
-UnitTest::UnitTest(std::string name)
+UnitTest::UnitTest(const std::string& name)
 {
 	this->name = name;
 }
@@ -9,25 +9,20 @@ UnitTest::UnitTest(std::string name)
 void UnitTestManager::StartAllTests()
 {
 	Debug::Print("------ Unit Tests ------");
-	AddVectorTest* addVectorTest = new AddVectorTest("Vectors Additions");
-	TryTest(addVectorTest);
-	delete addVectorTest;
+	AddVectorTest addVectorTest = AddVectorTest("Vectors Additions");
+	TryTest(&addVectorTest);
 
-	MinusVectorTest* minusVectorTest = new MinusVectorTest("Vectors Subtractions");
-	TryTest(minusVectorTest);
-	delete minusVectorTest;
+	MinusVectorTest minusVectorTest = MinusVectorTest("Vectors Subtractions");
+	TryTest(&minusVectorTest);
 
-	MultiplyVectorTest* multiplyVectorTest = new MultiplyVectorTest("Vectors Multiplications");
-	TryTest(multiplyVectorTest);
-	delete multiplyVectorTest;
+	MultiplyVectorTest multiplyVectorTest = MultiplyVectorTest("Vectors Multiplications");
+	TryTest(&multiplyVectorTest);
 
-	DivideVectorTest* divideVectorTest = new DivideVectorTest("Vectors Divisions");
-	TryTest(divideVectorTest);
-	delete divideVectorTest;
+	DivideVectorTest divideVectorTest = DivideVectorTest("Vectors Divisions");
+	TryTest(&divideVectorTest);
 
-	NormaliseVectorTest* normaliseVectorTest = new NormaliseVectorTest("Vectors Normalisations");
-	TryTest(normaliseVectorTest);
-	delete normaliseVectorTest;
+	NormaliseVectorTest normaliseVectorTest = NormaliseVectorTest("Vectors Normalisations");
+	TryTest(&normaliseVectorTest);
 
 	Debug::Print("------ Unit Tests finished! ------");
 }

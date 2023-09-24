@@ -19,7 +19,7 @@ class API Transform : public Reflection, public std::enable_shared_from_this<Tra
 
 public:
 	Transform() = delete;
-	Transform(std::weak_ptr<GameObject> gameObject);
+	Transform(const std::weak_ptr<GameObject>& gameObject);
 	//void SetReflection();
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
@@ -91,31 +91,31 @@ public:
 	* Set position
 	* @param value Position
 	*/
-	void SetPosition(const Vector3 value);
+	void SetPosition(const Vector3& value);
 
 	/**
 	* Set local position
 	* @param value Local position
 	*/
-	void SetLocalPosition(const Vector3 value);
+	void SetLocalPosition(const Vector3& value);
 
 	/**
 	* Set rotation (in degree)
 	* @param value Rotation (in degree)
 	*/
-	void SetRotation(const Vector3 value);//Euler angle
+	void SetRotation(const Vector3& value);//Euler angle
 
 	/**
 	* Set local rotation (in degree)
 	* @param value Local rotation (in degree)
 	*/
-	void SetLocalRotation(const Vector3 value);//Euler angle
+	void SetLocalRotation(const Vector3& value);//Euler angle
 
 	/**
 	* Set local scale
 	* @param value Local scale
 	*/
-	void SetLocalScale(const Vector3 value);
+	void SetLocalScale(const Vector3& value);
 
 	/**
 	* [Internal] Update children world positions
@@ -178,12 +178,12 @@ private:
 	/**
 	* Get localPosition from matrices 
 	*/
-	Vector3 GetLocalPositionFromMatrices(glm::mat4 childMatrix, glm::mat4 parentMatrix);
+	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix);
 
 	/**
 	*
 	*/
-	Vector3 GetLocalRotationFromWorldRotations(Vector3 childWorldRotation, Vector3 parentWorldRotation);
+	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation);
 
 };
 

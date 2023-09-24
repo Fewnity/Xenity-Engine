@@ -23,7 +23,7 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(std::weak_ptr<GameObject> newGameObject)
+void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
 {
 	if (newGameObject.expired())
 		return;

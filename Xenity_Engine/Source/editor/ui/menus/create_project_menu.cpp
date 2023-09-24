@@ -54,7 +54,7 @@ void CreateProjectMenu::Draw()
 	if (ImGui::Button("Select a folder"))
 	{
 		std::string folder = EditorUI::OpenFolderDialog("Select a folder");
-		if (folder != "")
+		if (!folder.empty())
 		{
 			projectParentDir = folder;
 			projectFolderChanged = true;
@@ -87,11 +87,11 @@ void CreateProjectMenu::Draw()
 
 	if (ImGui::Button("Create project"))
 	{
-		if (projectParentDir == "")
+		if (projectParentDir.empty())
 		{
 			createProjectError = ERROR_EMPTY_FOLDER;
 		}
-		else if (projectName == "")
+		else if (projectName.empty())
 		{
 			createProjectError = ERROR_EMPTY_NAME;
 		}
@@ -116,6 +116,7 @@ void CreateProjectMenu::Draw()
 					Editor::currentMenu = Menu_Editor;
 				}
 			}
+			delete projectDir;
 		}
 	}
 	ImGui::PopFont();

@@ -33,14 +33,14 @@ private:
 	* @param buildType Compile for hot reloading or for a simple build or for build and run
 	* @param exportPath Folder location for the build
 	*/
-	static void CompileGame(Platform platform, BuildType buildType, std::string exportPath);
+	static void CompileGame(Platform platform, BuildType buildType, const std::string& exportPath);
 	
 	/**
 	* Compile the game code in WSL for PSP or PsVita
 	* @param platform Platform target
 	* @param exportPath Folder location for the build
 	*/
-	static void CompileInWSL(Platform platform, std::string exportPath);
+	static void CompileInWSL(Platform platform, const std::string& exportPath);
 	
 	/**
 	* Get the command to start the compiler
@@ -73,6 +73,6 @@ private:
 	* @param buildType
 	* @param location of the game folder
 	*/
-	static void StartGame(Platform platform, std::string exportPath);
+	static void StartGame(Platform platform, const std::string& exportPath);
 };
 

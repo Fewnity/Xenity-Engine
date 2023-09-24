@@ -18,38 +18,38 @@ Socket *Debug::socket;
 /**
  * Print an error in the console and the debug file
  */
-void Debug::PrintError(std::string text)
+void Debug::PrintError(const std::string& text)
 {
     if (!EngineSettings::useDebugger)
         return;
 
     PrintInOnlineConsole(text);
-    text += '\n';
-    std::string textWithoutColor = "[ERROR] " + text;
+    std::string finalText = text + '\n';
+    std::string textWithoutColor = "[ERROR] " + finalText;
     std::string textWithColor = "\033[31m" + textWithoutColor;
     PrintInConsole(textWithColor);
     PrintInFile(textWithoutColor);
-    debugText += text;
+    debugText += finalText;
 }
 
 /**
  * Print a warning in the console and the debug file
  */
-void Debug::PrintWarning(std::string text)
+void Debug::PrintWarning(const std::string& text)
 {
     if (!EngineSettings::useDebugger)
         return;
 
     PrintInOnlineConsole(text);
-    text += '\n';
-    std::string textWithoutColor = "[WARNING] " + text;
+    std::string finalText = text + '\n';
+    std::string textWithoutColor = "[WARNING] " + finalText;
     std::string textWithColor = "\033[33m" + textWithoutColor;
     PrintInConsole(textWithColor);
     PrintInFile(textWithoutColor);
-    debugText += text;
+    debugText += finalText;
 }
 
-void Debug::PrintInConsole(std::string text)
+void Debug::PrintInConsole(const std::string& text)
 {
 #if defined(__PSP__)
     // PspDebugPrint(text);
@@ -60,7 +60,7 @@ void Debug::PrintInConsole(std::string text)
 #endif
 }
 
-void Debug::PrintInFile(std::string text)
+void Debug::PrintInFile(const std::string& text)
 {
     if (file && file.use_count() == 2)
         file->Write(text);
@@ -69,25 +69,25 @@ void Debug::PrintInFile(std::string text)
 /**
  * @brief Print text in the console and the debug file
  */
-void Debug::Print(std::string text)
+void Debug::Print(const std::string& text)
 {
     if (!EngineSettings::useDebugger)
         return;
 
     PrintInOnlineConsole(text);
-    text += '\n';
-    std::string newString = "\033[37m" + text;
+    std::string finalText = text + '\n';
+    std::string newString = "\033[37m" + finalText;
     PrintInConsole(newString);
-    PrintInFile(text);
-    //debugText += text;
+    PrintInFile(finalText);
+    //debugText += finalText;
 }
 
-void Debug::PrintInOnlineConsole(std::string text)
+void Debug::PrintInOnlineConsole(const std::string& text)
 {
     if (socket)
     {
-        text += char(3);
-        socket->SendData(text);
+        std::string finalText = text + char(3);
+        socket->SendData(finalText);
     }
 }
 

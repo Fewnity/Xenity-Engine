@@ -25,7 +25,7 @@ public:
 
 	Vector2Int normalize();
 	float magnitude();
-	static float Distance(const Vector2Int a, const Vector2Int b);
+	static float Distance(const Vector2Int& a, const Vector2Int& b);
 };
 
 

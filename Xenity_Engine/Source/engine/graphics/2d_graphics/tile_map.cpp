@@ -40,27 +40,27 @@ int Tilemap::GetDrawPriority() const
 	return orderInLayer;
 }
 
-void Tilemap::Setup(int width, int height)
+void Tilemap::Setup(int _width, int _height)
 {
-	Setup(width, height, DEFAULT_CHUNK_SIZE);
+	Setup(_width, _height, DEFAULT_CHUNK_SIZE);
 }
 
-void Tilemap::Setup(int width, int height, int chunkSize)
+void Tilemap::Setup(int _width, int _height, int _chunkSize)
 {
-	this->width = width;
-	this->height = height;
+	this->width = _width;
+	this->height = _height;
 
 	// Verify chunk size
-	if (chunkSize <= 0)
+	if (_chunkSize <= 0)
 	{
-		chunkSize = 1;
+		_chunkSize = 1;
 	}
-	else if (chunkSize > width || chunkSize > height)
+	else if (_chunkSize > _width || _chunkSize > _height)
 	{
-		chunkSize = std::min(width, height);
+		_chunkSize = std::min(_width, _height);
 	}
 
-	this->chunkSize = chunkSize;
+	this->chunkSize = _chunkSize;
 
 	if (tiles != nullptr)
 		free(tiles);
@@ -69,11 +69,11 @@ void Tilemap::Setup(int width, int height, int chunkSize)
 	AddTexture(nullptr);
 
 	// Alloc tiles and set texture to empty
-	tiles = (Tile *)malloc((size_t)width * height * sizeof(Tile));
+	tiles = (Tile *)malloc((size_t)_width * _height * sizeof(Tile));
 
-	for (int x = 0; x < width; x++)
+	for (int x = 0; x < _width; x++)
 	{
-		for (int y = 0; y < height; y++)
+		for (int y = 0; y < _height; y++)
 		{
 			Tile *tile = GetTile(x, y);
 			tile->textureId = 0;
@@ -81,7 +81,7 @@ void Tilemap::Setup(int width, int height, int chunkSize)
 	}
 
 	// Create chunk
-	chunkCount = (int)ceil(width / (float)chunkSize);
+	chunkCount = (int)ceil(_width / (float)_chunkSize);
 	for (int x = 0; x < chunkCount; x++)
 	{
 		for (int y = 0; y < chunkCount; y++)
@@ -102,8 +102,8 @@ Tilemap::Tile *Tilemap::GetTile(int x, int y)
 
 void Tilemap::SetTile(int x, int y, Texture *texture)
 {
-	int textureSize = (int)textures.size();
-	for (int i = 0; i < textureSize; i++)
+	int _textureSize = (int)textures.size();
+	for (int i = 0; i < _textureSize; i++)
 	{
 		if (textures[i] == texture)
 		{
@@ -184,7 +184,7 @@ void Tilemap::FillChunks()
 	}
 }
 
-void Tilemap::SetColor(Color color)
+void Tilemap::SetColor(const Color& color)
 {
 	this->color = color;
 	for (int x = 0; x < chunkCount; x++)

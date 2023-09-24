@@ -27,7 +27,7 @@ std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded;
 Directory* ProjectManager::projectDirectoryBase = nullptr;
 
-ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath)
+ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, const std::string& directoryPath)
 {
 	if (!directoryToCheck)
 		return nullptr;
@@ -143,12 +143,12 @@ void ProjectManager::FindAllProjectFiles()
 		projectFilesIds[kv.first->GetUniqueId()] = fileAndPath;
 	}
 
-	for (auto& kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		CreateFilReference(kv.second.path, kv.first);
 	}
 
-	for (auto& kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		bool contains = oldProjectFilesIds.contains(kv.first);
 		if (contains)
@@ -161,7 +161,7 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
-	for (auto& kv : oldProjectFilesIds)
+	for (const auto& kv : oldProjectFilesIds)
 	{
 		if (kv.second.hasChanged) 
 		{
@@ -221,7 +221,7 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory
 	}
 }
 
-bool ProjectManager::CreateProject(std::string name, std::string folderPath)
+bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
@@ -279,7 +279,7 @@ FileType ProjectManager::GetFileType(std::string extension)
 	return fileType;
 }
 
-bool ProjectManager::LoadProject(std::string projectPathToLoad)
+bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
@@ -343,8 +343,8 @@ void ProjectManager::UnloadProject()
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
 	projectLoaded = false;
-	projectName = "";
-	gameName = "";
+	projectName.clear();
+	gameName.clear();
 	Window::UpdateWindowTitle();
 }
 
@@ -459,7 +459,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	return projects;
 }
 
-void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
+void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
 {
 	int projectSize = projects.size();
 	json j;
@@ -475,7 +475,7 @@ void ProjectManager::SaveProjectsList(std::vector<ProjectListItem> projects)
 	file->Close();
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFilReference(std::string path, int id)
+std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, int id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
@@ -508,6 +508,9 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(std::string pa
 		break;
 	case File_Shader:
 		fileRef = Shader::MakeShader();
+		break;
+
+	case File_Other:
 		break;
 	}
 

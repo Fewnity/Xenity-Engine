@@ -37,12 +37,15 @@ void SpriteManager::Init()
     spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1,0);
     spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2,0);
     spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3,0);
-    spriteMeshData->subMeshes[0]->indices[0] = 0;
-    spriteMeshData->subMeshes[0]->indices[1] = 2;
-    spriteMeshData->subMeshes[0]->indices[2] = 1;
-    spriteMeshData->subMeshes[0]->indices[3] = 2;
-    spriteMeshData->subMeshes[0]->indices[4] = 0;
-    spriteMeshData->subMeshes[0]->indices[5] = 3;
+
+    MeshData::SubMesh* subMesh = spriteMeshData->subMeshes[0];
+
+    subMesh->indices[0] = 0;
+    subMesh->indices[1] = 2;
+    subMesh->indices[2] = 1;
+    subMesh->indices[3] = 2;
+    subMesh->indices[4] = 0;
+    subMesh->indices[5] = 3;
     spriteMeshData->SendDataToGpu();
 
 #if defined(__PSP__)
@@ -60,9 +63,8 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, Color color, std::shared_ptr <Material> material)
+void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material)
 {
-    Vector3 scale = transform->GetScale();
     if (!texture || !texture->IsValid())
     {
         Debug::PrintError("[SpriteManager::DrawSprite] Invalid texture");
@@ -72,6 +74,7 @@ void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared
     spriteBenchmark->Start();
     if (auto camera = Graphics::usedCamera.lock())
     {
+        Vector3 scale = transform->GetScale();
         if (!Engine::UseOpenGLFixedFunctions)
             material->Use();
 
@@ -85,7 +88,7 @@ void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared
         glm::mat4 matCopy = transform->transformationMatrix;
         matCopy = glm::scale(matCopy, glm::vec3(w, h, 1));
         if (!Engine::UseOpenGLFixedFunctions)
-            Graphics::currentShader->SetShaderModel(&matCopy);
+            Graphics::currentShader->SetShaderModel(matCopy);
 
 #if defined(__PSP__)
         if (Graphics::needUpdateCamera)
@@ -136,7 +139,7 @@ void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared
     spriteBenchmark->Stop();
 }
 
-void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr <Texture> texture, Color color, std::shared_ptr <Material> material)
+void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material)
 {
     if (!texture || !texture->IsValid())
     {
@@ -157,11 +160,12 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
         float scaleCoef = (1.0f / texture->GetPixelPerUnit());
         float w = texture->GetWidth() * scaleCoef;
         float h = texture->GetHeight() * scaleCoef;
-        scale.x *= w;
-        scale.y *= h;
+        Vector3 scaleSprite = scale;
+        scaleSprite.x *= w;
+        scaleSprite.y *= h;
 
         if (!Engine::UseOpenGLFixedFunctions)
-            Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scale);
+            Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scaleSprite);
 
 #if defined(__PSP__)
         if (Graphics::needUpdateCamera)
@@ -178,13 +182,13 @@ void SpriteManager::DrawSprite(Vector3 position, Vector3 rotation, Vector3 scale
         // Move/Rotate/Scale the sprite
         if (Engine::UseOpenGLFixedFunctions) 
         {
-            Engine::renderer->SetTransform(position, rotation, scale, true);
+            Engine::renderer->SetTransform(position, rotation, scaleSprite, true);
         }
 
         // Set draw settings
         RenderingSettings renderSettings = RenderingSettings();
 
-        if (scale.x * scale.y < 0)
+        if (scaleSprite.x * scaleSprite.y < 0)
             renderSettings.invertFaces = true;
         else
             renderSettings.invertFaces = false;

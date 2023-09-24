@@ -24,7 +24,7 @@ void MeshManager::Init()
 	Debug::Print("-------- Mesh Manager initiated --------");
 }
 
-std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
+std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 {
 	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
 	mesh->file = FileSystem::MakeFile(path);
@@ -33,7 +33,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(std::string path)
 	return mesh;
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::vector< std::shared_ptr<Texture>> textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	if (!meshData)
 		return;
@@ -81,7 +81,7 @@ void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, st
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std::shared_ptr<Texture>> textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vector<std::shared_ptr<Texture>> &textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	if (!meshData)
 		return;
@@ -105,7 +105,7 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std
 #else
 	if (!Engine::UseOpenGLFixedFunctions)
 	{
-		Graphics::currentShader->SetShaderModel(&transform->transformationMatrix);
+		Graphics::currentShader->SetShaderModel(transform->transformationMatrix);
 	}
 	else
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
@@ -140,7 +140,7 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, std::vector<std
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(Vector3 position, Vector3 rotation, Vector3 scale, std::shared_ptr < Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
 	std::vector< std::shared_ptr<Texture>> textures;
 	textures.push_back(texture);

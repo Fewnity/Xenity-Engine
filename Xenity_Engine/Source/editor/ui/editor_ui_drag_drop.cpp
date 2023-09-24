@@ -15,7 +15,7 @@
 #include <ShObjIdl.h>
 #include "../../engine/graphics/skybox.h"
 
-bool EditorUI::DragDropTarget(std::string name, std::shared_ptr <FileReference>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -37,7 +37,7 @@ bool EditorUI::DragDropTarget(std::string name, std::shared_ptr <FileReference>&
 	return false;
 }
 
-bool EditorUI::DragDropTarget(std::string name, Component*& ref)
+bool EditorUI::DragDropTarget(const std::string& name, Component*& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -57,7 +57,7 @@ bool EditorUI::DragDropTarget(std::string name, Component*& ref)
 	return false;
 }
 
-bool EditorUI::DragDropTarget(std::string name, GameObject*& ref)
+bool EditorUI::DragDropTarget(const std::string& name, GameObject*& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -77,7 +77,7 @@ bool EditorUI::DragDropTarget(std::string name, GameObject*& ref)
 	return false;
 }
 
-bool EditorUI::DragDropTarget(std::string name, Transform*& ref)
+bool EditorUI::DragDropTarget(const  std::string& name, Transform*& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{

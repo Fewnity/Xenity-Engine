@@ -14,10 +14,10 @@
 class CodeFile : public FileReference, public Reflection
 {
 public:
-	CodeFile(std::string fileExtension);
+	CodeFile(const std::string& fileExtension);
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
 	std::unordered_map < std::string, ReflectionEntry> GetMetaReflection();
-	static std::shared_ptr<CodeFile> MakeScene(std::string fileExtension);
+	static std::shared_ptr<CodeFile> MakeScene(const std::string& fileExtension);
 	bool isHeader = false;
 };
 

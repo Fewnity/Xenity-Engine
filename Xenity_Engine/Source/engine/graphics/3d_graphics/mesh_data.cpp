@@ -72,15 +72,15 @@ std::unordered_map<std::string, ReflectionEntry> MeshData::GetMetaReflection()
  * @param z Z position
  * @param index Vertex index
  */
-void MeshData::AddVertex(float u, float v, Color color, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex)
 {
-	RGBA rgba = color.GetRGBA();
 	Vertex vert;
 	vert.u = u;
 	vert.v = v;
 #ifdef __PSP__
 	vert.color = color.GetUnsignedIntABGR();
 #else
+	RGBA rgba = color.GetRGBA();
 	vert.r = rgba.r;
 	vert.g = rgba.g;
 	vert.b = rgba.b;
@@ -221,6 +221,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (newSubMesh->indices == nullptr)
 	{
 		Debug::PrintError("No memory for Indices");
+		delete newSubMesh;
 		return;
 	}
 
@@ -260,6 +261,8 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (newSubMesh->data == nullptr)
 	{
 		Debug::PrintWarning("No memory for Vertex");
+		free (newSubMesh->indices);
+		delete newSubMesh;
 		return;
 	}
 	

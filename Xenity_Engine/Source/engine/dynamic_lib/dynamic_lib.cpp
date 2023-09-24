@@ -7,19 +7,18 @@
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
 
-void DynamicLibrary::LoadGameLibrary(std::string libraryName)
+void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
-	libraryName += ".dll";
+	std::string fileName = libraryName + ".dll";
 
 #if defined(VISUAL_STUDIO)
-	library = LoadLibrary((LPCWSTR)libraryName.c_str()); // Visual Studio
+	library = LoadLibrary((LPCWSTR)fileName.c_str()); // Visual Studio
 #else
-	library = LoadLibrary(libraryName.c_str()); // MSVC Compiler
+	library = LoadLibrary(fileName.c_str()); // MSVC Compiler
 #endif
-	if (library != NULL)
-		Debug::Print("Library found");
-	else
-		Debug::PrintError("Library not found");
+
+	if (library == NULL)
+		Debug::PrintError("Library not found: " + fileName);
 }
 
 void DynamicLibrary::UnloadGameLibrary()

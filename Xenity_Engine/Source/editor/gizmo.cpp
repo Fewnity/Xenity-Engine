@@ -9,7 +9,7 @@ void Gizmo::Init()
 	color = Color::CreateFromRGB(255, 255, 255);
 }
 
-void Gizmo::DrawLine(Vector3 a, Vector3 b)
+void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 {
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.useBlend = true;
@@ -19,7 +19,7 @@ void Gizmo::DrawLine(Vector3 a, Vector3 b)
 	Engine::renderer->DrawLine(a, b, color, renderSettings);
 }
 
-void Gizmo::SetColor(Color newColor)
+void Gizmo::SetColor(const Color& newColor)
 {
 	color = newColor;
 }

@@ -17,7 +17,7 @@ void Math::MultiplyMatrices(const float *A, const float *B, float *result, int r
 		return;
 	}
 
-	float temp = 0;
+	float temp;
 
 	for (int i = 0; i < rA; i++)
 	{
@@ -35,9 +35,6 @@ void Math::MultiplyMatrices(const float *A, const float *B, float *result, int r
 
 unsigned int Math::nextPow2(const unsigned int value)
 {
-	if (value <= 0)
-		return 0;
-
 	unsigned int poweroftwo = 1;
 	while (poweroftwo < value)
 	{
@@ -48,9 +45,6 @@ unsigned int Math::nextPow2(const unsigned int value)
 
 unsigned int Math::previousPow2(const unsigned int value)
 {
-	if (value <= 0)
-		return 0;
-
 	unsigned int poweroftwo = 1;
 	unsigned int lastPower = poweroftwo;
 	while ((poweroftwo << 1) <= value)

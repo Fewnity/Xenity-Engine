@@ -41,7 +41,7 @@ Vector3 Spline::GetValueAt(const float t) const
     return result;
 }
 
-SplinePoint *Spline::CreateSplinePoint(const Vector3 position)
+SplinePoint *Spline::CreateSplinePoint(const Vector3& position)
 {
     SplinePoint *point = new SplinePoint();
 

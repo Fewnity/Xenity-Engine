@@ -60,7 +60,7 @@ public:
 	/**
 	* Set component's GameObject
 	*/
-	void SetGameObject(std::weak_ptr<GameObject> go);
+	void SetGameObject(const std::weak_ptr<GameObject>& go);
 
 	/**
 	* Get component's GameObject
@@ -90,7 +90,7 @@ protected:
 	std::string componentName = "";
 
 private:
-	std::weak_ptr <GameObject>gameObject;
+	std::weak_ptr <GameObject> gameObject;
 	std::weak_ptr <Transform> transform;
 	bool isEnabled = true;
 };

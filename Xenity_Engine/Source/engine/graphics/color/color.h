@@ -16,10 +16,7 @@ class API RGBA : public Reflection
 public:
 	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection();
-	RGBA() 
-	{
-		//SetReflection();
-	}
+	RGBA() = delete;
 
 	RGBA(float r, float g, float b, float a)
 	{
@@ -27,7 +24,6 @@ public:
 		this->a = a;
 		this->b = b;
 		this->a = a;
-		//SetReflection();
 	}
 
 	/**
@@ -104,17 +100,26 @@ public:
 	/**
 	* Get RGBA
 	*/
-	RGBA GetRGBA();
+	RGBA GetRGBA() const
+	{
+		return rgba;
+	}
 
 	/**
 	* Get RGBA value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntRGBA();
+	unsigned int GetUnsignedIntRGBA() const
+	{
+		return rgbaInt;
+	}
 
 	/**
 	* Get ABGR value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntABGR();
+	unsigned int GetUnsignedIntABGR() const
+	{
+		return abgrInt;
+	}
 
 private:
 	void UpdateUnsignedInts();

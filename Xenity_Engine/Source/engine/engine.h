@@ -28,12 +28,12 @@ class Material;
 /**
 * Destroy a gameObject
 */
-API void Destroy(std::weak_ptr<GameObject> gameObject);
+API void Destroy(const std::weak_ptr<GameObject>& gameObject);
 
 /**
 * Destroy a component
 */
-API void Destroy(std::weak_ptr<Component> component);
+API void Destroy(const std::weak_ptr<Component>& component);
 
 /**
 * Check if a GameObject or a Component is valid
@@ -48,7 +48,7 @@ bool IsValid(std::shared_ptr<T> pointer)
 * Check of a GameObject or a Component is valid
 */
 template <typename T>
-bool IsValid(std::weak_ptr<T> pointer)
+bool IsValid(const std::weak_ptr<T>& pointer)
 {
 	bool valid = true;
 	if (auto lockPointer = pointer.lock())
@@ -130,7 +130,7 @@ public:
 	* Set selected GameObject
 	* @param go New selected GameObject
 	*/
-	API static void SetSelectedGameObject(std::weak_ptr<GameObject> go);
+	API static void SetSelectedGameObject(const std::weak_ptr<GameObject>& go);
 
 	/**
 	* Quit game
@@ -192,7 +192,7 @@ public:
 	/**
 	* Destroy a component
 	*/
-	API static void RemoveComponentReferences(std::weak_ptr <Component> weakComponent);
+	API static void RemoveComponentReferences(const std::weak_ptr <Component>& weakComponent);
 
 private:
 	static std::shared_ptr<FileReference> selectedFileReference;

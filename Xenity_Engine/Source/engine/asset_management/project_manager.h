@@ -29,7 +29,7 @@ class API ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
-	ProjectDirectory(std::string path)
+	ProjectDirectory(const std::string& path)
 	{
 		this->path = path;
 	}
@@ -75,13 +75,13 @@ public:
 	* @param name Name of the project
 	* @param folderPath Project folder parent
 	*/
-	static bool CreateProject(std::string name, std::string folderPath);
+	static bool CreateProject(const std::string& name, const std::string& folderPath);
 
 	/**
 	* Load a project
 	* @param projectPathToLoad Project path
 	*/
-	static bool LoadProject(std::string projectPathToLoad);
+	static bool LoadProject(const std::string& projectPathToLoad);
 
 	static void UnloadProject();
 
@@ -175,7 +175,7 @@ public:
 	/**
 	* Save opened projects list
 	*/
-	static void SaveProjectsList(std::vector<ProjectListItem> projects);
+	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
 	static ProjectDirectory* projectDirectory;
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
@@ -188,12 +188,12 @@ public:
 	/**
 	* Find and get a project directory from a path and a parent directory
 	*/
-	static ProjectDirectory* FindProjectDirectory(ProjectDirectory* directoryToCheck, std::string directoryPath);
+	static ProjectDirectory* FindProjectDirectory(ProjectDirectory* directoryToCheck, const std::string& directoryPath);
 	static Directory* projectDirectoryBase;
 	static FileType GetFileType(std::string extension);
 
 private:
-	static std::shared_ptr<FileReference> CreateFilReference(std::string path, int id);
+	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, int id);
 	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
 	static bool projectLoaded;
 	static std::string projectName;

@@ -170,7 +170,7 @@ public:
 	* Read input events
 	* @parem event SDL event
 	*/
-	static void Read(const SDL_Event event);
+	static void Read(const SDL_Event& event);
 #endif
 
 	/**

@@ -22,7 +22,7 @@ std::shared_ptr<GameObject> CreateGameObject()
 	return newGameObject;
 }
 
-std::shared_ptr<GameObject> CreateGameObject(std::string name)
+std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
 	Engine::AddGameObject(newGameObject);
@@ -30,7 +30,7 @@ std::shared_ptr<GameObject> CreateGameObject(std::string name)
 	return newGameObject;
 }
 
-std::shared_ptr<GameObject> CreateGameObjectEditor(std::string name)
+std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
 	Engine::AddGameObjectEditor(newGameObject);
@@ -60,10 +60,10 @@ GameObject::GameObject()
 	this->name = DEFAULT_GAMEOBJECT_NAME;
 }
 
-GameObject::GameObject(std::string name)
+GameObject::GameObject(const std::string& _name)
 {
-	if (name != "")
-		this->name = name;
+	if (!_name.empty())
+		this->name = _name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
 }
@@ -92,7 +92,7 @@ void GameObject::Setup()
 
 #pragma endregion
 
-void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
+void GameObject::RemoveComponent(const std::weak_ptr<Component>& weakComponent)
 {
 	if (auto component = weakComponent.lock())
 	{
@@ -116,7 +116,7 @@ void GameObject::RemoveComponent(std::weak_ptr<Component> weakComponent)
 	}
 }
 
-void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
+void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 {
 	if (auto newChild = weakNewChild.lock())
 	{
@@ -158,7 +158,7 @@ void GameObject::AddChild(std::weak_ptr<GameObject> weakNewChild)
 	}
 }
 
-void GameObject::SetParent(std::weak_ptr<GameObject> gameObject)
+void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
 {
 	gameObject.lock()->AddChild(shared_from_this());
 }
@@ -180,7 +180,7 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 
 #pragma region Find GameObjects
 
-std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string name)
+std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name)
 {
 	std::vector<std::shared_ptr<GameObject>> foundGameObjects;
 
@@ -199,7 +199,7 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 	return foundGameObjects;
 }
 
-std::shared_ptr<GameObject> FindGameObjectByName(const std::string name)
+std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 {
 	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
 
@@ -255,7 +255,7 @@ void GameObject::SetActive(const bool active)
 
 #pragma endregion
 
-void GameObject::UpdateActive(std::weak_ptr<GameObject> weakChanged)
+void GameObject::UpdateActive(const std::weak_ptr<GameObject>& weakChanged)
 {
 	if (auto changed = weakChanged.lock())
 	{

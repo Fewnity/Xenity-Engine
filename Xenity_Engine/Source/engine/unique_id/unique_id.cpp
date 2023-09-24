@@ -10,10 +10,10 @@ UniqueId::UniqueId()
 	this->uniqueId = GenerateUniqueId(forFile);
 }
 
-UniqueId::UniqueId(bool forFile)
+UniqueId::UniqueId(bool _forFile)
 {
-	this->forFile = forFile;
-	this->uniqueId = GenerateUniqueId(forFile);
+	this->forFile = _forFile;
+	this->uniqueId = GenerateUniqueId(_forFile);
 }
 
 uint64_t UniqueId::GenerateUniqueId(bool forFile)
