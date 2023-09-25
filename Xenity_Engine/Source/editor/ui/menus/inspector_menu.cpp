@@ -221,7 +221,7 @@ void InspectorMenu::DrawFilePreview()
 			loadedPreview = Engine::GetSelectedFileReference();
 			previewText.clear();
 			// Read text file
-			if (loadedPreview->fileType == File_Code)
+			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
 				file->Open(false);
@@ -246,7 +246,7 @@ void InspectorMenu::DrawFilePreview()
 
 		if (!previewText.empty()) // Draw text preview
 		{
-			ImGui::TextWrapped(previewText.c_str());
+			ImGui::TextWrapped("%s", previewText.c_str());
 		}
 		else if (textureId != 0) // Draw image preview
 		{
