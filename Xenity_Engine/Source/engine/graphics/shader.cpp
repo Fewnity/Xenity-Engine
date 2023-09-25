@@ -28,15 +28,18 @@ Shader::Shader()
 /// </summary>
 Shader::~Shader()
 {
-	Engine::renderer->DeleteShader(vertexShaderId);
-	Engine::renderer->DeleteShader(fragmentShaderId);
-
-	if (useTessellation)
+	if (!Engine::UseOpenGLFixedFunctions)
 	{
-		Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+		Engine::renderer->DeleteShader(vertexShaderId);
 		Engine::renderer->DeleteShader(fragmentShaderId);
+
+		if (useTessellation)
+		{
+			Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+			Engine::renderer->DeleteShader(fragmentShaderId);
+		}
+		Engine::renderer->DeleteShaderProgram(programId);
 	}
-	Engine::renderer->DeleteShaderProgram(programId);
 }
 
 std::unordered_map<std::string, ReflectionEntry> Shader::GetReflection()
@@ -53,6 +56,9 @@ std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
 
 void Shader::LoadFileReference()
 {
+	if (Engine::UseOpenGLFixedFunctions)
+		return;
+
 	file->Open(false);
 	std::string shaderText = file->ReadAll();
 	file->Close();

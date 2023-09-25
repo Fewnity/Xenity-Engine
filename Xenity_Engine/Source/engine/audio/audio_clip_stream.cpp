@@ -10,12 +10,8 @@
 
 void AudioClipStream::OpenStream(const std::string& filePath)
 {
-	std::string finalPath = filePath;
-#if defined(__vita__)
-	finalPath = "ux0:" + finalPath;
-#endif
-	Debug::Print("Loading audio clip: " + finalPath);
-	std::string lowerExt = finalPath.substr(finalPath.size() - 3);
+	Debug::Print("Loading audio clip: " + filePath);
+	std::string lowerExt = filePath.substr(filePath.size() - 3);
 	int pathSize = lowerExt.size();
 	for (int i = 0; i < pathSize; i++)
 	{
@@ -24,10 +20,10 @@ void AudioClipStream::OpenStream(const std::string& filePath)
 	if (lowerExt == "wav")
 	{
 		wav = new drwav();
-		if (!drwav_init_file(wav, finalPath.c_str(), NULL))
+		if (!drwav_init_file(wav, filePath.c_str(), NULL))
 		{
 			// Error opening WAV file.
-			Debug::PrintError("AUDIO ERROR" + finalPath);
+			Debug::PrintError("AUDIO ERROR" + filePath);
 		}
 		else
 		{
@@ -39,10 +35,10 @@ void AudioClipStream::OpenStream(const std::string& filePath)
 	else if (lowerExt == "mp3")
 	{
 		mp3 = new drmp3();
-		if (!drmp3_init_file(mp3, finalPath.c_str(), NULL))
+		if (!drmp3_init_file(mp3, filePath.c_str(), NULL))
 		{
 			// Error opening MP3 file.
-			Debug::PrintError("AUDIO ERROR: " + finalPath);
+			Debug::PrintError("AUDIO ERROR: " + filePath);
 		}
 		else
 		{
@@ -53,7 +49,7 @@ void AudioClipStream::OpenStream(const std::string& filePath)
 	}
 	else
 	{
-		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + finalPath);
+		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + filePath);
 	}
 
 	if (type == Mp3)

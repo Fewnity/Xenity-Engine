@@ -14,22 +14,16 @@ using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 {
-	std::string finalpath = "";
-#ifdef __vita__
-	finalpath += "ux0:";
-#endif
-	//finalpath += FileSystem::fileSystem->modelsPath;
-	finalpath += mesh->file->GetPath();
-	Debug::Print("Loading mesh: " + finalpath);
+	Debug::Print("Loading mesh: " + mesh->file->GetPath());
 
 	// Open file
 	ifstream file;
-	file.open(finalpath);
+	file.open(mesh->file->GetPath());
 
 	// Print error if the file can't be read
 	if (file.fail())
 	{
-		Debug::PrintError("Mesh loading error. Path: " + finalpath);
+		Debug::PrintError("Mesh loading error. Path: " + mesh->file->GetPath());
 		return false;
 	}
 

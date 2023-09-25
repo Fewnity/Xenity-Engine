@@ -392,11 +392,7 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 	}
 	closedir(dir);
 #else
-	std::string dirPath = directory->GetPath();
-#if defined(__vita__)
-	dirPath = PSVITA_BASE_DIR + dirPath;
-#endif
-	for (const auto& file : std::filesystem::directory_iterator(dirPath))
+	for (const auto& file : std::filesystem::directory_iterator(directory->GetPath()))
 	{
 		if (file.is_directory())
 		{
