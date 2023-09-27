@@ -48,12 +48,22 @@ void AssetManager::Init()
 
 	if (!Engine::UseOpenGLFixedFunctions)
 	{
+		// Load standard shader
 		Engine::shader = Shader::MakeShader();
+#if defined(__vita__)
+		Engine::shader->file = FileSystem::MakeFile("shaders/standard_psvita.shader");
+#else
 		Engine::shader->file = FileSystem::MakeFile("shaders/standard.shader");
-
+#endif
+		// Load unlit shader
 		Engine::unlitShader = Shader::MakeShader();
+#if defined(__vita__)
+		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit_psvita.shader");
+#else
 		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
+#endif
 
+		// Create materials
 		Engine::standardMaterial = Material::MakeMaterial();
 		Engine::standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
 		Engine::standardMaterial->shader = Engine::shader;

@@ -12,6 +12,8 @@ SDL2 (2.26.2): https://github.com/libsdl-org/SDL
 
 Glad (4.6): https://glad.dav1d.de/ (filled: https://glad.dav1d.de/#profile=core&language=c&specification=gl&loader=on&api=gl%3D4.6)
 
-Stb (used: stb_image): https://github.com/nothings/stb
+Stb (used: stb_image 2.23): https://github.com/nothings/stb
 
 ImGui (1.89.5): https://github.com/ocornut/imgui
+
+VitaGL: (Compiled with HAVE_GLSL_SUPPORT=1 flag enabled) https://github.com/Rinnegatamante/vitaGL

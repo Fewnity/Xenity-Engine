@@ -180,7 +180,7 @@ bool File::Open(bool createFileIfNotFound)
 			file.open(path, params);
 			if (!file.is_open())
 			{
-				Debug::PrintError("Fail while opening and creating file (file.is_open())");
+				Debug::PrintError("Fail while opening and creating file (file.is_open()): " + path);
 			}
 			else
 			{
@@ -189,7 +189,7 @@ bool File::Open(bool createFileIfNotFound)
 		}
 		else
 		{
-			Debug::PrintError("Fail while opening file (file.is_open())");
+			Debug::PrintError("Fail while opening file (file.is_open()): " + path);
 		}
 	}
 	else

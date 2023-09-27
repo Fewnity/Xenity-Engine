@@ -74,7 +74,7 @@ std::shared_ptr <Shader> Engine::unlitShader = nullptr;
 std::shared_ptr<Material> Engine::standardMaterial = nullptr;
 std::shared_ptr<Material> Engine::unlitMaterial = nullptr;
 
-bool Engine::UseOpenGLFixedFunctions = true;
+bool Engine::UseOpenGLFixedFunctions = false;
 
 int Engine::Init()
 {

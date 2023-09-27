@@ -9,14 +9,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
-#include <psppower.h>
-#include "../../../psp/gu2gl.h"
-#endif
-
-#ifdef __vita__
-#include <vitaGL.h>
 #endif
 
 std::shared_ptr <MeshData> SpriteManager::spriteMeshData = nullptr;

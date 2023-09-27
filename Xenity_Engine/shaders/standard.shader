@@ -1,8 +1,8 @@
 {vertex}
 
-#version 330 core
+#version 330
 
-layout (location = 0) in vec3 vertex;
+layout (location = 0) in vec3 position;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 
@@ -17,18 +17,17 @@ uniform mat4 model; //Model matrice position, rotation and scale
 
 void main()
 {
-	gl_Position = projection * camera * model * vec4(vertex, 1);
+	gl_Position = projection * camera * model * vec4(position, 1);
 	TexCoord = uv;
-	FragPos = vec3(model * vec4(vertex, 1));
+	FragPos = vec3(model * vec4(position, 1));
 
 	Normal = mat3(transpose(inverse(model))) * normal; //TODO Check an object with a bigger scale and with a 	offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
 }
 
 {fragment}
 
-#version 330 core
+#version 330
 
-out vec4 FragColor;
 uniform vec3 ambiantLightColor;
 uniform vec3 cameraPos;
 
@@ -89,19 +88,19 @@ uniform int usedDirectionalLightCount;
 
 vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) {
 
-	vec3 lightDir = normalize(-light2.direction); // Directional light
-	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	//vec3 lightDir = normalize(-light2.direction); // Directional light
+	//float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
+	//vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
-	float specularStrength = 0.5;
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light2.color;
+	//float specularStrength = 0.5;
+	//vec3 reflectDir = reflect(-lightDir, norm);
+	//float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	//vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light2.color;
 
 	//Result
 	//vec3 result = (diffuse) + (specular); //Set face result
-	//vec3 result = (diffuse); //Set face result
+	//vec3 result = diffuse; //Set face result
 
 
 	vec3 result = (vec3(texture(material.diffuse, TexCoord)) * light2.color); //Set face result
@@ -179,7 +178,7 @@ void main()
 	float alpha = texture(material.diffuse, TexCoord).a;
 	//if (alpha <= 0.1)
 		//discard;
-	FragColor = vec4(result, alpha); //Add texture color
+	gl_FragColor = vec4(result, alpha); //Add texture color
 	//FragColor = texture(material.diffuse, TexCoord);
 	//FragColor = vec4(result, 1.0); //Add texture color
 }

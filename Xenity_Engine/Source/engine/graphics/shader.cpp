@@ -28,17 +28,20 @@ Shader::Shader()
 /// </summary>
 Shader::~Shader()
 {
-	if (!Engine::UseOpenGLFixedFunctions)
+	if (isLoaded)
 	{
-		Engine::renderer->DeleteShader(vertexShaderId);
-		Engine::renderer->DeleteShader(fragmentShaderId);
-
-		if (useTessellation)
+		if (!Engine::UseOpenGLFixedFunctions)
 		{
-			Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+			Engine::renderer->DeleteShader(vertexShaderId);
 			Engine::renderer->DeleteShader(fragmentShaderId);
+
+			if (useTessellation)
+			{
+				Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
+				Engine::renderer->DeleteShader(fragmentShaderId);
+			}
+			Engine::renderer->DeleteShaderProgram(programId);
 		}
-		Engine::renderer->DeleteShaderProgram(programId);
 	}
 }
 
@@ -56,63 +59,75 @@ std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
 
 void Shader::LoadFileReference()
 {
-	if (Engine::UseOpenGLFixedFunctions)
-		return;
-
-	file->Open(false);
-	std::string shaderText = file->ReadAll();
-	file->Close();
-	int textSize = shaderText.size();
-
-	if (textSize != 0)
+	if (!isLoaded)
 	{
-		int fragmentPos = -1;
-		int fragmentStartPos = -1;
+		isLoaded = true;
+		if (Engine::UseOpenGLFixedFunctions)
+			return;
 
-		int vertexPos = -1;
-		int vertexStartPos = -1;
+		file->Open(false);
+		std::string shaderText = file->ReadAll();
+		file->Close();
+		int textSize = shaderText.size();
 
-		for (int i = 0; i < textSize - 1; i++)
+		if (textSize != 0)
 		{
-			if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
+			int fragmentPos = -1;
+			int fragmentStartPos = -1;
+
+			int vertexPos = -1;
+			int vertexStartPos = -1;
+
+			for (int i = 0; i < textSize - 1; i++)
 			{
-				fragmentPos = i;
-				for (int j = i + 1; j < textSize; j++)
+				if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
 				{
-					if (shaderText[j] == '}')
+					fragmentPos = i;
+					for (int j = i + 1; j < textSize; j++)
 					{
-						fragmentStartPos = j + 2;
-						break;
+						if (shaderText[j] == '}')
+						{
+							fragmentStartPos = j + 2;
+							break;
+						}
+					}
+				}
+				else if (shaderText[i] == '{' && shaderText[i + 1] == 'v')
+				{
+					for (int j = i + 1; j < textSize; j++)
+					{
+						vertexPos = i;
+						if (shaderText[j] == '}')
+						{
+							vertexStartPos = j + 2;
+							break;
+						}
 					}
 				}
 			}
-			else if (shaderText[i] == '{' && shaderText[i + 1] == 'v')
+
+			if (vertexPos != -1 && fragmentPos != -1)
 			{
-				for (int j = i + 1; j < textSize; j++)
-				{
-					vertexPos = i;
-					if (shaderText[j] == '}')
-					{
-						vertexStartPos = j + 2;
-						break;
-					}
-				}
+				std::string fragShaderData = shaderText.substr(fragmentStartPos);
+				std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
+
+				LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
+				LoadShader(fragShaderData, ShaderType::Fragment_Shader);
+
+				//useTessellation = true;
+				//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+				//LoadShader(fragmentShaderPath, Fragment_Shader);
+
+				BuildShader();
+			}
+			else 
+			{
+				Debug::PrintError("The shader structure is wrong: " + file->GetPath());
 			}
 		}
-
-		if (vertexPos != -1 && fragmentPos != -1)
+		else 
 		{
-			std::string fragShaderData = shaderText.substr(fragmentStartPos);
-			std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
-
-			LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
-			LoadShader(fragShaderData, ShaderType::Fragment_Shader);
-
-			//useTessellation = true;
-			//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
-			//LoadShader(fragmentShaderPath, Fragment_Shader);
-
-			BuildShader();
+			Debug::PrintError("The shader file is empty or not found: " + file->GetPath());
 		}
 	}
 }
@@ -127,8 +142,6 @@ unsigned int Shader::GetProgramId()
 }
 
 #pragma endregion
-
-unsigned int usedShaderProgram = 0;
 
 /// <summary>
 /// Use shader

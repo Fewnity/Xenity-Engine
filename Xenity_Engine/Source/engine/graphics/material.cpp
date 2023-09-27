@@ -105,7 +105,8 @@ void Material::Use()
 	bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
 	bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
 
-	if (matChanged || cameraChanged || drawTypeChanged)
+	if(true)
+	//if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		lastUsedCamera = Graphics::usedCamera;
 		lastUpdatedType = Graphics::currentMode;

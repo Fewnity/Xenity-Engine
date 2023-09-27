@@ -959,6 +959,11 @@ void RendererOpengl::DeleteShaderProgram(unsigned int programId)
 void RendererOpengl::LinkShaderProgram(unsigned int programId)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(__vita__)
+	glBindAttribLocation(programId, 0, "position");
+	glBindAttribLocation(programId, 1, "uv");
+	glBindAttribLocation(programId, 2, "normal");
+#endif
 	glLinkProgram(programId);
 #endif
 }
