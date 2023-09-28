@@ -443,16 +443,20 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	bool isOpen = file->Open(false);
 	if (isOpen)
 	{
-		json j;
-		j = json::parse(file->ReadAll());
-
-		int projectCount = j.size();
-		for (int i = 0; i < projectCount; i++)
+		std::string projectFileString = file->ReadAll();
+		if (!projectFileString.empty())
 		{
-			ProjectListItem projectItem;
-			projectItem.name = j[i]["name"];
-			projectItem.path = j[i]["path"];
-			projects.push_back(projectItem);
+			json j;
+			j = json::parse(projectFileString);
+
+			int projectCount = j.size();
+			for (int i = 0; i < projectCount; i++)
+			{
+				ProjectListItem projectItem;
+				projectItem.name = j[i]["name"];
+				projectItem.path = j[i]["path"];
+				projects.push_back(projectItem);
+			}
 		}
 	}
 	file->Close();
