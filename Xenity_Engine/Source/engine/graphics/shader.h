@@ -31,7 +31,7 @@ public:
 
 	void LoadFileReference() override;
 
-	unsigned int GetProgramId();
+	unsigned int GetProgramId() const;
 	bool Use();
 	void SetShaderCameraPosition();
 	void SetShaderCameraPositionCanvas();

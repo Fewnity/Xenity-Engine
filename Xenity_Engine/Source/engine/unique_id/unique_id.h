@@ -10,7 +10,7 @@ public:
 	/**
 	* Get unique Id
 	*/
-	uint64_t GetUniqueId()
+	uint64_t GetUniqueId() const
 	{
 		return uniqueId;
 	}

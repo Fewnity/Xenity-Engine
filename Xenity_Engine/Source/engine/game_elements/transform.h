@@ -133,7 +133,7 @@ public:
 	/**
 	* Get GameObject
 	*/
-	std::shared_ptr<GameObject> GetGameObject()
+	std::shared_ptr<GameObject> GetGameObject() const
 	{
 		return gameObject.lock();
 	}
@@ -178,12 +178,12 @@ private:
 	/**
 	* Get localPosition from matrices
 	*/
-	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix);
+	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const;
 
 	/**
 	*
 	*/
-	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation);
+	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const;
 
 };
 

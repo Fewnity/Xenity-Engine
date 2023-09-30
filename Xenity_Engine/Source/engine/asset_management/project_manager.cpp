@@ -487,7 +487,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 	switch (type)
 	{
 	case File_Audio:
-		fileRef = AudioClip::MakeAudioClip(file->GetPath());
+		fileRef = AudioClip::MakeAudioClip();
 		break;
 	case File_Mesh:
 		fileRef = MeshData::MakeMeshData();

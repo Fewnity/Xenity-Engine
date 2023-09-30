@@ -44,7 +44,6 @@ Texture::Texture(unsigned char* data, const int channelCount, const int width, c
 std::unordered_map<std::string, ReflectionEntry> Texture::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
@@ -56,7 +55,6 @@ std::unordered_map<std::string, ReflectionEntry> Texture::GetMetaReflection()
 	Reflection::AddReflectionVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 	Reflection::AddReflectionVariable(reflectedVariables, (int&)filter, "filter", true);
 	Reflection::AddReflectionVariable(reflectedVariables, (int&)wrapMode, "wrapMode", true);
-	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 

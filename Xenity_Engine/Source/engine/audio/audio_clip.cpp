@@ -1,15 +1,13 @@
 #include "audio_clip.h"
 #include "../asset_management/asset_manager.h"
 
-AudioClip::AudioClip(const std::string& filePath)
+AudioClip::AudioClip()
 {
-	this->filePath = filePath;
 }
 
 std::unordered_map<std::string, ReflectionEntry> AudioClip::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 
@@ -19,9 +17,9 @@ std::unordered_map<std::string, ReflectionEntry> AudioClip::GetMetaReflection()
 	return reflectedVariables;
 }
 
-std::shared_ptr<AudioClip> AudioClip::MakeAudioClip(const std::string& filePath)
+std::shared_ptr<AudioClip> AudioClip::MakeAudioClip()
 {
-	std::shared_ptr<AudioClip> newFileRef = std::make_shared<AudioClip>(filePath);
+	std::shared_ptr<AudioClip> newFileRef = std::make_shared<AudioClip>();
 	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

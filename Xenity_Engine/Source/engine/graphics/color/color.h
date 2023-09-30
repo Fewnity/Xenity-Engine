@@ -29,7 +29,7 @@ public:
 	/**
 	* Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
 	*/
-	Vector4 ToVector4();
+	Vector4 ToVector4() const;
 
 	float r = 1;
 	float g = 1;

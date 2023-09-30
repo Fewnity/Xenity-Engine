@@ -52,7 +52,7 @@ public:
 	/**
 	* Get X (columns) grid size
 	*/
-	int GetXGridSize()
+	int GetXGridSize() const
 	{
 		return xGridSize;
 	}
@@ -60,7 +60,7 @@ public:
 	/**
 	* Get Y (rows) grid size
 	*/
-	int GetYGridSize()
+	int GetYGridSize() const
 	{
 		return yGridSize;
 	}
@@ -95,7 +95,7 @@ private:
 	/**
 	* Get tile (fast version)
 	*/
-	Tile* GetTileFast(int x, int y)
+	Tile* GetTileFast(int x, int y) const
 	{
 		return &grid[x * yGridSize + y];
 	}
@@ -103,7 +103,7 @@ private:
 	/**
 	* Get tile (fastest version)
 	*/
-	Tile* GetTileUltraFast(int& row, int& col)
+	Tile* GetTileUltraFast(int& row, int& col) const
 	{
 		return &grid[row + col];
 	}
@@ -111,7 +111,7 @@ private:
 	/**
 	* Get tile
 	*/
-	Tile* GetTile(int x, int y)
+	Tile* GetTile(int x, int y) const
 	{
 		if (grid == nullptr || !IsValidPosition(x, y))
 			return nullptr;
@@ -122,7 +122,7 @@ private:
 	/**
 	* Get if the position if valid or out of bounds
 	*/
-	bool IsValidPosition(int x, int y)
+	bool IsValidPosition(int x, int y) const
 	{
 		if (x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
 			return false;

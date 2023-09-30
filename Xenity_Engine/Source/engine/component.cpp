@@ -59,7 +59,7 @@ void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
 	}
 }
 
-bool Component::GetIsEnabled()
+bool Component::GetIsEnabled() const
 {
 	return isEnabled;
 }

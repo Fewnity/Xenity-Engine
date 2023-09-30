@@ -351,7 +351,7 @@ void Transform::UpdateWorldScale()
 	}
 }
 
-Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix)
+Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const
 {
 	glm::mat4 parentGlobalTransformInverse = glm::inverse(parentMatrix);
 	glm::mat4 childLocalTransform = parentGlobalTransformInverse * childMatrix;
@@ -361,7 +361,7 @@ Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, co
 	return Vector3(-childLocalPosition.x, childLocalPosition.y, childLocalPosition.z);
 }
 
-Vector3 Transform::GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation)
+Vector3 Transform::GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const
 {
 	glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentWorldRotation.z, parentWorldRotation.x, parentWorldRotation.y)));
 	glm::quat quatChildGlobal = glm::quat(glm::radians(glm::vec3(childWorldRotation.z, childWorldRotation.x, childWorldRotation.y)));

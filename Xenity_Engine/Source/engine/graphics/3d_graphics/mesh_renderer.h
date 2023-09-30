@@ -11,6 +11,7 @@
 #include "../iDrawable.h"
 #include <vector>
 #include <memory>
+
 class MeshData;
 class Texture;
 class Material;
@@ -20,7 +21,7 @@ class API MeshRenderer : public IDrawable
 public:
 	MeshRenderer();
 	~MeshRenderer();
-	//void SetReflection();
+
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	int GetDrawPriority() const override;
 

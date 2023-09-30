@@ -92,7 +92,7 @@ std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
 	return reflectedVariables;
 }
 
-Vector4 RGBA::ToVector4()
+Vector4 RGBA::ToVector4() const
 {
 	return Vector4(r, g, b, a);
 }

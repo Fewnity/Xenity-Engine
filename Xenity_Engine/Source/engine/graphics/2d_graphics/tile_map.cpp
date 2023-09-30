@@ -92,7 +92,7 @@ void Tilemap::Setup(int _width, int _height, int _chunkSize)
 	}
 }
 
-Tilemap::Tile* Tilemap::GetTile(int x, int y)
+Tilemap::Tile* Tilemap::GetTile(int x, int y) const
 {
 	if (tiles == nullptr || x < 0 || y < 0 || x >= height || y >= height)
 		return nullptr;
@@ -299,7 +299,7 @@ void Tilemap::DrawChunks()
 	}
 }
 
-int Tilemap::GetTextureIndex(Texture* texture)
+int Tilemap::GetTextureIndex(Texture* texture) const
 {
 	int textureIndex = -1;
 	int textureCount = (int)textures.size();

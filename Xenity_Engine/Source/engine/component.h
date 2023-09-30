@@ -46,7 +46,7 @@ public:
 	/**
 	* Get if the component is enabled
 	*/
-	bool GetIsEnabled();
+	bool GetIsEnabled() const;
 
 	/**
 	* Enable or disable the component
@@ -81,7 +81,7 @@ public:
 	/**
 	* Get component's name
 	*/
-	std::string GetComponentName()
+	std::string GetComponentName() const
 	{
 		return componentName;
 	}

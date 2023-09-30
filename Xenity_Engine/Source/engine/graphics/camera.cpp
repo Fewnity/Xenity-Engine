@@ -206,7 +206,7 @@ void Camera::SetProjectionType(ProjectionTypes type)
 	UpdateProjection();
 }
 
-ProjectionTypes Camera::GetProjectionType()
+ProjectionTypes Camera::GetProjectionType() const
 {
 	return projectionType;
 }

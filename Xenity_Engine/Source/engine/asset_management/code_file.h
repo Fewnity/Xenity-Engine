@@ -18,6 +18,13 @@ public:
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	std::unordered_map < std::string, ReflectionEntry> GetMetaReflection() override;
 	static std::shared_ptr<CodeFile> MakeScene(const std::string& fileExtension);
+
+	bool GetIsHeader() 
+	{
+		return isHeader;
+	}
+
+private:
 	bool isHeader = false;
 };
 

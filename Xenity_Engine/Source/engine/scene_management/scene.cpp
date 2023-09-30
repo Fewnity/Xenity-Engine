@@ -8,7 +8,6 @@ Scene::Scene()
 std::unordered_map<std::string, ReflectionEntry> Scene::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 

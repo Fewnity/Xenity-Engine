@@ -115,7 +115,7 @@ public:
 	* Get a component
 	*/
 	template <typename T>
-	std::weak_ptr<T> GetComponent()
+	std::weak_ptr<T> GetComponent() const
 	{
 		for (int i = 0; i < componentCount; i++)
 		{
@@ -145,7 +145,7 @@ public:
 	/**
 	* Get children count
 	*/
-	int GetChildrenCount()
+	int GetChildrenCount() const
 	{
 		return childCount;
 	}
@@ -153,7 +153,7 @@ public:
 	/**
 	* Get component count
 	*/
-	int GetComponentCount()
+	int GetComponentCount() const
 	{
 		return componentCount;
 	}
@@ -161,7 +161,7 @@ public:
 	/**
 	* Get transform
 	*/
-	std::shared_ptr<Transform> GetTransform()
+	std::shared_ptr<Transform> GetTransform() const
 	{
 		return transform;
 	}

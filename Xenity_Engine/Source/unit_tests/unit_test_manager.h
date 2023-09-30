@@ -9,12 +9,12 @@ public:
 	virtual bool Start(std::string& errorOut) = 0;
 
 	template <typename T>
-	bool Compare(T valueA, T valueB)
+	bool Compare(T valueA, T valueB) const
 	{
 		return valueA == valueB;
 	}
 
-	std::string GetName()
+	std::string GetName() const
 	{
 		return name;
 	}

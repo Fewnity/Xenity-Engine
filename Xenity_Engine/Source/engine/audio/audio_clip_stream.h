@@ -36,12 +36,12 @@ public:
 	/**
 	* Get audio clip frequency
 	*/
-	int GetFrequency();
+	int GetFrequency() const;
 
 	/**
 	* Get audio clip sample count
 	*/
-	int64_t GetSampleCount();
+	int64_t GetSampleCount() const;
 
 	/**
 	* Reset seek position
@@ -53,14 +53,14 @@ public:
 	/**
 	* Get seek position
 	*/
-	int64_t GetSeekPosition();
+	int64_t GetSeekPosition() const;
 
-	int GetChannelCount()
+	int GetChannelCount() const
 	{
 		return channelCount;
 	}
 
-	AudioType GetAudioType()
+	AudioType GetAudioType() const
 	{
 		return type;
 	}

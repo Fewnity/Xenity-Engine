@@ -80,7 +80,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		}
 		else if (fileType == File_Code)
 		{
-			if (std::dynamic_pointer_cast<CodeFile>(item.file)->isHeader)
+			if (std::dynamic_pointer_cast<CodeFile>(item.file)->GetIsHeader())
 				tex = EditorUI::icons[Icon_Header];
 			else
 				tex = EditorUI::icons[Icon_Code];

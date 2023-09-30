@@ -136,7 +136,7 @@ void Shader::LoadFileReference()
 
 #pragma region Getters
 
-unsigned int Shader::GetProgramId()
+unsigned int Shader::GetProgramId() const
 {
 	return this->programId;
 }

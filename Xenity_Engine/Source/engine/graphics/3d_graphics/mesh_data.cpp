@@ -50,7 +50,6 @@ std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned i
 std::unordered_map<std::string, ReflectionEntry> MeshData::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, fileId, "fileId", true);
 	return reflectedVariables;
 }
 

@@ -38,7 +38,7 @@ public:
 	/**
 	* Return recieved data during this frame
 	*/
-	std::string GetIncommingData()
+	std::string GetIncommingData() const
 	{
 		return incommingData;
 	}

@@ -135,7 +135,7 @@ public:
 	/**
 	* Return if the texture is valid
 	*/
-	bool IsValid()
+	bool IsValid() const
 	{
 		return isValid;
 	}

@@ -99,7 +99,7 @@ public:
 	/**
 	* Get projection type
 	*/
-	ProjectionTypes GetProjectionType();
+	ProjectionTypes GetProjectionType() const;
 
 	/**
 	* Update projection matrix
@@ -127,7 +127,7 @@ public:
 	/**
 	* Get view width in pixel
 	*/
-	int GetWidth()
+	int GetWidth() const
 	{
 		return width;
 	}
@@ -135,7 +135,7 @@ public:
 	/**
 	* Get view height in pixel
 	*/
-	int GetHeight()
+	int GetHeight() const
 	{
 		return height;
 	}
@@ -143,7 +143,7 @@ public:
 	/**
 	* Get view aspect ratio
 	*/
-	float GetAspectRatio()
+	float GetAspectRatio() const
 	{
 		return aspect;
 	}
@@ -154,7 +154,7 @@ public:
 	glm::mat4 projection;
 	glm::mat4 unscaledProjection;
 	void CopyMultiSampledFrameBuffer();
-	bool useMultisampling = true;
+	bool useMultisampling = false;
 
 private:
 	unsigned int framebuffer = -1;

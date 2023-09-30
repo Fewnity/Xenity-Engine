@@ -96,7 +96,7 @@ void AudioClipStream::FillBuffer(int size, int bufferOffset, short* buff)
 		drwav_read_pcm_frames_s16(wav, size, buff + (bufferOffset));
 }
 
-int AudioClipStream::GetFrequency()
+int AudioClipStream::GetFrequency() const
 {
 	int rate = 0;
 	if (type == Mp3)
@@ -107,12 +107,12 @@ int AudioClipStream::GetFrequency()
 	return rate;
 }
 
-int64_t AudioClipStream::GetSampleCount()
+int64_t AudioClipStream::GetSampleCount() const
 {
 	return sampleCount;
 }
 
-int64_t AudioClipStream::GetSeekPosition()
+int64_t AudioClipStream::GetSeekPosition() const
 {
 	uint64_t seekPos = 0;
 	if (type == Mp3)

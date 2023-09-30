@@ -64,7 +64,7 @@ public:
 	/**
 	* Get volume
 	*/
-	float GetVolume()
+	float GetVolume() const
 	{
 		return volume;
 	}
@@ -72,7 +72,7 @@ public:
 	/**
 	* Get panning
 	*/
-	float GetPanning()
+	float GetPanning() const
 	{
 		return pan;
 	}
@@ -80,7 +80,7 @@ public:
 	/**
 	* Get is playing
 	*/
-	bool GetIsPlaying()
+	bool GetIsPlaying() const
 	{
 		return isPlaying;
 	}
@@ -88,7 +88,7 @@ public:
 	/**
 	* Get is looping
 	*/
-	bool GetIsLooping()
+	bool GetIsLooping() const
 	{
 		return loop;
 	}

@@ -57,7 +57,7 @@ public:
 	* @param y Tile Y position
 	* @return Tilemap::Tile*
 	*/
-	Tile* GetTile(int x, int y);
+	Tile* GetTile(int x, int y) const;
 
 	/**
 	* @brief Set tile texture (slower)
@@ -94,7 +94,7 @@ public:
 	/**
 	* Get tile map width (column)
 	*/
-	int GetWidth()
+	int GetWidth() const
 	{
 		return width;
 	}
@@ -102,7 +102,7 @@ public:
 	/**
 	* Get tile map height (row)
 	*/
-	int GetHeight()
+	int GetHeight() const
 	{
 		return height;
 	}
@@ -161,7 +161,7 @@ private:
 	* @param texture
 	* @return int Texture index
 	*/
-	int GetTextureIndex(Texture* texture);
+	int GetTextureIndex(Texture* texture) const;
 
 	std::vector<Texture*> textures;
 	std::vector<TilemapChunk*> chunks;

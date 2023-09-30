@@ -392,7 +392,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->filePath);
+		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->file->GetPath());
 		newPlayedSound->audioSource = sharedAudioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needNewRead = true;
