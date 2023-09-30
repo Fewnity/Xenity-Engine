@@ -106,6 +106,7 @@
     <ClCompile Include="Source\editor\gizmo.cpp" />
     <ClCompile Include="Source\engine\graphics\shader.cpp" />
     <ClCompile Include="Source\engine\graphics\material.cpp" />
+    <ClCompile Include="Source\game_test\fps_counter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Source\editor\gizmo.h" />
     <ClInclude Include="Source\engine\graphics\shader.h" />
     <ClInclude Include="Source\engine\graphics\material.h" />
+    <ClInclude Include="Source\game_test\fps_counter.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

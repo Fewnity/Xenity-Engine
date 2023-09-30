@@ -15,6 +15,7 @@
 #include "../engine/class_registry/class_registry.h"
 #include "rotate.h"
 #include "free_move.h"
+#include "fps_counter.h"
 
 Game* Game::game;
 
@@ -30,6 +31,8 @@ void Game::Start()
 		{ return go->AddComponent<Rotate>(); });
 	ClassRegistry::AddComponentClass("FreeMove", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<FreeMove>(); });
+	ClassRegistry::AddComponentClass("FpsCounter", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<FpsCounter>(); });
 
 	Debug::Print("Game::Start");
 }

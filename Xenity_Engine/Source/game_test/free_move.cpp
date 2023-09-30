@@ -16,6 +16,10 @@ void FreeMove::Update()
 	Vector3 rot = cameraTrans->GetRotation();
 	Vector3 pos = cameraTrans->GetPosition();
 
+	float fwd = 0;
+	float side = 0;
+
+#if defined(__PSP__)
 	if (InputSystem::GetKey(TRIANGLE))
 		rot.x += -1 * Time::GetDeltaTime() * 60;
 	else if (InputSystem::GetKey(CROSS))
@@ -26,10 +30,17 @@ void FreeMove::Update()
 	else if (InputSystem::GetKey(SQUARE))
 		rot.y += -1 * Time::GetDeltaTime() * 60;
 
-	float fwd = 0;
-	float side = 0;
 	fwd = InputSystem::leftJoystick.y;
 	side = InputSystem::leftJoystick.x;
+
+#elif defined(__vita__)
+	fwd = InputSystem::leftJoystick.y;
+	side = InputSystem::leftJoystick.x;
+
+	rot.x += InputSystem::rightJoystick.y;
+	rot.y += InputSystem::rightJoystick.x;
+#endif
+
 
 	pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
 	pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;

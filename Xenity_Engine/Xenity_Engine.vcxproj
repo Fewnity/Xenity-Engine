@@ -73,6 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
@@ -182,6 +183,7 @@
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
+    <ClCompile Include="Source\game_test\fps_counter.cpp" />
     <ClCompile Include="Source\game_test\free_move.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene.cpp" />
@@ -318,6 +320,7 @@
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
+    <ClInclude Include="Source\game_test\fps_counter.h" />
     <ClInclude Include="Source\game_test\free_move.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\scene_management\scene.h" />
