@@ -286,7 +286,7 @@ void Engine::Loop()
 		Performance::Update();
 		Performance::ResetCounters();
 	}
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
 	delete game;
@@ -614,9 +614,15 @@ void Engine::FinishThreadedFileLoading()
 	int threadFileCount = threadLoadedFiles.size();
 	for (int i = 0; i < threadFileCount; i++)
 	{
-		threadLoadedFiles[i]->OnLoadFileReferenceFinished();
+		if (!threadLoadedFiles[i]->isLoading)
+		{
+			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
+			threadLoadedFiles.erase(threadLoadedFiles.begin() + i);
+			threadFileCount--;
+			i--;
+		}
 	}
-	threadLoadedFiles.clear();
+
 	threadLoadingMutex.unlock();
 }
 

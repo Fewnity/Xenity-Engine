@@ -59,5 +59,6 @@ public:
 	std::shared_ptr<File> file = nullptr;
 	FileType fileType = File_Other;
 	bool isLoaded = false;
+	bool isLoading = false;
 };
 

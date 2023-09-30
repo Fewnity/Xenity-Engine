@@ -11,7 +11,7 @@ TextRendererCanvas::TextRendererCanvas()
 	type = Draw_UI;
 
 	AssetManager::AddReflection(this);
-	material = Engine::standardMaterial;
+	material = Engine::unlitMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflection()

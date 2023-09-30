@@ -29,7 +29,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
 	mesh->file = FileSystem::MakeFile(path);
 	mesh->fileType = File_Mesh;
-	WavefrontLoader::LoadFromRawData(mesh);
+	mesh->LoadFileReference();
 	return mesh;
 }
 

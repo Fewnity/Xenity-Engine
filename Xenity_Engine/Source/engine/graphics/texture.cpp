@@ -16,14 +16,9 @@
 #include "../../psp/video_hardware_dxtn.h"
 #include <pspkernel.h>
 #include <vram.h>
-#else
+#elif defined(_WIN32) || defined(_WIN64)
 #include <thread>
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
-#elif defined(__vita__)
-#include <vitaGL.h>
 #endif
 
 Texture::Texture()
@@ -91,6 +86,11 @@ void Texture::LoadFileReference()
 	{
 		isLoaded = true;
 #if defined(EDITOR)
+		isLoading = true;
+		Engine::threadLoadingMutex.lock();
+		Engine::threadLoadedFiles.push_back(shared_from_this());
+		Engine::threadLoadingMutex.unlock();
+
 		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, filter, useMipMap);
 		threadLoading.detach();
 #else
@@ -362,16 +362,8 @@ void Texture::SetData(const unsigned char* texData)
 
 void Texture::LoadTexture()
 {
-	/*std::string path = "";
-#if defined(__vita__)
-	path += "ux0:";
-#endif
-	path += filename;*/
-
-	std::string path = file->GetPath();
-
 	std::string debugText = "Loading texture: ";
-	debugText += path;
+	debugText += file->GetPath();
 	Debug::Print(debugText);
 
 	int fileBufferSize = 0;
@@ -395,12 +387,7 @@ void Texture::LoadTexture()
 #if defined(__PSP__)
 	SetData(buffer);
 #endif
-
-#if defined(EDITOR)
-	Engine::threadLoadingMutex.lock();
-	Engine::threadLoadedFiles.push_back(shared_from_this());
-	Engine::threadLoadingMutex.unlock();
-#endif
+	isLoading = false;
 	//Debug::Print("Texture loaded");
 }
 

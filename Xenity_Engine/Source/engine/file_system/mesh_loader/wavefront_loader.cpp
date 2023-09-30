@@ -272,8 +272,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-	mesh->isValid = true;
-	mesh->SendDataToGpu();
+	mesh->isLoading = false;
 
 	return true;
 }

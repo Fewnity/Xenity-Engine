@@ -73,6 +73,8 @@ void LineRenderer::Draw()
 			subMesh->indices[4] = 0;
 			subMesh->indices[5] = 3;
 
+			meshData->OnLoadFileReferenceFinished();
+
 #if defined(__PSP__)
 			sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif

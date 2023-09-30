@@ -182,17 +182,30 @@ void MeshData::LoadFileReference()
 		isValid = false;
 
 #if defined(EDITOR)
-		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-		//std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-		//threadLoading.detach();
+		isLoading = true;
+		Engine::threadLoadingMutex.lock();
+		Engine::threadLoadedFiles.push_back(shared_from_this());
+		Engine::threadLoadingMutex.unlock();
+		
+		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		threadLoading.detach();
 #else
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		OnLoadFileReferenceFinished();
 #endif
 	}
 }
 
 void MeshData::OnLoadFileReferenceFinished()
 {
+	for (int i = 0; i < subMeshCount; i++)
+	{
+		SubMesh* sub = subMeshes[i];
+		sub->VBO = Engine::renderer->CreateBuffer();
+		sub->EBO = Engine::renderer->CreateBuffer();
+	}
+
+	SendDataToGpu();
 	isValid = true;
 }
 
@@ -271,7 +284,4 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 	subMeshes.push_back(newSubMesh);
 	subMeshCount++;
-
-	newSubMesh->VBO = Engine::renderer->CreateBuffer();
-	newSubMesh->EBO = Engine::renderer->CreateBuffer();
 }
