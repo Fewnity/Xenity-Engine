@@ -80,6 +80,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspnet_apctl
     pspnet_resolver
     psputility
+    psprtc
 )
 
 # Create an EBOOT.PBP file
@@ -147,7 +148,8 @@ png
   SceShaccCgExt 
   taihen_stub SceShaccCg_stub
   SceKernelDmacMgr_stub 
-  SceCtrl_stub 
+  SceCtrl_stub
+  SceRtc_stub
   stdc++
   pthread
 )
