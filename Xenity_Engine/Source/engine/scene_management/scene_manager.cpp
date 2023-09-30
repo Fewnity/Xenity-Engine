@@ -119,18 +119,21 @@ void SceneManager::LoadScene(const json& jsonData)
 		ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
 
 		// Create components
-		for (auto& componentKV : gameObjectKV.value()["Components"].items())
+		if (gameObjectKV.value().contains("Components"))
 		{
-			std::string componentName = componentKV.value()["Type"];
-			std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
-			if (comp)
+			for (auto& componentKV : gameObjectKV.value()["Components"].items())
 			{
-				allComponents.push_back(comp);
-				comp->SetUniqueId(std::stoull(componentKV.key()));
-			}
-			else
-			{
-				Debug::PrintWarning("Class " + componentName + " not found in the scene");
+				std::string componentName = componentKV.value()["Type"];
+				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
+				if (comp)
+				{
+					allComponents.push_back(comp);
+					comp->SetUniqueId(std::stoull(componentKV.key()));
+				}
+				else
+				{
+					Debug::PrintWarning("Class " + componentName + " not found in the scene");
+				}
 			}
 		}
 	}
@@ -143,12 +146,15 @@ void SceneManager::LoadScene(const json& jsonData)
 		auto go = FindGameObjectById(std::stoull(kv.key()));
 		if (go)
 		{
-			for (auto& kv2 : kv.value()["Childs"].items())
+			if (kv.value().contains("Childs"))
 			{
-				auto goChild = FindGameObjectById(kv2.value());
-				if (goChild)
+				for (auto& kv2 : kv.value()["Childs"].items())
 				{
-					goChild->SetParent(go);
+					auto goChild = FindGameObjectById(kv2.value());
+					if (goChild)
+					{
+						goChild->SetParent(go);
+					}
 				}
 			}
 
@@ -157,16 +163,19 @@ void SceneManager::LoadScene(const json& jsonData)
 			transform->isTransformationMatrixDirty = true;
 			transform->UpdateWorldValues();
 
-			for (auto& kv2 : kv.value()["Components"].items())
+			if (kv.value().contains("Components"))
 			{
-				int componentCount = go->GetComponentCount();
-				for (int compI = 0; compI < componentCount; compI++)
+				for (auto& kv2 : kv.value()["Components"].items())
 				{
-					std::shared_ptr<Component> component = go->components[compI];
-					if (component->GetUniqueId() == std::stoull(kv2.key()))
+					int componentCount = go->GetComponentCount();
+					for (int compI = 0; compI < componentCount; compI++)
 					{
-						ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
-						break;
+						std::shared_ptr<Component> component = go->components[compI];
+						if (component->GetUniqueId() == std::stoull(kv2.key()))
+						{
+							ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
+							break;
+						}
 					}
 				}
 			}
@@ -220,13 +229,16 @@ void SceneManager::LoadScene(const json& jsonData)
 		}
 	}
 
-	ReflectionUtils::JsonToMap(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
-	Graphics::OnLightingSettingsReflectionUpdate();
+	if (jsonData.contains("Lighting"))
+	{
+		ReflectionUtils::JsonToMap(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
+		Graphics::OnLightingSettingsReflectionUpdate();
+	}
 
 #if !defined(EDITOR)
 	Engine::SetGameState(Playing);
 #endif
-}
+	}
 
 void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 {
