@@ -1,3 +1,11 @@
+#if defined(EXPORT)
+#define API __declspec(dllexport)
+#elif defined(IMPORT)
+#define API __declspec(dllimport)
+#else
+#define API
+#endif
+
 #pragma once
 
 #include <unordered_map>
@@ -43,7 +51,7 @@ typedef std::variant<
 	std::reference_wrapper<std::shared_ptr<Material>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>> Variable;
 
-class ReflectionEntry
+class API ReflectionEntry
 {
 public:
 	ReflectionEntry() = default;
@@ -53,7 +61,7 @@ public:
 };
 
 
-class Reflection
+class API Reflection
 {
 public:
 	//std::unordered_map<std::string, Variable> reflectedVariables;
