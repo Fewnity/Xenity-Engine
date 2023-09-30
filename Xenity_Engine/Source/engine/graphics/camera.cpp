@@ -33,10 +33,13 @@ Camera::Camera()
 	this->fov = 60;
 	UpdateProjection();
 
-#if defined(EDITOR)
+#if defined(_WIN32) || defined(_WIN64)
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glGenFramebuffers(1, &secondFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, secondFramebuffer);
 #endif
+
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
 	AssetManager::AddReflection(this);
 }
@@ -54,14 +57,22 @@ std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
 
 Camera::~Camera()
 {
-#if defined(EDITOR)
+#if defined(_WIN32) || defined(_WIN64)
 	if (framebuffer != -1)
 	{
 		glDeleteFramebuffers(1, &framebuffer);
 	}
+	if (secondFramebuffer != -1)
+	{
+		glDeleteFramebuffers(1, &secondFramebuffer);
+	}
 	if (framebufferTexture != -1)
 	{
 		glDeleteTextures(1, &framebufferTexture);
+	}
+	if (secondFramebufferTexture != -1)
+	{
+		glDeleteTextures(1, &secondFramebufferTexture);
 	}
 	if (depthframebuffer != -1)
 	{
@@ -206,30 +217,78 @@ void Camera::UpdateFrameBuffer()
 #if defined(_WIN32) || defined(_WIN64)
 	if (needFrameBufferUpdate)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		if (framebufferTexture != -1)
 		{
 			glDeleteTextures(1, &framebufferTexture);
+			framebufferTexture = -1;
+		}
+		if (secondFramebufferTexture != -1)
+		{
+			glDeleteTextures(1, &secondFramebufferTexture);
+			secondFramebufferTexture = -1;
 		}
 		if (depthframebuffer != -1)
 		{
 			glDeleteRenderbuffers(1, &depthframebuffer);
+			depthframebuffer = -1;
 		}
 
-		glGenTextures(1, &framebufferTexture);
-		glBindTexture(GL_TEXTURE_2D, framebufferTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, framebufferSize.x, framebufferSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		if (useMultisampling)
+		{
+			int sample = 8;
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glGenTextures(1, &framebufferTexture);
+			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, framebufferTexture);
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample, GL_RGB, width, height, GL_TRUE);
+			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, framebufferTexture, 0);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glGenRenderbuffers(1, &depthframebuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample, GL_DEPTH_COMPONENT, width, height);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
 
-		glGenRenderbuffers(1, &depthframebuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, framebufferSize.x, framebufferSize.y);
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				Debug::PrintError("Framebuffer not created");
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
-		//Window::SetResolution(framebufferSize.x, framebufferSize.y);
+			//Screen buffer
+			glBindFramebuffer(GL_FRAMEBUFFER, secondFramebuffer);
+			glGenTextures(1, &secondFramebufferTexture);
+			glBindTexture(GL_TEXTURE_2D, secondFramebufferTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFramebufferTexture, 0);
+
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				Debug::PrintError("Framebuffer not created");
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+		else
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glGenTextures(1, &secondFramebufferTexture);
+			glBindTexture(GL_TEXTURE_2D, secondFramebufferTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFramebufferTexture, 0);
+
+			glGenRenderbuffers(1, &depthframebuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
+
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				Debug::PrintError("Framebuffer not created");
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
 		needFrameBufferUpdate = false;
 	}
 #endif
@@ -237,13 +296,12 @@ void Camera::UpdateFrameBuffer()
 
 void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 {
-	if (framebufferSize != resolution)
+	if (width != resolution.x || height != resolution.y)
 	{
 		width = resolution.x;
 		height = resolution.y;
 		aspect = (float)width / (float)height;
 
-		framebufferSize = resolution;
 		needFrameBufferUpdate = true;
 		UpdateProjection();
 #if defined(__PSP__)
@@ -260,12 +318,8 @@ void Camera::BindFrameBuffer()
 #endif
 	UpdateFrameBuffer();
 
-#if !defined(EDITOR)
 #if !defined(__PSP__)
 	Engine::renderer->SetViewport(0, 0, width, height);
-#endif
-#else
-	glViewport(0, 0, framebufferSize.x, framebufferSize.y);
 #endif
 }
 
@@ -339,6 +393,22 @@ void Camera::OnDrawGizmos()
 		Gizmo::DrawLine(Vector3(bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) * -1, Vector3(topRightNear.x, topRightNear.y, topRightNear.z) * -1);
 	}
 #endif
+}
+
+void Camera::CopyMultiSampledFrameBuffer()
+{
+	if (useMultisampling)
+	{
+#if defined(_WIN32) || defined(_WIN64)
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+#if defined(EDITOR)
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, secondFramebuffer);
+#else
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+#endif
+		glBlitFramebuffer(0, 0, GetWidth(), GetHeight(), 0, 0, GetWidth(), GetHeight(), GL_COLOR_BUFFER_BIT, GL_LINEAR);
+#endif
+	}
 }
 
 #pragma endregion

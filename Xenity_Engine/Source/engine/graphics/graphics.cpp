@@ -70,7 +70,6 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 void Graphics::Init()
 {
 	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
-
 #if defined(EDITOR)
 	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
 	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
@@ -203,6 +202,7 @@ void Graphics::DrawAllDrawable()
 				DrawEditorTool(camPos);
 			}
 #endif
+			camera->CopyMultiSampledFrameBuffer();
 		}
 	}
 

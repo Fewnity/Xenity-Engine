@@ -13,20 +13,17 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 --- To do quick:
-Check Setlights(camera);
 Change Opened scene on save
 Texture filter system
 Fix psp set transform with matrix
 Add map reflection support
-Make shader for psvita
-Fix all errors of cppcheck
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 use shared folder and fix crash when deleting folder
 Fix material crash on play
 Check if material is null
 Material::SetAttribut check emplace, try_emplace?
-Check sprite manager vitagl
+Set const on functions
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

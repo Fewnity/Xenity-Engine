@@ -148,12 +148,17 @@ public:
 		return aspect;
 	}
 
-	Vector2Int framebufferSize;
 	bool isEditor = false;
 	unsigned int framebufferTexture = -1;
+	unsigned int secondFramebufferTexture = -1;
 	glm::mat4 projection;
 	glm::mat4 unscaledProjection;
+	void CopyMultiSampledFrameBuffer();
+	bool useMultisampling = true;
+
 private:
+	unsigned int framebuffer = -1;
+	unsigned int secondFramebuffer = -1;
 	int width, height;
 	float aspect;
 	float fov = 60.0f;		  // For 3D
@@ -162,7 +167,6 @@ private:
 	float farClippingPlane = 1000;
 	ProjectionTypes projectionType = Perspective;
 
-	unsigned int framebuffer = -1;
 	unsigned int depthframebuffer = -1;
 	bool needFrameBufferUpdate = true;
 };

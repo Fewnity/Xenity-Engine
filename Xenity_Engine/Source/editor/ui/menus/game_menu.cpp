@@ -10,14 +10,15 @@ void GameMenu::Draw()
 {
 	windowSize = Vector2Int(0, 0);
 	int cameraCount = Graphics::cameras.size();
-	std::weak_ptr<Camera> camera;
+	std::shared_ptr<Camera> camera;
 	Vector2Int frameBufferSize;
 	for (int i = 0; i < cameraCount; i++)
 	{
 		if (!Graphics::cameras[i].lock()->isEditor)
 		{
-			camera = Graphics::cameras[i];
-			frameBufferSize = camera.lock()->framebufferSize;
+			camera = Graphics::cameras[i].lock();
+			frameBufferSize.x = camera->GetWidth();
+			frameBufferSize.y = camera->GetHeight();
 			break;
 		}
 	}
@@ -25,7 +26,7 @@ void GameMenu::Draw()
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	std::string windowName;
-	if (camera.lock())
+	if (camera)
 	{
 		windowName = "Game " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y) + "###Game";
 	}
@@ -39,10 +40,10 @@ void GameMenu::Draw()
 		ImGui::SetWindowFocus();
 	}
 	ImVec2 size = ImGui::GetContentRegionAvail();
-	if (camera.lock())
+	if (camera)
 	{
-		camera.lock()->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
-		ImGui::Image((ImTextureID)camera.lock()->framebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
+		camera->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
+		ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
 		windowSize = Vector2Int(size.x, size.y);
 		if (ImGui::IsItemHovered())
 		{

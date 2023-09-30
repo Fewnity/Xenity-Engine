@@ -37,7 +37,13 @@ int RendererOpengl::Init()
 	guglInit(list);
 	maxLightCount = 4;
 #elif defined(__vita__)
-	result = vglInit(0x100000);
+	//result = vglInit(0x100000);
+	result = vglInit(0);
+	//result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_NONE);
+
+	// Enabling V-Sync
+	//vglWaitVblankStart(GL_TRUE);
+
 	if (result == 0)
 		result = 1;
 #elif defined(_WIN32) || defined(_WIN64)
@@ -59,21 +65,14 @@ void RendererOpengl::Setup()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_NORMALIZE);
-#endif
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 
-	/*glEnable(GL_FOG);
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogi(GL_FOG_MODE, GL_EXP);
-	glFogi(GL_FOG_MODE, GL_EXP2);
-	glFogf(GL_FOG_DENSITY, 1.0f);
-	glFogf(GL_FOG_START, 0.0f);
-	glFogf(GL_FOG_END, 3.0f);*/
-	// glCullFace(GL_BACK);
+#if defined(_WIN32) || defined(_WIN64)
+	glEnable(GL_MULTISAMPLE);
+#endif
 
 #endif
 }

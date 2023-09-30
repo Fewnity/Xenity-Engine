@@ -107,7 +107,8 @@ void SceneMenu::Draw()
 		if (Graphics::cameras[i].lock()->isEditor)
 		{
 			camera = Graphics::cameras[i].lock();
-			frameBufferSize = camera->framebufferSize;
+			frameBufferSize.x = camera->GetWidth();
+			frameBufferSize.y = camera->GetHeight();
 			break;
 		}
 	}
@@ -127,7 +128,7 @@ void SceneMenu::Draw()
 	if (camera)
 	{
 		camera->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
-		ImGui::Image((ImTextureID)camera->framebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
 		windowSize = Vector2Int(size.x, size.y);
 		if (ImGui::IsItemHovered())
 		{
