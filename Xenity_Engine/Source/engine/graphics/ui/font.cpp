@@ -55,13 +55,7 @@ void Font::LoadFileReference()
 
 bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 {
-	std::string path;
-#ifdef __vita__
-	path = "ux0:";
-#endif
-	path += EngineSettings::RootFolder + filePath;
-
-	Debug::Print("Loading font: " + path);
+	Debug::Print("Loading font: " + filePath);
 
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
@@ -73,7 +67,7 @@ bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 	// Load font
 	FT_Face face;
 
-	if (FT_New_Face(ft, path.c_str(), 0, &face))
+	if (FT_New_Face(ft, filePath.c_str(), 0, &face))
 	{
 		Debug::PrintError("Failed to load font");
 		return false;
@@ -109,7 +103,7 @@ bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 			// load character glyph
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
-				Debug::PrintError("Failed to load Glyph. Path: " + path);
+				Debug::PrintError("Failed to load Glyph. Path: " + filePath);
 				continue;
 			}
 
@@ -161,7 +155,7 @@ bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 		}
 		catch (...)
 		{
-			Debug::PrintError("Failed to load Glyph. Path: " + path);
+			Debug::PrintError("Failed to load Glyph. Path: " + filePath);
 			free(atlas);
 			return false;
 		}
