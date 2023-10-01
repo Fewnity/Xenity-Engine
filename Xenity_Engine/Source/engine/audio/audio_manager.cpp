@@ -42,8 +42,9 @@ ProfilerBenchmark* audioBenchmark2 = nullptr;
 short MixSoundToBuffer(short bufferValue, short soundValue)
 {
 	int newVal = bufferValue + soundValue;
-	if (newVal > 32767)
-		newVal = 32767;
+	// Clamp value
+	if (newVal > INT16_MAX)
+		newVal = INT16_MAX;
 	else if (newVal < -32768)
 		newVal = -32768;
 
@@ -52,6 +53,7 @@ short MixSoundToBuffer(short bufferValue, short soundValue)
 
 void FillChannelBuffer(short* buffer, int length, Channel* channel)
 {
+	// Reset buffer
 	for (int i = 0; i < length; i++)
 	{
 		int leftBufferIndex = i * 2;
@@ -62,22 +64,22 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 
 	AudioManager::myMutex->Lock();
 
+	// For each sound, add it's buffer to the sound buffer and change seek of audio stream
 	int playedSoundsCount = (int)channel->playedSounds.size();
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
-		auto& sound = channel->playedSounds[soundIndex];
-		AudioClipStream* stream = sound->audioClipStream;
-#if defined(_WIN32) || defined(_WIN64)
-		float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
-		float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
-#else
-		float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->pan)) * 2;
-		float rightPan = std::max(0.0f, std::min(0.5f, sound->pan)) * 2;
-#endif
-		bool isPlaying = sound->isPlaying;
+		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
 
-		if (isPlaying)
+		if (sound->isPlaying)
 		{
+			AudioClipStream* stream = sound->audioClipStream;
+#if defined(_WIN32) || defined(_WIN64)
+			float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
+			float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
+#else
+			float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->pan)) * 2;
+			float rightPan = std::max(0.0f, std::min(0.5f, sound->pan)) * 2;
+#endif
 			float leftVolume = sound->volume * leftPan;
 			float rightVolume = sound->volume * rightPan;
 			int channelCount = stream->GetChannelCount();
@@ -89,8 +91,10 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 			int rightBufferIndex = 0;
 			short* soundBuffer = sound->buffer;
 
+			bool stopAudio = false;
 			for (int i = 0; i < length; i++)
 			{
+				// Add audio clip stream buffer to the channel buffer
 				leftBufferIndex = i * 2;
 				rightBufferIndex = 1 + i * 2;
 				leftBuf = &buffer[leftBufferIndex];
@@ -108,6 +112,8 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 
 				sound->seekNext += frequency;
 
+
+				// Check if the buffer seek position needs to be moved or reset
 				while (sound->seekNext >= SOUND_FREQUENCY)
 				{
 					sound->seekNext -= SOUND_FREQUENCY;
@@ -122,8 +128,16 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 
 					if (stream->GetSeekPosition() >= sampleCount)
 					{
-						stream->ResetSeek();
-						sound->seekPosition = 0;
+						if (sound->loop)
+						{
+							stream->ResetSeek();
+							sound->seekPosition = 0;
+						}
+						else
+						{
+							stopAudio = true;
+							break;
+						}
 					}
 					else if (sound->seekPosition == halfBuffSize)
 					{
@@ -135,6 +149,17 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 						sound->needNewRead2 = true;
 					}
 				}
+				if (stopAudio)
+				{
+					break;
+				}
+			}
+			if (stopAudio)
+			{
+				channel->playedSounds.erase(channel->playedSounds.begin() + soundIndex);
+				soundIndex--;
+				playedSoundsCount--;
+				continue;
 			}
 		}
 	}
@@ -147,7 +172,7 @@ void audioCallback(void* buf, unsigned int length, void* userdata)
 	audioBenchmark2->Start();
 	FillChannelBuffer((short*)buf, length, AudioManager::channel);
 	audioBenchmark2->Stop();
-}
+					}
 #endif
 
 #if defined(__vita__)
@@ -250,6 +275,7 @@ int fillAudioBufferThread()
 				playedSound->volume = audioSource->GetVolume();
 				playedSound->pan = audioSource->GetPanning();
 				playedSound->isPlaying = audioSource->GetIsPlaying();
+				playedSound->loop = audioSource->GetIsLooping();
 			}
 			AudioManager::myMutex->Unlock();
 		}
@@ -258,8 +284,8 @@ int fillAudioBufferThread()
 #else
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
+		}
 	}
-}
 
 
 Channel::Channel()
@@ -301,7 +327,7 @@ int AudioManager::Init()
 	{
 		sceKernelStartThread(thd_id2, 0, 0);
 		sceKernelStartThread(thd_id, 0, 0);
-	}
+}
 #elif defined(_WIN32) || defined(_WIN64)
 	audioData = (short*)malloc(sizeof(short) * buffSize);
 	audioData2 = (short*)malloc(sizeof(short) * buffSize);
@@ -392,7 +418,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->file->GetPath());
+		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->file);
 		newPlayedSound->audioSource = sharedAudioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needNewRead = true;
@@ -401,7 +427,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 		newPlayedSound->volume = sharedAudioSource->GetVolume();
 		newPlayedSound->pan = sharedAudioSource->GetPanning();
 		newPlayedSound->isPlaying = sharedAudioSource->GetIsPlaying();
-		newPlayedSound->loop = true;
+		newPlayedSound->loop = sharedAudioSource->GetIsLooping();
 		channel->playedSounds.push_back(newPlayedSound);
 	}
 	AudioManager::myMutex->Unlock();
