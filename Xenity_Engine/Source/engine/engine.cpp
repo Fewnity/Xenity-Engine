@@ -416,7 +416,7 @@ void Engine::CreateBenchmarks()
 	engineLoopBenchmark = new ProfilerBenchmark("Engine loop", "Engine loop");
 	//gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
 	componentsUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Components update");
-	drawIDrawablesBenchmark = new ProfilerBenchmark("Engine loop", "Draw");
+	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw", "Draw");
 	editorUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Editor update");
 	editorDrawBenchmark = new ProfilerBenchmark("Engine loop", "Editor draw");
 }

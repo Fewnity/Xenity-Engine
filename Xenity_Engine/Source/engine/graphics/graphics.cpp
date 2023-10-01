@@ -19,7 +19,11 @@ std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 
 ProfilerBenchmark* orderBenchmark = nullptr;
-ProfilerBenchmark* shaderBenchmark = nullptr;
+ProfilerBenchmark* skyboxBenchmark = nullptr;
+ProfilerBenchmark* drawAllBenchmark = nullptr;
+ProfilerBenchmark* drawEditorToolsBenchmark = nullptr;
+ProfilerBenchmark* drawEditorGridBenchmark = nullptr;
+ProfilerBenchmark* drawEditorGizmoBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
@@ -36,13 +40,6 @@ Color Graphics::skyColor;
 std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = Draw_3D;
-
-/*std::shared_ptr <GameObject> skyGoTop = nullptr;
-std::shared_ptr <GameObject> skyGoBottom = nullptr;
-std::shared_ptr <GameObject> skyGoLeft = nullptr;
-std::shared_ptr <GameObject> skyGoRight = nullptr;
-std::shared_ptr <GameObject> skyGoFront = nullptr;
-std::shared_ptr <GameObject> skyGoBack = nullptr;*/
 
 void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 {
@@ -82,7 +79,11 @@ void Graphics::Init()
 #endif
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
-	shaderBenchmark = new ProfilerBenchmark("Draw", "Shader");
+	skyboxBenchmark = new ProfilerBenchmark("Draw", "Skybox");
+	drawAllBenchmark = new ProfilerBenchmark("Draw", "Draw drawables");
+	drawEditorToolsBenchmark = new ProfilerBenchmark("Draw", "Draw tools");
+	drawEditorGridBenchmark = new ProfilerBenchmark("Draw", "Draw grid");
+	drawEditorGizmoBenchmark = new ProfilerBenchmark("Draw", "Draw gizmo");
 
 	SetDefaultValues();
 
@@ -112,14 +113,14 @@ void Graphics::DrawAllDrawable()
 	Engine::renderer->NewFrame();
 
 	int cameraCount = cameras.size();
+	int matCount = AssetManager::GetMaterialCount();
 
 	for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex];
 		auto camera = usedCamera.lock();
-		if (camera && camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
+		if (camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
 		{
-			int matCount = AssetManager::GetMaterialCount();
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
 				Material* mat = AssetManager::GetMaterial(materialIndex);
@@ -129,21 +130,19 @@ void Graphics::DrawAllDrawable()
 			currentMode = Draw_3D;
 
 			needUpdateCamera = true;
+			camera->UpdateProjection();
 			camera->BindFrameBuffer();
 			Engine::renderer->SetClearColor(skyColor);
 			Engine::renderer->Clear();
 
-			Vector3 camPos = camera->GetTransform()->GetPosition();
+			const Vector3 camPos = camera->GetTransform()->GetPosition();
 
-			camera->UpdateProjection();
-			shaderBenchmark->Start();
-
-			shaderBenchmark->Stop();
-
+			skyboxBenchmark->Start();
 			DrawSkybox(camPos);
+			skyboxBenchmark->Stop();
 
 			Engine::renderer->SetFog(isFogEnabled);
-
+			drawAllBenchmark->Start();
 			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
@@ -160,10 +159,12 @@ void Graphics::DrawAllDrawable()
 				}
 				drawable->Draw();
 			}
+			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
 			if (camera->isEditor)
 			{
+				drawEditorToolsBenchmark->Start();
 				Engine::renderer->SetFog(false);
 				//Draw editor scene grid
 				if (currentMode != Draw_3D)
@@ -186,8 +187,12 @@ void Graphics::DrawAllDrawable()
 				}
 
 				Engine::renderer->SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
-				DrawEditorGrid(camPos);
 
+				drawEditorGridBenchmark->Start();
+				DrawEditorGrid(camPos);
+				drawEditorGridBenchmark->Stop();
+
+				drawEditorGizmoBenchmark->Start();
 				for (int i = 0; i < Engine::componentsCount; i++)
 				{
 					if (auto component = Engine::orderedComponents[i].lock())
@@ -198,8 +203,10 @@ void Graphics::DrawAllDrawable()
 						}
 					}
 				}
+				drawEditorGizmoBenchmark->Stop();
 
 				DrawEditorTool(camPos);
+				drawEditorToolsBenchmark->Stop();
 			}
 #endif
 			camera->CopyMultiSampledFrameBuffer();
@@ -292,7 +299,7 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 	}
 }
 
-void Graphics::DrawSkybox(Vector3& cameraPosition)
+void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
 	if (skybox)
 	{
@@ -316,7 +323,7 @@ void Graphics::DrawSkybox(Vector3& cameraPosition)
 	}
 }
 
-void Graphics::DrawEditorGrid(Vector3& cameraPosition)
+void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 {
 	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
 
@@ -408,7 +415,7 @@ void Graphics::DrawEditorGrid(Vector3& cameraPosition)
 	}
 }
 
-void Graphics::DrawEditorTool(Vector3& cameraPosition)
+void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
 	// Draw tool
 	if (Engine::selectedGameObject.lock())

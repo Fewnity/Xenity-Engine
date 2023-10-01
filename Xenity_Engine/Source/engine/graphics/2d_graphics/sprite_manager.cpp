@@ -141,7 +141,6 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 		return;
 	}
 
-
 	spriteBenchmark->Start();
 	if (auto camera = Graphics::usedCamera.lock())
 	{

@@ -82,7 +82,7 @@ public:
 
 private:
 	static int iDrawablesCount;
-	static void DrawSkybox(Vector3& cameraPosition);
-	static void DrawEditorGrid(Vector3& cameraPosition);
-	static void DrawEditorTool(Vector3& cameraPosition);
+	static void DrawSkybox(const Vector3& cameraPosition);
+	static void DrawEditorGrid(const Vector3& cameraPosition);
+	static void DrawEditorTool(const Vector3& cameraPosition);
 };
