@@ -240,28 +240,35 @@ void Editor::CreateEmptyParent()
 
 #pragma region Save
 
-void Editor::DuplicateGameObject(std::shared_ptr<GameObject> gameObject)
+void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 {
-	std::shared_ptr<GameObject> newGameObject = CreateGameObject(gameObject->name);
-
-	auto selectedGO = Engine::selectedGameObject.lock();
-	if (selectedGO)
+	if (goToDuplicate)
 	{
-		if (selectedGO->parent.lock())
-			newGameObject->SetParent(selectedGO->parent);
-	}
+		// Create new gameobject
+		std::shared_ptr<GameObject> newGameObject = CreateGameObject(goToDuplicate->name);
 
-	int componentCount = gameObject->components.size();
-	for (int i = 0; i < componentCount; i++)
-	{
-		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(gameObject->components[i]->GetComponentName(), newGameObject);
-		auto newReflection = newComponent->GetReflection();
-		auto reflectionToCopy = gameObject->components[i]->GetReflection();
+		// Set parent and position/rotation/scale
+		if (goToDuplicate->parent.lock())
+		{
+			newGameObject->SetParent(goToDuplicate->parent);
+		}
+		newGameObject->GetTransform()->SetLocalPosition(goToDuplicate->GetTransform()->GetLocalPosition());
+		newGameObject->GetTransform()->SetLocalRotation(goToDuplicate->GetTransform()->GetLocalRotation());
+		newGameObject->GetTransform()->SetLocalScale(goToDuplicate->GetTransform()->GetLocalScale());
 
-		json copiedValues;
-		copiedValues["Values"] = ReflectionUtils::MapToJson(reflectionToCopy);
-		ReflectionUtils::JsonToMap(copiedValues, newReflection);
-		newComponent->OnReflectionUpdated();
+		// Duplicate all components
+		int componentCount = goToDuplicate->components.size();
+		for (int i = 0; i < componentCount; i++)
+		{
+			std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
+			auto newReflection = newComponent->GetReflection();
+			auto reflectionToCopy = goToDuplicate->components[i]->GetReflection();
+
+			json copiedValues;
+			copiedValues["Values"] = ReflectionUtils::MapToJson(reflectionToCopy);
+			ReflectionUtils::JsonToMap(copiedValues, newReflection);
+			newComponent->OnReflectionUpdated();
+		}
 	}
 }
 
