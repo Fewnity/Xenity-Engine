@@ -316,13 +316,18 @@ void Shader::SetShaderModel(const glm::mat4& trans)
 void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
 	Use();
-	glm::mat4 transformationMatrix = glm::mat4(1.0f);
-	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
 
+	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
+
+	if(rotation.y != 0)
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+	if (rotation.x != 0)
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	if (rotation.z != 0)
 	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+
 	Engine::renderer->SetShaderAttribut(programId, "model", transformationMatrix);
 }
 
@@ -466,9 +471,7 @@ void Shader::UpdateLights()
 			spotUsed++;
 		}
 	}
-	//SetShaderAttribut("usedPointLightCount", 0);
-	//SetShaderAttribut("usedSpotLightCount", 0);
-	//SetShaderAttribut("usedDirectionalLightCount", 0);
+
 	SetShaderAttribut("usedPointLightCount", pointUsed);
 	SetShaderAttribut("usedSpotLightCount", spotUsed);
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
