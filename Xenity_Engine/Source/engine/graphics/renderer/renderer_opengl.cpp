@@ -223,39 +223,10 @@ void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotati
 void RendererOpengl::SetTransform(const glm::mat4& mat)
 {
 #if defined(__PSP__)
-	ScePspFMatrix4 matrix;
-	matrix.x.x = mat[0][0];
-	matrix.x.y = mat[1][0];
-	matrix.x.z = -mat[2][0];
-	matrix.x.w = mat[3][0];
-
-	matrix.y.x = mat[0][1];
-	matrix.y.y = mat[1][1];
-	matrix.y.z = mat[2][1];
-	matrix.y.w = mat[3][1];
-
-	matrix.z.x = mat[0][2];
-	matrix.z.y = mat[1][2];
-	matrix.z.z = -mat[2][2];
-	matrix.z.w = mat[3][2];
-
-	matrix.w.x = mat[3][0];
-	matrix.w.y = mat[3][1];
-	matrix.w.z = mat[3][2];
-	matrix.w.w = mat[3][3];
-
-	sceGuSetMatrix(GU_MODEL, &matrix);
+	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 #else
 	glMatrixMode(GL_MODELVIEW);
-	float mat2[4][4];
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			mat2[i][j] = mat[i][j];
-		}
-	}
-	glMultMatrixf((GLfloat*)mat2);
+	glMultMatrixf((float*)&mat);
 #endif
 }
 
