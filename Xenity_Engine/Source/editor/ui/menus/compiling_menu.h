@@ -2,6 +2,13 @@
 
 #include "menu.h"
 
+enum CompilingPupopState
+{
+	Closed,
+	Closing,
+	Opening
+};
+
 class CompilingMenu : public Menu
 {
 public:

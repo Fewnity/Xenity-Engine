@@ -9,47 +9,25 @@ void CreateProjectMenu::Init()
 {
 }
 
-void CreateProjectMenu::Draw()
+void  CreateProjectMenu::DrawTitle()
 {
-	ImGuiIO& io = ImGui::GetIO();
-
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(viewport->WorkPos);
-	ImGui::SetNextWindowSize(viewport->WorkSize);
-	ImGui::SetNextWindowViewport(viewport->ID);
-
-	ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
-	ImVec2 size = ImGui::GetContentRegionAvail();
-
-	//Increase font size
-	ImFont* font = ImGui::GetFont();
-	float oldScale = font->Scale;
-	font->Scale *= 1.5;
-	ImGui::PushFont(font);
-
-	if (ImGui::Button("Back"))
-	{
-		Editor::currentMenu = Menu_Select_Project;
-	}
-	ImGui::PopFont();
-
-	font->Scale = oldScale * 2.0f;
-	ImGui::PushFont(font);
-
-	//Draw text
-	std::string noCamText = "Create a project";
-	ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+	const char* noCamText = "Create a project";
+	ImVec2 textSize = ImGui::CalcTextSize(noCamText);
 	ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
-	ImGui::Text(noCamText.c_str());
+	ImGui::Text("%s", noCamText);
+}
 
-	ImGui::PopFont();
-
-	font->Scale = oldScale * 1.5f;
-	ImGui::PushFont(font);
-
+void  CreateProjectMenu::DrawProjectPath()
+{
+	// Draw project path
 	std::string projectFolderText = "Project folder: " + projectParentDir + projectName + "\\";
-	ImGui::Text(projectFolderText.c_str());
+	ImGui::Text("%s", projectFolderText.c_str());
+}
 
+bool CreateProjectMenu::DrawSelectFolderButton()
+{
+	// Draw select folder button
 	bool projectFolderChanged = false;
 	if (ImGui::Button("Select a folder"))
 	{
@@ -60,17 +38,16 @@ void CreateProjectMenu::Draw()
 			projectFolderChanged = true;
 		}
 	}
-	bool nameChanged = EditorUI::DrawInput("Project Name", projectName);
+	return projectFolderChanged;
+}
 
-	if (projectFolderChanged && createProjectError == ERROR_EMPTY_FOLDER)
-	{
-		createProjectError = NO_ERROR;
-	}
-	else if ((nameChanged || projectFolderChanged) && createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
-	{
-		createProjectError = NO_ERROR;
-	}
+bool CreateProjectMenu::DrawProjectNameInput()
+{
+	return EditorUI::DrawInput("Project Name", projectName);
+}
 
+void CreateProjectMenu::DrawError() 
+{
 	ImColor red = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
 	if (createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
 	{
@@ -84,7 +61,11 @@ void CreateProjectMenu::Draw()
 	{
 		ImGui::TextColored(red, "Project name empty");
 	}
+}
 
+void CreateProjectMenu::DrawCreateProjectButton()
+{
+	// Draw create project button
 	if (ImGui::Button("Create project"))
 	{
 		if (projectParentDir.empty())
@@ -119,6 +100,60 @@ void CreateProjectMenu::Draw()
 			delete projectDir;
 		}
 	}
+}
+
+void CreateProjectMenu::Draw()
+{
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->WorkPos);
+	ImGui::SetNextWindowSize(viewport->WorkSize);
+	ImGui::SetNextWindowViewport(viewport->ID);
+
+	ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+
+	//Increase font size to 150%
+	ImFont* font = ImGui::GetFont();
+	float oldScale = font->Scale;
+	font->Scale *= 1.5f;
+	ImGui::PushFont(font);
+
+	if (ImGui::Button("Back"))
+	{
+		Editor::currentMenu = Menu_Select_Project;
+	}
+
+	// Set text scale to 200%
+	ImGui::PopFont();
+	font->Scale = oldScale * 2.0f;
+	ImGui::PushFont(font);
+
+	DrawTitle();
+
+
+	// Set text scale to 150%
+	ImGui::PopFont();
+	font->Scale = oldScale * 1.5f;
+	ImGui::PushFont(font);
+
+	DrawProjectPath();
+
+	bool projectFolderChanged = DrawSelectFolderButton();
+
+	bool nameChanged = DrawProjectNameInput();
+
+	if (projectFolderChanged && createProjectError == ERROR_EMPTY_FOLDER)
+	{
+		createProjectError = NO_ERROR;
+	}
+	else if ((nameChanged || projectFolderChanged) && createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
+	{
+		createProjectError = NO_ERROR;
+	}
+
+	DrawError();
+
+	DrawCreateProjectButton();
+
 	ImGui::PopFont();
 
 	//Reset font

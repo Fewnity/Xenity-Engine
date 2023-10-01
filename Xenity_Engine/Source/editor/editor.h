@@ -94,6 +94,8 @@ public:
 	static LightingMenu* lightingMenu;
 	static std::weak_ptr<AudioSource> audioSource;
 private:
+	static void CreateMenus();
+
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;
 	static FileExplorerMenu* fileExplorer;

@@ -33,6 +33,7 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 		bool opened = ImGui::TreeNodeEx(projectDir->GetFolderName().c_str(), flags);
 		ImGui::PopStyleColor();
 
+		// TODO : Check if the click was on the arrow to block this condition
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
 		{
 			Engine::SetCurrentProjectDirectory(projectDir);

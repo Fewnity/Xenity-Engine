@@ -91,7 +91,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 			int rightBufferIndex = 0;
 			short* soundBuffer = sound->buffer;
 
-			bool stopAudio = false;
+			bool deleteAudio = false;
 			for (int i = 0; i < length; i++)
 			{
 				// Add audio clip stream buffer to the channel buffer
@@ -126,7 +126,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 						sound->seekPosition += 1;
 					}
 
-					if (stream->GetSeekPosition() >= sampleCount)
+					if (stream->GetSeekPosition() >= sampleCount) // If the stream ends, reset the seek or stop the stream
 					{
 						if (sound->loop)
 						{
@@ -135,26 +135,28 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 						}
 						else
 						{
-							stopAudio = true;
+							deleteAudio = true;
 							break;
 						}
 					}
-					else if (sound->seekPosition == halfBuffSize)
+					else if (sound->seekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
 					{
-						sound->needNewRead = true;
+						sound->needFillFirstHalfBuffer = true;
 					}
-					else if (sound->seekPosition == buffSize)
+					else if (sound->seekPosition == buffSize) // If the buffer seek reach the end, reset the buffer seek and ask for a new stream read
 					{
 						sound->seekPosition = 0;
-						sound->needNewRead2 = true;
+						sound->needFillSecondHalfBuffer = true;
 					}
 				}
-				if (stopAudio)
+				if (deleteAudio)
 				{
 					break;
 				}
 			}
-			if (stopAudio)
+
+			// If the played sound needs to be deleted
+			if (deleteAudio)
 			{
 				channel->playedSounds.erase(channel->playedSounds.begin() + soundIndex);
 				soundIndex--;
@@ -172,7 +174,7 @@ void audioCallback(void* buf, unsigned int length, void* userdata)
 	audioBenchmark2->Start();
 	FillChannelBuffer((short*)buf, length, AudioManager::channel);
 	audioBenchmark2->Stop();
-					}
+}
 #endif
 
 #if defined(__vita__)
@@ -199,22 +201,25 @@ int audio_thread()
 			return 0;
 
 		WAVEHDR* w = &waveHdr[currentBuffer];
+		// If the audio header needs audio data
 		if (w->dwFlags & WHDR_DONE)
 		{
 			waveOutUnprepareHeader(hWaveOut, w, sizeof(WAVEHDR));
 
+			// Select current buffer
 			short* buffToUse = audioData;
 			if (currentBuffer == 1)
 				buffToUse = audioData2;
 
-
+			// Send audio data
 			FillChannelBuffer((short*)buffToUse, quarterBuffSize, AudioManager::channel);
-			w->lpData = reinterpret_cast<LPSTR>(buffToUse); // audioData est votre tableau d'échantillons audio
-			w->dwBufferLength = buffSize; // dataSize est la taille des données audio
+			w->lpData = reinterpret_cast<LPSTR>(buffToUse);
+			w->dwBufferLength = buffSize;
 			w->dwFlags = 0;
 			waveOutPrepareHeader(hWaveOut, w, sizeof(WAVEHDR));
 			waveOutWrite(hWaveOut, w, sizeof(WAVEHDR));
 
+			// Change buffer
 			currentBuffer = (currentBuffer + 1) % 2;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -235,6 +240,7 @@ int fillAudioBufferThread()
 
 		AudioManager::myMutex->Lock();
 		int playedSoundsCount = (int)AudioManager::channel->playedSounds.size();
+		// Fill each stream buffers
 		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
 			auto& sound = AudioManager::channel->playedSounds[soundIndex];
@@ -246,27 +252,25 @@ int fillAudioBufferThread()
 				bufferSizeToUse = halfBuffSize;
 			}
 
-			if (sound->needNewRead)
+			if (sound->needFillFirstHalfBuffer)
 			{
 				audioBenchmark->Start();
 				stream->FillBuffer(bufferSizeToUse, 0, sound->buffer);
-				sound->needNewRead = false;
+				sound->needFillFirstHalfBuffer = false;
 				audioBenchmark->Stop();
 			}
-			else if (sound->needNewRead2)
+			else if (sound->needFillSecondHalfBuffer)
 			{
 				audioBenchmark->Start();
 				stream->FillBuffer(bufferSizeToUse, halfBuffSize, sound->buffer);
-				sound->needNewRead2 = false;
+				sound->needFillSecondHalfBuffer = false;
 				audioBenchmark->Stop();
 			}
 		}
-		AudioManager::myMutex->Unlock();
 
-
+		// Get audio sources values
 		if (Engine::canUpdateAudio)
 		{
-			AudioManager::myMutex->Lock();
 			int count = (int)AudioManager::channel->playedSounds.size();
 			for (int i = 0; i < count; i++)
 			{
@@ -277,8 +281,10 @@ int fillAudioBufferThread()
 				playedSound->isPlaying = audioSource->GetIsPlaying();
 				playedSound->loop = audioSource->GetIsLooping();
 			}
-			AudioManager::myMutex->Unlock();
 		}
+
+		AudioManager::myMutex->Unlock();
+
 #if defined(__vita__) || defined(__PSP__)
 		sceKernelDelayThread(16);
 #else
@@ -332,7 +338,6 @@ int AudioManager::Init()
 	audioData = (short*)malloc(sizeof(short) * buffSize);
 	audioData2 = (short*)malloc(sizeof(short) * buffSize);
 
-	// Ouvrir le fichier audio WAV
 	WAVEFORMATEX waveFormat;
 	waveFormat.wFormatTag = WAVE_FORMAT_PCM;
 	waveFormat.nChannels = 2;
@@ -401,6 +406,8 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 	if (sharedAudioSource->audioClip == nullptr)
 		return;
 
+	// Find if the audio source is already playing
+
 	int count = (int)channel->playedSounds.size();
 	for (int i = 0; i < count; i++)
 	{
@@ -414,6 +421,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 
 	if (!found)
 	{
+		// create PlayedSound and copy audio source values
 		std::shared_ptr<PlayedSound> newPlayedSound = std::make_shared<PlayedSound>();
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
@@ -421,8 +429,8 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->file);
 		newPlayedSound->audioSource = sharedAudioSource;
 		newPlayedSound->seekPosition = 0;
-		newPlayedSound->needNewRead = true;
-		newPlayedSound->needNewRead2 = true;
+		newPlayedSound->needFillFirstHalfBuffer = true;
+		newPlayedSound->needFillSecondHalfBuffer = true;
 
 		newPlayedSound->volume = sharedAudioSource->GetVolume();
 		newPlayedSound->pan = sharedAudioSource->GetPanning();
@@ -439,6 +447,7 @@ void AudioManager::StopAudioSource(const std::weak_ptr<AudioSource>& audioSource
 	int audioSourceIndex = 0;
 	bool found = false;
 
+	// Find audio source index
 	if (auto as = audioSource.lock())
 	{
 		int count = (int)channel->playedSounds.size();
@@ -470,6 +479,7 @@ void AudioManager::RemoveAudioSource(const std::weak_ptr<AudioSource>& audioSour
 	int audioSourceIndex = 0;
 	bool found = false;
 
+	// Find audio source index
 	if (auto as = audioSource.lock())
 	{
 		int count = (int)channel->playedSounds.size();

@@ -37,8 +37,8 @@ public:
 	short* buffer = nullptr;
 	int seekNext = 0;
 	uint64_t seekPosition = 0;
-	bool needNewRead = false;
-	bool needNewRead2 = false;
+	bool needFillFirstHalfBuffer = false;
+	bool needFillSecondHalfBuffer = false;
 
 	float volume = 1;
 	float pan = 0.5;

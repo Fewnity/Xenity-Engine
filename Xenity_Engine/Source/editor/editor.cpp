@@ -48,33 +48,9 @@ LightingMenu* Editor::lightingMenu = nullptr;
 
 void Editor::Init()
 {
-	projectSettings = new ProjectSettingsMenu();
-	engineSettings = new EngineSettingsMenu();
-	fileExplorer = new FileExplorerMenu();
-	hierarchy = new HierarchyMenu();
-	inspector = new InspectorMenu();
-	mainBar = new MainBarMenu();
-	profiler = new ProfilerMenu();
-	gameMenu = new GameMenu();
-	sceneMenu = new SceneMenu();
-	compilingMenu = new CompilingMenu();
-	selectProjectMenu = new SelectProjectMenu();
-	createProjectMenu = new CreateProjectMenu();
-	lightingMenu = new LightingMenu();
+	CreateMenus();
 
-	projectSettings->Init();
-	engineSettings->Init();
-	fileExplorer->Init();
-	hierarchy->Init();
-	inspector->Init();
-	mainBar->Init();
-	profiler->Init();
-	gameMenu->Init();
-	sceneMenu->Init();
-	selectProjectMenu->Init();
-	createProjectMenu->Init();
-	lightingMenu->Init();
-
+	// Create scene camera TODO : Move to scene_menu.cpp?
 	cameraGO = CreateGameObjectEditor("Camera");
 	auto camera = cameraGO.lock()->AddComponent<Camera>();
 	camera->SetNearClippingPlane(0.01f);
@@ -84,24 +60,29 @@ void Editor::Init()
 	camera->isEditor = true;
 	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
 
+	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
 	audioSource = audioSourceGO->AddComponent<AudioSource>();
 }
 
 void Editor::Update()
 {
+	// Check user input and camera movement when in the scene menu
 	if (sceneMenu->isFocused)
 	{
-		auto cameraTrans = cameraGO.lock()->GetTransform();
-		Vector3 rot = cameraTrans->GetRotation();
-		Vector3 pos = cameraTrans->GetPosition();
+		// Get camera transform
+		auto cameraTransform = cameraGO.lock()->GetTransform();
+		Vector3 rot = cameraTransform->GetRotation();
+		Vector3 pos = cameraTransform->GetPosition();
 
+		// Rotate the camera when dragging the mouse right click
 		if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
 		{
 			rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
 			rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;
 		}
 
+		// Move the camera when using keyboard's arrows
 		float fwd = 0;
 		float up = 0;
 		float side = 0;
@@ -115,6 +96,7 @@ void Editor::Update()
 		else if (InputSystem::GetKey(LEFT))
 			side = -1;
 
+		// Move the camera when using the mouse's wheel
 		if (sceneMenu->isHovered)
 			fwd -= InputSystem::mouseWheel * 6;
 
@@ -124,13 +106,16 @@ void Editor::Update()
 			side -= InputSystem::InputSystem::mouseSpeed.x * 100;
 		}
 
-		pos -= cameraTrans->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
-		pos -= cameraTrans->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
-		pos -= cameraTrans->GetUp() * (up / 7.0f) * Time::GetDeltaTime() * 30;
+		// Apply values
+		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
+		pos -= cameraTransform->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
+		pos -= cameraTransform->GetUp() * (up / 7.0f) * Time::GetDeltaTime() * 30;
 
-		cameraTrans->SetPosition(pos);
-		cameraTrans->SetRotation(rot);
+		cameraTransform->SetPosition(pos);
+		cameraTransform->SetRotation(rot);
 	}
+
+	// Check shortcuts
 
 	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 	{
@@ -270,6 +255,36 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 			newComponent->OnReflectionUpdated();
 		}
 	}
+}
+
+void Editor::CreateMenus()
+{
+	projectSettings = new ProjectSettingsMenu();
+	engineSettings = new EngineSettingsMenu();
+	fileExplorer = new FileExplorerMenu();
+	hierarchy = new HierarchyMenu();
+	inspector = new InspectorMenu();
+	mainBar = new MainBarMenu();
+	profiler = new ProfilerMenu();
+	gameMenu = new GameMenu();
+	sceneMenu = new SceneMenu();
+	compilingMenu = new CompilingMenu();
+	selectProjectMenu = new SelectProjectMenu();
+	createProjectMenu = new CreateProjectMenu();
+	lightingMenu = new LightingMenu();
+
+	projectSettings->Init();
+	engineSettings->Init();
+	fileExplorer->Init();
+	hierarchy->Init();
+	inspector->Init();
+	mainBar->Init();
+	profiler->Init();
+	gameMenu->Init();
+	sceneMenu->Init();
+	selectProjectMenu->Init();
+	createProjectMenu->Init();
+	lightingMenu->Init();
 }
 
 #pragma endregion

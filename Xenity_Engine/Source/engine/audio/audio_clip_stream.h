@@ -12,8 +12,10 @@
 #include "dr_wav.h"
 
 #include <string>
+#include <memory>
 
 class Channel;
+class File;
 
 enum AudioType
 {
@@ -25,7 +27,7 @@ enum AudioType
 class API AudioClipStream
 {
 public:
-	void OpenStream(const std::string& fileName);
+	void OpenStream(std::shared_ptr<File> file);
 	~AudioClipStream();
 
 	/**

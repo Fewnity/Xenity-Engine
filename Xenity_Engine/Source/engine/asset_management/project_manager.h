@@ -104,7 +104,7 @@ public:
 	/**
 	* Save project settings
 	*/
-	static void SaveProjectSettigs();
+	static void SaveProjectSettings();
 
 	/**
 	* Get reflection of project settings

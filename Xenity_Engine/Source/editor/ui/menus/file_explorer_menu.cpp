@@ -15,7 +15,7 @@ void FileExplorerMenu::Init()
 
 void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 {
-	if (item.file)
+	if (item.file) // Do a specific action if the file can be opened
 	{
 		if (item.file->fileType == File_Scene)
 		{
@@ -27,7 +27,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 			system(command.c_str());
 		}
 	}
-	else if (item.directory)
+	else if (item.directory) // Open the folder
 	{
 		Engine::SetCurrentProjectDirectory(item.directory);
 		Engine::SetSelectedFileReference(nullptr);
@@ -36,12 +36,14 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 
 void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex)
 {
+	//Get name
 	std::string itemName;
 	if (isFile)
 		itemName = item.file->file->GetFileName();
 	else
 		itemName = item.directory->GetFolderName();
 
+	// Set item table position
 	if (currentCol == 0)
 		ImGui::TableNextRow();
 	ImGui::TableSetColumnIndex(currentCol);
@@ -49,8 +51,9 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	currentCol++;
 	currentCol %= colCount;
 
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
+	// Set style
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 
 	ImGui::BeginGroup();
@@ -58,61 +61,13 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	int availWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
-	std::shared_ptr<Texture> tex = EditorUI::icons[Icon_File];
-	if (!isFile)
-	{
-		tex = EditorUI::icons[Icon_Folder];
-	}
-	else
-	{
-		int fileType = item.file->fileType;
-		if (fileType == File_Texture)
-		{
-			tex = std::dynamic_pointer_cast<Texture>(item.file);
-			if (tex->GetTextureId() == 0)
-			{
-				tex = EditorUI::icons[Icon_Image];
-			}
-		}
-		else if (fileType == File_Scene)
-		{
-			tex = EditorUI::icons[Icon_Scene];
-		}
-		else if (fileType == File_Code)
-		{
-			if (std::dynamic_pointer_cast<CodeFile>(item.file)->GetIsHeader())
-				tex = EditorUI::icons[Icon_Header];
-			else
-				tex = EditorUI::icons[Icon_Code];
-		}
-		else if (fileType == File_Mesh)
-		{
-			tex = EditorUI::icons[Icon_Mesh];
-		}
-		else if (fileType == File_Audio)
-		{
-			tex = EditorUI::icons[Icon_Audio];
-		}
-		else if (fileType == File_Skybox)
-		{
-			tex = EditorUI::icons[Icon_Sky];
-		}
-		else if (fileType == File_Font)
-		{
-			tex = EditorUI::icons[Icon_Font];
-		}
-		else if (fileType == File_Material)
-		{
-			tex = EditorUI::icons[Icon_Material];
-		}
-		else if (fileType == File_Shader)
-		{
-			tex = EditorUI::icons[Icon_Shader];
-		}
-	}
+	std::shared_ptr<Texture> iconTexture = GetItemIcon(item, isFile);
+
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
-	Engine::renderer->BindTexture(tex);
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)tex->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	Engine::renderer->BindTexture(iconTexture);
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	
+	// Create an unique popupid
 	std::string popupId = "RightClick";
 	if (item.file)
 	{
@@ -123,6 +78,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		popupId += item.directory->GetFolderName();
 	}
 	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
+
 	bool hovered = ImGui::IsItemHovered();
 	if (hovered)
 	{
@@ -175,17 +131,8 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 	ImGui::EndGroup();
 
-	if (isFile)
-	{
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			std::string payloadName = "Files" + std::to_string(item.file->fileType);
-			ImGui::SetDragDropPayload(payloadName.c_str(), item.file.get(), sizeof(FileReference));
-			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)tex->GetTextureId(), ImVec2(iconSize, iconSize));
-			ImGui::TextWrapped(itemName.c_str());
-			ImGui::EndDragDropSource();
-		}
-	}
+	CheckItemDrag(item, isFile, iconTexture, iconSize, itemName);
+
 	ImGui::PopStyleColor(3);
 }
 
@@ -295,6 +242,79 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		ImGui::EndPopup();
 	}
 	return state;
+}
+
+void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, int iconSize, const std::string& itemName)
+{
+	if (isFile)
+	{
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			std::string payloadName = "Files" + std::to_string(fileExplorerItem.file->fileType);
+			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
+			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
+			ImGui::TextWrapped(itemName.c_str());
+			ImGui::EndDragDropSource();
+		}
+	}
+}
+
+std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile)
+{
+	// Get item icon
+	std::shared_ptr<Texture> tex = EditorUI::icons[Icon_File];
+	if (!isFile)
+	{
+		tex = EditorUI::icons[Icon_Folder];
+	}
+	else
+	{
+		int fileType = fileExplorerItem.file->fileType;
+		if (fileType == File_Texture)
+		{
+			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
+			if (tex->GetTextureId() == 0)
+			{
+				tex = EditorUI::icons[Icon_Image];
+			}
+		}
+		else if (fileType == File_Scene)
+		{
+			tex = EditorUI::icons[Icon_Scene];
+		}
+		else if (fileType == File_Code)
+		{
+			if (std::dynamic_pointer_cast<CodeFile>(fileExplorerItem.file)->GetIsHeader())
+				tex = EditorUI::icons[Icon_Header];
+			else
+				tex = EditorUI::icons[Icon_Code];
+		}
+		else if (fileType == File_Mesh)
+		{
+			tex = EditorUI::icons[Icon_Mesh];
+		}
+		else if (fileType == File_Audio)
+		{
+			tex = EditorUI::icons[Icon_Audio];
+		}
+		else if (fileType == File_Skybox)
+		{
+			tex = EditorUI::icons[Icon_Sky];
+		}
+		else if (fileType == File_Font)
+		{
+			tex = EditorUI::icons[Icon_Font];
+		}
+		else if (fileType == File_Material)
+		{
+			tex = EditorUI::icons[Icon_Material];
+		}
+		else if (fileType == File_Shader)
+		{
+			tex = EditorUI::icons[Icon_Shader];
+		}
+	}
+	return tex;
 }
 
 void FileExplorerMenu::Draw()

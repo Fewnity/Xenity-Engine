@@ -16,7 +16,7 @@ void ProjectSettingsMenu::Draw()
 
 	if (ImGui::Button("Save"))
 	{
-		ProjectManager::SaveProjectSettigs();
+		ProjectManager::SaveProjectSettings();
 	}
 
 	ImGui::End();

@@ -134,7 +134,7 @@ void ProjectManager::FindAllProjectFiles()
 		fileWithoutMeta[i]->SetUniqueId(id);
 	}
 
-
+	// Fill projectFilesIds
 	for (auto& kv : compatibleFiles)
 	{
 		FileAndPath fileAndPath = FileAndPath();
@@ -143,11 +143,13 @@ void ProjectManager::FindAllProjectFiles()
 		projectFilesIds[kv.first->GetUniqueId()] = fileAndPath;
 	}
 
+	// Create files references
 	for (const auto& kv : projectFilesIds)
 	{
 		CreateFilReference(kv.second.path, kv.first);
 	}
 
+	// Check if a file has changed or has been deleted
 	for (const auto& kv : projectFilesIds)
 	{
 		bool contains = oldProjectFilesIds.contains(kv.first);
@@ -161,22 +163,21 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
+	// Update file or delete files references
 	for (const auto& kv : oldProjectFilesIds)
 	{
 		if (kv.second.hasChanged)
 		{
 			GetFileReferenceById(kv.first)->file = projectFilesIds[kv.first].file;
-			Debug::Print("File renamed: " + std::to_string(kv.first));
 		}
 		else if (kv.second.hasBeenDeleted)
 		{
 			AssetManager::ForceDeleteFileReference(GetFileReferenceById(kv.first));
-			Debug::Print("File not found: " + std::to_string(kv.first));
 		}
 	}
 
-
 #if defined(EDITOR)
+	// Get all project directories and open one
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
 	ProjectDirectory* lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
 	if (lastOpenedDir)
@@ -214,6 +215,7 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory
 
 	for (auto& kv : ProjectManager::projectFilesIds)
 	{
+		// Check if this file is in this folder
 		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
 		{
 			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
@@ -233,6 +235,7 @@ FileType ProjectManager::GetFileType(std::string extension)
 {
 	FileType fileType = File_Other;
 
+	// Replace uppercase letters by lowercase letters
 	int extLen = extension.size();
 	for (int i = 1; i < extLen; i++)
 	{
@@ -298,7 +301,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	LoadProjectSettings();
 #if defined(EDITOR)
-	SaveProjectSettigs();
+	SaveProjectSettings();
 #endif
 
 	// Load dynamic library and create game
@@ -410,17 +413,24 @@ void ProjectManager::LoadProjectSettings()
 	}
 }
 
-void ProjectManager::SaveProjectSettigs()
+void ProjectManager::SaveProjectSettings()
 {
-	FileSystem::fileSystem->DeleteFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
+	FileSystem::fileSystem->DeleteFile(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection());
 
-	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
-	projectFile->Open(true);
-	projectFile->Write(projectData.dump(0));
-	projectFile->Close();
+	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
+	if (projectFile->Open(true))
+	{
+		projectFile->Write(projectData.dump(0));
+		projectFile->Close();
+	}
+	else
+	{
+		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path);
+	}
 }
 
 void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
@@ -431,9 +441,15 @@ void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + META_EXTENSION);
-	metaFile->Open(true);
-	metaFile->Write(metaData.dump(0));
-	metaFile->Close();
+	if (metaFile->Open(true))
+	{
+		metaFile->Write(metaData.dump(0));
+		metaFile->Close();
+	}
+	else
+	{
+		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + fileReference->file->GetPath());
+	}
 }
 
 std::vector<ProjectListItem> ProjectManager::GetProjectsList()
@@ -443,23 +459,23 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	bool isOpen = file->Open(false);
 	if (isOpen)
 	{
-		std::string projectFileString = file->ReadAll();
+		const std::string projectFileString = file->ReadAll();
 		if (!projectFileString.empty())
 		{
-			json j;
-			j = json::parse(projectFileString);
+			json j = json::parse(projectFileString);
 
 			int projectCount = j.size();
 			for (int i = 0; i < projectCount; i++)
 			{
+				// Get project informations (name and path)
 				ProjectListItem projectItem;
 				projectItem.name = j[i]["name"];
 				projectItem.path = j[i]["path"];
 				projects.push_back(projectItem);
 			}
 		}
+		file->Close();
 	}
-	file->Close();
 	return projects;
 }
 
@@ -474,15 +490,22 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 	FileSystem::fileSystem->DeleteFile(PROJECTS_LIST_FILE);
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	file->Open(true);
-	file->Write(j.dump(3));
-	file->Close();
+	if (file->Open(true))
+	{
+		file->Write(j.dump(3));
+		file->Close();
+	}
+	else
+	{
+		Debug::PrintError(std::string("[ProjectManager::SaveProjectsList] Cannot save projects list: ") + PROJECTS_LIST_FILE);
+	}
 }
 
 std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, int id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+
 	FileType type = GetFileType(file->GetFileExtension());
 	switch (type)
 	{
@@ -515,6 +538,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 		break;
 
 	case File_Other:
+		// Do nothing
 		break;
 	}
 
@@ -533,26 +557,33 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 
 void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 {
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + META_EXTENSION);
+	const std::string path = fileReference->file->GetPath() + META_EXTENSION;
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->CheckIfExist())
 	{
 		std::string jsonString = "";
-		metaFile->Open(true);
-		jsonString = metaFile->ReadAll();
-		metaFile->Close();
-
-		json metaData;
-		try
+		if (metaFile->Open(true))
 		{
-			metaData = json::parse(jsonString);
-		}
-		catch (const std::exception&)
-		{
-			Debug::PrintError("Meta file error");
-			return;
-		}
+			jsonString = metaFile->ReadAll();
+			metaFile->Close();
 
-		ReflectionUtils::JsonToMap(metaData, fileReference->GetMetaReflection());
+			json metaData;
+			try
+			{
+				metaData = json::parse(jsonString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error");
+				return;
+			}
+
+			ReflectionUtils::JsonToMap(metaData, fileReference->GetMetaReflection());
+		}
+		else
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path);
+		}
 	}
 }
 

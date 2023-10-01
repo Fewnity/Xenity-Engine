@@ -18,6 +18,13 @@ public:
 	void Init() override;
 	void Draw() override;
 private:
+	void DrawTitle();
+	void DrawProjectPath();
+	bool DrawSelectFolderButton();
+	bool DrawProjectNameInput();
+	void DrawError();
+	void DrawCreateProjectButton();
+
 	std::string projectName;
 	std::string projectParentDir;
 	CreateProjectError createProjectError = NO_ERROR;

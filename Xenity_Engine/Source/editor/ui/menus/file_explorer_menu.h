@@ -6,6 +6,7 @@
 
 class FileReference;
 class ProjectDirectory;
+class Texture;
 
 class FileExplorerItem
 {
@@ -22,6 +23,10 @@ public:
 private:
 	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex);
 	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex);
+	void CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, int iconSize, const std::string& itemName);
+
+	std::shared_ptr<Texture> GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile);
+
 	bool fileHovered = false;
 	void OpenItem(FileExplorerItem& item);
 	std::string renamingString = "";

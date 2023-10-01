@@ -8,54 +8,59 @@
 
 #include "stb_vorbis.c"
 
-void AudioClipStream::OpenStream(const std::string& filePath)
+void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 {
-	Debug::Print("Loading audio clip: " + filePath);
-	std::string lowerExt = filePath.substr(filePath.size() - 3);
+	const std::string path = file->GetPath();
+	Debug::Print("Loading audio clip: " + path);
+
+	// To lower extention
+	std::string lowerExt = file->GetFileExtension().substr(1);
 	int pathSize = lowerExt.size();
 	for (int i = 0; i < pathSize; i++)
 	{
 		lowerExt[i] = tolower(lowerExt[i]);
 	}
+
 	if (lowerExt == "wav")
 	{
 		wav = new drwav();
-		if (!drwav_init_file(wav, filePath.c_str(), NULL))
+		if (!drwav_init_file(wav, path.c_str(), NULL))
 		{
 			// Error opening WAV file.
-			Debug::PrintError("AUDIO ERROR" + filePath);
+			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path);
+			delete wav;
 		}
 		else
 		{
 			type = Wav;
+			// Get informations
 			channelCount = wav->channels;
+			sampleCount = wav->totalPCMFrameCount;
 			Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate));
 		}
 	}
 	else if (lowerExt == "mp3")
 	{
 		mp3 = new drmp3();
-		if (!drmp3_init_file(mp3, filePath.c_str(), NULL))
+		if (!drmp3_init_file(mp3, path.c_str(), NULL))
 		{
 			// Error opening MP3 file.
-			Debug::PrintError("AUDIO ERROR: " + filePath);
+			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path);
+			delete mp3;
 		}
 		else
 		{
 			type = Mp3;
+			// Get informations
 			channelCount = mp3->channels;
+			sampleCount = drmp3_get_pcm_frame_count(mp3);
 			Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate));
 		}
 	}
 	else
 	{
-		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + filePath);
+		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + path);
 	}
-
-	if (type == Mp3)
-		sampleCount = drmp3_get_pcm_frame_count(mp3);
-	else if (type == Wav)
-		sampleCount = wav->totalPCMFrameCount;
 
 	//////////////////////////////////// OGG
 	// int channels, sample_rate;

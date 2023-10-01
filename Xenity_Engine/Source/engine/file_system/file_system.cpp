@@ -7,16 +7,15 @@
 #include "../engine_settings.h"
 #include "../debug/debug.h"
 #include <filesystem>
+
 #if defined(__PSP__)
 #include <dirent.h>
 #include <sys/stat.h>
-#endif
-#if defined(__vita__)
+#elif defined(__vita__)
 #include <psp2/io/stat.h>
-#endif
-
 #define PSVITA_PATH R"(ux0:data\xenity_engine\)"
 #define PSVITA_BASE_DIR "ux0:"
+#endif
 
 FileSystem* FileSystem::fileSystem = nullptr;
 
@@ -176,11 +175,12 @@ bool File::Open(bool createFileIfNotFound)
 	{
 		if (createFileIfNotFound)
 		{
+			// Try to create the file
 			params = params | std::fstream::trunc;
 			file.open(path, params);
 			if (!file.is_open())
 			{
-				Debug::PrintError("Fail while creating and opening and creating file: " + path);
+				Debug::PrintError("[File::Open] Fail while creating and opening and creating file: " + path);
 			}
 			else
 			{
@@ -189,7 +189,7 @@ bool File::Open(bool createFileIfNotFound)
 		}
 		else
 		{
-			Debug::Print("Fail while opening file or file not found: " + path);
+			Debug::Print("[File::Open] Fail while opening file or file not found: " + path);
 		}
 	}
 	else
@@ -361,7 +361,7 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 			continue;
 		}
 
-		if (S_ISREG(statbuf.st_mode))
+		if (S_ISREG(statbuf.st_mode)) // If the entry is a file
 		{
 			std::shared_ptr<File> newFile = nullptr;
 			try
@@ -373,7 +373,7 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 			{
 			}
 		}
-		else if (S_ISDIR(statbuf.st_mode))
+		else if (S_ISDIR(statbuf.st_mode)) // If the entry is a folder
 		{
 			Directory* newDirectory = nullptr;
 			try

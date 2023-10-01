@@ -10,9 +10,9 @@ void ClassRegistry::AddComponentClass(const std::string& name, std::function<std
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, std::shared_ptr<GameObject> gameObject)
 {
-	if (nameToComponent.find(name) != nameToComponent.end())
+	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{
-		return nameToComponent[name](gameObject);
+		return nameToComponent[name](gameObject); // Call the function to add the component to the gameObject
 	}
 	else
 	{

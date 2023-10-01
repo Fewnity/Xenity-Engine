@@ -29,7 +29,7 @@ void Debug::PrintError(const std::string& text)
 	std::string textWithColor = "\033[31m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	debugText += finalText;
+	debugText += textWithoutColor;
 }
 
 /**
@@ -46,7 +46,7 @@ void Debug::PrintWarning(const std::string& text)
 	std::string textWithColor = "\033[33m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	debugText += finalText;
+	debugText += textWithoutColor;
 }
 
 void Debug::PrintInConsole(const std::string& text)
@@ -79,7 +79,7 @@ void Debug::Print(const std::string& text)
 	std::string newString = "\033[37m" + finalText;
 	PrintInConsole(newString);
 	PrintInFile(finalText);
-	//debugText += finalText;
+	//debugText += finalText; // Disable because cause crashes, why? Maybe thread?
 }
 
 void Debug::PrintInOnlineConsole(const std::string& text)
