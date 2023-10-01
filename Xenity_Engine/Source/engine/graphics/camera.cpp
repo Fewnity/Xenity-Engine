@@ -326,13 +326,7 @@ void Camera::BindFrameBuffer()
 void Camera::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	auto transform = GetTransform();
-	float distance = Vector3::Distance(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetPosition());
-	float alpha = 1;
-	if (distance <= 1.3f)
-		alpha = distance - 0.3f;
-
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBAFloat(1, 1, 1, alpha), Engine::unlitMaterial);
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
 
 	if (Engine::selectedGameObject.lock() && Engine::selectedGameObject.lock() == GetGameObject())
 	{
