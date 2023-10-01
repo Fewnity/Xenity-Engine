@@ -42,11 +42,10 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 	if (!camera)
 		return;
 
-
 	if (!Engine::UseOpenGLFixedFunctions)
 	{
 		material->Use();
-		Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scale);
+		Graphics::currentShader->SetShaderModel(position, rotation, scale);
 	}
 
 	meshBenchmark->Start();
@@ -54,7 +53,6 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 #if defined(__PSP__)
 	if (Graphics::needUpdateCamera)
 	{
-		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
 	}
@@ -90,26 +88,23 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 	if (!camera)
 		return;
 
-	if (!Engine::UseOpenGLFixedFunctions)
+	if (!Engine::UseOpenGLFixedFunctions) 
+	{
 		material->Use();
+		Graphics::currentShader->SetShaderModel(transform->transformationMatrix); //----------------------------
+	}
 
 	meshBenchmark->Start();
 	meshCameraBenchmark->Start();
 #if defined(__PSP__)
 	if (Graphics::needUpdateCamera)
 	{
-		camera->UpdateProjection();
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
 	}
 #else
-	if (!Engine::UseOpenGLFixedFunctions)
-	{
-		Graphics::currentShader->SetShaderModel(transform->transformationMatrix);
-	}
-	else
+	if (Engine::UseOpenGLFixedFunctions)
 		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-
 #endif
 	meshCameraBenchmark->Stop();
 
@@ -118,18 +113,21 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 
 	if (Engine::UseOpenGLFixedFunctions)
 	{
+		//----------------------------
 #if defined(__PSP__)
 		Vector3 position = transform->GetPosition();
 		Vector3 rotation = transform->GetRotation();
-		Engine::renderer->SetTransform(position, rotation, scale, true);
+		//Engine::renderer->SetTransform(position, rotation, scale, true);
+		Engine::renderer->SetTransform(transform->transformationMatrix);
 #else
 		Engine::renderer->SetTransform(transform->transformationMatrix);
 #endif
+		//----------------------------
 	}
 
 	meshTransformBenchmark->Stop();
-	// Set draw settings
 
+	// Set draw settings
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 
