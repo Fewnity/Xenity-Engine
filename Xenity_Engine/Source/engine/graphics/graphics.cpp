@@ -265,6 +265,12 @@ void Graphics::OrderDrawables()
 	orderBenchmark->Stop();
 }
 
+void Graphics::DeleteAllDrawables()
+{
+	Graphics::orderedIDrawable.clear();
+	iDrawablesCount = 0;
+}
+
 void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);

@@ -23,7 +23,6 @@ use shared folder and fix crash when deleting folder
 Fix material crash on play
 Check if material is null
 Material::SetAttribut check emplace, try_emplace?
-Set const on functions
 Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
 

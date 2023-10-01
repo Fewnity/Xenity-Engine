@@ -270,7 +270,7 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 void SceneManager::EmptyScene()
 {
 	openedScene.reset();
-	Graphics::orderedIDrawable.clear();
+	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();
 	int cameraCount = Graphics::cameras.size();
 	for (int i = 0; i < cameraCount; i++)

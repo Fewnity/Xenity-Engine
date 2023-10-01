@@ -49,6 +49,8 @@ public:
 	*/
 	static void OrderDrawables();
 
+	static void DeleteAllDrawables();
+
 	/**
 	* Add a drawable
 	* @param drawableToAdd Drawable to add
