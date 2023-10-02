@@ -137,6 +137,11 @@ void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, std::
 	t.detach();
 }
 
+void Compiler::OnCompileEnd(CompileResult result)
+{
+	Editor::compilingMenu->ClosePopup();
+}
+
 void Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
@@ -156,24 +161,46 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		if (buildType == EditorHotReloading)
 		{
 			std::string engineLibPath = ENGINE_PATH + std::string("engine_editor.lib");
+
+			// Copy engine editor lib to the temp build folder
 			std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_editor.lib", std::filesystem::copy_options::overwrite_existing);
 
 			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity_editor.h"), tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
 		}
 		else
 		{
-			// Copy engine lib to the temp build folder
 			std::string engineLibPath = ENGINE_PATH + std::string("engine_game.lib");
-			std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_game.lib", std::filesystem::copy_options::overwrite_existing);
-
-			// Copy all DLLs to the export folder
 			std::string engineDllPath = ENGINE_PATH + std::string("engine_game.dll");
-			std::filesystem::copy_file(engineDllPath, exportPath + "engine_game.dll", std::filesystem::copy_options::overwrite_existing);
 			std::string sdlDllPath = ENGINE_PATH + std::string("SDL2.dll");
-			std::filesystem::copy_file(sdlDllPath, exportPath + "SDL2.dll", std::filesystem::copy_options::overwrite_existing);
 			std::string glfwDllPath = ENGINE_PATH + std::string("glfw3.dll");
-			std::filesystem::copy_file(glfwDllPath, exportPath + "glfw3.dll", std::filesystem::copy_options::overwrite_existing);
+
+			// Copy engine game lib to the temp build folder
+			try
+			{
+				std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_game.lib", std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[Compiler::CompileGame] Missing engine_game.lib at " + engineLibPath);
+				OnCompileEnd(ERROR_ENGINE_GAME_LIB_MISSING);
+				return;
+			}
+
+			try
+			{
+				// Copy all DLLs to the export folder
+				std::filesystem::copy_file(engineDllPath, exportPath + "engine_game.dll", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(sdlDllPath, exportPath + "SDL2.dll", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(glfwDllPath, exportPath + "glfw3.dll", std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[Compiler::CompileGame] Missing one of these Dlls at " + engineDllPath + "\n" + sdlDllPath + "\n" + glfwDllPath);
+				OnCompileEnd(ERROR_LIB_DLLS_MISSING);
+				return;
+			}
 
 			// Copy engine headers to the temp build folder
 			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
@@ -248,7 +275,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 	}
 
-	Editor::compilingMenu->ClosePopup();
+	OnCompileEnd(SUCCESS);
 }
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)

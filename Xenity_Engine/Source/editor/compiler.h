@@ -9,6 +9,16 @@ enum BuildType
 	BuildAndRunGame,
 };
 
+enum CompileResult
+{
+	SUCCESS,
+	ERROR_UNKNOWN,
+	ERROR_ENGINE_GAME_LIB_MISSING,
+	ERROR_ENGINE_EDITOR_LIB_MISSING,
+	ERROR_LIB_DLLS_MISSING,
+	ERROR_ENGINE_HEADERS
+};
+
 class Compiler
 {
 public:
@@ -34,6 +44,12 @@ private:
 	* @param exportPath Folder location for the build
 	*/
 	static void CompileGame(Platform platform, BuildType buildType, const std::string& exportPath);
+
+	/**
+	* To call when the compile function ends
+	* 
+	*/
+	static void OnCompileEnd(CompileResult result);
 
 	/**
 	* Compile the game code in WSL for PSP or PsVita
