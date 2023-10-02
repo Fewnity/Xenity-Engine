@@ -139,6 +139,35 @@ void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, std::
 
 void Compiler::OnCompileEnd(CompileResult result)
 {
+	switch (result)
+	{
+	case SUCCESS:
+		Debug::Print("Game compiled successfully!");
+		break;
+	case ERROR_UNKNOWN:
+		Debug::PrintError("Unable to compile");
+		break;
+	case ERROR_ENGINE_GAME_LIB_MISSING:
+		Debug::PrintError("[Compiler::CompileGame] Missing engine_game.lib");
+		break;
+	case ERROR_ENGINE_EDITOR_LIB_MISSING:
+		break;
+	case ERROR_LIB_DLLS_MISSING:
+		Debug::PrintError("[Compiler::CompileGame] Missing one of Dlls");
+		break;
+	case ERROR_ENGINE_HEADERS_COPY:
+		Debug::PrintError("[Compiler::CompileGame] Error when copying engine headers");
+		break;
+	case ERROR_GAME_CODE_COPY:
+		Debug::PrintError("[Compiler::CompileGame] Error when copying game's code");
+		break;
+	case ERROR_COMPILED_FILES_COPY:
+		Debug::PrintError("[Compiler::CompileGame] Error when copying compiled game's files");
+		break;
+	default:
+		Debug::PrintError("Unable to compile");
+		break;
+	}
 	Editor::compilingMenu->ClosePopup();
 }
 
@@ -183,48 +212,65 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[Compiler::CompileGame] Missing engine_game.lib at " + engineLibPath);
 				OnCompileEnd(ERROR_ENGINE_GAME_LIB_MISSING);
 				return;
 			}
 
+			// Copy all DLLs to the export folder
 			try
 			{
-				// Copy all DLLs to the export folder
 				std::filesystem::copy_file(engineDllPath, exportPath + "engine_game.dll", std::filesystem::copy_options::overwrite_existing);
 				std::filesystem::copy_file(sdlDllPath, exportPath + "SDL2.dll", std::filesystem::copy_options::overwrite_existing);
 				std::filesystem::copy_file(glfwDllPath, exportPath + "glfw3.dll", std::filesystem::copy_options::overwrite_existing);
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[Compiler::CompileGame] Missing one of these Dlls at " + engineDllPath + "\n" + sdlDllPath + "\n" + glfwDllPath);
 				OnCompileEnd(ERROR_LIB_DLLS_MISSING);
 				return;
 			}
 
 			// Copy engine headers to the temp build folder
-			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
-
-			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.cpp"), tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
-			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.h"), tempCompileFolderPath + "main.h", std::filesystem::copy_options::overwrite_existing);
-		}
-		std::filesystem::create_directory(tempCompileFolderPath + "source\\");
-
-		for (const auto& file : std::filesystem::directory_iterator(ProjectManager::GetAssetFolderPath()))
-		{
-			if (file.is_regular_file())
+			try
 			{
-				std::string ext = file.path().extension().string();
-				if (ext == ".h" || ext == ".hpp" || ext == ".c" || ext == ".cpp")
-				{
-					std::string path = file.path().string();
-					std::string fileName = file.path().filename().string();
-					std::filesystem::copy_file(path, tempCompileFolderPath + "source\\" + fileName, std::filesystem::copy_options::overwrite_existing);
-				}
+				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+
+				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.cpp"), tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.h"), tempCompileFolderPath + "main.h", std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (const std::exception&)
+			{
+				OnCompileEnd(ERROR_ENGINE_HEADERS_COPY);
+				return;
 			}
 		}
 
+		// Copy game code
+		try
+		{
+			std::filesystem::create_directory(tempCompileFolderPath + "source\\");
+
+			for (const auto& file : std::filesystem::directory_iterator(ProjectManager::GetAssetFolderPath()))
+			{
+				if (file.is_regular_file())
+				{
+					std::string ext = file.path().extension().string();
+					if (ext == ".h" || ext == ".hpp" || ext == ".c" || ext == ".cpp")
+					{
+						std::string path = file.path().string();
+						std::string fileName = file.path().filename().string();
+						std::filesystem::copy_file(path, tempCompileFolderPath + "source\\" + fileName, std::filesystem::copy_options::overwrite_existing);
+					}
+				}
+			}
+		}
+		catch (const std::exception&)
+		{
+			OnCompileEnd(ERROR_GAME_CODE_COPY);
+			return;
+		}
+
+		// Setup windows compileur command
 		std::string command;
 		command = GetStartCompilerCommand();
 		command += GetAddNextCommand();
@@ -240,20 +286,36 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		int buildResult = system(command.c_str());
 		if (buildResult == 0)
 		{
-			Debug::Print("Game compiled successfully!");
-			if (buildType == EditorHotReloading)
+			try
 			{
-				std::filesystem::copy_file(tempCompileFolderPath + "game_editor.dll", ProjectManager::GetProjectFolderPath() + "\\game_editor.dll", std::filesystem::copy_options::overwrite_existing);
+				if (buildType == EditorHotReloading)
+				{
+					std::filesystem::copy_file(tempCompileFolderPath + "game_editor.dll", ProjectManager::GetProjectFolderPath() + "\\game_editor.dll", std::filesystem::copy_options::overwrite_existing);
+				}
+				else
+				{
+					std::filesystem::copy_file(tempCompileFolderPath + ProjectManager::GetGameName() + ".exe", exportPath + ProjectManager::GetGameName() + ".exe", std::filesystem::copy_options::overwrite_existing);
+					std::filesystem::copy_file(tempCompileFolderPath + "game.dll", exportPath + "game.dll", std::filesystem::copy_options::overwrite_existing);
+					std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+					std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+				}
 			}
-			else
+			catch (const std::exception&)
 			{
-				std::filesystem::copy_file(tempCompileFolderPath + ProjectManager::GetGameName() + ".exe", exportPath + ProjectManager::GetGameName() + ".exe", std::filesystem::copy_options::overwrite_existing);
-				std::filesystem::copy_file(tempCompileFolderPath + "game.dll", exportPath + "game.dll", std::filesystem::copy_options::overwrite_existing);
-				std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-				std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-				std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+				OnCompileEnd(ERROR_COMPILED_FILES_COPY);
+				return;
 			}
-			std::filesystem::remove_all(tempCompileFolderPath);
+
+			// Delete temp compiler folder content
+			try
+			{
+				std::filesystem::remove_all(tempCompileFolderPath);
+			}
+			catch (const std::exception&)
+			{
+			}
+			
 			if (buildType == BuildAndRunGame)
 			{
 				auto t = std::thread(StartGame, platform, exportPath);
@@ -262,7 +324,8 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 		else
 		{
-			Debug::PrintError("Unable to compile : " + command);
+			OnCompileEnd(ERROR_UNKNOWN);
+			return;
 		}
 	}
 	else
