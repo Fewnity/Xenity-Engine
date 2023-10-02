@@ -9,6 +9,7 @@ void ProfilerMenu::Init()
 
 #define FPS_HISTORY_SIZE 400
 float fpsHistory[FPS_HISTORY_SIZE] = { 0 };
+bool counterInitialised = false;
 
 void ProfilerMenu::Draw()
 {
@@ -22,15 +23,32 @@ void ProfilerMenu::Draw()
 		lastFps = io.Framerate;
 	}
 
+	// If the counter history is empty, fill the counter with the current frame rate
+	if (!counterInitialised) 
+	{
+		counterInitialised = true;
+		for (int i = 0; i < FPS_HISTORY_SIZE; i++)
+		{
+			fpsHistory[i] = io.Framerate;
+		}
+	}
+
+	// Move history and make an average
+	float fpsAVG = 0;
 	for (int i = 0; i < FPS_HISTORY_SIZE - 1; i++)
 	{
+		fpsAVG += fpsHistory[i];
 		fpsHistory[i] = fpsHistory[i + 1];
 	}
+	fpsAVG /= FPS_HISTORY_SIZE - 1;
 	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
 
 	ImGui::Begin("Debug");
 	std::string fpsText = "FPS: " + std::to_string(lastFps) + "###FPS_COUNTER";
 	ImGui::PlotLines(fpsText.c_str(), fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
+
+	ImGui::Text("FPS average: %0.2f, average frame time %0.2fms", fpsAVG, (1 / fpsAVG) * 1000);
+
 	ImGui::Text("DrawCall Count: %d", Performance::GetDrawCallCount());
 	ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
 
@@ -54,7 +72,7 @@ void ProfilerMenu::Draw()
 						if (kv2.first == kv.first)
 							continue;
 						ImGui::SetCursorPosX(20);
-						ImGui::Text("%s: %ld, avg %ld", kv2.first.c_str(), kv2.second->GetValue(), kv2.second->average);
+						ImGui::Text("[%s] AVG: %ld; %ld", kv2.first.c_str(), kv2.second->average, kv2.second->GetValue());
 					}
 				}
 			}
