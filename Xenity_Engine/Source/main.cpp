@@ -15,7 +15,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 --- To do quick:
 Change Opened scene on save
 Texture filter system
-Fix psp set transform with matrix
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
