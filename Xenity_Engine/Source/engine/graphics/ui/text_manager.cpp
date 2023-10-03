@@ -151,8 +151,12 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 
 	if (auto cameraLock = Graphics::usedCamera.lock())
 	{
-		if (!Engine::UseOpenGLFixedFunctions)
+		if (!Engine::UseOpenGLFixedFunctions) 
+		{
+			if (!material)
+				return;
 			material->Use();
+		}
 
 		textBenchmark->Start();
 

@@ -90,6 +90,9 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 
 	if (!Engine::UseOpenGLFixedFunctions) 
 	{
+		if (!material)
+			return;
+
 		material->Use();
 		Graphics::currentShader->SetShaderModel(transform->transformationMatrix); //----------------------------
 	}
