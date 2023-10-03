@@ -381,6 +381,7 @@ void Compiler::HotReloadGame()
 	else
 	{
 		Debug::PrintError("Game compilation failed");
+		SceneManager::RestoreSceneHotReloading();
 	}
 #endif
 }
