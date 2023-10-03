@@ -255,7 +255,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 				if (file.is_regular_file())
 				{
 					std::string ext = file.path().extension().string();
-					if (ext == ".h" || ext == ".hpp" || ext == ".c" || ext == ".cpp")
+					if (ext == ".h" || ext == ".cpp")
 					{
 						std::string path = file.path().string();
 						std::string fileName = file.path().filename().string();
