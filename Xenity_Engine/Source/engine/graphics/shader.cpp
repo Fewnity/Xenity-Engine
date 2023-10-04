@@ -57,6 +57,25 @@ std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
 	return reflectedVariables;
 }
 
+bool Shader::FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition) 
+{
+	bool found = false;
+	if (textToSearchIn[index] == textToFind[0] && textToSearchIn[index + 1] == textToFind[1])
+	{
+		startPosition = index;
+		for (int j = index + 1; j < textSize; j++)
+		{
+			if (textToSearchIn[j] == '}')
+			{
+				endPosition = j + 2;
+				found = true;
+				break;
+			}
+		}
+	}
+	return found;
+}
+
 void Shader::LoadFileReference()
 {
 	if (!isLoaded)
@@ -80,7 +99,14 @@ void Shader::LoadFileReference()
 
 			for (int i = 0; i < textSize - 1; i++)
 			{
-				if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
+				if (FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos)) 
+				{
+
+				}else if(FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
+				{
+
+				}
+				/*if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
 				{
 					fragmentPos = i;
 					for (int j = i + 1; j < textSize; j++)
@@ -103,7 +129,7 @@ void Shader::LoadFileReference()
 							break;
 						}
 					}
-				}
+				}*/
 			}
 
 			if (vertexPos != -1 && fragmentPos != -1)

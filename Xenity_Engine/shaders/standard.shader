@@ -1,4 +1,4 @@
-{vertex}
+//----------------------------------------------------- {vertex}
 
 #version 330
 
@@ -24,7 +24,7 @@ void main()
 	Normal = mat3(transpose(inverse(model))) * normal; //TODO Check an object with a bigger scale and with a 	offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
 }
 
-{fragment}
+//----------------------------------------------------- {fragment}
 
 #version 330
 
