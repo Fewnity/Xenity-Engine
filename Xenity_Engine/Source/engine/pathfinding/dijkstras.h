@@ -8,9 +8,7 @@
 
 #pragma once
 #include <vector>
-#include "../game_elements/gameobject.h"
-#include "../vectors/vector2.h"
-
+#include <string>
 
 class API Dijkstras
 {
