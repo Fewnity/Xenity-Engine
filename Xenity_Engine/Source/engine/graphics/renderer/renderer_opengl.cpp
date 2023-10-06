@@ -42,7 +42,7 @@ int RendererOpengl::Init()
 	//result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_NONE);
 
 	// Enabling V-Sync
-	//vglWaitVblankStart(GL_TRUE);
+	//vglWaitVblankStart(GL_FALSE);
 
 	if (result == 0)
 		result = 1;
@@ -477,7 +477,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			if (!meshData->hasUv)
 			{
 				stride = sizeof(VertexNoColorNoUv);
-				const VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
+				//const VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
 				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
@@ -488,7 +488,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 				if (meshData->hasColor)
 				{
 					stride = sizeof(Vertex);
-					const Vertex* data = (Vertex*)subMesh->data;
+					//const Vertex* data = (Vertex*)subMesh->data;
 					/*glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					glColorPointer(3, GL_FLOAT, stride, &data[0].r);
 					glVertexPointer(3, GL_FLOAT, stride, &data[0].x);*/
@@ -501,7 +501,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 				else
 				{
 					stride = sizeof(VertexNoColor);
-					const VertexNoColor* data = (VertexNoColor*)subMesh->data;
+					//const VertexNoColor* data = (VertexNoColor*)subMesh->data;
 					//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
@@ -527,7 +527,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			if (!meshData->hasUv)
 			{
 				stride = sizeof(VertexNormalsNoColorNoUv);
-				const VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
+				//const VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;
 				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
@@ -538,7 +538,7 @@ void RendererOpengl::DrawMeshData(std::shared_ptr <MeshData> meshData, std::vect
 			else
 			{
 				stride = sizeof(VertexNormalsNoColor);
-				const VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
+				//const VertexNormalsNoColor* data = (VertexNormalsNoColor*)subMesh->data;
 				//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 				//glNormalPointer(GL_FLOAT, stride, &data[0].normX);
 				//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
