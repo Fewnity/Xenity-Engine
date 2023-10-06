@@ -37,8 +37,8 @@ void FreeMove::Update()
 	fwd = InputSystem::leftJoystick.y;
 	side = InputSystem::leftJoystick.x;
 
-	rot.x += InputSystem::rightJoystick.y;
-	rot.y += InputSystem::rightJoystick.x;
+	rot.x += InputSystem::rightJoystick.y * Time::GetDeltaTime() * 60;
+	rot.y += InputSystem::rightJoystick.x * Time::GetDeltaTime() * 60;
 #endif
 
 
