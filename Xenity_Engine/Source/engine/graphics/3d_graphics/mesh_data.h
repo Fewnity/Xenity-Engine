@@ -162,4 +162,5 @@ public:
 	bool isValid = true;
 private:
 	void Unload();
+	void FreeMeshData(bool deleteSubMeshes);
 };
