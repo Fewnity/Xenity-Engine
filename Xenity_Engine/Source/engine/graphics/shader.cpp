@@ -60,7 +60,19 @@ std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
 bool Shader::FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition) 
 {
 	bool found = false;
-	if (textToSearchIn[index] == textToFind[0] && textToSearchIn[index + 1] == textToFind[1])
+	int textToFindSize = textToFind.size();
+	bool notEquals = false;
+
+	for (int i = 0; i < textToFindSize; i++)
+	{
+		if (textToSearchIn[index + i] != textToFind[i]) 
+		{
+			notEquals = true;
+			break;
+		}
+	}
+
+	if (!notEquals)
 	{
 		startPosition = index;
 		for (int j = index + 1; j < textSize; j++)
@@ -96,45 +108,57 @@ void Shader::LoadFileReference()
 
 			int vertexPos = -1;
 			int vertexStartPos = -1;
+			bool foundPlatform = false;
+			Platform currentPlatform = Platform::P_Windows;
+#if defined(__vita__)
+			currentPlatform = Platform::P_PsVita;
+#endif
+			int unused = 0;
+			int end = 0;
+			bool foundEnd = false;
 
 			for (int i = 0; i < textSize - 1; i++)
 			{
-				if (FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos)) 
+				if (FindTag(shaderText, i, textSize, "{pc}", unused, end))
 				{
-
-				}else if(FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
-				{
-
-				}
-				/*if (shaderText[i] == '{' && shaderText[i + 1] == 'f')
-				{
-					fragmentPos = i;
-					for (int j = i + 1; j < textSize; j++)
+					if (foundPlatform)
 					{
-						if (shaderText[j] == '}')
-						{
-							fragmentStartPos = j + 2;
-							break;
-						}
+						foundEnd = true;
+						break;
+					}
+					if (currentPlatform == Platform::P_Windows) 
+					{
+						foundPlatform = true;
 					}
 				}
-				else if (shaderText[i] == '{' && shaderText[i + 1] == 'v')
+				else if (FindTag(shaderText, i, textSize, "{psvita}", unused, end))
 				{
-					for (int j = i + 1; j < textSize; j++)
+					if (foundPlatform) 
 					{
-						vertexPos = i;
-						if (shaderText[j] == '}')
-						{
-							vertexStartPos = j + 2;
-							break;
-						}
+						foundEnd = true;
+						break;
 					}
-				}*/
+					if (currentPlatform == Platform::P_PsVita)
+					{
+						foundPlatform = true;
+					}
+				}
+				else if (foundPlatform && FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
+				{
+				}
+				else if(foundPlatform && FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
+				{
+				}
 			}
 
 			if (vertexPos != -1 && fragmentPos != -1)
 			{
-				std::string fragShaderData = shaderText.substr(fragmentStartPos);
+				std::string fragShaderData;
+				if(foundEnd)
+					fragShaderData = shaderText.substr(fragmentStartPos, end - fragmentStartPos);
+				else
+					fragShaderData = shaderText.substr(fragmentStartPos);
+
 				std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
 
 				LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
