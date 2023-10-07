@@ -738,10 +738,10 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 			auto light = AssetManager::GetLight(i).lock();
 			if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 			{
-				Vector3 lightRotation = light->GetTransform()->GetRotation();
-				Vector3 cameraPosition = cameraTransform->GetPosition();
 				if (light->type == Light::Directional)
 				{
+					Vector3 lightRotation = light->GetTransform()->GetRotation();
+					Vector3 cameraPosition = cameraTransform->GetPosition();
 					Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
 					SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->intensity, light->color, light->type, light->quadratic);
 				}

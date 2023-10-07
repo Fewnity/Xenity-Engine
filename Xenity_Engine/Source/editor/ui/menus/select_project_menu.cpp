@@ -49,7 +49,7 @@ void SelectProjectMenu::Draw()
 	if (ImGui::Button("Load project"))
 	{
 		std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
-		if (projectPath != "")
+		if (!projectPath.empty())
 		{
 			if (ProjectManager::LoadProject(projectPath))
 			{

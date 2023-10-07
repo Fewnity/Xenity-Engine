@@ -435,12 +435,13 @@ void ProjectManager::SaveProjectSettings()
 
 void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 {
-	FileSystem::fileSystem->DeleteFile(fileReference->file->GetPath() + META_EXTENSION);
+	std::shared_ptr<File> file = fileReference->file;
+	FileSystem::fileSystem->DeleteFile(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
 	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
 
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(fileReference->file->GetPath() + META_EXTENSION);
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	if (metaFile->Open(true))
 	{
 		metaFile->Write(metaData.dump(0));
@@ -448,7 +449,7 @@ void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
 	}
 	else
 	{
-		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + fileReference->file->GetPath());
+		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + file->GetPath());
 	}
 }
 
@@ -561,9 +562,9 @@ void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->CheckIfExist())
 	{
-		std::string jsonString = "";
 		if (metaFile->Open(true))
 		{
+			std::string jsonString = "";
 			jsonString = metaFile->ReadAll();
 			metaFile->Close();
 

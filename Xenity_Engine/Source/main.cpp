@@ -19,11 +19,12 @@ Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 use shared folder and fix crash when deleting folder
-Fix material crash on play
-Check if material is null
 Material::SetAttribut check emplace, try_emplace?
 Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
+Fix camera when multisampled is disabled on windows build
+Add close function for sockets
+Add network profiler
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

@@ -237,9 +237,11 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 		{
 			newGameObject->SetParent(goToDuplicate->parent);
 		}
-		newGameObject->GetTransform()->SetLocalPosition(goToDuplicate->GetTransform()->GetLocalPosition());
-		newGameObject->GetTransform()->SetLocalRotation(goToDuplicate->GetTransform()->GetLocalRotation());
-		newGameObject->GetTransform()->SetLocalScale(goToDuplicate->GetTransform()->GetLocalScale());
+		std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
+		std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
+		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
+		newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
+		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 
 		// Duplicate all components
 		int componentCount = goToDuplicate->components.size();

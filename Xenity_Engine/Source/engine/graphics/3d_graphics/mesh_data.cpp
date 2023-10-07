@@ -172,19 +172,18 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				free(subMesh->indices);
 				subMesh->indices = nullptr;
 			}
-		}
-
-		if (deleteSubMeshes) 
-		{
-			if(subMesh->VBO != 0)
-				Engine::renderer->DeleteBuffer(subMesh->VBO);
-			if (subMesh->EBO != 0)
-				Engine::renderer->DeleteBuffer(subMesh->EBO);
-			delete subMesh;
+			if (deleteSubMeshes)
+			{
+				if (subMesh->VBO != 0)
+					Engine::renderer->DeleteBuffer(subMesh->VBO);
+				if (subMesh->EBO != 0)
+					Engine::renderer->DeleteBuffer(subMesh->EBO);
+				delete subMesh;
+			}
 		}
 	}
 
-	if (deleteSubMeshes) 
+	if (deleteSubMeshes)
 	{
 		subMeshes.clear();
 		subMeshCount = 0;
@@ -212,7 +211,7 @@ void MeshData::LoadFileReference()
 		Engine::threadLoadingMutex.lock();
 		Engine::threadLoadedFiles.push_back(shared_from_this());
 		Engine::threadLoadingMutex.unlock();
-		
+
 		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 		threadLoading.detach();
 #else
@@ -228,7 +227,7 @@ void MeshData::OnLoadFileReferenceFinished()
 	for (int i = 0; i < subMeshCount; i++)
 	{
 		SubMesh* sub = subMeshes[i];
-		if(sub->VBO == 0)
+		if (sub->VBO == 0)
 			sub->VBO = Engine::renderer->CreateBuffer();
 		if (sub->EBO == 0)
 			sub->EBO = Engine::renderer->CreateBuffer();
