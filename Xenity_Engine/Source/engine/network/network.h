@@ -25,6 +25,8 @@ public:
 		this->socketId = socketId;
 	}
 
+	~Socket();
+
 	/**
 	* Send data
 	*/
@@ -34,6 +36,8 @@ public:
 	* Read data from the socket
 	*/
 	void Update();
+
+	void Close();
 
 	/**
 	* Return recieved data during this frame

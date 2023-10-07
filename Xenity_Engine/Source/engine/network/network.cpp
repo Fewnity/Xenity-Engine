@@ -105,6 +105,15 @@ void Socket::Update()
 	}
 }
 
+void Socket::Close()
+{
+}
+
+Socket::~Socket()
+{
+	Close();
+}
+
 void Socket::SendData(const std::string& text)
 {
 	if (socketId < 0)
