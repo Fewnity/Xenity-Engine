@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <errno.h>
+#include <unistd.h>
 #elif defined(LINUX)
 #include <sys/socket.h>
 #include <errno.h>
@@ -107,6 +109,11 @@ void Socket::Update()
 
 void Socket::Close()
 {
+#if defined(_WIN32) || defined(_WIN64)
+	closesocket(socketId);
+#else
+	close(socketId);
+#endif
 }
 
 Socket::~Socket()
@@ -210,7 +217,7 @@ Socket* NetworkManager::CreateSocket(const std::string& address, int port)
 	int i = 1;
 	if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)
 	{
-		Debug::Print("Failed to change socket flags");
+		Debug::PrintError("Failed to change socket flags");
 		return nullptr;
 	}
 #endif
