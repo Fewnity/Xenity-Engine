@@ -281,6 +281,7 @@ void Engine::Loop()
 		Editor::Draw();
 		editorDrawBenchmark->Stop();
 #endif
+		Debug::SendProfilerDataToServer();
 		Window::UpdateScreen();
 		engineLoopBenchmark->Stop();
 		Performance::Update();

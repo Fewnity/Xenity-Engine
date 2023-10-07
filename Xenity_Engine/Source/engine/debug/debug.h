@@ -40,6 +40,8 @@ public:
 	*/
 	static void PrintWarning(const std::string& text);
 
+	static void SendProfilerDataToServer();
+
 	/**
 	* Connect the game to an online debug console
 	*/
@@ -52,6 +54,7 @@ public:
 	{
 		return debugText;
 	}
+	static float SendProfilerRate;
 
 private:
 
@@ -75,4 +78,5 @@ private:
 
 	static std::string debugText;
 	static Socket* socket;
+	static float SendProfilerCooldown;
 };

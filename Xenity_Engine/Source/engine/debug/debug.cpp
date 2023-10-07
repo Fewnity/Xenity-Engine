@@ -10,10 +10,15 @@
 #include <psp2/io/stat.h>
 #endif
 #include "../engine_settings.h"
+#include "performance.h"
+#include "../../xenity.h"
 
 std::shared_ptr<File> file = nullptr;
 std::string Debug::debugText = "";
 Socket* Debug::socket;
+
+float Debug::SendProfilerCooldown = 0;
+float Debug::SendProfilerRate = 0.2f;
 
 /**
  * Print an error in the console and the debug file
@@ -47,6 +52,39 @@ void Debug::PrintWarning(const std::string& text)
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
+}
+
+void Debug::SendProfilerDataToServer()
+{
+	if (socket)
+	{
+		if (SendProfilerCooldown <= 0)
+		{
+			SendProfilerCooldown = SendProfilerRate;
+			if (EngineSettings::useProfiler)
+			{
+				//Add profiler texts
+				for (const auto& kv : Performance::profilerCategories)
+				{
+					std::string dat = "--- " + kv.first;
+					if (kv.second->profilerList.count(kv.first) != 0)
+					{
+						dat += ": " + std::to_string(kv.second->profilerList[kv.first]->GetValue()) + ", avg " + std::to_string(kv.second->profilerList[kv.first]->average);
+					}
+					for (const auto& kv2 : kv.second->profilerList)
+					{
+						dat += "\n" + kv2.first + " " + std::to_string(kv2.second->average) + " " + std::to_string(kv2.second->GetValue());
+					}
+					PrintInOnlineConsole(dat);
+				}
+				PrintInOnlineConsole("");
+			}
+		}
+		else 
+		{
+			SendProfilerCooldown -= Time::GetUnscaledDeltaTime();
+		}
+	}
 }
 
 void Debug::PrintInConsole(const std::string& text)
@@ -86,7 +124,7 @@ void Debug::PrintInOnlineConsole(const std::string& text)
 {
 	if (socket)
 	{
-		std::string finalText = text + char(3);
+		std::string finalText = "{1;" + text + "}";
 		socket->SendData(finalText);
 	}
 }
