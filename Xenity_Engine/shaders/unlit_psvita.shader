@@ -1,3 +1,4 @@
+//-------------- {psvita}
 {vertex}
 
 attribute vec3 position;
