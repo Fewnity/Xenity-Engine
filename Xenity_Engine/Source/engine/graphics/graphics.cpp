@@ -24,6 +24,8 @@ ProfilerBenchmark* drawAllBenchmark = nullptr;
 ProfilerBenchmark* drawEditorToolsBenchmark = nullptr;
 ProfilerBenchmark* drawEditorGridBenchmark = nullptr;
 ProfilerBenchmark* drawEditorGizmoBenchmark = nullptr;
+ProfilerBenchmark* drawEndFrameBenchmark = nullptr;
+ProfilerBenchmark* drawOtherBenchmark = nullptr;
 // ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
@@ -84,6 +86,8 @@ void Graphics::Init()
 	drawEditorToolsBenchmark = new ProfilerBenchmark("Draw", "Draw tools");
 	drawEditorGridBenchmark = new ProfilerBenchmark("Draw", "Draw grid");
 	drawEditorGizmoBenchmark = new ProfilerBenchmark("Draw", "Draw gizmo");
+	drawEndFrameBenchmark = new ProfilerBenchmark("Draw", "End frame");
+	drawOtherBenchmark = new ProfilerBenchmark("Draw", "Other");
 
 	SetDefaultValues();
 
@@ -121,6 +125,7 @@ void Graphics::DrawAllDrawable()
 		auto camera = usedCamera.lock();
 		if (camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
 		{
+			drawOtherBenchmark->Start();
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
 				Material* mat = AssetManager::GetMaterial(materialIndex);
@@ -136,6 +141,7 @@ void Graphics::DrawAllDrawable()
 			Engine::renderer->Clear();
 
 			const Vector3 camPos = camera->GetTransform()->GetPosition();
+			drawOtherBenchmark->Stop();
 
 			skyboxBenchmark->Start();
 			DrawSkybox(camPos);
@@ -221,7 +227,9 @@ void Graphics::DrawAllDrawable()
 	Engine::renderer->SetClearColor(Color::CreateFromRGB(15, 16, 16));
 	Engine::renderer->Clear();
 #endif
+	drawEndFrameBenchmark->Start();
 	Engine::renderer->EndFrame();
+	drawEndFrameBenchmark->Stop();
 }
 
 bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
