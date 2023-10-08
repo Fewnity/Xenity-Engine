@@ -174,6 +174,8 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 			}
 			if (deleteSubMeshes)
 			{
+				if (subMesh->VAO != 0)
+					Engine::renderer->DeleteVertexArray(subMesh->VAO);
 				if (subMesh->VBO != 0)
 					Engine::renderer->DeleteBuffer(subMesh->VBO);
 				if (subMesh->EBO != 0)
@@ -224,15 +226,6 @@ void MeshData::LoadFileReference()
 void MeshData::OnLoadFileReferenceFinished()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	for (int i = 0; i < subMeshCount; i++)
-	{
-		SubMesh* sub = subMeshes[i];
-		if (sub->VBO == 0)
-			sub->VBO = Engine::renderer->CreateBuffer();
-		if (sub->EBO == 0)
-			sub->EBO = Engine::renderer->CreateBuffer();
-	}
-
 	SendDataToGpu();
 #endif
 	isValid = true;

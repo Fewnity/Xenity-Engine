@@ -43,9 +43,11 @@ public:
 	void SetFogValues(float start, float end, Color color) override;
 
 	unsigned int CreateBuffer() override;
+	unsigned int CreateVertexArray() override;
 	void BindBuffer(BufferType type, unsigned int bufferId) override;
+	void BindVertexArray(unsigned int bufferId) override;
 	void DeleteBuffer(unsigned int bufferId) override;
-
+	void DeleteVertexArray(unsigned int bufferId) override;
 	void UploadMeshData(std::shared_ptr<MeshData> meshData) override;
 
 	//Shader

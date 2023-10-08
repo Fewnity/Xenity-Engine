@@ -97,8 +97,11 @@ public:
 	virtual void SetFogValues(float start, float end, Color color) = 0;
 
 	virtual unsigned CreateBuffer() = 0;
+	virtual unsigned int CreateVertexArray() = 0;
 	virtual void BindBuffer(BufferType type, unsigned int bufferId) = 0;
+	virtual void BindVertexArray(unsigned int bufferId) = 0;
 	virtual void DeleteBuffer(unsigned int bufferId) = 0;
+	virtual void DeleteVertexArray(unsigned int bufferId) = 0;
 	virtual void UploadMeshData(std::shared_ptr<MeshData> meshData) = 0;
 
 	//Shader
