@@ -154,7 +154,7 @@ public:
 	glm::mat4 projection;
 	glm::mat4 unscaledProjection;
 	void CopyMultiSampledFrameBuffer();
-	bool useMultisampling = false;
+	bool useMultisampling = true;
 
 private:
 	unsigned int framebuffer = -1;

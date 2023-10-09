@@ -310,11 +310,12 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 
 void Camera::BindFrameBuffer()
 {
+
 #if defined(_WIN32) || defined(_WIN64)
+	UpdateFrameBuffer();
 	if (framebuffer != -1)
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 #endif
-	UpdateFrameBuffer();
 
 #if !defined(__PSP__)
 	Engine::renderer->SetViewport(0, 0, width, height);
