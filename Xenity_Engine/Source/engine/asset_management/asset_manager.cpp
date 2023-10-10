@@ -62,6 +62,14 @@ void AssetManager::Init()
 #else
 		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
 #endif
+		
+		// Load line shader
+		Engine::lineShader = Shader::MakeShader();
+#if defined(__vita__)
+		Engine::lineShader->file = FileSystem::MakeFile("shaders/line_psvita.shader");
+#else
+		Engine::lineShader->file = FileSystem::MakeFile("shaders/line.shader");
+#endif
 
 		// Create materials
 		Engine::standardMaterial = Material::MakeMaterial();
@@ -74,11 +82,17 @@ void AssetManager::Init()
 		Engine::unlitMaterial->shader = Engine::unlitShader;
 		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
 
+		Engine::lineMaterial = Material::MakeMaterial();
+		Engine::lineMaterial->file = FileSystem::MakeFile("shaders/lineMaterial.mat");
+		Engine::lineMaterial->shader = Engine::lineShader;
+
 		Engine::shader->LoadFileReference();
 		Engine::unlitShader->LoadFileReference();
+		Engine::lineShader->LoadFileReference();
 
 		Engine::standardMaterial->LoadFileReference();
 		Engine::unlitMaterial->LoadFileReference();
+		Engine::lineMaterial->LoadFileReference();
 	}
 
 	Debug::Print("-------- Asset Manager initiated --------");

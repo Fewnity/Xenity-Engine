@@ -184,8 +184,10 @@ public:
 	static std::mutex threadLoadingMutex;
 	static std::shared_ptr<Shader> shader;
 	static std::shared_ptr<Shader> unlitShader;
+	static std::shared_ptr<Shader> lineShader;
 	static std::shared_ptr<Material> standardMaterial;
 	static std::shared_ptr<Material> unlitMaterial;
+	static std::shared_ptr<Material> lineMaterial;
 
 	static bool UseOpenGLFixedFunctions;
 

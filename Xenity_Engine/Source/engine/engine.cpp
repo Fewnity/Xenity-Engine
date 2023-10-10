@@ -71,8 +71,10 @@ GameState Engine::gameState = Stopped;
 
 std::shared_ptr <Shader> Engine::shader = nullptr;
 std::shared_ptr <Shader> Engine::unlitShader = nullptr;
+std::shared_ptr <Shader> Engine::lineShader = nullptr;
 std::shared_ptr<Material> Engine::standardMaterial = nullptr;
 std::shared_ptr<Material> Engine::unlitMaterial = nullptr;
+std::shared_ptr<Material> Engine::lineMaterial = nullptr;
 
 bool Engine::UseOpenGLFixedFunctions = false;
 
