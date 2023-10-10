@@ -23,6 +23,8 @@ public:
 		Tessellation_Evaluation_Shader,
 	};
 
+	static void Init();
+
 	Shader();
 	~Shader();
 
@@ -57,6 +59,8 @@ private:
 	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);
 	void SetSpotLightData(std::shared_ptr<Light> light, const int index);
 	bool FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition);
+
+	static glm::mat4 canvasCameraPosition;
 
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;

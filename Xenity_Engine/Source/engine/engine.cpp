@@ -151,6 +151,7 @@ int Engine::Init()
 
 	//------------------------------------------ Init other things
 	Graphics::Init();
+	Shader::Init();
 	InputSystem::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
@@ -178,6 +179,7 @@ int Engine::Init()
 void Engine::CheckEvents()
 {
 #if defined(_WIN32) || defined(_WIN64)
+	// Check SDL event
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -191,14 +193,14 @@ void Engine::CheckEvents()
 			isRunning = false;
 			break;
 		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
 			{
 #if defined(EDITOR)
 				if (event.window.windowID == SDL_GetWindowID(Window::window))
 #endif
 					Window::SetResolution(event.window.data1, event.window.data2);
 			}
-			else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+			else if (event.window.event == SDL_WINDOWEVENT_CLOSE) // Stop the engine on window close
 			{
 				isRunning = false;
 			}
@@ -264,9 +266,10 @@ void Engine::Loop()
 			componentsUpdateBenchmark->Stop();
 
 			canUpdateAudio = true;
-
+			
+			// Draw
 			drawIDrawablesBenchmark->Start();
-			Graphics::DrawAllDrawable();
+			Graphics::Draw();
 			drawIDrawablesBenchmark->Stop();
 
 			ResetTransformsStates();

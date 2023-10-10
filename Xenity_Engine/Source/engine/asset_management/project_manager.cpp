@@ -392,24 +392,34 @@ void ProjectManager::LoadProjectSettings()
 		std::string jsonString = "";
 
 		// Read file
-		projectFile->Open(true);
-		jsonString = projectFile->ReadAll();
-		projectFile->Close();
+		if (projectFile->Open(true))
+		{
+			jsonString = projectFile->ReadAll();
+			projectFile->Close();
 
-		// Parse Json
-		json projectData;
-		try
-		{
-			projectData = json::parse(jsonString);
 		}
-		catch (const std::exception&)
+		else
 		{
-			Debug::PrintError("Meta file error");
-			return;
+			Debug::PrintError("Fail to open the project settings file");
 		}
 
-		// Change settings
-		ReflectionUtils::JsonToMap(projectData, GetProjetSettingsReflection());
+		if (!jsonString.empty())
+		{
+			// Parse Json
+			json projectData;
+			try
+			{
+				projectData = json::parse(jsonString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("Meta file error");
+				return;
+			}
+
+			// Change settings
+			ReflectionUtils::JsonToMap(projectData, GetProjetSettingsReflection());
+		}
 	}
 }
 

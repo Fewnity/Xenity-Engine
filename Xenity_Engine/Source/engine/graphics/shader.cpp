@@ -17,7 +17,14 @@
 
 using json = nlohmann::json;
 
+glm::mat4 Shader::canvasCameraPosition;
+
 #pragma region Constructors / Destructor
+
+void Shader::Init()
+{
+	canvasCameraPosition = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+}
 
 Shader::Shader()
 {
@@ -96,88 +103,95 @@ void Shader::LoadFileReference()
 		if (Engine::UseOpenGLFixedFunctions)
 			return;
 
-		file->Open(false);
-		std::string shaderText = file->ReadAll();
-		file->Close();
-		int textSize = shaderText.size();
-
-		if (textSize != 0)
+		bool isOpen = file->Open(false);
+		if (isOpen)
 		{
-			int fragmentPos = -1;
-			int fragmentStartPos = -1;
+			std::string shaderText = file->ReadAll();
+			file->Close();
+			int textSize = shaderText.size();
 
-			int vertexPos = -1;
-			int vertexStartPos = -1;
-			bool foundPlatform = false;
-			Platform currentPlatform = Platform::P_Windows;
+			if (textSize != 0)
+			{
+				int fragmentPos = -1;
+				int fragmentStartPos = -1;
+
+				int vertexPos = -1;
+				int vertexStartPos = -1;
+				bool foundPlatform = false;
+				Platform currentPlatform = Platform::P_Windows;
 #if defined(__vita__)
-			currentPlatform = Platform::P_PsVita;
+				currentPlatform = Platform::P_PsVita;
 #endif
-			int unused = 0;
-			int end = 0;
-			bool foundEnd = false;
+				int unused = 0;
+				int end = 0;
+				bool foundEnd = false;
 
-			for (int i = 0; i < textSize - 1; i++)
-			{
-				if (FindTag(shaderText, i, textSize, "{pc}", unused, end))
+				for (int i = 0; i < textSize - 1; i++)
 				{
-					if (foundPlatform)
+					if (FindTag(shaderText, i, textSize, "{pc}", unused, end))
 					{
-						foundEnd = true;
-						break;
+						if (foundPlatform)
+						{
+							foundEnd = true;
+							break;
+						}
+						if (currentPlatform == Platform::P_Windows)
+						{
+							foundPlatform = true;
+						}
 					}
-					if (currentPlatform == Platform::P_Windows) 
+					else if (FindTag(shaderText, i, textSize, "{psvita}", unused, end))
 					{
-						foundPlatform = true;
+						if (foundPlatform)
+						{
+							foundEnd = true;
+							break;
+						}
+						if (currentPlatform == Platform::P_PsVita)
+						{
+							foundPlatform = true;
+						}
+					}
+					else if (foundPlatform && FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
+					{
+					}
+					else if (foundPlatform && FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
+					{
 					}
 				}
-				else if (FindTag(shaderText, i, textSize, "{psvita}", unused, end))
-				{
-					if (foundPlatform) 
-					{
-						foundEnd = true;
-						break;
-					}
-					if (currentPlatform == Platform::P_PsVita)
-					{
-						foundPlatform = true;
-					}
-				}
-				else if (foundPlatform && FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
-				{
-				}
-				else if(foundPlatform && FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
-				{
-				}
-			}
 
-			if (vertexPos != -1 && fragmentPos != -1)
-			{
-				std::string fragShaderData;
-				if(foundEnd)
-					fragShaderData = shaderText.substr(fragmentStartPos, end - fragmentStartPos);
+				if (vertexPos != -1 && fragmentPos != -1)
+				{
+					std::string fragShaderData;
+					if (foundEnd)
+						fragShaderData = shaderText.substr(fragmentStartPos, end - fragmentStartPos);
+					else
+						fragShaderData = shaderText.substr(fragmentStartPos);
+
+					std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
+
+					LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
+					LoadShader(fragShaderData, ShaderType::Fragment_Shader);
+
+					//useTessellation = true;
+					//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
+					//LoadShader(fragmentShaderPath, Fragment_Shader);
+
+					BuildShader();
+				}
 				else
-					fragShaderData = shaderText.substr(fragmentStartPos);
-
-				std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
-
-				LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
-				LoadShader(fragShaderData, ShaderType::Fragment_Shader);
-
-				//useTessellation = true;
-				//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
-				//LoadShader(fragmentShaderPath, Fragment_Shader);
-
-				BuildShader();
+				{
+					Debug::PrintError("The shader structure is wrong: " + file->GetPath());
+				}
 			}
-			else 
+			else
 			{
-				Debug::PrintError("The shader structure is wrong: " + file->GetPath());
+				Debug::PrintError("The shader file is empty: " + file->GetPath());
 			}
 		}
 		else 
 		{
-			Debug::PrintError("The shader file is empty or not found: " + file->GetPath());
+			Debug::PrintError("Fail to load the shader file: " + file->GetPath());
 		}
 	}
 }
@@ -323,11 +337,7 @@ void Shader::SetShaderCameraPosition()
 void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
-
-	glm::mat4 camera;
-	camera = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
-
-	Engine::renderer->SetShaderAttribut(programId, "camera", camera);
+	Engine::renderer->SetShaderAttribut(programId, "camera", canvasCameraPosition);
 }
 
 /// <summary>
@@ -342,11 +352,7 @@ void Shader::SetShaderProjection()
 void Shader::SetShaderProjectionCanvas()
 {
 	Use();
-	float size = 5;
-	float halfAspect = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * size / 5.0f;
-	float halfOne = 0.5f * 10 * size / 5.0f;
-	glm::mat4 projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
-	Engine::renderer->SetShaderAttribut(programId, "projection", projection);
+	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetCanvasProjection());
 }
 
 /// <summary>
@@ -370,11 +376,11 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
 
 	if(rotation.y != 0)
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (rotation.x != 0)
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	if (rotation.z != 0)
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 

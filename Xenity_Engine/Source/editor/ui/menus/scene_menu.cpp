@@ -146,7 +146,7 @@ void SceneMenu::Draw()
 
 			// Get screen mouse position (inverted)
 			glm::vec3 mousePositionGLM = glm::vec3(size.x - (mousePosition.x - windowPosition.x), size.y - (windowSize.y - (mousePosition.y - windowPosition.y)), 0.0f); // Invert Y for OpenGL coordinates
-			camera->UpdateProjection();
+
 			// Get world mouse position (position at the near clipping plane)
 			glm::vec3 worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->projection, glm::vec4(0, 0, size.x, size.y));
 

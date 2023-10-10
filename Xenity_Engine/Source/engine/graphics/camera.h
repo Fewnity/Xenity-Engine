@@ -88,7 +88,7 @@ public:
 	/**
 	* Get projection matrix without Clipping Planes values
 	*/
-	glm::mat4& GetUnscaledProjection();
+	glm::mat4& GetCanvasProjection();
 
 	/**
 	* Set projection type
@@ -149,14 +149,15 @@ public:
 	}
 
 	bool isEditor = false;
-	unsigned int framebufferTexture = -1;
 	unsigned int secondFramebufferTexture = -1;
 	glm::mat4 projection;
-	glm::mat4 unscaledProjection;
+	glm::mat4 canvasProjection;
 	void CopyMultiSampledFrameBuffer();
 	bool useMultisampling = true;
+	bool isProjectionDirty = true;
 
 private:
+	unsigned int framebufferTexture = -1;
 	unsigned int framebuffer = -1;
 	unsigned int secondFramebuffer = -1;
 	int width, height;

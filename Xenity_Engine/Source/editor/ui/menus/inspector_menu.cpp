@@ -224,9 +224,15 @@ void InspectorMenu::DrawFilePreview()
 			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
-				file->Open(false);
-				previewText = file->ReadAll();
-				file->Close();
+				if (file->Open(false)) 
+				{
+					previewText = file->ReadAll();
+					file->Close();
+				}
+				else 
+				{
+					Debug::PrintError("Fail to open the preview file");
+				}
 			}
 		}
 		// If the file is a texture, get the texture id

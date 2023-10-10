@@ -42,7 +42,7 @@ public:
 	/**
 	* Draw all Drawable elements
 	*/
-	static void DrawAllDrawable();
+	static void Draw();
 
 	/**
 	* Order all drawables

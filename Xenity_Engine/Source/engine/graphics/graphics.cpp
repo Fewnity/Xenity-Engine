@@ -104,7 +104,7 @@ void Graphics::SetDefaultValues()
 	skybox.reset();
 }
 
-void Graphics::DrawAllDrawable()
+void Graphics::Draw()
 {
 	/*auto camera = usedCamera.lock();
 	if (!camera)
@@ -126,6 +126,7 @@ void Graphics::DrawAllDrawable()
 		if (camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
 		{
 			drawOtherBenchmark->Start();
+			// Set material as dirty
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
 				Material* mat = AssetManager::GetMaterial(materialIndex);
@@ -135,12 +136,15 @@ void Graphics::DrawAllDrawable()
 			currentMode = Draw_3D;
 
 			needUpdateCamera = true;
+			
+			// Update camera and bind frame buffer
 			camera->UpdateProjection();
 			camera->BindFrameBuffer();
+			const Vector3 camPos = camera->GetTransform()->GetPosition();
+
 			Engine::renderer->SetClearColor(skyColor);
 			Engine::renderer->Clear();
 
-			const Vector3 camPos = camera->GetTransform()->GetPosition();
 			drawOtherBenchmark->Stop();
 
 			skyboxBenchmark->Start();
@@ -172,11 +176,15 @@ void Graphics::DrawAllDrawable()
 			{
 				drawEditorToolsBenchmark->Start();
 				Engine::renderer->SetFog(false);
+
 				//Draw editor scene grid
 				if (currentMode != Draw_3D)
 				{
 					currentMode = Draw_3D;
-					camera->UpdateProjection();
+					if (Engine::UseOpenGLFixedFunctions)
+					{
+						camera->UpdateProjection();
+					}
 				}
 
 				Engine::renderer->ResetTransform();

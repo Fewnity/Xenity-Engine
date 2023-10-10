@@ -31,7 +31,7 @@ Camera::Camera()
 	componentName = "Camera";
 
 	this->fov = 60;
-	UpdateProjection();
+	isProjectionDirty = true;
 
 #if defined(_WIN32) || defined(_WIN64)
 	glGenFramebuffers(1, &framebuffer);
@@ -89,7 +89,7 @@ Camera::~Camera()
 void Camera::SetFov(const float fov)
 {
 	this->fov = fov;
-	UpdateProjection();
+	isProjectionDirty = true;
 }
 
 float Camera::GetFov() const
@@ -100,7 +100,7 @@ float Camera::GetFov() const
 void Camera::SetProjectionSize(const float value)
 {
 	projectionSize = value;
-	UpdateProjection();
+	isProjectionDirty = true;
 }
 
 float Camera::GetProjectionSize() const
@@ -125,7 +125,7 @@ void Camera::SetNearClippingPlane(float value)
 		farClippingPlane = value + 0.01f;
 	}
 	nearClippingPlane = value;
-	UpdateProjection();
+	isProjectionDirty = true;
 }
 
 void Camera::SetFarClippingPlane(float value)
@@ -138,7 +138,7 @@ void Camera::SetFarClippingPlane(float value)
 	{
 		farClippingPlane = value;
 	}
-	UpdateProjection();
+	isProjectionDirty = true;
 }
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
@@ -170,23 +170,25 @@ void Camera::UpdateProjection()
 		projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
 #endif
 	}
-	else
+	else if(isProjectionDirty)
 	{
-		if (projectionType == ProjectionTypes::Perspective)
+		isProjectionDirty = false;
+		if (projectionType == ProjectionTypes::Perspective) // 3D projection
 		{
-			// Projection
 			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
 		}
-		else
+		else // 2D projection
 		{
-			float halfAspect = Window::GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
+			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
 			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-
-			// Unscaled version for canvas
-			float halfAspectUnscaled = Window::GetAspectRatio() / 2.0f;
-			unscaledProjection = glm::ortho(-halfAspectUnscaled, halfAspectUnscaled, -0.5f, 0.5f);
 		}
+
+		// Create canvas projection
+		float fixedProjectionSize = 5;
+		float halfAspect = GetAspectRatio() / 2.0f * 10 * fixedProjectionSize / 5.0f;
+		float halfOne = 0.5f * 10 * fixedProjectionSize / 5.0f;
+		canvasProjection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
 	}
 }
 
@@ -195,15 +197,15 @@ glm::mat4& Camera::GetProjection()
 	return projection;
 }
 
-glm::mat4& Camera::GetUnscaledProjection()
+glm::mat4& Camera::GetCanvasProjection()
 {
-	return unscaledProjection;
+	return canvasProjection;
 }
 
 void Camera::SetProjectionType(ProjectionTypes type)
 {
 	projectionType = type;
-	UpdateProjection();
+	isProjectionDirty = true;
 }
 
 ProjectionTypes Camera::GetProjectionType() const
@@ -301,6 +303,7 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 		aspect = (float)width / (float)height;
 
 		needFrameBufferUpdate = true;
+		isProjectionDirty = true;
 		UpdateProjection();
 #if defined(__PSP__)
 		Engine::renderer->SetViewport(0, 0, width, height);

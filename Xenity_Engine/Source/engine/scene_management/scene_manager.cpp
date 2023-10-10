@@ -76,10 +76,16 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			std::string jsonData = j.dump(2);
 			FileSystem::fileSystem->DeleteFile(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
-			file->Open(true);
-			file->Write(jsonData);
-			file->Close();
-			ProjectManager::RefreshProjectDirectory();
+			if (file->Open(true)) 
+			{
+				file->Write(jsonData);
+				file->Close();
+				ProjectManager::RefreshProjectDirectory();
+			}
+			else 
+			{
+				Debug::PrintError("Fail to save the scene file: " + file->GetPath());
+			}
 		}
 	}
 }

@@ -217,6 +217,34 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 	return json;
 }
 
+bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap)
+{
+	bool ok = true;
+
+	json myJson;
+	if (file->Open(true))
+	{
+		std::string jsonString = file->ReadAll();
+		file->Close();
+		if (!jsonString.empty())
+		{
+			myJson = json::parse(jsonString);
+			ReflectionUtils::JsonToMap(myJson, theMap);
+			ok = true;
+		}
+		else
+		{
+			ok = false;
+		}
+	}
+	else 
+	{
+		ok = false;
+	}
+
+	return ok;
+}
+
 json ReflectionUtils::ReflectionToJson(Reflection& reflection)
 {
 	json j2;

@@ -25,6 +25,8 @@ Check File::GetFolderPath() for psvita, remove ux0:
 Fix camera when multisampled is disabled on windows build
 Add close function for sockets
 Add network profiler
+Problem when duplicating a text renderer
+Fix crash when using material without shader
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

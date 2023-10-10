@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include "reflection.h"
 
+class File;
+
 class ReflectionUtils
 {
 public:
@@ -33,6 +35,8 @@ public:
 	* @param theMap The Reflection map
 	*/
 	static nlohmann::json MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap);
+
+	static bool FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap);
 
 private:
 	template <typename T>

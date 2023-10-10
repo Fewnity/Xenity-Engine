@@ -208,20 +208,22 @@ void Material::OnReflectionUpdated()
 	json myJson;
 	myJson["Values"] = ReflectionUtils::MapToJson(GetReflection());
 	FileSystem::fileSystem->DeleteFile(file->GetPath());
-	file->Open(true);
-	file->Write(myJson.dump(0));
-	file->Close();
+	if (file->Open(true))
+	{
+		file->Write(myJson.dump(0));
+		file->Close();
+	}
+	else
+	{
+		Debug::PrintError("Error when trying to save Material file");
+	}
 }
 
 void Material::LoadFileReference()
 {
-	json myJson;
-	file->Open(true);
-	std::string jsonString = file->ReadAll();
-	file->Close();
-	if (!jsonString.empty())
+	bool loadResult = ReflectionUtils::FileToMap(file, GetReflection());
+	if (!loadResult)
 	{
-		myJson = json::parse(jsonString);
-		ReflectionUtils::JsonToMap(myJson, GetReflection());
+		Debug::PrintError("Fail to load the material file: " + file->GetPath());
 	}
 }
