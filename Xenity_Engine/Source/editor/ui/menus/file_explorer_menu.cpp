@@ -175,6 +175,22 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 				ImGui::CloseCurrentPopup();
 				ProjectManager::RefreshProjectDirectory();
 			}
+			if (ImGui::MenuItem("Shader"))
+			{
+				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newShader.shader");
+				newFile->Open(true);
+				newFile->Close();
+				ImGui::CloseCurrentPopup();
+				ProjectManager::RefreshProjectDirectory();
+			}
+			if (ImGui::MenuItem("Material"))
+			{
+				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newMaterial.mat");
+				newFile->Open(true);
+				newFile->Close();
+				ImGui::CloseCurrentPopup();
+				ProjectManager::RefreshProjectDirectory();
+			}
 			ImGui::EndMenu();
 		}
 		if (itemSelected && ImGui::MenuItem("Rename"))
