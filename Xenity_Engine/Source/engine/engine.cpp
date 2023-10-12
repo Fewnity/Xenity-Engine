@@ -163,7 +163,12 @@ int Engine::Init()
 	//Init Editor
 #if defined(EDITOR)
 	Gizmo::Init();
-	EditorUI::Init();
+	int editorUiInitResult = EditorUI::Init();
+	if (editorUiInitResult != 0) 
+	{
+		Debug::PrintError("-------- Editor UI init error code: " + std::to_string(editorUiInitResult) + " --------");
+		return -1;
+	}
 	Editor::Init();
 #endif
 

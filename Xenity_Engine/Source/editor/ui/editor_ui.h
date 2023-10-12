@@ -20,6 +20,11 @@ class Component;
 class Transform;
 class SkyBox;
 
+enum EditorUIError
+{
+	EDITOR_UI_ERROR_MISSING_FONT = -1,
+};
+
 enum IconName
 {
 	Icon_Folder,
@@ -43,7 +48,7 @@ enum IconName
 class EditorUI
 {
 public:
-	static void Init();
+	[[nodiscard]] static int Init();
 	static void Draw();
 	static void NewFrame();
 	static void Render();

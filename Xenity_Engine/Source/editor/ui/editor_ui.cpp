@@ -28,11 +28,20 @@ float EditorUI::uiScale = 1;
 
 #pragma region Initialisation
 
-void EditorUI::Init()
+int EditorUI::Init()
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
-	io.Fonts->AddFontFromFileTTF("Roboto Regular.ttf", 30);
+	std::shared_ptr<File> fontFile = FileSystem::MakeFile("Roboto Regular.ttf");
+	if (fontFile->CheckIfExist()) 
+	{
+		io.Fonts->AddFontFromFileTTF(fontFile->GetPath().c_str(), 30);
+	}
+	else 
+	{
+		Debug::PrintError("[EditorUI::Init] Fail to load font file:" + fontFile->GetPath());
+		return EDITOR_UI_ERROR_MISSING_FONT;
+	}
 
 	for (int i = 0; i < Icon_Count; i++)
 	{
@@ -120,6 +129,7 @@ void EditorUI::Init()
 	}
 
 	Debug::Print("---- Editor UI initiated ----");
+	return 0;
 }
 
 void EditorUI::Draw()
