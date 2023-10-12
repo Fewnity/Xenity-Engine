@@ -75,7 +75,7 @@ std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int cha
 Texture::~Texture()
 {
 	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
-	UnloadFileReference();
+	this->UnloadFileReference();
 }
 
 void Texture::LoadFileReference()
@@ -360,33 +360,36 @@ void Texture::SetData(const unsigned char* texData)
 
 void Texture::LoadTexture()
 {
-	std::string debugText = "Loading texture: ";
-	debugText += file->GetPath();
-	Debug::Print(debugText);
+	Debug::Print("Loading texture: " + file->GetPath());
 
 	int fileBufferSize = 0;
-	file->Open(false);
-	unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
-	file->Close();
-
-	// Load image with stb_image
-	// stbi_set_flip_vertically_on_load(GL_TRUE);
-	buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
-		&nrChannels, 4);
-
-	free(fileData);
-
-	if (!buffer)
+	bool openResult = file->Open(false);
+	if (openResult)
 	{
-		debugText = "Failed to load texture";
-		Debug::PrintError(debugText);
-		return;
-	}
+		unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
+		file->Close();
+
+		// Load image with stb_image
+		// stbi_set_flip_vertically_on_load(GL_TRUE);
+		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+			&nrChannels, 4);
+
+		free(fileData);
+
+		if (!buffer)
+		{
+			Debug::PrintError("[Texture::LoadTexture] Failed to load texture");
+			return;
+		}
 #if defined(__PSP__)
-	SetData(buffer);
+		SetData(buffer);
 #endif
+	}
+	else
+	{
+		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file");
+	}
 	isLoading = false;
-	//Debug::Print("Texture loaded");
 }
 
 void Texture::Unload()
