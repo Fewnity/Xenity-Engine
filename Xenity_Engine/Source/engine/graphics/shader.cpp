@@ -321,12 +321,15 @@ void Shader::SetShaderCameraPosition()
 			xAngle -= 360;
 		}
 
+		float angle = glm::radians(-transform->GetRotation().z);
+		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+
 		glm::mat4 camera;
 		if (xAngle > 90 || xAngle < -90)
 			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
 		else
 			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
-
+		camera = rotationMatrix * camera;
 		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
 	}
 }
