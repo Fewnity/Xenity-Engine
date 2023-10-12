@@ -108,20 +108,28 @@ void Material::Use()
 	//if(true)
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
-		lastUsedCamera = Graphics::usedCamera;
-		lastUpdatedType = Graphics::currentMode;
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
-		shader->Use();
-		Update();
-
-		int matCount = AssetManager::GetMaterialCount();
-		for (int i = 0; i < matCount; i++)
+		if (shader)
 		{
-			Material* mat = AssetManager::GetMaterial(i);
-			if (mat->shader == shader && mat != this)
+			lastUsedCamera = Graphics::usedCamera;
+			lastUpdatedType = Graphics::currentMode;
+			shader->Use();
+			Update();
+
+			int matCount = AssetManager::GetMaterialCount();
+			for (int i = 0; i < matCount; i++)
 			{
-				mat->updated = false;
+				Material* mat = AssetManager::GetMaterial(i);
+				if (mat->shader == shader && mat != this)
+				{
+					mat->updated = false;
+				}
 			}
+		}
+		else 
+		{
+			Engine::renderer->UseShaderProgram(0);
+			Graphics::currentShader = nullptr;
 		}
 	}
 }

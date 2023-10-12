@@ -155,7 +155,11 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 		{
 			if (!material)
 				return;
+
 			material->Use();
+
+			if (!Graphics::currentShader)
+				return;
 		}
 
 		textBenchmark->Start();

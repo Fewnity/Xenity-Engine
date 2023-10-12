@@ -44,7 +44,13 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 
 	if (!Engine::UseOpenGLFixedFunctions)
 	{
+		if (!material)
+			return;
 		material->Use();
+
+		if (!Graphics::currentShader)
+			return;
+
 		Graphics::currentShader->SetShaderModel(position, rotation, scale);
 	}
 
@@ -94,6 +100,10 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 			return;
 
 		material->Use();
+
+		if(!Graphics::currentShader)
+			return;
+
 		Graphics::currentShader->SetShaderModel(transform->transformationMatrix); //----------------------------
 	}
 
