@@ -8,16 +8,7 @@
 #include "vector2_int.h"
 #include "vector2.h"
 
-
 #pragma region Constructors / Destructor
-
-/*void Vector3::SetReflection()
-{
-	parentReflection = this;
-	reflectedVariables["x"] = x;
-	reflectedVariables["y"] = y;
-	reflectedVariables["z"] = z;
-}*/
 
 std::unordered_map<std::string, ReflectionEntry> Vector3::GetReflection()
 {
@@ -33,7 +24,6 @@ Vector3::Vector3()
 	this->x = 0;
 	this->y = 0;
 	this->z = 0;
-	//SetReflection();
 }
 
 Vector3::Vector3(const float x, const float y, const float z)
@@ -41,7 +31,6 @@ Vector3::Vector3(const float x, const float y, const float z)
 	this->x = x;
 	this->y = y;
 	this->z = z;
-	//SetReflection();
 }
 
 Vector3::Vector3(const float fillValue)
@@ -49,7 +38,6 @@ Vector3::Vector3(const float fillValue)
 	this->x = fillValue;
 	this->y = fillValue;
 	this->z = fillValue;
-	//SetReflection();
 }
 
 Vector3::Vector3(Vector2Int vect)
@@ -57,7 +45,6 @@ Vector3::Vector3(Vector2Int vect)
 	this->x = (float)vect.x;
 	this->y = (float)vect.y;
 	this->z = 0;
-	//SetReflection();
 }
 
 Vector3::Vector3(Vector2 vect)
@@ -65,7 +52,6 @@ Vector3::Vector3(Vector2 vect)
 	this->x = vect.x;
 	this->y = vect.y;
 	this->z = 0;
-	//SetReflection();
 }
 
 #pragma endregion
@@ -80,7 +66,7 @@ Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 	return Vector3((-atan2f(ydis, xzdis)) * 180 / (float)M_PI, (-(atan2f(-xdis, zdis))) * 180 / (float)M_PI, 0);
 }
 
-Vector3 Vector3::Normalise()
+Vector3 Vector3::Normalised()
 {
 	float ls = this->x * this->x + this->y * this->y + this->z * this->z;
 	if (ls != 0)
@@ -92,6 +78,11 @@ Vector3 Vector3::Normalise()
 	{
 		return Vector3(0, 0, 0);
 	}
+}
+
+float Vector3::Magnitude()
+{
+	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
 }
 
 float Vector3::Distance(const Vector3& a, const Vector3& b)

@@ -24,14 +24,14 @@ public:
 	Vector3(Vector2Int vect);
 	Vector3(Vector2 vect);
 
+	static Vector3 LookAt(const Vector3& from, const Vector3& to);
+	static float Distance(const Vector3& a, const Vector3& b);
+	Vector3 Normalised();
+	float Magnitude();
+
 	float x;
 	float y;
 	float z;
-
-	static Vector3 LookAt(const Vector3& from, const Vector3& to);
-	static float Distance(const Vector3& a, const Vector3& b);
-	Vector3 Normalise();
-
 };
 
 

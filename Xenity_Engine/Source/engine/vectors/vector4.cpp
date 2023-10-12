@@ -8,14 +8,6 @@
 
 #pragma region Constructors / Destructor
 
-/*void Vector4::SetReflection()
-{
-	reflectedVariables["x"] = x;
-	reflectedVariables["y"] = y;
-	reflectedVariables["z"] = z;
-	reflectedVariables["w"] = w;
-}*/
-
 std::unordered_map<std::string, ReflectionEntry> Vector4::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
@@ -32,7 +24,6 @@ Vector4::Vector4()
 	this->y = 0;
 	this->z = 0;
 	this->w = 0;
-	//SetReflection();
 }
 
 Vector4::Vector4(const float x, const float y, const float z, const float w)
@@ -41,7 +32,6 @@ Vector4::Vector4(const float x, const float y, const float z, const float w)
 	this->y = y;
 	this->z = z;
 	this->w = w;
-	//SetReflection();
 }
 
 Vector4::Vector4(const float fillValue)
@@ -50,12 +40,11 @@ Vector4::Vector4(const float fillValue)
 	this->y = fillValue;
 	this->z = fillValue;
 	this->w = fillValue;
-	//SetReflection();
 }
 
 #pragma endregion
 
-Vector4 Vector4::Normalise()
+Vector4 Vector4::Normalised()
 {
 	float ls = this->x * this->x + this->y * this->y + this->z * this->z + this->w * this->w;
 	if (ls != 0)
@@ -67,6 +56,11 @@ Vector4 Vector4::Normalise()
 	{
 		return Vector4(0, 0, 0, 0);
 	}
+}
+
+float Vector4::Magnitude()
+{
+	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2) + powf(this->w, 2));
 }
 
 #pragma region Operators

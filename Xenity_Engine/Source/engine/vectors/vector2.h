@@ -24,12 +24,12 @@ public:
 	Vector2(const Vector3& vect3);
 	Vector2(const Vector2Int& vect2Int);
 
+	Vector2 Normalized();
+	float Magnitude();
+	static float Distance(const Vector2& a, const Vector2& b);
+
 	float x;
 	float y;
-
-	Vector2 Normalize();
-	float magnitude();
-	static float Distance(const Vector2& a, const Vector2& b);
 };
 
 

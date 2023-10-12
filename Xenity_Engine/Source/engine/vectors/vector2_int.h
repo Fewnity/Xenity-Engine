@@ -19,12 +19,12 @@ public:
 	Vector2Int(const int x, const int y);
 	Vector2Int(const int fillValue);
 
+	Vector2Int Normalized();
+	float Magnitude();
+	static float Distance(const Vector2Int& a, const Vector2Int& b);
+
 	int x;
 	int y;
-
-	Vector2Int normalize();
-	float magnitude();
-	static float Distance(const Vector2Int& a, const Vector2Int& b);
 };
 
 

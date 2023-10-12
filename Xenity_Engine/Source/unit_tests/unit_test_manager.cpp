@@ -225,7 +225,7 @@ bool NormaliseVectorTest::Start(std::string& errorOut)
 {
 	//Test Vector2
 	Vector2 v2A = Vector2(6, 3);
-	if (!Compare(v2A.Normalize(), Vector2(0.894427180f, 0.447213590f)))
+	if (!Compare(v2A.Normalized(), Vector2(0.894427180f, 0.447213590f)))
 	{
 		errorOut = "Bad Vector2 normalisation";
 		return false;
@@ -233,7 +233,7 @@ bool NormaliseVectorTest::Start(std::string& errorOut)
 
 	//Test Vector3
 	Vector3 v3a = Vector3(6, 3, 9);
-	if (!Compare(v3a.Normalise(), Vector3(0.534522474f, 0.267261237f, 0.801783741f)))
+	if (!Compare(v3a.Normalised(), Vector3(0.534522474f, 0.267261237f, 0.801783741f)))
 	{
 		errorOut = "Bad Vector3 normalisation";
 		return false;
@@ -241,7 +241,7 @@ bool NormaliseVectorTest::Start(std::string& errorOut)
 
 	//Test Vector4
 	Vector4 v4a = Vector4(6, 3, 9, -1);
-	if (!Compare(v4a.Normalise(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f)))
+	if (!Compare(v4a.Normalised(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f)))
 	{
 		errorOut = "Bad Vector4 normalisation";
 		return false;

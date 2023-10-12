@@ -47,7 +47,7 @@ void LineRenderer::Draw()
 			//float sizeFixer = 0.1f;
 			float sizeFixer = 1.0f;
 
-			Vector2 dir = (Vector2(endPosition.x, endPosition.y) - Vector2(startPosition.x, startPosition.y)).Normalize();
+			Vector2 dir = (Vector2(endPosition.x, endPosition.y) - Vector2(startPosition.x, startPosition.y)).Normalized();
 
 			Vector3 start = startPosition * sizeFixer;
 			Vector3 end = endPosition * sizeFixer;
