@@ -473,7 +473,15 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 		const std::string projectFileString = file->ReadAll();
 		if (!projectFileString.empty())
 		{
-			json j = json::parse(projectFileString);
+			json j;
+			try
+			{
+				j = json::parse(projectFileString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
+			}
 
 			int projectCount = j.size();
 			for (int i = 0; i < projectCount; i++)
