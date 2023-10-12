@@ -344,7 +344,7 @@ void Camera::OnDrawGizmos()
 		glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 		if (projectionType == Orthographic)
 			cameraModelMatrix = glm::scale(cameraModelMatrix, glm::vec3(1 / (5.0f * camera->aspect * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
-		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		cameraModelMatrix = glm::translate(cameraModelMatrix, glm::vec3(-cameraPosition.x, cameraPosition.y, cameraPosition.z));
