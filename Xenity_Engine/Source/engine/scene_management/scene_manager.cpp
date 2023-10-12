@@ -84,7 +84,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			}
 			else 
 			{
-				Debug::PrintError("Fail to save the scene file: " + file->GetPath());
+				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath());
 			}
 		}
 	}
@@ -267,7 +267,7 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 		}
 		catch (const std::exception&)
 		{
-			Debug::PrintError("Scene file error");
+			Debug::PrintError("[SceneManager::LoadScene] Scene file error");
 			return;
 		}
 	}

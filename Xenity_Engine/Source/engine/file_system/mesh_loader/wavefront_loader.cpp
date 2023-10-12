@@ -23,7 +23,7 @@ bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
 	// Print error if the file can't be read
 	if (file.fail())
 	{
-		Debug::PrintError("Mesh loading error. Path: " + mesh->file->GetPath());
+		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh->file->GetPath());
 		return false;
 	}
 

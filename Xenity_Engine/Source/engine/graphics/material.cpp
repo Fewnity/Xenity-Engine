@@ -208,7 +208,7 @@ void Material::OnReflectionUpdated()
 	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
 	if (!loadResult)
 	{
-		Debug::PrintError("Fail to save the Material file: " + file->GetPath());
+		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath());
 	}
 }
 
@@ -217,6 +217,6 @@ void Material::LoadFileReference()
 	bool loadResult = ReflectionUtils::FileToMap(file, GetReflection());
 	if (!loadResult)
 	{
-		Debug::PrintError("Fail to load the material file: " + file->GetPath());
+		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath());
 	}
 }

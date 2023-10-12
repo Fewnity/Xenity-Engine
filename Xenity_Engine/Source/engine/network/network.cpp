@@ -186,13 +186,13 @@ Socket* NetworkManager::CreateSocket(const std::string& address, int port)
 	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
 	if (startupResult != 0)
 	{
-		Debug::PrintError("Could not start win socket");
+		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
 		return nullptr;
 	}
 #endif
 	if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		Debug::PrintError("Could not create socket");
+		Debug::PrintError("[NetworkManager::CreateSocket] Could not create socket");
 		return nullptr;
 	}
 	memset(&serv_addr, '0', sizeof(serv_addr));
@@ -202,12 +202,12 @@ Socket* NetworkManager::CreateSocket(const std::string& address, int port)
 
 	if (inet_pton(AF_INET, address.c_str(), &serv_addr.sin_addr) <= 0)
 	{
-		Debug::PrintError("inet_pton error occured");
+		Debug::PrintError("[NetworkManager::CreateSocket] inet_pton error occured");
 		return nullptr;
 	}
 	if (connect(newSocketId, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
 	{
-		Debug::PrintError("Connect Failed");
+		Debug::PrintError("[NetworkManager::CreateSocket] Connect Failed");
 		return nullptr;
 	}
 #if defined(_WIN32) || defined(_WIN64)

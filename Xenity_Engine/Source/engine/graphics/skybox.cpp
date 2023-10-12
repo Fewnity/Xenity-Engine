@@ -50,7 +50,7 @@ void SkyBox::OnReflectionUpdated()
 	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
 	if (!loadResult)
 	{
-		Debug::PrintError("Fail to save the Skybox file: " + file->GetPath());
+		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath());
 	}
 }
 
@@ -59,7 +59,7 @@ void SkyBox::LoadFileReference()
 	bool loadResult = ReflectionUtils::FileToMap(file, GetReflection());
 	if (!loadResult) 
 	{
-		Debug::PrintError("Fail to load the skybox file: " + file->GetPath());
+		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath());
 	}
 }
 

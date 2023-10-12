@@ -181,17 +181,17 @@ void Shader::LoadFileReference()
 				}
 				else
 				{
-					Debug::PrintError("The shader structure is wrong: " + file->GetPath());
+					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + file->GetPath());
 				}
 			}
 			else
 			{
-				Debug::PrintError("The shader file is empty: " + file->GetPath());
+				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + file->GetPath());
 			}
 		}
 		else 
 		{
-			Debug::PrintError("Fail to load the shader file: " + file->GetPath());
+			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + file->GetPath());
 		}
 	}
 }
@@ -259,7 +259,7 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 		{
 			std::vector<char> errorLog = Engine::renderer->GetCompilationError(*id);
 
-			std::string shaderError = "Compilation error: ";
+			std::string shaderError = "[Shader::Compile] Compilation error: ";
 			switch (type)
 			{
 			case Shader::Vertex_Shader:
@@ -288,7 +288,7 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 	}
 	else
 	{
-		std::string shaderError = "Compilation error: Shader type not found. File path: " + shaderData;
+		std::string shaderError = "[Shader::Compile] Compilation error: Shader type not found. File path: " + shaderData;
 		Debug::PrintError(shaderError);
 	}
 }

@@ -81,7 +81,7 @@ void SelectProjectMenu::Draw()
 			}
 			else
 			{
-				Debug::PrintError("This is not a Xenity Project");
+				Debug::PrintError("[SelectProjectMenu::Draw] This is not a Xenity Project");
 			}
 		}
 	}
@@ -102,7 +102,7 @@ void SelectProjectMenu::Draw()
 			}
 			else
 			{
-				Debug::PrintError("This is not a Xenity Project");
+				Debug::PrintError("[SelectProjectMenu::Draw] This is not a Xenity Project");
 			}
 		}
 		ImGui::Separator();

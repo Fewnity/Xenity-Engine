@@ -18,7 +18,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 #endif
 
 	if (library == NULL)
-		Debug::PrintError("Library not found: " + fileName);
+		Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
 }
 
 void DynamicLibrary::UnloadGameLibrary()
@@ -31,7 +31,7 @@ void DynamicLibrary::UnloadGameLibrary()
 		}
 		else
 		{
-			Debug::PrintError("Library cannot be freed");
+			Debug::PrintError("[DynamicLibrary::UnloadGameLibrary] Library cannot be freed");
 		}
 	}
 }
@@ -49,12 +49,12 @@ GameInterface* DynamicLibrary::CreateGame()
 		}
 		else
 		{
-			Debug::PrintError("Cannot create game");
+			Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game");
 		}
 	}
 	else
 	{
-		Debug::PrintError("Cannot create game");
+		Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game");
 	}
 
 	return gameInterface;

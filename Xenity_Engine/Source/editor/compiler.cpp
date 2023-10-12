@@ -31,7 +31,7 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 
 	if (r7 != 0)
 	{
-		Debug::PrintError("Compilation failed");
+		Debug::PrintError("[Compiler::CompileInWSL] Compilation failed");
 	}
 
 	/*Debug::Print(std::to_string(r1));
@@ -145,27 +145,27 @@ void Compiler::OnCompileEnd(CompileResult result)
 		Debug::Print("Game compiled successfully!");
 		break;
 	case ERROR_UNKNOWN:
-		Debug::PrintError("Unable to compile");
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile");
 		break;
 	case ERROR_ENGINE_GAME_LIB_MISSING:
-		Debug::PrintError("[Compiler::CompileGame] Missing engine_game.lib");
+		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_game.lib");
 		break;
 	case ERROR_ENGINE_EDITOR_LIB_MISSING:
 		break;
 	case ERROR_LIB_DLLS_MISSING:
-		Debug::PrintError("[Compiler::CompileGame] Missing one of Dlls");
+		Debug::PrintError("[Compiler::OnCompileEnd] Missing one of Dlls");
 		break;
 	case ERROR_ENGINE_HEADERS_COPY:
-		Debug::PrintError("[Compiler::CompileGame] Error when copying engine headers");
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine headers");
 		break;
 	case ERROR_GAME_CODE_COPY:
-		Debug::PrintError("[Compiler::CompileGame] Error when copying game's code");
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's code");
 		break;
 	case ERROR_COMPILED_FILES_COPY:
-		Debug::PrintError("[Compiler::CompileGame] Error when copying compiled game's files");
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying compiled game's files");
 		break;
 	default:
-		Debug::PrintError("Unable to compile");
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile");
 		break;
 	}
 	Editor::compilingMenu->ClosePopup();
@@ -380,7 +380,7 @@ void Compiler::HotReloadGame()
 	}
 	else
 	{
-		Debug::PrintError("Game compilation failed");
+		Debug::PrintError("[Compiler::HotReloadGame] Game compilation failed");
 		SceneManager::RestoreSceneHotReloading();
 	}
 #endif

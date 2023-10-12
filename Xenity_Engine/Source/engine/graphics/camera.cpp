@@ -286,7 +286,7 @@ void Camera::UpdateFrameBuffer()
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Debug::PrintError("Framebuffer not created");
+				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created");
 		}
 
 		needFrameBufferUpdate = false;

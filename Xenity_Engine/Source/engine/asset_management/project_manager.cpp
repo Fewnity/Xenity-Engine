@@ -400,7 +400,7 @@ void ProjectManager::LoadProjectSettings()
 		}
 		else
 		{
-			Debug::PrintError("Fail to open the project settings file");
+			Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
 		}
 
 		if (!jsonString.empty())
@@ -413,7 +413,7 @@ void ProjectManager::LoadProjectSettings()
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("Meta file error");
+				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error");
 				return;
 			}
 
