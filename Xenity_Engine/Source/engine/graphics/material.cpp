@@ -205,17 +205,10 @@ std::unordered_map<std::string, ReflectionEntry> Material::GetMetaReflection()
 
 void Material::OnReflectionUpdated()
 {
-	json myJson;
-	myJson["Values"] = ReflectionUtils::MapToJson(GetReflection());
-	FileSystem::fileSystem->DeleteFile(file->GetPath());
-	if (file->Open(true))
+	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
+	if (!loadResult)
 	{
-		file->Write(myJson.dump(0));
-		file->Close();
-	}
-	else
-	{
-		Debug::PrintError("Error when trying to save Material file");
+		Debug::PrintError("Fail to save the Material file: " + file->GetPath());
 	}
 }
 

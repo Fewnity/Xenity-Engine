@@ -170,14 +170,14 @@ void Shader::LoadFileReference()
 
 					std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
 
-					LoadShader(vertexShaderData, ShaderType::Vertex_Shader);
-					LoadShader(fragShaderData, ShaderType::Fragment_Shader);
+					Compile(vertexShaderData, ShaderType::Vertex_Shader);
+					Compile(fragShaderData, ShaderType::Fragment_Shader);
 
 					//useTessellation = true;
 					//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
 					//LoadShader(fragmentShaderPath, Fragment_Shader);
 
-					BuildShader();
+					Link();
 				}
 				else
 				{
@@ -223,7 +223,7 @@ bool Shader::Use()
 
 #pragma region Data loading
 
-void Shader::LoadShader(const std::string& shaderData, ShaderType type)
+void Shader::Compile(const std::string& shaderData, ShaderType type)
 {
 	const char* shaderDataConst = shaderData.c_str();
 
@@ -418,7 +418,7 @@ void Shader::SetShaderAttribut(const char* attribut, int value)
 }
 
 
-void Shader::BuildShader()
+void Shader::Link()
 {
 	programId = Engine::renderer->CreateShaderProgram();
 	Engine::renderer->AttachShader(programId, vertexShaderId);

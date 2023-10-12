@@ -53,8 +53,8 @@ public:
 	static std::shared_ptr<Shader> MakeShader();
 
 private:
-	void BuildShader();
-	void LoadShader(const std::string& filePath, ShaderType type);
+	void Link();
+	void Compile(const std::string& filePath, ShaderType type);
 	void SetPointLightData(std::shared_ptr<Light> light, const int index);
 	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);
 	void SetSpotLightData(std::shared_ptr<Light> light, const int index);

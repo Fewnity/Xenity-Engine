@@ -47,17 +47,10 @@ std::unordered_map<std::string, ReflectionEntry> SkyBox::GetMetaReflection()
 
 void SkyBox::OnReflectionUpdated()
 {
-	json myJson;
-	myJson["Values"] = ReflectionUtils::MapToJson(GetReflection());
-	FileSystem::fileSystem->DeleteFile(file->GetPath());
-	if (file->Open(true)) 
+	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
+	if (!loadResult)
 	{
-		file->Write(myJson.dump(0));
-		file->Close();
-	}
-	else 
-	{
-		Debug::PrintError("Fail to save the skybox file: " + file->GetPath());
+		Debug::PrintError("Fail to save the Skybox file: " + file->GetPath());
 	}
 }
 
