@@ -37,6 +37,7 @@ public:
 	static nlohmann::json MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap);
 
 	static bool FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap);
+	static bool MapToFile(std::unordered_map<std::string, ReflectionEntry> theMap, std::shared_ptr<File> file);
 
 private:
 	template <typename T>

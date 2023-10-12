@@ -219,7 +219,7 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 
 bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap)
 {
-	bool ok = true;
+	bool ok;
 
 	json myJson;
 	if (file->Open(true))
@@ -238,6 +238,26 @@ bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<s
 		}
 	}
 	else 
+	{
+		ok = false;
+	}
+
+	return ok;
+}
+
+bool ReflectionUtils::MapToFile(std::unordered_map<std::string, ReflectionEntry> theMap, std::shared_ptr<File> file)
+{
+	bool ok;
+	json myJson;
+	myJson["Values"] = ReflectionUtils::MapToJson(theMap);
+	FileSystem::fileSystem->DeleteFile(file->GetPath());
+	if (file->Open(true))
+	{
+		file->Write(myJson.dump(0));
+		file->Close();
+		ok = true;
+	}
+	else
 	{
 		ok = false;
 	}
