@@ -112,13 +112,13 @@ void Transform::SetPosition(const Vector3& value)
 	if (gm->parent.expired())
 	{
 		localPosition = value;
+		SetChildrenWorldPositions();
 	}
 	else
 	{
+		SetChildrenWorldPositions();
 		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->parent.lock()->GetTransform()->transformationMatrix);
 	}
-
-	SetChildrenWorldPositions();
 }
 
 void Transform::SetLocalPosition(const Vector3& value)
@@ -152,13 +152,13 @@ void Transform::SetRotation(const Vector3& value)
 	if (gm->parent.expired())
 	{
 		localRotation = value;
+		SetChildrenWorldPositions();
 	}
 	else
 	{
+		SetChildrenWorldPositions();
 		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->parent.lock()->GetTransform()->GetRotation());
 	}
-
-	SetChildrenWorldPositions();
 }
 
 void Transform::SetLocalRotation(const Vector3& value)
@@ -194,8 +194,6 @@ void Transform::SetLocalScale(const Vector3& value)
 }
 
 #pragma endregion
-
-
 
 void Transform::OnParentChanged()
 {
@@ -302,11 +300,6 @@ void Transform::UpdateTransformationMatrix()
 {
 	if (!isTransformationMatrixDirty)
 		return;
-
-	/*if (drawableCount != 0)
-	{
-		Engine::drawOrderListDirty = true;
-	}*/
 
 	isTransformationMatrixDirty = false;
 
