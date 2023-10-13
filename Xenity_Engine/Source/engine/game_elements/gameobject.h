@@ -178,6 +178,7 @@ private:
 	* Update local active value
 	*/
 	void UpdateActive(const std::weak_ptr<GameObject>& changed);
+	bool IsParentOf(std::shared_ptr<GameObject> gameObject);
 
 	bool active = true;
 	bool localActive = true;

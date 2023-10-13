@@ -120,6 +120,11 @@ void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 {
 	if (auto newChild = weakNewChild.lock())
 	{
+		if (newChild->IsParentOf(shared_from_this()))
+		{
+			return;
+		}
+
 		// Remove the new child from his old parent's children list
 		if (newChild->parent.lock())
 		{
@@ -296,6 +301,22 @@ void GameObject::UpdateActive(const std::weak_ptr<GameObject>& weakChanged)
 			}
 		}
 	}
+}
+
+bool GameObject::IsParentOf(std::shared_ptr<GameObject> gameObject)
+{
+	for (int i = 0; i < childCount; i++)
+	{
+		if (children[i].lock() == gameObject) 
+		{
+			return true;
+		}
+		else 
+		{
+			return children[i].lock()->IsParentOf(gameObject);
+		}
+	}
+	return false;
 }
 
 void GameObject::OnReflectionUpdated()
