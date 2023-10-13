@@ -60,7 +60,7 @@ bool EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 
 	if (childLock)
 	{
-		int childCount = (int)childLock->children.size();
+		int childCount = childLock->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 		if (Engine::selectedGameObject.lock() == childLock)
 			flags |= ImGuiTreeNodeFlags_Selected;
@@ -103,7 +103,7 @@ bool EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 		}
 		if (opened)
 		{
-			for (int i = 0; i < childCount; i++)
+			for (int i = 0; i < childLock->GetChildrenCount(); i++)
 			{
 				bool clickedTemp = DrawTreeItem(childLock->children[i]);
 				if (clickedTemp)
