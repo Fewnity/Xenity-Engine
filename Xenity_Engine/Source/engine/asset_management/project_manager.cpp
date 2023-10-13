@@ -335,7 +335,7 @@ void ProjectManager::UnloadProject()
 {
 	Engine::SetCurrentProjectDirectory(nullptr);
 	SceneManager::SetOpenedScene(nullptr);
-	SceneManager::EmptyScene();
+	SceneManager::CreateEmptyScene();
 	Graphics::SetDefaultValues();
 
 	startScene.reset();

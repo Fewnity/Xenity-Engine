@@ -53,7 +53,12 @@ public:
 	/**
 	* [Internal] Clear scene
 	*/
-	static void EmptyScene();
+	static void ClearScene();
+
+	/**
+	* [Internal] Create empty scene
+	*/
+	static void CreateEmptyScene();
 
 	/**
 	* [Internal] Get opened scene

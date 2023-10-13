@@ -76,13 +76,13 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			std::string jsonData = j.dump(2);
 			FileSystem::fileSystem->DeleteFile(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
-			if (file->Open(true)) 
+			if (file->Open(true))
 			{
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
 			}
-			else 
+			else
 			{
 				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath());
 			}
@@ -107,7 +107,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	Engine::SetGameState(Starting);
 #endif
 
-	EmptyScene();
+	ClearScene();
 
 	std::vector<std::shared_ptr<Component>> allComponents;
 	uint64_t biggestId = 0;
@@ -249,7 +249,7 @@ void SceneManager::LoadScene(const json& jsonData)
 #if !defined(EDITOR)
 	Engine::SetGameState(Playing);
 #endif
-	}
+}
 
 void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 {
@@ -278,9 +278,8 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 	}
 }
 
-void SceneManager::EmptyScene()
+void SceneManager::ClearScene()
 {
-	openedScene.reset();
 	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();
 	int cameraCount = Graphics::cameras.size();
@@ -301,4 +300,10 @@ void SceneManager::EmptyScene()
 	Engine::gameObjectCount = 0;
 	Engine::selectedGameObject.reset();
 	Window::UpdateWindowTitle();
+}
+
+void SceneManager::CreateEmptyScene()
+{
+	openedScene.reset();
+	SceneManager::ClearScene();
 }

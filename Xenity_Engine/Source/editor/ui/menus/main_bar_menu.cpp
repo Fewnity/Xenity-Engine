@@ -30,7 +30,7 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("New Scene"))
 		{
-			SceneManager::EmptyScene();
+			SceneManager::CreateEmptyScene();
 		}
 		if (ImGui::MenuItem("Open Scene"))
 		{
