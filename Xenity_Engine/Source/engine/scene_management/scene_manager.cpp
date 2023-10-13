@@ -118,7 +118,7 @@ void SceneManager::LoadScene(const json& jsonData)
 		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 		uint64_t id = std::stoull(gameObjectKV.key());
 		newGameObject->SetUniqueId(id);
-		if (id >= biggestId)
+		if (id > biggestId)
 		{
 			biggestId = id;
 		}
@@ -131,10 +131,15 @@ void SceneManager::LoadScene(const json& jsonData)
 			{
 				std::string componentName = componentKV.value()["Type"];
 				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
+				uint64_t compId = std::stoull(componentKV.key());
+				if (compId > biggestId)
+				{
+					biggestId = compId;
+				}
 				if (comp)
 				{
 					allComponents.push_back(comp);
-					comp->SetUniqueId(std::stoull(componentKV.key()));
+					comp->SetUniqueId(compId);
 				}
 				else
 				{
