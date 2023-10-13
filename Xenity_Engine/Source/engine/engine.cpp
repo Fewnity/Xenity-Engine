@@ -673,6 +673,22 @@ void DestroyGameObjectAndChild(const std::weak_ptr<GameObject>& gameObject)
 	Engine::gameObjectsToDestroy.push_back(gameObject);
 	gameObjectLock->waitingForDestroy = true;
 	int childCount = gameObjectLock->GetChildrenCount();
+
+	// Remove the destroyed gameobject from his parent's children list
+	if (gameObjectLock->parent.lock() != nullptr) 
+	{
+		int parentChildCount = gameObjectLock->parent.lock()->GetChildrenCount();
+		for (int i = 0; i < parentChildCount; i++)
+		{
+			if (gameObjectLock->parent.lock()->children[i].lock() == gameObjectLock)
+			{
+				gameObjectLock->parent.lock()->children.erase(gameObjectLock->parent.lock()->children.begin() + i);
+				gameObjectLock->parent.lock()->childCount--;
+				break;
+			}
+		}
+	}
+
 	for (int i = 0; i < childCount; i++)
 	{
 		DestroyGameObjectAndChild(gameObjectLock->children[i]);
