@@ -165,7 +165,28 @@ void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 
 void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
 {
-	gameObject.lock()->AddChild(shared_from_this());
+	if (auto go = gameObject.lock()) 
+	{
+		go->AddChild(shared_from_this());
+	}
+	else 
+	{
+		// If the new parent is the root
+		if (auto lockParent = parent.lock())
+		{
+			int parentChildCount = lockParent->childCount;
+			for (int i = 0; i < parentChildCount; i++)
+			{
+				if (lockParent->children[i].lock() == shared_from_this())
+				{
+					lockParent->children.erase(lockParent->children.begin() + i);
+					lockParent->childCount--;
+					break;
+				}
+			}
+		}
+		parent.reset();
+	}
 }
 
 void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
