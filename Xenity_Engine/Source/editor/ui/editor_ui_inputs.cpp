@@ -80,11 +80,11 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 		value.reset();
 	}
 
-	Component* ref = nullptr;
+	std::shared_ptr<Component> ref = nullptr;
 	std::string payloadName = "Component";
 	if (DragDropTarget(payloadName, ref))
 	{
-		value = ref->shared_from_this();
+		value = ref;
 	}
 
 	return oldValue != value.lock();
@@ -107,11 +107,11 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 		value.reset();
 	}
 
-	Transform* ref = nullptr;
+	std::shared_ptr <Transform> ref = nullptr;
 	std::string payloadName = "Transform";
 	if (DragDropTarget(payloadName, ref))
 	{
-		value = ref->shared_from_this();
+		value = ref;
 	}
 
 	return oldValue != value.lock();
@@ -134,11 +134,11 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 		value.reset();
 	}
 
-	GameObject* ref = nullptr;
+	std::shared_ptr <GameObject> ref = nullptr;
 	std::string payloadName = "GameObject";
 	if (DragDropTarget(payloadName, ref))
 	{
-		value = ref->shared_from_this();
+		value = ref;
 	}
 
 	return oldValue != value.lock();

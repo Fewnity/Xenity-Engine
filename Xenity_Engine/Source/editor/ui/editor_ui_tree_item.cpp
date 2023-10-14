@@ -53,9 +53,9 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 	return objectClicked;
 }
 
-bool EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
+int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 {
-	bool objectClicked = false;
+	int state = 0;
 	auto childLock = child.lock();
 
 	if (childLock)
@@ -87,32 +87,39 @@ bool EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 		}
 		ImGui::PopStyleColor();
 
-		GameObject* droppedGameObject = nullptr;
+		std::shared_ptr <GameObject> droppedGameObject = nullptr;
 		if (DragDropTarget("GameObject", droppedGameObject))
 		{
 			droppedGameObject->SetParent(childLock);
+			state = 1;
 		}
 		else
 		{
-			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
+			if (ImGui::IsItemHovered())
 			{
-				Engine::SetSelectedGameObject(child);
-				Engine::SetSelectedFileReference(nullptr);
-				objectClicked = true;
+				state = 1;
+				if (ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
+				{
+					Engine::SetSelectedGameObject(child);
+					Engine::SetSelectedFileReference(nullptr);
+					state = 2;
+				}
 			}
 		}
 		if (opened)
 		{
 			for (int i = 0; i < childLock->GetChildrenCount(); i++)
 			{
-				bool clickedTemp = DrawTreeItem(childLock->children[i]);
-				if (clickedTemp)
-					objectClicked = true;
+				int clickedTemp = DrawTreeItem(childLock->children[i]);
+				if (clickedTemp == 1)
+					state = 1;
+				else if (clickedTemp == 2)
+					state = 2;
 			}
 			ImGui::TreePop();
 		}
 	}
-	return objectClicked;
+	return state;
 }
 
 #endif // #if defined(EDITOR)

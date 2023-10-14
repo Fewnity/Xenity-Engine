@@ -37,7 +37,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, Component*& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -48,7 +48,7 @@ bool EditorUI::DragDropTarget(const std::string& name, Component*& ref)
 
 			if (comp)
 			{
-				ref = comp;
+				ref = comp->shared_from_this();
 				return true;
 			}
 		}
@@ -57,7 +57,7 @@ bool EditorUI::DragDropTarget(const std::string& name, Component*& ref)
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, GameObject*& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -65,10 +65,9 @@ bool EditorUI::DragDropTarget(const std::string& name, GameObject*& ref)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			GameObject* gameObject = ((GameObject*)payload->Data);
-
 			if (gameObject)
 			{
-				ref = gameObject;
+				ref = gameObject->shared_from_this();
 				return true;
 			}
 		}
@@ -77,7 +76,7 @@ bool EditorUI::DragDropTarget(const std::string& name, GameObject*& ref)
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const  std::string& name, Transform*& ref)
+bool EditorUI::DragDropTarget(const  std::string& name, std::shared_ptr<Transform>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -88,7 +87,7 @@ bool EditorUI::DragDropTarget(const  std::string& name, Transform*& ref)
 
 			if (trans)
 			{
-				ref = trans;
+				ref = trans->shared_from_this();
 				return true;
 			}
 		}

@@ -58,10 +58,10 @@ public:
 
 	static void DrawTextCentered(const std::string& text);
 	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref);
-	static bool DragDropTarget(const std::string& name, Component*& ref);
-	static bool DragDropTarget(const std::string& name, GameObject*& ref);
-	static bool DragDropTarget(const std::string& name, Transform*& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
 
 	static bool DrawInput(const std::string& inputName, Color& value);
 	static bool DrawInput(const std::string& inputName, Vector2& value);
@@ -78,7 +78,7 @@ public:
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
-	static bool DrawTreeItem(const std::weak_ptr<GameObject>& child);
+	static int DrawTreeItem(const std::weak_ptr<GameObject>& child);
 	static bool DrawTreeItem(ProjectDirectory* projectDir);
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);

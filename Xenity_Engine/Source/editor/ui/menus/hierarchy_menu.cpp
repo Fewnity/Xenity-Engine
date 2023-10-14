@@ -11,6 +11,8 @@ void HierarchyMenu::Draw()
 {
 	ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
 
+	bool disableDrag = false;
+
 	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
 	//Add in the list only gameobject without parent
@@ -18,7 +20,10 @@ void HierarchyMenu::Draw()
 	{
 		if (Engine::gameObjects[i]->parent.lock() == nullptr)
 		{
-			EditorUI::DrawTreeItem(Engine::gameObjects[i]);
+			int r = EditorUI::DrawTreeItem(Engine::gameObjects[i]);
+			if (r != 0) {
+				disableDrag = true;
+			}
 		}
 	}
 	isFocused = ImGui::IsWindowFocused();
@@ -28,6 +33,13 @@ void HierarchyMenu::Draw()
 		Engine::SetSelectedFileReference(nullptr);
 	}
 	ImGui::EndChild();
-
+	if (!disableDrag)
+	{
+		std::shared_ptr <GameObject> droppedGameObject = nullptr;
+		if (EditorUI::DragDropTarget("GameObject", droppedGameObject))
+		{
+			droppedGameObject->SetParent(std::weak_ptr<GameObject>());
+		}
+	}
 	ImGui::End();
 }
