@@ -13,7 +13,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 --- To do quick:
-Change Opened scene on save
 Texture filter system
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
@@ -23,10 +22,9 @@ Material::SetAttribut check emplace, try_emplace?
 Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
 Fix camera when multisampled is disabled on windows build
-Add close function for sockets
 Add network profiler
-Problem when duplicating a text renderer
-Fix crash when using material without shader
+Add basic json data in empty files (like on empty scene save, on new file created)
+Check why files are deleted (RemoveUnusedFiles) on scene save
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
