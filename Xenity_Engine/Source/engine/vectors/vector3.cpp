@@ -93,6 +93,11 @@ float Vector3::Distance(const Vector3& a, const Vector3& b)
 	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
 }
 
+Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const int t)
+{
+	return a + (b-a) * t;
+}
+
 #pragma region Operators
 
 Vector3 operator+(const Vector3& left, const Vector3& right)
