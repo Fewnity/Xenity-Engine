@@ -23,6 +23,7 @@ public:
 	//void SetReflection();
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* Set field of view

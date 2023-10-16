@@ -55,6 +55,11 @@ std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
 	return reflectedVariables;
 }
 
+void Camera::OnReflectionUpdated()
+{
+	isProjectionDirty = true;
+}
+
 Camera::~Camera()
 {
 #if defined(_WIN32) || defined(_WIN64)
