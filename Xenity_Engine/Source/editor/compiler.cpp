@@ -75,7 +75,7 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 std::string Compiler::GetStartCompilerCommand()
 {
 	std::string command;
-	command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"; // Go to the compiler folder
+	//command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"; // Go to the compiler folder
 	//command = "c: && ";
 	command += "cd " + std::string(COMPILER_PATH); // Go to the compiler folder
 
