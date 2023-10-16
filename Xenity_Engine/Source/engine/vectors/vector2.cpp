@@ -73,6 +73,11 @@ float Vector2::Distance(const Vector2& a, const Vector2& b)
 	return sqrtf(xDis * xDis + yDis * yDis);
 }
 
+Vector2 Vector2::Lerp(const Vector2& a, const Vector2& b, const float t)
+{
+	return a + (b - a) * t;
+}
+
 #pragma region Operators
 
 Vector2 operator+(const Vector2& left, const Vector2& right)

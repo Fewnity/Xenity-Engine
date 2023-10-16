@@ -27,6 +27,7 @@ public:
 	Vector2 Normalized();
 	float Magnitude();
 	static float Distance(const Vector2& a, const Vector2& b);
+	static Vector2 Lerp(const Vector2& a, const Vector2& b, const float t);
 
 	float x;
 	float y;

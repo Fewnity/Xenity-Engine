@@ -26,7 +26,7 @@ public:
 
 	static Vector3 LookAt(const Vector3& from, const Vector3& to);
 	static float Distance(const Vector3& a, const Vector3& b);
-	static Vector3 Lerp(const Vector3& a, const Vector3& b, const int t);
+	static Vector3 Lerp(const Vector3& a, const Vector3& b, const float t);
 	Vector3 Normalised();
 	float Magnitude();
 	float x;

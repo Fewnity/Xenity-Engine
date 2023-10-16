@@ -63,6 +63,11 @@ float Vector4::Magnitude()
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2) + powf(this->w, 2));
 }
 
+Vector4 Vector4::Lerp(const Vector4& a, const Vector4& b, const float t)
+{
+	return a + (b - a) * t;
+}
+
 #pragma region Operators
 
 Vector4 operator+(const Vector4& left, const Vector4& right)

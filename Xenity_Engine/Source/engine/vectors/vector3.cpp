@@ -93,7 +93,7 @@ float Vector3::Distance(const Vector3& a, const Vector3& b)
 	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
 }
 
-Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const int t)
+Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const float t)
 {
 	return a + (b-a) * t;
 }

@@ -20,6 +20,7 @@ public:
 	Vector4(const float fillValue);
 	Vector4 Normalised();
 	float Magnitude();
+	static Vector4 Lerp(const Vector4& a, const Vector4& b, const float t);
 
 	float x;
 	float y;
