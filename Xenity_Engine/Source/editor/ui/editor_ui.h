@@ -19,6 +19,7 @@ class ProjectDirectory;
 class Component;
 class Transform;
 class SkyBox;
+class Collider;
 
 enum EditorUIError
 {
@@ -60,6 +61,7 @@ public:
 	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
 
@@ -74,6 +76,7 @@ public:
 	static bool DrawInput(const std::string& inputName, int& value);
 	static bool DrawInput(const std::string& inputName, bool& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);

@@ -328,6 +328,10 @@ void Engine::RegisterEngineComponents()
 		{ return go->AddComponent<AudioSource>(); });
 	ClassRegistry::AddComponentClass("TestComponent", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<TestComponent>(); });
+	ClassRegistry::AddComponentClass("RigidBody", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<RigidBody>(); });
+	ClassRegistry::AddComponentClass("BoxCollider", [](std::shared_ptr<GameObject> go)
+		{ return go->AddComponent<BoxCollider>(); });
 }
 
 void Engine::SetMaxCpuSpeed()

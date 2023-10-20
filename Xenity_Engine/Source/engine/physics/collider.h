@@ -2,5 +2,7 @@
 
 class Collider
 {
+public:
+	//virtual void 
 };
 

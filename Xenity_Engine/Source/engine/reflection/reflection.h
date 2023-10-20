@@ -29,9 +29,11 @@ class SkyBox;
 class Font;
 class Shader;
 class Material;
+class Collider;
 
 typedef std::variant<
 	std::reference_wrapper<std::weak_ptr<Component>>,
+	std::reference_wrapper<std::weak_ptr<Collider>>,
 	std::reference_wrapper<int>,
 	std::reference_wrapper<uint64_t>,
 	std::reference_wrapper<double>,
@@ -64,9 +66,6 @@ public:
 class API Reflection
 {
 public:
-	//std::unordered_map<std::string, Variable> reflectedVariables;
-	//virtual void SetReflection() = 0;
-
 	/**
 	* Get all child class variables references
 	*/

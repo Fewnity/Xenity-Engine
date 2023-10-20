@@ -89,3 +89,7 @@
 #include "engine/network/network.h"
 
 #include "engine/test_component.h"
+
+// Physics
+#include "engine/physics/box_collider.h"
+#include "engine/physics/rigidbody.h"
