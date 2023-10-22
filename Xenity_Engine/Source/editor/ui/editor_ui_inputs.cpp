@@ -90,6 +90,33 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	return oldValue != value.lock();
 }
 
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value)
+{
+	std::shared_ptr<Collider> oldValue = value.lock();
+
+	std::string inputText = "None (Collider)";
+	auto ptr = value.lock();
+	if (ptr != nullptr)
+	{
+		inputText = ptr->GetGameObject()->name;
+		inputText += " " + std::to_string(ptr->GetUniqueId());
+	}
+
+	if (DrawInputButton(inputName, inputText, true) == 2)
+	{
+		value.reset();
+	}
+
+	std::shared_ptr<Collider> ref = nullptr;
+	std::string payloadName = "Collider";
+	if (DragDropTarget(payloadName, ref))
+	{
+		value = ref;
+	}
+
+	return oldValue != value.lock();
+}
+
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value)
 {
 	std::shared_ptr<Transform> oldValue = value.lock();

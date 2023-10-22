@@ -57,6 +57,26 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 	return false;
 }
 
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			Collider* obj = ((Collider*)payload->Data);
+
+			if (obj)
+			{
+				ref = std::dynamic_pointer_cast<Collider>(((Component*)obj)->shared_from_this());
+				return true;
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
+}
+
 bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref)
 {
 	if (ImGui::BeginDragDropTarget())

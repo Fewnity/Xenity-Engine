@@ -1,6 +1,8 @@
 #pragma once
 
-class Collider
+#include "../component.h"
+
+class Collider : public Component
 {
 public:
 	//virtual void 
