@@ -8,6 +8,8 @@
 #include "audio/audio_source.h"
 #include "audio/audio_manager.h"
 #include "graphics/graphics.h"
+#include "physics/rigidbody.h"
+#include "physics/physics_manager.h"
 #include "game_elements/gameobject.h"
 #include "asset_management/asset_manager.h"
 
@@ -55,6 +57,10 @@ void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
 		else if (auto result = std::dynamic_pointer_cast<Camera>(thisShared))
 		{
 			Graphics::cameras.push_back(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<RigidBody>(thisShared))
+		{
+			PhysicsManager::rigidBodies.push_back(result);
 		}
 	}
 }

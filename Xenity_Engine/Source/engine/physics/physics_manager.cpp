@@ -11,9 +11,18 @@ void PhysicsManager::Init()
 
 void PhysicsManager::Update()
 {
-	int colliderCount = 0;
+	int colliderCount = rigidBodies.size();
 	for (int i = 0; i < colliderCount; i++)
 	{
-		rigidBodies[i].lock()->Tick();
+		if (rigidBodies[i].lock()) 
+		{
+			rigidBodies[i].lock()->Tick();
+		}
+		else 
+		{
+			rigidBodies.erase(rigidBodies.begin() + i);
+			i--;
+			colliderCount--;
+		}
 	}
 }

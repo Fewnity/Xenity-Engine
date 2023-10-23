@@ -36,6 +36,7 @@
 #include "../editor/compiler.h"
 #include "../unit_tests/unit_test_manager.h"
 #include "graphics/2d_graphics/billboard_renderer.h"
+#include "physics/physics_manager.h"
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
@@ -159,6 +160,7 @@ int Engine::Init()
 	AssetManager::Init();
 	AudioManager::Init();
 	Time::Init();
+	PhysicsManager::Init();
 
 	//Init Editor
 #if defined(EDITOR)
@@ -263,6 +265,9 @@ void Engine::Loop()
 			// Update all components
 			componentsUpdateBenchmark->Start();
 			UpdateComponents();
+
+			if (gameState == GameState::Playing)
+				PhysicsManager::Update();
 
 			// Remove all destroyed gameobjects and components
 			RemoveDestroyedGameObjects();

@@ -93,6 +93,17 @@ void Time::UpdateTime()
 	deltaTime = tempDeltaTime * timeScale;
 	unscaledDeltaTime = tempDeltaTime;
 
+	if (deltaTime >= 0.3333) 
+	{
+		deltaTime = 0.3333;
+	}
+
+	// Should we enable this?
+	/*if (unscaledDeltaTime >= 0.3333)
+	{
+		unscaledDeltaTime = 0.3333;
+	}*/
+
 	time += deltaTime;
 	unscaledTime += unscaledDeltaTime;
 }

@@ -3,7 +3,7 @@
 #include "../component.h"
 #include "../vectors/vector3.h"
 
-class Collider;
+class BoxCollider;
 
 class API RigidBody : public Component
 {
@@ -18,8 +18,10 @@ public:
 	void Tick();
 	Vector3 velocity = Vector3(0, 0, 0);
 	float drag = 1;
+	bool isStatic = false;
+	float bounce = 0.5f;
 	float gravityMultiplier = 1.0f;
-	std::weak_ptr<Collider> attachedcollider;
+	std::weak_ptr<BoxCollider> attachedcollider;
 
 private:
 };

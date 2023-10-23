@@ -57,6 +57,7 @@ Text scale
 
 int main(int argc, char* argv[])
 {
+
 	// Init engine
 	if (Engine::Init() != 0)
 	{

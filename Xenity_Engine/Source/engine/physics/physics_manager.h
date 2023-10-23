@@ -7,8 +7,9 @@ class RigidBody;
 
 class PhysicsManager
 {
-	void Init();
-	void Update();
+public:
+	static void Init();
+	static void Update();
 	static std::vector<std::weak_ptr<RigidBody>> rigidBodies;
 };
 

@@ -4,6 +4,7 @@
 #include "../class_registry/class_registry.h"
 #include "../reflection/reflection_utils.h"
 #include "../asset_management/project_manager.h"
+#include "../physics/physics_manager.h"
 
 using json = nlohmann::json;
 
@@ -292,6 +293,8 @@ void SceneManager::ClearScene()
 			cameraCount--;
 		}
 	}
+
+	PhysicsManager::rigidBodies.clear();
 	Engine::orderedComponents.clear();
 	Engine::gameObjectsToDestroy.clear();
 	Engine::componentsToDestroy.clear();
