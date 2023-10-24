@@ -41,11 +41,13 @@ void RigidBody::Tick()
 					int tempSide = BoxCollider::CheckCollision(attachedcollider.lock(), other->attachedcollider.lock(), velocity * Time::GetDeltaTime());
 					if (tempSide != NoSide)
 					{
-						side = tempSide;
+						if((side & tempSide) == 0)
+							side |= tempSide;
 					}
 				}
 			}
 		}
+
 		Vector3 newVelocity = velocity;
 		if ((side & SideX) != 0)
 			newVelocity.x = -velocity.x * bounce;
