@@ -30,5 +30,7 @@ public:
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	void OnReflectionUpdated() override;
 	static CollisionSide CheckCollision(std::shared_ptr <BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity);
+	void OnDrawGizmos() override;
+
 private:
 };

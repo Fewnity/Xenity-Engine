@@ -1,6 +1,8 @@
 #include "box_collider.h"
 #include "../asset_management/asset_manager.h"
-#include "../game_elements/transform.h"
+#include "../../xenity.h"
+#include "../../xenity_editor.h"
+#include "../graphics/renderer/renderer.h"
 
 BoxCollider::BoxCollider()
 {
@@ -53,26 +55,52 @@ CollisionSide BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> a, std::s
 			result |= SideZ;
 	}
 
-	/*if (xColl)
-		result |= SideX;
-	if (yColl)
-		result |= SideY;
-	if (zColl)
-		result |= SideZ;*/
-
-	/*if (aMinPos.x <= bMaxPos.x &&
-		aMaxPos.x >= bMinPos.x &&
-		aMinPos.y <= bMaxPos.y &&
-		aMaxPos.y >= bMinPos.y &&
-		aMinPos.z <= bMaxPos.z &&
-		aMaxPos.z >= bMinPos.z)
-	{
-		return SideX;
-	}*/
 	return (CollisionSide)result;
 }
 
 BoxCollider::~BoxCollider()
 {
 	AssetManager::RemoveReflection(this);
+}
+
+void BoxCollider::OnDrawGizmos()
+{
+	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
+	Gizmo::SetColor(lineColor);
+
+	Vector3 pos = GetTransform()->GetPosition();
+	pos.x = -pos.x;
+	pos += offset;
+
+	// Bottom vertex
+	Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
+	Vector3 v2 = pos + Vector3(min.x, min.y, max.z);
+	Vector3 v3 = pos + Vector3(max.x, min.y, min.z);
+	Vector3 v4 = pos + Vector3(max.x, min.y, max.z);
+
+	// Top vertex
+	Vector3 v5 = pos + Vector3(min.x, max.y, min.z);
+	Vector3 v6 = pos + Vector3(min.x, max.y, max.z);
+	Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
+	Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
+
+	Engine::renderer->SetCameraPosition(Graphics::usedCamera.lock());
+
+	// Bottom
+	Gizmo::DrawLine(v1, v2);
+	Gizmo::DrawLine(v1, v3);
+	Gizmo::DrawLine(v4, v3);
+	Gizmo::DrawLine(v4, v2);
+
+	// Top
+	Gizmo::DrawLine(v5, v6);
+	Gizmo::DrawLine(v5, v7);
+	Gizmo::DrawLine(v8, v7);
+	Gizmo::DrawLine(v8, v6);
+
+	// Bottom to top
+	Gizmo::DrawLine(v1, v5);
+	Gizmo::DrawLine(v2, v6);
+	Gizmo::DrawLine(v3, v7);
+	Gizmo::DrawLine(v4, v8);
 }

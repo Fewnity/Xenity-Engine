@@ -77,7 +77,7 @@ std::shared_ptr<Material> Engine::standardMaterial = nullptr;
 std::shared_ptr<Material> Engine::unlitMaterial = nullptr;
 std::shared_ptr<Material> Engine::lineMaterial = nullptr;
 
-bool Engine::UseOpenGLFixedFunctions = false;
+bool Engine::UseOpenGLFixedFunctions = true;
 
 int Engine::Init()
 {
