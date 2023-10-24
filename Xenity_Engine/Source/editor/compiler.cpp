@@ -27,10 +27,22 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 	int r5 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'");
 	int r6 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'");
 	int r7 = 1;
+
+	// get the thread number of the cpu
+	unsigned int threadNumber = std::thread::hardware_concurrency();
+	if (threadNumber == 0) // This function may returns 0, use 1 instead
+	{
+		threadNumber = 1;
+	}
+
+	std::string compileCommand = "wsl bash -c -i \"cd ~/XenityTestProject/build";
 	if (platform == P_PSP)
-		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && psp-cmake -DMODE=psp .. && cmake --build . -j12\"");
+		compileCommand+= " && psp-cmake -DMODE=psp ..";
 	else if (platform == P_PsVita)
-		r7 = system("wsl bash -c -i \"cd ~/XenityTestProject/build && cmake -DMODE=psvita .. && cmake --build . -j12\"");
+		compileCommand += " && cmake -DMODE=psvita ..";
+
+	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\"";
+	r7 = system(compileCommand.c_str());
 
 	if (r7 != 0)
 	{
