@@ -11,11 +11,14 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
 	std::string fileName = libraryName + ".dll";
 
+	//Disable error popup
+	SetErrorMode(0x0001);
 #if defined(VISUAL_STUDIO)
 	library = LoadLibrary((LPCWSTR)fileName.c_str()); // Visual Studio
 #else
 	library = LoadLibrary(fileName.c_str()); // MSVC Compiler
 #endif
+	SetErrorMode(0);
 
 	if (library == NULL)
 		Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
