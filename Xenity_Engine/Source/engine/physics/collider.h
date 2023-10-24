@@ -5,6 +5,5 @@
 class Collider : public Component
 {
 public:
-	//virtual void 
 };
 

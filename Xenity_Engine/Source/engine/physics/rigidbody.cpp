@@ -36,10 +36,13 @@ void RigidBody::Tick()
 			std::shared_ptr<RigidBody> other = PhysicsManager::rigidBodies[i].lock();
 			if (other != shared_from_this())
 			{
-				int tempSide = BoxCollider::CheckCollision(attachedcollider.lock(), other->attachedcollider.lock(), velocity * Time::GetDeltaTime());
-				if (tempSide != NoSide) 
+				if (other->attachedcollider.lock()) 
 				{
-					side = tempSide;
+					int tempSide = BoxCollider::CheckCollision(attachedcollider.lock(), other->attachedcollider.lock(), velocity * Time::GetDeltaTime());
+					if (tempSide != NoSide)
+					{
+						side = tempSide;
+					}
 				}
 			}
 		}
@@ -51,10 +54,10 @@ void RigidBody::Tick()
 		if ((side & SideZ) != 0)
 			newVelocity.z = -velocity.z * bounce;
 
-		if(newVelocity.Magnitude() != 0)
+		if (newVelocity.Magnitude() != 0)
 			GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
 
-		if ((side & SideY) == 0) 
+		if ((side & SideY) == 0)
 		{
 			newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
 			if (newVelocity.y <= -10)
