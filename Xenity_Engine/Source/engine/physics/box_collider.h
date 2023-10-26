@@ -9,9 +9,6 @@ enum CollisionSide {
 	SideX = 1,
 	SideY = 2,
 	SideZ = 4,
-	SideXNeg = 8,
-	SideYNeg = 16,
-	SideZNeg = 32,
 };
 
 class API BoxCollider : public Collider
@@ -29,8 +26,9 @@ public:
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	void OnReflectionUpdated() override;
+	static bool CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b);
 	static CollisionSide CheckCollision(std::shared_ptr <BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity);
 	void OnDrawGizmos() override;
-
+	bool isTrigger = false;
 private:
 };

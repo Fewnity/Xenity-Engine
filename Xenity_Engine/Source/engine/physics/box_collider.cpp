@@ -28,6 +28,25 @@ void BoxCollider::OnReflectionUpdated()
 	max = size / 2.0f;
 }
 
+bool BoxCollider::CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b)
+{
+	Vector3 aMinPos = a->min + a->GetTransform()->GetPosition() + a->offset;
+	Vector3 aMaxPos = a->max + a->GetTransform()->GetPosition() + a->offset;
+	Vector3 bMinPos = b->min + b->GetTransform()->GetPosition() + b->offset;
+	Vector3 bMaxPos = b->max + b->GetTransform()->GetPosition() + b->offset;
+
+	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
+	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
+	bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
+
+	if (xColl && yColl && zColl)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 CollisionSide BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity)
 {
 	Vector3 aMinPosBef = a->min + a->GetTransform()->GetPosition() + a->offset;

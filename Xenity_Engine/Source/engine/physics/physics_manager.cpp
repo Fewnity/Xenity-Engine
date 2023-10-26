@@ -14,15 +14,16 @@ void PhysicsManager::Update()
 	int colliderCount = rigidBodies.size();
 	for (int i = 0; i < colliderCount; i++)
 	{
-		if (rigidBodies[i].lock()) 
-		{
-			rigidBodies[i].lock()->Tick();
-		}
-		else 
+		if (!rigidBodies[i].lock())
 		{
 			rigidBodies.erase(rigidBodies.begin() + i);
 			i--;
 			colliderCount--;
 		}
+	}
+
+	for (int i = 0; i < colliderCount; i++)
+	{
+		rigidBodies[i].lock()->Tick();
 	}
 }
