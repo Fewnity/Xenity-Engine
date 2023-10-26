@@ -51,12 +51,12 @@ void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
 std::unordered_map<std::string, ReflectionEntry> Graphics::GetLightingSettingsReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skybox, "skybox", true);
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::skyColor, "skyColor", true);
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::isFogEnabled, "isFogEnabled", true);
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogStart, "fogStart", true);
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogEnd, "fogEnd", true);
-	Reflection::AddReflectionVariable(reflectedVariables, Graphics::fogColor, "fogColor", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::skybox, "skybox", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::skyColor, "skyColor", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::isFogEnabled, "isFogEnabled", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::fogStart, "fogStart", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::fogEnd, "fogEnd", true);
+	Reflection::AddVariable(reflectedVariables, Graphics::fogColor, "fogColor", true);
 	return reflectedVariables;
 }
 

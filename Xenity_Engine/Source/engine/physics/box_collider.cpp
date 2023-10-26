@@ -15,10 +15,11 @@ BoxCollider::BoxCollider()
 std::unordered_map<std::string, ReflectionEntry> BoxCollider::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	AddReflectionVariable(reflectedVariables, size, "size", true);
-	AddReflectionVariable(reflectedVariables, offset, "offset", true);
-	AddReflectionVariable(reflectedVariables, min, "min", true);
-	AddReflectionVariable(reflectedVariables, max, "max", true);
+	AddVariable(reflectedVariables, size, "size", true);
+	AddVariable(reflectedVariables, offset, "offset", true);
+	//AddReflectionVariable(reflectedVariables, min, "min", true);
+	//AddReflectionVariable(reflectedVariables, max, "max", true);
+	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
 	return reflectedVariables;
 }
 

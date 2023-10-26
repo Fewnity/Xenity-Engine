@@ -149,7 +149,8 @@ void InspectorMenu::Draw()
 				{
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 					{
-						std::string payloadName = "Component";
+						std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
+						std::string payloadName = "Component" + typeId;
 						ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
 						ImGui::Text("%s", comp->GetComponentName().c_str());
 						ImGui::EndDragDropSource();

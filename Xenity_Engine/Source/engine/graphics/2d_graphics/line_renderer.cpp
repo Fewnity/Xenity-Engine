@@ -13,10 +13,10 @@ LineRenderer::LineRenderer()
 std::unordered_map<std::string, ReflectionEntry> LineRenderer::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
-	Reflection::AddReflectionVariable(reflectedVariables, startPosition, "startPosition", true);
-	Reflection::AddReflectionVariable(reflectedVariables, endPosition, "endPosition", true);
-	Reflection::AddReflectionVariable(reflectedVariables, width, "width", true);
+	Reflection::AddVariable(reflectedVariables, color, "color", true);
+	Reflection::AddVariable(reflectedVariables, startPosition, "startPosition", true);
+	Reflection::AddVariable(reflectedVariables, endPosition, "endPosition", true);
+	Reflection::AddVariable(reflectedVariables, width, "width", true);
 	return reflectedVariables;
 }
 

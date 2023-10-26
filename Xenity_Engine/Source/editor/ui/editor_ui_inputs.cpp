@@ -63,7 +63,7 @@ bool EditorUI::DrawInput(const std::string& inputName, bool& value)
 	return value != oldValue;
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId)
 {
 	std::shared_ptr<Component> oldValue = value.lock();
 
@@ -81,8 +81,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	}
 
 	std::shared_ptr<Component> ref = nullptr;
-	std::string payloadName = "Component";
-	if (DragDropTarget(payloadName, ref))
+	std::string payloadName = "Component" + std::to_string(typeId);
+	if (DragDropTarget(payloadName, ref, typeId))
 	{
 		value = ref;
 	}

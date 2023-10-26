@@ -29,9 +29,9 @@ Tilemap::~Tilemap()
 std::unordered_map<std::string, ReflectionEntry> Tilemap::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, width, "width", true);
-	Reflection::AddReflectionVariable(reflectedVariables, height, "height", true);
-	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
+	Reflection::AddVariable(reflectedVariables, width, "width", true);
+	Reflection::AddVariable(reflectedVariables, height, "height", true);
+	Reflection::AddVariable(reflectedVariables, color, "color", true);
 	return reflectedVariables;
 }
 

@@ -24,9 +24,9 @@ Transform::Transform(const std::weak_ptr<GameObject>& gameObject)
 std::unordered_map<std::string, ReflectionEntry> Transform::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, localPosition, "localPosition", true);
-	Reflection::AddReflectionVariable(reflectedVariables, localRotation, "localRotation", true);
-	Reflection::AddReflectionVariable(reflectedVariables, localScale, "localScale", true);
+	Reflection::AddVariable(reflectedVariables, localPosition, "localPosition", true);
+	Reflection::AddVariable(reflectedVariables, localRotation, "localRotation", true);
+	Reflection::AddVariable(reflectedVariables, localScale, "localScale", true);
 	return reflectedVariables;
 }
 

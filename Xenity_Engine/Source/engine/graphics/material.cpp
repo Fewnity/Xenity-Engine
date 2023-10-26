@@ -200,8 +200,8 @@ void Material::Update()
 std::unordered_map<std::string, ReflectionEntry> Material::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, shader, "shader", true);
-	Reflection::AddReflectionVariable(reflectedVariables, useLighting, "useLighting", true);
+	Reflection::AddVariable(reflectedVariables, shader, "shader", true);
+	Reflection::AddVariable(reflectedVariables, useLighting, "useLighting", true);
 	return reflectedVariables;
 }
 

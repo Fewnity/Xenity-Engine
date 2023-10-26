@@ -78,10 +78,23 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 		}
 
 		bool opened = ImGui::TreeNodeEx(childLock->name.c_str(), flags);
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+
+		if (ImGui::BeginDragDropSource())
 		{
-			std::string payloadName = "GameObject";
-			ImGui::SetDragDropPayload(payloadName.c_str(), childLock.get(), sizeof(GameObject));
+			EditorUI::multiDragData.gameObjects.clear();
+			EditorUI::multiDragData.transforms.clear();
+			EditorUI::multiDragData.components.clear();
+
+			EditorUI::multiDragData.gameObjects.push_back(childLock.get());
+			EditorUI::multiDragData.transforms.push_back(childLock->GetTransform().get());
+			int componentCount = childLock->GetComponentCount();
+			for (int i = 0; i < componentCount; i++)
+			{
+				EditorUI::multiDragData.components.push_back(childLock->components[i].get());
+			}
+			std::string payloadName = "MultiDragData";
+			int emptyInt = 0;
+			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
 			ImGui::Text(childLock->name.c_str());
 			ImGui::EndDragDropSource();
 		}

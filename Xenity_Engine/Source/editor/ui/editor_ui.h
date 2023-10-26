@@ -46,9 +46,17 @@ enum IconName
 	Icon_Count,
 };
 
+class MultiDragData {
+public:
+	std::vector<GameObject*> gameObjects;
+	std::vector<Transform*> transforms;
+	std::vector<Component*> components;
+};
+
 class EditorUI
 {
 public:
+	static MultiDragData multiDragData;
 	[[nodiscard]] static int Init();
 	static void Draw();
 	static void NewFrame();
@@ -60,7 +68,7 @@ public:
 	static void DrawTextCentered(const std::string& text);
 	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, uint64_t typeId);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
@@ -75,7 +83,7 @@ public:
 	static bool DrawInput(const std::string& inputName, std::string& value);
 	static bool DrawInput(const std::string& inputName, int& value);
 	static bool DrawInput(const std::string& inputName, bool& value);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value);

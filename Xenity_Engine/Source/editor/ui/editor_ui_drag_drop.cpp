@@ -37,21 +37,37 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, uint64_t typeId)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		Component* comp = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			Component* comp = ((Component*)payload->Data);
-
-			if (comp)
-			{
-				ref = comp->shared_from_this();
-				return true;
-			}
+			comp = ((Component*)payload->Data);
 		}
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
+		{
+			int compCount = EditorUI::multiDragData.components.size();
+
+			for (int i = 0; i < compCount; i++)
+			{
+				if (typeid(*EditorUI::multiDragData.components[i]).hash_code() == typeId)
+				{
+					comp = EditorUI::multiDragData.components[i];
+					break;
+				}
+			}
+
+		}
+
+		if (comp)
+		{
+			ref = comp->shared_from_this();
+			return true;
+		}
+
 		ImGui::EndDragDropTarget();
 	}
 	return false;
@@ -82,15 +98,22 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObjec
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		GameObject* gameObject = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			GameObject* gameObject = ((GameObject*)payload->Data);
-			if (gameObject)
-			{
-				ref = gameObject->shared_from_this();
-				return true;
-			}
+			gameObject = ((GameObject*)payload->Data);
 		}
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
+		{
+			gameObject = EditorUI::multiDragData.gameObjects[0];
+		}
+
+		if (gameObject)
+		{
+			ref = gameObject->shared_from_this();
+			return true;
+		}
+
 		ImGui::EndDragDropTarget();
 	}
 	return false;
@@ -101,16 +124,22 @@ bool EditorUI::DragDropTarget(const  std::string& name, std::shared_ptr<Transfor
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		Transform* trans = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			Transform* trans = ((Transform*)payload->Data);
-
-			if (trans)
-			{
-				ref = trans->shared_from_this();
-				return true;
-			}
+			trans = ((Transform*)payload->Data);
 		}
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
+		{
+			trans = EditorUI::multiDragData.transforms[0];
+		}
+
+		if (trans)
+		{
+			ref = trans->shared_from_this();
+			return true;
+		}
+
 		ImGui::EndDragDropTarget();
 	}
 	return false;

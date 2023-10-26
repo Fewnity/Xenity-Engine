@@ -13,11 +13,11 @@ AudioSource::AudioSource()
 std::unordered_map<std::string, ReflectionEntry> AudioSource::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, volume, "volume", true);
-	Reflection::AddReflectionVariable(reflectedVariables, pan, "pan", true);
-	Reflection::AddReflectionVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
-	Reflection::AddReflectionVariable(reflectedVariables, loop, "loop", true);
-	Reflection::AddReflectionVariable(reflectedVariables, audioClip, "audioClip", true);
+	Reflection::AddVariable(reflectedVariables, volume, "volume", true);
+	Reflection::AddVariable(reflectedVariables, pan, "pan", true);
+	Reflection::AddVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
+	Reflection::AddVariable(reflectedVariables, loop, "loop", true);
+	Reflection::AddVariable(reflectedVariables, audioClip, "audioClip", true);
 	return reflectedVariables;
 }
 

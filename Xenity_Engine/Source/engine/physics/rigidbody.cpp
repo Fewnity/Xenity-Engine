@@ -12,12 +12,12 @@ RigidBody::RigidBody()
 std::unordered_map<std::string, ReflectionEntry> RigidBody::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	AddReflectionVariable(reflectedVariables, (std::weak_ptr<Component>&)attachedcollider, "attachedcollider", true);
-	AddReflectionVariable(reflectedVariables, isStatic, "isStatic", true);
-	AddReflectionVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
-	AddReflectionVariable(reflectedVariables, velocity, "velocity", true);
-	AddReflectionVariable(reflectedVariables, drag, "drag", true);
-	AddReflectionVariable(reflectedVariables, bounce, "bounce", true);
+	AddVariable(reflectedVariables, attachedcollider, "attachedcollider", true);
+	AddVariable(reflectedVariables, isStatic, "isStatic", true);
+	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
+	AddVariable(reflectedVariables, velocity, "velocity", true);
+	AddVariable(reflectedVariables, drag, "drag", true);
+	AddVariable(reflectedVariables, bounce, "bounce", true);
 	return reflectedVariables;
 }
 

@@ -30,12 +30,12 @@ SkyBox::SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture>back, std
 std::unordered_map<std::string, ReflectionEntry> SkyBox::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	AddReflectionVariable(reflectedVariables, front, "front", true, true);
-	AddReflectionVariable(reflectedVariables, back, "back", true, true);
-	AddReflectionVariable(reflectedVariables, up, "up", true, true);
-	AddReflectionVariable(reflectedVariables, down, "down", true, true);
-	AddReflectionVariable(reflectedVariables, left, "left", true, true);
-	AddReflectionVariable(reflectedVariables, right, "right", true, true);
+	AddVariable(reflectedVariables, front, "front", true, true);
+	AddVariable(reflectedVariables, back, "back", true, true);
+	AddVariable(reflectedVariables, up, "up", true, true);
+	AddVariable(reflectedVariables, down, "down", true, true);
+	AddVariable(reflectedVariables, left, "left", true, true);
+	AddVariable(reflectedVariables, right, "right", true, true);
 	return reflectedVariables;
 }
 

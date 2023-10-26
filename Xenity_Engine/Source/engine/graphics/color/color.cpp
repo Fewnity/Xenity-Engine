@@ -19,7 +19,7 @@ Color::Color()
 std::unordered_map<std::string, ReflectionEntry> Color::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, rgba, "rgba", true);
+	Reflection::AddVariable(reflectedVariables, rgba, "rgba", true);
 	return reflectedVariables;
 }
 
@@ -85,10 +85,10 @@ void Color::UpdateUnsignedInts()
 std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, r, "r", true);
-	Reflection::AddReflectionVariable(reflectedVariables, g, "g", true);
-	Reflection::AddReflectionVariable(reflectedVariables, b, "b", true);
-	Reflection::AddReflectionVariable(reflectedVariables, a, "a", true);
+	Reflection::AddVariable(reflectedVariables, r, "r", true);
+	Reflection::AddVariable(reflectedVariables, g, "g", true);
+	Reflection::AddVariable(reflectedVariables, b, "b", true);
+	Reflection::AddVariable(reflectedVariables, a, "a", true);
 	return reflectedVariables;
 }
 

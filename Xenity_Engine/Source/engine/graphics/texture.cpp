@@ -50,11 +50,11 @@ std::unordered_map<std::string, ReflectionEntry> Texture::GetReflection()
 std::unordered_map<std::string, ReflectionEntry> Texture::GetMetaReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, inVram, "inVram", true);
-	Reflection::AddReflectionVariable(reflectedVariables, useMipMap, "useMipMap", true);
-	Reflection::AddReflectionVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-	Reflection::AddReflectionVariable(reflectedVariables, (int&)filter, "filter", true);
-	Reflection::AddReflectionVariable(reflectedVariables, (int&)wrapMode, "wrapMode", true);
+	Reflection::AddVariable(reflectedVariables, inVram, "inVram", true);
+	Reflection::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
+	Reflection::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+	Reflection::AddVariable(reflectedVariables, (int&)filter, "filter", true);
+	Reflection::AddVariable(reflectedVariables, (int&)wrapMode, "wrapMode", true);
 	return reflectedVariables;
 }
 

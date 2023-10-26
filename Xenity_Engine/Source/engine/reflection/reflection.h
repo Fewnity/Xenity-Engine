@@ -58,6 +58,7 @@ class API ReflectionEntry
 public:
 	ReflectionEntry() = default;
 	std::optional<Variable> variable;
+	uint64_t typeId = 0;
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 };
@@ -76,7 +77,32 @@ public:
 	*/
 	virtual void OnReflectionUpdated() {};
 
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry>& map, const Variable& variable, const std::string& variableName, bool isPublic);
-	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry>& map, const Variable& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic);
+
+	template<typename T>
+	std::enable_if_t<!std::is_pointer<T>::value, void>
+	static AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, T& value, const std::string& variableName, bool isPublic)
+	{
+		uint64_t type = typeid(T).hash_code();
+		Reflection::AddReflectionVariable(map, value, variableName, false, isPublic, type);
+	}
+
+
+	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
+	static void AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, std::weak_ptr<T>& value, const std::string& variableName, bool isPublic)
+	{
+		uint64_t type = typeid(T).hash_code();
+		Reflection::AddReflectionVariable(map, (std::weak_ptr<Component>&)value, variableName,false, isPublic, type);
+	}
+
+	template<typename T>
+	std::enable_if_t<!std::is_pointer<T>::value, void>
+	static AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, T& value, const std::string& variableName, bool visibleInFileInspector, bool isPublic)
+	{
+		uint64_t type = typeid(T).hash_code();
+		Reflection::AddReflectionVariable(map, value, variableName, visibleInFileInspector, isPublic, type);
+	}
+
+private:
+	static void AddReflectionVariable(std::unordered_map<std::string, ReflectionEntry>& map, const Variable& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic, uint64_t id);
 };
 

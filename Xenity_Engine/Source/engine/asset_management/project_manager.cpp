@@ -9,6 +9,8 @@
 #include "code_file.h"
 #include "../graphics/skybox.h"
 
+//#include "../../dungeon_game/game.h"
+
 #if !defined(EDITOR)
 #include "../../game_test/game.h"
 #endif
@@ -315,6 +317,8 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 	Engine::game = new Game();
 #endif //  defined(_WIN32) || defined(_WIN64)
+
+	//Engine::game = new Game();
 
 	// Fill class registery
 	if (Engine::game)
@@ -632,8 +636,8 @@ std::string ProjectDirectory::GetFolderName()
 std::unordered_map<std::string, ReflectionEntry> ProjectManager::GetProjetSettingsReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, projectName, "projectName", true);
-	Reflection::AddReflectionVariable(reflectedVariables, gameName, "gameName", true);
-	Reflection::AddReflectionVariable(reflectedVariables, startScene, "startScene", true);
+	Reflection::AddVariable(reflectedVariables, projectName, "projectName", true);
+	Reflection::AddVariable(reflectedVariables, gameName, "gameName", true);
+	Reflection::AddVariable(reflectedVariables, startScene, "startScene", true);
 	return reflectedVariables;
 }

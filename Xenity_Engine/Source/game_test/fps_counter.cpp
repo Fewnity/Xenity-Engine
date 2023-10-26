@@ -25,7 +25,7 @@ void FpsCounter::Update()
 std::unordered_map<std::string, ReflectionEntry> FpsCounter::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, (std::weak_ptr<Component>&)textRenderer, "textRenderer", true);
+	Reflection::AddVariable(reflectedVariables, textRenderer, "textRenderer", true);
 	return reflectedVariables;
 }
 

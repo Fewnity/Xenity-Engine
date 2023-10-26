@@ -13,9 +13,9 @@
 std::unordered_map<std::string, ReflectionEntry> Vector3::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, x, "x", true);
-	Reflection::AddReflectionVariable(reflectedVariables, y, "y", true);
-	Reflection::AddReflectionVariable(reflectedVariables, z, "z", true);
+	Reflection::AddVariable(reflectedVariables, x, "x", true);
+	Reflection::AddVariable(reflectedVariables, y, "y", true);
+	Reflection::AddVariable(reflectedVariables, z, "z", true);
 	return reflectedVariables;
 }
 

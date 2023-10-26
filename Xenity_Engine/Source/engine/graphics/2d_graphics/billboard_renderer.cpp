@@ -14,8 +14,8 @@ BillboardRenderer::BillboardRenderer()
 std::unordered_map<std::string, ReflectionEntry> BillboardRenderer::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
-	Reflection::AddReflectionVariable(reflectedVariables, texture, "texture", true);
+	Reflection::AddVariable(reflectedVariables, color, "color", true);
+	Reflection::AddVariable(reflectedVariables, texture, "texture", true);
 	return reflectedVariables;
 }
 

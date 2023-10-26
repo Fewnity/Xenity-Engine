@@ -24,12 +24,12 @@ Light::~Light()
 std::unordered_map<std::string, ReflectionEntry> Light::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, intensity, "intensity", true);
-	Reflection::AddReflectionVariable(reflectedVariables, range, "range", true);
-	Reflection::AddReflectionVariable(reflectedVariables, spotAngle, "spotAngle", true);
-	Reflection::AddReflectionVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
-	Reflection::AddReflectionVariable(reflectedVariables, color, "color", true);
-	Reflection::AddReflectionVariable(reflectedVariables, (int&)type, "type", true);
+	Reflection::AddVariable(reflectedVariables, intensity, "intensity", true);
+	Reflection::AddVariable(reflectedVariables, range, "range", true);
+	Reflection::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
+	Reflection::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
+	Reflection::AddVariable(reflectedVariables, color, "color", true);
+	Reflection::AddVariable(reflectedVariables, (int&)type, "type", true);
 	return reflectedVariables;
 }
 

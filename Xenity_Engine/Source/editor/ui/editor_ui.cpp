@@ -23,6 +23,7 @@ bool EditorUI::showProjectsSettings = false;
 bool EditorUI::showLightingSettings = false;
 
 std::vector<std::shared_ptr<Texture>>  EditorUI::icons;
+MultiDragData EditorUI::multiDragData;
 
 float EditorUI::uiScale = 1;
 

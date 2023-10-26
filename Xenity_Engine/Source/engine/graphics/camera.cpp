@@ -47,11 +47,11 @@ Camera::Camera()
 std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, fov, "fov", true);
-	Reflection::AddReflectionVariable(reflectedVariables, projectionSize, "projectionSize", true);
-	Reflection::AddReflectionVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
-	Reflection::AddReflectionVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
-	Reflection::AddReflectionVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
+	Reflection::AddVariable(reflectedVariables, fov, "fov", true);
+	Reflection::AddVariable(reflectedVariables, projectionSize, "projectionSize", true);
+	Reflection::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
+	Reflection::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
+	Reflection::AddVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
 	return reflectedVariables;
 }
 

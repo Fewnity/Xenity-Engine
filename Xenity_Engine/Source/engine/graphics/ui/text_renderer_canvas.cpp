@@ -17,9 +17,9 @@ TextRendererCanvas::TextRendererCanvas()
 std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflection()
 {
 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddReflectionVariable(reflectedVariables, text, "text", true);
-	Reflection::AddReflectionVariable(reflectedVariables, font, "font", true);
-	Reflection::AddReflectionVariable(reflectedVariables, material, "material", true);
+	Reflection::AddVariable(reflectedVariables, text, "text", true);
+	Reflection::AddVariable(reflectedVariables, font, "font", true);
+	Reflection::AddVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
 }
 
