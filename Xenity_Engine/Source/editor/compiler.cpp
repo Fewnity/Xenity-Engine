@@ -37,7 +37,7 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 
 	std::string compileCommand = "wsl bash -c -i \"cd ~/XenityTestProject/build";
 	if (platform == P_PSP)
-		compileCommand+= " && psp-cmake -DMODE=psp ..";
+		compileCommand += " && psp-cmake -DMODE=psp ..";
 	else if (platform == P_PsVita)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
@@ -172,6 +172,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_game.lib");
 		break;
 	case ERROR_ENGINE_EDITOR_LIB_MISSING:
+		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_editor.lib");
 		break;
 	case ERROR_LIB_DLLS_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing one of Dlls");
@@ -213,12 +214,28 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		{
 			std::string engineLibPath = ENGINE_PATH + std::string("engine_editor.lib");
 
-			// Copy engine editor lib to the temp build folder
-			std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_editor.lib", std::filesystem::copy_options::overwrite_existing);
+			try
+			{
+				// Copy engine editor lib to the temp build folder
+				std::filesystem::copy_file(engineLibPath, tempCompileFolderPath + "engine_editor.lib", std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (const std::exception&)
+			{
+				OnCompileEnd(ERROR_ENGINE_EDITOR_LIB_MISSING);
+				return;
+			}
 
-			std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
-			std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity_editor.h"), tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
+			try 
+			{
+				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity_editor.h"), tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (const std::exception&)
+			{
+				OnCompileEnd(ERROR_ENGINE_HEADERS_COPY);
+				return;
+			}
 		}
 		else
 		{
@@ -338,7 +355,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			catch (const std::exception&)
 			{
 			}
-			
+
 			if (buildType == BuildAndRunGame)
 			{
 				auto t = std::thread(StartGame, platform, exportPath);
