@@ -72,7 +72,7 @@ void ProfilerMenu::Draw()
 						if (kv2.first == kv.first)
 							continue;
 						ImGui::SetCursorPosX(20);
-						ImGui::Text("[%s] AVG: %ld; %ld", kv2.first.c_str(), kv2.second->average, kv2.second->GetValue());
+						ImGui::Text("[%s] AVG: %lld; %lld", kv2.first.c_str(), kv2.second->average, kv2.second->GetValue());
 					}
 				}
 			}
@@ -93,12 +93,12 @@ void ProfilerMenu::Draw()
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
 				{
-					ImGui::Text("File%d isLoaded:%d useCount:%d :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
 					ImGui::SameLine();
-					ImGui::Text("%s", fileRef->file->GetFileName().c_str());
+					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%d", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
+					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");
@@ -110,12 +110,12 @@ void ProfilerMenu::Draw()
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
 				{
-					ImGui::Text("File%d isLoaded:%d useCount:%d :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
 					ImGui::SameLine();
-					ImGui::Text("%s", fileRef->file->GetFileName().c_str());
+					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("missing file isLoaded:%d useCount:%d", fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("missing file isLoaded:%d useCount:%ld", fileRef->isLoaded, fileRef.use_count());
 			}
 		}
 	}
