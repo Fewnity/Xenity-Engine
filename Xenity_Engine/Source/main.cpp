@@ -13,7 +13,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 
 /*
 --- To do quick:
-Texture filter system
+Reopen scene on renaming
+Fix editor camera when loading a scene whitout camera in game
+Stop playmode on load scene from editor
+Disable game input when scene tab is focused
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?

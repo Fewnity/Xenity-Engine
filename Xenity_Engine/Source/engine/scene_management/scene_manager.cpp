@@ -90,7 +90,13 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		}
 	}
 }
+
 #endif
+
+void SceneManager::ReloadScene()
+{
+	LoadScene(openedScene);
+}
 
 void SceneManager::RestoreScene()
 {

@@ -40,6 +40,8 @@ public:
 	static void SaveScene(SaveSceneType saveType);
 #endif
 
+	static void ReloadScene();
+
 	/**
 	* [Internal] Restore the saved scene backup
 	*/
