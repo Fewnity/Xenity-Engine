@@ -87,10 +87,7 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 std::string Compiler::GetStartCompilerCommand()
 {
 	std::string command;
-	//command = "cd C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"; // Go to the compiler folder
-	//command = "c: && ";
 	command += "cd " + std::string(COMPILER_PATH); // Go to the compiler folder
-
 	command += " && vcvarsamd64_x86.bat"; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
@@ -117,8 +114,7 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 		command += " /DEDITOR";
 	}
 	std::string folder = tempCompileFolderPath + "source\\";
-	//command += " -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" /LD \"" + folder + "\*.cpp\"";
-	command += " -I \"" + std::string(ENGINE_PATH) + "include\" /LD \"" + folder + "\*.cpp\"";
+	command += " -I \"" + std::string(ENGINE_PATH) + "include\" /LD \"" + folder + "*.cpp\"";
 	if (buildType != EditorHotReloading)
 	{
 		command += " engine_game.lib";
@@ -144,7 +140,6 @@ std::string Compiler::GetCompileGameExeCommand()
 {
 	std::string command;
 	std::string fileName = ProjectManager::GetGameName();
-	//command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\include\" main.cpp engine_game.lib"; //Buid game exe
 	command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"" + std::string(ENGINE_PATH) + "include\" main.cpp engine_game.lib"; //Buid game exe
 
 	//command += " >nul"; // Mute output
