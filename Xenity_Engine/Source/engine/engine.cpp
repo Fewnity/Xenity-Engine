@@ -451,7 +451,9 @@ void Engine::UpdateComponents()
 
 		componentsCount = 0;
 		OrderComponents();
-		InitialiseComponents();
+
+		if (gameState == GameState::Playing)
+			InitialiseComponents();
 	}
 
 	if (gameState == GameState::Playing)
