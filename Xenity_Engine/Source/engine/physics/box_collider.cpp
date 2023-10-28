@@ -85,6 +85,7 @@ BoxCollider::~BoxCollider()
 
 void BoxCollider::OnDrawGizmos()
 {
+#if defined(EDITOR)
 	if (Engine::selectedGameObject.lock() != GetGameObject()) 
 	{
 		return;
@@ -127,4 +128,5 @@ void BoxCollider::OnDrawGizmos()
 	Gizmo::DrawLine(v2, v6);
 	Gizmo::DrawLine(v3, v7);
 	Gizmo::DrawLine(v4, v8);
+#endif
 }
