@@ -50,23 +50,24 @@ bool BoxCollider::CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <
 
 CollisionSide BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity)
 {
-	Vector3 aMinPosBef = a->min + a->GetTransform()->GetPosition() + a->offset;
-	Vector3 aMaxPosBef = a->max + a->GetTransform()->GetPosition() + a->offset;
 	Vector3 aMinPos = a->min + a->GetTransform()->GetPosition() + a->offset + aVelocity;
 	Vector3 aMaxPos = a->max + a->GetTransform()->GetPosition() + a->offset + aVelocity;
 	Vector3 bMinPos = b->min + b->GetTransform()->GetPosition() + b->offset;
 	Vector3 bMaxPos = b->max + b->GetTransform()->GetPosition() + b->offset;
 
-	bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
-	bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
-	bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
 	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
 	bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
 	int result = NoSide;
 
-	if (xColl && yColl && zColl) 
+	if (xColl && yColl && zColl)
 	{
+		Vector3 aMinPosBef = a->min + a->GetTransform()->GetPosition() + a->offset;
+		Vector3 aMaxPosBef = a->max + a->GetTransform()->GetPosition() + a->offset;
+		bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
+		bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
+		bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
+
 		if (!xCollBefore)
 			result |= SideX;
 		if (!yCollBefore)
@@ -86,7 +87,7 @@ BoxCollider::~BoxCollider()
 void BoxCollider::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	if (Engine::selectedGameObject.lock() != GetGameObject()) 
+	if (Engine::selectedGameObject.lock() != GetGameObject())
 	{
 		return;
 	}
