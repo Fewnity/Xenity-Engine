@@ -6,6 +6,8 @@
 #include <json.hpp>
 #include <unordered_map>
 
+#include "../engine/file_system/file_type.h"
+
 class Component;
 class Reflection;
 class FileReference;
@@ -22,6 +24,7 @@ class CompilingMenu;
 class SelectProjectMenu;
 class CreateProjectMenu;
 class LightingMenu;
+class CreateClassMenu;
 class AudioSource;
 
 enum MenuNames
@@ -70,6 +73,8 @@ public:
 	*/
 	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
 
+	static void CreateNewFile(std::string fileName, FileType type);
+
 	/**
 	* Add a component to the selected GameObject
 	*/
@@ -92,6 +97,7 @@ public:
 	static SceneMenu* sceneMenu;
 	static InspectorMenu* inspector;
 	static LightingMenu* lightingMenu;
+	static CreateClassMenu* createClassMenu;
 	static std::weak_ptr<AudioSource> audioSource;
 private:
 	static void CreateMenus();
@@ -104,6 +110,7 @@ private:
 	static ProfilerMenu* profiler;
 	static SelectProjectMenu* selectProjectMenu;
 	static CreateProjectMenu* createProjectMenu;
+
 	static std::weak_ptr<GameObject> cameraGO;
 };
 

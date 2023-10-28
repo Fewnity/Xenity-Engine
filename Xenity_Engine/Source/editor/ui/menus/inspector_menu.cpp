@@ -222,7 +222,7 @@ void InspectorMenu::DrawFilePreview()
 			loadedPreview = Engine::GetSelectedFileReference();
 			previewText.clear();
 			// Read text file
-			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Shader)
+			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Header || loadedPreview->fileType == File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
 				if (file->Open(false)) 

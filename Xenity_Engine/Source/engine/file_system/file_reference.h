@@ -3,21 +3,9 @@
 #include "../../engine/reflection/reflection.h"
 #include <memory>
 
-class File;
+#include "file_type.h"
 
-enum FileType
-{
-	File_Other,
-	File_Audio,
-	File_Mesh,
-	File_Texture,
-	File_Scene,
-	File_Code,
-	File_Skybox,
-	File_Font,
-	File_Material,
-	File_Shader,
-};
+class File;
 
 class FileReference : public std::enable_shared_from_this<FileReference>
 {

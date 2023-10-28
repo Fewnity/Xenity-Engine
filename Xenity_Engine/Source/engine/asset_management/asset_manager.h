@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "../file_system/file_type.h"
 
 // class Shader;
 class Texture;
@@ -67,6 +68,9 @@ public:
 	// static Material *defaultUIMaterial;
 
 	static std::shared_ptr <Texture> defaultTexture;
+
+	static std::string GetDefaultFileData(FileType fileType);
+
 private:
 	// static int shaderCount;
 	static int materialCount;

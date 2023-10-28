@@ -510,6 +510,46 @@ int AssetManager::GetLightCount()
 	return lightCount;
 }
 
+std::string AssetManager::GetDefaultFileData(FileType fileType)
+{
+	std::string data = "{\n}";
+	std::shared_ptr<File> newFile;
+
+	switch (fileType)
+	{
+	case File_Scene:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\scene.xen");
+		break;
+	case File_Code:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.cpp");
+		break;
+	case File_Header:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.h");
+		break;
+	case File_Skybox:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\skybox.sky");
+		break;
+	case File_Material:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\material.mat");
+		break;
+	case File_Shader:
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\shader.shader");
+		break;
+	}
+
+	if (newFile->Open(false))
+	{
+		data = newFile->ReadAll();
+		newFile->Close();
+	}
+	else 
+	{
+		Debug::PrintError("[AssetManager::GetDefaultFileData] Default file not found");
+	}
+
+	return data;
+}
+
 // int AssetManager::GetMeshDataCount()
 // {
 // 	return meshDataCount;

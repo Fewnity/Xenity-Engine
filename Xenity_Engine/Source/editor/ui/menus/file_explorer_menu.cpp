@@ -8,6 +8,7 @@
 #include "../../../engine/asset_management/project_manager.h"
 #include "../../../engine/asset_management/code_file.h"
 #include "../../../engine/graphics/renderer/renderer.h"
+#include "create_class_menu.h"
 
 void FileExplorerMenu::Init()
 {
@@ -21,7 +22,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 		{
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->fileType == File_Code)
+		else if (item.file->fileType == File_Code || item.file->fileType == File_Header)
 		{
 			std::string command = "code \"" + item.file->file->GetPath() + "\"";
 			system(command.c_str());
@@ -156,40 +157,34 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			if (ImGui::MenuItem("Folder"))
 			{
 				FileSystem::fileSystem->CreateDirectory(fileExplorerItem.directory->path + "\\new Folder");
-				ImGui::CloseCurrentPopup();
 				ProjectManager::RefreshProjectDirectory();
+				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newScene.xen");
-				newFile->Open(true);
-				newFile->Close();
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene);				
 				ImGui::CloseCurrentPopup();
-				ProjectManager::RefreshProjectDirectory();
 			}
 			if (ImGui::MenuItem("Skybox"))
 			{
-				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newSkybox.sky");
-				newFile->Open(true);
-				newFile->Close();
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox);
 				ImGui::CloseCurrentPopup();
-				ProjectManager::RefreshProjectDirectory();
 			}
 			if (ImGui::MenuItem("Shader"))
 			{
-				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newShader.shader");
-				newFile->Open(true);
-				newFile->Close();
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader);
 				ImGui::CloseCurrentPopup();
-				ProjectManager::RefreshProjectDirectory();
 			}
 			if (ImGui::MenuItem("Material"))
 			{
-				std::shared_ptr<File> newFile = FileSystem::MakeFile(fileExplorerItem.directory->path + "\\newMaterial.mat");
-				newFile->Open(true);
-				newFile->Close();
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material);
 				ImGui::CloseCurrentPopup();
-				ProjectManager::RefreshProjectDirectory();
+			}
+			if (ImGui::MenuItem("C++ Class"))
+			{
+				EditorUI::showCreateClass = true;
+				Editor::createClassMenu->filePath = fileExplorerItem.directory->path;
+				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndMenu();
 		}
@@ -300,10 +295,11 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExp
 		}
 		else if (fileType == File_Code)
 		{
-			if (std::dynamic_pointer_cast<CodeFile>(fileExplorerItem.file)->GetIsHeader())
-				tex = EditorUI::icons[Icon_Header];
-			else
-				tex = EditorUI::icons[Icon_Code];
+			tex = EditorUI::icons[Icon_Code];
+		}
+		else if (fileType == File_Header)
+		{
+			tex = EditorUI::icons[Icon_Header];
 		}
 		else if (fileType == File_Mesh)
 		{

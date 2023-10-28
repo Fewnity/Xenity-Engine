@@ -260,9 +260,13 @@ FileType ProjectManager::GetFileType(std::string extension)
 	{
 		fileType = File_Scene;
 	}
-	else if (extension == ".h" || extension == ".cpp") //If the file is a code file/header
+	else if (extension == ".cpp") //If the file is a code file/header
 	{
 		fileType = File_Code;
+	}
+	else if (extension == ".h") //If the file is a code file/header
+	{
+		fileType = File_Header;
 	}
 	else if (extension == ".sky") //If the file is a skybox
 	{
@@ -544,6 +548,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 	case File_Scene:
 		fileRef = Scene::MakeScene();
 		break;
+	case File_Header:
 	case File_Code:
 		fileRef = CodeFile::MakeScene(file->GetFileExtension());
 		break;

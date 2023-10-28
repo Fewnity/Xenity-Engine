@@ -16,6 +16,7 @@
 #include "ui/menus/select_project_menu.h"
 #include "ui/menus/create_project_menu.h"
 #include "ui/menus/lighting_menu.h"
+#include "ui/menus/create_class_menu.h"
 
 #include <functional>
 #include "../engine/class_registry/class_registry.h"
@@ -45,6 +46,7 @@ CompilingMenu* Editor::compilingMenu = nullptr;
 SelectProjectMenu* Editor::selectProjectMenu = nullptr;
 CreateProjectMenu* Editor::createProjectMenu = nullptr;
 LightingMenu* Editor::lightingMenu = nullptr;
+CreateClassMenu* Editor::createClassMenu = nullptr;
 
 void Editor::Init()
 {
@@ -175,6 +177,10 @@ void Editor::Draw()
 		{
 			profiler->Draw();
 		}
+		if (EditorUI::showCreateClass) 
+		{
+			createClassMenu->Draw();
+		}
 		compilingMenu->Draw();
 		gameMenu->Draw();
 		sceneMenu->Draw();
@@ -259,6 +265,39 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 	}
 }
 
+void Editor::CreateNewFile(std::string fileName, FileType type)
+{
+	std::string fileExt = "";
+	switch (type)
+	{
+	case File_Scene:
+		fileExt = ".xen";
+		break;
+	case File_Skybox:
+		fileExt = ".sky";
+		break;
+	case File_Code:
+		fileExt = ".cpp";
+		break;
+	case File_Header:
+		fileExt = ".h";
+		break;
+	case File_Material:
+		fileExt = ".mat";
+		break;
+	case File_Shader:
+		fileExt = ".shader";
+		break;
+	}
+	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
+	if (newFile->Open(true))
+	{
+		newFile->Write(AssetManager::GetDefaultFileData(type));
+		newFile->Close();
+	}
+	ProjectManager::RefreshProjectDirectory();
+}
+
 void Editor::CreateMenus()
 {
 	projectSettings = new ProjectSettingsMenu();
@@ -274,6 +313,7 @@ void Editor::CreateMenus()
 	selectProjectMenu = new SelectProjectMenu();
 	createProjectMenu = new CreateProjectMenu();
 	lightingMenu = new LightingMenu();
+	createClassMenu = new CreateClassMenu();
 
 	projectSettings->Init();
 	engineSettings->Init();
@@ -287,6 +327,7 @@ void Editor::CreateMenus()
 	selectProjectMenu->Init();
 	createProjectMenu->Init();
 	lightingMenu->Init();
+	createClassMenu->Init();
 }
 
 #pragma endregion
