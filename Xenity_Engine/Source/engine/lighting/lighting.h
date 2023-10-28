@@ -101,7 +101,10 @@ public:
 
 	LightType type = Directional;
 	Color color = Color();
-	float intensity = 1;
+
+	void SetIntensity(float intensity);
+	float GetIntensity() const;
+
 
 	//// Internal
 	//Spot and point light
@@ -111,6 +114,8 @@ public:
 	void OnDrawGizmos() override;
 
 private:
+
+	float intensity = 1;
 
 	/**
 	* Calculate light values

@@ -453,7 +453,7 @@ void Shader::SetPointLightData(std::shared_ptr<Light> light, const int index)
 	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
-	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->intensity);
+	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->GetIntensity());
 	SetShaderAttribut((baseString + "position").c_str(), pos);
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
 	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
@@ -472,7 +472,7 @@ void Shader::SetDirectionalLightData(std::shared_ptr<Light> light, const int ind
 	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	SetShaderAttribut((baseString + "color").c_str(), light->intensity * lightColor);
+	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
 	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
 }
 
@@ -490,7 +490,7 @@ void Shader::SetSpotLightData(std::shared_ptr<Light> light, const int index)
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
 
-	SetShaderAttribut((baseString + "color").c_str(), light->intensity * lightColor);
+	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
 	SetShaderAttribut((baseString + "position").c_str(), pos);
 	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);

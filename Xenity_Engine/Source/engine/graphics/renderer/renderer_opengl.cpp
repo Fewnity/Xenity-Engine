@@ -631,11 +631,11 @@ void RendererOpengl::Setlights(std::weak_ptr<Camera> camera)
 					Vector3 lightRotation = light->GetTransform()->GetRotation();
 					Vector3 cameraPosition = cameraTransform->GetPosition();
 					Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-					SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->intensity, light->color, light->type, light->quadratic);
+					SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
 				}
 				else
 				{
-					SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->intensity, light->color, light->type, light->quadratic);
+					SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->quadratic);
 				}
 				usedLightCount++;
 				if (usedLightCount == maxLightCount)

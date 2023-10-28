@@ -131,6 +131,16 @@ float Light::GetSpotSmoothness() const
 	return spotSmoothness;
 }
 
+void Light::SetIntensity(float intensity)
+{
+	this->intensity = intensity;
+}
+
+float Light::GetIntensity() const
+{
+	return intensity;
+}
+
 void Light::SetRange(float value)
 {
 	if (value < 0)
