@@ -119,132 +119,139 @@ void SceneManager::LoadScene(const json& jsonData)
 	std::vector<std::shared_ptr<Component>> allComponents;
 	uint64_t biggestId = 0;
 
-	// Create all GameObjects and Components
-	for (auto& gameObjectKV : jsonData["GameObjects"].items())
+	if (jsonData.contains("GameObjects"))
 	{
-		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-		uint64_t id = std::stoull(gameObjectKV.key());
-		newGameObject->SetUniqueId(id);
-		if (id > biggestId)
+		// Create all GameObjects and Components
+		for (auto& gameObjectKV : jsonData["GameObjects"].items())
 		{
-			biggestId = id;
-		}
-		ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
-
-		// Create components
-		if (gameObjectKV.value().contains("Components"))
-		{
-			for (auto& componentKV : gameObjectKV.value()["Components"].items())
+			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+			uint64_t id = std::stoull(gameObjectKV.key());
+			newGameObject->SetUniqueId(id);
+			if (id > biggestId)
 			{
-				std::string componentName = componentKV.value()["Type"];
-				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
-				uint64_t compId = std::stoull(componentKV.key());
-				if (compId > biggestId)
-				{
-					biggestId = compId;
-				}
-				if (comp)
-				{
-					allComponents.push_back(comp);
-					comp->SetUniqueId(compId);
-				}
-				else
-				{
-					Debug::PrintWarning("Class " + componentName + " not found in the scene");
-				}
+				biggestId = id;
 			}
-		}
-	}
+			ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
 
-	UniqueId::lastUniqueId = biggestId;
-
-	// Bind Components values and GameObjects childs
-	for (auto& kv : jsonData["GameObjects"].items())
-	{
-		auto go = FindGameObjectById(std::stoull(kv.key()));
-		if (go)
-		{
-			if (kv.value().contains("Childs"))
+			// Create components
+			if (gameObjectKV.value().contains("Components"))
 			{
-				for (auto& kv2 : kv.value()["Childs"].items())
+				for (auto& componentKV : gameObjectKV.value()["Components"].items())
 				{
-					auto goChild = FindGameObjectById(kv2.value());
-					if (goChild)
+					std::string componentName = componentKV.value()["Type"];
+					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
+					uint64_t compId = std::stoull(componentKV.key());
+					if (compId > biggestId)
 					{
-						goChild->SetParent(go);
+						biggestId = compId;
+					}
+					if (comp)
+					{
+						allComponents.push_back(comp);
+						comp->SetUniqueId(compId);
+					}
+					else
+					{
+						Debug::PrintWarning("Class " + componentName + " not found in the scene");
 					}
 				}
 			}
+		}
 
-			std::shared_ptr<Transform> transform = go->GetTransform();
-			ReflectionUtils::JsonToReflection(kv.value()["Transform"], *transform.get());
-			transform->isTransformationMatrixDirty = true;
-			transform->UpdateWorldValues();
+		UniqueId::lastUniqueId = biggestId;
 
-			if (kv.value().contains("Components"))
+		// Bind Components values and GameObjects childs
+		for (auto& kv : jsonData["GameObjects"].items())
+		{
+			auto go = FindGameObjectById(std::stoull(kv.key()));
+			if (go)
 			{
-				for (auto& kv2 : kv.value()["Components"].items())
+				if (kv.value().contains("Childs"))
 				{
-					int componentCount = go->GetComponentCount();
-					for (int compI = 0; compI < componentCount; compI++)
+					for (auto& kv2 : kv.value()["Childs"].items())
 					{
-						std::shared_ptr<Component> component = go->components[compI];
-						if (component->GetUniqueId() == std::stoull(kv2.key()))
+						auto goChild = FindGameObjectById(kv2.value());
+						if (goChild)
 						{
-							ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
-							break;
+							goChild->SetParent(go);
+						}
+					}
+				}
+
+				std::shared_ptr<Transform> transform = go->GetTransform();
+				ReflectionUtils::JsonToReflection(kv.value()["Transform"], *transform.get());
+				transform->isTransformationMatrixDirty = true;
+				transform->UpdateWorldValues();
+
+				if (kv.value().contains("Components"))
+				{
+					for (auto& kv2 : kv.value()["Components"].items())
+					{
+						int componentCount = go->GetComponentCount();
+						for (int compI = 0; compI < componentCount; compI++)
+						{
+							std::shared_ptr<Component> component = go->components[compI];
+							if (component->GetUniqueId() == std::stoull(kv2.key()))
+							{
+								ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
+								break;
+							}
 						}
 					}
 				}
 			}
+
 		}
 
-	}
-
-	// Call Awake on Components
-	if (Engine::GetGameState() == Starting)
-	{
-		std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
-		int componentsCount = allComponents.size();
-		int componentsToInitCount = 0;
-
-		// Find uninitiated components and order them
-		for (int i = 0; i < componentsCount; i++)
+		// Call Awake on Components
+		if (Engine::GetGameState() == Starting)
 		{
-			if (auto componentToCheck = allComponents[i])
+			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
+			int componentsCount = allComponents.size();
+			int componentsToInitCount = 0;
+
+			// Find uninitiated components and order them
+			for (int i = 0; i < componentsCount; i++)
 			{
-				if (!componentToCheck->initiated)
+				if (auto componentToCheck = allComponents[i])
 				{
-					bool placeFound = false;
-					for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+					if (!componentToCheck->initiated)
 					{
-						// Check if the checked has a higher priority (lower value) than the component in the list
-						if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+						bool placeFound = false;
+						for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 						{
-							orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-							placeFound = true;
-							break;
+							// Check if the checked has a higher priority (lower value) than the component in the list
+							if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+							{
+								orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
+								placeFound = true;
+								break;
+							}
 						}
+						// if the priority is lower than all components's priorities in the list, add it the end of the list
+						if (!placeFound)
+						{
+							orderedComponentsToInit.push_back(componentToCheck);
+						}
+						componentsToInitCount++;
 					}
-					// if the priority is lower than all components's priorities in the list, add it the end of the list
-					if (!placeFound)
-					{
-						orderedComponentsToInit.push_back(componentToCheck);
-					}
-					componentsToInitCount++;
+				}
+			}
+
+			for (int i = 0; i < componentsToInitCount; i++)
+			{
+				std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
+				if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->GetLocalActive())
+				{
+					componentToInit->Awake();
+					componentToInit->isAwakeCalled = true;
 				}
 			}
 		}
-
-		for (int i = 0; i < componentsToInitCount; i++)
-		{
-			std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
-			if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->GetLocalActive())
-			{
-				componentToInit->Awake();
-				componentToInit->isAwakeCalled = true;
-			}
-		}
+	}
+	else 
+	{
+		UniqueId::lastUniqueId = 0;
 	}
 
 	if (jsonData.contains("Lighting"))
@@ -256,7 +263,7 @@ void SceneManager::LoadScene(const json& jsonData)
 #if !defined(EDITOR)
 	Engine::SetGameState(Playing);
 #endif
-}
+	}
 
 void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 {
