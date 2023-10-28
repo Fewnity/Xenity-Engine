@@ -85,6 +85,10 @@ BoxCollider::~BoxCollider()
 
 void BoxCollider::OnDrawGizmos()
 {
+	if (Engine::selectedGameObject.lock() != GetGameObject()) 
+	{
+		return;
+	}
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
 	Gizmo::SetColor(lineColor);
 
