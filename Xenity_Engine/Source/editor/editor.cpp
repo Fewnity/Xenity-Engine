@@ -265,7 +265,7 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 	}
 }
 
-void Editor::CreateNewFile(std::string fileName, FileType type)
+std::shared_ptr<File> Editor::CreateNewFile(std::string fileName, FileType type, bool fillWithDefaultData)
 {
 	std::string fileExt = "";
 	switch (type)
@@ -289,13 +289,18 @@ void Editor::CreateNewFile(std::string fileName, FileType type)
 		fileExt = ".shader";
 		break;
 	}
+
 	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
 	if (newFile->Open(true))
 	{
-		newFile->Write(AssetManager::GetDefaultFileData(type));
+		if(fillWithDefaultData)
+			newFile->Write(AssetManager::GetDefaultFileData(type));
 		newFile->Close();
 	}
+
 	ProjectManager::RefreshProjectDirectory();
+
+	return newFile;
 }
 
 void Editor::CreateMenus()

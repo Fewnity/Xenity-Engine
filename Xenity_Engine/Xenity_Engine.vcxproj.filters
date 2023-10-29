@@ -112,6 +112,7 @@
     <ClCompile Include="Source\engine\physics\box_collider.cpp" />
     <ClCompile Include="Source\engine\physics\collider.cpp" />
     <ClCompile Include="Source\editor\ui\menus\create_class_menu.cpp" />
+    <ClCompile Include="Source\engine\tools\string_tag_finder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Source\engine\physics\collider.h" />
     <ClInclude Include="Source\engine\file_system\file_type.h" />
     <ClInclude Include="Source\editor\ui\menus\create_class_menu.h" />
+    <ClInclude Include="Source\engine\tools\string_tag_finder.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

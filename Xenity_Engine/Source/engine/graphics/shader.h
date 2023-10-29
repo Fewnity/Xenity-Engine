@@ -58,7 +58,6 @@ private:
 	void SetPointLightData(std::shared_ptr<Light> light, const int index);
 	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);
 	void SetSpotLightData(std::shared_ptr<Light> light, const int index);
-	bool FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition);
 
 	static glm::mat4 canvasCameraPosition;
 

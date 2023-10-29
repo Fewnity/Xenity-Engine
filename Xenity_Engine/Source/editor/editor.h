@@ -26,6 +26,7 @@ class CreateProjectMenu;
 class LightingMenu;
 class CreateClassMenu;
 class AudioSource;
+class File;
 
 enum MenuNames
 {
@@ -73,7 +74,7 @@ public:
 	*/
 	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
 
-	static void CreateNewFile(std::string fileName, FileType type);
+	static std::shared_ptr<File> CreateNewFile(std::string fileName, FileType type, bool fillWithDefaultData);
 
 	/**
 	* Add a component to the selected GameObject

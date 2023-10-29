@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <json.hpp>
+#include "../tools/string_tag_finder.h"
 
 using json = nlohmann::json;
 
@@ -64,37 +65,6 @@ std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
 	return reflectedVariables;
 }
 
-bool Shader::FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition) 
-{
-	bool found = false;
-	int textToFindSize = textToFind.size();
-	bool notEquals = false;
-
-	for (int i = 0; i < textToFindSize; i++)
-	{
-		if (textToSearchIn[index + i] != textToFind[i]) 
-		{
-			notEquals = true;
-			break;
-		}
-	}
-
-	if (!notEquals)
-	{
-		startPosition = index;
-		for (int j = index + 1; j < textSize; j++)
-		{
-			if (textToSearchIn[j] == '}')
-			{
-				endPosition = j + 2;
-				found = true;
-				break;
-			}
-		}
-	}
-	return found;
-}
-
 void Shader::LoadFileReference()
 {
 	if (!isLoaded)
@@ -128,7 +98,7 @@ void Shader::LoadFileReference()
 
 				for (int i = 0; i < textSize - 1; i++)
 				{
-					if (FindTag(shaderText, i, textSize, "{pc}", unused, end))
+					if (StringTagFinder::FindTag(shaderText, i, textSize, "{pc}", unused, end))
 					{
 						if (foundPlatform)
 						{
@@ -140,7 +110,7 @@ void Shader::LoadFileReference()
 							foundPlatform = true;
 						}
 					}
-					else if (FindTag(shaderText, i, textSize, "{psvita}", unused, end))
+					else if (StringTagFinder::FindTag(shaderText, i, textSize, "{psvita}", unused, end))
 					{
 						if (foundPlatform)
 						{
@@ -152,10 +122,10 @@ void Shader::LoadFileReference()
 							foundPlatform = true;
 						}
 					}
-					else if (foundPlatform && FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
+					else if (foundPlatform && StringTagFinder::FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
 					{
 					}
-					else if (foundPlatform && FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
+					else if (foundPlatform && StringTagFinder::FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
 					{
 					}
 				}

@@ -3,10 +3,11 @@
 #include "../engine/monobehaviour.h"
 #include "../engine/component.h"
 
-class CLASSNAME : public MonoBehaviour
+class {CLASSNAME} : public MonoBehaviour
 {
 public:
-    CLASSNAME();
+    {CLASSNAME}();
+
     void Start() override;
     void Update() override;
 

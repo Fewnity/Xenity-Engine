@@ -162,27 +162,28 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene);				
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);				
 				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("Skybox"))
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox);
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox, true);
 				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("Shader"))
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader);
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader, true);
 				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("Material"))
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material);
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
 				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("C++ Class"))
 			{
 				EditorUI::showCreateClass = true;
+				Editor::createClassMenu->Reset();
 				Editor::createClassMenu->filePath = fileExplorerItem.directory->path;
 				ImGui::CloseCurrentPopup();
 			}
