@@ -26,8 +26,8 @@ public:
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	void OnReflectionUpdated() override;
-	static bool CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b);
-	static CollisionSide CheckCollision(std::shared_ptr <BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity);
+	static bool CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b);
+	static CollisionSide CheckCollision(const std::shared_ptr <BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity);
 	void OnDrawGizmos() override;
 	bool isTrigger = false;
 private:

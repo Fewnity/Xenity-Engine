@@ -369,7 +369,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 		std::shared_ptr<FileReference> tempFileRef = AssetManager::GetFileReference(i);
 		if (tempFileRef->fileId == id)
 		{
-			fileRef = tempFileRef;
+			fileRef = std::move(tempFileRef);
 			break;
 		}
 	}
@@ -450,7 +450,7 @@ void ProjectManager::SaveProjectSettings()
 	}
 }
 
-void ProjectManager::SaveMetaFile(std::shared_ptr<FileReference> fileReference)
+void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
 	FileSystem::fileSystem->DeleteFile(file->GetPath() + META_EXTENSION);
@@ -548,8 +548,10 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 		fileRef = Scene::MakeScene();
 		break;
 	case File_Header:
+		fileRef = CodeFile::MakeCode(true);
+		break;
 	case File_Code:
-		fileRef = CodeFile::MakeScene(file->GetFileExtension());
+		fileRef = CodeFile::MakeCode(false);
 		break;
 	case File_Skybox:
 		fileRef = SkyBox::MakeSkyBox();
@@ -582,7 +584,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 	return fileRef;
 }
 
-void ProjectManager::LoadMetaFile(std::shared_ptr<FileReference> fileReference)
+void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	const std::string path = fileReference->file->GetPath() + META_EXTENSION;
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);

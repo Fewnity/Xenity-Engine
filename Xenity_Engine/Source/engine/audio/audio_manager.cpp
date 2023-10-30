@@ -393,17 +393,16 @@ PlayedSound::~PlayedSound()
 		free(buffer);
 }
 
-void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource)
+void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
-	std::shared_ptr<AudioSource> sharedAudioSource = audioSource.lock();
-	if (!sharedAudioSource)
+	if (!audioSource)
 		return;
 
 	AudioManager::myMutex->Lock();
 	bool found = false;
 
 
-	if (sharedAudioSource->audioClip == nullptr)
+	if (audioSource->audioClip == nullptr)
 		return;
 
 	// Find if the audio source is already playing
@@ -412,7 +411,7 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 	for (int i = 0; i < count; i++)
 	{
 		const auto& playedSound = channel->playedSounds[i];
-		if (playedSound->audioSource == sharedAudioSource)
+		if (playedSound->audioSource == audioSource)
 		{
 			found = true;
 			break;
@@ -426,34 +425,34 @@ void AudioManager::PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(sharedAudioSource->audioClip->file);
-		newPlayedSound->audioSource = sharedAudioSource;
+		newAudioClipStream->OpenStream(audioSource->audioClip->file);
+		newPlayedSound->audioSource = audioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needFillFirstHalfBuffer = true;
 		newPlayedSound->needFillSecondHalfBuffer = true;
 
-		newPlayedSound->volume = sharedAudioSource->GetVolume();
-		newPlayedSound->pan = sharedAudioSource->GetPanning();
-		newPlayedSound->isPlaying = sharedAudioSource->GetIsPlaying();
-		newPlayedSound->loop = sharedAudioSource->GetIsLooping();
+		newPlayedSound->volume = audioSource->GetVolume();
+		newPlayedSound->pan = audioSource->GetPanning();
+		newPlayedSound->isPlaying = audioSource->GetIsPlaying();
+		newPlayedSound->loop = audioSource->GetIsLooping();
 		channel->playedSounds.push_back(newPlayedSound);
 	}
 	AudioManager::myMutex->Unlock();
 }
 
-void AudioManager::StopAudioSource(const std::weak_ptr<AudioSource>& audioSource)
+void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index
-	if (auto as = audioSource.lock())
+	if (audioSource)
 	{
 		int count = (int)channel->playedSounds.size();
 		for (int i = 0; i < count; i++)
 		{
-			if (channel->playedSounds[i]->audioSource == as)
+			if (channel->playedSounds[i]->audioSource == audioSource)
 			{
 				audioSourceIndex = i;
 				found = true;
@@ -473,19 +472,19 @@ void AudioManager::StopAudioSource(const std::weak_ptr<AudioSource>& audioSource
 /// Remove an audio source from the audio source list
 /// </summary>
 /// <param name="light"></param>
-void AudioManager::RemoveAudioSource(const std::weak_ptr<AudioSource>& audioSource)
+void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index
-	if (auto as = audioSource.lock())
+	if (audioSource)
 	{
 		int count = (int)channel->playedSounds.size();
 		for (int i = 0; i < count; i++)
 		{
-			if (channel->playedSounds[i]->audioSource == as)
+			if (channel->playedSounds[i]->audioSource == audioSource)
 			{
 				audioSourceIndex = i;
 				found = true;

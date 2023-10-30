@@ -41,7 +41,7 @@ public:
 	* @param useLighting Use lighting for drawing
 	*/
 	static void DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::vector< std::shared_ptr<Texture>>& textures, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material);
-	static void DrawMesh(std::shared_ptr<Transform> transform, const std::vector< std::shared_ptr<Texture>>& textures, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material);
+	static void DrawMesh(const std::shared_ptr<Transform>& transform, const std::vector< std::shared_ptr<Texture>>& textures, const std::shared_ptr <MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material);
 
 	/**
 	* Draw a mesh with a signem submesh
@@ -54,7 +54,7 @@ public:
 	* @param useBlend Is depth for drawing
 	* @param useLighting Is depth for drawing
 	*/
-	static void DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr<Texture> texture, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material);
+	static void DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material);
 
 	/**
 	* Load a mesh from a file path

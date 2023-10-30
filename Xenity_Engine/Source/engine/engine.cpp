@@ -22,12 +22,12 @@
 #include "game_interface.h"
 #include "class_registry/class_registry.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include "../psp/gu2gl.h"
 #include "../psp/callbacks.h"
 #include <psppower.h>
 #include <pspge.h>
-#elif __vita__
+#elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
 #include <psp2/power.h>
 #endif
@@ -56,20 +56,8 @@ bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
 std::unique_ptr<GameInterface> Engine::game = nullptr;
 
-std::shared_ptr <Shader> Engine::shader = nullptr;
-std::shared_ptr <Shader> Engine::unlitShader = nullptr;
-std::shared_ptr <Shader> Engine::lineShader = nullptr;
-std::shared_ptr<Material> Engine::standardMaterial = nullptr;
-std::shared_ptr<Material> Engine::unlitMaterial = nullptr;
-std::shared_ptr<Material> Engine::lineMaterial = nullptr;
-
-bool Engine::UseOpenGLFixedFunctions = false;
-
 int Engine::Init()
 {
-#if defined(__PSP__)
-	UseOpenGLFixedFunctions = true;
-#endif
 	// Init random
 	srand((unsigned int)time(NULL));
 
@@ -366,7 +354,7 @@ void Engine::Stop()
 {
 	renderer->Stop();
 	AudioManager::Stop();
-#ifdef __vita__
+#if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
 }
@@ -393,10 +381,10 @@ void Engine::CreateBenchmarks()
 }
 
 
-void Engine::RemoveComponentReferences(const std::weak_ptr <Component>& weakComponent)
+void Engine::RemoveComponentReferences(const std::shared_ptr <Component>& component)
 {
 	// Check if the component is a special class and remove other references
-	if (auto component = weakComponent.lock())
+	if (component)
 	{
 		//------------------------------------------------------------------------ Include the component header to compile
 		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
@@ -479,19 +467,18 @@ void Engine::ResetTransformsStates()
 }
 
 
-void DestroyGameObjectAndChild(const std::weak_ptr<GameObject>& gameObject)
+void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 {
-	std::shared_ptr<GameObject> gameObjectLock = gameObject.lock();
 	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
-	gameObjectLock->waitingForDestroy = true;
+	gameObject->waitingForDestroy = true;
 
 	// Remove the destroyed gameobject from his parent's children list
-	if (auto parent = gameObjectLock->parent.lock()) 
+	if (auto parent = gameObject->parent.lock())
 	{
 		int parentChildCount = parent->GetChildrenCount();
 		for (int i = 0; i < parentChildCount; i++)
 		{
-			if (parent->children[i].lock() == gameObjectLock)
+			if (parent->children[i].lock() == gameObject)
 			{
 				parent->children.erase(parent->children.begin() + i);
 				parent->childCount--;
@@ -500,24 +487,34 @@ void DestroyGameObjectAndChild(const std::weak_ptr<GameObject>& gameObject)
 		}
 	}
 
-	int childCount = gameObjectLock->GetChildrenCount();
+	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DestroyGameObjectAndChild(gameObjectLock->children[i]);
+		DestroyGameObjectAndChild(gameObject->children[i].lock());
 	}
 }
 
 void Destroy(const std::weak_ptr<GameObject>& gameObject)
 {
-	if (!gameObject.lock()->waitingForDestroy)
+	Destroy(gameObject.lock());
+}
+
+void Destroy(const std::weak_ptr<Component>& weakComponent)
+{
+	Destroy(weakComponent.lock());
+}
+
+void Destroy(const std::shared_ptr<GameObject>& gameObject)
+{
+	if (!gameObject->waitingForDestroy)
 	{
 		DestroyGameObjectAndChild(gameObject);
 	}
 }
 
-void Destroy(const std::weak_ptr<Component>& weakComponent)
+void Destroy(const std::shared_ptr<Component>& component)
 {
 	// Remove the component from the his parent's components list
-	if (auto component = weakComponent.lock())
-		component->GetGameObject()->RemoveComponent(weakComponent);
+	if (component)
+		component->GetGameObject()->RemoveComponent(component);
 }

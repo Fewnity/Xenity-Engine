@@ -31,7 +31,7 @@ void HierarchyMenu::Draw()
 	isFocused = ImGui::IsWindowFocused();
 	if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
 	{
-		Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+		Editor::SetSelectedGameObject(nullptr);
 		Editor::SetSelectedFileReference(nullptr);
 	}
 	ImGui::EndChild();
@@ -40,7 +40,7 @@ void HierarchyMenu::Draw()
 		std::shared_ptr <GameObject> droppedGameObject = nullptr;
 		if (EditorUI::DragDropTarget("GameObject", droppedGameObject))
 		{
-			droppedGameObject->SetParent(std::weak_ptr<GameObject>());
+			droppedGameObject->SetParent(nullptr);
 		}
 	}
 	ImGui::End();

@@ -8,7 +8,7 @@ SpriteRenderer::SpriteRenderer()
 	componentName = "SpriteRenderer";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	material = Engine::standardMaterial;
+	material = AssetManager::standardMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> SpriteRenderer::GetReflection()
@@ -27,6 +27,12 @@ SpriteRenderer::~SpriteRenderer()
 int SpriteRenderer::GetDrawPriority() const
 {
 	return orderInLayer;
+}
+
+void SpriteRenderer::SetOrderInLayer(int orderInLayer)
+{
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
 }
 
 #pragma endregion

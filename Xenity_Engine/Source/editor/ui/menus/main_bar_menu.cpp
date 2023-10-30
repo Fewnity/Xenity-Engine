@@ -21,7 +21,7 @@ void MainBarMenu::Init()
 static bool IsOpen = true;
 void MainBarMenu::Draw()
 {
-	bool hasSelectedGameObject = !Editor::GetSelectedGameObject().expired();
+	bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
@@ -86,7 +86,7 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Unselect"))
 		{
 			Editor::SetSelectedFileReference(nullptr);
-			Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+			Editor::SetSelectedGameObject(nullptr);
 		}
 		ImGui::EndMenu();
 	}
@@ -208,7 +208,7 @@ void MainBarMenu::Draw()
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
 				{
-					ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject().lock());
+					ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject());
 				}
 			}
 			ImGui::EndMenu();

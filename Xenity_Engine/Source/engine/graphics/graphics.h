@@ -35,7 +35,7 @@ public:
 	/**
 	* Set skybox
 	*/
-	static void SetSkybox(std::shared_ptr <SkyBox> skybox_);
+	static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
 
 	static std::unordered_map<std::string, ReflectionEntry> GetLightingSettingsReflection();
 	static void OnLightingSettingsReflectionUpdate();
@@ -64,6 +64,11 @@ public:
 	*/
 	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove);
 
+	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI);
+	static void SetDrawOrderListAsDirty();
+
+	static bool UseOpenGLFixedFunctions;
+
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	static std::weak_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
@@ -80,10 +85,10 @@ public:
 	static std::shared_ptr <Shader> currentShader;
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
-	static void DrawMesh(std::shared_ptr<MeshData> meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, std::shared_ptr <Material> material, bool forUI);
 
 private:
 	static int iDrawablesCount;
+	static bool drawOrderListDirty;
 	static void DrawSkybox(const Vector3& cameraPosition);
 #if defined(EDITOR)
 	static void DrawEditorGrid(const Vector3& cameraPosition);

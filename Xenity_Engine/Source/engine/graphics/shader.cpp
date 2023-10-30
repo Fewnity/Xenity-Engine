@@ -38,7 +38,7 @@ Shader::~Shader()
 {
 	if (isLoaded)
 	{
-		if (!Engine::UseOpenGLFixedFunctions && Engine::IsRunning())
+		if (!Graphics::UseOpenGLFixedFunctions && Engine::IsRunning())
 		{
 			Engine::GetRenderer().DeleteShader(vertexShaderId);
 			Engine::GetRenderer().DeleteShader(fragmentShaderId);
@@ -70,7 +70,7 @@ void Shader::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		if (Engine::UseOpenGLFixedFunctions)
+		if (Graphics::UseOpenGLFixedFunctions)
 			return;
 
 		bool isOpen = file->Open(false);
@@ -415,7 +415,7 @@ void Shader::Link()
 /// </summary>
 /// <param name="light">Point light</param>
 /// <param name="index">Shader's point light index</param>
-void Shader::SetPointLightData(std::shared_ptr<Light> light, const int index)
+void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int index)
 {
 	std::string baseString = "pointLights[" + std::to_string(index) + "].";
 
@@ -435,7 +435,7 @@ void Shader::SetPointLightData(std::shared_ptr<Light> light, const int index)
 /// </summary>
 /// <param name="light">Directional light</param>
 /// <param name="index">Shader's directional light index</param>
-void Shader::SetDirectionalLightData(std::shared_ptr<Light> light, const int index)
+void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
 {
 	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
@@ -451,7 +451,7 @@ void Shader::SetDirectionalLightData(std::shared_ptr<Light> light, const int ind
 /// </summary>
 /// <param name="light">Spot light</param>
 /// <param name="index">Shader's spot light index</param>
-void Shader::SetSpotLightData(std::shared_ptr<Light> light, const int index)
+void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int index)
 {
 	std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();

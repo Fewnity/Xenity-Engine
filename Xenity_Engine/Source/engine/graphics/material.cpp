@@ -72,7 +72,7 @@ void Material::SetAttribut(const char* attribut, const Vector4& value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">float</param>
-void Material::SetAttribut(const char* attribut, const float& value)
+void Material::SetAttribut(const char* attribut, const float value)
 {
 	uniformsFloat.emplace(std::pair <const char*, float>(attribut, value));
 }
@@ -82,7 +82,7 @@ void Material::SetAttribut(const char* attribut, const float& value)
 /// </summary>
 /// <param name="attribut">Attribut name</param>
 /// <param name="value">int</param>
-void Material::SetAttribut(const char* attribut, const int& value)
+void Material::SetAttribut(const char* attribut, const int value)
 {
 	uniformsInt.emplace(std::pair <const char*, int>(attribut, value));
 }

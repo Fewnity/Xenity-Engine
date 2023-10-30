@@ -2,7 +2,8 @@
 
 #include <string>
 
-class UnitTest {
+class UnitTest 
+{
 public:
 	UnitTest() = delete;
 	UnitTest(const std::string& name);

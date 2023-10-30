@@ -26,9 +26,9 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
+void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 {
-	if (newGameObject.expired())
+	if (!newGameObject)
 		return;
 
 	// Check if the component has been just instanciated
@@ -40,7 +40,7 @@ void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
 	}
 
 	this->gameObject = newGameObject;
-	this->transform = newGameObject.lock()->GetTransform();
+	this->transform = newGameObject->GetTransform();
 
 	if (firstUse)
 	{

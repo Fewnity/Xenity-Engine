@@ -19,6 +19,7 @@ bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
+bool Graphics::drawOrderListDirty = true;
 
 ProfilerBenchmark* orderBenchmark = nullptr;
 ProfilerBenchmark* skyboxBenchmark = nullptr;
@@ -45,7 +46,9 @@ std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = Draw_3D;
 
-void Graphics::SetSkybox(std::shared_ptr <SkyBox> skybox_)
+bool Graphics::UseOpenGLFixedFunctions = false;
+
+void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
 	skybox = skybox_;
 }
@@ -70,6 +73,10 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 
 void Graphics::Init()
 {
+#if defined(__PSP__)
+	UseOpenGLFixedFunctions = true;
+#endif
+
 	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
 #if defined(EDITOR)
 	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
@@ -169,7 +176,7 @@ void Graphics::Draw()
 					currentMode = drawable->type;
 					if (currentMode == Draw_UI)
 					{
-						if (Engine::UseOpenGLFixedFunctions)
+						if (UseOpenGLFixedFunctions)
 						{
 							Engine::GetRenderer().ResetView();
 							Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
@@ -190,7 +197,7 @@ void Graphics::Draw()
 				if (currentMode != Draw_3D)
 				{
 					currentMode = Draw_3D;
-					if (Engine::UseOpenGLFixedFunctions)
+					if (UseOpenGLFixedFunctions)
 					{
 						camera->UpdateProjection();
 					}
@@ -199,7 +206,7 @@ void Graphics::Draw()
 				Engine::GetRenderer().ResetTransform();
 				Engine::GetRenderer().SetCameraPosition(camera);
 
-				if (!Engine::UseOpenGLFixedFunctions)
+				if (!UseOpenGLFixedFunctions)
 				{
 					Engine::GetRenderer().UseShaderProgram(0);
 					Graphics::currentShader = nullptr;
@@ -248,9 +255,6 @@ void Graphics::Draw()
 
 bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
 {
-	const int priority1 = t1.lock()->GetDrawPriority();
-	const int priority2 = t2.lock()->GetDrawPriority();
-
 	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D)
 	{
 		return false;
@@ -267,6 +271,9 @@ bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<ID
 	{
 		return true;
 	}
+
+	const int priority1 = t1.lock()->GetDrawPriority();
+	const int priority2 = t2.lock()->GetDrawPriority();
 
 	if (priority1 <= priority2)
 	{
@@ -289,15 +296,15 @@ void Graphics::OrderDrawables()
 		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
 		if (drawableToCheck && drawableToCheck->GetTransform()->movedLastFrame)
 		{
-			GameplayManager::drawOrderListDirty = true;
+			drawOrderListDirty = true;
 			break;
 		}
 	}
 
-	if (GameplayManager::drawOrderListDirty)
+	if (drawOrderListDirty)
 	{
 		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
-		GameplayManager::drawOrderListDirty = false;
+		drawOrderListDirty = false;
 	}
 	orderBenchmark->Stop();
 }
@@ -312,7 +319,7 @@ void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
-	GameplayManager::drawOrderListDirty = true;
+	Graphics::SetDrawOrderListAsDirty();
 }
 
 void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
@@ -329,13 +336,13 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 	}
 }
 
-void Graphics::DrawMesh(std::shared_ptr<MeshData> meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, std::shared_ptr<Material> material, bool forUI)
+void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
 {
 	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
 	if (!camera)
 		return;
 
-	if (!Engine::UseOpenGLFixedFunctions)
+	if (!UseOpenGLFixedFunctions)
 	{
 		if (!material)
 			return;
@@ -351,12 +358,17 @@ void Graphics::DrawMesh(std::shared_ptr<MeshData> meshData, const std::vector<st
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
 		if(!forUI)
-			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+			Engine::GetRenderer().SetCameraPosition(camera);
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
 	}
 
 	Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
+}
+
+void Graphics::SetDrawOrderListAsDirty()
+{
+	drawOrderListDirty = true;
 }
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
@@ -374,12 +386,12 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, AssetManager::unlitMaterial);
 	}
 }
 #if defined(EDITOR)
@@ -478,10 +490,10 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
 	// Draw tool
-	if (Editor::GetSelectedGameObject().lock())
+	if (Editor::GetSelectedGameObject())
 	{
-		Vector3 selectedGOPos = Editor::GetSelectedGameObject().lock()->GetTransform()->GetPosition();
-		Vector3 selectedGoRot = Editor::GetSelectedGameObject().lock()->GetTransform()->GetRotation();
+		Vector3 selectedGOPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
 		float dist = Vector3::Distance(selectedGOPos, cameraPosition);
 		dist /= 40;
 		Vector3 scale = Vector3(dist);
@@ -492,9 +504,9 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, renderSettings, Engine::unlitMaterial);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, renderSettings, Engine::unlitMaterial);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, renderSettings, AssetManager::unlitMaterial);
 	}
 }
 #endif

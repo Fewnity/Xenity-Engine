@@ -35,14 +35,14 @@ public:
 	* @param transform Sprite's transform
 	*/
 	//static void DrawSprite(std::shared_ptr<Texture> texture, Color color, std::shared_ptr<Transform> transform);
-	static void DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
-	static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material);
+	static void DrawSprite(const std::shared_ptr<Transform>& transform, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material);
+	static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material);
 
 	/**
 	* Render a 2D line
 	* @param meshData Mesh data
 	*/
-	static void Render2DLine(std::shared_ptr <MeshData> meshData);
+	static void Render2DLine(const std::shared_ptr<MeshData>& meshData);
 
 private:
 	static std::shared_ptr <MeshData> spriteMeshData;

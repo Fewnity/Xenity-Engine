@@ -55,9 +55,9 @@ public:
 private:
 	void Link();
 	void Compile(const std::string& filePath, ShaderType type);
-	void SetPointLightData(std::shared_ptr<Light> light, const int index);
-	void SetDirectionalLightData(std::shared_ptr<Light> light, const int index);
-	void SetSpotLightData(std::shared_ptr<Light> light, const int index);
+	void SetPointLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetSpotLightData(const std::shared_ptr<Light>& light, const int index);
 
 	static glm::mat4 canvasCameraPosition;
 

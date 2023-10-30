@@ -75,11 +75,11 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// If there is no error, save the file
 		if (!path.empty())
 		{
-			std::string jsonData = j.dump(2);
 			FileSystem::fileSystem->DeleteFile(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(true))
 			{
+				std::string jsonData = j.dump(2);
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
@@ -266,7 +266,7 @@ void SceneManager::LoadScene(const json& jsonData)
 #endif
 	}
 
-void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
+void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
 	Debug::Print("Loading scene...");
 	std::shared_ptr<File> jsonFile = scene->file;
@@ -276,9 +276,9 @@ void SceneManager::LoadScene(std::shared_ptr<Scene> scene)
 		std::string jsonString = jsonFile->ReadAll();
 		jsonFile->Close();
 
-		json data;
 		try
 		{
+			json data;
 			if (!jsonString.empty())
 				data = json::parse(jsonString);
 			LoadScene(data);
@@ -316,7 +316,7 @@ void SceneManager::ClearScene()
 	GameplayManager::componentsCount = 0;
 	GameplayManager::gameObjectCount = 0;
 #if defined(EDITOR)
-	Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+	Editor::SetSelectedGameObject(nullptr);
 #endif
 	Window::UpdateWindowTitle();
 }

@@ -87,12 +87,14 @@ public:
 	* @param gameObject Child to add
 	*/
 	void AddChild(const std::weak_ptr<GameObject>& gameObject);
+	void AddChild(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* Set GameObject's parent
 	* @param gameObject New parent
 	*/
 	void SetParent(const std::weak_ptr<GameObject>& gameObject);
+	void SetParent(const std::shared_ptr<GameObject>& gameObject);
 	bool waitingForDestroy = false;
 
 	/**
@@ -110,12 +112,13 @@ public:
 	* Remove a component
 	*/
 	void RemoveComponent(const std::weak_ptr <Component>& weakComponent);
+	void RemoveComponent(const std::shared_ptr <Component>& component);
 
 	/**
 	* Get a component
 	*/
 	template <typename T>
-	std::weak_ptr<T> GetComponent() const
+	std::shared_ptr<T> GetComponent() const
 	{
 		for (int i = 0; i < componentCount; i++)
 		{
@@ -124,7 +127,7 @@ public:
 				return result;
 			}
 		}
-		return std::weak_ptr<T>();
+		return nullptr;
 	}
 
 	/**
@@ -173,13 +176,13 @@ private:
 	/**
 	* Add an existing component
 	*/
-	void AddExistingComponent(std::shared_ptr <Component> component);
+	void AddExistingComponent(const std::shared_ptr<Component>& component);
 
 	/**
 	* Update local active value
 	*/
-	void UpdateActive(const std::weak_ptr<GameObject>& changed);
-	bool IsParentOf(std::shared_ptr<GameObject> gameObject);
+	void UpdateActive(const std::shared_ptr<GameObject>& changed);
+	bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
 
 	bool active = true;
 	bool localActive = true;

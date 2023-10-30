@@ -11,7 +11,7 @@ TextRenderer::TextRenderer()
 	type = Draw_3D;
 
 	AssetManager::AddReflection(this);
-	material = Engine::standardMaterial;
+	material = AssetManager::standardMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> TextRenderer::GetReflection()
@@ -38,6 +38,12 @@ int TextRenderer::GetDrawPriority() const
 	return orderInLayer;
 }
 
+void TextRenderer::SetOrderInLayer(int orderInLayer)
+{
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
+}
+
 #pragma endregion
 
 void TextRenderer::SetText(const std::string& text)
@@ -49,11 +55,11 @@ void TextRenderer::SetText(const std::string& text)
 	}
 }
 
-void TextRenderer::SetFont(std::shared_ptr<Font> font)
+void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 {
 	if (this->font != font)
 	{
-		this->font = font;
+		this->font = std::move(font);
 		isTextInfoDirty = true;
 	}
 }

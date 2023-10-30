@@ -17,14 +17,14 @@ SkyBox::~SkyBox()
 	AssetManager::RemoveReflection(this);
 }
 
-SkyBox::SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture>back, std::shared_ptr<Texture> up, std::shared_ptr<Texture>down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right)
+SkyBox::SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right)
 {
-	this->front = front;
-	this->back = back;
-	this->up = up;
-	this->down = down;
-	this->left = left;
-	this->right = right;
+	this->front = std::move(front);
+	this->back = std::move(back);
+	this->up = std::move(up);
+	this->down = std::move(down);
+	this->left = std::move(left);
+	this->right = std::move(right);
 }
 
 std::unordered_map<std::string, ReflectionEntry> SkyBox::GetReflection()

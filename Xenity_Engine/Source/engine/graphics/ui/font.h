@@ -28,5 +28,5 @@ public:
 	}
 
 private:
-	bool CreateFont(std::shared_ptr<Font> font, const std::string& filePath);
+	bool CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath);
 };

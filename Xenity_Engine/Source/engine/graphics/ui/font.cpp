@@ -53,7 +53,7 @@ void Font::LoadFileReference()
 	}
 }
 
-bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
+bool Font::CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath)
 {
 	Debug::Print("Loading font: " + filePath);
 

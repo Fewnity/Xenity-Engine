@@ -15,7 +15,7 @@ class Texture;
 #include "../iDrawable.h"
 #include "../color/color.h"
 #include "../../engine.h"
-#include "../../game_elements/gameplay_manager.h"
+
 #include <memory>
 
 class API BillboardRenderer : public IDrawable
@@ -28,11 +28,7 @@ public:
 
 	int GetDrawPriority() const override;
 
-	void SetOrderInLayer(int orderInLayer)
-	{
-		this->orderInLayer = orderInLayer;
-		GameplayManager::drawOrderListDirty = true;
-	}
+	void SetOrderInLayer(int orderInLayer);
 
 	int GetOrderInLayer() const
 	{

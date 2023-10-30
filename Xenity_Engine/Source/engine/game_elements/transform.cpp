@@ -15,7 +15,7 @@
 
 #pragma region Constructors
 
-Transform::Transform(const std::weak_ptr<GameObject>& gameObject)
+Transform::Transform(const std::shared_ptr<GameObject>& gameObject)
 {
 	this->gameObject = gameObject;
 	UpdateTransformationMatrix();

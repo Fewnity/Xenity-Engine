@@ -113,19 +113,19 @@ public:
 	* Remove an audio source
 	* @param audioSource Audio source
 	*/
-	static void RemoveAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	static void RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
 	/**
 	* Play an audio source
 	* @param audioSource Audio source
 	*/
-	static void PlayAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	static void PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
 	/**
 	* Stop an audio source
 	* @param audioSource Audio source
 	*/
-	static void StopAudioSource(const std::weak_ptr<AudioSource>& audioSource);
+	static void StopAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
 	static bool isAdding;
 	static Channel* channel;

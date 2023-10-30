@@ -18,6 +18,7 @@ class Light;
 class FileReference;
 class Reflection;
 class Material;
+class Shader;
 
 class API AssetManager
 {
@@ -26,17 +27,17 @@ public:
 
 	static void AddMaterial(Material* material);
 	static void AddReflection(Reflection* reflection);
-	static void AddFileReference(std::shared_ptr <FileReference> fileReference);
+	static void AddFileReference(const std::shared_ptr <FileReference>& fileReference);
 	static void AddDrawable(const std::weak_ptr<IDrawable>& drawable);
 	static void AddLight(const std::weak_ptr<Light>& light);
 
 	static void RemoveMaterial(const Material* material);
 	static void RemoveReflection(const Reflection* reflection);
 	static void RemoveAllFileReferences();
-	static void RemoveFileReference(std::shared_ptr <FileReference> fileReference);
+	static void RemoveFileReference(const std::shared_ptr <FileReference>& fileReference);
 	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawable);
 	static void RemoveLight(const std::weak_ptr<Light>& light);
-	static void ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference);
+	static void ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference);
 
 	static Material* GetMaterial(const int index);
 	static Reflection* GetReflection(const int index);
@@ -53,6 +54,13 @@ public:
 	static std::shared_ptr <Texture> defaultTexture;
 
 	static std::string GetDefaultFileData(FileType fileType);
+
+	static std::shared_ptr<Shader> shader;
+	static std::shared_ptr<Shader> unlitShader;
+	static std::shared_ptr<Shader> lineShader;
+	static std::shared_ptr<Material> standardMaterial;
+	static std::shared_ptr<Material> unlitMaterial;
+	static std::shared_ptr<Material> lineMaterial;
 
 private:
 	static int materialCount;

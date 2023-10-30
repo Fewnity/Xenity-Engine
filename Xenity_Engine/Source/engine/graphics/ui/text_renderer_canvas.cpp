@@ -11,7 +11,7 @@ TextRendererCanvas::TextRendererCanvas()
 	type = Draw_UI;
 
 	AssetManager::AddReflection(this);
-	material = Engine::unlitMaterial;
+	material = AssetManager::unlitMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflection()
@@ -40,6 +40,12 @@ int TextRendererCanvas::GetDrawPriority() const
 
 #pragma endregion
 
+void TextRendererCanvas::SetOrderInLayer(int orderInLayer)
+{
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
+}
+
 void TextRendererCanvas::SetText(const std::string& text)
 {
 	if (this->text != text)
@@ -49,11 +55,11 @@ void TextRendererCanvas::SetText(const std::string& text)
 	}
 }
 
-void TextRendererCanvas::SetFont(std::shared_ptr<Font> font)
+void TextRendererCanvas::SetFont(const std::shared_ptr<Font>& font)
 {
 	if (this->font != font)
 	{
-		this->font = font;
+		this->font = std::move(font);
 		isTextInfoDirty = true;
 	}
 }

@@ -53,11 +53,7 @@ public:
 	* Set order in layer
 	* @param orderInLayer Order in layer
 	*/
-	void SetOrderInLayer(int orderInLayer)
-	{
-		this->orderInLayer = orderInLayer;
-		GameplayManager::drawOrderListDirty = true;
-	}
+	void SetOrderInLayer(int orderInLayer);
 
 	/**
 	* Get order in layer
@@ -77,7 +73,7 @@ public:
 	* Set text font
 	* @param font Font
 	*/
-	void SetFont(std::shared_ptr<Font> font);
+	void SetFont(const std::shared_ptr<Font>& font);
 
 private:
 	void Draw() override;

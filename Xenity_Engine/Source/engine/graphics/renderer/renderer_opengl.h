@@ -12,6 +12,18 @@
 #include "renderer.h"
 #include "../../lighting/lighting.h"
 
+enum BufferType
+{
+	Array_Buffer,
+	Element_Array_Buffer,
+};
+
+enum BufferMode
+{
+	Static,
+	Dynamic,
+};
+
 class API RendererOpengl : public Renderer
 {
 public:
@@ -26,22 +38,22 @@ public:
 	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) override;
 	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) override;
 	void ResetView() override;
-	void SetCameraPosition(std::weak_ptr<Camera> camera) override;
+	void SetCameraPosition(const std::shared_ptr<Camera>& camera) override;
 	void ResetTransform() override;
 	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
 	void SetTransform(const glm::mat4& mat) override;
-	void BindTexture(std::shared_ptr <Texture> texture) override;
-	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) override;
+	void BindTexture(const std::shared_ptr <Texture>& texture) override;
+	void DrawMeshData(const std::shared_ptr <MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
 	unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture* texture) override;
-	void SetTextureData(std::shared_ptr <Texture> texture, unsigned int textureType, const unsigned char* buffer) override;
+	void SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer) override;
 	void Clear() override;
 	void SetFog(bool active) override;
-	void SetFogValues(float start, float end, Color color) override;
+	void SetFogValues(float start, float end, const Color& color) override;
 
 	void DeleteSubMeshData(MeshData::SubMesh* subMesh) override;
-	void UploadMeshData(std::shared_ptr<MeshData> meshData) override;
+	void UploadMeshData(const std::shared_ptr<MeshData>& meshData) override;
 
 	//Shader
 	unsigned int CreateShader(Shader::ShaderType type) override;
@@ -67,7 +79,7 @@ public:
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
 
 private:
-	void ApplyTextureFilters(std::shared_ptr <Texture> texture);
+	void ApplyTextureFilters(const std::shared_ptr<Texture>& texture);
 	unsigned int CreateVertexArray();
 	unsigned int CreateBuffer();
 	void BindVertexArray(unsigned int bufferId);
@@ -79,8 +91,8 @@ private:
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);
 	int maxLightCount = 8;
 	void DisableAllLight();
-	void Setlights(std::weak_ptr<Camera> camera) override;
-	void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) override;
+	void Setlights(const std::shared_ptr<Camera>& camera) override;
+	void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) override;
 
 	float fogStart = 0;
 	float fogEnd = 10;

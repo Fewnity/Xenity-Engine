@@ -1,14 +1,14 @@
 #include "class_registry.h"
 #include "../../xenity.h"
 
-std::unordered_map <std::string, std::function<std::shared_ptr<Component>(std::shared_ptr<GameObject>)>> ClassRegistry::nameToComponent;
+std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> ClassRegistry::nameToComponent;
 
-void ClassRegistry::AddComponentClass(const std::string& name, std::function<std::shared_ptr<Component>(std::shared_ptr<GameObject>)> function)
+void ClassRegistry::AddComponentClass(const std::string& name, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)> function)
 {
 	nameToComponent[name] = function;
 }
 
-std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, std::shared_ptr<GameObject> gameObject)
+std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
 	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{
@@ -16,7 +16,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 	}
 	else
 	{
-		return std::shared_ptr<Component>();
+		return nullptr;
 	}
 }
 

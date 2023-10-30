@@ -16,7 +16,7 @@ void TextManager::Init()
 	textBenchmark = new ProfilerBenchmark("Text", "Text");
 }
 
-std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, std::shared_ptr<Font> font)
+std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font)
 {
 	if (!font)
 		return nullptr;
@@ -99,7 +99,7 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 	return mesh;
 }
 
-void TextManager::DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::shared_ptr<Transform> transform, const Color& color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material)
+void TextManager::DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr<Material>& material)
 {
 	if (!font)
 		return;
@@ -145,7 +145,7 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 	}
 }
 
-void TextManager::AddCharToMesh(std::shared_ptr <MeshData > mesh, Character* ch, float x, float y, int letterIndex)
+void TextManager::AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex)
 {
 	int indice = letterIndex * 4;
 	int indiceIndex = letterIndex * 6;
@@ -170,7 +170,7 @@ void TextManager::AddCharToMesh(std::shared_ptr <MeshData > mesh, Character* ch,
 
 }
 
-TextInfo* TextManager::GetTextInfomations(std::string& text, int textLen, std::shared_ptr<Font> font, float scale)
+TextInfo* TextManager::GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale)
 {
 	TextInfo* textInfos = new TextInfo();
 	if (!font)

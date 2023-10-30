@@ -20,7 +20,7 @@ void InspectorMenu::Draw()
 
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
 
-	auto selectedGameObject = Editor::GetSelectedGameObject().lock();
+	auto selectedGameObject = Editor::GetSelectedGameObject();
 	std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 
 	if (selectedFileReference)

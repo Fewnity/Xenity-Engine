@@ -18,7 +18,7 @@ class Vector2;
 class API WavefrontLoader
 {
 public:
-	static bool LoadFromRawData(std::shared_ptr <MeshData> mesh);
+	static bool LoadFromRawData(const std::shared_ptr <MeshData>& mesh);
 private:
 	class SubMesh
 	{

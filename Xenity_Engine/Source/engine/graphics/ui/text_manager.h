@@ -84,7 +84,7 @@ public:
 	* @param mesh Mesh
 	* @param font Font
 	*/
-	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, std::shared_ptr<Transform> transform, const Color& color, bool canvas, std::shared_ptr <MeshData> mesh, std::shared_ptr<Font> font, std::shared_ptr <Material> material);
+	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr <Material>& material);
 
 	/**
 	* Get informations about a text
@@ -93,7 +93,7 @@ public:
 	* @param font Font
 	* @param scale Test scale
 	*/
-	static TextInfo* GetTextInfomations(std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
+	static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
 
 	/**
 	* Create a mesh from a text
@@ -104,7 +104,7 @@ public:
 	* @param color Color
 	* @param font Font
 	*/
-	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, std::shared_ptr<Font> font);
+	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font);
 
 private:
 
@@ -117,7 +117,7 @@ private:
 	* @param y Char Y position
 	* @param letterIndex Letter index in the string
 	*/
-	static void AddCharToMesh(std::shared_ptr<MeshData> mesh, Character* ch, float x, float y, int letterIndex);
+	static void AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex);
 
 	static std::vector<std::shared_ptr<MeshData>> meshes;
 };

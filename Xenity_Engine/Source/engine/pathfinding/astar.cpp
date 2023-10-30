@@ -218,7 +218,7 @@ std::vector<Vector2> Astar::GetPath()
 	return path;
 }
 
-void Astar::SetDestination(Vector2 start, Vector2 end)
+void Astar::SetDestination(const Vector2& start, const Vector2& end)
 {
 	if (IsValidPosition((int)start.x, (int)start.y) && IsValidPosition((int)end.x, (int)end.y))
 	{

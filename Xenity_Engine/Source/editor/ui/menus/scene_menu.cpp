@@ -172,7 +172,7 @@ void SceneMenu::Draw()
 			}
 			else
 			{
-				auto selectedGO = Editor::GetSelectedGameObject().lock();
+				auto selectedGO = Editor::GetSelectedGameObject();
 				if (selectedGO)
 				{
 					auto selectedGoTransform = selectedGO->GetTransform();

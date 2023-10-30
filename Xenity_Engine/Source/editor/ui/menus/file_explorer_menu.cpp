@@ -98,7 +98,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 				Editor::SetSelectedFileReference(item.file);
 			}
 
-			Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+			Editor::SetSelectedGameObject(nullptr);
 		}
 	}
 

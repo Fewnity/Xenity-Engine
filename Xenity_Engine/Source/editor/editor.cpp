@@ -232,7 +232,7 @@ void Editor::CreateEmptyParent()
 	SetSelectedGameObject(go);
 }
 
-void Editor::SetSelectedFileReference(std::shared_ptr<FileReference> fileReference)
+void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
 	selectedFileReference = fileReference;
 #if  defined(EDITOR)
@@ -245,19 +245,19 @@ std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
 	return selectedFileReference;
 }
 
-void Editor::SetSelectedGameObject(const std::weak_ptr<GameObject>& newSelected)
+void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelected)
 {
 	selectedGameObject = newSelected;
 }
 
-std::weak_ptr<GameObject> Editor::GetSelectedGameObject()
+std::shared_ptr<GameObject> Editor::GetSelectedGameObject()
 {
-	return selectedGameObject;
+	return selectedGameObject.lock();
 }
 
 #pragma region Save
 
-void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
+void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicate)
 {
 	if (goToDuplicate)
 	{
@@ -291,7 +291,7 @@ void Editor::DuplicateGameObject(std::shared_ptr<GameObject> goToDuplicate)
 	}
 }
 
-std::shared_ptr<File> Editor::CreateNewFile(std::string fileName, FileType type, bool fillWithDefaultData)
+std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData)
 {
 	std::string fileExt = "";
 	switch (type)

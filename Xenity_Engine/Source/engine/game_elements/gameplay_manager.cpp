@@ -5,7 +5,6 @@
 int GameplayManager::gameObjectCount = 0;
 int GameplayManager::gameObjectEditorCount = 0;
 bool GameplayManager::componentsListDirty = true;
-bool GameplayManager::drawOrderListDirty = true;
 std::vector<std::weak_ptr<Component>> GameplayManager::orderedComponents;
 int GameplayManager::componentsCount = 0;
 std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjects;
@@ -15,13 +14,13 @@ std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
 
 GameState GameplayManager::gameState = Stopped;
 
-void GameplayManager::AddGameObject(std::shared_ptr<GameObject> gameObject)
+void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
 }
 
-void GameplayManager::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
+void GameplayManager::AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject)
 {
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;

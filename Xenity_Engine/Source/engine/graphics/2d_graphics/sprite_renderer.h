@@ -23,16 +23,12 @@ class API SpriteRenderer : public IDrawable
 public:
 	SpriteRenderer();
 	~SpriteRenderer();
-	//void SetReflection();
+
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	int GetDrawPriority() const override;
 
-	void SetOrderInLayer(int orderInLayer)
-	{
-		this->orderInLayer = orderInLayer;
-		GameplayManager::drawOrderListDirty = true;
-	}
+	void SetOrderInLayer(int orderInLayer);
 
 	int GetOrderInLayer() const
 	{

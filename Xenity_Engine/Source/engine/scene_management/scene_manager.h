@@ -30,7 +30,7 @@ public:
 	* Load a scene
 	* @param scene Load scene
 	*/
-	static void LoadScene(std::shared_ptr<Scene>scene);
+	static void LoadScene(const std::shared_ptr<Scene>& scene);
 
 #if defined(EDITOR)
 	/**
@@ -73,7 +73,7 @@ public:
 	/**
 	* [Internal] Set opened scene
 	*/
-	static void SetOpenedScene(std::shared_ptr<Scene> _openedScene)
+	static void SetOpenedScene(const std::shared_ptr<Scene>& _openedScene)
 	{
 		openedScene = _openedScene;
 	}

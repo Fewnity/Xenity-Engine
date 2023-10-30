@@ -17,6 +17,13 @@ int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
 
+std::shared_ptr <Shader> AssetManager::shader = nullptr;
+std::shared_ptr <Shader> AssetManager::unlitShader = nullptr;
+std::shared_ptr <Shader> AssetManager::lineShader = nullptr;
+std::shared_ptr<Material> AssetManager::standardMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::unlitMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::lineMaterial = nullptr;
+
 std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
 
 /**
@@ -30,53 +37,53 @@ void AssetManager::Init()
 	defaultTexture->file = FileSystem::MakeFile("engine_assets\\default_texture.png");
 	defaultTexture->LoadFileReference();
 
-	if (!Engine::UseOpenGLFixedFunctions)
+	if (!Graphics::UseOpenGLFixedFunctions)
 	{
 		// Load standard shader
-		Engine::shader = Shader::MakeShader();
+		shader = Shader::MakeShader();
 #if defined(__vita__)
-		Engine::shader->file = FileSystem::MakeFile("shaders/standard_psvita.shader");
+		shader->file = FileSystem::MakeFile("shaders/standard_psvita.shader");
 #else
-		Engine::shader->file = FileSystem::MakeFile("shaders/standard.shader");
+		shader->file = FileSystem::MakeFile("shaders/standard.shader");
 #endif
 		// Load unlit shader
-		Engine::unlitShader = Shader::MakeShader();
+		unlitShader = Shader::MakeShader();
 #if defined(__vita__)
-		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit_psvita.shader");
+		unlitShader->file = FileSystem::MakeFile("shaders/unlit_psvita.shader");
 #else
-		Engine::unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
+		unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
 #endif
 		
 		// Load line shader
-		Engine::lineShader = Shader::MakeShader();
+		lineShader = Shader::MakeShader();
 #if defined(__vita__)
 		Engine::lineShader->file = FileSystem::MakeFile("shaders/line_psvita.shader");
 #else
-		Engine::lineShader->file = FileSystem::MakeFile("shaders/line.shader");
+		lineShader->file = FileSystem::MakeFile("shaders/line.shader");
 #endif
 
 		// Create materials
-		Engine::standardMaterial = Material::MakeMaterial();
-		Engine::standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
-		Engine::standardMaterial->shader = Engine::shader;
-		Engine::standardMaterial->useLighting = true;
+		standardMaterial = Material::MakeMaterial();
+		standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
+		standardMaterial->shader = shader;
+		standardMaterial->useLighting = true;
 
-		Engine::unlitMaterial = Material::MakeMaterial();
-		Engine::unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
-		Engine::unlitMaterial->shader = Engine::unlitShader;
+		unlitMaterial = Material::MakeMaterial();
+		unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
+		unlitMaterial->shader = unlitShader;
 		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
 
-		Engine::lineMaterial = Material::MakeMaterial();
-		Engine::lineMaterial->file = FileSystem::MakeFile("shaders/lineMaterial.mat");
-		Engine::lineMaterial->shader = Engine::lineShader;
+		lineMaterial = Material::MakeMaterial();
+		lineMaterial->file = FileSystem::MakeFile("shaders/lineMaterial.mat");
+		lineMaterial->shader = lineShader;
 
-		Engine::shader->LoadFileReference();
-		Engine::unlitShader->LoadFileReference();
-		Engine::lineShader->LoadFileReference();
+		shader->LoadFileReference();
+		unlitShader->LoadFileReference();
+		lineShader->LoadFileReference();
 
-		Engine::standardMaterial->LoadFileReference();
-		Engine::unlitMaterial->LoadFileReference();
-		Engine::lineMaterial->LoadFileReference();
+		standardMaterial->LoadFileReference();
+		unlitMaterial->LoadFileReference();
+		lineMaterial->LoadFileReference();
 	}
 
 	Debug::Print("-------- Asset Manager initiated --------");
@@ -101,16 +108,8 @@ void AssetManager::AddReflection(Reflection* reflection)
 #endif
 }
 
-void AssetManager::AddFileReference(std::shared_ptr<FileReference> fileReference)
+void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
-	for (int i = 0; i < fileReferenceCount; i++)
-	{
-		if (fileReferences[i] == fileReference)
-		{
-			Debug::Print("OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			return;
-		}
-	}
 	fileReferences.push_back(fileReference);
 	fileReferenceCount++;
 }
@@ -192,7 +191,7 @@ void AssetManager::RemoveReflection(const Reflection* reflection)
 #endif
 }
 
-void AssetManager::ForceDeleteFileReference(std::shared_ptr<FileReference> fileReference)
+void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
@@ -264,7 +263,7 @@ void AssetManager::RemoveAllFileReferences()
 	fileReferenceCount = 0;
 }
 
-void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileReference)
+void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
 	if (!Engine::IsRunning())
 		return;
@@ -425,7 +424,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 		break;
 	}
 
-	if (newFile->Open(false))
+	if (newFile && newFile->Open(false))
 	{
 		data = newFile->ReadAll();
 		newFile->Close();

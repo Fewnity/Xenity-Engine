@@ -72,9 +72,9 @@ public:
 	/**
 	* Create a new GameObject from another
 	*/
-	static void DuplicateGameObject(std::shared_ptr<GameObject> gameObject);
+	static void DuplicateGameObject(const std::shared_ptr<GameObject>& gameObject);
 
-	static std::shared_ptr<File> CreateNewFile(std::string fileName, FileType type, bool fillWithDefaultData);
+	static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
 
 	/**
 	* Add a component to the selected GameObject
@@ -101,15 +101,15 @@ public:
 	static CreateClassMenu* createClassMenu;
 	static std::weak_ptr<AudioSource> audioSource;
 
-	static void SetSelectedFileReference(std::shared_ptr<FileReference> fileReference);
+	static void SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference);
 	static std::shared_ptr<FileReference> GetSelectedFileReference();
 
 	/**
 * Set selected GameObject
 * @param go New selected GameObject
 */
-	static void SetSelectedGameObject(const std::weak_ptr<GameObject>& go);
-	static std::weak_ptr<GameObject> GetSelectedGameObject();
+	static void SetSelectedGameObject(const std::shared_ptr<GameObject>& go);
+	static std::shared_ptr<GameObject> GetSelectedGameObject();
 
 private:
 	static std::weak_ptr<GameObject> selectedGameObject;

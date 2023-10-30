@@ -19,7 +19,7 @@ class API Transform : public Reflection, public std::enable_shared_from_this<Tra
 
 public:
 	Transform() = delete;
-	Transform(const std::weak_ptr<GameObject>& gameObject);
+	Transform(const std::shared_ptr<GameObject>& gameObject);
 	//void SetReflection();
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;

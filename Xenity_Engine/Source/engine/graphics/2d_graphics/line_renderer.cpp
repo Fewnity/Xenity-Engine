@@ -31,6 +31,12 @@ int LineRenderer::GetDrawPriority() const
 
 #pragma endregion
 
+void LineRenderer::SetOrderInLayer(int orderInLayer)
+{
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
+}
+
 /// <summary>
 /// Draw sprite
 /// </summary>

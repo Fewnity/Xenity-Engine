@@ -26,12 +26,12 @@ public:
 	* @param name Component name
 	* @param function Function that returns the GameObject with the new component
 	*/
-	static void AddComponentClass(const std::string& name, std::function<std::shared_ptr<Component>(std::shared_ptr<GameObject>)> function);
+	static void AddComponentClass(const std::string& name, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)> function);
 
 	/**
 	* Add a component to a GameObject from the component name
 	*/
-	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, std::shared_ptr<GameObject> gameObject);
+	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* Get a list of all component names
@@ -44,6 +44,6 @@ public:
 	static void Reset();
 
 private:
-	static std::unordered_map <std::string, std::function<std::shared_ptr<Component>(std::shared_ptr<GameObject>)>> nameToComponent;
+	static std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> nameToComponent;
 };
 

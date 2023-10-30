@@ -35,10 +35,7 @@ void CreateClassMenu::Draw()
 
 	if (EditorUI::DrawInput("File name", fileName))
 	{
-		if (!fileNameChanged)
-		{
-			fileNameChanged = true;
-		}
+		fileNameChanged = true;
 		int fileNameSize = fileName.size();
 		for (int i = 0; i < fileNameSize; i++)
 		{

@@ -58,5 +58,5 @@ private:
 	static Vector3 defaultPosition;
 	static Vector3 defaultRotation;
 	static Vector3 defaultScale;
-	static void SetDefaultValues(std::shared_ptr <GameObject> gameObject);
+	static void SetDefaultValues(const std::shared_ptr <GameObject>& gameObject);
 };

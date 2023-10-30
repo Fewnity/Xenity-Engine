@@ -94,7 +94,7 @@ public:
 	/**
 	* Save the meta file of a file reference
 	*/
-	static void SaveMetaFile(std::shared_ptr<FileReference> fileReference);
+	static void SaveMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
 	/**
 	* Load project settings
@@ -194,7 +194,7 @@ public:
 
 private:
 	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, int id);
-	static void LoadMetaFile(std::shared_ptr<FileReference> fileReference);
+	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 	static bool projectLoaded;
 	static std::string projectName;
 	static std::string gameName;

@@ -41,7 +41,7 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const std::vector<std::shared_ptr<Texture>>& textures, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)
 {
 	meshBenchmark->Start();
 
@@ -54,9 +54,9 @@ void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vect
 	meshBenchmark->Stop();
 }
 
-void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, std::shared_ptr < MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
+void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)
 {
-	std::vector< std::shared_ptr<Texture>> textures;
+	std::vector<std::shared_ptr<Texture>> textures;
 	textures.push_back(texture);
 	DrawMesh(position, rotation, scale, textures, meshData, renderSettings, material);
 }

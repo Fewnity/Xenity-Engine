@@ -47,18 +47,6 @@ enum CullFace
 	Front_And_Back,
 };
 
-enum BufferType
-{
-	Array_Buffer,
-	Element_Array_Buffer,
-};
-
-enum BufferMode
-{
-	Static,
-	Dynamic,
-};
-
 enum DrawMode
 {
 	Patches,
@@ -78,14 +66,16 @@ public:
 	virtual void EndFrame() = 0;
 	virtual void SetClearColor(const Color& color) = 0;
 	virtual void Clear() = 0;
+
+	// Fog
 	virtual void SetFog(bool active) = 0;
-	virtual void SetFogValues(float start, float end, Color color) = 0;
+	virtual void SetFogValues(float start, float end, const Color& color) = 0;
 
 	// Projection
 	virtual void SetViewport(int x, int y, int width, int height) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) = 0;
-	virtual void SetCameraPosition(std::weak_ptr<Camera> camera) = 0;
+	virtual void SetCameraPosition(const std::shared_ptr<Camera>& camera) = 0;
 	virtual void ResetView() = 0;
 
 	// Transform
@@ -95,14 +85,14 @@ public:
 
 	// Texture
 	virtual unsigned int CreateNewTexture() = 0;
-	virtual void BindTexture(std::shared_ptr<Texture> texture) = 0;
-	virtual void SetTextureData(std::shared_ptr<Texture> texture, unsigned int textureType, const unsigned char* buffer) = 0;
+	virtual void BindTexture(const std::shared_ptr<Texture>& texture) = 0;
+	virtual void SetTextureData(const std::shared_ptr<Texture>& texture, unsigned int textureType, const unsigned char* buffer) = 0;
 	virtual void DeleteTexture(Texture* texture) = 0;
 
 	// Mesh
-	virtual void UploadMeshData(std::shared_ptr<MeshData> meshData) = 0;
+	virtual void UploadMeshData(const std::shared_ptr<MeshData>& meshData) = 0;
 	virtual void DeleteSubMeshData(MeshData::SubMesh* subMesh) = 0;
-	virtual void DrawMeshData(std::shared_ptr<MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) = 0;
+	virtual void DrawMeshData(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 
 	//Shader
@@ -129,6 +119,6 @@ public:
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) = 0;
 
 private:
-	virtual void Setlights(std::weak_ptr<Camera> camera) = 0;
-	virtual void SetLight(int lightIndex, Vector3 lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
+	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;
+	virtual void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
 };

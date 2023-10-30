@@ -36,10 +36,20 @@ API void Destroy(const std::weak_ptr<GameObject>& gameObject);
 API void Destroy(const std::weak_ptr<Component>& component);
 
 /**
+*Destroy a gameObject
+*/
+API void Destroy(const std::shared_ptr<GameObject>&gameObject);
+
+/**
+* Destroy a component
+*/
+API void Destroy(const std::shared_ptr<Component>& component);
+
+/**
 * Check if a GameObject or a Component is valid
 */
 template <typename T>
-bool IsValid(std::shared_ptr<T> pointer)
+bool IsValid(const std::shared_ptr<T>& pointer)
 {
 	return IsValid(std::weak_ptr<T>(pointer));
 }
@@ -101,7 +111,6 @@ public:
 	*/
 	API static void Loop();
 
-
 	/**
 	* Quit game
 	*/
@@ -125,19 +134,11 @@ public:
 	static bool canUpdateAudio;
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
 	static std::mutex threadLoadingMutex;
-	static std::shared_ptr<Shader> shader;
-	static std::shared_ptr<Shader> unlitShader;
-	static std::shared_ptr<Shader> lineShader;
-	static std::shared_ptr<Material> standardMaterial;
-	static std::shared_ptr<Material> unlitMaterial;
-	static std::shared_ptr<Material> lineMaterial;
-
-	static bool UseOpenGLFixedFunctions;
 
 	/**
 	* Destroy a component
 	*/
-	API static void RemoveComponentReferences(const std::weak_ptr <Component>& weakComponent);
+	API static void RemoveComponentReferences(const std::shared_ptr<Component>& component);
 
 	API static Renderer& GetRenderer()
 	{

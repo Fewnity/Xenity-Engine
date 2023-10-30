@@ -161,7 +161,7 @@ Vector2 Camera::MouseTo2DWorld()
 
 void Camera::UpdateProjection()
 {
-	if (Engine::UseOpenGLFixedFunctions)
+	if (Graphics::UseOpenGLFixedFunctions)
 	{
 		if (projectionType == ProjectionTypes::Perspective)
 		{
@@ -335,7 +335,7 @@ void Camera::OnDrawGizmos()
 #if defined(EDITOR)
 	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
 
-	if (Editor::GetSelectedGameObject().lock() && Editor::GetSelectedGameObject().lock() == GetGameObject())
+	if (Editor::GetSelectedGameObject() && Editor::GetSelectedGameObject() == GetGameObject())
 	{
 		Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 		Gizmo::SetColor(lineColor);

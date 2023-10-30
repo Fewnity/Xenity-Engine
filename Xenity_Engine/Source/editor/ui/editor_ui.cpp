@@ -53,77 +53,77 @@ int EditorUI::Init()
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	fileIcon->file = FileSystem::MakeFile("icons/text.png");
 	fileIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_File] = fileIcon;
+	icons[Icon_File] = std::move(fileIcon);
 
 	std::shared_ptr<Texture> folderIcon = Texture::MakeTexture();
 	folderIcon->file = FileSystem::MakeFile("icons/folder.png");
 	folderIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Folder] = folderIcon;
+	icons[Icon_Folder] = std::move(folderIcon);
 
 	std::shared_ptr<Texture> sceneIcon = Texture::MakeTexture();
 	sceneIcon->file = FileSystem::MakeFile("icons/belt.png");
 	sceneIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Scene] = sceneIcon;
+	icons[Icon_Scene] = std::move(sceneIcon);
 
 	std::shared_ptr<Texture> imageIcon = Texture::MakeTexture();
 	imageIcon->file = FileSystem::MakeFile("icons/image.png");
 	imageIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Image] = imageIcon;
+	icons[Icon_Image] = std::move(imageIcon);
 
 	std::shared_ptr<Texture> meshIcon = Texture::MakeTexture();
 	meshIcon->file = FileSystem::MakeFile("icons/3d.png");
 	meshIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Mesh] = meshIcon;
+	icons[Icon_Mesh] = std::move(meshIcon);
 
 	std::shared_ptr<Texture> codeIcon = Texture::MakeTexture();
 	codeIcon->file = FileSystem::MakeFile("icons/code.png");
 	codeIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Code] = codeIcon;
+	icons[Icon_Code] = std::move(codeIcon);
 
 	std::shared_ptr<Texture> headerIcon = Texture::MakeTexture();
 	headerIcon->file = FileSystem::MakeFile("icons/header.png");
 	headerIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Header] = headerIcon;
+	icons[Icon_Header] = std::move(headerIcon);
 
 	std::shared_ptr<Texture> audioIcon = Texture::MakeTexture();
 	audioIcon->file = FileSystem::MakeFile("icons/audio.png");
 	audioIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Audio] = audioIcon;
+	icons[Icon_Audio] = std::move(audioIcon);
 
 	std::shared_ptr<Texture> fontIcon = Texture::MakeTexture();
 	fontIcon->file = FileSystem::MakeFile("icons/font.png");
 	fontIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Font] = fontIcon;
+	icons[Icon_Font] = std::move(fontIcon);
 
 	std::shared_ptr<Texture> skyIcon = Texture::MakeTexture();
 	skyIcon->file = FileSystem::MakeFile("icons/sky.png");
 	skyIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Sky] = skyIcon;
+	icons[Icon_Sky] = std::move(skyIcon);
 
 	std::shared_ptr<Texture> audioSourceIcon = Texture::MakeTexture();
 	audioSourceIcon->file = FileSystem::MakeFile("icons/audio_source.png");
 	audioSourceIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Audio_Source] = audioSourceIcon;
+	icons[Icon_Audio_Source] = std::move(audioSourceIcon);
 
 	std::shared_ptr<Texture> lightIcon = Texture::MakeTexture();
 	lightIcon->file = FileSystem::MakeFile("icons/light.png");
 	lightIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Light] = lightIcon;
+	icons[Icon_Light] = std::move(lightIcon);
 
 	std::shared_ptr<Texture> cameraIcon = Texture::MakeTexture();
 	cameraIcon->file = FileSystem::MakeFile("icons/camera.png");
 	cameraIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Camera] = cameraIcon;
+	icons[Icon_Camera] = std::move(cameraIcon);
 
 	std::shared_ptr<Texture> materialIcon = Texture::MakeTexture();
 	materialIcon->file = FileSystem::MakeFile("icons/material.png");
 	materialIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Material] = materialIcon;
+	icons[Icon_Material] = std::move(materialIcon);
 
 	std::shared_ptr<Texture> shaderIcon = Texture::MakeTexture();
 	shaderIcon->file = FileSystem::MakeFile("icons/shader.png");
 	shaderIcon->SetWrapMode(Texture::ClampToEdge);
-	icons[Icon_Shader] = shaderIcon;
+	icons[Icon_Shader] = std::move(shaderIcon);
 
 	for (int i = 0; i < Icon_Count; i++)
 	{

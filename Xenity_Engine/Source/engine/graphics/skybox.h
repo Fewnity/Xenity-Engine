@@ -31,7 +31,7 @@ public:
 	* @param left Left face
 	* @param right Right face
 	*/
-	SkyBox(std::shared_ptr<Texture> front, std::shared_ptr<Texture> back, std::shared_ptr<Texture> up, std::shared_ptr<Texture> down, std::shared_ptr<Texture> left, std::shared_ptr<Texture> right);
+	SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right);
 
 	std::shared_ptr<Texture> front = nullptr;
 	std::shared_ptr<Texture> back = nullptr;

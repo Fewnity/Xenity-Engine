@@ -31,7 +31,7 @@ public:
 	* @param buildType Compile for hot reloading or for a simple build or for build and run
 	* @param exportPath Folder location for the build
 	*/
-	static void CompileGameThreaded(Platform platform, BuildType buildType, std::string exportPath);
+	static void CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath);
 
 	/**
 	* Start hot reloading

@@ -146,7 +146,7 @@ std::string Compiler::GetCompileGameExeCommand()
 	return command;
 }
 
-void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, std::string exportPath)
+void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	Editor::compilingMenu->OpenPopup();
 	auto t = std::thread(CompileGame, platform, buildType, exportPath);

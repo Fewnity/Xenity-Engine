@@ -9,7 +9,6 @@
 #pragma once
 
 #include <string>
-// #include "graphics/texture.h"
 
 class API EngineSettings
 {
@@ -32,5 +31,4 @@ public:
 	static bool useLighting;
 	static bool useDebugger;
 	static bool useOnlineDebugger;
-	// static Texture::AnisotropicLevel anisotropicLevel;
 };

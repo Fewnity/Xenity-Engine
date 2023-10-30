@@ -27,7 +27,7 @@ public:
 	* @param start Start point position
 	* @param end End point position
 	*/
-	void SetDestination(Vector2 start, Vector2 end);
+	void SetDestination(const Vector2& start, const Vector2& end);
 
 	/**
 	* Set if a tile is an obstacle or not
@@ -103,7 +103,7 @@ private:
 	/**
 	* Get tile (fastest version)
 	*/
-	Tile* GetTileUltraFast(int& row, int& col) const
+	Tile* GetTileUltraFast(int row, int col) const
 	{
 		return &grid[row + col];
 	}

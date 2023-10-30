@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool WavefrontLoader::LoadFromRawData(std::shared_ptr <MeshData> mesh)
+bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
 	Debug::Print("Loading mesh: " + mesh->file->GetPath());
 

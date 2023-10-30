@@ -27,16 +27,16 @@ class API GameplayManager
 {
 public:
 	/**
-* Add a component into the game
-* @param gameObject GameObject to add
-*/
-	static void AddGameObject(std::shared_ptr<GameObject> gameObject);
+	* Add a component into the game
+	* @param gameObject GameObject to add
+	*/
+	static void AddGameObject(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* Add a component into the engine only (Not visible from the game)
 	* @param gameObject GameObject to add
 	*/
-	static void AddGameObjectEditor(std::shared_ptr<GameObject> gameObject);
+	static void AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* Get all GameObjects
@@ -44,7 +44,7 @@ public:
 	static std::vector<std::shared_ptr<GameObject>> GetGameObjects();
 
 	static bool componentsListDirty;
-	static bool drawOrderListDirty;
+
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static int gameObjectCount;
@@ -55,8 +55,8 @@ public:
 	static std::vector<std::shared_ptr<Component>> componentsToDestroy;
 
 	/**
-* Update all active components
-*/
+	* Update all active components
+	*/
 	static void UpdateComponents();
 
 	static void OrderComponents();
@@ -65,9 +65,9 @@ public:
 	static void RemoveDestroyedComponents();
 
 	/**
-* Set game state
-* @param _gameState New game state
-*/
+	* Set game state
+	* @param _gameState New game state
+	*/
 	static void SetGameState(GameState _gameState);
 
 	/**

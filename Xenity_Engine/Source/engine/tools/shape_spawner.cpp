@@ -48,7 +48,7 @@ std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObject
 	return gameObject;
 }
 
-void ShapeSpawner::SetDefaultValues(std::shared_ptr <GameObject> gameObject)
+void ShapeSpawner::SetDefaultValues(const std::shared_ptr <GameObject>& gameObject)
 {
 	auto transform = gameObject->GetTransform();
 	transform->SetPosition(defaultPosition);

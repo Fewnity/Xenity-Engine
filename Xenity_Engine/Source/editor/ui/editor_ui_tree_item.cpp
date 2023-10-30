@@ -53,22 +53,21 @@ bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
 	return objectClicked;
 }
 
-int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
+int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child)
 {
 	int state = 0;
-	auto childLock = child.lock();
 
-	if (childLock)
+	if (child)
 	{
-		int childCount = childLock->GetChildrenCount();
+		int childCount = child->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-		if (Editor::GetSelectedGameObject().lock() == childLock)
+		if (Editor::GetSelectedGameObject() == child)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
-		if (childLock->GetLocalActive())
+		if (child->GetLocalActive())
 		{
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
 		}
@@ -77,7 +76,7 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		bool opened = ImGui::TreeNodeEx(childLock->name.c_str(), flags);
+		bool opened = ImGui::TreeNodeEx(child->name.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())
 		{
@@ -85,17 +84,17 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 			EditorUI::multiDragData.transforms.clear();
 			EditorUI::multiDragData.components.clear();
 
-			EditorUI::multiDragData.gameObjects.push_back(childLock.get());
-			EditorUI::multiDragData.transforms.push_back(childLock->GetTransform().get());
-			int componentCount = childLock->GetComponentCount();
+			EditorUI::multiDragData.gameObjects.push_back(child.get());
+			EditorUI::multiDragData.transforms.push_back(child->GetTransform().get());
+			int componentCount = child->GetComponentCount();
 			for (int i = 0; i < componentCount; i++)
 			{
-				EditorUI::multiDragData.components.push_back(childLock->components[i].get());
+				EditorUI::multiDragData.components.push_back(child->components[i].get());
 			}
 			std::string payloadName = "MultiDragData";
 			int emptyInt = 0;
 			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
-			ImGui::Text(childLock->name.c_str());
+			ImGui::Text(child->name.c_str());
 			ImGui::EndDragDropSource();
 		}
 		ImGui::PopStyleColor();
@@ -103,7 +102,7 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 		std::shared_ptr <GameObject> droppedGameObject = nullptr;
 		if (DragDropTarget("GameObject", droppedGameObject))
 		{
-			droppedGameObject->SetParent(childLock);
+			droppedGameObject->SetParent(child);
 			state = 1;
 		}
 		else
@@ -121,9 +120,9 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 		}
 		if (opened)
 		{
-			for (int i = 0; i < childLock->GetChildrenCount(); i++)
+			for (int i = 0; i < child->GetChildrenCount(); i++)
 			{
-				int clickedTemp = DrawTreeItem(childLock->children[i]);
+				int clickedTemp = DrawTreeItem(child->children[i].lock());
 				if (clickedTemp == 1)
 					state = 1;
 				else if (clickedTemp == 2)

@@ -109,11 +109,7 @@ public:
 	}
 
 
-	void SetOrderInLayer(int orderInLayer)
-	{
-		this->orderInLayer = orderInLayer;
-		GameplayManager::drawOrderListDirty = true;
-	}
+	void SetOrderInLayer(int orderInLayer);
 
 
 	int GetOrderInLayer() const

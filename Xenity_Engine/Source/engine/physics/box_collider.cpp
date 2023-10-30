@@ -29,7 +29,7 @@ void BoxCollider::OnReflectionUpdated()
 	max = size / 2.0f;
 }
 
-bool BoxCollider::CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b)
+bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b)
 {
 	Vector3 aMinPos = a->min + a->GetTransform()->GetPosition() + a->offset;
 	Vector3 aMaxPos = a->max + a->GetTransform()->GetPosition() + a->offset;
@@ -48,12 +48,15 @@ bool BoxCollider::CheckTrigger(std::shared_ptr<BoxCollider> a, std::shared_ptr <
 	return false;
 }
 
-CollisionSide BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> a, std::shared_ptr <BoxCollider> b, Vector3 aVelocity)
+CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity)
 {
-	Vector3 aMinPos = a->min + a->GetTransform()->GetPosition() + a->offset + aVelocity;
-	Vector3 aMaxPos = a->max + a->GetTransform()->GetPosition() + a->offset + aVelocity;
-	Vector3 bMinPos = b->min + b->GetTransform()->GetPosition() + b->offset;
-	Vector3 bMaxPos = b->max + b->GetTransform()->GetPosition() + b->offset;
+	Vector3 aPosition = a->GetTransform()->GetPosition();
+	Vector3 bPosition = b->GetTransform()->GetPosition();
+
+	Vector3 aMinPos = a->min + aPosition + a->offset + aVelocity;
+	Vector3 aMaxPos = a->max + aPosition + a->offset + aVelocity;
+	Vector3 bMinPos = b->min + bPosition + b->offset;
+	Vector3 bMaxPos = b->max + bPosition + b->offset;
 
 	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -62,8 +65,8 @@ CollisionSide BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> a, std::s
 
 	if (xColl && yColl && zColl)
 	{
-		Vector3 aMinPosBef = a->min + a->GetTransform()->GetPosition() + a->offset;
-		Vector3 aMaxPosBef = a->max + a->GetTransform()->GetPosition() + a->offset;
+		Vector3 aMinPosBef = a->min + aPosition + a->offset;
+		Vector3 aMaxPosBef = a->max + aPosition + a->offset;
 		bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
 		bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
 		bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
@@ -87,7 +90,7 @@ BoxCollider::~BoxCollider()
 void BoxCollider::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	if (Editor::GetSelectedGameObject().lock() != GetGameObject())
+	if (Editor::GetSelectedGameObject() != GetGameObject())
 	{
 		return;
 	}

@@ -95,23 +95,25 @@ void GameObject::Setup()
 
 void GameObject::RemoveComponent(const std::weak_ptr<Component>& weakComponent)
 {
-	if (auto component = weakComponent.lock())
-	{
-		// If the component is not already waiting for destroy
-		if (!component->waitingForDestroy)
-		{
-			component->waitingForDestroy = true;
-			GameplayManager::componentsToDestroy.push_back(component);
+	RemoveComponent(weakComponent.lock());
+}
 
-			// Remove the component from the gameobject's components list
-			for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
+void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
+{
+	// If the component is not already waiting for destroy
+	if (component && !component->waitingForDestroy)
+	{
+		component->waitingForDestroy = true;
+		GameplayManager::componentsToDestroy.push_back(component);
+
+		// Remove the component from the gameobject's components list
+		for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
+		{
+			if (components[componentIndex] == component)
 			{
-				if (components[componentIndex] == component)
-				{
-					components.erase(components.begin() + componentIndex);
-					componentCount--;
-					break;
-				}
+				components.erase(components.begin() + componentIndex);
+				componentCount--;
+				break;
 			}
 		}
 	}
@@ -119,7 +121,12 @@ void GameObject::RemoveComponent(const std::weak_ptr<Component>& weakComponent)
 
 void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 {
-	if (auto newChild = weakNewChild.lock())
+	AddChild(weakNewChild.lock());
+}
+
+void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
+{
+	if (newChild)
 	{
 		if (newChild->IsParentOf(shared_from_this()))
 		{
@@ -155,7 +162,7 @@ void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 
 		if (add)
 		{
-			children.push_back(weakNewChild);
+			children.push_back(newChild);
 			childCount++;
 			newChild->parent = shared_from_this();
 			newChild->transform->OnParentChanged();
@@ -164,13 +171,13 @@ void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
 	}
 }
 
-void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
+void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 {
-	if (auto go = gameObject.lock()) 
+	if (gameObject)
 	{
-		go->AddChild(shared_from_this());
+		gameObject->AddChild(shared_from_this());
 	}
-	else 
+	else
 	{
 		// If the new parent is the root
 		if (auto lockParent = parent.lock())
@@ -190,7 +197,12 @@ void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
 	}
 }
 
-void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
+void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
+{
+	SetParent(gameObject.lock());
+}
+
+void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componentToAdd)
 {
 	if (!componentToAdd.get())
 		return;
@@ -282,9 +294,9 @@ void GameObject::SetActive(const bool active)
 
 #pragma endregion
 
-void GameObject::UpdateActive(const std::weak_ptr<GameObject>& weakChanged)
+void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 {
-	if (auto changed = weakChanged.lock())
+	if (changed)
 	{
 		bool lastLocalActive = localActive;
 		if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
@@ -325,15 +337,15 @@ void GameObject::UpdateActive(const std::weak_ptr<GameObject>& weakChanged)
 	}
 }
 
-bool GameObject::IsParentOf(std::shared_ptr<GameObject> gameObject)
+bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 {
 	for (int i = 0; i < childCount; i++)
 	{
-		if (children[i].lock() == gameObject) 
+		if (children[i].lock() == gameObject)
 		{
 			return true;
 		}
-		else 
+		else
 		{
 			return children[i].lock()->IsParentOf(gameObject);
 		}

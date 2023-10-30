@@ -14,8 +14,7 @@ MeshRenderer::MeshRenderer()
 	componentName = "MeshRenderer";
 	type = Draw_3D;
 	AssetManager::AddReflection(this);
-	material = Engine::standardMaterial;
-	//material = Engine::unlitMaterial;
+	material = AssetManager::standardMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> MeshRenderer::GetReflection()

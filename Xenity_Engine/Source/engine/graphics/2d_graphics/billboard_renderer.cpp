@@ -8,7 +8,7 @@ BillboardRenderer::BillboardRenderer()
 	componentName = "BillboardRenderer";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	material = Engine::standardMaterial;
+	material = AssetManager::standardMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> BillboardRenderer::GetReflection()
@@ -27,6 +27,12 @@ BillboardRenderer::~BillboardRenderer()
 int BillboardRenderer::GetDrawPriority() const
 {
 	return orderInLayer;
+}
+
+void BillboardRenderer::SetOrderInLayer(int orderInLayer)
+{
+		this->orderInLayer = orderInLayer;
+		Graphics::SetDrawOrderListAsDirty();
 }
 
 #pragma endregion

@@ -184,6 +184,12 @@ void Tilemap::FillChunks()
 	}
 }
 
+void Tilemap::SetOrderInLayer(int orderInLayer)
+{
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
+}
+
 void Tilemap::SetColor(const Color& color)
 {
 	this->color = color;

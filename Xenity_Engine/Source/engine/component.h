@@ -60,7 +60,7 @@ public:
 	/**
 	* Set component's GameObject
 	*/
-	void SetGameObject(const std::weak_ptr<GameObject>& go);
+	void SetGameObject(const std::shared_ptr<GameObject>& go);
 
 	/**
 	* Get component's GameObject
