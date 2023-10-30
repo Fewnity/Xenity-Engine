@@ -35,119 +35,22 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
-	if (!meshData)
-		return;
-
-	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
-	if (!camera)
-		return;
-
-	if (!Engine::UseOpenGLFixedFunctions)
-	{
-		if (!material)
-			return;
-		material->Use();
-
-		if (!Graphics::currentShader)
-			return;
-
-		Graphics::currentShader->SetShaderModel(position, rotation, scale);
-	}
-
 	meshBenchmark->Start();
-	meshCameraBenchmark->Start();
-#if defined(__PSP__)
-	if (Graphics::needUpdateCamera)
-	{
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-		Graphics::needUpdateCamera = false;
-	}
-#else
-	if (Engine::UseOpenGLFixedFunctions)
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-#endif
-	meshCameraBenchmark->Stop();
-
-	meshTransformBenchmark->Start();
-	if (Engine::UseOpenGLFixedFunctions)
-		Engine::renderer->SetTransform(position, rotation, scale, true);
-
-	meshTransformBenchmark->Stop();
-
-	// Set draw settings
-	if (scale.x * scale.y * scale.z < 0)
-		renderSettings.invertFaces = !renderSettings.invertFaces;
-
-	meshDrawBenchmark->Start();
-	Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
-	meshDrawBenchmark->Stop();
-
+	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
+	Graphics::DrawMesh(meshData, textures, renderSettings, matrix, material, false);
 	meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMesh(std::shared_ptr<Transform> transform, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr<MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
-	if (!meshData)
-		return;
-
-	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
-	if (!camera)
-		return;
-
-	if (!Engine::UseOpenGLFixedFunctions) 
-	{
-		if (!material)
-			return;
-
-		material->Use();
-
-		if(!Graphics::currentShader)
-			return;
-
-		Graphics::currentShader->SetShaderModel(transform->transformationMatrix); //----------------------------
-	}
-
 	meshBenchmark->Start();
-	meshCameraBenchmark->Start();
-#if defined(__PSP__)
-	if (Graphics::needUpdateCamera)
-	{
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-		Graphics::needUpdateCamera = false;
-	}
-#else
-	if (Engine::UseOpenGLFixedFunctions)
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-#endif
-	meshCameraBenchmark->Stop();
 
-	meshTransformBenchmark->Start();
 	Vector3 scale = transform->GetScale();
 
-	if (Engine::UseOpenGLFixedFunctions)
-	{
-		//----------------------------
-#if defined(__PSP__)
-		Vector3 position = transform->GetPosition();
-		Vector3 rotation = transform->GetRotation();
-		//Engine::renderer->SetTransform(position, rotation, scale, true);
-		Engine::renderer->SetTransform(transform->transformationMatrix);
-#else
-		Engine::renderer->SetTransform(transform->transformationMatrix);
-#endif
-		//----------------------------
-	}
-
-	meshTransformBenchmark->Stop();
-
-	// Set draw settings
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 
-	meshDrawBenchmark->Start();
-	Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
-	meshDrawBenchmark->Stop();
-
+	Graphics::DrawMesh(meshData, textures, renderSettings, transform->transformationMatrix, material, false);
 	meshBenchmark->Stop();
 }
 

@@ -30,9 +30,7 @@ public:
 	void ResetTransform() override;
 	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
 	void SetTransform(const glm::mat4& mat) override;
-	void MoveTransform(const Vector3& position) override;
 	void BindTexture(std::shared_ptr <Texture> texture) override;
-	void ApplyTextureFilters(std::shared_ptr <Texture> texture) override;
 	void DrawMeshData(std::shared_ptr <MeshData> meshData, std::vector<std::shared_ptr<Texture>> textures, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
 	unsigned int CreateNewTexture() override;
@@ -42,12 +40,7 @@ public:
 	void SetFog(bool active) override;
 	void SetFogValues(float start, float end, Color color) override;
 
-	unsigned int CreateBuffer() override;
-	unsigned int CreateVertexArray() override;
-	void BindBuffer(BufferType type, unsigned int bufferId) override;
-	void BindVertexArray(unsigned int bufferId) override;
-	void DeleteBuffer(unsigned int bufferId) override;
-	void DeleteVertexArray(unsigned int bufferId) override;
+	void DeleteSubMeshData(MeshData::SubMesh* subMesh) override;
 	void UploadMeshData(std::shared_ptr<MeshData> meshData) override;
 
 	//Shader
@@ -73,8 +66,14 @@ public:
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
 
-
 private:
+	void ApplyTextureFilters(std::shared_ptr <Texture> texture);
+	unsigned int CreateVertexArray();
+	unsigned int CreateBuffer();
+	void BindVertexArray(unsigned int bufferId);
+	void DeleteBuffer(unsigned int bufferId);
+	void DeleteVertexArray(unsigned int bufferId);
+
 	int GetBufferTypeEnum(BufferType bufferType);
 	// int GetBufferModeEnum(BufferMode bufferMode);
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);

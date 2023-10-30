@@ -9,10 +9,9 @@
 #include "code_file.h"
 #include "../graphics/skybox.h"
 
-//#include "../../dungeon_game/game.h"
-
 #if !defined(EDITOR)
-#include "../../game_test/game.h"
+#include "../../game_dungeon/game.h"
+//#include "../../game_test/game.h"
 #endif
 
 using json = nlohmann::json;
@@ -319,10 +318,10 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif // defined(EDITOR)
 	Engine::game = DynamicLibrary::CreateGame();
 #else
-	Engine::game = new Game();
+	Engine::game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
 
-	//Engine::game = new Game();
+	//Engine::game = std::make_unique<Game>();
 
 	// Fill class registery
 	if (Engine::game)

@@ -48,6 +48,9 @@ CreateProjectMenu* Editor::createProjectMenu = nullptr;
 LightingMenu* Editor::lightingMenu = nullptr;
 CreateClassMenu* Editor::createClassMenu = nullptr;
 
+std::weak_ptr<GameObject> Editor::selectedGameObject;
+std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
+
 void Editor::Init()
 {
 	CreateMenus();
@@ -121,20 +124,20 @@ void Editor::Update()
 
 	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 	{
-		if (Engine::selectedGameObject.lock())
-			DuplicateGameObject(Engine::selectedGameObject.lock());
+		if (selectedGameObject.lock())
+			DuplicateGameObject(selectedGameObject.lock());
 	}
 
 	if (InputSystem::GetKey(DELETE))
 	{
 		if (sceneMenu->isFocused || hierarchy->isFocused)
 		{
-			if (Engine::selectedGameObject.lock())
-				Destroy(Engine::selectedGameObject.lock());
+			if (selectedGameObject.lock())
+				Destroy(selectedGameObject.lock());
 		}
 	}
 
-	if (Engine::GetGameState() == GameState::Stopped)
+	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
 		{
@@ -195,26 +198,26 @@ void Editor::Draw()
 void Editor::CreateEmpty()
 {
 	auto go = CreateGameObject();
-	Engine::SetSelectedGameObject(go);
+	SetSelectedGameObject(go);
 }
 
 void Editor::CreateEmptyChild()
 {
 	auto go = CreateGameObject();
 	auto transform = go->GetTransform();
-	go->SetParent(Engine::selectedGameObject);
+	go->SetParent(selectedGameObject);
 	transform->SetLocalPosition(Vector3(0));
 	transform->SetLocalRotation(Vector3(0));
 	transform->SetLocalScale(Vector3(1));
 
-	Engine::SetSelectedGameObject(go);
+	SetSelectedGameObject(go);
 }
 
 void Editor::CreateEmptyParent()
 {
 	auto go = CreateGameObject();
 	auto transform = go->GetTransform();
-	std::shared_ptr<GameObject> selectGameObject = Engine::selectedGameObject.lock();
+	std::shared_ptr<GameObject> selectGameObject = selectedGameObject.lock();
 	auto selectedTransform = selectGameObject->GetTransform();
 	transform->SetPosition(selectedTransform->GetPosition());
 	transform->SetRotation(selectedTransform->GetRotation());
@@ -226,7 +229,30 @@ void Editor::CreateEmptyParent()
 	}
 	selectGameObject->SetParent(go);
 
-	Engine::SetSelectedGameObject(go);
+	SetSelectedGameObject(go);
+}
+
+void Editor::SetSelectedFileReference(std::shared_ptr<FileReference> fileReference)
+{
+	selectedFileReference = fileReference;
+#if  defined(EDITOR)
+	Editor::inspector->loadedPreview = nullptr;
+#endif
+}
+
+std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
+{
+	return selectedFileReference;
+}
+
+void Editor::SetSelectedGameObject(const std::weak_ptr<GameObject>& newSelected)
+{
+	selectedGameObject = newSelected;
+}
+
+std::weak_ptr<GameObject> Editor::GetSelectedGameObject()
+{
+	return selectedGameObject;
 }
 
 #pragma region Save

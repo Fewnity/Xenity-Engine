@@ -9,6 +9,7 @@
 #include "../audio/audio_manager.h"
 #include "../graphics/camera.h"
 #include "../lighting/lighting.h"
+#include "gameplay_manager.h"
 
 #pragma region Constructors / Destructor
 
@@ -17,7 +18,7 @@
 std::shared_ptr<GameObject> CreateGameObject()
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>();
-	Engine::AddGameObject(newGameObject);
+	GameplayManager::AddGameObject(newGameObject);
 	newGameObject->Setup();
 	return newGameObject;
 }
@@ -25,7 +26,7 @@ std::shared_ptr<GameObject> CreateGameObject()
 std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
-	Engine::AddGameObject(newGameObject);
+	GameplayManager::AddGameObject(newGameObject);
 	newGameObject->Setup();
 	return newGameObject;
 }
@@ -33,16 +34,16 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
-	Engine::AddGameObjectEditor(newGameObject);
+	GameplayManager::AddGameObjectEditor(newGameObject);
 	newGameObject->Setup();
 	return newGameObject;
 }
 
 std::shared_ptr<Component> FindComponentById(const uint64_t id)
 {
-	for (int i = 0; i < Engine::gameObjectCount; i++)
+	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 	{
-		std::shared_ptr<GameObject> gameobject = Engine::gameObjects[i];
+		std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
 		int componentCount = gameobject->GetComponentCount();
 		for (int compI = 0; compI < componentCount; compI++)
 		{
@@ -100,7 +101,7 @@ void GameObject::RemoveComponent(const std::weak_ptr<Component>& weakComponent)
 		if (!component->waitingForDestroy)
 		{
 			component->waitingForDestroy = true;
-			Engine::componentsToDestroy.push_back(component);
+			GameplayManager::componentsToDestroy.push_back(component);
 
 			// Remove the component from the gameobject's components list
 			for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
@@ -197,7 +198,7 @@ void GameObject::AddExistingComponent(std::shared_ptr<Component> componentToAdd)
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	componentCount++;
-	if (Engine::GetGameState() == Playing && GetLocalActive())
+	if (GameplayManager::GetGameState() == Playing && GetLocalActive())
 	{
 		componentToAdd->Awake();
 		componentToAdd->isAwakeCalled = true;
@@ -213,7 +214,7 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 	if (name == "@")
 		return foundGameObjects;
 
-	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>> gameObjects = GameplayManager::GetGameObjects();
 
 	int gameObjectCount = (int)gameObjects.size();
 
@@ -227,7 +228,7 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 
 std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 {
-	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>> gameObjects = GameplayManager::GetGameObjects();
 
 	if (name == "@")
 		return std::shared_ptr<GameObject>();
@@ -244,7 +245,7 @@ std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 
 std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 {
-	std::vector<std::shared_ptr<GameObject>> gameObjects = Engine::GetGameObjects();
+	std::vector<std::shared_ptr<GameObject>> gameObjects = GameplayManager::GetGameObjects();
 
 	int gameObjectCount = (int)gameObjects.size();
 

@@ -20,8 +20,8 @@ void InspectorMenu::Draw()
 
 	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
 
-	auto selectedGameObject = Engine::selectedGameObject.lock();
-	std::shared_ptr<FileReference> selectedFileReference = Engine::GetSelectedFileReference();
+	auto selectedGameObject = Editor::GetSelectedGameObject().lock();
+	std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 
 	if (selectedFileReference)
 	{
@@ -205,7 +205,7 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 
 void InspectorMenu::DrawFilePreview()
 {
-	if (Engine::GetSelectedFileReference())
+	if (Editor::GetSelectedFileReference())
 	{
 		ImDrawList* draw_list = ImGui::GetForegroundDrawList();
 
@@ -217,9 +217,9 @@ void InspectorMenu::DrawFilePreview()
 
 		int textureId = 0;
 		// If the selected file needs to be loaded for preview
-		if (loadedPreview != Engine::GetSelectedFileReference())
+		if (loadedPreview != Editor::GetSelectedFileReference())
 		{
-			loadedPreview = Engine::GetSelectedFileReference();
+			loadedPreview = Editor::GetSelectedFileReference();
 			previewText.clear();
 			// Read text file
 			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Header || loadedPreview->fileType == File_Shader)
@@ -259,7 +259,7 @@ void InspectorMenu::DrawFilePreview()
 		{
 			std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
 			ImVec2 availArea = ImGui::GetContentRegionAvail();
-			Engine::renderer->BindTexture(texture);
+			Engine::GetRenderer().BindTexture(texture);
 			ImGui::Image((ImTextureID)textureId, availArea);
 
 			// Print texture resolution

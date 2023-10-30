@@ -16,7 +16,7 @@ void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 	renderSettings.useDepth = false;
 	renderSettings.useLighting = false;
 	renderSettings.useTexture = false;
-	Engine::renderer->DrawLine(a, b, color, renderSettings);
+	Engine::GetRenderer().DrawLine(a, b, color, renderSettings);
 }
 
 void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, std::shared_ptr<Texture> texture, const Color& color)

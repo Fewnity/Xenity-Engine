@@ -13,6 +13,8 @@ class Vector3;
 class Vector2Int;
 class Vector2;
 
+#include <glm/glm.hpp>
+
 class API Math
 {
 public:
@@ -28,6 +30,8 @@ public:
 	* @param cB Column Count of B
 	*/
 	static void MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB);
+
+	static glm::mat4 CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale);
 
 	/**
 	* Get the next power of 2 of the given value (if the value is not itself a power of two)

@@ -4,15 +4,14 @@
 #include "../../debug/debug.h"
 #include "../../engine.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
 #include <vram.h>
 #endif
+
 #include "../../file_system/mesh_loader/wavefront_loader.h"
 #include "../../asset_management/asset_manager.h"
 #include "../../graphics/renderer/renderer.h"
-
-#include <glad/glad.h>
 
 MeshData::MeshData()
 {
@@ -144,7 +143,7 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 
 void MeshData::SendDataToGpu()
 {
-	Engine::renderer->UploadMeshData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+	Engine::GetRenderer().UploadMeshData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 	FreeMeshData(false);
 }
 
@@ -172,14 +171,9 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				free(subMesh->indices);
 				subMesh->indices = nullptr;
 			}
-			if (deleteSubMeshes)
+			if (deleteSubMeshes && Engine::IsRunning())
 			{
-				if (subMesh->VAO != 0)
-					Engine::renderer->DeleteVertexArray(subMesh->VAO);
-				if (subMesh->VBO != 0)
-					Engine::renderer->DeleteBuffer(subMesh->VBO);
-				if (subMesh->EBO != 0)
-					Engine::renderer->DeleteBuffer(subMesh->EBO);
+				Engine::GetRenderer().DeleteSubMeshData(subMesh);
 				delete subMesh;
 			}
 		}

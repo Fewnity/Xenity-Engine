@@ -14,6 +14,7 @@
 #include "TextAlignments.h"
 #include "../color/color.h"
 #include "../../engine.h"
+#include "../../game_elements/gameplay_manager.h"
 
 class Font;
 class TextInfo;
@@ -44,7 +45,7 @@ public:
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
-		Engine::drawOrderListDirty = true;
+		GameplayManager::drawOrderListDirty = true;
 	}
 
 	/**

@@ -45,13 +45,13 @@ public:
 	/**
 	* [Internal]
 	*/
-	Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
+	//Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
-	static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
+	//static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	~Texture();
 
@@ -71,11 +71,6 @@ public:
 	unsigned int GetTextureId() const;
 
 	/**
-	* Update texture if a filter changed
-	*/
-	void UpdateTextureFilter();
-
-	/**
 	* Set texture filter
 	* @param filter Filter
 	*/
@@ -87,6 +82,11 @@ public:
 	*/
 	void SetWrapMode(const WrapMode mode);
 
+	void SetSize(int width, int height) 
+	{
+		this->width = width;
+		this->height = height;
+	}
 	/**
 	* Get texture width
 	*/
@@ -112,6 +112,11 @@ public:
 	* Get texture channel count
 	*/
 	int GetChannelCount() const;
+
+	void SetChannelCount(int channelCount) 
+	{
+		this->nrChannels = channelCount;
+	}
 
 	/**
 	* Get if the texture is using mipmap

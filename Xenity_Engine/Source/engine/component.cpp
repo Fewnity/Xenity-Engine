@@ -12,6 +12,7 @@
 #include "physics/physics_manager.h"
 #include "game_elements/gameobject.h"
 #include "asset_management/asset_manager.h"
+#include "game_elements/gameplay_manager.h"
 
 #pragma region Constructors / Destructor
 
@@ -34,7 +35,7 @@ void Component::SetGameObject(const std::weak_ptr<GameObject>& newGameObject)
 	bool firstUse = false;
 	if (this->gameObject.expired())
 	{
-		Engine::componentsListDirty = true;
+		GameplayManager::componentsListDirty = true;
 		firstUse = true;
 	}
 

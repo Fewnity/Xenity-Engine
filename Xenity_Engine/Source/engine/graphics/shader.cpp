@@ -38,17 +38,17 @@ Shader::~Shader()
 {
 	if (isLoaded)
 	{
-		if (!Engine::UseOpenGLFixedFunctions)
+		if (!Engine::UseOpenGLFixedFunctions && Engine::IsRunning())
 		{
-			Engine::renderer->DeleteShader(vertexShaderId);
-			Engine::renderer->DeleteShader(fragmentShaderId);
+			Engine::GetRenderer().DeleteShader(vertexShaderId);
+			Engine::GetRenderer().DeleteShader(fragmentShaderId);
 
 			if (useTessellation)
 			{
-				Engine::renderer->DeleteShader(tessellationEvaluationShaderId);
-				Engine::renderer->DeleteShader(fragmentShaderId);
+				Engine::GetRenderer().DeleteShader(tessellationEvaluationShaderId);
+				Engine::GetRenderer().DeleteShader(fragmentShaderId);
 			}
-			Engine::renderer->DeleteShaderProgram(programId);
+			Engine::GetRenderer().DeleteShaderProgram(programId);
 		}
 	}
 }
@@ -184,7 +184,7 @@ bool Shader::Use()
 {
 	if (Graphics::currentShader != shared_from_this())
 	{
-		Engine::renderer->UseShaderProgram(programId);
+		Engine::GetRenderer().UseShaderProgram(programId);
 		Graphics::currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
 		return true;
 	}
@@ -218,16 +218,16 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 	if (id != nullptr)
 	{
 		//Compile
-		*id = Engine::renderer->CreateShader(type);
-		Engine::renderer->SetShaderData(*id, shaderDataConst);
-		Engine::renderer->CompileShader(*id);
+		*id = Engine::GetRenderer().CreateShader(type);
+		Engine::GetRenderer().SetShaderData(*id, shaderDataConst);
+		Engine::GetRenderer().CompileShader(*id);
 
-		int vResult = Engine::renderer->GetShaderCompilationResult(*id);
+		int vResult = Engine::GetRenderer().GetShaderCompilationResult(*id);
 
 		//On error
 		if (vResult == 0)
 		{
-			std::vector<char> errorLog = Engine::renderer->GetCompilationError(*id);
+			std::vector<char> errorLog = Engine::GetRenderer().GetCompilationError(*id);
 
 			std::string shaderError = "[Shader::Compile] Compilation error: ";
 			switch (type)
@@ -300,7 +300,7 @@ void Shader::SetShaderCameraPosition()
 		else
 			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
 		camera = rotationMatrix * camera;
-		Engine::renderer->SetShaderAttribut(programId, "camera", camera);
+		Engine::GetRenderer().SetShaderAttribut(programId, "camera", camera);
 	}
 }
 
@@ -310,7 +310,7 @@ void Shader::SetShaderCameraPosition()
 void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, "camera", canvasCameraPosition);
+	Engine::GetRenderer().SetShaderAttribut(programId, "camera", canvasCameraPosition);
 }
 
 /// <summary>
@@ -319,13 +319,13 @@ void Shader::SetShaderCameraPositionCanvas()
 void Shader::SetShaderProjection()
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetProjection());
 }
 
 void Shader::SetShaderProjectionCanvas()
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetCanvasProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetCanvasProjection());
 }
 
 /// <summary>
@@ -335,7 +335,7 @@ void Shader::SetShaderProjectionCanvas()
 void Shader::SetShaderModel(const glm::mat4& trans)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, "model", trans);
+	Engine::GetRenderer().SetShaderAttribut(programId, "model", trans);
 }
 
 /// <summary>
@@ -357,57 +357,57 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
-	Engine::renderer->SetShaderAttribut(programId, "model", transformationMatrix);
+	Engine::GetRenderer().SetShaderAttribut(programId, "model", transformationMatrix);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector4& value)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector3& value)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector2& value)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, float value)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, int value)
 {
 	Use();
-	Engine::renderer->SetShaderAttribut(programId, attribut, value);
+	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 
 void Shader::Link()
 {
-	programId = Engine::renderer->CreateShaderProgram();
-	Engine::renderer->AttachShader(programId, vertexShaderId);
+	programId = Engine::GetRenderer().CreateShaderProgram();
+	Engine::GetRenderer().AttachShader(programId, vertexShaderId);
 
 	if (useTessellation)
 	{
-		Engine::renderer->AttachShader(programId, tessellationShaderId);
-		Engine::renderer->AttachShader(programId, tessellationEvaluationShaderId);
+		Engine::GetRenderer().AttachShader(programId, tessellationShaderId);
+		Engine::GetRenderer().AttachShader(programId, tessellationEvaluationShaderId);
 	}
-	Engine::renderer->AttachShader(programId, fragmentShaderId);
+	Engine::GetRenderer().AttachShader(programId, fragmentShaderId);
 
-	Engine::renderer->LinkShaderProgram(programId);
-	Engine::renderer->UseShaderProgram(programId);
+	Engine::GetRenderer().LinkShaderProgram(programId);
+	Engine::GetRenderer().UseShaderProgram(programId);
 
-	modelLocation = Engine::renderer->GetShaderUniformLocation(programId, "model");
-	projectionLocation = Engine::renderer->GetShaderUniformLocation(programId, "projection");
+	modelLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "model");
+	projectionLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "projection");
 }
 
 /// <summary>

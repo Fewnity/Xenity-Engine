@@ -62,7 +62,7 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 	{
 		int childCount = childLock->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-		if (Engine::selectedGameObject.lock() == childLock)
+		if (Editor::GetSelectedGameObject().lock() == childLock)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
@@ -113,8 +113,8 @@ int EditorUI::DrawTreeItem(const std::weak_ptr<GameObject>& child)
 				state = 1;
 				if (ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
 				{
-					Engine::SetSelectedGameObject(child);
-					Engine::SetSelectedFileReference(nullptr);
+					Editor::SetSelectedGameObject(child);
+					Editor::SetSelectedFileReference(nullptr);
 					state = 2;
 				}
 			}

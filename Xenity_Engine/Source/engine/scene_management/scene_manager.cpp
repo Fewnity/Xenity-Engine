@@ -5,6 +5,7 @@
 #include "../reflection/reflection_utils.h"
 #include "../asset_management/project_manager.h"
 #include "../physics/physics_manager.h"
+#include "../game_elements/gameplay_manager.h"
 
 using json = nlohmann::json;
 
@@ -17,11 +18,11 @@ json savedSceneDataHotReloading;
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	json j;
-	int gameObjectCount = Engine::gameObjectCount;
+	int gameObjectCount = GameplayManager::gameObjectCount;
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		auto& go = Engine::gameObjects[goI];
+		auto& go = GameplayManager::gameObjects[goI];
 		std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
@@ -111,7 +112,7 @@ void SceneManager::RestoreSceneHotReloading()
 void SceneManager::LoadScene(const json& jsonData)
 {
 #if !defined(EDITOR)
-	Engine::SetGameState(Starting);
+	GameplayManager::SetGameState(Starting);
 #endif
 
 	ClearScene();
@@ -204,7 +205,7 @@ void SceneManager::LoadScene(const json& jsonData)
 		}
 
 		// Call Awake on Components
-		if (Engine::GetGameState() == Starting)
+		if (GameplayManager::GetGameState() == Starting)
 		{
 			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
 			int componentsCount = allComponents.size();
@@ -261,7 +262,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	}
 
 #if !defined(EDITOR)
-	Engine::SetGameState(Playing);
+	GameplayManager::SetGameState(Playing);
 #endif
 	}
 
@@ -308,13 +309,15 @@ void SceneManager::ClearScene()
 	}
 
 	PhysicsManager::rigidBodies.clear();
-	Engine::orderedComponents.clear();
-	Engine::gameObjectsToDestroy.clear();
-	Engine::componentsToDestroy.clear();
-	Engine::gameObjects.clear();
-	Engine::componentsCount = 0;
-	Engine::gameObjectCount = 0;
-	Engine::selectedGameObject.reset();
+	GameplayManager::orderedComponents.clear();
+	GameplayManager::gameObjectsToDestroy.clear();
+	GameplayManager::componentsToDestroy.clear();
+	GameplayManager::gameObjects.clear();
+	GameplayManager::componentsCount = 0;
+	GameplayManager::gameObjectCount = 0;
+#if defined(EDITOR)
+	Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+#endif
 	Window::UpdateWindowTitle();
 }
 

@@ -232,16 +232,6 @@ void RendererOpengl::SetTransform(const glm::mat4& mat)
 #endif
 }
 
-void RendererOpengl::MoveTransform(const Vector3& position)
-{
-#if defined(__PSP__)
-	glMatrixMode(GL_MODEL);
-#else
-	glMatrixMode(GL_MODELVIEW);
-#endif
-	glTranslatef(-position.x, position.y, position.z);
-}
-
 void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 {
 #if defined(__PSP__)
@@ -268,7 +258,7 @@ void RendererOpengl::BindTexture(std::shared_ptr <Texture>texture)
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
-void RendererOpengl::ApplyTextureFilters(std::shared_ptr <Texture >texture)
+void RendererOpengl::ApplyTextureFilters(std::shared_ptr<Texture> texture)
 {
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
@@ -702,14 +692,6 @@ unsigned int RendererOpengl::CreateVertexArray()
 	return id;
 }
 
-void RendererOpengl::BindBuffer(BufferType type, unsigned int bufferId)
-{
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	int t = GetBufferTypeEnum(type);
-	glBindBuffer(t, bufferId);
-#endif
-}
-
 void RendererOpengl::BindVertexArray(unsigned int bufferId)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
@@ -731,6 +713,16 @@ void RendererOpengl::DeleteVertexArray(unsigned int bufferId)
 #endif
 }
 
+void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh* subMesh)
+{
+	if (subMesh->VAO != 0)
+		DeleteVertexArray(subMesh->VAO);
+	if (subMesh->VBO != 0)
+		DeleteBuffer(subMesh->VBO);
+	if (subMesh->EBO != 0)
+		DeleteBuffer(subMesh->EBO);
+}
+
 void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
@@ -739,11 +731,13 @@ void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
 		MeshData::SubMesh* newSubMesh = meshData->subMeshes[i];
 
 		if (newSubMesh->VAO == 0)
-		newSubMesh->VAO = Engine::renderer->CreateVertexArray();
+			newSubMesh->VAO = CreateVertexArray();
+
 		glBindVertexArray(newSubMesh->VAO);
 
 		if (newSubMesh->VBO == 0)
-		newSubMesh->VBO = Engine::renderer->CreateBuffer();
+			newSubMesh->VBO = CreateBuffer();
+
 		glBindBuffer(GL_ARRAY_BUFFER, newSubMesh->VBO);
 
 		if (!meshData->hasNormal)
@@ -770,7 +764,7 @@ void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
 		}
 
 		if (newSubMesh->EBO == 0)
-		newSubMesh->EBO = Engine::renderer->CreateBuffer();
+			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
@@ -865,9 +859,9 @@ void RendererOpengl::UploadMeshData(std::shared_ptr<MeshData> meshData)
 			}
 		}
 
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 #endif
 }

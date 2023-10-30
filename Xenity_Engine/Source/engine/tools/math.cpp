@@ -10,6 +10,8 @@
 #include "../vectors/vector2_int.h"
 #include "../vectors/vector2.h"
 
+#include <glm/ext/matrix_transform.hpp>
+
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
@@ -31,6 +33,22 @@ void Math::MultiplyMatrices(const float* A, const float* B, float* result, int r
 			result[i * cB + j] = temp;
 		}
 	}
+}
+
+glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale)
+{
+	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
+
+	if (rotation.y != 0)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+	if (rotation.x != 0)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	if (rotation.z != 0)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+
+	return transformationMatrix;
 }
 
 unsigned int Math::nextPow2(const unsigned int value)

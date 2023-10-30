@@ -7,6 +7,8 @@
 #include "../graphics/3d_graphics/mesh_data.h"
 #include "skybox.h"
 
+#include "../../editor/editor.h"
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
 #endif
@@ -62,8 +64,8 @@ std::unordered_map<std::string, ReflectionEntry> Graphics::GetLightingSettingsRe
 
 void Graphics::OnLightingSettingsReflectionUpdate()
 {
-	Engine::renderer->SetFog(isFogEnabled);
-	Engine::renderer->SetFogValues(fogStart, fogEnd, fogColor);
+	Engine::GetRenderer().SetFog(isFogEnabled);
+	Engine::GetRenderer().SetFogValues(fogStart, fogEnd, fogColor);
 }
 
 void Graphics::Init()
@@ -114,7 +116,7 @@ void Graphics::Draw()
 
 	Graphics::OrderDrawables();
 
-	Engine::renderer->NewFrame();
+	Engine::GetRenderer().NewFrame();
 
 	int cameraCount = cameras.size();
 	int matCount = AssetManager::GetMaterialCount();
@@ -136,14 +138,18 @@ void Graphics::Draw()
 			currentMode = Draw_3D;
 
 			needUpdateCamera = true;
-			
+
 			// Update camera and bind frame buffer
 			camera->UpdateProjection();
 			camera->BindFrameBuffer();
 			const Vector3 camPos = camera->GetTransform()->GetPosition();
 
-			Engine::renderer->SetClearColor(skyColor);
-			Engine::renderer->Clear();
+			Engine::GetRenderer().SetClearColor(skyColor);
+			Engine::GetRenderer().Clear();
+
+#if defined(__PSP__)
+			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+#endif
 
 			drawOtherBenchmark->Stop();
 
@@ -151,11 +157,13 @@ void Graphics::Draw()
 			DrawSkybox(camPos);
 			skyboxBenchmark->Stop();
 
-			Engine::renderer->SetFog(isFogEnabled);
+			Engine::GetRenderer().SetFog(isFogEnabled);
 			drawAllBenchmark->Start();
+
 			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
+
 				if (drawable->type != currentMode)
 				{
 					currentMode = drawable->type;
@@ -163,7 +171,8 @@ void Graphics::Draw()
 					{
 						if (Engine::UseOpenGLFixedFunctions)
 						{
-							Engine::renderer->SetProjection2D(5, 0.03f, 100);
+							Engine::GetRenderer().ResetView();
+							Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 						}
 					}
 				}
@@ -175,7 +184,7 @@ void Graphics::Draw()
 			if (camera->isEditor)
 			{
 				drawEditorToolsBenchmark->Start();
-				Engine::renderer->SetFog(false);
+				Engine::GetRenderer().SetFog(false);
 
 				//Draw editor scene grid
 				if (currentMode != Draw_3D)
@@ -187,29 +196,26 @@ void Graphics::Draw()
 					}
 				}
 
-				Engine::renderer->ResetTransform();
-				Engine::renderer->SetCameraPosition(camera);
-
-				Engine::renderer->BindBuffer(BufferType::Array_Buffer, 0);
-				Engine::renderer->BindBuffer(BufferType::Element_Array_Buffer, 0);
+				Engine::GetRenderer().ResetTransform();
+				Engine::GetRenderer().SetCameraPosition(camera);
 
 				if (!Engine::UseOpenGLFixedFunctions)
 				{
-					Engine::renderer->UseShaderProgram(0);
+					Engine::GetRenderer().UseShaderProgram(0);
 					Graphics::currentShader = nullptr;
 					Graphics::currentMaterial = nullptr;
 				}
 
-				Engine::renderer->SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
+				Engine::GetRenderer().SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
 
 				drawEditorGridBenchmark->Start();
 				DrawEditorGrid(camPos);
 				drawEditorGridBenchmark->Stop();
 
 				drawEditorGizmoBenchmark->Start();
-				for (int i = 0; i < Engine::componentsCount; i++)
+				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
-					if (auto component = Engine::orderedComponents[i].lock())
+					if (auto component = GameplayManager::orderedComponents[i].lock())
 					{
 						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 						{
@@ -232,11 +238,11 @@ void Graphics::Draw()
 
 #if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	Engine::renderer->SetClearColor(Color::CreateFromRGB(15, 16, 16));
-	Engine::renderer->Clear();
+	Engine::GetRenderer().SetClearColor(Color::CreateFromRGB(15, 16, 16));
+	Engine::GetRenderer().Clear();
 #endif
 	drawEndFrameBenchmark->Start();
-	Engine::renderer->EndFrame();
+	Engine::GetRenderer().EndFrame();
 	drawEndFrameBenchmark->Stop();
 }
 
@@ -246,6 +252,14 @@ bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<ID
 	const int priority2 = t2.lock()->GetDrawPriority();
 
 	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D)
+	{
+		return false;
+	}
+	if (t2.lock()->type == Draw_2D && t1.lock()->type == Draw_3D)
+	{
+		return true;
+	}
+	if (t1.lock()->type == Draw_2D && t2.lock()->type == Draw_3D)
 	{
 		return false;
 	}
@@ -275,15 +289,15 @@ void Graphics::OrderDrawables()
 		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
 		if (drawableToCheck && drawableToCheck->GetTransform()->movedLastFrame)
 		{
-			Engine::drawOrderListDirty = true;
+			GameplayManager::drawOrderListDirty = true;
 			break;
 		}
 	}
 
-	if (Engine::drawOrderListDirty)
+	if (GameplayManager::drawOrderListDirty)
 	{
 		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
-		Engine::drawOrderListDirty = false;
+		GameplayManager::drawOrderListDirty = false;
 	}
 	orderBenchmark->Stop();
 }
@@ -298,7 +312,7 @@ void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
-	Engine::drawOrderListDirty = true;
+	GameplayManager::drawOrderListDirty = true;
 }
 
 void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
@@ -315,11 +329,41 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 	}
 }
 
+void Graphics::DrawMesh(std::shared_ptr<MeshData> meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, std::shared_ptr<Material> material, bool forUI)
+{
+	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
+	if (!camera)
+		return;
+
+	if (!Engine::UseOpenGLFixedFunctions)
+	{
+		if (!material)
+			return;
+
+		material->Use();
+
+		if (!Graphics::currentShader)
+			return;
+
+		Graphics::currentShader->SetShaderModel(matrix);
+	}
+	else
+	{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
+		if(!forUI)
+			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+#endif
+		Engine::GetRenderer().SetTransform(matrix);
+	}
+
+	Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
+}
+
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
 	if (skybox)
 	{
-		Engine::renderer->SetFog(false);
+		Engine::GetRenderer().SetFog(false);
 		float scaleF = 10.01f;
 		Vector3 scale = Vector3(scaleF);
 
@@ -338,7 +382,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, Engine::unlitMaterial);
 	}
 }
-
+#if defined(EDITOR)
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 {
 	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
@@ -393,12 +437,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
 			int zPos = z * coef;
-			Engine::renderer->DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
 		}
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
 			int xPos = -x * coef;
-			Engine::renderer->DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 1)
@@ -407,12 +451,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
 			float zPos = z * coef;
-			Engine::renderer->DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
 			float yPos = -y * coef;
-			Engine::renderer->DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 2)
@@ -421,12 +465,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
 			int xPos = x * coef;
-			Engine::renderer->DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
 			int yPos = -y * coef;
-			Engine::renderer->DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
+			Engine::GetRenderer().DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
 		}
 	}
 }
@@ -434,10 +478,10 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
 	// Draw tool
-	if (Engine::selectedGameObject.lock())
+	if (Editor::GetSelectedGameObject().lock())
 	{
-		Vector3 selectedGOPos = Engine::selectedGameObject.lock()->GetTransform()->GetPosition();
-		Vector3 selectedGoRot = Engine::selectedGameObject.lock()->GetTransform()->GetRotation();
+		Vector3 selectedGOPos = Editor::GetSelectedGameObject().lock()->GetTransform()->GetPosition();
+		Vector3 selectedGoRot = Editor::GetSelectedGameObject().lock()->GetTransform()->GetRotation();
 		float dist = Vector3::Distance(selectedGOPos, cameraPosition);
 		dist /= 40;
 		Vector3 scale = Vector3(dist);
@@ -453,3 +497,4 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, renderSettings, Engine::unlitMaterial);
 	}
 }
+#endif

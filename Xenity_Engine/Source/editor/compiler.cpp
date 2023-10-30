@@ -395,7 +395,7 @@ void Compiler::StartGame(Platform platform, const std::string& exportPath)
 void Compiler::HotReloadGame()
 {
 #if defined(_WIN32) || defined(_WIN64)
-	delete Engine::game;
+	Engine::game.reset();
 	Engine::game = nullptr;
 
 	SceneManager::SaveScene(SaveSceneForHotReloading);

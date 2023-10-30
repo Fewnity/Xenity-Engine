@@ -59,143 +59,66 @@ void SpriteManager::Init()
  */
 void SpriteManager::DrawSprite(std::shared_ptr<Transform> transform, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material)
 {
-	if (!texture || !texture->IsValid())
-	{
-		Debug::PrintError("[SpriteManager::DrawSprite] Invalid texture");
-		return;
-	}
-
 	spriteBenchmark->Start();
-	if (auto camera = Graphics::usedCamera.lock())
-	{
-		Vector3 scale = transform->GetScale();
-		if (!Engine::UseOpenGLFixedFunctions)
-			material->Use();
 
-		spriteMeshData->unifiedColor = color;
+	spriteMeshData->unifiedColor = color;
 
-		// Get sprite scale from texture size
-		float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-		float w = texture->GetWidth() * scaleCoef;
-		float h = texture->GetHeight() * scaleCoef;
+	Vector3 scale = transform->GetScale();
+	RenderingSettings renderSettings = RenderingSettings();
 
-		glm::mat4 matCopy = transform->transformationMatrix;
-		matCopy = glm::scale(matCopy, glm::vec3(w, h, 1));
-		if (!Engine::UseOpenGLFixedFunctions)
-			Graphics::currentShader->SetShaderModel(matCopy);
+	if (scale.x * scale.y < 0)
+		renderSettings.invertFaces = true;
+	else
+		renderSettings.invertFaces = false;
 
-#if defined(__PSP__)
-		if (Graphics::needUpdateCamera)
-		{
-			camera->UpdateProjection();
-			Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-			Graphics::needUpdateCamera = false;
-		}
-#else
-		if (Engine::UseOpenGLFixedFunctions)
-			Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-#endif
+	renderSettings.useBlend = true;
+	renderSettings.useDepth = false;
+	renderSettings.useTexture = true;
+	renderSettings.useLighting = false;
 
-		// Move/Rotate/Scale the sprite
-#if defined(__PSP__)
-		Engine::renderer->SetTransform(matCopy);
-#else
-		if (Engine::UseOpenGLFixedFunctions)
-		{
-#if defined(__PSP__)
-			Vector3 position = transform->GetPosition();
-			Vector3 rotation = transform->GetRotation();
-			Engine::renderer->SetTransform(position, rotation, scale, true);
-#else
-			Engine::renderer->SetTransform(matCopy);
-#endif
-		}
-#endif
+	float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+	float w = texture->GetWidth() * scaleCoef;
+	float h = texture->GetHeight() * scaleCoef;
 
-		// Set draw settings
-		RenderingSettings renderSettings = RenderingSettings();
+	glm::mat4 matCopy = transform->transformationMatrix;
+	matCopy = glm::scale(matCopy, glm::vec3(w, h, 1));
 
-		if (scale.x * scale.y < 0)
-			renderSettings.invertFaces = true;
-		else
-			renderSettings.invertFaces = false;
-
-		renderSettings.useBlend = true;
-		renderSettings.useDepth = false;
-		renderSettings.useTexture = true;
-		renderSettings.useLighting = false;
-
-		// Draw the sprite
-		std::vector<std::shared_ptr<Texture>> textures;
-		textures.push_back(texture);
-		Engine::renderer->DrawMeshData(spriteMeshData, textures, renderSettings);
-	}
+	std::vector<std::shared_ptr<Texture>> textures;
+	textures.push_back(texture);
+	Graphics::DrawMesh(spriteMeshData, textures, renderSettings, matCopy, material, false);
 	spriteBenchmark->Stop();
 }
 
 void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, std::shared_ptr <Texture> texture, const Color& color, std::shared_ptr <Material> material)
 {
-	if (!texture || !texture->IsValid())
-	{
-		Debug::PrintError("[SpriteManager::DrawSprite] Invalid texture");
-		return;
-	}
-
 	spriteBenchmark->Start();
-	if (auto camera = Graphics::usedCamera.lock())
-	{
-		if (!Engine::UseOpenGLFixedFunctions)
-			material->Use();
+	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 
-		spriteMeshData->unifiedColor = color;
+	spriteMeshData->unifiedColor = color;
 
-		// Get sprite scale from texture size
-		float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-		float w = texture->GetWidth() * scaleCoef;
-		float h = texture->GetHeight() * scaleCoef;
-		Vector3 scaleSprite = scale;
-		scaleSprite.x *= w;
-		scaleSprite.y *= h;
+	//Vector3 scale = transform->GetScale();
+	RenderingSettings renderSettings = RenderingSettings();
 
-		if (!Engine::UseOpenGLFixedFunctions)
-			Graphics::currentShader->SetShaderModel(Vector3(position.x, position.y, position.z), rotation, scaleSprite);
+	if (scale.x * scale.y < 0)
+		renderSettings.invertFaces = true;
+	else
+		renderSettings.invertFaces = false;
 
-#if defined(__PSP__)
-		if (Graphics::needUpdateCamera)
-		{
-			camera->UpdateProjection();
-			Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-			Graphics::needUpdateCamera = false;
-		}
-#else
-		if (Engine::UseOpenGLFixedFunctions)
-			Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-#endif
+	renderSettings.useBlend = true;
+	renderSettings.useDepth = false;
+	renderSettings.useTexture = true;
+	renderSettings.useLighting = false;
 
-		// Move/Rotate/Scale the sprite
-		if (Engine::UseOpenGLFixedFunctions)
-		{
-			Engine::renderer->SetTransform(position, rotation, scaleSprite, true);
-		}
+	float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+	float w = texture->GetWidth() * scaleCoef;
+	float h = texture->GetHeight() * scaleCoef;
 
-		// Set draw settings
-		RenderingSettings renderSettings = RenderingSettings();
+	//glm::mat4 matCopy = transform->transformationMatrix;
+	matrix = glm::scale(matrix, glm::vec3(w, h, 1));
 
-		if (scaleSprite.x * scaleSprite.y < 0)
-			renderSettings.invertFaces = true;
-		else
-			renderSettings.invertFaces = false;
-
-		renderSettings.useBlend = true;
-		renderSettings.useDepth = false;
-		renderSettings.useTexture = true;
-		renderSettings.useLighting = false;
-
-		// Draw the sprite
-		std::vector<std::shared_ptr<Texture>> textures;
-		textures.push_back(texture);
-		Engine::renderer->DrawMeshData(spriteMeshData, textures, renderSettings);
-	}
+	std::vector<std::shared_ptr<Texture>> textures;
+	textures.push_back(texture);
+	Graphics::DrawMesh(spriteMeshData, textures, renderSettings, matrix, material, false);
 	spriteBenchmark->Stop();
 }
 
@@ -214,17 +137,17 @@ void SpriteManager::Render2DLine(std::shared_ptr <MeshData> meshData)
 		if (Graphics::needUpdateCamera)
 		{
 			camera->UpdateProjection();
-			Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 			Graphics::needUpdateCamera = false;
 		}
 #else
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera);
+		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 #endif
 
 		Vector3 zero = Vector3(0);
 		Vector3 one = Vector3(1);
 
-		Engine::renderer->SetTransform(zero, zero, one, true);
+		Engine::GetRenderer().SetTransform(zero, zero, one, true);
 
 		// Set draw settings
 		RenderingSettings renderSettings = RenderingSettings();
@@ -237,7 +160,7 @@ void SpriteManager::Render2DLine(std::shared_ptr <MeshData> meshData)
 
 		std::vector<std::shared_ptr<Texture>> textures;
 		textures.push_back(AssetManager::defaultTexture);
-		Engine::renderer->DrawMeshData(meshData, textures, renderSettings);
+		Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
 	}
 	spriteBenchmark->Stop();
 }

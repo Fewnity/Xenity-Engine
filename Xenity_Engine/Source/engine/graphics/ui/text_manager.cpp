@@ -16,45 +16,6 @@ void TextManager::Init()
 	textBenchmark = new ProfilerBenchmark("Text", "Text");
 }
 
-void TextManager::DrawTextMesh(std::shared_ptr<MeshData> mesh, bool for3D, bool invertFaces, std::shared_ptr <Texture> texture)
-{
-	// Set draw settings
-	RenderingSettings renderSettings = RenderingSettings();
-	renderSettings.invertFaces = invertFaces;
-	renderSettings.useBlend = true;
-	renderSettings.useDepth = for3D;
-	renderSettings.useTexture = true;
-	renderSettings.useLighting = for3D;
-
-	std::vector< std::shared_ptr<Texture>> textures;
-	textures.push_back(texture);
-	Engine::renderer->DrawMeshData(mesh, textures, renderSettings);
-}
-
-void TextManager::SetTextPosition(std::shared_ptr<Transform> transform, bool canvas)
-{
-	// Set text scale and pivot position/rotation
-	Vector3 pos;
-	if (!canvas)
-	{
-		pos = transform->GetPosition();
-	}
-	else
-	{
-		float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
-		float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
-		pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
-	}
-
-	Vector3 scl = transform->GetScale();
-	scl.x = -scl.x;
-	Vector3 rot = transform->GetRotation();
-	if (Engine::UseOpenGLFixedFunctions)
-		Engine::renderer->SetTransform(pos, rot, scl, true);
-	else
-		Graphics::currentShader->SetShaderModel(pos, rot, scl);
-}
-
 std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, std::shared_ptr<Font> font)
 {
 	if (!font)
@@ -151,42 +112,36 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 
 	if (auto cameraLock = Graphics::usedCamera.lock())
 	{
-		if (!Engine::UseOpenGLFixedFunctions) 
-		{
-			if (!material)
-				return;
-
-			material->Use();
-
-			if (!Graphics::currentShader)
-				return;
-		}
-
-		textBenchmark->Start();
-
-		// Set projection
-		if (Engine::UseOpenGLFixedFunctions)
-		{
-			if (!canvas)
-			{
-				Engine::renderer->SetCameraPosition(Graphics::usedCamera);
-				Graphics::needUpdateCamera = false;
-			}
-			else
-			{
-				Engine::renderer->ResetView();
-				Graphics::needUpdateCamera = true;
-			}
-		}
-
-		SetTextPosition(transform, canvas);
-
-		bool invertFaces = false;
+		RenderingSettings renderSettings = RenderingSettings();
 		if (transform->GetScale().x * transform->GetScale().y < 0)
-			invertFaces = true;
+			renderSettings.invertFaces = true;
+		else
+			renderSettings.invertFaces = false;
+		renderSettings.useBlend = true;
+		renderSettings.useDepth = !canvas;
+		renderSettings.useTexture = true;
+		renderSettings.useLighting = !canvas;
 
-		DrawTextMesh(mesh, !canvas, invertFaces, font->fontAtlas);
-		textBenchmark->Stop();
+		Vector3 pos;
+		if (!canvas)
+		{
+			pos = transform->GetPosition();
+		}
+		else
+		{
+			float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
+			float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
+			pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+		}
+
+		Vector3 scl = transform->GetScale();
+		scl.x = -scl.x;
+		Vector3 rot = transform->GetRotation();
+		glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
+
+		std::vector<std::shared_ptr<Texture>> textures;
+		textures.push_back(font->fontAtlas);
+		Graphics::DrawMesh(mesh, textures, renderSettings, matrix, material, canvas);
 	}
 }
 

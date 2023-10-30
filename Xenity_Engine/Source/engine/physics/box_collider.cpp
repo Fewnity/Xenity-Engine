@@ -87,7 +87,7 @@ BoxCollider::~BoxCollider()
 void BoxCollider::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	if (Engine::selectedGameObject.lock() != GetGameObject())
+	if (Editor::GetSelectedGameObject().lock() != GetGameObject())
 	{
 		return;
 	}
@@ -110,7 +110,7 @@ void BoxCollider::OnDrawGizmos()
 	Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
 	Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
 
-	Engine::renderer->SetCameraPosition(Graphics::usedCamera.lock());
+	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 
 	// Bottom
 	Gizmo::DrawLine(v1, v2);

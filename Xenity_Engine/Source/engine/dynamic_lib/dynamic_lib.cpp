@@ -39,7 +39,7 @@ void DynamicLibrary::UnloadGameLibrary()
 	}
 }
 
-GameInterface* DynamicLibrary::CreateGame()
+std::unique_ptr<GameInterface> DynamicLibrary::CreateGame()
 {
 	GameInterface* gameInterface = nullptr;
 	if (library != NULL)
@@ -60,6 +60,6 @@ GameInterface* DynamicLibrary::CreateGame()
 		Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game");
 	}
 
-	return gameInterface;
+	return std::unique_ptr<GameInterface> (gameInterface);
 }
 #endif

@@ -82,7 +82,7 @@ public:
 	template <typename T>
 	static std::shared_ptr<T> AddComponentToSelection()
 	{
-		if (auto selectedGO = Engine::selectedGameObject.lock())
+		if (auto selectedGO = selectedGameObject.lock())
 		{
 			return selectedGO->AddComponent<T>();
 		}
@@ -100,7 +100,20 @@ public:
 	static LightingMenu* lightingMenu;
 	static CreateClassMenu* createClassMenu;
 	static std::weak_ptr<AudioSource> audioSource;
+
+	static void SetSelectedFileReference(std::shared_ptr<FileReference> fileReference);
+	static std::shared_ptr<FileReference> GetSelectedFileReference();
+
+	/**
+* Set selected GameObject
+* @param go New selected GameObject
+*/
+	static void SetSelectedGameObject(const std::weak_ptr<GameObject>& go);
+	static std::weak_ptr<GameObject> GetSelectedGameObject();
+
 private:
+	static std::weak_ptr<GameObject> selectedGameObject;
+	static std::shared_ptr<FileReference> selectedFileReference;
 	static void CreateMenus();
 
 	static ProjectSettingsMenu* projectSettings;

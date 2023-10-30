@@ -18,6 +18,7 @@ class MeshData;
 #include "../../vectors/vector3.h"
 #include "../color/color.h"
 #include "../../engine.h"
+#include "../../game_elements/gameplay_manager.h"
 
 class API LineRenderer : public IDrawable
 {
@@ -39,7 +40,7 @@ public:
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
-		Engine::drawOrderListDirty = true;
+		GameplayManager::drawOrderListDirty = true;
 	}
 
 	int GetOrderInLayer() const

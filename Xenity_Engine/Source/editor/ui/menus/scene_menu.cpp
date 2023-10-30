@@ -4,6 +4,7 @@
 #include <glm/ext/matrix_projection.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../tool_mode.h"
+#include "../../editor.h"
 
 enum Side {
 	Side_None,
@@ -171,7 +172,7 @@ void SceneMenu::Draw()
 			}
 			else
 			{
-				auto selectedGO = Engine::selectedGameObject.lock();
+				auto selectedGO = Editor::GetSelectedGameObject().lock();
 				if (selectedGO)
 				{
 					auto selectedGoTransform = selectedGO->GetTransform();

@@ -5,35 +5,19 @@
 
 bool initialised = false;
 
-// std::vector<Shader*> AssetManager::shaders;
 std::vector<Material*> AssetManager::materials;
 std::vector<Reflection*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
-// std::vector<MeshData*> AssetManager::meshesData;
 
-// int AssetManager::shaderCount = 0;
 int AssetManager::materialCount = 0;
 int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
 int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
-// int AssetManager::meshDataCount = 0;
-
-// Material* AssetManager::default3DMaterial = nullptr;
-// Material* AssetManager::default2DMaterial = nullptr;
-// Material* AssetManager::defaultUIMaterial = nullptr;
 
 std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
-
-// void AssetManager::ResetMaterialsUpdates()
-// {
-// 	for (int i = 0; i < materialCount; i++)
-// 	{
-// 		materials[i]->updated = false;
-// 	}
-// }
 
 /**
  * @brief Init
@@ -100,16 +84,6 @@ void AssetManager::Init()
 
 #pragma region Add assets
 
-/// <summary>
-/// Add a shader in the shader list
-/// </summary>
-/// <param name="shader"></param>
-// void AssetManager::AddShader(Shader *shader)
-// {
-// 	shaders.push_back(shader);
-// 	shaderCount++;
-// }
-
 void AssetManager::AddMaterial(Material* material)
 {
 	materials.push_back(material);
@@ -161,48 +135,15 @@ void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 	lightCount++;
 }
 
-/// <summary>
-/// Add a mesh data in the mesh data list
-/// </summary>
-/// <param name="meshData"></param>
-// void AssetManager::AddMeshData(MeshData *meshData)
-// {
-// 	meshesData.push_back(meshData);
-// 	meshDataCount++;
-// }
-
 #pragma endregion
 
 #pragma region Remove assets
 
-/// <summary>
-/// Remove a shader from the shader list
-/// </summary>
-/// <param name="shader"></param>
-// void AssetManager::RemoveShader(Shader *shader)
-// {
-// 	int shaderCount = (int)shaders.size();
-// 	int shaderIndex = 0;
-// 	bool found = false;
-// 	for (int i = 0; i < shaderCount; i++)
-// 	{
-// 		if (shaders[i] == shader)
-// 		{
-// 			found = true;
-// 			shaderIndex = i;
-// 			break;
-// 		}
-// 	}
-
-// 	if (found)
-// 	{
-// 		shaders.erase(shaders.begin() + shaderIndex);
-// 		shaderCount--;
-// 	}
-// }
-
 void AssetManager::RemoveMaterial(const Material* material)
 {
+	if (!Engine::IsRunning())
+		return;
+
 	int materialIndex = 0;
 	bool found = false;
 	for (int i = 0; i < materialCount; i++)
@@ -224,6 +165,9 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflection* reflection)
 {
+	if (!Engine::IsRunning())
+		return;
+
 #if defined(EDITOR)
 	if (initialised)
 	{
@@ -322,6 +266,9 @@ void AssetManager::RemoveAllFileReferences()
 
 void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileReference)
 {
+	if (!Engine::IsRunning())
+		return;
+
 	int fileReferenceIndex = 0;
 	bool found = false;
 	for (int i = 0; i < fileReferenceCount; i++)
@@ -347,6 +294,9 @@ void AssetManager::RemoveFileReference(std::shared_ptr<FileReference> fileRefere
 /// <param name="drawable"></param>
 void AssetManager::RemoveDrawable(const std::weak_ptr<IDrawable>& drawable)
 {
+	if (!Engine::IsRunning())
+		return;
+
 	int drawableIndex = 0;
 	bool found = false;
 	for (int i = 0; i < drawableCount; i++)
@@ -372,6 +322,9 @@ void AssetManager::RemoveDrawable(const std::weak_ptr<IDrawable>& drawable)
 /// <param name="light"></param>
 void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 {
+	if (!Engine::IsRunning())
+		return;
+
 	int lightIndex = 0;
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
@@ -391,53 +344,14 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 	}
 }
 
-// void AssetManager::RemoveMeshData(MeshData *meshData)
-// {
-// 	int meshDataCount = (int)meshesData.size();
-// 	int meshDataIndex = 0;
-// 	bool found = false;
-// 	for (int i = 0; i < meshDataCount; i++)
-// 	{
-// 		if (meshesData[i] == meshData)
-// 		{
-// 			found = true;
-// 			meshDataIndex = i;
-// 			break;
-// 		}
-// 	}
-
-// 	if (found)
-// 	{
-// 		meshesData.erase(meshesData.begin() + meshDataIndex);
-// 		meshDataCount--;
-// 	}
-// }
-
 #pragma endregion
 
 #pragma region Getters
-
-// Shader *AssetManager::GetShader(const int index)
-// {
-// 	return shaders[index];
-// }
 
 Material* AssetManager::GetMaterial(const int index)
 {
 	return materials[index];
 }
-
-// Material *AssetManager::GetMaterialByName(const std::string name)
-// {
-// 	for (int i = 0; i < materialCount; i++)
-// 	{
-// 		if (materials[i]->name == name)
-// 		{
-// 			return materials[i];
-// 		}
-// 	}
-// 	return nullptr;
-// }
 
 Reflection* AssetManager::GetReflection(const int index)
 {
@@ -458,32 +372,6 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 {
 	return lights[index];
 }
-
-// MeshData *AssetManager::GetMeshData(const int index)
-// {
-// 	return meshesData[index];
-// }
-
-// MeshData *AssetManager::GetMeshData(const std::string path)
-// {
-// 	for (int i = 0; i < meshDataCount; i++)
-// 	{
-// 		if (meshesData[i]->filePath == path)
-// 		{
-// 			return meshesData[i];
-// 		}
-// 	}
-// 	return nullptr;
-// }
-
-/// <summary>
-/// Get sahder count
-/// </summary>
-/// <returns></returns>
-// int AssetManager::GetShaderCount()
-// {
-// 	return shaderCount;
-// }
 
 int AssetManager::GetMaterialCount()
 {
@@ -549,10 +437,5 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 
 	return data;
 }
-
-// int AssetManager::GetMeshDataCount()
-// {
-// 	return meshDataCount;
-// }
 
 #pragma endregion

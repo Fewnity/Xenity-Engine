@@ -10,9 +10,9 @@
 #pragma once
 #include <string>
 #include "../platform.h"
+#include <memory>
 
 class GameInterface;
-
 
 class API DynamicLibrary
 {
@@ -31,7 +31,7 @@ public:
 	/**
 	* Create a game interface from the DLL
 	*/
-	static GameInterface* CreateGame();
+	static std::unique_ptr<GameInterface> CreateGame();
 private:
 
 };

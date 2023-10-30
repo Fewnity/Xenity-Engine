@@ -29,6 +29,9 @@ Add network profiler
 Add basic json data in empty files (like on empty scene save, on new file created)
 Check why files are deleted (RemoveUnusedFiles) on scene save
 
+useLighting not working
+Light still here when disabling component/gameobject
+
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog

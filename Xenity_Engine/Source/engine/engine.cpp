@@ -7,6 +7,7 @@
 #include "audio/audio_manager.h"
 #include "network/network.h"
 #include "dynamic_lib/dynamic_lib.h"
+#include "game_elements/gameplay_manager.h"
 
 #if defined(EDITOR)
 #include "dynamic_lib/dynamic_lib.h"
@@ -41,17 +42,7 @@
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
 
-std::vector<std::shared_ptr<GameObject>> Engine::gameObjects;
-std::vector<std::shared_ptr<GameObject>> Engine::gameObjectsEditor;
-std::vector<std::weak_ptr<GameObject>> Engine::gameObjectsToDestroy;
-std::vector<std::shared_ptr<Component>> Engine::componentsToDestroy;
-
-std::weak_ptr<GameObject> Engine::selectedGameObject;
-std::shared_ptr<FileReference> Engine::selectedFileReference = nullptr;
 ProjectDirectory* Engine::currentProjectDirectory = nullptr;
-
-int Engine::gameObjectCount = 0;
-int Engine::gameObjectEditorCount = 0;
 
 ProfilerBenchmark* engineLoopBenchmark = nullptr;
 //ProfilerBenchmark* gameLoopBenchmark = nullptr;
@@ -60,15 +51,10 @@ ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
 ProfilerBenchmark* editorUpdateBenchmark = nullptr;
 ProfilerBenchmark* editorDrawBenchmark = nullptr;
 
-bool Engine::componentsListDirty = true;
-bool Engine::drawOrderListDirty = true;
-std::vector<std::weak_ptr<Component>> Engine::orderedComponents;
-int Engine::componentsCount = 0;
-Renderer* Engine::renderer = nullptr;
+std::unique_ptr<Renderer> Engine::renderer = nullptr;
 bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
-GameInterface* Engine::game = nullptr;
-GameState Engine::gameState = Stopped;
+std::unique_ptr<GameInterface> Engine::game = nullptr;
 
 std::shared_ptr <Shader> Engine::shader = nullptr;
 std::shared_ptr <Shader> Engine::unlitShader = nullptr;
@@ -77,7 +63,7 @@ std::shared_ptr<Material> Engine::standardMaterial = nullptr;
 std::shared_ptr<Material> Engine::unlitMaterial = nullptr;
 std::shared_ptr<Material> Engine::lineMaterial = nullptr;
 
-bool Engine::UseOpenGLFixedFunctions = true;
+bool Engine::UseOpenGLFixedFunctions = false;
 
 int Engine::Init()
 {
@@ -114,8 +100,8 @@ int Engine::Init()
 	Performance::Init();
 
 	//------------------------------------------ Init renderer
-	Engine::renderer = new RendererOpengl();
-	int rendererInitResult = Engine::renderer->Init();
+	renderer = std::make_unique<RendererOpengl>();
+	int rendererInitResult = renderer->Init();
 	if (rendererInitResult != 0)
 	{
 		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------");
@@ -136,7 +122,7 @@ int Engine::Init()
 		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------");
 		return -1;
 	}
-	Engine::renderer->Setup();
+	renderer->Setup();
 
 	// Not working
 	/*#if defined(__PSP__)
@@ -264,14 +250,14 @@ void Engine::Loop()
 
 			// Update all components
 			componentsUpdateBenchmark->Start();
-			UpdateComponents();
+			GameplayManager::UpdateComponents();
 
-			if (gameState == GameState::Playing)
+			if (GameplayManager::GetGameState() == GameState::Playing)
 				PhysicsManager::Update();
 
 			// Remove all destroyed gameobjects and components
-			RemoveDestroyedGameObjects();
-			RemoveDestroyedComponents();
+			GameplayManager::RemoveDestroyedGameObjects();
+			GameplayManager::RemoveDestroyedComponents();
 
 			componentsUpdateBenchmark->Stop();
 
@@ -288,7 +274,7 @@ void Engine::Loop()
 		{
 #if defined(EDITOR)
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			Engine::renderer->Clear();
+			renderer->Clear();
 #endif
 		}
 #if defined(EDITOR)
@@ -305,7 +291,8 @@ void Engine::Loop()
 #if defined(EDITOR)
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
-	delete game;
+	game.reset();
+	//delete game;
 }
 
 void Engine::RegisterEngineComponents()
@@ -352,25 +339,6 @@ void Engine::SetMaxCpuSpeed()
 #endif
 }
 
-void Engine::SetGameState(GameState _gameState)
-{
-#if defined(EDITOR)
-	if (_gameState == Playing)
-	{
-		gameState = Starting;
-		SceneManager::SaveScene(SaveSceneForPlayState);
-		SceneManager::RestoreScene();
-		gameState = _gameState;
-	}
-	else if (_gameState == Stopped)
-	{
-		gameState = _gameState;
-		SceneManager::RestoreScene();
-	}
-#else
-	gameState = _gameState;
-#endif
-}
 
 void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
 {
@@ -393,18 +361,6 @@ ProjectDirectory* Engine::GetCurrentProjectDirectory()
 	return currentProjectDirectory;
 }
 
-void Engine::SetSelectedFileReference(std::shared_ptr<FileReference> fileReference)
-{
-	selectedFileReference = fileReference;
-#if  defined(EDITOR)
-	Editor::inspector->loadedPreview = nullptr;
-#endif
-}
-
-std::shared_ptr<FileReference> Engine::GetSelectedFileReference()
-{
-	return selectedFileReference;
-}
 
 void Engine::Stop()
 {
@@ -418,11 +374,6 @@ void Engine::Stop()
 void Engine::Quit()
 {
 	isRunning = false;
-}
-
-void Engine::SetSelectedGameObject(const std::weak_ptr<GameObject>& newSelected)
-{
-	selectedGameObject = newSelected;
 }
 
 int Engine::LoadGame()
@@ -441,140 +392,6 @@ void Engine::CreateBenchmarks()
 	editorDrawBenchmark = new ProfilerBenchmark("Engine loop", "Editor draw");
 }
 
-void Engine::UpdateComponents()
-{
-	// Order components and initialise new components
-	if (componentsListDirty)
-	{
-		componentsListDirty = false;
-		orderedComponents.clear();
-
-		componentsCount = 0;
-		OrderComponents();
-
-		if (gameState == GameState::Playing)
-			InitialiseComponents();
-	}
-
-	if (gameState == GameState::Playing)
-	{
-		// Update components
-		for (int i = 0; i < componentsCount; i++)
-		{
-			if (auto component = orderedComponents[i].lock())
-			{
-				if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
-				{
-					component->Update();
-				}
-			}
-			else
-			{
-				orderedComponents.erase(orderedComponents.begin() + i);
-				i--;
-				componentsCount--;
-			}
-		}
-	}
-}
-
-void Engine::OrderComponents()
-{
-	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
-	{
-		std::shared_ptr<GameObject>& gameObjectToCheck = gameObjects[gIndex];
-		if (gameObjectToCheck)
-		{
-			if (gameObjectToCheck->GetActive())
-			{
-				int goComponentCount = (int)gameObjectToCheck->GetComponentCount();
-				bool placeFound = false;
-				for (int cIndex = 0; cIndex < goComponentCount; cIndex++)
-				{
-					std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->components[cIndex];
-					if (componentToCheck)
-					{
-						for (int i = 0; i < componentsCount; i++)
-						{
-							// Check if the checked has a higher priority (lower value) than the component in the list
-							if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
-							{
-								orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-								placeFound = true;
-								break;
-							}
-						}
-						// if the priority is lower than all components's priorities in the list, add it the end of the list
-						if (!placeFound)
-						{
-							orderedComponents.push_back(componentToCheck);
-						}
-						componentsCount++;
-					}
-				}
-			}
-		}
-	}
-}
-
-void Engine::InitialiseComponents()
-{
-	int componentsToInitCount = 0;
-	std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
-	// Find uninitiated components and order them
-	for (int i = 0; i < componentsCount; i++)
-	{
-		if (auto componentToCheck = orderedComponents[i].lock())
-		{
-			if (!componentToCheck->initiated && componentToCheck->GetIsEnabled())
-			{
-				orderedComponentsToInit.push_back(componentToCheck);
-				componentsToInitCount++;
-			}
-		}
-	}
-
-	// Init components
-	for (int i = 0; i < componentsToInitCount; i++)
-	{
-		orderedComponentsToInit[i]->Start();
-		orderedComponentsToInit[i]->initiated = true;
-	}
-}
-
-void Engine::RemoveDestroyedGameObjects()
-{
-	// Remove destroyed GameObjects from the Engine's GameObjects list
-	int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
-	for (int i = 0; i < gameObjectToDestroyCount; i++)
-	{
-		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
-		{
-			std::shared_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
-			if (gameObjectToCheck == gameObjectsToDestroy[i].lock())
-			{
-				gameObjects.erase(gameObjects.begin() + gIndex);
-				break;
-			}
-		}
-		gameObjectCount--;
-	}
-	gameObjectsToDestroy.clear();
-}
-
-void Engine::RemoveDestroyedComponents()
-{
-	int componentToDestroyCount = (int)componentsToDestroy.size();
-	for (int i = 0; i < componentToDestroyCount; i++)
-	{
-		std::shared_ptr<Component> component = componentsToDestroy[i];
-		if (component)
-		{
-			Engine::RemoveComponentReferences(component);
-		}
-	}
-	componentsToDestroy.clear();
-}
 
 void Engine::RemoveComponentReferences(const std::weak_ptr <Component>& weakComponent)
 {
@@ -651,9 +468,9 @@ void Engine::FinishThreadedFileLoading()
 void Engine::ResetTransformsStates()
 {
 	// Reset moved state of all transforms
-	for (int i = 0; i < Engine::gameObjectCount; i++)
+	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 	{
-		std::shared_ptr<GameObject> gameObject = gameObjects[i];
+		std::shared_ptr<GameObject> gameObject = GameplayManager::gameObjects[i];
 		if (gameObject)
 		{
 			gameObject->GetTransform()->movedLastFrame = false;
@@ -661,27 +478,11 @@ void Engine::ResetTransformsStates()
 	}
 }
 
-void Engine::AddGameObject(std::shared_ptr<GameObject> gameObject)
-{
-	gameObjects.push_back(gameObject);
-	gameObjectCount++;
-}
-
-void Engine::AddGameObjectEditor(std::shared_ptr<GameObject> gameObject)
-{
-	gameObjectsEditor.push_back(gameObject);
-	gameObjectEditorCount++;
-}
-
-std::vector<std::shared_ptr<GameObject>> Engine::GetGameObjects()
-{
-	return std::vector<std::shared_ptr<GameObject>>(Engine::gameObjects);
-}
 
 void DestroyGameObjectAndChild(const std::weak_ptr<GameObject>& gameObject)
 {
 	std::shared_ptr<GameObject> gameObjectLock = gameObject.lock();
-	Engine::gameObjectsToDestroy.push_back(gameObject);
+	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
 	gameObjectLock->waitingForDestroy = true;
 
 	// Remove the destroyed gameobject from his parent's children list

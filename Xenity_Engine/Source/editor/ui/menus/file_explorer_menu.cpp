@@ -31,7 +31,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	else if (item.directory) // Open the folder
 	{
 		Engine::SetCurrentProjectDirectory(item.directory);
-		Engine::SetSelectedFileReference(nullptr);
+		Editor::SetSelectedFileReference(nullptr);
 	}
 }
 
@@ -65,7 +65,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	std::shared_ptr<Texture> iconTexture = GetItemIcon(item, isFile);
 
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
-	Engine::renderer->BindTexture(iconTexture);
+	Engine::GetRenderer().BindTexture(iconTexture);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	
 	// Create an unique popupid
@@ -95,10 +95,10 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		{
 			if (isFile)
 			{
-				Engine::SetSelectedFileReference(item.file);
+				Editor::SetSelectedFileReference(item.file);
 			}
 
-			Engine::selectedGameObject.reset();
+			Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
 		}
 	}
 
@@ -239,9 +239,9 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			{
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
 				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath() + ".meta");
-				if (Engine::GetSelectedFileReference() == fileExplorerItem.file)
+				if (Editor::GetSelectedFileReference() == fileExplorerItem.file)
 				{
-					Engine::SetSelectedFileReference(nullptr);
+					Editor::SetSelectedFileReference(nullptr);
 				}
 			}
 			else if (fileExplorerItem.directory)
@@ -404,7 +404,7 @@ void FileExplorerMenu::Draw()
 						Rename();
 					}
 					if (ImGui::IsWindowHovered())
-						Engine::SetSelectedFileReference(nullptr);
+						Editor::SetSelectedFileReference(nullptr);
 				}
 			}
 		}

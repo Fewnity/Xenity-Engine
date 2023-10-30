@@ -161,11 +161,14 @@ bool Font::CreateFont(std::shared_ptr<Font> font, const std::string& filePath)
 		}
 	}
 
-	std::shared_ptr<Texture> newAtlas = Texture::MakeTexture(atlas, channelCount, atlasSize, atlasSize, false);
-	font->fontAtlas = newAtlas;
+	std::shared_ptr<Texture> newAtlas = Texture::MakeTexture();
+	newAtlas->SetSize(atlasSize, atlasSize);
+	newAtlas->SetChannelCount(channelCount);
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Texture::Bilinear);
 	newAtlas->SetWrapMode(Texture::ClampToEdge);
+
+	font->fontAtlas = newAtlas;
 
 	free(atlas);
 

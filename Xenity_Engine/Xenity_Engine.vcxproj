@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\game_elements\gameplay_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\create_class_menu.cpp" />
     <ClCompile Include="Source\engine\physics\box_collider.cpp" />
     <ClCompile Include="Source\engine\physics\collider.cpp" />
@@ -307,6 +308,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\create_class_menu.h" />
     <ClInclude Include="Source\engine\file_system\file_type.h" />
     <ClInclude Include="Source\engine\physics\box_collider.h" />

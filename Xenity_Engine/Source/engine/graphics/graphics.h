@@ -12,6 +12,7 @@
 #include <vector>
 #include "../vectors/vector2_int.h"
 #include "iDrawableTypes.h"
+#include "renderer/renderer.h"
 
 class IDrawable;
 class Material;
@@ -79,10 +80,13 @@ public:
 	static std::shared_ptr <Shader> currentShader;
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
+	static void DrawMesh(std::shared_ptr<MeshData> meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, std::shared_ptr <Material> material, bool forUI);
 
 private:
 	static int iDrawablesCount;
 	static void DrawSkybox(const Vector3& cameraPosition);
+#if defined(EDITOR)
 	static void DrawEditorGrid(const Vector3& cameraPosition);
 	static void DrawEditorTool(const Vector3& cameraPosition);
+#endif
 };

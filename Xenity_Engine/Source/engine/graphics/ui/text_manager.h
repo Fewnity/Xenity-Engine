@@ -109,22 +109,6 @@ public:
 private:
 
 	/**
-	* @brief Set the text mesh position
-	*
-	* @param transform
-	* @param canvas
-	*/
-	static void SetTextPosition(std::shared_ptr<Transform> transform, bool canvas);
-
-	/**
-	* Draw mesh
-	*
-	* @param mesh Mesh data
-	* @param for3D 3D text mode
-	*/
-	static void DrawTextMesh(std::shared_ptr <MeshData> mesh, bool for3D, bool invertFaces, std::shared_ptr <Texture> texture);
-
-	/**
 	* @brief Add a char to the mesh
 	*
 	* @param mesh Mesh to modify

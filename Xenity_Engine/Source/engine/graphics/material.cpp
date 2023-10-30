@@ -128,7 +128,7 @@ void Material::Use()
 		}
 		else 
 		{
-			Engine::renderer->UseShaderProgram(0);
+			Engine::GetRenderer().UseShaderProgram(0);
 			Graphics::currentShader = nullptr;
 		}
 	}

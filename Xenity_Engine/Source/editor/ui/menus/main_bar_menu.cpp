@@ -21,7 +21,7 @@ void MainBarMenu::Init()
 static bool IsOpen = true;
 void MainBarMenu::Draw()
 {
-	bool hasSelectedGameObject = !Engine::selectedGameObject.expired();
+	bool hasSelectedGameObject = !Editor::GetSelectedGameObject().expired();
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
@@ -85,8 +85,8 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Unselect"))
 		{
-			Engine::SetSelectedFileReference(nullptr);
-			Engine::selectedGameObject.reset();
+			Editor::SetSelectedFileReference(nullptr);
+			Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
 		}
 		ImGui::EndMenu();
 	}
@@ -208,7 +208,7 @@ void MainBarMenu::Draw()
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
 				{
-					ClassRegistry::AddComponentFromName(componentNames[i], Engine::selectedGameObject.lock());
+					ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject().lock());
 				}
 			}
 			ImGui::EndMenu();
@@ -219,15 +219,15 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Play Game"))
 		{
-			Engine::SetGameState(GameState::Playing);
+			GameplayManager::SetGameState(GameState::Playing);
 		}
 		if (ImGui::MenuItem("Pause Game"))
 		{
-			Engine::SetGameState(GameState::Paused);
+			GameplayManager::SetGameState(GameState::Paused);
 		}
 		if (ImGui::MenuItem("Stop Game"))
 		{
-			Engine::SetGameState(GameState::Stopped);
+			GameplayManager::SetGameState(GameState::Stopped);
 		}
 		if (ImGui::MenuItem("Hot Reload Game"))
 		{

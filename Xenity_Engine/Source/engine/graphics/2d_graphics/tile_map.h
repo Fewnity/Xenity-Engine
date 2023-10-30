@@ -12,6 +12,7 @@
 #include <vector>
 #include "../color/color.h"
 #include "../../engine.h"
+#include "../../game_elements/gameplay_manager.h"
 
 class Texture;
 class MeshData;
@@ -111,7 +112,7 @@ public:
 	void SetOrderInLayer(int orderInLayer)
 	{
 		this->orderInLayer = orderInLayer;
-		Engine::drawOrderListDirty = true;
+		GameplayManager::drawOrderListDirty = true;
 	}
 
 

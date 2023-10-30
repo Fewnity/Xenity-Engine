@@ -2,6 +2,8 @@
 #include <imgui/imgui.h>
 #include "../../../xenity.h"
 #include "../editor_ui.h"
+#include "../../../engine/game_elements/gameplay_manager.h"
+#include "../../editor.h"
 
 void HierarchyMenu::Init()
 {
@@ -16,11 +18,11 @@ void HierarchyMenu::Draw()
 	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
 	//Add in the list only gameobject without parent
-	for (int i = 0; i < Engine::gameObjectCount; i++)
+	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 	{
-		if (Engine::gameObjects[i]->parent.lock() == nullptr)
+		if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
 		{
-			int r = EditorUI::DrawTreeItem(Engine::gameObjects[i]);
+			int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i]);
 			if (r != 0) {
 				disableDrag = true;
 			}
@@ -29,8 +31,8 @@ void HierarchyMenu::Draw()
 	isFocused = ImGui::IsWindowFocused();
 	if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
 	{
-		Engine::selectedGameObject.reset();
-		Engine::SetSelectedFileReference(nullptr);
+		Editor::SetSelectedGameObject(std::weak_ptr<GameObject>());
+		Editor::SetSelectedFileReference(nullptr);
 	}
 	ImGui::EndChild();
 	if (!disableDrag)

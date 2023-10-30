@@ -24,22 +24,22 @@
 Texture::Texture()
 {
 }
-
-Texture::Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
-{
-	// this->textureId = textureId;
-	this->nrChannels = channelCount;
-	this->width = width;
-	this->height = height;
-	this->inVram = loadInVram;
-
-	useMipMap = false;
-	if (data != nullptr)
-	{
-		//SetData(data);
-		isValid = true;
-	}
-}
+//
+//Texture::Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
+//{
+//	// this->textureId = textureId;
+//	this->nrChannels = channelCount;
+//	this->width = width;
+//	this->height = height;
+//	this->inVram = loadInVram;
+//
+//	useMipMap = false;
+//	if (data != nullptr)
+//	{
+//		//SetData(data);
+//		isValid = true;
+//	}
+//}
 
 std::unordered_map<std::string, ReflectionEntry> Texture::GetReflection()
 {
@@ -65,12 +65,13 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 	return newTexture;
 }
 
-std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
-{
-	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
-	AssetManager::AddFileReference(newTexture);
-	return newTexture;
-}
+//std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
+//{
+//	std::shared_ptr<Texture> newTexture;
+//	//std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
+//	//AssetManager::AddFileReference(newTexture);
+//	return newTexture;
+//}
 
 Texture::~Texture()
 {
@@ -311,10 +312,10 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 void Texture::OnLoadFileReferenceFinished()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(GetThisShared());
+	textureId = Engine::GetRenderer().CreateNewTexture();
+	Engine::GetRenderer().BindTexture(GetThisShared());
 	unsigned int rgba = 0x1908;
-	Engine::renderer->SetTextureData(GetThisShared(), rgba, buffer);
+	Engine::GetRenderer().SetTextureData(GetThisShared(), rgba, buffer);
 #endif
 
 	stbi_image_free(buffer);
@@ -350,12 +351,14 @@ void Texture::SetData(const unsigned char* texData)
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-	textureId = Engine::renderer->CreateNewTexture();
-	Engine::renderer->BindTexture(GetThisShared());
+	textureId = Engine::GetRenderer().CreateNewTexture();
+	Engine::GetRenderer().BindTexture(GetThisShared());
 	//unsigned int alpha = 0x1906;
 
-	Engine::renderer->SetTextureData(GetThisShared(), GL_LUMINANCE_ALPHA, texData);
+	Engine::GetRenderer().SetTextureData(GetThisShared(), GL_LUMINANCE_ALPHA, texData);
 #endif
+
+	isValid = true;
 }
 
 void Texture::LoadTexture()
@@ -394,7 +397,7 @@ void Texture::LoadTexture()
 
 void Texture::Unload()
 {
-	Engine::renderer->DeleteTexture(this);
+	Engine::GetRenderer().DeleteTexture(this);
 }
 
 /// <summary>
@@ -404,13 +407,11 @@ void Texture::Unload()
 void Texture::SetFilter(const Filter filter)
 {
 	this->filter = filter;
-	UpdateTextureFilter();
 }
 
 void Texture::SetWrapMode(const WrapMode mode)
 {
 	wrapMode = mode;
-	UpdateTextureFilter();
 }
 
 int Texture::GetWidth() const
@@ -463,14 +464,3 @@ Texture::WrapMode Texture::GetWrapMode() const
 }
 
 #pragma endregion
-
-/// <summary>
-/// Update texture if the filter has changed
-/// </summary>
-void Texture::UpdateTextureFilter()
-{
-	// Engine::renderer->BindTexture(this);
-	// Engine::renderer->SetTextureFilter(this, filter);
-	// Engine::renderer->SetTextureWrapMode(wrapMode);
-	// Engine::renderer->SetAnisotropyLevel(EngineSettings::anisotropicLevel);
-}

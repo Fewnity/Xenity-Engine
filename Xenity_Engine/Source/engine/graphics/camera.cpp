@@ -165,11 +165,11 @@ void Camera::UpdateProjection()
 	{
 		if (projectionType == ProjectionTypes::Perspective)
 		{
-			Engine::renderer->SetProjection3D(fov, nearClippingPlane, farClippingPlane, aspect);
+			Engine::GetRenderer().SetProjection3D(fov, nearClippingPlane, farClippingPlane, aspect);
 		}
 		else
 		{
-			Engine::renderer->SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
+			Engine::GetRenderer().SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
 		}
 #if defined (EDITOR)
 		projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
@@ -311,7 +311,7 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 		isProjectionDirty = true;
 		UpdateProjection();
 #if defined(__PSP__)
-		Engine::renderer->SetViewport(0, 0, width, height);
+		Engine::GetRenderer().SetViewport(0, 0, width, height);
 #endif
 	}
 }
@@ -326,7 +326,7 @@ void Camera::BindFrameBuffer()
 #endif
 
 #if !defined(__PSP__)
-	Engine::renderer->SetViewport(0, 0, width, height);
+	Engine::GetRenderer().SetViewport(0, 0, width, height);
 #endif
 }
 
@@ -335,14 +335,14 @@ void Camera::OnDrawGizmos()
 #if defined(EDITOR)
 	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
 
-	if (Engine::selectedGameObject.lock() && Engine::selectedGameObject.lock() == GetGameObject())
+	if (Editor::GetSelectedGameObject().lock() && Editor::GetSelectedGameObject().lock() == GetGameObject())
 	{
 		Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 		Gizmo::SetColor(lineColor);
 
 		std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(shared_from_this());
 
-		Engine::renderer->SetCameraPosition(Graphics::usedCamera.lock());
+		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 
 		Vector3 cameraPosition = camera->GetTransform()->GetPosition();
 		Vector3 cameraRotation = camera->GetTransform()->GetRotation();
