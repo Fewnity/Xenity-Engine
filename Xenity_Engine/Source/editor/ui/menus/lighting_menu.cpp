@@ -12,31 +12,33 @@ void LightingMenu::Init()
 void LightingMenu::Draw()
 {
 	bool changed = false;
-	ImGui::Begin("Lighting", &EditorUI::showLightingSettings, ImGuiWindowFlags_NoCollapse);
-	ImGui::Text("Lighting");
-	ImGui::Separator();
-	EditorUI::DrawInput("Skybox", Graphics::skybox);
-
-	if (EditorUI::DrawInput("Color", Graphics::skyColor))
-		changed = true;
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Text("Fog");
-	ImGui::Separator();
-	if (EditorUI::DrawInput("Enabled", Graphics::isFogEnabled))
-		changed = true;
-	if (EditorUI::DrawInput("Start", Graphics::fogStart))
-		changed = true;
-	if (EditorUI::DrawInput("End", Graphics::fogEnd))
-		changed = true;
-	if (EditorUI::DrawInput("Color", Graphics::fogColor))
-		changed = true;
-
-	if (changed)
+	bool visible = ImGui::Begin("Lighting", &EditorUI::showLightingSettings, ImGuiWindowFlags_NoCollapse);
+	if (visible)
 	{
-		Graphics::OnLightingSettingsReflectionUpdate();
-	}
+		ImGui::Text("Lighting");
+		ImGui::Separator();
+		EditorUI::DrawInput("Skybox", Graphics::skybox);
 
+		if (EditorUI::DrawInput("Color", Graphics::skyColor))
+			changed = true;
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Text("Fog");
+		ImGui::Separator();
+		if (EditorUI::DrawInput("Enabled", Graphics::isFogEnabled))
+			changed = true;
+		if (EditorUI::DrawInput("Start", Graphics::fogStart))
+			changed = true;
+		if (EditorUI::DrawInput("End", Graphics::fogEnd))
+			changed = true;
+		if (EditorUI::DrawInput("Color", Graphics::fogColor))
+			changed = true;
+
+		if (changed)
+		{
+			Graphics::OnLightingSettingsReflectionUpdate();
+		}
+	}
 	ImGui::End();
 }

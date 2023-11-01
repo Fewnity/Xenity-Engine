@@ -11,36 +11,38 @@ void HierarchyMenu::Init()
 
 void HierarchyMenu::Draw()
 {
-	ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
-
-	bool disableDrag = false;
-
-	ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
-
-	//Add in the list only gameobject without parent
-	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
+	bool visible = ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
+	if (visible)
 	{
-		if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
+		bool disableDrag = false;
+
+		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
+
+		//Add in the list only gameobject without parent
+		for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 		{
-			int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i]);
-			if (r != 0) {
-				disableDrag = true;
+			if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
+			{
+				int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i]);
+				if (r != 0) {
+					disableDrag = true;
+				}
 			}
 		}
-	}
-	isFocused = ImGui::IsWindowFocused();
-	if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
-	{
-		Editor::SetSelectedGameObject(nullptr);
-		Editor::SetSelectedFileReference(nullptr);
-	}
-	ImGui::EndChild();
-	if (!disableDrag)
-	{
-		std::shared_ptr <GameObject> droppedGameObject = nullptr;
-		if (EditorUI::DragDropTarget("GameObject", droppedGameObject))
+		isFocused = ImGui::IsWindowFocused();
+		if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
 		{
-			droppedGameObject->SetParent(nullptr);
+			Editor::SetSelectedGameObject(nullptr);
+			Editor::SetSelectedFileReference(nullptr);
+		}
+		ImGui::EndChild();
+		if (!disableDrag)
+		{
+			std::shared_ptr <GameObject> droppedGameObject = nullptr;
+			if (EditorUI::DragDropTarget("GameObject", droppedGameObject))
+			{
+				droppedGameObject->SetParent(nullptr);
+			}
 		}
 	}
 	ImGui::End();

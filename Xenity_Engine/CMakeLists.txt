@@ -59,16 +59,15 @@ add_definitions("-LARGE_MEMORY=1")
 include_directories(${PSPDEV}/psp/include/freetype2)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    stdc++
-    png
-    jpeg
+   # stdc++
     m
-    pspge
-    freetype
-    bz2
+    png
     z
-    pspgu
+    bz2
+    freetype
+    pspge
     pspgum
+    pspgu
     pspctrl
     pspdebug
     pspvram

@@ -17,19 +17,22 @@ std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
+
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
+
+std::vector<std::weak_ptr<IDrawable>> Graphics::noTransparentDrawable;
+std::vector<std::weak_ptr<IDrawable>> Graphics::transparentDrawable;
+std::vector<std::weak_ptr<IDrawable>> Graphics::spriteDrawable;
+std::vector<std::weak_ptr<IDrawable>> Graphics::uiDrawable;
+
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 bool Graphics::drawOrderListDirty = true;
 
 ProfilerBenchmark* orderBenchmark = nullptr;
 ProfilerBenchmark* skyboxBenchmark = nullptr;
 ProfilerBenchmark* drawAllBenchmark = nullptr;
-ProfilerBenchmark* drawEditorToolsBenchmark = nullptr;
-ProfilerBenchmark* drawEditorGridBenchmark = nullptr;
-ProfilerBenchmark* drawEditorGizmoBenchmark = nullptr;
+ProfilerBenchmark* drawMeshBenchmark = nullptr;
 ProfilerBenchmark* drawEndFrameBenchmark = nullptr;
-ProfilerBenchmark* drawOtherBenchmark = nullptr;
-// ProfilerBenchmark *gameobjectScanBenchmark = new ProfilerBenchmark("Scan GameObjects");
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
 std::shared_ptr <MeshData> rightArrow = nullptr;
@@ -91,12 +94,9 @@ void Graphics::Init()
 
 	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
 	skyboxBenchmark = new ProfilerBenchmark("Draw", "Skybox");
-	drawAllBenchmark = new ProfilerBenchmark("Draw", "Draw drawables");
-	drawEditorToolsBenchmark = new ProfilerBenchmark("Draw", "Draw tools");
-	drawEditorGridBenchmark = new ProfilerBenchmark("Draw", "Draw grid");
-	drawEditorGizmoBenchmark = new ProfilerBenchmark("Draw", "Draw gizmo");
+	drawAllBenchmark = new ProfilerBenchmark("Draw", "Drawables");
+	drawMeshBenchmark = new ProfilerBenchmark("Draw", "Mesh");
 	drawEndFrameBenchmark = new ProfilerBenchmark("Draw", "End frame");
-	drawOtherBenchmark = new ProfilerBenchmark("Draw", "Other");
 
 	SetDefaultValues();
 
@@ -130,11 +130,10 @@ void Graphics::Draw()
 
 	for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
-		usedCamera = cameras[cameraIndex];
-		auto camera = usedCamera.lock();
-		if (camera->GetIsEnabled() && camera->GetGameObject()->GetLocalActive())
+		usedCamera = cameras[cameraIndex].lock();
+		//auto camera = usedCamera.lock();
+		if (usedCamera.lock()->GetIsEnabled() && usedCamera.lock()->GetGameObject()->GetLocalActive())
 		{
-			drawOtherBenchmark->Start();
 			// Set material as dirty
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
@@ -147,27 +146,30 @@ void Graphics::Draw()
 			needUpdateCamera = true;
 
 			// Update camera and bind frame buffer
-			camera->UpdateProjection();
-			camera->BindFrameBuffer();
-			const Vector3 camPos = camera->GetTransform()->GetPosition();
+			usedCamera.lock()->UpdateProjection();
+			usedCamera.lock()->BindFrameBuffer();
+			const Vector3 camPos = usedCamera.lock()->GetTransform()->GetPosition();
 
 			Engine::GetRenderer().SetClearColor(skyColor);
 			Engine::GetRenderer().Clear();
 
 #if defined(__PSP__)
-			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+			//Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 #endif
-
-			drawOtherBenchmark->Stop();
+			if (UseOpenGLFixedFunctions) 
+			{
+				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
+				Engine::GetRenderer().Setlights(usedCamera.lock());
+			}
 
 			skyboxBenchmark->Start();
 			DrawSkybox(camPos);
 			skyboxBenchmark->Stop();
 
 			Engine::GetRenderer().SetFog(isFogEnabled);
-			drawAllBenchmark->Start();
 
-			for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
+			drawAllBenchmark->Start();
+			/*for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
 
@@ -184,13 +186,41 @@ void Graphics::Draw()
 					}
 				}
 				drawable->Draw();
+			}*/
+
+			int noTransCount = noTransparentDrawable.size();
+			int transCount = transparentDrawable.size();
+			int spriteCount = spriteDrawable.size();
+			int uiCount = uiDrawable.size();
+			
+			for (int drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
+			{
+				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
+				drawable->Draw();
 			}
+			currentMode = Draw_2D;
+			for (int drawableIndex = 0; drawableIndex < spriteCount; drawableIndex++)
+			{
+				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
+				drawable->Draw();
+			}
+			currentMode = Draw_UI;
+			if (UseOpenGLFixedFunctions)
+			{
+				Engine::GetRenderer().ResetView();
+				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
+			}
+			for (int drawableIndex = 0; drawableIndex < uiCount; drawableIndex++)
+			{
+				std::shared_ptr<IDrawable> drawable = uiDrawable[drawableIndex].lock();
+				drawable->Draw();
+			}
+
 			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
-			if (camera->isEditor)
+			if (usedCamera.lock()->isEditor)
 			{
-				drawEditorToolsBenchmark->Start();
 				Engine::GetRenderer().SetFog(false);
 
 				//Draw editor scene grid
@@ -199,12 +229,12 @@ void Graphics::Draw()
 					currentMode = Draw_3D;
 					if (UseOpenGLFixedFunctions)
 					{
-						camera->UpdateProjection();
+						usedCamera.lock()->UpdateProjection();
 					}
 				}
 
 				Engine::GetRenderer().ResetTransform();
-				Engine::GetRenderer().SetCameraPosition(camera);
+				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 
 				if (!UseOpenGLFixedFunctions)
 				{
@@ -213,13 +243,10 @@ void Graphics::Draw()
 					Graphics::currentMaterial = nullptr;
 				}
 
-				Engine::GetRenderer().SetProjection3D(camera->GetFov(), camera->GetNearClippingPlane(), camera->GetFarClippingPlane(), camera->GetAspectRatio());
+				Engine::GetRenderer().SetProjection3D(usedCamera.lock()->GetFov(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane(), usedCamera.lock()->GetAspectRatio());
 
-				drawEditorGridBenchmark->Start();
 				DrawEditorGrid(camPos);
-				drawEditorGridBenchmark->Stop();
 
-				drawEditorGizmoBenchmark->Start();
 				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
 					if (auto component = GameplayManager::orderedComponents[i].lock())
@@ -230,13 +257,11 @@ void Graphics::Draw()
 						}
 					}
 				}
-				drawEditorGizmoBenchmark->Stop();
 
 				DrawEditorTool(camPos);
-				drawEditorToolsBenchmark->Stop();
 			}
 #endif
-			camera->CopyMultiSampledFrameBuffer();
+			usedCamera.lock()->CopyMultiSampledFrameBuffer();
 		}
 	}
 
@@ -251,6 +276,8 @@ void Graphics::Draw()
 	drawEndFrameBenchmark->Start();
 	Engine::GetRenderer().EndFrame();
 	drawEndFrameBenchmark->Stop();
+
+	//usedCamera.reset();
 }
 
 bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
@@ -291,7 +318,7 @@ bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<ID
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
-	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+	/*for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
 		if (drawableToCheck && drawableToCheck->GetTransform()->movedLastFrame)
@@ -299,13 +326,40 @@ void Graphics::OrderDrawables()
 			drawOrderListDirty = true;
 			break;
 		}
-	}
+	}*/
+	//if (drawOrderListDirty)
+	//{
+		noTransparentDrawable.clear();
+		transparentDrawable.clear();
+		spriteDrawable.clear();
+		uiDrawable.clear();
 
-	if (drawOrderListDirty)
+		//noTransparentDrawable.reserve(iDrawablesCount);
+		//spriteDrawable.reserve(iDrawablesCount);
+		//uiDrawable.reserve(iDrawablesCount);
+
+		for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+		{
+			std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
+			if (drawableToCheck->type == Draw_3D) 
+			{
+				noTransparentDrawable.push_back(drawableToCheck);
+			}
+			else if (drawableToCheck->type == Draw_2D) 
+			{
+				spriteDrawable.push_back(drawableToCheck);
+			}
+			else 
+			{
+				uiDrawable.push_back(drawableToCheck);
+			}
+		}
+	//}
+	/*if (drawOrderListDirty)
 	{
 		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
 		drawOrderListDirty = false;
-	}
+	}*/
 	orderBenchmark->Stop();
 }
 
@@ -338,9 +392,11 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 
 void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
 {
-	std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
-	if (!camera)
+	//std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
+	if (!usedCamera.lock())
 		return;
+
+	drawMeshBenchmark->Start();
 
 	if (!UseOpenGLFixedFunctions)
 	{
@@ -358,12 +414,13 @@ void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::ve
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
 		if(!forUI)
-			Engine::GetRenderer().SetCameraPosition(camera);
+			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
 	}
 
 	Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
+	drawMeshBenchmark->Stop();
 }
 
 void Graphics::SetDrawOrderListAsDirty()

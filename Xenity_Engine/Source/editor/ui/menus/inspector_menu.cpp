@@ -18,163 +18,164 @@ void InspectorMenu::Draw()
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
-
-	auto selectedGameObject = Editor::GetSelectedGameObject();
-	std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
-
-	if (selectedFileReference)
+	bool visible = ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
+	if (visible)
 	{
-		std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
-		ImGui::Text(fileNameExt.c_str());
-		ImGui::Separator();
+		auto selectedGameObject = Editor::GetSelectedGameObject();
+		std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 
-		auto reflection = std::dynamic_pointer_cast<Reflection>(selectedFileReference);
-
-		auto metaReflection = selectedFileReference->GetMetaReflection();
-		if (reflection)
+		if (selectedFileReference)
 		{
-			auto reflectionList = reflection->GetReflection();
-			if (reflectionList.size() != 0)
-			{
-				bool changed = EditorUI::DrawMap(reflectionList);
-				if (changed)
-				{
-					reflection->OnReflectionUpdated();
-				}
-			}
-		}
-		if (metaReflection.size() != 0)
-		{
-			EditorUI::DrawMap(metaReflection);
-
-			if (ImGui::Button("Apply"))
-			{
-				ProjectManager::SaveMetaFile(selectedFileReference);
-			}
-		}
-	}
-	else if (selectedGameObject)
-	{
-		std::string str0 = selectedGameObject->name;
-
-		//Active checkbox
-		bool active = selectedGameObject->GetActive();
-		ImGui::Checkbox("##Active", &active);
-
-		//Name input
-		ImGui::SameLine();
-		ImGui::InputText("##Name ", &str0);
-
-		//Apply new values if changed
-		if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-		{
-			selectedGameObject->name = str0;
-		}
-		if (active != selectedGameObject->GetActive())
-		{
-			selectedGameObject->SetActive(active);
-		}
-
-		ImGui::Spacing();
-		ImGui::Separator();
-
-		//Local position input
-		ImGui::Spacing();
-		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
-		{
-			std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
-			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-			{
-				std::string payloadName = "Transform";
-				ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
-				ImGui::Text("Transform");
-				ImGui::EndDragDropSource();
-			}
-			Vector3 localPos = selectedTransform->GetLocalPosition();
-			bool changed = EditorUI::DrawInput("Local Position", localPos);
-
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedTransform->SetLocalPosition(localPos);
-			}
-			//ImGui::Text("World Position: %f %f %f", selectedTransform->GetPosition().x, selectedTransform->GetPosition().y, selectedTransform->GetPosition().z);
-
-			//Local rotation input
-			ImGui::Spacing();
-			ImGui::Spacing();
-			Vector3 localRot = selectedTransform->GetLocalRotation();
-			changed = EditorUI::DrawInput("Local Rotation", localRot);
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedTransform->SetLocalRotation(localRot);
-			}
-			//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);
-
-			//Local scale input
-			ImGui::Spacing();
-			ImGui::Spacing();
-			Vector3 localScale = selectedTransform->GetLocalScale();
-			changed = EditorUI::DrawInput("Local Scale", localScale);
-			if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
-			{
-				selectedTransform->SetLocalScale(localScale);
-			}
-			//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
+			std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
+			ImGui::Text(fileNameExt.c_str());
 			ImGui::Separator();
-		}
 
-		//Component list
-		int componentCount = selectedGameObject->GetComponentCount();
-		for (int i = 0; i < componentCount; i++)
-		{
-			auto& comp = selectedGameObject->components[i];
-			//Draw component title
+			auto reflection = std::dynamic_pointer_cast<Reflection>(selectedFileReference);
 
-			float cursorY = ImGui::GetCursorPosY();
-
-			bool isEnable = comp->GetIsEnabled();
-			ImGui::SetCursorPosX(35);
-			ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
-			if (comp->GetIsEnabled() != isEnable)
+			auto metaReflection = selectedFileReference->GetMetaReflection();
+			if (reflection)
 			{
-				comp->SetIsEnabled(isEnable);
-			}
-			ImGui::SetCursorPosY(cursorY);
-
-			if (ImGui::CollapsingHeader(EditorUI::GenerateItemId().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
-			{
-				CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
-				if (!comp->waitingForDestroy)
+				auto reflectionList = reflection->GetReflection();
+				if (reflectionList.size() != 0)
 				{
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+					bool changed = EditorUI::DrawMap(reflectionList);
+					if (changed)
 					{
-						std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
-						std::string payloadName = "Component" + typeId;
-						ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
-						ImGui::Text("%s", comp->GetComponentName().c_str());
-						ImGui::EndDragDropSource();
+						reflection->OnReflectionUpdated();
 					}
-
-					//Draw component variables
-					if (EditorUI::DrawReflection(*comp))
-					{
-						comp->OnReflectionUpdated();
-					}
-
-					ImGui::Separator();
 				}
 			}
-			float lastCursorY = ImGui::GetCursorPosY();
-			ImGui::SetCursorPosX(65);
-			ImGui::SetCursorPosY(cursorY + 4);
-			ImGui::Text(comp->GetComponentName().c_str());
-			ImGui::SetCursorPosY(lastCursorY);
+			if (metaReflection.size() != 0)
+			{
+				EditorUI::DrawMap(metaReflection);
+
+				if (ImGui::Button("Apply"))
+				{
+					ProjectManager::SaveMetaFile(selectedFileReference);
+				}
+			}
 		}
+		else if (selectedGameObject)
+		{
+			std::string str0 = selectedGameObject->name;
+
+			//Active checkbox
+			bool active = selectedGameObject->GetActive();
+			ImGui::Checkbox("##Active", &active);
+
+			//Name input
+			ImGui::SameLine();
+			ImGui::InputText("##Name ", &str0);
+
+			//Apply new values if changed
+			if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+			{
+				selectedGameObject->name = str0;
+			}
+			if (active != selectedGameObject->GetActive())
+			{
+				selectedGameObject->SetActive(active);
+			}
+
+			ImGui::Spacing();
+			ImGui::Separator();
+
+			//Local position input
+			ImGui::Spacing();
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+			{
+				std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+				{
+					std::string payloadName = "Transform";
+					ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
+					ImGui::Text("Transform");
+					ImGui::EndDragDropSource();
+				}
+				Vector3 localPos = selectedTransform->GetLocalPosition();
+				bool changed = EditorUI::DrawInput("Local Position", localPos);
+
+				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+				{
+					selectedTransform->SetLocalPosition(localPos);
+				}
+				//ImGui::Text("World Position: %f %f %f", selectedTransform->GetPosition().x, selectedTransform->GetPosition().y, selectedTransform->GetPosition().z);
+
+				//Local rotation input
+				ImGui::Spacing();
+				ImGui::Spacing();
+				Vector3 localRot = selectedTransform->GetLocalRotation();
+				changed = EditorUI::DrawInput("Local Rotation", localRot);
+				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+				{
+					selectedTransform->SetLocalRotation(localRot);
+				}
+				//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);
+
+				//Local scale input
+				ImGui::Spacing();
+				ImGui::Spacing();
+				Vector3 localScale = selectedTransform->GetLocalScale();
+				changed = EditorUI::DrawInput("Local Scale", localScale);
+				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+				{
+					selectedTransform->SetLocalScale(localScale);
+				}
+				//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
+				ImGui::Separator();
+			}
+
+			//Component list
+			int componentCount = selectedGameObject->GetComponentCount();
+			for (int i = 0; i < componentCount; i++)
+			{
+				auto& comp = selectedGameObject->components[i];
+				//Draw component title
+
+				float cursorY = ImGui::GetCursorPosY();
+
+				bool isEnable = comp->GetIsEnabled();
+				ImGui::SetCursorPosX(35);
+				ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+				if (comp->GetIsEnabled() != isEnable)
+				{
+					comp->SetIsEnabled(isEnable);
+				}
+				ImGui::SetCursorPosY(cursorY);
+
+				if (ImGui::CollapsingHeader(EditorUI::GenerateItemId().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+				{
+					CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
+					if (!comp->waitingForDestroy)
+					{
+						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+						{
+							std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
+							std::string payloadName = "Component" + typeId;
+							ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
+							ImGui::Text("%s", comp->GetComponentName().c_str());
+							ImGui::EndDragDropSource();
+						}
+
+						//Draw component variables
+						if (EditorUI::DrawReflection(*comp))
+						{
+							comp->OnReflectionUpdated();
+						}
+
+						ImGui::Separator();
+					}
+				}
+				float lastCursorY = ImGui::GetCursorPosY();
+				ImGui::SetCursorPosX(65);
+				ImGui::SetCursorPosY(cursorY + 4);
+				ImGui::Text(comp->GetComponentName().c_str());
+				ImGui::SetCursorPosY(lastCursorY);
+			}
+		}
+
+		DrawFilePreview();
 	}
-
-	DrawFilePreview();
-
 	ImGui::End();
 }
 

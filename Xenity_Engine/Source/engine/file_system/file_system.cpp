@@ -29,6 +29,31 @@ File::File(std::string _path) : UniqueId(true)
 	this->path = _path;
 	int pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
+
+
+
+	// Remove all folders from path
+	int finalPos = 0;
+	int lastSlashPos = path.find_last_of('\\');
+	int lastSlashPos2 = path.find_last_of('/');
+
+	if (lastSlashPos != -1 || lastSlashPos2 != -1)
+	{
+		if (lastSlashPos2 > lastSlashPos)
+			finalPos = lastSlashPos2 + 1;
+		else
+			finalPos = lastSlashPos + 1;
+	}
+
+	std::string fileName = path.substr(finalPos);
+
+	// Remove file extension from path
+	int nextPointPos = fileName.find_first_of('.');
+	if (nextPointPos == -1)
+		nextPointPos = INT32_MAX;
+	name = fileName.substr(0, nextPointPos);
+
+	//return fileName;
 }
 
 File::~File()
@@ -235,31 +260,33 @@ std::string File::GetFolderPath() const
 
 std::string File::GetFileName() const
 {
-	if (path.size() == 0)
-		return "";
+	return name;
 
-	// Remove all folders from path
-	int finalPos = 0;
-	int lastSlashPos = path.find_last_of('\\');
-	int lastSlashPos2 = path.find_last_of('/');
+	//if (path.size() == 0)
+	//	return "";
 
-	if (lastSlashPos != -1 || lastSlashPos2 != -1)
-	{
-		if (lastSlashPos2 > lastSlashPos)
-			finalPos = lastSlashPos2 + 1;
-		else
-			finalPos = lastSlashPos + 1;
-	}
+	//// Remove all folders from path
+	//int finalPos = 0;
+	//int lastSlashPos = path.find_last_of('\\');
+	//int lastSlashPos2 = path.find_last_of('/');
 
-	std::string fileName = path.substr(finalPos);
+	//if (lastSlashPos != -1 || lastSlashPos2 != -1)
+	//{
+	//	if (lastSlashPos2 > lastSlashPos)
+	//		finalPos = lastSlashPos2 + 1;
+	//	else
+	//		finalPos = lastSlashPos + 1;
+	//}
 
-	// Remove file extension from path
-	int nextPointPos = fileName.find_first_of('.');
-	if (nextPointPos == -1)
-		nextPointPos = INT32_MAX;
-	fileName = fileName.substr(0, nextPointPos);
+	//std::string fileName = path.substr(finalPos);
 
-	return fileName;
+	//// Remove file extension from path
+	//int nextPointPos = fileName.find_first_of('.');
+	//if (nextPointPos == -1)
+	//	nextPointPos = INT32_MAX;
+	//fileName = fileName.substr(0, nextPointPos);
+
+	//return fileName;
 }
 
 #pragma endregion

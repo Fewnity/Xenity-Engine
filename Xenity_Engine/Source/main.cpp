@@ -31,6 +31,7 @@ Check why files are deleted (RemoveUnusedFiles) on scene save
 
 useLighting not working
 Light still here when disabling component/gameobject
+Fix destroy
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

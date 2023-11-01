@@ -110,7 +110,7 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 		return;
 	}
 
-	if (auto cameraLock = Graphics::usedCamera.lock())
+	if (Graphics::usedCamera.lock())
 	{
 		RenderingSettings renderSettings = RenderingSettings();
 		if (transform->GetScale().x * transform->GetScale().y < 0)

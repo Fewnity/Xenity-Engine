@@ -77,6 +77,7 @@ public:
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
+	void Setlights(const std::shared_ptr<Camera>& camera) override;
 
 private:
 	void ApplyTextureFilters(const std::shared_ptr<Texture>& texture);
@@ -91,7 +92,6 @@ private:
 	int GetWrapModeEnum(Texture::WrapMode wrapMode);
 	int maxLightCount = 8;
 	void DisableAllLight();
-	void Setlights(const std::shared_ptr<Camera>& camera) override;
 	void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) override;
 
 	float fogStart = 0;

@@ -10,17 +10,11 @@
 #include <vitaGL.h>
 #endif
 
-ProfilerBenchmark* meshBenchmark = nullptr;
-ProfilerBenchmark* meshCameraBenchmark = nullptr;
-ProfilerBenchmark* meshTransformBenchmark = nullptr;
-ProfilerBenchmark* meshDrawBenchmark = nullptr;
+//ProfilerBenchmark* meshBenchmark = nullptr;
 
 void MeshManager::Init()
 {
-	meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
-	meshCameraBenchmark = new ProfilerBenchmark("Mesh", "Camera update");
-	meshTransformBenchmark = new ProfilerBenchmark("Mesh", "Transform update");
-	meshDrawBenchmark = new ProfilerBenchmark("Mesh", "Draw");
+	//meshBenchmark = new ProfilerBenchmark("Mesh", "Mesh");
 	Debug::Print("-------- Mesh Manager initiated --------");
 }
 
@@ -35,15 +29,15 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
-	meshBenchmark->Start();
+	//meshBenchmark->Start();
 	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 	Graphics::DrawMesh(meshData, textures, renderSettings, matrix, material, false);
-	meshBenchmark->Stop();
+	//meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const std::vector<std::shared_ptr<Texture>>& textures, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)
 {
-	meshBenchmark->Start();
+	//meshBenchmark->Start();
 
 	Vector3 scale = transform->GetScale();
 
@@ -51,7 +45,7 @@ void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const st
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 
 	Graphics::DrawMesh(meshData, textures, renderSettings, transform->transformationMatrix, material, false);
-	meshBenchmark->Stop();
+	//meshBenchmark->Stop();
 }
 
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)

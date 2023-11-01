@@ -109,57 +109,58 @@ void CreateProjectMenu::Draw()
 	ImGui::SetNextWindowSize(viewport->WorkSize);
 	ImGui::SetNextWindowViewport(viewport->ID);
 
-	ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
-
-	//Increase font size to 150%
-	ImFont* font = ImGui::GetFont();
-	float oldScale = font->Scale;
-	font->Scale *= 1.5f;
-	ImGui::PushFont(font);
-
-	if (ImGui::Button("Back"))
+	bool visible = ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+	if (visible)
 	{
-		Editor::currentMenu = Menu_Select_Project;
+		//Increase font size to 150%
+		ImFont* font = ImGui::GetFont();
+		float oldScale = font->Scale;
+		font->Scale *= 1.5f;
+		ImGui::PushFont(font);
+
+		if (ImGui::Button("Back"))
+		{
+			Editor::currentMenu = Menu_Select_Project;
+		}
+
+		// Set text scale to 200%
+		ImGui::PopFont();
+		font->Scale = oldScale * 2.0f;
+		ImGui::PushFont(font);
+
+		DrawTitle();
+
+
+		// Set text scale to 150%
+		ImGui::PopFont();
+		font->Scale = oldScale * 1.5f;
+		ImGui::PushFont(font);
+
+		DrawProjectPath();
+
+		bool projectFolderChanged = DrawSelectFolderButton();
+
+		bool nameChanged = DrawProjectNameInput();
+
+		if (projectFolderChanged && createProjectError == ERROR_EMPTY_FOLDER)
+		{
+			createProjectError = NO_ERROR;
+		}
+		else if ((nameChanged || projectFolderChanged) && createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
+		{
+			createProjectError = NO_ERROR;
+		}
+
+		DrawError();
+
+		DrawCreateProjectButton();
+
+		ImGui::PopFont();
+
+		//Reset font
+		font->Scale = oldScale;
+		ImGui::PushFont(font);
+		ImGui::PopFont();
 	}
-
-	// Set text scale to 200%
-	ImGui::PopFont();
-	font->Scale = oldScale * 2.0f;
-	ImGui::PushFont(font);
-
-	DrawTitle();
-
-
-	// Set text scale to 150%
-	ImGui::PopFont();
-	font->Scale = oldScale * 1.5f;
-	ImGui::PushFont(font);
-
-	DrawProjectPath();
-
-	bool projectFolderChanged = DrawSelectFolderButton();
-
-	bool nameChanged = DrawProjectNameInput();
-
-	if (projectFolderChanged && createProjectError == ERROR_EMPTY_FOLDER)
-	{
-		createProjectError = NO_ERROR;
-	}
-	else if ((nameChanged || projectFolderChanged) && createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
-	{
-		createProjectError = NO_ERROR;
-	}
-
-	DrawError();
-
-	DrawCreateProjectButton();
-
-	ImGui::PopFont();
-
-	//Reset font
-	font->Scale = oldScale;
-	ImGui::PushFont(font);
-	ImGui::PopFont();
-
 	ImGui::End();
 }

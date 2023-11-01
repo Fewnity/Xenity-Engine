@@ -269,12 +269,12 @@ void Tilemap::Draw()
 
 void Tilemap::DrawChunks()
 {
-	if (auto camera = Graphics::usedCamera.lock())
+	if (Graphics::usedCamera.lock())
 	{
-		Vector3 cameraPos = camera->GetTransform()->GetPosition();
+		Vector3 cameraPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
 
-		float xArea = camera->GetProjectionSize() * Graphics::usedCamera.lock()->GetAspectRatio() + chunkSize;
-		float yArea = camera->GetProjectionSize() + chunkSize;
+		float xArea = Graphics::usedCamera.lock()->GetProjectionSize() * Graphics::usedCamera.lock()->GetAspectRatio() + chunkSize;
+		float yArea = Graphics::usedCamera.lock()->GetProjectionSize() + chunkSize;
 
 		float xChunkPosition;
 		float yChunkPosition;

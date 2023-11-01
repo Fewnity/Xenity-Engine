@@ -2,12 +2,23 @@
 
 using namespace std::chrono;
 
+
+#if defined(__PSP__)
+#include <psptypes.h>
+#include <psprtc.h>
+#endif
+
+
 /// <summary>
 /// Start the benchmark timer
 /// </summary>
 void Benchmark::Start()
 {
+#if defined(_WIN32) || defined(_WIN64)
 	start_point = high_resolution_clock::now();
+#else
+	sceRtcGetCurrentTick(&startTick);
+#endif
 }
 
 /// <summary>
@@ -15,12 +26,18 @@ void Benchmark::Start()
 /// </summary>
 void Benchmark::Stop()
 {
+#if defined(_WIN32) || defined(_WIN64)
 	end_point = high_resolution_clock::now();
 
 	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
 	long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 
 	time = end - start;
+#else
+	sceRtcGetCurrentTick(&endTick);
+
+	time = endTick - startTick;
+#endif
 }
 
 /// <summary>

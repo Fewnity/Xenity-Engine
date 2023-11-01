@@ -117,8 +117,8 @@ public:
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) = 0;
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) = 0;
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) = 0;
+	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;
 
 private:
-	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;
 	virtual void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
 };

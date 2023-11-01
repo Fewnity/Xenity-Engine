@@ -31,10 +31,13 @@ void BoxCollider::OnReflectionUpdated()
 
 bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b)
 {
-	Vector3 aMinPos = a->min + a->GetTransform()->GetPosition() + a->offset;
-	Vector3 aMaxPos = a->max + a->GetTransform()->GetPosition() + a->offset;
-	Vector3 bMinPos = b->min + b->GetTransform()->GetPosition() + b->offset;
-	Vector3 bMaxPos = b->max + b->GetTransform()->GetPosition() + b->offset;
+	Vector3 aPos = a->GetTransform()->GetPosition() + a->offset;
+	Vector3 bPos = b->GetTransform()->GetPosition() + b->offset;
+
+	Vector3 aMinPos = a->min + aPos;
+	Vector3 aMaxPos = a->max + aPos;
+	Vector3 bMinPos = b->min + bPos;
+	Vector3 bMaxPos = b->max + bPos;
 
 	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;

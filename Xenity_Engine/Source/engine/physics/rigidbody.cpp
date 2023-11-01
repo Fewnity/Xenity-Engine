@@ -28,27 +28,28 @@ void RigidBody::Update()
 void RigidBody::Tick()
 {
 	inTrigger.clear();
-	if (attachedcollider.lock())
+	if (auto attachedColliderLock = attachedcollider.lock())
 	{
 		int side = NoSide;
 		int colliderCount = PhysicsManager::rigidBodies.size();
+		std::shared_ptr<RigidBody> other;
 		for (int i = 0; i < colliderCount; i++)
 		{
-			std::shared_ptr<RigidBody> other = PhysicsManager::rigidBodies[i].lock();
+			other = PhysicsManager::rigidBodies[i].lock();
 			if (other != shared_from_this() && other->GetIsEnabled() && other->GetGameObject()->GetLocalActive())
 			{
 				std::shared_ptr<BoxCollider> otherCollider = other->attachedcollider.lock();
 				if (otherCollider && otherCollider->GetIsEnabled() && otherCollider->GetGameObject()->GetLocalActive())
 				{
-					if (attachedcollider.lock()->isTrigger && isStatic)
+					if (attachedColliderLock->isTrigger && isStatic && !other->isStatic)
 					{
-						bool trigger = BoxCollider::CheckTrigger(attachedcollider.lock(), otherCollider);
+						bool trigger = BoxCollider::CheckTrigger(attachedColliderLock, otherCollider);
 						if (trigger)
 							inTrigger.push_back(otherCollider);
 					}
 					else if (!otherCollider->isTrigger && !isStatic)
 					{
-						int tempSide = BoxCollider::CheckCollision(attachedcollider.lock(), otherCollider, velocity * Time::GetDeltaTime());
+						int tempSide = BoxCollider::CheckCollision(attachedColliderLock, otherCollider, velocity * Time::GetDeltaTime());
 						if (tempSide != NoSide)
 						{
 							if ((side & tempSide) == 0)

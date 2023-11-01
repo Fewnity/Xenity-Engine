@@ -43,7 +43,7 @@ void MeshRenderer::Draw()
 {
 	if (auto gameObject = GetGameObject())
 	{
-		if (gameObject->GetLocalActive() && GetIsEnabled())
+		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData)
 		{
 			RenderingSettings renderSettings = RenderingSettings();
 			renderSettings.invertFaces = false;

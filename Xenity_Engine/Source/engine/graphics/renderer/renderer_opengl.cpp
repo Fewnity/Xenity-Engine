@@ -21,17 +21,22 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
 
+RenderingSettings lastSettings;
 ProfilerBenchmark* applySettingsBenchmark = nullptr;
-ProfilerBenchmark* mesh2Benchmark = nullptr;
+std::shared_ptr<Texture> usedTexture = nullptr;
+
+//ProfilerBenchmark* mesh2Benchmark = nullptr;
 
 RendererOpengl::RendererOpengl()
 {
 	applySettingsBenchmark = new ProfilerBenchmark("Draw", "Settings");
-	mesh2Benchmark = new ProfilerBenchmark("Draw", "mesh");
+	//mesh2Benchmark = new ProfilerBenchmark("Draw", "mesh");
 }
 
 int RendererOpengl::Init()
 {
+	lastSettings.useTexture = false;
+
 	int result = 1;
 #if defined(__PSP__)
 	guglInit(list);
@@ -99,8 +104,10 @@ void RendererOpengl::NewFrame()
 
 void RendererOpengl::EndFrame()
 {
+	usedTexture.reset();
 #if defined(__PSP__)
 	guglSwapBuffers(GL_FALSE, GL_FALSE);
+	//guglSwapBuffers(GL_TRUE, GL_FALSE);
 #elif defined(__vita__)
 	vglSwapBuffers(GL_FALSE);
 #endif
@@ -182,7 +189,7 @@ void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 	glRotatef(rotation.y + 180, 0, 1, 0);
 	glTranslatef(position.x, -position.y, -position.z);
 #endif
-	Setlights(camera);
+	//Setlights(camera);
 }
 
 void RendererOpengl::ResetTransform()
@@ -314,53 +321,77 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
 
 	applySettingsBenchmark->Start();
-	if (settings.invertFaces)
+	if (lastSettings.invertFaces != settings.invertFaces)
 	{
-		glFrontFace(GL_CW);
+		if (settings.invertFaces)
+		{
+			glFrontFace(GL_CW);
+		}
+		else
+		{
+			glFrontFace(GL_CCW);
+		}
 	}
-	else
+	if (lastSettings.useDepth != settings.useDepth)
 	{
-		glFrontFace(GL_CCW);
+		if (settings.useDepth)
+		{
+			glEnable(GL_DEPTH_TEST);
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+	}
+	if (lastSettings.useBlend != settings.useBlend)
+	{
+		if (settings.useBlend)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		else
+		{
+			glDisable(GL_BLEND);
+		}
 	}
 
-	if (settings.useDepth)
+	if (lastSettings.useLighting != settings.useLighting)
 	{
-		glEnable(GL_DEPTH_TEST);
-	}
-	else
-	{
-		glDisable(GL_DEPTH_TEST);
-	}
-
-	if (settings.useBlend)
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-	else
-	{
-		glDisable(GL_BLEND);
-	}
-
 #if defined(__PSP__)
-	if (EngineSettings::useLighting && settings.useLighting && !settings.useBlend)
+		if (EngineSettings::useLighting && settings.useLighting && !settings.useBlend)
 #else
-	if (EngineSettings::useLighting && settings.useLighting)
+		if (EngineSettings::useLighting && settings.useLighting)
 #endif
-	{
-		glEnable(GL_LIGHTING);
-	}
-	else
-	{
-		glDisable(GL_LIGHTING);
+		{
+			glEnable(GL_LIGHTING);
+		}
+		else
+		{
+			glDisable(GL_LIGHTING);
+		}
 	}
 
-	glEnable(GL_TEXTURE_2D);
+	if (lastSettings.useTexture != settings.useTexture)
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+
+	//lastSettings = settings;
+	lastSettings.invertFaces = settings.invertFaces;
+	lastSettings.useBlend = settings.useBlend;
+	lastSettings.useDepth = settings.useDepth;
+	lastSettings.useLighting = settings.useLighting;
+	lastSettings.useTexture = settings.useTexture;
+
 	applySettingsBenchmark->Stop();
+	//return;
 
 	int subMeshCount = meshData->subMeshCount;
-	int textureCount = textures.size();
+
 #if defined(__PSP__)
+	int textureCount = textures.size();
+	//int textureCount = 10;
 	int params = 0;
 
 	if (meshData->hasIndices)
@@ -389,7 +420,12 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 			break;
 		if (textures[i] == nullptr)
 			continue;
-		BindTexture(textures[i]);
+
+		if (usedTexture != textures[i]) 
+		{
+			usedTexture = textures[i];
+			BindTexture(textures[i]);
+		}
 		MeshData::SubMesh* subMesh = meshData->subMeshes[i];
 
 		if (!meshData->hasIndices)
@@ -402,6 +438,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		}
 	}
 #else
+	int textureCount = textures.size();
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -435,9 +472,14 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 		glBindVertexArray(subMesh->VAO);
 
-		BindTexture(textures[i]);
+	//	BindTexture(textures[i]);
+		if (usedTexture != textures[i]) 
+		{
+			usedTexture = textures[i];
+			BindTexture(textures[i]);
+		}
 
-		mesh2Benchmark->Start();
+		//mesh2Benchmark->Start();
 
 		if (!meshData->hasIndices)
 		{
@@ -449,7 +491,8 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, 0);
 		}
 		glBindVertexArray(0);
-		mesh2Benchmark->Stop();
+		Performance::AddDrawTriangles(subMesh->index_count / 3);
+		//mesh2Benchmark->Stop();
 	}
 
 #endif
@@ -470,7 +513,6 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -479,6 +521,8 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+
+	lastSettings.useTexture = false;
 
 	VertexNoColorNoUv ver[2];
 	ver[0].x = a.x;

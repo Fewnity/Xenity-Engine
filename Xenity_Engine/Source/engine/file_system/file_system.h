@@ -135,6 +135,7 @@ public:
 private:
 	std::string path = "";
 	std::string pathExtention = "";
+	std::string name = "";
 #if defined(__PSP__)
 	SceUID fileId;
 #else

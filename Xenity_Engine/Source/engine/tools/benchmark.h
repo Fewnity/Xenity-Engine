@@ -47,5 +47,10 @@ public:
 private:
 	std::chrono::time_point< std::chrono::high_resolution_clock> start_point, end_point;
 	long long time = 0;
+
+#if defined(__PSP__)
+	uint64_t endTick;
+	uint64_t startTick;
+#endif
 };
 

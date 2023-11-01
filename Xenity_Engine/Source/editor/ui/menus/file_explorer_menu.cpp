@@ -335,85 +335,86 @@ void FileExplorerMenu::Draw()
 	fileHovered = false;
 
 	float iconSize = 64 * EditorUI::GetUiScale();
-	ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
-
-	float height = ImGui::GetContentRegionAvail().y;
-
-	int offset = ImGui::GetCursorPosX();
-	if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
+	bool visible = ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
+	if (visible)
 	{
-		ImGui::TableNextRow(0, height);
-		ImGui::TableSetColumnIndex(0);
-		bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
-		if (treeItemClicked)
+		float height = ImGui::GetContentRegionAvail().y;
+
+		int offset = ImGui::GetCursorPosX();
+		if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
-			fileHovered = true;
-		}
-
-		ImGui::TableSetColumnIndex(1);
-		float width = ImGui::GetContentRegionAvail().x;
-		int colCount = width / (100 * EditorUI::GetUiScale());
-		if (colCount <= 0)
-			colCount = 1;
-
-		if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
-		{
-			int currentCol = 0;
-			int itemIndex = 0;
-			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
-			int folderCount = currentDir->subdirectories.size();
-			int fileCount = currentDir->files.size();
-			std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
-
-			for (int i = 0; i < folderCount; i++)
+			ImGui::TableNextRow(0, height);
+			ImGui::TableSetColumnIndex(0);
+			bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
+			if (treeItemClicked)
 			{
-				FileExplorerItem item;
-				item.directory = currentDir->subdirectories[i];
-				DrawExplorerItem(iconSize, currentCol, colCount, false, offset, item, itemIndex);
-				itemIndex++;
+				fileHovered = true;
 			}
 
-			for (int i = 0; i < fileCount; i++)
+			ImGui::TableSetColumnIndex(1);
+			float width = ImGui::GetContentRegionAvail().x;
+			int colCount = width / (100 * EditorUI::GetUiScale());
+			if (colCount <= 0)
+				colCount = 1;
+
+			if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
 			{
-				FileExplorerItem item;
-				item.file = filesRefs[i];
-				DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, itemIndex);
-				itemIndex++;
+				int currentCol = 0;
+				int itemIndex = 0;
+				ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
+				int folderCount = currentDir->subdirectories.size();
+				int fileCount = currentDir->files.size();
+				std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
+
+				for (int i = 0; i < folderCount; i++)
+				{
+					FileExplorerItem item;
+					item.directory = currentDir->subdirectories[i];
+					DrawExplorerItem(iconSize, currentCol, colCount, false, offset, item, itemIndex);
+					itemIndex++;
+				}
+
+				for (int i = 0; i < fileCount; i++)
+				{
+					FileExplorerItem item;
+					item.file = filesRefs[i];
+					DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, itemIndex);
+					itemIndex++;
+				}
+				ImGui::EndTable();
 			}
 			ImGui::EndTable();
-		}
-		ImGui::EndTable();
 
-		// Unselect file or open the popup if background is clicked
-		if (!fileHovered)
-		{
-			ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
-			FileExplorerItem item;
-			item.directory = currentDir;
-			int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
-			if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
+			// Unselect file or open the popup if background is clicked
+			if (!fileHovered)
 			{
-				if (ignoreClose)
+				ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
+				FileExplorerItem item;
+				item.directory = currentDir;
+				int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
+				if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
 				{
-					ignoreClose = false;
-				}
-				else
-				{
-					if (result == 0)
+					if (ignoreClose)
 					{
-						Rename();
+						ignoreClose = false;
 					}
-					if (ImGui::IsWindowHovered())
-						Editor::SetSelectedFileReference(nullptr);
+					else
+					{
+						if (result == 0)
+						{
+							Rename();
+						}
+						if (ImGui::IsWindowHovered())
+							Editor::SetSelectedFileReference(nullptr);
+					}
 				}
 			}
-		}
-		if (InputSystem::GetKeyDown(RETURN))
-		{
-			Rename();
+			if (InputSystem::GetKeyDown(RETURN))
+			{
+				Rename();
+			}
 		}
 	}
-
 	ImGui::End();
 }
 

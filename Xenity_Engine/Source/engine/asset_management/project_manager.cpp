@@ -9,8 +9,10 @@
 #include "code_file.h"
 #include "../graphics/skybox.h"
 
-#if !defined(EDITOR)
 #include "../../game_dungeon/game.h"
+
+#if !defined(EDITOR)
+//#include "../../game_dungeon/game.h"
 //#include "../../game_test/game.h"
 #endif
 
@@ -310,18 +312,18 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	// Load dynamic library and create game
-#if defined(_WIN32) || defined(_WIN64)
-#if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-#else
-	DynamicLibrary::LoadGameLibrary("game");
-#endif // defined(EDITOR)
-	Engine::game = DynamicLibrary::CreateGame();
-#else
-	Engine::game = std::make_unique<Game>();
-#endif //  defined(_WIN32) || defined(_WIN64)
+//#if defined(_WIN32) || defined(_WIN64)
+//#if defined(EDITOR)
+//	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+//#else
+//	DynamicLibrary::LoadGameLibrary("game");
+//#endif // defined(EDITOR)
+//	Engine::game = DynamicLibrary::CreateGame();
+//#else
+//	Engine::game = std::make_unique<Game>();
+//#endif //  defined(_WIN32) || defined(_WIN64)
 
-	//Engine::game = std::make_unique<Game>();
+	Engine::game = std::make_unique<Game>();
 
 	// Fill class registery
 	if (Engine::game)

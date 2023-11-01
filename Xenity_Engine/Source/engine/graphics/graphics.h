@@ -73,6 +73,11 @@ public:
 	static std::weak_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
+	static std::vector<std::weak_ptr<IDrawable>> noTransparentDrawable;
+	static std::vector<std::weak_ptr<IDrawable>> transparentDrawable;
+	static std::vector<std::weak_ptr<IDrawable>> spriteDrawable;
+	static std::vector<std::weak_ptr<IDrawable>> uiDrawable;
+
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 
 	static std::shared_ptr <SkyBox> skybox;

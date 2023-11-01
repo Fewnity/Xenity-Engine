@@ -4,12 +4,14 @@
 #include "../engine_settings.h"
 
 int Performance::drawCallCount = 0;
+int Performance::drawTriangleCount = 0;
 int Performance::updatedMaterialCount = 0;
 std::unordered_map<std::string, ProfilerCategory*> Performance::profilerCategories;
 
 int Performance::tickCount = 0;
 float Performance::averageCoolDown = 0;
 int Performance::LastDrawCallCount = 0;
+int Performance::LastDrawTriangleCount = 0;
 
 #pragma region Update values
 
@@ -22,6 +24,9 @@ void Performance::ResetCounters()
 {
 	LastDrawCallCount = drawCallCount;
 	drawCallCount = 0;
+	LastDrawTriangleCount = drawTriangleCount;
+	drawTriangleCount = 0;
+
 	updatedMaterialCount = 0;
 	ResetProfiler();
 }
@@ -29,6 +34,11 @@ void Performance::ResetCounters()
 void Performance::AddDrawCall()
 {
 	drawCallCount++;
+}
+
+void Performance::AddDrawTriangles(int count)
+{
+	drawTriangleCount+= count;
 }
 
 void Performance::AddMaterialUpdate()
@@ -43,6 +53,11 @@ void Performance::AddMaterialUpdate()
 int Performance::GetDrawCallCount()
 {
 	return LastDrawCallCount;
+}
+
+int Performance::GetDrawTrianglesCount()
+{
+	return LastDrawTriangleCount;
 }
 
 int Performance::GetUpdatedMaterialCount()

@@ -10,13 +10,15 @@ void ProjectSettingsMenu::Init()
 
 void ProjectSettingsMenu::Draw()
 {
-	ImGui::Begin("Project Settings", &EditorUI::showProjectsSettings, ImGuiWindowFlags_NoCollapse);
-
-	EditorUI::DrawMap(ProjectManager::GetProjetSettingsReflection());
-
-	if (ImGui::Button("Save"))
+	bool visible = ImGui::Begin("Project Settings", &EditorUI::showProjectsSettings, ImGuiWindowFlags_NoCollapse);
+	if (visible)
 	{
-		ProjectManager::SaveProjectSettings();
+		EditorUI::DrawMap(ProjectManager::GetProjetSettingsReflection());
+
+		if (ImGui::Button("Save"))
+		{
+			ProjectManager::SaveProjectSettings();
+		}
 	}
 
 	ImGui::End();

@@ -67,6 +67,8 @@ public:
 	*/
 	static void AddDrawCall();
 
+	static void AddDrawTriangles(int count);
+
 	/**
 	* Add one to the updated material counter
 	*/
@@ -76,6 +78,8 @@ public:
 	* Get draw call count
 	*/
 	static int GetDrawCallCount();
+
+	static int GetDrawTrianglesCount();
 
 	/**
 	* Get updated material count
@@ -96,7 +100,9 @@ private:
 	static void ResetProfiler();
 
 	static int drawCallCount;
+	static int drawTriangleCount;
 	static int LastDrawCallCount;
+	static int LastDrawTriangleCount;
 	static int updatedMaterialCount;
 
 	static int tickCount;
