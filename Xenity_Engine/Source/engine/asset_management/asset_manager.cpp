@@ -57,7 +57,7 @@ void AssetManager::Init()
 		// Load line shader
 		lineShader = Shader::MakeShader();
 #if defined(__vita__)
-		Engine::lineShader->file = FileSystem::MakeFile("shaders/line_psvita.shader");
+		lineShader->file = FileSystem::MakeFile("shaders/line_psvita.shader");
 #else
 		lineShader->file = FileSystem::MakeFile("shaders/line.shader");
 #endif

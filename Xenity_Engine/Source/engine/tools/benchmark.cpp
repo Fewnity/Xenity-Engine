@@ -14,7 +14,7 @@ using namespace std::chrono;
 /// </summary>
 void Benchmark::Start()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__vita__)
 	start_point = high_resolution_clock::now();
 #else
 	sceRtcGetCurrentTick(&startTick);
@@ -26,7 +26,7 @@ void Benchmark::Start()
 /// </summary>
 void Benchmark::Stop()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)|| defined(__vita__)
 	end_point = high_resolution_clock::now();
 
 	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();

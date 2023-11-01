@@ -189,7 +189,6 @@ void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 	glRotatef(rotation.y + 180, 0, 1, 0);
 	glTranslatef(position.x, -position.y, -position.z);
 #endif
-	//Setlights(camera);
 }
 
 void RendererOpengl::ResetTransform()
@@ -377,15 +376,9 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	//lastSettings = settings;
-	lastSettings.invertFaces = settings.invertFaces;
-	lastSettings.useBlend = settings.useBlend;
-	lastSettings.useDepth = settings.useDepth;
-	lastSettings.useLighting = settings.useLighting;
-	lastSettings.useTexture = settings.useTexture;
+	lastSettings = settings;
 
 	applySettingsBenchmark->Stop();
-	//return;
 
 	int subMeshCount = meshData->subMeshCount;
 

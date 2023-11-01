@@ -392,7 +392,6 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 
 void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
 {
-	//std::shared_ptr<Camera> camera = Graphics::usedCamera.lock();
 	if (!usedCamera.lock())
 		return;
 

@@ -8,7 +8,7 @@ SpriteRenderer::SpriteRenderer()
 	componentName = "SpriteRenderer";
 	type = Draw_2D;
 	AssetManager::AddReflection(this);
-	material = AssetManager::standardMaterial;
+	material = AssetManager::unlitMaterial;
 }
 
 std::unordered_map<std::string, ReflectionEntry> SpriteRenderer::GetReflection()
