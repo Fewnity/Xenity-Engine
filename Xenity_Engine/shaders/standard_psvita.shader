@@ -150,15 +150,15 @@ void main()
 
 	vec3 norm = normalize(Normals); //Direction of normals
 
-	//for (int i = 0; i < usedPointLightCount; i++)
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < usedPointLightCount; i++)
+	//for (int i = 0; i < 3; i++)
 	{
 		result += CalculatePointLight(pointLights[i], norm, FragPos, TexCoord, textureColor);
 	}
 
 
-	//for (int i = 0; i < usedDirectionalLightCount; i++)
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < usedDirectionalLightCount; i++)
+	//for (int i = 0; i < 1; i++)
 	{
 		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, TexCoord, textureColor);
 	}
