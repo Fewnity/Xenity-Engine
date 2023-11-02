@@ -270,6 +270,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
+    <ClCompile Include="Source\windows\cpu.cpp" />
     <ClCompile Include="Source\windows\inputs\inputs.cpp" />
     <ClCompile Include="Source\engine\test_component.cpp" />
     <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
@@ -308,6 +309,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\cpu.h" />
     <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\create_class_menu.h" />
     <ClInclude Include="Source\engine\file_system\file_type.h" />

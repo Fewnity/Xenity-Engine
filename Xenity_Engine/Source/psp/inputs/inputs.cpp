@@ -1,6 +1,6 @@
 #include "inputs.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 
 #include <pspctrl.h>
 #include "../../engine/inputs/input_system.h"

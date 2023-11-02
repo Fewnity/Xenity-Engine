@@ -4,12 +4,6 @@
 #include "../renderer/renderer.h"
 #include "../../file_system/mesh_loader/wavefront_loader.h"
 
-#if defined(__PSP__)
-#include "../../../psp/gu2gl.h"
-#elif defined(__vita__)
-#include <vitaGL.h>
-#endif
-
 //ProfilerBenchmark* meshBenchmark = nullptr;
 
 void MeshManager::Init()

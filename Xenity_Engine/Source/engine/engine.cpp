@@ -8,6 +8,7 @@
 #include "network/network.h"
 #include "dynamic_lib/dynamic_lib.h"
 #include "game_elements/gameplay_manager.h"
+#include "cpu.h"
 
 #if defined(EDITOR)
 #include "dynamic_lib/dynamic_lib.h"
@@ -45,7 +46,6 @@ std::mutex Engine::threadLoadingMutex;
 ProjectDirectory* Engine::currentProjectDirectory = nullptr;
 
 ProfilerBenchmark* engineLoopBenchmark = nullptr;
-//ProfilerBenchmark* gameLoopBenchmark = nullptr;
 ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
 ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
 ProfilerBenchmark* editorUpdateBenchmark = nullptr;
@@ -60,6 +60,10 @@ int Engine::Init()
 {
 	// Init random
 	srand((unsigned int)time(NULL));
+
+#if defined(__PSP__)
+	SetupCallbacks();
+#endif
 
 	// Setup game console CPU speed
 	SetMaxCpuSpeed();
@@ -83,7 +87,8 @@ int Engine::Init()
 	RegisterEngineComponents();
 
 	/* Initialize libraries */
-	//NetworkManager::Init();
+	NetworkManager::Init();
+	NetworkManager::needDrawMenu = false;
 
 	Performance::Init();
 
@@ -313,20 +318,6 @@ void Engine::RegisterEngineComponents()
 	ClassRegistry::AddComponentClass("BoxCollider", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<BoxCollider>(); });
 }
-
-void Engine::SetMaxCpuSpeed()
-{
-#if defined(__PSP__)
-	SetupCallbacks();
-	scePowerSetClockFrequency(333, 333, 166);
-#elif defined(__vita__)
-	scePowerSetArmClockFrequency(444);
-	scePowerSetBusClockFrequency(222);
-	scePowerSetGpuClockFrequency(222);
-	scePowerSetGpuXbarClockFrequency(166);
-#endif
-}
-
 
 void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
 {

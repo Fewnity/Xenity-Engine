@@ -305,11 +305,15 @@ void Transform::UpdateTransformationMatrix()
 
 	transformationMatrix = glm::mat4(1.0f);
 
-	transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
+	if(position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
+		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
 
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+	if(rotation.y != 0.0f)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+	if (rotation.x != 0.0f)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	if (rotation.z != 0.0f)
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	for (int i = 0; i < 3; i++)
 	{

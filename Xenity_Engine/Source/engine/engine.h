@@ -158,11 +158,6 @@ private:
 	API static void ResetTransformsStates();
 
 	/**
-	* Set Cpu speed to the max (PSP and PsVita)
-	*/
-	API static void SetMaxCpuSpeed();
-
-	/**
 	* Load and start game (Executed when compiled as a game build)
 	*/
 	API static int LoadGame();

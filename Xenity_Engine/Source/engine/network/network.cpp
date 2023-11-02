@@ -46,7 +46,7 @@ int NetworkManager::result = -1;
 bool NetworkManager::done = false;
 
 std::vector<Socket*> NetworkManager::sockets;
-bool NetworkManager::needDrawMenu = true;
+bool NetworkManager::needDrawMenu = false;
 
 void NetworkManager::Init()
 {
