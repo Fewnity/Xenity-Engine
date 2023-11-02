@@ -45,7 +45,7 @@ int NetworkManager::result = -1;
 #endif
 bool NetworkManager::done = false;
 
-std::vector<Socket*> NetworkManager::sockets;
+std::vector<std::shared_ptr<Socket>> NetworkManager::sockets;
 bool NetworkManager::needDrawMenu = false;
 
 void NetworkManager::Init()
@@ -173,7 +173,7 @@ void NetworkManager::DrawNetworkSetupMenu()
 	}
 }
 
-Socket* NetworkManager::CreateSocket(const std::string& address, int port)
+std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address, int port)
 {
 	// return nullptr;
 	int newSocketId = 1;
@@ -222,6 +222,6 @@ Socket* NetworkManager::CreateSocket(const std::string& address, int port)
 	}
 #endif
 
-	Socket* myNewSocket = new Socket(newSocketId);
+	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newSocketId);
 	return myNewSocket;
 }

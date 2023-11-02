@@ -626,6 +626,7 @@ ProjectDirectory::~ProjectDirectory()
 		delete subdirectories[i];
 	}
 	subdirectories.clear();
+	Debug::PrintWarning("ProjectDirectory::~ProjectDirectory()");
 }
 
 std::string ProjectDirectory::GetFolderName()

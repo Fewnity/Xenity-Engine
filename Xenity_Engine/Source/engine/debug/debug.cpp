@@ -15,7 +15,7 @@
 
 std::shared_ptr<File> file = nullptr;
 std::string Debug::debugText = "";
-Socket* Debug::socket = nullptr;
+std::shared_ptr<Socket> Debug::socket = nullptr;
 
 float Debug::SendProfilerCooldown = 0;
 float Debug::SendProfilerRate = 0.2f;

@@ -22,14 +22,14 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #include <glm/gtc/type_ptr.hpp>
 
 RenderingSettings lastSettings;
-ProfilerBenchmark* applySettingsBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> applySettingsBenchmark = nullptr;
 std::shared_ptr<Texture> usedTexture = nullptr;
 
 //ProfilerBenchmark* mesh2Benchmark = nullptr;
 
 RendererOpengl::RendererOpengl()
 {
-	applySettingsBenchmark = new ProfilerBenchmark("Draw", "Settings");
+	applySettingsBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Settings");
 	//mesh2Benchmark = new ProfilerBenchmark("Draw", "mesh");
 }
 

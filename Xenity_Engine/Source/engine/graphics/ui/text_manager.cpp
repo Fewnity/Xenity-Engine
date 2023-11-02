@@ -5,7 +5,7 @@
 #include "../renderer/renderer.h"
 #include "font.h"
 
-ProfilerBenchmark* textBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> textBenchmark = nullptr;
 
 /**
  * @brief Init text manager
@@ -13,7 +13,7 @@ ProfilerBenchmark* textBenchmark = nullptr;
  */
 void TextManager::Init()
 {
-	textBenchmark = new ProfilerBenchmark("Text", "Text");
+	textBenchmark = std::make_shared<ProfilerBenchmark>("Text", "Text");
 }
 
 std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font)

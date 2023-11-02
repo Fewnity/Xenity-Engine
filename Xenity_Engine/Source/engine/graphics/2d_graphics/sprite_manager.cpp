@@ -15,7 +15,7 @@
 
 std::shared_ptr <MeshData> SpriteManager::spriteMeshData = nullptr;
 
-ProfilerBenchmark* spriteBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> spriteBenchmark = nullptr;
 
 /**
  * @brief Init the Sprite Manager
@@ -23,7 +23,7 @@ ProfilerBenchmark* spriteBenchmark = nullptr;
  */
 void SpriteManager::Init()
 {
-	spriteBenchmark = new ProfilerBenchmark("Sprite", "Sprite");
+	spriteBenchmark = std::make_shared<ProfilerBenchmark>("Sprite", "Sprite");
 
 	// Create sprite mesh
 	spriteMeshData = MeshData::MakeMeshData(4, 6, false, false, true);

@@ -28,11 +28,11 @@ std::vector<std::weak_ptr<IDrawable>> Graphics::uiDrawable;
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 bool Graphics::drawOrderListDirty = true;
 
-ProfilerBenchmark* orderBenchmark = nullptr;
-ProfilerBenchmark* skyboxBenchmark = nullptr;
-ProfilerBenchmark* drawAllBenchmark = nullptr;
-ProfilerBenchmark* drawMeshBenchmark = nullptr;
-ProfilerBenchmark* drawEndFrameBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> orderBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> skyboxBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> drawAllBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> drawMeshBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
 std::shared_ptr <MeshData> rightArrow = nullptr;
@@ -92,11 +92,11 @@ void Graphics::Init()
 	toolArrowsTexture->LoadFileReference();
 #endif
 
-	orderBenchmark = new ProfilerBenchmark("Draw", "Order Drawables");
-	skyboxBenchmark = new ProfilerBenchmark("Draw", "Skybox");
-	drawAllBenchmark = new ProfilerBenchmark("Draw", "Drawables");
-	drawMeshBenchmark = new ProfilerBenchmark("Draw", "Mesh");
-	drawEndFrameBenchmark = new ProfilerBenchmark("Draw", "End frame");
+	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
+	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");
+	drawAllBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Drawables");
+	drawMeshBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Mesh");
+	drawEndFrameBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "End frame");
 
 	SetDefaultValues();
 

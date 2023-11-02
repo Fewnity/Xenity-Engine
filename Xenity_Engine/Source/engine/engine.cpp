@@ -45,11 +45,11 @@ std::mutex Engine::threadLoadingMutex;
 
 ProjectDirectory* Engine::currentProjectDirectory = nullptr;
 
-ProfilerBenchmark* engineLoopBenchmark = nullptr;
-ProfilerBenchmark* componentsUpdateBenchmark = nullptr;
-ProfilerBenchmark* drawIDrawablesBenchmark = nullptr;
-ProfilerBenchmark* editorUpdateBenchmark = nullptr;
-ProfilerBenchmark* editorDrawBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> drawIDrawablesBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> editorUpdateBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> editorDrawBenchmark = nullptr;
 
 std::unique_ptr<Renderer> Engine::renderer = nullptr;
 bool Engine::canUpdateAudio = false;
@@ -363,12 +363,12 @@ int Engine::LoadGame()
 
 void Engine::CreateBenchmarks()
 {
-	engineLoopBenchmark = new ProfilerBenchmark("Engine loop", "Engine loop");
+	engineLoopBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Engine loop");
 	//gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
-	componentsUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Components update");
-	drawIDrawablesBenchmark = new ProfilerBenchmark("Draw", "Draw");
-	editorUpdateBenchmark = new ProfilerBenchmark("Engine loop", "Editor update");
-	editorDrawBenchmark = new ProfilerBenchmark("Engine loop", "Editor draw");
+	componentsUpdateBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Components update");
+	drawIDrawablesBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Draw");
+	editorUpdateBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Editor update");
+	editorDrawBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Editor draw");
 }
 
 

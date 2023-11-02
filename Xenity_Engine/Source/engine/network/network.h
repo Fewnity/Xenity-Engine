@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #if defined(__PSP__)
 #include <psputility.h>
@@ -69,7 +70,7 @@ public:
 	/**
 	* [Internal] Create a socket
 	*/
-	static Socket* CreateSocket(const std::string& address, int port);
+	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
 
 	/**
 	* [Internal] draw network setup menu for the PSP
@@ -84,5 +85,5 @@ public:
 	static bool done;
 
 private:
-	static std::vector<Socket*> sockets;
+	static std::vector< std::shared_ptr<Socket>> sockets;
 };

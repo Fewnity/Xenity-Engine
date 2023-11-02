@@ -34,8 +34,8 @@ int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex* AudioManager::myMutex = nullptr;
 
-ProfilerBenchmark* audioBenchmark = nullptr;
-ProfilerBenchmark* audioBenchmark2 = nullptr;
+std::shared_ptr<ProfilerBenchmark> audioBenchmark = nullptr;
+std::shared_ptr<ProfilerBenchmark> audioBenchmark2 = nullptr;
 
 #define audiosize 2048
 
@@ -306,8 +306,8 @@ Channel::Channel()
 
 int AudioManager::Init()
 {
-	audioBenchmark = new ProfilerBenchmark("Audio", "Audio");
-	audioBenchmark2 = new ProfilerBenchmark("Audio", "Sub");
+	audioBenchmark = std::make_shared<ProfilerBenchmark>("Audio", "Audio");
+	audioBenchmark2 = std::make_shared<ProfilerBenchmark>("Audio", "Sub");
 	halfBuffSize = buffSize / 2;
 	quarterBuffSize = buffSize / 4;
 

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 
 class Socket;
 
@@ -77,6 +78,6 @@ private:
 	static void PrintInFile(const std::string& text);
 
 	static std::string debugText;
-	static Socket* socket;
+	static std::shared_ptr<Socket> socket;
 	static float SendProfilerCooldown;
 };
