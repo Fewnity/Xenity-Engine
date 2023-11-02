@@ -35,7 +35,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	}
 }
 
-void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex)
+void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, float offset, FileExplorerItem& item, int itemIndex)
 {
 	//Get name
 	std::string itemName;
@@ -58,8 +58,8 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 
 	ImGui::BeginGroup();
-	int cursorPos = ImGui::GetCursorPosX();
-	int availWidth = ImGui::GetContentRegionAvail().x;
+	int cursorPos =(int)ImGui::GetCursorPosX();
+	int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
 	std::shared_ptr<Texture> iconTexture = GetItemIcon(item, isFile);
@@ -256,7 +256,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 	return state;
 }
 
-void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, int iconSize, const std::string& itemName)
+void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName)
 {
 	if (isFile)
 	{
@@ -340,7 +340,7 @@ void FileExplorerMenu::Draw()
 	{
 		float height = ImGui::GetContentRegionAvail().y;
 
-		int offset = ImGui::GetCursorPosX();
+		float offset = ImGui::GetCursorPosX();
 		if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
 			ImGui::TableNextRow(0, height);
@@ -361,12 +361,12 @@ void FileExplorerMenu::Draw()
 			{
 				int currentCol = 0;
 				int itemIndex = 0;
-				ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
-				int folderCount = currentDir->subdirectories.size();
-				int fileCount = currentDir->files.size();
+				std::shared_ptr <ProjectDirectory> currentDir = Engine::GetCurrentProjectDirectory();
+				size_t folderCount = currentDir->subdirectories.size();
+				size_t fileCount = currentDir->files.size();
 				std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
 
-				for (int i = 0; i < folderCount; i++)
+				for (size_t i = 0; i < folderCount; i++)
 				{
 					FileExplorerItem item;
 					item.directory = currentDir->subdirectories[i];
@@ -374,7 +374,7 @@ void FileExplorerMenu::Draw()
 					itemIndex++;
 				}
 
-				for (int i = 0; i < fileCount; i++)
+				for (size_t i = 0; i < fileCount; i++)
 				{
 					FileExplorerItem item;
 					item.file = filesRefs[i];
@@ -388,7 +388,7 @@ void FileExplorerMenu::Draw()
 			// Unselect file or open the popup if background is clicked
 			if (!fileHovered)
 			{
-				ProjectDirectory* currentDir = Engine::GetCurrentProjectDirectory();
+				std::shared_ptr <ProjectDirectory> currentDir = Engine::GetCurrentProjectDirectory();
 				FileExplorerItem item;
 				item.directory = currentDir;
 				int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
@@ -437,7 +437,7 @@ void FileExplorerMenu::Rename()
 
 		bool success = false;
 		std::string parentPath = directoryToRename->path;
-		int lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
+		size_t lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
 		parentPath = parentPath.substr(0, lastSlash) + "\\";
 		success = FileSystem::fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
 	}

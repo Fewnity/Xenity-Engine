@@ -86,7 +86,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 			short* rightBuf = nullptr;
 			short* leftBuf = nullptr;
 			int frequency = stream->GetFrequency();
-			int sampleCount = stream->GetSampleCount();
+			uint64_t sampleCount = stream->GetSampleCount();
 			int leftBufferIndex = 0;
 			int rightBufferIndex = 0;
 			short* soundBuffer = sound->buffer;
@@ -400,7 +400,6 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	AudioManager::myMutex->Lock();
 	bool found = false;
-
 
 	if (audioSource->audioClip == nullptr)
 		return;

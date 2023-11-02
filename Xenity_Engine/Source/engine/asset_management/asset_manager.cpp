@@ -244,8 +244,8 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
-				int vectorSize = valuePtr->get().size();
-				for (int i = 0; i < vectorSize; i++)
+				size_t vectorSize = valuePtr->get().size();
+				for (size_t i = 0; i < vectorSize; i++)
 				{
 					if (valuePtr->get()[i] == fileReference)
 					{

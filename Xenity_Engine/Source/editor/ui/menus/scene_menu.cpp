@@ -100,10 +100,10 @@ void SceneMenu::Draw()
 		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
 	}*/
 	//Get the editor camera
-	int cameraCount = Graphics::cameras.size();
+	size_t cameraCount = Graphics::cameras.size();
 	std::shared_ptr<Camera> camera;
 	Vector2Int frameBufferSize;
-	for (int i = 0; i < cameraCount; i++)
+	for (size_t i = 0; i < cameraCount; i++)
 	{
 		if (Graphics::cameras[i].lock()->isEditor)
 		{
@@ -130,9 +130,9 @@ void SceneMenu::Draw()
 		}
 		if (camera)
 		{
-			camera->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
+			camera->ChangeFrameBufferSize(Vector2Int((int)size.x, (int)size.y));
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
-			windowSize = Vector2Int(size.x, size.y);
+			windowSize = Vector2Int((int)size.x, (int)size.y);
 			if (ImGui::IsItemHovered())
 			{
 				std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
@@ -143,7 +143,7 @@ void SceneMenu::Draw()
 				// Calculate camera matrix without translate
 				Vector3 cameraRotation = cameraTransform->GetRotation();
 				glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-				cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+				//cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 				cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 				cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -338,8 +338,8 @@ void SceneMenu::Draw()
 		}
 
 		// Get some values for inputs
-		windowPosition = Vector2Int(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-		mousePosition = Vector2Int(ImGui::GetMousePos().x, ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y));
+		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
+		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));
 		isFocused = ImGui::IsWindowFocused();
 
 		// List tool modes

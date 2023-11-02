@@ -203,8 +203,8 @@ void MainBarMenu::Draw()
 		if (ImGui::BeginMenu("All"))
 		{
 			std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
-			int componentCount = componentNames.size();
-			for (int i = 0; i < componentCount; i++)
+			size_t componentCount = componentNames.size();
+			for (size_t i = 0; i < componentCount; i++)
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
 				{

@@ -431,7 +431,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		}
 	}
 #else
-	int textureCount = textures.size();
+	size_t textureCount = textures.size();
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -450,7 +450,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	applySettingsBenchmark->Stop();
 	MeshData::SubMesh* subMesh = nullptr;
 	int stride = 0;
-	for (int i = 0; i < subMeshCount; i++)
+	for (size_t i = 0; i < subMeshCount; i++)
 	{
 		if (i == textureCount)
 			break;

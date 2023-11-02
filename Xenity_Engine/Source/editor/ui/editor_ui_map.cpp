@@ -89,10 +89,10 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
-				int vectorSize = valuePtr->get().size();
+				size_t vectorSize = valuePtr->get().size();
 				std::string tempVariableName = variableName;
 				bool firstDraw = true;
-				for (int vectorI = 0; vectorI < vectorSize; vectorI++)
+				for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 				{
 					std::string inputText = "None (Texture)";
 					const auto& ptr = valuePtr->get()[vectorI];
@@ -133,7 +133,7 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 				}
 				if (ImGui::Button("Remove Texture"))
 				{
-					int textureSize = valuePtr->get().size();
+					size_t textureSize = valuePtr->get().size();
 					if (textureSize != 0)
 					{
 						valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);

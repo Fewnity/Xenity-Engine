@@ -5,7 +5,8 @@
 #include <pspctrl.h>
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"
-#include "../../engine/debug/debug.h"
+
+#define JOYSTICK_DEAD_ZONE 0.25f
 
 SceCtrlData ctrl;
 
@@ -41,11 +42,11 @@ InputPad CrossGetInputPad()
 	pad.lx = ((ctrl.Lx - 128) / 256.0f) * 2;
 	pad.ly = ((ctrl.Ly - 128) / 256.0f) * 2;
 
-	if (pad.lx < 0.2f && pad.lx > -0.2f)
+	if (pad.lx <= JOYSTICK_DEAD_ZONE && pad.lx >= -JOYSTICK_DEAD_ZONE)
 	{
 		pad.lx = 0;
 	}
-	if (pad.ly < 0.2f && pad.ly > -0.2f)
+	if (pad.ly <= JOYSTICK_DEAD_ZONE && pad.ly >= -JOYSTICK_DEAD_ZONE)
 	{
 		pad.ly = 0;
 	}

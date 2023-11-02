@@ -78,7 +78,7 @@ void Shader::LoadFileReference()
 		{
 			std::string shaderText = file->ReadAll();
 			file->Close();
-			int textSize = shaderText.size();
+			size_t textSize = shaderText.size();
 
 			if (textSize != 0)
 			{
@@ -96,7 +96,7 @@ void Shader::LoadFileReference()
 				int end = 0;
 				bool foundEnd = false;
 
-				for (int i = 0; i < textSize - 1; i++)
+				for (size_t i = 0; i < textSize - 1; i++)
 				{
 					if (StringTagFinder::FindTag(shaderText, i, textSize, "{pc}", unused, end))
 					{

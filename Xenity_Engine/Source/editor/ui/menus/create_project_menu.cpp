@@ -78,7 +78,7 @@ void CreateProjectMenu::DrawCreateProjectButton()
 		}
 		else
 		{
-			Directory* projectDir = new Directory(projectParentDir + projectName);
+			std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(projectParentDir + projectName);
 			if (projectDir->CheckIfExist())
 			{
 				createProjectError = ERROR_PROJECT_ALREADY_EXISTS;
@@ -97,7 +97,7 @@ void CreateProjectMenu::DrawCreateProjectButton()
 					Editor::currentMenu = Menu_Editor;
 				}
 			}
-			delete projectDir;
+			//delete projectDir;
 		}
 	}
 }

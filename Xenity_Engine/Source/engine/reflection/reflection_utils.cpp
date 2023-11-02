@@ -93,10 +93,10 @@ void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
-					int arraySize = kvValue.size();
+					size_t arraySize = kvValue.size();
 
-					int vectorSize = valuePtr->get().size();
-					for (int i = 0; i < arraySize; i++)
+					size_t vectorSize = valuePtr->get().size();
+					for (size_t i = 0; i < arraySize; i++)
 					{
 						std::shared_ptr<FileReference> file = nullptr;
 						if (!kvValue.at(i).is_null())
@@ -106,13 +106,13 @@ void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string
 							if (file)
 								file->LoadFileReference();
 						}
-						if (i < vectorSize - 1)
+						if (i >= vectorSize)
 						{
-							valuePtr->get()[i] = std::dynamic_pointer_cast<Texture>(file);
+							valuePtr->get().push_back(std::dynamic_pointer_cast<Texture>(file));
 						}
 						else
 						{
-							valuePtr->get().push_back(std::dynamic_pointer_cast<Texture>(file));
+							valuePtr->get()[i] = std::dynamic_pointer_cast<Texture>(file);
 						}
 					}
 				}
@@ -206,8 +206,8 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 		{
 			const std::vector <std::shared_ptr<Texture>>& getVal = valuePtr->get();
-			int vectorSize = getVal.size();
-			for (int vIndex = 0; vIndex < vectorSize; vIndex++)
+			size_t vectorSize = getVal.size();
+			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 			{
 				if (getVal.at(vIndex))
 					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;

@@ -5,6 +5,6 @@
 class StringTagFinder
 {
 public:
-	static bool FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition);
+	static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition);
 };
 

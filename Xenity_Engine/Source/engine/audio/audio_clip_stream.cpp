@@ -15,8 +15,8 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 
 	// To lower extention
 	std::string lowerExt = file->GetFileExtension().substr(1);
-	int pathSize = lowerExt.size();
-	for (int i = 0; i < pathSize; i++)
+	size_t pathSize = lowerExt.size();
+	for (size_t i = 0; i < pathSize; i++)
 	{
 		lowerExt[i] = tolower(lowerExt[i]);
 	}

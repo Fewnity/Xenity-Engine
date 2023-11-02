@@ -20,7 +20,7 @@ using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileAndPath> ProjectManager::projectFilesIds;
-ProjectDirectory* ProjectManager::projectDirectory = nullptr;
+std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
 std::string ProjectManager::projectName = "";
 std::string ProjectManager::gameName = "";
 std::shared_ptr<Scene> ProjectManager::startScene = nullptr;
@@ -28,17 +28,17 @@ std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded;
-Directory* ProjectManager::projectDirectoryBase = nullptr;
+std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 
-ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directoryToCheck, const std::string& directoryPath)
+std::shared_ptr <ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath)
 {
 	if (!directoryToCheck)
 		return nullptr;
 
-	int dirCount = directoryToCheck->subdirectories.size();
-	for (int i = 0; i < dirCount; i++)
+	size_t dirCount = directoryToCheck->subdirectories.size();
+	for (size_t i = 0; i < dirCount; i++)
 	{
-		ProjectDirectory* subDir = directoryToCheck->subdirectories[i];
+		std::shared_ptr <ProjectDirectory> subDir = directoryToCheck->subdirectories[i];
 		// Check if the sub directory is the directory to find
 		if (subDir->path == directoryPath)
 		{
@@ -47,7 +47,7 @@ ProjectDirectory* ProjectManager::FindProjectDirectory(ProjectDirectory* directo
 		else
 		{
 			// Start recursive to search in the sub directory
-			ProjectDirectory* foundSubDir = FindProjectDirectory(subDir, directoryPath);
+			std::shared_ptr <ProjectDirectory> foundSubDir = FindProjectDirectory(subDir, directoryPath);
 			if (foundSubDir)
 				return foundSubDir;
 		}
@@ -74,10 +74,8 @@ void ProjectManager::FindAllProjectFiles()
 	projectFilesIds.clear();
 	//Get all files of the project
 	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
-	if (projectDirectory)
-		delete projectDirectory;
 
-	projectDirectory = new ProjectDirectory(assetFolderPath);
+	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath);
 
 	std::vector<std::shared_ptr<File>> allFoundFiles;
 	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
@@ -182,7 +180,7 @@ void ProjectManager::FindAllProjectFiles()
 #if defined(EDITOR)
 	// Get all project directories and open one
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
-	ProjectDirectory* lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
+	std::shared_ptr <ProjectDirectory> lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
 	if (lastOpenedDir)
 		Engine::SetCurrentProjectDirectory(lastOpenedDir);
 	else
@@ -196,12 +194,12 @@ void ProjectManager::FindAllProjectFiles()
 	compatibleFiles.clear();
 }
 
-void ProjectManager::CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory)
+void ProjectManager::CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory)
 {
-	int dirCount = projectDirectoryBase->subdirectories.size();
-	for (int i = 0; i < dirCount; i++)
+	size_t dirCount = projectDirectoryBase->subdirectories.size();
+	for (size_t i = 0; i < dirCount; i++)
 	{
-		ProjectDirectory* newDir = new ProjectDirectory(projectDirectoryBase->subdirectories[i]->GetPath());
+		std::shared_ptr <ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath());
 		realProjectDirectory->subdirectories.push_back(newDir);
 		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
 	}
@@ -212,7 +210,7 @@ void ProjectManager::RefreshProjectDirectory()
 	FindAllProjectFiles();
 }
 
-void ProjectManager::FillProjectDirectory(ProjectDirectory* realProjectDirectory)
+void ProjectManager::FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory)
 {
 	realProjectDirectory->files.clear();
 
@@ -239,8 +237,8 @@ FileType ProjectManager::GetFileType(std::string extension)
 	FileType fileType = File_Other;
 
 	// Replace uppercase letters by lowercase letters
-	int extLen = extension.size();
-	for (int i = 1; i < extLen; i++)
+	size_t extLen = extension.size();
+	for (size_t i = 1; i < extLen; i++)
 	{
 		extension[i] = tolower(extension[i]);
 	}
@@ -298,7 +296,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	assetFolderPath = projectPathToLoad + "assets\\";
 	engineAssetsFolderPath = ".\\engine_assets\\";
 
-	projectDirectoryBase = new Directory(assetFolderPath);
+	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 	if (!projectDirectoryBase->CheckIfExist())
 	{
 		return projectLoaded;
@@ -348,9 +346,11 @@ void ProjectManager::UnloadProject()
 	Graphics::SetDefaultValues();
 
 	startScene.reset();
-	delete projectDirectoryBase;
-	projectDirectoryBase = nullptr;
-	delete projectDirectory;
+	//delete projectDirectoryBase;
+	//projectDirectoryBase = nullptr;
+	projectDirectoryBase.reset();
+	projectDirectory.reset();
+	//delete projectDirectory;
 	projectDirectory = nullptr;
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
@@ -492,8 +492,8 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
 			}
 
-			int projectCount = j.size();
-			for (int i = 0; i < projectCount; i++)
+			size_t projectCount = j.size();
+			for (size_t i = 0; i < projectCount; i++)
 			{
 				// Get project informations (name and path)
 				ProjectListItem projectItem;
@@ -509,9 +509,9 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 
 void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
 {
-	int projectSize = projects.size();
+	size_t projectSize = projects.size();
 	json j;
-	for (int i = 0; i < projectSize; i++)
+	for (size_t i = 0; i < projectSize; i++)
 	{
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
@@ -529,7 +529,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, int id)
+std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
@@ -620,11 +620,11 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 
 ProjectDirectory::~ProjectDirectory()
 {
-	int dirCount = subdirectories.size();
+	/*int dirCount = subdirectories.size();
 	for (int i = 0; i < dirCount; i++)
 	{
 		delete subdirectories[i];
-	}
+	}*/
 	subdirectories.clear();
 	Debug::PrintWarning("ProjectDirectory::~ProjectDirectory()");
 }
@@ -633,9 +633,9 @@ std::string ProjectDirectory::GetFolderName()
 {
 	if (path.size() == 0)
 		return "";
-	int textLen = path.size();
+	size_t textLen = path.size();
 
-	int lastSlashPos = path.find_last_of('\\', textLen - 2);
+	size_t lastSlashPos = path.find_last_of('\\', textLen - 2);
 
 	std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
 

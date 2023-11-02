@@ -40,7 +40,7 @@ public:
 	*/
 	std::string GetFolderName();
 	std::string path = "";
-	std::vector<ProjectDirectory*> subdirectories;
+	std::vector<std::shared_ptr<ProjectDirectory>> subdirectories;
 	std::vector<std::shared_ptr<FileReference>> files;
 };
 
@@ -177,23 +177,23 @@ public:
 	*/
 	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
-	static ProjectDirectory* projectDirectory;
+	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
 	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
-	static void FillProjectDirectory(ProjectDirectory* realProjectDirectory);
-	static void CreateProjectDirectories(Directory* projectDirectoryBase, ProjectDirectory* realProjectDirectory);
+	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory);
+	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
 	static void RefreshProjectDirectory();
 	static void FindAllProjectFiles();
 
 	/**
 	* Find and get a project directory from a path and a parent directory
 	*/
-	static ProjectDirectory* FindProjectDirectory(ProjectDirectory* directoryToCheck, const std::string& directoryPath);
-	static Directory* projectDirectoryBase;
+	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
+	static std::shared_ptr <Directory> projectDirectoryBase;
 	static FileType GetFileType(std::string extension);
 
 private:
-	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, int id);
+	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, uint64_t id);
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 	static bool projectLoaded;
 	static std::string projectName;

@@ -31,7 +31,7 @@ void RigidBody::Tick()
 	if (auto attachedColliderLock = attachedcollider.lock())
 	{
 		int side = NoSide;
-		int colliderCount = PhysicsManager::rigidBodies.size();
+		size_t colliderCount = PhysicsManager::rigidBodies.size();
 		std::shared_ptr<RigidBody> other;
 		for (int i = 0; i < colliderCount; i++)
 		{

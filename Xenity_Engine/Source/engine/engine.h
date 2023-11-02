@@ -126,8 +126,8 @@ public:
 		return isRunning;
 	}
 
-	static void SetCurrentProjectDirectory(ProjectDirectory* dir);
-	static ProjectDirectory* GetCurrentProjectDirectory();
+	static void SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir);
+	static std::shared_ptr <ProjectDirectory> GetCurrentProjectDirectory();
 
 	static std::unique_ptr<GameInterface> game;
 
@@ -147,7 +147,7 @@ public:
 
 private:
 	static std::unique_ptr<Renderer> renderer;
-	static ProjectDirectory* currentProjectDirectory;
+	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 
 	API static void CreateBenchmarks();
 

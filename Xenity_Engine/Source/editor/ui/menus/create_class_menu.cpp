@@ -18,7 +18,7 @@ void CreateClassMenu::Draw()
 		{
 			if (!fileNameChanged)
 			{
-				int classNameSize = className.size();
+				size_t classNameSize = className.size();
 				fileName.clear();
 				for (int i = 0; i < classNameSize; i++)
 				{
@@ -37,7 +37,7 @@ void CreateClassMenu::Draw()
 		if (EditorUI::DrawInput("File name", fileName))
 		{
 			fileNameChanged = true;
-			int fileNameSize = fileName.size();
+			size_t fileNameSize = fileName.size();
 			for (int i = 0; i < fileNameSize; i++)
 			{
 				fileName[i] = std::tolower(fileName[i]);
@@ -54,7 +54,7 @@ void CreateClassMenu::Draw()
 
 			std::string codeData = AssetManager::GetDefaultFileData(FileType::File_Code);
 
-			int codeDataSize = codeData.size();
+			size_t codeDataSize = codeData.size();
 			int beg;
 			int end;
 			for (int i = 0; i < codeDataSize; i++)
@@ -73,8 +73,8 @@ void CreateClassMenu::Draw()
 			}
 
 			std::string headerData = AssetManager::GetDefaultFileData(FileType::File_Header);
-			int headerDataSize = headerData.size();
-			for (int i = 0; i < headerDataSize; i++)
+			size_t headerDataSize = headerData.size();
+			for (size_t i = 0; i < headerDataSize; i++)
 			{
 
 				if (StringTagFinder::FindTag(headerData, i, headerDataSize, "{CLASSNAME}", beg, end))

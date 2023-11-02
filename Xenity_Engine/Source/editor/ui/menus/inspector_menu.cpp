@@ -274,9 +274,9 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (loadedPreview->fileType == File_Audio) // Draw audio preview
 		{
-			int playedSoundCount = AudioManager::channel->playedSounds.size();
+			size_t playedSoundCount = AudioManager::channel->playedSounds.size();
 			AudioClipStream* stream = nullptr;
-			for (int i = 0; i < playedSoundCount; i++)
+			for (size_t i = 0; i < playedSoundCount; i++)
 			{
 				if (AudioManager::channel->playedSounds[i]->audioSource == Editor::audioSource.lock())
 				{
@@ -326,8 +326,8 @@ void InspectorMenu::DrawFilePreview()
 			if (stream)
 			{
 				// Get audio stream info
-				float seekPos = stream->GetSeekPosition() / (double)stream->GetSampleCount();
-				float totalTime = stream->GetSampleCount() / (double)stream->GetFrequency();
+				float seekPos = (float)(stream->GetSeekPosition() / (double)stream->GetSampleCount());
+				float totalTime = (float)(stream->GetSampleCount() / (double)stream->GetFrequency());
 
 				// Draw current time
 				availSize = ImGui::GetContentRegionAvail();
@@ -343,7 +343,7 @@ void InspectorMenu::DrawFilePreview()
 
 				// Move cursor when user is clicking on the timeline
 				float normalisedPos = ((mousePos.x - windowPos.x - cursorPos.x) / (float)(availSize.x));
-				int mouseYPos = mousePos.y - windowPos.y;
+				float mouseYPos = mousePos.y - windowPos.y;
 				bool isMouseXPosOk = normalisedPos >= 0 && normalisedPos <= 1;
 				bool isMouseYPosOk = mouseYPos >= cursorPos.y && mouseYPos <= cursorPos.y + 50;
 
@@ -353,7 +353,7 @@ void InspectorMenu::DrawFilePreview()
 						normalisedPos = 0;
 					else if (normalisedPos > 1)
 						normalisedPos = 1;
-					stream->SetSeek(stream->GetSampleCount() * normalisedPos);
+					stream->SetSeek((uint64_t)(stream->GetSampleCount() * normalisedPos));
 				}
 
 				// Draw audio cursor

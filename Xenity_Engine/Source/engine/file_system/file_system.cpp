@@ -27,15 +27,15 @@ File::File(std::string _path) : UniqueId(true)
 	_path = PSVITA_BASE_DIR + _path;
 #endif
 	this->path = _path;
-	int pointIndex = path.find_last_of('.');
+	size_t pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 
 
 
 	// Remove all folders from path
 	int finalPos = 0;
-	int lastSlashPos = path.find_last_of('\\');
-	int lastSlashPos2 = path.find_last_of('/');
+	int lastSlashPos = (int)path.find_last_of('\\');
+	int lastSlashPos2 = (int)path.find_last_of('/');
 
 	if (lastSlashPos != -1 || lastSlashPos2 != -1)
 	{
@@ -48,12 +48,10 @@ File::File(std::string _path) : UniqueId(true)
 	std::string fileName = path.substr(finalPos);
 
 	// Remove file extension from path
-	int nextPointPos = fileName.find_first_of('.');
+	int nextPointPos = (int)fileName.find_first_of('.');
 	if (nextPointPos == -1)
 		nextPointPos = INT32_MAX;
 	name = fileName.substr(0, nextPointPos);
-
-	//return fileName;
 }
 
 File::~File()
@@ -246,7 +244,7 @@ std::string File::GetFolderPath() const
 	if (path.size() == 0)
 		return "";
 
-	int lastSlashPos = path.find_last_of('\\');
+	int lastSlashPos = (int)path.find_last_of('\\');
 	if (lastSlashPos == -1)
 		lastSlashPos = 0;
 #if defined(__vita__)
@@ -303,16 +301,16 @@ Directory::Directory(std::string _path) : UniqueId(true)
 
 Directory::~Directory()
 {
-	int subDirCount = (int)subdirectories.size();
-	for (int i = 0; i < subDirCount; i++)
-	{
-		delete subdirectories[i];
-	}
+	//int subDirCount = (int)subdirectories.size();
+	//for (int i = 0; i < subDirCount; i++)
+	//{
+	//	delete subdirectories[i];
+	//}
 	subdirectories.clear();
 	files.clear();
 }
 
-void AddDirectoryFiles(std::vector<std::shared_ptr<File>>& vector, Directory* directory)
+void AddDirectoryFiles(std::vector<std::shared_ptr<File>>& vector, std::shared_ptr <Directory> directory)
 {
 	int fileCount = (int)directory->files.size();
 	for (int i = 0; i < fileCount; i++)
@@ -329,9 +327,9 @@ void AddDirectoryFiles(std::vector<std::shared_ptr<File>>& vector, Directory* di
 
 std::vector<std::shared_ptr<File>> Directory::GetAllFiles(bool recursive)
 {
-	FileSystem::fileSystem->FillDirectory(this, recursive);
+	FileSystem::fileSystem->FillDirectory(shared_from_this(), recursive);
 	std::vector<std::shared_ptr<File>> vector;
-	AddDirectoryFiles(vector, this);
+	AddDirectoryFiles(vector, shared_from_this());
 	return vector;
 }
 
@@ -354,13 +352,13 @@ bool Directory::CheckIfExist()
 	return exists;
 }
 
-void FileSystem::FillDirectory(Directory* directory, bool recursive)
+void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recursive)
 {
-	int directorySubDirectoryCount = directory->subdirectories.size();
-	for (int i = 0; i < directorySubDirectoryCount; i++)
-	{
-		delete directory->subdirectories[i];
-	}
+	//int directorySubDirectoryCount = directory->subdirectories.size();
+	//for (int i = 0; i < directorySubDirectoryCount; i++)
+	//{
+	//	delete directory->subdirectories[i];
+	//}
 	directory->files.clear();
 	directory->subdirectories.clear();
 	if (!directory->CheckIfExist())
@@ -402,18 +400,18 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 		}
 		else if (S_ISDIR(statbuf.st_mode)) // If the entry is a folder
 		{
-			Directory* newDirectory = nullptr;
+			std::shared_ptr <Directory> newDirectory = nullptr;
 			try
 			{
-				newDirectory = new Directory(fullPath + "\\");
+				newDirectory = std::make_shared<Directory>(fullPath + "\\");
 				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception&)
 			{
-				if (newDirectory != nullptr)
-					delete newDirectory;
+				/*if (newDirectory != nullptr)
+					delete newDirectory;*/
 			}
 		}
 	}
@@ -423,22 +421,22 @@ void FileSystem::FillDirectory(Directory* directory, bool recursive)
 	{
 		if (file.is_directory())
 		{
-			Directory* newDirectory = nullptr;
+			std::shared_ptr <Directory> newDirectory = nullptr;
 			try
 			{
 				std::string path = file.path().string();
 #if defined(__vita__)
 				path = path.substr(4);
 #endif
-				newDirectory = new Directory(path + "\\");
+				newDirectory = std::make_shared<Directory>(path + "\\");
 				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
 			catch (const std::exception&)
 			{
-				if (newDirectory != nullptr)
-					delete newDirectory;
+				/*if (newDirectory != nullptr)
+					delete newDirectory;*/
 			}
 		}
 		else if (file.is_regular_file())
@@ -483,8 +481,8 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 {
 	std::shared_ptr<File> file;
 
-	int fileCount = files.size();
-	for (int i = 0; i < fileCount; i++)
+	size_t fileCount = files.size();
+	for (size_t i = 0; i < fileCount; i++)
 	{
 		if (files[i]->GetPath() == path)
 		{

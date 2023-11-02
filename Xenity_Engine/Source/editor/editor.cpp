@@ -276,8 +276,8 @@ void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicat
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 
 		// Duplicate all components
-		int componentCount = goToDuplicate->components.size();
-		for (int i = 0; i < componentCount; i++)
+		size_t componentCount = goToDuplicate->components.size();
+		for (size_t i = 0; i < componentCount; i++)
 		{
 			std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
 			auto newReflection = newComponent->GetReflection();

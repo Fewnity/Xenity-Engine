@@ -1,6 +1,6 @@
 #include "string_tag_finder.h"
 
-bool StringTagFinder::FindTag(const std::string& textToSearchIn, const int index, const int textSize, const std::string& textToFind, int& startPosition, int& endPosition)
+bool StringTagFinder::FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition)
 {
 	bool found = false;
 	int textToFindSize = textToFind.size();

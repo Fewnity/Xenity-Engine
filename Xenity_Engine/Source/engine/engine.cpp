@@ -43,7 +43,7 @@
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
 
-ProjectDirectory* Engine::currentProjectDirectory = nullptr;
+std::shared_ptr <ProjectDirectory> Engine::currentProjectDirectory = nullptr;
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -319,7 +319,7 @@ void Engine::RegisterEngineComponents()
 		{ return go->AddComponent<BoxCollider>(); });
 }
 
-void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
+void Engine::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
 {
 	if (currentProjectDirectory)
 		currentProjectDirectory->files.clear();
@@ -327,15 +327,15 @@ void Engine::SetCurrentProjectDirectory(ProjectDirectory* dir)
 	if (currentProjectDirectory)
 	{
 		ProjectManager::FillProjectDirectory(currentProjectDirectory);
-		int itemCount = currentProjectDirectory->files.size();
-		for (int i = 0; i < itemCount; i++)
+		size_t itemCount = currentProjectDirectory->files.size();
+		for (size_t i = 0; i < itemCount; i++)
 		{
 			currentProjectDirectory->files[i]->LoadFileReference();
 		}
 	}
 }
 
-ProjectDirectory* Engine::GetCurrentProjectDirectory()
+std::shared_ptr <ProjectDirectory> Engine::GetCurrentProjectDirectory()
 {
 	return currentProjectDirectory;
 }
@@ -393,8 +393,8 @@ void Engine::RemoveComponentReferences(const std::shared_ptr <Component>& compon
 		}
 		else if (auto camera = std::dynamic_pointer_cast<Camera>(component))
 		{
-			int cameraCount = Graphics::cameras.size();
-			for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+			size_t cameraCount = Graphics::cameras.size();
+			for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 			{
 				auto cam = Graphics::cameras[cameraIndex].lock();
 				if (cam && cam == camera)
@@ -429,8 +429,8 @@ void Engine::RemoveUnusedFiles()
 void Engine::FinishThreadedFileLoading()
 {
 	threadLoadingMutex.lock();
-	int threadFileCount = threadLoadedFiles.size();
-	for (int i = 0; i < threadFileCount; i++)
+	size_t threadFileCount = threadLoadedFiles.size();
+	for (size_t i = 0; i < threadFileCount; i++)
 	{
 		if (!threadLoadedFiles[i]->isLoading)
 		{

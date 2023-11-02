@@ -12,7 +12,7 @@ class FileExplorerItem
 {
 public:
 	std::shared_ptr<FileReference> file = nullptr;
-	ProjectDirectory* directory = nullptr;
+	std::shared_ptr <ProjectDirectory> directory = nullptr;
 };
 
 class FileExplorerMenu : public Menu
@@ -21,9 +21,9 @@ public:
 	void Init() override;
 	void Draw() override;
 private:
-	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, int offset, FileExplorerItem& item, int itemIndex);
+	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, float offset, FileExplorerItem& item, int itemIndex);
 	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex);
-	void CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, int iconSize, const std::string& itemName);
+	void CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName);
 
 	std::shared_ptr<Texture> GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile);
 
@@ -32,7 +32,7 @@ private:
 	std::string renamingString = "";
 
 	std::shared_ptr<FileReference> fileToRename = nullptr;
-	ProjectDirectory* directoryToRename = nullptr;
+	std::shared_ptr<ProjectDirectory> directoryToRename = nullptr;
 	bool ignoreClose = false;
 	bool focusSet = false;
 	void Rename();

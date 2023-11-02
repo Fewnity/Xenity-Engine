@@ -215,13 +215,13 @@ std::string EditorUI::SaveFileDialog(const std::string& title)
 						std::wstring fileExtChoosed = fileTypes[fileTypeIndex].pszSpec;
 						fileExtChoosed = fileExtChoosed.substr(1);
 
-						int pathSize = wst.size();
-						int extSize = fileExtChoosed.size();
+						size_t pathSize = wst.size();
+						size_t extSize = fileExtChoosed.size();
 
 						std::wstring endOfTheFile = wst.substr(pathSize - extSize);
 
 						bool foundExt = true;
-						for (int i2 = 0; i2 < extSize; i2++)
+						for (size_t i2 = 0; i2 < extSize; i2++)
 						{
 							if (endOfTheFile[i2] != fileExtChoosed[i2])
 							{

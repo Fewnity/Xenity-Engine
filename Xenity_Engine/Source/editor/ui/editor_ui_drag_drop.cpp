@@ -49,9 +49,9 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 		}
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
 		{
-			int compCount = EditorUI::multiDragData.components.size();
+			size_t compCount = EditorUI::multiDragData.components.size();
 
-			for (int i = 0; i < compCount; i++)
+			for (size_t i = 0; i < compCount; i++)
 			{
 				if (typeid(*EditorUI::multiDragData.components[i]).hash_code() == typeId)
 				{

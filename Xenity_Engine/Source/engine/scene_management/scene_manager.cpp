@@ -208,18 +208,18 @@ void SceneManager::LoadScene(const json& jsonData)
 		if (GameplayManager::GetGameState() == Starting)
 		{
 			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
-			int componentsCount = allComponents.size();
+			size_t componentsCount = allComponents.size();
 			int componentsToInitCount = 0;
 
 			// Find uninitiated components and order them
-			for (int i = 0; i < componentsCount; i++)
+			for (size_t i = 0; i < componentsCount; i++)
 			{
-				if (auto componentToCheck = allComponents[i])
+				if (auto& componentToCheck = allComponents[i])
 				{
 					if (!componentToCheck->initiated)
 					{
 						bool placeFound = false;
-						for (int componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
+						for (size_t componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 						{
 							// Check if the checked has a higher priority (lower value) than the component in the list
 							if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
@@ -297,8 +297,8 @@ void SceneManager::ClearScene()
 {
 	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();
-	int cameraCount = Graphics::cameras.size();
-	for (int i = 0; i < cameraCount; i++)
+	size_t cameraCount = Graphics::cameras.size();
+	for (size_t i = 0; i < cameraCount; i++)
 	{
 		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->isEditor)
 		{

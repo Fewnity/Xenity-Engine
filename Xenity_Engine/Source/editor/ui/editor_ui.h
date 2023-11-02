@@ -61,7 +61,7 @@ public:
 	static void Draw();
 	static void NewFrame();
 	static void Render();
-	static void SetRoundedCorner(int value);
+	static void SetRoundedCorner(float value);
 
 	static std::string GetPrettyVariableName(std::string variableName);
 
@@ -90,7 +90,7 @@ public:
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child);
-	static bool DrawTreeItem(ProjectDirectory* projectDir);
+	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);

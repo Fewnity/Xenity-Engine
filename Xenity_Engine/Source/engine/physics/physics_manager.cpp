@@ -11,7 +11,7 @@ void PhysicsManager::Init()
 
 void PhysicsManager::Update()
 {
-	int colliderCount = rigidBodies.size();
+	size_t colliderCount = rigidBodies.size();
 	for (int i = 0; i < colliderCount; i++)
 	{
 		if (!rigidBodies[i].lock())

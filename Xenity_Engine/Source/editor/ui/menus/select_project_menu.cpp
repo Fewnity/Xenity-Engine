@@ -57,8 +57,8 @@ void SelectProjectMenu::Draw()
 				{
 					// Check if the project is already in the opened projects list
 					bool projectAlreadyInList = false;
-					int projectsCount = projectsList.size();
-					for (int i = 0; i < projectsCount; i++)
+					size_t projectsCount = projectsList.size();
+					for (size_t i = 0; i < projectsCount; i++)
 					{
 						if (projectsList[i].path == projectPath)
 						{
@@ -88,8 +88,8 @@ void SelectProjectMenu::Draw()
 			}
 		}
 		ImGui::Separator();
-		int projectCount = projectsList.size();
-		for (int i = 0; i < projectCount; i++)
+		size_t projectCount = projectsList.size();
+		for (size_t i = 0; i < projectCount; i++)
 		{
 			ImGui::BeginGroup();
 			ImGui::Text(projectsList[i].name.c_str());

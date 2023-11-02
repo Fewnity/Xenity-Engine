@@ -58,8 +58,8 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 	Debug::Print(std::to_string(r7));*/
 	std::string compileFolderPath = exportPath;
 	compileFolderPath = compileFolderPath.erase(1, 1);
-	int pathSize = compileFolderPath.size();
-	for (int i = 0; i < pathSize; i++)
+	size_t pathSize = compileFolderPath.size();
+	for (size_t i = 0; i < pathSize; i++)
 	{
 		if (compileFolderPath[i] == '\\')
 		{

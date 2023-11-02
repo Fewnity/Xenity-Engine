@@ -125,10 +125,10 @@ void Graphics::Draw()
 
 	Engine::GetRenderer().NewFrame();
 
-	int cameraCount = cameras.size();
+	size_t cameraCount = cameras.size();
 	int matCount = AssetManager::GetMaterialCount();
 
-	for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex].lock();
 		//auto camera = usedCamera.lock();
@@ -188,18 +188,18 @@ void Graphics::Draw()
 				drawable->Draw();
 			}*/
 
-			int noTransCount = noTransparentDrawable.size();
-			int transCount = transparentDrawable.size();
-			int spriteCount = spriteDrawable.size();
-			int uiCount = uiDrawable.size();
+			size_t noTransCount = noTransparentDrawable.size();
+			size_t transCount = transparentDrawable.size();
+			size_t spriteCount = spriteDrawable.size();
+			size_t uiCount = uiDrawable.size();
 			
-			for (int drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
+			for (size_t drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
 			currentMode = Draw_2D;
-			for (int drawableIndex = 0; drawableIndex < spriteCount; drawableIndex++)
+			for (size_t drawableIndex = 0; drawableIndex < spriteCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
 				drawable->Draw();
@@ -210,7 +210,7 @@ void Graphics::Draw()
 				Engine::GetRenderer().ResetView();
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 			}
-			for (int drawableIndex = 0; drawableIndex < uiCount; drawableIndex++)
+			for (size_t drawableIndex = 0; drawableIndex < uiCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = uiDrawable[drawableIndex].lock();
 				drawable->Draw();

@@ -15,7 +15,7 @@
 #include <ShObjIdl.h>
 #include "../../engine/graphics/skybox.h"
 
-bool EditorUI::DrawTreeItem(ProjectDirectory* projectDir)
+bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {
 	bool objectClicked = false;
 	if (projectDir)

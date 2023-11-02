@@ -9,10 +9,10 @@ void GameMenu::Init()
 void GameMenu::Draw()
 {
 	windowSize = Vector2Int(0, 0);
-	int cameraCount = Graphics::cameras.size();
+	size_t cameraCount = Graphics::cameras.size();
 	std::shared_ptr<Camera> camera;
 	Vector2Int frameBufferSize;
-	for (int i = 0; i < cameraCount; i++)
+	for (size_t i = 0; i < cameraCount; i++)
 	{
 		if (!Graphics::cameras[i].lock()->isEditor)
 		{
@@ -44,9 +44,9 @@ void GameMenu::Draw()
 		ImVec2 size = ImGui::GetContentRegionAvail();
 		if (camera)
 		{
-			camera->ChangeFrameBufferSize(Vector2Int(size.x, size.y));
+			camera->ChangeFrameBufferSize(Vector2Int((int)size.x, (int)size.y));
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
-			windowSize = Vector2Int(size.x, size.y);
+			windowSize = Vector2Int((int)size.x, (int)size.y);
 			if (ImGui::IsItemHovered())
 			{
 				isHovered = true;
@@ -77,8 +77,8 @@ void GameMenu::Draw()
 			ImGui::PopFont();
 		}
 
-		windowPosition = Vector2Int(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-		mousePosition = Vector2Int(ImGui::GetMousePos().x, ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y));
+		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
+		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();

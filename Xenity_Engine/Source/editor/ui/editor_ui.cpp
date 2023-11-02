@@ -147,9 +147,9 @@ void EditorUI::Draw()
 std::string EditorUI::GetPrettyVariableName(std::string variableName)
 {
 	variableName[0] = toupper(variableName[0]);
-	int nameSize = variableName.size();
+	size_t nameSize = variableName.size();
 	bool addSpace = false;
-	for (int i = 1; i < nameSize - 1; i++)
+	for (size_t i = 1; i < nameSize - 1; i++)
 	{
 		if (isupper(variableName[i]))
 		{
@@ -230,7 +230,7 @@ void EditorUI::Render()
 	}
 }
 
-void EditorUI::SetRoundedCorner(int value)
+void EditorUI::SetRoundedCorner(float value)
 {
 	ImGui::GetStyle().WindowRounding = value;
 }

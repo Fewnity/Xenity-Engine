@@ -56,7 +56,7 @@ public:
 	* Get all files of a directory and fill it
 	* @param directory Directory to fill
 	*/
-	void FillDirectory(Directory* directory, bool recursive);
+	void FillDirectory(std::shared_ptr <Directory> directory, bool recursive);
 
 	bool Rename(const std::string& path, const std::string& newPath);
 
@@ -143,7 +143,7 @@ private:
 #endif
 };
 
-class API Directory : public UniqueId
+class API Directory : public UniqueId, public std::enable_shared_from_this<Directory>
 {
 public:
 	Directory() = delete;
@@ -159,7 +159,7 @@ public:
 	* Check if the directory exists
 	*/
 	bool CheckIfExist();
-	std::vector<Directory*> subdirectories;
+	std::vector<std::shared_ptr<Directory>> subdirectories;
 	std::vector<std::shared_ptr<File>> files;
 
 	/**
