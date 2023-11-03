@@ -24,22 +24,6 @@
 Texture::Texture()
 {
 }
-//
-//Texture::Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
-//{
-//	// this->textureId = textureId;
-//	this->nrChannels = channelCount;
-//	this->width = width;
-//	this->height = height;
-//	this->inVram = loadInVram;
-//
-//	useMipMap = false;
-//	if (data != nullptr)
-//	{
-//		//SetData(data);
-//		isValid = true;
-//	}
-//}
 
 std::unordered_map<std::string, ReflectionEntry> Texture::GetReflection()
 {
@@ -64,14 +48,6 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 	AssetManager::AddFileReference(newTexture);
 	return newTexture;
 }
-
-//std::shared_ptr<Texture> Texture::MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram)
-//{
-//	std::shared_ptr<Texture> newTexture;
-//	//std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(data, channelCount, width, height, loadInVram);
-//	//AssetManager::AddFileReference(newTexture);
-//	return newTexture;
-//}
 
 Texture::~Texture()
 {

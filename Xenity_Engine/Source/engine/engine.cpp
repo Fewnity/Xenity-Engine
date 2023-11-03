@@ -210,7 +210,7 @@ void Engine::Loop()
 		return;
 	}
 #endif
-
+	Time::UpdateTime();
 	canUpdateAudio = true;
 	while (isRunning)
 	{

@@ -99,7 +99,7 @@ int Window::Init()
 	}
 
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
-	SDL_GL_SetSwapInterval(0);
+	SDL_GL_SetSwapInterval(1);
 	OnResize();
 
 	//Set dark title bar

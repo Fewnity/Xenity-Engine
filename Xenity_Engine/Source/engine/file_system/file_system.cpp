@@ -30,8 +30,6 @@ File::File(std::string _path) : UniqueId(true)
 	size_t pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 
-
-
 	// Remove all folders from path
 	int finalPos = 0;
 	int lastSlashPos = (int)path.find_last_of('\\');
@@ -56,14 +54,7 @@ File::File(std::string _path) : UniqueId(true)
 
 File::~File()
 {
-#if defined(__PSP__)
-	if (fileId >= 0)
-	{
-		sceIoClose(fileId);
-	}
-#else
 	Close();
-#endif
 }
 
 void File::Write(const std::string& data)
@@ -100,9 +91,11 @@ unsigned char* File::ReadAllBinary(int& size)
 		data = new char[file_stat.st_size + 1];
 		sceIoRead(fileId, data, file_stat.st_size);
 		size = file_stat.st_size;
+
+		sceIoClose(fileId);
+		fileId = -1;
 	}
 #else
-
 	file.seekg(0, std::ios_base::end);
 	int pos = file.tellg();
 	file.seekg(0, std::ios_base::beg);

@@ -132,7 +132,7 @@ void Debug::PrintInOnlineConsole(const std::string& text)
 void Debug::ConnectToOnlineConsole()
 {
 	Debug::Print("Connect to online console...");
-	socket = NetworkManager::CreateSocket("88.127.205.17", 6004);
+	socket = NetworkManager::CreateSocket("", 6004);
 }
 
 /**

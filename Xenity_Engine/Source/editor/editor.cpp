@@ -83,8 +83,8 @@ void Editor::Update()
 		// Rotate the camera when dragging the mouse right click
 		if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
 		{
-			rot.x += -InputSystem::mouseSpeed.y * Time::GetDeltaTime() * 20000;
-			rot.y += InputSystem::mouseSpeed.x * Time::GetDeltaTime() * 20000;
+			rot.x += -InputSystem::mouseSpeed.y * 70;
+			rot.y += InputSystem::mouseSpeed.x * 70;
 		}
 
 		// Move the camera when using keyboard's arrows
