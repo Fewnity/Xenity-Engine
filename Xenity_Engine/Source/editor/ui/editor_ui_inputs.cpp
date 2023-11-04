@@ -81,8 +81,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	}
 
 	std::shared_ptr<Component> ref = nullptr;
-	std::string payloadName = "Component" + std::to_string(typeId);
-	if (DragDropTarget(payloadName, ref, typeId))
+	std::string payloadName = "Type" + std::to_string(typeId);
+	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
 	}
@@ -90,7 +90,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId)
 {
 	std::shared_ptr<Collider> oldValue = value.lock();
 
@@ -108,7 +108,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 	}
 
 	std::shared_ptr<Collider> ref = nullptr;
-	std::string payloadName = "Collider";
+	std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -117,7 +117,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId)
 {
 	std::shared_ptr<Transform> oldValue = value.lock();
 
@@ -135,7 +135,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 	}
 
 	std::shared_ptr <Transform> ref = nullptr;
-	std::string payloadName = "Transform";
+	std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -144,7 +144,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value)
+bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId)
 {
 	std::shared_ptr<GameObject> oldValue = value.lock();
 
@@ -162,7 +162,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	}
 
 	std::shared_ptr <GameObject> ref = nullptr;
-	std::string payloadName = "GameObject";
+	std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;

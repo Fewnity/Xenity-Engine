@@ -87,7 +87,8 @@ void InspectorMenu::Draw()
 				std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{
-					std::string payloadName = "Transform";
+					std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
+					std::string payloadName = "Type" + typeId;
 					ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
 					ImGui::Text("Transform");
 					ImGui::EndDragDropSource();
@@ -151,7 +152,7 @@ void InspectorMenu::Draw()
 						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 						{
 							std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
-							std::string payloadName = "Component" + typeId;
+							std::string payloadName = "Type" + typeId;
 							ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
 							ImGui::Text("%s", comp->GetComponentName().c_str());
 							ImGui::EndDragDropSource();

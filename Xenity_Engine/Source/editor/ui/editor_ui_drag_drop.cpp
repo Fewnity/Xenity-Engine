@@ -37,7 +37,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, uint64_t typeId)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -53,7 +53,8 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 
 			for (size_t i = 0; i < compCount; i++)
 			{
-				if (typeid(*EditorUI::multiDragData.components[i]).hash_code() == typeId)
+				uint64_t id = typeid(*EditorUI::multiDragData.components[i]).hash_code();
+				if ("Type" + std::to_string(typeid(*EditorUI::multiDragData.components[i]).hash_code()) == name)
 				{
 					comp = EditorUI::multiDragData.components[i];
 					break;
@@ -119,7 +120,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObjec
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const  std::string& name, std::shared_ptr<Transform>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref)
 {
 	if (ImGui::BeginDragDropTarget())
 	{

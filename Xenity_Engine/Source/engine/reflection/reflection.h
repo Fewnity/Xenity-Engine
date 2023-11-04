@@ -51,7 +51,18 @@ typedef std::variant<
 	std::reference_wrapper<std::shared_ptr<Font>>,
 	std::reference_wrapper<std::shared_ptr<Shader>>,
 	std::reference_wrapper<std::shared_ptr<Material>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>> Variable;
+	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Font>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Material>>>,
+
+	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
+	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
+	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> Variable;
 
 class API ReflectionEntry
 {
@@ -91,7 +102,14 @@ public:
 	static void AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, std::weak_ptr<T>& value, const std::string& variableName, bool isPublic)
 	{
 		uint64_t type = typeid(T).hash_code();
-		Reflection::AddReflectionVariable(map, (std::weak_ptr<Component>&)value, variableName,false, isPublic, type);
+		Reflection::AddReflectionVariable(map, (std::weak_ptr<Component>&)value, variableName, false, isPublic, type);
+	}
+
+	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
+	static void AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, bool isPublic)
+	{
+		uint64_t type = typeid(T).hash_code();
+		Reflection::AddReflectionVariable(map, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type);
 	}
 
 	template<typename T>

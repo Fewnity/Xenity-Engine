@@ -12,6 +12,14 @@
 #include "graphics/color/color.h"
 
 class MeshRenderer;
+class Texture;
+class MeshData;
+class AudioClip;
+class Scene;
+class SkyBox;
+class Font;
+class Shader;
+class Material;
 
 class CustomClass : public Reflection
 {
@@ -49,6 +57,20 @@ public:
 	Vector4 vec4 = Vector4(0);
 
 	Color color;
+	std::shared_ptr <SkyBox> skyBox;
+
+	std::vector <std::shared_ptr<Texture>> textures;
+	std::vector <std::shared_ptr<MeshData>> meshData;
+	std::vector <std::shared_ptr<AudioClip>> audioClips;
+	std::vector <std::shared_ptr<Scene>> scenes;
+	std::vector <std::shared_ptr<SkyBox>> skyBoxes;
+	std::vector <std::shared_ptr<Font>> fonts;
+	std::vector <std::shared_ptr<Shader>> shaders;
+	std::vector <std::shared_ptr<Material>> materials;
+
+	std::vector <std::weak_ptr<MeshRenderer>> myComponents;
+	std::vector <std::weak_ptr<GameObject>> myGameObjects;
+	std::vector <std::weak_ptr<Transform>> myTransforms;
 
 	float myFloat = 0;
 	int myInt = 0;

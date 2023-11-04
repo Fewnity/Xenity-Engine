@@ -39,11 +39,11 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
 				valueChangedTemp = DrawInput(variableName, valuePtr->get(), reflectionEntry.typeId);
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Collider>>>(&variableRef)) // Supported basic type
-				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+				valueChangedTemp = DrawInput(variableName, valuePtr->get(), reflectionEntry.typeId);
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
-				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+				valueChangedTemp = DrawInput(variableName, valuePtr->get(), reflectionEntry.typeId);
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
-				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+				valueChangedTemp = DrawInput(variableName, valuePtr->get(), reflectionEntry.typeId);
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
 			{
 				if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
@@ -79,6 +79,10 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 			{
 				DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
+			{
+				DrawFileReference(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
+			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
 			{
 				DrawFileReference(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
@@ -89,57 +93,49 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
-				size_t vectorSize = valuePtr->get().size();
-				std::string tempVariableName = variableName;
-				bool firstDraw = true;
-				for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
-				{
-					std::string inputText = "None (Texture)";
-					const auto& ptr = valuePtr->get()[vectorI];
-					if (ptr != nullptr)
-					{
-						if (ptr->file != nullptr)
-							inputText = ptr->file->GetFileName();
-						else
-							inputText = "Filled but invalid file reference (Texture)";
-
-						inputText += " " + std::to_string(ptr->fileId) + " ";
-						if (ptr->file)
-							inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-					}
-
-					if (DrawInputButton(tempVariableName, inputText, true) == 2)
-					{
-						valuePtr->get()[vectorI] = nullptr;
-					}
-
-					if (firstDraw)
-					{
-						tempVariableName.clear();
-						firstDraw = false;
-					}
-
-					std::shared_ptr <FileReference> ref = nullptr;
-					std::string payloadName = "Files" + std::to_string(FileType::File_Texture);
-					if (DragDropTarget(payloadName, ref))
-					{
-						valuePtr->get()[vectorI] = std::dynamic_pointer_cast<Texture>(ref);
-						valueChangedTemp = true;
-					}
-				}
-				if (ImGui::Button("Add Texture"))
-				{
-					valuePtr->get().push_back(nullptr);
-				}
-				if (ImGui::Button("Remove Texture"))
-				{
-					size_t textureSize = valuePtr->get().size();
-					if (textureSize != 0)
-					{
-						valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
-					}
-				}
+				DrawVector(true, "Texture", valuePtr, valueChangedTemp, variableName, FileType::File_Texture);
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
+			{
+				DrawVector(true, "MeshData", valuePtr, valueChangedTemp, variableName, FileType::File_Mesh);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
+			{
+				DrawVector(true, "AudioClip", valuePtr, valueChangedTemp, variableName, FileType::File_Audio);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
+			{
+				DrawVector(true, "Scene", valuePtr, valueChangedTemp, variableName, FileType::File_Scene);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
+			{
+				DrawVector(true, "SkyBox", valuePtr, valueChangedTemp, variableName, FileType::File_Skybox);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
+			{
+				DrawVector(true, "Font", valuePtr, valueChangedTemp, variableName, FileType::File_Font);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
+			{
+				DrawVector(true, "Shader", valuePtr, valueChangedTemp, variableName, FileType::File_Shader);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
+			{
+				DrawVector(true, "Material", valuePtr, valueChangedTemp, variableName, FileType::File_Material);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
+			{
+				DrawVector("Transform", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
+			{
+				DrawVector("GameObject", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
+			{
+				DrawVector("Component", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+			}
+
 			if (valueChangedTemp)
 			{
 				valueChanged = true;

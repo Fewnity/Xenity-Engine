@@ -39,6 +39,21 @@ std::unordered_map<std::string, ReflectionEntry> TestComponent::GetReflection()
 	Reflection::AddVariable(reflectedVariables, myDouble, "myDouble", true);
 	Reflection::AddVariable(reflectedVariables, myString, "myString", true);
 
+	Reflection::AddVariable(reflectedVariables, skyBox, "skyBox", true);
+
+	Reflection::AddVariable(reflectedVariables, textures, "textures", true);
+	Reflection::AddVariable(reflectedVariables, meshData, "meshData", true);
+	Reflection::AddVariable(reflectedVariables, audioClips, "audioClips", true);
+	Reflection::AddVariable(reflectedVariables, scenes, "scenes", true);
+	Reflection::AddVariable(reflectedVariables, skyBoxes, "skyBoxes", true);
+	Reflection::AddVariable(reflectedVariables, fonts, "fonts", true);
+	Reflection::AddVariable(reflectedVariables, shaders, "shaders", true);
+	Reflection::AddVariable(reflectedVariables, materials, "materials", true);
+
+	Reflection::AddVariable(reflectedVariables, myComponents, "myComponents", true);
+	Reflection::AddVariable(reflectedVariables, myGameObjects, "myGameObjects", true);
+	Reflection::AddVariable(reflectedVariables, myTransforms, "myTransforms", true);
+
 	return reflectedVariables;
 }
 

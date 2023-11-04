@@ -5,6 +5,10 @@
 #include <memory>
 #include "../../engine/reflection/reflection.h"
 #include "../../engine/file_system/file_reference.h"
+#include "../../engine/component.h"
+#include "../../engine/game_elements/gameobject.h"
+#include "../../engine/game_elements/transform.h"
+#include <imgui/imgui.h>
 
 class GameObject;
 class Vector2;
@@ -68,7 +72,7 @@ public:
 	static void DrawTextCentered(const std::string& text);
 	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, uint64_t typeId);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
@@ -84,9 +88,9 @@ public:
 	static bool DrawInput(const std::string& inputName, int& value);
 	static bool DrawInput(const std::string& inputName, bool& value);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child);
@@ -146,6 +150,189 @@ public:
 		}
 	}
 
+	template <typename T>
+	static void DrawVector(bool isFileReference, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	{
+		size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			std::string inputText = "None (" + className + ")";
+			const auto& ptr = valuePtr->get()[vectorI];
+			if (ptr != nullptr)
+			{
+				if (ptr->file != nullptr)
+					inputText = ptr->file->GetFileName();
+				else
+					inputText = "Filled but invalid " + className;
+
+				inputText += " " + std::to_string(ptr->fileId) + " ";
+				if (ptr->file)
+					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			}
+
+			if (DrawInputButton("", inputText, true) == 2)
+			{
+				valuePtr->get()[vectorI] = nullptr;
+			}
+
+			std::shared_ptr <FileReference> ref = nullptr;
+			std::string payloadName = "Files" + std::to_string(dragdropId);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
+				valueChangedTemp = true;
+			}
+		}
+
+		std::string addText = "Add " + className + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(nullptr);
+		}
+
+		std::string removeText = "Remove " + className + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			size_t textureSize = valuePtr->get().size();
+			if (textureSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+			}
+		}
+	}
+
+	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	{
+		size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			std::string inputText = "None (" + className + ")";
+			const auto& ptr = valuePtr->get()[vectorI].lock();
+			if (ptr != nullptr)
+			{
+				inputText = ptr->GetGameObject()->name;
+			}
+
+			if (DrawInputButton("", inputText, true) == 2)
+			{
+				valuePtr->get()[vectorI] = std::weak_ptr<Transform>();
+			}
+
+			std::shared_ptr <Transform> ref = nullptr;
+			std::string payloadName = "Type" + std::to_string(dragdropId);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get()[vectorI] = ref;
+				valueChangedTemp = true;
+			}
+		}
+
+		std::string addText = "Add " + className + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(std::weak_ptr<Transform>());
+		}
+
+		std::string removeText = "Remove " + className + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			size_t textureSize = valuePtr->get().size();
+			if (textureSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+			}
+		}
+	}
+
+	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Component>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	{
+		size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			std::string inputText = "None (" + className + ")";
+			const auto& ptr = valuePtr->get()[vectorI].lock();
+			if (ptr != nullptr)
+			{
+				inputText = ptr->GetGameObject()->name;
+			}
+
+			if (DrawInputButton("", inputText, true) == 2)
+			{
+				valuePtr->get()[vectorI] = std::weak_ptr<Component>();
+			}
+
+			std::shared_ptr <Component> ref = nullptr;
+			std::string payloadName = "Type" + std::to_string(dragdropId);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get()[vectorI] = ref;
+				valueChangedTemp = true;
+			}
+		}
+
+		std::string addText = "Add " + className + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(std::weak_ptr<Component>());
+		}
+
+		std::string removeText = "Remove " + className + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			size_t textureSize = valuePtr->get().size();
+			if (textureSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+			}
+		}
+	}
+
+	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	{
+		size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			std::string inputText = "None (" + className + ")";
+			const auto& ptr = valuePtr->get()[vectorI].lock();
+			if (ptr != nullptr)
+			{
+				inputText = ptr->name;
+			}
+
+			if (DrawInputButton("", inputText, true) == 2)
+			{
+				valuePtr->get()[vectorI] = std::weak_ptr<GameObject>();
+			}
+
+			std::shared_ptr <GameObject> ref = nullptr;
+			std::string payloadName = "Type" + std::to_string(dragdropId);
+			if (DragDropTarget(payloadName, ref))
+			{
+				valuePtr->get()[vectorI] = ref;
+				valueChangedTemp = true;
+			}
+		}
+
+		std::string addText = "Add " + className + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(std::weak_ptr<GameObject>());
+		}
+
+		std::string removeText = "Remove " + className + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			size_t textureSize = valuePtr->get().size();
+			if (textureSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+			}
+		}
+	}
 private:
 	static int uiId;
 	static float uiScale;

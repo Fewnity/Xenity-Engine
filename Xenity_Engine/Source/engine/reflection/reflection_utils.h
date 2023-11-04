@@ -42,5 +42,8 @@ public:
 private:
 	template <typename T>
 	static void FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* valuePtr);
+
+	template <typename T>
+	static void FillVectorFileReference(nlohmann::json kvValue, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr);
 };
 
