@@ -30,7 +30,8 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
 
-		bool opened = ImGui::TreeNodeEx(projectDir->GetFolderName().c_str(), flags);
+		std::string nodeName = projectDir->GetFolderName() + EditorUI::GenerateItemId();
+		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 		ImGui::PopStyleColor();
 
 		// TODO : Check if the click was on the arrow to block this condition
