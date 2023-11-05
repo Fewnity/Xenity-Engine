@@ -76,7 +76,8 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		bool opened = ImGui::TreeNodeEx(child->name.c_str(), flags);
+		std::string nodeName = child->name + EditorUI::GenerateItemId();
+		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())
 		{

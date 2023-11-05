@@ -300,7 +300,7 @@ public:
 			const auto& ptr = valuePtr->get()[vectorI].lock();
 			if (ptr != nullptr)
 			{
-				inputText = ptr->name;
+				inputText = ptr->name + " " + std::to_string(ptr->GetUniqueId());
 			}
 
 			if (DrawInputButton("", inputText, true) == 2)
