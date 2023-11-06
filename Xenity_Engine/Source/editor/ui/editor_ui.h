@@ -151,6 +151,35 @@ public:
 	}
 
 	template <typename T>
+	static void DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
+	{
+		size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			const auto& ptr = valuePtr->get()[vectorI];
+			DrawInput("", (int&)ptr);
+			//if()
+		}
+
+		std::string addText = "Add " + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(0);
+		}
+
+		std::string removeText = "Remove " + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			size_t textureSize = valuePtr->get().size();
+			if (textureSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+			}
+		}
+	}
+
+	template <typename T>
 	static void DrawVector(bool isFileReference, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
 	{
 		size_t vectorSize = valuePtr->get().size();
@@ -194,10 +223,9 @@ public:
 		std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
-			size_t textureSize = valuePtr->get().size();
-			if (textureSize != 0)
+			if (vectorSize != 0)
 			{
-				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
 			}
 		}
 	}
@@ -238,10 +266,9 @@ public:
 		std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
-			size_t textureSize = valuePtr->get().size();
-			if (textureSize != 0)
+			if (vectorSize != 0)
 			{
-				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
 			}
 		}
 	}
@@ -282,10 +309,9 @@ public:
 		std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
-			size_t textureSize = valuePtr->get().size();
-			if (textureSize != 0)
+			if (vectorSize != 0)
 			{
-				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
 			}
 		}
 	}
@@ -326,10 +352,9 @@ public:
 		std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
-			size_t textureSize = valuePtr->get().size();
-			if (textureSize != 0)
+			if (vectorSize != 0)
 			{
-				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
 			}
 		}
 	}

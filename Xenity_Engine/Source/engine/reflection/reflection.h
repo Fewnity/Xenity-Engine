@@ -51,6 +51,9 @@ typedef std::variant<
 	std::reference_wrapper<std::shared_ptr<Font>>,
 	std::reference_wrapper<std::shared_ptr<Shader>>,
 	std::reference_wrapper<std::shared_ptr<Material>>,
+
+	std::reference_wrapper<std::vector<Reflection>>,
+	std::reference_wrapper<std::vector<int>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
@@ -110,6 +113,22 @@ public:
 	{
 		uint64_t type = typeid(T).hash_code();
 		Reflection::AddReflectionVariable(map, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type);
+	}
+
+	//template<typename T>
+	//std::enable_if_t<std::is_base_of<Reflection, T>::value, void>
+	static void AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, std::vector<int>& value, const std::string& variableName, bool isPublic)
+	{
+		uint64_t type = typeid(int).hash_code();
+		Reflection::AddReflectionVariable(map, value, variableName, false, isPublic, type);
+	}
+
+	template<typename T>
+	std::enable_if_t<std::is_base_of<Reflection, T>::value, void>
+	static AddVariable(std::unordered_map<std::string, ReflectionEntry>& map, std::vector<T>& value, const std::string& variableName, bool isPublic)
+	{
+		uint64_t type = typeid(T).hash_code();
+		Reflection::AddReflectionVariable(map, (std::vector<Reflection>&)value, variableName, false, isPublic, type);
 	}
 
 	template<typename T>

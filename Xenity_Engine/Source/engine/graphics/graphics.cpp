@@ -49,7 +49,7 @@ std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = Draw_3D;
 
-bool Graphics::UseOpenGLFixedFunctions = false;
+bool Graphics::UseOpenGLFixedFunctions = true;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {

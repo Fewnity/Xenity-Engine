@@ -135,6 +135,10 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 			{
 				DrawVector("Component", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
 			}
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<int>>>(&variableRef))
+			{
+				DrawVectorSimpleType(valuePtr, valueChangedTemp, variableName);
+			}
 
 			if (valueChangedTemp)
 			{
