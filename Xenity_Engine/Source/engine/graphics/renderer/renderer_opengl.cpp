@@ -376,7 +376,10 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	lastSettings = settings;
+	lastSettings.useBlend = settings.useBlend;
+	lastSettings.useDepth = settings.useDepth; 
+	lastSettings.useLighting = settings.useLighting;
+	lastSettings.useTexture = settings.useTexture;
 
 	applySettingsBenchmark->Stop();
 
@@ -515,6 +518,9 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 
+	lastSettings.useBlend = true;
+	lastSettings.useDepth = settings.useDepth;
+	lastSettings.useLighting = false;
 	lastSettings.useTexture = false;
 
 	VertexNoColorNoUv ver[2];
