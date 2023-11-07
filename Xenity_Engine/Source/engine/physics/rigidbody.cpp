@@ -28,59 +28,62 @@ void RigidBody::Update()
 void RigidBody::Tick()
 {
 	inTrigger.clear();
-	if (auto attachedColliderLock = attachedcollider.lock())
+	if (GetGameObject()->GetLocalActive() && GetIsEnabled()) 
 	{
-		int side = NoSide;
-		size_t colliderCount = PhysicsManager::rigidBodies.size();
-		std::shared_ptr<RigidBody> other;
-		for (int i = 0; i < colliderCount; i++)
+		if (auto attachedColliderLock = attachedcollider.lock())
 		{
-			other = PhysicsManager::rigidBodies[i].lock();
-			if (other != shared_from_this() && other->GetIsEnabled() && other->GetGameObject()->GetLocalActive())
+			int side = NoSide;
+			size_t colliderCount = PhysicsManager::rigidBodies.size();
+			std::shared_ptr<RigidBody> other;
+			for (int i = 0; i < colliderCount; i++)
 			{
-				std::shared_ptr<BoxCollider> otherCollider = other->attachedcollider.lock();
-				if (otherCollider && otherCollider->GetIsEnabled() && otherCollider->GetGameObject()->GetLocalActive())
+				other = PhysicsManager::rigidBodies[i].lock();
+				if (other != shared_from_this() && other->GetIsEnabled() && other->GetGameObject()->GetLocalActive())
 				{
-					if (attachedColliderLock->isTrigger && isStatic && !other->isStatic)
+					std::shared_ptr<BoxCollider> otherCollider = other->attachedcollider.lock();
+					if (otherCollider && otherCollider->GetIsEnabled() && otherCollider->GetGameObject()->GetLocalActive())
 					{
-						bool trigger = BoxCollider::CheckTrigger(attachedColliderLock, otherCollider);
-						if (trigger)
-							inTrigger.push_back(otherCollider);
-					}
-					else if (!otherCollider->isTrigger && !isStatic)
-					{
-						int tempSide = BoxCollider::CheckCollision(attachedColliderLock, otherCollider, velocity * Time::GetDeltaTime());
-						if (tempSide != NoSide)
+						if (attachedColliderLock->isTrigger && isStatic && !other->isStatic)
 						{
-							if ((side & tempSide) == 0)
-								side |= tempSide;
+							bool trigger = BoxCollider::CheckTrigger(attachedColliderLock, otherCollider);
+							if (trigger)
+								inTrigger.push_back(otherCollider);
+						}
+						else if (!otherCollider->isTrigger && !isStatic)
+						{
+							int tempSide = BoxCollider::CheckCollision(attachedColliderLock, otherCollider, velocity * Time::GetDeltaTime());
+							if (tempSide != NoSide)
+							{
+								if ((side & tempSide) == 0)
+									side |= tempSide;
+							}
 						}
 					}
 				}
 			}
-		}
-		if (!isStatic)
-		{
-			Vector3 newVelocity = velocity;
-			if ((side & SideX) != 0)
-				newVelocity.x = -velocity.x * bounce;
-			if ((side & SideY) != 0)
-				newVelocity.y = -velocity.y * bounce;
-			if ((side & SideZ) != 0)
-				newVelocity.z = -velocity.z * bounce;
-
-			if (newVelocity.Magnitude() != 0)
-				GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
-
-			if ((side & SideY) == 0)
+			if (!isStatic)
 			{
-				newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
-				if (newVelocity.y <= -10)
+				Vector3 newVelocity = velocity;
+				if ((side & SideX) != 0)
+					newVelocity.x = -velocity.x * bounce;
+				if ((side & SideY) != 0)
+					newVelocity.y = -velocity.y * bounce;
+				if ((side & SideZ) != 0)
+					newVelocity.z = -velocity.z * bounce;
+
+				if (newVelocity.Magnitude() != 0)
+					GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
+
+				if ((side & SideY) == 0)
 				{
-					newVelocity.y = -10;
+					newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
+					if (newVelocity.y <= -10)
+					{
+						newVelocity.y = -10;
+					}
 				}
+				velocity = newVelocity;
 			}
-			velocity = newVelocity;
 		}
 	}
 }

@@ -2,6 +2,7 @@
 #include "collider.h"
 #include "box_collider.h"
 #include "rigidbody.h"
+#include "../game_elements/gameobject.h"
 
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 
@@ -24,6 +25,7 @@ void PhysicsManager::Update()
 
 	for (int i = 0; i < colliderCount; i++)
 	{
-		rigidBodies[i].lock()->Tick();
+		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
+		rb->Tick();
 	}
 }
