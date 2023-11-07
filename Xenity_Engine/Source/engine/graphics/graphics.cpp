@@ -153,9 +153,6 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetClearColor(skyColor);
 			Engine::GetRenderer().Clear();
 
-#if defined(__PSP__)
-			//Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
-#endif
 			if (UseOpenGLFixedFunctions) 
 			{
 				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
@@ -169,24 +166,6 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetFog(isFogEnabled);
 
 			drawAllBenchmark->Start();
-			/*for (int drawableIndex = 0; drawableIndex < iDrawablesCount; drawableIndex++)
-			{
-				std::shared_ptr<IDrawable> drawable = orderedIDrawable[drawableIndex].lock();
-
-				if (drawable->type != currentMode)
-				{
-					currentMode = drawable->type;
-					if (currentMode == Draw_UI)
-					{
-						if (UseOpenGLFixedFunctions)
-						{
-							Engine::GetRenderer().ResetView();
-							Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
-						}
-					}
-				}
-				drawable->Draw();
-			}*/
 
 			size_t noTransCount = noTransparentDrawable.size();
 			size_t transCount = transparentDrawable.size();

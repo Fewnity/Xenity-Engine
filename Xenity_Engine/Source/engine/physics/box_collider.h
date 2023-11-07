@@ -17,7 +17,6 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
-	//void SetReflection();
 	Vector3 size = Vector3(1);
 	Vector3 offset = Vector3(0);
 
