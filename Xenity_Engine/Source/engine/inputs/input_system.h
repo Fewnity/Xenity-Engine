@@ -230,6 +230,7 @@ public:
 	static Vector2 mouseSpeed;
 	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
+	static bool blockGameInput;
 
 private:
 	class TouchScreen

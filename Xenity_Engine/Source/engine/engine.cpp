@@ -18,6 +18,7 @@
 #include "../xenity_editor.h"
 #include <glad/glad.h>
 #include "../editor/ui/menus/inspector_menu.h"
+#include "../editor/ui/menus/scene_menu.h"
 #endif
 
 #include "game_interface.h"
@@ -235,8 +236,19 @@ void Engine::Loop()
 #if defined(EDITOR)
 		editorUpdateBenchmark->Start();
 		Editor::Update();
+		if (Editor::sceneMenu->isFocused) 
+		{
+			InputSystem::ClearInputs();
+			InputSystem::blockGameInput = true;
+		}
+		else {
+			InputSystem::blockGameInput = false;
+		}
+		std::cout << Editor::sceneMenu->isFocused << std::endl;
 		editorUpdateBenchmark->Stop();
 #endif
+
+
 		if (ProjectManager::GetIsProjectLoaded())
 		{
 			RemoveUnusedFiles();
@@ -275,6 +287,7 @@ void Engine::Loop()
 		Editor::Draw();
 		editorDrawBenchmark->Stop();
 #endif
+		InputSystem::blockGameInput = false;
 		Debug::SendProfilerDataToServer();
 		Window::UpdateScreen();
 		engineLoopBenchmark->Stop();

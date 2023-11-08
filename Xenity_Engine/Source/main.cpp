@@ -20,13 +20,11 @@ Disable game input when scene tab is focused
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
-use shared folder and fix crash when deleting folder
 Material::SetAttribut check emplace, try_emplace?
 Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
 Fix camera when multisampled is disabled on windows build
 Add network profiler
-Add basic json data in empty files (like on empty scene save, on new file created)
 Check why files are deleted (RemoveUnusedFiles) on scene save
 
 useLighting not working
@@ -44,19 +42,15 @@ RGBA or RGB in vertex color?
 
 --- To do in a long time
 Add LOD
-Fix mouse speed at high fps
 Add transparency setting on textures
 Packing asset system
 Add a tool to rotate selected gameobject
 Fix tool with child and parent negative scale
-Detect the number of cpu core for cmake
-Check FileSystem::GetGamePath
-Check if CreateGameObjectEditor's GameObjects can be found with findGameObject
 Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
 Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
-Touch : Add input state : Begin, Hold (and End?)
+Touch : Add  input state : Begin, Hold (and End?)
 Text scale
 */
 

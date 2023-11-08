@@ -36,6 +36,7 @@ float InputSystem::mouseWheel = 0;
 bool InputSystem::hidedMouse = false;
 std::map<int, Input*> InputSystem::keyMap;
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
+bool InputSystem::blockGameInput = false;
 
 void InputSystem::Init()
 {
@@ -372,16 +373,28 @@ void InputSystem::SetInputInactive(const KeyCode keyCode)
 
 bool InputSystem::GetKeyDown(const KeyCode keyCode)
 {
+#if defined(EDITOR)
+	if (blockGameInput)
+		return false;
+#endif
 	return inputs[keyCode].pressed;
 }
 
 bool InputSystem::GetKey(const KeyCode keyCode)
 {
+#if defined(EDITOR)
+	if (blockGameInput)
+		return false;
+#endif
 	return inputs[keyCode].held;
 }
 
 bool InputSystem::GetKeyUp(const KeyCode keyCode)
 {
+#if defined(EDITOR)
+	if (blockGameInput)
+		return false;
+#endif
 	return inputs[keyCode].released;
 }
 
