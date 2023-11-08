@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 
 #include "xenity.h"
 
