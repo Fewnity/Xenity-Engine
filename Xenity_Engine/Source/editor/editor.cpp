@@ -91,30 +91,31 @@ void Editor::Update()
 		float fwd = 0;
 		float up = 0;
 		float side = 0;
+
 		if (InputSystem::GetKey(UP))
-			fwd = -1;
+			fwd = -1 * Time::GetDeltaTime();
 		else if (InputSystem::GetKey(DOWN))
-			fwd = 1;
+			fwd = 1 * Time::GetDeltaTime();
 
 		if (InputSystem::GetKey(RIGHT))
-			side = 1;
+			side = 1 * Time::GetDeltaTime();
 		else if (InputSystem::GetKey(LEFT))
-			side = -1;
-
-		// Move the camera when using the mouse's wheel
-		if (sceneMenu->isHovered)
-			fwd -= InputSystem::mouseWheel * 6;
+			side = -1 * Time::GetDeltaTime();
 
 		if (InputSystem::GetKey(MOUSE_MIDDLE))
 		{
-			up += InputSystem::InputSystem::mouseSpeed.y * 100;
-			side -= InputSystem::InputSystem::mouseSpeed.x * 100;
+			up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
+			side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
 		}
 
+		// Move the camera when using the mouse's wheel (Do not use delta time)
+		if (sceneMenu->isHovered)
+			fwd -= InputSystem::mouseWheel / 15.0f;
+
 		// Apply values
-		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * Time::GetDeltaTime() * 30;
-		pos -= cameraTransform->GetLeft() * (side / 7.0f) * Time::GetDeltaTime() * 30;
-		pos -= cameraTransform->GetUp() * (up / 7.0f) * Time::GetDeltaTime() * 30;
+		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
+		pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
+		pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
 
 		cameraTransform->SetPosition(pos);
 		cameraTransform->SetRotation(rot);
@@ -180,7 +181,7 @@ void Editor::Draw()
 		{
 			profiler->Draw();
 		}
-		if (EditorUI::showCreateClass) 
+		if (EditorUI::showCreateClass)
 		{
 			createClassMenu->Draw();
 		}
@@ -319,7 +320,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
 	if (newFile->Open(true))
 	{
-		if(fillWithDefaultData)
+		if (fillWithDefaultData)
 			newFile->Write(AssetManager::GetDefaultFileData(type));
 		newFile->Close();
 	}
