@@ -103,15 +103,18 @@ public:
 
 	static void SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference);
 	static std::shared_ptr<FileReference> GetSelectedFileReference();
+	static void SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir);
+	static std::shared_ptr <ProjectDirectory> GetCurrentProjectDirectory();
 
 	/**
-* Set selected GameObject
-* @param go New selected GameObject
-*/
+	* Set selected GameObject
+	* @param go New selected GameObject
+	*/
 	static void SetSelectedGameObject(const std::shared_ptr<GameObject>& go);
 	static std::shared_ptr<GameObject> GetSelectedGameObject();
 
 private:
+	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;
 	static void CreateMenus();

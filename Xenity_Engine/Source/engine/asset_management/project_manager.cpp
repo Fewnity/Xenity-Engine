@@ -9,10 +9,10 @@
 #include "code_file.h"
 #include "../graphics/skybox.h"
 
-//#include "../../game_dungeon/game.h"
+#include "../../game_dungeon/game.h"
 
 #if !defined(EDITOR)
-#include "../../game_dungeon/game.h"
+//#include "../../game_dungeon/game.h"
 //#include "../../game_test/game.h"
 #endif
 
@@ -27,7 +27,7 @@ std::shared_ptr<Scene> ProjectManager::startScene = nullptr;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
-bool ProjectManager::projectLoaded;
+bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 
 std::shared_ptr <ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath)
@@ -59,10 +59,10 @@ void ProjectManager::FindAllProjectFiles()
 {
 	// Keep in memory the old opened directory path to re-open it later
 	std::string oldPath = "";
-	if (Engine::GetCurrentProjectDirectory())
-		oldPath = Engine::GetCurrentProjectDirectory()->path;
+	if (Editor::GetCurrentProjectDirectory())
+		oldPath = Editor::GetCurrentProjectDirectory()->path;
 
-	Engine::SetCurrentProjectDirectory(nullptr);
+	Editor::SetCurrentProjectDirectory(nullptr);
 
 	for (const auto& kv : projectFilesIds)
 	{
@@ -126,7 +126,6 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
-
 	//Set new files ids
 	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
@@ -136,7 +135,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Fill projectFilesIds
-	for (auto& kv : compatibleFiles)
+	for (const auto& kv : compatibleFiles)
 	{
 		FileAndPath fileAndPath = FileAndPath();
 		fileAndPath.file = kv.first;
@@ -182,9 +181,9 @@ void ProjectManager::FindAllProjectFiles()
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
 	std::shared_ptr <ProjectDirectory> lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
 	if (lastOpenedDir)
-		Engine::SetCurrentProjectDirectory(lastOpenedDir);
+		Editor::SetCurrentProjectDirectory(lastOpenedDir);
 	else
-		Engine::SetCurrentProjectDirectory(projectDirectory);
+		Editor::SetCurrentProjectDirectory(projectDirectory);
 #endif
 
 	oldProjectFilesIds.clear();
@@ -310,18 +309,18 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	 //Load dynamic library and create game
-#if defined(_WIN32) || defined(_WIN64)
-#if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-#else
-	DynamicLibrary::LoadGameLibrary("game");
-#endif // defined(EDITOR)
-	Engine::game = DynamicLibrary::CreateGame();
-#else
-	Engine::game = std::make_unique<Game>();
-#endif //  defined(_WIN32) || defined(_WIN64)
+//#if defined(_WIN32) || defined(_WIN64)
+//#if defined(EDITOR)
+//	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+//#else
+//	DynamicLibrary::LoadGameLibrary("game");
+//#endif // defined(EDITOR)
+//	Engine::game = DynamicLibrary::CreateGame();
+//#else
+//	Engine::game = std::make_unique<Game>();
+//#endif //  defined(_WIN32) || defined(_WIN64)
 
-	//Engine::game = std::make_unique<Game>();
+	Engine::game = std::make_unique<Game>();
 
 	// Fill class registery
 	if (Engine::game)
@@ -340,18 +339,16 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 void ProjectManager::UnloadProject()
 {
-	Engine::SetCurrentProjectDirectory(nullptr);
+#if defined(EDITOR)
+	Editor::SetCurrentProjectDirectory(nullptr);
+#endif
 	SceneManager::SetOpenedScene(nullptr);
 	SceneManager::CreateEmptyScene();
 	Graphics::SetDefaultValues();
 
 	startScene.reset();
-	//delete projectDirectoryBase;
-	//projectDirectoryBase = nullptr;
 	projectDirectoryBase.reset();
 	projectDirectory.reset();
-	//delete projectDirectory;
-	projectDirectory = nullptr;
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
 	projectLoaded = false;

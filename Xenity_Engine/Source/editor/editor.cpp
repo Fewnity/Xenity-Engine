@@ -30,6 +30,7 @@ using json = nlohmann::json;
 
 std::weak_ptr<GameObject> Editor::cameraGO;
 std::weak_ptr<AudioSource> Editor::audioSource;
+std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
 
 MenuNames Editor::currentMenu = Menu_Select_Project;
 
@@ -57,7 +58,7 @@ void Editor::Init()
 
 	// Create scene camera TODO : Move to scene_menu.cpp?
 	cameraGO = CreateGameObjectEditor("Camera");
-	auto camera = cameraGO.lock()->AddComponent<Camera>();
+	std::shared_ptr<Camera> camera = cameraGO.lock()->AddComponent<Camera>();
 	camera->SetNearClippingPlane(0.01f);
 	camera->SetFarClippingPlane(500);
 	camera->SetProjectionSize(5.0f);
@@ -76,7 +77,7 @@ void Editor::Update()
 	if (sceneMenu->isFocused)
 	{
 		// Get camera transform
-		auto cameraTransform = cameraGO.lock()->GetTransform();
+		std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
 		Vector3 rot = cameraTransform->GetRotation();
 		Vector3 pos = cameraTransform->GetPosition();
 
@@ -121,7 +122,7 @@ void Editor::Update()
 		cameraTransform->SetRotation(rot);
 	}
 
-	// Check shortcuts
+	//------- Check shortcuts
 
 	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 	{
@@ -198,14 +199,14 @@ void Editor::Draw()
 
 void Editor::CreateEmpty()
 {
-	auto go = CreateGameObject();
+	std::shared_ptr<GameObject> go = CreateGameObject();
 	SetSelectedGameObject(go);
 }
 
 void Editor::CreateEmptyChild()
 {
-	auto go = CreateGameObject();
-	auto transform = go->GetTransform();
+	std::shared_ptr<GameObject> go = CreateGameObject();
+	std::shared_ptr<Transform> transform = go->GetTransform();
 	go->SetParent(selectedGameObject);
 	transform->SetLocalPosition(Vector3(0));
 	transform->SetLocalRotation(Vector3(0));
@@ -216,10 +217,10 @@ void Editor::CreateEmptyChild()
 
 void Editor::CreateEmptyParent()
 {
-	auto go = CreateGameObject();
-	auto transform = go->GetTransform();
+	std::shared_ptr<GameObject> go = CreateGameObject();
+	std::shared_ptr<Transform> transform = go->GetTransform();
 	std::shared_ptr<GameObject> selectGameObject = selectedGameObject.lock();
-	auto selectedTransform = selectGameObject->GetTransform();
+	std::shared_ptr<Transform>  selectedTransform = selectGameObject->GetTransform();
 	transform->SetPosition(selectedTransform->GetPosition());
 	transform->SetRotation(selectedTransform->GetRotation());
 	transform->SetLocalScale(selectedTransform->GetScale());
@@ -256,7 +257,26 @@ std::shared_ptr<GameObject> Editor::GetSelectedGameObject()
 	return selectedGameObject.lock();
 }
 
-#pragma region Save
+void Editor::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
+{
+	if (currentProjectDirectory)
+		currentProjectDirectory->files.clear();
+	currentProjectDirectory = dir;
+	if (currentProjectDirectory)
+	{
+		ProjectManager::FillProjectDirectory(currentProjectDirectory);
+		size_t itemCount = currentProjectDirectory->files.size();
+		for (size_t i = 0; i < itemCount; i++)
+		{
+			currentProjectDirectory->files[i]->LoadFileReference();
+		}
+	}
+}
+
+std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
+{
+	return currentProjectDirectory;
+}
 
 void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicate)
 {
@@ -362,5 +382,4 @@ void Editor::CreateMenus()
 	createClassMenu->Init();
 }
 
-#pragma endregion
 #endif

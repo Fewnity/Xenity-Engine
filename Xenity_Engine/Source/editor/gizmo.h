@@ -10,10 +10,27 @@ class Texture;
 class Gizmo
 {
 public:
+
+	/**
+	* Init Gizmo system
+	*/
 	static void Init();
+
+	/**
+	* Draw a simple line From A to B
+	*/
 	static void DrawLine(const Vector3& a, const Vector3& b);
+
+	/**
+	* Set Gizmo draw color
+	*/
 	static void SetColor(const Color& newColor);
+
+	/**
+	* Draw a billboard sprite
+	*/
 	static void DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color);
+
 private:
 	static Color color;
 };

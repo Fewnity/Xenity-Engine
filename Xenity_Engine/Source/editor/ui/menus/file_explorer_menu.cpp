@@ -30,7 +30,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	}
 	else if (item.directory) // Open the folder
 	{
-		Engine::SetCurrentProjectDirectory(item.directory);
+		Editor::SetCurrentProjectDirectory(item.directory);
 		Editor::SetSelectedFileReference(nullptr);
 	}
 }
@@ -345,7 +345,7 @@ void FileExplorerMenu::Draw()
 		{
 			ImGui::TableNextRow(0, height);
 			ImGui::TableSetColumnIndex(0);
-			bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::projectDirectory);
+			bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
 			if (treeItemClicked)
 			{
 				fileHovered = true;
@@ -361,7 +361,7 @@ void FileExplorerMenu::Draw()
 			{
 				int currentCol = 0;
 				int itemIndex = 0;
-				std::shared_ptr <ProjectDirectory> currentDir = Engine::GetCurrentProjectDirectory();
+				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 				size_t folderCount = currentDir->subdirectories.size();
 				size_t fileCount = currentDir->files.size();
 				std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
@@ -388,7 +388,7 @@ void FileExplorerMenu::Draw()
 			// Unselect file or open the popup if background is clicked
 			if (!fileHovered)
 			{
-				std::shared_ptr <ProjectDirectory> currentDir = Engine::GetCurrentProjectDirectory();
+				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 				FileExplorerItem item;
 				item.directory = currentDir;
 				int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);

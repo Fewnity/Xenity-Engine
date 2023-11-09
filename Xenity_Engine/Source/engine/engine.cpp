@@ -44,8 +44,6 @@
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
 
-std::shared_ptr <ProjectDirectory> Engine::currentProjectDirectory = nullptr;
-
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> drawIDrawablesBenchmark = nullptr;
@@ -244,7 +242,6 @@ void Engine::Loop()
 		else {
 			InputSystem::blockGameInput = false;
 		}
-		std::cout << Editor::sceneMenu->isFocused << std::endl;
 		editorUpdateBenchmark->Stop();
 #endif
 
@@ -331,28 +328,6 @@ void Engine::RegisterEngineComponents()
 	ClassRegistry::AddComponentClass("BoxCollider", [](std::shared_ptr<GameObject> go)
 		{ return go->AddComponent<BoxCollider>(); });
 }
-
-void Engine::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
-{
-	if (currentProjectDirectory)
-		currentProjectDirectory->files.clear();
-	currentProjectDirectory = dir;
-	if (currentProjectDirectory)
-	{
-		ProjectManager::FillProjectDirectory(currentProjectDirectory);
-		size_t itemCount = currentProjectDirectory->files.size();
-		for (size_t i = 0; i < itemCount; i++)
-		{
-			currentProjectDirectory->files[i]->LoadFileReference();
-		}
-	}
-}
-
-std::shared_ptr <ProjectDirectory> Engine::GetCurrentProjectDirectory()
-{
-	return currentProjectDirectory;
-}
-
 
 void Engine::Stop()
 {

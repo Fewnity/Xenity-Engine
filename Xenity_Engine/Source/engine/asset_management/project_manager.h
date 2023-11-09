@@ -83,6 +83,9 @@ public:
 	*/
 	static bool LoadProject(const std::string& projectPathToLoad);
 
+	/**
+	* Unload a project
+	*/
 	static void UnloadProject();
 
 	/**
@@ -177,24 +180,30 @@ public:
 	*/
 	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
-	static std::shared_ptr<ProjectDirectory> projectDirectory;
-	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
-	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
 	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory);
 	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
 	static void RefreshProjectDirectory();
-	static void FindAllProjectFiles();
 
 	/**
 	* Find and get a project directory from a path and a parent directory
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
-	static std::shared_ptr <Directory> projectDirectoryBase;
 	static FileType GetFileType(std::string extension);
 
+	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
+	{
+		return projectDirectory;
+	}
+
 private:
+	static void FindAllProjectFiles();
 	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, uint64_t id);
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
+
+	static std::shared_ptr<ProjectDirectory> projectDirectory;
+	static std::shared_ptr <Directory> projectDirectoryBase;
+	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
+	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
 	static bool projectLoaded;
 	static std::string projectName;
 	static std::string gameName;

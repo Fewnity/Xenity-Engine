@@ -41,6 +41,7 @@ public:
 	* Start hot reloading
 	*/
 	static void HotReloadGame();
+
 private:
 
 	/**

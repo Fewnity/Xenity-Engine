@@ -20,27 +20,30 @@ std::string tempCompileFolderPath = "";
 
 CompileResult Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 {
-	int r1 = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
-	int r2 = system("wsl sh -c 'mkdir ~/XenityTestProject'");
-	int r3 = system("wsl sh -c 'mkdir ~/XenityTestProject/build'");
-	int r4 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/Source ~/XenityTestProject'");
-	int r5 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'");
-	int r6 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'");
+	// Clear compilation folder
+	int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
-	if (r4 == 0)
+	// Create folders
+	int createProjectFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject'");
+	int createBuildFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject/build'");
+
+	// Copy files
+	int copyCodeResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/Source ~/XenityTestProject'"); // Engine's source code + (game's code but to change later)
+	int copyLibrariesResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'"); // Engine's libraries
+	int copyCmakelistsResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'"); // Cmakelists file
+
+	if (copyCodeResult == 0)
 	{
 		return ERROR_WSL_ENGINE_CODE_COPY;
 	}
-	else if (r5 == 0)
+	else if (copyLibrariesResult == 0)
 	{
 		return ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY;
 	}
-	else if (r6 == 0)
+	else if (copyCmakelistsResult == 0)
 	{
 		return ERROR_WSL_CMAKELISTS_COPY;
 	}
-
-	int r7 = 1;
 
 	// get the thread number of the cpu
 	unsigned int threadNumber = std::thread::hardware_concurrency();
@@ -55,23 +58,15 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	else if (platform == P_PsVita)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
-	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\"";
+	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\""; // Use thread number to increase compilation speed
 
 	// Start compilation
-	r7 = system(compileCommand.c_str());
-
-	if (r7 != 0)
+	int compileResult = system(compileCommand.c_str());
+	if (compileResult != 0)
 	{
 		return ERROR_WSL_COMPILATION;
 	}
 
-	/*Debug::Print(std::to_string(r1));
-	Debug::Print(std::to_string(r2));
-	Debug::Print(std::to_string(r3));
-	Debug::Print(std::to_string(r4));
-	Debug::Print(std::to_string(r5));
-	Debug::Print(std::to_string(r6));
-	Debug::Print(std::to_string(r7));*/
 	std::string compileFolderPath = exportPath;
 	compileFolderPath = compileFolderPath.erase(1, 1);
 	size_t pathSize = compileFolderPath.size();
@@ -90,12 +85,13 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	else if (platform == P_PsVita)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
-	int r8 = system(copyGameCommand.c_str());
-	if (r8 == 0)
+	int copyGameResult = system(copyGameCommand.c_str());
+	if (copyGameResult == 0)
 	{
 		return ERROR_FINAL_GAME_FILES_COPY;
 	}
 
+	// Copy game assets
 	try
 	{
 		std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
@@ -208,6 +204,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's files");
 		break;
 
+		// Specific to WSL
 	case ERROR_WSL_COMPILATION:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL");
 		break;
@@ -230,22 +227,30 @@ void Compiler::OnCompileEnd(CompileResult result)
 
 void Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
-	//Debug::Print("Compiled");
-	tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
+	// Set the folder path to use for the compilation
 	if (buildType == EditorHotReloading)
 	{
 		tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "hot_reloading_data\\";
 	}
+	else
+	{
+		tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "temp_build\\";
+	}
 
-	std::filesystem::remove_all(tempCompileFolderPath);
-	std::filesystem::create_directory(tempCompileFolderPath);
-	// Remove all files in the export folder
-	//std::filesystem::remove_all(exportPath);
-	//std::filesystem::create_directory(exportPath);
+	// Delete the directory and create a new one
+	try
+	{
+		std::filesystem::remove_all(tempCompileFolderPath);
+		std::filesystem::create_directory(tempCompileFolderPath);
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintWarning("[Compiler::CompileGame] Unable to clear the compilation folder");
+	}
 
 	if (platform == P_Windows)
 	{
-		if (buildType == EditorHotReloading)
+		if (buildType == EditorHotReloading) // In hot reloading mode:
 		{
 			std::string engineLibPath = ENGINE_PATH + std::string("engine_editor.lib");
 
@@ -260,6 +265,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 				return;
 			}
 
+			// Copy engine headers
 			try
 			{
 				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
@@ -272,7 +278,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 				return;
 			}
 		}
-		else
+		else // In game build mode:
 		{
 			std::string engineLibPath = ENGINE_PATH + std::string("engine_game.lib");
 			std::string engineDllPath = ENGINE_PATH + std::string("engine_game.dll");
