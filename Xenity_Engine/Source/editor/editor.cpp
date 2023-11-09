@@ -2,6 +2,7 @@
 #include "editor.h"
 #include "../xenity.h"
 #include "../xenity_editor.h"
+#include "../engine/engine.h"
 
 #include "ui/menus/project_settings_menu.h"
 #include "ui/menus/engine_settings_menu.h"
@@ -52,6 +53,11 @@ CreateClassMenu* Editor::createClassMenu = nullptr;
 std::weak_ptr<GameObject> Editor::selectedGameObject;
 std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
 
+std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
+std::shared_ptr <MeshData>  Editor::upArrow = nullptr;
+std::shared_ptr <MeshData>  Editor::forwardArrow = nullptr;
+std::shared_ptr <Texture>  Editor::toolArrowsTexture = nullptr;
+
 void Editor::Init()
 {
 	CreateMenus();
@@ -69,6 +75,16 @@ void Editor::Init()
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
 	audioSource = audioSourceGO->AddComponent<AudioSource>();
+
+	// Load Assets
+	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
+	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
+	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
+
+	toolArrowsTexture = Texture::MakeTexture();
+	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
+	toolArrowsTexture->SetFilter(Texture::Point);
+	toolArrowsTexture->LoadFileReference();
 }
 
 void Editor::Update()

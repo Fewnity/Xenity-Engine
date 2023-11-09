@@ -1,11 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "../engine/engine.h"
-#include "../engine/game_elements/gameobject.h"
 #include <json.hpp>
 #include <unordered_map>
 
+#include "../engine/game_elements/gameobject.h"
 #include "../engine/file_system/file_type.h"
 
 class Component;
@@ -27,6 +26,7 @@ class LightingMenu;
 class CreateClassMenu;
 class AudioSource;
 class File;
+class ProjectDirectory;
 
 enum MenuNames
 {
@@ -113,10 +113,16 @@ public:
 	static void SetSelectedGameObject(const std::shared_ptr<GameObject>& go);
 	static std::shared_ptr<GameObject> GetSelectedGameObject();
 
+	static std::shared_ptr <MeshData> rightArrow;
+	static std::shared_ptr <MeshData> upArrow;
+	static std::shared_ptr <MeshData> forwardArrow;
+	static std::shared_ptr <Texture> toolArrowsTexture;
 private:
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;
+
+
 	static void CreateMenus();
 
 	static ProjectSettingsMenu* projectSettings;

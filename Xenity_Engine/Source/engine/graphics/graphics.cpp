@@ -35,10 +35,6 @@ std::shared_ptr<ProfilerBenchmark> drawMeshBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
-std::shared_ptr <MeshData> rightArrow = nullptr;
-std::shared_ptr <MeshData> upArrow = nullptr;
-std::shared_ptr <MeshData> forwardArrow = nullptr;
-std::shared_ptr <Texture> toolArrowsTexture = nullptr;
 
 bool Graphics::isFogEnabled;
 float Graphics::fogStart = 0;
@@ -49,7 +45,7 @@ std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = Draw_3D;
 
-bool Graphics::UseOpenGLFixedFunctions = true;
+bool Graphics::UseOpenGLFixedFunctions = false;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
@@ -81,16 +77,6 @@ void Graphics::Init()
 #endif
 
 	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
-#if defined(EDITOR)
-	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
-	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
-	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
-
-	toolArrowsTexture = Texture::MakeTexture();
-	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
-	toolArrowsTexture->SetFilter(Texture::Point);
-	toolArrowsTexture->LoadFileReference();
-#endif
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
 	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");
@@ -527,9 +513,9 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	// Draw tool
 	if (Editor::GetSelectedGameObject())
 	{
-		Vector3 selectedGOPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
-		float dist = Vector3::Distance(selectedGOPos, cameraPosition);
+		float dist = Vector3::Distance(selectedGoPos, cameraPosition);
 		dist /= 40;
 		Vector3 scale = Vector3(dist);
 
@@ -539,9 +525,9 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, rightArrow, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, upArrow, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(selectedGOPos, selectedGoRot, scale, toolArrowsTexture, forwardArrow, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
+		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
 	}
 }
 #endif
