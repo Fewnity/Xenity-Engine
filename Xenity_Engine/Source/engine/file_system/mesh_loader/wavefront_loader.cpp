@@ -15,17 +15,23 @@ using namespace std;
 bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
 	Debug::Print("Loading mesh: " + mesh->file->GetPath());
-
+	//std::shared_ptr<File> file = std::make_shared<File>("");
 	// Open file
-	ifstream file;
-	file.open(mesh->file->GetPath());
+	//ifstream file;
+	//file.open(mesh->file->GetPath());
+
+	int textSize = 0;
+	mesh->file->Open(false);
+	std::string allString = mesh->file->ReadAll();
+	mesh->file->Close();
+	textSize = allString.size();
 
 	// Print error if the file can't be read
-	if (file.fail())
+	/*if (file.fail())
 	{
 		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh->file->GetPath());
 		return false;
-	}
+	}*/
 
 	bool verticesFound = false;
 	bool currentMeshFilled = false;
@@ -41,11 +47,37 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 	int count = -1;
 
 	// Read file
-	std::string line;
+	int lastLine = 0;
+	std::string line = "";
 	SubMesh* currentSubMeshPtr = nullptr;
 
-	while (std::getline(file, line))
+	for (int i = lastLine; i < textSize; i++)
 	{
+		if (allString[i] == '\n')
+		{
+			line = allString.substr(0, i+1);
+			lastLine = i+1;
+			break;
+		}
+	}
+
+	//while (std::getline(file, line))
+	bool stop = false;
+	while(true)
+	{
+		for (int i = lastLine; i < textSize; i++)
+		{
+			if (i == textSize - 1) 
+			{
+				stop = true;
+			}
+			if (allString[i] == '\n') 
+			{
+				line = allString.substr(lastLine, i-lastLine+1);
+				lastLine = i + 1;
+				break;
+			}
+		}
 		if (line[0] == 'v')
 		{
 			if (line[1] == ' ') // Add vertice
@@ -191,11 +223,15 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				currentSubMeshPtr = submeshes[currentSubMesh];
 			}
 		}
+		if (stop)
+		{
+			break;
+		}
 	}
 	currentSubMeshPtr = nullptr;
 
 	// Close the file
-	file.close();
+	//file.close();
 
 	//return false;
 	mesh->hasUv = !hasNoUv;
