@@ -59,11 +59,12 @@ void ProjectManager::FindAllProjectFiles()
 {
 	// Keep in memory the old opened directory path to re-open it later
 	std::string oldPath = "";
+#if defined(EDITOR)
 	if (Editor::GetCurrentProjectDirectory())
 		oldPath = Editor::GetCurrentProjectDirectory()->path;
 
 	Editor::SetCurrentProjectDirectory(nullptr);
-
+#endif
 	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
