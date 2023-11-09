@@ -55,7 +55,6 @@
     <ClCompile Include="Source\engine\graphics\3d_graphics\mesh_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_renderer.cpp" />
     <ClCompile Include="Source\engine\file_system\file_system.cpp" />
-    <ClCompile Include="Source\game_test\game.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
     <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
     <ClCompile Include="Source\engine\audio\audio_source.cpp" />
@@ -115,6 +114,15 @@
     <ClCompile Include="Source\engine\tools\string_tag_finder.cpp" />
     <ClCompile Include="Source\engine\game_elements\gameplay_manager.cpp" />
     <ClCompile Include="Source\windows\cpu.cpp" />
+    <ClCompile Include="Source\game_dungeon\animated_light.cpp" />
+    <ClCompile Include="Source\game_dungeon\camera_follow.cpp" />
+    <ClCompile Include="Source\game_dungeon\chest.cpp" />
+    <ClCompile Include="Source\game_dungeon\coin.cpp" />
+    <ClCompile Include="Source\game_dungeon\enemy.cpp" />
+    <ClCompile Include="Source\game_dungeon\game.cpp" />
+    <ClCompile Include="Source\game_dungeon\level_manager.cpp" />
+    <ClCompile Include="Source\game_dungeon\player.cpp" />
+    <ClCompile Include="Source\game_dungeon\spike.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -179,7 +187,6 @@
     <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_renderer.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_renderer.h" />
     <ClInclude Include="Source\engine\file_system\file_system.h" />
-    <ClInclude Include="Source\game_test\game.h" />
     <ClInclude Include="Source\engine\audio\audio_clip.h" />
     <ClInclude Include="Source\engine\audio\audio_manager.h" />
     <ClInclude Include="Source\engine\audio\audio_source.h" />
@@ -239,6 +246,15 @@
     <ClInclude Include="Source\engine\tools\string_tag_finder.h" />
     <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
     <ClInclude Include="Source\engine\cpu.h" />
+    <ClInclude Include="Source\game_dungeon\animated_light.h" />
+    <ClInclude Include="Source\game_dungeon\camera_follow.h" />
+    <ClInclude Include="Source\game_dungeon\chest.h" />
+    <ClInclude Include="Source\game_dungeon\coin.h" />
+    <ClInclude Include="Source\game_dungeon\enemy.h" />
+    <ClInclude Include="Source\game_dungeon\game.h" />
+    <ClInclude Include="Source\game_dungeon\level_manager.h" />
+    <ClInclude Include="Source\game_dungeon\player.h" />
+    <ClInclude Include="Source\game_dungeon\spike.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

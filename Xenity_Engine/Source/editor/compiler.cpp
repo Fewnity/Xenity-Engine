@@ -32,15 +32,15 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	int copyLibrariesResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'"); // Engine's libraries
 	int copyCmakelistsResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'"); // Cmakelists file
 
-	if (copyCodeResult == 0)
+	if (copyCodeResult != 0)
 	{
 		return ERROR_WSL_ENGINE_CODE_COPY;
 	}
-	else if (copyLibrariesResult == 0)
+	else if (copyLibrariesResult != 0)
 	{
 		return ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY;
 	}
-	else if (copyCmakelistsResult == 0)
+	else if (copyCmakelistsResult != 0)
 	{
 		return ERROR_WSL_CMAKELISTS_COPY;
 	}
@@ -86,7 +86,7 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
 	int copyGameResult = system(copyGameCommand.c_str());
-	if (copyGameResult == 0)
+	if (copyGameResult != 0)
 	{
 		return ERROR_FINAL_GAME_FILES_COPY;
 	}
