@@ -18,7 +18,7 @@
 
 std::string tempCompileFolderPath = "";
 
-void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
+CompileResult Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 {
 	int r1 = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 	int r2 = system("wsl sh -c 'mkdir ~/XenityTestProject'");
@@ -26,6 +26,20 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 	int r4 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/Source ~/XenityTestProject'");
 	int r5 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'");
 	int r6 = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'");
+
+	if (r4 == 0)
+	{
+		return ERROR_WSL_ENGINE_CODE_COPY;
+	}
+	else if (r5 == 0)
+	{
+		return ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY;
+	}
+	else if (r6 == 0)
+	{
+		return ERROR_WSL_CMAKELISTS_COPY;
+	}
+
 	int r7 = 1;
 
 	// get the thread number of the cpu
@@ -42,11 +56,13 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
 	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\"";
+
+	// Start compilation
 	r7 = system(compileCommand.c_str());
 
 	if (r7 != 0)
 	{
-		Debug::PrintError("[Compiler::CompileInWSL] Compilation failed");
+		return ERROR_WSL_COMPILATION;
 	}
 
 	/*Debug::Print(std::to_string(r1));
@@ -74,14 +90,24 @@ void Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 	else if (platform == P_PsVita)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
-	//Debug::Print(copyGameCommand);
 	int r8 = system(copyGameCommand.c_str());
+	if (r8 == 0)
+	{
+		return ERROR_FINAL_GAME_FILES_COPY;
+	}
 
-	std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-	std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-	std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+	try
+	{
+		std::filesystem::copy(ProjectManager::GetAssetFolderPath(), exportPath + "assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+		std::filesystem::copy(ProjectManager::GetEngineAssetFolderPath(), exportPath + "engine_assets\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+		std::filesystem::copy_file(ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME, std::filesystem::copy_options::overwrite_existing);
+	}
+	catch (const std::exception&)
+	{
+		return ERROR_FINAL_GAME_FILES_COPY;
+	}
 
-	//Debug::Print(std::to_string(r8));
+	return SUCCESS;
 }
 
 std::string Compiler::GetStartCompilerCommand()
@@ -149,7 +175,7 @@ std::string Compiler::GetCompileGameExeCommand()
 void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	Editor::compilingMenu->OpenPopup();
-	auto t = std::thread(CompileGame, platform, buildType, exportPath);
+	std::thread t = std::thread(CompileGame, platform, buildType, exportPath);
 	t.detach();
 }
 
@@ -161,7 +187,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 		Debug::Print("Game compiled successfully!");
 		break;
 	case ERROR_UNKNOWN:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile");
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
 	case ERROR_ENGINE_GAME_LIB_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_game.lib");
@@ -178,11 +204,25 @@ void Compiler::OnCompileEnd(CompileResult result)
 	case ERROR_GAME_CODE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's code");
 		break;
-	case ERROR_COMPILED_FILES_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying compiled game's files");
+	case ERROR_FINAL_GAME_FILES_COPY:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's files");
 		break;
+
+	case ERROR_WSL_COMPILATION:
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL");
+		break;
+	case ERROR_WSL_ENGINE_CODE_COPY:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's code");
+		break;
+	case ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's libraries files");
+		break;
+	case ERROR_WSL_CMAKELISTS_COPY:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying CMakeLists.txt file");
+		break;
+
 	default:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile");
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
 	}
 	Editor::compilingMenu->ClosePopup();
@@ -220,7 +260,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 				return;
 			}
 
-			try 
+			try
 			{
 				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
@@ -338,7 +378,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_COMPILED_FILES_COPY);
+				OnCompileEnd(ERROR_FINAL_GAME_FILES_COPY);
 				return;
 			}
 
@@ -365,11 +405,16 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 	}
 	else
 	{
-		CompileInWSL(platform, exportPath);
-		if (buildType == BuildAndRunGame)
+		CompileResult result = CompileInWSL(platform, exportPath);
+		if (result == SUCCESS && buildType == BuildAndRunGame)
 		{
 			auto t = std::thread(StartGame, platform, exportPath);
 			t.detach();
+		}
+		else
+		{
+			OnCompileEnd(result);
+			return;
 		}
 	}
 

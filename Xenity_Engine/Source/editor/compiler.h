@@ -18,7 +18,11 @@ enum CompileResult
 	ERROR_LIB_DLLS_MISSING,
 	ERROR_ENGINE_HEADERS_COPY,
 	ERROR_GAME_CODE_COPY,
-	ERROR_COMPILED_FILES_COPY,
+	ERROR_FINAL_GAME_FILES_COPY,
+	ERROR_WSL_COMPILATION,
+	ERROR_WSL_ENGINE_CODE_COPY,
+	ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY,
+	ERROR_WSL_CMAKELISTS_COPY,
 };
 
 class Compiler
@@ -58,7 +62,7 @@ private:
 	* @param platform Platform target
 	* @param exportPath Folder location for the build
 	*/
-	static void CompileInWSL(Platform platform, const std::string& exportPath);
+	static CompileResult CompileInWSL(Platform platform, const std::string& exportPath);
 
 	/**
 	* Get the command to start the compiler
