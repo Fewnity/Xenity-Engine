@@ -68,7 +68,7 @@ public:
 	* Set game state
 	* @param _gameState New game state
 	*/
-	static void SetGameState(GameState _gameState);
+	static void SetGameState(GameState _gameState, bool restoreScene);
 
 	/**
 	* Get game state
@@ -77,8 +77,10 @@ public:
 	{
 		return gameState;
 	}
+
 private:
 
 	static GameState gameState;
+
 };
 

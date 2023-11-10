@@ -20,6 +20,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	{
 		if (item.file->fileType == File_Scene)
 		{
+			GameplayManager::SetGameState(Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
 		else if (item.file->fileType == File_Code || item.file->fileType == File_Header)

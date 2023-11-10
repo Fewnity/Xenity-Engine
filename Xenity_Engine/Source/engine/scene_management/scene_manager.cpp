@@ -112,7 +112,7 @@ void SceneManager::RestoreSceneHotReloading()
 void SceneManager::LoadScene(const json& jsonData)
 {
 #if !defined(EDITOR)
-	GameplayManager::SetGameState(Starting);
+	GameplayManager::SetGameState(Starting, true);
 #endif
 
 	ClearScene();
