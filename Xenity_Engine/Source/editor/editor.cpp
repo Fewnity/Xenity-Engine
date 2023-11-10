@@ -54,9 +54,9 @@ std::weak_ptr<GameObject> Editor::selectedGameObject;
 std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
 
 std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
-std::shared_ptr <MeshData>  Editor::upArrow = nullptr;
-std::shared_ptr <MeshData>  Editor::forwardArrow = nullptr;
-std::shared_ptr <Texture>  Editor::toolArrowsTexture = nullptr;
+std::shared_ptr <MeshData> Editor::upArrow = nullptr;
+std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
+std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 
 void Editor::Init()
 {
