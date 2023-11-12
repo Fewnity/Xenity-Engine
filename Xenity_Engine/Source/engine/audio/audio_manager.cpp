@@ -25,6 +25,8 @@ HWAVEOUT hWaveOut;
 short* audioData = nullptr;
 short* audioData2 = nullptr;
 int currentBuffer = 0;
+#elif defined(_EE)
+#include <thread>
 #endif
 
 bool AudioManager::isAdding = false;

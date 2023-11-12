@@ -36,7 +36,6 @@
 
 #include "asset_management/project_manager.h"
 #include "scene_management/scene_manager.h"
-#include "../editor/compiler.h"
 #include "../unit_tests/unit_test_manager.h"
 #include "graphics/2d_graphics/billboard_renderer.h"
 #include "physics/physics_manager.h"

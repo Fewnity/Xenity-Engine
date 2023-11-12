@@ -7,7 +7,9 @@
 #include "../graphics/3d_graphics/mesh_data.h"
 #include "skybox.h"
 
+#if defined(EDITOR)
 #include "../../editor/editor.h"
+#endif
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>

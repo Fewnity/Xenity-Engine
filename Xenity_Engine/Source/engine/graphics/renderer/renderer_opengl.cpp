@@ -1,3 +1,4 @@
+#if !defined(_EE)
 #include "renderer_opengl.h"
 
 #include "../../../xenity.h"
@@ -1208,3 +1209,4 @@ int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
 
 // 	return mode;
 // }
+#endif

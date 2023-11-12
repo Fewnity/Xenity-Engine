@@ -262,7 +262,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	}
 
 #if !defined(EDITOR)
-	GameplayManager::SetGameState(Playing);
+	GameplayManager::SetGameState(Playing, true);
 #endif
 	}
 

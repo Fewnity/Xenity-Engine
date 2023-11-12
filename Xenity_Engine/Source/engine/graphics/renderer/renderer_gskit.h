@@ -1,4 +1,3 @@
-#if !defined(_EE)
 #if defined(EXPORT)
 #define API __declspec(dllexport)
 #elif defined(IMPORT)
@@ -25,10 +24,10 @@ enum BufferMode
 	Dynamic,
 };
 
-class API RendererOpengl : public Renderer
+class API RendererGsKit : public Renderer
 {
 public:
-	RendererOpengl();
+	RendererGsKit();
 	int Init() override;
 	void Setup() override;
 	void Stop() override;
@@ -101,7 +100,5 @@ private:
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
-
 	// int GetDrawModeEnum(DrawMode drawMode);
 };
-#endif

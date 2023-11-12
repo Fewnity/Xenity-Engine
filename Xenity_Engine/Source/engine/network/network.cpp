@@ -16,7 +16,7 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <unistd.h>
-#else // WINDOWS
+#elif defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
@@ -43,6 +43,7 @@ pspUtilityNetconfData NetworkManager::pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
 int NetworkManager::result = -1;
 #endif
+
 bool NetworkManager::done = false;
 
 std::vector<std::shared_ptr<Socket>> NetworkManager::sockets;
@@ -111,7 +112,7 @@ void Socket::Close()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	closesocket(socketId);
-#else
+#elif defined(__PSP__) || defined(__vita__)
 	close(socketId);
 #endif
 }
@@ -127,7 +128,9 @@ void Socket::SendData(const std::string& text)
 		return;
 
 	int InfoLentgh = (int)text.size();
+#if !defined(_EE)
 	send(socketId, text.c_str(), InfoLentgh, 0); // Send data to server
+#endif
 }
 
 void NetworkManager::DrawNetworkSetupMenu()
@@ -177,7 +180,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 {
 	// return nullptr;
 	int newSocketId = 1;
-
+#if !defined(_EE)
 	struct sockaddr_in serv_addr;
 
 	// memset(recvBuff, '0', sizeof(recvBuff));
@@ -221,7 +224,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 		return nullptr;
 	}
 #endif
-
+#endif
 	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newSocketId);
 	return myNewSocket;
 }

@@ -93,6 +93,8 @@ void Debug::PrintInConsole(const std::string& text)
 	// PspDebugPrint(text);
 #elif defined(__vita__)
 	// PsVitaDebugPrint(text);
+#elif defined(_EE)
+	// printf(text);
 #else
 	std::cout << text;
 #endif
