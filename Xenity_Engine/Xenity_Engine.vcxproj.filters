@@ -124,6 +124,7 @@
     <ClCompile Include="Source\game_dungeon\player.cpp" />
     <ClCompile Include="Source\game_dungeon\spike.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_dialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

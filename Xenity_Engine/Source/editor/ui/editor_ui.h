@@ -50,7 +50,25 @@ enum IconName
 	Icon_Count,
 };
 
-class MultiDragData {
+enum DialogType
+{
+	Dialog_Type_OK,
+	Dialog_Type_OK_CANCEL,
+	Dialog_Type_ABORT_RETRY_IGNORE,
+	Dialog_Type_YES_NO_CANCEL,
+	Dialog_Type_YES_NO,
+	Dialog_Type_RETRY_CANCEL,
+};
+
+enum DialogResult
+{
+	Dialog_YES,
+	Dialog_NO,
+	Dialog_CANCEL,
+};
+
+class MultiDragData 
+{
 public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<Transform*> transforms;
@@ -104,6 +122,8 @@ public:
 	static std::string OpenFolderDialog(const std::string& title);
 	static std::string OpenFileDialog(const std::string& title);
 	static std::string SaveFileDialog(const std::string& title);
+
+	static DialogResult OpenDialog(const std::string& title, const std::string& message, DialogType type);
 
 	static std::string GenerateItemId();
 	static bool showProfiler;
