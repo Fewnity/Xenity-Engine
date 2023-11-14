@@ -6,14 +6,10 @@
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_stdlib.h>
-#include "../../engine/tools/shape_spawner.h"
 #include <variant>
 #include <imgui/imgui_internal.h>
-#include "../../engine/asset_management/project_manager.h"
 #include <Windows.h>
-//#include <Commdlg.h>
 #include <ShObjIdl.h>
-#include "../../engine/graphics/skybox.h"
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;
@@ -23,7 +19,7 @@ bool EditorUI::showProjectsSettings = false;
 bool EditorUI::showLightingSettings = false;
 bool EditorUI::showCreateClass = false;
 
-std::vector<std::shared_ptr<Texture>>  EditorUI::icons;
+std::vector<std::shared_ptr<Texture>> EditorUI::icons;
 MultiDragData EditorUI::multiDragData;
 
 float EditorUI::uiScale = 1;
@@ -244,12 +240,6 @@ std::string EditorUI::GenerateItemId()
 	std::string itemId = "##" + std::to_string(uiId);
 	uiId++;
 	return itemId;
-}
-
-bool EditorUI::DrawReflection(Reflection& reflection)
-{
-	auto t = reflection.GetReflection();
-	return DrawMap(t);
 }
 
 void EditorUI::DrawTextCentered(const std::string& text)

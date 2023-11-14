@@ -11,8 +11,9 @@ class InspectorChangeValueCommand : public Command
 public:
 	InspectorChangeValueCommand() = delete;
 	InspectorChangeValueCommand(std::weak_ptr<U> target, T* valuePtr, T newValue, T lastValue);
-	void Execute();
-	void Undo();
+	void Execute() override;
+	void Undo() override;
+	void Redo() override;
 private:
 	std::weak_ptr<U> target;
 	T* valuePtr;
@@ -46,13 +47,24 @@ inline void InspectorChangeValueCommand<U, T>::Undo()
 	}
 }
 
+template<typename U, typename T>
+inline void InspectorChangeValueCommand<U, T>::Redo()
+{
+	if (target.lock())
+	{
+		*valuePtr = newValue;
+		SceneManager::SetSceneModified(true);
+	}
+}
+
 class InspectorGameObjectSetActiveCommand : public Command
 {
 public:
 	InspectorGameObjectSetActiveCommand() = delete;
 	InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> target, bool newValue, bool lastValue);
-	void Execute();
-	void Undo();
+	void Execute() override;
+	void Undo() override;
+	void Redo() override;
 private:
 	std::weak_ptr<GameObject> target;
 	bool newValue;
@@ -77,6 +89,15 @@ inline void InspectorGameObjectSetActiveCommand::Undo()
 	if (target.lock())
 	{
 		target.lock()->SetActive(lastValue);
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+inline void InspectorGameObjectSetActiveCommand::Redo()
+{
+	if (target.lock())
+	{
+		target.lock()->SetActive(newValue);
 		SceneManager::SetSceneModified(true);
 	}
 }

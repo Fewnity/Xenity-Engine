@@ -3,17 +3,11 @@
 #include "editor_ui.h"
 #include "../editor.h"
 #include "../../xenity.h"
-#include <imgui/imgui_impl_sdl2.h>
-#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
-#include "../../engine/tools/shape_spawner.h"
 #include <variant>
-#include <imgui/imgui_internal.h>
-#include "../../engine/asset_management/project_manager.h"
 #include <Windows.h>
-//#include <Commdlg.h>
 #include <ShObjIdl.h>
-#include "../../engine/graphics/skybox.h"
 
 std::string EditorUI::OpenFolderDialog(const std::string& title)
 {

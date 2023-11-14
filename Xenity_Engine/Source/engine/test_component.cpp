@@ -38,6 +38,7 @@ std::unordered_map<std::string, ReflectionEntry> TestComponent::GetReflection()
 	Reflection::AddVariable(reflectedVariables, myInt, "myInt", true);
 	Reflection::AddVariable(reflectedVariables, myDouble, "myDouble", true);
 	Reflection::AddVariable(reflectedVariables, myString, "myString", true);
+	Reflection::AddVariable(reflectedVariables, myBool, "myBool", true);
 
 	Reflection::AddVariable(reflectedVariables, skyBox, "skyBox", true);
 

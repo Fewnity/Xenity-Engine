@@ -76,5 +76,6 @@ public:
 	int myInt = 0;
 	double myDouble = 0;
 	std::string myString = "";
+	bool myBool = false;
 };
 

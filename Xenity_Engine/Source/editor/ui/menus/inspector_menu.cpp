@@ -40,7 +40,13 @@ void InspectorMenu::Draw()
 				auto reflectionList = reflection->GetReflection();
 				if (reflectionList.size() != 0)
 				{
-					bool changed = EditorUI::DrawMap(reflectionList);
+					std::shared_ptr<Command> command = nullptr;
+					bool changed = EditorUI::DrawMap(reflectionList, command, selectedFileReference);
+					if (command)
+					{
+						CommandManager::AddCommand(command);
+						command->Execute();
+					}
 					if (changed)
 					{
 						reflection->OnReflectionUpdated();
@@ -49,7 +55,13 @@ void InspectorMenu::Draw()
 			}
 			if (metaReflection.size() != 0)
 			{
-				EditorUI::DrawMap(metaReflection);
+				std::shared_ptr<Command> command = nullptr;
+				EditorUI::DrawMap(metaReflection, command, selectedFileReference);
+				if (command)
+				{
+					CommandManager::AddCommand(command);
+					command->Execute();
+				}
 
 				if (ImGui::Button("Apply"))
 				{
@@ -165,9 +177,15 @@ void InspectorMenu::Draw()
 						}
 
 						//Draw component variables
-						if (EditorUI::DrawReflection(*comp))
+						std::shared_ptr<Command> command = nullptr;
+						if (EditorUI::DrawMap(comp->GetReflection(), command, comp))
 						{
 							comp->OnReflectionUpdated();
+						}
+						if (command)
+						{
+							CommandManager::AddCommand(command);
+							command->Execute();
 						}
 
 						ImGui::Separator();
@@ -233,12 +251,12 @@ void InspectorMenu::DrawFilePreview()
 			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Header || loadedPreview->fileType == File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
-				if (file->Open(false)) 
+				if (file->Open(false))
 				{
 					previewText = file->ReadAll();
 					file->Close();
 				}
-				else 
+				else
 				{
 					Debug::PrintError("[InspectorMenu::DrawFilePreview] Fail to open the preview file");
 				}

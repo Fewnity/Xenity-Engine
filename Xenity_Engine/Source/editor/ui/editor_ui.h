@@ -9,8 +9,9 @@
 #include "../../engine/game_elements/gameobject.h"
 #include "../../engine/game_elements/transform.h"
 #include <imgui/imgui.h>
+#include "../command/command.h"
+#include "../command/commands/inspector_commands.h"
 
-class GameObject;
 class Vector2;
 class Vector2Int;
 class Vector3;
@@ -18,10 +19,7 @@ class Vector4;
 class Color;
 class Reflection;
 class Texture;
-class FileReference;
 class ProjectDirectory;
-class Component;
-class Transform;
 class SkyBox;
 class Collider;
 
@@ -67,7 +65,7 @@ enum DialogResult
 	Dialog_CANCEL,
 };
 
-class MultiDragData 
+class MultiDragData
 {
 public:
 	std::vector<GameObject*> gameObjects;
@@ -111,29 +109,236 @@ public:
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
-	//static bool DrawInput(const std::string& inputName, Color& value);
-	//static bool DrawInput(const std::string& inputName, Vector2& value);
-	//static bool DrawInput(const std::string& inputName, Vector2Int& value);
-	//static bool DrawInput(const std::string& inputName, Vector3& value);
-	//static bool DrawInput(const std::string& inputName, Vector4& value);
-	//static bool DrawInput(const std::string& inputName, float& value);
-	//static bool DrawInput(const std::string& inputName, double& value);
-	//static bool DrawInput(const std::string& inputName, std::string& value);
-	//static bool DrawInput(const std::string& inputName, int& value);
+	static bool DrawInput(const std::string& inputName, Color value, Color &newValue);
+	static bool DrawInput(const std::string& inputName, Vector2 value, Vector2 &newValue);
+	static bool DrawInput(const std::string& inputName, Vector2Int value, Vector2Int &newValue);
+	static bool DrawInput(const std::string& inputName, Vector3 value, Vector3 &newValue);
+	static bool DrawInput(const std::string& inputName, Vector4 value, Vector4 &newValue);
+	static bool DrawInput(const std::string& inputName, float value, float &newValue);
+	static bool DrawInput(const std::string& inputName, double value, double&newValue);
+	static bool DrawInput(const std::string& inputName, std::string value, std::string& newValue);
+	static bool DrawInput(const std::string& inputName, int value, int&newValue);
 	static bool DrawInput(const std::string& inputName, bool value, bool& newValue);
-	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId);
-	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId);
-	//static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId);
-	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
-	//static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component> value, std::weak_ptr<Component>& newValue, uint64_t typeId);
+
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider> value, std::weak_ptr<Collider>& newValue, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject> value, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform> value, std::weak_ptr<Transform>& newValue, uint64_t typeId);
+	//static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox> value, std::shared_ptr<SkyBox>& newValue);
 
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child);
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);
-	static bool DrawReflection(Reflection& reflection);
-	static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap);
+	//static bool DrawReflection(Reflection& reflection);
+	//static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap);
+
+	template<typename T>
+	static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
+	{
+		bool valueChanged = false;
+		//command = std::make_shared<InspectorChangeValueCommand>()
+		for (const auto& kv : myMap)
+		{
+			std::string variableName = GetPrettyVariableName(kv.first);
+			ReflectionEntry reflectionEntry = kv.second;
+			if (reflectionEntry.isPublic)
+			{
+				bool valueChangedTemp = false;
+				Variable variableRef = kv.second.variable.value();
+				if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef)) // Supported basic type
+				{
+					int newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, int>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
+				{
+					float newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, float>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))// Supported basic type
+				{
+					double newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, double>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
+				{
+					std::string newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, std::string>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
+				{
+					bool newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, bool>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
+				{
+					std::weak_ptr<Component> newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Component>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Collider>>>(&variableRef)) // Supported basic type
+				{
+					std::weak_ptr<Collider> newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Collider>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
+				{
+					std::weak_ptr<GameObject> newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<GameObject>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
+				{
+					std::weak_ptr<Transform> newValue;
+					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+					if (valueChangedTemp)
+						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Transform>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+				{
+					if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
+					{
+						Vector2 newValue;
+						valueChangedTemp = DrawInput(variableName, *val, newValue);
+						if (valueChangedTemp)
+							command = std::make_shared<InspectorChangeValueCommand<T, Vector2>>(parent, val, newValue, *val);
+					}
+					else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
+					{
+						Vector2Int newValue;
+						valueChangedTemp = DrawInput(variableName, *val, newValue);
+						if (valueChangedTemp)
+							command = std::make_shared<InspectorChangeValueCommand<T, Vector2Int>>(parent, val, newValue, *val);
+					}
+					else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
+					{
+						Vector3 newValue;
+						valueChangedTemp = DrawInput(variableName, *val, newValue);
+						if (valueChangedTemp)
+							command = std::make_shared<InspectorChangeValueCommand<T, Vector3>>(parent, val, newValue, *val);
+					}
+					else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
+					{
+						Vector4 newValue;
+						valueChangedTemp = DrawInput(variableName, *val, newValue);
+						if (valueChangedTemp)
+							command = std::make_shared<InspectorChangeValueCommand<T, Vector4>>(parent, val, newValue, *val);
+					}
+					else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
+					{
+						Color newValue;
+						valueChangedTemp = DrawInput(variableName, *val, newValue);
+						if (valueChangedTemp)
+							command = std::make_shared<InspectorChangeValueCommand<T, Color>>(parent, val, newValue, *val);
+					}
+					else //Basic draw
+						DrawMap(valuePtr->get().GetReflection(), command, parent);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
+				{
+					DrawFileReference(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
+				{
+					DrawVector(true, "Texture", valuePtr, valueChangedTemp, variableName, FileType::File_Texture);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
+				{
+					DrawVector(true, "MeshData", valuePtr, valueChangedTemp, variableName, FileType::File_Mesh);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
+				{
+					DrawVector(true, "AudioClip", valuePtr, valueChangedTemp, variableName, FileType::File_Audio);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
+				{
+					DrawVector(true, "Scene", valuePtr, valueChangedTemp, variableName, FileType::File_Scene);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
+				{
+					DrawVector(true, "SkyBox", valuePtr, valueChangedTemp, variableName, FileType::File_Skybox);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
+				{
+					DrawVector(true, "Font", valuePtr, valueChangedTemp, variableName, FileType::File_Font);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
+				{
+					DrawVector(true, "Shader", valuePtr, valueChangedTemp, variableName, FileType::File_Shader);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
+				{
+					DrawVector(true, "Material", valuePtr, valueChangedTemp, variableName, FileType::File_Material);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
+				{
+					DrawVector("Transform", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
+				{
+					DrawVector("GameObject", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
+				{
+					DrawVector("Component", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<int>>>(&variableRef))
+				{
+					DrawVectorSimpleType(valuePtr, valueChangedTemp, variableName);
+				}
+
+				if (valueChangedTemp)
+				{
+					valueChanged = true;
+				}
+			}
+		}
+		return valueChanged;
+	}
 
 	static std::string OpenFolderDialog(const std::string& title);
 	static std::string OpenFileDialog(const std::string& title);
