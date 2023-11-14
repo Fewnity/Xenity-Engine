@@ -149,8 +149,8 @@ void InspectorMenu::Draw()
 					comp->SetIsEnabled(isEnable);
 				}
 				ImGui::SetCursorPosY(cursorY);
-
-				if (ImGui::CollapsingHeader(EditorUI::GenerateItemId().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+				std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
+				if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 				{
 					CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 					if (!comp->waitingForDestroy)

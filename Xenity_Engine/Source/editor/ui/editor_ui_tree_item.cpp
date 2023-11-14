@@ -29,8 +29,8 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
-
-		std::string nodeName = projectDir->GetFolderName() + EditorUI::GenerateItemId();
+		
+		std::string nodeName = projectDir->GetFolderName() + "##TIPD" + std::to_string(projectDir->uniqueId);
 		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 		ImGui::PopStyleColor();
 
@@ -77,7 +77,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		std::string nodeName = child->name + EditorUI::GenerateItemId();
+		std::string nodeName = child->name + "##TIGO" + std::to_string(child->GetUniqueId());
 		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())

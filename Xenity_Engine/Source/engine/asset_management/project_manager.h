@@ -29,9 +29,10 @@ class API ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
-	ProjectDirectory(const std::string& path)
+	ProjectDirectory(const std::string& path, uint64_t uniqueId)
 	{
 		this->path = path;
+		this->uniqueId = uniqueId;
 	}
 	~ProjectDirectory();
 
@@ -42,6 +43,7 @@ public:
 	std::string path = "";
 	std::vector<std::shared_ptr<ProjectDirectory>> subdirectories;
 	std::vector<std::shared_ptr<FileReference>> files;
+	uint64_t uniqueId = 0;
 };
 
 class ProjectListItem

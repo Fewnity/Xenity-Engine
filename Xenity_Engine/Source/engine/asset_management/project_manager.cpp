@@ -76,7 +76,7 @@ void ProjectManager::FindAllProjectFiles()
 	//Get all files of the project
 	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
 
-	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath);
+	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
 
 	std::vector<std::shared_ptr<File>> allFoundFiles;
 	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
@@ -199,7 +199,7 @@ void ProjectManager::CreateProjectDirectories(std::shared_ptr <Directory> projec
 	size_t dirCount = projectDirectoryBase->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
-		std::shared_ptr <ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath());
+		std::shared_ptr <ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath(), projectDirectoryBase->subdirectories[i]->GetUniqueId());
 		realProjectDirectory->subdirectories.push_back(newDir);
 		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
 	}
