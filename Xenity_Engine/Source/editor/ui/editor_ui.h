@@ -111,6 +111,22 @@ public:
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
+	//static bool DrawInput(const std::string& inputName, Color& value);
+	//static bool DrawInput(const std::string& inputName, Vector2& value);
+	//static bool DrawInput(const std::string& inputName, Vector2Int& value);
+	//static bool DrawInput(const std::string& inputName, Vector3& value);
+	//static bool DrawInput(const std::string& inputName, Vector4& value);
+	//static bool DrawInput(const std::string& inputName, float& value);
+	//static bool DrawInput(const std::string& inputName, double& value);
+	//static bool DrawInput(const std::string& inputName, std::string& value);
+	//static bool DrawInput(const std::string& inputName, int& value);
+	static bool DrawInput(const std::string& inputName, bool value, bool& newValue);
+	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId);
+	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId);
+	//static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId);
+	//static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
+	//static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
+
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child);
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);

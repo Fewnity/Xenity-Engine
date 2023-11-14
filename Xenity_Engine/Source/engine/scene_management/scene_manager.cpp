@@ -14,6 +14,8 @@ std::shared_ptr<Scene> SceneManager::openedScene = nullptr;
 json savedSceneData;
 json savedSceneDataHotReloading;
 
+bool SceneManager::sceneModified = false;
+
 #if defined(EDITOR)
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
@@ -83,6 +85,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
+				sceneModified = false;
 			}
 			else
 			{
@@ -107,6 +110,30 @@ void SceneManager::RestoreScene()
 void SceneManager::RestoreSceneHotReloading()
 {
 	LoadScene(savedSceneDataHotReloading);
+}
+
+void SceneManager::SetSceneModified(bool value)
+{
+	sceneModified = value;
+	Window::UpdateWindowTitle();
+}
+
+bool SceneManager::OnQuit()
+{
+	bool cancel = false;
+	if (sceneModified)
+	{
+		DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", Dialog_Type_YES_NO_CANCEL);
+		if (result == DialogResult::Dialog_YES)
+		{
+			SaveScene(SaveSceneToFile);
+		}
+		else  if (result == DialogResult::Dialog_CANCEL)
+		{
+			cancel = true;
+		}
+	}
+	return cancel;
 }
 
 void SceneManager::LoadScene(const json& jsonData)

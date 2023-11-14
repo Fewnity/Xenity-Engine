@@ -78,8 +78,18 @@ public:
 		openedScene = _openedScene;
 	}
 
+	static void SetSceneModified(bool value);
+
+	static bool GetSceneModified() 
+	{
+		return sceneModified;
+	}
+
+	static bool OnQuit();
+
 private:
 	static std::shared_ptr<Scene> openedScene;
 	static void LoadScene(const nlohmann::json& jsonData);
+	static bool sceneModified;
 };
 

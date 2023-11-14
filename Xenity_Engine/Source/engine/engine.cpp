@@ -1,4 +1,3 @@
-// #define EDITOR
 #include "engine.h"
 #include "engine_settings.h"
 #include "../xenity.h"
@@ -14,7 +13,6 @@
 #include "dynamic_lib/dynamic_lib.h"
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include "../editor/editor.h"
 #include "../xenity_editor.h"
 #include <glad/glad.h>
 #include "../editor/ui/menus/inspector_menu.h"
@@ -173,9 +171,15 @@ void Engine::CheckEvents()
 		InputSystem::Read(event);
 		switch (event.type)
 		{
-		case SDL_QUIT:
-			isRunning = false;
+		case SDL_QUIT: 
+		{
+			bool cancelQuit = SceneManager::OnQuit();
+			if (!cancelQuit) 
+			{
+				isRunning = false;
+			}
 			break;
+		}
 		case SDL_WINDOWEVENT:
 			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
 			{
@@ -244,7 +248,6 @@ void Engine::Loop()
 		editorUpdateBenchmark->Stop();
 #endif
 
-
 		if (ProjectManager::GetIsProjectLoaded())
 		{
 			RemoveUnusedFiles();
@@ -294,7 +297,6 @@ void Engine::Loop()
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
 	game.reset();
-	//delete game;
 }
 
 void Engine::RegisterEngineComponents()

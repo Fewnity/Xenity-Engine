@@ -26,6 +26,7 @@
 #include "../engine/asset_management/project_manager.h"
 #include "../engine/reflection/reflection_utils.h"
 #include "../engine/scene_management/scene_manager.h"
+#include "command/command_manager.h"
 
 using json = nlohmann::json;
 
@@ -139,6 +140,15 @@ void Editor::Update()
 	}
 
 	//------- Check shortcuts
+
+	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Z)))
+	{
+		CommandManager::Undo();
+	}
+	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Y)))
+	{
+		CommandManager::Redo();
+	}
 
 	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 	{

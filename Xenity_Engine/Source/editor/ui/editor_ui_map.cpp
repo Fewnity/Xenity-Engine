@@ -34,8 +34,12 @@ bool EditorUI::DrawMap(const std::unordered_map<std::string, ReflectionEntry>& m
 				valueChangedTemp = DrawInput(variableName, valuePtr->get());
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
 				valueChangedTemp = DrawInput(variableName, valuePtr->get());
-			else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
-				valueChangedTemp = DrawInput(variableName, valuePtr->get());
+			else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef)) // Supported basic type{
+			{
+				bool newValue;
+				valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+
+			}
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
 				valueChangedTemp = DrawInput(variableName, valuePtr->get(), reflectionEntry.typeId);
 			else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Collider>>>(&variableRef)) // Supported basic type

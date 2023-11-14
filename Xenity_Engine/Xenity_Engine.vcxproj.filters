@@ -125,6 +125,9 @@
     <ClCompile Include="Source\game_dungeon\spike.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
     <ClCompile Include="Source\editor\ui\editor_dialog.cpp" />
+    <ClCompile Include="Source\editor\command\command.cpp" />
+    <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
+    <ClCompile Include="Source\editor\command\command_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -258,6 +261,9 @@
     <ClInclude Include="Source\game_dungeon\player.h" />
     <ClInclude Include="Source\game_dungeon\spike.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_gskit.h" />
+    <ClInclude Include="Source\editor\command\command.h" />
+    <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
+    <ClInclude Include="Source\editor\command\command_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

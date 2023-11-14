@@ -9,7 +9,6 @@
 #pragma once
 
 #include "../texture.h"
-// #include "../shader.h"
 #include <glm/glm.hpp>
 #include <vector>
 #include "../../lighting/lighting.h"
@@ -57,7 +56,6 @@ enum DrawMode
 class API Renderer
 {
 public:
-	Renderer();
 	virtual int Init() = 0;
 	virtual void Setup() = 0;
 	virtual void Stop() = 0;

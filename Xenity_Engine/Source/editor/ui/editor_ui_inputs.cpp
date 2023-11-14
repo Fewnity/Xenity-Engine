@@ -23,6 +23,8 @@ void EditorUI::DrawInputTitle(const std::string& title)
 	ImGui::SetNextItemWidth(-1);
 }
 
+#pragma region Old inputs
+
 bool EditorUI::DrawInput(const std::string& inputName, float& value)
 {
 	DrawInputTitle(inputName);
@@ -277,5 +279,22 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector4& value)
 
 	return value != oldValue;
 }
+
+#pragma endregion
+
+#pragma region New Inputs
+
+bool EditorUI::DrawInput(const std::string& inputName, bool value, bool& newValue)
+{
+	DrawInputTitle(inputName);
+	bool oldValue = bool(value);
+	ImGui::Checkbox(GenerateItemId().c_str(), &value);
+	newValue = value;
+	return value != oldValue;
+}
+
+#pragma endregion
+
+
 
 #endif

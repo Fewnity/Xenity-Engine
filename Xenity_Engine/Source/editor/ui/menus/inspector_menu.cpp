@@ -9,6 +9,8 @@
 #include "../../../engine/audio/audio_clip_stream.h"
 #include <imgui/imgui_impl_opengl3.h>
 #include "../../../engine/graphics/renderer/renderer.h"
+#include "../../command/commands/inspector_commands.h"
+#include "../../command/command_manager.h"
 
 void InspectorMenu::Init()
 {
@@ -70,11 +72,15 @@ void InspectorMenu::Draw()
 			//Apply new values if changed
 			if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 			{
-				selectedGameObject->name = str0;
+				auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->name, str0, selectedGameObject->name);
+				CommandManager::AddCommand(command);
+				command->Execute();
 			}
 			if (active != selectedGameObject->GetActive())
 			{
-				selectedGameObject->SetActive(active);
+				auto command = std::make_shared<InspectorGameObjectSetActiveCommand>(selectedGameObject, active, selectedGameObject->GetActive());
+				CommandManager::AddCommand(command);
+				command->Execute();
 			}
 
 			ImGui::Spacing();
