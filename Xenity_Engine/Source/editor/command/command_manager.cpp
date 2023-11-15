@@ -12,7 +12,7 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 		int count = (commands.size() -1) - (currentCommand + 1);
 		for (int i = 0; i < count; i++)
 		{
-			commands.erase(commands.begin() + currentCommand + 1);
+			commands.erase(commands.begin() + (currentCommand + 1));
 		}
 	}
 	if (commands.size() >= maxCommandCount)
