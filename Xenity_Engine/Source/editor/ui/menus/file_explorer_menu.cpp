@@ -421,6 +421,7 @@ void FileExplorerMenu::Draw()
 
 void FileExplorerMenu::Rename()
 {
+	bool needTitleRefresh = false;
 	bool needUpdate = false;
 	if (!renamingString.empty() && fileToRename)
 	{
@@ -429,8 +430,13 @@ void FileExplorerMenu::Rename()
 		bool success = false;
 		std::shared_ptr<File> file = fileToRename->file;
 		success = FileSystem::fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
-		if (success)
+		if (success) {
 			FileSystem::fileSystem->Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
+			if (SceneManager::GetOpenedScene() == fileToRename)
+			{
+				needTitleRefresh = true;
+			}
+		}
 	}
 	else if (!renamingString.empty() && directoryToRename)
 	{
@@ -449,4 +455,9 @@ void FileExplorerMenu::Rename()
 
 	if (needUpdate)
 		ProjectManager::RefreshProjectDirectory();
+
+	if (needTitleRefresh) 
+	{
+		Window::UpdateWindowTitle(); // If it's a scene, update the window title
+	}
 }
