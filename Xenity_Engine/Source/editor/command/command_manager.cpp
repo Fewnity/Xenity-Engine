@@ -7,14 +7,17 @@ int CommandManager::currentCommand = -1;
 void CommandManager::AddCommand(std::shared_ptr<Command> command)
 {
 	commands.push_back(command);
+	// If we are not at the end of the list, remove all other commands starting from currentCommand to the end of the list
 	if (currentCommand != commands.size() - 1) 
 	{
-		int count = (commands.size() -1) - (currentCommand + 1);
+		int count = (commands.size() - 1) - (currentCommand + 1);
 		for (int i = 0; i < count; i++)
 		{
 			commands.erase(commands.begin() + (currentCommand + 1));
 		}
 	}
+	
+	// 
 	if (commands.size() >= maxCommandCount)
 	{
 		commands.erase(commands.begin());
@@ -33,6 +36,7 @@ void CommandManager::ClearCommands()
 
 void CommandManager::Undo()
 {
+	// If we are not at the beginning of the list
 	if (currentCommand >= 0)
 	{
 		commands[currentCommand]->Undo();
@@ -42,6 +46,7 @@ void CommandManager::Undo()
 
 void CommandManager::Redo()
 {
+	//If we are not at the end of the list
 	if ((int)commands.size() - 1 > currentCommand)
 	{
 		currentCommand++;
