@@ -402,3 +402,53 @@ inline void InspectorCreateGameObjectCommand::Redo()
 {
 	Execute();
 }
+
+//----------------------------------------------------------------------------
+
+template<typename T>
+class InspectorDeleteComponentCommand : public Command
+{
+public:
+	InspectorDeleteComponentCommand() = delete;
+	InspectorDeleteComponentCommand(std::weak_ptr<GameObject> target, std::weak_ptr<T> componentToDestroy);
+	void Execute() override;
+	void Undo() override;
+	void Redo() override;
+private:
+	std::weak_ptr<GameObject> target;
+	std::weak_ptr<T> componentToDestroy;
+};
+
+template<typename T>
+inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<GameObject> target, std::weak_ptr<T> componentToDestroy)
+{
+	this->target = target;
+	this->newValue = newValue;
+	this->lastValue = lastValue;
+}
+
+template<typename T>
+inline void InspectorDeleteComponentCommand<T>::Execute()
+{
+	SceneManager::SetSceneModified(true);
+}
+
+template<typename T>
+inline void InspectorDeleteComponentCommand<T>::Undo()
+{
+	if (target.lock())
+	{
+		//target.lock()->SetLocalPosition(lastValue);
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+template<typename T>
+inline void InspectorDeleteComponentCommand<T>::Redo()
+{
+	if (target.lock())
+	{
+		//target.lock()->SetLocalPosition(newValue);
+		SceneManager::SetSceneModified(true);
+	}
+}
