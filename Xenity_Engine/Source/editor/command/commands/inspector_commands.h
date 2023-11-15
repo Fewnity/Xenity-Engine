@@ -314,6 +314,7 @@ public:
 private:
 	std::weak_ptr<GameObject> target;
 	std::weak_ptr<GameObject> createdGameObject;
+	std::weak_ptr<GameObject> oldParent;
 	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
 };
 
@@ -354,9 +355,9 @@ inline void InspectorCreateGameObjectCommand::Execute()
 		if (target.lock()->parent.lock())
 		{
 			createdGameObject.lock()->SetParent(target.lock()->parent.lock());
+			oldParent = target.lock()->parent.lock();
 		}
 		target.lock()->SetParent(createdGameObject);
-
 		done = true;
 	}
 
@@ -384,10 +385,16 @@ inline void InspectorCreateGameObjectCommand::Undo()
 		}
 		else if (mode == 2) 
 		{
+			if(oldParent.lock())
+				target.lock()->SetParent(oldParent.lock());
+			else
+				target.lock()->SetParent(nullptr);
+			Destroy(createdGameObject);
 			done = true;
 		}
+
 		if(done)
-		SceneManager::SetSceneModified(true);
+			SceneManager::SetSceneModified(true);
 	}
 }
 
