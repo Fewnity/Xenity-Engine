@@ -470,7 +470,9 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DestroyGameObjectAndChild(gameObject->children[i].lock());
+		DestroyGameObjectAndChild(gameObject->children[0].lock());
+		i--;
+		childCount--;
 	}
 }
 
