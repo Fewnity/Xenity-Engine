@@ -116,7 +116,9 @@ void InspectorMenu::Draw()
 
 				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 				{
-					selectedTransform->SetLocalPosition(localPos);
+					auto command = std::make_shared<InspectorTransformSetLocalPositionCommand>(selectedTransform, localPos, selectedTransform->GetLocalPosition());
+					CommandManager::AddCommand(command);
+					command->Execute();
 				}
 				//ImGui::Text("World Position: %f %f %f", selectedTransform->GetPosition().x, selectedTransform->GetPosition().y, selectedTransform->GetPosition().z);
 
@@ -127,7 +129,9 @@ void InspectorMenu::Draw()
 				changed = EditorUI::DrawInput("Local Rotation", localRot);
 				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 				{
-					selectedTransform->SetLocalRotation(localRot);
+					auto command = std::make_shared<InspectorTransformSetLocalRotationCommand>(selectedTransform, localRot, selectedTransform->GetLocalRotation());
+					CommandManager::AddCommand(command);
+					command->Execute();
 				}
 				//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);
 
@@ -138,7 +142,9 @@ void InspectorMenu::Draw()
 				changed = EditorUI::DrawInput("Local Scale", localScale);
 				if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
 				{
-					selectedTransform->SetLocalScale(localScale);
+					auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedTransform, localScale, selectedTransform->GetLocalScale());
+					CommandManager::AddCommand(command);
+					command->Execute();
 				}
 				//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
 				ImGui::Separator();

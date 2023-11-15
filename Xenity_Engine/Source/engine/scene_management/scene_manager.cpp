@@ -86,6 +86,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
 				sceneModified = false;
+				Window::UpdateWindowTitle();
 			}
 			else
 			{
