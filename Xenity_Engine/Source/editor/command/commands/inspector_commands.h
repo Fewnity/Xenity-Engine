@@ -4,6 +4,10 @@
 #include <memory>
 #include "../../../engine/scene_management/scene_manager.h"
 #include "../../../engine/game_elements/gameobject.h"
+#include "../../editor.h"
+#include "../../../engine/engine.h"
+
+//----------------------------------------------------------------------------
 
 template<typename U, typename T>
 class InspectorChangeValueCommand : public Command
@@ -40,7 +44,7 @@ inline void InspectorChangeValueCommand<U, T>::Execute()
 template<typename U, typename T>
 inline void InspectorChangeValueCommand<U, T>::Undo()
 {
-	if (target.lock()) 
+	if (target.lock())
 	{
 		*valuePtr = lastValue;
 		SceneManager::SetSceneModified(true);
@@ -244,4 +248,150 @@ inline void InspectorTransformSetLocalScaleCommand::Redo()
 		target.lock()->SetLocalScale(newValue);
 		SceneManager::SetSceneModified(true);
 	}
+}
+
+//----------------------------------------------------------------------------
+
+template<typename T>
+class InspectorAddComponentCommand : public Command
+{
+public:
+	InspectorAddComponentCommand() = delete;
+	InspectorAddComponentCommand(std::weak_ptr<GameObject> target);
+	void Execute() override;
+	void Undo() override;
+	void Redo() override;
+private:
+	std::weak_ptr<GameObject> target;
+	std::weak_ptr<T> newComponent;
+};
+
+template<typename T>
+inline InspectorAddComponentCommand<T>::InspectorAddComponentCommand(std::weak_ptr<GameObject> target)
+{
+	this->target = target;
+}
+
+template<typename T>
+inline void InspectorAddComponentCommand<T>::Execute()
+{
+	newComponent = target.lock()->AddComponent<T>();
+	SceneManager::SetSceneModified(true);
+}
+
+template<typename T>
+inline void InspectorAddComponentCommand<T>::Undo()
+{
+	if (target.lock() && newComponent.lock())
+	{
+		Destroy(newComponent);
+		newComponent.reset();
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+template<typename T>
+inline void InspectorAddComponentCommand<T>::Redo()
+{
+	if (target.lock())
+	{
+		newComponent = target.lock()->AddComponent<T>();
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+
+//----------------------------------------------------------------------------
+
+class InspectorCreateGameObjectCommand : public Command
+{
+public:
+	InspectorCreateGameObjectCommand() = delete;
+	InspectorCreateGameObjectCommand(std::weak_ptr<GameObject> target, int mode);
+	void Execute() override;
+	void Undo() override;
+	void Redo() override;
+private:
+	std::weak_ptr<GameObject> target;
+	std::weak_ptr<GameObject> createdGameObject;
+	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
+};
+
+inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(std::weak_ptr<GameObject> target, int mode)
+{
+	this->target = target;
+	this->mode = mode;
+}
+
+inline void InspectorCreateGameObjectCommand::Execute()
+{
+	bool done = false;
+
+	if (mode == 0)
+	{
+		createdGameObject = CreateGameObject();
+		done = true;
+	}
+	else if (mode == 1 && target.lock())
+	{
+		createdGameObject = CreateGameObject();
+		std::shared_ptr<Transform> transform = createdGameObject.lock()->GetTransform();
+		createdGameObject.lock()->SetParent(target);
+		transform->SetLocalPosition(Vector3(0));
+		transform->SetLocalRotation(Vector3(0));
+		transform->SetLocalScale(Vector3(1));
+		done = true;
+	}
+	else if (mode == 2 && target.lock())
+	{
+		createdGameObject = CreateGameObject();
+		std::shared_ptr<Transform> transform = createdGameObject.lock()->GetTransform();
+		std::shared_ptr<Transform>  selectedTransform = target.lock()->GetTransform();
+		transform->SetPosition(selectedTransform->GetPosition());
+		transform->SetRotation(selectedTransform->GetRotation());
+		transform->SetLocalScale(selectedTransform->GetScale());
+
+		if (target.lock()->parent.lock())
+		{
+			createdGameObject.lock()->SetParent(target.lock()->parent.lock());
+		}
+		target.lock()->SetParent(createdGameObject);
+
+		done = true;
+	}
+
+	if (done)
+	{
+		Editor::SetSelectedGameObject(createdGameObject.lock());
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+inline void InspectorCreateGameObjectCommand::Undo()
+{
+	if (createdGameObject.lock())
+	{
+		bool done = false;
+		if (mode == 0)
+		{
+			Destroy(createdGameObject);
+			done = true;
+		}
+		else if (mode == 1)
+		{
+			Destroy(createdGameObject);
+			done = true;
+		}
+		else if (mode == 2) 
+		{
+			done = true;
+		}
+		if(done)
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+inline void InspectorCreateGameObjectCommand::Redo()
+{
+	Execute();
 }

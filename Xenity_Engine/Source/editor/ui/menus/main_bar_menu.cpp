@@ -13,9 +13,19 @@
 #include <ShObjIdl.h>
 #include "../../../engine/scene_management/scene_manager.h"
 #include "../../../engine/asset_management/project_manager.h"
+#include "../../command/commands/inspector_commands.h"
+#include "../../command/command_manager.h"
 
 void MainBarMenu::Init()
 {
+}
+
+template<typename T>
+inline void MainBarMenu::AddComponentToSelectedGameObject()
+{
+	auto command = std::make_shared<InspectorAddComponentCommand<T>>(Editor::GetSelectedGameObject());
+	CommandManager::AddCommand(command);
+	command->Execute();
 }
 
 static bool IsOpen = true;
@@ -140,11 +150,11 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Mesh Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<MeshRenderer>();
+				AddComponentToSelectedGameObject<MeshRenderer>();
 			}
 			if (ImGui::MenuItem("Text Mesh", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<TextRenderer>();
+				AddComponentToSelectedGameObject<TextRenderer>();
 			}
 			ImGui::EndMenu();
 		}
@@ -152,7 +162,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Audio Source", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<AudioSource>();
+				AddComponentToSelectedGameObject<AudioSource>();
 			}
 			ImGui::EndMenu();
 		}
@@ -160,11 +170,11 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Camera", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<Camera>();
+				AddComponentToSelectedGameObject<Camera>();
 			}
 			if (ImGui::MenuItem("Light", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<Light>();
+				AddComponentToSelectedGameObject<Light>();
 			}
 			ImGui::EndMenu();
 		}
@@ -172,7 +182,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Tilemap", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<Tilemap>();
+				AddComponentToSelectedGameObject<Tilemap>();
 			}
 			ImGui::EndMenu();
 		}
@@ -180,7 +190,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<TextRendererCanvas>();
+				AddComponentToSelectedGameObject<TextRendererCanvas>();
 			}
 			ImGui::EndMenu();
 		}
@@ -188,7 +198,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Sprite Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<SpriteRenderer>();
+				AddComponentToSelectedGameObject<SpriteRenderer>();
 			}
 			ImGui::EndMenu();
 		}
@@ -196,7 +206,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Test Component", nullptr, nullptr, hasSelectedGameObject))
 			{
-				Editor::AddComponentToSelection<TestComponent>();
+				AddComponentToSelectedGameObject<TestComponent>();
 			}
 			ImGui::EndMenu();
 		}
