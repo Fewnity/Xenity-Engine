@@ -281,12 +281,12 @@ void Engine::Loop()
 			renderer->Clear();
 #endif
 		}
+		InputSystem::blockGameInput = false;
 #if defined(EDITOR)
 		editorDrawBenchmark->Start();
 		Editor::Draw();
 		editorDrawBenchmark->Stop();
 #endif
-		InputSystem::blockGameInput = false;
 		Debug::SendProfilerDataToServer();
 		Window::UpdateScreen();
 		engineLoopBenchmark->Stop();
