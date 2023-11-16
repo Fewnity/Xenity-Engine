@@ -23,7 +23,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 			GameplayManager::SetGameState(Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->fileType == File_Code || item.file->fileType == File_Header)
+		else if (item.file->fileType == File_Code || item.file->fileType == File_Header || item.file->fileType == File_Shader)
 		{
 			std::string command = "code \"" + item.file->file->GetPath() + "\"";
 			system(command.c_str());
