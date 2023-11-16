@@ -223,9 +223,12 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 	{
 		if (state == 0)
 			state = 2;
+
 		if (ImGui::MenuItem("Delete"))
 		{
-			Destroy(component);
+			auto command = std::make_shared<InspectorDeleteComponentCommand<Component>>(component);
+			CommandManager::AddCommand(command);
+			command->Execute();
 			componentCount--;
 			componentIndex--;
 			ImGui::CloseCurrentPopup();

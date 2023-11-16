@@ -6,6 +6,11 @@
 #include "../../../engine/game_elements/gameobject.h"
 #include "../../editor.h"
 #include "../../../engine/engine.h"
+#include <json.hpp>
+#include "../../../engine/reflection/reflection_utils.h"
+#include "../../../engine/class_registry/class_registry.h"
+
+//using json = nlohmann::json;
 
 //----------------------------------------------------------------------------
 
@@ -383,9 +388,9 @@ inline void InspectorCreateGameObjectCommand::Undo()
 			Destroy(createdGameObject);
 			done = true;
 		}
-		else if (mode == 2) 
+		else if (mode == 2)
 		{
-			if(oldParent.lock())
+			if (oldParent.lock())
 				target.lock()->SetParent(oldParent.lock());
 			else
 				target.lock()->SetParent(nullptr);
@@ -393,7 +398,7 @@ inline void InspectorCreateGameObjectCommand::Undo()
 			done = true;
 		}
 
-		if(done)
+		if (done)
 			SceneManager::SetSceneModified(true);
 	}
 }
@@ -410,27 +415,34 @@ class InspectorDeleteComponentCommand : public Command
 {
 public:
 	InspectorDeleteComponentCommand() = delete;
-	InspectorDeleteComponentCommand(std::weak_ptr<GameObject> target, std::weak_ptr<T> componentToDestroy);
+	InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy);
 	void Execute() override;
 	void Undo() override;
 	void Redo() override;
 private:
 	std::weak_ptr<GameObject> target;
 	std::weak_ptr<T> componentToDestroy;
+	nlohmann::json componentData;
+	std::string componentName = "";
 };
 
 template<typename T>
-inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<GameObject> target, std::weak_ptr<T> componentToDestroy)
+inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
 {
-	this->target = target;
-	this->newValue = newValue;
-	this->lastValue = lastValue;
+	this->target = componentToDestroy.lock()->GetGameObject();
+	this->componentToDestroy = componentToDestroy;
+	this->componentData["Values"] = ReflectionUtils::MapToJson(componentToDestroy.lock()->GetReflection());
+	this->componentName = componentToDestroy.lock()->GetComponentName();
 }
 
 template<typename T>
 inline void InspectorDeleteComponentCommand<T>::Execute()
 {
-	SceneManager::SetSceneModified(true);
+	if (componentToDestroy.lock())
+	{
+		Destroy(componentToDestroy);
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 template<typename T>
@@ -438,7 +450,9 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 {
 	if (target.lock())
 	{
-		//target.lock()->SetLocalPosition(lastValue);
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, target.lock());
+		ReflectionUtils::JsonToMap(componentData, component->GetReflection());
+		componentToDestroy = component;
 		SceneManager::SetSceneModified(true);
 	}
 }
@@ -446,9 +460,5 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 template<typename T>
 inline void InspectorDeleteComponentCommand<T>::Redo()
 {
-	if (target.lock())
-	{
-		//target.lock()->SetLocalPosition(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }

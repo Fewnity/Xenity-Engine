@@ -235,15 +235,6 @@ void Editor::CreateEmptyChild()
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObject, 1);
 	CommandManager::AddCommand(command);
 	command->Execute();
-
-	//std::shared_ptr<GameObject> go = CreateGameObject();
-	//std::shared_ptr<Transform> transform = go->GetTransform();
-	//go->SetParent(selectedGameObject);
-	//transform->SetLocalPosition(Vector3(0));
-	//transform->SetLocalRotation(Vector3(0));
-	//transform->SetLocalScale(Vector3(1));
-
-	//SetSelectedGameObject(go);
 }
 
 void Editor::CreateEmptyParent()
@@ -251,22 +242,6 @@ void Editor::CreateEmptyParent()
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObject, 2);
 	CommandManager::AddCommand(command);
 	command->Execute();
-
-	//std::shared_ptr<GameObject> go = CreateGameObject();
-	//std::shared_ptr<Transform> transform = go->GetTransform();
-	//std::shared_ptr<GameObject> selectGameObject = selectedGameObject.lock();
-	//std::shared_ptr<Transform>  selectedTransform = selectGameObject->GetTransform();
-	//transform->SetPosition(selectedTransform->GetPosition());
-	//transform->SetRotation(selectedTransform->GetRotation());
-	//transform->SetLocalScale(selectedTransform->GetScale());
-
-	//if (selectGameObject->parent.lock())
-	//{
-	//	go->SetParent(selectGameObject->parent.lock());
-	//}
-	//selectGameObject->SetParent(go);
-
-	//SetSelectedGameObject(go);
 }
 
 void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference)

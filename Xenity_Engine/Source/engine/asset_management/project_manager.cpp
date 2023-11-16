@@ -618,13 +618,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 
 ProjectDirectory::~ProjectDirectory()
 {
-	/*int dirCount = subdirectories.size();
-	for (int i = 0; i < dirCount; i++)
-	{
-		delete subdirectories[i];
-	}*/
 	subdirectories.clear();
-	Debug::PrintWarning("ProjectDirectory::~ProjectDirectory()");
 }
 
 std::string ProjectDirectory::GetFolderName()
