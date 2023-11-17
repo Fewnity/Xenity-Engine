@@ -5,7 +5,7 @@ Store and send (when rendering scene) shader values.
 ## Methods
 | Definition | Description |
 |-|-|
-void SetAttribut(const char* attribut, const T& value) | Set material attribute (Type can be Vector2/3/4, float and int)
+void SetAttribute(const char* attribute, const T& value) | Set material attribute (Type can be Vector2/3/4, float and int)
 
 
 ## Members
