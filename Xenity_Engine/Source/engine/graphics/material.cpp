@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 Material::Material()
 {
-	SetAttribut("color", Vector3(1, 1, 1));
+	SetAttribute("color", Vector3(1, 1, 1));
 	AssetManager::AddMaterial(this);
 }
 
@@ -28,63 +28,63 @@ Material::~Material()
 #pragma region Attributs setters
 
 /// <summary>
-/// Add a Vector2 attribut
+/// Add a Vector2 attribute
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">Vector2</param>
-void Material::SetAttribut(const char* attribut, const Vector2& value)
+void Material::SetAttribute(const char* attribute, const Vector2& value)
 {
-	uniformsVector2.emplace(std::pair <const char*, Vector2>(attribut, value));
+	uniformsVector2.emplace(std::pair <const char*, Vector2>(attribute, value));
 }
 
 /// <summary>
-/// Add a Vector3 attribut
+/// Add a Vector3 attribute
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">Vector3</param>
-void Material::SetAttribut(const char* attribut, const Vector3& value)
+void Material::SetAttribute(const char* attribute, const Vector3& value)
 {
-	uniformsVector3.emplace(std::pair <const char*, Vector3>(attribut, value));
+	uniformsVector3.emplace(std::pair <const char*, Vector3>(attribute, value));
 }
 
 /// <summary>
 /// Add a Vector4 attribut
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">Vector4</param>
-void Material::SetAttribut(const char* attribut, const Vector4& value)
+void Material::SetAttribute(const char* attribute, const Vector4& value)
 {
-	uniformsVector4.emplace(std::pair <const char*, Vector4>(attribut, value));
+	uniformsVector4.emplace(std::pair <const char*, Vector4>(attribute, value));
 }
 
 /// <summary>
-/// Add a Texture attribut
+/// Add a Texture attribute
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">Texture pointer</param>
-//void Material::SetAttribut(const char* attribut, Texture* value)
+//void Material::SetAttribute(const char* attribute, Texture* value)
 //{
-//	uniformsTextures.insert(std::pair <const char*, Texture*>(attribut, value));
+//	uniformsTextures.insert(std::pair <const char*, Texture*>(attribute, value));
 //}
 
 /// <summary>
-/// Add a float attribut
+/// Add a float attribute
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">float</param>
-void Material::SetAttribut(const char* attribut, const float value)
+void Material::SetAttribute(const char* attribute, const float value)
 {
-	uniformsFloat.emplace(std::pair <const char*, float>(attribut, value));
+	uniformsFloat.emplace(std::pair <const char*, float>(attribute, value));
 }
 
 /// <summary>
-/// Add an int attribut
+/// Add an int attribute
 /// </summary>
-/// <param name="attribut">Attribut name</param>
+/// <param name="attribute">Attribute name</param>
 /// <param name="value">int</param>
-void Material::SetAttribut(const char* attribut, const int value)
+void Material::SetAttribute(const char* attribute, const int value)
 {
-	uniformsInt.emplace(std::pair <const char*, int>(attribut, value));
+	uniformsInt.emplace(std::pair <const char*, int>(attribute, value));
 }
 
 std::shared_ptr<Material> Material::MakeMaterial()

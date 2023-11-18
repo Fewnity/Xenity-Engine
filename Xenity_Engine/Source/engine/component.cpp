@@ -49,7 +49,6 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 		if (auto result = std::dynamic_pointer_cast<IDrawable>(thisShared))
 		{
 			Graphics::AddDrawable(result);
-			AssetManager::AddDrawable(result);
 		}
 		else if (auto result = std::dynamic_pointer_cast<Light>(thisShared))
 		{

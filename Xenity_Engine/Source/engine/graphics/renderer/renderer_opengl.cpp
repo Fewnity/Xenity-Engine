@@ -359,9 +359,9 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	if (lastSettings.useLighting != settings.useLighting)
 	{
 #if defined(__PSP__)
-		if (EngineSettings::useLighting && settings.useLighting && !settings.useBlend)
+		if (settings.useLighting && !settings.useBlend)
 #else
-		if (EngineSettings::useLighting && settings.useLighting)
+		if (settings.useLighting)
 #endif
 		{
 			glEnable(GL_LIGHTING);

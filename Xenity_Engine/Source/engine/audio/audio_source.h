@@ -18,7 +18,6 @@ class API AudioSource : public Component
 public:
 	AudioSource();
 	~AudioSource();
-	//void SetReflection();
 
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
@@ -93,14 +92,14 @@ public:
 		return loop;
 	}
 
+	void OnDrawGizmos() override;
+
+private:
 	std::shared_ptr<AudioSource> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
 	}
 
-	void OnDrawGizmos() override;
-
-private:
 	float volume = 1;
 	float pan = 0.5;
 	bool loop = true;

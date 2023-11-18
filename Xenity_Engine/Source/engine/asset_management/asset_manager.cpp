@@ -8,13 +8,11 @@ bool initialised = false;
 std::vector<Material*> AssetManager::materials;
 std::vector<Reflection*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
-std::vector<std::weak_ptr<IDrawable>> AssetManager::drawables;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
 
 int AssetManager::materialCount = 0;
 int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
-int AssetManager::drawableCount = 0;
 int AssetManager::lightCount = 0;
 
 std::shared_ptr <Shader> AssetManager::shader = nullptr;
@@ -71,7 +69,7 @@ void AssetManager::Init()
 		unlitMaterial = Material::MakeMaterial();
 		unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
 		unlitMaterial->shader = unlitShader;
-		//Engine::unlitMaterial->SetAttribut("color", Vector3(1, 1, 1));
+		//Engine::unlitMaterial->SetAttribute("color", Vector3(1, 1, 1));
 
 		lineMaterial = Material::MakeMaterial();
 		lineMaterial->file = FileSystem::MakeFile("shaders/lineMaterial.mat");
@@ -112,16 +110,6 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 {
 	fileReferences.push_back(fileReference);
 	fileReferenceCount++;
-}
-
-/// <summary>
-/// Add a drawable in the drawable list
-/// </summary>
-/// <param name="drawable"></param>
-void AssetManager::AddDrawable(const std::weak_ptr<IDrawable>& drawable)
-{
-	drawables.push_back(drawable);
-	drawableCount++;
 }
 
 /// <summary>
@@ -288,34 +276,6 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 }
 
 /// <summary>
-/// Remove a drawable from the drawable list
-/// </summary>
-/// <param name="drawable"></param>
-void AssetManager::RemoveDrawable(const std::weak_ptr<IDrawable>& drawable)
-{
-	if (!Engine::IsRunning())
-		return;
-
-	int drawableIndex = 0;
-	bool found = false;
-	for (int i = 0; i < drawableCount; i++)
-	{
-		if (drawables[i].lock() == drawable.lock())
-		{
-			found = true;
-			drawableIndex = i;
-			break;
-		}
-	}
-
-	if (found)
-	{
-		drawables.erase(drawables.begin() + drawableIndex);
-		drawableCount--;
-	}
-}
-
-/// <summary>
 /// Remove a light from the light list
 /// </summary>
 /// <param name="light"></param>
@@ -362,11 +322,6 @@ std::shared_ptr<FileReference> AssetManager::GetFileReference(const int index)
 	return fileReferences[index];
 }
 
-std::weak_ptr<IDrawable> AssetManager::GetDrawable(const int index)
-{
-	return drawables[index];
-}
-
 std::weak_ptr<Light> AssetManager::GetLight(const int index)
 {
 	return lights[index];
@@ -385,11 +340,6 @@ int AssetManager::GetReflectionCount()
 int AssetManager::GetFileReferenceCount()
 {
 	return fileReferenceCount;
-}
-
-int AssetManager::GetDrawableCount()
-{
-	return drawableCount;
 }
 
 int AssetManager::GetLightCount()

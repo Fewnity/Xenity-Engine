@@ -25,17 +25,9 @@ class API LineRenderer : public IDrawable
 public:
 	LineRenderer();
 	~LineRenderer();
-	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 
 	int GetDrawPriority() const override;
-
-	//Material* material = nullptr;
-	Color color = Color();
-
-	Vector3 startPosition = Vector3(0, 0, 0);
-	Vector3 endPosition = Vector3(0, 0, 0);
-	float width = 1;
 
 	void SetOrderInLayer(int orderInLayer);
 
@@ -44,8 +36,18 @@ public:
 		return orderInLayer;
 	}
 
+	void SetColor(const Color& color)
+	{
+		this->color = color;
+	}
+
+	Vector3 startPosition = Vector3(0, 0, 0);
+	Vector3 endPosition = Vector3(0, 0, 0);
+	float width = 1;
+
 private:
 	void Draw() override;
+	Color color = Color();
 	int orderInLayer = 0;
 	std::shared_ptr <MeshData> meshData = nullptr;
 };

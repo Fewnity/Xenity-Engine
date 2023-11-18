@@ -27,7 +27,6 @@ public:
 	Light();
 	~Light();
 
-	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	void OnReflectionUpdated() override;
 
@@ -72,7 +71,7 @@ public:
 	void SetRange(float value);
 
 	/**
-	* Set light range
+	* Get light range
 	* @param value Light range
 	*/
 	float GetRange() const;

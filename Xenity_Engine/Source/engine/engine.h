@@ -121,6 +121,9 @@ public:
 	*/
 	API static void RegisterEngineComponents();
 
+	/**
+	* Get if the engine is running
+	*/
 	static bool IsRunning()
 	{
 		return isRunning;
@@ -137,20 +140,34 @@ public:
 	*/
 	API static void RemoveComponentReferences(const std::shared_ptr<Component>& component);
 
+	/**
+	* Get the renderer
+	*/
 	API static Renderer& GetRenderer()
 	{
 		return *renderer;
 	}
 
 private:
-	static std::unique_ptr<Renderer> renderer;
 
+	/**
+	* Create some benchmark for profiling
+	*/
 	API static void CreateBenchmarks();
 
-
+	/**
+	* Delete pointers when the reference count is low
+	*/
 	API static void RemoveUnusedFiles();
 
+	/**
+	* Finish file loading when files are loaded with a thread
+	*/
 	API static void FinishThreadedFileLoading();
+
+	/**
+	* Reset transforms states
+	*/
 	API static void ResetTransformsStates();
 
 	/**
@@ -163,5 +180,6 @@ private:
 	*/
 	API static void CheckEvents();
 
+	static std::unique_ptr<Renderer> renderer;
 	static bool isRunning;
 };

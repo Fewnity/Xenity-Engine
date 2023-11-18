@@ -6,10 +6,10 @@
 class Texture;
 class Shader;
 class Camera;
+class Vector2;
+class Vector3;
+class Vector4;
 
-#include "../vectors/vector2.h"
-#include "../vectors/vector3.h"
-#include "../vectors/vector4.h"
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"
 #include "iDrawableTypes.h"
@@ -30,21 +30,21 @@ public:
 	void LoadFileReference() override;
 
 	std::shared_ptr<Shader> shader = nullptr;
-	void SetAttribut(const char* attribut, const Vector2& value);
-	void SetAttribut(const char* attribut, const Vector3& value);
-	void SetAttribut(const char* attribut, const Vector4& value);
-	//void SetAttribut(const char* attribut, Texture* value);
-	void SetAttribut(const char* attribut, const float value);
-	void SetAttribut(const char* attribut, const int value);
-	bool updated = false;
-	bool useLighting = false;
+	void SetAttribute(const char* attribute, const Vector2& value);
+	void SetAttribute(const char* attribute, const Vector3& value);
+	void SetAttribute(const char* attribute, const Vector4& value);
+	//void SetAttribute(const char* attribut, Texture* value);
+	void SetAttribute(const char* attribute, const float value);
+	void SetAttribute(const char* attribute, const int value);
 
 	static std::shared_ptr<Material> MakeMaterial();
-	std::weak_ptr<Camera> lastUsedCamera;
-	IDrawableTypes lastUpdatedType = Draw_3D;
 
+	bool updated = false;
+	bool useLighting = false;
 private:
 	void Update();
+	std::weak_ptr<Camera> lastUsedCamera;
+	IDrawableTypes lastUpdatedType = Draw_3D;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> uniformsVector2;
 	std::unordered_map <const char*, Vector3> uniformsVector3;

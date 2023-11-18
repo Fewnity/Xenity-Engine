@@ -65,7 +65,6 @@ class API GameObject : public Reflection, public UniqueId, public std::enable_sh
 public:
 	GameObject();
 	GameObject(const std::string& name);
-	//void SetReflection();
 	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
 	void OnReflectionUpdated() override;
 
@@ -76,7 +75,7 @@ public:
 	*/
 	void Setup();
 
-	std::string name = "";
+	std::string name = "GameObject";
 	std::vector<std::weak_ptr<GameObject>> children;
 	std::vector<std::shared_ptr<Component>> components;
 

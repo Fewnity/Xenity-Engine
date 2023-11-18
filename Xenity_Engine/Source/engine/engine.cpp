@@ -369,8 +369,7 @@ void Engine::RemoveComponentReferences(const std::shared_ptr <Component>& compon
 		//------------------------------------------------------------------------ Include the component header to compile
 		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
 		{
-			Graphics::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
-			AssetManager::RemoveDrawable(std::dynamic_pointer_cast<IDrawable>(component));
+			Graphics::RemoveDrawable(drawable);
 		}
 		else if (auto light = std::dynamic_pointer_cast<Light>(component))
 		{

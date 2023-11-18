@@ -81,7 +81,7 @@ public:
 	std::string ReadAll();
 
 	/**
-	* Read all the file in binary mode (Need to free the pointer after
+	* Read all the file in binary mode (Need to free the pointer after)
 	*/
 	unsigned char* ReadAllBinary(int& size);
 
@@ -151,7 +151,7 @@ public:
 	~Directory();
 
 	/**
-	* Get all the files of the directory !!! (All files need to be deleted with delete()) !!!
+	* Get all the files of the directory (can be very slow)
 	*/
 	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
 

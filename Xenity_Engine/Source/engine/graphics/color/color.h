@@ -46,7 +46,7 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	* Create color from RGB
+	* Create color from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -54,7 +54,7 @@ public:
 	static Color CreateFromRGB(int r, int g, int b);
 
 	/**
-	* Create color from float RGB
+	* Create color from floats
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -62,7 +62,7 @@ public:
 	static Color CreateFromRGBFloat(float r, float g, float b);
 
 	/**
-	* Create color from RGBA
+	* Create color with alpha information from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -71,7 +71,7 @@ public:
 	static Color CreateFromRGBA(int r, int g, int b, int a);
 
 	/**
-	* Create color from float RGBA
+	* Create color from floats
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -80,7 +80,7 @@ public:
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 
 	/**
-	* Set color from RGBA
+	* Set color with alpha information from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -89,7 +89,7 @@ public:
 	void SetFromRGBA(int r, int g, int b, int a);
 
 	/**
-	* Set color from float RGBA
+	* Set color from with alpha information floats
 	* @param r Red level [0;1]
 	* @param g Green level [0;1]
 	* @param b Blue level [0;1]

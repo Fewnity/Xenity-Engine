@@ -16,10 +16,6 @@ void EngineSettingsMenu::Draw()
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Profiler");
 
-		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useLighting);
-		ImGui::SameLine();
-		ImGui::TextWrapped("Use Lighting");
-
 		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useDebugger);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Debugger (Print logs in the console and in the file)");

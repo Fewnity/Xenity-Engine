@@ -68,7 +68,7 @@ public:
 	static void Update();
 
 	/**
-	* [Internal] Create a socket
+	* Create a socket
 	*/
 	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
 

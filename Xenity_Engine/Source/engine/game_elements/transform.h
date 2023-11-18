@@ -43,7 +43,7 @@ public:
 	Vector3 GetRotation() const;
 
 	/**
-	* Get locla rotation (in degree)
+	* Get local rotation (in degree)
 	*/
 	Vector3 GetLocalRotation() const;
 
