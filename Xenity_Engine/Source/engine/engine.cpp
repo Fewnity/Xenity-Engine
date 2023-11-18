@@ -3,6 +3,9 @@
 #include "../xenity.h"
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
+//#include "file_system/file_system_default.h"
+//#include "file_system/file_system_psp.h"
+
 #include "audio/audio_manager.h"
 #include "network/network.h"
 #include "dynamic_lib/dynamic_lib.h"
@@ -65,7 +68,7 @@ int Engine::Init()
 	SetMaxCpuSpeed();
 
 	//------------------------------------------ Init File System
-	new FileSystem();
+	FileSystem::fileSystem = new FileSystem();
 	int fileSystemInitResult = FileSystem::fileSystem->InitFileSystem();
 	if (fileSystemInitResult != 0)
 	{

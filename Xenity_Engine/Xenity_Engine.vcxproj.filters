@@ -128,6 +128,10 @@
     <ClCompile Include="Source\editor\command\command.cpp" />
     <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
     <ClCompile Include="Source\editor\command\command_manager.cpp" />
+    <ClCompile Include="Source\engine\file_system\directory.cpp" />
+    <ClCompile Include="Source\engine\file_system\file.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_psp.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_default.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -264,6 +268,10 @@
     <ClInclude Include="Source\editor\command\command.h" />
     <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
     <ClInclude Include="Source\editor\command\command_manager.h" />
+    <ClInclude Include="Source\engine\file_system\directory.h" />
+    <ClInclude Include="Source\engine\file_system\file.h" />
+    <ClInclude Include="Source\engine\file_system\file_psp.h" />
+    <ClInclude Include="Source\engine\file_system\file_default.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

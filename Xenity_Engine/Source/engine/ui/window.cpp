@@ -16,6 +16,7 @@
 #include "../scene_management/scene_manager.h"
 #include "../scene_management/scene.h"
 #include "../file_system/file_system.h"
+#include "../file_system/file.h"
 #include "../asset_management/project_manager.h"
 
 int Window::width = 0;

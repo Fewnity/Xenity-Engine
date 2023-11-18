@@ -18,16 +18,17 @@
 #include <vector>
 #include <memory>
 
+#if defined(__vita__)
+#define PSVITA_PATH R"(ux0:data\xenity_engine\)"
+#define PSVITA_BASE_DIR "ux0:"
+#endif
+
 class Directory;
 class File;
 
 class API FileSystem
 {
 public:
-	FileSystem()
-	{
-		this->fileSystem = this;
-	}
 	static FileSystem* fileSystem;
 
 	/**
@@ -60,121 +61,12 @@ public:
 
 	bool Rename(const std::string& path, const std::string& newPath);
 
+	//virtual void Close(std::shared_ptr<File> file) = 0;
+	//virtual void Open(std::shared_ptr<File> file, bool createFileIfNotFound)= 0;
+	//virtual bool CheckIfExist(std::shared_ptr<File> file)= 0;
+	//virtual std::string ReadAll(std::shared_ptr<File> file)= 0;
+	//virtual unsigned char* ReadAllBinary(std::shared_ptr<File> file, int& size)= 0;
+	//virtual void Write(std::shared_ptr<File> file, const std::string& data)= 0;
+
 	static std::shared_ptr<File> MakeFile(const std::string& path);
-};
-
-class API File : public UniqueId
-{
-public:
-	File() = delete;
-	File(std::string _path);
-	~File();
-
-	/**
-	* Write data into the file
-	*/
-	void Write(const std::string& data);
-
-	/**
-	* Read all the file
-	*/
-	std::string ReadAll();
-
-	/**
-	* Read all the file in binary mode (Need to free the pointer after)
-	*/
-	unsigned char* ReadAllBinary(int& size);
-
-	/**
-	* Check if the file exists
-	*/
-	bool CheckIfExist();
-
-	/**
-	* Open the file
-	* @param createFileIfNotFound If true, create the file if not found
-	*/
-	bool Open(bool createFileIfNotFound);
-
-	/**
-	* Close file
-	*/
-	void Close();
-
-	/**
-	* Get file path
-	*/
-	std::string GetPath() const
-	{
-		/*#if defined(__vita__)
-				return path.substr(4);
-		#else
-				return path;
-		#endif*/
-		return path;
-	}
-
-	/**
-	* Get file's folder path
-	*/
-	std::string GetFolderPath() const;
-
-	/**
-	* Get file name
-	*/
-	std::string GetFileName() const;
-
-	/**
-	* Get file extension (dot included)
-	*/
-	std::string GetFileExtension() const
-	{
-		return pathExtention;
-	}
-
-private:
-	std::string path = "";
-	std::string pathExtention = "";
-	std::string name = "";
-#if defined(__PSP__)
-	SceUID fileId;
-#else
-	std::fstream file;
-#endif
-};
-
-class API Directory : public UniqueId, public std::enable_shared_from_this<Directory>
-{
-public:
-	Directory() = delete;
-	Directory(std::string _path);
-	~Directory();
-
-	/**
-	* Get all the files of the directory (can be very slow)
-	*/
-	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
-
-	/**
-	* Check if the directory exists
-	*/
-	bool CheckIfExist();
-	std::vector<std::shared_ptr<Directory>> subdirectories;
-	std::vector<std::shared_ptr<File>> files;
-
-	/**
-	* Get directory path
-	*/
-	std::string GetPath() const
-	{
-		return path;
-		/*#if defined(__vita__)
-				return path.substr(4);
-		#else
-				return path;
-		#endif*/
-	}
-
-private:
-	std::string path = "";
 };

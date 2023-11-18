@@ -165,6 +165,10 @@
     <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
     <ClCompile Include="Source\editor\command\command.cpp" />
     <ClCompile Include="Source\editor\ui\editor_dialog.cpp" />
+    <ClCompile Include="Source\engine\file_system\directory.cpp" />
+    <ClCompile Include="Source\engine\file_system\file.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_default.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_psp.cpp" />
     <ClCompile Include="Source\engine\game_elements\gameplay_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\create_class_menu.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
@@ -326,6 +330,10 @@
     <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
     <ClInclude Include="Source\editor\command\command.h" />
     <ClInclude Include="Source\engine\cpu.h" />
+    <ClInclude Include="Source\engine\file_system\directory.h" />
+    <ClInclude Include="Source\engine\file_system\file.h" />
+    <ClInclude Include="Source\engine\file_system\file_default.h" />
+    <ClInclude Include="Source\engine\file_system\file_psp.h" />
     <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\create_class_menu.h" />
     <ClInclude Include="Source\engine\file_system\file_type.h" />

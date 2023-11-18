@@ -122,6 +122,7 @@ void SceneManager::SetSceneModified(bool value)
 bool SceneManager::OnQuit()
 {
 	bool cancel = false;
+#if defined(EDITOR)
 	if (sceneModified)
 	{
 		DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", Dialog_Type_YES_NO_CANCEL);
@@ -134,6 +135,7 @@ bool SceneManager::OnQuit()
 			cancel = true;
 		}
 	}
+#endif
 	return cancel;
 }
 

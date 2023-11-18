@@ -6,9 +6,12 @@
 class Texture;
 class Shader;
 class Camera;
-class Vector2;
-class Vector3;
-class Vector4;
+
+// Vectors includes needed for other platforms
+#include "../vectors/vector2.h"
+#include "../vectors/vector3.h"
+#include "../vectors/vector4.h"
+//
 
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"

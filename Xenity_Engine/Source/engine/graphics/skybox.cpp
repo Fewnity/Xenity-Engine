@@ -4,6 +4,7 @@
 #include "../reflection/reflection_utils.h"
 #include "../debug/debug.h"
 #include "../file_system/file_system.h"
+#include "../file_system/file.h"
 
 using json = nlohmann::json;
 

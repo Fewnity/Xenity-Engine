@@ -69,6 +69,8 @@
 
 // Files
 #include "engine/file_system/file_system.h"
+#include "engine/file_system/file.h"
+#include "engine/file_system/directory.h"
 
 // Debug
 #include "engine/debug/debug.h"
