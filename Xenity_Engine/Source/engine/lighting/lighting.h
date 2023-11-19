@@ -27,7 +27,7 @@ public:
 	Light();
 	~Light();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	/**

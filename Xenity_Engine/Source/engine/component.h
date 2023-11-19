@@ -16,7 +16,7 @@
 class GameObject;
 class Transform;
 
-class API Component : public UniqueId, public Reflection, public std::enable_shared_from_this<Component>
+class API Component : public UniqueId, public Reflective, public std::enable_shared_from_this<Component>
 {
 public:
 	Component();

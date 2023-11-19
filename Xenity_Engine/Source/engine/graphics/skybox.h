@@ -15,7 +15,7 @@
 
 class Texture;
 
-class API SkyBox : public FileReference, public Reflection, public std::enable_shared_from_this<SkyBox>
+class API SkyBox : public FileReference, public Reflective, public std::enable_shared_from_this<SkyBox>
 {
 public:
 
@@ -39,8 +39,8 @@ public:
 	std::shared_ptr<Texture> down = nullptr;
 	std::shared_ptr<Texture> left = nullptr;
 	std::shared_ptr<Texture> right = nullptr;
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;

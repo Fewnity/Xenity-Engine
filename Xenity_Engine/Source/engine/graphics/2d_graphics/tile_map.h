@@ -23,7 +23,7 @@ public:
 	Tilemap();
 	~Tilemap();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	class Tile
 	{

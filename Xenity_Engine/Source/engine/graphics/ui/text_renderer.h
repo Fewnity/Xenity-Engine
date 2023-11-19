@@ -24,7 +24,7 @@ class API TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	~TextRenderer();

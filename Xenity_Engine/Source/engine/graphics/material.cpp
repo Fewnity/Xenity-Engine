@@ -197,23 +197,23 @@ void Material::Update()
 	//materialUpdateBenchmark->Stop();
 }
 
-std::unordered_map<std::string, ReflectionEntry> Material::GetReflection()
+ReflectiveData Material::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, shader, "shader", true);
-	Reflection::AddVariable(reflectedVariables, useLighting, "useLighting", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, shader, "shader", true);
+	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> Material::GetMetaReflection()
+ReflectiveData Material::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
 void Material::OnReflectionUpdated()
 {
-	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
+	bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!loadResult)
 	{
 		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath());
@@ -222,7 +222,7 @@ void Material::OnReflectionUpdated()
 
 void Material::LoadFileReference()
 {
-	bool loadResult = ReflectionUtils::FileToMap(file, GetReflection());
+	bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult)
 	{
 		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath());

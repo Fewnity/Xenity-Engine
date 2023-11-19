@@ -11,11 +11,11 @@
 #include "../../vectors/vector4.h"
 #include "../../reflection/reflection.h"
 
-class API RGBA : public Reflection
+class API RGBA : public Reflective
 {
 public:
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	RGBA() = delete;
 
 	RGBA(float r, float g, float b, float a)
@@ -37,12 +37,12 @@ public:
 	float a = 1;
 };
 
-class API Color : public Reflection
+class API Color : public Reflective
 {
 public:
 	Color();
 	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	/**

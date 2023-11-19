@@ -28,15 +28,15 @@ std::shared_ptr<Font> Font::MakeFont()
 	return newFileRef;
 }
 
-std::unordered_map<std::string, ReflectionEntry> Font::GetReflection()
+ReflectiveData Font::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> Font::GetMetaReflection()
+ReflectiveData Font::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 

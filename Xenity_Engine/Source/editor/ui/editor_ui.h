@@ -17,7 +17,7 @@ class Vector2Int;
 class Vector3;
 class Vector4;
 class Color;
-class Reflection;
+class Reflective;
 class Texture;
 class ProjectDirectory;
 class SkyBox;
@@ -131,22 +131,22 @@ public:
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);
-	//static bool DrawReflection(Reflection& reflection);
-	//static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap);
+	//static bool DrawReflection(Reflective& reflection);
+	//static bool DrawMap(const std::unordered_map<std::string, ReflectiveEntry>& myMap);
 
 	template<typename T>
-	static bool DrawMap(const std::unordered_map<std::string, ReflectionEntry>& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
+	static bool DrawMap(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
 	{
 		bool valueChanged = false;
 		//command = std::make_shared<InspectorChangeValueCommand>()
 		for (const auto& kv : myMap)
 		{
 			std::string variableName = GetPrettyVariableName(kv.first);
-			ReflectionEntry reflectionEntry = kv.second;
+			ReflectiveEntry reflectionEntry = kv.second;
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
-				Variable variableRef = kv.second.variable.value();
+				VariableReference variableRef = kv.second.variable.value();
 				if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef)) // Supported basic type
 				{
 					int newValue;
@@ -210,7 +210,7 @@ public:
 					if (valueChangedTemp)
 						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Transform>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
 				}
-				else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
 				{
 					if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
 					{
@@ -248,7 +248,7 @@ public:
 							command = std::make_shared<InspectorChangeValueCommand<T, Color>>(parent, val, newValue, *val);
 					}
 					else //Basic draw
-						DrawMap(valuePtr->get().GetReflection(), command, parent);
+						DrawMap(valuePtr->get().GetReflectiveData(), command, parent);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{

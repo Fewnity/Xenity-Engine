@@ -21,15 +21,15 @@ Light::~Light()
 	AssetManager::RemoveReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> Light::GetReflection()
+ReflectiveData Light::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, intensity, "intensity", true);
-	Reflection::AddVariable(reflectedVariables, range, "range", true);
-	Reflection::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
-	Reflection::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
-	Reflection::AddVariable(reflectedVariables, color, "color", true);
-	Reflection::AddVariable(reflectedVariables, (int&)type, "type", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, intensity, "intensity", true);
+	Reflective::AddVariable(reflectedVariables, range, "range", true);
+	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
+	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
+	Reflective::AddVariable(reflectedVariables, (int&)type, "type", true);
 	return reflectedVariables;
 }
 

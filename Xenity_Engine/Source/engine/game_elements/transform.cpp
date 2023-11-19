@@ -21,12 +21,12 @@ Transform::Transform(const std::shared_ptr<GameObject>& gameObject)
 	UpdateTransformationMatrix();
 }
 
-std::unordered_map<std::string, ReflectionEntry> Transform::GetReflection()
+ReflectiveData Transform::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, localPosition, "localPosition", true);
-	Reflection::AddVariable(reflectedVariables, localRotation, "localRotation", true);
-	Reflection::AddVariable(reflectedVariables, localScale, "localScale", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, localPosition, "localPosition", true);
+	Reflective::AddVariable(reflectedVariables, localRotation, "localRotation", true);
+	Reflective::AddVariable(reflectedVariables, localScale, "localScale", true);
 	return reflectedVariables;
 }
 

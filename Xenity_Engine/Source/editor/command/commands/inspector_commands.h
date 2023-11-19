@@ -431,7 +431,7 @@ inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::
 {
 	this->target = componentToDestroy.lock()->GetGameObject();
 	this->componentToDestroy = componentToDestroy;
-	this->componentData["Values"] = ReflectionUtils::MapToJson(componentToDestroy.lock()->GetReflection());
+	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.lock()->GetReflectiveData());
 	this->componentName = componentToDestroy.lock()->GetComponentName();
 }
 
@@ -451,7 +451,7 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 	if (target.lock())
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, target.lock());
-		ReflectionUtils::JsonToMap(componentData, component->GetReflection());
+		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
 		componentToDestroy = component;
 		SceneManager::SetSceneModified(true);
 	}

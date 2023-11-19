@@ -10,14 +10,14 @@ AudioSource::AudioSource()
 	AssetManager::AddReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> AudioSource::GetReflection()
+ReflectiveData AudioSource::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, volume, "volume", true);
-	Reflection::AddVariable(reflectedVariables, pan, "pan", true);
-	Reflection::AddVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
-	Reflection::AddVariable(reflectedVariables, loop, "loop", true);
-	Reflection::AddVariable(reflectedVariables, audioClip, "audioClip", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, volume, "volume", true);
+	Reflective::AddVariable(reflectedVariables, pan, "pan", true);
+	Reflective::AddVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
+	Reflective::AddVariable(reflectedVariables, loop, "loop", true);
+	Reflective::AddVariable(reflectedVariables, audioClip, "audioClip", true);
 	return reflectedVariables;
 }
 

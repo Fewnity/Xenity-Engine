@@ -9,7 +9,7 @@ public:
 	FreeMove();
 	void Start() override;
 	void Update() override;
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 private:
 };
 

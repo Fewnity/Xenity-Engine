@@ -25,7 +25,7 @@ class API LineRenderer : public IDrawable
 public:
 	LineRenderer();
 	~LineRenderer();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	int GetDrawPriority() const override;
 

@@ -311,12 +311,12 @@ void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicat
 		for (size_t i = 0; i < componentCount; i++)
 		{
 			std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
-			auto newReflection = newComponent->GetReflection();
-			auto reflectionToCopy = goToDuplicate->components[i]->GetReflection();
+			auto newReflection = newComponent->GetReflectiveData();
+			auto reflectionToCopy = goToDuplicate->components[i]->GetReflectiveData();
 
 			json copiedValues;
-			copiedValues["Values"] = ReflectionUtils::MapToJson(reflectionToCopy);
-			ReflectionUtils::JsonToMap(copiedValues, newReflection);
+			copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);
+			ReflectionUtils::JsonToReflectiveData(copiedValues, newReflection);
 			newComponent->OnReflectionUpdated();
 		}
 	}

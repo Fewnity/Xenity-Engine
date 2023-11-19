@@ -14,12 +14,12 @@ TextRendererCanvas::TextRendererCanvas()
 	material = AssetManager::unlitMaterial;
 }
 
-std::unordered_map<std::string, ReflectionEntry> TextRendererCanvas::GetReflection()
+ReflectiveData TextRendererCanvas::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, text, "text", true);
-	Reflection::AddVariable(reflectedVariables, font, "font", true);
-	Reflection::AddVariable(reflectedVariables, material, "material", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, text, "text", true);
+	Reflective::AddVariable(reflectedVariables, font, "font", true);
+	Reflective::AddVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
 }
 

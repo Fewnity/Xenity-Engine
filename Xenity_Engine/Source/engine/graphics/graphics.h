@@ -37,7 +37,7 @@ public:
 	*/
 	static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
 
-	static std::unordered_map<std::string, ReflectionEntry> GetLightingSettingsReflection();
+	static ReflectiveData GetLightingSettingsReflection();
 	static void OnLightingSettingsReflectionUpdate();
 
 	/**

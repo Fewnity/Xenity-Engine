@@ -14,7 +14,7 @@
 
 class GameObject;
 
-class API Transform : public Reflection, public std::enable_shared_from_this<Transform>
+class API Transform : public Reflective, public std::enable_shared_from_this<Transform>
 {
 
 public:
@@ -22,7 +22,7 @@ public:
 	Transform(const std::shared_ptr<GameObject>& gameObject);
 	//void SetReflection();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 
 	virtual ~Transform() = default;

@@ -7,15 +7,15 @@
 
 class Texture;
 
-class API Font : public FileReference, public Reflection
+class API Font : public FileReference, public Reflective
 {
 public:
 	~Font();
 	std::shared_ptr <Texture> fontAtlas = nullptr;
 	static std::shared_ptr<Font> MakeFont();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;

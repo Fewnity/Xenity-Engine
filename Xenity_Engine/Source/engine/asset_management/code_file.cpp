@@ -13,14 +13,14 @@ std::shared_ptr<CodeFile> CodeFile::MakeCode(const bool isHeader)
 	return newFileRef;
 }
 
-std::unordered_map<std::string, ReflectionEntry> CodeFile::GetReflection()
+ReflectiveData CodeFile::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> CodeFile::GetMetaReflection()
+ReflectiveData CodeFile::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }

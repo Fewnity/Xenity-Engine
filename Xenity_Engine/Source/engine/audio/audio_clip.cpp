@@ -5,15 +5,15 @@ AudioClip::AudioClip()
 {
 }
 
-std::unordered_map<std::string, ReflectionEntry> AudioClip::GetReflection()
+ReflectiveData AudioClip::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> AudioClip::GetMetaReflection()
+ReflectiveData AudioClip::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 

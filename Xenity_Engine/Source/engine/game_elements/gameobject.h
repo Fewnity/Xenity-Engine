@@ -60,12 +60,12 @@ API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 */
 API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
 
-class API GameObject : public Reflection, public UniqueId, public std::enable_shared_from_this<GameObject>
+class API GameObject : public Reflective, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();
 	GameObject(const std::string& name);
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	virtual ~GameObject();

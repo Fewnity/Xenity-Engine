@@ -19,7 +19,7 @@ public:
 	AudioSource();
 	~AudioSource();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	void Awake() override;
 

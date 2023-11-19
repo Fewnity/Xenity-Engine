@@ -12,9 +12,9 @@ BoxCollider::BoxCollider()
 	max = size / 2.0f;
 }
 
-std::unordered_map<std::string, ReflectionEntry> BoxCollider::GetReflection()
+ReflectiveData BoxCollider::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, size, "size", true);
 	AddVariable(reflectedVariables, offset, "offset", true);
 	//AddReflectionVariable(reflectedVariables, min, "min", true);

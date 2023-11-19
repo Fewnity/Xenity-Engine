@@ -21,12 +21,11 @@ class Font;
 class Shader;
 class Material;
 
-class CustomClass : public Reflection
+class CustomClass : public Reflective
 {
 public:
 	CustomClass();
-	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection();
+	ReflectiveData GetReflectiveData();
 	float myCustomFloat = 0;
 	float myCustomFloat2 = 0;
 };
@@ -37,8 +36,7 @@ public:
 	TestComponent();
 	~TestComponent();
 
-	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void Start() override;
 	void Update() override;
 

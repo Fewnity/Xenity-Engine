@@ -9,9 +9,9 @@ RigidBody::RigidBody()
 	AssetManager::AddReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> RigidBody::GetReflection()
+ReflectiveData RigidBody::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, attachedcollider, "attachedcollider", true);
 	AddVariable(reflectedVariables, isStatic, "isStatic", true);
 	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);

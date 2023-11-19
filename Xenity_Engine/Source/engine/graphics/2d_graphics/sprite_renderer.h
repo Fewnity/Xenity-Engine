@@ -24,7 +24,7 @@ public:
 	SpriteRenderer();
 	~SpriteRenderer();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	int GetDrawPriority() const override;
 

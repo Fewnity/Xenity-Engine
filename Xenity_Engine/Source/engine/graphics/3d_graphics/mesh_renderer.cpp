@@ -17,12 +17,12 @@ MeshRenderer::MeshRenderer()
 	material = AssetManager::standardMaterial;
 }
 
-std::unordered_map<std::string, ReflectionEntry> MeshRenderer::GetReflection()
+ReflectiveData MeshRenderer::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, meshData, "meshData", true);
-	Reflection::AddVariable(reflectedVariables, textures, "textures", true);
-	Reflection::AddVariable(reflectedVariables, material, "material", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
+	Reflective::AddVariable(reflectedVariables, textures, "textures", true);
+	Reflective::AddVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
 }
 

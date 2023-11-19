@@ -7,39 +7,43 @@
 using json = nlohmann::json;
 
 template <typename T>
-void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* valuePtr)
+void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* variablePtr)
 {
-	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId);
+	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId); // Try to find the file reference
 	if (file)
 	{
+		// Load file data
 		file->LoadFileReference();
-		valuePtr->get() = std::dynamic_pointer_cast<T>(file);
+		//Put the file in the variable reference
+		variablePtr->get() = std::dynamic_pointer_cast<T>(file);
 	}
 }
 
 template <typename T>
-void ReflectionUtils::FillVectorFileReference(json kvValue, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
+void ReflectionUtils::FillVectorFileReference(json jsonVectorData, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* vectorRefPtr)
 {
-	size_t arraySize = kvValue.size();
+	size_t jsonArraySize = jsonVectorData.size();
 
-	size_t vectorSize = valuePtr->get().size();
-	for (size_t i = 0; i < arraySize; i++)
+	size_t vectorSize = vectorRefPtr->get().size();
+	for (size_t i = 0; i < jsonArraySize; i++)
 	{
 		std::shared_ptr<FileReference> file = nullptr;
-		if (!kvValue.at(i).is_null())
+		if (!jsonVectorData.at(i).is_null())
 		{
-			uint64_t fileId = kvValue.at(i);
+			uint64_t fileId = jsonVectorData.at(i);
 			file = ProjectManager::GetFileReferenceById(fileId);
 			if (file)
 				file->LoadFileReference();
 		}
+
+		// Add the file to the vector
 		if (i >= vectorSize)
 		{
-			valuePtr->get().push_back(std::dynamic_pointer_cast<T>(file));
+			vectorRefPtr->get().push_back(std::dynamic_pointer_cast<T>(file));
 		}
 		else
 		{
-			valuePtr->get()[i] = std::dynamic_pointer_cast<T>(file);
+			vectorRefPtr->get()[i] = std::dynamic_pointer_cast<T>(file);
 		}
 	}
 }
@@ -71,36 +75,38 @@ void ReflectionUtils::FillVectorFileReference(json kvValue, std::reference_wrapp
 //	}
 //}
 
-void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string, ReflectionEntry> theMap)
+void ReflectionUtils::JsonToReflectiveData(const json& json, ReflectiveData dataList)
 {
 	if (json.contains("Values"))
 	{
+		// Go through json Values list
 		for (auto& kv : json["Values"].items())
 		{
-			if (theMap.contains(kv.key()))
+			// Check if the data list contains the variable name found in the json
+			if (dataList.contains(kv.key()))
 			{
-				Variable& variableRef = theMap.at(kv.key()).variable.value();
+				VariableReference& variableRef = dataList.at(kv.key()).variable.value();
 				auto& kvValue = kv.value();
 				if (kvValue.is_object())
 				{
-					if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+					if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
 					{
-						JsonToReflection(kvValue, valuePtr->get());
+						JsonToReflective(kvValue, valuePtr->get());
 					}
 				}
 				else
 				{
-					if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
+					if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef))
 						valuePtr->get() = kvValue;
 					else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
 						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<double>>(&variableRef))
+					else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))
 						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
+					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::string>>(&variableRef))
 						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
+					else if (auto valuePtr = std::get_if<std::reference_wrapper<bool>>(&variableRef))
 						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
+					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 					{
 						auto comp = FindComponentById(kvValue);
 						valuePtr->get() = comp;
@@ -258,19 +264,19 @@ void ReflectionUtils::JsonToMap(const json& json, std::unordered_map<std::string
 	}
 }
 
-void ReflectionUtils::JsonToReflection(const json& j, Reflection& reflection)
+void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
 {
-	auto myMap = reflection.GetReflection();
-	JsonToMap(j, myMap);
-	reflection.OnReflectionUpdated();
+	auto myMap = reflective.GetReflectiveData();
+	JsonToReflectiveData(j, myMap);
+	reflective.OnReflectionUpdated();
 }
 
-json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap)
+json ReflectionUtils::ReflectiveDataToJson(ReflectiveData dataList)
 {
 	json json;
-	for (const auto& kv : theMap)
+	for (const auto& kv : dataList)
 	{
-		Variable& variableRef = theMap.at(kv.first).variable.value();
+		VariableReference& variableRef = dataList.at(kv.first).variable.value();
 		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
 			json[kv.first] = valuePtr->get();
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
@@ -291,9 +297,9 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 			if (auto lockValue = (valuePtr->get()).lock())
 				json[kv.first] = lockValue->GetGameObject()->GetUniqueId();
 		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflection>>(&variableRef))
+		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
 		{
-			json[kv.first]["Values"] = ReflectionToJson(valuePtr->get());
+			json[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
 		}
 		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 		{
@@ -454,7 +460,7 @@ json ReflectionUtils::MapToJson(std::unordered_map<std::string, ReflectionEntry>
 	return json;
 }
 
-bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap)
+bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, ReflectiveData dataList)
 {
 	bool ok;
 
@@ -466,7 +472,7 @@ bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<s
 		if (!jsonString.empty())
 		{
 			myJson = json::parse(jsonString);
-			ReflectionUtils::JsonToMap(myJson, theMap);
+			ReflectionUtils::JsonToReflectiveData(myJson, dataList);
 			ok = true;
 		}
 		else
@@ -482,11 +488,11 @@ bool ReflectionUtils::FileToMap(std::shared_ptr<File> file, std::unordered_map<s
 	return ok;
 }
 
-bool ReflectionUtils::MapToFile(std::unordered_map<std::string, ReflectionEntry> theMap, std::shared_ptr<File> file)
+bool ReflectionUtils::ReflectiveDataToFile(ReflectiveData dataList, std::shared_ptr<File> file)
 {
 	bool ok;
 	json myJson;
-	myJson["Values"] = ReflectionUtils::MapToJson(theMap);
+	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
 	FileSystem::fileSystem->DeleteFile(file->GetPath());
 	if (file->Open(true))
 	{
@@ -502,10 +508,10 @@ bool ReflectionUtils::MapToFile(std::unordered_map<std::string, ReflectionEntry>
 	return ok;
 }
 
-json ReflectionUtils::ReflectionToJson(Reflection& reflection)
+json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 {
-	json j2;
-	auto t = reflection.GetReflection();
-	j2 = MapToJson(t);
-	return j2;
+	json jsonData;
+	auto dataList = reflective.GetReflectiveData();
+	jsonData = ReflectiveDataToJson(dataList);
+	return jsonData;
 }

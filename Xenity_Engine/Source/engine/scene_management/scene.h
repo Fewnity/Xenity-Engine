@@ -11,12 +11,12 @@
 #include "../file_system/file_reference.h"
 #include <string>
 
-class API Scene : public FileReference, public Reflection
+class API Scene : public FileReference, public Reflective
 {
 public:
 	Scene();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 	static std::shared_ptr<Scene> MakeScene();
 private:
 };

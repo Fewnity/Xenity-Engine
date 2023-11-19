@@ -18,7 +18,7 @@ class Camera;
 #include "iDrawableTypes.h"
 #include <memory>
 
-class Material : public FileReference, public Reflection
+class Material : public FileReference, public Reflective
 {
 public:
 	Material();
@@ -26,8 +26,8 @@ public:
 
 	void Use();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 	void OnReflectionUpdated() override;
 
 	void LoadFileReference() override;

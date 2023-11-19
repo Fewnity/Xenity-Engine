@@ -5,15 +5,15 @@ Scene::Scene()
 {
 }
 
-std::unordered_map<std::string, ReflectionEntry> Scene::GetReflection()
+ReflectiveData Scene::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> Scene::GetMetaReflection()
+ReflectiveData Scene::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 

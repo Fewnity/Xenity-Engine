@@ -17,8 +17,8 @@
 // 	//  GetTransform()->SetRotation(rotation);
 // }
 
-// std::unordered_map<std::string, ReflectionEntry> Rotate::GetReflection()
+// std::unordered_map<std::string, ReflectiveEntry> Rotate::GetReflectiveData()
 // {
-// 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+// 	std::unordered_map<std::string, ReflectiveEntry> reflectedVariables;
 // 	return reflectedVariables;
 // }

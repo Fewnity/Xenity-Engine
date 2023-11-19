@@ -48,8 +48,8 @@
 // 	cameraTrans->SetRotation(rot);
 // }
 
-// std::unordered_map<std::string, ReflectionEntry> FreeMove::GetReflection()
+// std::unordered_map<std::string, ReflectiveEntry> FreeMove::GetReflectiveData()
 // {
-// 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+// 	std::unordered_map<std::string, ReflectiveEntry> reflectedVariables;
 // 	return reflectedVariables;
 // }

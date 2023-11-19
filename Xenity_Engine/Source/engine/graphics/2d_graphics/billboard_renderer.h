@@ -23,8 +23,8 @@ class API BillboardRenderer : public IDrawable
 public:
 	BillboardRenderer();
 	~BillboardRenderer();
-	//void SetReflection();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+
+	ReflectiveData GetReflectiveData() override;
 
 	int GetDrawPriority() const override;
 

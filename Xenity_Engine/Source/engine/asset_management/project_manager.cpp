@@ -425,7 +425,7 @@ void ProjectManager::LoadProjectSettings()
 			}
 
 			// Change settings
-			ReflectionUtils::JsonToMap(projectData, GetProjetSettingsReflection());
+			ReflectionUtils::JsonToReflectiveData(projectData, GetProjetSettingsReflection());
 		}
 	}
 }
@@ -436,7 +436,7 @@ void ProjectManager::SaveProjectSettings()
 	FileSystem::fileSystem->DeleteFile(path);
 	json projectData;
 
-	projectData["Values"] = ReflectionUtils::MapToJson(GetProjetSettingsReflection());
+	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetProjetSettingsReflection());
 
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
 	if (projectFile->Open(true))
@@ -456,7 +456,7 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	FileSystem::fileSystem->DeleteFile(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
-	metaData["Values"] = ReflectionUtils::MapToJson(fileReference->GetMetaReflection());
+	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflection());
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	if (metaFile->Open(true))
@@ -607,7 +607,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 				return;
 			}
 
-			ReflectionUtils::JsonToMap(metaData, fileReference->GetMetaReflection());
+			ReflectionUtils::JsonToReflectiveData(metaData, fileReference->GetMetaReflection());
 		}
 		else
 		{
@@ -634,11 +634,11 @@ std::string ProjectDirectory::GetFolderName()
 	return fileName;
 }
 
-std::unordered_map<std::string, ReflectionEntry> ProjectManager::GetProjetSettingsReflection()
+ReflectiveData ProjectManager::GetProjetSettingsReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, projectName, "projectName", true);
-	Reflection::AddVariable(reflectedVariables, gameName, "gameName", true);
-	Reflection::AddVariable(reflectedVariables, startScene, "startScene", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
+	Reflective::AddVariable(reflectedVariables, gameName, "gameName", true);
+	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
 	return reflectedVariables;
 }

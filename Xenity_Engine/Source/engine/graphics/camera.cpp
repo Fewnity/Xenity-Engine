@@ -44,14 +44,14 @@ Camera::Camera()
 	AssetManager::AddReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> Camera::GetReflection()
+ReflectiveData Camera::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, fov, "fov", true);
-	Reflection::AddVariable(reflectedVariables, projectionSize, "projectionSize", true);
-	Reflection::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
-	Reflection::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
-	Reflection::AddVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, fov, "fov", true);
+	Reflective::AddVariable(reflectedVariables, projectionSize, "projectionSize", true);
+	Reflective::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
+	Reflective::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
+	Reflective::AddVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
 	return reflectedVariables;
 }
 

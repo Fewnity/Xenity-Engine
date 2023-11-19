@@ -27,7 +27,7 @@ public:
 	TextRendererCanvas();
 	~TextRendererCanvas();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	Vector3 position = Vector3(0, 0, 0);

@@ -6,7 +6,7 @@
 bool initialised = false;
 
 std::vector<Material*> AssetManager::materials;
-std::vector<Reflection*> AssetManager::reflections;
+std::vector<Reflective*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<std::weak_ptr<Light>> AssetManager::lights;
 
@@ -95,7 +95,7 @@ void AssetManager::AddMaterial(Material* material)
 	materialCount++;
 }
 
-void AssetManager::AddReflection(Reflection* reflection)
+void AssetManager::AddReflection(Reflective* reflection)
 {
 #if defined(EDITOR)
 	if (initialised)
@@ -150,7 +150,7 @@ void AssetManager::RemoveMaterial(const Material* material)
 	}
 }
 
-void AssetManager::RemoveReflection(const Reflection* reflection)
+void AssetManager::RemoveReflection(const Reflective* reflection)
 {
 	if (!Engine::IsRunning())
 		return;
@@ -184,10 +184,10 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
 	{
-		auto map = reflections[reflectionIndex]->GetReflection();
+		auto map = reflections[reflectionIndex]->GetReflectiveData();
 		for (auto& kv : map)
 		{
-			Variable& variableRef = kv.second.variable.value();
+			VariableReference& variableRef = kv.second.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 			{
 				if (valuePtr->get() == fileReference)
@@ -312,7 +312,7 @@ Material* AssetManager::GetMaterial(const int index)
 	return materials[index];
 }
 
-Reflection* AssetManager::GetReflection(const int index)
+Reflective* AssetManager::GetReflectiveData(const int index)
 {
 	return reflections[index];
 }

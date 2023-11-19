@@ -13,10 +13,10 @@
 class Vector2Int;
 class Vector2;
 
-class API Vector3 : public Reflection
+class API Vector3 : public Reflective
 {
 public:
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	Vector3();
 	Vector3(const float x, const float y, const float z);

@@ -8,13 +8,13 @@
 
 #pragma region Constructors / Destructor
 
-std::unordered_map<std::string, ReflectionEntry> Vector4::GetReflection()
+ReflectiveData Vector4::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, x, "x", true);
-	Reflection::AddVariable(reflectedVariables, y, "y", true);
-	Reflection::AddVariable(reflectedVariables, z, "z", true);
-	Reflection::AddVariable(reflectedVariables, w, "w", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, x, "x", true);
+	Reflective::AddVariable(reflectedVariables, y, "y", true);
+	Reflective::AddVariable(reflectedVariables, z, "z", true);
+	Reflective::AddVariable(reflectedVariables, w, "w", true);
 	return reflectedVariables;
 }
 

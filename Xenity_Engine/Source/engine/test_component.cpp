@@ -15,45 +15,45 @@ TestComponent::~TestComponent()
 	AssetManager::RemoveReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> TestComponent::GetReflection()
+ReflectiveData TestComponent::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 
-	Reflection::AddVariable(reflectedVariables, myCustomClass, "myCustomClass", true);
+	Reflective::AddVariable(reflectedVariables, myCustomClass, "myCustomClass", true);
 
-	Reflection::AddVariable(reflectedVariables, myComponent, "myComponent", true);
-	Reflection::AddVariable(reflectedVariables, myGameObject, "myGameObject", true);
-	Reflection::AddVariable(reflectedVariables, myTransform, "myTransform", true);
+	Reflective::AddVariable(reflectedVariables, myComponent, "myComponent", true);
+	Reflective::AddVariable(reflectedVariables, myGameObject, "myGameObject", true);
+	Reflective::AddVariable(reflectedVariables, myTransform, "myTransform", true);
 
-	Reflection::AddVariable(reflectedVariables, vec2, "vec2", true);
-	Reflection::AddVariable(reflectedVariables, vec2Int, "vec2Int", true);
-	Reflection::AddVariable(reflectedVariables, vec3, "vec3", true);
-	Reflection::AddVariable(reflectedVariables, vec3_2, "vec3_2", true);
-	Reflection::AddVariable(reflectedVariables, vec3_3, "vec3_3", true);
-	Reflection::AddVariable(reflectedVariables, vec4, "vec4", true);
+	Reflective::AddVariable(reflectedVariables, vec2, "vec2", true);
+	Reflective::AddVariable(reflectedVariables, vec2Int, "vec2Int", true);
+	Reflective::AddVariable(reflectedVariables, vec3, "vec3", true);
+	Reflective::AddVariable(reflectedVariables, vec3_2, "vec3_2", true);
+	Reflective::AddVariable(reflectedVariables, vec3_3, "vec3_3", true);
+	Reflective::AddVariable(reflectedVariables, vec4, "vec4", true);
 
-	Reflection::AddVariable(reflectedVariables, color, "color", true);
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
 
-	Reflection::AddVariable(reflectedVariables, myFloat, "myFloat", true);
-	Reflection::AddVariable(reflectedVariables, myInt, "myInt", true);
-	Reflection::AddVariable(reflectedVariables, myDouble, "myDouble", true);
-	Reflection::AddVariable(reflectedVariables, myString, "myString", true);
-	Reflection::AddVariable(reflectedVariables, myBool, "myBool", true);
+	Reflective::AddVariable(reflectedVariables, myFloat, "myFloat", true);
+	Reflective::AddVariable(reflectedVariables, myInt, "myInt", true);
+	Reflective::AddVariable(reflectedVariables, myDouble, "myDouble", true);
+	Reflective::AddVariable(reflectedVariables, myString, "myString", true);
+	Reflective::AddVariable(reflectedVariables, myBool, "myBool", true);
 
-	Reflection::AddVariable(reflectedVariables, skyBox, "skyBox", true);
+	Reflective::AddVariable(reflectedVariables, skyBox, "skyBox", true);
 
-	Reflection::AddVariable(reflectedVariables, textures, "textures", true);
-	Reflection::AddVariable(reflectedVariables, meshData, "meshData", true);
-	Reflection::AddVariable(reflectedVariables, audioClips, "audioClips", true);
-	Reflection::AddVariable(reflectedVariables, scenes, "scenes", true);
-	Reflection::AddVariable(reflectedVariables, skyBoxes, "skyBoxes", true);
-	Reflection::AddVariable(reflectedVariables, fonts, "fonts", true);
-	Reflection::AddVariable(reflectedVariables, shaders, "shaders", true);
-	Reflection::AddVariable(reflectedVariables, materials, "materials", true);
+	Reflective::AddVariable(reflectedVariables, textures, "textures", true);
+	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
+	Reflective::AddVariable(reflectedVariables, audioClips, "audioClips", true);
+	Reflective::AddVariable(reflectedVariables, scenes, "scenes", true);
+	Reflective::AddVariable(reflectedVariables, skyBoxes, "skyBoxes", true);
+	Reflective::AddVariable(reflectedVariables, fonts, "fonts", true);
+	Reflective::AddVariable(reflectedVariables, shaders, "shaders", true);
+	Reflective::AddVariable(reflectedVariables, materials, "materials", true);
 
-	Reflection::AddVariable(reflectedVariables, myComponents, "myComponents", true);
-	Reflection::AddVariable(reflectedVariables, myGameObjects, "myGameObjects", true);
-	Reflection::AddVariable(reflectedVariables, myTransforms, "myTransforms", true);
+	Reflective::AddVariable(reflectedVariables, myComponents, "myComponents", true);
+	Reflective::AddVariable(reflectedVariables, myGameObjects, "myGameObjects", true);
+	Reflective::AddVariable(reflectedVariables, myTransforms, "myTransforms", true);
 
 	return reflectedVariables;
 }
@@ -77,10 +77,10 @@ CustomClass::CustomClass()
 	reflectedVariables["myCustomFloat"] = myCustomFloat;
 }*/
 
-std::unordered_map<std::string, ReflectionEntry> CustomClass::GetReflection()
+ReflectiveData CustomClass::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, myCustomFloat, "myCustomFloat", true);
-	Reflection::AddVariable(reflectedVariables, myCustomFloat2, "myCustomFloat2", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, myCustomFloat, "myCustomFloat", true);
+	Reflective::AddVariable(reflectedVariables, myCustomFloat2, "myCustomFloat2", true);
 	return reflectedVariables;
 }

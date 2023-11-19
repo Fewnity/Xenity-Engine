@@ -16,10 +16,10 @@ Color::Color()
 {
 }
 
-std::unordered_map<std::string, ReflectionEntry> Color::GetReflection()
+ReflectiveData Color::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, rgba, "rgba", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, rgba, "rgba", true);
 	return reflectedVariables;
 }
 
@@ -82,13 +82,13 @@ void Color::UpdateUnsignedInts()
 	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
 }
 
-std::unordered_map<std::string, ReflectionEntry> RGBA::GetReflection()
+ReflectiveData RGBA::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, r, "r", true);
-	Reflection::AddVariable(reflectedVariables, g, "g", true);
-	Reflection::AddVariable(reflectedVariables, b, "b", true);
-	Reflection::AddVariable(reflectedVariables, a, "a", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, r, "r", true);
+	Reflective::AddVariable(reflectedVariables, g, "g", true);
+	Reflective::AddVariable(reflectedVariables, b, "b", true);
+	Reflective::AddVariable(reflectedVariables, a, "a", true);
 	return reflectedVariables;
 }
 

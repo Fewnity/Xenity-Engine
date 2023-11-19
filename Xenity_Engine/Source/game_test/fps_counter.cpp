@@ -22,9 +22,9 @@
 // 	}
 // }
 
-// std::unordered_map<std::string, ReflectionEntry> FpsCounter::GetReflection()
+// std::unordered_map<std::string, ReflectiveEntry> FpsCounter::GetReflectiveData()
 // {
-// 	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-// 	Reflection::AddVariable(reflectedVariables, textRenderer, "textRenderer", true);
+// 	std::unordered_map<std::string, ReflectiveEntry> reflectedVariables;
+// 	Reflective::AddVariable(reflectedVariables, textRenderer, "textRenderer", true);
 // 	return reflectedVariables;
 // }

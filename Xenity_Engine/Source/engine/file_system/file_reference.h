@@ -38,9 +38,9 @@ public:
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual std::unordered_map<std::string, ReflectionEntry> GetMetaReflection()
+	virtual ReflectiveData GetMetaReflection()
 	{
-		return std::unordered_map<std::string, ReflectionEntry>();
+		return ReflectiveData();
 	}
 
 	uint64_t fileId = -1;

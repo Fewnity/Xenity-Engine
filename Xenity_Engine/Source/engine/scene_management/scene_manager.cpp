@@ -28,8 +28,8 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
-		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectionToJson(*go->GetTransform().get());
-		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectionToJson(*go.get());
+		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
+		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectiveToJson(*go.get());
 
 		// Save GameObject's childs ids
 		std::vector<uint64_t> ids;
@@ -47,10 +47,10 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			auto& component = go->components[componentI];
 			std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
-			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectionToJson((*component.get()));
+			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
 		}
 
-		j["Lighting"]["Values"] = ReflectionUtils::MapToJson(Graphics::GetLightingSettingsReflection());
+		j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
 	}
 
 	if (saveType == SaveSceneForPlayState)
@@ -162,7 +162,7 @@ void SceneManager::LoadScene(const json& jsonData)
 			{
 				biggestId = id;
 			}
-			ReflectionUtils::JsonToReflection(gameObjectKV.value(), *newGameObject.get());
+			ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
 
 			// Create components
 			if (gameObjectKV.value().contains("Components"))
@@ -210,7 +210,7 @@ void SceneManager::LoadScene(const json& jsonData)
 				}
 
 				std::shared_ptr<Transform> transform = go->GetTransform();
-				ReflectionUtils::JsonToReflection(kv.value()["Transform"], *transform.get());
+				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 				transform->isTransformationMatrixDirty = true;
 				transform->UpdateWorldValues();
 
@@ -224,7 +224,7 @@ void SceneManager::LoadScene(const json& jsonData)
 							std::shared_ptr<Component> component = go->components[compI];
 							if (component->GetUniqueId() == std::stoull(kv2.key()))
 							{
-								ReflectionUtils::JsonToReflection(kv2.value(), *component.get());
+								ReflectionUtils::JsonToReflective(kv2.value(), *component.get());
 								break;
 							}
 						}
@@ -287,7 +287,7 @@ void SceneManager::LoadScene(const json& jsonData)
 
 	if (jsonData.contains("Lighting"))
 	{
-		ReflectionUtils::JsonToMap(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
+		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
 

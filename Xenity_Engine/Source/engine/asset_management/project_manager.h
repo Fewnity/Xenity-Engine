@@ -114,7 +114,7 @@ public:
 	/**
 	* Get reflection of project settings
 	*/
-	static std::unordered_map<std::string, ReflectionEntry> GetProjetSettingsReflection();
+	static ReflectiveData GetProjetSettingsReflection();
 
 	/**
 	* Get project name

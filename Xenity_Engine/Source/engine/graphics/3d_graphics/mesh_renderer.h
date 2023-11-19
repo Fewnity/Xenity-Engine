@@ -22,7 +22,7 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 	int GetDrawPriority() const override;
 
 	std::shared_ptr <MeshData> meshData = nullptr;

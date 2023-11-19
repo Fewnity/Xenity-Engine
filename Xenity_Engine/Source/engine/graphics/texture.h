@@ -13,7 +13,7 @@
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"
 
-class API Texture : public FileReference, public Reflection
+class API Texture : public FileReference, public Reflective
 {
 public:
 	enum Filter
@@ -47,8 +47,8 @@ public:
 	*/
 	//Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
 	//static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);

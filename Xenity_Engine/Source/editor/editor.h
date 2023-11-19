@@ -8,7 +8,7 @@
 #include "../engine/file_system/file_type.h"
 
 class Component;
-class Reflection;
+class Reflective;
 class FileReference;
 class ProjectSettingsMenu;
 class EngineSettingsMenu;

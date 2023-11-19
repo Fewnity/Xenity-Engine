@@ -26,12 +26,12 @@ Tilemap::~Tilemap()
 	AssetManager::RemoveReflection(this);
 }
 
-std::unordered_map<std::string, ReflectionEntry> Tilemap::GetReflection()
+ReflectiveData Tilemap::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, width, "width", true);
-	Reflection::AddVariable(reflectedVariables, height, "height", true);
-	Reflection::AddVariable(reflectedVariables, color, "color", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, width, "width", true);
+	Reflective::AddVariable(reflectedVariables, height, "height", true);
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	return reflectedVariables;
 }
 

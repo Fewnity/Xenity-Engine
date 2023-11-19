@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <time.h>
-
 class API Noise
 {
 public:

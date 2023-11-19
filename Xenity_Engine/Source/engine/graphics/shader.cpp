@@ -53,15 +53,15 @@ Shader::~Shader()
 	}
 }
 
-std::unordered_map<std::string, ReflectionEntry> Shader::GetReflection()
+ReflectiveData Shader::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> Shader::GetMetaReflection()
+ReflectiveData Shader::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 

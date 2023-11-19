@@ -12,7 +12,7 @@ public:
 	~RigidBody();
 	//void SetReflection();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	void Update() override;
 	void Tick();

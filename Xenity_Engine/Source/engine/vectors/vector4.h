@@ -10,10 +10,10 @@
 
 #include "../reflection/reflection.h"
 
-class API Vector4 : public Reflection
+class API Vector4 : public Reflective
 {
 public:
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);

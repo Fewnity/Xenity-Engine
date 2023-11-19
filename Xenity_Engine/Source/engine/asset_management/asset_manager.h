@@ -13,10 +13,9 @@
 #include "../file_system/file_type.h"
 
 class Texture;
-class IDrawable;
 class Light;
 class FileReference;
-class Reflection;
+class Reflective;
 class Material;
 class Shader;
 
@@ -26,19 +25,19 @@ public:
 	static void Init();
 
 	static void AddMaterial(Material* material);
-	static void AddReflection(Reflection* reflection);
+	static void AddReflection(Reflective* reflection);
 	static void AddFileReference(const std::shared_ptr <FileReference>& fileReference);
 	static void AddLight(const std::weak_ptr<Light>& light);
 
 	static void RemoveMaterial(const Material* material);
-	static void RemoveReflection(const Reflection* reflection);
+	static void RemoveReflection(const Reflective* reflection);
 	static void RemoveAllFileReferences();
 	static void RemoveFileReference(const std::shared_ptr <FileReference>& fileReference);
 	static void RemoveLight(const std::weak_ptr<Light>& light);
 	static void ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference);
 
 	static Material* GetMaterial(const int index);
-	static Reflection* GetReflection(const int index);
+	static Reflective* GetReflectiveData(const int index);
 	static std::shared_ptr<FileReference> GetFileReference(const int index);
 	static std::weak_ptr<Light> GetLight(const int index);
 
@@ -66,7 +65,7 @@ private:
 	static int lightCount;
 
 	static std::vector<Material*> materials;
-	static std::vector<Reflection*> reflections;
+	static std::vector<Reflective*> reflections;
 	static std::vector<std::shared_ptr<FileReference>> fileReferences;
 	static std::vector<std::weak_ptr<Light>> lights;
 };

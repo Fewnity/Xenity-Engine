@@ -8,11 +8,11 @@
 
 #pragma region Constructors
 
-std::unordered_map<std::string, ReflectionEntry> Vector2Int::GetReflection()
+ReflectiveData Vector2Int::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, x, "x", true);
-	Reflection::AddVariable(reflectedVariables, y, "y", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, x, "x", true);
+	Reflective::AddVariable(reflectedVariables, y, "y", true);
 	return reflectedVariables;
 }
 

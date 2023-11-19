@@ -26,6 +26,7 @@
  */
 
 #include "noise.h"
+#include <time.h>
 
  // This is the new and improved, C(2) continuous interpolant
 #define FADE(t) (t * t * t * (t * (t * 6 - 15) + 10))

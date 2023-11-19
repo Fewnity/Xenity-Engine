@@ -11,38 +11,53 @@ class ReflectionUtils
 public:
 
 	/**
-	* Fill Reflection from Json data
+	* Fill Reflective object from Json data
 	* @param j Json data
-	* @param reflection Reflection
+	* @param reflection Reflective object
 	*/
-	static void JsonToReflection(const nlohmann::json& j, Reflection& reflection);
+	static void JsonToReflective(const nlohmann::json& j, Reflective& reflective);
 
 	/**
-	* Fill Reflection map from Json data
+	* Fill Reflective data list from Json data
 	* @param json Json data
-	* @param theMap The Reflection map to fill
+	* @param theMap The Reflective data list to fill
 	*/
-	static void JsonToMap(const nlohmann::json& json, std::unordered_map<std::string, ReflectionEntry> theMap);
+	static void JsonToReflectiveData(const nlohmann::json& json, ReflectiveData dataList);
 
 	/**
-	* Create Json data from Reflection
-	* @param reflection Reflection
+	* Create Json data from Reflective object
+	* @param reflection Reflective object
 	*/
-	static nlohmann::json ReflectionToJson(Reflection& reflection);
+	static nlohmann::json ReflectiveToJson(Reflective& reflective);
 
 	/**
-	* Create Json data from Reflection map
-	* @param theMap The Reflection map
+	* Create Json data from Reflective data list
+	* @param theMap The Reflective data list
 	*/
-	static nlohmann::json MapToJson(std::unordered_map<std::string, ReflectionEntry> theMap);
+	static nlohmann::json ReflectiveDataToJson(ReflectiveData dataList);
 
-	static bool FileToMap(std::shared_ptr<File> file, std::unordered_map<std::string, ReflectionEntry> theMap);
-	static bool MapToFile(std::unordered_map<std::string, ReflectionEntry> theMap, std::shared_ptr<File> file);
+	/**
+	* Read a file to fill a Reflective data list
+	* @param file File to read
+	*/
+	static bool FileToReflectiveData(std::shared_ptr<File> file, ReflectiveData dataList);
+
+	/**
+	* Write Reflective data in a list
+	* @param file File to write in
+	*/
+	static bool ReflectiveDataToFile(ReflectiveData dataList, std::shared_ptr<File> file);
 
 private:
+	/**
+	* Fill a file reference variable
+	*/
 	template <typename T>
 	static void FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* valuePtr);
 
+	/**
+	* Fill a vector of file reference
+	*/
 	template <typename T>
 	static void FillVectorFileReference(nlohmann::json kvValue, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr);
 };

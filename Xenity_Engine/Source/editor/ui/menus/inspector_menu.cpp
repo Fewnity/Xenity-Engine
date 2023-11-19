@@ -32,12 +32,12 @@ void InspectorMenu::Draw()
 			ImGui::Text(fileNameExt.c_str());
 			ImGui::Separator();
 
-			auto reflection = std::dynamic_pointer_cast<Reflection>(selectedFileReference);
+			auto reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
 
 			auto metaReflection = selectedFileReference->GetMetaReflection();
 			if (reflection)
 			{
-				auto reflectionList = reflection->GetReflection();
+				auto reflectionList = reflection->GetReflectiveData();
 				if (reflectionList.size() != 0)
 				{
 					std::shared_ptr<Command> command = nullptr;
@@ -184,7 +184,7 @@ void InspectorMenu::Draw()
 
 						//Draw component variables
 						std::shared_ptr<Command> command = nullptr;
-						if (EditorUI::DrawMap(comp->GetReflection(), command, comp))
+						if (EditorUI::DrawMap(comp->GetReflectiveData(), command, comp))
 						{
 							comp->OnReflectionUpdated();
 						}

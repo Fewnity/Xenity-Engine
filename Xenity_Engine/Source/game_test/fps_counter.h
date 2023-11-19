@@ -12,7 +12,7 @@ public:
 	void Start() override;
 	void Update() override;
 	std::weak_ptr<TextRendererCanvas> textRenderer;
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
+	ReflectiveData GetReflectiveData() override;
 private:
 };
 

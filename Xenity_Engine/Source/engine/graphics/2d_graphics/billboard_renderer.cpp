@@ -11,11 +11,11 @@ BillboardRenderer::BillboardRenderer()
 	material = AssetManager::standardMaterial;
 }
 
-std::unordered_map<std::string, ReflectionEntry> BillboardRenderer::GetReflection()
+ReflectiveData BillboardRenderer::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-	Reflection::AddVariable(reflectedVariables, color, "color", true);
-	Reflection::AddVariable(reflectedVariables, texture, "texture", true);
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
+	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
 	return reflectedVariables;
 }
 

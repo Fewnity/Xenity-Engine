@@ -12,7 +12,7 @@
 
 class Light;
 
-class Shader : public FileReference, public Reflection
+class Shader : public FileReference, public Reflective
 {
 public:
 	enum ShaderType
@@ -28,8 +28,8 @@ public:
 	Shader();
 	~Shader();
 
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 
 	void LoadFileReference() override;
 

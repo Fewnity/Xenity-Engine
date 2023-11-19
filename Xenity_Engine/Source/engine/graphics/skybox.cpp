@@ -28,9 +28,9 @@ SkyBox::SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Text
 	this->right = std::move(right);
 }
 
-std::unordered_map<std::string, ReflectionEntry> SkyBox::GetReflection()
+ReflectiveData SkyBox::GetReflectiveData()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, front, "front", true, true);
 	AddVariable(reflectedVariables, back, "back", true, true);
 	AddVariable(reflectedVariables, up, "up", true, true);
@@ -40,15 +40,15 @@ std::unordered_map<std::string, ReflectionEntry> SkyBox::GetReflection()
 	return reflectedVariables;
 }
 
-std::unordered_map<std::string, ReflectionEntry> SkyBox::GetMetaReflection()
+ReflectiveData SkyBox::GetMetaReflection()
 {
-	std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
+	ReflectiveData reflectedVariables;
 	return reflectedVariables;
 }
 
 void SkyBox::OnReflectionUpdated()
 {
-	bool loadResult = ReflectionUtils::MapToFile(GetReflection(), file);
+	bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!loadResult)
 	{
 		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath());
@@ -57,7 +57,7 @@ void SkyBox::OnReflectionUpdated()
 
 void SkyBox::LoadFileReference()
 {
-	bool loadResult = ReflectionUtils::FileToMap(file, GetReflection());
+	bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult) 
 	{
 		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath());

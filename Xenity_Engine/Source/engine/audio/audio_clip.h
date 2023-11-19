@@ -13,12 +13,12 @@
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"
 
-class API AudioClip : public FileReference, public Reflection
+class API AudioClip : public FileReference, public Reflective
 {
 public:
 	AudioClip();
-	std::unordered_map<std::string, ReflectionEntry> GetReflection() override;
-	std::unordered_map<std::string, ReflectionEntry> GetMetaReflection() override;
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflection() override;
 	static std::shared_ptr<AudioClip> MakeAudioClip();
 private:
 };
