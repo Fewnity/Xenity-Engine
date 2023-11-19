@@ -1,3 +1,4 @@
+#if defined(_EE)
 #if defined(EXPORT)
 #define API __declspec(dllexport)
 #elif defined(IMPORT)
@@ -102,3 +103,4 @@ private:
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
 	// int GetDrawModeEnum(DrawMode drawMode);
 };
+#endif

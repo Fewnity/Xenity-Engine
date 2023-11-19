@@ -1,4 +1,5 @@
-#include "renderer_gskit.h"
+#if defined(_EE)
+include "renderer_gskit.h"
 
 #include "../../../xenity.h"
 #include "../3d_graphics/mesh_data.h"
@@ -317,3 +318,4 @@ int RendererGsKit::GetShaderTypeEnum(Shader::ShaderType shaderType)
 
 // 	return mode;
 // }
+#endif
