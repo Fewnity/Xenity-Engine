@@ -269,6 +269,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			try
 			{
 				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(ENGINE_PATH + std::string("Source\\editor\\"), tempCompileFolderPath + "editor\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
 				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity_editor.h"), tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
 			}
