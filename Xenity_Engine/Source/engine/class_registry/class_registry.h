@@ -14,7 +14,8 @@
 #include <memory>
 #include <vector>
 
-class GameObject;
+#include "../game_elements/gameobject.h"
+
 class Component;
 
 class API ClassRegistry
@@ -24,9 +25,15 @@ public:
 	/**
 	* Add a function to create a component
 	* @param name Component name
-	* @param function Function that returns the GameObject with the new component
-	*/
-	static void AddComponentClass(const std::string& name, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)> function);
+	*/	
+	template<typename T>
+	static void AddComponentClass(const std::string& name) 
+	{
+		nameToComponent[name] = [](std::shared_ptr<GameObject> go)
+		{ 
+			return go->AddComponent<T>(); 
+		};
+	}
 
 	/**
 	* Add a component to a GameObject from the component name

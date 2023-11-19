@@ -310,32 +310,19 @@ void Engine::Loop()
 void Engine::RegisterEngineComponents()
 {
 	// List all Engine components
-	ClassRegistry::AddComponentClass("Light", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<Light>(); });
-	ClassRegistry::AddComponentClass("Camera", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<Camera>(); });
-	ClassRegistry::AddComponentClass("TextRendererCanvas", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<TextRendererCanvas>(); });
-	ClassRegistry::AddComponentClass("TextRenderer", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<TextRenderer>(); });
-	ClassRegistry::AddComponentClass("MeshRenderer", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<MeshRenderer>(); });
-	ClassRegistry::AddComponentClass("Tilemap", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<Tilemap>(); });
-	ClassRegistry::AddComponentClass("SpriteRenderer", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<SpriteRenderer>(); });
-	ClassRegistry::AddComponentClass("BillboardRenderer", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<BillboardRenderer>(); });
-	ClassRegistry::AddComponentClass("LineRenderer", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<LineRenderer>(); });
-	ClassRegistry::AddComponentClass("AudioSource", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<AudioSource>(); });
-	ClassRegistry::AddComponentClass("TestComponent", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<TestComponent>(); });
-	ClassRegistry::AddComponentClass("RigidBody", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<RigidBody>(); });
-	ClassRegistry::AddComponentClass("BoxCollider", [](std::shared_ptr<GameObject> go)
-		{ return go->AddComponent<BoxCollider>(); });
+	ClassRegistry::AddComponentClass<Light>("Light");
+	ClassRegistry::AddComponentClass<Camera>("Camera");
+	ClassRegistry::AddComponentClass<TextRendererCanvas>("TextRendererCanvas");
+	ClassRegistry::AddComponentClass<TextRenderer>("TextRenderer");
+	ClassRegistry::AddComponentClass<MeshRenderer>("MeshRenderer");
+	ClassRegistry::AddComponentClass<Tilemap>("Tilemap");
+	ClassRegistry::AddComponentClass<SpriteRenderer>("SpriteRenderer");
+	ClassRegistry::AddComponentClass<BillboardRenderer>("BillboardRenderer");
+	ClassRegistry::AddComponentClass<LineRenderer>("LineRenderer");
+	ClassRegistry::AddComponentClass<AudioSource>("AudioSource");
+	ClassRegistry::AddComponentClass<TestComponent>("TestComponent");
+	ClassRegistry::AddComponentClass<RigidBody>("RigidBody");
+	ClassRegistry::AddComponentClass<BoxCollider>("BoxCollider");
 }
 
 void Engine::Stop()
