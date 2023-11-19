@@ -92,6 +92,7 @@ void NetworkManager::Update()
 
 void Socket::Update()
 {
+#if !defined(_EE)
 	if (socketId < 0)
 		return;
 
@@ -106,14 +107,17 @@ void Socket::Update()
 		recvBuff[recvd_len] = 0;
 		incommingData += recvBuff;
 	}
+#endif
 }
 
 void Socket::Close()
 {
+#if !defined(_EE)
 #if defined(_WIN32) || defined(_WIN64)
 	closesocket(socketId);
 #elif defined(__PSP__) || defined(__vita__)
 	close(socketId);
+#endif
 #endif
 }
 

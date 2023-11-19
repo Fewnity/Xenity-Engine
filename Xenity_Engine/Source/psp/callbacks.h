@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
 
 int SetupCallbacks(void);

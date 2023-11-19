@@ -3,8 +3,9 @@
 #include "../xenity.h"
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
-//#include "file_system/file_system_default.h"
-//#include "file_system/file_system_psp.h"
+#include "graphics/renderer/renderer_gskit.h"
+// #include "file_system/file_system_default.h"
+// #include "file_system/file_system_psp.h"
 
 #include "audio/audio_manager.h"
 #include "network/network.h"
@@ -92,7 +93,11 @@ int Engine::Init()
 	Performance::Init();
 
 	//------------------------------------------ Init renderer
+#if defined(_EE)
+	renderer = std::make_unique<RendererGsKit>();
+#else
 	renderer = std::make_unique<RendererOpengl>();
+#endif
 	int rendererInitResult = renderer->Init();
 	if (rendererInitResult != 0)
 	{

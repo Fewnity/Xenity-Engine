@@ -1,6 +1,6 @@
 #include "callbacks.h"
 
-#ifdef __PSP__
+#if defined(__PSP__)
 
 int exit_callback(int arg1, int arg2, void* common)
 {

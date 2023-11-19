@@ -112,6 +112,9 @@ StyleCopReport.xml
 *.pdb
 *.recipe
 
+# Files built by other compilers
+*.o
+
 !Xenity_Engine/build/models/*.obj
 !Xenity_Engine/engine_assets/*.obj
 !Xenity_Engine/engine_assets/models/*.obj

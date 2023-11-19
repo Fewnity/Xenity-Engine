@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__)
+#if defined(__PSP__) || defined(__vita__) || defined(_EE)
 #undef __STRICT_ANSI__
 #endif
 

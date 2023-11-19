@@ -8,10 +8,12 @@
 #include "../graphics/camera.h"
 #include "../debug/debug.h"
 
-#ifdef __vita__
+#if defined(__vita__)
 #include "../../psvita/inputs/inputs.h"
-#elif __PSP__
+#elif defined(__PSP__)
 #include "../../psp/inputs/inputs.h"
+#elif defined(_EE)
+#include "../../ps2/inputs/inputs.h"
 #else
 #include "../../windows/inputs/inputs.h"
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _EE
+#if defined(_EE)
 
 #include <map>
 #include <string>
