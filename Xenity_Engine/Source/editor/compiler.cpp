@@ -18,8 +18,25 @@
 
 std::string tempCompileFolderPath = "";
 
+std::string WindowsPathToWSL(const std::string& path) 
+{
+	std::string newPath = path;
+	newPath[0] = tolower(newPath[0]);
+	int pathSize = path.size();
+	for (int i = 1; i < pathSize; i++)
+	{
+		if (newPath[i] == '\\') 
+		{
+			newPath[i] = '/';
+		}
+	}
+	newPath.erase(newPath.begin() + 1);
+	return newPath;
+}
+
 CompileResult Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 {
+	std::string convertedEnginePath = WindowsPathToWSL(ENGINE_PATH);
 	// Clear compilation folder
 	int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
@@ -28,9 +45,12 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	int createBuildFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject/build'");
 
 	// Copy files
-	int copyCodeResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/Source ~/XenityTestProject'"); // Engine's source code + (game's code but to change later)
-	int copyLibrariesResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/include ~/XenityTestProject'"); // Engine's libraries
-	int copyCmakelistsResult = system("wsl sh -c 'cp -R /mnt/c/Users/elect/Documents/GitHub/Xenity-Engine/Xenity_Engine/CMakeLists.txt ~/XenityTestProject'"); // Cmakelists file
+	std::string copyEngineSourceCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "Source ~/XenityTestProject'";
+	int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
+	std::string copyEngineLibrariesCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + " include ~/XenityTestProject'";
+	int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
+	std::string copyCmakeCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "CMakeLists.txt ~/XenityTestProject'";
+	int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
 	if (copyCodeResult != 0)
 	{
