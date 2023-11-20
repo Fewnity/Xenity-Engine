@@ -159,7 +159,7 @@ void Shader::LoadFileReference()
 				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + file->GetPath());
 			}
 		}
-		else 
+		else
 		{
 			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + file->GetPath());
 		}
@@ -348,7 +348,7 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 
 	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
 
-	if(rotation.y != 0)
+	if (rotation.y != 0)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (rotation.x != 0)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -484,20 +484,23 @@ void Shader::UpdateLights()
 	for (int lightI = 0; lightI < lightCount; lightI++)
 	{
 		std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
-		if (light->type == Light::Directional)
+		if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			SetDirectionalLightData(light, directionalUsed);
-			directionalUsed++;
-		}
-		else if (light->type == Light::Point)
-		{
-			SetPointLightData(light, pointUsed);
-			pointUsed++;
-		}
-		else if (light->type == Light::Spot)
-		{
-			SetSpotLightData(light, spotUsed);
-			spotUsed++;
+			if (light->type == Light::Directional)
+			{
+				SetDirectionalLightData(light, directionalUsed);
+				directionalUsed++;
+			}
+			else if (light->type == Light::Point)
+			{
+				SetPointLightData(light, pointUsed);
+				pointUsed++;
+			}
+			else if (light->type == Light::Spot)
+			{
+				SetSpotLightData(light, spotUsed);
+				spotUsed++;
+			}
 		}
 	}
 

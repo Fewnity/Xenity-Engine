@@ -23,10 +23,6 @@ Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
 Fix camera when multisampled is disabled on windows build
 Add network profiler
-Fix undo update reflection
-
-useLighting not working
-Light still here when disabling component/gameobject
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
