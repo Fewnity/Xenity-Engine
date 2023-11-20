@@ -123,8 +123,14 @@ void InputSystem::Read(const SDL_Event& event)
 			mousePosition.x = Editor::gameMenu->mousePosition.x - Editor::gameMenu->windowPosition.x;
 			mousePosition.y = Editor::gameMenu->mousePosition.y - Editor::gameMenu->windowPosition.y;
 		}
-		else {
-			//mousePosition = Vector2(0);
+		else if (Editor::sceneMenu->isHovered)
+		{
+			mousePosition.x = Editor::sceneMenu->mousePosition.x - Editor::sceneMenu->windowPosition.x;
+			mousePosition.y = Editor::sceneMenu->mousePosition.y - Editor::sceneMenu->windowPosition.y;
+		}
+		else 
+		{
+			mousePosition = Vector2(0);
 		}
 #endif	
 		float xSpeed = 0;

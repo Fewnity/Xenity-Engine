@@ -247,7 +247,6 @@ void Engine::Loop()
 		Editor::Update();
 		if (Editor::sceneMenu->isFocused) 
 		{
-			InputSystem::ClearInputs();
 			InputSystem::blockGameInput = true;
 		}
 		else 
