@@ -15,7 +15,7 @@ void ProjectSettingsMenu::Draw()
 	if (visible)
 	{
 		std::shared_ptr<Command> command = nullptr;
-		std::shared_ptr<void*>emptyPtr;
+		std::shared_ptr<FileReference>emptyPtr;
 		EditorUI::DrawMap(ProjectManager::GetProjetSettingsReflection(), command, emptyPtr);
 		if (command)
 		{

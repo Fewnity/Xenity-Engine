@@ -35,6 +35,11 @@ public:
 
 	}
 
+	void OnReflectionUpdated() 
+	{
+
+	}
+
 	/**
 	* Get reflection of the file meta
 	*/

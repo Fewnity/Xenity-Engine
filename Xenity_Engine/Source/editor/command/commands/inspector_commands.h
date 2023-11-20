@@ -10,8 +10,6 @@
 #include "../../../engine/reflection/reflection_utils.h"
 #include "../../../engine/class_registry/class_registry.h"
 
-//using json = nlohmann::json;
-
 //----------------------------------------------------------------------------
 
 template<typename U, typename T>
@@ -42,8 +40,12 @@ inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_
 template<typename U, typename T>
 inline void InspectorChangeValueCommand<U, T>::Execute()
 {
-	*valuePtr = newValue;
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		*valuePtr = newValue;
+		target.lock()->OnReflectionUpdated();
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 template<typename U, typename T>
@@ -52,6 +54,7 @@ inline void InspectorChangeValueCommand<U, T>::Undo()
 	if (target.lock())
 	{
 		*valuePtr = lastValue;
+		target.lock()->OnReflectionUpdated();
 		SceneManager::SetSceneModified(true);
 	}
 }
@@ -59,11 +62,7 @@ inline void InspectorChangeValueCommand<U, T>::Undo()
 template<typename U, typename T>
 inline void InspectorChangeValueCommand<U, T>::Redo()
 {
-	if (target.lock())
-	{
-		*valuePtr = newValue;
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 //----------------------------------------------------------------------------
@@ -91,8 +90,11 @@ inline InspectorGameObjectSetActiveCommand::InspectorGameObjectSetActiveCommand(
 
 inline void InspectorGameObjectSetActiveCommand::Execute()
 {
-	target.lock()->SetActive(newValue);
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		target.lock()->SetActive(newValue);
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 inline void InspectorGameObjectSetActiveCommand::Undo()
@@ -106,11 +108,7 @@ inline void InspectorGameObjectSetActiveCommand::Undo()
 
 inline void InspectorGameObjectSetActiveCommand::Redo()
 {
-	if (target.lock())
-	{
-		target.lock()->SetActive(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 
@@ -139,8 +137,11 @@ inline InspectorTransformSetLocalPositionCommand::InspectorTransformSetLocalPosi
 
 inline void InspectorTransformSetLocalPositionCommand::Execute()
 {
-	target.lock()->SetLocalPosition(newValue);
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		target.lock()->SetLocalPosition(newValue);
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 inline void InspectorTransformSetLocalPositionCommand::Undo()
@@ -154,11 +155,7 @@ inline void InspectorTransformSetLocalPositionCommand::Undo()
 
 inline void InspectorTransformSetLocalPositionCommand::Redo()
 {
-	if (target.lock())
-	{
-		target.lock()->SetLocalPosition(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 //----------------------------------------------------------------------------
@@ -186,8 +183,11 @@ inline InspectorTransformSetLocalRotationCommand::InspectorTransformSetLocalRota
 
 inline void InspectorTransformSetLocalRotationCommand::Execute()
 {
-	target.lock()->SetLocalRotation(newValue);
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		target.lock()->SetLocalRotation(newValue);
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 inline void InspectorTransformSetLocalRotationCommand::Undo()
@@ -201,11 +201,7 @@ inline void InspectorTransformSetLocalRotationCommand::Undo()
 
 inline void InspectorTransformSetLocalRotationCommand::Redo()
 {
-	if (target.lock())
-	{
-		target.lock()->SetLocalRotation(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 //----------------------------------------------------------------------------
@@ -233,8 +229,11 @@ inline InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCo
 
 inline void InspectorTransformSetLocalScaleCommand::Execute()
 {
-	target.lock()->SetLocalScale(newValue);
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		target.lock()->SetLocalScale(newValue);
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 inline void InspectorTransformSetLocalScaleCommand::Undo()
@@ -248,11 +247,7 @@ inline void InspectorTransformSetLocalScaleCommand::Undo()
 
 inline void InspectorTransformSetLocalScaleCommand::Redo()
 {
-	if (target.lock())
-	{
-		target.lock()->SetLocalScale(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 //----------------------------------------------------------------------------
@@ -280,8 +275,11 @@ inline InspectorAddComponentCommand<T>::InspectorAddComponentCommand(std::weak_p
 template<typename T>
 inline void InspectorAddComponentCommand<T>::Execute()
 {
-	newComponent = target.lock()->AddComponent<T>();
-	SceneManager::SetSceneModified(true);
+	if (target.lock())
+	{
+		newComponent = target.lock()->AddComponent<T>();
+		SceneManager::SetSceneModified(true);
+	}
 }
 
 template<typename T>
@@ -298,11 +296,7 @@ inline void InspectorAddComponentCommand<T>::Undo()
 template<typename T>
 inline void InspectorAddComponentCommand<T>::Redo()
 {
-	if (target.lock())
-	{
-		newComponent = target.lock()->AddComponent<T>();
-		SceneManager::SetSceneModified(true);
-	}
+	Execute();
 }
 
 
@@ -352,7 +346,7 @@ inline void InspectorCreateGameObjectCommand::Execute()
 	{
 		createdGameObject = CreateGameObject();
 		std::shared_ptr<Transform> transform = createdGameObject.lock()->GetTransform();
-		std::shared_ptr<Transform>  selectedTransform = target.lock()->GetTransform();
+		std::shared_ptr<Transform> selectedTransform = target.lock()->GetTransform();
 		transform->SetPosition(selectedTransform->GetPosition());
 		transform->SetRotation(selectedTransform->GetRotation());
 		transform->SetLocalScale(selectedTransform->GetScale());

@@ -138,7 +138,6 @@ public:
 	static bool DrawMap(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
 	{
 		bool valueChanged = false;
-		//command = std::make_shared<InspectorChangeValueCommand>()
 		for (const auto& kv : myMap)
 		{
 			std::string variableName = GetPrettyVariableName(kv.first);

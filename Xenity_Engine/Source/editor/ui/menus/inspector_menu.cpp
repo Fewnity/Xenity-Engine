@@ -42,25 +42,23 @@ void InspectorMenu::Draw()
 				{
 					std::shared_ptr<Command> command = nullptr;
 					bool changed = EditorUI::DrawMap(reflectionList, command, selectedFileReference);
-					if (command)
+					if (changed && command)
 					{
 						CommandManager::AddCommand(command);
 						command->Execute();
-					}
-					if (changed)
-					{
-						reflection->OnReflectionUpdated();
 					}
 				}
 			}
 			if (metaReflection.size() != 0)
 			{
 				std::shared_ptr<Command> command = nullptr;
-				EditorUI::DrawMap(metaReflection, command, selectedFileReference);
-				if (command)
+				if (EditorUI::DrawMap(metaReflection, command, selectedFileReference))
 				{
-					CommandManager::AddCommand(command);
-					command->Execute();
+					if (command)
+					{
+						CommandManager::AddCommand(command);
+						command->Execute();
+					}
 				}
 
 				if (ImGui::Button("Apply"))
@@ -186,12 +184,11 @@ void InspectorMenu::Draw()
 						std::shared_ptr<Command> command = nullptr;
 						if (EditorUI::DrawMap(comp->GetReflectiveData(), command, comp))
 						{
-							comp->OnReflectionUpdated();
-						}
-						if (command)
-						{
-							CommandManager::AddCommand(command);
-							command->Execute();
+							if (command)
+							{
+								CommandManager::AddCommand(command);
+								command->Execute();
+							}
 						}
 
 						ImGui::Separator();
