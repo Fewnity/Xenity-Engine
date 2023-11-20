@@ -142,14 +142,8 @@ void InputSystem::Read(const SDL_Event& event)
 				w = Editor::gameMenu->windowSize.x;
 				h = Editor::gameMenu->windowSize.y;
 			}
-			else if (Editor::sceneMenu->isHovered)
-			{
-				w = Editor::sceneMenu->windowSize.x;
-				h = Editor::sceneMenu->windowSize.y;
-			}
 			else
 			{
-				//float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
 				w = Graphics::usedCamera.lock()->GetWidth();
 				h = Graphics::usedCamera.lock()->GetHeight();
 			}

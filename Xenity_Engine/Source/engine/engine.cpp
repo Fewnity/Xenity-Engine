@@ -250,7 +250,8 @@ void Engine::Loop()
 			InputSystem::ClearInputs();
 			InputSystem::blockGameInput = true;
 		}
-		else {
+		else 
+		{
 			InputSystem::blockGameInput = false;
 		}
 		editorUpdateBenchmark->Stop();

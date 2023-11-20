@@ -58,6 +58,7 @@ std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
 std::shared_ptr <MeshData> Editor::upArrow = nullptr;
 std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
+bool Editor::startRotatingCamera = false;
 
 void Editor::Init()
 {
@@ -91,6 +92,10 @@ void Editor::Init()
 void Editor::Update()
 {
 	// Check user input and camera movement when in the scene menu
+	if (InputSystem::GetKeyUp(MOUSE_RIGHT)) 
+	{
+		startRotatingCamera = false;
+	}
 	if (sceneMenu->isFocused)
 	{
 		// Get camera transform
@@ -98,8 +103,13 @@ void Editor::Update()
 		Vector3 rot = cameraTransform->GetRotation();
 		Vector3 pos = cameraTransform->GetPosition();
 
+		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && sceneMenu->isHovered)
+		{
+			startRotatingCamera = true;
+		}
+
 		// Rotate the camera when dragging the mouse right click
-		if (InputSystem::GetKey(MOUSE_RIGHT) && sceneMenu->isHovered)
+		if (InputSystem::GetKey(MOUSE_RIGHT) && startRotatingCamera)
 		{
 			rot.x += -InputSystem::mouseSpeed.y * 70;
 			rot.y += InputSystem::mouseSpeed.x * 70;

@@ -121,7 +121,7 @@ private:
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;
-
+	static bool startRotatingCamera;
 
 	static void CreateMenus();
 
