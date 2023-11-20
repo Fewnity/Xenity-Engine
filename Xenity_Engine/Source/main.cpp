@@ -1,7 +1,5 @@
 #include "main.h"
 
-//#define STB_IMAGE_IMPLEMENTATION
-
 #include "xenity.h"
 
 // PSP
@@ -19,7 +17,6 @@ Fix editor camera when loading a scene whitout camera in game
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
-Fix camera when mouse leaves the scene window
 Check File::GetFolderPath() for psvita, remove ux0:
 Fix camera when multisampled is disabled on windows build
 Add network profiler
