@@ -13,12 +13,11 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 /*
 --- To do quick:
-Fix editor camera when loading a scene whitout camera in game
+Fix editor camera when loading a scene without camera in game
 Add map reflection support
 Update shaders projection/position when using new camera and when switching to UI mode
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 Check File::GetFolderPath() for psvita, remove ux0:
-Fix camera when multisampled is disabled on windows build
 Add network profiler
 
 --- To do soon:

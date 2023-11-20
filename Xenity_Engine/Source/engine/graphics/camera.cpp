@@ -175,7 +175,7 @@ void Camera::UpdateProjection()
 		projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
 #endif
 	}
-	else if(isProjectionDirty)
+	else if (isProjectionDirty)
 	{
 		isProjectionDirty = false;
 		if (projectionType == ProjectionTypes::Perspective) // 3D projection
@@ -321,8 +321,24 @@ void Camera::BindFrameBuffer()
 
 #if defined(_WIN32) || defined(_WIN64)
 	UpdateFrameBuffer();
+#if defined(EDITOR)
 	if (framebuffer != -1)
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	}
+#else
+	if (useMultisampling)
+	{
+		if (framebuffer != -1)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		}
+	}
+	else
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+#endif
 #endif
 
 #if !defined(__PSP__)
