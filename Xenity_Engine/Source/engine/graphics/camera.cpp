@@ -51,6 +51,7 @@ ReflectiveData Camera::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, projectionSize, "projectionSize", true);
 	Reflective::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
+	Reflective::AddVariable(reflectedVariables, useMultisampling, "useMultisampling", true);
 	Reflective::AddVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
 	return reflectedVariables;
 }
@@ -58,6 +59,11 @@ ReflectiveData Camera::GetReflectiveData()
 void Camera::OnReflectionUpdated()
 {
 	isProjectionDirty = true;
+	if (lastMultisamplingValue != useMultisampling) 
+	{
+		lastMultisamplingValue = useMultisampling;
+		needFrameBufferUpdate = true;
+	}
 }
 
 Camera::~Camera()

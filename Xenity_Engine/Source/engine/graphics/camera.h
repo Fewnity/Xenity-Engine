@@ -155,6 +155,7 @@ public:
 	glm::mat4 canvasProjection;
 	void CopyMultiSampledFrameBuffer();
 	bool useMultisampling = true;
+	bool lastMultisamplingValue = useMultisampling;
 	bool isProjectionDirty = true;
 
 private:
