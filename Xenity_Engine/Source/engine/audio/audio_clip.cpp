@@ -11,7 +11,7 @@ ReflectiveData AudioClip::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData AudioClip::GetMetaReflection()
+ReflectiveData AudioClip::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

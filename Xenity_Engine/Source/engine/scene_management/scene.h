@@ -16,7 +16,7 @@ class API Scene : public FileReference, public Reflective
 public:
 	Scene();
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<Scene> MakeScene();
 private:
 };

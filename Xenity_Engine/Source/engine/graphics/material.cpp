@@ -205,7 +205,7 @@ ReflectiveData Material::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Material::GetMetaReflection()
+ReflectiveData Material::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

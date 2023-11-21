@@ -29,7 +29,7 @@ public:
 	~Shader();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 
 	void LoadFileReference() override;
 

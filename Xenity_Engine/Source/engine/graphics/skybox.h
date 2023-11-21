@@ -40,7 +40,7 @@ public:
 	std::shared_ptr<Texture> left = nullptr;
 	std::shared_ptr<Texture> right = nullptr;
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;

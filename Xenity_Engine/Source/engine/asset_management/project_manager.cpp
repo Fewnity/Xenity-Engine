@@ -456,7 +456,7 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	FileSystem::fileSystem->DeleteFile(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
-	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflection());
+	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	if (metaFile->Open(true))
@@ -607,7 +607,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 				return;
 			}
 
-			ReflectionUtils::JsonToReflectiveData(metaData, fileReference->GetMetaReflection());
+			ReflectionUtils::JsonToReflectiveData(metaData, fileReference->GetMetaReflectiveData());
 		}
 		else
 		{

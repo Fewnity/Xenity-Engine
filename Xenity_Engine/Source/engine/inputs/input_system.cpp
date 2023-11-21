@@ -110,7 +110,6 @@ void InputSystem::Read(const SDL_Event& event)
 	{
 	case SDL_MOUSEMOTION:
 	{
-		//event.motion.x
 		// Get mouse position
 #if !defined(EDITOR)
 		int mouseX, mouseY;

@@ -13,6 +13,8 @@
 #include "renderer.h"
 #include "../../lighting/lighting.h"
 
+class ProfilerBenchmark;
+
 enum BufferType
 {
 	Array_Buffer,
@@ -101,6 +103,8 @@ private:
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
+	RenderingSettings lastSettings;
+	std::shared_ptr<Texture> usedTexture = nullptr;
 
 	// int GetDrawModeEnum(DrawMode drawMode);
 };

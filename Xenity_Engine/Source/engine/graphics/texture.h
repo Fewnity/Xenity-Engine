@@ -48,7 +48,7 @@ public:
 	//Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
 	//static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);

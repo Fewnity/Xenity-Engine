@@ -16,7 +16,7 @@ class CodeFile : public FileReference, public Reflective
 public:
 	CodeFile(const bool isHeader);
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
 
 	bool GetIsHeader() 

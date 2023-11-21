@@ -53,7 +53,7 @@ ReflectiveData MeshData::GetReflectiveData()
 }
 
 
-ReflectiveData MeshData::GetMetaReflection()
+ReflectiveData MeshData::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

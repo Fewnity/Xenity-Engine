@@ -40,7 +40,7 @@ ReflectiveData SkyBox::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData SkyBox::GetMetaReflection()
+ReflectiveData SkyBox::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

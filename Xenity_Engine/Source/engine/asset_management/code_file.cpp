@@ -19,7 +19,7 @@ ReflectiveData CodeFile::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData CodeFile::GetMetaReflection()
+ReflectiveData CodeFile::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

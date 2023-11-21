@@ -12,10 +12,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- To do quick:
 Add map reflection support
-Update shaders projection/position when using new camera and when switching to UI mode
-Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
+Add default material/Shader in the project when creating new project
+Fix engine assets system
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
@@ -39,6 +39,7 @@ Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id
 Touch : Add  input state : Begin, Hold (and End?)
 Text scale
 Windows controller support
+Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 */
 
 #undef main

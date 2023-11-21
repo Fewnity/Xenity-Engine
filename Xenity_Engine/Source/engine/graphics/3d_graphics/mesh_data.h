@@ -72,7 +72,7 @@ public:
 	static std::shared_ptr<MeshData> MakeMeshData();
 	static std::shared_ptr<MeshData> MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 	~MeshData();
 
 	void LoadFileReference() override;

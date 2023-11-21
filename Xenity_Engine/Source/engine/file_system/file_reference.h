@@ -43,7 +43,7 @@ public:
 	/**
 	* Get reflection of the file meta
 	*/
-	virtual ReflectiveData GetMetaReflection()
+	virtual ReflectiveData GetMetaReflectiveData()
 	{
 		return ReflectiveData();
 	}

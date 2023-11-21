@@ -32,7 +32,7 @@ ReflectiveData Texture::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Texture::GetMetaReflection()
+ReflectiveData Texture::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);

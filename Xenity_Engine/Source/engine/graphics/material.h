@@ -27,7 +27,7 @@ public:
 	void Use();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflection() override;
+	ReflectiveData GetMetaReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	void LoadFileReference() override;

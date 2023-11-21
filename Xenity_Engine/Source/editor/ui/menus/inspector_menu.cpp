@@ -34,7 +34,7 @@ void InspectorMenu::Draw()
 
 			auto reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
 
-			auto metaReflection = selectedFileReference->GetMetaReflection();
+			auto metaReflection = selectedFileReference->GetMetaReflectiveData();
 			if (reflection)
 			{
 				auto reflectionList = reflection->GetReflectiveData();

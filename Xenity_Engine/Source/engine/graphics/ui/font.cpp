@@ -34,7 +34,7 @@ ReflectiveData Font::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Font::GetMetaReflection()
+ReflectiveData Font::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

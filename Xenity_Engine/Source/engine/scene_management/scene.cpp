@@ -11,7 +11,7 @@ ReflectiveData Scene::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Scene::GetMetaReflection()
+ReflectiveData Scene::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

@@ -59,7 +59,7 @@ ReflectiveData Shader::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Shader::GetMetaReflection()
+ReflectiveData Shader::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;
