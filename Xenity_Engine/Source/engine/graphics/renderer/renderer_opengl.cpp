@@ -377,6 +377,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
+	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.useBlend = settings.useBlend;
 	lastSettings.useDepth = settings.useDepth; 
 	lastSettings.useLighting = settings.useLighting;
