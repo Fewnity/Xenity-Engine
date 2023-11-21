@@ -346,6 +346,14 @@ void SceneMenu::Draw()
 		ImGui::SetCursorPos(startCursorPos);
 		DrawToolWindow();
 	}
+	else
+	{
+		windowPosition = Vector2Int(0, 0);
+		mousePosition = Vector2Int(0, 0);
+		windowSize = Vector2Int(0, 0);
+		isHovered = false;
+		isFocused = false;
+	}
 
 	ImGui::End();
 	ImGui::PopStyleVar();

@@ -80,6 +80,13 @@ void GameMenu::Draw()
 		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
 		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));
 	}
+	else 
+	{
+		windowPosition = Vector2Int(0, 0);
+		mousePosition = Vector2Int(0, 0);
+		windowSize = Vector2Int(0, 0);
+		isHovered = false;
+	}
 	ImGui::End();
 	ImGui::PopStyleVar();
 }
