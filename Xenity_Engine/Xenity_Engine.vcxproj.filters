@@ -141,7 +141,6 @@
     <ClInclude Include="Source\engine\inputs\input_system.h" />
     <ClInclude Include="Source\engine\graphics\camera.h" />
     <ClInclude Include="Source\engine\graphics\graphics.h" />
-    <ClInclude Include="Source\main.h" />
     <ClInclude Include="Source\engine\vectors\vector2.h" />
     <ClInclude Include="Source\engine\vectors\vector3.h" />
     <ClInclude Include="Source\engine\vectors\vector4.h" />

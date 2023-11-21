@@ -99,7 +99,7 @@ public:
 	/**
 	* Init Engine
 	*/
-	API static int Init();
+	[[nodiscard]] API static int Init();
 
 	/**
 	* Stop engine

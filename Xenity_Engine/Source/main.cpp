@@ -1,5 +1,3 @@
-#include "main.h"
-
 #include "xenity.h"
 
 // PSP
@@ -49,7 +47,8 @@ Windows controller support
 int main(int argc, char* argv[])
 {
 	// Init engine
-	if (Engine::Init() != 0)
+	int engineInitResult = Engine::Init();
+	if (engineInitResult != 0)
 	{
 		Debug::PrintError("-------- Engine failed to init --------");
 		return -1;
