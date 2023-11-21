@@ -1,5 +1,5 @@
 #if defined(__PSP__)
-include "renderer_ge.h"
+#include "renderer_ge.h"
 
 #include "../../../xenity.h"
 #include "../3d_graphics/mesh_data.h"
