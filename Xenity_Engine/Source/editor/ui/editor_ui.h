@@ -247,7 +247,13 @@ public:
 							command = std::make_shared<InspectorChangeValueCommand<T, Color>>(parent, val, newValue, *val);
 					}
 					else //Basic draw
-						DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
+					{
+						std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+						if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+						{
+							DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
+						}
+					}
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{
@@ -423,49 +429,52 @@ public:
 	static void DrawVector(bool isFileReference, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
 	{
 		size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
-			std::string inputText = "None (" + className + ")";
-			const auto& ptr = valuePtr->get()[vectorI];
-			if (ptr != nullptr)
+			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				if (ptr->file != nullptr)
-					inputText = ptr->file->GetFileName();
-				else
-					inputText = "Filled but invalid " + className;
+				std::string inputText = "None (" + className + ")";
+				const auto& ptr = valuePtr->get()[vectorI];
+				if (ptr != nullptr)
+				{
+					if (ptr->file != nullptr)
+						inputText = ptr->file->GetFileName();
+					else
+						inputText = "Filled but invalid " + className;
 
-				inputText += " " + std::to_string(ptr->fileId) + " ";
-				if (ptr->file)
-					inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+					inputText += " " + std::to_string(ptr->fileId) + " ";
+					if (ptr->file)
+						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+				}
+
+				if (DrawInputButton("", inputText, true) == 2)
+				{
+					valuePtr->get()[vectorI] = nullptr;
+				}
+
+				std::shared_ptr <FileReference> ref = nullptr;
+				std::string payloadName = "Files" + std::to_string(dragdropId);
+				if (DragDropTarget(payloadName, ref))
+				{
+					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
+					valueChangedTemp = true;
+				}
 			}
 
-			if (DrawInputButton("", inputText, true) == 2)
+			std::string addText = "Add " + className + GenerateItemId();
+			if (ImGui::Button(addText.c_str()))
 			{
-				valuePtr->get()[vectorI] = nullptr;
+				valuePtr->get().push_back(nullptr);
 			}
 
-			std::shared_ptr <FileReference> ref = nullptr;
-			std::string payloadName = "Files" + std::to_string(dragdropId);
-			if (DragDropTarget(payloadName, ref))
+			std::string removeText = "Remove " + className + GenerateItemId();
+			if (ImGui::Button(removeText.c_str()))
 			{
-				valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
-				valueChangedTemp = true;
-			}
-		}
-
-		std::string addText = "Add " + className + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr->get().push_back(nullptr);
-		}
-
-		std::string removeText = "Remove " + className + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
-			{
-				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				if (vectorSize != 0)
+				{
+					valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				}
 			}
 		}
 	}
