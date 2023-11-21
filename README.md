@@ -2,6 +2,8 @@
 
 Xenity Engine is a crossplatform game engine based on GameObject and Components.
 
+[Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
+
 ### Supported platforms:<br>
 ✔️ Supported<br>
 🚧 Work In Progress<br>
@@ -36,6 +38,7 @@ Features:
 > - If you compile the engine in Visual Studio, Hot Reloading will not be available. The engine will not be able to load DLLs, so the game code should be in Visual Studio project instead of the game project folder.
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
 > - Do not duplicate a meta file, each meta file has a unique file id in it.
+> - Currently for rendering, you have to copy the standard or unlit shader located in Xenity-Engine\Xenity_Engine\shaders\, put it in your new project, create a material, and then bind the shader in the material.
 
 ## How the engine works
 
