@@ -135,7 +135,7 @@ public:
 	//static bool DrawMap(const std::unordered_map<std::string, ReflectiveEntry>& myMap);
 
 	template<typename T>
-	static bool DrawMap(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
+	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
 	{
 		bool valueChanged = false;
 		for (const auto& kv : myMap)
@@ -247,7 +247,7 @@ public:
 							command = std::make_shared<InspectorChangeValueCommand<T, Color>>(parent, val, newValue, *val);
 					}
 					else //Basic draw
-						DrawMap(valuePtr->get().GetReflectiveData(), command, parent);
+						DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 				{

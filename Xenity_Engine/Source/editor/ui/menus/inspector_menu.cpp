@@ -41,7 +41,7 @@ void InspectorMenu::Draw()
 				if (reflectionList.size() != 0)
 				{
 					std::shared_ptr<Command> command = nullptr;
-					bool changed = EditorUI::DrawMap(reflectionList, command, selectedFileReference);
+					bool changed = EditorUI::DrawReflectiveData(reflectionList, command, selectedFileReference);
 					if (changed && command)
 					{
 						CommandManager::AddCommand(command);
@@ -52,7 +52,7 @@ void InspectorMenu::Draw()
 			if (metaReflection.size() != 0)
 			{
 				std::shared_ptr<Command> command = nullptr;
-				if (EditorUI::DrawMap(metaReflection, command, selectedFileReference))
+				if (EditorUI::DrawReflectiveData(metaReflection, command, selectedFileReference))
 				{
 					if (command)
 					{
@@ -182,7 +182,7 @@ void InspectorMenu::Draw()
 
 						//Draw component variables
 						std::shared_ptr<Command> command = nullptr;
-						if (EditorUI::DrawMap(comp->GetReflectiveData(), command, comp))
+						if (EditorUI::DrawReflectiveData(comp->GetReflectiveData(), command, comp))
 						{
 							if (command)
 							{
