@@ -4,8 +4,7 @@
 #include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
 #include "graphics/renderer/renderer_gskit.h"
-// #include "file_system/file_system_default.h"
-// #include "file_system/file_system_psp.h"
+#include "graphics/renderer/renderer_ge.h"
 
 #include "audio/audio_manager.h"
 #include "network/network.h"
@@ -95,6 +94,8 @@ int Engine::Init()
 	//------------------------------------------ Init renderer
 #if defined(_EE)
 	renderer = std::make_unique<RendererGsKit>();
+//#elif defined(__PSP__) // Not implemented
+//	renderer = std::make_unique<RendererGsKit>();
 #else
 	renderer = std::make_unique<RendererOpengl>();
 #endif
@@ -120,18 +121,6 @@ int Engine::Init()
 		return -1;
 	}
 	renderer->Setup();
-
-	// Not working
-	/*#if defined(__PSP__)
-		if (sceGeEdramSetSize(0x400000) == 0)
-		{
-			Debug::Print("-------- sceGeEdramSetSize ok --------");
-		}
-		else
-		{
-			Debug::PrintWarnign("-------- sceGeEdramSetSize ERROR --------");
-		}
-	#endif*/
 
 	//------------------------------------------ Init other things
 	Graphics::Init();

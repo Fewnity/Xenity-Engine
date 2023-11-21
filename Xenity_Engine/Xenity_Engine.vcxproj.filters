@@ -132,6 +132,7 @@
     <ClCompile Include="Source\engine\file_system\file.cpp" />
     <ClCompile Include="Source\engine\file_system\file_psp.cpp" />
     <ClCompile Include="Source\engine\file_system\file_default.cpp" />
+    <ClCompile Include="Source\engine\graphics\renderer\renderer_ge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Source\engine\file_system\file.h" />
     <ClInclude Include="Source\engine\file_system\file_psp.h" />
     <ClInclude Include="Source\engine\file_system\file_default.h" />
+    <ClInclude Include="Source\engine\graphics\renderer\renderer_ge.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

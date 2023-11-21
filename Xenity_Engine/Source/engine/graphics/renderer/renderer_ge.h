@@ -1,4 +1,4 @@
-#if defined(_EE)
+#if defined(__PSP__)
 #if defined(EXPORT)
 #define API __declspec(dllexport)
 #elif defined(IMPORT)
@@ -13,10 +13,10 @@
 #include "renderer.h"
 #include "../../lighting/lighting.h"
 
-class API RendererGsKit : public Renderer
+class API RendererGE : public Renderer
 {
 public:
-	RendererGsKit();
+	RendererGE();
 	int Init() override;
 	void Setup() override;
 	void Stop() override;

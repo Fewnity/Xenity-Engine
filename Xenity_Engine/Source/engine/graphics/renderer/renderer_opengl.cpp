@@ -22,16 +22,8 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
 
-RenderingSettings lastSettings;
-std::shared_ptr<ProfilerBenchmark> applySettingsBenchmark = nullptr;
-std::shared_ptr<Texture> usedTexture = nullptr;
-
-//ProfilerBenchmark* mesh2Benchmark = nullptr;
-
 RendererOpengl::RendererOpengl()
 {
-	applySettingsBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Settings");
-	//mesh2Benchmark = new ProfilerBenchmark("Draw", "mesh");
 }
 
 int RendererOpengl::Init()
@@ -71,6 +63,7 @@ int RendererOpengl::Init()
 
 void RendererOpengl::Setup()
 {
+	// TODO: this part needs to be improved
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_NORMALIZE);
 
@@ -82,7 +75,7 @@ void RendererOpengl::Setup()
 	glEnable(GL_MULTISAMPLE);
 #endif
 
-#endif
+#endif // defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 }
 
 void RendererOpengl::Stop()
@@ -121,7 +114,7 @@ void RendererOpengl::SetViewport(int x, int y, int width, int height)
 
 void RendererOpengl::SetClearColor(const Color& color)
 {
-#if defined(__PSP__)
+#if defined(__PSP__) // The psp uses an unsigned int with ABGR order
 	glClearColor(color.GetUnsignedIntABGR());
 #else
 	RGBA rgba = color.GetRGBA();
@@ -241,12 +234,14 @@ void RendererOpengl::BindTexture(const std::shared_ptr<Texture>& texture)
 #if defined(__PSP__)
 	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
 	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
+	// Set mipmap behavior
 	if (texture->useMipMap)
 		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
 	// sceGuTexLevelMode(GL_TEXTURE_CONST, 1); // Set mipmap level to use
 	// sceGuTexLevelMode(GL_TEXTURE_SLOPE, 2); //??? has no effect
 
 	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
+	// Send mipmap data
 	if (texture->useMipMap)
 	{
 		glTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
@@ -264,6 +259,7 @@ void RendererOpengl::BindTexture(const std::shared_ptr<Texture>& texture)
 
 void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
 {
+	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
 	if (texture->GetFilter() == Texture::Bilinear)
@@ -292,6 +288,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	}
 	int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
+	// Apply filters
 #if defined(__PSP__)
 	glTexFilter(minFilterValue, magfilterValue);
 	glTexWrap(wrap, wrap);
@@ -309,10 +306,10 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	if (!meshData->isValid)
 		return;
 
-	float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-	float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-	float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
-	float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
+	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
+	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
+	//float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
 	// glMaterial(GL_DIFFUSE, 0xFFFFFFFF);
 	//  glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
 	//  glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
@@ -320,7 +317,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	//  glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
 	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
 
-	applySettingsBenchmark->Start();
+	// Apply rendering settings
 	if (lastSettings.invertFaces != settings.invertFaces)
 	{
 		if (settings.invertFaces)
@@ -332,6 +329,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 			glFrontFace(GL_CCW);
 		}
 	}
+
 	if (lastSettings.useDepth != settings.useDepth)
 	{
 		if (settings.useDepth)
@@ -343,6 +341,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 			glDisable(GL_DEPTH_TEST);
 		}
 	}
+
 	if (lastSettings.useBlend != settings.useBlend)
 	{
 		if (settings.useBlend)
@@ -377,21 +376,20 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
+	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.useBlend = settings.useBlend;
 	lastSettings.useDepth = settings.useDepth; 
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	applySettingsBenchmark->Stop();
-
 	int subMeshCount = meshData->subMeshCount;
+	size_t textureCount = textures.size();
 
 #if defined(__PSP__)
-	int textureCount = textures.size();
-	//int textureCount = 10;
 	int params = 0;
 
+	// Get the parameters to use dependings of the mesh data format
 	if (meshData->hasIndices)
 	{
 		params |= GL_INDEX_16BIT;
@@ -412,20 +410,28 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	params |= GL_VERTEX_32BITF;
 	params |= GL_TRANSFORM_3D;
 
+	MeshData::SubMesh* subMesh = nullptr;
+
 	for (int i = 0; i < subMeshCount; i++)
 	{
+		subMesh = meshData->subMeshes[i];
+
+		// Do not continue if there are more submeshes than textures
 		if (i == textureCount)
 			break;
+
+		// Do not draw the submesh if the texture is null
 		if (textures[i] == nullptr)
 			continue;
 
+		// Bind texture
 		if (usedTexture != textures[i]) 
 		{
 			usedTexture = textures[i];
 			BindTexture(textures[i]);
 		}
-		MeshData::SubMesh* subMesh = meshData->subMeshes[i];
 
+		// Draw
 		if (!meshData->hasIndices)
 		{
 			glDrawElements(GL_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
@@ -436,7 +442,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		}
 	}
 #else
-	size_t textureCount = textures.size();
+
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -444,7 +450,6 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 
-	applySettingsBenchmark->Start();
 
 	if (Graphics::UseOpenGLFixedFunctions)
 	{
@@ -452,33 +457,34 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
 
-	applySettingsBenchmark->Stop();
 	MeshData::SubMesh* subMesh = nullptr;
-	int stride = 0;
+
 	for (size_t i = 0; i < subMeshCount; i++)
 	{
+		subMesh = meshData->subMeshes[i];
+
+		// Do not continue if there are more submeshes than textures
 		if (i == textureCount)
 			break;
 
+		// Do not draw the submesh if the texture is null
 		if (textures[i] == nullptr)
 			continue;
 
-		subMesh = meshData->subMeshes[i];
-
+		// Do not draw the submesh if the vertice count is 0
 		if (subMesh->vertice_count == 0)
 			continue;
 
+		//Bind all the data
 		glBindVertexArray(subMesh->VAO);
 
-	//	BindTexture(textures[i]);
 		if (usedTexture != textures[i]) 
 		{
 			usedTexture = textures[i];
 			BindTexture(textures[i]);
 		}
 
-		//mesh2Benchmark->Start();
-
+		// Draw
 		if (!meshData->hasIndices)
 		{
 			//glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
@@ -490,7 +496,6 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		}
 		glBindVertexArray(0);
 		Performance::AddDrawTriangles(subMesh->index_count / 3);
-		//mesh2Benchmark->Stop();
 	}
 
 #endif
@@ -591,6 +596,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
 
+	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
 	if (type == Light::Directional)
 		typeIntensity = 5;

@@ -14,7 +14,6 @@ RendererGsKit::RendererGsKit()
 
 int RendererGsKit::Init()
 {
-
 	int result = 0;
 
 	return result;
@@ -90,7 +89,6 @@ void RendererGsKit::DrawLine(const Vector3 &a, const Vector3 &b, const Color &co
 
 unsigned int RendererGsKit::CreateNewTexture()
 {
-
 	return 0;
 }
 
@@ -126,28 +124,6 @@ void RendererGsKit::SetFogValues(float start, float end, const Color &color)
 {
 }
 
-unsigned int RendererGsKit::CreateBuffer()
-{
-	return 0;
-}
-
-unsigned int RendererGsKit::CreateVertexArray()
-{
-	return 0;
-}
-
-void RendererGsKit::BindVertexArray(unsigned int bufferId)
-{
-}
-
-void RendererGsKit::DeleteBuffer(unsigned int bufferId)
-{
-}
-
-void RendererGsKit::DeleteVertexArray(unsigned int bufferId)
-{
-}
-
 void RendererGsKit::DeleteSubMeshData(MeshData::SubMesh *subMesh)
 {
 }
@@ -156,166 +132,4 @@ void RendererGsKit::UploadMeshData(const std::shared_ptr<MeshData> &meshData)
 {
 }
 
-unsigned int RendererGsKit::CreateShader(Shader::ShaderType type)
-{
-
-	return 0;
-}
-
-unsigned int RendererGsKit::CreateShaderProgram()
-{
-
-	return 0;
-}
-
-void RendererGsKit::CompileShader(unsigned int shaderId)
-{
-}
-
-int RendererGsKit::GetShaderCompilationResult(unsigned int shaderId)
-{
-
-	return 0;
-}
-
-std::vector<char> RendererGsKit::GetCompilationError(unsigned int shaderId)
-{
-
-	return std::vector<char>();
-}
-
-void RendererGsKit::SetShaderData(unsigned int shaderId, const char *data)
-{
-}
-
-void RendererGsKit::DeleteShader(unsigned int shaderId)
-{
-}
-
-void RendererGsKit::DeleteShaderProgram(unsigned int programId)
-{
-}
-
-void RendererGsKit::LinkShaderProgram(unsigned int programId)
-{
-}
-
-void RendererGsKit::UseShaderProgram(unsigned int programId)
-{
-}
-
-unsigned int RendererGsKit::GetShaderUniformLocation(unsigned int programId, const char *name)
-{
-
-	return 0;
-}
-
-void RendererGsKit::AttachShader(unsigned int programId, unsigned int shaderId)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const Vector4 &value)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const Vector3 &value)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const Vector2 &value)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const float value)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const int value)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const glm::mat4 &trans)
-{
-}
-
-void RendererGsKit::SetShaderAttribut(unsigned int programId, const char *attribut, const glm::mat3 &trans)
-{
-}
-
-int RendererGsKit::GetBufferTypeEnum(BufferType bufferType)
-{
-
-	return 0;
-}
-
-int RendererGsKit::GetWrapModeEnum(Texture::WrapMode wrapMode)
-{
-	return 0;
-}
-
-// int RendererGsKit::GetCullFaceEnum(CullFace face)
-// {
-// 	int side = GL_BACK;
-// 	switch (face)
-// 	{
-// 	case Front:
-// 		side = GL_FRONT;
-// 		break;
-// 	case Back:
-// 		side = GL_BACK;
-// 		break;
-// 	case Front_And_Back:
-// 		side = GL_FRONT_AND_BACK;
-// 		break;
-// 	}
-// 	return side;
-// }
-
-// float RendererGsKit::GetAnisotropicValueEnum(Texture::AnisotropicLevel level)
-// {
-// 	float anisotropicValue = 16;
-// 	switch (level)
-// 	{
-// 	case Texture::X0:
-// 		anisotropicValue = 1;
-// 		break;
-// 	case Texture::X2:
-// 		anisotropicValue = 2;
-// 		break;
-// 	case Texture::X4:
-// 		anisotropicValue = 4;
-// 		break;
-// 	case Texture::X8:
-// 		anisotropicValue = 8;
-// 		break;
-// 	case Texture::X16:
-// 		anisotropicValue = 16;
-// 		break;
-// 	}
-// 	return anisotropicValue;
-// }
-
-int RendererGsKit::GetShaderTypeEnum(Shader::ShaderType shaderType)
-{
-	return 0;
-}
-
-// int RendererGsKit::GetDrawModeEnum(DrawMode drawMode)
-// {
-// 	int mode = GL_TRIANGLES;
-// 	switch (drawMode)
-// 	{
-// 	case Patches:
-// 		mode = GL_PATCHES;
-// 		break;
-// 	case Triangles:
-// 		mode = GL_TRIANGLES;
-// 		break;
-// 	case Quads:
-// 		mode = GL_QUADS;
-// 		break;
-// 	}
-
-// 	return mode;
-// }
 #endif

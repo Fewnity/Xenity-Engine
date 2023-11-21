@@ -93,29 +93,30 @@ public:
 	virtual void DrawMeshData(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 
-	//Shader
-	virtual unsigned int CreateShader(Shader::ShaderType type) = 0;
-	virtual unsigned int CreateShaderProgram() = 0;
-	virtual void CompileShader(unsigned int shaderId) = 0;
-	virtual int GetShaderCompilationResult(unsigned int shaderId) = 0;
-	virtual std::vector<char> GetCompilationError(unsigned int shaderId) = 0;
-	virtual void SetShaderData(unsigned int shaderId, const char* data) = 0;
-	virtual void DeleteShader(unsigned int shaderId) = 0;
-	virtual void DeleteShaderProgram(unsigned int programId) = 0;
-	virtual void LinkShaderProgram(unsigned int programId) = 0;
-
-	virtual void UseShaderProgram(unsigned int programId) = 0;
-	virtual unsigned int GetShaderUniformLocation(unsigned int programId, const char* name) = 0;
-	virtual void AttachShader(unsigned int programId, unsigned int shaderId) = 0;
-
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const float value) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) = 0;
-	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) = 0;
 	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;
+
+	//Shader
+	virtual unsigned int CreateShader(Shader::ShaderType type) { return 0; }
+	virtual unsigned int CreateShaderProgram() { return 0; }
+	virtual void CompileShader(unsigned int shaderId) {}
+	virtual int GetShaderCompilationResult(unsigned int shaderId) { return 0; }
+	virtual std::vector<char> GetCompilationError(unsigned int shaderId) { return std::vector<char>(); }
+	virtual void SetShaderData(unsigned int shaderId, const char* data) {}
+	virtual void DeleteShader(unsigned int shaderId) {}
+	virtual void DeleteShaderProgram(unsigned int programId) {}
+	virtual void LinkShaderProgram(unsigned int programId) {}
+
+	virtual void UseShaderProgram(unsigned int programId) {}
+	virtual unsigned int GetShaderUniformLocation(unsigned int programId, const char* name) { return 0;  }
+	virtual void AttachShader(unsigned int programId, unsigned int shaderId) {}
+
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const float value) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) {}
+	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) {}
 
 private:
 	virtual void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
