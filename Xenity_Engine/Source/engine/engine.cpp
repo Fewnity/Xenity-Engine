@@ -94,8 +94,8 @@ int Engine::Init()
 	//------------------------------------------ Init renderer
 #if defined(_EE)
 	renderer = std::make_unique<RendererGsKit>();
-//#elif defined(__PSP__) // Not implemented
-//	renderer = std::make_unique<RendererGsKit>();
+#elif defined(__PSP__)
+	renderer = std::make_unique<RendererGE>();
 #else
 	renderer = std::make_unique<RendererOpengl>();
 #endif

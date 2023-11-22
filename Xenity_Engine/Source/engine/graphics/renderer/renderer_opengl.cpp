@@ -1,4 +1,4 @@
-#if !defined(_EE)
+#if !defined(_EE) && !defined(__PSP__)
 #include "renderer_opengl.h"
 
 #include "../../../xenity.h"
@@ -10,11 +10,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #define GLFW_DLL
-#elif defined(__PSP__)
-static unsigned int __attribute__((aligned(16))) list[262144];
-#include <pspkernel.h>
-#define GUGL_IMPLEMENTATION
-#include "../../../psp/gu2gl.h"
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif
@@ -31,10 +26,7 @@ int RendererOpengl::Init()
 	lastSettings.useTexture = false;
 
 	int result = 1;
-#if defined(__PSP__)
-	guglInit(list);
-	maxLightCount = 4;
-#elif defined(__vita__)
+#if defined(__vita__)
 	//result = vglInit(0x100000);
 	result = vglInit(0);
 	//result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_NONE);
@@ -80,9 +72,7 @@ void RendererOpengl::Setup()
 
 void RendererOpengl::Stop()
 {
-#if defined(__PSP__)
-	guglTerm();
-#elif defined(__vita__)
+#if defined(__vita__)
 	vglEnd();
 #else
 	glfwTerminate();
@@ -91,18 +81,12 @@ void RendererOpengl::Stop()
 
 void RendererOpengl::NewFrame()
 {
-#if defined(__PSP__)
-	guglStartFrame(list, GL_FALSE);
-#endif
 }
 
 void RendererOpengl::EndFrame()
 {
 	usedTexture.reset();
-#if defined(__PSP__)
-	guglSwapBuffers(GL_FALSE, GL_FALSE);
-	//guglSwapBuffers(GL_TRUE, GL_FALSE);
-#elif defined(__vita__)
+#if defined(__vita__)
 	vglSwapBuffers(GL_FALSE);
 #endif
 }
@@ -114,12 +98,8 @@ void RendererOpengl::SetViewport(int x, int y, int width, int height)
 
 void RendererOpengl::SetClearColor(const Color& color)
 {
-#if defined(__PSP__) // The psp uses an unsigned int with ABGR order
-	glClearColor(color.GetUnsignedIntABGR());
-#else
 	RGBA rgba = color.GetRGBA();
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
-#endif
 }
 
 void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
@@ -135,9 +115,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-#if defined(__PSP__)
-	glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
-#elif defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 	GLfloat zNear = nearClippingPlane;
 	GLfloat zFar = farClippingPlane;
 	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
@@ -150,15 +128,9 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 
 void RendererOpengl::ResetView()
 {
-#if defined(__PSP__)
-	glMatrixMode(GL_VIEW);
-	glLoadIdentity();
-	gluRotateY(180 / 180.0f * 3.14159f);
-#else
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(180, 0, 1, 0);
-#endif
 }
 
 void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
@@ -166,92 +138,41 @@ void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 	auto transform = camera->GetTransform();
 	Vector3 position = transform->GetPosition();
 	Vector3 rotation = transform->GetRotation();
-#if defined(__PSP__)
-	glMatrixMode(GL_VIEW);
-	glLoadIdentity();
 
-	gluRotateZ((-rotation.z) / 180.0f * 3.14159f);
-	gluRotateX(rotation.x / 180.0f * 3.14159f);
-	gluRotateY((rotation.y + 180) / 180.0f * 3.14159f);
-
-	glTranslatef(position.x, -position.y, -position.z);
-#else
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(-rotation.z, 0, 0, 1);
 	glRotatef(rotation.x, 1, 0, 0);
 	glRotatef(rotation.y + 180, 0, 1, 0);
 	glTranslatef(position.x, -position.y, -position.z);
-#endif
 }
 
 void RendererOpengl::ResetTransform()
 {
-#if defined(__PSP__)
-	glMatrixMode(GL_MODEL);
-	glLoadIdentity();
-#else
 	glMatrixMode(GL_MODELVIEW);
-#endif
 }
 
 void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
 {
-#if defined(__PSP__)
-	glMatrixMode(GL_MODEL);
-	if (resetTransform)
-		glLoadIdentity();
-#else
 	glMatrixMode(GL_MODELVIEW);
-#endif
 	glTranslatef(-position.x, position.y, position.z);
 
-#if defined(__PSP__)
-	gluRotateY(-rotation.y * 3.14159265359 / 180.0f);
-	gluRotateX(rotation.x * 3.14159265359 / 180.0f);
-	gluRotateZ(-rotation.z * 3.14159265359 / 180.0f);
-#else
 	glRotatef(-rotation.y, 0, 1, 0);
 	glRotatef(rotation.x, 1, 0, 0);
 	glRotatef(-rotation.z, 0, 0, 1);
-#endif
 
 	glScalef(scale.x, scale.y, scale.z);
 }
 
 void RendererOpengl::SetTransform(const glm::mat4& mat)
 {
-#if defined(__PSP__)
-	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
-#else
 	glMatrixMode(GL_MODELVIEW);
 	glMultMatrixf((float*)&mat);
-#endif
 }
 
 void RendererOpengl::BindTexture(const std::shared_ptr<Texture>& texture)
 {
-#if defined(__PSP__)
-	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
-	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
-	// Set mipmap behavior
-	if (texture->useMipMap)
-		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
-	// sceGuTexLevelMode(GL_TEXTURE_CONST, 1); // Set mipmap level to use
-	// sceGuTexLevelMode(GL_TEXTURE_SLOPE, 2); //??? has no effect
-
-	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
-	// Send mipmap data
-	if (texture->useMipMap)
-	{
-		glTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
-		// glTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
-		// glTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
-	}
-
-#else
 	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
-#endif
 	ApplyTextureFilters(texture);
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
@@ -289,16 +210,12 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
 	// Apply filters
-#if defined(__PSP__)
-	glTexFilter(minFilterValue, magfilterValue);
-	glTexWrap(wrap, wrap);
-#else
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterValue);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
-#endif
 }
 
 void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings)
@@ -357,11 +274,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 	if (lastSettings.useLighting != settings.useLighting)
 	{
-#if defined(__PSP__)
-		if (settings.useLighting && !settings.useBlend)
-#else
 		if (settings.useLighting)
-#endif
 		{
 			glEnable(GL_LIGHTING);
 		}
@@ -386,62 +299,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	int subMeshCount = meshData->subMeshCount;
 	size_t textureCount = textures.size();
 
-#if defined(__PSP__)
-	int params = 0;
 
-	// Get the parameters to use dependings of the mesh data format
-	if (meshData->hasIndices)
-	{
-		params |= GL_INDEX_16BIT;
-	}
-	params |= GL_TEXTURE_32BITF;
-	if (meshData->hasColor)
-	{
-		params |= GL_COLOR_8888;
-	}
-	else
-	{
-		sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
-	}
-	if (meshData->hasNormal)
-	{
-		params |= GU_NORMAL_32BITF;
-	}
-	params |= GL_VERTEX_32BITF;
-	params |= GL_TRANSFORM_3D;
-
-	MeshData::SubMesh* subMesh = nullptr;
-
-	for (int i = 0; i < subMeshCount; i++)
-	{
-		subMesh = meshData->subMeshes[i];
-
-		// Do not continue if there are more submeshes than textures
-		if (i == textureCount)
-			break;
-
-		// Do not draw the submesh if the texture is null
-		if (textures[i] == nullptr)
-			continue;
-
-		// Bind texture
-		if (usedTexture != textures[i]) 
-		{
-			usedTexture = textures[i];
-			BindTexture(textures[i]);
-		}
-
-		// Draw
-		if (!meshData->hasIndices)
-		{
-			glDrawElements(GL_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
-		}
-		else
-		{
-			glDrawElements(GL_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
-		}
-	}
-#else
 
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -497,8 +355,6 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glBindVertexArray(0);
 		Performance::AddDrawTriangles(subMesh->index_count / 3);
 	}
-
-#endif
 
 	Performance::AddDrawCall();
 }
@@ -559,11 +415,8 @@ unsigned int RendererOpengl::CreateNewTexture()
 
 void RendererOpengl::DeleteTexture(Texture* texture)
 {
-#if defined(__PSP__)
-#else
 	unsigned int val = texture->GetTextureId();
 	glDeleteTextures(1, &val);
-#endif
 }
 
 void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer)
@@ -587,8 +440,6 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	RGBA rgba = color.GetRGBA();
 
 	glEnable(GL_LIGHT0 + lightIndex);
-
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 
 	float lightAttenuation[1] = { attenuation };
 	if (type == Light::Directional)
@@ -621,25 +472,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	}
 	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, zeroLight);
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
-#elif defined(__PSP__)
-	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
-	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
-	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	if (type == Light::Directional)
-	{
-		sceGuLightColor(lightIndex, GU_AMBIENT, color.GetUnsignedIntABGR());
-		sceGuLightColor(lightIndex, GU_DIFFUSE, 0x00000000);
-	}
-	else
-	{
-		sceGuLightColor(lightIndex, GU_DIFFUSE, color.GetUnsignedIntABGR());
-		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
-	}
-	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-	if (type == Light::Directional)
-		attenuation = 0;
-	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
-#endif
+
 }
 
 void RendererOpengl::DisableAllLight()
@@ -692,10 +525,6 @@ void RendererOpengl::SetFog(bool active)
 		glEnable(GL_FOG);
 	else
 		glDisable(GL_FOG);
-#if defined(__PSP__)
-	if (active)
-		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
-#endif
 }
 
 void RendererOpengl::SetFogValues(float start, float end, const Color& color)
@@ -703,7 +532,6 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 	fogStart = start;
 	fogEnd = end;
 	fogColor = color;
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	//glFogi(GL_FOG_MODE, GL_EXP);
 	//glFogi(GL_FOG_MODE, GL_EXP2);
@@ -714,9 +542,7 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 	float floatColor[] = { rgba.r, rgba.g, rgba.b, 1.0f };
 
 	glFogfv(GL_FOG_COLOR, floatColor);
-#elif defined(__PSP__)
-	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
-#endif
+
 }
 
 unsigned int RendererOpengl::CreateBuffer()
@@ -1013,57 +839,41 @@ void RendererOpengl::AttachShader(unsigned int programId, unsigned int shaderId)
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniform4f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z, value.w);
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniform3f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z);
-#endif
-
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniform2f(GetShaderUniformLocation(programId, attribut), value.x, value.y);
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const float value)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniform1f(GetShaderUniformLocation(programId, attribut), value);
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const int value)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniform1i(GetShaderUniformLocation(programId, attribut), value);
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniformMatrix4fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUniformMatrix3fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
-#endif
 }
 
 int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	int type = GL_REPEAT;
 	switch (bufferType)
 	{
@@ -1075,8 +885,7 @@ int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 		break;
 	}
 	return type;
-#endif
-	return 0;
+
 }
 
 // int RendererOpengl::GetBufferModeEnum(BufferMode bufferMode)
@@ -1174,7 +983,6 @@ int RendererOpengl::GetWrapModeEnum(Texture::WrapMode wrapMode)
 
 int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	int compileType = GL_VERTEX_SHADER;
 	switch (shaderType)
 	{
@@ -1194,8 +1002,6 @@ int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
 #endif
 	}
 	return compileType;
-#endif
-	return 0;
 }
 
 // int RendererOpengl::GetDrawModeEnum(DrawMode drawMode)

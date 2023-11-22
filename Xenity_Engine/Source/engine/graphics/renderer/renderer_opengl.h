@@ -1,4 +1,4 @@
-#if !defined(_EE)
+#if !defined(_EE) && !defined(__PSP__)
 #if defined(EXPORT)
 #define API __declspec(dllexport)
 #elif defined(IMPORT)

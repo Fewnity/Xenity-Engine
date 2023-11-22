@@ -52,10 +52,12 @@ private:
 	int maxLightCount = 8;
 	void DisableAllLight();
 	void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) override;
-
+	int GetWrapModeEnum(Texture::WrapMode wrapMode);
 	float fogStart = 0;
 	float fogEnd = 10;
 	Color fogColor;
+	std::shared_ptr<Texture> usedTexture = nullptr;
+	RenderingSettings lastSettings;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 
