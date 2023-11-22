@@ -56,7 +56,6 @@ int RendererOpengl::Init()
 void RendererOpengl::Setup()
 {
 	// TODO: this part needs to be improved
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_NORMALIZE);
 
 	glDepthFunc(GL_LESS);
@@ -66,8 +65,6 @@ void RendererOpengl::Setup()
 #if defined(_WIN32) || defined(_WIN64)
 	glEnable(GL_MULTISAMPLE);
 #endif
-
-#endif // defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 }
 
 void RendererOpengl::Stop()
@@ -361,7 +358,6 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	if (settings.useDepth)
 		glEnable(GL_DEPTH_TEST);
 	else
@@ -400,17 +396,13 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	RGBA vec4Color = color.GetRGBA();
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glDrawArrays(GL_LINES, 0, 2);
-#endif
 }
 
 unsigned int RendererOpengl::CreateNewTexture()
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	unsigned int textureId;
 	glGenTextures(1, &textureId);
 	return textureId;
-#endif
-	return 0;
 }
 
 void RendererOpengl::DeleteTexture(Texture* texture)
@@ -421,11 +413,9 @@ void RendererOpengl::DeleteTexture(Texture* texture)
 
 void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
 	if (texture->useMipMap)
 		glGenerateMipmap(GL_TEXTURE_2D);
-#endif
 }
 
 void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation)
@@ -548,40 +538,30 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 unsigned int RendererOpengl::CreateBuffer()
 {
 	unsigned int id = 0;
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glGenBuffers(1, &id);
-#endif
 	return id;
 }
 
 unsigned int RendererOpengl::CreateVertexArray()
 {
 	unsigned int id = 0;
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glGenVertexArrays(1, &id);
-#endif
 	return id;
 }
 
 void RendererOpengl::BindVertexArray(unsigned int bufferId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glBindVertexArray(bufferId);
-#endif
 }
 
 void RendererOpengl::DeleteBuffer(unsigned int bufferId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDeleteBuffers(1, &bufferId);
-#endif
 }
 
 void RendererOpengl::DeleteVertexArray(unsigned int bufferId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDeleteVertexArrays(1, &bufferId);
-#endif
 }
 
 void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh* subMesh)
@@ -596,7 +576,6 @@ void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh* subMesh)
 
 void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	for (int i = 0; i < meshData->subMeshCount; i++)
 	{
 		MeshData::SubMesh* newSubMesh = meshData->subMeshes[i];
@@ -734,107 +713,77 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-#endif
 }
 
 unsigned int RendererOpengl::CreateShader(Shader::ShaderType type)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	int compileType = GetShaderTypeEnum(type);
 	return glCreateShader(compileType);
-#endif
-	return 0;
 }
 
 unsigned int RendererOpengl::CreateShaderProgram()
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	return glCreateProgram();
-#endif
-	return 0;
 }
 
 void RendererOpengl::CompileShader(unsigned int shaderId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glCompileShader(shaderId);
-#endif
 }
 
 int RendererOpengl::GetShaderCompilationResult(unsigned int shaderId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	GLint vResult;
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &vResult);
 	return (int)vResult;
-#endif
-	return 0;
 }
 
 std::vector<char> RendererOpengl::GetCompilationError(unsigned int shaderId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	int maxLength = 256;
 	std::vector<char> errorLog(maxLength);
 	glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
 	return errorLog;
-#endif
-	return std::vector<char>();
 }
 
 void RendererOpengl::SetShaderData(unsigned int shaderId, const char* data)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glShaderSource(shaderId, 1, &data, NULL);
-#endif
 }
 
 void RendererOpengl::DeleteShader(unsigned int shaderId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDeleteShader(shaderId);
-#endif
 }
 
 void RendererOpengl::DeleteShaderProgram(unsigned int programId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glDeleteProgram(programId);
-#endif
 }
 
 void RendererOpengl::LinkShaderProgram(unsigned int programId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 #if defined(__vita__)
 	glBindAttribLocation(programId, 0, "position");
 	glBindAttribLocation(programId, 1, "uv");
 	glBindAttribLocation(programId, 2, "normal");
 #endif
 	glLinkProgram(programId);
-#endif
 }
 
 void RendererOpengl::UseShaderProgram(unsigned int programId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glUseProgram(programId);
-#endif
 }
 
 unsigned int RendererOpengl::GetShaderUniformLocation(unsigned int programId, const char* name)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	return glGetUniformLocation(programId, name);
-#endif
-	return 0;
 }
 
 void RendererOpengl::AttachShader(unsigned int programId, unsigned int shaderId)
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	glAttachShader(programId, shaderId);
-#endif
 }
 
 void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value)
