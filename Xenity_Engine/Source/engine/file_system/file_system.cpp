@@ -94,6 +94,8 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 				std::string path = file.path().string();
 #if defined(__vita__)
 				path = path.substr(4);
+#elif defined(_EE)
+				path = path.substr(6);
 #endif
 				newDirectory = std::make_shared<Directory>(path + "\\");
 				if (recursive)
@@ -112,6 +114,8 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 				std::string path = file.path().string();
 #if defined(__vita__)
 				path = path.substr(4);
+#elif defined(_EE)
+				path = path.substr(6);
 #endif
 				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);

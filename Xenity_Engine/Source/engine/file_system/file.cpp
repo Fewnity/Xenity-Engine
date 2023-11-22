@@ -7,6 +7,8 @@ File::File(std::string _path) : UniqueId(true)
 {
 #if defined(__vita__)
 	_path = PSVITA_BASE_DIR + _path;
+#elif defined(_EE)
+	_path = "host0:" + _path;
 #endif
 	this->path = _path;
 	size_t pointIndex = path.find_last_of('.');
@@ -49,6 +51,8 @@ std::string File::GetFolderPath() const
 		lastSlashPos = 0;
 #if defined(__vita__)
 	std::string fileName = path.substr(4, lastSlashPos + 1);
+#elif defined(__EE)
+	std::string fileName = path.substr(6, lastSlashPos + 1);
 #else
 	std::string fileName = path.substr(0, lastSlashPos + 1);
 #endif
