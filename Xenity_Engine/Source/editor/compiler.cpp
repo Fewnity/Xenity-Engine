@@ -47,7 +47,7 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	// Copy files
 	std::string copyEngineSourceCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "Source ~/XenityTestProject'";
 	int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
-	std::string copyEngineLibrariesCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + " include ~/XenityTestProject'";
+	std::string copyEngineLibrariesCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "include ~/XenityTestProject'";
 	int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
 	std::string copyCmakeCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "CMakeLists.txt ~/XenityTestProject'";
 	int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
