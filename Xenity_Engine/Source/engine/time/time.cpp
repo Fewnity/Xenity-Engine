@@ -2,6 +2,9 @@
 #include <chrono>
 #include "../debug/debug.h"
 
+#if defined(_EE)
+#include <timer.h>
+#endif
 #if defined(__PSP__)
 #include <psptypes.h>
 #include <psprtc.h>
@@ -23,6 +26,9 @@ uint64_t currentTick;
 #elif defined(__vita__)
 SceRtcTick lastTick;
 SceRtcTick currentTick;
+#elif defined(_EE)
+uint64_t lastTick;
+uint64_t currentTick;
 #else
 std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_point;
 #endif
@@ -89,6 +95,10 @@ void Time::UpdateTime()
 	sceRtcGetCurrentTick(&currentTick);
 	float tempDeltaTime = (currentTick.tick - lastTick.tick) / 1000000.0f;
 	lastTick = currentTick;
+#elif defined(_EE)
+	currentTick = GetTimerSystemTime();
+	float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
+	lastTick = currentTick;
 #else
 	long long start = time_point_cast<milliseconds>(start_point).time_since_epoch().count();
 	long long end = time_point_cast<milliseconds>(end_point).time_since_epoch().count();
@@ -98,7 +108,7 @@ void Time::UpdateTime()
 #endif
 	deltaTime = tempDeltaTime * timeScale;
 	unscaledDeltaTime = tempDeltaTime;
-
+	
 	if (deltaTime >= 0.3333f) 
 	{
 		deltaTime = 0.3333f;
