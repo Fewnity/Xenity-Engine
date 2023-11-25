@@ -18,7 +18,7 @@ void TextManager::Init()
 
 std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font)
 {
-	if (!font)
+	if (!font || !font->fontAtlas)
 		return nullptr;
 
 	textBenchmark->Start();
@@ -173,7 +173,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character
 TextInfo* TextManager::GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale)
 {
 	TextInfo* textInfos = new TextInfo();
-	if (!font)
+	if (!font || !font->fontAtlas)
 		return textInfos;
 
 	textInfos->linesInfo.emplace_back(LineInfo());
