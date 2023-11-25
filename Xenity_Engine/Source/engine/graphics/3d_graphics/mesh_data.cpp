@@ -88,7 +88,17 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 	vert.y = y;
 	vert.z = z;
 
+#if defined(_EE)
+	subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	subMeshes[subMeshIndex]->c_st[index][0] = u;
+	subMeshes[subMeshIndex]->c_st[index][1] = v;
+
+#else
 	((Vertex*)subMeshes[subMeshIndex]->data)[index] = vert;
+#endif
 }
 
 void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
@@ -97,8 +107,14 @@ void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
-
+#if defined(_EE)
+	subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+#else
 	((VertexNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
+#endif
 }
 
 void MeshData::AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex)
@@ -109,8 +125,22 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index,
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
+#if defined(_EE)
+	subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 
+	subMeshes[subMeshIndex]->c_st[index][0] = u;
+	subMeshes[subMeshIndex]->c_st[index][1] = v;
+
+	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
+#else
 	((VertexNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
+#endif
 }
 
 void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
@@ -124,8 +154,22 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
+#if defined(_EE)
+	subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 
+	subMeshes[subMeshIndex]->c_st[index][0] = u;
+	subMeshes[subMeshIndex]->c_st[index][1] = v;
+
+	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
+#else
 	((VertexNormalsNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
+#endif
 }
 
 void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
@@ -138,7 +182,14 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	vert.y = y;
 	vert.z = z;
 
+#if defined(_EE)
+	subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+#else
 	((VertexNormalsNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
+#endif
 }
 
 void MeshData::SendDataToGpu()
@@ -242,7 +293,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
 #else
 	newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
@@ -255,7 +306,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	}
 
 	// Allocate memory for mesh data
-#ifdef __PSP__
+#if defined (__PSP__)
 	if (!hasNormal)
 	{
 		if (!hasUv)
@@ -270,7 +321,27 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		else
 			newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	}
+#elif defined (_EE)
+	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
+	newSubMesh->c_colours = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
+	newSubMesh->c_st = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
+
+	//if (!hasNormal)
+	//{
+	//	if (!hasUv)
+	//		newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
+	//	else
+	//		newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+	//}
+	//else
+	//{
+	//	if (!hasUv)
+	//		newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
+	//	else
+	//		newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+	//}
 #else
+
 	if (!hasNormal)
 	{
 		if (!hasUv)
@@ -285,8 +356,8 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		else
 			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
 	}
-
 #endif
+#if !defined (_EE)
 	if (newSubMesh->data == nullptr)
 	{
 		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex");
@@ -294,7 +365,17 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		delete newSubMesh;
 		return;
 	}
-
+#else
+	if (newSubMesh->c_verts == nullptr || newSubMesh->c_colours == nullptr || newSubMesh->c_st == nullptr)
+	{
+		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex");
+		free(newSubMesh->c_verts);
+		free(newSubMesh->c_colours);
+		free(newSubMesh->c_st);
+		delete newSubMesh;
+		return;
+	}
+#endif
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 

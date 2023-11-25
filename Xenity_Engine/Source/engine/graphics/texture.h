@@ -13,6 +13,10 @@
 #include "../file_system/file_reference.h"
 #include "../reflection/reflection.h"
 
+#if defined(_EE)
+#include <gsKit.h>
+#endif
+
 class API Texture : public FileReference, public Reflective
 {
 public:
@@ -162,6 +166,8 @@ public:
 	unsigned int pW = 0;
 	unsigned int pH = 0;
 	int type;
+#elif defined(_EE)
+	GSTEXTURE ps2Tex;
 #endif
 
 private:

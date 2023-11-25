@@ -74,7 +74,7 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 
 void Graphics::Init()
 {
-#if defined(__PSP__)
+#if defined(__PSP__) || defined(_EE)
 	UseOpenGLFixedFunctions = true;
 #endif
 

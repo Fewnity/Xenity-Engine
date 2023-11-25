@@ -14,6 +14,10 @@
 #include "../../file_system/file_reference.h"
 #include <vector>
 
+#if defined(_EE)
+#include <draw3d.h>
+#endif
+
 struct Vertex
 {
 	float u, v;
@@ -60,7 +64,11 @@ public:
 		unsigned short* indices = nullptr;
 		unsigned int vertice_count = 0;
 		void* data = nullptr;
-
+#if defined(_EE)
+		VECTOR* c_verts = nullptr;
+		VECTOR* c_colours = nullptr;
+		VECTOR* c_st = nullptr;
+#endif
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;

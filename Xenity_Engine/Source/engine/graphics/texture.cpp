@@ -20,6 +20,8 @@
 #elif defined(_WIN32) || defined(_WIN64)
 #include <thread>
 #include <glad/glad.h>
+#elif defined(_EE)
+#include "renderer/renderer_gskit.h"
 #endif
 
 Texture::Texture()
@@ -324,7 +326,32 @@ void Texture::SetData(const unsigned char* texData)
 		// SetTextureLevel(3, texData);
 		mipmaplevelCount = 1;
 	}
+#elif defined(_EE)
+	ps2Tex.Width = width;
+	ps2Tex.Height = height;
+	ps2Tex.PSM = GS_PSM_CT32;
+	ps2Tex.VramClut = 0;
+	ps2Tex.Clut = NULL;
 
+	ps2Tex.Filter = GS_FILTER_NEAREST;
+	ps2Tex.Mem = (u32*)memalign(128, ps2Tex.Width * ps2Tex.Height * 4);
+
+	struct pixel
+	{
+		u8 r, g, b, a;
+	};
+	struct pixel* Pixels = (struct pixel*)ps2Tex.Mem;
+	for (size_t i = 0; i < ps2Tex.Width * ps2Tex.Height; i++)
+	{
+		Pixels[i].r = texData[i * 4 + 0];
+		Pixels[i].g = texData[i * 4 + 1];
+		Pixels[i].b = texData[i * 4 + 2];
+		Pixels[i].a = 255 - texData[i * 4 + 3];
+	}
+	// Tex.Vram = gsKit_vram_alloc(gsGlobal, gsKit_texture_size(Tex2.Width, Tex2.Height, Tex2.PSM), GSKIT_ALLOC_USERBUFFER);
+	//  if (!Tex2.Vram)
+	//  	printf("No more Vram");
+	gsKit_TexManager_bind(((RendererGsKit&)Engine::GetRenderer()).gsGlobal, &ps2Tex);
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
@@ -361,7 +388,7 @@ void Texture::LoadTexture()
 			Debug::PrintError("[Texture::LoadTexture] Failed to load texture");
 			return;
 		}
-#if defined(__PSP__)
+#if defined(__PSP__) || defined(_EE)
 		SetData(buffer);
 #endif
 	}

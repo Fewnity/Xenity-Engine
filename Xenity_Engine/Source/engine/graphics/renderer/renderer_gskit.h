@@ -12,6 +12,9 @@
 
 #include "renderer.h"
 #include "../../lighting/lighting.h"
+#include <gsKit.h>
+#include <draw3d.h>
+#include <math3d.h>
 
 class API RendererGsKit : public Renderer
 {
@@ -45,6 +48,9 @@ public:
 	void UploadMeshData(const std::shared_ptr<MeshData>& meshData) override;
 
 	void Setlights(const std::shared_ptr<Camera>& camera) override;
+	GSGLOBAL* gsGlobal = nullptr;
+	MATRIX world_view;
+	MATRIX view_screen;
 
 private:
 	void ApplyTextureFilters(const std::shared_ptr<Texture>& texture);

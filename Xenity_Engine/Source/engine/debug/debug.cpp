@@ -94,7 +94,7 @@ void Debug::PrintInConsole(const std::string& text)
 #elif defined(__vita__)
 	// PsVitaDebugPrint(text);
 #elif defined(_EE)
-	// printf(text);
+	printf(text.c_str());
 #else
 	std::cout << text;
 #endif
