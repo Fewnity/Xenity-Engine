@@ -465,7 +465,7 @@ bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, Reflectiv
 	bool ok;
 
 	json myJson;
-	if (file->Open(true))
+	if (file->Open(false))
 	{
 		std::string jsonString = file->ReadAll();
 		file->Close();
