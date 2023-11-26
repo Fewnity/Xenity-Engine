@@ -12,6 +12,7 @@
 #include "../engine/scene_management/scene_manager.h"
 
 #define ENGINE_PATH "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\"
+//#define ENGINE_PATH "D:\\Xenity-Engine\\Xenity_Engine\\"
 //#define ENGINE_PATH "D:\\Gregory_Machefer\\Xenity-Engine\\Xenity_Engine\\"
 #define COMPILER_PATH "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"
 //#define COMPILER_PATH "C:\\VisualStudio\\VC\\Auxiliary\\Build"
@@ -143,7 +144,9 @@ std::string Compiler::GetAddNextCommand()
 
 std::string Compiler::GetNavToEngineFolderCommand()
 {
-	std::string command = "cd " + tempCompileFolderPath;
+	std::string command = "";
+	command += tempCompileFolderPath.substr(0, 2); // Change current drive
+	command += " && cd " + tempCompileFolderPath;
 	return command;
 }
 
@@ -337,7 +340,6 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
 
 				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.cpp"), tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
-				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.h"), tempCompileFolderPath + "main.h", std::filesystem::copy_options::overwrite_existing);
 			}
 			catch (const std::exception&)
 			{
@@ -374,7 +376,6 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		// Setup windows compileur command
 		std::string command;
 		command = GetStartCompilerCommand();
-		//command += " && d:";
 		command += GetAddNextCommand();
 		command += GetNavToEngineFolderCommand();
 		command += GetAddNextCommand();
