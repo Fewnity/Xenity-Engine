@@ -66,6 +66,9 @@ int Engine::Init()
 		return -1;
 	}
 
+	EngineSettings::LoadEngineSettings();
+	EngineSettings::SaveEngineSettings();
+
 	//------------------------------------------ Init Debug
 	int debugInitResult = Debug::Init();
 	if (debugInitResult != 0)

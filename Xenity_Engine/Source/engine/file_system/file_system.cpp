@@ -222,8 +222,3 @@ int FileSystem::InitFileSystem()
 	Debug::Print("-------- File System initiated --------");
 	return 0;
 }
-
-std::string FileSystem::GetGamePath()
-{
-	return EngineSettings::RootFolder;
-}

@@ -10,12 +10,7 @@
 #include "ui/menus/compiling_menu.h"
 #include <filesystem>
 #include "../engine/scene_management/scene_manager.h"
-
-#define ENGINE_PATH "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\"
-//#define ENGINE_PATH "D:\\Xenity-Engine\\Xenity_Engine\\"
-//#define ENGINE_PATH "D:\\Gregory_Machefer\\Xenity-Engine\\Xenity_Engine\\"
-#define COMPILER_PATH "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build"
-//#define COMPILER_PATH "C:\\VisualStudio\\VC\\Auxiliary\\Build"
+#include "../engine/engine_settings.h"
 
 std::string tempCompileFolderPath = "";
 
@@ -37,7 +32,7 @@ std::string WindowsPathToWSL(const std::string& path)
 
 CompileResult Compiler::CompileInWSL(Platform platform, const std::string& exportPath)
 {
-	std::string convertedEnginePath = WindowsPathToWSL(ENGINE_PATH);
+	std::string convertedEnginePath = WindowsPathToWSL(EngineSettings::engineProjectPath);
 	// Clear compilation folder
 	int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
@@ -130,7 +125,7 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 std::string Compiler::GetStartCompilerCommand()
 {
 	std::string command;
-	command += "cd " + std::string(COMPILER_PATH); // Go to the compiler folder
+	command += "cd " + EngineSettings::compilerPath; // Go to the compiler folder
 	command += " && vcvarsamd64_x86.bat"; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
@@ -159,7 +154,7 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 		command += " /DEDITOR";
 	}
 	std::string folder = tempCompileFolderPath + "source\\";
-	command += " -I \"" + std::string(ENGINE_PATH) + "include\" /LD \"" + folder + "*.cpp\"";
+	command += " -I \"" + std::string(EngineSettings::engineProjectPath) + "include\" /LD \"" + folder + "*.cpp\"";
 	if (buildType != EditorHotReloading)
 	{
 		command += " engine_game.lib";
@@ -185,7 +180,7 @@ std::string Compiler::GetCompileGameExeCommand()
 {
 	std::string command;
 	std::string fileName = ProjectManager::GetGameName();
-	command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"" + std::string(ENGINE_PATH) + "include\" main.cpp engine_game.lib"; //Buid game exe
+	command = "cl /Fe\"" + fileName + ".exe\" /std:c++20 /MP /EHsc -I \"" + std::string(EngineSettings::engineProjectPath) + "include\" main.cpp engine_game.lib"; //Buid game exe
 
 	//command += " >nul"; // Mute output
 	return command;
@@ -275,7 +270,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 	{
 		if (buildType == EditorHotReloading) // In hot reloading mode:
 		{
-			std::string engineLibPath = ENGINE_PATH + std::string("engine_editor.lib");
+			std::string engineLibPath = EngineSettings::engineProjectPath + "engine_editor.lib";
 
 			try
 			{
@@ -291,10 +286,10 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			// Copy engine headers
 			try
 			{
-				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-				std::filesystem::copy(ENGINE_PATH + std::string("Source\\editor\\"), tempCompileFolderPath + "editor\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
-				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity_editor.h"), tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy(EngineSettings::engineProjectPath + "Source\\engine\\", tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy(EngineSettings::engineProjectPath + "Source\\editor\\", tempCompileFolderPath + "editor\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy_file(EngineSettings::engineProjectPath + "Source\\xenity.h", tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(EngineSettings::engineProjectPath + "Source\\xenity_editor.h", tempCompileFolderPath + "xenity_editor.h", std::filesystem::copy_options::overwrite_existing);
 			}
 			catch (const std::exception&)
 			{
@@ -304,10 +299,10 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 		else // In game build mode:
 		{
-			std::string engineLibPath = ENGINE_PATH + std::string("engine_game.lib");
-			std::string engineDllPath = ENGINE_PATH + std::string("engine_game.dll");
-			std::string sdlDllPath = ENGINE_PATH + std::string("SDL2.dll");
-			std::string glfwDllPath = ENGINE_PATH + std::string("glfw3.dll");
+			std::string engineLibPath = EngineSettings::engineProjectPath + "engine_game.lib";
+			std::string engineDllPath = EngineSettings::engineProjectPath + "engine_game.dll";
+			std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL2.dll";
+			std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
 
 			// Copy engine game lib to the temp build folder
 			try
@@ -336,10 +331,10 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			// Copy engine headers to the temp build folder
 			try
 			{
-				std::filesystem::copy(ENGINE_PATH + std::string("Source\\engine\\"), tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\xenity.h"), tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy(EngineSettings::engineProjectPath + "Source\\engine\\", tempCompileFolderPath + "engine\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+				std::filesystem::copy_file(EngineSettings::engineProjectPath + "Source\\xenity.h", tempCompileFolderPath + "xenity.h", std::filesystem::copy_options::overwrite_existing);
 
-				std::filesystem::copy_file(ENGINE_PATH + std::string("Source\\main.cpp"), tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(EngineSettings::engineProjectPath + "Source\\main.cpp", tempCompileFolderPath + "main.cpp", std::filesystem::copy_options::overwrite_existing);
 			}
 			catch (const std::exception&)
 			{

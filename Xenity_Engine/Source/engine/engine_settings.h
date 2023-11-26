@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include "reflection/reflection.h"
 
 class API EngineSettings
 {
@@ -26,8 +27,12 @@ public:
 
 	static bool isWireframe;
 	static int maxLightCount;
-	static std::string RootFolder;
 	static bool useProfiler;
 	static bool useDebugger;
 	static bool useOnlineDebugger;
+	static std::string engineProjectPath;
+	static std::string compilerPath;
+	static std::string ppssppExePath;
+
+	static ReflectiveData GetReflectiveData();
 };
