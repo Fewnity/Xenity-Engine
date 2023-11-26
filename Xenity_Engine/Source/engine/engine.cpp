@@ -1,24 +1,19 @@
 #include "engine.h"
 #include "engine_settings.h"
 #include "../xenity.h"
-#include "graphics/renderer/renderer.h"
 #include "graphics/renderer/renderer_opengl.h"
 #include "graphics/renderer/renderer_gskit.h"
 #include "graphics/renderer/renderer_ge.h"
 
 #include "audio/audio_manager.h"
 #include "network/network.h"
-#include "dynamic_lib/dynamic_lib.h"
 #include "game_elements/gameplay_manager.h"
 #include "cpu.h"
 
 #if defined(EDITOR)
-#include "dynamic_lib/dynamic_lib.h"
 #include <imgui/imgui_impl_sdl2.h>
-#include <imgui/imgui_impl_opengl3.h>
 #include "../xenity_editor.h"
 #include <glad/glad.h>
-#include "../editor/ui/menus/inspector_menu.h"
 #include "../editor/ui/menus/scene_menu.h"
 #endif
 
@@ -28,17 +23,13 @@
 #if defined(__PSP__)
 #include "../psp/gu2gl.h"
 #include "../psp/callbacks.h"
-#include <psppower.h>
-#include <pspge.h>
 #elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
-#include <psp2/power.h>
 #endif
 
 #include "asset_management/project_manager.h"
 #include "scene_management/scene_manager.h"
 #include "../unit_tests/unit_test_manager.h"
-#include "graphics/2d_graphics/billboard_renderer.h"
 #include "physics/physics_manager.h"
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
@@ -107,9 +98,9 @@ int Engine::Init()
 	}
 
 	//------------------------------------------ Init Window
-#ifdef __PSP__
+#if defined(__PSP__)
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
-#elif __vita__
+#elif defined(__vita__)
 	Window::SetResolution(960, 544);
 #else
 	Window::SetResolution(1280, 720);
