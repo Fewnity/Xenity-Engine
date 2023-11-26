@@ -39,26 +39,15 @@ void AssetManager::Init()
 	{
 		// Load standard shader
 		shader = Shader::MakeShader();
-#if defined(__vita__)
-		shader->file = FileSystem::MakeFile("shaders/standard_psvita.shader");
-#else
 		shader->file = FileSystem::MakeFile("shaders/standard.shader");
-#endif
+
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
-#if defined(__vita__)
-		unlitShader->file = FileSystem::MakeFile("shaders/unlit_psvita.shader");
-#else
 		unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
-#endif
 		
 		// Load line shader
 		lineShader = Shader::MakeShader();
-#if defined(__vita__)
-		lineShader->file = FileSystem::MakeFile("shaders/line_psvita.shader");
-#else
 		lineShader->file = FileSystem::MakeFile("shaders/line.shader");
-#endif
 
 		// Create materials
 		standardMaterial = Material::MakeMaterial();

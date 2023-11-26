@@ -78,7 +78,7 @@ void Graphics::Init()
 	UseOpenGLFixedFunctions = true;
 #endif
 
-	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\Plane2Triangulate.obj");
+	skyPlane = MeshManager::LoadMesh("engine_assets\\models\\PlaneTriangulate.obj");
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
 	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");

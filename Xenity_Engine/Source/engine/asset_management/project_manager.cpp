@@ -228,7 +228,35 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 {
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\materials\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\shaders\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\textures\\");
 
+	// TODO improve this
+	try
+	{
+		// Copy basic materials
+		std::filesystem::copy_file("materials\\standardMaterial.mat", folderPath + name + "\\assets\\materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\unlitMaterial.mat", folderPath + name + "\\assets\\materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+
+		// Copy basic shaders
+		std::filesystem::copy_file("shaders\\standard.shader", folderPath + name + "\\assets\\shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\standard.shader.meta", folderPath + name + "\\assets\\shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\unlit.shader", folderPath + name + "\\assets\\shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\unlit.shader.meta", folderPath + name + "\\assets\\shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
+
+		// Copy basic 3D models
+		std::filesystem::copy("engine_assets\\models\\", folderPath + name + "\\assets\\models\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+
+		// Copy basic texture
+		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.");
+	}
 	return LoadProject(folderPath + name + "\\");
 }
 
@@ -309,7 +337,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	SaveProjectSettings();
 #endif
 
-	 //Load dynamic library and create game
+	//Load dynamic library and create game
 //#if defined(_WIN32) || defined(_WIN64)
 //#if defined(EDITOR)
 //	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
