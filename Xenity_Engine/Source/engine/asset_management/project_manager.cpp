@@ -9,11 +9,14 @@
 #include "code_file.h"
 #include "../graphics/skybox.h"
 
+// Not final code
+#if defined(VISUAL_STUDIO) || !defined(_WIN32) || !defined(_WIN64)
 #include "../../game_dungeon/game.h"
+//#include "../../game_test/game.h"
+#endif
 
 #if !defined(EDITOR)
 //#include "../../game_dungeon/game.h"
-//#include "../../game_test/game.h"
 #endif
 
 using json = nlohmann::json;
@@ -338,18 +341,20 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	//Load dynamic library and create game
-//#if defined(_WIN32) || defined(_WIN64)
-//#if defined(EDITOR)
-//	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-//#else
-//	DynamicLibrary::LoadGameLibrary("game");
-//#endif // defined(EDITOR)
-//	Engine::game = DynamicLibrary::CreateGame();
-//#else
-//	Engine::game = std::make_unique<Game>();
-//#endif //  defined(_WIN32) || defined(_WIN64)
-
+#if defined(VISUAL_STUDIO)
 	Engine::game = std::make_unique<Game>();
+#else
+#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR)
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+#else
+	DynamicLibrary::LoadGameLibrary("game");
+#endif // defined(EDITOR)
+	Engine::game = DynamicLibrary::CreateGame();
+#else
+	Engine::game = std::make_unique<Game>();
+#endif //  defined(_WIN32) || defined(_WIN64)
+#endif // defined(VISUAL_STUDIO)
 
 	// Fill class registery
 	if (Engine::game)
