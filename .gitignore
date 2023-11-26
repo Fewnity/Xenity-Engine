@@ -19,6 +19,7 @@ Xenity_Engine/build/PARAM.SFO
 Xenity_Engine/build/EBOOT.PBP
 Xenity_Engine/build/hello
 Xenity_Engine/buildvita/
+Xenity_Engine/Xenity Editor/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
