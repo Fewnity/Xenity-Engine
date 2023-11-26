@@ -40,25 +40,28 @@ Features:
 > - Do not duplicate a meta file, each meta file has a unique file id in it.
 
 > [!NOTE]
-> If you want to compile a game, you have to change the project path and the compiler path in the Engine Settings menu. You can set the PPSSPP location for Build And Run for PSP builds.
+> If you want to compile a game, you have to change the `project path` and the `compiler path` in the `Engine Settings` menu. You can set the `PPSSPP location` for Build And Run for PSP builds.
 
 ## How to compile without Visual Studio
-Run build_engine.bat
+Run `build_engine.bat` located in `Xenity-Engine\Xenity_Engine\`.
 
-A "Xenity Editor" folder will be created with the editor in it.
+A `Xenity Editor` folder will be created with the editor in it.
 
 ## How the engine works
 
-When a project/game is loaded, the engine will make a list of all existing files. Each file has an unique ID.
+When a project/game is loaded, the engine will make a list of all existing files. Each file has an unique Id.
+Classes that are originally a file like `Texture`, `Audio Clip`, `Mesh Data` and more, inherit from `File Reference` to have a pointer to their file.
+
+Some classes like `Component`, `GameObject` and more, inherit from `Reflective`. This allow to access their variables without knowing the base class. This is used by the Inspector to see and modify data and used to save/load their data in/from a file.
 
 ## Compatible files
-Images: .png .jpg .bmp
+Images: `.png .jpg .bmp`
 
-Audio: .wav .mp3
+Audio: `.wav .mp3`
 
-Mesh: .obj (Triangulate)
+Mesh: `.obj (Triangulate)`
 
-Font: .ttf
+Font: `.ttf`
 
 ## Used libraries
 Stb (used: stb_image 2.23): https://github.com/nothings/stb
