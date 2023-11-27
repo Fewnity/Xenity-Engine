@@ -30,6 +30,7 @@ project(hello)
 # Add any additional include paths here
 include_directories(
     include/
+    Source/
 )
 
 # Spécifiez le répertoire contenant vos fichiers source
