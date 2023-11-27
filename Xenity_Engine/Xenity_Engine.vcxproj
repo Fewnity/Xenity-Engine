@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\plugin\plugin.cpp" />
     <ClCompile Include="Source\editor\command\command_manager.cpp" />
     <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
     <ClCompile Include="Source\editor\command\command.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\select_project_menu.cpp" />
+    <ClCompile Include="Source\engine\plugin\plugin_manager.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
@@ -286,6 +288,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
+    <ClCompile Include="Source\plugins\test\plugin.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
     <ClCompile Include="Source\windows\cpu.cpp" />
@@ -327,6 +330,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\plugin\plugin.h" />
     <ClInclude Include="Source\editor\command\command_manager.h" />
     <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
     <ClInclude Include="Source\editor\command\command.h" />
@@ -359,6 +363,7 @@
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\select_project_menu.h" />
     <ClInclude Include="Source\engine\platform.h" />
+    <ClInclude Include="Source\engine\plugin\plugin_manager.h" />
     <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
@@ -455,6 +460,7 @@
     <ClInclude Include="Source\engine\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
+    <ClInclude Include="Source\plugins\test\plugin.h" />
     <ClInclude Include="Source\psp\video_hardware_dxtn.h" />
     <ClInclude Include="Source\unit_tests\unit_test_manager.h" />
     <ClInclude Include="Source\windows\inputs\inputs.h" />
