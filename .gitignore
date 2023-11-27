@@ -44,6 +44,17 @@ bld/
 [Ll]ogs/
 xenity_engine_debug.txt
 
+Xenity_Engine/Editor.exe
+Xenity_Engine/engine_editor.dll
+Xenity_Engine/engine_editor.exp
+Xenity_Engine/engine_editor.lib
+Xenity_Engine/engine_game.dll
+Xenity_Engine/engine_game.exp
+Xenity_Engine/engine_game.lib
+Xenity_Engine/engine_settings.json
+Xenity_Engine/imgui.ini
+Xenity_Engine/projects.json
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
@@ -122,6 +133,7 @@ StyleCopReport.xml
 
 !Xenity_Engine/shaders/*.meta
 !Xenity_Engine/materials/*.meta
+
 
 # Chutzpah Test files
 _Chutzpah*
