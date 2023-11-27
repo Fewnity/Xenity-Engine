@@ -203,6 +203,7 @@ void Graphics::Draw()
 				Engine::GetRenderer().ResetTransform();
 				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 
+				// Currently lines do not support shaders
 				if (!UseOpenGLFixedFunctions)
 				{
 					Engine::GetRenderer().UseShaderProgram(0);
