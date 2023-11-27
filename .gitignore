@@ -120,6 +120,9 @@ StyleCopReport.xml
 !Xenity_Engine/engine_assets/*.obj
 !Xenity_Engine/engine_assets/models/*.obj
 
+!Xenity_Engine/shaders/*.meta
+!Xenity_Engine/materials/*.meta
+
 # Chutzpah Test files
 _Chutzpah*
 
