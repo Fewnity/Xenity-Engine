@@ -54,6 +54,10 @@ Xenity_Engine/engine_game.lib
 Xenity_Engine/engine_settings.json
 Xenity_Engine/imgui.ini
 Xenity_Engine/projects.json
+Xenity_Engine/x64/
+
+Xenity_Engine.vcxproj.FileListAbsolute.txt
+Xenity_Engine.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
