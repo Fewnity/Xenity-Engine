@@ -11,6 +11,14 @@ void Gizmo::Init()
 
 void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 {
+	// Currently lines do not support shaders
+	if (!Graphics::UseOpenGLFixedFunctions)
+	{
+		Engine::GetRenderer().UseShaderProgram(0);
+		Graphics::currentShader = nullptr;
+		Graphics::currentMaterial = nullptr;
+	}
+
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.useBlend = true;
 	renderSettings.useDepth = false;
