@@ -169,6 +169,10 @@ void Engine::CheckEvents()
 			{
 				isRunning = false;
 			}
+			else 
+			{
+				isRunning = true;
+			}
 			break;
 		}
 		case SDL_WINDOWEVENT:
