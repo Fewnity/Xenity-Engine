@@ -125,7 +125,8 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 std::string Compiler::GetStartCompilerCommand()
 {
 	std::string command;
-	command += "cd " + EngineSettings::compilerPath; // Go to the compiler folder
+	command += EngineSettings::compilerPath.substr(0,2); // Go to the compiler folder
+	command += " && cd " + EngineSettings::compilerPath; // Go to the compiler folder
 	command += " && vcvarsamd64_x86.bat"; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
