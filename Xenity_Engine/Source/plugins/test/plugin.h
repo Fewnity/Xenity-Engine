@@ -8,6 +8,5 @@ public:
 	void Init() override;
 	void Shutdown() override;
 
-private:
-
+	PluginInfos CreateInfos() override;
 };

@@ -10,7 +10,7 @@ class PluginManager
 {
 public:
 	template <typename T>
-	void Register( const std::string name )
+	static void Register( const std::string name )
 	{
 		static_assert( 
 			std::is_base_of<Plugin, T>::value, 
@@ -18,6 +18,8 @@ public:
 		);
 
 		auto plugin = std::make_unique<T>();
+		plugin->Setup();
+
 		plugins.push_back( plugin );
 	}
 
