@@ -27,9 +27,9 @@ void {CLASSNAME}::Update()
 /**
 * Lists all variables to show in inspector
 */
-std::unordered_map<std::string, ReflectionEntry> {CLASSNAME}::GetReflection()
+ReflectiveData {CLASSNAME}::GetReflectiveData()
 {
-    std::unordered_map<std::string, ReflectionEntry> reflectedVariables;
-    // Reflection::AddVariable(reflectedVariables, variableName, "variableName", true);
+    ReflectiveData reflectedVariables;
+    // Reflection::AddVariable(reflectedVariables, variableName, "variableName", true); // true = isVisibleInInspector
     return reflectedVariables;
 }
