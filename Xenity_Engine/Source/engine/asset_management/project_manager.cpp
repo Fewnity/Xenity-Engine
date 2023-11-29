@@ -279,6 +279,9 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 
 		// Copy basic texture
 		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
+	
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
 	}
 	catch (const std::exception&)
 	{

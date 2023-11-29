@@ -1,5 +1,5 @@
 #include "{FILENAME}.h"
-#include "../xenity.h"
+#include <xenity.h>
 
 /**
 * Constructor
@@ -30,6 +30,6 @@ void {CLASSNAME}::Update()
 ReflectiveData {CLASSNAME}::GetReflectiveData()
 {
     ReflectiveData reflectedVariables;
-    // Reflection::AddVariable(reflectedVariables, variableName, "variableName", true); // true = isVisibleInInspector
+    // Reflective::AddVariable(reflectedVariables, variableName, "variableName", true); // true = isVisibleInInspector
     return reflectedVariables;
 }

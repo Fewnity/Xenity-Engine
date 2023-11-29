@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../engine/monobehaviour.h"
-#include "../engine/component.h"
+#include <engine/monobehaviour.h>
+#include <engine/component.h>
 
 class {CLASSNAME} : public MonoBehaviour
 {

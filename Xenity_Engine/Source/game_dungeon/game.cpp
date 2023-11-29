@@ -11,16 +11,11 @@
 #include "enemy.h"
 #include "animated_light.h"
 
-Game *Game::game = nullptr;
-
 /// <summary>
 /// Init game
 /// </summary>
 void Game::Start()
 {
-	game = this;
-	LoadGameData();
-
 	ClassRegistry::AddComponentClass<Player>("Player");
 	ClassRegistry::AddComponentClass<CameraFollow>("CameraFollow");
 	ClassRegistry::AddComponentClass<Coin>("Coin");
@@ -29,19 +24,6 @@ void Game::Start()
 	ClassRegistry::AddComponentClass<Chest>("Chest");
 	ClassRegistry::AddComponentClass<Enemy>("Enemy");
 	ClassRegistry::AddComponentClass<AnimatedLight>("AnimatedLight");
-
-	Debug::Print("Game::Start");
-}
-
-void Game::LoadGameData()
-{
-}
-
-/// <summary>
-/// Game loop
-/// </summary>
-void Game::Update()
-{
 }
 
 GameInterface *CreateGame()

@@ -16,8 +16,6 @@ class Game : public GameInterface
 {
 public:
 	void Start() override;
-
-private:
 };
 
 extern "C"
