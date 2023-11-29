@@ -15,13 +15,13 @@
 #include <engine/network/network.h>
 
 // Gameplay
-#include "game_elements/gameplay_manager.h"
+#include <engine/game_elements/gameplay_manager.h>
 
 // Game core
 #include "game_interface.h"
 
 // Class registry
-#include "class_registry/class_registry.h"
+#include <engine/class_registry/class_registry.h>
 
 // Editor
 #if defined(EDITOR)
