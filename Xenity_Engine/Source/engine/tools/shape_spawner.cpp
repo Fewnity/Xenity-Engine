@@ -1,5 +1,13 @@
 #include "shape_spawner.h"
-#include "../../xenity.h"
+
+#include <engine/vectors/vector3.h>
+
+#include <engine/game_elements/gameobject.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
+
 
 using namespace std;
 

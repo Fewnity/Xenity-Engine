@@ -5,10 +5,10 @@
 #include <cmath>
 
 #include "math.h"
-#include "../vectors/vector4.h"
-#include "../vectors/vector3.h"
-#include "../vectors/vector2_int.h"
-#include "../vectors/vector2.h"
+#include <engine/vectors/vector4.h>
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector2_int.h>
+#include <engine/vectors/vector2.h>
 
 #include <glm/ext/matrix_transform.hpp>
 

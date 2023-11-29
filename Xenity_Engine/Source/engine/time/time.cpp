@@ -1,6 +1,6 @@
 #include "time.h"
 #include <chrono>
-#include "../debug/debug.h"
+#include <engine/debug/debug.h>
 
 #if defined(_EE)
 #include <timer.h>

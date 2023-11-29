@@ -9,7 +9,7 @@
 #pragma once
 
 #include <vector>
-#include "../vectors/vector3.h"
+#include <engine/vectors/vector3.h>
 #include <memory>
 
 class Transform;

@@ -1,7 +1,7 @@
 #include "profiler_benchmark.h"
 
-#include "../debug/performance.h"
-#include "../engine_settings.h"
+#include <engine/debug/performance.h>
+#include <engine/engine_settings.h>
 
 ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::string& name)
 {

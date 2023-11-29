@@ -1,11 +1,24 @@
 #include "scene_manager.h"
-#include "../../xenity.h"
-#include "../../xenity_editor.h"
-#include "../class_registry/class_registry.h"
-#include "../reflection/reflection_utils.h"
-#include "../asset_management/project_manager.h"
-#include "../physics/physics_manager.h"
-#include "../game_elements/gameplay_manager.h"
+#include "scene.h"
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+
+#include <engine/class_registry/class_registry.h>
+
+#include <engine/reflection/reflection_utils.h>
+
+#include <engine/asset_management/project_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
+
+#include <engine/ui/window.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+
+#include <engine/physics/physics_manager.h>
+
+#include <editor/ui/editor_ui.h>
+
 
 using json = nlohmann::json;
 

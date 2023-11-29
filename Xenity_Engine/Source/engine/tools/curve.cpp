@@ -1,8 +1,10 @@
 #include "curve.h"
 
-#include "../game_elements/transform.h"
-#include "../game_elements/gameobject.h"
-#include "../engine.h"
+#include <engine/engine.h>
+
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+
 
 Vector3 Spline::GetValueAt(const float t) const
 {

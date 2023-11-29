@@ -8,16 +8,21 @@
 #include <SDL2/SDL_syswm.h>
 #endif
 
-#include "../engine.h"
-#include "../graphics/renderer/renderer.h"
-#include "../debug/debug.h"
-#include "../graphics/graphics.h"
-#include "../graphics/camera.h"
-#include "../scene_management/scene_manager.h"
-#include "../scene_management/scene.h"
-#include "../file_system/file_system.h"
-#include "../file_system/file.h"
-#include "../asset_management/project_manager.h"
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+
+#include <engine/scene_management/scene_manager.h>
+#include <engine/scene_management/scene.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+
+#include <engine/asset_management/project_manager.h>
+
 
 int Window::width = 0;
 int Window::height = 0;
