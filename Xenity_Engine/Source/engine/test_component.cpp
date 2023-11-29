@@ -1,9 +1,11 @@
 #include "test_component.h"
 
+#include <memory>
+
 #include <engine/asset_management/asset_manager.h>
 #include <engine/debug/debug.h>
-
-#include <memory>
+#include <engine/game_elements/gameobject.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
 
 TestComponent::TestComponent()
 {
