@@ -1,7 +1,5 @@
 #include "plugin.h"
 
-#include <xenity.h>
-
 void PluginTest::Startup()
 {
 	Debug::Print( "PluginTest: Startup!" );

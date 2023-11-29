@@ -3,6 +3,7 @@
 #include <xenity.h>
 #include <filesystem>
 #include <Windows.h>
+#include <editor/compiler.h>
 
 typedef Plugin* (__cdecl* CreatePluginFunction)();
 
@@ -15,9 +16,16 @@ std::vector<HINSTANCE> libs;
 void PluginManager::Init()
 {
 	Debug::Print( "PluginManager: initializing.." );
+	
+#if defined(EDITOR)
+	Compiler::CompilePlugin( 
+		Platform::Windows, 
+		"plugins\\test\\" 
+	);
+#endif
 
 	//  setup constants
-	const std::string path = "plugins/";
+	const std::string path = "plugins\\";
 	const std::string extension = ".dll";
 
 	//  check directory existence
@@ -44,7 +52,8 @@ void PluginManager::Init()
 		HINSTANCE lib = LoadLibraryA( path.c_str() );
 		if ( !lib )
 		{
-			Debug::PrintError( "PluginManager: failed to load library '" + path + "'");
+			auto error = "WindowsError(" + std::to_string(GetLastError()) + ")";
+			Debug::PrintError("PluginManager: failed to load library '" + path + "': " + error);
 			continue;
 		}
 
@@ -87,8 +96,21 @@ void PluginManager::Stop()
 	libs.clear();
 }
 
-void PluginManager::Register( Plugin* plugin )
+void PluginManager::Register(Plugin* plugin)
 {
+	printf("Plugin Adress: %p\n", plugin);
+	if (!plugin) return;
+
+	plugin->Setup();
+
+	auto& infos = plugin->GetInfos();
+	printf(
+		"- Name: %s\n- Version: %s\n- Description: %s\n- Author: %s\n", 
+		infos.name.c_str(), 
+		infos.version.c_str(), 
+		infos.description.c_str(), 
+		infos.author.c_str()
+	);
 	//auto uni_plugin = std::unique_ptr<Plugin>( plugin );
 	//if ( !uni_plugin ) return;
 
