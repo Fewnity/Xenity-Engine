@@ -2,14 +2,14 @@
 #include "../engine/platform.h"
 #include <string>
 
-enum BuildType
+enum class BuildType
 {
 	EditorHotReloading,
 	BuildGame,
 	BuildAndRunGame,
 };
 
-enum CompileResult
+enum class CompileResult
 {
 	SUCCESS,
 	ERROR_UNKNOWN,

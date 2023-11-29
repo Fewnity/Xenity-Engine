@@ -50,15 +50,15 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 
 	if (copyCodeResult != 0)
 	{
-		return ERROR_WSL_ENGINE_CODE_COPY;
+		return CompileResult::ERROR_WSL_ENGINE_CODE_COPY;
 	}
 	else if (copyLibrariesResult != 0)
 	{
-		return ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY;
+		return CompileResult::ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY;
 	}
 	else if (copyCmakelistsResult != 0)
 	{
-		return ERROR_WSL_CMAKELISTS_COPY;
+		return CompileResult::ERROR_WSL_CMAKELISTS_COPY;
 	}
 
 	// get the thread number of the cpu
@@ -69,9 +69,9 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	}
 
 	std::string compileCommand = "wsl bash -c -i \"cd ~/XenityTestProject/build";
-	if (platform == P_PSP)
+	if (platform == Platform::PSP)
 		compileCommand += " && psp-cmake -DMODE=psp ..";
-	else if (platform == P_PsVita)
+	else if (platform == Platform::PsVita)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
 	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\""; // Use thread number to increase compilation speed
@@ -80,7 +80,7 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	int compileResult = system(compileCommand.c_str());
 	if (compileResult != 0)
 	{
-		return ERROR_WSL_COMPILATION;
+		return CompileResult::ERROR_WSL_COMPILATION;
 	}
 
 	std::string compileFolderPath = exportPath;
@@ -96,15 +96,15 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	compileFolderPath[0] = tolower(compileFolderPath[0]);
 	compileFolderPath = "/mnt/" + compileFolderPath;
 	std::string copyGameCommand;
-	if (platform == P_PSP)
+	if (platform == Platform::PSP)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/EBOOT.PBP\" \"" + compileFolderPath + "/EBOOT.PBP\"'";
-	else if (platform == P_PsVita)
+	else if (platform == Platform::PsVita)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
 	int copyGameResult = system(copyGameCommand.c_str());
 	if (copyGameResult != 0)
 	{
-		return ERROR_FINAL_GAME_FILES_COPY;
+		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
 	}
 
 	// Copy game assets
@@ -116,10 +116,10 @@ CompileResult Compiler::CompileInWSL(Platform platform, const std::string& expor
 	}
 	catch (const std::exception&)
 	{
-		return ERROR_FINAL_GAME_FILES_COPY;
+		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
 	}
 
-	return SUCCESS;
+	return CompileResult::SUCCESS;
 }
 
 std::string Compiler::GetStartCompilerCommand()
@@ -150,13 +150,13 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 {
 	std::string command = "";
 	command += "cl /std:c++20 /MP /EHsc /DIMPORT"; // Start compilation
-	if (buildType == EditorHotReloading)
+	if (buildType == BuildType::EditorHotReloading)
 	{
 		command += " /DEDITOR";
 	}
 	std::string folder = tempCompileFolderPath + "source\\";
 	command += " -I \"" + std::string(EngineSettings::engineProjectPath) + "include\" /LD \"" + folder + "*.cpp\"";
-	if (buildType != EditorHotReloading)
+	if (buildType != BuildType::EditorHotReloading)
 	{
 		command += " engine_game.lib";
 	}
@@ -165,7 +165,7 @@ std::string Compiler::GetCompileGameLibCommand(BuildType buildType)
 		command += " engine_editor.lib";
 	}
 	command += " /link";
-	if (buildType != EditorHotReloading)
+	if (buildType != BuildType::EditorHotReloading)
 	{
 		command += " /implib:game.lib /out:game.dll";
 	}
@@ -198,42 +198,42 @@ void Compiler::OnCompileEnd(CompileResult result)
 {
 	switch (result)
 	{
-	case SUCCESS:
+	case CompileResult::SUCCESS:
 		Debug::Print("Game compiled successfully!");
 		break;
-	case ERROR_UNKNOWN:
+	case CompileResult::ERROR_UNKNOWN:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
-	case ERROR_ENGINE_GAME_LIB_MISSING:
+	case CompileResult::ERROR_ENGINE_GAME_LIB_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_game.lib");
 		break;
-	case ERROR_ENGINE_EDITOR_LIB_MISSING:
+	case CompileResult::ERROR_ENGINE_EDITOR_LIB_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_editor.lib");
 		break;
-	case ERROR_LIB_DLLS_MISSING:
+	case CompileResult::ERROR_LIB_DLLS_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing one of Dlls");
 		break;
-	case ERROR_ENGINE_HEADERS_COPY:
+	case CompileResult::ERROR_ENGINE_HEADERS_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine headers");
 		break;
-	case ERROR_GAME_CODE_COPY:
+	case CompileResult::ERROR_GAME_CODE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's code");
 		break;
-	case ERROR_FINAL_GAME_FILES_COPY:
+	case CompileResult::ERROR_FINAL_GAME_FILES_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's files");
 		break;
 
 		// Specific to WSL
-	case ERROR_WSL_COMPILATION:
+	case CompileResult::ERROR_WSL_COMPILATION:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL");
 		break;
-	case ERROR_WSL_ENGINE_CODE_COPY:
+	case CompileResult::ERROR_WSL_ENGINE_CODE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's code");
 		break;
-	case ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY:
+	case CompileResult::ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's libraries files");
 		break;
-	case ERROR_WSL_CMAKELISTS_COPY:
+	case CompileResult::ERROR_WSL_CMAKELISTS_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying CMakeLists.txt file");
 		break;
 
@@ -247,7 +247,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 void Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	// Set the folder path to use for the compilation
-	if (buildType == EditorHotReloading)
+	if (buildType == BuildType::EditorHotReloading)
 	{
 		tempCompileFolderPath = ProjectManager::GetProjectFolderPath() + "hot_reloading_data\\";
 	}
@@ -267,9 +267,9 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		Debug::PrintWarning("[Compiler::CompileGame] Unable to clear the compilation folder");
 	}
 
-	if (platform == P_Windows)
+	if (platform == Platform::Windows)
 	{
-		if (buildType == EditorHotReloading) // In hot reloading mode:
+		if (buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 		{
 			std::string engineLibPath = EngineSettings::engineProjectPath + "engine_editor.lib";
 
@@ -280,7 +280,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_ENGINE_EDITOR_LIB_MISSING);
+				OnCompileEnd(CompileResult::ERROR_ENGINE_EDITOR_LIB_MISSING);
 				return;
 			}
 
@@ -294,7 +294,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_ENGINE_HEADERS_COPY);
+				OnCompileEnd(CompileResult::ERROR_ENGINE_HEADERS_COPY);
 				return;
 			}
 		}
@@ -312,7 +312,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_ENGINE_GAME_LIB_MISSING);
+				OnCompileEnd(CompileResult::ERROR_ENGINE_GAME_LIB_MISSING);
 				return;
 			}
 
@@ -325,7 +325,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_LIB_DLLS_MISSING);
+				OnCompileEnd(CompileResult::ERROR_LIB_DLLS_MISSING);
 				return;
 			}
 
@@ -339,7 +339,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_ENGINE_HEADERS_COPY);
+				OnCompileEnd(CompileResult::ERROR_ENGINE_HEADERS_COPY);
 				return;
 			}
 		}
@@ -365,7 +365,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 		catch (const std::exception&)
 		{
-			OnCompileEnd(ERROR_GAME_CODE_COPY);
+			OnCompileEnd(CompileResult::ERROR_GAME_CODE_COPY);
 			return;
 		}
 
@@ -376,7 +376,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		command += GetNavToEngineFolderCommand();
 		command += GetAddNextCommand();
 		command += GetCompileGameLibCommand(buildType);
-		if (buildType != EditorHotReloading)
+		if (buildType != BuildType::EditorHotReloading)
 		{
 			command += GetAddNextCommand();
 			command += GetCompileGameExeCommand();
@@ -387,7 +387,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		{
 			try
 			{
-				if (buildType == EditorHotReloading)
+				if (buildType == BuildType::EditorHotReloading)
 				{
 					std::filesystem::copy_file(tempCompileFolderPath + "game_editor.dll", ProjectManager::GetProjectFolderPath() + "\\game_editor.dll", std::filesystem::copy_options::overwrite_existing);
 				}
@@ -402,7 +402,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			}
 			catch (const std::exception&)
 			{
-				OnCompileEnd(ERROR_FINAL_GAME_FILES_COPY);
+				OnCompileEnd(CompileResult::ERROR_FINAL_GAME_FILES_COPY);
 				return;
 			}
 
@@ -415,7 +415,7 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 			{
 			}
 
-			if (buildType == BuildAndRunGame)
+			if (buildType == BuildType::BuildAndRunGame)
 			{
 				auto t = std::thread(StartGame, platform, exportPath);
 				t.detach();
@@ -423,14 +423,14 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 		else
 		{
-			OnCompileEnd(ERROR_UNKNOWN);
+			OnCompileEnd(CompileResult::ERROR_UNKNOWN);
 			return;
 		}
 	}
 	else
 	{
 		CompileResult result = CompileInWSL(platform, exportPath);
-		if (result == SUCCESS && buildType == BuildAndRunGame)
+		if (result == CompileResult::SUCCESS && buildType == BuildType::BuildAndRunGame)
 		{
 			auto t = std::thread(StartGame, platform, exportPath);
 			t.detach();
@@ -442,19 +442,19 @@ void Compiler::CompileGame(Platform platform, BuildType buildType, const std::st
 		}
 	}
 
-	OnCompileEnd(SUCCESS);
+	OnCompileEnd(CompileResult::SUCCESS);
 }
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
-	if (platform == Platform::P_Windows)
+	if (platform == Platform::Windows)
 	{
 		std::string fileName = ProjectManager::GetGameName();
 		std::string command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";
 
 		system(command.c_str());
 	}
-	else if (platform == Platform::P_PSP)
+	else if (platform == Platform::PSP)
 	{
 		std::string command = "(\"C:\\Program Files\\PPSSPP\\PPSSPPWindows.exe\" \"" + exportPath + "EBOOT.PBP\")";
 		system(command.c_str());
@@ -473,7 +473,7 @@ void Compiler::HotReloadGame()
 	ClassRegistry::Reset();
 	Engine::RegisterEngineComponents();
 	DynamicLibrary::UnloadGameLibrary();
-	Compiler::CompileGame(Platform::P_Windows, EditorHotReloading, "");
+	Compiler::CompileGame(Platform::Windows, BuildType::EditorHotReloading, "");
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
 	Engine::game = DynamicLibrary::CreateGame();
 	if (Engine::game)

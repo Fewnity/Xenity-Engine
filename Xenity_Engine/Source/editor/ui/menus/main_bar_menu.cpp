@@ -54,31 +54,31 @@ void MainBarMenu::Draw()
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
 			if (!exportPath.empty())
-				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildGame, exportPath);
+				Compiler::CompileGameThreaded(Platform::Windows, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build for PSP"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
 			if (!exportPath.empty())
-				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildGame, exportPath);
+				Compiler::CompileGameThreaded(Platform::PSP, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build for PsVita"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
 			if (!exportPath.empty())
-				Compiler::CompileGameThreaded(Platform::P_PsVita, BuildType::BuildGame, exportPath);
+				Compiler::CompileGameThreaded(Platform::PsVita, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build And Run on Windows"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
 			if (!exportPath.empty())
-				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildAndRunGame, exportPath);
+				Compiler::CompileGameThreaded(Platform::Windows, BuildType::BuildAndRunGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build And Run on PSP"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder");
 			if (!exportPath.empty())
-				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
+				Compiler::CompileGameThreaded(Platform::PSP, BuildType::BuildAndRunGame, exportPath);
 		}
 		if (ImGui::MenuItem("Close project"))
 		{

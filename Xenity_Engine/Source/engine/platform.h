@@ -1,7 +1,8 @@
 #pragma once
 
-enum Platform {
-	P_Windows,
-	P_PSP,
-	P_PsVita,
+enum class Platform 
+{
+	Windows,
+	PSP,
+	PsVita,
 };
