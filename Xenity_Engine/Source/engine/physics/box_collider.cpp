@@ -1,8 +1,16 @@
 #include "box_collider.h"
-#include "../asset_management/asset_manager.h"
-#include "../../xenity.h"
-#include "../../xenity_editor.h"
-#include "../graphics/renderer/renderer.h"
+
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/graphics/renderer/renderer.h>
+
+#include <engine/graphics/graphics.h>
+
+#include <engine/game_elements/transform.h>
+
+#include <editor/editor.h>
+#include <editor/gizmo.h>
+
 
 BoxCollider::BoxCollider()
 {

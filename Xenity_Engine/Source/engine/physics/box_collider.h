@@ -1,7 +1,7 @@
 #pragma once
 
 #include "collider.h"
-#include "../vectors/vector3.h"
+#include <engine/vectors/vector3.h>
 #include <memory>
 
 enum CollisionSide {

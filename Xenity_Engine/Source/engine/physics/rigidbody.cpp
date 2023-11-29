@@ -1,7 +1,13 @@
 #include "rigidbody.h"
-#include "../asset_management/asset_manager.h"
-#include "../../xenity.h"
+
 #include "physics_manager.h"
+#include "box_collider.h"
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/time/time.h>
+
+#include <engine/game_elements/gameobject.h>
+
 
 RigidBody::RigidBody()
 {

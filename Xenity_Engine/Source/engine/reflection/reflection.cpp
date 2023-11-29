@@ -1,5 +1,4 @@
 #include "reflection.h"
-#include "../../xenity.h"
 
 void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic, uint64_t id)
 {

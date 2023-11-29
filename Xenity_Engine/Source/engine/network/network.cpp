@@ -1,7 +1,7 @@
 #include "network.h"
 
-#include "../debug/debug.h"
-#include "../engine_settings.h"
+#include <engine/debug/debug.h>
+#include <engine/engine_settings.h>
 
 #if defined(__vita__) || defined(__PSP__)
 #include <sys/socket.h>

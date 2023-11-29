@@ -1,8 +1,29 @@
 #include "reflection_utils.h"
-#include "../game_elements/gameobject.h"
-#include "../asset_management/project_manager.h"
-#include "../file_system/file_reference.h"
-#include "../../xenity.h"
+#include "reflection.h"
+
+#include <engine/asset_management/project_manager.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/file_system/file_reference.h>
+
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+#include <engine/component.h>
+
+#include <engine/scene_management/scene.h>
+#include <engine/graphics/skybox.h>
+
+#include <engine/graphics/shader.h>
+#include <engine/graphics/material.h>
+
+#include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/graphics/ui/font.h>
+
+#include <engine/audio/audio_clip.h>
+
 
 using json = nlohmann::json;
 

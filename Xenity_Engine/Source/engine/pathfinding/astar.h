@@ -7,7 +7,7 @@
 #endif
 
 #pragma once
-#include "../vectors/vector2.h"
+#include <engine/vectors/vector2.h>
 #include <vector>
 
 class API Astar

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "../vectors/vector3.h"
-#include "../component.h"
-#include "../graphics/color/color.h"
+#include <engine/vectors/vector3.h>
+#include <engine/component.h>
+#include <engine/graphics/color/color.h>
 
 const float lightConstant = 1;
 

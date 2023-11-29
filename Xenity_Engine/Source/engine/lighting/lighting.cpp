@@ -1,6 +1,13 @@
 #include "lighting.h"
-#include "../../xenity.h"
-#include "../../xenity_editor.h"
+
+#include <engine/asset_management/asset_manager.h>
+
+#include <engine/game_elements/transform.h>
+#include <engine/vectors/vector2.h>
+
+#include <editor/gizmo.h>
+#include <editor/ui/editor_ui.h>
+
 
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
