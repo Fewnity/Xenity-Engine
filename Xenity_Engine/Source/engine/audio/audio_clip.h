@@ -10,8 +10,8 @@
 
 #include <string>
 #include <memory>
-#include "../file_system/file_reference.h"
-#include "../reflection/reflection.h"
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
 
 class API AudioClip : public FileReference, public Reflective
 {

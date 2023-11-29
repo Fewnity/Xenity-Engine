@@ -1,31 +1,35 @@
 #include "input_system.h"
+
+#include "input_pad.h"
+#include "input_touch_raw.h"
+
+#include <engine/ui/window.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/graphics.h>
+
+#include <engine/debug/debug.h>
+
+#if defined(__vita__)
+	#include <psvita/inputs/inputs.h>
+#elif defined(__PSP__)
+	#include <psp/inputs/inputs.h>
+#elif defined(_EE)
+	#include <ps2/inputs/inputs.h>
+#else
+	#include <windows/inputs/inputs.h>
+#endif
+
+#if defined(EDITOR)
+	#include <editor/ui/menus/game_menu.h>
+	#include <editor/ui/menus/scene_menu.h>
+	#include <xenity_editor.h>
+#endif
+
 #include <fstream>
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include "../ui/window.h"
-#include "input_touch_raw.h"
-#include "../graphics/camera.h"
-#include "../debug/debug.h"
 
-#if defined(__vita__)
-#include "../../psvita/inputs/inputs.h"
-#elif defined(__PSP__)
-#include "../../psp/inputs/inputs.h"
-#elif defined(_EE)
-#include "../../ps2/inputs/inputs.h"
-#else
-#include "../../windows/inputs/inputs.h"
-#endif
-
-#include "input_pad.h"
-#include "../graphics/graphics.h"
-
-#if defined(EDITOR)
-#include "../../editor/ui/menus/game_menu.h"
-#include "../../editor/ui/menus/scene_menu.h"
-#include "../../xenity_editor.h"
-#endif
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
 Vector2 InputSystem::mouseSpeed = Vector2();

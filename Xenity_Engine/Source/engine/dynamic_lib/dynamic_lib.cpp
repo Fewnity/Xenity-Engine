@@ -1,8 +1,8 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include "dynamic_lib.h"
-#include "../game_interface.h"
+#include <engine/game_interface.h>
 #include <windows.h>
-#include "../debug/debug.h"
+#include <engine/debug/debug.h>
 
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;

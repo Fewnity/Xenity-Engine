@@ -1,22 +1,45 @@
 #include "project_manager.h"
-#include "../../xenity.h"
-#include "../../xenity_editor.h"
-#include <json.hpp>
-#include "../reflection/reflection_utils.h"
-#include "../dynamic_lib/dynamic_lib.h"
-#include "../scene_management/scene_manager.h"
-#include "../game_interface.h"
-#include "code_file.h"
-#include "../graphics/skybox.h"
 
-// Not final code
+#include "code_file.h"
+
+#include <engine/engine.h>
+#include <engine/game_interface.h>
+
+#include <engine/reflection/reflection_utils.h>
+#include <engine/dynamic_lib/dynamic_lib.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/scene_management/scene.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/file_system/directory.h>
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/material.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/ui/window.h>
+
+#include <engine/audio/audio_clip.h>
+
+#include <editor/editor.h>
+
+#include <json.hpp>
+
+
+// Not final code (en effet c'est pas bien du tout ça niveau dépendance monsieur grégory)
 #if defined(VISUAL_STUDIO) || !defined(_WIN32) || !defined(_WIN64)
-#include "../../game_dungeon/game.h"
-//#include "../../game_test/game.h"
+	#include <game_dungeon/game.h>
+	//#include <game_test/game.h>
 #endif
 
 #if !defined(EDITOR)
-//#include "../../game_dungeon/game.h"
+	//#include <game_dungeon/game.h>
 #endif
 
 using json = nlohmann::json;

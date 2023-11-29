@@ -1,7 +1,17 @@
 #include "asset_manager.h"
 
-#include "../../xenity.h"
-#include "../../engine/file_system/file_reference.h"
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file_reference.h>
+#include <engine/file_system/file.h>
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/material.h>
+#include <engine/graphics/texture.h>
+
 
 bool initialised = false;
 

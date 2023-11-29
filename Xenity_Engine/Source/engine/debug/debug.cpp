@@ -1,17 +1,22 @@
 #include "debug.h"
-#include "../file_system/file_system.h"
-#include "../network/network.h"
+#include "performance.h"
+
+#include <engine/engine_settings.h>
+#include <engine/network/network.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+
+#include <engine/time/time.h>
 
 #if defined(__PSP__)
-#include <pspkernel.h>
-#include "../../psp/debug/debug.h"
+	#include <pspkernel.h>
+	#include <psp/debug/debug.h>
 #elif defined(__vita__)
-#include "../../psvita/debug/debug.h"
-#include <psp2/io/stat.h>
+	#include <psvita/debug/debug.h>
+	#include <psp2/io/stat.h>
 #endif
-#include "../engine_settings.h"
-#include "performance.h"
-#include "../../xenity.h"
+
 
 std::shared_ptr<File> file = nullptr;
 std::string Debug::debugText = "";

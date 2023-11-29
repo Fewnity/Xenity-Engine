@@ -1,7 +1,7 @@
 #include "performance.h"
-#include "../time/time.h"
-#include "../debug/debug.h"
-#include "../engine_settings.h"
+#include <engine/time/time.h>
+#include <engine/debug/debug.h>
+#include <engine/engine_settings.h>
 
 int Performance::drawCallCount = 0;
 int Performance::drawTriangleCount = 0;

@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "../file_system/file_type.h"
+#include <engine/file_system/file_type.h>
 
 class Texture;
 class Light;

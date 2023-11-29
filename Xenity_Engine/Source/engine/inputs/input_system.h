@@ -14,8 +14,8 @@
 #include <SDL2/SDL_events.h>
 #endif
 
-#include "../vectors/vector2.h"
-#include "../vectors/vector2_int.h"
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector2_int.h>
 #include <vector>
 
 enum KeyCode

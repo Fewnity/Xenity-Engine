@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../component.h"
+#include <engine/component.h>
 #include <memory>
 
 class AudioClip;

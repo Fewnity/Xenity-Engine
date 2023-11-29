@@ -14,8 +14,8 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "../reflection/reflection.h"
-#include "../file_system/file_reference.h"
+#include <engine/reflection/reflection.h>
+#include <engine/file_system/file_reference.h>
 
 class FileReference;
 class File;

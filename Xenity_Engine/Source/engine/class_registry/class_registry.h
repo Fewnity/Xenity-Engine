@@ -14,7 +14,7 @@
 #include <memory>
 #include <vector>
 
-#include "../game_elements/gameobject.h"
+#include <engine/game_elements/gameobject.h>
 
 class Component;
 

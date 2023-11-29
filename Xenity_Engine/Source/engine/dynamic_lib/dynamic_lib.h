@@ -9,7 +9,7 @@
 
 #pragma once
 #include <string>
-#include "../platform.h"
+#include <engine/platform.h>
 #include <memory>
 
 class GameInterface;

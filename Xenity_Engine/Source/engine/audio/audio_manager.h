@@ -20,7 +20,7 @@
 #endif
 
 #include <mutex> // std::mutex
-#include "../audio/audio_source.h"
+#include "audio_source.h"
 
 #define SOUND_FREQUENCY 44100
 

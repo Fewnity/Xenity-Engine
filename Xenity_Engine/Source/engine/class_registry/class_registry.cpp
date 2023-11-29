@@ -1,5 +1,4 @@
 #include "class_registry.h"
-#include "../../xenity.h"
 
 std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> ClassRegistry::nameToComponent;
 

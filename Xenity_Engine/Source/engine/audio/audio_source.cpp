@@ -1,8 +1,16 @@
 #include "audio_source.h"
 #include "audio_manager.h"
-#include "../engine.h"
-#include "../../xenity.h"
-#include "../../xenity_editor.h"
+
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+
+#include <engine/game_elements/transform.h>
+#include <engine/vectors/vector2.h>
+#include <engine/graphics/color/color.h>
+
+#include <editor/gizmo.h>
+#include <editor/ui/editor_ui.h>
+
 
 AudioSource::AudioSource()
 {

@@ -1,5 +1,5 @@
 #include "audio_clip.h"
-#include "../asset_management/asset_manager.h"
+#include <engine/asset_management/asset_manager.h>
 
 AudioClip::AudioClip()
 {

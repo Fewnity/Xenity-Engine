@@ -1,33 +1,37 @@
 #include "audio_manager.h"
+
 #include "audio_clip.h"
 #include "audio_clip_stream.h"
 
-#include "../../xenity.h"
-#include <cstring>
+#include <engine/engine.h>
+#include <engine/tools/profiler_benchmark.h>
 
 #if defined(__PSP__)
-#include <pspaudiolib.h>
-#include <pspaudio.h>
-#include <pspkernel.h>
-#include <psppower.h>
+	#include <pspaudiolib.h>
+	#include <pspaudio.h>
+	#include <pspkernel.h>
+	#include <psppower.h>
 #elif defined(__vita__)
-#include <psp2/audioout.h>
-#include <psp2/kernel/threadmgr.h>
-#include <malloc.h>
+	#include <psp2/audioout.h>
+	#include <psp2/kernel/threadmgr.h>
+	#include <malloc.h>
 #elif defined(_WIN32) || defined(_WIN64)
-#include <thread>
-#include <chrono>
-#include <windows.h>
-#include <mmsystem.h>
+	#include <thread>
+	#include <chrono>
+	#include <windows.h>
+	#include <mmsystem.h>
 
-WAVEHDR waveHdr[2];
-HWAVEOUT hWaveOut;
-short* audioData = nullptr;
-short* audioData2 = nullptr;
-int currentBuffer = 0;
+	WAVEHDR waveHdr[2];
+	HWAVEOUT hWaveOut;
+	short* audioData = nullptr;
+	short* audioData2 = nullptr;
+	int currentBuffer = 0;
 #elif defined(_EE)
-#include <thread>
+	#include <thread>
 #endif
+
+#include <cstring>
+
 
 bool AudioManager::isAdding = false;
 Channel* AudioManager::channel;
