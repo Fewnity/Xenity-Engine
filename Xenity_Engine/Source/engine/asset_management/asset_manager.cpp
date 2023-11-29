@@ -11,6 +11,11 @@
 #include <engine/graphics/shader.h>
 #include <engine/graphics/material.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/ui/font.h>
+
+#include <engine/scene_management/scene.h>
+#include <engine/audio/audio_clip.h>
 
 
 bool initialised = false;

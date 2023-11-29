@@ -1,21 +1,23 @@
 #include "file_system.h"
-#include <string>
+
 #include "directory.h"
 #include "file.h"
-
 #include "file_psp.h"
 #include "file_default.h"
 
-#include "../engine_settings.h"
-#include "../debug/debug.h"
-#include <filesystem>
+#include <engine/engine_settings.h>
+#include <engine/debug/debug.h>
 
 #if defined(__PSP__)
-#include <dirent.h>
-#include <sys/stat.h>
+	#include <dirent.h>
+	#include <sys/stat.h>
 #elif defined(__vita__)
-#include <psp2/io/stat.h>
+	#include <psp2/io/stat.h>
 #endif
+
+#include <filesystem>
+#include <string>
+
 
 FileSystem* FileSystem::fileSystem = nullptr;
 

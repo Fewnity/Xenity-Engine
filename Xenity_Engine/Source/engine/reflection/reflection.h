@@ -20,6 +20,7 @@ class Transform;
 class Color;
 class Texture;
 class MeshData;
+class MeshRenderer;
 class Reflective;
 class Component;
 class FileReference;

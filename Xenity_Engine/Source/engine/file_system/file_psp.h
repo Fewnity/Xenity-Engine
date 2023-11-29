@@ -1,10 +1,11 @@
 #if defined(__PSP__)
+
 #if defined(EXPORT)
-#define API __declspec(dllexport)
+	#define API __declspec(dllexport)
 #elif defined(IMPORT)
-#define API __declspec(dllimport)
+	#define API __declspec(dllimport)
 #else
-#define API
+	#define API
 #endif
 
 #pragma once
@@ -33,4 +34,5 @@ public:
 protected:
 	SceUID fileId;
 };
+
 #endif

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../../engine/reflection/reflection.h"
-#include <memory>
-
 #include "file_type.h"
+
+#include <engine/reflection/reflection.h>
+
+#include <memory>
 
 class File;
 

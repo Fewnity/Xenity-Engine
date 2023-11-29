@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "../unique_id/unique_id.h"
+#include <engine/unique_id/unique_id.h>
+
 #include <vector>
 #include <memory>
 #include <string>

@@ -1,11 +1,13 @@
+#include "file_default.h"
 #include "file_psp.h"
-#include <string>
+
 #include "directory.h"
 
-#include "../engine_settings.h"
-#include "../debug/debug.h"
+#include <engine/engine_settings.h>
+#include <engine/debug/debug.h>
+
 #include <filesystem>
-#include "file_default.h"
+#include <string>
 
 FileDefault::FileDefault(std::string _path) : File(_path)
 {

@@ -1,13 +1,14 @@
 #include "directory.h"
 #include "file_system.h"
-#include <filesystem>
 
 #if defined(__PSP__)
-#include <dirent.h>
-#include <sys/stat.h>
+	#include <dirent.h>
+	#include <sys/stat.h>
 #elif defined(__vita__)
-#include <psp2/io/stat.h>
+	#include <psp2/io/stat.h>
 #endif
+
+#include <filesystem>
 
 Directory::Directory(std::string _path) : UniqueId(true)
 {

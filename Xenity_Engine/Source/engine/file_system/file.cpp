@@ -1,7 +1,9 @@
 #include "file.h"
-#include <filesystem>
-#include "../debug/debug.h"
 #include "file_system.h"
+
+#include <engine/debug/debug.h>
+
+#include <filesystem>
 
 File::File(std::string _path) : UniqueId(true)
 {
