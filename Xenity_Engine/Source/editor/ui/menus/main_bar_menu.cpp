@@ -26,6 +26,7 @@
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/audio/audio_source.h>
+#include <engine/debug/debug.h>
 
 void MainBarMenu::Init()
 {

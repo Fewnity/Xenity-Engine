@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../engine/monobehaviour.h"
-#include "../engine/component.h"
-#include "../xenity.h"
+#include <engine/monobehaviour.h>
+#include <engine/component.h>
+#include <xenity.h>
 
 class CameraFollow : public MonoBehaviour
 {

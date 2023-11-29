@@ -7,7 +7,7 @@
 #include <engine/time/time.h>
 
 #include <engine/game_elements/gameobject.h>
-
+#include <engine/game_elements/transform.h>
 
 RigidBody::RigidBody()
 {

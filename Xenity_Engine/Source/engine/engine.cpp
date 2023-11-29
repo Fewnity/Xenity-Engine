@@ -41,7 +41,7 @@
 #endif
 
 // Scenes
-#include "scene_management/scene_manager.h"
+#include <engine/scene_management/scene_manager.h>
 
 // Files & Assets
 #include <engine/file_system/file_system.h>
@@ -86,10 +86,13 @@
 #include <engine/physics/box_collider.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/test_component.h>
+#include <engine/debug/debug.h>
 
-#include "../unit_tests/unit_test_manager.h"
-#include "physics/physics_manager.h"
-#include "../editor/plugin/plugin_manager.h"
+#include <engine/game_elements/transform.h>
+
+#include <editor/plugin/plugin_manager.h>
+#include <engine/physics/physics_manager.h>
+#include "../unit_tests/unit_test_manager.h" // Move unit_tests to the folder engine?
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;

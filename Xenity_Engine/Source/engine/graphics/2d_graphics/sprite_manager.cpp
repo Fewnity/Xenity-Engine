@@ -7,6 +7,7 @@
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/transform.h>
+#include <engine/graphics/camera.h>
 
 #include <engine/debug/debug.h>
 #include <engine/tools/profiler_benchmark.h>

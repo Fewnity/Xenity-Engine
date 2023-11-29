@@ -1,5 +1,5 @@
 #include "camera_follow.h"
-#include "../xenity.h"
+#include <xenity.h>
 
 CameraFollow::CameraFollow()
 {

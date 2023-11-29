@@ -1,9 +1,9 @@
 #include "window.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include <glad/glad.h>
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "imgui/imgui_impl_sdl2.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_sdl2.h>
 #include <dwmapi.h>
 #include <windows.h>
 #include <SDL2/SDL_syswm.h>

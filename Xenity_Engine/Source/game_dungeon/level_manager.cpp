@@ -1,5 +1,5 @@
 #include "level_manager.h"
-#include "../xenity.h"
+#include <xenity.h>
 #include "player.h"
 
 Level::Level()

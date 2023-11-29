@@ -10,12 +10,11 @@
 
 #include <string>
 #include <vector>
-#include "transform.h"
 #include <memory>
 
 class Component;
-#include <engine/component.h>
-#include <engine/debug/debug.h>
+class Transform;
+
 #include <engine/reflection/reflection.h>
 #include <engine/unique_id/unique_id.h>
 

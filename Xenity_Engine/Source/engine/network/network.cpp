@@ -38,7 +38,7 @@
 #include <pspnet_resolver.h>
 #include <psputility.h>
 #include <psputils.h>
-#include "../../psp/gu2gl.h"
+#include <psp/gu2gl.h>
 pspUtilityNetconfData NetworkManager::pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
 int NetworkManager::result = -1;

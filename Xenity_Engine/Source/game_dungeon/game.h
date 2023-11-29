@@ -10,7 +10,7 @@
 #pragma once
 
 #include <memory>
-#include "../engine/game_interface.h"
+#include <engine/game_interface.h>
 
 class Game : public GameInterface
 {

@@ -1,5 +1,5 @@
 #include "coin.h"
-#include "../xenity.h"
+#include <xenity.h>
 #include "player.h"
 
 Coin::Coin()

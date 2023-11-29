@@ -1,5 +1,5 @@
 #include "chest.h"
-#include "../xenity.h"
+#include <xenity.h>
 #include "player.h"
 #include "level_manager.h"
 

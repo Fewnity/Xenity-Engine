@@ -3,6 +3,14 @@
 
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/tools/math.h>
+#include <engine/debug/performance.h>
+#include <engine/graphics/graphics.h>
+#include <engine/ui/window.h>
+#include <engine/graphics/camera.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
 
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>

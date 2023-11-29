@@ -1,14 +1,15 @@
 #include "camera.h"
 
 #include "graphics.h"
-#include "renderer/renderer.h"
 
+#include <engine/graphics/renderer/renderer.h>
 #include <engine/tools/math.h>
 #include <engine/engine.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
 
 #include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 	#include <glad/glad.h>
@@ -27,6 +28,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <engine/debug/debug.h>
 
 
 #pragma region Constructors / Destructor

@@ -1,13 +1,11 @@
 #include "benchmark.h"
 
-using namespace std::chrono;
-
-
 #if defined(__PSP__)
 #include <psptypes.h>
 #include <psprtc.h>
 #endif
 
+using namespace std::chrono;
 
 /// <summary>
 /// Start the benchmark timer

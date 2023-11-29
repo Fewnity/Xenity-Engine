@@ -8,6 +8,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <engine/ui/window.h>
 
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>

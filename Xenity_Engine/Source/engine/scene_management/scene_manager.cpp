@@ -10,6 +10,7 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/game_elements/transform.h>
 
 #include <engine/ui/window.h>
 #include <engine/graphics/graphics.h>
@@ -18,6 +19,7 @@
 #include <engine/physics/physics_manager.h>
 
 #include <editor/ui/editor_ui.h>
+#include <engine/debug/debug.h>
 
 
 using json = nlohmann::json;

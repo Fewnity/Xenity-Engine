@@ -6,6 +6,9 @@
 
 #include <engine/game_elements/gameobject.h>
 
+#if defined(__PSP__)
+#include <pspkernel.h>
+#endif
 
 #pragma region Constructors / Destructor
 

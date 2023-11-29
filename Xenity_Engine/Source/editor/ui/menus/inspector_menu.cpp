@@ -21,6 +21,7 @@
 #include <engine/graphics/material.h>
 #include <editor/ui/editor_ui.h>
 #include <engine/engine.h>
+#include <engine/debug/debug.h>
 
 void InspectorMenu::Init()
 {

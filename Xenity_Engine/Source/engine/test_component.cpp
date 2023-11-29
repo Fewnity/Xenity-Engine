@@ -5,6 +5,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 
 TestComponent::TestComponent()

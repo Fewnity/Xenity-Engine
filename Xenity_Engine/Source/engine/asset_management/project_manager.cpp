@@ -37,6 +37,7 @@
 	#include <game_dungeon/game.h>
 	//#include <game_test/game.h>
 #endif
+#include <engine/debug/debug.h>
 
 #if !defined(EDITOR)
 	//#include <game_dungeon/game.h>

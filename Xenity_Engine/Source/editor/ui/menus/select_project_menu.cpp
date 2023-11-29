@@ -4,6 +4,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
+#include <engine/debug/debug.h>
 
 std::vector<ProjectListItem> projectsList;
 

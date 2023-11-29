@@ -1,8 +1,9 @@
-#include "xenity.h"
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
 
 // PSP
 #if defined(__PSP__)
-#include "pspkernel.h"
+#include <pspkernel.h>
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #endif

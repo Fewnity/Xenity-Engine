@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "dr_mp3.h"
-#include "dr_wav.h"
+#include <dr_mp3.h>
+#include <dr_wav.h>
 
 #include <string>
 #include <memory>

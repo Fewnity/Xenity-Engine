@@ -1,7 +1,7 @@
 #include "game.h"
-#include "../xenity.h"
+#include <xenity.h>
 
-#include "../engine/class_registry/class_registry.h"
+#include <engine/class_registry/class_registry.h>
 #include "player.h"
 #include "camera_follow.h"
 #include "coin.h"

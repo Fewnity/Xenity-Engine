@@ -80,7 +80,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Delete temp compiler folder content
 	try
 	{
-		//fs::remove_all(params.tempPath);
+		fs::remove_all(params.tempPath);
 	}
 	catch (const std::exception&) {}
 
@@ -648,8 +648,11 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 {
 	std::string command;
-	command = "cl /Fe\"" + params.libraryName + ".exe\" /std:c++20 /MP /EHsc -I \"" + std::string(EngineSettings::engineProjectPath) + "include\" main.cpp engine_game.lib"; //Buid game exe
-
+	//Buid game exe
+	command = "cl /Fe\"" + params.libraryName + ".exe\" /std:c++20 /MP /EHsc";
+	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
+	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
+	command += " main.cpp engine_game.lib";
 	//command += " >nul"; // Mute output
 	return command;
 }

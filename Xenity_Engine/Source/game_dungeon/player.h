@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../engine/monobehaviour.h"
-#include "../engine/component.h"
-#include "../engine/physics/rigidbody.h"
+#include <engine/monobehaviour.h>
+#include <engine/component.h>
+#include <engine/physics/rigidbody.h>
 
 class TextRendererCanvas;
 class LevelManager;

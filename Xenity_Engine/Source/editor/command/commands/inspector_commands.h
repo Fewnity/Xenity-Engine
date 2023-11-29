@@ -9,8 +9,10 @@
 #include <engine/engine.h>
 #include <engine/scene_management/scene_manager.h>
 #include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/class_registry/class_registry.h>
+#include <engine/vectors/vector3.h>
 
 //----------------------------------------------------------------------------
 

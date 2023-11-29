@@ -18,6 +18,7 @@
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
 #include <engine/ui/window.h>
+#include <engine/debug/debug.h>
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;

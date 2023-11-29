@@ -1,10 +1,11 @@
 #include "enemy.h"
-#include "../xenity.h"
+#include <xenity.h>
 #include "player.h"
 #include "level_manager.h"
 #if defined(EDITOR)
-#include "../xenity_editor.h"
+#include <xenity_editor.h>
 #endif
+
 Enemy::Enemy()
 {
 	componentName = "Enemy";

@@ -7,6 +7,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/inputs/input_system.h>
 #include <engine/graphics/camera.h>
+#include <engine/game_elements/transform.h>
 #include <editor/editor.h>
 
 enum Side {

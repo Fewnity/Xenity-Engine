@@ -5,6 +5,7 @@
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
+#include <engine/tools/math.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

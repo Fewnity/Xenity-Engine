@@ -1,5 +1,5 @@
 #include "animated_light.h"
-#include "../xenity.h"
+#include <xenity.h>
 
 AnimatedLight::AnimatedLight()
 {

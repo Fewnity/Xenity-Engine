@@ -14,6 +14,9 @@
 
 #include <engine/tools/math.h>
 
+#if defined(__PSP__)
+#include <pspkernel.h>
+#endif
 
 std::shared_ptr<ProfilerBenchmark> textBenchmark = nullptr;
 

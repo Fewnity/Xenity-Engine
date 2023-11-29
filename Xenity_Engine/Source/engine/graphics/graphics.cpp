@@ -13,6 +13,9 @@
 #include "skybox.h"
 #include "camera.h"
 
+#include <engine/graphics/camera.h>
+#include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameplay_manager.h>
@@ -31,6 +34,7 @@
 #endif
 
 #include <algorithm>
+#include <engine/debug/debug.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
