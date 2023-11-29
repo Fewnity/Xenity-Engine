@@ -25,24 +25,23 @@
 
 // Editor
 #if defined(EDITOR)
-	#include <imgui/imgui_impl_sdl2.h>
-	#include <xenity_editor.h>
-	#include <glad/glad.h>
-	#include <editor/ui/menus/scene_menu.h>
+#include <imgui/imgui_impl_sdl2.h>
+#include <xenity_editor.h>
+#include <glad/glad.h>
+#include <editor/ui/menus/scene_menu.h>
 #endif
 
 // Other platforms
 #include <engine/cpu.h>
 #if defined(__PSP__)
-	#include <psp/gu2gl.h>
-	#include <psp/callbacks.h>
+#include <psp/gu2gl.h>
+#include <psp/callbacks.h>
 #elif defined(__vita__)
-	#include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/processmgr.h>
 #endif
 
 // Scenes
 #include "scene_management/scene_manager.h"
-
 
 // Files & Assets
 #include <engine/file_system/file_system.h>
@@ -88,8 +87,9 @@
 #include <engine/physics/rigidbody.h>
 #include <engine/test_component.h>
 
-
-
+#include "../unit_tests/unit_test_manager.h"
+#include "physics/physics_manager.h"
+#include "../editor/plugin/plugin_manager.h"
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
@@ -133,7 +133,7 @@ int Engine::Init()
 	if (debugInitResult != 0)
 	{
 		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------");
-		//Not a critical module, do not stop the engine
+		// Not a critical module, do not stop the engine
 	}
 
 	RegisterEngineComponents();
@@ -187,11 +187,12 @@ int Engine::Init()
 	Time::Init();
 	PhysicsManager::Init();
 
-	//Init Editor
+	// Init Editor
 #if defined(EDITOR)
+	PluginManager::Init();
 	Gizmo::Init();
 	int editorUiInitResult = EditorUI::Init();
-	if (editorUiInitResult != 0) 
+	if (editorUiInitResult != 0)
 	{
 		Debug::PrintError("-------- Editor UI init error code: " + std::to_string(editorUiInitResult) + " --------");
 		return -1;
@@ -221,14 +222,14 @@ void Engine::CheckEvents()
 		InputSystem::Read(event);
 		switch (event.type)
 		{
-		case SDL_QUIT: 
+		case SDL_QUIT:
 		{
 			bool cancelQuit = SceneManager::OnQuit();
-			if (!cancelQuit) 
+			if (!cancelQuit)
 			{
 				isRunning = false;
 			}
-			else 
+			else
 			{
 				isRunning = true;
 			}
@@ -291,11 +292,11 @@ void Engine::Loop()
 #if defined(EDITOR)
 		editorUpdateBenchmark->Start();
 		Editor::Update();
-		if (Editor::sceneMenu->isFocused) 
+		if (Editor::sceneMenu->isFocused)
 		{
 			InputSystem::blockGameInput = true;
 		}
-		else 
+		else
 		{
 			InputSystem::blockGameInput = false;
 		}
@@ -320,7 +321,7 @@ void Engine::Loop()
 			componentsUpdateBenchmark->Stop();
 
 			canUpdateAudio = true;
-			
+
 			// Draw
 			drawIDrawablesBenchmark->Start();
 			Graphics::Draw();
@@ -375,6 +376,9 @@ void Engine::Stop()
 {
 	renderer->Stop();
 	AudioManager::Stop();
+#if defined(EDITOR)
+	PluginManager::Stop();
+#endif
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
@@ -394,15 +398,14 @@ int Engine::LoadGame()
 void Engine::CreateBenchmarks()
 {
 	engineLoopBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Engine loop");
-	//gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
-	componentsUpdateBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Components update");
-	drawIDrawablesBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Draw");
-	editorUpdateBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Editor update");
-	editorDrawBenchmark = std::make_shared <ProfilerBenchmark>("Engine loop", "Editor draw");
+	// gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
+	componentsUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Components update");
+	drawIDrawablesBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Draw");
+	editorUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor update");
+	editorDrawBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor draw");
 }
 
-
-void Engine::RemoveComponentReferences(const std::shared_ptr <Component>& component)
+void Engine::RemoveComponentReferences(const std::shared_ptr<Component> &component)
 {
 	// Check if the component is a special class and remove other references
 	if (component)
@@ -446,7 +449,7 @@ void Engine::RemoveUnusedFiles()
 		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
 		if (refCount == 2)
 		{
-			// Free the file 
+			// Free the file
 			AssetManager::RemoveFileReference(fileRef);
 			fileRef.reset();
 			i--;
@@ -486,8 +489,7 @@ void Engine::ResetTransformsStates()
 	}
 }
 
-
-void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
+void DestroyGameObjectAndChild(const std::shared_ptr<GameObject> &gameObject)
 {
 	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
 	gameObject->waitingForDestroy = true;
@@ -516,17 +518,17 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	}
 }
 
-void Destroy(const std::weak_ptr<GameObject>& gameObject)
+void Destroy(const std::weak_ptr<GameObject> &gameObject)
 {
 	Destroy(gameObject.lock());
 }
 
-void Destroy(const std::weak_ptr<Component>& weakComponent)
+void Destroy(const std::weak_ptr<Component> &weakComponent)
 {
 	Destroy(weakComponent.lock());
 }
 
-void Destroy(const std::shared_ptr<GameObject>& gameObject)
+void Destroy(const std::shared_ptr<GameObject> &gameObject)
 {
 	if (!gameObject->waitingForDestroy)
 	{
@@ -534,7 +536,7 @@ void Destroy(const std::shared_ptr<GameObject>& gameObject)
 	}
 }
 
-void Destroy(const std::shared_ptr<Component>& component)
+void Destroy(const std::shared_ptr<Component> &component)
 {
 	// Remove the component from the his parent's components list
 	if (component)
