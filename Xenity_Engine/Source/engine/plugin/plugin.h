@@ -15,7 +15,7 @@ class Plugin
 public:
 	void Setup();
 
-	virtual void Init() = 0;
+	virtual void Startup() = 0;
 	virtual void Shutdown() = 0;
 
 	virtual PluginInfos CreateInfos() = 0;

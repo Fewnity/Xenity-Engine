@@ -5,7 +5,7 @@
 class PluginTest : public Plugin
 {
 public:
-	void Init() override;
+	void Startup() override;
 	void Shutdown() override;
 
 	PluginInfos CreateInfos() override;

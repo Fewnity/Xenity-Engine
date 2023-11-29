@@ -2,9 +2,9 @@
 
 #include <xenity.h>
 
-void PluginTest::Init()
+void PluginTest::Startup()
 {
-	Debug::Print( "PluginTest: Initialize!" );
+	Debug::Print( "PluginTest: Startup!" );
 }
 
 void PluginTest::Shutdown()
