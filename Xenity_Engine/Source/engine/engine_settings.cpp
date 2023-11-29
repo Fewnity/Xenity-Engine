@@ -1,7 +1,7 @@
 #include "engine_settings.h"
-#include "file_system/file_system.h"
-#include "file_system/file.h"
-#include "reflection/reflection_utils.h"
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/reflection/reflection_utils.h>
 
 bool EngineSettings::isWireframe = false;
 int EngineSettings::maxLightCount = 2;

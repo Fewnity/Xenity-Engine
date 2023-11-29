@@ -1,6 +1,8 @@
 #include "test_component.h"
-#include "debug/debug.h"
-#include "../xenity.h"
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/debug/debug.h>
+
 #include <memory>
 
 TestComponent::TestComponent()

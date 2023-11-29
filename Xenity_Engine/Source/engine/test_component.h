@@ -1,15 +1,16 @@
 #pragma once
+#include "component.h"
+
+#include <engine/lighting/lighting.h>
+#include <engine/graphics/color/color.h>
+
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector2_int.h>
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector4.h>
 
 #include <string>
 
-#include "component.h"
-
-#include "lighting/lighting.h"
-#include "vectors/vector2.h"
-#include "vectors/vector2_int.h"
-#include "vectors/vector3.h"
-#include "vectors/vector4.h"
-#include "graphics/color/color.h"
 
 class MeshRenderer;
 class Texture;
