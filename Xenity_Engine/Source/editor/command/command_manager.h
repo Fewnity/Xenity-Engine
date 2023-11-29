@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <memory>
-#include "command.h"
+
+class Command;
 
 class CommandManager
 {

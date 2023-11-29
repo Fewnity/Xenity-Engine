@@ -2,6 +2,7 @@
 
 #include "menu.h"
 #include <memory>
+
 class MainBarMenu : public Menu
 {
 public:

@@ -1,14 +1,16 @@
 #pragma once
 
-#include "../command.h"
 #include <memory>
-#include "../../../engine/scene_management/scene_manager.h"
-#include "../../../engine/game_elements/gameobject.h"
-#include "../../editor.h"
-#include "../../../engine/engine.h"
 #include <json.hpp>
-#include "../../../engine/reflection/reflection_utils.h"
-#include "../../../engine/class_registry/class_registry.h"
+
+#include <editor/command/command.h>
+#include <editor/editor.h>
+
+#include <engine/engine.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/reflection/reflection_utils.h>
+#include <engine/class_registry/class_registry.h>
 
 //----------------------------------------------------------------------------
 

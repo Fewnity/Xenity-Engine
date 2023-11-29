@@ -1,5 +1,7 @@
 #include "command_manager.h"
 
+#include <editor/command/command.h>
+
 std::vector<std::shared_ptr<Command>> CommandManager::commands;
 int CommandManager::maxCommandCount = 128;
 int CommandManager::currentCommand = -1;

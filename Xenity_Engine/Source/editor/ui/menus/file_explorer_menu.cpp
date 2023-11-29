@@ -1,14 +1,22 @@
 #include "file_explorer_menu.h"
+#include "create_class_menu.h"
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
-#include "../../../xenity.h"
-#include "../../editor.h"
-#include "../editor_ui.h"
-#include "../../../engine/scene_management/scene_manager.h"
-#include "../../../engine/asset_management/project_manager.h"
-#include "../../../engine/asset_management/code_file.h"
-#include "../../../engine/graphics/renderer/renderer.h"
-#include "create_class_menu.h"
+
+#include <editor/editor.h>
+#include <editor/ui/editor_ui.h>
+
+#include <engine/file_system/file.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/scene_management/scene.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/asset_management/code_file.h>
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/file_system/file_system.h>
+#include <engine/inputs/input_system.h>
+#include <engine/ui/window.h>
 
 void FileExplorerMenu::Init()
 {

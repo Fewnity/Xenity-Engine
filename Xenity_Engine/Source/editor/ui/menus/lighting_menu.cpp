@@ -1,9 +1,11 @@
 #include "lighting_menu.h"
+
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../../../xenity_editor.h"
-#include "../../../engine/reflection/reflection.h"
-#include "../../../engine/graphics/skybox.h"
+
+#include <editor/ui/editor_ui.h>
+#include <engine/reflection/reflection.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/graphics.h>
 
 void LightingMenu::Init()
 {

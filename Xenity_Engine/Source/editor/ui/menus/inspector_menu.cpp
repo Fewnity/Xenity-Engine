@@ -1,16 +1,25 @@
 #include "inspector_menu.h"
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
-#include "../../../xenity.h"
-#include "../editor_ui.h"
-#include "../../editor.h"
-#include "../../../engine/asset_management/project_manager.h"
-#include "../../../engine/audio/audio_manager.h"
-#include "../../../engine/audio/audio_clip_stream.h"
 #include <imgui/imgui_impl_opengl3.h>
-#include "../../../engine/graphics/renderer/renderer.h"
-#include "../../command/commands/inspector_commands.h"
-#include "../../command/command_manager.h"
+
+#include <editor/command/commands/inspector_commands.h>
+#include <editor/command/command_manager.h>
+
+#include <engine/file_system/file_reference.h>
+#include <engine/file_system/file.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/audio/audio_manager.h>
+#include <engine/audio/audio_clip.h>
+#include <engine/audio/audio_clip_stream.h>
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/inputs/input_system.h>
+#include <engine/scene_management/scene.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/material.h>
+#include <editor/ui/editor_ui.h>
 
 void InspectorMenu::Init()
 {

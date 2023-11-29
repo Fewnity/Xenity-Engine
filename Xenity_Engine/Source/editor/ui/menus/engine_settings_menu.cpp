@@ -1,7 +1,8 @@
 #include "engine_settings_menu.h"
+
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../editor_ui.h"
+#include <editor/ui/editor_ui.h>
+#include <engine/engine_settings.h>
 
 void EngineSettingsMenu::Init()
 {

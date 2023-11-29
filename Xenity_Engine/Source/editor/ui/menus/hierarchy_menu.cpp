@@ -1,9 +1,8 @@
 #include "hierarchy_menu.h"
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../editor_ui.h"
-#include "../../../engine/game_elements/gameplay_manager.h"
-#include "../../editor.h"
+
+#include <editor/ui/editor_ui.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 void HierarchyMenu::Init()
 {

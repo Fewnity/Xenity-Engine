@@ -1,8 +1,8 @@
 #include "compiling_menu.h"
+
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../editor_ui.h"
-#include "../../../engine/asset_management/project_manager.h"
+#include <editor/ui/editor_ui.h>
+#include <engine/asset_management/project_manager.h>
 
 void CompilingMenu::Init()
 {

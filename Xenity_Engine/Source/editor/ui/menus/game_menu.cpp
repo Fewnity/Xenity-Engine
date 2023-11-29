@@ -1,6 +1,9 @@
 #include "game_menu.h"
+
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
+#include <engine/graphics/camera.h>
+#include <engine/graphics/graphics.h>
+#include <engine/inputs/input_system.h>
 
 void GameMenu::Init()
 {
