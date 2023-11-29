@@ -1,36 +1,95 @@
 #include "engine.h"
+
+// Settings
 #include "engine_settings.h"
-#include "../xenity.h"
-#include "graphics/renderer/renderer_opengl.h"
-#include "graphics/renderer/renderer_gskit.h"
-#include "graphics/renderer/renderer_ge.h"
 
-#include "audio/audio_manager.h"
-#include "network/network.h"
+// Renderers
+#include <engine/graphics/renderer/renderer_opengl.h>
+#include <engine/graphics/renderer/renderer_gskit.h>
+#include <engine/graphics/renderer/renderer_ge.h>
+
+// Audio
+#include <engine/audio/audio_manager.h>
+
+// Network
+#include <engine/network/network.h>
+
+// Gameplay
 #include "game_elements/gameplay_manager.h"
-#include "cpu.h"
 
-#if defined(EDITOR)
-#include <imgui/imgui_impl_sdl2.h>
-#include "../xenity_editor.h"
-#include <glad/glad.h>
-#include "../editor/ui/menus/scene_menu.h"
-#endif
-
+// Game core
 #include "game_interface.h"
+
+// Class registry
 #include "class_registry/class_registry.h"
 
-#if defined(__PSP__)
-#include "../psp/gu2gl.h"
-#include "../psp/callbacks.h"
-#elif defined(__vita__)
-#include <psp2/kernel/processmgr.h>
+// Editor
+#if defined(EDITOR)
+	#include <imgui/imgui_impl_sdl2.h>
+	#include <xenity_editor.h>
+	#include <glad/glad.h>
+	#include <editor/ui/menus/scene_menu.h>
 #endif
 
-#include "asset_management/project_manager.h"
+// Other platforms
+#include <engine/cpu.h>
+#if defined(__PSP__)
+	#include <psp/gu2gl.h>
+	#include <psp/callbacks.h>
+#elif defined(__vita__)
+	#include <psp2/kernel/processmgr.h>
+#endif
+
+// Scenes
 #include "scene_management/scene_manager.h"
-#include "../unit_tests/unit_test_manager.h"
-#include "physics/physics_manager.h"
+
+
+// Files & Assets
+#include <engine/file_system/file_system.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/asset_management/project_manager.h>
+
+// Debug, Tests & Profiling
+#include <engine/debug/performance.h>
+#include <unit_tests/unit_test_manager.h>
+#include <engine/tools/profiler_benchmark.h>
+
+// Window
+#include <engine/ui/window.h>
+
+// Inputs
+#include <engine/inputs/input_system.h>
+
+// Graphics
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/2d_graphics/sprite_manager.h>
+#include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/graphics/ui/text_manager.h>
+
+// Time
+#include <engine/time/time.h>
+
+// Physics
+#include <engine/physics/physics_manager.h>
+
+// Components
+#include <engine/graphics/camera.h>
+#include <engine/lighting/lighting.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/ui/text_renderer.h>
+#include <engine/graphics/ui/text_renderer_canvas.h>
+#include <engine/graphics/2d_graphics/sprite_renderer.h>
+#include <engine/graphics/2d_graphics/billboard_renderer.h>
+#include <engine/graphics/2d_graphics/tile_map.h>
+#include <engine/graphics/2d_graphics/line_renderer.h>
+#include <engine/audio/audio_source.h>
+#include <engine/physics/box_collider.h>
+#include <engine/physics/rigidbody.h>
+#include <engine/test_component.h>
+
+
+
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
