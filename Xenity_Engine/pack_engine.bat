@@ -14,6 +14,8 @@ xcopy "editor.exe" "Xenity Editor\" /Y
 Rem ------ Copy Engine DLLs
 xcopy "engine_editor.dll" "Xenity Editor\" /Y
 xcopy "engine_game.dll" "Xenity Editor\" /Y
+xcopy "engine_editor.lib" "Xenity Editor\" /Y
+xcopy "engine_game.lib" "Xenity Editor\" /Y
 
 Rem ------ Copy other libraries DLLs
 xcopy "glfw3.dll" "Xenity Editor\" /Y
