@@ -5,7 +5,6 @@
 #include "file_psp.h"
 #include "file_default.h"
 
-#include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
 
 #if defined(__PSP__)
