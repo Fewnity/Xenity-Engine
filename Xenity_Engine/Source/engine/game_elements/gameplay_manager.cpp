@@ -1,6 +1,11 @@
 #include "gameplay_manager.h"
-#include "../engine.h"
-#include "../../xenity.h"
+
+#include <engine/engine.h>
+#include <engine/scene_management/scene_manager.h>
+
+#include <engine/game_elements/gameobject.h>
+#include <engine/component.h>
+
 
 int GameplayManager::gameObjectCount = 0;
 int GameplayManager::gameObjectEditorCount = 0;

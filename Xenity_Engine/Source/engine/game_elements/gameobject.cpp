@@ -1,15 +1,21 @@
 #include "gameobject.h"
-#include "../engine.h"
+
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/asset_management/asset_manager.h>
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/iDrawable.h>
+#include <engine/graphics/camera.h>
+#include <engine/lighting/lighting.h>
+
+#include <engine/audio/audio_source.h>
+#include <engine/audio/audio_manager.h>
+
 #include <iostream>
-#include "../debug/debug.h"
-#include "../graphics/graphics.h"
-#include "../asset_management/asset_manager.h"
-#include "../graphics/iDrawable.h"
-#include "../audio/audio_source.h"
-#include "../audio/audio_manager.h"
-#include "../graphics/camera.h"
-#include "../lighting/lighting.h"
-#include "gameplay_manager.h"
+
 
 #pragma region Constructors / Destructor
 

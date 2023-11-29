@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../vectors/vector3.h"
+#include <engine/vectors/vector3.h>
 #include <glm/glm.hpp>
 #include <memory>
 

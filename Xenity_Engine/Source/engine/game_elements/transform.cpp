@@ -1,14 +1,17 @@
 #include "transform.h"
 #include "gameobject.h"
-#include "../engine.h"
-#include <iostream>
-#include "../tools/math.h"
+
+#include <engine/tools/math.h>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "../inputs/input_system.h"
+
+#include <engine/engine.h>
+#include <engine/inputs/input_system.h>
+
+#include <iostream>
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */

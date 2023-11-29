@@ -14,10 +14,10 @@
 #include <memory>
 
 class Component;
-#include "../component.h"
-#include "../debug/debug.h"
-#include "../reflection/reflection.h"
-#include "../unique_id/unique_id.h"
+#include <engine/component.h>
+#include <engine/debug/debug.h>
+#include <engine/reflection/reflection.h>
+#include <engine/unique_id/unique_id.h>
 
 /**
 * Create a GameObject with the default name

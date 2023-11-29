@@ -1,18 +1,24 @@
 #include "component.h"
-#include "engine.h"
+#include <engine/game_elements/gameobject.h>
+
+#include <engine/engine.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/physics/physics_manager.h>
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/iDrawable.h>
+#include <engine/graphics/camera.h>
+#include <engine/lighting/lighting.h>
+
+#include <engine/audio/audio_source.h>
+#include <engine/audio/audio_manager.h>
+
+#include <engine/physics/rigidbody.h>
+
 #include <iostream>
 
-#include "graphics/iDrawable.h"
-#include "graphics/camera.h"
-#include "lighting/lighting.h"
-#include "audio/audio_source.h"
-#include "audio/audio_manager.h"
-#include "graphics/graphics.h"
-#include "physics/rigidbody.h"
-#include "physics/physics_manager.h"
-#include "game_elements/gameobject.h"
-#include "asset_management/asset_manager.h"
-#include "game_elements/gameplay_manager.h"
 
 #pragma region Constructors / Destructor
 
