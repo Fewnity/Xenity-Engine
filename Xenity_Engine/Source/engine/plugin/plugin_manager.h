@@ -9,6 +9,9 @@
 class PluginManager
 {
 public:
+	static void Init();
+	static void Stop();
+
 	template <typename T>
 	static void Register( const std::string name )
 	{
