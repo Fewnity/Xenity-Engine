@@ -60,11 +60,11 @@ CompileResult Compiler::Compile(CompilerParams params)
 	CompileResult result = CompileResult::ERROR_UNKNOWN;
 	switch (params.platform)
 	{
-		case Platform::Windows:
+		case Platform::P_Windows:
 			result = CompileWindows(params);
 			break;
-		case Platform::PSP:
-		case Platform::PsVita:
+		case Platform::P_PSP:
+		case Platform::P_PsVita:
 			result = CompileWSL(params);
 			break;
 		default:
@@ -75,7 +75,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Delete temp compiler folder content
 	try
 	{
-		fs::remove_all(params.tempPath);
+		//fs::remove_all(params.tempPath);
 	}
 	catch (const std::exception&) {}
 
@@ -109,18 +109,6 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	params.sourcePath = ProjectManager::GetAssetFolderPath();
 	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build\\";
 	params.exportPath = exportPath;
-
-	// Set the folder path to use for the compilation
-	// NOTE: is there any reason to use a different folder for the HotReload build type?
-	/*params.tempPath = ProjectManager::GetProjectFolderPath();
-	if (buildType == BuildType::EditorHotReloading)
-	{
-		params.tempPath += "hot_reloading_data\\";
-	}
-	else
-	{
-		params.tempPath += "temp_build\\";
-	}*/
 
 	// Compile
 	CompileResult result = Compile(params);
@@ -182,7 +170,7 @@ void Compiler::HotReloadGame()
 
 	// Compile game
 	Compiler::CompileGame(
-		Platform::Windows, 
+		Platform::P_Windows, 
 		BuildType::EditorHotReloading, 
 		ProjectManager::GetProjectFolderPath()
 	);
@@ -436,12 +424,12 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		command += GetAddNextCommand();
 		command += GetCompileExecutableCommand(params);
 	}
-	Debug::Print("[Compiler::Compile] Command: " + command);
 
 	// Run compilation
 	int buildResult = system(command.c_str());
 	if (buildResult != 0)
 	{
+		Debug::PrintError("[Compiler::Compile] Command: " + command);
 		return CompileResult::ERROR_UNKNOWN;
 	}
 
@@ -520,9 +508,9 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	std::string compileCommand = "wsl bash -c -i \"cd ~/XenityTestProject/build";
-	if (params.platform == Platform::PSP)
+	if (params.platform == Platform::P_PSP)
 		compileCommand += " && psp-cmake -DMODE=psp ..";
-	else if (params.platform == Platform::PsVita)
+	else if (params.platform == Platform::P_PsVita)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
 	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\""; // Use thread number to increase compilation speed
@@ -547,9 +535,9 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	compileFolderPath[0] = tolower(compileFolderPath[0]);
 	compileFolderPath = "/mnt/" + compileFolderPath;
 	std::string copyGameCommand;
-	if (params.platform == Platform::PSP)
+	if (params.platform == Platform::P_PSP)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/EBOOT.PBP\" \"" + compileFolderPath + "/EBOOT.PBP\"'";
-	else if (params.platform == Platform::PsVita)
+	else if (params.platform == Platform::P_PsVita)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
 	int copyGameResult = system(copyGameCommand.c_str());
@@ -638,16 +626,16 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 		command += " engine_editor.lib";
 	}
 	command += " /link";
+	command += " /implib:" + params.libraryName + ".lib";
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		command += " /implib:" + params.libraryName + ".lib";
 		command += " /out:" + params.getDynamicLibraryName();
 	}
 	else
 	{
-		command += " /implib:" + params.libraryName + ".lib";
 		command += " /out:" + params.getEditorDynamicLibraryName();
 	}
+
 	//command += " >nul"; // Mute output
 	return command;
 }
@@ -663,14 +651,14 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
-	if (platform == Platform::Windows)
+	if (platform == Platform::P_Windows)
 	{
 		std::string fileName = ProjectManager::GetGameName();
 		std::string command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";
 
 		system(command.c_str());
 	}
-	else if (platform == Platform::PSP)
+	else if (platform == Platform::P_PSP)
 	{
 		std::string command = "(\"C:\\Program Files\\PPSSPP\\PPSSPPWindows.exe\" \"" + exportPath + "EBOOT.PBP\")";
 		system(command.c_str());

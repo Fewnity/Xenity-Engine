@@ -1,7 +1,7 @@
 #pragma once
 
 #include <xenity.h>
-#include <engine/plugin/plugin_manager.h>
+#include <editor/plugin/plugin_manager.h>
 
 class PluginTest : public Plugin
 {

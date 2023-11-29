@@ -31,7 +31,7 @@
 #include "scene_management/scene_manager.h"
 #include "../unit_tests/unit_test_manager.h"
 #include "physics/physics_manager.h"
-#include "plugin/plugin_manager.h"
+#include "../editor/plugin/plugin_manager.h"
 
 std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
 std::mutex Engine::threadLoadingMutex;
@@ -128,10 +128,10 @@ int Engine::Init()
 	AudioManager::Init();
 	Time::Init();
 	PhysicsManager::Init();
-	PluginManager::Init();
 
 	//Init Editor
 #if defined(EDITOR)
+	PluginManager::Init();
 	Gizmo::Init();
 	int editorUiInitResult = EditorUI::Init();
 	if (editorUiInitResult != 0) 
@@ -318,7 +318,9 @@ void Engine::Stop()
 {
 	renderer->Stop();
 	AudioManager::Stop();
+#if defined(EDITOR)
 	PluginManager::Stop();
+#endif
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
