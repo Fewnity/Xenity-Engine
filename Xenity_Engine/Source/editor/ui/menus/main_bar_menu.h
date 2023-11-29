@@ -1,7 +1,7 @@
 #pragma once
 
-#include "menu.h"
 #include <memory>
+#include "menu.h"
 
 class MainBarMenu : public Menu
 {

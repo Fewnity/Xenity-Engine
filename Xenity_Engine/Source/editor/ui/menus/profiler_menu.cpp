@@ -1,7 +1,12 @@
 #include "profiler_menu.h"
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../../../xenity_editor.h"
+
+#include <engine/file_system/file_reference.h>
+#include <engine/time/time.h>
+#include <engine/engine_settings.h>
+#include <engine/debug/performance.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
 
 void ProfilerMenu::Init()
 {

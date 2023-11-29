@@ -1,9 +1,9 @@
 #include "select_project_menu.h"
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../../../xenity_editor.h"
-#include "../editor_ui.h"
-#include "../../../engine/asset_management/project_manager.h"
+
+#include <engine/asset_management/project_manager.h>
+#include <editor/editor.h>
+#include <editor/ui/editor_ui.h>
 
 std::vector<ProjectListItem> projectsList;
 

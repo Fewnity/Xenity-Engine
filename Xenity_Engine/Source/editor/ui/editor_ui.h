@@ -1,5 +1,5 @@
-#if defined(_WIN32) || defined(_WIN64)
 #pragma once
+#if defined(_WIN32) || defined(_WIN64)
 
 #include <string>
 #include <memory>
@@ -15,15 +15,23 @@
 #include <editor/command/command.h>
 #include <editor/command/commands/inspector_commands.h>
 
-class Vector2;
-class Vector2Int;
-class Vector3;
-class Vector4;
-class Color;
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector2_int.h>
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector4.h>
+#include <engine/graphics/color/color.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/graphics/material.h>
+#include <engine/audio/audio_clip.h>
+#include <engine/file_system/file.h>
+#include <engine/scene_management/scene.h>
+
 class Reflective;
-class Texture;
 class ProjectDirectory;
-class SkyBox;
 class Collider;
 
 enum EditorUIError

@@ -1,9 +1,9 @@
 #include "project_settings_menu.h"
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
-#include "../editor_ui.h"
-#include "../../../engine/asset_management/project_manager.h"
-#include "../../command/command_manager.h"
+
+#include "editor/ui/editor_ui.h"
+#include <engine/asset_management/project_manager.h>
+#include <editor/command/command_manager.h>
 
 void ProjectSettingsMenu::Init()
 {

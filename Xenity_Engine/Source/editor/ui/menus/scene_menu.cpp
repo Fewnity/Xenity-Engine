@@ -1,10 +1,13 @@
 #include "scene_menu.h"
 #include <imgui/imgui.h>
-#include "../../../xenity.h"
+
 #include <glm/ext/matrix_projection.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include "../../tool_mode.h"
-#include "../../editor.h"
+#include <editor/tool_mode.h>
+#include <engine/graphics/graphics.h>
+#include <engine/inputs/input_system.h>
+#include <engine/graphics/camera.h>
+#include <editor/editor.h>
 
 enum Side {
 	Side_None,
