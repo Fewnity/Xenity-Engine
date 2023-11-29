@@ -1,12 +1,14 @@
 #if defined(EDITOR)
 
-#include "editor_ui.h"
-#include "../editor.h"
-#include "../../xenity.h"
+// ImGui
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
 #include <imgui/imgui_internal.h>
-#include "../../engine/asset_management/project_manager.h"
+
+#include <editor/ui/editor_ui.h>
+#include <editor/editor.h>
+
+#include <engine/asset_management/project_manager.h>
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {

@@ -1,6 +1,14 @@
 #include "gizmo.h"
-#include "../xenity.h"
-#include "../engine/graphics/renderer/renderer.h"
+
+// Graphics
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/2d_graphics/sprite_manager.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+
+#include <engine/engine.h>
+#include <engine/game_elements/transform.h>
+#include <engine/asset_management/asset_manager.h>
 
 Color Gizmo::color;
 

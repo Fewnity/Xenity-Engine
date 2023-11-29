@@ -3,14 +3,17 @@
 
 #include <string>
 #include <memory>
-#include "../../engine/reflection/reflection.h"
-#include "../../engine/file_system/file_reference.h"
-#include "../../engine/component.h"
-#include "../../engine/game_elements/gameobject.h"
-#include "../../engine/game_elements/transform.h"
+
+// ImGui
 #include <imgui/imgui.h>
-#include "../command/command.h"
-#include "../command/commands/inspector_commands.h"
+
+#include <engine/reflection/reflection.h>
+#include <engine/file_system/file_reference.h>
+#include <engine/component.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+#include <editor/command/command.h>
+#include <editor/command/commands/inspector_commands.h>
 
 class Vector2;
 class Vector2Int;

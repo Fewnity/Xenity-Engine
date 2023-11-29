@@ -1,15 +1,23 @@
 #if defined(EDITOR)
-
 #include "editor_ui.h"
-#include "../editor.h"
-#include "../../xenity.h"
+
+#include <variant>
+#include <Windows.h>
+#include <ShObjIdl.h>
+#include <SDL2/SDL_video.h>
+
+// ImGui
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_stdlib.h>
-#include <variant>
 #include <imgui/imgui_internal.h>
-#include <Windows.h>
-#include <ShObjIdl.h>
+
+#include <editor/ui/editor_ui.h>
+#include <editor/editor.h>
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/graphics/texture.h>
+#include <engine/ui/window.h>
 
 int EditorUI::uiId = 0;
 bool EditorUI::showProfiler = true;

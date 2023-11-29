@@ -1,10 +1,10 @@
 #if defined(EDITOR)
 
-#include "editor_ui.h"
-
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
+
+#include <editor/ui/editor_ui.h>
 
 DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& message, DialogType type)
 {

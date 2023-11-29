@@ -4,8 +4,8 @@
 #include <json.hpp>
 #include <unordered_map>
 
-#include "../engine/game_elements/gameobject.h"
-#include "../engine/file_system/file_type.h"
+#include <engine/game_elements/gameobject.h>
+#include <engine/file_system/file_type.h>
 
 class Component;
 class Reflective;

@@ -1,6 +1,8 @@
 #pragma once
-#include "../engine/platform.h"
+
 #include <string>
+
+#include <engine/platform.h>
 
 enum BuildType
 {

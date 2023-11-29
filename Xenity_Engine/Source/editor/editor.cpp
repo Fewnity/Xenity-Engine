@@ -1,32 +1,42 @@
 #if defined(EDITOR)
-#include "editor.h"
-#include "../xenity.h"
-#include "../xenity_editor.h"
-#include "../engine/engine.h"
 
-#include "ui/menus/project_settings_menu.h"
-#include "ui/menus/engine_settings_menu.h"
-#include "ui/menus/file_explorer_menu.h"
-#include "ui/menus/hierarchy_menu.h"
-#include "ui/menus/inspector_menu.h"
-#include "ui/menus/main_bar_menu.h"
-#include "ui/menus/profiler_menu.h"
-#include "ui/menus/game_menu.h"
-#include "ui/menus/scene_menu.h"
-#include "ui/menus/compiling_menu.h"
-#include "ui/menus/select_project_menu.h"
-#include "ui/menus/create_project_menu.h"
-#include "ui/menus/lighting_menu.h"
-#include "ui/menus/create_class_menu.h"
+#include "editor.h"
+#include <engine/engine.h>
+#include <engine/audio/audio_source.h>
+#include <engine/graphics/texture.h>
+
+#include <editor/ui/menus/project_settings_menu.h>
+#include <editor/ui/menus/engine_settings_menu.h>
+#include <editor/ui/menus/file_explorer_menu.h>
+#include <editor/ui/menus/hierarchy_menu.h>
+#include <editor/ui/menus/inspector_menu.h>
+#include <editor/ui/menus/main_bar_menu.h>
+#include <editor/ui/menus/profiler_menu.h>
+#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/compiling_menu.h>
+#include <editor/ui/menus/select_project_menu.h>
+#include <editor/ui/menus/create_project_menu.h>
+#include <editor/ui/menus/lighting_menu.h>
+#include <editor/ui/menus/create_class_menu.h>
 
 #include <functional>
-#include "../engine/class_registry/class_registry.h"
-#include "../engine/file_system/file_reference.h"
-#include "../engine/file_system/mesh_loader/wavefront_loader.h"
-#include "../engine/asset_management/project_manager.h"
-#include "../engine/reflection/reflection_utils.h"
-#include "../engine/scene_management/scene_manager.h"
-#include "command/command_manager.h"
+#include <engine/class_registry/class_registry.h>
+#include <engine/file_system/file_reference.h>
+#include <engine/file_system/mesh_loader/wavefront_loader.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/reflection/reflection_utils.h>
+#include <engine/scene_management/scene_manager.h>
+#include <editor/command/command_manager.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/inputs/input_system.h>
+#include <editor/ui/editor_ui.h>
+#include <engine/file_system/file_system.h>
+#include <engine/time/time.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/file_system/file.h>
+#include <engine/asset_management/asset_manager.h>
 
 using json = nlohmann::json;
 

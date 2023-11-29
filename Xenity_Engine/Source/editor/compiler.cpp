@@ -1,16 +1,21 @@
 #include "compiler.h"
-#include "../engine/asset_management/project_manager.h"
-#include "../engine/debug/debug.h"
+
 #include <thread>
-#include "../engine/dynamic_lib/dynamic_lib.h"
-#include "../engine/engine.h"
-#include "../engine/class_registry/class_registry.h"
-#include "../engine/game_interface.h"
-#include "../xenity_editor.h"
-#include "ui/menus/compiling_menu.h"
 #include <filesystem>
-#include "../engine/scene_management/scene_manager.h"
-#include "../engine/engine_settings.h"
+
+// Engine
+#include <engine/engine_settings.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/debug/debug.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/engine.h>
+#include <engine/dynamic_lib/dynamic_lib.h>
+#include <engine/class_registry/class_registry.h>
+#include <engine/game_interface.h>
+
+// Editor
+#include <editor/editor.h>
+#include <editor/ui/menus/compiling_menu.h>
 
 std::string tempCompileFolderPath = "";
 

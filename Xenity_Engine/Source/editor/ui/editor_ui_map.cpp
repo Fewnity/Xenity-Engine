@@ -1,10 +1,11 @@
 #if defined(EDITOR)
 
-#include "editor_ui.h"
-#include "../editor.h"
-#include "../../xenity.h"
+// ImGui
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
+
+#include <editor/ui/editor_ui.h>
+#include <editor/editor.h>
 
 void EditorUI::DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value)
 {
