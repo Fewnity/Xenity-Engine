@@ -13,6 +13,8 @@ struct PluginInfos
 class Plugin
 {
 public:
+	virtual ~Plugin() = default;
+
 	void Setup();
 
 	virtual void Startup() = 0;

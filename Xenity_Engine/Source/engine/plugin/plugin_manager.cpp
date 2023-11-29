@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <Windows.h>
 
+typedef Plugin* (__cdecl* CreatePluginFunction)();
+
 std::vector<std::unique_ptr<Plugin>> PluginManager::plugins;
 
 //  NOTE: well I don't like that but including Windows.h in the header file
@@ -34,19 +36,35 @@ void PluginManager::Init()
 		//  check extension
 		if ( file->GetFileExtension() != extension ) return;
 
+		const std::string path = file->GetPath();
+
 		//  try loading library
 		//  TODO: abstract library loading to either DynamicLibrary static class
 		//        w/ eventually a PluginLibrary struct (which can contains the library name) 
-		HINSTANCE lib = LoadLibraryA( file->GetPath().c_str() );
+		HINSTANCE lib = LoadLibraryA( path.c_str() );
 		if ( !lib )
 		{
-			Debug::PrintError( "PluginManager: failed to load library '" + file->GetPath() + "'");
+			Debug::PrintError( "PluginManager: failed to load library '" + path + "'");
 			continue;
 		}
-		Debug::Print( "PluginManager: loaded library '" + file->GetPath() + "'" );
 
-		//  register
+		//  instantiate plugin
+		CreatePluginFunction ProcCreate = (CreatePluginFunction)GetProcAddress( lib, "CreatePlugin" );
+		if ( ProcCreate )
+		{
+			Register( (ProcCreate)() );
+		}
+		else
+		{
+			Debug::PrintError( "PluginManager:: failed to find CreatePlugin function in library '" + path + "'" );
+			
+			FreeLibrary( lib );
+			continue;
+		}
+
+		//  store library
 		libs.push_back( lib );
+		Debug::Print( "PluginManager: loaded library '" + path + "'" );
 	}
 }
 
@@ -67,4 +85,16 @@ void PluginManager::Stop()
 		}
 	}
 	libs.clear();
+}
+
+void PluginManager::Register( Plugin* plugin )
+{
+	//auto uni_plugin = std::unique_ptr<Plugin>( plugin );
+	//if ( !uni_plugin ) return;
+
+	////  setup
+	//uni_plugin->Setup();
+
+	////  store plugin
+	//plugins.push_back( uni_plugin );
 }

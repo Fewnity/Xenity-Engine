@@ -12,19 +12,17 @@ public:
 	static void Init();
 	static void Stop();
 
-	template <typename T>
-	static void Register( const std::string name )
+	/*template <typename T>
+	static void Register()
 	{
 		static_assert( 
 			std::is_base_of<Plugin, T>::value, 
 			"Called PluginManager::Register with a non-Plugin type!" 
 		);
 
-		auto plugin = std::make_unique<T>();
-		plugin->Setup();
-
-		plugins.push_back( plugin );
-	}
+		Register( new T() );
+	}*/
+	static void Register( Plugin* plugin );
 
 private:
 	static std::vector<std::unique_ptr<Plugin>> plugins;
