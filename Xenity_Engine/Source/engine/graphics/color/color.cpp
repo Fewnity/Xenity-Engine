@@ -1,7 +1,7 @@
 #include "color.h"
-#include "../../tools/math.h"
+#include <engine/tools/math.h>
+#include <engine/debug/debug.h>
 #include <math.h>
-#include "../../debug/debug.h"
 
 /**
  * @brief Create color from RGB

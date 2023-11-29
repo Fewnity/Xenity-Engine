@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include "../component.h"
+#include <engine/component.h>
 #include "iDrawableTypes.h"
 
 class API IDrawable : public Component

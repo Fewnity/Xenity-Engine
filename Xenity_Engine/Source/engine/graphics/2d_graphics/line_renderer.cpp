@@ -1,6 +1,11 @@
 #include "line_renderer.h"
-#include "../../../xenity.h"
-#include "../../graphics/3d_graphics/mesh_data.h"
+
+#include <engine/graphics/graphics.h>
+#include "sprite_manager.h"
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/game_elements/gameobject.h>
+
 
 #pragma region Constructors / Destructor
 

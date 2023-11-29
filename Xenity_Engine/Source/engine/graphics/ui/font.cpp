@@ -1,21 +1,24 @@
 #include "font.h"
-#include "../../../xenity.h"
-#include "../../asset_management/asset_manager.h"
-#include "../../engine_settings.h"
+
+#include <engine/graphics/texture.h>
+
+#include <engine/engine_settings.h>
+#include <engine/debug/debug.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "../../debug/debug.h"
-
 #if defined(__PSP__)
-#include <pspkernel.h>
-#include "../../../psp/gu2gl.h"
+	#include <pspkernel.h>
+	#include <psp/gu2gl.h>
 #elif defined(__vita__)
-#include <vitaGL.h>
+	#include <vitaGL.h>
 #endif
 
-//#include "../../../../include/stb_image_resize.h"
+//#include <stb_image_resize.h>
 
 Font::~Font()
 {

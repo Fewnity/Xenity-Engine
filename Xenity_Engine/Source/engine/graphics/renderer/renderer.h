@@ -8,13 +8,17 @@
 
 #pragma once
 
-#include "../texture.h"
+#include <engine/graphics/texture.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/lighting/lighting.h>
+
 #include <glm/glm.hpp>
+
 #include <vector>
-#include "../../lighting/lighting.h"
 #include <memory>
-#include "../shader.h"
-#include "../3d_graphics/mesh_data.h"
+
 
 class Color;
 class Vector4;

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "renderer.h"
-#include "../../lighting/lighting.h"
+#include <engine/lighting/lighting.h>
 #include <gsKit.h>
 #include <draw3d.h>
 #include <math3d.h>

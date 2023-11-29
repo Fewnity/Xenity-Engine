@@ -1,13 +1,24 @@
 #include "sprite_manager.h"
-#include "../../../xenity.h"
-#include "../3d_graphics/mesh_data.h"
-#include <cstdlib>
-#include <malloc.h>
-#include "../renderer/renderer.h"
 
-#include "../../../../include/stb_image_resize.h"
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/graphics/renderer/renderer.h>
+
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/transform.h>
+
+#include <engine/debug/debug.h>
+#include <engine/tools/profiler_benchmark.h>
+
+#include <engine/tools/math.h>
+
+#include <stb_image_resize.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <cstdlib>
+#include <malloc.h>
 
 #if defined(__PSP__)
 #include <pspkernel.h>

@@ -12,13 +12,15 @@ class Texture;
 class Material;
 class MeshData;
 
-#include "../../component.h"
-#include "../iDrawable.h"
-#include "../../vectors/vector4.h"
-#include "../../vectors/vector3.h"
-#include "../color/color.h"
-#include "../../engine.h"
-#include "../../game_elements/gameplay_manager.h"
+#include <engine/graphics/iDrawable.h>
+
+#include <engine/engine.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/component.h>
+
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector4.h>
+#include <engine/graphics/color/color.h>
 
 class API LineRenderer : public IDrawable
 {

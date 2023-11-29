@@ -1,9 +1,19 @@
 #include "text_manager.h"
-#include "../../../xenity.h"
-#include "../3d_graphics/mesh_data.h"
 
-#include "../renderer/renderer.h"
 #include "font.h"
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/debug/debug.h>
+#include <engine/tools/profiler_benchmark.h>
+
+#include <engine/game_elements/transform.h>
+
+#include <engine/tools/math.h>
+
 
 std::shared_ptr<ProfilerBenchmark> textBenchmark = nullptr;
 

@@ -1,10 +1,14 @@
 #include "skybox.h"
-#include "../asset_management/asset_manager.h"
+
+#include <engine/reflection/reflection_utils.h>
+#include <engine/debug/debug.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+
 #include <json.hpp>
-#include "../reflection/reflection_utils.h"
-#include "../debug/debug.h"
-#include "../file_system/file_system.h"
-#include "../file_system/file.h"
+
 
 using json = nlohmann::json;
 

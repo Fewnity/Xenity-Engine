@@ -10,8 +10,8 @@
 
 #include <string>
 
-#include "../color/color.h"
-#include "../../file_system/file_reference.h"
+#include <engine/graphics/color/color.h>
+#include <engine/file_system/file_reference.h>
 #include <vector>
 
 #if defined(_EE)

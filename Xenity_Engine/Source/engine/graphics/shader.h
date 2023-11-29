@@ -1,14 +1,18 @@
 #pragma once
+#include "texture.h"
+
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector4.h>
+
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
+
+#include <glm/glm.hpp>
 
 #include <string>
-#include "../vectors/vector2.h"
-#include "../vectors/vector3.h"
-#include "../vectors/vector4.h"
-#include "texture.h"
-#include <glm/glm.hpp>
-#include "../file_system/file_reference.h"
-#include "../reflection/reflection.h"
 #include <memory>
+
 
 class Light;
 

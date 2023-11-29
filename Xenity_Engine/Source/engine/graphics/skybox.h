@@ -9,9 +9,9 @@
 
 #include <memory>
 #include <unordered_map>
-#include "../file_system/file_reference.h"
+#include <engine/file_system/file_reference.h>
 #include <string>
-#include "../reflection/reflection.h"
+#include <engine/reflection/reflection.h>
 
 class Texture;
 

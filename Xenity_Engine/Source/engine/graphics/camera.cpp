@@ -1,28 +1,33 @@
 #include "camera.h"
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include "graphics.h"
-#include "../tools/math.h"
-#include "../engine.h"
 #include "renderer/renderer.h"
-// #include "../inputs/input_system.h"
-// #include "../ui/window.h"
 
-#include "../game_elements/gameobject.h"
+#include <engine/tools/math.h>
+#include <engine/engine.h>
+#include <engine/inputs/input_system.h>
+#include <engine/ui/window.h>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include "../inputs/input_system.h"
-#include "../ui/window.h"
+#include <engine/game_elements/gameobject.h>
+
 #if defined(_WIN32) || defined(_WIN64)
-#include <glad/glad.h>
+	#include <glad/glad.h>
 #endif
-#include "../asset_management/asset_manager.h"
+
+#include <engine/asset_management/asset_manager.h>
 #include "2d_graphics/sprite_manager.h"
 
 #if defined(EDITOR)
-#include "../../xenity_editor.h"
+	#include <editor/editor.h>
+	#include <editor/gizmo.h>
+	#include <editor/ui/editor_ui.h>
 #endif
+
+#include <glm/gtc/matrix_transform.hpp>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 #pragma region Constructors / Destructor
 

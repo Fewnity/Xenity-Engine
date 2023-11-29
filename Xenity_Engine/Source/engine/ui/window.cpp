@@ -5,6 +5,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_sdl2.h"
 #include <dwmapi.h>
+#include <windows.h>
 #include <SDL2/SDL_syswm.h>
 #endif
 

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../../vectors/vector4.h"
-#include "../../reflection/reflection.h"
+#include <engine/vectors/vector4.h>
+#include <engine/reflection/reflection.h>
 
 class API RGBA : public Reflective
 {

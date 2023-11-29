@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "../iDrawable.h"
+#include <engine/graphics/iDrawable.h>
+#include <engine/graphics/color/color.h>
+#include <engine/engine.h>
+#include <engine/game_elements/gameplay_manager.h>
+
 #include <vector>
-#include "../color/color.h"
-#include "../../engine.h"
-#include "../../game_elements/gameplay_manager.h"
 
 class Texture;
 class MeshData;

@@ -1,5 +1,11 @@
 #include "sprite_renderer.h"
-#include "../../../xenity.h"
+
+#include <engine/graphics/graphics.h>
+#include "sprite_manager.h"
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+
 
 #pragma region Constructors / Destructor
 

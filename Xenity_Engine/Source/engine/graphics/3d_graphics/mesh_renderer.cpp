@@ -1,6 +1,11 @@
 #include "mesh_renderer.h"
-#include "../../../xenity.h"
-#include "../renderer/renderer.h"
+
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/3d_graphics/mesh_manager.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+
 
 using namespace std;
 

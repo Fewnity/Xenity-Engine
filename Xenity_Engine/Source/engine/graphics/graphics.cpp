@@ -1,19 +1,37 @@
 #include "graphics.h"
-#include "../../xenity.h"
-#include "../graphics/renderer/renderer.h"
-#include "../graphics/renderer/renderer_opengl.h"
-#include <algorithm>
-#include "../file_system/mesh_loader/wavefront_loader.h"
-#include "../graphics/3d_graphics/mesh_data.h"
+
+#include "iDrawable.h"
+
+#include "renderer/renderer.h"
+#include "renderer/renderer_opengl.h"
+
+#include "3d_graphics/mesh_manager.h"
+#include "3d_graphics/mesh_data.h"
+
+#include "material.h"
+
 #include "skybox.h"
+#include "camera.h"
+
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/network/network.h>
+
+#include <engine/tools/profiler_benchmark.h>
+
+#include <engine/file_system/mesh_loader/wavefront_loader.h>
 
 #if defined(EDITOR)
-#include "../../editor/editor.h"
+	#include <editor/editor.h>
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <glad/glad.h>
+	#include <glad/glad.h>
 #endif
+
+#include <algorithm>
+
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::weak_ptr<Camera> Graphics::usedCamera;

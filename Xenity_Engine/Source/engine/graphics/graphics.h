@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <vector>
-#include "../vectors/vector2_int.h"
+#include <engine/vectors/vector2_int.h>
 #include "iDrawableTypes.h"
 #include "renderer/renderer.h"
 

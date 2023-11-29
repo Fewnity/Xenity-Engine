@@ -1,21 +1,32 @@
 #if !defined(_EE) && !defined(__PSP__)
 #include "renderer_opengl.h"
 
-#include "../../../xenity.h"
-#include "../3d_graphics/mesh_data.h"
-#include "../../tools/profiler_benchmark.h"
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+
+#include <engine/debug/debug.h>
+#include <engine/debug/performance.h>
+#include <engine/tools/profiler_benchmark.h>
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#define GLFW_DLL
+	#include <glad/glad.h>
+	#define GLFW_INCLUDE_NONE
+	#include <GLFW/glfw3.h>
+	#define GLFW_DLL
 #elif defined(__vita__)
-#include <vitaGL.h>
+	#include <vitaGL.h>
 #endif
 
-#include <memory>
+#include <engine/tools/math.h>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <memory>
+
 
 RendererOpengl::RendererOpengl()
 {

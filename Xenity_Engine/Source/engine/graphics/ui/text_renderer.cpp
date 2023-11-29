@@ -1,7 +1,13 @@
 #include "text_renderer.h"
 
-#include "../../../xenity.h"
-#include "../../graphics/3d_graphics/mesh_data.h"
+#include "text_manager.h"
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+
 
 #pragma region Constructors / Destructor
 

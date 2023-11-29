@@ -1,10 +1,20 @@
 #include "material.h"
-#include "../../xenity.h"
-#include "../graphics/renderer/renderer.h"
+
+#include "graphics.h"
+#include "renderer/renderer.h"
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
+
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+#include <engine/debug/performance.h>
+
+#include <engine/reflection/reflection_utils.h>
 
 #include <iostream>
 #include <json.hpp>
-#include "../reflection/reflection_utils.h"
+
 
 using json = nlohmann::json;
 

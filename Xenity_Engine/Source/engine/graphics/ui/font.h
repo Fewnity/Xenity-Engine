@@ -1,9 +1,11 @@
 #pragma once
 
-#include <memory>
-#include "../../file_system/file_reference.h"
-#include "../../reflection/reflection.h"
 #include "text_manager.h"
+
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
+
+#include <memory>
 
 class Texture;
 

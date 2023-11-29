@@ -7,14 +7,17 @@
 #endif
 
 #pragma once
-#include <string>
 
-#include "../../component.h"
-#include "../iDrawable.h"
 #include "TextAlignments.h"
-#include "../color/color.h"
-#include "../../engine.h"
-#include "../../game_elements/gameplay_manager.h"
+
+#include <engine/graphics/iDrawable.h>
+#include <engine/graphics/color/color.h>
+
+#include <engine/engine.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/component.h>
+
+#include <string>
 
 class Font;
 class TextInfo;

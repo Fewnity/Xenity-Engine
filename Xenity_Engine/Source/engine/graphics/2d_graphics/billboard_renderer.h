@@ -11,10 +11,12 @@
 class Texture;
 // class Material;
 
-#include "../../component.h"
-#include "../iDrawable.h"
-#include "../color/color.h"
-#include "../../engine.h"
+#include <engine/graphics/iDrawable.h>
+
+#include <engine/engine.h>
+#include <engine/component.h>
+
+#include <engine/graphics/color/color.h>
 
 #include <memory>
 

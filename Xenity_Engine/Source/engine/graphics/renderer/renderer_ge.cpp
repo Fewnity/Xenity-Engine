@@ -1,14 +1,13 @@
 #if defined(__PSP__)
 #include "renderer_ge.h"
 
-#include "../../../xenity.h"
-#include "../3d_graphics/mesh_data.h"
-#include "../../tools/profiler_benchmark.h"
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/tools/profiler_benchmark.h>
 
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>
 #define GUGL_IMPLEMENTATION
-#include "../../../psp/gu2gl.h"
+#include <psp/gu2gl.h>
 
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>

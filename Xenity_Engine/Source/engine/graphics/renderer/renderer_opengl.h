@@ -11,7 +11,7 @@
 #pragma once
 
 #include "renderer.h"
-#include "../../lighting/lighting.h"
+#include <engine/lighting/lighting.h>
 
 class ProfilerBenchmark;
 

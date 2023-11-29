@@ -8,13 +8,13 @@ class Shader;
 class Camera;
 
 // Vectors includes needed for other platforms
-#include "../vectors/vector2.h"
-#include "../vectors/vector3.h"
-#include "../vectors/vector4.h"
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector4.h>
 //
 
-#include "../file_system/file_reference.h"
-#include "../reflection/reflection.h"
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
 #include "iDrawableTypes.h"
 #include <memory>
 

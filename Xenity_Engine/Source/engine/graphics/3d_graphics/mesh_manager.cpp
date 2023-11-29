@@ -1,8 +1,18 @@
 #include "mesh_manager.h"
+
 #include "mesh_data.h"
-#include "../../../xenity.h"
-#include "../renderer/renderer.h"
-#include "../../file_system/mesh_loader/wavefront_loader.h"
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/renderer/renderer.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/mesh_loader/wavefront_loader.h>
+
+#include <engine/game_elements/transform.h>
+
+#include <engine/debug/debug.h>
+
+#include <engine/tools/math.h>
+
 
 void MeshManager::Init()
 {

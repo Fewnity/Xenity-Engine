@@ -1,9 +1,8 @@
 #if defined(_EE)
 #include "renderer_gskit.h"
 
-#include "../../../xenity.h"
-#include "../3d_graphics/mesh_data.h"
-#include "../../tools/profiler_benchmark.h"
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/tools/profiler_benchmark.h>
 
 #include <math3d.h>
 

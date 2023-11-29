@@ -1,28 +1,32 @@
 #include "texture.h"
-#include "../../xenity.h"
-
 #include "renderer/renderer.h"
 
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
+
 #define STB_IMAGE_IMPLEMENTATION
-#include "../../../include/stb_image.h"
+#include <stb_image.h>
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "../../../include/stb_image_resize.h"
+#include <stb_image_resize.h>
 #include <malloc.h>
 #include <string>
 
 #if defined(__vita__)
-#include <vitaGL.h>
+	#include <vitaGL.h>
 #elif defined(__PSP__)
-#include "../../psp/gu2gl.h"
-#include "../../psp/video_hardware_dxtn.h"
-#include <pspkernel.h>
-#include <vram.h>
+	#include <psp/gu2gl.h>
+	#include <psp/video_hardware_dxtn.h>
+	#include <pspkernel.h>
+	#include <vram.h>
 #elif defined(_WIN32) || defined(_WIN64)
-#include <thread>
-#include <glad/glad.h>
+	#include <thread>
+	#include <glad/glad.h>
 #elif defined(_EE)
-#include "renderer/renderer_gskit.h"
+	#include "renderer/renderer_gskit.h"
 #endif
+
 
 Texture::Texture()
 {

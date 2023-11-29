@@ -8,11 +8,14 @@
 
 #pragma once
 
-#include "../vectors/vector3.h"
-#include "../component.h"
-#include "../vectors/vector2.h"
-#include "../vectors/vector2_int.h"
+#include <engine/component.h>
+
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector2_int.h>
+
 #include "camera_projection_types.h"
+
 #include <glm/glm.hpp>
 
 class API Camera : public Component
