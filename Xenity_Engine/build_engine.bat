@@ -29,7 +29,7 @@ echo [32mCompiling Engine executable...[0m
 echo [32m--------------------------[0m
 echo [32m[0m
 
-cl /Fobuildoutput\ /FeEditor.exe /std:c++20 /MP /EHsc /DEDITOR -I "include" Source/main.cpp engine_editor.lib
+cl /Fobuildoutput\ /FeEditor.exe /std:c++20 /MP /EHsc /DEDITOR -I "include" -I "Source" Source/main.cpp engine_editor.lib
 
 if %buildgame%==Y (
 echo [32m[0m
