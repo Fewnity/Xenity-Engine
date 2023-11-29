@@ -25,9 +25,30 @@ enum class CompileResult
 	ERROR_WSL_CMAKELISTS_COPY,
 };
 
+struct CompilerParams
+{
+	Platform platform;
+	BuildType buildType;
+};
+
 class Compiler
 {
 public:
+	static void Compile(const CompilerParams& params);
+
+	/**
+	* Compile an engine plugin
+	*/
+	static void CompilePlugin(Platform platform, const std::string& pluginPath);
+
+	/**
+	* Compile the game code
+	* @param platform Platform target
+	* @param buildType Compile for hot reloading or for a simple build or for build and run
+	* @param exportPath Folder location for the build
+	*/
+	static void CompileGame(Platform platform, BuildType buildType, const std::string& exportPath);
+
 
 	/**
 	* Compile the game code (non blocking code)
@@ -43,15 +64,6 @@ public:
 	static void HotReloadGame();
 
 private:
-
-	/**
-	* Compile the game code
-	* @param platform Platform target
-	* @param buildType Compile for hot reloading or for a simple build or for build and run
-	* @param exportPath Folder location for the build
-	*/
-	static void CompileGame(Platform platform, BuildType buildType, const std::string& exportPath);
-
 	/**
 	* To call when the compile function ends
 	* 
