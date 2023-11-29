@@ -127,6 +127,7 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	if (result != CompileResult::SUCCESS) return result;
 
 	// Copy assets
+	if(params.buildType != BuildType::EditorHotReloading)
 	{
 		fs::copy(
 			ProjectManager::GetAssetFolderPath(), 
