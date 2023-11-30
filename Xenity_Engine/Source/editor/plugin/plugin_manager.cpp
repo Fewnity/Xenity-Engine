@@ -115,12 +115,8 @@ void PluginManager::Register(Plugin* plugin)
 		infos.description.c_str(), 
 		infos.author.c_str()
 	);
-	//auto uni_plugin = std::unique_ptr<Plugin>( plugin );
-	//if ( !uni_plugin ) return;
 
-	////  setup
-	//uni_plugin->Setup();
-
-	////  store plugin
-	//plugins.push_back( uni_plugin );
+	// Store into plugins
+	plugins.emplace_back(plugin);
+	Debug::Print("[PluginManager::Register] Registered plugin '" + infos.name + "'");
 }
