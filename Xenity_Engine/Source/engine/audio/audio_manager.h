@@ -11,10 +11,9 @@
 #include <vector>
 #include <memory>
 
-#ifdef __PSP__
+#if defined(__PSP__)
 #include <pspkernel.h>
-#endif
-#ifdef __vita__
+#elif defined(__vita__)
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
 #endif

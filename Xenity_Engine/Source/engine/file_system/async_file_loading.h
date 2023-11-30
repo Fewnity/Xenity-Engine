@@ -3,7 +3,8 @@
 #include <mutex>
 #include <memory>
 #include <vector>
-#include <engine/file_system/file_reference.h>
+
+class FileReference;
 
 class AsyncFileLoading
 {

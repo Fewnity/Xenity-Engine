@@ -2,7 +2,6 @@
 
 #include <engine/graphics/texture.h>
 
-#include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
 
 #include <engine/asset_management/asset_manager.h>

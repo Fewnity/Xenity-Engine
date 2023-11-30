@@ -10,7 +10,6 @@ class API RigidBody : public Component
 public:
 	RigidBody();
 	~RigidBody();
-	//void SetReflection();
 
 	ReflectiveData GetReflectiveData() override;
 

@@ -1,6 +1,5 @@
 #include "color.h"
 #include <engine/tools/math.h>
-#include <engine/debug/debug.h>
 #include <math.h>
 
 /**

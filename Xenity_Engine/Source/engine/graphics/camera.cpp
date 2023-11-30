@@ -3,7 +3,6 @@
 #include "graphics.h"
 
 #include <engine/graphics/renderer/renderer.h>
-#include <engine/tools/math.h>
 #include <engine/engine.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
@@ -16,7 +15,6 @@
 #endif
 
 #include <engine/asset_management/asset_manager.h>
-#include "2d_graphics/sprite_manager.h"
 
 #if defined(EDITOR)
 	#include <editor/editor.h>

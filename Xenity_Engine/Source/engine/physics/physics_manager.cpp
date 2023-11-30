@@ -4,8 +4,6 @@
 #include "box_collider.h"
 #include "rigidbody.h"
 
-#include <engine/game_elements/gameobject.h>
-
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 
 void PhysicsManager::Init()

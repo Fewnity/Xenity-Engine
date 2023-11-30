@@ -1,8 +1,6 @@
 #include "component.h"
 #include <engine/game_elements/gameobject.h>
 
-#include <engine/engine.h>
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/physics/physics_manager.h>
@@ -12,13 +10,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/lighting/lighting.h>
 
-#include <engine/audio/audio_source.h>
-#include <engine/audio/audio_manager.h>
-
 #include <engine/physics/rigidbody.h>
-
-#include <iostream>
-
 
 #pragma region Constructors / Destructor
 

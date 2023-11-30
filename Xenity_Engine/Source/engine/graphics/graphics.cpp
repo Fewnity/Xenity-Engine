@@ -16,7 +16,6 @@
 #include "skybox.h"
 #include "camera.h"
 
-#include <engine/graphics/camera.h>
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/engine.h>

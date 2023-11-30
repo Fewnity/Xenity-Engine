@@ -12,10 +12,6 @@
 #include "TextAlignments.h"
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
-
-#include <engine/engine.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <engine/component.h>
 #include <engine/vectors/vector3.h>
 
 class Font;

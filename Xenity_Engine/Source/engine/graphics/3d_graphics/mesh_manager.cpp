@@ -2,15 +2,9 @@
 
 #include "mesh_data.h"
 #include <engine/graphics/graphics.h>
-#include <engine/graphics/renderer/renderer.h>
-
 #include <engine/file_system/file_system.h>
-#include <engine/file_system/mesh_loader/wavefront_loader.h>
-
 #include <engine/game_elements/transform.h>
-
 #include <engine/debug/debug.h>
-
 #include <engine/tools/math.h>
 
 

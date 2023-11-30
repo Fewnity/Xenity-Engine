@@ -1,5 +1,4 @@
 #include "unique_id.h"
-#include <engine/engine.h>
 
 uint64_t UniqueId::lastUniqueId = 0;
 uint64_t UniqueId::lastFileUniqueId = 0;

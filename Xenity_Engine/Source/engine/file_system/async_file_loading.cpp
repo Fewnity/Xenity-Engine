@@ -1,5 +1,7 @@
 #include "async_file_loading.h"
 
+#include <engine/file_system/file_reference.h>
+
 std::vector<std::shared_ptr<FileReference>> AsyncFileLoading::threadLoadedFiles;
 std::mutex AsyncFileLoading::threadLoadingMutex;
 

@@ -1,19 +1,11 @@
 #include "gameobject.h"
 
-#include <engine/engine.h>
 #include <engine/debug/debug.h>
 
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/game_elements/transform.h>
-#include <engine/asset_management/asset_manager.h>
-#include <engine/graphics/graphics.h>
-#include <engine/graphics/iDrawable.h>
-#include <engine/graphics/camera.h>
-#include <engine/lighting/lighting.h>
 
-#include <engine/audio/audio_source.h>
-#include <engine/audio/audio_manager.h>
-#include <engine/tools/gameplay_utility.h>
+#include <engine/component.h>
 #include <iostream>
 
 

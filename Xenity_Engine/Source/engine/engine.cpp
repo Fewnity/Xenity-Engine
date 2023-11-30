@@ -29,6 +29,7 @@
 #include <xenity_editor.h>
 #include <glad/glad.h>
 #include <editor/ui/menus/scene_menu.h>
+#include <engine/scene_management/scene_manager.h>
 #endif
 
 // Other platforms
@@ -39,9 +40,6 @@
 #elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
 #endif
-
-// Scenes
-#include <engine/scene_management/scene_manager.h>
 
 // Files & Assets
 #include <engine/file_system/file_system.h>
@@ -70,7 +68,6 @@
 #include <engine/physics/physics_manager.h>
 
 #include <editor/plugin/plugin_manager.h>
-#include "../unit_tests/unit_test_manager.h" // Move unit_tests to the folder engine?
 #include <engine/file_system/async_file_loading.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
@@ -199,6 +196,7 @@ void Engine::CheckEvents()
 		{
 		case SDL_QUIT:
 		{
+#if defined(EDITOR)
 			bool cancelQuit = SceneManager::OnQuit();
 			if (!cancelQuit)
 			{
@@ -208,6 +206,9 @@ void Engine::CheckEvents()
 			{
 				isRunning = true;
 			}
+#else
+			isRunning = false;
+#endif
 			break;
 		}
 		case SDL_WINDOWEVENT:

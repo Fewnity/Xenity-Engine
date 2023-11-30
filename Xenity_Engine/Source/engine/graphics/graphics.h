@@ -12,7 +12,7 @@
 #include <vector>
 #include <engine/vectors/vector2_int.h>
 #include "iDrawableTypes.h"
-#include "renderer/renderer.h"
+#include "renderer/renderer.h" // For RenderingSettings
 
 class IDrawable;
 class Material;
