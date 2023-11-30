@@ -32,7 +32,7 @@
 #include <json.hpp>
 
 
-// Not final code (en effet c'est pas bien du tout ça niveau dépendance monsieur grégory)
+// Not final code (en effet c'est pas bien du tout ca niveau dependance monsieur gregory)
 #if defined(VISUAL_STUDIO) || !defined(_WIN32) || !defined(_WIN64)
 	//#include <game_dungeon/game.h>
 	//#include <game_test/game.h>
