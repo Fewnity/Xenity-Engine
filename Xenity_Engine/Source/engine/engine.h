@@ -89,11 +89,6 @@ public:
 	static std::mutex threadLoadingMutex;
 
 	/**
-	* Destroy a component
-	*/
-	API static void RemoveComponentReferences(const std::shared_ptr<Component>& component);
-
-	/**
 	* Get the renderer
 	*/
 	API static Renderer& GetRenderer()

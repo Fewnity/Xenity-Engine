@@ -51,6 +51,11 @@ Camera::Camera()
 	AssetManager::AddReflection(this);
 }
 
+void Camera::RemoveReferences()
+{
+	Graphics::RemoveCamera(std::dynamic_pointer_cast<Camera>(shared_from_this()));
+}
+
 ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

@@ -22,4 +22,6 @@ public:
 	virtual void Draw() {};
 	IDrawableTypes type = Draw_3D;
 	virtual int GetDrawPriority() const = 0;
+
+	void RemoveReferences() override;
 };

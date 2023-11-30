@@ -25,6 +25,8 @@ public:
 	~Camera();
 	//void SetReflection();
 
+	void RemoveReferences() override;
+
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 

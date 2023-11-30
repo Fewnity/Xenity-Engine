@@ -87,7 +87,7 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < componentCount; i++)
 	{
-		Engine::RemoveComponentReferences(components[i]);
+		components[i]->RemoveReferences();
 	}
 	components.clear();
 }

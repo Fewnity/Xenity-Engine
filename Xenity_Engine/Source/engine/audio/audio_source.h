@@ -19,6 +19,8 @@ public:
 	AudioSource();
 	~AudioSource();
 
+	void RemoveReferences() override;
+
 	ReflectiveData GetReflectiveData() override;
 
 	void Awake() override;

@@ -402,40 +402,6 @@ void Engine::CreateBenchmarks()
 	editorDrawBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor draw");
 }
 
-void Engine::RemoveComponentReferences(const std::shared_ptr<Component> &component)
-{
-	// Check if the component is a special class and remove other references
-	if (component)
-	{
-		//------------------------------------------------------------------------ Include the component header to compile
-		if (auto drawable = std::dynamic_pointer_cast<IDrawable>(component))
-		{
-			Graphics::RemoveDrawable(drawable);
-		}
-		else if (auto light = std::dynamic_pointer_cast<Light>(component))
-		{
-			AssetManager::RemoveLight(light);
-		}
-		else if (auto audioSource = std::dynamic_pointer_cast<AudioSource>(component))
-		{
-			AudioManager::RemoveAudioSource(audioSource);
-		}
-		else if (auto camera = std::dynamic_pointer_cast<Camera>(component))
-		{
-			size_t cameraCount = Graphics::cameras.size();
-			for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
-			{
-				auto cam = Graphics::cameras[cameraIndex].lock();
-				if (cam && cam == camera)
-				{
-					Graphics::cameras.erase(Graphics::cameras.begin() + cameraIndex);
-					break;
-				}
-			}
-		}
-	}
-}
-
 void Engine::RemoveUnusedFiles()
 {
 	int fileRefCount = AssetManager::GetFileReferenceCount();

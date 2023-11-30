@@ -34,6 +34,11 @@ AudioSource::~AudioSource()
 	AssetManager::RemoveReflection(this);
 }
 
+void AudioSource::RemoveReferences()
+{
+	AudioManager::RemoveAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+}
+
 void AudioSource::Awake()
 {
 	if (playOnAwake)

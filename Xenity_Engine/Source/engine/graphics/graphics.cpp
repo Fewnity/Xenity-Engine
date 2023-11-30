@@ -380,6 +380,20 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 	}
 }
 
+void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
+{
+	size_t cameraCount = cameras.size();
+	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+	{
+		auto cam = cameras[cameraIndex].lock();
+		if (cam && cam == cameraToRemove.lock())
+		{
+			cameras.erase(cameras.begin() + cameraIndex);
+			break;
+		}
+	}
+}
+
 void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
 {
 	if (!usedCamera.lock())

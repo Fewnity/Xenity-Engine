@@ -27,6 +27,8 @@ public:
 	Light();
 	~Light();
 
+	void RemoveReferences() override;
+
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 

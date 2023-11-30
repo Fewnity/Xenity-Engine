@@ -186,7 +186,7 @@ void GameplayManager::RemoveDestroyedComponents()
 		std::shared_ptr<Component> component = componentsToDestroy[i];
 		if (component)
 		{
-			Engine::RemoveComponentReferences(component);
+			component->RemoveReferences();
 		}
 	}
 	componentsToDestroy.clear();

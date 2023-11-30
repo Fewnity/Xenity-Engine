@@ -64,6 +64,12 @@ public:
 	*/
 	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove);
 
+	/**
+	* Remove a camera
+	* @param cameraToRemove Camera to remove
+	*/
+	static void RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove);
+
 	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI);
 	static void SetDrawOrderListAsDirty();
 

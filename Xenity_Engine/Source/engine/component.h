@@ -41,6 +41,8 @@ public:
 
 	virtual void OnDrawGizmos() {};
 
+	virtual void RemoveReferences() {};
+
 	int updatePriority = 5000; //Lower is more priotary
 
 	/**
@@ -56,6 +58,7 @@ public:
 	bool isAwakeCalled = false;
 
 	bool waitingForDestroy = false;
+
 
 	/**
 	* Set component's GameObject

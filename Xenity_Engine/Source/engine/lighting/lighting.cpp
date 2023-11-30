@@ -28,6 +28,11 @@ Light::~Light()
 	AssetManager::RemoveReflection(this);
 }
 
+void Light::RemoveReferences()
+{
+	AssetManager::RemoveLight(std::dynamic_pointer_cast<Light>(shared_from_this()));
+}
+
 ReflectiveData Light::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
