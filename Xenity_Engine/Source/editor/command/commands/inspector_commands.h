@@ -14,6 +14,7 @@
 #include <engine/class_registry/class_registry.h>
 #include <engine/vectors/vector3.h>
 #include <engine/component.h>
+#include <engine/tools/gameplay_utility.h>
 
 //----------------------------------------------------------------------------
 

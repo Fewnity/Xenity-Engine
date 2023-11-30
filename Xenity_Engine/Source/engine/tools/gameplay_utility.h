@@ -59,3 +59,23 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 	}
 	return valid;
 }
+
+/**
+* Destroy a gameObject
+*/
+API void Destroy(const std::weak_ptr<GameObject>& gameObject);
+
+/**
+* Destroy a component
+*/
+API void Destroy(const std::weak_ptr<Component>& component);
+
+/**
+*Destroy a gameObject
+*/
+API void Destroy(const std::shared_ptr<GameObject>& gameObject);
+
+/**
+* Destroy a component
+*/
+API void Destroy(const std::shared_ptr<Component>& component);
