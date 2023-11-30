@@ -49,6 +49,7 @@
 #include <engine/asset_management/project_manager.h>
 
 // Debug, Tests & Profiling
+#include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
 #include <unit_tests/unit_test_manager.h>
 #include <engine/tools/profiler_benchmark.h>
@@ -61,10 +62,6 @@
 
 // Graphics
 #include <engine/graphics/graphics.h>
-#include <engine/graphics/shader.h>
-#include <engine/graphics/2d_graphics/sprite_manager.h>
-#include <engine/graphics/3d_graphics/mesh_manager.h>
-#include <engine/graphics/ui/text_manager.h>
 
 // Time
 #include <engine/time/time.h>
@@ -72,26 +69,7 @@
 // Physics
 #include <engine/physics/physics_manager.h>
 
-// Components
-#include <engine/graphics/camera.h>
-#include <engine/lighting/lighting.h>
-#include <engine/graphics/3d_graphics/mesh_renderer.h>
-#include <engine/graphics/ui/text_renderer.h>
-#include <engine/graphics/ui/text_renderer_canvas.h>
-#include <engine/graphics/2d_graphics/sprite_renderer.h>
-#include <engine/graphics/2d_graphics/billboard_renderer.h>
-#include <engine/graphics/2d_graphics/tile_map.h>
-#include <engine/graphics/2d_graphics/line_renderer.h>
-#include <engine/audio/audio_source.h>
-#include <engine/physics/box_collider.h>
-#include <engine/physics/rigidbody.h>
-#include <engine/test_component.h>
-#include <engine/debug/debug.h>
-
-#include <engine/game_elements/transform.h>
-
 #include <editor/plugin/plugin_manager.h>
-#include <engine/physics/physics_manager.h>
 #include "../unit_tests/unit_test_manager.h" // Move unit_tests to the folder engine?
 #include <engine/file_system/async_file_loading.h>
 
@@ -178,11 +156,7 @@ int Engine::Init()
 
 	//------------------------------------------ Init other things
 	Graphics::Init();
-	Shader::Init();
 	InputSystem::Init();
-	SpriteManager::Init();
-	MeshManager::Init();
-	TextManager::Init();
 	AssetManager::Init();
 	AudioManager::Init();
 	Time::Init();

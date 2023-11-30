@@ -5,6 +5,9 @@
 #include "renderer/renderer.h"
 #include "renderer/renderer_opengl.h"
 
+#include "2d_graphics/sprite_manager.h"
+#include "ui/text_manager.h"
+
 #include "3d_graphics/mesh_manager.h"
 #include "3d_graphics/mesh_data.h"
 
@@ -111,6 +114,12 @@ void Graphics::Init()
 	SetDefaultValues();
 
 	Debug::Print("-------- Graphics initiated --------");
+
+
+	Shader::Init();
+	SpriteManager::Init();
+	MeshManager::Init();
+	TextManager::Init();
 }
 
 void Graphics::SetDefaultValues()
