@@ -94,11 +94,6 @@ private:
 	API static void FinishThreadedFileLoading();
 
 	/**
-	* Reset transforms states
-	*/
-	API static void ResetTransformsStates();
-
-	/**
 	* Check event (SDL)
 	*/
 	API static void CheckEvents();

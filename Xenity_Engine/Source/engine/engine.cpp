@@ -330,7 +330,7 @@ void Engine::Loop()
 			Graphics::Draw();
 			drawIDrawablesBenchmark->Stop();
 
-			ResetTransformsStates();
+			GameplayManager::ResetTransformStates();
 		}
 		else
 		{
@@ -437,17 +437,4 @@ void Engine::FinishThreadedFileLoading()
 	}
 
 	threadLoadingMutex.unlock();
-}
-
-void Engine::ResetTransformsStates()
-{
-	// Reset moved state of all transforms
-	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
-	{
-		std::shared_ptr<GameObject> gameObject = GameplayManager::gameObjects[i];
-		if (gameObject)
-		{
-			gameObject->GetTransform()->movedLastFrame = false;
-		}
-	}
 }
