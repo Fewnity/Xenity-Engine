@@ -171,11 +171,6 @@ private:
 	API static void ResetTransformsStates();
 
 	/**
-	* Load and start game (Executed when compiled as a game build)
-	*/
-	API static int LoadGame();
-
-	/**
 	* Check event (SDL)
 	*/
 	API static void CheckEvents();

@@ -264,8 +264,8 @@ void Engine::Loop()
 
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)
-	int projectLoadResult = LoadGame();
-	if (projectLoadResult != 0)
+	bool projectLoaded = ProjectManager::LoadProject(".\\");
+	if (!projectLoaded)
 	{
 		return;
 	}
@@ -390,12 +390,6 @@ void Engine::Stop()
 void Engine::Quit()
 {
 	isRunning = false;
-}
-
-int Engine::LoadGame()
-{
-	ProjectManager::LoadProject(".\\");
-	return 0;
 }
 
 void Engine::CreateBenchmarks()
