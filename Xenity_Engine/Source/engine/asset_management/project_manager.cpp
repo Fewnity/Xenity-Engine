@@ -34,7 +34,7 @@
 
 // Not final code (en effet c'est pas bien du tout ça niveau dépendance monsieur grégory)
 #if defined(VISUAL_STUDIO) || !defined(_WIN32) || !defined(_WIN64)
-	#include <game_dungeon/game.h>
+	//#include <game_dungeon/game.h>
 	//#include <game_test/game.h>
 #endif
 #include <engine/debug/debug.h>
@@ -368,9 +368,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	//Load dynamic library and create game
-#if defined(VISUAL_STUDIO)
-	Engine::game = std::make_unique<Game>();
-#else
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
@@ -381,7 +378,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 	Engine::game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
-#endif // defined(VISUAL_STUDIO)
+
 
 	// Fill class registery
 	if (Engine::game)

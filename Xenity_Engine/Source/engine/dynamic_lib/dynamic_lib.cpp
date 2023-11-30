@@ -14,7 +14,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 	//Disable error popup
 	SetErrorMode(0x0001);
 #if defined(VISUAL_STUDIO)
-	library = LoadLibrary((LPCWSTR)fileName.c_str()); // Visual Studio
+	library = LoadLibraryA(fileName.c_str()); // Visual Studio
 #else
 	library = LoadLibrary(fileName.c_str()); // MSVC Compiler
 #endif

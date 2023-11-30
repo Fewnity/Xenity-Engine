@@ -41,7 +41,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -124,19 +124,24 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;VISUAL_STUDIO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <EnableUAC>false</EnableUAC>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -201,15 +206,6 @@
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
-    <ClCompile Include="Source\game_dungeon\animated_light.cpp" />
-    <ClCompile Include="Source\game_dungeon\camera_follow.cpp" />
-    <ClCompile Include="Source\game_dungeon\chest.cpp" />
-    <ClCompile Include="Source\game_dungeon\coin.cpp" />
-    <ClCompile Include="Source\game_dungeon\enemy.cpp" />
-    <ClCompile Include="Source\game_dungeon\game.cpp" />
-    <ClCompile Include="Source\game_dungeon\level_manager.cpp" />
-    <ClCompile Include="Source\game_dungeon\player.cpp" />
-    <ClCompile Include="Source\game_dungeon\spike.cpp" />
     <ClCompile Include="Source\game_test\fps_counter.cpp" />
     <ClCompile Include="Source\game_test\free_move.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
@@ -275,7 +271,6 @@
     <ClCompile Include="Source\engine\graphics\camera.cpp" />
     <ClCompile Include="Source\engine\graphics\graphics.cpp" />
     <ClCompile Include="Source\glad.c" />
-    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\engine\tools\math.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2_int.cpp" />
@@ -368,15 +363,6 @@
     <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
-    <ClInclude Include="Source\game_dungeon\animated_light.h" />
-    <ClInclude Include="Source\game_dungeon\camera_follow.h" />
-    <ClInclude Include="Source\game_dungeon\chest.h" />
-    <ClInclude Include="Source\game_dungeon\coin.h" />
-    <ClInclude Include="Source\game_dungeon\enemy.h" />
-    <ClInclude Include="Source\game_dungeon\game.h" />
-    <ClInclude Include="Source\game_dungeon\level_manager.h" />
-    <ClInclude Include="Source\game_dungeon\player.h" />
-    <ClInclude Include="Source\game_dungeon\spike.h" />
     <ClInclude Include="Source\game_test\fps_counter.h" />
     <ClInclude Include="Source\game_test\free_move.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
