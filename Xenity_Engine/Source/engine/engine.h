@@ -75,11 +75,6 @@ private:
 	API static void CreateBenchmarks();
 
 	/**
-	 * Finish file loading when files are loaded with a thread
-	 */
-	API static void FinishThreadedFileLoading();
-
-	/**
 	 * Check event (SDL)
 	 */
 	API static void CheckEvents();

@@ -381,21 +381,3 @@ void Engine::CreateBenchmarks()
 	editorUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor update");
 	editorDrawBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor draw");
 }
-
-void Engine::FinishThreadedFileLoading()
-{
-	threadLoadingMutex.lock();
-	size_t threadFileCount = threadLoadedFiles.size();
-	for (size_t i = 0; i < threadFileCount; i++)
-	{
-		if (!threadLoadedFiles[i]->isLoading)
-		{
-			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
-			threadLoadedFiles.erase(threadLoadedFiles.begin() + i);
-			threadFileCount--;
-			i--;
-		}
-	}
-
-	threadLoadingMutex.unlock();
-}
