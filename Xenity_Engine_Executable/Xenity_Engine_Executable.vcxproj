@@ -72,7 +72,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)EditorLib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
