@@ -15,41 +15,42 @@ std::vector<HINSTANCE> libs;
 
 void PluginManager::Init()
 {
-	Debug::Print( "PluginManager: initializing.." );
+	Debug::Print("[PluginManager::Init] Initalizing..");
 	
 #if defined(EDITOR)
+	Debug::Print("[PluginManager::Init] Compiling..");
 	Compiler::CompilePlugin( 
 		Platform::P_Windows, 
 		"plugins\\test\\" 
 	);
 #endif
 
-	//  setup constants
+	// Setup constants
 	const std::string path = "plugins\\";
 	const std::string extension = ".dll";
 
-	//  check directory existence
-	//  NOTE: I think it would be better to have a static
-	//        function FileSystem::GetDirectory( std::string ) 
-	auto dir = std::make_shared<Directory>( path );
-	if ( !dir->CheckIfExist() )
+	// Check directory existence
+	// NOTE: I think it would be better to have a static
+	//       function FileSystem::GetDirectory( std::string ) 
+	auto dir = std::make_shared<Directory>(path);
+	if (!dir->CheckIfExist())
 	{
-		Debug::PrintWarning( "PluginManager: plugins directory not found!" );
+		Debug::PrintWarning("[PluginManager::Init] Plugins directory not found!");
 		return;
 	}
 
-	//  find & load plugin libraries
-	for ( auto& file : dir->GetAllFiles( false ) )
+	// Load plugin libraries
+	for (auto& file : dir->GetAllFiles(false))
 	{
-		//  check extension
-		if ( file->GetFileExtension() != extension ) return;
+		// Check extension
+		if (file->GetFileExtension() != extension) return;
 
 		const std::string path = file->GetPath();
 
-		//  try loading library
+		// Try loading DLL
 		//  TODO: abstract library loading to either DynamicLibrary static class
 		//        w/ eventually a PluginLibrary struct (which can contains the library name) 
-		HINSTANCE lib = LoadLibraryA( path.c_str() );
+		HINSTANCE lib = LoadLibraryA(path.c_str());
 		if ( !lib )
 		{
 			auto error = "WindowsError(" + std::to_string(GetLastError()) + ")";
@@ -58,39 +59,41 @@ void PluginManager::Init()
 		}
 
 		//  instantiate plugin
-		CreatePluginFunction ProcCreate = (CreatePluginFunction)GetProcAddress( lib, "CreatePlugin" );
-		if ( ProcCreate )
+		CreatePluginFunction ProcCreate = (CreatePluginFunction)GetProcAddress(lib, "CreatePlugin");
+		if (!ProcCreate)
 		{
-			Register( (ProcCreate)() );
-		}
-		else
-		{
-			Debug::PrintError( "PluginManager:: failed to find CreatePlugin function in library '" + path + "'" );
+			Debug::PrintError("[PluginManager::Init] Failed to find CreatePlugin function in DLL '" + path + "'");
 			
-			FreeLibrary( lib );
+			FreeLibrary(lib);
 			continue;
 		}
 
-		//  store library
-		libs.push_back( lib );
-		Debug::Print( "PluginManager: loaded library '" + path + "'" );
+		// Store DLL
+		libs.push_back(lib);
+		Debug::Print("[PluginManager::Init] Loaded DLL '" + path + "'");
+
+		// Register plugin
+		Register((ProcCreate)());
 	}
 }
 
 void PluginManager::Stop()
 {
-	//  release plugin libraries
-	for ( auto& lib : libs )
+	// Release plugins
+	plugins.clear();
+
+	// Release DLLs
+	for (auto& lib : libs)
 	{
 		//  NOTE: it would be nice to print the target library name/path in those logs,
 		//		  hence the PluginLibrary struct said earlier
-		if ( FreeLibrary( lib ) )
+		if (FreeLibrary(lib))
 		{
-			Debug::Print( "PluginManager: released library" );
+			Debug::Print("[PluginManager::Stop] Released a plugin DLL");
 		}
 		else
 		{
-			Debug::PrintError( "PluginManager: failed to release library!" );
+			Debug::PrintError("[PluginManager::Stop] Failed to release a plugin DLL!");
 		}
 	}
 	libs.clear();
@@ -101,6 +104,7 @@ void PluginManager::Register(Plugin* plugin)
 	printf("Plugin Adress: %p\n", plugin);
 	if (!plugin) return;
 
+	// Setup
 	plugin->Setup();
 
 	auto& infos = plugin->GetInfos();
