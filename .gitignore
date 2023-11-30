@@ -57,6 +57,9 @@ Xenity_Engine/imgui.ini
 Xenity_Engine/projects.json
 Xenity_Engine/x64/
 
+x64/Debug/engine_settings.json
+x64/Debug/imgui.ini
+
 Xenity_Engine.vcxproj.FileListAbsolute.txt
 Xenity_Engine.exe
 
