@@ -329,6 +329,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\plugin\api.h" />
     <ClInclude Include="Source\editor\plugin\plugin.h" />
     <ClInclude Include="Source\editor\command\command_manager.h" />
     <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
