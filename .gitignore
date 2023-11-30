@@ -22,6 +22,17 @@ Xenity_Engine/buildvita/
 Xenity_Engine/Xenity Editor/
 Xenity_Engine/plugins/*.dll
 
+Xenity_Engine_Executable/build/CMakeFiles/
+Xenity_Engine_Executable/build/cmake_install.cmake
+Xenity_Engine_Executable/build/CMakeCache.txt
+Xenity_Engine_Executable/build/Makefile
+Xenity_Engine_Executable/build/PARAM.SFO
+Xenity_Engine_Executable/build/EBOOT.PBP
+Xenity_Engine_Executable/build/hello
+Xenity_Engine_Executable/buildvita/
+Xenity_Engine_Executable/Xenity Editor/
+Xenity_Engine_Executable/plugins/*.dll
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -45,20 +56,23 @@ bld/
 [Ll]ogs/
 xenity_engine_debug.txt
 
-Xenity_Engine/Editor.exe
-Xenity_Engine/engine_editor.dll
-Xenity_Engine/engine_editor.exp
-Xenity_Engine/engine_editor.lib
-Xenity_Engine/engine_game.dll
-Xenity_Engine/engine_game.exp
-Xenity_Engine/engine_game.lib
-Xenity_Engine/engine_settings.json
-Xenity_Engine/imgui.ini
-Xenity_Engine/projects.json
-Xenity_Engine/x64/
+Xenity_Engine.dll
+Xenity_Engine.exp
+Xenity_Engine.lib
+imgui.ini
+engine_settings.json
+Editor.exe
+engine_editor.dll
+engine_editor.exp
+engine_editor.lib
+engine_game.dll
+engine_game.exp
+engine_game.lib
+projects.json
+Xenity_Engine_Executable.exe
 
-x64/Debug/engine_settings.json
-x64/Debug/imgui.ini
+Xenity_Engine/x64/
+Xenity_Engine_Executable/x64/
 
 Xenity_Engine.vcxproj.FileListAbsolute.txt
 Xenity_Engine.exe
@@ -142,6 +156,12 @@ StyleCopReport.xml
 !Xenity_Engine/shaders/*.meta
 !Xenity_Engine/materials/*.meta
 
+!Xenity_Engine_Executable/build/models/*.obj
+!Xenity_Engine_Executable/engine_assets/*.obj
+!Xenity_Engine_Executable/engine_assets/models/*.obj
+
+!Xenity_Engine_Executable/shaders/*.meta
+!Xenity_Engine_Executable/materials/*.meta
 
 # Chutzpah Test files
 _Chutzpah*
