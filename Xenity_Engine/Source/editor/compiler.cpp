@@ -204,7 +204,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 	switch (result)
 	{
 	case CompileResult::SUCCESS:
-		Debug::Print("Game compiled successfully!");
+		Debug::Print("[Compiler::OnCompileEnd] Code compiled successfully!");
 		break;
 	case CompileResult::ERROR_UNKNOWN:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
