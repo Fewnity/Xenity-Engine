@@ -588,7 +588,7 @@ std::string Compiler::GetStartCompilerCommand()
 		command += path.substr(0,2) + " && "; // Go to the compiler folder
 	}
 	command += "cd \"" + EngineSettings::compilerPath + "\""; // Go to the compiler folder
-	command += " && vcvarsamd64_x86.bat"; // Start the compiler
+	command += " && vcvars64.bat"; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
 }
