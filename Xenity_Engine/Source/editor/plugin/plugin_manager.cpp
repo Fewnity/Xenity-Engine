@@ -18,10 +18,10 @@ void PluginManager::Init()
 	Debug::Print( "PluginManager: initializing.." );
 	
 #if defined(EDITOR)
-	//Compiler::CompilePlugin( 
-	//	Platform::P_Windows, 
-	//	"plugins\\test\\" 
-	//);
+	Compiler::CompilePlugin( 
+		Platform::P_Windows, 
+		"plugins\\test\\" 
+	);
 #endif
 
 	//  setup constants

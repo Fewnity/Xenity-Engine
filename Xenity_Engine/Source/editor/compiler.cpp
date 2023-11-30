@@ -430,11 +430,11 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		command += GetCompileExecutableCommand(params);
 	}
 
+	Debug::Print("[Compiler::Compile] Command: " + command);
 	// Run compilation
 	int buildResult = system(command.c_str());
 	if (buildResult != 0)
 	{
-		Debug::PrintError("[Compiler::Compile] Command: " + command);
 		return CompileResult::ERROR_UNKNOWN;
 	}
 
@@ -610,7 +610,7 @@ std::string Compiler::GetNavToEngineFolderCommand(const CompilerParams& params)
 std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 {
 	std::string command = "";
-	command += "cl /std:c++20 /MP /EHsc /DIMPORT"; // Start compilation
+	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT"; // Start compilation
 	if (params.buildType == BuildType::EditorHotReloading)
 	{
 		command += " /DEDITOR";
