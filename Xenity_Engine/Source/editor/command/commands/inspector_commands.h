@@ -13,6 +13,7 @@
 #include <engine/reflection/reflection_utils.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/vectors/vector3.h>
+#include <engine/component.h>
 
 //----------------------------------------------------------------------------
 
