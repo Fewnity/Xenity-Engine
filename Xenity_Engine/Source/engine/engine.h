@@ -79,11 +79,6 @@ private:
 	API static void CreateBenchmarks();
 
 	/**
-	* Delete pointers when the reference count is low
-	*/
-	API static void RemoveUnusedFiles();
-
-	/**
 	* Finish file loading when files are loaded with a thread
 	*/
 	API static void FinishThreadedFileLoading();

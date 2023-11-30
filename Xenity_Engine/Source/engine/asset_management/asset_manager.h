@@ -41,6 +41,8 @@ public:
 	static std::shared_ptr<FileReference> GetFileReference(const int index);
 	static std::weak_ptr<Light> GetLight(const int index);
 
+	static void RemoveUnusedFiles();
+
 	static int GetMaterialCount();
 	static int GetReflectionCount();
 	static int GetFileReferenceCount();

@@ -308,7 +308,7 @@ void Engine::Loop()
 
 		if (ProjectManager::GetIsProjectLoaded())
 		{
-			RemoveUnusedFiles();
+			AssetManager::RemoveUnusedFiles();
 
 			// Update all components
 			componentsUpdateBenchmark->Start();
@@ -382,25 +382,6 @@ void Engine::CreateBenchmarks()
 	drawIDrawablesBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Draw");
 	editorUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor update");
 	editorDrawBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor draw");
-}
-
-void Engine::RemoveUnusedFiles()
-{
-	int fileRefCount = AssetManager::GetFileReferenceCount();
-	for (int i = 0; i < fileRefCount; i++)
-	{
-		std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
-		int refCount = fileRef.use_count();
-		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
-		if (refCount == 2)
-		{
-			// Free the file
-			AssetManager::RemoveFileReference(fileRef);
-			fileRef.reset();
-			i--;
-			fileRefCount--;
-		}
-	}
 }
 
 void Engine::FinishThreadedFileLoading()

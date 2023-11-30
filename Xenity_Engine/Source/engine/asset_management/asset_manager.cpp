@@ -331,6 +331,25 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 	return lights[index];
 }
 
+void AssetManager::RemoveUnusedFiles()
+{
+	int fileRefCount = GetFileReferenceCount();
+	for (int i = 0; i < fileRefCount; i++)
+	{
+		std::shared_ptr<FileReference> fileRef = GetFileReference(i);
+		int refCount = fileRef.use_count();
+		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
+		if (refCount == 2)
+		{
+			// Free the file
+			RemoveFileReference(fileRef);
+			fileRef.reset();
+			i--;
+			fileRefCount--;
+		}
+	}
+}
+
 int AssetManager::GetMaterialCount()
 {
 	return materialCount;
