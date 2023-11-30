@@ -93,9 +93,7 @@
 #include <editor/plugin/plugin_manager.h>
 #include <engine/physics/physics_manager.h>
 #include "../unit_tests/unit_test_manager.h" // Move unit_tests to the folder engine?
-
-std::vector<std::shared_ptr<FileReference>> Engine::threadLoadedFiles;
-std::mutex Engine::threadLoadingMutex;
+#include <engine/file_system/async_file_loading.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -277,7 +275,7 @@ void Engine::Loop()
 		engineLoopBenchmark->Start();
 
 #if defined(EDITOR)
-		FinishThreadedFileLoading();
+		AsyncFileLoading::FinishThreadedFileLoading();
 #endif
 
 		// Update time, inputs and network

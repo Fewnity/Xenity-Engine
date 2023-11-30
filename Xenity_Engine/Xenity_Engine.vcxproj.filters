@@ -126,6 +126,7 @@
     <ClCompile Include="Source\editor\plugin\plugin.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin_manager.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
+    <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -261,6 +262,7 @@
     <ClInclude Include="Source\editor\plugin\plugin_manager.h" />
     <ClInclude Include="Source\editor\plugin\api.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
+    <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

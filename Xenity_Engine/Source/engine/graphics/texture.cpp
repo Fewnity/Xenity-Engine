@@ -27,6 +27,7 @@
 #elif defined(_EE)
 	#include "renderer/renderer_gskit.h"
 #endif
+#include <engine/file_system/async_file_loading.h>
 
 
 Texture::Texture()
@@ -70,9 +71,7 @@ void Texture::LoadFileReference()
 		isLoaded = true;
 #if defined(EDITOR)
 		isLoading = true;
-		Engine::threadLoadingMutex.lock();
-		Engine::threadLoadedFiles.push_back(shared_from_this());
-		Engine::threadLoadingMutex.unlock();
+		AsyncFileLoading::AddFile(shared_from_this());
 
 		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, filter, useMipMap);
 		threadLoading.detach();

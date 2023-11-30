@@ -166,6 +166,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin.cpp" />
     <ClCompile Include="Source\editor\command\command_manager.cpp" />
@@ -325,6 +326,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
     <ClInclude Include="Source\editor\plugin\api.h" />
     <ClInclude Include="Source\editor\plugin\plugin.h" />

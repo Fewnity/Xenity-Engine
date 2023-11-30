@@ -13,7 +13,7 @@
 
 #include <engine/audio/audio_source.h>
 #include <engine/audio/audio_manager.h>
-
+#include <engine/tools/gameplay_utility.h>
 #include <iostream>
 
 
@@ -87,7 +87,8 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < componentCount; i++)
 	{
-		components[i]->RemoveReferences();
+		if(components[i])
+			components[i]->RemoveReferences();
 	}
 	components.clear();
 }

@@ -12,6 +12,7 @@
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
+#include <engine/file_system/async_file_loading.h>
 
 MeshData::MeshData()
 {
@@ -255,9 +256,8 @@ void MeshData::LoadFileReference()
 
 #if defined(EDITOR)
 		isLoading = true;
-		Engine::threadLoadingMutex.lock();
-		Engine::threadLoadedFiles.push_back(shared_from_this());
-		Engine::threadLoadingMutex.unlock();
+
+		AsyncFileLoading::AddFile(shared_from_this());
 
 		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 		threadLoading.detach();

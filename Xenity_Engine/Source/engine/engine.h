@@ -28,30 +28,29 @@ class Material;
 class Engine
 {
 public:
-
 	/**
-	* Init Engine
-	*/
+	 * Init Engine
+	 */
 	[[nodiscard]] API static int Init();
 
 	/**
-	* Stop engine
-	*/
+	 * Stop engine
+	 */
 	API static void Stop();
 
 	/**
-	* Engine loop
-	*/
+	 * Engine loop
+	 */
 	API static void Loop();
 
 	/**
-	* Quit game
-	*/
+	 * Quit game
+	 */
 	API static void Quit();
 
 	/**
-	* Get if the engine is running
-	*/
+	 * Get if the engine is running
+	 */
 	static bool IsRunning()
 	{
 		return isRunning;
@@ -60,32 +59,29 @@ public:
 	static std::unique_ptr<GameInterface> game;
 
 	static bool canUpdateAudio;
-	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
-	static std::mutex threadLoadingMutex;
 
 	/**
-	* Get the renderer
-	*/
-	API static Renderer& GetRenderer()
+	 * Get the renderer
+	 */
+	API static Renderer &GetRenderer()
 	{
 		return *renderer;
 	}
 
 private:
-
 	/**
-	* Create some benchmark for profiling
-	*/
+	 * Create some benchmark for profiling
+	 */
 	API static void CreateBenchmarks();
 
 	/**
-	* Finish file loading when files are loaded with a thread
-	*/
+	 * Finish file loading when files are loaded with a thread
+	 */
 	API static void FinishThreadedFileLoading();
 
 	/**
-	* Check event (SDL)
-	*/
+	 * Check event (SDL)
+	 */
 	API static void CheckEvents();
 
 	static std::unique_ptr<Renderer> renderer;
