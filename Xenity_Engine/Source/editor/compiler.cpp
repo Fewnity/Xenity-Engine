@@ -168,7 +168,7 @@ void Compiler::HotReloadGame()
 
 	// Reset registeries
 	ClassRegistry::Reset();
-	Engine::RegisterEngineComponents();
+	ClassRegistry::RegisterEngineComponents();
 
 	// Unload library
 	DynamicLibrary::UnloadGameLibrary();

@@ -50,11 +50,6 @@ public:
 	API static void Quit();
 
 	/**
-	* Register all engine components
-	*/
-	API static void RegisterEngineComponents();
-
-	/**
 	* Get if the engine is running
 	*/
 	static bool IsRunning()

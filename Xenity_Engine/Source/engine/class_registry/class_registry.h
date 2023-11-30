@@ -36,6 +36,11 @@ public:
 	}
 
 	/**
+	* Register all engine components
+	*/
+	static void RegisterEngineComponents();
+
+	/**
 	* Add a component to a GameObject from the component name
 	*/
 	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);

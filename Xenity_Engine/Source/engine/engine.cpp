@@ -139,7 +139,7 @@ int Engine::Init()
 		// Not a critical module, do not stop the engine
 	}
 
-	RegisterEngineComponents();
+	ClassRegistry::RegisterEngineComponents();
 
 	/* Initialize libraries */
 	NetworkManager::Init();
@@ -355,24 +355,6 @@ void Engine::Loop()
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
 	game.reset();
-}
-
-void Engine::RegisterEngineComponents()
-{
-	// List all Engine components
-	ClassRegistry::AddComponentClass<Light>("Light");
-	ClassRegistry::AddComponentClass<Camera>("Camera");
-	ClassRegistry::AddComponentClass<TextRendererCanvas>("TextRendererCanvas");
-	ClassRegistry::AddComponentClass<TextRenderer>("TextRenderer");
-	ClassRegistry::AddComponentClass<MeshRenderer>("MeshRenderer");
-	ClassRegistry::AddComponentClass<Tilemap>("Tilemap");
-	ClassRegistry::AddComponentClass<SpriteRenderer>("SpriteRenderer");
-	ClassRegistry::AddComponentClass<BillboardRenderer>("BillboardRenderer");
-	ClassRegistry::AddComponentClass<LineRenderer>("LineRenderer");
-	ClassRegistry::AddComponentClass<AudioSource>("AudioSource");
-	ClassRegistry::AddComponentClass<TestComponent>("TestComponent");
-	ClassRegistry::AddComponentClass<RigidBody>("RigidBody");
-	ClassRegistry::AddComponentClass<BoxCollider>("BoxCollider");
 }
 
 void Engine::Stop()
