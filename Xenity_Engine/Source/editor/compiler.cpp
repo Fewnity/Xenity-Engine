@@ -19,6 +19,9 @@
 
 namespace fs = std::filesystem;
 
+#define ENGINE_EDITOR "Xenity_Editor"
+#define ENGINE_GAME "Xenity_Engine"
+
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
 	if (!fs::path(path).is_absolute())
@@ -210,10 +213,10 @@ void Compiler::OnCompileEnd(CompileResult result)
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
 	case CompileResult::ERROR_ENGINE_GAME_LIB_MISSING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_game.lib");
+		Debug::PrintError("[Compiler::OnCompileEnd] Missing " + std::string(ENGINE_GAME) + ".lib");
 		break;
 	case CompileResult::ERROR_ENGINE_EDITOR_LIB_MISSING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Missing engine_editor.lib");
+		Debug::PrintError("[Compiler::OnCompileEnd] Missing " + std::string(ENGINE_EDITOR) + ".lib");
 		break;
 	case CompileResult::ERROR_LIB_DLLS_MISSING:
 		Debug::PrintError("[Compiler::OnCompileEnd] Missing one of Dlls");
@@ -273,14 +276,14 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 {
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
-		std::string engineLibPath = EngineSettings::engineProjectPath + "engine_editor.lib";
+		std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_EDITOR + ".lib";
 
 		try
 		{
 			// Copy engine editor lib to the temp build folder
 			fs::copy_file(
 				engineLibPath, 
-				params.tempPath + "engine_editor.lib", 
+				params.tempPath + ENGINE_EDITOR + ".lib",
 				fs::copy_options::overwrite_existing
 			);
 		}
@@ -320,8 +323,8 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 	}
 	else // In build mode:
 	{
-		std::string engineLibPath = EngineSettings::engineProjectPath + "engine_game.lib";
-		std::string engineDllPath = EngineSettings::engineProjectPath + "engine_game.dll";
+		std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".lib";
+		std::string engineDllPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".dll";
 		std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL2.dll";
 		std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
 
@@ -330,7 +333,7 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		{
 			fs::copy_file(
 				engineLibPath, 
-				params.tempPath + "engine_game.lib", 
+				params.tempPath + ENGINE_GAME + ".lib",
 				fs::copy_options::overwrite_existing
 			);
 		}
@@ -344,7 +347,7 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		{
 			fs::copy_file(
 				engineDllPath, 
-				params.exportPath + "engine_game.dll", 
+				params.exportPath + ENGINE_GAME + ".dll",
 				fs::copy_options::overwrite_existing
 			);
 			fs::copy_file(
@@ -624,11 +627,11 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 	command += " /LD \"" + folder + "*.cpp\"";
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		command += " engine_game.lib";
+		command += " " + std::string(ENGINE_GAME) + ".lib";
 	}
 	else
 	{
-		command += " engine_editor.lib";
+		command += " " + std::string(ENGINE_EDITOR) + ".lib";
 	}
 	command += " /link";
 	command += " /implib:" + params.libraryName + ".lib";
@@ -652,7 +655,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 	command = "cl /Fe\"" + params.libraryName + ".exe\" /std:c++20 /MP /EHsc";
 	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
 	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
-	command += " main.cpp engine_game.lib";
+	command += " main.cpp " + std::string(ENGINE_GAME) + ".lib";
 	//command += " >nul"; // Mute output
 	return command;
 }

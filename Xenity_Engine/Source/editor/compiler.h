@@ -53,7 +53,7 @@ struct CompilerParams
 	 */
 	std::string getEditorDynamicLibraryName() const
 	{
-		return libraryName + "_editor.dll";
+		return libraryName + "_Editor.dll";
 	}
 
 	/**

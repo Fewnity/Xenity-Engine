@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Editor|Win32">
+      <Configuration>Debug Editor</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Editor|x64">
+      <Configuration>Debug Editor</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Engine|Win32">
+      <Configuration>Debug Engine</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Engine|x64">
+      <Configuration>Debug Engine</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -33,6 +49,18 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -41,6 +69,18 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -61,10 +101,22 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -75,16 +127,65 @@
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
+    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <TargetName>Xenity_Editor</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
+    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <ExcludePath>$(ProjectDir)Source\editor\;$(ExcludePath)</ExcludePath>
+    <TargetName>Xenity_Engine</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
+    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
+    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib-vc2022;C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib_sdl2\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -144,6 +245,54 @@
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <EnableUAC>false</EnableUAC>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <EnableUAC>false</EnableUAC>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -168,64 +317,124 @@
   <ItemGroup>
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
-    <ClCompile Include="Source\editor\plugin\plugin.cpp" />
-    <ClCompile Include="Source\editor\command\command_manager.cpp" />
-    <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
-    <ClCompile Include="Source\editor\command\command.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_dialog.cpp" />
+    <ClCompile Include="Source\editor\plugin\plugin.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\command\command_manager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\command\command.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_dialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\file_system\directory.cpp" />
     <ClCompile Include="Source\engine\file_system\file.cpp" />
     <ClCompile Include="Source\engine\file_system\file_default.cpp" />
     <ClCompile Include="Source\engine\file_system\file_psp.cpp" />
     <ClCompile Include="Source\engine\game_elements\gameplay_manager.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\create_class_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\create_class_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\graphics\renderer\renderer_ge.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
     <ClCompile Include="Source\engine\physics\box_collider.cpp" />
     <ClCompile Include="Source\engine\physics\collider.cpp" />
     <ClCompile Include="Source\engine\physics\physics_manager.cpp" />
     <ClCompile Include="Source\engine\physics\rigidbody.cpp" />
-    <ClCompile Include="Source\editor\gizmo.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_ui_drag_drop.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_ui_inputs.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_ui_map.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp" />
+    <ClCompile Include="Source\editor\gizmo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_file_dialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_ui_drag_drop.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_ui_inputs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_ui_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_ui_tree_item.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\graphics\2d_graphics\billboard_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\material.cpp" />
     <ClCompile Include="Source\engine\graphics\shader.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\asset_management\code_file.cpp" />
-    <ClCompile Include="Source\editor\compiler.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\select_project_menu.cpp" />
-    <ClCompile Include="Source\editor\plugin\plugin_manager.cpp" />
+    <ClCompile Include="Source\editor\compiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\create_project_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\select_project_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\plugin\plugin_manager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\game_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\game_test\fps_counter.cpp" />
     <ClCompile Include="Source\game_test\free_move.cpp" />
     <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene_manager.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\engine_settings_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\file_explorer_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\hierarchy_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\inspector_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\main_bar_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\profiler_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\engine_settings_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\file_explorer_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\hierarchy_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\inspector_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\main_bar_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\profiler_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\file_system\file_reference.cpp" />
     <ClCompile Include="include\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Source\engine\reflection\reflection.cpp" />
     <ClCompile Include="Source\engine\class_registry\class_registry.cpp" />
-    <ClCompile Include="Source\editor\editor.cpp" />
-    <ClCompile Include="Source\editor\ui\editor_ui.cpp" />
+    <ClCompile Include="Source\editor\editor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\editor_ui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\audio\audio_clip.cpp" />
     <ClCompile Include="Source\engine\audio\audio_clip_stream.cpp" />
     <ClCompile Include="Source\engine\audio\audio_manager.cpp" />
@@ -328,18 +537,30 @@
   <ItemGroup>
     <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
-    <ClInclude Include="Source\editor\plugin\api.h" />
-    <ClInclude Include="Source\editor\plugin\plugin.h" />
-    <ClInclude Include="Source\editor\command\command_manager.h" />
-    <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
-    <ClInclude Include="Source\editor\command\command.h" />
+    <ClInclude Include="Source\editor\plugin\api.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\plugin\plugin.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\command\command_manager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\command\commands\inspector_commands.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\command\command.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\cpu.h" />
     <ClInclude Include="Source\engine\file_system\directory.h" />
     <ClInclude Include="Source\engine\file_system\file.h" />
     <ClInclude Include="Source\engine\file_system\file_default.h" />
     <ClInclude Include="Source\engine\file_system\file_psp.h" />
     <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
-    <ClInclude Include="Source\editor\ui\menus\create_class_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\create_class_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\file_system\file_type.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_ge.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_gskit.h" />
@@ -347,45 +568,85 @@
     <ClInclude Include="Source\engine\physics\collider.h" />
     <ClInclude Include="Source\engine\physics\physics_manager.h" />
     <ClInclude Include="Source\engine\physics\rigidbody.h" />
-    <ClInclude Include="Source\editor\gizmo.h" />
+    <ClInclude Include="Source\editor\gizmo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\graphics\2d_graphics\billboard_renderer.h" />
     <ClInclude Include="Source\engine\graphics\material.h" />
     <ClInclude Include="Source\engine\graphics\shader.h" />
     <ClInclude Include="Source\engine\graphics\ui\font.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />
-    <ClInclude Include="Source\editor\ui\menus\lighting_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\lighting_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\asset_management\code_file.h" />
-    <ClInclude Include="Source\editor\compiler.h" />
-    <ClInclude Include="Source\editor\tool_mode.h" />
-    <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\create_project_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\select_project_menu.h" />
+    <ClInclude Include="Source\editor\compiler.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\tool_mode.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\compiling_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\create_project_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\scene_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\select_project_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\platform.h" />
-    <ClInclude Include="Source\editor\plugin\plugin_manager.h" />
+    <ClInclude Include="Source\editor\plugin\plugin_manager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
-    <ClInclude Include="Source\editor\ui\menus\game_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\game_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\project_settings_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
     <ClInclude Include="Source\game_test\fps_counter.h" />
     <ClInclude Include="Source\game_test\free_move.h" />
     <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\scene_management\scene.h" />
     <ClInclude Include="Source\engine\scene_management\scene_manager.h" />
-    <ClInclude Include="Source\editor\ui\menus\engine_settings_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\file_explorer_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\hierarchy_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\inspector_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\main_bar_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\profiler_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\engine_settings_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\file_explorer_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\hierarchy_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\inspector_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\main_bar_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\profiler_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\file_system\file_reference.h" />
     <ClInclude Include="include\imgui\imgui_stdlib.h" />
     <ClInclude Include="Source\engine\reflection\reflection.h" />
     <ClInclude Include="Source\engine\class_registry\class_registry.h" />
     <ClInclude Include="include\json.hpp" />
-    <ClInclude Include="Source\editor\editor.h" />
-    <ClInclude Include="Source\editor\ui\editor_ui.h" />
+    <ClInclude Include="Source\editor\editor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\editor_ui.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\audio\audio_clip.h" />
     <ClInclude Include="Source\engine\audio\audio_clip_stream.h" />
     <ClInclude Include="Source\engine\audio\audio_manager.h" />
@@ -455,7 +716,9 @@
     <ClInclude Include="Source\windows\inputs\inputs.h" />
     <ClInclude Include="Source\xenity.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
-    <ClInclude Include="Source\xenity_editor.h" />
+    <ClInclude Include="Source\xenity_editor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\graphics\ui\text_manager.h" />
     <ClInclude Include="Source\engine\test_component.h" />
     <ClInclude Include="Source\engine\unique_id\unique_id.h" />

@@ -56,6 +56,9 @@ bld/
 [Ll]ogs/
 xenity_engine_debug.txt
 
+Xenity_Editor.dll
+Xenity_Editor.exp
+Xenity_Editor.lib
 Xenity_Engine.dll
 Xenity_Engine.exp
 Xenity_Engine.lib

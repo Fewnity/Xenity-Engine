@@ -332,7 +332,9 @@ void Engine::Loop()
 
 void Engine::Stop()
 {
+	isRunning = false;
 	renderer->Stop();
+	renderer.reset();
 	AudioManager::Stop();
 #if defined(EDITOR)
 	PluginManager::Stop();
@@ -340,7 +342,6 @@ void Engine::Stop()
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
-	isRunning = false;
 }
 
 void Engine::Quit()
