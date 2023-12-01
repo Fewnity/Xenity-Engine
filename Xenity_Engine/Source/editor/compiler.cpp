@@ -19,8 +19,57 @@
 
 namespace fs = std::filesystem;
 
+std::vector<CopyEntry> Compiler::copyEntries;
+
+void Compiler::AddCopyEntry(bool isFolder, std::string source, std::string dest)
+{
+	CopyEntry entry;
+	entry.isFolder = isFolder;
+	entry.sourcePath = source;
+	entry.destPath = dest;
+
+	copyEntries.push_back(entry);
+}
+
+bool Compiler::ExecuteCopyEntries()
+{
+	bool success = true;
+	for (CopyEntry entry : copyEntries)
+	{
+		try
+		{
+			if (entry.isFolder)
+			{
+				fs::copy(
+					entry.sourcePath,
+					entry.destPath,
+					fs::copy_options::overwrite_existing | fs::copy_options::recursive
+				);
+			}
+			else
+			{
+				fs::copy_file(
+					entry.sourcePath,
+					entry.destPath,
+					fs::copy_options::overwrite_existing
+				);
+			}
+		}
+		catch (const std::exception&)
+		{
+			Debug::PrintError("[Compiler::ExecuteCopyEntries] Cannot copy " + entry.sourcePath + " to" + entry.destPath);
+			success = false;
+		}
+	}
+	copyEntries.clear();
+	return success;
+}
+
 #define ENGINE_EDITOR "Xenity_Editor"
 #define ENGINE_GAME "Xenity_Engine"
+#define ASSETS_FOLDER "assets\\"
+#define ENGINE_ASSETS_FOLDER "engine_assets\\"
+#define MSVC_START_FILE "vcvars64.bat"
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -42,9 +91,9 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 	// Print parameters
 	Debug::Print(
-		"[Compiler::Compile] Preparing:" 
-		"\n- Platform: " + std::to_string( (int)params.platform )
-		+ "\n- Build Type: " + std::to_string( (int)params.buildType )
+		"[Compiler::Compile] Preparing:"
+		"\n- Platform: " + std::to_string((int)params.platform)
+		+ "\n- Build Type: " + std::to_string((int)params.buildType)
 		+ "\n- Temporary Path: " + params.tempPath
 		+ "\n- Source Path: " + params.sourcePath
 		+ "\n- Export Path: " + params.exportPath
@@ -68,16 +117,16 @@ CompileResult Compiler::Compile(CompilerParams params)
 	CompileResult result = CompileResult::ERROR_UNKNOWN;
 	switch (params.platform)
 	{
-		case Platform::P_Windows:
-			result = CompileWindows(params);
-			break;
-		case Platform::P_PSP:
-		case Platform::P_PsVita:
-			result = CompileWSL(params);
-			break;
-		default:
-			Debug::PrintError("[Compiler::Compile] No compile method for this platform!");
-			break;
+	case Platform::P_Windows:
+		result = CompileWindows(params);
+		break;
+	case Platform::P_PSP:
+	case Platform::P_PsVita:
+		result = CompileWSL(params);
+		break;
+	default:
+		Debug::PrintError("[Compiler::Compile] No compile method for this platform!");
+		break;
 	}
 
 	// Delete temp compiler folder content
@@ -94,9 +143,9 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 CompileResult Compiler::CompilePlugin(Platform platform, const std::string& pluginPath)
 {
-	std::string plugin_name = fs::path( pluginPath ).parent_path().filename().string();
+	std::string plugin_name = fs::path(pluginPath).parent_path().filename().string();
 
-	CompilerParams params {};
+	CompilerParams params{};
 	params.libraryName = "plugin_" + plugin_name;
 	params.platform = platform;
 	params.buildType = BuildType::EditorHotReloading;
@@ -110,7 +159,7 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 
 CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
-	CompilerParams params {};
+	CompilerParams params{};
 	params.libraryName = "game";
 	params.platform = platform;
 	params.buildType = buildType;
@@ -123,23 +172,16 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	if (result != CompileResult::SUCCESS) return result;
 
 	// Copy assets
-	if(params.buildType != BuildType::EditorHotReloading)
+	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		fs::copy(
-			ProjectManager::GetAssetFolderPath(), 
-			params.exportPath + "assets\\", 
-			fs::copy_options::overwrite_existing | fs::copy_options::recursive
-		);
-		fs::copy(
-			ProjectManager::GetEngineAssetFolderPath(), 
-			params.exportPath + "engine_assets\\", 
-			fs::copy_options::overwrite_existing | fs::copy_options::recursive
-		);
-		fs::copy_file(
-			ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, 
-			params.exportPath + PROJECT_SETTINGS_FILE_NAME, 
-			fs::copy_options::overwrite_existing
-		);
+		AddCopyEntry(true, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
+		AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
+		AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
+		bool copyResult = ExecuteCopyEntries();
+		if (!copyResult)
+		{
+			return CompileResult::ERROR_FILE_COPY;
+		}
 	}
 
 	// Launch game
@@ -178,14 +220,14 @@ void Compiler::HotReloadGame()
 
 	// Compile game
 	Compiler::CompileGame(
-		Platform::P_Windows, 
-		BuildType::EditorHotReloading, 
+		Platform::P_Windows,
+		BuildType::EditorHotReloading,
 		ProjectManager::GetProjectFolderPath()
 	);
-	
+
 	// Reload game
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
-	
+
 	// Create game instance
 	Engine::game = DynamicLibrary::CreateGame();
 	if (Engine::game)
@@ -230,6 +272,9 @@ void Compiler::OnCompileEnd(CompileResult result)
 	case CompileResult::ERROR_FINAL_GAME_FILES_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's files");
 		break;
+	case CompileResult::ERROR_FILE_COPY:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying files");
+		break;
 
 		// Specific to WSL
 	case CompileResult::ERROR_WSL_COMPILATION:
@@ -256,14 +301,14 @@ void Compiler::OnCompileEnd(CompileResult result)
 	}
 }
 
-std::string WindowsPathToWSL(const std::string& path) 
+std::string WindowsPathToWSL(const std::string& path)
 {
 	std::string newPath = path;
 	newPath[0] = tolower(newPath[0]);
 	int pathSize = (int)path.size();
 	for (int i = 1; i < pathSize; i++)
 	{
-		if (newPath[i] == '\\') 
+		if (newPath[i] == '\\')
 		{
 			newPath[i] = '/';
 		}
@@ -272,54 +317,16 @@ std::string WindowsPathToWSL(const std::string& path)
 	return newPath;
 }
 
-CompileResult Compiler::CompileWindows( const CompilerParams& params )
+CompileResult Compiler::CompileWindows(const CompilerParams& params)
 {
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
 		std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_EDITOR + ".lib";
 
-		try
-		{
-			// Copy engine editor lib to the temp build folder
-			fs::copy_file(
-				engineLibPath, 
-				params.tempPath + ENGINE_EDITOR + ".lib",
-				fs::copy_options::overwrite_existing
-			);
-		}
-		catch (const std::exception&)
-		{
-			return CompileResult::ERROR_ENGINE_EDITOR_LIB_MISSING;
-		}
-
-		// Copy engine headers
-		try
-		{
-			fs::copy(
-				EngineSettings::engineProjectPath + "Source\\engine\\", 
-				params.tempPath + "engine\\", 
-				fs::copy_options::overwrite_existing | fs::copy_options::recursive
-			);
-			fs::copy(
-				EngineSettings::engineProjectPath + "Source\\editor\\", 
-				params.tempPath + "editor\\", 
-				fs::copy_options::overwrite_existing | fs::copy_options::recursive
-			);
-			fs::copy_file(
-				EngineSettings::engineProjectPath + "Source\\xenity.h", 
-				params.tempPath + "xenity.h", 
-				fs::copy_options::overwrite_existing
-			);
-			fs::copy_file(
-				EngineSettings::engineProjectPath + "Source\\xenity_editor.h", 
-				params.tempPath + "xenity_editor.h", 
-				fs::copy_options::overwrite_existing
-			);
-		}
-		catch (const std::exception&)
-		{
-			return CompileResult::ERROR_ENGINE_HEADERS_COPY;
-		}
+		// Copy engine editor lib to the temp build folder
+		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR + ".lib");
+		// Copy editor header
+		AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\xenity_editor.h", params.tempPath + "xenity_editor.h");
 	}
 	else // In build mode:
 	{
@@ -329,67 +336,21 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
 
 		// Copy engine game lib to the temp build folder
-		try
-		{
-			fs::copy_file(
-				engineLibPath, 
-				params.tempPath + ENGINE_GAME + ".lib",
-				fs::copy_options::overwrite_existing
-			);
-		}
-		catch (const std::exception&)
-		{
-			return CompileResult::ERROR_ENGINE_GAME_LIB_MISSING;
-		}
-
+		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME + ".lib");
 		// Copy all DLLs to the export folder
-		try
-		{
-			fs::copy_file(
-				engineDllPath, 
-				params.exportPath + ENGINE_GAME + ".dll",
-				fs::copy_options::overwrite_existing
-			);
-			fs::copy_file(
-				sdlDllPath, 
-				params.exportPath + "SDL2.dll", 
-				fs::copy_options::overwrite_existing
-			);
-			fs::copy_file(
-				glfwDllPath, 
-				params.exportPath + "glfw3.dll", 
-				fs::copy_options::overwrite_existing
-			);
-		}
-		catch (const std::exception&)
-		{
-			return CompileResult::ERROR_LIB_DLLS_MISSING;
-		}
+		AddCopyEntry(false, engineDllPath, params.exportPath + ENGINE_GAME + ".dll");
+		AddCopyEntry(false, sdlDllPath, params.exportPath + "SDL2.dll");
+		AddCopyEntry(false, glfwDllPath, params.exportPath + "glfw3.dll");
+	}
 
-		// Copy engine headers to the temp build folder
-		try
-		{
-			fs::copy(
-				EngineSettings::engineProjectPath + "Source\\engine\\", 
-				params.tempPath + "engine\\",
-				fs::copy_options::overwrite_existing | fs::copy_options::recursive
-			);
-			fs::copy_file(
-				EngineSettings::engineProjectPath + "Source\\xenity.h", 
-				params.tempPath + "xenity.h", 
-				fs::copy_options::overwrite_existing
-			);
-
-			fs::copy_file(
-				EngineSettings::engineProjectPath + "Source\\main.cpp", 
-				params.tempPath + "main.cpp", 
-				fs::copy_options::overwrite_existing
-			);
-		}
-		catch (const std::exception&)
-		{
-			return CompileResult::ERROR_ENGINE_HEADERS_COPY;
-		}
+	// Copy engine headers to the temp build folder
+	AddCopyEntry(true, EngineSettings::engineProjectPath + "Source\\engine\\", params.tempPath + "engine\\");
+	AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\xenity.h", params.tempPath + "xenity.h");
+	AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\main.cpp", params.tempPath + "main.cpp");
+	bool headerCopyResult = ExecuteCopyEntries();
+	if (!headerCopyResult)
+	{
+		return CompileResult::ERROR_FILE_COPY;
 	}
 
 	// Copy source code
@@ -410,8 +371,8 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 			std::string path = file.path().string();
 			std::string fileName = file.path().filename().string();
 			fs::copy_file(
-				path, 
-				params.tempPath + "source\\" + fileName, 
+				path,
+				params.tempPath + "source\\" + fileName,
 				fs::copy_options::overwrite_existing
 			);
 		}
@@ -441,35 +402,20 @@ CompileResult Compiler::CompileWindows( const CompilerParams& params )
 		return CompileResult::ERROR_UNKNOWN;
 	}
 
-	// Copy DLLs to export path
-	try
+	// Copy compiled files to export path
+	const std::string dll_name = params.getDynamicLibraryName();
+	const std::string editor_dll_name = params.getEditorDynamicLibraryName();
+	if (params.buildType == BuildType::EditorHotReloading)
 	{
-		const std::string dll_name = params.getDynamicLibraryName();
-		const std::string editor_dll_name = params.getEditorDynamicLibraryName();
-
-		if (params.buildType == BuildType::EditorHotReloading)
-		{
-			fs::copy_file(
-				params.tempPath + editor_dll_name, 
-				params.exportPath + editor_dll_name, 
-				fs::copy_options::overwrite_existing
-			);
-		}
-		else
-		{
-			fs::copy_file(
-				params.tempPath + dll_name, 
-				params.exportPath + dll_name, 
-				fs::copy_options::overwrite_existing
-			);
-			fs::copy_file(
-				params.tempPath + params.libraryName + ".exe", 
-				params.exportPath + params.libraryName + ".exe", 
-				fs::copy_options::overwrite_existing
-			);
-		}
+		AddCopyEntry(false, params.tempPath + editor_dll_name, params.exportPath + editor_dll_name);
 	}
-	catch (const std::exception&)
+	else
+	{
+		AddCopyEntry(false, params.tempPath + dll_name, params.exportPath + dll_name);
+		AddCopyEntry(false, params.tempPath + editor_dll_name, params.exportPath + editor_dll_name);
+	}
+	bool gameCopyResult = ExecuteCopyEntries();
+	if (!gameCopyResult)
 	{
 		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
 	}
@@ -555,25 +501,11 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	// Copy game assets
-	try
-	{
-		fs::copy(
-			ProjectManager::GetAssetFolderPath(), 
-			params.exportPath + "assets\\", 
-			fs::copy_options::overwrite_existing | fs::copy_options::recursive
-		);
-		fs::copy(
-			ProjectManager::GetEngineAssetFolderPath(), 
-			params.exportPath + "engine_assets\\", 
-			fs::copy_options::overwrite_existing | fs::copy_options::recursive
-		);
-		fs::copy_file(
-			ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, 
-			params.exportPath + PROJECT_SETTINGS_FILE_NAME, 
-			fs::copy_options::overwrite_existing
-		);
-	}
-	catch (const std::exception&)
+	AddCopyEntry(false, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
+	AddCopyEntry(false, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(true, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
+	bool gameCopyResult = ExecuteCopyEntries();
+	if (!gameCopyResult)
 	{
 		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
 	}
@@ -588,10 +520,10 @@ std::string Compiler::GetStartCompilerCommand()
 	std::string command;
 	if (fs::path(path).is_absolute())
 	{
-		command += path.substr(0,2) + " && "; // Go to the compiler folder
+		command += path.substr(0, 2) + " && "; // Go to the compiler folder
 	}
 	command += "cd \"" + EngineSettings::compilerPath + "\""; // Go to the compiler folder
-	command += " && vcvars64.bat"; // Start the compiler
+	command += " && " + std::string(MSVC_START_FILE); // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
 }
@@ -618,7 +550,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 	{
 		command += " /DEDITOR";
 	}
-	
+
 	// Add include directories
 	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
 	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
@@ -662,16 +594,17 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
+	std::string command = "";
 	if (platform == Platform::P_Windows)
 	{
 		std::string fileName = ProjectManager::GetGameName();
-		std::string command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";
-
-		system(command.c_str());
+		command = "cd \"" + exportPath + "\"" + " && " + "\"" + fileName + ".exe\"";
 	}
 	else if (platform == Platform::P_PSP)
 	{
-		std::string command = "(\"C:\\Program Files\\PPSSPP\\PPSSPPWindows.exe\" \"" + exportPath + "EBOOT.PBP\")";
-		system(command.c_str());
+		command = "(\"" + EngineSettings::ppssppExePath + "\" \"" + exportPath + "EBOOT.PBP\")";
 	}
+
+	if(!command.empty())
+		system(command.c_str());
 }

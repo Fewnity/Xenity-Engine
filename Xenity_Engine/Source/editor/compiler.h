@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+#include <vector>
 #include <engine/platform.h>
 
 enum class BuildType
@@ -15,6 +15,7 @@ enum class CompileResult
 {
 	SUCCESS,
 	ERROR_UNKNOWN,
+	ERROR_FILE_COPY,
 	ERROR_ENGINE_GAME_LIB_MISSING,
 	ERROR_ENGINE_EDITOR_LIB_MISSING,
 	ERROR_LIB_DLLS_MISSING,
@@ -65,14 +66,18 @@ struct CompilerParams
 	}
 };
 
+class CopyEntry 
+{
+public:
+	bool isFolder = false;
+	std::string sourcePath = "";
+	std::string destPath = "";
+};
+
 class Compiler
 {
 public:
-	/**
-	 * General function to compile a source code
-	 * @param params Compilation parameters
-	 */
-	static CompileResult Compile(CompilerParams params);
+	static std::vector<CopyEntry> copyEntries;
 
 	/**
 	 * Compile an engine plugin
@@ -82,17 +87,6 @@ public:
 	static CompileResult CompilePlugin(
 		Platform platform,
 		const std::string &pluginPath);
-
-	/**
-	 * Compile the game code
-	 * @param platform Platform target
-	 * @param buildType Compile for hot reloading or for a simple build or for build and run
-	 * @param exportPath Folder location for the build
-	 */
-	static CompileResult CompileGame(
-		Platform platform,
-		BuildType buildType,
-		const std::string &exportPath);
 
 	/**
 	 * Compile the game code (non blocking code)
@@ -108,6 +102,34 @@ public:
 	static void HotReloadGame();
 
 private:
+
+	/**
+	* Execute all created copy entries and clear the list
+	*/
+	static bool ExecuteCopyEntries();
+
+	/**
+	* Create a new copy to be executed later
+	*/
+	static void AddCopyEntry(bool isFolder, std::string source, std::string dest);
+
+	/**
+	 * General function to compile a source code
+	 * @param params Compilation parameters
+	 */
+	static CompileResult Compile(CompilerParams params);
+
+	/**
+	 * Compile the game code
+	 * @param platform Platform target
+	 * @param buildType Compile for hot reloading or for a simple build or for build and run
+	 * @param exportPath Folder location for the build
+	 */
+	static CompileResult CompileGame(
+		Platform platform,
+		BuildType buildType,
+		const std::string &exportPath);
+
 	/**
 	 * Compile code for Windows
 	 * @param params Compilation parameters
