@@ -249,10 +249,6 @@ void Engine::Loop()
 	{
 		engineLoopBenchmark->Start();
 
-#if defined(EDITOR)
-		AsyncFileLoading::FinishThreadedFileLoading();
-#endif
-
 		// Update time, inputs and network
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
@@ -266,6 +262,7 @@ void Engine::Loop()
 
 		canUpdateAudio = false;
 #if defined(EDITOR)
+		AsyncFileLoading::FinishThreadedFileLoading();
 		editorUpdateBenchmark->Start();
 		Editor::Update();
 		if (Editor::sceneMenu->isFocused)
@@ -322,23 +319,24 @@ void Engine::Loop()
 		Window::UpdateScreen();
 		engineLoopBenchmark->Stop();
 		Performance::Update();
-		Performance::ResetCounters();
 	}
-#if defined(EDITOR)
-	ImGui::SaveIniSettingsToDisk("imgui.ini");
-#endif
-	game.reset();
 }
 
 void Engine::Stop()
 {
 	isRunning = false;
+#if defined(EDITOR)
+	ImGui::SaveIniSettingsToDisk("imgui.ini");
+#endif
+	game.reset();
+
 	renderer->Stop();
 	renderer.reset();
 	AudioManager::Stop();
 #if defined(EDITOR)
 	PluginManager::Stop();
 #endif
+
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif

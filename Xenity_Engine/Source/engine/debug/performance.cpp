@@ -86,6 +86,7 @@ void Performance::Update()
 			averageCoolDown = 0;
 			tickCount = 0;
 		}
+		ResetCounters();
 	}
 }
 
