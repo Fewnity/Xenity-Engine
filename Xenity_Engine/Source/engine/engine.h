@@ -53,7 +53,7 @@ public:
 	 */
 	static bool IsRunning()
 	{
-		return isRunning;
+		return isRunning && renderer != nullptr;
 	}
 
 	static std::unique_ptr<GameInterface> game;
