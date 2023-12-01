@@ -340,6 +340,7 @@ void Engine::Stop()
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
+	isRunning = false;
 }
 
 void Engine::Quit()
