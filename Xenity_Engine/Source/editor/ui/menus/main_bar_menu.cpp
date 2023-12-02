@@ -239,19 +239,19 @@ void MainBarMenu::Draw()
 	}
 	if (ImGui::BeginMenu("Game")) // ----------------------------------- Draw Game menu
 	{
-		if (ImGui::MenuItem("Play Game"))
+		if (ImGui::MenuItem("Play Game", nullptr, nullptr, GameplayManager::GetGameState() != GameState::Playing))
 		{
 			GameplayManager::SetGameState(GameState::Playing, true);
 		}
-		if (ImGui::MenuItem("Pause Game"))
+		if (ImGui::MenuItem("Pause Game", nullptr, nullptr, GameplayManager::GetGameState() != GameState::Stopped))
 		{
 			GameplayManager::SetGameState(GameState::Paused, true);
 		}
-		if (ImGui::MenuItem("Stop Game"))
+		if (ImGui::MenuItem("Stop Game", nullptr, nullptr, GameplayManager::GetGameState() != GameState::Stopped))
 		{
 			GameplayManager::SetGameState(GameState::Stopped, true);
 		}
-		if (ImGui::MenuItem("Hot Reload Game"))
+		if (ImGui::MenuItem("Compile Game"))
 		{
 			Compiler::HotReloadGame();
 		}

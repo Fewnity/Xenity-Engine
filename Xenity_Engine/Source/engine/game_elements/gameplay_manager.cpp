@@ -37,21 +37,30 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::GetGameObjects()
 	return std::vector<std::shared_ptr<GameObject>>(GameplayManager::gameObjects);
 }
 
-void GameplayManager::SetGameState(GameState _gameState, bool restoreScene)
+void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 {
 #if defined(EDITOR)
-	if (_gameState == Playing)
+	if (newGameState == Playing && gameState == Stopped) // Start game
 	{
 		gameState = Starting;
 		SceneManager::SaveScene(SaveSceneForPlayState);
 		SceneManager::RestoreScene();
-		gameState = _gameState;
+		gameState = newGameState;
 	}
-	else if (_gameState == Stopped)
+	else if (newGameState == Stopped && gameState == Playing) // Stop game
 	{
-		gameState = _gameState;
-		if(restoreScene)
+		gameState = newGameState;
+		if (restoreScene)
 			SceneManager::RestoreScene();
+	}
+	else if ((newGameState == Paused && gameState == Playing) ||
+			(newGameState == Playing && gameState == Paused)) // Pause / UnPause
+	{
+		gameState = newGameState;
+	}
+	else if ((newGameState == Paused && gameState == Paused)) // Pause / UnPause
+	{
+		gameState = Playing;
 	}
 #else
 	gameState = _gameState;

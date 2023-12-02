@@ -185,6 +185,30 @@ void Editor::Update()
 		}
 	}
 
+	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P))) // Pause / UnPause game
+	{
+		if (GameplayManager::GetGameState() == GameState::Playing)
+		{
+			GameplayManager::SetGameState(GameState::Paused, true);
+		}
+		else if (GameplayManager::GetGameState() == GameState::Paused)
+		{
+			GameplayManager::SetGameState(GameState::Playing, true);
+		}
+	}
+	else if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(P))) // Start / Stop game
+	{
+		if (GameplayManager::GetGameState() == GameState::Stopped)
+		{
+			GameplayManager::SetGameState(GameState::Playing, true);
+		}
+		else 
+		{
+			GameplayManager::SetGameState(GameState::Stopped, true);
+		}
+	}
+	
+
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
