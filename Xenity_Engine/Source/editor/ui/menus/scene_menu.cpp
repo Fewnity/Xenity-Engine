@@ -160,7 +160,7 @@ void SceneMenu::Draw()
 				// Normalise direction if needed
 				Vector3 mouseWorldDir = Vector3(worldCoords.x, worldCoords.y, worldCoords.z);
 				if (toolMode != Tool_MoveCamera)
-					mouseWorldDir = mouseWorldDir.Normalised();
+					mouseWorldDir = mouseWorldDir.Normalized();
 				mouseWorldDir *= -1;
 
 				// Store world mouse position

@@ -36,18 +36,7 @@ Vector2Int::Vector2Int(const int fillValue)
 
 #pragma endregion
 
-// From https://github.com/microsoft/referencesource/blob/5697c29004a34d80acdaf5742d7e699022c64ecd/System.Numerics/System/Numerics/Vector2Int.cs
-Vector2Int Vector2Int::Normalized()
-{
-	float ls = float(this->x * this->x + this->y * this->y);
-	float invNorm = 0;
-	if (ls != 0)
-		invNorm = 1.0f / sqrtf(ls);
-
-	return Vector2Int(int(this->x * invNorm), int(this->y * invNorm));
-}
-
-float Vector2Int::Magnitude()
+float Vector2Int::Magnitude() const
 {
 	return sqrtf(powf((float)this->x, 2) + powf((float)this->y, 2));
 }

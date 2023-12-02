@@ -19,9 +19,15 @@ public:
 	Vector2Int(const int x, const int y);
 	Vector2Int(const int fillValue);
 
-	Vector2Int Normalized();
-	float Magnitude();
+	/**
+	* Linearly interpolates between vectors
+	*/
 	static float Distance(const Vector2Int& a, const Vector2Int& b);
+
+	/**
+	* Get the length of this vector
+	*/
+	float Magnitude() const;
 
 	int x;
 	int y;

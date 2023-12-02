@@ -66,7 +66,7 @@ Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 	return Vector3((-atan2f(ydis, xzdis)) * 180 / (float)M_PI, (-(atan2f(-xdis, zdis))) * 180 / (float)M_PI, 0);
 }
 
-Vector3 Vector3::Normalised()
+Vector3 Vector3::Normalized() const
 {
 	float ls = this->x * this->x + this->y * this->y + this->z * this->z;
 	if (ls != 0)
@@ -80,7 +80,13 @@ Vector3 Vector3::Normalised()
 	}
 }
 
-float Vector3::Magnitude()
+Vector3 Vector3::Normalize()
+{
+	*(this) = this->Normalized();
+	return *(this);
+}
+
+float Vector3::Magnitude() const
 {
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
 }

@@ -51,7 +51,7 @@ Vector2::Vector2(const Vector2Int& vect2Int)
 #pragma endregion
 
 // From https://github.com/microsoft/referencesource/blob/5697c29004a34d80acdaf5742d7e699022c64ecd/System.Numerics/System/Numerics/Vector2.cs
-Vector2 Vector2::Normalized()
+Vector2 Vector2::Normalized() const
 {
 	float ls = this->x * this->x + this->y * this->y;
 	float invNorm = 0;
@@ -61,7 +61,13 @@ Vector2 Vector2::Normalized()
 	return Vector2(this->x * invNorm, this->y * invNorm);
 }
 
-float Vector2::Magnitude()
+Vector2 Vector2::Normalize()
+{
+	*(this) = this->Normalized();
+	return *(this);
+}
+
+float Vector2::Magnitude() const
 {
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2));
 }

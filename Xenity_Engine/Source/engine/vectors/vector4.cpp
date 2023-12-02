@@ -44,7 +44,7 @@ Vector4::Vector4(const float fillValue)
 
 #pragma endregion
 
-Vector4 Vector4::Normalised()
+Vector4 Vector4::Normalized() const
 {
 	float ls = this->x * this->x + this->y * this->y + this->z * this->z + this->w * this->w;
 	if (ls != 0)
@@ -58,7 +58,13 @@ Vector4 Vector4::Normalised()
 	}
 }
 
-float Vector4::Magnitude()
+Vector4 Vector4::Normalize()
+{
+	*(this) = this->Normalized();
+	return *(this);
+}
+
+float Vector4::Magnitude() const
 {
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2) + powf(this->w, 2));
 }

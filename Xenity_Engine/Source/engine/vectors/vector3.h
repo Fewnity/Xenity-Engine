@@ -24,11 +24,36 @@ public:
 	Vector3(Vector2Int vect);
 	Vector3(Vector2 vect);
 
+	/**
+	* Get the look rotation in degrees between two vectors
+	*/
 	static Vector3 LookAt(const Vector3& from, const Vector3& to);
+
+	/**
+	* Distance between two vectors
+	*/
 	static float Distance(const Vector3& a, const Vector3& b);
+
+	/**
+	* Linearly interpolates between vectors
+	*/
 	static Vector3 Lerp(const Vector3& a, const Vector3& b, const float t);
-	Vector3 Normalised();
-	float Magnitude();
+
+	/**
+	* Get this vector with a magnitude of 1 (Do not change vector values)
+	*/
+	Vector3 Normalized() const;
+
+	/**
+	* Makes this vector have a magnitude of 1 (Change vector values)
+	*/
+	Vector3 Normalize();
+
+	/**
+	* Get the length of this vector
+	*/
+	float Magnitude() const;
+
 	float x;
 	float y;
 	float z;

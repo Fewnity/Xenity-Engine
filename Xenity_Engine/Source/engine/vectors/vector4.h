@@ -18,9 +18,26 @@ public:
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);
 	Vector4(const float fillValue);
-	Vector4 Normalised();
-	float Magnitude();
+
+	/**
+	* Linearly interpolates between vectors
+	*/
 	static Vector4 Lerp(const Vector4& a, const Vector4& b, const float t);
+
+	/**
+	* Get this vector with a magnitude of 1 (Do not change vector values)
+	*/
+	Vector4 Normalized() const;
+
+	/**
+	* Makes this vector have a magnitude of 1 (Change vector values)
+	*/
+	Vector4 Normalize();
+
+	/**
+	* Get the length of this vector
+	*/
+	float Magnitude() const;
 
 	float x;
 	float y;
