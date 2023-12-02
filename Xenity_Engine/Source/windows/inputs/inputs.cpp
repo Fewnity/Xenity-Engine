@@ -75,6 +75,8 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
 	keyMap[SDLK_LALT] = &inputs[LEFT_ALT];
 	keyMap[SDLK_RALT] = &inputs[RIGHT_ALT];
 	keyMap[SDLK_DELETE] = &inputs[DELETE];
+	keyMap[SDLK_LSHIFT] = &inputs[LEFT_SHIFT];
+	keyMap[SDLK_RSHIFT] = &inputs[RIGHT_SHIFT];
 }
 
 void CrossInputsInit()
