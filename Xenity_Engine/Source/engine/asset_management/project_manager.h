@@ -68,6 +68,15 @@ public:
 	std::string path;
 };
 
+class ProjectSettings : public Reflective
+{
+public:
+	std::string gameName = "";
+	std::string projectName = "";
+	std::shared_ptr<Scene> startScene = nullptr;
+	ReflectiveData GetReflectiveData() override;
+};
+
 class API ProjectManager
 {
 public:
@@ -112,16 +121,11 @@ public:
 	static void SaveProjectSettings();
 
 	/**
-	* Get reflection of project settings
-	*/
-	static ReflectiveData GetProjetSettingsReflection();
-
-	/**
 	* Get project name
 	*/
 	static std::string GetProjectName()
 	{
-		return projectName;
+		return projectSettings.projectName;
 	}
 
 	/**
@@ -129,7 +133,7 @@ public:
 	*/
 	static std::string GetGameName()
 	{
-		return gameName;
+		return projectSettings.gameName;
 	}
 
 	/**
@@ -137,7 +141,7 @@ public:
 	*/
 	static std::shared_ptr<Scene> GetStartScene()
 	{
-		return startScene;
+		return projectSettings.startScene;
 	}
 
 	/**
@@ -172,6 +176,8 @@ public:
 		return projectLoaded;
 	}
 
+	static ProjectSettings GetProjectSettings(const std::string& path);
+
 	/**
 	* Get opened projects list
 	*/
@@ -197,6 +203,8 @@ public:
 		return projectDirectory;
 	}
 
+	static ProjectSettings projectSettings;
+
 private:
 	static void FindAllProjectFiles();
 	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, uint64_t id);
@@ -207,9 +215,6 @@ private:
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
 	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
 	static bool projectLoaded;
-	static std::string projectName;
-	static std::string gameName;
-	static std::shared_ptr<Scene> startScene;
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;
 	static std::string assetFolderPath;

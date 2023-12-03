@@ -16,7 +16,7 @@ void ProjectSettingsMenu::Draw()
 	{
 		std::shared_ptr<Command> command = nullptr;
 		std::shared_ptr<FileReference>emptyPtr;
-		EditorUI::DrawReflectiveData(ProjectManager::GetProjetSettingsReflection(), command, emptyPtr);
+		EditorUI::DrawReflectiveData(ProjectManager::projectSettings.GetReflectiveData(), command, emptyPtr);
 		if (command)
 		{
 			CommandManager::AddCommand(command);

@@ -42,9 +42,7 @@ using json = nlohmann::json;
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileAndPath> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
-std::string ProjectManager::projectName = "";
-std::string ProjectManager::gameName = "";
-std::shared_ptr<Scene> ProjectManager::startScene = nullptr;
+ProjectSettings  ProjectManager::projectSettings;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
@@ -281,7 +279,13 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	{
 		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.");
 	}
-	return LoadProject(folderPath + name + "\\");
+
+	projectSettings.projectName = name;
+	projectSettings.gameName = name;
+	projectFolderPath = folderPath + name + "\\";
+	SaveProjectSettings();
+	
+	return LoadProject(projectFolderPath);
 }
 
 FileType ProjectManager::GetFileType(std::string extension)
@@ -398,14 +402,14 @@ void ProjectManager::UnloadProject()
 	SceneManager::CreateEmptyScene();
 	Graphics::SetDefaultValues();
 
-	startScene.reset();
+	projectSettings.startScene.reset();
 	projectDirectoryBase.reset();
 	projectDirectory.reset();
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
 	projectLoaded = false;
-	projectName.clear();
-	gameName.clear();
+	projectSettings.projectName.clear();
+	projectSettings.gameName.clear();
 	Window::UpdateWindowTitle();
 }
 
@@ -442,9 +446,10 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	return fileRef;
 }
 
-void ProjectManager::LoadProjectSettings()
+ProjectSettings ProjectManager::GetProjectSettings(const std::string &path)
 {
-	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectFolderPath + PROJECT_SETTINGS_FILE_NAME);
+	ProjectSettings settings;
+	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";
@@ -472,13 +477,19 @@ void ProjectManager::LoadProjectSettings()
 			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error");
-				return;
+				return settings;
 			}
 
 			// Change settings
-			ReflectionUtils::JsonToReflectiveData(projectData, GetProjetSettingsReflection());
+			ReflectionUtils::JsonToReflectiveData(projectData, settings.GetReflectiveData());
 		}
 	}
+	return settings;
+}
+
+void ProjectManager::LoadProjectSettings()
+{
+	projectSettings = GetProjectSettings(projectFolderPath);
 }
 
 void ProjectManager::SaveProjectSettings()
@@ -487,7 +498,7 @@ void ProjectManager::SaveProjectSettings()
 	FileSystem::fileSystem->DeleteFile(path);
 	json projectData;
 
-	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetProjetSettingsReflection());
+	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
 
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
 	if (projectFile->Open(true))
@@ -546,8 +557,16 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 			{
 				// Get project informations (name and path)
 				ProjectListItem projectItem;
-				projectItem.name = j[i]["name"];
 				projectItem.path = j[i]["path"];
+				ProjectSettings settings = GetProjectSettings(projectItem.path);
+				if (settings.projectName.empty()) 
+				{
+					projectItem.name = j[i]["name"];
+				}
+				else 
+				{
+					projectItem.name = settings.projectName;
+				}
 				projects.push_back(projectItem);
 			}
 		}
@@ -685,7 +704,7 @@ std::string ProjectDirectory::GetFolderName()
 	return fileName;
 }
 
-ReflectiveData ProjectManager::GetProjetSettingsReflection()
+ReflectiveData ProjectSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
