@@ -120,6 +120,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 			ImGui::SetKeyboardFocusHere();
 			focusSet = true;
 		}
+		ImGui::SetNextItemWidth(-1);
 		ImGui::InputText(EditorUI::GenerateItemId().c_str(), &renamingString, ImGuiInputTextFlags_AutoSelectAll);
 		if (ImGui::IsItemClicked())
 		{
