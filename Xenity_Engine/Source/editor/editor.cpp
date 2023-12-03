@@ -404,6 +404,25 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	return newFile;
 }
 
+void Editor::OpenExplorerWindow(std::string path, bool isSelected)
+{
+	std::string command = "explorer.exe ";
+	if (isSelected)
+	{
+		command += "/select, \"";
+	}
+	else
+	{
+		command += "\"";
+	}
+
+	command += path;
+
+	command += "\"";
+
+	system(command.c_str());
+}
+
 void Editor::CreateMenus()
 {
 	projectSettings = new ProjectSettingsMenu();

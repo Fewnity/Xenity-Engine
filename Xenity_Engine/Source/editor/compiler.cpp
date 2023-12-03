@@ -143,6 +143,12 @@ CompileResult Compiler::Compile(CompilerParams params)
 	}
 	catch (const std::exception&) {}
 
+	// Open build folder if success
+	if (params.buildType == BuildType::BuildGame && result == CompileResult::SUCCESS) 
+	{
+		Editor::OpenExplorerWindow(params.exportPath, false);
+	}
+
 	// Send compile result
 	OnCompileEnd(result);
 	return result;

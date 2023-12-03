@@ -76,6 +76,8 @@ public:
 
 	static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
 
+	static void OpenExplorerWindow(std::string path, bool isSelected);
+
 	/**
 	* Add a component to the selected GameObject
 	*/

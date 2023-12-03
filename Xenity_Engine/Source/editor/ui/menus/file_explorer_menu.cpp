@@ -216,24 +216,10 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		}
 		if ((itemSelected && ImGui::MenuItem("Show in Explorer")) || (!itemSelected && ImGui::MenuItem("Open folder in Explorer")))
 		{
-			std::string command = "explorer.exe ";
-			if (itemSelected)
-			{
-				command += "/select, \"";
-			}
-			else
-			{
-				command += "\"";
-			}
-
 			if (fileExplorerItem.file)
-				command += fileExplorerItem.file->file->GetPath();
+				Editor::OpenExplorerWindow(fileExplorerItem.file->file->GetPath(), itemSelected);
 			else if (fileExplorerItem.directory)
-				command += fileExplorerItem.directory->path;
-
-			command += "\"";
-
-			system(command.c_str());
+				Editor::OpenExplorerWindow(fileExplorerItem.directory->path, itemSelected);
 
 			ImGui::CloseCurrentPopup();
 		}
