@@ -63,7 +63,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		gameState = Playing;
 	}
 #else
-	gameState = _gameState;
+	gameState = newGameState;
 #endif
 }
 
