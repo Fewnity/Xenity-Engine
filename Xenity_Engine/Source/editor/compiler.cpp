@@ -57,7 +57,7 @@ bool Compiler::ExecuteCopyEntries()
 		}
 		catch (const std::exception&)
 		{
-			Debug::PrintError("[Compiler::ExecuteCopyEntries] Cannot copy " + entry.sourcePath + " to" + entry.destPath);
+			Debug::PrintError("[Compiler::ExecuteCopyEntries] Cannot copy " + entry.sourcePath + " to " + entry.destPath);
 			success = false;
 		}
 	}
@@ -102,6 +102,13 @@ CompileResult Compiler::Compile(CompilerParams params)
 		+ "\n- Runtime DLL: " + params.getDynamicLibraryName()
 	);
 
+	CompilerAvailability availability = CheckCompilerAvailability(params);
+	if (availability != CompilerAvailability::AVAILABLE)
+	{
+		OnCompileEnd(CompileResult::ERROR_COMPILER_AVAILABILITY);
+		return CompileResult::ERROR_COMPILER_AVAILABILITY;
+	}
+
 	// Clean temporary directory
 	try
 	{
@@ -139,6 +146,66 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Send compile result
 	OnCompileEnd(result);
 	return result;
+}
+
+CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& params)
+{
+	int error = 0;
+
+	// Check if the compiler executable exists
+	if (!fs::exists(EngineSettings::compilerPath + MSVC_START_FILE))
+	{
+		error |= (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE;
+	}
+
+	// Check if the engine compiled library exists
+	if (params.platform == Platform::P_Windows)
+	{
+		if (params.buildType == BuildType::EditorHotReloading)
+		{
+			if (!fs::exists(EngineSettings::engineProjectPath + ENGINE_EDITOR + ".lib") ||
+				!fs::exists(EngineSettings::engineProjectPath + ENGINE_EDITOR + ".dll"))
+			{
+				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
+			}
+		}
+		else
+		{
+			if (!fs::exists(EngineSettings::engineProjectPath + ENGINE_GAME + ".lib") ||
+				!fs::exists(EngineSettings::engineProjectPath + ENGINE_GAME + ".dll"))
+			{
+				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
+			}
+		}
+	}
+	else if (params.platform == Platform::P_PSP)
+	{
+		if (!fs::exists(EngineSettings::ppssppExePath)) 
+		{
+			error |= (int)CompilerAvailability::MISSING_PPSSPP;
+		}
+	}
+
+	if (error == 0)
+	{
+		error |= (int)CompilerAvailability::AVAILABLE;
+	}
+	else
+	{
+		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
+		{
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(MSVC_START_FILE) + " not found in " + EngineSettings::compilerPath);
+		}
+		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
+		{
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + EngineSettings::engineProjectPath);
+		}
+		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
+		{
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::ppssppExePath);
+		}
+	}
+	return (CompilerAvailability)error;
 }
 
 CompileResult Compiler::CompilePlugin(Platform platform, const std::string& pluginPath)
@@ -254,18 +321,6 @@ void Compiler::OnCompileEnd(CompileResult result)
 	case CompileResult::ERROR_UNKNOWN:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
-	case CompileResult::ERROR_ENGINE_GAME_LIB_MISSING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Missing " + std::string(ENGINE_GAME) + ".lib");
-		break;
-	case CompileResult::ERROR_ENGINE_EDITOR_LIB_MISSING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Missing " + std::string(ENGINE_EDITOR) + ".lib");
-		break;
-	case CompileResult::ERROR_LIB_DLLS_MISSING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Missing one of Dlls");
-		break;
-	case CompileResult::ERROR_ENGINE_HEADERS_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine headers");
-		break;
 	case CompileResult::ERROR_GAME_CODE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's code");
 		break;
@@ -288,6 +343,9 @@ void Compiler::OnCompileEnd(CompileResult result)
 		break;
 	case CompileResult::ERROR_WSL_CMAKELISTS_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying CMakeLists.txt file");
+		break;
+	case CompileResult::ERROR_COMPILER_AVAILABILITY:
+		Debug::PrintError("[Compiler::OnCompileEnd] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
 		break;
 
 	default:
@@ -605,6 +663,6 @@ void Compiler::StartGame(Platform platform, const std::string& exportPath)
 		command = "(\"" + EngineSettings::ppssppExePath + "\" \"" + exportPath + "EBOOT.PBP\")";
 	}
 
-	if(!command.empty())
+	if (!command.empty())
 		system(command.c_str());
 }

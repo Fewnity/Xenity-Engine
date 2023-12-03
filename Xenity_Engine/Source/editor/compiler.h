@@ -16,16 +16,21 @@ enum class CompileResult
 	SUCCESS,
 	ERROR_UNKNOWN,
 	ERROR_FILE_COPY,
-	ERROR_ENGINE_GAME_LIB_MISSING,
-	ERROR_ENGINE_EDITOR_LIB_MISSING,
-	ERROR_LIB_DLLS_MISSING,
-	ERROR_ENGINE_HEADERS_COPY,
 	ERROR_GAME_CODE_COPY,
 	ERROR_FINAL_GAME_FILES_COPY,
 	ERROR_WSL_COMPILATION,
 	ERROR_WSL_ENGINE_CODE_COPY,
 	ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY,
 	ERROR_WSL_CMAKELISTS_COPY,
+	ERROR_COMPILER_AVAILABILITY,
+};
+
+enum class CompilerAvailability 
+{
+	AVAILABLE = 1,
+	MISSING_COMPILER_SOFTWARE = 2,
+	MISSING_ENGINE_COMPILED_LIB = 4,
+	MISSING_PPSSPP = 8,
 };
 
 struct CompilerParams
@@ -78,6 +83,8 @@ class Compiler
 {
 public:
 	static std::vector<CopyEntry> copyEntries;
+
+	static CompilerAvailability CheckCompilerAvailability(const CompilerParams& params);
 
 	/**
 	 * Compile an engine plugin
