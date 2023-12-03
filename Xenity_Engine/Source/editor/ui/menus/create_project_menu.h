@@ -3,9 +3,9 @@
 #include "menu.h"
 #include <string>
 
-enum CreateProjectError
+enum class CreateProjectError
 {
-	NO_ERROR,
+	NO_ERROR_,
 	ERROR_UNKNOWN,
 	ERROR_PROJECT_ALREADY_EXISTS,
 	ERROR_EMPTY_NAME,
@@ -27,6 +27,6 @@ private:
 
 	std::string projectName;
 	std::string projectParentDir;
-	CreateProjectError createProjectError = NO_ERROR;
+	CreateProjectError createProjectError = CreateProjectError::NO_ERROR_;
 };
 

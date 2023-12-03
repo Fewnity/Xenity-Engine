@@ -49,15 +49,15 @@ bool CreateProjectMenu::DrawProjectNameInput()
 void CreateProjectMenu::DrawError() 
 {
 	ImColor red = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
-	if (createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
+	if (createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
 	{
 		ImGui::TextColored(red, "A project has already this name");
 	}
-	else if (createProjectError == ERROR_EMPTY_FOLDER)
+	else if (createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
 	{
 		ImGui::TextColored(red, "Project folder not selected");
 	}
-	else if (createProjectError == ERROR_EMPTY_NAME)
+	else if (createProjectError == CreateProjectError::ERROR_EMPTY_NAME)
 	{
 		ImGui::TextColored(red, "Project name empty");
 	}
@@ -70,18 +70,18 @@ void CreateProjectMenu::DrawCreateProjectButton()
 	{
 		if (projectParentDir.empty())
 		{
-			createProjectError = ERROR_EMPTY_FOLDER;
+			createProjectError = CreateProjectError::ERROR_EMPTY_FOLDER;
 		}
 		else if (projectName.empty())
 		{
-			createProjectError = ERROR_EMPTY_NAME;
+			createProjectError = CreateProjectError::ERROR_EMPTY_NAME;
 		}
 		else
 		{
 			std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(projectParentDir + projectName);
 			if (projectDir->CheckIfExist())
 			{
-				createProjectError = ERROR_PROJECT_ALREADY_EXISTS;
+				createProjectError = CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS;
 			}
 			else
 			{
@@ -142,13 +142,13 @@ void CreateProjectMenu::Draw()
 
 		bool nameChanged = DrawProjectNameInput();
 
-		if (projectFolderChanged && createProjectError == ERROR_EMPTY_FOLDER)
+		if (projectFolderChanged && createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
 		{
-			createProjectError = NO_ERROR;
+			createProjectError = CreateProjectError::NO_ERROR_;
 		}
-		else if ((nameChanged || projectFolderChanged) && createProjectError == ERROR_PROJECT_ALREADY_EXISTS)
+		else if ((nameChanged || projectFolderChanged) && createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
 		{
-			createProjectError = NO_ERROR;
+			createProjectError = CreateProjectError::NO_ERROR_;
 		}
 
 		DrawError();

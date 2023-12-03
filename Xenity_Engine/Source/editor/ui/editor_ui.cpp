@@ -38,6 +38,7 @@ float EditorUI::uiScale = 1;
 int EditorUI::Init()
 {
 	ImGuiIO& io = ImGui::GetIO();
+
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
 	std::shared_ptr<File> fontFile = FileSystem::MakeFile("Roboto Regular.ttf");
 	if (fontFile->CheckIfExist()) 

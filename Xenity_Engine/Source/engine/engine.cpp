@@ -223,6 +223,12 @@ void Engine::CheckEvents()
 			{
 				isRunning = false;
 			}
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) 
+			{
+#if defined(EDITOR)
+				Editor::OnWindowFocused();
+#endif
+			}
 			break;
 		default:
 			break;

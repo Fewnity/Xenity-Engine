@@ -315,6 +315,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\file_handler.cpp" />
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin.cpp">
@@ -535,6 +536,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\file_handler.h" />
     <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
     <ClInclude Include="Source\editor\plugin\api.h">

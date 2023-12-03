@@ -19,6 +19,7 @@
 #include <editor/ui/menus/create_project_menu.h>
 #include <editor/ui/menus/lighting_menu.h>
 #include <editor/ui/menus/create_class_menu.h>
+#include <editor/compiler.h>
 
 #include <functional>
 #include <engine/class_registry/class_registry.h>
@@ -37,6 +38,8 @@
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/engine_settings.h>
+#include "file_handler.h"
 
 using json = nlohmann::json;
 
@@ -99,121 +102,136 @@ void Editor::Init()
 	toolArrowsTexture->LoadFileReference();
 }
 
+void Editor::OnWindowFocused() 
+{
+	if (ProjectManager::GetIsProjectLoaded())
+	{
+		bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
+		if (needCompile && EngineSettings::compileOnCodeChanged)
+		{
+			Compiler::HotReloadGame();
+		}
+	}
+}
+
 void Editor::Update()
 {
-	// Check user input and camera movement when in the scene menu
-	if (InputSystem::GetKeyUp(MOUSE_RIGHT)) 
+	if (ProjectManager::GetIsProjectLoaded())
 	{
-		startRotatingCamera = false;
-	}
-	if (sceneMenu->isFocused)
-	{
-		// Get camera transform
-		std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
-		Vector3 rot = cameraTransform->GetRotation();
-		Vector3 pos = cameraTransform->GetPosition();
-
-		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && sceneMenu->isHovered)
+		// Check user input and camera movement when in the scene menu
+		if (InputSystem::GetKeyUp(MOUSE_RIGHT))
 		{
-			startRotatingCamera = true;
+			startRotatingCamera = false;
+		}
+		if (sceneMenu->isFocused)
+		{
+			// Get camera transform
+			std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
+			Vector3 rot = cameraTransform->GetRotation();
+			Vector3 pos = cameraTransform->GetPosition();
+
+			if (InputSystem::GetKeyDown(MOUSE_RIGHT) && sceneMenu->isHovered)
+			{
+				startRotatingCamera = true;
+			}
+
+			// Rotate the camera when dragging the mouse right click
+			if (InputSystem::GetKey(MOUSE_RIGHT) && startRotatingCamera)
+			{
+				rot.x += -InputSystem::mouseSpeed.y * 70;
+				rot.y += InputSystem::mouseSpeed.x * 70;
+			}
+
+			// Move the camera when using keyboard's arrows
+			float fwd = 0;
+			float up = 0;
+			float side = 0;
+
+			if (InputSystem::GetKey(UP))
+				fwd = -1 * Time::GetDeltaTime();
+			else if (InputSystem::GetKey(DOWN))
+				fwd = 1 * Time::GetDeltaTime();
+
+			if (InputSystem::GetKey(RIGHT))
+				side = 1 * Time::GetDeltaTime();
+			else if (InputSystem::GetKey(LEFT))
+				side = -1 * Time::GetDeltaTime();
+
+			if (InputSystem::GetKey(MOUSE_MIDDLE))
+			{
+				up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
+				side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
+			}
+
+			// Move the camera when using the mouse's wheel (Do not use delta time)
+			if (sceneMenu->isHovered)
+				fwd -= InputSystem::mouseWheel / 15.0f;
+
+			// Apply values
+			pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
+			pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
+			pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
+
+			cameraTransform->SetPosition(pos);
+			cameraTransform->SetRotation(rot);
 		}
 
-		// Rotate the camera when dragging the mouse right click
-		if (InputSystem::GetKey(MOUSE_RIGHT) && startRotatingCamera)
+		//------- Check shortcuts
+
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Z)))
 		{
-			rot.x += -InputSystem::mouseSpeed.y * 70;
-			rot.y += InputSystem::mouseSpeed.x * 70;
+			CommandManager::Undo();
+		}
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Y)))
+		{
+			CommandManager::Redo();
 		}
 
-		// Move the camera when using keyboard's arrows
-		float fwd = 0;
-		float up = 0;
-		float side = 0;
-
-		if (InputSystem::GetKey(UP))
-			fwd = -1 * Time::GetDeltaTime();
-		else if (InputSystem::GetKey(DOWN))
-			fwd = 1 * Time::GetDeltaTime();
-
-		if (InputSystem::GetKey(RIGHT))
-			side = 1 * Time::GetDeltaTime();
-		else if (InputSystem::GetKey(LEFT))
-			side = -1 * Time::GetDeltaTime();
-
-		if (InputSystem::GetKey(MOUSE_MIDDLE))
-		{
-			up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
-			side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
-		}
-
-		// Move the camera when using the mouse's wheel (Do not use delta time)
-		if (sceneMenu->isHovered)
-			fwd -= InputSystem::mouseWheel / 15.0f;
-
-		// Apply values
-		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
-		pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
-		pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
-
-		cameraTransform->SetPosition(pos);
-		cameraTransform->SetRotation(rot);
-	}
-
-	//------- Check shortcuts
-
-	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Z)))
-	{
-		CommandManager::Undo();
-	}
-	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Y)))
-	{
-		CommandManager::Redo();
-	}
-
-	if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
-	{
-		if (selectedGameObject.lock())
-			DuplicateGameObject(selectedGameObject.lock());
-	}
-
-	if (InputSystem::GetKey(DELETE))
-	{
-		if (sceneMenu->isFocused || hierarchy->isFocused)
+		if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
 		{
 			if (selectedGameObject.lock())
-				Destroy(selectedGameObject.lock());
+				DuplicateGameObject(selectedGameObject.lock());
 		}
-	}
 
-	if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P))) // Pause / UnPause game
-	{
-		if (GameplayManager::GetGameState() == GameState::Playing)
+		if (InputSystem::GetKey(DELETE))
 		{
-			GameplayManager::SetGameState(GameState::Paused, true);
+			if (sceneMenu->isFocused || hierarchy->isFocused)
+			{
+				if (selectedGameObject.lock())
+					Destroy(selectedGameObject.lock());
+			}
 		}
-		else if (GameplayManager::GetGameState() == GameState::Paused)
+
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P))) // Pause / UnPause game
 		{
-			GameplayManager::SetGameState(GameState::Playing, true);
+			if (GameplayManager::GetGameState() == GameState::Playing)
+			{
+				GameplayManager::SetGameState(GameState::Paused, true);
+			}
+			else if (GameplayManager::GetGameState() == GameState::Paused)
+			{
+				GameplayManager::SetGameState(GameState::Playing, true);
+			}
 		}
-	}
-	else if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(P))) // Start / Stop game
-	{
+		else if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(P))) // Start / Stop game
+		{
+			if (GameplayManager::GetGameState() == GameState::Stopped)
+			{
+				GameplayManager::SetGameState(GameState::Playing, true);
+			}
+			else
+			{
+				GameplayManager::SetGameState(GameState::Stopped, true);
+			}
+		}
+
+
 		if (GameplayManager::GetGameState() == GameState::Stopped)
 		{
-			GameplayManager::SetGameState(GameState::Playing, true);
-		}
-		else 
-		{
-			GameplayManager::SetGameState(GameState::Stopped, true);
-		}
-	}
-	
-
-	if (GameplayManager::GetGameState() == GameState::Stopped)
-	{
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
-		{
-			SceneManager::SaveScene(SaveSceneToFile);
+			if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
+			{
+				SceneManager::SaveScene(SaveSceneToFile);
+			}
 		}
 	}
 }

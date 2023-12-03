@@ -108,6 +108,8 @@ public:
 	static void SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir);
 	static std::shared_ptr <ProjectDirectory> GetCurrentProjectDirectory();
 
+	static void OnWindowFocused();
+
 	/**
 	* Set selected GameObject
 	* @param go New selected GameObject

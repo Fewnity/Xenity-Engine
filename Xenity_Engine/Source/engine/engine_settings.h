@@ -34,5 +34,8 @@ public:
 	static std::string compilerPath;
 	static std::string ppssppExePath;
 
+	static bool compileOnCodeChanged;
+	static bool compileWhenOpeningProject;
+
 	static ReflectiveData GetReflectiveData();
 };

@@ -10,6 +10,9 @@ bool EngineSettings::useProfiler = true;
 bool EngineSettings::useDebugger = true;
 bool EngineSettings::useOnlineDebugger = false;
 
+bool EngineSettings::compileOnCodeChanged = false;
+bool EngineSettings::compileWhenOpeningProject = false;
+
 std::string EngineSettings::engineProjectPath = "C:\\Users\\elect\\Documents\\GitHub\\Xenity-Engine\\Xenity_Engine\\";
 //std::string EngineSettings::engineProjectPath = "D:\\Gregory_Machefer\\Xenity - Engine\\Xenity_Engine\\"; // At school
 std::string EngineSettings::compilerPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\";
@@ -39,5 +42,7 @@ ReflectiveData EngineSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, EngineSettings::engineProjectPath, "engineProjectPath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compilerPath, "compilerPath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::ppssppExePath, "ppssppExePath", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::compileOnCodeChanged, "compileOnCodeChanged", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::compileWhenOpeningProject, "compileWhenOpeningProject", true);
 	return reflectedVariables;
 }

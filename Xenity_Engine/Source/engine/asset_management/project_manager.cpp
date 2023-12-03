@@ -32,10 +32,14 @@
 #include <json.hpp>
 
 #include <engine/debug/debug.h>
-
+#if defined(EDITOR)
+#include <editor/file_handler.h>
+#include <editor/compiler.h>
+#endif
 #if !defined(EDITOR) && !defined(_WIN32) && !defined(_WIN64)
 	#include <game_dungeon/game.h>
 #endif
+#include <engine/engine_settings.h>
 
 using json = nlohmann::json;
 
@@ -382,6 +386,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	if (Engine::game)
 		Engine::game->Start();
 
+	if (EngineSettings::compileWhenOpeningProject)
+	{
+		Compiler::HotReloadGame();
+	}
+
 	// Load start scene
 	if (ProjectManager::GetStartScene())
 	{
@@ -390,6 +399,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	Debug::Print("Project loaded");
 	projectLoaded = true;
+	FileHandler::HasCodeChanged(GetAssetFolderPath());
 	return projectLoaded;
 }
 
@@ -712,3 +722,4 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
 	return reflectedVariables;
 }
+
