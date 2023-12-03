@@ -15,8 +15,13 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add map reflection support
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
-Add default material/Shader in the project when creating new project
+Auto refresh when a file has changed
+File drag and drop
+Show message when create a file that already exists
+Show message when nenaming a file that already has this name
+Fix UI at startup
 Fix engine assets system
+Open project folder by default when saving a new file
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
