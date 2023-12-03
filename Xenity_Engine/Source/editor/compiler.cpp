@@ -565,9 +565,9 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	// Copy game assets
-	AddCopyEntry(false, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
-	AddCopyEntry(false, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
-	AddCopyEntry(true, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
+	AddCopyEntry(true, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
+	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
 	bool gameCopyResult = ExecuteCopyEntries();
 	if (!gameCopyResult)
 	{
