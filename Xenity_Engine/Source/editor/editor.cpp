@@ -249,8 +249,8 @@ void Editor::Draw()
 	if (currentMenu != Menu_Editor)
 		offset = 0;
 
-	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - mainBar->GetHeight()));
-	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + mainBar->GetHeight()));
+	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset));
+	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset));
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
