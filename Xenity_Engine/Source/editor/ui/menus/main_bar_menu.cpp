@@ -279,6 +279,6 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-
+	height = ImGui::GetWindowHeight();
 	ImGui::EndMainMenuBar();
 }

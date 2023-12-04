@@ -185,7 +185,6 @@ void EditorUI::NewFrame()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 	uiId = 0;
-	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
 void EditorUI::UpdateUIScale()

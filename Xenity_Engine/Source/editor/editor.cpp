@@ -40,6 +40,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/engine_settings.h>
 #include "file_handler.h"
+#include <imgui/imgui_internal.h>
 
 using json = nlohmann::json;
 
@@ -102,7 +103,7 @@ void Editor::Init()
 	toolArrowsTexture->LoadFileReference();
 }
 
-void Editor::OnWindowFocused() 
+void Editor::OnWindowFocused()
 {
 	if (ProjectManager::GetIsProjectLoaded())
 	{
@@ -239,6 +240,49 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
+	ImGuiViewport * viewport = ImGui::GetMainViewport();
+
+	if (currentMenu == Menu_Editor)
+		mainBar->Draw();
+
+	float offset = mainBar->GetHeight();
+	if (currentMenu != Menu_Editor)
+		offset = 0;
+
+	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - mainBar->GetHeight()));
+	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + mainBar->GetHeight()));
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+	ImGuiID dsId = ImGui::GetID("BackgroundDock");
+	ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
+	if (!first_time) 
+	{
+		ImGui::DockBuilderRemoveNode(dsId);
+		ImGui::DockBuilderAddNode(dsId, ImGuiDockNodeFlags_PassthruCentralNode);
+
+		ImGuiID inspectorNode;
+		ImGuiID fileExplorerNode;
+		ImGuiID SceneNode;
+		ImGuiID hierarchyNode;
+
+		ImGuiID left;
+		ImGuiID leftTop;
+
+		ImGui::DockBuilderSplitNode(dsId, ImGuiDir_Left, 0.8f, &left, &inspectorNode);
+		ImGui::DockBuilderSplitNode(left, ImGuiDir_Up, 0.7f, &leftTop, &fileExplorerNode);
+		ImGui::DockBuilderSplitNode(leftTop, ImGuiDir_Left, 0.2f, &hierarchyNode, &SceneNode);
+
+		ImGui::DockBuilderDockWindow("Hierarchy", hierarchyNode);
+		ImGui::DockBuilderDockWindow("File Explorer", fileExplorerNode);
+		ImGui::DockBuilderDockWindow("Inspector", inspectorNode);
+		ImGui::DockBuilderDockWindow("Debug", inspectorNode);
+		ImGui::DockBuilderDockWindow("###Scene", SceneNode);
+		ImGui::DockBuilderDockWindow("###Game", SceneNode);
+
+		ImGui::DockBuilderFinish(dsId);
+	}
+	ImGui::DockSpace(dsId);
 
 	if (currentMenu == Menu_Create_Project)
 	{
@@ -265,7 +309,7 @@ void Editor::Draw()
 			hierarchy->Draw();
 			inspector->Draw();
 		}
-		mainBar->Draw();
+		//mainBar->Draw();
 		if (EditorUI::showProfiler)
 		{
 			profiler->Draw();
@@ -282,6 +326,8 @@ void Editor::Draw()
 			lightingMenu->Draw();
 		}
 	}
+	ImGui::End();
+	ImGui::PopStyleVar();
 	EditorUI::Render();
 }
 
