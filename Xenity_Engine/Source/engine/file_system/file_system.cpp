@@ -135,7 +135,14 @@ bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 	try
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-		std::filesystem::rename(path, newPath);
+		if (std::filesystem::exists(newPath)) 
+		{
+			success = false;
+		}
+		else 
+		{
+			std::filesystem::rename(path, newPath);
+		}
 #endif
 	}
 	catch (const std::exception&)
