@@ -254,6 +254,7 @@ void Editor::Draw()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	ImGuiID dsId = ImGui::GetID("BackgroundDock");
 	ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
 	if (!first_time) 
@@ -326,6 +327,7 @@ void Editor::Draw()
 			lightingMenu->Draw();
 		}
 	}
+	ImGui::PopStyleVar();
 	ImGui::End();
 	ImGui::PopStyleVar();
 	EditorUI::Render();
