@@ -41,6 +41,7 @@
 #include <engine/engine_settings.h>
 #include "file_handler.h"
 #include <imgui/imgui_internal.h>
+#include <engine/debug/debug.h>
 
 using json = nlohmann::json;
 
@@ -107,6 +108,11 @@ void Editor::OnWindowFocused()
 {
 	if (ProjectManager::GetIsProjectLoaded())
 	{
+		bool needRefresh = FileHandler::HasFileChangedOrAdded(ProjectManager::GetAssetFolderPath());
+		if (needRefresh) 
+		{
+			ProjectManager::RefreshProjectDirectory();
+		}
 		bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
 		if (needCompile && EngineSettings::compileOnCodeChanged)
 		{

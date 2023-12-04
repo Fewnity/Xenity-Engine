@@ -400,6 +400,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	Debug::Print("Project loaded");
 	projectLoaded = true;
 	FileHandler::HasCodeChanged(GetAssetFolderPath());
+	FileHandler::HasFileChangedOrAdded(GetAssetFolderPath());
 	return projectLoaded;
 }
 
