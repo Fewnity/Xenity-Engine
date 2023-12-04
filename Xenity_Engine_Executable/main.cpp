@@ -15,10 +15,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add map reflection support
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
-Auto refresh when a file has changed
 File drag and drop
-Show message when create a file that already exists
-Show message when nenaming a file that already has this name
+Change file name when creating a new file that already exists
 Fix engine assets system
 Open project folder by default when saving a new file
 
