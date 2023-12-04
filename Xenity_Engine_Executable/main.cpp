@@ -19,7 +19,6 @@ Auto refresh when a file has changed
 File drag and drop
 Show message when create a file that already exists
 Show message when nenaming a file that already has this name
-Fix UI at startup
 Fix engine assets system
 Open project folder by default when saving a new file
 

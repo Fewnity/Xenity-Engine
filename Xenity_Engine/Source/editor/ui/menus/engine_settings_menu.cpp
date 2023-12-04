@@ -28,6 +28,7 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 
 void EngineSettingsMenu::Draw()
 {
+	ImGui::SetNextWindowSize(ImVec2(0, 350), ImGuiCond_FirstUseEver);
 	bool visible = ImGui::Begin("Engine Settings", &EditorUI::showEngineSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{

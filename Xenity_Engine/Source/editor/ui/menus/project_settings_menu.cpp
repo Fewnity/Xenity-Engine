@@ -11,6 +11,7 @@ void ProjectSettingsMenu::Init()
 
 void ProjectSettingsMenu::Draw()
 {
+	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
 	bool visible = ImGui::Begin("Project Settings", &EditorUI::showProjectsSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{

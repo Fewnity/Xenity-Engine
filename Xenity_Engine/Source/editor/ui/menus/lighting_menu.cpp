@@ -13,10 +13,11 @@ void LightingMenu::Init()
 
 void LightingMenu::Draw()
 {
-	bool changed = false;
+	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
 	bool visible = ImGui::Begin("Lighting", &EditorUI::showLightingSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
+		bool changed = false;
 		ImGui::Text("Lighting");
 		ImGui::Separator();
 		EditorUI::DrawInput("Skybox", Graphics::skybox);
