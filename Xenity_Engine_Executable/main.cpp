@@ -16,13 +16,12 @@ Add map reflection support
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
 Fix engine assets system
-Open project folder by default when saving a new file
 Reload texture/mesh/audio if modified (only if scene is stopped)
+Add abitily to move folders into a folder
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
-Add abitily to move file into a folder
 Add more unit tests
 Add delete texture function in renderer for psp
 Create console window

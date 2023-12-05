@@ -17,6 +17,8 @@
 #include <engine/file_system/file_system.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
+#include <iostream>
+#include <engine/debug/debug.h>
 
 void FileExplorerMenu::Init()
 {
@@ -67,7 +69,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 
 	ImGui::BeginGroup();
-	int cursorPos =(int)ImGui::GetCursorPosX();
+	int cursorPos = (int)ImGui::GetCursorPosX();
 	int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
@@ -76,7 +78,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
-	
+
 	// Create an unique popupid
 	std::string popupId = "RightClick";
 	if (item.file)
@@ -142,6 +144,31 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 	ImGui::EndGroup();
 
+	// Set a drag drop target for folders
+	if (!isFile)
+	{
+		std::shared_ptr <FileReference> fileRef;
+		bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
+		if (dropFileInFolder)
+		{
+			std::string a = fileRef->file->GetPath();
+			std::string b = item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension();
+
+			int copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath(), item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension(), false);
+			if (copyResult == 0) 
+			{
+				copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath() + ".meta", item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension() + ".meta", false);
+				
+				if (copyResult == 0)
+				{
+					FileSystem::fileSystem->DeleteFile(fileRef->file->GetPath());
+					FileSystem::fileSystem->DeleteFile(fileRef->file->GetPath() + ".meta");
+				}
+			}
+
+			ProjectManager::RefreshProjectDirectory();
+		}
+	}
 	CheckItemDrag(item, isFile, iconTexture, iconSize, itemName);
 
 	ImGui::PopStyleColor(3);
@@ -172,7 +199,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);				
+				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);
 				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::MenuItem("Skybox"))
@@ -259,6 +286,9 @@ void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool is
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
 			std::string payloadName = "Files" + std::to_string(fileExplorerItem.file->fileType);
+			if (isHovered)
+				payloadName = "Files";
+
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
 			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
 			ImGui::TextWrapped(itemName.c_str());
@@ -410,6 +440,10 @@ void FileExplorerMenu::Draw()
 				Rename();
 			}
 		}
+		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+	}
+	else {
+		isHovered = true;
 	}
 	ImGui::End();
 }
@@ -433,7 +467,7 @@ void FileExplorerMenu::Rename()
 				needTitleRefresh = true;
 			}
 		}
-		else 
+		else
 		{
 			EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", Dialog_Type_OK);
 		}
@@ -456,7 +490,7 @@ void FileExplorerMenu::Rename()
 	if (needUpdate)
 		ProjectManager::RefreshProjectDirectory();
 
-	if (needTitleRefresh) 
+	if (needTitleRefresh)
 	{
 		Window::UpdateWindowTitle(); // If it's a scene, update the window title
 	}
