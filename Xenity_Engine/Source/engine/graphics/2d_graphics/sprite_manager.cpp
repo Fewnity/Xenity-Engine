@@ -71,6 +71,9 @@ void SpriteManager::Init()
  */
 void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material)
 {
+	if (!texture)
+		return;
+
 	spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
@@ -103,6 +106,9 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material)
 {
+	if (!texture)
+		return;
+
 	spriteBenchmark->Start();
 	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 
