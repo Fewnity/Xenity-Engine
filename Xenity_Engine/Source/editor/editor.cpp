@@ -109,7 +109,7 @@ void Editor::OnWindowFocused()
 	if (ProjectManager::GetIsProjectLoaded())
 	{
 		bool needRefresh = FileHandler::HasFileChangedOrAdded(ProjectManager::GetAssetFolderPath());
-		if (needRefresh) 
+		if (needRefresh)
 		{
 			ProjectManager::RefreshProjectDirectory();
 		}
@@ -246,7 +246,7 @@ void Editor::Update()
 void Editor::Draw()
 {
 	EditorUI::NewFrame();
-	ImGuiViewport * viewport = ImGui::GetMainViewport();
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	if (currentMenu == Menu_Editor)
 		mainBar->Draw();
@@ -263,7 +263,7 @@ void Editor::Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	ImGuiID dsId = ImGui::GetID("BackgroundDock");
 	ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
-	if (!first_time) 
+	if (!first_time)
 	{
 		ImGui::DockBuilderRemoveNode(dsId);
 		ImGui::DockBuilderAddNode(dsId, ImGuiDockNodeFlags_PassthruCentralNode);
@@ -464,6 +464,13 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	}
 
 	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
+	int id = 0;
+	while (newFile->CheckIfExist())
+	{
+		id++;
+		newFile = FileSystem::MakeFile(fileName + " (" + std::to_string(id) + ")" + fileExt);
+	}
+
 	if (newFile->Open(true))
 	{
 		if (fillWithDefaultData)

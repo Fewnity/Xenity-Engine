@@ -16,7 +16,6 @@ Add map reflection support
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
 File drag and drop
-Change file name when creating a new file that already exists
 Fix engine assets system
 Open project folder by default when saving a new file
 
