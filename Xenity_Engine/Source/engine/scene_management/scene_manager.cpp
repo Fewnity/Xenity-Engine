@@ -86,7 +86,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		}
 		else
 		{
-			path = EditorUI::SaveFileDialog("Save scene");
+			path = EditorUI::SaveFileDialog("Save scene", ProjectManager::GetAssetFolderPath());
 		}
 
 		// If there is no error, save the file

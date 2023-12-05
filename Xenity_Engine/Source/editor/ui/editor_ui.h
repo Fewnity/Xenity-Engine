@@ -356,9 +356,9 @@ public:
 		return valueChanged;
 	}
 
-	static std::string OpenFolderDialog(const std::string& title);
-	static std::string OpenFileDialog(const std::string& title);
-	static std::string SaveFileDialog(const std::string& title);
+	static std::string OpenFolderDialog(const std::string& title, const std::string& defaultLocation);
+	static std::string OpenFileDialog(const std::string& title, const std::string& defaultLocation);
+	static std::string SaveFileDialog(const std::string& title, const std::string& defaultLocation);
 
 	static DialogResult OpenDialog(const std::string& title, const std::string& message, DialogType type);
 

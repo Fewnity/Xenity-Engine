@@ -11,7 +11,7 @@
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 
-std::string EditorUI::OpenFolderDialog(const std::string& title)
+std::string EditorUI::OpenFolderDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
 
@@ -21,7 +21,22 @@ std::string EditorUI::OpenFolderDialog(const std::string& title)
 
 	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
 
-	if (SUCCEEDED(hr)) {
+
+	if (SUCCEEDED(hr)) 
+	{
+		// Set default location
+		if (!defaultLocation.empty())
+		{
+			IShellItem* pCurFolder = NULL;
+			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
+			if (SUCCEEDED(hr))
+			{
+				pFileOpen->SetFolder(pCurFolder);
+				pCurFolder->Release();
+			}
+		}
 		DWORD dwOptions;
 		pFileOpen->GetOptions(&dwOptions);
 
@@ -40,6 +55,7 @@ std::string EditorUI::OpenFolderDialog(const std::string& title)
 		LPCWSTR wideString = tempTitle.c_str();
 
 		pFileOpen->SetTitle(tempTitle.c_str());
+		//pFileOpen->Set;
 		hr = pFileOpen->Show(NULL);
 
 		if (SUCCEEDED(hr))
@@ -71,7 +87,7 @@ std::string EditorUI::OpenFolderDialog(const std::string& title)
 	return path;
 }
 
-std::string EditorUI::OpenFileDialog(const std::string& title)
+std::string EditorUI::OpenFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
 
@@ -83,6 +99,19 @@ std::string EditorUI::OpenFileDialog(const std::string& title)
 
 	if (SUCCEEDED(hr))
 	{
+		// Set default location
+		if (!defaultLocation.empty())
+		{
+			IShellItem* pCurFolder = NULL;
+			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
+			if (SUCCEEDED(hr))
+			{
+				pFileOpen->SetFolder(pCurFolder);
+				pCurFolder->Release();
+			}
+		}
 		DWORD dwOptions;
 		pFileOpen->GetOptions(&dwOptions);
 
@@ -147,7 +176,7 @@ std::string EditorUI::OpenFileDialog(const std::string& title)
 	return path;
 }
 
-std::string EditorUI::SaveFileDialog(const std::string& title)
+std::string EditorUI::SaveFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
 
@@ -159,6 +188,19 @@ std::string EditorUI::SaveFileDialog(const std::string& title)
 
 	if (SUCCEEDED(hr))
 	{
+		// Set default location
+		if (!defaultLocation.empty())
+		{
+			IShellItem* pCurFolder = NULL;
+			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
+			if (SUCCEEDED(hr))
+			{
+				pFileOpen->SetFolder(pCurFolder);
+				pCurFolder->Release();
+			}
+		}
 		DWORD dwOptions;
 		pFileOpen->GetOptions(&dwOptions);
 

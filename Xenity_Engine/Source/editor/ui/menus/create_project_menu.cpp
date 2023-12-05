@@ -31,7 +31,7 @@ bool CreateProjectMenu::DrawSelectFolderButton()
 	bool projectFolderChanged = false;
 	if (ImGui::Button("Select a folder"))
 	{
-		std::string folder = EditorUI::OpenFolderDialog("Select a folder");
+		std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
 		if (!folder.empty())
 		{
 			projectParentDir = folder;

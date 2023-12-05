@@ -51,7 +51,7 @@ void SelectProjectMenu::Draw()
 		ImGui::SameLine();
 		if (ImGui::Button("Load project"))
 		{
-			std::string projectPath = EditorUI::OpenFolderDialog("Select project folder");
+			std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
 			if (!projectPath.empty())
 			{
 				if (ProjectManager::LoadProject(projectPath))
