@@ -15,9 +15,9 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add map reflection support
 Check File::GetFolderPath() for psvita, remove ux0:
 Add network profiler
-File drag and drop
 Fix engine assets system
 Open project folder by default when saving a new file
+Reload texture/mesh/audio if modified (only if scene is stopped)
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

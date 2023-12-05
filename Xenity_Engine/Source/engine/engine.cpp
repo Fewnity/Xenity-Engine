@@ -211,6 +211,20 @@ void Engine::CheckEvents()
 #endif
 			break;
 		}
+#if defined(EDITOR)
+		case (SDL_DROPCOMPLETE):
+		{
+			Editor::OnDragAndDropFileFinished();
+			break;
+		}
+		case (SDL_DROPFILE): 
+		{
+			char* dropped_filedir = event.drop.file;
+			Editor::AddDragAndDrop(dropped_filedir);
+			SDL_free(dropped_filedir); // Free dropped_filedir memory
+			break;
+		}
+#endif
 		case SDL_WINDOWEVENT:
 			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
 			{

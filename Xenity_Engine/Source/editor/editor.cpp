@@ -75,6 +75,8 @@ std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 bool Editor::startRotatingCamera = false;
 
+std::vector<std::string> Editor::dragdropEntries;
+
 void Editor::Init()
 {
 	CreateMenus();
@@ -500,6 +502,81 @@ void Editor::OpenExplorerWindow(std::string path, bool isSelected)
 	command += "\"";
 
 	system(command.c_str());
+}
+
+void Editor::AddDragAndDrop(const std::string& path)
+{
+	dragdropEntries.push_back(path);
+}
+
+void Editor::StartFolderCopy(std::string path, std::string newPath)
+{
+	for (const auto& file : std::filesystem::directory_iterator(path))
+	{
+		// Check is file
+		if (!file.is_regular_file())
+		{
+			std::string newFolderPath = newPath + file.path().filename().string() + '\\';
+			FileSystem::fileSystem->CreateDirectory(newFolderPath);
+			StartFolderCopy(file.path().string() + '\\', newFolderPath);
+		}
+		else 
+		{
+			FileSystem::fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+		}
+	}
+}
+
+void Editor::OnDragAndDropFileFinished()
+{
+	int size = dragdropEntries.size();
+	for (int dragIndex = 0; dragIndex < size; dragIndex++)
+	{
+		try
+		{
+			std::string& path = dragdropEntries[dragIndex];
+			bool isDirectory = std::filesystem::is_directory(path);
+			int pathSize = path.size();
+
+			// Find the last backslash
+			int lastBackSlash = -1;
+			for (int textIndex = pathSize; textIndex > 0; textIndex--)
+			{
+				if (path[textIndex] == '\\')
+				{
+					lastBackSlash = textIndex;
+					break;
+				}
+			}
+			// Remove the parent's path of the file/folder
+			std::string newPath = Editor::GetCurrentProjectDirectory()->path + path.substr(lastBackSlash + 1);
+
+			if (isDirectory) 
+			{
+				FileSystem::fileSystem->CreateDirectory(newPath + '\\');
+				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
+			}
+			else 
+			{
+				int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
+				if (copyResult == -1) 
+				{
+					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", Dialog_Type_YES_NO_CANCEL);
+					if (result == Dialog_YES) 
+					{
+						FileSystem::fileSystem->CopyFile(path, newPath, true);
+					}
+				}
+			}
+		}
+		catch (const std::exception& e)
+		{
+			Debug::PrintError(e.what());
+		}
+	}
+
+	dragdropEntries.clear();
+	ProjectManager::RefreshProjectDirectory();
 }
 
 void Editor::CreateMenus()

@@ -61,12 +61,7 @@ public:
 
 	bool Rename(const std::string& path, const std::string& newPath);
 
-	//virtual void Close(std::shared_ptr<File> file) = 0;
-	//virtual void Open(std::shared_ptr<File> file, bool createFileIfNotFound)= 0;
-	//virtual bool CheckIfExist(std::shared_ptr<File> file)= 0;
-	//virtual std::string ReadAll(std::shared_ptr<File> file)= 0;
-	//virtual unsigned char* ReadAllBinary(std::shared_ptr<File> file, int& size)= 0;
-	//virtual void Write(std::shared_ptr<File> file, const std::string& data)= 0;
+	int CopyFile(const std::string& path, const std::string& newPath, bool replace);
 
 	static std::shared_ptr<File> MakeFile(const std::string& path);
 };

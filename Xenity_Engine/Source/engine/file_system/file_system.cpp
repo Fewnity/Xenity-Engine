@@ -152,6 +152,34 @@ bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 	return success;
 }
 
+int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)
+{
+	int result = 0;
+	try
+	{
+		if (!replace) 
+		{
+			if (std::filesystem::exists(newPath)) 
+			{
+				result = -1; // File already exists
+			}
+		}
+
+		std::filesystem::copy_options option = std::filesystem::copy_options::none;
+
+		if (replace)
+			option |= std::filesystem::copy_options::overwrite_existing;
+
+		if(result == 0)
+			std::filesystem::copy_file(path, newPath, option);
+	}
+	catch (const std::exception&)
+	{
+		result = -2; // Error
+	}
+	return result;
+}
+
 std::vector< std::shared_ptr<File>> files;
 
 std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)

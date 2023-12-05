@@ -78,6 +78,12 @@ public:
 
 	static void OpenExplorerWindow(std::string path, bool isSelected);
 
+	static void AddDragAndDrop(const std::string& path);
+
+	static void OnDragAndDropFileFinished();
+
+	static std::vector<std::string> dragdropEntries;
+
 	/**
 	* Add a component to the selected GameObject
 	*/
@@ -122,6 +128,8 @@ public:
 	static std::shared_ptr <MeshData> forwardArrow;
 	static std::shared_ptr <Texture> toolArrowsTexture;
 private:
+	static void StartFolderCopy(std::string path, std::string newPath);
+
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;
