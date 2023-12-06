@@ -128,6 +128,8 @@
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\editor\file_handler.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_vector.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

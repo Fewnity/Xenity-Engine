@@ -10,7 +10,7 @@ public:
 	virtual bool Start(std::string& errorOut) = 0;
 
 	template <typename T>
-	bool Compare(T valueA, T valueB) const
+	bool Compare(const T& valueA, const T& valueB) const
 	{
 		return valueA == valueB;
 	}
@@ -28,50 +28,85 @@ class UnitTestManager
 {
 public:
 	static void StartAllTests();
-	static void TryTest(UnitTest* test);
+	static void TryTest(UnitTest& test);
 };
 
-class AddVectorTest : public UnitTest
+//
+// --------------------- Vector
+//
+
+class VectorAddTest : public UnitTest
 {
 public:
-	AddVectorTest() = delete;
-	AddVectorTest(const std::string& name) : UnitTest(name) { }
+	VectorAddTest() = delete;
+	VectorAddTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-class MinusVectorTest : public UnitTest
+class VectorMinusTest : public UnitTest
 {
 public:
-	MinusVectorTest() = delete;
-	MinusVectorTest(const std::string& name) : UnitTest(name) { }
+	VectorMinusTest() = delete;
+	VectorMinusTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-class MultiplyVectorTest : public UnitTest
+class VectorMultiplyTest : public UnitTest
 {
 public:
-	MultiplyVectorTest() = delete;
-	MultiplyVectorTest(const std::string& name) : UnitTest(name) { }
+	VectorMultiplyTest() = delete;
+	VectorMultiplyTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-class DivideVectorTest : public UnitTest
+class VectorDivideTest : public UnitTest
 {
 public:
-	DivideVectorTest() = delete;
-	DivideVectorTest(const std::string& name) : UnitTest(name) { }
+	VectorDivideTest() = delete;
+	VectorDivideTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-class NormaliseVectorTest : public UnitTest
+class VectorNormaliseTest : public UnitTest
 {
 public:
-	NormaliseVectorTest() = delete;
-	NormaliseVectorTest(const std::string& name) : UnitTest(name) { }
+	VectorNormaliseTest() = delete;
+	VectorNormaliseTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+};
+
+//
+// --------------------- Transform
+//
+
+class TransformSetPositionTest : public UnitTest
+{
+public:
+	TransformSetPositionTest() = delete;
+	TransformSetPositionTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+};
+
+class TransformSetRotationTest : public UnitTest
+{
+public:
+	TransformSetRotationTest() = delete;
+	TransformSetRotationTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+};
+
+class TransformSetScaleTest : public UnitTest
+{
+public:
+	TransformSetScaleTest() = delete;
+	TransformSetScaleTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };

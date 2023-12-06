@@ -499,6 +499,8 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_transform.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_vector.cpp" />
     <ClCompile Include="Source\windows\cpu.cpp" />
     <ClCompile Include="Source\windows\inputs\inputs.cpp" />
     <ClCompile Include="Source\engine\test_component.cpp" />
