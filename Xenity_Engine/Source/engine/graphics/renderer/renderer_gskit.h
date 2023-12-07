@@ -1,14 +1,6 @@
-#if defined(_EE)
-#if defined(EXPORT)
-#define API __declspec(dllexport)
-#elif defined(IMPORT)
-#define API __declspec(dllimport)
-#else
-#define API
-#endif
-
-
 #pragma once
+#if defined(_EE)
+#include <engine/api.h>
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>

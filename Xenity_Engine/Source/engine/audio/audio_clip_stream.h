@@ -1,11 +1,3 @@
-#if defined(EXPORT)
-#define API __declspec(dllexport)
-#elif defined(IMPORT)
-#define API __declspec(dllimport)
-#else
-#define API
-#endif
-
 #pragma once
 
 #include <dr_mp3.h>
@@ -24,7 +16,7 @@ enum AudioType
 	Mp3,
 };
 
-class API AudioClipStream
+class AudioClipStream
 {
 public:
 	void OpenStream(std::shared_ptr<File> file);

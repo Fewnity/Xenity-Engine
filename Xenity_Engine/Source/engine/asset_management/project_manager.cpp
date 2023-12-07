@@ -386,10 +386,12 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	if (Engine::game)
 		Engine::game->Start();
 
+#if defined(EDITOR)
 	if (EngineSettings::compileWhenOpeningProject)
 	{
 		Compiler::HotReloadGame();
 	}
+#endif
 
 	// Load start scene
 	if (ProjectManager::GetStartScene())
@@ -399,8 +401,10 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	Debug::Print("Project loaded");
 	projectLoaded = true;
+#if defined(EDITOR)
 	FileHandler::HasCodeChanged(GetAssetFolderPath());
 	FileHandler::HasFileChangedOrAdded(GetAssetFolderPath());
+#endif
 	return projectLoaded;
 }
 

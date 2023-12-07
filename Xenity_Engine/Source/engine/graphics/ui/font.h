@@ -1,4 +1,5 @@
 #pragma once
+#include <engine/api.h>
 
 #include "text_manager.h"
 

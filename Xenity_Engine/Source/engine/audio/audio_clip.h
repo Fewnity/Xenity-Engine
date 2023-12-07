@@ -1,14 +1,6 @@
-#if defined(EXPORT)
-#define API __declspec(dllexport)
-#elif defined(IMPORT)
-#define API __declspec(dllimport)
-#else
-#define API
-#endif
-
 #pragma once
+#include <engine/api.h>
 
-#include <string>
 #include <memory>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>

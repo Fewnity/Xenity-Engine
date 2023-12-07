@@ -1,4 +1,5 @@
 #pragma once
+#include <engine/api.h>
 
 #include <engine/component.h>
 #include <engine/vectors/vector3.h>

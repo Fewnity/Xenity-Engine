@@ -267,6 +267,7 @@
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
     <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
     <ClInclude Include="Source\editor\file_handler.h" />
+    <ClInclude Include="Source\engine\api.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

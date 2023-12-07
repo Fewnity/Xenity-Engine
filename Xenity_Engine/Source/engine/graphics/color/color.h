@@ -1,12 +1,5 @@
-#if defined(EXPORT)
-#define API __declspec(dllexport)
-#elif defined(IMPORT)
-#define API __declspec(dllimport)
-#else
-#define API
-#endif
-
 #pragma once
+#include <engine/api.h>
 
 #include <engine/vectors/vector4.h>
 #include <engine/reflection/reflection.h>
@@ -14,7 +7,6 @@
 class API RGBA : public Reflective
 {
 public:
-	//void SetReflection();
 	ReflectiveData GetReflectiveData() override;
 	RGBA() = delete;
 
@@ -41,7 +33,6 @@ class API Color : public Reflective
 {
 public:
 	Color();
-	//void SetReflection();
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
