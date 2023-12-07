@@ -33,6 +33,26 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 	return false;
 }
 
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectDirectory>& ref)
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		ImGuiDragDropFlags target_flags = 0;
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
+		{
+			ProjectDirectory* movedFolder = (ProjectDirectory*)payload->Data;
+			std::shared_ptr<ProjectDirectory> directory = ProjectManager::FindProjectDirectory(ProjectManager::GetProjectDirectory(), movedFolder->path);
+			if (directory)
+			{
+				ref = directory;
+				return true;
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	return false;
+}
+
 bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref)
 {
 	if (ImGui::BeginDragDropTarget())

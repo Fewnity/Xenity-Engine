@@ -155,10 +155,10 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 			std::string b = item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension();
 
 			int copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath(), item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension(), false);
-			if (copyResult == 0) 
+			if (copyResult == 0)
 			{
 				copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath() + ".meta", item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension() + ".meta", false);
-				
+
 				if (copyResult == 0)
 				{
 					FileSystem::fileSystem->DeleteFile(fileRef->file->GetPath());
@@ -167,6 +167,11 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 			}
 
 			ProjectManager::RefreshProjectDirectory();
+		}
+		std::shared_ptr <ProjectDirectory> directoryRef;
+		bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
+		if (dropFolderInFolder) 
+		{
 		}
 	}
 	CheckItemDrag(item, isFile, iconTexture, iconSize, itemName);
@@ -281,19 +286,25 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 
 void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName)
 {
-	if (isFile)
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 	{
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		std::string payloadName;
+		if (isFile)
 		{
-			std::string payloadName = "Files" + std::to_string(fileExplorerItem.file->fileType);
+			payloadName = "Files" + std::to_string(fileExplorerItem.file->fileType);
 			if (isHovered)
 				payloadName = "Files";
-
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
-			ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
-			ImGui::TextWrapped(itemName.c_str());
-			ImGui::EndDragDropSource();
 		}
+		else
+		{
+			payloadName = "Folders";
+			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
+		}
+
+		ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::TextWrapped(itemName.c_str());
+		ImGui::EndDragDropSource();
 	}
 }
 

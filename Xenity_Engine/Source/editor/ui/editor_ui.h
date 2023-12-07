@@ -99,6 +99,7 @@ public:
 	static void DrawTextCentered(const std::string& text);
 	static int DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<ProjectDirectory>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
