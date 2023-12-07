@@ -510,7 +510,7 @@ void ProjectManager::LoadProjectSettings()
 void ProjectManager::SaveProjectSettings()
 {
 	std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
-	FileSystem::fileSystem->DeleteFile(path);
+	FileSystem::fileSystem->Delete(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
@@ -530,7 +530,7 @@ void ProjectManager::SaveProjectSettings()
 void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
-	FileSystem::fileSystem->DeleteFile(file->GetPath() + META_EXTENSION);
+	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
 	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
@@ -599,7 +599,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::fileSystem->DeleteFile(PROJECTS_LIST_FILE);
+	FileSystem::fileSystem->Delete(PROJECTS_LIST_FILE);
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	if (file->Open(true))
 	{

@@ -155,7 +155,7 @@ int Debug::Init()
 #if defined(__vita__)
 	fileName = "data\\xenity_engine\\" + fileName;
 #endif
-	FileSystem::fileSystem->DeleteFile(fileName);
+	FileSystem::fileSystem->Delete(fileName);
 
 	file = FileSystem::MakeFile(fileName);
 	file->Open(true);

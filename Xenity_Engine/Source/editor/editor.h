@@ -127,8 +127,8 @@ public:
 	static std::shared_ptr <MeshData> upArrow;
 	static std::shared_ptr <MeshData> forwardArrow;
 	static std::shared_ptr <Texture> toolArrowsTexture;
-private:
 	static void StartFolderCopy(std::string path, std::string newPath);
+private:
 
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;

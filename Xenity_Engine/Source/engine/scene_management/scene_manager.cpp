@@ -92,7 +92,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// If there is no error, save the file
 		if (!path.empty())
 		{
-			FileSystem::fileSystem->DeleteFile(path);
+			FileSystem::fileSystem->Delete(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(true))
 			{

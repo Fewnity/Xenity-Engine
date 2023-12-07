@@ -44,7 +44,7 @@ public:
 	* Delete a file
 	* @param path File path
 	*/
-	void DeleteFile(const std::string& path);
+	void Delete(const std::string& path);
 
 	/**
 	* Get all files of a directory and fill it

@@ -224,7 +224,7 @@ void FileSystem::CreateDirectory(const std::string& path)
 	std::filesystem::create_directory(finalPath);
 }
 
-void FileSystem::DeleteFile(const std::string& path)
+void FileSystem::Delete(const std::string& path)
 {
 	std::string newPath = path;
 #if defined(__vita__)

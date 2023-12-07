@@ -151,9 +151,6 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
 		if (dropFileInFolder)
 		{
-			std::string a = fileRef->file->GetPath();
-			std::string b = item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension();
-
 			int copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath(), item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension(), false);
 			if (copyResult == 0)
 			{
@@ -161,8 +158,8 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 				if (copyResult == 0)
 				{
-					FileSystem::fileSystem->DeleteFile(fileRef->file->GetPath());
-					FileSystem::fileSystem->DeleteFile(fileRef->file->GetPath() + ".meta");
+					FileSystem::fileSystem->Delete(fileRef->file->GetPath());
+					FileSystem::fileSystem->Delete(fileRef->file->GetPath() + ".meta");
 				}
 			}
 
@@ -172,6 +169,11 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
 		if (dropFolderInFolder) 
 		{
+			std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
+			FileSystem::fileSystem->CreateDirectory(destinationPath);
+			Editor::StartFolderCopy(directoryRef->path, destinationPath);
+			FileSystem::fileSystem->Delete(directoryRef->path);
+			ProjectManager::RefreshProjectDirectory();
 		}
 	}
 	CheckItemDrag(item, isFile, iconTexture, iconSize, itemName);
@@ -265,8 +267,8 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		{
 			if (fileExplorerItem.file)
 			{
-				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath());
-				FileSystem::fileSystem->DeleteFile(fileExplorerItem.file->file->GetPath() + ".meta");
+				FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath());
+				FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath() + ".meta");
 				if (Editor::GetSelectedFileReference() == fileExplorerItem.file)
 				{
 					Editor::SetSelectedFileReference(nullptr);
@@ -274,7 +276,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			}
 			else if (fileExplorerItem.directory)
 			{
-				FileSystem::fileSystem->DeleteFile(fileExplorerItem.directory->path);
+				FileSystem::fileSystem->Delete(fileExplorerItem.directory->path);
 			}
 			ProjectManager::RefreshProjectDirectory();
 			ImGui::CloseCurrentPopup();

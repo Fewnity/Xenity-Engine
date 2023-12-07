@@ -514,7 +514,7 @@ bool ReflectionUtils::ReflectiveDataToFile(ReflectiveData dataList, std::shared_
 	bool ok;
 	json myJson;
 	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
-	FileSystem::fileSystem->DeleteFile(file->GetPath());
+	FileSystem::fileSystem->Delete(file->GetPath());
 	if (file->Open(true))
 	{
 		file->Write(myJson.dump(0));
