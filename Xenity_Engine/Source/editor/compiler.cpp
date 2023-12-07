@@ -398,6 +398,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		std::string engineDllPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".dll";
 		std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL2.dll";
 		std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
+		std::string freetypeDllPath = EngineSettings::engineProjectPath + "freetype.dll";
 
 		// Copy engine game lib to the temp build folder
 		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME + ".lib");
@@ -405,6 +406,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		AddCopyEntry(false, engineDllPath, params.exportPath + ENGINE_GAME + ".dll");
 		AddCopyEntry(false, sdlDllPath, params.exportPath + "SDL2.dll");
 		AddCopyEntry(false, glfwDllPath, params.exportPath + "glfw3.dll");
+		AddCopyEntry(false, freetypeDllPath, params.exportPath + "freetype.dll");
 	}
 
 	// Copy engine headers to the temp build folder
@@ -476,7 +478,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	else
 	{
 		AddCopyEntry(false, params.tempPath + dll_name, params.exportPath + dll_name);
-		AddCopyEntry(false, params.tempPath + editor_dll_name, params.exportPath + editor_dll_name);
+		AddCopyEntry(false, params.tempPath + params.libraryName + ".exe", params.exportPath + params.libraryName + ".exe");
 	}
 	bool gameCopyResult = ExecuteCopyEntries();
 	if (!gameCopyResult)
