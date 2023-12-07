@@ -5,9 +5,11 @@
 #include <engine/debug/debug.h>
 
 using namespace std::chrono;
-uint64_t FileHandler::lastModifiedCodeFileTime;
-uint64_t FileHandler::lastModifiedFileTime;
-uint32_t FileHandler::lastFileCount;
+
+uint64_t FileHandler::lastModifiedCodeFileTime = 0;
+uint64_t FileHandler::lastModifiedFileTime = 0;
+uint32_t FileHandler::lastFileCount = 0;
+uint32_t FileHandler::tempFileCount = 0;
 
 bool FileHandler::HasCodeChanged(const std::string& path)
 {
@@ -35,7 +37,7 @@ bool FileHandler::HasCodeChanged(const std::string& path)
 	return changed;
 }
 
-bool FileHandler::HasFileChangedOrAdded(const std::string& path)
+bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 {
 	bool changed = false;
 	for (const auto& file : std::filesystem::directory_iterator(path))
@@ -44,18 +46,20 @@ bool FileHandler::HasFileChangedOrAdded(const std::string& path)
 		if (!file.is_regular_file())
 		{
 			bool temp = HasFileChangedOrAdded(file.path().string());
-			if (temp) 
+			if (temp)
 			{
 				changed = true;
 			}
 		}
-		else 
+		else
 		{
 			std::string ext = file.path().extension().string();
 
 			if (ext != ".meta")
 				continue;
 		}
+		
+		tempFileCount++;
 
 		// Check last date
 		std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
@@ -68,4 +72,17 @@ bool FileHandler::HasFileChangedOrAdded(const std::string& path)
 		}
 	}
 	return changed;
+}
+
+
+bool FileHandler::HasFileChangedOrAdded(const std::string& path)
+{
+	tempFileCount = 0;
+	bool result = HasFileChangedOrAddedRecursive(path);
+	if (tempFileCount != lastFileCount) 
+	{
+		result = true;
+	}
+	lastFileCount = tempFileCount;
+	return result;
 }

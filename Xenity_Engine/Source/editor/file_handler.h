@@ -10,5 +10,8 @@ public:
 	static uint64_t lastModifiedCodeFileTime;
 	static uint64_t lastModifiedFileTime;
 	static uint32_t lastFileCount;
+private:
+	static bool HasFileChangedOrAddedRecursive(const std::string& path);
+	static uint32_t tempFileCount;
 };
 
