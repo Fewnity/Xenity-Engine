@@ -15,20 +15,22 @@
 #include <string>
 
 #if defined(__vita__)
-	#include <vitaGL.h>
+#include <vitaGL.h>
 #elif defined(__PSP__)
-	#include <psp/gu2gl.h>
-	#include <psp/video_hardware_dxtn.h>
-	#include <pspkernel.h>
-	#include <vram.h>
+#include <psp/gu2gl.h>
+#include <psp/video_hardware_dxtn.h>
+#include <pspkernel.h>
+#include <vram.h>
 #elif defined(_WIN32) || defined(_WIN64)
-	#include <thread>
-	#include <glad/glad.h>
+#include <thread>
+#include <glad/glad.h>
 #elif defined(_EE)
-	#include "renderer/renderer_gskit.h"
+// #include "renderer/renderer_gskit.h"
+#include <graph.h>
+#include <gs_psm.h>
+#include "renderer/renderer_vu1.h"
 #endif
 #include <engine/file_system/async_file_loading.h>
-
 
 Texture::Texture()
 {
@@ -46,8 +48,8 @@ ReflectiveData Texture::GetMetaReflectiveData()
 	Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);
 	Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
 	Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-	Reflective::AddVariable(reflectedVariables, (int&)filter, "filter", true);
-	Reflective::AddVariable(reflectedVariables, (int&)wrapMode, "wrapMode", true);
+	Reflective::AddVariable(reflectedVariables, (int &)filter, "filter", true);
+	Reflective::AddVariable(reflectedVariables, (int &)wrapMode, "wrapMode", true);
 	return reflectedVariables;
 }
 
@@ -110,7 +112,7 @@ void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 }
 
 #if defined(__PSP__)
-void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height)
+void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigned int height)
 {
 	unsigned int blockx, blocky;
 	unsigned int j;
@@ -121,15 +123,15 @@ void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigne
 	unsigned int src_pitch = (width - 16) / 4;
 	unsigned int src_row = width * 8;
 
-	const u8* ysrc = in;
-	u32* dst = (u32*)out;
+	const u8 *ysrc = in;
+	u32 *dst = (u32 *)out;
 
 	for (blocky = 0; blocky < height_blocks; ++blocky)
 	{
-		const u8* xsrc = ysrc;
+		const u8 *xsrc = ysrc;
 		for (blockx = 0; blockx < width_blocks; ++blockx)
 		{
-			const u32* src = (u32*)xsrc;
+			const u32 *src = (u32 *)xsrc;
 			for (j = 0; j < 8; ++j)
 			{
 				*(dst++) = *(src++);
@@ -145,7 +147,7 @@ void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigne
 }
 
 // See https://github.com/pspdev/pspsdk/blob/master/src/debug/scr_printf.c
-void copy_texture_data(void* dest, const void* src, int width, int height, const int destType, const int srcType)
+void copy_texture_data(void *dest, const void *src, int width, int height, const int destType, const int srcType)
 {
 	/*for (unsigned int y = 0; y < height; y++)
 	{
@@ -164,7 +166,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 		{
 			for (unsigned int x = 0; x < width; x++)
 			{
-				((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
+				((unsigned int *)dest)[x + y * width] = ((unsigned int *)src)[x + y * width];
 			}
 		}
 	}
@@ -176,7 +178,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 			{
 				for (unsigned int x = 0; x < width; x++)
 				{
-					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+					uint32_t srcPixel = ((uint32_t *)src)[x + y * width];
 
 					uint16_t r = (srcPixel >> 24) & 0xFF;
 					uint16_t g = (srcPixel >> 16) & 0xFF;
@@ -185,7 +187,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 
 					uint16_t destPixel = (r >> 4) << 12 | (g >> 4) << 8 | (b >> 4) << 4 | (a >> 4);
 
-					((uint16_t*)dest)[x + y * width] = destPixel;
+					((uint16_t *)dest)[x + y * width] = destPixel;
 				}
 			}
 		}
@@ -195,7 +197,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 			{
 				for (unsigned int x = 0; x < width; x++)
 				{
-					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+					uint32_t srcPixel = ((uint32_t *)src)[x + y * width];
 
 					uint16_t r = (srcPixel >> 19) & 0x1F;
 					uint16_t g = (srcPixel >> 10) & 0x3F;
@@ -203,7 +205,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 
 					uint16_t destPixel = b | (g << 5) | (r << 11);
 
-					((uint16_t*)dest)[x + y * width] = destPixel;
+					((uint16_t *)dest)[x + y * width] = destPixel;
 				}
 			}
 		}
@@ -213,7 +215,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 			{
 				for (unsigned int x = 0; x < width; x++)
 				{
-					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+					uint32_t srcPixel = ((uint32_t *)src)[x + y * width];
 
 					uint16_t a = (srcPixel >> 24) ? 0x8000 : 0;
 					uint16_t b = (srcPixel >> 19) & 0x1F;
@@ -222,14 +224,14 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 
 					uint16_t destPixel = a | r | (g << 5) | (b << 10);
 
-					((uint16_t*)dest)[x + y * width] = destPixel;
+					((uint16_t *)dest)[x + y * width] = destPixel;
 				}
 			}
 		}
 	}
 }
 
-void Texture::SetTextureLevel(int level, const unsigned char* texData)
+void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
 	bool needResize = false;
 	int bytePerPixel = getColorByteCount(type);
@@ -241,7 +243,7 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 
 	int byteCount = (resizedPW * resizedPH) * bytePerPixel;
 
-	unsigned int* dataBuffer = (unsigned int*)memalign(16, byteCount);
+	unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
 
 	if (level != 0 || (width != pW || height != pH))
 	{
@@ -250,7 +252,7 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 
 	if (needResize)
 	{
-		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH) * 4);
+		unsigned char *resizedData = (unsigned char *)malloc((resizedPW * resizedPH) * 4);
 		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
 		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, GU_PSM_8888);
 		free(resizedData);
@@ -266,29 +268,28 @@ void Texture::SetTextureLevel(int level, const unsigned char* texData)
 	// Allocate memory in ram or vram
 	if (inVram)
 	{
-		unsigned int* newData = (unsigned int*)vramalloc(byteCount); // Divide by 8 when dxt1, by 4 when dxt3 and dxt5
+		unsigned int *newData = (unsigned int *)vramalloc(byteCount); // Divide by 8 when dxt1, by 4 when dxt3 and dxt5
 		// If there is no more free vram
 		if (!newData)
 		{
 			Debug::PrintWarning("No more free vram");
-			newData = (unsigned int*)memalign(16, byteCount);
+			newData = (unsigned int *)memalign(16, byteCount);
 			inVram = false;
 		}
-		data.push_back((unsigned int*)newData);
+		data.push_back((unsigned int *)newData);
 	}
 	else
 	{
-		data.push_back((unsigned int*)memalign(16, byteCount));
+		data.push_back((unsigned int *)memalign(16, byteCount));
 	}
-	//tx_compress_dxtn(4, resizedPW, resizedPH, (const unsigned char*)dataBuffer, type, (unsigned char*)data[level]);
+	// tx_compress_dxtn(4, resizedPW, resizedPH, (const unsigned char*)dataBuffer, type, (unsigned char*)data[level]);
 
 	// Place image data in the memory
-	swizzle_fast((u8*)data[level], (const u8*)dataBuffer, resizedPW * bytePerPixel, resizedPH);
-	//copy_texture_data(data[level], dataBuffer, pW, pH, type, type);
+	swizzle_fast((u8 *)data[level], (const u8 *)dataBuffer, resizedPW * bytePerPixel, resizedPH);
+	// copy_texture_data(data[level], dataBuffer, pW, pH, type, type);
 	free(dataBuffer);
 	sceKernelDcacheWritebackInvalidateAll();
 }
-
 
 #endif
 
@@ -305,18 +306,18 @@ void Texture::OnLoadFileReferenceFinished()
 	isValid = true;
 }
 
-void Texture::SetData(const unsigned char* texData)
+void Texture::SetData(const unsigned char *texData)
 {
 	// sceGeEdramSetSize(4096);
 	// The psp needs a pow2 sized texture
 #if defined(__PSP__)
-	//type = GU_PSM_8888;
-	//type = GU_PSM_4444;
-	//type = GU_PSM_5650;
+	// type = GU_PSM_8888;
+	// type = GU_PSM_4444;
+	// type = GU_PSM_5650;
 	type = GU_PSM_5551;
-	//type = GU_PSM_DXT5;
-	//type = GU_PSM_DXT3;
-	//type = GU_PSM_DXT1;
+	// type = GU_PSM_DXT5;
+	// type = GU_PSM_DXT3;
+	// type = GU_PSM_DXT1;
 
 	// Get pow2 size
 	pW = Math::nextPow2(width);
@@ -331,37 +332,46 @@ void Texture::SetData(const unsigned char* texData)
 		mipmaplevelCount = 1;
 	}
 #elif defined(_EE)
-	ps2Tex.Width = width;
-	ps2Tex.Height = height;
-	ps2Tex.PSM = GS_PSM_CT32;
-	ps2Tex.VramClut = 0;
-	ps2Tex.Clut = NULL;
+	texbuff.width = width;
+	texbuff.psm = GS_PSM_24;
+	texbuff.address = graph_vram_allocate(width, height, GS_PSM_24, GRAPH_ALIGN_BLOCK);
 
-	ps2Tex.Filter = GS_FILTER_NEAREST;
-	ps2Tex.Mem = (u32*)memalign(128, ps2Tex.Width * ps2Tex.Height * 4);
+	texbuff.info.width = draw_log2(width);
+	texbuff.info.height = draw_log2(height);
+	texbuff.info.components = TEXTURE_COMPONENTS_RGB;
+	texbuff.info.function = TEXTURE_FUNCTION_MODULATE;
 
-	struct pixel
-	{
-		u8 r, g, b, a;
-	};
-	struct pixel* Pixels = (struct pixel*)ps2Tex.Mem;
-	for (size_t i = 0; i < ps2Tex.Width * ps2Tex.Height; i++)
-	{
-		Pixels[i].r = texData[i * 4 + 0];
-		Pixels[i].g = texData[i * 4 + 1];
-		Pixels[i].b = texData[i * 4 + 2];
-		Pixels[i].a = 255 - texData[i * 4 + 3];
-	}
-	// Tex.Vram = gsKit_vram_alloc(gsGlobal, gsKit_texture_size(Tex2.Width, Tex2.Height, Tex2.PSM), GSKIT_ALLOC_USERBUFFER);
-	//  if (!Tex2.Vram)
-	//  	printf("No more Vram");
-	gsKit_TexManager_bind(((RendererGsKit&)Engine::GetRenderer()).gsGlobal, &ps2Tex);
+	// ps2Tex.Width = width;
+	// ps2Tex.Height = height;
+	// ps2Tex.PSM = GS_PSM_CT32;
+	// ps2Tex.VramClut = 0;
+	// ps2Tex.Clut = NULL;
+
+	// ps2Tex.Filter = GS_FILTER_NEAREST;
+	// ps2Tex.Mem = (u32 *)memalign(128, ps2Tex.Width * ps2Tex.Height * 4);
+
+	// struct pixel
+	// {
+	// 	u8 r, g, b, a;
+	// };
+	// struct pixel *Pixels = (struct pixel *)ps2Tex.Mem;
+	// for (size_t i = 0; i < ps2Tex.Width * ps2Tex.Height; i++)
+	// {
+	// 	Pixels[i].r = texData[i * 4 + 0];
+	// 	Pixels[i].g = texData[i * 4 + 1];
+	// 	Pixels[i].b = texData[i * 4 + 2];
+	// 	Pixels[i].a = 255 - texData[i * 4 + 3];
+	// }
+	// // Tex.Vram = gsKit_vram_alloc(gsGlobal, gsKit_texture_size(Tex2.Width, Tex2.Height, Tex2.PSM), GSKIT_ALLOC_USERBUFFER);
+	// //  if (!Tex2.Vram)
+	// //  	printf("No more Vram");
+	// gsKit_TexManager_bind(((RendererGsKit &)Engine::GetRenderer()).gsGlobal, &ps2Tex);
 #endif
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(GetThisShared());
-	//unsigned int alpha = 0x1906;
+	// unsigned int alpha = 0x1906;
 
 	Engine::GetRenderer().SetTextureData(GetThisShared(), GL_LUMINANCE_ALPHA, texData);
 #endif
@@ -377,13 +387,13 @@ void Texture::LoadTexture()
 	bool openResult = file->Open(false);
 	if (openResult)
 	{
-		unsigned char* fileData = file->ReadAllBinary(fileBufferSize);
+		unsigned char *fileData = file->ReadAllBinary(fileBufferSize);
 		file->Close();
 
 		// Load image with stb_image
 		// stbi_set_flip_vertically_on_load(GL_TRUE);
 		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
-			&nrChannels, 4);
+									   &nrChannels, 4);
 
 		free(fileData);
 

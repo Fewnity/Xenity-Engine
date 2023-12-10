@@ -9,6 +9,8 @@
 
 #if defined(_EE)
 #include <draw3d.h>
+#include <packet2.h>
+#include <packet2_utils.h>
 #endif
 
 struct Vertex
@@ -54,20 +56,21 @@ public:
 	public:
 		SubMesh() = default;
 		unsigned int index_count = 0;
-		unsigned short* indices = nullptr;
+		unsigned short *indices = nullptr;
 		unsigned int vertice_count = 0;
-		void* data = nullptr;
+		void *data = nullptr;
 #if defined(_EE)
-		VECTOR* c_verts = nullptr;
-		VECTOR* c_colours = nullptr;
-		VECTOR* c_st = nullptr;
+		VECTOR *c_verts = nullptr;
+		VECTOR *c_colours = nullptr;
+		VECTOR *c_st = nullptr;
+		packet2_t *meshPacket;
 #endif
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
 	};
 	MeshData();
-	//MeshData() = delete;
+	// MeshData() = delete;
 	MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
 
 	static std::shared_ptr<MeshData> MakeMeshData();
@@ -81,77 +84,76 @@ public:
 	void UnloadFileReference() override;
 
 	/**
-	* Alloc memory for a new submesh
-	*/
+	 * Alloc memory for a new submesh
+	 */
 	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
 	/**
-	* Add a vertex to a submesh
-	* @param u U Axis texture coordinate
-	* @param v V Axis texture coordinate
-	* @param color Vertex color
-	* @param x Vertex X position
-	* @param y Vertex Y position
-	* @param z Vertex Z position
-	* @param index Vertex index
-	* @param subMeshIndex Submesh index
-	*/
-	void AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex);
+	 * Add a vertex to a submesh
+	 * @param u U Axis texture coordinate
+	 * @param v V Axis texture coordinate
+	 * @param color Vertex color
+	 * @param x Vertex X position
+	 * @param y Vertex Y position
+	 * @param z Vertex Z position
+	 * @param index Vertex index
+	 * @param subMeshIndex Submesh index
+	 */
+	void AddVertex(float u, float v, const Color &color, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	* Add a vertex to a submesh
-	* @param x Vertex X position
-	* @param y Vertex Y position
-	* @param z Vertex Z position
-	* @param index Vertex index
-	* @param subMeshIndex Submesh index
-	*/
+	 * Add a vertex to a submesh
+	 * @param x Vertex X position
+	 * @param y Vertex Y position
+	 * @param z Vertex Z position
+	 * @param index Vertex index
+	 * @param subMeshIndex Submesh index
+	 */
 	void AddVertex(float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	* Add a vertex to a submesh
-	* @param u U Axis texture coordinate
-	* @param v V Axis texture coordinate
-	* @param x Vertex X position
-	* @param y Vertex Y position
-	* @param z Vertex Z position
-	* @param index Vertex index
-	* @param subMeshIndex Submesh index
-	*/
+	 * Add a vertex to a submesh
+	 * @param u U Axis texture coordinate
+	 * @param v V Axis texture coordinate
+	 * @param x Vertex X position
+	 * @param y Vertex Y position
+	 * @param z Vertex Z position
+	 * @param index Vertex index
+	 * @param subMeshIndex Submesh index
+	 */
 	void AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	* Add a vertex to a submesh
-	* @param u U Axis texture coordinate
-	* @param v V Axis texture coordinate
-	* @param nx Normal X direction
-	* @param ny Normal Y direction
-	* @param nz Normal Z direction
-	* @param x Vertex X position
-	* @param y Vertex Y position
-	* @param z Vertex Z position
-	* @param index Vertex index
-	* @param subMeshIndex Submesh index
-	*/
+	 * Add a vertex to a submesh
+	 * @param u U Axis texture coordinate
+	 * @param v V Axis texture coordinate
+	 * @param nx Normal X direction
+	 * @param ny Normal Y direction
+	 * @param nz Normal Z direction
+	 * @param x Vertex X position
+	 * @param y Vertex Y position
+	 * @param z Vertex Z position
+	 * @param index Vertex index
+	 * @param subMeshIndex Submesh index
+	 */
 	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	* Add a vertex to a submesh
-	* @param nx Normal X direction
-	* @param ny Normal Y direction
-	* @param nz Normal Z direction
-	* @param x Vertex X position
-	* @param y Vertex Y position
-	* @param z Vertex Z position
-	* @param index Vertex index
-	* @param subMeshIndex Submesh index
-	*/
+	 * Add a vertex to a submesh
+	 * @param nx Normal X direction
+	 * @param ny Normal Y direction
+	 * @param nz Normal Z direction
+	 * @param x Vertex X position
+	 * @param y Vertex Y position
+	 * @param z Vertex Z position
+	 * @param index Vertex index
+	 * @param subMeshIndex Submesh index
+	 */
 	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
-	std::vector<SubMesh*> subMeshes;
+	std::vector<SubMesh *> subMeshes;
 
 	void SendDataToGpu();
-
 
 	int subMeshCount = 0;
 	bool hasUv = false;
@@ -161,6 +163,7 @@ public:
 	bool isQuad = false;
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 	bool isValid = true;
+
 private:
 	void Unload();
 	void FreeMeshData(bool deleteSubMeshes);

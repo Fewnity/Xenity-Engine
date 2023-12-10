@@ -18,9 +18,10 @@
 
 #include <engine/physics/physics_manager.h>
 
+#if defined(EDITOR)
 #include <editor/ui/editor_ui.h>
+#endif
 #include <engine/debug/debug.h>
-
 
 using json = nlohmann::json;
 
@@ -39,7 +40,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		auto& go = GameplayManager::gameObjects[goI];
+		auto &go = GameplayManager::gameObjects[goI];
 		std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
@@ -59,7 +60,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		int componentCount = go->GetComponentCount();
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
-			auto& component = go->components[componentI];
+			auto &component = go->components[componentI];
 			std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
@@ -145,7 +146,7 @@ bool SceneManager::OnQuit()
 		{
 			SaveScene(SaveSceneToFile);
 		}
-		else  if (result == DialogResult::Dialog_CANCEL)
+		else if (result == DialogResult::Dialog_CANCEL)
 		{
 			cancel = true;
 		}
@@ -154,7 +155,7 @@ bool SceneManager::OnQuit()
 	return cancel;
 }
 
-void SceneManager::LoadScene(const json& jsonData)
+void SceneManager::LoadScene(const json &jsonData)
 {
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(Starting, true);
@@ -168,7 +169,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	if (jsonData.contains("GameObjects"))
 	{
 		// Create all GameObjects and Components
-		for (auto& gameObjectKV : jsonData["GameObjects"].items())
+		for (auto &gameObjectKV : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 			uint64_t id = std::stoull(gameObjectKV.key());
@@ -182,7 +183,7 @@ void SceneManager::LoadScene(const json& jsonData)
 			// Create components
 			if (gameObjectKV.value().contains("Components"))
 			{
-				for (auto& componentKV : gameObjectKV.value()["Components"].items())
+				for (auto &componentKV : gameObjectKV.value()["Components"].items())
 				{
 					std::string componentName = componentKV.value()["Type"];
 					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
@@ -207,14 +208,14 @@ void SceneManager::LoadScene(const json& jsonData)
 		UniqueId::lastUniqueId = biggestId;
 
 		// Bind Components values and GameObjects childs
-		for (auto& kv : jsonData["GameObjects"].items())
+		for (auto &kv : jsonData["GameObjects"].items())
 		{
 			auto go = FindGameObjectById(std::stoull(kv.key()));
 			if (go)
 			{
 				if (kv.value().contains("Childs"))
 				{
-					for (auto& kv2 : kv.value()["Childs"].items())
+					for (auto &kv2 : kv.value()["Childs"].items())
 					{
 						auto goChild = FindGameObjectById(kv2.value());
 						if (goChild)
@@ -231,7 +232,7 @@ void SceneManager::LoadScene(const json& jsonData)
 
 				if (kv.value().contains("Components"))
 				{
-					for (auto& kv2 : kv.value()["Components"].items())
+					for (auto &kv2 : kv.value()["Components"].items())
 					{
 						int componentCount = go->GetComponentCount();
 						for (int compI = 0; compI < componentCount; compI++)
@@ -246,7 +247,6 @@ void SceneManager::LoadScene(const json& jsonData)
 					}
 				}
 			}
-
 		}
 
 		// Call Awake on Components
@@ -259,7 +259,7 @@ void SceneManager::LoadScene(const json& jsonData)
 			// Find uninitiated components and order them
 			for (size_t i = 0; i < componentsCount; i++)
 			{
-				if (auto& componentToCheck = allComponents[i])
+				if (auto &componentToCheck = allComponents[i])
 				{
 					if (!componentToCheck->initiated)
 					{
@@ -295,7 +295,7 @@ void SceneManager::LoadScene(const json& jsonData)
 			}
 		}
 	}
-	else 
+	else
 	{
 		UniqueId::lastUniqueId = 0;
 	}
@@ -309,9 +309,9 @@ void SceneManager::LoadScene(const json& jsonData)
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(Playing, true);
 #endif
-	}
+}
 
-void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
+void SceneManager::LoadScene(const std::shared_ptr<Scene> &scene)
 {
 	Debug::Print("Loading scene...");
 	std::shared_ptr<File> jsonFile = scene->file;
@@ -330,7 +330,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 			openedScene = scene;
 			Window::UpdateWindowTitle();
 		}
-		catch (const std::exception&)
+		catch (const std::exception &)
 		{
 			Debug::PrintError("[SceneManager::LoadScene] Scene file error");
 			return;

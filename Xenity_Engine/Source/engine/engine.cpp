@@ -6,6 +6,7 @@
 // Renderers
 #include <engine/graphics/renderer/renderer_opengl.h>
 #include <engine/graphics/renderer/renderer_gskit.h>
+#include <engine/graphics/renderer/renderer_vu1.h>
 #include <engine/graphics/renderer/renderer_ge.h>
 
 // Audio
@@ -30,6 +31,7 @@
 #include <glad/glad.h>
 #include <editor/ui/menus/scene_menu.h>
 #include <engine/scene_management/scene_manager.h>
+#include <editor/plugin/plugin_manager.h>
 #endif
 
 // Other platforms
@@ -67,7 +69,6 @@
 // Physics
 #include <engine/physics/physics_manager.h>
 
-#include <editor/plugin/plugin_manager.h>
 #include <engine/file_system/async_file_loading.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
@@ -122,7 +123,8 @@ int Engine::Init()
 
 	//------------------------------------------ Init renderer
 #if defined(_EE)
-	renderer = std::make_unique<RendererGsKit>();
+	// renderer = std::make_unique<RendererGsKit>();
+	renderer = std::make_unique<RendererVU1>();
 #elif defined(__PSP__)
 	renderer = std::make_unique<RendererGE>();
 #else
@@ -217,9 +219,9 @@ void Engine::CheckEvents()
 			Editor::OnDragAndDropFileFinished();
 			break;
 		}
-		case (SDL_DROPFILE): 
+		case (SDL_DROPFILE):
 		{
-			char* dropped_filedir = event.drop.file;
+			char *dropped_filedir = event.drop.file;
 			Editor::AddDragAndDrop(dropped_filedir);
 			SDL_free(dropped_filedir); // Free dropped_filedir memory
 			break;
@@ -237,7 +239,7 @@ void Engine::CheckEvents()
 			{
 				isRunning = false;
 			}
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) 
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 			{
 #if defined(EDITOR)
 				Editor::OnWindowFocused();

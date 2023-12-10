@@ -27,17 +27,16 @@
 
 #include <engine/audio/audio_clip.h>
 
-#include <editor/editor.h>
-
 #include <json.hpp>
 
 #include <engine/debug/debug.h>
 #if defined(EDITOR)
+#include <editor/editor.h>
 #include <editor/file_handler.h>
 #include <editor/compiler.h>
 #endif
 #if !defined(EDITOR) && !defined(_WIN32) && !defined(_WIN64)
-	#include <game_dungeon/game.h>
+#include <game_dungeon/game.h>
 #endif
 #include <engine/engine_settings.h>
 
@@ -46,14 +45,14 @@ using json = nlohmann::json;
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileAndPath> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
-ProjectSettings  ProjectManager::projectSettings;
+ProjectSettings ProjectManager::projectSettings;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 
-std::shared_ptr <ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath)
+std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string &directoryPath)
 {
 	if (!directoryToCheck)
 		return nullptr;
@@ -61,7 +60,7 @@ std::shared_ptr <ProjectDirectory> ProjectManager::FindProjectDirectory(std::sha
 	size_t dirCount = directoryToCheck->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
-		std::shared_ptr <ProjectDirectory> subDir = directoryToCheck->subdirectories[i];
+		std::shared_ptr<ProjectDirectory> subDir = directoryToCheck->subdirectories[i];
 		// Check if the sub directory is the directory to find
 		if (subDir->path == directoryPath)
 		{
@@ -70,7 +69,7 @@ std::shared_ptr <ProjectDirectory> ProjectManager::FindProjectDirectory(std::sha
 		else
 		{
 			// Start recursive to search in the sub directory
-			std::shared_ptr <ProjectDirectory> foundSubDir = FindProjectDirectory(subDir, directoryPath);
+			std::shared_ptr<ProjectDirectory> foundSubDir = FindProjectDirectory(subDir, directoryPath);
 			if (foundSubDir)
 				return foundSubDir;
 		}
@@ -88,7 +87,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	Editor::SetCurrentProjectDirectory(nullptr);
 #endif
-	for (const auto& kv : projectFilesIds)
+	for (const auto &kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
 		fileChange.path = kv.second.path;
@@ -96,7 +95,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	projectFilesIds.clear();
-	//Get all files of the project
+	// Get all files of the project
 	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
 
 	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
@@ -104,7 +103,7 @@ void ProjectManager::FindAllProjectFiles()
 	std::vector<std::shared_ptr<File>> allFoundFiles;
 	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
 
-	//Get all files supported by the engine
+	// Get all files supported by the engine
 	int fileCount = (int)projectFiles.size();
 	int allFoundFileCount = 0;
 	for (int i = 0; i < fileCount; i++)
@@ -127,9 +126,9 @@ void ProjectManager::FindAllProjectFiles()
 	{
 		std::shared_ptr<File> file = allFoundFiles[i];
 		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-		if (!metaFile->CheckIfExist()) //If there is not meta for this file
+		if (!metaFile->CheckIfExist()) // If there is not meta for this file
 		{
-			//Create one later
+			// Create one later
 			fileWithoutMeta.push_back(file);
 			fileWithoutMetaCount++;
 		}
@@ -150,7 +149,7 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
-	//Set new files ids
+	// Set new files ids
 	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
@@ -159,7 +158,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Fill projectFilesIds
-	for (const auto& kv : compatibleFiles)
+	for (const auto &kv : compatibleFiles)
 	{
 		FileAndPath fileAndPath = FileAndPath();
 		fileAndPath.file = kv.first;
@@ -168,13 +167,13 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Create files references
-	for (const auto& kv : projectFilesIds)
+	for (const auto &kv : projectFilesIds)
 	{
 		CreateFilReference(kv.second.path, kv.first);
 	}
 
 	// Check if a file has changed or has been deleted
-	for (const auto& kv : projectFilesIds)
+	for (const auto &kv : projectFilesIds)
 	{
 		bool contains = oldProjectFilesIds.contains(kv.first);
 		if (contains)
@@ -188,7 +187,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Update file or delete files references
-	for (const auto& kv : oldProjectFilesIds)
+	for (const auto &kv : oldProjectFilesIds)
 	{
 		if (kv.second.hasChanged)
 		{
@@ -203,7 +202,7 @@ void ProjectManager::FindAllProjectFiles()
 #if defined(EDITOR)
 	// Get all project directories and open one
 	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
-	std::shared_ptr <ProjectDirectory> lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
+	std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
 	if (lastOpenedDir)
 		Editor::SetCurrentProjectDirectory(lastOpenedDir);
 	else
@@ -217,12 +216,12 @@ void ProjectManager::FindAllProjectFiles()
 	compatibleFiles.clear();
 }
 
-void ProjectManager::CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory)
+void ProjectManager::CreateProjectDirectories(std::shared_ptr<Directory> projectDirectoryBase, std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
 	size_t dirCount = projectDirectoryBase->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
-		std::shared_ptr <ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath(), projectDirectoryBase->subdirectories[i]->GetUniqueId());
+		std::shared_ptr<ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath(), projectDirectoryBase->subdirectories[i]->GetUniqueId());
 		realProjectDirectory->subdirectories.push_back(newDir);
 		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
 	}
@@ -233,11 +232,11 @@ void ProjectManager::RefreshProjectDirectory()
 	FindAllProjectFiles();
 }
 
-void ProjectManager::FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory)
+void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
 	realProjectDirectory->files.clear();
 
-	for (auto& kv : ProjectManager::projectFilesIds)
+	for (auto &kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
 		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
@@ -247,7 +246,7 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr <ProjectDirectory> rea
 	}
 }
 
-bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
+bool ProjectManager::CreateProject(const std::string &name, const std::string &folderPath)
 {
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
@@ -275,11 +274,11 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 
 		// Copy basic texture
 		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
-	
+
 		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
 		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
 		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.");
 	}
@@ -288,7 +287,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	projectSettings.gameName = name;
 	projectFolderPath = folderPath + name + "\\";
 	SaveProjectSettings();
-	
+
 	return LoadProject(projectFolderPath);
 }
 
@@ -303,43 +302,43 @@ FileType ProjectManager::GetFileType(std::string extension)
 		extension[i] = tolower(extension[i]);
 	}
 
-	if (extension == ".png" || extension == ".jpg" || extension == ".bmp") //If the file is an image
+	if (extension == ".png" || extension == ".jpg" || extension == ".bmp") // If the file is an image
 	{
 		fileType = File_Texture;
 	}
-	else if (extension == ".wav" || extension == ".mp3") //If the file is a sound/music
+	else if (extension == ".wav" || extension == ".mp3") // If the file is a sound/music
 	{
 		fileType = File_Audio;
 	}
-	else if (extension == ".obj") //If the file is a 3D object
+	else if (extension == ".obj") // If the file is a 3D object
 	{
 		fileType = File_Mesh;
 	}
-	else if (extension == ".xen") //If the file is a scene
+	else if (extension == ".xen") // If the file is a scene
 	{
 		fileType = File_Scene;
 	}
-	else if (extension == ".cpp") //If the file is a code file/header
+	else if (extension == ".cpp") // If the file is a code file/header
 	{
 		fileType = File_Code;
 	}
-	else if (extension == ".h") //If the file is a code file/header
+	else if (extension == ".h") // If the file is a code file/header
 	{
 		fileType = File_Header;
 	}
-	else if (extension == ".sky") //If the file is a skybox
+	else if (extension == ".sky") // If the file is a skybox
 	{
 		fileType = File_Skybox;
 	}
-	else if (extension == ".ttf") //If the file is a font
+	else if (extension == ".ttf") // If the file is a font
 	{
 		fileType = File_Font;
 	}
-	else if (extension == ".mat") //If the file is a font
+	else if (extension == ".mat") // If the file is a font
 	{
 		fileType = File_Material;
 	}
-	else if (extension == ".shader") //If the file is a font
+	else if (extension == ".shader") // If the file is a font
 	{
 		fileType = File_Shader;
 	}
@@ -347,7 +346,7 @@ FileType ProjectManager::GetFileType(std::string extension)
 	return fileType;
 }
 
-bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
+bool ProjectManager::LoadProject(const std::string &projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
@@ -369,7 +368,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	SaveProjectSettings();
 #endif
 
-	//Load dynamic library and create game
+	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
 	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
@@ -380,7 +379,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 	Engine::game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
-
 
 	// Fill class registery
 	if (Engine::game)
@@ -474,7 +472,6 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string &path)
 		{
 			jsonString = projectFile->ReadAll();
 			projectFile->Close();
-
 		}
 		else
 		{
@@ -489,7 +486,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string &path)
 			{
 				projectData = json::parse(jsonString);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error");
 				return settings;
@@ -527,7 +524,7 @@ void ProjectManager::SaveProjectSettings()
 	}
 }
 
-void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
+void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference> &fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
@@ -562,7 +559,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 			{
 				j = json::parse(projectFileString);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
 			}
@@ -574,11 +571,11 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				ProjectListItem projectItem;
 				projectItem.path = j[i]["path"];
 				ProjectSettings settings = GetProjectSettings(projectItem.path);
-				if (settings.projectName.empty()) 
+				if (settings.projectName.empty())
 				{
 					projectItem.name = j[i]["name"];
 				}
-				else 
+				else
 				{
 					projectItem.name = settings.projectName;
 				}
@@ -590,7 +587,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	return projects;
 }
 
-void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
+void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem> &projects)
 {
 	size_t projectSize = projects.size();
 	json j;
@@ -612,7 +609,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string &path, uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
@@ -669,7 +666,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 	return fileRef;
 }
 
-void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileReference)
+void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference> &fileReference)
 {
 	const std::string path = fileReference->file->GetPath() + META_EXTENSION;
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
@@ -686,7 +683,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 			{
 				metaData = json::parse(jsonString);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error");
 				return;
@@ -727,4 +724,3 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
 	return reflectedVariables;
 }
-

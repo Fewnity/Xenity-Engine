@@ -5,9 +5,10 @@
 #include <engine/game_elements/transform.h>
 #include <engine/vectors/vector2.h>
 
+#if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
-
+#endif
 
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
@@ -41,7 +42,7 @@ ReflectiveData Light::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
 	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, (int&)type, "type", true);
+	Reflective::AddVariable(reflectedVariables, (int &)type, "type", true);
 	return reflectedVariables;
 }
 
@@ -56,7 +57,7 @@ void Light::OnReflectionUpdated()
 
 #pragma region Quick light setup
 
-void Light::SetupPointLight(const Color& _color, const float _intensity, const float _range)
+void Light::SetupPointLight(const Color &_color, const float _intensity, const float _range)
 {
 	this->type = Light::Point;
 
@@ -65,7 +66,7 @@ void Light::SetupPointLight(const Color& _color, const float _intensity, const f
 	SetRange(_range);
 }
 
-void Light::SetupDirectionalLight(const Color& _color, const float _intensity)
+void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 {
 	this->type = Light::Directional;
 
@@ -75,12 +76,12 @@ void Light::SetupDirectionalLight(const Color& _color, const float _intensity)
 	this->linear = 0;
 }
 
-void Light::SetupSpotLight(const Color& _color, const float _intensity, const float _range, const float _angle)
+void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle)
 {
 	SetupSpotLight(_color, _intensity, _range, _angle, spotSmoothness);
 }
 
-void Light::SetupSpotLight(const Color& _color, const float _intensity, const float _range, const float _angle, const float _smoothness)
+void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
 	this->type = Light::Spot;
 

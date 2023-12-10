@@ -1,4 +1,4 @@
-#if defined(_EE)
+#if defined(_EE2)
 #include "renderer_gskit.h"
 
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -23,8 +23,8 @@
 
 int drawCount = 0;
 int drawCount2 = 0;
-VECTOR position = { 0.00f, 0.00f, 0.00f, 1.00f };
-VECTOR rotation = { 0.00f, 0.00f, 0.00f, 1.00f };
+VECTOR position = {0.00f, 0.00f, 0.00f, 1.00f};
+VECTOR rotation = {0.00f, 0.00f, 0.00f, 1.00f};
 glm::mat4 transformationMatrix = glm::mat4(1);
 
 RendererGsKit::RendererGsKit()
@@ -106,15 +106,15 @@ void RendererGsKit::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	float fH = tan(float(camera->GetFov() / 360.0f * 3.14159f)) * zNear;
 	float fW = fH * (4.0f / 3.0f);
 	create_view_screen(view_screen, 4.0f / 3.0f, -0.5f, 0.5f, -0.5f, 0.5f, 0.30f, 1000.00f);
-	//create_view_screen(view_screen, 4.0f / 3.0f, -fW, fW, -fH, fH, zFar, zNear);
+	// create_view_screen(view_screen, 4.0f / 3.0f, -fW, fW, -fH, fH, zFar, zNear);
 
 	Vector3 camPos = camera->GetTransform()->GetPosition();
 	Vector3 camRot = camera->GetTransform()->GetRotation();
 
-	//VECTOR camera_position = { camPos.x, camPos.y, camPos.z, 1.00f };
-	//VECTOR camera_rotation = { camRot.x * 3.14159265359 / 180.0f, camRot.y * 3.14159265359 / 180.0f, camRot.z * 3.14159265359 / 180.0f, 1.00f };
-	VECTOR camera_position = { 0.00f, 4.00f, 3.00f, 1.00f };
-	VECTOR camera_rotation = { 0.00f, 0.00f, 180.00f * 3.14159265359 / 180.0f, 1.00f };
+	// VECTOR camera_position = { camPos.x, camPos.y, camPos.z, 1.00f };
+	// VECTOR camera_rotation = { camRot.x * 3.14159265359 / 180.0f, camRot.y * 3.14159265359 / 180.0f, camRot.z * 3.14159265359 / 180.0f, 1.00f };
+	VECTOR camera_position = {0.00f, 4.00f, 3.00f, 1.00f};
+	VECTOR camera_rotation = {0.00f, 0.00f, 180.00f * 3.14159265359 / 180.0f, 1.00f};
 	create_world_view(world_view, camera_position, camera_rotation);
 }
 
@@ -124,10 +124,10 @@ void RendererGsKit::ResetTransform()
 
 void RendererGsKit::SetTransform(const Vector3 &position, const Vector3 &rotation, const Vector3 &scale, bool resetTransform)
 {
-	//transformationMatrix = glm::translate(transformationMatrix, glm::vec3(position.x, position.y, position.z));
-	//transformationMatrix = glm::rotate(transformationMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	//transformationMatrix = glm::rotate(transformationMatrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	//transformationMatrix = glm::rotate(transformationMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	// transformationMatrix = glm::translate(transformationMatrix, glm::vec3(position.x, position.y, position.z));
+	// transformationMatrix = glm::rotate(transformationMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	// transformationMatrix = glm::rotate(transformationMatrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	// transformationMatrix = glm::rotate(transformationMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 void RendererGsKit::SetTransform(const glm::mat4 &mat)
@@ -143,7 +143,7 @@ void RendererGsKit::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 {
 }
 
-int gsKit_convert_xyz(vertex_f_t* output, GSGLOBAL* gsGlobal, int count, vertex_f_t* vertices)
+int gsKit_convert_xyz(vertex_f_t *output, GSGLOBAL *gsGlobal, int count, vertex_f_t *vertices)
 {
 	int z;
 	unsigned int max_z;
@@ -181,12 +181,13 @@ int gsKit_convert_xyz(vertex_f_t* output, GSGLOBAL* gsGlobal, int count, vertex_
 	return 0;
 }
 
-void calculate_vertices_clipped(VECTOR* output, int count, VECTOR* vertices, MATRIX local_screen) {
+void calculate_vertices_clipped(VECTOR *output, int count, VECTOR *vertices, MATRIX local_screen)
+{
 	asm __volatile__(
-		"lqc2		$vf1, 0x00(%3)	    \n"	//set local_screen matrix[0]
-		"lqc2		$vf2, 0x10(%3)	    \n"	//set local_screen matrix[1]
-		"lqc2		$vf3, 0x20(%3)	    \n"	//set local_screen matrix[2]
-		"lqc2		$vf4, 0x30(%3)	    \n"	//set local_screen matrix[3]
+		"lqc2		$vf1, 0x00(%3)	    \n" // set local_screen matrix[0]
+		"lqc2		$vf2, 0x10(%3)	    \n" // set local_screen matrix[1]
+		"lqc2		$vf3, 0x20(%3)	    \n" // set local_screen matrix[2]
+		"lqc2		$vf4, 0x30(%3)	    \n" // set local_screen matrix[3]
 		// GS CLIP
 		"li      $2,0x4580				\n"
 		"dsll    $2, 16					\n"
@@ -198,7 +199,7 @@ void calculate_vertices_clipped(VECTOR* output, int count, VECTOR* vertices, MAT
 		"li      $9,	0x00			\n"
 
 		"calcvertices_loop:	            \n"
-		"lqc2		$vf6, 0x00(%2)	    \n" //load XYZ
+		"lqc2		$vf6, 0x00(%2)	    \n" // load XYZ
 		"vmulaw		$ACC, $vf4, $vf0	\n"
 		"vmaddax	$ACC, $vf1, $vf6	\n"
 		"vmadday	$ACC, $vf2, $vf6	\n"
@@ -207,19 +208,19 @@ void calculate_vertices_clipped(VECTOR* output, int count, VECTOR* vertices, MAT
 		"vwaitq								\n"
 		"vmulq.xyz		$vf7,	$vf7, $Q	\n"
 		"vftoi4.xyzw	$vf8,	$vf7		\n"
-		//GS CLIP
+		// GS CLIP
 		"vnop							 \n"
 		"vnop							 \n"
-		"ctc2    $0,	$vi16            \n"	//clear status flag
-		"vsub.xyw  $vf0, $vf7,	$vf0     \n"	//(z,ZBz,PPy,PPx)-(1,0,0,0);
-		"vsub.xy   $vf0, $vf29,	$vf7  	 \n"	//(Zmax,0,Ymax,Xmax) -(z,ZBz,PPy,PPx)
+		"ctc2    $0,	$vi16            \n" // clear status flag
+		"vsub.xyw  $vf0, $vf7,	$vf0     \n" //(z,ZBz,PPy,PPx)-(1,0,0,0);
+		"vsub.xy   $vf0, $vf29,	$vf7  	 \n" //(Zmax,0,Ymax,Xmax) -(z,ZBz,PPy,PPx)
 		"vnop                            \n"
 		"vnop                            \n"
 		"vnop							 \n"
 		"vnop							 \n"
 		"sll     $9,	1				 \n"
 		"andi    $9,	$9, 6			 \n"
-		"cfc2    $2,	$vi16            \n"	//read status flag
+		"cfc2    $2,	$vi16            \n" // read status flag
 		"andi    $2,	$2,0xc0			 \n"
 		"beqz    $2,	calcvertices_skip1\n"
 		"ori     $9,	$9,1			 \n"
@@ -229,13 +230,12 @@ void calculate_vertices_clipped(VECTOR* output, int count, VECTOR* vertices, MAT
 		"vmfir.w $vf8,	$vi1			 \n"
 
 		"calcvertices_skip2:		     \n"
-		"sqc2		$vf7, 0x00(%0)	     \n" //Store XYZ
+		"sqc2		$vf7, 0x00(%0)	     \n" // Store XYZ
 		"addi		%0, 0x10	         \n"
 		"addi		%2, 0x10	         \n"
 		"addi		%1, -1		         \n"
 		"bne		$0, %1, calcvertices_loop	\n"
-		: : "r" (output), "r" (count), "r" (vertices), "r" (local_screen) : "$10", "memory"
-	);
+		: : "r"(output), "r"(count), "r"(vertices), "r"(local_screen) : "$10", "memory");
 }
 
 void RendererGsKit::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
@@ -243,7 +243,7 @@ void RendererGsKit::DrawMeshData(const std::shared_ptr<MeshData> &meshData, cons
 	int subMeshCount = meshData->subMeshCount;
 	size_t textureCount = textures.size();
 
-	MeshData::SubMesh* subMesh = nullptr;
+	MeshData::SubMesh *subMesh = nullptr;
 
 	MATRIX local_world;
 	MATRIX local_screen;
@@ -264,40 +264,40 @@ void RendererGsKit::DrawMeshData(const std::shared_ptr<MeshData> &meshData, cons
 		if (subMesh->vertice_count == 0)
 			continue;
 
-		VECTOR* temp_vertices = (VECTOR*)memalign(128, sizeof(VECTOR) * subMesh->vertice_count);
-		VECTOR* transformed_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * subMesh->vertice_count);
-		color_t* transformed_colors = (color_t*)memalign(128, sizeof(color_t) * subMesh->vertice_count);
+		VECTOR *temp_vertices = (VECTOR *)memalign(128, sizeof(VECTOR) * subMesh->vertice_count);
+		VECTOR *transformed_verts = (VECTOR *)memalign(128, sizeof(VECTOR) * subMesh->vertice_count);
+		color_t *transformed_colors = (color_t *)memalign(128, sizeof(color_t) * subMesh->vertice_count);
 
 		for (int i = 0; i < 16; i++)
 		{
 			local_world[i] = transformationMatrix[i / 4][i % 4];
 		}
 
-		//create_local_world(local_world, position, rotation);
+		// create_local_world(local_world, position, rotation);
 		create_local_screen(local_screen, local_world, world_view, view_screen);
 
-		//calculate_vertices(temp_vertices, subMesh->vertice_count, subMesh->c_verts, local_screen);
+		// calculate_vertices(temp_vertices, subMesh->vertice_count, subMesh->c_verts, local_screen);
 		calculate_vertices_clipped(temp_vertices, subMesh->vertice_count, subMesh->c_verts, local_screen);
 
-		gsKit_convert_xyz((vertex_f_t*)transformed_verts, gsGlobal, subMesh->vertice_count, (vertex_f_t*)temp_vertices);
+		gsKit_convert_xyz((vertex_f_t *)transformed_verts, gsGlobal, subMesh->vertice_count, (vertex_f_t *)temp_vertices);
 
-		draw_convert_rgbq(transformed_colors, subMesh->vertice_count, (vertex_f_t*)temp_vertices, (color_f_t*)subMesh->c_colours, 0x80);
+		draw_convert_rgbq(transformed_colors, subMesh->vertice_count, (vertex_f_t *)temp_vertices, (color_f_t *)subMesh->c_colours, 0x80);
 
-		GSPRIMUVPOINT* transformed_vertices = (GSPRIMUVPOINT*)memalign(128, sizeof(GSPRIMUVPOINT) * subMesh->vertice_count);
+		GSPRIMUVPOINT *transformed_vertices = (GSPRIMUVPOINT *)memalign(128, sizeof(GSPRIMUVPOINT) * subMesh->vertice_count);
 
-		//GSTEXTURE* ps2Tex = &textures[i]->ps2Tex;
+		// GSTEXTURE* ps2Tex = &textures[i]->ps2Tex;
 
 		// ---- Fill vertices
 		for (unsigned int i2 = 0; i2 < subMesh->vertice_count; i2++)
 		{
 			transformed_vertices[i2].rgbaq = color_to_RGBAQ(transformed_colors[i2].r, transformed_colors[i2].g, transformed_colors[i2].b, transformed_colors[i2].a, 0.0f);
 
-			//transformed_vertices[i].rgbaq = color_to_RGBAQ(0, 0, 0, 0, 0.0f);
+			// transformed_vertices[i].rgbaq = color_to_RGBAQ(0, 0, 0, 0, 0.0f);
 
 			transformed_vertices[i2].xyz2 = vertex_to_XYZ2(gsGlobal, transformed_verts[i2][0], transformed_verts[i2][1], transformed_verts[i2][2]);
-			//transformed_vertices[i].xyz2 = vertex_to_XYZ2(gsGlobal, 0, 0, 0);
+			// transformed_vertices[i].xyz2 = vertex_to_XYZ2(gsGlobal, 0, 0, 0);
 			transformed_vertices[i2].uv = vertex_to_UV(&textures[i]->ps2Tex, subMesh->c_st[i2][0] * textures[i]->ps2Tex.Width, subMesh->c_st[i2][1] * textures[i]->ps2Tex.Height);
-			//transformed_vertices[i].uv = vertex_to_UV(ps2Tex, 0 * ps2Tex->Width, 0 * ps2Tex->Height);
+			// transformed_vertices[i].uv = vertex_to_UV(ps2Tex, 0 * ps2Tex->Width, 0 * ps2Tex->Height);
 		}
 
 		gsKit_prim_list_triangle_goraud_texture_uv_3d(gsGlobal, &textures[i]->ps2Tex, subMesh->vertice_count, transformed_vertices); // With texture

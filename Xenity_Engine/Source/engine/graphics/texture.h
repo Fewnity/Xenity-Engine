@@ -7,7 +7,8 @@
 #include <engine/reflection/reflection.h>
 
 #if defined(_EE)
-#include <gsKit.h>
+#include <draw.h>
+// #include <gsKit.h>
 #endif
 
 class API Texture : public FileReference, public Reflective
@@ -40,15 +41,15 @@ public:
 	Texture();
 
 	/**
-	* [Internal]
-	*/
-	//Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
+	 * [Internal]
+	 */
+	// Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
-	//static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
+	// static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	~Texture();
 
@@ -57,77 +58,77 @@ public:
 	void UnloadFileReference() override;
 
 	/**
-	* Set texture data
-	* @param data Texture data
-	*/
-	void SetData(const unsigned char* data);
+	 * Set texture data
+	 * @param data Texture data
+	 */
+	void SetData(const unsigned char *data);
 
 	/**
-	* Get texture ID
-	*/
+	 * Get texture ID
+	 */
 	unsigned int GetTextureId() const;
 
 	/**
-	* Set texture filter
-	* @param filter Filter
-	*/
+	 * Set texture filter
+	 * @param filter Filter
+	 */
 	void SetFilter(const Filter filter);
 
 	/**
-	* Set texture wrap mode
-	* @param mode Wrap mode
-	*/
+	 * Set texture wrap mode
+	 * @param mode Wrap mode
+	 */
 	void SetWrapMode(const WrapMode mode);
 
-	void SetSize(int width, int height) 
+	void SetSize(int width, int height)
 	{
 		this->width = width;
 		this->height = height;
 	}
 	/**
-	* Get texture width
-	*/
+	 * Get texture width
+	 */
 	int GetWidth() const;
 
 	/**
-	* Get texture height
-	*/
+	 * Get texture height
+	 */
 	int GetHeight() const;
 
 	/**
-	* Set texture pixel per unit
-	* @param value Pixel per unit
-	*/
+	 * Set texture pixel per unit
+	 * @param value Pixel per unit
+	 */
 	void SetPixelPerUnit(int value);
 
 	/**
-	* Get texture pixel per unit
-	*/
+	 * Get texture pixel per unit
+	 */
 	int GetPixelPerUnit() const;
 
 	/**
-	* Get texture channel count
-	*/
+	 * Get texture channel count
+	 */
 	int GetChannelCount() const;
 
-	void SetChannelCount(int channelCount) 
+	void SetChannelCount(int channelCount)
 	{
 		this->nrChannels = channelCount;
 	}
 
 	/**
-	* Get if the texture is using mipmap
-	*/
+	 * Get if the texture is using mipmap
+	 */
 	bool GetUseMipmap() const;
 
 	/**
-	* Get texture filter
-	*/
+	 * Get texture filter
+	 */
 	Texture::Filter GetFilter() const;
 
 	/**
-	* Get texture wrap mode
-	*/
+	 * Get texture wrap mode
+	 */
 	Texture::WrapMode GetWrapMode() const;
 
 	int mipmaplevelCount = 0;
@@ -135,8 +136,8 @@ public:
 	bool inVram = true;
 
 	/**
-	* Return if the texture is valid
-	*/
+	 * Return if the texture is valid
+	 */
 	bool IsValid() const
 	{
 		return isValid;
@@ -149,38 +150,38 @@ public:
 
 #if defined(__PSP__)
 	/**
-	* Create texture data for a mipmap level
-	* @param level Mipmap level
-	* @param texData Base texture data
-	*/
-	void SetTextureLevel(int level, const unsigned char* texData);
+	 * Create texture data for a mipmap level
+	 * @param level Mipmap level
+	 * @param texData Base texture data
+	 */
+	void SetTextureLevel(int level, const unsigned char *texData);
 
-	std::vector<void*> data;
+	std::vector<void *> data;
 	unsigned int pW = 0;
 	unsigned int pH = 0;
 	int type;
 #elif defined(_EE)
-	GSTEXTURE ps2Tex;
+	// GSTEXTURE ps2Tex;
+	texbuffer_t texbuff;
 #endif
 
 private:
-
 	/**
-	* Create the texture from a file path
-	* @param filePath File path
-	* @param filter Texture filter
-	* @param useMipMap Use mip map
-	*/
+	 * Create the texture from a file path
+	 * @param filePath File path
+	 * @param filter Texture filter
+	 * @param useMipMap Use mip map
+	 */
 	void CreateTexture(const Filter filter, const bool useMipMap);
 
 	/**
-	* Load texture data
-	*/
+	 * Load texture data
+	 */
 	void LoadTexture();
 
 	/**
-	* Unload texture data
-	*/
+	 * Unload texture data
+	 */
 	void Unload();
 
 	Filter filter = Bilinear;
@@ -190,5 +191,5 @@ private:
 
 	int pixelPerUnit = 100;
 	bool isValid = false;
-	unsigned char* buffer = nullptr;
+	unsigned char *buffer = nullptr;
 };

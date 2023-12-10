@@ -319,6 +319,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
+    <ClCompile Include="Source\engine\graphics\renderer\renderer_vu1.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -545,6 +546,7 @@
     </ClInclude>
     <ClInclude Include="Source\engine\api.h" />
     <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
+    <ClInclude Include="Source\engine\graphics\renderer\renderer_vu1.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
     <ClInclude Include="Source\editor\plugin\api.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>

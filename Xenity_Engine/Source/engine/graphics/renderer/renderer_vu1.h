@@ -1,17 +1,16 @@
 #pragma once
-#if defined(_EE2)
+#if defined(_EE)
 #include <engine/api.h>
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
-#include <gsKit.h>
 #include <draw3d.h>
 #include <math3d.h>
 
-class API RendererGsKit : public Renderer
+class API RendererVU1 : public Renderer
 {
 public:
-	RendererGsKit();
+	RendererVU1();
 	int Init() override;
 	void Setup() override;
 	void Stop() override;
@@ -40,11 +39,33 @@ public:
 	void UploadMeshData(const std::shared_ptr<MeshData> &meshData) override;
 
 	void Setlights(const std::shared_ptr<Camera> &camera) override;
-	GSGLOBAL *gsGlobal = nullptr;
-	MATRIX world_view;
-	MATRIX view_screen;
+	/**
+	 * Color look up table.
+	 * Needed for texture.
+	 */
+	clutbuffer_t clut;
+
+	/**
+	 * Level of details.
+	 * Needed for texture.
+	 */
+	lod_t lod;
+
+	/** Set GS primitive type of drawing. */
+	prim_t prim;
+	texbuffer_t texbuff;
+	// GSGLOBAL* gsGlobal = nullptr;
+	// MATRIX world_view;
+	// MATRIX view_screen;
 
 private:
+	void set_lod_clut_prim_tex_buff();
+	void clear_screen(framebuffer_t *frame, zbuffer_t *z);
+	void send_texture(texbuffer_t *texbuf, int id);
+	void vu1_upload_micro_program();
+	void vu1_set_double_buffer_settings();
+	void calculate_cube(texbuffer_t *t_texbuff);
+
 	void ApplyTextureFilters(const std::shared_ptr<Texture> &texture);
 
 	int maxLightCount = 8;

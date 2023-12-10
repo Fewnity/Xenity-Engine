@@ -8,9 +8,10 @@
 #include <engine/vectors/vector2.h>
 #include <engine/graphics/color/color.h>
 
+#if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
-
+#endif
 
 AudioSource::AudioSource()
 {

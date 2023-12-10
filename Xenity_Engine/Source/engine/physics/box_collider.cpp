@@ -8,9 +8,10 @@
 
 #include <engine/game_elements/transform.h>
 
+#if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/gizmo.h>
-
+#endif
 
 BoxCollider::BoxCollider()
 {
@@ -25,8 +26,8 @@ ReflectiveData BoxCollider::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, size, "size", true);
 	AddVariable(reflectedVariables, offset, "offset", true);
-	//AddReflectionVariable(reflectedVariables, min, "min", true);
-	//AddReflectionVariable(reflectedVariables, max, "max", true);
+	// AddReflectionVariable(reflectedVariables, min, "min", true);
+	// AddReflectionVariable(reflectedVariables, max, "max", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
 	return reflectedVariables;
 }
@@ -37,7 +38,7 @@ void BoxCollider::OnReflectionUpdated()
 	max = size / 2.0f;
 }
 
-bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b)
+bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
 {
 	Vector3 aPos = a->GetTransform()->GetPosition() + a->offset;
 	Vector3 bPos = b->GetTransform()->GetPosition() + b->offset;
@@ -59,7 +60,7 @@ bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std:
 	return false;
 }
 
-CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity)
+CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b, const Vector3 &aVelocity)
 {
 	Vector3 aPosition = a->GetTransform()->GetPosition();
 	Vector3 bPosition = b->GetTransform()->GetPosition();
