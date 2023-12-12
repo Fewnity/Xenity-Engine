@@ -69,7 +69,7 @@ Stb (used: stb_image 2.23): https://github.com/nothings/stb
 ### Windows specific: 
 FreeType (2.12.1): https://github.com/ubawurinna/freetype-windows-binaries/
 
-ImGui (1.89.5): https://github.com/ocornut/imgui
+ImGui (1.90.1): https://github.com/ocornut/imgui
 
 SDL2 (2.26.2): https://github.com/libsdl-org/SDL
 
