@@ -128,6 +128,9 @@ public:
 	static std::shared_ptr <MeshData> forwardArrow;
 	static std::shared_ptr <Texture> toolArrowsTexture;
 	static void StartFolderCopy(std::string path, std::string newPath);
+
+	static std::string GetIncrementedGameObjectName(std::string name);
+
 private:
 
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
@@ -136,6 +139,7 @@ private:
 	static bool startRotatingCamera;
 
 	static void CreateMenus();
+	static void GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number);
 
 	static ProjectSettingsMenu* projectSettings;
 	static EngineSettingsMenu* engineSettings;

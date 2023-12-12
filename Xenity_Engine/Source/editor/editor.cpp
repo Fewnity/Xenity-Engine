@@ -411,7 +411,7 @@ void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicat
 	if (goToDuplicate)
 	{
 		// Create new gameobject
-		std::shared_ptr<GameObject> newGameObject = CreateGameObject(goToDuplicate->name);
+		std::shared_ptr<GameObject> newGameObject = CreateGameObject(GetIncrementedGameObjectName(goToDuplicate->name));
 
 		// Set parent and position/rotation/scale
 		if (goToDuplicate->parent.lock())
@@ -525,6 +525,92 @@ void Editor::StartFolderCopy(std::string path, std::string newPath)
 			FileSystem::fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
 		}
 	}
+}
+
+void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number)
+{
+	int endParenthesis = -1;
+	int startParenthesis = -1;
+	int nameLenght = name.size();
+	int numberState = 2; // 0 Other than number, 1 only number, 2 nothing found
+
+	for (int i = nameLenght - 1; i > 0; i--)
+	{
+		if (name[i] == ')')
+		{
+			if (endParenthesis == -1 && startParenthesis == -1)
+				endParenthesis = i;
+			else
+				break;
+		}
+		else if (name[i] == '(')
+		{
+			if (endParenthesis == -1 || numberState != 1)
+				break;
+
+			if (startParenthesis == -1)
+			{
+				if (name[i - 1] == ' ')
+				{
+					startParenthesis = i;
+				}
+			}
+			break;
+		}
+		else
+		{
+			if (!isdigit(name[i]))
+			{
+				numberState = 0;
+				break;
+			}
+			else
+			{
+				numberState = 1;
+			}
+		}
+	}
+
+	if (startParenthesis != -1)
+	{
+		std::string t = name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1);
+		number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
+		baseName = name.substr(0, startParenthesis-1);
+	}
+	else
+	{
+		baseName = name;
+		number = 1;
+	}
+}
+
+std::string Editor::GetIncrementedGameObjectName(std::string name)
+{
+	std::string finalName = "";
+	int number = 1;
+	int foundNumberLocation = -1;
+	int endParenthesis = -1;
+	int startParenthesis = -1;
+	int numberState = 2; // 0 Other than number, 1 only number, 2 nothing found
+
+	GetIncrementedGameObjectNameInfo(name, finalName, number);
+
+	int gameObjectCount = GameplayManager::gameObjects.size();
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		std::string tempName;
+		int tempNumber;
+		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->name, tempName, tempNumber);
+		if (tempName == finalName) 
+		{
+			if(number < tempNumber)
+				number = tempNumber;
+		}
+	}
+	
+	finalName = finalName + " (" + std::to_string(number) + ")";
+
+	return finalName;
 }
 
 void Editor::OnDragAndDropFileFinished()
