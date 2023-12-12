@@ -40,6 +40,8 @@
 #endif
 #include <engine/engine_settings.h>
 
+//Reserved ids: 10 (MainScene)
+
 using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
@@ -52,7 +54,7 @@ std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 
-std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string &directoryPath)
+std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
 {
 	if (!directoryToCheck)
 		return nullptr;
@@ -87,7 +89,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	Editor::SetCurrentProjectDirectory(nullptr);
 #endif
-	for (const auto &kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
 		fileChange.path = kv.second.path;
@@ -158,7 +160,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Fill projectFilesIds
-	for (const auto &kv : compatibleFiles)
+	for (const auto& kv : compatibleFiles)
 	{
 		FileAndPath fileAndPath = FileAndPath();
 		fileAndPath.file = kv.first;
@@ -167,13 +169,13 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Create files references
-	for (const auto &kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		CreateFilReference(kv.second.path, kv.first);
 	}
 
 	// Check if a file has changed or has been deleted
-	for (const auto &kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
 		bool contains = oldProjectFilesIds.contains(kv.first);
 		if (contains)
@@ -187,7 +189,7 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Update file or delete files references
-	for (const auto &kv : oldProjectFilesIds)
+	for (const auto& kv : oldProjectFilesIds)
 	{
 		if (kv.second.hasChanged)
 		{
@@ -236,7 +238,7 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 {
 	realProjectDirectory->files.clear();
 
-	for (auto &kv : ProjectManager::projectFilesIds)
+	for (auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
 		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
@@ -246,45 +248,56 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 	}
 }
 
-bool ProjectManager::CreateProject(const std::string &name, const std::string &folderPath)
+bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\materials\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\shaders\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\textures\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Materials\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Shaders\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Textures\\");
+	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Scenes\\");
+
+	// Create default scene
+	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFilReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
+	if (sceneRef->file->Open(true))
+	{
+		std::string data = AssetManager::GetDefaultFileData(File_Scene);
+		sceneRef->file->Write(data);
+		sceneRef->file->Close();
+	}
 
 	// TODO improve this
 	try
 	{
 		// Copy basic materials
-		std::filesystem::copy_file("materials\\standardMaterial.mat", folderPath + name + "\\assets\\materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\unlitMaterial.mat", folderPath + name + "\\assets\\materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\standardMaterial.mat", folderPath + name + "\\assets\\Materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\unlitMaterial.mat", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
 
 		// Copy basic shaders
-		std::filesystem::copy_file("shaders\\standard.shader", folderPath + name + "\\assets\\shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\standard.shader.meta", folderPath + name + "\\assets\\shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\unlit.shader", folderPath + name + "\\assets\\shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\unlit.shader.meta", folderPath + name + "\\assets\\shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\standard.shader", folderPath + name + "\\assets\\Shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\standard.shader.meta", folderPath + name + "\\assets\\Shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\unlit.shader", folderPath + name + "\\assets\\Shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("shaders\\unlit.shader.meta", folderPath + name + "\\assets\\Shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
 
 		// Copy basic 3D models
-		std::filesystem::copy("engine_assets\\models\\", folderPath + name + "\\assets\\models\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+		std::filesystem::copy("engine_assets\\models\\", folderPath + name + "\\assets\\Models\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 
 		// Copy basic texture
-		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\Textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
 
 		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
 		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
 	}
-	catch (const std::exception &)
+	catch (const std::exception&)
 	{
 		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.");
 	}
 
 	projectSettings.projectName = name;
 	projectSettings.gameName = name;
+	projectSettings.startScene = sceneRef;
 	projectFolderPath = folderPath + name + "\\";
 	SaveProjectSettings();
 
@@ -346,7 +359,7 @@ FileType ProjectManager::GetFileType(std::string extension)
 	return fileType;
 }
 
-bool ProjectManager::LoadProject(const std::string &projectPathToLoad)
+bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
@@ -459,7 +472,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	return fileRef;
 }
 
-ProjectSettings ProjectManager::GetProjectSettings(const std::string &path)
+ProjectSettings ProjectManager::GetProjectSettings(const std::string& path)
 {
 	ProjectSettings settings;
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path + PROJECT_SETTINGS_FILE_NAME);
@@ -486,7 +499,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string &path)
 			{
 				projectData = json::parse(jsonString);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error");
 				return settings;
@@ -524,7 +537,7 @@ void ProjectManager::SaveProjectSettings()
 	}
 }
 
-void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference> &fileReference)
+void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
@@ -559,7 +572,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 			{
 				j = json::parse(projectFileString);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
 			}
@@ -587,7 +600,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	return projects;
 }
 
-void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem> &projects)
+void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
 {
 	size_t projectSize = projects.size();
 	json j;
@@ -609,7 +622,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem> &projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string &path, uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
@@ -666,7 +679,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::str
 	return fileRef;
 }
 
-void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference> &fileReference)
+void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	const std::string path = fileReference->file->GetPath() + META_EXTENSION;
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
@@ -683,7 +696,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference> &fileRefe
 			{
 				metaData = json::parse(jsonString);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error");
 				return;
