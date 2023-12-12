@@ -96,20 +96,20 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	{
 		fileHovered = true;
 	}
-	if (hovered && ((ImGui::IsMouseClicked(0) && doubleClicked) || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))))
+	if (hovered && ((ImGui::IsMouseClicked(0) && doubleClicked) || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) && !cancelNextClick)
 	{
 		if (doubleClicked)
 		{
 			OpenItem(item);
+			cancelNextClick = true;
 		}
 		else
 		{
 			if (isFile)
 			{
 				Editor::SetSelectedFileReference(item.file);
+				Editor::SetSelectedGameObject(nullptr);
 			}
-
-			Editor::SetSelectedGameObject(nullptr);
 		}
 	}
 
@@ -455,8 +455,13 @@ void FileExplorerMenu::Draw()
 		}
 		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 	}
-	else {
+	else 
+	{
 		isHovered = true;
+	}
+	if (ImGui::IsMouseReleased(0))
+	{
+		cancelNextClick = false;
 	}
 	ImGui::End();
 }

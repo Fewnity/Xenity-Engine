@@ -36,6 +36,7 @@ private:
 	std::shared_ptr<ProjectDirectory> directoryToRename = nullptr;
 	bool ignoreClose = false;
 	bool focusSet = false;
+	bool cancelNextClick = false;
 	void Rename();
 };
 
