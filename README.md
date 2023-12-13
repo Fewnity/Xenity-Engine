@@ -71,7 +71,7 @@ FreeType (2.12.1): https://github.com/ubawurinna/freetype-windows-binaries/
 
 ImGui (1.90.1): https://github.com/ocornut/imgui
 
-SDL2 (2.26.2): https://github.com/libsdl-org/SDL
+SDL2 (2.28.5): https://github.com/libsdl-org/SDL
 
 Glad (4.6): https://glad.dav1d.de/ (filled: https://glad.dav1d.de/#profile=core&language=c&specification=gl&loader=on&api=gl%3D4.6)
 
