@@ -130,13 +130,13 @@ public:
 	static void StartFolderCopy(std::string path, std::string newPath);
 
 	static std::string GetIncrementedGameObjectName(std::string name);
+	static bool startRotatingCamera;
 
 private:
 
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;
-	static bool startRotatingCamera;
 
 	static void CreateMenus();
 	static void GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number);
