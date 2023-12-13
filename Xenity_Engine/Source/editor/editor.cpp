@@ -437,6 +437,7 @@ void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicat
 			ReflectionUtils::JsonToReflectiveData(copiedValues, newReflection);
 			newComponent->OnReflectionUpdated();
 		}
+		SetSelectedGameObject(newGameObject);
 	}
 }
 
