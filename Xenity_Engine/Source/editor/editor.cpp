@@ -45,7 +45,6 @@
 
 using json = nlohmann::json;
 
-std::weak_ptr<GameObject> Editor::cameraGO;
 std::weak_ptr<AudioSource> Editor::audioSource;
 std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
 
@@ -73,7 +72,6 @@ std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
 std::shared_ptr <MeshData> Editor::upArrow = nullptr;
 std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
-bool Editor::startRotatingCamera = false;
 
 std::vector<std::string> Editor::dragdropEntries;
 
@@ -82,14 +80,7 @@ void Editor::Init()
 	CreateMenus();
 
 	// Create scene camera TODO : Move to scene_menu.cpp?
-	cameraGO = CreateGameObjectEditor("Camera");
-	std::shared_ptr<Camera> camera = cameraGO.lock()->AddComponent<Camera>();
-	camera->SetNearClippingPlane(0.01f);
-	camera->SetFarClippingPlane(500);
-	camera->SetProjectionSize(5.0f);
-	camera->SetFov(70);
-	camera->isEditor = true;
-	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
+
 
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
@@ -127,64 +118,6 @@ void Editor::Update()
 {
 	if (ProjectManager::GetIsProjectLoaded())
 	{
-		// Check user input and camera movement when in the scene menu
-		if (InputSystem::GetKeyUp(MOUSE_RIGHT))
-		{
-			startRotatingCamera = false;
-		}
-		if (sceneMenu->isFocused)
-		{
-			// Get camera transform
-			std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
-			Vector3 rot = cameraTransform->GetRotation();
-			Vector3 pos = cameraTransform->GetPosition();
-
-			if (InputSystem::GetKeyDown(MOUSE_RIGHT) && sceneMenu->isHovered)
-			{
-				startRotatingCamera = true;
-			}
-
-			// Rotate the camera when dragging the mouse right click
-			if (InputSystem::GetKey(MOUSE_RIGHT) && startRotatingCamera)
-			{
-				rot.x += -InputSystem::mouseSpeed.y * 70;
-				rot.y += InputSystem::mouseSpeed.x * 70;
-			}
-
-			// Move the camera when using keyboard's arrows
-			float fwd = 0;
-			float up = 0;
-			float side = 0;
-
-			if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
-				fwd = -1 * Time::GetDeltaTime();
-			else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
-				fwd = 1 * Time::GetDeltaTime();
-
-			if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
-				side = 1 * Time::GetDeltaTime();
-			else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
-				side = -1 * Time::GetDeltaTime();
-
-			if (InputSystem::GetKey(MOUSE_MIDDLE))
-			{
-				up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
-				side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
-			}
-
-			// Move the camera when using the mouse's wheel (Do not use delta time)
-			if (sceneMenu->isHovered)
-				fwd -= InputSystem::mouseWheel / 15.0f;
-
-			// Apply values
-			pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
-			pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
-			pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
-
-			cameraTransform->SetPosition(pos);
-			cameraTransform->SetRotation(rot);
-		}
-
 		//------- Check shortcuts
 
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Z)))
@@ -200,6 +133,22 @@ void Editor::Update()
 		{
 			if (selectedGameObject.lock())
 				DuplicateGameObject(selectedGameObject.lock());
+		}
+
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(N)))
+		{
+			CreateEmpty();
+		}
+
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(NUM_1)))
+		{
+			sceneMenu->Focus();
+		}
+
+		if ((InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(D)))
+		{
+			SetSelectedGameObject(nullptr);
+			SetSelectedFileReference(nullptr);
 		}
 
 		if (InputSystem::GetKey(DELETE))
@@ -233,7 +182,6 @@ void Editor::Update()
 				GameplayManager::SetGameState(GameState::Stopped, true);
 			}
 		}
-
 
 		if (GameplayManager::GetGameState() == GameState::Stopped)
 		{

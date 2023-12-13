@@ -130,7 +130,6 @@ public:
 	static void StartFolderCopy(std::string path, std::string newPath);
 
 	static std::string GetIncrementedGameObjectName(std::string name);
-	static bool startRotatingCamera;
 
 private:
 
@@ -149,7 +148,5 @@ private:
 	static ProfilerMenu* profiler;
 	static SelectProjectMenu* selectProjectMenu;
 	static CreateProjectMenu* createProjectMenu;
-
-	static std::weak_ptr<GameObject> cameraGO;
 };
 

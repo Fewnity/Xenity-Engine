@@ -9,6 +9,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/transform.h>
 #include <editor/editor.h>
+#include <engine/time/time.h>
 
 enum Side {
 	Side_None,
@@ -33,6 +34,14 @@ std::weak_ptr<GameObject> cube3;
 
 void SceneMenu::Init()
 {
+	cameraGO = CreateGameObjectEditor("Camera");
+	std::shared_ptr<Camera> camera = cameraGO.lock()->AddComponent<Camera>();
+	camera->SetNearClippingPlane(0.01f);
+	camera->SetFarClippingPlane(500);
+	camera->SetProjectionSize(5.0f);
+	camera->SetFov(70);
+	camera->isEditor = true;
+	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
 }
 
 ImVec4 normalColor{ 0.5f, 0.5f, 0.5f, 0.5f };
@@ -121,24 +130,117 @@ void SceneMenu::Draw()
 	windowSize = Vector2Int(0, 0);
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	std::string windowName = "Scene " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y) + "###Scene";
+	std::string windowName = "Scene";
+	if (isLastFrameOpened)
+		windowName += " " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y);
+	windowName += "###Scene";
 	bool visible = ImGui::Begin(windowName.c_str(), 0, ImGuiWindowFlags_NoNav);
+	isLastFrameOpened = visible;
 	if (visible)
 	{
+		if (forceFocus)
+		{
+			ImGui::SetWindowFocus();
+			forceFocus = true;
+		}
+
 		ImVec2 size = ImGui::GetContentRegionAvail();
 
 		ImVec2 startCursorPos = ImGui::GetCursorPos();
-		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 		{
 			ImGui::SetWindowFocus();
+			isFocused = true;
 		}
 		if (camera)
 		{
+			// Check user input and camera movement when in the scene menu
+			if (InputSystem::GetKeyUp(MOUSE_RIGHT))
+			{
+				startRotatingCamera = false;
+			}
+			if (isFocused)
+			{
+				// Get camera transform
+				std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
+				Vector3 rot = cameraTransform->GetRotation();
+				Vector3 pos = cameraTransform->GetPosition();
+
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && isHovered)
+				{
+					startRotatingCamera = true;
+				}
+
+				// Rotate the camera when dragging the mouse right click
+				if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera)
+				{
+					rot.x += -InputSystem::mouseSpeed.y * 70;
+					rot.y += InputSystem::mouseSpeed.x * 70;
+				}
+
+				// Move the camera when using keyboard's arrows
+				float fwd = 0;
+				float up = 0;
+				float upWorld = 0;
+				float side = 0;
+
+				if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
+					fwd = -1 * Time::GetDeltaTime();
+				else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
+					fwd = 1 * Time::GetDeltaTime();
+
+				if (InputSystem::GetKey(A))
+					upWorld = 1 * Time::GetDeltaTime();
+				else if (InputSystem::GetKey(E))
+					upWorld = -1 * Time::GetDeltaTime();
+
+				if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
+					side = 1 * Time::GetDeltaTime();
+				else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
+					side = -1 * Time::GetDeltaTime();
+
+				if (InputSystem::GetKey(MOUSE_MIDDLE))
+				{
+					up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
+					side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
+				}
+
+				// Move the camera when using the mouse's wheel (Do not use delta time)
+				if (isHovered)
+					fwd -= InputSystem::mouseWheel / 15.0f;
+
+				// Apply values
+				pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
+				pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
+				pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
+				pos.y -= (upWorld / 7.0f) * 30;
+
+				cameraTransform->SetPosition(pos);
+				cameraTransform->SetRotation(rot);
+			}
+
 			camera->ChangeFrameBufferSize(Vector2Int((int)size.x, (int)size.y));
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
 			windowSize = Vector2Int((int)size.x, (int)size.y);
+
 			if (ImGui::IsItemHovered())
 			{
+				if (InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(F))
+				{
+					if (Editor::GetSelectedGameObject() != nullptr)
+					{
+						Editor::GetSelectedGameObject()->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + camera->GetTransform()->GetForward() * 2);
+					}
+				}
+				else if (InputSystem::GetKeyDown(F))
+				{
+					if (Editor::GetSelectedGameObject() != nullptr)
+					{
+						Vector3 dir = (camera->GetTransform()->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition()).Normalized();
+						camera->GetTransform()->SetPosition(Editor::GetSelectedGameObject()->GetTransform()->GetPosition() + dir * 2);
+						camera->GetTransform()->SetRotation(Vector3::LookAt(camera->GetTransform()->GetPosition(), Editor::GetSelectedGameObject()->GetTransform()->GetPosition()));
+					}
+				}
 				std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 				isHovered = true;
 
@@ -340,7 +442,6 @@ void SceneMenu::Draw()
 				isHovered = false;
 			}
 		}
-
 		// Get some values for inputs
 		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
 		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));

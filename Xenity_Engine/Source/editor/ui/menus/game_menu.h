@@ -13,5 +13,6 @@ public:
 	Vector2Int windowPosition = Vector2Int(0);
 	Vector2Int mousePosition = Vector2Int(0);
 private:
+	bool isLastFrameOpened = false;
 };
 

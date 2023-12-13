@@ -28,16 +28,21 @@ void GameMenu::Draw()
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	std::string windowName;
-	if (camera)
+	std::string windowName = "Game";
+	if (isLastFrameOpened)
 	{
-		windowName = "Game " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y) + "###Game";
+		if (camera)
+		{
+			windowName += " " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y);
+		}
+		else
+		{
+			windowName += " (No camera)";
+		}
 	}
-	else
-	{
-		windowName = "Game (No camera)###Game";
-	}
+	windowName += "###Game";
 	bool visible = ImGui::Begin(windowName.c_str());
+	isLastFrameOpened = visible;
 	if (visible)
 	{
 		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
@@ -83,7 +88,7 @@ void GameMenu::Draw()
 		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
 		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));
 	}
-	else 
+	else
 	{
 		windowPosition = Vector2Int(0, 0);
 		mousePosition = Vector2Int(0, 0);
