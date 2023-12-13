@@ -37,6 +37,7 @@ private:
 	bool ignoreClose = false;
 	bool focusSet = false;
 	bool cancelNextClick = false;
+	bool firstClickedInWindow = false;
 	void Rename();
 };
 

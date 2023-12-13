@@ -13,5 +13,6 @@ public:
 	bool isFocused = false;
 private:
 	std::shared_ptr<GameObject> rightClickedElement;
+	bool firstClickedInWindow = false;
 };
 

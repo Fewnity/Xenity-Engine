@@ -45,9 +45,14 @@ void HierarchyMenu::Draw()
 				droppedGameObject->SetParent(nullptr);
 			}
 		}
-		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+		{
+			firstClickedInWindow = true;
+		}
+		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered() && firstClickedInWindow)
 		{
 			ImGui::OpenPopup("backgroundClick");
+			firstClickedInWindow = false;
 		}
 		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && !disableDrag)
 		{
@@ -55,7 +60,7 @@ void HierarchyMenu::Draw()
 		}
 		if (ImGui::BeginPopup("backgroundClick"))
 		{
-			if (rightClickedElement != nullptr) 
+			if (rightClickedElement != nullptr)
 			{
 				if (ImGui::MenuItem("Destroy GameObject"))
 				{

@@ -184,9 +184,14 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex)
 {
 	int state = 0;
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+	{
+		firstClickedInWindow = true;
+	}
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered() && firstClickedInWindow)
 	{
 		ImGui::OpenPopup(id.c_str());
+		firstClickedInWindow = false;
 		state = 1;
 	}
 
