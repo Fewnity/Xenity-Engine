@@ -22,8 +22,9 @@ void HierarchyMenu::Draw()
 		{
 			if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
 			{
-				int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i]);
-				if (r != 0) {
+				int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], rightClickedElement);
+				if (r != 0)
+				{
 					disableDrag = true;
 				}
 			}
@@ -35,6 +36,7 @@ void HierarchyMenu::Draw()
 			Editor::SetSelectedFileReference(nullptr);
 		}
 		ImGui::EndChild();
+
 		if (!disableDrag)
 		{
 			std::shared_ptr <GameObject> droppedGameObject = nullptr;
@@ -42,6 +44,46 @@ void HierarchyMenu::Draw()
 			{
 				droppedGameObject->SetParent(nullptr);
 			}
+		}
+		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+		{
+			ImGui::OpenPopup("backgroundClick");
+		}
+		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && !disableDrag)
+		{
+			rightClickedElement = nullptr;
+		}
+		if (ImGui::BeginPopup("backgroundClick"))
+		{
+			if (rightClickedElement != nullptr) 
+			{
+				if (ImGui::MenuItem("Destroy GameObject"))
+				{
+					Destroy(rightClickedElement);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+			if (ImGui::BeginMenu("GameObject"))
+			{
+				bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
+				if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
+				{
+					Editor::CreateEmptyParent();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Create Empty Child", nullptr, nullptr, hasSelectedGameObject))
+				{
+					Editor::CreateEmptyChild();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Create Empty"))
+				{
+					Editor::CreateEmpty();
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndPopup();
 		}
 	}
 	ImGui::End();

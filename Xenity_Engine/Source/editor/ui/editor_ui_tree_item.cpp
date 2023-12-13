@@ -9,6 +9,7 @@
 #include <editor/editor.h>
 
 #include <engine/asset_management/project_manager.h>
+#include <engine/debug/debug.h>
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {
@@ -24,7 +25,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
-		
+
 		std::string nodeName = projectDir->GetFolderName() + "##TIPD" + std::to_string(projectDir->uniqueId);
 		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 		ImGui::PopStyleColor();
@@ -49,7 +50,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 	return objectClicked;
 }
 
-int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child)
+int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::shared_ptr<GameObject>& rightClickedElement)
 {
 	int state = 0;
 
@@ -113,13 +114,19 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child)
 					Editor::SetSelectedFileReference(nullptr);
 					state = 2;
 				}
+				else if (ImGui::IsMouseReleased(1) && !ImGui::IsDragDropActive())
+				{
+					rightClickedElement = child;
+					state = 3;
+				}
 			}
 		}
+
 		if (opened)
 		{
 			for (int i = 0; i < child->GetChildrenCount(); i++)
 			{
-				int clickedTemp = DrawTreeItem(child->children[i].lock());
+				int clickedTemp = DrawTreeItem(child->children[i].lock(), rightClickedElement);
 				if (clickedTemp == 1)
 					state = 1;
 				else if (clickedTemp == 2)
