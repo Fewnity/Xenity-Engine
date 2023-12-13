@@ -156,14 +156,14 @@ void Editor::Update()
 			float up = 0;
 			float side = 0;
 
-			if (InputSystem::GetKey(UP))
+			if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
 				fwd = -1 * Time::GetDeltaTime();
-			else if (InputSystem::GetKey(DOWN))
+			else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
 				fwd = 1 * Time::GetDeltaTime();
 
-			if (InputSystem::GetKey(RIGHT))
+			if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
 				side = 1 * Time::GetDeltaTime();
-			else if (InputSystem::GetKey(LEFT))
+			else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
 				side = -1 * Time::GetDeltaTime();
 
 			if (InputSystem::GetKey(MOUSE_MIDDLE))
@@ -196,7 +196,7 @@ void Editor::Update()
 			CommandManager::Redo();
 		}
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && (/*InputSystem::GetKeyDown(C) || */ InputSystem::GetKeyDown(D))))
+		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(D)))
 		{
 			if (selectedGameObject.lock())
 				DuplicateGameObject(selectedGameObject.lock());
