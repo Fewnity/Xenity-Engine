@@ -13,10 +13,11 @@ void HierarchyMenu::Draw()
 	bool visible = ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
-		bool disableDrag = false;
+		OnStartDrawing();
 
 		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
+		bool disableDrag = false;
 		//Add in the list only gameobject without parent
 		for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 		{
@@ -29,7 +30,7 @@ void HierarchyMenu::Draw()
 				}
 			}
 		}
-		isFocused = ImGui::IsWindowFocused();
+
 		if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
 		{
 			Editor::SetSelectedGameObject(nullptr);
@@ -90,6 +91,13 @@ void HierarchyMenu::Draw()
 			}
 			ImGui::EndPopup();
 		}
+
+		CalculateWindowValues();
 	}
+	else
+	{
+		ResetWindowValues();
+	}
+
 	ImGui::End();
 }

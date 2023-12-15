@@ -17,6 +17,8 @@ void LightingMenu::Draw()
 	bool visible = ImGui::Begin("Lighting", &EditorUI::showLightingSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
+		OnStartDrawing();
+
 		bool changed = false;
 		ImGui::Text("Lighting");
 		ImGui::Separator();
@@ -29,6 +31,7 @@ void LightingMenu::Draw()
 		ImGui::Separator();
 		ImGui::Text("Fog");
 		ImGui::Separator();
+
 		if (EditorUI::DrawInput("Enabled", Graphics::isFogEnabled))
 			changed = true;
 		if (EditorUI::DrawInput("Start", Graphics::fogStart))
@@ -42,6 +45,13 @@ void LightingMenu::Draw()
 		{
 			Graphics::OnLightingSettingsReflectionUpdate();
 		}
+
+		CalculateWindowValues();
 	}
+	else
+	{
+		ResetWindowValues();
+	}
+
 	ImGui::End();
 }

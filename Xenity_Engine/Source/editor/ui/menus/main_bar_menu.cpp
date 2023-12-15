@@ -3,19 +3,20 @@
 
 #include <imgui/imgui.h>
 
-#include <engine/engine.h>
-#include <editor/ui/editor_ui.h>
-#include <engine/class_registry/class_registry.h>
-#include <engine/dynamic_lib/dynamic_lib.h>
-#include <editor/compiler.h>
-
 #include <Windows.h>
 #include <Commdlg.h>
 #include <ShObjIdl.h>
-#include <engine/scene_management/scene_manager.h>
-#include <engine/asset_management/project_manager.h>
+
+#include <editor/ui/editor_ui.h>
+#include <editor/compiler.h>
 #include <editor/command/commands/inspector_commands.h>
 #include <editor/command/command_manager.h>
+
+#include <engine/engine.h>
+#include <engine/class_registry/class_registry.h>
+#include <engine/dynamic_lib/dynamic_lib.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/asset_management/project_manager.h>
 #include <engine/tools/shape_spawner.h>
 #include <engine/graphics/ui/text_renderer_canvas.h>
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
@@ -40,7 +41,6 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 	command->Execute();
 }
 
-static bool IsOpen = true;
 void MainBarMenu::Draw()
 {
 	bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;

@@ -11,8 +11,9 @@ void GameMenu::Init()
 
 void GameMenu::Draw()
 {
-	windowSize = Vector2Int(0, 0);
 	size_t cameraCount = Graphics::cameras.size();
+
+	// Get game's camera
 	std::shared_ptr<Camera> camera;
 	Vector2Int frameBufferSize;
 	for (size_t i = 0; i < cameraCount; i++)
@@ -26,8 +27,7 @@ void GameMenu::Draw()
 		}
 	}
 
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	// Generate tab name
 	std::string windowName = "Game";
 	if (isLastFrameOpened)
 	{
@@ -41,60 +41,57 @@ void GameMenu::Draw()
 		}
 	}
 	windowName += "###Game";
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	bool visible = ImGui::Begin(windowName.c_str());
 	isLastFrameOpened = visible;
 	if (visible)
 	{
+		OnStartDrawing();
+
 		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
 		{
 			ImGui::SetWindowFocus();
 		}
-		ImVec2 size = ImGui::GetContentRegionAvail();
+
 		if (camera)
 		{
-			camera->ChangeFrameBufferSize(Vector2Int((int)size.x, (int)size.y));
-			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, size, ImVec2(0, 1), ImVec2(1, 0));
-			windowSize = Vector2Int((int)size.x, (int)size.y);
-			if (ImGui::IsItemHovered())
-			{
-				isHovered = true;
-			}
-			else
-			{
-				isHovered = false;
-			}
+			camera->ChangeFrameBufferSize(startAvailableSize);
+			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else
 		{
-			//Increase font size
-			ImFont* font = ImGui::GetFont();
-			font->Scale *= 2;
-			ImGui::PushFont(font);
-
-			//Draw text
-			std::string noCamText = "There is no camera";
-			ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
-			float offY = ImGui::GetCursorPosY();
-			ImGui::SetCursorPos(ImVec2((size.x - textSize.x) / 2.0f, (size.y + offY) / 2.0f));
-			ImGui::Text(noCamText.c_str());
-			ImGui::PopFont();
-
-			//Reset font
-			font->Scale /= 2.0f;
-			ImGui::PushFont(font);
-			ImGui::PopFont();
+			DrawNoCameraText();
 		}
 
-		windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
-		mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - size.y)));
+		CalculateWindowValues();
 	}
 	else
 	{
-		windowPosition = Vector2Int(0, 0);
-		mousePosition = Vector2Int(0, 0);
-		windowSize = Vector2Int(0, 0);
-		isHovered = false;
+		ResetWindowValues();
 	}
+
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void GameMenu::DrawNoCameraText()
+{
+	//Increase font size
+	ImFont* font = ImGui::GetFont();
+	font->Scale *= 2;
+	ImGui::PushFont(font);
+
+	//Draw text
+	std::string noCamText = "There is no camera";
+	ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+	float offY = ImGui::GetCursorPosY();
+	ImGui::SetCursorPos(ImVec2((startAvailableSize.x - textSize.x) / 2.0f, (startAvailableSize.y + offY) / 2.0f));
+	ImGui::Text(noCamText.c_str());
+	ImGui::PopFont();
+
+	//Reset font
+	font->Scale /= 2.0f;
+	ImGui::PushFont(font);
+	ImGui::PopFont();
 }

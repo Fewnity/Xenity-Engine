@@ -97,7 +97,6 @@ void CreateProjectMenu::DrawCreateProjectButton()
 					Editor::currentMenu = Menu_Editor;
 				}
 			}
-			//delete projectDir;
 		}
 	}
 }
@@ -112,6 +111,8 @@ void CreateProjectMenu::Draw()
 	bool visible = ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	if (visible)
 	{
+		OnStartDrawing();
+
 		//Increase font size to 150%
 		ImFont* font = ImGui::GetFont();
 		float oldScale = font->Scale;
@@ -161,6 +162,13 @@ void CreateProjectMenu::Draw()
 		font->Scale = oldScale;
 		ImGui::PushFont(font);
 		ImGui::PopFont();
+
+		CalculateWindowValues();
 	}
+	else
+	{
+		ResetWindowValues();
+	}
+
 	ImGui::End();
 }

@@ -153,7 +153,7 @@ void Editor::Update()
 
 		if (InputSystem::GetKey(DELETE))
 		{
-			if (sceneMenu->isFocused || hierarchy->isFocused)
+			if (sceneMenu->IsFocused() || hierarchy->IsFocused())
 			{
 				if (selectedGameObject.lock())
 					Destroy(selectedGameObject.lock());
@@ -537,10 +537,6 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 {
 	std::string finalName = "";
 	int number = 1;
-	int foundNumberLocation = -1;
-	int endParenthesis = -1;
-	int startParenthesis = -1;
-	int numberState = 2; // 0 Other than number, 1 only number, 2 nothing found
 
 	GetIncrementedGameObjectNameInfo(name, finalName, number);
 

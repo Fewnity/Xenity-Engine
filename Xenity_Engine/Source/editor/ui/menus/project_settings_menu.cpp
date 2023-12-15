@@ -15,8 +15,10 @@ void ProjectSettingsMenu::Draw()
 	bool visible = ImGui::Begin("Project Settings", &EditorUI::showProjectsSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
+		OnStartDrawing();
+
 		std::shared_ptr<Command> command = nullptr;
-		std::shared_ptr<FileReference>emptyPtr;
+		std::shared_ptr<FileReference> emptyPtr;
 		EditorUI::DrawReflectiveData(ProjectManager::projectSettings.GetReflectiveData(), command, emptyPtr);
 		if (command)
 		{
@@ -27,6 +29,12 @@ void ProjectSettingsMenu::Draw()
 		{
 			ProjectManager::SaveProjectSettings();
 		}
+
+		CalculateWindowValues();
+	}
+	else
+	{
+		ResetWindowValues();
 	}
 
 	ImGui::End();

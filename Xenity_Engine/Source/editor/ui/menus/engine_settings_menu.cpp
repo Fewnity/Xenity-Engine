@@ -26,12 +26,61 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 	return projectFolderChanged;
 }
 
+bool EngineSettingsMenu::DrawCompilerOptions()
+{
+	bool settingsChanged;
+	bool valueChanged;
+
+	ImGui::Separator();
+	ImGui::Text("Compiler Options:");
+	ImGui::Separator();
+
+	std::string tempEngineProjectPath;
+	ImGui::Text("Engine project location: %s", EngineSettings::engineProjectPath.c_str());
+	valueChanged = DrawSelectFolderButton(tempEngineProjectPath);
+	if (valueChanged)
+	{
+		EngineSettings::engineProjectPath = tempEngineProjectPath;
+		settingsChanged = true;
+	}
+
+	std::string tempCompilerPath;
+	ImGui::Text("Compiler location: %s", EngineSettings::compilerPath.c_str());
+	valueChanged = DrawSelectFolderButton(tempCompilerPath);
+	if (valueChanged)
+	{
+		EngineSettings::compilerPath = tempCompilerPath;
+		settingsChanged = true;
+	}
+
+	std::string tempPpssppExePath;
+	ImGui::Text("PPSSPP location: %s", EngineSettings::ppssppExePath.c_str());
+	valueChanged = DrawSelectFolderButton(tempPpssppExePath);
+	if (valueChanged)
+	{
+		EngineSettings::ppssppExePath = tempPpssppExePath + "PPSSPPWindows64.exe";
+		settingsChanged = true;
+	}
+
+	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::compileOnCodeChanged);
+	if (valueChanged)
+		settingsChanged = true;
+
+	valueChanged = ImGui::Checkbox("Compile On Project Opened", &EngineSettings::compileWhenOpeningProject);
+	if (valueChanged)
+		settingsChanged = true;
+
+	return settingsChanged;
+}
+
 void EngineSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 350), ImGuiCond_FirstUseEver);
 	bool visible = ImGui::Begin("Engine Settings", &EditorUI::showEngineSettings, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
+		OnStartDrawing();
+
 		bool settingsChanged = false;
 		bool valueChanged = false;
 		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useProfiler);
@@ -52,50 +101,22 @@ void EngineSettingsMenu::Draw()
 		if (valueChanged)
 			settingsChanged = true;
 
-		ImGui::Separator();
-		ImGui::Text("Compiler Options:");
-		ImGui::Separator();
-
-		std::string tempEngineProjectPath;
-		ImGui::Text("Engine project location: %s", EngineSettings::engineProjectPath.c_str());
-		valueChanged = DrawSelectFolderButton(tempEngineProjectPath);
-		if (valueChanged)
+		if (DrawCompilerOptions()) 
 		{
-			EngineSettings::engineProjectPath = tempEngineProjectPath;
 			settingsChanged = true;
 		}
-
-		std::string tempCompilerPath;
-		ImGui::Text("Compiler location: %s", EngineSettings::compilerPath.c_str());
-		valueChanged = DrawSelectFolderButton(tempCompilerPath);
-		if (valueChanged)
-		{
-			EngineSettings::compilerPath = tempCompilerPath;
-			settingsChanged = true;
-		}
-
-		std::string tempPpssppExePath;
-		ImGui::Text("PPSSPP location: %s", EngineSettings::ppssppExePath.c_str());
-		valueChanged = DrawSelectFolderButton(tempPpssppExePath);
-		if (valueChanged)
-		{
-			EngineSettings::ppssppExePath = tempPpssppExePath + "PPSSPPWindows64.exe";
-			settingsChanged = true;
-		}
-
-		valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::compileOnCodeChanged);
-		if (valueChanged)
-			settingsChanged = true;
-
-		valueChanged = ImGui::Checkbox("Compile On Project Opened", &EngineSettings::compileWhenOpeningProject);
-		if (valueChanged)
-			settingsChanged = true;
 
 		if (settingsChanged)
 		{
 			EngineSettings::SaveEngineSettings();
-			Debug::Print("Save");
 		}
+
+		CalculateWindowValues();
 	}
+	else
+	{
+		ResetWindowValues();
+	}
+
 	ImGui::End();
 }

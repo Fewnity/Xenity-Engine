@@ -17,6 +17,7 @@ class CreateProjectMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
+
 private:
 	void DrawTitle();
 	void DrawProjectPath();

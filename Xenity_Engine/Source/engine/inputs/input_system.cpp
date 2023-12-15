@@ -121,15 +121,13 @@ void InputSystem::Read(const SDL_Event& event)
 		mousePosition.x = (float)mouseX;
 		mousePosition.y = (float)mouseY;
 #else
-		if (Editor::gameMenu->isHovered && !Editor::sceneMenu->startRotatingCamera)
+		if (Editor::gameMenu->IsHovered() && !Editor::sceneMenu->startRotatingCamera)
 		{
-			mousePosition.x = Editor::gameMenu->mousePosition.x - Editor::gameMenu->windowPosition.x;
-			mousePosition.y = Editor::gameMenu->mousePosition.y - Editor::gameMenu->windowPosition.y;
+			mousePosition = Editor::gameMenu->GetMousePosition();
 		}
-		else if (Editor::sceneMenu->isHovered || Editor::sceneMenu->startRotatingCamera)
+		else if (Editor::sceneMenu->IsHovered() || Editor::sceneMenu->startRotatingCamera)
 		{
-			mousePosition.x = Editor::sceneMenu->mousePosition.x - Editor::sceneMenu->windowPosition.x;
-			mousePosition.y = Editor::sceneMenu->mousePosition.y - Editor::sceneMenu->windowPosition.y;
+			mousePosition = Editor::sceneMenu->GetMousePosition();
 		}
 		else 
 		{
@@ -146,15 +144,15 @@ void InputSystem::Read(const SDL_Event& event)
 			int w = 0;
 			int h = 0;
 #if defined(EDITOR)
-			if (Editor::gameMenu->isHovered && !Editor::sceneMenu->startRotatingCamera)
+			if (Editor::gameMenu->IsHovered() && !Editor::sceneMenu->startRotatingCamera)
 			{
-				w = Editor::gameMenu->windowSize.x;
-				h = Editor::gameMenu->windowSize.y;
+				w = Editor::gameMenu->GetWindowSize().x;
+				h = Editor::gameMenu->GetWindowSize().y;
 			}
-			else if (Editor::sceneMenu->isHovered || Editor::sceneMenu->startRotatingCamera)
+			else if (Editor::sceneMenu->IsHovered() || Editor::sceneMenu->startRotatingCamera)
 			{
-				w = Editor::sceneMenu->windowSize.x;
-				h = Editor::sceneMenu->windowSize.y;
+				w = Editor::sceneMenu->GetWindowSize().x;
+				h = Editor::sceneMenu->GetWindowSize().y;
 			}
 			else
 			{

@@ -20,11 +20,11 @@ class FileExplorerMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
+
 private:
 	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, float offset, FileExplorerItem& item, int itemIndex);
 	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex);
 	void CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName);
-	bool isHovered = false;
 
 	std::shared_ptr<Texture> GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile);
 

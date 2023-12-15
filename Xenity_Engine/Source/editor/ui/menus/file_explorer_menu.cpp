@@ -233,7 +233,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			{
 				EditorUI::showCreateClass = true;
 				Editor::createClassMenu->Reset();
-				Editor::createClassMenu->filePath = fileExplorerItem.directory->path;
+				Editor::createClassMenu->SetFolderPath(fileExplorerItem.directory->path);
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndMenu();
@@ -325,7 +325,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExp
 	}
 	else
 	{
-		int fileType = fileExplorerItem.file->fileType;
+		FileType fileType = fileExplorerItem.file->fileType;
 		if (fileType == File_Texture)
 		{
 			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
@@ -382,12 +382,12 @@ void FileExplorerMenu::Draw()
 	bool visible = ImGui::Begin("File Explorer", 0, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
-		float height = ImGui::GetContentRegionAvail().y;
+		OnStartDrawing();
 
 		float offset = ImGui::GetCursorPosX();
 		if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
-			ImGui::TableNextRow(0, height);
+			ImGui::TableNextRow(0, startAvailableSize.y);
 			ImGui::TableSetColumnIndex(0);
 			bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
 			if (treeItemClicked)
@@ -458,12 +458,15 @@ void FileExplorerMenu::Draw()
 				Rename();
 			}
 		}
-		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
+		CalculateWindowValues();
+		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem); // Do this after CalculateWindowValues()
 	}
-	else 
+	else
 	{
-		isHovered = true;
+		ResetWindowValues();
 	}
+
 	if (ImGui::IsMouseReleased(0))
 	{
 		cancelNextClick = false;

@@ -6,8 +6,6 @@
 #include <editor/ui/editor_ui.h>
 #include <engine/debug/debug.h>
 
-std::vector<ProjectListItem> projectsList;
-
 void SelectProjectMenu::Init()
 {
 	projectsList = ProjectManager::GetProjectsList();
@@ -15,8 +13,6 @@ void SelectProjectMenu::Init()
 
 void SelectProjectMenu::Draw()
 {
-	ImGuiIO& io = ImGui::GetIO();
-
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->WorkPos);
 	ImGui::SetNextWindowSize(viewport->WorkSize);
@@ -25,7 +21,7 @@ void SelectProjectMenu::Draw()
 	bool visible = ImGui::Begin("Select Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	if (visible)
 	{
-		ImVec2 size = ImGui::GetContentRegionAvail();
+		OnStartDrawing();
 
 		//Increase font size
 		ImFont* font = ImGui::GetFont();
@@ -51,65 +47,10 @@ void SelectProjectMenu::Draw()
 		ImGui::SameLine();
 		if (ImGui::Button("Load project"))
 		{
-			std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
-			if (!projectPath.empty())
-			{
-				if (ProjectManager::LoadProject(projectPath))
-				{
-					// Check if the project is already in the opened projects list
-					bool projectAlreadyInList = false;
-					size_t projectsCount = projectsList.size();
-					for (size_t i = 0; i < projectsCount; i++)
-					{
-						if (projectsList[i].path == projectPath)
-						{
-							projectAlreadyInList = true;
-							break;
-						}
-					}
-
-					// If not, add the project to the list
-					if (!projectAlreadyInList)
-					{
-						// Create new item
-						ProjectListItem newProjectListItem;
-						newProjectListItem.name = ProjectManager::GetProjectName();
-						newProjectListItem.path = projectPath;
-						projectsList.push_back(newProjectListItem);
-
-						ProjectManager::SaveProjectsList(projectsList);
-					}
-
-					Editor::currentMenu = Menu_Editor;
-				}
-				else
-				{
-					Debug::PrintError("[SelectProjectMenu::Draw] This is not a Xenity Project");
-				}
-			}
+			OnLoadButtonClick();
 		}
-		ImGui::Separator();
-		size_t projectCount = projectsList.size();
-		for (size_t i = 0; i < projectCount; i++)
-		{
-			ImGui::BeginGroup();
-			ImGui::Text(projectsList[i].name.c_str());
-			ImGui::Text(projectsList[i].path.c_str());
-			ImGui::EndGroup();
 
-			if (ImGui::IsItemClicked(0))
-			{
-				if (ProjectManager::LoadProject(projectsList[i].path))
-				{
-					Editor::currentMenu = Menu_Editor;
-				}
-				else
-				{
-					Debug::PrintError("[SelectProjectMenu::Draw] This is not a Xenity Project");
-				}
-			}
-			ImGui::Separator();
-		}
+		DrawProjectsList();
 
 		ImGui::PopFont();
 
@@ -117,6 +58,79 @@ void SelectProjectMenu::Draw()
 		font->Scale = oldScale;
 		ImGui::PushFont(font);
 		ImGui::PopFont();
+
+		CalculateWindowValues();
 	}
+	else
+	{
+		ResetWindowValues();
+	}
+
 	ImGui::End();
+}
+
+void SelectProjectMenu::OnLoadButtonClick()
+{
+	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
+	if (!projectPath.empty())
+	{
+		if (ProjectManager::LoadProject(projectPath))
+		{
+			// Check if the project is already in the opened projects list
+			bool projectAlreadyInList = false;
+			size_t projectsCount = projectsList.size();
+			for (size_t i = 0; i < projectsCount; i++)
+			{
+				if (projectsList[i].path == projectPath)
+				{
+					projectAlreadyInList = true;
+					break;
+				}
+			}
+
+			// If not, add the project to the list
+			if (!projectAlreadyInList)
+			{
+				// Create new item
+				ProjectListItem newProjectListItem;
+				newProjectListItem.name = ProjectManager::GetProjectName();
+				newProjectListItem.path = projectPath;
+				projectsList.push_back(newProjectListItem);
+
+				ProjectManager::SaveProjectsList(projectsList);
+			}
+
+			Editor::currentMenu = Menu_Editor;
+		}
+		else
+		{
+			Debug::PrintError("[SelectProjectMenu::OnLoadButtonClick] This is not a Xenity Project");
+		}
+	}
+}
+
+void SelectProjectMenu::DrawProjectsList()
+{
+	ImGui::Separator();
+	size_t projectCount = projectsList.size();
+	for (size_t i = 0; i < projectCount; i++)
+	{
+		ImGui::BeginGroup();
+		ImGui::Text(projectsList[i].name.c_str());
+		ImGui::Text(projectsList[i].path.c_str());
+		ImGui::EndGroup();
+
+		if (ImGui::IsItemClicked(0))
+		{
+			if (ProjectManager::LoadProject(projectsList[i].path))
+			{
+				Editor::currentMenu = Menu_Editor;
+			}
+			else
+			{
+				Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project");
+			}
+		}
+		ImGui::Separator();
+	}
 }

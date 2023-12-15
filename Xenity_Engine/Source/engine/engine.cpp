@@ -287,14 +287,7 @@ void Engine::Loop()
 		AsyncFileLoading::FinishThreadedFileLoading();
 		editorUpdateBenchmark->Start();
 		Editor::Update();
-		if (Editor::sceneMenu->isFocused)
-		{
-			InputSystem::blockGameInput = true;
-		}
-		else
-		{
-			InputSystem::blockGameInput = false;
-		}
+		InputSystem::blockGameInput = Editor::sceneMenu->IsFocused();
 		editorUpdateBenchmark->Stop();
 #endif
 
