@@ -185,6 +185,7 @@ int Engine::Init()
 
 void Engine::CheckEvents()
 {
+	bool leaved = false;
 #if defined(_WIN32) || defined(_WIN64)
 	// Check SDL event
 	SDL_Event event;
@@ -241,14 +242,22 @@ void Engine::CheckEvents()
 			}
 			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 			{
-#if defined(EDITOR)
-				Editor::OnWindowFocused();
-#endif
+				leaved = false;
+			}
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+			{
+				leaved = true;
 			}
 			break;
 		default:
 			break;
 		}
+	}
+	if (leaved) 
+	{
+#if defined(EDITOR)
+		Editor::OnWindowFocused();
+#endif
 	}
 #endif
 }
