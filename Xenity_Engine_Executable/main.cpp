@@ -29,6 +29,7 @@ RGBA or RGB in vertex color?
 
 --- To do in a long time
 Add LOD
+Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
 Packing asset system
 Add a tool to rotate selected gameobject

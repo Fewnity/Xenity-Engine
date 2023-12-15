@@ -618,5 +618,6 @@ private:
 	static int uiId;
 	static float uiScale;
 	static void UpdateUIScale();
+	static void LoadEditorIcon(IconName iconName, const std::string& path);
 };
 #endif
