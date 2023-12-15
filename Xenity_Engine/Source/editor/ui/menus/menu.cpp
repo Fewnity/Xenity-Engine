@@ -31,6 +31,16 @@ Vector2Int Menu::GetMousePosition()
 	return mousePosition;
 }
 
+void Menu::SetActive(bool active)
+{
+	isActive = active;
+}
+
+bool Menu::GetActive()
+{
+	return isActive;
+}
+
 void Menu::OnStartDrawing()
 {
 	ImVec2 size = ImGui::GetContentRegionAvail();
@@ -50,9 +60,11 @@ void Menu::ResetWindowValues()
 
 void Menu::CalculateWindowValues()
 {
-	windowPosition = Vector2Int((int)ImGui::GetWindowPos().x, (int)ImGui::GetWindowPos().y);
+	ImVec2 imguiWindowPos = ImGui::GetWindowPos();
+	ImVec2 imguiMousePos = ImGui::GetMousePos();
+	windowPosition = Vector2Int((int)imguiWindowPos.x, (int)imguiWindowPos.y);
 	oldMousePosition = mousePosition;
-	mousePosition = Vector2Int((int)ImGui::GetMousePos().x, (int)(ImGui::GetMousePos().y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
+	mousePosition = Vector2Int((int)imguiMousePos.x, (int)(imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
 	isFocused = ImGui::IsWindowFocused();
 	isHovered = ImGui::IsWindowHovered();
 }

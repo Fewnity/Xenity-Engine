@@ -6,6 +6,7 @@
 
 #include <engine/game_elements/gameobject.h>
 #include <engine/file_system/file_type.h>
+#include <editor/ui/menus/menu.h>
 
 class Component;
 class Reflective;
@@ -27,13 +28,6 @@ class CreateClassMenu;
 class AudioSource;
 class File;
 class ProjectDirectory;
-
-enum MenuNames
-{
-	Menu_Select_Project,
-	Menu_Create_Project,
-	Menu_Editor
-};
 
 class Editor
 {
@@ -100,13 +94,43 @@ public:
 		}
 	}
 
-	static MenuNames currentMenu;
-	static CompilingMenu* compilingMenu;
-	static GameMenu* gameMenu;
-	static SceneMenu* sceneMenu;
-	static InspectorMenu* inspector;
-	static LightingMenu* lightingMenu;
-	static CreateClassMenu* createClassMenu;
+	template <typename T>
+	static std::shared_ptr<T> GetMenu() 
+	{
+		int menuCount = menus.size();
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (auto menu = std::dynamic_pointer_cast<T>(menus[i])) 
+			{
+				return menu;
+			}
+		}
+		return nullptr;
+	}
+
+	template <typename T>
+	static void RemoveMenu()
+	{
+		int menuCount = menus.size();
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			{
+				menus.erase(menus.begin() + i);
+			}
+		}
+	}
+
+	template <typename T>
+	static std::shared_ptr<T> AddMenu()
+	{
+		std::shared_ptr<T> newMenu = std::make_shared<T>();
+		menus.push_back(newMenu);
+		newMenu->Init();
+		return newMenu;
+	}
+
+	static MenuGroup currentMenu;
 	static std::weak_ptr<AudioSource> audioSource;
 
 	static void SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference);
@@ -130,6 +154,7 @@ public:
 	static void StartFolderCopy(std::string path, std::string newPath);
 
 	static std::string GetIncrementedGameObjectName(std::string name);
+	static std::vector<std::shared_ptr<Menu>> menus;
 
 private:
 
@@ -140,13 +165,6 @@ private:
 	static void CreateMenus();
 	static void GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number);
 
-	static ProjectSettingsMenu* projectSettings;
-	static EngineSettingsMenu* engineSettings;
-	static FileExplorerMenu* fileExplorer;
-	static HierarchyMenu* hierarchy;
-	static MainBarMenu* mainBar;
-	static ProfilerMenu* profiler;
-	static SelectProjectMenu* selectProjectMenu;
-	static CreateProjectMenu* createProjectMenu;
+	static std::shared_ptr<MainBarMenu> mainBar;
 };
 

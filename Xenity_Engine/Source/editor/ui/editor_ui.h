@@ -364,12 +364,7 @@ public:
 	static DialogResult OpenDialog(const std::string& title, const std::string& message, DialogType type);
 
 	static std::string GenerateItemId();
-	static bool showProfiler;
-	static bool showEditor;
-	static bool showEngineSettings;
-	static bool showProjectsSettings;
-	static bool showLightingSettings;
-	static bool showCreateClass;
+
 	static std::vector<std::shared_ptr<Texture>> icons;
 
 	static float GetUiScale()

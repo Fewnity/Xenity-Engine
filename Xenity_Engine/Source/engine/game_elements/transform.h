@@ -13,7 +13,6 @@ class API Transform : public Reflective, public std::enable_shared_from_this<Tra
 public:
 	Transform() = delete;
 	Transform(const std::shared_ptr<GameObject>& gameObject);
-	//void SetReflection();
 
 	ReflectiveData GetReflectiveData() override;
 
@@ -121,7 +120,6 @@ public:
 	void OnParentChanged();
 
 	glm::mat4 transformationMatrix;
-	bool movedLastFrame = true;
 
 	/**
 	* Get GameObject

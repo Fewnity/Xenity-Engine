@@ -316,15 +316,7 @@ bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<ID
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
-	/*for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
-	{
-		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-		if (drawableToCheck && drawableToCheck->GetTransform()->movedLastFrame)
-		{
-			drawOrderListDirty = true;
-			break;
-		}
-	}*/
+
 	//if (drawOrderListDirty)
 	//{
 		noTransparentDrawable.clear();

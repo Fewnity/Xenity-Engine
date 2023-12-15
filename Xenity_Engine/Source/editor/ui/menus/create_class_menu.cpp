@@ -14,7 +14,7 @@ void CreateClassMenu::Init()
 void CreateClassMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(370, 0), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Create C++ Class", &EditorUI::showCreateClass, ImGuiWindowFlags_NoCollapse);
+	bool visible = ImGui::Begin("Create C++ Class", 0, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -49,7 +49,7 @@ void CreateClassMenu::Draw()
 		{
 			CreateFiles();
 			Reset();
-			EditorUI::showCreateClass = false;
+			isActive = false;
 		}
 
 		CalculateWindowValues();

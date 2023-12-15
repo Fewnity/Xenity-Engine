@@ -7,7 +7,6 @@
 #include <engine/game_elements/transform.h>
 #include <engine/component.h>
 
-
 int GameplayManager::gameObjectCount = 0;
 int GameplayManager::gameObjectEditorCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -100,19 +99,6 @@ void GameplayManager::UpdateComponents()
 				i--;
 				componentsCount--;
 			}
-		}
-	}
-}
-
-void GameplayManager::ResetTransformStates()
-{
-	// Reset moved state of all transforms
-	for (int i = 0; i < gameObjectCount; i++)
-	{
-		std::shared_ptr<GameObject> gameObject = gameObjects[i];
-		if (gameObject)
-		{
-			gameObject->GetTransform()->movedLastFrame = false;
 		}
 	}
 }

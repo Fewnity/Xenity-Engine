@@ -231,9 +231,10 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			}
 			if (ImGui::MenuItem("C++ Class"))
 			{
-				EditorUI::showCreateClass = true;
-				Editor::createClassMenu->Reset();
-				Editor::createClassMenu->SetFolderPath(fileExplorerItem.directory->path);
+				auto createClassMenu = Editor::GetMenu<CreateClassMenu>();
+				createClassMenu->SetActive(true);
+				createClassMenu->Reset();
+				createClassMenu->SetFolderPath(fileExplorerItem.directory->path);
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndMenu();

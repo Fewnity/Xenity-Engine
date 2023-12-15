@@ -6,6 +6,11 @@
 #include <editor/ui/editor_ui.h>
 #include <engine/debug/debug.h>
 
+SelectProjectMenu::SelectProjectMenu()
+{
+	group = Menu_Select_Project;
+}
+
 void SelectProjectMenu::Init()
 {
 	projectsList = ProjectManager::GetProjectsList();

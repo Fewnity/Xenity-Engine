@@ -8,6 +8,7 @@ class ProjectListItem;
 class SelectProjectMenu : public Menu
 {
 public:
+	SelectProjectMenu();
 	void Init() override;
 	void Draw() override;
 private:

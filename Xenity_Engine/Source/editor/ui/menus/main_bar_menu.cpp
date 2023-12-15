@@ -11,6 +11,11 @@
 #include <editor/compiler.h>
 #include <editor/command/commands/inspector_commands.h>
 #include <editor/command/command_manager.h>
+#include <editor/ui/menus/engine_settings_menu.h>
+#include <editor/ui/menus/project_settings_menu.h>
+#include <editor/ui/menus/lighting_menu.h>
+#include <editor/ui/menus/profiler_menu.h>
+//#include <editor/ui/menus/sh
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -259,23 +264,25 @@ void MainBarMenu::Draw()
 	}
 	if (ImGui::BeginMenu("Window")) // ----------------------------------- Draw Window menu
 	{
-		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EditorUI::showProfiler);
+		bool newVal = Editor::GetMenu<ProfilerMenu>()->GetActive();
+		if (ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &newVal))
+		{
+			Editor::GetMenu<ProfilerMenu>()->SetActive(newVal);
+		}
 		ImGui::SameLine();
 		ImGui::Text("Show Profiler");
-		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EditorUI::showEditor);
-		ImGui::SameLine();
-		ImGui::Text("Show Editor");
+
 		if (ImGui::MenuItem("Engine Settings"))
 		{
-			EditorUI::showEngineSettings = true;
+			Editor::GetMenu<EngineSettingsMenu>()->SetActive(true);
 		}
 		if (ImGui::MenuItem("Project Settings"))
 		{
-			EditorUI::showProjectsSettings = true;
+			Editor::GetMenu<ProjectSettingsMenu>()->SetActive(true);
 		}
 		if (ImGui::MenuItem("Lighting Settings"))
 		{
-			EditorUI::showLightingSettings = true;
+			Editor::GetMenu<LightingMenu>()->SetActive(true);
 		}
 		ImGui::EndMenu();
 	}

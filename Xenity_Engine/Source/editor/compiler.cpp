@@ -269,7 +269,8 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 
 void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
 {
-	Editor::compilingMenu->OpenPopup();
+	auto compilingMenu = Editor::GetMenu<CompilingMenu>();
+	compilingMenu->OpenPopup();
 	std::thread t = std::thread(CompileGame, platform, buildType, exportPath);
 	t.detach();
 }
@@ -359,9 +360,10 @@ void Compiler::OnCompileEnd(CompileResult result)
 		break;
 	}
 
-	if (Editor::compilingMenu)
+	auto compilingMenu = Editor::GetMenu<CompilingMenu>();
+	if (compilingMenu)
 	{
-		Editor::compilingMenu->ClosePopup();
+		compilingMenu->ClosePopup();
 	}
 }
 

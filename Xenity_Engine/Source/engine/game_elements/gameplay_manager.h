@@ -52,11 +52,6 @@ public:
 	*/
 	static void UpdateComponents();
 
-	/**
-	* Reset transforms states
-	*/
-	static void ResetTransformStates();
-
 	static void OrderComponents();
 	static void InitialiseComponents();
 	static void RemoveDestroyedGameObjects();

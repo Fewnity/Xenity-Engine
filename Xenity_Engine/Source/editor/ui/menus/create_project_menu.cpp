@@ -5,6 +5,11 @@
 #include <engine/file_system/directory.h>
 #include <engine/asset_management/project_manager.h>
 
+CreateProjectMenu::CreateProjectMenu()
+{
+	group = Menu_Create_Project;
+}
+
 void CreateProjectMenu::Init()
 {
 }

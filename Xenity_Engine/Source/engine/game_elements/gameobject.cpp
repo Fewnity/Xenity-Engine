@@ -308,7 +308,7 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 			std::weak_ptr<GameObject> gmToCheck = parent;
 			while (!gmToCheck.expired())
 			{
-				auto gm = gmToCheck.lock();
+				std::shared_ptr<GameObject> gm = gmToCheck.lock();
 
 				if (!gm->GetActive() || !gm->GetLocalActive()) // If a parent is disabled, set local active to false
 				{

@@ -147,10 +147,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	}
 	else
 	{
-		auto selectedGO = Editor::GetSelectedGameObject();
+		std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject();
 		if (selectedGO)
 		{
-			auto selectedGoTransform = selectedGO->GetTransform();
+			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
 
 			Vector3 camPos = cameraTransform->GetPosition();
 			Vector3 objectPos = selectedGoTransform->GetPosition();

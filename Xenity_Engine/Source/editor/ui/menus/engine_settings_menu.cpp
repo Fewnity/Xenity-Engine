@@ -28,8 +28,8 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 
 bool EngineSettingsMenu::DrawCompilerOptions()
 {
-	bool settingsChanged;
-	bool valueChanged;
+	bool settingsChanged = false;
+	bool valueChanged = false;
 
 	ImGui::Separator();
 	ImGui::Text("Compiler Options:");
@@ -76,7 +76,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 void EngineSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 350), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Engine Settings", &EditorUI::showEngineSettings, ImGuiWindowFlags_NoCollapse);
+	bool visible = ImGui::Begin("Engine Settings", 0, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

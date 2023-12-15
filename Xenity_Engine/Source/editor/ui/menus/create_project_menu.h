@@ -15,6 +15,7 @@ enum class CreateProjectError
 class CreateProjectMenu : public Menu
 {
 public:
+	CreateProjectMenu();
 	void Init() override;
 	void Draw() override;
 

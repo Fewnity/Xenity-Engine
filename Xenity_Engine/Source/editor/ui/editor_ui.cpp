@@ -21,12 +21,6 @@
 #include <engine/debug/debug.h>
 
 int EditorUI::uiId = 0;
-bool EditorUI::showProfiler = true;
-bool EditorUI::showEditor = true;
-bool EditorUI::showEngineSettings = false;
-bool EditorUI::showProjectsSettings = false;
-bool EditorUI::showLightingSettings = false;
-bool EditorUI::showCreateClass = false;
 
 std::vector<std::shared_ptr<Texture>> EditorUI::icons;
 MultiDragData EditorUI::multiDragData;

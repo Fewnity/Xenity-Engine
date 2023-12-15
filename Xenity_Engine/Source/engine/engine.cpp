@@ -274,6 +274,7 @@ void Engine::Loop()
 		return;
 	}
 #endif
+
 	Time::UpdateTime();
 	canUpdateAudio = true;
 	while (isRunning)
@@ -296,7 +297,8 @@ void Engine::Loop()
 		AsyncFileLoading::FinishThreadedFileLoading();
 		editorUpdateBenchmark->Start();
 		Editor::Update();
-		InputSystem::blockGameInput = Editor::sceneMenu->IsFocused();
+		auto sceneMenu = Editor::GetMenu<SceneMenu>();
+		InputSystem::blockGameInput = sceneMenu->IsFocused();
 		editorUpdateBenchmark->Stop();
 #endif
 
@@ -323,8 +325,6 @@ void Engine::Loop()
 			drawIDrawablesBenchmark->Start();
 			Graphics::Draw();
 			drawIDrawablesBenchmark->Stop();
-
-			GameplayManager::ResetTransformStates();
 		}
 		else
 		{

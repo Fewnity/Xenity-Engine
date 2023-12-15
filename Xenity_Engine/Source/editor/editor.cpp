@@ -48,22 +48,11 @@ using json = nlohmann::json;
 std::weak_ptr<AudioSource> Editor::audioSource;
 std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
 
-MenuNames Editor::currentMenu = Menu_Select_Project;
+MenuGroup Editor::currentMenu = Menu_Select_Project;
 
-ProjectSettingsMenu* Editor::projectSettings = nullptr;
-EngineSettingsMenu* Editor::engineSettings = nullptr;
-FileExplorerMenu* Editor::fileExplorer = nullptr;
-HierarchyMenu* Editor::hierarchy = nullptr;
-InspectorMenu* Editor::inspector = nullptr;
-MainBarMenu* Editor::mainBar = nullptr;
-ProfilerMenu* Editor::profiler = nullptr;
-GameMenu* Editor::gameMenu = nullptr;
-SceneMenu* Editor::sceneMenu = nullptr;
-CompilingMenu* Editor::compilingMenu = nullptr;
-SelectProjectMenu* Editor::selectProjectMenu = nullptr;
-CreateProjectMenu* Editor::createProjectMenu = nullptr;
-LightingMenu* Editor::lightingMenu = nullptr;
-CreateClassMenu* Editor::createClassMenu = nullptr;
+std::vector<std::shared_ptr<Menu>> Editor::menus;
+
+std::shared_ptr <MainBarMenu> Editor::mainBar = nullptr;
 
 std::weak_ptr<GameObject> Editor::selectedGameObject;
 std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
@@ -78,9 +67,6 @@ std::vector<std::string> Editor::dragdropEntries;
 void Editor::Init()
 {
 	CreateMenus();
-
-	// Create scene camera TODO : Move to scene_menu.cpp?
-
 
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
@@ -142,6 +128,7 @@ void Editor::Update()
 
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(NUM_1)))
 		{
+			auto sceneMenu = Editor::GetMenu<SceneMenu>();
 			sceneMenu->Focus();
 		}
 
@@ -153,6 +140,8 @@ void Editor::Update()
 
 		if (InputSystem::GetKey(DELETE))
 		{
+			auto sceneMenu = Editor::GetMenu<SceneMenu>();
+			auto hierarchy = Editor::GetMenu<HierarchyMenu>();
 			if (sceneMenu->IsFocused() || hierarchy->IsFocused())
 			{
 				if (selectedGameObject.lock())
@@ -241,7 +230,14 @@ void Editor::Draw()
 	}
 	ImGui::DockSpace(dsId);
 
-	if (currentMenu == Menu_Create_Project)
+	int menuCount = menus.size();
+	for (int i = 0; i < menuCount; i++)
+	{
+		if (menus[i]->GetActive() && menus[i]->group == currentMenu)
+			menus[i]->Draw();
+	}
+
+	/*if (currentMenu == Menu_Create_Project)
 	{
 		createProjectMenu->Draw();
 	}
@@ -266,7 +262,6 @@ void Editor::Draw()
 			hierarchy->Draw();
 			inspector->Draw();
 		}
-		//mainBar->Draw();
 		if (EditorUI::showProfiler)
 		{
 			profiler->Draw();
@@ -282,7 +277,7 @@ void Editor::Draw()
 		{
 			lightingMenu->Draw();
 		}
-	}
+	}*/
 	ImGui::PopStyleVar();
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -314,7 +309,8 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 {
 	selectedFileReference = fileReference;
 #if  defined(EDITOR)
-	Editor::inspector->loadedPreview = nullptr;
+	auto inspector = Editor::GetMenu<InspectorMenu>();
+	inspector->loadedPreview = nullptr;
 #endif
 }
 
@@ -469,7 +465,7 @@ void Editor::StartFolderCopy(std::string path, std::string newPath)
 			FileSystem::fileSystem->CreateDirectory(newFolderPath);
 			StartFolderCopy(file.path().string() + '\\', newFolderPath);
 		}
-		else 
+		else
 		{
 			FileSystem::fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
 		}
@@ -522,9 +518,8 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 	if (startParenthesis != -1)
 	{
-		std::string t = name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1);
 		number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
-		baseName = name.substr(0, startParenthesis-1);
+		baseName = name.substr(0, startParenthesis - 1);
 	}
 	else
 	{
@@ -546,13 +541,13 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 		std::string tempName;
 		int tempNumber;
 		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->name, tempName, tempNumber);
-		if (tempName == finalName) 
+		if (tempName == finalName)
 		{
-			if(number < tempNumber)
+			if (number < tempNumber)
 				number = tempNumber;
 		}
 	}
-	
+
 	finalName = finalName + " (" + std::to_string(number) + ")";
 
 	return finalName;
@@ -582,18 +577,18 @@ void Editor::OnDragAndDropFileFinished()
 			// Remove the parent's path of the file/folder
 			std::string newPath = Editor::GetCurrentProjectDirectory()->path + path.substr(lastBackSlash + 1);
 
-			if (isDirectory) 
+			if (isDirectory)
 			{
 				FileSystem::fileSystem->CreateDirectory(newPath + '\\');
 				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
 			}
-			else 
+			else
 			{
 				int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
-				if (copyResult == -1) 
+				if (copyResult == -1)
 				{
 					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", Dialog_Type_YES_NO_CANCEL);
-					if (result == Dialog_YES) 
+					if (result == Dialog_YES)
 					{
 						FileSystem::fileSystem->CopyFile(path, newPath, true);
 					}
@@ -612,34 +607,27 @@ void Editor::OnDragAndDropFileFinished()
 
 void Editor::CreateMenus()
 {
-	projectSettings = new ProjectSettingsMenu();
-	engineSettings = new EngineSettingsMenu();
-	fileExplorer = new FileExplorerMenu();
-	hierarchy = new HierarchyMenu();
-	inspector = new InspectorMenu();
-	mainBar = new MainBarMenu();
-	profiler = new ProfilerMenu();
-	gameMenu = new GameMenu();
-	sceneMenu = new SceneMenu();
-	compilingMenu = new CompilingMenu();
-	selectProjectMenu = new SelectProjectMenu();
-	createProjectMenu = new CreateProjectMenu();
-	lightingMenu = new LightingMenu();
-	createClassMenu = new CreateClassMenu();
+	std::shared_ptr<CreateClassMenu> createClassMenuPtr = AddMenu<CreateClassMenu>();
+	createClassMenuPtr->SetActive(false);
+	std::shared_ptr<LightingMenu> lightingMenuPtr = AddMenu<LightingMenu>();
+	lightingMenuPtr->SetActive(false);
+	std::shared_ptr<ProjectSettingsMenu> projectSettingsMenuPtr = AddMenu<ProjectSettingsMenu>();
+	projectSettingsMenuPtr->SetActive(false);
+	std::shared_ptr<EngineSettingsMenu> engineSettingsMenuPtr = AddMenu<EngineSettingsMenu>();
+	engineSettingsMenuPtr->SetActive(false);
 
-	projectSettings->Init();
-	engineSettings->Init();
-	fileExplorer->Init();
-	hierarchy->Init();
-	inspector->Init();
+	AddMenu<FileExplorerMenu>();
+	AddMenu<HierarchyMenu>();
+	AddMenu<InspectorMenu>();
+	AddMenu<ProfilerMenu>();
+	AddMenu<GameMenu>();
+	AddMenu<SceneMenu>();
+	AddMenu<CompilingMenu>();
+	AddMenu<SelectProjectMenu>();
+	AddMenu<CreateProjectMenu>();
+
+	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
-	profiler->Init();
-	gameMenu->Init();
-	sceneMenu->Init();
-	selectProjectMenu->Init();
-	createProjectMenu->Init();
-	lightingMenu->Init();
-	createClassMenu->Init();
 }
 
 #endif

@@ -220,7 +220,6 @@ void Transform::OnParentChanged()
 
 void Transform::SetChildrenWorldPositions()
 {
-	movedLastFrame = true;
 	UpdateTransformationMatrix();
 
 	auto gm = gameObject.lock();
@@ -238,7 +237,6 @@ void Transform::SetChildrenWorldPositions()
 
 void Transform::UpdateWorldValues()
 {
-	movedLastFrame = true;
 	UpdateWorldPosition();
 	UpdateWorldRotation();
 	UpdateWorldScale();
