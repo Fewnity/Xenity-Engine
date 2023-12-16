@@ -7,6 +7,7 @@
 #include <engine/debug/performance.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
+#include <editor/editor.h>
 
 void ProfilerMenu::Init()
 {
@@ -15,8 +16,9 @@ void ProfilerMenu::Init()
 void ProfilerMenu::Draw()
 {
 	UpdateFpsCounter();
-
-	bool visible = ImGui::Begin("Debug");
+	std::string windowName = "Debug###Debug" + std::to_string(id);
+	bool isOpen = true;
+	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -41,6 +43,11 @@ void ProfilerMenu::Draw()
 	}
 
 	ImGui::End();
+
+	if (!isOpen)
+	{
+		Editor::RemoveMenu(this);
+	}
 }
 
 void ProfilerMenu::UpdateFpsCounter()

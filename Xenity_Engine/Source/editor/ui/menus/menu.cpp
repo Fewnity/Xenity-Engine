@@ -46,6 +46,11 @@ void Menu::OnStartDrawing()
 	ImVec2 size = ImGui::GetContentRegionAvail();
 	startAvailableSize = Vector2Int(size.x, size.y);
 	windowSize = startAvailableSize;
+	if (forceFocus)
+	{
+		ImGui::SetWindowFocus();
+		forceFocus = false;
+	}
 }
 
 void Menu::ResetWindowValues()

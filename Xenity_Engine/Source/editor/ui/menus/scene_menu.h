@@ -35,6 +35,7 @@ private:
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
 
 	std::weak_ptr<GameObject> cameraGO;
+	std::weak_ptr<Camera> weakCamera;
 	bool isLastFrameOpened = false;
 	Vector3 oldWorldMousePosition;
 	Vector3 worldMousePosition;

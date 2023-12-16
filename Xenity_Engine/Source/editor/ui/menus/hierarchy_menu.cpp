@@ -10,7 +10,9 @@ void HierarchyMenu::Init()
 
 void HierarchyMenu::Draw()
 {
-	bool visible = ImGui::Begin("Hierarchy", 0, ImGuiWindowFlags_NoCollapse);
+	std::string windowName = "Hierarchy###Hierarchy" + std::to_string(id);
+	bool isOpen = true;
+	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -100,4 +102,9 @@ void HierarchyMenu::Draw()
 	}
 
 	ImGui::End();
+
+	if (!isOpen)
+	{
+		Editor::RemoveMenu(this);
+	}
 }

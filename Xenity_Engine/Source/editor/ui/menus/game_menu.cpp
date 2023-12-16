@@ -4,6 +4,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/graphics/graphics.h>
 #include <engine/inputs/input_system.h>
+#include <editor/editor.h>
 
 void GameMenu::Init()
 {
@@ -40,10 +41,11 @@ void GameMenu::Draw()
 			windowName += " (No camera)";
 		}
 	}
-	windowName += "###Game";
+	windowName += "###Game" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool visible = ImGui::Begin(windowName.c_str());
+	bool isOpen = true;
+	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	isLastFrameOpened = visible;
 	if (visible)
 	{
@@ -73,6 +75,11 @@ void GameMenu::Draw()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	if (!isOpen)
+	{
+		Editor::RemoveMenu(this);
+	}
 }
 
 void GameMenu::DrawNoCameraText()

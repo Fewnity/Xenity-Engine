@@ -15,7 +15,11 @@
 #include <editor/ui/menus/project_settings_menu.h>
 #include <editor/ui/menus/lighting_menu.h>
 #include <editor/ui/menus/profiler_menu.h>
-//#include <editor/ui/menus/sh
+#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/inspector_menu.h>
+#include <editor/ui/menus/file_explorer_menu.h>
+#include <editor/ui/menus/hierarchy_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -264,17 +268,34 @@ void MainBarMenu::Draw()
 	}
 	if (ImGui::BeginMenu("Window")) // ----------------------------------- Draw Window menu
 	{
-		bool newVal = Editor::GetMenu<ProfilerMenu>()->GetActive();
-		if (ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &newVal))
+		if (ImGui::MenuItem("Game"))
 		{
-			Editor::GetMenu<ProfilerMenu>()->SetActive(newVal);
+			Editor::AddMenu<GameMenu>();
 		}
-		ImGui::SameLine();
-		ImGui::Text("Show Profiler");
-
+		if (ImGui::MenuItem("Scene"))
+		{
+			Editor::AddMenu<SceneMenu>();
+		}
+		if (ImGui::MenuItem("Inspector"))
+		{
+			Editor::AddMenu<InspectorMenu>();
+		}
+		if (ImGui::MenuItem("Profiler"))
+		{
+			Editor::AddMenu<ProfilerMenu>();
+		}
+		if (ImGui::MenuItem("File Explorer"))
+		{
+			Editor::AddMenu<FileExplorerMenu>();
+		}
+		if (ImGui::MenuItem("Hierarchy"))
+		{
+			Editor::AddMenu<HierarchyMenu>();
+		}
 		if (ImGui::MenuItem("Engine Settings"))
 		{
 			Editor::GetMenu<EngineSettingsMenu>()->SetActive(true);
+			Editor::GetMenu<EngineSettingsMenu>()->Focus();
 		}
 		if (ImGui::MenuItem("Project Settings"))
 		{

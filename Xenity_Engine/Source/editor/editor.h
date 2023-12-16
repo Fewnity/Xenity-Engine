@@ -97,7 +97,6 @@ public:
 	template <typename T>
 	static std::shared_ptr<T> GetMenu() 
 	{
-		int menuCount = menus.size();
 		for (int i = 0; i < menuCount; i++)
 		{
 			if (auto menu = std::dynamic_pointer_cast<T>(menus[i])) 
@@ -111,12 +110,26 @@ public:
 	template <typename T>
 	static void RemoveMenu()
 	{
-		int menuCount = menus.size();
 		for (int i = 0; i < menuCount; i++)
 		{
 			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
 			{
 				menus.erase(menus.begin() + i);
+				menuCount--;
+				break;
+			}
+		}
+	}
+
+	static void RemoveMenu(Menu* menu)
+	{
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (menu == menus[i].get())
+			{
+				menus.erase(menus.begin() + i);
+				menuCount--;
+				break;
 			}
 		}
 	}
@@ -124,9 +137,20 @@ public:
 	template <typename T>
 	static std::shared_ptr<T> AddMenu()
 	{
+		int count = 0;
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			{
+				count++;
+			}
+		}
+
 		std::shared_ptr<T> newMenu = std::make_shared<T>();
 		menus.push_back(newMenu);
+		newMenu->id = count;
 		newMenu->Init();
+		menuCount++;
 		return newMenu;
 	}
 
@@ -157,7 +181,7 @@ public:
 	static std::vector<std::shared_ptr<Menu>> menus;
 
 private:
-
+	static int menuCount;
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::weak_ptr<GameObject> selectedGameObject;
 	static std::shared_ptr<FileReference> selectedFileReference;

@@ -30,8 +30,9 @@ void InspectorMenu::Init()
 void InspectorMenu::Draw()
 {
 	ImGuiIO& io = ImGui::GetIO();
-
-	bool visible = ImGui::Begin("Inspector", 0, ImGuiWindowFlags_NoCollapse);
+	std::string windowName = "Inspector###Inspector" + std::to_string(id);
+	bool isOpen = true;
+	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -58,6 +59,11 @@ void InspectorMenu::Draw()
 	}
 
 	ImGui::End();
+
+	if (!isOpen)
+	{
+		Editor::RemoveMenu(this);
+	}
 }
 
 int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)

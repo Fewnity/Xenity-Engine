@@ -63,6 +63,7 @@ std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 
 std::vector<std::string> Editor::dragdropEntries;
+int Editor::menuCount = 0;
 
 void Editor::Init()
 {
@@ -219,65 +220,24 @@ void Editor::Draw()
 		ImGui::DockBuilderSplitNode(left, ImGuiDir_Up, 0.7f, &leftTop, &fileExplorerNode);
 		ImGui::DockBuilderSplitNode(leftTop, ImGuiDir_Left, 0.2f, &hierarchyNode, &SceneNode);
 
-		ImGui::DockBuilderDockWindow("Hierarchy", hierarchyNode);
-		ImGui::DockBuilderDockWindow("File Explorer", fileExplorerNode);
-		ImGui::DockBuilderDockWindow("Inspector", inspectorNode);
-		ImGui::DockBuilderDockWindow("Debug", inspectorNode);
-		ImGui::DockBuilderDockWindow("###Scene", SceneNode);
-		ImGui::DockBuilderDockWindow("###Game", SceneNode);
+		ImGui::DockBuilderDockWindow("###Hierarchy0", hierarchyNode);
+		ImGui::DockBuilderDockWindow("###File_Explorer0", fileExplorerNode);
+		ImGui::DockBuilderDockWindow("###Inspector0", inspectorNode);
+		ImGui::DockBuilderDockWindow("###Debug0", inspectorNode);
+		ImGui::DockBuilderDockWindow("###Scene0", SceneNode);
+		ImGui::DockBuilderDockWindow("###Game0", SceneNode);
 
 		ImGui::DockBuilderFinish(dsId);
 	}
 	ImGui::DockSpace(dsId);
 
-	int menuCount = menus.size();
+	//int menuCount = menus.size();
 	for (int i = 0; i < menuCount; i++)
 	{
 		if (menus[i]->GetActive() && menus[i]->group == currentMenu)
 			menus[i]->Draw();
 	}
 
-	/*if (currentMenu == Menu_Create_Project)
-	{
-		createProjectMenu->Draw();
-	}
-	else if (currentMenu == Menu_Select_Project)
-	{
-		selectProjectMenu->Draw();
-	}
-	else
-	{
-		EditorUI::SetRoundedCorner(10);
-		if (EditorUI::showProjectsSettings)
-		{
-			projectSettings->Draw();
-		}
-		if (EditorUI::showEngineSettings)
-		{
-			engineSettings->Draw();
-		}
-		if (EditorUI::showEditor)
-		{
-			fileExplorer->Draw();
-			hierarchy->Draw();
-			inspector->Draw();
-		}
-		if (EditorUI::showProfiler)
-		{
-			profiler->Draw();
-		}
-		if (EditorUI::showCreateClass)
-		{
-			createClassMenu->Draw();
-		}
-		compilingMenu->Draw();
-		gameMenu->Draw();
-		sceneMenu->Draw();
-		if (EditorUI::showLightingSettings)
-		{
-			lightingMenu->Draw();
-		}
-	}*/
 	ImGui::PopStyleVar();
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -310,7 +270,8 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 	selectedFileReference = fileReference;
 #if  defined(EDITOR)
 	auto inspector = Editor::GetMenu<InspectorMenu>();
-	inspector->loadedPreview = nullptr;
+	if(inspector)
+		inspector->loadedPreview = nullptr;
 #endif
 }
 

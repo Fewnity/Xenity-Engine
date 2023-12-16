@@ -10,17 +10,19 @@
 #include <editor/editor.h>
 #include <engine/time/time.h>
 #include <iostream>
+#include <engine/debug/debug.h>
 
 void SceneMenu::Init()
 {
 	cameraGO = CreateGameObjectEditor("Camera");
-	std::shared_ptr<Camera> camera = cameraGO.lock()->AddComponent<Camera>();
-	camera->SetNearClippingPlane(0.01f);
-	camera->SetFarClippingPlane(500);
-	camera->SetProjectionSize(5.0f);
-	camera->SetFov(70);
-	camera->isEditor = true;
-	camera->GetTransform()->SetPosition(Vector3(0, 1, 0));
+	std::shared_ptr<Camera> cameraLock = cameraGO.lock()->AddComponent<Camera>();
+	cameraLock->SetNearClippingPlane(0.01f);
+	cameraLock->SetFarClippingPlane(500);
+	cameraLock->SetProjectionSize(5.0f);
+	cameraLock->SetFov(70);
+	cameraLock->isEditor = true;
+	cameraLock->GetTransform()->SetPosition(Vector3(0, 1, 0));
+	weakCamera = cameraLock;
 }
 
 ImVec4 normalColor{ 0.5f, 0.5f, 0.5f, 0.5f };
@@ -357,39 +359,28 @@ void SceneMenu::Draw()
 		cube2.lock()->GetTransform()->SetLocalScale(Vector3(0.15));
 		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
 	}*/
-	//Get the editor camera
-	size_t cameraCount = Graphics::cameras.size();
-	std::shared_ptr<Camera> camera;
-	Vector2Int frameBufferSize;
-	for (size_t i = 0; i < cameraCount; i++)
+
+	std::shared_ptr<Camera> camera = weakCamera.lock();
+	Vector2Int frameBufferSize = Vector2Int(0,0);
+	if (camera) 
 	{
-		if (Graphics::cameras[i].lock()->isEditor)
-		{
-			camera = Graphics::cameras[i].lock();
-			frameBufferSize.x = camera->GetWidth();
-			frameBufferSize.y = camera->GetHeight();
-			break;
-		}
+		frameBufferSize.x = camera->GetWidth();
+		frameBufferSize.y = camera->GetHeight();
 	}
 
 	// Generate tab name
 	std::string windowName = "Scene";
 	if (isLastFrameOpened)
 		windowName += " " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y);
-	windowName += "###Scene";
+	windowName += "###Scene" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool visible = ImGui::Begin(windowName.c_str(), 0, ImGuiWindowFlags_NoNav);
+	bool isOpen = true;
+	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse);
 	isLastFrameOpened = visible;
 	if (visible)
 	{
 		OnStartDrawing();
-
-		if (forceFocus)
-		{
-			ImGui::SetWindowFocus();
-			forceFocus = false;
-		}
 
 		ImVec2 startCursorPos = ImGui::GetCursorPos();
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
@@ -440,6 +431,11 @@ void SceneMenu::Draw()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	if (!isOpen) 
+	{
+		Editor::RemoveMenu(this);
+	}
 }
 
 void SceneMenu::DrawToolWindow()

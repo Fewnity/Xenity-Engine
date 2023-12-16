@@ -29,7 +29,7 @@
 #include <imgui/imgui_impl_sdl2.h>
 #include <xenity_editor.h>
 #include <glad/glad.h>
-#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/game_menu.h>
 #include <engine/scene_management/scene_manager.h>
 #include <editor/plugin/plugin_manager.h>
 #endif
@@ -297,8 +297,12 @@ void Engine::Loop()
 		AsyncFileLoading::FinishThreadedFileLoading();
 		editorUpdateBenchmark->Start();
 		Editor::Update();
-		auto sceneMenu = Editor::GetMenu<SceneMenu>();
-		InputSystem::blockGameInput = sceneMenu->IsFocused();
+		auto gameMenu = Editor::GetMenu<GameMenu>();
+		if (gameMenu)
+			InputSystem::blockGameInput = !gameMenu->IsFocused();
+		else
+			InputSystem::blockGameInput = true;
+
 		editorUpdateBenchmark->Stop();
 #endif
 

@@ -16,7 +16,6 @@ class API Camera : public Component
 public:
 	Camera();
 	~Camera();
-	//void SetReflection();
 
 	void RemoveReferences() override;
 

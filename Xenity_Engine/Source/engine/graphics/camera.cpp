@@ -334,7 +334,6 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 
 void Camera::BindFrameBuffer()
 {
-
 #if defined(_WIN32) || defined(_WIN64)
 	UpdateFrameBuffer();
 #if defined(EDITOR)

@@ -76,7 +76,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 void EngineSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 350), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Engine Settings", 0, ImGuiWindowFlags_NoCollapse);
+	bool visible = ImGui::Begin("Engine Settings", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
