@@ -58,7 +58,8 @@ void GameMenu::Draw()
 
 		if (camera)
 		{
-			camera->ChangeFrameBufferSize(startAvailableSize);
+			if (isHovered || isFocused)
+				camera->ChangeFrameBufferSize(startAvailableSize);
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else

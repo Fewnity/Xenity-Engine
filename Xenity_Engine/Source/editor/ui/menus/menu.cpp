@@ -49,6 +49,7 @@ void Menu::OnStartDrawing()
 	if (forceFocus)
 	{
 		ImGui::SetWindowFocus();
+		isFocused = true;
 		forceFocus = false;
 	}
 }
