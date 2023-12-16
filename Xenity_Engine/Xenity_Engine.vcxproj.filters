@@ -131,6 +131,7 @@
     <ClCompile Include="Source\unit_tests\unit_test_vector.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_transform.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_vu1.cpp" />
+    <ClCompile Include="Source\engine\debug\crash_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Source\editor\file_handler.h" />
     <ClInclude Include="Source\engine\api.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_vu1.h" />
+    <ClInclude Include="Source\engine\debug\crash_handler.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

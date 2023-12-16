@@ -70,6 +70,7 @@
 #include <engine/physics/physics_manager.h>
 
 #include <engine/file_system/async_file_loading.h>
+#include <engine/debug/crash_handler.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -84,6 +85,8 @@ std::unique_ptr<GameInterface> Engine::game = nullptr;
 
 int Engine::Init()
 {
+	CrashHandler::Init();
+
 	// Init random
 	srand((unsigned int)time(NULL));
 

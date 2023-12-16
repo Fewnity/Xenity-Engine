@@ -635,6 +635,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 	}
 	command += " /link";
 	command += " /implib:" + params.libraryName + ".lib";
+	command += " /DEBUG";
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
 		command += " /out:" + params.getDynamicLibraryName();

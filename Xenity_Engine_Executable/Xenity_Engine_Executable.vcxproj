@@ -127,7 +127,7 @@
     <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
-    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022x64;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Editor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
     <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Engine;$(LibraryPath)</LibraryPath>
@@ -211,7 +211,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xenity_Editor.lib;SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>Xenity_Editor.lib;SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
