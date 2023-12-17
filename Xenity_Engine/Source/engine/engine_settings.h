@@ -3,6 +3,7 @@
 
 #include <string>
 #include <engine/reflection/reflection.h>
+#include <engine/graphics/color/color.h>
 
 class API EngineSettings
 {
@@ -29,6 +30,9 @@ public:
 
 	static bool compileOnCodeChanged;
 	static bool compileWhenOpeningProject;
+
+	static Color backbgroundColor;
+	static Color secondaryColor;
 
 	static ReflectiveData GetReflectiveData();
 };

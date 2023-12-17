@@ -101,6 +101,13 @@ void EngineSettingsMenu::Draw()
 		if (valueChanged)
 			settingsChanged = true;
 
+		valueChanged = EditorUI::DrawInput("Backbground color", EngineSettings::backbgroundColor);
+		if (valueChanged)
+			settingsChanged = true;
+		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::secondaryColor);
+		if (valueChanged)
+			settingsChanged = true;
+
 		if (DrawCompilerOptions()) 
 		{
 			settingsChanged = true;

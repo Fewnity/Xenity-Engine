@@ -21,6 +21,9 @@ std::string EngineSettings::ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWi
 
 // Texture::AnisotropicLevel EngineSettings::anisotropicLevel = Texture::AnisotropicLevel::X16;
 
+Color EngineSettings::backbgroundColor = Color::CreateFromRGBAFloat(0.059f, 0.059f, 0.059f, 1);
+Color EngineSettings::secondaryColor = Color::CreateFromRGBAFloat(0.22f, 0.48f, 0.796f, 1);
+
 void EngineSettings::SaveEngineSettings()
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile("engine_settings.json");
@@ -44,5 +47,9 @@ ReflectiveData EngineSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, EngineSettings::ppssppExePath, "ppssppExePath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compileOnCodeChanged, "compileOnCodeChanged", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compileWhenOpeningProject, "compileWhenOpeningProject", true);
+
+	Reflective::AddVariable(reflectedVariables, EngineSettings::backbgroundColor, "backbgroundColor", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::secondaryColor, "secondaryColor", true);
+
 	return reflectedVariables;
 }

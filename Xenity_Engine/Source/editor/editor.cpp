@@ -188,6 +188,7 @@ void Editor::Draw()
 	EditorUI::NewFrame();
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
+	ApplyEditorStyle();
 	if (currentMenu == Menu_Editor)
 		mainBar->Draw();
 
@@ -197,8 +198,8 @@ void Editor::Draw()
 
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset));
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset));
-
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
 	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	ImGuiID dsId = ImGui::GetID("BackgroundDock");
@@ -240,8 +241,83 @@ void Editor::Draw()
 
 	ImGui::PopStyleVar();
 	ImGui::End();
-	ImGui::PopStyleVar();
+
+	RemoveEditorStyle();
 	EditorUI::Render();
+}
+
+void Editor::ApplyEditorStyle()
+{
+	//Default colors
+	// BG 15 15 15
+	// Input 29 47 73
+	// tab 31 57 88
+	// tab selected 51 105 173
+	// Button 35 69 109
+	// Element selected 56 123 203
+
+	Vector4 bgColor = EngineSettings::backbgroundColor.GetRGBA().ToVector4();
+	Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x, bgColor.y, bgColor.z, 1));
+
+	ImVec4 colorLevel0 = ImVec4(secondaryColor.x, secondaryColor.y, secondaryColor.z, 1);
+	ImVec4 colorLevel1 = ImVec4(secondaryColor.x - 0.1f, secondaryColor.y - 0.1f, secondaryColor.z - 0.1f, 1);
+	ImVec4 colorLevel2 = ImVec4(secondaryColor.x - 0.2f, secondaryColor.y - 0.2f, secondaryColor.z - 0.2f, 1);
+	ImVec4 colorLevel3 = ImVec4(secondaryColor.x - 0.3f, secondaryColor.y - 0.3f, secondaryColor.z - 0.3f, 1);
+	ImVec4 colorLevel4 = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 1);
+	ImVec4 colorLevel4Alpha = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 0.5f);
+
+	ImGui::PushStyleColor(ImGuiCol_Button, colorLevel2);
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorLevel0);
+
+	ImGui::PushStyleColor(ImGuiCol_Tab, colorLevel2);
+	ImGui::PushStyleColor(ImGuiCol_TabActive, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_TabHovered, colorLevel0);
+	ImGui::PushStyleColor(ImGuiCol_TabUnfocused, colorLevel3);
+	ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, colorLevel2);
+
+	ImGui::PushStyleColor(ImGuiCol_Header, colorLevel2);
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, colorLevel0);
+
+	ImGui::PushStyleColor(ImGuiCol_TitleBg, colorLevel4);
+	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, colorLevel3);
+
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, colorLevel4Alpha);
+
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, colorLevel0);
+
+	//ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(secondaryColor.x - 0.4, secondaryColor.y - 0.4, secondaryColor.z - 0.4, 0.5f));
+	//ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(secondaryColor.x - 0.4, secondaryColor.y - 0.4, secondaryColor.z - 0.4, 0.5f));
+}
+
+void Editor::RemoveEditorStyle()
+{
+	ImGui::PopStyleVar();
+
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor();
 }
 
 void Editor::CreateEmpty()
@@ -270,7 +346,7 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 	selectedFileReference = fileReference;
 #if  defined(EDITOR)
 	auto inspector = Editor::GetMenu<InspectorMenu>();
-	if(inspector)
+	if (inspector)
 		inspector->loadedPreview = nullptr;
 #endif
 }

@@ -179,6 +179,8 @@ public:
 
 	static std::string GetIncrementedGameObjectName(std::string name);
 	static std::vector<std::shared_ptr<Menu>> menus;
+	static void ApplyEditorStyle();
+	static void RemoveEditorStyle();
 
 private:
 	static int menuCount;
