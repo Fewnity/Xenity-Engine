@@ -71,6 +71,7 @@ void MainBarMenu::Draw()
 		{
 			SceneManager::SaveScene(SaveSceneToFile);
 		}
+		ImGui::Separator();
 		if (ImGui::MenuItem("Build for Windows"))
 		{
 			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
@@ -101,6 +102,7 @@ void MainBarMenu::Draw()
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
 		}
+		ImGui::Separator();
 		if (ImGui::MenuItem("Close project"))
 		{
 			ProjectManager::UnloadProject();
@@ -260,6 +262,7 @@ void MainBarMenu::Draw()
 		{
 			GameplayManager::SetGameState(GameState::Stopped, true);
 		}
+		ImGui::Separator();
 		if (ImGui::MenuItem("Compile Game"))
 		{
 			Compiler::HotReloadGame();
@@ -268,30 +271,35 @@ void MainBarMenu::Draw()
 	}
 	if (ImGui::BeginMenu("Window")) // ----------------------------------- Draw Window menu
 	{
-		if (ImGui::MenuItem("Game"))
+		if (ImGui::BeginMenu("General"))
 		{
-			Editor::AddMenu<GameMenu>();
+			if (ImGui::MenuItem("Game"))
+			{
+				Editor::AddMenu<GameMenu>();
+			}
+			if (ImGui::MenuItem("Scene"))
+			{
+				Editor::AddMenu<SceneMenu>();
+			}
+			if (ImGui::MenuItem("Inspector"))
+			{
+				Editor::AddMenu<InspectorMenu>();
+			}
+			if (ImGui::MenuItem("Profiler"))
+			{
+				Editor::AddMenu<ProfilerMenu>();
+			}
+			if (ImGui::MenuItem("File Explorer"))
+			{
+				Editor::AddMenu<FileExplorerMenu>();
+			}
+			if (ImGui::MenuItem("Hierarchy"))
+			{
+				Editor::AddMenu<HierarchyMenu>();
+			}
+			ImGui::EndMenu();
 		}
-		if (ImGui::MenuItem("Scene"))
-		{
-			Editor::AddMenu<SceneMenu>();
-		}
-		if (ImGui::MenuItem("Inspector"))
-		{
-			Editor::AddMenu<InspectorMenu>();
-		}
-		if (ImGui::MenuItem("Profiler"))
-		{
-			Editor::AddMenu<ProfilerMenu>();
-		}
-		if (ImGui::MenuItem("File Explorer"))
-		{
-			Editor::AddMenu<FileExplorerMenu>();
-		}
-		if (ImGui::MenuItem("Hierarchy"))
-		{
-			Editor::AddMenu<HierarchyMenu>();
-		}
+		ImGui::Separator();
 		if (ImGui::MenuItem("Engine Settings"))
 		{
 			Editor::GetMenu<EngineSettingsMenu>()->SetActive(true);
