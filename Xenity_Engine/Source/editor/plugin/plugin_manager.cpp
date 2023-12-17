@@ -19,10 +19,10 @@ void PluginManager::Init()
 	
 #if defined(EDITOR)
 	Debug::Print("[PluginManager::Init] Compiling..");
-	Compiler::CompilePlugin( 
-		Platform::P_Windows, 
-		"plugins\\test\\" 
-	);
+	//Compiler::CompilePlugin( 
+	//	Platform::P_Windows, 
+	//	"plugins\\test\\" 
+	//);
 #endif
 
 	// Setup constants
