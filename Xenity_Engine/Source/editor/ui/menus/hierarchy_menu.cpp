@@ -38,6 +38,8 @@ void HierarchyMenu::Draw()
 			Editor::SetSelectedGameObject(nullptr);
 			Editor::SetSelectedFileReference(nullptr);
 		}
+		bool isChildFocused = ImGui::IsWindowFocused();
+		bool isChildHovered = ImGui::IsWindowHovered();
 		ImGui::EndChild();
 
 		if (!disableDrag)
@@ -96,6 +98,10 @@ void HierarchyMenu::Draw()
 		}
 
 		CalculateWindowValues();
+		if (isChildFocused)
+			isFocused = isChildFocused;
+		if (isChildHovered)
+			isHovered = isChildHovered;
 	}
 	else
 	{
