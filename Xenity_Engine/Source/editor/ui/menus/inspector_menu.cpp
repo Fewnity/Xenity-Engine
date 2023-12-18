@@ -153,12 +153,20 @@ void InspectorMenu::DrawFilePreview()
 			Engine::GetRenderer().BindTexture(texture);
 			ImGui::Image((ImTextureID)textureId, availArea);
 
-			// Print texture resolution
 			std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
 			ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
 			ImVec2 textPos;
 			textPos.x = availArea.x / 2.0f - textSize.x / 2.0f + ImGui::GetCursorPosX();
 			textPos.y = availArea.y - textSize.y / 2.0f;
+
+			//Draw text background
+			ImVec2 childWindowPos = ImGui::GetWindowPos();
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
+			ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
+			draw_list->AddRectFilled(rectTopLeftPos, rectBottomRightPos, ImColor(ImVec4(0, 0, 0, 0.35f)));
+
+			// Print texture resolution
 			ImGui::SetCursorPos(textPos);
 			ImGui::Text(text.c_str());
 		}
