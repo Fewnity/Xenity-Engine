@@ -259,16 +259,27 @@ void Editor::ApplyEditorStyle()
 
 	Vector4 bgColor = EngineSettings::backbgroundColor.GetRGBA().ToVector4();
 	Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x, bgColor.y, bgColor.z, 1));
+	Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
+	Vector4 pTint = Vector4(0);
+	if (GameplayManager::GetGameState() == Playing) 
+	{
+		pTint = playTint;
+		if (!EngineSettings::isPlayTintAdditive)
+			pTint *= -1;
+	}
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x + pTint.x, bgColor.y + pTint.y, bgColor.z + pTint.z, 1));
 
 	ImVec4 colorLevel0 = ImVec4(secondaryColor.x, secondaryColor.y, secondaryColor.z, 1);
+	ImVec4 colorLevel05 = ImVec4(secondaryColor.x - 0.05f, secondaryColor.y - 0.05f, secondaryColor.z - 0.05f, 1);
 	ImVec4 colorLevel1 = ImVec4(secondaryColor.x - 0.1f, secondaryColor.y - 0.1f, secondaryColor.z - 0.1f, 1);
+	ImVec4 colorLevel15 = ImVec4(secondaryColor.x - 0.15f, secondaryColor.y - 0.15f, secondaryColor.z - 0.15f, 1);
 	ImVec4 colorLevel2 = ImVec4(secondaryColor.x - 0.2f, secondaryColor.y - 0.2f, secondaryColor.z - 0.2f, 1);
+	ImVec4 colorLevel25 = ImVec4(secondaryColor.x - 0.25f, secondaryColor.y - 0.25f, secondaryColor.z - 0.25f, 1);
 	ImVec4 colorLevel3 = ImVec4(secondaryColor.x - 0.3f, secondaryColor.y - 0.3f, secondaryColor.z - 0.3f, 1);
 	ImVec4 colorLevel4 = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 1);
 	ImVec4 colorLevel4Alpha = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 0.5f);
 
-	ImGui::PushStyleColor(ImGuiCol_Button, colorLevel2);
+	ImGui::PushStyleColor(ImGuiCol_Button, colorLevel25);
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorLevel1);
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorLevel0);
 
@@ -278,8 +289,8 @@ void Editor::ApplyEditorStyle()
 	ImGui::PushStyleColor(ImGuiCol_TabUnfocused, colorLevel3);
 	ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, colorLevel2);
 
-	ImGui::PushStyleColor(ImGuiCol_Header, colorLevel2);
-	ImGui::PushStyleColor(ImGuiCol_HeaderActive, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_Header, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, colorLevel05);
 	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, colorLevel0);
 
 	ImGui::PushStyleColor(ImGuiCol_TitleBg, colorLevel4);

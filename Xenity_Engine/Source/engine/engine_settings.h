@@ -33,6 +33,8 @@ public:
 
 	static Color backbgroundColor;
 	static Color secondaryColor;
+	static Color playTintColor;
+	static bool isPlayTintAdditive;
 
 	static ReflectiveData GetReflectiveData();
 };

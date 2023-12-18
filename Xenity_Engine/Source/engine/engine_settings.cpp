@@ -23,6 +23,8 @@ std::string EngineSettings::ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWi
 
 Color EngineSettings::backbgroundColor = Color::CreateFromRGBAFloat(0.059f, 0.059f, 0.059f, 1);
 Color EngineSettings::secondaryColor = Color::CreateFromRGBAFloat(0.22f, 0.48f, 0.796f, 1);
+Color EngineSettings::playTintColor = Color::CreateFromRGBAFloat(0.2f, 0.0f, 0.0f, 1);
+bool EngineSettings::isPlayTintAdditive = true;
 
 void EngineSettings::SaveEngineSettings()
 {
@@ -50,6 +52,8 @@ ReflectiveData EngineSettings::GetReflectiveData()
 
 	Reflective::AddVariable(reflectedVariables, EngineSettings::backbgroundColor, "backbgroundColor", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::secondaryColor, "secondaryColor", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::playTintColor, "playTintColor", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::isPlayTintAdditive, "isPlayTintAdditive", true);
 
 	return reflectedVariables;
 }

@@ -107,6 +107,12 @@ void EngineSettingsMenu::Draw()
 		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::secondaryColor);
 		if (valueChanged)
 			settingsChanged = true;
+		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::playTintColor);
+		if (valueChanged)
+			settingsChanged = true;
+		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::isPlayTintAdditive);
+		if (valueChanged)
+			settingsChanged = true;
 
 		if (DrawCompilerOptions()) 
 		{
