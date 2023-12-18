@@ -46,7 +46,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		SceneManager::RestoreScene();
 		gameState = newGameState;
 	}
-	else if (newGameState == Stopped && gameState == Playing) // Stop game
+	else if (newGameState == Stopped && gameState != Stopped) // Stop game
 	{
 		gameState = newGameState;
 		if (restoreScene)
