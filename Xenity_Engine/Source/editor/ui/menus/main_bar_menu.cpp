@@ -37,6 +37,9 @@
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/audio/audio_source.h>
 #include <engine/debug/debug.h>
+#include <engine/physics/rigidbody.h>
+#include <engine/physics/box_collider.h>
+#include "about_menu.h"
 
 void MainBarMenu::Init()
 {
@@ -48,6 +51,21 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 	auto command = std::make_shared<InspectorAddComponentCommand<T>>(Editor::GetSelectedGameObject());
 	CommandManager::AddCommand(command);
 	command->Execute();
+}
+
+template <typename T>
+std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name) 
+{
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::weak_ptr<GameObject>(), 0);
+	CommandManager::AddCommand(command);
+	command->Execute();
+	command->createdGameObject.lock()->name = Editor::GetIncrementedGameObjectName(name);
+
+	auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObject.lock());
+	CommandManager::AddCommand(command2);
+	command2->Execute();
+
+	return command2->newComponent.lock();
 }
 
 void MainBarMenu::Draw()
@@ -137,7 +155,7 @@ void MainBarMenu::Draw()
 		{
 			Editor::CreateEmpty();
 		}
-		if (ImGui::BeginMenu("3D Objects"))
+		/*if (ImGui::BeginMenu("3D Objects"))
 		{
 			if (ImGui::MenuItem("Cube"))
 			{
@@ -162,6 +180,47 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Donut"))
 			{
 				ShapeSpawner::SpawnDonut();
+			}
+			ImGui::EndMenu();
+		}*/
+		if (ImGui::BeginMenu("Light"))
+		{
+			if (ImGui::MenuItem("Directional Light"))
+			{
+				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Directional Light");
+				light->SetupDirectionalLight(Color::CreateFromRGBFloat(1, 1, 1), 1);
+			}
+			if (ImGui::MenuItem("Spot Light", 0, false, false))
+			{
+				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Spot Light");
+				light->SetupSpotLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10, 60, 0.5f);
+			}
+			if (ImGui::MenuItem("Point Light"))
+			{
+				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Point Light");
+				light->SetupPointLight(Color::CreateFromRGBFloat(1,1,1), 1, 10);
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Audio"))
+		{
+			if (ImGui::MenuItem("Audio Source"))
+			{
+				std::shared_ptr<AudioSource> audioSource = CreateEmptyWithComponent<AudioSource>("Audio Source");
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Camera"))
+		{
+			if (ImGui::MenuItem("2D Camera"))
+			{
+				std::shared_ptr<Camera> camera = CreateEmptyWithComponent<Camera>("Camera");
+				camera->SetProjectionType(ProjectionTypes::Orthographic);
+			}
+			if (ImGui::MenuItem("3D Camera"))
+			{
+				std::shared_ptr<Camera> camera = CreateEmptyWithComponent<Camera>("Camera");
+				camera->SetProjectionType(ProjectionTypes::Perspective);
 			}
 			ImGui::EndMenu();
 		}
@@ -198,6 +257,18 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Light", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<Light>();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Physics"))
+		{
+			if (ImGui::MenuItem("RigidBody", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<RigidBody>();
+			}
+			if (ImGui::MenuItem("Box Collider", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<BoxCollider>();
 			}
 			ImGui::EndMenu();
 		}
@@ -275,27 +346,27 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Game"))
 			{
-				Editor::AddMenu<GameMenu>();
+				Editor::AddMenu<GameMenu>(true);
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				Editor::AddMenu<SceneMenu>();
+				Editor::AddMenu<SceneMenu>(true);
 			}
 			if (ImGui::MenuItem("Inspector"))
 			{
-				Editor::AddMenu<InspectorMenu>();
+				Editor::AddMenu<InspectorMenu>(true);
 			}
 			if (ImGui::MenuItem("Profiler"))
 			{
-				Editor::AddMenu<ProfilerMenu>();
+				Editor::AddMenu<ProfilerMenu>(true);
 			}
 			if (ImGui::MenuItem("File Explorer"))
 			{
-				Editor::AddMenu<FileExplorerMenu>();
+				Editor::AddMenu<FileExplorerMenu>(true);
 			}
 			if (ImGui::MenuItem("Hierarchy"))
 			{
-				Editor::AddMenu<HierarchyMenu>();
+				Editor::AddMenu<HierarchyMenu>(true);
 			}
 			ImGui::EndMenu();
 		}
@@ -312,6 +383,22 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Lighting Settings"))
 		{
 			Editor::GetMenu<LightingMenu>()->SetActive(true);
+		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Window menu
+	{
+		if (ImGui::MenuItem("Documentation"))
+		{
+			ShellExecute(0, 0, L"https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc", 0, 0, SW_SHOW);
+		}
+		if (ImGui::MenuItem("Project's GitHub"))
+		{
+			ShellExecute(0, 0, L"https://github.com/Fewnity/Xenity-Engine", 0, 0, SW_SHOW);
+		}
+		if (ImGui::MenuItem("About Xenity Engine"))
+		{
+			Editor::GetMenu<AboutMenu>()->SetActive(true);
 		}
 		ImGui::EndMenu();
 	}

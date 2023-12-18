@@ -267,9 +267,9 @@ public:
 	void Execute() override;
 	void Undo() override;
 	void Redo() override;
+	std::weak_ptr<T> newComponent;
 private:
 	std::weak_ptr<GameObject> target;
-	std::weak_ptr<T> newComponent;
 };
 
 template<typename T>
@@ -316,9 +316,9 @@ public:
 	void Execute() override;
 	void Undo() override;
 	void Redo() override;
+	std::weak_ptr<GameObject> createdGameObject;
 private:
 	std::weak_ptr<GameObject> target;
-	std::weak_ptr<GameObject> createdGameObject;
 	std::weak_ptr<GameObject> oldParent;
 	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
 };

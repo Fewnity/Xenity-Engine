@@ -135,7 +135,7 @@ public:
 	}
 
 	template <typename T>
-	static std::shared_ptr<T> AddMenu()
+	static std::shared_ptr<T> AddMenu(bool active)
 	{
 		int count = 0;
 		for (int i = 0; i < menuCount; i++)
@@ -150,6 +150,7 @@ public:
 		menus.push_back(newMenu);
 		newMenu->id = count;
 		newMenu->Init();
+		newMenu->SetActive(active);
 		menuCount++;
 		return newMenu;
 	}

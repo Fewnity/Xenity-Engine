@@ -19,6 +19,7 @@
 #include <editor/ui/menus/create_project_menu.h>
 #include <editor/ui/menus/lighting_menu.h>
 #include <editor/ui/menus/create_class_menu.h>
+#include <editor/ui/menus/about_menu.h>
 #include <editor/compiler.h>
 
 #include <functional>
@@ -646,24 +647,21 @@ void Editor::OnDragAndDropFileFinished()
 
 void Editor::CreateMenus()
 {
-	std::shared_ptr<CreateClassMenu> createClassMenuPtr = AddMenu<CreateClassMenu>();
-	createClassMenuPtr->SetActive(false);
-	std::shared_ptr<LightingMenu> lightingMenuPtr = AddMenu<LightingMenu>();
-	lightingMenuPtr->SetActive(false);
-	std::shared_ptr<ProjectSettingsMenu> projectSettingsMenuPtr = AddMenu<ProjectSettingsMenu>();
-	projectSettingsMenuPtr->SetActive(false);
-	std::shared_ptr<EngineSettingsMenu> engineSettingsMenuPtr = AddMenu<EngineSettingsMenu>();
-	engineSettingsMenuPtr->SetActive(false);
+	AddMenu<CreateClassMenu>(false);
+	AddMenu<LightingMenu>(false);
+	AddMenu<ProjectSettingsMenu>(false);
+	AddMenu<EngineSettingsMenu>(false);
+	AddMenu<AboutMenu>(false);
 
-	AddMenu<FileExplorerMenu>();
-	AddMenu<HierarchyMenu>();
-	AddMenu<InspectorMenu>();
-	AddMenu<ProfilerMenu>();
-	AddMenu<GameMenu>();
-	AddMenu<SceneMenu>();
-	AddMenu<CompilingMenu>();
-	AddMenu<SelectProjectMenu>();
-	AddMenu<CreateProjectMenu>();
+	AddMenu<FileExplorerMenu>(true);
+	AddMenu<HierarchyMenu>(true);
+	AddMenu<InspectorMenu>(true);
+	AddMenu<ProfilerMenu>(true);
+	AddMenu<GameMenu>(true);
+	AddMenu<SceneMenu>(true);
+	AddMenu<CompilingMenu>(true);
+	AddMenu<SelectProjectMenu>(true);
+	AddMenu<CreateProjectMenu>(true);
 
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();

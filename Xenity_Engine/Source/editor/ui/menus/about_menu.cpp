@@ -1,0 +1,34 @@
+#include "about_menu.h"
+
+#include <imgui/imgui.h>
+
+#include <editor/ui/editor_ui.h>
+#include <engine/reflection/reflection.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/graphics.h>
+
+void AboutMenu::Init()
+{
+}
+
+void AboutMenu::Draw()
+{
+	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+
+	bool visible = ImGui::Begin("About Xenity Engine", &isActive, ImGuiWindowFlags_NoCollapse);
+	if (visible)
+	{
+		OnStartDrawing();
+
+		ImGui::Text("Version: 0.1");
+		ImGui::Text("Made by Fewnity with love <3");
+
+		CalculateWindowValues();
+	}
+	else
+	{
+		ResetWindowValues();
+	}
+
+	ImGui::End();
+}
