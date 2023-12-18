@@ -569,7 +569,7 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 {
 	std::string finalName = "";
 	int number = 1;
-
+	bool foundOne = false;
 	GetIncrementedGameObjectNameInfo(name, finalName, number);
 
 	int gameObjectCount = GameplayManager::gameObjects.size();
@@ -580,12 +580,14 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->name, tempName, tempNumber);
 		if (tempName == finalName)
 		{
+			foundOne = true;
 			if (number < tempNumber)
 				number = tempNumber;
 		}
 	}
 
-	finalName = finalName + " (" + std::to_string(number) + ")";
+	if(foundOne)
+		finalName = finalName + " (" + std::to_string(number) + ")";
 
 	return finalName;
 }
