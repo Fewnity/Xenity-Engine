@@ -356,6 +356,35 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 	DrawTransformHeader(selectedGameObject);
 
 	DrawComponentsHeaders(selectedGameObject);
+
+	float cursorX = ImGui::GetCursorPosX();
+	ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
+	bool justChanged = false;
+	if (ImGui::Button("Add Component", ImVec2(startAvailableSize.x / 2.0f, 0)))
+	{
+		showAddComponentMenu = true;
+		justChanged = true;
+	}
+	if (showAddComponentMenu) 
+	{
+		ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
+		ImGui::BeginChild("inspectorComponentList", ImVec2(startAvailableSize.x / 2.0f, 0), ImGuiChildFlags_FrameStyle);
+		std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
+		size_t componentCount = componentNames.size();
+		for (size_t i = 0; i < componentCount; i++)
+		{
+			if (ImGui::Button(componentNames[i].c_str()))
+			{
+				ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject());
+				showAddComponentMenu = false;
+			}
+		}
+		ImGui::EndChild();
+		if ((ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)) && !ImGui::IsItemHovered() && !justChanged)
+		{
+			showAddComponentMenu = false;
+		}
+	}
 }
 
 void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGameObject)

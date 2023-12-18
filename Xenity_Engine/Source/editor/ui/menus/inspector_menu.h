@@ -22,6 +22,7 @@ private:
 	void DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGameObject);
 	void DrawTransformHeader(std::shared_ptr <GameObject> selectedGameObject);
 	void DrawComponentsHeaders(std::shared_ptr <GameObject> selectedGameObject);
+	bool showAddComponentMenu = false;
 
 	std::string previewText = "";
 };
