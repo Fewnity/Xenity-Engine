@@ -138,7 +138,7 @@ public:
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform> value, std::weak_ptr<Transform>& newValue, uint64_t typeId);
 	//static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox> value, std::shared_ptr<SkyBox>& newValue);
 
-	static int DrawTreeItem(const std::shared_ptr<GameObject>& child, std::shared_ptr<GameObject>& rightClickedElement);
+	static int DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement);
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);

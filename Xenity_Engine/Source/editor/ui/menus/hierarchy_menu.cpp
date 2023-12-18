@@ -59,15 +59,16 @@ void HierarchyMenu::Draw()
 		}
 		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && !disableDrag)
 		{
-			rightClickedElement = nullptr;
+			rightClickedElement.reset();
 		}
 		if (ImGui::BeginPopup("backgroundClick"))
 		{
-			if (rightClickedElement != nullptr)
+			if (rightClickedElement.lock() != nullptr)
 			{
 				if (ImGui::MenuItem("Destroy GameObject"))
 				{
 					Destroy(rightClickedElement);
+					rightClickedElement.reset();
 					ImGui::CloseCurrentPopup();
 				}
 			}

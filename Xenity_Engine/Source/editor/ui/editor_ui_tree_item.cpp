@@ -50,7 +50,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 	return objectClicked;
 }
 
-int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::shared_ptr<GameObject>& rightClickedElement)
+int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement)
 {
 	int state = 0;
 
