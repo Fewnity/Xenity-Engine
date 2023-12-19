@@ -52,6 +52,7 @@ std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
 MenuGroup Editor::currentMenu = Menu_Select_Project;
 
 std::vector<std::shared_ptr<Menu>> Editor::menus;
+std::weak_ptr <Menu> Editor::lastFocusedGameMenu;
 
 std::shared_ptr <MainBarMenu> Editor::mainBar = nullptr;
 
@@ -64,6 +65,7 @@ std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 
 std::vector<std::string> Editor::dragdropEntries;
+
 int Editor::menuCount = 0;
 
 void Editor::Init()

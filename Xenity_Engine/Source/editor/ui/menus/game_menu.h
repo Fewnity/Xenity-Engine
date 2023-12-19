@@ -8,7 +8,7 @@ class GameMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
-
+	bool needUpdateCamera = false;
 private:
 	bool isLastFrameOpened = false;
 	void DrawNoCameraText();

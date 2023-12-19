@@ -6,7 +6,10 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/component.h>
-
+#if defined(EDITOR)
+#include <editor/editor.h>
+#include <editor/ui/menus/game_menu.h>
+#endif
 int GameplayManager::gameObjectCount = 0;
 int GameplayManager::gameObjectEditorCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -60,6 +63,10 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	else if ((newGameState == Paused && gameState == Paused)) // Pause / UnPause
 	{
 		gameState = Playing;
+	}
+	if (auto menu = Editor::lastFocusedGameMenu.lock())
+	{
+		std::dynamic_pointer_cast<GameMenu>(menu)->needUpdateCamera = true;
 	}
 #else
 	gameState = newGameState;

@@ -182,6 +182,7 @@ public:
 	static std::vector<std::shared_ptr<Menu>> menus;
 	static void ApplyEditorStyle();
 	static void RemoveEditorStyle();
+	static std::weak_ptr <Menu> lastFocusedGameMenu;
 
 private:
 	static int menuCount;
