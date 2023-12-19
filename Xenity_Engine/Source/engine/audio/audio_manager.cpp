@@ -5,29 +5,31 @@
 
 #include <engine/engine.h>
 #include <engine/tools/profiler_benchmark.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 #if defined(__PSP__)
-	#include <pspaudiolib.h>
-	#include <pspaudio.h>
-	#include <pspkernel.h>
-	#include <psppower.h>
+#include <pspaudiolib.h>
+#include <pspaudio.h>
+#include <pspkernel.h>
+#include <psppower.h>
 #elif defined(__vita__)
-	#include <psp2/audioout.h>
-	#include <psp2/kernel/threadmgr.h>
-	#include <malloc.h>
+#include <psp2/audioout.h>
+#include <psp2/kernel/threadmgr.h>
+#include <malloc.h>
 #elif defined(_WIN32) || defined(_WIN64)
-	#include <thread>
-	#include <chrono>
-	#include <windows.h>
-	#include <mmsystem.h>
+#include <thread>
+#include <chrono>
+#include <windows.h>
+#include <mmsystem.h>
 
-	WAVEHDR waveHdr[2];
-	HWAVEOUT hWaveOut;
-	short* audioData = nullptr;
-	short* audioData2 = nullptr;
-	int currentBuffer = 0;
+short* emptyBuffer = nullptr;
+WAVEHDR waveHdr[2];
+HWAVEOUT hWaveOut;
+short* audioData = nullptr;
+short* audioData2 = nullptr;
+int currentBuffer = 0;
 #elif defined(_EE)
-	#include <thread>
+#include <thread>
 #endif
 
 #include <cstring>
@@ -76,7 +78,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	{
 		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
 
-		if (sound->isPlaying)
+		if (sound->isPlaying && (sound->audioSource->isEditor || GameplayManager::GetGameState() == Playing))
 		{
 			AudioClipStream* stream = sound->audioClipStream;
 #if defined(_WIN32) || defined(_WIN64)
@@ -250,6 +252,7 @@ int fillAudioBufferThread()
 		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
 			auto& sound = AudioManager::channel->playedSounds[soundIndex];
+
 			AudioClipStream* stream = sound->audioClipStream;
 
 			int bufferSizeToUse = quarterBuffSize;
@@ -296,8 +299,8 @@ int fillAudioBufferThread()
 #else
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
-		}
 	}
+}
 
 
 Channel::Channel()
@@ -316,6 +319,8 @@ int AudioManager::Init()
 	audioBenchmark2 = std::make_shared<ProfilerBenchmark>("Audio", "Sub");
 	halfBuffSize = buffSize / 2;
 	quarterBuffSize = buffSize / 4;
+
+	emptyBuffer = (short*)calloc((size_t)buffSize, sizeof(short));
 
 	myMutex = new MyMutex();
 #if defined(__vita__)
@@ -339,7 +344,7 @@ int AudioManager::Init()
 	{
 		sceKernelStartThread(thd_id2, 0, 0);
 		sceKernelStartThread(thd_id, 0, 0);
-}
+	}
 #elif defined(_WIN32) || defined(_WIN64)
 	audioData = (short*)malloc(sizeof(short) * buffSize);
 	audioData2 = (short*)malloc(sizeof(short) * buffSize);

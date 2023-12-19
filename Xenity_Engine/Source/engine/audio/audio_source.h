@@ -88,6 +88,7 @@ public:
 	}
 
 	void OnDrawGizmos() override;
+	bool isEditor = false;
 
 private:
 	std::shared_ptr<AudioSource> GetThisShared()

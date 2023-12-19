@@ -18,7 +18,6 @@ Add network profiler
 Fix engine assets system
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Add abitily to move folders into a folder
-Sound still playing in pause mode
 Fix wrong resolution when launching game in the editor
 
 --- To do soon:
