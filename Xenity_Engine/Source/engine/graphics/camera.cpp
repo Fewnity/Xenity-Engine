@@ -188,7 +188,17 @@ void Camera::UpdateProjection()
 			Engine::GetRenderer().SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
 		}
 #if defined (EDITOR)
-		projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+		if (projectionType == ProjectionTypes::Perspective) // 3D projection
+		{
+			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+		}
+		else // 2D projection
+		{
+			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
+			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
+			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
+			projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
+		}
 #endif
 	}
 	else if (isProjectionDirty)
@@ -203,6 +213,7 @@ void Camera::UpdateProjection()
 			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
 			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
+			projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		}
 
 		// Create canvas projection
@@ -378,8 +389,6 @@ void Camera::OnDrawGizmos()
 		Vector3 cameraPosition = camera->GetTransform()->GetPosition();
 		Vector3 cameraRotation = camera->GetTransform()->GetRotation();
 		glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-		if (projectionType == Orthographic)
-			cameraModelMatrix = glm::scale(cameraModelMatrix, glm::vec3(1 / (5.0f * camera->aspect * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 		cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));

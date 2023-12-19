@@ -113,11 +113,14 @@ void RendererOpengl::SetClearColor(const Color& color)
 
 void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
-	float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
-	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
+	if (Graphics::usedCamera.lock())
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+		float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
+		glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
+	}
 }
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
