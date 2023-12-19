@@ -347,6 +347,19 @@ Vector3 SceneMenu::GetNearestPoint(const Vector3& linePos1, const Vector3& lineD
 	return ClosestPoint;
 }
 
+void SceneMenu::Switch2DMode(bool is2D)
+{
+	mode2D = is2D;
+	if (mode2D) 
+	{
+		weakCamera.lock()->SetProjectionType(ProjectionTypes::Orthographic);
+	}
+	else 
+	{
+		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
+	}
+}
+
 void SceneMenu::Draw()
 {
 	/*if (InputSystem::GetKeyDown(E))
@@ -464,6 +477,10 @@ void SceneMenu::DrawToolWindow()
 		if (ImGui::Button("Scale"))
 		{
 			toolMode = Tool_Scale;
+		}
+		if (ImGui::Button("2D"))
+		{
+			Switch2DMode(!mode2D);
 		}
 		ImGui::PopStyleColor(3);
 	}

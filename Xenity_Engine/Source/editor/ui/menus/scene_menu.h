@@ -49,6 +49,7 @@ private:
 	std::weak_ptr<GameObject> cube1;
 	std::weak_ptr<GameObject> cube2;
 	std::weak_ptr<GameObject> cube3;
-
+	bool mode2D = false;
+	void Switch2DMode(bool is2D);
 };
 
