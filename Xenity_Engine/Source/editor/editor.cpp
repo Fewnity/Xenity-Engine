@@ -261,13 +261,16 @@ void Editor::ApplyEditorStyle()
 	Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
 	Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
+
 	if (GameplayManager::GetGameState() == Playing) 
-	{
 		pTint = playTint;
-		if (!EngineSettings::isPlayTintAdditive)
-			pTint *= -1;
-	}
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x + pTint.x, bgColor.y + pTint.y, bgColor.z + pTint.z, 1));
+	else if (!EngineSettings::isPlayTintAdditive)
+		pTint = Vector4(1);
+
+	if (EngineSettings::isPlayTintAdditive)
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x + pTint.x, bgColor.y + pTint.y, bgColor.z + pTint.z, 1));
+	else
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x * pTint.x, bgColor.y * pTint.y, bgColor.z * pTint.z, 1));
 
 	ImVec4 colorLevel0 = ImVec4(secondaryColor.x, secondaryColor.y, secondaryColor.z, 1);
 	ImVec4 colorLevel05 = ImVec4(secondaryColor.x - 0.05f, secondaryColor.y - 0.05f, secondaryColor.z - 0.05f, 1);

@@ -110,7 +110,10 @@ void EngineSettingsMenu::Draw()
 		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::playTintColor);
 		if (valueChanged)
 			settingsChanged = true;
+
 		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::isPlayTintAdditive);
+		ImGui::SameLine();
+		ImGui::TextWrapped("Is Play Tint Additive");
 		if (valueChanged)
 			settingsChanged = true;
 
