@@ -11,6 +11,7 @@
 #include <engine/time/time.h>
 #include <iostream>
 #include <engine/debug/debug.h>
+#include <engine/tools/shape_spawner.h>
 
 void SceneMenu::Init()
 {
@@ -44,7 +45,7 @@ void SceneMenu::SetButtonColor(bool isSelected)
 void SceneMenu::MoveCamera()
 {
 	// Check user input and camera movement when in the scene menu
-	if (InputSystem::GetKeyUp(MOUSE_RIGHT))
+	if (InputSystem::GetKeyUp(MOUSE_RIGHT) || InputSystem::GetKeyUp(MOUSE_MIDDLE))
 	{
 		startRotatingCamera = false;
 	}
@@ -55,13 +56,13 @@ void SceneMenu::MoveCamera()
 		Vector3 rot = cameraTransform->GetRotation();
 		Vector3 pos = cameraTransform->GetPosition();
 
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && isHovered)
+		if ((ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) && isHovered)
 		{
 			startRotatingCamera = true;
 		}
 
 		// Rotate the camera when dragging the mouse right click
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera)
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera && !mode2D)
 		{
 			rot.x += -InputSystem::mouseSpeed.y * 70;
 			rot.y += InputSystem::mouseSpeed.x * 70;
@@ -88,7 +89,7 @@ void SceneMenu::MoveCamera()
 		else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
 			side = -1 * Time::GetDeltaTime();
 
-		if (InputSystem::GetKey(MOUSE_MIDDLE))
+		if ((InputSystem::GetKey(MOUSE_MIDDLE) || (mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right))) && startRotatingCamera)
 		{
 			up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
 			side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
@@ -96,7 +97,19 @@ void SceneMenu::MoveCamera()
 
 		// Move the camera when using the mouse's wheel (Do not use delta time)
 		if (isHovered)
-			fwd -= InputSystem::mouseWheel / 15.0f;
+		{
+			if (!mode2D)
+			{
+				fwd -= InputSystem::mouseWheel / 15.0f;
+			}
+			else
+			{
+				float newSize = weakCamera.lock()->GetProjectionSize() - InputSystem::mouseWheel * weakCamera.lock()->GetProjectionSize() / 10.0f;
+				if (newSize < 0.1f)
+					newSize = 0.1f;
+				weakCamera.lock()->SetProjectionSize(newSize);
+			}
+		}
 
 		// Apply values
 		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
@@ -105,7 +118,10 @@ void SceneMenu::MoveCamera()
 		pos.y -= (upWorld / 7.0f) * 30;
 
 		cameraTransform->SetPosition(pos);
-		cameraTransform->SetRotation(rot);
+		if (!mode2D)
+			cameraTransform->SetRotation(rot);
+		else
+			cameraTransform->SetRotation(Vector3(0));
 	}
 }
 
@@ -127,12 +143,16 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 	// Get world mouse position (position at the near clipping plane)
 	glm::vec3 worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->projection, glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
-
+	//std::cout << "Pos " << worldCoords.x << " " << worldCoords.y << " " << worldCoords.z << std::endl;
 	// Normalise direction if needed
 	Vector3 mouseWorldDir = Vector3(worldCoords.x, worldCoords.y, worldCoords.z);
 	if (toolMode != Tool_MoveCamera)
 		mouseWorldDir = mouseWorldDir.Normalized();
 	mouseWorldDir *= -1;
+	if (mode2D)
+		mouseWorldDir = Vector3(0, 0, -1);
+
+	//std::cout << "Dir " << mouseWorldDir.x << " " << mouseWorldDir.y << " " << mouseWorldDir.z << std::endl;
 
 	// Store world mouse position
 	oldWorldMousePosition = worldMousePosition;
@@ -143,7 +163,11 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		// Move the camera if the mouse left button is held
 		if (InputSystem::GetKey(MOUSE_LEFT))
 		{
-			Vector3 newPos = cameraTransform->GetPosition() + (oldWorldMousePosition - worldMousePosition) * cameraHandMoveSpeed;
+			float tempCameraHandMoveSpeed = cameraHandMoveSpeed;
+			if (mode2D)
+				tempCameraHandMoveSpeed = 1;
+
+			Vector3 newPos = cameraTransform->GetPosition() + (oldWorldMousePosition - worldMousePosition) * tempCameraHandMoveSpeed;
 			cameraTransform->SetPosition(newPos);
 		}
 	}
@@ -155,12 +179,20 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
 
 			Vector3 camPos = cameraTransform->GetPosition();
+			if (mode2D)
+				camPos = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPos;
 			Vector3 objectPos = selectedGoTransform->GetPosition();
 
-			// Get selected gameObject directions
-			Vector3 objectRight = selectedGoTransform->GetRight();
-			Vector3 objectUp = selectedGoTransform->GetUp();
-			Vector3 objectForward = selectedGoTransform->GetForward();
+			Vector3 objectRight = Vector3(1,0,0);
+			Vector3 objectUp = Vector3(0, 1, 0);
+			Vector3 objectForward = Vector3(0, 0, 1);
+			if (!Editor::isToolLocalMode) 
+			{
+				// Get selected gameObject directions
+				objectRight = selectedGoTransform->GetRight();
+				objectUp = selectedGoTransform->GetUp();
+				objectForward = selectedGoTransform->GetForward();
+			}
 
 			if (InputSystem::GetKeyDown(MOUSE_LEFT))
 			{
@@ -184,20 +216,24 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 				if (cube1.lock())
 				{
-					//cube1.lock()->GetTransform()->SetPosition(rightClosestPoint);
-					//cube2.lock()->GetTransform()->SetPosition(upClosestPoint);
-					//cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
+					cube1.lock()->GetTransform()->SetPosition(rightClosestPoint);
+					cube2.lock()->GetTransform()->SetPosition(upClosestPoint);
+					cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
 				}
 
 				// Get the distance between the gameobject and the closest point of the camera's direction
 				float rightDist = Vector3::Distance(rightClosestPointCam, objectPos);
 				float upDist = Vector3::Distance(upClosestPointCam, objectPos);
 				float forwardDist = Vector3::Distance(forwardClosestPointCam, objectPos);
+				std::cout << "upDist: " << upDist << std::endl;
+				std::cout << "forwardDist: " << forwardDist << std::endl;
 
 				// Get the distance between the two lines nearest points
 				float rightDist2 = Vector3::Distance(rightClosestPointCam, rightClosestPoint);
 				float upDist2 = Vector3::Distance(upClosestPointCam, upClosestPoint);
 				float forwardDist2 = Vector3::Distance(forwardClosestPointCam, forwardClosestPoint);
+				std::cout << "upDist2: " << upDist << std::endl;
+				std::cout << "forwardDist2: " << forwardDist << std::endl;
 
 				float camDist = Vector3::Distance(objectPos, camPos);
 
@@ -216,17 +252,30 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 				// Detect the arrow
 				side = Side_None;
-				if ((rightDist2 < upDist2 || !isUpGood) && (rightDist2 < forwardDist2 || !isForwardGood) && isRightGood && rightDist2 <= 0.01f * camDist && rightDist <= 0.13f * camDist)
+				if (mode2D) 
 				{
-					side = Side_Right;
+					if ((upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
+					{
+						side = Side_Up;
+					}
+					else if ((forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
+					{
+						side = Side_Forward;
+					}
 				}
-				else if ((upDist2 < rightDist2 || !isRightGood) && (upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
-				{
-					side = Side_Up;
-				}
-				else if ((forwardDist2 < rightDist2 || !isRightGood) && (forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
-				{
-					side = Side_Forward;
+				else {
+					if ((rightDist2 < upDist2 || !isUpGood) && (rightDist2 < forwardDist2 || !isForwardGood) && isRightGood && rightDist2 <= 0.01f * camDist && rightDist <= 0.13f * camDist)
+					{
+						side = Side_Right;
+					}
+					else if ((upDist2 < rightDist2 || !isRightGood) && (upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
+					{
+						side = Side_Up;
+					}
+					else if ((forwardDist2 < rightDist2 || !isRightGood) && (forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
+					{
+						side = Side_Forward;
+					}
 				}
 
 				/*if (rightDist < upDist && rightDist < forwardDist && isRightGood)
@@ -350,11 +399,11 @@ Vector3 SceneMenu::GetNearestPoint(const Vector3& linePos1, const Vector3& lineD
 void SceneMenu::Switch2DMode(bool is2D)
 {
 	mode2D = is2D;
-	if (mode2D) 
+	if (mode2D)
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Orthographic);
 	}
-	else 
+	else
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
 	}
@@ -362,7 +411,7 @@ void SceneMenu::Switch2DMode(bool is2D)
 
 void SceneMenu::Draw()
 {
-	/*if (InputSystem::GetKeyDown(E))
+	if (InputSystem::GetKeyDown(R))
 	{
 		cube1 = ShapeSpawner::SpawnCube();
 		cube2 = ShapeSpawner::SpawnCube();
@@ -371,11 +420,11 @@ void SceneMenu::Draw()
 		cube1.lock()->GetTransform()->SetLocalScale(Vector3(0.05));
 		cube2.lock()->GetTransform()->SetLocalScale(Vector3(0.15));
 		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
-	}*/
+	}
 
 	std::shared_ptr<Camera> camera = weakCamera.lock();
-	Vector2Int frameBufferSize = Vector2Int(0,0);
-	if (camera) 
+	Vector2Int frameBufferSize = Vector2Int(0, 0);
+	if (camera)
 	{
 		frameBufferSize.x = camera->GetWidth();
 		frameBufferSize.y = camera->GetHeight();
@@ -445,7 +494,7 @@ void SceneMenu::Draw()
 	ImGui::End();
 	ImGui::PopStyleVar();
 
-	if (!isOpen) 
+	if (!isOpen)
 	{
 		Editor::RemoveMenu(this);
 	}
@@ -481,6 +530,18 @@ void SceneMenu::DrawToolWindow()
 		if (ImGui::Button("2D"))
 		{
 			Switch2DMode(!mode2D);
+		}
+		if (Editor::isToolLocalMode) {
+			if (ImGui::Button("Local"))
+			{
+				Editor::isToolLocalMode = false;
+			}
+		}
+		else {
+			if (ImGui::Button("World"))
+			{
+				Editor::isToolLocalMode = true;
+			}
 		}
 		ImGui::PopStyleColor(3);
 	}

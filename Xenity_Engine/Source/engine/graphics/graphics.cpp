@@ -241,7 +241,14 @@ void Graphics::Draw()
 					Graphics::currentMaterial = nullptr;
 				}
 
-				Engine::GetRenderer().SetProjection3D(usedCamera.lock()->GetFov(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane(), usedCamera.lock()->GetAspectRatio());
+				if (usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
+				{
+					Engine::GetRenderer().SetProjection3D(usedCamera.lock()->GetFov(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane(), usedCamera.lock()->GetAspectRatio());
+				}
+				else
+				{
+					Engine::GetRenderer().SetProjection2D(usedCamera.lock()->GetProjectionSize(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane());
+				}
 
 				DrawEditorGrid(camPos);
 
@@ -268,7 +275,7 @@ void Graphics::Draw()
 
 #if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	Engine::GetRenderer().SetClearColor(Color::CreateFromRGB(15, 16, 16));
+	Engine::GetRenderer().SetClearColor(Color::CreateFromRGB(15, 15, 15));
 	Engine::GetRenderer().Clear();
 #endif
 	drawEndFrameBenchmark->Start();
@@ -554,7 +561,15 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	{
 		Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
-		float dist = Vector3::Distance(selectedGoPos, cameraPosition);
+		if(Editor::isToolLocalMode)
+			selectedGoRot = Vector3(0);
+
+		float dist = 1;
+		if(usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
+			dist = Vector3::Distance(selectedGoPos, cameraPosition);
+		else
+			dist = usedCamera.lock()->GetProjectionSize() * 1.5f;
+
 		dist /= 40;
 		Vector3 scale = Vector3(dist);
 

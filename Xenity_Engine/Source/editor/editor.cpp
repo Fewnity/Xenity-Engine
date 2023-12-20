@@ -67,6 +67,7 @@ std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 std::vector<std::string> Editor::dragdropEntries;
 
 int Editor::menuCount = 0;
+bool Editor::isToolLocalMode;
 
 void Editor::Init()
 {

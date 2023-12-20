@@ -183,7 +183,7 @@ public:
 	static void ApplyEditorStyle();
 	static void RemoveEditorStyle();
 	static std::weak_ptr <Menu> lastFocusedGameMenu;
-
+	static bool isToolLocalMode;
 private:
 	static int menuCount;
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;

@@ -197,7 +197,8 @@ void Camera::UpdateProjection()
 			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
 			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-			projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
+			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
+			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		}
 #endif
 	}
@@ -213,7 +214,8 @@ void Camera::UpdateProjection()
 			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
 			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-			projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
+			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
+			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		}
 
 		// Create canvas projection
