@@ -579,6 +579,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
+		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
 		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
 		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
 		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
