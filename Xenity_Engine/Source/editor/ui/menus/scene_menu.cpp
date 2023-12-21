@@ -183,10 +183,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				camPos = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPos;
 			Vector3 objectPos = selectedGoTransform->GetPosition();
 
-			Vector3 objectRight = Vector3(1,0,0);
+			Vector3 objectRight = Vector3(1, 0, 0);
 			Vector3 objectUp = Vector3(0, 1, 0);
 			Vector3 objectForward = Vector3(0, 0, 1);
-			if (!Editor::isToolLocalMode) 
+			if (!Editor::isToolLocalMode)
 			{
 				// Get selected gameObject directions
 				objectRight = selectedGoTransform->GetRight();
@@ -225,17 +225,17 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				float rightDist = Vector3::Distance(rightClosestPointCam, objectPos);
 				float upDist = Vector3::Distance(upClosestPointCam, objectPos);
 				float forwardDist = Vector3::Distance(forwardClosestPointCam, objectPos);
-				std::cout << "rightDist: " << rightDist << std::endl;
+				/*std::cout << "rightDist: " << rightDist << std::endl;
 				std::cout << "upDist: " << upDist << std::endl;
-				std::cout << "forwardDist: " << forwardDist << std::endl;
+				std::cout << "forwardDist: " << forwardDist << std::endl;*/
 
 				// Get the distance between the two lines nearest points
 				float rightDist2 = Vector3::Distance(rightClosestPointCam, rightClosestPoint);
 				float upDist2 = Vector3::Distance(upClosestPointCam, upClosestPoint);
 				float forwardDist2 = Vector3::Distance(forwardClosestPointCam, forwardClosestPoint);
-				std::cout << "rightDist2: " << rightDist2 << std::endl;
+				/*std::cout << "rightDist2: " << rightDist2 << std::endl;
 				std::cout << "upDist2: " << upDist2 << std::endl;
-				std::cout << "forwardDist2: " << forwardDist2 << std::endl;
+				std::cout << "forwardDist2: " << forwardDist2 << std::endl;*/
 
 				float camDist = Vector3::Distance(objectPos, camPos);
 
@@ -257,10 +257,15 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				bool isRightTooFar = abs(objectPos.x - rightClosestPoint.x) > 1 * camera->GetProjectionSize() / 5.0f;
 				bool isUpTooFar = abs(objectPos.y - upClosestPoint.y) > 1 * camera->GetProjectionSize() / 5.0f;
 				bool isForwardTooFar = abs(objectPos.z - forwardClosestPoint.z) > 1 * camera->GetProjectionSize() / 5.0f;
-
-				std::cout << "isRightGood: " << isRightGood << std::endl;
+				if (!mode2D)
+				{
+					isRightTooFar = abs(objectPos.x - rightClosestPoint.x) > 1 * camDist / 8.0f;
+					isUpTooFar = abs(objectPos.y - upClosestPoint.y) > 1 * camDist / 8.0f;
+					isForwardTooFar = abs(objectPos.z - forwardClosestPoint.z) > 1 * camDist / 8.0f;
+				}
+				/*std::cout << "isRightGood: " << isRightGood << std::endl;
 				std::cout << "isUpGood: " << isUpGood << std::endl;
-				std::cout << "isForwardGood: " << isForwardGood << std::endl;
+				std::cout << "isForwardGood: " << isForwardGood << std::endl;*/
 
 				if (isnan(rightDist2))
 					rightDist2 = 99999999;
@@ -271,81 +276,50 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 				// Detect the arrow
 				side = Side_None;
-				if (mode2D) 
+				Side nearSide = Side_None;
+				if (rightDist2 < upDist2 && rightDist2 < forwardDist2)
 				{
-					Side nearSide = Side_None;
-					if (rightDist2 < upDist2 && rightDist2 < forwardDist2)
-					{
-						nearSide = Side_Right;
-					}
-					if (upDist2 < rightDist2 && upDist2 < forwardDist2)
-					{
-						nearSide = Side_Up;
-					}
-					if (forwardDist2 < upDist2 && forwardDist2 < rightDist2)
-					{
-						nearSide = Side_Forward;
-					}
+					nearSide = Side_Right;
+				}
+				if (upDist2 < rightDist2 && upDist2 < forwardDist2)
+				{
+					nearSide = Side_Up;
+				}
+				if (forwardDist2 < upDist2 && forwardDist2 < rightDist2)
+				{
+					nearSide = Side_Forward;
+				}
 
-					/*if ((upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
-					{
-						side = Side_Up;
-					}
-					else if ((forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
-					{
-						side = Side_Forward;
-					}*/
-					/*if ((rightDist2 < upDist2 || !isUpGood) && (rightDist2 < forwardDist2 || !isForwardGood) && isRightGood && rightDist2 <= 0.01f * camDist && rightDist <= 0.13f * camDist)
+				if (mode2D)
+				{
+					if (isRightGood && nearSide == Side_Right && !isRightTooFar && rightDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
 					{
 						side = Side_Right;
 					}
-					else if ((upDist2 < rightDist2 || !isRightGood) && (upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
+					else if (isUpGood && nearSide == Side_Up && !isUpTooFar && upDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
 					{
 						side = Side_Up;
 					}
-					else if ((forwardDist2 < rightDist2 || !isRightGood) && (forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
-					{
-						side = Side_Forward;
-					}*/
-					if ((rightDist2 < upDist2 || !isUpGood) && (rightDist2 < forwardDist2 || !isForwardGood) && isRightGood && nearSide == Side_Right && !isRightTooFar)
-					{
-						side = Side_Right;
-					}
-					else if ((upDist2 < rightDist2 || !isRightGood) && (upDist2 < forwardDist2 || !isForwardGood) && isUpGood && nearSide == Side_Up && !isUpTooFar)
-					{
-						side = Side_Up;
-					}
-					else if ((forwardDist2 < rightDist2 || !isRightGood) && (forwardDist2 < upDist2 || !isUpGood) && isForwardGood && nearSide == Side_Forward && !isForwardTooFar)
+					else if (isForwardGood && nearSide == Side_Forward && !isForwardTooFar && forwardDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
 					{
 						side = Side_Forward;
 					}
 				}
-				else 
-				{
-					if ((rightDist2 < upDist2 || !isUpGood) && (rightDist2 < forwardDist2 || !isForwardGood) && isRightGood && rightDist2 <= 0.01f * camDist && rightDist <= 0.13f * camDist)
-					{
-						side = Side_Right;
-					}
-					else if ((upDist2 < rightDist2 || !isRightGood) && (upDist2 < forwardDist2 || !isForwardGood) && isUpGood && upDist2 <= 0.01f * camDist && upDist <= 0.13f * camDist)
-					{
-						side = Side_Up;
-					}
-					else if ((forwardDist2 < rightDist2 || !isRightGood) && (forwardDist2 < upDist2 || !isUpGood) && isForwardGood && forwardDist2 <= 0.01f * camDist && forwardDist <= 0.13f * camDist)
-					{
-						side = Side_Forward;
-					}
-				}
-
-				/*if (rightDist < upDist && rightDist < forwardDist && isRightGood)
-					side = 0;
-				else if (upDist < rightDist && upDist < forwardDist && isUpGood)
-					side = 1;
-				else if (forwardDist < rightDist && forwardDist < upDist && isForwardGood)
-					side = 2;
 				else
-					side = -1;*/
-
-					//std::cout << side << std::endl;
+				{
+					if (isRightGood && nearSide == Side_Right && !isRightTooFar && rightDist2 / camDist <= 0.02f)
+					{
+						side = Side_Right;
+					}
+					else if (isUpGood && nearSide == Side_Up && !isUpTooFar && upDist2 / camDist <= 0.02f)
+					{
+						side = Side_Up;
+					}
+					else if (isForwardGood && nearSide == Side_Forward && !isForwardTooFar && forwardDist2 / camDist <= 0.02f)
+					{
+						side = Side_Forward;
+					}
+				}
 			}
 
 			if (InputSystem::GetKey(MOUSE_LEFT) && side != Side_None)
