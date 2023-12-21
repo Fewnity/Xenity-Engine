@@ -23,6 +23,7 @@ public:
 	void Init() override;
 	void Draw() override;
 	bool startRotatingCamera = false;
+	ToolMode toolMode = Tool_Move;
 
 private:
 	void DrawToolWindow();
@@ -44,11 +45,11 @@ private:
 	Side side = Side_None;
 	float snapAmount = 1.0f;
 	int cameraHandMoveSpeed = 200;
-	ToolMode toolMode = Tool_Move;
 
 	std::weak_ptr<GameObject> cube1;
 	std::weak_ptr<GameObject> cube2;
 	std::weak_ptr<GameObject> cube3;
+	Vector3 startDragPos = Vector3(0);
 	bool mode2D = false;
 	void Switch2DMode(bool is2D);
 };

@@ -28,15 +28,17 @@
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
 
 #if defined(EDITOR)
-	#include <editor/editor.h>
+#include <editor/editor.h>
+#include <editor/ui/menus/scene_menu.h>
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-	#include <glad/glad.h>
+#include <glad/glad.h>
 #endif
 
 #include <algorithm>
 #include <engine/debug/debug.h>
+#include <editor/tool_mode.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
@@ -171,7 +173,7 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetClearColor(skyColor);
 			Engine::GetRenderer().Clear();
 
-			if (UseOpenGLFixedFunctions) 
+			if (UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 				Engine::GetRenderer().Setlights(usedCamera.lock());
@@ -189,7 +191,7 @@ void Graphics::Draw()
 			size_t transCount = transparentDrawable.size();
 			size_t spriteCount = spriteDrawable.size();
 			size_t uiCount = uiDrawable.size();
-			
+
 			for (size_t drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
@@ -326,31 +328,31 @@ void Graphics::OrderDrawables()
 
 	//if (drawOrderListDirty)
 	//{
-		noTransparentDrawable.clear();
-		transparentDrawable.clear();
-		spriteDrawable.clear();
-		uiDrawable.clear();
+	noTransparentDrawable.clear();
+	transparentDrawable.clear();
+	spriteDrawable.clear();
+	uiDrawable.clear();
 
-		//noTransparentDrawable.reserve(iDrawablesCount);
-		//spriteDrawable.reserve(iDrawablesCount);
-		//uiDrawable.reserve(iDrawablesCount);
+	//noTransparentDrawable.reserve(iDrawablesCount);
+	//spriteDrawable.reserve(iDrawablesCount);
+	//uiDrawable.reserve(iDrawablesCount);
 
-		for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+	{
+		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
+		if (drawableToCheck->type == Draw_3D)
 		{
-			std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-			if (drawableToCheck->type == Draw_3D) 
-			{
-				noTransparentDrawable.push_back(drawableToCheck);
-			}
-			else if (drawableToCheck->type == Draw_2D) 
-			{
-				spriteDrawable.push_back(drawableToCheck);
-			}
-			else 
-			{
-				uiDrawable.push_back(drawableToCheck);
-			}
+			noTransparentDrawable.push_back(drawableToCheck);
 		}
+		else if (drawableToCheck->type == Draw_2D)
+		{
+			spriteDrawable.push_back(drawableToCheck);
+		}
+		else
+		{
+			uiDrawable.push_back(drawableToCheck);
+		}
+	}
 	//}
 	/*if (drawOrderListDirty)
 	{
@@ -423,7 +425,7 @@ void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::ve
 	else
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-		if(!forUI)
+		if (!forUI)
 			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
@@ -561,11 +563,11 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	{
 		Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
-		if(Editor::isToolLocalMode)
+		if (Editor::isToolLocalMode)
 			selectedGoRot = Vector3(0);
 
 		float dist = 1;
-		if(usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
+		if (usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
 			dist = Vector3::Distance(selectedGoPos, cameraPosition);
 		else
 			dist = usedCamera.lock()->GetProjectionSize() * 1.5f;
@@ -579,10 +581,16 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
-		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
+		if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Move)
+		{
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
+		}
+		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate) 
+		{
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
+		}
 	}
 }
 #endif

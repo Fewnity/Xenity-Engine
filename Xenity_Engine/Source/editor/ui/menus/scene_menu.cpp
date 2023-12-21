@@ -42,139 +42,43 @@ void SceneMenu::SetButtonColor(bool isSelected)
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
 }
 
-struct Circle {
-	float radius;
-	float cx, cy, cz;
+struct Line2 
+{
+	Vector3 origin;
+	Vector3 direction;
+
+	Line2(const Vector3& _origin, const Vector3& _direction) 
+	{
+		origin = _origin;
+		direction = _direction;
+	}
 };
 
-float distancePointLine3D(float x, float y, float z, Vector3 linePos, Vector3 lineDir) {
+struct Plane 
+{
+	Vector3 normal;
 
-	float x0 = linePos.x;
-	float y0 = linePos.y;
-	float z0 = linePos.z;
-
-	float dx = lineDir.x;
-	float dy = lineDir.y;
-	float dz = lineDir.z;
-
-	float num = fabs((dz) * (x - x0) + (dy) * (y - y0) + (dz) * (z - z0));
-
-	float den = sqrt(dx * dx + dy * dy + dz * dz);
-
-	return num / den;
-}
-
-bool checkIntersection(Circle circle, Vector3 linePos, Vector3 lineDir) {
-
-	float x = circle.cx;
-	float y = circle.cy;
-	float z = circle.cz;
-
-	float radius = circle.radius;
-
-	float d = distancePointLine3D(x, y, z, linePos, lineDir);
-
-	if (d <= radius) {
-		return true;
+	Plane(const Vector3& _normal) 
+	{
+		normal = _normal;
 	}
-	else {
-		return false;
+};
+
+Vector3 intersectionPoint(const Line2& line, const Plane& plane) {
+	// Vérifie si la ligne est parallèle au plan
+	double dotProduct = line.direction.Dot(plane.normal);
+	if (std::abs(dotProduct) < 1e-6) {
+		// La ligne est parallèle au plan
+		std::cerr << "La ligne est parallèle au plan, aucune intersection." << std::endl;
+		return Vector3(0, 0, 0); // ou une autre valeur d'erreur
 	}
 
-}
+	// Calcul de la distance le long de la ligne à partir de son origine jusqu'au point d'intersection
+	double t = (-line.origin.Dot(plane.normal)) / dotProduct;
 
-void getIntersectionPos(Circle circle, Vector3 linePos, Vector3 lineDir, float& ix, float& iy, float& iz) {
-
-	float x = circle.cx;
-	float y = circle.cy;
-	float z = circle.cz;
-
-	float radius = circle.radius;
-
-	float dx = lineDir.x;
-	float dy = lineDir.y;
-	float dz = lineDir.z;
-
-	float x0 = linePos.x;
-	float y0 = linePos.y;
-	float z0 = linePos.z;
-
-	float d = distancePointLine3D(x, y, z, linePos, lineDir);
-
-	if (d <= radius) {
-		ix = x + radius * (dx) * (d / sqrt(dx * dx + dy * dy + dz * dz));
-		iy = y + radius * (dy) * (d / sqrt(dx * dx + dy * dy + dz * dz));
-		iz = z + radius * (dz) * (d / sqrt(dx * dx + dy * dy + dz * dz));
-	}
-
-}
-
-bool intersectCircleLine(const Vector3& startPoint, const Vector3& directionVector,
-	const Vector3& circleCenter, double circleRadius,
-	Vector3& intersectionPoint) {
-	// Equation paramétrique de la ligne : P(t) = startPoint + t * directionVector
-	// Equation du cercle en 3D : (x - xc)^2 + (y - yc)^2 + (z - zc)^2 = R^2
-
-	// Paramètres de la ligne
-	double a = directionVector.x * directionVector.x + directionVector.y * directionVector.y + directionVector.z * directionVector.z;
-	double b = 2 * (directionVector.x * (startPoint.x - circleCenter.x) +
-		directionVector.y * (startPoint.y - circleCenter.y) +
-		directionVector.z * (startPoint.z - circleCenter.z));
-	double c = startPoint.x * startPoint.x - 2 * startPoint.x * circleCenter.x + circleCenter.x * circleCenter.x +
-		startPoint.y * startPoint.y - 2 * startPoint.y * circleCenter.y + circleCenter.y * circleCenter.y +
-		startPoint.z * startPoint.z - 2 * startPoint.z * circleCenter.z + circleCenter.z * circleCenter.z -
-		circleRadius * circleRadius;
-
-	// Discriminant
-	double discriminant = b * b - 4 * a * c;
-
-	if (discriminant < 0) {
-		// Pas d'intersection (le discriminant est négatif)
-		return false;
-	}
-	else {
-		// Calcul des solutions quadratiques
-		double t1 = (-b + sqrt(discriminant)) / (2 * a);
-		double t2 = (-b - sqrt(discriminant)) / (2 * a);
-
-		// Trouver le point d'intersection le plus proche du startPoint le long de la ligne
-		double t = (t1 < t2) ? t1 : t2;
-
-		intersectionPoint.x = startPoint.x + t * directionVector.x;
-		intersectionPoint.y = startPoint.y + t * directionVector.y;
-		intersectionPoint.z = startPoint.z + t * directionVector.z;
-		std::cout << "Point: " << intersectionPoint.x << " " << intersectionPoint.y << " " << intersectionPoint.z << std::endl;
-		// Vérifier si le point d'intersection est effectivement à la distance du rayon du cercle
-		Vector3 diff = intersectionPoint - circleCenter;
-		double distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
-
-		if (distanceSquared <= circleRadius * circleRadius) {
-			return true;
-		}
-		else {
-			// Le point d'intersection n'est pas à la distance du rayon du cercle
-			return false;
-		}
-	}
-
-	//if (discriminant < 0) {
-	//	// Pas d'intersection (le discriminant est négatif)
-	//	return false;
-	//}
-	//else {
-	//	// Calcul des solutions quadratiques
-	//	double t1 = (-b + sqrt(discriminant)) / (2 * a);
-	//	double t2 = (-b - sqrt(discriminant)) / (2 * a);
-
-	//	// Trouver le point d'intersection le plus proche du startPoint le long de la ligne
-	//	double t = (t1 < t2) ? t1 : t2;
-
-	//	intersectionPoint.x = startPoint.x + t * directionVector.x;
-	//	intersectionPoint.y = startPoint.y + t * directionVector.y;
-	//	intersectionPoint.z = startPoint.z + t * directionVector.z;
-
-	//	return true;
-	//}
+	// Calcul du point d'intersection
+	Vector3 intersection = line.origin + (line.direction * t);
+	return intersection;
 }
 
 void SceneMenu::MoveCamera()
@@ -456,23 +360,15 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					}
 				}
 			}
-			if (Editor::GetSelectedGameObject())
+			
+			if (InputSystem::GetKey(MOUSE_LEFT) && (side != Side_None || toolMode == Tool_Rotate))
 			{
-				//Vector3 p;
-				//std::cout << intersectCircleLine(cameraTransform->GetPosition(), mouseWorldDir, Editor::GetSelectedGameObject()->GetTransform()->GetPosition(), 1, p) << std::endl;
-				float x = 0;
-				float y = 0;
-				float z = 0;
-				Circle c;
-				c.cx = 0;
-				c.cy = 0;
-				c.cz = 0;
-				c.radius = 1;
-				getIntersectionPos(c, cameraTransform->GetPosition(), mouseWorldDir, x, y, z);
-				std::cout << x << " " << y << " " << z << std::endl;
-			}
-			if (InputSystem::GetKey(MOUSE_LEFT) && side != Side_None)
-			{
+				Vector3 planeNormal(0, 1, 0); // Face UP
+				//Vector3 planeNormal(0, 0, 1); // Red arrow
+				Plane plane = Plane(planeNormal);
+				Line2 line(cameraTransform->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition(), mouseWorldDir); // Normalisation de la direction
+				Vector3 intersection = intersectionPoint(line, plane);
+				std::cout << "Point d'intersection : (" << intersection.x << ", " << intersection.y << ", " << intersection.z << ")" << std::endl;
 				Vector3 objectDir = Vector3(0);
 
 				// Select the right value
@@ -488,15 +384,18 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				if (InputSystem::GetKeyDown(MOUSE_LEFT))
 				{
 					startMovePosition = closestPoint;
+					startDragPos = intersection;
 				}
 
 				// Calculate the value offset
 				Vector3 objectOffset = (closestPoint - startMovePosition);
-
 				if (toolMode == Tool_Scale)
 					objectOffset *= 4;
-				else if (toolMode == Tool_Rotate)
+				else if (toolMode == Tool_Rotate) 
+				{
+					objectOffset = (intersection - startDragPos);
 					objectOffset *= 10;
+				}
 
 				// Snap values if needed
 				if (InputSystem::GetKey(LEFT_CONTROL))
@@ -521,14 +420,14 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 						//selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, Vector3::Distance(Vector3(0), objectOffset)));
 						//objectDir = objectForward;*/
 
-					if (side == Side_Right)
+					/*if (side == Side_Right)
 						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(Vector3::Distance(Vector3(0), objectOffset), 0, 0));
 					else if (side == Side_Up)
 						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, Vector3::Distance(Vector3(0), objectOffset), 0));
 					else if (side == Side_Forward)
-						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, Vector3::Distance(Vector3(0), objectOffset)));
-					//std::cout << side << std::endl;
-					//selectedGoTransform->SetLocalRotation(startObjectValue + objectOffset);
+						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, Vector3::Distance(Vector3(0), objectOffset)));*/
+
+					selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, Vector3::Distance(Vector3(0), objectOffset), 0));
 				}
 				else if (toolMode == Tool_Scale)
 					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);

@@ -47,6 +47,10 @@ public:
 	*/
 	float Magnitude() const;
 
+	double Dot(const Vector3& v) const;
+
+	Vector3 Cross(const Vector3& v) const;
+
 	float x;
 	float y;
 	float z;
