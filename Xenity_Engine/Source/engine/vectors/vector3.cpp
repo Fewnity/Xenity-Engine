@@ -96,7 +96,6 @@ double Vector3::Dot(const Vector3& v) const
 	return x * v.x + y * v.y + z * v.z;
 }
 
-// Produit vectoriel
 Vector3 Vector3::Cross(const Vector3& v) const
 {
 	return Vector3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);

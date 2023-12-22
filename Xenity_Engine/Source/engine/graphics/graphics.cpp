@@ -590,6 +590,8 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate) 
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot + Vector3(90,0,0), scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot + Vector3(0, 0, 90), scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
 		}
 	}
 }

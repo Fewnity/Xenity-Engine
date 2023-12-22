@@ -42,23 +42,23 @@ void SceneMenu::SetButtonColor(bool isSelected)
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
 }
 
-struct Line2 
+struct Line2
 {
 	Vector3 origin;
 	Vector3 direction;
 
-	Line2(const Vector3& _origin, const Vector3& _direction) 
+	Line2(const Vector3& _origin, const Vector3& _direction)
 	{
 		origin = _origin;
 		direction = _direction;
 	}
 };
 
-struct Plane 
+struct Plane
 {
 	Vector3 normal;
 
-	Plane(const Vector3& _normal) 
+	Plane(const Vector3& _normal)
 	{
 		normal = _normal;
 	}
@@ -173,7 +173,6 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	// Calculate camera matrix without translate
 	Vector3 cameraRotation = cameraTransform->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-	//cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -182,7 +181,6 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 	// Get world mouse position (position at the near clipping plane)
 	glm::vec3 worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->projection, glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
-	//std::cout << "Pos " << worldCoords.x << " " << worldCoords.y << " " << worldCoords.z << std::endl;
 	// Normalise direction if needed
 	Vector3 mouseWorldDir = Vector3(worldCoords.x, worldCoords.y, worldCoords.z);
 	if (toolMode != Tool_MoveCamera)
@@ -190,8 +188,6 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	mouseWorldDir *= -1;
 	if (mode2D)
 		mouseWorldDir = Vector3(0, 0, -1);
-
-	//std::cout << "Dir " << mouseWorldDir.x << " " << mouseWorldDir.y << " " << mouseWorldDir.z << std::endl;
 
 	// Store world mouse position
 	oldWorldMousePosition = worldMousePosition;
@@ -217,10 +213,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		{
 			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
 
-			Vector3 camPos = cameraTransform->GetPosition();
+			Vector3 objectPosition = selectedGoTransform->GetPosition();
+			Vector3 camPosition = cameraTransform->GetPosition();
 			if (mode2D)
-				camPos = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPos;
-			Vector3 objectPos = selectedGoTransform->GetPosition();
+				camPosition = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPosition;
 
 			Vector3 objectRight = Vector3(1, 0, 0);
 			Vector3 objectUp = Vector3(0, 1, 0);
@@ -233,6 +229,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				objectForward = selectedGoTransform->GetForward();
 			}
 
+			float camDistance = Vector3::Distance(objectPosition, camPosition);
 			if (InputSystem::GetKeyDown(MOUSE_LEFT))
 			{
 				// Get start object value
@@ -244,14 +241,14 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					startObjectValue = selectedGoTransform->GetLocalScale();
 
 				// Get nearest lines interaction points on the object's direction axis
-				Vector3 rightClosestPoint = GetNearestPoint(objectPos, objectRight, camPos, mouseWorldDir);
-				Vector3 upClosestPoint = GetNearestPoint(objectPos, objectUp, camPos, mouseWorldDir);
-				Vector3 forwardClosestPoint = GetNearestPoint(objectPos, objectForward, camPos, mouseWorldDir);
+				Vector3 rightClosestPoint = GetNearestPoint(objectPosition, objectRight, camPosition, mouseWorldDir);
+				Vector3 upClosestPoint = GetNearestPoint(objectPosition, objectUp, camPosition, mouseWorldDir);
+				Vector3 forwardClosestPoint = GetNearestPoint(objectPosition, objectForward, camPosition, mouseWorldDir);
 
 				// Get nearest lines interaction points on the camera's direction axis
-				Vector3 rightClosestPointCam = GetNearestPoint(camPos, mouseWorldDir, objectPos, objectRight);
-				Vector3 upClosestPointCam = GetNearestPoint(camPos, mouseWorldDir, objectPos, objectUp);
-				Vector3 forwardClosestPointCam = GetNearestPoint(camPos, mouseWorldDir, objectPos, objectForward);
+				Vector3 rightClosestPointCam = GetNearestPoint(camPosition, mouseWorldDir, objectPosition, objectRight);
+				Vector3 upClosestPointCam = GetNearestPoint(camPosition, mouseWorldDir, objectPosition, objectUp);
+				Vector3 forwardClosestPointCam = GetNearestPoint(camPosition, mouseWorldDir, objectPosition, objectForward);
 
 				if (cube1.lock())
 				{
@@ -260,115 +257,96 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
 				}
 
-				// Get the distance between the gameobject and the closest point of the camera's direction
-				float rightDist = Vector3::Distance(rightClosestPointCam, objectPos);
-				float upDist = Vector3::Distance(upClosestPointCam, objectPos);
-				float forwardDist = Vector3::Distance(forwardClosestPointCam, objectPos);
-				/*std::cout << "rightDist: " << rightDist << std::endl;
-				std::cout << "upDist: " << upDist << std::endl;
-				std::cout << "forwardDist: " << forwardDist << std::endl;*/
-
-				// Get the distance between the two lines nearest points
-				float rightDist2 = Vector3::Distance(rightClosestPointCam, rightClosestPoint);
-				float upDist2 = Vector3::Distance(upClosestPointCam, upClosestPoint);
-				float forwardDist2 = Vector3::Distance(forwardClosestPointCam, forwardClosestPoint);
-				/*std::cout << "rightDist2: " << rightDist2 << std::endl;
-				std::cout << "upDist2: " << upDist2 << std::endl;
-				std::cout << "forwardDist2: " << forwardDist2 << std::endl;*/
-
-				float camDist = Vector3::Distance(objectPos, camPos);
+				Vector3 rightDirPoint = (rightClosestPoint - objectPosition).Normalize();
+				Vector3 upDirPoint = (upClosestPoint - objectPosition).Normalize();
+				Vector3 forwardDirPoint = (forwardClosestPoint - objectPosition).Normalize();
+				float rightRightSide = rightDirPoint.Dot(objectRight);
+				float upRightSide = upDirPoint.Dot(objectUp);
+				float forwardRightSide = forwardDirPoint.Dot(objectForward);
 
 				//----------------------------------- Check if the mouse is on the arrow
 
 				// Check if the side of the arrows is correct
-				bool isRightGood = objectPos.x < rightClosestPoint.x;
-				if (objectRight.x < 0)
-					isRightGood = objectPos.x > rightClosestPoint.x;
 
-				bool isUpGood = objectPos.y < upClosestPoint.y;
-				if (objectUp.y < 0)
-					isUpGood = objectPos.y > upClosestPoint.y;
-
-				bool isForwardGood = objectPos.z < forwardClosestPoint.z;
-				if (objectForward.z < 0)
-					isForwardGood = objectPos.z > forwardClosestPoint.z;
-
-				bool isRightTooFar = abs(objectPos.x - rightClosestPoint.x) > 1 * camera->GetProjectionSize() / 5.0f;
-				bool isUpTooFar = abs(objectPos.y - upClosestPoint.y) > 1 * camera->GetProjectionSize() / 5.0f;
-				bool isForwardTooFar = abs(objectPos.z - forwardClosestPoint.z) > 1 * camera->GetProjectionSize() / 5.0f;
+				bool isRightTooFar = abs(objectPosition.x - rightClosestPoint.x) > 1 * camera->GetProjectionSize() / 5.0f;
+				bool isUpTooFar = abs(objectPosition.y - upClosestPoint.y) > 1 * camera->GetProjectionSize() / 5.0f;
+				bool isForwardTooFar = abs(objectPosition.z - forwardClosestPoint.z) > 1 * camera->GetProjectionSize() / 5.0f;
 				if (!mode2D)
 				{
-					isRightTooFar = abs(objectPos.x - rightClosestPoint.x) > 1 * camDist / 8.0f;
-					isUpTooFar = abs(objectPos.y - upClosestPoint.y) > 1 * camDist / 8.0f;
-					isForwardTooFar = abs(objectPos.z - forwardClosestPoint.z) > 1 * camDist / 8.0f;
+					isRightTooFar = abs(objectPosition.x - rightClosestPoint.x) > 1 * camDistance / 8.0f;
+					isUpTooFar = abs(objectPosition.y - upClosestPoint.y) > 1 * camDistance / 8.0f;
+					isForwardTooFar = abs(objectPosition.z - forwardClosestPoint.z) > 1 * camDistance / 8.0f;
 				}
-				/*std::cout << "isRightGood: " << isRightGood << std::endl;
-				std::cout << "isUpGood: " << isUpGood << std::endl;
-				std::cout << "isForwardGood: " << isForwardGood << std::endl;*/
 
-				if (isnan(rightDist2))
-					rightDist2 = 99999999;
-				if (isnan(upDist2))
-					upDist2 = 99999999;
-				if (isnan(forwardDist2))
-					forwardDist2 = 99999999;
+				// Get the distance between the two lines nearest points
+				float rightPointsDist = Vector3::Distance(rightClosestPointCam, rightClosestPoint);
+				float upPointsDist = Vector3::Distance(upClosestPointCam, upClosestPoint);
+				float forwardPointsDist = Vector3::Distance(forwardClosestPointCam, forwardClosestPoint);
+				if (isnan(rightPointsDist))
+					rightPointsDist = 99999999.0f;
+				if (isnan(upPointsDist))
+					upPointsDist = 99999999.0f;
+				if (isnan(forwardPointsDist))
+					forwardPointsDist = 99999999.0f;
 
 				// Detect the arrow
-				side = Side_None;
 				Side nearSide = Side_None;
-				if (rightDist2 < upDist2 && rightDist2 < forwardDist2)
+				if (rightPointsDist < upPointsDist && rightPointsDist < forwardPointsDist)
 				{
 					nearSide = Side_Right;
 				}
-				if (upDist2 < rightDist2 && upDist2 < forwardDist2)
+				else if (upPointsDist < rightPointsDist && upPointsDist < forwardPointsDist)
 				{
 					nearSide = Side_Up;
 				}
-				if (forwardDist2 < upDist2 && forwardDist2 < rightDist2)
+				else if (forwardPointsDist < upPointsDist && forwardPointsDist < rightPointsDist)
 				{
 					nearSide = Side_Forward;
 				}
 
+				side = Side_None;
 				if (mode2D)
 				{
-					if (isRightGood && nearSide == Side_Right && !isRightTooFar && rightDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
+					float size = camera->GetProjectionSize() * 5.0f;
+					if (rightRightSide >= 0.95f && nearSide == Side_Right && !isRightTooFar && rightPointsDist / size <= 0.11f)
 					{
 						side = Side_Right;
 					}
-					else if (isUpGood && nearSide == Side_Up && !isUpTooFar && upDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
+					else if (upRightSide >= 0.95f && nearSide == Side_Up && !isUpTooFar && upPointsDist / size <= 0.11f)
 					{
 						side = Side_Up;
 					}
-					else if (isForwardGood && nearSide == Side_Forward && !isForwardTooFar && forwardDist2 / camera->GetProjectionSize() * 5.0f <= 0.11f)
+					else if (forwardRightSide >= 0.95f && nearSide == Side_Forward && !isForwardTooFar && forwardPointsDist / size <= 0.11f)
 					{
 						side = Side_Forward;
 					}
 				}
 				else
 				{
-					if (isRightGood && nearSide == Side_Right && !isRightTooFar && rightDist2 / camDist <= 0.02f)
+					if (rightRightSide >= 0.95f && nearSide == Side_Right && !isRightTooFar && rightPointsDist / camDistance <= 0.02f)
 					{
 						side = Side_Right;
 					}
-					else if (isUpGood && nearSide == Side_Up && !isUpTooFar && upDist2 / camDist <= 0.02f)
+					else if (upRightSide >= 0.95f && nearSide == Side_Up && !isUpTooFar && upPointsDist / camDistance <= 0.02f)
 					{
 						side = Side_Up;
 					}
-					else if (isForwardGood && nearSide == Side_Forward && !isForwardTooFar && forwardDist2 / camDist <= 0.02f)
+					else if (forwardRightSide >= 0.95f && nearSide == Side_Forward && !isForwardTooFar && forwardPointsDist / camDistance <= 0.02f)
 					{
 						side = Side_Forward;
 					}
 				}
 			}
-			
+
 			if (InputSystem::GetKey(MOUSE_LEFT) && (side != Side_None || toolMode == Tool_Rotate))
 			{
-				Vector3 planeNormal(0, 1, 0); // Face UP
+				Vector3 planeNormal= Vector3(0, 1, 0); // Face UP
 				//Vector3 planeNormal(0, 0, 1); // Red arrow
 				Plane plane = Plane(planeNormal);
-				Line2 line(cameraTransform->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition(), mouseWorldDir); // Normalisation de la direction
+				Line2 line = Line2(cameraTransform->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition(), mouseWorldDir); // Normalisation de la direction
 				Vector3 intersection = intersectionPoint(line, plane);
-				std::cout << "Point d'intersection : (" << intersection.x << ", " << intersection.y << ", " << intersection.z << ")" << std::endl;
+
+				//std::cout << "Point d'intersection : (" << intersection.x << ", " << intersection.y << ", " << intersection.z << ")" << std::endl;
 				Vector3 objectDir = Vector3(0);
 
 				// Select the right value
@@ -380,22 +358,27 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					objectDir = objectForward;
 
 				// Get the closest point on the object axis
-				Vector3 closestPoint = GetNearestPoint(camPos, mouseWorldDir, objectPos, objectDir);
+				Vector3 closestPoint = GetNearestPoint(camPosition, mouseWorldDir, objectPosition, objectDir);
 				if (InputSystem::GetKeyDown(MOUSE_LEFT))
 				{
 					startMovePosition = closestPoint;
 					startDragPos = intersection;
+					finalAngle = 0;
+					float dist = Vector3::Distance(Vector3(0), intersection) / camDistance;
+					if (dist >= 0.10f && dist <= 0.13f) 
+					{
+						allowRotation = true;
+					}
+					else
+					{
+						allowRotation = false;
+					}
 				}
 
 				// Calculate the value offset
 				Vector3 objectOffset = (closestPoint - startMovePosition);
 				if (toolMode == Tool_Scale)
 					objectOffset *= 4;
-				else if (toolMode == Tool_Rotate) 
-				{
-					objectOffset = (intersection - startDragPos);
-					objectOffset *= 10;
-				}
 
 				// Snap values if needed
 				if (InputSystem::GetKey(LEFT_CONTROL))
@@ -407,30 +390,35 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 				//Set object position/rotation/scale
 				if (toolMode == Tool_Move)
-					selectedGoTransform->SetPosition(startObjectValue + objectOffset);
-				else if (toolMode == Tool_Rotate)
 				{
-					/*if (side == 0)
-						//selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(Vector3::Distance(Vector3(0),  objectOffset), 0,0));
-						//objectDir = objectRight;
-					else if (side == 1)
-						//selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, Vector3::Distance(Vector3(0), objectOffset), 0));
-						//objectDir = objectUp;
-					else if (side == 2)
-						//selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, Vector3::Distance(Vector3(0), objectOffset)));
-						//objectDir = objectForward;*/
-
-					/*if (side == Side_Right)
-						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(Vector3::Distance(Vector3(0), objectOffset), 0, 0));
-					else if (side == Side_Up)
-						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, Vector3::Distance(Vector3(0), objectOffset), 0));
-					else if (side == Side_Forward)
-						selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, Vector3::Distance(Vector3(0), objectOffset)));*/
-
-					selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, Vector3::Distance(Vector3(0), objectOffset), 0));
+					selectedGoTransform->SetPosition(startObjectValue + objectOffset);
 				}
-				else if (toolMode == Tool_Scale)
-					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
+				else if (toolMode == Tool_Rotate && allowRotation)
+				{
+					if (intersection != startDragPos)
+					{
+						float angle = startDragPos.Dot(intersection) / (startDragPos.Magnitude() * intersection.Magnitude());
+						float crossProduct = startDragPos.x * intersection.z - startDragPos.z * intersection.x;
+						startDragPos = intersection;
+						if (!isnan(acos(angle) * 180.0 / M_PI))
+						{
+							if (crossProduct < 0)
+								finalAngle += (acos(angle) * 180.0f / M_PI);
+							else
+								finalAngle -= (acos(angle) * 180.0f / M_PI);
+							selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, finalAngle, 0));
+						}
+						//std::cout << "angle: " << angle << std::endl;
+						//if (angle == 1)
+						//	std::cout << "salut" << std::endl;
+						//std::cout << "acos(angle): " << acosf(angle) << std::endl;
+						//std::cout << "(acos(angle) * 180.0f / M_PI): " << (acos(angle) * 180.0f / M_PI) << std::endl;
+					}
+				}
+				else if (toolMode == Tool_Scale) 
+				{
+					//selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
+				}
 			}
 		}
 	}

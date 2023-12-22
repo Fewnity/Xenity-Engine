@@ -9,6 +9,7 @@ enum Side
 };
 
 #include "menu.h"
+#include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
 #include <editor/tool_mode.h>
@@ -51,6 +52,8 @@ private:
 	std::weak_ptr<GameObject> cube3;
 	Vector3 startDragPos = Vector3(0);
 	bool mode2D = false;
+	float finalAngle = 0;
+	bool allowRotation = false;
 	void Switch2DMode(bool is2D);
 };
 
