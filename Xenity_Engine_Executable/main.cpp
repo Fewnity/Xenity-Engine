@@ -18,7 +18,7 @@ Add network profiler
 Fix engine assets system
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Add abitily to move folders into a folder
-Player not gizmo when using up/down arrow in scene tab
+Add a property window on components to have values in a new window
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

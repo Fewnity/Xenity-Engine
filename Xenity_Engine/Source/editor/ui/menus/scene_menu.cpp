@@ -378,7 +378,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					if (toolMode == Tool_Move)
 						startObjectValue = selectedGoTransform->GetPosition();
 					else if (toolMode == Tool_Rotate)
-						startObjectValue = selectedGoTransform->GetRotation();
+						startObjectValue = selectedGoTransform->GetLocalRotation();
 					else if (toolMode == Tool_Scale)
 						startObjectValue = selectedGoTransform->GetLocalScale();
 

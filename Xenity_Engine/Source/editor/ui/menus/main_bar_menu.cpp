@@ -183,6 +183,14 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}*/
+		if (ImGui::BeginMenu("2D"))
+		{
+			if (ImGui::MenuItem("Sprite Renderer"))
+			{
+				std::shared_ptr<SpriteRenderer> spriteRenderer = CreateEmptyWithComponent<SpriteRenderer>("Sprite");
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("Light"))
 		{
 			if (ImGui::MenuItem("Directional Light"))
@@ -379,10 +387,12 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Project Settings"))
 		{
 			Editor::GetMenu<ProjectSettingsMenu>()->SetActive(true);
+			Editor::GetMenu<ProjectSettingsMenu>()->Focus();
 		}
 		if (ImGui::MenuItem("Lighting Settings"))
 		{
 			Editor::GetMenu<LightingMenu>()->SetActive(true);
+			Editor::GetMenu<LightingMenu>()->Focus();
 		}
 		ImGui::EndMenu();
 	}
