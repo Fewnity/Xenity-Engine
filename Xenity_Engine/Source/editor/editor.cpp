@@ -62,7 +62,9 @@ std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
 std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
 std::shared_ptr <MeshData> Editor::upArrow = nullptr;
 std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
-std::shared_ptr <MeshData> Editor::rotationCircle = nullptr;
+std::shared_ptr <MeshData> Editor::rotationCircleX = nullptr;
+std::shared_ptr <MeshData> Editor::rotationCircleY = nullptr;
+std::shared_ptr <MeshData> Editor::rotationCircleZ = nullptr;
 std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 
 std::vector<std::string> Editor::dragdropEntries;
@@ -84,7 +86,9 @@ void Editor::Init()
 	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
 	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
 
-	rotationCircle = MeshManager::LoadMesh("engine_assets\\rotation_circle.obj");
+	rotationCircleX = MeshManager::LoadMesh("engine_assets\\rotation_circleX.obj");
+	rotationCircleY = MeshManager::LoadMesh("engine_assets\\rotation_circleY.obj");
+	rotationCircleZ = MeshManager::LoadMesh("engine_assets\\rotation_circleZ.obj");
 
 	toolArrowsTexture = Texture::MakeTexture();
 	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");

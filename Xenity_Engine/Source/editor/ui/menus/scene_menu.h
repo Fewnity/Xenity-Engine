@@ -32,9 +32,17 @@ private:
 	void MoveCamera();
 	void ProcessTool(std::shared_ptr<Camera>& camera);
 
-	float Dot(const Vector3& a, const Vector3& b);
-	Vector3 CrossProduct(const Vector3& a, const Vector3& b);
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
+	void GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, std::shared_ptr<Camera>& camera);
+	Side GetNearSide(float camDistance,
+		const Vector3& rightClosestPointCam, const Vector3& rightClosestPoint,
+		const Vector3& upClosestPointCam, const Vector3& upClosestPoint,
+		const Vector3& forwardClosestPointCam, const Vector3& forwardClosestPoint);
+
+	Side DetectSide(float camDistance, const Vector3& objectPosition, const Vector3& camPosition, const Vector3& mouseWorldDirNormalized,
+		const Vector3& objectRight, const Vector3& objectUp, const Vector3& objectForward);
+
+	void CheckAllowRotation(float dist, bool& allowRotation, bool isIntersectionGood, Side sideToCheck, const Vector3& intersection);
 
 	std::weak_ptr<GameObject> cameraGO;
 	std::weak_ptr<Camera> weakCamera;
@@ -51,6 +59,7 @@ private:
 	std::weak_ptr<GameObject> cube2;
 	std::weak_ptr<GameObject> cube3;
 	Vector3 startDragPos = Vector3(0);
+
 	bool mode2D = false;
 	float finalAngle = 0;
 	bool allowRotation = false;

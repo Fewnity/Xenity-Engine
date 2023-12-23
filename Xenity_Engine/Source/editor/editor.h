@@ -175,8 +175,9 @@ public:
 	static std::shared_ptr <MeshData> rightArrow;
 	static std::shared_ptr <MeshData> upArrow;
 	static std::shared_ptr <MeshData> forwardArrow;
-	static std::shared_ptr <MeshData> rotationCircle;
-	
+	static std::shared_ptr <MeshData> rotationCircleX;
+	static std::shared_ptr <MeshData> rotationCircleY;
+	static std::shared_ptr <MeshData> rotationCircleZ;
 	static std::shared_ptr <Texture> toolArrowsTexture;
 	static void StartFolderCopy(std::string path, std::string newPath);
 

@@ -581,7 +581,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
-		if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Move)
+		if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Move || Editor::GetMenu<SceneMenu>()->toolMode == Tool_Scale)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
@@ -589,9 +589,9 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		}
 		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate) 
 		{
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot + Vector3(90,0,0), scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot + Vector3(0, 0, 90), scale, Editor::toolArrowsTexture, Editor::rotationCircle, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleX, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleY, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleZ, renderSettings, AssetManager::unlitMaterial);
 		}
 	}
 }

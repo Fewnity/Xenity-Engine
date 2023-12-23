@@ -51,6 +51,10 @@ public:
 
 	Vector3 Cross(const Vector3& v) const;
 
+	static double Dot(const Vector3& a, const Vector3& b);
+
+	static Vector3 Cross(const Vector3& a, const Vector3& b);
+
 	float x;
 	float y;
 	float z;
