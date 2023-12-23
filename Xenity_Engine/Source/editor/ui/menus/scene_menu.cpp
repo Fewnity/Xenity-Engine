@@ -92,26 +92,32 @@ void SceneMenu::MoveCamera()
 		float upWorld = 0;
 		float side = 0;
 
+		float* upDownRef = &fwd;
+		if (mode2D)
+			upDownRef = &upWorld;
 		if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
-			fwd = -1 * Time::GetDeltaTime();
+			*upDownRef = -1 * Time::GetDeltaTime();
 		else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
-			fwd = 1 * Time::GetDeltaTime();
+			*upDownRef = 1 * Time::GetDeltaTime();
 
-		if (InputSystem::GetKey(A))
-			upWorld = 1 * Time::GetDeltaTime();
-		else if (InputSystem::GetKey(E))
-			upWorld = -1 * Time::GetDeltaTime();
+		if (!mode2D)
+		{
+			if (InputSystem::GetKey(A))
+				upWorld = 1 * Time::GetDeltaTime();
+			else if (InputSystem::GetKey(E))
+				upWorld = -1 * Time::GetDeltaTime();
+		}
 
 		if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
 			side = 1 * Time::GetDeltaTime();
 		else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
 			side = -1 * Time::GetDeltaTime();
 
-		if (/*(InputSystem::GetKey(MOUSE_MIDDLE) || */ (mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right)) && startRotatingCamera)
+		/*if (mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera)
 		{
 			up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
 			side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
-		}
+		}*/
 
 		// Move the camera when using the mouse's wheel (Do not use delta time)
 		if (isHovered)
@@ -298,7 +304,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		mouseWorldDirNormalized = Vector3(0, 0, -1);
 
 	// Move the camera if the mouse left button is held
-	if ((InputSystem::GetKey(MOUSE_LEFT) && toolMode == Tool_MoveCamera) || InputSystem::GetKey(MOUSE_MIDDLE))
+	if ((InputSystem::GetKey(MOUSE_LEFT) && toolMode == Tool_MoveCamera) || InputSystem::GetKey(MOUSE_MIDDLE) || (ImGui::IsMouseDown(ImGuiMouseButton_Right) && mode2D))
 	{
 		float tempCameraHandMoveSpeed = cameraHandMoveSpeed;
 		if (mode2D)
@@ -455,7 +461,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				else if (toolMode == Tool_Scale)
 				{
 					Vector3 objectOffset = (closestPoint - startMovePosition);
-						objectOffset *= 4;
+					objectOffset *= 4;
 					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
 				}
 			}
