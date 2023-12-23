@@ -3,6 +3,8 @@
 #include <memory>
 #include "menu.h"
 
+class Texture;
+
 class MainBarMenu : public Menu
 {
 public:
@@ -16,5 +18,6 @@ public:
 private:
 	template<typename T>
 	void AddComponentToSelectedGameObject();
+	bool DrawImageButton(bool enabled, std::shared_ptr<Texture> texture);
 	int height = 0;
 };

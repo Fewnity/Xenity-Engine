@@ -491,8 +491,8 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 			}
 		}
 		float lastCursorY = ImGui::GetCursorPosY();
-		ImGui::SetCursorPosX(65);
-		ImGui::SetCursorPosY(cursorY + 4);
+		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosY(cursorY + 3);
 		ImGui::Text(comp->GetComponentName().c_str());
 		ImGui::SetCursorPosY(lastCursorY);
 	}

@@ -49,6 +49,7 @@ int EditorUI::Init()
 	{
 		icons.emplace_back(std::shared_ptr<Texture>());
 	}
+	// File types icons
 	LoadEditorIcon(Icon_File, "icons/text.png");
 	LoadEditorIcon(Icon_Folder, "icons/folder.png");
 	LoadEditorIcon(Icon_Scene, "icons/belt.png");
@@ -64,6 +65,17 @@ int EditorUI::Init()
 	LoadEditorIcon(Icon_Camera, "icons/camera.png");
 	LoadEditorIcon(Icon_Material, "icons/material.png");
 	LoadEditorIcon(Icon_Shader, "icons/shader.png");
+
+	// Play Pause Stop icons...
+	LoadEditorIcon(Icon_Play, "icons/play.png");
+	LoadEditorIcon(Icon_Pause, "icons/pause.png");
+	LoadEditorIcon(Icon_Stop, "icons/stop.png");
+
+	// Scene tab icons
+	LoadEditorIcon(Icon_Camera_Move, "icons/camera_move.png");
+	LoadEditorIcon(Icon_Move, "icons/move.png");
+	LoadEditorIcon(Icon_Rotate, "icons/rotate.png");
+	LoadEditorIcon(Icon_Scale, "icons/scale.png");
 
 	Debug::Print("---- Editor UI initiated ----");
 	return 0;

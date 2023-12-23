@@ -28,6 +28,7 @@ public:
 
 private:
 	void DrawToolWindow();
+	bool DrawImageButton(bool enabled, std::shared_ptr<Texture> texture);
 	void SetButtonColor(bool isSelected);
 	void MoveCamera();
 	void ProcessTool(std::shared_ptr<Camera>& camera);

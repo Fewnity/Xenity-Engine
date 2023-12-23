@@ -212,7 +212,7 @@ void Editor::Draw()
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	ImGuiID dsId = ImGui::GetID("BackgroundDock");
 	ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
@@ -273,7 +273,7 @@ void Editor::ApplyEditorStyle()
 	Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
 
-	if (GameplayManager::GetGameState() == Playing) 
+	if (GameplayManager::GetGameState() != Stopped) 
 		pTint = playTint;
 	else if (!EngineSettings::isPlayTintAdditive)
 		pTint = Vector4(1);
@@ -322,28 +322,7 @@ void Editor::RemoveEditorStyle()
 {
 	ImGui::PopStyleVar();
 
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
-
-	ImGui::PopStyleColor();
+	ImGui::PopStyleColor(16);
 }
 
 void Editor::CreateEmpty()

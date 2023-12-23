@@ -12,6 +12,8 @@
 #include <iostream>
 #include <engine/debug/debug.h>
 #include <engine/tools/shape_spawner.h>
+#include <editor/ui/editor_ui.h>
+#include <engine/engine_settings.h>
 
 void SceneMenu::Init()
 {
@@ -33,6 +35,10 @@ ImVec4 hoverColor{ 0.4f, 0.4f, 0.4f, 0.6f };
 void SceneMenu::SetButtonColor(bool isSelected)
 {
 	ImVec4 currentColor = normalColor;
+	Vector4 color = EngineSettings::secondaryColor.GetRGBA().ToVector4() / 2.0f;
+	Vector4 colorHover = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+	pressedColor = ImVec4(normalColor.x + color.x, normalColor.y + color.y, normalColor.z + color.z, normalColor.w + 0.2f);
+	hoverColor = ImVec4(normalColor.x + colorHover.x, normalColor.y + colorHover.y, normalColor.z + colorHover.z, normalColor.w + 0.2f);
 	if (isSelected)
 	{
 		currentColor = pressedColor;
@@ -594,35 +600,50 @@ void SceneMenu::Draw()
 	}
 }
 
+bool SceneMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
+{
+	if (!enabled)
+		ImGui::BeginDisabled();
+	bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)texture->GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	if (!enabled)
+		ImGui::EndDisabled();
+	return clicked;
+}
+
 void SceneMenu::DrawToolWindow()
 {
 	if (ImGui::CollapsingHeader("Tool modes", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		SetButtonColor(toolMode == Tool_MoveCamera);
-		if (ImGui::Button("Move camera"))
+		bool moveCameraClicked = DrawImageButton(true, EditorUI::icons[Icon_Camera_Move]);
+		ImGui::PopStyleColor(3);
+		SetButtonColor(toolMode == Tool_Move);
+		bool moveClicked = DrawImageButton(true, EditorUI::icons[Icon_Move]);
+		ImGui::PopStyleColor(3);
+		SetButtonColor(toolMode == Tool_Rotate);
+		bool rotateClicked = DrawImageButton(true, EditorUI::icons[Icon_Rotate]);
+		ImGui::PopStyleColor(3);
+		SetButtonColor(toolMode == Tool_Scale);
+		bool scaleClicked = DrawImageButton(true, EditorUI::icons[Icon_Scale]);
+		ImGui::PopStyleColor(3);
+		if (moveCameraClicked)
 		{
 			toolMode = Tool_MoveCamera;
 		}
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == Tool_Move);
-		if (ImGui::Button("Move"))
+		if (moveClicked) 
 		{
 			toolMode = Tool_Move;
 		}
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == Tool_Rotate);
-		if (ImGui::Button("Rotate"))
+		if (rotateClicked) 
 		{
 			toolMode = Tool_Rotate;
 			Editor::isToolLocalMode = true;
 		}
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == Tool_Scale);
-		if (ImGui::Button("Scale"))
+		if (scaleClicked) 
 		{
 			toolMode = Tool_Scale;
 		}
-		ImGui::PopStyleColor(3);
+
 		SetButtonColor(mode2D);
 		if (ImGui::Button("2D"))
 		{

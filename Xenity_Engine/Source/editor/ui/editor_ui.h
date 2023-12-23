@@ -56,6 +56,13 @@ enum IconName
 	Icon_Camera,
 	Icon_Material,
 	Icon_Shader,
+	Icon_Play,
+	Icon_Pause,
+	Icon_Stop,
+	Icon_Camera_Move,
+	Icon_Move,
+	Icon_Rotate,
+	Icon_Scale,
 	Icon_Count,
 };
 

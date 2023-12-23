@@ -54,7 +54,7 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 }
 
 template <typename T>
-std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name) 
+std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name)
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::weak_ptr<GameObject>(), 0);
 	CommandManager::AddCommand(command);
@@ -66,6 +66,16 @@ std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name)
 	command2->Execute();
 
 	return command2->newComponent.lock();
+}
+
+bool MainBarMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
+{
+	if (!enabled)
+		ImGui::BeginDisabled();
+	bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)texture->GetTextureId(), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	if (!enabled)
+		ImGui::EndDisabled();
+	return clicked;
 }
 
 void MainBarMenu::Draw()
@@ -206,7 +216,7 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Point Light"))
 			{
 				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Point Light");
-				light->SetupPointLight(Color::CreateFromRGBFloat(1,1,1), 1, 10);
+				light->SetupPointLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10);
 			}
 			ImGui::EndMenu();
 		}
@@ -414,4 +424,42 @@ void MainBarMenu::Draw()
 	}
 	height = ImGui::GetWindowHeight();
 	ImGui::EndMainMenuBar();
+
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + height));
+	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
+	float oldBorderSize = ImGui::GetStyle().WindowBorderSize;
+	ImGui::GetStyle().WindowBorderSize = 0;
+	ImGui::Begin("undermainbar", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+	height += ImGui::GetWindowHeight();
+	
+	float oldFramePadding = ImGui::GetStyle().FramePadding.x;
+	ImGui::GetStyle().FramePadding.x = 14;
+	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + ImGui::GetStyle().ItemSpacing.x * 2 + ImGui::GetStyle().FramePadding.x * 6) / 2.0f);
+	ImGui::BeginGroup();
+	bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[Icon_Play]);
+	ImGui::SameLine();
+	bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Pause]);
+	ImGui::SameLine();
+	bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Stop]);
+	ImGui::EndGroup();
+	ImGui::GetStyle().FramePadding.x = oldFramePadding;
+	if (playClicked)
+	{
+		GameplayManager::SetGameState(GameState::Playing, true);
+	}
+	if (pauseClicked)
+	{
+		GameplayManager::SetGameState(GameState::Paused, true);
+	}
+	if (stopClicked)
+	{
+		GameplayManager::SetGameState(GameState::Stopped, true);
+	}
+
+	ImGui::End();
+	ImGui::GetStyle().WindowBorderSize = oldBorderSize;
+	ImGui::PopStyleVar();
 }
