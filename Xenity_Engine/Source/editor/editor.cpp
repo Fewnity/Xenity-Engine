@@ -656,6 +656,7 @@ void Editor::CreateMenus()
 	AddMenu<ProjectSettingsMenu>(false);
 	AddMenu<EngineSettingsMenu>(false);
 	AddMenu<AboutMenu>(false);
+	//AddMenu<SelectAssetMenu>(false);
 
 	AddMenu<FileExplorerMenu>(true);
 	AddMenu<HierarchyMenu>(true);
@@ -666,7 +667,6 @@ void Editor::CreateMenus()
 	AddMenu<CompilingMenu>(true);
 	AddMenu<SelectProjectMenu>(true);
 	AddMenu<CreateProjectMenu>(true);
-
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
 }

@@ -171,7 +171,7 @@ void ProjectManager::FindAllProjectFiles()
 	// Create files references
 	for (const auto& kv : projectFilesIds)
 	{
-		CreateFilReference(kv.second.path, kv.first);
+		CreateFileReference(kv.second.path, kv.first);
 	}
 
 	// Check if a file has changed or has been deleted
@@ -258,7 +258,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Scenes\\");
 
 	// Create default scene
-	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFilReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
+	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
 	if (sceneRef->file->Open(true))
 	{
 		std::string data = AssetManager::GetDefaultFileData(File_Scene);
@@ -460,7 +460,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	{
 		if (projectFilesIds.contains(id))
 		{
-			fileRef = CreateFilReference(projectFilesIds[id].path, id);
+			fileRef = CreateFileReference(projectFilesIds[id].path, id);
 			if (fileRef)
 			{
 				if (fileRef->fileType == File_Skybox)
@@ -622,7 +622,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFilReference(const std::string& path, uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);

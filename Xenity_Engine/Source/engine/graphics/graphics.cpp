@@ -405,7 +405,7 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 
 void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
 {
-	if (!usedCamera.lock())
+	if (!meshData || !usedCamera.lock())
 		return;
 
 	drawMeshBenchmark->Start();

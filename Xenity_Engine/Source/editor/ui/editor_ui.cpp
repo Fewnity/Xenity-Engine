@@ -26,6 +26,7 @@ std::vector<std::shared_ptr<Texture>> EditorUI::icons;
 MultiDragData EditorUI::multiDragData;
 
 float EditorUI::uiScale = 1;
+std::shared_ptr<Menu> EditorUI::currentSelectAssetMenu;
 
 #pragma region Initialisation
 

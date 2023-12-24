@@ -197,14 +197,14 @@ public:
 	}
 
 	static ProjectSettings projectSettings;
+	static std::shared_ptr <Directory> projectDirectoryBase;
 
 private:
 	static void FindAllProjectFiles();
-	static std::shared_ptr<FileReference> CreateFilReference(const std::string& path, uint64_t id);
+	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, uint64_t id);
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
-	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
 	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
 	static bool projectLoaded;

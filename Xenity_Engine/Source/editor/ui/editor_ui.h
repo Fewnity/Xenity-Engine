@@ -29,6 +29,7 @@
 #include <engine/audio/audio_clip.h>
 #include <engine/file_system/file.h>
 #include <engine/scene_management/scene.h>
+#include "menus/select_asset_menu.h"
 
 class Reflective;
 class ProjectDirectory;
@@ -308,35 +309,35 @@ public:
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 				{
-					DrawVector(true, "Texture", valuePtr, valueChangedTemp, variableName, FileType::File_Texture);
+					DrawVector(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
 				{
-					DrawVector(true, "MeshData", valuePtr, valueChangedTemp, variableName, FileType::File_Mesh);
+					DrawVector(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
 				{
-					DrawVector(true, "AudioClip", valuePtr, valueChangedTemp, variableName, FileType::File_Audio);
+					DrawVector(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
 				{
-					DrawVector(true, "Scene", valuePtr, valueChangedTemp, variableName, FileType::File_Scene);
+					DrawVector(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
 				{
-					DrawVector(true, "SkyBox", valuePtr, valueChangedTemp, variableName, FileType::File_Skybox);
+					DrawVector(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
 				{
-					DrawVector(true, "Font", valuePtr, valueChangedTemp, variableName, FileType::File_Font);
+					DrawVector(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
 				{
-					DrawVector(true, "Shader", valuePtr, valueChangedTemp, variableName, FileType::File_Shader);
+					DrawVector(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
 				{
-					DrawVector(true, "Material", valuePtr, valueChangedTemp, variableName, FileType::File_Material);
+					DrawVector(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
 				{
@@ -373,6 +374,7 @@ public:
 	static std::string GenerateItemId();
 
 	static std::vector<std::shared_ptr<Texture>> icons;
+	static std::shared_ptr<Menu> currentSelectAssetMenu;
 
 	static float GetUiScale()
 	{
@@ -399,6 +401,17 @@ public:
 		if (DrawInputButton(variableName, inputText, true) == 2)
 		{
 			valuePtr->get() = nullptr;
+		}
+		if (ImGui::IsItemClicked())
+		{
+			if (currentSelectAssetMenu)
+				Editor::RemoveMenu(currentSelectAssetMenu.get());
+
+			std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
+			selectMenu->SetActive(true);
+			selectMenu->valuePtr = *valuePtr;
+			selectMenu->SearchFiles(fileType);
+			currentSelectAssetMenu = selectMenu;
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
@@ -440,7 +453,7 @@ public:
 	}
 
 	template <typename T>
-	static void DrawVector(bool isFileReference, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	static void DrawVector(FileType fileType, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
 	{
 		size_t vectorSize = valuePtr->get().size();
 		std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
@@ -466,9 +479,20 @@ public:
 				{
 					valuePtr->get()[vectorI] = nullptr;
 				}
+				if (ImGui::IsItemClicked())
+				{
+					if (currentSelectAssetMenu)
+						Editor::RemoveMenu(currentSelectAssetMenu.get());
+
+					std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
+					selectMenu->SetActive(true);
+					selectMenu->valuePtr = (valuePtr->get()[vectorI]);
+					selectMenu->SearchFiles(fileType);
+					currentSelectAssetMenu = selectMenu;
+				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
-				std::string payloadName = "Files" + std::to_string(dragdropId);
+				std::string payloadName = "Files" + std::to_string(fileType);
 				if (DragDropTarget(payloadName, ref))
 				{
 					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
