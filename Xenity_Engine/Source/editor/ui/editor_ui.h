@@ -412,6 +412,7 @@ public:
 			selectMenu->valuePtr = *valuePtr;
 			selectMenu->SearchFiles(fileType);
 			currentSelectAssetMenu = selectMenu;
+			selectMenu->Focus();
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
@@ -489,6 +490,7 @@ public:
 					selectMenu->valuePtr = (valuePtr->get()[vectorI]);
 					selectMenu->SearchFiles(fileType);
 					currentSelectAssetMenu = selectMenu;
+					selectMenu->Focus();
 				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
