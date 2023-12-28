@@ -41,7 +41,11 @@ Features:
 
 > [!NOTE]
 > If you want to compile a game, you have to change the `project path` and the `compiler path` in the `Engine Settings` menu. You can set the `PPSSPP location` for Build And Run for PSP builds.
+> 
+> To build the project in Visual Studio, you have to set the project "Xenity_Engine_Executable" as startup project.
 
+## How to compile in Visual Studio
+Set the project "Xenity_Engine_Executable" as startup project.
 ## How to compile without Visual Studio
 Run `build_engine.bat` located in `Xenity-Engine\Xenity_Engine\`.
 
