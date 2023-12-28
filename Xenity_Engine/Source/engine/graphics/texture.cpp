@@ -27,6 +27,7 @@
 #elif defined(_EE)
 // #include "renderer/renderer_gskit.h"
 #include <graph.h>
+#include <dma.h>
 #include <gs_psm.h>
 #include "renderer/renderer_vu1.h"
 #endif
@@ -333,13 +334,25 @@ void Texture::SetData(const unsigned char *texData)
 	}
 #elif defined(_EE)
 	texbuff.width = width;
-	texbuff.psm = GS_PSM_24;
-	texbuff.address = graph_vram_allocate(width, height, GS_PSM_24, GRAPH_ALIGN_BLOCK);
+	texbuff.psm = GS_PSM_32;
+	texbuff.address = graph_vram_allocate(width, height, GS_PSM_32, GRAPH_ALIGN_BLOCK);
 
 	texbuff.info.width = draw_log2(width);
 	texbuff.info.height = draw_log2(height);
 	texbuff.info.components = TEXTURE_COMPONENTS_RGB;
 	texbuff.info.function = TEXTURE_FUNCTION_MODULATE;
+
+	packet2_t *packet2 = packet2_create(50, P2_TYPE_NORMAL, P2_MODE_CHAIN, 0);
+	packet2_update(packet2, draw_texture_transfer(packet2->next, (void *)texData, width, height, GS_PSM_32, texbuff.address, texbuff.width));
+	packet2_update(packet2, draw_texture_flush(packet2->next));
+	dma_channel_send_packet2(packet2, DMA_CHANNEL_GIF, 1);
+	dma_wait_fast();
+	packet2_free(packet2);
+
+	// for (int i = 0; i < width * height; i++)
+	// {
+	// 	texbuff.address[i] = 0;
+	// }
 
 	// ps2Tex.Width = width;
 	// ps2Tex.Height = height;

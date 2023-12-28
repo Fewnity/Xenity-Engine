@@ -4,7 +4,7 @@
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/debug/debug.h>
-
+#include <engine/graphics/graphics.h>
 #include <kernel.h>
 #include <malloc.h>
 #include <tamtypes.h>
@@ -152,10 +152,10 @@ void RendererVU1::set_lod_clut_prim_tex_buff()
 	prim.mapping_type = PRIM_MAP_ST;
 	prim.colorfix = PRIM_UNFIXED;
 
-	texbuff.info.width = draw_log2(128);
-	texbuff.info.height = draw_log2(128);
-	texbuff.info.components = TEXTURE_COMPONENTS_RGB;
-	texbuff.info.function = TEXTURE_FUNCTION_MODULATE;
+	// texbuff.info.width = draw_log2(128);
+	// texbuff.info.height = draw_log2(128);
+	// texbuff.info.components = TEXTURE_COMPONENTS_RGB;
+	// texbuff.info.function = TEXTURE_FUNCTION_MODULATE;
 }
 
 int RendererVU1::Init()
@@ -210,27 +210,27 @@ int RendererVU1::Init()
 
 	set_lod_clut_prim_tex_buff();
 
-	texbuff.width = 128;
-	texbuff.psm = GS_PSM_24;
-	texbuff.address = graph_vram_allocate(128, 128, GS_PSM_24, GRAPH_ALIGN_BLOCK);
-	send_texture(&texbuff, 0);
-	calculate_cube(&texbuff);
+	// texbuff.width = 128;
+	// texbuff.psm = GS_PSM_24;
+	// texbuff.address = graph_vram_allocate(128, 128, GS_PSM_24, GRAPH_ALIGN_BLOCK);
+	// send_texture(&texbuff, 0);
+	// calculate_cube(&texbuff);
 
-	c_verts = (VECTOR *)memalign(128, sizeof(VECTOR) * faces_count);
-	c_sts = (VECTOR *)memalign(128, sizeof(VECTOR) * faces_count);
+	// c_verts = (VECTOR *)memalign(128, sizeof(VECTOR) * faces_count);
+	// c_sts = (VECTOR *)memalign(128, sizeof(VECTOR) * faces_count);
 
-	for (int i = 0; i < faces_count; i++)
-	{
-		c_verts[i][0] = vertices[faces[i]][0];
-		c_verts[i][1] = vertices[faces[i]][1];
-		c_verts[i][2] = vertices[faces[i]][2];
-		c_verts[i][3] = vertices[faces[i]][3];
+	// for (int i = 0; i < faces_count; i++)
+	// {
+	// 	c_verts[i][0] = vertices[faces[i]][0];
+	// 	c_verts[i][1] = vertices[faces[i]][1];
+	// 	c_verts[i][2] = vertices[faces[i]][2];
+	// 	c_verts[i][3] = vertices[faces[i]][3];
 
-		c_sts[i][0] = sts[faces[i]][0];
-		c_sts[i][1] = sts[faces[i]][1];
-		c_sts[i][2] = sts[faces[i]][2];
-		c_sts[i][3] = sts[faces[i]][3];
-	}
+	// 	c_sts[i][0] = sts[faces[i]][0];
+	// 	c_sts[i][1] = sts[faces[i]][1];
+	// 	c_sts[i][2] = sts[faces[i]][2];
+	// 	c_sts[i][3] = sts[faces[i]][3];
+	// }
 
 	return result;
 }
@@ -289,11 +289,24 @@ void RendererVU1::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	// Vector3 camPos = camera->GetTransform()->GetPosition();
 	// Vector3 camRot = camera->GetTransform()->GetRotation();
 
-	// // VECTOR camera_position = { camPos.x, camPos.y, camPos.z, 1.00f };
-	// // VECTOR camera_rotation = { camRot.x * 3.14159265359 / 180.0f, camRot.y * 3.14159265359 / 180.0f, camRot.z * 3.14159265359 / 180.0f, 1.00f };
-	// VECTOR camera_position = {0.00f, 4.00f, 3.00f, 1.00f};
-	// VECTOR camera_rotation = {0.00f, 0.00f, 180.00f * 3.14159265359 / 180.0f, 1.00f};
-	// create_world_view(world_view, camera_position, camera_rotation);
+	// camera_position[0] = camPos.x;
+	// camera_position[1] = camPos.y;
+	// camera_position[2] = camPos.z;
+	// camera_position[3] = 1.00f;
+
+	// camera_rotation[0] = camRot.x * 3.14159265359 / 180.0f;
+	// camera_rotation[1] = camRot.y * 3.14159265359 / 180.0f;
+	// camera_rotation[2] = camRot.z * 3.14159265359 / 180.0f;
+	// camera_rotation[0] = 10 * 3.14159265359 / 180.0f;
+	// camera_rotation[1] = 0 * 3.14159265359 / 180.0f;
+	// camera_rotation[2] = 0 * 3.14159265359 / 180.0f;
+	// camera_rotation[3] = 1.0f;
+
+	// camera_rotation = {camRot.x * 3.14159265359 / 180.0f, camRot.y * 3.14159265359 / 180.0f, camRot.z * 3.14159265359 / 180.0f, 1.00f};
+	// Debug::Print("Salut");
+	//   VECTOR camera_position = {0.00f, 4.00f, 3.00f, 1.00f};
+	//   VECTOR camera_rotation = {0.00f, 0.00f, 180.00f * 3.14159265359 / 180.0f, 1.00f};
+	//   create_world_view(world_view, camera_position, camera_rotation);
 }
 
 void RendererVU1::ResetTransform()
@@ -347,21 +360,36 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 		// 	camera_rotation[2] = 0.00f;
 		// }
 	}
-	create_world_view(world_view, camera_position, camera_rotation);
-
+	// create_world_view(world_view, camera_position, camera_rotation);
+	glm::mat4 transformationMatrixC = glm::mat4(1);
+	transformationMatrixC = glm::translate(transformationMatrixC, glm::vec3(0, 0, 0));
+	transformationMatrixC = glm::rotate(transformationMatrixC, 45.0f * 3.14159265359f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	transformationMatrixC = glm::rotate(transformationMatrixC, 0.0f * 3.14159265359f / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	transformationMatrixC = glm::rotate(transformationMatrixC, 0.0f * 3.14159265359f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	for (int i = 0; i < 16; i++)
+	{
+		world_view[i] = transformationMatrixC[i / 4][i % 4];
+		// world_view[i] = Graphics::usedCamera.lock()->GetTransform()->transformationMatrix[i / 4][i % 4];
+	}
 	///
 	//
 	//
-	create_local_world(local_world, object_position, object_rotation);
+
+	// create_local_world(local_world, object_position, object_rotation);
+	for (int i = 0; i < 16; i++)
+	{
+		local_world[i] = transformationMatrix[i / 4][i % 4];
+	}
 	create_local_screen(local_screen, local_world, world_view, view_screen);
 
 	// return;
 	int subMeshCount = meshData->subMeshCount;
+
 	size_t textureCount = textures.size();
 
 	MeshData::SubMesh *subMesh = nullptr;
-	if (drawCount2 >= 1 || subMeshCount != 6)
-		return;
+	// if (drawCount2 >= 1 || subMeshCount != 6)
+	// 	return;
 
 	drawCount2++;
 	for (size_t i = 0; i < subMeshCount; i++)
@@ -381,6 +409,11 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 		// Do not draw the submesh if the vertice count is 0
 		if (subMesh->vertice_count == 0)
 			continue;
+
+		// if (i == 1)
+		// 	break;
+
+		meshData->UpdatePS2Packets(i, textures[i]);
 		// Debug::Print("" + std::to_string(subMesh->vertice_count));
 
 		// we don't wan't to unpack at 8 + beggining of buffer, but at
@@ -395,7 +428,7 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 		// packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, c_sts, faces_count, 1);
 		// vif_added_bytes += faces_count;
 		int faceToDraw = subMesh->vertice_count;
-
+		int drawn = 0;
 		while (faceToDraw != 0)
 		{
 			int count = 255;
@@ -408,15 +441,13 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 			packet2_utils_vu_add_unpack_data(curr_vif_packet, 0, &local_screen, 8, 0);
 			u32 vif_added_bytes = 0; // zero because now we will use TOP register (double buffer)
 
-			// int faceC = faces_count;
-			// faceC = 255;
 			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->meshPacket->base, packet2_get_qw_count(subMesh->meshPacket), 1);
 			vif_added_bytes += packet2_get_qw_count(subMesh->meshPacket);
-			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_verts + (subMesh->vertice_count - faceToDraw), count, 1);
-			vif_added_bytes += count;
+			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_verts + (drawn), count, 1);
+			vif_added_bytes += 255;
 
-			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_st + (subMesh->vertice_count - faceToDraw), count, 1);
-			vif_added_bytes += count;
+			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_st + (drawn), count, 1);
+			vif_added_bytes += 255;
 
 			packet2_utils_vu_add_start_program(curr_vif_packet, 0);
 			packet2_utils_vu_add_end_tag(curr_vif_packet);
@@ -426,6 +457,7 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 			//  Switch packet, so we can proceed during DMA transfer
 			context = !context;
 			faceToDraw -= count;
+			drawn += count;
 		}
 	}
 }

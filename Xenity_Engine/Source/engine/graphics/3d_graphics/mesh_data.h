@@ -83,6 +83,8 @@ public:
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
 
+	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
+
 	/**
 	 * Alloc memory for a new submesh
 	 */

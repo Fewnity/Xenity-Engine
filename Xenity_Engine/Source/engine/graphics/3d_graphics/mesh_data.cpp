@@ -99,6 +99,8 @@ void MeshData::AddVertex(float u, float v, const Color &color, float x, float y,
 	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 	subMeshes[subMeshIndex]->c_st[index][0] = u;
 	subMeshes[subMeshIndex]->c_st[index][1] = v;
+	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
 #else
 	((Vertex *)subMeshes[subMeshIndex]->data)[index] = vert;
@@ -137,6 +139,8 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index,
 
 	subMeshes[subMeshIndex]->c_st[index][0] = u;
 	subMeshes[subMeshIndex]->c_st[index][1] = v;
+	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
 	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
 	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
@@ -166,6 +170,8 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 
 	subMeshes[subMeshIndex]->c_st[index][0] = u;
 	subMeshes[subMeshIndex]->c_st[index][1] = v;
+	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
 	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
 	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
@@ -191,6 +197,9 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	subMeshes[subMeshIndex]->c_verts[index][1] = y;
 	subMeshes[subMeshIndex]->c_verts[index][2] = z;
 	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+
+	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 #else
 	((VertexNormalsNoColorNoUv *)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
@@ -291,6 +300,27 @@ void MeshData::UnloadFileReference()
 	}
 }
 
+void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
+{
+	SubMesh *subMesh = subMeshes[index];
+	if (subMesh->meshPacket)
+		packet2_free(subMesh->meshPacket);
+	subMesh->meshPacket = packet2_create(11, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
+	packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
+	packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
+	packet2_add_float(subMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
+	packet2_add_s32(subMesh->meshPacket, 255);						   // vertex count
+	packet2_utils_gif_add_set(subMesh->meshPacket, 1);
+	packet2_utils_gs_add_lod(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
+	packet2_utils_gs_add_texbuff_clut(subMesh->meshPacket, &texture->texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
+	packet2_utils_gs_add_prim_giftag(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 255, DRAW_STQ2_REGLIST, 3, 0);
+	// RGBA
+	packet2_add_u32(subMesh->meshPacket, 128);
+	packet2_add_u32(subMesh->meshPacket, 128);
+	packet2_add_u32(subMesh->meshPacket, 128);
+	packet2_add_u32(subMesh->meshPacket, 128);
+}
+
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	MeshData::SubMesh *newSubMesh = new MeshData::SubMesh();
@@ -330,23 +360,22 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->c_st = (VECTOR *)memalign(128, sizeof(VECTOR) * vcount);
 	// RendererVU1((RendererVU1 &)Engine::GetRenderer())
 	// newSubMesh->meshPacket = packet2_create(10, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
-	newSubMesh->meshPacket = packet2_create(11, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
-	packet2_add_float(newSubMesh->meshPacket, 2048.0F);					  // scale
-	packet2_add_float(newSubMesh->meshPacket, 2048.0F);					  // scale
-	packet2_add_float(newSubMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
-	packet2_add_s32(newSubMesh->meshPacket, 255);						  // vertex count
-	packet2_utils_gif_add_set(newSubMesh->meshPacket, 1);
-	packet2_utils_gs_add_lod(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
-	packet2_utils_gs_add_texbuff_clut(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
-	packet2_utils_gs_add_prim_giftag(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 255, DRAW_STQ2_REGLIST, 3, 0);
-	u8 j = 0; // RGBA
-			  // for (j = 0; j < 4; j++)
-	// packet2_add_u32(zbyszek_packet, 128);
-	packet2_add_u32(newSubMesh->meshPacket, 128);
-	packet2_add_u32(newSubMesh->meshPacket, 128);
-	packet2_add_u32(newSubMesh->meshPacket, 128);
-	packet2_add_u32(newSubMesh->meshPacket, 128);
-	Debug::Print("A" + std::to_string(vcount));
+
+	// newSubMesh->meshPacket = packet2_create(11, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
+	// packet2_add_float(newSubMesh->meshPacket, 2048.0F);					  // scale
+	// packet2_add_float(newSubMesh->meshPacket, 2048.0F);					  // scale
+	// packet2_add_float(newSubMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
+	// packet2_add_s32(newSubMesh->meshPacket, 255);						  // vertex count
+	// packet2_utils_gif_add_set(newSubMesh->meshPacket, 1);
+	// packet2_utils_gs_add_lod(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
+	// packet2_utils_gs_add_texbuff_clut(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
+	// packet2_utils_gs_add_prim_giftag(newSubMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 255, DRAW_STQ2_REGLIST, 3, 0);
+	// // RGBA
+	// packet2_add_u32(newSubMesh->meshPacket, 128);
+	// packet2_add_u32(newSubMesh->meshPacket, 128);
+	// packet2_add_u32(newSubMesh->meshPacket, 128);
+	// packet2_add_u32(newSubMesh->meshPacket, 128);
+	// Debug::Print("A" + std::to_string(vcount));
 
 	// if (!hasNormal)
 	//{
