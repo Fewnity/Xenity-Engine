@@ -30,6 +30,7 @@
 #if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/ui/menus/scene_menu.h>
+#include <editor/tool_mode.h>
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -38,7 +39,6 @@
 
 #include <algorithm>
 #include <engine/debug/debug.h>
-#include <editor/tool_mode.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;

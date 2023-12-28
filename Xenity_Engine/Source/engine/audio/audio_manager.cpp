@@ -22,7 +22,6 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-short* emptyBuffer = nullptr;
 WAVEHDR waveHdr[2];
 HWAVEOUT hWaveOut;
 short* audioData = nullptr;
@@ -319,8 +318,6 @@ int AudioManager::Init()
 	audioBenchmark2 = std::make_shared<ProfilerBenchmark>("Audio", "Sub");
 	halfBuffSize = buffSize / 2;
 	quarterBuffSize = buffSize / 4;
-
-	emptyBuffer = (short*)calloc((size_t)buffSize, sizeof(short));
 
 	myMutex = new MyMutex();
 #if defined(__vita__)
