@@ -2,13 +2,25 @@
 #include "file_system.h"
 
 #if defined(__PSP__)
-	#include <dirent.h>
-	#include <sys/stat.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #elif defined(__vita__)
-	#include <psp2/io/stat.h>
+#include <psp2/io/stat.h>
 #endif
 
 #include <filesystem>
+
+#if defined(_EE)
+#define NEWLIB_PORT_AWARE
+#include <fileXio_rpc.h>
+#include <fileio.h>
+
+#include <sifrpc.h>
+#include <loadfile.h>
+#include <sbv_patches.h>
+#include <iopcontrol.h>
+#include <iopheap.h>
+#endif
 
 Directory::Directory(std::string _path) : UniqueId(true)
 {
@@ -26,7 +38,7 @@ Directory::~Directory()
 	files.clear();
 }
 
-void AddDirectoryFiles(std::vector<std::shared_ptr<File>>& vector, std::shared_ptr <Directory> directory)
+void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, std::shared_ptr<Directory> directory)
 {
 	int fileCount = (int)directory->files.size();
 	for (int i = 0; i < fileCount; i++)
@@ -53,14 +65,26 @@ bool Directory::CheckIfExist()
 {
 	bool exists = false;
 #if defined(__PSP__)
-	DIR* dir = opendir(this->path.c_str());
+	DIR *dir = opendir(this->path.c_str());
 	if (dir == NULL)
 	{
 		exists = false;
 	}
-	else {
+	else
+	{
 		closedir(dir);
 		exists = true;
+	}
+#elif defined(_EE)
+	int fd = fileXioDopen(this->path.c_str());
+	if (fd < 0)
+	{
+		exists = false;
+	}
+	else
+	{
+		exists = true;
+		fileXioDclose(fd);
 	}
 #else
 	exists = std::filesystem::exists(this->path);

@@ -19,6 +19,7 @@ Fix engine assets system
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Add abitily to move folders into a folder
 Add a property window on components to have values in a new window
+Fix crash when stopping the game when the game tab is not updated
 
 --- To do soon:
 Fix Awake : Call awake when a gameobject was disabled and then enabled

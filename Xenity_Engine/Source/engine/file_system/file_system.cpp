@@ -3,31 +3,42 @@
 #include "directory.h"
 #include "file.h"
 #include "file_psp.h"
+#include "file_ps2.h"
 #include "file_default.h"
 
 #include <engine/debug/debug.h>
 
-#if defined(__PSP__)
-	#include <dirent.h>
-	#include <sys/stat.h>
+#if defined(_EE)
+#define NEWLIB_PORT_AWARE
+#include <fileXio_rpc.h>
+#include <fileio.h>
+
+#include <sifrpc.h>
+#include <loadfile.h>
+#include <sbv_patches.h>
+#include <iopcontrol.h>
+#include <iopheap.h>
+#endif
+
+#if defined(__PSP__) || defined(_EE)
+#include <dirent.h>
+#include <sys/stat.h>
 #elif defined(__vita__)
-	#include <psp2/io/stat.h>
+#include <psp2/io/stat.h>
 #endif
 
 #include <filesystem>
 #include <string>
 
-
-FileSystem* FileSystem::fileSystem = nullptr;
+FileSystem *FileSystem::fileSystem = nullptr;
 
 #pragma region File
-
 
 #pragma endregion
 
 #pragma region Directory
 
-void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recursive)
+void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recursive)
 {
 	directory->files.clear();
 	directory->subdirectories.clear();
@@ -36,12 +47,12 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 		return;
 	}
 #if defined(__PSP__)
-	DIR* dir = opendir(directory->GetPath().c_str());
+	DIR *dir = opendir(directory->GetPath().c_str());
 	if (dir == NULL)
 	{
 		return;
 	}
-	struct dirent* ent;
+	struct dirent *ent;
 	while ((ent = readdir(dir)) != NULL)
 	{
 		std::string found = "";
@@ -64,13 +75,13 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 				newFile = FileSystem::MakeFile(fullPath);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 			}
 		}
 		else if (S_ISDIR(statbuf.st_mode)) // If the entry is a folder
 		{
-			std::shared_ptr <Directory> newDirectory = nullptr;
+			std::shared_ptr<Directory> newDirectory = nullptr;
 			try
 			{
 				newDirectory = std::make_shared<Directory>(fullPath + "\\");
@@ -78,18 +89,64 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 			}
 		}
 	}
 	closedir(dir);
+#elif defined(_EE)
+	Debug::Print("FillDirectory");
+	std::string fullPath = directory->GetPath();
+	int fd = fileXioDopen(directory->GetPath().c_str());
+	if (fd >= 0)
+	{
+		iox_dirent_t dirent;
+		int t = 0;
+
+		std::vector<std::string> newDirs;
+
+		while ((t = fileXioDread(fd, &dirent)) != 0)
+		{
+			Debug::Print(std::to_string(dirent.stat.mode) + " " + std::string(dirent.name));
+			if (dirent.stat.mode == 8198)
+			{
+				std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
+				// path = path.substr(6);
+				Debug::Print("IsFile " + path);
+				std::shared_ptr<File> newFile = FileSystem::MakeFile(path);
+				directory->files.push_back(newFile);
+			}
+			else if (dirent.stat.mode == 4103)
+			{
+				std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
+				newDirs.push_back(path);
+				Debug::Print("IsFolder " + path);
+				// path = path.substr(6);
+
+				// std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(path + "\\");
+				// if (recursive)
+				// 	newDirectory->GetAllFiles(true);
+				// directory->subdirectories.push_back(newDirectory);
+			}
+		}
+		fileXioDclose(fd);
+
+		int c = newDirs.size();
+		for (int i = 0; i < c; i++)
+		{
+			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(newDirs[i] + "\\");
+			if (recursive)
+				newDirectory->GetAllFiles(true);
+			directory->subdirectories.push_back(newDirectory);
+		}
+	}
 #else
-	for (const auto& file : std::filesystem::directory_iterator(directory->GetPath()))
+	for (const auto &file : std::filesystem::directory_iterator(directory->GetPath()))
 	{
 		if (file.is_directory())
 		{
-			std::shared_ptr <Directory> newDirectory = nullptr;
+			std::shared_ptr<Directory> newDirectory = nullptr;
 			try
 			{
 				std::string path = file.path().string();
@@ -103,7 +160,7 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 			}
 		}
@@ -121,7 +178,7 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception&)
+			catch (const std::exception &)
 			{
 			}
 		}
@@ -129,37 +186,37 @@ void FileSystem::FillDirectory(std::shared_ptr <Directory> directory, bool recur
 #endif
 }
 
-bool FileSystem::Rename(const std::string& path, const std::string& newPath)
+bool FileSystem::Rename(const std::string &path, const std::string &newPath)
 {
 	bool success = true;
 	try
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
-		if (std::filesystem::exists(newPath)) 
+		if (std::filesystem::exists(newPath))
 		{
 			success = false;
 		}
-		else 
+		else
 		{
 			std::filesystem::rename(path, newPath);
 		}
 #endif
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
 		success = false;
 	}
 	return success;
 }
 
-int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)
+int FileSystem::CopyFile(const std::string &path, const std::string &newPath, bool replace)
 {
 	int result = 0;
 	try
 	{
-		if (!replace) 
+		if (!replace)
 		{
-			if (std::filesystem::exists(newPath)) 
+			if (std::filesystem::exists(newPath))
 			{
 				result = -1; // File already exists
 			}
@@ -170,19 +227,19 @@ int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bo
 		if (replace)
 			option |= std::filesystem::copy_options::overwrite_existing;
 
-		if(result == 0)
+		if (result == 0)
 			std::filesystem::copy_file(path, newPath, option);
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
 		result = -2; // Error
 	}
 	return result;
 }
 
-std::vector< std::shared_ptr<File>> files;
+std::vector<std::shared_ptr<File>> files;
 
-std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
+std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 {
 	std::shared_ptr<File> file;
 
@@ -200,6 +257,8 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 	{
 #if defined(__PSP__)
 		file = std::make_shared<FilePSP>(path);
+#elif defined(_EE)
+		file = std::make_shared<FilePS2>(path);
 #else
 		file = std::make_shared<FileDefault>(path);
 #endif
@@ -215,7 +274,7 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 
 #pragma endregion
 
-void FileSystem::CreateDirectory(const std::string& path)
+void FileSystem::CreateDirectory(const std::string &path)
 {
 	std::string finalPath = path;
 #if defined(__vita__)
@@ -224,7 +283,7 @@ void FileSystem::CreateDirectory(const std::string& path)
 	std::filesystem::create_directory(finalPath);
 }
 
-void FileSystem::Delete(const std::string& path)
+void FileSystem::Delete(const std::string &path)
 {
 	std::string newPath = path;
 #if defined(__vita__)
@@ -238,9 +297,8 @@ void FileSystem::Delete(const std::string& path)
 	{
 		std::filesystem::remove_all(newPath.c_str());
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
-
 	}
 #endif
 }
@@ -254,7 +312,39 @@ int FileSystem::InitFileSystem()
 #if defined(__vita__)
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
 #endif
+#if defined(_EE)
+	SifInitRpc(0);
+	while (!SifIopReset(NULL, 0))
+	{
+	}
+	while (!SifIopSync())
+	{
+	}
+	SifInitRpc(0);
 
+	// SifInitIopHeap();
+	// // SifLoadFileInit();
+
+	// sbv_patch_enable_lmb();
+	// sbv_patch_disable_prefix_check();
+	// sbv_patch_fileio();
+
+	int ret = SifLoadModule("host0:iomanX.irx", 0, NULL);
+	int ret2 = SifLoadModule("host0:fileXio.irx", 0, NULL);
+
+	fileXioInitSkipOverride();
+	// fileXioSetBlockMode(0);
+
+	if (ret < 0)
+		Debug::PrintError("Failed to load iomanX.irx");
+	if (ret2 < 0)
+		Debug::PrintError("Failed to load fileXio.irx");
+
+	if (ret >= 0 && ret2 >= 0)
+	{
+		Debug::Print("-------- PS2 File System initiated --------");
+	}
+#endif
 	Debug::Print("-------- File System initiated --------");
 	return 0;
 }

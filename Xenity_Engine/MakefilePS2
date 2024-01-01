@@ -16,13 +16,21 @@ CPP_FILES := $(shell find $(SRC_DIR) -name '*.cpp')
 OBJ_FILES := $(CPP_FILES:%.cpp=%.o)
 
 EE_OBJS = draw_3D.o $(OBJ_FILES)
-EE_LIBS_EXTRA = -lfreetype -lpng -lpatches -ldraw -lgraph -lmath3d -lpacket2 -ldma -lc -latomic
-
+EE_LIBS_EXTRA = -lfileXio -lfreetype -lpng -lpatches -ldraw -lgraph -lmath3d -lpacket2 -ldma -lc -latomic
+EE_CFLAGS = -fdata-sections -ffunction-sections -flto
+EE_LDFLAGS = -fdata-sections -ffunction-sections -flto -Wl,--gc-sections
 
 INCLUDE_DIR = include
 INCLUDE_DIR2 = Source
 EE_INCS += -I$(INCLUDE_DIR) -I$(INCLUDE_DIR2) -I$(PS2SDK)/ports/include -I$(PS2SDK)/ports/include/SDL -I$(PS2SDK)/ports/include/freetype2
 EE_CXXFLAGS += -std=c++20
+
+IRX_FILES += iomanX.irx fileXio.irx
+EE_OBJS += $(IRX_FILES:.irx=_irx.o)
+
+# IRX files
+%_irx.c:
+	$(PS2SDK)/bin/bin2c $(PS2SDK)/iop/irx/$*.irx $@ $*_irx
 
 # all: $(EE_BIN)
 # 	$(EE_STRIP) --strip-all $(EE_BIN)

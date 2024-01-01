@@ -286,8 +286,8 @@ void RendererVU1::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	// create_view_screen(view_screen, 4.0f / 3.0f, -0.5f, 0.5f, -0.5f, 0.5f, 0.30f, 1000.00f);
 	// // create_view_screen(view_screen, 4.0f / 3.0f, -fW, fW, -fH, fH, zFar, zNear);
 
-	// Vector3 camPos = camera->GetTransform()->GetPosition();
-	// Vector3 camRot = camera->GetTransform()->GetRotation();
+	Vector3 camPos = camera->GetTransform()->GetPosition();
+	Vector3 camRot = camera->GetTransform()->GetRotation();
 
 	// camera_position[0] = camPos.x;
 	// camera_position[1] = camPos.y;
@@ -307,6 +307,10 @@ void RendererVU1::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	//   VECTOR camera_position = {0.00f, 4.00f, 3.00f, 1.00f};
 	//   VECTOR camera_rotation = {0.00f, 0.00f, 180.00f * 3.14159265359 / 180.0f, 1.00f};
 	//   create_world_view(world_view, camera_position, camera_rotation);
+
+	VECTOR camera_position2 = {-camPos.x, camPos.y, camPos.z, 1.00f};																								  //- + +
+	VECTOR camera_rotation2 = {camRot.x * 3.14159265359 / 180.0f, (180.0f + camRot.y) * 3.14159265359 / 180.0f, (180.0f - camRot.z) * 3.14159265359 / 180.0f, 1.00f}; // + + -
+	create_world_view(world_view, camera_position2, camera_rotation2);
 }
 
 void RendererVU1::ResetTransform()
@@ -336,41 +340,56 @@ void RendererVU1::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 int t = 0;
 void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
 {
-	create_view_screen(view_screen, graph_aspect_ratio(), -3.00f, 3.00f, -3.00f, 3.00f, 1.00f, 2000.00f);
-	t++;
-	if (t == 100)
-	{
-		t = 0;
-		object_rotation[0] += 0.008f;
-		while (object_rotation[0] > 3.14f)
-		{
-			object_rotation[0] -= 6.28f;
-		}
-		object_rotation[1] += 0.012f;
-		while (object_rotation[1] > 3.14f)
-		{
-			object_rotation[1] -= 6.28f;
-		}
+	// create_view_screen(view_screen, graph_aspect_ratio(), -3.00f, 3.00f, -3.00f, 3.00f, 1.00f, 2000.00f);
+	float t;
+	create_view_screen(view_screen, graph_aspect_ratio(), 0.098f, -0.098f, -0.14f, 0.14f, 0.03f, 1000.00f);
+	// glm::mat4 projection = glm::perspective(glm::radians(60.0f), 640.0f / 448.0f, 1.0f, 2000.0f);
 
-		// camera_position[2] += 1.5F;
-		// camera_rotation[2] += 0.002f;
-		// if (camera_position[2] >= 800.0F)
-		// {
-		// 	camera_position[2] = 40.0F;
-		// 	camera_rotation[2] = 0.00f;
-		// }
-	}
-	// create_world_view(world_view, camera_position, camera_rotation);
-	glm::mat4 transformationMatrixC = glm::mat4(1);
-	transformationMatrixC = glm::translate(transformationMatrixC, glm::vec3(0, 0, 0));
-	transformationMatrixC = glm::rotate(transformationMatrixC, 45.0f * 3.14159265359f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	transformationMatrixC = glm::rotate(transformationMatrixC, 0.0f * 3.14159265359f / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	transformationMatrixC = glm::rotate(transformationMatrixC, 0.0f * 3.14159265359f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-	for (int i = 0; i < 16; i++)
-	{
-		world_view[i] = transformationMatrixC[i / 4][i % 4];
-		// world_view[i] = Graphics::usedCamera.lock()->GetTransform()->transformationMatrix[i / 4][i % 4];
-	}
+	// for (int i = 0; i < 16; i++)
+	// {
+	// 	view_screen[i] = projection[i / 4][i % 4];
+	// 	// world_view[i] = Graphics::usedCamera.lock()->GetTransform()->transformationMatrix[i / 4][i % 4];
+	// }
+
+	t++;
+	// if (t == 100)
+	// {
+	// 	t = 0;
+	// 	object_rotation[0] += 0.008f;
+	// 	while (object_rotation[0] > 3.14f)
+	// 	{
+	// 		object_rotation[0] -= 6.28f;
+	// 	}
+	// 	object_rotation[1] += 0.012f;
+	// 	while (object_rotation[1] > 3.14f)
+	// 	{
+	// 		object_rotation[1] -= 6.28f;
+	// 	}
+
+	// 	// camera_position[2] += 1.5F;
+	// 	// camera_rotation[2] += 0.002f;
+	// 	// if (camera_position[2] >= 800.0F)
+	// 	// {
+	// 	// 	camera_position[2] = 40.0F;
+	// 	// 	camera_rotation[2] = 0.00f;
+	// 	// }
+	// }
+	// VECTOR camera_position2 = {1.00f, 1.00f, -2.00f, 1.00f};																						 //- + +
+	// VECTOR camera_rotation2 = {20.0f * 3.14159265359 / 180.0f, (180.0f + 0) * 3.14159265359 / 180.0f, (180.0f - 0) * 3.14159265359 / 180.0f, 1.00f}; // ? + -
+	// create_world_view(world_view, camera_position2, camera_rotation2);
+	// glm::mat4 transformationMatrixC = glm::mat4(1);
+	// transformationMatrixC = glm::translate(transformationMatrixC, glm::vec3(0, 0, 0));
+	// // transformationMatrixC = glm::rotate(transformationMatrixC, (t * 0.005f) * 3.14159265359f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	// // transformationMatrixC = glm::rotate(transformationMatrixC, (0.0f) * 3.14159265359f / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	// // transformationMatrixC = glm::rotate(transformationMatrixC, (180.0f + 0) * 3.14159265359f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	// transformationMatrixC = glm::rotate(transformationMatrixC, 0 * 3.14159265359f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	// transformationMatrixC = glm::rotate(transformationMatrixC, (0.0f) * 3.14159265359f / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	// transformationMatrixC = glm::rotate(transformationMatrixC, 0 * 3.14159265359f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	// for (int i = 0; i < 16; i++)
+	// {
+	// 	// world_view[i] = transformationMatrixC[i / 4][i % 4];
+	// 	//  world_view[i] = Graphics::usedCamera.lock()->GetTransform()->transformationMatrix[i / 4][i % 4];
+	// }
 	///
 	//
 	//
