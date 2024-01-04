@@ -15,6 +15,8 @@
 #include <graph.h>
 #include <draw.h>
 
+#include <unistd.h>
+
 #include <memory>
 #include <malloc.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -38,7 +40,7 @@ extern u32 VU1Draw3D_CodeStart __attribute__((section(".vudata")));
 extern u32 VU1Draw3D_CodeEnd __attribute__((section(".vudata")));
 VECTOR *c_verts __attribute__((aligned(128))), *c_sts __attribute__((aligned(128)));
 packet2_t *vif_packets[2] __attribute__((aligned(64)));
-packet2_t *curr_vif_packet;
+packet2_t *curr_vif_packet = nullptr;
 
 VECTOR object_position;
 VECTOR object_rotation = {0.00f, 0.00f, 0.00f, 1.00f};
@@ -88,6 +90,7 @@ void RendererVU1::vu1_upload_micro_program()
 	packet2_vif_add_micro_program(packet2, 0, &VU1Draw3D_CodeStart, &VU1Draw3D_CodeEnd);
 	packet2_utils_vu_add_end_tag(packet2);
 	dma_channel_send_packet2(packet2, DMA_CHANNEL_VIF1, 1);
+	FlushCache(0);
 	dma_channel_wait(DMA_CHANNEL_VIF1, 0);
 	packet2_free(packet2);
 }
@@ -101,6 +104,7 @@ void RendererVU1::send_texture(texbuffer_t *texbuf, int id)
 	// else
 	// packet2_update(packet2, draw_texture_transfer(packet2->next, zbyszek2, 128, 128, GS_PSM_24, texbuf->address, texbuf->width));
 	packet2_update(packet2, draw_texture_flush(packet2->next));
+	FlushCache(0);
 	dma_channel_send_packet2(packet2, DMA_CHANNEL_GIF, 1);
 	dma_wait_fast();
 	packet2_free(packet2);
@@ -113,12 +117,14 @@ void RendererVU1::clear_screen(framebuffer_t *frame, zbuffer_t *z)
 
 	// Clear framebuffer but don't update zbuffer.
 	packet2_update(clear, draw_disable_tests(clear->next, 0, z));
-	packet2_update(clear, draw_clear(clear->next, 0, 2048.0f - 320.0f, 2048.0f - 256.0f, frame->width, frame->height, 0x40, 0x40, 0x80));
+	// packet2_update(clear, draw_clear(clear->next, 0, 2048.0f - 320.0f, 2048.0f - 256.0f, frame->width, frame->height, 0x40, 0x40, 0x80));
+	packet2_update(clear, draw_clear(clear->next, 0, 2048.0f - 320.0f, 2048.0f - 256.0f, frame->width, frame->height, rand() % 64, rand() % 64, 0x80));
 	packet2_update(clear, draw_enable_tests(clear->next, 0, z));
 	packet2_update(clear, draw_finish(clear->next));
 
 	// Now send our current dma chain.
 	dma_wait_fast();
+	FlushCache(0);
 	dma_channel_send_packet2(clear, DMA_CHANNEL_GIF, 1);
 
 	packet2_free(clear);
@@ -203,6 +209,7 @@ int RendererVU1::Init()
 	packet2_update(packet2, draw_finish(packet2->next));
 
 	// Now send the packet, no need to wait since it's the first.
+	FlushCache(0);
 	dma_channel_send_packet2(packet2, DMA_CHANNEL_GIF, 1);
 	dma_wait_fast();
 
@@ -310,6 +317,9 @@ void RendererVU1::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 
 	VECTOR camera_position2 = {-camPos.x, camPos.y, camPos.z, 1.00f};																								  //- + +
 	VECTOR camera_rotation2 = {camRot.x * 3.14159265359 / 180.0f, (180.0f + camRot.y) * 3.14159265359 / 180.0f, (180.0f - camRot.z) * 3.14159265359 / 180.0f, 1.00f}; // + + -
+
+	// VECTOR camera_position2 = {0, 2, -4, 1.00f};																								 //- + +
+	// VECTOR camera_rotation2 = {0 * 3.14159265359 / 180.0f, (180.0f + 0) * 3.14159265359 / 180.0f, (180.0f - 0) * 3.14159265359 / 180.0f, 1.00f}; // + + -
 	create_world_view(world_view, camera_position2, camera_rotation2);
 }
 
@@ -407,10 +417,15 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 	size_t textureCount = textures.size();
 
 	MeshData::SubMesh *subMesh = nullptr;
-	// if (drawCount2 >= 1 || subMeshCount != 6)
+	drawCount2++;
+	// if (drawCount2 != 2)
+	// 	return;
+	// if (subMeshCount != 6)
 	// 	return;
 
-	drawCount2++;
+	if (drawCount2 >= 30)
+		return;
+
 	for (size_t i = 0; i < subMeshCount; i++)
 	// for (size_t i = 0; i < 5; i++)
 	// for (size_t i = 5; i < 6; i++)
@@ -429,11 +444,18 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 		if (subMesh->vertice_count == 0)
 			continue;
 
+		// if (subMesh->vertice_count != 756)
+		// 	break;
+		// if (drawCount2 != 2)
+		// 	break;
+		// Debug::Print("A");
+
 		// if (i == 1)
 		// 	break;
 
 		meshData->UpdatePS2Packets(i, textures[i]);
-		// Debug::Print("" + std::to_string(subMesh->vertice_count));
+		// printf("v%d i%d\n", subMesh->vertice_count, subMesh->index_count);
+		//  Debug::Print("" + std::to_string(subMesh->vertice_count));
 
 		// we don't wan't to unpack at 8 + beggining of buffer, but at
 		// the beggining of the buffer
@@ -446,15 +468,18 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 
 		// packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, c_sts, faces_count, 1);
 		// vif_added_bytes += faces_count;
-		int faceToDraw = subMesh->vertice_count;
-		int drawn = 0;
-		while (faceToDraw != 0)
+		int verticesToDraw = subMesh->vertice_count;
+		int verticesDrawn = 0;
+		while (verticesToDraw > 0)
+		// for (int ttt = 0; ttt < 2; ttt++)
 		{
-			int count = 255;
-			if (faceToDraw < 255)
-				count = faceToDraw;
-
+			int count = 36;
+			if (verticesToDraw < 36)
+				count = verticesToDraw;
+			// Debug::Print("Draw " + std::to_string(count));
+			// curr_vif_packet = packet2_create(2048, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
 			curr_vif_packet = vif_packets[context];
+
 			packet2_reset(curr_vif_packet, 0);
 			// Add matrix at the beggining of VU mem (skip TOP)
 			packet2_utils_vu_add_unpack_data(curr_vif_packet, 0, &local_screen, 8, 0);
@@ -462,23 +487,36 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 
 			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->meshPacket->base, packet2_get_qw_count(subMesh->meshPacket), 1);
 			vif_added_bytes += packet2_get_qw_count(subMesh->meshPacket);
-			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_verts + (drawn), count, 1);
-			vif_added_bytes += 255;
+			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_verts + verticesDrawn, count, 1);
+			vif_added_bytes += 36;
 
-			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_st + (drawn), count, 1);
-			vif_added_bytes += 255;
+			packet2_utils_vu_add_unpack_data(curr_vif_packet, vif_added_bytes, subMesh->c_st + verticesDrawn, count, 1);
+			// vif_added_bytes += 36;
 
 			packet2_utils_vu_add_start_program(curr_vif_packet, 0);
 			packet2_utils_vu_add_end_tag(curr_vif_packet);
 
 			dma_channel_wait(DMA_CHANNEL_VIF1, 0);
+			FlushCache(0);
 			dma_channel_send_packet2(curr_vif_packet, DMA_CHANNEL_VIF1, 1);
-			//  Switch packet, so we can proceed during DMA transfer
-			context = !context;
-			faceToDraw -= count;
-			drawn += count;
+			// draw_wait_finish();
+			//  packet2_free(curr_vif_packet);
+
+			// sleep(1);
+			//   Switch packet, so we can proceed during DMA transfer
+			if (context == 0)
+				context = 1;
+			else
+				context = 0;
+			// context = !context;
+			verticesToDraw -= count;
+			verticesDrawn += count;
 		}
 	}
+	// struct timespec req;
+	// req.tv_sec = 0;
+	// req.tv_nsec = 1000000; // sleep 5ms at most
+	// nanosleep(&req, nullptr);
 }
 
 void RendererVU1::DrawLine(const Vector3 &a, const Vector3 &b, const Color &color, RenderingSettings &settings)

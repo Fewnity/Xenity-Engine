@@ -11,13 +11,13 @@
 #include FT_FREETYPE_H
 
 #if defined(__PSP__)
-	#include <pspkernel.h>
-	#include <psp/gu2gl.h>
+#include <pspkernel.h>
+#include <psp/gu2gl.h>
 #elif defined(__vita__)
-	#include <vitaGL.h>
+#include <vitaGL.h>
 #endif
 
-//#include <stb_image_resize.h>
+// #include <stb_image_resize.h>
 
 Font::~Font()
 {
@@ -55,7 +55,7 @@ void Font::LoadFileReference()
 	}
 }
 
-bool Font::CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath)
+bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &filePath)
 {
 	Debug::Print("Loading font: " + filePath);
 
@@ -77,19 +77,20 @@ bool Font::CreateFont(const std::shared_ptr<Font>& font, const std::string& file
 
 	int charPixelHeight = 48;
 	// int charPixelHeight = 21;
-	// Load glyph
+	//  Load glyph
 	FT_Set_Pixel_Sizes(face, 0, charPixelHeight);
 	// Engine::renderer->PixelStoreUnpack();
 	// glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	int atlasSize = 512;
 	// int atlasSize = 256;
+	int atlasSize = 512;
+	//  int atlasSize = 256;
 	int channelCount = 2;
-#ifdef __PSP__
+#if defined(__PSP__) || defined(_EE)
 	channelCount = 4;
 #endif
 
-	unsigned char* atlas = (unsigned char*)calloc((size_t)atlasSize * atlasSize * channelCount, sizeof(unsigned char));
+	unsigned char *atlas = (unsigned char *)calloc((size_t)atlasSize * atlasSize * channelCount, sizeof(unsigned char));
 	if (!atlas)
 	{
 		return false;
@@ -110,7 +111,7 @@ bool Font::CreateFont(const std::shared_ptr<Font>& font, const std::string& file
 			}
 
 			// now store character for later use
-			Character* character = new Character();
+			Character *character = new Character();
 			character->Size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
 			character->Bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
 			character->rightSize = Vector2(face->glyph->bitmap.width * 0.01f, face->glyph->bitmap.rows * 0.01f);
@@ -140,13 +141,18 @@ bool Font::CreateFont(const std::shared_ptr<Font>& font, const std::string& file
 					for (int fH = 0; fH < (int)face->glyph->bitmap.width; fH++)
 					{
 						int atlasOffset = (fH * channelCount) + (fW * atlasSize * channelCount) + textureXOffset + yOffset * atlasSize * channelCount;
-#ifdef __PSP__
+#if defined(__PSP__)
 						atlas[atlasOffset] = 255;
 						atlas[atlasOffset + 1] = 255;
 						atlas[atlasOffset + 2] = 255;
 						atlas[atlasOffset + 3] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+#elif defined(_EE)
+						atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						atlas[atlasOffset + 1] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						atlas[atlasOffset + 2] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						atlas[atlasOffset + 3] = 255;
 #else
-						//atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						// atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 						atlas[atlasOffset] = 255;
 						atlas[atlasOffset + 1] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 #endif

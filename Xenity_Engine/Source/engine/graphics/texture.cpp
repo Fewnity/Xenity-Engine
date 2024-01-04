@@ -28,6 +28,7 @@
 // #include "renderer/renderer_gskit.h"
 #include <graph.h>
 #include <dma.h>
+#include <kernel.h>
 #include <gs_psm.h>
 #include "renderer/renderer_vu1.h"
 #endif
@@ -147,7 +148,7 @@ void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigne
 	}
 }
 
-// See https://github.com/pspdev/pspsdk/blob/master/src/debug/scr_printf.c
+// See https://github.com/pspdev/pspsdk/blob/master/src/debug///scr_printf.c
 void copy_texture_data(void *dest, const void *src, int width, int height, const int destType, const int srcType)
 {
 	/*for (unsigned int y = 0; y < height; y++)
@@ -345,6 +346,7 @@ void Texture::SetData(const unsigned char *texData)
 	packet2_t *packet2 = packet2_create(50, P2_TYPE_NORMAL, P2_MODE_CHAIN, 0);
 	packet2_update(packet2, draw_texture_transfer(packet2->next, (void *)texData, width, height, GS_PSM_32, texbuff.address, texbuff.width));
 	packet2_update(packet2, draw_texture_flush(packet2->next));
+	FlushCache(0);
 	dma_channel_send_packet2(packet2, DMA_CHANNEL_GIF, 1);
 	dma_wait_fast();
 	packet2_free(packet2);

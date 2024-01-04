@@ -108,21 +108,26 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 
 		while ((t = fileXioDread(fd, &dirent)) != 0)
 		{
-			Debug::Print(std::to_string(dirent.stat.mode) + " " + std::string(dirent.name));
-			if (dirent.stat.mode == 8198)
+			// Debug::Print(std::to_string(dirent.stat.mode) + " " + std::string(dirent.name));
+			if (std::string(dirent.name) == "." || std::string(dirent.name) == "..")
+				continue;
+
+			if (dirent.stat.mode == 8198 || dirent.stat.mode == 8199)
 			{
-				std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
-				// path = path.substr(6);
-				Debug::Print("IsFile " + path);
+				std::string path = directory->GetPath().substr(5) + std::string(dirent.name);
+				// std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
+				//   path = path.substr(6);
+				//   Debug::Print("IsFile " + path);
 				std::shared_ptr<File> newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
 			}
 			else if (dirent.stat.mode == 4103)
 			{
-				std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
+				std::string path = directory->GetPath().substr(5) + std::string(dirent.name);
+				// std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
 				newDirs.push_back(path);
-				Debug::Print("IsFolder " + path);
-				// path = path.substr(6);
+				// Debug::Print("IsFolder " + path);
+				//  path = path.substr(6);
 
 				// std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(path + "\\");
 				// if (recursive)
@@ -153,7 +158,8 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 #if defined(__vita__)
 				path = path.substr(4);
 #elif defined(_EE)
-				path = path.substr(6);
+				path = path.substr(5);
+				// path = path.substr(6);
 #endif
 				newDirectory = std::make_shared<Directory>(path + "\\");
 				if (recursive)
@@ -173,7 +179,8 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 #if defined(__vita__)
 				path = path.substr(4);
 #elif defined(_EE)
-				path = path.substr(6);
+				path = path.substr(5);
+				// path = path.substr(6);
 #endif
 				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
@@ -259,6 +266,7 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 		file = std::make_shared<FilePSP>(path);
 #elif defined(_EE)
 		file = std::make_shared<FilePS2>(path);
+		// file = std::make_shared<FileDefault>(path);
 #else
 		file = std::make_shared<FileDefault>(path);
 #endif
@@ -285,6 +293,9 @@ void FileSystem::CreateDirectory(const std::string &path)
 
 void FileSystem::Delete(const std::string &path)
 {
+#if defined(_EE)
+	return;
+#endif
 	std::string newPath = path;
 #if defined(__vita__)
 	newPath = PSVITA_BASE_DIR + path;
@@ -313,37 +324,37 @@ int FileSystem::InitFileSystem()
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
 #endif
 #if defined(_EE)
-	SifInitRpc(0);
-	while (!SifIopReset(NULL, 0))
-	{
-	}
-	while (!SifIopSync())
-	{
-	}
-	SifInitRpc(0);
+// 	SifInitRpc(0);
+// 	while (!SifIopReset(NULL, 0))
+// 	{
+// 	}
+// 	while (!SifIopSync())
+// 	{
+// 	}
+// 	SifInitRpc(0);
 
-	// SifInitIopHeap();
-	// // SifLoadFileInit();
+// 	// SifInitIopHeap();
+// 	// // SifLoadFileInit();
 
-	// sbv_patch_enable_lmb();
-	// sbv_patch_disable_prefix_check();
-	// sbv_patch_fileio();
+// 	// sbv_patch_enable_lmb();
+// 	// sbv_patch_disable_prefix_check();
+// 	// sbv_patch_fileio();
 
-	int ret = SifLoadModule("host0:iomanX.irx", 0, NULL);
-	int ret2 = SifLoadModule("host0:fileXio.irx", 0, NULL);
+// 	int ret = SifLoadModule("host0:iomanX.irx", 0, NULL);
+// 	int ret2 = SifLoadModule("host0:fileXio.irx", 0, NULL);
 
-	fileXioInitSkipOverride();
-	// fileXioSetBlockMode(0);
+// 	fileXioInitSkipOverride();
+// 	// fileXioSetBlockMode(0);
 
-	if (ret < 0)
-		Debug::PrintError("Failed to load iomanX.irx");
-	if (ret2 < 0)
-		Debug::PrintError("Failed to load fileXio.irx");
+// 	if (ret < 0)
+// 		Debug::PrintError("Failed to load iomanX.irx");
+// 	if (ret2 < 0)
+// 		Debug::PrintError("Failed to load fileXio.irx");
 
-	if (ret >= 0 && ret2 >= 0)
-	{
-		Debug::Print("-------- PS2 File System initiated --------");
-	}
+// 	if (ret >= 0 && ret2 >= 0)
+// 	{
+// 		Debug::Print("-------- PS2 File System initiated --------");
+// 	}
 #endif
 	Debug::Print("-------- File System initiated --------");
 	return 0;

@@ -134,6 +134,7 @@
     <ClCompile Include="Source\engine\debug\crash_handler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\about_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\select_asset_menu.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_ps2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -276,6 +277,7 @@
     <ClInclude Include="Source\engine\debug\crash_handler.h" />
     <ClInclude Include="Source\editor\ui\menus\about_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\select_asset_menu.h" />
+    <ClInclude Include="Source\engine\file_system\file_ps2.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

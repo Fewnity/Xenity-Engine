@@ -63,7 +63,7 @@ public:
 		VECTOR *c_verts = nullptr;
 		VECTOR *c_colours = nullptr;
 		VECTOR *c_st = nullptr;
-		packet2_t *meshPacket;
+		packet2_t *meshPacket = nullptr;
 #endif
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;

@@ -87,7 +87,7 @@ int Engine::Init()
 {
 	CrashHandler::Init();
 
-	// Init random
+	//  Init random
 	srand((unsigned int)time(NULL));
 
 #if defined(__PSP__)
@@ -106,7 +106,9 @@ int Engine::Init()
 	}
 
 	EngineSettings::LoadEngineSettings();
+#if defined(EDITOR)
 	EngineSettings::SaveEngineSettings();
+#endif
 
 	//------------------------------------------ Init Debug
 	int debugInitResult = Debug::Init();
@@ -164,7 +166,7 @@ int Engine::Init()
 	Time::Init();
 	PhysicsManager::Init();
 
-	// Init Editor
+	//  Init Editor
 #if defined(EDITOR)
 	PluginManager::Init();
 	Gizmo::Init();
@@ -245,7 +247,7 @@ void Engine::CheckEvents()
 			}
 			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 			{
-				focusCount ++;
+				focusCount++;
 			}
 			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
 			{
@@ -271,7 +273,11 @@ void Engine::Loop()
 
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)
+#if defined(_EE)
+	bool projectLoaded = ProjectManager::LoadProject("");
+#else
 	bool projectLoaded = ProjectManager::LoadProject(".\\");
+#endif
 	if (!projectLoaded)
 	{
 		return;

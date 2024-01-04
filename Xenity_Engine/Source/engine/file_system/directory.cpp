@@ -27,9 +27,19 @@ Directory::Directory(std::string _path) : UniqueId(true)
 #if defined(__vita__)
 	_path = PSVITA_BASE_DIR + _path;
 #elif defined(_EE)
-	_path = "host0:" + _path;
+	_path = "mass:" + _path;
+	//_path = "host0:" + _path;
+	int pathLen = _path.size();
+	for (int i = 0; i < pathLen; i++)
+	{
+		if (_path[i] == '\\')
+		{
+			_path[i] = '/';
+		}
+	}
 #endif
 	this->path = _path;
+
 }
 
 Directory::~Directory()

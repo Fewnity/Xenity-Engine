@@ -302,23 +302,28 @@ void MeshData::UnloadFileReference()
 
 void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 {
+#if defined(_EE)
 	SubMesh *subMesh = subMeshes[index];
-	if (subMesh->meshPacket)
-		packet2_free(subMesh->meshPacket);
-	subMesh->meshPacket = packet2_create(11, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
-	packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
-	packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
-	packet2_add_float(subMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
-	packet2_add_s32(subMesh->meshPacket, 255);						   // vertex count
-	packet2_utils_gif_add_set(subMesh->meshPacket, 1);
-	packet2_utils_gs_add_lod(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
-	packet2_utils_gs_add_texbuff_clut(subMesh->meshPacket, &texture->texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
-	packet2_utils_gs_add_prim_giftag(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 255, DRAW_STQ2_REGLIST, 3, 0);
-	// RGBA
-	packet2_add_u32(subMesh->meshPacket, 128);
-	packet2_add_u32(subMesh->meshPacket, 128);
-	packet2_add_u32(subMesh->meshPacket, 128);
-	packet2_add_u32(subMesh->meshPacket, 128);
+	// if (subMesh->meshPacket)
+	// packet2_free(subMesh->meshPacket);
+	if (!subMesh->meshPacket)
+	{
+		subMesh->meshPacket = packet2_create(11, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
+		packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
+		packet2_add_float(subMesh->meshPacket, 2048.0F);				   // scale
+		packet2_add_float(subMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
+		packet2_add_s32(subMesh->meshPacket, 36);						   // vertex count
+		packet2_utils_gif_add_set(subMesh->meshPacket, 1);
+		packet2_utils_gs_add_lod(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
+		packet2_utils_gs_add_texbuff_clut(subMesh->meshPacket, &texture->texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
+		packet2_utils_gs_add_prim_giftag(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 36, DRAW_STQ2_REGLIST, 3, 0);
+		// RGBA
+		packet2_add_u32(subMesh->meshPacket, 128);
+		packet2_add_u32(subMesh->meshPacket, 128);
+		packet2_add_u32(subMesh->meshPacket, 128);
+		packet2_add_u32(subMesh->meshPacket, 128);
+	}
+#endif
 }
 
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)

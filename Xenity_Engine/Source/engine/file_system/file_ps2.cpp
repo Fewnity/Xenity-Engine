@@ -22,6 +22,7 @@
 #include <sbv_patches.h>
 #include <iopcontrol.h>
 #include <iopheap.h>
+#include <debug.h>
 
 FilePS2::FilePS2(std::string _path) : File(_path)
 {
@@ -38,7 +39,7 @@ void FilePS2::Close()
 
 void FilePS2::Write(const std::string &data)
 {
-	fileId = fileXioOpen(path.c_str(), O_RDWR, 0777);
+	fileId = fileXioOpen(path.c_str(), FIO_O_WRONLY);
 	if (fileId >= 0)
 	{
 		fileXioLseek(fileId, 0, SEEK_END);
@@ -51,7 +52,7 @@ void FilePS2::Write(const std::string &data)
 std::string FilePS2::ReadAll()
 {
 	std::string allText = "";
-	fileId = fileXioOpen(path.c_str(), O_RDONLY, 0);
+	fileId = fileXioOpen(path.c_str(), FIO_O_RDONLY, 0777);
 	if (fileId >= 0)
 	{
 		int pos = fileXioLseek(fileId, 0, SEEK_END);
@@ -71,7 +72,7 @@ std::string FilePS2::ReadAll()
 unsigned char *FilePS2::ReadAllBinary(int &size)
 {
 	char *data = nullptr;
-	fileId = fileXioOpen(path.c_str(), O_RDONLY, 0);
+	fileId = fileXioOpen(path.c_str(), FIO_O_RDONLY, 0777);
 	if (fileId >= 0)
 	{
 		iox_stat_t file_stat;
@@ -91,7 +92,7 @@ bool FilePS2::CheckIfExist()
 {
 	bool exists = false;
 
-	int params = O_RDONLY;
+	int params = FIO_O_RDONLY;
 	fileId = fileXioOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{
@@ -106,9 +107,9 @@ bool FilePS2::CheckIfExist()
 bool FilePS2::Open(bool createFileIfNotFound)
 {
 	bool isOpen = false;
-	int params = O_RDWR;
+	int params = FIO_O_RDWR;
 	if (createFileIfNotFound)
-		params = params | O_CREAT;
+		params = params | FIO_O_CREAT;
 	fileId = fileXioOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{

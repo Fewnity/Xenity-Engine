@@ -10,7 +10,8 @@ File::File(std::string _path) : UniqueId(true)
 #if defined(__vita__)
 	_path = PSVITA_BASE_DIR + _path;
 #elif defined(_EE)
-	_path = "host0:" + _path;
+	_path = "mass:" + _path;
+	//_path = "host0:" + _path;
 #endif
 	this->path = _path;
 	size_t pointIndex = path.find_last_of('.');
@@ -36,6 +37,16 @@ File::File(std::string _path) : UniqueId(true)
 	if (nextPointPos == -1)
 		nextPointPos = INT32_MAX;
 	name = fileName.substr(0, nextPointPos);
+#if defined(_EE)
+	int pathLen = path.size();
+	for (int i = 0; i < pathLen; i++)
+	{
+		if (path[i] == '\\')
+		{
+			path[i] = '/';
+		}
+	}
+#endif
 }
 
 File::~File()
@@ -53,8 +64,9 @@ std::string File::GetFolderPath() const
 		lastSlashPos = 0;
 #if defined(__vita__)
 	std::string fileName = path.substr(4, lastSlashPos + 1);
-#elif defined(__EE)
-	std::string fileName = path.substr(6, lastSlashPos + 1);
+#elif defined(_EE)
+	std::string fileName = path.substr(5, lastSlashPos + 1);
+	// std::string fileName = path.substr(6, lastSlashPos + 1);
 #else
 	std::string fileName = path.substr(0, lastSlashPos + 1);
 #endif

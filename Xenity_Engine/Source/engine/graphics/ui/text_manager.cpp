@@ -28,7 +28,7 @@ void TextManager::Init()
 	textBenchmark = std::make_shared<ProfilerBenchmark>("Text", "Text");
 }
 
-std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font)
+std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color &color, const std::shared_ptr<Font> &font)
 {
 	if (!font || !font->fontAtlas)
 		return nullptr;
@@ -71,7 +71,8 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 
 	// Create empty mesh
 	int charCountToDraw = textLenght - (textInfo->lineCount - 1);
-	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
+	// std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
+	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData(6 * charCountToDraw, 6 * charCountToDraw, false, false, true);
 
 	mesh->unifiedColor = color;
 
@@ -79,7 +80,7 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 	for (int i = 0; i < textLenght; i++)
 	{
 		char c = text[i];
-		Character* ch = font->Characters[c];
+		Character *ch = font->Characters[c];
 
 		if (c == '\n')
 		{
@@ -104,14 +105,14 @@ std::shared_ptr <MeshData> TextManager::CreateMesh(std::string& text, TextInfo* 
 
 	mesh->OnLoadFileReferenceFinished();
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 	textBenchmark->Stop();
 	return mesh;
 }
 
-void TextManager::DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr<Material>& material)
+void TextManager::DrawText(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform> &transform, const Color &color, bool canvas, const std::shared_ptr<MeshData> &mesh, const std::shared_ptr<Font> &font, const std::shared_ptr<Material> &material)
 {
 	if (!font)
 		return;
@@ -157,9 +158,10 @@ void TextManager::DrawText(const std::string& text, TextInfo* textInfo, Horizont
 	}
 }
 
-void TextManager::AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex)
+void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character *ch, float x, float y, int letterIndex)
 {
-	int indice = letterIndex * 4;
+	// int indice = letterIndex * 4;
+	int indice = letterIndex * 6;
 	int indiceIndex = letterIndex * 6;
 
 	float w = ch->rightSize.x;
@@ -167,24 +169,32 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character
 
 	float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
 
+	// mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
+	// mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);
+	// mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice, 0);
+	// mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice, 0);
+
+	// Use 6 vertices instead of 4 because at the time the PS2 VU1 renderer do not supports indices
 	mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
 	mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);
 	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice, 0);
-	mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice, 0);
 
-	MeshData::SubMesh* subMesh = mesh->subMeshes[0];
+	mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, 3 + indice, 0);
+	mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice, 0);
+	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice, 0);
+
+	MeshData::SubMesh *subMesh = mesh->subMeshes[0];
 	subMesh->indices[0 + indiceIndex] = 0 + indice;
 	subMesh->indices[1 + indiceIndex] = 2 + indice;
 	subMesh->indices[2 + indiceIndex] = 1 + indice;
-	subMesh->indices[3 + indiceIndex] = 2 + indice;
-	subMesh->indices[4 + indiceIndex] = 0 + indice;
-	subMesh->indices[5 + indiceIndex] = 3 + indice;
-
+	subMesh->indices[3 + indiceIndex] = 3 + indice;
+	subMesh->indices[4 + indiceIndex] = 4 + indice;
+	subMesh->indices[5 + indiceIndex] = 5 + indice;
 }
 
-TextInfo* TextManager::GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale)
+TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, std::shared_ptr<Font> font, float scale)
 {
-	TextInfo* textInfos = new TextInfo();
+	TextInfo *textInfos = new TextInfo();
 	if (!font || !font->fontAtlas)
 		return textInfos;
 
@@ -196,7 +206,7 @@ TextInfo* TextManager::GetTextInfomations(const std::string& text, int textLen, 
 
 	for (int i = 0; i < textLen; i++)
 	{
-		Character* ch = font->Characters[text[i]];
+		Character *ch = font->Characters[text[i]];
 		if (text[i] == '\n')
 		{
 			textInfos->linesInfo[currentLine].lenght *= scale;
