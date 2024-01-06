@@ -18,13 +18,21 @@ std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const 
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
-	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
+	if (name.empty()) 
 	{
-		return nameToComponent[name](gameObject); // Call the function to add the component to the gameObject
+		Debug::PrintError("[ClassRegistry::AddComponentFromName] Empty component name");
+		return nullptr;
 	}
 	else
 	{
-		return nullptr;
+		if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
+		{
+			return nameToComponent[name](gameObject); // Call the function to add the component to the gameObject
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 }
 

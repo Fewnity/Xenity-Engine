@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <engine/game_elements/gameobject.h>
+#include <engine/debug/debug.h>
 
 class Component;
 
@@ -22,10 +23,17 @@ public:
 	template<typename T>
 	static void AddComponentClass(const std::string& name) 
 	{
-		nameToComponent[name] = [](std::shared_ptr<GameObject> go)
-		{ 
-			return go->AddComponent<T>(); 
-		};
+		if (name.empty()) 
+		{
+			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name");
+		}
+		else 
+		{
+			nameToComponent[name] = [](std::shared_ptr<GameObject> go)
+			{ 
+				return go->AddComponent<T>(); 
+			};
+		}
 	}
 
 	/**
