@@ -365,7 +365,7 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 		showAddComponentMenu = true;
 		justChanged = true;
 	}
-	if (showAddComponentMenu) 
+	if (showAddComponentMenu)
 	{
 		ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
 		ImGui::BeginChild("inspectorComponentList", ImVec2(startAvailableSize.x / 2.0f, 0), ImGuiChildFlags_FrameStyle);
@@ -472,7 +472,10 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 					std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
 					std::string payloadName = "Type" + typeId;
 					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
-					ImGui::Text("%s", comp->GetComponentName().c_str());
+					if (!comp->GetComponentName().empty())
+						ImGui::Text("%s", comp->GetComponentName().c_str());
+					else
+						ImGui::Text("Missing component name");
 					ImGui::EndDragDropSource();
 				}
 
@@ -493,7 +496,10 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 		float lastCursorY = ImGui::GetCursorPosY();
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY + 3);
-		ImGui::Text(comp->GetComponentName().c_str());
+		if (!comp->GetComponentName().empty())
+			ImGui::Text("%s", comp->GetComponentName().c_str());
+		else
+			ImGui::Text("Missing component name");
 		ImGui::SetCursorPosY(lastCursorY);
 	}
 }

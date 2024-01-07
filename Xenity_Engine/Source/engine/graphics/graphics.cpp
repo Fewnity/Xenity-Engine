@@ -203,7 +203,8 @@ void Graphics::Draw()
 				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
-			currentMode = Draw_UI;
+			if(!usedCamera.lock()->isEditor)
+				currentMode = Draw_UI;
 			if (UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().ResetView();
@@ -562,6 +563,12 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	if (Editor::GetSelectedGameObject())
 	{
 		Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		//if (usedCamera.lock()->isEditor) 
+		//{
+		//	float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (selectedGoPos.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
+		//	float yOff = (-1 * 5) + (selectedGoPos.y * (1 * 10));
+		//	selectedGoPos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+		//}
 		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
 		if (Editor::isToolLocalMode)
 			selectedGoRot = Vector3(0);

@@ -135,6 +135,8 @@
     <ClCompile Include="Source\editor\ui\menus\about_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\select_asset_menu.cpp" />
     <ClCompile Include="Source\engine\file_system\file_ps2.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\canvas.cpp" />
+    <ClCompile Include="Source\engine\game_elements\rect_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -278,6 +280,8 @@
     <ClInclude Include="Source\editor\ui\menus\about_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\select_asset_menu.h" />
     <ClInclude Include="Source\engine\file_system\file_ps2.h" />
+    <ClInclude Include="Source\engine\graphics\ui\canvas.h" />
+    <ClInclude Include="Source\engine\game_elements\rect_transform.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -12,5 +12,6 @@ public:
 private:
 	bool isLastFrameOpened = false;
 	void DrawNoCameraText();
+	Vector2Int lastSize = Vector2Int(0);
 };
 

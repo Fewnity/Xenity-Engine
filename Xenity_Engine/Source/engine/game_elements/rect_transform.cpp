@@ -1,0 +1,56 @@
+#include "rect_transform.h"
+#include <engine/asset_management/asset_manager.h>
+#include <engine/graphics/ui/canvas.h>
+#include <engine/debug/debug.h>
+#include <engine/game_elements/transform.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+
+#if defined(EDITOR)
+#include <editor/editor.h>
+#endif
+
+RectTransform::RectTransform()
+{
+	componentName = "RectTransform";
+
+	AssetManager::AddReflection(this);
+}
+
+RectTransform::~RectTransform()
+{
+	AssetManager::RemoveReflection(this);
+}
+
+ReflectiveData RectTransform::GetReflectiveData()
+{
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, position, "position", true);
+	Reflective::AddVariable(reflectedVariables, anchors, "anchors", true);
+	return reflectedVariables;
+}
+
+void RectTransform::OnReflectionUpdated()
+{
+}
+
+void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas) 
+{
+	float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
+#if defined(EDITOR)
+	if (Editor::lastFocusedGameMenu.lock() != nullptr) 
+	{
+		Vector2Int windowsSize = Editor::lastFocusedGameMenu.lock()->GetWindowSize();
+		aspect = (float)windowsSize.x / (float)windowsSize.y;
+	}
+#endif
+	float xOff = (-aspect * 5) + (position.x * (aspect * 10));
+	float yOff = (-1 * 5) + (position.y * (1 * 10));
+	Vector3 newPos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+	GetTransform()->SetLocalPosition(newPos);
+}
+
+void RectTransform::UpdatePosition(std::shared_ptr <RectTransform> rect)
+{
+
+}

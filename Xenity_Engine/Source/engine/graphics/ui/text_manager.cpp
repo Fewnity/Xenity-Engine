@@ -142,9 +142,10 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		}
 		else
 		{
-			float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
-			float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
-			pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+			pos = transform->GetPosition();
+			//float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
+			//float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
+			//pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
 		}
 
 		Vector3 scl = transform->GetScale();

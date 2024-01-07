@@ -7,6 +7,7 @@
 #include <engine/inputs/input_system.h>
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/transform.h>
+#include <engine/game_elements/rect_transform.h>
 #include <editor/editor.h>
 #include <engine/time/time.h>
 #include <iostream>
@@ -328,6 +329,11 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
 
 			Vector3 objectPosition = selectedGoTransform->GetPosition();
+			//float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (objectPosition.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
+			//float yOff = (-1 * 5) + (objectPosition.y * (1 * 10));
+			//objectPosition = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
+
+			//objectPosition
 			Vector3 camPosition = cameraTransform->GetPosition();
 			if (mode2D)
 				camPosition = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPosition;
@@ -381,8 +387,16 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				if (InputSystem::GetKeyDown(MOUSE_LEFT))
 				{
 					// Get start object value
-					if (toolMode == Tool_Move)
-						startObjectValue = selectedGoTransform->GetPosition();
+					if (toolMode == Tool_Move) 
+					{
+						std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
+						if (rect)
+						{
+							startObjectValue = Vector3(rect->position.x, rect->position.y, 0);
+						}
+						else
+							startObjectValue = selectedGoTransform->GetPosition();
+					}
 					else if (toolMode == Tool_Rotate)
 						startObjectValue = selectedGoTransform->GetLocalRotation();
 					else if (toolMode == Tool_Scale)
@@ -414,6 +428,8 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				{
 					// Calculate the value offset
 					Vector3 objectOffset = (closestPoint - startMovePosition);
+					/*objectOffset.x /= (Graphics::usedCamera.lock()->GetAspectRatio() * 10);
+					objectOffset.y /= -10;*/
 
 					// Snap values if needed
 					if (InputSystem::GetKey(LEFT_CONTROL))
@@ -422,7 +438,16 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 						objectOffset.y = (int)(objectOffset.y / snapAmount) * snapAmount;
 						objectOffset.z = (int)(objectOffset.z / snapAmount) * snapAmount;
 					}
-					selectedGoTransform->SetPosition(startObjectValue + objectOffset);
+					std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
+					if (rect)
+					{
+						rect->position.x = startObjectValue.x + objectOffset.x / (Graphics::usedCamera.lock()->GetAspectRatio() * 10.0f);
+						rect->position.y = startObjectValue.y - objectOffset.y / 10.0f;
+					}
+					else
+					{
+						selectedGoTransform->SetPosition(startObjectValue + objectOffset);
+					}
 				}
 				else if (toolMode == Tool_Rotate && allowRotation)
 				{
@@ -630,16 +655,16 @@ void SceneMenu::DrawToolWindow()
 		{
 			toolMode = Tool_MoveCamera;
 		}
-		if (moveClicked) 
+		if (moveClicked)
 		{
 			toolMode = Tool_Move;
 		}
-		if (rotateClicked) 
+		if (rotateClicked)
 		{
 			toolMode = Tool_Rotate;
 			Editor::isToolLocalMode = true;
 		}
-		if (scaleClicked) 
+		if (scaleClicked)
 		{
 			toolMode = Tool_Scale;
 		}

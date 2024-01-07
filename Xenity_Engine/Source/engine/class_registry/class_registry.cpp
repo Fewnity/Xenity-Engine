@@ -1,6 +1,7 @@
 #include "class_registry.h"
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/ui/canvas.h>
 #include <engine/graphics/ui/text_renderer_canvas.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
@@ -8,6 +9,7 @@
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
 #include <engine/graphics/2d_graphics/line_renderer.h>
+#include <engine/game_elements/rect_transform.h>
 #include <engine/audio/audio_source.h>
 #include <engine/test_component.h>
 #include <engine/physics/rigidbody.h>
@@ -57,6 +59,8 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<Light>("Light");
 	AddComponentClass<Camera>("Camera");
 	AddComponentClass<TextRendererCanvas>("TextRendererCanvas");
+	AddComponentClass<Canvas>("Canvas");
+	AddComponentClass<RectTransform>("RectTransform");
 	AddComponentClass<TextRenderer>("TextRenderer");
 	AddComponentClass<MeshRenderer>("MeshRenderer");
 	AddComponentClass<Tilemap>("Tilemap");

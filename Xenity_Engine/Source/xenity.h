@@ -9,9 +9,10 @@
 #include <engine/engine.h>
 #include <engine/engine_settings.h>
 
-// GameObjects
+// GameObject / Transforms
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <engine/game_elements/rect_transform.h>
 
 // Vectors
 #include <engine/vectors/vector2.h>
@@ -66,6 +67,7 @@
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/ui/text_renderer_canvas.h>
 #include <engine/graphics/ui/TextAlignments.h>
+#include <engine/graphics/ui/canvas.h>
 
 // Files
 #include <engine/file_system/file_system.h>

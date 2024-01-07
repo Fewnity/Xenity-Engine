@@ -63,10 +63,11 @@ void GameMenu::Draw()
 
 		if (camera)
 		{
-			if (isHovered || isFocused)
+			if (isHovered || isFocused || lastSize != startAvailableSize || Editor::lastFocusedGameMenu.lock() == nullptr)
 			{
 				Editor::lastFocusedGameMenu = shared_from_this();
 				camera->ChangeFrameBufferSize(startAvailableSize);
+				lastSize = startAvailableSize;
 			}
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 		}

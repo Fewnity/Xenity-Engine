@@ -26,6 +26,8 @@ ReflectiveData TextRendererCanvas::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, text, "text", true);
 	Reflective::AddVariable(reflectedVariables, font, "font", true);
 	Reflective::AddVariable(reflectedVariables, material, "material", true);
+	Reflective::AddVariable(reflectedVariables, (int&)horizontalAlignment, "horizontalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, (int&)verticalAlignment, "verticalAlignment", true);
 	return reflectedVariables;
 }
 
