@@ -9,9 +9,9 @@ public:
 	void Init() override;
 	void Draw() override;
 	bool needUpdateCamera = false;
+	Vector2Int lastSize = Vector2Int(1280,720);
 private:
 	bool isLastFrameOpened = false;
 	void DrawNoCameraText();
-	Vector2Int lastSize = Vector2Int(0);
 };
 

@@ -3,6 +3,7 @@
 #if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
+#include <editor/ui/menus/game_menu.h>
 #endif
 
 #include <engine/game_elements/gameobject.h>
@@ -67,7 +68,7 @@ void Canvas::OnDrawGizmos()
 //#if defined(EDITOR)
 	if (Editor::lastFocusedGameMenu.lock() != nullptr)
 	{
-		Vector2Int windowsSize = Editor::lastFocusedGameMenu.lock()->GetWindowSize();
+		Vector2Int windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
 		aspect = (float)windowsSize.x / (float)windowsSize.y;
 	}
 //#endif

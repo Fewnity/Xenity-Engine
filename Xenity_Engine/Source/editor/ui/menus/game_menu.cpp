@@ -12,24 +12,27 @@ void GameMenu::Init()
 
 void GameMenu::Draw()
 {
-	size_t cameraCount = Graphics::cameras.size();
-
-	// Get game's camera
 	std::shared_ptr<Camera> camera;
 	Vector2Int frameBufferSize;
-	for (size_t i = 0; i < cameraCount; i++)
+	if (startAvailableSize.x != 0 && startAvailableSize.y != 0)
 	{
-		if (!Graphics::cameras[i].lock()->isEditor)
+		size_t cameraCount = Graphics::cameras.size();
+
+		// Get game's camera
+		for (size_t i = 0; i < cameraCount; i++)
 		{
-			camera = Graphics::cameras[i].lock();
-			if (needUpdateCamera)
+			if (!Graphics::cameras[i].lock()->isEditor)
 			{
-				camera->ChangeFrameBufferSize(startAvailableSize);
-				needUpdateCamera = false;
+				camera = Graphics::cameras[i].lock();
+				if (needUpdateCamera)
+				{
+					camera->ChangeFrameBufferSize(startAvailableSize);
+					needUpdateCamera = false;
+				}
+				frameBufferSize.x = camera->GetWidth();
+				frameBufferSize.y = camera->GetHeight();
+				break;
 			}
-			frameBufferSize.x = camera->GetWidth();
-			frameBufferSize.y = camera->GetHeight();
-			break;
 		}
 	}
 
@@ -63,7 +66,7 @@ void GameMenu::Draw()
 
 		if (camera)
 		{
-			if (isHovered || isFocused || lastSize != startAvailableSize || Editor::lastFocusedGameMenu.lock() == nullptr)
+			if ((isHovered || isFocused || lastSize != startAvailableSize || Editor::lastFocusedGameMenu.lock() == nullptr) && (startAvailableSize.x != 0 && startAvailableSize.y != 0))
 			{
 				Editor::lastFocusedGameMenu = shared_from_this();
 				camera->ChangeFrameBufferSize(startAvailableSize);

@@ -536,7 +536,7 @@ void SceneMenu::Switch2DMode(bool is2D)
 
 void SceneMenu::Draw()
 {
-	if (InputSystem::GetKeyDown(R))
+	/*if (InputSystem::GetKeyDown(R))
 	{
 		cube1 = ShapeSpawner::SpawnCube();
 		cube2 = ShapeSpawner::SpawnCube();
@@ -545,7 +545,7 @@ void SceneMenu::Draw()
 		cube1.lock()->GetTransform()->SetLocalScale(Vector3(0.05));
 		cube2.lock()->GetTransform()->SetLocalScale(Vector3(0.15));
 		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
-	}
+	}*/
 
 	std::shared_ptr<Camera> camera = weakCamera.lock();
 	Vector2Int frameBufferSize = Vector2Int(0, 0);
@@ -575,7 +575,7 @@ void SceneMenu::Draw()
 			ImGui::SetWindowFocus();
 			isFocused = true;
 		}
-		if (camera)
+		if (camera && (startAvailableSize.x != 0 && startAvailableSize.y != 0))
 		{
 			MoveCamera();
 

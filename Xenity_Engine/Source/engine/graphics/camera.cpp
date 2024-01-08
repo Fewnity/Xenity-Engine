@@ -207,7 +207,7 @@ void Camera::UpdateProjection()
 		isProjectionDirty = false;
 		if (projectionType == ProjectionTypes::Perspective) // 3D projection
 		{
-			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+       			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
 		}
 		else // 2D projection
 		{

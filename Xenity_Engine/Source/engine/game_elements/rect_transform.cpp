@@ -8,6 +8,7 @@
 
 #if defined(EDITOR)
 #include <editor/editor.h>
+#include <editor/ui/menus/game_menu.h>
 #endif
 
 RectTransform::RectTransform()
@@ -40,7 +41,7 @@ void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas)
 #if defined(EDITOR)
 	if (Editor::lastFocusedGameMenu.lock() != nullptr) 
 	{
-		Vector2Int windowsSize = Editor::lastFocusedGameMenu.lock()->GetWindowSize();
+		Vector2Int windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
 		aspect = (float)windowsSize.x / (float)windowsSize.y;
 	}
 #endif
