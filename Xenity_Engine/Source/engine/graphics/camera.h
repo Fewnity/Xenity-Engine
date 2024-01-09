@@ -121,6 +121,7 @@ public:
 	void BindFrameBuffer();
 
 	void OnDrawGizmosSelected() override;
+	void OnDrawGizmos() override;
 
 	/**
 	* Get view width in pixel

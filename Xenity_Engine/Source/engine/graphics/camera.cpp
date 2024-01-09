@@ -374,11 +374,15 @@ void Camera::BindFrameBuffer()
 #endif
 }
 
-void Camera::OnDrawGizmosSelected()
+void Camera::OnDrawGizmos()
 {
 #if defined(EDITOR)
 	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
-
+#endif
+}
+void Camera::OnDrawGizmosSelected()
+{
+#if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
