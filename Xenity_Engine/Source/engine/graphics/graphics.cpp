@@ -205,7 +205,7 @@ void Graphics::Draw()
 			}
 			if(!usedCamera.lock()->isEditor)
 				currentMode = Draw_UI;
-			if (UseOpenGLFixedFunctions)
+			if (UseOpenGLFixedFunctions && !usedCamera.lock()->isEditor)
 			{
 				Engine::GetRenderer().ResetView();
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
@@ -429,7 +429,7 @@ void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::ve
 	else
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-		if (!forUI)
+		if (!forUI || usedCamera.lock()->isEditor)
 			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
