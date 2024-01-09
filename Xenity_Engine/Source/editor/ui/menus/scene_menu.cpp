@@ -690,6 +690,22 @@ void SceneMenu::DrawToolWindow()
 				Editor::isToolLocalMode = true;
 			}
 		}
+		ImGui::Text("Grid Axis");
+		ImGui::SameLine();
+		if (ImGui::Button("X"))
+		{
+			gridAxis = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Y"))
+		{
+			gridAxis = 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Z"))
+		{
+			gridAxis = 2;
+		}
 		ImGui::PopStyleColor(3);
 	}
 }

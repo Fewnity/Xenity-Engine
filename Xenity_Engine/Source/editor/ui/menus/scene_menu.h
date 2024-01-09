@@ -65,5 +65,6 @@ private:
 	float finalAngle = 0;
 	bool allowRotation = false;
 	void Switch2DMode(bool is2D);
+	int gridAxis = 0;
 };
 
