@@ -262,6 +262,9 @@ void Graphics::Draw()
 						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 						{
 							component->OnDrawGizmos();
+
+							if (Editor::GetSelectedGameObject() == component->GetGameObject())
+								component->OnDrawGizmosSelected();
 						}
 					}
 				}

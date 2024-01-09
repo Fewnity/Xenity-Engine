@@ -99,13 +99,9 @@ BoxCollider::~BoxCollider()
 	AssetManager::RemoveReflection(this);
 }
 
-void BoxCollider::OnDrawGizmos()
+void BoxCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
-	if (Editor::GetSelectedGameObject() != GetGameObject())
-	{
-		return;
-	}
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
 	Gizmo::SetColor(lineColor);
 

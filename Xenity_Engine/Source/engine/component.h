@@ -33,6 +33,7 @@ public:
 	//virtual void OnParentChanged() {}
 
 	virtual void OnDrawGizmos() {};
+	virtual void OnDrawGizmosSelected() {};
 
 	virtual void RemoveReferences() {};
 

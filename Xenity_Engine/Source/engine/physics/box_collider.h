@@ -28,7 +28,7 @@ public:
 	void OnReflectionUpdated() override;
 	static bool CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b);
 	static CollisionSide CheckCollision(const std::shared_ptr <BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity);
-	void OnDrawGizmos() override;
+	void OnDrawGizmosSelected() override;
 	bool isTrigger = false;
 private:
 };
