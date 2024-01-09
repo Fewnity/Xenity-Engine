@@ -35,6 +35,7 @@
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/ui/text_renderer.h>
+#include <engine/graphics/ui/canvas.h>
 #include <engine/audio/audio_source.h>
 #include <engine/debug/debug.h>
 #include <engine/physics/rigidbody.h>
@@ -300,6 +301,10 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::BeginMenu("UI"))
 		{
+			if (ImGui::MenuItem("Canvas", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<Canvas>();
+			}
 			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<TextRendererCanvas>();
