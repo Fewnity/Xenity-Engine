@@ -286,7 +286,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -317,8 +317,12 @@
   <ItemGroup>
     <ClCompile Include="Source\engine\game_elements\rect_transform.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\canvas.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\about_menu.cpp" />
-    <ClCompile Include="Source\editor\ui\menus\select_asset_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\about_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\select_asset_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\debug\crash_handler.cpp" />
     <ClCompile Include="Source\editor\file_handler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -549,8 +553,12 @@
   <ItemGroup>
     <ClInclude Include="Source\engine\game_elements\rect_transform.h" />
     <ClInclude Include="Source\engine\graphics\ui\canvas.h" />
-    <ClInclude Include="Source\editor\ui\menus\about_menu.h" />
-    <ClInclude Include="Source\editor\ui\menus\select_asset_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\about_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\select_asset_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\debug\crash_handler.h" />
     <ClInclude Include="Source\editor\file_handler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
