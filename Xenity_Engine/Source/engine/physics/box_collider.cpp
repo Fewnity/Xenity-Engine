@@ -103,6 +103,9 @@ void BoxCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
+	if(isTrigger)
+		lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 0.5f);
+
 	Gizmo::SetColor(lineColor);
 
 	Vector3 pos = GetTransform()->GetPosition();
