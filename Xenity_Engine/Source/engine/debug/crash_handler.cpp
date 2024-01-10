@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <DbgHelp.h>
 #endif
+#include <functional>
 
 #include "debug.h"
 
@@ -107,4 +108,14 @@ void CrashHandler::Init()
 	signal(SIGSEGV, Handler); // Pour SIGSEGV (segmentation fault)
 	signal(SIGFPE, Handler);  // Pour SIGFPE (erreurs de calcul en virgule flottante)
 #endif
+}
+
+void CrashHandler::CallInTry(void (*function)())
+{
+	__try {
+		function();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+		std::cerr << "Exception caught!" << std::endl;
+	}
 }

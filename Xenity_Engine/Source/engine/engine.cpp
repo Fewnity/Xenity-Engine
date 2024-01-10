@@ -321,7 +321,8 @@ void Engine::Loop()
 
 			// Update all components
 			componentsUpdateBenchmark->Start();
-			GameplayManager::UpdateComponents();
+			//GameplayManager::UpdateComponents();
+			CrashHandler::CallInTry(GameplayManager::UpdateComponents);
 
 			if (GameplayManager::GetGameState() == GameState::Playing)
 				PhysicsManager::Update();
