@@ -108,6 +108,20 @@ public:
 	}
 
 	template <typename T>
+	static std::vector<std::shared_ptr<T>> GetMenus()
+	{
+		std::vector<std::shared_ptr<T>> menusListT;
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			{
+				menusListT.push_back(menu);
+			}
+		}
+		return menusListT;
+	}
+
+	template <typename T>
 	static void RemoveMenu()
 	{
 		for (int i = 0; i < menuCount; i++)

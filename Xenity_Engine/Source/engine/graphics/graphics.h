@@ -95,7 +95,7 @@ private:
 	static bool drawOrderListDirty;
 	static void DrawSkybox(const Vector3& cameraPosition);
 #if defined(EDITOR)
-	static void DrawEditorGrid(const Vector3& cameraPosition);
+	static void DrawEditorGrid(const Vector3& cameraPosition, int gridAxis);
 	static void DrawEditorTool(const Vector3& cameraPosition);
 #endif
 };

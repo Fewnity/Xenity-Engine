@@ -25,6 +25,8 @@ public:
 	void Draw() override;
 	bool startRotatingCamera = false;
 	ToolMode toolMode = Tool_Move;
+	std::weak_ptr<Camera> weakCamera;
+	int gridAxis = 0;
 
 private:
 	void DrawToolWindow();
@@ -46,7 +48,6 @@ private:
 	void CheckAllowRotation(float dist, bool& allowRotation, bool isIntersectionGood, Side sideToCheck, const Vector3& intersection);
 
 	std::weak_ptr<GameObject> cameraGO;
-	std::weak_ptr<Camera> weakCamera;
 	bool isLastFrameOpened = false;
 	Vector3 oldWorldMousePosition;
 	Vector3 worldMousePosition;
@@ -65,6 +66,6 @@ private:
 	float finalAngle = 0;
 	bool allowRotation = false;
 	void Switch2DMode(bool is2D);
-	int gridAxis = 0;
+	int lastGridAxis = 0;
 };
 

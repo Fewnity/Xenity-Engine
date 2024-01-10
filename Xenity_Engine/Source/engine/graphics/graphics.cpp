@@ -253,7 +253,21 @@ void Graphics::Draw()
 					Engine::GetRenderer().SetProjection2D(usedCamera.lock()->GetProjectionSize(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane());
 				}
 
-				DrawEditorGrid(camPos);
+				// Get the grid axis
+				std::vector<std::shared_ptr<SceneMenu>> sceneMenus;
+				sceneMenus = Editor::GetMenus<SceneMenu>();
+				int sceneMenuCount = sceneMenus.size();
+				int gridAxis = 0;
+				for (int i = 0; i < sceneMenuCount; i++)
+				{
+					if (sceneMenus[i]->weakCamera.lock() == usedCamera.lock()) 
+					{
+						gridAxis = sceneMenus[i]->gridAxis;
+						break;
+					}
+				}
+
+				DrawEditorGrid(camPos, gridAxis);
 
 				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
@@ -468,7 +482,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 	}
 }
 #if defined(EDITOR)
-void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
+void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
 	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
 
@@ -489,7 +503,6 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition)
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);*/
 
-	int gridAxis = 0;
 	float distance;
 	if (gridAxis == 0)
 		distance = abs(cameraPosition.y);

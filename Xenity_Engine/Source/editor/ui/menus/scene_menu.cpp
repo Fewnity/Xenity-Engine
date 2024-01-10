@@ -527,10 +527,12 @@ void SceneMenu::Switch2DMode(bool is2D)
 	if (mode2D)
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Orthographic);
+		gridAxis = 2;
 	}
 	else
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
+		gridAxis = lastGridAxis;
 	}
 }
 
@@ -695,16 +697,19 @@ void SceneMenu::DrawToolWindow()
 		if (ImGui::Button("X"))
 		{
 			gridAxis = 0;
+			lastGridAxis = 0;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Y"))
 		{
 			gridAxis = 1;
+			lastGridAxis = 1;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Z"))
 		{
 			gridAxis = 2;
+			lastGridAxis = 2;
 		}
 		ImGui::PopStyleColor(3);
 	}
