@@ -1,13 +1,23 @@
 #pragma once
 #include <engine/api.h>
-//#include <functional>
 
 class API CrashHandler
 {
 public:
+	/**
+	* Enable crash events
+	*/
 	static void Init();
-	static void CallInTry(void (*function)());
+
+	/**
+	* Call a function in a try/catch
+	*/
+	static bool CallInTry(void (*function)());
+
 private:
+	/**
+	* Called function on error (Not in Editor mode)
+	*/
 	static void Handler(int signum);
 };
 

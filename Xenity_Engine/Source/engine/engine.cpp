@@ -321,9 +321,16 @@ void Engine::Loop()
 
 			// Update all components
 			componentsUpdateBenchmark->Start();
-			//GameplayManager::UpdateComponents();
-			CrashHandler::CallInTry(GameplayManager::UpdateComponents);
-
+#if defined(EDITOR)
+			// Catch game's code error to prevent the editor to crash
+			bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
+			if (tryResult) 
+			{
+				Debug::PrintError("Error in game's code");
+			}
+#else
+			GameplayManager::UpdateComponents();
+#endif
 			if (GameplayManager::GetGameState() == GameState::Playing)
 				PhysicsManager::Update();
 
