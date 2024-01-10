@@ -2,12 +2,34 @@
 
 #include <imgui/imgui.h>
 #include <editor/ui/editor_ui.h>
+#include <engine/file_system/file_system.h>
 #include <engine/file_system/directory.h>
 #include <engine/asset_management/project_manager.h>
+#include <Windows.h>
+#include <ShlObj.h>
 
 CreateProjectMenu::CreateProjectMenu()
 {
 	group = Menu_Create_Project;
+
+	// Get Xenity's default project location
+	TCHAR docPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPath(NULL,
+		CSIDL_MYDOCUMENTS,
+		NULL,
+		0,
+		docPath))) 
+	{
+		std::wstring wStringDocPath = &docPath[0]; //convert to wstring
+		std::string stringDocPath(wStringDocPath.begin(), wStringDocPath.end()); //and convert to string.
+		projectParentDir = stringDocPath + "\\Xenity_Projects\\";
+		// Create the directory if not found
+		bool folderCreateResult = FileSystem::fileSystem->CreateFolder(projectParentDir);
+		if (!folderCreateResult) 
+		{
+			projectParentDir.clear();
+		}
+	}
 }
 
 void CreateProjectMenu::Init()
