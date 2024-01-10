@@ -532,7 +532,7 @@ void SceneMenu::Switch2DMode(bool is2D)
 	else
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
-		gridAxis = lastGridAxis;
+		gridAxis = 0;
 	}
 }
 
@@ -692,25 +692,7 @@ void SceneMenu::DrawToolWindow()
 				Editor::isToolLocalMode = true;
 			}
 		}
-		ImGui::Text("Grid Axis");
-		ImGui::SameLine();
-		if (ImGui::Button("X"))
-		{
-			gridAxis = 0;
-			lastGridAxis = 0;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Y"))
-		{
-			gridAxis = 1;
-			lastGridAxis = 1;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Z"))
-		{
-			gridAxis = 2;
-			lastGridAxis = 2;
-		}
+
 		ImGui::PopStyleColor(3);
 	}
 }
