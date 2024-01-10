@@ -37,8 +37,9 @@ public:
 	/**
 	* Create a directory
 	* @param path Directory path
+	* @return True if success
 	*/
-	void CreateDirectory(const std::string& path);
+	bool CreateFolder(const std::string& path);
 
 	/**
 	* Delete a file

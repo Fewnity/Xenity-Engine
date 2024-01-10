@@ -504,7 +504,7 @@ void Editor::StartFolderCopy(std::string path, std::string newPath)
 		if (!file.is_regular_file())
 		{
 			std::string newFolderPath = newPath + file.path().filename().string() + '\\';
-			FileSystem::fileSystem->CreateDirectory(newFolderPath);
+			FileSystem::fileSystem->CreateFolder(newFolderPath);
 			StartFolderCopy(file.path().string() + '\\', newFolderPath);
 		}
 		else
@@ -623,7 +623,7 @@ void Editor::OnDragAndDropFileFinished()
 
 			if (isDirectory)
 			{
-				FileSystem::fileSystem->CreateDirectory(newPath + '\\');
+				FileSystem::fileSystem->CreateFolder(newPath + '\\');
 				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
 			}
 			else

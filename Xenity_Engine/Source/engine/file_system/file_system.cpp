@@ -282,13 +282,24 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 
 #pragma endregion
 
-void FileSystem::CreateDirectory(const std::string &path)
+bool FileSystem::CreateFolder(const std::string &path)
 {
 	std::string finalPath = path;
 #if defined(__vita__)
 	finalPath = PSVITA_BASE_DIR + finalPath;
 #endif
-	std::filesystem::create_directory(finalPath);
+
+	bool result = true;
+	try
+	{
+		std::filesystem::create_directory(finalPath);
+	}
+	catch (const std::exception&)
+	{
+		result = false;
+	}
+
+	return result;
 }
 
 void FileSystem::Delete(const std::string &path)

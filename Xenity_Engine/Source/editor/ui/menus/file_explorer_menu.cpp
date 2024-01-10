@@ -170,7 +170,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		if (dropFolderInFolder) 
 		{
 			std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
-			FileSystem::fileSystem->CreateDirectory(destinationPath);
+			FileSystem::fileSystem->CreateFolder(destinationPath);
 			Editor::StartFolderCopy(directoryRef->path, destinationPath);
 			FileSystem::fileSystem->Delete(directoryRef->path);
 			ProjectManager::RefreshProjectDirectory();
@@ -205,7 +205,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 		{
 			if (ImGui::MenuItem("Folder"))
 			{
-				FileSystem::fileSystem->CreateDirectory(fileExplorerItem.directory->path + "\\new Folder");
+				FileSystem::fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
 				ProjectManager::RefreshProjectDirectory();
 				ImGui::CloseCurrentPopup();
 			}

@@ -250,12 +250,12 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Materials\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Shaders\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Textures\\");
-	FileSystem::fileSystem->CreateDirectory(folderPath + name + "\\assets\\Scenes\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Materials\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Shaders\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Textures\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Scenes\\");
 
 	// Create default scene
 	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
