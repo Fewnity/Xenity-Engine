@@ -145,8 +145,8 @@ void Graphics::Draw()
 
 	Engine::GetRenderer().NewFrame();
 
-	size_t cameraCount = cameras.size();
-	int matCount = AssetManager::GetMaterialCount();
+	const size_t cameraCount = cameras.size();
+	const int matCount = AssetManager::GetMaterialCount();
 
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
@@ -187,10 +187,10 @@ void Graphics::Draw()
 
 			drawAllBenchmark->Start();
 
-			size_t noTransCount = noTransparentDrawable.size();
-			size_t transCount = transparentDrawable.size();
-			size_t spriteCount = spriteDrawable.size();
-			size_t uiCount = uiDrawable.size();
+			const size_t noTransCount = noTransparentDrawable.size();
+			const size_t transCount = transparentDrawable.size();
+			const size_t spriteCount = spriteDrawable.size();
+			const size_t uiCount = uiDrawable.size();
 
 			for (size_t drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
 			{
@@ -256,7 +256,7 @@ void Graphics::Draw()
 				// Get the grid axis
 				std::vector<std::shared_ptr<SceneMenu>> sceneMenus;
 				sceneMenus = Editor::GetMenus<SceneMenu>();
-				int sceneMenuCount = sceneMenus.size();
+				const int sceneMenuCount = sceneMenus.size();
 				int gridAxis = 0;
 				for (int i = 0; i < sceneMenuCount; i++)
 				{
@@ -271,7 +271,7 @@ void Graphics::Draw()
 
 				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
-					if (auto component = GameplayManager::orderedComponents[i].lock())
+					if (std::shared_ptr<Component> component = GameplayManager::orderedComponents[i].lock())
 					{
 						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 						{
@@ -409,10 +409,10 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 
 void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 {
-	size_t cameraCount = cameras.size();
+	const size_t cameraCount = cameras.size();
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
-		auto cam = cameras[cameraIndex].lock();
+		const std::shared_ptr<Camera> cam = cameras[cameraIndex].lock();
 		if (cam && cam == cameraToRemove.lock())
 		{
 			cameras.erase(cameras.begin() + cameraIndex);
@@ -463,7 +463,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 	if (skybox)
 	{
 		Engine::GetRenderer().SetFog(false);
-		float scaleF = 10.01f;
+		const float scaleF = 10.01f;
 		Vector3 scale = Vector3(scaleF);
 
 		RenderingSettings renderSettings = RenderingSettings();
@@ -484,7 +484,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 #if defined(EDITOR)
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
-	Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
 
 	/*glEnable(GL_DEPTH_TEST);
 
@@ -521,8 +521,8 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 	if (distance < 0.7f)
 		distance = 0.7f;
 
-	float lineLenght = 20 * distance;
-	float lineCount = lineLenght / coef;
+	const float lineLenght = 20 * distance;
+	const float lineCount = lineLenght / coef;
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.useBlend = true;
 	renderSettings.useDepth = true;
@@ -548,12 +548,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 		//For YZ
 		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
 		{
-			float zPos = z * coef;
+			const float zPos = z * coef;
 			Engine::GetRenderer().DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
-			float yPos = -y * coef;
+			const float yPos = -y * coef;
 			Engine::GetRenderer().DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
@@ -562,12 +562,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 		// For XY
 		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
 		{
-			int xPos = x * coef;
+			const int xPos = x * coef;
 			Engine::GetRenderer().DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
 		}
 		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
 		{
-			int yPos = -y * coef;
+			const int yPos = -y * coef;
 			Engine::GetRenderer().DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
 		}
 	}
@@ -578,7 +578,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	// Draw tool
 	if (Editor::GetSelectedGameObject())
 	{
-		Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		const Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		//if (usedCamera.lock()->isEditor) 
 		//{
 		//	float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (selectedGoPos.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
@@ -596,7 +596,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 			dist = usedCamera.lock()->GetProjectionSize() * 1.5f;
 
 		dist /= 40;
-		Vector3 scale = Vector3(dist);
+		const Vector3 scale = Vector3(dist);
 
 		RenderingSettings renderSettings = RenderingSettings();
 		renderSettings.invertFaces = false;

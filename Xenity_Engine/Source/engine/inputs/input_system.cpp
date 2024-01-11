@@ -87,7 +87,7 @@ int InputSystem::GetTouchScreenCount()
 
 int InputSystem::GetTouchCount(const int screenIndex)
 {
-	int screenCount = (int)screens.size();
+	const int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
 		return 0;
@@ -97,7 +97,7 @@ int InputSystem::GetTouchCount(const int screenIndex)
 
 Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 {
-	int screenCount = (int)screens.size();
+	const int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
 		return Touch();
@@ -121,8 +121,8 @@ void InputSystem::Read(const SDL_Event& event)
 		mousePosition.x = (float)mouseX;
 		mousePosition.y = (float)mouseY;
 #else
-		auto gameMenu = Editor::GetMenu<GameMenu>();
-		auto sceneMenu = Editor::GetMenu<SceneMenu>();
+		std::shared_ptr<GameMenu> gameMenu = Editor::GetMenu<GameMenu>();
+		std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 
 		if (gameMenu && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
 		{
@@ -242,9 +242,9 @@ void InputSystem::Read(const SDL_Event& event)
 
 void InputSystem::Read()
 {
-	int screenCount = (int)screens.size();
-	std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
-	int touchesRawCount = (int)touchesRaw.size();
+	const int screenCount = (int)screens.size();
+	const std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
+	const int touchesRawCount = (int)touchesRaw.size();
 
 	for (int touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
 	{
@@ -253,7 +253,7 @@ void InputSystem::Read()
 		bool newInput = true;
 		int foundInputIndex = -1;
 
-		int fingerId = touchRaw.fingerId;
+		const int fingerId = touchRaw.fingerId;
 
 		for (int touchI = 0; touchI < screen->touches.size(); touchI++)
 		{
@@ -306,14 +306,14 @@ void InputSystem::Read()
 		}
 	}
 
-	InputPad pad = CrossGetInputPad();
+	const InputPad pad = CrossGetInputPad();
 	leftJoystick.x = pad.lx;
 	leftJoystick.y = pad.ly;
 
 	rightJoystick.x = pad.rx;
 	rightJoystick.y = pad.ry;
 
-	auto mapE = keyMap.end();
+	const auto mapE = keyMap.end();
 
 	for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
 	{

@@ -78,7 +78,7 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 	spriteMeshData->unifiedColor = color;
 
-	Vector3 scale = transform->GetScale();
+	const Vector3 scale = transform->GetScale();
 	RenderingSettings renderSettings = RenderingSettings();
 
 	if (scale.x * scale.y < 0)
@@ -91,12 +91,11 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
 
-	float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-	float w = texture->GetWidth() * scaleCoef;
-	float h = texture->GetHeight() * scaleCoef;
+	const float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+	const float w = texture->GetWidth() * scaleCoef;
+	const float h = texture->GetHeight() * scaleCoef;
 
-	glm::mat4 matCopy = transform->transformationMatrix;
-	matCopy = glm::scale(matCopy, glm::vec3(w, h, 1));
+	const glm::mat4 matCopy = glm::scale(transform->transformationMatrix, glm::vec3(w, h, 1));
 
 	std::vector<std::shared_ptr<Texture>> textures;
 	textures.push_back(texture);
@@ -110,7 +109,6 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 		return;
 
 	spriteBenchmark->Start();
-	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 
 	spriteMeshData->unifiedColor = color;
 
@@ -127,12 +125,11 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
 
-	float scaleCoef = (1.0f / texture->GetPixelPerUnit());
-	float w = texture->GetWidth() * scaleCoef;
-	float h = texture->GetHeight() * scaleCoef;
+	const float scaleCoef = (1.0f / texture->GetPixelPerUnit());
+	const float w = texture->GetWidth() * scaleCoef;
+	const float h = texture->GetHeight() * scaleCoef;
 
-	//glm::mat4 matCopy = transform->transformationMatrix;
-	matrix = glm::scale(matrix, glm::vec3(w, h, 1));
+	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
 
 	std::vector<std::shared_ptr<Texture>> textures;
 	textures.push_back(texture);
@@ -162,8 +159,8 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 #endif
 
-		Vector3 zero = Vector3(0);
-		Vector3 one = Vector3(1);
+		const Vector3 zero = Vector3(0);
+		const Vector3 one = Vector3(1);
 
 		Engine::GetRenderer().SetTransform(zero, zero, one, true);
 

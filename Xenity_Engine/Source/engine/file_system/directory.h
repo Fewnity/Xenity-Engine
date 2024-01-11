@@ -24,7 +24,7 @@ public:
 	/**
 	* Check if the directory exists
 	*/
-	bool CheckIfExist();
+	bool CheckIfExist() const;
 	std::vector<std::shared_ptr<Directory>> subdirectories;
 	std::vector<std::shared_ptr<File>> files;
 

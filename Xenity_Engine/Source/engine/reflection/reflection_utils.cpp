@@ -43,15 +43,15 @@ void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<
 template <typename T>
 void ReflectionUtils::FillVectorFileReference(json jsonVectorData, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* vectorRefPtr)
 {
-	size_t jsonArraySize = jsonVectorData.size();
+	const size_t jsonArraySize = jsonVectorData.size();
 
-	size_t vectorSize = vectorRefPtr->get().size();
+	const size_t vectorSize = vectorRefPtr->get().size();
 	for (size_t i = 0; i < jsonArraySize; i++)
 	{
 		std::shared_ptr<FileReference> file = nullptr;
 		if (!jsonVectorData.at(i).is_null())
 		{
-			uint64_t fileId = jsonVectorData.at(i);
+			const uint64_t fileId = jsonVectorData.at(i);
 			file = ProjectManager::GetFileReferenceById(fileId);
 			if (file)
 				file->LoadFileReference();
@@ -107,7 +107,7 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, ReflectiveData data
 			if (dataList.contains(kv.key()))
 			{
 				VariableReference& variableRef = dataList.at(kv.key()).variable.value();
-				auto& kvValue = kv.value();
+				const auto& kvValue = kv.value();
 				if (kvValue.is_object())
 				{
 					if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
@@ -208,9 +208,9 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, ReflectiveData data
 					}
 					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
 					{
-						size_t arraySize = kvValue.size();
+						const size_t arraySize = kvValue.size();
 
-						size_t vectorSize = valuePtr->get().size();
+						const size_t vectorSize = valuePtr->get().size();
 						for (size_t i = 0; i < arraySize; i++)
 						{
 							std::shared_ptr<Component> comp = nullptr;

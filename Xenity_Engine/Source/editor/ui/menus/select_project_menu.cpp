@@ -18,25 +18,25 @@ void SelectProjectMenu::Init()
 
 void SelectProjectMenu::Draw()
 {
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->WorkPos);
 	ImGui::SetNextWindowSize(viewport->WorkSize);
 	ImGui::SetNextWindowViewport(viewport->ID);
 
-	bool visible = ImGui::Begin("Select Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+	const bool visible = ImGui::Begin("Select Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	if (visible)
 	{
 		OnStartDrawing();
 
 		//Increase font size
 		ImFont* font = ImGui::GetFont();
-		float oldScale = font->Scale;
+		const float oldScale = font->Scale;
 		font->Scale *= 2;
 		ImGui::PushFont(font);
 
 		//Draw text
-		std::string noCamText = "Projects";
-		ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+		const std::string noCamText = "Projects";
+		const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
 
 		ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
 		ImGui::Text(noCamText.c_str());
@@ -76,14 +76,14 @@ void SelectProjectMenu::Draw()
 
 void SelectProjectMenu::OnLoadButtonClick()
 {
-	std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
+	const std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
 	if (!projectPath.empty())
 	{
 		if (ProjectManager::LoadProject(projectPath))
 		{
 			// Check if the project is already in the opened projects list
 			bool projectAlreadyInList = false;
-			size_t projectsCount = projectsList.size();
+			const size_t projectsCount = projectsList.size();
 			for (size_t i = 0; i < projectsCount; i++)
 			{
 				if (projectsList[i].path == projectPath)
@@ -117,7 +117,7 @@ void SelectProjectMenu::OnLoadButtonClick()
 void SelectProjectMenu::DrawProjectsList()
 {
 	ImGui::Separator();
-	size_t projectCount = projectsList.size();
+	const size_t projectCount = projectsList.size();
 	for (size_t i = 0; i < projectCount; i++)
 	{
 		ImGui::BeginGroup();

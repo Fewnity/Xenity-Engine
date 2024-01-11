@@ -35,13 +35,13 @@ public:
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 		ImGui::BeginGroup();
-		int cursorPos = (int)ImGui::GetCursorPosX();
-		int availWidth = (int)ImGui::GetContentRegionAvail().x;
+		const int cursorPos = (int)ImGui::GetCursorPosX();
+		const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 		ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)icon->GetTextureId(), ImVec2(iconSize, iconSize));
 
-		float windowWidth = ImGui::GetContentRegionAvail().x;
-		float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
+		const float windowWidth = ImGui::GetContentRegionAvail().x;
+		const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
 		if (textWidth <= availWidth)
 		{
 			ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
@@ -57,11 +57,11 @@ public:
 
 	void SearchFiles(FileType type) 
 	{
-		std::vector<std::shared_ptr<File>> projectFiles = ProjectManager::projectDirectoryBase->GetAllFiles(true);
-		int fileCount = (int)projectFiles.size();
+		const std::vector<std::shared_ptr<File>> projectFiles = ProjectManager::projectDirectoryBase->GetAllFiles(true);
+		const int fileCount = (int)projectFiles.size();
 		for (int i = 0; i < fileCount; i++)
 		{
-			std::shared_ptr<File> file = projectFiles[i];
+			const std::shared_ptr<File> file = projectFiles[i];
 			FileType fileType = ProjectManager::GetFileType(file->GetFileExtension());
 
 			if (fileType != File_Other && fileType == type)
@@ -77,23 +77,22 @@ public:
 	{
 		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 		bool isOpen = true;
-		bool visible = ImGui::Begin("Select file##Selectfile", &isOpen, ImGuiWindowFlags_NoCollapse);
+		const bool visible = ImGui::Begin("Select file##Selectfile", &isOpen, ImGuiWindowFlags_NoCollapse);
 		if (visible)
 		{
 			OnStartDrawing();
 
-			float width = ImGui::GetContentRegionAvail().x;
+			const float width = ImGui::GetContentRegionAvail().x;
 			int colCount = width / (100 * 1); // Replace 1 by EditorUI::GetUIScale()
 			if (colCount <= 0)
 				colCount = 1;
 			int currentCol = 0;
-			float offset = ImGui::GetCursorPosX();
+			const float offset = ImGui::GetCursorPosX();
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
-				int fileCount = foundFiles.size();
+				const int fileCount = foundFiles.size();
 				for (int i = 0; i < fileCount; i++)
 				{
-					std::string txt = foundFiles[i]->file->GetPath();
 					FileExplorerItem item;
 					item.file = foundFiles[i];
 					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item, true), 64, i);

@@ -83,7 +83,7 @@ void NetworkManager::Init()
 
 void NetworkManager::Update()
 {
-	int socketCount = (int)sockets.size();
+	const int socketCount = (int)sockets.size();
 	for (int i = 0; i < socketCount; i++)
 	{
 		sockets[i]->Update();
@@ -131,9 +131,9 @@ void Socket::SendData(const std::string& text)
 	if (socketId < 0)
 		return;
 
-	int InfoLentgh = (int)text.size();
+	const int infoLentgh = (int)text.size();
 #if !defined(_EE)
-	send(socketId, text.c_str(), InfoLentgh, 0); // Send data to server
+	send(socketId, text.c_str(), infoLentgh, 0); // Send data to server
 #endif
 }
 

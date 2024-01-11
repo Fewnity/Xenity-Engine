@@ -81,22 +81,22 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 		{
 			AudioClipStream* stream = sound->audioClipStream;
 #if defined(_WIN32) || defined(_WIN64)
-			float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
-			float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
+			const float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
+			const float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
 #else
-			float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->pan)) * 2;
-			float rightPan = std::max(0.0f, std::min(0.5f, sound->pan)) * 2;
+			const float leftPan = std::max(0.0f, std::min(0.5f, 1 - sound->pan)) * 2;
+			const float rightPan = std::max(0.0f, std::min(0.5f, sound->pan)) * 2;
 #endif
-			float leftVolume = sound->volume * leftPan;
-			float rightVolume = sound->volume * rightPan;
-			int channelCount = stream->GetChannelCount();
+			const float leftVolume = sound->volume * leftPan;
+			const float rightVolume = sound->volume * rightPan;
+			const int channelCount = stream->GetChannelCount();
 			short* rightBuf = nullptr;
 			short* leftBuf = nullptr;
-			int frequency = stream->GetFrequency();
-			uint64_t sampleCount = stream->GetSampleCount();
+			const int frequency = stream->GetFrequency();
+			const uint64_t sampleCount = stream->GetSampleCount();
 			int leftBufferIndex = 0;
 			int rightBufferIndex = 0;
-			short* soundBuffer = sound->buffer;
+			const short* soundBuffer = sound->buffer;
 
 			bool deleteAudio = false;
 			for (int i = 0; i < length; i++)
@@ -279,7 +279,7 @@ int fillAudioBufferThread()
 		// Get audio sources values
 		if (Engine::canUpdateAudio)
 		{
-			int count = (int)AudioManager::channel->playedSounds.size();
+			const int count = (int)AudioManager::channel->playedSounds.size();
 			for (int i = 0; i < count; i++)
 			{
 				const auto& playedSound = AudioManager::channel->playedSounds[i];
@@ -414,7 +414,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	// Find if the audio source is already playing
 
-	int count = (int)channel->playedSounds.size();
+	const int count = (int)channel->playedSounds.size();
 	for (int i = 0; i < count; i++)
 	{
 		const auto& playedSound = channel->playedSounds[i];
@@ -456,7 +456,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	// Find audio source index
 	if (audioSource)
 	{
-		int count = (int)channel->playedSounds.size();
+		const int count = (int)channel->playedSounds.size();
 		for (int i = 0; i < count; i++)
 		{
 			if (channel->playedSounds[i]->audioSource == audioSource)
@@ -488,7 +488,7 @@ void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSo
 	// Find audio source index
 	if (audioSource)
 	{
-		int count = (int)channel->playedSounds.size();
+		const int count = (int)channel->playedSounds.size();
 		for (int i = 0; i < count; i++)
 		{
 			if (channel->playedSounds[i]->audioSource == audioSource)

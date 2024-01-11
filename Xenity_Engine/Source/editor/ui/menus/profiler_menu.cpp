@@ -16,14 +16,14 @@ void ProfilerMenu::Init()
 void ProfilerMenu::Draw()
 {
 	UpdateFpsCounter();
-	std::string windowName = "Debug###Debug" + std::to_string(id);
+	const std::string windowName = "Debug###Debug" + std::to_string(id);
 	bool isOpen = true;
-	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
 
-		std::string fpsText = "FPS: " + std::to_string(lastFps) + "###FPS_COUNTER";
+		const std::string fpsText = "FPS: " + std::to_string(lastFps) + "###FPS_COUNTER";
 		ImGui::PlotLines(fpsText.c_str(), fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
 
 		ImGui::Text("FPS average: %0.2f, average frame time %0.2fms", fpsAVG, (1 / fpsAVG) * 1000);
@@ -52,7 +52,7 @@ void ProfilerMenu::Draw()
 
 void ProfilerMenu::UpdateFpsCounter()
 {
-	ImGuiIO& io = ImGui::GetIO();
+	const ImGuiIO& io = ImGui::GetIO();
 
 	//Update timer to slowly update framerate
 	nextFpsUpdate += Time::GetUnscaledDeltaTime();
@@ -123,7 +123,7 @@ void ProfilerMenu::DrawFilesList()
 	{
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
-			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
+			const std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
 			if (fileRef && !fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);
@@ -140,7 +140,7 @@ void ProfilerMenu::DrawFilesList()
 		ImGui::Text("-----------------------------------------------------");
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
-			std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
+			const std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
 			if (fileRef && fileRef->isLoaded)
 			{
 				ImGui::SetCursorPosX(20);

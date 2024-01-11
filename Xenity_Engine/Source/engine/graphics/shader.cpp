@@ -89,12 +89,12 @@ void Shader::LoadFileReference()
 		if (Graphics::UseOpenGLFixedFunctions)
 			return;
 
-		bool isOpen = file->Open(false);
+		const bool isOpen = file->Open(false);
 		if (isOpen)
 		{
-			std::string shaderText = file->ReadAll();
+			const std::string shaderText = file->ReadAll();
 			file->Close();
-			size_t textSize = shaderText.size();
+			const size_t textSize = shaderText.size();
 
 			if (textSize != 0)
 			{
@@ -307,8 +307,8 @@ void Shader::SetShaderCameraPosition()
 			xAngle -= 360;
 		}
 
-		float angle = glm::radians(-transform->GetRotation().z);
-		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		const float angle = glm::radians(-transform->GetRotation().z);
+		const glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
 
 		glm::mat4 camera;
 		if (xAngle > 90 || xAngle < -90)
@@ -433,10 +433,10 @@ void Shader::Link()
 /// <param name="index">Shader's point light index</param>
 void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	std::string baseString = "pointLights[" + std::to_string(index) + "].";
+	const std::string baseString = "pointLights[" + std::to_string(index) + "].";
 
-	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
-	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
 	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->GetIntensity());
@@ -453,10 +453,10 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 /// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	std::string baseString = "directionalLights[" + std::to_string(index) + "].";
+	const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
-	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
-	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
 	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
 	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
@@ -469,9 +469,9 @@ void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const 
 /// <param name="index">Shader's spot light index</param>
 void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	std::string baseString = "spotLights[" + std::to_string(index) + "].";
-	Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
-	Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+	const std::string baseString = "spotLights[" + std::to_string(index) + "].";
+	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
@@ -491,7 +491,7 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 /// </summary>
 void Shader::UpdateLights()
 {
-	int lightCount = AssetManager::GetLightCount();
+	const int lightCount = AssetManager::GetLightCount();
 	int directionalUsed = 0;
 	int pointUsed = 0;
 	int spotUsed = 0;

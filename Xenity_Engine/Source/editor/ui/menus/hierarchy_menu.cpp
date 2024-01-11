@@ -10,9 +10,9 @@ void HierarchyMenu::Init()
 
 void HierarchyMenu::Draw()
 {
-	std::string windowName = "Hierarchy###Hierarchy" + std::to_string(id);
+	const std::string windowName = "Hierarchy###Hierarchy" + std::to_string(id);
 	bool isOpen = true;
-	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -25,7 +25,7 @@ void HierarchyMenu::Draw()
 		{
 			if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
 			{
-				int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], rightClickedElement);
+				const int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], rightClickedElement);
 				if (r != 0)
 				{
 					disableDrag = true;
@@ -38,8 +38,8 @@ void HierarchyMenu::Draw()
 			Editor::SetSelectedGameObject(nullptr);
 			Editor::SetSelectedFileReference(nullptr);
 		}
-		bool isChildFocused = ImGui::IsWindowFocused();
-		bool isChildHovered = ImGui::IsWindowHovered();
+		const bool isChildFocused = ImGui::IsWindowFocused();
+		const bool isChildHovered = ImGui::IsWindowHovered();
 		ImGui::EndChild();
 
 		if (!disableDrag)
@@ -76,7 +76,7 @@ void HierarchyMenu::Draw()
 			}
 			if (ImGui::BeginMenu("GameObject"))
 			{
-				bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
+				const bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
 				if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
 				{
 					Editor::CreateEmptyParent();

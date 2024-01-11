@@ -59,7 +59,7 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 	if (!directoryToCheck)
 		return nullptr;
 
-	size_t dirCount = directoryToCheck->subdirectories.size();
+	const size_t dirCount = directoryToCheck->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
 		std::shared_ptr<ProjectDirectory> subDir = directoryToCheck->subdirectories[i];
@@ -106,12 +106,12 @@ void ProjectManager::FindAllProjectFiles()
 	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
 
 	// Get all files supported by the engine
-	int fileCount = (int)projectFiles.size();
+	const int fileCount = (int)projectFiles.size();
 	int allFoundFileCount = 0;
 	for (int i = 0; i < fileCount; i++)
 	{
 		std::shared_ptr<File> file = projectFiles[i];
-		FileType fileType = GetFileType(file->GetFileExtension());
+		const FileType fileType = GetFileType(file->GetFileExtension());
 
 		if (fileType != File_Other)
 		{
@@ -138,12 +138,12 @@ void ProjectManager::FindAllProjectFiles()
 		{
 			if (metaFile->Open(false))
 			{
-				std::string jsonString = metaFile->ReadAll();
+				const std::string jsonString = metaFile->ReadAll();
 				metaFile->Close();
 
 				json data;
 				data = json::parse(jsonString);
-				uint64_t id = data["id"];
+				const uint64_t id = data["id"];
 				if (id > biggestId)
 					biggestId = id;
 				file->SetUniqueId(id);
@@ -177,7 +177,7 @@ void ProjectManager::FindAllProjectFiles()
 	// Check if a file has changed or has been deleted
 	for (const auto& kv : projectFilesIds)
 	{
-		bool contains = oldProjectFilesIds.contains(kv.first);
+		const bool contains = oldProjectFilesIds.contains(kv.first);
 		if (contains)
 		{
 			oldProjectFilesIds[kv.first].hasBeenDeleted = false;
@@ -220,7 +220,7 @@ void ProjectManager::FindAllProjectFiles()
 
 void ProjectManager::CreateProjectDirectories(std::shared_ptr<Directory> projectDirectoryBase, std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
-	size_t dirCount = projectDirectoryBase->subdirectories.size();
+	const size_t dirCount = projectDirectoryBase->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
 		std::shared_ptr<ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath(), projectDirectoryBase->subdirectories[i]->GetUniqueId());
@@ -238,7 +238,7 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 {
 	realProjectDirectory->files.clear();
 
-	for (auto& kv : ProjectManager::projectFilesIds)
+	for (const auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
 		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
@@ -261,7 +261,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
 	if (sceneRef->file->Open(true))
 	{
-		std::string data = AssetManager::GetDefaultFileData(File_Scene);
+		const std::string data = AssetManager::GetDefaultFileData(File_Scene);
 		sceneRef->file->Write(data);
 		sceneRef->file->Close();
 	}
@@ -304,9 +304,10 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	return LoadProject(projectFolderPath);
 }
 
-FileType ProjectManager::GetFileType(std::string extension)
+FileType ProjectManager::GetFileType(const std::string& _extension)
 {
 	FileType fileType = File_Other;
+	std::string extension = _extension;
 
 	// Replace uppercase letters by lowercase letters
 	size_t extLen = extension.size();
@@ -444,7 +445,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 	std::shared_ptr<FileReference> fileRef = nullptr;
 
 	// Find if the File Reference is already instanciated
-	int fileRefCount = AssetManager::GetFileReferenceCount();
+	const int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
 		std::shared_ptr<FileReference> tempFileRef = AssetManager::GetFileReference(i);
@@ -519,7 +520,7 @@ void ProjectManager::LoadProjectSettings()
 
 void ProjectManager::SaveProjectSettings()
 {
-	std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
+	const std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
 	FileSystem::fileSystem->Delete(path);
 	json projectData;
 
@@ -561,7 +562,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 {
 	std::vector<ProjectListItem> projects;
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	bool isOpen = file->Open(false);
+	const bool isOpen = file->Open(false);
 	if (isOpen)
 	{
 		const std::string projectFileString = file->ReadAll();
@@ -577,7 +578,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
 			}
 
-			size_t projectCount = j.size();
+			const size_t projectCount = j.size();
 			for (size_t i = 0; i < projectCount; i++)
 			{
 				// Get project informations (name and path)
@@ -602,7 +603,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 
 void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
 {
-	size_t projectSize = projects.size();
+	const size_t projectSize = projects.size();
 	json j;
 	for (size_t i = 0; i < projectSize; i++)
 	{
@@ -627,7 +628,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
 
-	FileType type = GetFileType(file->GetFileExtension());
+	const FileType type = GetFileType(file->GetFileExtension());
 	switch (type)
 	{
 	case File_Audio:
@@ -720,11 +721,12 @@ std::string ProjectDirectory::GetFolderName()
 {
 	if (path.size() == 0)
 		return "";
-	size_t textLen = path.size();
 
-	size_t lastSlashPos = path.find_last_of('\\', textLen - 2);
+	const size_t textLen = path.size();
 
-	std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
+	const size_t lastSlashPos = path.find_last_of('\\', textLen - 2);
+
+	const std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
 
 	return fileName;
 }

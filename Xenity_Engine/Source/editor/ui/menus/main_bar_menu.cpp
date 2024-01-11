@@ -73,7 +73,7 @@ bool MainBarMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)texture->GetTextureId(), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)texture->GetTextureId(), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
 	return clicked;
@@ -81,7 +81,7 @@ bool MainBarMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture
 
 void MainBarMenu::Draw()
 {
-	bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
+	const bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
@@ -103,31 +103,31 @@ void MainBarMenu::Draw()
 		ImGui::Separator();
 		if (ImGui::MenuItem("Build for Windows"))
 		{
-			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
+			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build for PSP"))
 		{
-			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
+			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build for PsVita"))
 		{
-			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
+			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PsVita, BuildType::BuildGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build And Run on Windows"))
 		{
-			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
+			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildAndRunGame, exportPath);
 		}
 		if (ImGui::MenuItem("Build And Run on PSP"))
 		{
-			std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
+			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
 		}
@@ -329,8 +329,8 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::BeginMenu("All"))
 		{
-			std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
-			size_t componentCount = componentNames.size();
+			const std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
+			const size_t componentCount = componentNames.size();
 			for (size_t i = 0; i < componentCount; i++)
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
@@ -430,25 +430,25 @@ void MainBarMenu::Draw()
 	height = ImGui::GetWindowHeight();
 	ImGui::EndMainMenuBar();
 
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + height));
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 0));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
-	float oldBorderSize = ImGui::GetStyle().WindowBorderSize;
+	const float oldBorderSize = ImGui::GetStyle().WindowBorderSize;
 	ImGui::GetStyle().WindowBorderSize = 0;
 	ImGui::Begin("undermainbar", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	height += ImGui::GetWindowHeight();
 	
-	float oldFramePadding = ImGui::GetStyle().FramePadding.x;
+	const float oldFramePadding = ImGui::GetStyle().FramePadding.x;
 	ImGui::GetStyle().FramePadding.x = 14;
 	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + ImGui::GetStyle().ItemSpacing.x * 2 + ImGui::GetStyle().FramePadding.x * 6) / 2.0f);
 	ImGui::BeginGroup();
-	bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[Icon_Play]);
+	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[Icon_Play]);
 	ImGui::SameLine();
-	bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Pause]);
+	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Pause]);
 	ImGui::SameLine();
-	bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Stop]);
+	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Stop]);
 	ImGui::EndGroup();
 	ImGui::GetStyle().FramePadding.x = oldFramePadding;
 	if (playClicked)

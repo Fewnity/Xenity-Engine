@@ -32,7 +32,7 @@ void FilePSP::Write(const std::string& data)
 	if (fileId >= 0)
 	{
 		sceIoLseek(fileId, 0, SEEK_END);
-		int b = sceIoWrite(fileId, data.c_str(), data.size());
+		const int b = sceIoWrite(fileId, data.c_str(), data.size());
 		sceIoClose(fileId);
 		fileId = -1;
 	}
@@ -44,7 +44,7 @@ std::string FilePSP::ReadAll()
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDONLY, 0);
 	if (fileId >= 0)
 	{
-		int pos = sceIoLseek(fileId, 0, SEEK_END);
+		const int pos = sceIoLseek(fileId, 0, SEEK_END);
 		sceIoLseek(fileId, 0, SEEK_SET);
 		char* data = new char[pos + 1];
 		data[pos] = 0;
@@ -81,7 +81,7 @@ bool FilePSP::CheckIfExist()
 {
 	bool exists = false;
 
-	int params = PSP_O_RDONLY;
+	const int params = PSP_O_RDONLY;
 	fileId = sceIoOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{

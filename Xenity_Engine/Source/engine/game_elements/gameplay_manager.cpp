@@ -119,7 +119,7 @@ void GameplayManager::OrderComponents()
 		{
 			if (gameObjectToCheck->GetActive())
 			{
-				int goComponentCount = (int)gameObjectToCheck->GetComponentCount();
+				const int goComponentCount = (int)gameObjectToCheck->GetComponentCount();
 				bool placeFound = false;
 				for (int cIndex = 0; cIndex < goComponentCount; cIndex++)
 				{
@@ -177,7 +177,7 @@ void GameplayManager::InitialiseComponents()
 void GameplayManager::RemoveDestroyedGameObjects()
 {
 	// Remove destroyed GameObjects from the Engine's GameObjects list
-	int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
+	const int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
 	for (int i = 0; i < gameObjectToDestroyCount; i++)
 	{
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
@@ -196,7 +196,7 @@ void GameplayManager::RemoveDestroyedGameObjects()
 
 void GameplayManager::RemoveDestroyedComponents()
 {
-	int componentToDestroyCount = (int)componentsToDestroy.size();
+	const int componentToDestroyCount = (int)componentsToDestroy.size();
 	for (int i = 0; i < componentToDestroyCount; i++)
 	{
 		std::shared_ptr<Component> component = componentsToDestroy[i];

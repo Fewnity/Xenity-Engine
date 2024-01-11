@@ -9,7 +9,7 @@ HINSTANCE library;
 
 void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
-	std::string fileName = libraryName + ".dll";
+	const std::string fileName = libraryName + ".dll";
 
 	//Disable error popup
 	SetErrorMode(0x0001);

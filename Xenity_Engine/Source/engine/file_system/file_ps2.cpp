@@ -43,7 +43,7 @@ void FilePS2::Write(const std::string &data)
 	if (fileId >= 0)
 	{
 		fileXioLseek(fileId, 0, SEEK_END);
-		int b = fileXioWrite(fileId, data.c_str(), data.size());
+		const int b = fileXioWrite(fileId, data.c_str(), data.size());
 		fileXioClose(fileId);
 		fileId = -1;
 	}
@@ -55,7 +55,7 @@ std::string FilePS2::ReadAll()
 	fileId = fileXioOpen(path.c_str(), FIO_O_RDONLY, 0777);
 	if (fileId >= 0)
 	{
-		int pos = fileXioLseek(fileId, 0, SEEK_END);
+		const int pos = fileXioLseek(fileId, 0, SEEK_END);
 		fileXioLseek(fileId, 0, SEEK_SET);
 		char *data = new char[pos + 1];
 		data[pos] = 0;
@@ -92,7 +92,7 @@ bool FilePS2::CheckIfExist()
 {
 	bool exists = false;
 
-	int params = FIO_O_RDONLY;
+	const int params = FIO_O_RDONLY;
 	fileId = fileXioOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{

@@ -13,7 +13,7 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 {
 	// Draw select folder button
 	bool projectFolderChanged = false;
-	std::string buttonId = "Select a folder" + std::string(EditorUI::GenerateItemId());
+	const std::string buttonId = "Select a folder" + std::string(EditorUI::GenerateItemId());
 	if (ImGui::Button(buttonId.c_str()))
 	{
 		std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
@@ -76,7 +76,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 void EngineSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 350), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Engine Settings", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Engine Settings", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

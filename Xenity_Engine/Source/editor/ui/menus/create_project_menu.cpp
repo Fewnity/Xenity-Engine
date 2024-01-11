@@ -24,7 +24,7 @@ CreateProjectMenu::CreateProjectMenu()
 		std::string stringDocPath(wStringDocPath.begin(), wStringDocPath.end()); //and convert to string.
 		projectParentDir = stringDocPath + "\\Xenity_Projects\\";
 		// Create the directory if not found
-		bool folderCreateResult = FileSystem::fileSystem->CreateFolder(projectParentDir);
+		const bool folderCreateResult = FileSystem::fileSystem->CreateFolder(projectParentDir);
 		if (!folderCreateResult) 
 		{
 			projectParentDir.clear();
@@ -38,9 +38,9 @@ void CreateProjectMenu::Init()
 
 void  CreateProjectMenu::DrawTitle()
 {
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	const char* noCamText = "Create a project";
-	ImVec2 textSize = ImGui::CalcTextSize(noCamText);
+	const ImVec2 textSize = ImGui::CalcTextSize(noCamText);
 	ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
 	ImGui::Text("%s", noCamText);
 }
@@ -48,7 +48,7 @@ void  CreateProjectMenu::DrawTitle()
 void  CreateProjectMenu::DrawProjectPath()
 {
 	// Draw project path
-	std::string projectFolderText = "Project folder: " + projectParentDir + projectName + "\\";
+	const std::string projectFolderText = "Project folder: " + projectParentDir + projectName + "\\";
 	ImGui::Text("%s", projectFolderText.c_str());
 }
 
@@ -58,7 +58,7 @@ bool CreateProjectMenu::DrawSelectFolderButton()
 	bool projectFolderChanged = false;
 	if (ImGui::Button("Select a folder"))
 	{
-		std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
+		const std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
 		if (!folder.empty())
 		{
 			projectParentDir = folder;
@@ -75,7 +75,7 @@ bool CreateProjectMenu::DrawProjectNameInput()
 
 void CreateProjectMenu::DrawError() 
 {
-	ImColor red = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
+	const ImColor red = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
 	if (createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
 	{
 		ImGui::TextColored(red, "A project has already this name");
@@ -105,14 +105,14 @@ void CreateProjectMenu::DrawCreateProjectButton()
 		}
 		else
 		{
-			std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(projectParentDir + projectName);
+			const std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(projectParentDir + projectName);
 			if (projectDir->CheckIfExist())
 			{
 				createProjectError = CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS;
 			}
 			else
 			{
-				bool creationResult = ProjectManager::CreateProject(projectName, projectParentDir);
+				const bool creationResult = ProjectManager::CreateProject(projectName, projectParentDir);
 				if (creationResult)
 				{
 					std::vector<ProjectListItem> projectsList = ProjectManager::GetProjectsList();
@@ -130,19 +130,19 @@ void CreateProjectMenu::DrawCreateProjectButton()
 
 void CreateProjectMenu::Draw()
 {
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->WorkPos);
 	ImGui::SetNextWindowSize(viewport->WorkSize);
 	ImGui::SetNextWindowViewport(viewport->ID);
 
-	bool visible = ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+	const bool visible = ImGui::Begin("Create Project", 0, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	if (visible)
 	{
 		OnStartDrawing();
 
 		//Increase font size to 150%
 		ImFont* font = ImGui::GetFont();
-		float oldScale = font->Scale;
+		const float oldScale = font->Scale;
 		font->Scale *= 1.5f;
 		ImGui::PushFont(font);
 

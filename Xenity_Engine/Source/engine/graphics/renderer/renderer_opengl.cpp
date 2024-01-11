@@ -107,7 +107,7 @@ void RendererOpengl::SetViewport(int x, int y, int width, int height)
 
 void RendererOpengl::SetClearColor(const Color& color)
 {
-	RGBA rgba = color.GetRGBA();
+	const RGBA rgba = color.GetRGBA();
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
 }
 
@@ -117,8 +117,8 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
-		float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
+		const float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+		const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 		glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 	}
 }
@@ -128,10 +128,10 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #if defined(_WIN32) || defined(_WIN64)
-	GLfloat zNear = nearClippingPlane;
-	GLfloat zFar = farClippingPlane;
-	GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
-	GLfloat fW = fH * aspect;
+	const GLfloat zNear = nearClippingPlane;
+	const GLfloat zFar = farClippingPlane;
+	const GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
+	const GLfloat fW = fH * aspect;
 	glFrustum(-fW, fW, -fH, fH, zNear, zFar);
 #elif defined(__vita__)
 	gluPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
@@ -147,9 +147,9 @@ void RendererOpengl::ResetView()
 
 void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 {
-	auto transform = camera->GetTransform();
-	Vector3 position = transform->GetPosition();
-	Vector3 rotation = transform->GetRotation();
+	std::shared_ptr<Transform> transform = camera->GetTransform();
+	const Vector3 position = transform->GetPosition();
+	const Vector3 rotation = transform->GetRotation();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -219,7 +219,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 		}
 		magfilterValue = GL_NEAREST;
 	}
-	int wrap = GetWrapModeEnum(texture->GetWrapMode());
+	const int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
 	// Apply filters
 
@@ -308,8 +308,8 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	int subMeshCount = meshData->subMeshCount;
-	size_t textureCount = textures.size();
+	const int subMeshCount = meshData->subMeshCount;
+	const size_t textureCount = textures.size();
 
 
 
@@ -323,7 +323,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 	if (Graphics::UseOpenGLFixedFunctions)
 	{
-		RGBA rgba = meshData->unifiedColor.GetRGBA();
+		const RGBA rgba = meshData->unifiedColor.GetRGBA();
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
 
@@ -408,7 +408,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	int stride = sizeof(VertexNoColorNoUv);
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
-	RGBA vec4Color = color.GetRGBA();
+	const RGBA vec4Color = color.GetRGBA();
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glDrawArrays(GL_LINES, 0, 2);
 }
@@ -422,8 +422,8 @@ unsigned int RendererOpengl::CreateNewTexture()
 
 void RendererOpengl::DeleteTexture(Texture* texture)
 {
-	unsigned int val = texture->GetTextureId();
-	glDeleteTextures(1, &val);
+	unsigned int textureId = texture->GetTextureId();
+	glDeleteTextures(1, &textureId);
 }
 
 void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer)
@@ -442,7 +442,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	if (lightIndex >= maxLightCount)
 		return;
 
-	RGBA rgba = color.GetRGBA();
+	const RGBA rgba = color.GetRGBA();
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
@@ -459,10 +459,10 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	else if (type == Light::Point)
 		typeIntensity = 2;
 
-	float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
-	float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
+	const float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
+	const float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
 
 	// Assign created components to GL_LIGHT0
 	if (type == Light::Directional)
@@ -490,10 +490,10 @@ void RendererOpengl::DisableAllLight()
 
 void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 {
-	auto cameraTransform = camera->GetTransform();
+	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
 	DisableAllLight();
-	int lightCount = AssetManager::GetLightCount();
+	const int lightCount = AssetManager::GetLightCount();
 	int usedLightCount = 0;
 	for (int i = 0; i < lightCount; i++)
 	{
@@ -502,9 +502,9 @@ void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 		{
 			if (light->type == Light::Directional)
 			{
-				Vector3 lightRotation = light->GetTransform()->GetRotation();
-				Vector3 cameraPosition = cameraTransform->GetPosition();
-				Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
+				const Vector3 lightRotation = light->GetTransform()->GetRotation();
+				const Vector3 cameraPosition = cameraTransform->GetPosition();
+				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
 			}
 			else
@@ -732,7 +732,7 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 
 unsigned int RendererOpengl::CreateShader(Shader::ShaderType type)
 {
-	int compileType = GetShaderTypeEnum(type);
+	const int compileType = GetShaderTypeEnum(type);
 	return glCreateShader(compileType);
 }
 

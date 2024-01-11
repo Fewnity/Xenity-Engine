@@ -67,7 +67,7 @@ void TextRendererCanvas::SetFont(const std::shared_ptr<Font>& font)
 {
 	if (this->font != font)
 	{
-		this->font = std::move(font);
+		this->font = font;
 		isTextInfoDirty = true;
 	}
 }

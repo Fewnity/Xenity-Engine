@@ -46,7 +46,7 @@ int MeshRenderer::GetDrawPriority() const
 
 void MeshRenderer::Draw()
 {
-	if (auto gameObject = GetGameObject())
+	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{
 		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData)
 		{

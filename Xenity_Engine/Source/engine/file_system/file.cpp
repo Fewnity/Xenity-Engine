@@ -14,13 +14,13 @@ File::File(std::string _path) : UniqueId(true)
 	//_path = "host0:" + _path;
 #endif
 	this->path = _path;
-	size_t pointIndex = path.find_last_of('.');
+	const size_t pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 
 	// Remove all folders from path
 	int finalPos = 0;
-	int lastSlashPos = (int)path.find_last_of('\\');
-	int lastSlashPos2 = (int)path.find_last_of('/');
+	const int lastSlashPos = (int)path.find_last_of('\\');
+	const int lastSlashPos2 = (int)path.find_last_of('/');
 
 	if (lastSlashPos != -1 || lastSlashPos2 != -1)
 	{
@@ -30,7 +30,7 @@ File::File(std::string _path) : UniqueId(true)
 			finalPos = lastSlashPos + 1;
 	}
 
-	std::string fileName = path.substr(finalPos);
+	const std::string fileName = path.substr(finalPos);
 
 	// Remove file extension from path
 	int nextPointPos = (int)fileName.find_first_of('.');
@@ -38,7 +38,7 @@ File::File(std::string _path) : UniqueId(true)
 		nextPointPos = INT32_MAX;
 	name = fileName.substr(0, nextPointPos);
 #if defined(_EE)
-	int pathLen = path.size();
+	const int pathLen = path.size();
 	for (int i = 0; i < pathLen; i++)
 	{
 		if (path[i] == '\\')
@@ -63,12 +63,12 @@ std::string File::GetFolderPath() const
 	if (lastSlashPos == -1)
 		lastSlashPos = 0;
 #if defined(__vita__)
-	std::string fileName = path.substr(4, lastSlashPos + 1);
+	const std::string fileName = path.substr(4, lastSlashPos + 1);
 #elif defined(_EE)
-	std::string fileName = path.substr(5, lastSlashPos + 1);
+	const std::string fileName = path.substr(5, lastSlashPos + 1);
 	// std::string fileName = path.substr(6, lastSlashPos + 1);
 #else
-	std::string fileName = path.substr(0, lastSlashPos + 1);
+	const std::string fileName = path.substr(0, lastSlashPos + 1);
 #endif
 
 	return fileName;

@@ -22,12 +22,12 @@ SkyBox::~SkyBox()
 
 SkyBox::SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right)
 {
-	this->front = std::move(front);
-	this->back = std::move(back);
-	this->up = std::move(up);
-	this->down = std::move(down);
-	this->left = std::move(left);
-	this->right = std::move(right);
+	this->front = front;
+	this->back = back;
+	this->up = up;
+	this->down = down;
+	this->left = left;
+	this->right = right;
 }
 
 ReflectiveData SkyBox::GetReflectiveData()
@@ -50,7 +50,7 @@ ReflectiveData SkyBox::GetMetaReflectiveData()
 
 void SkyBox::OnReflectionUpdated()
 {
-	bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	const bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!loadResult)
 	{
 		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath());
@@ -59,7 +59,7 @@ void SkyBox::OnReflectionUpdated()
 
 void SkyBox::LoadFileReference()
 {
-	bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult) 
 	{
 		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath());

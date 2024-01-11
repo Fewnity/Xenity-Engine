@@ -43,7 +43,7 @@ bool Menu::GetActive()
 
 void Menu::OnStartDrawing()
 {
-	ImVec2 size = ImGui::GetContentRegionAvail();
+	const ImVec2 size = ImGui::GetContentRegionAvail();
 	startAvailableSize = Vector2Int(size.x, size.y);
 	windowSize = startAvailableSize;
 	if (forceFocus)
@@ -66,8 +66,8 @@ void Menu::ResetWindowValues()
 
 void Menu::CalculateWindowValues()
 {
-	ImVec2 imguiWindowPos = ImGui::GetWindowPos();
-	ImVec2 imguiMousePos = ImGui::GetMousePos();
+	const ImVec2 imguiWindowPos = ImGui::GetWindowPos();
+	const ImVec2 imguiMousePos = ImGui::GetMousePos();
 	windowPosition = Vector2Int((int)imguiWindowPos.x, (int)imguiWindowPos.y);
 	oldMousePosition = mousePosition;
 	mousePosition = Vector2Int((int)imguiMousePos.x, (int)(imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;

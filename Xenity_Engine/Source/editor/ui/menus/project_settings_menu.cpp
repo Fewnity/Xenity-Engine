@@ -12,7 +12,7 @@ void ProjectSettingsMenu::Init()
 void ProjectSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Project Settings", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Project Settings", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

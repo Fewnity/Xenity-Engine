@@ -30,8 +30,9 @@ public:
 
 	/**
 	* Read all the file in binary mode (Need to free the pointer after)
+	* @param sizeOut return read data size
 	*/
-	virtual unsigned char* ReadAllBinary(int& size) { return nullptr; };
+	virtual unsigned char* ReadAllBinary(int& sizeOut) { return nullptr; };
 
 	/**
 	* Check if the file exists

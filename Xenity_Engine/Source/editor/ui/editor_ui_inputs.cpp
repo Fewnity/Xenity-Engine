@@ -32,7 +32,7 @@ void EditorUI::DrawInputTitle(const std::string& title)
 bool EditorUI::DrawInput(const std::string& inputName, float& value)
 {
 	DrawInputTitle(inputName);
-	float oldValue = float(value);
+	const float oldValue = float(value);
 	ImGui::InputFloat(GenerateItemId().c_str(), &value, 0, 0, "%.4f");
 	return value != oldValue;
 }
@@ -40,7 +40,7 @@ bool EditorUI::DrawInput(const std::string& inputName, float& value)
 bool EditorUI::DrawInput(const std::string& inputName, double& value)
 {
 	DrawInputTitle(inputName);
-	double oldValue = double(value);
+	const double oldValue = double(value);
 	ImGui::InputDouble(GenerateItemId().c_str(), &value, 0, 0, "%0.8f");
 	return value != oldValue;
 }
@@ -48,7 +48,7 @@ bool EditorUI::DrawInput(const std::string& inputName, double& value)
 bool EditorUI::DrawInput(const std::string& inputName, std::string& value)
 {
 	DrawInputTitle(inputName);
-	std::string oldValue = std::string(value);
+	const std::string oldValue = std::string(value);
 	ImGui::InputText(GenerateItemId().c_str(), &value);
 	return value != oldValue;
 }
@@ -56,7 +56,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::string& value)
 bool EditorUI::DrawInput(const std::string& inputName, int& value)
 {
 	DrawInputTitle(inputName);
-	int oldValue = int(value);
+	const int oldValue = int(value);
 	ImGui::InputInt(GenerateItemId().c_str(), &value);
 	return value != oldValue;
 }
@@ -64,14 +64,14 @@ bool EditorUI::DrawInput(const std::string& inputName, int& value)
 bool EditorUI::DrawInput(const std::string& inputName, bool& value)
 {
 	DrawInputTitle(inputName);
-	bool oldValue = bool(value);
+	const bool oldValue = bool(value);
 	ImGui::Checkbox(GenerateItemId().c_str(), &value);
 	return value != oldValue;
 }
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId)
 {
-	std::shared_ptr<Component> oldValue = value.lock();
+	const std::shared_ptr<Component> oldValue = value.lock();
 
 	std::string inputText = "None (Component)";
 	auto ptr = value.lock();
@@ -87,7 +87,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	}
 
 	std::shared_ptr<Component> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -98,7 +98,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId)
 {
-	std::shared_ptr<Collider> oldValue = value.lock();
+	const std::shared_ptr<Collider> oldValue = value.lock();
 
 	std::string inputText = "None (Collider)";
 	auto ptr = value.lock();
@@ -114,7 +114,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 	}
 
 	std::shared_ptr<Collider> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -125,7 +125,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId)
 {
-	std::shared_ptr<Transform> oldValue = value.lock();
+	const std::shared_ptr<Transform> oldValue = value.lock();
 
 	std::string inputText = "None (Transform)";
 	auto ptr = value.lock();
@@ -141,7 +141,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 	}
 
 	std::shared_ptr <Transform> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -152,7 +152,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId)
 {
-	std::shared_ptr<GameObject> oldValue = value.lock();
+	const std::shared_ptr<GameObject> oldValue = value.lock();
 
 	std::string inputText = "None (GameObject)";
 	auto ptr = value.lock();
@@ -168,7 +168,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	}
 
 	std::shared_ptr <GameObject> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -190,9 +190,9 @@ bool EditorUI::DrawInput(const std::string& inputName, Color& value)
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
 	ImGui::SetCursorPosX(150 * uiScale);
-	Vector4 vec4 = value.GetRGBA().ToVector4();
+	const Vector4 vec4 = value.GetRGBA().ToVector4();
 	ImVec4 color = ImVec4(vec4.x, vec4.y, vec4.z, vec4.w);
-	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	const float startAvailSize = ImGui::GetContentRegionAvail().x;
 	ImGui::SetNextItemWidth(startAvailSize);
 
 	ImGui::ColorEdit4(GenerateItemId().c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs);
@@ -207,7 +207,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Color& value)
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector2& value)
 {
-	Vector2 oldValue = Vector2(value);
+	const Vector2 oldValue = Vector2(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -226,7 +226,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2& value)
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector2Int& value)
 {
-	Vector2Int oldValue = Vector2Int(value);
+	const Vector2Int oldValue = Vector2Int(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -245,7 +245,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2Int& value)
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector3& value)
 {
-	Vector3 oldValue = Vector3(value);
+	const Vector3 oldValue = Vector3(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -265,7 +265,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector3& value)
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector4& value)
 {
-	Vector4 oldValue = Vector4(value);
+	const Vector4 oldValue = Vector4(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -291,7 +291,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector4& value)
 bool EditorUI::DrawInput(const std::string& inputName, float value, float& newValue)
 {
 	DrawInputTitle(inputName);
-	float oldValue = float(value);
+	const float oldValue = float(value);
 	ImGui::InputFloat(GenerateItemId().c_str(), &value, 0, 0, "%.4f");
 	newValue = value;
 	return value != oldValue;
@@ -300,7 +300,7 @@ bool EditorUI::DrawInput(const std::string& inputName, float value, float& newVa
 bool EditorUI::DrawInput(const std::string& inputName, double value, double& newValue)
 {
 	DrawInputTitle(inputName);
-	double oldValue = double(value);
+	const double oldValue = double(value);
 	ImGui::InputDouble(GenerateItemId().c_str(), &value, 0, 0, "%0.8f");
 	newValue = value;
 	return value != oldValue;
@@ -309,7 +309,7 @@ bool EditorUI::DrawInput(const std::string& inputName, double value, double& new
 bool EditorUI::DrawInput(const std::string& inputName, std::string value, std::string& newValue)
 {
 	DrawInputTitle(inputName);
-	std::string oldValue = std::string(value);
+	const std::string oldValue = std::string(value);
 	ImGui::InputText(GenerateItemId().c_str(), &value);
 	newValue = value;
 	return value != oldValue;
@@ -318,7 +318,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::string value, std::s
 bool EditorUI::DrawInput(const std::string& inputName, int value, int& newValue)
 {
 	DrawInputTitle(inputName);
-	int oldValue = int(value);
+	const int oldValue = int(value);
 	ImGui::InputInt(GenerateItemId().c_str(), &value);
 	newValue = value;
 	return value != oldValue;
@@ -327,7 +327,7 @@ bool EditorUI::DrawInput(const std::string& inputName, int value, int& newValue)
 bool EditorUI::DrawInput(const std::string& inputName, bool value, bool& newValue)
 {
 	DrawInputTitle(inputName);
-	bool oldValue = bool(value);
+	const bool oldValue = bool(value);
 	ImGui::Checkbox(GenerateItemId().c_str(), &value);
 	newValue = value;
 	return value != oldValue;
@@ -335,7 +335,7 @@ bool EditorUI::DrawInput(const std::string& inputName, bool value, bool& newValu
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector2 value, Vector2& newValue)
 {
-	Vector2 oldValue = Vector2(value);
+	const Vector2 oldValue = Vector2(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -354,7 +354,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2 value, Vector2& n
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector2Int value, Vector2Int& newValue)
 {
-	Vector2Int oldValue = Vector2Int(value);
+	const Vector2Int oldValue = Vector2Int(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -373,7 +373,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2Int value, Vector2
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector3 value, Vector3& newValue)
 {
-	Vector3 oldValue = Vector3(value);
+	const Vector3 oldValue = Vector3(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -393,7 +393,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector3 value, Vector3& n
 
 bool EditorUI::DrawInput(const std::string& inputName, Vector4 value, Vector4& newValue)
 {
-	Vector4 oldValue = Vector4(value);
+	const Vector4 oldValue = Vector4(value);
 
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
@@ -414,7 +414,7 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector4 value, Vector4& n
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component> value, std::weak_ptr<Component>& newValue, uint64_t typeId)
 {
-	std::shared_ptr<Component> oldValue = value.lock();
+	const std::shared_ptr<Component> oldValue = value.lock();
 
 	std::string inputText = "None (Component)";
 	auto ptr = value.lock();
@@ -430,7 +430,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component> 
 	}
 
 	std::shared_ptr<Component> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -441,7 +441,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component> 
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider> value, std::weak_ptr<Collider>& newValue, uint64_t typeId)
 {
-	std::shared_ptr<Collider> oldValue = value.lock();
+	const std::shared_ptr<Collider> oldValue = value.lock();
 
 	std::string inputText = "None (Collider)";
 	auto ptr = value.lock();
@@ -457,7 +457,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider> v
 	}
 
 	std::shared_ptr<Collider> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -468,7 +468,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider> v
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform> value, std::weak_ptr<Transform>& newValue, uint64_t typeId)
 {
-	std::shared_ptr<Transform> oldValue = value.lock();
+	const std::shared_ptr<Transform> oldValue = value.lock();
 
 	std::string inputText = "None (Transform)";
 	auto ptr = value.lock();
@@ -484,7 +484,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform> 
 	}
 
 	std::shared_ptr <Transform> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -495,7 +495,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform> 
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject> value, std::weak_ptr<GameObject>& newValue, uint64_t typeId)
 {
-	std::shared_ptr<GameObject> oldValue = value.lock();
+	const std::shared_ptr<GameObject> oldValue = value.lock();
 
 	std::string inputText = "None (GameObject)";
 	auto ptr = value.lock();
@@ -511,7 +511,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	}
 
 	std::shared_ptr <GameObject> ref = nullptr;
-	std::string payloadName = "Type" + std::to_string(typeId);
+	const std::string payloadName = "Type" + std::to_string(typeId);
 	if (DragDropTarget(payloadName, ref))
 	{
 		value = ref;
@@ -534,9 +534,9 @@ bool EditorUI::DrawInput(const std::string& inputName, Color value, Color& newVa
 	ImGui::Text(inputName.c_str());
 	ImGui::SameLine();
 	ImGui::SetCursorPosX(150 * uiScale);
-	Vector4 vec4 = value.GetRGBA().ToVector4();
+	const Vector4 vec4 = value.GetRGBA().ToVector4();
 	ImVec4 color = ImVec4(vec4.x, vec4.y, vec4.z, vec4.w);
-	float startAvailSize = ImGui::GetContentRegionAvail().x;
+	const float startAvailSize = ImGui::GetContentRegionAvail().x;
 	ImGui::SetNextItemWidth(startAvailSize);
 
 	ImGui::ColorEdit4(GenerateItemId().c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs);

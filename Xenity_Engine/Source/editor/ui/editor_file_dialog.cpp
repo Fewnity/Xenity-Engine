@@ -28,8 +28,8 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 		if (!defaultLocation.empty())
 		{
 			IShellItem* pCurFolder = NULL;
-			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
-			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			const std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			const LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
 			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
 			if (SUCCEEDED(hr))
 			{
@@ -49,13 +49,10 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 		pFileOpen->SetOptions(dwOptions | FOS_PICKFOLDERS);
 
 		// Initializing an object of wstring
-		std::wstring tempTitle = std::wstring(title.begin(), title.end());
-
-		// Applying c_str() method on temp
-		LPCWSTR wideString = tempTitle.c_str();
+		const std::wstring tempTitle = std::wstring(title.begin(), title.end());
 
 		pFileOpen->SetTitle(tempTitle.c_str());
-		//pFileOpen->Set;
+
 		hr = pFileOpen->Show(NULL);
 
 		if (SUCCEEDED(hr))
@@ -70,7 +67,7 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 				{
 					std::wstringstream ss;
 					ss << pszFolderPath;
-					std::wstring wst = ss.str();
+					const std::wstring wst = ss.str();
 					path = std::string(wst.begin(), wst.end());
 					path += "\\";
 					CoTaskMemFree(pszFolderPath);
@@ -103,8 +100,8 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 		if (!defaultLocation.empty())
 		{
 			IShellItem* pCurFolder = NULL;
-			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
-			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			const std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			const LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
 			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
 			if (SUCCEEDED(hr))
 			{
@@ -134,9 +131,6 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 		// Initializing an object of wstring
 		std::wstring tempTitle = std::wstring(title.begin(), title.end());
 
-		// Applying c_str() method on temp
-		LPCWSTR wideString = tempTitle.c_str();
-
 		pFileOpen->SetTitle(tempTitle.c_str());
 		hr = pFileOpen->Show(NULL);
 
@@ -158,7 +152,7 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 					{
 						std::wstringstream ss;
 						ss << pszFolderPath;
-						std::wstring wst = ss.str();
+						const std::wstring wst = ss.str();
 
 						path = std::string(wst.begin(), wst.end());
 						CoTaskMemFree(pszFolderPath);
@@ -192,8 +186,8 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 		if (!defaultLocation.empty())
 		{
 			IShellItem* pCurFolder = NULL;
-			std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
-			LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
+			const std::wstring wstringDefaultLocTemp = std::wstring(defaultLocation.begin(), defaultLocation.end());
+			const LPCWSTR wstringDefaultLoc = wstringDefaultLocTemp.c_str();
 			HRESULT hr = SHCreateItemFromParsingName(wstringDefaultLoc, NULL, IID_PPV_ARGS(&pCurFolder));
 			if (SUCCEEDED(hr))
 			{
@@ -222,10 +216,7 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 
 
 		// Initializing an object of wstring
-		std::wstring tempTitle = std::wstring(title.begin(), title.end());
-
-		// Applying c_str() method on temp
-		LPCWSTR wideString = tempTitle.c_str();
+		const std::wstring tempTitle = std::wstring(title.begin(), title.end());
 
 		pFileOpen->SetTitle(tempTitle.c_str());
 		hr = pFileOpen->Show(NULL);
@@ -253,10 +244,10 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 						std::wstring fileExtChoosed = fileTypes[fileTypeIndex].pszSpec;
 						fileExtChoosed = fileExtChoosed.substr(1);
 
-						size_t pathSize = wst.size();
-						size_t extSize = fileExtChoosed.size();
+						const size_t pathSize = wst.size();
+						const size_t extSize = fileExtChoosed.size();
 
-						std::wstring endOfTheFile = wst.substr(pathSize - extSize);
+						const std::wstring endOfTheFile = wst.substr(pathSize - extSize);
 
 						bool foundExt = true;
 						for (size_t i2 = 0; i2 < extSize; i2++)

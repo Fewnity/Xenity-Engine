@@ -35,7 +35,7 @@ DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& m
 		break;
 	}
 
-	int result = MessageBoxA(NULL, message.c_str(), title.c_str(), windowsType | MB_ICONEXCLAMATION); // 6 7 2 (cross is 2)
+	const int result = MessageBoxA(NULL, message.c_str(), title.c_str(), windowsType | MB_ICONEXCLAMATION); // 6 7 2 (cross is 2)
 
 	if (result == 6) 
 	{

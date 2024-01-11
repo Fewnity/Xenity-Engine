@@ -16,7 +16,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 	bool objectClicked = false;
 	if (projectDir)
 	{
-		int childCount = (int)projectDir->subdirectories.size();
+		const int childCount = (int)projectDir->subdirectories.size();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 		if (Editor::GetCurrentProjectDirectory() == projectDir)
 			flags |= ImGuiTreeNodeFlags_Selected;
@@ -26,8 +26,8 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
 
-		std::string nodeName = projectDir->GetFolderName() + "##TIPD" + std::to_string(projectDir->uniqueId);
-		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
+		const std::string nodeName = projectDir->GetFolderName() + "##TIPD" + std::to_string(projectDir->uniqueId);
+		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 		ImGui::PopStyleColor();
 
 		// TODO : Check if the click was on the arrow to block this condition
@@ -56,7 +56,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 
 	if (child)
 	{
-		int childCount = child->GetChildrenCount();
+		const int childCount = child->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 		if (Editor::GetSelectedGameObject() == child)
 			flags |= ImGuiTreeNodeFlags_Selected;
@@ -73,8 +73,8 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		std::string nodeName = child->name + "##TIGO" + std::to_string(child->GetUniqueId());
-		bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
+		const std::string nodeName = child->name + "##TIGO" + std::to_string(child->GetUniqueId());
+		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())
 		{
@@ -84,12 +84,12 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 
 			EditorUI::multiDragData.gameObjects.push_back(child.get());
 			EditorUI::multiDragData.transforms.push_back(child->GetTransform().get());
-			int componentCount = child->GetComponentCount();
+			const int componentCount = child->GetComponentCount();
 			for (int i = 0; i < componentCount; i++)
 			{
 				EditorUI::multiDragData.components.push_back(child->components[i].get());
 			}
-			std::string payloadName = "MultiDragData";
+			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;
 			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
 			ImGui::Text(child->name.c_str());
@@ -126,7 +126,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 		{
 			for (int i = 0; i < child->GetChildrenCount(); i++)
 			{
-				int clickedTemp = DrawTreeItem(child->children[i].lock(), rightClickedElement);
+				const int clickedTemp = DrawTreeItem(child->children[i].lock(), rightClickedElement);
 				if (clickedTemp == 1)
 					state = 1;
 				else if (clickedTemp == 2)

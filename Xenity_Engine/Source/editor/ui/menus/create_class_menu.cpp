@@ -14,7 +14,7 @@ void CreateClassMenu::Init()
 void CreateClassMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(370, 0), ImGuiCond_FirstUseEver);
-	bool visible = ImGui::Begin("Create C++ Class", 0, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Create C++ Class", 0, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -75,7 +75,7 @@ void CreateClassMenu::SetFolderPath(const std::string& path)
 
 void CreateClassMenu::SetFileNameFromClassName()
 {
-	size_t classNameSize = className.size();
+	const size_t classNameSize = className.size();
 	fileName.clear();
 	for (int i = 0; i < classNameSize; i++)
 	{
@@ -126,7 +126,6 @@ void CreateClassMenu::CreateFiles()
 			headerDataSize = headerData.size();
 		}
 	}
-
 
 	// Write data to files
 	if (codeFile->Open(false))

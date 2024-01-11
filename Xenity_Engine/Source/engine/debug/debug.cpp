@@ -18,7 +18,7 @@
 #endif
 
 
-std::shared_ptr<File> file = nullptr;
+std::shared_ptr<File> Debug::file = nullptr;
 std::string Debug::debugText = "";
 std::shared_ptr<Socket> Debug::socket = nullptr;
 
@@ -34,9 +34,9 @@ void Debug::PrintError(const std::string& text)
 		return;
 
 	PrintInOnlineConsole(text);
-	std::string finalText = text + '\n';
-	std::string textWithoutColor = "[ERROR] " + finalText;
-	std::string textWithColor = "\033[31m" + textWithoutColor;
+	const std::string finalText = text + '\n';
+	const std::string textWithoutColor = "[ERROR] " + finalText;
+	const std::string textWithColor = "\033[31m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
@@ -51,9 +51,9 @@ void Debug::PrintWarning(const std::string& text)
 		return;
 
 	PrintInOnlineConsole(text);
-	std::string finalText = text + '\n';
-	std::string textWithoutColor = "[WARNING] " + finalText;
-	std::string textWithColor = "\033[33m" + textWithoutColor;
+	const std::string finalText = text + '\n';
+	const std::string textWithoutColor = "[WARNING] " + finalText;
+	const std::string textWithColor = "\033[33m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
@@ -120,8 +120,8 @@ void Debug::Print(const std::string& text)
 		return;
 
 	PrintInOnlineConsole(text);
-	std::string finalText = text + '\n';
-	std::string newString = "\033[37m" + finalText;
+	const std::string finalText = text + '\n';
+	const std::string newString = "\033[37m" + finalText;
 	PrintInConsole(newString);
 	PrintInFile(finalText);
 	//debugText += finalText; // Disable because cause crashes, why? Maybe thread?
@@ -131,7 +131,7 @@ void Debug::PrintInOnlineConsole(const std::string& text)
 {
 	if (socket)
 	{
-		std::string finalText = "{1;" + text + "}";
+		const std::string finalText = "{1;" + text + "}";
 		socket->SendData(finalText);
 	}
 }

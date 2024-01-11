@@ -118,7 +118,7 @@ private:
 	/**
 	* Create a new copy to be executed later
 	*/
-	static void AddCopyEntry(bool isFolder, std::string source, std::string dest);
+	static void AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest);
 
 	/**
 	 * General function to compile a source code

@@ -35,7 +35,7 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 		}
 		else if (item.file->fileType == File_Code || item.file->fileType == File_Header || item.file->fileType == File_Shader)
 		{
-			std::string command = "code \"" + item.file->file->GetPath() + "\"";
+			const std::string command = "code \"" + item.file->file->GetPath() + "\"";
 			system(command.c_str());
 		}
 	}
@@ -69,13 +69,13 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 
 	ImGui::BeginGroup();
-	int cursorPos = (int)ImGui::GetCursorPosX();
-	int availWidth = (int)ImGui::GetContentRegionAvail().x;
+	const int cursorPos = (int)ImGui::GetCursorPosX();
+	const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
 	std::shared_ptr<Texture> iconTexture = GetItemIcon(item, isFile);
 
-	bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
+	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 
@@ -91,7 +91,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	}
 	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
 
-	bool hovered = ImGui::IsItemHovered();
+	const bool hovered = ImGui::IsItemHovered();
 	if (hovered)
 	{
 		fileHovered = true;
@@ -113,8 +113,8 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		}
 	}
 
-	float windowWidth = ImGui::GetContentRegionAvail().x;
-	float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
+	const float windowWidth = ImGui::GetContentRegionAvail().x;
+	const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
 	if ((fileToRename == item.file && item.file) || (directoryToRename == item.directory && item.directory))
 	{
 		if (!focusSet)
@@ -147,8 +147,8 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	// Set a drag drop target for folders
 	if (!isFile)
 	{
-		std::shared_ptr <FileReference> fileRef;
-		bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
+		std::shared_ptr <FileReference> fileRef = nullptr;
+		const bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
 		if (dropFileInFolder)
 		{
 			int copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath(), item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension(), false);
@@ -165,11 +165,11 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 			ProjectManager::RefreshProjectDirectory();
 		}
-		std::shared_ptr <ProjectDirectory> directoryRef;
-		bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
+		std::shared_ptr <ProjectDirectory> directoryRef = nullptr;
+		const bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
 		if (dropFolderInFolder) 
 		{
-			std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
+			const std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
 			FileSystem::fileSystem->CreateFolder(destinationPath);
 			Editor::StartFolderCopy(directoryRef->path, destinationPath);
 			FileSystem::fileSystem->Delete(directoryRef->path);
@@ -326,50 +326,46 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExp
 	}
 	else
 	{
-		FileType fileType = fileExplorerItem.file->fileType;
-		if (fileType == File_Texture)
+		const FileType fileType = fileExplorerItem.file->fileType;
+
+		switch (fileType)
+		{
+		case File_Texture:
 		{
 			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
 			if (tex->GetTextureId() == 0)
 			{
 				tex = EditorUI::icons[Icon_Image];
 			}
+			break;
 		}
-		else if (fileType == File_Scene)
-		{
+		case File_Scene:
 			tex = EditorUI::icons[Icon_Scene];
-		}
-		else if (fileType == File_Code)
-		{
+			break;
+		case File_Code:
 			tex = EditorUI::icons[Icon_Code];
-		}
-		else if (fileType == File_Header)
-		{
+			break;
+		case File_Header:
 			tex = EditorUI::icons[Icon_Header];
-		}
-		else if (fileType == File_Mesh)
-		{
+			break;
+		case File_Mesh:
 			tex = EditorUI::icons[Icon_Mesh];
-		}
-		else if (fileType == File_Audio)
-		{
+			break;
+		case File_Audio:
 			tex = EditorUI::icons[Icon_Audio];
-		}
-		else if (fileType == File_Skybox)
-		{
+			break;
+		case File_Skybox:
 			tex = EditorUI::icons[Icon_Sky];
-		}
-		else if (fileType == File_Font)
-		{
+			break;
+		case File_Font:
 			tex = EditorUI::icons[Icon_Font];
-		}
-		else if (fileType == File_Material)
-		{
+			break;
+		case File_Material:
 			tex = EditorUI::icons[Icon_Material];
-		}
-		else if (fileType == File_Shader)
-		{
+			break;
+		case File_Shader:
 			tex = EditorUI::icons[Icon_Shader];
+			break;
 		}
 	}
 	return tex;
@@ -379,28 +375,28 @@ void FileExplorerMenu::Draw()
 {
 	fileHovered = false;
 
-	float iconSize = 64 * EditorUI::GetUiScale();
+	const float iconSize = 64 * EditorUI::GetUiScale();
 	std::string windowName = "File Explorer###File_Explorer" + std::to_string(id);
 	bool isOpen = true;
-	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 
 	if (visible)
 	{
 		OnStartDrawing();
 
-		float offset = ImGui::GetCursorPosX();
+		const float offset = ImGui::GetCursorPosX();
 		if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
 			ImGui::TableNextRow(0, startAvailableSize.y);
 			ImGui::TableSetColumnIndex(0);
-			bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
+			const bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
 			if (treeItemClicked)
 			{
 				fileHovered = true;
 			}
 
 			ImGui::TableSetColumnIndex(1);
-			float width = ImGui::GetContentRegionAvail().x;
+			const float width = ImGui::GetContentRegionAvail().x;
 			int colCount = width / (100 * EditorUI::GetUiScale());
 			if (colCount <= 0)
 				colCount = 1;
@@ -439,7 +435,7 @@ void FileExplorerMenu::Draw()
 				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 				FileExplorerItem item;
 				item.directory = currentDir;
-				int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
+				const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
 				if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
 				{
 					if (ignoreClose)
@@ -491,9 +487,8 @@ void FileExplorerMenu::Rename()
 	{
 		needUpdate = true;
 
-		bool success = false;
 		std::shared_ptr<File> file = fileToRename->file;
-		success = FileSystem::fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
+		const bool success = FileSystem::fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
 		if (success)
 		{
 			FileSystem::fileSystem->Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
@@ -511,11 +506,10 @@ void FileExplorerMenu::Rename()
 	{
 		needUpdate = true;
 
-		bool success = false;
 		std::string parentPath = directoryToRename->path;
-		size_t lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
+		const size_t lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
 		parentPath = parentPath.substr(0, lastSlash) + "\\";
-		success = FileSystem::fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
+		const bool success = FileSystem::fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
 	}
 
 	fileToRename.reset();

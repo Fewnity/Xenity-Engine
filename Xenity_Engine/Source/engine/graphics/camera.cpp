@@ -164,9 +164,9 @@ void Camera::SetFarClippingPlane(float value)
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
-	Vector3 camPos = GetTransform()->GetPosition();
-	float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
-	float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
+	const Vector3 camPos = GetTransform()->GetPosition();
+	const float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
+	const float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
 	return Vector2(vx, vy);
 }
 
@@ -194,8 +194,8 @@ void Camera::UpdateProjection()
 		}
 		else // 2D projection
 		{
-			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
-			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
+			const float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
+			const float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
 			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
@@ -211,17 +211,17 @@ void Camera::UpdateProjection()
 		}
 		else // 2D projection
 		{
-			float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
-			float halfOne = 0.5f * GetProjectionSize() / 5.0f;
+			const float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
+			const float halfOne = 0.5f * GetProjectionSize() / 5.0f;
 			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
 			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		}
 
 		// Create canvas projection
-		float fixedProjectionSize = 5;
-		float halfAspect = GetAspectRatio() / 2.0f * 10 * fixedProjectionSize / 5.0f;
-		float halfOne = 0.5f * 10 * fixedProjectionSize / 5.0f;
+		const float fixedProjectionSize = 5;
+		const float halfAspect = GetAspectRatio() / 2.0f * 10 * fixedProjectionSize / 5.0f;
+		const float halfOne = 0.5f * 10 * fixedProjectionSize / 5.0f;
 		canvasProjection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
 	}
 }
@@ -383,44 +383,44 @@ void Camera::OnDrawGizmos()
 void Camera::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
-	Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
+	const Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
-	std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(shared_from_this());
+	const std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(shared_from_this());
 
 	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 
-	Vector3 cameraPosition = camera->GetTransform()->GetPosition();
-	Vector3 cameraRotation = camera->GetTransform()->GetRotation();
+	const Vector3 cameraPosition = camera->GetTransform()->GetPosition();
+	const Vector3 cameraRotation = camera->GetTransform()->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	cameraModelMatrix = glm::translate(cameraModelMatrix, glm::vec3(-cameraPosition.x, cameraPosition.y, cameraPosition.z));
 
-	glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
+	const glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
 
 	//Top left
-	glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
-	glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(topLeftNear.x, topLeftNear.y, topLeftNear.z) * -1, Vector3(topLeftFar.x, topLeftFar.y, topLeftFar.z) * -1);
 
 	//Top right
-	glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
-	glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(topRightNear.x, topRightNear.y, topRightNear.z) * -1, Vector3(topRightFar.x, topRightFar.y, topRightFar.z) * -1);
 
 	//Bottom left
-	glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
-	glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) * -1, Vector3(bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) * -1);
 
 	//Bottom right
-	glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
-	glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.5f), cameraModelMatrix, camera->projection, screenSizeNorm);
+	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, camera->projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) * -1, Vector3(bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) * -1);
 

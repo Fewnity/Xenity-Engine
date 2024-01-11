@@ -111,9 +111,9 @@ std::shared_ptr<Material> Material::MakeMaterial()
 /// </summary>
 void Material::Use()
 {
-	bool matChanged = Graphics::currentMaterial != shared_from_this();
-	bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
-	bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
+	const bool matChanged = Graphics::currentMaterial != shared_from_this();
+	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
+	const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
 
 	//if(true)
 	if (matChanged || cameraChanged || drawTypeChanged)
@@ -126,7 +126,7 @@ void Material::Use()
 			shader->Use();
 			Update();
 
-			int matCount = AssetManager::GetMaterialCount();
+			const int matCount = AssetManager::GetMaterialCount();
 			for (int i = 0; i < matCount; i++)
 			{
 				Material* mat = AssetManager::GetMaterial(i);
@@ -223,7 +223,7 @@ ReflectiveData Material::GetMetaReflectiveData()
 
 void Material::OnReflectionUpdated()
 {
-	bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	const bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!loadResult)
 	{
 		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath());
@@ -232,7 +232,7 @@ void Material::OnReflectionUpdated()
 
 void Material::LoadFileReference()
 {
-	bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult)
 	{
 		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath());

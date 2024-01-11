@@ -300,7 +300,7 @@ void Texture::OnLoadFileReferenceFinished()
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(GetThisShared());
-	unsigned int rgba = 0x1908;
+	const unsigned int rgba = 0x1908;
 	Engine::GetRenderer().SetTextureData(GetThisShared(), rgba, buffer);
 #endif
 
@@ -399,7 +399,7 @@ void Texture::LoadTexture()
 	Debug::Print("Loading texture: " + file->GetPath());
 
 	int fileBufferSize = 0;
-	bool openResult = file->Open(false);
+	const bool openResult = file->Open(false);
 	if (openResult)
 	{
 		unsigned char *fileData = file->ReadAllBinary(fileBufferSize);

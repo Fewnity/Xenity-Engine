@@ -40,17 +40,17 @@ void BoxCollider::OnReflectionUpdated()
 
 bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
 {
-	Vector3 aPos = a->GetTransform()->GetPosition() + a->offset;
-	Vector3 bPos = b->GetTransform()->GetPosition() + b->offset;
+	const Vector3 aPos = a->GetTransform()->GetPosition() + a->offset;
+	const Vector3 bPos = b->GetTransform()->GetPosition() + b->offset;
 
-	Vector3 aMinPos = a->min + aPos;
-	Vector3 aMaxPos = a->max + aPos;
-	Vector3 bMinPos = b->min + bPos;
-	Vector3 bMaxPos = b->max + bPos;
+	const Vector3 aMinPos = a->min + aPos;
+	const Vector3 aMaxPos = a->max + aPos;
+	const Vector3 bMinPos = b->min + bPos;
+	const Vector3 bMaxPos = b->max + bPos;
 
-	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
+	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
+	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
+	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
 
 	if (xColl && yColl && zColl)
 	{
@@ -62,26 +62,26 @@ bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std:
 
 CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b, const Vector3 &aVelocity)
 {
-	Vector3 aPosition = a->GetTransform()->GetPosition();
-	Vector3 bPosition = b->GetTransform()->GetPosition();
+	const Vector3 aPosition = a->GetTransform()->GetPosition();
+	const Vector3 bPosition = b->GetTransform()->GetPosition();
 
-	Vector3 aMinPos = a->min + aPosition + a->offset + aVelocity;
-	Vector3 aMaxPos = a->max + aPosition + a->offset + aVelocity;
-	Vector3 bMinPos = b->min + bPosition + b->offset;
-	Vector3 bMaxPos = b->max + bPosition + b->offset;
+	const Vector3 aMinPos = a->min + aPosition + a->offset + aVelocity;
+	const Vector3 aMaxPos = a->max + aPosition + a->offset + aVelocity;
+	const Vector3 bMinPos = b->min + bPosition + b->offset;
+	const Vector3 bMaxPos = b->max + bPosition + b->offset;
 
-	bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
+	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
+	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
+	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
 	int result = NoSide;
 
 	if (xColl && yColl && zColl)
 	{
-		Vector3 aMinPosBef = a->min + aPosition + a->offset;
-		Vector3 aMaxPosBef = a->max + aPosition + a->offset;
-		bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
-		bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
-		bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
+		const Vector3 aMinPosBef = a->min + aPosition + a->offset;
+		const Vector3 aMaxPosBef = a->max + aPosition + a->offset;
+		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
+		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
+		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
 
 		if (!xCollBefore)
 			result |= SideX;
@@ -113,16 +113,16 @@ void BoxCollider::OnDrawGizmosSelected()
 	pos += offset;
 
 	// Bottom vertex
-	Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
-	Vector3 v2 = pos + Vector3(min.x, min.y, max.z);
-	Vector3 v3 = pos + Vector3(max.x, min.y, min.z);
-	Vector3 v4 = pos + Vector3(max.x, min.y, max.z);
+	const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
+	const Vector3 v2 = pos + Vector3(min.x, min.y, max.z);
+	const Vector3 v3 = pos + Vector3(max.x, min.y, min.z);
+	const Vector3 v4 = pos + Vector3(max.x, min.y, max.z);
 
 	// Top vertex
-	Vector3 v5 = pos + Vector3(min.x, max.y, min.z);
-	Vector3 v6 = pos + Vector3(min.x, max.y, max.z);
-	Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
-	Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
+	const Vector3 v5 = pos + Vector3(min.x, max.y, min.z);
+	const Vector3 v6 = pos + Vector3(min.x, max.y, max.z);
+	const Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
+	const Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
 
 	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 

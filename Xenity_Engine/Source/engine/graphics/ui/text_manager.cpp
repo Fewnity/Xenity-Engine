@@ -34,7 +34,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 		return nullptr;
 
 	textBenchmark->Start();
-	int textLenght = (int)text.size();
+	const int textLenght = (int)text.size();
 
 	// if (textLenght == 0)
 	// {
@@ -70,7 +70,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 	}
 
 	// Create empty mesh
-	int charCountToDraw = textLenght - (textInfo->lineCount - 1);
+	const int charCountToDraw = textLenght - (textInfo->lineCount - 1);
 	// std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData(4 * charCountToDraw, 6 * charCountToDraw, false, false, true);
 	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData(6 * charCountToDraw, 6 * charCountToDraw, false, false, true);
 
@@ -79,7 +79,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 	int drawnCharIndex = 0;
 	for (int i = 0; i < textLenght; i++)
 	{
-		char c = text[i];
+		const char c = text[i];
 		Character *ch = font->Characters[c];
 
 		if (c == '\n')
@@ -150,8 +150,8 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 
 		Vector3 scl = transform->GetScale();
 		scl.x = -scl.x;
-		Vector3 rot = transform->GetRotation();
-		glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
+		const Vector3 rot = transform->GetRotation();
+		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
 		std::vector<std::shared_ptr<Texture>> textures;
 		textures.push_back(font->fontAtlas);
@@ -162,13 +162,13 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character *ch, float x, float y, int letterIndex)
 {
 	// int indice = letterIndex * 4;
-	int indice = letterIndex * 6;
-	int indiceIndex = letterIndex * 6;
+	const int indice = letterIndex * 6;
+	const int indiceIndex = letterIndex * 6;
 
-	float w = ch->rightSize.x;
-	float h = ch->rightSize.y;
+	const float w = ch->rightSize.x;
+	const float h = ch->rightSize.y;
 
-	float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
+	const float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
 
 	// mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
 	// mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);
@@ -207,7 +207,7 @@ TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, 
 
 	for (int i = 0; i < textLen; i++)
 	{
-		Character *ch = font->Characters[text[i]];
+		const Character *ch = font->Characters[text[i]];
 		if (text[i] == '\n')
 		{
 			textInfos->linesInfo[currentLine].lenght *= scale;

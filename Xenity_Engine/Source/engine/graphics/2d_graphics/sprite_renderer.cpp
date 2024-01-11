@@ -48,7 +48,7 @@ void SpriteRenderer::SetOrderInLayer(int orderInLayer)
 /// </summary>
 void SpriteRenderer::Draw()
 {
-	if (auto gameObject = GetGameObject())
+	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{
 		// Draw the sprite only if there is a texture and if the component/gameobject is active
 		if (gameObject->GetLocalActive() && GetIsEnabled())

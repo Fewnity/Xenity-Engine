@@ -6,6 +6,7 @@
 #include <memory>
 
 class Socket;
+class File;
 
 /**
  * Used to print text in a console/file or remotely to a server
@@ -81,4 +82,5 @@ private:
 	static std::string debugText;
 	static std::shared_ptr<Socket> socket;
 	static float SendProfilerCooldown;
+	static std::shared_ptr<File> file;
 };

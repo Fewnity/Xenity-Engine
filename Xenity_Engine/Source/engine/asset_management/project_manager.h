@@ -188,7 +188,7 @@ public:
 	* Find and get a project directory from a path and a parent directory
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
-	static FileType GetFileType(std::string extension);
+	static FileType GetFileType(const std::string& extension);
 
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
 	{

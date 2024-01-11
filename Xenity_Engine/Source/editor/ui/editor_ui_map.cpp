@@ -35,7 +35,7 @@ int EditorUI::DrawInputButton(const std::string& inputName, const std::string& t
 		w -= 25 * uiScale;
 	}
 	ImGui::BeginGroup();
-	std::string id = text + GenerateItemId();
+	const std::string id = text + GenerateItemId();
 	if (ImGui::Button(id.c_str(), ImVec2(w, 0)))
 	{
 		returnValue = 1;
@@ -43,7 +43,7 @@ int EditorUI::DrawInputButton(const std::string& inputName, const std::string& t
 	if (addUnbindButton)
 	{
 		ImGui::SameLine();
-		std::string id2 = "X" + GenerateItemId();
+		const std::string id2 = "X" + GenerateItemId();
 		if (ImGui::Button(id2.c_str()))
 		{
 			returnValue = 2;

@@ -20,14 +20,14 @@ bool FileHandler::HasCodeChanged(const std::string& path)
 		if (!file.is_regular_file()) continue;
 
 		// Check extension
-		std::string ext = file.path().extension().string();
+		const std::string ext = file.path().extension().string();
 		if (ext != ".h" && ext != ".cpp") continue;
 
-		std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+		const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
 
 		// Check last date
-		auto duration = time.time_since_epoch();
-		uint64_t durationCount = duration.count();
+		const auto duration = time.time_since_epoch();
+		const uint64_t durationCount = duration.count();
 		if (durationCount > lastModifiedCodeFileTime)
 		{
 			lastModifiedCodeFileTime = durationCount;
@@ -45,7 +45,7 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 		// Check is file
 		if (!file.is_regular_file())
 		{
-			bool temp = HasFileChangedOrAdded(file.path().string());
+			const bool temp = HasFileChangedOrAdded(file.path().string());
 			if (temp)
 			{
 				changed = true;
@@ -53,7 +53,7 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 		}
 		else
 		{
-			std::string ext = file.path().extension().string();
+			const std::string ext = file.path().extension().string();
 
 			if (ext != ".meta")
 				continue;
@@ -62,9 +62,9 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 		tempFileCount++;
 
 		// Check last date
-		std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
-		auto duration = time.time_since_epoch();
-		uint64_t durationCount = duration.count();
+		const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+		const auto duration = time.time_since_epoch();
+		const uint64_t durationCount = duration.count();
 		if (durationCount > lastModifiedFileTime)
 		{
 			lastModifiedFileTime = durationCount;

@@ -24,13 +24,13 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::vector<std::shared_ptr<Texture>>& textures, std::shared_ptr <MeshData> meshData, RenderingSettings& renderSettings, std::shared_ptr <Material> material)
 {
-	glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
+	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 	Graphics::DrawMesh(meshData, textures, renderSettings, matrix, material, false);
 }
 
 void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const std::vector<std::shared_ptr<Texture>>& textures, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)
 {
-	Vector3 scale = transform->GetScale();
+	const Vector3 scale = transform->GetScale();
 
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;

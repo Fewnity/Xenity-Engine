@@ -110,8 +110,8 @@ void RendererGE::SetProjection2D(float projectionSize, float nearClippingPlane, 
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
-	float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
+	const float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+	const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
@@ -131,7 +131,7 @@ void RendererGE::ResetView()
 
 void RendererGE::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 {
-	auto transform = camera->GetTransform();
+	const std::shared_ptr<Transform> transform = camera->GetTransform();
 	Vector3 position = transform->GetPosition();
 	Vector3 rotation = transform->GetRotation();
 	glMatrixMode(GL_VIEW);
@@ -302,7 +302,7 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	int subMeshCount = meshData->subMeshCount;
+	const int subMeshCount = meshData->subMeshCount;
 	size_t textureCount = textures.size();
 
 	int params = 0;
@@ -417,10 +417,10 @@ void RendererGE::DisableAllLight()
 
 void RendererGE::Setlights(const std::shared_ptr<Camera> &camera)
 {
-	auto cameraTransform = camera->GetTransform();
+	std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
 	DisableAllLight();
-	int lightCount = AssetManager::GetLightCount();
+	const int lightCount = AssetManager::GetLightCount();
 	int usedLightCount = 0;
 	for (int i = 0; i < lightCount; i++)
 	{

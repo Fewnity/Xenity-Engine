@@ -100,12 +100,12 @@ void Editor::OnWindowFocused()
 {
 	if (ProjectManager::GetIsProjectLoaded())
 	{
-		bool needRefresh = FileHandler::HasFileChangedOrAdded(ProjectManager::GetAssetFolderPath());
+		const bool needRefresh = FileHandler::HasFileChangedOrAdded(ProjectManager::GetAssetFolderPath());
 		if (needRefresh)
 		{
 			ProjectManager::RefreshProjectDirectory();
 		}
-		bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
+		const bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
 		if (needCompile && EngineSettings::compileOnCodeChanged)
 		{
 			Compiler::HotReloadGame();
@@ -162,7 +162,7 @@ void Editor::Update()
 			}
 		}
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P))) // Pause / UnPause game
+		if (InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P)) // Pause / UnPause game
 		{
 			if (GameplayManager::GetGameState() == GameState::Playing)
 			{
@@ -214,8 +214,8 @@ void Editor::Draw()
 
 	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
-	ImGuiID dsId = ImGui::GetID("BackgroundDock");
-	ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
+	const ImGuiID dsId = ImGui::GetID("BackgroundDock");
+	const ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
 	if (!first_time)
 	{
 		ImGui::DockBuilderRemoveNode(dsId);
@@ -268,9 +268,9 @@ void Editor::ApplyEditorStyle()
 	// Button 35 69 109
 	// Element selected 56 123 203
 
-	Vector4 bgColor = EngineSettings::backbgroundColor.GetRGBA().ToVector4();
-	Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
-	Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
+	const Vector4 bgColor = EngineSettings::backbgroundColor.GetRGBA().ToVector4();
+	const Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+	const Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
 
 	if (GameplayManager::GetGameState() != Stopped) 
@@ -283,15 +283,15 @@ void Editor::ApplyEditorStyle()
 	else
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x * pTint.x, bgColor.y * pTint.y, bgColor.z * pTint.z, 1));
 
-	ImVec4 colorLevel0 = ImVec4(secondaryColor.x, secondaryColor.y, secondaryColor.z, 1);
-	ImVec4 colorLevel05 = ImVec4(secondaryColor.x - 0.05f, secondaryColor.y - 0.05f, secondaryColor.z - 0.05f, 1);
-	ImVec4 colorLevel1 = ImVec4(secondaryColor.x - 0.1f, secondaryColor.y - 0.1f, secondaryColor.z - 0.1f, 1);
-	ImVec4 colorLevel15 = ImVec4(secondaryColor.x - 0.15f, secondaryColor.y - 0.15f, secondaryColor.z - 0.15f, 1);
-	ImVec4 colorLevel2 = ImVec4(secondaryColor.x - 0.2f, secondaryColor.y - 0.2f, secondaryColor.z - 0.2f, 1);
-	ImVec4 colorLevel25 = ImVec4(secondaryColor.x - 0.25f, secondaryColor.y - 0.25f, secondaryColor.z - 0.25f, 1);
-	ImVec4 colorLevel3 = ImVec4(secondaryColor.x - 0.3f, secondaryColor.y - 0.3f, secondaryColor.z - 0.3f, 1);
-	ImVec4 colorLevel4 = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 1);
-	ImVec4 colorLevel4Alpha = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 0.5f);
+	const ImVec4 colorLevel0 = ImVec4(secondaryColor.x, secondaryColor.y, secondaryColor.z, 1);
+	const ImVec4 colorLevel05 = ImVec4(secondaryColor.x - 0.05f, secondaryColor.y - 0.05f, secondaryColor.z - 0.05f, 1);
+	const ImVec4 colorLevel1 = ImVec4(secondaryColor.x - 0.1f, secondaryColor.y - 0.1f, secondaryColor.z - 0.1f, 1);
+	const ImVec4 colorLevel15 = ImVec4(secondaryColor.x - 0.15f, secondaryColor.y - 0.15f, secondaryColor.z - 0.15f, 1);
+	const ImVec4 colorLevel2 = ImVec4(secondaryColor.x - 0.2f, secondaryColor.y - 0.2f, secondaryColor.z - 0.2f, 1);
+	const ImVec4 colorLevel25 = ImVec4(secondaryColor.x - 0.25f, secondaryColor.y - 0.25f, secondaryColor.z - 0.25f, 1);
+	const ImVec4 colorLevel3 = ImVec4(secondaryColor.x - 0.3f, secondaryColor.y - 0.3f, secondaryColor.z - 0.3f, 1);
+	const ImVec4 colorLevel4 = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 1);
+	const ImVec4 colorLevel4Alpha = ImVec4(secondaryColor.x - 0.4f, secondaryColor.y - 0.4f, secondaryColor.z - 0.4f, 0.5f);
 
 	ImGui::PushStyleColor(ImGuiCol_Button, colorLevel25);
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorLevel1);
@@ -379,7 +379,7 @@ void Editor::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
 	if (currentProjectDirectory)
 	{
 		ProjectManager::FillProjectDirectory(currentProjectDirectory);
-		size_t itemCount = currentProjectDirectory->files.size();
+		const size_t itemCount = currentProjectDirectory->files.size();
 		for (size_t i = 0; i < itemCount; i++)
 		{
 			currentProjectDirectory->files[i]->LoadFileReference();
@@ -411,7 +411,7 @@ void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicat
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 
 		// Duplicate all components
-		size_t componentCount = goToDuplicate->components.size();
+		const size_t componentCount = goToDuplicate->components.size();
 		for (size_t i = 0; i < componentCount; i++)
 		{
 			std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
@@ -496,14 +496,14 @@ void Editor::AddDragAndDrop(const std::string& path)
 	dragdropEntries.push_back(path);
 }
 
-void Editor::StartFolderCopy(std::string path, std::string newPath)
+void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
 {
 	for (const auto& file : std::filesystem::directory_iterator(path))
 	{
 		// Check is file
 		if (!file.is_regular_file())
 		{
-			std::string newFolderPath = newPath + file.path().filename().string() + '\\';
+			const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
 			FileSystem::fileSystem->CreateFolder(newFolderPath);
 			StartFolderCopy(file.path().string() + '\\', newFolderPath);
 		}
@@ -577,7 +577,7 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 	bool foundOne = false;
 	GetIncrementedGameObjectNameInfo(name, finalName, number);
 
-	int gameObjectCount = GameplayManager::gameObjects.size();
+	const int gameObjectCount = GameplayManager::gameObjects.size();
 	for (int i = 0; i < gameObjectCount; i++)
 	{
 		std::string tempName;
@@ -599,14 +599,14 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 
 void Editor::OnDragAndDropFileFinished()
 {
-	int size = dragdropEntries.size();
+	const int size = dragdropEntries.size();
 	for (int dragIndex = 0; dragIndex < size; dragIndex++)
 	{
 		try
 		{
 			std::string& path = dragdropEntries[dragIndex];
-			bool isDirectory = std::filesystem::is_directory(path);
-			int pathSize = path.size();
+			const bool isDirectory = std::filesystem::is_directory(path);
+			const int pathSize = path.size();
 
 			// Find the last backslash
 			int lastBackSlash = -1;
@@ -619,7 +619,7 @@ void Editor::OnDragAndDropFileFinished()
 				}
 			}
 			// Remove the parent's path of the file/folder
-			std::string newPath = Editor::GetCurrentProjectDirectory()->path + path.substr(lastBackSlash + 1);
+			const std::string newPath = Editor::GetCurrentProjectDirectory()->path + path.substr(lastBackSlash + 1);
 
 			if (isDirectory)
 			{
@@ -628,7 +628,7 @@ void Editor::OnDragAndDropFileFinished()
 			}
 			else
 			{
-				int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
+				const int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
 				if (copyResult == -1)
 				{
 					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", Dialog_Type_YES_NO_CANCEL);

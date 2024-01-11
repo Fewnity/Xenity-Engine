@@ -135,13 +135,13 @@ void EditorUI::UpdateUIScale()
 	//float y = io.DisplaySize.y;
 
 	SDL_DisplayMode DM;
-	int index = SDL_GetWindowDisplayIndex(Window::window);
+	const int index = SDL_GetWindowDisplayIndex(Window::window);
 	//float oldUiScale = uiScale;
 	if (index >= 0)
 	{
 		float dpi = 0;
 		float unused;
-		int result = SDL_GetDisplayDPI(index, &dpi, &unused, &unused);
+		const int result = SDL_GetDisplayDPI(index, &dpi, &unused, &unused);
 		if (result == 0)
 		{
 			uiScale = dpi / 96.0f;
@@ -198,15 +198,15 @@ void EditorUI::SetRoundedCorner(float value)
 
 std::string EditorUI::GenerateItemId()
 {
-	std::string itemId = "##" + std::to_string(uiId);
+	const std::string itemId = "##" + std::to_string(uiId);
 	uiId++;
 	return itemId;
 }
 
 void EditorUI::DrawTextCentered(const std::string& text)
 {
-	float windowWidth = ImGui::GetWindowSize().x;
-	float textWidth = ImGui::CalcTextSize(text.c_str()).x;
+	const float windowWidth = ImGui::GetWindowSize().x;
+	const float textWidth = ImGui::CalcTextSize(text.c_str()).x;
 	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
 	ImGui::Text(text.c_str());
 }

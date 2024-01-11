@@ -30,9 +30,9 @@ void InspectorMenu::Init()
 void InspectorMenu::Draw()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	std::string windowName = "Inspector###Inspector" + std::to_string(id);
+	const std::string windowName = "Inspector###Inspector" + std::to_string(id);
 	bool isOpen = true;
-	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -133,7 +133,7 @@ void InspectorMenu::DrawFilePreview()
 			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
 		}
 
-		// If the preview is a text, calculate the texte size
+		// If the preview is a text, calculate the text size
 		if (!previewText.empty())
 		{
 			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10; // + 10 to avoid the hided last line in some text
@@ -148,22 +148,22 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (textureId != 0) // Draw image preview
 		{
-			std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
-			ImVec2 availArea = ImGui::GetContentRegionAvail();
+			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
+			const ImVec2 availArea = ImGui::GetContentRegionAvail();
 			Engine::GetRenderer().BindTexture(texture);
 			ImGui::Image((ImTextureID)textureId, availArea);
 
-			std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
-			ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
+			const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
+			const ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
 			ImVec2 textPos;
 			textPos.x = availArea.x / 2.0f - textSize.x / 2.0f + ImGui::GetCursorPosX();
 			textPos.y = availArea.y - textSize.y / 2.0f;
 
 			//Draw text background
-			ImVec2 childWindowPos = ImGui::GetWindowPos();
+			const ImVec2 childWindowPos = ImGui::GetWindowPos();
 			ImDrawList* draw_list = ImGui::GetWindowDrawList();
-			ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
-			ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
+			const ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
+			const ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
 			draw_list->AddRectFilled(rectTopLeftPos, rectBottomRightPos, ImColor(ImVec4(0, 0, 0, 0.35f)));
 
 			// Print texture resolution
@@ -172,7 +172,7 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (loadedPreview->fileType == File_Audio) // Draw audio preview
 		{
-			size_t playedSoundCount = AudioManager::channel->playedSounds.size();
+			const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
 			AudioClipStream* stream = nullptr;
 			for (size_t i = 0; i < playedSoundCount; i++)
 			{
@@ -224,14 +224,14 @@ void InspectorMenu::DrawFilePreview()
 			if (stream)
 			{
 				// Get audio stream info
-				float seekPos = (float)(stream->GetSeekPosition() / (double)stream->GetSampleCount());
-				float totalTime = (float)(stream->GetSampleCount() / (double)stream->GetFrequency());
+				const float seekPos = (float)(stream->GetSeekPosition() / (double)stream->GetSampleCount());
+				const float totalTime = (float)(stream->GetSampleCount() / (double)stream->GetFrequency());
 
 				// Draw current time
 				availSize = ImGui::GetContentRegionAvail();
 				ImVec2 cursorPos = ImGui::GetCursorPos();
-				std::string currentTimeText = std::to_string(((int)(totalTime * seekPos * 1000)) / 1000.0f);
-				ImVec2 infoTextSize2 = ImGui::CalcTextSize(currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
+				const std::string currentTimeText = std::to_string(((int)(totalTime * seekPos * 1000)) / 1000.0f);
+				const ImVec2 infoTextSize2 = ImGui::CalcTextSize(currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
 				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize2.x / 2 + cursorPos.x);
 				ImGui::Text("%ss", currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
 
@@ -241,9 +241,9 @@ void InspectorMenu::DrawFilePreview()
 
 				// Move cursor when user is clicking on the timeline
 				float normalisedPos = ((mousePos.x - windowPos.x - cursorPos.x) / (float)(availSize.x));
-				float mouseYPos = mousePos.y - windowPos.y;
-				bool isMouseXPosOk = normalisedPos >= 0 && normalisedPos <= 1;
-				bool isMouseYPosOk = mouseYPos >= cursorPos.y && mouseYPos <= cursorPos.y + 50;
+				const float mouseYPos = mousePos.y - windowPos.y;
+				const bool isMouseXPosOk = normalisedPos >= 0 && normalisedPos <= 1;
+				const bool isMouseYPosOk = mouseYPos >= cursorPos.y && mouseYPos <= cursorPos.y + 50;
 
 				if (ImGui::IsMouseClicked(0) && isMouseXPosOk && isMouseYPosOk)
 				{
@@ -270,8 +270,8 @@ void InspectorMenu::DrawFilePreview()
 				}
 
 				std::string totalTimeText = std::to_string(((int)(totalTime * 1000)) / 1000.0f);
-				std::string infoText = audioTypeText + ", " + std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
-				ImVec2 infoTextSize = ImGui::CalcTextSize(infoText.c_str());
+				const std::string infoText = audioTypeText + ", " + std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
+				const ImVec2 infoTextSize = ImGui::CalcTextSize(infoText.c_str());
 				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize.x / 2 + cursorPos.x);
 				ImGui::Text("%s", infoText.c_str());
 			}
@@ -285,13 +285,13 @@ void InspectorMenu::DrawFilePreview()
 
 void InspectorMenu::DrawFileInfo(std::shared_ptr<FileReference>& selectedFileReference)
 {
-	std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
+	const std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
 	ImGui::Text(fileNameExt.c_str());
 	ImGui::Separator();
 
-	auto reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
+	std::shared_ptr<Reflective> reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
 
-	auto metaReflection = selectedFileReference->GetMetaReflectiveData();
+	ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (reflection)
 	{
 		auto reflectionList = reflection->GetReflectiveData();
@@ -357,7 +357,7 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 
 	DrawComponentsHeaders(selectedGameObject);
 
-	float cursorX = ImGui::GetCursorPosX();
+	const float cursorX = ImGui::GetCursorPosX();
 	ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
 	bool justChanged = false;
 	if (ImGui::Button("Add Component", ImVec2(startAvailableSize.x / 2.0f, 0)))
@@ -370,7 +370,7 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 		ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
 		ImGui::BeginChild("inspectorComponentList", ImVec2(startAvailableSize.x / 2.0f, 0), ImGuiChildFlags_FrameStyle);
 		std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
-		size_t componentCount = componentNames.size();
+		const size_t componentCount = componentNames.size();
 		for (size_t i = 0; i < componentCount; i++)
 		{
 			if (ImGui::Button(componentNames[i].c_str()))
@@ -396,8 +396,8 @@ void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGame
 		std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
-			std::string payloadName = "Type" + typeId;
+			const std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
+			const std::string payloadName = "Type" + typeId;
 			ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
 			ImGui::Text("Transform");
 			ImGui::EndDragDropSource();
@@ -449,7 +449,6 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 	for (int i = 0; i < componentCount; i++)
 	{
 		auto& comp = selectedGameObject->components[i];
-		//Draw component title
 
 		float cursorY = ImGui::GetCursorPosY();
 
@@ -461,7 +460,7 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 			comp->SetIsEnabled(isEnable);
 		}
 		ImGui::SetCursorPosY(cursorY);
-		std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
+		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
@@ -469,8 +468,8 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 			{
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{
-					std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
-					std::string payloadName = "Type" + typeId;
+					const std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
+					const std::string payloadName = "Type" + typeId;
 					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
 					if (!comp->GetComponentName().empty())
 						ImGui::Text("%s", comp->GetComponentName().c_str());
@@ -493,7 +492,9 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 				ImGui::Separator();
 			}
 		}
-		float lastCursorY = ImGui::GetCursorPosY();
+
+		//Draw component title
+		const float lastCursorY = ImGui::GetCursorPosY();
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY + 3);
 		if (!comp->GetComponentName().empty())

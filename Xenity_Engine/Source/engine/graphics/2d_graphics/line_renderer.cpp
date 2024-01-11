@@ -50,7 +50,7 @@ void LineRenderer::SetOrderInLayer(int orderInLayer)
 /// </summary>
 void LineRenderer::Draw()
 {
-	if (auto gameObject = GetGameObject())
+	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{
 		// Draw the sprite only if there is a texture and if the component/gameobject is active
 		if (gameObject->GetLocalActive() && GetIsEnabled())
@@ -59,19 +59,19 @@ void LineRenderer::Draw()
 				meshData.reset();
 
 			//float sizeFixer = 0.1f;
-			float sizeFixer = 1.0f;
+			const float sizeFixer = 1.0f;
 
-			Vector2 dir = (Vector2(endPosition.x, endPosition.y) - Vector2(startPosition.x, startPosition.y)).Normalized();
+			const Vector2 dir = (Vector2(endPosition.x, endPosition.y) - Vector2(startPosition.x, startPosition.y)).Normalized();
 
 			Vector3 start = startPosition * sizeFixer;
 			Vector3 end = endPosition * sizeFixer;
 			start.x = -start.x;
 			end.x = -end.x;
 
-			float width2 = width * sizeFixer;
+			const float width2 = width * sizeFixer;
 
-			float fixedXWidth = width2 / 2.0f * dir.y;
-			float fixedYWidth = width2 / 2.0f * dir.x;
+			const float fixedXWidth = width2 / 2.0f * dir.y;
+			const float fixedYWidth = width2 / 2.0f * dir.x;
 
 			meshData = MeshData::MakeMeshData(4, 6, false, false, true);
 			meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0, 0);

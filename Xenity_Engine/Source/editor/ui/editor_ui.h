@@ -160,8 +160,8 @@ public:
 		bool valueChanged = false;
 		for (const auto& kv : myMap)
 		{
-			std::string variableName = GetPrettyVariableName(kv.first);
-			ReflectiveEntry reflectionEntry = kv.second;
+			const std::string variableName = GetPrettyVariableName(kv.first);
+			const ReflectiveEntry reflectionEntry = kv.second;
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
@@ -385,7 +385,7 @@ public:
 	static void DrawFileReference(FileType fileType, const std::string& className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
 	{
 		std::string inputText = "None (" + className + ")";
-		auto ptr = valuePtr->get();
+		const auto ptr = valuePtr->get();
 		if (ptr != nullptr)
 		{
 			if (ptr->file != nullptr)
@@ -416,7 +416,7 @@ public:
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
-		std::string payloadName = "Files" + std::to_string(fileType);
+		const std::string payloadName = "Files" + std::to_string(fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
 			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
@@ -427,25 +427,24 @@ public:
 	template <typename T>
 	static void DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
 	{
-		size_t vectorSize = valuePtr->get().size();
+		const size_t vectorSize = valuePtr->get().size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			const auto& ptr = valuePtr->get()[vectorI];
 			DrawInput("", (int&)ptr);
-			//if()
 		}
 
-		std::string addText = "Add " + GenerateItemId();
+		const std::string addText = "Add " + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
 			valuePtr->get().push_back(0);
 		}
 
-		std::string removeText = "Remove " + GenerateItemId();
+		const std::string removeText = "Remove " + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
-			size_t textureSize = valuePtr->get().size();
+			const size_t textureSize = valuePtr->get().size();
 			if (textureSize != 0)
 			{
 				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
@@ -456,8 +455,8 @@ public:
 	template <typename T>
 	static void DrawVector(FileType fileType, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
 	{
-		size_t vectorSize = valuePtr->get().size();
-		std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+		const size_t vectorSize = valuePtr->get().size();
+		const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -494,7 +493,7 @@ public:
 				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
-				std::string payloadName = "Files" + std::to_string(fileType);
+				const std::string payloadName = "Files" + std::to_string(fileType);
 				if (DragDropTarget(payloadName, ref))
 				{
 					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
@@ -502,13 +501,13 @@ public:
 				}
 			}
 
-			std::string addText = "Add " + className + GenerateItemId();
+			const std::string addText = "Add " + className + GenerateItemId();
 			if (ImGui::Button(addText.c_str()))
 			{
 				valuePtr->get().push_back(nullptr);
 			}
 
-			std::string removeText = "Remove " + className + GenerateItemId();
+			const std::string removeText = "Remove " + className + GenerateItemId();
 			if (ImGui::Button(removeText.c_str()))
 			{
 				if (vectorSize != 0)
@@ -521,7 +520,7 @@ public:
 
 	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
 	{
-		size_t vectorSize = valuePtr->get().size();
+		const size_t vectorSize = valuePtr->get().size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
@@ -538,7 +537,7 @@ public:
 			}
 
 			std::shared_ptr <Transform> ref = nullptr;
-			std::string payloadName = "Type" + std::to_string(dragdropId);
+			const std::string payloadName = "Type" + std::to_string(dragdropId);
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get()[vectorI] = ref;
@@ -546,13 +545,13 @@ public:
 			}
 		}
 
-		std::string addText = "Add " + className + GenerateItemId();
+		const std::string addText = "Add " + className + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
 			valuePtr->get().push_back(std::weak_ptr<Transform>());
 		}
 
-		std::string removeText = "Remove " + className + GenerateItemId();
+		const std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
 			if (vectorSize != 0)
@@ -564,7 +563,7 @@ public:
 
 	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Component>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
 	{
-		size_t vectorSize = valuePtr->get().size();
+		const size_t vectorSize = valuePtr->get().size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
@@ -581,7 +580,7 @@ public:
 			}
 
 			std::shared_ptr <Component> ref = nullptr;
-			std::string payloadName = "Type" + std::to_string(dragdropId);
+			const std::string payloadName = "Type" + std::to_string(dragdropId);
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get()[vectorI] = ref;
@@ -589,13 +588,13 @@ public:
 			}
 		}
 
-		std::string addText = "Add " + className + GenerateItemId();
+		const std::string addText = "Add " + className + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
 			valuePtr->get().push_back(std::weak_ptr<Component>());
 		}
 
-		std::string removeText = "Remove " + className + GenerateItemId();
+		const std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
 			if (vectorSize != 0)
@@ -624,7 +623,7 @@ public:
 			}
 
 			std::shared_ptr <GameObject> ref = nullptr;
-			std::string payloadName = "Type" + std::to_string(dragdropId);
+			const std::string payloadName = "Type" + std::to_string(dragdropId);
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get()[vectorI] = ref;
@@ -632,13 +631,13 @@ public:
 			}
 		}
 
-		std::string addText = "Add " + className + GenerateItemId();
+		const std::string addText = "Add " + className + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
 			valuePtr->get().push_back(std::weak_ptr<GameObject>());
 		}
 
-		std::string removeText = "Remove " + className + GenerateItemId();
+		const std::string removeText = "Remove " + className + GenerateItemId();
 		if (ImGui::Button(removeText.c_str()))
 		{
 			if (vectorSize != 0)

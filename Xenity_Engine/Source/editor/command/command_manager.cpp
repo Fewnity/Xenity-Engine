@@ -12,7 +12,7 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 	// If we are not at the end of the list, remove all other commands starting from currentCommand to the end of the list
 	if (currentCommand != commands.size() - 1) 
 	{
-		int count = (commands.size() - 1) - (currentCommand + 1);
+		const int count = (commands.size() - 1) - (currentCommand + 1);
 		for (int i = 0; i < count; i++)
 		{
 			commands.erase(commands.begin() + (currentCommand + 1));

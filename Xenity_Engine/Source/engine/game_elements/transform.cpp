@@ -66,7 +66,7 @@ Vector3 Transform::GetLocalScale() const
 
 Vector3 Transform::GetForward() const
 {
-	Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
+	const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
 	return direction;
 }
 
@@ -82,13 +82,13 @@ Vector3 Transform::GetLeft() const
 
 Vector3 Transform::GetRight() const
 {
-	Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
+	const Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
 	return direction;
 }
 
 Vector3 Transform::GetUp() const
 {
-	Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
+	const Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
 	return direction;
 }
 
@@ -108,7 +108,7 @@ void Transform::SetPosition(const Vector3& value)
 
 	position = value;
 
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->parent.expired())
 	{
 		localPosition = value;
@@ -148,7 +148,7 @@ void Transform::SetRotation(const Vector3& value)
 		return;
 
 	rotation = value;
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->parent.expired())
 	{
 		localRotation = value;
@@ -197,7 +197,7 @@ void Transform::SetLocalScale(const Vector3& value)
 
 void Transform::OnParentChanged()
 {
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (!gm->parent.expired())
 	{
 		auto parentTransform = gm->parent.lock()->GetTransform();
@@ -222,9 +222,9 @@ void Transform::SetChildrenWorldPositions()
 {
 	UpdateTransformationMatrix();
 
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 
-	int childCount = gm->GetChildrenCount();
+	const int childCount = gm->GetChildrenCount();
 
 	//For each children
 	for (int i = 0; i < childCount; i++)
@@ -246,21 +246,21 @@ void Transform::UpdateWorldValues()
 
 void Transform::UpdateWorldRotation()
 {
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->parent.expired())
 	{
 		rotation = localRotation;
 		return;
 	}
 
-	auto parentTransform = gm->parent.lock()->GetTransform();
-	Vector3 parentRotation = parentTransform->GetRotation();
-	glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentRotation.z, parentRotation.x, parentRotation.y)));
-	glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(localRotation.z, localRotation.x, localRotation.y)));
+	const std::shared_ptr<Transform> parentTransform = gm->parent.lock()->GetTransform();
+	const Vector3 parentRotation = parentTransform->GetRotation();
+	const glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentRotation.z, parentRotation.x, parentRotation.y)));
+	const glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(localRotation.z, localRotation.x, localRotation.y)));
 
-	glm::quat quatChildGlobal = quatParentGlobal * quatChildLocal;
+	const glm::quat quatChildGlobal = quatParentGlobal * quatChildLocal;
 
-	glm::vec3 eulerChildGlobal = glm::degrees(glm::eulerAngles(quatChildGlobal));
+	const glm::vec3 eulerChildGlobal = glm::degrees(glm::eulerAngles(quatChildGlobal));
 
 	Vector3 newRotation;
 	newRotation.x = eulerChildGlobal.y;
@@ -272,7 +272,7 @@ void Transform::UpdateWorldRotation()
 
 void Transform::UpdateWorldPosition()
 {
-	auto gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->parent.expired())
 	{
 		position = localPosition;
@@ -280,9 +280,9 @@ void Transform::UpdateWorldPosition()
 	}
 
 	auto parentTransform = gm->parent.lock()->GetTransform();
-	Vector3 parentPosition = parentTransform->GetPosition();
-	Vector3 parentScale = parentTransform->GetScale();
-	Vector3 thisLocalPosition = GetLocalPosition();
+	const Vector3 parentPosition = parentTransform->GetPosition();
+	const Vector3 parentScale = parentTransform->GetScale();
+	const Vector3 thisLocalPosition = GetLocalPosition();
 	//Get child local position
 	const float scaledLocalPos[3] = { (thisLocalPosition.x * parentScale.x), -(thisLocalPosition.y * parentScale.y), -(thisLocalPosition.z * parentScale.z) };
 
@@ -315,7 +315,7 @@ void Transform::UpdateTransformationMatrix()
 
 	for (int i = 0; i < 3; i++)
 	{
-		int ix3 = i * 3;
+		const int ix3 = i * 3;
 		for (int j = 0; j < 3; j++)
 		{
 			rotationMatrix[ix3 + j] = transformationMatrix[i][j];
@@ -328,7 +328,7 @@ void Transform::UpdateTransformationMatrix()
 void Transform::UpdateWorldScale()
 {
 	scale = localScale;
-	auto lockGameObject = gameObject.lock();
+	const std::shared_ptr<GameObject> lockGameObject = gameObject.lock();
 	if (auto parentGm = lockGameObject->parent.lock())
 	{
 		while (parentGm != nullptr)
@@ -337,10 +337,10 @@ void Transform::UpdateWorldScale()
 			parentGm = parentGm->parent.lock();
 		}
 
-		int childCount = lockGameObject->GetChildrenCount();
+		const int childCount = lockGameObject->GetChildrenCount();
 		for (int i = 0; i < childCount; i++)
 		{
-			auto child = lockGameObject->children[i].lock();
+			std::shared_ptr<GameObject> child = lockGameObject->children[i].lock();
 			child->GetTransform()->UpdateWorldScale();
 		}
 	}
@@ -348,32 +348,32 @@ void Transform::UpdateWorldScale()
 
 Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const
 {
-	glm::mat4 parentGlobalTransformInverse = glm::inverse(parentMatrix);
-	glm::mat4 childLocalTransform = parentGlobalTransformInverse * childMatrix;
+	const glm::mat4 parentGlobalTransformInverse = glm::inverse(parentMatrix);
+	const glm::mat4 childLocalTransform = parentGlobalTransformInverse * childMatrix;
 
-	glm::vec3 childLocalPosition = glm::vec3(childLocalTransform[3]);
+	const glm::vec3 childLocalPosition = glm::vec3(childLocalTransform[3]);
 
 	return Vector3(-childLocalPosition.x, childLocalPosition.y, childLocalPosition.z);
 }
 
 Vector3 Transform::GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const
 {
-	glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentWorldRotation.z, parentWorldRotation.x, parentWorldRotation.y)));
-	glm::quat quatChildGlobal = glm::quat(glm::radians(glm::vec3(childWorldRotation.z, childWorldRotation.x, childWorldRotation.y)));
+	const glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentWorldRotation.z, parentWorldRotation.x, parentWorldRotation.y)));
+	const glm::quat quatChildGlobal = glm::quat(glm::radians(glm::vec3(childWorldRotation.z, childWorldRotation.x, childWorldRotation.y)));
 
 	glm::quat quatChildGlobalRelativeToParentInverse = glm::inverse(quatParentGlobal) * quatChildGlobal;
 
-	float tempx = -quatChildGlobalRelativeToParentInverse.x;
-	float tempy = -quatChildGlobalRelativeToParentInverse.y;
-	float tempz = -quatChildGlobalRelativeToParentInverse.z;
-	float tempw = -quatChildGlobalRelativeToParentInverse.w;
+	const float tempx = -quatChildGlobalRelativeToParentInverse.x;
+	const float tempy = -quatChildGlobalRelativeToParentInverse.y;
+	const float tempz = -quatChildGlobalRelativeToParentInverse.z;
+	const float tempw = -quatChildGlobalRelativeToParentInverse.w;
 
 	quatChildGlobalRelativeToParentInverse.x = tempy;
 	quatChildGlobalRelativeToParentInverse.y = tempz;
 	quatChildGlobalRelativeToParentInverse.z = tempx;
 	quatChildGlobalRelativeToParentInverse.w = tempw;
 
-	glm::mat4 matChildRelative = glm::mat4_cast(quatChildGlobalRelativeToParentInverse);
+	const glm::mat4 matChildRelative = glm::mat4_cast(quatChildGlobalRelativeToParentInverse);
 
 	float x, y, z;
 	glm::extractEulerAngleYXZ(matChildRelative, x, y, z);

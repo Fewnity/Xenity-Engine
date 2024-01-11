@@ -193,7 +193,7 @@ public:
 	static std::shared_ptr <MeshData> rotationCircleY;
 	static std::shared_ptr <MeshData> rotationCircleZ;
 	static std::shared_ptr <Texture> toolArrowsTexture;
-	static void StartFolderCopy(std::string path, std::string newPath);
+	static void StartFolderCopy(const std::string& path, const std::string& newPath);
 
 	static std::string GetIncrementedGameObjectName(std::string name);
 	static std::vector<std::shared_ptr<Menu>> menus;

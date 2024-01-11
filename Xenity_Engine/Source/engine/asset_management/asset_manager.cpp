@@ -191,7 +191,7 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 		auto map = reflections[reflectionIndex]->GetReflectiveData();
 		for (auto& kv : map)
 		{
-			VariableReference& variableRef = kv.second.variable.value();
+			const VariableReference& variableRef = kv.second.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 			{
 				if (valuePtr->get() == fileReference)
@@ -236,7 +236,7 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
 			{
-				size_t vectorSize = valuePtr->get().size();
+				const size_t vectorSize = valuePtr->get().size();
 				for (size_t i = 0; i < vectorSize; i++)
 				{
 					if (valuePtr->get()[i] == fileReference)
@@ -337,7 +337,7 @@ void AssetManager::RemoveUnusedFiles()
 	for (int i = 0; i < fileRefCount; i++)
 	{
 		std::shared_ptr<FileReference> fileRef = GetFileReference(i);
-		int refCount = fileRef.use_count();
+		const int refCount = fileRef.use_count();
 		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
 		if (refCount == 2)
 		{
@@ -373,7 +373,7 @@ int AssetManager::GetLightCount()
 std::string AssetManager::GetDefaultFileData(FileType fileType)
 {
 	std::string data = "{\n}";
-	std::shared_ptr<File> newFile;
+	std::shared_ptr<File> newFile = nullptr;
 
 	switch (fileType)
 	{

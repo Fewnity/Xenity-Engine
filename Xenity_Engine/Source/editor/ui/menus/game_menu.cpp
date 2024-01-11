@@ -12,11 +12,11 @@ void GameMenu::Init()
 
 void GameMenu::Draw()
 {
-	std::shared_ptr<Camera> camera;
+	std::shared_ptr<Camera> camera = nullptr;
 	Vector2Int frameBufferSize;
 	if (startAvailableSize.x != 0 && startAvailableSize.y != 0)
 	{
-		size_t cameraCount = Graphics::cameras.size();
+		const size_t cameraCount = Graphics::cameras.size();
 
 		// Get game's camera
 		for (size_t i = 0; i < cameraCount; i++)
@@ -53,7 +53,7 @@ void GameMenu::Draw()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	bool isOpen = true;
-	bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
 	isLastFrameOpened = visible;
 	if (visible)
 	{
@@ -103,9 +103,9 @@ void GameMenu::DrawNoCameraText()
 	ImGui::PushFont(font);
 
 	//Draw text
-	std::string noCamText = "There is no camera";
-	ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
-	float offY = ImGui::GetCursorPosY();
+	const std::string noCamText = "There is no camera";
+	const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+	const float offY = ImGui::GetCursorPosY();
 	ImGui::SetCursorPos(ImVec2((startAvailableSize.x - textSize.x) / 2.0f, (startAvailableSize.y + offY) / 2.0f));
 	ImGui::Text(noCamText.c_str());
 	ImGui::PopFont();

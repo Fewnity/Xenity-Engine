@@ -79,7 +79,7 @@ void MeshData::AddVertex(float u, float v, const Color &color, float x, float y,
 	Vertex vert;
 	vert.u = u;
 	vert.v = v;
-#ifdef __PSP__
+#if defined(__PSP__)
 	vert.color = color.GetUnsignedIntABGR();
 #else
 	RGBA rgba = color.GetRGBA();

@@ -23,13 +23,12 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
 	Debug::Print("Loading mesh: " + mesh->file->GetPath());
 
-	bool opened = mesh->file->Open(false);
+	const bool opened = mesh->file->Open(false);
 	if (opened)
 	{
-		std::string allString = mesh->file->ReadAll();
+		const std::string allString = mesh->file->ReadAll();
 		mesh->file->Close();
-		int textSize = 0;
-		textSize = allString.size();
+		const int textSize = allString.size();
 
 		bool verticesFound = false;
 		bool currentMeshFilled = false;
@@ -137,7 +136,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				if (count == -1)
 				{
 					count = 0;
-					int lineSize = (int)line.size();
+					const int lineSize = (int)line.size();
 					for (int i = 0; i < lineSize - 1; i++)
 					{
 						if (line[i] == '/')
@@ -245,8 +244,8 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 			int vertexIndicesSize = (int)submesh->vertexIndices.size();
 			for (int i = 0; i < vertexIndicesSize; i++)
 			{
-				unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
-				unsigned int textureIndex = submesh->textureIndices[i] - 1;
+				const unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
+				const unsigned int textureIndex = submesh->textureIndices[i] - 1;
 
 				const Vector3& vertice = tempVertices.at(vertexIndex);
 				if (!mesh->hasNormal)
@@ -266,7 +265,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				}
 				else
 				{
-					unsigned int normalIndices = submesh->normalsIndices[i] - 1;
+					const unsigned int normalIndices = submesh->normalsIndices[i] - 1;
 					const Vector3& normal = tempNormals.at(normalIndices);
 					if (!mesh->hasUv)
 					{
@@ -298,7 +297,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		}
 		submeshes.clear();
 
-#ifdef __PSP__
+#if defined(__PSP__)
 		sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 

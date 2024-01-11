@@ -50,13 +50,13 @@ Directory::~Directory()
 
 void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, std::shared_ptr<Directory> directory)
 {
-	int fileCount = (int)directory->files.size();
+	const int fileCount = (int)directory->files.size();
 	for (int i = 0; i < fileCount; i++)
 	{
 		vector.push_back(directory->files[i]);
 	}
 
-	int directoryCount = (int)directory->subdirectories.size();
+	const int directoryCount = (int)directory->subdirectories.size();
 	for (int i = 0; i < directoryCount; i++)
 	{
 		AddDirectoryFiles(vector, directory->subdirectories[i]);
@@ -71,7 +71,7 @@ std::vector<std::shared_ptr<File>> Directory::GetAllFiles(bool recursive)
 	return vector;
 }
 
-bool Directory::CheckIfExist()
+bool Directory::CheckIfExist() const
 {
 	bool exists = false;
 #if defined(__PSP__)

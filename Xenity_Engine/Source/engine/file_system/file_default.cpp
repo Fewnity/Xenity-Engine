@@ -48,7 +48,7 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 {
 	char* data = nullptr;
 	file.seekg(0, std::ios_base::end);
-	int pos = file.tellg();
+	const int pos = file.tellg();
 	file.seekg(0, std::ios_base::beg);
 	data = new char[pos];
 	file.read(data, pos);
@@ -65,7 +65,7 @@ bool FileDefault::CheckIfExist()
 	}
 	else
 	{
-		std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+		const std::ios_base::openmode params = std::fstream::in | std::fstream::out;
 		file.open(path, params);
 
 		if (file.is_open())

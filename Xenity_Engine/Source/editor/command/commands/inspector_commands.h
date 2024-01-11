@@ -26,7 +26,6 @@ public:
 	InspectorChangeValueCommand(std::weak_ptr<U> target, T* valuePtr, T newValue, T lastValue);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<U> target;
 	T* valuePtr;
@@ -65,11 +64,6 @@ inline void InspectorChangeValueCommand<U, T>::Undo()
 	}
 }
 
-template<typename U, typename T>
-inline void InspectorChangeValueCommand<U, T>::Redo()
-{
-	Execute();
-}
 
 //----------------------------------------------------------------------------
 
@@ -80,7 +74,6 @@ public:
 	InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> target, bool newValue, bool lastValue);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<GameObject> target;
 	bool newValue;
@@ -112,11 +105,6 @@ inline void InspectorGameObjectSetActiveCommand::Undo()
 	}
 }
 
-inline void InspectorGameObjectSetActiveCommand::Redo()
-{
-	Execute();
-}
-
 
 //----------------------------------------------------------------------------
 
@@ -127,7 +115,6 @@ public:
 	InspectorTransformSetLocalPositionCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<Transform> target;
 	Vector3 newValue;
@@ -159,11 +146,6 @@ inline void InspectorTransformSetLocalPositionCommand::Undo()
 	}
 }
 
-inline void InspectorTransformSetLocalPositionCommand::Redo()
-{
-	Execute();
-}
-
 //----------------------------------------------------------------------------
 
 class InspectorTransformSetLocalRotationCommand : public Command
@@ -173,7 +155,6 @@ public:
 	InspectorTransformSetLocalRotationCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<Transform> target;
 	Vector3 newValue;
@@ -205,11 +186,6 @@ inline void InspectorTransformSetLocalRotationCommand::Undo()
 	}
 }
 
-inline void InspectorTransformSetLocalRotationCommand::Redo()
-{
-	Execute();
-}
-
 //----------------------------------------------------------------------------
 
 class InspectorTransformSetLocalScaleCommand : public Command
@@ -219,7 +195,6 @@ public:
 	InspectorTransformSetLocalScaleCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<Transform> target;
 	Vector3 newValue;
@@ -251,11 +226,6 @@ inline void InspectorTransformSetLocalScaleCommand::Undo()
 	}
 }
 
-inline void InspectorTransformSetLocalScaleCommand::Redo()
-{
-	Execute();
-}
-
 //----------------------------------------------------------------------------
 
 template<typename T>
@@ -266,7 +236,6 @@ public:
 	InspectorAddComponentCommand(std::weak_ptr<GameObject> target);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 	std::weak_ptr<T> newComponent;
 private:
 	std::weak_ptr<GameObject> target;
@@ -299,12 +268,6 @@ inline void InspectorAddComponentCommand<T>::Undo()
 	}
 }
 
-template<typename T>
-inline void InspectorAddComponentCommand<T>::Redo()
-{
-	Execute();
-}
-
 
 //----------------------------------------------------------------------------
 
@@ -315,7 +278,6 @@ public:
 	InspectorCreateGameObjectCommand(std::weak_ptr<GameObject> target, int mode);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 	std::weak_ptr<GameObject> createdGameObject;
 private:
 	std::weak_ptr<GameObject> target;
@@ -403,11 +365,6 @@ inline void InspectorCreateGameObjectCommand::Undo()
 	}
 }
 
-inline void InspectorCreateGameObjectCommand::Redo()
-{
-	Execute();
-}
-
 //----------------------------------------------------------------------------
 
 template<typename T>
@@ -418,7 +375,6 @@ public:
 	InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy);
 	void Execute() override;
 	void Undo() override;
-	void Redo() override;
 private:
 	std::weak_ptr<GameObject> target;
 	std::weak_ptr<T> componentToDestroy;
@@ -455,10 +411,4 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 		componentToDestroy = component;
 		SceneManager::SetSceneModified(true);
 	}
-}
-
-template<typename T>
-inline void InspectorDeleteComponentCommand<T>::Redo()
-{
-	Execute();
 }
