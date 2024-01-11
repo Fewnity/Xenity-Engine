@@ -15,7 +15,7 @@ enum SaveSceneType
 	SaveSceneForHotReloading,
 };
 
-class API SceneManager
+class SceneManager
 {
 public:
 
@@ -23,7 +23,7 @@ public:
 	* Load a scene
 	* @param scene Load scene
 	*/
-	static void LoadScene(const std::shared_ptr<Scene>& scene);
+	API static void LoadScene(const std::shared_ptr<Scene>& scene);
 
 #if defined(EDITOR)
 	/**

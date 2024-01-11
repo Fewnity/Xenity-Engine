@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
 
@@ -18,7 +17,7 @@ class Directory;
 #define META_EXTENSION ".meta"
 #define PROJECTS_LIST_FILE "projects.json"
 
-class API ProjectDirectory
+class ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
@@ -70,7 +69,7 @@ public:
 	ReflectiveData GetReflectiveData() override;
 };
 
-class API ProjectManager
+class ProjectManager
 {
 public:
 

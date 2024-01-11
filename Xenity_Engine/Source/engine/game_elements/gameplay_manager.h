@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #include <string>
 #include <vector>
@@ -16,7 +15,7 @@ enum GameState
 	Playing
 };
 
-class API GameplayManager
+class GameplayManager
 {
 public:
 	/**

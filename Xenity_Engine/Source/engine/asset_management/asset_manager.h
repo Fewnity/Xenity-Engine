@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #include <vector>
 #include <string>
@@ -13,7 +12,7 @@ class Reflective;
 class Material;
 class Shader;
 
-class API AssetManager
+class AssetManager
 {
 public:
 	static void Init();

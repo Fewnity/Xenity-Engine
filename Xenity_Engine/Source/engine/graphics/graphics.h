@@ -15,7 +15,7 @@ class SkyBox;
 class Vector3;
 class Shader;
 
-class API Graphics
+class Graphics
 {
 public:
 
@@ -28,7 +28,7 @@ public:
 	/**
 	* Set skybox
 	*/
-	static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
+	API static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
 
 	static ReflectiveData GetLightingSettingsReflection();
 	static void OnLightingSettingsReflectionUpdate();
@@ -69,7 +69,7 @@ public:
 	static bool UseOpenGLFixedFunctions;
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
-	static std::weak_ptr<Camera> usedCamera;
+	API static std::weak_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
 	static std::vector<std::weak_ptr<IDrawable>> noTransparentDrawable;

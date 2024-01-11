@@ -23,7 +23,7 @@ std::string Debug::debugText = "";
 std::shared_ptr<Socket> Debug::socket = nullptr;
 
 float Debug::SendProfilerCooldown = 0;
-float Debug::SendProfilerRate = 0.2f;
+float Debug::SendProfilerDelay = 0.2f;
 
 /**
  * Print an error in the console and the debug file
@@ -65,7 +65,7 @@ void Debug::SendProfilerDataToServer()
 	{
 		if (SendProfilerCooldown <= 0)
 		{
-			SendProfilerCooldown = SendProfilerRate;
+			SendProfilerCooldown = SendProfilerDelay;
 			if (EngineSettings::useProfiler)
 			{
 				//Add profiler texts

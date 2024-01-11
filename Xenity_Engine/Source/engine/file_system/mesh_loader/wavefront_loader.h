@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #include <vector>
 #include <memory>
@@ -8,7 +7,7 @@ class MeshData;
 class Vector3;
 class Vector2;
 
-class API WavefrontLoader
+class WavefrontLoader
 {
 public:
 	static bool LoadFromRawData(const std::shared_ptr <MeshData>& mesh);

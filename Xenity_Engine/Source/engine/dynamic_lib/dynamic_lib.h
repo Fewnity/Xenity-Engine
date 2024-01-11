@@ -1,6 +1,5 @@
 #pragma once
 #if defined(_WIN32) || defined(_WIN64)
-#include <engine/api.h>
 
 #include <string>
 #include <engine/platform.h>
@@ -8,7 +7,7 @@
 
 class GameInterface;
 
-class API DynamicLibrary
+class DynamicLibrary
 {
 public:
 

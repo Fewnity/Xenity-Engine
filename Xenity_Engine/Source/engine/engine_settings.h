@@ -1,11 +1,10 @@
 #pragma once
-#include <engine/api.h>
 
 #include <string>
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/color/color.h>
 
-class API EngineSettings
+class EngineSettings
 {
 public:
 

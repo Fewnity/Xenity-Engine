@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #include <vector>
 #include <memory>
@@ -20,7 +19,7 @@ class AudioClip;
 class AudioClipStream;
 class AudioSource;
 
-class API PlayedSound
+class PlayedSound
 {
 public:
 	~PlayedSound();
@@ -38,7 +37,7 @@ public:
 	bool isPlaying = false;
 };
 
-class API Channel
+class Channel
 {
 public:
 	Channel();
@@ -54,7 +53,7 @@ private:
 #endif
 };
 
-class API MyMutex
+class MyMutex
 {
 public:
 	std::mutex audioMutex;
@@ -87,7 +86,7 @@ public:
 	}
 };
 
-class API AudioManager
+class AudioManager
 {
 public:
 

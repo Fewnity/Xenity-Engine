@@ -1,12 +1,11 @@
 #pragma once
-#include <engine/api.h>
 
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <unordered_map>
 
-class API ProfilerValue
+class ProfilerValue
 {
 public:
 	void AddValue(long long v)
@@ -14,19 +13,23 @@ public:
 		value += v;
 		addedValue += v;
 	}
+
 	void ResetValue()
 	{
 		lastValue = value;
 		value = 0;
 	}
+
 	long long GetValue()
 	{
 		return lastValue;
 	}
+
 	void SetLastValue(long long v)
 	{
 		lastValue = v;
 	}
+
 	long long average = 0;
 	long long addedValue = 0;
 
@@ -35,13 +38,13 @@ private:
 	long long value = 0;
 };
 
-class API ProfilerCategory
+class ProfilerCategory
 {
 public:
 	std::unordered_map<std::string, ProfilerValue*> profilerList;
 };
 
-class API Performance
+class Performance
 {
 public:
 

@@ -7,6 +7,9 @@
 
 class Socket;
 
+/**
+ * Used to print text in a console/file or remotely to a server
+ */
 class API Debug
 {
 public:
@@ -34,6 +37,9 @@ public:
 	*/
 	static void PrintWarning(const std::string& text);
 
+	/**
+	 * Send all profiler data to the debug server
+	 */
 	static void SendProfilerDataToServer();
 
 	/**
@@ -48,7 +54,9 @@ public:
 	{
 		return debugText;
 	}
-	static float SendProfilerRate;
+
+	// Lower is higher speed
+	static float SendProfilerDelay;
 
 private:
 

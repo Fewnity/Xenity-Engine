@@ -65,12 +65,12 @@ private:
 	/**
 	 * Create some benchmark for profiling
 	 */
-	API static void CreateBenchmarks();
+	static void CreateBenchmarks();
 
 	/**
 	 * Check event (SDL)
 	 */
-	API static void CheckEvents();
+	static void CheckEvents();
 
 	static std::unique_ptr<Renderer> renderer;
 	static bool isRunning;

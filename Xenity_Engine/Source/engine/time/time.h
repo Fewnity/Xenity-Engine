@@ -55,4 +55,3 @@ private:
 	static float unscaledTime;
 	static float unscaledDeltaTime;
 };
-

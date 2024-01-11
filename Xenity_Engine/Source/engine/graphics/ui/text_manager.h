@@ -1,5 +1,4 @@
 #pragma once
-#include <engine/api.h>
 
 #include "TextAlignments.h"
 
@@ -23,7 +22,7 @@ class Color;
 class Font;
 class Material;
 
-class API Character
+class Character
 {
 public:
 	glm::ivec2 Size = glm::ivec2(0, 0);          // Size of glyph
@@ -39,14 +38,14 @@ public:
 	Vector2 uvOffet = Vector2(0);
 };
 
-class API LineInfo
+class LineInfo
 {
 public:
 	float lenght = 0;
 	float y1 = 0;
 };
 
-class API TextInfo
+class TextInfo
 {
 public:
 	std::vector<LineInfo> linesInfo;
@@ -54,7 +53,7 @@ public:
 	int lineCount = 0;
 };
 
-class API TextManager
+class TextManager
 {
 public:
 

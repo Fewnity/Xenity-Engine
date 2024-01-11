@@ -1,7 +1,6 @@
 #pragma once
-#include <engine/api.h>
 
-class API CrashHandler
+class CrashHandler
 {
 public:
 	/**
