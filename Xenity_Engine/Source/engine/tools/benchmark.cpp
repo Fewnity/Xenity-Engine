@@ -27,8 +27,8 @@ void Benchmark::Stop()
 #if defined(_WIN32) || defined(_WIN64) || defined(__vita__)
 	end_point = high_resolution_clock::now();
 
-	long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
-	long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
+	const long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
+	const long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
 
 	time = end - start;
 #elif defined(__PSP__)

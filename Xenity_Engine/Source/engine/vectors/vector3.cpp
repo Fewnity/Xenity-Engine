@@ -58,20 +58,20 @@ Vector3::Vector3(Vector2 vect)
 
 Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 {
-	float xdis = to.x - from.x;
-	float ydis = to.y - from.y;
-	float zdis = to.z - from.z;
-	float xzdis = sqrtf(xdis * xdis + zdis * zdis);
+	const float xdis = to.x - from.x;
+	const float ydis = to.y - from.y;
+	const float zdis = to.z - from.z;
+	const float xzdis = sqrtf(xdis * xdis + zdis * zdis);
 
 	return Vector3((-atan2f(ydis, xzdis)) * 180 / (float)M_PI, (-(atan2f(-xdis, zdis))) * 180 / (float)M_PI, 0);
 }
 
 Vector3 Vector3::Normalized() const
 {
-	float ls = this->x * this->x + this->y * this->y + this->z * this->z;
+	const float ls = this->x * this->x + this->y * this->y + this->z * this->z;
 	if (ls != 0)
 	{
-		float length = sqrtf(ls);
+		const float length = sqrtf(ls);
 		return Vector3(this->x / length, this->y / length, this->z / length);
 	}
 	else
@@ -113,9 +113,9 @@ Vector3 Vector3::Cross(const Vector3& a, const Vector3& b)
 
 float Vector3::Distance(const Vector3& a, const Vector3& b)
 {
-	float xDis = a.x - b.x;
-	float yDis = a.y - b.y;
-	float zDis = a.z - b.z;
+	const float xDis = a.x - b.x;
+	const float yDis = a.y - b.y;
+	const float zDis = a.z - b.z;
 	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
 }
 

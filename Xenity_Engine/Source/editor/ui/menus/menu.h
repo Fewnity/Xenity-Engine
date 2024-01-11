@@ -15,13 +15,13 @@ public:
 	virtual void Init() = 0;
 	virtual void Draw() = 0;
 	virtual void Focus();
-	virtual bool IsFocused();
-	virtual bool IsHovered();
-	virtual Vector2Int GetWindowSize();
-	virtual Vector2Int GetWindowPosition();
-	virtual Vector2Int GetMousePosition();
+	virtual bool IsFocused() const;
+	virtual bool IsHovered() const;
+	virtual Vector2Int GetWindowSize() const;
+	virtual Vector2Int GetWindowPosition() const;
+	virtual Vector2Int GetMousePosition() const;
 	virtual void SetActive(bool active);
-	virtual bool GetActive();
+	virtual bool GetActive() const;
 	MenuGroup group = Menu_Editor;
 	int id = 0;
 

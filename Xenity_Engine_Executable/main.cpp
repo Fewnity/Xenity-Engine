@@ -50,7 +50,7 @@ Create one shader per material to avoid reupdate shader when using the same shad
 int main(int argc, char* argv[])
 {
 	// Init engine
-	int engineInitResult = Engine::Init();
+	const int engineInitResult = Engine::Init();
 	if (engineInitResult != 0)
 	{
 		Debug::PrintError("-------- Engine failed to init --------");

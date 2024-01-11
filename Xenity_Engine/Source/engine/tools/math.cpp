@@ -76,12 +76,12 @@ unsigned int Math::previousPow2(const unsigned int value)
 Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();
-	float TempS = angleA / 180.0f * (float)M_PI;
-	float TempT = (180 - angleB) / 180.0f * (float)M_PI;
+	const float TempS = angleA / 180.0f * (float)M_PI;
+	const float TempT = (180 - angleB) / 180.0f * (float)M_PI;
 
-	float cosTempT = cosf(TempT);
-	float cosTempS = cosf(TempS);
-	float SinTempS = sinf(TempS);
+	const float cosTempT = cosf(TempT);
+	const float cosTempS = cosf(TempS);
+	const float SinTempS = sinf(TempS);
 
 	direction.x = SinTempS * cosTempT;
 	direction.y = -sinf(TempT);
@@ -93,10 +93,10 @@ Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 Vector2 Math::Get2DDirectionFromAngle(const float angleA)
 {
 	Vector2 direction = Vector2();
-	float TempS = angleA / 180.0f * (float)M_PI;
+	const float TempS = angleA / 180.0f * (float)M_PI;
 
-	float cosTempS = cosf(TempS);
-	float SinTempS = sinf(TempS);
+	const float cosTempS = cosf(TempS);
+	const float SinTempS = sinf(TempS);
 
 	direction.x = cosTempS;
 	direction.y = -SinTempS;

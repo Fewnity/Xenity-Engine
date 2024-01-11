@@ -43,8 +43,8 @@ float Vector2Int::Magnitude() const
 
 float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)
 {
-	float xDis = (float)(a.x - b.x);
-	float yDis = (float)(a.y - b.y);
+	const float xDis = (float)(a.x - b.x);
+	const float yDis = (float)(a.y - b.y);
 	return sqrtf(xDis * xDis + yDis * yDis);
 }
 

@@ -40,8 +40,8 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		auto &go = GameplayManager::gameObjects[goI];
-		std::string goId = std::to_string(go->GetUniqueId());
+		std::shared_ptr<GameObject> &go = GameplayManager::gameObjects[goI];
+		const std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
 		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
@@ -49,7 +49,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 		// Save GameObject's childs ids
 		std::vector<uint64_t> ids;
-		int childCount = go->GetChildrenCount();
+		const int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
 		{
 			ids.push_back(go->children[childI].lock()->GetUniqueId());
@@ -57,11 +57,11 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		j["GameObjects"][goId]["Childs"] = ids;
 
 		// Save components values
-		int componentCount = go->GetComponentCount();
+		const int componentCount = go->GetComponentCount();
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
-			auto &component = go->components[componentI];
-			std::string compId = std::to_string(component->GetUniqueId());
+			std::shared_ptr<Component> &component = go->components[componentI];
+			const std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
 		}
@@ -172,7 +172,7 @@ void SceneManager::LoadScene(const json &jsonData)
 		for (auto &gameObjectKV : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-			uint64_t id = std::stoull(gameObjectKV.key());
+			const uint64_t id = std::stoull(gameObjectKV.key());
 			newGameObject->SetUniqueId(id);
 			if (id > biggestId)
 			{
@@ -185,7 +185,7 @@ void SceneManager::LoadScene(const json &jsonData)
 			{
 				for (auto &componentKV : gameObjectKV.value()["Components"].items())
 				{
-					std::string componentName = componentKV.value()["Type"];
+					const std::string componentName = componentKV.value()["Type"];
 					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
 					uint64_t compId = std::stoull(componentKV.key());
 					if (compId > biggestId)
@@ -210,14 +210,14 @@ void SceneManager::LoadScene(const json &jsonData)
 		// Bind Components values and GameObjects childs
 		for (auto &kv : jsonData["GameObjects"].items())
 		{
-			auto go = FindGameObjectById(std::stoull(kv.key()));
+			std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
 			if (go)
 			{
 				if (kv.value().contains("Childs"))
 				{
-					for (auto &kv2 : kv.value()["Childs"].items())
+					for (const auto &kv2 : kv.value()["Childs"].items())
 					{
-						auto goChild = FindGameObjectById(kv2.value());
+						std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
 						if (goChild)
 						{
 							goChild->SetParent(go);
@@ -232,9 +232,9 @@ void SceneManager::LoadScene(const json &jsonData)
 
 				if (kv.value().contains("Components"))
 				{
-					for (auto &kv2 : kv.value()["Components"].items())
+					for (const auto &kv2 : kv.value()["Components"].items())
 					{
-						int componentCount = go->GetComponentCount();
+						const int componentCount = go->GetComponentCount();
 						for (int compI = 0; compI < componentCount; compI++)
 						{
 							std::shared_ptr<Component> component = go->components[compI];
@@ -253,7 +253,7 @@ void SceneManager::LoadScene(const json &jsonData)
 		if (GameplayManager::GetGameState() == Starting)
 		{
 			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
-			size_t componentsCount = allComponents.size();
+			const size_t componentsCount = allComponents.size();
 			int componentsToInitCount = 0;
 
 			// Find uninitiated components and order them
@@ -315,7 +315,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene> &scene)
 {
 	Debug::Print("Loading scene...");
 	std::shared_ptr<File> jsonFile = scene->file;
-	bool isOpen = jsonFile->Open(false);
+	const bool isOpen = jsonFile->Open(false);
 	if (isOpen)
 	{
 		std::string jsonString = jsonFile->ReadAll();

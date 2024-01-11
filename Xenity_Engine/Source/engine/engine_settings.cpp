@@ -29,13 +29,13 @@ bool EngineSettings::isPlayTintAdditive = true;
 void EngineSettings::SaveEngineSettings()
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile("engine_settings.json");
-	bool result = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	const bool result = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 }
 
 void EngineSettings::LoadEngineSettings()
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile("engine_settings.json");
-	bool result = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+	const bool result = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 }
 
 ReflectiveData EngineSettings::GetReflectiveData()

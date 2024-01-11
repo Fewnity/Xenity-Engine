@@ -3,7 +3,7 @@
 bool StringTagFinder::FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition)
 {
 	bool found = false;
-	int textToFindSize = textToFind.size();
+	const int textToFindSize = textToFind.size();
 	bool notEquals = false;
 
 	for (int i = 0; i < textToFindSize; i++)

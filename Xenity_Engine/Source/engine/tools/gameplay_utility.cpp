@@ -9,7 +9,7 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	// Remove the destroyed gameobject from his parent's children list
 	if (auto parent = gameObject->parent.lock())
 	{
-		int parentChildCount = parent->GetChildrenCount();
+		const int parentChildCount = parent->GetChildrenCount();
 		for (int i = 0; i < parentChildCount; i++)
 		{
 			if (parent->children[i].lock() == gameObject)

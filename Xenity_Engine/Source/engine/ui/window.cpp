@@ -47,7 +47,7 @@ void Window::OnResize()
 	UpdateAspectRatio();
 
 #if !defined(EDITOR)
-	int cameraCount = Graphics::cameras.size();
+	const int cameraCount = Graphics::cameras.size();
 	for (int i = 0; i < cameraCount; i++)
 	{
 		Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(width, height));
@@ -83,14 +83,14 @@ int Window::Init()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	//  Init SDL
-	int sdlInitResult = SDL_Init(SDL_INIT_EVERYTHING);
+	const int sdlInitResult = SDL_Init(SDL_INIT_EVERYTHING);
 	if (sdlInitResult != 0)
 	{
 		return WND_ERROR_SDL_INIT;
 	}
 
 	// Create SDL Window
-	unsigned int center = SDL_WINDOWPOS_CENTERED;
+	const unsigned int center = SDL_WINDOWPOS_CENTERED;
 	window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (window == nullptr)
 	{

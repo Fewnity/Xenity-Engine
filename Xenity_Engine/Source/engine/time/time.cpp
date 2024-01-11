@@ -89,22 +89,22 @@ void Time::UpdateTime()
 {
 #if defined(__PSP__)
 	sceRtcGetCurrentTick(&currentTick);
-	float tempDeltaTime = (currentTick - lastTick) / 1000000.0f;
+	const float tempDeltaTime = (currentTick - lastTick) / 1000000.0f;
 	lastTick = currentTick;
 #elif defined(__vita__)
 	sceRtcGetCurrentTick(&currentTick);
-	float tempDeltaTime = (currentTick.tick - lastTick.tick) / 1000000.0f;
+	const float tempDeltaTime = (currentTick.tick - lastTick.tick) / 1000000.0f;
 	lastTick = currentTick;
 #elif defined(_EE)
 	currentTick = GetTimerSystemTime();
-	float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
+	const float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
 	lastTick = currentTick;
 #else
-	long long start = time_point_cast<milliseconds>(start_point).time_since_epoch().count();
-	long long end = time_point_cast<milliseconds>(end_point).time_since_epoch().count();
+	const long long start = time_point_cast<milliseconds>(start_point).time_since_epoch().count();
+	const long long end = time_point_cast<milliseconds>(end_point).time_since_epoch().count();
 	end_point = start_point;
 	start_point = high_resolution_clock::now();
-	float tempDeltaTime = (start - end) / 1000.0f;
+	const float tempDeltaTime = (start - end) / 1000.0f;
 #endif
 	deltaTime = tempDeltaTime * timeScale;
 	unscaledDeltaTime = tempDeltaTime;

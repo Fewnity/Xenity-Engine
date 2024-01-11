@@ -99,7 +99,7 @@ int Engine::Init()
 
 	//------------------------------------------ Init File System
 	FileSystem::fileSystem = new FileSystem();
-	int fileSystemInitResult = FileSystem::fileSystem->InitFileSystem();
+	const int fileSystemInitResult = FileSystem::fileSystem->InitFileSystem();
 	if (fileSystemInitResult != 0)
 	{
 		return -1;
@@ -111,7 +111,7 @@ int Engine::Init()
 #endif
 
 	//------------------------------------------ Init Debug
-	int debugInitResult = Debug::Init();
+	const int debugInitResult = Debug::Init();
 	if (debugInitResult != 0)
 	{
 		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------");
@@ -135,7 +135,7 @@ int Engine::Init()
 #else
 	renderer = std::make_unique<RendererOpengl>();
 #endif
-	int rendererInitResult = renderer->Init();
+	const int rendererInitResult = renderer->Init();
 	if (rendererInitResult != 0)
 	{
 		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------");
@@ -150,7 +150,7 @@ int Engine::Init()
 #else
 	Window::SetResolution(1280, 720);
 #endif
-	int windowInitResult = Window::Init();
+	const int windowInitResult = Window::Init();
 	if (windowInitResult != 0)
 	{
 		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------");
@@ -170,7 +170,7 @@ int Engine::Init()
 #if defined(EDITOR)
 	PluginManager::Init();
 	Gizmo::Init();
-	int editorUiInitResult = EditorUI::Init();
+	const int editorUiInitResult = EditorUI::Init();
 	if (editorUiInitResult != 0)
 	{
 		Debug::PrintError("-------- Editor UI init error code: " + std::to_string(editorUiInitResult) + " --------");
@@ -205,7 +205,7 @@ void Engine::CheckEvents()
 		case SDL_QUIT:
 		{
 #if defined(EDITOR)
-			bool cancelQuit = SceneManager::OnQuit();
+			const bool cancelQuit = SceneManager::OnQuit();
 			if (!cancelQuit)
 			{
 				isRunning = false;
@@ -274,9 +274,9 @@ void Engine::Loop()
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)
 #if defined(_EE)
-	bool projectLoaded = ProjectManager::LoadProject("");
+	const bool projectLoaded = ProjectManager::LoadProject("");
 #else
-	bool projectLoaded = ProjectManager::LoadProject(".\\");
+	const bool projectLoaded = ProjectManager::LoadProject(".\\");
 #endif
 	if (!projectLoaded)
 	{
@@ -306,7 +306,7 @@ void Engine::Loop()
 		AsyncFileLoading::FinishThreadedFileLoading();
 		editorUpdateBenchmark->Start();
 		Editor::Update();
-		auto gameMenu = Editor::GetMenu<GameMenu>();
+		const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
 		if (gameMenu)
 			InputSystem::blockGameInput = !gameMenu->IsFocused();
 		else
@@ -323,7 +323,7 @@ void Engine::Loop()
 			componentsUpdateBenchmark->Start();
 #if defined(EDITOR)
 			// Catch game's code error to prevent the editor to crash
-			bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
+			const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
 			if (tryResult) 
 			{
 				Debug::PrintError("Error in game's code");

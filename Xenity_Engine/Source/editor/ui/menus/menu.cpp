@@ -6,27 +6,27 @@ void Menu::Focus()
 	forceFocus = true;
 }
 
-bool Menu::IsFocused()
+bool Menu::IsFocused() const
 {
 	return isFocused;
 }
 
-bool Menu::IsHovered()
+bool Menu::IsHovered() const
 {
 	return isHovered;
 }
 
-Vector2Int Menu::GetWindowSize()
+Vector2Int Menu::GetWindowSize() const
 {
 	return windowSize;
 }
 
-Vector2Int Menu::GetWindowPosition()
+Vector2Int Menu::GetWindowPosition() const
 {
 	return windowPosition;
 }
 
-Vector2Int Menu::GetMousePosition()
+Vector2Int Menu::GetMousePosition() const
 {
 	return mousePosition;
 }
@@ -36,7 +36,7 @@ void Menu::SetActive(bool active)
 	isActive = active;
 }
 
-bool Menu::GetActive()
+bool Menu::GetActive() const
 {
 	return isActive;
 }
