@@ -12,6 +12,10 @@ public:
 	void OnDrawGizmos() override;
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
+
+	/**
+	* [Internal]
+	*/
 	int GetDrawPriority() const override;
 	void Draw() override;
 

@@ -8,9 +8,8 @@ class FileReference;
 class ProjectDirectory;
 class Texture;
 
-class FileExplorerItem
+struct FileExplorerItem
 {
-public:
 	std::shared_ptr<FileReference> file = nullptr;
 	std::shared_ptr <ProjectDirectory> directory = nullptr;
 };

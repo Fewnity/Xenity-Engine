@@ -1,5 +1,10 @@
-#if !defined(_EE) && !defined(__PSP__)
 #pragma once
+
+/**
+ * [Internal]
+ */
+
+#if !defined(_EE) && !defined(__PSP__) // Improve conditions
 #include <engine/api.h>
 
 #include "renderer.h"

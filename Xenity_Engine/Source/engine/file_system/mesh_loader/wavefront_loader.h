@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <vector>
 #include <memory>
 
@@ -12,10 +16,8 @@ class WavefrontLoader
 public:
 	static bool LoadFromRawData(const std::shared_ptr <MeshData>& mesh);
 private:
-	class SubMesh
+	struct SubMesh
 	{
-	public:
-		SubMesh() = default;
 		std::vector<int> vertexIndices;
 		std::vector<int> textureIndices;
 		std::vector<int> normalsIndices;

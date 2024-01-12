@@ -13,7 +13,7 @@ class API Gizmo
 public:
 
 	/**
-	* Init Gizmo system
+	* [Internal] Init Gizmo system
 	*/
 	static void Init();
 

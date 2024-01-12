@@ -22,23 +22,23 @@ template <typename T>
 bool IsValid(const std::weak_ptr<T>& pointer)
 {
 	bool valid = true;
-	if (auto lockPointer = pointer.lock())
+	if (const auto lockPointer = pointer.lock())
 	{
-		if (std::shared_ptr<Component> component = std::dynamic_pointer_cast<Component>(lockPointer))
+		if (const std::shared_ptr<Component> component = std::dynamic_pointer_cast<Component>(lockPointer))
 		{
 			if (component->waitingForDestroy)
 			{
 				valid = false;
 			}
 		}
-		else if (std::shared_ptr<GameObject> gameObject = std::dynamic_pointer_cast<GameObject>(lockPointer))
+		else if (const std::shared_ptr<GameObject> gameObject = std::dynamic_pointer_cast<GameObject>(lockPointer))
 		{
 			if (gameObject->waitingForDestroy)
 			{
 				valid = false;
 			}
 		}
-		else if (std::shared_ptr<Transform> transform = std::dynamic_pointer_cast<Transform>(lockPointer))
+		else if (const std::shared_ptr<Transform> transform = std::dynamic_pointer_cast<Transform>(lockPointer))
 		{
 			if (!IsValid(transform->GetGameObject()))
 			{

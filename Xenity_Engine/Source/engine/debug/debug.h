@@ -16,7 +16,7 @@ class API Debug
 public:
 
 	/**
-	* Init debug system
+	* [Internal] Init debug system
 	*/
 	static int Init();
 
@@ -39,24 +39,24 @@ public:
 	static void PrintWarning(const std::string& text);
 
 	/**
-	 * Send all profiler data to the debug server
+	 * [Internal] Send all profiler data to the debug server
 	 */
 	static void SendProfilerDataToServer();
 
 	/**
-	* Connect the game to an online debug console
+	* [Internal] Connect the game to an online debug console
 	*/
 	static void ConnectToOnlineConsole();
 
 	/**
-	* Get all the debug text into a string
+	* [Internal] Get all the debug text into a string
 	*/
 	static std::string GetDebugString()
 	{
 		return debugText;
 	}
 
-	// Lower is higher speed
+	// [Internal] Lower is higher speed
 	static float SendProfilerDelay;
 
 private:

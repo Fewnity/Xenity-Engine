@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include "plugin.h"
 
 #include <string>

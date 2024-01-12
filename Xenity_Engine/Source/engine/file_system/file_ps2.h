@@ -1,5 +1,10 @@
-#if defined(_EE)
 #pragma once
+
+/**
+ * [Internal]
+ */
+
+#if defined(_EE)
 #include <engine/api.h>
 
 #include "file.h"

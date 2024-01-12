@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 enum FileType
 {
 	File_Other,

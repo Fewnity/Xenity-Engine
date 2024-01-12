@@ -18,6 +18,9 @@ public:
 
 	ReflectiveData GetReflectiveData() override;
 
+	/**
+	 * [Internal]
+	 */
 	int GetDrawPriority() const override;
 
 	void SetOrderInLayer(int orderInLayer);

@@ -115,7 +115,7 @@ public:
 	void SetChildrenWorldPositions();
 
 	/**
-	* Function called when the parent changed
+	* TODO Function called when the parent changed
 	*/
 	void OnParentChanged();
 
@@ -133,6 +133,8 @@ public:
 	* [Internal] Update world values
 	*/
 	void UpdateWorldValues();
+
+	// [Internal]
 	bool isTransformationMatrixDirty = true;
 
 private:

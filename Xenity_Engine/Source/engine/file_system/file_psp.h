@@ -1,5 +1,10 @@
-#if defined(__PSP__)
 #pragma once
+
+/**
+ * [Internal]
+ */
+
+#if defined(__PSP__)
 #include <engine/api.h>
 
 #include "file.h"

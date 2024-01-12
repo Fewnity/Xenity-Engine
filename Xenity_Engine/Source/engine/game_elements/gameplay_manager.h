@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <string>
 #include <vector>
 #include <memory>

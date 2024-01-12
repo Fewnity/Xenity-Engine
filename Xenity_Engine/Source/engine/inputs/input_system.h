@@ -128,18 +128,16 @@ enum KeyCode
 
 #define INPUT_COUNT 105 // Number = Last Enum + 2
 
-class API Input
+struct Input
 {
-public:
 	KeyCode code = EMPTY;
 	bool pressed = false;
 	bool released = false;
 	bool held = false;
 };
 
-class API Touch
+struct Touch
 {
-public:
 	Vector2Int position = Vector2Int(0);
 	Vector2Int startPosition = Vector2Int(0);
 	int fingerId = -1;

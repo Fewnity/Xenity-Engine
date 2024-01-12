@@ -88,6 +88,8 @@ public:
 	}
 
 	void OnDrawGizmos() override;
+
+	// [Internal]
 	bool isEditor = false;
 
 private:

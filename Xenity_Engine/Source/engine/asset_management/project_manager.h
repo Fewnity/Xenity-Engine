@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
 
 #include <unordered_map>
@@ -38,23 +42,20 @@ public:
 	uint64_t uniqueId = 0;
 };
 
-class ProjectListItem
+struct ProjectListItem
 {
-public:
 	std::string name;
 	std::string path;
 };
 
-class FileAndPath
+struct FileAndPath
 {
-public:
 	std::string path;
 	std::shared_ptr<File> file;
 };
 
-class FileChange
+struct FileChange
 {
-public:
 	bool hasChanged = false;
 	bool hasBeenDeleted = true;
 	std::string path;

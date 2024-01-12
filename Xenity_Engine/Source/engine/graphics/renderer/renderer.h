@@ -1,4 +1,9 @@
 #pragma once
+
+/**
+ * [Internal]
+ */
+
 #include <engine/api.h>
 
 #include <engine/graphics/texture.h>
@@ -20,9 +25,8 @@ class Vector2;
 class Camera;
 class Texture;
 
-class RenderingSettings
+struct RenderingSettings
 {
-public:
 	bool useDepth = false;
 	bool useBlend = false;
 	bool invertFaces = false;

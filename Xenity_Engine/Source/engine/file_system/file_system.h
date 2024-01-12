@@ -25,7 +25,7 @@ public:
 	static FileSystem* fileSystem;
 
 	/**
-	* Init file system
+	* [Internal] Init file system
 	*/
 	int InitFileSystem();
 
@@ -57,5 +57,8 @@ public:
 
 	int CopyFile(const std::string& path, const std::string& newPath, bool replace);
 
+	/**
+	 * [Internal] ?
+	 */
 	static std::shared_ptr<File> MakeFile(const std::string& path);
 };

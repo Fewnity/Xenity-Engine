@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include "file_type.h"
 
 #include <engine/reflection/reflection.h>

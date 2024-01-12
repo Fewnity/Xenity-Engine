@@ -1,16 +1,7 @@
-#if defined(EXPORT)
-#define API __declspec(dllexport)
-#elif defined(IMPORT)
-#define API __declspec(dllimport)
-#else
-#define API
-#endif
-
 #pragma once
 
-class API InputPad
+struct InputPad
 {
-public:
 	int buttons = 0;
 	float lx = 0;
 	float ly = 0;

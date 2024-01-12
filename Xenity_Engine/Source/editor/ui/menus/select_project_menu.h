@@ -3,7 +3,7 @@
 #include "menu.h"
 #include <vector>
 
-class ProjectListItem;
+struct ProjectListItem;
 
 class SelectProjectMenu : public Menu
 {

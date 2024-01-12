@@ -84,9 +84,8 @@ enum DialogResult
 	Dialog_CANCEL,
 };
 
-class MultiDragData
+struct MultiDragData
 {
-public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<Transform*> transforms;
 	std::vector<Component*> components;

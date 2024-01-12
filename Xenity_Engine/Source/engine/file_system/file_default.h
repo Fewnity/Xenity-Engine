@@ -1,4 +1,9 @@
 #pragma once
+
+/**
+ * [Internal]
+ */
+
 #include <engine/api.h>
 
 #include "file.h"

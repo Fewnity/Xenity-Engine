@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <string>
 #include <vector>
 #include <engine/platform.h>
@@ -71,9 +75,8 @@ struct CompilerParams
 	}
 };
 
-class CopyEntry 
+struct CopyEntry 
 {
-public:
 	bool isFolder = false;
 	std::string sourcePath = "";
 	std::string destPath = "";

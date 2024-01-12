@@ -22,9 +22,8 @@ class Color;
 class Font;
 class Material;
 
-class Character
+struct Character
 {
-public:
 	glm::ivec2 Size = glm::ivec2(0, 0);          // Size of glyph
 	glm::ivec2 Bearing = glm::ivec2(0, 0);       // Offset from baseline to left/top of glyph
 	unsigned int Advance = 0; // Offset to advance to next glyph
@@ -38,21 +37,28 @@ public:
 	Vector2 uvOffet = Vector2(0);
 };
 
-class LineInfo
+/**
+ * [Internal]
+ */
+struct LineInfo
 {
-public:
 	float lenght = 0;
 	float y1 = 0;
 };
 
-class TextInfo
+/**
+ * [Internal]
+ */
+struct TextInfo
 {
-public:
 	std::vector<LineInfo> linesInfo;
 	float maxLineHeight = 0;
 	int lineCount = 0;
 };
 
+/**
+ * [Internal]
+ */
 class TextManager
 {
 public:

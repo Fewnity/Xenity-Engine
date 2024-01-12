@@ -25,6 +25,10 @@ public:
 	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
+
+	/**
+	 * [Internal]
+	 */
 	int GetDrawPriority() const override;
 
 	std::shared_ptr<Material> material = nullptr;

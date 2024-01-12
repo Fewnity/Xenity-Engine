@@ -16,6 +16,10 @@ public:
 	~MeshRenderer();
 
 	ReflectiveData GetReflectiveData() override;
+
+	/**
+	 * [Internal]
+	 */
 	int GetDrawPriority() const override;
 
 	std::shared_ptr <MeshData> meshData = nullptr;

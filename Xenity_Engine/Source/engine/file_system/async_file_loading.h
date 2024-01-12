@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <mutex>
 #include <memory>
 #include <vector>

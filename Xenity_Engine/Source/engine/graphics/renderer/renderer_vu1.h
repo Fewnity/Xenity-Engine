@@ -1,4 +1,9 @@
 #pragma once
+
+/**
+ * [Internal]
+ */
+
 #if defined(_EE)
 #include <engine/api.h>
 

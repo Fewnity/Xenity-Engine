@@ -84,7 +84,7 @@ public:
 	glm::mat4& GetProjection();
 
 	/**
-	* Get projection matrix without Clipping Planes values
+	* [Internal] Get projection matrix without Clipping Planes values
 	*/
 	glm::mat4& GetCanvasProjection();
 
@@ -100,23 +100,23 @@ public:
 	ProjectionTypes GetProjectionType() const;
 
 	/**
-	* Update projection matrix
+	* [Internal] Update projection matrix
 	*/
 	void UpdateProjection();
 
 	/**
-	* Change Frame buffer size in pixel
+	* [Internal] Change Frame buffer size in pixel
 	* @param
 	*/
 	void ChangeFrameBufferSize(const Vector2Int& resolution);
 
 	/**
-	* Update FrameBuffer
+	* [Internal] Update FrameBuffer
 	*/
 	void UpdateFrameBuffer();
 
 	/**
-	* Bind view frame buffer
+	* [Internal] Bind view frame buffer
 	*/
 	void BindFrameBuffer();
 
@@ -147,13 +147,17 @@ public:
 		return aspect;
 	}
 
+	// [Internal]
 	bool isEditor = false;
+	// [Internal]
 	unsigned int secondFramebufferTexture = -1;
 	glm::mat4 projection;
 	glm::mat4 canvasProjection;
 	void CopyMultiSampledFrameBuffer();
 	bool useMultisampling = true;
+	// [Internal]
 	bool lastMultisamplingValue = useMultisampling;
+	// [Internal]
 	bool isProjectionDirty = true;
 
 private:

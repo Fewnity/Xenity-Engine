@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -38,9 +42,8 @@ private:
 	long long value = 0;
 };
 
-class ProfilerCategory
+struct ProfilerCategory
 {
-public:
 	std::unordered_map<std::string, ProfilerValue*> profilerList;
 };
 
