@@ -149,18 +149,18 @@ class API InputSystem
 public:
 
 	/**
-	* Init input system
+	* [Internal] Init input system
 	*/
 	static void Init();
 
 	/**
-	* Read input events
+	* [Internal] Read input events
 	*/
 	static void Read();
 #if defined(_WIN32) || defined(_WIN64)
 
 	/**
-	* Read input events
+	* [Internal] Read input events
 	* @parem event SDL event
 	*/
 	static void Read(const SDL_Event& event);
@@ -185,7 +185,7 @@ public:
 	static bool GetKeyUp(const KeyCode keyCode);
 
 	/**
-	* Set all keys states to inactive
+	* [Internal] Set all keys states to inactive
 	*/
 	static void ClearInputs();
 
@@ -226,9 +226,8 @@ public:
 	static bool blockGameInput;
 
 private:
-	class TouchScreen
+	struct TouchScreen
 	{
-	public:
 		std::vector<Touch> touches;
 		std::vector<bool> updated;
 	};

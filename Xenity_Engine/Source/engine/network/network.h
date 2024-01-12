@@ -27,7 +27,7 @@ public:
 	void SendData(const std::string& text);
 
 	/**
-	* Read data from the socket
+	* [Internal] Read data from the socket
 	*/
 	void Update();
 

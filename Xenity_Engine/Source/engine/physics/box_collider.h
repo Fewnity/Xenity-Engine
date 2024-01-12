@@ -21,14 +21,24 @@ public:
 	Vector3 size = Vector3(1);
 	Vector3 offset = Vector3(0);
 
-	Vector3 min;
-	Vector3 max;
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
+	
+	/**
+	 * [Internal]
+	 */
 	static bool CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b);
+	
+	/**
+	 * [Internal]
+	 */
 	static CollisionSide CheckCollision(const std::shared_ptr <BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity);
+	
 	void OnDrawGizmosSelected() override;
 	bool isTrigger = false;
+
 private:
+	Vector3 min;
+	Vector3 max;
 };

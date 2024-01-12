@@ -16,6 +16,9 @@
 
 class Light;
 
+/**
+ * Internal
+ */
 class Shader : public FileReference, public Reflective
 {
 public:
@@ -38,7 +41,9 @@ public:
 	void LoadFileReference() override;
 
 	unsigned int GetProgramId() const;
+
 	bool Use();
+
 	void SetShaderCameraPosition();
 	void SetShaderCameraPositionCanvas();
 	void SetShaderProjection();

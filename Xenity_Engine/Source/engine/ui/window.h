@@ -1,4 +1,5 @@
 #pragma once
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <SDL2/SDL.h>
 #endif
@@ -20,7 +21,15 @@ public:
 	static int GetTitleBarHeight();
 
 	static float GetAspectRatio();
+
+	/**
+	 * [Internal]
+	 */
 	static int Init();
+
+	/**
+	 * [Internal]
+	 */
 	static void UpdateScreen();
 	static void UpdateWindowTitle();
 #if defined(_WIN32) || defined(_WIN64)

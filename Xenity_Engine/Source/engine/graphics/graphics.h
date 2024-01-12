@@ -1,4 +1,9 @@
 #pragma once
+
+/**
+ * [Internal]
+ */
+
 #include <engine/api.h>
 
 #include <memory>
@@ -26,7 +31,7 @@ public:
 	static void SetDefaultValues();
 
 	/**
-	* Set skybox
+	* Set skybox TODO move this function?
 	*/
 	API static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
 

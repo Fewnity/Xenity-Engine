@@ -71,13 +71,22 @@ public:
 		openedScene = _openedScene;
 	}
 
+	/**
+	 * [Internal]
+	 */
 	static void SetSceneModified(bool value);
 
+	/**
+	 * [Internal]
+	 */
 	static bool GetSceneModified() 
 	{
 		return sceneModified;
 	}
 
+	/**
+	 * [Internal]
+	 */
 	static bool OnQuit();
 
 private:

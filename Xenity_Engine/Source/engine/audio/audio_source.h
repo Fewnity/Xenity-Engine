@@ -99,7 +99,7 @@ private:
 	}
 
 	float volume = 1;
-	float pan = 0.5;
+	float pan = 0.5f;
 	bool loop = true;
 	bool isPlaying = false;
 	bool playOnAwake = true;

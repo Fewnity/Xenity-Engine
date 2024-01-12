@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+ * [Internal] Maybe not? 
+ *	Maybe create a Json Class to be able to make json from objects
+ */
+
 #include <json.hpp>
 #include <unordered_map>
 #include "reflection.h"

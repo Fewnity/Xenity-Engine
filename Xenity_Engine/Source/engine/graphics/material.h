@@ -24,6 +24,7 @@ public:
 	Material();
 	~Material();
 
+	// [Internal]
 	void Use();
 
 	ReflectiveData GetReflectiveData() override;
@@ -42,6 +43,7 @@ public:
 
 	static std::shared_ptr<Material> MakeMaterial();
 
+	// [Internal]
 	bool updated = false;
 	bool useLighting = false;
 private:

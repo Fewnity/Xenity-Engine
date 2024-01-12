@@ -61,6 +61,9 @@ typedef std::variant<
 	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> VariableReference;
 
+/**
+ * [Internal]
+ */
 class API ReflectiveEntry
 {
 public:

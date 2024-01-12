@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * [Internal]
+ */
+
 #include <string>
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/color/color.h>

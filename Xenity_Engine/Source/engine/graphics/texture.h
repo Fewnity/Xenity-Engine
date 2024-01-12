@@ -64,7 +64,7 @@ public:
 	void SetData(const unsigned char *data);
 
 	/**
-	 * Get texture ID
+	 * [Internal] Get texture ID
 	 */
 	unsigned int GetTextureId() const;
 
@@ -133,6 +133,8 @@ public:
 
 	int mipmaplevelCount = 0;
 	bool useMipMap = false;
+
+	// [Internal] ?
 	bool inVram = true;
 
 	/**
@@ -143,6 +145,9 @@ public:
 		return isValid;
 	}
 
+	/**
+	 * [Internal]
+	 */
 	std::shared_ptr<Texture> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Texture>(shared_from_this());
