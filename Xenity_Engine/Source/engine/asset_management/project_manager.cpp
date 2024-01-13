@@ -39,6 +39,7 @@
 #include <game_dungeon/game.h>
 #endif
 #include <engine/engine_settings.h>
+#include <engine/tools/string_tag_finder.h>
 
 //Reserved ids: 10 (MainScene)
 
@@ -218,6 +219,63 @@ void ProjectManager::FindAllProjectFiles()
 	compatibleFiles.clear();
 }
 
+void ProjectManager::CreateVisualStudioSettings()
+{
+	try
+	{
+		// Get engine includes folder
+		std::filesystem::path exePath = std::filesystem::canonical("./");
+		std::string includesPath = exePath.generic_string() + "/includes/";
+
+		// Read the empty vscode settings file
+		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
+		bool isOpen = emptyVSCodeParamFile->Open(false);
+		if (isOpen)
+		{
+			std::string vsCodeText = emptyVSCodeParamFile->ReadAll();
+			emptyVSCodeParamFile->Close();
+
+			const size_t vsCodeTextSize = vsCodeText.size();
+
+			// Replace tag by the include folder path
+			int beg, end;
+			for (size_t i = 0; i < vsCodeTextSize; i++)
+			{
+				if (StringTagFinder::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
+				{
+					vsCodeText.replace(beg, end - beg - 1, includesPath);
+					break;
+				}
+			}
+
+			// Create vscode folder
+			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode\\");
+
+			// Create the vscode settings file
+			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(assetFolderPath + ".vscode\\c_cpp_properties.json");
+			bool isOpen = vsCodeParamFile->Open(true);
+			if (isOpen)
+			{
+				vsCodeParamFile->Write(vsCodeText);
+				vsCodeParamFile->Close();
+			}
+			else 
+			{
+				Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to create Visual Studio Settings file");
+			}
+		}
+		else 
+		{
+			Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to read Visual Studio Settings sample file");
+		}
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file");
+		
+	}
+}
+
 void ProjectManager::CreateProjectDirectories(std::shared_ptr<Directory> projectDirectoryBase, std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
 	const size_t dirCount = projectDirectoryBase->subdirectories.size();
@@ -358,7 +416,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	}
 
 	return fileType;
-}
+	}
 
 bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
@@ -399,6 +457,12 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		Engine::game->Start();
 
 #if defined(EDITOR)
+	CreateVisualStudioSettings();
+
+	// Check files to avoid triggerring a compilation
+	FileHandler::HasCodeChanged(GetAssetFolderPath());
+	FileHandler::HasFileChangedOrAdded(GetAssetFolderPath());
+
 	if (EngineSettings::compileWhenOpeningProject)
 	{
 		Compiler::HotReloadGame();
@@ -413,10 +477,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	Debug::Print("Project loaded");
 	projectLoaded = true;
-#if defined(EDITOR)
-	FileHandler::HasCodeChanged(GetAssetFolderPath());
-	FileHandler::HasFileChangedOrAdded(GetAssetFolderPath());
-#endif
+
 	return projectLoaded;
 }
 

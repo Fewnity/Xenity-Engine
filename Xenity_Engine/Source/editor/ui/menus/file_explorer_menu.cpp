@@ -28,14 +28,19 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 {
 	if (item.file) // Do a specific action if the file can be opened
 	{
-		if (item.file->fileType == File_Scene)
+		if (item.file->fileType == File_Scene) // If the file is a scene, load the scene
 		{
 			GameplayManager::SetGameState(Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->fileType == File_Code || item.file->fileType == File_Header || item.file->fileType == File_Shader)
+		else if (item.file->fileType == File_Code || item.file->fileType == File_Header || item.file->fileType == File_Shader) // If the file is something like code, open Visual Studio Code
 		{
-			const std::string command = "code \"" + item.file->file->GetPath() + "\"";
+			// Open the folder to allow vs code c++ settings
+			std::string command = "code \"" + ProjectManager::GetAssetFolderPath() + "\"";
+			system(command.c_str());
+
+			// Open the file
+			command = "code \"" + item.file->file->GetPath() + "\"";
 			system(command.c_str());
 		}
 	}

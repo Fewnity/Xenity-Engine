@@ -201,6 +201,8 @@ public:
 
 private:
 	static void FindAllProjectFiles();
+	static void CreateVisualStudioSettings();
+
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, uint64_t id);
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 

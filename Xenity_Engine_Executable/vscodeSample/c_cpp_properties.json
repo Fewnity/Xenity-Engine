@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+            "name": "Xenity",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "{ENGINE_SOURCE_PATH}**"
+            ],
+            "cppStandard": "c++20"
+        }
+    ],
+    "version": 4
+}
