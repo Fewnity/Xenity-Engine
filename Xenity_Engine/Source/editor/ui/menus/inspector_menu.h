@@ -15,6 +15,7 @@ public:
 	void Draw() override;
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
 	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
+	bool forceItemUpdate = false;
 
 private:
 	void DrawFilePreview();

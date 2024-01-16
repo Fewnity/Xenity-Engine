@@ -11,6 +11,7 @@
 #include <engine/file_system/directory.h>
 #include <engine/graphics/texture.h>
 #include <editor/ui/menus/file_explorer_menu.h>
+#include <editor/ui/menus/inspector_menu.h>
 #include <editor/editor.h>
 
 template <class T>
@@ -99,6 +100,12 @@ public:
 					if (ImGui::IsItemClicked())
 					{
 						valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
+						std::vector<std::shared_ptr<InspectorMenu>> inspectors = Editor::GetMenus<InspectorMenu>();
+						int inspectorsCount = inspectors.size();
+						for (int menuIndex = 0; menuIndex < inspectorsCount; menuIndex++)
+						{
+							inspectors[menuIndex]->forceItemUpdate = true;
+						}
 					}
 					if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered())
 					{

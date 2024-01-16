@@ -291,7 +291,6 @@ void InspectorMenu::DrawFileInfo(std::shared_ptr<FileReference>& selectedFileRef
 
 	std::shared_ptr<Reflective> reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
 
-	ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (reflection)
 	{
 		auto reflectionList = reflection->GetReflectiveData();
@@ -304,8 +303,14 @@ void InspectorMenu::DrawFileInfo(std::shared_ptr<FileReference>& selectedFileRef
 				CommandManager::AddCommand(command);
 				command->Execute();
 			}
+			if (forceItemUpdate) 
+			{
+				reflection->OnReflectionUpdated();
+				forceItemUpdate = false;
+			}
 		}
 	}
+	ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (metaReflection.size() != 0)
 	{
 		std::shared_ptr<Command> command = nullptr;
