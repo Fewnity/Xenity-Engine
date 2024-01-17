@@ -31,6 +31,7 @@
 #include <editor/editor.h>
 #include <editor/ui/menus/scene_menu.h>
 #include <editor/tool_mode.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -203,7 +204,7 @@ void Graphics::Draw()
 				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
-			if(!usedCamera.lock()->isEditor)
+			if (!usedCamera.lock()->isEditor)
 				currentMode = Draw_UI;
 			if (UseOpenGLFixedFunctions && !usedCamera.lock()->isEditor)
 			{
@@ -260,7 +261,7 @@ void Graphics::Draw()
 				int gridAxis = 0;
 				for (int i = 0; i < sceneMenuCount; i++)
 				{
-					if (sceneMenus[i]->weakCamera.lock() == usedCamera.lock()) 
+					if (sceneMenus[i]->weakCamera.lock() == usedCamera.lock())
 					{
 						gridAxis = sceneMenus[i]->gridAxis;
 						break;
@@ -268,6 +269,7 @@ void Graphics::Draw()
 				}
 
 				DrawEditorGrid(camPos, gridAxis);
+				DrawSelectedItemBoundingBox(camPos);
 
 				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
@@ -482,6 +484,53 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 	}
 }
 #if defined(EDITOR)
+
+void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
+{
+	if (const std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject())
+	{
+		const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
+
+		RenderingSettings renderSettings = RenderingSettings();
+		renderSettings.useBlend = true;
+		renderSettings.useDepth = true;
+		renderSettings.useLighting = false;
+		renderSettings.useTexture = false;
+
+		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
+		if (meshRenderer)
+		{
+			const Vector3 min = meshRenderer->meshData->minBoundingBox;
+			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
+
+			const Vector3 bottom0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
+			const Vector3 bottom1 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, max.z, 1);
+			const Vector3 bottom2 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, min.y, min.z, 1);
+			const Vector3 bottom3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, min.y, max.z, 1);
+
+			const Vector3 top0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, max.y, min.z, 1);
+			const Vector3 top1 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, max.y, max.z, 1);
+			const Vector3 top2 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, min.z, 1);
+			const Vector3 top3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
+
+			Engine::GetRenderer().DrawLine(bottom0, bottom1, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom1, bottom3, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom2, bottom0, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom2, bottom3, color, renderSettings);
+
+			Engine::GetRenderer().DrawLine(top0, top1, color, renderSettings);
+			Engine::GetRenderer().DrawLine(top1, top3, color, renderSettings);
+			Engine::GetRenderer().DrawLine(top2, top0, color, renderSettings);
+			Engine::GetRenderer().DrawLine(top2, top3, color, renderSettings);
+
+			Engine::GetRenderer().DrawLine(bottom0, top0, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom1, top1, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom2, top2, color, renderSettings);
+			Engine::GetRenderer().DrawLine(bottom3, top3, color, renderSettings);
+		}
+	}
+}
+
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
 	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
@@ -610,7 +659,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
 		}
-		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate) 
+		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleX, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleY, renderSettings, AssetManager::unlitMaterial);
