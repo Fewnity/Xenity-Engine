@@ -15,6 +15,9 @@
 #include <engine/tools/shape_spawner.h>
 #include <editor/ui/editor_ui.h>
 #include <engine/engine_settings.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
 
 void SceneMenu::Init()
 {
@@ -154,6 +157,101 @@ void SceneMenu::MoveCamera()
 		else
 			cameraTransform->SetRotation(Vector3(0));
 	}
+}
+
+bool getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t)
+{
+	float t1 = (corner1.x - startPosition.x) * dirfrac.x;
+	float t2 = (corner2.x - startPosition.x) * dirfrac.x;
+	float t3 = (corner1.y - startPosition.y) * dirfrac.y;
+	float t4 = (corner2.y - startPosition.y) * dirfrac.y;
+	float t5 = (corner1.z - startPosition.z) * dirfrac.z;
+	float t6 = (corner2.z - startPosition.z) * dirfrac.z;
+
+	float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+	float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+	// if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us, if tmin > tmax, ray doesn't intersect AABB
+	if (tmax < 0 || tmin > tmax)
+	{
+	}
+	else
+	{
+		if (*t > tmin)
+		{
+			*t = tmin;
+			return true;
+		}
+	}
+	return false;
+}
+
+std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
+{
+	const std::shared_ptr<Transform> cameraTransform = Graphics::usedCamera.lock()->GetTransform();
+	std::shared_ptr<Camera> cam = Graphics::usedCamera.lock();
+
+	// Calculate camera matrix without translate
+	const Vector3 cameraRotation = cameraTransform->GetRotation();
+	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1 + 180), glm::vec3(1.0f, 0.0f, 0.0f));
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	// Get screen mouse position (inverted)
+	const glm::vec3 mousePositionGLM = glm::vec3(cam->GetWidth() - InputSystem::mousePosition.x, cam->GetHeight() - (cam->GetHeight() - InputSystem::mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
+
+	// Get world mouse position (position at the near clipping plane)
+	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, cam->projection, glm::vec4(0, 0, cam->GetWidth(), cam->GetHeight()));
+	//worldCoords = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z);
+
+	// Normalise direction if needed
+	//mouseWorldDirNormalized = worldCoords.Normalized();
+	Vector3 dir = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
+	int gameObjectCount = GameplayManager::gameObjectCount;
+
+	Vector3 dirfrac;
+	dirfrac.x = 1.0f / dir.x;
+	dirfrac.y = 1.0f / dir.y;
+	dirfrac.z = 1.0f / dir.z;
+
+	Vector3 fixedCamPos = cam->GetTransform()->GetPosition();
+	fixedCamPos.x = -fixedCamPos.x;
+
+	float dis = 999999;
+	float minDis = dis;
+	std::shared_ptr<GameObject> newGameObject = nullptr;
+	for (int i = 0; i < gameObjectCount; i++)
+	{
+		dis = 999999;
+		const std::shared_ptr<GameObject> selectedGO = GameplayManager::GetGameObjects()[i];
+		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
+		if (meshRenderer)
+		{
+			const Vector3 min = meshRenderer->meshData->minBoundingBox;
+			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
+			const Vector3 bottom0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
+			const Vector3 top3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
+			bool hit = getHitDistance(bottom0, top3, dirfrac, fixedCamPos, &dis);
+			if (hit)
+			{
+				Debug::PrintWarning("CCC");
+				if (dis < minDis)
+				{
+					minDis = dis;
+					newGameObject = selectedGO;
+				}
+				//break;
+			}
+		}
+	}
+
+	/*if (newGameObject != Editor::GetSelectedGameObject())
+	{
+		Editor::SetSelectedGameObject(newGameObject);
+		selected = true;
+	}*/
+
+	return newGameObject;
 }
 
 void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, std::shared_ptr<Camera>& camera)
@@ -310,6 +408,12 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	if (mode2D && toolMode != Tool_MoveCamera)
 		mouseWorldDirNormalized = Vector3(0, 0, -1);
 
+	std::shared_ptr<GameObject> newGameObjectSelected = nullptr;
+	if (InputSystem::GetKeyDown(MOUSE_LEFT))
+	{
+		newGameObjectSelected = CheckBoundingBoxesOnClick();
+	}
+
 	// Move the camera if the mouse left button is held
 	if ((InputSystem::GetKey(MOUSE_LEFT) && toolMode == Tool_MoveCamera) || InputSystem::GetKey(MOUSE_MIDDLE) || (ImGui::IsMouseDown(ImGuiMouseButton_Right) && mode2D))
 	{
@@ -388,7 +492,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				if (InputSystem::GetKeyDown(MOUSE_LEFT))
 				{
 					// Get start object value
-					if (toolMode == Tool_Move) 
+					if (toolMode == Tool_Move)
 					{
 						const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 						if (rect)
@@ -497,6 +601,13 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
 				}
 			}
+		}
+	}
+	if (InputSystem::GetKeyDown(MOUSE_LEFT))
+	{
+		if (side == Side_None) 
+		{
+			Editor::SetSelectedGameObject(newGameObjectSelected);
 		}
 	}
 }

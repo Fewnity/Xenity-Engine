@@ -120,6 +120,8 @@ public:
 	*/
 	void BindFrameBuffer();
 
+	Vector3 GetMouseRay();
+
 	void OnDrawGizmosSelected() override;
 	void OnDrawGizmos() override;
 

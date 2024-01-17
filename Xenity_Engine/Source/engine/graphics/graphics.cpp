@@ -483,6 +483,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, AssetManager::unlitMaterial);
 	}
 }
+
 #if defined(EDITOR)
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)

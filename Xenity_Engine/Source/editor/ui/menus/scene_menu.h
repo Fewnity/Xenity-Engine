@@ -34,6 +34,7 @@ private:
 	void SetButtonColor(bool isSelected);
 	void MoveCamera();
 	void ProcessTool(std::shared_ptr<Camera>& camera);
+	std::shared_ptr<GameObject> CheckBoundingBoxesOnClick();
 
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
 	void GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, std::shared_ptr<Camera>& camera);
