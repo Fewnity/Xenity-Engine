@@ -4,6 +4,7 @@
 #include <string>
 
 #include <engine/graphics/color/color.h>
+#include <engine/vectors/vector3.h>
 #include <engine/file_system/file_reference.h>
 #include <vector>
 
@@ -165,6 +166,10 @@ public:
 	bool isQuad = false;
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 	bool isValid = true;
+
+	Vector3 minBoundingBox;
+	Vector3 maxBoundingBox;
+	void ComputeBoundingBox();
 
 private:
 	void Unload();

@@ -74,7 +74,7 @@ ReflectiveData MeshData::GetMetaReflectiveData()
  * @param z Z position
  * @param index Vertex index
  */
-void MeshData::AddVertex(float u, float v, const Color &color, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex)
 {
 	Vertex vert;
 	vert.u = u;
@@ -103,7 +103,7 @@ void MeshData::AddVertex(float u, float v, const Color &color, float x, float y,
 	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
 #else
-	((Vertex *)subMeshes[subMeshIndex]->data)[index] = vert;
+	((Vertex*)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -119,7 +119,7 @@ void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
 	subMeshes[subMeshIndex]->c_verts[index][2] = z;
 	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 #else
-	((VertexNoColorNoUv *)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -147,7 +147,7 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index,
 	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
 	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNoColor *)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -178,7 +178,7 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
 	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNormalsNoColor *)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNormalsNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -201,14 +201,76 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
 	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 #else
-	((VertexNormalsNoColorNoUv *)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNormalsNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
 void MeshData::SendDataToGpu()
 {
 	Engine::GetRenderer().UploadMeshData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-	FreeMeshData(false);
+	//FreeMeshData(false);
+}
+
+void MeshData::ComputeBoundingBox()
+{
+	bool firstValue = true;
+	for (int i = 0; i < subMeshCount; i++)
+	{
+		SubMesh* subMesh = subMeshes[i];
+
+		int verticesCount = subMesh->vertice_count;
+		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
+		{
+			Vector3 vert;
+			if (!hasNormal)
+			{
+				if (!hasUv)
+				{
+					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+				else
+				{
+					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+			}
+			else
+			{
+				if (!hasUv)
+				{
+					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+				else
+				{
+					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+			}
+			if (firstValue)
+			{
+				minBoundingBox.x = vert.x;
+				minBoundingBox.y = vert.y;
+				minBoundingBox.z = vert.z;
+
+				maxBoundingBox.x = vert.x;
+				maxBoundingBox.y = vert.y;
+				maxBoundingBox.z = vert.z;
+				firstValue = false;
+			}
+			else
+			{
+				minBoundingBox.x = std::min(minBoundingBox.x, vert.x);
+				minBoundingBox.y = std::min(minBoundingBox.y, vert.y);
+				minBoundingBox.z = std::min(minBoundingBox.z, vert.z);
+
+				maxBoundingBox.x = std::max(maxBoundingBox.x, vert.x);
+				maxBoundingBox.y = std::max(maxBoundingBox.y, vert.y);
+				maxBoundingBox.z = std::max(maxBoundingBox.z, vert.z);
+			}
+		}
+	}
 }
 
 void MeshData::Unload()
@@ -220,7 +282,7 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 {
 	for (int i = 0; i < subMeshCount; i++)
 	{
-		SubMesh *subMesh = subMeshes[i];
+		SubMesh* subMesh = subMeshes[i];
 		if (subMesh)
 		{
 			if (subMesh->data)
@@ -284,6 +346,7 @@ void MeshData::OnLoadFileReferenceFinished()
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	SendDataToGpu();
 #endif
+	ComputeBoundingBox();
 	isValid = true;
 }
 
@@ -303,7 +366,7 @@ void MeshData::UnloadFileReference()
 void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 {
 #if defined(_EE)
-	SubMesh *subMesh = subMeshes[index];
+	SubMesh* subMesh = subMeshes[index];
 	// if (subMesh->meshPacket)
 	// packet2_free(subMesh->meshPacket);
 	if (!subMesh->meshPacket)
@@ -314,9 +377,9 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 		packet2_add_float(subMesh->meshPacket, ((float)0xFFFFFF) / 32.0F); // scale
 		packet2_add_s32(subMesh->meshPacket, 36);						   // vertex count
 		packet2_utils_gif_add_set(subMesh->meshPacket, 1);
-		packet2_utils_gs_add_lod(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).lod);
-		packet2_utils_gs_add_texbuff_clut(subMesh->meshPacket, &texture->texbuff, &((RendererVU1 &)Engine::GetRenderer()).clut);
-		packet2_utils_gs_add_prim_giftag(subMesh->meshPacket, &((RendererVU1 &)Engine::GetRenderer()).prim, 36, DRAW_STQ2_REGLIST, 3, 0);
+		packet2_utils_gs_add_lod(subMesh->meshPacket, &((RendererVU1&)Engine::GetRenderer()).lod);
+		packet2_utils_gs_add_texbuff_clut(subMesh->meshPacket, &texture->texbuff, &((RendererVU1&)Engine::GetRenderer()).clut);
+		packet2_utils_gs_add_prim_giftag(subMesh->meshPacket, &((RendererVU1&)Engine::GetRenderer()).prim, 36, DRAW_STQ2_REGLIST, 3, 0);
 		// RGBA
 		packet2_add_u32(subMesh->meshPacket, 128);
 		packet2_add_u32(subMesh->meshPacket, 128);
@@ -328,12 +391,12 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
-	MeshData::SubMesh *newSubMesh = new MeshData::SubMesh();
+	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
 
 #if defined(__PSP__)
-	newSubMesh->indices = (unsigned short *)memalign(16, sizeof(unsigned short) * index_count);
+	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
 #else
-	newSubMesh->indices = (unsigned short *)malloc(sizeof(unsigned short) * index_count);
+	newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
 #endif
 	if (newSubMesh->indices == nullptr)
 	{
@@ -347,22 +410,22 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (!hasNormal)
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNoColorNoUv *)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
+			newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
 		else
-			newSubMesh->data = (VertexNoColor *)memalign(16, sizeof(VertexNoColor) * vcount);
+			newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
 	}
 	else
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNormalsNoColorNoUv *)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
+			newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
 		else
-			newSubMesh->data = (VertexNormalsNoColor *)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+			newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	}
 #elif defined(_EE)
 
-	newSubMesh->c_verts = (VECTOR *)memalign(128, sizeof(VECTOR) * vcount);
-	newSubMesh->c_colours = (VECTOR *)memalign(128, sizeof(VECTOR) * vcount);
-	newSubMesh->c_st = (VECTOR *)memalign(128, sizeof(VECTOR) * vcount);
+	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
+	newSubMesh->c_colours = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
+	newSubMesh->c_st = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
 	// RendererVU1((RendererVU1 &)Engine::GetRenderer())
 	// newSubMesh->meshPacket = packet2_create(10, P2_TYPE_NORMAL, P2_MODE_CHAIN, 1);
 
@@ -401,16 +464,16 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (!hasNormal)
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNoColorNoUv *)malloc(sizeof(VertexNoColorNoUv) * vcount);
+			newSubMesh->data = (VertexNoColorNoUv*)malloc(sizeof(VertexNoColorNoUv) * vcount);
 		else
-			newSubMesh->data = (VertexNoColor *)malloc(sizeof(VertexNoColor) * vcount);
+			newSubMesh->data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
 	}
 	else
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNormalsNoColorNoUv *)malloc(sizeof(VertexNormalsNoColorNoUv) * vcount);
+			newSubMesh->data = (VertexNormalsNoColorNoUv*)malloc(sizeof(VertexNormalsNoColorNoUv) * vcount);
 		else
-			newSubMesh->data = (VertexNormalsNoColor *)malloc(sizeof(VertexNormalsNoColor) * vcount);
+			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
 	}
 #endif
 #if !defined(_EE)
