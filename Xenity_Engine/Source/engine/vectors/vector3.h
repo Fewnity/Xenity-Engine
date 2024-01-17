@@ -2,6 +2,8 @@
 #include <engine/api.h>
 
 #include <engine/reflection/reflection.h>
+#include <glm/ext/vector_float3.hpp>
+#include <glm/ext/vector_float4.hpp>
 
 class Vector2Int;
 class Vector2;
@@ -13,9 +15,11 @@ public:
 
 	Vector3();
 	Vector3(const float x, const float y, const float z);
+	Vector3(const glm::vec3& glmVec3);
+	Vector3(const glm::vec4& glmVec4);
 	Vector3(const float fillValue);
-	Vector3(Vector2Int vect);
-	Vector3(Vector2 vect);
+	Vector3(const Vector2Int& vect);
+	Vector3(const Vector2& vect);
 
 	/**
 	* Get the look rotation in degrees between two vectors

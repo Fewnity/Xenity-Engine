@@ -7,6 +7,7 @@
 #include "vector3.h"
 #include "vector2_int.h"
 #include "vector2.h"
+//#include <glm/ext/vector_float3.hpp>
 
 #pragma region Constructors / Destructor
 
@@ -33,6 +34,20 @@ Vector3::Vector3(const float x, const float y, const float z)
 	this->z = z;
 }
 
+Vector3::Vector3(const glm::vec3& glmVec3)
+{
+	this->x = glmVec3.x;
+	this->y = glmVec3.y;
+	this->z = glmVec3.z;
+}
+
+Vector3::Vector3(const glm::vec4& glmVec4)
+{
+	this->x = glmVec4.x;
+	this->y = glmVec4.y;
+	this->z = glmVec4.z;
+}
+
 Vector3::Vector3(const float fillValue)
 {
 	this->x = fillValue;
@@ -40,14 +55,14 @@ Vector3::Vector3(const float fillValue)
 	this->z = fillValue;
 }
 
-Vector3::Vector3(Vector2Int vect)
+Vector3::Vector3(const Vector2Int& vect)
 {
 	this->x = (float)vect.x;
 	this->y = (float)vect.y;
 	this->z = 0;
 }
 
-Vector3::Vector3(Vector2 vect)
+Vector3::Vector3(const Vector2& vect)
 {
 	this->x = vect.x;
 	this->y = vect.y;
