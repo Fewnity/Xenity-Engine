@@ -490,17 +490,18 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
 	if (const std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject())
 	{
-		const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
-
-		RenderingSettings renderSettings = RenderingSettings();
-		renderSettings.useBlend = true;
-		renderSettings.useDepth = true;
-		renderSettings.useLighting = false;
-		renderSettings.useTexture = false;
 
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
-		if (meshRenderer)
+		if (meshRenderer && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
+			const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
+
+			RenderingSettings renderSettings = RenderingSettings();
+			renderSettings.useBlend = true;
+			renderSettings.useDepth = true;
+			renderSettings.useLighting = false;
+			renderSettings.useTexture = false;
+
 			const Vector3 min = meshRenderer->meshData->minBoundingBox;
 			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
 
