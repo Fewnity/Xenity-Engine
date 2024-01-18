@@ -490,7 +490,6 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
 	if (const std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject())
 	{
-
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
 		if (meshRenderer && meshRenderer->meshData && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{

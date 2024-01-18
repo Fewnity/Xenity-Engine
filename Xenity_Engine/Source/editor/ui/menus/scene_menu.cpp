@@ -595,6 +595,12 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 			}
 		}
 	}
+
+	if (InputSystem::GetKeyUp(MOUSE_LEFT)) 
+	{
+		side = Side_None;
+	}
+
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
 		if (side == Side_None) 
