@@ -186,10 +186,9 @@ bool getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 s
 	return false;
 }
 
-std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
+std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr<Camera>& camera)
 {
-	const std::shared_ptr<Transform> cameraTransform = Graphics::usedCamera.lock()->GetTransform();
-	std::shared_ptr<Camera> cam = Graphics::usedCamera.lock();
+	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
 	// Calculate camera matrix without translate
 	const Vector3 cameraRotation = cameraTransform->GetRotation();
@@ -198,10 +197,10 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(cam->GetWidth() - InputSystem::mousePosition.x, cam->GetHeight() - (cam->GetHeight() - InputSystem::mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(camera->GetWidth() - InputSystem::mousePosition.x, camera->GetHeight() - (camera->GetHeight() - InputSystem::mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, cam->projection, glm::vec4(0, 0, cam->GetWidth(), cam->GetHeight()));
+	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->projection, glm::vec4(0, 0, camera->GetWidth(), camera->GetHeight()));
 
 	// Normalise direction if needed
 	const Vector3 dir = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
@@ -212,7 +211,7 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
 	dirfrac.y = 1.0f / dir.y;
 	dirfrac.z = 1.0f / dir.z;
 
-	Vector3 fixedCamPos = cam->GetTransform()->GetPosition();
+	Vector3 fixedCamPos = camera->GetTransform()->GetPosition();
 	fixedCamPos.x = -fixedCamPos.x;
 
 	float dis = 999999;
@@ -404,7 +403,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	std::shared_ptr<GameObject> newGameObjectSelected = nullptr;
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
-		newGameObjectSelected = CheckBoundingBoxesOnClick();
+		newGameObjectSelected = CheckBoundingBoxesOnClick(camera);
 	}
 
 	// Move the camera if the mouse left button is held
