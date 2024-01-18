@@ -229,6 +229,7 @@ void ProjectManager::CreateVisualStudioSettings()
 
 		// Read the empty vscode settings file
 		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
+
 		bool isOpen = emptyVSCodeParamFile->Open(false);
 		if (isOpen)
 		{
@@ -251,8 +252,11 @@ void ProjectManager::CreateVisualStudioSettings()
 			// Create vscode folder
 			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode\\");
 
+			std::string filePath = assetFolderPath + ".vscode\\c_cpp_properties.json";
+			FileSystem::fileSystem->Delete(filePath);
+
 			// Create the vscode settings file
-			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(assetFolderPath + ".vscode\\c_cpp_properties.json");
+			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
 			bool isOpen = vsCodeParamFile->Open(true);
 			if (isOpen)
 			{
