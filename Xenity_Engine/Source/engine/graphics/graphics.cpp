@@ -492,7 +492,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 	{
 
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
-		if (meshRenderer && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
+		if (meshRenderer && meshRenderer->meshData && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
 			const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
 
