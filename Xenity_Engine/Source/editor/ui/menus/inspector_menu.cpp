@@ -458,15 +458,9 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 		float cursorY = ImGui::GetCursorPosY();
 
 		bool isEnable = comp->GetIsEnabled();
-		ImGui::SetCursorPosX(35);
-		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
-		if (comp->GetIsEnabled() != isEnable)
-		{
-			comp->SetIsEnabled(isEnable);
-		}
-		ImGui::SetCursorPosY(cursorY);
+
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
-		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
 			CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 			if (!comp->waitingForDestroy)
@@ -498,14 +492,26 @@ void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGa
 			}
 		}
 
-		//Draw component title
 		const float lastCursorY = ImGui::GetCursorPosY();
+
+		// Draw component enabled checkbox
 		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosY(cursorY);
+		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+		if (comp->GetIsEnabled() != isEnable)
+		{
+			comp->SetIsEnabled(isEnable);
+		}
+
+		//Draw component title
+		ImGui::SetCursorPosY(cursorY);
+		ImGui::SetCursorPosX(65);
 		ImGui::SetCursorPosY(cursorY + 3);
 		if (!comp->GetComponentName().empty())
 			ImGui::Text("%s", comp->GetComponentName().c_str());
 		else
 			ImGui::Text("Missing component name");
+
 		ImGui::SetCursorPosY(lastCursorY);
 	}
 }
