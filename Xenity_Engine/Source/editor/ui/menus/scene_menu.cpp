@@ -202,11 +202,9 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
 
 	// Get world mouse position (position at the near clipping plane)
 	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, cam->projection, glm::vec4(0, 0, cam->GetWidth(), cam->GetHeight()));
-	//worldCoords = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z);
 
 	// Normalise direction if needed
-	//mouseWorldDirNormalized = worldCoords.Normalized();
-	Vector3 dir = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
+	const Vector3 dir = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
 	int gameObjectCount = GameplayManager::gameObjectCount;
 
 	Vector3 dirfrac;
@@ -222,34 +220,29 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick()
 	std::shared_ptr<GameObject> newGameObject = nullptr;
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		dis = 999999;
 		const std::shared_ptr<GameObject> selectedGO = GameplayManager::GetGameObjects()[i];
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
+
 		if (meshRenderer && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
 			const Vector3 min = meshRenderer->meshData->minBoundingBox;
 			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
 			const Vector3 bottom0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
 			const Vector3 top3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
-			bool hit = getHitDistance(bottom0, top3, dirfrac, fixedCamPos, &dis);
+			
+			dis = 999999;
+			const bool hit = getHitDistance(bottom0, top3, dirfrac, fixedCamPos, &dis);
+
 			if (hit)
 			{
-				Debug::PrintWarning("CCC");
 				if (dis < minDis)
 				{
 					minDis = dis;
 					newGameObject = selectedGO;
 				}
-				//break;
 			}
 		}
 	}
-
-	/*if (newGameObject != Editor::GetSelectedGameObject())
-	{
-		Editor::SetSelectedGameObject(newGameObject);
-		selected = true;
-	}*/
 
 	return newGameObject;
 }
