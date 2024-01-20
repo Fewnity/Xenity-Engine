@@ -330,6 +330,7 @@
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\engine\file_system\file_ps2.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_vu1.cpp" />
+    <ClCompile Include="Source\engine\physics\raycast.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -567,6 +568,7 @@
     <ClInclude Include="Source\engine\file_system\async_file_loading.h" />
     <ClInclude Include="Source\engine\file_system\file_ps2.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_vu1.h" />
+    <ClInclude Include="Source\engine\physics\raycast.h" />
     <ClInclude Include="Source\engine\tools\gameplay_utility.h" />
     <ClInclude Include="Source\editor\plugin\api.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>

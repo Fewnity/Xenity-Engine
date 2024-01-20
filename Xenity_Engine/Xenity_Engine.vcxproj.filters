@@ -137,6 +137,7 @@
     <ClCompile Include="Source\engine\file_system\file_ps2.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\canvas.cpp" />
     <ClCompile Include="Source\engine\game_elements\rect_transform.cpp" />
+    <ClCompile Include="Source\engine\physics\raycast.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -282,6 +283,7 @@
     <ClInclude Include="Source\engine\file_system\file_ps2.h" />
     <ClInclude Include="Source\engine\graphics\ui\canvas.h" />
     <ClInclude Include="Source\engine\game_elements\rect_transform.h" />
+    <ClInclude Include="Source\engine\physics\raycast.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -5,6 +5,8 @@
 #include <engine/vectors/vector3.h>
 #include <memory>
 
+class RigidBody;
+
 enum CollisionSide {
 	NoSide = 0,
 	SideX = 1,
@@ -18,9 +20,11 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
+	void Awake() override;
+
 	Vector3 size = Vector3(1);
 	Vector3 offset = Vector3(0);
-
+	std::weak_ptr<RigidBody> currentRigidbody;
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
@@ -38,7 +42,7 @@ public:
 	void OnDrawGizmosSelected() override;
 	bool isTrigger = false;
 
-private:
 	Vector3 min;
 	Vector3 max;
+private:
 };

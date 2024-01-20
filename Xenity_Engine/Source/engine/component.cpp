@@ -11,6 +11,7 @@
 #include <engine/lighting/lighting.h>
 
 #include <engine/physics/rigidbody.h>
+#include <engine/physics/box_collider.h>
 
 #pragma region Constructors / Destructor
 
@@ -59,6 +60,10 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 		else if (auto result = std::dynamic_pointer_cast<RigidBody>(thisShared))
 		{
 			PhysicsManager::rigidBodies.push_back(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<BoxCollider>(thisShared))
+		{
+			PhysicsManager::boxColliders.push_back(result);
 		}
 	}
 }

@@ -26,7 +26,6 @@ public:
 	bool isStatic = false;
 	float bounce = 0.5f;
 	float gravityMultiplier = 1.0f;
-	std::weak_ptr<BoxCollider> attachedcollider;
 	std::vector <std::weak_ptr <BoxCollider>> inTrigger;
 private:
 };

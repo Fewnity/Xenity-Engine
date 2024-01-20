@@ -396,12 +396,9 @@ Vector3 Camera::GetMouseRay()
 
 	// Get world mouse position (position at the near clipping plane)
 	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, projection, glm::vec4(0, 0, width, height));
-	//worldCoords = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z);
 
-	// Normalise direction if needed
-	//mouseWorldDirNormalized = worldCoords.Normalized();
-
-	return Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
+	// Normalise direction
+	return Vector3(-vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
 }
 
 void Camera::OnDrawGizmosSelected()

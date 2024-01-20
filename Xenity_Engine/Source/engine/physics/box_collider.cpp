@@ -12,6 +12,7 @@
 #include <editor/editor.h>
 #include <editor/gizmo.h>
 #endif
+#include "rigidbody.h"
 
 BoxCollider::BoxCollider()
 {
@@ -97,6 +98,11 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 BoxCollider::~BoxCollider()
 {
 	AssetManager::RemoveReflection(this);
+}
+
+void BoxCollider::Awake()
+{
+	currentRigidbody = GetGameObject()->GetComponent<RigidBody>();
 }
 
 void BoxCollider::OnDrawGizmosSelected()
