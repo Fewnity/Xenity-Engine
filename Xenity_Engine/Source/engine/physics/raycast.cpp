@@ -11,10 +11,10 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 	RaycastHit nearestHit;
 	nearestHit.hitGameObject.reset();
 
-	int colliderCount = PhysicsManager::boxColliders.size();
+	const int colliderCount = PhysicsManager::boxColliders.size();
 	for (int i = 0; i < colliderCount; i++)
 	{
-		std::shared_ptr<BoxCollider> boxCollider = PhysicsManager::boxColliders[i].lock();
+		const std::shared_ptr<BoxCollider> boxCollider = PhysicsManager::boxColliders[i].lock();
 		if (boxCollider)
 		{
 			RaycastHit currentHit;

@@ -188,35 +188,19 @@ bool getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 s
 
 std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr<Camera>& camera)
 {
-	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
-
-	// Calculate camera matrix without translate
-	const Vector3 cameraRotation = cameraTransform->GetRotation();
-	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1 + 180), glm::vec3(1.0f, 0.0f, 0.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(camera->GetWidth() - InputSystem::mousePosition.x, camera->GetHeight() - (camera->GetHeight() - InputSystem::mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
-
-	// Get world mouse position (position at the near clipping plane)
-	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->projection, glm::vec4(0, 0, camera->GetWidth(), camera->GetHeight()));
-
-	// Normalise direction if needed
-	const Vector3 dir = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
-	int gameObjectCount = GameplayManager::gameObjectCount;
+	const Vector3 dir = camera->GetMouseRay();
 
 	Vector3 dirfrac;
 	dirfrac.x = 1.0f / dir.x;
 	dirfrac.y = 1.0f / dir.y;
 	dirfrac.z = 1.0f / dir.z;
 
-	Vector3 fixedCamPos = camera->GetTransform()->GetPosition();
-	fixedCamPos.x = -fixedCamPos.x;
+	const Vector3 camPos = camera->GetTransform()->GetPosition();
 
 	float dis = 999999;
 	float minDis = dis;
 	std::shared_ptr<GameObject> newGameObject = nullptr;
+	const int gameObjectCount = GameplayManager::gameObjectCount;
 	for (int i = 0; i < gameObjectCount; i++)
 	{
 		const std::shared_ptr<GameObject> selectedGO = GameplayManager::GetGameObjects()[i];
@@ -226,11 +210,13 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr
 		{
 			const Vector3 min = meshRenderer->meshData->minBoundingBox;
 			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
-			const Vector3 bottom0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
-			const Vector3 top3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
-			
+			Vector3 transformedMin = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
+			Vector3 transformedMax = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
+			transformedMin.x = -transformedMin.x;
+			transformedMax.x = -transformedMax.x;
+
 			dis = 999999;
-			const bool hit = getHitDistance(bottom0, top3, dirfrac, fixedCamPos, &dis);
+			const bool hit = getHitDistance(transformedMin, transformedMax, dirfrac, camPos, &dis);
 
 			if (hit)
 			{
