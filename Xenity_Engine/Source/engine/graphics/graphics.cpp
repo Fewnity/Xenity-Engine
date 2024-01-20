@@ -625,8 +625,9 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
+	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 	// Draw tool
-	if (Editor::GetSelectedGameObject())
+	if (Editor::GetSelectedGameObject() && sceneMenu)
 	{
 		const Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		//if (usedCamera.lock()->isEditor) 
@@ -654,13 +655,14 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
-		if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Move || Editor::GetMenu<SceneMenu>()->toolMode == Tool_Scale)
+
+		if (sceneMenu->toolMode == Tool_Move || sceneMenu->toolMode == Tool_Scale)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
 		}
-		else if (Editor::GetMenu<SceneMenu>()->toolMode == Tool_Rotate)
+		else if (sceneMenu->toolMode == Tool_Rotate)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleX, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleY, renderSettings, AssetManager::unlitMaterial);
