@@ -273,7 +273,7 @@ void Editor::ApplyEditorStyle()
 	const Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
 
-	if (GameplayManager::GetGameState() != Stopped) 
+	if (GameplayManager::GetGameState() != Stopped)
 		pTint = playTint;
 	else if (!EngineSettings::isPlayTintAdditive)
 		pTint = Vector4(1);
@@ -392,38 +392,166 @@ std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
 	return currentProjectDirectory;
 }
 
+void Editor::DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_ptr<GameObject> goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
+{
+	// Create new gameobject
+	std::string newGameObjectName = goToDuplicate->name;
+	if (parent == nullptr)
+		newGameObjectName = GetIncrementedGameObjectName(goToDuplicate->name);
+
+	std::shared_ptr<GameObject> newGameObject = CreateGameObject(newGameObjectName);
+	
+	// Set parent 
+	if (parent != nullptr) 
+	{
+		newGameObject->SetParent(parent);
+	}
+	else if (goToDuplicate->parent.lock())
+	{
+		newGameObject->SetParent(goToDuplicate->parent);
+	}
+
+	// Set local position/rotation/scale
+	std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
+	std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
+	newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
+	newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
+	newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
+
+	const size_t componentCount = goToDuplicate->components.size();
+	for (size_t i = 0; i < componentCount; i++)
+	{
+		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
+		ReflectiveData newReflection = newComponent->GetReflectiveData();
+		ReflectiveData reflectionToCopy = goToDuplicate->components[i]->GetReflectiveData();
+
+		json copiedValues;
+		copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);
+
+		ReflectionUtils::JsonToReflectiveData(copiedValues, newReflection);
+		newComponent->OnReflectionUpdated();
+
+		ComponentAndId newComponentAndId;
+		newComponentAndId.newComponent = newComponent;
+		newComponentAndId.oldId = goToDuplicate->components[i]->GetUniqueId();
+		ComponentsAndIds.push_back(newComponentAndId);
+	}
+
+	GameObjectAndId gameObjectAndId;
+	gameObjectAndId.newGameObject = newGameObject;
+	gameObjectAndId.oldId = goToDuplicate->GetUniqueId();
+
+	GameObjectsAndIds.push_back(gameObjectAndId);
+
+	int childCount = goToDuplicate->childCount;
+	for (int i = 0; i < childCount; i++)
+	{
+		DuplicateChild(newGameObject, goToDuplicate->children[i].lock(), ComponentsAndIds, GameObjectsAndIds);
+	}
+}
+
 void Editor::DuplicateGameObject(const std::shared_ptr<GameObject>& goToDuplicate)
 {
+	// TODO Créer les components avec les mêmes ids que les anciens, check toutes les variables qui ont pour identifiant unique celui de l'ancien component, remplacer la référence et créer un nouvel id, 
 	if (goToDuplicate)
 	{
-		// Create new gameobject
-		std::shared_ptr<GameObject> newGameObject = CreateGameObject(GetIncrementedGameObjectName(goToDuplicate->name));
+		std::vector<ComponentAndId> ComponentsAndIds;
+		std::vector<GameObjectAndId> GameObjectsAndIds;
+		DuplicateChild(nullptr, goToDuplicate, ComponentsAndIds, GameObjectsAndIds);
 
-		// Set parent and position/rotation/scale
-		if (goToDuplicate->parent.lock())
+		const size_t componentCount = ComponentsAndIds.size();
+		const size_t gameObjectCount = GameObjectsAndIds.size();
+		for (size_t componentIndex = 0; componentIndex < componentCount; componentIndex++)
 		{
-			newGameObject->SetParent(goToDuplicate->parent);
+			ReflectiveData newReflection = ComponentsAndIds[componentIndex].newComponent->GetReflectiveData();
+			for (auto& kv : newReflection)
+			{
+				VariableReference& variableRef = kv.second.variable.value();
+				if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
+				{
+					if (valuePtr->get().lock())
+					{
+						for (size_t j = 0; j < componentCount; j++)
+						{
+							if (valuePtr->get().lock()->GetUniqueId() == ComponentsAndIds[j].oldId)
+							{
+								valuePtr->get() = ComponentsAndIds[j].newComponent;
+							}
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef))
+				{
+					if (valuePtr->get().lock())
+					{
+						for (size_t j = 0; j < gameObjectCount; j++)
+						{
+							if (valuePtr->get().lock()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+							{
+								valuePtr->get() = GameObjectsAndIds[j].newGameObject;
+							}
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef))
+				{
+					if (valuePtr->get().lock())
+					{
+						for (size_t j = 0; j < gameObjectCount; j++)
+						{
+							if (valuePtr->get().lock()->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+							{
+								valuePtr->get() = GameObjectsAndIds[j].newGameObject->GetTransform();
+							}
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
+				{
+					size_t vectorSize = valuePtr->get().size();
+					for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
+					{
+						for (size_t j = 0; j < componentCount; j++)
+						{
+							if (valuePtr->get()[vectorIndex].lock()->GetUniqueId() == ComponentsAndIds[j].oldId)
+							{
+								valuePtr->get()[vectorIndex] = ComponentsAndIds[j].newComponent;
+							}
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
+				{
+					size_t vectorSize = valuePtr->get().size();
+					for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
+					{
+						for (size_t j = 0; j < gameObjectCount; j++)
+						{
+							if (valuePtr->get()[vectorIndex].lock()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+							{
+								valuePtr->get()[vectorIndex] = GameObjectsAndIds[j].newGameObject;
+							}
+						}
+					}
+				}
+				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
+				{
+					size_t vectorSize = valuePtr->get().size();
+					for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
+					{
+						for (size_t j = 0; j < gameObjectCount; j++)
+						{
+							if (valuePtr->get()[vectorIndex].lock()->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+							{
+								valuePtr->get()[vectorIndex] = GameObjectsAndIds[j].newGameObject->GetTransform();
+							}
+						}
+					}
+				}
+			}
 		}
-		std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
-		std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
-		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
-		newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
-		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 
-		// Duplicate all components
-		const size_t componentCount = goToDuplicate->components.size();
-		for (size_t i = 0; i < componentCount; i++)
-		{
-			std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
-			auto newReflection = newComponent->GetReflectiveData();
-			auto reflectionToCopy = goToDuplicate->components[i]->GetReflectiveData();
-
-			json copiedValues;
-			copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);
-			ReflectionUtils::JsonToReflectiveData(copiedValues, newReflection);
-			newComponent->OnReflectionUpdated();
-		}
-		SetSelectedGameObject(newGameObject);
+		SetSelectedGameObject(GameObjectsAndIds[0].newGameObject);
 	}
 }
 
@@ -591,7 +719,7 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 		}
 	}
 
-	if(foundOne)
+	if (foundOne)
 		finalName = finalName + " (" + std::to_string(number) + ")";
 
 	return finalName;
