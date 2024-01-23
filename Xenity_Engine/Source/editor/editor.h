@@ -67,24 +67,8 @@ public:
 	*/
 	static void CreateEmptyParent();
 
-	/**
-	* Create a new GameObject from another
-	*/
-	static void DuplicateGameObject(const std::shared_ptr<GameObject>& gameObject);
 
-	struct ComponentAndId
-	{
-		std::shared_ptr<Component> newComponent = nullptr;
-		uint64_t oldId = 0;
-	};
-
-	struct GameObjectAndId
-	{
-		std::shared_ptr<GameObject> newGameObject = nullptr;
-		uint64_t oldId = 0;
-	};
-
-	static void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_ptr<GameObject> goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds);
+	//static void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_ptr<GameObject> goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds);
 
 	static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
 
