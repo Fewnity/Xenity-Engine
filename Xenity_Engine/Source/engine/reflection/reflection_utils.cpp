@@ -285,6 +285,17 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, ReflectiveData data
 	}
 }
 
+void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
+{
+	ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
+	json jsonData;
+	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
+
+	ReflectiveData toReflectiveData = toReflective.GetReflectiveData();
+	JsonToReflectiveData(jsonData, toReflectiveData);
+	toReflective.OnReflectionUpdated();
+}
+
 void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
 {
 	auto myMap = reflective.GetReflectiveData();

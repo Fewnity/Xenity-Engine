@@ -15,6 +15,8 @@ class ReflectionUtils
 {
 public:
 
+	static void ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective);
+
 	/**
 	* Fill Reflective object from Json data
 	* @param j Json data
