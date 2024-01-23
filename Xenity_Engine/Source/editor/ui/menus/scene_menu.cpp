@@ -103,31 +103,29 @@ void SceneMenu::MoveCamera()
 		float side = 0;
 
 		float* upDownRef = &fwd;
-		if (mode2D)
-			upDownRef = &upWorld;
-		if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
-			*upDownRef = -1 * Time::GetDeltaTime();
-		else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
-			*upDownRef = 1 * Time::GetDeltaTime();
 
-		if (!mode2D)
+		if (!InputSystem::GetKey(LEFT_CONTROL)) // Disable camera keyboard controls while making a shortcut
 		{
-			if (InputSystem::GetKey(A))
-				upWorld = 1 * Time::GetDeltaTime();
-			else if (InputSystem::GetKey(E))
-				upWorld = -1 * Time::GetDeltaTime();
+			if (mode2D)
+				upDownRef = &upWorld;
+			if (InputSystem::GetKey(UP) || InputSystem::GetKey(Z))
+				*upDownRef = -1 * Time::GetDeltaTime();
+			else if (InputSystem::GetKey(DOWN) || InputSystem::GetKey(S))
+				*upDownRef = 1 * Time::GetDeltaTime();
+
+			if (!mode2D)
+			{
+				if (InputSystem::GetKey(A))
+					upWorld = 1 * Time::GetDeltaTime();
+				else if (InputSystem::GetKey(E))
+					upWorld = -1 * Time::GetDeltaTime();
+			}
+
+			if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
+				side = 1 * Time::GetDeltaTime();
+			else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
+				side = -1 * Time::GetDeltaTime();
 		}
-
-		if (InputSystem::GetKey(RIGHT) || InputSystem::GetKey(D))
-			side = 1 * Time::GetDeltaTime();
-		else if (InputSystem::GetKey(LEFT) || InputSystem::GetKey(Q))
-			side = -1 * Time::GetDeltaTime();
-
-		/*if (mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera)
-		{
-			up += InputSystem::InputSystem::mouseSpeed.y * 1.5f;
-			side -= InputSystem::InputSystem::mouseSpeed.x * 1.5f;
-		}*/
 
 		// Move the camera when using the mouse's wheel (Do not use delta time)
 		if (isHovered)
@@ -582,14 +580,14 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		}
 	}
 
-	if (InputSystem::GetKeyUp(MOUSE_LEFT)) 
+	if (InputSystem::GetKeyUp(MOUSE_LEFT))
 	{
 		side = Side_None;
 	}
 
 	if (InputSystem::GetKeyDown(MOUSE_LEFT))
 	{
-		if (side == Side_None) 
+		if (side == Side_None)
 		{
 			Editor::SetSelectedGameObject(newGameObjectSelected);
 		}
