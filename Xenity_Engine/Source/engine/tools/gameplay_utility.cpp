@@ -29,17 +29,15 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	if (parent == nullptr)
 		newGameObjectName = Editor::GetIncrementedGameObjectName(goToDuplicate->name);
 #endif
+	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 
-	std::shared_ptr<GameObject> newGameObject = CreateGameObject(newGameObjectName);
+	ReflectionUtils::ReflectiveToReflective(*goToDuplicate.get(), *newGameObject.get());
+	newGameObject->name = newGameObjectName;
 
 	// Set parent 
 	if (parent != nullptr)
 	{
 		newGameObject->SetParent(parent);
-	}
-	else if (goToDuplicate->parent.lock())
-	{
-		newGameObject->SetParent(goToDuplicate->parent);
 	}
 
 	// Set local position/rotation/scale
@@ -52,9 +50,11 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	const size_t componentCount = goToDuplicate->components.size();
 	for (size_t i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(goToDuplicate->components[i]->GetComponentName(), newGameObject);
+		std::shared_ptr<Component> componentToDuplicate = goToDuplicate->components[i];
+		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), newGameObject);
+		newComponent->SetIsEnabled(componentToDuplicate->GetIsEnabled());
 		ReflectiveData newReflection = newComponent->GetReflectiveData();
-		ReflectiveData reflectionToCopy = goToDuplicate->components[i]->GetReflectiveData();
+		ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
 
 		json copiedValues;
 		copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);
@@ -64,7 +64,7 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 
 		ComponentAndId newComponentAndId;
 		newComponentAndId.newComponent = newComponent;
-		newComponentAndId.oldId = goToDuplicate->components[i]->GetUniqueId();
+		newComponentAndId.oldId = componentToDuplicate->GetUniqueId();
 		ComponentsAndIds.push_back(newComponentAndId);
 	}
 
@@ -81,10 +81,10 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	}
 }
 
-void Instanciate(const std::shared_ptr<GameObject>& goToDuplicate)
+std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToDuplicate)
 {
 	if (!goToDuplicate)
-		return;
+		return nullptr;
 
 	std::vector<ComponentAndId> ComponentsAndIds;
 	std::vector<GameObjectAndId> GameObjectsAndIds;
@@ -183,9 +183,7 @@ void Instanciate(const std::shared_ptr<GameObject>& goToDuplicate)
 		}
 	}
 
-#if defined(EDITOR)
-	Editor::SetSelectedGameObject(GameObjectsAndIds[0].newGameObject);
-#endif
+	return GameObjectsAndIds[0].newGameObject;
 }
 
 void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)

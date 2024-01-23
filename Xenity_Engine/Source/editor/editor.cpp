@@ -130,8 +130,17 @@ void Editor::Update()
 
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(D)))
 		{
-			if (selectedGameObject.lock())
-				Instanciate(selectedGameObject.lock());
+			if (selectedGameObject.lock()) 
+			{
+				std::shared_ptr<GameObject> gameObjectToDuplicate = selectedGameObject.lock();
+			
+				std::shared_ptr<GameObject> newGameObject = Instantiate(gameObjectToDuplicate);
+				if (gameObjectToDuplicate->parent.lock() != nullptr) 
+				{
+					newGameObject->SetParent(gameObjectToDuplicate->parent.lock());
+				}
+				SetSelectedGameObject(newGameObject);
+			}
 		}
 
 		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(N)))
