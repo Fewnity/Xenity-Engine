@@ -40,7 +40,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
-		std::shared_ptr<GameObject> &go = GameplayManager::gameObjects[goI];
+		std::shared_ptr<GameObject>& go = GameplayManager::gameObjects[goI];
 		const std::string goId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
@@ -60,10 +60,11 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		const int componentCount = go->GetComponentCount();
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
-			std::shared_ptr<Component> &component = go->components[componentI];
+			std::shared_ptr<Component>& component = go->components[componentI];
 			const std::string compId = std::to_string(component->GetUniqueId());
 			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
+			j["GameObjects"][goId]["Components"][compId]["Values"]["enabled"] = component->GetIsEnabled();
 		}
 
 		j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
@@ -155,7 +156,7 @@ bool SceneManager::OnQuit()
 	return cancel;
 }
 
-void SceneManager::LoadScene(const json &jsonData)
+void SceneManager::LoadScene(const json& jsonData)
 {
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(Starting, true);
@@ -169,7 +170,7 @@ void SceneManager::LoadScene(const json &jsonData)
 	if (jsonData.contains("GameObjects"))
 	{
 		// Create all GameObjects and Components
-		for (auto &gameObjectKV : jsonData["GameObjects"].items())
+		for (auto& gameObjectKV : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 			const uint64_t id = std::stoull(gameObjectKV.key());
@@ -183,10 +184,13 @@ void SceneManager::LoadScene(const json &jsonData)
 			// Create components
 			if (gameObjectKV.value().contains("Components"))
 			{
-				for (auto &componentKV : gameObjectKV.value()["Components"].items())
+				for (auto& componentKV : gameObjectKV.value()["Components"].items())
 				{
 					const std::string componentName = componentKV.value()["Type"];
 					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
+
+
+					// Get and set component id
 					uint64_t compId = std::stoull(componentKV.key());
 					if (compId > biggestId)
 					{
@@ -194,12 +198,18 @@ void SceneManager::LoadScene(const json &jsonData)
 					}
 					if (comp)
 					{
+						// Enable or disable component
+						if (componentKV.value()["Values"].contains("enabled"))
+						{
+							bool isEnabled = componentKV.value()["Values"]["enabled"];
+							comp->SetIsEnabled(isEnabled);
+						}
 						allComponents.push_back(comp);
 						comp->SetUniqueId(compId);
 					}
 					else
 					{
-						Debug::PrintWarning("Class " + componentName + " not found in the scene");
+						Debug::PrintWarning("Class " + componentName + " not found in the scene. DO NOT SAVE THE SCENE!!!");
 					}
 				}
 			}
@@ -208,14 +218,14 @@ void SceneManager::LoadScene(const json &jsonData)
 		UniqueId::lastUniqueId = biggestId;
 
 		// Bind Components values and GameObjects childs
-		for (auto &kv : jsonData["GameObjects"].items())
+		for (auto& kv : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
 			if (go)
 			{
 				if (kv.value().contains("Childs"))
 				{
-					for (const auto &kv2 : kv.value()["Childs"].items())
+					for (const auto& kv2 : kv.value()["Childs"].items())
 					{
 						std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
 						if (goChild)
@@ -232,7 +242,7 @@ void SceneManager::LoadScene(const json &jsonData)
 
 				if (kv.value().contains("Components"))
 				{
-					for (const auto &kv2 : kv.value()["Components"].items())
+					for (const auto& kv2 : kv.value()["Components"].items())
 					{
 						const int componentCount = go->GetComponentCount();
 						for (int compI = 0; compI < componentCount; compI++)
@@ -259,7 +269,7 @@ void SceneManager::LoadScene(const json &jsonData)
 			// Find uninitiated components and order them
 			for (size_t i = 0; i < componentsCount; i++)
 			{
-				if (auto &componentToCheck = allComponents[i])
+				if (auto& componentToCheck = allComponents[i])
 				{
 					if (!componentToCheck->initiated)
 					{
@@ -309,9 +319,9 @@ void SceneManager::LoadScene(const json &jsonData)
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(Playing, true);
 #endif
-}
+	}
 
-void SceneManager::LoadScene(const std::shared_ptr<Scene> &scene)
+void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
 	Debug::Print("Loading scene...");
 	std::shared_ptr<File> jsonFile = scene->file;
@@ -330,7 +340,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene> &scene)
 			openedScene = scene;
 			Window::UpdateWindowTitle();
 		}
-		catch (const std::exception &)
+		catch (const std::exception&)
 		{
 			Debug::PrintError("[SceneManager::LoadScene] Scene file error");
 			return;
