@@ -26,7 +26,7 @@ public:
 	std::string ReadAll() override;
 	unsigned char* ReadAllBinary(int& size) override;
 	bool CheckIfExist() override;
-	bool Open(bool createFileIfNotFound) override;
+	bool Open(FileMode fileMode) override;
 
 protected:
 	SceUID fileId;

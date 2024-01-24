@@ -28,6 +28,12 @@ void FilePSP::Close()
 
 void FilePSP::Write(const std::string& data)
 {
+	if (currentFileMode == FileMode::ReadOnly)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		return;
+	}
+
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDWR, 0777);
 	if (fileId >= 0)
 	{
@@ -40,6 +46,12 @@ void FilePSP::Write(const std::string& data)
 
 std::string FilePSP::ReadAll()
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return "";
+	}
+
 	std::string allText = "";
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDONLY, 0);
 	if (fileId >= 0)
@@ -60,6 +72,12 @@ std::string FilePSP::ReadAll()
 
 unsigned char* FilePSP::ReadAllBinary(int& size)
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return nullptr;
+	}
+
 	char* data = nullptr;
 	fileId = sceIoOpen(path.c_str(), PSP_O_RDONLY, 0);
 	if (fileId >= 0)
@@ -93,12 +111,19 @@ bool FilePSP::CheckIfExist()
 	return exists;
 }
 
-bool FilePSP::Open(bool createFileIfNotFound)
+bool FilePSP::Open(FileMode fileMode)
 {
+	currentFileMode = fileMode;
+
 	bool isOpen = false;
-	int params = PSP_O_RDWR;
-	if (createFileIfNotFound)
-		params = params | PSP_O_CREAT;
+	int params = 0;
+	if (fileMode == FileMode::WriteOnly || fileMode == FileMode::WriteCreateFile)
+		params = PSP_O_WRONLY;
+	else
+		params = PSP_O_RDONLY;
+
+	if (fileMode == FileMode::WriteCreateFile)
+		params |= PSP_O_CREAT;
 	fileId = sceIoOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{

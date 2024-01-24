@@ -437,7 +437,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 		newFile = FileSystem::MakeFile(fileName + " (" + std::to_string(id) + ")" + fileExt);
 	}
 
-	if (newFile->Open(true))
+	if (newFile->Open(FileMode::WriteCreateFile))
 	{
 		if (fillWithDefaultData)
 			newFile->Write(AssetManager::GetDefaultFileData(type));

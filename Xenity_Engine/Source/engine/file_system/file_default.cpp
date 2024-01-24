@@ -23,6 +23,12 @@ void FileDefault::Close()
 
 void FileDefault::Write(const std::string& data)
 {
+	if (currentFileMode == FileMode::ReadOnly)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		return;
+	}
+
 	if (file.is_open())
 	{
 		file.seekg(0, std::ios_base::end);
@@ -33,6 +39,12 @@ void FileDefault::Write(const std::string& data)
 
 std::string FileDefault::ReadAll()
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return "";
+	}
+
 	std::string allText = "";
 	file.seekg(0, std::ios_base::beg);
 	std::string tempText;
@@ -46,6 +58,12 @@ std::string FileDefault::ReadAll()
 
 unsigned char* FileDefault::ReadAllBinary(int& size)
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return nullptr;
+	}
+
 	char* data = nullptr;
 	file.seekg(0, std::ios_base::end);
 	const int pos = file.tellg();
@@ -65,7 +83,8 @@ bool FileDefault::CheckIfExist()
 	}
 	else
 	{
-		const std::ios_base::openmode params = std::fstream::in | std::fstream::out;
+		std::ios_base::openmode params = std::fstream::in;
+
 		file.open(path, params);
 
 		if (file.is_open())
@@ -77,20 +96,24 @@ bool FileDefault::CheckIfExist()
 	return exists;
 }
 
-bool FileDefault::Open(bool createFileIfNotFound)
+bool FileDefault::Open(FileMode fileMode)
 {
-	bool isOpen = false;
+	currentFileMode = fileMode;
 
-	std::ios_base::openmode params = std::fstream::binary | std::fstream::in | std::fstream::out;
+	bool isOpen = false;
+	std::ios_base::openmode params = std::fstream::binary;
+	if (fileMode == FileMode::WriteOnly || fileMode == FileMode::WriteCreateFile)
+		params |= std::fstream::out;
+	else
+		params |= std::fstream::in;
 
 	file.open(path, params);
-
 	if (!file.is_open())
 	{
-		if (createFileIfNotFound)
+		if (fileMode == FileMode::WriteCreateFile)
 		{
 			// Try to create the file
-			params = params | std::fstream::trunc;
+			params |= std::fstream::trunc;
 			file.open(path, params);
 			if (!file.is_open())
 			{

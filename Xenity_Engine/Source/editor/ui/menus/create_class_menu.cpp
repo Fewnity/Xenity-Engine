@@ -128,13 +128,13 @@ void CreateClassMenu::CreateFiles()
 	}
 
 	// Write data to files
-	if (codeFile->Open(false))
+	if (codeFile->Open(FileMode::WriteOnly))
 	{
 		codeFile->Write(codeData);
 		codeFile->Close();
 	}
 
-	if (headerFile->Open(false))
+	if (headerFile->Open(FileMode::WriteOnly))
 	{
 		headerFile->Write(headerData);
 		headerFile->Close();

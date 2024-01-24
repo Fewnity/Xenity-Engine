@@ -212,7 +212,7 @@ int Debug::Init()
 	FileSystem::fileSystem->Delete(fileName);
 
 	file = FileSystem::MakeFile(fileName);
-	file->Open(true);
+	file->Open(FileMode::WriteCreateFile);
 
 	if (!file->CheckIfExist())
 	{

@@ -397,7 +397,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 		break;
 	}
 
-	if (newFile && newFile->Open(false))
+	if (newFile && newFile->Open(FileMode::ReadOnly))
 	{
 		data = newFile->ReadAll();
 		newFile->Close();

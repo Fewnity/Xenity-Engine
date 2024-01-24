@@ -116,7 +116,7 @@ void InspectorMenu::DrawFilePreview()
 			if (loadedPreview->fileType == FileType::File_Code || loadedPreview->fileType == FileType::File_Header || loadedPreview->fileType == FileType::File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
-				if (file->Open(false))
+				if (file->Open(FileMode::ReadOnly))
 				{
 					previewText = file->ReadAll();
 					file->Close();

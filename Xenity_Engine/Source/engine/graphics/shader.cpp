@@ -89,7 +89,7 @@ void Shader::LoadFileReference()
 		if (Graphics::UseOpenGLFixedFunctions)
 			return;
 
-		const bool isOpen = file->Open(false);
+		const bool isOpen = file->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
 			const std::string shaderText = file->ReadAll();

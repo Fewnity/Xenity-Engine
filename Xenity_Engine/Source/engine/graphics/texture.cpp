@@ -399,7 +399,7 @@ void Texture::LoadTexture()
 	Debug::Print("Loading texture: " + file->GetPath());
 
 	int fileBufferSize = 0;
-	const bool openResult = file->Open(false);
+	const bool openResult = file->Open(FileMode::ReadOnly);
 	if (openResult)
 	{
 		unsigned char *fileData = file->ReadAllBinary(fileBufferSize);

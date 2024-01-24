@@ -137,7 +137,7 @@ void ProjectManager::FindAllProjectFiles()
 		}
 		else // Or read meta file
 		{
-			if (metaFile->Open(false))
+			if (metaFile->Open(FileMode::ReadOnly))
 			{
 				const std::string jsonString = metaFile->ReadAll();
 				metaFile->Close();
@@ -230,7 +230,7 @@ void ProjectManager::CreateVisualStudioSettings()
 		// Read the empty vscode settings file
 		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
 
-		bool isOpen = emptyVSCodeParamFile->Open(false);
+		bool isOpen = emptyVSCodeParamFile->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
 			std::string vsCodeText = emptyVSCodeParamFile->ReadAll();
@@ -257,7 +257,7 @@ void ProjectManager::CreateVisualStudioSettings()
 
 			// Create the vscode settings file
 			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
-			bool isOpen = vsCodeParamFile->Open(true);
+			bool isOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
 			if (isOpen)
 			{
 				vsCodeParamFile->Write(vsCodeText);
@@ -321,7 +321,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 
 	// Create default scene
 	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
-	if (sceneRef->file->Open(true))
+	if (sceneRef->file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
 		sceneRef->file->Write(data);
@@ -547,7 +547,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& path)
 		std::string jsonString = "";
 
 		// Read file
-		if (projectFile->Open(true))
+		if (projectFile->Open(FileMode::ReadOnly))
 		{
 			jsonString = projectFile->ReadAll();
 			projectFile->Close();
@@ -592,7 +592,7 @@ void ProjectManager::SaveProjectSettings()
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
 
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
-	if (projectFile->Open(true))
+	if (projectFile->Open(FileMode::WriteCreateFile))
 	{
 		projectFile->Write(projectData.dump(0));
 		projectFile->Close();
@@ -612,7 +612,7 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-	if (metaFile->Open(true))
+	if (metaFile->Open(FileMode::WriteCreateFile))
 	{
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
@@ -627,7 +627,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 {
 	std::vector<ProjectListItem> projects;
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	const bool isOpen = file->Open(false);
+	const bool isOpen = file->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
 		const std::string projectFileString = file->ReadAll();
@@ -677,7 +677,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 	FileSystem::fileSystem->Delete(PROJECTS_LIST_FILE);
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	if (file->Open(true))
+	if (file->Open(FileMode::WriteCreateFile))
 	{
 		file->Write(j.dump(3));
 		file->Close();
@@ -751,7 +751,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->CheckIfExist())
 	{
-		if (metaFile->Open(true))
+		if (metaFile->Open(FileMode::ReadOnly))
 		{
 			std::string jsonString = "";
 			jsonString = metaFile->ReadAll();

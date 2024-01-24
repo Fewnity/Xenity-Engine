@@ -96,7 +96,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		{
 			FileSystem::fileSystem->Delete(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
-			if (file->Open(true))
+			if (file->Open(FileMode::WriteCreateFile))
 			{
 				std::string jsonData = j.dump(2);
 				file->Write(jsonData);
@@ -325,7 +325,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
 	Debug::Print("Loading scene...");
 	std::shared_ptr<File> jsonFile = scene->file;
-	const bool isOpen = jsonFile->Open(false);
+	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
 		std::string jsonString = jsonFile->ReadAll();

@@ -39,6 +39,12 @@ void FilePS2::Close()
 
 void FilePS2::Write(const std::string &data)
 {
+	if (currentFileMode == FileMode::ReadOnly)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		return;
+	}
+
 	fileId = fileXioOpen(path.c_str(), FIO_O_WRONLY);
 	if (fileId >= 0)
 	{
@@ -51,6 +57,12 @@ void FilePS2::Write(const std::string &data)
 
 std::string FilePS2::ReadAll()
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return "";
+	}
+
 	std::string allText = "";
 	fileId = fileXioOpen(path.c_str(), FIO_O_RDONLY, 0777);
 	if (fileId >= 0)
@@ -71,6 +83,12 @@ std::string FilePS2::ReadAll()
 
 unsigned char *FilePS2::ReadAllBinary(int &size)
 {
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return nullptr;
+	}
+
 	char *data = nullptr;
 	fileId = fileXioOpen(path.c_str(), FIO_O_RDONLY, 0777);
 	if (fileId >= 0)
@@ -104,12 +122,19 @@ bool FilePS2::CheckIfExist()
 	return exists;
 }
 
-bool FilePS2::Open(bool createFileIfNotFound)
+bool FilePS2::Open(FileMode fileMode)
 {
+	currentFileMode = fileMode;
+
 	bool isOpen = false;
-	int params = FIO_O_RDWR;
-	if (createFileIfNotFound)
-		params = params | FIO_O_CREAT;
+	int params = 0;
+	if (fileMode == FileMode::WriteOnly || fileMode == FileMode::WriteCreateFile)
+		params = FIO_O_WRONLY;
+	else
+		params = FIO_O_RDONLY;
+
+	if (fileMode == FileMode::WriteCreateFile)
+		params |= FIO_O_CREAT;
 	fileId = fileXioOpen(path.c_str(), params, 0777);
 	if (fileId >= 0)
 	{

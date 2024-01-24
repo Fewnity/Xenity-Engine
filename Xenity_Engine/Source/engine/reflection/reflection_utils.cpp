@@ -497,7 +497,7 @@ bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, Reflectiv
 	bool ok;
 
 	json myJson;
-	if (file->Open(false))
+	if (file->Open(FileMode::ReadOnly))
 	{
 		std::string jsonString = file->ReadAll();
 		file->Close();
@@ -526,7 +526,7 @@ bool ReflectionUtils::ReflectiveDataToFile(ReflectiveData dataList, std::shared_
 	json myJson;
 	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
 	FileSystem::fileSystem->Delete(file->GetPath());
-	if (file->Open(true))
+	if (file->Open(FileMode::WriteCreateFile))
 	{
 		file->Write(myJson.dump(0));
 		file->Close();

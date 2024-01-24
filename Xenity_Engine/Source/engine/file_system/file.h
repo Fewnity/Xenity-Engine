@@ -11,6 +11,13 @@
 #include <string>
 #include <fstream>
 
+enum class FileMode 
+{
+	ReadOnly,
+	WriteOnly,
+	WriteCreateFile,
+};
+
 class API File : public UniqueId, public std::enable_shared_from_this<File>
 {
 public:
@@ -43,7 +50,7 @@ public:
 	* Open the file
 	* @param createFileIfNotFound If true, create the file if not found
 	*/
-	virtual bool Open(bool createFileIfNotFound) { return false; };
+	virtual bool Open(FileMode fileMode) { return false; };
 
 	/**
 	* Close file
@@ -82,6 +89,7 @@ public:
 	}
 
 protected:
+	FileMode currentFileMode = FileMode::ReadOnly;
 	std::string path = "";
 	std::string pathExtention = "";
 	std::string name = "";
