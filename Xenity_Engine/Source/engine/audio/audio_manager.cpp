@@ -77,7 +77,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	{
 		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
 
-		if (sound->isPlaying && (sound->audioSource->isEditor || GameplayManager::GetGameState() == Playing))
+		if (sound->isPlaying && (sound->audioSource->isEditor || GameplayManager::GetGameState() == GameState::Playing))
 		{
 			AudioClipStream* stream = sound->audioClipStream;
 #if defined(_WIN32) || defined(_WIN64)

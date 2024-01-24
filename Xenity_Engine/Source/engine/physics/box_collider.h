@@ -7,7 +7,8 @@
 
 class RigidBody;
 
-enum CollisionSide {
+enum class CollisionSide 
+{
 	NoSide = 0,
 	SideX = 1,
 	SideY = 2,

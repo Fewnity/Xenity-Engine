@@ -282,7 +282,7 @@ void Compiler::HotReloadGame()
 	Engine::game = nullptr;
 
 	// Prepare scene
-	SceneManager::SaveScene(SaveSceneForHotReloading);
+	SceneManager::SaveScene(SaveSceneType::SaveSceneForHotReloading);
 	SceneManager::ClearScene();
 
 	// Reset registery and re-add basic components

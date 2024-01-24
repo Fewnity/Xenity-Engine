@@ -172,7 +172,7 @@ private:
 	float projectionSize = 5; // For 2D
 	float nearClippingPlane = 0.3f;
 	float farClippingPlane = 1000;
-	ProjectionTypes projectionType = Perspective;
+	ProjectionTypes projectionType = ProjectionTypes::Perspective;
 
 	unsigned int depthframebuffer = -1;
 	bool needFrameBufferUpdate = true;

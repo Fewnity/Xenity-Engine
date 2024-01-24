@@ -35,12 +35,12 @@ class Reflective;
 class ProjectDirectory;
 class Collider;
 
-enum EditorUIError
+enum class EditorUIError
 {
 	EDITOR_UI_ERROR_MISSING_FONT = -1,
 };
 
-enum IconName
+enum class IconName
 {
 	Icon_Folder,
 	Icon_File,
@@ -67,7 +67,7 @@ enum IconName
 	Icon_Count,
 };
 
-enum DialogType
+enum class DialogType
 {
 	Dialog_Type_OK,
 	Dialog_Type_OK_CANCEL,
@@ -77,7 +77,7 @@ enum DialogType
 	Dialog_Type_RETRY_CANCEL,
 };
 
-enum DialogResult
+enum class DialogResult
 {
 	Dialog_YES,
 	Dialog_NO,
@@ -415,7 +415,7 @@ public:
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
-		const std::string payloadName = "Files" + std::to_string(fileType);
+		const std::string payloadName = "Files" + std::to_string((int)fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
 			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
@@ -492,7 +492,7 @@ public:
 				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
-				const std::string payloadName = "Files" + std::to_string(fileType);
+				const std::string payloadName = "Files" + std::to_string((int)fileType);
 				if (DragDropTarget(payloadName, ref))
 				{
 					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);

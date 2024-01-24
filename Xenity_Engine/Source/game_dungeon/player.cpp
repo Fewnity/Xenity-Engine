@@ -21,20 +21,20 @@ void Player::Update()
 		Vector2 input = Vector2(0);
 
 #if defined(_WIN32) || defined(_WIN64)
-		if (InputSystem::GetKey(UP))
+		if (InputSystem::GetKey(KeyCode::UP))
 		{
 			input.x = -1;
 		}
-		else if (InputSystem::GetKey(DOWN))
+		else if (InputSystem::GetKey(KeyCode::DOWN))
 		{
 			input.x = 1;
 		}
 
-		if (InputSystem::GetKey(LEFT))
+		if (InputSystem::GetKey(KeyCode::LEFT))
 		{
 			input.y = -1;
 		}
-		else if (InputSystem::GetKey(RIGHT))
+		else if (InputSystem::GetKey(KeyCode::RIGHT))
 		{
 			input.y = 1;
 		}
@@ -54,7 +54,7 @@ void Player::Update()
 
 		if(canJump)
 		{
-			if (InputSystem::GetKeyDown(SPACE) || InputSystem::GetKeyDown(CROSS))
+			if (InputSystem::GetKeyDown(KeyCode::SPACE) || InputSystem::GetKeyDown(KeyCode::CROSS))
 			{
 				canJump = false;
 				rigidbodyLock->velocity.y = jumpForce;

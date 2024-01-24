@@ -12,13 +12,13 @@
 
 class ProfilerBenchmark;
 
-enum BufferType
+enum class BufferType
 {
 	Array_Buffer,
 	Element_Array_Buffer,
 };
 
-enum BufferMode
+enum class BufferMode
 {
 	Static,
 	Dynamic,

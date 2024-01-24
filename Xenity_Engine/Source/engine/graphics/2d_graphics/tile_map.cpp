@@ -24,7 +24,7 @@
 Tilemap::Tilemap()
 {
 	componentName = "Tilemap";
-	type = Draw_2D;
+	type = IDrawableTypes::Draw_2D;
 	AssetManager::AddReflection(this);
 }
 

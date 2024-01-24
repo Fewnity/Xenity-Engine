@@ -1,6 +1,6 @@
 #pragma once
 
-enum Side
+enum class Side
 {
 	Side_None,
 	Side_Right,
@@ -24,7 +24,7 @@ public:
 	void Init() override;
 	void Draw() override;
 	bool startRotatingCamera = false;
-	ToolMode toolMode = Tool_Move;
+	ToolMode toolMode = ToolMode::Tool_Move;
 	std::weak_ptr<Camera> weakCamera;
 	int gridAxis = 0;
 
@@ -54,7 +54,7 @@ private:
 	Vector3 worldMousePosition;
 	Vector3 startMovePosition;
 	Vector3 startObjectValue;
-	Side side = Side_None;
+	Side side = Side::Side_None;
 	float snapAmount = 1.0f;
 	int cameraHandMoveSpeed = 200;
 

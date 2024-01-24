@@ -14,19 +14,19 @@ SceTouchData touch[SCE_TOUCH_PORT_MAX_NUM];
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
 {
-	keyMap[SCE_CTRL_CROSS] = &inputs[CROSS];
-	keyMap[SCE_CTRL_CIRCLE] = &inputs[CIRCLE];
-	keyMap[SCE_CTRL_SQUARE] = &inputs[SQUARE];
-	keyMap[SCE_CTRL_TRIANGLE] = &inputs[TRIANGLE];
+	keyMap[SCE_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
+	keyMap[SCE_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
+	keyMap[SCE_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
+	keyMap[SCE_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
 
-	keyMap[SCE_CTRL_START] = &inputs[START];
-	keyMap[SCE_CTRL_SELECT] = &inputs[SELECT];
-	keyMap[SCE_CTRL_LTRIGGER] = &inputs[LTRIGGER1];
-	keyMap[SCE_CTRL_RTRIGGER] = &inputs[RTRIGGER1];
-	keyMap[SCE_CTRL_RIGHT] = &inputs[RIGHT];
-	keyMap[SCE_CTRL_LEFT] = &inputs[LEFT];
-	keyMap[SCE_CTRL_DOWN] = &inputs[DOWN];
-	keyMap[SCE_CTRL_UP] = &inputs[UP];
+	keyMap[SCE_CTRL_START] = &inputs[(int)KeyCode::START];
+	keyMap[SCE_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
+	keyMap[SCE_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
+	keyMap[SCE_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
+	keyMap[SCE_CTRL_RIGHT] = &inputs[(int)KeyCode::RIGHT];
+	keyMap[SCE_CTRL_LEFT] = &inputs[(int)KeyCode::LEFT];
+	keyMap[SCE_CTRL_DOWN] = &inputs[(int)KeyCode::DOWN];
+	keyMap[SCE_CTRL_UP] = &inputs[(int)KeyCode::UP];
 }
 
 void CrossInputsInit()

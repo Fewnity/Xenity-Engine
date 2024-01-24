@@ -4,7 +4,7 @@
  * [Internal]
  */
 
-enum FileType
+enum class FileType
 {
 	File_Other,
 	File_Audio,

@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #endif
 
-enum WindowError
+enum class WindowError
 {
 	WND_ERROR_SDL_INIT = -1,
 	WND_ERROR_SDL_CREATE_WINDOW = -2,

@@ -7,17 +7,21 @@
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-
+#include <engine/debug/debug.h>
 
 #pragma region Constructors / Destructor
 
 TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "TextRendererCanvas";
-	type = Draw_UI;
+	type = IDrawableTypes::Draw_UI;
 
 	AssetManager::AddReflection(this);
 	material = AssetManager::unlitMaterial;
+
+	Debug::Print("int" + std::to_string(sizeof(int)));
+	Debug::Print("horizontalAlignment" + std::to_string(sizeof(horizontalAlignment)));
+	Debug::Print("verticalAlignment" + std::to_string(sizeof(verticalAlignment)));
 }
 
 ReflectiveData TextRendererCanvas::GetReflectiveData()

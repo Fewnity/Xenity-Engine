@@ -377,22 +377,22 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 
 	switch (fileType)
 	{
-	case File_Scene:
+	case FileType::File_Scene:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\scene.xen");
 		break;
-	case File_Code:
+	case FileType::File_Code:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.cpp");
 		break;
-	case File_Header:
+	case FileType::File_Header:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.h");
 		break;
-	case File_Skybox:
+	case FileType::File_Skybox:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\skybox.sky");
 		break;
-	case File_Material:
+	case FileType::File_Material:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\material.mat");
 		break;
-	case File_Shader:
+	case FileType::File_Shader:
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\shader.shader");
 		break;
 	}

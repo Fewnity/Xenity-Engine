@@ -11,7 +11,7 @@
 #include <engine/vectors/vector2_int.h>
 #include <vector>
 
-enum KeyCode
+enum class KeyCode
 {
 	EMPTY = -1,
 	RETURN = 0,
@@ -130,7 +130,7 @@ enum KeyCode
 
 struct Input
 {
-	KeyCode code = EMPTY;
+	KeyCode code = KeyCode::EMPTY;
 	bool pressed = false;
 	bool released = false;
 	bool held = false;

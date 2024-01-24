@@ -8,27 +8,27 @@
 
 DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& message, DialogType type)
 {
-	DialogResult dialogResult = Dialog_CANCEL;
+	DialogResult dialogResult = DialogResult::Dialog_CANCEL;
 #if defined(_WIN32) || defined(_WIN64)
 	int windowsType = MB_OK;
 	switch (type)
 	{
-	case Dialog_Type_OK:
+	case DialogType::Dialog_Type_OK:
 		windowsType = MB_OK;
 		break;
-	case Dialog_Type_OK_CANCEL:
+	case DialogType::Dialog_Type_OK_CANCEL:
 		windowsType = MB_OKCANCEL;
 		break;
-	case Dialog_Type_ABORT_RETRY_IGNORE:
+	case DialogType::Dialog_Type_ABORT_RETRY_IGNORE:
 		windowsType = MB_ABORTRETRYIGNORE;
 		break;
-	case Dialog_Type_YES_NO_CANCEL:
+	case DialogType::Dialog_Type_YES_NO_CANCEL:
 		windowsType = MB_YESNOCANCEL;
 		break;
-	case Dialog_Type_YES_NO:
+	case DialogType::Dialog_Type_YES_NO:
 		windowsType = MB_YESNO;
 		break;
-	case Dialog_Type_RETRY_CANCEL:
+	case DialogType::Dialog_Type_RETRY_CANCEL:
 		windowsType = MB_RETRYCANCEL;
 		break;
 	default:
@@ -39,15 +39,15 @@ DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& m
 
 	if (result == 6) 
 	{
-		dialogResult = Dialog_YES;
+		dialogResult = DialogResult::Dialog_YES;
 	}
 	else if (result == 7) 
 	{
-		dialogResult = Dialog_NO;
+		dialogResult = DialogResult::Dialog_NO;
 	}
 	else if (result == 2) 
 	{
-		dialogResult = Dialog_CANCEL;
+		dialogResult = DialogResult::Dialog_CANCEL;
 	}
 #endif
 	return dialogResult;

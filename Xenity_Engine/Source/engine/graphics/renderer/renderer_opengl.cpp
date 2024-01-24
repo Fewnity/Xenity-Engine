@@ -195,7 +195,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
-	if (texture->GetFilter() == Texture::Bilinear)
+	if (texture->GetFilter() == Texture::Filter::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -207,7 +207,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 		}
 		magfilterValue = GL_LINEAR;
 	}
-	else if (texture->GetFilter() == Texture::Point)
+	else if (texture->GetFilter() == Texture::Filter::Point)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -447,16 +447,16 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	glEnable(GL_LIGHT0 + lightIndex);
 
 	float lightAttenuation[1] = { attenuation };
-	if (type == Light::Directional)
+	if (type == Light::LightType::Directional)
 		lightAttenuation[0] = { 0 };
 
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
 
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
-	if (type == Light::Directional)
+	if (type == Light::LightType::Directional)
 		typeIntensity = 5;
-	else if (type == Light::Point)
+	else if (type == Light::LightType::Point)
 		typeIntensity = 2;
 
 	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
@@ -465,7 +465,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	const float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
 
 	// Assign created components to GL_LIGHT0
-	if (type == Light::Directional)
+	if (type == Light::LightType::Directional)
 	{
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, lightColor);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, zeroLight);
@@ -500,7 +500,7 @@ void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 		auto light = AssetManager::GetLight(i).lock();
 		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			if (light->type == Light::Directional)
+			if (light->type == Light::LightType::Directional)
 			{
 				const Vector3 lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 cameraPosition = cameraTransform->GetPosition();
@@ -841,10 +841,10 @@ int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 	int type = GL_REPEAT;
 	switch (bufferType)
 	{
-	case Array_Buffer:
+	case BufferType::Array_Buffer:
 		type = GL_ARRAY_BUFFER;
 		break;
-	case Element_Array_Buffer:
+	case BufferType::Element_Array_Buffer:
 		type = GL_ELEMENT_ARRAY_BUFFER;
 		break;
 	}
@@ -950,17 +950,17 @@ int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
 	int compileType = GL_VERTEX_SHADER;
 	switch (shaderType)
 	{
-	case Shader::Vertex_Shader:
+	case Shader::ShaderType::Vertex_Shader:
 		compileType = GL_VERTEX_SHADER;
 		break;
-	case Shader::Fragment_Shader:
+	case Shader::ShaderType::Fragment_Shader:
 		compileType = GL_FRAGMENT_SHADER;
 		break;
 #if !defined(__vita__)
-	case Shader::Tessellation_Control_Shader:
+	case Shader::ShaderType::Tessellation_Control_Shader:
 		compileType = GL_TESS_CONTROL_SHADER;
 		break;
-	case Shader::Tessellation_Evaluation_Shader:
+	case Shader::ShaderType::Tessellation_Evaluation_Shader:
 		compileType = GL_TESS_EVALUATION_SHADER;
 		break;
 #endif

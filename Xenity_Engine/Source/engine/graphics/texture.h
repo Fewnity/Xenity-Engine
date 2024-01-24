@@ -14,13 +14,13 @@
 class API Texture : public FileReference, public Reflective
 {
 public:
-	enum Filter
+	enum class Filter
 	{
 		Point,
 		Bilinear,
 	};
 
-	enum AnisotropicLevel
+	enum class AnisotropicLevel
 	{
 		X0,
 		X2,
@@ -29,7 +29,7 @@ public:
 		X16,
 	};
 
-	enum WrapMode
+	enum class WrapMode
 	{
 		ClampToEdge,
 		ClampToBorder,
@@ -189,8 +189,8 @@ private:
 	 */
 	void Unload();
 
-	Filter filter = Bilinear;
-	WrapMode wrapMode = Repeat;
+	Filter filter = Filter::Bilinear;
+	WrapMode wrapMode = WrapMode::Repeat;
 	unsigned int textureId = 0;
 	int width = 0, height = 0, nrChannels = 0;
 

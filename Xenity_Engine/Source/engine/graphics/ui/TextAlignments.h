@@ -1,13 +1,13 @@
 #pragma once
 
-enum HorizontalAlignment 
+enum class HorizontalAlignment
 {
 	H_Left,
 	H_Center,
 	H_Right
 };
 
-enum VerticalAlignment 
+enum class VerticalAlignment
 {
 	V_Top,
 	V_Center,

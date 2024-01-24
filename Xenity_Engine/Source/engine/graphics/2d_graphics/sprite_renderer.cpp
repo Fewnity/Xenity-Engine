@@ -12,7 +12,7 @@
 SpriteRenderer::SpriteRenderer()
 {
 	componentName = "SpriteRenderer";
-	type = Draw_2D;
+	type = IDrawableTypes::Draw_2D;
 	AssetManager::AddReflection(this);
 	material = AssetManager::unlitMaterial;
 }

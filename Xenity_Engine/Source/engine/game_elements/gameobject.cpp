@@ -209,7 +209,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	componentCount++;
-	if (GameplayManager::GetGameState() == Playing && GetLocalActive())
+	if (GameplayManager::GetGameState() == GameState::Playing && GetLocalActive())
 	{
 		componentToAdd->Awake();
 		componentToAdd->isAwakeCalled = true;

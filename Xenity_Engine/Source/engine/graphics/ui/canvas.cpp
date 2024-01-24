@@ -51,7 +51,7 @@ void Canvas::Draw()
 Canvas::Canvas()
 {
 	componentName = "Canvas";
-	type = Draw_UI;
+	type = IDrawableTypes::Draw_UI;
 
 	AssetManager::AddReflection(this);
 }

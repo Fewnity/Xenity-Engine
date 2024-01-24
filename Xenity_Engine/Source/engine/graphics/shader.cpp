@@ -217,16 +217,16 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 
 	switch (type)
 	{
-	case Shader::Vertex_Shader:
+	case ShaderType::Vertex_Shader:
 		id = &vertexShaderId;
 		break;
-	case Shader::Fragment_Shader:
+	case ShaderType::Fragment_Shader:
 		id = &fragmentShaderId;
 		break;
-	case Shader::Tessellation_Control_Shader:
+	case ShaderType::Tessellation_Control_Shader:
 		id = &tessellationShaderId;
 		break;
-	case Shader::Tessellation_Evaluation_Shader:
+	case ShaderType::Tessellation_Evaluation_Shader:
 		id = &tessellationEvaluationShaderId;
 		break;
 	}
@@ -248,16 +248,16 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 			std::string shaderError = "[Shader::Compile] Compilation error: ";
 			switch (type)
 			{
-			case Shader::Vertex_Shader:
+			case ShaderType::Vertex_Shader:
 				shaderError += "Vertex";
 				break;
-			case Shader::Fragment_Shader:
+			case ShaderType::Fragment_Shader:
 				shaderError += "Fragment";
 				break;
-			case Shader::Tessellation_Control_Shader:
+			case ShaderType::Tessellation_Control_Shader:
 				shaderError += "Tessellation control";
 				break;
-			case Shader::Tessellation_Evaluation_Shader:
+			case ShaderType::Tessellation_Evaluation_Shader:
 				shaderError += "Tessellation evaluation";
 				break;
 			}
@@ -502,17 +502,17 @@ void Shader::UpdateLights()
 		std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
 		if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			if (light->type == Light::Directional)
+			if (light->type == Light::LightType::Directional)
 			{
 				SetDirectionalLightData(light, directionalUsed);
 				directionalUsed++;
 			}
-			else if (light->type == Light::Point)
+			else if (light->type == Light::LightType::Point)
 			{
 				SetPointLightData(light, pointUsed);
 				pointUsed++;
 			}
-			else if (light->type == Light::Spot)
+			else if (light->type == Light::LightType::Spot)
 			{
 				SetSpotLightData(light, spotUsed);
 				spotUsed++;

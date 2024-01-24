@@ -8,7 +8,7 @@
 class Scene;
 class Component;
 
-enum SaveSceneType
+enum class SaveSceneType
 {
 	SaveSceneToFile,
 	SaveSceneForPlayState,

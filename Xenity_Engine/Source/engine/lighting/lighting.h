@@ -10,7 +10,7 @@ const float lightConstant = 1;
 class API Light : public Component
 {
 public:
-	enum LightType
+	enum class LightType
 	{
 		Directional,
 		Point,
@@ -93,7 +93,7 @@ public:
 	*/
 	float GetSpotSmoothness() const;
 
-	LightType type = Directional;
+	LightType type = LightType::Directional;
 	Color color = Color();
 
 	void SetIntensity(float intensity);

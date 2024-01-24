@@ -15,7 +15,7 @@
 LineRenderer::LineRenderer()
 {
 	componentName = "LineRenderer";
-	type = Draw_2D;
+	type = IDrawableTypes::Draw_2D;
 }
 
 ReflectiveData LineRenderer::GetReflectiveData()

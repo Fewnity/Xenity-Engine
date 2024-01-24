@@ -43,40 +43,40 @@ int EditorUI::Init()
 	else 
 	{
 		Debug::PrintError("[EditorUI::Init] Fail to load font file:" + fontFile->GetPath());
-		return EDITOR_UI_ERROR_MISSING_FONT;
+		return (int)EditorUIError::EDITOR_UI_ERROR_MISSING_FONT;
 	}
 
-	for (int i = 0; i < Icon_Count; i++)
+	for (int i = 0; i < (int)IconName::Icon_Count; i++)
 	{
 		icons.emplace_back(std::shared_ptr<Texture>());
 	}
 	// File types icons
-	LoadEditorIcon(Icon_File, "icons/text.png");
-	LoadEditorIcon(Icon_Folder, "icons/folder.png");
-	LoadEditorIcon(Icon_Scene, "icons/belt.png");
-	LoadEditorIcon(Icon_Image, "icons/image.png");
-	LoadEditorIcon(Icon_Mesh, "icons/3d.png");
-	LoadEditorIcon(Icon_Code, "icons/code.png");
-	LoadEditorIcon(Icon_Header, "icons/header.png");
-	LoadEditorIcon(Icon_Audio, "icons/audio.png");
-	LoadEditorIcon(Icon_Font, "icons/font.png");
-	LoadEditorIcon(Icon_Sky, "icons/sky.png");
-	LoadEditorIcon(Icon_Audio_Source, "icons/audio_source.png");
-	LoadEditorIcon(Icon_Light, "icons/light.png");
-	LoadEditorIcon(Icon_Camera, "icons/camera.png");
-	LoadEditorIcon(Icon_Material, "icons/material.png");
-	LoadEditorIcon(Icon_Shader, "icons/shader.png");
+	LoadEditorIcon(IconName::Icon_File, "icons/text.png");
+	LoadEditorIcon(IconName::Icon_Folder, "icons/folder.png");
+	LoadEditorIcon(IconName::Icon_Scene, "icons/belt.png");
+	LoadEditorIcon(IconName::Icon_Image, "icons/image.png");
+	LoadEditorIcon(IconName::Icon_Mesh, "icons/3d.png");
+	LoadEditorIcon(IconName::Icon_Code, "icons/code.png");
+	LoadEditorIcon(IconName::Icon_Header, "icons/header.png");
+	LoadEditorIcon(IconName::Icon_Audio, "icons/audio.png");
+	LoadEditorIcon(IconName::Icon_Font, "icons/font.png");
+	LoadEditorIcon(IconName::Icon_Sky, "icons/sky.png");
+	LoadEditorIcon(IconName::Icon_Audio_Source, "icons/audio_source.png");
+	LoadEditorIcon(IconName::Icon_Light, "icons/light.png");
+	LoadEditorIcon(IconName::Icon_Camera, "icons/camera.png");
+	LoadEditorIcon(IconName::Icon_Material, "icons/material.png");
+	LoadEditorIcon(IconName::Icon_Shader, "icons/shader.png");
 
 	// Play Pause Stop icons...
-	LoadEditorIcon(Icon_Play, "icons/play.png");
-	LoadEditorIcon(Icon_Pause, "icons/pause.png");
-	LoadEditorIcon(Icon_Stop, "icons/stop.png");
+	LoadEditorIcon(IconName::Icon_Play, "icons/play.png");
+	LoadEditorIcon(IconName::Icon_Pause, "icons/pause.png");
+	LoadEditorIcon(IconName::Icon_Stop, "icons/stop.png");
 
 	// Scene tab icons
-	LoadEditorIcon(Icon_Camera_Move, "icons/camera_move.png");
-	LoadEditorIcon(Icon_Move, "icons/move.png");
-	LoadEditorIcon(Icon_Rotate, "icons/rotate.png");
-	LoadEditorIcon(Icon_Scale, "icons/scale.png");
+	LoadEditorIcon(IconName::Icon_Camera_Move, "icons/camera_move.png");
+	LoadEditorIcon(IconName::Icon_Move, "icons/move.png");
+	LoadEditorIcon(IconName::Icon_Rotate, "icons/rotate.png");
+	LoadEditorIcon(IconName::Icon_Scale, "icons/scale.png");
 
 	Debug::Print("---- Editor UI initiated ----");
 	return 0;
@@ -165,9 +165,9 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	//fileIcon->file = FileSystem::MakeFile("icons/text.png");
 	fileIcon->file = FileSystem::MakeFile(path.c_str());
-	fileIcon->SetWrapMode(Texture::ClampToEdge);
+	fileIcon->SetWrapMode(Texture::WrapMode::ClampToEdge);
 	fileIcon->LoadFileReference();
-	icons[iconName] = std::move(fileIcon);
+	icons[(int)iconName] = std::move(fileIcon);
 }
 
 /**

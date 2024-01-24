@@ -49,7 +49,7 @@ using json = nlohmann::json;
 std::weak_ptr<AudioSource> Editor::audioSource;
 std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
 
-MenuGroup Editor::currentMenu = Menu_Select_Project;
+MenuGroup Editor::currentMenu = MenuGroup::Menu_Select_Project;
 
 std::vector<std::shared_ptr<Menu>> Editor::menus;
 std::weak_ptr <Menu> Editor::lastFocusedGameMenu;
@@ -92,7 +92,7 @@ void Editor::Init()
 
 	toolArrowsTexture = Texture::MakeTexture();
 	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
-	toolArrowsTexture->SetFilter(Texture::Point);
+	toolArrowsTexture->SetFilter(Texture::Filter::Point);
 	toolArrowsTexture->LoadFileReference();
 }
 
@@ -119,16 +119,16 @@ void Editor::Update()
 	{
 		//------- Check shortcuts
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Z)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::Z)))
 		{
 			CommandManager::Undo();
 		}
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(Y)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::Y)))
 		{
 			CommandManager::Redo();
 		}
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(D)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::D)))
 		{
 			if (selectedGameObject.lock()) 
 			{
@@ -143,24 +143,24 @@ void Editor::Update()
 			}
 		}
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(N)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::N)))
 		{
 			CreateEmpty();
 		}
 
-		if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(NUM_1)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::NUM_1)))
 		{
 			auto sceneMenu = Editor::GetMenu<SceneMenu>();
 			sceneMenu->Focus();
 		}
 
-		if ((InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(D)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_SHIFT) && InputSystem::GetKeyDown(KeyCode::D)))
 		{
 			SetSelectedGameObject(nullptr);
 			SetSelectedFileReference(nullptr);
 		}
 
-		if (InputSystem::GetKey(DELETE))
+		if (InputSystem::GetKey(KeyCode::DELETE))
 		{
 			auto sceneMenu = Editor::GetMenu<SceneMenu>();
 			auto hierarchy = Editor::GetMenu<HierarchyMenu>();
@@ -171,7 +171,7 @@ void Editor::Update()
 			}
 		}
 
-		if (InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKey(LEFT_SHIFT) && InputSystem::GetKeyDown(P)) // Pause / UnPause game
+		if (InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKey(KeyCode::LEFT_SHIFT) && InputSystem::GetKeyDown(KeyCode::P)) // Pause / UnPause game
 		{
 			if (GameplayManager::GetGameState() == GameState::Playing)
 			{
@@ -182,7 +182,7 @@ void Editor::Update()
 				GameplayManager::SetGameState(GameState::Playing, true);
 			}
 		}
-		else if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(P))) // Start / Stop game
+		else if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::P))) // Start / Stop game
 		{
 			if (GameplayManager::GetGameState() == GameState::Stopped)
 			{
@@ -196,9 +196,9 @@ void Editor::Update()
 
 		if (GameplayManager::GetGameState() == GameState::Stopped)
 		{
-			if ((InputSystem::GetKey(LEFT_CONTROL) && InputSystem::GetKeyDown(S)))
+			if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::S)))
 			{
-				SceneManager::SaveScene(SaveSceneToFile);
+				SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 			}
 		}
 	}
@@ -210,11 +210,11 @@ void Editor::Draw()
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	ApplyEditorStyle();
-	if (currentMenu == Menu_Editor)
+	if (currentMenu == MenuGroup::Menu_Editor)
 		mainBar->Draw();
 
 	float offset = mainBar->GetHeight();
-	if (currentMenu != Menu_Editor)
+	if (currentMenu != MenuGroup::Menu_Editor)
 		offset = 0;
 
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset));
@@ -282,7 +282,7 @@ void Editor::ApplyEditorStyle()
 	const Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
 
-	if (GameplayManager::GetGameState() != Stopped)
+	if (GameplayManager::GetGameState() != GameState::Stopped)
 		pTint = playTint;
 	else if (!EngineSettings::isPlayTintAdditive)
 		pTint = Vector4(1);
@@ -408,22 +408,22 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	std::string fileExt = "";
 	switch (type)
 	{
-	case File_Scene:
+	case FileType::File_Scene:
 		fileExt = ".xen";
 		break;
-	case File_Skybox:
+	case FileType::File_Skybox:
 		fileExt = ".sky";
 		break;
-	case File_Code:
+	case FileType::File_Code:
 		fileExt = ".cpp";
 		break;
-	case File_Header:
+	case FileType::File_Header:
 		fileExt = ".h";
 		break;
-	case File_Material:
+	case FileType::File_Material:
 		fileExt = ".mat";
 		break;
-	case File_Shader:
+	case FileType::File_Shader:
 		fileExt = ".shader";
 		break;
 	}
@@ -607,8 +607,8 @@ void Editor::OnDragAndDropFileFinished()
 				const int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
 				if (copyResult == -1)
 				{
-					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", Dialog_Type_YES_NO_CANCEL);
-					if (result == Dialog_YES)
+					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", DialogType::Dialog_Type_YES_NO_CANCEL);
+					if (result == DialogResult::Dialog_YES)
 					{
 						FileSystem::fileSystem->CopyFile(path, newPath, true);
 					}

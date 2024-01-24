@@ -70,11 +70,11 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
 	}
 
-	if (saveType == SaveSceneForPlayState)
+	if (saveType == SaveSceneType::SaveSceneForPlayState)
 	{
 		savedSceneData = j;
 	}
-	else if (saveType == SaveSceneForHotReloading)
+	else if (saveType == SaveSceneType::SaveSceneForHotReloading)
 	{
 		savedSceneDataHotReloading = j;
 	}
@@ -142,10 +142,10 @@ bool SceneManager::OnQuit()
 #if defined(EDITOR)
 	if (sceneModified)
 	{
-		DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", Dialog_Type_YES_NO_CANCEL);
+		DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
 		if (result == DialogResult::Dialog_YES)
 		{
-			SaveScene(SaveSceneToFile);
+			SaveScene(SaveSceneType::SaveSceneToFile);
 		}
 		else if (result == DialogResult::Dialog_CANCEL)
 		{
@@ -159,7 +159,7 @@ bool SceneManager::OnQuit()
 void SceneManager::LoadScene(const json& jsonData)
 {
 #if !defined(EDITOR)
-	GameplayManager::SetGameState(Starting, true);
+	GameplayManager::SetGameState(GameState::Starting, true);
 #endif
 
 	ClearScene();
@@ -260,7 +260,7 @@ void SceneManager::LoadScene(const json& jsonData)
 		}
 
 		// Call Awake on Components
-		if (GameplayManager::GetGameState() == Starting)
+		if (GameplayManager::GetGameState() == GameState::Starting)
 		{
 			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
 			const size_t componentsCount = allComponents.size();
@@ -317,7 +317,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	}
 
 #if !defined(EDITOR)
-	GameplayManager::SetGameState(Playing, true);
+	GameplayManager::SetGameState(GameState::Playing, true);
 #endif
 	}
 

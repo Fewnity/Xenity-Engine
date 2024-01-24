@@ -98,7 +98,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
-			SceneManager::SaveScene(SaveSceneToFile);
+			SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Build for Windows"))
@@ -135,7 +135,7 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Close project"))
 		{
 			ProjectManager::UnloadProject();
-			Editor::currentMenu = Menu_Select_Project;
+			Editor::currentMenu = MenuGroup::Menu_Select_Project;
 		}
 		if (ImGui::MenuItem("Exit"))
 		{
@@ -444,11 +444,11 @@ void MainBarMenu::Draw()
 	ImGui::GetStyle().FramePadding.x = 14;
 	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + ImGui::GetStyle().ItemSpacing.x * 2 + ImGui::GetStyle().FramePadding.x * 6) / 2.0f);
 	ImGui::BeginGroup();
-	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[Icon_Play]);
+	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[(int)IconName::Icon_Play]);
 	ImGui::SameLine();
-	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Pause]);
+	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Pause]);
 	ImGui::SameLine();
-	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[Icon_Stop]);
+	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Stop]);
 	ImGui::EndGroup();
 	ImGui::GetStyle().FramePadding.x = oldFramePadding;
 	if (playClicked)

@@ -100,6 +100,6 @@ void AudioSource::Stop()
 void AudioSource::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Audio_Source], Color::CreateFromRGBFloat(1, 1, 1));
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Audio_Source], Color::CreateFromRGBFloat(1, 1, 1));
 #endif
 }

@@ -59,7 +59,7 @@ void Light::OnReflectionUpdated()
 
 void Light::SetupPointLight(const Color &_color, const float _intensity, const float _range)
 {
-	this->type = Light::Point;
+	this->type = LightType::Point;
 
 	this->color = _color;
 	this->intensity = _intensity;
@@ -68,7 +68,7 @@ void Light::SetupPointLight(const Color &_color, const float _intensity, const f
 
 void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 {
-	this->type = Light::Directional;
+	this->type = LightType::Directional;
 
 	this->color = _color;
 	this->intensity = _intensity;
@@ -83,7 +83,7 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
-	this->type = Light::Spot;
+	this->type = LightType::Spot;
 
 	this->color = _color;
 	this->intensity = _intensity;
@@ -99,7 +99,7 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 void Light::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[Icon_Light], color);
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Light], color);
 #endif
 }
 
@@ -160,7 +160,7 @@ void Light::SetRange(float value)
 		value = 0;
 
 	range = value;
-	if (type != Directional)
+	if (type != LightType::Directional)
 		UpdateLightValues();
 }
 

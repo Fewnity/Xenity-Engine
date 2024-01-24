@@ -2,7 +2,7 @@
 
 #include <engine/vectors/vector2_int.h>
 
-enum MenuGroup
+enum class MenuGroup
 {
 	Menu_Select_Project,
 	Menu_Create_Project,
@@ -22,7 +22,7 @@ public:
 	virtual Vector2Int GetMousePosition() const;
 	virtual void SetActive(bool active);
 	virtual bool GetActive() const;
-	MenuGroup group = Menu_Editor;
+	MenuGroup group = MenuGroup::Menu_Editor;
 	int id = 0;
 
 protected:

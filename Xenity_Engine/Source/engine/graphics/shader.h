@@ -22,7 +22,7 @@ class Light;
 class Shader : public FileReference, public Reflective
 {
 public:
-	enum ShaderType
+	enum class ShaderType
 	{
 		Vertex_Shader,
 		Fragment_Shader,

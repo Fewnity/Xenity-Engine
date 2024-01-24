@@ -20,7 +20,7 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
 
-GameState GameplayManager::gameState = Stopped;
+GameState GameplayManager::gameState = GameState::Stopped;
 
 void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
@@ -42,27 +42,27 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::GetGameObjects()
 void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 {
 #if defined(EDITOR)
-	if (newGameState == Playing && gameState == Stopped) // Start game
+	if (newGameState == GameState::Playing && gameState == GameState::Stopped) // Start game
 	{
-		gameState = Starting;
-		SceneManager::SaveScene(SaveSceneForPlayState);
+		gameState = GameState::Starting;
+		SceneManager::SaveScene(SaveSceneType::SaveSceneForPlayState);
 		SceneManager::RestoreScene();
 		gameState = newGameState;
 	}
-	else if (newGameState == Stopped && gameState != Stopped) // Stop game
+	else if (newGameState == GameState::Stopped && gameState != GameState::Stopped) // Stop game
 	{
 		gameState = newGameState;
 		if (restoreScene)
 			SceneManager::RestoreScene();
 	}
-	else if ((newGameState == Paused && gameState == Playing) ||
-			(newGameState == Playing && gameState == Paused)) // Pause / UnPause
+	else if ((newGameState == GameState::Paused && gameState == GameState::Playing) ||
+			(newGameState == GameState::Playing && gameState == GameState::Paused)) // Pause / UnPause
 	{
 		gameState = newGameState;
 	}
-	else if ((newGameState == Paused && gameState == Paused)) // Pause / UnPause
+	else if ((newGameState == GameState::Paused && gameState == GameState::Paused)) // Pause / UnPause
 	{
-		gameState = Playing;
+		gameState = GameState::Playing;
 	}
 	if (auto menu = Editor::lastFocusedGameMenu.lock())
 	{

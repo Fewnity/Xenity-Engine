@@ -11,7 +11,7 @@
 class GameObject;
 class Component;
 
-enum GameState
+enum class GameState
 {
 	Stopped,
 	Paused,

@@ -28,12 +28,12 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 {
 	if (item.file) // Do a specific action if the file can be opened
 	{
-		if (item.file->fileType == File_Scene) // If the file is a scene, load the scene
+		if (item.file->fileType == FileType::File_Scene) // If the file is a scene, load the scene
 		{
-			GameplayManager::SetGameState(Stopped, false);
+			GameplayManager::SetGameState(GameState::Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->fileType == File_Code || item.file->fileType == File_Header || item.file->fileType == File_Shader) // If the file is something like code, open Visual Studio Code
+		else if (item.file->fileType == FileType::File_Code || item.file->fileType == FileType::File_Header || item.file->fileType == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
 		{
 			// Open the folder to allow vs code c++ settings
 			std::string command = "code \"" + ProjectManager::GetAssetFolderPath() + "\"";
@@ -304,7 +304,7 @@ void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool is
 		std::string payloadName;
 		if (isFile)
 		{
-			payloadName = "Files" + std::to_string(fileExplorerItem.file->fileType);
+			payloadName = "Files" + std::to_string((int)fileExplorerItem.file->fileType);
 			if (isHovered)
 				payloadName = "Files";
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
@@ -324,10 +324,10 @@ void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool is
 std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile)
 {
 	// Get item icon
-	std::shared_ptr<Texture> tex = EditorUI::icons[Icon_File];
+	std::shared_ptr<Texture> tex = EditorUI::icons[(int)IconName::Icon_File];
 	if (!isFile)
 	{
-		tex = EditorUI::icons[Icon_Folder];
+		tex = EditorUI::icons[(int)IconName::Icon_Folder];
 	}
 	else
 	{
@@ -335,41 +335,41 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExp
 
 		switch (fileType)
 		{
-		case File_Texture:
+		case FileType::File_Texture:
 		{
 			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
 			if (tex->GetTextureId() == 0)
 			{
-				tex = EditorUI::icons[Icon_Image];
+				tex = EditorUI::icons[(int)IconName::Icon_Image];
 			}
 			break;
 		}
-		case File_Scene:
-			tex = EditorUI::icons[Icon_Scene];
+		case FileType::File_Scene:
+			tex = EditorUI::icons[(int)IconName::Icon_Scene];
 			break;
-		case File_Code:
-			tex = EditorUI::icons[Icon_Code];
+		case FileType::File_Code:
+			tex = EditorUI::icons[(int)IconName::Icon_Code];
 			break;
-		case File_Header:
-			tex = EditorUI::icons[Icon_Header];
+		case FileType::File_Header:
+			tex = EditorUI::icons[(int)IconName::Icon_Header];
 			break;
-		case File_Mesh:
-			tex = EditorUI::icons[Icon_Mesh];
+		case FileType::File_Mesh:
+			tex = EditorUI::icons[(int)IconName::Icon_Mesh];
 			break;
-		case File_Audio:
-			tex = EditorUI::icons[Icon_Audio];
+		case FileType::File_Audio:
+			tex = EditorUI::icons[(int)IconName::Icon_Audio];
 			break;
-		case File_Skybox:
-			tex = EditorUI::icons[Icon_Sky];
+		case FileType::File_Skybox:
+			tex = EditorUI::icons[(int)IconName::Icon_Sky];
 			break;
-		case File_Font:
-			tex = EditorUI::icons[Icon_Font];
+		case FileType::File_Font:
+			tex = EditorUI::icons[(int)IconName::Icon_Font];
 			break;
-		case File_Material:
-			tex = EditorUI::icons[Icon_Material];
+		case FileType::File_Material:
+			tex = EditorUI::icons[(int)IconName::Icon_Material];
 			break;
-		case File_Shader:
-			tex = EditorUI::icons[Icon_Shader];
+		case FileType::File_Shader:
+			tex = EditorUI::icons[(int)IconName::Icon_Shader];
 			break;
 		}
 	}
@@ -458,7 +458,7 @@ void FileExplorerMenu::Draw()
 					}
 				}
 			}
-			if (InputSystem::GetKeyDown(RETURN))
+			if (InputSystem::GetKeyDown(KeyCode::RETURN))
 			{
 				Rename();
 			}
@@ -504,7 +504,7 @@ void FileExplorerMenu::Rename()
 		}
 		else
 		{
-			EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", Dialog_Type_OK);
+			EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", DialogType::Dialog_Type_OK);
 		}
 	}
 	else if (!renamingString.empty() && directoryToRename)

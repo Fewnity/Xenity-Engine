@@ -65,7 +65,7 @@ public:
 			const std::shared_ptr<File> file = projectFiles[i];
 			FileType fileType = ProjectManager::GetFileType(file->GetFileExtension());
 
-			if (fileType != File_Other && fileType == type)
+			if (fileType != FileType::File_Other && fileType == type)
 			{
 				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(file->GetUniqueId());
 				fileRef->LoadFileReference();

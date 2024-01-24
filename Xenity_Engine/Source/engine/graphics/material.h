@@ -49,7 +49,7 @@ public:
 private:
 	void Update();
 	std::weak_ptr<Camera> lastUsedCamera;
-	IDrawableTypes lastUpdatedType = Draw_3D;
+	IDrawableTypes lastUpdatedType = IDrawableTypes::Draw_3D;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> uniformsVector2;
 	std::unordered_map <const char*, Vector3> uniformsVector3;

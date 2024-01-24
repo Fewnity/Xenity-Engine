@@ -173,8 +173,8 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	newAtlas->SetSize(atlasSize, atlasSize);
 	newAtlas->SetChannelCount(channelCount);
 	newAtlas->SetData(atlas);
-	newAtlas->SetFilter(Texture::Bilinear);
-	newAtlas->SetWrapMode(Texture::ClampToEdge);
+	newAtlas->SetFilter(Texture::Filter::Bilinear);
+	newAtlas->SetWrapMode(Texture::WrapMode::ClampToEdge);
 
 	font->fontAtlas = newAtlas;
 

@@ -34,20 +34,20 @@ struct RenderingSettings
 	bool useLighting = true;
 };
 
-enum PolygoneFillMode
+enum class PolygoneFillMode
 {
 	Fill,
 	Line
 };
 
-enum CullFace
+enum class CullFace
 {
 	Front,
 	Back,
 	Front_And_Back,
 };
 
-enum DrawMode
+enum class DrawMode
 {
 	Patches,
 	Triangles,

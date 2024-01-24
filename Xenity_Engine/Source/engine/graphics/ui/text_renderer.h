@@ -31,8 +31,8 @@ public:
 	int GetDrawPriority() const override;
 
 	std::shared_ptr<Material> material = nullptr;
-	HorizontalAlignment horizontalAlignment = H_Center;
-	VerticalAlignment verticalAlignment = V_Center;
+	HorizontalAlignment horizontalAlignment = HorizontalAlignment::H_Center;
+	VerticalAlignment verticalAlignment = VerticalAlignment::V_Center;
 
 	/**
 	* Set order in layer

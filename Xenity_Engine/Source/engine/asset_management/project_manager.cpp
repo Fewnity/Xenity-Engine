@@ -114,7 +114,7 @@ void ProjectManager::FindAllProjectFiles()
 		std::shared_ptr<File> file = projectFiles[i];
 		const FileType fileType = GetFileType(file->GetFileExtension());
 
-		if (fileType != File_Other)
+		if (fileType != FileType::File_Other)
 		{
 			compatibleFiles[file] = fileType;
 			allFoundFiles.push_back(file);
@@ -323,7 +323,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
 	if (sceneRef->file->Open(true))
 	{
-		const std::string data = AssetManager::GetDefaultFileData(File_Scene);
+		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
 		sceneRef->file->Write(data);
 		sceneRef->file->Close();
 	}
@@ -368,7 +368,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 
 FileType ProjectManager::GetFileType(const std::string& _extension)
 {
-	FileType fileType = File_Other;
+	FileType fileType = FileType::File_Other;
 	std::string extension = _extension;
 
 	// Replace uppercase letters by lowercase letters
@@ -380,43 +380,43 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 
 	if (extension == ".png" || extension == ".jpg" || extension == ".bmp") // If the file is an image
 	{
-		fileType = File_Texture;
+		fileType = FileType::File_Texture;
 	}
 	else if (extension == ".wav" || extension == ".mp3") // If the file is a sound/music
 	{
-		fileType = File_Audio;
+		fileType = FileType::File_Audio;
 	}
 	else if (extension == ".obj") // If the file is a 3D object
 	{
-		fileType = File_Mesh;
+		fileType = FileType::File_Mesh;
 	}
 	else if (extension == ".xen") // If the file is a scene
 	{
-		fileType = File_Scene;
+		fileType = FileType::File_Scene;
 	}
 	else if (extension == ".cpp") // If the file is a code file/header
 	{
-		fileType = File_Code;
+		fileType = FileType::File_Code;
 	}
 	else if (extension == ".h") // If the file is a code file/header
 	{
-		fileType = File_Header;
+		fileType = FileType::File_Header;
 	}
 	else if (extension == ".sky") // If the file is a skybox
 	{
-		fileType = File_Skybox;
+		fileType = FileType::File_Skybox;
 	}
 	else if (extension == ".ttf") // If the file is a font
 	{
-		fileType = File_Font;
+		fileType = FileType::File_Font;
 	}
 	else if (extension == ".mat") // If the file is a font
 	{
-		fileType = File_Material;
+		fileType = FileType::File_Material;
 	}
 	else if (extension == ".shader") // If the file is a font
 	{
-		fileType = File_Shader;
+		fileType = FileType::File_Shader;
 	}
 
 	return fileType;
@@ -529,7 +529,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
 			fileRef = CreateFileReference(projectFilesIds[id].path, id);
 			if (fileRef)
 			{
-				if (fileRef->fileType == File_Skybox)
+				if (fileRef->fileType == FileType::File_Skybox)
 					fileRef->LoadFileReference();
 			}
 		}
@@ -696,38 +696,38 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 	const FileType type = GetFileType(file->GetFileExtension());
 	switch (type)
 	{
-	case File_Audio:
+	case FileType::File_Audio:
 		fileRef = AudioClip::MakeAudioClip();
 		break;
-	case File_Mesh:
+	case FileType::File_Mesh:
 		fileRef = MeshData::MakeMeshData();
 		break;
-	case File_Texture:
+	case FileType::File_Texture:
 		fileRef = Texture::MakeTexture();
 		break;
-	case File_Scene:
+	case FileType::File_Scene:
 		fileRef = Scene::MakeScene();
 		break;
-	case File_Header:
+	case FileType::File_Header:
 		fileRef = CodeFile::MakeCode(true);
 		break;
-	case File_Code:
+	case FileType::File_Code:
 		fileRef = CodeFile::MakeCode(false);
 		break;
-	case File_Skybox:
+	case FileType::File_Skybox:
 		fileRef = SkyBox::MakeSkyBox();
 		break;
-	case File_Font:
+	case FileType::File_Font:
 		fileRef = Font::MakeFont();
 		break;
-	case File_Material:
+	case FileType::File_Material:
 		fileRef = Material::MakeMaterial();
 		break;
-	case File_Shader:
+	case FileType::File_Shader:
 		fileRef = Shader::MakeShader();
 		break;
 
-	case File_Other:
+	case FileType::File_Other:
 		// Do nothing
 		break;
 	}

@@ -190,13 +190,13 @@ void InputSystem::Read(const SDL_Event& event)
 		switch (event.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			SetInput(true, MOUSE_RIGHT);
+			SetInput(true, KeyCode::MOUSE_RIGHT);
 			break;
 		case SDL_BUTTON_LEFT:
-			SetInput(true, MOUSE_LEFT);
+			SetInput(true, KeyCode::MOUSE_LEFT);
 			break;
 		case SDL_BUTTON_MIDDLE:
-			SetInput(true, MOUSE_MIDDLE);
+			SetInput(true, KeyCode::MOUSE_MIDDLE);
 			break;
 		}
 		break;
@@ -207,13 +207,13 @@ void InputSystem::Read(const SDL_Event& event)
 		switch (event.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			SetInput(false, MOUSE_RIGHT);
+			SetInput(false, KeyCode::MOUSE_RIGHT);
 			break;
 		case SDL_BUTTON_LEFT:
-			SetInput(false, MOUSE_LEFT);
+			SetInput(false, KeyCode::MOUSE_LEFT);
 			break;
 		case SDL_BUTTON_MIDDLE:
-			SetInput(false, MOUSE_MIDDLE);
+			SetInput(false, KeyCode::MOUSE_MIDDLE);
 			break;
 		}
 		break;
@@ -359,23 +359,23 @@ void InputSystem::SetInput(const bool pressed, const KeyCode keyCode)
 
 void InputSystem::SetInputPressed(const KeyCode keyCode)
 {
-	if (!inputs[keyCode].held)
+	if (!inputs[(int)keyCode].held)
 	{
-		inputs[keyCode].pressed = true;
-		inputs[keyCode].held = true;
+		inputs[(int)keyCode].pressed = true;
+		inputs[(int)keyCode].held = true;
 	}
 }
 
 void InputSystem::SetInputReleased(const KeyCode keyCode)
 {
-	inputs[keyCode].released = true;
-	inputs[keyCode].held = false;
+	inputs[(int)keyCode].released = true;
+	inputs[(int)keyCode].held = false;
 }
 
 void InputSystem::SetInputInactive(const KeyCode keyCode)
 {
-	inputs[keyCode].pressed = false;
-	inputs[keyCode].released = false;
+	inputs[(int)keyCode].pressed = false;
+	inputs[(int)keyCode].released = false;
 }
 
 #pragma endregion
@@ -388,7 +388,7 @@ bool InputSystem::GetKeyDown(const KeyCode keyCode)
 	if (blockGameInput)
 		return false;
 #endif
-	return inputs[keyCode].pressed;
+	return inputs[(int)keyCode].pressed;
 }
 
 bool InputSystem::GetKey(const KeyCode keyCode)
@@ -397,7 +397,7 @@ bool InputSystem::GetKey(const KeyCode keyCode)
 	if (blockGameInput)
 		return false;
 #endif
-	return inputs[keyCode].held;
+	return inputs[(int)keyCode].held;
 }
 
 bool InputSystem::GetKeyUp(const KeyCode keyCode)
@@ -406,7 +406,7 @@ bool InputSystem::GetKeyUp(const KeyCode keyCode)
 	if (blockGameInput)
 		return false;
 #endif
-	return inputs[keyCode].released;
+	return inputs[(int)keyCode].released;
 }
 
 #pragma endregion

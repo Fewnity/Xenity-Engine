@@ -155,7 +155,7 @@ void Material::Update()
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
-		if (Graphics::currentMode == Draw_UI)
+		if (Graphics::currentMode == IDrawableTypes::Draw_UI)
 		{
 			shader->SetShaderCameraPositionCanvas();
 			shader->SetShaderProjectionCanvas();

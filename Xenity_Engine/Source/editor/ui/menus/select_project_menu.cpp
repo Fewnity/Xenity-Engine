@@ -8,7 +8,7 @@
 
 SelectProjectMenu::SelectProjectMenu()
 {
-	group = Menu_Select_Project;
+	group = MenuGroup::Menu_Select_Project;
 }
 
 void SelectProjectMenu::Init()
@@ -47,7 +47,7 @@ void SelectProjectMenu::Draw()
 		ImGui::PushFont(font);
 		if (ImGui::Button("Create project"))
 		{
-			Editor::currentMenu = Menu_Create_Project;
+			Editor::currentMenu = MenuGroup::Menu_Create_Project;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Load project"))
@@ -105,7 +105,7 @@ void SelectProjectMenu::OnLoadButtonClick()
 				ProjectManager::SaveProjectsList(projectsList);
 			}
 
-			Editor::currentMenu = Menu_Editor;
+			Editor::currentMenu = MenuGroup::Menu_Editor;
 		}
 		else
 		{
@@ -129,7 +129,7 @@ void SelectProjectMenu::DrawProjectsList()
 		{
 			if (ProjectManager::LoadProject(projectsList[i].path))
 			{
-				Editor::currentMenu = Menu_Editor;
+				Editor::currentMenu = MenuGroup::Menu_Editor;
 			}
 			else
 			{

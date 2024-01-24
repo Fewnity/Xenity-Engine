@@ -10,9 +10,9 @@ void CompilingMenu::Init()
 
 void CompilingMenu::Draw()
 {
-	if (popupState == Opening)
+	if (popupState == (int)CompilingPupopState::Opening)
 	{
-		popupState = Closing;
+		popupState = (int)CompilingPupopState::Closing;
 		ImGui::OpenPopup("Compiling...");
 	}
 
@@ -22,7 +22,7 @@ void CompilingMenu::Draw()
 	if (ImGui::BeginPopupModal("Compiling...", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking))
 	{
 		ImGui::Text("Compiling game...");
-		if (popupState == Closed)
+		if (popupState == (int)CompilingPupopState::Closed)
 		{
 			ImGui::CloseCurrentPopup();
 		}
@@ -32,10 +32,10 @@ void CompilingMenu::Draw()
 
 void CompilingMenu::OpenPopup()
 {
-	popupState = Opening;
+	popupState = (int)CompilingPupopState::Opening;
 }
 
 void CompilingMenu::ClosePopup()
 {
-	popupState = Closed;
+	popupState = (int)CompilingPupopState::Closed;
 }

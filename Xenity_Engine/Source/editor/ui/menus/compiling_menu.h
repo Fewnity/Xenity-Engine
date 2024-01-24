@@ -2,7 +2,7 @@
 
 #include "menu.h"
 
-enum CompilingPupopState
+enum class CompilingPupopState
 {
 	Closed,
 	Closing,

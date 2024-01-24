@@ -113,7 +113,7 @@ void InspectorMenu::DrawFilePreview()
 			loadedPreview = Editor::GetSelectedFileReference();
 			previewText.clear();
 			// Read text file
-			if (loadedPreview->fileType == File_Code || loadedPreview->fileType == File_Header || loadedPreview->fileType == File_Shader)
+			if (loadedPreview->fileType == FileType::File_Code || loadedPreview->fileType == FileType::File_Header || loadedPreview->fileType == FileType::File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->file;
 				if (file->Open(false))
@@ -128,7 +128,7 @@ void InspectorMenu::DrawFilePreview()
 			}
 		}
 		// If the file is a texture, get the texture id
-		if (loadedPreview->fileType == File_Texture)
+		if (loadedPreview->fileType == FileType::File_Texture)
 		{
 			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
 		}
@@ -170,7 +170,7 @@ void InspectorMenu::DrawFilePreview()
 			ImGui::SetCursorPos(textPos);
 			ImGui::Text(text.c_str());
 		}
-		else if (loadedPreview->fileType == File_Audio) // Draw audio preview
+		else if (loadedPreview->fileType == FileType::File_Audio) // Draw audio preview
 		{
 			const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
 			AudioClipStream* stream = nullptr;
@@ -343,7 +343,7 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 	ImGui::InputText("##Name ", &str0);
 
 	//Apply new values if changed
-	if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+	if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
 		auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->name, str0, selectedGameObject->name);
 		CommandManager::AddCommand(command);
@@ -410,7 +410,7 @@ void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGame
 		Vector3 localPos = selectedTransform->GetLocalPosition();
 		bool changed = EditorUI::DrawInput("Local Position", localPos);
 
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
 			auto command = std::make_shared<InspectorTransformSetLocalPositionCommand>(selectedTransform, localPos, selectedTransform->GetLocalPosition());
 			CommandManager::AddCommand(command);
@@ -423,7 +423,7 @@ void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGame
 		ImGui::Spacing();
 		Vector3 localRot = selectedTransform->GetLocalRotation();
 		changed = EditorUI::DrawInput("Local Rotation", localRot);
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
 			auto command = std::make_shared<InspectorTransformSetLocalRotationCommand>(selectedTransform, localRot, selectedTransform->GetLocalRotation());
 			CommandManager::AddCommand(command);
@@ -436,7 +436,7 @@ void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGame
 		ImGui::Spacing();
 		Vector3 localScale = selectedTransform->GetLocalScale();
 		changed = EditorUI::DrawInput("Local Scale", localScale);
-		if (changed && (InputSystem::GetKeyDown(RETURN) || InputSystem::GetKeyDown(MOUSE_LEFT)))
+		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
 			auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedTransform, localScale, selectedTransform->GetLocalScale());
 			CommandManager::AddCommand(command);

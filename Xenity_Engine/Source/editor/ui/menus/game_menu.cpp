@@ -59,7 +59,7 @@ void GameMenu::Draw()
 	{
 		OnStartDrawing();
 
-		if (InputSystem::GetKeyDown(MOUSE_RIGHT) && ImGui::IsWindowHovered())
+		if (InputSystem::GetKeyDown(KeyCode::MOUSE_RIGHT) && ImGui::IsWindowHovered())
 		{
 			ImGui::SetWindowFocus();
 		}

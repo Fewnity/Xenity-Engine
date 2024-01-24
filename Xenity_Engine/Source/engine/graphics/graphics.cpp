@@ -72,7 +72,7 @@ Color Graphics::fogColor;
 Color Graphics::skyColor;
 std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
-IDrawableTypes Graphics::currentMode = Draw_3D;
+IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
 
 bool Graphics::UseOpenGLFixedFunctions = false;
 
@@ -162,7 +162,7 @@ void Graphics::Draw()
 				mat->updated = false;
 			}
 
-			currentMode = Draw_3D;
+			currentMode = IDrawableTypes::Draw_3D;
 
 			needUpdateCamera = true;
 
@@ -198,14 +198,14 @@ void Graphics::Draw()
 				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
-			currentMode = Draw_2D;
+			currentMode = IDrawableTypes::Draw_2D;
 			for (size_t drawableIndex = 0; drawableIndex < spriteCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
 			if (!usedCamera.lock()->isEditor)
-				currentMode = Draw_UI;
+				currentMode = IDrawableTypes::Draw_UI;
 			if (UseOpenGLFixedFunctions && !usedCamera.lock()->isEditor)
 			{
 				Engine::GetRenderer().ResetView();
@@ -225,9 +225,9 @@ void Graphics::Draw()
 				Engine::GetRenderer().SetFog(false);
 
 				//Draw editor scene grid
-				if (currentMode != Draw_3D)
+				if (currentMode != IDrawableTypes::Draw_3D)
 				{
-					currentMode = Draw_3D;
+					currentMode = IDrawableTypes::Draw_3D;
 					if (UseOpenGLFixedFunctions)
 					{
 						usedCamera.lock()->UpdateProjection();
@@ -309,19 +309,19 @@ void Graphics::Draw()
 
 bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
 {
-	if (t1.lock()->type == Draw_3D && t2.lock()->type == Draw_3D)
+	if (t1.lock()->type == IDrawableTypes::Draw_3D && t2.lock()->type == IDrawableTypes::Draw_3D)
 	{
 		return false;
 	}
-	if (t2.lock()->type == Draw_2D && t1.lock()->type == Draw_3D)
+	if (t2.lock()->type == IDrawableTypes::Draw_2D && t1.lock()->type == IDrawableTypes::Draw_3D)
 	{
 		return true;
 	}
-	if (t1.lock()->type == Draw_2D && t2.lock()->type == Draw_3D)
+	if (t1.lock()->type == IDrawableTypes::Draw_2D && t2.lock()->type == IDrawableTypes::Draw_3D)
 	{
 		return false;
 	}
-	if (t2.lock()->type == Draw_UI && t1.lock()->type != Draw_UI)
+	if (t2.lock()->type == IDrawableTypes::Draw_UI && t1.lock()->type != IDrawableTypes::Draw_UI)
 	{
 		return true;
 	}
@@ -360,11 +360,11 @@ void Graphics::OrderDrawables()
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-		if (drawableToCheck->type == Draw_3D)
+		if (drawableToCheck->type == IDrawableTypes::Draw_3D)
 		{
 			noTransparentDrawable.push_back(drawableToCheck);
 		}
-		else if (drawableToCheck->type == Draw_2D)
+		else if (drawableToCheck->type == IDrawableTypes::Draw_2D)
 		{
 			spriteDrawable.push_back(drawableToCheck);
 		}
@@ -656,13 +656,13 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		if (sceneMenu->toolMode == Tool_Move || sceneMenu->toolMode == Tool_Scale)
+		if (sceneMenu->toolMode == ToolMode::Tool_Move || sceneMenu->toolMode == ToolMode::Tool_Scale)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
 		}
-		else if (sceneMenu->toolMode == Tool_Rotate)
+		else if (sceneMenu->toolMode == ToolMode::Tool_Rotate)
 		{
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleX, renderSettings, AssetManager::unlitMaterial);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleY, renderSettings, AssetManager::unlitMaterial);

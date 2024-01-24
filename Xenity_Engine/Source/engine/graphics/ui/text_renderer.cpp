@@ -14,7 +14,7 @@
 TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
-	type = Draw_3D;
+	type = IDrawableTypes::Draw_3D;
 
 	AssetManager::AddReflection(this);
 	material = AssetManager::standardMaterial;

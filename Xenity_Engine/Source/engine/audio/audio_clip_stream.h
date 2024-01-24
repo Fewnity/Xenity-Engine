@@ -13,7 +13,7 @@
 class Channel;
 class File;
 
-enum AudioType
+enum class AudioType
 {
 	Null,
 	Wav,
@@ -64,7 +64,7 @@ public:
 	}
 
 private:
-	AudioType type = Null;
+	AudioType type = AudioType::Null;
 	drmp3* mp3 = nullptr;
 	drwav* wav = nullptr;
 	int64_t sampleCount = 0;

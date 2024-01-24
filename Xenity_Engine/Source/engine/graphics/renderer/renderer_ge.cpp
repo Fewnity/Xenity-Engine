@@ -192,7 +192,7 @@ void RendererGE::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 {
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
-	if (texture->GetFilter() == Texture::Bilinear)
+	if (texture->GetFilter() == Texture::Filter::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -204,7 +204,7 @@ void RendererGE::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 		}
 		magfilterValue = GL_LINEAR;
 	}
-	else if (texture->GetFilter() == Texture::Point)
+	else if (texture->GetFilter() == Texture::Filter::Point)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -391,7 +391,7 @@ void RendererGE::SetLight(int lightIndex, const Vector3 &lightPosition, float in
 	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
 	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	if (type == Light::Directional)
+	if (type == Light::LightType::Directional)
 	{
 		sceGuLightColor(lightIndex, GU_AMBIENT, color.GetUnsignedIntABGR());
 		sceGuLightColor(lightIndex, GU_DIFFUSE, 0x00000000);
@@ -402,7 +402,7 @@ void RendererGE::SetLight(int lightIndex, const Vector3 &lightPosition, float in
 		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	}
 	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-	if (type == Light::Directional)
+	if (type == Light::LightType::Directional)
 		attenuation = 0;
 	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
 }
@@ -427,7 +427,7 @@ void RendererGE::Setlights(const std::shared_ptr<Camera> &camera)
 		auto light = AssetManager::GetLight(i).lock();
 		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			if (light->type == Light::Directional)
+			if (light->type == Light::LightType::Directional)
 			{
 				Vector3 lightRotation = light->GetTransform()->GetRotation();
 				Vector3 cameraPosition = cameraTransform->GetPosition();

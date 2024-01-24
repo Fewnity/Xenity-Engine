@@ -36,7 +36,7 @@ void RigidBody::Tick()
 
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
 	{
-		int side = NoSide;
+		int side = (int)CollisionSide::NoSide;
 		std::shared_ptr<BoxCollider> rbBoxCollider = GetGameObject()->GetComponent<BoxCollider>();
 		if (rbBoxCollider)
 		{
@@ -58,8 +58,8 @@ void RigidBody::Tick()
 					}
 					else if (!other->isTrigger && !isStatic) // Check collision
 					{
-						const int tempSide = BoxCollider::CheckCollision(rbBoxCollider, other, deltaTimeVelocity);
-						if (tempSide != NoSide)
+						const int tempSide = (int)BoxCollider::CheckCollision(rbBoxCollider, other, deltaTimeVelocity);
+						if (tempSide != (int)CollisionSide::NoSide)
 						{
 							if ((side & tempSide) == 0)
 								side |= tempSide;
@@ -75,11 +75,11 @@ void RigidBody::Tick()
 			Vector3 newVelocity = velocity;
 
 			// Make the rigidbody bounce if there is a wall in the opposite direction
-			if ((side & SideX) != 0)
+			if ((side & (int)CollisionSide::SideX) != 0)
 				newVelocity.x = -velocity.x * bounce;
-			if ((side & SideY) != 0)
+			if ((side & (int)CollisionSide::SideY) != 0)
 				newVelocity.y = -velocity.y * bounce;
-			if ((side & SideZ) != 0)
+			if ((side & (int)CollisionSide::SideZ) != 0)
 				newVelocity.z = -velocity.z * bounce;
 
 			// Move the rigidbody
@@ -87,7 +87,7 @@ void RigidBody::Tick()
 				GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
 
 			// Apply gravity
-			if ((side & SideY) == 0)
+			if ((side & (int)CollisionSide::SideY) == 0)
 			{
 				newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
 				if (newVelocity.y <= -10)

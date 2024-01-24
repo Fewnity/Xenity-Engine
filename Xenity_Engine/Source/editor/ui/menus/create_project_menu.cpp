@@ -10,7 +10,7 @@
 
 CreateProjectMenu::CreateProjectMenu()
 {
-	group = Menu_Create_Project;
+	group = MenuGroup::Menu_Create_Project;
 
 	// Get Xenity's default project location
 	TCHAR docPath[MAX_PATH];
@@ -121,7 +121,7 @@ void CreateProjectMenu::DrawCreateProjectButton()
 					newProjectListItem.path = projectParentDir + projectName + "\\";
 					projectsList.push_back(newProjectListItem);
 					ProjectManager::SaveProjectsList(projectsList);
-					Editor::currentMenu = Menu_Editor;
+					Editor::currentMenu = MenuGroup::Menu_Editor;
 				}
 			}
 		}
@@ -148,7 +148,7 @@ void CreateProjectMenu::Draw()
 
 		if (ImGui::Button("Back"))
 		{
-			Editor::currentMenu = Menu_Select_Project;
+			Editor::currentMenu = MenuGroup::Menu_Select_Project;
 		}
 
 		// Set text scale to 200%

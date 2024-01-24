@@ -75,7 +75,7 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
 	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
-	int result = NoSide;
+	int result = (int)CollisionSide::NoSide;
 
 	if (xColl && yColl && zColl)
 	{
@@ -86,11 +86,11 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
 
 		if (!xCollBefore)
-			result |= SideX;
+			result |= (int)CollisionSide::SideX;
 		if (!yCollBefore)
-			result |= SideY;
+			result |= (int)CollisionSide::SideY;
 		if (!zCollBefore)
-			result |= SideZ;
+			result |= (int)CollisionSide::SideZ;
 	}
 
 	return (CollisionSide)result;

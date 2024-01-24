@@ -52,19 +52,19 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 	float x = 0;
 	float y = 0;
 	int line = 0;
-	if (horizontalAlignment == H_Left)
+	if (horizontalAlignment == HorizontalAlignment::H_Left)
 		x = -textInfo->linesInfo[line].lenght;
-	else if (horizontalAlignment == H_Center)
+	else if (horizontalAlignment == HorizontalAlignment::H_Center)
 		x = -textInfo->linesInfo[line].lenght * 0.5f;
 
 	y = textInfo->linesInfo[line].y1 * 0.25f;
 	y += -textInfo->maxLineHeight;
 
-	if (verticalAlignment == V_Center)
+	if (verticalAlignment == VerticalAlignment::V_Center)
 	{
 		y += totalY * 0.5f;
 	}
-	else if (verticalAlignment == V_Top)
+	else if (verticalAlignment == VerticalAlignment::V_Top)
 	{
 		y += totalY;
 	}
@@ -86,9 +86,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 		{
 			line++;
 
-			if (horizontalAlignment == H_Left)
+			if (horizontalAlignment == HorizontalAlignment::H_Left)
 				x = -textInfo->linesInfo[line].lenght;
-			else if (horizontalAlignment == H_Center)
+			else if (horizontalAlignment == HorizontalAlignment::H_Center)
 				x = -textInfo->linesInfo[line].lenght * 0.5f;
 			else
 				x = 0;

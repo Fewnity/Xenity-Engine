@@ -181,7 +181,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& 
 {
 	bool changed = false;
 	auto ref = std::ref(value);
-	DrawFileReference(File_Skybox, "Skybox", &ref, changed, inputName);
+	DrawFileReference(FileType::File_Skybox, "Skybox", &ref, changed, inputName);
 	return changed;
 }
 
