@@ -44,9 +44,9 @@ public:
 	/**
 	 * Get if the engine is running
 	 */
-	static bool IsRunning()
+	static bool IsRunning(bool checkRenderer)
 	{
-		return isRunning && renderer != nullptr;
+		return isRunning && (!checkRenderer || renderer != nullptr);
 	}
 
 	static std::unique_ptr<GameInterface> game;

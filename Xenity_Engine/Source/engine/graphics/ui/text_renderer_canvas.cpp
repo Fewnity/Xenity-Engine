@@ -18,10 +18,6 @@ TextRendererCanvas::TextRendererCanvas()
 
 	AssetManager::AddReflection(this);
 	material = AssetManager::unlitMaterial;
-
-	Debug::Print("int" + std::to_string(sizeof(int)));
-	Debug::Print("horizontalAlignment" + std::to_string(sizeof(horizontalAlignment)));
-	Debug::Print("verticalAlignment" + std::to_string(sizeof(verticalAlignment)));
 }
 
 ReflectiveData TextRendererCanvas::GetReflectiveData()

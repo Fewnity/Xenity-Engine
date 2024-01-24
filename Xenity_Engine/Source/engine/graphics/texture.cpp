@@ -88,7 +88,7 @@ void Texture::LoadFileReference()
 
 void Texture::UnloadFileReference()
 {
-	if (Engine::IsRunning())
+	if (Engine::IsRunning(true))
 	{
 		Debug::Print("Unload");
 		if (isLoaded)

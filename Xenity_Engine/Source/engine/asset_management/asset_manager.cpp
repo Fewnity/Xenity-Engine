@@ -132,7 +132,7 @@ void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 
 void AssetManager::RemoveMaterial(const Material* material)
 {
-	if (!Engine::IsRunning())
+	if (!Engine::IsRunning(true))
 		return;
 
 	int materialIndex = 0;
@@ -156,7 +156,7 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflective* reflection)
 {
-	if (!Engine::IsRunning())
+	if (!Engine::IsRunning(true))
 		return;
 
 #if defined(EDITOR)
@@ -257,7 +257,7 @@ void AssetManager::RemoveAllFileReferences()
 
 void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
-	if (!Engine::IsRunning())
+	if (!Engine::IsRunning(true))
 		return;
 
 	int fileReferenceIndex = 0;
@@ -285,7 +285,7 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 /// <param name="light"></param>
 void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 {
-	if (!Engine::IsRunning())
+	if (!Engine::IsRunning(true))
 		return;
 
 	int lightIndex = 0;

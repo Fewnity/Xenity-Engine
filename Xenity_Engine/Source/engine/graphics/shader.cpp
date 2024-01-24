@@ -54,7 +54,7 @@ Shader::~Shader()
 {
 	if (isLoaded)
 	{
-		if (!Graphics::UseOpenGLFixedFunctions && Engine::IsRunning())
+		if (!Graphics::UseOpenGLFixedFunctions && Engine::IsRunning(true))
 		{
 			Engine::GetRenderer().DeleteShader(vertexShaderId);
 			Engine::GetRenderer().DeleteShader(fragmentShaderId);

@@ -29,10 +29,10 @@ class SelectProjectMenu;
 class CreateProjectMenu;
 class LightingMenu;
 class CreateClassMenu;
+class ConsoleMenu;
 class AudioSource;
 class File;
 class ProjectDirectory;
-
 class Editor
 {
 public:

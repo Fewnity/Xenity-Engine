@@ -20,6 +20,7 @@
 #include <editor/ui/menus/inspector_menu.h>
 #include <editor/ui/menus/file_explorer_menu.h>
 #include <editor/ui/menus/hierarchy_menu.h>
+#include <editor/ui/menus/console_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -390,6 +391,10 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Hierarchy"))
 			{
 				Editor::AddMenu<HierarchyMenu>(true);
+			}
+			if (ImGui::MenuItem("Console"))
+			{
+				Editor::AddMenu<ConsoleMenu>(true);
 			}
 			ImGui::EndMenu();
 		}

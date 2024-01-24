@@ -3,20 +3,20 @@
 
 #include <engine/engine_settings.h>
 #include <engine/network/network.h>
-
+#include <engine/engine.h>
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 
 #include <engine/time/time.h>
 
 #if defined(__PSP__)
-	#include <pspkernel.h>
-	#include <psp/debug/debug.h>
+#include <pspkernel.h>
+#include <psp/debug/debug.h>
 #elif defined(__vita__)
-	#include <psvita/debug/debug.h>
-	#include <psp2/io/stat.h>
+#include <psvita/debug/debug.h>
+#include <psp2/io/stat.h>
 #endif
-
+#include <engine/audio/audio_manager.h>
 
 std::shared_ptr<File> Debug::file = nullptr;
 std::string Debug::debugText = "";
@@ -24,15 +24,20 @@ std::shared_ptr<Socket> Debug::socket = nullptr;
 
 float Debug::SendProfilerCooldown = 0;
 float Debug::SendProfilerDelay = 0.2f;
+std::vector<DebugHistory> Debug::debugMessageHistory;
+
+MyMutex* debugMutex = nullptr;
 
 /**
  * Print an error in the console and the debug file
  */
 void Debug::PrintError(const std::string& text)
 {
-	if (!EngineSettings::useDebugger)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr)
 		return;
 
+	debugMutex->Lock();
+	AddMessageInHistory(text, DebugType::Error);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[ERROR] " + finalText;
@@ -40,6 +45,7 @@ void Debug::PrintError(const std::string& text)
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
+	debugMutex->Unlock();
 }
 
 /**
@@ -47,9 +53,11 @@ void Debug::PrintError(const std::string& text)
  */
 void Debug::PrintWarning(const std::string& text)
 {
-	if (!EngineSettings::useDebugger)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr)
 		return;
 
+	debugMutex->Lock();
+	AddMessageInHistory(text, DebugType::Warning);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[WARNING] " + finalText;
@@ -57,6 +65,7 @@ void Debug::PrintWarning(const std::string& text)
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
+	debugMutex->Unlock();
 }
 
 void Debug::SendProfilerDataToServer()
@@ -85,7 +94,7 @@ void Debug::SendProfilerDataToServer()
 				PrintInOnlineConsole("");
 			}
 		}
-		else 
+		else
 		{
 			SendProfilerCooldown -= Time::GetUnscaledDeltaTime();
 		}
@@ -116,15 +125,59 @@ void Debug::PrintInFile(const std::string& text)
  */
 void Debug::Print(const std::string& text)
 {
-	if (!EngineSettings::useDebugger)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr)
 		return;
 
+	debugMutex->Lock();
+	AddMessageInHistory(text, DebugType::Log);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string newString = "\033[37m" + finalText;
 	PrintInConsole(newString);
 	PrintInFile(finalText);
-	//debugText += finalText; // Disable because cause crashes, why? Maybe thread?
+	debugText += finalText; // Disable because cause crashes, why? Maybe thread?
+	debugMutex->Unlock();
+}
+
+void Debug::ClearDebugLogs()
+{
+	if (debugMutex == nullptr)
+		return;
+
+	debugMutex->Lock();
+	debugMessageHistory.clear();
+	debugText.clear();
+	debugMutex->Unlock();
+}
+
+void Debug::AddMessageInHistory(const std::string& message, DebugType messageType)
+{
+#if defined(EDITOR)
+	if (!Engine::IsRunning(false))
+		return;
+
+	int historySize = debugMessageHistory.size();
+	bool found = false;
+	for (int i = 0; i < historySize; i++)
+	{
+		DebugHistory& historyItem = debugMessageHistory[i];
+		if (historyItem.type == messageType && historyItem.message == message)
+		{
+			historyItem.count++;
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		DebugHistory historyItem;
+		historyItem.message = message;
+		historyItem.count = 1;
+		historyItem.type = messageType;
+		debugMessageHistory.push_back(historyItem);
+	}
+#endif
 }
 
 void Debug::PrintInOnlineConsole(const std::string& text)
@@ -151,6 +204,7 @@ int Debug::Init()
 	if (!EngineSettings::useDebugger)
 		return 0;
 
+	debugMutex = new MyMutex("DebugMutex");
 	std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
 	fileName = "data\\xenity_engine\\" + fileName;

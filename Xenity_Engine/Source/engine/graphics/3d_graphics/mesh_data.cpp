@@ -296,7 +296,7 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				free(subMesh->indices);
 				subMesh->indices = nullptr;
 			}
-			if (deleteSubMeshes && Engine::IsRunning())
+			if (deleteSubMeshes && Engine::IsRunning(true))
 			{
 				Engine::GetRenderer().DeleteSubMeshData(subMesh);
 				delete subMesh;
@@ -352,7 +352,7 @@ void MeshData::OnLoadFileReferenceFinished()
 
 void MeshData::UnloadFileReference()
 {
-	if (Engine::IsRunning())
+	if (Engine::IsRunning(true))
 	{
 		if (isLoaded)
 		{

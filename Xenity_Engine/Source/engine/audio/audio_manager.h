@@ -60,9 +60,13 @@ private:
 class MyMutex
 {
 public:
-	std::mutex audioMutex;
+	MyMutex() = delete;
+	MyMutex(const std::string& mutexName);
+
 #if defined(__vita__)
 	int mutexid = -1;
+#else
+	std::mutex audioMutex;
 #endif
 
 	/**

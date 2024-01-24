@@ -4,9 +4,24 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 class Socket;
 class File;
+
+enum class DebugType {
+	Log,
+	Warning,
+	Error,
+};
+
+class DebugHistory 
+{
+public:
+	DebugType type = DebugType::Log;
+	int count = 0;
+	std::string message;
+};
 
 /**
  * Used to print text in a console/file or remotely to a server
@@ -56,10 +71,19 @@ public:
 		return debugText;
 	}
 
+	/**
+	* [Internal] Clear all logs (the file is untouched)
+	*/
+	static void ClearDebugLogs();
+
+
 	// [Internal] Lower is higher speed
 	static float SendProfilerDelay;
+	static std::vector<DebugHistory> debugMessageHistory;
 
 private:
+
+	static void AddMessageInHistory(const std::string& message, DebugType messageType);
 
 	/**
 	* Send text via the socket to the online debug console

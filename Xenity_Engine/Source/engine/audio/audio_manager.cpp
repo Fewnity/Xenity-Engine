@@ -204,7 +204,7 @@ int audio_thread()
 {
 	while (true)
 	{
-		if (!Engine::IsRunning())
+		if (!Engine::IsRunning(true))
 			return 0;
 
 		WAVEHDR* w = &waveHdr[currentBuffer];
@@ -242,7 +242,7 @@ int fillAudioBufferThread()
 {
 	while (true)
 	{
-		if (!Engine::IsRunning())
+		if (!Engine::IsRunning(true))
 			return 0;
 
 		AudioManager::myMutex->Lock();
@@ -319,10 +319,7 @@ int AudioManager::Init()
 	halfBuffSize = buffSize / 2;
 	quarterBuffSize = buffSize / 4;
 
-	myMutex = new MyMutex();
-#if defined(__vita__)
-	myMutex->mutexid = sceKernelCreateMutex("MyMutex", 0, 1, NULL);
-#endif
+	myMutex = new MyMutex("AudioMutex");
 	channel = new Channel();
 
 #if defined(__PSP__)
@@ -505,4 +502,11 @@ void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSo
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 	}
 	AudioManager::myMutex->Unlock();
+}
+
+MyMutex::MyMutex(const std::string& mutexName)
+{
+#if defined(__vita__)
+	mutexid = sceKernelCreateMutex(mutexName.c_str(), 0, 1, NULL);
+#endif
 }

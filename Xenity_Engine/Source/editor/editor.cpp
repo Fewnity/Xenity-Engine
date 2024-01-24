@@ -20,6 +20,7 @@
 #include <editor/ui/menus/lighting_menu.h>
 #include <editor/ui/menus/create_class_menu.h>
 #include <editor/ui/menus/about_menu.h>
+#include <editor/ui/menus/console_menu.h>
 #include <editor/compiler.h>
 
 #include <functional>
@@ -643,6 +644,7 @@ void Editor::CreateMenus()
 	AddMenu<CompilingMenu>(true);
 	AddMenu<SelectProjectMenu>(true);
 	AddMenu<CreateProjectMenu>(true);
+	AddMenu<ConsoleMenu>(true);
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
 }

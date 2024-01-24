@@ -27,7 +27,6 @@ Add the ability to change values with mouse when sliding
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
-Create console window
 Text scale
 Create function to scan project is there is no problem with ids
 Create function to scan scenes is there is no problem with ids
