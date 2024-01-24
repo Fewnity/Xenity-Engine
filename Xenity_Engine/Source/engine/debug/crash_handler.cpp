@@ -111,6 +111,7 @@ void CrashHandler::Init()
 
 bool CrashHandler::CallInTry(void (*function)())
 {
+#if defined(_WIN32) || defined(_WIN64)
 	bool errorResult = false;
 	__try 
 	{
@@ -121,4 +122,7 @@ bool CrashHandler::CallInTry(void (*function)())
 		errorResult = true;
 	}
 	return errorResult;
+#else
+	return false;
+#endif
 }

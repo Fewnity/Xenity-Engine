@@ -11,24 +11,37 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 //------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
 
 /*
---- To do quick:
-Add map reflection support
-Check File::GetFolderPath() for psvita, remove ux0:
-Add network profiler
-Fix engine assets system
-Reload texture/mesh/audio if modified (only if scene is stopped)
+--- Check if working:
 Add ability to move folders into a folder
-Add a property window on components to have values in a new window
+Check File::GetFolderPath() for psvita, remove ux0:
+
+--- To do quick:
+Fix crash if rotation values are infinite
+Add ImageRenderer for canvas
+Add buttons for canvas
+Finish rect transform support
+Add Windows controllers support
+Add the ability to change values with mouse when sliding
 
 --- To do soon:
+Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
-Add more unit tests
-Add delete texture function in renderer for psp
 Create console window
-RGBA or RGB in vertex color?
+Text scale
+Create function to scan project is there is no problem with ids
+Create function to scan scenes is there is no problem with ids
+Disable scene save if the project is not compiled
+Add a option to select read or write when opening a file
 
 --- To do in a long time
+Add a property window on components to have values in a new window
+Fix engine assets system
+Add network profiler
+Add map reflection support
+Add more unit tests
+Add delete texture function in renderer for psp
+RGBA or RGB in vertex color?
 Add LOD
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
@@ -40,8 +53,6 @@ Add find function for child only in a gameobject
 Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add  input state : Begin, Hold (and End?)
-Text scale
-Windows controller support
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 */
 

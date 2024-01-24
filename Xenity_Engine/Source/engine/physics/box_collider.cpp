@@ -7,6 +7,7 @@
 #include <engine/graphics/graphics.h>
 
 #include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
 
 #if defined(EDITOR)
 #include <editor/editor.h>
