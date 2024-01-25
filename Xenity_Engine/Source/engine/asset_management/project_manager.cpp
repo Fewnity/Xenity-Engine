@@ -122,6 +122,7 @@ void ProjectManager::FindAllProjectFiles()
 		}
 	}
 
+	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<std::shared_ptr<File>> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = 0;
@@ -141,16 +142,31 @@ void ProjectManager::FindAllProjectFiles()
 			{
 				const std::string jsonString = metaFile->ReadAll();
 				metaFile->Close();
+				if (!jsonString.empty())
+				{
+					json data = json::parse(jsonString);
+					uint64_t id = data["id"];
 
-				json data;
-				data = json::parse(jsonString);
-				const uint64_t id = data["id"];
-				if (id > biggestId)
-					biggestId = id;
-				file->SetUniqueId(id);
+#if defined(EDITOR)
+					if (usedIds[id] == true)
+					{
+						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(id) + ", File:" + metaFile->GetPath());
+						fileWithoutMeta.push_back(file);
+						fileWithoutMetaCount++;
+						continue;
+					}
+#endif
+
+					usedIds[id] = true;
+
+					if (id > biggestId)
+						biggestId = id;
+					file->SetUniqueId(id);
+				}
 			}
 		}
 	}
+	usedIds.clear();
 
 	// Set new files ids
 	UniqueId::lastFileUniqueId = biggestId;
@@ -263,12 +279,12 @@ void ProjectManager::CreateVisualStudioSettings()
 				vsCodeParamFile->Write(vsCodeText);
 				vsCodeParamFile->Close();
 			}
-			else 
+			else
 			{
 				Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to create Visual Studio Settings file");
 			}
 		}
-		else 
+		else
 		{
 			Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to read Visual Studio Settings sample file");
 		}
@@ -276,7 +292,7 @@ void ProjectManager::CreateVisualStudioSettings()
 	catch (const std::exception&)
 	{
 		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file");
-		
+
 	}
 }
 
@@ -420,7 +436,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	}
 
 	return fileType;
-	}
+}
 
 bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {

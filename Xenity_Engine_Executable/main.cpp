@@ -28,8 +28,6 @@ Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
 Text scale
-Create function to scan project is there is no problem with ids
-Create function to scan scenes is there is no problem with ids
 Disable scene save if the project is not compiled
 
 --- To do in a long time

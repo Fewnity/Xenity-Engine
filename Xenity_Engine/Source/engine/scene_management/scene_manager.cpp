@@ -35,6 +35,8 @@ bool SceneManager::sceneModified = false;
 #if defined(EDITOR)
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
+	std::unordered_map<uint64_t, bool> usedIds;
+
 	json j;
 	int gameObjectCount = GameplayManager::gameObjectCount;
 
@@ -52,7 +54,13 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		const int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
 		{
-			ids.push_back(go->children[childI].lock()->GetUniqueId());
+			uint64_t id = go->children[childI].lock()->GetUniqueId();
+			if (usedIds[id])
+			{
+				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id));
+			}
+			usedIds[id] = true;
+			ids.push_back(id);
 		}
 		j["GameObjects"][goId]["Childs"] = ids;
 
@@ -61,10 +69,17 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
 			std::shared_ptr<Component>& component = go->components[componentI];
-			const std::string compId = std::to_string(component->GetUniqueId());
-			j["GameObjects"][goId]["Components"][compId]["Type"] = component->GetComponentName();
-			j["GameObjects"][goId]["Components"][compId]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
-			j["GameObjects"][goId]["Components"][compId]["Values"]["enabled"] = component->GetIsEnabled();
+			uint64_t compId = component->GetUniqueId();
+			const std::string compIdString = std::to_string(compId);
+			if (usedIds[compId])
+			{
+				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + std::to_string(compId));
+			}
+			usedIds[compId] = true;
+
+			j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
+			j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
+			j["GameObjects"][goId]["Components"][compIdString]["Values"]["enabled"] = component->GetIsEnabled();
 		}
 
 		j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
@@ -98,7 +113,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(FileMode::WriteCreateFile))
 			{
-				std::string jsonData = j.dump(2);
+				const std::string jsonData = j.dump(2);
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
@@ -319,7 +334,7 @@ void SceneManager::LoadScene(const json& jsonData)
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Playing, true);
 #endif
-	}
+}
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
