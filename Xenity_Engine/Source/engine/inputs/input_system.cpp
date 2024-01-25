@@ -10,19 +10,21 @@
 #include <engine/debug/debug.h>
 
 #if defined(__vita__)
-	#include <psvita/inputs/inputs.h>
+#include <psvita/inputs/inputs.h>
 #elif defined(__PSP__)
-	#include <psp/inputs/inputs.h>
+#include <psp/inputs/inputs.h>
 #elif defined(_EE)
-	#include <ps2/inputs/inputs.h>
+#include <ps2/inputs/inputs.h>
 #else
-	#include <windows/inputs/inputs.h>
+#include <windows/inputs/inputs.h>
+#include <SDL2/SDL_gamecontroller.h>
+#include <SDL2/SDL_joystick.h>
 #endif
 
 #if defined(EDITOR)
-	#include <editor/ui/menus/game_menu.h>
-	#include <editor/ui/menus/scene_menu.h>
-	#include <xenity_editor.h>
+#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/scene_menu.h>
+#include <xenity_editor.h>
 #endif
 
 #include <fstream>
@@ -41,19 +43,21 @@ Input InputSystem::inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::hidedMouse = false;
 std::map<int, Input*> InputSystem::keyMap;
+std::map<int, Input*> InputSystem::buttonMap;
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
 bool InputSystem::blockGameInput = false;
 
 void InputSystem::Init()
 {
 	keyMap = std::map<int, Input*>();
+	buttonMap = std::map<int, Input*>();
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		inputs[i] = Input();
 		inputs[i].code = (KeyCode)i;
 	}
 
-	CrossAddInputs(keyMap, inputs);
+	CrossAddInputs(keyMap, buttonMap, inputs);
 	CrossInputsInit();
 
 #ifdef __vita__
@@ -107,9 +111,57 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 	return screens[screenIndex]->touches[touchIndex];
 }
 
+void InputSystem::UpdateControllers()
+{
+	const InputPad pad = CrossGetInputPad();
+	leftJoystick.x = pad.lx;
+	leftJoystick.y = pad.ly;
+
+	rightJoystick.x = pad.rx;
+	rightJoystick.y = pad.ry;
+
+#if defined(__PSP__) || defined(__vita__)
+	const auto mapE = keyMap.end();
+	for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
+	{
+		if (pad.buttons & mapB->first) // If the input is pressed
+		{
+			if (!mapB->second->held)
+			{
+				SetInput(true, mapB->second->code);
+			}
+		}
+		else
+		{
+			if (mapB->second->held)
+			{
+				SetInput(false, mapB->second->code);
+			}
+		}
+	}
+#else
+	// Windows
+	const auto pressedButtonsEnd = pad.pressedButtons.end();
+	for (auto pressedButtonsBeg = pad.pressedButtons.begin(); pressedButtonsBeg != pressedButtonsEnd; ++pressedButtonsBeg)
+	{
+		if (pressedButtonsBeg->second)
+		{
+			if (!buttonMap[pressedButtonsBeg->first]->held)
+				SetInput(true, buttonMap[pressedButtonsBeg->first]->code);
+		}
+		else
+		{
+			if (buttonMap[pressedButtonsBeg->first]->held)
+				SetInput(false, buttonMap[pressedButtonsBeg->first]->code);
+		}
+	}
+#endif
+}
+
 #if defined(_WIN32) || defined(_WIN64)
 void InputSystem::Read(const SDL_Event& event)
 {
+	UpdateControllers();
 	switch (event.type)
 	{
 	case SDL_MOUSEMOTION:
@@ -132,7 +184,7 @@ void InputSystem::Read(const SDL_Event& event)
 		{
 			mousePosition = sceneMenu->GetMousePosition();
 		}
-		else 
+		else
 		{
 			mousePosition = Vector2(0);
 		}
@@ -147,7 +199,7 @@ void InputSystem::Read(const SDL_Event& event)
 			int w = 0;
 			int h = 0;
 #if defined(EDITOR)
-			if (gameMenu  && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
+			if (gameMenu && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
 			{
 				w = gameMenu->GetWindowSize().x;
 				h = gameMenu->GetWindowSize().y;
@@ -306,32 +358,7 @@ void InputSystem::Read()
 		}
 	}
 
-	const InputPad pad = CrossGetInputPad();
-	leftJoystick.x = pad.lx;
-	leftJoystick.y = pad.ly;
-
-	rightJoystick.x = pad.rx;
-	rightJoystick.y = pad.ry;
-
-	const auto mapE = keyMap.end();
-
-	for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
-	{
-		if (pad.buttons & mapB->first) // If the input is pressed
-		{
-			if (!mapB->second->held)
-			{
-				SetInput(true, mapB->second->code);
-			}
-		}
-		else
-		{
-			if (mapB->second->held)
-			{
-				SetInput(false, mapB->second->code);
-			}
-		}
-	}
+	UpdateControllers();
 }
 
 #pragma region Change inputs states

@@ -7,7 +7,7 @@
 #include "../../engine/debug/debug.h"
 #include <SDL2/SDL_events.h>
 
-void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
+void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
 	keyMap[SDLK_LEFT] = &inputs[(int)KeyCode::LEFT];
 	keyMap[SDLK_RIGHT] = &inputs[(int)KeyCode::RIGHT];
@@ -77,15 +77,74 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
 	keyMap[SDLK_DELETE] = &inputs[(int)KeyCode::DELETE];
 	keyMap[SDLK_LSHIFT] = &inputs[(int)KeyCode::LEFT_SHIFT];
 	keyMap[SDLK_RSHIFT] = &inputs[(int)KeyCode::RIGHT_SHIFT];
+
+	buttonMap[SDL_CONTROLLER_BUTTON_A] = &inputs[(int)KeyCode::CROSS];
+	buttonMap[SDL_CONTROLLER_BUTTON_B] = &inputs[(int)KeyCode::CIRCLE];
+	buttonMap[SDL_CONTROLLER_BUTTON_X] = &inputs[(int)KeyCode::SQUARE];
+	buttonMap[SDL_CONTROLLER_BUTTON_Y] = &inputs[(int)KeyCode::TRIANGLE];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_LEFT] = &inputs[(int)KeyCode::LEFT];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] = &inputs[(int)KeyCode::RIGHT];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_UP] = &inputs[(int)KeyCode::UP];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_DOWN] = &inputs[(int)KeyCode::DOWN];
+
+	buttonMap[SDL_CONTROLLER_BUTTON_START] = &inputs[(int)KeyCode::START];
+	buttonMap[SDL_CONTROLLER_BUTTON_BACK] = &inputs[(int)KeyCode::SELECT];
+	//buttonMap[SDL_CONTROLLER_BUTTON_GUIDE] = &inputs[(int)KeyCode::SELECT];
 }
+
+SDL_GameController* controller0;
 
 void CrossInputsInit()
 {
+	controller0 = SDL_GameControllerOpen(0);
+	//int numJoy = SDL_NumJoysticks();
 }
 
 InputPad CrossGetInputPad()
 {
 	InputPad pad = InputPad();
+
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_A] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_A);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_B] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_B);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_X] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_X);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_Y] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_Y);
+
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_DPAD_LEFT] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_DPAD_UP] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_DPAD_UP);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_DPAD_DOWN] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_BACK] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_BACK);
+	pad.pressedButtons[SDL_CONTROLLER_BUTTON_START] = SDL_GameControllerGetButton(controller0, SDL_CONTROLLER_BUTTON_START);
+
+	int16_t rightXValue = SDL_GameControllerGetAxis(controller0, SDL_CONTROLLER_AXIS_RIGHTX);
+	int16_t rightYValue = SDL_GameControllerGetAxis(controller0, SDL_CONTROLLER_AXIS_RIGHTY);
+	int16_t leftXValue = SDL_GameControllerGetAxis(controller0, SDL_CONTROLLER_AXIS_LEFTX);
+	int16_t leftYValue = SDL_GameControllerGetAxis(controller0, SDL_CONTROLLER_AXIS_LEFTY);
+
+	pad.lx = ((leftXValue) / 65536.0f) * 2;
+	pad.ly = ((leftYValue) / 65536.0f) * 2;
+
+
+	pad.rx = ((rightXValue) / 65536.0f) * 2;
+	pad.ry = ((rightYValue) / 65536.0f) * 2;
+
+	if (pad.lx < 0.2f && pad.lx > -0.2f)
+	{
+		pad.lx = 0;
+	}
+	if (pad.ly < 0.2f && pad.ly > -0.2f)
+	{
+		pad.ly = 0;
+	}
+	if (pad.rx < 0.2f && pad.rx > -0.2f)
+	{
+		pad.rx = 0;
+	}
+	if (pad.ry < 0.2f && pad.ry > -0.2f)
+	{
+		pad.ry = 0;
+	}
 
 	return pad;
 }

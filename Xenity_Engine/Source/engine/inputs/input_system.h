@@ -207,6 +207,7 @@ public:
 	*/
 	static Touch GetTouch(const int touchIndex, const int screenIndex);
 
+
 	/**
 	* Hide mouse
 	*/
@@ -232,6 +233,7 @@ private:
 		std::vector<bool> updated;
 	};
 
+	static void UpdateControllers();
 	/**
 	* Set inputs state
 	*/
@@ -255,5 +257,6 @@ private:
 	static bool hidedMouse;
 	static Input inputs[INPUT_COUNT];
 	static std::map<int, Input*> keyMap;
+	static std::map<int, Input*> buttonMap;
 	static std::vector<TouchScreen*> screens;
 };

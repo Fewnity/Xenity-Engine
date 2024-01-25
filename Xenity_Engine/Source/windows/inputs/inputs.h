@@ -12,7 +12,7 @@ struct Input;
 struct Touch;
 struct TouchRaw;
 
-API void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs);
+API void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs);
 API void CrossInputsInit();
 API InputPad CrossGetInputPad();
 API std::vector<TouchRaw> CrossUpdateTouch();
