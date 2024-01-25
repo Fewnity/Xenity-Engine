@@ -645,6 +645,10 @@ public:
 			}
 		}
 	}
+
+	static void SetButtonColor(bool isSelected);
+	static void EndButtonColor();
+
 private:
 	static int uiId;
 	static float uiScale;

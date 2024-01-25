@@ -32,26 +32,6 @@ void SceneMenu::Init()
 	weakCamera = cameraLock;
 }
 
-ImVec4 normalColor{ 0.5f, 0.5f, 0.5f, 0.5f };
-ImVec4 pressedColor{ 0.3f, 0.3f, 0.3f, 0.5f };
-ImVec4 hoverColor{ 0.4f, 0.4f, 0.4f, 0.6f };
-
-void SceneMenu::SetButtonColor(bool isSelected)
-{
-	ImVec4 currentColor = normalColor;
-	const Vector4 color = EngineSettings::secondaryColor.GetRGBA().ToVector4() / 2.0f;
-	const Vector4 colorHover = EngineSettings::secondaryColor.GetRGBA().ToVector4();
-	pressedColor = ImVec4(normalColor.x + color.x, normalColor.y + color.y, normalColor.z + color.z, normalColor.w + 0.2f);
-	hoverColor = ImVec4(normalColor.x + colorHover.x, normalColor.y + colorHover.y, normalColor.z + colorHover.z, normalColor.w + 0.2f);
-	if (isSelected)
-	{
-		currentColor = pressedColor;
-	}
-	ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, pressedColor);
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
-}
-
 bool IntersectionPoint(const Vector3& origin, const Vector3& direction, const Vector3& plane, Vector3& intersection)
 {
 	// Vérifie si la ligne est parallèle au plan
@@ -735,18 +715,18 @@ void SceneMenu::DrawToolWindow()
 {
 	if (ImGui::CollapsingHeader("Tool modes", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
+		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
 		bool moveCameraClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Camera_Move]);
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == ToolMode::Tool_Move);
+		EditorUI::EndButtonColor();
+		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Move);
 		bool moveClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Move]);
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == ToolMode::Tool_Rotate);
+		EditorUI::EndButtonColor();
+		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Rotate);
 		bool rotateClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Rotate]);
-		ImGui::PopStyleColor(3);
-		SetButtonColor(toolMode == ToolMode::Tool_Scale);
+		EditorUI::EndButtonColor();
+		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Scale);
 		bool scaleClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Scale]);
-		ImGui::PopStyleColor(3);
+		EditorUI::EndButtonColor();
 		if (moveCameraClicked)
 		{
 			toolMode = ToolMode::Tool_MoveCamera;
@@ -765,13 +745,13 @@ void SceneMenu::DrawToolWindow()
 			toolMode = ToolMode::Tool_Scale;
 		}
 
-		SetButtonColor(mode2D);
+		EditorUI::SetButtonColor(mode2D);
 		if (ImGui::Button("2D"))
 		{
 			Switch2DMode(!mode2D);
 		}
-		ImGui::PopStyleColor(3);
-		SetButtonColor(false);
+		EditorUI::EndButtonColor();
+		EditorUI::SetButtonColor(false);
 		if (Editor::isToolLocalMode)
 		{
 			if (ImGui::Button("Local"))
@@ -786,7 +766,6 @@ void SceneMenu::DrawToolWindow()
 				Editor::isToolLocalMode = true;
 			}
 		}
-
-		ImGui::PopStyleColor(3);
+		EditorUI::EndButtonColor();
 	}
 }

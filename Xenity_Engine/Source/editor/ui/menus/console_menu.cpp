@@ -36,10 +36,25 @@ void ConsoleMenu::Draw()
 				DebugHistory& history = Debug::debugMessageHistory[i];
 
 				ImVec4 color = ImVec4(1,1,1,1);
-				if(history.type == DebugType::Warning)
+				if (history.type == DebugType::Log)
+				{
+					if (!showLogs)
+						continue;
+				}
+				else if (history.type == DebugType::Warning) 
+				{
+					if (!showWarnings)
+						continue;
+
 					color = ImVec4(1, 1, 0, 1);
-				else if (history.type == DebugType::Error)
+				}
+				else if (history.type == DebugType::Error) 
+				{
+					if (!showErrors)
+						continue;
+
 					color = ImVec4(1, 0, 0, 1);
+				}
 
 				ImGui::TextColored(color, "[%d] %s", history.count, history.message.c_str());
 			}
@@ -60,6 +75,32 @@ void ConsoleMenu::Draw()
 		if (ImGui::Button("Clear"))
 		{
 			Debug::ClearDebugLogs();
+		}
+		if (!consoleMode) 
+		{
+			ImGui::SameLine();
+			EditorUI::SetButtonColor(showLogs);
+			if (ImGui::Button("Show Logs"))
+			{
+				showLogs = !showLogs;
+			}
+			EditorUI::EndButtonColor();
+
+			ImGui::SameLine();
+			EditorUI::SetButtonColor(showWarnings);
+			if (ImGui::Button("Show Warnings"))
+			{
+				showWarnings = !showWarnings;
+			}
+			EditorUI::EndButtonColor();
+
+			ImGui::SameLine();
+			EditorUI::SetButtonColor(showErrors);
+			if (ImGui::Button("Show Errors"))
+			{
+				showErrors = !showErrors;
+			}
+			EditorUI::EndButtonColor();
 		}
 		ImGui::EndChild();
 

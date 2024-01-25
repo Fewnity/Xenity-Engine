@@ -11,5 +11,8 @@ public:
 
 private:
 	bool consoleMode = true;
+	bool showLogs = true;
+	bool showWarnings = true;
+	bool showErrors = true;
 };
 

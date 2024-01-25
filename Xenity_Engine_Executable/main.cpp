@@ -31,9 +31,10 @@ Text scale
 Create function to scan project is there is no problem with ids
 Create function to scan scenes is there is no problem with ids
 Disable scene save if the project is not compiled
-Add a option to select read or write when opening a file
 
 --- To do in a long time
+Add try catch to all json parse
+Regenerate an id the a meta file is corrupted
 Add a property window on components to have values in a new window
 Fix engine assets system
 Add network profiler

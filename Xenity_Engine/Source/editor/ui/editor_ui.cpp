@@ -19,6 +19,7 @@
 #include <engine/graphics/texture.h>
 #include <engine/ui/window.h>
 #include <engine/debug/debug.h>
+#include <engine/engine_settings.h>
 
 int EditorUI::uiId = 0;
 
@@ -91,6 +92,31 @@ void EditorUI::Draw()
 #pragma endregion
 
 #pragma region Update
+
+ImVec4 normalColor{ 0.5f, 0.5f, 0.5f, 0.5f };
+ImVec4 pressedColor{ 0.3f, 0.3f, 0.3f, 0.5f };
+ImVec4 hoverColor{ 0.4f, 0.4f, 0.4f, 0.6f };
+
+void EditorUI::SetButtonColor(bool isSelected)
+{
+	ImVec4 currentColor = normalColor;
+	const Vector4 color = EngineSettings::secondaryColor.GetRGBA().ToVector4() / 2.0f;
+	const Vector4 colorHover = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+	pressedColor = ImVec4(normalColor.x + color.x, normalColor.y + color.y, normalColor.z + color.z, normalColor.w + 0.2f);
+	hoverColor = ImVec4(normalColor.x + colorHover.x, normalColor.y + colorHover.y, normalColor.z + colorHover.z, normalColor.w + 0.2f);
+	if (isSelected)
+	{
+		currentColor = pressedColor;
+	}
+	ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, pressedColor);
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
+}
+
+void EditorUI::EndButtonColor()
+{
+	ImGui::PopStyleColor(3);
+}
 
 std::string EditorUI::GetPrettyVariableName(std::string variableName)
 {
