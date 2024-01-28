@@ -21,10 +21,10 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
 	keyMap[PSP_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
 	keyMap[PSP_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
 	keyMap[PSP_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
-	keyMap[PSP_CTRL_RIGHT] = &inputs[(int)KeyCode::RIGHT];
-	keyMap[PSP_CTRL_LEFT] = &inputs[(int)KeyCode::LEFT];
-	keyMap[PSP_CTRL_DOWN] = &inputs[(int)KeyCode::DOWN];
-	keyMap[PSP_CTRL_UP] = &inputs[(int)KeyCode::UP];
+	keyMap[PSP_CTRL_RIGHT] = &inputs[(int)KeyCode::DPAD_RIGHT];
+	keyMap[PSP_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
+	keyMap[PSP_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
+	keyMap[PSP_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
 }
 
 void CrossInputsInit()

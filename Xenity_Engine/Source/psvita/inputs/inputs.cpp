@@ -24,9 +24,9 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
 	keyMap[SCE_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
 	keyMap[SCE_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
 	keyMap[SCE_CTRL_RIGHT] = &inputs[(int)KeyCode::RIGHT];
-	keyMap[SCE_CTRL_LEFT] = &inputs[(int)KeyCode::LEFT];
-	keyMap[SCE_CTRL_DOWN] = &inputs[(int)KeyCode::DOWN];
-	keyMap[SCE_CTRL_UP] = &inputs[(int)KeyCode::UP];
+	keyMap[SCE_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
+	keyMap[SCE_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
+	keyMap[SCE_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
 }
 
 void CrossInputsInit()

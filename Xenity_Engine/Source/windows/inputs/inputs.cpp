@@ -82,10 +82,10 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 	buttonMap[SDL_CONTROLLER_BUTTON_B] = &inputs[(int)KeyCode::CIRCLE];
 	buttonMap[SDL_CONTROLLER_BUTTON_X] = &inputs[(int)KeyCode::SQUARE];
 	buttonMap[SDL_CONTROLLER_BUTTON_Y] = &inputs[(int)KeyCode::TRIANGLE];
-	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_LEFT] = &inputs[(int)KeyCode::LEFT];
-	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] = &inputs[(int)KeyCode::RIGHT];
-	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_UP] = &inputs[(int)KeyCode::UP];
-	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_DOWN] = &inputs[(int)KeyCode::DOWN];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] = &inputs[(int)KeyCode::DPAD_RIGHT];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_UP] = &inputs[(int)KeyCode::DPAD_UP];
+	buttonMap[SDL_CONTROLLER_BUTTON_DPAD_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
 
 	buttonMap[SDL_CONTROLLER_BUTTON_START] = &inputs[(int)KeyCode::START];
 	buttonMap[SDL_CONTROLLER_BUTTON_BACK] = &inputs[(int)KeyCode::SELECT];
