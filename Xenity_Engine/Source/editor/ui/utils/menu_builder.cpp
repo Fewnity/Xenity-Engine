@@ -41,14 +41,18 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 RightClickMenuState RightClickMenu::Draw(const bool blockOpen)
 {
 	RightClickMenuState state = RightClickMenuState::Closed;
-
-	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
+	bool isHovered = ImGui::IsItemHovered();
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && isHovered)
 	{
 		isFocusCorrect = true;
 	}
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+
+	bool isClicked = ImGui::IsMouseReleased(ImGuiMouseButton_Right);
+	isHovered = ImGui::IsItemHovered();
+
+	if (isClicked && isHovered)
 	{
-		if (ImGui::IsItemHovered() && !blockOpen && isFocusCorrect)
+		if (!blockOpen && isFocusCorrect)
 		{
 			ImGui::OpenPopup(nameId.c_str());
 			state = RightClickMenuState::JustOpened;
