@@ -7,6 +7,7 @@
 #include <editor/command/commands/inspector_commands.h>
 #include <editor/command/command_manager.h>
 #include <editor/ui/editor_ui.h>
+#include <editor/ui/utils/menu_builder.h>
 
 #include <engine/file_system/file_reference.h>
 #include <engine/file_system/file.h>
@@ -68,29 +69,26 @@ void InspectorMenu::Draw()
 
 int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)
 {
-	int state = 0;
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
-	{
-		ImGui::OpenPopup(id.c_str());
-		state = 1;
-	}
-
-	if (ImGui::BeginPopup(id.c_str()))
-	{
-		if (state == 0)
-			state = 2;
-
-		if (ImGui::MenuItem("Delete"))
+	std::function<void()> deleteFunc = [&component, &componentCount, &componentIndex]()
 		{
 			auto command = std::make_shared<InspectorDeleteComponentCommand<Component>>(component);
 			CommandManager::AddCommand(command);
 			command->Execute();
 			componentCount--;
 			componentIndex--;
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::EndPopup();
-	}
+		};
+
+	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
+	inspectorRightClickMenu.AddItem("Delete", deleteFunc);
+	RightClickMenuState rightClickMenuState = inspectorRightClickMenu.Draw(false);
+
+	int state = 0;
+
+	if (rightClickMenuState == RightClickMenuState::JustOpened)
+		state = 1;
+	else if (rightClickMenuState == RightClickMenuState::Opened)
+		state = 2;
+
 	return state;
 }
 

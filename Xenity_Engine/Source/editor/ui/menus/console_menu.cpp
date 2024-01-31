@@ -3,6 +3,7 @@
 #include <imgui/imgui.h>
 
 #include <editor/ui/editor_ui.h>
+#include <editor/ui/utils/menu_builder.h>
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/graphics.h>
@@ -28,6 +29,9 @@ void ConsoleMenu::Draw()
 		if (consoleMode)
 		{
 			ImGui::Text("%s", Debug::GetDebugString().c_str());
+			RightClickMenu rightClickMenu("ConsoleMenuRightClick");
+			rightClickMenu.AddItem("Clear", []() { Debug::ClearDebugLogs(); });
+			rightClickMenu.Draw(false);
 		}
 		else
 		{

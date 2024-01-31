@@ -19,6 +19,7 @@
 #include <engine/ui/window.h>
 #include <iostream>
 #include <engine/debug/debug.h>
+#include <editor/ui/utils/menu_builder.h>
 
 void FileExplorerMenu::Init()
 {
@@ -172,7 +173,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		}
 		std::shared_ptr <ProjectDirectory> directoryRef = nullptr;
 		const bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
-		if (dropFolderInFolder) 
+		if (dropFolderInFolder)
 		{
 			const std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
 			FileSystem::fileSystem->CreateFolder(destinationPath);
@@ -188,6 +189,19 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex)
 {
+	/*RightClickMenu fileExplorerRightClickMenu = RightClickMenu(id);
+	RightClickMenuItem createItem = fileExplorerRightClickMenu.AddItem("Create");
+	createItem.AddItem("Folder", [&fileExplorerItem]()
+		{
+		FileSystem::fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
+		ProjectManager::RefreshProjectDirectory();
+		});
+
+	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Draw(false);
+
+	if (rightClickState != RightClickMenuState::Closed)
+		fileHovered = true;*/
+
 	int state = 0;
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
 	{

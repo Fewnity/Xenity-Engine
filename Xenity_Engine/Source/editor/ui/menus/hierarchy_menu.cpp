@@ -2,6 +2,7 @@
 #include <imgui/imgui.h>
 
 #include <editor/ui/editor_ui.h>
+#include <editor/ui/utils/menu_builder.h>
 #include <engine/game_elements/gameplay_manager.h>
 
 void HierarchyMenu::Init()
@@ -54,48 +55,35 @@ void HierarchyMenu::Draw()
 		{
 			firstClickedInWindow = true;
 		}
-		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && ImGui::IsItemHovered() && firstClickedInWindow)
-		{
-			ImGui::OpenPopup("backgroundClick");
-			firstClickedInWindow = false;
-		}
 		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && !disableDrag)
 		{
 			rightClickedElement.reset();
 		}
-		if (ImGui::BeginPopup("backgroundClick"))
-		{
-			if (rightClickedElement.lock() != nullptr)
+
+		std::function<void()> destroyGameObjectFunc = [this]()
 			{
-				if (ImGui::MenuItem("Destroy GameObject"))
-				{
-					Destroy(rightClickedElement);
-					rightClickedElement.reset();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-			if (ImGui::BeginMenu("GameObject"))
-			{
-				const bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
-				if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
-				{
-					Editor::CreateEmptyParent();
-					ImGui::CloseCurrentPopup();
-				}
-				if (ImGui::MenuItem("Create Empty Child", nullptr, nullptr, hasSelectedGameObject))
-				{
-					Editor::CreateEmptyChild();
-					ImGui::CloseCurrentPopup();
-				}
-				if (ImGui::MenuItem("Create Empty"))
-				{
-					Editor::CreateEmpty();
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndMenu();
-			}
-			ImGui::EndPopup();
-		}
+				Destroy(rightClickedElement);
+				rightClickedElement.reset();
+			};
+
+		const bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
+
+		// Start creating right click menu
+		RightClickMenu backgroundRightClickMenu = RightClickMenu("HierarchyRightClickMenu");
+		// -
+		RightClickMenuItem& destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
+		RightClickMenuItem& gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
+		destroyGameObjectMenuItem.SetIsVisible(rightClickedElement.lock() != nullptr);
+		//--
+		RightClickMenuItem& createEmptyParentMenuItem = gameObjectMenuItem.AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
+		RightClickMenuItem& createEmptyChildMenuItem = gameObjectMenuItem.AddItem("Create Empty Child", []() { Editor::CreateEmptyChild(); });
+		gameObjectMenuItem.AddItem("Create Empty", []() { Editor::CreateEmpty(); });
+		createEmptyParentMenuItem.SetIsEnabled(hasSelectedGameObject);
+		createEmptyChildMenuItem.SetIsEnabled(hasSelectedGameObject);
+
+		RightClickMenuState rightClickMenuState = backgroundRightClickMenu.Draw(!firstClickedInWindow);
+		if (rightClickMenuState== RightClickMenuState::JustOpened)
+			firstClickedInWindow = false;
 
 		CalculateWindowValues();
 		if (isChildFocused)

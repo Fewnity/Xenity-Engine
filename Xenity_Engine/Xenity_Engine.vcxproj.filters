@@ -139,6 +139,7 @@
     <ClCompile Include="Source\engine\game_elements\rect_transform.cpp" />
     <ClCompile Include="Source\engine\physics\raycast.cpp" />
     <ClCompile Include="Source\editor\ui\menus\console_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\utils\menu_builder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="Source\engine\game_elements\rect_transform.h" />
     <ClInclude Include="Source\engine\physics\raycast.h" />
     <ClInclude Include="Source\editor\ui\menus\console_menu.h" />
+    <ClInclude Include="Source\editor\ui\utils\menu_builder.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
