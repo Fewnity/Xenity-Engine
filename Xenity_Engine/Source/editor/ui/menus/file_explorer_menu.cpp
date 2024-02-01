@@ -245,7 +245,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 	std::string explorerTitle = "Show in Explorer";
 	if (!itemSelected)
 		explorerTitle = "Open folder in Explorer";
-	RightClickMenuItem& explorerMenuItem = fileExplorerRightClickMenu.AddItem(explorerTitle, [&fileExplorerItem, &itemSelected]()
+	fileExplorerRightClickMenu.AddItem(explorerTitle, [&fileExplorerItem, &itemSelected]()
 	{
 		if (fileExplorerItem.file)
 			Editor::OpenExplorerWindow(fileExplorerItem.file->file->GetPath(), itemSelected);
@@ -257,7 +257,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 	{
 		ProjectManager::RefreshProjectDirectory();
 	});
-	RightClickMenuItem& deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [this, &fileExplorerItem]()
+	RightClickMenuItem& deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [&fileExplorerItem]()
 	{
 		if (fileExplorerItem.file)
 		{
