@@ -76,5 +76,5 @@ private:
 
 namespace MenuBuilder
 {
-	//void DrawText();
+	void DrawText(const std::string );
 }

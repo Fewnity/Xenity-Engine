@@ -31,6 +31,9 @@ public:
 	float myCustomFloat2 = 0;
 };
 
+ENUM_MACRO(MyTestEnum, Valeur0 = 5, DeuxiemeValeur = 145, Trois = 1203);
+ENUM_MACRO(Matos, Clavier, Souris, Ecran);
+
 class TestComponent : public Component
 {
 public:
@@ -76,5 +79,7 @@ public:
 	double myDouble = 0;
 	std::string myString = "";
 	bool myBool = false;
+	MyTestEnum myEnum = MyTestEnum::DeuxiemeValeur;
+	Matos myMatos = Matos::Clavier;
 };
 

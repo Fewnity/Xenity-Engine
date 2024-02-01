@@ -139,6 +139,7 @@ public:
 	static bool DrawInput(const std::string& inputName, int value, int&newValue);
 	static bool DrawInput(const std::string& inputName, bool value, bool& newValue);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component> value, std::weak_ptr<Component>& newValue, uint64_t typeId);
+	static bool DrawEnum(const std::string& inputName, int value, int& newValue, uint64_t enumType);
 
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider> value, std::weak_ptr<Collider>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject> value, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
@@ -168,7 +169,10 @@ public:
 				if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef)) // Supported basic type
 				{
 					int newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					if(!reflectionEntry.isEnum)
+						valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+					else
+						valueChangedTemp = DrawEnum(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
 					if (valueChangedTemp)
 						command = std::make_shared<InspectorChangeValueCommand<T, int>>(parent, &valuePtr->get(), newValue, valuePtr->get());
 				}

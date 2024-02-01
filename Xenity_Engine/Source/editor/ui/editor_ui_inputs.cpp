@@ -324,6 +324,25 @@ bool EditorUI::DrawInput(const std::string& inputName, int value, int& newValue)
 	return value != oldValue;
 }
 
+bool EditorUI::DrawEnum(const std::string& inputName, int value, int& newValue, uint64_t enumType)
+{
+	DrawInputTitle(inputName);
+	const int oldValue = int(value);
+	std::map<int, std::string>& names = EnumHelper::GetMyVectors()[enumType];
+	ImGui::Text(names[value].c_str());
+
+	for (auto& var : names)
+	{
+		if (ImGui::Button(var.second.c_str()))
+		{
+			value = var.first;
+		}
+	}
+
+	newValue = value;
+	return value != oldValue;
+}
+
 bool EditorUI::DrawInput(const std::string& inputName, bool value, bool& newValue)
 {
 	DrawInputTitle(inputName);

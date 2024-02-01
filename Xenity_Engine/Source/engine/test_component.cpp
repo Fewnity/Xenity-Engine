@@ -59,7 +59,8 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, myComponents, "myComponents", true);
 	Reflective::AddVariable(reflectedVariables, myGameObjects, "myGameObjects", true);
 	Reflective::AddVariable(reflectedVariables, myTransforms, "myTransforms", true);
-
+	Reflective::AddVariable(reflectedVariables, myEnum, "myEnum", true);
+	Reflective::AddVariable(reflectedVariables, myMatos, "myMatos", true);
 	return reflectedVariables;
 }
 
