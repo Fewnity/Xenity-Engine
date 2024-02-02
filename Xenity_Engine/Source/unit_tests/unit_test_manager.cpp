@@ -40,16 +40,16 @@ void UnitTestManager::StartAllTests()
 	Debug::Print("------ Unit Tests finished! ------");
 }
 
-void UnitTestManager::TryTest(UnitTest& test)
+void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 {
 	std::string errorOut = "";
-	bool testResult = test.Start(errorOut);
+	bool testResult = RegisterEnumStringsMap.Start(errorOut);
 	if (testResult)
 	{
-		Debug::Print(test.GetName() + " Passed");
+		Debug::Print(RegisterEnumStringsMap.GetName() + " Passed");
 	}
 	else
 	{
-		Debug::PrintError(test.GetName() + ": " + errorOut);
+		Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut);
 	}
 }

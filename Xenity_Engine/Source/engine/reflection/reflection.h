@@ -27,7 +27,7 @@ class Shader;
 class Material;
 class Collider;
 
-typedef std::variant<
+typedef std::variant <
 	std::reference_wrapper<std::weak_ptr<Component>>,
 	std::reference_wrapper<std::weak_ptr<Collider>>,
 	std::reference_wrapper<int>,
@@ -61,100 +61,128 @@ typedef std::variant<
 
 	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
-	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> VariableReference;
+	std::reference_wrapper<std::vector<std::weak_ptr<Component>> >> VariableReference;
 
-//class EnumInfos
-//{
-//public:
-//	std::vector<std::string>* names = nullptr;
-//};
+/**
+* Class to get the list of enum strings lists
+* initialise enumStringsLists before calling main()
+*/
 class EnumHelper
 {
 public:
-	static std::map<uint64_t, std::map<int, std::string>>& GetMyVectors() {
-		static std::map<uint64_t, std::map<int, std::string>> enumStringsList;
-		std::cout << &enumStringsList << std::endl;
-		return enumStringsList;
+	static std::map<uint64_t, std::map<int, std::string>>& GetEnumStringsLists() 
+	{
+		static std::map<uint64_t, std::map<int, std::string>> enumStringsLists;
+		return enumStringsLists;
 	}
 };
-//static std::map <uint64_t, std::vector<std::string>> enumStringsList;
 
-static std::map<int, std::string> convertToVector(std::string test)
+/**
+* Create a map with the int value as key and the second value as the enum name
+*/
+static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 {
-	std::map<int, std::string> myVector;
 
-	int size = test.size();
-	int lastEnd = 0;
-	bool foundEgals = false;
-	for (int i = 0; i < size; i++)
+	int textSize = enumData.size();
+	// Remove all spaces in the string
+	for (int charIndex = 0; charIndex < textSize; charIndex++)
 	{
-		if (test[i] == ' ')
+		if (enumData[charIndex] == ' ')
 		{
-			test.erase(test.begin() + i);
-			i--;
-			size--;
+			enumData.erase(enumData.begin() + charIndex);
+			charIndex--;
+			textSize--;
 		}
 	}
+
+	std::map<int, std::string> myVector;
+	int lastEnumNameEndPos = 0;
+	bool foundEgals = false;
 	int currentValue = -1;
-	for (int i = 0; i < size; i++)
+	for (int charIndex = 0; charIndex < textSize; charIndex++)
 	{
-		if (test[i] == '=')
+		if (enumData[charIndex] == '=') // If the enum is defined with a number
 		{
 			foundEgals = true;
 			int endPos = 0;
-			for (int j = i; j < size; j++)
+
+			// Find the end of the number
+			for (int charIndex2 = charIndex; charIndex2 < textSize; charIndex2++)
 			{
-				if (test[j] == ',') 
+				if (enumData[charIndex2] == ',')
 				{
-					endPos = j;
+					endPos = charIndex2;
 					break;
 				}
 			}
-			std::string t = test.substr(i+1, endPos - (i+1));
-			currentValue = std::stoi(t);
-			//currentValue++;
-			myVector[currentValue] = test.substr(lastEnd, i - lastEnd);
+			
+			std::string stringValue;
+			if(endPos == 0)
+				stringValue = enumData.substr(charIndex + 1);
+			else
+				stringValue = enumData.substr(charIndex + 1, endPos - (charIndex + 1));
 
-			lastEnd = i;
+			// Convert the string to an int
+			currentValue = std::stoi(stringValue);
+
+			// Get the enum name and add it to the map
+			myVector[currentValue] = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+
+			lastEnumNameEndPos = charIndex;
 		}
-		if (test[i] == ',')
+		else if (enumData[charIndex] == ',') // If there is another enum
 		{
 			if (foundEgals)
 			{
 				foundEgals = false;
-				lastEnd = i + 1;
+				lastEnumNameEndPos = charIndex + 1;
 				continue;
 			}
+
+			// The enum value is not defined, use the last one and add one
 			currentValue++;
-			myVector[currentValue] = test.substr(lastEnd, i - lastEnd);
-			lastEnd = i + 1;
-			//i += 1;
+
+			// Get the enum name and add it to the map
+			myVector[currentValue] = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+
+			// Update indexes
+			lastEnumNameEndPos = charIndex + 1;
+			charIndex += 1;
 		}
 	}
+
+	// Since the last enum does not have a ',' at the end, add the last enum value
 	if (!foundEgals)
 	{
 		currentValue++;
-		myVector[currentValue] = test.substr(lastEnd);
+		myVector[currentValue] = enumData.substr(lastEnumNameEndPos);
 	}
 	return myVector;
 }
 
 
+/**
+* Register a enum's strings map into a static map that list's all other enum strings map
+*/
 template<typename T>
-static void* test(const std::map<int, std::string> ref)
+static void* RegisterEnumStringsMap(const std::map<int, std::string> newEnumStringsList)
 {
 	uint64_t type = typeid(T).hash_code();
-	{
-		std::map<uint64_t, std::map<int, std::string>>& tt = EnumHelper::GetMyVectors();
-		tt[type] = ref;
-	}
+	std::map<uint64_t, std::map<int, std::string>>& enumStringsLists = EnumHelper::GetEnumStringsLists();
+	enumStringsLists[type] = newEnumStringsList;
 
 	return nullptr;
 }
 
-#define ENUM_MACRO(name, ...) \
-    static enum class name { __VA_ARGS__ }; \
-	static const void* name##RegisterTrick = test<name>(convertToVector(#__VA_ARGS__));
+//TODO:
+// Replace enum's strings map by a vector to have two enums string with the same int value
+// Try to find another way to call RegisterEnumStringsMap without creating a void* variable
+/**
+* Create an enum that can be used by the editor
+*/
+#define ENUM(name, ...) \
+    enum class name { __VA_ARGS__ }; \
+	static const void* ##Intern##name##Register = RegisterEnumStringsMap<name>(ConvertEnumToMap(#__VA_ARGS__));
 
 /**
  * [Internal]
@@ -163,11 +191,6 @@ class API ReflectiveEntry
 {
 public:
 	ReflectiveEntry() = default;
-	/*~ReflectiveEntry() 
-	{
-		if (enumInfos)
-			delete enumInfos;
-	}*/
 	std::optional<VariableReference> variable;
 	uint64_t typeId = 0;
 	bool visibleInFileInspector = false;
@@ -230,7 +253,7 @@ public:
 
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
-	static AddVariable(ReflectiveData& map, std::vector<T>& value, const std::string& variableName, bool isPublic)
+		static AddVariable(ReflectiveData& map, std::vector<T>& value, const std::string& variableName, bool isPublic)
 	{
 		uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, (std::vector<Reflective>&)value, variableName, false, isPublic, type, false);
@@ -238,7 +261,7 @@ public:
 
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value, void>
-	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, bool visibleInFileInspector, bool isPublic)
+		static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, bool visibleInFileInspector, bool isPublic)
 	{
 		uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, value, variableName, visibleInFileInspector, isPublic, type, false);

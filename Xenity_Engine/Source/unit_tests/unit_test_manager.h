@@ -28,7 +28,7 @@ class UnitTestManager
 {
 public:
 	static void StartAllTests();
-	static void TryTest(UnitTest& test);
+	static void TryTest(UnitTest& RegisterEnumStringsMap);
 };
 
 //

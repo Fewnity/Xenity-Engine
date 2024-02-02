@@ -328,15 +328,21 @@ bool EditorUI::DrawEnum(const std::string& inputName, int value, int& newValue, 
 {
 	DrawInputTitle(inputName);
 	const int oldValue = int(value);
-	std::map<int, std::string>& names = EnumHelper::GetMyVectors()[enumType];
-	ImGui::Text(names[value].c_str());
+	std::map<int, std::string>& names = EnumHelper::GetEnumStringsLists()[enumType];
 
-	for (auto& var : names)
-	{
-		if (ImGui::Button(var.second.c_str()))
+	if (ImGui::BeginCombo(GenerateItemId().c_str(), names[value].c_str())) {
+
+		for (auto& var : names)
 		{
-			value = var.first;
+			if (ImGui::Selectable(var.second.c_str()))
+			{
+				value = var.first;
+			}
+
+			if (value == var.first)
+				ImGui::SetItemDefaultFocus();
 		}
+		ImGui::EndCombo();
 	}
 
 	newValue = value;
