@@ -32,10 +32,7 @@ public:
 };
 
 ENUM(Matos, Clavier, Souris, Ecran);
-
-
-
-ENUM(Colors, Blue = 5, Red = 145, Orange = 1203);
+ENUM(Colors, Blue = 5, Red = 145, Orange = 1203, Yellow = 145, Green = 145, Purple = 5);
 
 class TestComponent : public Component
 {

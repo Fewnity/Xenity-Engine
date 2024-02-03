@@ -63,6 +63,13 @@ typedef std::variant <
 	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Component>> >> VariableReference;
 
+class EnumValueName 
+{
+public:
+	int value;
+	std::string name;
+};
+
 /**
 * Class to get the list of enum strings lists
 * initialise enumStringsLists before calling main()
@@ -70,9 +77,9 @@ typedef std::variant <
 class EnumHelper
 {
 public:
-	static std::map<uint64_t, std::map<int, std::string>>& GetEnumStringsLists() 
+	static std::map<uint64_t, std::vector<EnumValueName>>& GetEnumStringsLists()
 	{
-		static std::map<uint64_t, std::map<int, std::string>> enumStringsLists;
+		static std::map<uint64_t, std::vector<EnumValueName>> enumStringsLists;
 		return enumStringsLists;
 	}
 };
@@ -80,9 +87,8 @@ public:
 /**
 * Create a map with the int value as key and the second value as the enum name
 */
-static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
+static std::vector<EnumValueName> ConvertEnumToMap(std::string enumData)
 {
-
 	int textSize = enumData.size();
 	// Remove all spaces in the string
 	for (int charIndex = 0; charIndex < textSize; charIndex++)
@@ -95,7 +101,7 @@ static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 		}
 	}
 
-	std::map<int, std::string> myVector;
+	std::vector<EnumValueName> myVector;
 	int lastEnumNameEndPos = 0;
 	bool foundEgals = false;
 	int currentValue = -1;
@@ -126,7 +132,10 @@ static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 			currentValue = std::stoi(stringValue);
 
 			// Get the enum name and add it to the map
-			myVector[currentValue] = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+			EnumValueName enumValueName;
+			enumValueName.value = currentValue;
+			enumValueName.name = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+			myVector.push_back(enumValueName);
 
 			lastEnumNameEndPos = charIndex;
 		}
@@ -143,7 +152,10 @@ static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 			currentValue++;
 
 			// Get the enum name and add it to the map
-			myVector[currentValue] = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+			EnumValueName enumValueName;
+			enumValueName.value = currentValue;
+			enumValueName.name = enumData.substr(lastEnumNameEndPos, charIndex - lastEnumNameEndPos);
+			myVector.push_back(enumValueName);
 
 			// Update indexes
 			lastEnumNameEndPos = charIndex + 1;
@@ -155,7 +167,11 @@ static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 	if (!foundEgals)
 	{
 		currentValue++;
-		myVector[currentValue] = enumData.substr(lastEnumNameEndPos);
+
+		EnumValueName enumValueName;
+		enumValueName.value = currentValue;
+		enumValueName.name = enumData.substr(lastEnumNameEndPos);
+		myVector.push_back(enumValueName);
 	}
 	return myVector;
 }
@@ -165,10 +181,10 @@ static std::map<int, std::string> ConvertEnumToMap(std::string enumData)
 * Register a enum's strings map into a static map that list's all other enum strings map
 */
 template<typename T>
-static void* RegisterEnumStringsMap(const std::map<int, std::string> newEnumStringsList)
+static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStringsList)
 {
 	uint64_t type = typeid(T).hash_code();
-	std::map<uint64_t, std::map<int, std::string>>& enumStringsLists = EnumHelper::GetEnumStringsLists();
+	std::map<uint64_t, std::vector<EnumValueName>>& enumStringsLists = EnumHelper::GetEnumStringsLists();
 	enumStringsLists[type] = newEnumStringsList;
 
 	return nullptr;

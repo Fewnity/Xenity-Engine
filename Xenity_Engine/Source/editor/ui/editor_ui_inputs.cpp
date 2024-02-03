@@ -328,19 +328,63 @@ bool EditorUI::DrawEnum(const std::string& inputName, int value, int& newValue, 
 {
 	DrawInputTitle(inputName);
 	const int oldValue = int(value);
-	std::map<int, std::string>& names = EnumHelper::GetEnumStringsLists()[enumType];
+	std::vector<EnumValueName>& names = EnumHelper::GetEnumStringsLists()[enumType];
+	std::vector<EnumValueName> mergednames;
 
-	if (ImGui::BeginCombo(GenerateItemId().c_str(), names[value].c_str())) {
+	int enumSize = names.size();
+	std::string comboTitle = "";
+	bool isFirst = true;
 
-		for (auto& var : names)
+	int mergedNameSize = 0;
+	for (int enumIndex = 0; enumIndex < enumSize; enumIndex++)
+	{
+		EnumValueName& currentName = names[enumIndex];
+		// If the enum is selected, add the name to the combo's title
+		if (value == currentName.value)
 		{
-			if (ImGui::Selectable(var.second.c_str()))
+			if (!isFirst)
+				comboTitle += " | ";
+			else
+				isFirst = false;
+
+			comboTitle += currentName.name;
+		}
+
+		// If there are enums with the same value, merge their names
+		bool found = false;
+		for (int j = 0; j < mergedNameSize; j++)
+		{
+			if (mergednames[j].value == currentName.value)
 			{
-				value = var.first;
+				mergednames[j].name += " | " + currentName.name;
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			EnumValueName newMergedName = EnumValueName();
+			newMergedName.name = currentName.name;
+			newMergedName.value = currentName.value;
+			mergednames.push_back(newMergedName);
+			mergedNameSize++;
+		}
+	}
+
+	// Draw combo list
+	if (ImGui::BeginCombo(GenerateItemId().c_str(), comboTitle.c_str()))
+	{
+		for (auto& var : mergednames)
+		{
+			if (ImGui::Selectable(var.name.c_str()))
+			{
+				value = var.value;
 			}
 
-			if (value == var.first)
+			if (value == var.value) 
+			{
 				ImGui::SetItemDefaultFocus();
+			}
 		}
 		ImGui::EndCombo();
 	}
