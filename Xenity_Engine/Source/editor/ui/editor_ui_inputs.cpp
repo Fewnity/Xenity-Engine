@@ -306,6 +306,12 @@ bool EditorUI::DrawInput(const std::string& inputName, double value, double& new
 	return value != oldValue;
 }
 
+bool EditorUI::DrawInput(const std::string& inputName, uint64_t value, uint64_t& newValue)
+{
+	//ImGui::InputScalar
+	return false;
+}
+
 bool EditorUI::DrawInput(const std::string& inputName, std::string value, std::string& newValue)
 {
 	DrawInputTitle(inputName);

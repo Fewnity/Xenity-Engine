@@ -49,7 +49,7 @@ typedef std::variant <
 	std::reference_wrapper<std::shared_ptr<Material>>,
 
 	std::reference_wrapper<std::vector<Reflective>>,
-	std::reference_wrapper<std::vector<int>>,
+	//std::reference_wrapper<std::vector<int>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
@@ -61,7 +61,7 @@ typedef std::variant <
 
 	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
-	std::reference_wrapper<std::vector<std::weak_ptr<Component>> >> VariableReference;
+	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> VariableReference;
 
 class EnumValueName 
 {
@@ -261,11 +261,11 @@ public:
 
 	//template<typename T>
 	//std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
-	static void AddVariable(ReflectiveData& map, std::vector<int>& value, const std::string& variableName, bool isPublic)
+	/*static void AddVariable(ReflectiveData& map, std::vector<int>& value, const std::string& variableName, bool isPublic)
 	{
 		uint64_t type = typeid(int).hash_code();
 		Reflective::AddReflectionVariable(map, value, variableName, false, isPublic, type, false);
-	}
+	}*/
 
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
