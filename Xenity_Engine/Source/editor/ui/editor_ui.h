@@ -154,6 +154,39 @@ public:
 	//static bool DrawReflection(Reflective& reflection);
 	//static bool DrawMap(const std::unordered_map<std::string, ReflectiveEntry>& myMap);
 
+	template<typename T2, typename T>
+	static bool DrawInputOf(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr)
+	{
+		T newValue;
+		const bool valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+		if (valueChangedTemp)
+			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+
+		return valueChangedTemp;
+	}
+
+	template<typename T2, typename T>
+	static bool DrawInputOf(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, T* valuePtr)
+	{
+		T newValue;
+		const bool valueChangedTemp = DrawInput(variableName, *valuePtr, newValue);
+		if (valueChangedTemp)
+			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, valuePtr, newValue, *valuePtr);
+
+		return valueChangedTemp;
+	}
+
+	template<typename T2, typename T>
+	static bool DrawInputOf(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper <T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	{
+		T newValue;
+		const bool valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+		if (valueChangedTemp)
+			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+
+		return valueChangedTemp;
+	}
+
 	template<typename T>
 	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
 	{
@@ -178,96 +211,57 @@ public:
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
 				{
-					float newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, float>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))// Supported basic type
 				{
-					double newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, double>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
 				{
-					std::string newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, std::string>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
 				{
-					bool newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, bool>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
 				{
-					std::weak_ptr<Component> newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Component>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Collider>>>(&variableRef)) // Supported basic type
 				{
-					std::weak_ptr<Collider> newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Collider>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
 				{
-					std::weak_ptr<GameObject> newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<GameObject>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
 				{
-					std::weak_ptr<Transform> newValue;
-					valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
-					if (valueChangedTemp)
-						command = std::make_shared<InspectorChangeValueCommand<T, std::weak_ptr<Transform>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+					valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
 				}
 				else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
 				{
 					if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
 					{
-						Vector2 newValue;
-						valueChangedTemp = DrawInput(variableName, *val, newValue);
-						if (valueChangedTemp)
-							command = std::make_shared<InspectorChangeValueCommand<T, Vector2>>(parent, val, newValue, *val);
+						valueChangedTemp = DrawInputOf(variableName, command, parent, val);
 					}
 					else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
 					{
-						Vector2Int newValue;
-						valueChangedTemp = DrawInput(variableName, *val, newValue);
-						if (valueChangedTemp)
-							command = std::make_shared<InspectorChangeValueCommand<T, Vector2Int>>(parent, val, newValue, *val);
+						valueChangedTemp = DrawInputOf(variableName, command, parent, val);
 					}
 					else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
 					{
-						Vector3 newValue;
-						valueChangedTemp = DrawInput(variableName, *val, newValue);
-						if (valueChangedTemp)
-							command = std::make_shared<InspectorChangeValueCommand<T, Vector3>>(parent, val, newValue, *val);
+						valueChangedTemp = DrawInputOf(variableName, command, parent, val);
 					}
 					else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
 					{
-						Vector4 newValue;
-						valueChangedTemp = DrawInput(variableName, *val, newValue);
-						if (valueChangedTemp)
-							command = std::make_shared<InspectorChangeValueCommand<T, Vector4>>(parent, val, newValue, *val);
+						valueChangedTemp = DrawInputOf(variableName, command, parent, val);
 					}
 					else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
 					{
-						Color newValue;
-						valueChangedTemp = DrawInput(variableName, *val, newValue);
-						if (valueChangedTemp)
-							command = std::make_shared<InspectorChangeValueCommand<T, Color>>(parent, val, newValue, *val);
+						valueChangedTemp = DrawInputOf(variableName, command, parent, val);
 					}
 					else //Basic draw
 					{
