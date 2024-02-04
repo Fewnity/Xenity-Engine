@@ -721,7 +721,7 @@ public:
 		{
 			valuePtr->get() = nullptr;
 		}
-		if (returnValue == 1)
+		else if (returnValue == 1)
 		{
 			if (currentSelectAssetMenu)
 				Editor::RemoveMenu(currentSelectAssetMenu.get());
