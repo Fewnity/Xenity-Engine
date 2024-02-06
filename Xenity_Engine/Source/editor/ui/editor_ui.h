@@ -91,46 +91,6 @@ struct MultiDragData
 	std::vector<Component*> components;
 };
 
-typedef std::variant <
-	std::reference_wrapper<int>,
-	std::reference_wrapper<double>,
-	std::reference_wrapper<float>, 
-	std::reference_wrapper<bool>, 
-	std::reference_wrapper<uint64_t>,
-	std::reference_wrapper<std::string>,
-	std::reference_wrapper<Reflective>,
-	std::reference_wrapper<std::shared_ptr<Texture>>,
-	std::reference_wrapper<std::shared_ptr<MeshData>>,
-	std::reference_wrapper<std::shared_ptr<Scene>>,
-	std::reference_wrapper<std::shared_ptr<SkyBox>>,
-	std::reference_wrapper<std::shared_ptr<Font>>,
-	std::reference_wrapper<std::shared_ptr<Shader>>,
-	std::reference_wrapper<std::shared_ptr<Material>>,
-	std::reference_wrapper<std::weak_ptr<Component>>,
-	std::reference_wrapper<std::weak_ptr<Collider>>,
-	std::reference_wrapper<std::weak_ptr<GameObject>>,
-	std::reference_wrapper<std::weak_ptr<Transform>>,
-	std::reference_wrapper<std::vector<Reflective>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
-	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
-	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
-	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> VariableReference2;
-
-//typedef std::variant <
-//	std::reference_wrapper<int>,
-//	std::reference_wrapper<double>,
-//	std::reference_wrapper<float>,
-//	std::reference_wrapper<bool>,
-//	std::reference_wrapper<uint64_t>,
-//	std::reference_wrapper<std::string>> VariableReference2;
-
-//typedef std::variant <
-//	std::reference_wrapper<int>,
-//	std::reference_wrapper<uint64_t>,
-//	std::reference_wrapper<double>,
-//	std::reference_wrapper<float>,
-//	std::reference_wrapper<bool>> VariableReference2;
-
 class EditorUI
 {
 public:
@@ -185,15 +145,12 @@ public:
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider> value, std::weak_ptr<Collider>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject> value, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform> value, std::weak_ptr<Transform>& newValue, uint64_t typeId);
-	//static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox> value, std::shared_ptr<SkyBox>& newValue);
 
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement);
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);
-	//static bool DrawReflection(Reflective& reflection);
-	//static bool DrawMap(const std::unordered_map<std::string, ReflectiveEntry>& myMap);
 
 	template<typename T2, typename T>
 	static bool DrawInputOf(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr)
@@ -246,25 +203,16 @@ public:
 	template <typename T>
 	struct is_vector<std::vector<T>> : std::true_type {};
 
+	// Template for basic types (int, float, strings...)
 	template<typename T2, typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
 	static DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("Simple!");
-		T newValue;
-		const bool valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-		if (valueChangedTemp)
-			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
-
+		const bool valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
 		return valueChangedTemp;
 	}
-
-	/*std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && is_vector<T>::value, bool>
-	static DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	*/
-	/*std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && is_vector<T>::value, bool>*/
-	//std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value&& is_vector<T>::value, bool>
 	
+	// Template for vectors of reflective (not implemented)
 	template<typename T2>
 	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
@@ -275,173 +223,58 @@ public:
 
 		return valueChangedTemp;
 	}
-
-	template<typename T2>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	
+	// Template for vector of std::weak_ptr (GameObject, Transform, Component)
+	template<typename T2, typename T>
+	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("Vector for GameObject!");
 		bool valueChangedTemp = false;
 
-		DrawVector("GameObject", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);	
+		if (std::is_same <T, GameObject>())
+		{
+			valueChangedTemp = DrawVector("GameObject", valuePtr, variableName, reflectionEntry.typeId);
+		}
+		else if (std::is_same <T, Transform>())
+		{
+			valueChangedTemp = DrawVector("Transform", valuePtr, variableName, reflectionEntry.typeId);
+		}
+		else if (std::is_same <T, Component>())
+		{
+			valueChangedTemp = DrawVector("Component", valuePtr, variableName, reflectionEntry.typeId);
+		}
 
-		return valueChangedTemp;
-	}
-
-	template<typename T2>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	{
-		Debug::Print("Vector for Transform!");
-		bool valueChangedTemp = false;
-		DrawVector("Transform", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
-		return valueChangedTemp;
-	}
-
-	template<typename T2>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<Component>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	{
-		Debug::Print("Vector for Component!");
-		bool valueChangedTemp = false;
-		DrawVector("Component", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
 		return valueChangedTemp;
 	}
 	
+	// Template for vector of std::shared_ptr (Files: MeshData, AudioClip, Texture...)
 	template<typename T2, typename T>
 	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("Vector for file!");
-		bool valueChangedTemp = false;
-
-		if (std::is_same <T, Texture>())
-		{
-			DrawVector(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, MeshData>())
-		{
-			DrawVector(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, AudioClip>())
-		{
-			DrawVector(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, Scene>())
-		{
-			DrawVector(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, SkyBox>())
-		{
-			DrawVector(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, Font>())
-		{
-			DrawVector(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, Shader>())
-		{
-			DrawVector(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <T, Material>())
-		{
-			DrawVector(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
-		}
-
+		const bool valueChangedTemp = DrawVector(valuePtr, variableName);
 		return valueChangedTemp;
 	}
 
+	// Template for std::shared_ptr (Files: MeshData, AudioClip, Texture...)
 	template<typename T2, typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
 	static DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("File!");
-
-		bool valueChangedTemp = false;
-		if (std::is_same <decltype(valuePtr->get().get()), Texture*>())
-		{
-			DrawFileReference(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), MeshData*>())
-		{
-			DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), AudioClip*>())
-		{
-			DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), Scene*>())
-		{
-			DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), Font*>())
-		{
-			DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), SkyBox*>())
-		{
-			DrawFileReference(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), Shader*>())
-		{
-			DrawFileReference(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
-		}
-		else if (std::is_same <decltype(valuePtr->get().get()), Material*>())
-		{
-			DrawFileReference(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
-		}
-
+		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName);
 		return valueChangedTemp;
 	}
 
-	template<typename T2>
-	//std::enable_if_t<is_weak_ptr<T>::value, bool>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<Component>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	// Template for std::weak_ptr (GameObject, Transform, Component)
+	template<typename T2, typename T>
+	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("Component!");
-
-		bool valueChangedTemp = false;
-		valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-
+		const bool valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
 		return valueChangedTemp;
 	}
 
-	template<typename T2>
-	//std::enable_if_t<is_weak_ptr<T>::value, bool>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<Collider>>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	{
-		Debug::Print("Collider!");
-
-		bool valueChangedTemp = false;
-		valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-
-		return valueChangedTemp;
-	}
-
-	template<typename T2>
-	//std::enable_if_t<is_weak_ptr<T>::value, bool>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<GameObject>>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	{
-		Debug::Print("GameObject!");
-
-		bool valueChangedTemp = false;
-		valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-
-		return valueChangedTemp;
-	}
-
-	template<typename T2>
-	//std::enable_if_t<is_weak_ptr<T>::value, bool>
-	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<Transform>>* valuePtr, const ReflectiveEntry& reflectionEntry)
-	{
-		Debug::Print("Transform!");
-
-		bool valueChangedTemp = false;
-		valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-
-		return valueChangedTemp;
-	}
-
+	// Template for reflective (Custom reflective, Vectors, Color)
 	template<typename T2>
 	static bool DrawInputOf2(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("Reflective!");
 		bool valueChangedTemp = false;
 
 		if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
@@ -477,9 +310,9 @@ public:
 	}
 
 	template<typename... Types, typename ParentType>
-	static bool processVariant(const std::variant<Types...>& var, const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) {
+	static bool ProcessVariant(const std::variant<Types...>& var, const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) {
 		bool valueChangedTemp = false;
-		std::visit([&valueChangedTemp, variableName, &command, &parent, &reflectionEntry](auto value)
+		std::visit([&valueChangedTemp, &variableName, &command, &parent, &reflectionEntry](auto value)
 			{
 				valueChangedTemp = DrawInputOf2(variableName, command, parent, &value, reflectionEntry);
 			}, var);
@@ -494,186 +327,12 @@ public:
 		for (const auto& kv : myMap)
 		{
 			const std::string variableName = GetPrettyVariableName(kv.first);
-			const ReflectiveEntry reflectionEntry = kv.second;
+			const ReflectiveEntry& reflectionEntry = kv.second;
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
-				VariableReference variableRef = kv.second.variable.value();
-				valueChangedTemp = processVariant(variableRef, variableName, command, parent, reflectionEntry);
-
-				/*Color t = Color::CreateFromRGB(14,55,20);
-				VariableReference2 variableRef2 = t;
-				valueChangedTemp = processVariant(variableRef2, variableName, command, parent, reflectionEntry);
-
-				std::shared_ptr<MeshData> t2 = nullptr;
-				VariableReference2 variableRef3 = t2;
-				valueChangedTemp = processVariant(variableRef3, variableName, command, parent, reflectionEntry);
-
-				float t3 = 34;
-				VariableReference2 variableRef4 = t3;
-				valueChangedTemp = processVariant(variableRef4, variableName, command, parent, reflectionEntry);
-
-				std::weak_ptr<Component> t4;
-				VariableReference2 variableRef5 = t4;
-				valueChangedTemp = processVariant(variableRef5, variableName, command, parent, reflectionEntry);
-
-				std::vector<std::shared_ptr<Texture>> t5;
-				VariableReference2 variableRef6 = t5;
-				valueChangedTemp = processVariant(variableRef6, variableName, command, parent, reflectionEntry);*/
-
-				//if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef)) // Supported basic type
-				//{
-				//	int newValue;
-				//	if(!reflectionEntry.isEnum)
-				//		valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
-				//	else
-				//		valueChangedTemp = DrawEnum(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
-				//	if (valueChangedTemp)
-				//		command = std::make_shared<InspectorChangeValueCommand<T, int>>(parent, &valuePtr->get(), newValue, valuePtr->get());
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))// Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))// Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::string>>(&variableRef))// Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<bool>>(&variableRef)) // Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef)) // Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Collider>>>(&variableRef)) // Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef)) // Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef)) // Supported basic type
-				//{
-				//	valueChangedTemp = DrawInputOf(variableName, command, parent, valuePtr, reflectionEntry);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
-				//{
-				//	if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
-				//	{
-				//		valueChangedTemp = DrawInputOf(variableName, command, parent, val);
-				//	}
-				//	else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
-				//	{
-				//		valueChangedTemp = DrawInputOf(variableName, command, parent, val);
-				//	}
-				//	else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
-				//	{
-				//		valueChangedTemp = DrawInputOf(variableName, command, parent, val);
-				//	}
-				//	else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
-				//	{
-				//		valueChangedTemp = DrawInputOf(variableName, command, parent, val);
-				//	}
-				//	else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
-				//	{
-				//		valueChangedTemp = DrawInputOf(variableName, command, parent, val);
-				//	}
-				//	else //Basic draw
-				//	{
-				//		std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
-				//		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
-				//		{
-				//			DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
-				//		}
-				//	}
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
-				//{
-				//	DrawFileReference(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Texture, "Texture", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Mesh, "MeshData", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Audio, "AudioClip", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Scene, "Scene", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Skybox, "SkyBox", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Font, "Font", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Shader, "Shader", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
-				//{
-				//	DrawVector(FileType::File_Material, "Material", valuePtr, valueChangedTemp, variableName);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
-				//{
-				//	DrawVector("Transform", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
-				//{
-				//	DrawVector("GameObject", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
-				//}
-				//else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
-				//{
-				//	DrawVector("Component", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
-				//}
-				///*else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<int>>>(&variableRef))
-				//{
-				//	DrawVectorSimpleType(valuePtr, valueChangedTemp, variableName);
-				//}*/
+				const VariableReference& variableRef = kv.second.variable.value();
+				valueChangedTemp = ProcessVariant(variableRef, variableName, command, parent, reflectionEntry);
 
 				if (valueChangedTemp)
 				{
@@ -701,16 +360,19 @@ public:
 	}
 
 	template <typename T>
-	static void DrawFileReference(FileType fileType, const std::string& className, std::reference_wrapper<std::shared_ptr<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
+	static bool DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName)
 	{
-		std::string inputText = "None (" + className + ")";
+		bool valueChangedTemp = false;
+		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
+
+		std::string inputText = "None (" + classInfo.name + ")";
 		const auto ptr = valuePtr->get();
 		if (ptr != nullptr)
 		{
 			if (ptr->file != nullptr)
 				inputText = ptr->file->GetFileName();
 			else
-				inputText = "Filled but invalid file reference (" + className + ")";
+				inputText = "Filled but invalid file reference (" + classInfo.name + ")";
 
 			inputText += " " + std::to_string(ptr->fileId) + " ";
 			if (ptr->file)
@@ -729,23 +391,26 @@ public:
 			std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
 			selectMenu->SetActive(true);
 			selectMenu->valuePtr = *valuePtr;
-			selectMenu->SearchFiles(fileType);
+			selectMenu->SearchFiles(classInfo.fileType);
 			currentSelectAssetMenu = selectMenu;
 			selectMenu->Focus();
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
-		const std::string payloadName = "Files" + std::to_string((int)fileType);
+		const std::string payloadName = "Files" + std::to_string((int)classInfo.fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
 			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
+
+		return valueChangedTemp;
 	}
 
 	template <typename T>
-	static void DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
+	static bool DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName)
 	{
+		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr->get().size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -769,36 +434,42 @@ public:
 				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
 			}
 		}
+
+		return valueChangedTemp;
 	}
 
 	template <typename T>
-	static void DrawVector(FileType fileType, const std::string& className, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName)
+	static bool DrawVector(std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const std::string& variableName)
 	{
+		bool valueChangedTemp = false;
+		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
+
 		const size_t vectorSize = valuePtr->get().size();
 		const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				std::string inputText = "None (" + className + ")";
+				std::string inputText = "None (" + classInfo.name + ")";
 				const auto& ptr = valuePtr->get()[vectorI];
 				if (ptr != nullptr)
 				{
 					if (ptr->file != nullptr)
 						inputText = ptr->file->GetFileName();
 					else
-						inputText = "Filled but invalid " + className;
+						inputText = "Filled but invalid " + classInfo.name;
 
 					inputText += " " + std::to_string(ptr->fileId) + " ";
 					if (ptr->file)
 						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 				}
 
-				if (DrawInputButton("", inputText, true) == 2)
+				int result = DrawInputButton("", inputText, true);
+				if (result == 2)
 				{
 					valuePtr->get()[vectorI] = nullptr;
 				}
-				if (ImGui::IsItemClicked())
+				else if (result == 1)
 				{
 					if (currentSelectAssetMenu)
 						Editor::RemoveMenu(currentSelectAssetMenu.get());
@@ -806,13 +477,13 @@ public:
 					std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
 					selectMenu->SetActive(true);
 					selectMenu->valuePtr = (valuePtr->get()[vectorI]);
-					selectMenu->SearchFiles(fileType);
+					selectMenu->SearchFiles(classInfo.fileType);
 					currentSelectAssetMenu = selectMenu;
 					selectMenu->Focus();
 				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
-				const std::string payloadName = "Files" + std::to_string((int)fileType);
+				const std::string payloadName = "Files" + std::to_string((int)classInfo.fileType);
 				if (DragDropTarget(payloadName, ref))
 				{
 					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
@@ -820,13 +491,13 @@ public:
 				}
 			}
 
-			const std::string addText = "Add " + className + GenerateItemId();
+			const std::string addText = "Add " + classInfo.name + GenerateItemId();
 			if (ImGui::Button(addText.c_str()))
 			{
 				valuePtr->get().push_back(nullptr);
 			}
 
-			const std::string removeText = "Remove " + className + GenerateItemId();
+			const std::string removeText = "Remove " + classInfo.name + GenerateItemId();
 			if (ImGui::Button(removeText.c_str()))
 			{
 				if (vectorSize != 0)
@@ -835,10 +506,14 @@ public:
 				}
 			}
 		}
+
+		return valueChangedTemp;
 	}
 
-	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
+	template <typename T>
+	static bool DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const std::string& variableName, const uint64_t& dragdropId)
 	{
+		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr->get().size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -847,15 +522,18 @@ public:
 			const auto& ptr = valuePtr->get()[vectorI].lock();
 			if (ptr != nullptr)
 			{
-				inputText = ptr->GetGameObject()->name;
+				if constexpr (std::is_same <T, GameObject>())
+					inputText = ptr->name + " " + std::to_string(ptr->GetUniqueId());
+				else
+					inputText = ptr->GetGameObject()->name;
 			}
 
 			if (DrawInputButton("", inputText, true) == 2)
 			{
-				valuePtr->get()[vectorI] = std::weak_ptr<Transform>();
+				valuePtr->get()[vectorI] = std::weak_ptr<T>();
 			}
 
-			std::shared_ptr <Transform> ref = nullptr;
+			std::shared_ptr <T> ref = nullptr;
 			const std::string payloadName = "Type" + std::to_string(dragdropId);
 			if (DragDropTarget(payloadName, ref))
 			{
@@ -867,7 +545,7 @@ public:
 		const std::string addText = "Add " + className + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
-			valuePtr->get().push_back(std::weak_ptr<Transform>());
+			valuePtr->get().push_back(std::weak_ptr<T>());
 		}
 
 		const std::string removeText = "Remove " + className + GenerateItemId();
@@ -878,92 +556,8 @@ public:
 				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
 			}
 		}
-	}
 
-	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<Component>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
-	{
-		const size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
-		{
-			std::string inputText = "None (" + className + ")";
-			const auto& ptr = valuePtr->get()[vectorI].lock();
-			if (ptr != nullptr)
-			{
-				inputText = ptr->GetGameObject()->name;
-			}
-
-			if (DrawInputButton("", inputText, true) == 2)
-			{
-				valuePtr->get()[vectorI] = std::weak_ptr<Component>();
-			}
-
-			std::shared_ptr <Component> ref = nullptr;
-			const std::string payloadName = "Type" + std::to_string(dragdropId);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get()[vectorI] = ref;
-				valueChangedTemp = true;
-			}
-		}
-
-		const std::string addText = "Add " + className + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr->get().push_back(std::weak_ptr<Component>());
-		}
-
-		const std::string removeText = "Remove " + className + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
-			{
-				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
-			}
-		}
-	}
-
-	static void DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>* valuePtr, bool& valueChangedTemp, const std::string& variableName, const uint64_t& dragdropId)
-	{
-		size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
-		{
-			std::string inputText = "None (" + className + ")";
-			const auto& ptr = valuePtr->get()[vectorI].lock();
-			if (ptr != nullptr)
-			{
-				inputText = ptr->name + " " + std::to_string(ptr->GetUniqueId());
-			}
-
-			if (DrawInputButton("", inputText, true) == 2)
-			{
-				valuePtr->get()[vectorI] = std::weak_ptr<GameObject>();
-			}
-
-			std::shared_ptr <GameObject> ref = nullptr;
-			const std::string payloadName = "Type" + std::to_string(dragdropId);
-			if (DragDropTarget(payloadName, ref))
-			{
-				valuePtr->get()[vectorI] = ref;
-				valueChangedTemp = true;
-			}
-		}
-
-		const std::string addText = "Add " + className + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr->get().push_back(std::weak_ptr<GameObject>());
-		}
-
-		const std::string removeText = "Remove " + className + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
-			{
-				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
-			}
-		}
+		return valueChangedTemp;
 	}
 
 	static void SetButtonColor(bool isSelected);

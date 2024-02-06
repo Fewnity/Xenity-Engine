@@ -119,6 +119,7 @@ int Engine::Init()
 	}
 
 	ClassRegistry::RegisterEngineComponents();
+	ClassRegistry::RegisterEngineFileClasses();
 
 	/* Initialize libraries */
 	NetworkManager::Init();

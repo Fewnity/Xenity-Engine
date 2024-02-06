@@ -16,7 +16,17 @@
 #include <engine/physics/box_collider.h>
 #include <engine/test_component.h>
 
+#include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/audio/audio_clip.h>
+#include <engine/scene_management/scene.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/material.h>
+
 std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> ClassRegistry::nameToComponent;
+std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
@@ -71,4 +81,18 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<TestComponent>("TestComponent");
 	AddComponentClass<RigidBody>("RigidBody");
 	AddComponentClass<BoxCollider>("BoxCollider");
+}
+
+
+void ClassRegistry::RegisterEngineFileClasses()
+{
+	// List all Engine file classes
+	AddFileClass<Texture>("Texture", FileType::File_Texture);
+	AddFileClass<MeshData>("MeshData", FileType::File_Mesh);
+	AddFileClass<AudioClip>("AudioClip", FileType::File_Audio);
+	AddFileClass<Scene>("Scene", FileType::File_Scene);
+	AddFileClass<SkyBox>("SkyBox", FileType::File_Skybox);
+	AddFileClass<Font>("Font", FileType::File_Font);
+	AddFileClass<Shader>("Shader", FileType::File_Shader);
+	AddFileClass<Material>("Material", FileType::File_Material);
 }
