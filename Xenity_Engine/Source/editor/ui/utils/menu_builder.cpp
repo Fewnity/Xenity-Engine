@@ -3,8 +3,10 @@
 #include <engine/debug/debug.h>
 
 bool RightClickMenu::isFocusCorrect = false;
+bool RightClickMenu::isDrawn = false;
+std::string RightClickMenu::isDrawnName = "";
 
-RightClickMenu::RightClickMenu(std::string uniqueName)
+RightClickMenu::RightClickMenu(const std::string& uniqueName)
 {
 	this->nameId = uniqueName;
 }
@@ -38,7 +40,7 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 	}
 }
 
-RightClickMenuState RightClickMenu::Draw(const bool blockOpen)
+RightClickMenuState RightClickMenu::Check(const bool blockOpen)
 {
 	RightClickMenuState state = RightClickMenuState::Closed;
 	bool isHovered = ImGui::IsItemHovered();
@@ -56,15 +58,28 @@ RightClickMenuState RightClickMenu::Draw(const bool blockOpen)
 		{
 			ImGui::OpenPopup(nameId.c_str());
 			state = RightClickMenuState::JustOpened;
+			isDrawnName = nameId;
 		}
 		isFocusCorrect = false;
 	}
+	if (state == RightClickMenuState::Closed && isDrawn && isDrawnName == nameId)
+	{
+		state = RightClickMenuState::Opened;
+	}
+	return state;
+}
+
+bool RightClickMenu::Draw()
+{
+	bool drawn = false;
+
+	if (isDrawnName == nameId)
+		isDrawn = false;
 
 	if (ImGui::BeginPopup(nameId.c_str()))
 	{
-		if (state != RightClickMenuState::JustOpened)
-			state = RightClickMenuState::Opened;
-
+		drawn = true;
+		isDrawn = true;
 		const int itemsCount = items.size();
 		for (int i = 0; i < itemsCount; i++)
 		{
@@ -73,10 +88,10 @@ RightClickMenuState RightClickMenu::Draw(const bool blockOpen)
 		ImGui::EndPopup();
 	}
 
-	return state;
+	return drawn;
 }
 
-RightClickMenuItem& RightClickMenu::AddItem(const std::string& title, std::function<void()> onClickFunction)
+RightClickMenuItem& RightClickMenu::AddItem(const std::string& title, const std::function<void()> onClickFunction)
 {
 	RightClickMenuItem newItem;
 	newItem.SetTitle(title);

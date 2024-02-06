@@ -70,19 +70,25 @@ void HierarchyMenu::Draw()
 
 		// Start creating right click menu
 		RightClickMenu backgroundRightClickMenu = RightClickMenu("HierarchyRightClickMenu");
-		// -
-		RightClickMenuItem& destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
-		RightClickMenuItem& gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
-		destroyGameObjectMenuItem.SetIsVisible(rightClickedElement.lock() != nullptr);
-		//--
-		RightClickMenuItem& createEmptyParentMenuItem = gameObjectMenuItem.AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
-		RightClickMenuItem& createEmptyChildMenuItem = gameObjectMenuItem.AddItem("Create Empty Child", []() { Editor::CreateEmptyChild(); });
-		gameObjectMenuItem.AddItem("Create Empty", []() { Editor::CreateEmpty(); });
-		createEmptyParentMenuItem.SetIsEnabled(hasSelectedGameObject);
-		createEmptyChildMenuItem.SetIsEnabled(hasSelectedGameObject);
+		RightClickMenuState rightClickState = backgroundRightClickMenu.Check(!firstClickedInWindow);
 
-		RightClickMenuState rightClickMenuState = backgroundRightClickMenu.Draw(!firstClickedInWindow);
-		if (rightClickMenuState== RightClickMenuState::JustOpened)
+		if (rightClickState != RightClickMenuState::Closed)
+		{
+			// -
+			RightClickMenuItem& destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
+			RightClickMenuItem& gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
+			destroyGameObjectMenuItem.SetIsVisible(rightClickedElement.lock() != nullptr);
+			//--
+			RightClickMenuItem& createEmptyParentMenuItem = gameObjectMenuItem.AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
+			RightClickMenuItem& createEmptyChildMenuItem = gameObjectMenuItem.AddItem("Create Empty Child", []() { Editor::CreateEmptyChild(); });
+			gameObjectMenuItem.AddItem("Create Empty", []() { Editor::CreateEmpty(); });
+			createEmptyParentMenuItem.SetIsEnabled(hasSelectedGameObject);
+			createEmptyChildMenuItem.SetIsEnabled(hasSelectedGameObject);
+		}
+
+		backgroundRightClickMenu.Draw();
+
+		if (rightClickState == RightClickMenuState::JustOpened)
 			firstClickedInWindow = false;
 
 		CalculateWindowValues();

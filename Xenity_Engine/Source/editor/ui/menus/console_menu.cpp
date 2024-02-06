@@ -29,9 +29,13 @@ void ConsoleMenu::Draw()
 		if (consoleMode)
 		{
 			ImGui::Text("%s", Debug::GetDebugString().c_str());
-			RightClickMenu rightClickMenu("ConsoleMenuRightClick");
-			rightClickMenu.AddItem("Clear", []() { Debug::ClearDebugLogs(); });
-			rightClickMenu.Draw(false);
+			RightClickMenu rightClickMenu = RightClickMenu("ConsoleMenuRightClick");
+			RightClickMenuState rightClickState = rightClickMenu.Check(false);
+			if (rightClickState != RightClickMenuState::Closed) 
+			{
+				rightClickMenu.AddItem("Clear", []() { Debug::ClearDebugLogs(); });
+			}
+			rightClickMenu.Draw();
 		}
 		else
 		{

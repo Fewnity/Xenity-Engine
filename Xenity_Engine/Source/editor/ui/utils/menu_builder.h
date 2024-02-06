@@ -63,12 +63,15 @@ class RightClickMenu
 {
 public:
 	RightClickMenu() = delete;
-	RightClickMenu(std::string uniqueName);
+	RightClickMenu(const std::string& uniqueName);
 	std::vector<RightClickMenuItem> items;
-	RightClickMenuState Draw(const bool blockOpen);
-	RightClickMenuItem& AddItem(const std::string& title, std::function<void()> onClickFunction);
+	RightClickMenuState Check(const bool blockOpen);
+	bool Draw();
+	RightClickMenuItem& AddItem(const std::string& title, const std::function<void()> onClickFunction);
 	RightClickMenuItem& AddItem(const std::string& title);
 private:
+	static bool isDrawn;
+	static std::string isDrawnName;
 	static bool isFocusCorrect;
 	void DrawRecursive(const RightClickMenuItem& item) const;
 	std::string nameId;

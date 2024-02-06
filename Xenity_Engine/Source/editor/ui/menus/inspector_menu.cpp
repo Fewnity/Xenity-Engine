@@ -79,14 +79,18 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 		};
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
-	inspectorRightClickMenu.AddItem("Delete", deleteFunc);
-	RightClickMenuState rightClickMenuState = inspectorRightClickMenu.Draw(false);
+	RightClickMenuState rightClickState = inspectorRightClickMenu.Check(false);
+	if (rightClickState != RightClickMenuState::Closed) 
+	{
+		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
+	}
+	bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
 
 	int state = 0;
 
-	if (rightClickMenuState == RightClickMenuState::JustOpened)
+	if (rightClickState == RightClickMenuState::JustOpened)
 		state = 1;
-	else if (rightClickMenuState == RightClickMenuState::Opened)
+	else if (rightClickMenuDrawn)
 		state = 2;
 
 	return state;
