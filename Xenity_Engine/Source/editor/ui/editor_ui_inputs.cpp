@@ -81,7 +81,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -108,7 +109,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -135,7 +137,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -162,7 +165,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -499,7 +503,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component> 
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -526,7 +531,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider> v
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -553,7 +559,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform> 
 		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}
@@ -580,7 +587,8 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
-	if (DrawInputButton(inputName, inputText, true) == 2)
+	InputButtonState result = DrawInputButton(inputName, inputText, true);
+	if (result == InputButtonState::ResetValue)
 	{
 		value.reset();
 	}

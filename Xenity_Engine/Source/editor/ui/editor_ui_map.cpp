@@ -25,9 +25,9 @@ void EditorUI::DrawTableInput(const std::string& inputName, const std::string& i
 	ImGui::InputInt(inputId.c_str(), &value, 0, 0);
 }
 
-int EditorUI::DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton)
+InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton)
 {
-	int returnValue = 0;
+	InputButtonState returnValue = InputButtonState::Null;
 	DrawInputTitle(inputName);
 	float w = ImGui::GetContentRegionAvail().x;
 	if (addUnbindButton)
@@ -38,7 +38,7 @@ int EditorUI::DrawInputButton(const std::string& inputName, const std::string& t
 	const std::string id = text + GenerateItemId();
 	if (ImGui::Button(id.c_str(), ImVec2(w, 0)))
 	{
-		returnValue = 1;
+		returnValue = InputButtonState::OpenAssetMenu;
 	}
 	if (addUnbindButton)
 	{
@@ -46,7 +46,7 @@ int EditorUI::DrawInputButton(const std::string& inputName, const std::string& t
 		const std::string id2 = "X" + GenerateItemId();
 		if (ImGui::Button(id2.c_str()))
 		{
-			returnValue = 2;
+			returnValue = InputButtonState::ResetValue;
 		}
 	}
 	ImGui::EndGroup();
