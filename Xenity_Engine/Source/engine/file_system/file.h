@@ -60,7 +60,7 @@ public:
 	/**
 	* Get file path
 	*/
-	std::string GetPath() const
+	const std::string& GetPath() const
 	{
 		/*#if defined(__vita__)
 				return path.substr(4);
@@ -78,12 +78,12 @@ public:
 	/**
 	* Get file name
 	*/
-	std::string GetFileName() const;
+	const std::string& GetFileName() const;
 
 	/**
 	* Get file extension (dot included)
 	*/
-	std::string GetFileExtension() const
+	const std::string& GetFileExtension() const
 	{
 		return pathExtention;
 	}

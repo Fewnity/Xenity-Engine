@@ -74,7 +74,7 @@ std::string File::GetFolderPath() const
 	return fileName;
 }
 
-std::string File::GetFileName() const
+const std::string& File::GetFileName() const
 {
 	return name;
 }
