@@ -288,6 +288,7 @@
     <ClInclude Include="Source\engine\physics\raycast.h" />
     <ClInclude Include="Source\editor\ui\menus\console_menu.h" />
     <ClInclude Include="Source\editor\ui\utils\menu_builder.h" />
+    <ClInclude Include="Source\engine\tools\template_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

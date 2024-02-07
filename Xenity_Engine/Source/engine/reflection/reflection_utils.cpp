@@ -1,7 +1,7 @@
 #include "reflection_utils.h"
-#include "reflection.h"
 
 #include <engine/asset_management/project_manager.h>
+#include <engine/scene_management/scene.h>
 
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
@@ -10,25 +10,286 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/component.h>
+#include <engine/physics/collider.h>
 
-#include <engine/scene_management/scene.h>
 #include <engine/graphics/skybox.h>
-
 #include <engine/graphics/shader.h>
 #include <engine/graphics/material.h>
-
 #include <engine/graphics/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
-
 #include <engine/graphics/ui/font.h>
 
 #include <engine/audio/audio_clip.h>
-
+#include <engine/debug/debug.h>
 
 using json = nlohmann::json;
 
+#pragma region Fill variables
+
+// Template for basic types (int, float, strings...)
+template<typename T>
+std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<T>* valuePtr)
+{
+	valuePtr->get() = jsonValue;
+}
+
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<Reflective>* valuePtr)
+{
+	ReflectionUtils::JsonToReflective(jsonValue, valuePtr->get());
+}
+
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective>>* valuePtr)
+{
+	Debug::PrintError("[JsonToVariable] not implemented for std::vector<Reflective>!");
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
+{
+	if constexpr (std::is_same <T, GameObject>())
+	{
+		auto go = FindGameObjectById(jsonValue);
+		valuePtr->get() = go;
+	}
+	else if constexpr (std::is_same <T, Transform>())
+	{
+		auto go = FindGameObjectById(jsonValue);
+		valuePtr->get() = go->GetTransform();
+	}
+	else if constexpr (std::is_same <T, Component>())
+	{
+		auto comp = FindComponentById(jsonValue);
+		valuePtr->get() = comp;
+	}
+	else if constexpr (std::is_same <T, Collider>())
+	{
+		Debug::PrintError("[JsonToVariable] not implemented for std::weak_ptr<Collider>!");
+	}
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr)
+{
+	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
+{
+	const size_t arraySize = jsonValue.size();
+	const size_t vectorSize = valuePtr->get().size();
+
+	for (size_t i = 0; i < arraySize; i++)
+	{
+		std::shared_ptr<T> tempVariable = nullptr;
+		if (!jsonValue.at(i).is_null())
+		{
+			const uint64_t id = jsonValue.at(i);
+			if constexpr (std::is_same <T, GameObject>())
+			{
+				tempVariable = FindGameObjectById(id);
+			}
+			else if constexpr (std::is_same <T, Transform>())
+			{
+				std::shared_ptr <GameObject> go = FindGameObjectById(id);
+				if (go)
+				{
+					tempVariable = go->GetTransform();
+				}
+			}
+			else if constexpr (std::is_same <T, Component>())
+			{
+				tempVariable = FindComponentById(id);
+			}
+			else if constexpr (std::is_same <T, Collider>())
+			{
+				Debug::PrintError("[JsonToVariable] not implemented for std::vector<std::weak_ptr<Collider>>!");
+			}
+		}
+		if (i >= vectorSize)
+		{
+			valuePtr->get().push_back(tempVariable);
+		}
+		else
+		{
+			valuePtr->get()[i] = tempVariable;
+		}
+	}
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
+{
+	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
+}
+
+void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveData& dataList)
+{
+	if (json.contains("Values"))
+	{
+		// Go through json Values list
+		for (const auto& kv : json["Values"].items())
+		{
+			// Check if the data list contains the variable name found in the json
+			if (dataList.contains(kv.key()))
+			{
+				const VariableReference& variableRef = dataList.at(kv.key()).variable.value();
+				const auto& kvValue = kv.value();
+				std::visit([&kvValue](const auto& value)
+					{
+						JsonToVariable(kvValue, &value);
+					}, variableRef);
+			}
+		}
+	}
+}
+
+void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
+{
+	ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
+	json jsonData;
+	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
+
+	ReflectiveData toReflectiveData = toReflective.GetReflectiveData();
+	JsonToReflectiveData(jsonData, toReflectiveData);
+	toReflective.OnReflectionUpdated();
+}
+
+void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
+{
+	auto myMap = reflective.GetReflectiveData();
+	JsonToReflectiveData(j, myMap);
+	reflective.OnReflectionUpdated();
+}
+
+#pragma endregion
+
+#pragma region Fill json
+
+// Template for basic types (int, float, strings...)
+template<typename T>
+std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<T>* valuePtr)
+{
+	jsonValue[key] = valuePtr->get();
+}
+
+void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective>* valuePtr)
+{
+	jsonValue[key]["Values"] = ReflectionUtils::ReflectiveToJson(valuePtr->get());
+}
+
+void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective>>* valuePtr)
+{
+	Debug::PrintError("[VariableToJson] not implemented for std::vector<Reflective>!");
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
+{
+	if (auto lockValue = (valuePtr->get()).lock())
+	{
+		if constexpr (std::is_same <T, GameObject>())
+		{
+			jsonValue[key] = lockValue->GetUniqueId();
+		}
+		else if constexpr (std::is_same <T, Transform>())
+		{
+			jsonValue[key] = lockValue->GetGameObject()->GetUniqueId();
+		}
+		else if constexpr (std::is_same <T, Component>())
+		{
+			jsonValue[key] = lockValue->GetUniqueId();
+		}
+		else if constexpr (std::is_same <T, Collider>())
+		{
+			Debug::PrintError("[VariableToJson] not implemented for std::weak_ptr<Collider>!");
+		}
+	}
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr)
+{
+	if (valuePtr->get() != nullptr)
+		jsonValue[key] = valuePtr->get()->fileId;
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
+{
+	const std::vector <std::weak_ptr<T>>& getVal = valuePtr->get();
+	size_t vectorSize = getVal.size();
+	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
+	{
+		if (getVal.at(vIndex).lock())
+		{
+			if constexpr (std::is_same <T, GameObject>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Transform>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetGameObject()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Component>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Collider>())
+			{
+				Debug::PrintError("[VariableToJson] not implemented for std::vector<std::weak_ptr<Collider>>!");
+			}
+		}
+	}
+}
+
+template<typename T>
+std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
+{
+	const std::vector <std::shared_ptr<T>>& getVal = valuePtr->get();
+	size_t vectorSize = getVal.size();
+	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
+	{
+		if (getVal.at(vIndex))
+			jsonValue[key][vIndex] = getVal.at(vIndex)->fileId;
+	}
+}
+
+json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
+{
+	json json;
+	for (const auto& kv : dataList)
+	{
+		const std::string key = kv.first;
+		const VariableReference& variableRef = dataList.at(kv.first).variable.value();
+
+		std::visit([&key, &json](const auto& value)
+			{
+				VariableToJson(json, key, &value);
+			}, variableRef);
+	}
+	return json;
+}
+
+json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
+{
+	const auto dataList = reflective.GetReflectiveData();
+	json jsonData = ReflectiveDataToJson(dataList);
+	return jsonData;
+}
+
 template <typename T>
-void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<std::shared_ptr<T>>* variablePtr)
+void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>>* variablePtr)
 {
 	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId); // Try to find the file reference
 	if (file)
@@ -41,11 +302,11 @@ void ReflectionUtils::FillFileReference(uint64_t fileId, std::reference_wrapper<
 }
 
 template <typename T>
-void ReflectionUtils::FillVectorFileReference(json jsonVectorData, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* vectorRefPtr)
+void ReflectionUtils::FillVectorFileReference(const json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* vectorRefPtr)
 {
 	const size_t jsonArraySize = jsonVectorData.size();
-
 	const size_t vectorSize = vectorRefPtr->get().size();
+
 	for (size_t i = 0; i < jsonArraySize; i++)
 	{
 		std::shared_ptr<FileReference> file = nullptr;
@@ -68,6 +329,7 @@ void ReflectionUtils::FillVectorFileReference(json jsonVectorData, std::referenc
 		}
 	}
 }
+
 
 //template <typename T>
 //void ReflectionUtils::FillVector(json kvValue, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
@@ -96,413 +358,21 @@ void ReflectionUtils::FillVectorFileReference(json jsonVectorData, std::referenc
 //	}
 //}
 
-void ReflectionUtils::JsonToReflectiveData(const json& json, ReflectiveData dataList)
+#pragma endregion
+
+#pragma region IO
+
+bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, const ReflectiveData& dataList)
 {
-	if (json.contains("Values"))
-	{
-		// Go through json Values list
-		for (auto& kv : json["Values"].items())
-		{
-			// Check if the data list contains the variable name found in the json
-			if (dataList.contains(kv.key()))
-			{
-				VariableReference& variableRef = dataList.at(kv.key()).variable.value();
-				const auto& kvValue = kv.value();
-				if (kvValue.is_object())
-				{
-					if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
-					{
-						JsonToReflective(kvValue, valuePtr->get());
-					}
-				}
-				else
-				{
-					if (auto valuePtr = std::get_if<std::reference_wrapper<int>>(&variableRef))
-						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
-						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))
-						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::string>>(&variableRef))
-						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<bool>>(&variableRef))
-						valuePtr->get() = kvValue;
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
-					{
-						auto comp = FindComponentById(kvValue);
-						valuePtr->get() = comp;
-					}
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef))
-					{
-						auto go = FindGameObjectById(kvValue);
-						valuePtr->get() = go;
-					}
-					else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef))
-					{
-						auto go = FindGameObjectById(kvValue);
-						valuePtr->get() = go->GetTransform();
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
-					{
-						FillFileReference<Texture>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
-					{
-						FillFileReference<MeshData>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
-					{
-						FillFileReference<Scene>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
-					{
-						FillFileReference<AudioClip>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
-					{
-						FillFileReference<SkyBox>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
-					{
-						FillFileReference<Font>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
-					{
-						FillFileReference<Shader>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
-					{
-						FillFileReference<Material>(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
-					{
-						FillVectorFileReference(kvValue, valuePtr);
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
-					{
-						const size_t arraySize = kvValue.size();
+	bool ok = false;
 
-						const size_t vectorSize = valuePtr->get().size();
-						for (size_t i = 0; i < arraySize; i++)
-						{
-							std::shared_ptr<Component> comp = nullptr;
-							if (!kvValue.at(i).is_null())
-							{
-								uint64_t id = kvValue.at(i);
-								comp = FindComponentById(id);
-							}
-							if (i >= vectorSize)
-							{
-								valuePtr->get().push_back(comp);
-							}
-							else
-							{
-								valuePtr->get()[i] = comp;
-							}
-						}
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
-					{
-						size_t arraySize = kvValue.size();
-
-						size_t vectorSize = valuePtr->get().size();
-						for (size_t i = 0; i < arraySize; i++)
-						{
-							std::shared_ptr<GameObject> go = nullptr;
-							if (!kvValue.at(i).is_null())
-							{
-								uint64_t id = kvValue.at(i);
-								go = FindGameObjectById(id);
-							}
-							if (i >= vectorSize)
-							{
-								valuePtr->get().push_back(go);
-							}
-							else
-							{
-								valuePtr->get()[i] = go;
-							}
-						}
-					}
-					else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
-					{
-						size_t arraySize = kvValue.size();
-
-						size_t vectorSize = valuePtr->get().size();
-						for (size_t i = 0; i < arraySize; i++)
-						{
-							std::shared_ptr<Transform> trans = nullptr;
-							if (!kvValue.at(i).is_null())
-							{
-								uint64_t id = kvValue.at(i);
-								std::shared_ptr <GameObject> go = FindGameObjectById(id);
-								if (go)
-								{
-									trans = go->GetTransform();
-								}
-							}
-							if (i >= vectorSize)
-							{
-								valuePtr->get().push_back(trans);
-							}
-							else
-							{
-								valuePtr->get()[i] = trans;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
-{
-	ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
-	json jsonData;
-	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
-
-	ReflectiveData toReflectiveData = toReflective.GetReflectiveData();
-	JsonToReflectiveData(jsonData, toReflectiveData);
-	toReflective.OnReflectionUpdated();
-}
-
-void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
-{
-	auto myMap = reflective.GetReflectiveData();
-	JsonToReflectiveData(j, myMap);
-	reflective.OnReflectionUpdated();
-}
-
-json ReflectionUtils::ReflectiveDataToJson(ReflectiveData dataList)
-{
-	json json;
-	for (const auto& kv : dataList)
-	{
-		VariableReference& variableRef = dataList.at(kv.first).variable.value();
-		if (auto valuePtr = std::get_if< std::reference_wrapper<int>>(&variableRef))
-			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<float>>(&variableRef))
-			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<double>>(&variableRef))
-			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::string>>(&variableRef))
-			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<bool>>(&variableRef))
-			json[kv.first] = valuePtr->get();
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<GameObject> >>(&variableRef))
-		{
-			if (auto lockValue = (valuePtr->get()).lock())
-				json[kv.first] = lockValue->GetUniqueId();
-		}
-		else if (auto valuePtr = std::get_if< std::reference_wrapper<std::weak_ptr<Transform> >>(&variableRef))
-		{
-			if (auto lockValue = (valuePtr->get()).lock())
-				json[kv.first] = lockValue->GetGameObject()->GetUniqueId();
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<Reflective>>(&variableRef))
-		{
-			json[kv.first]["Values"] = ReflectiveToJson(valuePtr->get());
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
-		{
-			if (auto lockValue = (valuePtr->get()).lock())
-				json[kv.first] = lockValue->GetUniqueId();
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Shader>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Material>>>(&variableRef))
-		{
-			if (valuePtr->get() != nullptr)
-				json[kv.first] = valuePtr->get()->fileId;
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<Texture>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<MeshData>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<AudioClip>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<Scene>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<SkyBox>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Font>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<Font>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<Shader>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Material>>>>(&variableRef))
-		{
-			const std::vector <std::shared_ptr<Material>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex))
-					json[kv.first][vIndex] = getVal.at(vIndex)->fileId;
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
-		{
-			const std::vector <std::weak_ptr<Component>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex).lock())
-					json[kv.first][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
-		{
-			const std::vector <std::weak_ptr<GameObject>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex).lock())
-					json[kv.first][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
-			}
-		}
-		else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
-		{
-			const std::vector <std::weak_ptr<Transform>>& getVal = valuePtr->get();
-			size_t vectorSize = getVal.size();
-			for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
-			{
-				if (getVal.at(vIndex).lock())
-					json[kv.first][vIndex] = getVal.at(vIndex).lock()->GetGameObject()->GetUniqueId();
-			}
-		}
-	}
-	return json;
-}
-
-bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, ReflectiveData dataList)
-{
-	bool ok;
-
-	json myJson;
 	if (file->Open(FileMode::ReadOnly))
 	{
-		std::string jsonString = file->ReadAll();
+		const std::string jsonString = file->ReadAll();
 		file->Close();
 		if (!jsonString.empty())
 		{
+			json myJson;
 			myJson = json::parse(jsonString);
 			ReflectionUtils::JsonToReflectiveData(myJson, dataList);
 			ok = true;
@@ -520,9 +390,9 @@ bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, Reflectiv
 	return ok;
 }
 
-bool ReflectionUtils::ReflectiveDataToFile(ReflectiveData dataList, std::shared_ptr<File> file)
+bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, std::shared_ptr<File> file)
 {
-	bool ok;
+	bool ok = false;
 	json myJson;
 	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
 	FileSystem::fileSystem->Delete(file->GetPath());
@@ -540,10 +410,4 @@ bool ReflectionUtils::ReflectiveDataToFile(ReflectiveData dataList, std::shared_
 	return ok;
 }
 
-json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
-{
-	json jsonData;
-	auto dataList = reflective.GetReflectiveData();
-	jsonData = ReflectiveDataToJson(dataList);
-	return jsonData;
-}
+#pragma endregion

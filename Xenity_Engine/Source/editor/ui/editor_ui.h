@@ -35,23 +35,7 @@ class Reflective;
 class ProjectDirectory;
 class Collider;
 
-template<class T>
-struct is_shared_ptr : std::false_type {};
-
-template<class T>
-struct is_shared_ptr<std::shared_ptr<T>> : std::true_type {};
-
-template<class T>
-struct is_weak_ptr : std::false_type {};
-
-template<class T>
-struct is_weak_ptr<std::weak_ptr<T>> : std::true_type {};
-
-template <typename T>
-struct is_vector : std::false_type {};
-
-template <typename T>
-struct is_vector<std::vector<T>> : std::true_type {};
+#include <engine/tools/template_utils.h>
 
 enum class EditorUIError
 {
@@ -264,7 +248,7 @@ public:
 		return valueChangedTemp;
 	}
 
-	template <typename T>
+	/*template <typename T>
 	static bool DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName)
 	{
 		bool valueChangedTemp = false;
@@ -293,7 +277,7 @@ public:
 		}
 
 		return valueChangedTemp;
-	}
+	}*/
 
 	template <typename T>
 	static bool DrawVector(std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const std::string& variableName)
