@@ -10,7 +10,7 @@
 
 SceCtrlData ctrl;
 
-void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
+void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
 	keyMap[PSP_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
 	keyMap[PSP_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];

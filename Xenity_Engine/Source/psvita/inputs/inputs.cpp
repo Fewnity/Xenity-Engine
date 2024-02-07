@@ -12,7 +12,7 @@
 SceCtrlData ctrl;
 SceTouchData touch[SCE_TOUCH_PORT_MAX_NUM];
 
-void CrossAddInputs(std::map<int, Input*>& keyMap, Input* inputs)
+void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
 	keyMap[SCE_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
 	keyMap[SCE_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];

@@ -198,7 +198,7 @@ static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStri
 */
 #define ENUM(name, ...) \
     enum class name { __VA_ARGS__ }; \
-	static const void* ##Intern##name##Register = RegisterEnumStringsMap<name>(ConvertEnumToMap(#__VA_ARGS__));
+	static const void* name##Register = RegisterEnumStringsMap<name>(ConvertEnumToMap(#__VA_ARGS__));
 
 /**
  * [Internal]
