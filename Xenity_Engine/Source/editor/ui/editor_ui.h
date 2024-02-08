@@ -428,7 +428,12 @@ private:
 		static DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		T newValue;
-		const bool valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+		bool valueChangedTemp = false;
+		if (!reflectionEntry.isEnum)
+			valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+		else if constexpr (std::is_same<int, T>())
+			valueChangedTemp = DrawEnum(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+
 		if (valueChangedTemp)
 			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
 		return valueChangedTemp;
