@@ -62,7 +62,7 @@ ReflectiveData Camera::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, useMultisampling, "useMultisampling", true);
-	Reflective::AddVariable(reflectedVariables, (int&)projectionType, "projectionType", true);
+	Reflective::AddVariable(reflectedVariables, projectionType, "projectionType", true);
 	return reflectedVariables;
 }
 

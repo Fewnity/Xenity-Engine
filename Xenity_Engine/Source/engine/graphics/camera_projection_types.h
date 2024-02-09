@@ -1,7 +1,3 @@
 #pragma once
 
-enum class ProjectionTypes 
-{
-	Perspective,
-	Orthographic,
-};
+ENUM(ProjectionTypes, Perspective, Orthographic);

@@ -195,7 +195,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
-	if (texture->GetFilter() == Texture::Filter::Bilinear)
+	if (texture->GetFilter() == Filter::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -207,7 +207,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 		}
 		magfilterValue = GL_LINEAR;
 	}
-	else if (texture->GetFilter() == Texture::Filter::Point)
+	else if (texture->GetFilter() == Filter::Point)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -433,7 +433,7 @@ void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, un
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation)
+void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float attenuation)
 {
 #if defined(__vita__)
 	return;
@@ -447,16 +447,16 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	glEnable(GL_LIGHT0 + lightIndex);
 
 	float lightAttenuation[1] = { attenuation };
-	if (type == Light::LightType::Directional)
+	if (type == LightType::Directional)
 		lightAttenuation[0] = { 0 };
 
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
 
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
-	if (type == Light::LightType::Directional)
+	if (type == LightType::Directional)
 		typeIntensity = 5;
-	else if (type == Light::LightType::Point)
+	else if (type == LightType::Point)
 		typeIntensity = 2;
 
 	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
@@ -465,7 +465,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	const float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
 
 	// Assign created components to GL_LIGHT0
-	if (type == Light::LightType::Directional)
+	if (type == LightType::Directional)
 	{
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, lightColor);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, zeroLight);
@@ -500,7 +500,7 @@ void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 		auto light = AssetManager::GetLight(i).lock();
 		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			if (light->type == Light::LightType::Directional)
+			if (light->type == LightType::Directional)
 			{
 				const Vector3 lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 cameraPosition = cameraTransform->GetPosition();
@@ -867,36 +867,36 @@ int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 // 	return mode;
 // }
 
-int RendererOpengl::GetWrapModeEnum(Texture::WrapMode wrapMode)
+int RendererOpengl::GetWrapModeEnum(WrapMode wrapMode)
 {
 	int mode = GL_REPEAT;
 	switch (wrapMode)
 	{
-	case Texture::WrapMode::ClampToEdge:
-	case Texture::WrapMode::ClampToBorder:
+	case WrapMode::ClampToEdge:
+	case WrapMode::ClampToBorder:
 #if defined(_WIN32) || defined(_WIN64)
 		mode = GL_CLAMP_TO_EDGE;
 #else
 		mode = GL_CLAMP;
 #endif
 		break;
-	case Texture::WrapMode::Repeat:
+	case WrapMode::Repeat:
 		mode = GL_REPEAT;
 		break;
 
-		// case Texture::WrapMode::ClampToEdge:
+		// case WrapMode::ClampToEdge:
 		// 	mode = GL_CLAMP_TO_EDGE;
 		// 	break;
-		// case Texture::WrapMode::ClampToBorder:
+		// case WrapMode::ClampToBorder:
 		// 	mode = GL_CLAMP_TO_BORDER;
 		// 	break;
-		// case Texture::WrapMode::MirroredRepeat:
+		// case WrapMode::MirroredRepeat:
 		// 	mode = GL_MIRRORED_REPEAT;
 		// 	break;
-		// case Texture::WrapMode::Repeat:
+		// case WrapMode::Repeat:
 		// 	mode = GL_REPEAT;
 		// 	break;
-		// case Texture::WrapMode::MirrorClampToEdge:
+		// case WrapMode::MirrorClampToEdge:
 		// 	mode = GL_MIRROR_CLAMP_TO_EDGE;
 		// 	break;
 	}

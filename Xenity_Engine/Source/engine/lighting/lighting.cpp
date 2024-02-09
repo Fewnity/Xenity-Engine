@@ -42,7 +42,7 @@ ReflectiveData Light::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
 	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, (int &)type, "type", true);
+	Reflective::AddVariable(reflectedVariables, type, "type", true);
 	return reflectedVariables;
 }
 

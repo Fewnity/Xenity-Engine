@@ -7,15 +7,12 @@
 
 const float lightConstant = 1;
 
+ENUM(LightType, Directional, Point, Spot);
+
 class API Light : public Component
 {
 public:
-	enum class LightType
-	{
-		Directional,
-		Point,
-		Spot,
-	};
+
 
 	Light();
 	~Light();

@@ -191,7 +191,7 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	//fileIcon->file = FileSystem::MakeFile("icons/text.png");
 	fileIcon->file = FileSystem::MakeFile(path.c_str());
-	fileIcon->SetWrapMode(Texture::WrapMode::ClampToEdge);
+	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
 	fileIcon->LoadFileReference();
 	icons[(int)iconName] = std::move(fileIcon);
 }

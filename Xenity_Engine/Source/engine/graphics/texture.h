@@ -11,33 +11,13 @@
 // #include <gsKit.h>
 #endif
 
+ENUM(Filter, Point, Bilinear);
+ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
+ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
+
 class API Texture : public FileReference, public Reflective
 {
 public:
-	enum class Filter
-	{
-		Point,
-		Bilinear,
-	};
-
-	enum class AnisotropicLevel
-	{
-		X0,
-		X2,
-		X4,
-		X8,
-		X16,
-	};
-
-	enum class WrapMode
-	{
-		ClampToEdge,
-		ClampToBorder,
-		MirroredRepeat,
-		Repeat,
-		MirrorClampToEdge
-	};
-
 	Texture();
 
 	/**
@@ -124,12 +104,12 @@ public:
 	/**
 	 * Get texture filter
 	 */
-	Texture::Filter GetFilter() const;
+	Filter GetFilter() const;
 
 	/**
 	 * Get texture wrap mode
 	 */
-	Texture::WrapMode GetWrapMode() const;
+	WrapMode GetWrapMode() const;
 
 	int mipmaplevelCount = 0;
 	bool useMipMap = false;

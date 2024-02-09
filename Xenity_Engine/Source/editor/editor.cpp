@@ -93,7 +93,7 @@ void Editor::Init()
 
 	toolArrowsTexture = Texture::MakeTexture();
 	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
-	toolArrowsTexture->SetFilter(Texture::Filter::Point);
+	toolArrowsTexture->SetFilter(Filter::Point);
 	toolArrowsTexture->LoadFileReference();
 }
 

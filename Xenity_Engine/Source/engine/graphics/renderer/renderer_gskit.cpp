@@ -326,7 +326,7 @@ void RendererGsKit::SetTextureData(const std::shared_ptr<Texture> &texture, unsi
 {
 }
 
-void RendererGsKit::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, Light::LightType type, float attenuation)
+void RendererGsKit::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, LightType type, float attenuation)
 {
 }
 

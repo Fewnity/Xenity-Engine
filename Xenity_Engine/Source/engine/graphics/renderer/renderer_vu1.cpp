@@ -536,7 +536,7 @@ void RendererVU1::SetTextureData(const std::shared_ptr<Texture> &texture, unsign
 {
 }
 
-void RendererVU1::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, Light::LightType type, float attenuation)
+void RendererVU1::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, LightType type, float attenuation)
 {
 }
 

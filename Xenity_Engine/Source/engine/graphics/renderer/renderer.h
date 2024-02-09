@@ -120,5 +120,5 @@ public:
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) {}
 
 private:
-	virtual void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, Light::LightType type, float attenuation) = 0;
+	virtual void SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float attenuation) = 0;
 };

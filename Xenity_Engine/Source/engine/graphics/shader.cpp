@@ -502,17 +502,17 @@ void Shader::UpdateLights()
 		std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
 		if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
-			if (light->type == Light::LightType::Directional)
+			if (light->type == LightType::Directional)
 			{
 				SetDirectionalLightData(light, directionalUsed);
 				directionalUsed++;
 			}
-			else if (light->type == Light::LightType::Point)
+			else if (light->type == LightType::Point)
 			{
 				SetPointLightData(light, pointUsed);
 				pointUsed++;
 			}
-			else if (light->type == Light::LightType::Spot)
+			else if (light->type == LightType::Spot)
 			{
 				SetSpotLightData(light, spotUsed);
 				spotUsed++;

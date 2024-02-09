@@ -50,8 +50,8 @@ ReflectiveData Texture::GetMetaReflectiveData()
 	Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);
 	Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
 	Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-	Reflective::AddVariable(reflectedVariables, (int &)filter, "filter", true);
-	Reflective::AddVariable(reflectedVariables, (int &)wrapMode, "wrapMode", true);
+	Reflective::AddVariable(reflectedVariables, filter, "filter", true);
+	Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
 	return reflectedVariables;
 }
 
@@ -486,12 +486,12 @@ unsigned int Texture::GetTextureId() const
 	return textureId;
 }
 
-Texture::Filter Texture::GetFilter() const
+Filter Texture::GetFilter() const
 {
 	return filter;
 }
 
-Texture::WrapMode Texture::GetWrapMode() const
+WrapMode Texture::GetWrapMode() const
 {
 	return wrapMode;
 }
