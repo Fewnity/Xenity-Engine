@@ -228,7 +228,7 @@ void Destroy(const std::weak_ptr<Component>& weakComponent)
 
 void Destroy(const std::shared_ptr<GameObject>& gameObject)
 {
-	if (!gameObject->waitingForDestroy)
+	if (gameObject && !gameObject->waitingForDestroy)
 	{
 		DestroyGameObjectAndChild(gameObject);
 	}
