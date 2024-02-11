@@ -18,10 +18,11 @@ enum class RightClickMenuState
 class RightClickMenuItem
 {
 public:
-	std::vector<RightClickMenuItem> onHoverItems;
+	~RightClickMenuItem();
+	std::vector<RightClickMenuItem*> onHoverItems;
 	std::function<void()> onClicked;
-	RightClickMenuItem& AddItem(const std::string& title, std::function<void()> onClickFunction);
-	RightClickMenuItem& AddItem(const std::string& title);
+	RightClickMenuItem* AddItem(const std::string& title, std::function<void()> onClickFunction);
+	RightClickMenuItem* AddItem(const std::string& title);
 
 	void SetTitle(const std::string& title) 
 	{
@@ -64,11 +65,12 @@ class RightClickMenu
 public:
 	RightClickMenu() = delete;
 	RightClickMenu(const std::string& uniqueName);
-	std::vector<RightClickMenuItem> items;
+	~RightClickMenu();
+	std::vector<RightClickMenuItem*> items;
 	RightClickMenuState Check(const bool blockOpen);
 	bool Draw();
-	RightClickMenuItem& AddItem(const std::string& title, const std::function<void()> onClickFunction);
-	RightClickMenuItem& AddItem(const std::string& title);
+	RightClickMenuItem* AddItem(const std::string& title, const std::function<void()> onClickFunction);
+	RightClickMenuItem* AddItem(const std::string& title);
 private:
 	static bool isDrawn;
 	static std::string isDrawnName;

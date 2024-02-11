@@ -75,15 +75,15 @@ void HierarchyMenu::Draw()
 		if (rightClickState != RightClickMenuState::Closed)
 		{
 			// -
-			RightClickMenuItem& destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
-			RightClickMenuItem& gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
-			destroyGameObjectMenuItem.SetIsVisible(rightClickedElement.lock() != nullptr);
+			RightClickMenuItem* destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
+			RightClickMenuItem* gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
+			destroyGameObjectMenuItem->SetIsVisible(rightClickedElement.lock() != nullptr);
 			//--
-			RightClickMenuItem& createEmptyParentMenuItem = gameObjectMenuItem.AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
-			RightClickMenuItem& createEmptyChildMenuItem = gameObjectMenuItem.AddItem("Create Empty Child", []() { Editor::CreateEmptyChild(); });
-			gameObjectMenuItem.AddItem("Create Empty", []() { Editor::CreateEmpty(); });
-			createEmptyParentMenuItem.SetIsEnabled(hasSelectedGameObject);
-			createEmptyChildMenuItem.SetIsEnabled(hasSelectedGameObject);
+			RightClickMenuItem* createEmptyParentMenuItem = gameObjectMenuItem->AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
+			RightClickMenuItem* createEmptyChildMenuItem = gameObjectMenuItem->AddItem("Create Empty Child", []() { Editor::CreateEmptyChild(); });
+			gameObjectMenuItem->AddItem("Create Empty", []() { Editor::CreateEmpty(); });
+			createEmptyParentMenuItem->SetIsEnabled(hasSelectedGameObject);
+			createEmptyChildMenuItem->SetIsEnabled(hasSelectedGameObject);
 		}
 
 		backgroundRightClickMenu.Draw();

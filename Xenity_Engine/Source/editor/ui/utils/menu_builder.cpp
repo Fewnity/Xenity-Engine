@@ -11,6 +11,16 @@ RightClickMenu::RightClickMenu(const std::string& uniqueName)
 	this->nameId = uniqueName;
 }
 
+RightClickMenu::~RightClickMenu()
+{
+	int itemCount = items.size();
+	for (int i = 0; i < itemCount; i++)
+	{
+		delete items[i];
+	}
+	items.clear();
+}
+
 void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 {
 	if (!item.GetIsVisible())
@@ -23,7 +33,7 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 		{
 			for (int i = 0; i < itemsCount; i++)
 			{
-				DrawRecursive(item.onHoverItems[i]);
+				DrawRecursive(*item.onHoverItems[i]);
 			}
 			ImGui::EndMenu();
 		}
@@ -83,7 +93,7 @@ bool RightClickMenu::Draw()
 		const int itemsCount = items.size();
 		for (int i = 0; i < itemsCount; i++)
 		{
-			DrawRecursive(items[i]);
+			DrawRecursive(*items[i]);
 		}
 		ImGui::EndPopup();
 	}
@@ -91,39 +101,49 @@ bool RightClickMenu::Draw()
 	return drawn;
 }
 
-RightClickMenuItem& RightClickMenu::AddItem(const std::string& title, const std::function<void()> onClickFunction)
+RightClickMenuItem* RightClickMenu::AddItem(const std::string& title, const std::function<void()> onClickFunction)
 {
-	RightClickMenuItem newItem;
-	newItem.SetTitle(title);
-	newItem.onClicked = onClickFunction;
+	RightClickMenuItem* newItem = new RightClickMenuItem();
+	newItem->SetTitle(title);
+	newItem->onClicked = onClickFunction;
 	items.push_back(newItem);
 
 	return items[items.size() - 1];
 }
 
-RightClickMenuItem& RightClickMenu::AddItem(const std::string& title)
+RightClickMenuItem* RightClickMenu::AddItem(const std::string& title)
 {
-	RightClickMenuItem newItem;
-	newItem.SetTitle(title);
+	RightClickMenuItem* newItem = new RightClickMenuItem();
+	newItem->SetTitle(title);
 	items.push_back(newItem);
 
 	return items[items.size() - 1];
 }
 
-RightClickMenuItem& RightClickMenuItem::AddItem(const std::string& title, std::function<void()> onClickFunction)
+RightClickMenuItem::~RightClickMenuItem()
 {
-	RightClickMenuItem newItem;
-	newItem.text = title;
-	newItem.onClicked = onClickFunction;
+	int itemCount = onHoverItems.size();
+	for (int i = 0; i < itemCount; i++)
+	{
+		delete onHoverItems[i];
+	}
+	onHoverItems.clear();
+}
+
+RightClickMenuItem* RightClickMenuItem::AddItem(const std::string& title, std::function<void()> onClickFunction)
+{
+	RightClickMenuItem* newItem = new RightClickMenuItem();
+	newItem->text = title;
+	newItem->onClicked = onClickFunction;
 	onHoverItems.push_back(newItem);
 
 	return onHoverItems[onHoverItems.size() - 1];
 }
 
-RightClickMenuItem& RightClickMenuItem::AddItem(const std::string& title)
+RightClickMenuItem* RightClickMenuItem::AddItem(const std::string& title)
 {
-	RightClickMenuItem newItem;
-	newItem.text = title;
+	RightClickMenuItem* newItem = new RightClickMenuItem();
+	newItem->text = title;
 	onHoverItems.push_back(newItem);
 
 	return onHoverItems[onHoverItems.size() - 1];

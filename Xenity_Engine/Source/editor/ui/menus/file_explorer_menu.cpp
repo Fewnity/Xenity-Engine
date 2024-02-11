@@ -194,34 +194,34 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 	if (rightClickState != RightClickMenuState::Closed)
 	{
 		//-
-		RightClickMenuItem& createItem = fileExplorerRightClickMenu.AddItem("Create");
+		RightClickMenuItem* createItem = fileExplorerRightClickMenu.AddItem("Create");
 		//--
-		createItem.AddItem("Folder", [&fileExplorerItem]()
+		createItem->AddItem("Folder", [&fileExplorerItem]()
 			{
 				FileSystem::fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
 				ProjectManager::RefreshProjectDirectory();
 			});
-		createItem.AddItem("Scene", [&fileExplorerItem]()
+		createItem->AddItem("Scene", [&fileExplorerItem]()
 			{
 				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);
 
 			});
-		createItem.AddItem("Skybox", [&fileExplorerItem]()
+		createItem->AddItem("Skybox", [&fileExplorerItem]()
 			{
 				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox, true);
 
 			});
-		createItem.AddItem("Shader", [&fileExplorerItem]()
+		createItem->AddItem("Shader", [&fileExplorerItem]()
 			{
 				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader, true);
 
 			});
-		createItem.AddItem("Material", [&fileExplorerItem]()
+		createItem->AddItem("Material", [&fileExplorerItem]()
 			{
 				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
 
 			});
-		createItem.AddItem("C++ Class", [&fileExplorerItem]()
+		createItem->AddItem("C++ Class", [&fileExplorerItem]()
 			{
 				auto createClassMenu = Editor::GetMenu<CreateClassMenu>();
 				createClassMenu->SetActive(true);
@@ -229,7 +229,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 				createClassMenu->SetFolderPath(fileExplorerItem.directory->path);
 			});
 		//-
-		RightClickMenuItem& RenameItem = fileExplorerRightClickMenu.AddItem("Rename", [this, &fileExplorerItem]()
+		RightClickMenuItem* RenameItem = fileExplorerRightClickMenu.AddItem("Rename", [this, &fileExplorerItem]()
 			{
 				fileToRename = fileExplorerItem.file;
 				directoryToRename = fileExplorerItem.directory;
@@ -239,12 +239,12 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 					renamingString = directoryToRename->GetFolderName();
 
 			});
-		RenameItem.SetIsVisible(itemSelected);
-		RightClickMenuItem& openMenuItem = fileExplorerRightClickMenu.AddItem("Open", [this, &fileExplorerItem]()
+		RenameItem->SetIsVisible(itemSelected);
+		RightClickMenuItem* openMenuItem = fileExplorerRightClickMenu.AddItem("Open", [this, &fileExplorerItem]()
 			{
 				OpenItem(fileExplorerItem);
 			});
-		openMenuItem.SetIsVisible(itemSelected);
+		openMenuItem->SetIsVisible(itemSelected);
 		std::string explorerTitle = "Show in Explorer";
 		if (!itemSelected)
 			explorerTitle = "Open folder in Explorer";
@@ -260,7 +260,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 			{
 				ProjectManager::RefreshProjectDirectory();
 			});
-		RightClickMenuItem& deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [&fileExplorerItem]()
+		RightClickMenuItem* deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [&fileExplorerItem]()
 			{
 				if (fileExplorerItem.file)
 				{
@@ -277,7 +277,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 				}
 				ProjectManager::RefreshProjectDirectory();
 			});
-		deleteMenuItem.SetIsVisible(itemSelected);
+		deleteMenuItem->SetIsVisible(itemSelected);
 	}
 
 	bool rightClickDrawn = fileExplorerRightClickMenu.Draw();
