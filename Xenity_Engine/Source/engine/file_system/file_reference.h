@@ -40,7 +40,7 @@ public:
 
 	}
 
-	void OnReflectionUpdated() 
+	virtual void OnReflectionUpdated()
 	{
 
 	}

@@ -50,8 +50,8 @@ ReflectiveData SkyBox::GetMetaReflectiveData()
 
 void SkyBox::OnReflectionUpdated()
 {
-	const bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
-	if (!loadResult)
+	const bool saveResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	if (!saveResult)
 	{
 		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath());
 	}

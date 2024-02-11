@@ -201,7 +201,7 @@ public:
 	}
 
 	template <typename T>
-	static bool DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName)
+	static bool DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
@@ -242,6 +242,7 @@ public:
 		if (DragDropTarget(payloadName, ref))
 		{
 			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
+			newValue = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
 
@@ -486,7 +487,10 @@ private:
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
 	static DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName);
+		T newValue;
+		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName, newValue);
+		if (valueChangedTemp)
+			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
 		return valueChangedTemp;
 	}
 

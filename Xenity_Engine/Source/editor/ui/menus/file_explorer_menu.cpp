@@ -83,7 +83,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
-	ImGui::ImageButton("##FileExplorerImage", (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 
 	// Create an unique popupid
 	std::string popupId = "RightClick";
