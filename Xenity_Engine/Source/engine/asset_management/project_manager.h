@@ -52,6 +52,7 @@ struct FileAndPath
 {
 	std::string path;
 	std::shared_ptr<File> file;
+	FileType type;
 };
 
 struct FileChange
@@ -97,6 +98,7 @@ public:
 	* @param id File reference Id
 	*/
 	static std::shared_ptr<FileReference> GetFileReferenceById(uint64_t id);
+	static FileAndPath* GetFileById(uint64_t id);
 
 	/**
 	* Save the meta file of a file reference
@@ -190,6 +192,8 @@ public:
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
 	static FileType GetFileType(const std::string& extension);
+	static std::vector<FileAndPath> GetFileByType(FileType type);
+	static std::vector<uint64_t> GetAllUsedFileByTheGame();
 
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
 	{

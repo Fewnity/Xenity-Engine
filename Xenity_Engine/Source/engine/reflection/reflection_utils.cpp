@@ -284,7 +284,7 @@ json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 {
 	const auto dataList = reflective.GetReflectiveData();
-	json jsonData = ReflectiveDataToJson(dataList);
+	const json jsonData = ReflectiveDataToJson(dataList);
 	return jsonData;
 }
 

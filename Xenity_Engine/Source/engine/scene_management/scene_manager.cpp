@@ -17,9 +17,11 @@
 #include <engine/graphics/camera.h>
 
 #include <engine/physics/physics_manager.h>
+#include <engine/tools/template_utils.h>
 
 #if defined(EDITOR)
 #include <editor/ui/editor_ui.h>
+#include <editor/file_reference_finder.h>
 #endif
 #include <engine/debug/debug.h>
 
@@ -33,12 +35,14 @@ json savedSceneDataHotReloading;
 bool SceneManager::sceneModified = false;
 
 #if defined(EDITOR)
+
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	std::unordered_map<uint64_t, bool> usedIds;
+	std::vector<uint64_t> usedFilesIds;
 
 	json j;
-	int gameObjectCount = GameplayManager::gameObjectCount;
+	const int gameObjectCount = GameplayManager::gameObjectCount;
 
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
@@ -80,10 +84,14 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
 			j["GameObjects"][goId]["Components"][compIdString]["Values"]["enabled"] = component->GetIsEnabled();
-		}
 
-		j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
+			ReflectiveData componentData = component->GetReflectiveData();
+			FileReferenceFinder::GetUsedFilesInReflectiveData(usedFilesIds, componentData);
+		}
 	}
+
+	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
+	j["UsedFiles"]["Values"] = usedFilesIds;
 
 	if (saveType == SaveSceneType::SaveSceneForPlayState)
 	{

@@ -113,6 +113,8 @@ public:
 
 private:
 
+	static bool ExportProjectFiles(const CompilerParams& params);
+
 	/**
 	* Execute all created copy entries and clear the list
 	*/

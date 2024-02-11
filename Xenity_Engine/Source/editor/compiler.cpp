@@ -12,6 +12,7 @@
 #include <engine/dynamic_lib/dynamic_lib.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/game_interface.h>
+#include <engine/tools/string_tag_finder.h>
 
 // Editor
 #include <editor/editor.h>
@@ -230,6 +231,33 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 	return result;
 }
 
+bool Compiler::ExportProjectFiles(const CompilerParams& params)
+{
+	std::string projectFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
+	int projectFolderPathLen = projectFolder.size();
+	std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
+	int idsCount = ids.size();
+	for (int i = 0; i < idsCount; i++)
+	{
+		FileAndPath* filePath = ProjectManager::GetFileById(ids[i]);
+		if (filePath)
+		{
+			std::string newPath = filePath->path.substr(projectFolderPathLen, filePath->path.size() - projectFolderPathLen);
+			AddCopyEntry(false, filePath->path, params.exportPath + ASSETS_FOLDER + newPath);
+			AddCopyEntry(false, filePath->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
+
+			std::string folderToCreate = (params.exportPath + ASSETS_FOLDER + newPath);
+			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of("\\"));
+			fs::create_directories(folderToCreate);
+		}
+	}
+	//AddCopyEntry(true, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
+	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
+	const bool copyResult = ExecuteCopyEntries();
+	return copyResult;
+}
+
 CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
 {
 	CompilerParams params{};
@@ -247,10 +275,7 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	// Copy assets
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		AddCopyEntry(true, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
-		AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
-		AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
-		const bool copyResult = ExecuteCopyEntries();
+		const bool copyResult = ExportProjectFiles(params);
 		if (!copyResult)
 		{
 			return CompileResult::ERROR_FILE_COPY;
@@ -569,10 +594,7 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	// Copy game assets
-	AddCopyEntry(true, ProjectManager::GetAssetFolderPath(), params.exportPath + ASSETS_FOLDER);
-	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
-	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
-	const bool gameCopyResult = ExecuteCopyEntries();
+	const bool gameCopyResult = ExportProjectFiles(params);
 	if (!gameCopyResult)
 	{
 		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;

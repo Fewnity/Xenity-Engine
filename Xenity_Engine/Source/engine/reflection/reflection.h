@@ -87,7 +87,7 @@ public:
 /**
 * Create a map with the int value as key and the second value as the enum name
 */
-static std::vector<EnumValueName> ConvertEnumToMap(std::string enumData)
+static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 {
 	int textSize = enumData.size();
 	// Remove all spaces in the string
@@ -198,7 +198,7 @@ static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStri
 */
 #define ENUM(name, ...) \
     enum class name { __VA_ARGS__ }; \
-	static const void* name##Register = RegisterEnumStringsMap<name>(ConvertEnumToMap(#__VA_ARGS__));
+	static const void* name##Register = RegisterEnumStringsMap<name>(ConvertEnumToVector(#__VA_ARGS__));
 
 /**
  * [Internal]

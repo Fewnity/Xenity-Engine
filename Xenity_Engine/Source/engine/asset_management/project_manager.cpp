@@ -129,6 +129,7 @@ void ProjectManager::FindAllProjectFiles()
 	for (int i = 0; i < allFoundFileCount; i++)
 	{
 		std::shared_ptr<File> file = allFoundFiles[i];
+		std::string metaFilePath = file->GetPath() + META_EXTENSION;
 		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 		if (!metaFile->CheckIfExist()) // If there is not meta for this file
 		{
@@ -186,9 +187,10 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	// Create files references
-	for (const auto& kv : projectFilesIds)
+	for (auto& kv : projectFilesIds)
 	{
-		CreateFileReference(kv.second.path, kv.first);
+		std::shared_ptr<FileReference> fileRef = CreateFileReference(kv.second.path, kv.first);
+		kv.second.type = fileRef->fileType;
 	}
 
 	// Check if a file has changed or has been deleted
@@ -519,6 +521,80 @@ void ProjectManager::UnloadProject()
 	projectSettings.projectName.clear();
 	projectSettings.gameName.clear();
 	Window::UpdateWindowTitle();
+}
+
+std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
+{
+	int idCount = 0;
+	std::vector<uint64_t> ids;
+	std::vector<FileAndPath> sceneFiles = GetFileByType(FileType::File_Scene);
+	int scenCount = sceneFiles.size();
+	for (int i = 0; i < scenCount; i++)
+	{
+		ids.push_back(sceneFiles[i].file->GetUniqueId());
+		std::shared_ptr<File> jsonFile = sceneFiles[i].file;
+		const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
+		if (isOpen)
+		{
+			std::string jsonString = jsonFile->ReadAll();
+			jsonFile->Close();
+
+			try
+			{
+				json data;
+				if (!jsonString.empty())
+					data = json::parse(jsonString);
+
+				for (auto& idKv : data["UsedFiles"]["Values"].items())
+				{
+					bool idAlreadyInList = false;
+					for (int idIndex = 0; idIndex < idCount; idIndex++)
+					{
+						if (ids[idIndex] == idKv.value())
+						{
+							idAlreadyInList = true;
+							break;
+						}
+					}
+					if (!idAlreadyInList) 
+					{
+						ids.push_back(idKv.value());
+						idCount++;
+					}
+				}
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[SceneManager::LoadScene] Scene file error");
+				continue;
+			}
+		}
+	}
+	return ids;
+}
+
+std::vector<FileAndPath> ProjectManager::GetFileByType(FileType type)
+{
+	std::vector<FileAndPath> fileList;
+	for (auto& fileinfo : projectFilesIds) 
+	{
+		if (fileinfo.second.type == type) 
+		{
+			fileList.push_back(fileinfo.second);
+		}
+	}
+
+	return fileList;
+}
+
+FileAndPath* ProjectManager::GetFileById(uint64_t id)
+{
+	if (projectFilesIds.contains(id))
+	{
+		return &projectFilesIds[id];
+	}
+
+	return nullptr;
 }
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
