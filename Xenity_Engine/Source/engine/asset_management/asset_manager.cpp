@@ -54,29 +54,29 @@ void AssetManager::Init()
 	{
 		// Load standard shader
 		shader = Shader::MakeShader();
-		shader->file = FileSystem::MakeFile("shaders/standard.shader");
+		shader->file = FileSystem::MakeFile("engine_assets\\shaders/standard.shader");
 
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
-		unlitShader->file = FileSystem::MakeFile("shaders/unlit.shader");
+		unlitShader->file = FileSystem::MakeFile("engine_assets\\shaders/unlit.shader");
 		
 		// Load line shader
 		lineShader = Shader::MakeShader();
-		lineShader->file = FileSystem::MakeFile("shaders/line.shader");
+		lineShader->file = FileSystem::MakeFile("engine_assets\\shaders/line.shader");
 
 		// Create materials
 		standardMaterial = Material::MakeMaterial();
-		standardMaterial->file = FileSystem::MakeFile("shaders/standardMaterial.mat");
+		standardMaterial->file = FileSystem::MakeFile("engine_assets\\materials/standardMaterial.mat");
 		standardMaterial->shader = shader;
 		standardMaterial->useLighting = true;
 
 		unlitMaterial = Material::MakeMaterial();
-		unlitMaterial->file = FileSystem::MakeFile("shaders/unlitMaterial.mat");
+		unlitMaterial->file = FileSystem::MakeFile("engine_assets\\materials/unlitMaterial.mat");
 		unlitMaterial->shader = unlitShader;
 		//Engine::unlitMaterial->SetAttribute("color", Vector3(1, 1, 1));
 
 		lineMaterial = Material::MakeMaterial();
-		lineMaterial->file = FileSystem::MakeFile("shaders/lineMaterial.mat");
+		lineMaterial->file = FileSystem::MakeFile("engine_assets\\materials/lineMaterial.mat");
 		lineMaterial->shader = lineShader;
 
 		shader->LoadFileReference();
