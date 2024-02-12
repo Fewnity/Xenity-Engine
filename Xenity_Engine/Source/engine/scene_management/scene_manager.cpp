@@ -91,6 +91,9 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	}
 
 	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
+
+	if (Graphics::skybox != nullptr)
+		usedFilesIds.push_back(Graphics::skybox->fileId);
 	j["UsedFiles"]["Values"] = usedFilesIds;
 
 	if (saveType == SaveSceneType::SaveSceneForPlayState)

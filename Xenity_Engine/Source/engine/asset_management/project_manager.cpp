@@ -34,6 +34,7 @@
 #include <editor/editor.h>
 #include <editor/file_handler.h>
 #include <editor/compiler.h>
+#include <editor/file_reference_finder.h>
 #endif
 #if !defined(EDITOR) && !defined(_WIN32) && !defined(_WIN64)
 #include <game_dungeon/game.h>
@@ -525,8 +526,9 @@ void ProjectManager::UnloadProject()
 
 std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 {
-	int idCount = 0;
 	std::vector<uint64_t> ids;
+#if defined(EDITOR)
+	int idCount = 0;
 	std::vector<FileAndPath> sceneFiles = GetFileByType(FileType::File_Scene);
 	int scenCount = sceneFiles.size();
 	for (int i = 0; i < scenCount; i++)
@@ -559,6 +561,8 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					if (!idAlreadyInList) 
 					{
 						ids.push_back(idKv.value());
+						std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
+						FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
 						idCount++;
 					}
 				}
@@ -570,6 +574,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 			}
 		}
 	}
+#endif
 	return ids;
 }
 

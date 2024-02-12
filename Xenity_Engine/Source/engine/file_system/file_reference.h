@@ -45,6 +45,11 @@ public:
 
 	}
 
+	virtual ReflectiveData GetReflectiveData()
+	{
+		return ReflectiveData();
+	}
+
 	/**
 	* Get reflection of the file meta
 	*/
