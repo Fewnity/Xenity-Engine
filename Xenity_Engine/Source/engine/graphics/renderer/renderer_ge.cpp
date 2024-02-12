@@ -192,7 +192,7 @@ void RendererGE::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 {
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
-	if (texture->GetFilter() == Texture::Filter::Bilinear)
+	if (texture->GetFilter() == Filter::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -204,7 +204,7 @@ void RendererGE::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 		}
 		magfilterValue = GL_LINEAR;
 	}
-	else if (texture->GetFilter() == Texture::Filter::Point)
+	else if (texture->GetFilter() == Filter::Point)
 	{
 		if (texture->GetUseMipmap())
 		{
@@ -478,36 +478,36 @@ void RendererGE::UploadMeshData(const std::shared_ptr<MeshData> &meshData)
 {
 }
 
-int RendererGE::GetWrapModeEnum(Texture::WrapMode wrapMode)
+int RendererGE::GetWrapModeEnum(WrapMode wrapMode)
 {
 	int mode = GL_REPEAT;
 	switch (wrapMode)
 	{
-	case Texture::WrapMode::ClampToEdge:
-	case Texture::WrapMode::ClampToBorder:
+	case WrapMode::ClampToEdge:
+	case WrapMode::ClampToBorder:
 #if defined(_WIN32) || defined(_WIN64)
 		mode = GL_CLAMP_TO_EDGE;
 #else
 		mode = GL_CLAMP;
 #endif
 		break;
-	case Texture::WrapMode::Repeat:
+	case WrapMode::Repeat:
 		mode = GL_REPEAT;
 		break;
 
-		// case Texture::WrapMode::ClampToEdge:
+		// case WrapMode::ClampToEdge:
 		// 	mode = GL_CLAMP_TO_EDGE;
 		// 	break;
-		// case Texture::WrapMode::ClampToBorder:
+		// case WrapMode::ClampToBorder:
 		// 	mode = GL_CLAMP_TO_BORDER;
 		// 	break;
-		// case Texture::WrapMode::MirroredRepeat:
+		// case WrapMode::MirroredRepeat:
 		// 	mode = GL_MIRRORED_REPEAT;
 		// 	break;
-		// case Texture::WrapMode::Repeat:
+		// case WrapMode::Repeat:
 		// 	mode = GL_REPEAT;
 		// 	break;
-		// case Texture::WrapMode::MirrorClampToEdge:
+		// case WrapMode::MirrorClampToEdge:
 		// 	mode = GL_MIRROR_CLAMP_TO_EDGE;
 		// 	break;
 	}
