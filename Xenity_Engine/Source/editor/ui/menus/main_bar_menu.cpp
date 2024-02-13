@@ -21,6 +21,7 @@
 #include <editor/ui/menus/file_explorer_menu.h>
 #include <editor/ui/menus/hierarchy_menu.h>
 #include <editor/ui/menus/console_menu.h>
+#include <editor/ui/menus/sprite_editor_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -395,6 +396,10 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Console"))
 			{
 				Editor::AddMenu<ConsoleMenu>(true);
+			}
+			if (ImGui::MenuItem("Sprite Editor"))
+			{
+				Editor::AddMenu<SpriteEditorMenu>(true);
 			}
 			ImGui::EndMenu();
 		}

@@ -141,6 +141,7 @@
     <ClCompile Include="Source\editor\ui\menus\console_menu.cpp" />
     <ClCompile Include="Source\editor\ui\utils\menu_builder.cpp" />
     <ClCompile Include="Source\editor\file_reference_finder.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\sprite_editor_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -291,6 +292,7 @@
     <ClInclude Include="Source\editor\ui\utils\menu_builder.h" />
     <ClInclude Include="Source\engine\tools\template_utils.h" />
     <ClInclude Include="Source\editor\file_reference_finder.h" />
+    <ClInclude Include="Source\editor\ui\menus\sprite_editor_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

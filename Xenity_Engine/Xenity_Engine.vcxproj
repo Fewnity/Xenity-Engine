@@ -318,6 +318,7 @@
     <ClCompile Include="Source\editor\file_reference_finder.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Source\editor\ui\menus\sprite_editor_menu.cpp" />
     <ClCompile Include="Source\editor\ui\utils\menu_builder.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -564,6 +565,7 @@
     <ClInclude Include="Source\editor\file_reference_finder.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Source\editor\ui\menus\sprite_editor_menu.h" />
     <ClInclude Include="Source\editor\ui\utils\menu_builder.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
