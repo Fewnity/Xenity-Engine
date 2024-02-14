@@ -3,22 +3,14 @@
 #include <memory>
 #include "menu.h"
 #include <engine/vectors/vector2.h>
+#include <engine/graphics/2d_graphics/sprite_selection.h>
 
 class Texture;
 
 
-
 class SpriteEditorMenu : public Menu
 {
-public:
-	class SpriteSelection
-	{
-	public:
-		Vector2 position;
-		Vector2 size;
-		Vector2 pivot;
-	};
-	
+public:	
 	void Init() override;
 	void Draw() override;
 	std::shared_ptr<Texture> spriteToEdit;
@@ -34,6 +26,6 @@ public:
 	int currentSelectedSpriteIndex = -1;
 
 private:
-	void AddNewSpriteSelection(Vector2 position, Vector2 size, Vector2 pivot);
+	void AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot);
 };
 

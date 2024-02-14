@@ -52,6 +52,7 @@ ReflectiveData Texture::GetMetaReflectiveData()
 	Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 	Reflective::AddVariable(reflectedVariables, filter, "filter", true);
 	Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
+	Reflective::AddVariable(reflectedVariables, spriteSelections, "spriteSelections", true);
 	return reflectedVariables;
 }
 

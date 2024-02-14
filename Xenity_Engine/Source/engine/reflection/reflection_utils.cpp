@@ -187,6 +187,33 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective>>* valuePtr)
 {
 	Debug::PrintError("[VariableToJson] not implemented for std::vector<Reflective>!");
+
+	std::vector <Reflective>& getVal = valuePtr->get();
+	size_t vectorSize = getVal.size();
+	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
+	{
+		jsonValue[key]["Values"][vIndex] = ReflectionUtils::ReflectiveToJson(getVal[vIndex]);
+		/*if (getVal.at(vIndex).lock())
+		{
+			if constexpr (std::is_same <T, GameObject>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Transform>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetGameObject()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Component>())
+			{
+				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
+			}
+			else if constexpr (std::is_same <T, Collider>())
+			{
+				Debug::PrintError("[VariableToJson] not implemented for std::vector<std::weak_ptr<Collider>>!");
+			}
+		}*/
+	}
+
 }
 
 template<typename T>

@@ -5,6 +5,7 @@
 #include <vector>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
+#include <engine/graphics/2d_graphics/sprite_selection.h>
 
 #if defined(_EE)
 #include <draw.h>
@@ -149,6 +150,7 @@ public:
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
+	std::vector<SpriteSelection> spriteSelections;
 
 private:
 	/**
