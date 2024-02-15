@@ -442,7 +442,7 @@ private:
 
 	// Template for vectors of reflective (not implemented)
 	template<typename T2>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		Debug::Print("[Not implemented] Vector for Reflective!");
 		bool valueChangedTemp = false;

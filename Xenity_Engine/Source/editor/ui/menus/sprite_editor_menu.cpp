@@ -10,12 +10,6 @@
 
 void SpriteEditorMenu::Init()
 {
-	SpriteSelection selection;
-	selection.position = Vector2(512, 0);
-	selection.size = Vector2(512, 1024);
-	selection.pivot = Vector2(0.5f, 0.5f);
-	spriteSelections.push_back(selection);
-	currentSelectedSpriteIndex = 0;
 }
 
 void SpriteEditorMenu::AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot)
@@ -86,7 +80,17 @@ void SpriteEditorMenu::Draw()
 			const std::string buttonText = "Save" + EditorUI::GenerateItemId();
 			if (ImGui::Button(buttonText.c_str())) 
 			{
-				spriteToEdit->spriteSelections = std::vector<SpriteSelection>(spriteSelections);
+				spriteToEdit->ClearSpriteSelections();
+				const int spriteSelectionCount = spriteSelections.size();
+				for (int selectI = 0; selectI < spriteSelectionCount; selectI++)
+				{
+					SpriteSelection* newSpriteSelection = new SpriteSelection();
+					newSpriteSelection->position = spriteSelections[selectI].position;
+					newSpriteSelection->size = spriteSelections[selectI].size;
+					newSpriteSelection->pivot = spriteSelections[selectI].pivot;
+					spriteToEdit->spriteSelections.push_back(newSpriteSelection);
+				}
+				//spriteToEdit->spriteSelections = std::vector<SpriteSelection>(spriteSelections);
 				ProjectManager::SaveMetaFile(spriteToEdit);
 			}
 		}

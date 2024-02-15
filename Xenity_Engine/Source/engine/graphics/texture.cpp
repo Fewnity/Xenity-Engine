@@ -100,6 +100,16 @@ void Texture::UnloadFileReference()
 	}
 }
 
+void Texture::ClearSpriteSelections()
+{
+	int selectionCount = spriteSelections.size();
+	for (int i = 0; i < selectionCount; i++)
+	{
+		delete spriteSelections[i];
+	}
+	spriteSelections.clear();
+}
+
 /// <summary>
 /// Create the texture from the file path and texture settings
 /// </summary>
@@ -431,6 +441,7 @@ void Texture::LoadTexture()
 
 void Texture::Unload()
 {
+	ClearSpriteSelections();
 	Engine::GetRenderer().DeleteTexture(this);
 }
 

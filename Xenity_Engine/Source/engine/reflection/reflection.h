@@ -48,7 +48,7 @@ typedef std::variant <
 	std::reference_wrapper<std::shared_ptr<Shader>>,
 	std::reference_wrapper<std::shared_ptr<Material>>,
 
-	std::reference_wrapper<std::vector<Reflective>>,
+	std::reference_wrapper<std::vector<Reflective*>>,
 	//std::reference_wrapper<std::vector<int>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
@@ -200,6 +200,19 @@ static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStri
     enum class name { __VA_ARGS__ }; \
 	static const void* name##Register = RegisterEnumStringsMap<name>(ConvertEnumToVector(#__VA_ARGS__));
 
+class TypeSpawner
+{
+public:
+	virtual ~TypeSpawner() {}
+	virtual void* Allocate() const = 0;
+};
+
+template<typename T> class TypeSpawnerImpl : public TypeSpawner
+{
+public:
+	virtual void* Allocate()const { return new T; }
+};
+
 /**
  * [Internal]
  */
@@ -212,6 +225,7 @@ public:
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 	bool isEnum = false;
+	TypeSpawner* typeSpawner = nullptr;
 };
 
 typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;
@@ -219,6 +233,8 @@ typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;
 class API Reflective
 {
 public:
+	virtual ~Reflective() = default;
+
 	/**
 	* Get all child class variables references
 	*/
@@ -232,30 +248,30 @@ public:
 
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value, void>
-	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, bool isPublic)
+	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
+		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, value, variableName, false, isPublic, type, false);
 	}
 
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static void AddVariable(ReflectiveData& map, T& value, const std::string& variableName, bool isPublic)
+	static void AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
+		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, (int&)value, variableName, false, isPublic, type, true);
 	}
 
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& map, std::weak_ptr<T>& value, const std::string& variableName, bool isPublic)
+	static void AddVariable(ReflectiveData& map, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
+		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, (std::weak_ptr<Component>&)value, variableName, false, isPublic, type, false);
 	}
 
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& map, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, bool isPublic)
+	static void AddVariable(ReflectiveData& map, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
+		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
 	}
 
@@ -269,21 +285,22 @@ public:
 
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
-		static AddVariable(ReflectiveData& map, std::vector<T>& value, const std::string& variableName, bool isPublic)
+	static AddVariable(ReflectiveData& map, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, (std::vector<Reflective>&)value, variableName, false, isPublic, type, false);
+		const uint64_t type = typeid(T).hash_code();
+		Reflective::AddReflectionVariable(map, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
+		map[variableName].typeSpawner = new TypeSpawnerImpl<T>();
 	}
 
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value, void>
-		static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, bool visibleInFileInspector, bool isPublic)
+	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic)
 	{
-		uint64_t type = typeid(T).hash_code();
+		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, value, variableName, visibleInFileInspector, isPublic, type, false);
 	}
 
 private:
-	static void AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic, uint64_t id, bool isEnum);
+	static void AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
 };
 

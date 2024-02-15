@@ -150,7 +150,8 @@ public:
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
-	std::vector<SpriteSelection> spriteSelections;
+	std::vector<SpriteSelection*> spriteSelections;
+	void ClearSpriteSelections();
 
 private:
 	/**

@@ -1,6 +1,6 @@
 #include "reflection.h"
 
-void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, bool visibleInFileInspector, bool isPublic, uint64_t id, bool isEnum)
+void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
 {
 	ReflectiveEntry entry;
 	entry.variable = variable;

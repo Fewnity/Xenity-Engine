@@ -29,24 +29,39 @@ using json = nlohmann::json;
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<T>* valuePtr)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& entry)
 {
 	valuePtr->get() = jsonValue;
 }
 
-void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<Reflective>* valuePtr)
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::JsonToReflective(jsonValue, valuePtr->get());
 }
 
-void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective>>* valuePtr)
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& entry)
 {
 	Debug::PrintError("[JsonToVariable] not implemented for std::vector<Reflective>!");
+
+	const size_t jsonArraySize = jsonValue.size();
+	const size_t objectVectorSize = valuePtr->get().size();
+
+	for (size_t i = 0; i < jsonArraySize; i++)
+	{
+		/*if (i >= objectVectorSize)
+		{
+			valuePtr->get().push_back(tempVariable);
+		}
+		else
+		{
+			valuePtr->get()[i] = tempVariable;
+		}*/
+	}
 }
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& entry)
 {
 	if constexpr (std::is_same <T, GameObject>())
 	{
@@ -71,19 +86,19 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
 }
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& entry)
 {
-	const size_t arraySize = jsonValue.size();
-	const size_t vectorSize = valuePtr->get().size();
+	const size_t jsonArraySize = jsonValue.size();
+	const size_t objectVectorSize = valuePtr->get().size();
 
-	for (size_t i = 0; i < arraySize; i++)
+	for (size_t i = 0; i < jsonArraySize; i++)
 	{
 		std::shared_ptr<T> tempVariable = nullptr;
 		if (!jsonValue.at(i).is_null())
@@ -110,7 +125,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 				Debug::PrintError("[JsonToVariable] not implemented for std::vector<std::weak_ptr<Collider>>!");
 			}
 		}
-		if (i >= vectorSize)
+		if (i >= objectVectorSize)
 		{
 			valuePtr->get().push_back(tempVariable);
 		}
@@ -123,7 +138,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
 }
@@ -138,11 +153,12 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 			// Check if the data list contains the variable name found in the json
 			if (dataList.contains(kv.key()))
 			{
-				const VariableReference& variableRef = dataList.at(kv.key()).variable.value();
+				const ReflectiveEntry entry = dataList.at(kv.key());
+				const VariableReference& variableRef = entry.variable.value();
 				const auto& kvValue = kv.value();
-				std::visit([&kvValue](const auto& value)
+				std::visit([&kvValue, &entry](const auto& value)
 					{
-						JsonToVariable(kvValue, &value);
+						JsonToVariable(kvValue, &value, entry);
 					}, variableRef);
 			}
 		}
@@ -151,7 +167,7 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 
 void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
 {
-	ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
+	const ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
 	json jsonData;
 	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
 
@@ -162,7 +178,7 @@ void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflect
 
 void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
 {
-	auto myMap = reflective.GetReflectiveData();
+	const ReflectiveData myMap = reflective.GetReflectiveData();
 	JsonToReflectiveData(j, myMap);
 	reflective.OnReflectionUpdated();
 }
@@ -184,43 +200,23 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 	jsonValue[key]["Values"] = ReflectionUtils::ReflectiveToJson(valuePtr->get());
 }
 
-void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective>>* valuePtr)
+void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr)
 {
 	Debug::PrintError("[VariableToJson] not implemented for std::vector<Reflective>!");
 
-	std::vector <Reflective>& getVal = valuePtr->get();
-	size_t vectorSize = getVal.size();
+	std::vector <Reflective*>& getVal = valuePtr->get();
+	const size_t vectorSize = getVal.size();
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
-		jsonValue[key]["Values"][vIndex] = ReflectionUtils::ReflectiveToJson(getVal[vIndex]);
-		/*if (getVal.at(vIndex).lock())
-		{
-			if constexpr (std::is_same <T, GameObject>())
-			{
-				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
-			}
-			else if constexpr (std::is_same <T, Transform>())
-			{
-				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetGameObject()->GetUniqueId();
-			}
-			else if constexpr (std::is_same <T, Component>())
-			{
-				jsonValue[key][vIndex] = getVal.at(vIndex).lock()->GetUniqueId();
-			}
-			else if constexpr (std::is_same <T, Collider>())
-			{
-				Debug::PrintError("[VariableToJson] not implemented for std::vector<std::weak_ptr<Collider>>!");
-			}
-		}*/
+		jsonValue[key]["Values"][vIndex] = ReflectionUtils::ReflectiveToJson(*getVal[vIndex]);
 	}
-
 }
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
 {
-	if (auto lockValue = (valuePtr->get()).lock())
+	if (const auto lockValue = (valuePtr->get()).lock())
 	{
 		if constexpr (std::is_same <T, GameObject>())
 		{
@@ -254,7 +250,7 @@ std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transf
 ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
 {
 	const std::vector <std::weak_ptr<T>>& getVal = valuePtr->get();
-	size_t vectorSize = getVal.size();
+	const size_t vectorSize = getVal.size();
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
 		if (getVal.at(vIndex).lock())
@@ -284,7 +280,7 @@ std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
 {
 	const std::vector <std::shared_ptr<T>>& getVal = valuePtr->get();
-	size_t vectorSize = getVal.size();
+	const size_t vectorSize = getVal.size();
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
 		if (getVal.at(vIndex))
