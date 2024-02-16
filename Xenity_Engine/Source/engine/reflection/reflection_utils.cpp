@@ -48,14 +48,21 @@ void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference
 
 	for (size_t i = 0; i < jsonArraySize; i++)
 	{
-		/*if (i >= objectVectorSize)
+		Reflective* tempVariable = nullptr;
+		if (jsonValue[i].contains("Values"))
+		{
+			// Go through json Values list
+			tempVariable = (Reflective*)entry.typeSpawner->Allocate();
+			ReflectionUtils::JsonToReflective(jsonValue[i], *tempVariable);
+		}
+		if (i >= objectVectorSize)
 		{
 			valuePtr->get().push_back(tempVariable);
 		}
 		else
 		{
 			valuePtr->get()[i] = tempVariable;
-		}*/
+		}
 	}
 }
 
@@ -208,7 +215,10 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 	const size_t vectorSize = getVal.size();
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
-		jsonValue[key]["Values"][vIndex] = ReflectionUtils::ReflectiveToJson(*getVal[vIndex]);
+		if (!getVal[vIndex])
+			jsonValue[key][vIndex]["Values"] = nullptr;
+		else
+			jsonValue[key][vIndex]["Values"] = ReflectionUtils::ReflectiveToJson(*getVal[vIndex]);
 	}
 }
 

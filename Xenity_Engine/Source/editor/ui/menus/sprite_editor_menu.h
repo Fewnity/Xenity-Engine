@@ -14,6 +14,7 @@ public:
 	void Init() override;
 	void Draw() override;
 	std::shared_ptr<Texture> spriteToEdit;
+	std::shared_ptr<Texture> oldSpriteToEdit; // TODO improve this by removing this and using events
 
 	Vector2 offset = Vector2(0, 0);
 	Vector2 minOffset = Vector2(-0.5f, -0.5f);

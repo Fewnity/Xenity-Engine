@@ -207,7 +207,7 @@ public:
 		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
 
 		std::string inputText = "None (" + classInfo.name + ")";
-		const auto ptr = valuePtr->get();
+		const std::shared_ptr<T> ptr = valuePtr->get();
 		if (ptr != nullptr)
 		{
 			if (ptr->file != nullptr)

@@ -90,13 +90,28 @@ void SpriteEditorMenu::Draw()
 					newSpriteSelection->pivot = spriteSelections[selectI].pivot;
 					spriteToEdit->spriteSelections.push_back(newSpriteSelection);
 				}
-				//spriteToEdit->spriteSelections = std::vector<SpriteSelection>(spriteSelections);
 				ProjectManager::SaveMetaFile(spriteToEdit);
 			}
 		}
+
 		std::shared_ptr<Texture> newValue;
 		std::reference_wrapper<std::shared_ptr<Texture>> textureRef = std::ref(spriteToEdit);
 		EditorUI::DrawFileReference(&textureRef, "Texture", newValue);
+		if (spriteToEdit != oldSpriteToEdit)
+		{
+			oldSpriteToEdit = spriteToEdit;
+			spriteSelections.clear();
+			int spriteToEditSelectionCount = spriteToEdit->spriteSelections.size();
+			for (int i = 0; i < spriteToEditSelectionCount; i++)
+			{
+				SpriteSelection newSelection;
+				newSelection.position = spriteToEdit->spriteSelections[i]->position;
+				newSelection.size = spriteToEdit->spriteSelections[i]->size;
+				newSelection.pivot = spriteToEdit->spriteSelections[i]->pivot;
+				spriteSelections.push_back(newSelection);
+			}
+		}
+
 		ImGui::EndChild();
 
 		if (InputSystem::GetKey(KeyCode::MOUSE_RIGHT))
@@ -134,7 +149,6 @@ void SpriteEditorMenu::Draw()
 	ImGui::Begin("Sprite Editor Tool", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (spriteToEdit)
 	{
-		//ImVec2 availSize = ImGui::GetContentRegionAvail();
 		if (ImGui::Button("Add new sprite selection"))
 		{
 			AddNewSpriteSelection(Vector2(0, 0), Vector2(spriteToEdit->GetWidth(), spriteToEdit->GetHeight()), Vector2(0.5f, 0.5f));
