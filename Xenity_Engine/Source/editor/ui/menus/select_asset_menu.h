@@ -58,19 +58,13 @@ public:
 
 	void SearchFiles(FileType type) 
 	{
-		const std::vector<std::shared_ptr<File>> projectFiles = ProjectManager::projectDirectoryBase->GetAllFiles(true);
+		const std::vector<FileAndPath> projectFiles = ProjectManager::GetFilesByType(type);
 		const int fileCount = (int)projectFiles.size();
 		for (int i = 0; i < fileCount; i++)
 		{
-			const std::shared_ptr<File> file = projectFiles[i];
-			FileType fileType = ProjectManager::GetFileType(file->GetFileExtension());
-
-			if (fileType != FileType::File_Other && fileType == type)
-			{
-				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(file->GetUniqueId());
-				fileRef->LoadFileReference();
-				foundFiles.push_back(fileRef);
-			}
+			std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
+			fileRef->LoadFileReference();
+			foundFiles.push_back(fileRef);
 		}
 	}
 
@@ -129,7 +123,8 @@ public:
 	}
 
 	std::optional<std::reference_wrapper<std::shared_ptr<T>>> valuePtr;
-	std::vector<std::shared_ptr<FileReference>> foundFiles;
+
 private:
+	std::vector<std::shared_ptr<FileReference>> foundFiles;
 };
 
