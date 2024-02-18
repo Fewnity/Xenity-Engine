@@ -12,7 +12,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 	const std::string fileName = libraryName + ".dll";
 
 	//Disable error popup
-	SetErrorMode(0x0001);
+	SetErrorMode(SEM_FAILCRITICALERRORS);
 #if defined(VISUAL_STUDIO)
 	library = LoadLibraryA(fileName.c_str()); // Visual Studio
 #else
@@ -20,8 +20,15 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 #endif
 	SetErrorMode(0);
 
-	if (library == NULL)
-		Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
+	if (library == NULL) 
+	{
+		// https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
+		int errorCode = GetLastError();
+		if(errorCode == 127)
+			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Failed to load library (wrong version): " + fileName);
+		else
+			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
+	}
 }
 
 void DynamicLibrary::UnloadGameLibrary()
