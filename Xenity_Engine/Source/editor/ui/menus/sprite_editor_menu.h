@@ -13,6 +13,10 @@ class SpriteEditorMenu : public Menu
 public:	
 	void Init() override;
 	void Draw() override;
+
+private:
+	void AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot);
+
 	std::shared_ptr<Texture> spriteToEdit;
 	std::shared_ptr<Texture> oldSpriteToEdit; // TODO improve this by removing this and using events
 
@@ -25,8 +29,5 @@ public:
 	float maxZoom = 3;
 	std::vector<SpriteSelection> spriteSelections;
 	int currentSelectedSpriteIndex = -1;
-
-private:
-	void AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot);
 };
 

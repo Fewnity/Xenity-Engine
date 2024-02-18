@@ -3,10 +3,12 @@
 #include <imgui/imgui.h>
 
 #include <editor/ui/editor_ui.h>
+#include <editor/asset_modifier/asset_modifier.h>
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/texture.h>
 #include <engine/inputs/input_system.h>
+#include <engine/file_system/file_system.h>
 
 void SpriteEditorMenu::Init()
 {
@@ -74,12 +76,14 @@ void SpriteEditorMenu::Draw()
 
 		ImGui::SetCursorPosY(oldCursorYPos);
 
-		ImGui::BeginChild("SpriteEditorChild2", ImVec2(startAvailableSize.x, 0), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("SpriteEditorChild", ImVec2(startAvailableSize.x, 0), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		if (spriteToEdit)
 		{
 			const std::string buttonText = "Save" + EditorUI::GenerateItemId();
 			if (ImGui::Button(buttonText.c_str())) 
 			{
+				std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->fileId) + "\\";
+				FileSystem::fileSystem->CreateFolder(folderPath);
 				spriteToEdit->ClearSpriteSelections();
 				const int spriteSelectionCount = spriteSelections.size();
 				for (int selectI = 0; selectI < spriteSelectionCount; selectI++)
@@ -89,6 +93,9 @@ void SpriteEditorMenu::Draw()
 					newSpriteSelection->size = spriteSelections[selectI].size;
 					newSpriteSelection->pivot = spriteSelections[selectI].pivot;
 					spriteToEdit->spriteSelections.push_back(newSpriteSelection);
+
+					std::shared_ptr<File> newFile = FileSystem::fileSystem->MakeFile(folderPath + spriteToEdit->file->GetFileName() + "_" + std::to_string(selectI) + ".png");
+					AssetModifier::CropTexture(spriteToEdit, newSpriteSelection->position.x, newSpriteSelection->position.y, newSpriteSelection->size.x, newSpriteSelection->size.y, newFile);
 				}
 				ProjectManager::SaveMetaFile(spriteToEdit);
 			}
