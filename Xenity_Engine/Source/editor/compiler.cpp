@@ -321,11 +321,11 @@ void Compiler::HotReloadGame()
 	Compiler::CompileGame(
 		Platform::P_Windows,
 		BuildType::EditorHotReloading,
-		ProjectManager::GetProjectFolderPath()
+		ProjectManager::GetProjectFolderPath() + "temp\\"
 	);
 
 	// Reload game
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\" + "game_editor");
 
 	// Create game instance
 	Engine::game = DynamicLibrary::CreateGame();

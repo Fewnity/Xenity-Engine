@@ -332,6 +332,8 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\temp\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\additional_assets\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Materials\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Shaders\\");
@@ -456,6 +458,9 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		return projectLoaded;
 	}
 
+	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\temp\\");
+	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
+
 	FindAllProjectFiles();
 
 	LoadProjectSettings();
@@ -466,7 +471,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "game_editor");
+	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
 #else
 	DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
