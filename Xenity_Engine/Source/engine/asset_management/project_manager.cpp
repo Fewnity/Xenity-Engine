@@ -55,6 +55,7 @@ std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
+std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
 {
@@ -101,6 +102,14 @@ void ProjectManager::FindAllProjectFiles()
 	projectFilesIds.clear();
 	// Get all files of the project
 	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
+
+	std::vector<std::shared_ptr<File>> projectAdditionalAssetFiles = additionalAssetDirectoryBase->GetAllFiles(true);
+	const int additionalAssetFileCount = (int)projectAdditionalAssetFiles.size();
+	for (int i = 0; i < additionalAssetFileCount; i++)
+	{
+		projectFiles.push_back(projectAdditionalAssetFiles[i]);
+	}
+	projectAdditionalAssetFiles.clear();
 
 	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
 
@@ -458,8 +467,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		return projectLoaded;
 	}
 
+
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\temp\\");
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
+
+	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "\\additional_assets\\");
 
 	FindAllProjectFiles();
 
@@ -520,6 +532,7 @@ void ProjectManager::UnloadProject()
 
 	projectSettings.startScene.reset();
 	projectDirectoryBase.reset();
+	additionalAssetDirectoryBase.reset();
 	projectDirectory.reset();
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
@@ -534,7 +547,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	std::vector<uint64_t> ids;
 #if defined(EDITOR)
 	int idCount = 0;
-	std::vector<FileAndPath> sceneFiles = GetFileByType(FileType::File_Scene);
+	std::vector<FileAndPath> sceneFiles = GetFilesByType(FileType::File_Scene);
 	int scenCount = sceneFiles.size();
 	for (int i = 0; i < scenCount; i++)
 	{
@@ -583,7 +596,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	return ids;
 }
 
-std::vector<FileAndPath> ProjectManager::GetFileByType(FileType type)
+std::vector<FileAndPath> ProjectManager::GetFilesByType(FileType type)
 {
 	std::vector<FileAndPath> fileList;
 	for (auto& fileinfo : projectFilesIds) 

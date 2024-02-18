@@ -192,7 +192,7 @@ public:
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
 	static FileType GetFileType(const std::string& extension);
-	static std::vector<FileAndPath> GetFileByType(FileType type);
+	static std::vector<FileAndPath> GetFilesByType(FileType type);
 	static std::vector<uint64_t> GetAllUsedFileByTheGame();
 
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
@@ -202,7 +202,7 @@ public:
 
 	static ProjectSettings projectSettings;
 	static std::shared_ptr <Directory> projectDirectoryBase;
-
+	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
 	static void FindAllProjectFiles();
 	static void CreateVisualStudioSettings();
