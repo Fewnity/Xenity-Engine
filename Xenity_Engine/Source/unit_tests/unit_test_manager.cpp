@@ -25,8 +25,8 @@ void UnitTestManager::StartAllTests()
 	VectorDivideTest divideVectorTest = VectorDivideTest("Vectors Divisions");
 	TryTest(divideVectorTest);
 
-	VectorNormaliseTest normaliseVectorTest = VectorNormaliseTest("Vectors Normalisations");
-	TryTest(normaliseVectorTest);
+	VectorNormalizeTest normalizeVectorTest = VectorNormalizeTest("Vectors Normalizations");
+	TryTest(normalizeVectorTest);
 
 	TransformSetPositionTest transformSetPositionTest = TransformSetPositionTest("Transform Set Position");
 	TryTest(transformSetPositionTest);
@@ -43,7 +43,7 @@ void UnitTestManager::StartAllTests()
 void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 {
 	std::string errorOut = "";
-	bool testResult = RegisterEnumStringsMap.Start(errorOut);
+	const bool testResult = RegisterEnumStringsMap.Start(errorOut);
 	if (testResult)
 	{
 		Debug::Print(RegisterEnumStringsMap.GetName() + " Passed");

@@ -177,7 +177,7 @@ bool VectorDivideTest::Start(std::string& errorOut)
 	return result;
 }
 
-bool VectorNormaliseTest::Start(std::string& errorOut)
+bool VectorNormalizeTest::Start(std::string& errorOut)
 {
 	bool result = true;
 
@@ -185,7 +185,7 @@ bool VectorNormaliseTest::Start(std::string& errorOut)
 	Vector2 v2A = Vector2(6, 3);
 	if (!Compare(v2A.Normalized(), Vector2(0.894427180f, 0.447213590f)))
 	{
-		errorOut += "Bad Vector2 normalisation\n";
+		errorOut += "Bad Vector2 normalization\n";
 		result = false;
 	}
 
@@ -193,7 +193,7 @@ bool VectorNormaliseTest::Start(std::string& errorOut)
 	Vector3 v3A = Vector3(6, 3, 9);
 	if (!Compare(v3A.Normalized(), Vector3(0.534522474f, 0.267261237f, 0.801783741f)))
 	{
-		errorOut += "Bad Vector3 normalisation\n";
+		errorOut += "Bad Vector3 normalization\n";
 		result = false;
 	}
 
@@ -201,7 +201,7 @@ bool VectorNormaliseTest::Start(std::string& errorOut)
 	Vector4 v4A = Vector4(6, 3, 9, -1);
 	if (!Compare(v4A.Normalized(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f)))
 	{
-		errorOut += "Bad Vector4 normalisation\n";
+		errorOut += "Bad Vector4 normalization\n";
 		result = false;
 	}
 

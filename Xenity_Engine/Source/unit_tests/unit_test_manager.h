@@ -71,11 +71,11 @@ public:
 	bool Start(std::string& errorOut) override;
 };
 
-class VectorNormaliseTest : public UnitTest
+class VectorNormalizeTest : public UnitTest
 {
 public:
-	VectorNormaliseTest() = delete;
-	VectorNormaliseTest(const std::string& name) : UnitTest(name) { }
+	VectorNormalizeTest() = delete;
+	VectorNormalizeTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
