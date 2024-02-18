@@ -40,36 +40,43 @@ bool FileHandler::HasCodeChanged(const std::string& path)
 bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 {
 	bool changed = false;
-	for (const auto& file : std::filesystem::directory_iterator(path))
+	try
 	{
-		// Check is file
-		if (!file.is_regular_file())
+		for (const auto& file : std::filesystem::directory_iterator(path))
 		{
-			const bool temp = HasFileChangedOrAdded(file.path().string());
-			if (temp)
+			// Check is file
+			if (!file.is_regular_file())
 			{
+				const bool temp = HasFileChangedOrAdded(file.path().string());
+				if (temp)
+				{
+					changed = true;
+				}
+			}
+			else
+			{
+				const std::string ext = file.path().extension().string();
+
+				if (ext != ".meta")
+					continue;
+			}
+
+			tempFileCount++;
+
+			// Check last date
+			const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+			const auto duration = time.time_since_epoch();
+			const uint64_t durationCount = duration.count();
+			if (durationCount > lastModifiedFileTime)
+			{
+				lastModifiedFileTime = durationCount;
 				changed = true;
 			}
 		}
-		else
-		{
-			const std::string ext = file.path().extension().string();
-
-			if (ext != ".meta")
-				continue;
-		}
-		
-		tempFileCount++;
-
-		// Check last date
-		const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
-		const auto duration = time.time_since_epoch();
-		const uint64_t durationCount = duration.count();
-		if (durationCount > lastModifiedFileTime)
-		{
-			lastModifiedFileTime = durationCount;
-			changed = true;
-		}
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintError("[FileHandler::HasFileChangedOrAddedRecursive] failed to check if files have changed");
 	}
 	return changed;
 }
@@ -79,7 +86,7 @@ bool FileHandler::HasFileChangedOrAdded(const std::string& path)
 {
 	tempFileCount = 0;
 	bool result = HasFileChangedOrAddedRecursive(path);
-	if (tempFileCount != lastFileCount) 
+	if (tempFileCount != lastFileCount)
 	{
 		result = true;
 	}
