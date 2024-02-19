@@ -83,7 +83,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 			j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
 			j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
-			j["GameObjects"][goId]["Components"][compIdString]["Values"]["enabled"] = component->GetIsEnabled();
+			j["GameObjects"][goId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
 
 			ReflectiveData componentData = component->GetReflectiveData();
 			FileReferenceFinder::GetUsedFilesInReflectiveData(usedFilesIds, componentData);
@@ -225,9 +225,9 @@ void SceneManager::LoadScene(const json& jsonData)
 					if (comp)
 					{
 						// Enable or disable component
-						if (componentKV.value()["Values"].contains("enabled"))
+						if (componentKV.value().contains("Enabled"))
 						{
-							bool isEnabled = componentKV.value()["Values"]["enabled"];
+							const bool isEnabled = componentKV.value()["Enabled"];
 							comp->SetIsEnabled(isEnabled);
 						}
 						allComponents.push_back(comp);
