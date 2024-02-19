@@ -21,6 +21,6 @@ public:
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
 	static GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::vector<uint64_t>& ids);
 
-	static void GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, ReflectiveData reflectiveData);
+	static void GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData);
 };
 

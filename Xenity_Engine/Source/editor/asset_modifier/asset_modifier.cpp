@@ -48,7 +48,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX,
 
 		int index;
 		int index2;
-		int yOffset = originalHeight - height;
+		const int yOffset = originalHeight - height;
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width * channelCount; x++)

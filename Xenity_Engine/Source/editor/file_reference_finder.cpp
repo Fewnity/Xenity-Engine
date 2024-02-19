@@ -31,7 +31,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 	if (valuePtr)
 	{
 		const std::vector <std::shared_ptr<T>>& getVal = valuePtr->get();
-		size_t vectorSize = getVal.size();
+		const size_t vectorSize = getVal.size();
 		for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 		{
 			if (getVal.at(vIndex))
@@ -53,13 +53,12 @@ bool FileReferenceFinder::GetFileRefId(const T& var, std::vector <uint64_t>& ids
 	return false;
 }
 
-void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, ReflectiveData reflectiveData)
+void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData)
 {
 	int usedFilesIdsCount = usedFilesIds.size();
 
 	for (const auto& kv : reflectiveData)
 	{
-		const std::string key = kv.first;
 		const VariableReference& variableRef = reflectiveData.at(kv.first).variable.value();
 		bool isFileFound = false;
 		std::vector<uint64_t> foundFileIds;
@@ -70,7 +69,7 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& us
 
 		if (isFileFound)
 		{
-			int foundFileIdsCount = foundFileIds.size();
+			const int foundFileIdsCount = foundFileIds.size();
 			for (int foundFileIndex = 0; foundFileIndex < foundFileIdsCount; foundFileIndex++)
 			{
 				bool alreadyListed = false;

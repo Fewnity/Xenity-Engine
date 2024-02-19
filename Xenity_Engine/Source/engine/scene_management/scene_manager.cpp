@@ -58,7 +58,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		const int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
 		{
-			uint64_t id = go->children[childI].lock()->GetUniqueId();
+			const uint64_t id = go->children[childI].lock()->GetUniqueId();
 			if (usedIds[id])
 			{
 				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id));
@@ -73,7 +73,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		for (int componentI = 0; componentI < componentCount; componentI++)
 		{
 			std::shared_ptr<Component>& component = go->components[componentI];
-			uint64_t compId = component->GetUniqueId();
+			const uint64_t compId = component->GetUniqueId();
 			const std::string compIdString = std::to_string(compId);
 			if (usedIds[compId])
 			{
@@ -196,7 +196,7 @@ void SceneManager::LoadScene(const json& jsonData)
 	if (jsonData.contains("GameObjects"))
 	{
 		// Create all GameObjects and Components
-		for (auto& gameObjectKV : jsonData["GameObjects"].items())
+		for (const auto& gameObjectKV : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 			const uint64_t id = std::stoull(gameObjectKV.key());
@@ -217,7 +217,7 @@ void SceneManager::LoadScene(const json& jsonData)
 
 
 					// Get and set component id
-					uint64_t compId = std::stoull(componentKV.key());
+					const uint64_t compId = std::stoull(componentKV.key());
 					if (compId > biggestId)
 					{
 						biggestId = compId;
@@ -246,7 +246,7 @@ void SceneManager::LoadScene(const json& jsonData)
 		// Bind Components values and GameObjects childs
 		for (auto& kv : jsonData["GameObjects"].items())
 		{
-			std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
+			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
 			if (go)
 			{
 				if (kv.value().contains("Childs"))
@@ -354,7 +354,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
-		std::string jsonString = jsonFile->ReadAll();
+		const std::string jsonString = jsonFile->ReadAll();
 		jsonFile->Close();
 
 		try

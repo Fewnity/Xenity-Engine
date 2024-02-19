@@ -155,8 +155,8 @@ void ProjectManager::FindAllProjectFiles()
 				metaFile->Close();
 				if (!jsonString.empty())
 				{
-					json data = json::parse(jsonString);
-					uint64_t id = data["id"];
+					const json data = json::parse(jsonString);
+					const uint64_t id = data["id"];
 
 #if defined(EDITOR)
 					if (usedIds[id] == true)
@@ -252,8 +252,8 @@ void ProjectManager::CreateVisualStudioSettings()
 	try
 	{
 		// Get engine includes folder
-		std::filesystem::path exePath = std::filesystem::canonical("./");
-		std::string includesPath = exePath.generic_string() + "/includes/";
+		const std::filesystem::path exePath = std::filesystem::canonical("./");
+		const std::string includesPath = exePath.generic_string() + "/includes/";
 
 		// Read the empty vscode settings file
 		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
@@ -304,7 +304,6 @@ void ProjectManager::CreateVisualStudioSettings()
 	catch (const std::exception&)
 	{
 		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file");
-
 	}
 }
 
@@ -467,7 +466,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		return projectLoaded;
 	}
 
-
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\temp\\");
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
 
@@ -548,7 +546,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 #if defined(EDITOR)
 	int idCount = 0;
 	std::vector<FileAndPath> sceneFiles = GetFilesByType(FileType::File_Scene);
-	int scenCount = sceneFiles.size();
+	const int scenCount = sceneFiles.size();
 	for (int i = 0; i < scenCount; i++)
 	{
 		ids.push_back(sceneFiles[i].file->GetUniqueId());
@@ -565,7 +563,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 				if (!jsonString.empty())
 					data = json::parse(jsonString);
 
-				for (auto& idKv : data["UsedFiles"]["Values"].items())
+				for (const auto& idKv : data["UsedFiles"]["Values"].items())
 				{
 					bool idAlreadyInList = false;
 					for (int idIndex = 0; idIndex < idCount; idIndex++)
