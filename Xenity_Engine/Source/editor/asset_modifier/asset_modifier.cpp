@@ -16,6 +16,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX,
 	{
 		int fileBufferSize;
 		unsigned char* fileData = textureInput->file->ReadAllBinary(fileBufferSize);
+		textureInput->file->Close();
 
 		if (!fileData) 
 		{
@@ -23,7 +24,6 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX,
 			return;
 		}
 
-		textureInput->file->Close();
 		int channelCount = 4;
 
 		// Load image with stb_image
