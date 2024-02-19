@@ -160,7 +160,7 @@ void SpriteEditorMenu::Draw()
 		{
 			AddNewSpriteSelection(Vector2(0, 0), Vector2(spriteToEdit->GetWidth(), spriteToEdit->GetHeight()), Vector2(0.5f, 0.5f));
 		}
-		ImGui::Spacing();
+		ImGui::Separator();
 
 		int spriteSelectionCount = spriteSelections.size();
 		for (int selectionIndex = 0; selectionIndex < spriteSelectionCount; selectionIndex++)
@@ -209,7 +209,7 @@ void SpriteEditorMenu::Draw()
 					currentSelection.pivot = selectionPivot;
 			}
 
-			ImGui::Spacing();
+			ImGui::Separator();
 		}
 	}
 	ImGui::End();
