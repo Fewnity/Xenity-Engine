@@ -82,7 +82,7 @@ void SpriteEditorMenu::Draw()
 			const std::string buttonText = "Save" + EditorUI::GenerateItemId();
 			if (ImGui::Button(buttonText.c_str())) 
 			{
-				std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->fileId) + "\\";
+				const std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->fileId) + "\\";
 				FileSystem::fileSystem->CreateFolder(folderPath);
 				spriteToEdit->ClearSpriteSelections();
 				const int spriteSelectionCount = spriteSelections.size();

@@ -32,11 +32,11 @@ void LightingMenu::Draw()
 		ImGui::Text("Fog");
 		ImGui::Separator();
 
-		if (EditorUI::DrawInput("Enabled", Graphics::isFogEnabled))
+		if (EditorUI::DrawInputTemplate("Enabled", Graphics::isFogEnabled) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInput("Start", Graphics::fogStart))
+		if (EditorUI::DrawInputTemplate("Start", Graphics::fogStart) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInput("End", Graphics::fogEnd))
+		if (EditorUI::DrawInputTemplate("End", Graphics::fogEnd) != ValueInputState::NO_CHANGE)
 			changed = true;
 		if (EditorUI::DrawInput("Color", Graphics::fogColor))
 			changed = true;

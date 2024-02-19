@@ -85,8 +85,6 @@ struct CopyEntry
 class Compiler
 {
 public:
-	static std::vector<CopyEntry> copyEntries;
-
 	static CompilerAvailability CheckCompilerAvailability(const CompilerParams& params);
 
 	/**
@@ -192,4 +190,6 @@ private:
 	 * @param location of the game folder
 	 */
 	static void StartGame(Platform platform, const std::string &exportPath);
+
+	static std::vector<CopyEntry> copyEntries;
 };

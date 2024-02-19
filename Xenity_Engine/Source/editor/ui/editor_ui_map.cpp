@@ -7,24 +7,6 @@
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 
-void EditorUI::DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value)
-{
-	ImGui::TableSetColumnIndex(columnIndex);
-	ImGui::Text(inputName.c_str());
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(-1);
-	ImGui::InputFloat(inputId.c_str(), &value, 0, 0, "%.4f");
-}
-
-void EditorUI::DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value)
-{
-	ImGui::TableSetColumnIndex(columnIndex);
-	ImGui::Text(inputName.c_str());
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(-1);
-	ImGui::InputInt(inputId.c_str(), &value, 0, 0);
-}
-
 InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton)
 {
 	InputButtonState returnValue = InputButtonState::Null;

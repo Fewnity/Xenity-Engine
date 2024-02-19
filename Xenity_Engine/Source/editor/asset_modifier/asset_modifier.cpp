@@ -9,11 +9,12 @@
 #include <stb_image_resize.h>
 #include <engine/debug/debug.h>
 
-void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX, int posY, int width, int height, std::shared_ptr<File> fileOutput)
+void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int posX, const int posY, const int width, const int height, std::shared_ptr<File> fileOutput)
 {
 	const bool openResult = textureInput->file->Open(FileMode::ReadOnly);
 	if (openResult)
 	{
+		// Read texture file's data
 		int fileBufferSize;
 		unsigned char* fileData = textureInput->file->ReadAllBinary(fileBufferSize);
 		textureInput->file->Close();
@@ -38,6 +39,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX,
 			return;
 		}
 
+		// Alloc memory for the cropped texture
 		unsigned char* croppedBuffer = (unsigned char*)malloc(width * height * channelCount * sizeof(unsigned char));
 		if (!croppedBuffer)
 		{
@@ -45,17 +47,18 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, int posX,
 			Debug::PrintError("[AssetModifier::CropTexture] Fail to allocate memory for croppedBuffer");
 			return;
 		}
-
-		int index;
-		int index2;
+		
+		// Copy needed texture data to the cropped texture buffer
+		int originalTexDatIndex;
+		int croppedTexDatIndex;
 		const int yOffset = originalHeight - height;
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width * channelCount; x++)
 			{
-				index = (x + posX * channelCount) + (y + yOffset - posY) * (originalWidth * channelCount);
-				index2 = x + y * (width * channelCount);
-				croppedBuffer[index2] = buffer[index];
+				originalTexDatIndex = (x + posX * channelCount) + (y + yOffset - posY) * (originalWidth * channelCount);
+				croppedTexDatIndex = x + y * (width * channelCount);
+				croppedBuffer[croppedTexDatIndex] = buffer[originalTexDatIndex];
 			}
 		}
 

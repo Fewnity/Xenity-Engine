@@ -70,7 +70,7 @@ bool CreateProjectMenu::DrawSelectFolderButton()
 
 bool CreateProjectMenu::DrawProjectNameInput()
 {
-	return EditorUI::DrawInput("Project Name", projectName);
+	return EditorUI::DrawInputTemplate("Project Name", projectName) != ValueInputState::NO_CHANGE;
 }
 
 void CreateProjectMenu::DrawError() 

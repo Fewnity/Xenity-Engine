@@ -6,6 +6,7 @@
 
 // ImGui
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_reference.h>
@@ -86,6 +87,13 @@ enum class DialogResult
 	Dialog_CANCEL,
 };
 
+enum class ValueInputState
+{
+	NO_CHANGE,
+	CHANGED,
+	APPLIED,
+};
+
 enum class InputButtonState
 {
 	Null,
@@ -121,45 +129,71 @@ public:
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
 
-	static bool DrawInput(const std::string& inputName, Color& value);
-	static bool DrawInput(const std::string& inputName, Vector2& value);
-	static bool DrawInput(const std::string& inputName, Vector2Int& value);
-	static bool DrawInput(const std::string& inputName, Vector3& value);
-	static bool DrawInput(const std::string& inputName, Vector4& value);
-	static bool DrawInput(const std::string& inputName, float& value);
-	static bool DrawInput(const std::string& inputName, double& value);
-	static bool DrawInput(const std::string& inputName, std::string& value);
-	static bool DrawInput(const std::string& inputName, int& value);
-	static bool DrawInput(const std::string& inputName, bool& value);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& value, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& value, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& value, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& value, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
 
-	static bool DrawInput(const std::string& inputName, Color value, Color &newValue);
-	static bool DrawInput(const std::string& inputName, Vector2 value, Vector2 &newValue);
-	static bool DrawInput(const std::string& inputName, Vector2Int value, Vector2Int &newValue);
-	static bool DrawInput(const std::string& inputName, Vector3 value, Vector3 &newValue);
-	static bool DrawInput(const std::string& inputName, Vector4 value, Vector4 &newValue);
-	static bool DrawInput(const std::string& inputName, float value, float &newValue);
-	static bool DrawInput(const std::string& inputName, double value, double&newValue);
-	static bool DrawInput(const std::string& inputName, uint64_t value, uint64_t& newValue);
-	static bool DrawInput(const std::string& inputName, std::string value, std::string& newValue);
-	static bool DrawInput(const std::string& inputName, int value, int&newValue);
-	static bool DrawInput(const std::string& inputName, bool value, bool& newValue);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component> value, std::weak_ptr<Component>& newValue, uint64_t typeId);
-	static bool DrawEnum(const std::string& inputName, int value, int& newValue, uint64_t enumType);
+	static bool DrawInput(const std::string& inputName, Color &newValue);
+	static bool DrawInput(const std::string& inputName, Vector2 &newValue);
+	static bool DrawInput(const std::string& inputName, Vector2Int &newValue);
+	static bool DrawInput(const std::string& inputName, Vector3 &newValue);
+	static bool DrawInput(const std::string& inputName, Vector4 &newValue);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& newValue, uint64_t typeId);
+	static bool DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType);
 
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider> value, std::weak_ptr<Collider>& newValue, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject> value, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform> value, std::weak_ptr<Transform>& newValue, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& newValue, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& newValue, uint64_t typeId);
 
 	static int DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement);
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
 	static void DrawInputTitle(const std::string& title);
-	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, float& value);
-	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, int& value);
+
+	template<typename T>
+	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, T& value)
+	{
+		ImGui::TableSetColumnIndex(columnIndex);
+		ImGui::Text(inputName.c_str());
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(-1);
+		if constexpr(std::is_same<T, float>())
+			ImGui::InputFloat(inputId.c_str(), &value, 0, 0, "%.4f");
+		else if constexpr (std::is_same<T, int>())
+			ImGui::InputInt(inputId.c_str(), &value, 0, 0);
+	}
+
+	template<typename T>
+	static ValueInputState DrawInputTemplate(const std::string& inputName, T& valueRef)
+	{
+		T value = valueRef;
+		ValueInputState returnValue = ValueInputState::NO_CHANGE;
+
+		DrawInputTitle(inputName);
+		bool hasChanged = false;
+
+		if constexpr(std::is_same<T, float>())
+			hasChanged = ImGui::InputFloat(GenerateItemId().c_str(), &value, 0, 0, "%.4f");
+		else if constexpr (std::is_same<T, int>())
+			hasChanged = ImGui::InputInt(GenerateItemId().c_str(), &value);
+		else if constexpr (std::is_same<T, double>())
+			hasChanged = ImGui::InputDouble(GenerateItemId().c_str(), &value, 0, 0, "%0.8f");
+		else if constexpr (std::is_same<T, bool>())
+			hasChanged = ImGui::Checkbox(GenerateItemId().c_str(), &value);
+		else if constexpr (std::is_same<T, std::string>())
+			hasChanged = ImGui::InputText(GenerateItemId().c_str(), &value);
+		/*else if constexpr (std::is_same<T, Vector2>() || std::is_same<T, Vector2Int>() || std::is_same<T, Vector3>() || std::is_same<T, Vector4>()) {
+
+		}*/
+		//else if constexpr (std::is_same<T, uint64_t>())
+
+		valueRef = value;
+
+		const bool hasApplied = ImGui::IsItemDeactivatedAfterEdit();
+		if (hasApplied)
+			returnValue = ValueInputState::APPLIED;
+		else if (hasChanged)
+			returnValue = ValueInputState::CHANGED;
+
+		return returnValue;
+	}
 
 	template<typename T>
 	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
@@ -219,7 +253,7 @@ public:
 			if (ptr->file)
 				inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 		}
-		InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
+		const InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
 		if (returnValue == InputButtonState::ResetValue)
 		{
 			valuePtr->get() = nullptr;
@@ -306,7 +340,7 @@ public:
 						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
 				}
 
-				InputButtonState result = DrawInputButton("", inputText, true);
+				const InputButtonState result = DrawInputButton("", inputText, true);
 				if (result == InputButtonState::ResetValue)
 				{
 					valuePtr->get()[vectorI] = nullptr;
@@ -370,7 +404,7 @@ public:
 					inputText = ptr->GetGameObject()->name;
 			}
 
-			InputButtonState result = DrawInputButton("", inputText, true);
+			const InputButtonState result = DrawInputButton("", inputText, true);
 			if (result == InputButtonState::ResetValue)
 			{
 				valuePtr->get()[vectorI] = std::weak_ptr<T>();
@@ -413,10 +447,10 @@ private:
 	static void LoadEditorIcon(IconName iconName, const std::string& path);
 
 	template<typename T2, typename T>
-	static bool DrawInputReflective(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, T* valuePtr)
+	static bool DrawInputReflective(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, T* valuePtr)
 	{
-		T newValue;
-		const bool valueChangedTemp = DrawInput(variableName, *valuePtr, newValue);
+		T newValue = *valuePtr;
+		const bool valueChangedTemp = DrawInput(variableName, newValue);
 		if (valueChangedTemp)
 			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, valuePtr, newValue, *valuePtr);
 
@@ -426,14 +460,18 @@ private:
 	// Template for basic types (int, float, strings...)
 	template<typename T2, typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
-		static DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+		static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		T newValue;
+		T newValue = valuePtr->get();
 		bool valueChangedTemp = false;
-		if (!reflectionEntry.isEnum)
-			valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue);
+		if (!reflectionEntry.isEnum) 
+		{
+			ValueInputState state = DrawInputTemplate(variableName, newValue);
+			if (state == ValueInputState::APPLIED)
+				valueChangedTemp = true;
+		}
 		else if constexpr (std::is_same<int, T>())
-			valueChangedTemp = DrawEnum(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+			valueChangedTemp = DrawEnum(variableName, newValue, reflectionEntry.typeId);
 
 		if (valueChangedTemp)
 			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
@@ -442,7 +480,7 @@ private:
 
 	// Template for vectors of reflective (not implemented)
 	template<typename T2>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		Debug::Print("[Not implemented] Vector for Reflective!");
 		bool valueChangedTemp = false;
@@ -454,19 +492,19 @@ private:
 
 	// Template for vector of std::weak_ptr (GameObject, Transform, Component)
 	template<typename T2, typename T>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		bool valueChangedTemp = false;
 
-		if (std::is_same <T, GameObject>())
+		if constexpr (std::is_same <T, GameObject>())
 		{
 			valueChangedTemp = DrawVector("GameObject", valuePtr, variableName, reflectionEntry.typeId);
 		}
-		else if (std::is_same <T, Transform>())
+		else if constexpr (std::is_same <T, Transform>())
 		{
 			valueChangedTemp = DrawVector("Transform", valuePtr, variableName, reflectionEntry.typeId);
 		}
-		else if (std::is_same <T, Component>())
+		else if constexpr  (std::is_same <T, Component>())
 		{
 			valueChangedTemp = DrawVector("Component", valuePtr, variableName, reflectionEntry.typeId);
 		}
@@ -476,7 +514,7 @@ private:
 
 	// Template for vector of std::shared_ptr (Files: MeshData, AudioClip, Texture...)
 	template<typename T2, typename T>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		const bool valueChangedTemp = DrawVector(valuePtr, variableName);
 		return valueChangedTemp;
@@ -485,7 +523,7 @@ private:
 	// Template for std::shared_ptr (Files: MeshData, AudioClip, Texture...)
 	template<typename T2, typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
-	static DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		T newValue;
 		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName, newValue);
@@ -496,10 +534,10 @@ private:
 
 	// Template for std::weak_ptr (GameObject, Transform, Component)
 	template<typename T2, typename T>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		std::weak_ptr<T> newValue;
-		const bool valueChangedTemp = DrawInput(variableName, valuePtr->get(), newValue, reflectionEntry.typeId);
+		std::weak_ptr<T> newValue = valuePtr->get();
+		const bool valueChangedTemp = DrawInput(variableName, newValue, reflectionEntry.typeId);
 		if (valueChangedTemp)
 			command = std::make_shared<InspectorChangeValueCommand<T2, std::weak_ptr<T>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
 
@@ -508,7 +546,7 @@ private:
 
 	// Template for reflective (Custom reflective, Vectors, Color)
 	template<typename T2>
-	static bool DrawVariable(const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		bool valueChangedTemp = false;
 
@@ -534,7 +572,7 @@ private:
 		}
 		else //Basic draw
 		{
-			std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+			const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 			if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
 				DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);

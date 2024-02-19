@@ -5,9 +5,15 @@
 class Texture;
 class File;
 
+/**
+* Class to modify assets (Crop textures)
+*/
 class AssetModifier
 {
 public:
-	static void CropTexture(std::shared_ptr<Texture> textureInput, int posX, int posY, int width, int heigh, std::shared_ptr<File> fileOutput);
+	/**
+	* Create a cropped texture from a texture
+	*/
+	static void CropTexture(std::shared_ptr<Texture> textureInput, const int posX, const int posY, const int width, const int heigh, std::shared_ptr<File> fileOutput);
 };
 

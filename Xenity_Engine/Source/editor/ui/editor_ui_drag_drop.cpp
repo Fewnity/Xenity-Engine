@@ -70,7 +70,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 			for (size_t i = 0; i < compCount; i++)
 			{
 				const uint64_t id = typeid(*EditorUI::multiDragData.components[i]).hash_code();
-				if ("Type" + std::to_string(typeid(*EditorUI::multiDragData.components[i]).hash_code()) == name)
+				if ("Type" + std::to_string(id) == name)
 				{
 					comp = EditorUI::multiDragData.components[i];
 					break;

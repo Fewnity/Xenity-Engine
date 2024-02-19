@@ -19,7 +19,7 @@ void CreateClassMenu::Draw()
 	{
 		OnStartDrawing();
 
-		if (EditorUI::DrawInput("Class name", className))
+		if (EditorUI::DrawInputTemplate("Class name", className) != ValueInputState::NO_CHANGE)
 		{
 			if (!fileNameChanged)
 			{
@@ -27,10 +27,10 @@ void CreateClassMenu::Draw()
 			}
 		}
 
-		if (EditorUI::DrawInput("File name", fileName))
+		if (EditorUI::DrawInputTemplate("File name", fileName) != ValueInputState::NO_CHANGE)
 		{
 			fileNameChanged = true;
-			size_t fileNameSize = fileName.size();
+			const size_t fileNameSize = fileName.size();
 			for (int i = 0; i < fileNameSize; i++)
 			{
 				fileName[i] = std::tolower(fileName[i]);
