@@ -13,8 +13,6 @@
 
 class Component;
 
-
-
 class API ClassRegistry
 {
 public:
@@ -23,6 +21,12 @@ public:
 		std::string name;
 		uint64_t typeId;
 		FileType fileType = FileType::File_Other;
+	};
+
+	struct ClassInfo
+	{
+		std::string name;
+		uint64_t typeId;
 	};
 
 	/**
@@ -42,6 +46,11 @@ public:
 				{
 					return go->AddComponent<T>();
 				};
+
+			ClassInfo classInfo;
+			classInfo.name = name;
+			classInfo.typeId = typeid(T).hash_code();
+			classInfos.push_back(classInfo);
 		}
 	}
 
@@ -87,8 +96,8 @@ public:
 	template<typename T>
 	static const FileClassInfo& GetFileClassInfo()
 	{
-		uint64_t classId = typeid(T).hash_code();
-		int fileClassInfosCount = fileClassInfos.size();
+		const uint64_t classId = typeid(T).hash_code();
+		const int fileClassInfosCount = fileClassInfos.size();
 		for (int i = 0; i < fileClassInfosCount; i++)
 		{
 			const FileClassInfo& info = fileClassInfos[i];
@@ -99,9 +108,34 @@ public:
 		}
 	}
 
+	static const std::string GetClassName(uint64_t classId)
+	{
+		const int classInfosCount = classInfos.size();
+		for (int i = 0; i < classInfosCount; i++)
+		{
+			const ClassInfo& info = classInfos[i];
+			if (classId == info.typeId)
+			{
+				return info.name;
+			}
+		}
+		const int fileClassInfosCount = fileClassInfos.size();
+		for (int i = 0; i < fileClassInfosCount; i++)
+		{
+			const FileClassInfo& info = fileClassInfos[i];
+			if (classId == info.typeId)
+			{
+				return info.name;
+			}
+		}
+
+		return "Component";
+	}
+
 private:
 
 	static std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> nameToComponent;
 	static std::vector<FileClassInfo> fileClassInfos;
+	static std::vector<ClassInfo> classInfos;
 };
 

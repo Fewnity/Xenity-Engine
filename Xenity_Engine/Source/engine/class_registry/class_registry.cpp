@@ -27,6 +27,7 @@
 
 std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
+std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
@@ -51,7 +52,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 std::vector<std::string> ClassRegistry::GetComponentNames()
 {
 	std::vector<std::string> names;
-	for (auto& kv : nameToComponent)
+	for (const auto& kv : nameToComponent)
 	{
 		names.push_back(kv.first);
 	}
@@ -61,6 +62,7 @@ std::vector<std::string> ClassRegistry::GetComponentNames()
 void ClassRegistry::Reset()
 {
 	nameToComponent.clear();
+	classInfos.clear();
 }
 
 void ClassRegistry::RegisterEngineComponents()
