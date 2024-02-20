@@ -233,16 +233,16 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 
 bool Compiler::ExportProjectFiles(const CompilerParams& params)
 {
-	std::string projectFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
-	int projectFolderPathLen = projectFolder.size();
-	std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
-	int idsCount = ids.size();
+	const std::string projectFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
+	const int projectFolderPathLen = projectFolder.size();
+	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
+	const int idsCount = ids.size();
 	for (int i = 0; i < idsCount; i++)
 	{
-		FileAndPath* filePath = ProjectManager::GetFileById(ids[i]);
+		const FileAndPath* filePath = ProjectManager::GetFileById(ids[i]);
 		if (filePath)
 		{
-			std::string newPath = filePath->path.substr(projectFolderPathLen, filePath->path.size() - projectFolderPathLen);
+			const std::string newPath = filePath->path.substr(projectFolderPathLen, filePath->path.size() - projectFolderPathLen);
 			AddCopyEntry(false, filePath->path, params.exportPath + ASSETS_FOLDER + newPath);
 			AddCopyEntry(false, filePath->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
 

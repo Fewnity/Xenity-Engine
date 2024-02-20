@@ -57,12 +57,12 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 }
 
 template <typename T>
-std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name)
+std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::weak_ptr<GameObject>(), 0);
 	CommandManager::AddCommand(command);
 	command->Execute();
-	command->createdGameObject.lock()->name = Editor::GetIncrementedGameObjectName(name);
+	command->createdGameObject.lock()->name = Editor::GetIncrementedGameObjectName(gameObjectName);
 
 	auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObject.lock());
 	CommandManager::AddCommand(command2);
@@ -71,7 +71,7 @@ std::shared_ptr<T> CreateEmptyWithComponent(const std::string& name)
 	return command2->newComponent.lock();
 }
 
-bool MainBarMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
+bool MainBarMenu::DrawImageButton(const bool enabled, const std::shared_ptr<Texture>& texture)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
@@ -200,7 +200,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Sprite Renderer"))
 			{
-				std::shared_ptr<SpriteRenderer> spriteRenderer = CreateEmptyWithComponent<SpriteRenderer>("Sprite");
+				std::shared_ptr<SpriteRenderer> spriteRenderer = CreateGameObjectWithComponent<SpriteRenderer>("Sprite");
 			}
 			ImGui::EndMenu();
 		}
@@ -208,17 +208,17 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Directional Light"))
 			{
-				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Directional Light");
+				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Directional Light");
 				light->SetupDirectionalLight(Color::CreateFromRGBFloat(1, 1, 1), 1);
 			}
 			if (ImGui::MenuItem("Spot Light", 0, false, false))
 			{
-				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Spot Light");
+				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Spot Light");
 				light->SetupSpotLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10, 60, 0.5f);
 			}
 			if (ImGui::MenuItem("Point Light"))
 			{
-				std::shared_ptr<Light> light = CreateEmptyWithComponent<Light>("Point Light");
+				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Point Light");
 				light->SetupPointLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10);
 			}
 			ImGui::EndMenu();
@@ -227,7 +227,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Audio Source"))
 			{
-				std::shared_ptr<AudioSource> audioSource = CreateEmptyWithComponent<AudioSource>("Audio Source");
+				std::shared_ptr<AudioSource> audioSource = CreateGameObjectWithComponent<AudioSource>("Audio Source");
 			}
 			ImGui::EndMenu();
 		}
@@ -235,12 +235,12 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("2D Camera"))
 			{
-				std::shared_ptr<Camera> camera = CreateEmptyWithComponent<Camera>("Camera");
+				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
 				camera->SetProjectionType(ProjectionTypes::Orthographic);
 			}
 			if (ImGui::MenuItem("3D Camera"))
 			{
-				std::shared_ptr<Camera> camera = CreateEmptyWithComponent<Camera>("Camera");
+				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
 				camera->SetProjectionType(ProjectionTypes::Perspective);
 			}
 			ImGui::EndMenu();
@@ -461,15 +461,16 @@ void MainBarMenu::Draw()
 	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Stop]);
 	ImGui::EndGroup();
 	ImGui::GetStyle().FramePadding.x = oldFramePadding;
+
 	if (playClicked)
 	{
 		GameplayManager::SetGameState(GameState::Playing, true);
 	}
-	if (pauseClicked)
+	else if (pauseClicked)
 	{
 		GameplayManager::SetGameState(GameState::Paused, true);
 	}
-	if (stopClicked)
+	else if (stopClicked)
 	{
 		GameplayManager::SetGameState(GameState::Stopped, true);
 	}

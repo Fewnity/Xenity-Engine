@@ -12,6 +12,10 @@ public:
 	Vector2Int lastSize = Vector2Int(1280,720);
 private:
 	bool isLastFrameOpened = false;
+
+	/**
+	* Draw a message to say there is no camera
+	*/
 	void DrawNoCameraText();
 };
 

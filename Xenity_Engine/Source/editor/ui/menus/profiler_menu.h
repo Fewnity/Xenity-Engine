@@ -10,8 +10,19 @@ public:
 	void Draw() override;
 
 private:
+	/**
+	* Read current fps and store it in the history
+	*/
 	void UpdateFpsCounter();
+
+	/**
+	* Draw all profiler benchmarks
+	*/
 	void DrawProfilerBenchmarks();
+
+	/**
+	* Draw files reference count list
+	*/
 	void DrawFilesList();
 
 	float fpsAVG = 0;

@@ -30,7 +30,6 @@ void InspectorMenu::Init()
 
 void InspectorMenu::Draw()
 {
-	ImGuiIO& io = ImGui::GetIO();
 	const std::string windowName = "Inspector###Inspector" + std::to_string(id);
 	bool isOpen = true;
 	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
@@ -84,7 +83,7 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 	{
 		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
 	}
-	bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
+	const bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
 
 	int state = 0;
 
@@ -238,8 +237,8 @@ void InspectorMenu::DrawFilePreview()
 				ImGui::Text("%ss", currentTimeText.substr(0, currentTimeText.find_last_of('.') + 4).c_str());
 
 				cursorPos = ImGui::GetCursorPos();
-				ImVec2 mousePos = ImGui::GetMousePos();
-				ImVec2 windowPos = ImGui::GetWindowPos();
+				const ImVec2 mousePos = ImGui::GetMousePos();
+				const ImVec2 windowPos = ImGui::GetWindowPos();
 
 				// Move cursor when user is clicking on the timeline
 				float normalisedPos = ((mousePos.x - windowPos.x - cursorPos.x) / (float)(availSize.x));
@@ -271,7 +270,7 @@ void InspectorMenu::DrawFilePreview()
 					audioTypeText = "Mp3";
 				}
 
-				std::string totalTimeText = std::to_string(((int)(totalTime * 1000)) / 1000.0f);
+				const std::string totalTimeText = std::to_string(((int)(totalTime * 1000)) / 1000.0f);
 				const std::string infoText = audioTypeText + ", " + std::to_string(stream->GetFrequency()) + " Hz, " + channelText + ", " + totalTimeText.substr(0, totalTimeText.find_last_of('.') + 4) + "s";
 				const ImVec2 infoTextSize = ImGui::CalcTextSize(infoText.c_str());
 				ImGui::SetCursorPosX(availSize.x / 2 - infoTextSize.x / 2 + cursorPos.x);
@@ -285,7 +284,7 @@ void InspectorMenu::DrawFilePreview()
 	}
 }
 
-void InspectorMenu::DrawFileInfo(std::shared_ptr<FileReference>& selectedFileReference)
+void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedFileReference)
 {
 	const std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
 	ImGui::Text(fileNameExt.c_str());
@@ -332,7 +331,7 @@ void InspectorMenu::DrawFileInfo(std::shared_ptr<FileReference>& selectedFileRef
 	}
 }
 
-void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGameObject)
+void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
 {
 	std::string str0 = selectedGameObject->name;
 
@@ -394,7 +393,7 @@ void InspectorMenu::DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGame
 	}
 }
 
-void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGameObject)
+void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selectedGameObject)
 {
 	//Local position input
 	ImGui::Spacing();
@@ -449,15 +448,15 @@ void InspectorMenu::DrawTransformHeader(std::shared_ptr<GameObject> selectedGame
 	}
 }
 
-void InspectorMenu::DrawComponentsHeaders(std::shared_ptr<GameObject> selectedGameObject)
+void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& selectedGameObject)
 {
 	//Component list
 	int componentCount = selectedGameObject->GetComponentCount();
 	for (int i = 0; i < componentCount; i++)
 	{
-		auto& comp = selectedGameObject->components[i];
+		std::shared_ptr <Component>& comp = selectedGameObject->components[i];
 
-		float cursorY = ImGui::GetCursorPosY();
+		const float cursorY = ImGui::GetCursorPosY();
 
 		bool isEnable = comp->GetIsEnabled();
 

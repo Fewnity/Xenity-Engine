@@ -15,6 +15,40 @@ public:
 	void Draw() override;
 
 private:
+
+	/**
+	* Load sprite selections from the current sprite sheet
+	*/
+	void LoadSpriteSelections();
+
+	/**
+	* Save sprite selections of the current sprite sheet
+	*/
+	void SaveSpriteSelections();
+
+	/**
+	* Draw sprite sheet overlay menu
+	*/
+	void DrawSpriteSheetOverlay();
+
+	/**
+	* Draw sprite sheet image and selections lines
+	*/
+	void DrawSpriteSheet();
+
+	/**
+	* Draw the sprite editor tool window
+	*/
+	void DrawToolWindow();
+
+	/**
+	* Detect mouse and move the sprite sheet
+	*/
+	void MoveSpriteSheet();
+
+	/**
+	* Add a new sprite selection
+	*/
 	void AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot);
 
 	std::shared_ptr<Texture> spriteToEdit;

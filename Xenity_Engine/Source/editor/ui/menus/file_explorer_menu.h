@@ -19,16 +19,40 @@ class FileExplorerMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
-	static std::shared_ptr<Texture> GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile);
+
+	/**
+	* Get icon texture from a FileExplorerItem
+	*/
+	static std::shared_ptr<Texture> GetItemIcon(const FileExplorerItem& fileExplorerItem);
 
 private:
-	void DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, float offset, FileExplorerItem& item, int itemIndex);
-	int CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex);
-	void CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName);
 
+	/**
+	* Draw a file/folder icon and check for clicks/drag
+	*/
+	void DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item, const int itemIndex);
+	
+	/**
+	* Check for right click on item and draw the right click menu
+	*/
+	int CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id, const int itemIndex);
+
+	/**
+	* Check if an item is being dragged, and apply drag behavior if needed
+	*/
+	void CheckItemDrag(const FileExplorerItem& fileExplorerItem, std::shared_ptr<Texture>& iconTexture, const float iconSize, const std::string& itemName);
+
+	/**
+	* Rename the selected file
+	*/
+	void Rename();
+
+	/**
+	* Open an Item if the item supports this
+	*/
+	void OpenItem(const FileExplorerItem& item);
 
 	bool fileHovered = false;
-	void OpenItem(FileExplorerItem& item);
 	std::string renamingString = "";
 
 	std::shared_ptr<FileReference> fileToRename = nullptr;
@@ -37,6 +61,5 @@ private:
 	bool focusSet = false;
 	bool cancelNextClick = false;
 	bool firstClickedInWindow = false;
-	void Rename();
 };
 

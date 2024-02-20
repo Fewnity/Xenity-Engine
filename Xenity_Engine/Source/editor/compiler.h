@@ -85,6 +85,9 @@ struct CopyEntry
 class Compiler
 {
 public:
+	/**
+	* Check if the compiler has all needed files to start a compilation
+	*/
 	static CompilerAvailability CheckCompilerAvailability(const CompilerParams& params);
 
 	/**
@@ -111,6 +114,9 @@ public:
 
 private:
 
+	/**
+	* Export all game's files into the build folder
+	*/
 	static bool ExportProjectFiles(const CompilerParams& params);
 
 	/**

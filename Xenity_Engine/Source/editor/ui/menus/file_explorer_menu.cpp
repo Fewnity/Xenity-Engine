@@ -25,7 +25,7 @@ void FileExplorerMenu::Init()
 {
 }
 
-void FileExplorerMenu::OpenItem(FileExplorerItem& item)
+void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 {
 	if (item.file) // Do a specific action if the file can be opened
 	{
@@ -52,11 +52,11 @@ void FileExplorerMenu::OpenItem(FileExplorerItem& item)
 	}
 }
 
-void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int colCount, bool isFile, float offset, FileExplorerItem& item, int itemIndex)
+void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item, const int itemIndex)
 {
 	//Get name
 	std::string itemName;
-	if (isFile)
+	if (item.file)
 		itemName = item.file->file->GetFileName();
 	else
 		itemName = item.directory->GetFolderName();
@@ -79,7 +79,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
 
-	std::shared_ptr<Texture> iconTexture = GetItemIcon(item, isFile);
+	std::shared_ptr<Texture> iconTexture = GetItemIcon(item);
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
@@ -111,7 +111,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 		}
 		else
 		{
-			if (isFile)
+			if (item.file)
 			{
 				Editor::SetSelectedFileReference(item.file);
 				Editor::SetSelectedGameObject(nullptr);
@@ -151,7 +151,7 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 	ImGui::EndGroup();
 
 	// Set a drag drop target for folders
-	if (!isFile)
+	if (!item.file)
 	{
 		std::shared_ptr <FileReference> fileRef = nullptr;
 		const bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
@@ -182,12 +182,12 @@ void FileExplorerMenu::DrawExplorerItem(float iconSize, int& currentCol, int col
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
-	CheckItemDrag(item, isFile, iconTexture, iconSize, itemName);
+	CheckItemDrag(item, iconTexture, iconSize, itemName);
 
 	ImGui::PopStyleColor(3);
 }
 
-int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplorerItem, bool itemSelected, const std::string& id, int itemIndex)
+int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id, const int itemIndex)
 {
 	RightClickMenu fileExplorerRightClickMenu = RightClickMenu(id);
 	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Check(false);
@@ -298,16 +298,18 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(FileExplorerItem& fileExplore
 	return state;
 }
 
-void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool isFile, std::shared_ptr<Texture>& iconTexture, float iconSize, const std::string& itemName)
+void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, std::shared_ptr<Texture>& iconTexture, const float iconSize, const std::string& itemName)
 {
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 	{
 		std::string payloadName;
-		if (isFile)
+		if (fileExplorerItem.file)
 		{
-			payloadName = "Files" + std::to_string((int)fileExplorerItem.file->fileType);
 			if (isHovered)
 				payloadName = "Files";
+			else
+				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->fileType);
+
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
 		}
 		else
@@ -322,11 +324,11 @@ void FileExplorerMenu::CheckItemDrag(FileExplorerItem& fileExplorerItem, bool is
 	}
 }
 
-std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(FileExplorerItem& fileExplorerItem, bool isFile)
+std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& fileExplorerItem)
 {
 	// Get item icon
 	std::shared_ptr<Texture> tex = EditorUI::icons[(int)IconName::Icon_File];
-	if (!isFile)
+	if (fileExplorerItem.directory)
 	{
 		tex = EditorUI::icons[(int)IconName::Icon_Folder];
 	}
@@ -420,7 +422,7 @@ void FileExplorerMenu::Draw()
 				{
 					FileExplorerItem item;
 					item.directory = currentDir->subdirectories[i];
-					DrawExplorerItem(iconSize, currentCol, colCount, false, offset, item, itemIndex);
+					DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
 					itemIndex++;
 				}
 
@@ -428,7 +430,7 @@ void FileExplorerMenu::Draw()
 				{
 					FileExplorerItem item;
 					item.file = filesRefs[i];
-					DrawExplorerItem(iconSize, currentCol, colCount, true, offset, item, itemIndex);
+					DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
 					itemIndex++;
 				}
 				ImGui::EndTable();

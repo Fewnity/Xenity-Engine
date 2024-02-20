@@ -90,12 +90,12 @@ public:
 				{
 					FileExplorerItem item;
 					item.file = foundFiles[i];
-					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item, true), 64, i);
+					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item), 64, i);
 					if (ImGui::IsItemClicked())
 					{
 						valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
-						std::vector<std::shared_ptr<InspectorMenu>> inspectors = Editor::GetMenus<InspectorMenu>();
-						int inspectorsCount = inspectors.size();
+						const std::vector<std::shared_ptr<InspectorMenu>> inspectors = Editor::GetMenus<InspectorMenu>();
+						const int inspectorsCount = inspectors.size();
 						for (int menuIndex = 0; menuIndex < inspectorsCount; menuIndex++)
 						{
 							inspectors[menuIndex]->forceItemUpdate = true;

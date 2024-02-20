@@ -10,14 +10,33 @@ class MainBarMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
-	int GetHeight()
+
+	/**
+	* Get bar height
+	*/
+	int GetHeight() const
 	{
 		return height;
 	}
 
 private:
+	/**
+	* Add a component to the selected gameobject
+	*/
 	template<typename T>
 	void AddComponentToSelectedGameObject();
-	bool DrawImageButton(bool enabled, std::shared_ptr<Texture> texture);
+
+	/**
+	* Create a gameobject with a component
+	*/
+	template <typename T>
+	std::shared_ptr<T> CreateGameObjectWithComponent(const std::string& gameObjectName);
+
+	/**
+	* Draw an image as a button
+	* @return is clicked
+	*/
+	bool DrawImageButton(const bool enabled, const std::shared_ptr<Texture>& texture);
+
 	int height = 0;
 };

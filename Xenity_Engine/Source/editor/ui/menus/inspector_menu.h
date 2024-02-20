@@ -13,16 +13,41 @@ class InspectorMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
-	std::shared_ptr<FileReference> loadedPreview = nullptr;
+
+	/**
+	* Check if the user wants to open the right click menu and open it if needed
+	*/
 	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
+
+	std::shared_ptr<FileReference> loadedPreview = nullptr;
 	bool forceItemUpdate = false;
 
 private:
+	/**
+	* Draw file preview part
+	*/
 	void DrawFilePreview();
-	void DrawFileInfo(std::shared_ptr<FileReference> & selectedFileReference);
-	void DrawGameObjectInfo(std::shared_ptr <GameObject> selectedGameObject);
-	void DrawTransformHeader(std::shared_ptr <GameObject> selectedGameObject);
-	void DrawComponentsHeaders(std::shared_ptr <GameObject> selectedGameObject);
+
+	/**
+	* Draw file info part
+	*/
+	void DrawFileInfo(const std::shared_ptr<FileReference>& selectedFileReference);
+
+	/**
+	* Draw selected gameobject infos
+	*/
+	void DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject);
+
+	/**
+	* Draw selected transform header
+	*/
+	void DrawTransformHeader(const std::shared_ptr <GameObject>& selectedGameObject);
+
+	/**
+	* Draw components headers
+	*/
+	void DrawComponentsHeaders(const std::shared_ptr <GameObject>& selectedGameObject);
+
 	bool showAddComponentMenu = false;
 
 	std::string previewText = "";
