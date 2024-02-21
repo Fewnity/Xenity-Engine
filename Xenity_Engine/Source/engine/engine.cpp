@@ -41,6 +41,8 @@
 #include <psp/callbacks.h>
 #elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
+#elif defined(_WIN32) || defined(_WIN64)
+#include <csignal>
 #endif
 
 // Files & Assets
@@ -83,8 +85,17 @@ bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
 std::unique_ptr<GameInterface> Engine::game = nullptr;
 
+void Engine::OnCloseSignal(int)
+{
+	isRunning = false;
+}
+
 int Engine::Init()
 {
+#if defined(_WIN32) || defined(_WIN64)
+	signal(SIGBREAK, Engine::OnCloseSignal);
+#endif
+
 	CrashHandler::Init();
 
 	//  Init random
@@ -370,6 +381,9 @@ void Engine::Loop()
 
 void Engine::Stop()
 {
+	if (!isRunning)
+		return;
+
 	isRunning = false;
 #if defined(EDITOR)
 	ImGui::SaveIniSettingsToDisk("imgui.ini");

@@ -62,6 +62,8 @@ public:
 	}
 
 private:
+	static void OnCloseSignal(int);
+
 	/**
 	 * Create some benchmark for profiling
 	 */
