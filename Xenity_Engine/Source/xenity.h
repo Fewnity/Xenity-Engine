@@ -101,3 +101,6 @@
 
 // Utils
 #include <engine/tools/gameplay_utility.h>
+
+// Event System
+#include <engine/event_system/event_system.h>
