@@ -9,8 +9,19 @@
 #include <engine/graphics/graphics.h>
 #include <engine/debug/debug.h>
 
+ConsoleMenu::~ConsoleMenu()
+{
+	Debug::GetOnDebugLogEvent().Unbind(&ConsoleMenu::OnNewDebug, this);
+}
+
 void ConsoleMenu::Init()
 {
+	Debug::GetOnDebugLogEvent().Bind(&ConsoleMenu::OnNewDebug, this);
+}
+
+void ConsoleMenu::OnNewDebug() 
+{
+	needUpdateScrool = 1;
 }
 
 void ConsoleMenu::Draw()
@@ -21,10 +32,20 @@ void ConsoleMenu::Draw()
 	if (visible)
 	{
 		OnStartDrawing();
-		ImVec2 startCusorPos = ImGui::GetCursorPos();
+		const ImVec2 startCusorPos = ImGui::GetCursorPos();
 
 		ImGui::SetCursorPosY(startCusorPos.y * 2);
-		int historyCount = Debug::debugMessageHistory.size();
+		const int historyCount = Debug::debugMessageHistory.size();
+		
+		if (needUpdateScrool != 0)
+			needUpdateScrool++;
+
+		if (needUpdateScrool >= 6)
+		{
+			needUpdateScrool = 0;
+			ImGui::SetNextWindowScroll(ImVec2(-1, maxScrollSize));
+		}
+
 		ImGui::BeginChild("ConsoleMenuChild");
 		if (consoleMode)
 		{
@@ -41,7 +62,7 @@ void ConsoleMenu::Draw()
 		{
 			for (int i = 0; i < historyCount; i++)
 			{
-				DebugHistory& history = Debug::debugMessageHistory[i];
+				const DebugHistory& history = Debug::debugMessageHistory[i];
 
 				ImVec4 color = ImVec4(1,1,1,1);
 				if (history.type == DebugType::Log)
@@ -66,6 +87,14 @@ void ConsoleMenu::Draw()
 
 				ImGui::TextColored(color, "[%d] %s", history.count, history.message.c_str());
 			}
+		}
+		if (needUpdateScrool == 5) 
+		{
+			if (ImGui::GetScrollY() != maxScrollSize)
+			{
+				needUpdateScrool = 0;
+			}
+			maxScrollSize = ImGui::GetScrollMaxY();
 		}
 		ImGui::EndChild();
 

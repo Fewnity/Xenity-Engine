@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <engine/event_system/event_system.h>
 
 class Socket;
 class File;
@@ -81,7 +82,14 @@ public:
 	static float SendProfilerDelay;
 	static std::vector<DebugHistory> debugMessageHistory;
 
+	static Event<>& GetOnDebugLogEvent()
+	{
+		return OnDebugLogEvent;
+	}
+
 private:
+
+	static Event<> OnDebugLogEvent;
 
 	static void AddMessageInHistory(const std::string& message, DebugType messageType);
 

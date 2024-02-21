@@ -26,6 +26,8 @@ float Debug::SendProfilerCooldown = 0;
 float Debug::SendProfilerDelay = 0.2f;
 std::vector<DebugHistory> Debug::debugMessageHistory;
 
+Event<> Debug::OnDebugLogEvent;
+
 MyMutex* debugMutex = nullptr;
 
 /**
@@ -33,7 +35,7 @@ MyMutex* debugMutex = nullptr;
  */
 void Debug::PrintError(const std::string& text)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -46,6 +48,7 @@ void Debug::PrintError(const std::string& text)
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
 	debugMutex->Unlock();
+	OnDebugLogEvent.Trigger();
 }
 
 /**
@@ -53,7 +56,7 @@ void Debug::PrintError(const std::string& text)
  */
 void Debug::PrintWarning(const std::string& text)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -66,6 +69,7 @@ void Debug::PrintWarning(const std::string& text)
 	PrintInFile(textWithoutColor);
 	debugText += textWithoutColor;
 	debugMutex->Unlock();
+	OnDebugLogEvent.Trigger();
 }
 
 void Debug::SendProfilerDataToServer()
@@ -125,7 +129,7 @@ void Debug::PrintInFile(const std::string& text)
  */
 void Debug::Print(const std::string& text)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr)
+	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -137,6 +141,7 @@ void Debug::Print(const std::string& text)
 	PrintInFile(finalText);
 	debugText += finalText; // Disable because cause crashes, why? Maybe thread?
 	debugMutex->Unlock();
+	OnDebugLogEvent.Trigger();
 }
 
 void Debug::ClearDebugLogs()
