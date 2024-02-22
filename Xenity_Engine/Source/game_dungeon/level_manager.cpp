@@ -78,6 +78,6 @@ ReflectiveData LevelManager::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, level1, "level1", true);
 	Reflective::AddVariable(reflectedVariables, level2, "level2", true);
 
-	Reflective::AddVariable(reflectedVariables, levels, "levels", true);
+	//Reflective::AddVariable(reflectedVariables, levels, "levels", true);
 	return reflectedVariables;
 }

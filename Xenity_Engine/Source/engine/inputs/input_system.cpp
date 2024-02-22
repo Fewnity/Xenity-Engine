@@ -22,12 +22,11 @@
 #endif
 
 #if defined(EDITOR)
-#include <editor/ui/menus/game_menu.h>
-#include <editor/ui/menus/scene_menu.h>
-#include <xenity_editor.h>
+#include <editor/ui/menus/game_menu.h> // Need to remove this include
+#include <editor/ui/menus/scene_menu.h> // Need to remove this include
+#include <xenity_editor.h> // Need to remove this include
 #endif
 
-#include <fstream>
 #include <map>
 #include <unordered_map>
 #include <vector>

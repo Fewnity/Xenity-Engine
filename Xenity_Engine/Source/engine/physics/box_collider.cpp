@@ -28,8 +28,6 @@ ReflectiveData BoxCollider::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, size, "size", true);
 	AddVariable(reflectedVariables, offset, "offset", true);
-	// AddReflectionVariable(reflectedVariables, min, "min", true);
-	// AddReflectionVariable(reflectedVariables, max, "max", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
 	return reflectedVariables;
 }

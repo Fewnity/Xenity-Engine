@@ -94,7 +94,7 @@ public:
 	}
 
 	template<typename T>
-	static const FileClassInfo& GetFileClassInfo()
+	static const FileClassInfo* GetFileClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
 		const int fileClassInfosCount = fileClassInfos.size();
@@ -103,9 +103,11 @@ public:
 			const FileClassInfo& info = fileClassInfos[i];
 			if (classId == info.typeId)
 			{
-				return info;
+				return &info;
 			}
 		}
+
+		return nullptr;
 	}
 
 	static const std::string GetClassName(uint64_t classId)

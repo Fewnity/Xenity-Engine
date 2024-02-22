@@ -74,7 +74,7 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 
 	GameObjectsAndIds.push_back(gameObjectAndId);
 
-	int childCount = goToDuplicate->childCount;
+	const int childCount = goToDuplicate->childCount;
 	for (int i = 0; i < childCount; i++)
 	{
 		DuplicateChild(newGameObject, goToDuplicate->children[i].lock(), ComponentsAndIds, GameObjectsAndIds);

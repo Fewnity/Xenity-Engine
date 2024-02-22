@@ -17,10 +17,6 @@
 #include <engine/audio/audio_clip_stream.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/inputs/input_system.h>
-#include <engine/scene_management/scene.h>
-#include <engine/graphics/ui/font.h>
-#include <engine/graphics/skybox.h>
-#include <engine/graphics/material.h>
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
 
@@ -294,11 +290,11 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 	if (reflection)
 	{
-		auto reflectionList = reflection->GetReflectiveData();
+		const ReflectiveData reflectionList = reflection->GetReflectiveData();
 		if (reflectionList.size() != 0)
 		{
 			std::shared_ptr<Command> command = nullptr;
-			bool changed = EditorUI::DrawReflectiveData(reflectionList, command, selectedFileReference);
+			const bool changed = EditorUI::DrawReflectiveData(reflectionList, command, selectedFileReference);
 			if (changed && command)
 			{
 				CommandManager::AddCommand(command);
@@ -311,7 +307,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 			}
 		}
 	}
-	ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
+	const ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (metaReflection.size() != 0)
 	{
 		std::shared_ptr<Command> command = nullptr;

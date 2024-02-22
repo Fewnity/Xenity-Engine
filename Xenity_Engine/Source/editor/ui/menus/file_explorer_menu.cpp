@@ -280,7 +280,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		deleteMenuItem->SetIsVisible(itemSelected);
 	}
 
-	bool rightClickDrawn = fileExplorerRightClickMenu.Draw();
+	const bool rightClickDrawn = fileExplorerRightClickMenu.Draw();
 
 	int state = 0;
 	if (rightClickDrawn)

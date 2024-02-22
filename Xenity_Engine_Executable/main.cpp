@@ -23,6 +23,10 @@ Finish rect transform support
 Add Windows controllers support
 Add the ability to change values with mouse when sliding
 
+Add event for input system for the screen size and mouse position
+Add event in SceneManager for UpdateWindowTitle?
+Move/Store engine name and version somewhere
+
 --- To do soon:
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled

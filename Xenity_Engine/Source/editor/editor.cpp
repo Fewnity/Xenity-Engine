@@ -44,6 +44,7 @@
 #include "file_handler.h"
 #include <imgui/imgui_internal.h>
 #include <engine/debug/debug.h>
+#include <engine/event_system/event_system.h>
 
 using json = nlohmann::json;
 
@@ -95,6 +96,8 @@ void Editor::Init()
 	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Filter::Point);
 	toolArrowsTexture->LoadFileReference();
+
+	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 }
 
 void Editor::OnWindowFocused()

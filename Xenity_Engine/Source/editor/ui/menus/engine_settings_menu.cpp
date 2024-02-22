@@ -16,7 +16,7 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 	const std::string buttonId = "Select a folder" + std::string(EditorUI::GenerateItemId());
 	if (ImGui::Button(buttonId.c_str()))
 	{
-		std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
+		const std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
 		if (!folder.empty())
 		{
 			path = folder;

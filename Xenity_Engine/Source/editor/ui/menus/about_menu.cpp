@@ -2,11 +2,6 @@
 
 #include <imgui/imgui.h>
 
-#include <editor/ui/editor_ui.h>
-#include <engine/reflection/reflection.h>
-#include <engine/graphics/skybox.h>
-#include <engine/graphics/graphics.h>
-
 void AboutMenu::Init()
 {
 }

@@ -280,12 +280,12 @@ void ProjectManager::CreateVisualStudioSettings()
 			// Create vscode folder
 			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode\\");
 
-			std::string filePath = assetFolderPath + ".vscode\\c_cpp_properties.json";
+			const std::string filePath = assetFolderPath + ".vscode\\c_cpp_properties.json";
 			FileSystem::fileSystem->Delete(filePath);
 
 			// Create the vscode settings file
 			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
-			bool isOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
+			const bool isOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
 			if (isOpen)
 			{
 				vsCodeParamFile->Write(vsCodeText);
@@ -401,7 +401,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	std::string extension = _extension;
 
 	// Replace uppercase letters by lowercase letters
-	size_t extLen = extension.size();
+	const size_t extLen = extension.size();
 	for (size_t i = 1; i < extLen; i++)
 	{
 		extension[i] = tolower(extension[i]);
@@ -545,7 +545,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	std::vector<uint64_t> ids;
 #if defined(EDITOR)
 	int idCount = 0;
-	std::vector<FileAndPath> sceneFiles = GetFilesByType(FileType::File_Scene);
+	const std::vector<FileAndPath> sceneFiles = GetFilesByType(FileType::File_Scene);
 	const int scenCount = sceneFiles.size();
 	for (int i = 0; i < scenCount; i++)
 	{
@@ -594,10 +594,10 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	return ids;
 }
 
-std::vector<FileAndPath> ProjectManager::GetFilesByType(FileType type)
+std::vector<FileAndPath> ProjectManager::GetFilesByType(const FileType type)
 {
 	std::vector<FileAndPath> fileList;
-	for (auto& fileinfo : projectFilesIds) 
+	for (const auto& fileinfo : projectFilesIds) 
 	{
 		if (fileinfo.second.type == type) 
 		{
@@ -608,7 +608,7 @@ std::vector<FileAndPath> ProjectManager::GetFilesByType(FileType type)
 	return fileList;
 }
 
-FileAndPath* ProjectManager::GetFileById(uint64_t id)
+FileAndPath* ProjectManager::GetFileById(const uint64_t id)
 {
 	if (projectFilesIds.contains(id))
 	{
@@ -618,7 +618,7 @@ FileAndPath* ProjectManager::GetFileById(uint64_t id)
 	return nullptr;
 }
 
-std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 
@@ -801,7 +801,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, const uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);

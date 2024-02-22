@@ -7,17 +7,15 @@
 #include <string>
 #include <vector>
 #include <engine/platform.h>
+#include <engine/reflection/reflection.h>
+#include <engine/event_system/event_system.h>
 
-enum class BuildType
-{
+ENUM(BuildType, 
 	EditorHotReloading,
 	BuildGame,
-	BuildAndRunGame,
-};
+	BuildAndRunGame);
 
-enum class CompileResult
-{
-	SUCCESS,
+ENUM(CompileResult, SUCCESS,
 	ERROR_UNKNOWN,
 	ERROR_FILE_COPY,
 	ERROR_GAME_CODE_COPY,
@@ -26,16 +24,13 @@ enum class CompileResult
 	ERROR_WSL_ENGINE_CODE_COPY,
 	ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY,
 	ERROR_WSL_CMAKELISTS_COPY,
-	ERROR_COMPILER_AVAILABILITY,
-};
+	ERROR_COMPILER_AVAILABILITY);
 
-enum class CompilerAvailability 
-{
+ENUM(CompilerAvailability,
 	AVAILABLE = 1,
 	MISSING_COMPILER_SOFTWARE = 2,
 	MISSING_ENGINE_COMPILED_LIB = 4,
-	MISSING_PPSSPP = 8,
-};
+	MISSING_PPSSPP = 8);
 
 struct CompilerParams
 {
@@ -111,6 +106,16 @@ public:
 	 * Start hot reloading
 	 */
 	static void HotReloadGame();
+
+	static Event<>& GetOnCompilationEndedEvent()
+	{
+		return OnCompilationEndedEvent;
+	}
+
+	static Event<>& GetOnCompilationStartedEvent()
+	{
+		return OnCompilationStartedEvent;
+	}
 
 private:
 
@@ -198,4 +203,8 @@ private:
 	static void StartGame(Platform platform, const std::string &exportPath);
 
 	static std::vector<CopyEntry> copyEntries;
+
+	static Event<> OnCompilationEndedEvent;
+	static Event<> OnCompilationStartedEvent;
+
 };

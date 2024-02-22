@@ -8,6 +8,7 @@
 #include <engine/graphics/shader.h>
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/skybox.h>
+#include <engine/debug/debug.h>
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
@@ -50,6 +51,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 template<typename T>
 bool FileReferenceFinder::GetFileRefId(const T& var, std::vector <uint64_t>& ids)
 {
+	Debug::PrintError("[FileReferenceFinder::GetFileRefId] Not implemented!");
 	return false;
 }
 

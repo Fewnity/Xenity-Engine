@@ -32,6 +32,7 @@
 #include <editor/ui/menus/game_menu.h>
 #include <engine/scene_management/scene_manager.h>
 #include <editor/plugin/plugin_manager.h>
+#include <editor/file_handler.h>
 #endif
 
 // Other platforms
@@ -84,6 +85,7 @@ std::unique_ptr<Renderer> Engine::renderer = nullptr;
 bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
 std::unique_ptr<GameInterface> Engine::game = nullptr;
+Event<>* Engine::OnWindowFocusEvent = nullptr;
 
 void Engine::OnCloseSignal(int)
 {
@@ -95,6 +97,8 @@ int Engine::Init()
 #if defined(_WIN32) || defined(_WIN64)
 	signal(SIGBREAK, Engine::OnCloseSignal);
 #endif
+
+	OnWindowFocusEvent = new Event<>();
 
 	CrashHandler::Init();
 
@@ -218,14 +222,7 @@ void Engine::CheckEvents()
 		{
 #if defined(EDITOR)
 			const bool cancelQuit = SceneManager::OnQuit();
-			if (!cancelQuit)
-			{
-				isRunning = false;
-			}
-			else
-			{
-				isRunning = true;
-			}
+			isRunning = cancelQuit;
 #else
 			isRunning = false;
 #endif
@@ -272,9 +269,7 @@ void Engine::CheckEvents()
 	}
 	if (focusCount == 1)
 	{
-#if defined(EDITOR)
-		Editor::OnWindowFocused();
-#endif
+		OnWindowFocusEvent->Trigger();
 	}
 #endif
 }

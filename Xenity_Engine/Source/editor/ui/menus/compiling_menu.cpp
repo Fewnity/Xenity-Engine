@@ -1,18 +1,25 @@
 #include "compiling_menu.h"
 
 #include <imgui/imgui.h>
-#include <editor/ui/editor_ui.h>
-#include <engine/asset_management/project_manager.h>
+#include <editor/compiler.h>
+
+CompilingMenu::~CompilingMenu()
+{
+	Compiler::GetOnCompilationStartedEvent().Unbind(&CompilingMenu::OpenPopup, this);
+	Compiler::GetOnCompilationEndedEvent().Unbind(&CompilingMenu::ClosePopup, this);
+}
 
 void CompilingMenu::Init()
 {
+	Compiler::GetOnCompilationStartedEvent().Bind(&CompilingMenu::OpenPopup, this);
+	Compiler::GetOnCompilationEndedEvent().Bind(&CompilingMenu::ClosePopup, this);
 }
 
 void CompilingMenu::Draw()
 {
-	if (popupState == (int)CompilingPupopState::Opening)
+	if (popupState == CompilingPupopState::Opening)
 	{
-		popupState = (int)CompilingPupopState::Closing;
+		popupState = CompilingPupopState::Closing;
 		ImGui::OpenPopup("Compiling...");
 	}
 
@@ -22,7 +29,7 @@ void CompilingMenu::Draw()
 	if (ImGui::BeginPopupModal("Compiling...", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking))
 	{
 		ImGui::Text("Compiling game...");
-		if (popupState == (int)CompilingPupopState::Closed)
+		if (popupState == CompilingPupopState::Closed)
 		{
 			ImGui::CloseCurrentPopup();
 		}
@@ -32,10 +39,10 @@ void CompilingMenu::Draw()
 
 void CompilingMenu::OpenPopup()
 {
-	popupState = (int)CompilingPupopState::Opening;
+	popupState = CompilingPupopState::Opening;
 }
 
 void CompilingMenu::ClosePopup()
 {
-	popupState = (int)CompilingPupopState::Closed;
+	popupState = CompilingPupopState::Closed;
 }

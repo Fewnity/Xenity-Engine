@@ -215,7 +215,6 @@ void SceneManager::LoadScene(const json& jsonData)
 					const std::string componentName = componentKV.value()["Type"];
 					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, newGameObject);
 
-
 					// Get and set component id
 					const uint64_t compId = std::stoull(componentKV.key());
 					if (compId > biggestId)

@@ -238,16 +238,16 @@ public:
 	static bool DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
-		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
+		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
 
-		std::string inputText = "None (" + classInfo.name + ")";
+		std::string inputText = "None (" + classInfo->name + ")";
 		const std::shared_ptr<T> ptr = valuePtr->get();
 		if (ptr != nullptr)
 		{
 			if (ptr->file != nullptr)
 				inputText = ptr->file->GetFileName();
 			else
-				inputText = "Filled but invalid file reference (" + classInfo.name + ")";
+				inputText = "Filled but invalid file reference (" + classInfo->name + ")";
 
 			inputText += " " + std::to_string(ptr->fileId) + " ";
 			if (ptr->file)
@@ -266,13 +266,13 @@ public:
 			std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
 			selectMenu->SetActive(true);
 			selectMenu->valuePtr = *valuePtr;
-			selectMenu->SearchFiles(classInfo.fileType);
+			selectMenu->SearchFiles(classInfo->fileType);
 			currentSelectAssetMenu = selectMenu;
 			selectMenu->Focus();
 		}
 
 		std::shared_ptr <FileReference> ref = nullptr;
-		const std::string payloadName = "Files" + std::to_string((int)classInfo.fileType);
+		const std::string payloadName = "Files" + std::to_string((int)classInfo->fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
 			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
@@ -318,7 +318,7 @@ public:
 	static bool DrawVector(std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const std::string& variableName)
 	{
 		bool valueChangedTemp = false;
-		const ClassRegistry::FileClassInfo& classInfo = ClassRegistry::GetFileClassInfo<T>();
+		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
 
 		const size_t vectorSize = valuePtr->get().size();
 		const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
@@ -326,14 +326,14 @@ public:
 		{
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				std::string inputText = "None (" + classInfo.name + ")";
+				std::string inputText = "None (" + classInfo->name + ")";
 				const auto& ptr = valuePtr->get()[vectorI];
 				if (ptr != nullptr)
 				{
 					if (ptr->file != nullptr)
 						inputText = ptr->file->GetFileName();
 					else
-						inputText = "Filled but invalid " + classInfo.name;
+						inputText = "Filled but invalid " + classInfo->name;
 
 					inputText += " " + std::to_string(ptr->fileId) + " ";
 					if (ptr->file)
@@ -353,13 +353,13 @@ public:
 					std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
 					selectMenu->SetActive(true);
 					selectMenu->valuePtr = (valuePtr->get()[vectorI]);
-					selectMenu->SearchFiles(classInfo.fileType);
+					selectMenu->SearchFiles(classInfo->fileType);
 					currentSelectAssetMenu = selectMenu;
 					selectMenu->Focus();
 				}
 
 				std::shared_ptr <FileReference> ref = nullptr;
-				const std::string payloadName = "Files" + std::to_string((int)classInfo.fileType);
+				const std::string payloadName = "Files" + std::to_string((int)classInfo->fileType);
 				if (DragDropTarget(payloadName, ref))
 				{
 					valuePtr->get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
@@ -367,13 +367,13 @@ public:
 				}
 			}
 
-			const std::string addText = "Add " + classInfo.name + GenerateItemId();
+			const std::string addText = "Add " + classInfo->name + GenerateItemId();
 			if (ImGui::Button(addText.c_str()))
 			{
 				valuePtr->get().push_back(nullptr);
 			}
 
-			const std::string removeText = "Remove " + classInfo.name + GenerateItemId();
+			const std::string removeText = "Remove " + classInfo->name + GenerateItemId();
 			if (ImGui::Button(removeText.c_str()))
 			{
 				if (vectorSize != 0)

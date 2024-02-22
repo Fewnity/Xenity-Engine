@@ -97,8 +97,8 @@ public:
 	* Get file reference by Id
 	* @param id File reference Id
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceById(uint64_t id);
-	static FileAndPath* GetFileById(uint64_t id);
+	static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
+	static FileAndPath* GetFileById(const uint64_t id);
 
 	/**
 	* Save the meta file of a file reference
@@ -192,7 +192,7 @@ public:
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
 	static FileType GetFileType(const std::string& extension);
-	static std::vector<FileAndPath> GetFilesByType(FileType type);
+	static std::vector<FileAndPath> GetFilesByType(const FileType type);
 	static std::vector<uint64_t> GetAllUsedFileByTheGame();
 
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
@@ -207,7 +207,7 @@ private:
 	static void FindAllProjectFiles();
 	static void CreateVisualStudioSettings();
 
-	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, uint64_t id);
+	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;

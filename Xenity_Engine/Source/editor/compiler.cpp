@@ -16,7 +16,9 @@
 
 // Editor
 #include <editor/editor.h>
-#include <editor/ui/menus/compiling_menu.h>
+
+Event<> Compiler::OnCompilationEndedEvent;
+Event<> Compiler::OnCompilationStartedEvent;
 
 namespace fs = std::filesystem;
 
@@ -35,7 +37,7 @@ void Compiler::AddCopyEntry(bool isFolder, const std::string& source, const std:
 bool Compiler::ExecuteCopyEntries()
 {
 	bool success = true;
-	for (CopyEntry entry : copyEntries)
+	for (const CopyEntry& entry : copyEntries)
 	{
 		try
 		{
@@ -93,8 +95,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Print parameters
 	Debug::Print(
 		"[Compiler::Compile] Preparing:"
-		"\n- Platform: " + std::to_string((int)params.platform)
-		+ "\n- Build Type: " + std::to_string((int)params.buildType)
+		"\n- Platform: " + (EnumHelper::GetEnumStringsLists()[typeid(Platform).hash_code()])[(int)params.platform].name.substr(2)
+		+ "\n- Build Type: " + (EnumHelper::GetEnumStringsLists()[typeid(BuildType).hash_code()])[(int)params.buildType].name
 		+ "\n- Temporary Path: " + params.tempPath
 		+ "\n- Source Path: " + params.sourcePath
 		+ "\n- Export Path: " + params.exportPath
@@ -294,8 +296,7 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 
 void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
 {
-	auto compilingMenu = Editor::GetMenu<CompilingMenu>();
-	compilingMenu->OpenPopup();
+	OnCompilationStartedEvent.Trigger();
 	std::thread t = std::thread(CompileGame, platform, buildType, exportPath);
 	t.detach();
 }
@@ -385,11 +386,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 		break;
 	}
 
-	auto compilingMenu = Editor::GetMenu<CompilingMenu>();
-	if (compilingMenu)
-	{
-		compilingMenu->ClosePopup();
-	}
+	OnCompilationEndedEvent.Trigger();
 }
 
 std::string WindowsPathToWSL(const std::string& path)

@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <engine/platform.h>
+#include <engine/event_system/event_system.h>
 #include <mutex>
 
 class Renderer;
@@ -61,7 +62,14 @@ public:
 		return *renderer;
 	}
 
+	static Event<>* GetOnWindowFocusEvent() 
+	{
+		return OnWindowFocusEvent;
+	}
+
 private:
+	static Event<>* OnWindowFocusEvent;
+
 	static void OnCloseSignal(int);
 
 	/**

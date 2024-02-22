@@ -12,12 +12,13 @@ enum class CompilingPupopState
 class CompilingMenu : public Menu
 {
 public:
+	~CompilingMenu();
 	void Init() override;
 	void Draw() override;
 	void OpenPopup();
 	void ClosePopup();
 
 private:
-	int popupState = 0;
+	CompilingPupopState popupState = CompilingPupopState::Closed;
 };
 
