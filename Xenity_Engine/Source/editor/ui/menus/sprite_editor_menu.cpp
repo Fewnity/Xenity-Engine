@@ -72,6 +72,11 @@ void SpriteEditorMenu::LoadSpriteSelections()
 
 void SpriteEditorMenu::SaveSpriteSelections()
 {
+	const std::string folderPath0 = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\";
+
+	// Create the folder where sprites will be saved
+	FileSystem::fileSystem->CreateFolder(folderPath0);
+
 	const std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->fileId) + "\\";
 	// Create the folder where sprites will be saved
 	FileSystem::fileSystem->CreateFolder(folderPath);
