@@ -137,7 +137,7 @@ int Window::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform 
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL2_InitForOpenGL(Window::window, context);
-	ImGui_ImplOpenGL3_Init("#version 460");
+	ImGui_ImplOpenGL3_Init();
 
 	UpdateWindowTitle();
 #endif
