@@ -1,6 +1,6 @@
 #include "inputs.h"
 
-#ifdef __vita__
+#if defined(__vita__)
 
 #include <psp2/ctrl.h>
 #include "../common/debugScreen.h"

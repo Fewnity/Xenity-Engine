@@ -7,7 +7,7 @@
 
 #define JOYSTICK_DEAD_ZONE 0.25f
 
-void CrossAddInputs(std::map<int, Input *> &keyMap, Input *inputs)
+void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
 }
 

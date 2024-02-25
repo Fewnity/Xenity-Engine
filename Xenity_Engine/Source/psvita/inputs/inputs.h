@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef __vita__
+#if defined(__vita__)
 
 #include <map>
 #include <string>
