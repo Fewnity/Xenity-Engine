@@ -47,7 +47,7 @@ ReflectiveData Texture::GetReflectiveData()
 ReflectiveData Texture::GetMetaReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);
+	//Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);
 	Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
 	Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 	Reflective::AddVariable(reflectedVariables, filter, "filter", true);
@@ -275,11 +275,12 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 		copy_texture_data(dataBuffer, texData, pW, pH, type, GU_PSM_8888);
 	}
 
+	bool isLevelInVram = true;
 	if (resizedPW > 256 || resizedPH > 256)
-		inVram = false;
+		isLevelInVram = false;
 
 	// Allocate memory in ram or vram
-	if (inVram)
+	if (isLevelInVram)
 	{
 		unsigned int *newData = (unsigned int *)vramalloc(byteCount); // Divide by 8 when dxt1, by 4 when dxt3 and dxt5
 		// If there is no more free vram
@@ -287,7 +288,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 		{
 			Debug::PrintWarning("No more free vram");
 			newData = (unsigned int *)memalign(16, byteCount);
-			inVram = false;
+			isLevelInVram = false;
 		}
 		data.push_back((unsigned int *)newData);
 	}
@@ -295,6 +296,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	{
 		data.push_back((unsigned int *)memalign(16, byteCount));
 	}
+	inVram.push_back(isLevelInVram);
 	// tx_compress_dxtn(4, resizedPW, resizedPH, (const unsigned char*)dataBuffer, type, (unsigned char*)data[level]);
 
 	// Place image data in the memory

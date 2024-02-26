@@ -287,7 +287,14 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 		{
 			if (subMesh->data)
 			{
+#if defined(__PSP__)
+				if(isOnVram)
+					vfree(subMesh->data);
+				else
+					free(subMesh->data);
+#else
 				free(subMesh->data);
+#endif
 				subMesh->data = nullptr;
 			}
 
@@ -392,37 +399,66 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
-
-#if defined(__PSP__)
-	newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
-#else
-	newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
-#endif
-	if (newSubMesh->indices == nullptr)
+	if (index_count != 0 && hasIndices) 
 	{
-		Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices");
-		delete newSubMesh;
-		return;
+#if defined(__PSP__)
+		newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+#else
+		newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+#endif
+		if (newSubMesh->indices == nullptr)
+		{
+			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices");
+			delete newSubMesh;
+			return;
+		}
 	}
-
 	// Allocate memory for mesh data
 #if defined(__PSP__)
+	isOnVram = true;
 	if (!hasNormal)
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
+		{
+			newSubMesh->data = (VertexNoColorNoUv*)vramalloc(vcount * sizeof(VertexNoColorNoUv));
+			if(!newSubMesh->data)
+			{
+				isOnVram = false;
+				newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
+			}
+		}
 		else
-			newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+		{
+			newSubMesh->data = (VertexNoColor*)vramalloc(vcount * sizeof(VertexNoColor));
+			if (!newSubMesh->data)
+			{
+				isOnVram = false;
+				newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
+			}
+		}
 	}
 	else
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
+		{
+			newSubMesh->data = (VertexNormalsNoColorNoUv*)vramalloc(vcount * sizeof(VertexNormalsNoColorNoUv));
+			if (!newSubMesh->data)
+			{
+				isOnVram = false;
+				newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
+			}
+		}
 		else
-			newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+		{
+			newSubMesh->data = (VertexNormalsNoColor*)vramalloc(vcount * sizeof(VertexNormalsNoColor));
+			if (!newSubMesh->data)
+			{
+				isOnVram = false;
+				newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
+			}
+		}
 	}
 #elif defined(_EE)
-
 	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
 	newSubMesh->c_colours = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
 	newSubMesh->c_st = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
@@ -460,7 +496,6 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	//		newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
 	// }
 #else
-
 	if (!hasNormal)
 	{
 		if (!hasUv)
@@ -476,6 +511,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
 	}
 #endif
+
 #if !defined(_EE)
 	if (newSubMesh->data == nullptr)
 	{

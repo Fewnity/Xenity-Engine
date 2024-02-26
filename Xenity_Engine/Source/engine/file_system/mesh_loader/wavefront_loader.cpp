@@ -226,11 +226,14 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		}
 		currentSubMeshPtr = nullptr;
 
-		//return false;
 		mesh->hasUv = !hasNoUv;
 		mesh->hasNormal = !hasNoNormals;
 		mesh->hasColor = false;
-
+#if defined(__PSP__)
+		mesh->hasIndices = false; // Disable indices on psp, this will improve performances
+#else
+		mesh->hasIndices = true;
+#endif
 		for (int i = 0; i < currentSubMesh + 1; i++)
 		{
 			const SubMesh* sub = submeshes[i];
@@ -283,7 +286,8 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 
 					}
 				}
-				mesh->subMeshes[subMeshIndex]->indices[i] = i;
+				if(mesh->hasIndices)
+					mesh->subMeshes[subMeshIndex]->indices[i] = i;
 			}
 		}
 

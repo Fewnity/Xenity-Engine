@@ -172,6 +172,9 @@ public:
 	void ComputeBoundingBox();
 
 private:
+#if defined(__PSP__)
+	bool isOnVram = true;
+#endif
 	void Unload();
 	void FreeMeshData(bool deleteSubMeshes);
 };

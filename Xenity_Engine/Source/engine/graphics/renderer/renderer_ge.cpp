@@ -373,6 +373,14 @@ unsigned int RendererGE::CreateNewTexture()
 
 void RendererGE::DeleteTexture(Texture *texture)
 {
+	int levelCount = texture->inVram.size();
+	for (int i = 0; i < levelCount; i++)
+	{
+		if (texture->inVram[i])
+			vfree(texture->data[i]);
+		else
+			free(texture->data[i]);
+	}
 }
 
 void RendererGE::SetTextureData(const std::shared_ptr<Texture> &texture, unsigned int textureType, const unsigned char *buffer)

@@ -311,15 +311,12 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 	const int subMeshCount = meshData->subMeshCount;
 	const size_t textureCount = textures.size();
 
-
-
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
-
 
 	if (Graphics::UseOpenGLFixedFunctions)
 	{
@@ -357,11 +354,10 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		// Draw
 		if (!meshData->hasIndices)
 		{
-			//glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
+			glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
 		}
 		else
 		{
-			//glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, subMesh->indices);
 			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, 0);
 		}
 		glBindVertexArray(0);

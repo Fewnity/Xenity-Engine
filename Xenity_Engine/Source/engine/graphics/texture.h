@@ -115,9 +115,6 @@ public:
 	int mipmaplevelCount = 0;
 	bool useMipMap = false;
 
-	// [Internal] ?
-	bool inVram = true;
-
 	/**
 	 * Return if the texture is valid
 	 */
@@ -143,6 +140,8 @@ public:
 	void SetTextureLevel(int level, const unsigned char *texData);
 
 	std::vector<void *> data;
+	std::vector<bool> inVram;
+
 	unsigned int pW = 0;
 	unsigned int pH = 0;
 	int type;
