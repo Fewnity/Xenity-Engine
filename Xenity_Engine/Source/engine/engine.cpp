@@ -7,7 +7,7 @@
 #include <engine/graphics/renderer/renderer_opengl.h>
 #include <engine/graphics/renderer/renderer_gskit.h>
 #include <engine/graphics/renderer/renderer_vu1.h>
-#include <engine/graphics/renderer/renderer_ge.h>
+#include <engine/graphics/renderer/renderer_gu.h>
 
 // Audio
 #include <engine/audio/audio_manager.h>
@@ -38,7 +38,6 @@
 // Other platforms
 #include <engine/cpu.h>
 #if defined(__PSP__)
-#include <psp/gu2gl.h>
 #include <psp/callbacks.h>
 #elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
@@ -147,7 +146,7 @@ int Engine::Init()
 	// renderer = std::make_unique<RendererGsKit>();
 	renderer = std::make_unique<RendererVU1>();
 #elif defined(__PSP__)
-	renderer = std::make_unique<RendererGE>();
+	renderer = std::make_unique<RendererGU>();
 #else
 	renderer = std::make_unique<RendererOpengl>();
 #endif

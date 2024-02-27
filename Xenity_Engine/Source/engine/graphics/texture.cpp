@@ -17,7 +17,7 @@
 #if defined(__vita__)
 #include <vitaGL.h>
 #elif defined(__PSP__)
-#include <psp/gu2gl.h>
+#include <pspgu.h>
 #include <psp/video_hardware_dxtn.h>
 #include <pspkernel.h>
 #include <vram.h>
@@ -244,10 +244,38 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 	}
 }
 
+unsigned int GetColorByteCount(unsigned int psm)
+{
+	switch (psm)
+	{
+	case GU_PSM_T4:
+		return 0; // 0.5?
+
+	case GU_PSM_T8:
+		return 1;
+
+	case GU_PSM_5650:
+	case GU_PSM_5551:
+	case GU_PSM_4444:
+	case GU_PSM_T16:
+		return 2;
+
+	case GU_PSM_8888:
+	case GU_PSM_T32:
+	case GU_PSM_DXT1:
+	case GU_PSM_DXT3:
+	case GU_PSM_DXT5:
+		return 4;
+
+	default:
+		return 0;
+	}
+}
+
 void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
 	bool needResize = false;
-	int bytePerPixel = getColorByteCount(type);
+	int bytePerPixel = GetColorByteCount(type);
 
 	int diviser = (int)pow(2, level);
 

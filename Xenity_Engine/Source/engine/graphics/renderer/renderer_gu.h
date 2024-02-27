@@ -10,10 +10,10 @@
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
 
-class API RendererGE : public Renderer
+class API RendererGU : public Renderer
 {
 public:
-	RendererGE();
+	RendererGU();
 	int Init() override;
 	void Setup() override;
 	void Stop() override;

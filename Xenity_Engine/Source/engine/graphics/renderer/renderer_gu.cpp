@@ -1,5 +1,5 @@
 #if defined(__PSP__)
-#include "renderer_ge.h"
+#include "renderer_gu.h"
 
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
@@ -14,8 +14,6 @@
 
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>
-#define GUGL_IMPLEMENTATION
-#include <psp/gu2gl.h>
 
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
@@ -24,11 +22,15 @@ static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspgu.h>
 #include <pspgum.h>
 
-RendererGE::RendererGE()
+#define PSP_BUF_WIDTH 512
+#define PSP_SCR_WIDTH 480
+#define PSP_SCR_HEIGHT 272
+
+RendererGU::RendererGU()
 {
 }
 
-int RendererGE::Init()
+int RendererGU::Init()
 {
 	int result = 0;
 
@@ -73,158 +75,186 @@ int RendererGE::Init()
 	sceGuDisplay(GU_TRUE);
 
 	maxLightCount = 4;
+
+	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
+
 	return result;
 }
 
-void RendererGE::Setup()
+void RendererGU::Setup()
 {
 }
 
-void RendererGE::Stop()
+void RendererGU::Stop()
 {
-	guglTerm();
+	sceGuTerm();
 }
 
-void RendererGE::NewFrame()
+void RendererGU::NewFrame()
 {
-	guglStartFrame(list, GL_FALSE);
+	sceGuStart(GU_DIRECT, list);
+	// sceGuClearColor(0);
+	// sceGuClearDepth(1);
+	/*if (dialog)
+	{
+		sceGuFinish();
+		sceGuSync(0, 0);
+	}*/
 }
 
-void RendererGE::EndFrame()
+void RendererGU::EndFrame()
 {
 	usedTexture.reset();
-	guglSwapBuffers(GL_FALSE, GL_FALSE);
+
+	/*if (!dialog)
+	{*/
+		sceGuFinish();
+		sceGuSync(0, 0);
+	//}
+
+	//if (vsync)
+	//{
+		//sceDisplayWaitVblankStart();
+	//}
+
+	sceGuSwapBuffers();
 }
 
-void RendererGE::SetViewport(int x, int y, int width, int height)
+void RendererGU::SetViewport(int x, int y, int width, int height)
 {
-	glViewport(x, y, width, height);
+	sceGuViewport(x, y, width, height);
 }
 
-void RendererGE::SetClearColor(const Color &color)
+void RendererGU::SetClearColor(const Color &color)
 {
-	glClearColor(color.GetUnsignedIntABGR());
+	sceGuClearColor(color.GetUnsignedIntABGR());
 }
 
-void RendererGE::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
+void RendererGU::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	sceGumMatrixMode(GU_PROJECTION);
+	sceGumLoadIdentity();
 	const float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
 	const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
-	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
+	sceGumOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
-void RendererGE::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
+void RendererGU::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
 {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
+	sceGumMatrixMode(GU_PROJECTION);
+	sceGumLoadIdentity();
+	sceGumPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 }
 
-void RendererGE::ResetView()
+void RendererGU::ResetView()
 {
-	glMatrixMode(GL_VIEW);
-	glLoadIdentity();
-	gluRotateY(180 / 180.0f * 3.14159f);
+	sceGumMatrixMode(GU_VIEW);
+	sceGumLoadIdentity();
+	sceGumRotateY(180 / 180.0f * 3.14159f);
 }
 
-void RendererGE::SetCameraPosition(const std::shared_ptr<Camera> &camera)
+void RendererGU::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 {
 	const std::shared_ptr<Transform> transform = camera->GetTransform();
 	Vector3 position = transform->GetPosition();
 	Vector3 rotation = transform->GetRotation();
-	glMatrixMode(GL_VIEW);
-	glLoadIdentity();
+	sceGumMatrixMode(GU_VIEW);
+	sceGumLoadIdentity();
 
-	gluRotateZ((-rotation.z) / 180.0f * 3.14159f);
-	gluRotateX(rotation.x / 180.0f * 3.14159f);
-	gluRotateY((rotation.y + 180) / 180.0f * 3.14159f);
+	sceGumRotateZ((-rotation.z) / 180.0f * 3.14159f);
+	sceGumRotateX(rotation.x / 180.0f * 3.14159f);
+	sceGumRotateY((rotation.y + 180) / 180.0f * 3.14159f);
 
-	glTranslatef(position.x, -position.y, -position.z);
+	ScePspFVector3 v = { position.x, -position.y, -position.z };
+	sceGumTranslate(&v);
 }
 
-void RendererGE::ResetTransform()
+void RendererGU::ResetTransform()
 {
-	glMatrixMode(GL_MODEL);
-	glLoadIdentity();
+	sceGumMatrixMode(GU_MODEL);
+	sceGumLoadIdentity();
 }
 
-void RendererGE::SetTransform(const Vector3 &position, const Vector3 &rotation, const Vector3 &scale, bool resetTransform)
+void RendererGU::SetTransform(const Vector3 &position, const Vector3 &rotation, const Vector3 &scale, bool resetTransform)
 {
-	glMatrixMode(GL_MODEL);
+	sceGumMatrixMode(GU_MODEL);
 	if (resetTransform)
-		glLoadIdentity();
-	glTranslatef(-position.x, position.y, position.z);
-	gluRotateY(-rotation.y * 3.14159265359 / 180.0f);
-	gluRotateX(rotation.x * 3.14159265359 / 180.0f);
-	gluRotateZ(-rotation.z * 3.14159265359 / 180.0f);
-	glScalef(scale.x, scale.y, scale.z);
+		sceGumLoadIdentity();
+
+	ScePspFVector3 vt = { -position.x, position.y, position.z };
+	sceGumTranslate(&vt);
+
+	sceGumRotateY(-rotation.y * 3.14159265359 / 180.0f);
+	sceGumRotateX(rotation.x * 3.14159265359 / 180.0f);
+	sceGumRotateZ(-rotation.z * 3.14159265359 / 180.0f);
+
+	ScePspFVector3 vs = { scale.x, scale.y, scale.z };
+	sceGumScale(&vs);
 }
 
-void RendererGE::SetTransform(const glm::mat4 &mat)
+void RendererGU::SetTransform(const glm::mat4 &mat)
 {
 	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 }
 
-void RendererGE::BindTexture(const std::shared_ptr<Texture> &texture)
+void RendererGU::BindTexture(const std::shared_ptr<Texture> &texture)
 {
-	glTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
-	glTexFunc(GL_TFX_MODULATE, GL_TCC_RGBA);
+	sceGuTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
+	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
 	// Set mipmap behavior
 	if (texture->useMipMap)
 		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
-	// sceGuTexLevelMode(GL_TEXTURE_CONST, 1); // Set mipmap level to use
-	// sceGuTexLevelMode(GL_TEXTURE_SLOPE, 2); //??? has no effect
+	// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
+	// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
 
-	glTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
+	sceGuTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
 	// Send mipmap data
 	if (texture->useMipMap)
 	{
-		glTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
-		// glTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
-		// glTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
+		sceGuTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
+		// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
+		// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
 	}
 	ApplyTextureFilters(texture);
 }
 
-void RendererGE::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
+void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 {
-	int minFilterValue = GL_LINEAR;
-	int magfilterValue = GL_LINEAR;
+	int minFilterValue = GU_LINEAR;
+	int magfilterValue = GU_LINEAR;
 	if (texture->GetFilter() == Filter::Bilinear)
 	{
 		if (texture->GetUseMipmap())
 		{
-			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
+			minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
 		}
 		else
 		{
-			minFilterValue = GL_LINEAR;
+			minFilterValue = GU_LINEAR;
 		}
-		magfilterValue = GL_LINEAR;
+		magfilterValue = GU_LINEAR;
 	}
 	else if (texture->GetFilter() == Filter::Point)
 	{
 		if (texture->GetUseMipmap())
 		{
-			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
+			minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
 		}
 		else
 		{
-			minFilterValue = GL_NEAREST;
+			minFilterValue = GU_NEAREST;
 		}
-		magfilterValue = GL_NEAREST;
+		magfilterValue = GU_NEAREST;
 	}
-	int wrap = GetWrapModeEnum(texture->GetWrapMode());
+	const int wrap = GetWrapModeEnum(texture->GetWrapMode());
 
 	// Apply filters
-	glTexFilter(minFilterValue, magfilterValue);
-	glTexWrap(wrap, wrap);
+	sceGuTexFilter(minFilterValue, magfilterValue);
+	sceGuTexWrap(wrap, wrap);
 
 }
 
-void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
+void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
 {
 	if (!meshData->isValid)
 		return;
@@ -233,23 +263,23 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
 	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
 	//float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
-	// glMaterial(GL_DIFFUSE, 0xFFFFFFFF);
-	//  glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-	//  glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-	//  glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-	//  glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
-	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
+	// glMaterial(GU_DIFFUSE, 0xFFFFFFFF);
+	//  glMaterialfv(GU_FRONT, GU_AMBIENT, material_ambient);
+	//  glMaterialfv(GU_FRONT, GU_DIFFUSE, material_diffuse);
+	//  glMaterialfv(GU_FRONT, GU_SPECULAR, material_specular);
+	//  glMaterialfv(GU_FRONT, GU_EMISSION, material_emission);
+	//  glMaterialf(GU_FRONT, GU_SHININESS, 10.0);               /* NOT default value   */
 
 	// Apply rendering settings
 	if (lastSettings.invertFaces != settings.invertFaces)
 	{
 		if (settings.invertFaces)
 		{
-			glFrontFace(GL_CW);
+			sceGuFrontFace(GU_CW);
 		}
 		else
 		{
-			glFrontFace(GL_CCW);
+			sceGuFrontFace(GU_CCW);
 		}
 	}
 
@@ -257,11 +287,11 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	{
 		if (settings.useDepth)
 		{
-			glEnable(GL_DEPTH_TEST);
+			sceGuEnable(GU_DEPTH_TEST);
 		}
 		else
 		{
-			glDisable(GL_DEPTH_TEST);
+			sceGuDisable(GU_DEPTH_TEST);
 		}
 	}
 
@@ -269,12 +299,12 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	{
 		if (settings.useBlend)
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			sceGuEnable(GU_BLEND);
+			sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA,0,0);
 		}
 		else
 		{
-			glDisable(GL_BLEND);
+			sceGuDisable(GU_BLEND);
 		}
 	}
 
@@ -282,17 +312,17 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	{
 		if (settings.useLighting && !settings.useBlend)
 		{
-			glEnable(GL_LIGHTING);
+			sceGuEnable(GU_LIGHTING);
 		}
 		else
 		{
-			glDisable(GL_LIGHTING);
+			sceGuDisable(GU_LIGHTING);
 		}
 	}
 
 	if (lastSettings.useTexture != settings.useTexture)
 	{
-		glEnable(GL_TEXTURE_2D);
+		sceGuEnable(GU_TEXTURE_2D);
 	}
 
 	// Keep in memory the used settings
@@ -310,12 +340,12 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	// Get the parameters to use dependings of the mesh data format
 	if (meshData->hasIndices)
 	{
-		params |= GL_INDEX_16BIT;
+		params |= GU_INDEX_16BIT;
 	}
-	params |= GL_TEXTURE_32BITF;
+	params |= GU_TEXTURE_32BITF;
 	if (meshData->hasColor)
 	{
-		params |= GL_COLOR_8888;
+		params |= GU_COLOR_8888;
 	}
 	else
 	{
@@ -325,8 +355,8 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	{
 		params |= GU_NORMAL_32BITF;
 	}
-	params |= GL_VERTEX_32BITF;
-	params |= GL_TRANSFORM_3D;
+	params |= GU_VERTEX_32BITF;
+	params |= GU_TRANSFORM_3D;
 
 	MeshData::SubMesh* subMesh = nullptr;
 
@@ -352,29 +382,29 @@ void RendererGE::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 		// Draw
 		if (!meshData->hasIndices)
 		{
-			glDrawElements(GL_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
+			sceGumDrawArray(GU_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
 		}
 		else
 		{
-			glDrawElements(GL_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
+			sceGumDrawArray(GU_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
 		}
 	}
 	Performance::AddDrawCall();
 }
 
-void RendererGE::DrawLine(const Vector3 &a, const Vector3 &b, const Color &color, RenderingSettings &settings)
+void RendererGU::DrawLine(const Vector3 &a, const Vector3 &b, const Color &color, RenderingSettings &settings)
 {
 }
 
-unsigned int RendererGE::CreateNewTexture()
+unsigned int RendererGU::CreateNewTexture()
 {
 	return 0;
 }
 
-void RendererGE::DeleteTexture(Texture *texture)
+void RendererGU::DeleteTexture(Texture *texture)
 {
-	int levelCount = texture->inVram.size();
-	for (int i = 0; i < levelCount; i++)
+	const int textreuLevelCount = texture->inVram.size();
+	for (int i = 0; i < textreuLevelCount; i++)
 	{
 		if (texture->inVram[i])
 			vfree(texture->data[i]);
@@ -383,18 +413,18 @@ void RendererGE::DeleteTexture(Texture *texture)
 	}
 }
 
-void RendererGE::SetTextureData(const std::shared_ptr<Texture> &texture, unsigned int textureType, const unsigned char *buffer)
+void RendererGU::SetTextureData(const std::shared_ptr<Texture> &texture, unsigned int textureType, const unsigned char *buffer)
 {
 }
 
-void RendererGE::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, LightType type, float attenuation)
+void RendererGU::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, LightType type, float attenuation)
 {
 	if (lightIndex >= maxLightCount)
 		return;
 
 	RGBA rgba = color.GetRGBA();
 
-	glEnable(GL_LIGHT0 + lightIndex);
+	sceGuEnable(GU_LIGHT0 + lightIndex);
 
 	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
 	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
@@ -415,15 +445,15 @@ void RendererGE::SetLight(int lightIndex, const Vector3 &lightPosition, float in
 	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
 }
 
-void RendererGE::DisableAllLight()
+void RendererGU::DisableAllLight()
 {
 	for (int lightIndex = 0; lightIndex < maxLightCount; lightIndex++)
 	{
-		glDisable(GL_LIGHT0 + lightIndex);
+		sceGuDisable(GU_LIGHT0 + lightIndex);
 	}
 }
 
-void RendererGE::Setlights(const std::shared_ptr<Camera> &camera)
+void RendererGU::Setlights(const std::shared_ptr<Camera> &camera)
 {
 	std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
@@ -453,24 +483,24 @@ void RendererGE::Setlights(const std::shared_ptr<Camera> &camera)
 	}
 }
 
-void RendererGE::Clear()
+void RendererGU::Clear()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
+	sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT /*| GU_STENCIL_BUFFER_BIT*/);
 }
 
-void RendererGE::SetFog(bool active)
+void RendererGU::SetFog(bool active)
 {
 	if (active)
-		glEnable(GL_FOG);
+		sceGuEnable(GU_FOG);
 	else
-		glDisable(GL_FOG);
+		sceGuDisable(GU_FOG);
 #if defined(__PSP__)
 	if (active)
 		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 #endif
 }
 
-void RendererGE::SetFogValues(float start, float end, const Color &color)
+void RendererGU::SetFogValues(float start, float end, const Color &color)
 {
 	fogStart = start;
 	fogEnd = end;
@@ -478,45 +508,45 @@ void RendererGE::SetFogValues(float start, float end, const Color &color)
 	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 }
 
-void RendererGE::DeleteSubMeshData(MeshData::SubMesh *subMesh)
+void RendererGU::DeleteSubMeshData(MeshData::SubMesh *subMesh)
 {
 }
 
-void RendererGE::UploadMeshData(const std::shared_ptr<MeshData> &meshData)
+void RendererGU::UploadMeshData(const std::shared_ptr<MeshData> &meshData)
 {
 }
 
-int RendererGE::GetWrapModeEnum(WrapMode wrapMode)
+int RendererGU::GetWrapModeEnum(WrapMode wrapMode)
 {
-	int mode = GL_REPEAT;
+	int mode = GU_REPEAT;
 	switch (wrapMode)
 	{
 	case WrapMode::ClampToEdge:
 	case WrapMode::ClampToBorder:
 #if defined(_WIN32) || defined(_WIN64)
-		mode = GL_CLAMP_TO_EDGE;
+		mode = GU_CLAMP_TO_EDGE;
 #else
-		mode = GL_CLAMP;
+		mode = GU_CLAMP;
 #endif
 		break;
 	case WrapMode::Repeat:
-		mode = GL_REPEAT;
+		mode = GU_REPEAT;
 		break;
 
 		// case WrapMode::ClampToEdge:
-		// 	mode = GL_CLAMP_TO_EDGE;
+		// 	mode = GU_CLAMP_TO_EDGE;
 		// 	break;
 		// case WrapMode::ClampToBorder:
-		// 	mode = GL_CLAMP_TO_BORDER;
+		// 	mode = GU_CLAMP_TO_BORDER;
 		// 	break;
 		// case WrapMode::MirroredRepeat:
-		// 	mode = GL_MIRRORED_REPEAT;
+		// 	mode = GU_MIRRORED_REPEAT;
 		// 	break;
 		// case WrapMode::Repeat:
-		// 	mode = GL_REPEAT;
+		// 	mode = GU_REPEAT;
 		// 	break;
 		// case WrapMode::MirrorClampToEdge:
-		// 	mode = GL_MIRROR_CLAMP_TO_EDGE;
+		// 	mode = GU_MIRROR_CLAMP_TO_EDGE;
 		// 	break;
 	}
 	return mode;

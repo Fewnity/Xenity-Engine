@@ -12,7 +12,6 @@
 
 #if defined(__PSP__)
 #include <pspkernel.h>
-#include <psp/gu2gl.h>
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif

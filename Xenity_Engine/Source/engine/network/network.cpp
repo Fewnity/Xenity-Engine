@@ -32,13 +32,13 @@
 #endif
 
 #if defined(__PSP__)
+#include <pspgu.h>
 #include <pspnet.h>
 #include <pspnet_apctl.h>
 #include <pspnet_inet.h>
 #include <pspnet_resolver.h>
 #include <psputility.h>
 #include <psputils.h>
-#include <psp/gu2gl.h>
 pspUtilityNetconfData NetworkManager::pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
 int NetworkManager::result = -1;

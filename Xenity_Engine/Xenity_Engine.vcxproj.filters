@@ -122,7 +122,7 @@
     <ClCompile Include="Source\engine\file_system\file.cpp" />
     <ClCompile Include="Source\engine\file_system\file_psp.cpp" />
     <ClCompile Include="Source\engine\file_system\file_default.cpp" />
-    <ClCompile Include="Source\engine\graphics\renderer\renderer_ge.cpp" />
+    <ClCompile Include="Source\engine\graphics\renderer\renderer_gu.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin.cpp" />
     <ClCompile Include="Source\editor\plugin\plugin_manager.cpp" />
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
@@ -274,7 +274,7 @@
     <ClInclude Include="Source\engine\file_system\file.h" />
     <ClInclude Include="Source\engine\file_system\file_psp.h" />
     <ClInclude Include="Source\engine\file_system\file_default.h" />
-    <ClInclude Include="Source\engine\graphics\renderer\renderer_ge.h" />
+    <ClInclude Include="Source\engine\graphics\renderer\renderer_gu.h" />
     <ClInclude Include="Source\editor\plugin\plugin.h" />
     <ClInclude Include="Source\editor\plugin\plugin_manager.h" />
     <ClInclude Include="Source\editor\plugin\api.h" />
