@@ -1,6 +1,7 @@
 #if !defined(_EE) && !defined(__PSP__)
 #include "renderer_opengl.h"
 
+#include <memory>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -26,9 +27,6 @@
 #include <engine/tools/math.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <memory>
-
-
 RendererOpengl::RendererOpengl()
 {
 }
@@ -50,8 +48,11 @@ int RendererOpengl::Init()
 
 	if (result == 0)
 		result = 1;
+
+	Window::SetResolution(960, 544);
 #elif defined(_WIN32) || defined(_WIN64)
 	result = glfwInit();
+	Window::SetResolution(1280, 720);
 #endif
 
 	Debug::Print("-------- OpenGL Renderer initiated --------");

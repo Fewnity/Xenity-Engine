@@ -5,6 +5,7 @@
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>
+#include <engine/ui/window.h>
 #include <kernel.h>
 #include <malloc.h>
 #include <tamtypes.h>
@@ -238,6 +239,8 @@ int RendererVU1::Init()
 	// 	c_sts[i][2] = sts[faces[i]][2];
 	// 	c_sts[i][3] = sts[faces[i]][3];
 	// }
+
+	Window::SetResolution(640, 512);
 
 	return result;
 }

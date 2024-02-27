@@ -158,13 +158,6 @@ int Engine::Init()
 	}
 
 	//------------------------------------------ Init Window
-#if defined(__PSP__)
-	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
-#elif defined(__vita__)
-	Window::SetResolution(960, 544);
-#else
-	Window::SetResolution(1280, 720);
-#endif
 	const int windowInitResult = Window::Init();
 	if (windowInitResult != 0)
 	{
