@@ -161,6 +161,7 @@ public:
 	}
 
 	int childCount = 0;
+	int componentCount = 0;
 private:
 	std::shared_ptr<Transform> transform;
 
@@ -177,5 +178,4 @@ private:
 
 	bool active = true;
 	bool localActive = true;
-	int componentCount = 0;
 };

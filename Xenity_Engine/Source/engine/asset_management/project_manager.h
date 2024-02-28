@@ -17,6 +17,7 @@ class FileReference;
 class File;
 class Scene;
 class Directory;
+class CompilerParams;
 
 #define META_EXTENSION ".meta"
 #define PROJECTS_LIST_FILE "projects.json"
@@ -68,6 +69,10 @@ public:
 	std::string gameName = "";
 	std::string projectName = "";
 	std::shared_ptr<Scene> startScene = nullptr;
+	std::string engineVersion = "0.0";
+	std::string compiledLibEngineVersion = "0";
+	bool isCompiled = false;
+	bool isLibCompiledForDebug = false;
 	ReflectiveData GetReflectiveData() override;
 };
 
@@ -204,6 +209,7 @@ public:
 	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
+	static void OnProjectCompiled(CompilerParams params, bool result);
 	static void FindAllProjectFiles();
 	static void CreateVisualStudioSettings();
 

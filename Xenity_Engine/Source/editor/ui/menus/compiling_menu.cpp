@@ -37,12 +37,12 @@ void CompilingMenu::Draw()
 	}
 }
 
-void CompilingMenu::OpenPopup()
+void CompilingMenu::OpenPopup(CompilerParams params)
 {
 	popupState = CompilingPupopState::Opening;
 }
 
-void CompilingMenu::ClosePopup()
+void CompilingMenu::ClosePopup(CompilerParams params, bool result)
 {
 	popupState = CompilingPupopState::Closed;
 }

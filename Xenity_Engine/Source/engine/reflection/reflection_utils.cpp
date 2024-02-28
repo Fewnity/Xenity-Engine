@@ -41,8 +41,6 @@ void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference
 
 void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& entry)
 {
-	Debug::PrintError("[JsonToVariable] not implemented for std::vector<Reflective>!");
-
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr->get().size();
 
@@ -209,8 +207,6 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 
 void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr)
 {
-	Debug::PrintError("[VariableToJson] not implemented for std::vector<Reflective>!");
-
 	std::vector <Reflective*>& getVal = valuePtr->get();
 	const size_t vectorSize = getVal.size();
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)

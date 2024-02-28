@@ -17,8 +17,8 @@
 // Editor
 #include <editor/editor.h>
 
-Event<> Compiler::OnCompilationEndedEvent;
-Event<> Compiler::OnCompilationStartedEvent;
+Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
+Event<CompilerParams> Compiler::OnCompilationStartedEvent;
 
 namespace fs = std::filesystem;
 
@@ -108,7 +108,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	const CompilerAvailability availability = CheckCompilerAvailability(params);
 	if (availability != CompilerAvailability::AVAILABLE)
 	{
-		OnCompileEnd(CompileResult::ERROR_COMPILER_AVAILABILITY);
+		OnCompileEnd(CompileResult::ERROR_COMPILER_AVAILABILITY, params);
 		return CompileResult::ERROR_COMPILER_AVAILABILITY;
 	}
 
@@ -153,7 +153,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	}
 
 	// Send compile result
-	OnCompileEnd(result);
+	OnCompileEnd(result, params);
 	return result;
 }
 
@@ -270,6 +270,8 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build\\";
 	params.exportPath = exportPath;
 
+	OnCompilationStartedEvent.Trigger(params);
+
 	// Compile
 	const CompileResult result = Compile(params);
 	if (result != CompileResult::SUCCESS) return result;
@@ -296,7 +298,6 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 
 void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
 {
-	OnCompilationStartedEvent.Trigger();
 	std::thread t = std::thread(CompileGame, platform, buildType, exportPath);
 	t.detach();
 }
@@ -334,17 +335,16 @@ void Compiler::HotReloadGame()
 	{
 		Debug::Print("Game compilation done");
 		Engine::game->Start();
-		SceneManager::RestoreSceneHotReloading();
 	}
 	else
 	{
 		Debug::PrintError("[Compiler::HotReloadGame] Game compilation failed");
-		SceneManager::RestoreSceneHotReloading();
 	}
+	SceneManager::RestoreSceneHotReloading();
 #endif
 }
 
-void Compiler::OnCompileEnd(CompileResult result)
+void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 {
 	switch (result)
 	{
@@ -386,7 +386,7 @@ void Compiler::OnCompileEnd(CompileResult result)
 		break;
 	}
 
-	OnCompilationEndedEvent.Trigger();
+	OnCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
 }
 
 std::string WindowsPathToWSL(const std::string& path)

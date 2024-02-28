@@ -2,6 +2,8 @@
 
 #include "menu.h"
 
+class CompilerParams;
+
 enum class CompilingPupopState
 {
 	Closed,
@@ -15,8 +17,8 @@ public:
 	~CompilingMenu();
 	void Init() override;
 	void Draw() override;
-	void OpenPopup();
-	void ClosePopup();
+	void OpenPopup(CompilerParams params);
+	void ClosePopup(CompilerParams params, bool result);
 
 private:
 	CompilingPupopState popupState = CompilingPupopState::Closed;

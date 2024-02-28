@@ -24,6 +24,7 @@
 #include <editor/file_reference_finder.h>
 #endif
 #include <engine/debug/debug.h>
+#include <engine/missing_script.h>
 
 using json = nlohmann::json;
 
@@ -81,9 +82,16 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			}
 			usedIds[compId] = true;
 
-			j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
-			j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
-			j["GameObjects"][goId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
+			if (std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component))
+			{
+				j["GameObjects"][goId]["Components"][compIdString] = missingScript->data;
+			}
+			else 
+			{
+				j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
+				j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
+				j["GameObjects"][goId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
+			}
 
 			ReflectiveData componentData = component->GetReflectiveData();
 			FileReferenceFinder::GetUsedFilesInReflectiveData(usedFilesIds, componentData);
@@ -168,7 +176,7 @@ bool SceneManager::OnQuit()
 #if defined(EDITOR)
 	if (sceneModified)
 	{
-		DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
+		const DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
 		if (result == DialogResult::Dialog_YES)
 		{
 			SaveScene(SaveSceneType::SaveSceneToFile);
@@ -229,13 +237,20 @@ void SceneManager::LoadScene(const json& jsonData)
 							const bool isEnabled = componentKV.value()["Enabled"];
 							comp->SetIsEnabled(isEnabled);
 						}
-						allComponents.push_back(comp);
-						comp->SetUniqueId(compId);
 					}
 					else
 					{
-						Debug::PrintWarning("Class " + componentName + " not found in the scene. DO NOT SAVE THE SCENE!!!");
+						// If the component is missing (the class doesn't exist anymore or the game is not compiled
+						// Create a missing script and copy component data to avoid data loss
+						std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
+						comp = missingScript;
+						missingScript->data = componentKV.value();
+						newGameObject->components.push_back(missingScript);
+						newGameObject->componentCount++;
+						missingScript->SetGameObject(newGameObject);
 					}
+					allComponents.push_back(comp);
+					comp->SetUniqueId(compId);
 				}
 			}
 		}

@@ -107,12 +107,12 @@ public:
 	 */
 	static void HotReloadGame();
 
-	static Event<>& GetOnCompilationEndedEvent()
+	static Event<CompilerParams, bool>& GetOnCompilationEndedEvent()
 	{
 		return OnCompilationEndedEvent;
 	}
 
-	static Event<>& GetOnCompilationStartedEvent()
+	static Event<CompilerParams>& GetOnCompilationStartedEvent()
 	{
 		return OnCompilationStartedEvent;
 	}
@@ -167,7 +167,7 @@ private:
 	 * To call when the compile function ends
 	 *
 	 */
-	static void OnCompileEnd(CompileResult result);
+	static void OnCompileEnd(CompileResult result, CompilerParams& params);
 
 	/**
 	 * Get the command to start the compiler
@@ -204,7 +204,7 @@ private:
 
 	static std::vector<CopyEntry> copyEntries;
 
-	static Event<> OnCompilationEndedEvent;
-	static Event<> OnCompilationStartedEvent;
+	static Event<CompilerParams, bool> OnCompilationEndedEvent;
+	static Event<CompilerParams> OnCompilationStartedEvent;
 
 };

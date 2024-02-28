@@ -26,11 +26,12 @@
 #include <engine/ui/window.h>
 
 #include <engine/audio/audio_clip.h>
-
 #include <json.hpp>
 
 #include <engine/debug/debug.h>
+#include <engine/game_elements/gameplay_manager.h>
 #if defined(EDITOR)
+#include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 #include <editor/file_handler.h>
 #include <editor/compiler.h>
@@ -451,8 +452,24 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	return fileType;
 }
 
+void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
+{
+	bool wasWrongVersionBefore = projectSettings.compiledLibEngineVersion != ENGINE_DLL_VERSION;
+	if (result)
+	{
+		projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+	}
+	else
+	{
+		projectSettings.compiledLibEngineVersion = "0";
+	}
+	SaveProjectSettings();
+}
+
 bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
+	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
+
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
 
@@ -474,18 +491,22 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	FindAllProjectFiles();
 
 	LoadProjectSettings();
+	projectSettings.engineVersion = ENGINE_VERSION;
 #if defined(EDITOR)
 	SaveProjectSettings();
 #endif
 
 	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
+	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION)
+	{
 #if defined(EDITOR)
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
+		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
 #else
-	DynamicLibrary::LoadGameLibrary("game");
+		DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
-	Engine::game = DynamicLibrary::CreateGame();
+		Engine::game = DynamicLibrary::CreateGame();
+	}
 #else
 	Engine::game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
@@ -517,7 +538,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectLoaded = true;
 
 	return projectLoaded;
-}
+	}
 
 void ProjectManager::UnloadProject()
 {
@@ -574,7 +595,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 							break;
 						}
 					}
-					if (!idAlreadyInList) 
+					if (!idAlreadyInList)
 					{
 						ids.push_back(idKv.value());
 						std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
@@ -597,9 +618,9 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 std::vector<FileAndPath> ProjectManager::GetFilesByType(const FileType type)
 {
 	std::vector<FileAndPath> fileList;
-	for (const auto& fileinfo : projectFilesIds) 
+	for (const auto& fileinfo : projectFilesIds)
 	{
-		if (fileinfo.second.type == type) 
+		if (fileinfo.second.type == type)
 		{
 			fileList.push_back(fileinfo.second);
 		}
@@ -915,5 +936,8 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
 	Reflective::AddVariable(reflectedVariables, gameName, "gameName", true);
 	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
+	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", true);
+	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", true);
+	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug", true);
 	return reflectedVariables;
 }

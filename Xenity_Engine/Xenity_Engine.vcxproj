@@ -319,6 +319,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\missing_script.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\editor\asset_modifier\asset_modifier.cpp" />
     <ClCompile Include="Source\editor\file_reference_finder.cpp">
@@ -570,6 +571,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\missing_script.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />
     <ClInclude Include="Source\editor\asset_modifier\asset_modifier.h" />
     <ClInclude Include="Source\editor\file_reference_finder.h">

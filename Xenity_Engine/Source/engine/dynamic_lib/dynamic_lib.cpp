@@ -3,6 +3,7 @@
 #include <engine/game_interface.h>
 #include <windows.h>
 #include <engine/debug/debug.h>
+#include <engine/asset_management/project_manager.h>
 
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
@@ -20,15 +21,18 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 #endif
 	SetErrorMode(0);
 
-	if (library == NULL) 
+	const bool result = library != NULL;
+	if (!result)
 	{
 		// https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
-		int errorCode = GetLastError();
+		const int errorCode = GetLastError();
 		if(errorCode == 127)
 			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Failed to load library (wrong version): " + fileName);
 		else
 			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
 	}
+
+	ProjectManager::projectSettings.isCompiled = result;
 }
 
 void DynamicLibrary::UnloadGameLibrary()
