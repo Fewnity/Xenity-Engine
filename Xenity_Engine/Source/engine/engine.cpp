@@ -326,6 +326,7 @@ void Engine::Loop()
 			if (tryResult) 
 			{
 				Debug::PrintError("Error in game's code");
+				GameplayManager::SetGameState(GameState::Stopped, true);
 			}
 #else
 			GameplayManager::UpdateComponents();
