@@ -632,7 +632,11 @@ std::string Compiler::GetNavToEngineFolderCommand(const CompilerParams& params)
 std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 {
 	std::string command = "";
+#if defined(DEBUG)
 	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT"; // Start compilation
+#else
+	command += "cl /std:c++20 /MP /EHsc /MD /DIMPORT"; // Start compilation
+#endif
 	if (params.buildType == BuildType::EditorHotReloading)
 	{
 		command += " /DEDITOR";

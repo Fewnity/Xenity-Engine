@@ -452,9 +452,9 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	return fileType;
 }
 
+#if defined(EDITOR)
 void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 {
-	bool wasWrongVersionBefore = projectSettings.compiledLibEngineVersion != ENGINE_DLL_VERSION;
 	if (result)
 	{
 		projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
@@ -463,13 +463,22 @@ void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 	{
 		projectSettings.compiledLibEngineVersion = "0";
 	}
+
+	bool isDebugMode = false;
+#if defined(DEBUG)
+	isDebugMode = true;
+#endif
+	projectSettings.isLibCompiledForDebug = isDebugMode;
+
 	SaveProjectSettings();
 }
+#endif
 
 bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
+#if defined(EDITOR)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
-
+#endif
 	Debug::Print("Loading project: " + projectPathToLoad);
 	projectLoaded = false;
 
@@ -498,7 +507,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
-	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION)
+	bool isDebugMode = false;
+#if defined(DEBUG)
+	isDebugMode = true;
+#endif
+	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION && projectSettings.isLibCompiledForDebug == isDebugMode)
 	{
 #if defined(EDITOR)
 		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
@@ -506,6 +519,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
 		Engine::game = DynamicLibrary::CreateGame();
+	}
+	else 
+	{
+		// Maybe automaticaly recompile the project
+		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");
 	}
 #else
 	Engine::game = std::make_unique<Game>();
@@ -538,7 +556,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectLoaded = true;
 
 	return projectLoaded;
-	}
+}
 
 void ProjectManager::UnloadProject()
 {

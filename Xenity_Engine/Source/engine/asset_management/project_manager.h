@@ -209,7 +209,9 @@ public:
 	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
+#if defined(EDITOR)
 	static void OnProjectCompiled(CompilerParams params, bool result);
+#endif
 	static void FindAllProjectFiles();
 	static void CreateVisualStudioSettings();
 
