@@ -455,6 +455,9 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 #if defined(EDITOR)
 void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 {
+	if (params.buildType != BuildType::EditorHotReloading)
+		return;
+
 	if (result)
 	{
 		projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
