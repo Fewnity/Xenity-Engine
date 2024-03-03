@@ -23,6 +23,7 @@ Add buttons for canvas
 Finish rect transform support
 Add Windows controllers support
 Add the ability to change values with mouse when sliding
+Find a way to avoid duplicating missing script
 
 Add event for input system for the screen size and mouse position
 Add event in SceneManager for UpdateWindowTitle?

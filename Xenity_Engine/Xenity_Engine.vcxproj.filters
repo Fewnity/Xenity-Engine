@@ -145,6 +145,8 @@
     <ClCompile Include="Source\editor\asset_modifier\asset_modifier.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\engine\missing_script.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\docker_config_menu.cpp" />
+    <ClCompile Include="Source\editor\windows\editor\win_editor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -300,6 +302,7 @@
     <ClInclude Include="Source\editor\asset_modifier\asset_modifier.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />
     <ClInclude Include="Source\engine\missing_script.h" />
+    <ClInclude Include="Source\editor\ui\menus\docker_config_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

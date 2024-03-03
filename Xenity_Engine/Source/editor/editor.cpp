@@ -21,6 +21,7 @@
 #include <editor/ui/menus/create_class_menu.h>
 #include <editor/ui/menus/about_menu.h>
 #include <editor/ui/menus/console_menu.h>
+#include <editor/ui/menus/docker_config_menu.h>
 #include <editor/compiler.h>
 
 #include <functional>
@@ -635,6 +636,7 @@ void Editor::CreateMenus()
 	AddMenu<LightingMenu>(false);
 	AddMenu<ProjectSettingsMenu>(false);
 	AddMenu<EngineSettingsMenu>(false);
+	AddMenu<DockerConfigMenu>(false);
 	AddMenu<AboutMenu>(false);
 	//AddMenu<SelectAssetMenu>(false);
 
@@ -650,6 +652,33 @@ void Editor::CreateMenus()
 	AddMenu<ConsoleMenu>(true);
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
+}
+
+void Editor::OpenExecutableFile(std::string executablePath)
+{
+	if (executablePath.empty())
+		return;
+
+	const int backSlash = executablePath.find_last_of('/');
+	const int backSlash2 = executablePath.find_last_of('\\');
+	int finalBackSlashPos = -1;
+	if (backSlash < backSlash2) 
+	{
+		finalBackSlashPos = backSlash2;
+	}
+	else 
+	{
+		finalBackSlashPos = backSlash;
+	}
+
+	if (finalBackSlashPos == -1)
+		return;
+
+	std::string finalName = executablePath.substr(finalBackSlashPos+1);
+	std::string path = executablePath.substr(0, finalBackSlashPos+1);
+
+	std::string command = "cd \"" + path + "\"" + " && " + "\"" + finalName + "\"";
+	system(command.c_str());
 }
 
 #endif

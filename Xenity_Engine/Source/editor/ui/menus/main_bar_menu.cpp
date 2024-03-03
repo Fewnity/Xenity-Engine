@@ -22,6 +22,7 @@
 #include <editor/ui/menus/hierarchy_menu.h>
 #include <editor/ui/menus/console_menu.h>
 #include <editor/ui/menus/sprite_editor_menu.h>
+#include <editor/ui/menus/docker_config_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -419,17 +420,24 @@ void MainBarMenu::Draw()
 			Editor::GetMenu<LightingMenu>()->SetActive(true);
 			Editor::GetMenu<LightingMenu>()->Focus();
 		}
+		ImGui::Separator();
+		if (ImGui::MenuItem("Docker Configuration"))
+		{
+			Editor::GetMenu<DockerConfigMenu>()->SetActive(true);
+			Editor::GetMenu<DockerConfigMenu>()->Focus();
+		}
+
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Window menu
 	{
 		if (ImGui::MenuItem("Documentation"))
 		{
-			ShellExecute(0, 0, L"https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc", 0, 0, SW_SHOW);
+			Editor::OpenLinkInWebBrowser("https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc");
 		}
 		if (ImGui::MenuItem("Project's GitHub"))
 		{
-			ShellExecute(0, 0, L"https://github.com/Fewnity/Xenity-Engine", 0, 0, SW_SHOW);
+			Editor::OpenLinkInWebBrowser("https://github.com/Fewnity/Xenity-Engine");
 		}
 		if (ImGui::MenuItem("About Xenity Engine"))
 		{

@@ -203,6 +203,10 @@ public:
 	static void RemoveEditorStyle();
 	static std::weak_ptr <Menu> lastFocusedGameMenu;
 	static bool isToolLocalMode;
+
+	static void OpenLinkInWebBrowser(std::string link);
+	static void OpenExecutableFile(std::string executablePath);
+
 private:
 	static int menuCount;
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;

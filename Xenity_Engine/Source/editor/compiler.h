@@ -24,6 +24,9 @@ ENUM(CompileResult, SUCCESS,
 	ERROR_WSL_ENGINE_CODE_COPY,
 	ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY,
 	ERROR_WSL_CMAKELISTS_COPY,
+	ERROR_DOCKER_NOT_FOUND,
+	ERROR_DOCKER_NOT_RUNNING,
+	ERROR_DOCKER_COMPILATION,
 	ERROR_COMPILER_AVAILABILITY);
 
 ENUM(CompilerAvailability,
@@ -31,6 +34,12 @@ ENUM(CompilerAvailability,
 	MISSING_COMPILER_SOFTWARE = 2,
 	MISSING_ENGINE_COMPILED_LIB = 4,
 	MISSING_PPSSPP = 8);
+
+ENUM(DockerState,
+	NOT_INSTALLED,
+	NOT_RUNNING,
+	MISSING_IMAGE,
+	RUNNING);
 
 struct CompilerParams
 {
@@ -117,6 +126,8 @@ public:
 		return OnCompilationStartedEvent;
 	}
 
+	static DockerState CheckDockerState();
+
 private:
 
 	/**
@@ -162,6 +173,12 @@ private:
 	 * @param params Compilation parameters
 	 */
 	static CompileResult CompileWSL(const CompilerParams &params);
+
+	/**
+	 * Compile code in WSL for PSP or PsVita
+	 * @param params Compilation parameters
+	 */
+	static CompileResult CompileInDocker(const CompilerParams& params);
 
 	/**
 	 * To call when the compile function ends

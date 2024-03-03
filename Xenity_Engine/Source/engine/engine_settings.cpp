@@ -18,6 +18,7 @@ std::string EngineSettings::engineProjectPath = "C:\\Users\\elect\\Documents\\Gi
 std::string EngineSettings::compilerPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\";
 //std::string EngineSettings::compilerPath = "C:\\VisualStudio\\VC\\Auxiliary\\Build\\";
 std::string EngineSettings::ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWindows64.exe";
+std::string EngineSettings::dockerExePath = "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe";
 
 // Texture::AnisotropicLevel EngineSettings::anisotropicLevel = Texture::AnisotropicLevel::X16;
 
@@ -47,6 +48,7 @@ ReflectiveData EngineSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, EngineSettings::engineProjectPath, "engineProjectPath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compilerPath, "compilerPath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::ppssppExePath, "ppssppExePath", true);
+	Reflective::AddVariable(reflectedVariables, EngineSettings::dockerExePath, "dockerExePath", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compileOnCodeChanged, "compileOnCodeChanged", true);
 	Reflective::AddVariable(reflectedVariables, EngineSettings::compileWhenOpeningProject, "compileWhenOpeningProject", true);
 

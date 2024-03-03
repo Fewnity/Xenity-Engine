@@ -30,6 +30,7 @@ public:
 	static std::string engineProjectPath;
 	static std::string compilerPath;
 	static std::string ppssppExePath;
+	static std::string dockerExePath;
 
 	static bool compileOnCodeChanged;
 	static bool compileWhenOpeningProject;

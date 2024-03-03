@@ -132,7 +132,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 		break;
 	case Platform::P_PSP:
 	case Platform::P_PsVita:
-		result = CompileWSL(params);
+		//result = CompileWSL(params);
+		result = CompileInDocker(params);
 		break;
 	default:
 		Debug::PrintError("[Compiler::Compile] No compile method for this platform!");
@@ -231,6 +232,30 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 
 	const CompileResult result = Compile(params);
 	return result;
+}
+
+DockerState Compiler::CheckDockerState()
+{
+	// 2>nul Silent error
+	// 1>nul Silent standard output
+
+	const int checkDockerInstallResult = system("docker 2>nul 1>nul");
+	if (checkDockerInstallResult != 0)
+	{
+		return DockerState::NOT_INSTALLED;
+	}
+	const int checkDockerRunningResult = system("docker ps 2>nul 1>nul");
+	if (checkDockerRunningResult != 0)
+	{
+		return DockerState::NOT_RUNNING;
+	}
+	const int checkDockerImageResult = system("docker image inspect ubuntu_test 2>nul 1>nul");
+	if (checkDockerImageResult != 0)
+	{
+		return DockerState::MISSING_IMAGE;
+	}
+
+	return DockerState::RUNNING;
 }
 
 bool Compiler::ExportProjectFiles(const CompilerParams& params)
@@ -595,6 +620,68 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	if (!gameCopyResult)
 	{
 		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
+	}
+
+	return CompileResult::SUCCESS;
+}
+
+CompileResult Compiler::CompileInDocker(const CompilerParams& params)
+{
+	const int checkDockerInstallResult = system("docker > nul");
+	if (checkDockerInstallResult != 0) 
+	{
+		Debug::PrintError("[Compiler::CompileInDocker] Docker is not detected on your computer.");
+		return CompileResult::ERROR_DOCKER_NOT_FOUND;
+	}
+	const int checkDockerRunningResult = system("docker ps > nul");
+	if (checkDockerRunningResult != 0)
+	{
+		Debug::PrintError("[Compiler::CompileInDocker] Docker is not running.");
+		return CompileResult::ERROR_DOCKER_NOT_RUNNING;
+	}
+
+	const int stopResult = system("docker stop XenityEngineBuild");
+	const int removeResult = system("docker remove XenityEngineBuild");
+
+	std::string prepareCompileCommand = "";
+	if (params.platform == Platform::P_PSP)
+		prepareCompileCommand = "psp-cmake -DMODE=psp ..";
+	else if (params.platform == Platform::P_PsVita)
+		prepareCompileCommand = "cmake -DMODE=psvita ..";
+
+	unsigned int threadNumber = std::thread::hardware_concurrency();
+	if (threadNumber == 0) // This function may returns 0, use 1 instead
+	{
+		threadNumber = 1;
+	}
+
+	std::string createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
+	const int createResult = system(createCommand.c_str());
+
+	const std::string copyEngineSourceCommand = "docker cp \"" + EngineSettings::engineProjectPath + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
+	const std::string copyEngineLibrariesCommand = "docker cp \"" + EngineSettings::engineProjectPath + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
+	const std::string copyCmakeCommand = "docker cp \"" + EngineSettings::engineProjectPath + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
+
+	std::string startCommand = "docker start -a XenityEngineBuild";
+	const int startResult = system(startCommand.c_str());
+
+	std::string fileName = "";
+	if (params.platform == Platform::P_PSP)
+		fileName = "EBOOT.PBP";
+	else if (params.platform == Platform::P_PsVita)
+		fileName = "hello.vpk";
+
+	// Copy final file
+	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/"+ fileName+ "\" " + params.exportPath + fileName;
+	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
+
+	if (copyGameFileResult != 0)
+	{
+		Debug::PrintError("[Compiler::CompileInDocker] Docker compilation failed.");
+		return CompileResult::ERROR_DOCKER_COMPILATION;
 	}
 
 	return CompileResult::SUCCESS;

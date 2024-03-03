@@ -62,6 +62,15 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
+	std::string tempDockerExePath;
+	ImGui::Text("Docker location: %s", EngineSettings::dockerExePath.c_str());
+	valueChanged = DrawSelectFolderButton(tempDockerExePath);
+	if (valueChanged)
+	{
+		EngineSettings::dockerExePath = tempDockerExePath + "Docker Desktop.exe";
+		settingsChanged = true;
+	}
+
 	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::compileOnCodeChanged);
 	if (valueChanged)
 		settingsChanged = true;
