@@ -208,9 +208,9 @@ private:
 	std::function<void(Args...)> CreateBindHelper(void(ObjType::* function)(Args...), ObjType* obj, const std::index_sequence<Is...>)
 	{
 		// Add the right number of placeholders
-#if defined(__GNUC__) && __GNUC__ <= 12
+#if defined(__GNUC__)
 		return std::bind(function, obj, std::_Placeholder<Is + 1>{}...);
-#else // For later version of GCC and for MSVC
+#else // For MSVC
 		return std::bind(function, obj, std::_Ph<Is + 1>{}...);
 #endif
 	}
@@ -226,9 +226,9 @@ private:
 	std::function<void(Args...)> CreateBindHelper(void(*function)(Args...), const std::index_sequence<Is...>)
 	{
 		// Add the right number of placeholders
-#if defined(__GNUC__) && __GNUC__ <= 12
+#if defined(__GNUC__)
 		return std::bind(function, std::_Placeholder<Is + 1>{}...);
-#else // For later version of GCC and for MSVC
+#else // For MSVC
 		return std::bind(function, std::_Ph<Is + 1>{}...);
 #endif
 	}
