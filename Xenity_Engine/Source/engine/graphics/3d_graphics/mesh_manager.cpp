@@ -10,7 +10,7 @@
 
 void MeshManager::Init()
 {
-	Debug::Print("-------- Mesh Manager initiated --------");
+	Debug::Print("-------- Mesh Manager initiated --------", true);
 }
 
 std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)

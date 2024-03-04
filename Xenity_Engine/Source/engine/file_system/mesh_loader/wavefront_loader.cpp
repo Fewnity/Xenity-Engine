@@ -21,7 +21,7 @@ using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
-	Debug::Print("Loading mesh: " + mesh->file->GetPath());
+	Debug::Print("Loading mesh: " + mesh->file->GetPath(), true);
 
 	const bool opened = mesh->file->Open(FileMode::ReadOnly);
 	if (opened)

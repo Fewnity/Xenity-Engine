@@ -115,7 +115,7 @@ void Graphics::Init()
 
 	SetDefaultValues();
 
-	Debug::Print("-------- Graphics initiated --------");
+	Debug::Print("-------- Graphics initiated --------", true);
 
 
 	Shader::Init();

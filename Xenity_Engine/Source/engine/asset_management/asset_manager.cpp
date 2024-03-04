@@ -88,7 +88,7 @@ void AssetManager::Init()
 		lineMaterial->LoadFileReference();
 	}
 
-	Debug::Print("-------- Asset Manager initiated --------");
+	Debug::Print("-------- Asset Manager initiated --------", true);
 }
 
 #pragma region Add assets
@@ -404,7 +404,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 	}
 	else 
 	{
-		Debug::PrintError("[AssetManager::GetDefaultFileData] Default file not found");
+		Debug::PrintError("[AssetManager::GetDefaultFileData] Default file not found", true);
 	}
 
 	return data;

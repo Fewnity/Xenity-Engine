@@ -68,13 +68,13 @@ int main(int argc, char* argv[])
 	const int engineInitResult = Engine::Init();
 	if (engineInitResult != 0)
 	{
-		Debug::PrintError("-------- Engine failed to init --------");
+		Debug::PrintError("-------- Engine failed to init --------", true);
 		return -1;
 	}
 
 	// Engine and game loop
 	Engine::Loop();
-	Debug::Print("-------- Game loop ended --------");
+	Debug::Print("-------- Game loop ended --------", true);
 	Engine::Stop();
 
 	return 0;

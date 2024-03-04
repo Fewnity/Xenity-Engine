@@ -56,12 +56,12 @@ void Font::LoadFileReference()
 
 bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &filePath)
 {
-	Debug::Print("Loading font: " + filePath);
+	Debug::Print("Loading font: " + filePath, true);
 
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{
-		Debug::PrintError("[Font::CreateFont] Could not init FreeType Library");
+		Debug::PrintError("[Font::CreateFont] Could not init FreeType Library", true);
 		return false;
 	}
 
@@ -70,7 +70,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 
 	if (FT_New_Face(ft, filePath.c_str(), 0, &face))
 	{
-		Debug::PrintError("[Font::CreateFont] Failed to load font");
+		Debug::PrintError("[Font::CreateFont] Failed to load font", true);
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 			// load character glyph
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
-				Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath);
+				Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath, true);
 				continue;
 			}
 
@@ -162,7 +162,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 		}
 		catch (...)
 		{
-			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath);
+			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath, true);
 			free(atlas);
 			return false;
 		}
@@ -186,7 +186,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-	Debug::Print("Font loaded");
+	Debug::Print("Font loaded", true);
 
 	return true;
 }

@@ -58,7 +58,7 @@ void SpriteManager::Init()
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-	Debug::Print("-------- Sprite Manager initiated --------");
+	Debug::Print("-------- Sprite Manager initiated --------", true);
 }
 
 /**
@@ -141,7 +141,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 {
 	if (!AssetManager::defaultTexture || !AssetManager::defaultTexture->IsValid())
 	{
-		Debug::PrintError("[SpriteManager::Render2DLine] Invalid texture");
+		Debug::PrintError("[SpriteManager::Render2DLine] Invalid texture", true);
 		return;
 	}
 

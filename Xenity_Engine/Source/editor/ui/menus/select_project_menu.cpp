@@ -109,7 +109,7 @@ void SelectProjectMenu::OnLoadButtonClick()
 		}
 		else
 		{
-			Debug::PrintError("[SelectProjectMenu::OnLoadButtonClick] This is not a Xenity Project");
+			Debug::PrintError("[SelectProjectMenu::OnLoadButtonClick] This is not a Xenity Project", true);
 		}
 	}
 }
@@ -133,7 +133,7 @@ void SelectProjectMenu::DrawProjectsList()
 			}
 			else
 			{
-				Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project");
+				Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project", true);
 			}
 		}
 		ImGui::Separator();

@@ -17,7 +17,7 @@ int Performance::LastDrawTriangleCount = 0;
 
 void Performance::Init()
 {
-	Debug::Print("-------- Profiler initiated --------");
+	Debug::Print("-------- Profiler initiated --------", true);
 }
 
 void Performance::ResetCounters()

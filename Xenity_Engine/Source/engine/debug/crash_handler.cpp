@@ -11,20 +11,20 @@
 void CrashHandler::Handler(int signum)
 {
 #if defined(_WIN32) || defined(_WIN64)
-	Debug::PrintError("\n!!! Crash detected !!!");
+	Debug::PrintError("\n!!! Crash detected !!!", true);
 	switch (signum)
 	{
 	case SIGSEGV:
-		Debug::Print("Segmentation fault");
+		Debug::Print("Segmentation fault", true);
 		break;
 	case SIGFPE:
-		Debug::Print("Floating point exception");
+		Debug::Print("Floating point exception", true);
 		break;
 	default:
-		Debug::Print("Other type of exception: " + std::to_string(signum));
+		Debug::Print("Other type of exception: " + std::to_string(signum), true);
 		break;
 	}
-	Debug::Print("\n------ Stack trace ------\n");
+	Debug::Print("\n------ Stack trace ------\n", true);
 
 	// Linux code
 	/*const int maxStackTraceSize = 10;
@@ -84,12 +84,12 @@ void CrashHandler::Handler(int signum)
 				if (line)
 				{
 					std::string fileName = line->FileName;
-					Debug::Print(std::to_string(functionCount) + ": " + name + "() in " + fileName);
+					Debug::Print(std::to_string(functionCount) + ": " + name + "() in " + fileName, true);
 					//Debug::Print(std::to_string(functionCount) + ": " + name + " " + fileName + " at line " + std::to_string(line->LineNumber)); // LineNumber is not very accurate
 				}
 				else 
 				{
-					Debug::Print(std::to_string(functionCount) + ": " + name + "()");
+					Debug::Print(std::to_string(functionCount) + ": " + name + "()", true);
 				}
 				functionCount++;
 			}

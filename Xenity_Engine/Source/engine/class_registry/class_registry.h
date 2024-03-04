@@ -38,7 +38,7 @@ public:
 	{
 		if (name.empty())
 		{
-			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name");
+			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name", true);
 		}
 		else
 		{
@@ -81,7 +81,7 @@ public:
 	{
 		if (name.empty())
 		{
-			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name");
+			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name", true);
 		}
 		else
 		{

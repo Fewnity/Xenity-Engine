@@ -128,7 +128,7 @@ int Engine::Init()
 	const int debugInitResult = Debug::Init();
 	if (debugInitResult != 0)
 	{
-		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------");
+		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------", true);
 		// Not a critical module, do not stop the engine
 	}
 
@@ -153,7 +153,7 @@ int Engine::Init()
 	const int rendererInitResult = renderer->Init();
 	if (rendererInitResult != 0)
 	{
-		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------");
+		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------", true);
 		return -1;
 	}
 
@@ -161,7 +161,7 @@ int Engine::Init()
 	const int windowInitResult = Window::Init();
 	if (windowInitResult != 0)
 	{
-		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------");
+		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------", true);
 		return -1;
 	}
 	renderer->Setup();
@@ -181,13 +181,13 @@ int Engine::Init()
 	const int editorUiInitResult = EditorUI::Init();
 	if (editorUiInitResult != 0)
 	{
-		Debug::PrintError("-------- Editor UI init error code: " + std::to_string(editorUiInitResult) + " --------");
+		Debug::PrintError("-------- Editor UI init error code: " + std::to_string(editorUiInitResult) + " --------", true);
 		return -1;
 	}
 	Editor::Init();
 #endif
 
-	Debug::Print("-------- Engine fully initiated --------\n");
+	Debug::Print("-------- Engine fully initiated --------\n", true);
 
 	CreateBenchmarks();
 
@@ -268,7 +268,7 @@ void Engine::CheckEvents()
 
 void Engine::Loop()
 {
-	Debug::Print("-------- Initiating game --------");
+	Debug::Print("-------- Initiating game --------", true);
 
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)

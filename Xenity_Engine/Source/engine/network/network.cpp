@@ -150,7 +150,7 @@ void NetworkManager::DrawNetworkSetupMenu()
 		case PSP_UTILITY_DIALOG_NONE:
 		{
 			result = pspNetworkData.base.result;
-			Debug::Print("Network setup: " + std::to_string(result));
+			Debug::Print("Network setup: " + std::to_string(result), true);
 			if (result == 0)
 			{
 				if (EngineSettings::useOnlineDebugger)

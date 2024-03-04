@@ -126,7 +126,7 @@ int Window::Init()
 	}
 	catch (const std::exception&)
 	{
-		Debug::PrintWarning("Failed to set dark title bar");
+		Debug::PrintWarning("Failed to set dark title bar", true);
 	}
 
 	IMGUI_CHECKVERSION();
@@ -141,7 +141,7 @@ int Window::Init()
 
 	UpdateWindowTitle();
 #endif
-	Debug::Print("-------- Window initiated --------");
+	Debug::Print("-------- Window initiated --------", true);
 	return 0;
 }
 

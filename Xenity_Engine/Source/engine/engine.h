@@ -20,7 +20,7 @@ class Shader;
 class Material;
 
 #define ENGINE_VERSION "0.1"
-#define ENGINE_DLL_VERSION "1" // Increase by one this number to invalidate compiled Dlls of games projects
+#define ENGINE_DLL_VERSION "2" // Increase by one this number to invalidate compiled Dlls of games projects
 
 class Engine
 {

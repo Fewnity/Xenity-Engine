@@ -64,7 +64,7 @@ void InputSystem::Init()
 	screens.push_back(new InputSystem::TouchScreen());
 #endif
 
-	Debug::Print("-------- Input System initiated --------");
+	Debug::Print("-------- Input System initiated --------", true);
 }
 
 void InputSystem::HideMouse()

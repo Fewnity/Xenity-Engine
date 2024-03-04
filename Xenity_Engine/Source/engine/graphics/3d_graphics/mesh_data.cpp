@@ -408,7 +408,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 #endif
 		if (newSubMesh->indices == nullptr)
 		{
-			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices");
+			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices", true);
 			delete newSubMesh;
 			return;
 		}
@@ -515,7 +515,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 #if !defined(_EE)
 	if (newSubMesh->data == nullptr)
 	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex");
+		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex", true);
 		free(newSubMesh->indices);
 		delete newSubMesh;
 		return;
@@ -523,7 +523,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 #else
 	if (newSubMesh->c_verts == nullptr || newSubMesh->c_colours == nullptr || newSubMesh->c_st == nullptr)
 	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex");
+		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex", true);
 		free(newSubMesh->c_verts);
 		free(newSubMesh->c_colours);
 		free(newSubMesh->c_st);

@@ -62,7 +62,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			const uint64_t id = go->children[childI].lock()->GetUniqueId();
 			if (usedIds[id])
 			{
-				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id));
+				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id), true);
 			}
 			usedIds[id] = true;
 			ids.push_back(id);
@@ -78,7 +78,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			const std::string compIdString = std::to_string(compId);
 			if (usedIds[compId])
 			{
-				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + std::to_string(compId));
+				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + std::to_string(compId), true);
 			}
 			usedIds[compId] = true;
 
@@ -141,7 +141,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			}
 			else
 			{
-				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath());
+				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath(), true);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ void SceneManager::LoadScene(const json& jsonData)
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
-	Debug::Print("Loading scene...");
+	Debug::Print("Loading scene...", true);
 	std::shared_ptr<File> jsonFile = scene->file;
 	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 	if (isOpen)
@@ -382,7 +382,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		}
 		catch (const std::exception&)
 		{
-			Debug::PrintError("[SceneManager::LoadScene] Scene file error");
+			Debug::PrintError("[SceneManager::LoadScene] Scene file error", true);
 			return;
 		}
 	}

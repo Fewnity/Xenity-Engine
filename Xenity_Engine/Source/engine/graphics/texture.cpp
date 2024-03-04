@@ -65,7 +65,7 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 
 Texture::~Texture()
 {
-	Debug::Print("Texture::~Texture()" + std::to_string(textureId));
+	Debug::Print("Texture::~Texture()" + std::to_string(textureId), true);
 	this->UnloadFileReference();
 }
 
@@ -91,7 +91,7 @@ void Texture::UnloadFileReference()
 {
 	if (Engine::IsRunning(true))
 	{
-		Debug::Print("Unload");
+		Debug::Print("Unload", true);
 		if (isLoaded)
 		{
 			isLoaded = false;
@@ -314,7 +314,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 		// If there is no more free vram
 		if (!newData)
 		{
-			Debug::PrintWarning("No more free vram");
+			Debug::PrintWarning("No more free vram", true);
 			newData = (unsigned int *)memalign(16, byteCount);
 			isLevelInVram = false;
 		}
@@ -437,7 +437,7 @@ void Texture::SetData(const unsigned char *texData)
 
 void Texture::LoadTexture()
 {
-	Debug::Print("Loading texture: " + file->GetPath());
+	Debug::Print("Loading texture: " + file->GetPath(), true);
 
 	const bool openResult = file->Open(FileMode::ReadOnly);
 	if (openResult)
@@ -455,7 +455,7 @@ void Texture::LoadTexture()
 
 		if (!buffer)
 		{
-			Debug::PrintError("[Texture::LoadTexture] Failed to load texture");
+			Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
 			return;
 		}
 #if defined(__PSP__) || defined(_EE)
@@ -464,7 +464,7 @@ void Texture::LoadTexture()
 	}
 	else
 	{
-		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file");
+		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file", true);
 	}
 	isLoading = false;
 }

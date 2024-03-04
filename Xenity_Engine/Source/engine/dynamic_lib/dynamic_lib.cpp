@@ -27,9 +27,9 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 		// https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
 		const int errorCode = GetLastError();
 		if(errorCode == 127)
-			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Failed to load library (wrong version): " + fileName);
+			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Failed to load library (wrong version): " + fileName, true);
 		else
-			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName);
+			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName, true);
 	}
 
 	ProjectManager::projectSettings.isCompiled = result;
@@ -41,11 +41,11 @@ void DynamicLibrary::UnloadGameLibrary()
 	{
 		if (FreeLibrary(library))
 		{
-			Debug::Print("Library freed");
+			Debug::Print("Library freed", true);
 		}
 		else
 		{
-			Debug::PrintError("[DynamicLibrary::UnloadGameLibrary] Library cannot be freed");
+			Debug::PrintError("[DynamicLibrary::UnloadGameLibrary] Library cannot be freed", true);
 		}
 	}
 }
@@ -63,12 +63,12 @@ std::unique_ptr<GameInterface> DynamicLibrary::CreateGame()
 		}
 		else
 		{
-			Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game");
+			Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game", true);
 		}
 	}
 	else
 	{
-		Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game");
+		Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game", true);
 	}
 
 	return std::unique_ptr<GameInterface> (gameInterface);

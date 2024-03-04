@@ -120,7 +120,7 @@ void InspectorMenu::DrawFilePreview()
 				}
 				else
 				{
-					Debug::PrintError("[InspectorMenu::DrawFilePreview] Fail to open the preview file");
+					Debug::PrintError("[InspectorMenu::DrawFilePreview] Fail to open the preview file", true);
 				}
 			}
 		}

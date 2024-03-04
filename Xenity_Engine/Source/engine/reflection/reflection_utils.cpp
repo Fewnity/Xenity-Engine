@@ -85,7 +85,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 	}
 	else if constexpr (std::is_same <T, Collider>())
 	{
-		Debug::PrintError("[JsonToVariable] not implemented for std::weak_ptr<Collider>!");
+		Debug::PrintError("[JsonToVariable] not implemented for std::weak_ptr<Collider>!", true);
 	}
 }
 
@@ -127,7 +127,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 			}
 			else if constexpr (std::is_same <T, Collider>())
 			{
-				Debug::PrintError("[JsonToVariable] not implemented for std::vector<std::weak_ptr<Collider>>!");
+				Debug::PrintError("[JsonToVariable] not implemented for std::vector<std::weak_ptr<Collider>>!", true);
 			}
 		}
 		if (i >= objectVectorSize)
@@ -238,7 +238,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 		}
 		else if constexpr (std::is_same <T, Collider>())
 		{
-			Debug::PrintError("[VariableToJson] not implemented for std::weak_ptr<Collider>!");
+			Debug::PrintError("[VariableToJson] not implemented for std::weak_ptr<Collider>!", true);
 		}
 	}
 }
@@ -275,7 +275,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 			}
 			else if constexpr (std::is_same <T, Collider>())
 			{
-				Debug::PrintError("[VariableToJson] not implemented for std::vector<std::weak_ptr<Collider>>!");
+				Debug::PrintError("[VariableToJson] not implemented for std::vector<std::weak_ptr<Collider>>!", true);
 			}
 		}
 	}

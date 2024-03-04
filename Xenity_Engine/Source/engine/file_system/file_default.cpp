@@ -117,7 +117,7 @@ bool FileDefault::Open(FileMode fileMode)
 			file.open(path, params);
 			if (!file.is_open())
 			{
-				Debug::PrintError("[File::Open] Fail while creating and opening and creating file: " + path);
+				Debug::PrintError("[File::Open] Fail while creating and opening and creating file: " + path, true);
 			}
 			else
 			{

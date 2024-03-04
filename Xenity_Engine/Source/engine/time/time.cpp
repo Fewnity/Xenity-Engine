@@ -82,7 +82,7 @@ void Time::Init()
 	sceRtcGetCurrentTick(&currentTick);
 	lastTick = currentTick;
 #endif
-	Debug::Print("-------- Time system initiated --------");
+	Debug::Print("-------- Time system initiated --------", true);
 }
 
 void Time::UpdateTime()

@@ -55,7 +55,7 @@ int RendererOpengl::Init()
 	Window::SetResolution(1280, 720);
 #endif
 
-	Debug::Print("-------- OpenGL Renderer initiated --------");
+	Debug::Print("-------- OpenGL Renderer initiated --------", true);
 
 	// 0 is used to say "OK"
 	if (result == 1)

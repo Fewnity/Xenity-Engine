@@ -43,7 +43,7 @@ int EditorUI::Init()
 	}
 	else 
 	{
-		Debug::PrintError("[EditorUI::Init] Fail to load font file:" + fontFile->GetPath());
+		Debug::PrintError("[EditorUI::Init] Fail to load font file:" + fontFile->GetPath(), true);
 		return (int)EditorUIError::EDITOR_UI_ERROR_MISSING_FONT;
 	}
 
@@ -79,7 +79,7 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Rotate, "icons/rotate.png");
 	LoadEditorIcon(IconName::Icon_Scale, "icons/scale.png");
 
-	Debug::Print("---- Editor UI initiated ----");
+	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;
 }
 

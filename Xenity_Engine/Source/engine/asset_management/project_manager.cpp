@@ -162,7 +162,7 @@ void ProjectManager::FindAllProjectFiles()
 #if defined(EDITOR)
 					if (usedIds[id] == true)
 					{
-						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(id) + ", File:" + metaFile->GetPath());
+						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(id) + ", File:" + metaFile->GetPath(), true);
 						fileWithoutMeta.push_back(file);
 						fileWithoutMetaCount++;
 						continue;
@@ -294,17 +294,17 @@ void ProjectManager::CreateVisualStudioSettings()
 			}
 			else
 			{
-				Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to create Visual Studio Settings file");
+				Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to create Visual Studio Settings file", true);
 			}
 		}
 		else
 		{
-			Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to read Visual Studio Settings sample file");
+			Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Failed to read Visual Studio Settings sample file", true);
 		}
 	}
 	catch (const std::exception&)
 	{
-		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file");
+		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file", true);
 	}
 }
 
@@ -384,7 +384,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	}
 	catch (const std::exception&)
 	{
-		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.");
+		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.", true);
 	}
 
 	projectSettings.projectName = name;
@@ -482,7 +482,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #if defined(EDITOR)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
 #endif
-	Debug::Print("Loading project: " + projectPathToLoad);
+	Debug::Print("Loading project: " + projectPathToLoad, true);
 	projectLoaded = false;
 
 	projectFolderPath = projectPathToLoad;
@@ -555,7 +555,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		SceneManager::LoadScene(ProjectManager::GetStartScene());
 	}
 
-	Debug::Print("Project loaded");
+	Debug::Print("Project loaded", true);
 	projectLoaded = true;
 
 	return projectLoaded;
@@ -627,7 +627,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[SceneManager::LoadScene] Scene file error");
+				Debug::PrintError("[SceneManager::LoadScene] Scene file error", true);
 				continue;
 			}
 		}
@@ -709,7 +709,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& path)
 		}
 		else
 		{
-			Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
+			Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file", true);
 		}
 
 		if (!jsonString.empty())
@@ -722,7 +722,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& path)
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error");
+				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error", true);
 				return settings;
 			}
 
@@ -754,7 +754,7 @@ void ProjectManager::SaveProjectSettings()
 	}
 	else
 	{
-		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path);
+		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path, true);
 	}
 }
 
@@ -774,7 +774,7 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	}
 	else
 	{
-		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + file->GetPath());
+		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + file->GetPath(), true);
 	}
 }
 
@@ -795,7 +795,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath());
+				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath(), true);
 			}
 
 			const size_t projectCount = j.size();
@@ -839,7 +839,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 	else
 	{
-		Debug::PrintError(std::string("[ProjectManager::SaveProjectsList] Cannot save projects list: ") + PROJECTS_LIST_FILE);
+		Debug::PrintError(std::string("[ProjectManager::SaveProjectsList] Cannot save projects list: ") + PROJECTS_LIST_FILE, true);
 	}
 }
 
@@ -919,7 +919,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error");
+				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error", true);
 				return;
 			}
 
@@ -927,7 +927,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 		}
 		else
 		{
-			Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path);
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path, true);
 		}
 	}
 }

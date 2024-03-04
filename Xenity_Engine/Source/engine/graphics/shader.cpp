@@ -167,17 +167,17 @@ void Shader::LoadFileReference()
 				}
 				else
 				{
-					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + file->GetPath());
+					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + file->GetPath(), true);
 				}
 			}
 			else
 			{
-				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + file->GetPath());
+				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + file->GetPath(), true);
 			}
 		}
 		else
 		{
-			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + file->GetPath());
+			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + file->GetPath(), true);
 		}
 	}
 }

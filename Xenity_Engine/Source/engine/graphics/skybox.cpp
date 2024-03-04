@@ -53,7 +53,7 @@ void SkyBox::OnReflectionUpdated()
 	const bool saveResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!saveResult)
 	{
-		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath());
+		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath(), true);
 	}
 }
 
@@ -62,7 +62,7 @@ void SkyBox::LoadFileReference()
 	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult) 
 	{
-		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath());
+		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
 	}
 }
 

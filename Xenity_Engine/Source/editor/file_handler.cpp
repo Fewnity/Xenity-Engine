@@ -76,7 +76,7 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 	}
 	catch (const std::exception&)
 	{
-		Debug::PrintError("[FileHandler::HasFileChangedOrAddedRecursive] failed to check if files have changed");
+		Debug::PrintError("[FileHandler::HasFileChangedOrAddedRecursive] failed to check if files have changed", true);
 	}
 	return changed;
 }

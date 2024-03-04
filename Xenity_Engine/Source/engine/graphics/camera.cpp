@@ -286,7 +286,7 @@ void Camera::UpdateFrameBuffer()
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created");
+				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			//Screen buffer
@@ -300,7 +300,7 @@ void Camera::UpdateFrameBuffer()
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFramebufferTexture, 0);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created");
+				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 		}
 		else
 		{
@@ -320,7 +320,7 @@ void Camera::UpdateFrameBuffer()
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created");
+				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 		}
 
 		needFrameBufferUpdate = false;

@@ -12,7 +12,7 @@ UnitTest::UnitTest(const std::string& name)
 
 void UnitTestManager::StartAllTests()
 {
-	Debug::Print("------ Unit Tests ------");
+	Debug::Print("------ Unit Tests ------", true);
 	VectorAddTest addVectorTest = VectorAddTest("Vectors Additions");
 	TryTest(addVectorTest);
 
@@ -37,7 +37,7 @@ void UnitTestManager::StartAllTests()
 	TransformSetScaleTest transformSetScaleTest = TransformSetScaleTest("Transform Set Scale");
 	TryTest(transformSetScaleTest);
 
-	Debug::Print("------ Unit Tests finished! ------");
+	Debug::Print("------ Unit Tests finished! ------", true);
 }
 
 void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
@@ -46,10 +46,10 @@ void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 	const bool testResult = RegisterEnumStringsMap.Start(errorOut);
 	if (testResult)
 	{
-		Debug::Print(RegisterEnumStringsMap.GetName() + " Passed");
+		Debug::Print(RegisterEnumStringsMap.GetName() + " Passed", true);
 	}
 	else
 	{
-		Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut);
+		Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut, true);
 	}
 }

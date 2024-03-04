@@ -21,7 +21,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 
 		if (!fileData) 
 		{
-			Debug::PrintError("[AssetModifier::CropTexture] Fail to read file data");
+			Debug::PrintError("[AssetModifier::CropTexture] Fail to read file data", true);
 			return;
 		}
 
@@ -35,7 +35,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 		free(fileData);
 		if (!buffer)
 		{
-			Debug::PrintError("[AssetModifier::CropTexture] stbi_load_from_memory failed");
+			Debug::PrintError("[AssetModifier::CropTexture] stbi_load_from_memory failed", true);
 			return;
 		}
 
@@ -44,7 +44,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 		if (!croppedBuffer)
 		{
 			stbi_image_free(buffer);
-			Debug::PrintError("[AssetModifier::CropTexture] Fail to allocate memory for croppedBuffer");
+			Debug::PrintError("[AssetModifier::CropTexture] Fail to allocate memory for croppedBuffer", true);
 			return;
 		}
 		
@@ -69,6 +69,6 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 	}
 	else 
 	{
-		Debug::PrintError("[AssetModifier::CropTexture] Fail to open file");
+		Debug::PrintError("[AssetModifier::CropTexture] Fail to open file", true);
 	}
 }

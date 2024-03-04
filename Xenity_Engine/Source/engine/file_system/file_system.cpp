@@ -96,7 +96,7 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 	}
 	closedir(dir);
 #elif defined(_EE)
-	Debug::Print("FillDirectory");
+	Debug::Print("FillDirectory", true);
 	std::string fullPath = directory->GetPath();
 	int fd = fileXioDopen(directory->GetPath().c_str());
 	if (fd >= 0)
@@ -367,6 +367,6 @@ int FileSystem::InitFileSystem()
 // 		Debug::Print("-------- PS2 File System initiated --------");
 // 	}
 #endif
-	Debug::Print("-------- File System initiated --------");
+	Debug::Print("-------- File System initiated --------", true);
 	return 0;
 }

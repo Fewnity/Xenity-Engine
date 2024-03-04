@@ -33,7 +33,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 {
 	if (name.empty()) 
 	{
-		Debug::PrintError("[ClassRegistry::AddComponentFromName] Empty component name");
+		Debug::PrintError("[ClassRegistry::AddComponentFromName] Empty component name", true);
 		return nullptr;
 	}
 	else

@@ -40,19 +40,19 @@ public:
 	* Print a text
 	* @param text Text to print
 	*/
-	static void Print(const std::string& text);
+	static void Print(const std::string& text, bool hideInConsole = false);
 
 	/**
 	* Print an error
 	* @param text Text to print
 	*/
-	static void PrintError(const std::string& text);
+	static void PrintError(const std::string& text, bool hideInConsole = false);
 
 	/**
 	* Print a warning
 	* @param text Text to print
 	*/
-	static void PrintWarning(const std::string& text);
+	static void PrintWarning(const std::string& text, bool hideInConsole = false);
 
 	/**
 	 * [Internal] Send all profiler data to the debug server

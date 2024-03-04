@@ -33,20 +33,22 @@ MyMutex* debugMutex = nullptr;
 /**
  * Print an error in the console and the debug file
  */
-void Debug::PrintError(const std::string& text)
+void Debug::PrintError(const std::string& text, bool hideInConsole)
 {
 	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	AddMessageInHistory(text, DebugType::Error);
+	if(!hideInConsole)
+		AddMessageInHistory(text, DebugType::Error);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[ERROR] " + finalText;
 	const std::string textWithColor = "\033[31m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	debugText += textWithoutColor;
+	if (!hideInConsole)
+		debugText += textWithoutColor;
 	debugMutex->Unlock();
 	OnDebugLogEvent.Trigger();
 }
@@ -54,20 +56,22 @@ void Debug::PrintError(const std::string& text)
 /**
  * Print a warning in the console and the debug file
  */
-void Debug::PrintWarning(const std::string& text)
+void Debug::PrintWarning(const std::string& text, bool hideInConsole)
 {
 	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	AddMessageInHistory(text, DebugType::Warning);
+	if (!hideInConsole)
+		AddMessageInHistory(text, DebugType::Warning);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[WARNING] " + finalText;
 	const std::string textWithColor = "\033[33m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	debugText += textWithoutColor;
+	if (!hideInConsole)
+		debugText += textWithoutColor;
 	debugMutex->Unlock();
 	OnDebugLogEvent.Trigger();
 }
@@ -127,19 +131,21 @@ void Debug::PrintInFile(const std::string& text)
 /**
  * @brief Print text in the console and the debug file
  */
-void Debug::Print(const std::string& text)
+void Debug::Print(const std::string& text, bool hideInConsole)
 {
 	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	AddMessageInHistory(text, DebugType::Log);
+	if (!hideInConsole)
+		AddMessageInHistory(text, DebugType::Log);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string newString = "\033[37m" + finalText;
 	PrintInConsole(newString);
 	PrintInFile(finalText);
-	debugText += finalText; // Disable because cause crashes, why? Maybe thread?
+	if (!hideInConsole)
+		debugText += finalText; // Disable because cause crashes, why? Maybe thread?
 	debugMutex->Unlock();
 	OnDebugLogEvent.Trigger();
 }
@@ -196,7 +202,7 @@ void Debug::PrintInOnlineConsole(const std::string& text)
 
 void Debug::ConnectToOnlineConsole()
 {
-	Debug::Print("Connect to online console...");
+	Print("Connect to online console...", true);
 	socket = NetworkManager::CreateSocket("", 6004);
 }
 
@@ -221,10 +227,10 @@ int Debug::Init()
 
 	if (!file->CheckIfExist())
 	{
-		Print("-------- Debug file not created --------");
+		Print("-------- Debug file not created --------", true);
 		return -1;
 	}
 
-	Print("-------- Debug initiated --------");
+	Print("-------- Debug initiated --------", true);
 	return 0;
 }

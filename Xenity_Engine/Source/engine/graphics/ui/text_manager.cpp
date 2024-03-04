@@ -119,7 +119,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 
 	if (!font->fontAtlas || !font->fontAtlas->IsValid())
 	{
-		Debug::PrintError("[TextManager::DrawText] Invalid font");
+		Debug::PrintError("[TextManager::DrawText] Invalid font", true);
 		return;
 	}
 

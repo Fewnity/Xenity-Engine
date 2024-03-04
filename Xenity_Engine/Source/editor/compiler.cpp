@@ -60,7 +60,7 @@ bool Compiler::ExecuteCopyEntries()
 		}
 		catch (const std::exception&)
 		{
-			Debug::PrintError("[Compiler::ExecuteCopyEntries] Cannot copy " + entry.sourcePath + " to " + entry.destPath);
+			Debug::PrintError("[Compiler::ExecuteCopyEntries] Cannot copy " + entry.sourcePath + " to " + entry.destPath, true);
 			success = false;
 		}
 	}
@@ -103,7 +103,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		+ "\n- Library Name: " + params.libraryName
 		+ "\n- Editor DLL: " + params.getEditorDynamicLibraryName()
 		+ "\n- Runtime DLL: " + params.getDynamicLibraryName()
-	);
+	, true);
 
 	const CompilerAvailability availability = CheckCompilerAvailability(params);
 	if (availability != CompilerAvailability::AVAILABLE)
@@ -120,7 +120,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	}
 	catch (const std::exception&)
 	{
-		Debug::PrintWarning("[Compiler::Compile] Unable to clear the compilation folder");
+		Debug::PrintWarning("[Compiler::Compile] Unable to clear the compilation folder", true);
 	}
 
 	// Compile depending on platform
@@ -136,7 +136,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		result = CompileInDocker(params);
 		break;
 	default:
-		Debug::PrintError("[Compiler::Compile] No compile method for this platform!");
+		Debug::PrintError("[Compiler::Compile] No compile method for this platform!", true);
 		break;
 	}
 
@@ -204,15 +204,15 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(MSVC_START_FILE) + " not found in " + EngineSettings::compilerPath);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(MSVC_START_FILE) + " not found in " + EngineSettings::compilerPath, true);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + EngineSettings::engineProjectPath);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + EngineSettings::engineProjectPath, true);
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::ppssppExePath);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::ppssppExePath, true);
 		}
 	}
 	return (CompilerAvailability)error;

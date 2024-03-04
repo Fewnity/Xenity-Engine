@@ -15,7 +15,7 @@
 void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 {
 	const std::string path = file->GetPath();
-	Debug::Print("Loading audio clip: " + path);
+	Debug::Print("Loading audio clip: " + path, true);
 
 	// To lower extention
 	std::string lowerExt = file->GetFileExtension().substr(1);
@@ -31,7 +31,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 		if (!drwav_init_file(wav, path.c_str(), NULL))
 		{
 			// Error opening WAV file.
-			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path);
+			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path, true);
 			delete wav;
 		}
 		else
@@ -40,7 +40,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 			// Get informations
 			channelCount = wav->channels;
 			sampleCount = wav->totalPCMFrameCount;
-			Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate));
+			Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate), true);
 		}
 	}
 	else if (lowerExt == "mp3")
@@ -49,7 +49,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 		if (!drmp3_init_file(mp3, path.c_str(), NULL))
 		{
 			// Error opening MP3 file.
-			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path);
+			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path, true);
 			delete mp3;
 		}
 		else
@@ -58,12 +58,12 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 			// Get informations
 			channelCount = mp3->channels;
 			sampleCount = drmp3_get_pcm_frame_count(mp3);
-			Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate));
+			Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate), true);
 		}
 	}
 	else
 	{
-		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + path);
+		Debug::PrintError("[AudioClipStream::OpenStream] unknown file format: " + path, true);
 	}
 
 	//////////////////////////////////// OGG

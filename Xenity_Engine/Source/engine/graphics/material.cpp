@@ -226,7 +226,7 @@ void Material::OnReflectionUpdated()
 	const bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
 	if (!loadResult)
 	{
-		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath());
+		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath(), true);
 	}
 }
 
@@ -235,6 +235,6 @@ void Material::LoadFileReference()
 	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 	if (!loadResult)
 	{
-		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath());
+		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath(), true);
 	}
 }

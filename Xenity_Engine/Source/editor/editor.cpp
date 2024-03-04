@@ -622,7 +622,7 @@ void Editor::OnDragAndDropFileFinished()
 		}
 		catch (const std::exception& e)
 		{
-			Debug::PrintError(e.what());
+			Debug::PrintError(e.what(), true);
 		}
 	}
 

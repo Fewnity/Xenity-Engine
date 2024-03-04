@@ -97,7 +97,7 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::MenuItem("Open Scene"))
 		{
-			Debug::PrintWarning("(File/Open Scene) Unimplemented button");
+			Debug::PrintWarning("(File/Open Scene) Unimplemented button", true);
 		}
 		if (ImGui::MenuItem("Save Scene"))
 		{
