@@ -957,8 +957,8 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
 	Reflective::AddVariable(reflectedVariables, gameName, "gameName", true);
 	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
-	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", true);
-	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", true);
-	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug", true);
+	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", false);
+	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", false);
+	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug", false);
 	return reflectedVariables;
 }
