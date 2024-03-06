@@ -1,6 +1,7 @@
 #include "engine_settings_menu.h"
 
 #include <imgui/imgui.h>
+#include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
@@ -16,7 +17,10 @@ bool EngineSettingsMenu::DrawSelectFolderButton(std::string& path)
 	const std::string buttonId = "Select a folder" + std::string(EditorUI::GenerateItemId());
 	if (ImGui::Button(buttonId.c_str()))
 	{
-		const std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
+		std::string unsued;
+		std::string pathToOpen = path;
+		Editor::SeparateFileFromPath(path, pathToOpen, unsued);
+		const std::string folder = EditorUI::OpenFolderDialog("Select a folder", pathToOpen);
 		if (!folder.empty())
 		{
 			path = folder;
@@ -35,7 +39,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 	ImGui::Text("Compiler Options:");
 	ImGui::Separator();
 
-	std::string tempEngineProjectPath;
+	std::string tempEngineProjectPath = EngineSettings::engineProjectPath;
 	ImGui::Text("Engine project location: %s", EngineSettings::engineProjectPath.c_str());
 	valueChanged = DrawSelectFolderButton(tempEngineProjectPath);
 	if (valueChanged)
@@ -44,7 +48,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
-	std::string tempCompilerPath;
+	std::string tempCompilerPath = EngineSettings::compilerPath;
 	ImGui::Text("Compiler location: %s", EngineSettings::compilerPath.c_str());
 	valueChanged = DrawSelectFolderButton(tempCompilerPath);
 	if (valueChanged)
@@ -53,7 +57,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
-	std::string tempPpssppExePath;
+	std::string tempPpssppExePath = EngineSettings::ppssppExePath;
 	ImGui::Text("PPSSPP location: %s", EngineSettings::ppssppExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempPpssppExePath);
 	if (valueChanged)
@@ -62,7 +66,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
-	std::string tempDockerExePath;
+	std::string tempDockerExePath = EngineSettings::dockerExePath;
 	ImGui::Text("Docker location: %s", EngineSettings::dockerExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempDockerExePath);
 	if (valueChanged)

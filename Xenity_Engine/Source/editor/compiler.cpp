@@ -16,6 +16,7 @@
 
 // Editor
 #include <editor/editor.h>
+#include "ui/menus/docker_config_menu.h"
 
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
@@ -103,7 +104,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		+ "\n- Library Name: " + params.libraryName
 		+ "\n- Editor DLL: " + params.getEditorDynamicLibraryName()
 		+ "\n- Runtime DLL: " + params.getDynamicLibraryName()
-	, true);
+		, true);
 
 	const CompilerAvailability availability = CheckCompilerAvailability(params);
 	if (availability != CompilerAvailability::AVAILABLE)
@@ -391,7 +392,7 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 
 		// Specific to WSL
 	case CompileResult::ERROR_WSL_COMPILATION:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL");
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL (probably a C++ error)");
 		break;
 	case CompileResult::ERROR_WSL_ENGINE_CODE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's code");
@@ -404,6 +405,23 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 		break;
 	case CompileResult::ERROR_COMPILER_AVAILABILITY:
 		Debug::PrintError("[Compiler::OnCompileEnd] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
+		break;
+
+		// Specific to Docker
+	case CompileResult::ERROR_DOCKER_COMPILATION:
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on Docker (probably a C++ error)");
+		break;
+	case CompileResult::ERROR_DOCKER_NOT_FOUND:
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to find Docker");
+		break;
+	case CompileResult::ERROR_DOCKER_NOT_RUNNING:
+		Debug::PrintError("[Compiler::OnCompileEnd] Docker is not running");
+		break;
+	case CompileResult::ERROR_DOCKER_MISSING_IMAGE:
+		Debug::PrintError("[Compiler::OnCompileEnd] Docker image is missing");
+		break;
+	case CompileResult::ERROR_DOCKER_COULD_NOT_START:
+		Debug::PrintError("[Compiler::OnCompileEnd] Docker path is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
 		break;
 
 	default:
@@ -625,21 +643,57 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	return CompileResult::SUCCESS;
 }
 
+bool Compiler::CreateDockerImage()
+{
+	const int result = system("docker build -t ubuntu_test . 1>nul");
+	return result == 0;
+}
+
 CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 {
-	const int checkDockerInstallResult = system("docker > nul");
-	if (checkDockerInstallResult != 0) 
+	DockerState state = CheckDockerState();
+	if (state == DockerState::NOT_INSTALLED)
 	{
-		Debug::PrintError("[Compiler::CompileInDocker] Docker is not detected on your computer.");
+		// Open the docker config menu if docker is not installed
+		Editor::GetMenu<DockerConfigMenu>()->SetActive(true);
+		Editor::GetMenu<DockerConfigMenu>()->Focus();
 		return CompileResult::ERROR_DOCKER_NOT_FOUND;
 	}
-	const int checkDockerRunningResult = system("docker ps > nul");
-	if (checkDockerRunningResult != 0)
+	else if (state == DockerState::NOT_RUNNING)
 	{
-		Debug::PrintError("[Compiler::CompileInDocker] Docker is not running.");
-		return CompileResult::ERROR_DOCKER_NOT_RUNNING;
+		const bool startResult = Editor::OpenExecutableFile(EngineSettings::dockerExePath);
+		if (startResult)
+		{
+			// Check every 3 seconds if docker is running
+			for (int i = 0; i < 10; i++)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+				state = CheckDockerState();
+				if (state != DockerState::NOT_RUNNING)
+					break;
+			}
+
+			if (state == DockerState::NOT_RUNNING)
+				return CompileResult::ERROR_DOCKER_NOT_RUNNING;
+			else // Wait a little bit to be sure docker is operational
+				std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+		}
+		else 
+		{
+			return CompileResult::ERROR_DOCKER_COULD_NOT_START;
+		}
 	}
 
+	if (state == DockerState::MISSING_IMAGE)
+	{
+		Debug::PrintWarning("The docker image is missing, creating image... (This may takes few minutes)");
+		if (!CreateDockerImage())
+		{
+			return CompileResult::ERROR_DOCKER_MISSING_IMAGE;
+		}
+	}
+
+	// We have to stop and remove the container to recreate it
 	const int stopResult = system("docker stop XenityEngineBuild");
 	const int removeResult = system("docker remove XenityEngineBuild");
 
@@ -675,12 +729,11 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		fileName = "hello.vpk";
 
 	// Copy final file
-	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/"+ fileName+ "\" " + params.exportPath + fileName;
+	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" " + params.exportPath + fileName;
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
 
 	if (copyGameFileResult != 0)
 	{
-		Debug::PrintError("[Compiler::CompileInDocker] Docker compilation failed.");
 		return CompileResult::ERROR_DOCKER_COMPILATION;
 	}
 

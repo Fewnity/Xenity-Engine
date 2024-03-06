@@ -654,31 +654,47 @@ void Editor::CreateMenus()
 	mainBar->Init();
 }
 
-void Editor::OpenExecutableFile(std::string executablePath)
+bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName) 
 {
-	if (executablePath.empty())
-		return;
+	if (fullPath.empty())
+		return false;
 
-	const int backSlash = executablePath.find_last_of('/');
-	const int backSlash2 = executablePath.find_last_of('\\');
+	const int backSlash = fullPath.find_last_of('/');
+	const int backSlash2 = fullPath.find_last_of('\\');
 	int finalBackSlashPos = -1;
-	if (backSlash < backSlash2) 
+	if (backSlash < backSlash2)
 	{
 		finalBackSlashPos = backSlash2;
 	}
-	else 
+	else
 	{
 		finalBackSlashPos = backSlash;
 	}
 
 	if (finalBackSlashPos == -1)
-		return;
+		return false;
 
-	std::string finalName = executablePath.substr(finalBackSlashPos+1);
-	std::string path = executablePath.substr(0, finalBackSlashPos+1);
+	fileName = fullPath.substr(finalBackSlashPos + 1);
+	folderPath = fullPath.substr(0, finalBackSlashPos + 1);
 
-	std::string command = "cd \"" + path + "\"" + " && " + "\"" + finalName + "\"";
-	system(command.c_str());
+	return true;
+}
+
+bool Editor::OpenExecutableFile(const std::string& executablePath)
+{
+	std::string finalName;
+	std::string path;
+
+	if(SeparateFileFromPath(executablePath, path, finalName))
+	{
+		std::string command = "cd \"" + path + "\"" + " && " + "\"" + finalName + "\"";
+		const int result = system(command.c_str());
+		return result == 0;
+	}
+	else 
+	{
+		return false;
+	}
 }
 
 #endif

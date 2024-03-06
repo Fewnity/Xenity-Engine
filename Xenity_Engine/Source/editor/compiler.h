@@ -27,6 +27,8 @@ ENUM(CompileResult, SUCCESS,
 	ERROR_DOCKER_NOT_FOUND,
 	ERROR_DOCKER_NOT_RUNNING,
 	ERROR_DOCKER_COMPILATION,
+	ERROR_DOCKER_MISSING_IMAGE,
+	ERROR_DOCKER_COULD_NOT_START,
 	ERROR_COMPILER_AVAILABILITY);
 
 ENUM(CompilerAvailability,
@@ -127,6 +129,8 @@ public:
 	}
 
 	static DockerState CheckDockerState();
+
+	static bool CreateDockerImage();
 
 private:
 

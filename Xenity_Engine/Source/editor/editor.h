@@ -204,8 +204,12 @@ public:
 	static std::weak_ptr <Menu> lastFocusedGameMenu;
 	static bool isToolLocalMode;
 
-	static void OpenLinkInWebBrowser(std::string link);
-	static void OpenExecutableFile(std::string executablePath);
+	static void OpenLinkInWebBrowser(const std::string& link);
+	/**
+	* @return True on success
+	*/
+	static bool OpenExecutableFile(const std::string& executablePath);
+	static bool SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName);
 
 private:
 	static int menuCount;
