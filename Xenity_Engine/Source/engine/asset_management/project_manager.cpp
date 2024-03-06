@@ -362,16 +362,16 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	try
 	{
 		// Copy basic materials
-		std::filesystem::copy_file("materials\\standardMaterial.mat", folderPath + name + "\\assets\\Materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\unlitMaterial.mat", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\materials\\standardMaterial.mat", folderPath + name + "\\assets\\Materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\materials\\unlitMaterial.mat", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
 
 		// Copy basic shaders
-		std::filesystem::copy_file("shaders\\standard.shader", folderPath + name + "\\assets\\Shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\standard.shader.meta", folderPath + name + "\\assets\\Shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\unlit.shader", folderPath + name + "\\assets\\Shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("shaders\\unlit.shader.meta", folderPath + name + "\\assets\\Shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\shaders\\standard.shader", folderPath + name + "\\assets\\Shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\shaders\\standard.shader.meta", folderPath + name + "\\assets\\Shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\shaders\\unlit.shader", folderPath + name + "\\assets\\Shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\shaders\\unlit.shader.meta", folderPath + name + "\\assets\\Shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
 
 		// Copy basic 3D models
 		std::filesystem::copy("engine_assets\\models\\", folderPath + name + "\\assets\\Models\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
