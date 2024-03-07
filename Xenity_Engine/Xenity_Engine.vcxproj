@@ -482,7 +482,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\editor\ui\menus\docker_config_menu.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\docker_config_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\editor\windows\editor\win_editor.cpp" />
     <ClCompile Include="Source\engine\missing_script.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
@@ -773,7 +775,9 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\editor\ui\menus\docker_config_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\docker_config_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\missing_script.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />
     <ClInclude Include="Source\editor\asset_modifier\asset_modifier.h" />
