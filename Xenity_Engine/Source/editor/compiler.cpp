@@ -13,6 +13,8 @@
 #include <engine/class_registry/class_registry.h>
 #include <engine/game_interface.h>
 #include <engine/tools/string_tag_finder.h>
+#include <engine/file_system/directory.h>
+#include <engine/file_system/file.h>
 
 // Editor
 #include <editor/editor.h>
@@ -486,28 +488,52 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		return CompileResult::ERROR_FILE_COPY;
 	}
 
+	std::vector<std::string> sourceDestFolders;
+
 	// Copy source code
 	try
 	{
 		fs::create_directory(params.tempPath + "source\\");
 
-		for (const auto& file : fs::directory_iterator(params.sourcePath))
+		const int sourcePathLen = params.sourcePath.size();
+		std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
+		const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
+
+		const int fileCount = files.size();
+		for (int i = 0; i < fileCount; i++)
 		{
-			// Check is file
-			if (!file.is_regular_file()) continue;
+			const std::string ext = files[i]->GetFileExtension();
 
 			// Check extension
-			const std::string ext = file.path().extension().string();
-			if (ext != ".h" && ext != ".cpp") continue;
+			if (ext != ".h" && ext != ".cpp")
+				continue;
 
 			// Copy file
-			const std::string path = file.path().string();
-			const std::string fileName = file.path().filename().string();
+			const std::string filePathToCopy = files[i]->GetPath();
+			const std::string destFolder = params.tempPath + "source\\" + files[i]->GetFolderPath().substr(sourcePathLen);
+			fs::create_directories(destFolder);
+
 			fs::copy_file(
-				path,
-				params.tempPath + "source\\" + fileName,
+				filePathToCopy,
+				params.tempPath + "source\\" + filePathToCopy.substr(sourcePathLen), // substr to remove all folders including the locations of the project/source files
 				fs::copy_options::overwrite_existing
 			);
+
+			// Check if the destination folder is already in the list
+			bool found = false;
+			const int sourceDestFoldersSize = sourceDestFolders.size();
+			for (int x = 0; x < sourceDestFoldersSize; x++)
+			{
+				if (sourceDestFolders[x] == destFolder) 
+				{
+					found = true;
+					break;
+				}
+			}
+
+			// if not, add the destination folder in the list for later use
+			if(!found)
+				sourceDestFolders.push_back(destFolder);
 		}
 	}
 	catch (const std::exception&)
@@ -520,7 +546,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	command += GetAddNextCommand();
 	command += GetNavToEngineFolderCommand(params);
 	command += GetAddNextCommand();
-	command += GetCompileGameLibCommand(params);
+	command += GetCompileGameLibCommand(params, sourceDestFolders);
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
 		command += GetAddNextCommand();
@@ -769,14 +795,20 @@ std::string Compiler::GetNavToEngineFolderCommand(const CompilerParams& params)
 	return command;
 }
 
-std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
+std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, const std::vector<std::string>& sourceDestFolders)
 {
 	std::string command = "";
+	// MP for multithreading (faster compilation)
+	// EHsc for exceptions
+	// MD Use dll to compile (MDd for debug mode)
+	// DIMPORT define "IMPORT"
 #if defined(DEBUG)
 	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT"; // Start compilation
 #else
 	command += "cl /std:c++20 /MP /EHsc /MD /DIMPORT"; // Start compilation
 #endif
+
+	// Define "EDITOR" if compiled to play game in editor
 	if (params.buildType == BuildType::EditorHotReloading)
 	{
 		command += " /DEDITOR";
@@ -786,8 +818,17 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
 	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
 
-	const std::string folder = params.tempPath + "source\\";
-	command += " /LD \"" + folder + "*.cpp\"";
+	// Create DLL
+	command += " /LD";
+
+	// Add all source folders
+	const int sourceDestFoldersSize = sourceDestFolders.size();
+	for (int i = 0; i < sourceDestFoldersSize; i++)
+	{
+		command += " \"" + sourceDestFolders[i] + "*.cpp\"";
+	}
+	
+	// Add the .lib file to use
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
 		command += " " + std::string(ENGINE_GAME) + ".lib";
@@ -796,9 +837,12 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params)
 	{
 		command += " " + std::string(ENGINE_EDITOR) + ".lib";
 	}
+
 	command += " /link";
+	// Set .lib output file name
 	command += " /implib:" + params.libraryName + ".lib";
-	command += " /DEBUG";
+	//command += " /DEBUG"; ///????
+	// Set dll output file name
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
 		command += " /out:" + params.getDynamicLibraryName();

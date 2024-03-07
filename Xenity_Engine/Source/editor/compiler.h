@@ -209,7 +209,7 @@ private:
 	 * Get the command to compile the game as a dynamic library
 	 * @param buildType
 	 */
-	static std::string GetCompileGameLibCommand(const CompilerParams &params);
+	static std::string GetCompileGameLibCommand(const CompilerParams &params, const std::vector<std::string>& sourceDestFolders);
 
 	/**
 	 * Get the command to compile the game as an executable file
