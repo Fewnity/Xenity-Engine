@@ -120,6 +120,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		fs::remove_all(params.tempPath);
 		fs::create_directory(params.tempPath);
+		fs::create_directory(EngineSettings::engineProjectPath + "Source\\game_code\\");
 	}
 	catch (const std::exception&)
 	{
@@ -450,6 +451,58 @@ std::string WindowsPathToWSL(const std::string& path)
 	return newPath;
 }
 
+std::vector<std::string> CopyGameSource(const CompilerParams& params)
+{
+	std::vector<std::string> sourceDestFolders;
+
+	// Copy source code
+
+	fs::create_directory(params.tempPath + "source\\");
+
+	const int sourcePathLen = params.sourcePath.size();
+	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
+	const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
+
+	const int fileCount = files.size();
+	for (int i = 0; i < fileCount; i++)
+	{
+		const std::string ext = files[i]->GetFileExtension();
+
+		// Check extension
+		if (ext != ".h" && ext != ".cpp")
+			continue;
+
+		// Copy file
+		const std::string filePathToCopy = files[i]->GetPath();
+		const std::string destFolder = params.tempPath + "source\\" + files[i]->GetFolderPath().substr(sourcePathLen);
+		fs::create_directories(destFolder);
+
+		fs::copy_file(
+			filePathToCopy,
+			params.tempPath + "source\\" + filePathToCopy.substr(sourcePathLen), // substr to remove all folders including the locations of the project/source files
+			fs::copy_options::overwrite_existing
+		);
+
+		// Check if the destination folder is already in the list
+		bool found = false;
+		const int sourceDestFoldersSize = sourceDestFolders.size();
+		for (int x = 0; x < sourceDestFoldersSize; x++)
+		{
+			if (sourceDestFolders[x] == destFolder)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		// if not, add the destination folder in the list for later use
+		if (!found)
+			sourceDestFolders.push_back(destFolder);
+	}
+
+	return sourceDestFolders;
+}
+
 CompileResult Compiler::CompileWindows(const CompilerParams& params)
 {
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
@@ -493,48 +546,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	// Copy source code
 	try
 	{
-		fs::create_directory(params.tempPath + "source\\");
-
-		const int sourcePathLen = params.sourcePath.size();
-		std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
-		const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
-
-		const int fileCount = files.size();
-		for (int i = 0; i < fileCount; i++)
-		{
-			const std::string ext = files[i]->GetFileExtension();
-
-			// Check extension
-			if (ext != ".h" && ext != ".cpp")
-				continue;
-
-			// Copy file
-			const std::string filePathToCopy = files[i]->GetPath();
-			const std::string destFolder = params.tempPath + "source\\" + files[i]->GetFolderPath().substr(sourcePathLen);
-			fs::create_directories(destFolder);
-
-			fs::copy_file(
-				filePathToCopy,
-				params.tempPath + "source\\" + filePathToCopy.substr(sourcePathLen), // substr to remove all folders including the locations of the project/source files
-				fs::copy_options::overwrite_existing
-			);
-
-			// Check if the destination folder is already in the list
-			bool found = false;
-			const int sourceDestFoldersSize = sourceDestFolders.size();
-			for (int x = 0; x < sourceDestFoldersSize; x++)
-			{
-				if (sourceDestFolders[x] == destFolder) 
-				{
-					found = true;
-					break;
-				}
-			}
-
-			// if not, add the destination folder in the list for later use
-			if(!found)
-				sourceDestFolders.push_back(destFolder);
-		}
+		sourceDestFolders = CopyGameSource(params);
 	}
 	catch (const std::exception&)
 	{
@@ -704,7 +716,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 			else // Wait a little bit to be sure docker is operational
 				std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		}
-		else 
+		else
 		{
 			return CompileResult::ERROR_DOCKER_COULD_NOT_START;
 		}
@@ -744,6 +756,24 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
 	const std::string copyCmakeCommand = "docker cp \"" + EngineSettings::engineProjectPath + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
+
+	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
+	const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
+
+	// Copy source code in the build folder
+	try
+	{
+		CopyGameSource(params);
+	}
+	catch (const std::exception&)
+	{
+		return CompileResult::ERROR_GAME_CODE_COPY;
+	}
+
+	// Copy game source from the build folder to docker
+	const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
+	const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
+
 
 	std::string startCommand = "docker start -a XenityEngineBuild";
 	const int startResult = system(startCommand.c_str());
@@ -827,7 +857,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	{
 		command += " \"" + sourceDestFolders[i] + "*.cpp\"";
 	}
-	
+
 	// Add the .lib file to use
 	if (params.buildType != BuildType::EditorHotReloading)
 	{

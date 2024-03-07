@@ -484,8 +484,12 @@
   <ItemGroup>
     <ClCompile Include="Source\editor\ui\menus\docker_config_menu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\editor\windows\editor\win_editor.cpp" />
+    <ClCompile Include="Source\editor\windows\editor\win_editor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\missing_script.cpp" />
     <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\editor\asset_modifier\asset_modifier.cpp" />
@@ -777,6 +781,7 @@
   <ItemGroup>
     <ClInclude Include="Source\editor\ui\menus\docker_config_menu.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\engine\missing_script.h" />
     <ClInclude Include="Source\engine\event_system\event_system.h" />

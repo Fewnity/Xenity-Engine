@@ -38,7 +38,7 @@
 #include <editor/file_reference_finder.h>
 #endif
 #if !defined(EDITOR) && !defined(_WIN32) && !defined(_WIN64)
-#include <game_dungeon/game.h>
+#include "game_code/source/game.h"
 #endif
 #include <engine/engine_settings.h>
 #include <engine/tools/string_tag_finder.h>
