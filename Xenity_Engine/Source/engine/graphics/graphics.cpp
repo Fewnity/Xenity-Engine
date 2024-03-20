@@ -145,6 +145,7 @@ void Graphics::Draw()
 	Graphics::OrderDrawables();
 
 	Engine::GetRenderer().NewFrame();
+	Graphics::currentMaterial = nullptr;
 
 	const size_t cameraCount = cameras.size();
 	const int matCount = AssetManager::GetMaterialCount();
