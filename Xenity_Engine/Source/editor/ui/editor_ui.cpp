@@ -28,6 +28,7 @@ MultiDragData EditorUI::multiDragData;
 
 float EditorUI::uiScale = 1;
 std::shared_ptr<Menu> EditorUI::currentSelectAssetMenu;
+bool EditorUI::isEditingElement = false;
 
 #pragma region Initialisation
 
@@ -201,6 +202,7 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 */
 void EditorUI::Render()
 {
+	isEditingElement = ImGui::IsAnyItemActive();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

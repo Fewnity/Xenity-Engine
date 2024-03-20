@@ -155,11 +155,12 @@ void Editor::Update()
 
 		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::NUM_1)))
 		{
-			auto sceneMenu = Editor::GetMenu<SceneMenu>();
-			sceneMenu->Focus();
+			std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
+			if(sceneMenu)
+				sceneMenu->Focus();
 		}
 
-		if ((InputSystem::GetKey(KeyCode::LEFT_SHIFT) && InputSystem::GetKeyDown(KeyCode::D)))
+		if ((InputSystem::GetKey(KeyCode::LEFT_SHIFT) && InputSystem::GetKeyDown(KeyCode::D)) && !EditorUI::IsEditingElement())
 		{
 			SetSelectedGameObject(nullptr);
 			SetSelectedFileReference(nullptr);
@@ -167,9 +168,9 @@ void Editor::Update()
 
 		if (InputSystem::GetKey(KeyCode::DELETE))
 		{
-			auto sceneMenu = Editor::GetMenu<SceneMenu>();
-			auto hierarchy = Editor::GetMenu<HierarchyMenu>();
-			if (sceneMenu->IsFocused() || hierarchy->IsFocused())
+			const std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
+			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
+			if ((sceneMenu && sceneMenu->IsFocused()) || (hierarchy && hierarchy->IsFocused()))
 			{
 				if (selectedGameObject.lock())
 					Destroy(selectedGameObject.lock());
