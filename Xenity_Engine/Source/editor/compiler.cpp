@@ -788,6 +788,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" " + params.exportPath + fileName;
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
 
+	// Copy prx file for build and run on psp hardware
+	if (params.platform == Platform::P_PSP) 
+	{
+		std::string fileName2 = "hello.prx";
+		const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName2 + "\" " + params.exportPath + fileName2;
+		const int copyGameFileResult2 = system(copyGameFileCommand2.c_str()); // Engine's source code + (game's code but to change later)
+	}
+
 	if (copyGameFileResult != 0)
 	{
 		return CompileResult::ERROR_DOCKER_COMPILATION;
