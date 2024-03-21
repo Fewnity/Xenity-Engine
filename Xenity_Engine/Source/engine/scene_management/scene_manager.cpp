@@ -257,7 +257,7 @@ void SceneManager::LoadScene(const json& jsonData)
 
 		UniqueId::lastUniqueId = biggestId;
 
-		// Bind Components values and GameObjects childs
+		// Set gameobjects parents
 		for (auto& kv : jsonData["GameObjects"].items())
 		{
 			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
@@ -274,7 +274,15 @@ void SceneManager::LoadScene(const json& jsonData)
 						}
 					}
 				}
+			}
+		}
 
+		// Bind Components values
+		for (auto& kv : jsonData["GameObjects"].items())
+		{
+			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
+			if (go)
+			{
 				std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 				transform->isTransformationMatrixDirty = true;
