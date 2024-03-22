@@ -27,4 +27,5 @@ public:
 	std::shared_ptr <Material> material;
 private:
 	void Draw() override;
+	void Update() override;
 };

@@ -142,8 +142,6 @@ void Graphics::Draw()
 		Debug::PrintWarning("[Graphics::DrawAllDrawable] There is no camera for rendering");
 	}*/
 
-	Graphics::OrderDrawables();
-
 	Engine::GetRenderer().NewFrame();
 	Graphics::currentMaterial = nullptr;
 
@@ -153,6 +151,7 @@ void Graphics::Draw()
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex].lock();
+		Graphics::OrderDrawables();
 		//auto camera = usedCamera.lock();
 		if (usedCamera.lock()->GetIsEnabled() && usedCamera.lock()->GetGameObject()->GetLocalActive())
 		{
@@ -197,6 +196,11 @@ void Graphics::Draw()
 			for (size_t drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
 			{
 				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
+				drawable->Draw();
+			}
+			for (size_t drawableIndex = 0; drawableIndex < transCount; drawableIndex++)
+			{
+				std::shared_ptr<IDrawable> drawable = transparentDrawable[drawableIndex].lock();
 				drawable->Draw();
 			}
 			currentMode = IDrawableTypes::Draw_2D;
@@ -343,6 +347,17 @@ bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<ID
 	return false;
 }
 
+bool meshComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
+{
+	const Vector3& pos1 = t1.lock()->GetTransform()->GetPosition();
+	const Vector3& pos2 = t2.lock()->GetTransform()->GetPosition();
+	const Vector3& camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+	const float dis1 = Vector3::Distance(pos1, camPos);
+	const float dis2 = Vector3::Distance(pos2, camPos);
+
+	return dis1 > dis2;
+}
+
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
@@ -360,10 +375,13 @@ void Graphics::OrderDrawables()
 
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
-		std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
+		const std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
 		if (drawableToCheck->type == IDrawableTypes::Draw_3D)
 		{
-			noTransparentDrawable.push_back(drawableToCheck);
+			if(drawableToCheck->isTransparent)
+				transparentDrawable.push_back(drawableToCheck);
+			else
+				noTransparentDrawable.push_back(drawableToCheck);
 		}
 		else if (drawableToCheck->type == IDrawableTypes::Draw_2D)
 		{
@@ -374,6 +392,9 @@ void Graphics::OrderDrawables()
 			uiDrawable.push_back(drawableToCheck);
 		}
 	}
+
+	std::sort(transparentDrawable.begin(), transparentDrawable.end(), meshComparator);
+
 	//}
 	/*if (drawOrderListDirty)
 	{

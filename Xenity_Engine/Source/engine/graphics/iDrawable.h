@@ -15,6 +15,6 @@ public:
 	virtual void Draw() {};
 	IDrawableTypes type = IDrawableTypes::Draw_3D;
 	virtual int GetDrawPriority() const = 0;
-
+	bool isTransparent = false;
 	void RemoveReferences() override;
 };

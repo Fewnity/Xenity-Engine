@@ -302,6 +302,9 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
+	if(settings.useBlend)
+		glDepthMask(GL_FALSE);
+
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.useBlend = settings.useBlend;
@@ -364,7 +367,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glBindVertexArray(0);
 		Performance::AddDrawTriangles(subMesh->index_count / 3);
 	}
-
+	glDepthMask(GL_TRUE);
 	Performance::AddDrawCall();
 }
 

@@ -335,7 +335,7 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 		}
 	}
 
-	if (lastSettings.useLighting != settings.useLighting)
+	if (lastSettings.useLighting != settings.useLighting || lastSettings.useBlend != settings.useBlend)
 	{
 		if (settings.useLighting && !settings.useBlend)
 		{
@@ -351,6 +351,10 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	{
 		sceGuEnable(GU_TEXTURE_2D);
 	}
+
+	// glDepthMask needs GL_FALSE here, pspsdk is doing this wrong, may change in a sdk update
+	if (settings.useBlend)
+		sceGuDepthMask(GU_TRUE);
 
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
@@ -416,6 +420,10 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 			sceGumDrawArray(GU_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
 		}
 	}
+
+	// glDepthMask needs GL_TRUE here, pspsdk is doing this wrong, may change in a sdk update
+	sceGuDepthMask(GU_FALSE);
+
 	Performance::AddDrawCall();
 }
 

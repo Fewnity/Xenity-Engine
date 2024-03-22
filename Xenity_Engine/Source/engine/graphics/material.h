@@ -46,6 +46,7 @@ public:
 	// [Internal]
 	bool updated = false;
 	bool useLighting = false;
+	bool useTransparency = false;
 private:
 	void Update();
 	std::weak_ptr<Camera> lastUsedCamera;

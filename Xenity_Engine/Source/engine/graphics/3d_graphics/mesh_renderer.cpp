@@ -2,6 +2,7 @@
 
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/graphics/material.h>
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
@@ -44,18 +45,23 @@ int MeshRenderer::GetDrawPriority() const
 	return 0;
 }
 
+void MeshRenderer::Update() 
+{
+}
+
 void MeshRenderer::Draw()
 {
 	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{
-		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData)
+		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData && material)
 		{
 			RenderingSettings renderSettings = RenderingSettings();
 			renderSettings.invertFaces = false;
-			renderSettings.useBlend = false;
 			renderSettings.useDepth = true;
 			renderSettings.useTexture = true;
 			renderSettings.useLighting = true;
+			renderSettings.useBlend = material->useTransparency;
+			isTransparent = material->useTransparency;
 			MeshManager::DrawMesh(GetTransform(), textures, meshData, renderSettings, material);
 		}
 	}
