@@ -121,7 +121,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	const float windowWidth = ImGui::GetContentRegionAvail().x;
 	const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
-	if ((fileToRename == item.file && item.file) || (directoryToRename == item.directory && item.directory))
+	if ((fileToRename == item.file && item.file) || (directoryToRename == item.directory && item.directory && !item.file))
 	{
 		if (!focusSet)
 		{
@@ -235,7 +235,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				directoryToRename = fileExplorerItem.directory;
 				if (fileToRename)
 					renamingString = fileToRename->file->GetFileName();
-				if (directoryToRename)
+				else if (directoryToRename)
 					renamingString = directoryToRename->GetFolderName();
 
 			});
@@ -328,7 +328,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 {
 	// Get item icon
 	std::shared_ptr<Texture> tex = EditorUI::icons[(int)IconName::Icon_File];
-	if (fileExplorerItem.directory)
+	if (!fileExplorerItem.file)
 	{
 		tex = EditorUI::icons[(int)IconName::Icon_Folder];
 	}
@@ -430,6 +430,7 @@ void FileExplorerMenu::Draw()
 				{
 					FileExplorerItem item;
 					item.file = filesRefs[i];
+					item.directory = currentDir;
 					DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
 					itemIndex++;
 				}
