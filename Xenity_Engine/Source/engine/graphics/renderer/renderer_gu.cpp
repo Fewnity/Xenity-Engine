@@ -68,6 +68,8 @@ int RendererGU::Init()
 	sceGuEnable(GU_TEXTURE_2D);
 	sceGuEnable(GU_CLIP_PLANES);
 
+	sceGuAmbient(0xff000000);
+
 	sceGuFinish();
 	sceGuSync(0, 0);
 
@@ -335,9 +337,9 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 		}
 	}
 
-	if (lastSettings.useLighting != settings.useLighting || lastSettings.useBlend != settings.useBlend)
+	if (lastSettings.useLighting != settings.useLighting)
 	{
-		if (settings.useLighting && !settings.useBlend)
+		if (settings.useLighting)
 		{
 			sceGuEnable(GU_LIGHTING);
 		}
