@@ -53,6 +53,7 @@ ReflectiveData Texture::GetMetaReflectiveData()
 	Reflective::AddVariable(reflectedVariables, filter, "filter", true);
 	Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
 	Reflective::AddVariable(reflectedVariables, spriteSelections, "spriteSelections", true);
+	Reflective::AddVariable(reflectedVariables, type, "type", true);
 	return reflectedVariables;
 }
 
@@ -160,7 +161,7 @@ void swizzle_fast(u8 *out, const u8 *in, const unsigned int width, const unsigne
 }
 
 // See https://github.com/pspdev/pspsdk/blob/master/src/debug///scr_printf.c
-void copy_texture_data(void *dest, const void *src, int width, int height, const int destType, const int srcType)
+void copy_texture_data(void *dest, const void *src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType)
 {
 	/*for (unsigned int y = 0; y < height; y++)
 	{
@@ -171,7 +172,7 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 	}*/
 	if (destType == srcType)
 	{
-		if (srcType == GU_PSM_4444 || srcType == GU_PSM_5650 || srcType == GU_PSM_5551)
+		if (srcType == PSPTextureType::RGBA_4444 || srcType == PSPTextureType::RGBA_5650 || srcType == PSPTextureType::RGBA_5551)
 		{
 			height /= 2;
 		}
@@ -185,7 +186,7 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 	}
 	else
 	{
-		if (srcType == GU_PSM_8888 && destType == GU_PSM_4444)
+		if (srcType == PSPTextureType::RGBA_8888 && destType == PSPTextureType::RGBA_4444)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -204,7 +205,7 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 				}
 			}
 		}
-		else if (srcType == GU_PSM_8888 && destType == GU_PSM_5650)
+		else if (srcType == PSPTextureType::RGBA_8888 && destType == PSPTextureType::RGBA_5650)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -222,7 +223,7 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 				}
 			}
 		}
-		else if (srcType == GU_PSM_8888 && destType == GU_PSM_5551)
+		else if (srcType == PSPTextureType::RGBA_8888 && destType == PSPTextureType::RGBA_5551)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -244,32 +245,57 @@ void copy_texture_data(void *dest, const void *src, int width, int height, const
 	}
 }
 
-unsigned int GetColorByteCount(unsigned int psm)
+unsigned int GetColorByteCount(PSPTextureType psm)
 {
 	switch (psm)
 	{
-	case GU_PSM_T4:
-		return 0; // 0.5?
+	//case GU_PSM_T4:
+	//	return 0; // 0.5?
 
-	case GU_PSM_T8:
-		return 1;
+	//case GU_PSM_T8:
+	//	return 1;
 
-	case GU_PSM_5650:
-	case GU_PSM_5551:
-	case GU_PSM_4444:
-	case GU_PSM_T16:
+	case PSPTextureType::RGBA_5650:
+	case PSPTextureType::RGBA_5551:
+	case PSPTextureType::RGBA_4444:
+	//case GU_PSM_T16:
 		return 2;
 
-	case GU_PSM_8888:
-	case GU_PSM_T32:
+	case PSPTextureType::RGBA_8888:
+	/*case GU_PSM_T32:
 	case GU_PSM_DXT1:
 	case GU_PSM_DXT3:
-	case GU_PSM_DXT5:
+	case GU_PSM_DXT5:*/
 		return 4;
 
 	default:
 		return 0;
 	}
+	
+	//switch (psm)
+	//{
+	//case GU_PSM_T4:
+	//	return 0; // 0.5?
+
+	//case GU_PSM_T8:
+	//	return 1;
+
+	//case GU_PSM_5650:
+	//case GU_PSM_5551:
+	//case GU_PSM_4444:
+	//case GU_PSM_T16:
+	//	return 2;
+
+	//case GU_PSM_8888:
+	//case GU_PSM_T32:
+	//case GU_PSM_DXT1:
+	//case GU_PSM_DXT3:
+	//case GU_PSM_DXT5:
+	//	return 4;
+
+	//default:
+	//	return 0;
+	//}
 }
 
 void Texture::SetTextureLevel(int level, const unsigned char *texData)
@@ -295,12 +321,12 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	{
 		unsigned char *resizedData = (unsigned char *)malloc((resizedPW * resizedPH) * 4);
 		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
-		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, GU_PSM_8888);
+		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, PSPTextureType::RGBA_8888);
 		free(resizedData);
 	}
 	else
 	{
-		copy_texture_data(dataBuffer, texData, pW, pH, type, GU_PSM_8888);
+		copy_texture_data(dataBuffer, texData, pW, pH, type, PSPTextureType::RGBA_8888);
 	}
 
 	bool isLevelInVram = true;
@@ -355,9 +381,9 @@ void Texture::SetData(const unsigned char *texData)
 	// The psp needs a pow2 sized texture
 #if defined(__PSP__)
 	// type = GU_PSM_8888;
-	// type = GU_PSM_4444;
+	//type = GU_PSM_4444;
 	// type = GU_PSM_5650;
-	type = GU_PSM_5551;
+	//type = GU_PSM_5551;
 	// type = GU_PSM_DXT5;
 	// type = GU_PSM_DXT3;
 	// type = GU_PSM_DXT1;

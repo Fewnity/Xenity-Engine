@@ -15,6 +15,7 @@
 ENUM(Filter, Point, Bilinear);
 ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
 ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
+ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
 
 class API Texture : public FileReference, public Reflective
 {
@@ -144,11 +145,11 @@ public:
 
 	unsigned int pW = 0;
 	unsigned int pH = 0;
-	int type;
 #elif defined(_EE)
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
+	PSPTextureType type = PSPTextureType::RGBA_5650;
 	std::vector<SpriteSelection*> spriteSelections;
 	void ClearSpriteSelections();
 

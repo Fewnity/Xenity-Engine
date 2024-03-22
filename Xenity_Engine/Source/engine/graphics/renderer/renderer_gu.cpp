@@ -197,9 +197,36 @@ void RendererGU::SetTransform(const glm::mat4 &mat)
 	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 }
 
+int TypeToGUPSM(PSPTextureType psm)
+{
+	switch (psm)
+	{
+		//case GU_PSM_T4:
+		//case GU_PSM_T8:
+		//case GU_PSM_T16:
+		/*case GU_PSM_T32:
+		case GU_PSM_DXT1:
+		case GU_PSM_DXT3:
+		case GU_PSM_DXT5:*/
+
+	case PSPTextureType::RGBA_5650:
+		return GU_PSM_5650;
+	case PSPTextureType::RGBA_5551:
+		return GU_PSM_5551;
+	case PSPTextureType::RGBA_4444:
+		return GU_PSM_4444;
+
+	case PSPTextureType::RGBA_8888:
+		return GU_PSM_8888;
+
+	default:
+		return 0;
+	}
+}
+
 void RendererGU::BindTexture(const std::shared_ptr<Texture> &texture)
 {
-	sceGuTexMode(texture->type, texture->mipmaplevelCount, 0, 1);
+	sceGuTexMode(TypeToGUPSM(texture->type), texture->mipmaplevelCount, 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
 	// Set mipmap behavior
 	if (texture->useMipMap)
