@@ -78,7 +78,7 @@ public:
 	/**
 	* Get component's name
 	*/
-	std::string GetComponentName() const
+	const std::string& GetComponentName() const
 	{
 		return componentName;
 	}

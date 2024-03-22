@@ -108,7 +108,7 @@ void RendererOpengl::SetViewport(int x, int y, int width, int height)
 
 void RendererOpengl::SetClearColor(const Color& color)
 {
-	const RGBA rgba = color.GetRGBA();
+	const RGBA& rgba = color.GetRGBA();
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
 }
 
@@ -149,8 +149,8 @@ void RendererOpengl::ResetView()
 void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 {
 	std::shared_ptr<Transform> transform = camera->GetTransform();
-	const Vector3 position = transform->GetPosition();
-	const Vector3 rotation = transform->GetRotation();
+	const Vector3& position = transform->GetPosition();
+	const Vector3& rotation = transform->GetRotation();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -321,7 +321,7 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 	if (Graphics::UseOpenGLFixedFunctions)
 	{
-		const RGBA rgba = meshData->unifiedColor.GetRGBA();
+		const RGBA& rgba = meshData->unifiedColor.GetRGBA();
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
 
@@ -405,7 +405,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	int stride = sizeof(VertexNoColorNoUv);
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
-	const RGBA vec4Color = color.GetRGBA();
+	const RGBA& vec4Color = color.GetRGBA();
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glDrawArrays(GL_LINES, 0, 2);
 }
@@ -439,7 +439,7 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 	if (lightIndex >= maxLightCount)
 		return;
 
-	const RGBA rgba = color.GetRGBA();
+	const RGBA& rgba = color.GetRGBA();
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
@@ -499,8 +499,8 @@ void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 		{
 			if (light->type == LightType::Directional)
 			{
-				const Vector3 lightRotation = light->GetTransform()->GetRotation();
-				const Vector3 cameraPosition = cameraTransform->GetPosition();
+				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& cameraPosition = cameraTransform->GetPosition();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
 			}
@@ -540,7 +540,7 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 	glFogf(GL_FOG_DENSITY, 1.0f);
 	glFogf(GL_FOG_START, start);
 	glFogf(GL_FOG_END, end);
-	RGBA rgba = color.GetRGBA();
+	const RGBA& rgba = color.GetRGBA();
 	float floatColor[] = { rgba.r, rgba.g, rgba.b, 1.0f };
 
 	glFogfv(GL_FOG_COLOR, floatColor);

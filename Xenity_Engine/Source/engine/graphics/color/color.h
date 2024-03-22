@@ -91,7 +91,7 @@ public:
 	/**
 	* Get RGBA
 	*/
-	RGBA GetRGBA() const
+	const RGBA& GetRGBA() const
 	{
 		return rgba;
 	}

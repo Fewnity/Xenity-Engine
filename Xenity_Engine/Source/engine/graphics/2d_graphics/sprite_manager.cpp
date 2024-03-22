@@ -78,7 +78,7 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 	spriteMeshData->unifiedColor = color;
 
-	const Vector3 scale = transform->GetScale();
+	const Vector3& scale = transform->GetScale();
 	RenderingSettings renderSettings = RenderingSettings();
 
 	if (scale.x * scale.y < 0)

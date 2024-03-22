@@ -14,7 +14,7 @@
 
 void AudioClipStream::OpenStream(std::shared_ptr<File> file)
 {
-	const std::string path = file->GetPath();
+	const std::string& path = file->GetPath();
 	Debug::Print("Loading audio clip: " + path, true);
 
 	// To lower extention

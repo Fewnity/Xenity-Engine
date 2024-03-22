@@ -156,8 +156,8 @@ void RendererGU::ResetView()
 void RendererGU::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 {
 	const std::shared_ptr<Transform> transform = camera->GetTransform();
-	Vector3 position = transform->GetPosition();
-	Vector3 rotation = transform->GetRotation();
+	const Vector3& position = transform->GetPosition();
+	const Vector3& rotation = transform->GetRotation();
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
 
@@ -422,7 +422,7 @@ void RendererGU::SetLight(int lightIndex, const Vector3 &lightPosition, float in
 	if (lightIndex >= maxLightCount)
 		return;
 
-	RGBA rgba = color.GetRGBA();
+	const RGBA& rgba = color.GetRGBA();
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
 
@@ -467,9 +467,9 @@ void RendererGU::Setlights(const std::shared_ptr<Camera> &camera)
 		{
 			if (light->type == LightType::Directional)
 			{
-				Vector3 lightRotation = light->GetTransform()->GetRotation();
-				Vector3 cameraPosition = cameraTransform->GetPosition();
-				Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
+				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& cameraPosition = cameraTransform->GetPosition();
+				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
 			}
 			else

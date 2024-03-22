@@ -135,22 +135,11 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = !canvas;
 
-		Vector3 pos;
-		if (!canvas)
-		{
-			pos = transform->GetPosition();
-		}
-		else
-		{
-			pos = transform->GetPosition();
-			//float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (transform->GetPosition().x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
-			//float yOff = (-1 * 5) + (transform->GetPosition().y * (1 * 10));
-			//pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
-		}
+		const Vector3& pos = transform->GetPosition();
 
 		Vector3 scl = transform->GetScale();
 		scl.x = -scl.x;
-		const Vector3 rot = transform->GetRotation();
+		const Vector3& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
 		std::vector<std::shared_ptr<Texture>> textures;

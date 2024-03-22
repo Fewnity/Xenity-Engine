@@ -42,7 +42,7 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 	if (distance <= 1.3f)
 		alpha = distance - 0.3f;
 
-	const RGBA rgba = color.GetRGBA();
+	const RGBA& rgba = color.GetRGBA();
 	SpriteManager::DrawSprite(position, Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), texture, Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), AssetManager::unlitMaterial);
 }
 

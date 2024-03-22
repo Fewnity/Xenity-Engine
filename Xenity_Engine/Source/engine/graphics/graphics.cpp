@@ -170,7 +170,7 @@ void Graphics::Draw()
 			// Update camera and bind frame buffer
 			usedCamera.lock()->UpdateProjection();
 			usedCamera.lock()->BindFrameBuffer();
-			const Vector3 camPos = usedCamera.lock()->GetTransform()->GetPosition();
+			const Vector3& camPos = usedCamera.lock()->GetTransform()->GetPosition();
 
 			Engine::GetRenderer().SetClearColor(skyColor);
 			Engine::GetRenderer().Clear();
@@ -630,7 +630,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	// Draw tool
 	if (Editor::GetSelectedGameObject() && sceneMenu)
 	{
-		const Vector3 selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		const Vector3& selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
 		//if (usedCamera.lock()->isEditor) 
 		//{
 		//	float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (selectedGoPos.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));

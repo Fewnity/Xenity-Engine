@@ -164,7 +164,7 @@ void Camera::SetFarClippingPlane(float value)
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
-	const Vector3 camPos = GetTransform()->GetPosition();
+	const Vector3& camPos = GetTransform()->GetPosition();
 	const float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
 	const float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
 	return Vector2(vx, vy);
@@ -386,7 +386,7 @@ Vector3 Camera::GetMouseRay()
 	const std::shared_ptr<Transform> cameraTransform = GetTransform();
 
 	// Calculate camera matrix without translate
-	const Vector3 cameraRotation = cameraTransform->GetRotation();
+	const Vector3& cameraRotation = cameraTransform->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1 + 180), glm::vec3(1.0f, 0.0f, 0.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -409,8 +409,8 @@ void Camera::OnDrawGizmosSelected()
 
 	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
 
-	const Vector3 cameraPosition = GetTransform()->GetPosition();
-	const Vector3 cameraRotation = GetTransform()->GetRotation();
+	const Vector3& cameraPosition = GetTransform()->GetPosition();
+	const Vector3& cameraRotation = GetTransform()->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));

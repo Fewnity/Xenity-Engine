@@ -62,8 +62,8 @@ bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std:
 
 CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b, const Vector3 &aVelocity)
 {
-	const Vector3 aPosition = a->GetTransform()->GetPosition();
-	const Vector3 bPosition = b->GetTransform()->GetPosition();
+	const Vector3& aPosition = a->GetTransform()->GetPosition();
+	const Vector3& bPosition = b->GetTransform()->GetPosition();
 
 	const Vector3 aMinPos = a->min + aPosition + a->offset + aVelocity;
 	const Vector3 aMaxPos = a->max + aPosition + a->offset + aVelocity;

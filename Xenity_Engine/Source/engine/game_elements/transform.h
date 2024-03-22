@@ -22,32 +22,32 @@ public:
 	/**
 	* Get position
 	*/
-	Vector3 GetPosition() const;
+	const Vector3& GetPosition() const;
 
 	/**
 	* Get local position
 	*/
-	Vector3 GetLocalPosition() const;
+	const Vector3& GetLocalPosition() const;
 
 	/**
 	* Get rotation (in degree)
 	*/
-	Vector3 GetRotation() const;
+	const Vector3& GetRotation() const;
 
 	/**
 	* Get local rotation (in degree)
 	*/
-	Vector3 GetLocalRotation() const;
+	const Vector3& GetLocalRotation() const;
 
 	/**
 	* Get scale
 	*/
-	Vector3 GetScale() const;
+	const Vector3& GetScale() const;
 
 	/**
 	* Get local scale
 	*/
-	Vector3 GetLocalScale() const;
+	const Vector3& GetLocalScale() const;
 
 	/**
 	* Get forward direction

@@ -155,7 +155,7 @@ public:
 	/**
 	* Get transform
 	*/
-	std::shared_ptr<Transform> GetTransform() const
+	inline std::shared_ptr<Transform> GetTransform() const
 	{
 		return transform;
 	}

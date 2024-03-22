@@ -294,7 +294,7 @@ void Shader::SetShaderCameraPosition()
 	{
 		std::shared_ptr<Transform> transform = Graphics::usedCamera.lock()->GetTransform();
 		Vector3 lookDirection = transform->GetForward();
-		Vector3 camPos = transform->GetPosition();
+		const Vector3& camPos = transform->GetPosition();
 		lookDirection = lookDirection + camPos;
 
 		float xAngle = transform->GetRotation().x;

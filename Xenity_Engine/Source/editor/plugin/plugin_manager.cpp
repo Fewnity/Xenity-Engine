@@ -45,7 +45,7 @@ void PluginManager::Init()
 		// Check extension
 		if (file->GetFileExtension() != extension) return;
 
-		const std::string path = file->GetPath();
+		const std::string& path = file->GetPath();
 
 		// Try loading DLL
 		//  TODO: abstract library loading to either DynamicLibrary static class

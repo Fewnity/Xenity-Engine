@@ -70,8 +70,8 @@ public:
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
 	};
+
 	MeshData();
-	// MeshData() = delete;
 	MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
 
 	static std::shared_ptr<MeshData> MakeMeshData();

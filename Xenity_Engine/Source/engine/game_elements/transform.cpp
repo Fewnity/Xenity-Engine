@@ -34,32 +34,32 @@ ReflectiveData Transform::GetReflectiveData()
 
 #pragma region Accessors
 
-Vector3 Transform::GetPosition() const
+const Vector3& Transform::GetPosition() const
 {
 	return position;
 }
 
-Vector3 Transform::GetLocalPosition() const
+const Vector3& Transform::GetLocalPosition() const
 {
 	return localPosition;
 }
 
-Vector3 Transform::GetRotation() const
+const Vector3& Transform::GetRotation() const
 {
 	return rotation;
 }
 
-Vector3 Transform::GetLocalRotation() const
+const Vector3& Transform::GetLocalRotation() const
 {
 	return localRotation;
 }
 
-Vector3 Transform::GetScale() const
+const Vector3& Transform::GetScale() const
 {
 	return scale;
 }
 
-Vector3 Transform::GetLocalScale() const
+const Vector3& Transform::GetLocalScale() const
 {
 	return localScale;
 }
@@ -254,7 +254,7 @@ void Transform::UpdateWorldRotation()
 	}
 
 	const std::shared_ptr<Transform> parentTransform = gm->parent.lock()->GetTransform();
-	const Vector3 parentRotation = parentTransform->GetRotation();
+	const Vector3& parentRotation = parentTransform->GetRotation();
 	const glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentRotation.z, parentRotation.x, parentRotation.y)));
 	const glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(localRotation.z, localRotation.x, localRotation.y)));
 
@@ -280,9 +280,9 @@ void Transform::UpdateWorldPosition()
 	}
 
 	auto parentTransform = gm->parent.lock()->GetTransform();
-	const Vector3 parentPosition = parentTransform->GetPosition();
-	const Vector3 parentScale = parentTransform->GetScale();
-	const Vector3 thisLocalPosition = GetLocalPosition();
+	const Vector3& parentPosition = parentTransform->GetPosition();
+	const Vector3& parentScale = parentTransform->GetScale();
+	const Vector3& thisLocalPosition = GetLocalPosition();
 	//Get child local position
 	const float scaledLocalPos[3] = { (thisLocalPosition.x * parentScale.x), -(thisLocalPosition.y * parentScale.y), -(thisLocalPosition.z * parentScale.z) };
 

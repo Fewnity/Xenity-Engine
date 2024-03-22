@@ -173,7 +173,7 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr
 	dirfrac.y = 1.0f / dir.y;
 	dirfrac.z = 1.0f / dir.z;
 
-	const Vector3 camPos = camera->GetTransform()->GetPosition();
+	const Vector3& camPos = camera->GetTransform()->GetPosition();
 
 	float dis = 999999;
 	float minDis = dis;
@@ -215,7 +215,7 @@ void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormal
 	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
 	// Calculate camera matrix without translate
-	const Vector3 cameraRotation = cameraTransform->GetRotation();
+	const Vector3& cameraRotation = cameraTransform->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -388,7 +388,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		{
 			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
 
-			const Vector3 objectPosition = selectedGoTransform->GetPosition();
+			const Vector3& objectPosition = selectedGoTransform->GetPosition();
 			//float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (objectPosition.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
 			//float yOff = (-1 * 5) + (objectPosition.y * (1 * 10));
 			//objectPosition = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane

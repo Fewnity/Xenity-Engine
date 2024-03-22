@@ -30,7 +30,7 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 
 void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const std::vector<std::shared_ptr<Texture>>& textures, const std::shared_ptr<MeshData>& meshData, RenderingSettings& renderSettings, const std::shared_ptr<Material>& material)
 {
-	const Vector3 scale = transform->GetScale();
+	const Vector3& scale = transform->GetScale();
 
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;

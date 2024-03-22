@@ -25,10 +25,10 @@ Vector3 Spline::GetValueAt(const float t) const
 
 	if (parentTransform && nextTransform && beforeTransform && parent2Transform)
 	{
-		const Vector3 parentPos = parentTransform->GetPosition();
-		const Vector3 nextTransformPos = nextTransform->GetPosition();
-		const Vector3 beforeTransformPos = beforeTransform->GetPosition();
-		const Vector3 parent2TransformPos = parent2Transform->GetPosition();
+		const Vector3& parentPos = parentTransform->GetPosition();
+		const Vector3& nextTransformPos = nextTransform->GetPosition();
+		const Vector3& beforeTransformPos = beforeTransform->GetPosition();
+		const Vector3& parent2TransformPos = parent2Transform->GetPosition();
 
 		const float pow1 = powf(1 - tVal, 3);
 		const float pow2 = powf((1 - tVal), 2);
