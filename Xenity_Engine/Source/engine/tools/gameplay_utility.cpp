@@ -43,9 +43,12 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	// Set local position/rotation/scale
 	std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
 	std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
-	newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
-	newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
-	newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
+	if (parent)
+	{
+		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
+		newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
+		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
+	}
 
 	const size_t componentCount = goToDuplicate->components.size();
 	for (size_t i = 0; i < componentCount; i++)

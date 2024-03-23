@@ -144,6 +144,9 @@ void Editor::Update()
 				{
 					newGameObject->SetParent(gameObjectToDuplicate->parent.lock());
 				}
+				newGameObject->GetTransform()->SetLocalPosition(gameObjectToDuplicate->GetTransform()->GetLocalPosition());
+				newGameObject->GetTransform()->SetLocalRotation(gameObjectToDuplicate->GetTransform()->GetLocalRotation());
+				newGameObject->GetTransform()->SetLocalScale(gameObjectToDuplicate->GetTransform()->GetLocalScale());
 				SetSelectedGameObject(newGameObject);
 			}
 		}
