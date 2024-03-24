@@ -25,6 +25,7 @@ public:
 	std::shared_ptr <MeshData> meshData = nullptr;
 	std::vector< std::shared_ptr<Texture>> textures;
 	std::shared_ptr <Material> material;
+	bool culled = false;
 private:
 	void Draw() override;
 	void Update() override;

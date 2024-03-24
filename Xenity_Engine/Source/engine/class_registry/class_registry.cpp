@@ -5,6 +5,7 @@
 #include <engine/graphics/ui/text_renderer_canvas.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/3d_graphics/lod.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
@@ -83,6 +84,7 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<TestComponent>("TestComponent");
 	AddComponentClass<RigidBody>("RigidBody");
 	AddComponentClass<BoxCollider>("BoxCollider");
+	AddComponentClass<Lod>("Lod");
 }
 
 

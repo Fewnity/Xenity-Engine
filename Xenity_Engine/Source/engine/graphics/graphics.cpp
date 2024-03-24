@@ -10,6 +10,7 @@
 
 #include "3d_graphics/mesh_manager.h"
 #include "3d_graphics/mesh_data.h"
+#include <engine/graphics/3d_graphics/lod.h>
 
 #include "material.h"
 
@@ -46,6 +47,7 @@ std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::weak_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
+int Graphics::lodsCount = 0;
 
 std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 
@@ -53,6 +55,7 @@ std::vector<std::weak_ptr<IDrawable>> Graphics::noTransparentDrawable;
 std::vector<std::weak_ptr<IDrawable>> Graphics::transparentDrawable;
 std::vector<std::weak_ptr<IDrawable>> Graphics::spriteDrawable;
 std::vector<std::weak_ptr<IDrawable>> Graphics::uiDrawable;
+std::vector<std::weak_ptr<Lod>> Graphics::lods;
 
 std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 bool Graphics::drawOrderListDirty = true;
@@ -151,10 +154,11 @@ void Graphics::Draw()
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex].lock();
-		Graphics::OrderDrawables();
-		//auto camera = usedCamera.lock();
 		if (usedCamera.lock()->GetIsEnabled() && usedCamera.lock()->GetGameObject()->GetLocalActive())
 		{
+			OrderDrawables();
+			CheckLods();
+
 			// Set material as dirty
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
@@ -419,13 +423,37 @@ void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 
 void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 {
-	iDrawablesCount = (int)orderedIDrawable.size(); // TODO remove?
+	if (!Engine::IsRunning(true))
+		return;
+
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
 		if (orderedIDrawable[i].lock() == drawableToRemove.lock())
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
+			break;
+		}
+	}
+}
+
+void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
+{
+	lods.push_back(lodToAdd);
+	lodsCount++;
+}
+
+void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
+{
+	if (!Engine::IsRunning(true))
+		return;
+
+	for (int i = 0; i < lodsCount; i++)
+	{
+		if (lods[i].lock() == lodToRemove.lock())
+		{
+			lods.erase(lods.begin() + i);
+			lodsCount--;
 			break;
 		}
 	}
@@ -503,6 +531,18 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, renderSettings, AssetManager::unlitMaterial);
 		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, renderSettings, AssetManager::unlitMaterial);
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, AssetManager::unlitMaterial);
+	}
+}
+
+void Graphics::CheckLods()
+{
+	for (int i = 0; i < lodsCount; i++)
+	{
+		std::shared_ptr<Lod> lod = lods[i].lock();
+		if (lod) 
+		{
+			lod->CheckLod();
+		}
 	}
 }
 

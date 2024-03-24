@@ -19,6 +19,7 @@ class Texture;
 class SkyBox;
 class Vector3;
 class Shader;
+class Lod;
 
 class Graphics
 {
@@ -63,6 +64,18 @@ public:
 	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove);
 
 	/**
+	* Add a lod
+	* @param lodToAddLlod to add
+	*/
+	static void AddLod(const std::weak_ptr<Lod>& lodToAdd);
+
+	/**
+	* Remove a lod
+	* @param lodToRemove Lod to remove
+	*/
+	static void RemoveLod(const std::weak_ptr<Lod>& lodToRemove);
+
+	/**
 	* Remove a camera
 	* @param cameraToRemove Camera to remove
 	*/
@@ -83,6 +96,7 @@ public:
 	static std::vector<std::weak_ptr<IDrawable>> uiDrawable;
 
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
+	static std::vector<std::weak_ptr<Lod>> lods;
 
 	static std::shared_ptr <SkyBox> skybox;
 
@@ -97,8 +111,10 @@ public:
 
 private:
 	static int iDrawablesCount;
+	static int lodsCount;
 	static bool drawOrderListDirty;
 	static void DrawSkybox(const Vector3& cameraPosition);
+	static void CheckLods();
 #if defined(EDITOR)
 	static void DrawSelectedItemBoundingBox(const Vector3& cameraPosition);
 	static void DrawEditorGrid(const Vector3& cameraPosition, int gridAxis);

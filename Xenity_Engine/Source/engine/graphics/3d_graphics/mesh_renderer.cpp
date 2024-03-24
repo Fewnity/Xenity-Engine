@@ -53,7 +53,7 @@ void MeshRenderer::Draw()
 {
 	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{
-		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData && material)
+		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData && material && !culled)
 		{
 			RenderingSettings renderSettings = RenderingSettings();
 			renderSettings.invertFaces = false;

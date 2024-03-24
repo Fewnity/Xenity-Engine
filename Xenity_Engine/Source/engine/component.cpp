@@ -8,6 +8,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/3d_graphics/lod.h>
 #include <engine/lighting/lighting.h>
 
 #include <engine/physics/rigidbody.h>
@@ -43,11 +44,16 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 	if (firstUse)
 	{
+		// Move this code in a OnGameObjectSet function in the specific component?
 		std::shared_ptr<Component> thisShared = shared_from_this();
 		// If the component is a drawble, add to the drawable list
 		if (auto result = std::dynamic_pointer_cast<IDrawable>(thisShared))
 		{
 			Graphics::AddDrawable(result);
+		}
+		else if (auto result = std::dynamic_pointer_cast<Lod>(thisShared))
+		{
+			Graphics::AddLod(result);
 		}
 		else if (auto result = std::dynamic_pointer_cast<Light>(thisShared))
 		{
