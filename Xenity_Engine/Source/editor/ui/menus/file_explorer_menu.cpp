@@ -386,7 +386,7 @@ void FileExplorerMenu::Draw()
 	const float iconSize = 64 * EditorUI::GetUiScale();
 	std::string windowName = "File Explorer###File_Explorer" + std::to_string(id);
 	bool isOpen = true;
-	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
 
 	if (visible)
 	{
@@ -397,19 +397,20 @@ void FileExplorerMenu::Draw()
 		{
 			ImGui::TableNextRow(0, startAvailableSize.y);
 			ImGui::TableSetColumnIndex(0);
+			ImGui::BeginChild("explorer_table_folder_tree_child");
 			const bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
 			if (treeItemClicked)
 			{
 				fileHovered = true;
 			}
-
+			ImGui::EndChild();
 			ImGui::TableSetColumnIndex(1);
 			const float width = ImGui::GetContentRegionAvail().x;
 			int colCount = width / (100 * EditorUI::GetUiScale());
 			if (colCount <= 0)
 				colCount = 1;
 
-			if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None))
+			if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None | ImGuiTableFlags_ScrollY))
 			{
 				int currentCol = 0;
 				int itemIndex = 0;
