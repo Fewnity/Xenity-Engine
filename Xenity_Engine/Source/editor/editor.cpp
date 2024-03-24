@@ -22,6 +22,7 @@
 #include <editor/ui/menus/about_menu.h>
 #include <editor/ui/menus/console_menu.h>
 #include <editor/ui/menus/docker_config_menu.h>
+#include <editor/ui/menus/build_settings_menu.h>
 #include <editor/compiler.h>
 
 #include <functional>
@@ -642,6 +643,7 @@ void Editor::CreateMenus()
 	AddMenu<EngineSettingsMenu>(false);
 	AddMenu<DockerConfigMenu>(false);
 	AddMenu<AboutMenu>(false);
+	AddMenu<BuildSettingsMenu>(false);
 	//AddMenu<SelectAssetMenu>(false);
 
 	AddMenu<FileExplorerMenu>(true);

@@ -23,6 +23,7 @@
 #include <editor/ui/menus/console_menu.h>
 #include <editor/ui/menus/sprite_editor_menu.h>
 #include <editor/ui/menus/docker_config_menu.h>
+#include <editor/ui/menus/build_settings_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -104,6 +105,11 @@ void MainBarMenu::Draw()
 			SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 		}
 		ImGui::Separator();
+		if (ImGui::MenuItem("Build Settings"))
+		{
+			Editor::GetMenu<BuildSettingsMenu>()->SetActive(true);
+			Editor::GetMenu<BuildSettingsMenu>()->Focus();
+		}
 		if (ImGui::MenuItem("Build for Windows"))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
