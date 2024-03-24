@@ -87,12 +87,12 @@ void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 ReflectiveData Graphics::GetLightingSettingsReflection()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, Graphics::skybox, "skybox", true);
-	Reflective::AddVariable(reflectedVariables, Graphics::skyColor, "skyColor", true);
-	Reflective::AddVariable(reflectedVariables, Graphics::isFogEnabled, "isFogEnabled", true);
-	Reflective::AddVariable(reflectedVariables, Graphics::fogStart, "fogStart", true);
-	Reflective::AddVariable(reflectedVariables, Graphics::fogEnd, "fogEnd", true);
-	Reflective::AddVariable(reflectedVariables, Graphics::fogColor, "fogColor", true);
+	Reflective::AddVariable(reflectedVariables, skybox, "skybox", true);
+	Reflective::AddVariable(reflectedVariables, skyColor, "skyColor", true);
+	Reflective::AddVariable(reflectedVariables, isFogEnabled, "isFogEnabled", true);
+	Reflective::AddVariable(reflectedVariables, fogStart, "fogStart", true);
+	Reflective::AddVariable(reflectedVariables, fogEnd, "fogEnd", true);
+	Reflective::AddVariable(reflectedVariables, fogColor, "fogColor", true);
 	return reflectedVariables;
 }
 
@@ -146,7 +146,7 @@ void Graphics::Draw()
 	}*/
 
 	Engine::GetRenderer().NewFrame();
-	Graphics::currentMaterial = nullptr;
+	currentMaterial = nullptr;
 
 	const size_t cameraCount = cameras.size();
 	const int matCount = AssetManager::GetMaterialCount();
@@ -250,8 +250,8 @@ void Graphics::Draw()
 				if (!UseOpenGLFixedFunctions)
 				{
 					Engine::GetRenderer().UseShaderProgram(0);
-					Graphics::currentShader = nullptr;
-					Graphics::currentMaterial = nullptr;
+					currentShader = nullptr;
+					currentMaterial = nullptr;
 				}
 
 				if (usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
@@ -410,7 +410,7 @@ void Graphics::OrderDrawables()
 
 void Graphics::DeleteAllDrawables()
 {
-	Graphics::orderedIDrawable.clear();
+	orderedIDrawable.clear();
 	iDrawablesCount = 0;
 }
 
@@ -418,7 +418,7 @@ void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
-	Graphics::SetDrawOrderListAsDirty();
+	SetDrawOrderListAsDirty();
 }
 
 void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
@@ -487,10 +487,10 @@ void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::ve
 
 		material->Use();
 
-		if (!Graphics::currentShader)
+		if (!currentShader)
 			return;
 
-		Graphics::currentShader->SetShaderModel(matrix);
+		currentShader->SetShaderModel(matrix);
 	}
 	else
 	{

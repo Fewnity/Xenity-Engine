@@ -22,11 +22,18 @@ public:
 	static void Init();
 
 	static void AddMaterial(Material* material);
+
+	/**
+	* Used in component constructor when the component has files references stored in variables
+	*/
 	static void AddReflection(Reflective* reflection);
 	static void AddFileReference(const std::shared_ptr <FileReference>& fileReference);
 	static void AddLight(const std::weak_ptr<Light>& light);
 
 	static void RemoveMaterial(const Material* material);
+	/**
+	* Used in component destructor when the component has files references stored in variables
+	*/
 	static void RemoveReflection(const Reflective* reflection);
 	static void RemoveAllFileReferences();
 	static void RemoveFileReference(const std::shared_ptr <FileReference>& fileReference);
@@ -43,7 +50,6 @@ public:
 	static int GetMaterialCount();
 	static int GetReflectionCount();
 	static int GetFileReferenceCount();
-	static int GetDrawableCount();
 	static int GetLightCount();
 
 	static std::shared_ptr <Texture> defaultTexture;

@@ -25,6 +25,8 @@ Add Windows controllers support
 Add the ability to change values with mouse when sliding
 Find a way to avoid duplicating missing script
 Build and run on real harward for psp
+Fix duplication crash with missing script
+Clean Component::SetGameObject code
 
 Add event for input system for the screen size and mouse position
 Add event in SceneManager for UpdateWindowTitle?
@@ -45,9 +47,7 @@ Fix engine assets system
 Add network profiler
 Add map reflection support
 Add more unit tests
-Add delete texture function in renderer for psp
 RGBA or RGB in vertex color?
-Add LOD
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
 Packing asset system
