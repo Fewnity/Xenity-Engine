@@ -182,13 +182,13 @@
     <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022x64;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Editor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
-    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022x64;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022x64;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Release Editor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
     <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Engine;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
-    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug Engine;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Release Engine;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
