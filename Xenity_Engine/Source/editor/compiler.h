@@ -13,7 +13,8 @@
 ENUM(BuildType, 
 	EditorHotReloading,
 	BuildGame,
-	BuildAndRunGame);
+	BuildAndRunGame,
+	BuildAndRunOnHardwareGame);
 
 ENUM(CompileResult, SUCCESS,
 	ERROR_UNKNOWN,

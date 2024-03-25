@@ -6,4 +6,7 @@
 ENUM(Platform,
 	P_Windows,
 	P_PSP,
-	P_PsVita);
+	P_PsVita,
+	P_PS2,
+	P_PS3,
+	P_PS4);

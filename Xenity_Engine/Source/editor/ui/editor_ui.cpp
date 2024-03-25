@@ -80,6 +80,14 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Rotate, "icons/rotate.png");
 	LoadEditorIcon(IconName::Icon_Scale, "icons/scale.png");
 
+	// Platform icons
+	LoadEditorIcon(IconName::Icon_Platform_Windows, "icons/platform_windows.png");
+	LoadEditorIcon(IconName::Icon_Platform_PSP, "icons/platform_psp.png");
+	LoadEditorIcon(IconName::Icon_Platform_PSVITA, "icons/platform_psvita.png");
+	LoadEditorIcon(IconName::Icon_Platform_PS2, "icons/platform_ps2.png");
+	LoadEditorIcon(IconName::Icon_Platform_PS3, "icons/platform_ps3.png");
+	LoadEditorIcon(IconName::Icon_Platform_PS4, "icons/platform_ps4.png");
+
 	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;
 }

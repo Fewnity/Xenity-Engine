@@ -67,7 +67,13 @@ enum class IconName
 	Icon_Move,
 	Icon_Rotate,
 	Icon_Scale,
-	Icon_Count,
+	Icon_Platform_Windows,
+	Icon_Platform_PSP,
+	Icon_Platform_PSVITA,
+	Icon_Platform_PS2,
+	Icon_Platform_PS3,
+	Icon_Platform_PS4,
+	Icon_Count, // Last item
 };
 
 enum class DialogType
