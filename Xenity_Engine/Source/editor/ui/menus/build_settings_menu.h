@@ -10,13 +10,17 @@ class Texture;
 class PlatformSettings : public Reflective
 {
 public:
-
+	ReflectiveData GetReflectiveData() override
+	{
+		ReflectiveData reflectedVariables;
+		return reflectedVariables;
+	}
 };
 
 class PlatformSettingsPSP : public PlatformSettings
 {
 public:
-	ReflectiveData GetReflectiveData()
+	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -29,7 +33,7 @@ private:
 class PlatformSettingsPsVita : public PlatformSettings
 {
 public:
-	ReflectiveData GetReflectiveData()
+	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -42,7 +46,7 @@ private:
 class PlatformSettingsWindows : public PlatformSettings
 {
 public:
-	ReflectiveData GetReflectiveData()
+	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);

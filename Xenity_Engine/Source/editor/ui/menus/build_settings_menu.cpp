@@ -4,6 +4,9 @@
 #include <editor/ui/editor_ui.h>
 #include <editor/compiler.h>
 #include <engine/engine_settings.h>
+#include <engine/file_system/file_system.h>
+
+using json = nlohmann::json;
 
 void BuildSettingsMenu::Init()
 {
@@ -201,6 +204,20 @@ void BuildSettingsMenu::LoadSettings()
 
 void BuildSettingsMenu::SaveSettings()
 {
+	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
+
+	const int platformCount = plaforms.size();
+	json buildSettinsData;
+
+	for (int i = 0; i < platformCount; i++)
+	{
+		if(plaforms[i].settings)
+			buildSettinsData[plaforms[i].name] = ReflectionUtils::ReflectiveDataToJson(plaforms[i].settings->GetReflectiveData());
+	}
+
+	file->Open(FileMode::WriteCreateFile);
+	file->Write(buildSettinsData.dump(0));
+	file->Close();
 }
 
 void BuildSettingsMenu::StartBuild(Platform platform, BuildType buildType)
