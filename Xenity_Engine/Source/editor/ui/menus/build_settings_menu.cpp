@@ -5,11 +5,16 @@
 #include <editor/compiler.h>
 #include <engine/engine_settings.h>
 #include <engine/file_system/file_system.h>
+#include <editor/command/command_manager.h>
 
 using json = nlohmann::json;
 
 void BuildSettingsMenu::Init()
 {
+	onSettingChangedEvent = new Event<>();
+
+	///// Create all build platforms
+
 	BuildPlatform windowsPlatform = BuildPlatform();
 	windowsPlatform.name = "Windows";
 	windowsPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_Windows];
@@ -17,7 +22,7 @@ void BuildSettingsMenu::Init()
 	windowsPlatform.supportBuildAndRun = true;
 	windowsPlatform.supportBuildAndRunOnHardware = false;
 	windowsPlatform.platform = Platform::P_Windows;
-	windowsPlatform.settings = std::make_shared<PlatformSettingsWindows>();
+	windowsPlatform.settings = std::make_shared<PlatformSettingsWindows>(onSettingChangedEvent);
 
 	BuildPlatform pspPlatform = BuildPlatform();
 	pspPlatform.name = "PSP";
@@ -26,7 +31,7 @@ void BuildSettingsMenu::Init()
 	pspPlatform.supportBuildAndRun = true;
 	pspPlatform.supportBuildAndRunOnHardware = true;
 	pspPlatform.platform = Platform::P_PSP;
-	pspPlatform.settings = std::make_shared<PlatformSettingsPSP>();
+	pspPlatform.settings = std::make_shared<PlatformSettingsPSP>(onSettingChangedEvent);
 
 	BuildPlatform psvitaPlatform = BuildPlatform();
 	psvitaPlatform.name = "PsVita";
@@ -35,7 +40,7 @@ void BuildSettingsMenu::Init()
 	psvitaPlatform.supportBuildAndRun = false;
 	psvitaPlatform.supportBuildAndRunOnHardware = false;
 	psvitaPlatform.platform = Platform::P_PsVita;
-	psvitaPlatform.settings = std::make_shared<PlatformSettingsPsVita>();
+	psvitaPlatform.settings = std::make_shared<PlatformSettingsPsVita>(onSettingChangedEvent);
 
 	BuildPlatform ps2Platform = BuildPlatform();
 	ps2Platform.name = "PS2";
@@ -67,6 +72,9 @@ void BuildSettingsMenu::Init()
 	plaforms.push_back(ps2Platform);
 	plaforms.push_back(ps3Platform);
 	plaforms.push_back(ps4Platform);
+
+	LoadSettings();
+	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
 }
 
 void BuildSettingsMenu::Draw()
@@ -77,16 +85,19 @@ void BuildSettingsMenu::Draw()
 	if (visible)
 	{
 		OnStartDrawing();
+		// Create table
 		if (ImGui::BeginTable("build_settings_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
+			// Create two columns
 			ImGui::TableSetupColumn(0, ImGuiTableColumnFlags_WidthFixed,
 				260.0f);
 			ImGui::TableSetupColumn(0, ImGuiTableColumnFlags_WidthStretch,
 				0);
 
 			ImGui::TableNextRow();
-			ImGui::TableSetColumnIndex(0);
 
+			// Platforms list
+			ImGui::TableSetColumnIndex(0);
 			ImGui::BeginChild("build_settings_platforms_table_child");
 			//ImGui::Text("Platforms");
 			const int imageSize = 50;
@@ -100,6 +111,8 @@ void BuildSettingsMenu::Draw()
 				const float scrollY = ImGui::GetScrollY();
 				const ImVec2 availColSize = ImGui::GetContentRegionAvail();
 				ImGui::BeginGroup();
+
+				// Change color/text if supported or not supported
 				ImVec4 tint = ImVec4(1, 1, 1, 1);
 				ImVec4 textColor = ImVec4(1, 1, 1, 1);
 				std::string nameText = platform.name;
@@ -124,20 +137,24 @@ void BuildSettingsMenu::Draw()
 				backgroundRGBA.z = std::max(0.0f, backgroundRGBA.z - backgroundColorCoef);
 				const ImU32 backgroundColor = IM_COL32(255 * backgroundRGBA.x, 255 * backgroundRGBA.y, 255 * backgroundRGBA.z, 200);
 
+				// Draw button background
 				const ImVec2 winPos = ImGui::GetWindowPos();
 				ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(winPos.x + cursorPos.x, winPos.y + cursorPos.y - scrollY),
 					ImVec2(winPos.x + cursorPos.x + availColSize.x, winPos.y + cursorPos.y - scrollY + 50 + 10),
 					backgroundColor, 5);
 
+				// Draw icon
 				cursorPos.y += 5;
 				ImGui::SetCursorPosX(cursorPos.x + 5);
 				ImGui::SetCursorPosY(cursorPos.y);
-				ImGui::Image((ImTextureID)platform.icon->GetTextureId(), ImVec2(imageSize, imageSize), ImVec2(0,0), ImVec2(1, 1), tint);
+				ImGui::Image((ImTextureID)platform.icon->GetTextureId(), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), tint);
 
+				// Draw icon shadow
 				ImGui::SetCursorPosX(cursorPos.x + 5 + 2);
 				ImGui::SetCursorPosY(cursorPos.y + 2);
 				ImGui::Image((ImTextureID)platform.icon->GetTextureId(), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0.2f));
 
+				// Draw text
 				ImGui::SameLine();
 				ImGui::SetCursorPosY(cursorPos.y + 25 - ImGui::GetStyle().ItemSpacing.y * 2);
 				ImGui::TextColored(textColor, "%s", nameText.c_str());
@@ -156,15 +173,16 @@ void BuildSettingsMenu::Draw()
 
 			ImGui::EndChild();
 
+			// Settings list
 			ImGui::TableSetColumnIndex(1);
 			ImGui::BeginChild("build_settings_settings_table_child");
 			//ImGui::Text("Settings");
 			const BuildPlatform& platform = plaforms[selectedPlatformIndex];
 			std::shared_ptr<Command> command = nullptr;
-			//std::shared_ptr<PlatformSettings> parent;
-			bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings);
+			const bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings);
 			if (valueChanged && command)
 			{
+				CommandManager::AddCommand(command);
 				command->Execute();
 			}
 			if (ImGui::Button("Build"))
@@ -185,6 +203,7 @@ void BuildSettingsMenu::Draw()
 					StartBuild(platform.platform, BuildType::BuildAndRunOnHardwareGame);
 				}
 			}
+
 			ImGui::EndChild();
 		}
 		ImGui::EndTable();
@@ -198,25 +217,51 @@ void BuildSettingsMenu::Draw()
 	ImGui::End();
 }
 
+void BuildSettingsMenu::OnSettingChanged()
+{
+	SaveSettings();
+}
+
 void BuildSettingsMenu::LoadSettings()
 {
+	// Read file data
+	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
+	file->Open(FileMode::ReadOnly);
+	const std::string data = file->ReadAll();
+	file->Close();
+
+	// Parse data to json
+	const json buildSettingsData = json::parse(data);
+
+	// Use json to update settings values
+	const int platformCount = plaforms.size();
+	for (int i = 0; i < platformCount; i++)
+	{
+		const BuildPlatform& plaform = plaforms[i];
+		if (plaform.settings)
+		{
+			ReflectionUtils::JsonToReflectiveData(buildSettingsData[plaform.name], plaform.settings->GetReflectiveData());
+		}
+	}
 }
 
 void BuildSettingsMenu::SaveSettings()
 {
-	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
-
+	// Generate json from settings data
 	const int platformCount = plaforms.size();
-	json buildSettinsData;
+	json buildSettingsData;
 
 	for (int i = 0; i < platformCount; i++)
 	{
-		if(plaforms[i].settings)
-			buildSettinsData[plaforms[i].name] = ReflectionUtils::ReflectiveDataToJson(plaforms[i].settings->GetReflectiveData());
+		const BuildPlatform& plaform = plaforms[i];
+		if(plaform.settings)
+			buildSettingsData[plaform.name]["Values"] = ReflectionUtils::ReflectiveDataToJson(plaform.settings->GetReflectiveData());
 	}
 
+	// Write json into the file
+	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
 	file->Open(FileMode::WriteCreateFile);
-	file->Write(buildSettinsData.dump(0));
+	file->Write(buildSettingsData.dump(0));
 	file->Close();
 }
 
