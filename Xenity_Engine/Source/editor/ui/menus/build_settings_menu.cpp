@@ -103,13 +103,13 @@ void BuildSettingsMenu::Draw()
 			const int imageSize = 50;
 
 			const int platformCount = plaforms.size();
+			ImVec2 availColSize = ImGui::GetContentRegionAvail();
 			for (int i = 0; i < platformCount; i++)
 			{
 				const BuildPlatform& platform = plaforms[i];
 				ImVec2 cursorPos = ImGui::GetCursorPos();
 				const ImVec2 startcursorPos = cursorPos;
 				const float scrollY = ImGui::GetScrollY();
-				const ImVec2 availColSize = ImGui::GetContentRegionAvail();
 				ImGui::BeginGroup();
 
 				// Change color/text if supported or not supported
@@ -118,14 +118,14 @@ void BuildSettingsMenu::Draw()
 				std::string nameText = platform.name;
 				Vector4 backgroundRGBA = EngineSettings::secondaryColor.GetRGBA().ToVector4();
 				float backgroundColorCoef = 0.3f;
-				if (!platform.isSupported) 
+				if (!platform.isSupported)
 				{
 					tint = ImVec4(0.5f, 0.5f, 0.5f, 1);
 					textColor = ImVec4(0.5f, 0.5f, 0.5f, 1);
 					nameText += " (not yet supported)";
 					backgroundColorCoef = 0.45f;
 				}
-				else 
+				else
 				{
 					if (i == selectedPlatformIndex)
 						backgroundColorCoef = 0.17f;
@@ -185,22 +185,33 @@ void BuildSettingsMenu::Draw()
 				CommandManager::AddCommand(command);
 				command->Execute();
 			}
-			if (ImGui::Button("Build"))
+
+			availColSize = ImGui::GetContentRegionAvail();
+			if (platform.supportBuildAndRunOnHardware)
+			{
+				ImGui::SetCursorPosY(windowSize.y - (20 + ImGui::GetStyle().ItemSpacing.y)*2);
+				ImGui::SetCursorPosX(availColSize.x - (180 + ImGui::GetStyle().ItemSpacing.x));
+				if (ImGui::Button("Build And Run On Hardware", ImVec2(180 + ImGui::GetStyle().ItemSpacing.x, 20)))
+				{
+					StartBuild(platform.platform, BuildType::BuildAndRunOnHardwareGame);
+				}
+			}
+
+			if (platform.supportBuildAndRun)
+				ImGui::SetCursorPosX(availColSize.x - (180 + ImGui::GetStyle().ItemSpacing.x));
+			else
+				ImGui::SetCursorPosX(availColSize.x - (80));
+			ImGui::SetCursorPosY(windowSize.y - (20 + ImGui::GetStyle().ItemSpacing.y));
+			if (ImGui::Button("Build", ImVec2(80, 20)))
 			{
 				StartBuild(platform.platform, BuildType::BuildGame);
 			}
 			if (platform.supportBuildAndRun)
 			{
-				if (ImGui::Button("Build And Run"))
+				ImGui::SameLine();
+				if (ImGui::Button("Build And Run", ImVec2(100, 20)))
 				{
 					StartBuild(platform.platform, BuildType::BuildAndRunGame);
-				}
-			}
-			if (platform.supportBuildAndRunOnHardware)
-			{
-				if (ImGui::Button("Build And Run On Hardware"))
-				{
-					StartBuild(platform.platform, BuildType::BuildAndRunOnHardwareGame);
 				}
 			}
 
@@ -230,17 +241,29 @@ void BuildSettingsMenu::LoadSettings()
 	const std::string data = file->ReadAll();
 	file->Close();
 
-	// Parse data to json
-	const json buildSettingsData = json::parse(data);
-
-	// Use json to update settings values
-	const int platformCount = plaforms.size();
-	for (int i = 0; i < platformCount; i++)
+	if (!data.empty())
 	{
-		const BuildPlatform& plaform = plaforms[i];
-		if (plaform.settings)
+		json buildSettingsData;
+		try
 		{
-			ReflectionUtils::JsonToReflectiveData(buildSettingsData[plaform.name], plaform.settings->GetReflectiveData());
+			// Parse data to json
+			buildSettingsData = json::parse(data);
+		}
+		catch (const std::exception&)
+		{
+			Debug::PrintError("[BuildSettingsMenu::LoadSettings] Error while loading build settings");
+			return;
+		}
+
+		// Use json to update settings values
+		const int platformCount = plaforms.size();
+		for (int i = 0; i < platformCount; i++)
+		{
+			const BuildPlatform& plaform = plaforms[i];
+			if (plaform.settings)
+			{
+				ReflectionUtils::JsonToReflectiveData(buildSettingsData[plaform.name], plaform.settings->GetReflectiveData());
+			}
 		}
 	}
 }
@@ -254,7 +277,7 @@ void BuildSettingsMenu::SaveSettings()
 	for (int i = 0; i < platformCount; i++)
 	{
 		const BuildPlatform& plaform = plaforms[i];
-		if(plaform.settings)
+		if (plaform.settings)
 			buildSettingsData[plaform.name]["Values"] = ReflectionUtils::ReflectiveDataToJson(plaform.settings->GetReflectiveData());
 	}
 

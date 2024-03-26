@@ -44,11 +44,13 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		return reflectedVariables;
 	}
 
 private:
 	bool isDebugMode = false;
+	bool enableOnlineProfiler = false;
 };
 
 class PlatformSettingsPsVita : public PlatformSettings
@@ -61,11 +63,13 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		return reflectedVariables;
 	}
 
 private:
 	bool isDebugMode = false;
+	bool enableOnlineProfiler = false;
 };
 
 class PlatformSettingsWindows : public PlatformSettings
@@ -78,11 +82,13 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		return reflectedVariables;
 	}
 
 private:
 	bool isDebugMode = false;
+	bool enableOnlineProfiler = false;
 };
 
 class BuildSettingsMenu : public Menu
