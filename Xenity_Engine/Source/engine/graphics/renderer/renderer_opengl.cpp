@@ -365,10 +365,13 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, 0);
 		}
 		glBindVertexArray(0);
-		Performance::AddDrawTriangles(subMesh->index_count / 3);
+		if (Graphics::usedCamera.lock()->isEditor) 
+		{
+			Performance::AddDrawTriangles(subMesh->vertice_count / 3);
+			Performance::AddDrawCall();
+		}
 	}
 	glDepthMask(GL_TRUE);
-	Performance::AddDrawCall();
 }
 
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)

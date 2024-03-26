@@ -421,12 +421,11 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 		{
 			sceGumDrawArray(GU_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
 		}
+		//Performance::AddDrawCall();
 	}
 
 	// glDepthMask needs GL_TRUE here, pspsdk is doing this wrong, may change in a sdk update
 	sceGuDepthMask(GU_FALSE);
-
-	Performance::AddDrawCall();
 }
 
 void RendererGU::DrawLine(const Vector3 &a, const Vector3 &b, const Color &color, RenderingSettings &settings)
