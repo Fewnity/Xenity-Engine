@@ -391,7 +391,9 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		catch (const std::exception& e)
 		{
 			CreateEmptyScene();
+#if defined(EDITOR)
 			EditorUI::OpenDialog("Error", "Error while loading the scene. The file is probably corrupted.", DialogType::Dialog_Type_OK);
+#endif
 			Debug::PrintError("[SceneManager::LoadScene] Scene file error: " + std::string(e.what()), true);
 			return;
 		}
