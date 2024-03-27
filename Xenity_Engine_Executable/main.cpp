@@ -11,6 +11,35 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
 //------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
 
+// For the Alpha Release
+/*
+--- Needed
+Show submesh count somewhere
+New material System
+Use white texture if no texture on material
+New Input system
+Fix variables order
+Text scale
+Fix rotation tool texture uv
+Fix crash if rotation values are infinite
+Fix duplication crash with missing script
+Multiple gameobject selection
+Clean folders
+Create crash dump file
+Remove engine location settings
+Rework the documentation
+Clean code
+Update read me
+
+--- Can be for next release
+
+--- Done
+Fix error when loading mesh
+Add try catch to all json parse
+Clear scene if fail loading scene
+*/
+
+
 /*
 --- Check if working:
 Add ability to move folders into a folder
