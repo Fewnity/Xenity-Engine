@@ -39,9 +39,13 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		std::vector<Vector3> tempVertices;
 		std::vector<Vector2> tempTexturesCoords;
 		std::vector<Vector3> tempNormals;
+		int tempVerticesCount = 0;
+		int tempTexturesCoordsCount = 0;
+		int tempNormalsCount = 0;
 		bool hasNoUv = false;
 		bool hasNoNormals = false;
 		int count = -1;
+		bool notSupported = false;
 
 		// Read file
 		int lastLine = 0;
@@ -97,6 +101,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 					if (currentSubMeshPtr)
 						currentSubMeshPtr->verticesCount++;
 					tempVertices.emplace_back(Vector3(x, y, z));
+					tempVerticesCount++;
 				}
 				else if (line[2] == ' ')
 				{
@@ -112,6 +117,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 						if (currentSubMeshPtr)
 							currentSubMeshPtr->textureCordsCount++;
 						tempTexturesCoords.emplace_back(Vector2(x, 1 - y));
+						tempTexturesCoordsCount++;
 					}
 					else if (line[1] == 'n') // Add normal
 					{
@@ -124,6 +130,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 						if (currentSubMeshPtr)
 							currentSubMeshPtr->normalsCount++;
 						tempNormals.emplace_back(Vector3(x, y, z));
+						tempNormalsCount++;
 					}
 				}
 			}
@@ -137,19 +144,28 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				{
 					count = 0;
 					const int lineSize = (int)line.size();
+					int spaceCount = 0;
 					for (int i = 0; i < lineSize - 1; i++)
 					{
 						if (line[i] == '/')
 						{
 							count++;
-							if (line[(size_t)i + 1] == '/')
+							/*if (line[(size_t)i + 1] == '/')
 							{
-
 								count = 6;
 								hasNoUv = true;
 								break;
-							}
+							}*/
 						}
+						else if (line[i] == ' ')
+						{
+							spaceCount++;
+						}
+					}
+					if (spaceCount == 4)
+					{
+						notSupported = true;
+						break;
 					}
 				}
 
@@ -224,73 +240,101 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				break;
 			}
 		}
-		currentSubMeshPtr = nullptr;
+		if (!notSupported)
+		{
 
-		mesh->hasUv = !hasNoUv;
-		mesh->hasNormal = !hasNoNormals;
-		mesh->hasColor = false;
+
+			stop = false;
+			currentSubMeshPtr = nullptr;
+
+			mesh->hasUv = !hasNoUv;
+			mesh->hasNormal = !hasNoNormals;
+			mesh->hasColor = false;
 #if defined(__PSP__)
-		mesh->hasIndices = false; // Disable indices on psp, this will improve performances
+			mesh->hasIndices = false; // Disable indices on psp, this will improve performances
 #else
-		mesh->hasIndices = true;
+			mesh->hasIndices = true;
 #endif
-		for (int i = 0; i < currentSubMesh + 1; i++)
-		{
-			const SubMesh* sub = submeshes[i];
-			mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
-		}
-
-		for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
-		{
-			const SubMesh* submesh = submeshes[subMeshIndex];
-			// Push vertices in the right order
-			int vertexIndicesSize = (int)submesh->vertexIndices.size();
-			for (int i = 0; i < vertexIndicesSize; i++)
+			for (int i = 0; i < currentSubMesh + 1; i++)
 			{
-				const unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
-				const unsigned int textureIndex = submesh->textureIndices[i] - 1;
+				const SubMesh* sub = submeshes[i];
+				mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
+			}
 
-				const Vector3& vertice = tempVertices.at(vertexIndex);
-				if (!mesh->hasNormal)
+			for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
+			{
+				const SubMesh* submesh = submeshes[subMeshIndex];
+				// Push vertices in the right order
+				const int vertexIndicesSize = (int)submesh->vertexIndices.size();
+				for (int i = 0; i < vertexIndicesSize; i++)
 				{
-					if (!mesh->hasUv)
+					const unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
+					unsigned int textureIndex = 0;
+
+					if (vertexIndex >= tempVerticesCount)
 					{
-						mesh->AddVertex(
-							vertice.x, vertice.y, vertice.z, i, subMeshIndex);
+						stop = true;
+						break;
+					}
+					if (mesh->hasUv)
+					{
+						textureIndex = submesh->textureIndices[i] - 1;
+						if (textureIndex >= tempTexturesCoordsCount)
+						{
+							stop = true;
+							break;
+						}
+					}
+					const Vector3& vertice = tempVertices.at(vertexIndex);
+					if (!mesh->hasNormal)
+					{
+						if (!mesh->hasUv)
+						{
+							mesh->AddVertex(
+								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
+						}
+						else
+						{
+							const Vector2& uv = tempTexturesCoords.at(textureIndex);
+							mesh->AddVertex(
+								uv.x, uv.y,
+								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
+						}
 					}
 					else
 					{
-						const Vector2& uv = tempTexturesCoords.at(textureIndex);
-						mesh->AddVertex(
-							uv.x, uv.y,
-							vertice.x, vertice.y, vertice.z, i, subMeshIndex);
-					}
-				}
-				else
-				{
-					const unsigned int normalIndices = submesh->normalsIndices[i] - 1;
-					const Vector3& normal = tempNormals.at(normalIndices);
-					if (!mesh->hasUv)
-					{
-						mesh->AddVertex(
-							normal.x, normal.y, normal.z,
-							vertice.x, vertice.y, vertice.z, i, subMeshIndex);
-					}
-					else
-					{
-						const Vector2& uv = tempTexturesCoords.at(textureIndex);
-						mesh->AddVertex(
-							uv.x, uv.y,
-							normal.x, normal.y, normal.z,
-							vertice.x, vertice.y, vertice.z, i, subMeshIndex);
+						const unsigned int normalIndices = submesh->normalsIndices[i] - 1;
+						if (normalIndices >= tempNormalsCount)
+						{
+							stop = true;
+							break;
+						}
+						const Vector3& normal = tempNormals.at(normalIndices);
+						if (!mesh->hasUv)
+						{
+							mesh->AddVertex(
+								normal.x, normal.y, normal.z,
+								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
+						}
+						else
+						{
+							const Vector2& uv = tempTexturesCoords.at(textureIndex);
+							mesh->AddVertex(
+								uv.x, uv.y,
+								normal.x, normal.y, normal.z,
+								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 
+						}
 					}
+					if (mesh->hasIndices)
+						mesh->subMeshes[subMeshIndex]->indices[i] = i;
 				}
-				if(mesh->hasIndices)
-					mesh->subMeshes[subMeshIndex]->indices[i] = i;
+				if (stop)
+				{
+					break;
+				}
 			}
 		}
-
 		// Free memory
 		for (int i = 0; i < currentSubMesh + 1; i++)
 		{
@@ -306,8 +350,13 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 #endif
 
 		mesh->isLoading = false;
+		if (notSupported)
+		{
+			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh->file->GetPath());
+			return false;
+		}
 	}
-	else 
+	else
 	{
 		// Print error if the file can't be read
 		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh->file->GetPath());
