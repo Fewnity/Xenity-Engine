@@ -156,7 +156,18 @@ void ProjectManager::FindAllProjectFiles()
 				metaFile->Close();
 				if (!jsonString.empty())
 				{
-					const json data = json::parse(jsonString);
+					json data;
+					try
+					{
+						data = json::parse(jsonString);
+					}
+					catch (const std::exception&)
+					{
+						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Meta file corrupted! File:" + metaFile->GetPath(), true);
+						fileWithoutMeta.push_back(file);
+						fileWithoutMetaCount++;
+						continue;
+					}
 					const uint64_t id = data["id"];
 
 #if defined(EDITOR)

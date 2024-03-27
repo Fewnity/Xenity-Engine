@@ -388,9 +388,11 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 			openedScene = scene;
 			Window::UpdateWindowTitle();
 		}
-		catch (const std::exception&)
+		catch (const std::exception& e)
 		{
-			Debug::PrintError("[SceneManager::LoadScene] Scene file error", true);
+			CreateEmptyScene();
+			EditorUI::OpenDialog("Error", "Error while loading the scene. The file is probably corrupted.", DialogType::Dialog_Type_OK);
+			Debug::PrintError("[SceneManager::LoadScene] Scene file error: " + std::string(e.what()), true);
 			return;
 		}
 	}

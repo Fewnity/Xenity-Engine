@@ -401,10 +401,16 @@ bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, const Ref
 		file->Close();
 		if (!jsonString.empty())
 		{
-			json myJson;
-			myJson = json::parse(jsonString);
-			ReflectionUtils::JsonToReflectiveData(myJson, dataList);
-			ok = true;
+			try
+			{
+				json myJson = json::parse(jsonString);
+				ReflectionUtils::JsonToReflectiveData(myJson, dataList);
+				ok = true;
+			}
+			catch (const std::exception&)
+			{
+				ok = false;
+			}
 		}
 		else
 		{
