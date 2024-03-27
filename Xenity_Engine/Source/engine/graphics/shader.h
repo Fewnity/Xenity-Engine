@@ -56,7 +56,7 @@ public:
 	void SetShaderAttribut(const char* attribut, float value);
 	void SetShaderAttribut(const char* attribut, int value);
 
-	void UpdateLights();
+	void UpdateLights(bool disableLights);
 	bool useTessellation = false;
 
 	static std::shared_ptr<Shader> MakeShader();

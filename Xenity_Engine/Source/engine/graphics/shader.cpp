@@ -489,33 +489,36 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 /// <summary>
 /// Send lights data to the shader
 /// </summary>
-void Shader::UpdateLights()
+void Shader::UpdateLights(bool disableLights)
 {
-	const int lightCount = AssetManager::GetLightCount();
 	int directionalUsed = 0;
 	int pointUsed = 0;
 	int spotUsed = 0;
-
-	//For each lights
-	for (int lightI = 0; lightI < lightCount; lightI++)
+	if (disableLights)
 	{
-		std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
-		if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
+		const int lightCount = AssetManager::GetLightCount();
+
+		//For each lights
+		for (int lightI = 0; lightI < lightCount; lightI++)
 		{
-			if (light->type == LightType::Directional)
+			std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
+			if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 			{
-				SetDirectionalLightData(light, directionalUsed);
-				directionalUsed++;
-			}
-			else if (light->type == LightType::Point)
-			{
-				SetPointLightData(light, pointUsed);
-				pointUsed++;
-			}
-			else if (light->type == LightType::Spot)
-			{
-				SetSpotLightData(light, spotUsed);
-				spotUsed++;
+				if (light->type == LightType::Directional)
+				{
+					SetDirectionalLightData(light, directionalUsed);
+					directionalUsed++;
+				}
+				else if (light->type == LightType::Point)
+				{
+					SetPointLightData(light, pointUsed);
+					pointUsed++;
+				}
+				else if (light->type == LightType::Spot)
+				{
+					SetSpotLightData(light, spotUsed);
+					spotUsed++;
+				}
 			}
 		}
 	}

@@ -168,8 +168,7 @@ void Material::Update()
 
 		if (!updated)
 		{
-			if (useLighting)
-				shader->UpdateLights();
+			shader->UpdateLights(useLighting);
 
 			int textureIndex = 0;
 			/*for (const auto& kv : uniformsTextures)
