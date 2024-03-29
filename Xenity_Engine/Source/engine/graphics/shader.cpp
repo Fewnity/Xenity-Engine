@@ -453,7 +453,7 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 /// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
+	static const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);

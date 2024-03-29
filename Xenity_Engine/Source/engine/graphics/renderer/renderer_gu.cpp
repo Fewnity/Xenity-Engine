@@ -7,6 +7,7 @@
 #include <engine/tools/math.h>
 #include <engine/debug/performance.h>
 #include <engine/graphics/graphics.h>
+#include <engine/graphics/material.h>
 #include <engine/ui/window.h>
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/gameobject.h>
@@ -110,8 +111,8 @@ void RendererGU::EndFrame()
 
 	/*if (!dialog)
 	{*/
-		sceGuFinish();
-		sceGuSync(0, 0);
+	sceGuFinish();
+	sceGuSync(0, 0);
 	//}
 
 	//if (vsync)
@@ -127,7 +128,7 @@ void RendererGU::SetViewport(int x, int y, int width, int height)
 	sceGuViewport(x, y, width, height);
 }
 
-void RendererGU::SetClearColor(const Color &color)
+void RendererGU::SetClearColor(const Color& color)
 {
 	sceGuClearColor(color.GetUnsignedIntABGR());
 }
@@ -155,7 +156,7 @@ void RendererGU::ResetView()
 	sceGumRotateY(180 / 180.0f * 3.14159f);
 }
 
-void RendererGU::SetCameraPosition(const std::shared_ptr<Camera> &camera)
+void RendererGU::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 {
 	const std::shared_ptr<Transform> transform = camera->GetTransform();
 	const Vector3& position = transform->GetPosition();
@@ -177,7 +178,7 @@ void RendererGU::ResetTransform()
 	sceGumLoadIdentity();
 }
 
-void RendererGU::SetTransform(const Vector3 &position, const Vector3 &rotation, const Vector3 &scale, bool resetTransform)
+void RendererGU::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
 {
 	sceGumMatrixMode(GU_MODEL);
 	if (resetTransform)
@@ -194,7 +195,7 @@ void RendererGU::SetTransform(const Vector3 &position, const Vector3 &rotation, 
 	sceGumScale(&vs);
 }
 
-void RendererGU::SetTransform(const glm::mat4 &mat)
+void RendererGU::SetTransform(const glm::mat4& mat)
 {
 	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 }
@@ -226,7 +227,7 @@ int TypeToGUPSM(PSPTextureType psm)
 	}
 }
 
-void RendererGU::BindTexture(const std::shared_ptr<Texture> &texture)
+void RendererGU::BindTexture(const std::shared_ptr<Texture>& texture)
 {
 	sceGuTexMode(TypeToGUPSM(texture->type), texture->mipmaplevelCount, 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
@@ -247,7 +248,7 @@ void RendererGU::BindTexture(const std::shared_ptr<Texture> &texture)
 	ApplyTextureFilters(texture);
 }
 
-void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
+void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
 {
 	int minFilterValue = GU_LINEAR;
 	int magfilterValue = GU_LINEAR;
@@ -283,9 +284,14 @@ void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture> &texture)
 
 }
 
-void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
+void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings)
 {
-	if (!meshData->isValid)
+	DrawSubMesh(subMesh, material, material->texture, settings);
+}
+
+void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
+{
+	if (!subMesh.meshData->isValid)
 		return;
 
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
@@ -329,7 +335,7 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 		if (settings.useBlend)
 		{
 			sceGuEnable(GU_BLEND);
-			sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA,0,0);
+			sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
 		}
 		else
 		{
@@ -365,70 +371,57 @@ void RendererGU::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const s
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	const int subMeshCount = meshData->subMeshCount;
-	size_t textureCount = textures.size();
-
 	int params = 0;
 
 	// Get the parameters to use dependings of the mesh data format
-	if (meshData->hasIndices)
+	if (subMesh.meshData->hasIndices)
 	{
 		params |= GU_INDEX_16BIT;
 	}
 	params |= GU_TEXTURE_32BITF;
-	if (meshData->hasColor)
+	if (subMesh.meshData->hasColor)
 	{
 		params |= GU_COLOR_8888;
 	}
 	else
 	{
-		sceGuColor(meshData->unifiedColor.GetUnsignedIntABGR());
+		sceGuColor(subMesh.meshData->unifiedColor.GetUnsignedIntABGR());
 	}
-	if (meshData->hasNormal)
+	if (subMesh.meshData->hasNormal)
 	{
 		params |= GU_NORMAL_32BITF;
 	}
 	params |= GU_VERTEX_32BITF;
 	params |= GU_TRANSFORM_3D;
 
-	MeshData::SubMesh* subMesh = nullptr;
+	// Do not draw the submesh if the texture is null
+	if (texture == nullptr)
+		return;
 
-	for (int i = 0; i < subMeshCount; i++)
+	// Bind texture
+	if (usedTexture != texture)
 	{
-		subMesh = meshData->subMeshes[i];
-
-		// Do not continue if there are more submeshes than textures
-		if (i == textureCount)
-			break;
-
-		// Do not draw the submesh if the texture is null
-		if (textures[i] == nullptr)
-			continue;
-
-		// Bind texture
-		if (usedTexture != textures[i])
-		{
-			usedTexture = textures[i];
-			BindTexture(textures[i]);
-		}
-
-		// Draw
-		if (!meshData->hasIndices)
-		{
-			sceGumDrawArray(GU_TRIANGLES, params, subMesh->vertice_count, 0, subMesh->data);
-		}
-		else
-		{
-			sceGumDrawArray(GU_TRIANGLES, params, subMesh->index_count, subMesh->indices, subMesh->data);
-		}
-		//Performance::AddDrawCall();
+		usedTexture = texture;
+		BindTexture(texture);
 	}
+
+	// Draw
+	if (!subMesh.meshData->hasIndices)
+	{
+		sceGumDrawArray(GU_TRIANGLES, params, subMesh.vertice_count, 0, subMesh.data);
+	}
+	else
+	{
+		sceGumDrawArray(GU_TRIANGLES, params, subMesh.index_count, subMesh.indices, subMesh.data);
+	}
+	//Performance::AddDrawCall();
+
 
 	// glDepthMask needs GL_TRUE here, pspsdk is doing this wrong, may change in a sdk update
 	sceGuDepthMask(GU_FALSE);
 }
 
-void RendererGU::DrawLine(const Vector3 &a, const Vector3 &b, const Color &color, RenderingSettings &settings)
+void RendererGU::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
 }
 
@@ -437,7 +430,7 @@ unsigned int RendererGU::CreateNewTexture()
 	return 0;
 }
 
-void RendererGU::DeleteTexture(Texture *texture)
+void RendererGU::DeleteTexture(Texture* texture)
 {
 	const int textreuLevelCount = texture->inVram.size();
 	for (int i = 0; i < textreuLevelCount; i++)
@@ -449,11 +442,11 @@ void RendererGU::DeleteTexture(Texture *texture)
 	}
 }
 
-void RendererGU::SetTextureData(const std::shared_ptr<Texture> &texture, unsigned int textureType, const unsigned char *buffer)
+void RendererGU::SetTextureData(const std::shared_ptr<Texture>& texture, unsigned int textureType, const unsigned char* buffer)
 {
 }
 
-void RendererGU::SetLight(int lightIndex, const Vector3 &lightPosition, float intensity, Color color, LightType type, float attenuation)
+void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float attenuation)
 {
 	if (lightIndex >= maxLightCount)
 		return;
@@ -489,7 +482,7 @@ void RendererGU::DisableAllLight()
 	}
 }
 
-void RendererGU::Setlights(const std::shared_ptr<Camera> &camera)
+void RendererGU::Setlights(const std::shared_ptr<Camera>& camera)
 {
 	std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
@@ -536,7 +529,7 @@ void RendererGU::SetFog(bool active)
 #endif
 }
 
-void RendererGU::SetFogValues(float start, float end, const Color &color)
+void RendererGU::SetFogValues(float start, float end, const Color& color)
 {
 	fogStart = start;
 	fogEnd = end;
@@ -544,11 +537,11 @@ void RendererGU::SetFogValues(float start, float end, const Color &color)
 	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 }
 
-void RendererGU::DeleteSubMeshData(MeshData::SubMesh *subMesh)
+void RendererGU::DeleteSubMeshData(MeshData::SubMesh* subMesh)
 {
 }
 
-void RendererGU::UploadMeshData(const std::shared_ptr<MeshData> &meshData)
+void RendererGU::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 {
 }
 

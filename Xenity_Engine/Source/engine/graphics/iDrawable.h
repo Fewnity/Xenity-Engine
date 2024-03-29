@@ -2,8 +2,13 @@
 #include <engine/api.h>
 
 #include <memory>
+#include <vector>
 #include <engine/component.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
 #include "iDrawableTypes.h"
+#include "render_command.h"
+
+class Material;
 
 class API IDrawable : public Component
 {
@@ -17,4 +22,7 @@ public:
 	virtual int GetDrawPriority() const = 0;
 	bool isTransparent = false;
 	void RemoveReferences() override;
+
+	virtual void CreateRenderCommands(RenderBatch& renderBatch) { }
+	virtual void DrawSubMesh(const RenderCommand & renderCommand) {};
 };

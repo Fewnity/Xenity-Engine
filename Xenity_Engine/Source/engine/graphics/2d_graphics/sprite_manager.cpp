@@ -3,6 +3,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/material.h>
 
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
@@ -69,10 +70,10 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material)
+void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	if (!texture)
-		return;
+	/*if (!material)
+		return;*/
 
 	spriteBenchmark->Start();
 
@@ -97,16 +98,16 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 	const glm::mat4 matCopy = glm::scale(transform->transformationMatrix, glm::vec3(w, h, 1));
 
-	std::vector<std::shared_ptr<Texture>> textures;
-	textures.push_back(texture);
-	Graphics::DrawMesh(spriteMeshData, textures, renderSettings, matCopy, material, false);
+	//Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
+	Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);
+
 	spriteBenchmark->Stop();
 }
 
-void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const std::shared_ptr<Texture>& texture, const Color& color, const std::shared_ptr<Material>& material)
+void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	if (!texture)
-		return;
+	/*if (!material)
+		return;*/
 
 	spriteBenchmark->Start();
 
@@ -131,9 +132,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
 
-	std::vector<std::shared_ptr<Texture>> textures;
-	textures.push_back(texture);
-	Graphics::DrawMesh(spriteMeshData, textures, renderSettings, matrix, material, false);
+	Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matrix, false);
 	spriteBenchmark->Stop();
 }
 
@@ -173,9 +172,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		std::vector<std::shared_ptr<Texture>> textures;
-		textures.push_back(AssetManager::defaultTexture);
-		Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
+		Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], AssetManager::standardMaterial, AssetManager::defaultTexture, renderSettings);
 	}
 	spriteBenchmark->Stop();
 }

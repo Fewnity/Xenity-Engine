@@ -142,9 +142,10 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		const Vector3& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
-		std::vector<std::shared_ptr<Texture>> textures;
-		textures.push_back(font->fontAtlas);
-		Graphics::DrawMesh(mesh, textures, renderSettings, matrix, material, canvas);
+		std::vector<std::shared_ptr<Material>> materials;
+		materials.push_back(material);
+		/*materials.push_back(font->fontAtlas);*/
+		Graphics::DrawMesh(mesh, materials, renderSettings, matrix, canvas);
 	}
 }
 

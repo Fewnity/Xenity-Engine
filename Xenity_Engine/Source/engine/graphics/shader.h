@@ -15,6 +15,7 @@
 
 
 class Light;
+class Material;
 
 /**
  * Internal
@@ -60,7 +61,7 @@ public:
 	bool useTessellation = false;
 
 	static std::shared_ptr<Shader> MakeShader();
-
+	std::weak_ptr<Material> updatedBy;
 private:
 	void Link();
 	void Compile(const std::string& filePath, ShaderType type);

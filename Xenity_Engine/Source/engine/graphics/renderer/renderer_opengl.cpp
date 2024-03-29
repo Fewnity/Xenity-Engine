@@ -5,6 +5,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/graphics/material.h>
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
@@ -16,12 +17,12 @@
 #include <engine/tools/profiler_benchmark.h>
 
 #if defined(_WIN32) || defined(_WIN64)
-	#include <glad/glad.h>
-	#define GLFW_INCLUDE_NONE
-	#include <GLFW/glfw3.h>
-	#define GLFW_DLL
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#define GLFW_DLL
 #elif defined(__vita__)
-	#include <vitaGL.h>
+#include <vitaGL.h>
 #endif
 
 #include <engine/tools/math.h>
@@ -231,9 +232,14 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
 }
 
-void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings)
+void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings)
 {
-	if (!meshData->isValid)
+	DrawSubMesh(subMesh, material, material->texture, settings);
+}
+
+void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
+{
+	if (!subMesh.meshData->isValid)
 		return;
 
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
@@ -302,18 +308,15 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	if(settings.useBlend)
+	if (settings.useBlend)
 		glDepthMask(GL_FALSE);
 
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.useBlend = settings.useBlend;
-	lastSettings.useDepth = settings.useDepth; 
+	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
-
-	const int subMeshCount = meshData->subMeshCount;
-	const size_t textureCount = textures.size();
 
 	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -324,53 +327,43 @@ void RendererOpengl::DrawMeshData(const std::shared_ptr <MeshData>& meshData, co
 
 	if (Graphics::UseOpenGLFixedFunctions)
 	{
-		const RGBA& rgba = meshData->unifiedColor.GetRGBA();
+		const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
 		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 	}
 
-	MeshData::SubMesh* subMesh = nullptr;
+	// Do not draw the submesh if the texture is null
+	/*if (material == nullptr)
+		return;*/
 
-	for (size_t i = 0; i < subMeshCount; i++)
+	// Do not draw the submesh if the vertice count is 0
+	if (subMesh.vertice_count == 0)
+		return;
+
+	//Bind all the data
+	glBindVertexArray(subMesh.VAO);
+
+	if (usedTexture != texture)
 	{
-		subMesh = meshData->subMeshes[i];
-
-		// Do not continue if there are more submeshes than textures
-		if (i == textureCount)
-			break;
-
-		// Do not draw the submesh if the texture is null
-		if (textures[i] == nullptr)
-			continue;
-
-		// Do not draw the submesh if the vertice count is 0
-		if (subMesh->vertice_count == 0)
-			continue;
-
-		//Bind all the data
-		glBindVertexArray(subMesh->VAO);
-
-		if (usedTexture != textures[i]) 
-		{
-			usedTexture = textures[i];
-			BindTexture(textures[i]);
-		}
-
-		// Draw
-		if (!meshData->hasIndices)
-		{
-			glDrawArrays(GL_TRIANGLES, 0, subMesh->vertice_count);
-		}
-		else
-		{
-			glDrawElements(GL_TRIANGLES, subMesh->index_count, GL_UNSIGNED_SHORT, 0);
-		}
-		glBindVertexArray(0);
-		if (Graphics::usedCamera.lock()->isEditor) 
-		{
-			Performance::AddDrawTriangles(subMesh->vertice_count / 3);
-			Performance::AddDrawCall();
-		}
+		usedTexture = texture;
+		BindTexture(texture);
 	}
+
+	// Draw
+	if (!subMesh.meshData->hasIndices)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, subMesh.vertice_count);
+	}
+	else
+	{
+		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
+	}
+	glBindVertexArray(0);
+	if (Graphics::usedCamera.lock()->isEditor)
+	{
+		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
+		Performance::AddDrawCall();
+	}
+
 	glDepthMask(GL_TRUE);
 }
 

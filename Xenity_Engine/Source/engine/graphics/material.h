@@ -47,6 +47,7 @@ public:
 	bool updated = false;
 	bool useLighting = false;
 	bool useTransparency = false;
+	std::shared_ptr<Texture> texture;
 private:
 	void Update();
 	std::weak_ptr<Camera> lastUsedCamera;

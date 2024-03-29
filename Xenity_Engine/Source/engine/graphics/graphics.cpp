@@ -11,6 +11,7 @@
 #include "3d_graphics/mesh_manager.h"
 #include "3d_graphics/mesh_data.h"
 #include <engine/graphics/3d_graphics/lod.h>
+#include <engine/graphics/render_command.h>
 
 #include "material.h"
 
@@ -78,6 +79,8 @@ std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
 
 bool Graphics::UseOpenGLFixedFunctions = false;
+
+RenderBatch renderBatch;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
@@ -151,12 +154,13 @@ void Graphics::Draw()
 	const size_t cameraCount = cameras.size();
 	const int matCount = AssetManager::GetMaterialCount();
 
+	OrderDrawables();
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex].lock();
 		if (usedCamera.lock()->GetIsEnabled() && usedCamera.lock()->GetGameObject()->GetLocalActive())
 		{
-			OrderDrawables();
+			SortDrawables();
 			CheckLods();
 
 			// Set material as dirty
@@ -191,28 +195,34 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetFog(isFogEnabled);
 
 			drawAllBenchmark->Start();
-
-			const size_t noTransCount = noTransparentDrawable.size();
-			const size_t transCount = transparentDrawable.size();
-			const size_t spriteCount = spriteDrawable.size();
-			const size_t uiCount = uiDrawable.size();
-
-			for (size_t drawableIndex = 0; drawableIndex < noTransCount; drawableIndex++)
+			
+			for (auto& renderQueue : renderBatch.renderQueues)
 			{
-				std::shared_ptr<IDrawable> drawable = noTransparentDrawable[drawableIndex].lock();
-				drawable->Draw();
+				const int commandCount = renderQueue.second.commandIndex;
+				for (int commandIndex = 0; commandIndex < commandCount; commandIndex++)
+				{
+					const RenderCommand& com = renderQueue.second.commands[commandIndex];
+					if (com.isEnabled)
+						com.drawable->DrawSubMesh(com);
+				}
 			}
-			for (size_t drawableIndex = 0; drawableIndex < transCount; drawableIndex++)
+			
+			const int transparentCommandCount = renderBatch.transparentMeshCommandIndex;
+			for (int commandIndex = 0; commandIndex < transparentCommandCount; commandIndex++)
 			{
-				std::shared_ptr<IDrawable> drawable = transparentDrawable[drawableIndex].lock();
-				drawable->Draw();
+				const RenderCommand& com = renderBatch.transparentMeshCommands[commandIndex];
+				if (com.isEnabled)
+						com.drawable->DrawSubMesh(com);
 			}
 			currentMode = IDrawableTypes::Draw_2D;
-			for (size_t drawableIndex = 0; drawableIndex < spriteCount; drawableIndex++)
+			const int spriteCommandCount = renderBatch.spriteCommandIndex;
+			for (int commandIndex = 0; commandIndex < spriteCommandCount; commandIndex++)
 			{
-				std::shared_ptr<IDrawable> drawable = spriteDrawable[drawableIndex].lock();
-				drawable->Draw();
+				const RenderCommand& com = renderBatch.spriteCommands[commandIndex];
+				if (com.isEnabled)
+					com.drawable->DrawSubMesh(com);
 			}
+
 			if (!usedCamera.lock()->isEditor)
 				currentMode = IDrawableTypes::Draw_UI;
 			if (UseOpenGLFixedFunctions && !usedCamera.lock()->isEditor)
@@ -220,10 +230,12 @@ void Graphics::Draw()
 				Engine::GetRenderer().ResetView();
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 			}
-			for (size_t drawableIndex = 0; drawableIndex < uiCount; drawableIndex++)
+			const int uiCommandCount = renderBatch.uiCommandIndex;
+			for (int commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
 			{
-				std::shared_ptr<IDrawable> drawable = uiDrawable[drawableIndex].lock();
-				drawable->Draw();
+				const RenderCommand& com = renderBatch.uiCommands[commandIndex];
+				if (com.isEnabled)
+					com.drawable->DrawSubMesh(com);
 			}
 
 			drawAllBenchmark->Stop();
@@ -280,6 +292,7 @@ void Graphics::Draw()
 				DrawEditorGrid(camPos, gridAxis);
 				DrawSelectedItemBoundingBox(camPos);
 
+				// Draw all gizmos
 				for (int i = 0; i < GameplayManager::componentsCount; i++)
 				{
 					if (std::shared_ptr<Component> component = GameplayManager::orderedComponents[i].lock())
@@ -316,45 +329,60 @@ void Graphics::Draw()
 	//usedCamera.reset();
 }
 
-bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
+//bool spriteComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
+//{
+//	if (t1.lock()->type == IDrawableTypes::Draw_3D && t2.lock()->type == IDrawableTypes::Draw_3D)
+//	{
+//		return false;
+//	}
+//	if (t2.lock()->type == IDrawableTypes::Draw_2D && t1.lock()->type == IDrawableTypes::Draw_3D)
+//	{
+//		return true;
+//	}
+//	if (t1.lock()->type == IDrawableTypes::Draw_2D && t2.lock()->type == IDrawableTypes::Draw_3D)
+//	{
+//		return false;
+//	}
+//	if (t2.lock()->type == IDrawableTypes::Draw_UI && t1.lock()->type != IDrawableTypes::Draw_UI)
+//	{
+//		return true;
+//	}
+//
+//	const int priority1 = t1.lock()->GetDrawPriority();
+//	const int priority2 = t2.lock()->GetDrawPriority();
+//
+//	if (priority1 <= priority2)
+//	{
+//		if (priority1 == priority2)
+//		{
+//			return t1.lock()->GetTransform()->GetPosition().z > t2.lock()->GetTransform()->GetPosition().z;
+//		}
+//
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//bool meshComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
+//{
+//	const Vector3& pos1 = t1.lock()->GetTransform()->GetPosition();
+//	const Vector3& pos2 = t2.lock()->GetTransform()->GetPosition();
+//	const Vector3& camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+//	const float dis1 = Vector3::Distance(pos1, camPos);
+//	const float dis2 = Vector3::Distance(pos2, camPos);
+//
+//	return dis1 > dis2;
+//}
+
+bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 {
-	if (t1.lock()->type == IDrawableTypes::Draw_3D && t2.lock()->type == IDrawableTypes::Draw_3D)
-	{
+	/*if (!c1.transform)
 		return false;
-	}
-	if (t2.lock()->type == IDrawableTypes::Draw_2D && t1.lock()->type == IDrawableTypes::Draw_3D)
-	{
-		return true;
-	}
-	if (t1.lock()->type == IDrawableTypes::Draw_2D && t2.lock()->type == IDrawableTypes::Draw_3D)
-	{
-		return false;
-	}
-	if (t2.lock()->type == IDrawableTypes::Draw_UI && t1.lock()->type != IDrawableTypes::Draw_UI)
-	{
-		return true;
-	}
-
-	const int priority1 = t1.lock()->GetDrawPriority();
-	const int priority2 = t2.lock()->GetDrawPriority();
-
-	if (priority1 <= priority2)
-	{
-		if (priority1 == priority2)
-		{
-			return t1.lock()->GetTransform()->GetPosition().z > t2.lock()->GetTransform()->GetPosition().z;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-bool meshComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDrawable>& t2)
-{
-	const Vector3& pos1 = t1.lock()->GetTransform()->GetPosition();
-	const Vector3& pos2 = t2.lock()->GetTransform()->GetPosition();
+	if (!c2.transform)
+		return false;*/
+	const Vector3& pos1 = c1.transform->GetPosition();
+	const Vector3& pos2 = c2.transform->GetPosition();
 	const Vector3& camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
 	const float dis1 = Vector3::Distance(pos1, camPos);
 	const float dis2 = Vector3::Distance(pos2, camPos);
@@ -362,49 +390,23 @@ bool meshComparator(const std::weak_ptr<IDrawable>& t1, const std::weak_ptr<IDra
 	return dis1 > dis2;
 }
 
+void Graphics::SortDrawables()
+{
+	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
+}
+
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
 
-	//if (drawOrderListDirty)
-	//{
-	noTransparentDrawable.clear();
-	transparentDrawable.clear();
-	spriteDrawable.clear();
-	uiDrawable.clear();
 
-	//noTransparentDrawable.reserve(iDrawablesCount);
-	//spriteDrawable.reserve(iDrawablesCount);
-	//uiDrawable.reserve(iDrawablesCount);
-
+	renderBatch.Reset();
 	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
 	{
 		const std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-		if (drawableToCheck->type == IDrawableTypes::Draw_3D)
-		{
-			if(drawableToCheck->isTransparent)
-				transparentDrawable.push_back(drawableToCheck);
-			else
-				noTransparentDrawable.push_back(drawableToCheck);
-		}
-		else if (drawableToCheck->type == IDrawableTypes::Draw_2D)
-		{
-			spriteDrawable.push_back(drawableToCheck);
-		}
-		else
-		{
-			uiDrawable.push_back(drawableToCheck);
-		}
+		drawableToCheck->CreateRenderCommands(renderBatch);
 	}
 
-	std::sort(transparentDrawable.begin(), transparentDrawable.end(), meshComparator);
-
-	//}
-	/*if (drawOrderListDirty)
-	{
-		std::sort(orderedIDrawable.begin(), orderedIDrawable.end(), spriteComparator);
-		drawOrderListDirty = false;
-	}*/
 	orderBenchmark->Stop();
 }
 
@@ -473,17 +475,58 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 	}
 }
 
-void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI)
+void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	if (!meshData || !usedCamera.lock())
-		return;
+//	if (!meshData || !usedCamera.lock())
+//		return;
+//
+//	drawMeshBenchmark->Start();
+//
+//	if (!UseOpenGLFixedFunctions)
+//	{
+//		const int materialCount = materials.size();
+//		for (int i = 0; i < materialCount; i++)
+//		{
+//			if (!materials[i])
+//				continue;
+//
+//			materials[i]->Use();
+//
+//			if (!currentShader)
+//				continue;
+//
+//			currentShader->SetShaderModel(matrix);
+//		}
+//	}
+//	else
+//	{
+//#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
+//		if (!forUI || usedCamera.lock()->isEditor)
+//			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
+//#endif
+//		Engine::GetRenderer().SetTransform(matrix);
+//	}
+//
+//	Engine::GetRenderer().DrawMeshData(meshData, materials, renderSettings);
+//	drawMeshBenchmark->Stop();
+}
+
+void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+{
+	DrawMesh(subMesh, material, material->texture, renderSettings, matrix, forUI);
+}
+
+void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+{
+	/*if (!usedCamera.lock())
+		return;*/
 
 	drawMeshBenchmark->Start();
 
 	if (!UseOpenGLFixedFunctions)
 	{
-		if (!material)
-			return;
+		/*if (!material)
+			return;*/
 
 		material->Use();
 
@@ -501,7 +544,7 @@ void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::ve
 		Engine::GetRenderer().SetTransform(matrix);
 	}
 
-	Engine::GetRenderer().DrawMeshData(meshData, textures, renderSettings);
+	Engine::GetRenderer().DrawSubMesh(subMesh, material, texture, renderSettings);
 	drawMeshBenchmark->Stop();
 }
 
@@ -525,12 +568,34 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, skybox->down, skyPlane, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, skybox->up, skyPlane, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, skybox->front, skyPlane, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, skybox->back, skyPlane, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, skybox->left, skyPlane, renderSettings, AssetManager::unlitMaterial);
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, skybox->right, skyPlane, renderSettings, AssetManager::unlitMaterial);
+		//AssetManager::unlitMaterial->texture = skybox->down;
+		//MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale , *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+
+		AssetManager::unlitMaterial->texture = skybox->down;
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->up;
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->front;
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->back;
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->left;
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->right;
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+
+		/*AssetManager::unlitMaterial->texture = skybox->down;
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->up;
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->front;
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->back;
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->left;
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
+		AssetManager::unlitMaterial->texture = skybox->right;
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);*/
 	}
 }
 
@@ -566,15 +631,16 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 			const Vector3 min = meshRenderer->meshData->minBoundingBox;
 			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
 
-			const Vector3 bottom0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
-			const Vector3 bottom1 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, max.z, 1);
-			const Vector3 bottom2 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, min.y, min.z, 1);
-			const Vector3 bottom3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, min.y, max.z, 1);
+			const glm::mat4x4& matrix = selectedGO->GetTransform()->transformationMatrix;
+			const Vector3 bottom0 = matrix * glm::vec4(min.x, min.y, min.z, 1);
+			const Vector3 bottom1 = matrix * glm::vec4(min.x, min.y, max.z, 1);
+			const Vector3 bottom2 = matrix * glm::vec4(max.x, min.y, min.z, 1);
+			const Vector3 bottom3 = matrix * glm::vec4(max.x, min.y, max.z, 1);
 
-			const Vector3 top0 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, max.y, min.z, 1);
-			const Vector3 top1 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, max.y, max.z, 1);
-			const Vector3 top2 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, min.z, 1);
-			const Vector3 top3 = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
+			const Vector3 top0 = matrix * glm::vec4(min.x, max.y, min.z, 1);
+			const Vector3 top1 = matrix * glm::vec4(min.x, max.y, max.z, 1);
+			const Vector3 top2 = matrix * glm::vec4(max.x, max.y, min.z, 1);
+			const Vector3 top3 = matrix * glm::vec4(max.x, max.y, max.z, 1);
 
 			Engine::GetRenderer().DrawLine(bottom0, bottom1, color, renderSettings);
 			Engine::GetRenderer().DrawLine(bottom1, bottom3, color, renderSettings);
@@ -692,12 +758,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	if (Editor::GetSelectedGameObject() && sceneMenu)
 	{
 		const Vector3& selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
-		//if (usedCamera.lock()->isEditor) 
-		//{
-		//	float xOff = (-Graphics::usedCamera.lock()->GetAspectRatio() * 5) + (selectedGoPos.x * (Graphics::usedCamera.lock()->GetAspectRatio() * 10));
-		//	float yOff = (-1 * 5) + (selectedGoPos.y * (1 * 10));
-		//	selectedGoPos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
-		//}
+
 		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
 		if (Editor::isToolLocalMode)
 			selectedGoRot = Vector3(0);
@@ -718,17 +779,18 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
+		AssetManager::unlitMaterial->texture = Editor::toolArrowsTexture;
 		if (sceneMenu->toolMode == ToolMode::Tool_Move || sceneMenu->toolMode == ToolMode::Tool_Scale)
 		{
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rightArrow, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::upArrow, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::forwardArrow, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 		}
 		else if (sceneMenu->toolMode == ToolMode::Tool_Rotate)
 		{
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleX, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleY, renderSettings, AssetManager::unlitMaterial);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, Editor::toolArrowsTexture, Editor::rotationCircleZ, renderSettings, AssetManager::unlitMaterial);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 		}
 	}
 }

@@ -48,6 +48,7 @@ public:
 	* Order all drawables
 	*/
 	static void OrderDrawables();
+	static void SortDrawables();
 
 	static void DeleteAllDrawables();
 
@@ -81,7 +82,11 @@ public:
 	*/
 	static void RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove);
 
-	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& renderSettings, const glm::mat4& matrix, const std::shared_ptr<Material>& material, bool forUI);
+	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	
+	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+
 	static void SetDrawOrderListAsDirty();
 
 	static bool UseOpenGLFixedFunctions;

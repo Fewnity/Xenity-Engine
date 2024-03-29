@@ -37,9 +37,10 @@ public:
 	{
 		this->color = color;
 	}
-
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
 private:
 	Color color = Color();
 	void Draw() override;
+	void DrawSubMesh(const RenderCommand& renderCommand) override;
 	int orderInLayer = 0;
 };

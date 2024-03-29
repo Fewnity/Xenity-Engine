@@ -149,6 +149,7 @@
     <ClCompile Include="Source\editor\windows\editor\win_editor.cpp" />
     <ClCompile Include="Source\engine\graphics\3d_graphics\lod.cpp" />
     <ClCompile Include="Source\editor\ui\menus\build_settings_menu.cpp" />
+    <ClCompile Include="Source\engine\graphics\render_command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -307,6 +308,7 @@
     <ClInclude Include="Source\editor\ui\menus\docker_config_menu.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\lod.h" />
     <ClInclude Include="Source\editor\ui\menus\build_settings_menu.h" />
+    <ClInclude Include="Source\engine\graphics\render_command.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

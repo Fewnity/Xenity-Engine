@@ -66,6 +66,7 @@ public:
 		VECTOR *c_st = nullptr;
 		packet2_t *meshPacket = nullptr;
 #endif
+		MeshData* meshData = nullptr;
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;

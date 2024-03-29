@@ -5,6 +5,7 @@
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/material.h>
 
 #include <engine/engine.h>
 #include <engine/game_elements/transform.h>
@@ -43,7 +44,8 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 		alpha = distance - 0.3f;
 
 	const RGBA& rgba = color.GetRGBA();
-	SpriteManager::DrawSprite(position, Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), texture, Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), AssetManager::unlitMaterial);
+	//AssetManager::unlitMaterial->texture = texture;
+	SpriteManager::DrawSprite(position, Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), AssetManager::unlitMaterial, texture);
 }
 
 void Gizmo::SetColor(const Color& newColor)

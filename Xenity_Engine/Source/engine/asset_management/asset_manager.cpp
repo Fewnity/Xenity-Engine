@@ -59,34 +59,38 @@ void AssetManager::Init()
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
 		unlitShader->file = FileSystem::MakeFile("engine_assets\\shaders/unlit.shader");
-		
+
 		// Load line shader
 		lineShader = Shader::MakeShader();
 		lineShader->file = FileSystem::MakeFile("engine_assets\\shaders/line.shader");
 
+		shader->LoadFileReference();
+		unlitShader->LoadFileReference();
+		lineShader->LoadFileReference();
+	}
 		// Create materials
 		standardMaterial = Material::MakeMaterial();
 		standardMaterial->file = FileSystem::MakeFile("engine_assets\\materials/standardMaterial.mat");
 		standardMaterial->shader = shader;
+		standardMaterial->texture = defaultTexture;
 		standardMaterial->useLighting = true;
 
 		unlitMaterial = Material::MakeMaterial();
 		unlitMaterial->file = FileSystem::MakeFile("engine_assets\\materials/unlitMaterial.mat");
 		unlitMaterial->shader = unlitShader;
+		unlitMaterial->texture = defaultTexture;
 		//Engine::unlitMaterial->SetAttribute("color", Vector3(1, 1, 1));
 
 		lineMaterial = Material::MakeMaterial();
 		lineMaterial->file = FileSystem::MakeFile("engine_assets\\materials/lineMaterial.mat");
 		lineMaterial->shader = lineShader;
+		lineMaterial->texture = defaultTexture;
 
-		shader->LoadFileReference();
-		unlitShader->LoadFileReference();
-		lineShader->LoadFileReference();
 
 		standardMaterial->LoadFileReference();
 		unlitMaterial->LoadFileReference();
 		lineMaterial->LoadFileReference();
-	}
+	
 
 	Debug::Print("-------- Asset Manager initiated --------", true);
 }

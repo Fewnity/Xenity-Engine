@@ -24,6 +24,7 @@ class Vector3;
 class Vector2;
 class Camera;
 class Texture;
+class Material;
 
 struct RenderingSettings
 {
@@ -91,7 +92,8 @@ public:
 	// Mesh
 	virtual void UploadMeshData(const std::shared_ptr<MeshData>& meshData) = 0;
 	virtual void DeleteSubMeshData(MeshData::SubMesh* subMesh) = 0;
-	virtual void DrawMeshData(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Texture>>& textures, RenderingSettings& settings) = 0;
+	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings) = 0;
+	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 
 	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;

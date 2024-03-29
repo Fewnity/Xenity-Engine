@@ -436,33 +436,34 @@ void FileExplorerMenu::Draw()
 					itemIndex++;
 				}
 				ImGui::EndTable();
-			}
-			ImGui::EndTable();
 
-			// Unselect file or open the popup if background is clicked
-			if (!fileHovered)
-			{
-				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
-				FileExplorerItem item;
-				item.directory = currentDir;
-				const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
-				if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
+				// Unselect file or open the popup if background is clicked
+				if (!fileHovered)
 				{
-					if (ignoreClose)
+					std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
+					FileExplorerItem item;
+					item.directory = currentDir;
+					const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
+					if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
 					{
-						ignoreClose = false;
-					}
-					else
-					{
-						if (result == 0)
+						if (ignoreClose)
 						{
-							Rename();
+							ignoreClose = false;
 						}
-						if (ImGui::IsWindowHovered())
-							Editor::SetSelectedFileReference(nullptr);
+						else
+						{
+							if (result == 0)
+							{
+								Rename();
+							}
+							if (ImGui::IsWindowHovered())
+								Editor::SetSelectedFileReference(nullptr);
+						}
 					}
 				}
 			}
+			ImGui::EndTable();
+
 			if (InputSystem::GetKeyDown(KeyCode::RETURN))
 			{
 				Rename();

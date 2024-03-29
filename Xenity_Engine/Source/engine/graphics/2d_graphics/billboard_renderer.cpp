@@ -49,13 +49,13 @@ void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 /// </summary>
 void BillboardRenderer::Draw()
 {
-	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
-	{
-		// Draw the sprite only if there is a texture and if the component/gameobject is active
-		if (gameObject->GetLocalActive() && GetIsEnabled())
-		{
-			const std::shared_ptr<Transform> transform = GetTransform();
-			SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), texture, color, material);
-		}
-	}
+	//if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
+	//{
+	//	// Draw the sprite only if there is a texture and if the component/gameobject is active
+	//	if (gameObject->GetLocalActive() && GetIsEnabled())
+	//	{
+	//		const std::shared_ptr<Transform> transform = GetTransform();
+	//		SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), color, material);
+	//	}
+	//}
 }

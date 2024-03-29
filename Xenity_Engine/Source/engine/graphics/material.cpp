@@ -26,11 +26,13 @@ Material::Material()
 {
 	SetAttribute("color", Vector3(1, 1, 1));
 	AssetManager::AddMaterial(this);
+	AssetManager::AddReflection(this);
 }
 
 Material::~Material()
 {
 	AssetManager::RemoveMaterial(this);
+	AssetManager::RemoveReflection(this);
 }
 
 #pragma endregion
@@ -111,32 +113,70 @@ std::shared_ptr<Material> Material::MakeMaterial()
 /// </summary>
 void Material::Use()
 {
+	//const bool matChanged = Graphics::currentMaterial != shared_from_this();
+	//const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
+	//const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
+
+	////if(true)
+	//if (matChanged || cameraChanged || drawTypeChanged)
+	//{
+	//	Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
+	//	if (shader)
+	//	{
+	//		lastUsedCamera = Graphics::usedCamera;
+	//		lastUpdatedType = Graphics::currentMode;
+	//		shader->Use();
+	//		shader->updatedBy = Graphics::currentMaterial;
+	//		Update();
+
+	//		const int matCount = AssetManager::GetMaterialCount();
+	//		for (int i = 0; i < matCount; i++)
+	//		{
+	//			Material* mat = AssetManager::GetMaterial(i);
+	//			if (mat->shader == shader && mat != this)
+	//			{
+	//				mat->updated = false;
+	//			}
+	//		}
+	//	}
+	//	else 
+	//	{
+	//		Engine::GetRenderer().UseShaderProgram(0);
+	//		Graphics::currentShader = nullptr;
+	//	}
+	//}
+
 	const bool matChanged = Graphics::currentMaterial != shared_from_this();
 	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
 	const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
 
-	//if(true)
-	if (matChanged || cameraChanged || drawTypeChanged)
+	if (matChanged)
+		//if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
 		if (shader)
 		{
-			lastUsedCamera = Graphics::usedCamera;
-			lastUpdatedType = Graphics::currentMode;
-			shader->Use();
-			Update();
-
-			const int matCount = AssetManager::GetMaterialCount();
-			for (int i = 0; i < matCount; i++)
+			if(true)
+			//if (shader->updatedBy.lock() != Graphics::currentMaterial)
 			{
-				Material* mat = AssetManager::GetMaterial(i);
-				if (mat->shader == shader && mat != this)
+				lastUsedCamera = Graphics::usedCamera;
+				lastUpdatedType = Graphics::currentMode;
+				shader->Use();
+				//shader->updatedBy = Graphics::currentMaterial;
+				Update();
+
+				const int matCount = AssetManager::GetMaterialCount();
+				for (int i = 0; i < matCount; i++)
 				{
-					mat->updated = false;
+					Material* mat = AssetManager::GetMaterial(i);
+					if (mat->shader == shader && mat != this)
+					{
+						mat->updated = false;
+					}
 				}
 			}
 		}
-		else 
+		else
 		{
 			Engine::GetRenderer().UseShaderProgram(0);
 			Graphics::currentShader = nullptr;
@@ -212,6 +252,7 @@ ReflectiveData Material::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, shader, "shader", true);
 	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
 	Reflective::AddVariable(reflectedVariables, useTransparency, "useTransparency", true);
+	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
 	return reflectedVariables;
 }
 
