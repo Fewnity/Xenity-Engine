@@ -483,6 +483,15 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 						CommandManager::AddCommand(command);
 						command->Execute();
 					}
+					else 
+					{
+						comp->OnReflectionUpdated();
+					}
+				}
+				if (forceItemUpdate)
+				{
+					comp->OnReflectionUpdated();
+					forceItemUpdate = false;
 				}
 
 				ImGui::Separator();

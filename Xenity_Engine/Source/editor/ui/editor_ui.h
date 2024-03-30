@@ -350,6 +350,7 @@ public:
 				if (result == InputButtonState::ResetValue)
 				{
 					valuePtr->get()[vectorI] = nullptr;
+					valueChangedTemp = true;
 				}
 				else if (result == InputButtonState::OpenAssetMenu)
 				{
@@ -377,6 +378,7 @@ public:
 			if (ImGui::Button(addText.c_str()))
 			{
 				valuePtr->get().push_back(nullptr);
+				valueChangedTemp = true;
 			}
 
 			const std::string removeText = "Remove " + classInfo->name + GenerateItemId();
@@ -385,6 +387,7 @@ public:
 				if (vectorSize != 0)
 				{
 					valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+					valueChangedTemp = true;
 				}
 			}
 		}
@@ -414,6 +417,7 @@ public:
 			if (result == InputButtonState::ResetValue)
 			{
 				valuePtr->get()[vectorI] = std::weak_ptr<T>();
+				valueChangedTemp = true;
 			}
 
 			std::shared_ptr <T> ref = nullptr;
@@ -429,6 +433,7 @@ public:
 		if (ImGui::Button(addText.c_str()))
 		{
 			valuePtr->get().push_back(std::weak_ptr<T>());
+			valueChangedTemp = true;
 		}
 
 		const std::string removeText = "Remove " + className + GenerateItemId();
@@ -437,6 +442,7 @@ public:
 			if (vectorSize != 0)
 			{
 				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				valueChangedTemp = true;
 			}
 		}
 
