@@ -137,7 +137,7 @@ void RendererGU::SetProjection2D(float projectionSize, float nearClippingPlane, 
 {
 	sceGumMatrixMode(GU_PROJECTION);
 	sceGumLoadIdentity();
-	const float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+	const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
 	const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 	sceGumOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }

@@ -25,7 +25,7 @@ ReflectiveData Lod::GetReflectiveData()
 
 void Lod::CheckLod()
 {
-	const float camDis = Vector3::Distance(GetTransform()->GetPosition(), Graphics::usedCamera.lock()->GetTransform()->GetPosition());
+	const float camDis = Vector3::Distance(GetTransform()->GetPosition(), Graphics::usedCamera->GetTransform()->GetPosition());
 	if (camDis >= culledDistance) 
 	{
 		SetAllLevel(false);

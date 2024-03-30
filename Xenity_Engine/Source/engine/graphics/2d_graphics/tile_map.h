@@ -126,7 +126,7 @@ private:
 	bool dirtyMeshes = false;
 
 	int orderInLayer = 0;
-	void Draw() override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	/**
 	* @brief Fill all chunks meshes

@@ -27,6 +27,11 @@ ReflectiveData SpriteRenderer::GetReflectiveData()
 	return reflectedVariables;
 }
 
+void SpriteRenderer::OnReflectionUpdated()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
 SpriteRenderer::~SpriteRenderer()
 {
 	AssetManager::RemoveReflection(this);
@@ -61,34 +66,41 @@ void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	if (!material || !texture)
 		return;
 
-	RenderCommand* command = nullptr;
-	command = &renderBatch.spriteCommands[renderBatch.spriteCommandIndex];
+	RenderCommand command = RenderCommand();
+	command.material = material;
+	command.drawable = this;
+	command.subMesh = nullptr;
+	command.transform = GetTransform();
+	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+
+	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
 
-	command->material = material;
-	command->drawable = this;
-	command->subMesh = nullptr;
-	command->transform = GetTransform();
-	command->isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
 }
 
-/// <summary>
-/// Draw sprite
-/// </summary>
-void SpriteRenderer::Draw()
+void SpriteRenderer::SetMaterial(std::shared_ptr<Material> material)
 {
-	//if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
-	//{
-	//	// Draw the sprite only if there is a texture and if the component/gameobject is active
-	//	if (gameObject->GetLocalActive() && GetIsEnabled() && material)
-	//	{
-	//		material->texture = texture;
-	//		SpriteManager::DrawSprite(GetTransform(), color, material);
-	//	}
-	//}
+	this->material = material;
+	Graphics::isRenderingBatchDirty = true;
 }
 
-void SpriteRenderer::DrawSubMesh(const RenderCommand& renderCommand)
+void SpriteRenderer::SetTexture(std::shared_ptr<Texture> texture)
+{
+	this->texture = texture;
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void SpriteRenderer::OnDisabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void SpriteRenderer::OnEnabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void SpriteRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	SpriteManager::DrawSprite(GetTransform(), color, material, texture);
 }

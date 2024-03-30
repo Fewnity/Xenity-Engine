@@ -147,7 +147,7 @@ void Material::Use()
 	//}
 
 	const bool matChanged = Graphics::currentMaterial != shared_from_this();
-	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
+	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera;
 	const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
 
 	if (matChanged)

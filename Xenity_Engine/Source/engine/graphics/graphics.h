@@ -92,7 +92,7 @@ public:
 	static bool UseOpenGLFixedFunctions;
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
-	API static std::weak_ptr<Camera> usedCamera;
+	API static std::shared_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
 	static std::vector<std::weak_ptr<IDrawable>> noTransparentDrawable;
@@ -113,7 +113,7 @@ public:
 	static std::shared_ptr <Shader> currentShader;
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
-
+	static bool isRenderingBatchDirty;
 private:
 	static int iDrawablesCount;
 	static int lodsCount;

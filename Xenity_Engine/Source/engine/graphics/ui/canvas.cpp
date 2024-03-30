@@ -31,7 +31,7 @@ int Canvas::GetDrawPriority() const
 	return 0;
 }
 
-void Canvas::Draw()
+void Canvas::DrawCommand(const RenderCommand& renderCommand)
 {
 	/*if (Window::GetWidth() != lastSize.x || Window::GetHeight() != lastSize.y)
 	{*/
@@ -64,7 +64,7 @@ Canvas::~Canvas()
 void Canvas::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
+	float aspect = Graphics::usedCamera->GetAspectRatio();
 
 	if (Editor::lastFocusedGameMenu.lock() != nullptr)
 	{
@@ -79,7 +79,7 @@ void Canvas::OnDrawGizmos()
 	const Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
-	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
+	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 	Gizmo::DrawLine(Vector3(xOff, yOff, 0) * -1, Vector3(xOff, -yOff, 0) * -1);
 	Gizmo::DrawLine(Vector3(-xOff, yOff, 0) * -1, Vector3(-xOff, -yOff, 0) * -1);
 

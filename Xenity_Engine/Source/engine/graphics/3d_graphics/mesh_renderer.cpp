@@ -11,6 +11,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/inputs/input_system.h>
 #include <engine/debug/debug.h>
+#include <engine/graphics/graphics.h>
 
 using namespace std;
 
@@ -31,16 +32,17 @@ ReflectiveData MeshRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
-	Reflective::AddVariable(reflectedVariables, textures, "textures", true);
+	//Reflective::AddVariable(reflectedVariables, textures, "textures", true);
 	Reflective::AddVariable(reflectedVariables, materials, "materials", true);
-	Reflective::AddVariable(reflectedVariables, backupMaterials, "backupMaterials", true);
-	Reflective::AddVariable(reflectedVariables, startBackup, "startBackup", true);
+	//Reflective::AddVariable(reflectedVariables, backupMaterials, "backupMaterials", true);
+	//Reflective::AddVariable(reflectedVariables, startBackup, "startBackup", true);
 	return reflectedVariables;
 }
 
 void MeshRenderer::OnReflectionUpdated()
 {
 	matCount = materials.size();
+	Graphics::isRenderingBatchDirty = true;
 }
 
 /// <summary>
@@ -56,15 +58,12 @@ int MeshRenderer::GetDrawPriority() const
 	return 0;
 }
 
-void MeshRenderer::Update()
-{
-}
-
 void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
 	if (!meshData)
 		return;
 
+	// Create a command for each submesh
 	const int subMeshCount = meshData->subMeshCount;
 	std::shared_ptr<Material> material = nullptr;
 	for (int i = 0; i < subMeshCount; i++)
@@ -76,28 +75,49 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		if (material == nullptr)
 			continue;
 
-		RenderCommand* command = nullptr;
+		RenderCommand command = RenderCommand();
+		command.material = material;
+		command.drawable = this;
+		command.subMesh = meshData->subMeshes[i];
+		command.transform = GetTransform();
+		command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
 		if(!material->useTransparency)
 		{
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
-			command = &renderQueue.commands[renderQueue.commandIndex];
+			renderQueue.commands.push_back(command);
 			renderQueue.commandIndex++;
 		}
 		else
 		{
-			command = &renderBatch.transparentMeshCommands[renderBatch.transparentMeshCommandIndex];
+			renderBatch.transparentMeshCommands.push_back(command);
 			renderBatch.transparentMeshCommandIndex++;
 		}
-		command->material = material;
-		command->drawable = this;
-		command->subMesh = meshData->subMeshes[i];
-		command->transform = GetTransform();
-		command->isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
 	}
 }
 
-void MeshRenderer::Draw()
+void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 {
+	this->meshData = meshData;
+	Graphics::isRenderingBatchDirty = true;
+}
+
+std::shared_ptr<MeshData> MeshRenderer::GetMeshData()
+{
+	return meshData;
+}
+
+void MeshRenderer::OnDisabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void MeshRenderer::OnEnabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+//void MeshRenderer::Draw()
+//{
 	/*if (startBackup)
 	{
 		const int gmSize = GameplayManager::gameObjects.size();
@@ -136,10 +156,37 @@ void MeshRenderer::Draw()
 			MeshManager::DrawMesh(GetTransform(), meshData, materials, renderSettings);
 		}
 	}*/
-}
+//}
 
-void MeshRenderer::DrawSubMesh(const RenderCommand& renderCommand)
+void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
+	/*if (startBackup)
+	{
+		const int gmSize = GameplayManager::gameObjects.size();
+		for (int gmI = 0; gmI < gmSize; gmI++)
+		{
+			std::shared_ptr<MeshRenderer> mr = GameplayManager::gameObjects[gmI]->GetComponent<MeshRenderer>();
+			if (mr)
+			{
+				const int tSize = mr->textures.size();
+				const int mSize = backupMaterials.size();
+				for (int i = 0; i < tSize; i++)
+				{
+					mr->materials.push_back(nullptr);
+					for (int im = 0; im < mSize; im++)
+					{
+						if (backupMaterials[im] && mr->textures[i] == backupMaterials[im]->texture)
+						{
+							mr->materials[i] = backupMaterials[im];
+						}
+					}
+				}
+			}
+		}
+		startBackup = false;
+		Debug::Print("A");
+	}*/
+
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;

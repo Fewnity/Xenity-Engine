@@ -184,10 +184,10 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr
 		const std::shared_ptr<GameObject> selectedGO = GameplayManager::GetGameObjects()[i];
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
 
-		if (meshRenderer && meshRenderer->meshData && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
+		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
-			const Vector3 min = meshRenderer->meshData->minBoundingBox;
-			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
+			const Vector3 min = meshRenderer->GetMeshData()->minBoundingBox;
+			const Vector3 max = meshRenderer->GetMeshData()->maxBoundingBox;
 			Vector3 transformedMin = selectedGO->GetTransform()->transformationMatrix * glm::vec4(min.x, min.y, min.z, 1);
 			Vector3 transformedMax = selectedGO->GetTransform()->transformationMatrix * glm::vec4(max.x, max.y, max.z, 1);
 			transformedMin.x = -transformedMin.x;
@@ -502,7 +502,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 					if (rect)
 					{
-						rect->position.x = startObjectValue.x + objectOffset.x / (Graphics::usedCamera.lock()->GetAspectRatio() * 10.0f);
+						rect->position.x = startObjectValue.x + objectOffset.x / (Graphics::usedCamera->GetAspectRatio() * 10.0f);
 						rect->position.y = startObjectValue.y - objectOffset.y / 10.0f;
 					}
 					else

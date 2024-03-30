@@ -49,8 +49,8 @@ std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObject
 {
 	std::shared_ptr<GameObject> gameObject = CreateGameObject(gameObjectName);
 	std::shared_ptr<MeshRenderer> mesh = gameObject->AddComponent<MeshRenderer>();
-	mesh->meshData = MeshManager::LoadMesh(meshFilePath);
-	mesh->textures.push_back(AssetManager::defaultTexture);
+	mesh->SetMeshData(MeshManager::LoadMesh(meshFilePath));
+	//mesh->textures.push_back(AssetManager::defaultTexture);
 	SetDefaultValues(gameObject);
 	// mesh->material = AssetManager::default3DMaterial;
 	return gameObject;

@@ -44,7 +44,7 @@ public:
 	float width = 1;
 
 private:
-	void Draw() override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 	Color color = Color();
 	int orderInLayer = 0;
 	std::shared_ptr <MeshData> meshData = nullptr;

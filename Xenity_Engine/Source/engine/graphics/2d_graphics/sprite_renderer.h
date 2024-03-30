@@ -17,6 +17,7 @@ public:
 	~SpriteRenderer();
 
 	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	 * [Internal]
@@ -30,17 +31,24 @@ public:
 		return orderInLayer;
 	}
 
-	std::shared_ptr <Material> material = nullptr;
-	std::shared_ptr <Texture> texture = nullptr;
 
 	void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
+
+	void SetMaterial(std::shared_ptr <Material> material);
+	void SetTexture(std::shared_ptr <Texture> texture);
+
+	void OnDisabled() override;
+	void OnEnabled() override;
+
 private:
+	std::shared_ptr <Material> material = nullptr;
+	std::shared_ptr <Texture> texture = nullptr;
 	Color color = Color();
-	void Draw() override;
-	void DrawSubMesh(const RenderCommand& renderCommand) override;
+
+	void DrawCommand(const RenderCommand& renderCommand) override;
 	int orderInLayer = 0;
 };

@@ -30,6 +30,7 @@ Remove engine location settings
 Rework the documentation
 Clean code
 Update read me
+Add command to DrawVector functions
 
 --- Can be for next release
 

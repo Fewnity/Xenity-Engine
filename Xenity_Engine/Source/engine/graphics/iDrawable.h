@@ -17,12 +17,12 @@ public:
 
 	virtual ~IDrawable();
 
-	virtual void Draw() {};
+	//virtual void Draw() {};
 	IDrawableTypes type = IDrawableTypes::Draw_3D;
 	virtual int GetDrawPriority() const = 0;
 	bool isTransparent = false;
 	void RemoveReferences() override;
 
 	virtual void CreateRenderCommands(RenderBatch& renderBatch) { }
-	virtual void DrawSubMesh(const RenderCommand & renderCommand) {};
+	virtual void DrawCommand(const RenderCommand & renderCommand) {};
 };

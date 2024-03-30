@@ -23,16 +23,21 @@ public:
 	 */
 	int GetDrawPriority() const override;
 
-	std::shared_ptr <MeshData> meshData = nullptr;
-	std::vector< std::shared_ptr<Texture>> textures;
-	std::vector<std::shared_ptr <Material>> materials;
-	int matCount = 0;
-	bool startBackup = false;
-	std::vector<std::shared_ptr <Material>> backupMaterials;
 	bool culled = false;
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
+	void SetMeshData(std::shared_ptr <MeshData> meshData);
+	std::shared_ptr <MeshData> GetMeshData();
+
+	void OnDisabled() override;
+	void OnEnabled() override;
+
 private:
-	void Draw() override;
-	void DrawSubMesh(const RenderCommand& renderCommand) override;
-	void Update() override;
+	int matCount = 0;
+	//bool startBackup = false;
+	std::shared_ptr <MeshData> meshData = nullptr;
+	//std::vector<std::shared_ptr<Texture>> textures;
+	std::vector<std::shared_ptr <Material>> materials;
+	//std::vector<std::shared_ptr <Material>> backupMaterials;
+	//void Draw() override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 };

@@ -19,10 +19,6 @@ public:
 class RenderQueue 
 {
 public:
-	RenderQueue() 
-	{
-		commands.resize(1500);
-	}
 	int commandIndex = 0;
 	std::vector<RenderCommand> commands;
 };
@@ -30,13 +26,6 @@ public:
 class RenderBatch
 {
 public:
-	RenderBatch()
-	{
-		transparentMeshCommands.resize(100);
-		spriteCommands.resize(1000);
-		uiCommands.resize(200);
-	}
-
 	std::unordered_map<uint64_t, RenderQueue> renderQueues;
 
 	std::vector<RenderCommand> transparentMeshCommands;
@@ -50,10 +39,15 @@ public:
 	{
 		for (auto& renderQueue : renderQueues)
 		{
+			renderQueue.second.commands.clear();
 			renderQueue.second.commandIndex = 0;
 		}
 		transparentMeshCommandIndex = 0;
 		spriteCommandIndex = 0;
 		uiCommandIndex = 0;
+
+		transparentMeshCommands.clear();
+		spriteCommands.clear();
+		uiCommands.clear();
 	}
 };

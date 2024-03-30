@@ -48,7 +48,7 @@ void LineRenderer::SetOrderInLayer(int orderInLayer)
 /// <summary>
 /// Draw sprite
 /// </summary>
-void LineRenderer::Draw()
+void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	{

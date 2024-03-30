@@ -45,7 +45,7 @@
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
-std::weak_ptr<Camera> Graphics::usedCamera;
+std::shared_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 int Graphics::lodsCount = 0;
@@ -79,7 +79,7 @@ std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
 
 bool Graphics::UseOpenGLFixedFunctions = false;
-
+bool Graphics::isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
@@ -158,7 +158,7 @@ void Graphics::Draw()
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
 		usedCamera = cameras[cameraIndex].lock();
-		if (usedCamera.lock()->GetIsEnabled() && usedCamera.lock()->GetGameObject()->GetLocalActive())
+		if (usedCamera->GetIsEnabled() && usedCamera->GetGameObject()->GetLocalActive())
 		{
 			SortDrawables();
 			CheckLods();
@@ -175,17 +175,17 @@ void Graphics::Draw()
 			needUpdateCamera = true;
 
 			// Update camera and bind frame buffer
-			usedCamera.lock()->UpdateProjection();
-			usedCamera.lock()->BindFrameBuffer();
-			const Vector3& camPos = usedCamera.lock()->GetTransform()->GetPosition();
+			usedCamera->UpdateProjection();
+			usedCamera->BindFrameBuffer();
+			const Vector3& camPos = usedCamera->GetTransform()->GetPosition();
 
 			Engine::GetRenderer().SetClearColor(skyColor);
 			Engine::GetRenderer().Clear();
 
 			if (UseOpenGLFixedFunctions)
 			{
-				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
-				Engine::GetRenderer().Setlights(usedCamera.lock());
+				Engine::GetRenderer().SetCameraPosition(usedCamera);
+				Engine::GetRenderer().Setlights(usedCamera);
 			}
 
 			skyboxBenchmark->Start();
@@ -195,7 +195,7 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetFog(isFogEnabled);
 
 			drawAllBenchmark->Start();
-			
+
 			for (auto& renderQueue : renderBatch.renderQueues)
 			{
 				const int commandCount = renderQueue.second.commandIndex;
@@ -203,16 +203,16 @@ void Graphics::Draw()
 				{
 					const RenderCommand& com = renderQueue.second.commands[commandIndex];
 					if (com.isEnabled)
-						com.drawable->DrawSubMesh(com);
+						com.drawable->DrawCommand(com);
 				}
 			}
-			
+
 			const int transparentCommandCount = renderBatch.transparentMeshCommandIndex;
 			for (int commandIndex = 0; commandIndex < transparentCommandCount; commandIndex++)
 			{
 				const RenderCommand& com = renderBatch.transparentMeshCommands[commandIndex];
 				if (com.isEnabled)
-						com.drawable->DrawSubMesh(com);
+					com.drawable->DrawCommand(com);
 			}
 			currentMode = IDrawableTypes::Draw_2D;
 			const int spriteCommandCount = renderBatch.spriteCommandIndex;
@@ -220,12 +220,12 @@ void Graphics::Draw()
 			{
 				const RenderCommand& com = renderBatch.spriteCommands[commandIndex];
 				if (com.isEnabled)
-					com.drawable->DrawSubMesh(com);
+					com.drawable->DrawCommand(com);
 			}
 
-			if (!usedCamera.lock()->isEditor)
+			if (!usedCamera->isEditor)
 				currentMode = IDrawableTypes::Draw_UI;
-			if (UseOpenGLFixedFunctions && !usedCamera.lock()->isEditor)
+			if (UseOpenGLFixedFunctions && !usedCamera->isEditor)
 			{
 				Engine::GetRenderer().ResetView();
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
@@ -235,13 +235,13 @@ void Graphics::Draw()
 			{
 				const RenderCommand& com = renderBatch.uiCommands[commandIndex];
 				if (com.isEnabled)
-					com.drawable->DrawSubMesh(com);
+					com.drawable->DrawCommand(com);
 			}
 
 			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
-			if (usedCamera.lock()->isEditor)
+			if (usedCamera->isEditor)
 			{
 				Engine::GetRenderer().SetFog(false);
 
@@ -251,12 +251,12 @@ void Graphics::Draw()
 					currentMode = IDrawableTypes::Draw_3D;
 					if (UseOpenGLFixedFunctions)
 					{
-						usedCamera.lock()->UpdateProjection();
+						usedCamera->UpdateProjection();
 					}
 				}
 
 				Engine::GetRenderer().ResetTransform();
-				Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
+				Engine::GetRenderer().SetCameraPosition(usedCamera);
 
 				// Currently lines do not support shaders
 				if (!UseOpenGLFixedFunctions)
@@ -266,13 +266,13 @@ void Graphics::Draw()
 					currentMaterial = nullptr;
 				}
 
-				if (usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
+				if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)
 				{
-					Engine::GetRenderer().SetProjection3D(usedCamera.lock()->GetFov(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane(), usedCamera.lock()->GetAspectRatio());
+					Engine::GetRenderer().SetProjection3D(usedCamera->GetFov(), usedCamera->GetNearClippingPlane(), usedCamera->GetFarClippingPlane(), usedCamera->GetAspectRatio());
 				}
 				else
 				{
-					Engine::GetRenderer().SetProjection2D(usedCamera.lock()->GetProjectionSize(), usedCamera.lock()->GetNearClippingPlane(), usedCamera.lock()->GetFarClippingPlane());
+					Engine::GetRenderer().SetProjection2D(usedCamera->GetProjectionSize(), usedCamera->GetNearClippingPlane(), usedCamera->GetFarClippingPlane());
 				}
 
 				// Get the grid axis
@@ -282,7 +282,7 @@ void Graphics::Draw()
 				int gridAxis = 0;
 				for (int i = 0; i < sceneMenuCount; i++)
 				{
-					if (sceneMenus[i]->weakCamera.lock() == usedCamera.lock())
+					if (sceneMenus[i]->weakCamera.lock() == usedCamera)
 					{
 						gridAxis = sceneMenus[i]->gridAxis;
 						break;
@@ -310,7 +310,7 @@ void Graphics::Draw()
 				DrawEditorTool(camPos);
 			}
 #endif
-			usedCamera.lock()->CopyMultiSampledFrameBuffer();
+			usedCamera->CopyMultiSampledFrameBuffer();
 		}
 	}
 
@@ -383,7 +383,7 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 		return false;*/
 	const Vector3& pos1 = c1.transform->GetPosition();
 	const Vector3& pos2 = c2.transform->GetPosition();
-	const Vector3& camPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+	const Vector3& camPos = Graphics::usedCamera->GetTransform()->GetPosition();
 	const float dis1 = Vector3::Distance(pos1, camPos);
 	const float dis2 = Vector3::Distance(pos2, camPos);
 
@@ -398,13 +398,15 @@ void Graphics::SortDrawables()
 void Graphics::OrderDrawables()
 {
 	orderBenchmark->Start();
-
-
-	renderBatch.Reset();
-	for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+	if (isRenderingBatchDirty)
 	{
-		const std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-		drawableToCheck->CreateRenderCommands(renderBatch);
+		isRenderingBatchDirty = false;
+		renderBatch.Reset();
+		for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+		{
+			const std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
+			drawableToCheck->CreateRenderCommands(renderBatch);
+		}
 	}
 
 	orderBenchmark->Stop();
@@ -414,12 +416,14 @@ void Graphics::DeleteAllDrawables()
 {
 	orderedIDrawable.clear();
 	iDrawablesCount = 0;
+	isRenderingBatchDirty = true;
 }
 
 void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
+	isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
 }
 
@@ -434,6 +438,7 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
+			isRenderingBatchDirty = true;
 			break;
 		}
 	}
@@ -477,38 +482,38 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 
 void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-//	if (!meshData || !usedCamera.lock())
-//		return;
-//
-//	drawMeshBenchmark->Start();
-//
-//	if (!UseOpenGLFixedFunctions)
-//	{
-//		const int materialCount = materials.size();
-//		for (int i = 0; i < materialCount; i++)
-//		{
-//			if (!materials[i])
-//				continue;
-//
-//			materials[i]->Use();
-//
-//			if (!currentShader)
-//				continue;
-//
-//			currentShader->SetShaderModel(matrix);
-//		}
-//	}
-//	else
-//	{
-//#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-//		if (!forUI || usedCamera.lock()->isEditor)
-//			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
-//#endif
-//		Engine::GetRenderer().SetTransform(matrix);
-//	}
-//
-//	Engine::GetRenderer().DrawMeshData(meshData, materials, renderSettings);
-//	drawMeshBenchmark->Stop();
+	//	if (!meshData || !usedCamera.lock())
+	//		return;
+	//
+	//	drawMeshBenchmark->Start();
+	//
+	//	if (!UseOpenGLFixedFunctions)
+	//	{
+	//		const int materialCount = materials.size();
+	//		for (int i = 0; i < materialCount; i++)
+	//		{
+	//			if (!materials[i])
+	//				continue;
+	//
+	//			materials[i]->Use();
+	//
+	//			if (!currentShader)
+	//				continue;
+	//
+	//			currentShader->SetShaderModel(matrix);
+	//		}
+	//	}
+	//	else
+	//	{
+	//#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
+	//		if (!forUI || usedCamera.lock()->isEditor)
+	//			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
+	//#endif
+	//		Engine::GetRenderer().SetTransform(matrix);
+	//	}
+	//
+	//	Engine::GetRenderer().DrawMeshData(meshData, materials, renderSettings);
+	//	drawMeshBenchmark->Stop();
 }
 
 void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
@@ -538,8 +543,8 @@ void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<
 	else
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-		if (!forUI || usedCamera.lock()->isEditor)
-			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
+		if (!forUI || usedCamera->isEditor)
+			Engine::GetRenderer().SetCameraPosition(usedCamera);
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
 	}
@@ -568,9 +573,6 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		//AssetManager::unlitMaterial->texture = skybox->down;
-		//MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale , *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-
 		AssetManager::unlitMaterial->texture = skybox->down;
 		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = skybox->up;
@@ -583,19 +585,6 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = skybox->right;
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-
-		/*AssetManager::unlitMaterial->texture = skybox->down;
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->up;
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->front;
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->back;
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->left;
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->right;
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, AssetManager::unlitMaterial, skyPlane, renderSettings);*/
 	}
 }
 
@@ -604,7 +593,7 @@ void Graphics::CheckLods()
 	for (int i = 0; i < lodsCount; i++)
 	{
 		std::shared_ptr<Lod> lod = lods[i].lock();
-		if (lod) 
+		if (lod)
 		{
 			lod->CheckLod();
 		}
@@ -618,7 +607,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 	if (const std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject())
 	{
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
-		if (meshRenderer && meshRenderer->meshData && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
+		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
 			const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
 
@@ -628,8 +617,8 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 			renderSettings.useLighting = false;
 			renderSettings.useTexture = false;
 
-			const Vector3 min = meshRenderer->meshData->minBoundingBox;
-			const Vector3 max = meshRenderer->meshData->maxBoundingBox;
+			const Vector3 min = meshRenderer->GetMeshData()->minBoundingBox;
+			const Vector3 max = meshRenderer->GetMeshData()->maxBoundingBox;
 
 			const glm::mat4x4& matrix = selectedGO->GetTransform()->transformationMatrix;
 			const Vector3 bottom0 = matrix * glm::vec4(min.x, min.y, min.z, 1);
@@ -764,10 +753,10 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 			selectedGoRot = Vector3(0);
 
 		float dist = 1;
-		if (usedCamera.lock()->GetProjectionType() == ProjectionTypes::Perspective)
+		if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)
 			dist = Vector3::Distance(selectedGoPos, cameraPosition);
 		else
-			dist = usedCamera.lock()->GetProjectionSize() * 1.5f;
+			dist = usedCamera->GetProjectionSize() * 1.5f;
 
 		dist /= 40;
 		const Vector3 scale = Vector3(dist);

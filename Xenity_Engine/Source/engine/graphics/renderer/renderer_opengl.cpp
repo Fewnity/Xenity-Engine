@@ -115,11 +115,11 @@ void RendererOpengl::SetClearColor(const Color& color)
 
 void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
-	if (Graphics::usedCamera.lock())
+	if (Graphics::usedCamera)
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		const float halfRatio = Graphics::usedCamera.lock()->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+		const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
 		const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
 		glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 	}
@@ -358,7 +358,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
 	}
 	glBindVertexArray(0);
-	if (Graphics::usedCamera.lock()->isEditor)
+	if (Graphics::usedCamera->isEditor)
 	{
 		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		Performance::AddDrawCall();

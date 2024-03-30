@@ -71,7 +71,7 @@ public:
 	void SetFont(const std::shared_ptr<Font>& font);
 
 private:
-	void Draw() override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 	std::shared_ptr<Font> font;
 	std::string text;
 	Color color = Color();

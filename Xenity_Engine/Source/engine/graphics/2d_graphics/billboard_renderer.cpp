@@ -47,7 +47,7 @@ void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 /// <summary>
 /// Draw sprite
 /// </summary>
-void BillboardRenderer::Draw()
+void BillboardRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	//if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
 	//{

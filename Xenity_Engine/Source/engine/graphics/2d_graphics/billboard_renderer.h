@@ -42,6 +42,6 @@ public:
 
 private:
 	Color color = Color();
-	void Draw() override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 	int orderInLayer = 0;
 };

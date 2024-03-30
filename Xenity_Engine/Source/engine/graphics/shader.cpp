@@ -290,9 +290,9 @@ void Shader::SetShaderCameraPosition()
 {
 	Use();
 	//Camera position
-	if (Graphics::usedCamera.lock() != nullptr)
+	if (Graphics::usedCamera != nullptr)
 	{
-		std::shared_ptr<Transform> transform = Graphics::usedCamera.lock()->GetTransform();
+		std::shared_ptr<Transform> transform = Graphics::usedCamera->GetTransform();
 		Vector3 lookDirection = transform->GetForward();
 		const Vector3& camPos = transform->GetPosition();
 		lookDirection = lookDirection + camPos;
@@ -335,13 +335,13 @@ void Shader::SetShaderCameraPositionCanvas()
 void Shader::SetShaderProjection()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetProjection());
 }
 
 void Shader::SetShaderProjectionCanvas()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera.lock()->GetCanvasProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetCanvasProjection());
 }
 
 /// <summary>

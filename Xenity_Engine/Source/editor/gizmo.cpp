@@ -38,14 +38,14 @@ void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 
 void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color)
 {
-	const float distance = Vector3::Distance(position, Graphics::usedCamera.lock()->GetTransform()->GetPosition());
+	const float distance = Vector3::Distance(position, Graphics::usedCamera->GetTransform()->GetPosition());
 	float alpha = 1;
 	if (distance <= 1.3f)
 		alpha = distance - 0.3f;
 
 	const RGBA& rgba = color.GetRGBA();
 	//AssetManager::unlitMaterial->texture = texture;
-	SpriteManager::DrawSprite(position, Graphics::usedCamera.lock()->GetTransform()->GetRotation(), Vector3(0.2f), Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), AssetManager::unlitMaterial, texture);
+	SpriteManager::DrawSprite(position, Graphics::usedCamera->GetTransform()->GetRotation(), Vector3(0.2f), Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), AssetManager::unlitMaterial, texture);
 }
 
 void Gizmo::SetColor(const Color& newColor)

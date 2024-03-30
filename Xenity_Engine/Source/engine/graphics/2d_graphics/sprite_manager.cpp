@@ -145,17 +145,17 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 	}
 
 	spriteBenchmark->Start();
-	if (Graphics::usedCamera.lock())
+	if (Graphics::usedCamera)
 	{
 #if defined(__PSP__)
 		if (Graphics::needUpdateCamera)
 		{
-			Graphics::usedCamera.lock()->UpdateProjection();
-			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
+			Graphics::usedCamera->UpdateProjection();
+			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 			Graphics::needUpdateCamera = false;
 		}
 #else
-		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera.lock());
+		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 #endif
 
 		const Vector3 zero = Vector3(0);

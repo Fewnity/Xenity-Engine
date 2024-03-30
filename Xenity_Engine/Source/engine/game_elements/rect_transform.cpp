@@ -37,7 +37,7 @@ void RectTransform::OnReflectionUpdated()
 
 void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas) 
 {
-	float aspect = Graphics::usedCamera.lock()->GetAspectRatio();
+	float aspect = Graphics::usedCamera->GetAspectRatio();
 #if defined(EDITOR)
 	if (Editor::lastFocusedGameMenu.lock() != nullptr) 
 	{

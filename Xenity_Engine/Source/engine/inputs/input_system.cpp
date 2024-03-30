@@ -192,7 +192,7 @@ void InputSystem::Read(const SDL_Event& event)
 		float ySpeed = 0;
 		int xSpeedRaw = 0;
 		int ySpeedRaw = 0;
-		if (Graphics::usedCamera.lock())
+		if (Graphics::usedCamera)
 		{
 			float a = 0;
 			int w = 0;
@@ -210,12 +210,12 @@ void InputSystem::Read(const SDL_Event& event)
 			}
 			else
 			{
-				w = Graphics::usedCamera.lock()->GetWidth();
-				h = Graphics::usedCamera.lock()->GetHeight();
+				w = Graphics::usedCamera->GetWidth();
+				h = Graphics::usedCamera->GetHeight();
 			}
 #else
-			w = Graphics::usedCamera.lock()->GetWidth();
-			h = Graphics::usedCamera.lock()->GetHeight();
+			w = Graphics::usedCamera->GetWidth();
+			h = Graphics::usedCamera->GetHeight();
 #endif
 
 			a = (float)w / (float)h;

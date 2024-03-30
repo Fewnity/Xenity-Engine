@@ -255,7 +255,7 @@ void Tilemap::CreateChunksMeshes()
 	}
 }
 
-void Tilemap::Draw()
+void Tilemap::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (auto gameObject = GetGameObject())
 	{
@@ -276,12 +276,12 @@ void Tilemap::Draw()
 
 void Tilemap::DrawChunks()
 {
-	if (Graphics::usedCamera.lock())
+	if (Graphics::usedCamera)
 	{
-		Vector3 cameraPos = Graphics::usedCamera.lock()->GetTransform()->GetPosition();
+		Vector3 cameraPos = Graphics::usedCamera->GetTransform()->GetPosition();
 
-		float xArea = Graphics::usedCamera.lock()->GetProjectionSize() * Graphics::usedCamera.lock()->GetAspectRatio() + chunkSize;
-		float yArea = Graphics::usedCamera.lock()->GetProjectionSize() + chunkSize;
+		float xArea = Graphics::usedCamera->GetProjectionSize() * Graphics::usedCamera->GetAspectRatio() + chunkSize;
+		float yArea = Graphics::usedCamera->GetProjectionSize() + chunkSize;
 
 		float xChunkPosition;
 		float yChunkPosition;

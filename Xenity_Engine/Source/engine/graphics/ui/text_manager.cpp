@@ -123,7 +123,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		return;
 	}
 
-	if (Graphics::usedCamera.lock())
+	if (Graphics::usedCamera)
 	{
 		RenderingSettings renderSettings = RenderingSettings();
 		if (transform->GetScale().x * transform->GetScale().y < 0)

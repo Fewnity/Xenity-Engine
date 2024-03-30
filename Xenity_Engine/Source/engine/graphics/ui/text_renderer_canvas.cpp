@@ -75,7 +75,7 @@ void TextRendererCanvas::SetFont(const std::shared_ptr<Font>& font)
 /// <summary>
 /// Draw text
 /// </summary>
-void TextRendererCanvas::Draw()
+void TextRendererCanvas::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled() /* && shader != nullptr*/)
 	{
