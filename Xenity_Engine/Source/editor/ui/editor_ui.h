@@ -263,6 +263,7 @@ public:
 		if (returnValue == InputButtonState::ResetValue)
 		{
 			valuePtr->get() = nullptr;
+			valueChangedTemp = true;
 		}
 		else if (returnValue == InputButtonState::OpenAssetMenu)
 		{
