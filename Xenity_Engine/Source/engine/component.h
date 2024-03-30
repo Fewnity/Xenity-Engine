@@ -32,6 +32,9 @@ public:
 	virtual void Update() {}
 	//virtual void OnParentChanged() {}
 
+	virtual void OnDisabled() {};
+	virtual void OnEnabled() {};
+
 	virtual void OnDrawGizmos() {};
 	virtual void OnDrawGizmosSelected() {};
 

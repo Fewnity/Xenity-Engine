@@ -82,4 +82,8 @@ bool Component::GetIsEnabled() const
 void Component::SetIsEnabled(bool isEnabled)
 {
 	this->isEnabled = isEnabled;
+	if (isEnabled)
+		OnDisabled();
+	else
+		OnEnabled();
 }

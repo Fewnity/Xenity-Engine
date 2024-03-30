@@ -328,6 +328,16 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 		// If the gameobject has changed his state
 		if (lastLocalActive != localActive)
 		{
+			for (int i = 0; i < componentCount; i++)
+			{
+				if (components[i]) 
+				{
+					if(localActive)
+						components[i]->OnEnabled();
+					else
+						components[i]->OnDisabled();
+				}
+			}
 			// Update children
 			for (int i = 0; i < childCount; i++)
 			{
