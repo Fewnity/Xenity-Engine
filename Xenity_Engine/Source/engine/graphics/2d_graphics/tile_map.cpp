@@ -255,23 +255,43 @@ void Tilemap::CreateChunksMeshes()
 	}
 }
 
+void Tilemap::CreateRenderCommands(RenderBatch& renderBatch)
+{
+	/*if (!material || !texture)
+		return;
+
+	RenderCommand command = RenderCommand();
+	command.material = material;
+	command.drawable = this;
+	command.subMesh = nullptr;
+	command.transform = GetTransform();
+	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+
+	renderBatch.spriteCommands.push_back(command);
+	renderBatch.spriteCommandIndex++;*/
+}
+
+void Tilemap::OnDisabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void Tilemap::OnEnabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
 void Tilemap::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (auto gameObject = GetGameObject())
+	if (dirtyMeshes)
 	{
-		if (gameObject->GetLocalActive() && GetIsEnabled())
-		{
-			if (dirtyMeshes)
-			{
-				dirtyMeshes = false;
+		dirtyMeshes = false;
 
-				CreateChunksMeshes();
-				FillChunks();
-			}
-
-			DrawChunks();
-		}
+		CreateChunksMeshes();
+		FillChunks();
 	}
+
+	DrawChunks();
 }
 
 void Tilemap::DrawChunks()

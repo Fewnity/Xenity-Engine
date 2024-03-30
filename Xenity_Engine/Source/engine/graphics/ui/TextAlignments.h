@@ -1,15 +1,6 @@
 #pragma once
 
-enum class HorizontalAlignment
-{
-	H_Left,
-	H_Center,
-	H_Right
-};
+#include <engine/reflection/reflection.h>
 
-enum class VerticalAlignment
-{
-	V_Top,
-	V_Center,
-	V_Bottom
-};
+ENUM(HorizontalAlignment, Left, Center, Right);
+ENUM(VerticalAlignment, Top, Center, Bottom);

@@ -15,7 +15,7 @@ BillboardRenderer::BillboardRenderer()
 	componentName = "BillboardRenderer";
 	type = IDrawableTypes::Draw_2D;
 	AssetManager::AddReflection(this);
-	material = AssetManager::standardMaterial;
+	//material = AssetManager::standardMaterial;
 }
 
 ReflectiveData BillboardRenderer::GetReflectiveData()
@@ -23,7 +23,13 @@ ReflectiveData BillboardRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, material, "material", true);
 	return reflectedVariables;
+}
+
+void BillboardRenderer::OnReflectionUpdated()
+{
+	Graphics::isRenderingBatchDirty = true;
 }
 
 BillboardRenderer::~BillboardRenderer()
@@ -38,24 +44,55 @@ int BillboardRenderer::GetDrawPriority() const
 
 void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 {
-		this->orderInLayer = orderInLayer;
-		Graphics::SetDrawOrderListAsDirty();
+	this->orderInLayer = orderInLayer;
+	Graphics::SetDrawOrderListAsDirty();
 }
 
 #pragma endregion
+
+void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
+{
+	if (!material || !texture)
+		return;
+
+	RenderCommand command = RenderCommand();
+	command.material = material;
+	command.drawable = this;
+	command.subMesh = nullptr;
+	command.transform = GetTransform();
+	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+
+	renderBatch.spriteCommands.push_back(command);
+	renderBatch.spriteCommandIndex++;
+}
+
+void BillboardRenderer::SetMaterial(std::shared_ptr<Material> material)
+{
+	this->material = material;
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void BillboardRenderer::SetTexture(std::shared_ptr<Texture> texture)
+{
+	this->texture = texture;
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void BillboardRenderer::OnDisabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void BillboardRenderer::OnEnabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
 
 /// <summary>
 /// Draw sprite
 /// </summary>
 void BillboardRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	//if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
-	//{
-	//	// Draw the sprite only if there is a texture and if the component/gameobject is active
-	//	if (gameObject->GetLocalActive() && GetIsEnabled())
-	//	{
-	//		const std::shared_ptr<Transform> transform = GetTransform();
-	//		SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera.lock()->GetTransform()->GetRotation(), transform->GetScale(), color, material);
-	//	}
-	//}
+	const std::shared_ptr<Transform> transform = GetTransform();
+	SpriteManager::DrawSprite(transform->GetPosition(), transform->GetRotation() + Graphics::usedCamera->GetTransform()->GetRotation(), transform->GetScale(), color, material, texture);
 }

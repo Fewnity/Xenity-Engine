@@ -113,66 +113,27 @@ std::shared_ptr<Material> Material::MakeMaterial()
 /// </summary>
 void Material::Use()
 {
-	//const bool matChanged = Graphics::currentMaterial != shared_from_this();
-	//const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera.lock();
-	//const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
-
-	////if(true)
-	//if (matChanged || cameraChanged || drawTypeChanged)
-	//{
-	//	Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
-	//	if (shader)
-	//	{
-	//		lastUsedCamera = Graphics::usedCamera;
-	//		lastUpdatedType = Graphics::currentMode;
-	//		shader->Use();
-	//		shader->updatedBy = Graphics::currentMaterial;
-	//		Update();
-
-	//		const int matCount = AssetManager::GetMaterialCount();
-	//		for (int i = 0; i < matCount; i++)
-	//		{
-	//			Material* mat = AssetManager::GetMaterial(i);
-	//			if (mat->shader == shader && mat != this)
-	//			{
-	//				mat->updated = false;
-	//			}
-	//		}
-	//	}
-	//	else 
-	//	{
-	//		Engine::GetRenderer().UseShaderProgram(0);
-	//		Graphics::currentShader = nullptr;
-	//	}
-	//}
-
 	const bool matChanged = Graphics::currentMaterial != shared_from_this();
 	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera;
 	const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
 
-	if (matChanged)
-		//if (matChanged || cameraChanged || drawTypeChanged)
+	if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
 		if (shader)
 		{
-			if(true)
-			//if (shader->updatedBy.lock() != Graphics::currentMaterial)
-			{
-				lastUsedCamera = Graphics::usedCamera;
-				lastUpdatedType = Graphics::currentMode;
-				shader->Use();
-				//shader->updatedBy = Graphics::currentMaterial;
-				Update();
+			lastUsedCamera = Graphics::usedCamera;
+			lastUpdatedType = Graphics::currentMode;
+			shader->Use();
+			Update();
 
-				const int matCount = AssetManager::GetMaterialCount();
-				for (int i = 0; i < matCount; i++)
+			const int matCount = AssetManager::GetMaterialCount();
+			for (int i = 0; i < matCount; i++)
+			{
+				Material* mat = AssetManager::GetMaterial(i);
+				if (mat->shader == shader && mat != this)
 				{
-					Material* mat = AssetManager::GetMaterial(i);
-					if (mat->shader == shader && mat != this)
-					{
-						mat->updated = false;
-					}
+					mat->updated = false;
 				}
 			}
 		}

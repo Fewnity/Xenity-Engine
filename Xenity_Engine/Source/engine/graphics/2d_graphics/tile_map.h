@@ -117,6 +117,10 @@ public:
 	void SetColor(const Color& color);
 
 private:
+	void OnDisabled() override;
+	void OnEnabled() override;
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
+
 	class TilemapChunk
 	{
 	public:

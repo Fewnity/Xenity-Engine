@@ -17,9 +17,12 @@ public:
 	* [Internal]
 	*/
 	int GetDrawPriority() const override;
-	void DrawCommand(const RenderCommand& renderCommand) override;
 
 private:
+	void OnDisabled() override;
+	void OnEnabled() override;
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
 	Vector2Int lastSize = 0;
 };
 

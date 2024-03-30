@@ -15,7 +15,7 @@ SpriteRenderer::SpriteRenderer()
 	componentName = "SpriteRenderer";
 	type = IDrawableTypes::Draw_2D;
 	AssetManager::AddReflection(this);
-	material = AssetManager::unlitMaterial;
+	//material = AssetManager::unlitMaterial;
 }
 
 ReflectiveData SpriteRenderer::GetReflectiveData()
@@ -52,17 +52,6 @@ void SpriteRenderer::SetOrderInLayer(int orderInLayer)
 
 void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	/*if (!material->useTransparency)
-	{
-		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
-		command = &renderQueue.commands[renderQueue.commandIndex];
-		renderQueue.commandIndex++;
-	}
-	else
-	{
-		command = &renderBatch.transparentMeshCommands[renderBatch.transparentMeshCommandIndex];
-		renderBatch.transparentMeshCommandIndex++;
-	}*/
 	if (!material || !texture)
 		return;
 
@@ -75,7 +64,6 @@ void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
-
 }
 
 void SpriteRenderer::SetMaterial(std::shared_ptr<Material> material)

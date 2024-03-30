@@ -113,7 +113,6 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 	spriteMeshData->unifiedColor = color;
 
-	//Vector3 scale = transform->GetScale();
 	RenderingSettings renderSettings = RenderingSettings();
 
 	if (scale.x * scale.y < 0)
@@ -166,7 +165,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 		// Set draw settings
 		RenderingSettings renderSettings = RenderingSettings();
 
-		renderSettings.invertFaces = true;
+		renderSettings.invertFaces = false;
 		renderSettings.useBlend = true;
 		renderSettings.useDepth = false;
 		renderSettings.useTexture = true;

@@ -32,10 +32,7 @@ ReflectiveData MeshRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
-	//Reflective::AddVariable(reflectedVariables, textures, "textures", true);
 	Reflective::AddVariable(reflectedVariables, materials, "materials", true);
-	//Reflective::AddVariable(reflectedVariables, backupMaterials, "backupMaterials", true);
-	//Reflective::AddVariable(reflectedVariables, startBackup, "startBackup", true);
 	return reflectedVariables;
 }
 
@@ -116,82 +113,13 @@ void MeshRenderer::OnEnabled()
 	Graphics::isRenderingBatchDirty = true;
 }
 
-//void MeshRenderer::Draw()
-//{
-	/*if (startBackup)
-	{
-		const int gmSize = GameplayManager::gameObjects.size();
-		for (int gmI = 0; gmI < gmSize; gmI++)
-		{
-			std::shared_ptr<MeshRenderer> mr = GameplayManager::gameObjects[gmI]->GetComponent<MeshRenderer>();
-			if (mr)
-			{
-				const int tSize = mr->textures.size();
-				const int mSize = backupMaterials.size();
-				for (int i = 0; i < tSize; i++)
-				{
-					for (int im = 0; im < mSize; im++)
-					{
-						mr->materials.push_back(nullptr);
-						if (backupMaterials[im] && mr->textures[i] == backupMaterials[im]->texture)
-						{
-							mr->materials[i] = backupMaterials[im];
-						}
-					}
-				}
-			}
-		}
-		startBackup = false;
-		Debug::Print("A");
-	}*/
-	/*if (const std::shared_ptr<GameObject> gameObject = GetGameObject())
-	{
-		if (gameObject->GetLocalActive() && GetIsEnabled() && meshData && !culled)
-		{
-			RenderingSettings renderSettings = RenderingSettings();
-			renderSettings.invertFaces = false;
-			renderSettings.useDepth = true;
-			renderSettings.useTexture = true;
-			renderSettings.useLighting = true;
-			MeshManager::DrawMesh(GetTransform(), meshData, materials, renderSettings);
-		}
-	}*/
-//}
-
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	/*if (startBackup)
-	{
-		const int gmSize = GameplayManager::gameObjects.size();
-		for (int gmI = 0; gmI < gmSize; gmI++)
-		{
-			std::shared_ptr<MeshRenderer> mr = GameplayManager::gameObjects[gmI]->GetComponent<MeshRenderer>();
-			if (mr)
-			{
-				const int tSize = mr->textures.size();
-				const int mSize = backupMaterials.size();
-				for (int i = 0; i < tSize; i++)
-				{
-					mr->materials.push_back(nullptr);
-					for (int im = 0; im < mSize; im++)
-					{
-						if (backupMaterials[im] && mr->textures[i] == backupMaterials[im]->texture)
-						{
-							mr->materials[i] = backupMaterials[im];
-						}
-					}
-				}
-			}
-		}
-		startBackup = false;
-		Debug::Print("A");
-	}*/
-
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
-	renderSettings.useLighting = true;
+	renderSettings.useLighting = renderCommand.material->useLighting;
 	renderSettings.useBlend = renderCommand.material->useTransparency;
 	MeshManager::DrawMesh(GetTransform(), *renderCommand.subMesh, renderCommand.material, renderSettings);
 }

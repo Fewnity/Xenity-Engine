@@ -31,6 +31,29 @@ int Canvas::GetDrawPriority() const
 	return 0;
 }
 
+void Canvas::OnDisabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void Canvas::OnEnabled()
+{
+	Graphics::isRenderingBatchDirty = true;
+}
+
+void Canvas::CreateRenderCommands(RenderBatch& renderBatch)
+{
+	RenderCommand command = RenderCommand();
+	command.material = nullptr;
+	command.drawable = this;
+	command.subMesh = nullptr;
+	command.transform = GetTransform();
+	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+
+	renderBatch.uiCommands.push_back(command);
+	renderBatch.uiCommandIndex++;
+}
+
 void Canvas::DrawCommand(const RenderCommand& renderCommand)
 {
 	/*if (Window::GetWidth() != lastSize.x || Window::GetHeight() != lastSize.y)

@@ -20,7 +20,9 @@ class API LineRenderer : public IDrawable
 public:
 	LineRenderer();
 	~LineRenderer();
+
 	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated()  override;
 
 	/**
 	 * [Internal]
@@ -44,9 +46,14 @@ public:
 	float width = 1;
 
 private:
+	void OnDisabled() override;
+	void OnEnabled() override;
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
 	void DrawCommand(const RenderCommand& renderCommand) override;
+
 	Color color = Color();
 	int orderInLayer = 0;
 	std::shared_ptr <MeshData> meshData = nullptr;
+	std::shared_ptr <Material> material = nullptr;
 };
 

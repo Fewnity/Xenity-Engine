@@ -36,19 +36,19 @@ public:
 	{
 		this->color = color;
 	}
-	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	void SetMaterial(std::shared_ptr <Material> material);
 	void SetTexture(std::shared_ptr <Texture> texture);
 
-	void OnDisabled() override;
-	void OnEnabled() override;
 
 private:
+	void OnDisabled() override;
+	void OnEnabled() override;
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
+	void DrawCommand(const RenderCommand& renderCommand) override;
+
 	std::shared_ptr <Material> material = nullptr;
 	std::shared_ptr <Texture> texture = nullptr;
 	Color color = Color();
-
-	void DrawCommand(const RenderCommand& renderCommand) override;
 	int orderInLayer = 0;
 };

@@ -31,8 +31,8 @@ public:
 	int GetDrawPriority() const override;
 
 	std::shared_ptr<Material> material = nullptr;
-	HorizontalAlignment horizontalAlignment = HorizontalAlignment::H_Center;
-	VerticalAlignment verticalAlignment = VerticalAlignment::V_Center;
+	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
+	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
 
 	/**
 	* Set order in layer
@@ -70,6 +70,9 @@ public:
 	void SetFont(const std::shared_ptr<Font>& font);
 
 private:
+	void OnDisabled() override;
+	void OnEnabled() override;
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
 	void DrawCommand(const RenderCommand& renderCommand) override;
 	std::shared_ptr<Font> font;
 	std::string text;

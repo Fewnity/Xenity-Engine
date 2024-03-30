@@ -15,9 +15,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Show submesh count somewhere
-New material System
 Use white texture if no texture on material
-New Input system
 Fix variables order
 Text scale
 Fix rotation tool texture uv
@@ -30,11 +28,14 @@ Remove engine location settings
 Rework the documentation
 Clean code
 Update read me
-Add command to DrawVector functions
+Add undo/redo commands to DrawVector/DrawFileReference functions
+Fix sprites color with shaders
 
 --- Can be for next release
+New Input system
 
 --- Done
+New material System
 Fix error when loading mesh
 Add try catch to all json parse
 Clear scene if fail loading scene

@@ -52,19 +52,19 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 	float x = 0;
 	float y = 0;
 	int line = 0;
-	if (horizontalAlignment == HorizontalAlignment::H_Left)
+	if (horizontalAlignment == HorizontalAlignment::Left)
 		x = -textInfo->linesInfo[line].lenght;
-	else if (horizontalAlignment == HorizontalAlignment::H_Center)
+	else if (horizontalAlignment == HorizontalAlignment::Center)
 		x = -textInfo->linesInfo[line].lenght * 0.5f;
 
 	y = textInfo->linesInfo[line].y1 * 0.25f;
 	y += -textInfo->maxLineHeight;
 
-	if (verticalAlignment == VerticalAlignment::V_Center)
+	if (verticalAlignment == VerticalAlignment::Center)
 	{
 		y += totalY * 0.5f;
 	}
-	else if (verticalAlignment == VerticalAlignment::V_Top)
+	else if (verticalAlignment == VerticalAlignment::Top)
 	{
 		y += totalY;
 	}
@@ -86,9 +86,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 		{
 			line++;
 
-			if (horizontalAlignment == HorizontalAlignment::H_Left)
+			if (horizontalAlignment == HorizontalAlignment::Left)
 				x = -textInfo->linesInfo[line].lenght;
-			else if (horizontalAlignment == HorizontalAlignment::H_Center)
+			else if (horizontalAlignment == HorizontalAlignment::Center)
 				x = -textInfo->linesInfo[line].lenght * 0.5f;
 			else
 				x = 0;
@@ -142,10 +142,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		const Vector3& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
-		std::vector<std::shared_ptr<Material>> materials;
-		materials.push_back(material);
-		/*materials.push_back(font->fontAtlas);*/
-		Graphics::DrawMesh(mesh, materials, renderSettings, matrix, canvas);
+		Graphics::DrawMesh(*mesh->subMeshes[0], material, font->fontAtlas, renderSettings, matrix, canvas);
 	}
 }
 
