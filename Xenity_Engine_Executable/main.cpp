@@ -16,9 +16,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Show submesh count somewhere
 Fix variables order
-Text scale
-Fix rotation tool texture uv
-Fix crash if rotation values are infinite
 Fix duplication crash with missing script
 Multiple gameobject selection
 Clean folders
@@ -33,6 +30,9 @@ Fix sprites color with shaders
 New Input system
 
 --- Done
+Fix crash if rotation values are infinite
+Text scale
+Fix rotation tool texture uv
 Use white texture if no texture on material
 Create crash dump file
 New material System
