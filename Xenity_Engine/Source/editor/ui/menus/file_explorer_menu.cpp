@@ -15,6 +15,7 @@
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/file_system/file_system.h>
+#include <engine/asset_management/asset_manager.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
 #include <iostream>
@@ -78,12 +79,26 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	const int cursorPos = (int)ImGui::GetCursorPosX();
 	const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
-
+	ImVec2 imageCursorPos = ImGui::GetCursorPos();
 	std::shared_ptr<Texture> iconTexture = GetItemIcon(item);
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
+
+	if (item.file && item.file->fileType == FileType::File_Material)
+	{
+		std::shared_ptr<Texture> matTexture = EditorUI::icons[(int)IconName::Icon_Material];
+		Engine::GetRenderer().BindTexture(matTexture);
+		imageCursorPos.x -= iconSize / 3 / 2;
+		imageCursorPos.y -= iconSize / 3 / 2;
+
+		ImGui::SetCursorPos(imageCursorPos);
+		ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)matTexture->GetTextureId(), ImVec2(iconSize / 3, iconSize / 3), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	}
+
+	ImGui::SetCursorPos(finalImageCursorPos);
 
 	// Create an unique popupid
 	std::string popupId = "RightClick";
@@ -369,8 +384,18 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 			tex = EditorUI::icons[(int)IconName::Icon_Font];
 			break;
 		case FileType::File_Material:
-			tex = EditorUI::icons[(int)IconName::Icon_Material];
+		{
+			std::shared_ptr<Material> mat = std::dynamic_pointer_cast<Material>(fileExplorerItem.file);
+			if (!mat->texture || mat->texture->GetTextureId() == 0)
+			{
+				tex = AssetManager::defaultTexture;
+			}
+			else 
+			{
+				tex = mat->texture;
+			}
 			break;
+		}
 		case FileType::File_Shader:
 			tex = EditorUI::icons[(int)IconName::Icon_Shader];
 			break;
