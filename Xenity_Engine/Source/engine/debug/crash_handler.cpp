@@ -7,24 +7,49 @@
 #endif
 
 #include "debug.h"
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/engine.h>
 
 void CrashHandler::Handler(int signum)
 {
 #if defined(_WIN32) || defined(_WIN64)
-	Debug::PrintError("\n!!! Crash detected !!!", true);
+	// Create crash dump file
+	std::shared_ptr<File> file = FileSystem::MakeFile("crash_dump.txt");
+	bool isFileDumpOpened = file->Open(FileMode::WriteCreateFile);
+
+	const std::string crashDetectedMessage = "!!! Crash detected !!!";
+
+	// Print in console and file
+	Debug::PrintError("\n" + crashDetectedMessage, true);
+	if (isFileDumpOpened)
+		file->Write(crashDetectedMessage + "\n");
+
+	std::string errorTypeMessage;
 	switch (signum)
 	{
 	case SIGSEGV:
-		Debug::Print("Segmentation fault", true);
+		errorTypeMessage = "Segmentation fault";
 		break;
 	case SIGFPE:
-		Debug::Print("Floating point exception", true);
+		errorTypeMessage = "Floating point exception";
 		break;
 	default:
-		Debug::Print("Other type of exception: " + std::to_string(signum), true);
+		errorTypeMessage = "Other type of exception: " + std::to_string(signum);
 		break;
 	}
-	Debug::Print("\n------ Stack trace ------\n", true);
+
+	// Print in console and file
+	Debug::PrintError(errorTypeMessage, true);
+	if (isFileDumpOpened)
+		file->Write(errorTypeMessage + "\n");
+
+	const std::string stackTraceMessage = "\n------ Stack Trace ------\n";
+
+	// Print in console and file
+	Debug::PrintError(stackTraceMessage, true);
+	if (isFileDumpOpened)
+		file->Write(stackTraceMessage + "\n");
 
 	// Linux code
 	/*const int maxStackTraceSize = 10;
@@ -61,6 +86,14 @@ void CrashHandler::Handler(int signum)
 
 		bool needPrintStack = false;
 		int functionCount = 0;
+
+		const std::string lineNumberMessage = "Line numbers may not be accurate";
+
+		// Print in console and file
+		Debug::Print(lineNumberMessage);
+		if(isFileDumpOpened)
+			file->Write(lineNumberMessage + "\n");
+
 		for (unsigned short i = 0; i < frames; i++)
 		{
 			if (line)
@@ -81,23 +114,38 @@ void CrashHandler::Handler(int signum)
 			// Print function name and the location
 			if (needPrintStack)
 			{
+				std::string message;
 				if (line)
 				{
 					std::string fileName = line->FileName;
-					Debug::Print(std::to_string(functionCount) + ": " + name + "() in " + fileName, true);
-					//Debug::Print(std::to_string(functionCount) + ": " + name + " " + fileName + " at line " + std::to_string(line->LineNumber)); // LineNumber is not very accurate
+					//message = std::to_string(functionCount) + ": " + name + "() in " + fileName;
+					message = std::to_string(functionCount) + ": " + name + " " + fileName + " at line " + std::to_string(line->LineNumber-1); // LineNumber is not very accurate
 				}
 				else 
 				{
-					Debug::Print(std::to_string(functionCount) + ": " + name + "()", true);
+
+					message = std::to_string(functionCount) + ": " + name + "()";
 				}
+
+				// Print in console and file
+				Debug::Print(message);
+				if (isFileDumpOpened)
+					file->Write(message + "\n");
+
 				functionCount++;
 			}
+		}
+		if (isFileDumpOpened) 
+		{
+			file->Write("\n\n\n");
+			file->Close();
 		}
 		free(line);
 		free(symbol);
 	}
-	exit(signum); // Ou d'autres actions à effectuer pour gérer l'erreur
+	// Raise SIGBREAK signal to correctly shutdown the engine
+	raise(SIGBREAK);
+	exit(signum);
 #endif
 }
 
@@ -105,7 +153,7 @@ void CrashHandler::Init()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	signal(SIGSEGV, Handler); // SIGSEGV (segmentation fault)
-	signal(SIGFPE, Handler);  // SIGFPE (erreurs de calcul en virgule flottante)
+	signal(SIGFPE, Handler);  // SIGFPE (floating point number error)
 #endif
 }
 
