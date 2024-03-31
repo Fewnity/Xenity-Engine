@@ -521,10 +521,12 @@ void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<
 	DrawMesh(subMesh, material, material->texture, renderSettings, matrix, forUI);
 }
 
-void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
 	/*if (!usedCamera.lock())
 		return;*/
+	if (texture == nullptr)
+		texture = AssetManager::defaultTexture;
 
 	drawMeshBenchmark->Start();
 

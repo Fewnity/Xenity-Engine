@@ -85,7 +85,7 @@ public:
 	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 	
 	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
-	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 
 	static void SetDrawOrderListAsDirty();
 
