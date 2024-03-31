@@ -103,7 +103,7 @@ bool FileDefault::Open(FileMode fileMode)
 	bool isOpen = false;
 	std::ios_base::openmode params = std::fstream::binary;
 	if (fileMode == FileMode::WriteOnly || fileMode == FileMode::WriteCreateFile)
-		params |= std::fstream::out;
+		params |= std::fstream::app;
 	else
 		params |= std::fstream::in;
 
