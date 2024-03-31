@@ -99,6 +99,11 @@ Vector3 Transform::GetDown() const
 
 void Transform::SetPosition(const Vector3& value)
 {
+	// Security check
+	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
+		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+		return;
+
 	if (value != position)
 	{
 		isTransformationMatrixDirty = true;
@@ -123,6 +128,11 @@ void Transform::SetPosition(const Vector3& value)
 
 void Transform::SetLocalPosition(const Vector3& value)
 {
+	// Security check
+	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
+		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+		return;
+
 	if (gameObject.lock()->parent.expired())
 	{
 		SetPosition(value);
@@ -142,6 +152,12 @@ void Transform::SetLocalPosition(const Vector3& value)
 
 void Transform::SetRotation(const Vector3& value)
 {
+	// Security check
+	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) || 
+		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+		return;
+
+	// Do not update the matrix if it's the same value
 	if (value != rotation)
 		isTransformationMatrixDirty = true;
 	else
@@ -163,6 +179,11 @@ void Transform::SetRotation(const Vector3& value)
 
 void Transform::SetLocalRotation(const Vector3& value)
 {
+	// Security check
+	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
+		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+		return;
+
 	if (gameObject.lock()->parent.expired())
 	{
 		SetRotation(value);
@@ -182,6 +203,11 @@ void Transform::SetLocalRotation(const Vector3& value)
 
 void Transform::SetLocalScale(const Vector3& value)
 {
+	// Security check
+	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
+		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+		return;
+
 	isTransformationMatrixDirty = true;
 
 	/*if (value != localScale)
