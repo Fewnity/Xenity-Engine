@@ -149,6 +149,7 @@ void Graphics::Draw()
 	}*/
 
 	Engine::GetRenderer().NewFrame();
+	usedCamera.reset();
 	currentMaterial = nullptr;
 
 	const size_t cameraCount = cameras.size();

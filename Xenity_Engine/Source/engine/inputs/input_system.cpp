@@ -210,10 +210,12 @@ void InputSystem::Read(const SDL_Event& event)
 			}
 			else
 			{
+				// Use window instead?
 				w = Graphics::usedCamera->GetWidth();
 				h = Graphics::usedCamera->GetHeight();
 			}
 #else
+			// Use window instead?
 			w = Graphics::usedCamera->GetWidth();
 			h = Graphics::usedCamera->GetHeight();
 #endif

@@ -15,7 +15,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Show submesh count somewhere
-Use white texture if no texture on material
 Fix variables order
 Text scale
 Fix rotation tool texture uv
@@ -23,7 +22,6 @@ Fix crash if rotation values are infinite
 Fix duplication crash with missing script
 Multiple gameobject selection
 Clean folders
-Create crash dump file
 Remove engine location settings
 Rework the documentation
 Clean code
@@ -35,6 +33,8 @@ Fix sprites color with shaders
 New Input system
 
 --- Done
+Use white texture if no texture on material
+Create crash dump file
 New material System
 Fix error when loading mesh
 Add try catch to all json parse
