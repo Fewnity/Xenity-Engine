@@ -74,6 +74,8 @@ private:
 	void OnEnabled() override;
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 	void DrawCommand(const RenderCommand& renderCommand) override;
+
+	float fontSize = 1;
 	std::shared_ptr<Font> font;
 	std::string text;
 	Color color = Color();

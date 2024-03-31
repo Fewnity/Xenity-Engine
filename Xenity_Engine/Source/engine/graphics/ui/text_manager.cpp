@@ -28,7 +28,7 @@ void TextManager::Init()
 	textBenchmark = std::make_shared<ProfilerBenchmark>("Text", "Text");
 }
 
-std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color &color, const std::shared_ptr<Font> &font)
+std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color &color, const std::shared_ptr<Font> &font, float scale)
 {
 	if (!font || !font->fontAtlas)
 		return nullptr;
@@ -53,20 +53,20 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 	float y = 0;
 	int line = 0;
 	if (horizontalAlignment == HorizontalAlignment::Left)
-		x = -textInfo->linesInfo[line].lenght;
+		x = -textInfo->linesInfo[line].lenght * scale;
 	else if (horizontalAlignment == HorizontalAlignment::Center)
-		x = -textInfo->linesInfo[line].lenght * 0.5f;
+		x = -textInfo->linesInfo[line].lenght * 0.5f * scale;
 
-	y = textInfo->linesInfo[line].y1 * 0.25f;
-	y += -textInfo->maxLineHeight;
+	y = textInfo->linesInfo[line].y1 * 0.25f * scale;
+	y += -textInfo->maxLineHeight * scale;
 
 	if (verticalAlignment == VerticalAlignment::Center)
 	{
-		y += totalY * 0.5f;
+		y += totalY * 0.5f * scale;
 	}
 	else if (verticalAlignment == VerticalAlignment::Top)
 	{
-		y += totalY;
+		y += totalY * scale;
 	}
 
 	// Create empty mesh
@@ -93,13 +93,13 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *t
 			else
 				x = 0;
 
-			y += -textInfo->maxLineHeight;
+			y += -textInfo->maxLineHeight * scale;
 		}
 		else
 		{
-			AddCharToMesh(mesh, ch, x, y, drawnCharIndex);
+			AddCharToMesh(mesh, ch, x, y, drawnCharIndex, scale);
 			drawnCharIndex++;
-			x += ch->rightAdvance;
+			x += ch->rightAdvance * scale;
 		}
 	}
 
@@ -146,16 +146,16 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 	}
 }
 
-void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character *ch, float x, float y, int letterIndex)
+void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character *ch, float x, float y, int letterIndex, float scale)
 {
 	// int indice = letterIndex * 4;
 	const int indice = letterIndex * 6;
 	const int indiceIndex = letterIndex * 6;
 
-	const float w = ch->rightSize.x;
-	const float h = ch->rightSize.y;
+	const float w = ch->rightSize.x * scale;
+	const float h = ch->rightSize.y * scale;
 
-	const float fixedY = y - (ch->rightSize.y - ch->rightBearing.y);
+	const float fixedY = (y - (ch->rightSize.y - ch->rightBearing.y) * scale);
 
 	// mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
 	// mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);

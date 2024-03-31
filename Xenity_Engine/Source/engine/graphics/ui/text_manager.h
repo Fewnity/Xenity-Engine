@@ -106,7 +106,7 @@ public:
 	* @param color Color
 	* @param font Font
 	*/
-	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font);
+	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font, float scale);
 
 private:
 
@@ -119,7 +119,7 @@ private:
 	* @param y Char Y position
 	* @param letterIndex Letter index in the string
 	*/
-	static void AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex);
+	static void AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex, float scale);
 
 	static std::vector<std::shared_ptr<MeshData>> meshes;
 };

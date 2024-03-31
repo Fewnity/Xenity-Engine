@@ -28,6 +28,7 @@ ReflectiveData TextRenderer::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, material, "material", true);
 	Reflective::AddVariable(reflectedVariables, horizontalAlignment, "horizontalAlignment", true);
 	Reflective::AddVariable(reflectedVariables, verticalAlignment, "verticalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, fontSize, "fontSize", true);
 	return reflectedVariables;
 }
 
@@ -111,7 +112,7 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 		if (mesh)
 			mesh.reset();
 		textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);
-		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font);
+		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font, fontSize);
 		isTextInfoDirty = false;
 	}
 	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
