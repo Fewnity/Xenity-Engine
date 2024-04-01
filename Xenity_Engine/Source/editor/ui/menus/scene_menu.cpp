@@ -570,6 +570,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 		if (side == Side::Side_None)
 		{
 			Editor::SetSelectedGameObject(newGameObjectSelected);
+			Editor::SetSelectedFileReference(nullptr);
 		}
 	}
 }
@@ -608,6 +609,18 @@ void SceneMenu::Switch2DMode(bool is2D)
 		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
 		gridAxis = 0;
 	}
+}
+
+void SceneMenu::FocusSelectedObject()
+{
+	if (!Editor::GetSelectedGameObject())
+		return;
+		
+	std::shared_ptr<Transform> cameraTransform = weakCamera.lock()->GetTransform();
+	std::shared_ptr<Transform> selectedObjectTransform = Editor::GetSelectedGameObject()->GetTransform();
+	const Vector3 dir = (cameraTransform->GetPosition() - selectedObjectTransform->GetPosition()).Normalized();
+	cameraTransform->SetPosition(selectedObjectTransform->GetPosition() + dir * 2);
+	cameraTransform->SetRotation(Vector3::LookAt(cameraTransform->GetPosition(), selectedObjectTransform->GetPosition()));
 }
 
 void SceneMenu::Draw()
@@ -669,12 +682,7 @@ void SceneMenu::Draw()
 				}
 				else if (InputSystem::GetKeyDown(KeyCode::F))
 				{
-					if (Editor::GetSelectedGameObject() != nullptr)
-					{
-						const Vector3 dir = (camera->GetTransform()->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition()).Normalized();
-						camera->GetTransform()->SetPosition(Editor::GetSelectedGameObject()->GetTransform()->GetPosition() + dir * 2);
-						camera->GetTransform()->SetRotation(Vector3::LookAt(camera->GetTransform()->GetPosition(), Editor::GetSelectedGameObject()->GetTransform()->GetPosition()));
-					}
+					FocusSelectedObject();
 				}
 
 				ProcessTool(camera);

@@ -10,6 +10,7 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/debug.h>
+#include <editor/ui/menus/scene_menu.h>
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {
@@ -108,16 +109,30 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 			if (ImGui::IsItemHovered())
 			{
 				state = 1;
-				if (ImGui::IsMouseReleased(0) && !ImGui::IsDragDropActive())
+				if (!ImGui::IsDragDropActive())
 				{
-					Editor::SetSelectedGameObject(child);
-					Editor::SetSelectedFileReference(nullptr);
-					state = 2;
-				}
-				else if (ImGui::IsMouseReleased(1) && !ImGui::IsDragDropActive())
-				{
-					rightClickedElement = child;
-					state = 3;
+					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					{
+						Editor::SetSelectedGameObject(child);
+						Editor::SetSelectedFileReference(nullptr);
+						state = 2;
+						std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
+						for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
+						{
+							sceneMenu->FocusSelectedObject();
+						}
+					}
+					else if (ImGui::IsMouseReleased(0))
+					{
+						Editor::SetSelectedGameObject(child);
+						Editor::SetSelectedFileReference(nullptr);
+						state = 2;
+					}
+					else if (ImGui::IsMouseReleased(1))
+					{
+						rightClickedElement = child;
+						state = 3;
+					}
 				}
 			}
 		}

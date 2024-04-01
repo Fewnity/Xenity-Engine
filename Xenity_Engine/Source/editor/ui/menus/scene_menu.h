@@ -23,6 +23,8 @@ class SceneMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
+	void FocusSelectedObject();
+
 	bool startRotatingCamera = false;
 	ToolMode toolMode = ToolMode::Tool_Move;
 	std::weak_ptr<Camera> weakCamera;
