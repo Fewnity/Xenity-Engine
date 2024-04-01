@@ -228,7 +228,8 @@ public:
 	TypeSpawner* typeSpawner = nullptr;
 };
 
-typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;
+//typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;
+typedef std::vector<std::pair<std::string, ReflectiveEntry>> ReflectiveData;
 
 class API Reflective
 {
@@ -289,7 +290,14 @@ public:
 	{
 		const uint64_t type = typeid(T).hash_code();
 		Reflective::AddReflectionVariable(map, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
-		map[variableName].typeSpawner = new TypeSpawnerImpl<T>();
+		for (auto& otherEntry : map)
+		{
+			if (otherEntry.first == variableName) 
+			{
+				otherEntry.second.typeSpawner = new TypeSpawnerImpl<T>();
+				break;
+			}
+		}
 	}
 
 	template<typename T>

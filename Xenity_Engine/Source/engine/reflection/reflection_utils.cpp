@@ -156,15 +156,19 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 		for (const auto& kv : json["Values"].items())
 		{
 			// Check if the data list contains the variable name found in the json
-			if (dataList.contains(kv.key()))
+
+			for (auto& otherEntry : dataList)
 			{
-				const ReflectiveEntry entry = dataList.at(kv.key());
-				const VariableReference& variableRef = entry.variable.value();
-				const auto& kvValue = kv.value();
-				std::visit([&kvValue, &entry](const auto& value)
-					{
-						JsonToVariable(kvValue, &value, entry);
-					}, variableRef);
+				if (otherEntry.first == kv.key())
+				{
+					const VariableReference& variableRef = otherEntry.second.variable.value();
+					const auto& kvValue = kv.value();
+					std::visit([&kvValue, &otherEntry](const auto& value)
+						{
+							JsonToVariable(kvValue, &value, otherEntry.second);
+						}, variableRef);
+					break;
+				}
 			}
 		}
 	}
@@ -300,7 +304,7 @@ json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 	for (const auto& kv : dataList)
 	{
 		const std::string key = kv.first;
-		const VariableReference& variableRef = dataList.at(kv.first).variable.value();
+		const VariableReference& variableRef = kv.second.variable.value();
 
 		std::visit([&key, &json](const auto& value)
 			{

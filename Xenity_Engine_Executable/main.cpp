@@ -15,7 +15,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Show submesh count somewhere
-Fix variables order
 Fix duplication crash with missing script
 Multiple gameobject selection
 Clean folders
@@ -30,6 +29,7 @@ Fix sprites color with shaders
 New Input system
 
 --- Done
+Fix variables order
 Fix crash if rotation values are infinite
 Text scale
 Fix rotation tool texture uv

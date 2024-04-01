@@ -8,5 +8,6 @@ void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableRefere
 	entry.isPublic = isPublic;
 	entry.typeId = id;
 	entry.isEnum = isEnum;
-	map[variableName] = entry;
+	
+	map.push_back(std::make_pair(variableName, entry));
 }
