@@ -80,21 +80,8 @@ public:
 
 	static std::vector<std::string> dragdropEntries;
 
-	/**
-	* Add a component to the selected GameObject
-	*/
-	template <typename T>
-	static std::shared_ptr<T> AddComponentToSelection()
-	{
-		if (auto selectedGO = selectedGameObject.lock())
-		{
-			return selectedGO->AddComponent<T>();
-		}
-		else
-		{
-			return nullptr;
-		}
-	}
+	static bool IsParentOf(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& child);
+	static std::vector<std::shared_ptr<GameObject>> RemoveChildren(const std::vector<std::shared_ptr<GameObject>> go);
 
 	template <typename T>
 	static std::shared_ptr<T> GetMenu() 
@@ -186,7 +173,12 @@ public:
 	* @param go New selected GameObject
 	*/
 	static void SetSelectedGameObject(const std::shared_ptr<GameObject>& go);
-	static std::shared_ptr<GameObject> GetSelectedGameObject();
+	static void ClearSelectedGameObjects();
+	static void AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToAdd);
+	static void RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToRemove);
+	static bool IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObjectToCheck);
+
+	static std::vector<std::weak_ptr<GameObject>> GetSelectedGameObjects();
 
 	static std::shared_ptr <MeshData> rightArrow;
 	static std::shared_ptr <MeshData> upArrow;
@@ -214,7 +206,7 @@ public:
 private:
 	static int menuCount;
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
-	static std::weak_ptr<GameObject> selectedGameObject;
+	static std::vector<std::weak_ptr<GameObject>> selectedGameObjects;
 	static std::shared_ptr<FileReference> selectedFileReference;
 
 	static void CreateMenus();

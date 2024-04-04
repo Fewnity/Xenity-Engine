@@ -33,17 +33,21 @@ void InspectorMenu::Draw()
 	{
 		OnStartDrawing();
 
-		std::shared_ptr <GameObject> selectedGameObject = Editor::GetSelectedGameObject();
-		std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
+		if (Editor::GetSelectedGameObjects().size() == 1)
+		{
+			std::shared_ptr <GameObject> selectedGameObject = Editor::GetSelectedGameObjects()[0].lock();
+			std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
+			
+			if (selectedFileReference)
+			{
+				DrawFileInfo(selectedFileReference);
+			}
+			else if (selectedGameObject)
+			{
+				DrawGameObjectInfo(selectedGameObject);
+			}
+		}
 
-		if (selectedFileReference)
-		{
-			DrawFileInfo(selectedFileReference);
-		}
-		else if (selectedGameObject)
-		{
-			DrawGameObjectInfo(selectedGameObject);
-		}
 
 		DrawFilePreview();
 
@@ -75,7 +79,7 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
 	RightClickMenuState rightClickState = inspectorRightClickMenu.Check(false);
-	if (rightClickState != RightClickMenuState::Closed) 
+	if (rightClickState != RightClickMenuState::Closed)
 	{
 		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
 	}
@@ -300,7 +304,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 				CommandManager::AddCommand(command);
 				command->Execute();
 			}
-			if (forceItemUpdate) 
+			if (forceItemUpdate)
 			{
 				reflection->OnReflectionUpdated();
 				forceItemUpdate = false;
@@ -377,7 +381,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		{
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
-				ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject());
+				ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObjects()[0].lock());
 				showAddComponentMenu = false;
 			}
 		}
@@ -483,7 +487,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 						CommandManager::AddCommand(command);
 						command->Execute();
 					}
-					else 
+					else
 					{
 						comp->OnReflectionUpdated();
 					}

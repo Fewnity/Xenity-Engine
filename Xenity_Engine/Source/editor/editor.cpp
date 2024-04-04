@@ -60,7 +60,7 @@ std::weak_ptr <Menu> Editor::lastFocusedGameMenu;
 
 std::shared_ptr <MainBarMenu> Editor::mainBar = nullptr;
 
-std::weak_ptr<GameObject> Editor::selectedGameObject;
+std::vector <std::weak_ptr<GameObject>> Editor::selectedGameObjects;
 std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
 
 std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
@@ -136,12 +136,17 @@ void Editor::Update()
 
 		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::D)))
 		{
-			if (selectedGameObject.lock()) 
+			std::vector <std::shared_ptr<GameObject>> selectedGameObjectsToCheck;
+			for (auto weakGo : GetSelectedGameObjects())
 			{
-				std::shared_ptr<GameObject> gameObjectToDuplicate = selectedGameObject.lock();
-			
+				selectedGameObjectsToCheck.push_back(weakGo.lock());
+			}
+
+			std::vector<std::shared_ptr<GameObject>> gameObjectsToDuplicate = RemoveChildren(selectedGameObjectsToCheck);
+			for (auto gameObjectToDuplicate : gameObjectsToDuplicate)
+			{
 				std::shared_ptr<GameObject> newGameObject = Instantiate(gameObjectToDuplicate);
-				if (gameObjectToDuplicate->parent.lock() != nullptr) 
+				if (gameObjectToDuplicate->parent.lock() != nullptr)
 				{
 					newGameObject->SetParent(gameObjectToDuplicate->parent.lock());
 				}
@@ -176,8 +181,10 @@ void Editor::Update()
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
 			if ((sceneMenu && sceneMenu->IsFocused()) || (hierarchy && hierarchy->IsFocused()))
 			{
-				if (selectedGameObject.lock())
-					Destroy(selectedGameObject.lock());
+				for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+				{
+					Destroy(currentGameObject.lock());
+				}
 			}
 		}
 
@@ -211,6 +218,22 @@ void Editor::Update()
 				SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 			}
 		}
+
+		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::O)))
+		{
+			std::vector <std::shared_ptr<GameObject>> goToCheck;
+			for (auto weakGo : GetSelectedGameObjects())
+			{
+				goToCheck.push_back(weakGo.lock());
+
+			}
+			std::vector<std::shared_ptr<GameObject>> go = RemoveChildren(goToCheck);
+			for (auto g : go)
+			{
+				Debug::Print(g->name);
+			}
+		}
+
 	}
 }
 
@@ -279,7 +302,7 @@ void Editor::Draw()
 
 void Editor::ApplyEditorStyle()
 {
-	//Default colors
+	// Default colors
 	// BG 15 15 15
 	// Input 29 47 73
 	// tab 31 57 88
@@ -346,21 +369,21 @@ void Editor::RemoveEditorStyle()
 
 void Editor::CreateEmpty()
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::weak_ptr<GameObject>(), 0);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
 	CommandManager::AddCommand(command);
 	command->Execute();
 }
 
 void Editor::CreateEmptyChild()
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObject, 1);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 1);
 	CommandManager::AddCommand(command);
 	command->Execute();
 }
 
 void Editor::CreateEmptyParent()
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObject, 2);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 2);
 	CommandManager::AddCommand(command);
 	command->Execute();
 }
@@ -369,7 +392,7 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 {
 	selectedFileReference = fileReference;
 #if  defined(EDITOR)
-	auto inspector = Editor::GetMenu<InspectorMenu>();
+	std::shared_ptr<InspectorMenu> inspector = Editor::GetMenu<InspectorMenu>();
 	if (inspector)
 		inspector->loadedPreview = nullptr;
 #endif
@@ -382,12 +405,81 @@ std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
 
 void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelected)
 {
-	selectedGameObject = newSelected;
+	ClearSelectedGameObjects();
+
+	if (newSelected == nullptr)
+		return;
+
+	newSelected->isSelected = true;
+	selectedGameObjects.push_back(newSelected);
 }
 
-std::shared_ptr<GameObject> Editor::GetSelectedGameObject()
+void Editor::ClearSelectedGameObjects()
 {
-	return selectedGameObject.lock();
+	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	{
+		if(currentGameObject.lock())
+			currentGameObject.lock()->isSelected = false;
+	}
+	selectedGameObjects.clear();
+}
+
+void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToAdd)
+{
+	if (gameObjectToAdd == nullptr)
+		return;
+
+	bool found = false;
+	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	{
+		if (currentGameObject.lock() == gameObjectToAdd) 
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if (!found) 
+	{
+		gameObjectToAdd->isSelected = true;
+		selectedGameObjects.push_back(gameObjectToAdd);
+	}
+}
+
+void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToRemove)
+{
+	if (gameObjectToRemove == nullptr)
+		return;
+
+	const int goCount = selectedGameObjects.size();
+	for (int i = 0; i < goCount; i++)
+	{
+		if (selectedGameObjects[i].lock() == gameObjectToRemove)
+		{
+			gameObjectToRemove->isSelected = false;
+			selectedGameObjects.erase(selectedGameObjects.begin() + i);
+			break;
+		}
+	}
+}
+
+bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObjectToCheck)
+{
+	bool found = false;
+	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	{
+		if (currentGameObject.lock() == gameObjectToCheck)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::vector<std::weak_ptr<GameObject>> Editor::GetSelectedGameObjects()
+{
+	return selectedGameObjects;
 }
 
 void Editor::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
@@ -633,6 +725,74 @@ void Editor::OnDragAndDropFileFinished()
 
 	dragdropEntries.clear();
 	ProjectManager::RefreshProjectDirectory();
+}
+
+bool Editor::IsParentOf(/*const std::shared_ptr<GameObject>& baseParent, */ const std::shared_ptr<GameObject>&parent, const std::shared_ptr<GameObject>& child)
+{
+	if (parent == nullptr || child == nullptr)
+		return false;
+
+	std::shared_ptr<GameObject> currentGameObject = child;
+	for (std::weak_ptr<GameObject> curChild : parent->children)
+	{
+		if (auto curChildLock = curChild.lock()) 
+		{
+			if (curChildLock == child) 
+			{
+				return true;
+			}
+			else 
+			{
+				if (IsParentOf(curChildLock, child)) 
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vector<std::shared_ptr<GameObject>> go)
+{
+	std::vector<std::shared_ptr<GameObject>> newList = go;
+
+	int goCount = go.size();
+	for (int i = 0; i < goCount; i++)
+	{
+		std::shared_ptr<GameObject> currentGameObject = newList[i];
+		if (currentGameObject == nullptr) 
+		{
+			goCount--;
+			newList.erase(newList.begin() + i);
+			i--;
+		}
+	}
+
+	for (int i = 0; i < goCount; i++)
+	{
+		std::shared_ptr<GameObject> currentGameObject = newList[i];
+		
+		for (int j = 0; j < goCount; j++)
+		{
+			std::shared_ptr<GameObject> currentGameObject2 = newList[j];
+			if (currentGameObject == currentGameObject2)
+				continue;
+
+			if (IsParentOf(currentGameObject, currentGameObject2)) 
+			{
+				goCount--;
+				newList.erase(newList.begin() + j);
+				if (j <= i)
+					i--;
+				j--;
+				continue;
+			}
+		}
+	}
+
+	return newList;
 }
 
 void Editor::CreateMenus()

@@ -10,6 +10,7 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/debug.h>
+#include <engine/inputs/input_system.h>
 #include <editor/ui/menus/scene_menu.h>
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
@@ -59,7 +60,8 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 	{
 		const int childCount = child->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-		if (Editor::GetSelectedGameObject() == child)
+
+		if (child->isSelected)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
@@ -124,6 +126,9 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 					}
 					else if (ImGui::IsMouseReleased(0))
 					{
+						if(InputSystem::GetKey(KeyCode::LEFT_CONTROL))
+							Editor::AddSelectedGameObject(child);
+						else
 						Editor::SetSelectedGameObject(child);
 						Editor::SetSelectedFileReference(nullptr);
 						state = 2;

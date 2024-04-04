@@ -383,7 +383,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 	if (toolMode != ToolMode::Tool_MoveCamera)
 	{
-		std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject();
+		std::shared_ptr<GameObject> selectedGO = nullptr;
+		if(Editor::GetSelectedGameObjects().size() == 1)
+			selectedGO = Editor::GetSelectedGameObjects()[0].lock();
+
 		if (selectedGO)
 		{
 			std::shared_ptr<Transform> selectedGoTransform = selectedGO->GetTransform();
@@ -424,7 +427,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				Vector3 intersectionX = Vector3(0);
 				Vector3 intersectionY = Vector3(0);
 				Vector3 intersectionZ = Vector3(0);
-				Vector3 rayStartPosition = cameraTransform->GetPosition() - Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+				Vector3 rayStartPosition = cameraTransform->GetPosition() - selectedGoTransform->GetPosition();
 				if (mode2D)
 					rayStartPosition += mouseWorldDir;
 
@@ -569,7 +572,14 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	{
 		if (side == Side::Side_None)
 		{
-			Editor::SetSelectedGameObject(newGameObjectSelected);
+			if (InputSystem::GetKey(KeyCode::LEFT_CONTROL) && newGameObjectSelected)
+			{
+				Editor::AddSelectedGameObject(newGameObjectSelected);
+			}
+			else
+			{
+				Editor::SetSelectedGameObject(newGameObjectSelected);
+			}
 			Editor::SetSelectedFileReference(nullptr);
 		}
 	}
@@ -613,14 +623,17 @@ void SceneMenu::Switch2DMode(bool is2D)
 
 void SceneMenu::FocusSelectedObject()
 {
-	if (!Editor::GetSelectedGameObject())
+	if (Editor::GetSelectedGameObjects().size() != 1)
 		return;
-		
-	std::shared_ptr<Transform> cameraTransform = weakCamera.lock()->GetTransform();
-	std::shared_ptr<Transform> selectedObjectTransform = Editor::GetSelectedGameObject()->GetTransform();
-	const Vector3 dir = (cameraTransform->GetPosition() - selectedObjectTransform->GetPosition()).Normalized();
-	cameraTransform->SetPosition(selectedObjectTransform->GetPosition() + dir * 2);
-	cameraTransform->SetRotation(Vector3::LookAt(cameraTransform->GetPosition(), selectedObjectTransform->GetPosition()));
+
+	if (auto selectedGameObject = Editor::GetSelectedGameObjects()[0].lock())
+	{
+		std::shared_ptr<Transform> cameraTransform = weakCamera.lock()->GetTransform();
+		std::shared_ptr<Transform> selectedObjectTransform = selectedGameObject->GetTransform();
+		const Vector3 dir = (cameraTransform->GetPosition() - selectedObjectTransform->GetPosition()).Normalized();
+		cameraTransform->SetPosition(selectedObjectTransform->GetPosition() + dir * 2);
+		cameraTransform->SetRotation(Vector3::LookAt(cameraTransform->GetPosition(), selectedObjectTransform->GetPosition()));
+	}
 }
 
 void SceneMenu::Draw()
@@ -675,9 +688,12 @@ void SceneMenu::Draw()
 			{
 				if (InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::F))
 				{
-					if (Editor::GetSelectedGameObject() != nullptr)
+					if (Editor::GetSelectedGameObjects().size() == 1)
 					{
-						Editor::GetSelectedGameObject()->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + camera->GetTransform()->GetForward() * 2);
+						if (auto selectedGameObject = Editor::GetSelectedGameObjects()[0].lock())
+						{
+							selectedGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + camera->GetTransform()->GetForward() * 2);
+						}
 					}
 				}
 				else if (InputSystem::GetKeyDown(KeyCode::F))

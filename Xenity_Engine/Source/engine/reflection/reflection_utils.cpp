@@ -303,7 +303,7 @@ json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 	json json;
 	for (const auto& kv : dataList)
 	{
-		const std::string key = kv.first;
+		const std::string& key = kv.first;
 		const VariableReference& variableRef = kv.second.variable.value();
 
 		std::visit([&key, &json](const auto& value)

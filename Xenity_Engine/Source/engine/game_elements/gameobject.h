@@ -73,6 +73,10 @@ public:
 
 	std::weak_ptr<GameObject> parent;
 
+#if defined(EDITOR)
+	bool isSelected = false;
+#endif
+
 	/**
 	* Add a child to the GameObject
 	* @param gameObject Child to add

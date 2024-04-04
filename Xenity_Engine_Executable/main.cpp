@@ -90,6 +90,10 @@ Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add  input state : Begin, Hold (and End?)
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
+Check memory leak when removing an item from vector in the editorUI
+multiple directional light not working properly
+Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
+Use enum is InspectorCreateGameObjectCommand instead of int
 */
 
 #undef main

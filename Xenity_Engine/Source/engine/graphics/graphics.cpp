@@ -302,7 +302,7 @@ void Graphics::Draw()
 						{
 							component->OnDrawGizmos();
 
-							if (Editor::GetSelectedGameObject() == component->GetGameObject())
+							if (component->GetGameObject()->isSelected)
 								component->OnDrawGizmosSelected();
 						}
 					}
@@ -607,8 +607,13 @@ void Graphics::CheckLods()
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
-	if (const std::shared_ptr<GameObject> selectedGO = Editor::GetSelectedGameObject())
+	std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
+	for (std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
 	{
+		std::shared_ptr<GameObject> selectedGO = selectedGOWeak.lock();
+		if (!selectedGO)
+			continue;
+
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
 		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
@@ -654,25 +659,6 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
-	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
-
-	/*glEnable(GL_DEPTH_TEST);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_LIGHTING);
-		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);*/
-
 	float distance;
 	if (gridAxis == 0)
 		distance = abs(cameraPosition.y);
@@ -681,6 +667,9 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 	else //if (gridAxis == 2)
 		distance = abs(cameraPosition.z);
 
+	if (distance < 0.7f)
+		distance = 0.7f;
+
 	// Get the coef for grid lineCount by using the camera distance
 	int coef = 1;
 	while (coef < distance / 10)
@@ -688,11 +677,10 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 		coef *= 10;
 	}
 
-	if (distance < 0.7f)
-		distance = 0.7f;
-
 	const float lineLenght = 20 * distance;
 	const float lineCount = lineLenght / coef;
+	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.useBlend = true;
 	renderSettings.useDepth = true;
@@ -747,11 +735,15 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
 	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 	// Draw tool
-	if (Editor::GetSelectedGameObject() && sceneMenu)
+	if (Editor::GetSelectedGameObjects().size() == 1 && sceneMenu)
 	{
-		const Vector3& selectedGoPos = Editor::GetSelectedGameObject()->GetTransform()->GetPosition();
+		std::shared_ptr<GameObject>selectedGo = Editor::GetSelectedGameObjects()[0].lock();
+		if (!selectedGo)
+			return;
 
-		Vector3 selectedGoRot = Editor::GetSelectedGameObject()->GetTransform()->GetRotation();
+		const Vector3& selectedGoPos = selectedGo->GetTransform()->GetPosition();
+
+		Vector3 selectedGoRot = selectedGo->GetTransform()->GetRotation();
 		if (Editor::isToolLocalMode)
 			selectedGoRot = Vector3(0);
 

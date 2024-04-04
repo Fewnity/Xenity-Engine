@@ -53,20 +53,27 @@ void MainBarMenu::Init()
 template<typename T>
 inline void MainBarMenu::AddComponentToSelectedGameObject()
 {
-	auto command = std::make_shared<InspectorAddComponentCommand<T>>(Editor::GetSelectedGameObject());
-	CommandManager::AddCommand(command);
-	command->Execute();
+	std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
+	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	{
+		if(!currentGameObject.lock())
+			continue;
+
+		auto command = std::make_shared<InspectorAddComponentCommand<T>>(currentGameObject);
+		CommandManager::AddCommand(command);
+		command->Execute();
+	}
 }
 
 template <typename T>
 std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::weak_ptr<GameObject>(), 0);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
 	CommandManager::AddCommand(command);
 	command->Execute();
-	command->createdGameObject.lock()->name = Editor::GetIncrementedGameObjectName(gameObjectName);
+	command->createdGameObjects[0].lock()->name = Editor::GetIncrementedGameObjectName(gameObjectName);
 
-	auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObject.lock());
+	auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObjects[0].lock());
 	CommandManager::AddCommand(command2);
 	command2->Execute();
 
@@ -85,7 +92,9 @@ bool MainBarMenu::DrawImageButton(const bool enabled, const std::shared_ptr<Text
 
 void MainBarMenu::Draw()
 {
-	const bool hasSelectedGameObject = Editor::GetSelectedGameObject() != nullptr;
+	const int selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
+	const bool hasSelectedGameObject = selectedGameObjectCount != 0;
+	const bool hasOneSelectedGameObject = selectedGameObjectCount == 1;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
@@ -163,7 +172,7 @@ void MainBarMenu::Draw()
 	}
 	if (ImGui::BeginMenu("GameObject")) // ----------------------------------- Draw GameObject menu
 	{
-		if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasSelectedGameObject))
+		if (ImGui::MenuItem("Create Empty Parent", nullptr, nullptr, hasOneSelectedGameObject))
 		{
 			Editor::CreateEmptyParent();
 		}
@@ -344,7 +353,12 @@ void MainBarMenu::Draw()
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
 				{
-					ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObject());
+					std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
+					for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+					{
+						if(currentGameObject.lock())
+							ClassRegistry::AddComponentFromName(componentNames[i], currentGameObject.lock());
+					}
 				}
 			}
 			ImGui::EndMenu();

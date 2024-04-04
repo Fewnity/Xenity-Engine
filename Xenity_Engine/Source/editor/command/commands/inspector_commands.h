@@ -20,7 +20,7 @@
 #include <engine/component.h>
 #include <engine/tools/gameplay_utility.h>
 
-//----------------------------------------------------------------------------
+ //----------------------------------------------------------------------------
 
 template<typename U, typename T>
 class InspectorChangeValueCommand : public Command
@@ -279,19 +279,19 @@ class InspectorCreateGameObjectCommand : public Command
 {
 public:
 	InspectorCreateGameObjectCommand() = delete;
-	InspectorCreateGameObjectCommand(std::weak_ptr<GameObject> target, int mode);
+	InspectorCreateGameObjectCommand(std::vector<std::weak_ptr<GameObject>> targets, int mode);
 	void Execute() override;
 	void Undo() override;
-	std::weak_ptr<GameObject> createdGameObject;
+	std::vector<std::weak_ptr<GameObject>> createdGameObjects;
 private:
-	std::weak_ptr<GameObject> target;
-	std::weak_ptr<GameObject> oldParent;
+	std::vector<std::weak_ptr<GameObject>> targets;
+	std::vector<std::weak_ptr<GameObject>> oldParents;
 	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
 };
 
-inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(std::weak_ptr<GameObject> target, int mode)
+inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(std::vector<std::weak_ptr<GameObject>> targets, int mode)
 {
-	this->target = target;
+	this->targets = targets;
 	this->mode = mode;
 }
 
@@ -299,69 +299,95 @@ inline void InspectorCreateGameObjectCommand::Execute()
 {
 	bool done = false;
 
+	createdGameObjects.clear();
+	oldParents.clear();
+
 	if (mode == 0)
 	{
-		createdGameObject = CreateGameObject();
+		createdGameObjects.push_back(CreateGameObject());
 		done = true;
 	}
-	else if (mode == 1 && target.lock())
+	else if (mode == 1)
 	{
-		createdGameObject = CreateGameObject();
-		std::shared_ptr<Transform> transform = createdGameObject.lock()->GetTransform();
-		createdGameObject.lock()->SetParent(target);
-		transform->SetLocalPosition(Vector3(0));
-		transform->SetLocalRotation(Vector3(0));
-		transform->SetLocalScale(Vector3(1));
-		done = true;
-	}
-	else if (mode == 2 && target.lock())
-	{
-		createdGameObject = CreateGameObject();
-		std::shared_ptr<Transform> transform = createdGameObject.lock()->GetTransform();
-		std::shared_ptr<Transform> selectedTransform = target.lock()->GetTransform();
-		transform->SetPosition(selectedTransform->GetPosition());
-		transform->SetRotation(selectedTransform->GetRotation());
-		transform->SetLocalScale(selectedTransform->GetScale());
-
-		if (target.lock()->parent.lock())
+		for (std::weak_ptr<GameObject> weakTarget : targets)
 		{
-			createdGameObject.lock()->SetParent(target.lock()->parent.lock());
-			oldParent = target.lock()->parent.lock();
+			if (auto target = weakTarget.lock())
+			{
+				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+				createdGameObjects.push_back(newGameObject);
+				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
+				newGameObject->SetParent(target);
+				transform->SetLocalPosition(Vector3(0));
+				transform->SetLocalRotation(Vector3(0));
+				transform->SetLocalScale(Vector3(1));
+				done = true;
+			}
 		}
-		target.lock()->SetParent(createdGameObject);
-		done = true;
+	}
+	else if (mode == 2)
+	{
+		for (std::weak_ptr<GameObject> weakTarget : targets)
+		{
+			if (auto target = weakTarget.lock())
+			{
+				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+				createdGameObjects.push_back(newGameObject);
+				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
+				std::shared_ptr<Transform> selectedTransform = target->GetTransform();
+				transform->SetPosition(selectedTransform->GetPosition());
+				transform->SetRotation(selectedTransform->GetRotation());
+				transform->SetLocalScale(selectedTransform->GetScale());
+
+				if (target->parent.lock())
+				{
+					newGameObject->SetParent(target->parent.lock());
+				}
+
+				oldParents.push_back(target->parent.lock());
+
+				target->SetParent(newGameObject);
+				done = true;
+			}
+		}
 	}
 
 	if (done)
 	{
-		Editor::SetSelectedGameObject(createdGameObject.lock());
+		Editor::ClearSelectedGameObjects();
+		for (std::weak_ptr<GameObject> createdGameObject : createdGameObjects)
+		{
+			Editor::AddSelectedGameObject(createdGameObject.lock());
+		}
 		SceneManager::SetSceneModified(true);
 	}
 }
 
 inline void InspectorCreateGameObjectCommand::Undo()
 {
-	if (createdGameObject.lock())
+	if (createdGameObjects.size() > 0)
 	{
 		bool done = false;
-		if (mode == 0)
+		if (mode != 2)
 		{
-			Destroy(createdGameObject);
+			for (std::weak_ptr<GameObject> weakGameObject : createdGameObjects)
+			{
+				Destroy(weakGameObject.lock());
+			}
 			done = true;
 		}
-		else if (mode == 1)
+		else 
 		{
-			Destroy(createdGameObject);
-			done = true;
-		}
-		else if (mode == 2)
-		{
-			if (oldParent.lock())
-				target.lock()->SetParent(oldParent.lock());
-			else
-				target.lock()->SetParent(nullptr);
-			Destroy(createdGameObject);
-			done = true;
+			const int targetCount = targets.size();
+			for (int i = 0; i < targetCount; i++)
+			{
+				if (oldParents[i].lock())
+					targets[i].lock()->SetParent(oldParents[i].lock());
+				else
+					targets[i].lock()->SetParent(nullptr);
+
+				Destroy(createdGameObjects[i].lock());
+				done = true;
+			}
 		}
 
 		if (done)
