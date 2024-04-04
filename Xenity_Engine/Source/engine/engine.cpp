@@ -26,7 +26,7 @@
 
 // Editor
 #if defined(EDITOR)
-#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdl3.h>
 #include <xenity_editor.h>
 #include <glad/glad.h>
 #include <editor/ui/menus/game_menu.h>
@@ -205,12 +205,12 @@ void Engine::CheckEvents()
 	while (SDL_PollEvent(&event))
 	{
 #if defined(EDITOR)
-		ImGui_ImplSDL2_ProcessEvent(&event);
+		ImGui_ImplSDL3_ProcessEvent(&event);
 #endif
 		InputSystem::Read(event);
 		switch (event.type)
 		{
-		case SDL_QUIT:
+		case SDL_EVENT_QUIT:
 		{
 #if defined(EDITOR)
 			const bool cancelQuit = SceneManager::OnQuit();
@@ -221,40 +221,40 @@ void Engine::CheckEvents()
 			break;
 		}
 #if defined(EDITOR)
-		case (SDL_DROPCOMPLETE):
+		case (SDL_EVENT_DROP_COMPLETE):
 		{
 			Editor::OnDragAndDropFileFinished();
 			break;
 		}
-		case (SDL_DROPFILE):
-		{
-			char *dropped_filedir = event.drop.file;
-			Editor::AddDragAndDrop(dropped_filedir);
-			SDL_free(dropped_filedir); // Free dropped_filedir memory
-			break;
-		}
+//		case (SDL_EVENT_DROP_FILE):
+//		{
+//			char *dropped_filedir = event.drop.file;
+//			Editor::AddDragAndDrop(dropped_filedir);
+//			SDL_free(dropped_filedir); // Free dropped_filedir memory
+//			break;
+//		}
 #endif
-		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
-			{
-#if defined(EDITOR)
-				if (event.window.windowID == SDL_GetWindowID(Window::window))
-#endif
-					Window::SetResolution(event.window.data1, event.window.data2);
-			}
-			else if (event.window.event == SDL_WINDOWEVENT_CLOSE) // Stop the engine on window close
-			{
-				isRunning = false;
-			}
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-			{
-				focusCount++;
-			}
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-			{
-				focusCount--;
-			}
-			break;
+//		case SDL_WINDOWEVENT:
+//			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
+//			{
+//#if defined(EDITOR)
+//				if (event.window.windowID == SDL_GetWindowID(Window::window))
+//#endif
+//					Window::SetResolution(event.window.data1, event.window.data2);
+//			}
+//			else if (event.window.event == SDL_WINDOWEVENT_CLOSE) // Stop the engine on window close
+//			{
+//				isRunning = false;
+//			}
+//			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+//			{
+//				focusCount++;
+//			}
+//			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+//			{
+//				focusCount--;
+//			}
+//			break;
 		default:
 			break;
 		}

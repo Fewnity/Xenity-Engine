@@ -3,10 +3,10 @@
 #include <glad/glad.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdl3.h>
 #include <dwmapi.h>
 #include <windows.h>
-#include <SDL2/SDL_syswm.h>
+//#include <SDL3/SDL_syswm.h>
 #endif
 
 #include <engine/engine.h>
@@ -83,7 +83,7 @@ int Window::Init()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	//  Init SDL
-	const int sdlInitResult = SDL_Init(SDL_INIT_EVERYTHING);
+	const int sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
 	if (sdlInitResult != 0)
 	{
 		return (int)WindowError::WND_ERROR_SDL_INIT;
@@ -91,7 +91,8 @@ int Window::Init()
 
 	// Create SDL Window
 	const unsigned int center = SDL_WINDOWPOS_CENTERED;
-	window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+	//window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+	window = SDL_CreateWindow(ENGINE_NAME, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (window == nullptr)
 	{
 		return (int)WindowError::WND_ERROR_SDL_CREATE_WINDOW;
@@ -104,14 +105,14 @@ int Window::Init()
 		return (int)WindowError::WND_ERROR_SDL_GL_CONTEXT;
 	}
 
-	gladLoadGLLoader(SDL_GL_GetProcAddress);
+	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 	SDL_GL_SetSwapInterval(0);
 	OnResize();
 
 	//Set dark title bar
 	try
 	{
-		SDL_SysWMinfo wmInfo;
+		/*SDL_SysWMinfo wmInfo;
 		SDL_VERSION(&wmInfo.version);
 		SDL_GetWindowWMInfo(window, &wmInfo);
 		HWND hwnd = wmInfo.info.win.window;
@@ -122,7 +123,7 @@ int Window::Init()
 			&USE_DARK_MODE, sizeof(USE_DARK_MODE))))
 		{
 
-		}
+		}*/
 	}
 	catch (const std::exception&)
 	{
@@ -136,7 +137,7 @@ int Window::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform 
 	ImGui::StyleColorsDark();
-	ImGui_ImplSDL2_InitForOpenGL(Window::window, context);
+	ImGui_ImplSDL3_InitForOpenGL(Window::window, context);
 	ImGui_ImplOpenGL3_Init();
 
 	UpdateWindowTitle();
@@ -174,10 +175,11 @@ void Window::UpdateWindowTitle()
 void Window::SetFullScreenMode(bool enable)
 {
 #if defined(_WIN32) || defined(_WIN64)
-	if (enable)
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-	else
-		SDL_SetWindowFullscreen(window, 0);
+	SDL_SetWindowFullscreen(window, enable);
+	//if (enable)
+	//	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//else
+	//	SDL_SetWindowFullscreen(window, 0);
 #endif
 }
 

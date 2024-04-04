@@ -17,8 +17,8 @@
 #include <ps2/inputs/inputs.h>
 #else
 #include <windows/inputs/inputs.h>
-#include <SDL2/SDL_gamecontroller.h>
-#include <SDL2/SDL_joystick.h>
+#include <SDL3/SDL_gamepad.h>
+#include <SDL3/SDL_joystick.h>
 #endif
 
 #if defined(EDITOR)
@@ -163,14 +163,14 @@ void InputSystem::Read(const SDL_Event& event)
 	UpdateControllers();
 	switch (event.type)
 	{
-	case SDL_MOUSEMOTION:
+	case SDL_EVENT_MOUSE_MOTION:
 	{
 		// Get mouse position
 #if !defined(EDITOR)
-		int mouseX, mouseY;
+		float mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
-		mousePosition.x = (float)mouseX;
-		mousePosition.y = (float)mouseY;
+		mousePosition.x = mouseX;
+		mousePosition.y = mouseY;
 #else
 		std::shared_ptr<GameMenu> gameMenu = Editor::GetMenu<GameMenu>();
 		std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
@@ -236,7 +236,7 @@ void InputSystem::Read(const SDL_Event& event)
 		break;
 	}
 
-	case SDL_MOUSEBUTTONDOWN:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 	{
 		if (hidedMouse)
 			HideMouse();
@@ -255,7 +255,7 @@ void InputSystem::Read(const SDL_Event& event)
 		break;
 	}
 
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 	{
 		switch (event.button.button)
 		{
@@ -272,22 +272,22 @@ void InputSystem::Read(const SDL_Event& event)
 		break;
 	}
 
-	case SDL_KEYDOWN:
+	case SDL_EVENT_KEY_DOWN:
 	{
 		if (keyMap.count(event.key.keysym.sym) != 0)
 			SetInput(true, keyMap[event.key.keysym.sym]->code);
 		break;
 	}
 
-	case SDL_KEYUP:
+	case SDL_EVENT_KEY_UP:
 	{
 		if (keyMap.count(event.key.keysym.sym) != 0)
 			SetInput(false, keyMap[event.key.keysym.sym]->code);
 		break;
 	}
 
-	case SDL_MOUSEWHEEL:
-		mouseWheel = event.wheel.preciseY;
+	case SDL_EVENT_MOUSE_WHEEL:
+		mouseWheel = event.wheel.y;
 		break;
 	}
 }

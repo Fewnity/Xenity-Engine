@@ -18,6 +18,8 @@
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 void SceneMenu::Init()
 {

@@ -38,7 +38,6 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="include\imgui\imgui_impl_sdl2.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2_int.cpp" />
@@ -150,6 +149,7 @@
     <ClCompile Include="Source\engine\graphics\3d_graphics\lod.cpp" />
     <ClCompile Include="Source\editor\ui\menus\build_settings_menu.cpp" />
     <ClCompile Include="Source\engine\graphics\render_command.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -192,7 +192,6 @@
     <ClInclude Include="include\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="include\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="include\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="include\imgui\imgui_impl_sdl2.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
@@ -309,6 +308,7 @@
     <ClInclude Include="Source\engine\graphics\3d_graphics\lod.h" />
     <ClInclude Include="Source\editor\ui\menus\build_settings_menu.h" />
     <ClInclude Include="Source\engine\graphics\render_command.h" />
+    <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

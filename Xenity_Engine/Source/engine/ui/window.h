@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #endif
 
 enum class WindowError

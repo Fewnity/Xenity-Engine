@@ -4,10 +4,10 @@
 #include <variant>
 #include <Windows.h>
 #include <ShObjIdl.h>
-#include <SDL2/SDL_video.h>
+#include <SDL3/SDL_video.h>
 
 // ImGui
-#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdl3.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_stdlib.h>
 #include <imgui/imgui_internal.h>
@@ -159,46 +159,29 @@ void EditorUI::NewFrame()
 {
 	EditorUI::UpdateUIScale();
 	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
+	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 	uiId = 0;
 }
 
 void EditorUI::UpdateUIScale()
 {
-	ImGuiIO& io = ImGui::GetIO();
-	//float y = io.DisplaySize.y;
-
-	SDL_DisplayMode DM;
-	const int index = SDL_GetWindowDisplayIndex(Window::window);
-	//float oldUiScale = uiScale;
+	const int index = SDL_GetDisplayForWindow(Window::window);
 	if (index >= 0)
 	{
-		float dpi = 0;
-		float unused;
-		const int result = SDL_GetDisplayDPI(index, &dpi, &unused, &unused);
-		if (result == 0)
+		uiScale = SDL_GetDisplayContentScale(index);
+		if (uiScale == 0)
 		{
-			uiScale = dpi / 96.0f;
-		}
-		else
-		{
-			SDL_GetCurrentDisplayMode(index, &DM);
-			uiScale = DM.h / 1080.0f;
+			uiScale = 1;
 		}
 	}
 
-	//if (oldUiScale != uiScale)
-	//{
-		//io.Fonts->Clear();
 	ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
-	//}
 }
 
 void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 {
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
-	//fileIcon->file = FileSystem::MakeFile("icons/text.png");
 	fileIcon->file = FileSystem::MakeFile(path.c_str());
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
 	fileIcon->LoadFileReference();

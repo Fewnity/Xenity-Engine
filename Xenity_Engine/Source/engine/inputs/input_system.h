@@ -4,7 +4,7 @@
 #include <map>
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <SDL2/SDL_events.h>
+#include <SDL3/SDL_events.h>
 #endif
 
 #include <engine/vectors/vector2.h>
