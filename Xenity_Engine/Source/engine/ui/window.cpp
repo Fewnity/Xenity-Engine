@@ -109,27 +109,6 @@ int Window::Init()
 	SDL_GL_SetSwapInterval(0);
 	OnResize();
 
-	//Set dark title bar
-	try
-	{
-		/*SDL_SysWMinfo wmInfo;
-		SDL_VERSION(&wmInfo.version);
-		SDL_GetWindowWMInfo(window, &wmInfo);
-		HWND hwnd = wmInfo.info.win.window;
-
-		BOOL USE_DARK_MODE = true;
-		if (SUCCEEDED(DwmSetWindowAttribute(
-			hwnd, DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE,
-			&USE_DARK_MODE, sizeof(USE_DARK_MODE))))
-		{
-
-		}*/
-	}
-	catch (const std::exception&)
-	{
-		Debug::PrintWarning("Failed to set dark title bar", true);
-	}
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
