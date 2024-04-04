@@ -518,7 +518,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	{
 		const std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".lib";
 		const std::string engineDllPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".dll";
-		const std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL2.dll";
+		const std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL3.dll";
 		const std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
 		const std::string freetypeDllPath = EngineSettings::engineProjectPath + "freetype.dll";
 
@@ -526,7 +526,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME + ".lib");
 		// Copy all DLLs to the export folder
 		AddCopyEntry(false, engineDllPath, params.exportPath + ENGINE_GAME + ".dll");
-		AddCopyEntry(false, sdlDllPath, params.exportPath + "SDL2.dll");
+		AddCopyEntry(false, sdlDllPath, params.exportPath + "SDL3.dll");
 		AddCopyEntry(false, glfwDllPath, params.exportPath + "glfw3.dll");
 		AddCopyEntry(false, freetypeDllPath, params.exportPath + "freetype.dll");
 	}
