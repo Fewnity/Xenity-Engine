@@ -66,25 +66,25 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -176,51 +176,51 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022x64;$(ProjectDir)lib_sdl3\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>Xenity_Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022x64;$(ProjectDir)lib_sdl3\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>Xenity_Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl3\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <ExcludePath>$(ProjectDir)Source\editor\;$(ExcludePath)</ExcludePath>
     <TargetName>Xenity_Engine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl3\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <ExcludePath>$(ProjectDir)Source\editor\;$(ExcludePath)</ExcludePath>
     <TargetName>Xenity_Engine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">
-    <LibraryPath>$(ProjectDir)lib-vc2022;$(ProjectDir)lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib-vc2022;C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib_sdl2\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -228,13 +228,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -242,15 +243,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;EDITOR;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -258,15 +261,21 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;EDITOR;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -274,15 +283,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;_CONSOLE;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -290,15 +300,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;VISUAL_STUDIO;EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x86;$(ProjectDir)lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -310,15 +321,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib_sdl2\x86;C:\Users\elect\source\repos\OpenGL_Test\OpenGL_Test\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -338,8 +350,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -369,8 +381,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl3\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -400,8 +412,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl3\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -425,8 +437,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl3\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -451,8 +463,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl3\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;irrKlang.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -468,7 +480,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
     </ClCompile>
@@ -477,8 +489,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib_sdl2\x64;$(ProjectDir)lib-vc2022x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freetype.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

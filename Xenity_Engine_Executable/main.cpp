@@ -17,18 +17,19 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Show submesh count somewhere
 Fix duplication crash with missing script
 Multiple gameobject selection
-Clean folders
-Remove engine location settings
 Rework the documentation
 Clean code
 Update read me
 Add undo/redo commands to DrawVector/DrawFileReference functions
 Fix sprites color with shaders
+Check docker in a thread for faster engine boot
 
 --- Can be for next release
 New Input system
 
 --- Done
+Clean folders
+Remove engine location settings
 Fix variables order
 Fix crash if rotation values are infinite
 Text scale
