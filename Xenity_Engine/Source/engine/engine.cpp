@@ -228,39 +228,35 @@ void Engine::CheckEvents()
 			Editor::OnDragAndDropFileFinished();
 			break;
 		}
-//		case (SDL_EVENT_DROP_FILE):
-//		{
-//			char *dropped_filedir = event.drop.file;
-//			Editor::AddDragAndDrop(dropped_filedir);
-//			SDL_free(dropped_filedir); // Free dropped_filedir memory
-//			break;
-//		}
+
+		case (SDL_EVENT_DROP_FILE):
+		{
+			char *dropped_filedir = event.drop.data;
+			Editor::AddDragAndDrop(dropped_filedir);
+			//SDL_free(dropped_filedir); // Free dropped_filedir memory // FIXME TODO memory leak here! Crash if used since updated to SDL3
+			break;
+		}
 #endif
-//		case SDL_WINDOWEVENT:
-//			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) // Update viewport resolution on resize
-//			{
-//#if defined(EDITOR)
-//				if (event.window.windowID == SDL_GetWindowID(Window::window))
-//#endif
-//					Window::SetResolution(event.window.data1, event.window.data2);
-//			}
-//			else if (event.window.event == SDL_WINDOWEVENT_CLOSE) // Stop the engine on window close
-//			{
-//				isRunning = false;
-//			}
-//			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-//			{
-//				focusCount++;
-//			}
-//			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-//			{
-//				focusCount--;
-//			}
-//			break;
+
+		case SDL_EVENT_WINDOW_FOCUS_GAINED:
+			focusCount++;
+			break;
+		case SDL_EVENT_WINDOW_FOCUS_LOST:
+			focusCount--;
+			break;
+
+		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+			if (event.window.windowID == SDL_GetWindowID(Window::window)) 
+			{
+				Window::SetResolution(event.window.data1, event.window.data2);
+			}
+			break;
+
 		default:
 			break;
 		}
 	}
+
 	if (focusCount == 1)
 	{
 		OnWindowFocusEvent->Trigger();
