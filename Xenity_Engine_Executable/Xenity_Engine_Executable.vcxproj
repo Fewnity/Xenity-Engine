@@ -179,28 +179,36 @@
     <LibraryPath>$(SolutionDir)Xenity_Engine/lib-vc2022;$(SolutionDir)Xenity_Engine/lib_sdl2\x64;$(SolutionDir)x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
-    <LibraryPath>$(SolutionDir)x64\Debug Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
-    <LibraryPath>$(SolutionDir)x64\Release Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
-    <LibraryPath>$(SolutionDir)x64\Debug Engine;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
-    <LibraryPath>$(SolutionDir)x64\Release Engine;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
-    <LibraryPath>$(SolutionDir)x86\Debug Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
-    <LibraryPath>$(SolutionDir)x86\Debug Engine;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">
-    <LibraryPath>$(SolutionDir)x86\Release Editor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">
-    <LibraryPath>$(SolutionDir)x86\Release Engine;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -236,7 +244,10 @@
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x86\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x86\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">
@@ -260,7 +271,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x86\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x86\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
@@ -281,7 +295,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x86\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x86\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">
@@ -302,7 +319,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x86\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x86\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -365,7 +385,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x86\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
@@ -392,7 +415,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>
@@ -417,7 +443,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
@@ -441,7 +470,10 @@ copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetyp
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"</Command>
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

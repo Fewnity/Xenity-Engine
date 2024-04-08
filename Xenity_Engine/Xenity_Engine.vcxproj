@@ -183,23 +183,27 @@
     <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>Xenity_Editor</TargetName>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
     <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <TargetName>Xenity_Editor</TargetName>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
     <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <ExcludePath>$(ProjectDir)Source\editor\;$(ExcludePath)</ExcludePath>
     <TargetName>Xenity_Engine</TargetName>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
     <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <ExcludePath>$(ProjectDir)Source\editor\;$(ExcludePath)</ExcludePath>
     <TargetName>Xenity_Engine</TargetName>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)libs\x64;$(LibraryPath)</LibraryPath>
@@ -209,15 +213,23 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
     <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Xenity_Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">
     <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Xenity_Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">
     <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Xenity_Engine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">
     <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Xenity_Engine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(ProjectDir)libs\x86;$(LibraryPath)</LibraryPath>
