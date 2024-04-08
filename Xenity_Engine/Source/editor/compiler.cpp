@@ -23,6 +23,9 @@
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
 
+std::string engineFolderLocation = "";
+std::string engineProjectLocation = "";
+
 namespace fs = std::filesystem;
 
 std::vector<CopyEntry> Compiler::copyEntries;
@@ -120,7 +123,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		fs::remove_all(params.tempPath);
 		fs::create_directory(params.tempPath);
-		fs::create_directory(EngineSettings::engineProjectPath + "Source\\game_code\\");
+		fs::create_directory(engineProjectLocation + "Source\\game_code\\");
 	}
 	catch (const std::exception&)
 	{
@@ -162,6 +165,17 @@ CompileResult Compiler::Compile(CompilerParams params)
 	return result;
 }
 
+void Compiler::Init()
+{
+	const std::string root = fs::current_path().string();
+	engineFolderLocation = root + "\\";
+	engineProjectLocation = engineFolderLocation;
+#if defined (VISUAL_STUDIO)
+	int backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of("\\");
+	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine\\";
+#endif
+}
+
 CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& params)
 {
 	int error = 0;
@@ -177,16 +191,16 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (params.buildType == BuildType::EditorHotReloading)
 		{
-			if (!fs::exists(EngineSettings::engineProjectPath + ENGINE_EDITOR + ".lib") ||
-				!fs::exists(EngineSettings::engineProjectPath + ENGINE_EDITOR + ".dll"))
+			if (!fs::exists(engineFolderLocation + ENGINE_EDITOR + ".lib") ||
+				!fs::exists(engineFolderLocation + ENGINE_EDITOR + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
 		}
 		else
 		{
-			if (!fs::exists(EngineSettings::engineProjectPath + ENGINE_GAME + ".lib") ||
-				!fs::exists(EngineSettings::engineProjectPath + ENGINE_GAME + ".dll"))
+			if (!fs::exists(engineFolderLocation + ENGINE_GAME + ".lib") ||
+				!fs::exists(engineFolderLocation + ENGINE_GAME + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
@@ -212,7 +226,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + EngineSettings::engineProjectPath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + engineFolderLocation, true);
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
@@ -507,20 +521,20 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 {
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
-		const std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_EDITOR + ".lib";
+		const std::string engineLibPath = engineFolderLocation + ENGINE_EDITOR + ".lib";
 
 		// Copy engine editor lib to the temp build folder
 		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR + ".lib");
 		// Copy editor header
-		AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\xenity_editor.h", params.tempPath + "xenity_editor.h");
+		AddCopyEntry(false, engineProjectLocation + "Source\\xenity_editor.h", params.tempPath + "xenity_editor.h");
 	}
 	else // In build mode:
 	{
-		const std::string engineLibPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".lib";
-		const std::string engineDllPath = EngineSettings::engineProjectPath + ENGINE_GAME + ".dll";
-		const std::string sdlDllPath = EngineSettings::engineProjectPath + "SDL3.dll";
-		const std::string glfwDllPath = EngineSettings::engineProjectPath + "glfw3.dll";
-		const std::string freetypeDllPath = EngineSettings::engineProjectPath + "freetype.dll";
+		const std::string engineLibPath = engineFolderLocation + ENGINE_GAME + ".lib";
+		const std::string engineDllPath = engineFolderLocation + ENGINE_GAME + ".dll";
+		const std::string sdlDllPath = engineFolderLocation + "SDL3.dll";
+		const std::string glfwDllPath = engineFolderLocation + "glfw3.dll";
+		const std::string freetypeDllPath = engineFolderLocation + "freetype.dll";
 
 		// Copy engine game lib to the temp build folder
 		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME + ".lib");
@@ -532,9 +546,9 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	}
 
 	// Copy engine headers to the temp build folder
-	AddCopyEntry(true, EngineSettings::engineProjectPath + "Source\\engine\\", params.tempPath + "engine\\");
-	AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\xenity.h", params.tempPath + "xenity.h");
-	AddCopyEntry(false, EngineSettings::engineProjectPath + "Source\\main.cpp", params.tempPath + "main.cpp");
+	AddCopyEntry(true, engineProjectLocation + "Source\\engine\\", params.tempPath + "engine\\");
+	AddCopyEntry(false, engineProjectLocation + "Source\\xenity.h", params.tempPath + "xenity.h");
+	AddCopyEntry(false, engineProjectLocation + "Source\\main.cpp", params.tempPath + "main.cpp");
 	const bool headerCopyResult = ExecuteCopyEntries();
 	if (!headerCopyResult)
 	{
@@ -596,7 +610,8 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 
 CompileResult Compiler::CompileWSL(const CompilerParams& params)
 {
-	const std::string convertedEnginePath = WindowsPathToWSL(EngineSettings::engineProjectPath);
+	const std::string convertedEnginePath = WindowsPathToWSL(engineProjectLocation);
+	const std::string convertedEngineExePath = WindowsPathToWSL(engineFolderLocation);
 	// Clear compilation folder
 	const int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
@@ -609,7 +624,7 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
 	const std::string copyEngineLibrariesCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "include ~/XenityTestProject'";
 	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
-	const std::string copyCmakeCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "CMakeLists.txt ~/XenityTestProject'";
+	const std::string copyCmakeCommand = "wsl sh -c 'cp -R /mnt/" + convertedEngineExePath + "CMakeLists.txt ~/XenityTestProject'";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
 	if (copyCodeResult != 0)
@@ -750,11 +765,11 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	std::string createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
 	const int createResult = system(createCommand.c_str());
 
-	const std::string copyEngineSourceCommand = "docker cp \"" + EngineSettings::engineProjectPath + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
-	const std::string copyEngineLibrariesCommand = "docker cp \"" + EngineSettings::engineProjectPath + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
-	const std::string copyCmakeCommand = "docker cp \"" + EngineSettings::engineProjectPath + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
+	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
 	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
@@ -853,8 +868,8 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	}
 
 	// Add include directories
-	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
-	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
+	command += " -I \"" + engineProjectLocation + "include\"";
+	command += " -I \"" + engineProjectLocation + "Source\"";
 
 	// Create DLL
 	command += " /LD";
@@ -899,8 +914,8 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 	std::string command;
 	//Buid game exe
 	command = "cl /Fe\"" + params.libraryName + ".exe\" /std:c++20 /MP /EHsc";
-	command += " -I \"" + EngineSettings::engineProjectPath + "include\"";
-	command += " -I \"" + EngineSettings::engineProjectPath + "Source\"";
+	command += " -I \"" + engineProjectLocation + "include\"";
+	command += " -I \"" + engineProjectLocation + "Source\"";
 	command += " main.cpp " + std::string(ENGINE_GAME) + ".lib";
 	//command += " >nul"; // Mute output
 	return command;

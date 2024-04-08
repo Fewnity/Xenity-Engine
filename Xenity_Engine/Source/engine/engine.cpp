@@ -33,6 +33,7 @@
 #include <engine/scene_management/scene_manager.h>
 #include <editor/plugin/plugin_manager.h>
 #include <editor/file_handler.h>
+#include <editor/compiler.h>
 #endif
 
 // Other platforms
@@ -185,6 +186,7 @@ int Engine::Init()
 		return -1;
 	}
 	Editor::Init();
+	Compiler::Init();
 #endif
 
 	Debug::Print("-------- Engine fully initiated --------\n", true);

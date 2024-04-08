@@ -39,15 +39,6 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 	ImGui::Text("Compiler Options:");
 	ImGui::Separator();
 
-	std::string tempEngineProjectPath = EngineSettings::engineProjectPath;
-	ImGui::Text("Engine project location: %s", EngineSettings::engineProjectPath.c_str());
-	valueChanged = DrawSelectFolderButton(tempEngineProjectPath);
-	if (valueChanged)
-	{
-		EngineSettings::engineProjectPath = tempEngineProjectPath;
-		settingsChanged = true;
-	}
-
 	std::string tempCompilerPath = EngineSettings::compilerPath;
 	ImGui::Text("Compiler location: %s", EngineSettings::compilerPath.c_str());
 	valueChanged = DrawSelectFolderButton(tempCompilerPath);

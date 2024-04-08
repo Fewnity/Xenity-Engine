@@ -27,7 +27,6 @@ public:
 	static bool useProfiler;
 	static bool useDebugger;
 	static bool useOnlineDebugger;
-	static std::string engineProjectPath;
 	static std::string compilerPath;
 	static std::string ppssppExePath;
 	static std::string dockerExePath;

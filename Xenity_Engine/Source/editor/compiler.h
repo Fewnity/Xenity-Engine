@@ -92,6 +92,9 @@ struct CopyEntry
 class Compiler
 {
 public:
+
+	static void Init();
+
 	/**
 	* Check if the compiler has all needed files to start a compilation
 	*/
