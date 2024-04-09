@@ -11,6 +11,7 @@
 #include <editor/compiler.h>
 #include <editor/command/commands/inspector_commands.h>
 #include <editor/command/command_manager.h>
+#include <editor/command/command.h>
 #include <editor/ui/menus/engine_settings_menu.h>
 #include <editor/ui/menus/project_settings_menu.h>
 #include <editor/ui/menus/lighting_menu.h>
@@ -62,6 +63,9 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 		auto command = std::make_shared<InspectorAddComponentCommand<T>>(currentGameObject);
 		CommandManager::AddCommand(command);
 		command->Execute();
+		
+		if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(command->newComponent.lock()))
+			boxCollider->SetDefaultSize();
 	}
 }
 
@@ -356,8 +360,12 @@ void MainBarMenu::Draw()
 					std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
 					for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 					{
-						if(currentGameObject.lock())
-							ClassRegistry::AddComponentFromName(componentNames[i], currentGameObject.lock());
+						if (currentGameObject.lock()) 
+						{
+							std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentNames[i], currentGameObject.lock());
+							if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
+								boxCollider->SetDefaultSize();
+						}
 					}
 				}
 			}

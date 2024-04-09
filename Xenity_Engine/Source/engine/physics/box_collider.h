@@ -41,6 +41,9 @@ public:
 	static CollisionSide CheckCollision(const std::shared_ptr <BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity);
 	
 	void OnDrawGizmosSelected() override;
+	void SetDefaultSize();
+	void CalculateBoundingBox();
+
 	bool isTrigger = false;
 
 	Vector3 min;

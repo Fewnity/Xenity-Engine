@@ -8,6 +8,7 @@
 
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
 
 #if defined(EDITOR)
 #include <editor/editor.h>
@@ -19,8 +20,7 @@ BoxCollider::BoxCollider()
 {
 	componentName = "BoxCollider";
 	AssetManager::AddReflection(this);
-	min = -size / 2.0f;
-	max = size / 2.0f;
+	CalculateBoundingBox();
 }
 
 ReflectiveData BoxCollider::GetReflectiveData()
@@ -34,8 +34,7 @@ ReflectiveData BoxCollider::GetReflectiveData()
 
 void BoxCollider::OnReflectionUpdated()
 {
-	min = -size / 2.0f;
-	max = size / 2.0f;
+	CalculateBoundingBox();
 }
 
 bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
@@ -149,4 +148,22 @@ void BoxCollider::OnDrawGizmosSelected()
 	Gizmo::DrawLine(v3, v7);
 	Gizmo::DrawLine(v4, v8);
 #endif
+}
+
+void BoxCollider::SetDefaultSize()
+{
+	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
+	if (mesh && mesh->GetMeshData())
+	{
+		Vector3 scale = GetTransform()->GetLocalScale();
+		size = (mesh->GetMeshData()->maxBoundingBox - mesh->GetMeshData()->minBoundingBox) * scale;
+		offset = ((mesh->GetMeshData()->maxBoundingBox + mesh->GetMeshData()->minBoundingBox) / 2.0f) * scale;
+		CalculateBoundingBox();
+	}
+}
+
+void BoxCollider::CalculateBoundingBox()
+{
+	min = -size / 2.0f;
+	max = size / 2.0f;
 }

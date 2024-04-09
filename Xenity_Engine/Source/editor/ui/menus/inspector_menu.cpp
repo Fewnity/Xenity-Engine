@@ -19,6 +19,7 @@
 #include <engine/inputs/input_system.h>
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
+#include <engine/physics/box_collider.h>
 
 void InspectorMenu::Init()
 {
@@ -381,7 +382,11 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		{
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
-				ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObjects()[0].lock());
+				std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObjects()[0].lock());
+
+				if(std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
+						boxCollider->SetDefaultSize();
+
 				showAddComponentMenu = false;
 			}
 		}
