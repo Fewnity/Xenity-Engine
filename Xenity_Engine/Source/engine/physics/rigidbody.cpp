@@ -32,8 +32,6 @@ void RigidBody::Update()
 
 void RigidBody::Tick()
 {
-	inTrigger.clear();
-
 	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
 	{
 		int side = (int)CollisionSide::NoSide;
@@ -54,7 +52,9 @@ void RigidBody::Tick()
 					{
 						const bool trigger = BoxCollider::CheckTrigger(rbBoxCollider, other);
 						if (trigger)
-							inTrigger.push_back(other);
+						{
+							rbBoxCollider->onTriggerEvent.Trigger(other);
+						}
 					}
 					else if (!other->isTrigger && !isStatic) // Check collision
 					{

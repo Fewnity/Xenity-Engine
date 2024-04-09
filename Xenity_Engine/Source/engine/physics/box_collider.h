@@ -3,6 +3,7 @@
 
 #include "collider.h"
 #include <engine/vectors/vector3.h>
+#include <engine/event_system/event_system.h>
 #include <memory>
 
 class RigidBody;
@@ -45,6 +46,8 @@ public:
 	void CalculateBoundingBox();
 
 	bool isTrigger = false;
+
+	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
 
 	Vector3 min;
 	Vector3 max;
