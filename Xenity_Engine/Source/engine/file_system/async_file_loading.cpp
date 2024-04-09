@@ -1,6 +1,7 @@
 #include "async_file_loading.h"
 
 #include <engine/file_system/file_reference.h>
+#include <engine/graphics/graphics.h>
 
 std::vector<std::shared_ptr<FileReference>> AsyncFileLoading::threadLoadedFiles;
 std::mutex AsyncFileLoading::threadLoadingMutex;
@@ -15,6 +16,7 @@ void AsyncFileLoading::FinishThreadedFileLoading()
 		{
 			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
 			threadLoadedFiles.erase(threadLoadedFiles.begin() + i);
+			Graphics::isRenderingBatchDirty = true; // Move this in a better location ???
 			threadFileCount--;
 			i--;
 		}
