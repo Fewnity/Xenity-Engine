@@ -110,6 +110,23 @@ public:
 		return nullptr;
 	}
 
+	template<typename T>
+	static const ClassInfo* GetClassInfo()
+	{
+		const uint64_t classId = typeid(T).hash_code();
+		const int classInfosCount = classInfos.size();
+		for (int i = 0; i < classInfosCount; i++)
+		{
+			const ClassInfo& info = classInfos[i];
+			if (classId == info.typeId)
+			{
+				return &info;
+			}
+		}
+
+		return nullptr;
+	}
+
 	static const std::string GetClassName(uint64_t classId)
 	{
 		const int classInfosCount = classInfos.size();
