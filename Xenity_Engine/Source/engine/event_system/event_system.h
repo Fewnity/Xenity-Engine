@@ -13,7 +13,7 @@
 * @brief Event<int, float> myEventWithParams;
 */
 template<typename... Args>
-class API Event
+class Event
 {
 public:
 
