@@ -523,9 +523,9 @@ private:
 		{
 			valueChangedTemp = DrawVector("Transform", valuePtr, variableName, reflectionEntry.typeId);
 		}
-		else if constexpr  (std::is_same <T, Component>())
+		else if constexpr (std::is_same <T, Component>())
 		{
-			valueChangedTemp = DrawVector("Component", valuePtr, variableName, reflectionEntry.typeId);
+			valueChangedTemp = DrawVector(ClassRegistry::GetClassName(reflectionEntry.typeId), valuePtr, variableName, reflectionEntry.typeId);
 		}
 
 		return valueChangedTemp;
