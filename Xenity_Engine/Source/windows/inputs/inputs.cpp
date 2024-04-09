@@ -5,8 +5,7 @@
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"
 #include "../../engine/debug/debug.h"
-#include <SDL3/SDL_events.h>
-//#include <SDL3/SDL_oldnames.h>
+#include <SDL3/SDL.h>
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
@@ -97,8 +96,12 @@ SDL_Gamepad* controller0;
 
 void CrossInputsInit()
 {
-	controller0 = SDL_OpenGamepad(0);
-	//int numJoy = SDL_NumJoysticks();
+	int gamepadsCount;
+	SDL_JoystickID* ids = SDL_GetGamepads(&gamepadsCount);
+	if (gamepadsCount > 0) 
+	{
+		controller0 = SDL_OpenGamepad(ids[0]);
+	}
 }
 
 InputPad CrossGetInputPad()
