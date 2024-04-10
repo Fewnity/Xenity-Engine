@@ -74,7 +74,7 @@ public:
 * Class to get the list of enum strings lists
 * initialise enumStringsLists before calling main()
 */
-class EnumHelper
+class API EnumHelper
 {
 public:
 	static std::map<uint64_t, std::vector<EnumValueName>>& GetEnumStringsLists()
