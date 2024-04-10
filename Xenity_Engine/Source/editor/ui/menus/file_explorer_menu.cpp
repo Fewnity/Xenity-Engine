@@ -85,6 +85,8 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(iconTexture);
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool hovered = ImGui::IsItemHovered();
+
 	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
 
 	if (item.file && item.file->fileType == FileType::File_Material)
@@ -112,7 +114,6 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	}
 	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
 
-	const bool hovered = ImGui::IsItemHovered();
 	if (hovered)
 	{
 		fileHovered = true;
