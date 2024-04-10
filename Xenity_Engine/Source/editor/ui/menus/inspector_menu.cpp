@@ -37,15 +37,18 @@ void InspectorMenu::Draw()
 		if (Editor::GetSelectedGameObjects().size() == 1)
 		{
 			std::shared_ptr <GameObject> selectedGameObject = Editor::GetSelectedGameObjects()[0].lock();
-			std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 			
+			if (selectedGameObject)
+			{
+				DrawGameObjectInfo(selectedGameObject);
+			}
+		}
+		else 
+		{
+			std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 			if (selectedFileReference)
 			{
 				DrawFileInfo(selectedFileReference);
-			}
-			else if (selectedGameObject)
-			{
-				DrawGameObjectInfo(selectedGameObject);
 			}
 		}
 
