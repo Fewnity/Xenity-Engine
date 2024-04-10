@@ -210,18 +210,20 @@ void Engine::CheckEvents()
 		ImGui_ImplSDL3_ProcessEvent(&event);
 #endif
 		InputSystem::Read(event);
+
 		switch (event.type)
 		{
-		case SDL_EVENT_QUIT:
-		{
-#if defined(EDITOR)
-			const bool cancelQuit = SceneManager::OnQuit();
-			isRunning = cancelQuit;
-#else
-			isRunning = false;
-#endif
+		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+			if (event.window.windowID == SDL_GetWindowID(Window::window))
+			{
+				Quit();
+			}
 			break;
-		}
+
+		case SDL_EVENT_QUIT:
+			Quit();
+			break;
+
 #if defined(EDITOR)
 		case (SDL_EVENT_DROP_COMPLETE):
 		{
@@ -399,7 +401,12 @@ void Engine::Stop()
 
 void Engine::Quit()
 {
+#if defined(EDITOR)
+	const bool cancelQuit = SceneManager::OnQuit();
+	isRunning = cancelQuit;
+#else
 	isRunning = false;
+#endif
 }
 
 void Engine::CreateBenchmarks()
