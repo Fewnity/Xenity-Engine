@@ -12,7 +12,7 @@ public:
 	void OnNewDebug();
 
 private:
-	bool consoleMode = true;
+	bool consoleMode = false;
 	bool showLogs = true;
 	bool showWarnings = true;
 	bool showErrors = true;
