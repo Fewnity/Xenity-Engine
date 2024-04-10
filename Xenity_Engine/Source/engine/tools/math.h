@@ -12,6 +12,8 @@ class API Math
 {
 public:
 
+	static const float PI;
+
 	/**
 	* Multiply two matrices
 	* @param A First matrix

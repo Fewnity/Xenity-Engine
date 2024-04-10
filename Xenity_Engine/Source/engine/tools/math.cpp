@@ -12,6 +12,8 @@
 
 #include <glm/ext/matrix_transform.hpp>
 
+const float Math::PI = 3.14159265359f;
+
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
