@@ -10,6 +10,9 @@
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/engine.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/component.h>
 
 void CrashHandler::Handler(int signum)
 {
@@ -123,7 +126,6 @@ void CrashHandler::Handler(int signum)
 				}
 				else 
 				{
-
 					message = std::to_string(functionCount) + ": " + name + "()";
 				}
 
@@ -135,6 +137,22 @@ void CrashHandler::Handler(int signum)
 				functionCount++;
 			}
 		}
+
+		std::string lastComponentMessage = "";
+		std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
+
+		if (lastComponent)
+		{
+			lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
+			if(lastComponent->GetGameObject())
+				lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->name;
+
+			// Print in console and file
+			Debug::Print(lastComponentMessage);
+			if (isFileDumpOpened)
+				file->Write(lastComponentMessage + "\n");
+		}
+
 		if (isFileDumpOpened) 
 		{
 			file->Write("\n\n\n");

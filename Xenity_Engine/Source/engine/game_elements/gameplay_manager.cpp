@@ -19,6 +19,7 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjects;
 std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
+std::weak_ptr<Component> GameplayManager::lastUpdatedComponent;
 
 GameState GameplayManager::gameState = GameState::Stopped;
 
@@ -97,6 +98,7 @@ void GameplayManager::UpdateComponents()
 			{
 				if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 				{
+					lastUpdatedComponent = component;
 					component->Update();
 				}
 			}

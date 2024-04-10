@@ -323,7 +323,16 @@ void Engine::Loop()
 			const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
 			if (tryResult) 
 			{
-				Debug::PrintError("Error in game's code");
+				std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
+				std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
+				if (lastComponent)
+				{
+					lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
+					if (lastComponent->GetGameObject())
+						lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->name;
+				}
+				Debug::PrintError(lastComponentMessage);
+
 				GameplayManager::SetGameState(GameState::Stopped, true);
 			}
 #else

@@ -49,6 +49,7 @@ public:
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::shared_ptr<Component>> componentsToDestroy;
+	static std::weak_ptr<Component> lastUpdatedComponent;
 
 	/**
 	* Update all active components
