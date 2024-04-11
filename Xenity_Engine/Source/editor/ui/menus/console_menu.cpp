@@ -6,20 +6,29 @@
 #include <editor/ui/utils/menu_builder.h>
 #include <engine/reflection/reflection.h>
 #include <engine/debug/debug.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 ConsoleMenu::~ConsoleMenu()
 {
 	Debug::GetOnDebugLogEvent().Unbind(&ConsoleMenu::OnNewDebug, this);
+	GameplayManager::GetOnPlayEvent().Unbind(&ConsoleMenu::OnPlay, this);
 }
 
 void ConsoleMenu::Init()
 {
 	Debug::GetOnDebugLogEvent().Bind(&ConsoleMenu::OnNewDebug, this);
+	GameplayManager::GetOnPlayEvent().Bind(&ConsoleMenu::OnPlay, this);
 }
 
 void ConsoleMenu::OnNewDebug() 
 {
 	needUpdateScrool = 1;
+}
+
+void ConsoleMenu::OnPlay()
+{
+	if(clearOnPlay)
+		Debug::ClearDebugLogs();
 }
 
 void ConsoleMenu::Draw()
@@ -111,6 +120,14 @@ void ConsoleMenu::Draw()
 		{
 			Debug::ClearDebugLogs();
 		}
+		ImGui::SameLine();
+		EditorUI::SetButtonColor(clearOnPlay);
+		if (ImGui::Button("Clear on play"))
+		{
+			clearOnPlay = !clearOnPlay;
+		}
+		EditorUI::EndButtonColor();
+
 		if (!consoleMode) 
 		{
 			ImGui::SameLine();

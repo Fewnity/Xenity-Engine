@@ -9,13 +9,15 @@ public:
 	~ConsoleMenu();
 	void Init() override;
 	void Draw() override;
-	void OnNewDebug();
 
 private:
+	void OnNewDebug();
+	void OnPlay();
 	bool consoleMode = false;
 	bool showLogs = true;
 	bool showWarnings = true;
 	bool showErrors = true;
+	bool clearOnPlay = true;
 	int lastHistoryCount = 0;
 	float maxScrollSize;
 	int needUpdateScrool = 0;
