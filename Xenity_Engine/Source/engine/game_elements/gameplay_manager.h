@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <engine/event_system/event_system.h>
 
 class GameObject;
 class Component;
@@ -75,7 +76,13 @@ public:
 		return gameState;
 	}
 
+	static Event<>& GetOnPlayEvent() 
+	{
+		return OnPlayEvent;
+	}
+
 private:
+	static Event<> OnPlayEvent;
 
 	static GameState gameState;
 

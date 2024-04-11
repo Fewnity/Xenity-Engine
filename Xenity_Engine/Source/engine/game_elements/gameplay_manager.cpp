@@ -20,6 +20,7 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
 std::weak_ptr<Component> GameplayManager::lastUpdatedComponent;
+Event<> GameplayManager::OnPlayEvent;
 
 GameState GameplayManager::gameState = GameState::Stopped;
 
@@ -49,6 +50,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		SceneManager::SaveScene(SaveSceneType::SaveSceneForPlayState);
 		SceneManager::RestoreScene();
 		gameState = newGameState;
+		OnPlayEvent.Trigger();
 	}
 	else if (newGameState == GameState::Stopped && gameState != GameState::Stopped) // Stop game
 	{
