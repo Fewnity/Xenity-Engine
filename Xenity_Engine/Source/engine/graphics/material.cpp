@@ -234,9 +234,13 @@ void Material::OnReflectionUpdated()
 
 void Material::LoadFileReference()
 {
-	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
-	if (!loadResult)
+	if (!isLoaded)
 	{
-		Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath(), true);
+		isLoaded = true;
+		const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+		if (!loadResult)
+		{
+			Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath(), true);
+		}
 	}
 }
