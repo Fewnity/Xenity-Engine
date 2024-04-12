@@ -112,7 +112,26 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 
 void InputSystem::UpdateControllers()
 {
-	const InputPad pad = CrossGetInputPad();
+	InputPad pad = CrossGetInputPad();
+	const float JoystickDeadZone = 0.25f;
+
+	if (pad.lx < JoystickDeadZone && pad.lx > -JoystickDeadZone && abs(pad.ly) < JoystickDeadZone)
+	{
+		pad.lx = 0;
+	}
+	if (pad.ly < JoystickDeadZone && pad.ly > -JoystickDeadZone && abs(pad.lx) < JoystickDeadZone)
+	{
+		pad.ly = 0;
+	}
+	if (pad.rx < JoystickDeadZone && pad.rx > -JoystickDeadZone && abs(pad.ry) < JoystickDeadZone)
+	{
+		pad.rx = 0;
+	}
+	if (pad.ry < JoystickDeadZone && pad.ry > -JoystickDeadZone && abs(pad.rx) < JoystickDeadZone)
+	{
+		pad.ry = 0;
+	}
+
 	leftJoystick.x = pad.lx;
 	leftJoystick.y = pad.ly;
 

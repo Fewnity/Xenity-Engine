@@ -49,27 +49,10 @@ InputPad CrossGetInputPad()
 	pad.lx = ((ctrl.lx - 128) / 256.0f) * 2;
 	pad.ly = ((ctrl.ly - 128) / 256.0f) * 2;
 
-	if (pad.lx < 0.2f && pad.lx > -0.2f)
-	{
-		pad.lx = 0;
-	}
-	if (pad.ly < 0.2f && pad.ly > -0.2f)
-	{
-		pad.ly = 0;
-	}
-
 	// Right joystick
 	pad.rx = ((ctrl.rx - 128) / 256.0f) * 2;
 	pad.ry = ((ctrl.ry - 128) / 256.0f) * 2;
 
-	if (pad.rx < 0.2f && pad.rx > -0.2f)
-	{
-		pad.rx = 0;
-	}
-	if (pad.ry < 0.2f && pad.ry > -0.2f)
-	{
-		pad.ry = 0;
-	}
 
 	return pad;
 }

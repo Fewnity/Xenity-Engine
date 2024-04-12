@@ -6,8 +6,6 @@
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"
 
-#define JOYSTICK_DEAD_ZONE 0.25f
-
 SceCtrlData ctrl;
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
@@ -42,14 +40,6 @@ InputPad CrossGetInputPad()
 	pad.lx = ((ctrl.Lx - 128) / 256.0f) * 2;
 	pad.ly = ((ctrl.Ly - 128) / 256.0f) * 2;
 
-	if (pad.lx <= JOYSTICK_DEAD_ZONE && pad.lx >= -JOYSTICK_DEAD_ZONE)
-	{
-		pad.lx = 0;
-	}
-	if (pad.ly <= JOYSTICK_DEAD_ZONE && pad.ly >= -JOYSTICK_DEAD_ZONE)
-	{
-		pad.ly = 0;
-	}
 	return pad;
 }
 

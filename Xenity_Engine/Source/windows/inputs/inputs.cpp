@@ -133,23 +133,6 @@ InputPad CrossGetInputPad()
 	pad.rx = ((rightXValue) / 65536.0f) * 2;
 	pad.ry = ((rightYValue) / 65536.0f) * 2;
 
-	if (pad.lx < 0.2f && pad.lx > -0.2f)
-	{
-		pad.lx = 0;
-	}
-	if (pad.ly < 0.2f && pad.ly > -0.2f)
-	{
-		pad.ly = 0;
-	}
-	if (pad.rx < 0.2f && pad.rx > -0.2f)
-	{
-		pad.rx = 0;
-	}
-	if (pad.ry < 0.2f && pad.ry > -0.2f)
-	{
-		pad.ry = 0;
-	}
-
 	return pad;
 }
 

@@ -95,6 +95,8 @@ Check memory leak when removing an item from vector in the editorUI
 multiple directional light not working properly
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
 Use enum is InspectorCreateGameObjectCommand instead of int
+Disable scene saving while playing with main menu bar
+Fix commands on dll reloading, use gameobject id instead of weak_ptr?
 */
 
 #undef main
