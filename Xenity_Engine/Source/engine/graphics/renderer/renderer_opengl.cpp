@@ -324,11 +324,20 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
-
-	if (Graphics::UseOpenGLFixedFunctions)
+	const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
+	Vector4 colorToUse = Vector4(rgba.r, rgba.g, rgba.b, rgba.a);
+	if (lastUsedColor != colorToUse || lastShaderIdUsedColor != material->shader->fileId)
 	{
-		const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
-		glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
+		lastUsedColor = colorToUse;
+		lastShaderIdUsedColor = material->shader->fileId;
+		if (Graphics::UseOpenGLFixedFunctions)
+		{
+			glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
+		}
+		else 
+		{
+			material->shader->SetShaderAttribut("color", colorToUse);
+		}
 	}
 
 	// Do not draw the submesh if the texture is null

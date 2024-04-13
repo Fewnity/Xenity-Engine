@@ -103,7 +103,8 @@ private:
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
 	RenderingSettings lastSettings;
 	std::shared_ptr<Texture> usedTexture = nullptr;
-
+	Vector4 lastUsedColor = Vector4(0, 0, 0, 0);
+	uint64_t lastShaderIdUsedColor = 0;
 	// int GetDrawModeEnum(DrawMode drawMode);
 };
 #endif
