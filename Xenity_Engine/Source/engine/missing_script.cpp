@@ -16,5 +16,7 @@ MissingScript::~MissingScript()
 
 ReflectiveData MissingScript::GetReflectiveData()
 {
-	return ReflectiveData();
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, data, "data", true);
+	return reflectedVariables;
 }

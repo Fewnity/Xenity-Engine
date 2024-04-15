@@ -87,6 +87,7 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<RigidBody>("RigidBody");
 	AddComponentClass<BoxCollider>("BoxCollider");
 	AddComponentClass<Lod>("Lod");
+	AddComponentClass<MissingScript>("MissingScript", false);
 }
 
 
