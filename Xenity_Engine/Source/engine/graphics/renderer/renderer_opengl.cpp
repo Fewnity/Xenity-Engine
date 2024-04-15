@@ -92,6 +92,7 @@ void RendererOpengl::Stop()
 
 void RendererOpengl::NewFrame()
 {
+	lastUsedColor = Vector4(-1, -1, -1, -1);
 }
 
 void RendererOpengl::EndFrame()
@@ -236,7 +237,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 {
 	DrawSubMesh(subMesh, material, material->texture, settings);
 }
-
+int t = 0;
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
 {
 	if (!subMesh.meshData->isValid)
@@ -325,17 +326,17 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 	const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
-	Vector4 colorToUse = Vector4(rgba.r, rgba.g, rgba.b, rgba.a);
-	if (lastUsedColor != colorToUse || lastShaderIdUsedColor != material->shader->fileId)
+	const Vector4 colorToUse = rgba.ToVector4();
+	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material->shader->fileId))
 	{
 		lastUsedColor = colorToUse;
-		lastShaderIdUsedColor = material->shader->fileId;
 		if (Graphics::UseOpenGLFixedFunctions)
 		{
 			glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
 		}
 		else 
 		{
+			lastShaderIdUsedColor = material->shader->fileId;
 			material->shader->SetShaderAttribut("color", colorToUse);
 		}
 	}
@@ -344,7 +345,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	/*if (material == nullptr)
 		return;*/
 
-	// Do not draw the submesh if the vertice count is 0
+	// Do not draw the submesh if the vertice count is 0 TODO: Remove this?
 	if (subMesh.vertice_count == 0)
 		return;
 
@@ -414,7 +415,12 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
 	const RGBA& vec4Color = color.GetRGBA();
-	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	if (lastUsedColor != colorToUse) 
+	{
+		glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+		lastUsedColor = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	}
 	glDrawArrays(GL_LINES, 0, 2);
 }
 
