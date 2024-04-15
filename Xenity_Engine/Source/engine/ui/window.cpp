@@ -90,8 +90,6 @@ int Window::Init()
 	}
 
 	// Create SDL Window
-	const unsigned int center = SDL_WINDOWPOS_CENTERED;
-	//window = SDL_CreateWindow(ENGINE_NAME, center, center, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	window = SDL_CreateWindow(ENGINE_NAME, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (window == nullptr)
 	{
