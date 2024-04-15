@@ -237,7 +237,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 {
 	DrawSubMesh(subMesh, material, material->texture, settings);
 }
-int t = 0;
+
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
 {
 	if (!subMesh.meshData->isValid)
@@ -377,6 +377,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	glDepthMask(GL_TRUE);
 }
 
+// TODO : Improve this function, it's not optimized and using shaders
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
 	if (settings.useDepth)
