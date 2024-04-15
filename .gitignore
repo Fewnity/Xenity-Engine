@@ -32,6 +32,7 @@ Xenity_Engine_Executable/build/hello
 Xenity_Engine_Executable/buildvita/
 Xenity_Engine_Executable/Xenity Editor/
 Xenity_Engine_Executable/plugins/*.dll
+Xenity_Engine_Executable/*.dll
 Xenity_Engine_Executable/build_settings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
