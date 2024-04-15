@@ -484,6 +484,12 @@ void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 #endif
 	projectSettings.isLibCompiledForDebug = isDebugMode;
 
+	bool is64Bits = false;
+#if defined(_WIN64)
+	is64Bits = true;
+#endif
+	projectSettings.isLibCompiledFor64Bits = is64Bits;
+
 	SaveProjectSettings();
 }
 #endif
@@ -522,10 +528,14 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	// Load dynamic library and create game
 #if defined(_WIN32) || defined(_WIN64)
 	bool isDebugMode = false;
+	bool is64Bits = false;
+#if defined(_WIN64)
+	is64Bits = true;
+#endif
 #if defined(DEBUG)
 	isDebugMode = true;
 #endif
-	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION && projectSettings.isLibCompiledForDebug == isDebugMode)
+	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION && projectSettings.isLibCompiledForDebug == isDebugMode && projectSettings.isLibCompiledFor64Bits == is64Bits)
 	{
 #if defined(EDITOR)
 		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
@@ -971,5 +981,6 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", false);
 	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", false);
 	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug", false);
+	Reflective::AddVariable(reflectedVariables, isLibCompiledFor64Bits, "isLibCompiledFor64Bits", false);
 	return reflectedVariables;
 }

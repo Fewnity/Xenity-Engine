@@ -23,9 +23,9 @@
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
 
-std::string engineFolderLocation = "";
-std::string engineProjectLocation = "";
-
+std::string Compiler::engineFolderLocation = "";
+std::string Compiler::engineProjectLocation = "";
+std::string  Compiler::compilerExecFileName = "";
 namespace fs = std::filesystem;
 
 std::vector<CopyEntry> Compiler::copyEntries;
@@ -78,7 +78,8 @@ bool Compiler::ExecuteCopyEntries()
 #define ENGINE_GAME "Xenity_Engine"
 #define ASSETS_FOLDER "assets\\"
 #define ENGINE_ASSETS_FOLDER "engine_assets\\"
-#define MSVC_START_FILE "vcvars64.bat"
+#define MSVC_START_FILE_64BITS "vcvars64.bat"
+#define MSVC_START_FILE_32BITS "vcvars32.bat"
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -174,6 +175,11 @@ void Compiler::Init()
 	int backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of("\\");
 	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine\\";
 #endif
+#if defined(_WIN64) 
+	compilerExecFileName = MSVC_START_FILE_64BITS;
+#else
+	compilerExecFileName = MSVC_START_FILE_32BITS;
+#endif
 }
 
 CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& params)
@@ -181,7 +187,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	int error = 0;
 
 	// Check if the compiler executable exists
-	if (!fs::exists(EngineSettings::compilerPath + MSVC_START_FILE))
+	if (!fs::exists(EngineSettings::compilerPath + compilerExecFileName))
 	{
 		error |= (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE;
 	}
@@ -222,7 +228,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(MSVC_START_FILE) + " not found in " + EngineSettings::compilerPath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::compilerPath, true);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
@@ -252,28 +258,41 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 	return result;
 }
 
-DockerState Compiler::CheckDockerState()
+DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 {
 	// 2>nul Silent error
 	// 1>nul Silent standard output
+	DockerState result = DockerState::NOT_INSTALLED;
 
 	const int checkDockerInstallResult = system("docker 2>nul 1>nul");
 	if (checkDockerInstallResult != 0)
 	{
-		return DockerState::NOT_INSTALLED;
+		result = DockerState::NOT_INSTALLED;
 	}
-	const int checkDockerRunningResult = system("docker ps 2>nul 1>nul");
-	if (checkDockerRunningResult != 0)
+	else
 	{
-		return DockerState::NOT_RUNNING;
-	}
-	const int checkDockerImageResult = system("docker image inspect ubuntu_test 2>nul 1>nul");
-	if (checkDockerImageResult != 0)
-	{
-		return DockerState::MISSING_IMAGE;
+		const int checkDockerRunningResult = system("docker ps 2>nul 1>nul");
+		if (checkDockerRunningResult != 0)
+		{
+			result = DockerState::NOT_RUNNING;
+		}
+		else
+		{
+			const int checkDockerImageResult = system("docker image inspect ubuntu_test 2>nul 1>nul");
+			if (checkDockerImageResult != 0)
+			{
+				result = DockerState::MISSING_IMAGE;
+			}
+		}
 	}
 
-	return DockerState::RUNNING;
+	result = DockerState::RUNNING;
+
+	if (callback) 
+	{
+		callback->Trigger(DockerState::RUNNING);
+	}
+	return result;
 }
 
 bool Compiler::ExportProjectFiles(const CompilerParams& params)
@@ -704,7 +723,7 @@ bool Compiler::CreateDockerImage()
 
 CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 {
-	DockerState state = CheckDockerState();
+	DockerState state = CheckDockerState(nullptr);
 	if (state == DockerState::NOT_INSTALLED)
 	{
 		// Open the docker config menu if docker is not installed
@@ -721,7 +740,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 			for (int i = 0; i < 10; i++)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-				state = CheckDockerState();
+				state = CheckDockerState(nullptr);
 				if (state != DockerState::NOT_RUNNING)
 					break;
 			}
@@ -804,7 +823,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
 
 	// Copy prx file for build and run on psp hardware
-	if (params.platform == Platform::P_PSP) 
+	if (params.platform == Platform::P_PSP)
 	{
 		std::string fileName2 = "hello.prx";
 		const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName2 + "\" \"" + params.exportPath + fileName2 + "\"";
@@ -829,7 +848,7 @@ std::string Compiler::GetStartCompilerCommand()
 		command += path.substr(0, 2) + " && "; // Go to the compiler folder
 	}
 	command += "cd \"" + EngineSettings::compilerPath + "\""; // Go to the compiler folder
-	command += " && " + std::string(MSVC_START_FILE); // Start the compiler
+	command += " && " + compilerExecFileName; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
 }

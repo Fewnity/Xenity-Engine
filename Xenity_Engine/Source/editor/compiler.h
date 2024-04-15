@@ -132,7 +132,7 @@ public:
 		return OnCompilationStartedEvent;
 	}
 
-	static DockerState CheckDockerState();
+	static DockerState CheckDockerState(Event<DockerState>* callback);
 
 	static bool CreateDockerImage();
 
@@ -232,4 +232,7 @@ private:
 	static Event<CompilerParams, bool> OnCompilationEndedEvent;
 	static Event<CompilerParams> OnCompilationStartedEvent;
 
+	static std::string compilerExecFileName;
+	static std::string engineFolderLocation;
+	static std::string engineProjectLocation;
 };

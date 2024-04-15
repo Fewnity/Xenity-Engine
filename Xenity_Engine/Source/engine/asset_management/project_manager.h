@@ -73,6 +73,7 @@ public:
 	std::string compiledLibEngineVersion = "0";
 	bool isCompiled = false;
 	bool isLibCompiledForDebug = false;
+	bool isLibCompiledFor64Bits = false;
 	ReflectiveData GetReflectiveData() override;
 };
 
