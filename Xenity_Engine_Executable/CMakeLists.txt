@@ -67,7 +67,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     bz2
     freetype
     pspge
-    pspgum
+    pspvfpu
+    pspgum_vfpu
     pspgu
     pspctrl
     pspdebug

@@ -49,6 +49,7 @@ int RendererGU::Init()
 	void* zbp = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * 2);
 
 	sceGuInit();
+	gumInit();
 
 	sceGuStart(GU_DIRECT, list);
 	sceGuDrawBuffer(displayColorMode, vrelptr(fbp0), PSP_BUF_WIDTH);
