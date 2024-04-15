@@ -16,6 +16,7 @@
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/box_collider.h>
 #include <engine/test_component.h>
+#include <engine/missing_script.h>
 
 #include <engine/graphics/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -26,7 +27,7 @@
 #include <engine/graphics/shader.h>
 #include <engine/graphics/material.h>
 
-std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> ClassRegistry::nameToComponent;
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
 std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 
@@ -41,7 +42,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 	{
 		if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 		{
-			return nameToComponent[name](gameObject); // Call the function to add the component to the gameObject
+			return nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
 		}
 		else
 		{
@@ -55,7 +56,8 @@ std::vector<std::string> ClassRegistry::GetComponentNames()
 	std::vector<std::string> names;
 	for (const auto& kv : nameToComponent)
 	{
-		names.push_back(kv.first);
+		if(kv.second.second)
+			names.push_back(kv.first);
 	}
 	return names;
 }

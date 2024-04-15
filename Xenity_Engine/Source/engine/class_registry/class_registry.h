@@ -34,7 +34,7 @@ public:
 	* @param name Component name
 	*/
 	template<typename T>
-	static void AddComponentClass(const std::string& name)
+	static void AddComponentClass(const std::string& name, bool isVisible = true)
 	{
 		if (name.empty())
 		{
@@ -42,10 +42,11 @@ public:
 		}
 		else
 		{
-			nameToComponent[name] = [](std::shared_ptr<GameObject> go)
+			auto function = [](std::shared_ptr<GameObject> go)
 				{
-					return go->AddComponent<T>();
-				};
+				return go->AddComponent<T>();
+			};
+			nameToComponent[name] = { function , isVisible };
 
 			ClassInfo classInfo;
 			classInfo.name = name;
@@ -153,7 +154,7 @@ public:
 
 private:
 
-	static std::unordered_map <std::string, std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>> nameToComponent;
+	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> nameToComponent;
 	static std::vector<FileClassInfo> fileClassInfos;
 	static std::vector<ClassInfo> classInfos;
 };
