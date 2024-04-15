@@ -9,6 +9,7 @@
 #include <vector>
 #include <optional>
 #include <iostream>
+#include <json.hpp>
 
 class GameObject;
 class Transform;
@@ -36,6 +37,7 @@ typedef std::variant <
 	std::reference_wrapper<float>,
 	std::reference_wrapper<bool>,
 	std::reference_wrapper<std::string>,
+	std::reference_wrapper<nlohmann::json>,
 	std::reference_wrapper<Reflective>,
 	std::reference_wrapper<std::weak_ptr<GameObject>>,
 	std::reference_wrapper<std::weak_ptr<Transform>>,

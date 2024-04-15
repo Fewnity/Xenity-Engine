@@ -172,6 +172,9 @@ public:
 		T value = valueRef;
 		ValueInputState returnValue = ValueInputState::NO_CHANGE;
 
+		if constexpr (std::is_same<T, nlohmann::json>())
+			return returnValue;
+
 		DrawInputTitle(inputName);
 		bool hasChanged = false;
 
