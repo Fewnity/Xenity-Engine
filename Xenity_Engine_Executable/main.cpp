@@ -15,19 +15,20 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Show submesh count somewhere
-Fix duplication crash with missing script
 Multiple gameobject selection
 Rework the documentation
 Clean code
-Update read me
 Add undo/redo commands to DrawVector/DrawFileReference functions
-Fix sprites color with shaders
-Check docker in a thread for faster engine boot
+Add support for mesh material loading
 
 --- Can be for next release
 New Input system
 
 --- Done
+Fix duplication crash with missing script
+Check docker in a thread for faster engine boot
+Update read me
+Fix sprites color with shaders
 Clean folders
 Remove engine location settings
 Fix variables order
@@ -72,7 +73,6 @@ Text scale
 Disable scene save if the project is not compiled
 
 --- To do in a long time
-Add try catch to all json parse
 Regenerate an id the a meta file is corrupted
 Add a property window on components to have values in a new window
 Fix engine assets system
