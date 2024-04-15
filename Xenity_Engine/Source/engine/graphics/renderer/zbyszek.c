@@ -1,3 +1,4 @@
+#if defined(_EE)
 #ifndef __zbyszek__
 #define __zbyszek__
 
@@ -49157,4 +49158,5 @@ static unsigned char zbyszek[] __attribute__((aligned(16))) = {
 	0x71,
 };
 
+#endif
 #endif

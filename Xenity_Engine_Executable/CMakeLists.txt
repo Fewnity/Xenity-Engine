@@ -40,6 +40,7 @@ set(SOURCES_DIR "Source")
 file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c")
 
 list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
+list(FILTER SOURCES EXCLUDE REGEX "Source/glad.c")
 
 # Ajoutez les fichiers source à l'exécutable
 add_executable(${PROJECT_NAME} ${SOURCES})
