@@ -6,12 +6,19 @@
 
 void DockerConfigMenu::Init()
 {
+	dockerStateEvent.Bind(&DockerConfigMenu::SetDockerState, this);
 	Refresh();
 }
 
 void DockerConfigMenu::Refresh() 
 {
-	currentDockerState = Compiler::CheckDockerState();
+	std::thread refreshThread(&Compiler::CheckDockerState, &dockerStateEvent);
+	refreshThread.detach();
+}
+
+void DockerConfigMenu::SetDockerState(const DockerState state)
+{
+	currentDockerState = state;
 }
 
 void DockerConfigMenu::Draw()
