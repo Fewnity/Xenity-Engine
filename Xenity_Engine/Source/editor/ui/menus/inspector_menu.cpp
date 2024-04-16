@@ -462,7 +462,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 	int componentCount = selectedGameObject->GetComponentCount();
 	for (int i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr <Component>& comp = selectedGameObject->components[i];
+		std::shared_ptr <Component> comp = selectedGameObject->components[i];
 
 		const float cursorY = ImGui::GetCursorPosY();
 
