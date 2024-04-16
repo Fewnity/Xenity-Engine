@@ -283,14 +283,17 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 			{
 				result = DockerState::MISSING_IMAGE;
 			}
+			else 
+			{
+				result = DockerState::RUNNING;
+			}
 		}
 	}
 
-	result = DockerState::RUNNING;
 
 	if (callback) 
 	{
-		callback->Trigger(DockerState::RUNNING);
+		callback->Trigger(result);
 	}
 	return result;
 }
