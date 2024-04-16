@@ -14,7 +14,14 @@ class Vector2;
 class WavefrontLoader
 {
 public:
+
+	/**
+	* Load a mesh from a file
+	* @param mesh Mesh file to load
+	* @return True if the mesh was loaded successfully
+	*/
 	static bool LoadFromRawData(const std::shared_ptr <MeshData>& mesh);
+
 private:
 	struct SubMesh
 	{

@@ -23,8 +23,8 @@ public:
 
 	Vector3 velocity = Vector3(0, 0, 0);
 	float drag = 1;
-	bool isStatic = false;
 	float bounce = 0.5f;
 	float gravityMultiplier = 1.0f;
+	bool isStatic = false;
 private:
 };

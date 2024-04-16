@@ -137,6 +137,6 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = material->useLighting;
 	renderSettings.useBlend = material->useTransparency;
 	MeshManager::DrawMesh(GetTransform(), *subMesh, material, renderSettings);
-	//Graphics::DrawMesh(*subMesh, material, )
+	//Graphics::DrawSubMesh(*subMesh, material, )
 	//SpriteManager::Render2DLine(meshData);
 }

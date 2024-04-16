@@ -19,8 +19,8 @@ public:
 class RenderQueue 
 {
 public:
-	int commandIndex = 0;
 	std::vector<RenderCommand> commands;
+	int commandIndex = 0;
 };
 
 class RenderBatch

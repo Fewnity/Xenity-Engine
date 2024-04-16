@@ -7,6 +7,7 @@
 class CrashHandler
 {
 public:
+
 	/**
 	* Enable crash events
 	*/
@@ -14,10 +15,12 @@ public:
 
 	/**
 	* Call a function in a try/catch
+	* @param function Function to call
 	*/
 	static bool CallInTry(void (*function)());
 
 private:
+
 	/**
 	* Called function on error (Not in Editor mode)
 	*/

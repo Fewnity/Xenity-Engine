@@ -12,23 +12,36 @@
 class ProfilerValue
 {
 public:
+
+	/**
+	* Add a time value to the profiler
+	*/
 	void AddValue(long long v)
 	{
 		value += v;
 		addedValue += v;
 	}
 
+	/**
+	* Reset the value
+	*/
 	void ResetValue()
 	{
 		lastValue = value;
 		value = 0;
 	}
 
+	/**
+	* Get the value
+	*/
 	long long GetValue()
 	{
 		return lastValue;
 	}
 
+	/**
+	* Set the last value
+	*/
 	void SetLastValue(long long v)
 	{
 		lastValue = v;
@@ -66,6 +79,10 @@ public:
 	*/
 	static void AddDrawCall();
 
+	/**
+	* Add a number of triangles to the draw triangle counter
+	* @param count Number of triangles to add
+	*/
 	static void AddDrawTriangles(int count);
 
 	/**
@@ -78,6 +95,9 @@ public:
 	*/
 	static int GetDrawCallCount();
 
+	/**
+	* Get draw triangle count
+	*/
 	static int GetDrawTrianglesCount();
 
 	/**

@@ -114,7 +114,6 @@ public:
 	WrapMode GetWrapMode() const;
 
 	int mipmaplevelCount = 0;
-	bool useMipMap = false;
 
 	/**
 	 * Return if the texture is valid
@@ -172,6 +171,7 @@ private:
 	 */
 	void Unload();
 
+	unsigned char *buffer = nullptr;
 	Filter filter = Filter::Bilinear;
 	WrapMode wrapMode = WrapMode::Repeat;
 	unsigned int textureId = 0;
@@ -179,5 +179,6 @@ private:
 
 	int pixelPerUnit = 100;
 	bool isValid = false;
-	unsigned char *buffer = nullptr;
+	public:
+		bool useMipMap = false;
 };

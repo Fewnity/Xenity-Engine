@@ -243,6 +243,6 @@ private:
 		std::function<void(Args...)> function;
 	};
 
-	int functionCount = 0;
 	std::vector<BindedFunctionInfo> functionsInfosList;
+	int functionCount = 0;
 };

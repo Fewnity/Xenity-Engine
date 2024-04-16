@@ -161,7 +161,7 @@ void Graphics::Draw()
 		usedCamera = cameras[cameraIndex].lock();
 		if (usedCamera->GetIsEnabled() && usedCamera->GetGameObject()->GetLocalActive())
 		{
-			SortDrawables();
+			SortTransparentDrawables();
 			CheckLods();
 
 			// Set material as dirty
@@ -391,7 +391,7 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 	return dis1 > dis2;
 }
 
-void Graphics::SortDrawables()
+void Graphics::SortTransparentDrawables()
 {
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
 }
@@ -481,48 +481,12 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 	}
 }
 
-void Graphics::DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	//	if (!meshData || !usedCamera.lock())
-	//		return;
-	//
-	//	drawMeshBenchmark->Start();
-	//
-	//	if (!UseOpenGLFixedFunctions)
-	//	{
-	//		const int materialCount = materials.size();
-	//		for (int i = 0; i < materialCount; i++)
-	//		{
-	//			if (!materials[i])
-	//				continue;
-	//
-	//			materials[i]->Use();
-	//
-	//			if (!currentShader)
-	//				continue;
-	//
-	//			currentShader->SetShaderModel(matrix);
-	//		}
-	//	}
-	//	else
-	//	{
-	//#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-	//		if (!forUI || usedCamera.lock()->isEditor)
-	//			Engine::GetRenderer().SetCameraPosition(usedCamera.lock());
-	//#endif
-	//		Engine::GetRenderer().SetTransform(matrix);
-	//	}
-	//
-	//	Engine::GetRenderer().DrawMeshData(meshData, materials, renderSettings);
-	//	drawMeshBenchmark->Stop();
+	DrawSubMesh(subMesh, material, material->texture, renderSettings, matrix, forUI);
 }
 
-void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
-{
-	DrawMesh(subMesh, material, material->texture, renderSettings, matrix, forUI);
-}
-
-void Graphics::DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
 	/*if (!usedCamera.lock())
 		return;*/

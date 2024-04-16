@@ -90,7 +90,6 @@ public:
 	*/
 	float GetSpotSmoothness() const;
 
-	LightType type = LightType::Directional;
 	Color color = Color();
 
 	void SetIntensity(float intensity);
@@ -118,4 +117,7 @@ private:
 	//For spot light
 	float spotAngle = 30;
 	float spotSmoothness = 0;
+
+public:
+	LightType type = LightType::Directional;
 };

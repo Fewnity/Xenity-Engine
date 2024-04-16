@@ -25,7 +25,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings)
 {
 	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
-	Graphics::DrawMesh(subMesh, material, renderSettings, matrix, false);
+	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
 }
 
 void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings)
@@ -35,5 +35,5 @@ void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const Me
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 
-	Graphics::DrawMesh(subMesh, material, renderSettings, transform->transformationMatrix, false);
+	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform->transformationMatrix, false);
 }

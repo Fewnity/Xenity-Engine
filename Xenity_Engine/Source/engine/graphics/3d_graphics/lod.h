@@ -13,17 +13,28 @@ public:
 
 	ReflectiveData GetReflectiveData() override;
 
+	/**
+	* [Internal] Check the lod
+	*/
 	void CheckLod();
 	void RemoveReferences()  override;
 
 private:
+
+	/**
+	* Use one of the level and disable the others
+	*/
 	void UseLevel(std::weak_ptr<MeshRenderer> levelToEnable, std::weak_ptr<MeshRenderer> levelToDisable0, std::weak_ptr<MeshRenderer> levelToDisable1);
+
+	/**
+	* Set all the level to visible or not
+	*/
 	void SetAllLevel(bool visible);
 
 	std::weak_ptr<MeshRenderer> lod0MeshRenderer;
 	std::weak_ptr<MeshRenderer> lod1MeshRenderer;
-	float lod1Distance = 7;
 	std::weak_ptr<MeshRenderer> lod2MeshRenderer;
+	float lod1Distance = 7;
 	float lod2Distance = 15;
 	float culledDistance = 30;
 };

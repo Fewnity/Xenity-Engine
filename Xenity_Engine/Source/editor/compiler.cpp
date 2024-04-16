@@ -306,7 +306,7 @@ bool Compiler::ExportProjectFiles(const CompilerParams& params)
 	const int idsCount = ids.size();
 	for (int i = 0; i < idsCount; i++)
 	{
-		const FileAndPath* filePath = ProjectManager::GetFileById(ids[i]);
+		const FileInfo* filePath = ProjectManager::GetFileById(ids[i]);
 		if (filePath)
 		{
 			const std::string newPath = filePath->path.substr(projectFolderPathLen, filePath->path.size() - projectFolderPathLen);

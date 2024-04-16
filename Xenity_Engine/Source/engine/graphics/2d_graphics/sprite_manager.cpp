@@ -98,8 +98,8 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 	const glm::mat4 matCopy = glm::scale(transform->transformationMatrix, glm::vec3(w, h, 1));
 
-	//Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
-	Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);
+	//Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
+	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);
 
 	spriteBenchmark->Stop();
 }
@@ -131,7 +131,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
 
-	Graphics::DrawMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matrix, false);
+	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matrix, false);
 	spriteBenchmark->Stop();
 }
 

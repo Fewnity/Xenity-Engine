@@ -29,6 +29,10 @@ public:
 	* [Internal] Init graphics (Load skybox, load some meshes)
 	*/
 	static void Init();
+
+	/**
+	* [Internal] Set default values (fog, skybox, ...), called on init and on unloading a project
+	*/
 	static void SetDefaultValues();
 
 	/**
@@ -48,8 +52,15 @@ public:
 	* Order all drawables
 	*/
 	static void OrderDrawables();
-	static void SortDrawables();
 
+	/**
+	* Sort transparent drawables
+	*/
+	static void SortTransparentDrawables();
+
+	/**
+	* Delete all drawables
+	*/
 	static void DeleteAllDrawables();
 
 	/**
@@ -82,11 +93,30 @@ public:
 	*/
 	static void RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove);
 
-	static void DrawMesh(const std::shared_ptr<MeshData>& meshData, const std::vector<std::shared_ptr<Material>>& materials, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	/**
+	* Draw a submesh
+	* @param subMesh The submesh to draw
+	* @param material The material to use
+	* @param renderSettings The rendering settings
+	* @param matrix The matrix to apply
+	* @param forUI If the mesh is for UI
+	*/
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 	
-	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
-	static void DrawMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	/**
+	* Draw a submesh
+	* @param subMesh The submesh to draw
+	* @param material The material to use
+	* @param texture The texture to use
+	* @param renderSettings The rendering settings
+	* @param matrix The matrix to apply
+	* @param forUI If the mesh is for UI
+	*/
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 
+	/**
+	* Set draw order list as dirty
+	*/
 	static void SetDrawOrderListAsDirty();
 
 	static bool UseOpenGLFixedFunctions;
@@ -114,15 +144,41 @@ public:
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
 	static bool isRenderingBatchDirty;
+
 private:
+	/**
+	* Draw skybox
+	* @param cameraPosition The camera position
+	*/
+	static void DrawSkybox(const Vector3& cameraPosition);
+
+	/**
+	* Check lods
+	*/
+	static void CheckLods();
+
+#if defined(EDITOR)
+	/**
+	* Draw selected item bounding box
+	* @param cameraPosition The camera position
+	*/
+	static void DrawSelectedItemBoundingBox(const Vector3& cameraPosition);
+
+	/**
+	* Draw editor grid
+	* @param cameraPosition The camera position
+	* @param gridAxis The grid axis
+	*/
+	static void DrawEditorGrid(const Vector3& cameraPosition, int gridAxis);
+
+	/**
+	* Draw editor tool
+	* @param cameraPosition The camera position
+	*/
+	static void DrawEditorTool(const Vector3& cameraPosition);
+#endif
+
 	static int iDrawablesCount;
 	static int lodsCount;
 	static bool drawOrderListDirty;
-	static void DrawSkybox(const Vector3& cameraPosition);
-	static void CheckLods();
-#if defined(EDITOR)
-	static void DrawSelectedItemBoundingBox(const Vector3& cameraPosition);
-	static void DrawEditorGrid(const Vector3& cameraPosition, int gridAxis);
-	static void DrawEditorTool(const Vector3& cameraPosition);
-#endif
 };

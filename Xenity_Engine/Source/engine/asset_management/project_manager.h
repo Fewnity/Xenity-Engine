@@ -49,7 +49,7 @@ struct ProjectListItem
 	std::string path;
 };
 
-struct FileAndPath
+struct FileInfo
 {
 	std::string path;
 	std::shared_ptr<File> file;
@@ -85,12 +85,14 @@ public:
 	* Create a project
 	* @param name Name of the project
 	* @param folderPath Project folder parent
+	* @return True if the project has been created
 	*/
 	static bool CreateProject(const std::string& name, const std::string& folderPath);
 
 	/**
 	* Load a project
 	* @param projectPathToLoad Project path
+	* @return True if the project has been loaded
 	*/
 	static bool LoadProject(const std::string& projectPathToLoad);
 
@@ -102,9 +104,16 @@ public:
 	/**
 	* Get file reference by Id
 	* @param id File reference Id
+	* @return File reference
 	*/
 	static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
-	static FileAndPath* GetFileById(const uint64_t id);
+
+	/**
+	* Get file by Id
+	* @param id File Id
+	* @return File
+	*/
+	static FileInfo* GetFileById(const uint64_t id);
 
 	/**
 	* Save the meta file of a file reference
@@ -177,7 +186,11 @@ public:
 		return projectLoaded;
 	}
 
-	static ProjectSettings GetProjectSettings(const std::string& path);
+	/**
+	* Get project settings
+	* @param path Project path
+	*/
+	static ProjectSettings GetProjectSettings(const std::string& projectPath);
 
 	/**
 	* Get opened projects list
@@ -186,21 +199,52 @@ public:
 
 	/**
 	* Save opened projects list
+	* @param projects Projects list
 	*/
 	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
+	/**
+	* Fill project directory with all files and directories
+	*/
 	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory);
+
+	/**
+	* Create project directories
+	*/
 	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
+
+	/**
+	* Refresh project directory
+	*/
 	static void RefreshProjectDirectory();
 
 	/**
 	* Find and get a project directory from a path and a parent directory
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
+
+	/**
+	* Get file type from extension
+	* @param extension File extension
+	* @return File type
+	*/
 	static FileType GetFileType(const std::string& extension);
-	static std::vector<FileAndPath> GetFilesByType(const FileType type);
+
+	/**
+	* Get all files by type
+	* @param type File type
+	* @return Files
+	*/
+	static std::vector<FileInfo> GetFilesByType(const FileType type);
+
+	/**
+	* Get all used files by the game
+	*/
 	static std::vector<uint64_t> GetAllUsedFileByTheGame();
 
+	/**
+	* Get project directory
+	*/
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
 	{
 		return projectDirectory;
@@ -210,18 +254,43 @@ public:
 	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
+
 #if defined(EDITOR)
+	/**
+	* Event called when the project is compiled
+	* @param params Compiler parameters
+	* @param result Compilation result
+	*/
 	static void OnProjectCompiled(CompilerParams params, bool result);
 #endif
+
+	/**
+	* Find all project files
+	*/
 	static void FindAllProjectFiles();
+
+	/**
+	* Create Visual Studio Code settings file
+	*/
 	static void CreateVisualStudioSettings();
 
+	/**
+	* Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
+	* @param path File path
+	* @param id File Id
+	* @return File reference
+	*/
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
+
+	/**
+	* Load meta file
+	* @param fileReference File reference
+	*/
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
-	static std::unordered_map<uint64_t, FileAndPath> projectFilesIds;
+	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
 	static bool projectLoaded;
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;

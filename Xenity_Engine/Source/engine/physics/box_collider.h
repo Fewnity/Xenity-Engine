@@ -45,11 +45,11 @@ public:
 	void SetDefaultSize();
 	void CalculateBoundingBox();
 
-	bool isTrigger = false;
 
 	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
 
 	Vector3 min;
 	Vector3 max;
+	bool isTrigger = false;
 private:
 };

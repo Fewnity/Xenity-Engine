@@ -113,8 +113,13 @@ public:
 	}
 
 private:
+
+	/**
+	* Update the unsigned ints
+	*/
 	void UpdateUnsignedInts();
 
+	// Color informations, default is white
 	RGBA rgba = RGBA(1, 1, 1, 1);
 	unsigned int rgbaInt = 0xFFFFFFFF;
 	unsigned int abgrInt = 0xFFFFFFFF;

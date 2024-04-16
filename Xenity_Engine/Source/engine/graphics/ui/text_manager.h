@@ -26,12 +26,12 @@ struct Character
 {
 	glm::ivec2 Size = glm::ivec2(0, 0);          // Size of glyph
 	glm::ivec2 Bearing = glm::ivec2(0, 0);       // Offset from baseline to left/top of glyph
-	unsigned int Advance = 0; // Offset to advance to next glyph
 
 	Vector2 rightSize = Vector2(0);
 	Vector2 rightBearing = Vector2(0);
 
 	float rightAdvance = 0;
+	unsigned int Advance = 0; // Offset to advance to next glyph
 
 	Vector2 uv = Vector2(0);
 	Vector2 uvOffet = Vector2(0);
@@ -69,12 +69,6 @@ public:
 	static void Init();
 
 	/**
-	* Create font
-	* @filePath Font file path
-	*/
-	//static bool CreateFont(std::shared_ptr<Font>, std::string filePath);
-
-	/**
 	* Draw a text
 	* @param text Text
 	* @param textInfo Text info
@@ -85,6 +79,7 @@ public:
 	* @param canvas Is for canvas
 	* @param mesh Mesh
 	* @param font Font
+	* @param material Material
 	*/
 	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr <Material>& material);
 
@@ -94,6 +89,7 @@ public:
 	* @param textLen Text lenght
 	* @param font Font
 	* @param scale Test scale
+	* @return Text informations
 	*/
 	static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
 
@@ -105,6 +101,8 @@ public:
 	* @param verticalAlignment Vertical alignment
 	* @param color Color
 	* @param font Font
+	* @param scale Scale
+	* @return The mesh
 	*/
 	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font, float scale);
 

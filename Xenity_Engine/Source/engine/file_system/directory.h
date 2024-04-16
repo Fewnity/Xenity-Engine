@@ -18,6 +18,7 @@ public:
 
 	/**
 	* Get all the files of the directory (can be very slow)
+	* @param recursive If true, get all the files of the subdirectories
 	*/
 	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
 
@@ -25,6 +26,7 @@ public:
 	* Check if the directory exists
 	*/
 	bool CheckIfExist() const;
+
 	std::vector<std::shared_ptr<Directory>> subdirectories;
 	std::vector<std::shared_ptr<File>> files;
 
@@ -34,11 +36,6 @@ public:
 	std::string GetPath() const
 	{
 		return path;
-		/*#if defined(__vita__)
-				return path.substr(4);
-		#else
-				return path;
-		#endif*/
 	}
 
 private:

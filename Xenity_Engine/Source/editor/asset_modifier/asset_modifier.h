@@ -11,6 +11,7 @@ class File;
 class AssetModifier
 {
 public:
+
 	/**
 	* Create a cropped texture from a texture
 	*/

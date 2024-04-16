@@ -26,13 +26,9 @@ public:
 
 	/**
 	* [Internal] Init file system
+	* @return 0 if success
 	*/
 	int InitFileSystem();
-
-	/**
-	* Get game path
-	*/
-	std::string GetGamePath();
 
 	/**
 	* Create a directory

@@ -13,11 +13,9 @@ class API Transform : public Reflective, public std::enable_shared_from_this<Tra
 public:
 	Transform() = delete;
 	Transform(const std::shared_ptr<GameObject>& gameObject);
+	virtual ~Transform() = default;
 
 	ReflectiveData GetReflectiveData() override;
-
-
-	virtual ~Transform() = default;
 
 	/**
 	* Get position
@@ -134,9 +132,6 @@ public:
 	*/
 	void UpdateWorldValues();
 
-	// [Internal]
-	bool isTransformationMatrixDirty = true;
-
 private:
 
 	/**
@@ -170,13 +165,22 @@ private:
 
 	/**
 	* Get localPosition from matrices
+	* @param childMatrix The child matrix
+	* @param parentMatrix The parent matrix
+	* @return The local position
 	*/
 	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const;
 
 	/**
-	*
+	* Get localRotation from matrices
+	* @param childMatrix The child matrix
+	* @param parentMatrix The parent matrix
+	* @return The local rotation
 	*/
 	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const;
 
+public:
+	// [Internal]
+	bool isTransformationMatrixDirty = true;
 };
 

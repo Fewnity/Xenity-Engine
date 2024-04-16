@@ -58,7 +58,6 @@ public:
 	void SetShaderAttribut(const char* attribut, int value);
 
 	void UpdateLights(bool disableLights);
-	bool useTessellation = false;
 
 	static std::shared_ptr<Shader> MakeShader();
 private:
@@ -77,4 +76,7 @@ private:
 	unsigned int programId = 0;
 	unsigned int modelLocation = 0;
 	unsigned int projectionLocation = 0;
+
+public:
+	bool useTessellation = false;
 };

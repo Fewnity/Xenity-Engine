@@ -93,6 +93,9 @@ class Compiler
 {
 public:
 
+	/**
+	* Initialize the compiler
+	*/
 	static void Init();
 
 	/**
@@ -122,34 +125,55 @@ public:
 	 */
 	static void HotReloadGame();
 
+	/**
+	* Get the event when the compilation ends
+	*/
 	static Event<CompilerParams, bool>& GetOnCompilationEndedEvent()
 	{
 		return OnCompilationEndedEvent;
 	}
 
+	/**
+	* Get the event when the compilation starts
+	*/
 	static Event<CompilerParams>& GetOnCompilationStartedEvent()
 	{
 		return OnCompilationStartedEvent;
 	}
 
+	/**
+	* Check if Docker is installed and running
+	* @param callback Event to call when the check is done if the check is async
+	* @return Docker state
+	*/
 	static DockerState CheckDockerState(Event<DockerState>* callback);
 
+	/**
+	* Create a Docker image to install all needed sdk and tools
+	* @return True if the image was created
+	*/
 	static bool CreateDockerImage();
 
 private:
 
 	/**
 	* Export all game's files into the build folder
+	* @param params Compilation parameters
+	* @return True if the export was successful
 	*/
 	static bool ExportProjectFiles(const CompilerParams& params);
 
 	/**
 	* Execute all created copy entries and clear the list
+	* @return True if all copy entries were successful
 	*/
 	static bool ExecuteCopyEntries();
 
 	/**
 	* Create a new copy to be executed later
+	* @param isFolder True if the source is a folder
+	* @param source Source path
+	* @param dest Destination path
 	*/
 	static void AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest);
 
@@ -164,6 +188,7 @@ private:
 	 * @param platform Platform target
 	 * @param buildType Compile for hot reloading or for a simple build or for build and run
 	 * @param exportPath Folder location for the build
+	 * @return Compilation result
 	 */
 	static CompileResult CompileGame(
 		Platform platform,
@@ -173,24 +198,28 @@ private:
 	/**
 	 * Compile code for Windows
 	 * @param params Compilation parameters
+	 * @return Compilation result
 	 */
 	static CompileResult CompileWindows(const CompilerParams &params);
 
 	/**
 	 * Compile code in WSL for PSP or PsVita
 	 * @param params Compilation parameters
+	 * @return Compilation result
 	 */
 	static CompileResult CompileWSL(const CompilerParams &params);
 
 	/**
 	 * Compile code in WSL for PSP or PsVita
 	 * @param params Compilation parameters
+	 * @return Compilation result
 	 */
 	static CompileResult CompileInDocker(const CompilerParams& params);
 
 	/**
 	 * To call when the compile function ends
-	 *
+	 * @param result Compilation result
+	 * @param params Compilation parameters
 	 */
 	static void OnCompileEnd(CompileResult result, CompilerParams& params);
 
@@ -206,24 +235,27 @@ private:
 
 	/**
 	 * Get the command to navigate to the engine folder
+	 * @param params Compilation parameters
 	 */
 	static std::string GetNavToEngineFolderCommand(const CompilerParams &params);
 
 	/**
 	 * Get the command to compile the game as a dynamic library
-	 * @param buildType
+	 * @param params Compilation parameters
+	 * @param sourceDestFolders Source code destination folders
 	 */
 	static std::string GetCompileGameLibCommand(const CompilerParams &params, const std::vector<std::string>& sourceDestFolders);
 
 	/**
 	 * Get the command to compile the game as an executable file
+	 * @param params Compilation parameters
 	 */
 	static std::string GetCompileExecutableCommand(const CompilerParams &params);
 
 	/**
 	 * Start game for build and run (PsVita not supported)
-	 * @param buildType
-	 * @param location of the game folder
+	 * @param platform Platform target
+	 * @param exportPath Folder location of the build
 	 */
 	static void StartGame(Platform platform, const std::string &exportPath);
 

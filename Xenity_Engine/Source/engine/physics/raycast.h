@@ -10,9 +10,9 @@ class BoxCollider;
 
 struct RaycastHit 
 {
-	float distance = 0;
-	Vector3 hitPosition = Vector3(0,0,0);
 	std::weak_ptr<GameObject> hitGameObject;
+	Vector3 hitPosition = Vector3(0,0,0);
+	float distance = 0;
 };
 
 class API Raycast

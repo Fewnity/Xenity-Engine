@@ -21,19 +21,13 @@ public:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	Vector3 position = Vector3(0, 0, 0);
-	float size = 16;
-	float lineSpacing = 0;
-	float characterSpacing = 0;
-
 	/**
 	 * [Internal]
 	 */
 	int GetDrawPriority() const override;
 
 	std::shared_ptr<Material> material = nullptr;
-	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
-	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
+
 
 	/**
 	* Set text color
@@ -71,17 +65,42 @@ public:
 	void SetFont(const std::shared_ptr<Font>& font);
 
 private:
+
+	/**
+	* Called when the component is disabled
+	*/
 	void OnDisabled() override;
+
+	/**
+	* Called when the component is enabled
+	*/
 	void OnEnabled() override;
+
+	/**
+	* Create the render commands
+	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
+
+	/**
+	* Draw the command
+	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	float fontSize = 1;
+	std::shared_ptr<MeshData> mesh = nullptr;
 	std::shared_ptr<Font> font;
+	TextInfo* textInfo = nullptr;
 	std::string text;
 	Color color = Color();
 	int orderInLayer = 0;
-	TextInfo* textInfo = nullptr;
+	float fontSize = 1;
+
+public:
+	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
+	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
+	float size = 16;
+	float lineSpacing = 0;
+	float characterSpacing = 0;
+
+private:
 	bool isTextInfoDirty = true;
-	std::shared_ptr<MeshData> mesh = nullptr;
 };

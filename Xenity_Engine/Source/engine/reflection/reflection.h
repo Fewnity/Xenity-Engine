@@ -68,8 +68,8 @@ typedef std::variant <
 class EnumValueName 
 {
 public:
-	int value;
 	std::string name;
+	int value;
 };
 
 /**
@@ -224,10 +224,10 @@ public:
 	ReflectiveEntry() = default;
 	std::optional<VariableReference> variable;
 	uint64_t typeId = 0;
+	TypeSpawner* typeSpawner = nullptr;
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 	bool isEnum = false;
-	TypeSpawner* typeSpawner = nullptr;
 };
 
 //typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;

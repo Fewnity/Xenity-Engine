@@ -59,16 +59,6 @@ public:
 		return yGridSize;
 	}
 
-	/**
-	* Set to true to reduce accurary but improve speed
-	*/
-	bool lowAccuracy = false;
-
-	/**
-	* Set to true to allow the path to cross corners
-	*/
-	bool canPassCorners = false;
-
 private:
 
 	class Tile
@@ -155,8 +145,19 @@ private:
 	Vector2 endPos = Vector2(0, 0);
 	Tile* currentTile = nullptr;
 	Tile* endTile = nullptr;
-	bool cantAccess = false;
 	int xGridSize = 0;
 	int yGridSize = 0;
+	bool cantAccess = false;
+
+public:
+	/**
+	* Set to true to reduce accurary but improve speed
+	*/
+	bool lowAccuracy = false;
+
+	/**
+	* Set to true to allow the path to cross corners
+	*/
+	bool canPassCorners = false;
 };
 

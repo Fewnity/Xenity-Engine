@@ -32,6 +32,7 @@ public:
 	/**
 	* Add a function to create a component
 	* @param name Component name
+	* @param isVisible Is the component visible in the editor
 	*/
 	template<typename T>
 	static void AddComponentClass(const std::string& name, bool isVisible = true)
@@ -60,10 +61,15 @@ public:
 	*/
 	static void RegisterEngineComponents();
 
+	/**
+	* Register all engine file classes
+	*/
 	static void RegisterEngineFileClasses();
 
 	/**
 	* Add a component to a GameObject from the component name
+	* @param name Component name
+	* @param gameObject GameObject to add the component to
 	*/
 	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
 
@@ -77,6 +83,11 @@ public:
 	*/
 	static void Reset();
 
+	/**
+	* Add a file class info into the list
+	* @param name File class name
+	* @param fileType File type
+	*/
 	template<typename T>
 	static void AddFileClass(const std::string& name, const FileType fileType)
 	{
@@ -94,6 +105,9 @@ public:
 		}
 	}
 
+	/**
+	* Get a file class info from the class type
+	*/
 	template<typename T>
 	static const FileClassInfo* GetFileClassInfo()
 	{
@@ -111,6 +125,9 @@ public:
 		return nullptr;
 	}
 
+	/**
+	* Get a class info from the class type
+	*/
 	template<typename T>
 	static const ClassInfo* GetClassInfo()
 	{
@@ -128,6 +145,11 @@ public:
 		return nullptr;
 	}
 
+	/**
+	* Get a class name from the class type id (hash code)
+	* @param classId Class type id (hash code)
+	* @return Class name (Component if not found)
+	*/
 	static const std::string GetClassName(uint64_t classId)
 	{
 		const int classInfosCount = classInfos.size();

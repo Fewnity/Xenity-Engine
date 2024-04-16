@@ -33,32 +33,64 @@ public:
 		return orderInLayer;
 	}
 
+	/**
+	* Set the color of the sprite
+	*/
 	void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
 
+	/**
+	* Get the material of the sprite
+	*/
 	std::shared_ptr <Material> GetMaterial()
 	{
 		return material;
 	}
 
+	/**
+	* Get the texture of the sprite
+	*/
 	std::shared_ptr <Texture> GetTexture()
 	{
 		return texture;
 	}
 
+	/**
+	* Set the material of the sprite
+	*/
 	void SetMaterial(std::shared_ptr <Material> material);
+	
+	/**
+	* Set the texture of the sprite
+	*/
 	void SetTexture(std::shared_ptr <Texture> texture);
 
 private:
+
+	/**
+	* Called when the component is disabled
+	*/
 	void OnDisabled() override;
+
+	/**
+	* Called when the component is enabled
+	*/
 	void OnEnabled() override;
+
+	/**
+	* Create the render commands
+	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
+
+	/**
+	* Draw the command
+	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	Color color = Color();
-	int orderInLayer = 0;
 	std::shared_ptr <Material> material = nullptr;
 	std::shared_ptr <Texture> texture = nullptr;
+	int orderInLayer = 0;
 };

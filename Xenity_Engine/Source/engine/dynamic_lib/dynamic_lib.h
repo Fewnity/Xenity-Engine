@@ -12,12 +12,16 @@
 
 class GameInterface;
 
+/**
+ * Used to load/unload a game DLL (used only on Windows)
+ */
 class DynamicLibrary
 {
 public:
 
 	/**
 	* Load a game DLL
+	* @param libraryName Name of the library
 	*/
 	static void LoadGameLibrary(const std::string& libraryName);
 

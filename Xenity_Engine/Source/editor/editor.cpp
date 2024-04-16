@@ -727,7 +727,7 @@ void Editor::OnDragAndDropFileFinished()
 	ProjectManager::RefreshProjectDirectory();
 }
 
-bool Editor::IsParentOf(/*const std::shared_ptr<GameObject>& baseParent, */ const std::shared_ptr<GameObject>&parent, const std::shared_ptr<GameObject>& child)
+bool Editor::IsParentOf(const std::shared_ptr<GameObject>&parent, const std::shared_ptr<GameObject>& child)
 {
 	if (parent == nullptr || child == nullptr)
 		return false;
@@ -754,36 +754,36 @@ bool Editor::IsParentOf(/*const std::shared_ptr<GameObject>& baseParent, */ cons
 	return false;
 }
 
-std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vector<std::shared_ptr<GameObject>> go)
+std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vector<std::shared_ptr<GameObject>> parentsAndChildren)
 {
-	std::vector<std::shared_ptr<GameObject>> newList = go;
+	std::vector<std::shared_ptr<GameObject>> parentsAndChildrenCopy = parentsAndChildren;
 
-	int goCount = go.size();
+	int goCount = parentsAndChildren.size();
 	for (int i = 0; i < goCount; i++)
 	{
-		std::shared_ptr<GameObject> currentGameObject = newList[i];
+		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
 		if (currentGameObject == nullptr) 
 		{
 			goCount--;
-			newList.erase(newList.begin() + i);
+			parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + i);
 			i--;
 		}
 	}
 
 	for (int i = 0; i < goCount; i++)
 	{
-		std::shared_ptr<GameObject> currentGameObject = newList[i];
+		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
 		
 		for (int j = 0; j < goCount; j++)
 		{
-			std::shared_ptr<GameObject> currentGameObject2 = newList[j];
+			std::shared_ptr<GameObject> currentGameObject2 = parentsAndChildrenCopy[j];
 			if (currentGameObject == currentGameObject2)
 				continue;
 
 			if (IsParentOf(currentGameObject, currentGameObject2)) 
 			{
 				goCount--;
-				newList.erase(newList.begin() + j);
+				parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + j);
 				if (j <= i)
 					i--;
 				j--;
@@ -792,7 +792,7 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 		}
 	}
 
-	return newList;
+	return parentsAndChildrenCopy;
 }
 
 void Editor::CreateMenus()

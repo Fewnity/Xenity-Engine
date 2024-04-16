@@ -106,7 +106,7 @@ public:
 
 	/**
 	* [Internal] Change Frame buffer size in pixel
-	* @param
+	* @param resolution The new resolution
 	*/
 	void ChangeFrameBufferSize(const Vector2Int& resolution);
 
@@ -149,21 +149,19 @@ public:
 		return aspect;
 	}
 
-	// [Internal]
-	bool isEditor = false;
+
 	// [Internal]
 	unsigned int secondFramebufferTexture = -1;
-	glm::mat4 projection;
-	glm::mat4 canvasProjection;
-	void CopyMultiSampledFrameBuffer();
-	bool useMultisampling = true;
-	// [Internal]
-	bool lastMultisamplingValue = useMultisampling;
-	// [Internal]
-	bool isProjectionDirty = true;
 
 private:
 	unsigned int framebufferTexture = -1;
+
+public:
+	glm::mat4 projection;
+	glm::mat4 canvasProjection;
+	void CopyMultiSampledFrameBuffer();
+
+private:
 	unsigned int framebuffer = -1;
 	unsigned int secondFramebuffer = -1;
 	int width, height;
@@ -176,4 +174,13 @@ private:
 
 	unsigned int depthframebuffer = -1;
 	bool needFrameBufferUpdate = true;
+
+public:
+	bool useMultisampling = true;
+	// [Internal]
+	bool lastMultisamplingValue = useMultisampling;
+	// [Internal]
+	bool isProjectionDirty = true;
+	// [Internal]
+	bool isEditor = false;
 };

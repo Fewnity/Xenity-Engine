@@ -42,16 +42,19 @@ public:
 
 	/**
 	* Set volume
+	* @param _volume
 	*/
 	void SetVolume(float _volume);
 
 	/**
 	* Set panning
+	* @param panning
 	*/
 	void SetPanning(float panning);
 
 	/**
 	* Set is looping
+	* @param isLooping
 	*/
 	void SetLoop(bool isLooping);
 
@@ -89,10 +92,11 @@ public:
 
 	void OnDrawGizmos() override;
 
-	// [Internal]
-	bool isEditor = false;
-
 private:
+
+	/**
+	* Get shared pointer from this
+	*/
 	std::shared_ptr<AudioSource> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
@@ -103,4 +107,8 @@ private:
 	bool loop = true;
 	bool isPlaying = false;
 	bool playOnAwake = true;
+
+public:
+	// [Internal]
+	bool isEditor = false;
 };

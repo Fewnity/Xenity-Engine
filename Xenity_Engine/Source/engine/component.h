@@ -55,7 +55,10 @@ public:
 	bool isAwakeCalled = false;
 
 	bool waitingForDestroy = false;
+private:
+	bool isEnabled = true;
 
+public:
 
 	/**
 	* Set component's GameObject
@@ -92,5 +95,4 @@ protected:
 private:
 	std::weak_ptr <GameObject> gameObject;
 	std::weak_ptr <Transform> transform;
-	bool isEnabled = true;
 };

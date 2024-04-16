@@ -11,10 +11,10 @@ uint64_t FileHandler::lastModifiedFileTime = 0;
 uint32_t FileHandler::lastFileCount = 0;
 uint32_t FileHandler::tempFileCount = 0;
 
-bool FileHandler::HasCodeChanged(const std::string& path)
+bool FileHandler::HasCodeChanged(const std::string& folderPath)
 {
 	bool changed = false;
-	for (const auto& file : std::filesystem::directory_iterator(path))
+	for (const auto& file : std::filesystem::directory_iterator(folderPath))
 	{
 		// Check is file
 		if (!file.is_regular_file()) continue;
@@ -37,12 +37,12 @@ bool FileHandler::HasCodeChanged(const std::string& path)
 	return changed;
 }
 
-bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
+bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& folderPath)
 {
 	bool changed = false;
 	try
 	{
-		for (const auto& file : std::filesystem::directory_iterator(path))
+		for (const auto& file : std::filesystem::directory_iterator(folderPath))
 		{
 			// Check is file
 			if (!file.is_regular_file())
@@ -82,10 +82,10 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& path)
 }
 
 
-bool FileHandler::HasFileChangedOrAdded(const std::string& path)
+bool FileHandler::HasFileChangedOrAdded(const std::string& folderPath)
 {
 	tempFileCount = 0;
-	bool result = HasFileChangedOrAddedRecursive(path);
+	bool result = HasFileChangedOrAddedRecursive(folderPath);
 	if (tempFileCount != lastFileCount)
 	{
 		result = true;

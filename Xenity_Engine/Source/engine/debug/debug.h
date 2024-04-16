@@ -39,18 +39,21 @@ public:
 	/**
 	* Print a text
 	* @param text Text to print
+	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void Print(const std::string& text, bool hideInConsole = false);
 
 	/**
 	* Print an error
 	* @param text Text to print
+	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void PrintError(const std::string& text, bool hideInConsole = false);
 
 	/**
 	* Print a warning
 	* @param text Text to print
+	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void PrintWarning(const std::string& text, bool hideInConsole = false);
 
@@ -82,6 +85,9 @@ public:
 	static float SendProfilerDelay;
 	static std::vector<DebugHistory> debugMessageHistory;
 
+	/**
+	* Get the event when a debug message is printed
+	*/
 	static Event<>& GetOnDebugLogEvent()
 	{
 		return OnDebugLogEvent;
@@ -89,8 +95,11 @@ public:
 
 private:
 
-	static Event<> OnDebugLogEvent;
-
+	/**
+	* Add a message in the history
+	* @param message Message to add
+	* @param messageType Type of the message
+	*/
 	static void AddMessageInHistory(const std::string& message, DebugType messageType);
 
 	/**
@@ -111,6 +120,7 @@ private:
 	*/
 	static void PrintInFile(const std::string& text);
 
+	static Event<> OnDebugLogEvent;
 	static std::string debugText;
 	static std::shared_ptr<Socket> socket;
 	static float SendProfilerCooldown;

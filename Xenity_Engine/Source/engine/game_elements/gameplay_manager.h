@@ -57,14 +57,30 @@ public:
 	*/
 	static void UpdateComponents();
 
+	/**
+	* Order components by their update order
+	*/
 	static void OrderComponents();
+
+	/**
+	* Initialise all components
+	*/
 	static void InitialiseComponents();
+
+	/**
+	* Remove destroyed GameObjects
+	*/
 	static void RemoveDestroyedGameObjects();
+
+	/**
+	* Remove destroyed components
+	*/
 	static void RemoveDestroyedComponents();
 
 	/**
 	* Set game state
 	* @param _gameState New game state
+	* @param restoreScene If true, the scene will be restored
 	*/
 	static void SetGameState(GameState _gameState, bool restoreScene);
 
@@ -76,6 +92,9 @@ public:
 		return gameState;
 	}
 
+	/**
+	* Get the OnPlay event
+	*/
 	static Event<>& GetOnPlayEvent() 
 	{
 		return OnPlayEvent;

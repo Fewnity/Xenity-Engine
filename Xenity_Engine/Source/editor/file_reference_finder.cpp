@@ -51,7 +51,6 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 template<typename T>
 bool FileReferenceFinder::GetFileRefId(const T& var, std::vector <uint64_t>& ids)
 {
-	Debug::PrintError("[FileReferenceFinder::GetFileRefId] Not implemented!");
 	return false;
 }
 

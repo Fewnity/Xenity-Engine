@@ -33,30 +33,43 @@ public:
 
 	void LoadFileReference() override;
 
-	std::shared_ptr<Shader> shader = nullptr;
+	/**
+	* Set attribute of the material
+	* @param attribute The attribute to set
+	* @param value The value to set
+	*/
 	void SetAttribute(const char* attribute, const Vector2& value);
 	void SetAttribute(const char* attribute, const Vector3& value);
 	void SetAttribute(const char* attribute, const Vector4& value);
-	//void SetAttribute(const char* attribut, Texture* value);
 	void SetAttribute(const char* attribute, const float value);
 	void SetAttribute(const char* attribute, const int value);
+	//void SetAttribute(const char* attribut, Texture* value);
 
 	static std::shared_ptr<Material> MakeMaterial();
 
 	// [Internal]
-	bool updated = false;
-	bool useLighting = false;
-	bool useTransparency = false;
-	std::shared_ptr<Texture> texture;
 private:
+
+	/**
+	* Update the material
+	*/
 	void Update();
+
 	std::weak_ptr<Camera> lastUsedCamera;
-	IDrawableTypes lastUpdatedType = IDrawableTypes::Draw_3D;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> uniformsVector2;
 	std::unordered_map <const char*, Vector3> uniformsVector3;
 	std::unordered_map <const char*, Vector4> uniformsVector4;
 	std::unordered_map <const char*, int> uniformsInt;
 	std::unordered_map <const char*, float> uniformsFloat;
+
+public:
+	std::shared_ptr<Shader> shader = nullptr;
+	std::shared_ptr<Texture> texture;
+	IDrawableTypes lastUpdatedType = IDrawableTypes::Draw_3D;
+	bool updated = false;
+	bool useLighting = false;
+	bool useTransparency = false;
+
 };
 

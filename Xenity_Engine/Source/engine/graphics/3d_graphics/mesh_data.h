@@ -17,7 +17,7 @@
 struct Vertex
 {
 	float u, v;
-#ifdef __PSP__
+#if defined(__PSP__)
 	unsigned int color;
 #else
 	float r, g, b, a;
@@ -85,6 +85,11 @@ public:
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
 
+	/**
+	* Update ps2 packets
+	* @param index The index of the submesh
+	* @param texture The texture to use
+	*/
 	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
 
 	/**
@@ -159,17 +164,22 @@ public:
 
 	void SendDataToGpu();
 
+	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+
+	Vector3 minBoundingBox;
+	Vector3 maxBoundingBox;
+
 	int subMeshCount = 0;
 	bool hasUv = false;
 	bool hasNormal = false;
 	bool hasColor = true;
 	bool hasIndices = true;
 	bool isQuad = false;
-	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 	bool isValid = true;
 
-	Vector3 minBoundingBox;
-	Vector3 maxBoundingBox;
+	/**
+	* Compute the bounding box of the mesh
+	*/
 	void ComputeBoundingBox();
 
 private:
@@ -177,5 +187,10 @@ private:
 	bool isOnVram = true;
 #endif
 	void Unload();
+
+	/**
+	* Free the mesh data
+	* @param deleteSubMeshes If the submeshes should be deleted
+	*/
 	void FreeMeshData(bool deleteSubMeshes);
 };

@@ -12,13 +12,13 @@
 #include <stb_vorbis.c>
 
 
-void AudioClipStream::OpenStream(std::shared_ptr<File> file)
+void AudioClipStream::OpenStream(std::shared_ptr<File> audioFile)
 {
-	const std::string& path = file->GetPath();
+	const std::string& path = audioFile->GetPath();
 	Debug::Print("Loading audio clip: " + path, true);
 
 	// To lower extention
-	std::string lowerExt = file->GetFileExtension().substr(1);
+	std::string lowerExt = audioFile->GetFileExtension().substr(1);
 	const size_t pathSize = lowerExt.size();
 	for (size_t i = 0; i < pathSize; i++)
 	{

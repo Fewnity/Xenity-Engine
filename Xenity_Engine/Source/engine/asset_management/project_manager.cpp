@@ -48,7 +48,7 @@
 using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
-std::unordered_map<uint64_t, FileAndPath> ProjectManager::projectFilesIds;
+std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
 ProjectSettings ProjectManager::projectSettings;
 std::string ProjectManager::projectFolderPath = "";
@@ -202,7 +202,7 @@ void ProjectManager::FindAllProjectFiles()
 	// Fill projectFilesIds
 	for (const auto& kv : compatibleFiles)
 	{
-		FileAndPath fileAndPath = FileAndPath();
+		FileInfo fileAndPath = FileInfo();
 		fileAndPath.file = kv.first;
 		fileAndPath.path = kv.first->GetPath();
 		projectFilesIds[kv.first->GetUniqueId()] = fileAndPath;
@@ -608,16 +608,16 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	std::vector<uint64_t> ids;
 #if defined(EDITOR)
 	int idCount = 0;
-	const std::vector<FileAndPath> sceneFiles = GetFilesByType(FileType::File_Scene);
-	const int scenCount = sceneFiles.size();
-	for (int i = 0; i < scenCount; i++)
+	const std::vector<FileInfo> sceneFiles = GetFilesByType(FileType::File_Scene);
+	const int sceneCount = sceneFiles.size();
+	for (int i = 0; i < sceneCount; i++)
 	{
 		ids.push_back(sceneFiles[i].file->GetUniqueId());
 		std::shared_ptr<File> jsonFile = sceneFiles[i].file;
 		const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
-			std::string jsonString = jsonFile->ReadAll();
+			const std::string jsonString = jsonFile->ReadAll();
 			jsonFile->Close();
 
 			try
@@ -641,14 +641,21 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					{
 						ids.push_back(idKv.value());
 						std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
-						FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
+						if (fileRef) 
+						{
+							FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
+						}
+						else 
+						{
+							Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].file->GetFileName(), true);
+						}
 						idCount++;
 					}
 				}
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[SceneManager::LoadScene] Scene file error", true);
+				Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] Scene file error", true);
 				continue;
 			}
 		}
@@ -657,9 +664,9 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	return ids;
 }
 
-std::vector<FileAndPath> ProjectManager::GetFilesByType(const FileType type)
+std::vector<FileInfo> ProjectManager::GetFilesByType(const FileType type)
 {
-	std::vector<FileAndPath> fileList;
+	std::vector<FileInfo> fileList;
 	for (const auto& fileinfo : projectFilesIds)
 	{
 		if (fileinfo.second.type == type)
@@ -671,7 +678,7 @@ std::vector<FileAndPath> ProjectManager::GetFilesByType(const FileType type)
 	return fileList;
 }
 
-FileAndPath* ProjectManager::GetFileById(const uint64_t id)
+FileInfo* ProjectManager::GetFileById(const uint64_t id)
 {
 	if (projectFilesIds.contains(id))
 	{
@@ -714,10 +721,10 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	return fileRef;
 }
 
-ProjectSettings ProjectManager::GetProjectSettings(const std::string& path)
+ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPath)
 {
 	ProjectSettings settings;
-	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path + PROJECT_SETTINGS_FILE_NAME);
+	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectPath + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
 	{
 		std::string jsonString = "";

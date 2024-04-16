@@ -33,7 +33,7 @@ public:
 	*/
 	static uint64_t GenerateUniqueId(bool forFile);
 private:
-	bool forFile = false;
 	uint64_t uniqueId;
+	bool forFile = false;
 };
 

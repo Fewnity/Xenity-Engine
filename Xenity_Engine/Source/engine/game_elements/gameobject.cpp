@@ -92,11 +92,6 @@ void GameObject::Setup()
 
 #pragma endregion
 
-void GameObject::RemoveComponent(const std::weak_ptr<Component>& weakComponent)
-{
-	RemoveComponent(weakComponent.lock());
-}
-
 void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 {
 	// If the component is not already waiting for destroy
@@ -116,11 +111,6 @@ void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 			}
 		}
 	}
-}
-
-void GameObject::AddChild(const std::weak_ptr<GameObject>& weakNewChild)
-{
-	AddChild(weakNewChild.lock());
 }
 
 void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
@@ -195,11 +185,6 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 		parent.reset();
 		transform->OnParentChanged();
 	}
-}
-
-void GameObject::SetParent(const std::weak_ptr<GameObject>& gameObject)
-{
-	SetParent(gameObject.lock());
 }
 
 void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componentToAdd)

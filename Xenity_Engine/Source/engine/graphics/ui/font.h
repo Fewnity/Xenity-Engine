@@ -26,7 +26,9 @@ public:
 	Character* Characters[256] = {};
 	float maxCharHeight = 0;
 
-	// [Internal]
+	/**
+	* [Internal] Get the shared pointer of this object
+	*/
 	std::shared_ptr<Font> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Font>(shared_from_this());

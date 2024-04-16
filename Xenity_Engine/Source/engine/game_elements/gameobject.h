@@ -13,50 +13,59 @@ class Transform;
 
 /**
 * Create a GameObject with the default name
+* @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObject();
 
 /**
 * Create a GameObject
 * @param name GameObject name
+* @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
 /**
 * Create a GameObject not visible in the hierarchy
 * @param name GameObject name
+* @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
 
 /**
 * Find a GameObject with a name
 * @param name GameObject name
+* @return The found GameObject
 */
 API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
 
 /**
 * Find a GameObject with an id
 * @param id GameObject id
+* @return The found GameObject
 */
 API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 
 /**
 * Find a component with an id
 * @param id Component id
+* @return The found component
 */
 API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 
 /**
 * Find GameObjects with a name
 * @param name GameObjects name
+* @return The found GameObjects
 */
 API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
 
 class API GameObject : public Reflective, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
+
 	GameObject();
 	GameObject(const std::string& name);
+
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
@@ -73,27 +82,22 @@ public:
 
 	std::weak_ptr<GameObject> parent;
 
-#if defined(EDITOR)
-	bool isSelected = false;
-#endif
-
 	/**
 	* Add a child to the GameObject
 	* @param gameObject Child to add
 	*/
-	void AddChild(const std::weak_ptr<GameObject>& gameObject);
 	void AddChild(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* Set GameObject's parent
 	* @param gameObject New parent
 	*/
-	void SetParent(const std::weak_ptr<GameObject>& gameObject);
 	void SetParent(const std::shared_ptr<GameObject>& gameObject);
-	bool waitingForDestroy = false;
+
 
 	/**
 	* Add a component
+	* @return The added component
 	*/
 	template <typename T>
 	std::shared_ptr<T> AddComponent()
@@ -105,12 +109,13 @@ public:
 
 	/**
 	* Remove a component
+	* @param component Component to remove
 	*/
-	void RemoveComponent(const std::weak_ptr <Component>& weakComponent);
 	void RemoveComponent(const std::shared_ptr <Component>& component);
 
 	/**
 	* Get a component
+	* @return The component
 	*/
 	template <typename T>
 	std::shared_ptr<T> GetComponent() const
@@ -137,6 +142,7 @@ public:
 
 	/**
 	* Set GameObject as active or not
+	* @param active Active value
 	*/
 	void SetActive(const bool active);
 
@@ -164,22 +170,37 @@ public:
 		return transform;
 	}
 
-	int childCount = 0;
-	int componentCount = 0;
 private:
-	std::shared_ptr<Transform> transform;
 
 	/**
 	* Add an existing component
+	* @param component Component to add
 	*/
 	void AddExistingComponent(const std::shared_ptr<Component>& component);
 
 	/**
 	* Update local active value
+	* @param changed The changed GameObject
 	*/
 	void UpdateActive(const std::shared_ptr<GameObject>& changed);
+
+	/**
+	* Check if the GameObject is a parent of another GameObject
+	*/
 	bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
 
+	std::shared_ptr<Transform> transform;
+
+public:
+	int childCount = 0;
+	int componentCount = 0;
+
+#if defined(EDITOR)
+	bool isSelected = false;
+#endif
+	bool waitingForDestroy = false;
+
+private:
 	bool active = true;
 	bool localActive = true;
 };
