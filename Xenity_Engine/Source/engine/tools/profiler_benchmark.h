@@ -13,12 +13,12 @@ public:
 	~ProfilerBenchmark();
 
 	/**
-	* Start the benchmark
+	* @brief Start the benchmark
 	*/
 	void Start();
 
 	/**
-	* Add the elapsed time since the last Start call to the profiler
+	* @brief Add the elapsed time since the last Start call to the profiler
 	*/
 	void Stop();
 

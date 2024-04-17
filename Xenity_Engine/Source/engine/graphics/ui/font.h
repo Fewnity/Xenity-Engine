@@ -27,7 +27,7 @@ public:
 	float maxCharHeight = 0;
 
 	/**
-	* [Internal] Get the shared pointer of this object
+	* @brief [Internal] Get the shared pointer of this object
 	*/
 	std::shared_ptr<Font> GetThisShared()
 	{

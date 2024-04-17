@@ -17,38 +17,56 @@ public:
 	virtual ~Component();
 
 	/**
-	* Function called once before Start() at the creation of the component
+	* @brief Function called once before Start() at the creation of the component
 	*/
 	virtual void Awake() {}
 
 	/**
-	* Function called once after Awake() at the creation of the component
+	* @brief Function called once after Awake() at the creation of the component
 	*/
 	virtual void Start() {}
 
 	/**
-	* Function called every frame
+	* @brief Function called every frame
 	*/
 	virtual void Update() {}
 	//virtual void OnParentChanged() {}
 
+	/**
+	* @brief Called when the component is enabled
+	*/
 	virtual void OnDisabled() {};
+
+	/**
+	* @brief Called when the component is disabled
+	*/
 	virtual void OnEnabled() {};
 
+	/**
+	* @brief Called each frame to draw gizmos
+	*/
 	virtual void OnDrawGizmos() {};
+
+	/**
+	* @brief Called each frame to draw gizmos if the object is selected
+	*/
 	virtual void OnDrawGizmosSelected() {};
 
+	/**
+	* @brief [Internal] Remove references of this component for some specific cases
+	*/
 	virtual void RemoveReferences() {};
 
 	int updatePriority = 5000; //Lower is more priotary
 
 	/**
-	* Get if the component is enabled
+	* @brief Get if the component is enabled
 	*/
 	bool GetIsEnabled() const;
 
 	/**
-	* Enable or disable the component
+	* @brief Enable or disable the component*
+	* @param isEnabled: true to enable, false to disable
 	*/
 	void SetIsEnabled(bool isEnabled);
 	bool initiated = false;
@@ -61,12 +79,13 @@ private:
 public:
 
 	/**
-	* Set component's GameObject
+	* @brief [Internal] Set component's GameObject
+	* @param gameObject: GameObject to set
 	*/
-	void SetGameObject(const std::shared_ptr<GameObject>& go);
+	void SetGameObject(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
-	* Get component's GameObject
+	* @brief Get component's GameObject
 	*/
 	std::shared_ptr <GameObject> GetGameObject() const
 	{
@@ -74,7 +93,7 @@ public:
 	}
 
 	/**
-	* Get component's Transform
+	* @brief Get component's Transform
 	*/
 	std::shared_ptr <Transform> GetTransform() const
 	{
@@ -82,7 +101,7 @@ public:
 	}
 
 	/**
-	* Get component's name
+	* @brief Get component's name
 	*/
 	const std::string& GetComponentName() const
 	{

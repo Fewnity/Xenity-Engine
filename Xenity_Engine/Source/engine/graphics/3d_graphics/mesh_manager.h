@@ -24,12 +24,12 @@ class API MeshManager
 public:
 
 	/**
-	* Init mesh manager
+	* @brief Init mesh manager
 	*/
 	static void Init();
 	
 	/**
-	* Draw a submesh
+	* @brief Draw a submesh
 	* @param transform Mesh transform
 	* @param subMesh Submesh to draw
 	* @param material Material to use
@@ -38,7 +38,7 @@ public:
 	static void DrawMesh(const std::shared_ptr<Transform>& transform, const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings);
 	
 	/**
-	* Draw a submesh
+	* @brief Draw a submesh
 	* @param position Mesh position
 	* @param rotation Mesh rotation
 	* @param scale Mesh scale
@@ -50,7 +50,7 @@ public:
 
 	
 	/**
-	* Load a mesh from a file path
+	* @brief Load a mesh from a file path
 	* @param path File path
 	* @return The loaded mesh
 	*/

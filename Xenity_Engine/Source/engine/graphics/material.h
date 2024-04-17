@@ -34,7 +34,7 @@ public:
 	void LoadFileReference() override;
 
 	/**
-	* Set attribute of the material
+	* @brief Set attribute of the material
 	* @param attribute The attribute to set
 	* @param value The value to set
 	*/
@@ -51,7 +51,7 @@ public:
 private:
 
 	/**
-	* Update the material
+	* @brief Update the material
 	*/
 	void Update();
 

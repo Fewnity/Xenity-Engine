@@ -16,7 +16,7 @@ public:
 	static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
 
 	/**
-	* Gets if the file is a header file
+	* @brief Gets if the file is a header file
 	* @return If the file is a header file
 	*/
 	bool GetIsHeader() 

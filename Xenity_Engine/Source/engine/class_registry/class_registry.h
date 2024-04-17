@@ -30,7 +30,7 @@ public:
 	};
 
 	/**
-	* Add a function to create a component
+	* @brief Add a function to create a component
 	* @param name Component name
 	* @param isVisible Is the component visible in the editor
 	*/
@@ -57,34 +57,34 @@ public:
 	}
 
 	/**
-	* Register all engine components
+	* @brief Register all engine components
 	*/
 	static void RegisterEngineComponents();
 
 	/**
-	* Register all engine file classes
+	* @brief Register all engine file classes
 	*/
 	static void RegisterEngineFileClasses();
 
 	/**
-	* Add a component to a GameObject from the component name
+	* @brief Add a component to a GameObject from the component name
 	* @param name Component name
 	* @param gameObject GameObject to add the component to
 	*/
 	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
 
 	/**
-	* Get a list of all component names
+	* @brief Get a list of all component names
 	*/
 	static std::vector<std::string> GetComponentNames();
 
 	/**
-	* Reset all registered components
+	* @brief Reset all registered components
 	*/
 	static void Reset();
 
 	/**
-	* Add a file class info into the list
+	* @brief Add a file class info into the list
 	* @param name File class name
 	* @param fileType File type
 	*/
@@ -106,7 +106,7 @@ public:
 	}
 
 	/**
-	* Get a file class info from the class type
+	* @brief Get a file class info from the class type
 	*/
 	template<typename T>
 	static const FileClassInfo* GetFileClassInfo()
@@ -126,7 +126,7 @@ public:
 	}
 
 	/**
-	* Get a class info from the class type
+	* @brief Get a class info from the class type
 	*/
 	template<typename T>
 	static const ClassInfo* GetClassInfo()
@@ -146,7 +146,7 @@ public:
 	}
 
 	/**
-	* Get a class name from the class type id (hash code)
+	* @brief Get a class name from the class type id (hash code)
 	* @param classId Class type id (hash code)
 	* @return Class name (Component if not found)
 	*/

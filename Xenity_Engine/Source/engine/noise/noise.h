@@ -6,25 +6,37 @@ class API Noise
 public:
 
 	/**
-	* Get 1D noise
+	* @brief Get 1D noise
+	* @param x The x coordinate
 	*/
 	static float noise1(float x);
 
 	/**
-	* Get 2D noise
+	* @brief Get 2D noise
+	* @param x The x coordinate
+	* @param y The y coordinate
 	*/
 	static float noise2(float x, float y);
 
 	/**
-	* Get 3D noise
+	* @brief Get 3D noise
+	* @param x The x coordinate
+	* @param y The y coordinate
+	* @param z The z coordinate
 	*/
 	static float noise3(float x, float y, float z);
 
 	/**
-	* Get 4D noise
+	* @brief Get 4D noise
+	* @param x The x coordinate
+	* @param y The y coordinate
+	* @param z The z coordinate
+	* @param w The w coordinate
 	*/
 	static float noise4(float x, float y, float z, float w);
+
 private:
+
 	static float grad1(int hash, float x);
 	static float grad2(int hash, float x, float y);
 	static float grad3(int hash, float x, float y, float z);

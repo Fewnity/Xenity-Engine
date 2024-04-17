@@ -2,6 +2,8 @@
 #include <vector>
 #include <memory>
 
+// Type traits for checking if a type is a shared_ptr, weak_ptr, or vector
+
 template<class T>
 struct is_shared_ptr : std::false_type {};
 

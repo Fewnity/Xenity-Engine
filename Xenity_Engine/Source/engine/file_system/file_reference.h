@@ -18,7 +18,7 @@ public:
 	FileReference() = default;
 
 	/**
-	* Load the file
+	* @brief Load the file
 	*/
 	virtual void LoadFileReference()
 	{
@@ -27,7 +27,7 @@ public:
 	}
 
 	/**
-	* Unload the file
+	* @brief Unload the file
 	*/
 	virtual void UnloadFileReference()
 	{
@@ -51,7 +51,7 @@ public:
 	}
 
 	/**
-	* Get reflection of the file meta
+	* @brief Get reflection of the file meta
 	*/
 	virtual ReflectiveData GetMetaReflectiveData()
 	{

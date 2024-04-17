@@ -64,12 +64,12 @@ class TextManager
 public:
 
 	/**
-	* [Internal] Init text manager
+	* @brief [Internal] Init text manager
 	*/
 	static void Init();
 
 	/**
-	* Draw a text
+	* @brief Draw a text
 	* @param text Text
 	* @param textInfo Text info
 	* @param horizontalAlignment Horizontal alignment
@@ -84,7 +84,7 @@ public:
 	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr <Material>& material);
 
 	/**
-	* Get informations about a text
+	* @brief Get informations about a text
 	* @param text Text
 	* @param textLen Text lenght
 	* @param font Font
@@ -94,7 +94,7 @@ public:
 	static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
 
 	/**
-	* Create a mesh from a text
+	* @brief Create a mesh from a text
 	* @param text Text
 	* @param textInfo Text informations
 	* @param horizontalAlignment Horizontal alignment
@@ -110,7 +110,6 @@ private:
 
 	/**
 	* @brief Add a char to the mesh
-	*
 	* @param mesh Mesh to modify
 	* @param ch Char to add
 	* @param x Char X position

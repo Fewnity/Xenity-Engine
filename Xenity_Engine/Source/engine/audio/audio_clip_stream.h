@@ -26,13 +26,13 @@ public:
 	~AudioClipStream();
 
 	/**
-	* Open audio clip stream
+	* @brief Open audio clip stream
 	* @param file File
 	*/
 	void OpenStream(std::shared_ptr<File> audioFile);
 
 	/**
-	* Fill audio buffer
+	* @brief Fill audio buffer
 	* @param size Buffer size
 	* @param bufferOffset Buffer offset
 	* @param buff Buffer
@@ -40,33 +40,33 @@ public:
 	void FillBuffer(int size, int bufferOffset, short* buff);
 
 	/**
-	* Get audio clip frequency
+	* @brief Get audio clip frequency
 	*/
 	int GetFrequency() const;
 
 	/**
-	* Get audio clip sample count
+	* @brief Get audio clip sample count
 	*/
 	int64_t GetSampleCount() const;
 
 	/**
-	* Reset seek position
+	* @brief Reset seek position
 	*/
 	void ResetSeek();
 
 	/**
-	* Set seek position
+	* @brief Set seek position
 	* @param seekPosition Seek position
 	*/
 	void SetSeek(uint64_t seekPosition);
 
 	/**
-	* Get seek position
+	* @brief Get seek position
 	*/
 	int64_t GetSeekPosition() const;
 
 	/**
-	* Get channel count
+	* @brief Get channel count
 	*/
 	int GetChannelCount() const
 	{
@@ -74,7 +74,7 @@ public:
 	}
 
 	/**
-	* Get audio type
+	* @brief Get audio type
 	*/
 	AudioType GetAudioType() const
 	{

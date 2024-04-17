@@ -12,32 +12,38 @@ class API ShapeSpawner
 public:
 
 	/**
-	* Spawn a cube
+	* @brief Spawn a cube
+	* @return A shared pointer to the cube GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnCube();
 
 	/**
-	* Spawn a sphere
+	* @brief Spawn a sphere
+	* @return A shared pointer to the sphere GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnSphere();
 
 	/**
-	* Spawn a cone
+	* @brief Spawn a cone
+	* @return A shared pointer to the cone GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnCone();
 
 	/**
-	* Spawn a donut
+	* @brief Spawn a donut
+	* @return A shared pointer to the donut GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnDonut();
 
 	/**
-	* Spawn a plane
+	* @brief Spawn a plane
+	* @return A shared pointer to the plane GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnPlane();
 
 	/**
-	* Spawn a cylinder
+	* @brief Spawn a cylinder
+	* @return A shared pointer to the cylinder GameObject
 	*/
 	static std::shared_ptr <GameObject> SpawnCylinder();
 
@@ -45,6 +51,9 @@ public:
 private:
 	/**
 	* Create a GameObject and add a MeshRenderer to it
+	* @param gameObjectName The name of the GameObject
+	* @param meshFilePath The path to the mesh file
+	* @return A shared pointer to the GameObject
 	*/
 	static std::shared_ptr<GameObject> MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath);
 

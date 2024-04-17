@@ -18,109 +18,109 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	/**
-	* Get position
+	* @brief Get position
 	*/
 	const Vector3& GetPosition() const;
 
 	/**
-	* Get local position
+	* @brief Get local position
 	*/
 	const Vector3& GetLocalPosition() const;
 
 	/**
-	* Get rotation (in degree)
+	* @brief Get rotation (in degree)
 	*/
 	const Vector3& GetRotation() const;
 
 	/**
-	* Get local rotation (in degree)
+	* @brief Get local rotation (in degree)
 	*/
 	const Vector3& GetLocalRotation() const;
 
 	/**
-	* Get scale
+	* @brief Get scale
 	*/
 	const Vector3& GetScale() const;
 
 	/**
-	* Get local scale
+	* @brief Get local scale
 	*/
 	const Vector3& GetLocalScale() const;
 
 	/**
-	* Get forward direction
+	* @brief Get forward direction
 	*/
 	Vector3 GetForward() const;
 
 	/**
-	* Get left direction
+	* @brief Get left direction
 	*/
 	Vector3 GetLeft() const;
 
 	/**
-	* Get right direction
+	* @brief Get right direction
 	*/
 	Vector3 GetRight() const;
 
 	/**
-	* Get up direction
+	* @brief Get up direction
 	*/
 	Vector3 GetUp() const;
 
 	/**
-	* Get down direction
+	* @brief Get down direction
 	*/
 	Vector3 GetDown() const;
 
 	/**
-	* Get backward direction
+	* @brief Get backward direction
 	*/
 	Vector3 GetBackward() const;
 
 	/**
-	* Set position
+	* @brief Set position
 	* @param value Position
 	*/
 	void SetPosition(const Vector3& value);
 
 	/**
-	* Set local position
+	* @brief Set local position
 	* @param value Local position
 	*/
 	void SetLocalPosition(const Vector3& value);
 
 	/**
-	* Set rotation (in degree)
+	* @brief Set rotation (in degree)
 	* @param value Rotation (in degree)
 	*/
 	void SetRotation(const Vector3& value);//Euler angle
 
 	/**
-	* Set local rotation (in degree)
+	* @brief Set local rotation (in degree)
 	* @param value Local rotation (in degree)
 	*/
 	void SetLocalRotation(const Vector3& value);//Euler angle
 
 	/**
-	* Set local scale
+	* @brief Set local scale
 	* @param value Local scale
 	*/
 	void SetLocalScale(const Vector3& value);
 
 	/**
-	* [Internal] Update children world positions
+	* @brief [Internal] Update children world positions
 	*/
 	void SetChildrenWorldPositions();
 
 	/**
-	* TODO Function called when the parent changed
+	* @brief TODO Function called when the parent changed
 	*/
 	void OnParentChanged();
 
 	glm::mat4 transformationMatrix;
 
 	/**
-	* Get GameObject
+	* @brief Get GameObject
 	*/
 	std::shared_ptr<GameObject> GetGameObject() const
 	{
@@ -128,29 +128,29 @@ public:
 	}
 
 	/**
-	* [Internal] Update world values
+	* @brief [Internal] Update world values
 	*/
 	void UpdateWorldValues();
 
 private:
 
 	/**
-	* Update transformation matrix
+	* @brief Update transformation matrix
 	*/
 	void UpdateTransformationMatrix();
 
 	/**
-	* Update world position
+	* @brief Update world position
 	*/
 	void UpdateWorldPosition();
 
 	/**
-	* Update world rotation
+	* @brief Update world rotation
 	*/
 	void UpdateWorldRotation();
 
 	/**
-	* Update world scale
+	* @brief Update world scale
 	*/
 	void UpdateWorldScale();
 
@@ -164,7 +164,7 @@ private:
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
 	/**
-	* Get localPosition from matrices
+	* @brief Get localPosition from matrices
 	* @param childMatrix The child matrix
 	* @param parentMatrix The parent matrix
 	* @return The local position
@@ -172,7 +172,7 @@ private:
 	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const;
 
 	/**
-	* Get localRotation from matrices
+	* @brief Get localRotation from matrices
 	* @param childMatrix The child matrix
 	* @param parentMatrix The parent matrix
 	* @return The local rotation

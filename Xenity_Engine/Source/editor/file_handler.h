@@ -11,18 +11,18 @@ class FileHandler
 public:
 
 	/**
-	* Check if code files have changed
+	* @brief Check if code files have changed
 	*/
 	static bool HasCodeChanged(const std::string& folderPath);
 
 	/**
-	* Check if files have changed or added
+	* @brief Check if files have changed or added
 	*/
 	static bool HasFileChangedOrAdded(const std::string& folderPath);
 private:
 
 	/**
-	* Check if files have changed or added recursively
+	* @brief Check if files have changed or added recursively
 	*/
 	static bool HasFileChangedOrAddedRecursive(const std::string& folderPath);
 

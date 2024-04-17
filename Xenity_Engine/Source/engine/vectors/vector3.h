@@ -22,41 +22,53 @@ public:
 	Vector3(const Vector2& vect);
 
 	/**
-	* Get the look rotation in degrees between two vectors
+	* @brief Get the look rotation in degrees between two vectors
 	*/
 	static Vector3 LookAt(const Vector3& from, const Vector3& to);
 
 	/**
-	* Distance between two vectors
+	* @brief Distance between two vectors
 	*/
 	static float Distance(const Vector3& a, const Vector3& b);
 
 	/**
-	* Linearly interpolates between vectors
+	* @brief Linearly interpolates between vectors
 	*/
 	static Vector3 Lerp(const Vector3& a, const Vector3& b, const float t);
 
 	/**
-	* Get this vector with a magnitude of 1 (Do not change vector values)
+	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
 	*/
 	Vector3 Normalized() const;
 
 	/**
-	* Makes this vector have a magnitude of 1 (Change vector values)
+	* @brief Makes this vector have a magnitude of 1 (Change vector values)
 	*/
 	Vector3 Normalize();
 
 	/**
-	* Get the length of this vector
+	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
 
+	/**
+	* @brief Get the dot product of this vector
+	*/
 	double Dot(const Vector3& v) const;
 
+	/**
+	* @brief Get the cross product of this vector and another
+	*/
 	Vector3 Cross(const Vector3& v) const;
 
+	/**
+	* @brief Get the dot product of two vectors
+	*/
 	static double Dot(const Vector3& a, const Vector3& b);
 
+	/**
+	* @brief Get the cross product of two vectors
+	*/
 	static Vector3 Cross(const Vector3& a, const Vector3& b);
 
 	float x;

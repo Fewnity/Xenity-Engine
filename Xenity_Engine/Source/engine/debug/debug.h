@@ -25,50 +25,50 @@ public:
 };
 
 /**
- * Used to print text in a console/file or remotely to a server
+ * @brief Used to print text in a console/file or remotely to a server
  */
 class API Debug
 {
 public:
 
 	/**
-	* [Internal] Init debug system
+	* @brief [Internal] Init debug system
 	*/
 	static int Init();
 
 	/**
-	* Print a text
+	* @brief Print a text
 	* @param text Text to print
 	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void Print(const std::string& text, bool hideInConsole = false);
 
 	/**
-	* Print an error
+	* @brief Print an error
 	* @param text Text to print
 	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void PrintError(const std::string& text, bool hideInConsole = false);
 
 	/**
-	* Print a warning
+	* @brief Print a warning
 	* @param text Text to print
 	* @param hideInConsole If true, the text will not be printed in the console
 	*/
 	static void PrintWarning(const std::string& text, bool hideInConsole = false);
 
 	/**
-	 * [Internal] Send all profiler data to the debug server
+	 * @brief [Internal] Send all profiler data to the debug server
 	 */
 	static void SendProfilerDataToServer();
 
 	/**
-	* [Internal] Connect the game to an online debug console
+	* @brief [Internal] Connect the game to an online debug console
 	*/
 	static void ConnectToOnlineConsole();
 
 	/**
-	* [Internal] Get all the debug text into a string
+	* @brief [Internal] Get all the debug text into a string
 	*/
 	static std::string GetDebugString()
 	{
@@ -76,7 +76,7 @@ public:
 	}
 
 	/**
-	* [Internal] Clear all logs (the file is untouched)
+	* @brief [Internal] Clear all logs (the file is untouched)
 	*/
 	static void ClearDebugLogs();
 
@@ -86,7 +86,7 @@ public:
 	static std::vector<DebugHistory> debugMessageHistory;
 
 	/**
-	* Get the event when a debug message is printed
+	* @brief Get the event when a debug message is printed
 	*/
 	static Event<>& GetOnDebugLogEvent()
 	{
@@ -96,26 +96,26 @@ public:
 private:
 
 	/**
-	* Add a message in the history
+	* @brief Add a message in the history
 	* @param message Message to add
 	* @param messageType Type of the message
 	*/
 	static void AddMessageInHistory(const std::string& message, DebugType messageType);
 
 	/**
-	* Send text via the socket to the online debug console
+	* @brief Send text via the socket to the online debug console
 	* @param text Text to send
 	*/
 	static void PrintInOnlineConsole(const std::string& text);
 
 	/**
-	* Print text to the cmd
+	* @brief Print text to the cmd
 	* @param text Text to print
 	*/
 	static void PrintInConsole(const std::string& text);
 
 	/**
-	* Write text to the debug file
+	* @brief Write text to the debug file
 	* @param text Text to write
 	*/
 	static void PrintInFile(const std::string& text);

@@ -1,6 +1,6 @@
 #include "reflection.h"
 
-void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
+void Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
 {
 	ReflectiveEntry entry;
 	entry.variable = variable;
@@ -9,5 +9,5 @@ void Reflective::AddReflectionVariable(ReflectiveData& map, const VariableRefere
 	entry.typeId = id;
 	entry.isEnum = isEnum;
 	
-	map.push_back(std::make_pair(variableName, entry));
+	vector.push_back(std::make_pair(variableName, entry));
 }

@@ -14,7 +14,7 @@ class ProfilerValue
 public:
 
 	/**
-	* Add a time value to the profiler
+	* @brief Add a time value to the profiler
 	*/
 	void AddValue(long long v)
 	{
@@ -23,7 +23,7 @@ public:
 	}
 
 	/**
-	* Reset the value
+	* @brief Reset the value
 	*/
 	void ResetValue()
 	{
@@ -32,7 +32,7 @@ public:
 	}
 
 	/**
-	* Get the value
+	* @brief Get the value
 	*/
 	long long GetValue()
 	{
@@ -40,7 +40,7 @@ public:
 	}
 
 	/**
-	* Set the last value
+	* @brief Set the last value
 	*/
 	void SetLastValue(long long v)
 	{
@@ -65,48 +65,48 @@ class Performance
 public:
 
 	/**
-	* Init profiler
+	* @brief Init profiler
 	*/
 	static void Init();
 
 	/**
-	* Reset counters and profiler (To call every frame)
+	* @brief Reset counters and profiler (To call every frame)
 	*/
 	static void ResetCounters();
 
 	/**
-	* Add one to the draw call counter
+	* @brief Add one to the draw call counter
 	*/
 	static void AddDrawCall();
 
 	/**
-	* Add a number of triangles to the draw triangle counter
+	* @brief Add a number of triangles to the draw triangle counter
 	* @param count Number of triangles to add
 	*/
 	static void AddDrawTriangles(int count);
 
 	/**
-	* Add one to the updated material counter
+	* @brief Add one to the updated material counter
 	*/
 	static void AddMaterialUpdate();
 
 	/**
-	* Get draw call count
+	* @brief Get draw call count
 	*/
 	static int GetDrawCallCount();
 
 	/**
-	* Get draw triangle count
+	* @brief Get draw triangle count
 	*/
 	static int GetDrawTrianglesCount();
 
 	/**
-	* Get updated material count
+	* @brief Get updated material count
 	*/
 	static int GetUpdatedMaterialCount();
 
 	/**
-	* Update the profiler (To call every frame)
+	* @brief Update the profiler (To call every frame)
 	*/
 	static void Update();
 
@@ -114,7 +114,7 @@ public:
 private:
 
 	/**
-	* Reset profiler
+	* @brief Reset profiler
 	*/
 	static void ResetProfiler();
 

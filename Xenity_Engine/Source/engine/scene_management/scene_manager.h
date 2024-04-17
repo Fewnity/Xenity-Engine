@@ -20,14 +20,14 @@ class SceneManager
 public:
 
 	/**
-	* Load a scene
+	* @brief Load a scene
 	* @param scene Load scene
 	*/
 	API static void LoadScene(const std::shared_ptr<Scene>& scene);
 
 #if defined(EDITOR)
 	/**
-	* [Internal] Save scene
+	* @brief [Internal] Save scene
 	* @param saveType If SaveSceneToFile, save scene as a file; If SaveSceneForPlayState/SaveSceneForHotReloading, save scene as a backup to reload it later
 	*/
 	static void SaveScene(SaveSceneType saveType);
@@ -36,27 +36,27 @@ public:
 	static void ReloadScene();
 
 	/**
-	* [Internal] Restore the saved scene backup
+	* @brief [Internal] Restore the saved scene backup
 	*/
 	static void RestoreScene();
 
 	/**
-	* [Internal] Restore the saved scene backup for hot reloading
+	* @brief [Internal] Restore the saved scene backup for hot reloading
 	*/
 	static void RestoreSceneHotReloading();
 
 	/**
-	* [Internal] Clear scene
+	* @brief [Internal] Clear scene
 	*/
 	static void ClearScene();
 
 	/**
-	* [Internal] Create empty scene
+	* @brief [Internal] Create empty scene
 	*/
 	static void CreateEmptyScene();
 
 	/**
-	* [Internal] Get opened scene
+	* @brief [Internal] Get opened scene
 	*/
 	static std::shared_ptr<Scene> GetOpenedScene()
 	{
@@ -64,7 +64,7 @@ public:
 	}
 
 	/**
-	* [Internal] Set opened scene
+	* @brief [Internal] Set opened scene
 	*/
 	static void SetOpenedScene(const std::shared_ptr<Scene>& _openedScene)
 	{
@@ -72,12 +72,12 @@ public:
 	}
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	static void SetSceneModified(bool value);
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	static bool GetSceneModified() 
 	{
@@ -85,13 +85,18 @@ public:
 	}
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	static bool OnQuit();
 
 private:
-	static std::shared_ptr<Scene> openedScene;
+
+	/**
+	* @brief [Internal] Load scene from json data
+	*/
 	static void LoadScene(const nlohmann::json& jsonData);
+
+	static std::shared_ptr<Scene> openedScene;
 	static bool sceneModified;
 };
 

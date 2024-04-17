@@ -7,7 +7,7 @@
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 
-InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton)
+InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const std::string& buttonText, bool addUnbindButton)
 {
 	InputButtonState returnValue = InputButtonState::Null;
 	DrawInputTitle(inputName);
@@ -17,7 +17,7 @@ InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const s
 		w -= 25 * uiScale;
 	}
 	ImGui::BeginGroup();
-	const std::string id = text + GenerateItemId();
+	const std::string id = buttonText + GenerateItemId();
 	if (ImGui::Button(id.c_str(), ImVec2(w, 0)))
 	{
 		returnValue = InputButtonState::OpenAssetMenu;

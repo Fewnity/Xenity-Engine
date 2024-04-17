@@ -19,7 +19,7 @@ public:
 	}
 
 	/**
-	* Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
+	* @brief Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
 	*/
 	Vector4 ToVector4() const;
 
@@ -37,7 +37,7 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	* Create color from ints
+	* @brief Create color from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -45,7 +45,7 @@ public:
 	static Color CreateFromRGB(int r, int g, int b);
 
 	/**
-	* Create color from floats
+	* @brief Create color from floats
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -53,7 +53,7 @@ public:
 	static Color CreateFromRGBFloat(float r, float g, float b);
 
 	/**
-	* Create color with alpha information from ints
+	* @brief Create color with alpha information from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -62,7 +62,7 @@ public:
 	static Color CreateFromRGBA(int r, int g, int b, int a);
 
 	/**
-	* Create color from floats
+	* @brief Create color from floats
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -71,7 +71,7 @@ public:
 	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 
 	/**
-	* Set color with alpha information from ints
+	* @brief Set color with alpha information from ints
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
@@ -80,7 +80,7 @@ public:
 	void SetFromRGBA(int r, int g, int b, int a);
 
 	/**
-	* Set color from with alpha information floats
+	* @brief Set color from with alpha information floats
 	* @param r Red level [0;1]
 	* @param g Green level [0;1]
 	* @param b Blue level [0;1]
@@ -89,7 +89,7 @@ public:
 	void SetFromRGBAfloat(float r, float g, float b, float a);
 
 	/**
-	* Get RGBA
+	* @brief Get RGBA
 	*/
 	const RGBA& GetRGBA() const
 	{
@@ -97,7 +97,7 @@ public:
 	}
 
 	/**
-	* Get RGBA value as an unsigned int
+	* @brief Get RGBA value as an unsigned int
 	*/
 	unsigned int GetUnsignedIntRGBA() const
 	{
@@ -105,7 +105,7 @@ public:
 	}
 
 	/**
-	* Get ABGR value as an unsigned int
+	* @brief Get ABGR value as an unsigned int
 	*/
 	unsigned int GetUnsignedIntABGR() const
 	{
@@ -115,7 +115,7 @@ public:
 private:
 
 	/**
-	* Update the unsigned ints
+	* @brief Update the unsigned ints
 	*/
 	void UpdateUnsignedInts();
 

@@ -14,29 +14,29 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	* [Internal]
+	* @brief [Internal]
 	*/
 	int GetDrawPriority() const override;
 
 private:
 
 	/**
-	* Called when the component is disabled
+	* @brief Called when the component is disabled
 	*/
 	void OnDisabled() override;
 
 	/**
-	* Called when the component is enabled
+	* @brief Called when the component is enabled
 	*/
 	void OnEnabled() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 

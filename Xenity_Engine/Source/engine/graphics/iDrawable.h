@@ -22,12 +22,12 @@ public:
 	void RemoveReferences() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	virtual void CreateRenderCommands(RenderBatch& renderBatch) { }
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	virtual void DrawCommand(const RenderCommand & renderCommand) {};
 };

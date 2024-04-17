@@ -19,40 +19,75 @@ class RightClickMenuItem
 {
 public:
 	~RightClickMenuItem();
-	std::vector<RightClickMenuItem*> onHoverItems;
-	std::function<void()> onClicked;
+
+	/**
+	* @brief Add an item to the menu
+	* @param title The title of the item
+	* @param onClickFunction The function to be called when the item is clicked
+	* @return The item
+	*/
 	RightClickMenuItem* AddItem(const std::string& title, std::function<void()> onClickFunction);
+
+	/**
+	* @brief Add an item to the menu
+	* @param title The title of the item
+	* @return The item
+	*/
 	RightClickMenuItem* AddItem(const std::string& title);
 
+	/**
+	* @brief Set the title of the item
+	* @param title The title of the item
+	*/
 	void SetTitle(const std::string& title) 
 	{
 		this->text = title;
 	}
 
+	/**
+	* @brief Set the enabled state of the item
+	* @param isEnabled The enabled state of the item
+	*/
 	void SetIsEnabled(const bool isEnabled) 
 	{
 		this->isEnabled = isEnabled;
 	}
 
+	/**
+	* @brief Set the visible state of the item
+	* @param isVisible The visible state of the item
+	*/
 	void SetIsVisible(const bool isVisible) 
 	{
 		this->isVisible = isVisible;
 	}
 
+	/**
+	* @brief Get the title of the item
+	*/
 	std::string GetTitle() const
 	{
 		return text;
 	}
 
+	/**
+	* @brief Get the enabled state of the item
+	*/
 	bool GetIsEnabled() const
 	{
 		return isEnabled;
 	}
 
+	/**
+	* @brief Get the visible state of the item
+	*/
 	bool GetIsVisible() const
 	{
 		return isVisible;
 	}
+
+	std::vector<RightClickMenuItem*> onHoverItems;
+	std::function<void()> onClicked;
 
 private:
 	std::string text;
@@ -66,20 +101,45 @@ public:
 	RightClickMenu() = delete;
 	RightClickMenu(const std::string& uniqueName);
 	~RightClickMenu();
-	std::vector<RightClickMenuItem*> items;
+
+	/**
+	* @brief Check if the menu should be opened or closed
+	* @param blockOpen If true, won't be able to be opened
+	* @return The state of the menu
+	*/
 	RightClickMenuState Check(const bool blockOpen);
+
+	/**
+	* @brief Draw the menu
+	*/
 	bool Draw();
+
+	/**
+	* @brief Add an item to the menu
+	* @param title The title of the item
+	* @param onClickFunction The function to be called when the item is clicked
+	* @return The item
+	*/
 	RightClickMenuItem* AddItem(const std::string& title, const std::function<void()> onClickFunction);
+
+	/**
+	* @brief Add an item to the menu
+	* @param title The title of the item
+	* @return The item
+	*/
 	RightClickMenuItem* AddItem(const std::string& title);
+
+	std::vector<RightClickMenuItem*> items;
 private:
+
+	/**
+	* @brief Draw the menu recursively
+	* @param item The item to draw
+	*/
+	void DrawRecursive(const RightClickMenuItem& item) const;
+
 	static bool isDrawn;
 	static std::string isDrawnName;
 	static bool isFocusCorrect;
-	void DrawRecursive(const RightClickMenuItem& item) const;
 	std::string nameId;
 };
-
-namespace MenuBuilder
-{
-	void DrawText(const std::string );
-}

@@ -18,27 +18,27 @@ public:
 	Vector2(const Vector2Int& vect2Int);
 
 	/**
-	* Distance between two vectors
+	* @brief Distance between two vectors
 	*/
 	static float Distance(const Vector2& a, const Vector2& b);
 
 	/**
-	* Linearly interpolates between vectors
+	* @brief Linearly interpolates between vectors
 	*/
 	static Vector2 Lerp(const Vector2& a, const Vector2& b, const float t);
 
 	/**
-	* Get this vector with a magnitude of 1 (Do not change vector values)
+	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
 	*/
 	Vector2 Normalized() const;
 
 	/**
-	* Makes this vector have a magnitude of 1 (Change vector values)
+	* @brief Makes this vector have a magnitude of 1 (Change vector values)
 	*/
 	Vector2 Normalize();
 
 	/**
-	* Get the length of this vector
+	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
 

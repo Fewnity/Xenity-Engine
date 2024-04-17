@@ -23,7 +23,7 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	* Setup the light as a point light
+	* @brief Setup the light as a point light
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
@@ -31,14 +31,14 @@ public:
 	void SetupPointLight(const Color& color, float _intensity, const float _range);
 
 	/**
-	* Setup the light as a directional light
+	* @brief Setup the light as a directional light
 	* @param color Light color
 	* @param intensity Light intensity
 	*/
 	void SetupDirectionalLight(const Color& color, const float _intensity);
 
 	/**
-	* Setup the light as a spot light
+	* @brief Setup the light as a spot light
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
@@ -47,7 +47,7 @@ public:
 	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle);
 
 	/**
-	* Setup the light as a point light
+	* @brief Setup the light as a point light
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
@@ -57,42 +57,49 @@ public:
 	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle, const float _smoothness);
 
 	/**
-	* Set light range
+	* @brief Set light range
 	* @param value Light range (Greater or equals to 0)
 	*/
 	void SetRange(float value);
 
 	/**
-	* Get light range
+	* @brief Get light range
 	* @param value Light range
 	*/
 	float GetRange() const;
 
 	/**
-	* Set spot angle
+	* @brief Set spot angle
 	* @param value Spot angle [0;179]
 	*/
 	void SetSpotAngle(float angle);
 
 	/**
-	* Set spot smoothness
+	* @brief Set spot smoothness
 	* @param value Spot smoothness [0;1]
 	*/
 	void SetSpotSmoothness(float smoothness);
 
 	/**
-	* Get spot angle
+	* @brief Get spot angle
 	*/
 	float GetSpotAngle() const;
 
 	/**
-	* Get spot smoothness
+	* @brief Get spot smoothness
 	*/
 	float GetSpotSmoothness() const;
 
 	Color color = Color();
 
+	/**
+	* @brief Set light intensity
+	*/
 	void SetIntensity(float intensity);
+
+	/**
+	* @brief Get light intensity
+	*/
 	float GetIntensity() const;
 
 
@@ -108,7 +115,7 @@ private:
 	float intensity = 1;
 
 	/**
-	* Calculate light values
+	* @brief Calculate light values
 	*/
 	void UpdateLightValues();
 

@@ -22,7 +22,7 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	int GetDrawPriority() const override;
 
@@ -34,7 +34,7 @@ public:
 	}
 
 	/**
-	* Set the color of the sprite
+	* @brief Set the color of the sprite
 	*/
 	void SetColor(const Color& color)
 	{
@@ -42,7 +42,7 @@ public:
 	}
 
 	/**
-	* Get the material of the sprite
+	* @brief Get the material of the sprite
 	*/
 	std::shared_ptr <Material> GetMaterial()
 	{
@@ -50,7 +50,7 @@ public:
 	}
 
 	/**
-	* Get the texture of the sprite
+	* @brief Get the texture of the sprite
 	*/
 	std::shared_ptr <Texture> GetTexture()
 	{
@@ -58,34 +58,34 @@ public:
 	}
 
 	/**
-	* Set the material of the sprite
+	* @brief Set the material of the sprite
 	*/
 	void SetMaterial(std::shared_ptr <Material> material);
 	
 	/**
-	* Set the texture of the sprite
+	* @brief Set the texture of the sprite
 	*/
 	void SetTexture(std::shared_ptr <Texture> texture);
 
 private:
 
 	/**
-	* Called when the component is disabled
+	* @brief Called when the component is disabled
 	*/
 	void OnDisabled() override;
 
 	/**
-	* Called when the component is enabled
+	* @brief Called when the component is enabled
 	*/
 	void OnEnabled() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 

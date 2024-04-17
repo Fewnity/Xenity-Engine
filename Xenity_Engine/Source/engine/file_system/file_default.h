@@ -22,37 +22,37 @@ public:
 	FileDefault(std::string _path);
 
 	/**
-	* Open the file
+	* @brief Open the file
 	* @param fileMode The mode to open the file
 	* @return True if the file is opened successfully
 	*/
 	bool Open(FileMode fileMode) override;
 
 	/**
-	* Close the file
+	* @brief Close the file
 	*/
 	void Close() override;
 	
 	/**
-	* Check if the file exists
+	* @brief Check if the file exists
 	* @return True if the file exists
 	*/
 	bool CheckIfExist() override;
 
 	/**
-	* Read all the content of the file as a string
+	* @brief Read all the content of the file as a string
 	*/
 	std::string ReadAll() override;
 
 	/**
-	* Read all the content of the file as a binary
+	* @brief Read all the content of the file as a binary
 	* @param size Output: The size of the binary
 	* @return The binary data
 	*/
 	unsigned char* ReadAllBinary(int& size) override;
 	
 	/**
-	* Write string data to the file
+	* @brief Write string data to the file
 	* @param data The data to write
 	*/
 	void Write(const std::string& data) override;

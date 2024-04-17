@@ -7,16 +7,20 @@
 #include <engine/component.h>
 
 /**
-* Check if a GameObject or a Component is valid
+* @brief Check if a GameObject or a Component is valid
+* @param pointer The pointer to check
+* @return True if the pointer is valid, false otherwise
 */
 template <typename T>
 bool IsValid(const std::shared_ptr<T>& pointer)
 {
-	return IsValid(std::weak_ptr<T>(pointer));
+	return IsValid(std::weak_ptr<T>(pointer)); // TODO why creating a weak ptr? Better to check if the pointer is valid here instead of checking in the other function
 }
 
 /**
-* Check of a GameObject or a Component is valid
+* @brief Check of a GameObject or a Component is valid
+* @param pointer The pointer to check
+* @return True if the pointer is valid, false otherwise
 */
 template <typename T>
 bool IsValid(const std::weak_ptr<T>& pointer)
@@ -54,26 +58,31 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 }
 
 /**
-* Create a new GameObject from another
+* @brief Create a new GameObject from another
+* @param gameObject GameObject to instanciate
 */
 API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& gameObject);
 
 /**
-* Destroy a gameObject
+* @brief Destroy a gameObject
+* @param gameObject GameObject to destroy
 */
 API void Destroy(const std::weak_ptr<GameObject>& gameObject);
 
 /**
-* Destroy a component
+* @brief Destroy a component
+* @param component Component to destroy
 */
 API void Destroy(const std::weak_ptr<Component>& component);
 
 /**
-*Destroy a gameObject
+* @brief Destroy a gameObject
+* @param gameObject GameObject to destroy
 */
 API void Destroy(const std::shared_ptr<GameObject>& gameObject);
 
 /**
-* Destroy a component
+* @brief Destroy a component
+* @param component Component to destroy
 */
 API void Destroy(const std::shared_ptr<Component>& component);

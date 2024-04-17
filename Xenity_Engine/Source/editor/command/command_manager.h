@@ -10,28 +10,29 @@
 class Command;
 
 /**
-* Class to manage commands (Add commands to the history to reuse them later, Undo, Redo...)
+* @brief Class to manage commands (Add commands to the history to reuse them later, Undo, Redo...)
 */
 class CommandManager
 {
 public:
 	/**
-	* Add new command to the history, allow the command to be used by Undo and Redo
+	* @brief Add new command to the history, allow the command to be used by Undo and Redo
+	* @param command Command to add
 	*/
 	static void AddCommand(std::shared_ptr<Command> command);
 
 	/**
-	* Clear commands history
+	* @brief Clear commands history
 	*/
 	static void ClearCommands();
 
 	/**
-	* Undo the previous command
+	* @brief Undo the previous command
 	*/
 	static void Undo();
 
 	/**
-	* Redo the previous command
+	* @brief Redo the previous command
 	*/
 	static void Redo();
 

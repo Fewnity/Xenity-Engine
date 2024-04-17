@@ -25,7 +25,7 @@ public:
 	void OnReflectionUpdated()  override;
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	int GetDrawPriority() const override;
 
@@ -37,7 +37,7 @@ public:
 	}
 
 	/**
-	* Set the color of the sprite
+	* @brief Set the color of the sprite
 	*/
 	void SetColor(const Color& color)
 	{
@@ -50,22 +50,22 @@ public:
 private:
 
 	/**
-	* Called when the component is disabled
+	* @brief Called when the component is disabled
 	*/
 	void OnDisabled() override;
 
 	/**
-	* Called when the component is enabled
+	* @brief Called when the component is enabled
 	*/
 	void OnEnabled() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 

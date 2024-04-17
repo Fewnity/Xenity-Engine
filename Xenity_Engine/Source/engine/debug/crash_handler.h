@@ -9,12 +9,12 @@ class CrashHandler
 public:
 
 	/**
-	* Enable crash events
+	* @brief Enable crash events
 	*/
 	static void Init();
 
 	/**
-	* Call a function in a try/catch
+	* @brief Call a function in a try/catch
 	* @param function Function to call
 	*/
 	static bool CallInTry(void (*function)());
@@ -22,7 +22,8 @@ public:
 private:
 
 	/**
-	* Called function on error (Not in Editor mode)
+	* @brief Called function on error (Not in Editor mode)
+	* @param signum Signal number
 	*/
 	static void Handler(int signum);
 };

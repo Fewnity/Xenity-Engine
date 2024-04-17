@@ -13,12 +13,12 @@ public:
 	Vector2Int(const int fillValue);
 
 	/**
-	* Linearly interpolates between vectors
+	* @brief Linearly interpolates between vectors
 	*/
 	static float Distance(const Vector2Int& a, const Vector2Int& b);
 
 	/**
-	* Get the length of this vector
+	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
 

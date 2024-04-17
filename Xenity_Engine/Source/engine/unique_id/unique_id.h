@@ -8,7 +8,7 @@ public:
 	UniqueId(bool _forFile);
 
 	/**
-	* Get unique Id
+	* @brief Get unique Id
 	*/
 	uint64_t GetUniqueId() const
 	{
@@ -16,7 +16,8 @@ public:
 	}
 
 	/**
-	* Set unique Id
+	* @brief Set unique Id
+	* @param id Id to set
 	*/
 	void SetUniqueId(uint64_t id)
 	{
@@ -27,12 +28,14 @@ public:
 	static uint64_t lastUniqueId;
 
 	/**
-	* Generate a new id
+	* @brief Generate a new id
 	* @param forFile Is an Id for a file
 	* @return new Id
 	*/
 	static uint64_t GenerateUniqueId(bool forFile);
+
 private:
+
 	uint64_t uniqueId;
 	bool forFile = false;
 };

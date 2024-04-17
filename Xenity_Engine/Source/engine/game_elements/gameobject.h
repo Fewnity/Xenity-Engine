@@ -12,48 +12,48 @@ class Transform;
 #include <engine/unique_id/unique_id.h>
 
 /**
-* Create a GameObject with the default name
+* @brief Create a GameObject with the default name
 * @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObject();
 
 /**
-* Create a GameObject
+* @brief Create a GameObject
 * @param name GameObject name
 * @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
 /**
-* Create a GameObject not visible in the hierarchy
+* @brief Create a GameObject not visible in the hierarchy
 * @param name GameObject name
 * @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
 
 /**
-* Find a GameObject with a name
+* @brief Find a GameObject with a name
 * @param name GameObject name
 * @return The found GameObject
 */
 API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
 
 /**
-* Find a GameObject with an id
+* @brief Find a GameObject with an id
 * @param id GameObject id
 * @return The found GameObject
 */
 API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 
 /**
-* Find a component with an id
+* @brief Find a component with an id
 * @param id Component id
 * @return The found component
 */
 API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 
 /**
-* Find GameObjects with a name
+* @brief Find GameObjects with a name
 * @param name GameObjects name
 * @return The found GameObjects
 */
@@ -72,7 +72,7 @@ public:
 	virtual ~GameObject();
 
 	/**
-	* [Internal] Setup the GameObject
+	* @brief [Internal] Setup the GameObject
 	*/
 	void Setup();
 
@@ -83,20 +83,20 @@ public:
 	std::weak_ptr<GameObject> parent;
 
 	/**
-	* Add a child to the GameObject
+	* @brief Add a child to the GameObject
 	* @param gameObject Child to add
 	*/
 	void AddChild(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
-	* Set GameObject's parent
+	* @brief Set GameObject's parent
 	* @param gameObject New parent
 	*/
 	void SetParent(const std::shared_ptr<GameObject>& gameObject);
 
 
 	/**
-	* Add a component
+	* @brief Add a component
 	* @return The added component
 	*/
 	template <typename T>
@@ -108,13 +108,13 @@ public:
 	}
 
 	/**
-	* Remove a component
+	* @brief Remove a component
 	* @param component Component to remove
 	*/
 	void RemoveComponent(const std::shared_ptr <Component>& component);
 
 	/**
-	* Get a component
+	* @brief Get a component
 	* @return The component
 	*/
 	template <typename T>
@@ -131,23 +131,23 @@ public:
 	}
 
 	/**
-	* Get if the GameObject is marked as active
+	* @brief Get if the GameObject is marked as active
 	*/
 	bool GetActive() const;
 
 	/**
-	* Get if the GameObject is active based on his parents
+	* @brief Get if the GameObject is active based on his parents
 	*/
 	bool GetLocalActive() const;
 
 	/**
-	* Set GameObject as active or not
+	* @brief Set GameObject as active or not
 	* @param active Active value
 	*/
 	void SetActive(const bool active);
 
 	/**
-	* Get children count
+	* @brief Get children count
 	*/
 	int GetChildrenCount() const
 	{
@@ -155,7 +155,7 @@ public:
 	}
 
 	/**
-	* Get component count
+	* @brief Get component count
 	*/
 	int GetComponentCount() const
 	{
@@ -163,7 +163,7 @@ public:
 	}
 
 	/**
-	* Get transform
+	* @brief Get transform
 	*/
 	inline std::shared_ptr<Transform> GetTransform() const
 	{
@@ -173,19 +173,19 @@ public:
 private:
 
 	/**
-	* Add an existing component
+	* @brief Add an existing component
 	* @param component Component to add
 	*/
 	void AddExistingComponent(const std::shared_ptr<Component>& component);
 
 	/**
-	* Update local active value
+	* @brief Update local active value
 	* @param changed The changed GameObject
 	*/
 	void UpdateActive(const std::shared_ptr<GameObject>& changed);
 
 	/**
-	* Check if the GameObject is a parent of another GameObject
+	* @brief Check if the GameObject is a parent of another GameObject
 	*/
 	bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
 

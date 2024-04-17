@@ -13,22 +13,22 @@ public:
 	Vector4(const float fillValue);
 
 	/**
-	* Linearly interpolates between vectors
+	* @brief Linearly interpolates between vectors
 	*/
 	static Vector4 Lerp(const Vector4& a, const Vector4& b, const float t);
 
 	/**
-	* Get this vector with a magnitude of 1 (Do not change vector values)
+	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
 	*/
 	Vector4 Normalized() const;
 
 	/**
-	* Makes this vector have a magnitude of 1 (Change vector values)
+	* @brief Makes this vector have a magnitude of 1 (Change vector values)
 	*/
 	Vector4 Normalize();
 
 	/**
-	* Get the length of this vector
+	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
 

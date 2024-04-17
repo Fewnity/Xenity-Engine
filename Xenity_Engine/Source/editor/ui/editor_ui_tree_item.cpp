@@ -42,7 +42,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 		{
 			for (int i = 0; i < childCount; i++)
 			{
-				bool clickedTemp = DrawTreeItem(projectDir->subdirectories[i]);
+				const bool clickedTemp = DrawTreeItem(projectDir->subdirectories[i]);
 				if (clickedTemp)
 					objectClicked = true;
 			}
@@ -52,22 +52,22 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 	return objectClicked;
 }
 
-int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement)
+int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::weak_ptr<GameObject>& rightClickedElement)
 {
 	int state = 0;
 
-	if (child)
+	if (gameObject)
 	{
-		const int childCount = child->GetChildrenCount();
+		const int childCount = gameObject->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 
-		if (child->isSelected)
+		if (gameObject->isSelected)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
-		if (child->GetLocalActive())
+		if (gameObject->GetLocalActive())
 		{
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1.0f));
 		}
@@ -76,7 +76,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		const std::string nodeName = child->name + "##TIGO" + std::to_string(child->GetUniqueId());
+		const std::string nodeName = gameObject->name + "##TIGO" + std::to_string(gameObject->GetUniqueId());
 		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())
@@ -85,17 +85,17 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 			EditorUI::multiDragData.transforms.clear();
 			EditorUI::multiDragData.components.clear();
 
-			EditorUI::multiDragData.gameObjects.push_back(child.get());
-			EditorUI::multiDragData.transforms.push_back(child->GetTransform().get());
-			const int componentCount = child->GetComponentCount();
+			EditorUI::multiDragData.gameObjects.push_back(gameObject.get());
+			EditorUI::multiDragData.transforms.push_back(gameObject->GetTransform().get());
+			const int componentCount = gameObject->GetComponentCount();
 			for (int i = 0; i < componentCount; i++)
 			{
-				EditorUI::multiDragData.components.push_back(child->components[i].get());
+				EditorUI::multiDragData.components.push_back(gameObject->components[i].get());
 			}
 			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;
 			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
-			ImGui::Text(child->name.c_str());
+			ImGui::Text(gameObject->name.c_str());
 			ImGui::EndDragDropSource();
 		}
 		ImGui::PopStyleColor();
@@ -103,7 +103,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 		std::shared_ptr <GameObject> droppedGameObject = nullptr;
 		if (DragDropTarget("GameObject", droppedGameObject))
 		{
-			droppedGameObject->SetParent(child);
+			droppedGameObject->SetParent(gameObject);
 			state = 1;
 		}
 		else
@@ -115,7 +115,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 				{
 					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 					{
-						Editor::SetSelectedGameObject(child);
+						Editor::SetSelectedGameObject(gameObject);
 						Editor::SetSelectedFileReference(nullptr);
 						state = 2;
 						std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
@@ -127,15 +127,16 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 					else if (ImGui::IsMouseReleased(0))
 					{
 						if(InputSystem::GetKey(KeyCode::LEFT_CONTROL))
-							Editor::AddSelectedGameObject(child);
+							Editor::AddSelectedGameObject(gameObject);
 						else
-						Editor::SetSelectedGameObject(child);
+							Editor::SetSelectedGameObject(gameObject);
+
 						Editor::SetSelectedFileReference(nullptr);
 						state = 2;
 					}
 					else if (ImGui::IsMouseReleased(1))
 					{
-						rightClickedElement = child;
+						rightClickedElement = gameObject;
 						state = 3;
 					}
 				}
@@ -144,9 +145,9 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_p
 
 		if (opened)
 		{
-			for (int i = 0; i < child->GetChildrenCount(); i++)
+			for (int i = 0; i < gameObject->GetChildrenCount(); i++)
 			{
-				const int clickedTemp = DrawTreeItem(child->children[i].lock(), rightClickedElement);
+				const int clickedTemp = DrawTreeItem(gameObject->children[i].lock(), rightClickedElement);
 				if (clickedTemp == 1)
 					state = 1;
 				else if (clickedTemp == 2)

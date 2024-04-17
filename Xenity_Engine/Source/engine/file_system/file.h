@@ -26,43 +26,43 @@ public:
 	~File();
 
 	/**
-	* Write string data to the file
+	* @brief Write string data to the file
 	* @param data The data to write
 	*/
 	virtual void Write(const std::string& data) {};
 
 	/**
-	* Read all the content of the file as a string
+	* @brief Read all the content of the file as a string
 	*/
 	virtual std::string ReadAll() { return ""; };
 
 	/**
-	* Read all the content of the file as a binary (Need to free the pointer after)
+	* @brief Read all the content of the file as a binary (Need to free the pointer after)
 	* @param size Output: The size of the binary
 	* @return The binary data
 	*/
 	virtual unsigned char* ReadAllBinary(int& size) { return nullptr; };
 
 	/**
-	* Check if the file exists
+	* @brief Check if the file exists
 	* @return True if the file exists
 	*/
 	virtual bool CheckIfExist() { return false; };
 
 	/**
-	* Open the file
+	* @brief Open the file
 	* @param fileMode The mode to open the file
 	* @return True if the file is opened successfully
 	*/
 	virtual bool Open(FileMode fileMode) { return false; };
 
 	/**
-	* Close file
+	* @brief Close file
 	*/
 	virtual void Close() {};
 
 	/**
-	* Get file path
+	* @brief Get file path
 	*/
 	const std::string& GetPath() const
 	{
@@ -70,17 +70,17 @@ public:
 	}
 
 	/**
-	* Get file's folder path
+	* @brief Get file's folder path
 	*/
 	std::string GetFolderPath() const;
 
 	/**
-	* Get file name
+	* @brief Get file name
 	*/
 	const std::string& GetFileName() const;
 
 	/**
-	* Get file extension (dot included)
+	* @brief Get file extension (dot included)
 	*/
 	const std::string& GetFileExtension() const
 	{

@@ -9,9 +9,9 @@ class IDrawable;
 class RenderCommand
 {
 public:
-	const MeshData::SubMesh* subMesh = nullptr;
 	std::shared_ptr<Transform> transform = nullptr;
 	std::shared_ptr<Material> material = nullptr;
+	const MeshData::SubMesh* subMesh = nullptr;
 	IDrawable* drawable = nullptr;
 	bool isEnabled;
 };
@@ -35,6 +35,9 @@ public:
 	int spriteCommandIndex = 0;
 	int uiCommandIndex = 0;
 
+	/**
+	* @brief Reset the render batch
+	*/
 	void Reset()
 	{
 		for (auto& renderQueue : renderQueues)

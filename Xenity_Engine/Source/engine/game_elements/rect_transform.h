@@ -17,12 +17,12 @@ public:
 	Vector2 anchors = Vector2(0);
 
 	/**
-	 * [Internal] Update the position of the rect transform
+	 * @brief [Internal] Update the position of the rect transform
 	 */
 	void UpdatePosition(std::shared_ptr <Canvas> canvas);
 
 	/**
-	 * [Internal] Update the position of the rect transform
+	 * @brief [Internal] Update the position of the rect transform
 	 */
 	void UpdatePosition(std::shared_ptr <RectTransform> canvas);
 

@@ -19,47 +19,47 @@ public:
 	void Awake() override;
 
 	/**
-	* Play audio
+	* @brief Play audio
 	*/
 	void Play();
 
 	/**
-	* Resume audio
+	* @brief Resume audio
 	*/
 	void Resume();
 
 	/**
-	* Pause audio
+	* @brief Pause audio
 	*/
 	void Pause();
 
 	/**
-	* Stop audio
+	* @brief Stop audio
 	*/
 	void Stop();
 
 	std::shared_ptr<AudioClip> audioClip = nullptr;
 
 	/**
-	* Set volume
+	* @brief Set volume
 	* @param _volume
 	*/
 	void SetVolume(float _volume);
 
 	/**
-	* Set panning
+	* @brief Set panning
 	* @param panning
 	*/
 	void SetPanning(float panning);
 
 	/**
-	* Set is looping
+	* @brief Set is looping
 	* @param isLooping
 	*/
 	void SetLoop(bool isLooping);
 
 	/**
-	* Get volume
+	* @brief Get volume
 	*/
 	float GetVolume() const
 	{
@@ -67,7 +67,7 @@ public:
 	}
 
 	/**
-	* Get panning
+	* @brief Get panning
 	*/
 	float GetPanning() const
 	{
@@ -75,7 +75,7 @@ public:
 	}
 
 	/**
-	* Get is playing
+	* @brief Get is playing
 	*/
 	bool GetIsPlaying() const
 	{
@@ -83,7 +83,7 @@ public:
 	}
 
 	/**
-	* Get is looping
+	* @brief Get is looping
 	*/
 	bool GetIsLooping() const
 	{
@@ -95,7 +95,7 @@ public:
 private:
 
 	/**
-	* Get shared pointer from this
+	* @brief Get shared pointer from this
 	*/
 	std::shared_ptr<AudioSource> GetThisShared()
 	{

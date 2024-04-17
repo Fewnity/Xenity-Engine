@@ -17,7 +17,7 @@ public:
 	~SkyBox();
 
 	/**
-	* Create a skybox
+	* @brief Create a skybox
 	* @param front Front face
 	* @param back Back face
 	* @param up Up face
@@ -27,17 +27,18 @@ public:
 	*/
 	SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right);
 
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData() override;
+	static std::shared_ptr<SkyBox> MakeSkyBox();
+	void OnReflectionUpdated() override;
+	void LoadFileReference() override;
+
 	std::shared_ptr<Texture> front = nullptr;
 	std::shared_ptr<Texture> back = nullptr;
 	std::shared_ptr<Texture> up = nullptr;
 	std::shared_ptr<Texture> down = nullptr;
 	std::shared_ptr<Texture> left = nullptr;
 	std::shared_ptr<Texture> right = nullptr;
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
-	static std::shared_ptr<SkyBox> MakeSkyBox();
-	void OnReflectionUpdated() override;
-	void LoadFileReference() override;
 
 private:
 };

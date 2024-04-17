@@ -18,8 +18,24 @@ struct RaycastHit
 class API Raycast
 {
 public:
-	static bool Check(const Vector3& startPosition, const Vector3& direction, const float distance, RaycastHit& raycastHit);
-	static bool Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3& startPosition, const Vector3& direction, const float distance, RaycastHit& raycastHit);
+	/**
+	* @brief Check if a ray hits a collider
+	* @param startPosition The start position of the ray
+	* @param direction The direction of the ray
+	* @param maxDistance The max distance of the ray
+	* @param raycastHit The raycastHit struct that will be filled with the hit information
+	*/
+	static bool Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit);
+
+	/**
+	* @brief Check if a ray hits a collider
+	* @param boxCollider The box collider to check
+	* @param startPosition The start position of the ray
+	* @param direction The direction of the ray
+	* @param maxDistance The max distance of the ray
+	* @param raycastHit The raycastHit struct that will be filled with the hit information
+	*/
+	static bool Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit);
 private:
 };
 

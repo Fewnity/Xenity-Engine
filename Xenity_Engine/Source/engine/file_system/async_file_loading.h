@@ -15,12 +15,12 @@ class AsyncFileLoading
 public:
 
 	/**
-	* Finish file loading when files are loaded with a thread
+	* @brief Finish file loading when files are loaded with a thread
 	*/
 	static void FinishThreadedFileLoading();
 
 	/**
-	* Add a file loading with a thread
+	* @brief Add a file loading with a thread
 	* @param file File to load
 	*/
 	static void AddFile(std::shared_ptr<FileReference> file);

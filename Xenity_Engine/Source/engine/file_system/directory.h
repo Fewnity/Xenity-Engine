@@ -17,13 +17,13 @@ public:
 	~Directory();
 
 	/**
-	* Get all the files of the directory (can be very slow)
+	* @brief Get all the files of the directory (can be very slow)
 	* @param recursive If true, get all the files of the subdirectories
 	*/
 	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
 
 	/**
-	* Check if the directory exists
+	* @brief Check if the directory exists
 	*/
 	bool CheckIfExist() const;
 
@@ -31,7 +31,7 @@ public:
 	std::vector<std::shared_ptr<File>> files;
 
 	/**
-	* Get directory path
+	* @brief Get directory path
 	*/
 	std::string GetPath() const
 	{

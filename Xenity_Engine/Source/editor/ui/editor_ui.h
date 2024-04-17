@@ -118,16 +118,59 @@ class EditorUI
 {
 public:
 	static MultiDragData multiDragData;
+
+	/**
+	* @brief Initialize the editor UI
+	* @return 0 if no error
+	*/
 	[[nodiscard]] static int Init();
+
+	/**
+	* @brief Draw menus
+	*/
 	static void Draw();
+
+	/**
+	* @brief Start a new frame
+	*/
 	static void NewFrame();
+	
+	/**
+	* @brief Render at screen the ui
+	*/
 	static void Render();
+
+	/**
+	* @brief Set rounded corner value
+	* @param value Rounded corner value
+	*/
 	static void SetRoundedCorner(float value);
 
+	/**
+	* @brief Get a pretty name from a variable name (Capitalize first letter and add space betwwen capitalized letters)
+	* @param variableName Variable name to convert
+	* @return Pretty variable name
+	*/
 	static std::string GetPrettyVariableName(std::string variableName);
 
+	/**
+	* @brief Draw a centered text
+	* @param text Text to draw
+	*/
 	static void DrawTextCentered(const std::string& text);
-	static InputButtonState DrawInputButton(const std::string& inputName, const std::string& text, bool addUnbindButton);
+
+	/**
+	* @brief Draw an input button for file assets
+	* @param inputName Name of the input
+	* @param buttonText Text to display on the button
+	* @param addUnbindButton Add an unbind button
+	* @return InputButtonState
+	*/
+	static InputButtonState DrawInputButton(const std::string& inputName, const std::string& buttonText, bool addUnbindButton);
+
+	/**
+	* @brief Add a drag drop target to the previous UI element
+	*/
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<ProjectDirectory>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
@@ -135,24 +178,78 @@ public:
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
 	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
 
-	static bool DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value);
-
+	/**
+	* @brief Draw input for specific types Color, Vectors
+	*/
 	static bool DrawInput(const std::string& inputName, Color &newValue);
 	static bool DrawInput(const std::string& inputName, Vector2 &newValue);
 	static bool DrawInput(const std::string& inputName, Vector2Int &newValue);
 	static bool DrawInput(const std::string& inputName, Vector3 &newValue);
 	static bool DrawInput(const std::string& inputName, Vector4 &newValue);
-	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& newValue, uint64_t typeId);
-	static bool DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType);
 
+	/**
+	* @brief Draw input for file references
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
+	static DrawInput(const std::string& inputName, std::shared_ptr<T>& value)
+	{
+		bool changed = false;
+		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
+		std::shared_ptr<T> newValue;
+		changed = DrawFileReference(&ref, inputName, newValue);
+		return changed;
+	}
+
+	/**
+	* @brief Draw input for specific types (Component, gameobject, transform...)
+	* @param inputName Name of the input
+	* @param newValue New value
+	* @param typeId Type id of the object (hash of the class)
+	* @return True if the value has changed
+	*/
+	static bool DrawInput(const std::string& inputName, std::weak_ptr<Component>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Collider>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<GameObject>& newValue, uint64_t typeId);
 	static bool DrawInput(const std::string& inputName, std::weak_ptr<Transform>& newValue, uint64_t typeId);
 
-	static int DrawTreeItem(const std::shared_ptr<GameObject>& child, std::weak_ptr<GameObject>& rightClickedElement);
+	/**
+	* @brief Draw an enum
+	* @param inputName Name of the input
+	* @param newValue New value
+	* @param enumType Type of the enum
+	* @return True if the value has changed
+	*/
+	static bool DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType);
+
+	/**
+	* @brief Draw gameobject tree
+	* @param gameObject Gameobject to draw
+	* @parma rightClickedElement Element that has been right clicked
+	* @return 0 nothing as been clicked, 1 hovered, 2 clicked, 3 click released (TODO: change to enum)
+	*/
+	static int DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::weak_ptr<GameObject>& rightClickedElement);
+
+	/**
+	* @brief Draw tree item for a project directory
+	* @param projectDir Project directory to draw
+	* @return True if the item has been clicked
+	*/
 	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
+
+	/**
+	* @brief Draw input title
+	* @param title Title to draw
+	*/
 	static void DrawInputTitle(const std::string& title);
 
+	/**
+	* @brief Draw a table input (used with ImGui::BeginTable before)
+	* @param inputName Name of the input
+	* @param inputId Id of the input
+	* @param columnIndex Column index
+	* @param value Value to draw
+	*/
 	template<typename T>
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, T& value)
 	{
@@ -160,12 +257,24 @@ public:
 		ImGui::Text(inputName.c_str());
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(-1);
-		if constexpr(std::is_same<T, float>())
+
+		if constexpr (std::is_same<T, float>())
 			ImGui::InputFloat(inputId.c_str(), &value, 0, 0, "%.4f");
 		else if constexpr (std::is_same<T, int>())
-			ImGui::InputInt(inputId.c_str(), &value, 0, 0);
+			ImGui::InputInt(inputId.c_str(), &value);
+		else if constexpr (std::is_same<T, double>())
+			ImGui::InputDouble(inputId.c_str(), &value, 0, 0, "%0.8f");
+		else if constexpr (std::is_same<T, bool>())
+			ImGui::Checkbox(inputId.c_str(), &value);
+		else if constexpr (std::is_same<T, std::string>())
+			ImGui::InputText(inputId.c_str(), &value);
 	}
 
+	/**
+	* @brief Draw input template for basic types (int, float, bool, strings...)
+	* @param inputName Name of the input
+	* @param valueRef Reference to the value
+	*/
 	template<typename T>
 	static ValueInputState DrawInputTemplate(const std::string& inputName, T& valueRef)
 	{
@@ -204,6 +313,13 @@ public:
 		return returnValue;
 	}
 
+	/**
+	* @brief Draw reflective data
+	* @param myMap Reflective data to draw
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @return True if the value has changed
+	*/
 	template<typename T>
 	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
 	{
@@ -227,24 +343,65 @@ public:
 		return valueChanged;
 	}
 
+	/**
+	* @brief Open folder dialog (Windows only)
+	* @param title Title of the dialog
+	* @param defaultLocation Default location
+	* @return Path of the folder
+	*/
 	static std::string OpenFolderDialog(const std::string& title, const std::string& defaultLocation);
+
+	/**
+	* @brief Open file dialog (Windows only)
+	* @param title Title of the dialog
+	* @param defaultLocation Default location
+	* @return Path of the file
+	*/
 	static std::string OpenFileDialog(const std::string& title, const std::string& defaultLocation);
+
+	/**
+	* @brief Save file dialog (Windows only)
+	* @param title Title of the dialog
+	* @param defaultLocation Default location
+	* @return Path of the file
+	*/
 	static std::string SaveFileDialog(const std::string& title, const std::string& defaultLocation);
 
+	/**
+	* @brief Open a dialog box (Windows only)
+	* @param title Title of the dialog
+	* @param message Message of the dialog
+	* @param type Type of the dialog
+	* @return Result of the dialog
+	*/
 	static DialogResult OpenDialog(const std::string& title, const std::string& message, DialogType type);
 
+	/**
+	* @brief Generate an id for the next ui element
+	*/
 	static std::string GenerateItemId();
 
 	static std::vector<std::shared_ptr<Texture>> icons;
 	static std::shared_ptr<Menu> currentSelectAssetMenu;
 
+	/**
+	* @brief Get the ui scale based on the screen resolution/settings
+	*/
 	static float GetUiScale()
 	{
 		return uiScale;
 	}
 
+	/**
+	* @brief Draw a file reference
+	* @param valuePtr Reference to the file reference
+	* @param variableName Name of the variable
+	* @param newValue New value
+	* @return True if the value has changed
+	*/
 	template <typename T>
-	static bool DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
+	static DrawFileReference(std::reference_wrapper<std::shared_ptr<T>>* valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
@@ -324,6 +481,12 @@ public:
 		return valueChangedTemp;
 	}*/
 
+	/**
+	* @brief Draw a vector of file references
+	* @param valuePtr Reference to the vector of file references
+	* @param variableName Name of the variable
+	* @return True if the value has changed
+	*/
 	template <typename T>
 	static bool DrawVector(std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const std::string& variableName)
 	{
@@ -399,6 +562,14 @@ public:
 		return valueChangedTemp;
 	}
 
+	/**
+	* @brief Draw a vector of std::weak_ptr (GameObject, Transform, Component...)
+	* @param className Name of the class
+	* @param valuePtr Reference to the vector of std::weak_ptr
+	* @param variableName Name of the variable
+	* @param dragdropId Id of the dragdrop
+	* @return True if the value has changed
+	*/
 	template <typename T>
 	static bool DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const std::string& variableName, const uint64_t& dragdropId)
 	{
@@ -453,9 +624,20 @@ public:
 		return valueChangedTemp;
 	}
 
+	/**
+	* @brief Set next buttons style color
+	* @param isSelected Is the button selected
+	*/
 	static void SetButtonColor(bool isSelected);
+
+	/**
+	* @brief End next buttons style color
+	*/
 	static void EndButtonColor();
 
+	/**
+	* @brief Get if an element is being edited
+	*/
 	static bool IsEditingElement() 
 	{
 		return isEditingElement;
@@ -465,9 +647,25 @@ private:
 	static int uiId;
 	static bool isEditingElement;
 	static float uiScale;
+
+	/**
+	* @brief Update the ui scale based on the screen resolution/settings
+	*/
 	static void UpdateUIScale();
+
+	/**
+	* @brief Load editor icons
+	*/
 	static void LoadEditorIcon(IconName iconName, const std::string& path);
 
+	/**
+	* @brief Draw input for reflective (Color, Vectors)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @return True if the value has changed
+	*/
 	template<typename T2, typename T>
 	static bool DrawInputReflective(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, T* valuePtr)
 	{
@@ -479,7 +677,14 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for basic types (int, float, strings...)
+	/**
+	* @brief Draw a variable of basic types (int, float, strings...) and enums
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	*/
 	template<typename T2, typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
 		static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
@@ -500,19 +705,33 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for vectors of reflective (not implemented)
+	/**
+	* @brief Draw a variable of a list of reflectives (not implemented)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		Debug::Print("[Not implemented] Vector for Reflective!", true);
+		//Debug::Print("[Not implemented] Vector for Reflective!", true);
 		bool valueChangedTemp = false;
-
-		//DrawVector("GameObject", valuePtr, valueChangedTemp, variableName, reflectionEntry.typeId);
 
 		return valueChangedTemp;
 	}
 
-	// Template for vector of std::weak_ptr (GameObject, Transform, Component)
+	/**
+	* @brief Draw a variable of a list of std::weak_ptr (GameObject, Transform, Component)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2, typename T>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
@@ -534,7 +753,15 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for vector of std::shared_ptr (Files: MeshData, AudioClip, Texture...)
+	/**
+	* @brief Draw a variable of a list of std::shared_ptr (MeshData, AudioClip, Texture...)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2, typename T>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
@@ -542,7 +769,15 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for std::shared_ptr (Files: MeshData, AudioClip, Texture...)
+	/**
+	* @brief Draw a variable of std::shared_ptr (MeshData, AudioClip, Texture...)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2, typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
 	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
@@ -554,7 +789,15 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for std::weak_ptr (GameObject, Transform, Component)
+	/**
+	* @brief Draw a variable of std::weak_ptr (GameObject, Transform, Component)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2, typename T>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
@@ -566,7 +809,15 @@ private:
 		return valueChangedTemp;
 	}
 
-	// Template for reflective (Custom reflective, Vectors, Color)
+	/**
+	* @brief Draw a variable of reflective (Custom reflective, Vectors, Color)
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param valuePtr Reference to the value
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename T2>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
@@ -604,6 +855,15 @@ private:
 		return valueChangedTemp;
 	}
 
+	/**
+	* @brief Process a variant (std::variant) to draw the variable
+	* @param var Variant to process
+	* @param variableName Name of the variable
+	* @param command Command to apply if the value has changed
+	* @param parent Parent of the reflective data
+	* @param reflectionEntry Reflection entry of the variable
+	* @return True if the value has changed
+	*/
 	template<typename... Types, typename ParentType>
 	static bool ProcessVariant(const std::variant<Types...>& var, const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) {
 		bool valueChangedTemp = false;

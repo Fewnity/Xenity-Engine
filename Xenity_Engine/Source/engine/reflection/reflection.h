@@ -73,7 +73,7 @@ public:
 };
 
 /**
-* Class to get the list of enum strings lists
+* @brief Class to get the list of enum strings lists
 * initialise enumStringsLists before calling main()
 */
 class API EnumHelper
@@ -87,7 +87,8 @@ public:
 };
 
 /**
-* Create a map with the int value as key and the second value as the enum name
+* @brief Create a map with the int value as key and the second value as the enum name
+* @param enumData The enum data as a string
 */
 static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 {
@@ -180,7 +181,8 @@ static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 
 
 /**
-* Register a enum's strings map into a static map that list's all other enum strings map
+* @brief Register a enum's strings map into a static map that list's all other enum strings map
+* @param newEnumStringsList The enum's strings map
 */
 template<typename T>
 static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStringsList)
@@ -196,7 +198,7 @@ static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStri
 // Replace enum's strings map by a vector to have two enums string with the same int value
 // Try to find another way to call RegisterEnumStringsMap without creating a void* variable
 /**
-* Create an enum that can be used by the editor
+* @brief Create an enum that can be used by the editor
 */
 #define ENUM(name, ...) \
     enum class name { __VA_ARGS__ }; \
@@ -212,11 +214,14 @@ public:
 template<typename T> class TypeSpawnerImpl : public TypeSpawner
 {
 public:
+	/**
+	* @brief Allocate a new instance of the type
+	*/
 	virtual void* Allocate()const { return new T; }
 };
 
 /**
- * [Internal]
+ * @brief [Internal]
  */
 class API ReflectiveEntry
 {
@@ -230,7 +235,6 @@ public:
 	bool isEnum = false;
 };
 
-//typedef std::unordered_map<std::string, ReflectiveEntry> ReflectiveData;
 typedef std::vector<std::pair<std::string, ReflectiveEntry>> ReflectiveData;
 
 class API Reflective
@@ -239,43 +243,70 @@ public:
 	virtual ~Reflective() = default;
 
 	/**
-	* Get all child class variables references
+	* @brief Get all child class variables references
 	*/
 	virtual ReflectiveData GetReflectiveData() = 0;
 
 	/**
-	* Called when a variable is updated
+	* @brief Called when a variable is updated
 	*/
 	virtual void OnReflectionUpdated() {};
 
-
+	/**
+	* @brief Add a variable to the list of variables (basic type)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value, void>
-	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool isPublic)
+	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
 	}
 
+	/**
+	* @brief Add a variable to the list of variables (enum)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static void AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool isPublic)
+	static void AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, (int&)value, variableName, false, isPublic, type, true);
+		Reflective::CreateReflectionEntry(vector, (int&)value, variableName, false, isPublic, type, true);
 	}
 
+	/**
+	* @brief Add a variable to the list of variables (component)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& map, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
+	static void AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, (std::weak_ptr<Component>&)value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, (std::weak_ptr<Component>&)value, variableName, false, isPublic, type, false);
 	}
-
+	
+	/**
+	* @brief Add a variable to the list of variables (component list)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& map, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
+	static void AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
 	}
 
 	//template<typename T>
@@ -286,13 +317,20 @@ public:
 		Reflective::AddReflectionVariable(map, value, variableName, false, isPublic, type, false);
 	}*/
 
+	/**
+	* @brief Add a variable to the list of variables (reflective list)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
-	static AddVariable(ReflectiveData& map, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
+	static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
-		for (auto& otherEntry : map)
+		Reflective::CreateReflectionEntry(vector, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
+		for (auto& otherEntry : vector)
 		{
 			if (otherEntry.first == variableName) 
 			{
@@ -302,15 +340,34 @@ public:
 		}
 	}
 
+	/**
+	* @brief Add a variable to the list of variables (basic type)
+	* @param map The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param visibleInFileInspector If the variable is visible in the file inspector
+	* @param isPublic If the variable is public
+	*/
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value, void>
 	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::AddReflectionVariable(map, value, variableName, visibleInFileInspector, isPublic, type, false);
+		Reflective::CreateReflectionEntry(map, value, variableName, visibleInFileInspector, isPublic, type, false);
 	}
 
 private:
-	static void AddReflectionVariable(ReflectiveData& map, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
+
+	/**
+	* @brief Create a reflection entry
+	* @param vector The list of variables
+	* @param variable The variable value
+	* @param variableName The variable name
+	* @param visibleInFileInspector If the variable is visible in the file inspector
+	* @param isPublic If the variable is public
+	* @param id The variable type id (hash code)
+	* @param isEnum If the variable is an enum
+	*/
+	static void CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
 };
 

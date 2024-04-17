@@ -153,59 +153,59 @@ class API InputSystem
 public:
 
 	/**
-	* [Internal] Init input system
+	* @brief [Internal] Init input system
 	*/
 	static void Init();
 
 	/**
-	* [Internal] Read input events
+	* @brief [Internal] Read input events
 	*/
 	static void Read();
 #if defined(_WIN32) || defined(_WIN64)
 
 	/**
-	* [Internal] Read input events
+	* @brief [Internal] Read input events
 	* @parem event SDL event
 	*/
 	static void Read(const SDL_Event& event);
 #endif
 
 	/**
-	* Return true if the key has just been pressed
+	* @brief Return true if the key has just been pressed
 	* @param Key code to check
 	*/
 	static bool GetKeyDown(const KeyCode keyCode);
 
 	/**
-	* Return true if the key is held
+	* @brief Return true if the key is held
 	* @param Key code to check
 	*/
 	static bool GetKey(const KeyCode keyCode);
 
 	/**
-	* Return true if the key has just been released
+	* @brief Return true if the key has just been released
 	* @param Key code to check
 	*/
 	static bool GetKeyUp(const KeyCode keyCode);
 
 	/**
-	* [Internal] Set all keys states to inactive
+	* @brief [Internal] Set all keys states to inactive
 	*/
 	static void ClearInputs();
 
 	/**
-	* Get how many touch screens the device has
+	* @brief Get how many touch screens the device has
 	*/
 	static int GetTouchScreenCount();
 
 	/**
-	* Get how many touch inputs the screen has
+	* @brief Get how many touch inputs the screen has
 	* @param screenIndex Screen index
 	*/
 	static int GetTouchCount(const int screenIndex);
 
 	/**
-	* Get touch data
+	* @brief Get touch data
 	* @param touchIndex Touch index
 	* @param screenIndex Screen index
 	*/
@@ -213,12 +213,12 @@ public:
 
 
 	/**
-	* Hide mouse
+	* @brief Hide mouse
 	*/
 	static void HideMouse();
 
 	/**
-	* Show mouse
+	* @brief Show mouse
 	*/
 	static void ShowMouse();
 
@@ -239,22 +239,22 @@ private:
 
 	static void UpdateControllers();
 	/**
-	* Set inputs state
+	* @brief Set inputs state
 	*/
 	static void SetInput(const bool pressed, const KeyCode keyCode);
 
 	/**
-	* Set an input as pressed
+	* @brief Set an input as pressed
 	*/
 	static void SetInputPressed(const KeyCode keyCode);
 
 	/**
-	* Set an input as released
+	* @brief Set an input as released
 	*/
 	static void SetInputReleased(const KeyCode keyCode);
 
 	/**
-	* Set an input states to false
+	* @brief Set an input states to false
 	*/
 	static void SetInputInactive(const KeyCode keyCode);
 

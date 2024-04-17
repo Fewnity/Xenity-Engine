@@ -19,40 +19,40 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	int GetDrawPriority() const override;
 
 	/**
-	* Set mesh data
+	* @brief Set mesh data
 	* @param meshData The mesh data
 	*/
 	void SetMeshData(std::shared_ptr <MeshData> meshData);
 
 	/**
-	* Get mesh data
+	* @brief Get mesh data
 	*/
 	std::shared_ptr <MeshData> GetMeshData();
 
 private:
 
 	/**
-	* Called when the component is disabled
+	* @brief Called when the component is disabled
 	*/
 	void OnDisabled() override;
 
 	/**
-	* Called when the component is enabled
+	* @brief Called when the component is enabled
 	*/
 	void OnEnabled() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 

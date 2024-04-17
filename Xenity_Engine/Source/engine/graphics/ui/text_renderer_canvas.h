@@ -22,7 +22,7 @@ public:
 	void OnReflectionUpdated() override;
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	int GetDrawPriority() const override;
 
@@ -30,7 +30,7 @@ public:
 
 
 	/**
-	* Set text color
+	* @brief Set text color
 	* @param color Color
 	*/
 	void SetColor(const Color& color)
@@ -39,13 +39,13 @@ public:
 	}
 
 	/**
-	* Set order in layer
+	* @brief Set order in layer
 	* @param orderInLayer Order in layer
 	*/
 	void SetOrderInLayer(int orderInLayer);
 
 	/**
-	* Get order in layer
+	* @brief Get order in layer
 	*/
 	int GetOrderInLayer() const
 	{
@@ -53,13 +53,13 @@ public:
 	}
 
 	/**
-	* Set text
+	* @brief Set text
 	* @param text Text
 	*/
 	void SetText(const std::string& text);
 
 	/**
-	* Set text font
+	* @brief Set text font
 	* @param font Font
 	*/
 	void SetFont(const std::shared_ptr<Font>& font);
@@ -67,22 +67,22 @@ public:
 private:
 
 	/**
-	* Called when the component is disabled
+	* @brief Called when the component is disabled
 	*/
 	void OnDisabled() override;
 
 	/**
-	* Called when the component is enabled
+	* @brief Called when the component is enabled
 	*/
 	void OnEnabled() override;
 
 	/**
-	* Create the render commands
+	* @brief Create the render commands
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 

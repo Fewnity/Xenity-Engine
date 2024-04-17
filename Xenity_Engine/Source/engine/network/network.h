@@ -22,19 +22,22 @@ public:
 	~Socket();
 
 	/**
-	* Send data
+	* @brief Send data
 	*/
 	void SendData(const std::string& text);
 
 	/**
-	* [Internal] Read data from the socket
+	* @brief [Internal] Read data from the socket
 	*/
 	void Update();
 
+	/**
+	* @brief Close the socket
+	*/
 	void Close();
 
 	/**
-	* Return recieved data during this frame
+	* @brief Return recieved data during this frame
 	*/
 	std::string GetIncommingData() const
 	{
@@ -51,22 +54,22 @@ class API NetworkManager
 public:
 
 	/**
-	* [Internal] Init network manager
+	* @brief [Internal] Init network manager
 	*/
 	static void Init();
 
 	/**
-	* [Internal] Update all sockets (To call every frame)
+	* @brief [Internal] Update all sockets (To call every frame)
 	*/
 	static void Update();
 
 	/**
-	* Create a socket
+	* @brief Create a socket
 	*/
 	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
 
 	/**
-	* [Internal] draw network setup menu for the PSP
+	* @brief [Internal] draw network setup menu for the PSP
 	*/
 	static void DrawNetworkSetupMenu();
 

@@ -26,27 +26,28 @@ class Engine
 {
 public:
 	/**
-	 * Init Engine
+	 * @brief Init Engine
 	 */
 	[[nodiscard]] API static int Init();
 
 	/**
-	 * Stop engine
+	 * @brief Stop engine
 	 */
 	API static void Stop();
 
 	/**
-	 * Engine loop
+	 * @brief Engine loop
 	 */
 	API static void Loop();
 
 	/**
-	 * Quit game
+	 * @brief Quit game
 	 */
 	API static void Quit();
 
 	/**
-	 * Get if the engine is running
+	 * @brief Get if the engine is running
+	 * @param checkRenderer Check if the renderer exists
 	 */
 	static bool IsRunning(bool checkRenderer)
 	{
@@ -58,13 +59,16 @@ public:
 	static bool canUpdateAudio;
 
 	/**
-	 * Get the renderer
+	 * @brief Get the renderer
 	 */
 	API static Renderer &GetRenderer()
 	{
 		return *renderer;
 	}
 
+	/**
+	 * @brief Get the OnWindowFocus event
+	 */
 	static Event<>* GetOnWindowFocusEvent() 
 	{
 		return OnWindowFocusEvent;
@@ -73,15 +77,18 @@ public:
 private:
 	static Event<>* OnWindowFocusEvent;
 
+	/**
+	 * @brief Close signal, called when the software is closing
+	 */
 	static void OnCloseSignal(int);
 
 	/**
-	 * Create some benchmark for profiling
+	 * @brief Create some benchmark for profiling
 	 */
 	static void CreateBenchmarks();
 
 	/**
-	 * Check event (SDL)
+	 * @brief Check event (SDL)
 	 */
 	static void CheckEvents();
 

@@ -82,7 +82,7 @@ class ProjectManager
 public:
 
 	/**
-	* Create a project
+	* @brief Create a project
 	* @param name Name of the project
 	* @param folderPath Project folder parent
 	* @return True if the project has been created
@@ -90,48 +90,48 @@ public:
 	static bool CreateProject(const std::string& name, const std::string& folderPath);
 
 	/**
-	* Load a project
+	* @brief Load a project
 	* @param projectPathToLoad Project path
 	* @return True if the project has been loaded
 	*/
 	static bool LoadProject(const std::string& projectPathToLoad);
 
 	/**
-	* Unload a project
+	* @brief Unload a project
 	*/
 	static void UnloadProject();
 
 	/**
-	* Get file reference by Id
+	* @brief Get file reference by Id
 	* @param id File reference Id
 	* @return File reference
 	*/
 	static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
 
 	/**
-	* Get file by Id
+	* @brief Get file by Id
 	* @param id File Id
 	* @return File
 	*/
 	static FileInfo* GetFileById(const uint64_t id);
 
 	/**
-	* Save the meta file of a file reference
+	* @brief Save the meta file of a file reference
 	*/
 	static void SaveMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
 	/**
-	* Load project settings
+	* @brief Load project settings
 	*/
 	static void LoadProjectSettings();
 
 	/**
-	* Save project settings
+	* @brief Save project settings
 	*/
 	static void SaveProjectSettings();
 
 	/**
-	* Get project name
+	* @brief Get project name
 	*/
 	static std::string GetProjectName()
 	{
@@ -139,7 +139,7 @@ public:
 	}
 
 	/**
-	* Get game name
+	* @brief Get game name
 	*/
 	static std::string GetGameName()
 	{
@@ -147,7 +147,7 @@ public:
 	}
 
 	/**
-	* Get game start scene
+	* @brief Get game start scene
 	*/
 	static std::shared_ptr<Scene> GetStartScene()
 	{
@@ -155,7 +155,7 @@ public:
 	}
 
 	/**
-	* Get project folder path
+	* @brief Get project folder path
 	*/
 	static std::string GetProjectFolderPath()
 	{
@@ -163,7 +163,7 @@ public:
 	}
 
 	/**
-	* Get asset folder path
+	* @brief Get asset folder path
 	*/
 	static std::string GetAssetFolderPath()
 	{
@@ -171,7 +171,7 @@ public:
 	}
 
 	/**
-	* Get engine asset folder path
+	* @brief Get engine asset folder path
 	*/
 	static std::string GetEngineAssetFolderPath()
 	{
@@ -179,7 +179,7 @@ public:
 	}
 
 	/**
-	* Get if the project is loaded
+	* @brief Get if the project is loaded
 	*/
 	static bool GetIsProjectLoaded()
 	{
@@ -187,63 +187,63 @@ public:
 	}
 
 	/**
-	* Get project settings
+	* @brief Get project settings
 	* @param path Project path
 	*/
 	static ProjectSettings GetProjectSettings(const std::string& projectPath);
 
 	/**
-	* Get opened projects list
+	* @brief Get opened projects list
 	*/
 	static std::vector<ProjectListItem> GetProjectsList();
 
 	/**
-	* Save opened projects list
+	* @brief Save opened projects list
 	* @param projects Projects list
 	*/
 	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
 	/**
-	* Fill project directory with all files and directories
+	* @brief Fill project directory with all files and directories
 	*/
 	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory);
 
 	/**
-	* Create project directories
+	* @brief Create project directories
 	*/
 	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
 
 	/**
-	* Refresh project directory
+	* @brief Refresh project directory
 	*/
 	static void RefreshProjectDirectory();
 
 	/**
-	* Find and get a project directory from a path and a parent directory
+	* @brief Find and get a project directory from a path and a parent directory
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
 
 	/**
-	* Get file type from extension
+	* @brief Get file type from extension
 	* @param extension File extension
 	* @return File type
 	*/
 	static FileType GetFileType(const std::string& extension);
 
 	/**
-	* Get all files by type
+	* @brief Get all files by type
 	* @param type File type
 	* @return Files
 	*/
 	static std::vector<FileInfo> GetFilesByType(const FileType type);
 
 	/**
-	* Get all used files by the game
+	* @brief Get all used files by the game
 	*/
 	static std::vector<uint64_t> GetAllUsedFileByTheGame();
 
 	/**
-	* Get project directory
+	* @brief Get project directory
 	*/
 	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
 	{
@@ -257,7 +257,7 @@ private:
 
 #if defined(EDITOR)
 	/**
-	* Event called when the project is compiled
+	* @brief Event called when the project is compiled
 	* @param params Compiler parameters
 	* @param result Compilation result
 	*/
@@ -265,17 +265,17 @@ private:
 #endif
 
 	/**
-	* Find all project files
+	* @brief Find all project files
 	*/
 	static void FindAllProjectFiles();
 
 	/**
-	* Create Visual Studio Code settings file
+	* @brief Create Visual Studio Code settings file
 	*/
 	static void CreateVisualStudioSettings();
 
 	/**
-	* Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
+	* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
 	* @param path File path
 	* @param id File Id
 	* @return File reference
@@ -283,7 +283,7 @@ private:
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
 
 	/**
-	* Load meta file
+	* @brief Load meta file
 	* @param fileReference File reference
 	*/
 	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);

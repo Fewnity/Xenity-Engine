@@ -14,7 +14,7 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	/**
-	* [Internal] Check the lod
+	* @brief [Internal] Check the lod
 	*/
 	void CheckLod();
 	void RemoveReferences()  override;
@@ -22,12 +22,12 @@ public:
 private:
 
 	/**
-	* Use one of the level and disable the others
+	* @brief Use one of the level and disable the others
 	*/
 	void UseLevel(std::weak_ptr<MeshRenderer> levelToEnable, std::weak_ptr<MeshRenderer> levelToDisable0, std::weak_ptr<MeshRenderer> levelToDisable1);
 
 	/**
-	* Set all the level to visible or not
+	* @brief Set all the level to visible or not
 	*/
 	void SetAllLevel(bool visible);
 

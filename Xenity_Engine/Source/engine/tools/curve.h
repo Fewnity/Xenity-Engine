@@ -20,19 +20,19 @@ class API Spline
 {
 public:
 	/**
-	* Create a spline point
+	* @brief Create a spline point
 	* @param position Position of the point
 	*/
 	SplinePoint* CreateSplinePoint(const Vector3& position);
 
 	/**
-	* Add a point to the spline
+	* @brief Add a point to the spline
 	* @param point Point of the spline
 	*/
 	void AddSplinePoint(SplinePoint* point);
 
 	/**
-	* Get spline value at t
+	* @brief Get spline value at t
 	* @param t [0;1]
 	*/
 	Vector3 GetValueAt(const float t) const;

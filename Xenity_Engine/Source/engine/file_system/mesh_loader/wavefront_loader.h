@@ -16,7 +16,7 @@ class WavefrontLoader
 public:
 
 	/**
-	* Load a mesh from a file
+	* @brief Load a mesh from a file
 	* @param mesh Mesh file to load
 	* @return True if the mesh was loaded successfully
 	*/

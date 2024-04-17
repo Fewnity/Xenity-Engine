@@ -25,26 +25,26 @@ public:
 	static FileSystem* fileSystem;
 
 	/**
-	* [Internal] Init file system
+	* @brief [Internal] Init file system
 	* @return 0 if success
 	*/
 	int InitFileSystem();
 
 	/**
-	* Create a directory
+	* @brief Create a directory
 	* @param path Directory path
 	* @return True if success
 	*/
 	bool CreateFolder(const std::string& path);
 
 	/**
-	* Delete a file
+	* @brief Delete a file
 	* @param path File path
 	*/
 	void Delete(const std::string& path);
 
 	/**
-	* Get all files of a directory and fill it
+	* @brief Get all files of a directory and fill it
 	* @param directory Directory to fill
 	*/
 	void FillDirectory(std::shared_ptr <Directory> directory, bool recursive);
@@ -54,7 +54,7 @@ public:
 	int CopyFile(const std::string& path, const std::string& newPath, bool replace);
 
 	/**
-	 * [Internal] ?
+	 * @brief [Internal] ?
 	 */
 	static std::shared_ptr<File> MakeFile(const std::string& path);
 };

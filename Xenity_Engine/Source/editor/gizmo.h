@@ -13,25 +13,25 @@ class API Gizmo
 public:
 
 	/**
-	* [Internal] Init Gizmo system
+	* @brief [Internal] Init Gizmo system
 	*/
 	static void Init();
 
 	/**
-	* Draw a simple line From A to B
+	* @brief Draw a simple line From A to B
 	* @param a Start point
 	* @param b End point
 	*/
 	static void DrawLine(const Vector3& a, const Vector3& b);
 
 	/**
-	* Set Gizmo draw color
+	* @brief Set Gizmo draw color
 	* @param newColor New color to set
 	*/
 	static void SetColor(const Color& newColor);
 
 	/**
-	* Draw a billboard sprite
+	* @brief Draw a billboard sprite
 	* @param position Position
 	* @param scale Scale
 	* @param texture Texture to draw

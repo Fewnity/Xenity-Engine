@@ -29,15 +29,6 @@ void EditorUI::DrawInputTitle(const std::string& title)
 
 #pragma region Old inputs
 
-bool EditorUI::DrawInput(const std::string& inputName, std::shared_ptr<SkyBox>& value)
-{
-	bool changed = false;
-	auto ref = std::ref(value);
-	std::shared_ptr<SkyBox> newValue;
-	changed = DrawFileReference(&ref, inputName, newValue);
-	return changed;
-}
-
 #pragma endregion
 
 #pragma region New Inputs
@@ -192,7 +183,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	std::weak_ptr<Component> value = newValue;
 	const std::shared_ptr<Component> oldValue = value.lock();
 
-	std::string inputText = "None (Component)";
+	std::string inputText;
 	const auto ptr = value.lock();
 	if (ptr != nullptr)
 	{

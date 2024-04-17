@@ -17,7 +17,7 @@ public:
 	void Update() override;
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	void Tick();
 

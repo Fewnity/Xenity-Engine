@@ -24,19 +24,19 @@ class GameplayManager
 {
 public:
 	/**
-	* Add a component into the game
+	* @brief Add a component into the game
 	* @param gameObject GameObject to add
 	*/
 	static void AddGameObject(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
-	* Add a component into the engine only (Not visible from the game)
+	* @brief Add a component into the engine only (Not visible from the game)
 	* @param gameObject GameObject to add
 	*/
 	static void AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
-	* Get all GameObjects
+	* @brief Get all GameObjects
 	*/
 	static std::vector<std::shared_ptr<GameObject>> GetGameObjects();
 
@@ -53,39 +53,39 @@ public:
 	static std::weak_ptr<Component> lastUpdatedComponent;
 
 	/**
-	* Update all active components
+	* @brief Update all active components
 	*/
 	static void UpdateComponents();
 
 	/**
-	* Order components by their update order
+	* @brief Order components by their update order
 	*/
 	static void OrderComponents();
 
 	/**
-	* Initialise all components
+	* @brief Initialise all components
 	*/
 	static void InitialiseComponents();
 
 	/**
-	* Remove destroyed GameObjects
+	* @brief Remove destroyed GameObjects
 	*/
 	static void RemoveDestroyedGameObjects();
 
 	/**
-	* Remove destroyed components
+	* @brief Remove destroyed components
 	*/
 	static void RemoveDestroyedComponents();
 
 	/**
-	* Set game state
+	* @brief Set game state
 	* @param _gameState New game state
 	* @param restoreScene If true, the scene will be restored
 	*/
 	static void SetGameState(GameState _gameState, bool restoreScene);
 
 	/**
-	* Get game state
+	* @brief Get game state
 	*/
 	static GameState GetGameState()
 	{
@@ -93,7 +93,7 @@ public:
 	}
 
 	/**
-	* Get the OnPlay event
+	* @brief Get the OnPlay event
 	*/
 	static Event<>& GetOnPlayEvent() 
 	{

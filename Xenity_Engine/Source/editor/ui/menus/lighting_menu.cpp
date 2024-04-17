@@ -24,6 +24,10 @@ void LightingMenu::Draw()
 		ImGui::Separator();
 		EditorUI::DrawInput("Skybox", Graphics::skybox);
 
+		//std::shared_ptr<int> t;
+		//std::reference_wrapper<std::shared_ptr<int>> ref = std::ref(t);
+		//EditorUI::DrawFileReference(&ref, "r", t);
+
 		if (EditorUI::DrawInput("Color", Graphics::skyColor))
 			changed = true;
 

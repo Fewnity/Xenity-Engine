@@ -12,7 +12,7 @@ class FileReferenceFinder
 public:
 
 	/**
-	* Add the file id to the vector
+	* @brief Add the file id to the vector
 	* @param valuePtr Reference to the file reference
 	* @param ids Vector to store the file ids
 	*/
@@ -21,7 +21,7 @@ public:
 	static GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::vector<uint64_t>& ids);
 
 	/**
-	* Get all files ids from a reflective data, get all files id stored in variables
+	* @brief Get all files ids from a reflective data, get all files id stored in variables
 	* @param usedFilesIds Vector to store the file ids
 	* @param reflectiveData Reflective data to get the files ids
 	*/
@@ -36,7 +36,7 @@ private:
 	static bool GetFileRefId(const T& var, std::vector <uint64_t>& ids);
 
 	/**
-	* Get all files ids from a vector of file references
+	* @brief Get all files ids from a vector of file references
 	* @param valuePtr Reference to the vector of file references
 	* @param ids Vector to store the file ids
 	*/

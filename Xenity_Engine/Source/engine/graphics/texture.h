@@ -23,7 +23,7 @@ public:
 	Texture();
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	// Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
@@ -40,24 +40,24 @@ public:
 	void UnloadFileReference() override;
 
 	/**
-	 * Set texture data
+	 * @brief Set texture data
 	 * @param data Texture data
 	 */
 	void SetData(const unsigned char *data);
 
 	/**
-	 * [Internal] Get texture ID
+	 * @brief [Internal] Get texture ID
 	 */
 	unsigned int GetTextureId() const;
 
 	/**
-	 * Set texture filter
+	 * @brief Set texture filter
 	 * @param filter Filter
 	 */
 	void SetFilter(const Filter filter);
 
 	/**
-	 * Set texture wrap mode
+	 * @brief Set texture wrap mode
 	 * @param mode Wrap mode
 	 */
 	void SetWrapMode(const WrapMode mode);
@@ -67,29 +67,30 @@ public:
 		this->width = width;
 		this->height = height;
 	}
+
 	/**
-	 * Get texture width
+	 * @brief Get texture width
 	 */
 	int GetWidth() const;
 
 	/**
-	 * Get texture height
+	 * @brief Get texture height
 	 */
 	int GetHeight() const;
 
 	/**
-	 * Set texture pixel per unit
+	 * @brief Set texture pixel per unit
 	 * @param value Pixel per unit
 	 */
 	void SetPixelPerUnit(int value);
 
 	/**
-	 * Get texture pixel per unit
+	 * @brief Get texture pixel per unit
 	 */
 	int GetPixelPerUnit() const;
 
 	/**
-	 * Get texture channel count
+	 * @brief Get texture channel count
 	 */
 	int GetChannelCount() const;
 
@@ -99,24 +100,24 @@ public:
 	}
 
 	/**
-	 * Get if the texture is using mipmap
+	 * @brief Get if the texture is using mipmap
 	 */
 	bool GetUseMipmap() const;
 
 	/**
-	 * Get texture filter
+	 * @brief Get texture filter
 	 */
 	Filter GetFilter() const;
 
 	/**
-	 * Get texture wrap mode
+	 * @brief Get texture wrap mode
 	 */
 	WrapMode GetWrapMode() const;
 
 	int mipmaplevelCount = 0;
 
 	/**
-	 * Return if the texture is valid
+	 * @brief Return if the texture is valid
 	 */
 	bool IsValid() const
 	{
@@ -124,7 +125,7 @@ public:
 	}
 
 	/**
-	 * [Internal]
+	 * @brief [Internal]
 	 */
 	std::shared_ptr<Texture> GetThisShared()
 	{
@@ -133,7 +134,7 @@ public:
 
 #if defined(__PSP__)
 	/**
-	 * Create texture data for a mipmap level
+	 * @brief Create texture data for a mipmap level
 	 * @param level Mipmap level
 	 * @param texData Base texture data
 	 */
@@ -150,24 +151,27 @@ public:
 #endif
 	PSPTextureType type = PSPTextureType::RGBA_5650;
 	std::vector<SpriteSelection*> spriteSelections;
+
+	/**
+	* @brief Clear all sprite selections
+	*/
 	void ClearSpriteSelections();
 
 private:
 	/**
-	 * Create the texture from a file path
-	 * @param filePath File path
+	 * @brief Create the texture
 	 * @param filter Texture filter
 	 * @param useMipMap Use mip map
 	 */
 	void CreateTexture(const Filter filter, const bool useMipMap);
 
 	/**
-	 * Load texture data
+	 * @brief Load texture data
 	 */
 	void LoadTexture();
 
 	/**
-	 * Unload texture data
+	 * @brief Unload texture data
 	 */
 	void Unload();
 
@@ -179,6 +183,6 @@ private:
 
 	int pixelPerUnit = 100;
 	bool isValid = false;
-	public:
-		bool useMipMap = false;
+public:
+	bool useMipMap = false;
 };

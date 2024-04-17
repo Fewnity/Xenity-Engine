@@ -70,7 +70,7 @@ public:
 #endif
 
 	/**
-	* Lock mutex
+	* @brief Lock mutex
 	*/
 	void Lock()
 	{
@@ -82,7 +82,7 @@ public:
 	}
 
 	/**
-	* Unlock mutex
+	* @brief Unlock mutex
 	*/
 	void Unlock()
 	{
@@ -99,29 +99,29 @@ class AudioManager
 public:
 
 	/**
-	* Init audio manager
+	* @brief Init audio manager
 	*/
 	static int Init();
 
 	/**
-	* Unload audio manager
+	* @brief Unload audio manager
 	*/
 	static void Stop();
 
 	/**
-	* Remove an audio source
+	* @brief Remove an audio source
 	* @param audioSource Audio source
 	*/
 	static void RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
 	/**
-	* Play an audio source
+	* @brief Play an audio source
 	* @param audioSource Audio source
 	*/
 	static void PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
 	/**
-	* Stop an audio source
+	* @brief Stop an audio source
 	* @param audioSource Audio source
 	*/
 	static void StopAudioSource(const std::shared_ptr<AudioSource>& audioSource);

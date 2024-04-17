@@ -13,12 +13,12 @@ class EngineSettings
 public:
 
 	/**
-	* Save engine settings
+	* @brief Save engine settings
 	*/
 	static void SaveEngineSettings();
 
 	/**
-	* Load engine settings
+	* @brief Load engine settings
 	*/
 	static void LoadEngineSettings();
 

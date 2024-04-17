@@ -11,20 +11,20 @@ public:
 	~Astar();
 
 	/**
-	* Compute pathfinding and get the path
+	* @brief Compute pathfinding and get the path
 	* @return Points positions (start and end included) or empty if not path was found
 	*/
 	std::vector<Vector2> GetPath();
 
 	/**
-	* Set destination
+	* @brief Set destination
 	* @param start Start point position
 	* @param end End point position
 	*/
 	void SetDestination(const Vector2& start, const Vector2& end);
 
 	/**
-	* Set if a tile is an obstacle or not
+	* @brief Set if a tile is an obstacle or not
 	* @param x Tile X position
 	* @param y Tile Y position
 	* @param isObstacle Is tile an obstacle
@@ -32,19 +32,19 @@ public:
 	void SetTileIsObstacle(int x, int y, bool isObstacle);
 
 	/**
-	* Set the grid size
+	* @brief Set the grid size
 	* @param xSize Grid X size (columns)
 	* @param ySize Grid Y size (rows)
 	*/
 	void SetGridSize(int xSize, int ySize);
 
 	/**
-	* Clear obstacles
+	* @brief Clear obstacles
 	*/
 	void ResetGrid();
 
 	/**
-	* Get X (columns) grid size
+	* @brief Get X (columns) grid size
 	*/
 	int GetXGridSize() const
 	{
@@ -52,7 +52,7 @@ public:
 	}
 
 	/**
-	* Get Y (rows) grid size
+	* @brief Get Y (rows) grid size
 	*/
 	int GetYGridSize() const
 	{
@@ -77,7 +77,7 @@ private:
 	};
 
 	/**
-	* Get tile (fast version)
+	* @brief Get tile (fast version)
 	*/
 	Tile* GetTileFast(int x, int y) const
 	{
@@ -85,7 +85,7 @@ private:
 	}
 
 	/**
-	* Get tile (fastest version)
+	* @brief Get tile (fastest version)
 	*/
 	Tile* GetTileUltraFast(int row, int col) const
 	{
@@ -93,7 +93,7 @@ private:
 	}
 
 	/**
-	* Get tile
+	* @brief Get tile
 	*/
 	Tile* GetTile(int x, int y) const
 	{
@@ -104,7 +104,7 @@ private:
 	}
 
 	/**
-	* Get if the position if valid or out of bounds
+	* @brief Get if the position if valid or out of bounds
 	*/
 	bool IsValidPosition(int x, int y) const
 	{
@@ -115,27 +115,27 @@ private:
 	}
 
 	/**
-	* Get the tile with the lowest F value
+	* @brief Get the tile with the lowest F value
 	*/
 	void GetLowestFTile();
 
 	/**
-	* To remove?
+	* @brief To remove?
 	*/
 	void SetFinalPath();
 
 	/**
-	* Reset pathfinding values (Clear obstacles if clearObstacles is true)
+	* @brief Reset pathfinding values (Clear obstacles if clearObstacles is true)
 	*/
 	void ResetGrid(bool clearObstacles);
 
 	/**
-	* Free grid memory
+	* @brief Free grid memory
 	*/
 	void DeleteGrid();
 
 	/**
-	* Process one tick of the pathfinding system
+	* @brief Process one tick of the pathfinding system
 	*/
 	void ProcessOneStep();
 
@@ -151,12 +151,12 @@ private:
 
 public:
 	/**
-	* Set to true to reduce accurary but improve speed
+	* @brief Set to true to reduce accurary but improve speed
 	*/
 	bool lowAccuracy = false;
 
 	/**
-	* Set to true to allow the path to cross corners
+	* @brief Set to true to allow the path to cross corners
 	*/
 	bool canPassCorners = false;
 };

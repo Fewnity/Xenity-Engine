@@ -86,19 +86,19 @@ public:
 	void UnloadFileReference() override;
 
 	/**
-	* Update ps2 packets
+	* @brief Update ps2 packets
 	* @param index The index of the submesh
 	* @param texture The texture to use
 	*/
 	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
 
 	/**
-	 * Alloc memory for a new submesh
+	 * @brief Alloc memory for a new submesh
 	 */
 	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
 	/**
-	 * Add a vertex to a submesh
+	 * @brief Add a vertex to a submesh
 	 * @param u U Axis texture coordinate
 	 * @param v V Axis texture coordinate
 	 * @param color Vertex color
@@ -111,7 +111,7 @@ public:
 	void AddVertex(float u, float v, const Color &color, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	 * Add a vertex to a submesh
+	 * @brief Add a vertex to a submesh
 	 * @param x Vertex X position
 	 * @param y Vertex Y position
 	 * @param z Vertex Z position
@@ -121,7 +121,7 @@ public:
 	void AddVertex(float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	 * Add a vertex to a submesh
+	 * @brief Add a vertex to a submesh
 	 * @param u U Axis texture coordinate
 	 * @param v V Axis texture coordinate
 	 * @param x Vertex X position
@@ -133,7 +133,7 @@ public:
 	void AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	 * Add a vertex to a submesh
+	 * @brief Add a vertex to a submesh
 	 * @param u U Axis texture coordinate
 	 * @param v V Axis texture coordinate
 	 * @param nx Normal X direction
@@ -148,7 +148,7 @@ public:
 	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
 	/**
-	 * Add a vertex to a submesh
+	 * @brief Add a vertex to a submesh
 	 * @param nx Normal X direction
 	 * @param ny Normal Y direction
 	 * @param nz Normal Z direction
@@ -162,6 +162,9 @@ public:
 
 	std::vector<SubMesh *> subMeshes;
 
+	/**
+	* @brief Send the mesh data to the GPU
+	*/
 	void SendDataToGpu();
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
@@ -178,7 +181,7 @@ public:
 	bool isValid = true;
 
 	/**
-	* Compute the bounding box of the mesh
+	* @brief Compute the bounding box of the mesh
 	*/
 	void ComputeBoundingBox();
 
@@ -189,7 +192,7 @@ private:
 	void Unload();
 
 	/**
-	* Free the mesh data
+	* @brief Free the mesh data
 	* @param deleteSubMeshes If the submeshes should be deleted
 	*/
 	void FreeMeshData(bool deleteSubMeshes);
