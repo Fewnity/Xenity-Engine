@@ -87,6 +87,18 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	const bool hovered = ImGui::IsItemHovered();
 
+	// Create an unique popupid
+	std::string popupId = "RightClick";
+	if (item.file)
+	{
+		popupId += std::to_string(item.file->fileId);
+	}
+	else
+	{
+		popupId += item.directory->GetFolderName();
+	}
+	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
+
 	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
 
 	if (item.file && item.file->fileType == FileType::File_Material)
@@ -102,17 +114,6 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	ImGui::SetCursorPos(finalImageCursorPos);
 
-	// Create an unique popupid
-	std::string popupId = "RightClick";
-	if (item.file)
-	{
-		popupId += std::to_string(item.file->fileId);
-	}
-	else
-	{
-		popupId += item.directory->GetFolderName();
-	}
-	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
 
 	if (hovered)
 	{
