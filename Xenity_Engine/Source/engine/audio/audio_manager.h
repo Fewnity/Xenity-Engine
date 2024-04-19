@@ -48,6 +48,7 @@ public:
 	int port = 0;
 
 	std::vector<std::shared_ptr<PlayedSound>> playedSounds;
+	int playedSoundsCount = 0;
 
 private:
 #if defined(__vita__)

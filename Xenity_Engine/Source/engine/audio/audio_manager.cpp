@@ -6,6 +6,7 @@
 #include <engine/engine.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/debug/debug.h>
 
 #if defined(__PSP__)
 #include <pspaudiolib.h>
@@ -72,12 +73,15 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	AudioManager::myMutex->Lock();
 
 	// For each sound, add it's buffer to the sound buffer and change seek of audio stream
-	int playedSoundsCount = (int)channel->playedSounds.size();
+	int playedSoundsCount = (int)channel->playedSoundsCount;
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
 		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
-
+#if defined(EDITOR)
 		if (sound->isPlaying && (sound->audioSource->isEditor || GameplayManager::GetGameState() == GameState::Playing))
+#else
+		if (sound->isPlaying)
+#endif
 		{
 			AudioClipStream* stream = sound->audioClipStream;
 #if defined(_WIN32) || defined(_WIN64)
@@ -143,7 +147,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 						else
 						{
 							deleteAudio = true;
-							break;
+							//break;
 						}
 					}
 					else if (sound->seekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
@@ -156,16 +160,17 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 						sound->needFillSecondHalfBuffer = true;
 					}
 				}
-				if (deleteAudio)
+				/*if (deleteAudio) // TODO: Why is working for short audio without this? Are we stopping the audio too early?
 				{
 					break;
-				}
+				}*/
 			}
 
 			// If the played sound needs to be deleted
 			if (deleteAudio)
 			{
 				channel->playedSounds.erase(channel->playedSounds.begin() + soundIndex);
+				channel->playedSoundsCount--;
 				soundIndex--;
 				playedSoundsCount--;
 				continue;
@@ -176,11 +181,20 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 }
 
 #if defined(__PSP__)
-void audioCallback(void* buf, unsigned int length, void* userdata)
+int audio_thread(SceSize args, void* argp)
 {
-	audioBenchmark2->Start();
-	FillChannelBuffer((short*)buf, length, AudioManager::channel);
-	audioBenchmark2->Stop();
+	while (true)
+	{
+		if (sceAudioGetChannelRestLength(0) == 0) 
+		{
+			//audioBenchmark2->Start();
+			int16_t wave_buf[audiosize * 2] = { 0 };
+			FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
+			sceAudioOutput(0, PSP_AUDIO_VOLUME_MAX, wave_buf);
+			//audioBenchmark2->Stop();
+		}
+		sceKernelDelayThread(2);
+	}
 }
 #endif
 
@@ -246,7 +260,7 @@ int fillAudioBufferThread()
 			return 0;
 
 		AudioManager::myMutex->Lock();
-		int playedSoundsCount = (int)AudioManager::channel->playedSounds.size();
+		const int playedSoundsCount = (int)AudioManager::channel->playedSoundsCount;
 		// Fill each stream buffers
 		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
@@ -279,7 +293,7 @@ int fillAudioBufferThread()
 		// Get audio sources values
 		if (Engine::canUpdateAudio)
 		{
-			const int count = (int)AudioManager::channel->playedSounds.size();
+			const int count = (int)AudioManager::channel->playedSoundsCount;
 			for (int i = 0; i < count; i++)
 			{
 				const auto& playedSound = AudioManager::channel->playedSounds[i];
@@ -324,13 +338,19 @@ int AudioManager::Init()
 
 #if defined(__PSP__)
 	pspAudioInit();
-	pspAudioSetChannelCallback(0, audioCallback, (void*)0);
-
+	sceAudioChReserve(0, audiosize, 0);
 	SceUID thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
 	if (thd_id >= 0)
 	{
 		sceKernelStartThread(thd_id, 0, 0);
 	}
+
+	SceUID thd_id2 = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
+	if (thd_id2 >= 0)
+	{
+		sceKernelStartThread(thd_id2, 0, 0);
+	}
+
 #elif defined(__vita__)
 	SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x400000, 0, 0, NULL);
 	SceUID thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x400000, 0, 0, NULL);
@@ -411,7 +431,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	// Find if the audio source is already playing
 
-	const int count = (int)channel->playedSounds.size();
+	const int count = channel->playedSoundsCount;
 	for (int i = 0; i < count; i++)
 	{
 		const auto& playedSound = channel->playedSounds[i];
@@ -440,6 +460,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->isPlaying = audioSource->GetIsPlaying();
 		newPlayedSound->loop = audioSource->GetIsLooping();
 		channel->playedSounds.push_back(newPlayedSound);
+		channel->playedSoundsCount++;
 	}
 	AudioManager::myMutex->Unlock();
 }
@@ -453,7 +474,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	// Find audio source index
 	if (audioSource)
 	{
-		const int count = (int)channel->playedSounds.size();
+		const int count = channel->playedSoundsCount;
 		for (int i = 0; i < count; i++)
 		{
 			if (channel->playedSounds[i]->audioSource == audioSource)
@@ -468,6 +489,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	if (found)
 	{
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
+		channel->playedSoundsCount--;
 	}
 	AudioManager::myMutex->Unlock();
 }
@@ -485,7 +507,7 @@ void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSo
 	// Find audio source index
 	if (audioSource)
 	{
-		const int count = (int)channel->playedSounds.size();
+		const int count = channel->playedSoundsCount;
 		for (int i = 0; i < count; i++)
 		{
 			if (channel->playedSounds[i]->audioSource == audioSource)
@@ -500,6 +522,7 @@ void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSo
 	if (found)
 	{
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
+		channel->playedSoundsCount--;
 	}
 	AudioManager::myMutex->Unlock();
 }
