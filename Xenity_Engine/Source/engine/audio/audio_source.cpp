@@ -11,6 +11,8 @@
 #if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
+#elif defined(__PSP__)
+#include <pspkernel.h>
 #endif
 
 AudioSource::AudioSource()
@@ -68,13 +70,32 @@ void AudioSource::SetLoop(bool isLooping)
 {
 	this->loop = isLooping;
 }
-
+#if defined(__PSP__) || defined(__vita__)
+int test(SceSize args, void* argp) 
+{
+	std::shared_ptr<AudioSource> audioS = *(std::shared_ptr<AudioSource>*)argp;
+	AudioManager::PlayAudioSource(audioS);
+	sceKernelExitDeleteThread(0);
+	return 0;
+}
+#endif
 void AudioSource::Play()
 {
 	if (audioClip != nullptr)
 	{
 		isPlaying = true;
-		AudioManager::PlayAudioSource(GetThisShared());
+		std::shared_ptr<AudioSource> sharedThis = GetThisShared();
+#if defined(_WIN32) || defined(_WIN64)
+		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
+		t.detach();
+		//AudioManager::PlayAudioSource(GetThisShared());
+#elif defined(__PSP__) || defined(__vita__)
+		SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x18, 0x10000, 0, NULL);
+		if (thd_id2 >= 0)
+		{
+			sceKernelStartThread(thd_id2, sizeof(std::shared_ptr<AudioSource>), &sharedThis);
+		}
+#endif
 	}
 }
 

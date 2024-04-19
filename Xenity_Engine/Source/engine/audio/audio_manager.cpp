@@ -423,11 +423,12 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	if (!audioSource)
 		return;
 
-	AudioManager::myMutex->Lock();
 	bool found = false;
 
 	if (audioSource->audioClip == nullptr)
 		return;
+
+	AudioManager::myMutex->Lock();
 
 	// Find if the audio source is already playing
 
@@ -441,6 +442,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 			break;
 		}
 	}
+	AudioManager::myMutex->Unlock();
 
 	if (!found)
 	{
@@ -459,10 +461,12 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->pan = audioSource->GetPanning();
 		newPlayedSound->isPlaying = audioSource->GetIsPlaying();
 		newPlayedSound->loop = audioSource->GetIsLooping();
+
+		AudioManager::myMutex->Lock();
 		channel->playedSounds.push_back(newPlayedSound);
 		channel->playedSoundsCount++;
+		AudioManager::myMutex->Unlock();
 	}
-	AudioManager::myMutex->Unlock();
 }
 
 void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSource)

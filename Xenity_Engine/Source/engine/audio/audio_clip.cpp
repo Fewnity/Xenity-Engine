@@ -30,7 +30,7 @@ std::shared_ptr<AudioClip> AudioClip::MakeAudioClip()
 
 void AudioClip::LoadFileReference()
 {
-	if (loadedInMemory) 
+	if (loadedInMemory && !isLoaded) 
 	{
 		file->Open(FileMode::ReadOnly);
 		data = (short*)file->ReadAllBinary(length);
@@ -40,13 +40,15 @@ void AudioClip::LoadFileReference()
 			loadedInMemory = false;
 			Debug::PrintError("Not enough memory for audio: " + file->GetPath());
 		}
+		isLoaded = true;
 	}
 }
 
 void AudioClip::UnloadFileReference()
 {
-	if (loadedInMemory)
+	if (loadedInMemory && isLoaded)
 	{
 		free(data);
 	}
+	isLoaded = false;
 }
