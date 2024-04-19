@@ -429,7 +429,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(audioSource->audioClip->file);
+		newAudioClipStream->OpenStream(audioSource->audioClip);
 		newPlayedSound->audioSource = audioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needFillFirstHalfBuffer = true;

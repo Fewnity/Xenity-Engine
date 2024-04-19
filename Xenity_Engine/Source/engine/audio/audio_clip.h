@@ -12,5 +12,13 @@ public:
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<AudioClip> MakeAudioClip();
+
+	void LoadFileReference() override;
+	void UnloadFileReference() override;
+
+	bool loadedInMemory = false;
+
+	int length = 0;
+	short* data = nullptr;
 private:
 };

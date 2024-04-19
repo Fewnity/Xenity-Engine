@@ -69,6 +69,9 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 	const int pos = file.tellg();
 	file.seekg(0, std::ios_base::beg);
 	data = new char[pos];
+	if(!data)
+		return nullptr;
+
 	file.read(data, pos);
 	size = pos;
 	return (unsigned char*)data;

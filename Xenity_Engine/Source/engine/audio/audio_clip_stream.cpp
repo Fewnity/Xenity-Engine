@@ -3,6 +3,7 @@
 #include <engine/debug/debug.h>
 
 #include <engine/file_system/file.h>
+#include <engine/audio/audio_clip.h>
 
 #define DR_WAV_IMPLEMENTATION
 #include <dr_wav.h>
@@ -10,15 +11,17 @@
 #include <dr_mp3.h>
 
 #include <stb_vorbis.c>
+#include "audio_clip.h"
 
 
-void AudioClipStream::OpenStream(std::shared_ptr<File> audioFile)
+void AudioClipStream::OpenStream(std::shared_ptr<AudioClip> audioFile)
 {
-	const std::string& path = audioFile->GetPath();
-	Debug::Print("Loading audio clip: " + path, true);
+	std::shared_ptr<File> file = audioFile->file;
+	const std::string& path = file->GetPath();
+	//Debug::Print("Loading audio clip: " + path, true);
 
 	// To lower extention
-	std::string lowerExt = audioFile->GetFileExtension().substr(1);
+	std::string lowerExt = file->GetFileExtension().substr(1);
 	const size_t pathSize = lowerExt.size();
 	for (size_t i = 0; i < pathSize; i++)
 	{
@@ -28,7 +31,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> audioFile)
 	if (lowerExt == "wav")
 	{
 		wav = new drwav();
-		if (!drwav_init_file(wav, path.c_str(), NULL))
+		if ((audioFile->loadedInMemory && !drwav_init_memory(wav, audioFile->data, audioFile->length, NULL)) || (!audioFile->loadedInMemory && !drwav_init_file(wav, path.c_str(), NULL)))
 		{
 			// Error opening WAV file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path, true);
@@ -40,13 +43,13 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> audioFile)
 			// Get informations
 			channelCount = wav->channels;
 			sampleCount = wav->totalPCMFrameCount;
-			Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate), true);
+			//Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate), true);
 		}
 	}
 	else if (lowerExt == "mp3")
 	{
 		mp3 = new drmp3();
-		if (!drmp3_init_file(mp3, path.c_str(), NULL))
+		if ((audioFile->loadedInMemory && !drmp3_init_memory(mp3, audioFile->data, audioFile->length, NULL)) || (!audioFile->loadedInMemory && !drmp3_init_file(mp3, path.c_str(), NULL)))
 		{
 			// Error opening MP3 file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path, true);
@@ -58,7 +61,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<File> audioFile)
 			// Get informations
 			channelCount = mp3->channels;
 			sampleCount = drmp3_get_pcm_frame_count(mp3);
-			Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate), true);
+			//Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate), true);
 		}
 	}
 	else

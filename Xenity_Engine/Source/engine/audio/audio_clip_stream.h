@@ -12,6 +12,7 @@
 
 class Channel;
 class File;
+class AudioClip;
 
 enum class AudioType
 {
@@ -29,7 +30,7 @@ public:
 	* @brief Open audio clip stream
 	* @param file File
 	*/
-	void OpenStream(std::shared_ptr<File> audioFile);
+	void OpenStream(std::shared_ptr<AudioClip> audioFile);
 
 	/**
 	* @brief Fill audio buffer
