@@ -9,6 +9,7 @@
 
 #if defined(__PSP__)
 #include <pspkernel.h>
+#include <pspthreadman.h>
 #elif defined(__vita__)
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
@@ -28,7 +29,7 @@ class PlayedSound
 public:
 	~PlayedSound();
 	AudioClipStream* audioClipStream = nullptr;
-	std::shared_ptr<AudioSource> audioSource;
+	std::weak_ptr<AudioSource> audioSource;
 	short* buffer = nullptr;
 	int seekNext = 0;
 	uint64_t seekPosition = 0;
@@ -66,6 +67,8 @@ public:
 
 #if defined(__vita__)
 	int mutexid = -1;
+	//#elif defined(__PSP__)
+	//SceLwMutexWorkarea workarea;
 #else
 	std::mutex audioMutex;
 #endif
@@ -77,6 +80,8 @@ public:
 	{
 #if defined(__vita__)
 		sceKernelLockMutex(mutexid, 1, nullptr);
+//#elif defined(__PSP__)
+//		sceKernelLockLwMutex(&workarea, 1, nullptr);
 #else
 		audioMutex.lock();
 #endif
@@ -89,6 +94,8 @@ public:
 	{
 #if defined(__vita__)
 		sceKernelUnlockMutex(mutexid, 1);
+//#elif defined(__PSP__)
+//		sceKernelUnlockLwMutex(&workarea, 1);
 #else
 		audioMutex.unlock();
 #endif
@@ -113,7 +120,7 @@ public:
 	* @brief Remove an audio source
 	* @param audioSource Audio source
 	*/
-	static void RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSource);
+	static void RemoveAudioSource(AudioSource* audioSource);
 
 	/**
 	* @brief Play an audio source

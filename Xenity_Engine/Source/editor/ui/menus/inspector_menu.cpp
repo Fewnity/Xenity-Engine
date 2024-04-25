@@ -181,7 +181,7 @@ void InspectorMenu::DrawFilePreview()
 			AudioClipStream* stream = nullptr;
 			for (size_t i = 0; i < playedSoundCount; i++)
 			{
-				if (AudioManager::channel->playedSounds[i]->audioSource == Editor::audioSource.lock())
+				if (AudioManager::channel->playedSounds[i]->audioSource.lock() == Editor::audioSource.lock())
 				{
 					// Get audio stream
 					stream = AudioManager::channel->playedSounds[i]->audioClipStream;

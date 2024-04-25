@@ -78,7 +78,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	{
 		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
 #if defined(EDITOR)
-		if (sound->isPlaying && (sound->audioSource->isEditor || GameplayManager::GetGameState() == GameState::Playing))
+		if (sound->isPlaying && ((sound->audioSource.lock() && sound->audioSource.lock()->isEditor) || GameplayManager::GetGameState() == GameState::Playing))
 #else
 		if (sound->isPlaying)
 #endif
@@ -297,11 +297,14 @@ int fillAudioBufferThread()
 			for (int i = 0; i < count; i++)
 			{
 				const auto& playedSound = AudioManager::channel->playedSounds[i];
-				std::shared_ptr<AudioSource> audioSource = playedSound->audioSource;
-				playedSound->volume = audioSource->GetVolume();
-				playedSound->pan = audioSource->GetPanning();
-				playedSound->isPlaying = audioSource->GetIsPlaying();
-				playedSound->loop = audioSource->GetIsLooping();
+				std::shared_ptr<AudioSource> audioSource = playedSound->audioSource.lock();
+				if (audioSource) {
+
+					playedSound->volume = audioSource->GetVolume();
+					playedSound->pan = audioSource->GetPanning();
+					playedSound->isPlaying = audioSource->GetIsPlaying();
+					playedSound->loop = audioSource->GetIsLooping();
+				}
 			}
 		}
 
@@ -352,8 +355,8 @@ int AudioManager::Init()
 	}
 
 #elif defined(__vita__)
-	SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x400000, 0, 0, NULL);
-	SceUID thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x400000, 0, 0, NULL);
+	SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
+	SceUID thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
 	if (thd_id >= 0 && thd_id2 >= 0)
 	{
 		sceKernelStartThread(thd_id2, 0, 0);
@@ -420,6 +423,8 @@ PlayedSound::~PlayedSound()
 
 void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
+	//return;
+
 	if (!audioSource)
 		return;
 
@@ -436,7 +441,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	for (int i = 0; i < count; i++)
 	{
 		const auto& playedSound = channel->playedSounds[i];
-		if (playedSound->audioSource == audioSource)
+		if (playedSound->audioSource.lock() == audioSource)
 		{
 			found = true;
 			break;
@@ -481,7 +486,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		const int count = channel->playedSoundsCount;
 		for (int i = 0; i < count; i++)
 		{
-			if (channel->playedSounds[i]->audioSource == audioSource)
+			if (channel->playedSounds[i]->audioSource.lock() == audioSource)
 			{
 				audioSourceIndex = i;
 				found = true;
@@ -502,7 +507,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 /// Remove an audio source from the audio source list
 /// </summary>
 /// <param name="light"></param>
-void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSource)
+void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 {
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
@@ -514,7 +519,7 @@ void AudioManager::RemoveAudioSource(const std::shared_ptr<AudioSource>& audioSo
 		const int count = channel->playedSoundsCount;
 		for (int i = 0; i < count; i++)
 		{
-			if (channel->playedSounds[i]->audioSource == audioSource)
+			if (channel->playedSounds[i]->audioSource.lock().get() == audioSource)
 			{
 				audioSourceIndex = i;
 				found = true;
@@ -535,5 +540,7 @@ MyMutex::MyMutex(const std::string& mutexName)
 {
 #if defined(__vita__)
 	mutexid = sceKernelCreateMutex(mutexName.c_str(), 0, 1, NULL);
+//#elif defined(__PSP__)
+//	sceKernelCreateLwMutex(&workarea, mutexName.c_str(), 0, 1, NULL);
 #endif
 }

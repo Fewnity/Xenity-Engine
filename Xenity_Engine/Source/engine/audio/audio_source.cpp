@@ -7,6 +7,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/vectors/vector2.h>
 #include <engine/graphics/color/color.h>
+#include <engine/debug/debug.h>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -39,7 +40,7 @@ AudioSource::~AudioSource()
 
 void AudioSource::RemoveReferences()
 {
-	AudioManager::RemoveAudioSource(std::dynamic_pointer_cast<AudioSource>(shared_from_this()));
+	AudioManager::RemoveAudioSource(this);
 }
 
 void AudioSource::Awake()
@@ -70,6 +71,7 @@ void AudioSource::SetLoop(bool isLooping)
 {
 	this->loop = isLooping;
 }
+
 #if defined(__PSP__) || defined(__vita__)
 int test(SceSize args, void* argp) 
 {
@@ -79,6 +81,7 @@ int test(SceSize args, void* argp)
 	return 0;
 }
 #endif
+
 void AudioSource::Play()
 {
 	if (audioClip != nullptr)
@@ -89,12 +92,20 @@ void AudioSource::Play()
 		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
 		t.detach();
 		//AudioManager::PlayAudioSource(GetThisShared());
-#elif defined(__PSP__) || defined(__vita__)
-		SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x18, 0x10000, 0, NULL);
+#elif defined(__PSP__)
+		AudioManager::PlayAudioSource(GetThisShared());
+		/*SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x18, 0x10000, 0, NULL);
 		if (thd_id2 >= 0)
 		{
 			sceKernelStartThread(thd_id2, sizeof(std::shared_ptr<AudioSource>), &sharedThis);
-		}
+		}*/
+#elif defined(__vita__)
+		AudioManager::PlayAudioSource(GetThisShared());
+		/*SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x40, 0x400000, 0, 0, NULL);
+		if (thd_id2 >= 0)
+		{
+			sceKernelStartThread(thd_id2, sizeof(std::shared_ptr<AudioSource>), &sharedThis);
+		}*/
 #endif
 	}
 }
