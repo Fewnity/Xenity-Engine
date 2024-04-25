@@ -73,7 +73,12 @@ API void Destroy(const std::weak_ptr<GameObject>& gameObject);
 * @brief Destroy a component
 * @param component Component to destroy
 */
-API void Destroy(const std::weak_ptr<Component>& component);
+template<typename T>
+std::enable_if_t<std::is_base_of<Component, T>::value, void>
+Destroy(const std::weak_ptr<T>& weakComponent)
+{
+	Destroy(weakComponent.lock());
+}
 
 /**
 * @brief Destroy a gameObject
@@ -85,4 +90,11 @@ API void Destroy(const std::shared_ptr<GameObject>& gameObject);
 * @brief Destroy a component
 * @param component Component to destroy
 */
-API void Destroy(const std::shared_ptr<Component>& component);
+template<typename T>
+std::enable_if_t<std::is_base_of<Component, T>::value, void>
+Destroy(const std::shared_ptr<T>& component) 
+{
+	// Remove the component from the his parent's components list
+	if (component)
+		component->GetGameObject()->RemoveComponent(component);
+}

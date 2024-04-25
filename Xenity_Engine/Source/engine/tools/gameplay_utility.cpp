@@ -98,10 +98,10 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 	const size_t gameObjectCount = GameObjectsAndIds.size();
 	for (size_t componentIndex = 0; componentIndex < componentCount; componentIndex++)
 	{
-		ReflectiveData newReflection = ComponentsAndIds[componentIndex].newComponent->GetReflectiveData();
+		const ReflectiveData newReflection = ComponentsAndIds[componentIndex].newComponent->GetReflectiveData();
 		for (auto& kv : newReflection)
 		{
-			VariableReference& variableRef = kv.second.variable.value();
+			const VariableReference& variableRef = kv.second.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 			{
 				if (valuePtr->get().lock())
@@ -143,7 +143,7 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Component>>>>(&variableRef))
 			{
-				size_t vectorSize = valuePtr->get().size();
+				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
 					for (size_t j = 0; j < componentCount; j++)
@@ -157,7 +157,7 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>>(&variableRef))
 			{
-				size_t vectorSize = valuePtr->get().size();
+				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
 					for (size_t j = 0; j < gameObjectCount; j++)
@@ -171,7 +171,7 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>>(&variableRef))
 			{
-				size_t vectorSize = valuePtr->get().size();
+				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
 					for (size_t j = 0; j < gameObjectCount; j++)
@@ -224,22 +224,10 @@ void Destroy(const std::weak_ptr<GameObject>& gameObject)
 	Destroy(gameObject.lock());
 }
 
-void Destroy(const std::weak_ptr<Component>& weakComponent)
-{
-	Destroy(weakComponent.lock());
-}
-
 void Destroy(const std::shared_ptr<GameObject>& gameObject)
 {
 	if (gameObject && !gameObject->waitingForDestroy)
 	{
 		DestroyGameObjectAndChild(gameObject);
 	}
-}
-
-void Destroy(const std::shared_ptr<Component>& component)
-{
-	// Remove the component from the his parent's components list
-	if (component)
-		component->GetGameObject()->RemoveComponent(component);
 }
