@@ -134,18 +134,27 @@ void Window::UpdateScreen()
 void Window::UpdateWindowTitle()
 {
 #if defined(_WIN32) || defined(_WIN64)
-	std::string newTitle = "" + ProjectManager::GetProjectName() + " - ";
-	if (SceneManager::GetOpenedScene())
+	std::string newTitle = "";
+	if (ProjectManager::GetIsProjectLoaded())
 	{
-		newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
-		if (SceneManager::GetSceneModified())
-			newTitle += "*";
+		newTitle += ProjectManager::GetProjectName() + " - ";
+		if (SceneManager::GetOpenedScene())
+		{
+			newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
+			if (SceneManager::GetSceneModified())
+				newTitle += "*";
+		}
+		else
+		{
+			newTitle += "Empty Scene *";
+		}
+		newTitle += std::string(" - ");
 	}
-	else
+	else 
 	{
-		newTitle += "Empty Scene *";
+
 	}
-	newTitle += std::string(" - ") + ENGINE_NAME + " 0.1";
+	newTitle += std::string(ENGINE_NAME) + " 0.1";
 	SDL_SetWindowTitle(window, newTitle.c_str());
 #endif
 }

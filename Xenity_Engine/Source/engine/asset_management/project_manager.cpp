@@ -570,6 +570,8 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	}
 #endif
 
+	projectLoaded = true;
+
 	// Load start scene
 	if (ProjectManager::GetStartScene())
 	{
@@ -577,7 +579,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	}
 
 	Debug::Print("Project loaded", true);
-	projectLoaded = true;
 
 	return projectLoaded;
 }
@@ -587,6 +588,7 @@ void ProjectManager::UnloadProject()
 #if defined(EDITOR)
 	Editor::SetCurrentProjectDirectory(nullptr);
 #endif
+	SceneManager::SetSceneModified(false);
 	SceneManager::SetOpenedScene(nullptr);
 	SceneManager::CreateEmptyScene();
 	Graphics::SetDefaultValues();
