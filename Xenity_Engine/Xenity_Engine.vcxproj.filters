@@ -150,6 +150,7 @@
     <ClCompile Include="Source\editor\ui\menus\build_settings_menu.cpp" />
     <ClCompile Include="Source\engine\graphics\render_command.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
+    <ClCompile Include="Source\engine\particle_system\particle_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -309,6 +310,7 @@
     <ClInclude Include="Source\editor\ui\menus\build_settings_menu.h" />
     <ClInclude Include="Source\engine\graphics\render_command.h" />
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
+    <ClInclude Include="Source\engine\particle_system\particle_system.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

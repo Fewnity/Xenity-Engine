@@ -104,3 +104,6 @@
 
 // Event System
 #include <engine/event_system/event_system.h>
+
+// Particles
+#include <engine/particle_system/particle_system.h>

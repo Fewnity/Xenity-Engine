@@ -26,6 +26,7 @@
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/shader.h>
 #include <engine/graphics/material.h>
+#include <engine/particle_system/particle_system.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
@@ -83,10 +84,11 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<BillboardRenderer>("BillboardRenderer");
 	AddComponentClass<LineRenderer>("LineRenderer");
 	AddComponentClass<AudioSource>("AudioSource");
-	AddComponentClass<TestComponent>("TestComponent");
+	AddComponentClass<ParticleSystem>("ParticleSystem");
 	AddComponentClass<RigidBody>("RigidBody");
 	AddComponentClass<BoxCollider>("BoxCollider");
 	AddComponentClass<Lod>("Lod");
+	AddComponentClass<TestComponent>("TestComponent");
 	AddComponentClass<MissingScript>("MissingScript", false);
 }
 
