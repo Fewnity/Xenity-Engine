@@ -402,8 +402,11 @@ void Engine::Stop()
 void Engine::Quit()
 {
 #if defined(EDITOR)
-	const bool cancelQuit = SceneManager::OnQuit();
-	isRunning = cancelQuit;
+	if (isRunning) 
+	{
+		const bool cancelQuit = SceneManager::OnQuit();
+		isRunning = cancelQuit;
+	}
 #else
 	isRunning = false;
 #endif
