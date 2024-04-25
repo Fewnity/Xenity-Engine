@@ -41,6 +41,7 @@ New material System
 Fix error when loading mesh
 Add try catch to all json parse
 Clear scene if fail loading scene
+Check DestroyGameObjectAndChild
 */
 
 

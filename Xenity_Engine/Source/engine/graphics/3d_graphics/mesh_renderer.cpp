@@ -25,7 +25,6 @@ MeshRenderer::MeshRenderer()
 	componentName = "MeshRenderer";
 	type = IDrawableTypes::Draw_3D;
 	AssetManager::AddReflection(this);
-	//material = AssetManager::standardMaterial;
 }
 
 ReflectiveData MeshRenderer::GetReflectiveData()

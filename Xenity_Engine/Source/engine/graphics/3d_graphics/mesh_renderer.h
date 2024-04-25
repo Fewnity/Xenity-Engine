@@ -6,7 +6,6 @@
 #include <memory>
 
 class MeshData;
-class Texture;
 class Material;
 
 class API MeshRenderer : public IDrawable
