@@ -112,6 +112,7 @@ void Debug::SendProfilerDataToServer()
 void Debug::PrintInConsole(const std::string& text)
 {
 #if defined(__PSP__)
+	printf(text.c_str());
 	// PspDebugPrint(text);
 #elif defined(__vita__)
 	// PsVitaDebugPrint(text);
