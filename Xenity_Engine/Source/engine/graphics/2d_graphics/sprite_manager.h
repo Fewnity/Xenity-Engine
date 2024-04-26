@@ -50,6 +50,6 @@ public:
 	*/
 	static void Render2DLine(const std::shared_ptr<MeshData>& meshData);
 
-private:
 	static std::shared_ptr <MeshData> spriteMeshData;
+private:
 };

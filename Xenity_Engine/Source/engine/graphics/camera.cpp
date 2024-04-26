@@ -57,12 +57,12 @@ void Camera::RemoveReferences()
 ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, fov, "fov", true);
-	Reflective::AddVariable(reflectedVariables, projectionSize, "projectionSize", true);
+	Reflective::AddVariable(reflectedVariables, projectionType, "projectionType", true);
+	Reflective::AddVariable(reflectedVariables, fov, "fov", projectionType == ProjectionTypes::Perspective);
+	Reflective::AddVariable(reflectedVariables, projectionSize, "projectionSize", projectionType == ProjectionTypes::Orthographic);
 	Reflective::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, useMultisampling, "useMultisampling", true);
-	Reflective::AddVariable(reflectedVariables, projectionType, "projectionType", true);
 	return reflectedVariables;
 }
 

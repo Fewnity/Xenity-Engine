@@ -14,34 +14,20 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // For the Alpha Release
 /*
 --- Needed
-Show submesh count somewhere
 Multiple gameobject selection
 Rework the documentation
 Clean code
 Add undo/redo commands to DrawVector/DrawFileReference functions
 Add support for mesh material loading
+Fix commands on dll reloading, use gameobject id instead of weak_ptr?
+Disable scene saving while playing with main menu bar
+Add more Get/Set
 
 --- Can be for next release
 New Input system
 
 --- Done
-Fix duplication crash with missing script
-Check docker in a thread for faster engine boot
-Update read me
-Fix sprites color with shaders
-Clean folders
-Remove engine location settings
-Fix variables order
-Fix crash if rotation values are infinite
-Text scale
-Fix rotation tool texture uv
-Use white texture if no texture on material
-Create crash dump file
-New material System
-Fix error when loading mesh
-Add try catch to all json parse
-Clear scene if fail loading scene
-Check DestroyGameObjectAndChild
+
 */
 
 
@@ -74,7 +60,7 @@ Text scale
 Disable scene save if the project is not compiled
 
 --- To do in a long time
-Regenerate an id the a meta file is corrupted
+Regenerate an id if a meta file is corrupted
 Add a property window on components to have values in a new window
 Fix engine assets system
 Add network profiler
@@ -96,8 +82,6 @@ Check memory leak when removing an item from vector in the editorUI
 multiple directional light not working properly
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
 Use enum is InspectorCreateGameObjectCommand instead of int
-Disable scene saving while playing with main menu bar
-Fix commands on dll reloading, use gameobject id instead of weak_ptr?
 */
 
 #undef main

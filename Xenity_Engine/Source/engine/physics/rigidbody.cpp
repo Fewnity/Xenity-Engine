@@ -20,7 +20,7 @@ ReflectiveData RigidBody::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, isStatic, "isStatic", true);
 	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
-	AddVariable(reflectedVariables, velocity, "velocity", true);
+	//AddVariable(reflectedVariables, velocity, "velocity", true);
 	AddVariable(reflectedVariables, drag, "drag", true);
 	AddVariable(reflectedVariables, bounce, "bounce", true);
 	return reflectedVariables;

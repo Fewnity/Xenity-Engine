@@ -37,12 +37,12 @@ void Light::RemoveReferences()
 ReflectiveData Light::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, intensity, "intensity", true);
-	Reflective::AddVariable(reflectedVariables, range, "range", true);
-	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", true);
-	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", true);
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	Reflective::AddVariable(reflectedVariables, type, "type", true);
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
+	Reflective::AddVariable(reflectedVariables, intensity, "intensity", true);
+	Reflective::AddVariable(reflectedVariables, range, "range", type != LightType::Directional);
+	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", type == LightType::Spot);
+	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", type == LightType::Spot);
 	return reflectedVariables;
 }
 

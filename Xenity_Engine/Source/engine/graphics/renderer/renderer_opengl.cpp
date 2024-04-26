@@ -367,7 +367,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	{
 		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
 	}
-	glBindVertexArray(0);
+	glBindVertexArray(0); // Disable this?
 	if (Graphics::usedCamera->isEditor)
 	{
 		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
