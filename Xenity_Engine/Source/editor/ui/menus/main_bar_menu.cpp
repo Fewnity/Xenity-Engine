@@ -45,7 +45,11 @@
 #include <engine/debug/debug.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/box_collider.h>
+#include <engine/particle_system/particle_system.h>
 #include "about_menu.h"
+#include <engine/graphics/2d_graphics/billboard_renderer.h>
+#include <engine/graphics/3d_graphics/lod.h>
+#include <engine/game_elements/rect_transform.h>
 
 void MainBarMenu::Init()
 {
@@ -299,6 +303,18 @@ void MainBarMenu::Draw()
 			{
 				AddComponentToSelectedGameObject<Light>();
 			}
+			if (ImGui::MenuItem("Lod", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<Lod>();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Effects"))
+		{
+			if (ImGui::MenuItem("Particle System", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<ParticleSystem>();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Physics"))
@@ -327,6 +343,10 @@ void MainBarMenu::Draw()
 			{
 				AddComponentToSelectedGameObject<Canvas>();
 			}
+			if (ImGui::MenuItem("Rect Transform", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<RectTransform>();
+			}
 			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<TextRendererCanvas>();
@@ -338,6 +358,10 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Sprite Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<SpriteRenderer>();
+			}
+			if (ImGui::MenuItem("Billboard Renderer", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<BillboardRenderer>();
 			}
 			ImGui::EndMenu();
 		}
