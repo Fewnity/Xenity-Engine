@@ -175,6 +175,10 @@ void InspectorMenu::DrawFilePreview()
 			ImGui::SetCursorPos(textPos);
 			ImGui::Text(text.c_str());
 		}
+		else if (loadedPreview->fileType == FileType::File_Mesh) // Draw audio preview
+		{
+			ImGui::Text("SubMesh count: %d", std::dynamic_pointer_cast<MeshData>(loadedPreview)->subMeshCount);
+		}
 		else if (loadedPreview->fileType == FileType::File_Audio) // Draw audio preview
 		{
 			const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
