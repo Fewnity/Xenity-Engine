@@ -292,9 +292,6 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 
 void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
 {
-	if (!subMesh.meshData->isValid)
-		return;
-
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
 	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
 	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
@@ -372,32 +369,10 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	int params = 0;
-
-	// Get the parameters to use dependings of the mesh data format
-	if (subMesh.meshData->hasIndices)
-	{
-		params |= GU_INDEX_16BIT;
-	}
-	params |= GU_TEXTURE_32BITF;
-	if (subMesh.meshData->hasColor)
-	{
-		params |= GU_COLOR_8888;
-	}
-	else
+	if(!subMesh.meshData->hasColor)
 	{
 		sceGuColor(subMesh.meshData->unifiedColor.GetUnsignedIntABGR());
 	}
-	if (subMesh.meshData->hasNormal)
-	{
-		params |= GU_NORMAL_32BITF;
-	}
-	params |= GU_VERTEX_32BITF;
-	params |= GU_TRANSFORM_3D;
-
-	// Do not draw the submesh if the texture is null
-	if (texture == nullptr)
-		return;
 
 	// Bind texture
 	if (usedTexture != texture)
@@ -409,11 +384,11 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 	// Draw
 	if (!subMesh.meshData->hasIndices)
 	{
-		sceGumDrawArray(GU_TRIANGLES, params, subMesh.vertice_count, 0, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
 	}
 	else
 	{
-		sceGumDrawArray(GU_TRIANGLES, params, subMesh.index_count, subMesh.indices, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.index_count, subMesh.indices, subMesh.data);
 	}
 	//Performance::AddDrawCall();
 

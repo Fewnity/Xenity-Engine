@@ -185,6 +185,10 @@ public:
 	*/
 	void ComputeBoundingBox();
 
+#if defined(__PSP__)
+	int pspDrawParam = 0;
+#endif
+
 private:
 #if defined(__PSP__)
 	bool isOnVram = true;

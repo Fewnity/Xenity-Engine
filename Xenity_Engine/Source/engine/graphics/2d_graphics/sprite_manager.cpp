@@ -44,15 +44,16 @@ void SpriteManager::Init()
 	spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1, 0);
 	spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2, 0);
 	spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3, 0);
+	spriteMeshData->hasIndices = true;
 
 	MeshData::SubMesh* subMesh = spriteMeshData->subMeshes[0];
-
 	subMesh->indices[0] = 0;
 	subMesh->indices[1] = 2;
 	subMesh->indices[2] = 1;
 	subMesh->indices[3] = 2;
 	subMesh->indices[4] = 0;
 	subMesh->indices[5] = 3;
+
 	spriteMeshData->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)

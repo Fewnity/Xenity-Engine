@@ -7,6 +7,7 @@
 #if defined(__PSP__)
 #include <pspkernel.h>
 #include <vram.h>
+#include <pspgu.h>
 #endif
 
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
@@ -343,6 +344,7 @@ void MeshData::LoadFileReference()
 		threadLoading.detach();
 #else
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+
 		OnLoadFileReferenceFinished();
 #endif
 	}
@@ -350,6 +352,24 @@ void MeshData::LoadFileReference()
 
 void MeshData::OnLoadFileReferenceFinished()
 {
+#if defined(__PSP__)
+	if (hasIndices)
+	{
+		pspDrawParam |= GU_INDEX_16BIT;
+	}
+	pspDrawParam |= GU_TEXTURE_32BITF;
+	if (hasColor)
+	{
+		pspDrawParam |= GU_COLOR_8888;
+	}
+	if (hasNormal)
+	{
+		pspDrawParam |= GU_NORMAL_32BITF;
+	}
+	pspDrawParam |= GU_VERTEX_32BITF;
+	pspDrawParam |= GU_TRANSFORM_3D;
+#endif
+
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	SendDataToGpu();
 #endif
