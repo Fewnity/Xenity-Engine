@@ -9,7 +9,7 @@
 class MeshData;
 class Material;
 
-ENUM(EmitterShape, Box, Sphere, Cone);
+ENUM(EmitterShape, Box, Cone);
 
 class Particle 
 {
@@ -68,6 +68,7 @@ private:
 	*/
 	void OnEnabled() override;
 	void ResetParticle(Particle& particle, bool setIsDead);
+	void AllocateParticlesMemory();
 
 	std::shared_ptr <MeshData> mesh = nullptr;
 	std::shared_ptr <Material> material = nullptr;
@@ -89,7 +90,6 @@ private:
 	std::uniform_real_distribution<float>boxZDistribution;
 
 	bool isBillboard = true;
-	Vector3 lookDir = Vector3(0);
 	float spawnRate = 0;
 	float timer = 0;
 	float maxParticles = 10;
