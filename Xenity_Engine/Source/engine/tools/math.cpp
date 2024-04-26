@@ -12,6 +12,10 @@
 
 #include <glm/ext/matrix_transform.hpp>
 
+#if defined(__PSP__)
+#include <pspgum.h>
+#endif
+
 const float Math::PI = 3.14159265359f;
 
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
@@ -39,8 +43,26 @@ void Math::MultiplyMatrices(const float* A, const float* B, float* result, int r
 
 glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
-	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
+	glm::mat4 transformationMatrix;
+#if defined(__PSP__)
+	ScePspFMatrix4 pspTransformationMatrix;
+	gumLoadIdentity(&pspTransformationMatrix);
+	ScePspFVector3 pspPosition = { -position.x, position.y, position.z };
+	gumTranslate(&pspTransformationMatrix, &pspPosition);
 
+if (rotation.y != 0)
+	gumRotateY(&pspTransformationMatrix, glm::radians(rotation.y*-1));
+if (rotation.x != 0)
+	gumRotateX(&pspTransformationMatrix, glm::radians(rotation.x));
+if (rotation.z != 0)
+	gumRotateZ(&pspTransformationMatrix, glm::radians(rotation.z*-1));
+
+	ScePspFVector3 pspScale = { scale.x, scale.y, scale.z };
+	gumScale(&pspTransformationMatrix, &pspScale);
+
+	transformationMatrix = *((glm::mat4*)(&pspTransformationMatrix));
+#else
+	transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
 	if (rotation.y != 0)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (rotation.x != 0)
@@ -49,6 +71,7 @@ glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Vector3& rotati
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+#endif
 
 	return transformationMatrix;
 }
@@ -61,6 +84,17 @@ unsigned int Math::nextPow2(const unsigned int value)
 		poweroftwo <<= 1;
 	}
 	return poweroftwo;
+}
+
+glm::mat4 Math::MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB)
+{
+	glm::mat4 newMat;
+#if defined(__PSP__)
+	gumMultMatrix((ScePspFMatrix4*)&newMat, ((const ScePspFMatrix4*)(&matA)), ((const ScePspFMatrix4*)(&matB)));
+#else
+	newMat = matA * matB;
+#endif
+	return newMat;
 }
 
 unsigned int Math::previousPow2(const unsigned int value)

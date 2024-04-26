@@ -35,6 +35,8 @@ public:
 	*/
 	static glm::mat4 CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale);
 
+	static glm::mat4 MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB);
+
 	/**
 	* @brief Get the next power of 2 of the given value (if the value is not itself a power of two)
 	* @brief Ex Value = 140; returns -> 256
