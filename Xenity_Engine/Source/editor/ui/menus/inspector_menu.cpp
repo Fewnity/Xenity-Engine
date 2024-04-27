@@ -389,10 +389,14 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		{
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
-				std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentNames[i], Editor::GetSelectedGameObjects()[0].lock());
+				auto command = std::make_shared<InspectorAddComponentCommand>(Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
+				CommandManager::AddCommand(command);
+				command->Execute();
 
-				if(std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
-						boxCollider->SetDefaultSize();
+				std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
+
+				if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
+					boxCollider->SetDefaultSize();
 
 				showAddComponentMenu = false;
 			}

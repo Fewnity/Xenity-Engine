@@ -261,6 +261,9 @@ void Engine::CheckEvents()
 
 	if (focusCount == 1)
 	{
+#if defined(EDITOR)
+		if(!EditorUI::IsEditingElement())
+#endif
 		OnWindowFocusEvent->Trigger();
 	}
 #endif

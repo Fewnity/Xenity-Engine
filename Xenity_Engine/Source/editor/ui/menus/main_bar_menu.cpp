@@ -64,11 +64,13 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 		if(!currentGameObject.lock())
 			continue;
 
-		auto command = std::make_shared<InspectorAddComponentCommand<T>>(currentGameObject);
+		auto command = std::make_shared<InspectorAddComponentCommand>(currentGameObject, ClassRegistry::GetClassInfo<T>()->name);
 		CommandManager::AddCommand(command);
 		command->Execute();
-		
-		if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(command->newComponent.lock()))
+
+		std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
+
+		if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
 			boxCollider->SetDefaultSize();
 	}
 }
@@ -81,11 +83,17 @@ std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string&
 	command->Execute();
 	command->createdGameObjects[0].lock()->name = Editor::GetIncrementedGameObjectName(gameObjectName);
 
-	auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObjects[0].lock());
+	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(command->createdGameObjects[0], ClassRegistry::GetClassInfo<T>()->name);
+	CommandManager::AddCommand(componentCommand);
+	componentCommand->Execute();
+	std::shared_ptr<Component> newComponent = FindComponentById(componentCommand->componentId);
+
+	/*auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObjects[0].lock());
 	CommandManager::AddCommand(command2);
 	command2->Execute();
 
-	return command2->newComponent.lock();
+	return command2->newComponent.lock();*/
+	return std::dynamic_pointer_cast<T>(newComponent);
 }
 
 bool MainBarMenu::DrawImageButton(const bool enabled, const std::shared_ptr<Texture>& texture)
@@ -106,64 +114,64 @@ void MainBarMenu::Draw()
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::BeginMainMenuBar();
-
+	bool isGameStopped = GameplayManager::GetGameState() == GameState::Stopped;
 	if (ImGui::BeginMenu("File")) // ----------------------------------- Draw File menu
 	{
-		if (ImGui::MenuItem("New Scene"))
+		if (ImGui::MenuItem("New Scene", nullptr, nullptr, isGameStopped))
 		{
 			SceneManager::CreateEmptyScene();
 		}
-		if (ImGui::MenuItem("Open Scene"))
+		if (ImGui::MenuItem("Open Scene", nullptr, nullptr, isGameStopped))
 		{
 			Debug::PrintWarning("(File/Open Scene) Unimplemented button", true);
 		}
-		if (ImGui::MenuItem("Save Scene"))
+		if (ImGui::MenuItem("Save Scene", nullptr, nullptr, isGameStopped))
 		{
 			SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 		}
 		ImGui::Separator();
-		if (ImGui::MenuItem("Build Settings"))
+		if (ImGui::MenuItem("Build Settings", nullptr, nullptr, isGameStopped))
 		{
 			Editor::GetMenu<BuildSettingsMenu>()->SetActive(true);
 			Editor::GetMenu<BuildSettingsMenu>()->Focus();
 		}
-		if (ImGui::MenuItem("Build for Windows"))
+		if (ImGui::MenuItem("Build for Windows", nullptr, nullptr, isGameStopped))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildGame, exportPath);
 		}
-		if (ImGui::MenuItem("Build for PSP"))
+		if (ImGui::MenuItem("Build for PSP", nullptr, nullptr, isGameStopped))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildGame, exportPath);
 		}
-		if (ImGui::MenuItem("Build for PsVita"))
+		if (ImGui::MenuItem("Build for PsVita", nullptr, nullptr, isGameStopped))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PsVita, BuildType::BuildGame, exportPath);
 		}
-		if (ImGui::MenuItem("Build And Run on Windows"))
+		if (ImGui::MenuItem("Build And Run on Windows", nullptr, nullptr, isGameStopped))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_Windows, BuildType::BuildAndRunGame, exportPath);
 		}
-		if (ImGui::MenuItem("Build And Run on PSP"))
+		if (ImGui::MenuItem("Build And Run on PSP", nullptr, nullptr, isGameStopped))
 		{
 			const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 			if (!exportPath.empty())
 				Compiler::CompileGameThreaded(Platform::P_PSP, BuildType::BuildAndRunGame, exportPath);
 		}
 		ImGui::Separator();
-		if (ImGui::MenuItem("Close project"))
+		if (ImGui::MenuItem("Close project", nullptr, nullptr, isGameStopped))
 		{
 			ProjectManager::UnloadProject();
 			Editor::currentMenu = MenuGroup::Menu_Select_Project;
 		}
-		if (ImGui::MenuItem("Exit"))
+		if (ImGui::MenuItem("Exit", nullptr, nullptr, isGameStopped))
 		{
 			Engine::Quit();
 		}

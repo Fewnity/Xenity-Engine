@@ -12,10 +12,12 @@
 
 #include <engine/engine.h>
 #include <engine/scene_management/scene_manager.h>
+#include <engine/asset_management/project_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/class_registry/class_registry.h>
+#include <engine/game_elements/gameplay_manager.h>
 #include <engine/vectors/vector3.h>
 #include <engine/component.h>
 #include <engine/tools/gameplay_utility.h>
@@ -31,7 +33,9 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<U> target;
+	void SetValue(T valueToSet, bool isUndo);
+
+	uint64_t targetId = 0;
 	T* valuePtr;
 	T newValue;
 	T lastValue;
@@ -40,32 +44,85 @@ private:
 template<typename U, typename T>
 inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_ptr<U> target, T* valuePtr, T newValue, T lastValue)
 {
-	this->target = target;
+	if constexpr (std::is_base_of<U, FileReference>())
+	{
+		this->targetId = target.lock()->fileId;
+	}
+	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
+	{
+		this->targetId = target.lock()->GetUniqueId();
+	}
+
 	this->valuePtr = valuePtr;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
 }
 
 template<typename U, typename T>
+inline void InspectorChangeValueCommand<U, T>::SetValue(T valueToSet, bool isUndo)
+{
+	bool hasBeenSet = false;
+	if (targetId != 0)
+	{
+		if constexpr (std::is_base_of<U, FileReference>())
+		{
+			std::shared_ptr<FileReference> foundFileRef = ProjectManager::GetFileReferenceById(targetId);
+			if (foundFileRef)
+			{
+				*valuePtr = valueToSet;
+				foundFileRef->OnReflectionUpdated();
+				hasBeenSet = true;
+			}
+		}
+		else if constexpr (std::is_base_of<U, Component>())
+		{
+			std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
+			if (foundComponent)
+			{
+				*valuePtr = valueToSet;
+				foundComponent->OnReflectionUpdated();
+				SceneManager::SetSceneModified(true);
+				hasBeenSet = true;
+			}
+		}
+		else if constexpr (std::is_base_of<U, GameObject>())
+		{
+			std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+			if (foundGameObject)
+			{
+				*valuePtr = valueToSet;
+				foundGameObject->OnReflectionUpdated();
+				SceneManager::SetSceneModified(true);
+				hasBeenSet = true;
+			}
+		}
+		else
+		{
+			Debug::PrintError("Can't do Command!");
+		}
+	}
+	else
+	{
+		*valuePtr = valueToSet;
+		//hasBeenSet = true;
+	}
+
+	if (hasBeenSet && isUndo)
+	{
+		Debug::Print("Undo value changed in Inspector");
+	}
+}
+
+template<typename U, typename T>
 inline void InspectorChangeValueCommand<U, T>::Execute()
 {
-	if (target.lock())
-	{
-		*valuePtr = newValue;
-		target.lock()->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
-	}
+	SetValue(newValue, false);
 }
 
 template<typename U, typename T>
 inline void InspectorChangeValueCommand<U, T>::Undo()
 {
-	if (target.lock())
-	{
-		*valuePtr = lastValue;
-		target.lock()->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
-	}
+	SetValue(lastValue, true);
 }
 
 
@@ -232,43 +289,57 @@ inline void InspectorTransformSetLocalScaleCommand::Undo()
 
 //----------------------------------------------------------------------------
 
-template<typename T>
+
 class InspectorAddComponentCommand : public Command
 {
 public:
 	InspectorAddComponentCommand() = delete;
-	InspectorAddComponentCommand(std::weak_ptr<GameObject> target);
+	InspectorAddComponentCommand(std::weak_ptr<GameObject> target, std::string componentName);
 	void Execute() override;
 	void Undo() override;
-	std::weak_ptr<T> newComponent;
+
+	std::string componentName = "";
+	uint64_t componentId = 0;
 private:
-	std::weak_ptr<GameObject> target;
+	uint64_t targetId = 0;
 };
 
-template<typename T>
-inline InspectorAddComponentCommand<T>::InspectorAddComponentCommand(std::weak_ptr<GameObject> target)
+inline InspectorAddComponentCommand::InspectorAddComponentCommand(std::weak_ptr<GameObject> target, std::string componentName)
 {
-	this->target = target;
+	this->componentName = componentName;
+	if (target.lock())
+		targetId = target.lock()->GetUniqueId();
 }
 
-template<typename T>
-inline void InspectorAddComponentCommand<T>::Execute()
+inline void InspectorAddComponentCommand::Execute()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		newComponent = target.lock()->AddComponent<T>();
-		SceneManager::SetSceneModified(true);
+		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentName, foundGameObject);
+		if (newComponent) 
+		{
+			componentId = newComponent->GetUniqueId();
+			SceneManager::SetSceneModified(true);
+		}
+		else 
+		{
+			componentId = 0;
+		}
 	}
 }
 
-template<typename T>
-inline void InspectorAddComponentCommand<T>::Undo()
+inline void InspectorAddComponentCommand::Undo()
 {
-	if (target.lock() && newComponent.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject && componentId != 0)
 	{
-		Destroy(newComponent);
-		newComponent.reset();
-		SceneManager::SetSceneModified(true);
+		std::shared_ptr<Component> oldComponent = FindComponentById(componentId);
+		if (oldComponent) 
+		{
+			Destroy(oldComponent);
+			SceneManager::SetSceneModified(true);
+		}
 	}
 }
 
@@ -375,7 +446,7 @@ inline void InspectorCreateGameObjectCommand::Undo()
 			}
 			done = true;
 		}
-		else 
+		else
 		{
 			const int targetCount = targets.size();
 			for (int i = 0; i < targetCount; i++)
@@ -407,7 +478,7 @@ public:
 	void Undo() override;
 private:
 	std::weak_ptr<GameObject> target;
-	std::weak_ptr<T> componentToDestroy;
+	uint64_t componentId = 0;
 	nlohmann::json componentData;
 	std::string componentName = "";
 };
@@ -416,7 +487,7 @@ template<typename T>
 inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
 {
 	this->target = componentToDestroy.lock()->GetGameObject();
-	this->componentToDestroy = componentToDestroy;
+	this->componentId = componentToDestroy.lock()->GetUniqueId();
 	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.lock()->GetReflectiveData());
 	this->componentName = componentToDestroy.lock()->GetComponentName();
 }
@@ -424,7 +495,8 @@ inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::
 template<typename T>
 inline void InspectorDeleteComponentCommand<T>::Execute()
 {
-	if (componentToDestroy.lock())
+	std::shared_ptr<Component> componentToDestroy = FindComponentById(componentId);
+	if (componentToDestroy)
 	{
 		Destroy(componentToDestroy);
 		SceneManager::SetSceneModified(true);
@@ -438,7 +510,7 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, target.lock());
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
-		componentToDestroy = component;
+		componentId = component->GetUniqueId();
 		SceneManager::SetSceneModified(true);
 	}
 }

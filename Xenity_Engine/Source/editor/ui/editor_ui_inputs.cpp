@@ -193,7 +193,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	else 
 	{
 
-		inputText = "None (" + ClassRegistry::GetClassName(typeId) + ")";
+		inputText = "None (" + ClassRegistry::GetClassNameById(typeId) + ")";
 	}
 
 	InputButtonState result = DrawInputButton(inputName, inputText, true);

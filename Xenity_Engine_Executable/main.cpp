@@ -14,19 +14,21 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // For the Alpha Release
 /*
 --- Needed
+Add undo/redo commands to DrawVector functions
+Add support for mesh material loading
+Add more Get/Set
+
 Multiple gameobject selection
 Rework the documentation
+Mesh drag drop into the scene
 Clean code
-Add undo/redo commands to DrawVector/DrawFileReference functions
-Add support for mesh material loading
-Fix commands on dll reloading, use gameobject id instead of weak_ptr?
-Disable scene saving while playing with main menu bar
-Add more Get/Set
 
 --- Can be for next release
 New Input system
 
 --- Done
+Disable scene saving while playing with main menu bar
+Fix commands on dll reloading, use gameobject id instead of weak_ptr?
 
 */
 
@@ -43,9 +45,7 @@ Add buttons for canvas
 Finish rect transform support
 Add Windows controllers support
 Add the ability to change values with mouse when sliding
-Find a way to avoid duplicating missing script
 Build and run on real harward for psp
-Fix duplication crash with missing script
 Clean Component::SetGameObject code
 
 Add event for input system for the screen size and mouse position

@@ -14,6 +14,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <editor/command/command.h>
+#include <editor/command/command_manager.h>
 #include <editor/command/commands/inspector_commands.h>
 
 #include <engine/vectors/vector2.h>
@@ -198,6 +199,14 @@ public:
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
 		changed = DrawFileReference(&ref, inputName, newValue);
+
+		if (changed) 
+		{
+			std::shared_ptr<Command> command = std::make_shared<InspectorChangeValueCommand<void, std::shared_ptr<T>>>(std::weak_ptr<void>(), &ref.get(), newValue, ref.get());
+			CommandManager::AddCommand(command);
+			command->Execute();
+		}
+
 		return changed;
 	}
 
@@ -422,7 +431,8 @@ public:
 		const InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
 		if (returnValue == InputButtonState::ResetValue)
 		{
-			valuePtr->get() = nullptr;
+			//valuePtr->get() = nullptr;
+			newValue = nullptr;
 			valueChangedTemp = true;
 		}
 		else if (returnValue == InputButtonState::OpenAssetMenu)
@@ -442,7 +452,7 @@ public:
 		const std::string payloadName = "Files" + std::to_string((int)classInfo->fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
-			valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
+			//valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
 			newValue = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
@@ -747,7 +757,7 @@ private:
 		}
 		else if constexpr (std::is_same <T, Component>())
 		{
-			valueChangedTemp = DrawVector(ClassRegistry::GetClassName(reflectionEntry.typeId), valuePtr, variableName, reflectionEntry.typeId);
+			valueChangedTemp = DrawVector(ClassRegistry::GetClassNameById(reflectionEntry.typeId), valuePtr, variableName, reflectionEntry.typeId);
 		}
 
 		return valueChangedTemp;
