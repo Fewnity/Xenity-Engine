@@ -43,8 +43,6 @@
 #include <engine/engine_settings.h>
 #include <engine/tools/string_tag_finder.h>
 
-//Reserved ids: 10 (MainScene)
-
 using json = nlohmann::json;
 
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
@@ -54,8 +52,10 @@ ProjectSettings ProjectManager::projectSettings;
 std::string ProjectManager::projectFolderPath = "";
 std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
+std::string ProjectManager::publicEngineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
+std::shared_ptr<Directory> ProjectManager::publicEngineAssetsDirectoryBase = nullptr;
 std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
@@ -83,6 +83,20 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 	return nullptr;
 }
 
+void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets)
+{
+	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource->GetAllFiles(true);
+	const int projectAssetFilesCount = (int)projectAssetFiles.size();
+	for (int i = 0; i < projectAssetFilesCount; i++)
+	{
+		ProjectEngineFile projectEngineFile;
+		projectEngineFile.file = projectAssetFiles[i];
+		projectEngineFile.isEngineAsset = isEngineAssets;
+		projectFilesDestination.push_back(projectEngineFile);
+	}
+	projectAssetFiles.clear();
+}
+
 void ProjectManager::FindAllProjectFiles()
 {
 	// Keep in memory the old opened directory path to re-open it later
@@ -93,6 +107,8 @@ void ProjectManager::FindAllProjectFiles()
 
 	Editor::SetCurrentProjectDirectory(nullptr);
 #endif
+	
+	// Keep in memory all old files path to check later if some files have been moved
 	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
@@ -101,47 +117,48 @@ void ProjectManager::FindAllProjectFiles()
 	}
 
 	projectFilesIds.clear();
-	// Get all files of the project
-	std::vector<std::shared_ptr<File>> projectFiles = projectDirectoryBase->GetAllFiles(true);
 
-	std::vector<std::shared_ptr<File>> projectAdditionalAssetFiles = additionalAssetDirectoryBase->GetAllFiles(true);
-	const int additionalAssetFileCount = (int)projectAdditionalAssetFiles.size();
-	for (int i = 0; i < additionalAssetFileCount; i++)
-	{
-		projectFiles.push_back(projectAdditionalAssetFiles[i]);
-	}
-	projectAdditionalAssetFiles.clear();
+	// Get all files of the project
+	std::vector<ProjectEngineFile> projectFiles;
+
+	AddFilesToProjectFiles(projectFiles, publicEngineAssetsDirectoryBase, true); // This directory first
+	AddFilesToProjectFiles(projectFiles, projectDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, additionalAssetDirectoryBase, false);
 
 	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
 
-	std::vector<std::shared_ptr<File>> allFoundFiles;
-	std::unordered_map<std::shared_ptr<File>, FileType> compatibleFiles;
+	std::vector<CompatibleFile> compatibleFiles;
 
 	// Get all files supported by the engine
 	const int fileCount = (int)projectFiles.size();
-	int allFoundFileCount = 0;
 	for (int i = 0; i < fileCount; i++)
 	{
-		std::shared_ptr<File> file = projectFiles[i];
+		const std::shared_ptr<File> file = projectFiles[i].file;
 		const FileType fileType = GetFileType(file->GetFileExtension());
 
+		// If the file is supported, add it to the list
 		if (fileType != FileType::File_Other)
 		{
-			compatibleFiles[file] = fileType;
-			allFoundFiles.push_back(file);
-			allFoundFileCount++;
+			CompatibleFile compatibleFile;
+			compatibleFile.file.file = file;
+			compatibleFile.file.isEngineAsset = projectFiles[i].isEngineAsset;
+			compatibleFile.type = fileType;
+			compatibleFiles.push_back(compatibleFile);
 		}
 	}
+	projectFiles.clear();
 
+	// Read meta files and list all files that do not have a meta file for later use
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<std::shared_ptr<File>> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
-	uint64_t biggestId = 0;
-	for (int i = 0; i < allFoundFileCount; i++)
+	uint64_t biggestId = UniqueId::reservedFileId;
+
+	for(auto& compatibleFile : compatibleFiles)
 	{
-		std::shared_ptr<File> file = allFoundFiles[i];
-		std::string metaFilePath = file->GetPath() + META_EXTENSION;
-		std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
+		std::shared_ptr<File> file = compatibleFile.file.file;
+		const std::string metaFilePath = file->GetPath() + META_EXTENSION;
+		std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
 		if (!metaFile->CheckIfExist()) // If there is not meta for this file
 		{
 			// Create one later
@@ -171,6 +188,7 @@ void ProjectManager::FindAllProjectFiles()
 					const uint64_t id = data["id"];
 
 #if defined(EDITOR)
+					//if (!compatibleFile.file.isEngineAsset && (usedIds[id] == true || id <= UniqueId::reservedFileId))
 					if (usedIds[id] == true)
 					{
 						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(id) + ", File:" + metaFile->GetPath(), true);
@@ -195,7 +213,7 @@ void ProjectManager::FindAllProjectFiles()
 	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
-		uint64_t id = UniqueId::GenerateUniqueId(true);
+		const uint64_t id = UniqueId::GenerateUniqueId(true);
 		fileWithoutMeta[i]->SetUniqueId(id);
 	}
 
@@ -203,9 +221,9 @@ void ProjectManager::FindAllProjectFiles()
 	for (const auto& kv : compatibleFiles)
 	{
 		FileInfo fileAndPath = FileInfo();
-		fileAndPath.file = kv.first;
-		fileAndPath.path = kv.first->GetPath();
-		projectFilesIds[kv.first->GetUniqueId()] = fileAndPath;
+		fileAndPath.file = kv.file.file;
+		fileAndPath.path = kv.file.file->GetPath();
+		projectFilesIds[kv.file.file->GetUniqueId()] = fileAndPath;
 	}
 
 	// Create files references
@@ -221,11 +239,12 @@ void ProjectManager::FindAllProjectFiles()
 		const bool contains = oldProjectFilesIds.contains(kv.first);
 		if (contains)
 		{
-			oldProjectFilesIds[kv.first].hasBeenDeleted = false;
-		}
-		if (contains && oldProjectFilesIds[kv.first].path != kv.second.path)
-		{
-			oldProjectFilesIds[kv.first].hasChanged = true;
+			FileChange& fileChange = oldProjectFilesIds[kv.first];
+			fileChange.hasBeenDeleted = false;
+			if (fileChange.path != kv.second.path)
+			{
+				fileChange.hasChanged = true;
+			}
 		}
 	}
 
@@ -253,8 +272,6 @@ void ProjectManager::FindAllProjectFiles()
 #endif
 
 	oldProjectFilesIds.clear();
-	projectFiles.clear();
-	allFoundFiles.clear();
 	fileWithoutMeta.clear();
 	compatibleFiles.clear();
 }
@@ -349,19 +366,25 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 	}
 }
 
+void ProjectManager::Init()
+{
+	engineAssetsFolderPath = ".\\engine_assets\\";
+	publicEngineAssetsFolderPath = ".\\public_engine_assets\\";
+
+	publicEngineAssetsDirectoryBase = std::make_shared<Directory>(publicEngineAssetsFolderPath);
+}
+
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\temp\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\additional_assets\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Materials\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Shaders\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Textures\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Scripts\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Scenes\\");
 
 	// Create default scene
-	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", 10));
+	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", UniqueId::GenerateUniqueId(true)));
 	if (sceneRef->file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
@@ -369,29 +392,11 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 		sceneRef->file->Close();
 	}
 
-	// TODO improve this
+	// TODO improve this (use copy entry system like in the compiler class)
 	try
 	{
-		// Copy basic materials
-		std::filesystem::copy_file("engine_assets\\materials\\standardMaterial.mat", folderPath + name + "\\assets\\Materials\\standardMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\materials\\standardMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\standardMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\materials\\unlitMaterial.mat", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\materials\\unlitMaterial.mat.meta", folderPath + name + "\\assets\\Materials\\unlitMaterial.mat.meta", std::filesystem::copy_options::overwrite_existing);
-
-		// Copy basic shaders
-		std::filesystem::copy_file("engine_assets\\shaders\\standard.shader", folderPath + name + "\\assets\\Shaders\\standard.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\shaders\\standard.shader.meta", folderPath + name + "\\assets\\Shaders\\standard.shader.meta", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\shaders\\unlit.shader", folderPath + name + "\\assets\\Shaders\\unlit.shader", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\shaders\\unlit.shader.meta", folderPath + name + "\\assets\\Shaders\\unlit.shader.meta", std::filesystem::copy_options::overwrite_existing);
-
-		// Copy basic 3D models
-		std::filesystem::copy("engine_assets\\models\\", folderPath + name + "\\assets\\Models\\", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-
-		// Copy basic texture
-		std::filesystem::copy_file("engine_assets\\default_texture.png", folderPath + name + "\\assets\\Textures\\default_texture.png", std::filesystem::copy_options::overwrite_existing);
-
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\Scripts\\game.cpp", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\Scripts\\game.h", std::filesystem::copy_options::overwrite_existing);
 	}
 	catch (const std::exception&)
 	{
@@ -464,6 +469,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 }
 
 #if defined(EDITOR)
+
 void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 {
 	if (params.buildType != BuildType::EditorHotReloading)
@@ -504,7 +510,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets\\";
-	engineAssetsFolderPath = ".\\engine_assets\\";
+
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 	if (!projectDirectoryBase->CheckIfExist())
@@ -516,6 +522,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
 
 	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "\\additional_assets\\");
+
 
 	FindAllProjectFiles();
 
@@ -791,6 +798,9 @@ void ProjectManager::SaveProjectSettings()
 void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
+	if (!file)
+		return;
+
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
@@ -834,7 +844,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				// Get project informations (name and path)
 				ProjectListItem projectItem;
 				projectItem.path = j[i]["path"];
-				ProjectSettings settings = GetProjectSettings(projectItem.path);
+				const ProjectSettings settings = GetProjectSettings(projectItem.path);
 				if (settings.projectName.empty())
 				{
 					projectItem.name = j[i]["name"];

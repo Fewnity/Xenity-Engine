@@ -27,6 +27,8 @@ public:
 	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;
 
+	static const uint64_t reservedFileId;
+
 	/**
 	* @brief Generate a new id
 	* @param forFile Is an Id for a file

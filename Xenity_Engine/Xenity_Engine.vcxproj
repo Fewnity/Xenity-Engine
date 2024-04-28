@@ -513,6 +513,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\engine_asset_manager_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\particle_system\particle_system.cpp" />
     <ClCompile Include="Source\engine\graphics\render_command.cpp" />
     <ClCompile Include="Source\editor\ui\menus\build_settings_menu.cpp">
@@ -817,6 +829,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
+    <ClInclude Include="Source\editor\ui\menus\engine_asset_manager_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\particle_system\particle_system.h" />
     <ClInclude Include="Source\engine\graphics\render_command.h" />
     <ClInclude Include="Source\editor\ui\menus\build_settings_menu.h">

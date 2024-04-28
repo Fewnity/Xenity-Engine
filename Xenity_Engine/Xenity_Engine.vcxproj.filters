@@ -151,6 +151,7 @@
     <ClCompile Include="Source\engine\graphics\render_command.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
     <ClCompile Include="Source\engine\particle_system\particle_system.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\engine_asset_manager_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -311,6 +312,7 @@
     <ClInclude Include="Source\engine\graphics\render_command.h" />
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
     <ClInclude Include="Source\engine\particle_system\particle_system.h" />
+    <ClInclude Include="Source\editor\ui\menus\engine_asset_manager_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

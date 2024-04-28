@@ -50,6 +50,7 @@
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/game_elements/rect_transform.h>
+#include "engine_asset_manager_menu.h"
 
 void MainBarMenu::Init()
 {
@@ -489,6 +490,15 @@ void MainBarMenu::Draw()
 
 		ImGui::EndMenu();
 	}
+	if (ImGui::BeginMenu("Other")) // ----------------------------------- Draw Window menu
+	{
+		if (ImGui::MenuItem("Engine Asset Manager"))
+		{
+			Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
+			Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
+		}
+		ImGui::EndMenu();
+	}
 	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Window menu
 	{
 		if (ImGui::MenuItem("Documentation"))
@@ -502,6 +512,7 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("About Xenity Engine"))
 		{
 			Editor::GetMenu<AboutMenu>()->SetActive(true);
+			Editor::GetMenu<AboutMenu>()->Focus();
 		}
 		ImGui::EndMenu();
 	}

@@ -1,7 +1,8 @@
 #include "unique_id.h"
 
+const uint64_t UniqueId::reservedFileId = 100000;
 uint64_t UniqueId::lastUniqueId = 0;
-uint64_t UniqueId::lastFileUniqueId = 0;
+uint64_t UniqueId::lastFileUniqueId = UniqueId::reservedFileId;
 
 UniqueId::UniqueId()
 {

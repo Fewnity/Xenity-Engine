@@ -49,6 +49,20 @@ struct ProjectListItem
 	std::string path;
 };
 
+class ProjectEngineFile 
+{
+public:
+	std::shared_ptr<File> file = nullptr;
+	bool isEngineAsset = false;
+};
+
+class CompatibleFile
+{
+public:
+	ProjectEngineFile file;
+	FileType type;
+};
+
 struct FileInfo
 {
 	std::string path;
@@ -80,6 +94,11 @@ public:
 class ProjectManager
 {
 public:
+
+	/**
+	* Init the Project Manager
+	*/
+	static void Init();
 
 	/**
 	* @brief Create a project
@@ -252,8 +271,11 @@ public:
 
 	static ProjectSettings projectSettings;
 	static std::shared_ptr <Directory> projectDirectoryBase;
+	static std::shared_ptr <Directory> publicEngineAssetsDirectoryBase;
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
+
+	static void AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets);
 
 #if defined(EDITOR)
 	/**
@@ -294,6 +316,7 @@ private:
 	static bool projectLoaded;
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;
+	static std::string publicEngineAssetsFolderPath;
 	static std::string assetFolderPath;
 };
 

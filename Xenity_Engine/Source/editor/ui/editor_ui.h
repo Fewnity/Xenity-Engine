@@ -306,6 +306,8 @@ public:
 			hasChanged = ImGui::Checkbox(GenerateItemId().c_str(), &value);
 		else if constexpr (std::is_same<T, std::string>())
 			hasChanged = ImGui::InputText(GenerateItemId().c_str(), &value);
+		else if constexpr (std::is_same<T, uint64_t>())
+			hasChanged = ImGui::InputScalar(GenerateItemId().c_str(), ImGuiDataType_S64, &value);
 		/*else if constexpr (std::is_same<T, Vector2>() || std::is_same<T, Vector2Int>() || std::is_same<T, Vector3>() || std::is_same<T, Vector4>()) {
 
 		}*/
