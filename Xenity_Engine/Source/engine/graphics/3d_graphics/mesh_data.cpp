@@ -335,18 +335,18 @@ void MeshData::LoadFileReference()
 		isLoaded = true;
 		isValid = false;
 
-#if defined(EDITOR)
-		isLoading = true;
-
-		AsyncFileLoading::AddFile(shared_from_this());
-
-		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-		threadLoading.detach();
-#else
 		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
 
 		OnLoadFileReferenceFinished();
-#endif
+//#if defined(EDITOR)
+//		isLoading = true;
+//
+//		AsyncFileLoading::AddFile(shared_from_this());
+//
+//		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+//		threadLoading.detach();
+//#else
+//#endif
 	}
 }
 

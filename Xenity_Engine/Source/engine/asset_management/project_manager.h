@@ -12,6 +12,7 @@
 #include <memory>
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_reference.h>
+#include <engine/event_system/event_system.h>
 
 class FileReference;
 class File;
@@ -121,11 +122,25 @@ public:
 	static void UnloadProject();
 
 	/**
-	* @brief Get file reference by Id
+	* @brief Get file reference by Id (does not load the file reference)
 	* @param id File reference Id
-	* @return File reference
+	* @return File reference (nullptr if not found)
 	*/
 	static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
+
+	/**
+	* @brief Get file reference by file (does not load the file reference)
+	* @param file File
+	* @return File reference (nullptr if not found)
+	*/
+	static std::shared_ptr<FileReference> GetFileReferenceByFile(std::shared_ptr<File> file);
+
+	/**
+	* @brief Get file reference by file path (does not load the file reference)
+	* @param filePath File path
+	* @return File reference (nullptr if not found)
+	*/
+	static std::shared_ptr<FileReference> GetFileReferenceByFilePath(const std::string filePath);
 
 	/**
 	* @brief Get file by Id
@@ -277,6 +292,26 @@ public:
 		return projectDirectory;
 	}
 
+	static uint64_t ReadFileId(const std::shared_ptr<File>& file);
+
+	/**
+* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
+* @param path File path
+* @param id File Id
+* @return File reference
+*/
+	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
+
+	static Event<>& GetProjectLoadedEvent()
+	{
+		return projectLoadedEvent;
+	}
+
+	static Event<>& GetProjectUnloadedEvent()
+	{
+		return projectUnloadedEvent;
+	}
+
 	static ProjectSettings projectSettings;
 	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::shared_ptr <Directory> publicEngineAssetsDirectoryBase;
@@ -292,6 +327,7 @@ private:
 	* @param result Compilation result
 	*/
 	static void OnProjectCompiled(CompilerParams params, bool result);
+
 #endif
 
 	/**
@@ -304,13 +340,7 @@ private:
 	*/
 	static void CreateVisualStudioSettings();
 
-	/**
-	* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
-	* @param path File path
-	* @param id File Id
-	* @return File reference
-	*/
-	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
+
 
 	/**
 	* @brief Load meta file
@@ -326,5 +356,8 @@ private:
 	static std::string engineAssetsFolderPath;
 	static std::string publicEngineAssetsFolderPath;
 	static std::string assetFolderPath;
+
+	static Event<> projectLoadedEvent;
+	static Event<> projectUnloadedEvent;
 };
 

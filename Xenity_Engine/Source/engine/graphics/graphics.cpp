@@ -740,6 +740,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 		}
+		AssetManager::unlitMaterial->texture = nullptr;
 	}
 }
 #endif

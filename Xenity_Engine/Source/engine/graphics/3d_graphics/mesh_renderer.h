@@ -33,6 +33,22 @@ public:
 	*/
 	std::shared_ptr <MeshData> GetMeshData();
 
+	std::vector<std::shared_ptr <Material>> GetMaterials() const
+	{
+		return materials;
+	}
+
+	void SetMaterial(std::shared_ptr <Material> material, int index);
+
+	std::shared_ptr <Material> GetMaterial(int index) const
+	{
+		if (index < materials.size())
+			return materials[index];
+
+		return nullptr;
+	}
+
+
 private:
 
 	/**

@@ -57,6 +57,8 @@ bool ProjectManager::projectLoaded = false;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 std::shared_ptr<Directory> ProjectManager::publicEngineAssetsDirectoryBase = nullptr;
 std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
+Event<> ProjectManager::projectLoadedEvent;
+Event<> ProjectManager::projectUnloadedEvent;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
 {
@@ -83,6 +85,40 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 	return nullptr;
 }
 
+uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
+{
+	uint64_t id = -1;
+	const std::string metaFilePath = file->GetPath() + META_EXTENSION;
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
+
+	if (!metaFile->CheckIfExist()) // If there is not meta for this file
+	{
+	}
+	else // Or read meta file
+	{
+		if (metaFile->Open(FileMode::ReadOnly))
+		{
+			const std::string jsonString = metaFile->ReadAll();
+			metaFile->Close();
+			if (!jsonString.empty())
+			{
+				json data;
+				try
+				{
+					data = json::parse(jsonString);
+					id = data["id"];
+				}
+				catch (const std::exception&)
+				{
+					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Meta file corrupted! File:" + metaFile->GetPath(), true);
+				}
+			}
+		}
+	}
+
+	return id;
+}
+
 void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets)
 {
 	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource->GetAllFiles(true);
@@ -107,7 +143,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	Editor::SetCurrentProjectDirectory(nullptr);
 #endif
-	
+
 	// Keep in memory all old files path to check later if some files have been moved
 	for (const auto& kv : projectFilesIds)
 	{
@@ -154,57 +190,35 @@ void ProjectManager::FindAllProjectFiles()
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = UniqueId::reservedFileId;
 
-	for(auto& compatibleFile : compatibleFiles)
+	UniqueId::ResetIds();
+
+	for (auto& compatibleFile : compatibleFiles)
 	{
 		std::shared_ptr<File> file = compatibleFile.file.file;
-		const std::string metaFilePath = file->GetPath() + META_EXTENSION;
-		std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
-		if (!metaFile->CheckIfExist()) // If there is not meta for this file
+		uint64_t fileId = ReadFileId(file);
+		if (fileId == -1)
 		{
-			// Create one later
 			fileWithoutMeta.push_back(file);
 			fileWithoutMetaCount++;
 		}
-		else // Or read meta file
+		else
 		{
-			if (metaFile->Open(FileMode::ReadOnly))
-			{
-				const std::string jsonString = metaFile->ReadAll();
-				metaFile->Close();
-				if (!jsonString.empty())
-				{
-					json data;
-					try
-					{
-						data = json::parse(jsonString);
-					}
-					catch (const std::exception&)
-					{
-						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Meta file corrupted! File:" + metaFile->GetPath(), true);
-						fileWithoutMeta.push_back(file);
-						fileWithoutMetaCount++;
-						continue;
-					}
-					const uint64_t id = data["id"];
-
 #if defined(EDITOR)
-					//if (!compatibleFile.file.isEngineAsset && (usedIds[id] == true || id <= UniqueId::reservedFileId))
-					if (usedIds[id] == true)
-					{
-						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(id) + ", File:" + metaFile->GetPath(), true);
-						fileWithoutMeta.push_back(file);
-						fileWithoutMetaCount++;
-						continue;
-					}
+			if (!compatibleFile.file.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+				//if (usedIds[id] == true)
+			{
+				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
+				fileWithoutMeta.push_back(file);
+				fileWithoutMetaCount++;
+				continue;
+			}
 #endif
 
-					usedIds[id] = true;
+			usedIds[fileId] = true;
 
-					if (id > biggestId)
-						biggestId = id;
-					file->SetUniqueId(id);
-				}
-			}
+			if (fileId > biggestId)
+				biggestId = fileId;
+			file->SetUniqueId(fileId);
 		}
 	}
 	usedIds.clear();
@@ -395,8 +409,8 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	// TODO improve this (use copy entry system like in the compiler class)
 	try
 	{
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\Scripts\\game.cpp", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\Scripts\\game.h", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
 	}
 	catch (const std::exception&)
 	{
@@ -551,7 +565,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif // defined(EDITOR)
 		Engine::game = DynamicLibrary::CreateGame();
 	}
-	else 
+	else
 	{
 		// Maybe automaticaly recompile the project
 		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");
@@ -585,6 +599,8 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		SceneManager::LoadScene(ProjectManager::GetStartScene());
 	}
 
+	projectLoadedEvent.Trigger();
+
 	Debug::Print("Project loaded", true);
 
 	return projectLoaded;
@@ -610,6 +626,8 @@ void ProjectManager::UnloadProject()
 	projectSettings.projectName.clear();
 	projectSettings.gameName.clear();
 	Window::UpdateWindowTitle();
+
+	projectUnloadedEvent.Trigger();
 }
 
 std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
@@ -650,11 +668,11 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					{
 						ids.push_back(idKv.value());
 						std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
-						if (fileRef) 
+						if (fileRef)
 						{
 							FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
 						}
-						else 
+						else
 						{
 							Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].file->GetFileName(), true);
 						}
@@ -699,6 +717,11 @@ FileInfo* ProjectManager::GetFileById(const uint64_t id)
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64_t id)
 {
+	if (id == -1) 
+	{
+		return nullptr;
+	}
+
 	std::shared_ptr<FileReference> fileRef = nullptr;
 
 	// Find if the File Reference is already instanciated
@@ -728,6 +751,20 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	}
 
 	return fileRef;
+}
+
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(std::shared_ptr<File> file)
+{
+	const uint64_t fileId = ProjectManager::ReadFileId(file);
+	return GetFileReferenceById(fileId);
+}
+
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string filePath)
+{
+	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
+	const uint64_t fileId = ProjectManager::ReadFileId(file);
+
+	return GetFileReferenceById(fileId);
 }
 
 ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPath)
@@ -962,7 +999,6 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error", true);
 				return;
 			}
-
 			ReflectionUtils::JsonToReflectiveData(metaData, fileReference->GetMetaReflectiveData());
 		}
 		else

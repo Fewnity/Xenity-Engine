@@ -201,7 +201,7 @@ void MainBarMenu::Draw()
 		{
 			Editor::CreateEmpty();
 		}
-		/*if (ImGui::BeginMenu("3D Objects"))
+		if (ImGui::BeginMenu("3D Objects"))
 		{
 			if (ImGui::MenuItem("Cube"))
 			{
@@ -228,7 +228,7 @@ void MainBarMenu::Draw()
 				ShapeSpawner::SpawnDonut();
 			}
 			ImGui::EndMenu();
-		}*/
+		}
 		if (ImGui::BeginMenu("2D"))
 		{
 			if (ImGui::MenuItem("Sprite Renderer"))

@@ -37,6 +37,9 @@ ReflectiveData MeshRenderer::GetReflectiveData()
 
 void MeshRenderer::OnReflectionUpdated()
 {
+	if (meshData)
+		materials.resize(meshData->subMeshCount);
+
 	matCount = materials.size();
 	Graphics::isRenderingBatchDirty = true;
 }
@@ -77,7 +80,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = meshData->subMeshes[i];
 		command.transform = GetTransform();
 		command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
-		if(!material->useTransparency)
+		if (!material->useTransparency)
 		{
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
 			renderQueue.commands.push_back(command);
@@ -94,12 +97,30 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 {
 	this->meshData = meshData;
+	if (meshData) 
+	{
+		materials.resize(meshData->subMeshCount);
+		matCount = meshData->subMeshCount;
+	}
+	else 
+	{
+
+	}
 	Graphics::isRenderingBatchDirty = true;
 }
 
 std::shared_ptr<MeshData> MeshRenderer::GetMeshData()
 {
 	return meshData;
+}
+
+void MeshRenderer::SetMaterial(std::shared_ptr<Material> material, int index)
+{
+	if (index < materials.size())
+	{
+		materials[index] = material;
+		Graphics::isRenderingBatchDirty = true;
+	}
 }
 
 void MeshRenderer::OnDisabled()

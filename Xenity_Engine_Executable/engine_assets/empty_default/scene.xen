@@ -1,2 +1,141 @@
 {
+  "GameObjects": {
+    "1": {
+      "Childs": [],
+      "Components": {
+        "2": {
+          "Enabled": true,
+          "Type": "Camera",
+          "Values": {
+            "farClippingPlane": 1000.0,
+            "fov": 60.0,
+            "nearClippingPlane": 0.30000001192092896,
+            "projectionSize": 5.0,
+            "projectionType": 0,
+            "useMultisampling": true
+          }
+        }
+      },
+      "Transform": {
+        "Values": {
+          "localPosition": {
+            "Values": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          },
+          "localRotation": {
+            "Values": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          },
+          "localScale": {
+            "Values": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      },
+      "Values": {
+        "active": true,
+        "name": "Camera"
+      }
+    },
+    "3": {
+      "Childs": [],
+      "Components": {
+        "4": {
+          "Enabled": true,
+          "Type": "Light",
+          "Values": {
+            "color": {
+              "Values": {
+                "rgba": {
+                  "Values": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                  }
+                }
+              }
+            },
+            "intensity": 1.0,
+            "range": 10.0,
+            "spotAngle": 30.0,
+            "spotSmoothness": 0.0,
+            "type": 0
+          }
+        }
+      },
+      "Transform": {
+        "Values": {
+          "localPosition": {
+            "Values": {
+              "x": 0.0,
+              "y": 2.0,
+              "z": 0.0
+            }
+          },
+          "localRotation": {
+            "Values": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          },
+          "localScale": {
+            "Values": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      },
+      "Values": {
+        "active": true,
+        "name": "Sun"
+      }
+    }
+  },
+  "Lighting": {
+    "Values": {
+      "fogColor": {
+        "Values": {
+          "rgba": {
+            "Values": {
+              "a": 1.0,
+              "b": 0.5960784554481506,
+              "g": 0.5960784554481506,
+              "r": 0.5960784554481506
+            }
+          }
+        }
+      },
+      "fogEnd": 50.0,
+      "fogStart": 10.0,
+      "isFogEnabled": false,
+      "skyColor": {
+        "Values": {
+          "rgba": {
+            "Values": {
+              "a": 1.0,
+              "b": 0.09803921729326248,
+              "g": 0.09803921729326248,
+              "r": 0.09803921729326248
+            }
+          }
+        }
+      }
+    }
+  },
+  "UsedFiles": {
+    "Values": []
+  }
 }

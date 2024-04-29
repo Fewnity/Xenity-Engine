@@ -16,7 +16,7 @@ public:
 	}
 
 	/**
-	* @brief Set unique Id
+	* @brief [Internal] Set unique Id
 	* @param id Id to set
 	*/
 	void SetUniqueId(uint64_t id)
@@ -30,11 +30,16 @@ public:
 	static const uint64_t reservedFileId;
 
 	/**
-	* @brief Generate a new id
+	* @brief [Internal] Generate a new id
 	* @param forFile Is an Id for a file
 	* @return new Id
 	*/
 	static uint64_t GenerateUniqueId(bool forFile);
+
+	/**
+	* @brief [Internal] Reset all ids
+	*/
+	static void ResetIds();
 
 private:
 

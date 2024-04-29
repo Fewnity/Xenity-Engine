@@ -7,6 +7,12 @@
 
 File::File(std::string _path) : UniqueId(true)
 {
+	if (_path.empty())
+	{
+		Debug::PrintError("File path is empty");
+		return;
+	}
+
 #if defined(__vita__)
 	_path = PSVITA_BASE_DIR + _path;
 #elif defined(_EE)

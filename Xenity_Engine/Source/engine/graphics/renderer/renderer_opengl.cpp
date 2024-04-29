@@ -403,6 +403,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = false;
+	usedTexture = nullptr;
 
 	VertexNoColorNoUv ver[2];
 	ver[0].x = a.x;
@@ -417,11 +418,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 
 	const RGBA& vec4Color = color.GetRGBA();
 	Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
-	if (lastUsedColor != colorToUse) 
-	{
-		glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
-		lastUsedColor = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
-	}
+	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glDrawArrays(GL_LINES, 0, 2);
 }
 

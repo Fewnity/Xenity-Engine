@@ -64,6 +64,8 @@ void InspectorMenu::Draw()
 
 	ImGui::End();
 
+	forceItemUpdate = false;
+
 	if (!isOpen)
 	{
 		Editor::RemoveMenu(this);
@@ -315,7 +317,6 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 			if (forceItemUpdate)
 			{
 				reflection->OnReflectionUpdated();
-				forceItemUpdate = false;
 			}
 		}
 	}
@@ -511,7 +512,6 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				if (forceItemUpdate)
 				{
 					comp->OnReflectionUpdated();
-					forceItemUpdate = false;
 				}
 
 				ImGui::Separator();

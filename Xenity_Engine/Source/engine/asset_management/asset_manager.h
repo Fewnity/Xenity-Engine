@@ -24,6 +24,9 @@ public:
 	*/
 	static void Init();
 
+	static void OnProjectLoaded();
+	static void OnProjectUnloaded();
+
 	/**
 	* @brief Adds a material
 	* @param material The material to add

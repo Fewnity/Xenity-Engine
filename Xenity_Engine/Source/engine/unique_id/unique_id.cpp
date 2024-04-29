@@ -16,6 +16,12 @@ UniqueId::UniqueId(bool _forFile)
 	this->uniqueId = GenerateUniqueId(_forFile);
 }
 
+void UniqueId::ResetIds() 
+{
+	lastUniqueId = 0;
+	lastFileUniqueId = reservedFileId;
+}
+
 uint64_t UniqueId::GenerateUniqueId(bool forFile)
 {
 	if (forFile)

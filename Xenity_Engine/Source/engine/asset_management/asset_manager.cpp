@@ -16,7 +16,7 @@
 
 #include <engine/scene_management/scene.h>
 #include <engine/audio/audio_clip.h>
-
+#include <engine/asset_management/project_manager.h>
 
 bool initialised = false;
 
@@ -46,6 +46,16 @@ std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
 void AssetManager::Init()
 {
 	initialised = true;
+	ProjectManager::GetProjectLoadedEvent().Bind(&AssetManager::OnProjectLoaded);
+	ProjectManager::GetProjectUnloadedEvent().Bind(&AssetManager::OnProjectUnloaded);
+
+	//return;
+
+	Debug::Print("-------- Asset Manager initiated --------", true);
+}
+
+void AssetManager::OnProjectLoaded()
+{
 	defaultTexture = Texture::MakeTexture();
 	defaultTexture->file = FileSystem::MakeFile("public_engine_assets\\textures\\default_texture.png");
 	defaultTexture->LoadFileReference();
@@ -68,31 +78,28 @@ void AssetManager::Init()
 		unlitShader->LoadFileReference();
 		lineShader->LoadFileReference();
 	}
-		// Create materials
-		standardMaterial = Material::MakeMaterial();
-		standardMaterial->file = FileSystem::MakeFile("engine_assets\\materials/standardMaterial.mat");
-		standardMaterial->shader = shader;
-		standardMaterial->texture = defaultTexture;
-		standardMaterial->useLighting = true;
 
-		unlitMaterial = Material::MakeMaterial();
-		unlitMaterial->file = FileSystem::MakeFile("engine_assets\\materials/unlitMaterial.mat");
-		unlitMaterial->shader = unlitShader;
-		unlitMaterial->texture = defaultTexture;
-		//Engine::unlitMaterial->SetAttribute("color", Vector3(1, 1, 1));
+	// Create materials
+	standardMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/standardMaterial.mat"));
+	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/unlitMaterial.mat"));
+	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/lineMaterial.mat"));
 
-		lineMaterial = Material::MakeMaterial();
-		lineMaterial->file = FileSystem::MakeFile("engine_assets\\materials/lineMaterial.mat");
-		lineMaterial->shader = lineShader;
-		lineMaterial->texture = defaultTexture;
+	standardMaterial->LoadFileReference();
+	unlitMaterial->LoadFileReference();
+	lineMaterial->LoadFileReference();
+}
 
+void AssetManager::OnProjectUnloaded()
+{
+	defaultTexture.reset();
 
-		standardMaterial->LoadFileReference();
-		unlitMaterial->LoadFileReference();
-		lineMaterial->LoadFileReference();
-	
+	shader.reset();
+	unlitShader.reset();
+	lineShader.reset();
 
-	Debug::Print("-------- Asset Manager initiated --------", true);
+	standardMaterial.reset();
+	unlitMaterial.reset();
+	lineMaterial.reset();
 }
 
 #pragma region Add assets
@@ -406,7 +413,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 		data = newFile->ReadAll();
 		newFile->Close();
 	}
-	else 
+	else
 	{
 		Debug::PrintError("[AssetManager::GetDefaultFileData] Default file not found", true);
 	}
