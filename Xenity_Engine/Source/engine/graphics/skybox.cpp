@@ -7,6 +7,7 @@
 
 #include <json.hpp>
 
+const int SkyBox::version = 1;
 
 using json = nlohmann::json;
 
@@ -50,7 +51,11 @@ ReflectiveData SkyBox::GetMetaReflectiveData()
 
 void SkyBox::OnReflectionUpdated()
 {
-	const bool saveResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	json jsonData;
+	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
+	jsonData["Version"] = version;
+
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, file);
 	if (!saveResult)
 	{
 		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath(), true);

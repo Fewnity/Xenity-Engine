@@ -41,4 +41,6 @@ public:
 	std::shared_ptr<Texture> right = nullptr;
 
 private:
+
+	static const int version;
 };

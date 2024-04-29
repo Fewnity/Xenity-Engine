@@ -17,6 +17,7 @@
 
 
 using json = nlohmann::json;
+const int Material::version = 1;
 
 #pragma region Constructors / Destructor
 
@@ -225,8 +226,12 @@ ReflectiveData Material::GetMetaReflectiveData()
 
 void Material::OnReflectionUpdated()
 {
-	const bool loadResult = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
-	if (!loadResult)
+	json jsonData;
+	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
+	jsonData["Version"] = version;
+
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, file);
+	if (!saveResult)
 	{
 		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath(), true);
 	}

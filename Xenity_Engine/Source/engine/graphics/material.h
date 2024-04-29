@@ -70,6 +70,7 @@ public:
 	bool updated = false;
 	bool useLighting = false;
 	bool useTransparency = false;
+	static const int version;
 
 };
 

@@ -35,6 +35,8 @@ json savedSceneDataHotReloading;
 
 bool SceneManager::sceneModified = false;
 
+const int SceneManager::sceneVersion = 1;
+
 #if defined(EDITOR)
 
 void SceneManager::SaveScene(SaveSceneType saveType)
@@ -43,8 +45,10 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	std::vector<uint64_t> usedFilesIds;
 
 	json j;
-	const int gameObjectCount = GameplayManager::gameObjectCount;
 
+	j["Version"] = sceneVersion;
+
+	const int gameObjectCount = GameplayManager::gameObjectCount;
 	for (int goI = 0; goI < gameObjectCount; goI++)
 	{
 		std::shared_ptr<GameObject>& go = GameplayManager::gameObjects[goI];

@@ -45,6 +45,8 @@
 
 using json = nlohmann::json;
 
+const int ProjectManager::metaVersion = 1;
+
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
@@ -841,6 +843,7 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference->fileId;
+	metaData["MetaVersion"] = metaVersion;
 	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);

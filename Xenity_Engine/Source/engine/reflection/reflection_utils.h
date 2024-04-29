@@ -75,6 +75,14 @@ public:
 	*/
 	static bool ReflectiveDataToFile(const ReflectiveData& dataList, std::shared_ptr<File> file);
 
+	/**
+	* @brief Write Reflective data in a list
+	* @param dataList Reflective data list
+	* @param file File to write in
+	* @return True if the data has been written successfully
+	*/
+	static bool JsonToFile(const nlohmann::json& data, std::shared_ptr<File> file);
+
 #pragma endregion
 
 private:

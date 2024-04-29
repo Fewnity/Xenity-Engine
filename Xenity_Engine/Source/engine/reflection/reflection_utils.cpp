@@ -434,10 +434,18 @@ bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, std::
 	bool ok = false;
 	json myJson;
 	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
+	ok = JsonToFile(myJson, file);
+
+	return ok;
+}
+
+bool ReflectionUtils::JsonToFile(const nlohmann::json& data, std::shared_ptr<File> file)
+{
+	bool ok = false;
 	FileSystem::fileSystem->Delete(file->GetPath());
 	if (file->Open(FileMode::WriteCreateFile))
 	{
-		file->Write(myJson.dump(0));
+		file->Write(data.dump(0));
 		file->Close();
 		ok = true;
 	}
