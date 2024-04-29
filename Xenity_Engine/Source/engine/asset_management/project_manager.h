@@ -198,6 +198,14 @@ public:
 	}
 
 	/**
+	* @brief Get engine asset folder path
+	*/
+	static std::string GetPublicEngineAssetFolderPath()
+	{
+		return publicEngineAssetsFolderPath;
+	}
+
+	/**
 	* @brief Get if the project is loaded
 	*/
 	static bool GetIsProjectLoaded()

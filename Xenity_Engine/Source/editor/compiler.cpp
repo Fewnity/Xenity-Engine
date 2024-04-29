@@ -78,6 +78,7 @@ bool Compiler::ExecuteCopyEntries()
 #define ENGINE_GAME "Xenity_Engine"
 #define ASSETS_FOLDER "assets\\"
 #define ENGINE_ASSETS_FOLDER "engine_assets\\"
+#define PUBLIC_ENGINE_ASSETS_FOLDER "public_engine_assets\\"
 #define MSVC_START_FILE_64BITS "vcvars64.bat"
 #define MSVC_START_FILE_32BITS "vcvars32.bat"
 
@@ -300,18 +301,21 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 
 bool Compiler::ExportProjectFiles(const CompilerParams& params)
 {
-	const std::string projectFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
-	const int projectFolderPathLen = projectFolder.size();
+	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
+	const int projectFolderPathLen = projectAssetFolder.size();
 	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
 	const int idsCount = ids.size();
 	for (int i = 0; i < idsCount; i++)
 	{
-		const FileInfo* filePath = ProjectManager::GetFileById(ids[i]);
-		if (filePath)
+		const FileInfo* fileInfo = ProjectManager::GetFileById(ids[i]);
+		if (fileInfo)
 		{
-			const std::string newPath = filePath->path.substr(projectFolderPathLen, filePath->path.size() - projectFolderPathLen);
-			AddCopyEntry(false, filePath->path, params.exportPath + ASSETS_FOLDER + newPath);
-			AddCopyEntry(false, filePath->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
+			if (fileInfo->file->GetUniqueId() <= UniqueId::reservedFileId)
+				continue;
+
+			const std::string newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
+			AddCopyEntry(false, fileInfo->path, params.exportPath + ASSETS_FOLDER + newPath);
+			AddCopyEntry(false, fileInfo->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
 
 			std::string folderToCreate = (params.exportPath + ASSETS_FOLDER + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of("\\"));
@@ -320,6 +324,7 @@ bool Compiler::ExportProjectFiles(const CompilerParams& params)
 	}
 
 	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(true, ProjectManager::GetPublicEngineAssetFolderPath(), params.exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
 	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
 	const bool copyResult = ExecuteCopyEntries();
 	return copyResult;
