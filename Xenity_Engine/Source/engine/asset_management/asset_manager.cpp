@@ -47,22 +47,22 @@ void AssetManager::Init()
 {
 	initialised = true;
 	defaultTexture = Texture::MakeTexture();
-	defaultTexture->file = FileSystem::MakeFile("engine_assets\\default_texture.png");
+	defaultTexture->file = FileSystem::MakeFile("public_engine_assets\\textures\\default_texture.png");
 	defaultTexture->LoadFileReference();
 
 	if (!Graphics::UseOpenGLFixedFunctions)
 	{
 		// Load standard shader
 		shader = Shader::MakeShader();
-		shader->file = FileSystem::MakeFile("engine_assets\\shaders/standard.shader");
+		shader->file = FileSystem::MakeFile("public_engine_assets\\shaders/standard.shader");
 
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
-		unlitShader->file = FileSystem::MakeFile("engine_assets\\shaders/unlit.shader");
+		unlitShader->file = FileSystem::MakeFile("public_engine_assets\\shaders/unlit.shader");
 
 		// Load line shader
 		lineShader = Shader::MakeShader();
-		lineShader->file = FileSystem::MakeFile("engine_assets\\shaders/line.shader");
+		lineShader->file = FileSystem::MakeFile("public_engine_assets\\shaders/line.shader");
 
 		shader->LoadFileReference();
 		unlitShader->LoadFileReference();

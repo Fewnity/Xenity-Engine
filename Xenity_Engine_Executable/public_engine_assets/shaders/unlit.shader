@@ -27,7 +27,7 @@ void main()
 #version 330 core
 
 out vec4 FragColor;
-uniform vec3 color;
+uniform vec4 color;
 uniform vec3 cameraPos;
 
 in vec2 TexCoord;
@@ -43,12 +43,12 @@ void main()
 {
 	// Ambient
 
-	vec3 ambient = color * vec3(texture(material.diffuse, TexCoord)); //Get ambient intensity and color
+	vec3 ambient = color.xyz * vec3(texture(material.diffuse, TexCoord)); //Get ambient intensity and color
 
 	//Result
 	vec3 result = ambient; //Set face result
 
-	float alpha = texture(material.diffuse, TexCoord).a;
+	float alpha = texture(material.diffuse, TexCoord).a * color.w;
 	FragColor = vec4(result, alpha); //Add texture color
 }
 
@@ -77,7 +77,7 @@ void main()
 
 {fragment}
 
-uniform vec3 color;
+uniform vec4 color;
 
 varying vec2 TexCoord;
 
@@ -92,11 +92,11 @@ void main()
 {
 	// Ambient
 
-	vec3 ambient = color * vec3(tex2D(material.diffuse, TexCoord)); //Get ambient intensity and color
+	vec3 ambient = color.xyz * vec3(tex2D(material.diffuse, TexCoord)); //Get ambient intensity and color
 
 	//Result
 	vec3 result = ambient; //Set face result
 
-	float alpha = tex2D(material.diffuse, TexCoord).a;
+	float alpha = tex2D(material.diffuse, TexCoord).a * color.w;
 	gl_FragColor = vec4(result, alpha); //Add texture color
 }

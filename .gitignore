@@ -170,6 +170,11 @@ StyleCopReport.xml
 !Xenity_Engine_Executable/engine_assets/*/*.meta
 !Xenity_Engine_Executable/engine_assets/*.meta
 
+!Xenity_Engine_Executable/public_engine_assets/models/*
+!Xenity_Engine_Executable/public_engine_assets/fonts/*
+!Xenity_Engine_Executable/public_engine_assets/shaders/*
+!Xenity_Engine_Executable/public_engine_assets/textures/*
+
 # Chutzpah Test files
 _Chutzpah*
 
