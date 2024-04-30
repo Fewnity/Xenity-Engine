@@ -85,7 +85,8 @@ public:
 	}
 
 	/**
-	 * @brief [Internal]
+	 * @brief [Internal] Show a dialog to ask if the user wants to save the scene if it has been modified
+	 * @return True if canceled
 	 */
 	static bool OnQuit();
 

@@ -374,6 +374,10 @@ void SceneManager::LoadScene(const json& jsonData)
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
+	bool canceled = OnQuit();
+	if (canceled)
+		return;
+
 	Debug::Print("Loading scene...", true);
 	std::shared_ptr<File> jsonFile = scene->file;
 	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
