@@ -140,8 +140,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
-				sceneModified = false;
-				Window::UpdateWindowTitle();
+				SetSceneModified(false);
 			}
 			else
 			{
@@ -390,7 +389,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 				data = json::parse(jsonString);
 			LoadScene(data);
 			openedScene = scene;
-			Window::UpdateWindowTitle();
+			SetSceneModified(false);
 		}
 		catch (const std::exception& e)
 		{
