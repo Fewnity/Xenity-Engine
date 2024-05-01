@@ -74,6 +74,19 @@ public:
 	std::vector <std::weak_ptr<GameObject>> myGameObjects;
 	std::vector <std::weak_ptr<Transform>> myTransforms;
 
+	std::vector <Vector2*> myVectors2;
+	std::vector <Vector2Int*> myVectors2Int;
+	std::vector <Vector3*> myVectors3;
+	std::vector <Vector4*> myVectors4;
+	std::vector <CustomClass*> myCustomClasses;
+	std::vector <int> myInts;
+	std::vector <float> myFloats;
+	std::vector <uint64_t> myUint64s;
+	std::vector <double> myDoubles;
+	std::vector <std::string> myStrings;
+	std::vector <Matos> myMatoslist;
+	std::vector <Color*> myColors;
+
 	float myFloat = 0;
 	int myInt = 0;
 	double myDouble = 0;

@@ -12,7 +12,6 @@ TestComponent::TestComponent()
 {
 	componentName = "TestComponent";
 	AssetManager::AddReflection(this);
-	//SetReflection();
 }
 
 TestComponent::~TestComponent()
@@ -61,11 +60,26 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, myTransforms, "myTransforms", true);
 	Reflective::AddVariable(reflectedVariables, myEnum, "myEnum", true);
 	Reflective::AddVariable(reflectedVariables, myMatos, "myMatos", true);
+
+	Reflective::AddVariable(reflectedVariables, myVectors2, "myVectors2", true);
+	Reflective::AddVariable(reflectedVariables, myVectors2Int, "myVectors2Int", true);
+	Reflective::AddVariable(reflectedVariables, myVectors3, "myVectors3", true);
+	Reflective::AddVariable(reflectedVariables, myVectors4, "myVectors4", true);
+	Reflective::AddVariable(reflectedVariables, myCustomClasses, "myCustomClasses", true);
+	Reflective::AddVariable(reflectedVariables, myInts, "myInts", true);
+	Reflective::AddVariable(reflectedVariables, myFloats, "myFloats", true);
+	Reflective::AddVariable(reflectedVariables, myUint64s, "myUint64s", true);
+	Reflective::AddVariable(reflectedVariables, myDoubles, "myDoubles", true);
+	Reflective::AddVariable(reflectedVariables, myStrings, "myStrings", true);
+	Reflective::AddVariable(reflectedVariables, myMatoslist, "myMatoslist", true);
+	Reflective::AddVariable(reflectedVariables, myColors, "myColors", true);
+
 	return reflectedVariables;
 }
 
 void TestComponent::Start()
 {
+	
 }
 
 void TestComponent::Update()
@@ -76,12 +90,6 @@ void TestComponent::Update()
 CustomClass::CustomClass()
 {
 }
-
-
-/*void CustomClass::SetReflection()
-{
-	reflectedVariables["myCustomFloat"] = myCustomFloat;
-}*/
 
 ReflectiveData CustomClass::GetReflectiveData()
 {

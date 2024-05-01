@@ -65,6 +65,28 @@ void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference
 }
 
 template<typename T>
+std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<T>>* valuePtr, const ReflectiveEntry& entry)
+{
+	const size_t jsonArraySize = jsonValue.size();
+	const size_t objectVectorSize = valuePtr->get().size();
+
+	for (size_t i = 0; i < jsonArraySize; i++)
+	{
+		T tempVariable = jsonValue[i];
+		if (i >= objectVectorSize)
+		{
+			valuePtr->get().push_back(tempVariable);
+		}
+		else
+		{
+			valuePtr->get()[i] = tempVariable;
+		}
+	}
+}
+
+template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& entry)
 {
@@ -223,6 +245,19 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 }
 
 template<typename T>
+std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+				|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>>* valuePtr)
+{
+	std::vector <T>& getVal = valuePtr->get();
+	const size_t vectorSize = getVal.size();
+	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
+	{
+		jsonValue[key][vIndex] = getVal[vIndex];
+	}
+}
+
+template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
 {
@@ -362,34 +397,6 @@ void ReflectionUtils::FillVectorFileReference(const json& jsonVectorData, const 
 		}
 	}
 }
-
-
-//template <typename T>
-//void ReflectionUtils::FillVector(json kvValue, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
-//{
-//	size_t arraySize = kvValue.size();
-//
-//	size_t vectorSize = valuePtr->get().size();
-//	for (size_t i = 0; i < arraySize; i++)
-//	{
-//		std::shared_ptr<FileReference> file = nullptr;
-//		if (!kvValue.at(i).is_null())
-//		{
-//			int fileId = kvValue.at(i);
-//			file = ProjectManager::GetFileReferenceById(fileId);
-//			if (file)
-//				file->LoadFileReference();
-//		}
-//		if (i >= vectorSize)
-//		{
-//			valuePtr->get().push_back(std::dynamic_pointer_cast<T>(file));
-//		}
-//		else
-//		{
-//			valuePtr->get()[i] = std::dynamic_pointer_cast<T>(file);
-//		}
-//	}
-//}
 
 #pragma endregion
 

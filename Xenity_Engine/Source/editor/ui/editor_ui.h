@@ -135,7 +135,7 @@ public:
 	* @brief Start a new frame
 	*/
 	static void NewFrame();
-	
+
 	/**
 	* @brief Render at screen the ui
 	*/
@@ -182,25 +182,25 @@ public:
 	/**
 	* @brief Draw input for specific types Color, Vectors
 	*/
-	static bool DrawInput(const std::string& inputName, Color &newValue);
-	static bool DrawInput(const std::string& inputName, Vector2 &newValue);
-	static bool DrawInput(const std::string& inputName, Vector2Int &newValue);
-	static bool DrawInput(const std::string& inputName, Vector3 &newValue);
-	static bool DrawInput(const std::string& inputName, Vector4 &newValue);
+	static bool DrawInput(const std::string& inputName, Color& newValue);
+	static bool DrawInput(const std::string& inputName, Vector2& newValue);
+	static bool DrawInput(const std::string& inputName, Vector2Int& newValue);
+	static bool DrawInput(const std::string& inputName, Vector3& newValue);
+	static bool DrawInput(const std::string& inputName, Vector4& newValue);
 
 	/**
 	* @brief Draw input for file references
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static DrawInput(const std::string& inputName, std::shared_ptr<T>& value)
+		static DrawInput(const std::string& inputName, std::shared_ptr<T>& value)
 	{
 		bool changed = false;
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
 		changed = DrawFileReference(&ref, inputName, newValue);
 
-		if (changed) 
+		if (changed)
 		{
 			std::shared_ptr<Command> command = std::make_shared<InspectorChangeValueCommand<void, std::shared_ptr<T>>>(std::weak_ptr<void>(), &ref.get(), newValue, ref.get());
 			CommandManager::AddCommand(command);
@@ -296,7 +296,7 @@ public:
 		DrawInputTitle(inputName);
 		bool hasChanged = false;
 
-		if constexpr(std::is_same<T, float>())
+		if constexpr (std::is_same<T, float>())
 			hasChanged = ImGui::InputFloat(GenerateItemId().c_str(), &value, 0, 0, "%.4f");
 		else if constexpr (std::is_same<T, int>())
 			hasChanged = ImGui::InputInt(GenerateItemId().c_str(), &value);
@@ -351,6 +351,7 @@ public:
 				}
 			}
 		}
+		ImGui::Separator();
 		return valueChanged;
 	}
 
@@ -458,40 +459,9 @@ public:
 			newValue = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
-
+		ImGui::Separator();
 		return valueChangedTemp;
 	}
-
-	/*template <typename T>
-	static bool DrawVectorSimpleType(std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName)
-	{
-		bool valueChangedTemp = false;
-		const size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
-		{
-			const auto& ptr = valuePtr->get()[vectorI];
-			DrawInput("", (int&)ptr);
-		}
-
-		const std::string addText = "Add " + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr->get().push_back(0);
-		}
-
-		const std::string removeText = "Remove " + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			const size_t textureSize = valuePtr->get().size();
-			if (textureSize != 0)
-			{
-				valuePtr->get().erase(valuePtr->get().begin() + textureSize - 1);
-			}
-		}
-
-		return valueChangedTemp;
-	}*/
 
 	/**
 	* @brief Draw a vector of file references
@@ -570,7 +540,7 @@ public:
 				}
 			}
 		}
-
+		ImGui::Separator();
 		return valueChangedTemp;
 	}
 
@@ -632,6 +602,117 @@ public:
 				valueChangedTemp = true;
 			}
 		}
+		ImGui::Separator();
+		return valueChangedTemp;
+	}
+
+	template <typename T, typename T2>
+	std::enable_if_t<std::is_base_of<Reflective, T>::value, bool>
+	static DrawVector(const std::string& className, std::reference_wrapper<std::vector<T*>>* valuePtr, const std::string& variableName, const ReflectiveEntry& entry, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent)
+	{
+		bool valueChanged = false;
+		const size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			T* ptr = valuePtr->get()[vectorI];
+			if (ptr)
+			{
+				bool valueChangedTemp = false;
+				if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
+				{
+					valueChangedTemp = DrawInputReflective("", command, parent, val);
+				}
+				else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
+				{
+					valueChangedTemp = DrawInputReflective("", command, parent, val);
+				}
+				else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
+				{
+					valueChangedTemp = DrawInputReflective("", command, parent, val);
+				}
+				else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
+				{
+					valueChangedTemp = DrawInputReflective("", command, parent, val);
+				}
+				else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
+				{
+					valueChangedTemp = DrawInputReflective("", command, parent, val);
+				}
+				else //Basic draw
+				{
+					const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)ptr);
+					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+					{
+						valueChangedTemp = DrawReflectiveData(ptr->GetReflectiveData(), command, parent);
+					}
+				}
+				if (valueChangedTemp) 
+				{
+					valueChanged = true;
+				}
+			}
+			else 
+			{
+				ImGui::Text("Null element");
+			}
+		}
+
+		const std::string addText = "Add " + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back((T*)entry.typeSpawner->Allocate());
+			valueChanged = true;
+		}
+
+		const std::string removeText = "Remove " + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			if (vectorSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				valueChanged = true;
+			}
+		}
+		ImGui::Separator();
+		return valueChanged;
+	}
+
+	template <typename T, typename T2>
+	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, bool>
+	static DrawVector(const std::string& className, std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName, const ReflectiveEntry& entry, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent)
+	{
+		bool valueChangedTemp = false;
+		const size_t vectorSize = valuePtr->get().size();
+		ImGui::Text(variableName.c_str());
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			T& ptr = valuePtr->get()[vectorI];
+			auto ref = std::ref(valuePtr->get()[vectorI]);
+			if (DrawVariable("", command, parent, &ref, entry)) 
+			{
+				valueChangedTemp = true;
+			}
+		}
+
+		const std::string addText = "Add " + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr->get().push_back(T());
+			valueChangedTemp = true;
+		}
+
+		const std::string removeText = "Remove " + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			if (vectorSize != 0)
+			{
+				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				valueChangedTemp = true;
+			}
+		}
+		ImGui::Separator();
 
 		return valueChangedTemp;
 	}
@@ -650,7 +731,7 @@ public:
 	/**
 	* @brief Get if an element is being edited
 	*/
-	static bool IsEditingElement() 
+	static bool IsEditingElement()
 	{
 		return isEditingElement;
 	}
@@ -699,11 +780,11 @@ private:
 	*/
 	template<typename T2, typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
-		static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		T newValue = valuePtr->get();
 		bool valueChangedTemp = false;
-		if (!reflectionEntry.isEnum) 
+		if (!reflectionEntry.isEnum)
 		{
 			ValueInputState state = DrawInputTemplate(variableName, newValue);
 			if (state == ValueInputState::APPLIED)
@@ -729,9 +810,18 @@ private:
 	template<typename T2>
 	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
-		//Debug::Print("[Not implemented] Vector for Reflective!", true);
 		bool valueChangedTemp = false;
+		valueChangedTemp = DrawVector("Reflective", valuePtr, variableName, reflectionEntry, command, parent);
+		return valueChangedTemp;
+	}
 
+	template<typename T, typename T2>
+	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+		|| std::is_same<T, double>::value || std::is_same<T, bool>::value || std::is_same<T, std::string>::value, bool>
+	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	{
+		bool valueChangedTemp = false;
+		valueChangedTemp = DrawVector("simple value", valuePtr, variableName, reflectionEntry, command, parent);
 		return valueChangedTemp;
 	}
 
@@ -792,7 +882,7 @@ private:
 	*/
 	template<typename T2, typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
-	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+		static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
 	{
 		T newValue;
 		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName, newValue);
@@ -860,7 +950,7 @@ private:
 			const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 			if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
+				valueChangedTemp = DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
 			}
 		}
 

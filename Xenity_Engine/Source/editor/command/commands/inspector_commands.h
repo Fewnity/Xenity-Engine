@@ -46,11 +46,13 @@ inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_
 {
 	if constexpr (std::is_base_of<U, FileReference>())
 	{
-		this->targetId = target.lock()->fileId;
+		if(target.lock())
+			this->targetId = target.lock()->fileId;
 	}
 	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
 	{
-		this->targetId = target.lock()->GetUniqueId();
+		if(target.lock())
+			this->targetId = target.lock()->GetUniqueId();
 	}
 
 	this->valuePtr = valuePtr;

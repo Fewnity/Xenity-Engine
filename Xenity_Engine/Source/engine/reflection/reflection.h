@@ -10,6 +10,7 @@
 #include <optional>
 #include <iostream>
 #include <json.hpp>
+#include <engine/tools/template_utils.h>
 
 class GameObject;
 class Transform;
@@ -28,6 +29,7 @@ class Shader;
 class Material;
 class Collider;
 
+// List of all the types that can be used in the reflection system (visible in the inspector and saved to json)
 typedef std::variant <
 	std::reference_wrapper<std::weak_ptr<Component>>,
 	std::reference_wrapper<std::weak_ptr<Collider>>,
@@ -51,7 +53,12 @@ typedef std::variant <
 	std::reference_wrapper<std::shared_ptr<Material>>,
 
 	std::reference_wrapper<std::vector<Reflective*>>,
-	//std::reference_wrapper<std::vector<int>>,
+	std::reference_wrapper<std::vector<int>>,
+	std::reference_wrapper<std::vector<float>>,
+	std::reference_wrapper<std::vector<uint64_t>>,
+	std::reference_wrapper<std::vector<double>>,
+	std::reference_wrapper<std::vector<std::string>>,
+
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
@@ -267,6 +274,13 @@ public:
 		Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
 	}
 
+	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+	static void AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
+	{
+		const uint64_t type = typeid(T).hash_code();
+		Reflective::CreateReflectionEntry(vector, (std::vector<int>&)value, variableName, false, isPublic, type, true);
+	}
+
 	/**
 	* @brief Add a variable to the list of variables (enum)
 	* @param vector The list of variables
@@ -309,13 +323,13 @@ public:
 		Reflective::CreateReflectionEntry(vector, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
 	}
 
-	//template<typename T>
-	//std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
-	/*static void AddVariable(ReflectiveData& map, std::vector<int>& value, const std::string& variableName, bool isPublic)
+	template<typename T>
+	std::enable_if_t<std::is_same<float, T>::value, void>
+	static AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, bool isPublic)
 	{
-		uint64_t type = typeid(int).hash_code();
-		Reflective::AddReflectionVariable(map, value, variableName, false, isPublic, type, false);
-	}*/
+		const uint64_t type = typeid(T).hash_code();
+		Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
+	}
 
 	/**
 	* @brief Add a variable to the list of variables (reflective list)

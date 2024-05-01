@@ -513,8 +513,6 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				{
 					comp->OnReflectionUpdated();
 				}
-
-				ImGui::Separator();
 			}
 		}
 

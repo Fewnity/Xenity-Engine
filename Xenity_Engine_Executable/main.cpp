@@ -17,7 +17,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
 Add more Get/Set
-Set scene is dirty to false when loading a scene
+Add copy/past component
+Check same id gameobject bug
 
 Multiple gameobject selection
 Rework the documentation

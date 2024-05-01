@@ -144,6 +144,11 @@ private:
 	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 	static JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& entry);
 
+	template<typename T>
+	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
+	static JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::vector<T>>* valuePtr, const ReflectiveEntry& entry);
+
 	/**
 	* @brief Fill a vector variable with a json value (reflective)
 	* @param jsonValue Json value
@@ -209,6 +214,11 @@ private:
 	template<typename T>
 	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr);
+
+	template<typename T>
+	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
+	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>>* valuePtr);
 
 	/**
 	* @brief Fill a json value with a vector variable (file reference)
