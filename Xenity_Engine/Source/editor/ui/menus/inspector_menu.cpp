@@ -21,6 +21,8 @@
 #include <engine/debug/debug.h>
 #include <engine/physics/box_collider.h>
 
+using json = nlohmann::json;
+
 void InspectorMenu::Init()
 {
 }
@@ -72,7 +74,44 @@ void InspectorMenu::Draw()
 	}
 }
 
-int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)
+int InspectorMenu::CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>& transform, const std::string& id)
+{
+	std::function<void()> copyFunc = [&transform]()
+		{
+			json copyData;
+			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform->GetReflectiveData());
+			EditorUI::copiedComponentJson = copyData;
+			EditorUI::currentCopyType = CopyType::Transform;
+		};
+
+	std::function<void()> pastFunc = [&transform]()
+		{
+			ReflectionUtils::JsonToReflectiveData(EditorUI::copiedComponentJson, transform->GetReflectiveData());
+			transform->isTransformationMatrixDirty = true;
+			transform->UpdateWorldValues();
+		};
+
+	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
+	RightClickMenuState rightClickState = inspectorRightClickMenu.Check(false);
+	if (rightClickState != RightClickMenuState::Closed)
+	{
+		inspectorRightClickMenu.AddItem("Copy transform values", copyFunc);
+		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Past transform values", pastFunc);
+		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Transform);
+	}
+	const bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
+
+	int state = 0;
+
+	if (rightClickState == RightClickMenuState::JustOpened)
+		state = 1;
+	else if (rightClickMenuDrawn)
+		state = 2;
+
+	return state;
+}
+
+int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)
 {
 	std::function<void()> deleteFunc = [&component, &componentCount, &componentIndex]()
 		{
@@ -83,10 +122,28 @@ int InspectorMenu::CheckOpenRightClickPopupFile(std::shared_ptr<Component>& comp
 			componentIndex--;
 		};
 
+	std::function<void()> copyFunc = [&component]()
+		{
+			json copyData;
+			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(component->GetReflectiveData());
+			EditorUI::copiedComponentJson = copyData;
+			EditorUI::copiedComponentName = component->GetComponentName();
+			EditorUI::currentCopyType = CopyType::Component;
+		};
+
+	std::function<void()> pastFunc = [&component]()
+		{
+			ReflectionUtils::JsonToReflectiveData(EditorUI::copiedComponentJson, component->GetReflectiveData());
+			component->OnReflectionUpdated();
+		};
+
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
 	RightClickMenuState rightClickState = inspectorRightClickMenu.Check(false);
 	if (rightClickState != RightClickMenuState::Closed)
 	{
+		inspectorRightClickMenu.AddItem("Copy component values", copyFunc);
+		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Past component values", pastFunc);
+		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Component && EditorUI::copiedComponentName == component->GetComponentName());
 		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
 	}
 	const bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
@@ -417,6 +474,8 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
+		CheckOpenRightClickPopupTransform(selectedTransform, "RightClick" + std::to_string(selectedTransform->GetGameObject()->GetUniqueId()));
+
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
 			const std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
@@ -480,7 +539,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
-			CheckOpenRightClickPopupFile(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
+			CheckOpenRightClickPopup(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 			if (!comp->waitingForDestroy)
 			{
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))

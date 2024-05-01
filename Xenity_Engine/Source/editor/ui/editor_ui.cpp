@@ -21,6 +21,8 @@
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 
+using json = nlohmann::json;
+
 int EditorUI::uiId = 0;
 
 std::vector<std::shared_ptr<Texture>> EditorUI::icons;
@@ -29,6 +31,10 @@ MultiDragData EditorUI::multiDragData;
 float EditorUI::uiScale = 1;
 std::shared_ptr<Menu> EditorUI::currentSelectAssetMenu;
 bool EditorUI::isEditingElement = false;
+
+CopyType EditorUI::currentCopyType;
+json EditorUI::copiedComponentJson;
+std::string EditorUI::copiedComponentName;
 
 #pragma region Initialisation
 

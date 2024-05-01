@@ -17,8 +17,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
 Add more Get/Set
-Add copy/past component
 Check same id gameobject bug
+Create command for copy/past component
 
 Multiple gameobject selection
 Rework the documentation
@@ -31,6 +31,7 @@ New Input system
 --- Done
 Disable scene saving while playing with main menu bar
 Fix commands on dll reloading, use gameobject id instead of weak_ptr?
+Add copy/past component
 
 */
 

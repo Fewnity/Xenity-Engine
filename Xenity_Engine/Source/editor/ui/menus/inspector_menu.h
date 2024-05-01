@@ -7,6 +7,7 @@
 class FileReference;
 class Component;
 class GameObject;
+class Transform;
 
 class InspectorMenu : public Menu
 {
@@ -17,7 +18,9 @@ public:
 	/**
 	* Check if the user wants to open the right click menu and open it if needed
 	*/
-	int CheckOpenRightClickPopupFile(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
+	int CheckOpenRightClickPopup(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
+
+	int CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>& transform, const std::string& id);
 
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
 	bool forceItemUpdate = false;

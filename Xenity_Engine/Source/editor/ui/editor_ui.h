@@ -115,6 +115,13 @@ struct MultiDragData
 	std::vector<Component*> components;
 };
 
+enum class CopyType
+{
+	Null,
+	Component,
+	Transform,
+};
+
 class EditorUI
 {
 public:
@@ -735,6 +742,10 @@ public:
 	{
 		return isEditingElement;
 	}
+
+	static CopyType currentCopyType;
+	static nlohmann::json copiedComponentJson;
+	static std::string copiedComponentName;
 
 private:
 	static int uiId;
