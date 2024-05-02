@@ -516,3 +516,99 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 		SceneManager::SetSceneModified(true);
 	}
 }
+
+template<typename T>
+class InspectorSetComponentDataCommand : public Command
+{
+public:
+	InspectorSetComponentDataCommand() = delete;
+	InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData);
+	void Execute() override;
+	void Undo() override;
+private:
+	uint64_t componentId = 0;
+	nlohmann::json componentData;
+	nlohmann::json oldComponentData;
+	std::string componentName = "";
+};
+
+template<typename T>
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData)
+{
+	this->componentId = componentToUse.lock()->GetUniqueId();
+	this->componentData = newComponentData;
+	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
+	this->componentName = componentToUse.lock()->GetComponentName();
+}
+
+template<typename T>
+inline void InspectorSetComponentDataCommand<T>::Execute()
+{
+	std::shared_ptr<Component> componentToUpdate = FindComponentById(componentId);
+	if (componentToUpdate)
+	{
+		ReflectionUtils::JsonToReflectiveData(componentData, componentToUpdate->GetReflectiveData());
+		componentToUpdate->OnReflectionUpdated();
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+template<typename T>
+inline void InspectorSetComponentDataCommand<T>::Undo()
+{
+	std::shared_ptr<Component> componentToUpdate = FindComponentById(componentId);
+	if (componentToUpdate)
+	{
+		ReflectionUtils::JsonToReflectiveData(oldComponentData, componentToUpdate->GetReflectiveData());
+		componentToUpdate->OnReflectionUpdated();
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+class InspectorSetTransformDataCommand : public Command
+{
+public:
+	InspectorSetTransformDataCommand() = delete;
+	InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newComponentData);
+	void Execute() override;
+	void Undo() override;
+private:
+	uint64_t transformtId = 0;
+	nlohmann::json transformData;
+	nlohmann::json oldTransformData;
+};
+
+inline InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newTransformDataData)
+{
+	this->transformtId = componentToUse.lock()->GetGameObject()->GetUniqueId();
+	this->transformData = newTransformDataData;
+	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
+}
+
+inline void InspectorSetTransformDataCommand::Execute()
+{
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(transformtId);
+	if (gameObject)
+	{
+		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
+		ReflectionUtils::JsonToReflectiveData(transformData, transformToUpdate->GetReflectiveData());
+		transformToUpdate->isTransformationMatrixDirty = true;
+		transformToUpdate->UpdateWorldValues();
+		transformToUpdate->OnReflectionUpdated();
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+inline void InspectorSetTransformDataCommand::Undo()
+{
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(transformtId);
+	if (gameObject)
+	{
+		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
+		ReflectionUtils::JsonToReflectiveData(oldTransformData, transformToUpdate->GetReflectiveData());
+		transformToUpdate->isTransformationMatrixDirty = true;
+		transformToUpdate->UpdateWorldValues();
+		transformToUpdate->OnReflectionUpdated();
+		SceneManager::SetSceneModified(true);
+	}
+}

@@ -86,9 +86,9 @@ int InspectorMenu::CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>&
 
 	std::function<void()> pastFunc = [&transform]()
 		{
-			ReflectionUtils::JsonToReflectiveData(EditorUI::copiedComponentJson, transform->GetReflectiveData());
-			transform->isTransformationMatrixDirty = true;
-			transform->UpdateWorldValues();
+			std::shared_ptr<InspectorSetTransformDataCommand> command = std::make_shared<InspectorSetTransformDataCommand>(transform, EditorUI::copiedComponentJson);
+			CommandManager::AddCommand(command);
+			command->Execute();
 		};
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
@@ -133,8 +133,9 @@ int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& componen
 
 	std::function<void()> pastFunc = [&component]()
 		{
-			ReflectionUtils::JsonToReflectiveData(EditorUI::copiedComponentJson, component->GetReflectiveData());
-			component->OnReflectionUpdated();
+			std::shared_ptr<InspectorSetComponentDataCommand<Component>> command = std::make_shared<InspectorSetComponentDataCommand<Component>>(component, EditorUI::copiedComponentJson);
+			CommandManager::AddCommand(command);
+			command->Execute();
 		};
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
