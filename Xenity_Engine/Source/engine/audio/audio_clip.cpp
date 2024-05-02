@@ -33,22 +33,22 @@ void AudioClip::LoadFileReference()
 	if (loadedInMemory && !isLoaded) 
 	{
 		file->Open(FileMode::ReadOnly);
-		data = (short*)file->ReadAllBinary(length);
+		audioMemory.data = (short*)file->ReadAllBinary(audioMemory.dataLength);
 		file->Close();
-		if(!data)
+		if(!audioMemory.data || audioMemory.dataLength == 0)
 		{
 			loadedInMemory = false;
 			Debug::PrintError("Not enough memory for audio: " + file->GetPath());
 		}
-		isLoaded = true;
 	}
+	isLoaded = true;
 }
 
 void AudioClip::UnloadFileReference()
 {
 	if (loadedInMemory && isLoaded)
 	{
-		free(data);
+		free(audioMemory.data);
 	}
 	isLoaded = false;
 }

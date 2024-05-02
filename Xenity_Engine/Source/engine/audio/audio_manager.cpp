@@ -430,7 +430,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	bool found = false;
 
-	if (audioSource->audioClip == nullptr)
+	if (audioSource->GetAudioClip() == nullptr)
 		return;
 
 	AudioManager::myMutex->Lock();
@@ -456,7 +456,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(audioSource->audioClip);
+		newAudioClipStream->OpenStream(audioSource->GetAudioClip());
 		newPlayedSound->audioSource = audioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needFillFirstHalfBuffer = true;

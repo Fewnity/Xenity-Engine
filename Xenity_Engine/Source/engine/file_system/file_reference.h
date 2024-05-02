@@ -62,6 +62,23 @@ public:
 
 	std::shared_ptr<File> file = nullptr;
 	FileType fileType = FileType::File_Other;
+
+	void SetIsLoading(bool _isLoading)
+	{
+		isLoading = _isLoading;
+	}
+
+	bool GetIsLoading() const
+	{
+		return isLoading;
+	}
+
+	bool GetIsLoaded() const
+	{
+		return isLoaded;
+	}
+
+protected:
 	bool isLoaded = false;
 	bool isLoading = false;
 };

@@ -284,7 +284,7 @@ void InspectorMenu::DrawFilePreview()
 					if (audioSource)
 					{
 						audioSource->Stop();
-						audioSource->audioClip = std::dynamic_pointer_cast<AudioClip>(loadedPreview);
+						audioSource->SetAudioClip(std::dynamic_pointer_cast<AudioClip>(loadedPreview));
 						audioSource->Play();
 					}
 				}

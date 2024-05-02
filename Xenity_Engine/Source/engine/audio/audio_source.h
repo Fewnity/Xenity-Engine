@@ -38,7 +38,6 @@ public:
 	*/
 	void Stop();
 
-	std::shared_ptr<AudioClip> audioClip = nullptr;
 
 	/**
 	* @brief Set volume
@@ -90,9 +89,21 @@ public:
 		return loop;
 	}
 
+	std::shared_ptr<AudioClip> GetAudioClip()
+	{
+		return audioClip;
+	}
+
+	void SetAudioClip(std::shared_ptr<AudioClip> audioClip)
+	{
+		this->audioClip = audioClip;
+	}
+
 	void OnDrawGizmos() override;
 
 private:
+
+	std::shared_ptr<AudioClip> audioClip = nullptr;
 
 	/**
 	* @brief Get shared pointer from this

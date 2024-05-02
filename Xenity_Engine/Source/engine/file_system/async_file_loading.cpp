@@ -12,7 +12,7 @@ void AsyncFileLoading::FinishThreadedFileLoading()
 	size_t threadFileCount = threadLoadedFiles.size();
 	for (size_t i = 0; i < threadFileCount; i++)
 	{
-		if (!threadLoadedFiles[i]->isLoading)
+		if (!threadLoadedFiles[i]->GetIsLoading())
 		{
 			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
 			threadLoadedFiles.erase(threadLoadedFiles.begin() + i);

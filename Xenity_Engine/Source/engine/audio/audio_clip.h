@@ -8,6 +8,11 @@
 class API AudioClip : public FileReference, public Reflective
 {
 public:
+	struct AudioMemory
+	{
+		int dataLength = 0;
+		short* data = nullptr;
+	};
 	AudioClip();
 
 	ReflectiveData GetReflectiveData() override;
@@ -17,9 +22,23 @@ public:
 	void LoadFileReference() override;
 	void UnloadFileReference() override;
 
-	bool loadedInMemory = false;
+	/**
+	* [Internal]
+	*/
+	bool GetIsLoadedInMemory() 
+	{
+		return loadedInMemory;
+	}
 
-	int length = 0;
-	short* data = nullptr;
+	/**
+	* [Internal]
+	*/
+	const AudioMemory& GetAudioMemory()
+	{
+		return audioMemory;
+	}
+
 private:
+	AudioMemory audioMemory;
+	bool loadedInMemory = false;
 };

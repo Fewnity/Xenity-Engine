@@ -28,10 +28,11 @@ void AudioClipStream::OpenStream(std::shared_ptr<AudioClip> audioFile)
 		lowerExt[i] = tolower(lowerExt[i]);
 	}
 
+	const AudioClip::AudioMemory& audioMemory = audioFile->GetAudioMemory();
 	if (lowerExt == "wav")
 	{
 		wav = new drwav();
-		if ((audioFile->loadedInMemory && !drwav_init_memory(wav, audioFile->data, audioFile->length, NULL)) || (!audioFile->loadedInMemory && !drwav_init_file(wav, path.c_str(), NULL)))
+		if ((audioFile->GetIsLoadedInMemory() && !drwav_init_memory(wav, audioMemory.data, audioMemory.dataLength, NULL)) || (!audioFile->GetIsLoadedInMemory() && !drwav_init_file(wav, path.c_str(), NULL)))
 		{
 			// Error opening WAV file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path, true);
@@ -49,7 +50,7 @@ void AudioClipStream::OpenStream(std::shared_ptr<AudioClip> audioFile)
 	else if (lowerExt == "mp3")
 	{
 		mp3 = new drmp3();
-		if ((audioFile->loadedInMemory && !drmp3_init_memory(mp3, audioFile->data, audioFile->length, NULL)) || (!audioFile->loadedInMemory && !drmp3_init_file(mp3, path.c_str(), NULL)))
+		if ((audioFile->GetIsLoadedInMemory() && !drmp3_init_memory(mp3, audioMemory.data, audioMemory.dataLength, NULL)) || (!audioFile->GetIsLoadedInMemory() && !drmp3_init_file(mp3, path.c_str(), NULL)))
 		{
 			// Error opening MP3 file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path, true);

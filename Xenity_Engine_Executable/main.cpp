@@ -17,7 +17,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
 Add more Get/Set
-Check same id gameobject bug
 Fix selected file then create gameobject (the file is still selected)
 
 Multiple gameobject selection

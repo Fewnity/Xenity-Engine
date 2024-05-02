@@ -124,34 +124,34 @@ void ProfilerMenu::DrawFilesList()
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
 			const std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
-			if (fileRef && !fileRef->isLoaded)
+			if (fileRef && !fileRef->GetIsLoaded())
 			{
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
 				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->GetIsLoaded(), fileRef.use_count());
 					ImGui::SameLine();
 					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->isLoaded, fileRef->fileType, fileRef.use_count());
+					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->GetIsLoaded(), fileRef->fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");
 		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
 		{
 			const std::shared_ptr<FileReference> fileRef = AssetManager::GetFileReference(i);
-			if (fileRef && fileRef->isLoaded)
+			if (fileRef && fileRef->GetIsLoaded())
 			{
 				ImGui::SetCursorPosX(20);
 				if (fileRef->file)
 				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->GetIsLoaded(), fileRef.use_count());
 					ImGui::SameLine();
 					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("missing file isLoaded:%d useCount:%ld", fileRef->isLoaded, fileRef.use_count());
+					ImGui::Text("missing file isLoaded:%d useCount:%ld", fileRef->GetIsLoaded(), fileRef.use_count());
 			}
 		}
 	}
