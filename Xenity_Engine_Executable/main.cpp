@@ -18,7 +18,7 @@ Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
 Add more Get/Set
 Check same id gameobject bug
-Create command for copy/past component
+Fix selected file then create gameobject (the file is still selected)
 
 Multiple gameobject selection
 Rework the documentation
@@ -85,6 +85,7 @@ Check memory leak when removing an item from vector in the editorUI
 multiple directional light not working properly
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
 Use enum is InspectorCreateGameObjectCommand instead of int
+Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = true; and call UpdateWorldValues in the function?
 */
 
 #undef main

@@ -2,6 +2,7 @@
 
 #include <engine/debug/debug.h>
 #include <engine/file_system/file.h>
+#include <engine/file_system/file_system.h>
 
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector3.h>
@@ -47,6 +48,9 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		int count = -1;
 		bool notSupported = false;
 
+		std::string mtlFile = "";
+		std::string currentMaterial = "";
+
 		// Read file
 		int lastLine = 0;
 		std::string line = "";
@@ -56,7 +60,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		{
 			if (allString[i] == '\n')
 			{
-				line = allString.substr(0, i + 1);
+				line = allString.substr(0, i);
 				lastLine = i + 1;
 				break;
 			}
@@ -73,7 +77,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				}
 				if (allString[i] == '\n')
 				{
-					line = allString.substr(lastLine, i - lastLine + 1);
+					line = allString.substr(lastLine, i - lastLine);
 					lastLine = i + 1;
 					break;
 				}
@@ -224,8 +228,9 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 					currentSubMeshPtr->normalsIndices.push_back(vn3);
 				}
 			}
-			else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e')
+			else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e' && line[3] == 'm' && line[4] == 't' && line[5] == 'l') // Find the material
 			{
+				// Create a new submesh before reading faces data
 				if (!verticesFound && currentMeshFilled)
 				{
 					currentMeshFilled = false;
@@ -234,16 +239,27 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 					currentSubMesh++;
 					currentSubMeshPtr = submeshes[currentSubMesh];
 				}
+				/*int endOffset = 8;
+				if (line[line.size() - 1] == '\r') 
+				{
+					endOffset = 7;
+				}*/
+				//currentMaterial = line.substr(7, line.size() - 7);
 			}
+			//else if (line[0] == 'm' && line[1] == 't' && line[2] == 'l' && line[3] == 'l' && line[4] == 'i' && line[5] == 'b') // Find the mtl file
+			//{
+			//	// Get the name of the mtl file
+			//	mtlFile = line.substr(7, line.size() - 7);
+			//}
+
 			if (stop)
 			{
 				break;
 			}
 		}
+
 		if (!notSupported)
 		{
-
-
 			stop = false;
 			currentSubMeshPtr = nullptr;
 
@@ -260,6 +276,9 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 				const SubMesh* sub = submeshes[i];
 				mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
 			}
+
+			/*if(!mtlFile.empty())
+				ReadMtlFile(mesh->file->GetFolderPath() + mtlFile);*/
 
 			for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
 			{
@@ -363,4 +382,24 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		return false;
 	}
 	return true;
+}
+
+bool WavefrontLoader::ReadMtlFile(const std::string& path)
+{
+	return false;
+	Debug::Print("Loading mtl file: " + path, true);
+	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const bool opened = file->Open(FileMode::ReadOnly);
+	if (opened)
+	{
+		const std::string allString = file->ReadAll();
+		file->Close();
+		const int textSize = allString.size();
+		Debug::Print("[WavefrontLoader::ReadMtlFile] Mtl file: " + allString);
+	}
+	else 
+	{
+		Debug::PrintError("[WavefrontLoader::ReadMtlFile] Mtl file loading error. Path: " + path);
+	}
+	return false;
 }

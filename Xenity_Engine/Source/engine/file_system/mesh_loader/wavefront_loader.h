@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 class MeshData;
 class Vector3;
@@ -23,6 +24,9 @@ public:
 	static bool LoadFromRawData(const std::shared_ptr <MeshData>& mesh);
 
 private:
+
+	static bool ReadMtlFile(const std::string& path);
+
 	struct SubMesh
 	{
 		std::vector<int> vertexIndices;
@@ -33,5 +37,6 @@ private:
 		int verticesCount = 0;
 		int normalsCount = 0;
 		int textureCordsCount = 0;
+		std::string matName;
 	};
 };
