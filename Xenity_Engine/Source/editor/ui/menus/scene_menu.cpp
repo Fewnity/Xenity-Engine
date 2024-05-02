@@ -18,6 +18,8 @@
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/asset_management/asset_manager.h>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -685,6 +687,21 @@ void SceneMenu::Draw()
 
 			camera->ChangeFrameBufferSize(startAvailableSize);
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
+
+			std::shared_ptr<FileReference> mesh;
+			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh);
+			if (mesh)
+			{
+				std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->file->GetFileName());
+				std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
+				meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
+				const int matCount = meshRenderer->GetMaterials().size();
+				for (int i = 0; i < matCount; i++)
+				{
+					meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
+				}
+				Editor::SetSelectedGameObject(newGameObject);
+			}
 
 			if (ImGui::IsItemHovered())
 			{
