@@ -192,8 +192,6 @@ void ProjectManager::FindAllProjectFiles()
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = UniqueId::reservedFileId;
 
-	UniqueId::ResetIds();
-
 	for (auto& compatibleFile : compatibleFiles)
 	{
 		std::shared_ptr<File> file = compatibleFile.file.file;

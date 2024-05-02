@@ -36,11 +36,6 @@ public:
 	*/
 	static uint64_t GenerateUniqueId(bool forFile);
 
-	/**
-	* @brief [Internal] Reset all ids
-	*/
-	static void ResetIds();
-
 private:
 
 	uint64_t uniqueId;
