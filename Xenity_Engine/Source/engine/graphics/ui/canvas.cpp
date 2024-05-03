@@ -74,7 +74,6 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 Canvas::Canvas()
 {
 	componentName = "Canvas";
-	type = IDrawableTypes::Draw_UI;
 
 	AssetManager::AddReflection(this);
 }

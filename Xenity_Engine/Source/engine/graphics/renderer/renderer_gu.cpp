@@ -230,17 +230,17 @@ int TypeToGUPSM(PSPTextureType psm)
 
 void RendererGU::BindTexture(const std::shared_ptr<Texture>& texture)
 {
-	sceGuTexMode(TypeToGUPSM(texture->type), texture->mipmaplevelCount, 0, 1);
+	sceGuTexMode(TypeToGUPSM(texture->type), texture->GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
 	// Set mipmap behavior
-	if (texture->useMipMap)
+	if (texture->GetIsUsingMipMap())
 		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
 	// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
 	// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
 
 	sceGuTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
 	// Send mipmap data
-	if (texture->useMipMap)
+	if (texture->GetIsUsingMipMap())
 	{
 		sceGuTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
 		// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);

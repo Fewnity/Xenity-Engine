@@ -103,14 +103,24 @@ public:
 	float GetIntensity() const;
 
 
+
+	void OnDrawGizmos() override;
+
+	float GetLinearValue() 
+	{
+		return linear;
+	}
+
+	float GetQuadraticValue() 
+	{
+		return quadratic;
+	}
+
+private:
 	//// Internal
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
-
-	void OnDrawGizmos() override;
-
-private:
 
 	float intensity = 1;
 

@@ -14,7 +14,6 @@ class API Font : public FileReference, public Reflective
 {
 public:
 	~Font();
-	std::shared_ptr <Texture> fontAtlas = nullptr;
 	static std::shared_ptr<Font> MakeFont();
 
 	ReflectiveData GetReflectiveData() override;
@@ -34,6 +33,12 @@ public:
 		return std::dynamic_pointer_cast<Font>(shared_from_this());
 	}
 
+	std::shared_ptr <Texture>& GetFontAtlas() 
+	{
+		return fontAtlas;
+	}
+
 private:
+	std::shared_ptr <Texture> fontAtlas = nullptr;
 	bool CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath);
 };

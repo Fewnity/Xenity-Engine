@@ -442,8 +442,8 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->GetIntensity());
 	SetShaderAttribut((baseString + "position").c_str(), pos);
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
-	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
-	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
+	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
 }
 
 /// <summary>
@@ -480,8 +480,8 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 	SetShaderAttribut((baseString + "position").c_str(), pos);
 	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
-	SetShaderAttribut((baseString + "linear").c_str(), light->linear);
-	SetShaderAttribut((baseString + "quadratic").c_str(), light->quadratic);
+	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
+	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
 	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
 	SetShaderAttribut((baseString + "outerCutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle())));
 }

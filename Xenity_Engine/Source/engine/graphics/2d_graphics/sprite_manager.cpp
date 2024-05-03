@@ -97,7 +97,7 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 	const float w = texture->GetWidth() * scaleCoef;
 	const float h = texture->GetHeight() * scaleCoef;
 
-	const glm::mat4 matCopy = glm::scale(transform->transformationMatrix, glm::vec3(w, h, 1));
+	const glm::mat4 matCopy = glm::scale(transform->GetTransformationMatrix(), glm::vec3(w, h, 1));
 
 	//Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
 	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);

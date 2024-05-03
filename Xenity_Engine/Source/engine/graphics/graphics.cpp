@@ -224,9 +224,9 @@ void Graphics::Draw()
 					com.drawable->DrawCommand(com);
 			}
 
-			if (!usedCamera->isEditor)
+			if (!usedCamera->GetIsEditor())
 				currentMode = IDrawableTypes::Draw_UI;
-			if (UseOpenGLFixedFunctions && !usedCamera->isEditor)
+			if (UseOpenGLFixedFunctions && !usedCamera->GetIsEditor())
 			{
 				Engine::GetRenderer().ResetView();
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
@@ -242,7 +242,7 @@ void Graphics::Draw()
 			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
-			if (usedCamera->isEditor)
+			if (usedCamera->GetIsEditor())
 			{
 				Engine::GetRenderer().SetFog(false);
 
@@ -510,7 +510,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 	else
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-		if (!forUI || usedCamera->isEditor)
+		if (!forUI || usedCamera->GetIsEditor())
 			Engine::GetRenderer().SetCameraPosition(usedCamera);
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
@@ -592,7 +592,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 			const Vector3 min = meshRenderer->GetMeshData()->minBoundingBox;
 			const Vector3 max = meshRenderer->GetMeshData()->maxBoundingBox;
 
-			const glm::mat4x4& matrix = selectedGO->GetTransform()->transformationMatrix;
+			const glm::mat4x4& matrix = selectedGO->GetTransform()->GetTransformationMatrix();
 			const Vector3 bottom0 = matrix * glm::vec4(min.x, min.y, min.z, 1);
 			const Vector3 bottom1 = matrix * glm::vec4(min.x, min.y, max.z, 1);
 			const Vector3 bottom2 = matrix * glm::vec4(max.x, min.y, min.z, 1);

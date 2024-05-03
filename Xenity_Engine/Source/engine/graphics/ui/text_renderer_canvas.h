@@ -26,7 +26,6 @@ public:
 	 */
 	int GetDrawPriority() const override;
 
-	std::shared_ptr<Material> material = nullptr;
 
 
 	/**
@@ -64,7 +63,12 @@ public:
 	*/
 	void SetFont(const std::shared_ptr<Font>& font);
 
+	std::shared_ptr<Material> GetMaterial();
+
+	void SetMaterial(std::shared_ptr<Material> _material);
+
 private:
+	std::shared_ptr<Material> material = nullptr;
 
 	/**
 	* @brief Called when the component is disabled

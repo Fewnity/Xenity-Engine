@@ -31,8 +31,7 @@ class Collider;
 
 // List of all the types that can be used in the reflection system (visible in the inspector and saved to json)
 typedef std::variant <
-	std::reference_wrapper<std::weak_ptr<Component>>,
-	std::reference_wrapper<std::weak_ptr<Collider>>,
+	// Basic types
 	std::reference_wrapper<int>,
 	std::reference_wrapper<uint64_t>,
 	std::reference_wrapper<double>,
@@ -41,7 +40,13 @@ typedef std::variant <
 	std::reference_wrapper<std::string>,
 	std::reference_wrapper<nlohmann::json>,
 	std::reference_wrapper<Reflective>,
+
+	// components/game elements
+	std::reference_wrapper<std::weak_ptr<Component>>,
+	std::reference_wrapper<std::weak_ptr<Collider>>,
 	std::reference_wrapper<std::weak_ptr<GameObject>>,
+
+	// Files
 	std::reference_wrapper<std::weak_ptr<Transform>>,
 	std::reference_wrapper<std::shared_ptr<Texture>>,
 	std::reference_wrapper<std::shared_ptr<MeshData>>,
@@ -52,6 +57,7 @@ typedef std::variant <
 	std::reference_wrapper<std::shared_ptr<Shader>>,
 	std::reference_wrapper<std::shared_ptr<Material>>,
 
+	//List of basic types
 	std::reference_wrapper<std::vector<Reflective*>>,
 	std::reference_wrapper<std::vector<int>>,
 	std::reference_wrapper<std::vector<float>>,
@@ -59,6 +65,7 @@ typedef std::variant <
 	std::reference_wrapper<std::vector<double>>,
 	std::reference_wrapper<std::vector<std::string>>,
 
+	//List of files
 	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
@@ -68,6 +75,7 @@ typedef std::variant <
 	std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Material>>>,
 
+	// List of components/game elements
 	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Transform>>>,
 	std::reference_wrapper<std::vector<std::weak_ptr<Component>>>> VariableReference;
@@ -192,9 +200,9 @@ static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 * @param newEnumStringsList The enum's strings map
 */
 template<typename T>
-static void* RegisterEnumStringsMap(const std::vector<EnumValueName> newEnumStringsList)
+static void* RegisterEnumStringsMap(const std::vector<EnumValueName>& newEnumStringsList)
 {
-	uint64_t type = typeid(T).hash_code();
+	const uint64_t type = typeid(T).hash_code();
 	std::map<uint64_t, std::vector<EnumValueName>>& enumStringsLists = EnumHelper::GetEnumStringsLists();
 	enumStringsLists[type] = newEnumStringsList;
 

@@ -14,7 +14,6 @@
 TextRendererCanvas::TextRendererCanvas()
 {
 	componentName = "TextRendererCanvas";
-	type = IDrawableTypes::Draw_UI;
 
 	AssetManager::AddReflection(this);
 	material = AssetManager::unlitMaterial;
@@ -73,6 +72,17 @@ void TextRendererCanvas::SetFont(const std::shared_ptr<Font>& font)
 		isTextInfoDirty = true;
 		Graphics::isRenderingBatchDirty = true;
 	}
+}
+
+std::shared_ptr<Material> TextRendererCanvas::GetMaterial()
+{
+	return material;
+}
+
+void TextRendererCanvas::SetMaterial(std::shared_ptr<Material> _material)
+{
+	material = _material;
+	Graphics::isRenderingBatchDirty = true;
 }
 
 void TextRendererCanvas::OnDisabled()

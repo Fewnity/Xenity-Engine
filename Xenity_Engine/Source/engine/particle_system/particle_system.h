@@ -55,9 +55,19 @@ public:
 	*/
 	void Play();
 
-	bool isEmitting = true;
+	void SetIsEmitting(bool _isEmitting) 
+	{
+		isEmitting = _isEmitting;
+	}
+
+	bool GetIsEmitting() 
+	{
+		return isEmitting;
+	}
 
 private:
+	bool isEmitting = true;
+
 	/**
 	* @brief Called when the component is disabled
 	*/

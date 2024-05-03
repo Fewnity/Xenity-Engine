@@ -23,7 +23,6 @@ using namespace std;
 MeshRenderer::MeshRenderer()
 {
 	componentName = "MeshRenderer";
-	type = IDrawableTypes::Draw_3D;
 	AssetManager::AddReflection(this);
 }
 

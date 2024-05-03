@@ -13,7 +13,6 @@
 BillboardRenderer::BillboardRenderer()
 {
 	componentName = "BillboardRenderer";
-	type = IDrawableTypes::Draw_2D;
 	AssetManager::AddReflection(this);
 	//material = AssetManager::standardMaterial;
 }

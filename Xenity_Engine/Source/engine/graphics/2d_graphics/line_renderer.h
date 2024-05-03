@@ -44,10 +44,29 @@ public:
 		this->color = color;
 	}
 
-	Vector3 startPosition = Vector3(0, 0, 0);
-	Vector3 endPosition = Vector3(0, 0, 0);
+	Vector3 GetStartPosition() 
+	{
+		return startPosition;
+	}
+
+	Vector3 GetEndPosition()
+	{
+		return endPosition;
+	}
+
+	void SetStartPosition(const Vector3& newStartPosition)
+	{
+		startPosition = newStartPosition;
+	}
+
+	void SetEndPosition(const Vector3& newEndPosition)
+	{
+		endPosition = newEndPosition;
+	}
 
 private:
+	Vector3 startPosition = Vector3(0, 0, 0);
+	Vector3 endPosition = Vector3(0, 0, 0);
 
 	/**
 	* @brief Called when the component is disabled

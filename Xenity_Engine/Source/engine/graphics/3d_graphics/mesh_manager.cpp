@@ -35,5 +35,5 @@ void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const Me
 	if (scale.x * scale.y * scale.z < 0)
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 
-	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform->transformationMatrix, false);
+	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform->GetTransformationMatrix(), false);
 }

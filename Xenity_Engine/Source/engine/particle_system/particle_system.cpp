@@ -20,11 +20,9 @@
 ParticleSystem::ParticleSystem()
 {
 	componentName = "ParticleSystem";
-	type = IDrawableTypes::Draw_3D;
 	AssetManager::AddReflection(this);
 
 	AllocateParticlesMemory();
-
 }
 
 ParticleSystem::~ParticleSystem()
@@ -205,8 +203,8 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	const int camCount = Graphics::cameras.size();
 
 	const Vector3& camScale = Graphics::usedCamera->GetTransform()->GetScale();
-	const glm::mat4& camMat = Graphics::usedCamera->GetTransform()->transformationMatrix;
-	glm::mat4& transMat = GetTransform()->transformationMatrix;
+	const glm::mat4& camMat = Graphics::usedCamera->GetTransform()->GetTransformationMatrix();
+	const glm::mat4& transMat = GetTransform()->GetTransformationMatrix();
 
 	const RGBA& rgba = color.GetRGBA();
 	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y);

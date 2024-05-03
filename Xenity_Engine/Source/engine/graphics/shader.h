@@ -145,6 +145,5 @@ private:
 	unsigned int modelLocation = 0;
 	unsigned int projectionLocation = 0;
 
-public:
 	bool useTessellation = false;
 };

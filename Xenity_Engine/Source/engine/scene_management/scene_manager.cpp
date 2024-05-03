@@ -414,7 +414,7 @@ void SceneManager::ClearScene()
 	size_t cameraCount = Graphics::cameras.size();
 	for (size_t i = 0; i < cameraCount; i++)
 	{
-		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->isEditor)
+		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->GetIsEditor())
 		{
 			Graphics::cameras.erase(Graphics::cameras.begin() + i);
 			i--;

@@ -47,7 +47,7 @@ void RigidBody::Tick()
 				other = PhysicsManager::boxColliders[i].lock();
 				if (other != rbBoxCollider && other->GetIsEnabled() && other->GetGameObject()->GetLocalActive())
 				{
-					const std::shared_ptr<RigidBody> otherRigidbody = other->currentRigidbody.lock();
+					const std::shared_ptr<RigidBody> otherRigidbody = other->GetAttachedRigidbody().lock();
 					if (rbBoxCollider->isTrigger && isStatic && otherRigidbody && !otherRigidbody->isStatic) // Check trigger
 					{
 						const bool trigger = BoxCollider::CheckTrigger(rbBoxCollider, other);

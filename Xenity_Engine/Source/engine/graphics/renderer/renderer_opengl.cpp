@@ -368,7 +368,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
 	}
 	glBindVertexArray(0); // Disable this?
-	if (Graphics::usedCamera->isEditor)
+	if (Graphics::usedCamera->GetIsEditor())
 	{
 		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		Performance::AddDrawCall();
@@ -438,7 +438,7 @@ void RendererOpengl::DeleteTexture(Texture* texture)
 void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer)
 {
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
-	if (texture->useMipMap)
+	if (texture->GetIsUsingMipMap())
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -514,11 +514,11 @@ void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3& cameraPosition = cameraTransform->GetPosition();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
+				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
 			}
 			else
 			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->quadratic);
+				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)

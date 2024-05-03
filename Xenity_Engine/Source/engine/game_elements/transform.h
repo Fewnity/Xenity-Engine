@@ -117,7 +117,11 @@ public:
 	*/
 	void OnParentChanged();
 
-	glm::mat4 transformationMatrix;
+
+	const glm::mat4& GetTransformationMatrix() 
+	{
+		return transformationMatrix;
+	}
 
 	/**
 	* @brief Get GameObject
@@ -133,6 +137,8 @@ public:
 	void UpdateWorldValues();
 
 private:
+
+	glm::mat4 transformationMatrix;
 
 	/**
 	* @brief Update transformation matrix

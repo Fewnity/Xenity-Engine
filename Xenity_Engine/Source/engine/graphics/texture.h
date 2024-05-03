@@ -22,16 +22,10 @@ class API Texture : public FileReference, public Reflective
 public:
 	Texture();
 
-	/**
-	 * @brief [Internal]
-	 */
-	// Texture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
-
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
-	// static std::shared_ptr<Texture> MakeTexture(unsigned char* data, const int channelCount, const int width, const int height, bool loadInVram);
 
 	~Texture();
 
@@ -114,8 +108,6 @@ public:
 	 */
 	WrapMode GetWrapMode() const;
 
-	int mipmaplevelCount = 0;
-
 	/**
 	 * @brief Return if the texture is valid
 	 */
@@ -124,6 +116,22 @@ public:
 		return isValid;
 	}
 
+	/**
+	* @brief [Internal] Get mipmap level count
+	* @return 0 if mipmapping is not used
+	*/
+	int GetMipmaplevelCount() 
+	{
+		return mipmaplevelCount;
+	}
+
+	/**
+	* @bried [Internal] Get if the texture is using mipmapping
+	*/
+	bool GetIsUsingMipMap() 
+	{
+		return useMipMap;
+	}
 	/**
 	 * @brief [Internal]
 	 */
@@ -140,6 +148,7 @@ public:
 	 */
 	void SetTextureLevel(int level, const unsigned char *texData);
 
+	// One vector element for each mipmap level
 	std::vector<void *> data;
 	std::vector<bool> inVram;
 
@@ -158,6 +167,9 @@ public:
 	void ClearSpriteSelections();
 
 private:
+
+	int mipmaplevelCount = 0;
+
 	/**
 	 * @brief Create the texture
 	 * @param filter Texture filter
@@ -183,6 +195,6 @@ private:
 
 	int pixelPerUnit = 100;
 	bool isValid = false;
-public:
 	bool useMipMap = false;
+public:
 };

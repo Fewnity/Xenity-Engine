@@ -42,8 +42,8 @@ bool Raycast::Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3&
 	bool found = false;
 	if (auto sharedboxCollider = boxCollider.lock())
 	{
-		const Vector3 min = sharedboxCollider->min + sharedboxCollider->GetTransform()->GetPosition();
-		const Vector3 max = sharedboxCollider->max + sharedboxCollider->GetTransform()->GetPosition();
+		const Vector3 min = sharedboxCollider->GetMin() + sharedboxCollider->GetTransform()->GetPosition();
+		const Vector3 max = sharedboxCollider->GetMax() + sharedboxCollider->GetTransform()->GetPosition();
 
 		const float t1 = (min.x - startPosition.x) * dirfrac.x;
 		const float t2 = (max.x - startPosition.x) * dirfrac.x;

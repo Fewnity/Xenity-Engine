@@ -24,10 +24,6 @@ public:
 
 	void Awake() override;
 
-	Vector3 size = Vector3(1);
-	Vector3 offset = Vector3(0);
-	std::weak_ptr<RigidBody> currentRigidbody;
-
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 	
@@ -61,8 +57,33 @@ public:
 
 	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
 
+	bool isTrigger = false;
+
+	const Vector3& GetMin() const
+	{
+		return min;
+	}
+
+	const Vector3& GetMax() const
+	{
+		return max;
+	}
+
+	void SetSize(const Vector3& size);
+	const Vector3& GetSize();
+
+	void SetOffset(const Vector3& offset);
+	const Vector3& GetOffset();
+
+	std::weak_ptr<RigidBody> GetAttachedRigidbody() 
+	{
+		return attachedRigidbody;
+	}
+
+private:
+	std::weak_ptr<RigidBody> attachedRigidbody;
+	Vector3 size = Vector3(1);
+	Vector3 offset = Vector3(0);
 	Vector3 min;
 	Vector3 max;
-	bool isTrigger = false;
-private:
 };

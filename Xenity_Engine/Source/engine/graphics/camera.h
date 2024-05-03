@@ -149,15 +149,35 @@ public:
 		return aspect;
 	}
 
+	/**
+	* @brief Get if the camera is using multisampling (Windows Only)
+	*/
+	bool GetUseMultisampling() 
+	{
+		return useMultisampling;
+	}
+
+	/**
+	* @brief Set if the camera is using multisampling (Windows Only)
+	* @param _UseMultisampling True to enable Multisampling
+	*/
+	void SetUseMultisampling(bool _UseMultisampling) 
+	{
+		useMultisampling = _UseMultisampling;
+	}
+
 	// [Internal]
 	unsigned int secondFramebufferTexture = -1;
 
 private:
 	unsigned int framebufferTexture = -1;
 
-public:
 	glm::mat4 projection;
 	glm::mat4 canvasProjection;
+public:
+	/**
+	* @brief [Internal]
+	*/
 	void CopyMultiSampledFrameBuffer();
 
 private:
@@ -174,12 +194,29 @@ private:
 	unsigned int depthframebuffer = -1;
 	bool needFrameBufferUpdate = true;
 
-public:
 	bool useMultisampling = true;
-	// [Internal]
-	bool lastMultisamplingValue = useMultisampling;
 	// [Internal]
 	bool isProjectionDirty = true;
 	// [Internal]
+	bool lastMultisamplingValue = useMultisampling;
+	// [Internal]
 	bool isEditor = false;
+
+public:
+
+	/**
+	* [Internal] Get if the camera is for the editor
+	*/
+	bool GetIsEditor() 
+	{
+		return isEditor;
+	}
+
+	/**
+	* [Internal] Set if the camera is for the editor
+	*/
+	void SetIsEditor(bool _isEditor)
+	{
+		isEditor = _isEditor;
+	}
 };

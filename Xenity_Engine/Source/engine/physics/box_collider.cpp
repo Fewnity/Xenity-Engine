@@ -100,7 +100,7 @@ BoxCollider::~BoxCollider()
 
 void BoxCollider::Awake()
 {
-	currentRigidbody = GetGameObject()->GetComponent<RigidBody>();
+	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
 }
 
 void BoxCollider::OnDrawGizmosSelected()
@@ -166,4 +166,25 @@ void BoxCollider::CalculateBoundingBox()
 {
 	min = -size / 2.0f;
 	max = size / 2.0f;
+}
+
+void BoxCollider::SetSize(const Vector3& size)
+{
+	this->size = size;
+	CalculateBoundingBox();
+}
+
+const Vector3& BoxCollider::GetSize()
+{
+	return size;
+}
+
+void BoxCollider::SetOffset(const Vector3& offset)
+{
+	this->offset = offset;
+}
+
+const Vector3& BoxCollider::GetOffset()
+{
+	return offset;
 }

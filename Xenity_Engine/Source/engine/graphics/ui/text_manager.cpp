@@ -30,7 +30,7 @@ void TextManager::Init()
 
 std::shared_ptr<MeshData> TextManager::CreateMesh(std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color &color, const std::shared_ptr<Font> &font, float scale)
 {
-	if (!font || !font->fontAtlas)
+	if (!font || !font->GetFontAtlas())
 		return nullptr;
 
 	textBenchmark->Start();
@@ -118,7 +118,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 	if (!font)
 		return;
 
-	if (!font->fontAtlas || !font->fontAtlas->IsValid())
+	if (!font->GetFontAtlas() || !font->GetFontAtlas()->IsValid())
 	{
 		Debug::PrintError("[TextManager::DrawText] Invalid font", true);
 		return;
@@ -143,7 +143,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		const Vector3& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
-		Graphics::DrawSubMesh(*mesh->subMeshes[0], material, font->fontAtlas, renderSettings, matrix, canvas);
+		Graphics::DrawSubMesh(*mesh->subMeshes[0], material, font->GetFontAtlas(), renderSettings, matrix, canvas);
 	}
 }
 
@@ -184,7 +184,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, std::shared_ptr<Font> font, float scale)
 {
 	TextInfo *textInfos = new TextInfo();
-	if (!font || !font->fontAtlas)
+	if (!font || !font->GetFontAtlas())
 		return textInfos;
 
 	textInfos->linesInfo.emplace_back(LineInfo());

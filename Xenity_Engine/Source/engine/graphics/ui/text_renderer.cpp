@@ -14,7 +14,6 @@
 TextRenderer::TextRenderer()
 {
 	componentName = "TextRenderer";
-	type = IDrawableTypes::Draw_3D;
 
 	AssetManager::AddReflection(this);
 	material = AssetManager::standardMaterial;
@@ -72,6 +71,17 @@ void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 		this->font = font;
 		isTextInfoDirty = true;
 	}
+}
+
+std::shared_ptr<Material> TextRenderer::GetMaterial()
+{
+	return material;
+}
+
+void TextRenderer::SetMaterial(std::shared_ptr<Material> _material)
+{
+	material = _material;
+	Graphics::isRenderingBatchDirty = true;
 }
 
 void TextRenderer::OnDisabled()
