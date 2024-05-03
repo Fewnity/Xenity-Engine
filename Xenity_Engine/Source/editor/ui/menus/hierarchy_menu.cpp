@@ -24,7 +24,7 @@ void HierarchyMenu::Draw()
 		//Add in the list only gameobject without parent
 		for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 		{
-			if (GameplayManager::gameObjects[i]->parent.lock() == nullptr)
+			if (GameplayManager::gameObjects[i]->GetParent().lock() == nullptr)
 			{
 				const int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], rightClickedElement);
 				if (r != 0)

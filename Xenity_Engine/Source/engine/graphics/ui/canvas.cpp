@@ -62,7 +62,7 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 
 	for (int i = 0; i < GetGameObject()->childCount; i++)
 	{
-		std::shared_ptr<RectTransform> rect = GetGameObject()->children[i].lock()->GetComponent<RectTransform>();
+		std::shared_ptr<RectTransform> rect = GetGameObject()->GetChildren()[i].lock()->GetComponent<RectTransform>();
 		if (rect)
 		{
 			rect->UpdatePosition(std::dynamic_pointer_cast<Canvas>(shared_from_this()));

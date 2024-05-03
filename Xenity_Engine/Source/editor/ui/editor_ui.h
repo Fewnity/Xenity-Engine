@@ -441,7 +441,6 @@ public:
 		const InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
 		if (returnValue == InputButtonState::ResetValue)
 		{
-			//valuePtr->get() = nullptr;
 			newValue = nullptr;
 			valueChangedTemp = true;
 		}
@@ -462,7 +461,6 @@ public:
 		const std::string payloadName = "Files" + std::to_string((int)classInfo->fileType);
 		if (DragDropTarget(payloadName, ref))
 		{
-			//valuePtr->get() = std::dynamic_pointer_cast<T>(ref);
 			newValue = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
@@ -572,9 +570,9 @@ public:
 			if (ptr != nullptr)
 			{
 				if constexpr (std::is_same <T, GameObject>())
-					inputText = ptr->name + " " + std::to_string(ptr->GetUniqueId());
+					inputText = ptr->GetName() + " " + std::to_string(ptr->GetUniqueId());
 				else
-					inputText = ptr->GetGameObject()->name;
+					inputText = ptr->GetGameObject()->GetName();
 			}
 
 			const InputButtonState result = DrawInputButton("", inputText, true);

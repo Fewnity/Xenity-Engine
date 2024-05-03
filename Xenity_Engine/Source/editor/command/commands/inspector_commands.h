@@ -411,12 +411,12 @@ inline void InspectorCreateGameObjectCommand::Execute()
 				transform->SetRotation(selectedTransform->GetRotation());
 				transform->SetLocalScale(selectedTransform->GetScale());
 
-				if (target->parent.lock())
+				if (target->GetParent().lock())
 				{
-					newGameObject->SetParent(target->parent.lock());
+					newGameObject->SetParent(target->GetParent().lock());
 				}
 
-				oldParents.push_back(target->parent.lock());
+				oldParents.push_back(target->GetParent().lock());
 
 				target->SetParent(newGameObject);
 				done = true;

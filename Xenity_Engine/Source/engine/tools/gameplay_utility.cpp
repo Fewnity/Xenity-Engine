@@ -24,15 +24,15 @@ struct GameObjectAndId
 void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_ptr<GameObject> goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
 {
 	// Create new gameobject
-	std::string newGameObjectName = goToDuplicate->name;
+	std::string newGameObjectName = goToDuplicate->GetName();
 #if defined(EDITOR)
 	if (parent == nullptr)
-		newGameObjectName = Editor::GetIncrementedGameObjectName(goToDuplicate->name);
+		newGameObjectName = Editor::GetIncrementedGameObjectName(goToDuplicate->GetName());
 #endif
 	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 
 	ReflectionUtils::ReflectiveToReflective(*goToDuplicate.get(), *newGameObject.get());
-	newGameObject->name = newGameObjectName;
+	newGameObject->SetName(newGameObjectName);
 
 	// Set parent 
 	if (parent != nullptr)
@@ -80,7 +80,7 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	const int childCount = goToDuplicate->childCount;
 	for (int i = 0; i < childCount; i++)
 	{
-		DuplicateChild(newGameObject, goToDuplicate->children[i].lock(), ComponentsAndIds, GameObjectsAndIds);
+		DuplicateChild(newGameObject, goToDuplicate->GetChildren()[i].lock(), ComponentsAndIds, GameObjectsAndIds);
 	}
 }
 
@@ -195,14 +195,14 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	gameObject->waitingForDestroy = true;
 
 	// Remove the destroyed gameobject from his parent's children list
-	if (auto parent = gameObject->parent.lock())
+	if (auto parent = gameObject->GetParent().lock())
 	{
 		const int parentChildCount = parent->GetChildrenCount();
 		for (int i = 0; i < parentChildCount; i++)
 		{
-			if (parent->children[i].lock() == gameObject)
+			if (parent->GetChildren()[i].lock() == gameObject)
 			{
-				parent->children.erase(parent->children.begin() + i);
+				parent->GetChildren().erase(parent->GetChildren().begin() + i);
 				parent->childCount--;
 				break;
 			}
@@ -212,7 +212,7 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DestroyGameObjectAndChild(gameObject->children[0].lock());
+		DestroyGameObjectAndChild(gameObject->GetChildren()[0].lock());
 		i--;
 		childCount--;
 	}

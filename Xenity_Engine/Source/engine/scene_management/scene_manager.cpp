@@ -63,7 +63,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		const int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
 		{
-			const uint64_t id = go->children[childI].lock()->GetUniqueId();
+			const uint64_t id = go->GetChildren()[childI].lock()->GetUniqueId();
 			if (usedIds[id])
 			{
 				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id), true);

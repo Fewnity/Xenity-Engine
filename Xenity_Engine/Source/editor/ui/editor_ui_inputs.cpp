@@ -188,7 +188,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	const auto ptr = value.lock();
 	if (ptr != nullptr)
 	{
-		inputText = ptr->GetGameObject()->name;
+		inputText = ptr->GetGameObject()->GetName();
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 	else 
@@ -222,7 +222,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 	const auto ptr = value.lock();
 	if (ptr != nullptr)
 	{
-		inputText = ptr->GetGameObject()->name;
+		inputText = ptr->GetGameObject()->GetName();
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 
@@ -251,7 +251,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 	const auto ptr = value.lock();
 	if (ptr != nullptr)
 	{
-		inputText = ptr->GetGameObject()->name;
+		inputText = ptr->GetGameObject()->GetName();
 		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
 	}
 
@@ -280,7 +280,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	auto ptr = value.lock();
 	if (ptr != nullptr)
 	{
-		inputText = ptr->name;
+		inputText = ptr->GetName();
 		inputText += " " + std::to_string(ptr->GetUniqueId());
 	}
 

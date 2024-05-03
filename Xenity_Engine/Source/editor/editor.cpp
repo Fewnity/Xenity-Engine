@@ -147,9 +147,9 @@ void Editor::Update()
 			for (auto gameObjectToDuplicate : gameObjectsToDuplicate)
 			{
 				std::shared_ptr<GameObject> newGameObject = Instantiate(gameObjectToDuplicate);
-				if (gameObjectToDuplicate->parent.lock() != nullptr)
+				if (gameObjectToDuplicate->GetParent().lock() != nullptr)
 				{
-					newGameObject->SetParent(gameObjectToDuplicate->parent.lock());
+					newGameObject->SetParent(gameObjectToDuplicate->GetParent().lock());
 				}
 				newGameObject->GetTransform()->SetLocalPosition(gameObjectToDuplicate->GetTransform()->GetLocalPosition());
 				newGameObject->GetTransform()->SetLocalRotation(gameObjectToDuplicate->GetTransform()->GetLocalRotation());
@@ -231,7 +231,7 @@ void Editor::Update()
 			std::vector<std::shared_ptr<GameObject>> go = RemoveChildren(goToCheck);
 			for (auto g : go)
 			{
-				Debug::Print(g->name);
+				Debug::Print(g->GetName());
 			}
 		}
 
@@ -661,7 +661,7 @@ std::string Editor::GetIncrementedGameObjectName(std::string name)
 	{
 		std::string tempName;
 		int tempNumber;
-		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->name, tempName, tempNumber);
+		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->GetName(), tempName, tempNumber);
 		if (tempName == finalName)
 		{
 			foundOne = true;
@@ -734,7 +734,7 @@ bool Editor::IsParentOf(const std::shared_ptr<GameObject>&parent, const std::sha
 		return false;
 
 	std::shared_ptr<GameObject> currentGameObject = child;
-	for (std::weak_ptr<GameObject> curChild : parent->children)
+	for (std::weak_ptr<GameObject> curChild : parent->GetChildren())
 	{
 		if (auto curChildLock = curChild.lock()) 
 		{

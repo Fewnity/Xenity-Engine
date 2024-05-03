@@ -76,7 +76,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.5f, 0.5f, 1.0f));
 		}
 
-		const std::string nodeName = gameObject->name + "##TIGO" + std::to_string(gameObject->GetUniqueId());
+		const std::string nodeName = gameObject->GetName() + "##TIGO" + std::to_string(gameObject->GetUniqueId());
 		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 
 		if (ImGui::BeginDragDropSource())
@@ -95,7 +95,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;
 			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
-			ImGui::Text(gameObject->name.c_str());
+			ImGui::Text(gameObject->GetName().c_str());
 			ImGui::EndDragDropSource();
 		}
 		ImGui::PopStyleColor();
@@ -147,7 +147,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 		{
 			for (int i = 0; i < gameObject->GetChildrenCount(); i++)
 			{
-				const int clickedTemp = DrawTreeItem(gameObject->children[i].lock(), rightClickedElement);
+				const int clickedTemp = DrawTreeItem(gameObject->GetChildren()[i].lock(), rightClickedElement);
 				if (clickedTemp == 1)
 					state = 1;
 				else if (clickedTemp == 2)

@@ -400,7 +400,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
 {
-	std::string str0 = selectedGameObject->name;
+	std::string str0 = selectedGameObject->GetName();
 
 	//Active checkbox
 	bool active = selectedGameObject->GetActive();
@@ -411,9 +411,9 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 	ImGui::InputText("##Name ", &str0);
 
 	//Apply new values if changed
-	if (str0 != selectedGameObject->name && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
+	if (str0 != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
-		auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->name, str0, selectedGameObject->name);
+		auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->GetName(), str0, selectedGameObject->GetName());
 		CommandManager::AddCommand(command);
 		command->Execute();
 	}

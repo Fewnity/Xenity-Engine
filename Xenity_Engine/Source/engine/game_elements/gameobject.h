@@ -76,11 +76,16 @@ public:
 	*/
 	void Setup();
 
-	std::string name = "GameObject";
-	std::vector<std::weak_ptr<GameObject>> children;
-	std::vector<std::shared_ptr<Component>> components;
+	/*const*/ std::string & GetName()
+	{
+		return name;
+	}
 
-	std::weak_ptr<GameObject> parent;
+	void SetName(const std::string& name) 
+	{
+		this->name = name;
+	}
+
 
 	/**
 	* @brief Add a child to the GameObject
@@ -170,7 +175,34 @@ public:
 		return transform;
 	}
 
+	inline std::weak_ptr<GameObject> GetParent() const
+	{
+		return parent;
+	}
+
+	inline void SetParent(std::weak_ptr<GameObject> parent)
+	{
+		this->parent = parent;
+	}
+
+	std::weak_ptr<GameObject> GetChild(int index) 
+	{
+		return children[index];
+	}
+
+	/**
+	* 
+	*/
+	std::vector<std::weak_ptr<GameObject>>& GetChildren()
+	{
+		return children;
+	}
+
+	std::vector<std::shared_ptr<Component>> components;
 private:
+	std::vector<std::weak_ptr<GameObject>> children;
+	std::string name = "GameObject";
+	std::weak_ptr<GameObject> parent;
 
 	/**
 	* @brief Add an existing component

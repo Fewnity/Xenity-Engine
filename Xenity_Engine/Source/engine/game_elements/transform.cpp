@@ -114,7 +114,7 @@ void Transform::SetPosition(const Vector3& value)
 	position = value;
 
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (gm->GetParent().expired())
 	{
 		localPosition = value;
 		SetChildrenWorldPositions();
@@ -122,7 +122,7 @@ void Transform::SetPosition(const Vector3& value)
 	else
 	{
 		SetChildrenWorldPositions();
-		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->parent.lock()->GetTransform()->transformationMatrix);
+		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->GetParent().lock()->GetTransform()->transformationMatrix);
 	}
 }
 
@@ -133,7 +133,7 @@ void Transform::SetLocalPosition(const Vector3& value)
 		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
 		return;
 
-	if (gameObject.lock()->parent.expired())
+	if (gameObject.lock()->GetParent().expired())
 	{
 		SetPosition(value);
 		return;
@@ -165,7 +165,7 @@ void Transform::SetRotation(const Vector3& value)
 
 	rotation = value;
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (gm->GetParent().expired())
 	{
 		localRotation = value;
 		SetChildrenWorldPositions();
@@ -173,7 +173,7 @@ void Transform::SetRotation(const Vector3& value)
 	else
 	{
 		SetChildrenWorldPositions();
-		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->parent.lock()->GetTransform()->GetRotation());
+		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->GetParent().lock()->GetTransform()->GetRotation());
 	}
 }
 
@@ -184,7 +184,7 @@ void Transform::SetLocalRotation(const Vector3& value)
 		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
 		return;
 
-	if (gameObject.lock()->parent.expired())
+	if (gameObject.lock()->GetParent().expired())
 	{
 		SetRotation(value);
 		return;
@@ -224,9 +224,9 @@ void Transform::SetLocalScale(const Vector3& value)
 void Transform::OnParentChanged()
 {
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
-	if (!gm->parent.expired())
+	if (!gm->GetParent().expired())
 	{
-		auto parentTransform = gm->parent.lock()->GetTransform();
+		auto parentTransform = gm->GetParent().lock()->GetTransform();
 		//----- Set new local scale
 		localScale = scale / parentTransform->scale;
 
@@ -255,7 +255,7 @@ void Transform::SetChildrenWorldPositions()
 	//For each children
 	for (int i = 0; i < childCount; i++)
 	{
-		auto transform = gm->children[i].lock()->GetTransform();
+		std::shared_ptr<Transform> transform = gm->GetChildren()[i].lock()->GetTransform();
 		transform->isTransformationMatrixDirty = true;
 		transform->UpdateWorldValues();
 	}
@@ -273,13 +273,13 @@ void Transform::UpdateWorldValues()
 void Transform::UpdateWorldRotation()
 {
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (gm->GetParent().expired())
 	{
 		rotation = localRotation;
 		return;
 	}
 
-	const std::shared_ptr<Transform> parentTransform = gm->parent.lock()->GetTransform();
+	const std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
 	const Vector3& parentRotation = parentTransform->GetRotation();
 	const glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentRotation.z, parentRotation.x, parentRotation.y)));
 	const glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(localRotation.z, localRotation.x, localRotation.y)));
@@ -299,13 +299,13 @@ void Transform::UpdateWorldRotation()
 void Transform::UpdateWorldPosition()
 {
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
-	if (gm->parent.expired())
+	if (gm->GetParent().expired())
 	{
 		position = localPosition;
 		return;
 	}
 
-	auto parentTransform = gm->parent.lock()->GetTransform();
+	auto parentTransform = gm->GetParent().lock()->GetTransform();
 	const Vector3& parentPosition = parentTransform->GetPosition();
 	const Vector3& parentScale = parentTransform->GetScale();
 	const Vector3& thisLocalPosition = GetLocalPosition();
@@ -355,18 +355,18 @@ void Transform::UpdateWorldScale()
 {
 	scale = localScale;
 	const std::shared_ptr<GameObject> lockGameObject = gameObject.lock();
-	if (auto parentGm = lockGameObject->parent.lock())
+	if (auto parentGm = lockGameObject->GetParent().lock())
 	{
 		while (parentGm != nullptr)
 		{
 			scale = scale * parentGm->GetTransform()->localScale;
-			parentGm = parentGm->parent.lock();
+			parentGm = parentGm->GetParent().lock();
 		}
 
 		const int childCount = lockGameObject->GetChildrenCount();
 		for (int i = 0; i < childCount; i++)
 		{
-			std::shared_ptr<GameObject> child = lockGameObject->children[i].lock();
+			std::shared_ptr<GameObject> child = lockGameObject->GetChildren()[i].lock();
 			child->GetTransform()->UpdateWorldScale();
 		}
 	}

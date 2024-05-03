@@ -217,7 +217,7 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		if (gameObjects[i]->name == name)
+		if (gameObjects[i]->GetName() == name)
 			foundGameObjects.push_back(gameObjects[i]);
 	}
 	return foundGameObjects;
@@ -234,7 +234,7 @@ std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		if (gameObjects[i]->name == name)
+		if (gameObjects[i]->GetName() == name)
 			return gameObjects[i];
 	}
 	return std::shared_ptr<GameObject>();

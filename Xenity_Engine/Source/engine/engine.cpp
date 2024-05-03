@@ -335,7 +335,7 @@ void Engine::Loop()
 				{
 					lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
 					if (lastComponent->GetGameObject())
-						lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->name;
+						lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->GetName();
 				}
 				Debug::PrintError(lastComponentMessage);
 

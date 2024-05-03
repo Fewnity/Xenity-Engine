@@ -82,7 +82,7 @@ std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string&
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
 	CommandManager::AddCommand(command);
 	command->Execute();
-	command->createdGameObjects[0].lock()->name = Editor::GetIncrementedGameObjectName(gameObjectName);
+	command->createdGameObjects[0].lock()->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
 
 	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(command->createdGameObjects[0], ClassRegistry::GetClassInfo<T>()->name);
 	CommandManager::AddCommand(componentCommand);
