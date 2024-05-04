@@ -475,11 +475,11 @@ void RendererGU::Setlights(const std::shared_ptr<Camera>& camera)
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3& cameraPosition = cameraTransform->GetPosition();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->quadratic);
+				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
 			}
 			else
 			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->quadratic);
+				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
