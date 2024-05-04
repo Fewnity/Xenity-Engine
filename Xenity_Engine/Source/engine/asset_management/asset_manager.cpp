@@ -83,10 +83,13 @@ void AssetManager::OnProjectLoaded()
 	standardMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/standardMaterial.mat"));
 	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/unlitMaterial.mat"));
 	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/lineMaterial.mat"));
-
-	standardMaterial->LoadFileReference();
-	unlitMaterial->LoadFileReference();
-	lineMaterial->LoadFileReference();
+	
+	if(standardMaterial)
+		standardMaterial->LoadFileReference();
+	if(unlitMaterial)
+		unlitMaterial->LoadFileReference();
+	if(lineMaterial)
+		lineMaterial->LoadFileReference();
 }
 
 void AssetManager::OnProjectUnloaded()
