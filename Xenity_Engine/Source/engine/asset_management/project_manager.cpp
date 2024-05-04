@@ -378,6 +378,15 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}
 	}
+
+	// Sort files by name (only in editor)
+#if defined(EDITOR)
+	std::sort(realProjectDirectory->files.begin(), realProjectDirectory->files.end(), 
+		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b) 
+		{ 
+			return a->file->GetFileName() < b->file->GetFileName(); 
+		});
+#endif
 }
 
 void ProjectManager::Init()
