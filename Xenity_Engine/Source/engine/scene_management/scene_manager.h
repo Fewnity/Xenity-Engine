@@ -95,7 +95,7 @@ private:
 	/**
 	* @brief [Internal] Load scene from json data
 	*/
-	static void LoadScene(const nlohmann::json& jsonData);
+	static void LoadScene(const nlohmann::ordered_json& jsonData);
 
 	static std::shared_ptr<Scene> openedScene;
 	static bool sceneModified;

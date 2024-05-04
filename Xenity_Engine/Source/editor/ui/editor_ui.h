@@ -985,5 +985,7 @@ private:
 
 		return valueChangedTemp;
 	}
+
+	static bool DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened);
 };
 #endif

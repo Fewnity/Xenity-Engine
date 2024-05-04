@@ -63,6 +63,84 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 	return objectClicked;
 }
 
+bool EditorUI::DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened)
+{
+	if (DragDropTarget("GameObject", droppedGameObject))
+	{
+		std::shared_ptr<GameObject> newParent = dropAreaOwner->GetParent().lock();
+		if (isParentOpened && dropAreaOwner->childCount != 0 && !isParent)
+		{
+			newParent = dropAreaOwner;
+		}
+		droppedGameObject->SetParent(newParent);
+		if (!newParent)
+		{
+			const int gameObjectCount = GameplayManager::gameObjectCount;
+			int gameObjectIndex = -1;
+			int gameObjectToMoveIndex = -1;
+			for (int i = 0; i < gameObjectCount; i++)
+			{
+				if (GameplayManager::gameObjects[i] == dropAreaOwner)
+				{
+					gameObjectIndex = i;
+					break;
+				}
+			}
+			for (int i = 0; i < gameObjectCount; i++)
+			{
+				if (GameplayManager::gameObjects[i] == droppedGameObject)
+				{
+					gameObjectToMoveIndex = i;
+					break;
+				}
+			}
+			int offset = 0;
+			if (gameObjectToMoveIndex > gameObjectIndex)
+			{
+				offset = 1;
+			}
+			GameplayManager::gameObjects.erase(GameplayManager::gameObjects.begin() + gameObjectToMoveIndex);
+			GameplayManager::gameObjects.insert(GameplayManager::gameObjects.begin() + gameObjectIndex + offset, droppedGameObject);
+		}
+		else
+		{
+			const int gameObjectCount = newParent->childCount;
+			int gameObjectIndex = -1;
+			int gameObjectToMoveIndex = -1;
+
+			for (int i = 0; i < gameObjectCount; i++)
+			{
+				if (newParent->GetChildren()[i].lock() == dropAreaOwner)
+				{
+					gameObjectIndex = i;
+					break;
+				}
+			}
+			for (int i = 0; i < gameObjectCount; i++)
+			{
+				if (newParent->GetChildren()[i].lock() == droppedGameObject)
+				{
+					gameObjectToMoveIndex = i;
+					break;
+				}
+			}
+
+			if (newParent == dropAreaOwner)
+			{
+				gameObjectIndex = -1;
+			}
+
+			if (gameObjectIndex != gameObjectToMoveIndex && (gameObjectIndex != -1 || newParent == dropAreaOwner) && gameObjectToMoveIndex != -1)
+			{
+				newParent->GetChildren().erase(newParent->GetChildren().begin() + gameObjectToMoveIndex);
+				newParent->GetChildren().insert(newParent->GetChildren().begin() + (gameObjectIndex + 1), droppedGameObject);
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
 int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::weak_ptr<GameObject>& rightClickedElement)
 {
 	static bool cancelClick = false;
@@ -149,11 +227,11 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 					}
 					else if (ImGui::IsMouseReleased(0))
 					{
-						if (cancelClick) 
+						if (cancelClick)
 						{
 							cancelClick = false;
 						}
-						else 
+						else
 						{
 							if (InputSystem::GetKey(KeyCode::LEFT_CONTROL))
 								Editor::AddSelectedGameObject(gameObject);
@@ -173,6 +251,15 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			}
 		}
 
+		if ((!opened && gameObject->childCount == 0) || (opened && gameObject->childCount != 0))
+		{
+			ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
+			if (DragDropOrderGameObject(droppedGameObject, gameObject, false, opened))
+			{
+				state = 1;
+			}
+		}
+
 		if (opened)
 		{
 			for (int i = 0; i < gameObject->GetChildrenCount(); i++)
@@ -184,6 +271,11 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 					state = 2;
 			}
 			ImGui::TreePop();
+		}
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
+		if (DragDropOrderGameObject(droppedGameObject, gameObject, true, opened))
+		{
+			state = 1;
 		}
 	}
 

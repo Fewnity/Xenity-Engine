@@ -180,11 +180,6 @@ public:
 		return parent;
 	}
 
-	inline void SetParent(std::weak_ptr<GameObject> parent)
-	{
-		this->parent = parent;
-	}
-
 	std::weak_ptr<GameObject> GetChild(int index) 
 	{
 		return children[index];

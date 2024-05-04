@@ -26,12 +26,12 @@
 #include <engine/debug/debug.h>
 #include <engine/missing_script.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 std::shared_ptr<Scene> SceneManager::openedScene = nullptr;
 
-json savedSceneData;
-json savedSceneDataHotReloading;
+ordered_json savedSceneData;
+ordered_json savedSceneDataHotReloading;
 
 bool SceneManager::sceneModified = false;
 
@@ -44,7 +44,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<uint64_t> usedFilesIds;
 
-	json j;
+	ordered_json j;
 
 	j["Version"] = sceneVersion;
 
@@ -193,7 +193,7 @@ bool SceneManager::OnQuit()
 	return cancel;
 }
 
-void SceneManager::LoadScene(const json& jsonData)
+void SceneManager::LoadScene(const ordered_json& jsonData)
 {
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Starting, true);
@@ -388,9 +388,9 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 		try
 		{
-			json data;
+			ordered_json data;
 			if (!jsonString.empty())
-				data = json::parse(jsonString);
+				data = ordered_json::parse(jsonString);
 			LoadScene(data);
 			openedScene = scene;
 			SetSceneModified(false);
