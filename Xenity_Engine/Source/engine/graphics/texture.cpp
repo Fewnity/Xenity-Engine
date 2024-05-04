@@ -330,8 +330,10 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	}
 
 	bool isLevelInVram = true;
-	if (resizedPW > 256 || resizedPH > 256)
+	if (resizedPW > 256 || resizedPH > 256) {
 		isLevelInVram = false;
+		Debug::PrintWarning("Texture too big to be in vram", true);
+	}
 
 	// Allocate memory in ram or vram
 	if (isLevelInVram)
@@ -340,7 +342,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 		// If there is no more free vram
 		if (!newData)
 		{
-			Debug::PrintWarning("No more free vram", true);
+			Debug::PrintWarning("No enough free vram", true);
 			newData = (unsigned int *)memalign(16, byteCount);
 			isLevelInVram = false;
 		}
