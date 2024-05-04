@@ -1,5 +1,3 @@
-#if defined(EDITOR)
-
 // ImGui
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
@@ -15,6 +13,7 @@
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {
+	static bool cancelClick = false;
 	bool objectClicked = false;
 	if (projectDir)
 	{
@@ -31,12 +30,24 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 		const std::string nodeName = projectDir->GetFolderName() + "##TIPD" + std::to_string(projectDir->uniqueId);
 		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
 		ImGui::PopStyleColor();
+		const bool justOpened = ImGui::IsItemToggledOpen();
+		if (justOpened)
+		{
+			cancelClick = true;
+		}
 
 		// TODO : Check if the click was on the arrow to block this condition
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(0))
 		{
-			Editor::SetCurrentProjectDirectory(projectDir);
-			objectClicked = true;
+			if (cancelClick)
+			{
+				cancelClick = false;
+			}
+			else
+			{
+				Editor::SetCurrentProjectDirectory(projectDir);
+				objectClicked = true;
+			}
 		}
 		if (opened)
 		{
@@ -54,6 +65,7 @@ bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 
 int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::weak_ptr<GameObject>& rightClickedElement)
 {
+	static bool cancelClick = false;
 	int state = 0;
 
 	if (gameObject)
@@ -78,7 +90,11 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 
 		const std::string nodeName = gameObject->GetName() + "##TIGO" + std::to_string(gameObject->GetUniqueId());
 		const bool opened = ImGui::TreeNodeEx(nodeName.c_str(), flags);
-
+		const bool justOpened = ImGui::IsItemToggledOpen();
+		if (justOpened)
+		{
+			cancelClick = true;
+		}
 		if (ImGui::BeginDragDropSource())
 		{
 			EditorUI::multiDragData.gameObjects.clear();
@@ -115,24 +131,38 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 				{
 					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 					{
-						Editor::SetSelectedGameObject(gameObject);
-						Editor::SetSelectedFileReference(nullptr);
-						state = 2;
-						std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
-						for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
+						if (cancelClick)
 						{
-							sceneMenu->FocusSelectedObject();
+							cancelClick = false;
+						}
+						else
+						{
+							Editor::SetSelectedGameObject(gameObject);
+							Editor::SetSelectedFileReference(nullptr);
+							state = 2;
+							std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
+							for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
+							{
+								sceneMenu->FocusSelectedObject();
+							}
 						}
 					}
 					else if (ImGui::IsMouseReleased(0))
 					{
-						if(InputSystem::GetKey(KeyCode::LEFT_CONTROL))
-							Editor::AddSelectedGameObject(gameObject);
-						else
-							Editor::SetSelectedGameObject(gameObject);
+						if (cancelClick) 
+						{
+							cancelClick = false;
+						}
+						else 
+						{
+							if (InputSystem::GetKey(KeyCode::LEFT_CONTROL))
+								Editor::AddSelectedGameObject(gameObject);
+							else
+								Editor::SetSelectedGameObject(gameObject);
 
-						Editor::SetSelectedFileReference(nullptr);
-						state = 2;
+							Editor::SetSelectedFileReference(nullptr);
+							state = 2;
+						}
 					}
 					else if (ImGui::IsMouseReleased(1))
 					{
@@ -156,7 +186,6 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			ImGui::TreePop();
 		}
 	}
+
 	return state;
 }
-
-#endif // #if defined(EDITOR)
