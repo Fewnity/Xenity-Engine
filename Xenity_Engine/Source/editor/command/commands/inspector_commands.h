@@ -431,6 +431,7 @@ inline void InspectorCreateGameObjectCommand::Execute()
 		{
 			Editor::AddSelectedGameObject(createdGameObject.lock());
 		}
+		Editor::SetSelectedFileReference(nullptr);
 		SceneManager::SetSceneModified(true);
 	}
 }
