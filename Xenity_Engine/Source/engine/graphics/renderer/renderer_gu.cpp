@@ -380,8 +380,8 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 		usedTexture = texture;
 		BindTexture(texture);
 	}
-	//sceGuTexOffset(0.1f, 0.1f);
-	//sceGuTexScale(2.0f, 2.0f);
+	sceGuTexOffset(material->offset.x, material->offset.y);
+	sceGuTexScale(material->tiling.x, material->tiling.y);
 
 	// Draw
 	if (!subMesh.meshData->hasIndices)

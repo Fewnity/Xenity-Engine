@@ -358,10 +358,13 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 		BindTexture(texture);
 	}
 
-	//glMatrixMode(GL_TEXTURE);
-	//glLoadIdentity();
-	//glTranslatef(0.1f, 0.1f, 0);
-	//glScalef(2.0, 2.0, 1.0);
+	if (Graphics::UseOpenGLFixedFunctions)
+	{
+		glMatrixMode(GL_TEXTURE);
+		glLoadIdentity();
+		glTranslatef(material->offset.x, material->offset.y, 0);
+		glScalef(material->tiling.x, material->tiling.y, 1.0f);
+	}
 
 	// Draw
 	if (!subMesh.meshData->hasIndices)

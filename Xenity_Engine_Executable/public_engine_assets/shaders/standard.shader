@@ -37,6 +37,8 @@ in vec3 FragPos;
 
 in vec2 TexCoord;
 uniform sampler2D ourTexture;
+uniform vec2 tiling;
+uniform vec2 offset;
 
 struct Material {
 	sampler2D diffuse;
@@ -104,7 +106,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos,
 	//vec3 result = diffuse; //Set face result
 
 
-	vec3 result = (vec3(texture(material.diffuse, TexCoord)) * light2.color); //Set face result
+	vec3 result = (vec3(texture(material.diffuse, (TexCoord * tiling) + offset)) * light2.color); //Set face result
 	return result;
 }
 
@@ -112,13 +114,13 @@ vec3 CalculatePointLight(PointLight light2, vec3 norm, vec3 fragPos, vec3 viewDi
 
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
 	float specularStrength = 0.5;
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light2.color;
+	vec3 specular = specularStrength * (spec * vec3(texture(material.specular, (TexCoord * tiling) + offset))) * light2.color;
 
 	float distance = length(light2.position - fragPos);
 	float attenuation = 1.0 / (light2.constant + light2.linear * distance + light2.quadratic * (distance * distance));
@@ -132,13 +134,13 @@ vec3 CalculatePointLight(PointLight light2, vec3 norm, vec3 fragPos, vec3 viewDi
 vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) {
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
 	float specularStrength = 0.5;
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light2.color;
+	vec3 specular = specularStrength * (spec * vec3(texture(material.specular, (TexCoord * tiling) + offset))) * light2.color;
 
 	float distance = length(light2.position - fragPos);
 	float attenuation = 1.0 / (light2.constant + light2.linear * distance + light2.quadratic * (distance * distance));
@@ -176,7 +178,7 @@ void main()
 
 	//result += CalculateSpotLight(spotLights[1], norm, FragPos, viewDir);
 
-	float alpha = texture(material.diffuse, TexCoord).a;
+	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a;
 	//if (alpha <= 0.1)
 		//discard;
 	gl_FragColor = vec4(result, alpha); //Add texture color
@@ -269,6 +271,8 @@ struct Material {
 };
 
 uniform Material material;
+uniform vec2 tiling;
+uniform vec2 offset;
 
 float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 fragPos, vec3 viewDir, vec2 texcoords) 
 {
@@ -276,7 +280,7 @@ float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 fragPos
 	//float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
 	//float3 tx = (diff * tex2D(textureBase, texcoords).xyz) * light.color; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
-	float3 tx = tex2D(textureBase, texcoords).xyz * light.color;
+	float3 tx = tex2D(textureBase, (texcoords * tiling) + offset)).xyz * light.color;
 	return tx;
 }
 
@@ -288,7 +292,7 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float3
 	
 	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
 
-	float3 diffuse = (diff * tex2D(textureBase, texcoords).xyz) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	float3 diffuse = (diff * tex2D(textureBase, (texcoords * tiling) + offset)).xyz) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//float3 tx = tex2D(textureBase, texcoords).xyz * light.color;
 

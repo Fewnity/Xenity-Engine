@@ -172,6 +172,9 @@ void Material::Update()
 		{
 			shader->UpdateLights(useLighting);
 
+			shader->SetShaderAttribut("tiling", tiling);
+			shader->SetShaderAttribut("offset", offset);
+
 			int textureIndex = 0;
 			/*for (const auto& kv : uniformsTextures)
 			{
@@ -215,6 +218,8 @@ ReflectiveData Material::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
 	Reflective::AddVariable(reflectedVariables, useTransparency, "useTransparency", true);
 	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, offset, "offset", true);
+	Reflective::AddVariable(reflectedVariables, tiling, "tiling", true);
 	return reflectedVariables;
 }
 

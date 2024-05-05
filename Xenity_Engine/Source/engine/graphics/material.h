@@ -70,6 +70,9 @@ public:
 	bool updated = false;
 	bool useLighting = false;
 	bool useTransparency = false;
+	Vector2 offset = Vector2(0,0);
+	Vector2 tiling = Vector2(1, 1);
+
 	static const int version;
 
 };

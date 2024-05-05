@@ -32,6 +32,9 @@ uniform vec3 cameraPos;
 
 in vec2 TexCoord;
 
+uniform vec2 tiling;
+uniform vec2 offset;
+
 struct Material {
 	sampler2D diffuse;
 	vec3 ambient;
@@ -43,12 +46,12 @@ void main()
 {
 	// Ambient
 
-	vec3 ambient = color.xyz * vec3(texture(material.diffuse, TexCoord)); //Get ambient intensity and color
+	vec3 ambient = color.xyz * vec3(texture(material.diffuse, (TexCoord * tiling) + offset)); //Get ambient intensity and color
 
 	//Result
 	vec3 result = ambient; //Set face result
 
-	float alpha = texture(material.diffuse, TexCoord).a * color.w;
+	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a * color.w;
 	FragColor = vec4(result, alpha); //Add texture color
 }
 
@@ -87,16 +90,18 @@ struct Material {
 };
 
 uniform Material material;
+uniform vec2 tiling;
+uniform vec2 offset;
 
 void main()
 {
 	// Ambient
 
-	vec3 ambient = color.xyz * vec3(tex2D(material.diffuse, TexCoord)); //Get ambient intensity and color
+	vec3 ambient = color.xyz * vec3(tex2D(material.diffuse, (TexCoord * tiling) + offset)); //Get ambient intensity and color
 
 	//Result
 	vec3 result = ambient; //Set face result
 
-	float alpha = tex2D(material.diffuse, TexCoord).a * color.w;
+	float alpha = tex2D(material.diffuse, (TexCoord * tiling) + offset).a * color.w;
 	gl_FragColor = vec4(result, alpha); //Add texture color
 }
