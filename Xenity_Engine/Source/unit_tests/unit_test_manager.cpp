@@ -13,29 +13,60 @@ UnitTest::UnitTest(const std::string& name)
 void UnitTestManager::StartAllTests()
 {
 	Debug::Print("------ Unit Tests ------", true);
-	VectorAddTest addVectorTest = VectorAddTest("Vectors Additions");
-	TryTest(addVectorTest);
 
-	VectorMinusTest minusVectorTest = VectorMinusTest("Vectors Subtractions");
-	TryTest(minusVectorTest);
+	//------------------------------------------------------------------ Test vectors
+	{
+		VectorAddTest addVectorTest = VectorAddTest("Vectors Additions");
+		TryTest(addVectorTest);
 
-	VectorMultiplyTest multiplyVectorTest = VectorMultiplyTest("Vectors Multiplications");
-	TryTest(multiplyVectorTest);
+		VectorMinusTest minusVectorTest = VectorMinusTest("Vectors Subtractions");
+		TryTest(minusVectorTest);
 
-	VectorDivideTest divideVectorTest = VectorDivideTest("Vectors Divisions");
-	TryTest(divideVectorTest);
+		VectorMultiplyTest multiplyVectorTest = VectorMultiplyTest("Vectors Multiplications");
+		TryTest(multiplyVectorTest);
 
-	VectorNormalizeTest normalizeVectorTest = VectorNormalizeTest("Vectors Normalizations");
-	TryTest(normalizeVectorTest);
+		VectorDivideTest divideVectorTest = VectorDivideTest("Vectors Divisions");
+		TryTest(divideVectorTest);
 
-	TransformSetPositionTest transformSetPositionTest = TransformSetPositionTest("Transform Set Position");
-	TryTest(transformSetPositionTest);
+		VectorNormalizeTest normalizeVectorTest = VectorNormalizeTest("Vectors Normalizations");
+		TryTest(normalizeVectorTest);
+	}
 
-	TransformSetRotationTest transformSetRotationTest = TransformSetRotationTest("Transform Set Rotation");
-	TryTest(transformSetRotationTest);
+	//------------------------------------------------------------------ Test transform
+	{
+		TransformSetPositionTest transformSetPositionTest = TransformSetPositionTest("Transform Set Position");
+		TryTest(transformSetPositionTest);
 
-	TransformSetScaleTest transformSetScaleTest = TransformSetScaleTest("Transform Set Scale");
-	TryTest(transformSetScaleTest);
+		TransformSetRotationTest transformSetRotationTest = TransformSetRotationTest("Transform Set Rotation");
+		TryTest(transformSetRotationTest);
+
+		TransformSetScaleTest transformSetScaleTest = TransformSetScaleTest("Transform Set Scale");
+		TryTest(transformSetScaleTest);
+	}
+
+	//------------------------------------------------------------------ Test color
+	{
+		ColorConstructorTest colorConstructorTest = ColorConstructorTest("Color Constructor");
+		TryTest(colorConstructorTest);
+
+		ColorSetTest colorSetTest = ColorSetTest("Color Set");
+		TryTest(colorSetTest);
+	}
+
+	//------------------------------------------------------------------ Test Event System
+	{
+		EventSystemTest eventSystemTest = EventSystemTest("Event System");
+		TryTest(eventSystemTest);
+	}
+
+	//------------------------------------------------------------------ Test Math
+	{
+		MathBasicTest mathBasicTest = MathBasicTest("Math Basics");
+		TryTest(mathBasicTest);
+
+		MathMatrixTest mathMatrixTest = MathMatrixTest("Math Matrice");
+		TryTest(mathMatrixTest);
+	}
 
 	Debug::Print("------ Unit Tests finished! ------", true);
 }

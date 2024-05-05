@@ -152,6 +152,9 @@
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
     <ClCompile Include="Source\engine\particle_system\particle_system.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_asset_manager_menu.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_color.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_event_system.cpp" />
+    <ClCompile Include="Source\unit_tests\unit_test_math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
