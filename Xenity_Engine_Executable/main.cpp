@@ -26,10 +26,7 @@ Clean code
 New Input system
 
 --- Done
-Disable scene saving while playing with main menu bar
-Fix commands on dll reloading, use gameobject id instead of weak_ptr?
-Add copy/past component
-Fix selected file then create gameobject (the file is still selected)
+
 
 */
 
@@ -57,13 +54,10 @@ Move/Store engine name and version somewhere
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
-Text scale
-Disable scene save if the project is not compiled
 
 --- To do in a long time
 Regenerate an id if a meta file is corrupted
 Add a property window on components to have values in a new window
-Fix engine assets system
 Add network profiler
 Add map reflection support
 Add more unit tests
