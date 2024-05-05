@@ -253,11 +253,13 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 
 		if ((!opened && gameObject->childCount == 0) || (opened && gameObject->childCount != 0))
 		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
 			ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
 			if (DragDropOrderGameObject(droppedGameObject, gameObject, false, opened))
 			{
 				state = 1;
 			}
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
 		}
 
 		if (opened)
@@ -272,11 +274,13 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			}
 			ImGui::TreePop();
 		}
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
 		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
 		if (DragDropOrderGameObject(droppedGameObject, gameObject, true, opened))
 		{
 			state = 1;
 		}
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
 	}
 
 	return state;

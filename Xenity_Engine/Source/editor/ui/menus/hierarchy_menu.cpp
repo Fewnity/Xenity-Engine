@@ -20,6 +20,7 @@ void HierarchyMenu::Draw()
 
 		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
 
+		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		bool disableDrag = false;
 		//Add in the list only gameobject without parent
 		for (int i = 0; i < GameplayManager::gameObjectCount; i++)
@@ -33,6 +34,7 @@ void HierarchyMenu::Draw()
 				}
 			}
 		}
+		ImGui::PopStyleColor();
 
 		if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered() && !disableDrag)
 		{
