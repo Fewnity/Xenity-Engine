@@ -153,7 +153,7 @@ void NetworkManager::DrawNetworkSetupMenu()
 			Debug::Print("Network setup: " + std::to_string(result), true);
 			if (result == 0)
 			{
-				if (EngineSettings::useOnlineDebugger)
+				if (EngineSettings::values.useOnlineDebugger)
 				{
 					Debug::ConnectToOnlineConsole();
 				}
