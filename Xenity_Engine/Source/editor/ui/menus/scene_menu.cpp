@@ -28,7 +28,7 @@ void SceneMenu::Init()
 	cameraGO = CreateGameObjectEditor("Camera");
 	std::shared_ptr<Camera> cameraLock = cameraGO.lock()->AddComponent<Camera>();
 	cameraLock->SetNearClippingPlane(0.01f);
-	cameraLock->SetFarClippingPlane(500);
+	cameraLock->SetFarClippingPlane(2000);
 	cameraLock->SetProjectionSize(5.0f);
 	cameraLock->SetFov(70);
 	cameraLock->SetIsEditor(true);
