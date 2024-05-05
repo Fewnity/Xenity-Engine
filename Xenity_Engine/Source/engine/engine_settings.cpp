@@ -3,56 +3,36 @@
 #include <engine/file_system/file.h>
 #include <engine/reflection/reflection_utils.h>
 
-bool EngineSettings::isWireframe = false;
-int EngineSettings::maxLightCount = 2;
-
-bool EngineSettings::useProfiler = true;
-bool EngineSettings::useDebugger = true;
-bool EngineSettings::useOnlineDebugger = false;
-
-bool EngineSettings::compileOnCodeChanged = false;
-bool EngineSettings::compileWhenOpeningProject = false;
-
-std::string EngineSettings::compilerPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\";
-//std::string EngineSettings::compilerPath = "C:\\VisualStudio\\VC\\Auxiliary\\Build\\";
-std::string EngineSettings::ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWindows64.exe";
-std::string EngineSettings::dockerExePath = "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe";
-
-// Texture::AnisotropicLevel EngineSettings::anisotropicLevel = Texture::AnisotropicLevel::X16;
-
-Color EngineSettings::backbgroundColor = Color::CreateFromRGBAFloat(0.059f, 0.059f, 0.059f, 1);
-Color EngineSettings::secondaryColor = Color::CreateFromRGBAFloat(0.22f, 0.48f, 0.796f, 1);
-Color EngineSettings::playTintColor = Color::CreateFromRGBAFloat(0.2f, 0.0f, 0.0f, 1);
-bool EngineSettings::isPlayTintAdditive = true;
+EngineSettingsValues EngineSettings::values;
 
 void EngineSettings::SaveEngineSettings()
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile("engine_settings.json");
-	const bool result = ReflectionUtils::ReflectiveDataToFile(GetReflectiveData(), file);
+	const bool result = ReflectionUtils::ReflectiveDataToFile(values.GetReflectiveData(), file);
 }
 
 void EngineSettings::LoadEngineSettings()
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile("engine_settings.json");
-	const bool result = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+	const bool result = ReflectionUtils::FileToReflectiveData(file, values.GetReflectiveData());
 }
 
-ReflectiveData EngineSettings::GetReflectiveData()
+ReflectiveData EngineSettingsValues::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, EngineSettings::useProfiler, "useProfiler", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::useDebugger, "useDebugger", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::useOnlineDebugger, "useOnlineDebugger", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::compilerPath, "compilerPath", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::ppssppExePath, "ppssppExePath", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::dockerExePath, "dockerExePath", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::compileOnCodeChanged, "compileOnCodeChanged", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::compileWhenOpeningProject, "compileWhenOpeningProject", true);
+	Reflective::AddVariable(reflectedVariables, useProfiler, "useProfiler", true);
+	Reflective::AddVariable(reflectedVariables, useDebugger, "useDebugger", true);
+	Reflective::AddVariable(reflectedVariables, useOnlineDebugger, "useOnlineDebugger", true);
+	Reflective::AddVariable(reflectedVariables, compilerPath, "compilerPath", true);
+	Reflective::AddVariable(reflectedVariables, ppssppExePath, "ppssppExePath", true);
+	Reflective::AddVariable(reflectedVariables, dockerExePath, "dockerExePath", true);
+	Reflective::AddVariable(reflectedVariables, compileOnCodeChanged, "compileOnCodeChanged", true);
+	Reflective::AddVariable(reflectedVariables, compileWhenOpeningProject, "compileWhenOpeningProject", true);
 
-	Reflective::AddVariable(reflectedVariables, EngineSettings::backbgroundColor, "backbgroundColor", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::secondaryColor, "secondaryColor", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::playTintColor, "playTintColor", true);
-	Reflective::AddVariable(reflectedVariables, EngineSettings::isPlayTintAdditive, "isPlayTintAdditive", true);
+	Reflective::AddVariable(reflectedVariables, backbgroundColor, "backbgroundColor", true);
+	Reflective::AddVariable(reflectedVariables, secondaryColor, "secondaryColor", true);
+	Reflective::AddVariable(reflectedVariables, playTintColor, "playTintColor", true);
+	Reflective::AddVariable(reflectedVariables, isPlayTintAdditive, "isPlayTintAdditive", true);
 
 	return reflectedVariables;
 }

@@ -115,8 +115,8 @@ ImVec4 hoverColor{ 0.4f, 0.4f, 0.4f, 0.6f };
 void EditorUI::SetButtonColor(bool isSelected)
 {
 	ImVec4 currentColor = normalColor;
-	const Vector4 color = EngineSettings::secondaryColor.GetRGBA().ToVector4() / 2.0f;
-	const Vector4 colorHover = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+	const Vector4 color = EngineSettings::values.secondaryColor.GetRGBA().ToVector4() / 2.0f;
+	const Vector4 colorHover = EngineSettings::values.secondaryColor.GetRGBA().ToVector4();
 	pressedColor = ImVec4(normalColor.x + color.x, normalColor.y + color.y, normalColor.z + color.z, normalColor.w + 0.2f);
 	hoverColor = ImVec4(normalColor.x + colorHover.x, normalColor.y + colorHover.y, normalColor.z + colorHover.z, normalColor.w + 0.2f);
 	if (isSelected)

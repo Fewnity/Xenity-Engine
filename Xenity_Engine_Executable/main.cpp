@@ -16,6 +16,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
+Add UV offset and scale in materials
 
 Multiple gameobject selection
 Rework the documentation

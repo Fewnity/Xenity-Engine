@@ -39,38 +39,38 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 	ImGui::Text("Compiler Options:");
 	ImGui::Separator();
 
-	std::string tempCompilerPath = EngineSettings::compilerPath;
-	ImGui::Text("Compiler location: %s", EngineSettings::compilerPath.c_str());
+	std::string tempCompilerPath = EngineSettings::values.compilerPath;
+	ImGui::Text("Compiler location: %s", EngineSettings::values.compilerPath.c_str());
 	valueChanged = DrawSelectFolderButton(tempCompilerPath);
 	if (valueChanged)
 	{
-		EngineSettings::compilerPath = tempCompilerPath;
+		EngineSettings::values.compilerPath = tempCompilerPath;
 		settingsChanged = true;
 	}
 
-	std::string tempPpssppExePath = EngineSettings::ppssppExePath;
-	ImGui::Text("PPSSPP location: %s", EngineSettings::ppssppExePath.c_str());
+	std::string tempPpssppExePath = EngineSettings::values.ppssppExePath;
+	ImGui::Text("PPSSPP location: %s", EngineSettings::values.ppssppExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempPpssppExePath);
 	if (valueChanged)
 	{
-		EngineSettings::ppssppExePath = tempPpssppExePath + "PPSSPPWindows64.exe";
+		EngineSettings::values.ppssppExePath = tempPpssppExePath + "PPSSPPWindows64.exe";
 		settingsChanged = true;
 	}
 
-	std::string tempDockerExePath = EngineSettings::dockerExePath;
-	ImGui::Text("Docker location: %s", EngineSettings::dockerExePath.c_str());
+	std::string tempDockerExePath = EngineSettings::values.dockerExePath;
+	ImGui::Text("Docker location: %s", EngineSettings::values.dockerExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempDockerExePath);
 	if (valueChanged)
 	{
-		EngineSettings::dockerExePath = tempDockerExePath + "Docker Desktop.exe";
+		EngineSettings::values.dockerExePath = tempDockerExePath + "Docker Desktop.exe";
 		settingsChanged = true;
 	}
 
-	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::compileOnCodeChanged);
+	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::values.compileOnCodeChanged);
 	if (valueChanged)
 		settingsChanged = true;
 
-	valueChanged = ImGui::Checkbox("Compile On Project Opened", &EngineSettings::compileWhenOpeningProject);
+	valueChanged = ImGui::Checkbox("Compile On Project Opened", &EngineSettings::values.compileWhenOpeningProject);
 	if (valueChanged)
 		settingsChanged = true;
 
@@ -87,35 +87,35 @@ void EngineSettingsMenu::Draw()
 
 		bool settingsChanged = false;
 		bool valueChanged = false;
-		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useProfiler);
+		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.useProfiler);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Profiler");
 		if (valueChanged)
 			settingsChanged = true;
 		
-		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useDebugger);
+		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.useDebugger);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Debugger (Print logs in the console and in the file)");
 		if (valueChanged)
 			settingsChanged = true;
 
-		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::useOnlineDebugger);
+		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.useOnlineDebugger);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Online Debugger (Print logs to an online console)");
 		if (valueChanged)
 			settingsChanged = true;
 
-		valueChanged = EditorUI::DrawInput("Backbground color",EngineSettings::backbgroundColor);
+		valueChanged = EditorUI::DrawInput("Backbground color",EngineSettings::values.backbgroundColor);
 		if (valueChanged)
 			settingsChanged = true;
-		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::secondaryColor);
+		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::values.secondaryColor);
 		if (valueChanged)
 			settingsChanged = true;
-		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::playTintColor);
+		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::values.playTintColor);
 		if (valueChanged)
 			settingsChanged = true;
 
-		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::isPlayTintAdditive);
+		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.isPlayTintAdditive);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Is Play Tint Additive");
 		if (valueChanged)

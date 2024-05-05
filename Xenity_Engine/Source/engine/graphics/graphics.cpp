@@ -58,7 +58,6 @@ std::vector<std::weak_ptr<IDrawable>> Graphics::spriteDrawable;
 std::vector<std::weak_ptr<IDrawable>> Graphics::uiDrawable;
 std::vector<std::weak_ptr<Lod>> Graphics::lods;
 
-std::shared_ptr <SkyBox> Graphics::skybox = nullptr;
 bool Graphics::drawOrderListDirty = true;
 
 std::shared_ptr<ProfilerBenchmark> orderBenchmark = nullptr;
@@ -69,11 +68,6 @@ std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
 
-bool Graphics::isFogEnabled;
-float Graphics::fogStart = 0;
-float Graphics::fogEnd = 10;
-Color Graphics::fogColor;
-Color Graphics::skyColor;
 std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
@@ -82,12 +76,14 @@ bool Graphics::UseOpenGLFixedFunctions = false;
 bool Graphics::isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
+GraphicsSettings Graphics::settings;
+
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
-	skybox = skybox_;
+	settings.skybox = skybox_;
 }
 
-ReflectiveData Graphics::GetLightingSettingsReflection()
+ReflectiveData GraphicsSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, skybox, "skybox", true);
@@ -101,8 +97,8 @@ ReflectiveData Graphics::GetLightingSettingsReflection()
 
 void Graphics::OnLightingSettingsReflectionUpdate()
 {
-	Engine::GetRenderer().SetFog(isFogEnabled);
-	Engine::GetRenderer().SetFogValues(fogStart, fogEnd, fogColor);
+	Engine::GetRenderer().SetFog(settings.isFogEnabled);
+	Engine::GetRenderer().SetFogValues(settings.fogStart, settings.fogEnd, settings.fogColor);
 }
 
 void Graphics::Init()
@@ -132,12 +128,12 @@ void Graphics::Init()
 
 void Graphics::SetDefaultValues()
 {
-	isFogEnabled = false;
-	fogStart = 10;
-	fogEnd = 50;
-	fogColor = Color::CreateFromRGB(152, 152, 152);
-	skyColor = Color::CreateFromRGB(25, 25, 25);
-	skybox.reset();
+	settings.isFogEnabled = false;
+	settings.fogStart = 10;
+	settings.fogEnd = 50;
+	settings.fogColor = Color::CreateFromRGB(152, 152, 152);
+	settings.skyColor = Color::CreateFromRGB(25, 25, 25);
+	settings.skybox.reset();
 }
 
 void Graphics::Draw()
@@ -180,7 +176,7 @@ void Graphics::Draw()
 			usedCamera->BindFrameBuffer();
 			const Vector3& camPos = usedCamera->GetTransform()->GetPosition();
 
-			Engine::GetRenderer().SetClearColor(skyColor);
+			Engine::GetRenderer().SetClearColor(settings.skyColor);
 			Engine::GetRenderer().Clear();
 
 			if (UseOpenGLFixedFunctions)
@@ -193,7 +189,7 @@ void Graphics::Draw()
 			DrawSkybox(camPos);
 			skyboxBenchmark->Stop();
 
-			Engine::GetRenderer().SetFog(isFogEnabled);
+			Engine::GetRenderer().SetFog(settings.isFogEnabled);
 
 			drawAllBenchmark->Start();
 
@@ -527,7 +523,7 @@ void Graphics::SetDrawOrderListAsDirty()
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
-	if (skybox)
+	if (settings.skybox)
 	{
 		Engine::GetRenderer().SetFog(false);
 		const float scaleF = 10.01f;
@@ -540,17 +536,17 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		AssetManager::unlitMaterial->texture = skybox->down;
+		AssetManager::unlitMaterial->texture = settings.skybox->down;
 		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->up;
+		AssetManager::unlitMaterial->texture = settings.skybox->up;
 		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->front;
+		AssetManager::unlitMaterial->texture = settings.skybox->front;
 		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->back;
+		AssetManager::unlitMaterial->texture = settings.skybox->back;
 		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->left;
+		AssetManager::unlitMaterial->texture = settings.skybox->left;
 		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-		AssetManager::unlitMaterial->texture = skybox->right;
+		AssetManager::unlitMaterial->texture = settings.skybox->right;
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
 	}
 }

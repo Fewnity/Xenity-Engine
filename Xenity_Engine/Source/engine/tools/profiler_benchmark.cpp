@@ -27,7 +27,7 @@ ProfilerBenchmark::~ProfilerBenchmark()
 void ProfilerBenchmark::Start()
 {
 #if defined(EDITOR)
-	if (EngineSettings::useProfiler)
+	if (EngineSettings::values.useProfiler)
 		bench->Start();
 #endif
 }
@@ -35,7 +35,7 @@ void ProfilerBenchmark::Start()
 void ProfilerBenchmark::Stop()
 {
 #if defined(EDITOR)
-	if (EngineSettings::useProfiler)
+	if (EngineSettings::values.useProfiler)
 	{
 		bench->Stop();
 		profilerValue->AddValue(bench->GetMicroSeconds());

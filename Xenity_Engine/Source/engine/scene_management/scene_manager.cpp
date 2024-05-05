@@ -102,10 +102,10 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		}
 	}
 
-	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::GetLightingSettingsReflection());
+	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::settings.GetReflectiveData());
 
-	if (Graphics::skybox != nullptr)
-		usedFilesIds.push_back(Graphics::skybox->fileId);
+	if (Graphics::settings.skybox != nullptr)
+		usedFilesIds.push_back(Graphics::settings.skybox->fileId);
 	j["UsedFiles"]["Values"] = usedFilesIds;
 
 	if (saveType == SaveSceneType::SaveSceneForPlayState)
@@ -363,7 +363,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 	if (jsonData.contains("Lighting"))
 	{
-		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::GetLightingSettingsReflection());
+		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::settings.GetReflectiveData());
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
 

@@ -22,13 +22,13 @@ void LightingMenu::Draw()
 		bool changed = false;
 		ImGui::Text("Lighting");
 		ImGui::Separator();
-		EditorUI::DrawInput("Skybox", Graphics::skybox);
+		EditorUI::DrawInput("Skybox", Graphics::settings.skybox);
 
 		//std::shared_ptr<int> t;
 		//std::reference_wrapper<std::shared_ptr<int>> ref = std::ref(t);
 		//EditorUI::DrawFileReference(&ref, "r", t);
 
-		if (EditorUI::DrawInput("Color", Graphics::skyColor))
+		if (EditorUI::DrawInput("Color", Graphics::settings.skyColor))
 			changed = true;
 
 		ImGui::Spacing();
@@ -36,13 +36,13 @@ void LightingMenu::Draw()
 		ImGui::Text("Fog");
 		ImGui::Separator();
 
-		if (EditorUI::DrawInputTemplate("Enabled", Graphics::isFogEnabled) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInputTemplate("Enabled", Graphics::settings.isFogEnabled) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInputTemplate("Start", Graphics::fogStart) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInputTemplate("Start", Graphics::settings.fogStart) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInputTemplate("End", Graphics::fogEnd) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInputTemplate("End", Graphics::settings.fogEnd) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInput("Color", Graphics::fogColor))
+		if (EditorUI::DrawInput("Color", Graphics::settings.fogColor))
 			changed = true;
 
 		if (changed)

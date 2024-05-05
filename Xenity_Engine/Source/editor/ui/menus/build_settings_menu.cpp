@@ -116,7 +116,7 @@ void BuildSettingsMenu::Draw()
 				ImVec4 tint = ImVec4(1, 1, 1, 1);
 				ImVec4 textColor = ImVec4(1, 1, 1, 1);
 				std::string nameText = platform.name;
-				Vector4 backgroundRGBA = EngineSettings::secondaryColor.GetRGBA().ToVector4();
+				Vector4 backgroundRGBA = EngineSettings::values.secondaryColor.GetRGBA().ToVector4();
 				float backgroundColorCoef = 0.3f;
 				if (!platform.isSupported)
 				{

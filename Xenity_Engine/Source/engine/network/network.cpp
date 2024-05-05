@@ -74,7 +74,7 @@ void NetworkManager::Init()
 
 	sceUtilityNetconfInitStart(&pspNetworkData);
 #else
-	if (EngineSettings::useOnlineDebugger)
+	if (EngineSettings::values.useOnlineDebugger)
 	{
 		Debug::ConnectToOnlineConsole();
 	}

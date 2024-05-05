@@ -67,7 +67,7 @@ int Performance::GetUpdatedMaterialCount()
 
 void Performance::Update()
 {
-	if (EngineSettings::useProfiler)
+	if (EngineSettings::values.useProfiler)
 	{
 		tickCount++;
 

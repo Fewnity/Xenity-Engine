@@ -47,8 +47,8 @@ public:
 
 	/**
 	* @brief Get the previous power of 2 of the given value (if the value is not itself a power of two)
-	* Ex Value = 140; returns -> 128
-	* Ex Value = 128; returns -> 128
+	* @brief Ex Value = 140; returns -> 128
+	* @brief Ex Value = 128; returns -> 128
 	* @param value Start value
 	*/
 	static unsigned int previousPow2(const unsigned int value);

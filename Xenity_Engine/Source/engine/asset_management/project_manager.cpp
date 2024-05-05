@@ -594,7 +594,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	FileHandler::HasCodeChanged(GetAssetFolderPath());
 	FileHandler::HasFileChangedOrAdded(GetAssetFolderPath());
 
-	if (EngineSettings::compileWhenOpeningProject)
+	if (EngineSettings::values.compileWhenOpeningProject)
 	{
 		Compiler::HotReloadGame();
 	}

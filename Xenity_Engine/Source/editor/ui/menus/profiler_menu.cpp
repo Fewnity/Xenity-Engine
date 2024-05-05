@@ -87,7 +87,7 @@ void ProfilerMenu::DrawProfilerBenchmarks()
 {
 	if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		if (EngineSettings::useProfiler)
+		if (EngineSettings::values.useProfiler)
 		{
 			//Add profiler texts
 			for (const auto& kv : Performance::profilerCategories)

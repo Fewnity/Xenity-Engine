@@ -43,6 +43,7 @@ public:
 	* @brief |
 	* @brief Example:
 	* @brief Bind(&MyFunction);
+	* @brief Bind(&MyClass::MyFunction); (static function)
 	* 
 	* @param function: Pointer to the function to bind
 	*/
@@ -63,7 +64,7 @@ public:
 	* @brief Bind a function linked to an object
 	* @brief |
 	* @brief Example:
-	* @brief Bind(&MyClass::MyFunction, ptrToMyObject)
+	* @brief Bind(&MyClass::MyFunction, ptrToMyObject) (non-static function)
 	* 
 	* @param function: Pointer to the function to bind
 	* @param obj: Pointer to the object

@@ -21,6 +21,20 @@ class Vector3;
 class Shader;
 class Lod;
 
+class GraphicsSettings : public Reflective
+{
+public:
+	ReflectiveData GetReflectiveData() override;
+
+	std::shared_ptr <SkyBox> skybox;
+
+	bool isFogEnabled;
+	float fogStart = 0;
+	float fogEnd = 10;
+	Color fogColor;
+	Color skyColor;
+};
+
 class Graphics
 {
 public:
@@ -40,7 +54,6 @@ public:
 	*/
 	API static void SetSkybox(const std::shared_ptr<SkyBox>&  skybox_);
 
-	static ReflectiveData GetLightingSettingsReflection();
 	static void OnLightingSettingsReflectionUpdate();
 
 	/**
@@ -133,17 +146,13 @@ public:
 	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
 	static std::vector<std::weak_ptr<Lod>> lods;
 
-	static std::shared_ptr <SkyBox> skybox;
-
-	static bool isFogEnabled;
-	static float fogStart;
-	static float fogEnd;
-	static Color fogColor;
-	static Color skyColor;
+	
 	static std::shared_ptr <Shader> currentShader;
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
 	static bool isRenderingBatchDirty;
+
+	static GraphicsSettings settings;
 
 private:
 

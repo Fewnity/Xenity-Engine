@@ -188,7 +188,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	int error = 0;
 
 	// Check if the compiler executable exists
-	if (!fs::exists(EngineSettings::compilerPath + compilerExecFileName))
+	if (!fs::exists(EngineSettings::values.compilerPath + compilerExecFileName))
 	{
 		error |= (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE;
 	}
@@ -215,7 +215,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	}
 	else if (params.platform == Platform::P_PSP)
 	{
-		if (!fs::exists(EngineSettings::ppssppExePath))
+		if (!fs::exists(EngineSettings::values.ppssppExePath))
 		{
 			error |= (int)CompilerAvailability::MISSING_PPSSPP;
 		}
@@ -229,7 +229,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::compilerPath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath, true);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
@@ -237,7 +237,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::ppssppExePath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::values.ppssppExePath, true);
 		}
 	}
 	return (CompilerAvailability)error;
@@ -741,7 +741,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else if (state == DockerState::NOT_RUNNING)
 	{
-		const bool startResult = Editor::OpenExecutableFile(EngineSettings::dockerExePath);
+		const bool startResult = Editor::OpenExecutableFile(EngineSettings::values.dockerExePath);
 		if (startResult)
 		{
 			// Check every 3 seconds if docker is running
@@ -848,14 +848,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 
 std::string Compiler::GetStartCompilerCommand()
 {
-	const std::string path = EngineSettings::compilerPath;
+	const std::string path = EngineSettings::values.compilerPath;
 
 	std::string command;
 	if (fs::path(path).is_absolute())
 	{
 		command += path.substr(0, 2) + " && "; // Go to the compiler folder
 	}
-	command += "cd \"" + EngineSettings::compilerPath + "\""; // Go to the compiler folder
+	command += "cd \"" + EngineSettings::values.compilerPath + "\""; // Go to the compiler folder
 	command += " && " + compilerExecFileName; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
@@ -958,7 +958,7 @@ void Compiler::StartGame(Platform platform, const std::string& exportPath)
 	}
 	else if (platform == Platform::P_PSP)
 	{
-		command = "(\"" + EngineSettings::ppssppExePath + "\" \"" + exportPath + "EBOOT.PBP\")";
+		command = "(\"" + EngineSettings::values.ppssppExePath + "\" \"" + exportPath + "EBOOT.PBP\")";
 	}
 
 	if (!command.empty())

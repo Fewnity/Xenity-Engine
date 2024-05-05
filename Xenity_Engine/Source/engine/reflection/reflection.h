@@ -267,6 +267,8 @@ public:
 	*/
 	virtual void OnReflectionUpdated() {};
 
+
+protected:
 	/**
 	* @brief Add a variable to the list of variables (basic type)
 	* @param vector The list of variables
@@ -379,7 +381,6 @@ public:
 	}
 
 private:
-
 	/**
 	* @brief Create a reflection entry
 	* @param vector The list of variables

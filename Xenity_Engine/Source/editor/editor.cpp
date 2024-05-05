@@ -113,7 +113,7 @@ void Editor::OnWindowFocused()
 			ProjectManager::RefreshProjectDirectory();
 		}
 		const bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
-		if (needCompile && EngineSettings::compileOnCodeChanged)
+		if (needCompile && EngineSettings::values.compileOnCodeChanged)
 		{
 			Compiler::HotReloadGame();
 		}
@@ -311,17 +311,17 @@ void Editor::ApplyEditorStyle()
 	// Button 35 69 109
 	// Element selected 56 123 203
 
-	const Vector4 bgColor = EngineSettings::backbgroundColor.GetRGBA().ToVector4();
-	const Vector4 secondaryColor = EngineSettings::secondaryColor.GetRGBA().ToVector4();
-	const Vector4 playTint = EngineSettings::playTintColor.GetRGBA().ToVector4();
+	const Vector4 bgColor = EngineSettings::values.backbgroundColor.GetRGBA().ToVector4();
+	const Vector4 secondaryColor = EngineSettings::values.secondaryColor.GetRGBA().ToVector4();
+	const Vector4 playTint = EngineSettings::values.playTintColor.GetRGBA().ToVector4();
 	Vector4 pTint = Vector4(0);
 
 	if (GameplayManager::GetGameState() != GameState::Stopped)
 		pTint = playTint;
-	else if (!EngineSettings::isPlayTintAdditive)
+	else if (!EngineSettings::values.isPlayTintAdditive)
 		pTint = Vector4(1);
 
-	if (EngineSettings::isPlayTintAdditive)
+	if (EngineSettings::values.isPlayTintAdditive)
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x + pTint.x, bgColor.y + pTint.y, bgColor.z + pTint.z, 1));
 	else
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(bgColor.x * pTint.x, bgColor.y * pTint.y, bgColor.z * pTint.z, 1));

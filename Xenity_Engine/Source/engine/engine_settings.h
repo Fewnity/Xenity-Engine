@@ -8,9 +8,33 @@
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/color/color.h>
 
+class EngineSettingsValues : public Reflective
+{
+public:
+	ReflectiveData GetReflectiveData() override;
+	
+	bool isWireframe = false;
+	int maxLightCount = 2;
+	bool useProfiler = true;
+	bool useDebugger = true;
+	bool useOnlineDebugger = false;
+	std::string compilerPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\";
+	std::string ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWindows64.exe";
+	std::string dockerExePath = "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe";
+
+	bool compileOnCodeChanged = false;
+	bool compileWhenOpeningProject = false;
+
+	Color backbgroundColor = Color::CreateFromRGBAFloat(0.059f, 0.059f, 0.059f, 1);
+	Color secondaryColor = Color::CreateFromRGBAFloat(0.22f, 0.48f, 0.796f, 1);
+	Color playTintColor = Color::CreateFromRGBAFloat(0.2f, 0.0f, 0.0f, 1);
+	bool isPlayTintAdditive = true;
+};
+
 class EngineSettings
 {
 public:
+	static EngineSettingsValues values;
 
 	/**
 	* @brief Save engine settings
@@ -21,23 +45,4 @@ public:
 	* @brief Load engine settings
 	*/
 	static void LoadEngineSettings();
-
-	static bool isWireframe;
-	static int maxLightCount;
-	static bool useProfiler;
-	static bool useDebugger;
-	static bool useOnlineDebugger;
-	static std::string compilerPath;
-	static std::string ppssppExePath;
-	static std::string dockerExePath;
-
-	static bool compileOnCodeChanged;
-	static bool compileWhenOpeningProject;
-
-	static Color backbgroundColor;
-	static Color secondaryColor;
-	static Color playTintColor;
-	static bool isPlayTintAdditive;
-
-	static ReflectiveData GetReflectiveData();
 };

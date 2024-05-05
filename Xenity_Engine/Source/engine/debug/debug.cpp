@@ -35,7 +35,7 @@ MyMutex* debugMutex = nullptr;
  */
 void Debug::PrintError(const std::string& text, bool hideInConsole)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -58,7 +58,7 @@ void Debug::PrintError(const std::string& text, bool hideInConsole)
  */
 void Debug::PrintWarning(const std::string& text, bool hideInConsole)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -83,7 +83,7 @@ void Debug::SendProfilerDataToServer()
 		if (SendProfilerCooldown <= 0)
 		{
 			SendProfilerCooldown = SendProfilerDelay;
-			if (EngineSettings::useProfiler)
+			if (EngineSettings::values.useProfiler)
 			{
 				//Add profiler texts
 				for (const auto& kv : Performance::profilerCategories)
@@ -134,7 +134,7 @@ void Debug::PrintInFile(const std::string& text)
  */
 void Debug::Print(const std::string& text, bool hideInConsole)
 {
-	if (!EngineSettings::useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
@@ -213,7 +213,7 @@ void Debug::ConnectToOnlineConsole()
  */
 int Debug::Init()
 {
-	if (!EngineSettings::useDebugger)
+	if (!EngineSettings::values.useDebugger)
 		return 0;
 
 	debugMutex = new MyMutex("DebugMutex");
