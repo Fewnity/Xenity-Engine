@@ -215,11 +215,11 @@ ReflectiveData Material::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, shader, "shader", true);
-	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
-	Reflective::AddVariable(reflectedVariables, useTransparency, "useTransparency", true);
 	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
 	Reflective::AddVariable(reflectedVariables, offset, "offset", true);
 	Reflective::AddVariable(reflectedVariables, tiling, "tiling", true);
+	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
+	Reflective::AddVariable(reflectedVariables, useTransparency, "useTransparency", true);
 	return reflectedVariables;
 }
 
