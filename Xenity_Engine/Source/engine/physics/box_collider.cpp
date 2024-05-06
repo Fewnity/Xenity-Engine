@@ -39,8 +39,8 @@ void BoxCollider::OnReflectionUpdated()
 
 bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
 {
-	const Vector3 aPos = a->GetTransform()->GetPosition() + a->offset;
-	const Vector3 bPos = b->GetTransform()->GetPosition() + b->offset;
+	const Vector3 aPos = a->GetTransform()->GetPosition();
+	const Vector3 bPos = b->GetTransform()->GetPosition();
 
 	const Vector3 aMinPos = a->min + aPos;
 	const Vector3 aMaxPos = a->max + aPos;
@@ -64,10 +64,10 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 	const Vector3& aPosition = a->GetTransform()->GetPosition();
 	const Vector3& bPosition = b->GetTransform()->GetPosition();
 
-	const Vector3 aMinPos = a->min + aPosition + a->offset + aVelocity;
-	const Vector3 aMaxPos = a->max + aPosition + a->offset + aVelocity;
-	const Vector3 bMinPos = b->min + bPosition + b->offset;
-	const Vector3 bMaxPos = b->max + bPosition + b->offset;
+	const Vector3 aMinPos = a->min + aPosition + aVelocity;
+	const Vector3 aMaxPos = a->max + aPosition + aVelocity;
+	const Vector3 bMinPos = b->min + bPosition;
+	const Vector3 bMaxPos = b->max + bPosition;
 
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -76,8 +76,8 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 
 	if (xColl && yColl && zColl)
 	{
-		const Vector3 aMinPosBef = a->min + aPosition + a->offset;
-		const Vector3 aMaxPosBef = a->max + aPosition + a->offset;
+		const Vector3 aMinPosBef = a->min + aPosition;
+		const Vector3 aMaxPosBef = a->max + aPosition;
 		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
 		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
 		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
@@ -114,7 +114,6 @@ void BoxCollider::OnDrawGizmosSelected()
 
 	Vector3 pos = GetTransform()->GetPosition();
 	pos.x = -pos.x;
-	pos += offset;
 
 	// Bottom vertex
 	const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
@@ -164,8 +163,8 @@ void BoxCollider::SetDefaultSize()
 
 void BoxCollider::CalculateBoundingBox()
 {
-	min = -size / 2.0f;
-	max = size / 2.0f;
+	min = -size / 2.0f + offset;
+	max = size / 2.0f + offset;
 }
 
 void BoxCollider::SetSize(const Vector3& size)

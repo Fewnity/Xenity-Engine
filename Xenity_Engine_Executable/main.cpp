@@ -16,11 +16,12 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
-
+Fix Rigidbody crash when before there was a script crash in a start function
 Multiple gameobject selection
 Rework the documentation
 Mesh drag drop into the scene
 Clean code
+Clear console on build
 
 --- Can be for next release
 New Input system
