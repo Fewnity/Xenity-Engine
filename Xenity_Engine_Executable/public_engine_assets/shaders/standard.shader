@@ -280,7 +280,7 @@ float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 fragPos
 	//float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
 	//float3 tx = (diff * tex2D(textureBase, texcoords).xyz) * light.color; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
-	float3 tx = tex2D(textureBase, (texcoords * tiling) + offset)).xyz * light.color;
+	float3 tx = tex2D(textureBase, (texcoords * tiling) + offset).xyz * light.color;
 	return tx;
 }
 
@@ -292,7 +292,7 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float3
 	
 	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
 
-	float3 diffuse = (diff * tex2D(textureBase, (texcoords * tiling) + offset)).xyz) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	float3 diffuse = (diff * tex2D(textureBase, (texcoords * tiling) + offset).xyz) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//float3 tx = tex2D(textureBase, texcoords).xyz * light.color;
 
@@ -324,6 +324,6 @@ void main()
 		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, viewDir, TexCoord);
 	}
 
-	float alpha = tex2D(material.diffuse, TexCoord).a;
+	float alpha = tex2D(material.diffuse, (TexCoord * tiling) + offset).a;
 	gl_FragColor = vec4(result, alpha); //Add texture color
 }
