@@ -94,6 +94,8 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 
 CompileResult Compiler::Compile(CompilerParams params)
 {
+	Debug::ClearDebugLogs();
+
 	// Ensure path are absolute
 	const std::string root = fs::current_path().string();
 	params.tempPath = MakePathAbsolute(params.tempPath, root);
