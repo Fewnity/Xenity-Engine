@@ -7,10 +7,12 @@
 
 class RigidBody;
 class BoxCollider;
+class Collider;
 
 struct RaycastHit 
 {
 	std::weak_ptr<GameObject> hitGameObject;
+	std::weak_ptr<Collider> hitCollider;
 	Vector3 hitPosition = Vector3(0,0,0);
 	float distance = 0;
 };

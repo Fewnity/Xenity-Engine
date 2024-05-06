@@ -10,6 +10,7 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 {
 	RaycastHit nearestHit;
 	nearestHit.hitGameObject.reset();
+	nearestHit.hitCollider.reset();
 
 	const int colliderCount = PhysicsManager::boxColliders.size();
 	for (int i = 0; i < colliderCount; i++)
@@ -66,6 +67,7 @@ bool Raycast::Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3&
 				found = true;
 				raycastHit.distance = tmin;
 				raycastHit.hitGameObject = sharedboxCollider->GetGameObject();
+				raycastHit.hitCollider = sharedboxCollider;
 				raycastHit.hitPosition = (direction * tmin) + startPosition;
 			}
 		}
