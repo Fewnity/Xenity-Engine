@@ -44,21 +44,21 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<uint64_t> usedFilesIds;
 
+	// Use ordered json to keep gameobject's order
 	ordered_json j;
 
 	j["Version"] = sceneVersion;
 
-	const int gameObjectCount = GameplayManager::gameObjectCount;
-	for (int goI = 0; goI < gameObjectCount; goI++)
+	// For each gameobject:
+	for (std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
 	{
-		std::shared_ptr<GameObject>& go = GameplayManager::gameObjects[goI];
-		const std::string goId = std::to_string(go->GetUniqueId());
+		const std::string gameObjectId = std::to_string(go->GetUniqueId());
 
 		// Save GameObject's and Transform's values
-		j["GameObjects"][goId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
-		j["GameObjects"][goId]["Values"] = ReflectionUtils::ReflectiveToJson(*go.get());
+		j["GameObjects"][gameObjectId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
+		j["GameObjects"][gameObjectId]["Values"] = ReflectionUtils::ReflectiveToJson(*go.get());
 
-		// Save GameObject's childs ids
+		// Save GameObject's children ids
 		std::vector<uint64_t> ids;
 		const int childCount = go->GetChildrenCount();
 		for (int childI = 0; childI < childCount; childI++)
@@ -71,48 +71,57 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			usedIds[id] = true;
 			ids.push_back(id);
 		}
-		j["GameObjects"][goId]["Childs"] = ids;
+		j["GameObjects"][gameObjectId]["Children"] = ids;
 
 		// Save components values
-		const int componentCount = go->GetComponentCount();
-		for (int componentI = 0; componentI < componentCount; componentI++)
+		//const int componentCount = go->GetComponentCount();
+		//for (int componentI = 0; componentI < componentCount; componentI++)
+		for (std::shared_ptr<Component>& component : go->components)
 		{
-			std::shared_ptr<Component>& component = go->components[componentI];
 			const uint64_t compId = component->GetUniqueId();
 			const std::string compIdString = std::to_string(compId);
 			if (usedIds[compId])
 			{
-				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + std::to_string(compId), true);
+				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + compIdString, true);
 			}
 			usedIds[compId] = true;
 
-			if (std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component))
+			ReflectiveData componentData = component->GetReflectiveData();
+
+			std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
+			// If the component is valide, save values
+			if (!missingScript)
 			{
-				j["GameObjects"][goId]["Components"][compIdString] = missingScript->data;
+				j["GameObjects"][gameObjectId]["Components"][compIdString]["Type"] = component->GetComponentName();
+				j["GameObjects"][gameObjectId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveDataToJson(componentData);
+				j["GameObjects"][gameObjectId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
 			}
-			else 
+			else
 			{
-				j["GameObjects"][goId]["Components"][compIdString]["Type"] = component->GetComponentName();
-				j["GameObjects"][goId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveToJson((*component.get()));
-				j["GameObjects"][goId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
+				// Or save component raw values
+				j["GameObjects"][gameObjectId]["Components"][compIdString] = missingScript->data;
 			}
 
-			ReflectiveData componentData = component->GetReflectiveData();
+			// Get all files ids used by the component
 			FileReferenceFinder::GetUsedFilesInReflectiveData(usedFilesIds, componentData);
 		}
 	}
 
+	// Save lighting data
 	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::settings.GetReflectiveData());
 
+	// Add skybox file to the usedFile list
 	if (Graphics::settings.skybox != nullptr)
 		usedFilesIds.push_back(Graphics::settings.skybox->fileId);
+
+	// Save the usedFilesIds list
 	j["UsedFiles"]["Values"] = usedFilesIds;
 
-	if (saveType == SaveSceneType::SaveSceneForPlayState)
+	if (saveType == SaveSceneType::SaveSceneForPlayState) // Save Scene in a temporary json to restore it after quitting play mode
 	{
 		savedSceneData = j;
 	}
-	else if (saveType == SaveSceneType::SaveSceneForHotReloading)
+	else if (saveType == SaveSceneType::SaveSceneForHotReloading)// Save Scene in a temporary json to restore it after compiling the game
 	{
 		savedSceneDataHotReloading = j;
 	}
@@ -126,7 +135,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		}
 		else
 		{
-			path = EditorUI::SaveFileDialog("Save scene", ProjectManager::GetAssetFolderPath());
+			path = EditorUI::SaveFileDialog("Save Scene", ProjectManager::GetAssetFolderPath());
 		}
 
 		// If there is no error, save the file
@@ -179,6 +188,7 @@ bool SceneManager::OnQuit()
 #if defined(EDITOR)
 	if (sceneModified)
 	{
+		// Ask if the user wants to save the scene or not if the quit the scene
 		const DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
 		if (result == DialogResult::Dialog_YES)
 		{
@@ -191,10 +201,11 @@ bool SceneManager::OnQuit()
 	}
 #endif
 	return cancel;
-}
+		}
 
 void SceneManager::LoadScene(const ordered_json& jsonData)
 {
+	// Automaticaly start the game if built in engine mode
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Starting, true);
 #endif
@@ -210,15 +221,17 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		for (const auto& gameObjectKV : jsonData["GameObjects"].items())
 		{
 			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+			// Set gameobject id
 			const uint64_t id = std::stoull(gameObjectKV.key());
 			newGameObject->SetUniqueId(id);
 			if (id > biggestId)
 			{
 				biggestId = id;
 			}
+			// Fill gameobjet's values from json
 			ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
 
-			// Create components
+			// Create components if there is any
 			if (gameObjectKV.value().contains("Components"))
 			{
 				for (auto& componentKV : gameObjectKV.value()["Components"].items())
@@ -258,23 +271,23 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			}
 		}
 
+		// Set the current unique id counter to the biggestId found in the scene
 		UniqueId::lastUniqueId = biggestId;
 
 		// Set gameobjects parents
 		for (auto& kv : jsonData["GameObjects"].items())
 		{
-			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
-			if (go)
+			const std::shared_ptr<GameObject> parentGameObject = FindGameObjectById(std::stoull(kv.key()));
+			// Check if the parent has children
+			if (parentGameObject && kv.value().contains("Children"))
 			{
-				if (kv.value().contains("Childs"))
+				// For each child, set his parent
+				for (const auto& kv2 : kv.value()["Children"].items())
 				{
-					for (const auto& kv2 : kv.value()["Childs"].items())
+					std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
+					if (goChild)
 					{
-						std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
-						if (goChild)
-						{
-							goChild->SetParent(go);
-						}
+						goChild->SetParent(parentGameObject);
 					}
 				}
 			}
@@ -286,21 +299,25 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
 			if (go)
 			{
+				// Update transform
 				std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 				transform->isTransformationMatrixDirty = true;
 				transform->UpdateWorldValues();
 
+				// If the gameobject has components
 				if (kv.value().contains("Components"))
 				{
+					const int componentCount = go->GetComponentCount();
+					// Find the component with the Id
 					for (const auto& kv2 : kv.value()["Components"].items())
 					{
-						const int componentCount = go->GetComponentCount();
 						for (int compI = 0; compI < componentCount; compI++)
 						{
 							std::shared_ptr<Component> component = go->components[compI];
 							if (component->GetUniqueId() == std::stoull(kv2.key()))
 							{
+								// Fill values
 								ReflectionUtils::JsonToReflective(kv2.value(), *component.get());
 								break;
 							}
@@ -345,6 +362,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				}
 			}
 
+			// Call components Awake() function
 			for (int i = 0; i < componentsToInitCount; i++)
 			{
 				std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
@@ -361,16 +379,18 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		UniqueId::lastUniqueId = 0;
 	}
 
+	// Load lighting values
 	if (jsonData.contains("Lighting"))
 	{
 		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::settings.GetReflectiveData());
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
 
+	// Automaticaly set the game in play mode if built in engine mode
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Playing, true);
 #endif
-}
+	}
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
@@ -379,6 +399,8 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		return;
 
 	Debug::Print("Loading scene...", true);
+
+	// Get scene file and read all data
 	std::shared_ptr<File> jsonFile = scene->file;
 	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 	if (isOpen)
