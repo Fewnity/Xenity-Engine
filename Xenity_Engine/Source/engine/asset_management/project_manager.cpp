@@ -90,7 +90,12 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
 {
 	uint64_t id = -1;
-	const std::string metaFilePath = file->GetPath() + META_EXTENSION;
+	std::string metaFilePath = file->GetPath() + META_EXTENSION;
+#if defined(__vita__)
+	metaFilePath = metaFilePath.substr(4);
+#elif defined(_EE)
+	metaFilePath = metaFilePath.substr(5);
+#endif
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
 
 	if (!metaFile->CheckIfExist()) // If there is not meta for this file

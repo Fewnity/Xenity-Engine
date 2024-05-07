@@ -21,7 +21,7 @@ Multiple gameobject selection
 Rework the documentation
 Mesh drag drop into the scene
 Clean code
-Clear console on build
+First PSP frame doest not use light
 
 --- Can be for next release
 New Input system

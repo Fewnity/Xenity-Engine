@@ -64,16 +64,9 @@ public:
 	/**
 	* @brief Get file path
 	*/
-	//const std::string& GetPath() const
-	std::string GetPath() const
+	const std::string& GetPath() const
 	{
-#if defined(__vita__)
-		return path.substr(4);
-#elif defined(_EE)
-		return path.substr(5);
-#else
 		return path;
-#endif
 	}
 
 	/**
