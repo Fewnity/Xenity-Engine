@@ -35,10 +35,11 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 
 bool Raycast::Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)
 {
+	const float epsilon = 1e-6f;
 	Vector3 dirfrac;
-	dirfrac.x = 1.0f / direction.x;
-	dirfrac.y = 1.0f / direction.y;
-	dirfrac.z = 1.0f / direction.z;
+	dirfrac.x = (fabs(direction.x) < epsilon) ? 1.0f : 1.0f / direction.x;
+	dirfrac.y = (fabs(direction.y) < epsilon) ? 1.0f : 1.0f / direction.y;
+	dirfrac.z = (fabs(direction.z) < epsilon) ? 1.0f : 1.0f / direction.z;
 
 	bool found = false;
 	if (auto sharedboxCollider = boxCollider.lock())
