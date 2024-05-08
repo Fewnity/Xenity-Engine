@@ -64,7 +64,7 @@ private:
 	class Tile
 	{
 	public:
-		bool isObstacle = false;
+		Tile* previousTile = nullptr;
 		int g = 0;
 		int h = 0;
 		int f = 0; // = g + h
@@ -72,7 +72,7 @@ private:
 		int y = 0;
 
 		bool closed = false;
-		Tile* previousTile = nullptr;
+		bool isObstacle = false;
 		bool inList = false;
 	};
 

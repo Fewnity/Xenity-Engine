@@ -5,9 +5,8 @@
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
 
-UnitTest::UnitTest(const std::string& name)
+UnitTest::UnitTest(const std::string& _name) : name(_name)
 {
-	this->name = name;
 }
 
 void UnitTestManager::StartAllTests()

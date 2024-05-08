@@ -100,7 +100,7 @@ private:
 	std::uniform_real_distribution<float>boxZDistribution;
 
 	bool isBillboard = true;
-	float spawnRate = 0;
+	float spawnRate = 1;
 	float timer = 0;
 	float maxParticles = 10;
 	Color color = Color::CreateFromRGBAFloat(1, 1, 1, 1);

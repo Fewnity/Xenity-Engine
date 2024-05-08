@@ -30,8 +30,7 @@ void Astar::SetGridSize(int xSize, int ySize)
 
 void Astar::DeleteGrid()
 {
-	if (grid)
-		free(grid);
+	free(grid);
 }
 
 Astar::~Astar()

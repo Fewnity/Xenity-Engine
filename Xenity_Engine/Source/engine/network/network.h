@@ -39,7 +39,7 @@ public:
 	/**
 	* @brief Return recieved data during this frame
 	*/
-	std::string GetIncommingData() const
+	const std::string& GetIncommingData() const
 	{
 		return incommingData;
 	}

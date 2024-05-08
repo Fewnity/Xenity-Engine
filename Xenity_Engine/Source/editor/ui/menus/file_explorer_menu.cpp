@@ -174,15 +174,16 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		const bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
 		if (dropFileInFolder)
 		{
-			int copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath(), item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension(), false);
+			std::shared_ptr<File>& file = fileRef->file;
+			int copyResult = FileSystem::fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
 			if (copyResult == 0)
 			{
-				copyResult = FileSystem::fileSystem->CopyFile(fileRef->file->GetPath() + ".meta", item.directory->path + fileRef->file->GetFileName() + fileRef->file->GetFileExtension() + ".meta", false);
+				copyResult = FileSystem::fileSystem->CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
 
 				if (copyResult == 0)
 				{
-					FileSystem::fileSystem->Delete(fileRef->file->GetPath());
-					FileSystem::fileSystem->Delete(fileRef->file->GetPath() + ".meta");
+					FileSystem::fileSystem->Delete(file->GetPath());
+					FileSystem::fileSystem->Delete(file->GetPath() + ".meta");
 				}
 			}
 
@@ -400,6 +401,9 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 		}
 		case FileType::File_Shader:
 			tex = EditorUI::icons[(int)IconName::Icon_Shader];
+			break;
+
+		case FileType::File_Other:
 			break;
 		}
 	}

@@ -13,6 +13,12 @@ FileDefault::FileDefault(std::string _path) : File(_path)
 {
 }
 
+
+FileDefault::~FileDefault()
+{
+	Close();
+}
+
 void FileDefault::Close()
 {
 	if (file.is_open())

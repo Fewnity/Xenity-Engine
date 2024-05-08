@@ -28,16 +28,16 @@ class PlayedSound
 {
 public:
 	~PlayedSound();
+	uint64_t seekPosition = 0;
 	AudioClipStream* audioClipStream = nullptr;
 	std::weak_ptr<AudioSource> audioSource;
 	short* buffer = nullptr;
 	int seekNext = 0;
-	uint64_t seekPosition = 0;
+	float volume = 1;
+	float pan = 0.5;
 	bool needFillFirstHalfBuffer = false;
 	bool needFillSecondHalfBuffer = false;
 
-	float volume = 1;
-	float pan = 0.5;
 	bool loop = true;
 	bool isPlaying = false;
 };

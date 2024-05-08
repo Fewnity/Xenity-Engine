@@ -205,7 +205,7 @@ void InspectorMenu::DrawFilePreview()
 		}
 
 		ImGui::Text("Preview:");
-		ImGui::BeginChild("Preview", ImVec2(0, sizeY), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::BeginChild("Preview", ImVec2(0, sizeY), ImGuiChildFlags_Border, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		if (!previewText.empty()) // Draw text preview
 		{
@@ -226,7 +226,6 @@ void InspectorMenu::DrawFilePreview()
 
 			//Draw text background
 			const ImVec2 childWindowPos = ImGui::GetWindowPos();
-			ImDrawList* draw_list = ImGui::GetWindowDrawList();
 			const ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
 			const ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
 			draw_list->AddRectFilled(rectTopLeftPos, rectBottomRightPos, ImColor(ImVec4(0, 0, 0, 0.35f)));

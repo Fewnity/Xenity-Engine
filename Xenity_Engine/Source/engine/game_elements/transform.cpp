@@ -15,9 +15,8 @@
 
 #pragma region Constructors
 
-Transform::Transform(const std::shared_ptr<GameObject>& gameObject)
+Transform::Transform(const std::shared_ptr<GameObject>& _gameObject) : gameObject(_gameObject)
 {
-	this->gameObject = gameObject;
 	UpdateTransformationMatrix();
 }
 
@@ -407,5 +406,5 @@ Vector3 Transform::GetLocalRotationFromWorldRotations(const Vector3& childWorldR
 	y = glm::degrees(y);
 	z = glm::degrees(z);
 
-	return Vector3(y, x, z);
+	return Vector3(y, x, z); // and not x, y, z
 }

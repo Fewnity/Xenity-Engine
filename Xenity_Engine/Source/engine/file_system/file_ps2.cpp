@@ -28,6 +28,11 @@ FilePS2::FilePS2(std::string _path) : File(_path)
 {
 }
 
+FilePS2::~FilePS2()
+{
+	Close();
+}
+
 void FilePS2::Close()
 {
 	if (fileId >= 0)

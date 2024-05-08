@@ -56,17 +56,17 @@ public:
 	{
 	public:
 		SubMesh() = default;
-		unsigned int index_count = 0;
 		unsigned short *indices = nullptr;
-		unsigned int vertice_count = 0;
+		MeshData* meshData = nullptr;
 		void *data = nullptr;
+		unsigned int index_count = 0;
+		unsigned int vertice_count = 0;
 #if defined(_EE)
 		VECTOR *c_verts = nullptr;
 		VECTOR *c_colours = nullptr;
 		VECTOR *c_st = nullptr;
 		packet2_t *meshPacket = nullptr;
 #endif
-		MeshData* meshData = nullptr;
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;

@@ -138,7 +138,7 @@ void Editor::Update()
 		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::D)))
 		{
 			std::vector <std::shared_ptr<GameObject>> selectedGameObjectsToCheck;
-			for (auto weakGo : GetSelectedGameObjects())
+			for (auto& weakGo : GetSelectedGameObjects())
 			{
 				selectedGameObjectsToCheck.push_back(weakGo.lock());
 			}
@@ -151,9 +151,11 @@ void Editor::Update()
 				{
 					newGameObject->SetParent(gameObjectToDuplicate->GetParent().lock());
 				}
-				newGameObject->GetTransform()->SetLocalPosition(gameObjectToDuplicate->GetTransform()->GetLocalPosition());
-				newGameObject->GetTransform()->SetLocalRotation(gameObjectToDuplicate->GetTransform()->GetLocalRotation());
-				newGameObject->GetTransform()->SetLocalScale(gameObjectToDuplicate->GetTransform()->GetLocalScale());
+				std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
+				std::shared_ptr<Transform> transformToDuplicate = gameObjectToDuplicate->GetTransform();
+				newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
+				newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
+				newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 				SetSelectedGameObject(newGameObject);
 			}
 		}
@@ -223,7 +225,7 @@ void Editor::Update()
 		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::O)))
 		{
 			std::vector <std::shared_ptr<GameObject>> goToCheck;
-			for (auto weakGo : GetSelectedGameObjects())
+			for (auto& weakGo : GetSelectedGameObjects())
 			{
 				goToCheck.push_back(weakGo.lock());
 
@@ -478,7 +480,7 @@ bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObje
 	return false;
 }
 
-std::vector<std::weak_ptr<GameObject>> Editor::GetSelectedGameObjects()
+const std::vector<std::weak_ptr<GameObject>>& Editor::GetSelectedGameObjects()
 {
 	return selectedGameObjects;
 }
@@ -551,7 +553,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	return newFile;
 }
 
-void Editor::OpenExplorerWindow(std::string path, bool isSelected)
+void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 {
 	std::string command = "explorer.exe ";
 	if (isSelected)
@@ -649,7 +651,7 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 	}
 }
 
-std::string Editor::GetIncrementedGameObjectName(std::string name)
+std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 {
 	std::string finalName = "";
 	int number = 1;
@@ -733,7 +735,6 @@ bool Editor::IsParentOf(const std::shared_ptr<GameObject>&parent, const std::sha
 	if (parent == nullptr || child == nullptr)
 		return false;
 
-	std::shared_ptr<GameObject> currentGameObject = child;
 	for (std::weak_ptr<GameObject> curChild : parent->GetChildren())
 	{
 		if (auto curChildLock = curChild.lock()) 

@@ -153,7 +153,7 @@ private:
 	* @param objectAddress: Address of the object (0 if no object is used)
 	* @param callableFunction: Address of the function
 	*/
-	void AddFunction(const ADDR_SIZE functionAddress, const ADDR_SIZE objectAddress, const std::function<void(Args...)> callableFunction)
+	void AddFunction(const ADDR_SIZE functionAddress, const ADDR_SIZE objectAddress, const std::function<void(Args...)>& callableFunction)
 	{
 		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
 		if (funcIndex == -1)

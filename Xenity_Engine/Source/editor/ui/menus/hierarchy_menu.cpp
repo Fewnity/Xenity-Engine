@@ -18,7 +18,7 @@ void HierarchyMenu::Draw()
 	{
 		OnStartDrawing();
 
-		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), true);
+		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), ImGuiChildFlags_Border);
 
 		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		bool disableDrag = false;
@@ -62,11 +62,6 @@ void HierarchyMenu::Draw()
 			rightClickedElement.reset();
 		}
 
-		std::function<void()> destroyGameObjectFunc = [this]()
-			{
-				Destroy(rightClickedElement);
-				rightClickedElement.reset();
-			};
 
 		// Start creating right click menu
 		RightClickMenu backgroundRightClickMenu = RightClickMenu("HierarchyRightClickMenu");
@@ -74,6 +69,12 @@ void HierarchyMenu::Draw()
 
 		if (rightClickState != RightClickMenuState::Closed)
 		{
+		std::function<void()> destroyGameObjectFunc = [this]()
+			{
+				Destroy(rightClickedElement);
+				rightClickedElement.reset();
+			};
+
 			const int selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
 			const bool hasSelectedGameObject = selectedGameObjectCount != 0;
 			const bool hasOneSelectedGameObject = selectedGameObjectCount == 1;

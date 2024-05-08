@@ -76,7 +76,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	int playedSoundsCount = (int)channel->playedSoundsCount;
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
-		std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
+		const std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
 #if defined(EDITOR)
 		if (sound->isPlaying && ((sound->audioSource.lock() && sound->audioSource.lock()->isEditor) || GameplayManager::GetGameState() == GameState::Playing))
 #else
@@ -406,10 +406,8 @@ void AudioManager::Stop()
 	waveOutUnprepareHeader(hWaveOut, &waveHdr[1], sizeof(WAVEHDR));
 	waveOutClose(hWaveOut);
 
-	if (audioData)
-		free(audioData);
-	if (audioData2)
-		free(audioData2);
+	free(audioData);
+	free(audioData2);
 
 #endif
 }
@@ -417,8 +415,7 @@ void AudioManager::Stop()
 PlayedSound::~PlayedSound()
 {
 	delete audioClipStream;
-	if (buffer)
-		free(buffer);
+	free(buffer);
 }
 
 void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)

@@ -6,9 +6,8 @@ bool RightClickMenu::isFocusCorrect = false;
 bool RightClickMenu::isDrawn = false;
 std::string RightClickMenu::isDrawnName = "";
 
-RightClickMenu::RightClickMenu(const std::string& uniqueName)
+RightClickMenu::RightClickMenu(const std::string& uniqueName) : nameId(uniqueName)
 {
-	this->nameId = uniqueName;
 }
 
 RightClickMenu::~RightClickMenu()
@@ -101,7 +100,7 @@ bool RightClickMenu::Draw()
 	return drawn;
 }
 
-RightClickMenuItem* RightClickMenu::AddItem(const std::string& title, const std::function<void()> onClickFunction)
+RightClickMenuItem* RightClickMenu::AddItem(const std::string& title, const std::function<void()>& onClickFunction)
 {
 	RightClickMenuItem* newItem = new RightClickMenuItem();
 	newItem->SetTitle(title);

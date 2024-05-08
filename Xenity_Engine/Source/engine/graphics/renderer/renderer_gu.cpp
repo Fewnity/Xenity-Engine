@@ -290,7 +290,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 	DrawSubMesh(subMesh, material, material->texture, settings);
 }
 
-void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
+void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings)
 {
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
 	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */

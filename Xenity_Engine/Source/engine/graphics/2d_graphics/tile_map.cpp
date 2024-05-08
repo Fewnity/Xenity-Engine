@@ -68,8 +68,7 @@ void Tilemap::Setup(int _width, int _height, int _chunkSize)
 
 	this->chunkSize = _chunkSize;
 
-	if (tiles != nullptr)
-		free(tiles);
+	free(tiles);
 
 	// Add empty texture to make empty tiles
 	AddTexture(nullptr);

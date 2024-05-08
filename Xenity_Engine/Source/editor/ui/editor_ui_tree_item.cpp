@@ -132,8 +132,9 @@ bool EditorUI::DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGame
 
 			if (gameObjectIndex != gameObjectToMoveIndex && (gameObjectIndex != -1 || newParent == dropAreaOwner) && gameObjectToMoveIndex != -1)
 			{
-				newParent->GetChildren().erase(newParent->GetChildren().begin() + gameObjectToMoveIndex);
-				newParent->GetChildren().insert(newParent->GetChildren().begin() + (gameObjectIndex + 1), droppedGameObject);
+				std::vector<std::weak_ptr<GameObject>>& parentChildren = newParent->GetChildren();
+				parentChildren.erase(parentChildren.begin() + gameObjectToMoveIndex);
+				parentChildren.insert(parentChildren.begin() + (gameObjectIndex + 1), droppedGameObject);
 			}
 		}
 		return true;

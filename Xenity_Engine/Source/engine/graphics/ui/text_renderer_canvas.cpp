@@ -118,8 +118,7 @@ void TextRendererCanvas::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (isTextInfoDirty)
 	{
-		if (textInfo)
-			delete textInfo;
+		delete textInfo;
 		if (mesh)
 			mesh.reset();
 		textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);

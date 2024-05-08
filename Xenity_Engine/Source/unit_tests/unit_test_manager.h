@@ -6,7 +6,7 @@ class UnitTest
 {
 public:
 	UnitTest() = delete;
-	UnitTest(const std::string& name);
+	UnitTest(const std::string& _name);
 	virtual bool Start(std::string& errorOut) = 0;
 
 	/**

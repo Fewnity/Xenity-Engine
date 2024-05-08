@@ -17,6 +17,11 @@ FilePSP::FilePSP(std::string _path) : File(_path)
 {
 }
 
+FilePSP::~FilePSP()
+{
+	Close();
+}
+
 void FilePSP::Close()
 {
 	if (fileId >= 0)

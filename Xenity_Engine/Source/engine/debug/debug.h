@@ -70,7 +70,7 @@ public:
 	/**
 	* @brief [Internal] Get all the debug text into a string
 	*/
-	static std::string GetDebugString()
+	static const std::string& GetDebugString()
 	{
 		return debugText;
 	}

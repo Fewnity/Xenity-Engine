@@ -143,9 +143,8 @@ private:
 	bool lastValue;
 };
 
-inline InspectorGameObjectSetActiveCommand::InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> target, bool newValue, bool lastValue)
+inline InspectorGameObjectSetActiveCommand::InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> _target, bool newValue, bool lastValue) : target(_target)
 {
-	this->target = target;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
 }
@@ -184,9 +183,8 @@ private:
 	Vector3 lastValue;
 };
 
-inline InspectorTransformSetLocalPositionCommand::InspectorTransformSetLocalPositionCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue)
+inline InspectorTransformSetLocalPositionCommand::InspectorTransformSetLocalPositionCommand(std::weak_ptr<Transform> _target, Vector3 newValue, Vector3 lastValue) : target(_target)
 {
-	this->target = target;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
 }
@@ -224,9 +222,8 @@ private:
 	Vector3 lastValue;
 };
 
-inline InspectorTransformSetLocalRotationCommand::InspectorTransformSetLocalRotationCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue)
+inline InspectorTransformSetLocalRotationCommand::InspectorTransformSetLocalRotationCommand(std::weak_ptr<Transform> _target, Vector3 newValue, Vector3 lastValue) : target(_target)
 {
-	this->target = target;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
 }
@@ -264,11 +261,8 @@ private:
 	Vector3 lastValue;
 };
 
-inline InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue)
+inline InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(std::weak_ptr<Transform> _target, Vector3 _newValue, Vector3 _lastValue) : target(_target), newValue(_newValue), lastValue(_lastValue)
 {
-	this->target = target;
-	this->newValue = newValue;
-	this->lastValue = lastValue;
 }
 
 inline void InspectorTransformSetLocalScaleCommand::Execute()
@@ -296,7 +290,7 @@ class InspectorAddComponentCommand : public Command
 {
 public:
 	InspectorAddComponentCommand() = delete;
-	InspectorAddComponentCommand(std::weak_ptr<GameObject> target, std::string componentName);
+	InspectorAddComponentCommand(std::weak_ptr<GameObject> target, const std::string& componentName);
 	void Execute() override;
 	void Undo() override;
 
@@ -306,9 +300,8 @@ private:
 	uint64_t targetId = 0;
 };
 
-inline InspectorAddComponentCommand::InspectorAddComponentCommand(std::weak_ptr<GameObject> target, std::string componentName)
+inline InspectorAddComponentCommand::InspectorAddComponentCommand(std::weak_ptr<GameObject> target, const std::string& _componentName) : componentName(_componentName)
 {
-	this->componentName = componentName;
 	if (target.lock())
 		targetId = target.lock()->GetUniqueId();
 }
@@ -352,7 +345,7 @@ class InspectorCreateGameObjectCommand : public Command
 {
 public:
 	InspectorCreateGameObjectCommand() = delete;
-	InspectorCreateGameObjectCommand(std::vector<std::weak_ptr<GameObject>> targets, int mode);
+	InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& targets, int mode);
 	void Execute() override;
 	void Undo() override;
 	std::vector<std::weak_ptr<GameObject>> createdGameObjects;
@@ -362,9 +355,8 @@ private:
 	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
 };
 
-inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(std::vector<std::weak_ptr<GameObject>> targets, int mode)
+inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& _targets, int mode) : targets(_targets)
 {
-	this->targets = targets;
 	this->mode = mode;
 }
 
@@ -489,10 +481,11 @@ private:
 template<typename T>
 inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
 {
-	this->target = componentToDestroy.lock()->GetGameObject();
-	this->componentId = componentToDestroy.lock()->GetUniqueId();
-	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.lock()->GetReflectiveData());
-	this->componentName = componentToDestroy.lock()->GetComponentName();
+	std::shared_ptr<T> componentToDestroyLock = componentToDestroy.lock();
+	this->target = componentToDestroyLock->GetGameObject();
+	this->componentId = componentToDestroyLock->GetUniqueId();
+	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
+	this->componentName = componentToDestroyLock->GetComponentName();
 }
 
 template<typename T>
@@ -534,10 +527,9 @@ private:
 };
 
 template<typename T>
-inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData)
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData) : componentData(newComponentData)
 {
 	this->componentId = componentToUse.lock()->GetUniqueId();
-	this->componentData = newComponentData;
 	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
 	this->componentName = componentToUse.lock()->GetComponentName();
 }
@@ -579,10 +571,9 @@ private:
 	nlohmann::json oldTransformData;
 };
 
-inline InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newTransformDataData)
+inline InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newTransformDataData) : transformData(newTransformDataData)
 {
 	this->transformtId = componentToUse.lock()->GetGameObject()->GetUniqueId();
-	this->transformData = newTransformDataData;
 	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
 }
 

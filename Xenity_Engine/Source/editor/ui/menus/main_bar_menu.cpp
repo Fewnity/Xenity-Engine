@@ -59,8 +59,8 @@ void MainBarMenu::Init()
 template<typename T>
 inline void MainBarMenu::AddComponentToSelectedGameObject()
 {
-	std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
-	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
+	for (const std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
 		if(!currentGameObject.lock())
 			continue;
@@ -390,8 +390,8 @@ void MainBarMenu::Draw()
 			{
 				if (ImGui::MenuItem(componentNames[i].c_str(), nullptr, nullptr, hasSelectedGameObject))
 				{
-					std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
-					for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+					const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
+					for (const std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 					{
 						if (currentGameObject.lock()) 
 						{
@@ -523,15 +523,16 @@ void MainBarMenu::Draw()
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + height));
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 0));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
-	const float oldBorderSize = ImGui::GetStyle().WindowBorderSize;
-	ImGui::GetStyle().WindowBorderSize = 0;
+	ImGuiStyle& style = ImGui::GetStyle();
+	const float oldBorderSize = style.WindowBorderSize;
+	style.WindowBorderSize = 0;
 	ImGui::Begin("undermainbar", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	height += ImGui::GetWindowHeight();
 	
-	const float oldFramePadding = ImGui::GetStyle().FramePadding.x;
-	ImGui::GetStyle().FramePadding.x = 14;
-	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + ImGui::GetStyle().ItemSpacing.x * 2 + ImGui::GetStyle().FramePadding.x * 6) / 2.0f);
+	const float oldFramePadding = style.FramePadding.x;
+	style.FramePadding.x = 14;
+	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + style.ItemSpacing.x * 2 + style.FramePadding.x * 6) / 2.0f);
 	ImGui::BeginGroup();
 	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[(int)IconName::Icon_Play]);
 	ImGui::SameLine();
@@ -539,7 +540,7 @@ void MainBarMenu::Draw()
 	ImGui::SameLine();
 	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Stop]);
 	ImGui::EndGroup();
-	ImGui::GetStyle().FramePadding.x = oldFramePadding;
+	style.FramePadding.x = oldFramePadding;
 
 	if (playClicked)
 	{
@@ -555,6 +556,6 @@ void MainBarMenu::Draw()
 	}
 
 	ImGui::End();
-	ImGui::GetStyle().WindowBorderSize = oldBorderSize;
+	style.WindowBorderSize = oldBorderSize;
 	ImGui::PopStyleVar();
 }

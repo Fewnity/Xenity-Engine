@@ -81,7 +81,7 @@ public:
 	* @param path Path of the file
 	* @param isSelected If the file should be selected in the file explorer
 	*/
-	static void OpenExplorerWindow(std::string path, bool isSelected);
+	static void OpenExplorerWindow(const std::string& path, bool isSelected);
 
 	/**
 	* @brief Add a file into a wait list from drag and drop
@@ -266,7 +266,7 @@ public:
 	/**
 	* @brief Get selected GameObjects
 	*/
-	static std::vector<std::weak_ptr<GameObject>> GetSelectedGameObjects();
+	static const std::vector<std::weak_ptr<GameObject>>& GetSelectedGameObjects();
 
 	/**
 	* @brief Start folder copy
@@ -276,7 +276,7 @@ public:
 	/**
 	* @brief Get the name of a GameObject incremented by the number of GameObjects with the same name
 	*/
-	static std::string GetIncrementedGameObjectName(std::string name);
+	static std::string GetIncrementedGameObjectName(const std::string& name);
 
 	/**
 	* @brief Apply editor style to all next ImGui calls

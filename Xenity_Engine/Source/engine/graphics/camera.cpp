@@ -392,7 +392,7 @@ Vector3 Camera::GetMouseRay()
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(width - InputSystem::mousePosition.x, height - (height - InputSystem::mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(width - InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
 	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, projection, glm::vec4(0, 0, width, height));

@@ -193,7 +193,7 @@ void Graphics::Draw()
 
 			drawAllBenchmark->Start();
 
-			for (auto& renderQueue : renderBatch.renderQueues)
+			for (const auto& renderQueue : renderBatch.renderQueues)
 			{
 				const int commandCount = renderQueue.second.commandIndex;
 				for (int commandIndex = 0; commandIndex < commandCount; commandIndex++)
@@ -567,8 +567,8 @@ void Graphics::CheckLods()
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
-	std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
-	for (std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
+	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
+	for (const std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
 	{
 		std::shared_ptr<GameObject> selectedGO = selectedGOWeak.lock();
 		if (!selectedGO)

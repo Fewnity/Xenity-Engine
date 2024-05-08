@@ -21,7 +21,7 @@ struct GameObjectAndId
 	uint64_t oldId = 0;
 };
 
-void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_ptr<GameObject> goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
+void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
 {
 	// Create new gameobject
 	std::string newGameObjectName = goToDuplicate->GetName();
@@ -38,13 +38,10 @@ void DuplicateChild(const std::shared_ptr<GameObject> parent, const std::shared_
 	if (parent != nullptr)
 	{
 		newGameObject->SetParent(parent);
-	}
 
-	// Set local position/rotation/scale
-	std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
-	std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
-	if (parent)
-	{
+		// Set local position/rotation/scale
+		std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
+		std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
 		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
 		newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());

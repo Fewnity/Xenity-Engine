@@ -175,7 +175,7 @@ void Compiler::Init()
 	engineFolderLocation = root + "\\";
 	engineProjectLocation = engineFolderLocation;
 #if defined (VISUAL_STUDIO)
-	int backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of("\\");
+	const int backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('\\');
 	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine\\";
 #endif
 #if defined(_WIN64) 
@@ -320,7 +320,7 @@ bool Compiler::ExportProjectFiles(const CompilerParams& params)
 			AddCopyEntry(false, fileInfo->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
 
 			std::string folderToCreate = (params.exportPath + ASSETS_FOLDER + newPath);
-			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of("\\"));
+			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('\\'));
 			fs::create_directories(folderToCreate);
 		}
 	}
@@ -617,14 +617,14 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	}
 
 	// Copy compiled files to export path
-	const std::string dll_name = params.getDynamicLibraryName();
-	const std::string editor_dll_name = params.getEditorDynamicLibraryName();
 	if (params.buildType == BuildType::EditorHotReloading)
 	{
+		const std::string editor_dll_name = params.getEditorDynamicLibraryName();
 		AddCopyEntry(false, params.tempPath + editor_dll_name, params.exportPath + editor_dll_name);
 	}
 	else
 	{
+		const std::string dll_name = params.getDynamicLibraryName();
 		AddCopyEntry(false, params.tempPath + dll_name, params.exportPath + dll_name);
 		AddCopyEntry(false, params.tempPath + params.libraryName + ".exe", params.exportPath + params.libraryName + ".exe");
 	}
@@ -801,8 +801,8 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
-	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
-	const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
+	//std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
+	//const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
 
 	// Copy source code in the build folder
 	try

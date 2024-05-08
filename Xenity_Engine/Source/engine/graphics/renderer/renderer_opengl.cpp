@@ -238,7 +238,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	DrawSubMesh(subMesh, material, material->texture, settings);
 }
 
-void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings)
+void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings)
 {
 	if (!subMesh.meshData->isValid)
 		return;

@@ -39,7 +39,6 @@ Directory::Directory(std::string _path) : UniqueId(true)
 	}
 #endif
 	this->path = _path;
-
 }
 
 Directory::~Directory()

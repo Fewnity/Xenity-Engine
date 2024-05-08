@@ -44,7 +44,7 @@ public:
 	void SetTransform(const glm::mat4& mat) override;
 	void BindTexture(const std::shared_ptr <Texture>& texture) override;
 	void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings) override;
-	void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture> texture, RenderingSettings& settings) override;
+	void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
 	unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture* texture) override;

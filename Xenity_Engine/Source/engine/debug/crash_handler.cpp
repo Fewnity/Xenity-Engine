@@ -138,12 +138,11 @@ void CrashHandler::Handler(int signum)
 			}
 		}
 
-		std::string lastComponentMessage = "";
 		std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
 
 		if (lastComponent)
 		{
-			lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
+			std::string lastComponentMessage = "Component name: " + lastComponent->GetComponentName();
 			if(lastComponent->GetGameObject())
 				lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->GetName();
 

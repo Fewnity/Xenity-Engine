@@ -22,13 +22,14 @@ using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
-	Debug::Print("Loading mesh: " + mesh->file->GetPath(), true);
+	std::shared_ptr<File>& file = mesh->file;
+	Debug::Print("Loading mesh: " + file->GetPath(), true);
 
-	const bool opened = mesh->file->Open(FileMode::ReadOnly);
+	const bool opened = file->Open(FileMode::ReadOnly);
 	if (opened)
 	{
-		const std::string allString = mesh->file->ReadAll();
-		mesh->file->Close();
+		const std::string allString = file->ReadAll();
+		file->Close();
 		const int textSize = allString.size();
 
 		bool verticesFound = false;

@@ -104,7 +104,7 @@ public:
 	* @param scale Scale
 	* @return The mesh
 	*/
-	static std::shared_ptr <MeshData> CreateMesh(std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Color& color, const std::shared_ptr<Font>& font, float scale);
+	static std::shared_ptr <MeshData> CreateMesh(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color& color, const std::shared_ptr<Font>& font, float scale);
 
 private:
 

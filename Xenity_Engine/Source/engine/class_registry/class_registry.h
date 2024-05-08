@@ -150,7 +150,7 @@ public:
 	* @param classId Class type id (hash code)
 	* @return Class name (Component if not found)
 	*/
-	static const std::string GetClassNameById(uint64_t classId)
+	static std::string GetClassNameById(uint64_t classId)
 	{
 		const int classInfosCount = classInfos.size();
 		for (int i = 0; i < classInfosCount; i++)

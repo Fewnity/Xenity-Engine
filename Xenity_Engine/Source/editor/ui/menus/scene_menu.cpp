@@ -141,7 +141,7 @@ void SceneMenu::MoveCamera()
 	}
 }
 
-bool getHitDistance(Vector3 corner1, Vector3 corner2, Vector3 dirfrac, Vector3 startPosition, float* t)
+bool getHitDistance(const Vector3& corner1, const Vector3& corner2, const Vector3& dirfrac, const Vector3& startPosition, float* t)
 {
 	float t1 = (corner1.x - startPosition.x) * dirfrac.x;
 	float t2 = (corner2.x - startPosition.x) * dirfrac.x;

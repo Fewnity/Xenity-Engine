@@ -33,7 +33,7 @@ public:
 	/**
 	* @brief Get directory path
 	*/
-	std::string GetPath() const
+	const std::string& GetPath() const
 	{
 		return path;
 	}

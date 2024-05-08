@@ -85,6 +85,7 @@ void BuildSettingsMenu::Draw()
 	if (visible)
 	{
 		OnStartDrawing();
+		ImGuiStyle& style = ImGui::GetStyle();
 		// Create table
 		if (ImGui::BeginTable("build_settings_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
@@ -156,7 +157,7 @@ void BuildSettingsMenu::Draw()
 
 				// Draw text
 				ImGui::SameLine();
-				ImGui::SetCursorPosY(cursorPos.y + 25 - ImGui::GetStyle().ItemSpacing.y * 2);
+				ImGui::SetCursorPosY(cursorPos.y + 25 - style.ItemSpacing.y * 2);
 				ImGui::TextColored(textColor, "%s", nameText.c_str());
 
 				if (platform.isSupported)
@@ -189,19 +190,19 @@ void BuildSettingsMenu::Draw()
 			availColSize = ImGui::GetContentRegionAvail();
 			if (platform.supportBuildAndRunOnHardware)
 			{
-				ImGui::SetCursorPosY(windowSize.y - (20 + ImGui::GetStyle().ItemSpacing.y)*2);
-				ImGui::SetCursorPosX(availColSize.x - (180 + ImGui::GetStyle().ItemSpacing.x));
-				if (ImGui::Button("Build And Run On Hardware", ImVec2(180 + ImGui::GetStyle().ItemSpacing.x, 20)))
+				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y)*2);
+				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x));
+				if (ImGui::Button("Build And Run On Hardware", ImVec2(180 + style.ItemSpacing.x, 20)))
 				{
 					StartBuild(platform.platform, BuildType::BuildAndRunOnHardwareGame);
 				}
 			}
 
 			if (platform.supportBuildAndRun)
-				ImGui::SetCursorPosX(availColSize.x - (180 + ImGui::GetStyle().ItemSpacing.x));
+				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x));
 			else
 				ImGui::SetCursorPosX(availColSize.x - (80));
-			ImGui::SetCursorPosY(windowSize.y - (20 + ImGui::GetStyle().ItemSpacing.y));
+			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y));
 			if (ImGui::Button("Build", ImVec2(80, 20)))
 			{
 				StartBuild(platform.platform, BuildType::BuildGame);

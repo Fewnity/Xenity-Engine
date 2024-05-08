@@ -19,10 +19,11 @@ bool ColorConstructorTest::Start(std::string& errorOut)
 		result = false;
 	}
 
-	if (!Compare(color.GetRGBA().r, 1.0f) || 
-		!Compare(color.GetRGBA().g, 1.0f) || 
-		!Compare(color.GetRGBA().b, 1.0f) || 
-		!Compare(color.GetRGBA().a, 1.0f))
+	const RGBA& rgbaRef = color.GetRGBA();
+	if (!Compare(rgbaRef.r, 1.0f) ||
+		!Compare(rgbaRef.g, 1.0f) ||
+		!Compare(rgbaRef.b, 1.0f) ||
+		!Compare(rgbaRef.a, 1.0f))
 	{
 		errorOut += "Bad Color RGBA constructor\n";
 		result = false;

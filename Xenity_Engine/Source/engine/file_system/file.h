@@ -23,7 +23,7 @@ class API File : public UniqueId, public std::enable_shared_from_this<File>
 public:
 	File() = delete;
 	File(std::string _path);
-	~File();
+	~File() = default;
 
 	/**
 	* @brief Write string data to the file

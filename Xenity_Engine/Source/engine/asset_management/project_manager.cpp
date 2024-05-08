@@ -197,7 +197,7 @@ void ProjectManager::FindAllProjectFiles()
 	int fileWithoutMetaCount = 0;
 	uint64_t biggestId = UniqueId::reservedFileId;
 
-	for (auto& compatibleFile : compatibleFiles)
+	for (const auto& compatibleFile : compatibleFiles)
 	{
 		std::shared_ptr<File> file = compatibleFile.file.file;
 		uint64_t fileId = ReadFileId(file);
@@ -306,7 +306,7 @@ void ProjectManager::CreateVisualStudioSettings()
 		// Read the empty vscode settings file
 		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
 
-		bool isOpen = emptyVSCodeParamFile->Open(FileMode::ReadOnly);
+		const bool isOpen = emptyVSCodeParamFile->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
 			std::string vsCodeText = emptyVSCodeParamFile->ReadAll();
@@ -333,8 +333,8 @@ void ProjectManager::CreateVisualStudioSettings()
 
 			// Create the vscode settings file
 			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
-			const bool isOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
-			if (isOpen)
+			const bool isNewFileOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
+			if (isNewFileOpen)
 			{
 				vsCodeParamFile->Write(vsCodeText);
 				vsCodeParamFile->Close();
@@ -373,20 +373,21 @@ void ProjectManager::RefreshProjectDirectory()
 
 void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
-	realProjectDirectory->files.clear();
+	std::vector<std::shared_ptr<FileReference>>& projFileVector = realProjectDirectory->files;
+	projFileVector.clear();
 
 	for (const auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
 		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
 		{
-			realProjectDirectory->files.push_back(ProjectManager::GetFileReferenceById(kv.first));
+			projFileVector.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}
 	}
 
 	// Sort files by name (only in editor)
 #if defined(EDITOR)
-	std::sort(realProjectDirectory->files.begin(), realProjectDirectory->files.end(), 
+	std::sort(projFileVector.begin(), projFileVector.end(),
 		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b) 
 		{ 
 			return a->file->GetFileName() < b->file->GetFileName(); 
@@ -773,7 +774,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(std::share
 	return GetFileReferenceById(fileId);
 }
 
-std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string filePath)
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string& filePath)
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	const uint64_t fileId = ProjectManager::ReadFileId(file);

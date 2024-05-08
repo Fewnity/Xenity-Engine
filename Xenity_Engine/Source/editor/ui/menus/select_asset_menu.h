@@ -81,11 +81,11 @@ public:
 			int colCount = width / (100 * 1); // Replace 1 by EditorUI::GetUIScale()
 			if (colCount <= 0)
 				colCount = 1;
-			int currentCol = 0;
 			const float offset = ImGui::GetCursorPosX();
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
 				const int fileCount = foundFiles.size();
+				int currentCol = 0;
 				for (int i = 0; i < fileCount; i++)
 				{
 					FileExplorerItem item;

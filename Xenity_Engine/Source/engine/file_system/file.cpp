@@ -55,11 +55,6 @@ File::File(std::string _path) : UniqueId(true)
 #endif
 }
 
-File::~File()
-{
-	Close();
-}
-
 std::string File::GetFolderPath() const
 {
 	if (path.size() == 0)

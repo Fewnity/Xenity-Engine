@@ -20,6 +20,7 @@ class API FilePSP : public File
 public:
 	FilePSP() = delete;
 	FilePSP(std::string _path);
+	~FilePSP();
 
 	/**
 	* @brief Open the file

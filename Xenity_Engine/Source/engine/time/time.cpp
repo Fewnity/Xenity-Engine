@@ -74,7 +74,7 @@ void Time::Init()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	start_point = high_resolution_clock::now();
-	end_point = high_resolution_clock::now();
+	end_point = start_point;
 #elif defined(__PSP__)
 	sceRtcGetCurrentTick(&currentTick);
 	lastTick = currentTick;

@@ -382,10 +382,6 @@ void Texture::SetData(const unsigned char *texData)
 	// sceGeEdramSetSize(4096);
 	// The psp needs a pow2 sized texture
 #if defined(__PSP__)
-	// type = GU_PSM_8888;
-	//type = GU_PSM_4444;
-	// type = GU_PSM_5650;
-	//type = GU_PSM_5551;
 	// type = GU_PSM_DXT5;
 	// type = GU_PSM_DXT3;
 	// type = GU_PSM_DXT1;

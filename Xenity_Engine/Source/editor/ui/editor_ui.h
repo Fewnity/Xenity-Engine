@@ -344,13 +344,12 @@ public:
 		bool valueChanged = false;
 		for (const auto& kv : myMap)
 		{
-			const std::string variableName = GetPrettyVariableName(kv.first);
 			const ReflectiveEntry& reflectionEntry = kv.second;
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
 				const VariableReference& variableRef = kv.second.variable.value();
-				valueChangedTemp = ProcessVariant(variableRef, variableName, command, parent, reflectionEntry);
+				valueChangedTemp = ProcessVariant(variableRef, GetPrettyVariableName(kv.first), command, parent, reflectionEntry);
 
 				if (valueChangedTemp)
 				{
@@ -558,7 +557,7 @@ public:
 	* @return True if the value has changed
 	*/
 	template <typename T>
-	static bool DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const std::string& variableName, const uint64_t& dragdropId)
+	static bool DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const std::string& variableName, const uint64_t dragdropId)
 	{
 		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr->get().size();
@@ -689,12 +688,13 @@ public:
 	static DrawVector(const std::string& className, std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName, const ReflectiveEntry& entry, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent)
 	{
 		bool valueChangedTemp = false;
-		const size_t vectorSize = valuePtr->get().size();
+		std::vector<T>& valueRef = valuePtr->get();
+		const size_t vectorSize = valueRef.size();
 		ImGui::Text(variableName.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
-			T& ptr = valuePtr->get()[vectorI];
-			auto ref = std::ref(valuePtr->get()[vectorI]);
+			T& ptr = valueRef[vectorI];
+			auto ref = std::ref(valueRef[vectorI]);
 			if (DrawVariable("", command, parent, &ref, entry)) 
 			{
 				valueChangedTemp = true;
@@ -704,7 +704,7 @@ public:
 		const std::string addText = "Add " + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
-			valuePtr->get().push_back(T());
+			valueRef.push_back(T());
 			valueChangedTemp = true;
 		}
 
@@ -713,7 +713,7 @@ public:
 		{
 			if (vectorSize != 0)
 			{
-				valuePtr->get().erase(valuePtr->get().begin() + vectorSize - 1);
+				valueRef.erase(valueRef.begin() + vectorSize - 1);
 				valueChangedTemp = true;
 			}
 		}
@@ -976,7 +976,8 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename... Types, typename ParentType>
-	static bool ProcessVariant(const std::variant<Types...>& var, const std::string variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) {
+	static bool ProcessVariant(const std::variant<Types...>& var, const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) 
+	{
 		bool valueChangedTemp = false;
 		std::visit([&valueChangedTemp, &variableName, &command, &parent, &reflectionEntry](auto value)
 			{

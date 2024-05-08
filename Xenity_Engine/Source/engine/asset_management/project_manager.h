@@ -27,10 +27,9 @@ class ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
-	ProjectDirectory(const std::string& path, uint64_t uniqueId)
+	ProjectDirectory(const std::string& _path, uint64_t _uniqueId) : path(_path)
 	{
-		this->path = path;
-		this->uniqueId = uniqueId;
+		uniqueId = _uniqueId;
 	}
 	~ProjectDirectory();
 
@@ -140,7 +139,7 @@ public:
 	* @param filePath File path
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceByFilePath(const std::string filePath);
+	static std::shared_ptr<FileReference> GetFileReferenceByFilePath(const std::string& filePath);
 
 	/**
 	* @brief Get file by Id
@@ -191,7 +190,7 @@ public:
 	/**
 	* @brief Get project folder path
 	*/
-	static std::string GetProjectFolderPath()
+	static const std::string& GetProjectFolderPath()
 	{
 		return projectFolderPath;
 	}
@@ -199,7 +198,7 @@ public:
 	/**
 	* @brief Get asset folder path
 	*/
-	static std::string GetAssetFolderPath()
+	static const std::string& GetAssetFolderPath()
 	{
 		return assetFolderPath;
 	}
@@ -207,7 +206,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static std::string GetEngineAssetFolderPath()
+	static const std::string& GetEngineAssetFolderPath()
 	{
 		return engineAssetsFolderPath;
 	}
@@ -215,7 +214,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static std::string GetPublicEngineAssetFolderPath()
+	static const std::string& GetPublicEngineAssetFolderPath()
 	{
 		return publicEngineAssetsFolderPath;
 	}

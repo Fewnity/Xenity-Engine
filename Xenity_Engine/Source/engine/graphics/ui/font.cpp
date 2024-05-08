@@ -171,7 +171,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	std::shared_ptr<Texture> newAtlas = Texture::MakeTexture();
 	newAtlas->SetSize(atlasSize, atlasSize);
 	newAtlas->SetChannelCount(channelCount);
-	newAtlas->type = PSPTextureType::RGBA_8888;
+	newAtlas->type = PSPTextureType::RGBA_4444;
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);
 	newAtlas->SetWrapMode(WrapMode::ClampToEdge);

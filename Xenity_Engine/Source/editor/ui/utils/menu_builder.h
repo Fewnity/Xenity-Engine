@@ -65,7 +65,7 @@ public:
 	/**
 	* @brief Get the title of the item
 	*/
-	std::string GetTitle() const
+	const std::string& GetTitle() const
 	{
 		return text;
 	}
@@ -120,7 +120,7 @@ public:
 	* @param onClickFunction The function to be called when the item is clicked
 	* @return The item
 	*/
-	RightClickMenuItem* AddItem(const std::string& title, const std::function<void()> onClickFunction);
+	RightClickMenuItem* AddItem(const std::string& title, const std::function<void()>& onClickFunction);
 
 	/**
 	* @brief Add an item to the menu
