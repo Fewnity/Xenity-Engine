@@ -9,6 +9,7 @@
 #include <engine/platform.h>
 #include <engine/reflection/reflection.h>
 #include <engine/event_system/event_system.h>
+#include <editor/platform_settings.h>
 
 ENUM(BuildType, 
 	EditorHotReloading,
@@ -46,9 +47,6 @@ ENUM(DockerState,
 
 struct CompilerParams
 {
-	// Plaftorm target
-	Platform platform;
-
 	// Build type
 	BuildType buildType;
 
@@ -64,6 +62,8 @@ struct CompilerParams
 
 	// Library file name (e.g. DLL)
 	std::string libraryName;
+
+	BuildPlatform buildPlatform;
 
 	/**
 	 * @brief Get the editor dynamic-linked library file name (appending extension)
@@ -118,7 +118,7 @@ public:
 	 * @param buildType Compile for hot reloading or for a simple build or for build and run
 	 * @param exportPath Folder location for the build
 	 */
-	static void CompileGameThreaded(Platform platform, BuildType buildType, const std::string &exportPath);
+	static void CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string &exportPath);
 
 	/**
 	 * @brief Start hot reloading
@@ -191,7 +191,7 @@ private:
 	 * @return Compilation result
 	 */
 	static CompileResult CompileGame(
-		Platform platform,
+		const BuildPlatform buildPlatform,
 		BuildType buildType,
 		const std::string &exportPath);
 
@@ -252,12 +252,16 @@ private:
 	 */
 	static std::string GetCompileExecutableCommand(const CompilerParams &params);
 
+	static std::string GetCompileIconCommand(const CompilerParams& params);
+
 	/**
 	 * @brief Start game for build and run (PsVita not supported)
 	 * @param platform Platform target
 	 * @param exportPath Folder location of the build
 	 */
 	static void StartGame(Platform platform, const std::string &exportPath);
+
+	static void CopyAndConvertPsVitaImages(const CompilerParams& params);
 
 	static std::vector<CopyEntry> copyEntries;
 

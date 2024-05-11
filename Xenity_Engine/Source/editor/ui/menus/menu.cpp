@@ -34,6 +34,10 @@ Vector2Int Menu::GetMousePosition() const
 void Menu::SetActive(bool active)
 {
 	isActive = active;
+	if (isActive) 
+	{
+		OnOpen();
+	}
 }
 
 bool Menu::GetActive() const

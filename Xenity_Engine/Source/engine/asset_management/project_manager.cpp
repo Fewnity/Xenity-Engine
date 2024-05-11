@@ -42,6 +42,7 @@
 #endif
 #include <engine/engine_settings.h>
 #include <engine/tools/string_tag_finder.h>
+#include <engine/graphics/icon.h>
 
 using json = nlohmann::json;
 
@@ -492,6 +493,10 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	else if (extension == ".shader") // If the file is a font
 	{
 		fileType = FileType::File_Shader;
+	}
+	else if (extension == ".ico") // If the file is a font
+	{
+		fileType = FileType::File_Icon;
 	}
 
 	return fileType;
@@ -973,6 +978,9 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 		break;
 	case FileType::File_Shader:
 		fileRef = Shader::MakeShader();
+		break;
+	case FileType::File_Icon:
+		fileRef = Icon::MakeIcon();
 		break;
 
 	case FileType::File_Other:

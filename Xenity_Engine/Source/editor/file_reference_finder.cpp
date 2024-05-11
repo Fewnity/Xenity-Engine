@@ -1,4 +1,6 @@
 #include "file_reference_finder.h"
+
+// List of all file types drawn by the EditorUI or the editor wont compile
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -9,6 +11,7 @@
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/skybox.h>
 #include <engine/debug/debug.h>
+#include <engine/graphics/icon.h>
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<livearea style="a2" format-ver="01.00" content-rev="1">
+ 
+	<livearea-background>
+    	<image>bg.png</image>
+	</livearea-background>
+
+	<gate>
+		<startup-image>startup.png</startup-image>
+	</gate>
+
+	<frame id="frame1">
+		<liveitem>
+			<text align="center" valign="bottom" text-align="center" word-wrap="off" ellipsis="on">
+				<str size="24" bold="on" shadow="on">By Fewnity</str>
+			</text>
+		</liveitem>
+	</frame>
+
+	<frame id="frame2">
+		<liveitem>
+			<text align="center" valign="bottom" text-align="center" word-wrap="off" ellipsis="on">
+				<str size="24" bold="on" shadow="on">1.0</str>
+			</text>
+		</liveitem>
+	</frame>
+
+	<frame id="frame3">
+		<liveitem>
+			<text align="center" valign="bottom" text-align="center" word-wrap="off" ellipsis="on">
+				<str size="24" bold="on" shadow="on">Made with Xenity Engine</str>
+			</text>
+		</liveitem>
+	</frame>
+
+</livearea>

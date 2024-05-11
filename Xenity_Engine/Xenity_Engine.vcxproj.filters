@@ -155,6 +155,8 @@
     <ClCompile Include="Source\unit_tests\unit_test_color.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_event_system.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_math.cpp" />
+    <ClCompile Include="Source\editor\platform_settings.cpp" />
+    <ClCompile Include="Source\engine\graphics\icon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -316,6 +318,8 @@
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
     <ClInclude Include="Source\engine\particle_system\particle_system.h" />
     <ClInclude Include="Source\editor\ui\menus\engine_asset_manager_menu.h" />
+    <ClInclude Include="Source\editor\platform_settings.h" />
+    <ClInclude Include="Source\engine\graphics\icon.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

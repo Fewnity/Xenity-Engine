@@ -23,6 +23,8 @@ Mesh drag drop into the scene
 Clean code
 First PSP frame doest not use light
 Fix particles scale
+Show selected element in the select asset menu
+Refactor DrawReflectiveData valueChanged system, maybe use an event?
 
 --- Can be for next release
 New Input system

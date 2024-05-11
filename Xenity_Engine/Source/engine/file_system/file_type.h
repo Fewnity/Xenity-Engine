@@ -17,4 +17,5 @@ enum class FileType
 	File_Font,
 	File_Material,
 	File_Shader,
+	File_Icon,
 };

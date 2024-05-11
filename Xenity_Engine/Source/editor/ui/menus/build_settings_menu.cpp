@@ -9,6 +9,8 @@
 
 using json = nlohmann::json;
 
+std::vector<BuildPlatform> BuildSettingsMenu::buildPlatforms;
+
 void BuildSettingsMenu::Init()
 {
 	onSettingChangedEvent = new Event<>();
@@ -29,7 +31,7 @@ void BuildSettingsMenu::Init()
 	pspPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PSP];
 	pspPlatform.isSupported = true;
 	pspPlatform.supportBuildAndRun = true;
-	pspPlatform.supportBuildAndRunOnHardware = true;
+	pspPlatform.supportBuildAndRunOnHardware = false;
 	pspPlatform.platform = Platform::P_PSP;
 	pspPlatform.settings = std::make_shared<PlatformSettingsPSP>(onSettingChangedEvent);
 
@@ -66,20 +68,21 @@ void BuildSettingsMenu::Init()
 	ps4Platform.supportBuildAndRunOnHardware = false;
 	ps4Platform.platform = Platform::P_PS4;
 
-	plaforms.push_back(windowsPlatform);
-	plaforms.push_back(pspPlatform);
-	plaforms.push_back(psvitaPlatform);
-	plaforms.push_back(ps2Platform);
-	plaforms.push_back(ps3Platform);
-	plaforms.push_back(ps4Platform);
+	buildPlatforms.push_back(windowsPlatform);
+	buildPlatforms.push_back(pspPlatform);
+	buildPlatforms.push_back(psvitaPlatform);
+	buildPlatforms.push_back(ps2Platform);
+	buildPlatforms.push_back(ps3Platform);
+	buildPlatforms.push_back(ps4Platform);
 
-	LoadSettings();
+	//LoadSettings();
 	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
 }
 
 void BuildSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(900, 500), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSizeConstraints(ImVec2(100, 100), ImVec2(999999, 999999));
 
 	const bool visible = ImGui::Begin("Build Settings", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
@@ -103,11 +106,11 @@ void BuildSettingsMenu::Draw()
 			//ImGui::Text("Platforms");
 			const int imageSize = 50;
 
-			const int platformCount = plaforms.size();
+			const int platformCount = buildPlatforms.size();
 			ImVec2 availColSize = ImGui::GetContentRegionAvail();
 			for (int i = 0; i < platformCount; i++)
 			{
-				const BuildPlatform& platform = plaforms[i];
+				const BuildPlatform& platform = buildPlatforms[i];
 				ImVec2 cursorPos = ImGui::GetCursorPos();
 				const ImVec2 startcursorPos = cursorPos;
 				const float scrollY = ImGui::GetScrollY();
@@ -166,6 +169,7 @@ void BuildSettingsMenu::Draw()
 					if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availColSize.x, 50 + 10)))
 					{
 						selectedPlatformIndex = i;
+						lastSettingError = 0;
 					}
 				}
 				ImGui::EndGroup();
@@ -178,13 +182,65 @@ void BuildSettingsMenu::Draw()
 			ImGui::TableSetColumnIndex(1);
 			ImGui::BeginChild("build_settings_settings_table_child");
 			//ImGui::Text("Settings");
-			const BuildPlatform& platform = plaforms[selectedPlatformIndex];
+			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
 			std::shared_ptr<Command> command = nullptr;
 			const bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings);
 			if (valueChanged && command)
 			{
 				CommandManager::AddCommand(command);
 				command->Execute();
+				platform.settings->OnReflectionUpdated();
+			}
+
+			if (platform.platform == Platform::P_Windows)
+			{
+				ImGui::Text("Notes:");
+				ImGui::Text("Icon: ico 512x512");
+			}
+			else if (platform.platform == Platform::P_PSP)
+			{
+				ImGui::Text("Notes:");
+				ImGui::Text("Background image: PNG 480x272");
+				ImGui::Text("Icon image: PNG 144x80");
+				ImGui::Text("Background image: PNG 310x180");
+				ImGui::Text("Background image: PNG 310x180");
+				if (lastSettingError == 1)
+				{
+					ImGui::TextColored(ImVec4(1,0,0,1), "Error: Wrong background image size");
+				}
+				else if (lastSettingError == 2)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong icon image size");
+				}
+				else if (lastSettingError == 3)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong preview image size");
+				}
+			}
+			else if (platform.platform == Platform::P_PsVita)
+			{
+				ImGui::Text("Notes:");
+				ImGui::Text("Background image: 8bits PNG 840x500");
+				ImGui::Text("Icon image: 8bits PNG 128x128");
+				ImGui::Text("Background image: 8bits PNG 280x158");
+				ImGui::Text("Game Id: Must be exactly 9 characters and unique"); 
+				ImGui::TextWrapped("Recommended: XXXXYYYYY where X = string of developer in uppercase and Y = a number for this app");
+				if (lastSettingError == 1)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong background image size");
+				}
+				else if (lastSettingError == 2)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong icon image size");
+				}
+				else if (lastSettingError == 3)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong startup image size");
+				}
+				else if (lastSettingError == 4)
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Incorrect game id");
+				}
 			}
 
 			availColSize = ImGui::GetContentRegionAvail();
@@ -194,7 +250,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x));
 				if (ImGui::Button("Build And Run On Hardware", ImVec2(180 + style.ItemSpacing.x, 20)))
 				{
-					StartBuild(platform.platform, BuildType::BuildAndRunOnHardwareGame);
+					StartBuild(platform, BuildType::BuildAndRunOnHardwareGame);
 				}
 			}
 
@@ -205,14 +261,14 @@ void BuildSettingsMenu::Draw()
 			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y));
 			if (ImGui::Button("Build", ImVec2(80, 20)))
 			{
-				StartBuild(platform.platform, BuildType::BuildGame);
+				StartBuild(platform, BuildType::BuildGame);
 			}
 			if (platform.supportBuildAndRun)
 			{
 				ImGui::SameLine();
 				if (ImGui::Button("Build And Run", ImVec2(100, 20)))
 				{
-					StartBuild(platform.platform, BuildType::BuildAndRunGame);
+					StartBuild(platform, BuildType::BuildAndRunGame);
 				}
 			}
 
@@ -229,15 +285,31 @@ void BuildSettingsMenu::Draw()
 	ImGui::End();
 }
 
+const BuildPlatform& BuildSettingsMenu::GetBuildPlatform(Platform platform)
+{
+	for (const BuildPlatform& buildPlatform : buildPlatforms)
+	{
+		if (buildPlatform.platform == platform) 
+		{
+			return buildPlatform;
+		}
+	}
+}
+
 void BuildSettingsMenu::OnSettingChanged()
 {
 	SaveSettings();
 }
 
+void BuildSettingsMenu::OnOpen()
+{
+	LoadSettings();
+}
+
 void BuildSettingsMenu::LoadSettings()
 {
 	// Read file data
-	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
+	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
 	file->Open(FileMode::ReadOnly);
 	const std::string data = file->ReadAll();
 	file->Close();
@@ -257,10 +329,10 @@ void BuildSettingsMenu::LoadSettings()
 		}
 
 		// Use json to update settings values
-		const int platformCount = plaforms.size();
+		const int platformCount = buildPlatforms.size();
 		for (int i = 0; i < platformCount; i++)
 		{
-			const BuildPlatform& plaform = plaforms[i];
+			const BuildPlatform& plaform = buildPlatforms[i];
 			if (plaform.settings)
 			{
 				ReflectionUtils::JsonToReflectiveData(buildSettingsData[plaform.name], plaform.settings->GetReflectiveData());
@@ -272,26 +344,34 @@ void BuildSettingsMenu::LoadSettings()
 void BuildSettingsMenu::SaveSettings()
 {
 	// Generate json from settings data
-	const int platformCount = plaforms.size();
+	const int platformCount = buildPlatforms.size();
 	json buildSettingsData;
 
 	for (int i = 0; i < platformCount; i++)
 	{
-		const BuildPlatform& plaform = plaforms[i];
+		const BuildPlatform& plaform = buildPlatforms[i];
 		if (plaform.settings)
 			buildSettingsData[plaform.name]["Values"] = ReflectionUtils::ReflectiveDataToJson(plaform.settings->GetReflectiveData());
 	}
 
+	FileSystem::fileSystem->Delete(ProjectManager::GetProjectFolderPath() + "build_settings.json");
+
 	// Write json into the file
-	std::shared_ptr<File> file = FileSystem::MakeFile("build_settings.json");
+	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
 	file->Open(FileMode::WriteCreateFile);
 	file->Write(buildSettingsData.dump(0));
 	file->Close();
 }
 
-void BuildSettingsMenu::StartBuild(Platform platform, BuildType buildType)
+void BuildSettingsMenu::StartBuild(BuildPlatform buildPlatform, BuildType buildType)
 {
+	const int validityResult = buildPlatform.settings->IsValid();
+	lastSettingError = validityResult;
+
+	if (validityResult != 0)
+		return;
+
 	const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 	if (!exportPath.empty())
-		Compiler::CompileGameThreaded(platform, BuildType::BuildGame, exportPath);
+		Compiler::CompileGameThreaded(buildPlatform, BuildType::BuildGame, exportPath);
 }

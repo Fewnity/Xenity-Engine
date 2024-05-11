@@ -66,6 +66,8 @@ public:
 	MenuGroup group = MenuGroup::Menu_Editor;
 	int id = 0;
 
+	virtual void OnOpen() {}
+
 protected:
 
 	/**

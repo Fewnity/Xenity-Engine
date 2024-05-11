@@ -17,6 +17,7 @@
 #include <editor/command/command_manager.h>
 #include <editor/command/commands/inspector_commands.h>
 
+// List of all types drawn by the EditorUI or the editor wont compile
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
@@ -28,6 +29,7 @@
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/material.h>
+#include <engine/graphics/icon.h>
 #include <engine/audio/audio_clip.h>
 #include <engine/file_system/file.h>
 #include <engine/scene_management/scene.h>

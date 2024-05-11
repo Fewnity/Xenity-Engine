@@ -26,6 +26,7 @@
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/shader.h>
 #include <engine/graphics/material.h>
+#include <engine/graphics/icon.h>
 #include <engine/particle_system/particle_system.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> ClassRegistry::nameToComponent;
@@ -104,4 +105,5 @@ void ClassRegistry::RegisterEngineFileClasses()
 	AddFileClass<Font>("Font", FileType::File_Font);
 	AddFileClass<Shader>("Shader", FileType::File_Shader);
 	AddFileClass<Material>("Material", FileType::File_Material);
+	AddFileClass<Icon>("Icon", FileType::File_Icon);
 }

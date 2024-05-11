@@ -28,6 +28,7 @@ class Font;
 class Shader;
 class Material;
 class Collider;
+class Icon;
 
 // List of all the types that can be used in the reflection system (visible in the inspector and saved to json)
 typedef std::variant <
@@ -56,6 +57,7 @@ typedef std::variant <
 	std::reference_wrapper<std::shared_ptr<Font>>,
 	std::reference_wrapper<std::shared_ptr<Shader>>,
 	std::reference_wrapper<std::shared_ptr<Material>>,
+	std::reference_wrapper<std::shared_ptr<Icon>>,
 
 	//List of basic types
 	std::reference_wrapper<std::vector<Reflective*>>,
@@ -74,6 +76,7 @@ typedef std::variant <
 	std::reference_wrapper<std::vector<std::shared_ptr<Font>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>,
 	std::reference_wrapper<std::vector<std::shared_ptr<Material>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<Icon>>>,
 
 	// List of components/game elements
 	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,

@@ -15,10 +15,15 @@
 #include <engine/tools/string_tag_finder.h>
 #include <engine/file_system/directory.h>
 #include <engine/file_system/file.h>
+#include <engine/graphics/texture.h>
+
+#include <stb_image.h>
+#include <stb_image_write.h>
 
 // Editor
 #include <editor/editor.h>
 #include "ui/menus/docker_config_menu.h"
+#include "ui/menus/build_settings_menu.h"
 
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
@@ -105,7 +110,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Print parameters
 	Debug::Print(
 		"[Compiler::Compile] Preparing:"
-		"\n- Platform: " + (EnumHelper::GetEnumStringsLists()[typeid(Platform).hash_code()])[(int)params.platform].name.substr(2)
+		"\n- Platform: " + (EnumHelper::GetEnumStringsLists()[typeid(Platform).hash_code()])[(int)params.buildPlatform.platform].name.substr(2)
 		+ "\n- Build Type: " + (EnumHelper::GetEnumStringsLists()[typeid(BuildType).hash_code()])[(int)params.buildType].name
 		+ "\n- Temporary Path: " + params.tempPath
 		+ "\n- Source Path: " + params.sourcePath
@@ -136,7 +141,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 	// Compile depending on platform
 	CompileResult result = CompileResult::ERROR_UNKNOWN;
-	switch (params.platform)
+	switch (params.buildPlatform.platform)
 	{
 	case Platform::P_Windows:
 		result = CompileWindows(params);
@@ -196,7 +201,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	}
 
 	// Check if the engine compiled library exists
-	if (params.platform == Platform::P_Windows)
+	if (params.buildPlatform.platform == Platform::P_Windows)
 	{
 		if (params.buildType == BuildType::EditorHotReloading)
 		{
@@ -215,7 +220,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 			}
 		}
 	}
-	else if (params.platform == Platform::P_PSP)
+	else if (params.buildPlatform.platform == Platform::P_PSP)
 	{
 		if (!fs::exists(EngineSettings::values.ppssppExePath))
 		{
@@ -251,7 +256,7 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 
 	CompilerParams params{};
 	params.libraryName = "plugin_" + plugin_name;
-	params.platform = platform;
+	params.buildPlatform = BuildSettingsMenu::GetBuildPlatform(platform);
 	params.buildType = BuildType::EditorHotReloading;
 	params.sourcePath = pluginPath;
 	params.tempPath = "plugins\\.build\\";
@@ -332,11 +337,11 @@ bool Compiler::ExportProjectFiles(const CompilerParams& params)
 	return copyResult;
 }
 
-CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, const std::string& exportPath)
+CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
 	CompilerParams params{};
 	params.libraryName = "game";
-	params.platform = platform;
+	params.buildPlatform = buildPlatform;
 	params.buildType = buildType;
 	params.sourcePath = ProjectManager::GetAssetFolderPath();
 	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build\\";
@@ -361,16 +366,16 @@ CompileResult Compiler::CompileGame(Platform platform, BuildType buildType, cons
 	// Launch game
 	if (params.buildType == BuildType::BuildAndRunGame)
 	{
-		auto t = std::thread(StartGame, params.platform, params.exportPath);
+		auto t = std::thread(StartGame, params.buildPlatform.platform, params.exportPath);
 		t.detach();
 	}
 
 	return result;
 }
 
-void Compiler::CompileGameThreaded(Platform platform, BuildType buildType, const std::string& exportPath)
+void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
-	std::thread t = std::thread(CompileGame, platform, buildType, exportPath);
+	std::thread t = std::thread(CompileGame, buildPlatform, buildType, exportPath);
 	t.detach();
 }
 
@@ -393,7 +398,7 @@ void Compiler::HotReloadGame()
 
 	// Compile game
 	Compiler::CompileGame(
-		Platform::P_Windows,
+		BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows),
 		BuildType::EditorHotReloading,
 		ProjectManager::GetProjectFolderPath() + "temp\\"
 	);
@@ -577,9 +582,27 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	// Copy engine headers to the temp build folder
 	AddCopyEntry(true, engineProjectLocation + "Source\\engine\\", params.tempPath + "engine\\");
 	AddCopyEntry(false, engineProjectLocation + "Source\\xenity.h", params.tempPath + "xenity.h");
-	AddCopyEntry(false, engineProjectLocation + "Source\\main.cpp", params.tempPath + "main.cpp");
+	AddCopyEntry(false, engineFolderLocation + "main.cpp", params.tempPath + "main.cpp");
 	const bool headerCopyResult = ExecuteCopyEntries();
 	if (!headerCopyResult)
+	{
+		return CompileResult::ERROR_FILE_COPY;
+	}
+
+	std::shared_ptr<PlatformSettingsWindows> platformSettings = std::dynamic_pointer_cast<PlatformSettingsWindows>(params.buildPlatform.settings);
+	if (platformSettings && platformSettings->icon)
+	{
+		// Copy game icon
+		AddCopyEntry(false, platformSettings->icon->file->GetPath(), params.tempPath + "logo.ico");
+	}
+	else 
+	{
+		// Copy default icon
+		AddCopyEntry(false, engineFolderLocation + "logo.ico", params.tempPath + "logo.ico");
+	}
+	AddCopyEntry(false, engineFolderLocation + "res.rc", params.tempPath + "res.rc");
+	const bool iconCopyResult = ExecuteCopyEntries();
+	if (!iconCopyResult)
 	{
 		return CompileResult::ERROR_FILE_COPY;
 	}
@@ -604,6 +627,8 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	command += GetCompileGameLibCommand(params, sourceDestFolders);
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
+		command += GetAddNextCommand();
+		command += GetCompileIconCommand(params);
 		command += GetAddNextCommand();
 		command += GetCompileExecutableCommand(params);
 	}
@@ -677,9 +702,9 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	std::string compileCommand = "wsl bash -c -i \"cd ~/XenityTestProject/build";
-	if (params.platform == Platform::P_PSP)
+	if (params.buildPlatform.platform == Platform::P_PSP)
 		compileCommand += " && psp-cmake -DMODE=psp ..";
-	else if (params.platform == Platform::P_PsVita)
+	else if (params.buildPlatform.platform == Platform::P_PsVita)
 		compileCommand += " && cmake -DMODE=psvita ..";
 
 	compileCommand += " && cmake --build . -j" + std::to_string(threadNumber) + "\""; // Use thread number to increase compilation speed
@@ -704,9 +729,9 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	compileFolderPath[0] = tolower(compileFolderPath[0]);
 	compileFolderPath = "/mnt/" + compileFolderPath;
 	std::string copyGameCommand;
-	if (params.platform == Platform::P_PSP)
+	if (params.buildPlatform.platform == Platform::P_PSP)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/EBOOT.PBP\" \"" + compileFolderPath + "/EBOOT.PBP\"'";
-	else if (params.platform == Platform::P_PsVita)
+	else if (params.buildPlatform.platform == Platform::P_PsVita)
 		copyGameCommand = "wsl sh -c 'cp ~/\"XenityTestProject/build/hello.vpk\" \"" + compileFolderPath + "/hello.vpk\"'";
 
 	const int copyGameResult = system(copyGameCommand.c_str());
@@ -780,10 +805,13 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const int removeResult = system("docker remove XenityEngineBuild");
 
 	std::string prepareCompileCommand = "";
-	if (params.platform == Platform::P_PSP)
-		prepareCompileCommand = "psp-cmake -DMODE=psp ..";
-	else if (params.platform == Platform::P_PsVita)
-		prepareCompileCommand = "cmake -DMODE=psvita ..";
+	if (params.buildPlatform.platform == Platform::P_PSP)
+		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + " ..";
+	else if (params.buildPlatform.platform == Platform::P_PsVita) 
+	{
+		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
+		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DGAME_ID=" + platformSettings->gameId + " ..";
+	}
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
 	if (threadNumber == 0) // This function may returns 0, use 1 instead
@@ -801,8 +829,6 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
-	//std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
-	//const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
 
 	// Copy source code in the build folder
 	try
@@ -818,22 +844,31 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
 	const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
 
+	// Copy XMB/Livearea images
+	if (params.buildPlatform.platform == Platform::P_PsVita)
+	{
+		CopyAndConvertPsVitaImages(params);
+	}
+	else if (params.buildPlatform.platform == Platform::P_PSP)
+	{
+		CopyAndConvertPsVitaImages(params);
+	}
 
 	std::string startCommand = "docker start -a XenityEngineBuild";
 	const int startResult = system(startCommand.c_str());
 
 	std::string fileName = "";
-	if (params.platform == Platform::P_PSP)
+	if (params.buildPlatform.platform == Platform::P_PSP)
 		fileName = "EBOOT.PBP";
-	else if (params.platform == Platform::P_PsVita)
-		fileName = "hello.vpk";
+	else if (params.buildPlatform.platform == Platform::P_PsVita)
+		fileName = ProjectManager::GetGameName() + ".vpk";
 
 	// Copy final file
 	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
 
 	// Copy prx file for build and run on psp hardware
-	if (params.platform == Platform::P_PSP)
+	if (params.buildPlatform.platform == Platform::P_PSP)
 	{
 		std::string fileName2 = "hello.prx";
 		const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName2 + "\" \"" + params.exportPath + fileName2 + "\"";
@@ -846,6 +881,66 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 
 	return CompileResult::SUCCESS;
+}
+
+void Compiler::CopyAndConvertPsVitaImages(const CompilerParams& params)
+{
+	if (params.buildPlatform.platform == Platform::P_PSP) 
+	{
+		std::shared_ptr<PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
+		if (platformSettings) 
+		{
+			//---------------- PSP compiler will look for images in the build folder ----------------
+			
+			// Copy default psp images
+			const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
+			const int copyImagesResult = system(copyImagesCommand.c_str());
+
+			// Copy and replace images with custom ones
+			if (platformSettings->backgroundImage)
+			{
+				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/BG.PNG\"";
+				const int copyBgImageResult = system(copyBgImageCommand.c_str());
+			}
+			if (platformSettings->iconImage)
+			{
+				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/ICON.PNG\"";
+				const int copyIconImageResult = system(copyIconImageCommand.c_str());
+			}
+			if (platformSettings->previewImage)
+			{
+				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->previewImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/PREVIEW.PNG\"";
+				const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
+			}
+		}
+	}
+	else if (params.buildPlatform.platform == Platform::P_PsVita)
+	{
+		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
+		if (platformSettings)
+		{
+			// Copy default psp images
+			const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
+			const int copyImagesResult = system(copyImagesCommand.c_str());
+
+			// Copy and replace images with custom ones
+			if (platformSettings->backgroundImage)
+			{
+				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/bg.png\"";
+				const int copyBgImageResult = system(copyBgImageCommand.c_str());
+			}
+			if (platformSettings->iconImage)
+			{
+				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/icon0.png\"";
+				const int copyIconImageResult = system(copyIconImageCommand.c_str());
+			}
+			if (platformSettings->startupImage)
+			{
+				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->startupImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/startup.png\"";
+				const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
+			}
+		}
+	}
 }
 
 std::string Compiler::GetStartCompilerCommand()
@@ -938,11 +1033,20 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	return command;
 }
 
+std::string Compiler::GetCompileIconCommand(const CompilerParams& params)
+{
+	std::string command;
+	//Buid game resource
+	command = "rc res.rc";
+	//command += " >nul"; // Mute output
+	return command;
+}
+
 std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 {
 	std::string command;
 	//Buid game exe
-	command = "cl /Fe\"" + params.libraryName + ".exe\" /std:c++20 /MP /EHsc";
+	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc";
 	command += " -I \"" + engineProjectLocation + "include\"";
 	command += " -I \"" + engineProjectLocation + "Source\"";
 	command += " main.cpp " + std::string(ENGINE_GAME) + ".lib";

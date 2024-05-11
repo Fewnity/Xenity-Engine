@@ -88,10 +88,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 # Create an EBOOT.PBP file
 create_pbp_file(
     TARGET ${PROJECT_NAME}
-    ICON_PATH NULL
-    BACKGROUND_PATH NULL
-    PREVIEW_PATH NULL
-    TITLE ${APP_NAME}
+    ICON_PATH psp_images/ICON.PNG
+    BACKGROUND_PATH psp_images/BG.PNG
+    PREVIEW_PATH psp_images/PREVIEW.PNG
+    TITLE ${GAME_NAME}
     BUILD_PRX 1
 )
 elseif(MODE STREQUAL "psvita")
@@ -160,13 +160,13 @@ png
 vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME})
 # The FILE directive lets you add additional files to the VPK, the syntax is
 # FILE src_path dst_path_in_vpk. In this case, we add the LiveArea paths.
-vita_create_vpk(${PROJECT_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
+vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   VERSION ${VITA_VERSION}
-  NAME ${APP_NAME}
-  #FILE sce_sys/icon0.png sce_sys/icon0.png
-  #FILE sce_sys/livearea/contents/bg.png sce_sys/livearea/contents/bg.png
-  #FILE sce_sys/livearea/contents/startup.png sce_sys/livearea/contents/startup.png
-  #FILE sce_sys/livearea/contents/template.xml sce_sys/livearea/contents/template.xml
+  NAME ${GAME_NAME}
+  FILE psvita_images/icon0.png sce_sys/icon0.png
+  FILE psvita_images/bg.png sce_sys/livearea/contents/bg.png
+  FILE psvita_images/startup.png sce_sys/livearea/contents/startup.png
+  FILE psvita_images/template.xml sce_sys/livearea/contents/template.xml
 )
 else()
 message(STATUS "BUILD WINDOWS")
