@@ -105,7 +105,6 @@ int Window::Init()
 
 	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 	SDL_GL_SetSwapInterval(1);
-	SDL_StartTextInput();
 	OnResize();
 
 	IMGUI_CHECKVERSION();

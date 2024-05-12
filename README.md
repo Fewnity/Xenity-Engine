@@ -101,7 +101,7 @@ GLM (slightly modified for PS2): https://github.com/g-truc/glm
 ### Windows specific: 
 FreeType (v2.13.2): https://github.com/ubawurinna/freetype-windows-binaries/
 
-ImGui (1.90.5): https://github.com/ocornut/imgui
+ImGui (1.90.6): https://github.com/ocornut/imgui
 
 SDL (3.1.2): https://github.com/libsdl-org/SDL
 
