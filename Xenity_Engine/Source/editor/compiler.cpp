@@ -291,7 +291,7 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 			{
 				result = DockerState::MISSING_IMAGE;
 			}
-			else 
+			else
 			{
 				result = DockerState::RUNNING;
 			}
@@ -299,14 +299,14 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 	}
 
 
-	if (callback) 
+	if (callback)
 	{
 		callback->Trigger(result);
 	}
 	return result;
 }
 
-bool Compiler::ExportProjectFiles(const CompilerParams& params)
+bool Compiler::ExportProjectFiles(const std::string& exportPath)
 {
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
 	const int projectFolderPathLen = projectAssetFolder.size();
@@ -321,18 +321,18 @@ bool Compiler::ExportProjectFiles(const CompilerParams& params)
 				continue;
 
 			const std::string newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
-			AddCopyEntry(false, fileInfo->path, params.exportPath + ASSETS_FOLDER + newPath);
-			AddCopyEntry(false, fileInfo->path + ".meta", params.exportPath + ASSETS_FOLDER + newPath + ".meta");
+			AddCopyEntry(false, fileInfo->path, exportPath + ASSETS_FOLDER + newPath);
+			AddCopyEntry(false, fileInfo->path + ".meta", exportPath + ASSETS_FOLDER + newPath + ".meta");
 
-			std::string folderToCreate = (params.exportPath + ASSETS_FOLDER + newPath);
+			std::string folderToCreate = (exportPath + ASSETS_FOLDER + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('\\'));
 			fs::create_directories(folderToCreate);
 		}
 	}
 
-	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), params.exportPath + ENGINE_ASSETS_FOLDER);
-	AddCopyEntry(true, ProjectManager::GetPublicEngineAssetFolderPath(), params.exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
-	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, params.exportPath + PROJECT_SETTINGS_FILE_NAME);
+	AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), exportPath + ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(true, ProjectManager::GetPublicEngineAssetFolderPath(), exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
+	AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME);
 	const bool copyResult = ExecuteCopyEntries();
 	return copyResult;
 }
@@ -356,10 +356,13 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	// Copy assets
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		const bool copyResult = ExportProjectFiles(params);
-		if (!copyResult)
+		if (buildPlatform.platform != Platform::P_PsVita) // PsVita files are included in the .vpk file
 		{
-			return CompileResult::ERROR_FILE_COPY;
+			const bool copyResult = ExportProjectFiles(params.exportPath);
+			if (!copyResult)
+			{
+				return CompileResult::ERROR_FILE_COPY;
+			}
 		}
 	}
 
@@ -595,7 +598,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		// Copy game icon
 		AddCopyEntry(false, platformSettings->icon->file->GetPath(), params.tempPath + "logo.ico");
 	}
-	else 
+	else
 	{
 		// Copy default icon
 		AddCopyEntry(false, engineFolderLocation + "logo.ico", params.tempPath + "logo.ico");
@@ -741,7 +744,7 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	}
 
 	// Copy game assets
-	const bool gameCopyResult = ExportProjectFiles(params);
+	const bool gameCopyResult = ExportProjectFiles(params.exportPath);
 	if (!gameCopyResult)
 	{
 		return CompileResult::ERROR_FINAL_GAME_FILES_COPY;
@@ -807,10 +810,10 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	std::string prepareCompileCommand = "";
 	if (params.buildPlatform.platform == Platform::P_PSP)
 		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + " ..";
-	else if (params.buildPlatform.platform == Platform::P_PsVita) 
+	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
 		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
-		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DGAME_ID=" + platformSettings->gameId + " ..";
+		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + " ..";
 	}
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
@@ -847,14 +850,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	// Copy XMB/Livearea images
 	if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
-		CopyAndConvertPsVitaImages(params);
+		CopyAssetsToDocker(params);
 	}
 	else if (params.buildPlatform.platform == Platform::P_PSP)
 	{
-		CopyAndConvertPsVitaImages(params);
+		CopyAssetsToDocker(params);
 	}
 
-	std::string startCommand = "docker start -a XenityEngineBuild";
+	const std::string startCommand = "docker start -a XenityEngineBuild";
 	const int startResult = system(startCommand.c_str());
 
 	std::string fileName = "";
@@ -883,19 +886,18 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	return CompileResult::SUCCESS;
 }
 
-void Compiler::CopyAndConvertPsVitaImages(const CompilerParams& params)
+void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 {
-	if (params.buildPlatform.platform == Platform::P_PSP) 
+	if (params.buildPlatform.platform == Platform::P_PSP)
 	{
 		std::shared_ptr<PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
-		if (platformSettings) 
-		{
-			//---------------- PSP compiler will look for images in the build folder ----------------
-			
-			// Copy default psp images
-			const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
-			const int copyImagesResult = system(copyImagesCommand.c_str());
 
+		//---------------- PSP compiler will look for images in the build folder ----------------
+		// Copy default psp images
+		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
+		const int copyImagesResult = system(copyImagesCommand.c_str());
+		if (platformSettings)
+		{
 			// Copy and replace images with custom ones
 			if (platformSettings->backgroundImage)
 			{
@@ -917,12 +919,25 @@ void Compiler::CopyAndConvertPsVitaImages(const CompilerParams& params)
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
 		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
+		// Copy default psp images
+		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const int copyImagesResult = system(copyImagesCommand.c_str());
+
+		const std::string copyGameEngineAssetsCommand = "docker cp \"" + ProjectManager::GetEngineAssetFolderPath().substr(0, ProjectManager::GetEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const int copyGameEngineAssetsResult = system(copyGameEngineAssetsCommand.c_str());
+
+		const std::string copyGamePublicEngineAssetsCommand = "docker cp \"" + ProjectManager::GetPublicEngineAssetFolderPath().substr(0, ProjectManager::GetPublicEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const int copyGamePublicEngineAssetsResult = system(copyGamePublicEngineAssetsCommand.c_str());
+
+		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
+		const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
+
+		const bool copyResult = ExportProjectFiles(params.tempPath);
+		const std::string copyGameAssetsCommand = "docker cp \"" + params.tempPath + "assets\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const int copyGameAssetsResult = system(copyGameAssetsCommand.c_str());
+
 		if (platformSettings)
 		{
-			// Copy default psp images
-			const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
-			const int copyImagesResult = system(copyImagesCommand.c_str());
-
 			// Copy and replace images with custom ones
 			if (platformSettings->backgroundImage)
 			{

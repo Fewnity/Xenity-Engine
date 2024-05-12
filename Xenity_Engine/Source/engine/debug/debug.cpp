@@ -219,7 +219,7 @@ int Debug::Init()
 	debugMutex = new MyMutex("DebugMutex");
 	std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
-	fileName = "data\\xenity_engine\\" + fileName;
+	fileName = "ux0:data\\xenity_engine\\" + fileName;
 #endif
 	FileSystem::fileSystem->Delete(fileName);
 

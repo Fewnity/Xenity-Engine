@@ -13,9 +13,7 @@ File::File(std::string _path) : UniqueId(true)
 		return;
 	}
 
-#if defined(__vita__)
-	_path = PSVITA_BASE_DIR + _path;
-#elif defined(_EE)
+#if defined(_EE)
 	_path = "mass:" + _path;
 	//_path = "host0:" + _path;
 #endif
@@ -63,9 +61,8 @@ std::string File::GetFolderPath() const
 	int lastSlashPos = (int)path.find_last_of('\\');
 	if (lastSlashPos == -1)
 		lastSlashPos = 0;
-#if defined(__vita__)
-	const std::string fileName = path.substr(4, lastSlashPos + 1);
-#elif defined(_EE)
+
+#if defined(_EE)
 	const std::string fileName = path.substr(5, lastSlashPos + 1);
 	// std::string fileName = path.substr(6, lastSlashPos + 1);
 #else

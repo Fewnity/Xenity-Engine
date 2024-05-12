@@ -62,27 +62,27 @@ include_directories(${PSPDEV}/psp/include/freetype2)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
    # stdc++
-    m
-    png
-    z
-    bz2
-    freetype
-    pspge
-    pspvfpu
-    pspgum_vfpu
-    pspgu
-    pspctrl
-    pspdebug
-    pspvram
-    psppower
-    pspdisplay
-    pspaudiolib
-    pspaudio
-    pspnet
-    pspnet_apctl
-    pspnet_resolver
-    psputility
-    psprtc
+   m
+   png
+   z
+   bz2
+   freetype
+   pspaudiolib
+   pspgum_vfpu
+   pspge
+   pspgu
+   pspvfpu
+   pspctrl
+   pspdebug
+   pspvram
+   psppower
+   pspdisplay
+   pspaudio
+   pspnet
+   pspnet_apctl
+   pspnet_resolver
+   psprtc
+   psputility
 )
 
 # Create an EBOOT.PBP file
@@ -107,7 +107,7 @@ include_directories(${VITASDK}/arm-vita-eabi/include/freetype2)
 #set(VITA_APP_NAME "Xenity Engine")
 # Unique ID must be exactly 9 characters. Recommended: XXXXYYYYY where X =
 # unique string of developer and Y = a unique number for this app
-set(VITA_TITLEID  "FEWN00006")
+# set(VITA_TITLEID  "FEWN00006")
 # Optional version string to show in LiveArea's more info screen
 set(VITA_VERSION  "01.00")
 
@@ -167,6 +167,10 @@ vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   FILE psvita_images/bg.png sce_sys/livearea/contents/bg.png
   FILE psvita_images/startup.png sce_sys/livearea/contents/startup.png
   FILE psvita_images/template.xml sce_sys/livearea/contents/template.xml
+  FILE project_settings.json project_settings.json
+  FILE assets assets
+  FILE public_engine_assets public_engine_assets
+  FILE engine_assets engine_assets
 )
 else()
 message(STATUS "BUILD WINDOWS")

@@ -161,7 +161,7 @@ private:
 	* @param params Compilation parameters
 	* @return True if the export was successful
 	*/
-	static bool ExportProjectFiles(const CompilerParams& params);
+	static bool ExportProjectFiles(const std::string& exportPath);
 
 	/**
 	* @brief Execute all created copy entries and clear the list
@@ -261,7 +261,7 @@ private:
 	 */
 	static void StartGame(Platform platform, const std::string &exportPath);
 
-	static void CopyAndConvertPsVitaImages(const CompilerParams& params);
+	static void CopyAssetsToDocker(const CompilerParams& params);
 
 	static std::vector<CopyEntry> copyEntries;
 

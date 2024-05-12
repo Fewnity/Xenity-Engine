@@ -92,9 +92,8 @@ uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
 {
 	uint64_t id = -1;
 	std::string metaFilePath = file->GetPath() + META_EXTENSION;
-#if defined(__vita__)
-	metaFilePath = metaFilePath.substr(4);
-#elif defined(_EE)
+
+#if defined(_EE)
 	metaFilePath = metaFilePath.substr(5);
 #endif
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
@@ -545,7 +544,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets\\";
 
-
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 	if (!projectDirectoryBase->CheckIfExist())
 	{
@@ -556,7 +554,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
 
 	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "\\additional_assets\\");
-
 
 	FindAllProjectFiles();
 
