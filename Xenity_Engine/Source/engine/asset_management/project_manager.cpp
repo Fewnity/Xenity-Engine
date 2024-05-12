@@ -390,7 +390,7 @@ void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> real
 	std::sort(projFileVector.begin(), projFileVector.end(),
 		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b) 
 		{ 
-			return a->file->GetFileName() < b->file->GetFileName(); 
+			return (a->file->GetFileName() + a->file->GetFileExtension()) < (b->file->GetFileName() + b->file->GetFileExtension());
 		});
 #endif
 }
