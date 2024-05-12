@@ -16,14 +16,12 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
-Fix Rigidbody crash when before there was a script crash in a start function
 Multiple gameobject selection
 Rework the documentation
 Mesh drag drop into the scene
 Clean code
 First PSP frame doest not use light
 Fix particles scale
-Show selected element in the select asset menu
 Refactor DrawReflectiveData valueChanged system, maybe use an event?
 
 --- Can be for next release
