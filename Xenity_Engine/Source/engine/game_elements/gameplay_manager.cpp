@@ -173,6 +173,7 @@ void GameplayManager::InitialiseComponents()
 	// Init components
 	for (int i = 0; i < componentsToInitCount; i++)
 	{
+		lastUpdatedComponent = orderedComponentsToInit[i];
 		orderedComponentsToInit[i]->Start();
 		orderedComponentsToInit[i]->initiated = true;
 	}
