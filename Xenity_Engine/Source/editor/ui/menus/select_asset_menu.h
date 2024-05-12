@@ -23,7 +23,7 @@ public:
 	{
 	}
 
-	void DrawItem(const std::string& itemName, int& currentCol, int colCount,int offset, std::shared_ptr<Texture> icon, int iconSize, int index)
+	void DrawItem(const std::string& itemName, int& currentCol, int colCount,int offset, std::shared_ptr<Texture> icon, int iconSize, int index, bool isSelected)
 	{
 		if (currentCol == 0)
 			ImGui::TableNextRow();
@@ -31,8 +31,10 @@ public:
 
 		currentCol++;
 		currentCol %= colCount;
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+		if(isSelected)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.2f, 0.3f, 1.0f));
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 		ImGui::BeginGroup();
@@ -90,7 +92,9 @@ public:
 				{
 					FileExplorerItem item;
 					item.file = foundFiles[i];
-					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item), 64, i);
+					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(foundFiles[i]);
+					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
+
 					if (ImGui::IsItemClicked())
 					{
 						valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
