@@ -81,7 +81,7 @@ public:
 	std::shared_ptr<Texture> backgroundImage;
 	std::shared_ptr<Texture> iconImage;
 	std::shared_ptr<Texture> startupImage;
-	std::string gameId = "XENI00001";
+	std::string gameId = "";
 private:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
