@@ -13,6 +13,7 @@
 #include <editor/ui/menus/file_explorer_menu.h>
 #include <editor/ui/menus/inspector_menu.h>
 #include <editor/editor.h>
+#include <engine/event_system/event_system.h>
 
 template <class T>
 class SelectAssetMenu : public Menu
@@ -98,6 +99,10 @@ public:
 					if (ImGui::IsItemClicked())
 					{
 						valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
+						if (onValueChangedEvent) 
+						{
+							onValueChangedEvent->Trigger();
+						}
 						const std::vector<std::shared_ptr<InspectorMenu>> inspectors = Editor::GetMenus<InspectorMenu>();
 						const int inspectorsCount = inspectors.size();
 						for (int menuIndex = 0; menuIndex < inspectorsCount; menuIndex++)
@@ -127,7 +132,7 @@ public:
 	}
 
 	std::optional<std::reference_wrapper<std::shared_ptr<T>>> valuePtr;
-
+	Event<>* onValueChangedEvent = nullptr;
 private:
 	std::vector<std::shared_ptr<FileReference>> foundFiles;
 };

@@ -341,8 +341,9 @@ public:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent)
+	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent, Event<>* _onValueChangedEvent)
 	{
+		onValueChangedEvent = _onValueChangedEvent;
 		bool valueChanged = false;
 		for (const auto& kv : myMap)
 		{
@@ -358,6 +359,10 @@ public:
 					valueChanged = true;
 				}
 			}
+		}
+		if (onValueChangedEvent && valueChanged) 
+		{
+			onValueChangedEvent->Trigger();
 		}
 		ImGui::Separator();
 		return valueChanged;
@@ -451,6 +456,7 @@ public:
 				Editor::RemoveMenu(currentSelectAssetMenu.get());
 
 			std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
+			selectMenu->onValueChangedEvent = onValueChangedEvent;
 			selectMenu->SetActive(true);
 			selectMenu->valuePtr = *valuePtr;
 			selectMenu->SearchFiles(classInfo->fileType);
@@ -513,6 +519,7 @@ public:
 						Editor::RemoveMenu(currentSelectAssetMenu.get());
 
 					std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
+					selectMenu->onValueChangedEvent = onValueChangedEvent;
 					selectMenu->SetActive(true);
 					selectMenu->valuePtr = (valuePtr->get()[vectorI]);
 					selectMenu->SearchFiles(classInfo->fileType);
@@ -650,7 +657,7 @@ public:
 					const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)ptr);
 					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 					{
-						valueChangedTemp = DrawReflectiveData(ptr->GetReflectiveData(), command, parent);
+						valueChangedTemp = DrawReflectiveData(ptr->GetReflectiveData(), command, parent, nullptr);
 					}
 				}
 				if (valueChangedTemp) 
@@ -746,7 +753,7 @@ public:
 	static CopyType currentCopyType;
 	static nlohmann::json copiedComponentJson;
 	static std::string copiedComponentName;
-
+	static Event<>* onValueChangedEvent;
 private:
 	static int uiId;
 	static bool isEditingElement;
@@ -961,7 +968,7 @@ private:
 			const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 			if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				valueChangedTemp = DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent);
+				valueChangedTemp = DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent, nullptr);
 			}
 		}
 

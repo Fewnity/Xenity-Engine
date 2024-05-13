@@ -35,6 +35,7 @@ bool EditorUI::isEditingElement = false;
 CopyType EditorUI::currentCopyType;
 json EditorUI::copiedComponentJson;
 std::string EditorUI::copiedComponentName;
+Event<>* EditorUI::onValueChangedEvent = nullptr;
 
 #pragma region Initialisation
 

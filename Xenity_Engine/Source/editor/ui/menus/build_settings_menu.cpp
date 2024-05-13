@@ -75,7 +75,6 @@ void BuildSettingsMenu::Init()
 	buildPlatforms.push_back(ps3Platform);
 	buildPlatforms.push_back(ps4Platform);
 
-	//LoadSettings();
 	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
 }
 
@@ -183,8 +182,9 @@ void BuildSettingsMenu::Draw()
 			ImGui::BeginChild("build_settings_settings_table_child");
 			//ImGui::Text("Settings");
 			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
+
 			std::shared_ptr<Command> command = nullptr;
-			const bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings);
+			const bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings, onSettingChangedEvent);
 			if (valueChanged && command)
 			{
 				CommandManager::AddCommand(command);

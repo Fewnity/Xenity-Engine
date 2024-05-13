@@ -27,6 +27,6 @@ private:
 	int lastSettingError = 0;
 
 	int selectedPlatformIndex = 0;
-	Event<>* onSettingChangedEvent;
+	Event<>* onSettingChangedEvent = nullptr;
 };
 
