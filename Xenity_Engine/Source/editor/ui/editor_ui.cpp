@@ -55,10 +55,8 @@ int EditorUI::Init()
 		return (int)EditorUIError::EDITOR_UI_ERROR_MISSING_FONT;
 	}
 
-	for (int i = 0; i < (int)IconName::Icon_Count; i++)
-	{
-		icons.emplace_back(std::shared_ptr<Texture>());
-	}
+	icons.resize((int)IconName::Icon_Count);
+
 	// File types icons
 	LoadEditorIcon(IconName::Icon_File, "icons/text.png");
 	LoadEditorIcon(IconName::Icon_Folder, "icons/folder.png");

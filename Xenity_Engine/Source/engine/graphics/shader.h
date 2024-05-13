@@ -135,7 +135,7 @@ private:
 	*/
 	void SetSpotLightData(const std::shared_ptr<Light>& light, const int index);
 
-	static glm::mat4 canvasCameraPosition;
+	static glm::mat4 canvasCameraTransformationMatrix;
 
 	unsigned int vertexShaderId = 0;
 	unsigned int fragmentShaderId = 0;

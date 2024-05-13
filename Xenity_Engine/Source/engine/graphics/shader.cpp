@@ -34,13 +34,13 @@
 
 using json = nlohmann::json;
 
-glm::mat4 Shader::canvasCameraPosition;
+glm::mat4 Shader::canvasCameraTransformationMatrix;
 
 #pragma region Constructors / Destructor
 
 void Shader::Init()
 {
-	canvasCameraPosition = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+	canvasCameraTransformationMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
 }
 
 Shader::Shader()
@@ -326,7 +326,7 @@ void Shader::SetShaderCameraPosition()
 void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "camera", canvasCameraPosition);
+	Engine::GetRenderer().SetShaderAttribut(programId, "camera", canvasCameraTransformationMatrix);
 }
 
 /// <summary>

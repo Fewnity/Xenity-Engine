@@ -4,7 +4,7 @@
 // PSP
 #if defined(__PSP__)
 #include <pspkernel.h>
-PSP_HEAP_THRESHOLD_SIZE_KB(1024);
+PSP_HEAP_THRESHOLD_SIZE_KB(1024); // Reduce heap size to give the memory to threads
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #endif
@@ -22,7 +22,6 @@ Mesh drag drop into the scene
 Clean code
 First PSP frame doest not use light
 Fix particles scale
-Refactor DrawReflectiveData valueChanged system, maybe use an event?
 
 --- Can be for next release
 New Input system
