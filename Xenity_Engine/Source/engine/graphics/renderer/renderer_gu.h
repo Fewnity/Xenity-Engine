@@ -25,6 +25,7 @@ public:
 	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) override;
 	void ResetView() override;
 	void SetCameraPosition(const std::shared_ptr<Camera>& camera) override;
+	void SetCameraPosition(const Vector3& position, const Vector3& rotation) override;
 	void ResetTransform() override;
 	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
 	void SetTransform(const glm::mat4& mat) override;

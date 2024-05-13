@@ -162,6 +162,16 @@ void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 	glTranslatef(position.x, -position.y, -position.z);
 }
 
+void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& rotation)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glRotatef(-rotation.z, 0, 0, 1);
+	glRotatef(rotation.x, 1, 0, 0);
+	glRotatef(rotation.y + 180, 0, 1, 0);
+	glTranslatef(position.x, -position.y, -position.z);
+}
+
 void RendererOpengl::ResetTransform()
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -427,6 +437,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	const RGBA& vec4Color = color.GetRGBA();
 	Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	lastUsedColor = Vector4(-1, -1, -1, -1);
 	glDrawArrays(GL_LINES, 0, 2);
 }
 

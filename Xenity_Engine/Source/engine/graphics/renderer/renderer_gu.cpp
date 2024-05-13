@@ -173,6 +173,19 @@ void RendererGU::SetCameraPosition(const std::shared_ptr<Camera>& camera)
 	sceGumTranslate(&v);
 }
 
+void RendererGU::SetCameraPosition(const Vector3& position, const Vector3& rotation)
+{
+	sceGumMatrixMode(GU_VIEW);
+	sceGumLoadIdentity();
+
+	sceGumRotateZ((-rotation.z) / 180.0f * 3.14159f);
+	sceGumRotateX(rotation.x / 180.0f * 3.14159f);
+	sceGumRotateY((rotation.y + 180) / 180.0f * 3.14159f);
+
+	ScePspFVector3 v = { position.x, -position.y, -position.z };
+	sceGumTranslate(&v);
+}
+
 void RendererGU::ResetTransform()
 {
 	sceGumMatrixMode(GU_MODEL);

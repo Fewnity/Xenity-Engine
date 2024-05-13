@@ -76,6 +76,7 @@ public:
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) = 0;
 	virtual void SetCameraPosition(const std::shared_ptr<Camera>& camera) = 0;
+	virtual void SetCameraPosition(const Vector3& position, const Vector3& rotation) = 0;
 	virtual void ResetView() = 0;
 
 	// Transform

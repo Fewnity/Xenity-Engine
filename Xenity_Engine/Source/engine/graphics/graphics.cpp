@@ -224,7 +224,7 @@ void Graphics::Draw()
 				currentMode = IDrawableTypes::Draw_UI;
 			if (UseOpenGLFixedFunctions && !usedCamera->GetIsEditor())
 			{
-				Engine::GetRenderer().ResetView();
+				Engine::GetRenderer().SetCameraPosition(Vector3(0,0,-1), Vector3(0,0,0));
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 			}
 			const int uiCommandCount = renderBatch.uiCommandIndex;
