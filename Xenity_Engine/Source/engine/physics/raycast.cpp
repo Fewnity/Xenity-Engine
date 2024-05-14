@@ -5,6 +5,7 @@
 #include "rigidbody.h"
 #include "physics_manager.h"
 #include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
 
 bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)
 {
@@ -16,7 +17,7 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 	for (int i = 0; i < colliderCount; i++)
 	{
 		const std::shared_ptr<BoxCollider> boxCollider = PhysicsManager::boxColliders[i].lock();
-		if (boxCollider)
+		if (boxCollider && boxCollider->GetIsEnabled() && boxCollider->GetGameObject()->GetLocalActive())
 		{
 			RaycastHit currentHit;
 			if (Check(boxCollider, startPosition, direction, maxDistance, currentHit)) 
