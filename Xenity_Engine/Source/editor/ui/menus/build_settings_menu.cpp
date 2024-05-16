@@ -202,8 +202,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Notes:");
 				ImGui::Text("Background image: PNG 480x272");
 				ImGui::Text("Icon image: PNG 144x80");
-				ImGui::Text("Background image: PNG 310x180");
-				ImGui::Text("Background image: PNG 310x180");
+				ImGui::Text("Preview image: PNG 310x180");
 				if (lastSettingError == 1)
 				{
 					ImGui::TextColored(ImVec4(1,0,0,1), "Error: Wrong background image size");
@@ -222,7 +221,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Notes:");
 				ImGui::Text("Background image: 8bits PNG 840x500");
 				ImGui::Text("Icon image: 8bits PNG 128x128");
-				ImGui::Text("Background image: 8bits PNG 280x158");
+				ImGui::Text("Startup image: 8bits PNG 280x158");
 				ImGui::Text("Game Id: Must be exactly 9 characters and unique"); 
 				ImGui::TextWrapped("Recommended: XXXXYYYYY where X = string of developer in uppercase and Y = a number for this app");
 				if (lastSettingError == 1)
