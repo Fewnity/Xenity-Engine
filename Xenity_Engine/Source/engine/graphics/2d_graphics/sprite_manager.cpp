@@ -144,11 +144,11 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 	if (Graphics::needUpdateCamera)
 	{
 		Graphics::usedCamera->UpdateProjection();
-		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+		Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 		Graphics::needUpdateCamera = false;
 	}
 #else
-	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 #endif
 
 	const Vector3 zero = Vector3(0);
@@ -165,7 +165,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
 
-	Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], AssetManager::standardMaterial, AssetManager::defaultTexture, renderSettings);
+	Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], *AssetManager::standardMaterial, *AssetManager::defaultTexture, renderSettings);
 
 	spriteBenchmark->Stop();
 }

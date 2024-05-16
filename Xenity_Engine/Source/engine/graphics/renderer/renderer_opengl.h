@@ -38,24 +38,24 @@ public:
 	void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) override;
 	void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) override;
 	void ResetView() override;
-	void SetCameraPosition(const std::shared_ptr<Camera>& camera) override;
+	void SetCameraPosition(const Camera& camera) override;
 	void SetCameraPosition(const Vector3& position, const Vector3& rotation) override;
 	void ResetTransform() override;
 	void SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform) override;
 	void SetTransform(const glm::mat4& mat) override;
-	void BindTexture(const std::shared_ptr <Texture>& texture) override;
-	void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings) override;
-	void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings) override;
+	void BindTexture(const Texture& texture) override;
+	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings) override;
+	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
 	unsigned int CreateNewTexture() override;
-	void DeleteTexture(Texture* texture) override;
-	void SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer) override;
+	void DeleteTexture(Texture& texture) override;
+	void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) override;
 	void Clear() override;
 	void SetFog(bool active) override;
 	void SetFogValues(float start, float end, const Color& color) override;
 
-	void DeleteSubMeshData(MeshData::SubMesh* subMesh) override;
-	void UploadMeshData(const std::shared_ptr<MeshData>& meshData) override;
+	void DeleteSubMeshData(MeshData::SubMesh& subMesh) override;
+	void UploadMeshData(const MeshData& meshData) override;
 
 	//Shader
 	unsigned int CreateShader(Shader::ShaderType type) override;
@@ -79,10 +79,10 @@ public:
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
-	void Setlights(const std::shared_ptr<Camera>& camera) override;
+	void Setlights(const Camera& camera) override;
 
 private:
-	void ApplyTextureFilters(const std::shared_ptr<Texture>& texture);
+	void ApplyTextureFilters(const Texture& texture);
 	unsigned int CreateVertexArray();
 	unsigned int CreateBuffer();
 	void BindVertexArray(unsigned int bufferId);
@@ -103,7 +103,7 @@ private:
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
 	RenderingSettings lastSettings;
-	std::shared_ptr<Texture> usedTexture = nullptr;
+	unsigned int usedTexture = 0;
 	Vector4 lastUsedColor = Vector4(-1, -1, -1, -1);
 	uint64_t lastShaderIdUsedColor = 0;
 	// int GetDrawModeEnum(DrawMode drawMode);

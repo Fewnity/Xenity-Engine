@@ -133,7 +133,7 @@ void BoxCollider::OnDrawGizmosSelected()
 	const Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
 	const Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
 
-	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 	// Bottom
 	Gizmo::DrawLine(v1, v2);

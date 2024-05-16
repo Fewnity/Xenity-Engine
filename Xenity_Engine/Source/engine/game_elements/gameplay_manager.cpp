@@ -102,7 +102,7 @@ void GameplayManager::UpdateComponents()
 		// Update components
 		for (int i = 0; i < componentsCount; i++)
 		{
-			if (auto component = orderedComponents[i].lock())
+			if (std::shared_ptr<Component> component = orderedComponents[i].lock())
 			{
 				if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 				{

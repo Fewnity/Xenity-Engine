@@ -77,7 +77,7 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 	int playedSoundsCount = (int)channel->playedSoundsCount;
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
-		const std::shared_ptr<PlayedSound>& sound = channel->playedSounds[soundIndex];
+		PlayedSound* sound = channel->playedSounds[soundIndex];
 #if defined(EDITOR)
 		if (sound->isPlaying && ((sound->audioSource.lock() && sound->audioSource.lock()->isEditor) || GameplayManager::GetGameState() == GameState::Playing))
 #else
@@ -123,7 +123,6 @@ void FillChannelBuffer(short* buffer, int length, Channel* channel)
 				}
 
 				sound->seekNext += frequency;
-
 
 				// Check if the buffer seek position needs to be moved or reset
 				while (sound->seekNext >= SOUND_FREQUENCY)
@@ -447,7 +446,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	if (!found)
 	{
 		// create PlayedSound and copy audio source values
-		std::shared_ptr<PlayedSound> newPlayedSound = std::make_shared<PlayedSound>();
+		PlayedSound* newPlayedSound = new PlayedSound();
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
@@ -491,6 +490,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	if (found)
 	{
+		delete channel->playedSounds[audioSourceIndex];
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 		channel->playedSoundsCount--;
 	}
@@ -524,6 +524,7 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 
 	if (found)
 	{
+		delete channel->playedSounds[audioSourceIndex];
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 		channel->playedSoundsCount--;
 	}

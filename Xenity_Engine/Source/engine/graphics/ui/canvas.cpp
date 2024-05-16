@@ -101,7 +101,7 @@ void Canvas::OnDrawGizmos()
 	const Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
-	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 	Gizmo::DrawLine(Vector3(xOff, yOff, 0) * -1, Vector3(xOff, -yOff, 0) * -1);
 	Gizmo::DrawLine(Vector3(-xOff, yOff, 0) * -1, Vector3(-xOff, -yOff, 0) * -1);
 

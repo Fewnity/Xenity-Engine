@@ -80,13 +80,13 @@ public:
 	* @brief Add a drawable
 	* @param drawableToAdd Drawable to add
 	*/
-	static void AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd);
+	static void AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd);
 
 	/**
 	* @brief Remove a drawable
 	* @param drawableToRemove Drawable to remove
 	*/
-	static void RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove);
+	static void RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove);
 
 	/**
 	* @brief Add a lod
@@ -138,12 +138,7 @@ public:
 	API static std::shared_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
-	static std::vector<std::weak_ptr<IDrawable>> noTransparentDrawable;
-	static std::vector<std::weak_ptr<IDrawable>> transparentDrawable;
-	static std::vector<std::weak_ptr<IDrawable>> spriteDrawable;
-	static std::vector<std::weak_ptr<IDrawable>> uiDrawable;
-
-	static std::vector<std::weak_ptr<IDrawable>> orderedIDrawable;
+	static std::vector<IDrawable*> orderedIDrawable;
 	static std::vector<std::weak_ptr<Lod>> lods;
 
 	

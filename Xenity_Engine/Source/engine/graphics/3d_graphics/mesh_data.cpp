@@ -208,7 +208,7 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 
 void MeshData::SendDataToGpu()
 {
-	Engine::GetRenderer().UploadMeshData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+	Engine::GetRenderer().UploadMeshData(*this);
 	//FreeMeshData(false);
 }
 
@@ -306,7 +306,7 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 			}
 			if (deleteSubMeshes && Engine::IsRunning(true))
 			{
-				Engine::GetRenderer().DeleteSubMeshData(subMesh);
+				Engine::GetRenderer().DeleteSubMeshData(*subMesh);
 				delete subMesh;
 			}
 		}

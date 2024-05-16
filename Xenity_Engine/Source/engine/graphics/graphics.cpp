@@ -50,12 +50,8 @@ bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 int Graphics::lodsCount = 0;
 
-std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
+std::vector<IDrawable*> Graphics::orderedIDrawable;
 
-std::vector<std::weak_ptr<IDrawable>> Graphics::noTransparentDrawable;
-std::vector<std::weak_ptr<IDrawable>> Graphics::transparentDrawable;
-std::vector<std::weak_ptr<IDrawable>> Graphics::spriteDrawable;
-std::vector<std::weak_ptr<IDrawable>> Graphics::uiDrawable;
 std::vector<std::weak_ptr<Lod>> Graphics::lods;
 
 bool Graphics::drawOrderListDirty = true;
@@ -119,7 +115,6 @@ void Graphics::Init()
 
 	Debug::Print("-------- Graphics initiated --------", true);
 
-
 	Shader::Init();
 	SpriteManager::Init();
 	MeshManager::Init();
@@ -152,9 +147,10 @@ void Graphics::Draw()
 	const int matCount = AssetManager::GetMaterialCount();
 
 	OrderDrawables();
-	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+	//for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+	for(std::weak_ptr<Camera>& weakCam: cameras)
 	{
-		usedCamera = cameras[cameraIndex].lock();
+		usedCamera = weakCam.lock();
 		if (usedCamera->GetIsEnabled() && usedCamera->GetGameObject()->GetLocalActive())
 		{
 			SortTransparentDrawables();
@@ -181,8 +177,8 @@ void Graphics::Draw()
 
 			if (UseOpenGLFixedFunctions)
 			{
-				Engine::GetRenderer().SetCameraPosition(usedCamera);
-				Engine::GetRenderer().Setlights(usedCamera);
+				Engine::GetRenderer().SetCameraPosition(*usedCamera);
+				Engine::GetRenderer().Setlights(*usedCamera);
 			}
 
 			skyboxBenchmark->Start();
@@ -195,27 +191,21 @@ void Graphics::Draw()
 
 			for (const auto& renderQueue : renderBatch.renderQueues)
 			{
-				const int commandCount = renderQueue.second.commandIndex;
-				for (int commandIndex = 0; commandIndex < commandCount; commandIndex++)
+				for(const RenderCommand& com : renderQueue.second.commands)
 				{
-					const RenderCommand& com = renderQueue.second.commands[commandIndex];
 					if (com.isEnabled)
 						com.drawable->DrawCommand(com);
 				}
 			}
 
-			const int transparentCommandCount = renderBatch.transparentMeshCommandIndex;
-			for (int commandIndex = 0; commandIndex < transparentCommandCount; commandIndex++)
+			for (const RenderCommand& com : renderBatch.transparentMeshCommands)
 			{
-				const RenderCommand& com = renderBatch.transparentMeshCommands[commandIndex];
 				if (com.isEnabled)
 					com.drawable->DrawCommand(com);
 			}
 			currentMode = IDrawableTypes::Draw_2D;
-			const int spriteCommandCount = renderBatch.spriteCommandIndex;
-			for (int commandIndex = 0; commandIndex < spriteCommandCount; commandIndex++)
+			for (const RenderCommand& com : renderBatch.spriteCommands)
 			{
-				const RenderCommand& com = renderBatch.spriteCommands[commandIndex];
 				if (com.isEnabled)
 					com.drawable->DrawCommand(com);
 			}
@@ -253,7 +243,7 @@ void Graphics::Draw()
 				}
 
 				Engine::GetRenderer().ResetTransform();
-				Engine::GetRenderer().SetCameraPosition(usedCamera);
+				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 
 				// Currently lines do not support shaders
 				if (!UseOpenGLFixedFunctions)
@@ -275,13 +265,12 @@ void Graphics::Draw()
 				// Get the grid axis
 				std::vector<std::shared_ptr<SceneMenu>> sceneMenus;
 				sceneMenus = Editor::GetMenus<SceneMenu>();
-				const int sceneMenuCount = sceneMenus.size();
 				int gridAxis = 0;
-				for (int i = 0; i < sceneMenuCount; i++)
+				for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
 				{
-					if (sceneMenus[i]->weakCamera.lock() == usedCamera)
+					if (sceneMenu->weakCamera.lock() == usedCamera)
 					{
-						gridAxis = sceneMenus[i]->gridAxis;
+						gridAxis = sceneMenu->gridAxis;
 						break;
 					}
 				}
@@ -290,9 +279,9 @@ void Graphics::Draw()
 				DrawSelectedItemBoundingBox(camPos);
 
 				// Draw all gizmos
-				for (int i = 0; i < GameplayManager::componentsCount; i++)
+				for (std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 				{
-					if (std::shared_ptr<Component> component = GameplayManager::orderedComponents[i].lock())
+					if (std::shared_ptr<Component> component = weakComponent.lock())
 					{
 						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
 						{
@@ -399,10 +388,9 @@ void Graphics::OrderDrawables()
 	{
 		isRenderingBatchDirty = false;
 		renderBatch.Reset();
-		for (int iDrawIndex = 0; iDrawIndex < iDrawablesCount; iDrawIndex++)
+		for (IDrawable* drawable : orderedIDrawable)
 		{
-			const std::shared_ptr<IDrawable> drawableToCheck = orderedIDrawable[iDrawIndex].lock();
-			drawableToCheck->CreateRenderCommands(renderBatch);
+			drawable->CreateRenderCommands(renderBatch);
 		}
 	}
 
@@ -416,26 +404,26 @@ void Graphics::DeleteAllDrawables()
 	isRenderingBatchDirty = true;
 }
 
-void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
+void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 {
-	DXASSERT(drawableToAdd.lock() != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr")
+	DXASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr")
 
-	orderedIDrawable.push_back(drawableToAdd);
+	orderedIDrawable.push_back(drawableToAdd.get());
 	iDrawablesCount++;
 	isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
 }
 
-void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
+void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove)
 {
-	DXASSERT(drawableToRemove.lock() != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr")
+	DXASSERT(drawableToRemove != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr")
 
 	if (!Engine::IsRunning(true))
 		return;
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i].lock() == drawableToRemove.lock())
+		if (orderedIDrawable[i] == drawableToRemove.get())
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
@@ -515,12 +503,12 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
 		if (!forUI || usedCamera->GetIsEditor())
-			Engine::GetRenderer().SetCameraPosition(usedCamera);
+			Engine::GetRenderer().SetCameraPosition(*usedCamera);
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
 	}
 
-	Engine::GetRenderer().DrawSubMesh(subMesh, material, texture, renderSettings);
+	Engine::GetRenderer().DrawSubMesh(subMesh, *material, *texture, renderSettings);
 	drawMeshBenchmark->Stop();
 }
 
@@ -535,7 +523,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 	{
 		Engine::GetRenderer().SetFog(false);
 		const float scaleF = 10.01f;
-		Vector3 scale = Vector3(scaleF);
+		const Vector3 scale = Vector3(scaleF);
 
 		RenderingSettings renderSettings = RenderingSettings();
 		renderSettings.invertFaces = false;

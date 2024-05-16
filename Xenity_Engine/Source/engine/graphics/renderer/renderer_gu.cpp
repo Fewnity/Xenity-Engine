@@ -108,7 +108,7 @@ void RendererGU::NewFrame()
 
 void RendererGU::EndFrame()
 {
-	usedTexture.reset();
+	usedTexture = nullptr;
 
 	/*if (!dialog)
 	{*/
@@ -154,12 +154,12 @@ void RendererGU::ResetView()
 {
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
-	sceGumRotateY(180 / 180.0f * 3.14159f);
+	sceGumRotateY(3.14159f);
 }
 
-void RendererGU::SetCameraPosition(const std::shared_ptr<Camera>& camera)
+void RendererGU::SetCameraPosition(const Camera& camera)
 {
-	const std::shared_ptr<Transform> transform = camera->GetTransform();
+	const std::shared_ptr<Transform> transform = camera.GetTransform();
 	const Vector3& position = transform->GetPosition();
 	const Vector3& rotation = transform->GetRotation();
 	sceGumMatrixMode(GU_VIEW);
@@ -241,34 +241,34 @@ int TypeToGUPSM(PSPTextureType psm)
 	}
 }
 
-void RendererGU::BindTexture(const std::shared_ptr<Texture>& texture)
+void RendererGU::BindTexture(const Texture& texture)
 {
-	sceGuTexMode(TypeToGUPSM(texture->type), texture->GetMipmaplevelCount(), 0, 1);
+	sceGuTexMode(TypeToGUPSM(texture.type), texture.GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
 	// Set mipmap behavior
-	if (texture->GetIsUsingMipMap())
+	if (texture.GetIsUsingMipMap())
 		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
 	// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
 	// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
 
-	sceGuTexImage(0, texture->pW, texture->pH, texture->pW, texture->data[0]);
+	sceGuTexImage(0, texture.pW, texture.pH, texture.pW, texture.data[0]);
 	// Send mipmap data
-	if (texture->GetIsUsingMipMap())
+	if (texture.GetIsUsingMipMap())
 	{
-		sceGuTexImage(1, texture->pW / 2, texture->pH / 2, texture->pW / 2, texture->data[1]);
+		sceGuTexImage(1, texture.pW / 2, texture.pH / 2, texture.pW / 2, texture.data[1]);
 		// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
 		// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
 	}
 	ApplyTextureFilters(texture);
 }
 
-void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
+void RendererGU::ApplyTextureFilters(const Texture& texture)
 {
 	int minFilterValue = GU_LINEAR;
 	int magfilterValue = GU_LINEAR;
-	if (texture->GetFilter() == Filter::Bilinear)
+	if (texture.GetFilter() == Filter::Bilinear)
 	{
-		if (texture->GetUseMipmap())
+		if (texture.GetUseMipmap())
 		{
 			minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
 		}
@@ -278,9 +278,9 @@ void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
 		}
 		magfilterValue = GU_LINEAR;
 	}
-	else if (texture->GetFilter() == Filter::Point)
+	else if (texture.GetFilter() == Filter::Point)
 	{
-		if (texture->GetUseMipmap())
+		if (texture.GetUseMipmap())
 		{
 			minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
 		}
@@ -290,7 +290,7 @@ void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
 		}
 		magfilterValue = GU_NEAREST;
 	}
-	const int wrap = GetWrapModeEnum(texture->GetWrapMode());
+	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
 
 	// Apply filters
 	sceGuTexFilter(minFilterValue, magfilterValue);
@@ -298,12 +298,12 @@ void RendererGU::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
 
 }
 
-void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings)
+void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
 {
-	DrawSubMesh(subMesh, material, material->texture, settings);
+	DrawSubMesh(subMesh, material, *material.texture, settings);
 }
 
-void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings)
+void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
 	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
@@ -388,13 +388,13 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared
 	}
 
 	// Bind texture
-	if (usedTexture != texture)
+	if (usedTexture != texture.data[0])
 	{
-		usedTexture = texture;
+		usedTexture = texture.data[0];
 		BindTexture(texture);
 	}
-	sceGuTexOffset(material->offset.x, material->offset.y);
-	sceGuTexScale(material->tiling.x, material->tiling.y);
+	sceGuTexOffset(material.offset.x, material.offset.y);
+	sceGuTexScale(material.tiling.x, material.tiling.y);
 
 	// Draw
 	if (!subMesh.meshData->hasIndices)
@@ -421,19 +421,19 @@ unsigned int RendererGU::CreateNewTexture()
 	return 0;
 }
 
-void RendererGU::DeleteTexture(Texture* texture)
+void RendererGU::DeleteTexture(Texture& texture)
 {
-	const int textreuLevelCount = texture->inVram.size();
-	for (int i = 0; i < textreuLevelCount; i++)
+	const int textureLevelCount = texture.inVram.size();
+	for (int i = 0; i < textureLevelCount; i++)
 	{
-		if (texture->inVram[i])
-			vfree(texture->data[i]);
+		if (texture.inVram[i])
+			vfree(texture.data[i]);
 		else
-			free(texture->data[i]);
+			free(texture.data[i]);
 	}
 }
 
-void RendererGU::SetTextureData(const std::shared_ptr<Texture>& texture, unsigned int textureType, const unsigned char* buffer)
+void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
 }
 
@@ -473,9 +473,9 @@ void RendererGU::DisableAllLight()
 	}
 }
 
-void RendererGU::Setlights(const std::shared_ptr<Camera>& camera)
+void RendererGU::Setlights(const Camera& camera)
 {
-	std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
+	std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
@@ -528,11 +528,11 @@ void RendererGU::SetFogValues(float start, float end, const Color& color)
 	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 }
 
-void RendererGU::DeleteSubMeshData(MeshData::SubMesh* subMesh)
+void RendererGU::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
 }
 
-void RendererGU::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
+void RendererGU::UploadMeshData(const MeshData& meshData)
 {
 }
 

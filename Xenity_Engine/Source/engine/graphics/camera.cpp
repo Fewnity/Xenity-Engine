@@ -407,7 +407,7 @@ void Camera::OnDrawGizmosSelected()
 	const Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
-	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 	const Vector3& cameraPosition = GetTransform()->GetPosition();
 	const Vector3& cameraRotation = GetTransform()->GetRotation();

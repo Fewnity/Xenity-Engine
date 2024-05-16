@@ -215,7 +215,7 @@ void InspectorMenu::DrawFilePreview()
 		{
 			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
 			const ImVec2 availArea = ImGui::GetContentRegionAvail();
-			Engine::GetRenderer().BindTexture(texture);
+			Engine::GetRenderer().BindTexture(*texture);
 			ImGui::Image((ImTextureID)textureId, availArea);
 
 			const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());

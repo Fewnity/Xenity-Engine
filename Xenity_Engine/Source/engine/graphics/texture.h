@@ -120,7 +120,7 @@ public:
 	* @brief [Internal] Get mipmap level count
 	* @return 0 if mipmapping is not used
 	*/
-	int GetMipmaplevelCount() 
+	int GetMipmaplevelCount() const
 	{
 		return mipmaplevelCount;
 	}
@@ -128,7 +128,7 @@ public:
 	/**
 	* @bried [Internal] Get if the texture is using mipmapping
 	*/
-	bool GetIsUsingMipMap() 
+	bool GetIsUsingMipMap() const
 	{
 		return useMipMap;
 	}

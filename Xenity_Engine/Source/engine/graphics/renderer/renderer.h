@@ -75,7 +75,7 @@ public:
 	virtual void SetViewport(int x, int y, int width, int height) = 0;
 	virtual void SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane) = 0;
 	virtual void SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect) = 0;
-	virtual void SetCameraPosition(const std::shared_ptr<Camera>& camera) = 0;
+	virtual void SetCameraPosition(const Camera& camera) = 0;
 	virtual void SetCameraPosition(const Vector3& position, const Vector3& rotation) = 0;
 	virtual void ResetView() = 0;
 
@@ -86,18 +86,18 @@ public:
 
 	// Texture
 	virtual unsigned int CreateNewTexture() = 0;
-	virtual void BindTexture(const std::shared_ptr<Texture>& texture) = 0;
-	virtual void SetTextureData(const std::shared_ptr<Texture>& texture, unsigned int textureType, const unsigned char* buffer) = 0;
-	virtual void DeleteTexture(Texture* texture) = 0;
+	virtual void BindTexture(const Texture& texture) = 0;
+	virtual void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) = 0;
+	virtual void DeleteTexture(Texture& texture) = 0;
 
 	// Mesh
-	virtual void UploadMeshData(const std::shared_ptr<MeshData>& meshData) = 0;
-	virtual void DeleteSubMeshData(MeshData::SubMesh* subMesh) = 0;
-	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings) = 0;
-	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings) = 0;
+	virtual void UploadMeshData(const MeshData& meshData) = 0;
+	virtual void DeleteSubMeshData(MeshData::SubMesh& subMesh) = 0;
+	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings) = 0;
+	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 
-	virtual void Setlights(const std::shared_ptr<Camera>& camera) = 0;
+	virtual void Setlights(const Camera& camera) = 0;
 
 	//Shader
 	virtual unsigned int CreateShader(Shader::ShaderType type) { return 0; }

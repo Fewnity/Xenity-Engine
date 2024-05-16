@@ -132,7 +132,7 @@ void ParticleSystem::OnDrawGizmosSelected()
 		const Vector3 v7 = pos + Vector3(boxSize.x, boxSize.y, -boxSize.z) / 2.0f;
 		const Vector3 v8 = pos + Vector3(boxSize.x, boxSize.y, boxSize.z) / 2.0f;
 
-		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+		Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 		// Bottom
 		Gizmo::DrawLine(v1, v2);

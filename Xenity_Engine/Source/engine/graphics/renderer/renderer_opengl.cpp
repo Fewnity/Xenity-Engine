@@ -97,7 +97,7 @@ void RendererOpengl::NewFrame()
 
 void RendererOpengl::EndFrame()
 {
-	usedTexture.reset();
+	usedTexture = 0;
 #if defined(__vita__)
 	vglSwapBuffers(GL_FALSE);
 #endif
@@ -148,9 +148,9 @@ void RendererOpengl::ResetView()
 	glRotatef(180, 0, 1, 0);
 }
 
-void RendererOpengl::SetCameraPosition(const std::shared_ptr<Camera>& camera)
+void RendererOpengl::SetCameraPosition(const Camera& camera)
 {
-	std::shared_ptr<Transform> transform = camera->GetTransform();
+	std::shared_ptr<Transform> transform = camera.GetTransform();
 	const Vector3& position = transform->GetPosition();
 	const Vector3& rotation = transform->GetRotation();
 
@@ -195,22 +195,22 @@ void RendererOpengl::SetTransform(const glm::mat4& mat)
 	glMultMatrixf((float*)&mat);
 }
 
-void RendererOpengl::BindTexture(const std::shared_ptr<Texture>& texture)
+void RendererOpengl::BindTexture(const Texture& texture)
 {
-	glBindTexture(GL_TEXTURE_2D, texture->GetTextureId());
+	glBindTexture(GL_TEXTURE_2D, texture.GetTextureId());
 	ApplyTextureFilters(texture);
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
-void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture)
+void RendererOpengl::ApplyTextureFilters(const Texture& texture)
 {
 	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
-	if (texture->GetFilter() == Filter::Bilinear)
+	if (texture.GetFilter() == Filter::Bilinear)
 	{
-		if (texture->GetUseMipmap())
+		if (texture.GetUseMipmap())
 		{
 			minFilterValue = GL_LINEAR_MIPMAP_LINEAR;
 		}
@@ -220,9 +220,9 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 		}
 		magfilterValue = GL_LINEAR;
 	}
-	else if (texture->GetFilter() == Filter::Point)
+	else if (texture.GetFilter() == Filter::Point)
 	{
-		if (texture->GetUseMipmap())
+		if (texture.GetUseMipmap())
 		{
 			minFilterValue = GL_NEAREST_MIPMAP_NEAREST;
 		}
@@ -232,7 +232,7 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 		}
 		magfilterValue = GL_NEAREST;
 	}
-	const int wrap = GetWrapModeEnum(texture->GetWrapMode());
+	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
 
 	// Apply filters
 
@@ -243,16 +243,13 @@ void RendererOpengl::ApplyTextureFilters(const std::shared_ptr<Texture>& texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilterValue);
 }
 
-void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& settings)
+void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
 {
-	DrawSubMesh(subMesh, material, material->texture, settings);
+	DrawSubMesh(subMesh, material, *material.texture, settings);
 }
 
-void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture, RenderingSettings& settings)
+void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
-	if (!subMesh.meshData->isValid)
-		return;
-
 	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
 	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
 	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
@@ -337,7 +334,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 	const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
 	const Vector4 colorToUse = rgba.ToVector4();
-	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material->shader->fileId))
+	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.shader->fileId))
 	{
 		lastUsedColor = colorToUse;
 		if (Graphics::UseOpenGLFixedFunctions)
@@ -346,25 +343,17 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 		}
 		else 
 		{
-			lastShaderIdUsedColor = material->shader->fileId;
-			material->shader->SetShaderAttribut("color", colorToUse);
+			lastShaderIdUsedColor = material.shader->fileId;
+			material.shader->SetShaderAttribut("color", colorToUse);
 		}
 	}
-
-	// Do not draw the submesh if the texture is null
-	/*if (material == nullptr)
-		return;*/
-
-	// Do not draw the submesh if the vertice count is 0 TODO: Remove this?
-	if (subMesh.vertice_count == 0)
-		return;
 
 	//Bind all the data
 	glBindVertexArray(subMesh.VAO);
 
-	if (usedTexture != texture)
+	if (usedTexture != texture.GetTextureId())
 	{
-		usedTexture = texture;
+		usedTexture = texture.GetTextureId();
 		BindTexture(texture);
 	}
 
@@ -372,8 +361,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::sh
 	{
 		glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
-		glTranslatef(material->offset.x, material->offset.y, 0);
-		glScalef(material->tiling.x, material->tiling.y, 1.0f);
+		glTranslatef(material.offset.x, material.offset.y, 0);
+		glScalef(material.tiling.x, material.tiling.y, 1.0f);
 	}
 
 	// Draw
@@ -421,7 +410,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = false;
-	usedTexture = nullptr;
+	usedTexture = 0;
 
 	VertexNoColorNoUv ver[2];
 	ver[0].x = a.x;
@@ -448,16 +437,16 @@ unsigned int RendererOpengl::CreateNewTexture()
 	return textureId;
 }
 
-void RendererOpengl::DeleteTexture(Texture* texture)
+void RendererOpengl::DeleteTexture(Texture& texture)
 {
-	unsigned int textureId = texture->GetTextureId();
+	unsigned int textureId = texture.GetTextureId();
 	glDeleteTextures(1, &textureId);
 }
 
-void RendererOpengl::SetTextureData(const std::shared_ptr <Texture>& texture, unsigned int textureType, const unsigned char* buffer)
+void RendererOpengl::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
-	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture->GetWidth(), texture->GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
-	if (texture->GetIsUsingMipMap())
+	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture.GetWidth(), texture.GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
+	if (texture.GetIsUsingMipMap())
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -516,9 +505,9 @@ void RendererOpengl::DisableAllLight()
 	}
 }
 
-void RendererOpengl::Setlights(const std::shared_ptr<Camera>& camera)
+void RendererOpengl::Setlights(const Camera& camera)
 {
-	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
+	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
@@ -607,21 +596,21 @@ void RendererOpengl::DeleteVertexArray(unsigned int bufferId)
 	glDeleteVertexArrays(1, &bufferId);
 }
 
-void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh* subMesh)
+void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
-	if (subMesh->VAO != 0)
-		DeleteVertexArray(subMesh->VAO);
-	if (subMesh->VBO != 0)
-		DeleteBuffer(subMesh->VBO);
-	if (subMesh->EBO != 0)
-		DeleteBuffer(subMesh->EBO);
+	if (subMesh.VAO != 0)
+		DeleteVertexArray(subMesh.VAO);
+	if (subMesh.VBO != 0)
+		DeleteBuffer(subMesh.VBO);
+	if (subMesh.EBO != 0)
+		DeleteBuffer(subMesh.EBO);
 }
 
-void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
+void RendererOpengl::UploadMeshData(const MeshData& meshData)
 {
-	for (int i = 0; i < meshData->subMeshCount; i++)
+	for (int i = 0; i < meshData.subMeshCount; i++)
 	{
-		MeshData::SubMesh* newSubMesh = meshData->subMeshes[i];
+		MeshData::SubMesh* newSubMesh = meshData.subMeshes[i];
 
 		if (newSubMesh->VAO == 0)
 			newSubMesh->VAO = CreateVertexArray();
@@ -633,9 +622,9 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 
 		glBindBuffer(GL_ARRAY_BUFFER, newSubMesh->VBO);
 
-		if (!meshData->hasNormal)
+		if (!meshData.hasNormal)
 		{
-			if (!meshData->hasUv)
+			if (!meshData.hasUv)
 			{
 				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNoColorNoUv) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
 			}
@@ -646,7 +635,7 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 		}
 		else
 		{
-			if (!meshData->hasUv)
+			if (!meshData.hasUv)
 			{
 				glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalsNoColorNoUv) * newSubMesh->vertice_count, newSubMesh->data, GL_STATIC_DRAW);
 			}
@@ -662,9 +651,9 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
 		int stride;
-		if (!meshData->hasNormal)
+		if (!meshData.hasNormal)
 		{
-			if (!meshData->hasUv)
+			if (!meshData.hasUv)
 			{
 				stride = sizeof(VertexNoColorNoUv);
 				//const VertexNoColorNoUv* data = (VertexNoColorNoUv*)subMesh->data;
@@ -675,7 +664,7 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 			}
 			else
 			{
-				if (meshData->hasColor)
+				if (meshData.hasColor)
 				{
 					stride = sizeof(Vertex);
 					//const Vertex* data = (Vertex*)subMesh->data;
@@ -717,7 +706,7 @@ void RendererOpengl::UploadMeshData(const std::shared_ptr<MeshData>& meshData)
 		}
 		else
 		{
-			if (!meshData->hasUv)
+			if (!meshData.hasUv)
 			{
 				stride = sizeof(VertexNormalsNoColorNoUv);
 				//const VertexNormalsNoColorNoUv* data = (VertexNormalsNoColorNoUv*)subMesh->data;

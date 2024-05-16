@@ -48,7 +48,7 @@ public:
 	Channel();
 	int port = 0;
 
-	std::vector<std::shared_ptr<PlayedSound>> playedSounds;
+	std::vector<PlayedSound*> playedSounds;
 	int playedSoundsCount = 0;
 
 private:

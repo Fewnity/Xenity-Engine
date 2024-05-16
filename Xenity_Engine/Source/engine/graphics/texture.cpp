@@ -370,9 +370,9 @@ void Texture::OnLoadFileReferenceFinished()
 {
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::GetRenderer().CreateNewTexture();
-	Engine::GetRenderer().BindTexture(GetThisShared());
+	Engine::GetRenderer().BindTexture(*this);
 	const unsigned int rgba = 0x1908;
-	Engine::GetRenderer().SetTextureData(GetThisShared(), rgba, buffer);
+	Engine::GetRenderer().SetTextureData(*this, rgba, buffer);
 #endif
 
 	stbi_image_free(buffer);
@@ -453,10 +453,10 @@ void Texture::SetData(const unsigned char *texData)
 
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
 	textureId = Engine::GetRenderer().CreateNewTexture();
-	Engine::GetRenderer().BindTexture(GetThisShared());
+	Engine::GetRenderer().BindTexture(*this);
 	// unsigned int alpha = 0x1906;
 
-	Engine::GetRenderer().SetTextureData(GetThisShared(), GL_LUMINANCE_ALPHA, texData);
+	Engine::GetRenderer().SetTextureData(*this, GL_LUMINANCE_ALPHA, texData);
 #endif
 
 	isValid = true;
@@ -499,7 +499,7 @@ void Texture::LoadTexture()
 void Texture::Unload()
 {
 	ClearSpriteSelections();
-	Engine::GetRenderer().DeleteTexture(this);
+	Engine::GetRenderer().DeleteTexture(*this);
 }
 
 /// <summary>
