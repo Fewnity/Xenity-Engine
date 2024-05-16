@@ -2,6 +2,7 @@
 
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/graphics.h>
+#include <engine/assertions/assertions.h>
 
 std::vector<std::shared_ptr<FileReference>> AsyncFileLoading::threadLoadedFiles;
 std::mutex AsyncFileLoading::threadLoadingMutex;
@@ -27,6 +28,8 @@ void AsyncFileLoading::FinishThreadedFileLoading()
 
 void AsyncFileLoading::AddFile(std::shared_ptr<FileReference> file)
 {
+	DXASSERT(file != nullptr, "[AsyncFileLoading::AddFile] file is nullptr")
+
 	threadLoadingMutex.lock();
 	threadLoadedFiles.push_back(file);
 	threadLoadingMutex.unlock();

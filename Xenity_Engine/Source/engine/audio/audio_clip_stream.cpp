@@ -12,10 +12,12 @@
 
 #include <stb_vorbis.c>
 #include "audio_clip.h"
+#include <engine/assertions/assertions.h>
 
 
 void AudioClipStream::OpenStream(std::shared_ptr<AudioClip> audioFile)
 {
+	DXASSERT(audioFile != nullptr, "[AudioClipStream::OpenStream] audioFile is null")
 	std::shared_ptr<File> file = audioFile->file;
 	const std::string& path = file->GetPath();
 	//Debug::Print("Loading audio clip: " + path, true);

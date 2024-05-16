@@ -73,10 +73,9 @@ void SpriteManager::Init()
  */
 void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	/*if (!material)
-		return;*/
+	DXASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
 
-	spriteBenchmark->Start();
+		spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
 
@@ -107,10 +106,9 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	/*if (!material)
-		return;*/
+	DXASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
 
-	spriteBenchmark->Start();
+		spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
 
@@ -138,41 +136,36 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 {
-	if (!AssetManager::defaultTexture || !AssetManager::defaultTexture->IsValid())
-	{
-		Debug::PrintError("[SpriteManager::Render2DLine] Invalid texture", true);
-		return;
-	}
+	DXASSERT(meshData != nullptr, "[SpriteManager::Render2DLine] meshData is nullptr")
 
 	spriteBenchmark->Start();
-	if (Graphics::usedCamera)
-	{
+
 #if defined(__PSP__)
-		if (Graphics::needUpdateCamera)
-		{
-			Graphics::usedCamera->UpdateProjection();
-			Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
-			Graphics::needUpdateCamera = false;
-		}
-#else
+	if (Graphics::needUpdateCamera)
+	{
+		Graphics::usedCamera->UpdateProjection();
 		Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
+		Graphics::needUpdateCamera = false;
+	}
+#else
+	Engine::GetRenderer().SetCameraPosition(Graphics::usedCamera);
 #endif
 
-		const Vector3 zero = Vector3(0);
-		const Vector3 one = Vector3(1);
+	const Vector3 zero = Vector3(0);
+	const Vector3 one = Vector3(1);
 
-		Engine::GetRenderer().SetTransform(zero, zero, one, true);
+	Engine::GetRenderer().SetTransform(zero, zero, one, true);
 
-		// Set draw settings
-		RenderingSettings renderSettings = RenderingSettings();
+	// Set draw settings
+	RenderingSettings renderSettings = RenderingSettings();
 
-		renderSettings.invertFaces = false;
-		renderSettings.useBlend = true;
-		renderSettings.useDepth = false;
-		renderSettings.useTexture = true;
-		renderSettings.useLighting = false;
+	renderSettings.invertFaces = false;
+	renderSettings.useBlend = true;
+	renderSettings.useDepth = false;
+	renderSettings.useTexture = true;
+	renderSettings.useLighting = false;
 
-		Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], AssetManager::standardMaterial, AssetManager::defaultTexture, renderSettings);
-	}
+	Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], AssetManager::standardMaterial, AssetManager::defaultTexture, renderSettings);
+
 	spriteBenchmark->Stop();
 }

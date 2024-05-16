@@ -28,8 +28,7 @@ Component::~Component()
 
 void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 {
-	if (!newGameObject)
-		return;
+	DXASSERT(newGameObject != nullptr, "[Component::SetGameObject] newGameObject is empty")
 
 	// Check if the component has been just instanciated
 	bool firstUse = false;

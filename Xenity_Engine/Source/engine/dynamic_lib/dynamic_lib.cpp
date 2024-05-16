@@ -4,12 +4,15 @@
 #include <windows.h>
 #include <engine/debug/debug.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/assertions/assertions.h>
 
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
 
 void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
+	DXASSERT(!libraryName.empty(), "[DynamicLibrary::LoadGameLibrary] libraryName is empty")
+
 	const std::string fileName = libraryName + ".dll";
 
 	//Disable error popup

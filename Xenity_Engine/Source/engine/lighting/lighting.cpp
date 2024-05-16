@@ -62,7 +62,7 @@ void Light::SetupPointLight(const Color &_color, const float _intensity, const f
 	this->type = LightType::Point;
 
 	this->color = _color;
-	this->intensity = _intensity;
+	SetIntensity(_intensity);
 	SetRange(_range);
 }
 
@@ -71,7 +71,7 @@ void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 	this->type = LightType::Directional;
 
 	this->color = _color;
-	this->intensity = _intensity;
+	SetIntensity(_intensity);
 	this->quadratic = 0;
 	this->linear = 0;
 }
@@ -146,6 +146,8 @@ float Light::GetSpotSmoothness() const
 
 void Light::SetIntensity(float intensity)
 {
+	if (intensity < 0)
+		intensity = 0;
 	this->intensity = intensity;
 }
 

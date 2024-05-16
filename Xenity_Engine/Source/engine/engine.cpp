@@ -194,7 +194,9 @@ int Engine::Init()
 
 	CreateBenchmarks();
 
+#if defined(DEBUG)
 	UnitTestManager::StartAllTests();
+#endif
 
 	return 0;
 }

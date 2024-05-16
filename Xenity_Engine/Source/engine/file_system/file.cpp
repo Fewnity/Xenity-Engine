@@ -7,9 +7,10 @@
 
 File::File(std::string _path) : UniqueId(true)
 {
+	DXASSERT(!_path.empty(), "[File::File] _path is nullptr")
+
 	if (_path.empty())
 	{
-		Debug::PrintError("File path is empty");
 		return;
 	}
 

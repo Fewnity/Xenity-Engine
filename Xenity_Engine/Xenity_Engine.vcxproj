@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\assertions\assertions.cpp" />
     <ClCompile Include="Source\engine\graphics\icon.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
     <ClCompile Include="Source\editor\platform_settings.cpp">
@@ -842,6 +843,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\assertions\assertions.h" />
     <ClInclude Include="Source\engine\graphics\icon.h" />
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
     <ClInclude Include="Source\editor\platform_settings.h">

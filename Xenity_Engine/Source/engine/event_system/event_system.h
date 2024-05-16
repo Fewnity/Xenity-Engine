@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <stdint.h>
+#include <engine/assertions/assertions.h>
 
 #if defined(_WIN64)
 #define ADDR_SIZE uint64_t
@@ -57,6 +58,8 @@ public:
 	*/
 	void Bind(void(*function)(Args...))
 	{
+		DXASSERT(function != nullptr, "[Event::Bind] function is nullptr")
+
 		if (!function)
 			return;
 
@@ -80,6 +83,9 @@ public:
 	template<typename ObjType>
 	void Bind(void(ObjType::* function)(Args...), ObjType* obj)
 	{
+		DXASSERT(function != nullptr, "[Event::Bind] ObjType::function is nullptr")
+		DXASSERT(obj != nullptr, "[Event::Bind] obj is nullptr")
+
 		if (!function || !obj)
 			return;
 
@@ -99,6 +105,8 @@ public:
 	*/
 	void Unbind(void(*function)(Args...))
 	{
+		DXASSERT(function != nullptr, "[Event::Unbind] function is nullptr")
+
 		if (!function)
 			return;
 
@@ -117,6 +125,9 @@ public:
 	template<typename ObjType>
 	void Unbind(void(ObjType::* function)(Args...), ObjType* obj)
 	{
+		DXASSERT(function != nullptr, "[Event::Unbind] ObjType::function is nullptr")
+		DXASSERT(obj != nullptr, "[Event::Unbind] obj is nullptr")
+
 		if (!function || !obj)
 			return;
 
@@ -216,6 +227,9 @@ private:
 	template<typename ObjType, std::size_t... Is>
 	std::function<void(Args...)> CreateBindHelper(void(ObjType::* function)(Args...), ObjType* obj, const std::index_sequence<Is...>)
 	{
+		DXASSERT(function != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
+		DXASSERT(obj != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
+
 		// Add the right number of placeholders
 #if defined(__GNUC__)
 		return std::bind(function, obj, std::_Placeholder<Is + 1>{}...);
@@ -234,6 +248,8 @@ private:
 	template<std::size_t... Is>
 	std::function<void(Args...)> CreateBindHelper(void(*function)(Args...), const std::index_sequence<Is...>)
 	{
+		DXASSERT(function != nullptr, "[Event::CreateBindHelper] function is nullptr")
+
 		// Add the right number of placeholders
 #if defined(__GNUC__)
 		return std::bind(function, std::_Placeholder<Is + 1>{}...);

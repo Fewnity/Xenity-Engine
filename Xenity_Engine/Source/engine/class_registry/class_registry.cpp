@@ -35,21 +35,16 @@ std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
-	if (name.empty()) 
+	DXASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty")
+	DXASSERT(gameObject != nullptr, "[ClassRegistry::AddComponentFromName] gameObject is empty")
+
+	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{
-		Debug::PrintError("[ClassRegistry::AddComponentFromName] Empty component name", true);
-		return nullptr;
+		return nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
 	}
 	else
 	{
-		if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
-		{
-			return nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
-		}
-		else
-		{
-			return nullptr;
-		}
+		return nullptr;
 	}
 }
 

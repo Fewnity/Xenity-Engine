@@ -1,5 +1,6 @@
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
+#include <engine/assertions/assertions.h>
 
 // PSP
 #if defined(__PSP__)

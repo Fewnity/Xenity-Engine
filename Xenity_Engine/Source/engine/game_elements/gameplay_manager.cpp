@@ -6,10 +6,12 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/component.h>
+
 #if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/ui/menus/game_menu.h>
 #endif
+
 int GameplayManager::gameObjectCount = 0;
 int GameplayManager::gameObjectEditorCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -26,19 +28,23 @@ GameState GameplayManager::gameState = GameState::Stopped;
 
 void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
+	DXASSERT(gameObject != nullptr, "[GameplayManager::AddGameObject] gameObject is nullptr")
+
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
 }
 
 void GameplayManager::AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject)
 {
+	DXASSERT(gameObject != nullptr, "[GameplayManager::AddGameObjectEditor] gameObject is nullptr")
+
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;
 }
 
-std::vector<std::shared_ptr<GameObject>> GameplayManager::GetGameObjects()
+const std::vector<std::shared_ptr<GameObject>>& GameplayManager::GetGameObjects()
 {
-	return std::vector<std::shared_ptr<GameObject>>(GameplayManager::gameObjects);
+	return GameplayManager::gameObjects;
 }
 
 void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
@@ -118,7 +124,7 @@ void GameplayManager::OrderComponents()
 {
 	for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 	{
-		std::shared_ptr<GameObject>& gameObjectToCheck = gameObjects[gIndex];
+		const std::shared_ptr<GameObject>& gameObjectToCheck = gameObjects[gIndex];
 		if (gameObjectToCheck)
 		{
 			if (gameObjectToCheck->GetActive())
@@ -127,7 +133,7 @@ void GameplayManager::OrderComponents()
 				bool placeFound = false;
 				for (int cIndex = 0; cIndex < goComponentCount; cIndex++)
 				{
-					std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->components[cIndex];
+					const std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->components[cIndex];
 					if (componentToCheck)
 					{
 						for (int i = 0; i < componentsCount; i++)

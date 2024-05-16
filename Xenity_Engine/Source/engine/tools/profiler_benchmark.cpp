@@ -2,9 +2,13 @@
 
 #include <engine/debug/performance.h>
 #include <engine/engine_settings.h>
+#include <engine/assertions/assertions.h>
 
 ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::string& name)
 {
+	DXASSERT(!category.empty(), "[ProfilerBenchmark::ProfilerBenchmark] category is empty")
+	DXASSERT(!name.empty(), "[ProfilerBenchmark::ProfilerBenchmark] name is empty")
+
 #if defined(EDITOR)
 	//If the profiler is new, created a new one
 	if (Performance::profilerCategories.count(category) == 0)

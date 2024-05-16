@@ -86,7 +86,6 @@ public:
 		this->name = name;
 	}
 
-
 	/**
 	* @brief Add a child to the GameObject
 	* @param gameObject Child to add
@@ -105,7 +104,8 @@ public:
 	* @return The added component
 	*/
 	template <typename T>
-	std::shared_ptr<T> AddComponent()
+	std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
+	AddComponent()
 	{
 		std::shared_ptr<Component> newC = std::make_shared<T>();
 		AddExistingComponent(newC);
@@ -123,7 +123,8 @@ public:
 	* @return The component
 	*/
 	template <typename T>
-	std::shared_ptr<T> GetComponent() const
+	std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
+	GetComponent() const
 	{
 		for (int i = 0; i < componentCount; i++)
 		{

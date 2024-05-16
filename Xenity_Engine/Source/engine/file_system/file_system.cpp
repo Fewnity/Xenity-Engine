@@ -40,6 +40,8 @@ FileSystem *FileSystem::fileSystem = nullptr;
 
 void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recursive)
 {
+	DXASSERT(directory != nullptr, "[FileSystem::FillDirectory] directory is nullptr")
+
 	directory->files.clear();
 	directory->subdirectories.clear();
 	if (!directory->CheckIfExist())
@@ -245,6 +247,8 @@ std::vector<std::shared_ptr<File>> files;
 
 std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 {
+	DXASSERT(!path.empty(), "[FileSystem::MakeFile] path is empty")
+
 	std::shared_ptr<File> file;
 
 	size_t fileCount = files.size();
@@ -281,12 +285,12 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 
 bool FileSystem::CreateFolder(const std::string &path)
 {
-	std::string finalPath = path;
+	DXASSERT(!path.empty(), "[FileSystem::CreateFolder] path is empty")
 
 	bool result = true;
 	try
 	{
-		std::filesystem::create_directory(finalPath);
+		std::filesystem::create_directory(path);
 	}
 	catch (const std::exception &)
 	{
@@ -298,17 +302,17 @@ bool FileSystem::CreateFolder(const std::string &path)
 
 void FileSystem::Delete(const std::string &path)
 {
+	DXASSERT(!path.empty(), "[FileSystem::Delete] path is empty")
 #if defined(_EE)
 	return;
 #endif
-	std::string newPath = path;
 
 #if defined(__PSP__)
-	sceIoRemove(newPath.c_str());
+	sceIoRemove(path.c_str());
 #else
 	try
 	{
-		std::filesystem::remove_all(newPath.c_str());
+		std::filesystem::remove_all(path.c_str());
 	}
 	catch (const std::exception &)
 	{

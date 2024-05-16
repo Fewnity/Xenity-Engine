@@ -92,7 +92,7 @@ public:
 	* @brief Set projection type
 	* @param type Projection type
 	*/
-	void SetProjectionType(ProjectionTypes type);
+	void SetProjectionType(const ProjectionTypes type);
 
 	/**
 	* @brief Get projection type

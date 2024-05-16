@@ -6,7 +6,6 @@
 #include <imgui/imgui_impl_sdl3.h>
 #include <dwmapi.h>
 #include <windows.h>
-//#include <SDL3/SDL_syswm.h>
 #endif
 
 #include <engine/engine.h>

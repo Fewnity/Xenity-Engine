@@ -418,6 +418,8 @@ void Graphics::DeleteAllDrawables()
 
 void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 {
+	DXASSERT(drawableToAdd.lock() != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr")
+
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
 	isRenderingBatchDirty = true;
@@ -426,6 +428,8 @@ void Graphics::AddDrawable(const std::weak_ptr<IDrawable>& drawableToAdd)
 
 void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 {
+	DXASSERT(drawableToRemove.lock() != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr")
+
 	if (!Engine::IsRunning(true))
 		return;
 
@@ -443,12 +447,16 @@ void Graphics::RemoveDrawable(const std::weak_ptr<IDrawable>& drawableToRemove)
 
 void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 {
+	DXASSERT(lodToAdd.lock() != nullptr, "[Graphics::AddLod] lodToAdd is nullptr")
+
 	lods.push_back(lodToAdd);
 	lodsCount++;
 }
 
 void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 {
+	DXASSERT(lodToRemove.lock() != nullptr, "[Graphics::RemoveLod] lodToRemove is nullptr")
+
 	if (!Engine::IsRunning(true))
 		return;
 
@@ -465,6 +473,8 @@ void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 
 void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 {
+	DXASSERT(cameraToRemove.lock() != nullptr, "[Graphics::RemoveCamera] cameraToRemove is nullptr")
+
 	const size_t cameraCount = cameras.size();
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
 	{
@@ -484,8 +494,9 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	/*if (!usedCamera.lock())
-		return;*/
+	DXASSERT(material != nullptr, "[Graphics::DrawSubMesh] material is nullptr")
+	DXASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr")
+
 	if (texture == nullptr)
 		texture = AssetManager::defaultTexture;
 
@@ -493,9 +504,6 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 
 	if (!UseOpenGLFixedFunctions)
 	{
-		/*if (!material)
-			return;*/
-
 		material->Use();
 
 		if (!currentShader)

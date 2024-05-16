@@ -17,6 +17,7 @@
 #include <engine/scene_management/scene.h>
 #include <engine/audio/audio_clip.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/assertions/assertions.h>
 
 bool initialised = false;
 
@@ -48,8 +49,6 @@ void AssetManager::Init()
 	initialised = true;
 	ProjectManager::GetProjectLoadedEvent().Bind(&AssetManager::OnProjectLoaded);
 	ProjectManager::GetProjectUnloadedEvent().Bind(&AssetManager::OnProjectUnloaded);
-
-	//return;
 
 	Debug::Print("-------- Asset Manager initiated --------", true);
 }
@@ -84,12 +83,13 @@ void AssetManager::OnProjectLoaded()
 	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/unlitMaterial.mat"));
 	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/lineMaterial.mat"));
 	
-	if(standardMaterial)
-		standardMaterial->LoadFileReference();
-	if(unlitMaterial)
-		unlitMaterial->LoadFileReference();
-	if(lineMaterial)
-		lineMaterial->LoadFileReference();
+	DXASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+	DXASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+	DXASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+
+	standardMaterial->LoadFileReference();
+	unlitMaterial->LoadFileReference();
+	lineMaterial->LoadFileReference();
 }
 
 void AssetManager::OnProjectUnloaded()
@@ -109,12 +109,16 @@ void AssetManager::OnProjectUnloaded()
 
 void AssetManager::AddMaterial(Material* material)
 {
+	DXASSERT(material != nullptr, "[AssetManager::AddMaterial] Material is null")
+
 	materials.push_back(material);
 	materialCount++;
 }
 
 void AssetManager::AddReflection(Reflective* reflection)
 {
+	DXASSERT(reflection != nullptr, "[AssetManager::AddReflection] Reflection is null")
+
 #if defined(EDITOR)
 	if (initialised)
 	{
@@ -126,6 +130,8 @@ void AssetManager::AddReflection(Reflective* reflection)
 
 void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	DXASSERT(fileReference != nullptr, "[AssetManager::AddFileReference] fileReference is null")
+
 	fileReferences.push_back(fileReference);
 	fileReferenceCount++;
 }
@@ -136,6 +142,8 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 /// <param name="light"></param>
 void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 {
+	DXASSERT(light.lock() != nullptr, "[AssetManager::AddLight] light is null")
+
 	lights.push_back(light);
 	lightCount++;
 }
@@ -146,6 +154,8 @@ void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 
 void AssetManager::RemoveMaterial(const Material* material)
 {
+	DXASSERT(material != nullptr, "[AssetManager::RemoveMaterial] material is null")
+
 	if (!Engine::IsRunning(true))
 		return;
 
@@ -170,6 +180,8 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflective* reflection)
 {
+	DXASSERT(reflection != nullptr, "[AssetManager::RemoveReflection] reflection is null")
+
 	if (!Engine::IsRunning(true))
 		return;
 
@@ -199,11 +211,13 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	DXASSERT(fileReference != nullptr, "[AssetManager::ForceDeleteFileReference] fileReference is null")
+
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
 	{
 		auto map = reflections[reflectionIndex]->GetReflectiveData();
-		for (auto& kv : map)
+		for (const auto& kv : map)
 		{
 			const VariableReference& variableRef = kv.second.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
@@ -271,6 +285,8 @@ void AssetManager::RemoveAllFileReferences()
 
 void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	DXASSERT(fileReference != nullptr, "[AssetManager::RemoveFileReference] fileReference is null")
+
 	if (!Engine::IsRunning(true))
 		return;
 
@@ -299,6 +315,8 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 /// <param name="light"></param>
 void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 {
+	DXASSERT(light.lock() != nullptr, "[AssetManager::RemoveLight] light is null")
+
 	if (!Engine::IsRunning(true))
 		return;
 

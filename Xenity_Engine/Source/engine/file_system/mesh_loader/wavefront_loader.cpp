@@ -22,6 +22,8 @@ using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 {
+	DXASSERT(mesh != nullptr, "[WavefrontLoader::LoadFromRawData] mesh is nullptr")
+
 	std::shared_ptr<File>& file = mesh->file;
 	Debug::Print("Loading mesh: " + file->GetPath(), true);
 

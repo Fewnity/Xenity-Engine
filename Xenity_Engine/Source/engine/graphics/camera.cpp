@@ -236,7 +236,7 @@ glm::mat4& Camera::GetCanvasProjection()
 	return canvasProjection;
 }
 
-void Camera::SetProjectionType(ProjectionTypes type)
+void Camera::SetProjectionType(const ProjectionTypes type)
 {
 	projectionType = type;
 	isProjectionDirty = true;

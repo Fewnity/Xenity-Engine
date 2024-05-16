@@ -13,6 +13,7 @@
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/component.h>
+#include <engine/assertions/assertions.h>
 
 void CrashHandler::Handler(int signum)
 {

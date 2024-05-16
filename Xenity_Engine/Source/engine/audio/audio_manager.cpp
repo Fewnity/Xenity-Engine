@@ -33,6 +33,7 @@ int currentBuffer = 0;
 #endif
 
 #include <cstring>
+#include <engine/assertions/assertions.h>
 
 
 bool AudioManager::isAdding = false;
@@ -185,7 +186,7 @@ int audio_thread(SceSize args, void* argp)
 {
 	while (true)
 	{
-		if (sceAudioGetChannelRestLength(0) == 0) 
+		if (sceAudioGetChannelRestLength(0) == 0)
 		{
 			//audioBenchmark2->Start();
 			int16_t wave_buf[audiosize * 2] = { 0 };
@@ -420,10 +421,7 @@ PlayedSound::~PlayedSound()
 
 void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
-	//return;
-
-	if (!audioSource)
-		return;
+	DXASSERT(audioSource != nullptr, "[AudioManager::PlayAudioSource] audioSource is null")
 
 	bool found = false;
 
@@ -473,22 +471,21 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
+	DXASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null")
+
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index
-	if (audioSource)
+	const int count = channel->playedSoundsCount;
+	for (int i = 0; i < count; i++)
 	{
-		const int count = channel->playedSoundsCount;
-		for (int i = 0; i < count; i++)
+		if (channel->playedSounds[i]->audioSource.lock() == audioSource)
 		{
-			if (channel->playedSounds[i]->audioSource.lock() == audioSource)
-			{
-				audioSourceIndex = i;
-				found = true;
-				break;
-			}
+			audioSourceIndex = i;
+			found = true;
+			break;
 		}
 	}
 
@@ -506,22 +503,22 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 /// <param name="light"></param>
 void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 {
-	AudioManager::myMutex->Lock();
+	DXASSERT(audioSource != nullptr, "[AudioManager::RemoveAudioSource] audioSource is null")
+
+		AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index
-	if (audioSource)
+
+	const int count = channel->playedSoundsCount;
+	for (int i = 0; i < count; i++)
 	{
-		const int count = channel->playedSoundsCount;
-		for (int i = 0; i < count; i++)
+		if (channel->playedSounds[i]->audioSource.lock().get() == audioSource)
 		{
-			if (channel->playedSounds[i]->audioSource.lock().get() == audioSource)
-			{
-				audioSourceIndex = i;
-				found = true;
-				break;
-			}
+			audioSourceIndex = i;
+			found = true;
+			break;
 		}
 	}
 
@@ -537,7 +534,7 @@ MyMutex::MyMutex(const std::string& mutexName)
 {
 #if defined(__vita__)
 	mutexid = sceKernelCreateMutex(mutexName.c_str(), 0, 1, NULL);
-//#elif defined(__PSP__)
-//	sceKernelCreateLwMutex(&workarea, mutexName.c_str(), 0, 1, NULL);
+	//#elif defined(__PSP__)
+	//	sceKernelCreateLwMutex(&workarea, mutexName.c_str(), 0, 1, NULL);
 #endif
 }

@@ -211,7 +211,9 @@ bool Shader::Use()
 
 void Shader::Compile(const std::string& shaderData, ShaderType type)
 {
-	const char* shaderDataConst = shaderData.c_str();
+	DXASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty")
+
+		const char* shaderDataConst = shaderData.c_str();
 
 	unsigned int* id = nullptr;
 
@@ -231,50 +233,44 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 		break;
 	}
 
-	if (id != nullptr)
+	DXASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr")
+
+	//Compile
+	*id = Engine::GetRenderer().CreateShader(type);
+	Engine::GetRenderer().SetShaderData(*id, shaderDataConst);
+	Engine::GetRenderer().CompileShader(*id);
+
+	int vResult = Engine::GetRenderer().GetShaderCompilationResult(*id);
+
+	//On error
+	if (vResult == 0)
 	{
-		//Compile
-		*id = Engine::GetRenderer().CreateShader(type);
-		Engine::GetRenderer().SetShaderData(*id, shaderDataConst);
-		Engine::GetRenderer().CompileShader(*id);
+		std::vector<char> errorLog = Engine::GetRenderer().GetCompilationError(*id);
 
-		int vResult = Engine::GetRenderer().GetShaderCompilationResult(*id);
-
-		//On error
-		if (vResult == 0)
+		std::string shaderError = "[Shader::Compile] Compilation error: ";
+		switch (type)
 		{
-			std::vector<char> errorLog = Engine::GetRenderer().GetCompilationError(*id);
-
-			std::string shaderError = "[Shader::Compile] Compilation error: ";
-			switch (type)
-			{
-			case ShaderType::Vertex_Shader:
-				shaderError += "Vertex";
-				break;
-			case ShaderType::Fragment_Shader:
-				shaderError += "Fragment";
-				break;
-			case ShaderType::Tessellation_Control_Shader:
-				shaderError += "Tessellation control";
-				break;
-			case ShaderType::Tessellation_Evaluation_Shader:
-				shaderError += "Tessellation evaluation";
-				break;
-			}
-
-			shaderError += " shader: ";
-			for (int i = 0; i < errorLog.size(); i++)
-			{
-				shaderError += errorLog[i];
-			}
-
-			shaderError += ". File path: " + shaderData;
-			Debug::PrintError(shaderError);
+		case ShaderType::Vertex_Shader:
+			shaderError += "Vertex";
+			break;
+		case ShaderType::Fragment_Shader:
+			shaderError += "Fragment";
+			break;
+		case ShaderType::Tessellation_Control_Shader:
+			shaderError += "Tessellation control";
+			break;
+		case ShaderType::Tessellation_Evaluation_Shader:
+			shaderError += "Tessellation evaluation";
+			break;
 		}
-	}
-	else
-	{
-		std::string shaderError = "[Shader::Compile] Compilation error: Shader type not found. File path: " + shaderData;
+
+		shaderError += " shader: ";
+		for (int i = 0; i < errorLog.size(); i++)
+		{
+			shaderError += errorLog[i];
+		}
+
+		shaderError += ". File path: " + shaderData;
 		Debug::PrintError(shaderError);
 	}
 }
@@ -433,6 +429,8 @@ void Shader::Link()
 /// <param name="index">Shader's point light index</param>
 void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int index)
 {
+	DXASSERT(light != nullptr, "[Shader::SetPointLightData] light is nullptr")
+
 	const std::string baseString = "pointLights[" + std::to_string(index) + "].";
 
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
@@ -453,6 +451,8 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 /// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
 {
+	DXASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
+
 	static const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
@@ -469,6 +469,8 @@ void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const 
 /// <param name="index">Shader's spot light index</param>
 void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int index)
 {
+	DXASSERT(light != nullptr, "[Shader::SetSpotLightData] light is nullptr")
+
 	const std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);

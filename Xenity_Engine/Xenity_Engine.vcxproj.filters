@@ -157,6 +157,7 @@
     <ClCompile Include="Source\unit_tests\unit_test_math.cpp" />
     <ClCompile Include="Source\editor\platform_settings.cpp" />
     <ClCompile Include="Source\engine\graphics\icon.cpp" />
+    <ClCompile Include="Source\engine\assertions\assertions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -320,6 +321,7 @@
     <ClInclude Include="Source\editor\ui\menus\engine_asset_manager_menu.h" />
     <ClInclude Include="Source\editor\platform_settings.h" />
     <ClInclude Include="Source\engine\graphics\icon.h" />
+    <ClInclude Include="Source\engine\assertions\assertions.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

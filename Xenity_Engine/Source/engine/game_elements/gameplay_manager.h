@@ -38,7 +38,7 @@ public:
 	/**
 	* @brief Get all GameObjects
 	*/
-	static std::vector<std::shared_ptr<GameObject>> GetGameObjects();
+	static const std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
 
 	static bool componentsListDirty;
 

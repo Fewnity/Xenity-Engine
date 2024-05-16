@@ -128,7 +128,7 @@ Socket::~Socket()
 
 void Socket::SendData(const std::string& text)
 {
-	if (socketId < 0)
+	if (socketId < 0 || text.empty())
 		return;
 
 	const int infoLentgh = (int)text.size();
@@ -182,7 +182,12 @@ void NetworkManager::DrawNetworkSetupMenu()
 
 std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address, int port)
 {
-	// return nullptr;
+	if (address.empty() || port <= 0)
+	{
+		Debug::PrintError("[NetworkManager::CreateSocket] Invalid address or port");
+		return nullptr;
+	}
+
 	int newSocketId = 1;
 #if !defined(_EE)
 	struct sockaddr_in serv_addr;

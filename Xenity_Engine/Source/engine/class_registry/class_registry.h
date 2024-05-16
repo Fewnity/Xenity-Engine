@@ -10,6 +10,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/debug/debug.h>
 #include <engine/file_system/file_type.h>
+#include <engine/assertions/assertions.h>
 
 class Component;
 
@@ -35,25 +36,21 @@ public:
 	* @param isVisible Is the component visible in the editor
 	*/
 	template<typename T>
-	static void AddComponentClass(const std::string& name, bool isVisible = true)
+	std::enable_if_t<std::is_base_of<Component, T>::value, void>
+	static AddComponentClass(const std::string& name, bool isVisible = true)
 	{
-		if (name.empty())
-		{
-			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name", true);
-		}
-		else
-		{
-			auto function = [](std::shared_ptr<GameObject> go)
-				{
-				return go->AddComponent<T>();
-			};
-			nameToComponent[name] = { function , isVisible };
+		DXASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty")
 
-			ClassInfo classInfo;
-			classInfo.name = name;
-			classInfo.typeId = typeid(T).hash_code();
-			classInfos.push_back(classInfo);
-		}
+		auto function = [](std::shared_ptr<GameObject> go)
+		{
+			return go->AddComponent<T>();
+		};
+		nameToComponent[name] = { function , isVisible };
+
+		ClassInfo classInfo;
+		classInfo.name = name;
+		classInfo.typeId = typeid(T).hash_code();
+		classInfos.push_back(classInfo);
 	}
 
 	/**
@@ -89,27 +86,24 @@ public:
 	* @param fileType File type
 	*/
 	template<typename T>
-	static void AddFileClass(const std::string& name, const FileType fileType)
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+	static AddFileClass(const std::string& name, const FileType fileType)
 	{
-		if (name.empty())
-		{
-			Debug::PrintError("[ClassRegistry::AddComponentClass] Empty component name", true);
-		}
-		else
-		{
-			FileClassInfo fileClassInfo;
-			fileClassInfo.name = name;
-			fileClassInfo.typeId = typeid(T).hash_code();
-			fileClassInfo.fileType = fileType;
-			fileClassInfos.push_back(fileClassInfo);
-		}
+		DXASSERT(!name.empty(), "[ClassRegistry::AddFileClass] name is empty")
+
+		FileClassInfo fileClassInfo;
+		fileClassInfo.name = name;
+		fileClassInfo.typeId = typeid(T).hash_code();
+		fileClassInfo.fileType = fileType;
+		fileClassInfos.push_back(fileClassInfo);
 	}
 
 	/**
 	* @brief Get a file class info from the class type
 	*/
 	template<typename T>
-	static const FileClassInfo* GetFileClassInfo()
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, const FileClassInfo*>
+	static GetFileClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
 		const int fileClassInfosCount = fileClassInfos.size();
@@ -129,7 +123,8 @@ public:
 	* @brief Get a class info from the class type
 	*/
 	template<typename T>
-	static const ClassInfo* GetClassInfo()
+	std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
+	static GetClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
 		const int classInfosCount = classInfos.size();
