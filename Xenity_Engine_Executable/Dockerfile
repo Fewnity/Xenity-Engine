@@ -20,12 +20,13 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt install -y \
 # Install wget and tar to download and open the archive
 RUN sudo apt install -y wget tar
 
-#RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/latest/pspdev-ubuntu-latest.tar.gz
-#RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/v20230818/pspdev-ubuntu-latest.tar.gz
 # Download pspdev
-RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/pspdev-ubuntu-latest.tar.gz
+#RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/v20230818/pspdev-ubuntu-latest.tar.gz
+#RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/pspdev-ubuntu-latest.tar.gz
+RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/latest/pspdev-ubuntu-latest-x86_64.tar.gz
 # Extract files
-RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest.tar.gz && rm pspdev-ubuntu-latest.tar.gz
+#RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest.tar.gz && rm pspdev-ubuntu-latest.tar.gz
+RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest-x86_64.tar.gz && rm pspdev-ubuntu-latest-x86_64.tar.gz
 
 # Add env variables
 RUN echo "export PSPDEV=/usr/local/pspdev" >> /root/.bashrc

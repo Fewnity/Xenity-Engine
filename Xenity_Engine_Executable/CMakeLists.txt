@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.15)
 SET(MODE "mode" CACHE STRING "Some user-specified option")
 
 set(APP_NAME "Xenity Engine")
@@ -55,14 +55,13 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 if(MODE STREQUAL "psp")
 message(STATUS "BUILD PSP")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -D_PSP_FW_VERSION=660")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -D_PSP_FW_VERSION=660 -LARGE_MEMORY=1")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -D_PSP_FW_VERSION=660")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -D_PSP_FW_VERSION=660 -LARGE_MEMORY=1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -LARGE_MEMORY=1")
 
-# add_definitions("-DPSP_FW_VERSION=500")
-# add_definitions("-DPSP_FW_VERSION=500")
 add_definitions("-LARGE_MEMORY=1")
+
 
 include_directories(${PSPDEV}/psp/include/freetype2)
 
@@ -120,7 +119,6 @@ set(VITA_VERSION  "01.00")
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -fcompare-debug-second")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
