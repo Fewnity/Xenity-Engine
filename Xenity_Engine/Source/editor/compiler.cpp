@@ -808,12 +808,17 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const int removeResult = system("docker remove XenityEngineBuild");
 
 	std::string prepareCompileCommand = "";
-	if (params.buildPlatform.platform == Platform::P_PSP)
-		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + " ..";
+	if (params.buildPlatform.platform == Platform::P_PSP) 
+	{
+		std::shared_ptr<PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
+		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
+		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + debugDefine + " ..";
+	}
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
 		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
-		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + " ..";
+		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
+		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + " ..";
 	}
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
@@ -829,9 +834,10 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
 	const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
+	const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
+	const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
 	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
-
 
 	// Copy source code in the build folder
 	try

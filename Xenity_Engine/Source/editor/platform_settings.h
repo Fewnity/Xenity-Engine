@@ -41,7 +41,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
+		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
 		Reflective::AddVariable(reflectedVariables, previewImage, "previewImage", true);
@@ -53,9 +53,9 @@ public:
 	std::shared_ptr<Texture> backgroundImage;
 	std::shared_ptr<Texture> iconImage;
 	std::shared_ptr<Texture> previewImage;
-private:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
+private:
 };
 
 class PlatformSettingsPsVita : public PlatformSettings
@@ -68,7 +68,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
+		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
 		Reflective::AddVariable(reflectedVariables, startupImage, "startupImage", true);
@@ -82,9 +82,9 @@ public:
 	std::shared_ptr<Texture> iconImage;
 	std::shared_ptr<Texture> startupImage;
 	std::string gameId = "";
-private:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
+private:
 };
 
 class PlatformSettingsWindows : public PlatformSettings
@@ -96,8 +96,8 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
+		//Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, icon, "icon", true);
 		return reflectedVariables;
 	}
@@ -105,9 +105,9 @@ public:
 	int IsValid() override;
 
 	std::shared_ptr<Icon> icon;
-private:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
+private:
 };
 
 class BuildPlatform
