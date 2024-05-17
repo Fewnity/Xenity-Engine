@@ -371,7 +371,11 @@ void AssetManager::RemoveUnusedFiles()
 		std::shared_ptr<FileReference> fileRef = GetFileReference(i);
 		const int refCount = fileRef.use_count();
 		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
+#if defined(EDITOR) // Do not unload files in the editor to avoid freezes TODO: Make a cache system to reduce memory usage
+		if (refCount == 1)
+#else
 		if (refCount == 2)
+#endif
 		{
 			// Free the file
 			RemoveFileReference(fileRef);
