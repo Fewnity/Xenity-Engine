@@ -118,8 +118,7 @@ void BoxCollider::OnDrawGizmosSelected()
 
 	Gizmo::SetColor(lineColor);
 
-	Vector3 pos = GetTransform()->GetPosition();
-	pos.x = -pos.x;
+	const Vector3 pos = GetTransform()->GetPosition();
 
 	// Bottom vertex
 	const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);

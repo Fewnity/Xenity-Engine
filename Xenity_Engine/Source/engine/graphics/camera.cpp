@@ -412,49 +412,49 @@ void Camera::OnDrawGizmosSelected()
 	const Vector3& cameraPosition = GetTransform()->GetPosition();
 	const Vector3& cameraRotation = GetTransform()->GetRotation();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	cameraModelMatrix = glm::translate(cameraModelMatrix, glm::vec3(-cameraPosition.x, cameraPosition.y, cameraPosition.z));
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(-cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y+180), glm::vec3(0.0f, 1.0f, 0.0f));
+	cameraModelMatrix = glm::translate(cameraModelMatrix, glm::vec3(cameraPosition.x, -cameraPosition.y, -cameraPosition.z));
 
 	const glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
 
 	//Top left
-	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.5f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
 	const glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(topLeftNear.x, topLeftNear.y, topLeftNear.z) * -1, Vector3(topLeftFar.x, topLeftFar.y, topLeftFar.z) * -1);
+	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z));
 
 	//Top right
-	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.5f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
 	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(topRightNear.x, topRightNear.y, topRightNear.z) * -1, Vector3(topRightFar.x, topRightFar.y, topRightFar.z) * -1);
+	Gizmo::DrawLine(Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
 
 	//Bottom left
-	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.5f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
 	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) * -1, Vector3(bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) * -1);
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) );
 
 	//Bottom right
-	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.5f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
 	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) * -1, Vector3(bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) * -1);
+	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) , Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) );
 
 
-	Gizmo::DrawLine(Vector3(topLeftFar.x, topLeftFar.y, topLeftFar.z) * -1, Vector3(topRightFar.x, topRightFar.y, topRightFar.z) * -1);
-	Gizmo::DrawLine(Vector3(topLeftNear.x, topLeftNear.y, topLeftNear.z) * -1, Vector3(topRightNear.x, topRightNear.y, topRightNear.z) * -1);
+	Gizmo::DrawLine(Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
+	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z) , Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) );
 
-	Gizmo::DrawLine(Vector3(bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) * -1, Vector3(bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) * -1);
-	Gizmo::DrawLine(Vector3(bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) * -1, Vector3(bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) * -1);
+	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) );
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) );
 
-	Gizmo::DrawLine(Vector3(bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) * -1, Vector3(topLeftFar.x, topLeftFar.y, topLeftFar.z) * -1);
-	Gizmo::DrawLine(Vector3(bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) * -1, Vector3(topRightFar.x, topRightFar.y, topRightFar.z) * -1);
+	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z) );
+	Gizmo::DrawLine(Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
 
-	Gizmo::DrawLine(Vector3(bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) * -1, Vector3(topLeftNear.x, topLeftNear.y, topLeftNear.z) * -1);
-	Gizmo::DrawLine(Vector3(bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) * -1, Vector3(topRightNear.x, topRightNear.y, topRightNear.z) * -1);
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z) );
+	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) , Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) );
 #endif
 }
 

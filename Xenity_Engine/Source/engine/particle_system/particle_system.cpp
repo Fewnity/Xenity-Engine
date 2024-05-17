@@ -115,8 +115,6 @@ void ParticleSystem::OnDrawGizmosSelected()
 	Gizmo::SetColor(lineColor);
 
 	Vector3 pos = GetTransform()->GetPosition();
-	pos.x = -pos.x;
-	//pos += offset;
 
 	if (emitterShape == EmitterShape::Box)
 	{

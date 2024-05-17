@@ -22,7 +22,7 @@ public:
 	* @param a Start point
 	* @param b End point
 	*/
-	static void DrawLine(const Vector3& a, const Vector3& b);
+	static void DrawLine(Vector3 a, Vector3 b);
 
 	/**
 	* @brief Set Gizmo draw color

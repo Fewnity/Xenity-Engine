@@ -18,8 +18,11 @@ void Gizmo::Init()
 	color = Color::CreateFromRGB(255, 255, 255);
 }
 
-void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
+void Gizmo::DrawLine(Vector3 a, Vector3 b)
 {
+	a.x = -a.x;
+	b.x = -b.x;
+
 	// Currently lines do not support shaders
 	if (!Graphics::UseOpenGLFixedFunctions)
 	{
