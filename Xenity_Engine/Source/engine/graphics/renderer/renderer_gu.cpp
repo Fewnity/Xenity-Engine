@@ -437,7 +437,7 @@ void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType
 {
 }
 
-void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float attenuation)
+void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float quadraticAttenuation, float linearAttenuation, float constAttenuation)
 {
 	if (lightIndex >= maxLightCount)
 		return;
@@ -445,6 +445,9 @@ void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float in
 	const RGBA& rgba = color.GetRGBA();
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
+
+	if (intensity > 1)
+		intensity = 1;
 
 	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
 	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
@@ -460,9 +463,13 @@ void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float in
 		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	}
 	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-	if (type == LightType::Directional)
-		attenuation = 0;
-	sceGuLightAtt(lightIndex, 0.0f, 0.0f, attenuation);
+	if (type == LightType::Directional) 
+	{
+		quadraticAttenuation = 0;
+		linearAttenuation = 0;
+		constAttenuation = 0;
+	}
+	sceGuLightAtt(lightIndex, constAttenuation, linearAttenuation, quadraticAttenuation);
 }
 
 void RendererGU::DisableAllLight()
@@ -490,11 +497,11 @@ void RendererGU::Setlights(const Camera& camera)
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3& cameraPosition = cameraTransform->GetPosition();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
+				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), 1, 0);
 			}
 			else
 			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
+				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), light->GetLinearValue(), 1);
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)

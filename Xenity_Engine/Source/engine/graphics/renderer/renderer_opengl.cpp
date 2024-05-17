@@ -450,7 +450,7 @@ void RendererOpengl::SetTextureData(const Texture& texture, unsigned int texture
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float attenuation)
+void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float quadraticAttenuation, float linearAttenuation, float constAttenuation)
 {
 #if defined(__vita__)
 	return;
@@ -463,11 +463,19 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
-	float lightAttenuation[1] = { attenuation };
-	if (type == LightType::Directional)
+	float lightAttenuation[1] = { quadraticAttenuation };
+	float lightLinearAttenuation[1] = { linearAttenuation };
+	float lightConstAttenuation[1] = { constAttenuation };
+	if (type == LightType::Directional) {
 		lightAttenuation[0] = { 0 };
+		lightLinearAttenuation[0] = { 0 };
+		lightConstAttenuation[0] = { 1 };
+	}
 
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
+
+	glLightfv(GL_LIGHT0 + lightIndex, GL_LINEAR_ATTENUATION, lightLinearAttenuation);
+	glLightfv(GL_LIGHT0 + lightIndex, GL_CONSTANT_ATTENUATION, lightConstAttenuation);
 
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
@@ -475,6 +483,9 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 		typeIntensity = 5;
 	else if (type == LightType::Point)
 		typeIntensity = 2;
+
+	if (intensity > 1)
+		intensity = 1;
 
 	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
 	const float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -522,11 +533,11 @@ void RendererOpengl::Setlights(const Camera& camera)
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3& cameraPosition = cameraTransform->GetPosition();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
+				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), 1, 0);
 			}
 			else
 			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue());
+				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), light->GetLinearValue(), 1);
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
