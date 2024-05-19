@@ -17,13 +17,14 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Add support for mesh material loading
+Add different icon for sun and light
 Multiple gameobject selection
 Rework the documentation
 Mesh drag drop into the scene
 Clean code
 First PSP frame doest not use light
 Fix particles scale
-
+Fix bug when dradding a gameobject in a disabled gameobject then remove the child and the child is still disabled
 --- Can be for next release
 New Input system
 
