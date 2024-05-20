@@ -134,6 +134,9 @@ void MeshRenderer::OnEnabled()
 
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
+	if (culled)
+		return;
+
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
