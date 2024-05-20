@@ -175,6 +175,7 @@ void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& r
 void RendererOpengl::ResetTransform()
 {
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
