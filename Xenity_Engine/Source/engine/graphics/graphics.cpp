@@ -143,11 +143,9 @@ void Graphics::Draw()
 	usedCamera.reset();
 	currentMaterial = nullptr;
 
-	const size_t cameraCount = cameras.size();
-	const int matCount = AssetManager::GetMaterialCount();
-
 	OrderDrawables();
-	//for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
+
+	const int matCount = AssetManager::GetMaterialCount();
 	for(std::weak_ptr<Camera>& weakCam: cameras)
 	{
 		usedCamera = weakCam.lock();
