@@ -101,7 +101,16 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 void Light::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Light], color);
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
+
+	IconName icon = IconName::Icon_Point_Light;
+	if(type == LightType::Directional)
+		icon = IconName::Icon_Sun_Light;
+	else if (type == LightType::Spot)
+		icon = IconName::Icon_Spot_Light;
+
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)icon], color);
+
 #endif
 }
 

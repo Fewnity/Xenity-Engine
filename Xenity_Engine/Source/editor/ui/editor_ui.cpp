@@ -69,7 +69,9 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Font, "icons/font.png");
 	LoadEditorIcon(IconName::Icon_Sky, "icons/sky.png");
 	LoadEditorIcon(IconName::Icon_Audio_Source, "icons/audio_source.png");
-	LoadEditorIcon(IconName::Icon_Light, "icons/light.png");
+	LoadEditorIcon(IconName::Icon_Point_Light, "icons/point_light.png");
+	LoadEditorIcon(IconName::Icon_Sun_Light, "icons/sun_light.png");
+	LoadEditorIcon(IconName::Icon_Spot_Light, "icons/spot_light.png");
 	LoadEditorIcon(IconName::Icon_Camera, "icons/camera.png");
 	LoadEditorIcon(IconName::Icon_Material, "icons/material.png");
 	LoadEditorIcon(IconName::Icon_Shader, "icons/shader.png");
