@@ -105,6 +105,7 @@ public:
 
 
 	void OnDrawGizmos() override;
+	void OnDrawGizmosSelected() override;
 
 	float GetLinearValue() 
 	{

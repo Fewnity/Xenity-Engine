@@ -39,6 +39,8 @@ public:
 	*/
 	static void DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color);
 
+	static void DrawSphere(const Vector3& position, const float radius);
+
 private:
 	static Color color;
 };

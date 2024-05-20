@@ -102,60 +102,13 @@ void Light::OnDrawGizmos()
 {
 #if defined(EDITOR)
 	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Light], color);
-
-	//Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);
-	//Gizmo::SetColor(lineColor);
-
-	//Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
-	//const int steps = 30;
-	//const float angleStep = 360.0f / steps;
-	//for (int i = 0; i < steps; i++)
-	//{
-	//	// Draw sphere with lines
-	//	{
-	//		Vector3 pos0 = GetTransform()->GetPosition();
-	//		pos0.x += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-	//		pos0.z += 5 * sin((angleStep * i) * Math::PI / 180.0f);
-	//		//pos0.x = -pos0.x;
-
-	//		Vector3 pos1 = GetTransform()->GetPosition();
-	//		pos1.x += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		pos1.z += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		//pos1.x = -pos1.x;
-
-	//		Gizmo::DrawLine(pos0, pos1);
-	//	}
-
-	//	{
-	//		Vector3 pos0 = GetTransform()->GetPosition();
-	//		pos0.x += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-	//		pos0.y += 5 * sin((angleStep * i) * Math::PI / 180.0f);
-	//		//pos0.x = -pos0.x;
-
-	//		Vector3 pos1 = GetTransform()->GetPosition();
-	//		pos1.x += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		pos1.y += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		//pos1.x = -pos1.x;
-
-	//		Gizmo::DrawLine(pos0, pos1);
-	//	}
-
-	//	{
-	//		Vector3 pos0 = GetTransform()->GetPosition();
-	//		pos0.y += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-	//		pos0.z += 5 * sin((angleStep * i) * Math::PI / 180.0f);
-	//		//pos0.x = -pos0.x;
-
-	//		Vector3 pos1 = GetTransform()->GetPosition();
-	//		pos1.y += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		pos1.z += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
-	//		//pos1.x = -pos1.x;
-
-	//		Gizmo::DrawLine(pos0, pos1);
-	//	}
-	//}
 #endif
+}
+
+void Light::OnDrawGizmosSelected()
+{
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
+	Gizmo::DrawSphere(GetTransform()->GetPosition(), 4);
 }
 
 void Light::UpdateLightValues()
