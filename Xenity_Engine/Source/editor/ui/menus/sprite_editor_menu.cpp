@@ -98,6 +98,7 @@ void SpriteEditorMenu::SaveSpriteSelections()
 	}
 
 	// Save sprite sheet texture meta file
+	spriteToEdit->isMetaDirty = true;
 	ProjectManager::SaveMetaFile(spriteToEdit);
 }
 

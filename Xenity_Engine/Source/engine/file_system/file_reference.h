@@ -62,6 +62,7 @@ public:
 
 	std::shared_ptr<File> file = nullptr;
 	FileType fileType = FileType::File_Other;
+	bool isMetaDirty = false;
 
 	void SetIsLoading(bool _isLoading)
 	{

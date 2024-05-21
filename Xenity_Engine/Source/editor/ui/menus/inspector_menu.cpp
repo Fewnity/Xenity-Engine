@@ -392,6 +392,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 		if (ImGui::Button("Apply"))
 		{
+			selectedFileReference->isMetaDirty = true;
 			ProjectManager::SaveMetaFile(selectedFileReference);
 		}
 	}

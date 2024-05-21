@@ -80,6 +80,7 @@ void EngineAssetManagerMenu::Draw()
 			{
 				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(oldIds[i]);
 				fileRef->fileId = ids[i];
+				fileRef->isMetaDirty = true;
 				ProjectManager::SaveMetaFile(fileRef);
 			}
 			oldIds = ids;
@@ -90,12 +91,12 @@ void EngineAssetManagerMenu::Draw()
 			for (int i = 0; i < fileRefCount; i++)
 			{
 				AssetManager::GetFileReference(i)->fileId += UniqueId::reservedFileId;
+				AssetManager::GetFileReference(i)->isMetaDirty = true;
 			}
 
 			for (int i = 0; i < fileRefCount; i++)
 			{
 				ProjectManager::SaveMetaFile(AssetManager::GetFileReference(i));
-				//AssetManager::GetFileReference(i)->fileId += UniqueId::reservedFileId;
 			}
 		}
 		ImGui::Separator();

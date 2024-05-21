@@ -103,20 +103,23 @@ void Editor::Init()
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 }
 
+void Editor::OnFileModified()
+{
+	ProjectManager::RefreshProjectDirectory();
+}
+
+void Editor::OnCodeModified()
+{
+	if(EngineSettings::values.compileOnCodeChanged)
+		Compiler::HotReloadGame();
+}
+
 void Editor::OnWindowFocused()
 {
 	if (ProjectManager::GetIsProjectLoaded())
 	{
-		const bool needRefresh = FileHandler::HasFileChangedOrAdded(ProjectManager::GetAssetFolderPath());
-		if (needRefresh)
-		{
-			ProjectManager::RefreshProjectDirectory();
-		}
-		const bool needCompile = FileHandler::HasCodeChanged(ProjectManager::GetAssetFolderPath());
-		if (needCompile && EngineSettings::values.compileOnCodeChanged)
-		{
-			Compiler::HotReloadGame();
-		}
+		FileHandler::HasFileChangedOrAddedThreaded(ProjectManager::GetAssetFolderPath(), OnFileModified);
+		FileHandler::HasCodeChangedThreaded(ProjectManager::GetAssetFolderPath(), OnCodeModified);
 	}
 }
 
@@ -505,8 +508,6 @@ std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
 {
 	return currentProjectDirectory;
 }
-
-
 
 std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData)
 {

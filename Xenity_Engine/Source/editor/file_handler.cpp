@@ -11,7 +11,7 @@ uint64_t FileHandler::lastModifiedFileTime = 0;
 uint32_t FileHandler::lastFileCount = 0;
 uint32_t FileHandler::tempFileCount = 0;
 
-bool FileHandler::HasCodeChanged(const std::string& folderPath)
+bool FileHandler::HasCodeChangedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback)
 {
 	bool changed = false;
 	for (const auto& file : std::filesystem::directory_iterator(folderPath))
@@ -34,6 +34,10 @@ bool FileHandler::HasCodeChanged(const std::string& folderPath)
 			changed = true;
 		}
 	}
+	if (isThreaded && changed) 
+	{
+		callback();
+	}
 	return changed;
 }
 
@@ -47,7 +51,7 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& folderPath)
 			// Check is file
 			if (!file.is_regular_file())
 			{
-				const bool temp = HasFileChangedOrAdded(file.path().string());
+				const bool temp = HasFileChangedOrAddedRecursive(file.path().string());
 				if (temp)
 				{
 					changed = true;
@@ -82,7 +86,7 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& folderPath)
 }
 
 
-bool FileHandler::HasFileChangedOrAdded(const std::string& folderPath)
+bool FileHandler::HasFileChangedOrAddedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback)
 {
 	tempFileCount = 0;
 	bool result = HasFileChangedOrAddedRecursive(folderPath);
@@ -91,5 +95,44 @@ bool FileHandler::HasFileChangedOrAdded(const std::string& folderPath)
 		result = true;
 	}
 	lastFileCount = tempFileCount;
+
+	if (isThreaded && result)
+	{
+		callback();
+	}
+
 	return result;
+}
+
+bool FileHandler::HasCodeChanged(const std::string& folderPath)
+{
+	return FileHandler::HasCodeChangedDirect(folderPath, false, std::function<void()>());
+}
+
+bool FileHandler::HasFileChangedOrAdded(const std::string& folderPath)
+{
+	return FileHandler::HasFileChangedOrAddedDirect(folderPath, false, std::function<void()>());
+}
+
+void FileHandler::HasCodeChangedThreaded(const std::string& folderPath, std::function<void()> callback)
+{
+	std::thread t  = std::thread(FileHandler::HasCodeChangedDirect, folderPath, true, callback);
+	t.detach();
+}
+
+void FileHandler::HasFileChangedOrAddedThreaded(const std::string& folderPath, std::function<void()> callback)
+{
+	std::thread t = std::thread(FileHandler::HasFileChangedOrAddedDirect, folderPath, true, callback);
+	t.detach();
+}
+
+void FileHandler::SetLastModifiedFile(const std::string& file)
+{
+	const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+	const auto duration = time.time_since_epoch();
+	const uint64_t durationCount = duration.count();
+	if (durationCount > lastModifiedFileTime)
+	{
+		lastModifiedFileTime = durationCount;
+	}
 }

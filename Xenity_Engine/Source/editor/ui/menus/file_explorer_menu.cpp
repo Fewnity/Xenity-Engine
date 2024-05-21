@@ -393,7 +393,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 			{
 				tex = AssetManager::defaultTexture;
 			}
-			else 
+			else
 			{
 				tex = mat->texture;
 			}
@@ -446,28 +446,30 @@ void FileExplorerMenu::Draw()
 				int currentCol = 0;
 				int itemIndex = 0;
 				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
-				size_t folderCount = currentDir->subdirectories.size();
-				size_t fileCount = currentDir->files.size();
-				std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
-
-				for (size_t i = 0; i < folderCount; i++)
+				if (currentDir)
 				{
-					FileExplorerItem item;
-					item.directory = currentDir->subdirectories[i];
-					DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
-					itemIndex++;
-				}
+					size_t folderCount = currentDir->subdirectories.size();
+					size_t fileCount = currentDir->files.size();
+					std::vector <std::shared_ptr<FileReference>> filesRefs = currentDir->files;
 
-				for (size_t i = 0; i < fileCount; i++)
-				{
-					FileExplorerItem item;
-					item.file = filesRefs[i];
-					item.directory = currentDir;
-					DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
-					itemIndex++;
-				}
-				ImGui::EndTable();
+					for (size_t i = 0; i < folderCount; i++)
+					{
+						FileExplorerItem item;
+						item.directory = currentDir->subdirectories[i];
+						DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
+						itemIndex++;
+					}
 
+					for (size_t i = 0; i < fileCount; i++)
+					{
+						FileExplorerItem item;
+						item.file = filesRefs[i];
+						item.directory = currentDir;
+						DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
+						itemIndex++;
+					}
+				}
+					ImGui::EndTable();
 				// Unselect file or open the popup if background is clicked
 				if (!fileHovered)
 				{

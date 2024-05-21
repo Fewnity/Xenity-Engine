@@ -864,7 +864,9 @@ void ProjectManager::SaveProjectSettings()
 void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
 {
 	std::shared_ptr<File> file = fileReference->file;
-	if (!file)
+
+	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
+	if (!file || (!fileReference->isMetaDirty && metaFile->CheckIfExist()))
 		return;
 
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
@@ -873,11 +875,12 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	metaData["MetaVersion"] = metaVersion;
 	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
 
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	if (metaFile->Open(FileMode::WriteCreateFile))
 	{
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
+		fileReference->isMetaDirty = false;
+		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
 	}
 	else
 	{

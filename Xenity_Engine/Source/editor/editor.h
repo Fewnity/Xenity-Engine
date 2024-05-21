@@ -319,8 +319,9 @@ public:
 	static std::weak_ptr <Menu> lastFocusedGameMenu;
 	static bool isToolLocalMode;
 
-
 private:
+	static void OnFileModified();
+	static void OnCodeModified();
 
 	/**
 	* @brief Create all menus
