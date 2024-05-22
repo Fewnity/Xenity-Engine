@@ -12,6 +12,9 @@
 
 class File;
 
+/**
+* @brief Class to fill Reflective from data, or convert Reflective to json/file
+*/
 class ReflectionUtils
 {
 public:

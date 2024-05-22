@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
 
+/**
+* @brief Class to inherit if you want an object to have an unique Id.
+*/
 class UniqueId
 {
 public:

@@ -17,6 +17,9 @@ ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
 ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
 ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
 
+/**
+* @brief Texture file class
+*/
 class API Texture : public FileReference, public Reflective
 {
 public:

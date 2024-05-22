@@ -6,6 +6,9 @@
 
 class BoxCollider;
 
+/*
+* @brief Component to add physics to the GameObject
+*/
 class API RigidBody : public Component
 {
 public:

@@ -3,6 +3,9 @@
 
 #include <chrono>
 
+/**
+* @brief Class to get time informations (Delta time, elapsed time)
+*/
 class API Time
 {
 public:

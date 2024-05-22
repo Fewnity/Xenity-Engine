@@ -18,8 +18,8 @@ class Light;
 class Material;
 
 /**
- * @brief Internal
- */
+* @brief [Internal] Shader file class
+*/
 class Shader : public FileReference, public Reflective
 {
 public:

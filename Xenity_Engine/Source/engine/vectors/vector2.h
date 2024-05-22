@@ -6,6 +6,9 @@ class Vector2Int;
 
 #include <engine/reflection/reflection.h>
 
+/*
+* @brief Contains 2D coordinates
+*/
 class API Vector2 : public Reflective
 {
 public:

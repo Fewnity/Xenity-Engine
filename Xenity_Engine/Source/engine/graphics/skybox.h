@@ -9,6 +9,9 @@
 
 class Texture;
 
+/**
+* @brief Skybox file class
+*/
 class API SkyBox : public FileReference, public Reflective, public std::enable_shared_from_this<SkyBox>
 {
 public:

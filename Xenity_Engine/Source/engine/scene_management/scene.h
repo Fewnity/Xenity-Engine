@@ -4,6 +4,9 @@
 #include <engine/file_system/file_reference.h>
 #include <string>
 
+/**
+* @brief Scene file
+*/
 class API Scene : public FileReference, public Reflective
 {
 public:

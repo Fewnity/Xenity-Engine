@@ -17,6 +17,9 @@ struct RaycastHit
 	float distance = 0;
 };
 
+/**
+* @brief Class to check collisions with a ray
+*/
 class API Raycast
 {
 public:

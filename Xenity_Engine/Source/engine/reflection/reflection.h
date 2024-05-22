@@ -255,6 +255,9 @@ public:
 
 typedef std::vector<std::pair<std::string, ReflectiveEntry>> ReflectiveData;
 
+/**
+* @brief Class to inherit if you want to access child's variables to fill variables from json or save them to json
+*/
 class API Reflective
 {
 public:

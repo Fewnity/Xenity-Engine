@@ -4,6 +4,9 @@
 #include <engine/vectors/vector2.h>
 #include <vector>
 
+/**
+* @brief Class used for path finding
+*/
 class API Astar
 {
 public:

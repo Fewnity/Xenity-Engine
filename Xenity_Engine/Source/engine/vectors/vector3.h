@@ -8,6 +8,9 @@
 class Vector2Int;
 class Vector2;
 
+/*
+* @brief Contains 3D coordinates
+*/
 class API Vector3 : public Reflective
 {
 public:

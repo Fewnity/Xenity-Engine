@@ -9,6 +9,9 @@
 class GameObject;
 class Transform;
 
+/*
+* @brief Class used to create something that can be attached to a GameObject
+*/
 class API Component : public UniqueId, public Reflective, public std::enable_shared_from_this<Component>
 {
 public:

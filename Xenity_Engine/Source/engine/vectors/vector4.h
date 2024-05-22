@@ -3,6 +3,9 @@
 
 #include <engine/reflection/reflection.h>
 
+/*
+* @brief Contains 4D coordinates
+*/
 class API Vector4 : public Reflective
 {
 public:

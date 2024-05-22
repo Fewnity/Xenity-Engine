@@ -8,6 +8,10 @@ class Vector2;
 
 #include <glm/glm.hpp>
 
+
+/**
+* @brief Math class for basics operations
+*/
 class API Math
 {
 public:

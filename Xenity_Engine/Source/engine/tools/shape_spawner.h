@@ -7,6 +7,9 @@
 class GameObject;
 class Vector3;
 
+/*
+* @brief Class to spawn a GameObject with a Mesh Renderer filled using shape's mesh data 
+*/
 class API ShapeSpawner
 {
 public:

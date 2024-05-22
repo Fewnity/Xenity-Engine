@@ -139,7 +139,7 @@ float Noise::grad4(int hash, float x, float y, float z, float t)
 //---------------------------------------------------------------------
 /** 1D float Perlin noise, SL "noise()"
  */
-float Noise::noise1(float x)
+float Noise::noise1D(float x)
 {
 	int ix0, ix1;
 	float fx0, fx1;
@@ -183,7 +183,7 @@ float Noise::pnoise1(float x, int px)
 //---------------------------------------------------------------------
 /** 2D float Perlin noise.
  */
-float Noise::noise2(float x, float y)
+float Noise::noise2D(float x, float y)
 {
 	int ix0, iy0, ix1, iy1;
 	float fx0, fy0, fx1, fy1;
@@ -252,7 +252,7 @@ float Noise::pnoise2(float x, float y, int px, int py)
 //---------------------------------------------------------------------
 /** 3D float Perlin noise.
  */
-float Noise::noise3(float x, float y, float z)
+float Noise::noise3D(float x, float y, float z)
 {
 	int ix0, iy0, ix1, iy1, iz0, iz1;
 	float fx0, fy0, fz0, fx1, fy1, fz1;
@@ -359,7 +359,7 @@ float Noise::pnoise3(float x, float y, float z, int px, int py, int pz)
 /** 4D float Perlin noise.
  */
 
-float Noise::noise4(float x, float y, float z, float w)
+float Noise::noise4D(float x, float y, float z, float w)
 {
 	int ix0, iy0, iz0, iw0, ix1, iy1, iz1, iw1;
 	float fx0, fy0, fz0, fw0, fx1, fy1, fz1, fw1;

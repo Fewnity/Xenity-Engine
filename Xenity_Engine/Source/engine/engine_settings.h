@@ -8,6 +8,9 @@
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/color/color.h>
 
+/**
+* @brief Contains all engine settings
+*/
 class EngineSettingsValues : public Reflective
 {
 public:
@@ -31,6 +34,9 @@ public:
 	bool isPlayTintAdditive = true;
 };
 
+/**
+* @brief Class used to save and load engine settings
+*/
 class EngineSettings
 {
 public:

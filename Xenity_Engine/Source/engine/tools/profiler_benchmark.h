@@ -6,6 +6,9 @@
 
 class ProfilerValue;
 
+/**
+* @brief Class to use to benchmark the engine and send the result to the profiler
+*/
 class API ProfilerBenchmark
 {
 public:

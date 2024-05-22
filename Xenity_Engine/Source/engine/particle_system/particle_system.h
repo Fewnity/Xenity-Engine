@@ -22,6 +22,9 @@ public:
 	bool isDead = true;
 };
 
+/**
+* @brief Component to spawn particles
+*/
 class API ParticleSystem : public IDrawable
 {
 public:

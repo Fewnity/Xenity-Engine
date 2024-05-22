@@ -3,6 +3,9 @@
 
 #include <engine/reflection/reflection.h>
 
+/*
+* @brief Contains integer 2D coordinates 
+*/
 class API Vector2Int : public Reflective
 {
 public:

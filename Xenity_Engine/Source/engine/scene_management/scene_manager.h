@@ -15,13 +15,16 @@ enum class SaveSceneType
 	SaveSceneForHotReloading,
 };
 
+/**
+* @brief Class to load and save scenes
+*/
 class SceneManager
 {
 public:
 
 	/**
 	* @brief Load a scene
-	* @param scene Load scene
+	* @param scene Scene to load
 	*/
 	API static void LoadScene(const std::shared_ptr<Scene>& scene);
 

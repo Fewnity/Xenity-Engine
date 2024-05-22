@@ -148,6 +148,9 @@ struct Touch
 	float force = 0;
 };
 
+/**
+* @brief Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)
+*/
 class API InputSystem
 {
 public:

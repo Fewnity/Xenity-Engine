@@ -9,10 +9,12 @@ const float lightConstant = 1;
 
 ENUM(LightType, Directional, Point, Spot);
 
+/**
+* @brief Component to produce light
+*/
 class API Light : public Component
 {
 public:
-
 
 	Light();
 	~Light();

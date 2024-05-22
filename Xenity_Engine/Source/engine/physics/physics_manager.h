@@ -10,6 +10,9 @@
 class RigidBody;
 class BoxCollider;
 
+/**
+* @brief Class to manage collisions
+*/
 class PhysicsManager
 {
 public:

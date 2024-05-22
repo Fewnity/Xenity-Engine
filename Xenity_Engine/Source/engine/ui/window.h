@@ -11,6 +11,9 @@ enum class WindowError
 	WND_ERROR_SDL_GL_CONTEXT = -3
 };
 
+/**
+* @brief Contains info about the window
+*/
 class Window
 {
 public:

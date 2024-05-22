@@ -22,6 +22,9 @@ class Material;
 #define ENGINE_VERSION "0.1"
 #define ENGINE_DLL_VERSION "2" // Increase by one this number to invalidate compiled Dlls of games projects
 
+/*
+* @brief Class used to manage the engine (Init, Stop...)
+*/
 class Engine
 {
 public:

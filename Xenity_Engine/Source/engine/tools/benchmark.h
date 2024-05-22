@@ -3,6 +3,9 @@
 
 #include <chrono>
 
+/**
+* @brief Class used to test the performances of a piece of code
+*/
 class API Benchmark
 {
 public:

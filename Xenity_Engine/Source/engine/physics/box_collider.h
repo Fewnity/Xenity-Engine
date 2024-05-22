@@ -16,6 +16,9 @@ enum class CollisionSide
 	SideZ = 4,
 };
 
+/**
+* @brief Component to add a cube-shaped collider to a GameObject
+*/
 class API BoxCollider : public Collider
 {
 public:

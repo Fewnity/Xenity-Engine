@@ -9,6 +9,9 @@
 #include <psputility.h>
 #endif
 
+/**
+* @brief Class to send and received data to/from a server
+*/
 class API Socket
 {
 public:
