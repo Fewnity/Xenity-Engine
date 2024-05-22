@@ -16,13 +16,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Add undo/redo commands to DrawVector functions
-Add support for mesh material loading
-Multiple gameobject selection
 Rework the documentation
-Mesh drag drop into the scene
 Clean code
-First PSP frame doest not use light
-Fix particles scale
 
 --- Can be for next release
 New Input system
@@ -56,6 +51,9 @@ Move/Store engine name and version somewhere
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
+First PSP frame doest not use light
+Mesh drag drop into the scene
+Multiple gameobject selection
 
 --- To do in a long time
 Regenerate an id if a meta file is corrupted
@@ -63,6 +61,7 @@ Add a property window on components to have values in a new window
 Add network profiler
 Add map reflection support
 Add more unit tests
+Add support for mesh material loading
 RGBA or RGB in vertex color?
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures

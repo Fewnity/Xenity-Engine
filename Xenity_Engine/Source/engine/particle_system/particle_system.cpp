@@ -205,7 +205,8 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	const glm::mat4& transMat = GetTransform()->GetTransformationMatrix();
 
 	const RGBA& rgba = color.GetRGBA();
-	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y);
+	const Vector3& scale = GetTransform()->GetScale();
+	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y) * glm::vec3(scale.x, scale.y, scale.z);
 
 	for (int i = 0; i < maxParticles; i++)
 	{
@@ -216,7 +217,6 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 		}
 
 		glm::mat4 newMat = Math::MultiplyMatrices(transMat, Math::CreateModelMatrix(particle.position, rotation, Vector3(1)));
-		//glm::mat4 newMat = transMat * Math::CreateModelMatrix(particle.position, rotation, Vector3(1));
 		if (isBillboard)
 		{
 			for (int matI = 0; matI < 3; matI++)
