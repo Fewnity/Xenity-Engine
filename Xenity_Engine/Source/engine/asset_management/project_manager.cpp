@@ -47,8 +47,6 @@
 
 using json = nlohmann::json;
 
-const int ProjectManager::metaVersion = 1;
-
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
@@ -881,9 +879,11 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
 		fileReference->isMetaDirty = false;
+#if defined(EDITOR)
 		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
 		if (!exists)
 			FileHandler::AddOneFile();
+#endif
 	}
 	else
 	{
