@@ -34,6 +34,9 @@ public:
 
 	static void SetLastModifiedFile(const std::string& file);
 
+	static void RemoveOneFile();
+	static void AddOneFile();
+
 private:
 
 	/**

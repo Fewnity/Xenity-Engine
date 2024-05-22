@@ -188,6 +188,7 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 		}
 		parent.reset();
 		transform->OnParentChanged();
+		UpdateActive(shared_from_this());
 	}
 }
 

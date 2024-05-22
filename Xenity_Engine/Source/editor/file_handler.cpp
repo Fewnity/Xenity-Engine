@@ -136,3 +136,13 @@ void FileHandler::SetLastModifiedFile(const std::string& file)
 		lastModifiedFileTime = durationCount;
 	}
 }
+
+void FileHandler::RemoveOneFile()
+{
+	lastFileCount--;
+}
+
+void FileHandler::AddOneFile()
+{
+	lastFileCount++;
+}

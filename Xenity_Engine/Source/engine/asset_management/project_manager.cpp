@@ -866,7 +866,8 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 	std::shared_ptr<File> file = fileReference->file;
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-	if (!file || (!fileReference->isMetaDirty && metaFile->CheckIfExist()))
+	bool exists = metaFile->CheckIfExist();
+	if (!file || (!fileReference->isMetaDirty && exists))
 		return;
 
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
@@ -881,6 +882,8 @@ void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileRefe
 		metaFile->Close();
 		fileReference->isMetaDirty = false;
 		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
+		if (!exists)
+			FileHandler::AddOneFile();
 	}
 	else
 	{

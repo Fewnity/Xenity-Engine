@@ -21,6 +21,7 @@
 #include <iostream>
 #include <engine/debug/debug.h>
 #include <editor/ui/utils/menu_builder.h>
+#include <editor/file_handler.h>
 
 void FileExplorerMenu::Init()
 {
@@ -284,6 +285,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				{
 					FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath());
 					FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath() + ".meta");
+					FileHandler::RemoveOneFile();
 					if (Editor::GetSelectedFileReference() == fileExplorerItem.file)
 					{
 						Editor::SetSelectedFileReference(nullptr);
