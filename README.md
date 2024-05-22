@@ -89,6 +89,10 @@ If you need help, you can open an Issue or contact me.
 Email: `fewnity@gmail.com`<br>
 Discord: `fewnity`
 
+## License
+
+The code of this repository is under the MIT license.
+
 ## Used libraries
 Stb (used: stb_image 2.23 (later versions do not on PSP), stb_image_resize 0.97, stb_image_write 1.16): https://github.com/nothings/stb
 
