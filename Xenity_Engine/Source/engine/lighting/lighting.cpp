@@ -116,8 +116,10 @@ void Light::OnDrawGizmos()
 
 void Light::OnDrawGizmosSelected()
 {
+#if defined(EDITOR)
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 	Gizmo::DrawSphere(GetTransform()->GetPosition(), 4);
+#endif
 }
 
 void Light::UpdateLightValues()

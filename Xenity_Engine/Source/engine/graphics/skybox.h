@@ -42,5 +42,5 @@ public:
 
 private:
 
-	static const int version;
+	static constexpr int version = 1;
 };

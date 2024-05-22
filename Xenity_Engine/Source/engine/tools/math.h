@@ -12,7 +12,7 @@ class API Math
 {
 public:
 
-	static const float PI;
+	static constexpr float PI = 3.14159265359f;
 
 	/**
 	* @brief Multiply two matrices

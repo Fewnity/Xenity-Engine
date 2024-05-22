@@ -99,6 +99,6 @@ private:
 
 	static std::shared_ptr<Scene> openedScene;
 	static bool sceneModified;
-	static const int sceneVersion;
+	static constexpr int sceneVersion = 1;
 };
 

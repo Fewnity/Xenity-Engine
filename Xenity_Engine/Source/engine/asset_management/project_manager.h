@@ -355,7 +355,7 @@ private:
 	static std::string engineAssetsFolderPath;
 	static std::string publicEngineAssetsFolderPath;
 	static std::string assetFolderPath;
-	static const int metaVersion;
+	static constexpr int metaVersion = 1;
 
 	static Event<> projectLoadedEvent;
 	static Event<> projectUnloadedEvent;

@@ -7,8 +7,6 @@
 
 #include <json.hpp>
 
-const int SkyBox::version = 1;
-
 using json = nlohmann::json;
 
 SkyBox::SkyBox()

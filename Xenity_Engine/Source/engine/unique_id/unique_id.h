@@ -27,7 +27,7 @@ public:
 	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;
 
-	static const uint64_t reservedFileId;
+	static constexpr uint64_t reservedFileId = 100000;
 
 	/**
 	* @brief [Internal] Generate a new id

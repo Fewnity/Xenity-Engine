@@ -35,8 +35,6 @@ ordered_json savedSceneDataHotReloading;
 
 bool SceneManager::sceneModified = false;
 
-const int SceneManager::sceneVersion = 1;
-
 #if defined(EDITOR)
 
 void SceneManager::SaveScene(SaveSceneType saveType)

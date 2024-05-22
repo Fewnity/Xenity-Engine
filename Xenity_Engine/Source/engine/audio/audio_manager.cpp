@@ -38,7 +38,7 @@ int currentBuffer = 0;
 
 bool AudioManager::isAdding = false;
 Channel* AudioManager::channel;
-int buffSize = 1024 * 16;
+constexpr int buffSize = 1024 * 16;
 int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex* AudioManager::myMutex = nullptr;

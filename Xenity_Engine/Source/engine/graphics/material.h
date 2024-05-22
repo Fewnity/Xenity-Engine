@@ -73,7 +73,7 @@ public:
 	Vector2 offset = Vector2(0,0);
 	Vector2 tiling = Vector2(1, 1);
 
-	static const int version;
+	static constexpr int version = 1;
 
 };
 

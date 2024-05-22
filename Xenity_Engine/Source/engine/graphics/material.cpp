@@ -17,7 +17,6 @@
 
 
 using json = nlohmann::json;
-const int Material::version = 1;
 
 #pragma region Constructors / Destructor
 
