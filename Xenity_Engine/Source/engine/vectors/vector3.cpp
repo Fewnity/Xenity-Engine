@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__) || defined(_EE)
 #undef __STRICT_ANSI__

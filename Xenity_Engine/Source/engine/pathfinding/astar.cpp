@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include "astar.h"
 #include <malloc.h>
 #define _USE_MATH_DEFINES

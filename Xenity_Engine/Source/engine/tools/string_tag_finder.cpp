@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include "string_tag_finder.h"
 
 bool StringTagFinder::FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition)

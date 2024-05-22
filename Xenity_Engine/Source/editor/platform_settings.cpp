@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include "platform_settings.h"
 #include <engine/graphics/texture.h>
 #include <engine/file_system/file.h>

@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #pragma once
 
 #include <engine/graphics/3d_graphics/mesh_data.h>

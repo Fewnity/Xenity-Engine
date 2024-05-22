@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include "file_reference_finder.h"
 
 // List of all file types drawn by the EditorUI or the editor wont compile

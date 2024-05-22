@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Gr�gory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
 #include <engine/assertions/assertions.h>
