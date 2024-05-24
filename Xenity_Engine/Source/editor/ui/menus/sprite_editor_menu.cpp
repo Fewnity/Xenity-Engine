@@ -27,7 +27,7 @@ void SpriteEditorMenu::AddNewSpriteSelection(const Vector2& position, const Vect
 	selection.size = size;
 	selection.pivot = pivot;
 	spriteSelections.push_back(selection);
-	currentSelectedSpriteIndex = spriteSelections.size() - 1;
+	currentSelectedSpriteIndex = (int)spriteSelections.size() - 1;
 }
 
 void SpriteEditorMenu::Draw()
@@ -63,8 +63,8 @@ void SpriteEditorMenu::LoadSpriteSelections()
 	spriteSelections.clear();
 
 	// Create a sprite selection and copy data from the spriteToEdit texture
-	const int spriteToEditSelectionCount = spriteToEdit->spriteSelections.size();
-	for (int i = 0; i < spriteToEditSelectionCount; i++)
+	const size_t spriteToEditSelectionCount = spriteToEdit->spriteSelections.size();
+	for (size_t i = 0; i < spriteToEditSelectionCount; i++)
 	{
 		SpriteSelection* selectionToCopy = spriteToEdit->spriteSelections[i];
 
@@ -88,8 +88,8 @@ void SpriteEditorMenu::SaveSpriteSelections()
 	FileSystem::fileSystem->CreateFolder(folderPath);
 
 	spriteToEdit->ClearSpriteSelections();
-	const int spriteSelectionCount = spriteSelections.size();
-	for (int selectI = 0; selectI < spriteSelectionCount; selectI++)
+	const size_t spriteSelectionCount = spriteSelections.size();
+	for (size_t selectI = 0; selectI < spriteSelectionCount; selectI++)
 	{
 		// Add sprite selections to the sprite sheet texture
 		SpriteSelection* newSpriteSelection = new SpriteSelection();
@@ -152,8 +152,8 @@ void SpriteEditorMenu::DrawSpriteSheet()
 	ImGui::GetWindowDrawList()->AddImage((ImTextureID)spriteToEdit->GetTextureId(), ImVec2(topX, topY), ImVec2(bottomX, bottomY));
 
 	// Draw all sprite selection lines
-	const int spriteSelectionCount = spriteSelections.size();
-	for (int selectionIndex = 0; selectionIndex < spriteSelectionCount; selectionIndex++)
+	const size_t spriteSelectionCount = spriteSelections.size();
+	for (size_t selectionIndex = 0; selectionIndex < spriteSelectionCount; selectionIndex++)
 	{
 		const SpriteSelection& currentSelection = spriteSelections[selectionIndex];
 
@@ -200,8 +200,8 @@ void SpriteEditorMenu::DrawToolWindow()
 		ImGui::Separator();
 
 		// Draw all sprite selections
-		int spriteSelectionCount = spriteSelections.size();
-		for (int selectionIndex = 0; selectionIndex < spriteSelectionCount; selectionIndex++)
+		size_t spriteSelectionCount = spriteSelections.size();
+		for (size_t selectionIndex = 0; selectionIndex < spriteSelectionCount; selectionIndex++)
 		{
 			SpriteSelection& currentSelection = spriteSelections[selectionIndex];
 

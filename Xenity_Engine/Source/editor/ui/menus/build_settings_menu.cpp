@@ -111,9 +111,9 @@ void BuildSettingsMenu::Draw()
 			//ImGui::Text("Platforms");
 			const int imageSize = 50;
 
-			const int platformCount = buildPlatforms.size();
+			const size_t platformCount = buildPlatforms.size();
 			ImVec2 availColSize = ImGui::GetContentRegionAvail();
-			for (int i = 0; i < platformCount; i++)
+			for (size_t i = 0; i < platformCount; i++)
 			{
 				const BuildPlatform& platform = buildPlatforms[i];
 				ImVec2 cursorPos = ImGui::GetCursorPos();
@@ -299,6 +299,9 @@ const BuildPlatform& BuildSettingsMenu::GetBuildPlatform(Platform platform)
 			return buildPlatform;
 		}
 	}
+
+	XASSERT(false, "[BuildSettingsMenu::GetBuildPlatform] No platform found")
+	return buildPlatforms[0];
 }
 
 void BuildSettingsMenu::OnSettingChanged()
@@ -334,8 +337,8 @@ void BuildSettingsMenu::LoadSettings()
 		}
 
 		// Use json to update settings values
-		const int platformCount = buildPlatforms.size();
-		for (int i = 0; i < platformCount; i++)
+		const size_t platformCount = buildPlatforms.size();
+		for (size_t i = 0; i < platformCount; i++)
 		{
 			const BuildPlatform& plaform = buildPlatforms[i];
 			if (plaform.settings)
@@ -349,10 +352,10 @@ void BuildSettingsMenu::LoadSettings()
 void BuildSettingsMenu::SaveSettings()
 {
 	// Generate json from settings data
-	const int platformCount = buildPlatforms.size();
+	const size_t platformCount = buildPlatforms.size();
 	json buildSettingsData;
 
-	for (int i = 0; i < platformCount; i++)
+	for (size_t i = 0; i < platformCount; i++)
 	{
 		const BuildPlatform& plaform = buildPlatforms[i];
 		if (plaform.settings)

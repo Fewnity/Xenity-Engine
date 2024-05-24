@@ -35,6 +35,14 @@ void CompilingMenu::Draw()
 	if (ImGui::BeginPopupModal("Compiling...", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking))
 	{
 		ImGui::Text("Compiling game...");
+		if (Compiler::GetCompilationMethod() == CompilationMethod::DOCKER)
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				Compiler::CancelCompilation();
+			}
+		}
 		if (popupState == CompilingPupopState::Closed)
 		{
 			ImGui::CloseCurrentPopup();

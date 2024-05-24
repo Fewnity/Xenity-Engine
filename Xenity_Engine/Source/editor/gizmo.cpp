@@ -59,6 +59,9 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 
 void Gizmo::DrawSphere(const Vector3& position, const float radius)
 {
+	if (radius == 0)
+		return;
+
 	const int steps = 30;
 	const float angleStep = 360.0f / steps;
 	for (int i = 0; i < steps; i++)

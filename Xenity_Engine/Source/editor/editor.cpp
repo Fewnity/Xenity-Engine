@@ -153,7 +153,7 @@ void Editor::Update()
 			}
 
 			std::vector<std::shared_ptr<GameObject>> gameObjectsToDuplicate = RemoveChildren(selectedGameObjectsToCheck);
-			for (auto gameObjectToDuplicate : gameObjectsToDuplicate)
+			for (std::shared_ptr<GameObject>& gameObjectToDuplicate : gameObjectsToDuplicate)
 			{
 				std::shared_ptr<GameObject> newGameObject = Instantiate(gameObjectToDuplicate);
 				if (gameObjectToDuplicate->GetParent().lock() != nullptr)
@@ -230,22 +230,6 @@ void Editor::Update()
 				SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 			}
 		}
-
-		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::O)))
-		{
-			std::vector <std::shared_ptr<GameObject>> goToCheck;
-			for (auto& weakGo : GetSelectedGameObjects())
-			{
-				goToCheck.push_back(weakGo.lock());
-
-			}
-			std::vector<std::shared_ptr<GameObject>> go = RemoveChildren(goToCheck);
-			for (auto g : go)
-			{
-				Debug::Print(g->GetName());
-			}
-		}
-
 	}
 }
 
@@ -258,7 +242,7 @@ void Editor::Draw()
 	if (currentMenu == MenuGroup::Menu_Editor)
 		mainBar->Draw();
 
-	float offset = mainBar->GetHeight();
+	int offset = mainBar->GetHeight();
 	if (currentMenu != MenuGroup::Menu_Editor)
 		offset = 0;
 
@@ -403,11 +387,9 @@ void Editor::CreateEmptyParent()
 void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
 	selectedFileReference = fileReference;
-#if  defined(EDITOR)
 	std::shared_ptr<InspectorMenu> inspector = Editor::GetMenu<InspectorMenu>();
 	if (inspector)
 		inspector->loadedPreview = nullptr;
-#endif
 }
 
 std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
@@ -438,8 +420,7 @@ void Editor::ClearSelectedGameObjects()
 
 void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToAdd)
 {
-	if (gameObjectToAdd == nullptr)
-		return;
+	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr")
 
 	bool found = false;
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
@@ -460,11 +441,10 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 
 void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToRemove)
 {
-	if (gameObjectToRemove == nullptr)
-		return;
+	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr")
 
-	const int goCount = selectedGameObjects.size();
-	for (int i = 0; i < goCount; i++)
+	const size_t goCount = selectedGameObjects.size();
+	for (size_t i = 0; i < goCount; i++)
 	{
 		if (selectedGameObjects[i].lock() == gameObjectToRemove)
 		{
@@ -477,7 +457,8 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 
 bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObjectToCheck)
 {
-	bool found = false;
+	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr")
+
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
 		if (currentGameObject.lock() == gameObjectToCheck)
@@ -538,6 +519,11 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	case FileType::File_Shader:
 		fileExt = ".shader";
 		break;
+	default:
+	{
+		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file")
+		break;
+	}
 	}
 
 	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
@@ -581,11 +567,17 @@ void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 
 void Editor::AddDragAndDrop(const std::string& path)
 {
+	if (path.empty())
+		return;
+
 	dragdropEntries.push_back(path);
 }
 
 void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
 {
+	if (path.empty() || newPath.empty())
+		return;
+
 	for (const auto& file : std::filesystem::directory_iterator(path))
 	{
 		// Check is file
@@ -606,7 +598,7 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 {
 	int endParenthesis = -1;
 	int startParenthesis = -1;
-	int nameLenght = name.size();
+	int nameLenght = (int)name.size();
 	int numberState = 2; // 0 Other than number, 1 only number, 2 nothing found
 
 	for (int i = nameLenght - 1; i > 0; i--)
@@ -665,12 +657,13 @@ std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 	bool foundOne = false;
 	GetIncrementedGameObjectNameInfo(name, finalName, number);
 
-	const int gameObjectCount = GameplayManager::gameObjects.size();
-	for (int i = 0; i < gameObjectCount; i++)
+	//const int gameObjectCount = GameplayManager::gameObjects.size();
+	//for (int i = 0; i < gameObjectCount; i++)
+	for(const std::shared_ptr<GameObject>& gameObject : GameplayManager::gameObjects)
 	{
 		std::string tempName;
 		int tempNumber;
-		GetIncrementedGameObjectNameInfo(GameplayManager::gameObjects[i]->GetName(), tempName, tempNumber);
+		GetIncrementedGameObjectNameInfo(gameObject->GetName(), tempName, tempNumber);
 		if (tempName == finalName)
 		{
 			foundOne = true;
@@ -687,14 +680,14 @@ std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 
 void Editor::OnDragAndDropFileFinished()
 {
-	const int size = dragdropEntries.size();
-	for (int dragIndex = 0; dragIndex < size; dragIndex++)
+	const size_t size = dragdropEntries.size();
+	for (size_t dragIndex = 0; dragIndex < size; dragIndex++)
 	{
 		try
 		{
 			std::string& path = dragdropEntries[dragIndex];
 			const bool isDirectory = std::filesystem::is_directory(path);
-			const int pathSize = path.size();
+			const size_t pathSize = path.size();
 
 			// Find the last backslash
 			int lastBackSlash = -1;
@@ -767,8 +760,8 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 {
 	std::vector<std::shared_ptr<GameObject>> parentsAndChildrenCopy = parentsAndChildren;
 
-	int goCount = parentsAndChildren.size();
-	for (int i = 0; i < goCount; i++)
+	size_t goCount = parentsAndChildren.size();
+	for (size_t i = 0; i < goCount; i++)
 	{
 		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
 		if (currentGameObject == nullptr) 
@@ -814,7 +807,6 @@ void Editor::CreateMenus()
 	AddMenu<AboutMenu>(false);
 	AddMenu<BuildSettingsMenu>(false);
 	AddMenu<EngineAssetManagerMenu>(false);
-	//AddMenu<SelectAssetMenu>(false);
 
 	AddMenu<FileExplorerMenu>(true);
 	AddMenu<HierarchyMenu>(true);
@@ -835,8 +827,8 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 	if (fullPath.empty())
 		return false;
 
-	const int backSlash = fullPath.find_last_of('/');
-	const int backSlash2 = fullPath.find_last_of('\\');
+	const int backSlash = (int)fullPath.find_last_of('/');
+	const int backSlash2 = (int)fullPath.find_last_of('\\');
 	int finalBackSlashPos = -1;
 	if (backSlash < backSlash2)
 	{
@@ -858,6 +850,10 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 
 bool Editor::OpenExecutableFile(const std::string& executablePath)
 {
+	DXASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty")
+	if (executablePath.empty())
+		return false;
+
 	std::string finalName;
 	std::string path;
 

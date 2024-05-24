@@ -65,7 +65,7 @@ bool FileReferenceFinder::GetFileRefId(const T& var, std::vector <uint64_t>& ids
 
 void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData)
 {
-	int usedFilesIdsCount = usedFilesIds.size();
+	size_t usedFilesIdsCount = usedFilesIds.size();
 
 	for (const auto& kv : reflectiveData)
 	{
@@ -79,11 +79,11 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& us
 
 		if (isFileFound)
 		{
-			const int foundFileIdsCount = foundFileIds.size();
-			for (int foundFileIndex = 0; foundFileIndex < foundFileIdsCount; foundFileIndex++)
+			const size_t foundFileIdsCount = foundFileIds.size();
+			for (size_t foundFileIndex = 0; foundFileIndex < foundFileIdsCount; foundFileIndex++)
 			{
 				bool alreadyListed = false;
-				for (int fileIndex = 0; fileIndex < usedFilesIdsCount; fileIndex++)
+				for (size_t fileIndex = 0; fileIndex < usedFilesIdsCount; fileIndex++)
 				{
 					if (usedFilesIds[fileIndex] == foundFileIds[foundFileIndex])
 					{

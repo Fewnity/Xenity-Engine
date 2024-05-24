@@ -109,8 +109,8 @@ void Texture::UnloadFileReference()
 
 void Texture::ClearSpriteSelections()
 {
-	int selectionCount = spriteSelections.size();
-	for (int i = 0; i < selectionCount; i++)
+	const size_t selectionCount = spriteSelections.size();
+	for (size_t i = 0; i < selectionCount; i++)
 	{
 		delete spriteSelections[i];
 	}

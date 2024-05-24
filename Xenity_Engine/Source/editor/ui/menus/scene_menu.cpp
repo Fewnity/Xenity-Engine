@@ -317,20 +317,20 @@ Side SceneMenu::DetectSide(float camDistance, const Vector3& objectPosition, con
 
 	const Side nearSide = GetNearSide(camDistance, rightClosestPointCam, rightClosestPoint, upClosestPointCam, upClosestPoint, forwardClosestPointCam, forwardClosestPoint);
 
-	const float rightRightSide = Vector3::Dot((rightClosestPoint - objectPosition).Normalize(), objectRight);
-	const float upRightSide = Vector3::Dot((upClosestPoint - objectPosition).Normalize(), objectUp);
-	const float forwardRightSide = Vector3::Dot((forwardClosestPoint - objectPosition).Normalize(), objectForward);
+	const double rightRightSide = Vector3::Dot((rightClosestPoint - objectPosition).Normalize(), objectRight);
+	const double upRightSide = Vector3::Dot((upClosestPoint - objectPosition).Normalize(), objectUp);
+	const double forwardRightSide = Vector3::Dot((forwardClosestPoint - objectPosition).Normalize(), objectForward);
 
 	Side tempSide = Side::Side_None;
-	if (rightRightSide >= 0.95f && nearSide == Side::Side_Right && !isRightTooFar)
+	if (rightRightSide >= 0.95 && nearSide == Side::Side_Right && !isRightTooFar)
 	{
 		tempSide = Side::Side_Right;
 	}
-	else if (upRightSide >= 0.95f && nearSide == Side::Side_Up && !isUpTooFar)
+	else if (upRightSide >= 0.95 && nearSide == Side::Side_Up && !isUpTooFar)
 	{
 		tempSide = Side::Side_Up;
 	}
-	else if (forwardRightSide >= 0.95f && nearSide == Side::Side_Forward && !isForwardTooFar)
+	else if (forwardRightSide >= 0.95 && nearSide == Side::Side_Forward && !isForwardTooFar)
 	{
 		tempSide = Side::Side_Forward;
 	}
@@ -535,8 +535,8 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 
 					if (finalIntersection != startDragPos)
 					{
-						const float angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
-						const float angleDeg = acos(angle) * 180.0f / M_PI;
+						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
+						const double angleDeg = acos(angle) * 180.0 / M_PI;
 						if (!isnan(angleDeg))
 						{
 							float crossProduct = 0;
@@ -602,14 +602,14 @@ Vector3 SceneMenu::GetNearestPoint(const Vector3& linePos1, const Vector3& lineD
 	{
 		const Vector3 V = linePos2 - linePos1;
 
-		const float dotD1D2 = Vector3::Dot(lineDir1, lineDir2);
+		const double dotD1D2 = Vector3::Dot(lineDir1, lineDir2);
 
-		const float a = Vector3::Dot(lineDir1, V);
-		const float b = Vector3::Dot(lineDir2, V);
-		const float c = Vector3::Dot(lineDir1, lineDir2);
+		const double a = Vector3::Dot(lineDir1, V);
+		const double b = Vector3::Dot(lineDir2, V);
+		const double c = Vector3::Dot(lineDir1, lineDir2);
 
-		const float s = (a - b * dotD1D2) / (1 - dotD1D2 * dotD1D2);
-		const float t = (b - c * s);
+		const double s = (a - b * dotD1D2) / (1 - dotD1D2 * dotD1D2);
+		const double t = (b - c * s);
 
 		ClosestPoint = linePos2 + t * (lineDir2 * -1);
 	}
@@ -701,7 +701,7 @@ void SceneMenu::Draw()
 				std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->file->GetFileName());
 				std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
 				meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
-				const int matCount = meshRenderer->GetMaterials().size();
+				const size_t matCount = meshRenderer->GetMaterials().size();
 				for (int i = 0; i < matCount; i++)
 				{
 					meshRenderer->SetMaterial(AssetManager::standardMaterial, i);

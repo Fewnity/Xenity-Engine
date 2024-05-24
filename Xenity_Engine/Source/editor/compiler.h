@@ -23,7 +23,8 @@ ENUM(BuildType,
 	BuildAndRunGame,
 	BuildAndRunOnHardwareGame);
 
-ENUM(CompileResult, SUCCESS,
+ENUM(CompileResult, 
+	SUCCESS,
 	ERROR_UNKNOWN,
 	ERROR_FILE_COPY,
 	ERROR_GAME_CODE_COPY,
@@ -37,6 +38,7 @@ ENUM(CompileResult, SUCCESS,
 	ERROR_DOCKER_COMPILATION,
 	ERROR_DOCKER_MISSING_IMAGE,
 	ERROR_DOCKER_COULD_NOT_START,
+	ERROR_COMPILATION_CANCELLED,
 	ERROR_COMPILER_AVAILABILITY);
 
 ENUM(CompilerAvailability,
@@ -50,6 +52,11 @@ ENUM(DockerState,
 	NOT_RUNNING,
 	MISSING_IMAGE,
 	RUNNING);
+
+ENUM(CompilationMethod,
+	MSVC,
+	DOCKER,
+	WSL);
 
 struct CompilerParams
 {
@@ -159,6 +166,13 @@ public:
 	* @return True if the image was created
 	*/
 	static bool CreateDockerImage();
+
+	static void CancelCompilation();
+
+	static CompilationMethod GetCompilationMethod() 
+	{
+		return compilationMethod;
+	}
 
 private:
 
@@ -277,4 +291,7 @@ private:
 	static std::string compilerExecFileName;
 	static std::string engineFolderLocation;
 	static std::string engineProjectLocation;
+
+	static CompilationMethod compilationMethod;
+	static bool isCompilationCancelled;
 };

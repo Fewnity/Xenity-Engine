@@ -128,12 +128,12 @@ int AudioClipStream::GetFrequency() const
 	return rate;
 }
 
-int64_t AudioClipStream::GetSampleCount() const
+uint64_t AudioClipStream::GetSampleCount() const
 {
 	return sampleCount;
 }
 
-int64_t AudioClipStream::GetSeekPosition() const
+uint64_t AudioClipStream::GetSeekPosition() const
 {
 	uint64_t seekPos = 0;
 	if (type == AudioType::Mp3)

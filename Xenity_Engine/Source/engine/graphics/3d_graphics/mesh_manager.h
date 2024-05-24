@@ -22,7 +22,7 @@
 class Vector3;
 class Texture;
 class Transform;
-class RenderingSettings;
+struct RenderingSettings;
 class Material;
 
 class API MeshManager

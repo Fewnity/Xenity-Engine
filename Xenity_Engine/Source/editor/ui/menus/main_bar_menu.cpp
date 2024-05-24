@@ -115,7 +115,7 @@ bool MainBarMenu::DrawImageButton(const bool enabled, const std::shared_ptr<Text
 
 void MainBarMenu::Draw()
 {
-	const int selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
+	const size_t selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
 	const bool hasSelectedGameObject = selectedGameObjectCount != 0;
 	const bool hasOneSelectedGameObject = selectedGameObjectCount == 1;
 

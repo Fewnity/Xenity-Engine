@@ -78,7 +78,7 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 
 	char* data = nullptr;
 	file.seekg(0, std::ios_base::end);
-	const int pos = file.tellg();
+	const std::streampos pos = file.tellg();
 	file.seekg(0, std::ios_base::beg);
 	data = new char[pos];
 	if(!data)

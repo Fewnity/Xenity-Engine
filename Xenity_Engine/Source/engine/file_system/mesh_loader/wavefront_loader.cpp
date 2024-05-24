@@ -38,7 +38,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 	{
 		const std::string allString = file->ReadAll();
 		file->Close();
-		const int textSize = allString.size();
+		const size_t textSize = allString.size();
 
 		bool verticesFound = false;
 		bool currentMeshFilled = false;
@@ -61,11 +61,11 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		std::string currentMaterial = "";
 
 		// Read file
-		int lastLine = 0;
+		size_t lastLine = 0;
 		std::string line = "";
 		SubMesh* currentSubMeshPtr = nullptr;
 
-		for (int i = lastLine; i < textSize; i++)
+		for (size_t i = lastLine; i < textSize; i++)
 		{
 			if (allString[i] == '\n')
 			{
@@ -78,7 +78,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		bool stop = false;
 		while (true)
 		{
-			for (int i = lastLine; i < textSize; i++)
+			for (size_t i = lastLine; i < textSize; i++)
 			{
 				if (i == textSize - 1)
 				{
@@ -403,7 +403,7 @@ bool WavefrontLoader::ReadMtlFile(const std::string& path)
 	{
 		const std::string allString = file->ReadAll();
 		file->Close();
-		const int textSize = allString.size();
+		const size_t textSize = allString.size();
 		Debug::Print("[WavefrontLoader::ReadMtlFile] Mtl file: " + allString);
 	}
 	else 

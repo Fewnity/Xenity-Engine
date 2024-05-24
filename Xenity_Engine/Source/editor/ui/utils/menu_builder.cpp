@@ -18,8 +18,8 @@ RightClickMenu::RightClickMenu(const std::string& uniqueName) : nameId(uniqueNam
 
 RightClickMenu::~RightClickMenu()
 {
-	int itemCount = items.size();
-	for (int i = 0; i < itemCount; i++)
+	size_t itemCount = items.size();
+	for (size_t i = 0; i < itemCount; i++)
 	{
 		delete items[i];
 	}
@@ -31,12 +31,12 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 	if (!item.GetIsVisible())
 		return;
 
-	const int itemsCount = item.onHoverItems.size();
+	const size_t itemsCount = item.onHoverItems.size();
 	if (itemsCount != 0) 
 	{
 		if (ImGui::BeginMenu(item.GetTitle().c_str(), item.GetIsEnabled()))
 		{
-			for (int i = 0; i < itemsCount; i++)
+			for (size_t i = 0; i < itemsCount; i++)
 			{
 				DrawRecursive(*item.onHoverItems[i]);
 			}
@@ -95,8 +95,8 @@ bool RightClickMenu::Draw()
 	{
 		drawn = true;
 		isDrawn = true;
-		const int itemsCount = items.size();
-		for (int i = 0; i < itemsCount; i++)
+		const size_t itemsCount = items.size();
+		for (size_t i = 0; i < itemsCount; i++)
 		{
 			DrawRecursive(*items[i]);
 		}
@@ -127,8 +127,8 @@ RightClickMenuItem* RightClickMenu::AddItem(const std::string& title)
 
 RightClickMenuItem::~RightClickMenuItem()
 {
-	int itemCount = onHoverItems.size();
-	for (int i = 0; i < itemCount; i++)
+	size_t itemCount = onHoverItems.size();
+	for (size_t i = 0; i < itemCount; i++)
 	{
 		delete onHoverItems[i];
 	}

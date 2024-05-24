@@ -24,7 +24,7 @@ class FileReference;
 class File;
 class Scene;
 class Directory;
-class CompilerParams;
+struct CompilerParams;
 
 #define META_EXTENSION ".meta"
 #define PROJECTS_LIST_FILE "projects.json"

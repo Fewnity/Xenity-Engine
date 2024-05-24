@@ -54,7 +54,7 @@ public:
 	/**
 	* @brief Get audio clip sample count
 	*/
-	int64_t GetSampleCount() const;
+	uint64_t GetSampleCount() const;
 
 	/**
 	* @brief Reset seek position
@@ -70,7 +70,7 @@ public:
 	/**
 	* @brief Get seek position
 	*/
-	int64_t GetSeekPosition() const;
+	uint64_t GetSeekPosition() const;
 
 	/**
 	* @brief Get channel count

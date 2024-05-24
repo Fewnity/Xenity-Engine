@@ -669,8 +669,8 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 #if defined(EDITOR)
 	int idCount = 0;
 	const std::vector<FileInfo> sceneFiles = GetFilesByType(FileType::File_Scene);
-	const int sceneCount = sceneFiles.size();
-	for (int i = 0; i < sceneCount; i++)
+	const size_t sceneCount = sceneFiles.size();
+	for (size_t i = 0; i < sceneCount; i++)
 	{
 		ids.push_back(sceneFiles[i].file->GetUniqueId());
 		std::shared_ptr<File> jsonFile = sceneFiles[i].file;

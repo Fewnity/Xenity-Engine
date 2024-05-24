@@ -17,6 +17,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/file_system/file_type.h>
 #include <editor/ui/menus/menu.h>
+#include <engine/assertions/assertions.h>
 
 class Component;
 class Reflective;
@@ -171,6 +172,8 @@ public:
 	*/
 	static void RemoveMenu(Menu* menu)
 	{
+		DXASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr")
+
 		for (int i = 0; i < menuCount; i++)
 		{
 			if (menu == menus[i].get())

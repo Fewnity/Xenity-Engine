@@ -22,6 +22,7 @@
 #include <engine/file_system/directory.h>
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
+#include <engine/assertions/assertions.h>
 
 #include <stb_image.h>
 #include <stb_image_write.h>
@@ -41,8 +42,19 @@ namespace fs = std::filesystem;
 
 std::vector<CopyEntry> Compiler::copyEntries;
 
+CompilationMethod Compiler::compilationMethod = CompilationMethod::MSVC;
+bool Compiler::isCompilationCancelled = false;
+
 void Compiler::AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest)
 {
+	DXASSERT(!source.empty(), "[Compiler::AddCopyEntry] source is empty")
+	DXASSERT(!dest.empty(), "[Compiler::AddCopyEntry] dest is empty")
+
+	if (source.empty() || dest.empty())
+	{
+		return;
+	}
+
 	CopyEntry entry;
 	entry.isFolder = isFolder;
 	entry.sourcePath = source;
@@ -106,6 +118,7 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 CompileResult Compiler::Compile(CompilerParams params)
 {
 	Debug::ClearDebugLogs();
+	isCompilationCancelled = false;
 
 	// Ensure path are absolute
 	const std::string root = fs::current_path().string();
@@ -154,7 +167,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		break;
 	case Platform::P_PSP:
 	case Platform::P_PsVita:
-		//result = CompileWSL(params);
+		//result = CompileWSL(params); // Deprecated
 		result = CompileInDocker(params);
 		break;
 	default:
@@ -186,7 +199,7 @@ void Compiler::Init()
 	engineFolderLocation = root + "\\";
 	engineProjectLocation = engineFolderLocation;
 #if defined (VISUAL_STUDIO)
-	const int backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('\\');
+	const size_t backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('\\');
 	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine\\";
 #endif
 #if defined(_WIN64) 
@@ -258,6 +271,11 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 
 CompileResult Compiler::CompilePlugin(Platform platform, const std::string& pluginPath)
 {
+	DXASSERT(!pluginPath.empty(), "[Compiler::CompilePlugin] pluginPath is empty")
+
+	if (pluginPath.empty())
+		return CompileResult::ERROR_UNKNOWN;
+
 	const std::string plugin_name = fs::path(pluginPath).parent_path().filename().string();
 
 	CompilerParams params{};
@@ -304,21 +322,25 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 		}
 	}
 
-
 	if (callback)
 	{
 		callback->Trigger(result);
 	}
+
 	return result;
 }
 
 bool Compiler::ExportProjectFiles(const std::string& exportPath)
 {
+	DXASSERT(!exportPath.empty(), "[Compiler::ExportProjectFiles] exportPath is empty")
+	if (exportPath.empty())
+		return false;
+
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
-	const int projectFolderPathLen = projectAssetFolder.size();
+	const size_t projectFolderPathLen = projectAssetFolder.size();
 	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
-	const int idsCount = ids.size();
-	for (int i = 0; i < idsCount; i++)
+	const size_t idsCount = ids.size();
+	for (size_t i = 0; i < idsCount; i++)
 	{
 		const FileInfo* fileInfo = ProjectManager::GetFileById(ids[i]);
 		if (fileInfo)
@@ -345,6 +367,10 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 
 CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
+	DXASSERT(!exportPath.empty(), "[Compiler::CompileGame] exportPath is empty")
+	if (exportPath.empty())
+		return CompileResult::ERROR_UNKNOWN;
+
 	CompilerParams params{};
 	params.libraryName = "game";
 	params.buildPlatform = buildPlatform;
@@ -484,6 +510,10 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 		Debug::PrintError("[Compiler::OnCompileEnd] Docker path is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
 		break;
 
+	case CompileResult::ERROR_COMPILATION_CANCELLED:
+		Debug::PrintError("[Compiler::OnCompileEnd] The compilation has been cancelled");
+		break;
+
 	default:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
 		break;
@@ -494,6 +524,10 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 
 std::string WindowsPathToWSL(const std::string& path)
 {
+	DXASSERT(!path.empty(), "[Compiler::WindowsPathToWSL] path is empty")
+	if (path.empty())
+		return "";
+
 	std::string newPath = path;
 	newPath[0] = tolower(newPath[0]);
 	const int pathSize = (int)path.size();
@@ -516,12 +550,12 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 	fs::create_directory(params.tempPath + "source\\");
 
-	const int sourcePathLen = params.sourcePath.size();
+	const size_t sourcePathLen = params.sourcePath.size();
 	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
 	const std::vector<std::shared_ptr<File>> files = gameSourceDir->GetAllFiles(true);
 
-	const int fileCount = files.size();
-	for (int i = 0; i < fileCount; i++)
+	const size_t fileCount = files.size();
+	for (size_t i = 0; i < fileCount; i++)
 	{
 		const std::string ext = files[i]->GetFileExtension();
 
@@ -542,8 +576,8 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 		// Check if the destination folder is already in the list
 		bool found = false;
-		const int sourceDestFoldersSize = sourceDestFolders.size();
-		for (int x = 0; x < sourceDestFoldersSize; x++)
+		const size_t sourceDestFoldersSize = sourceDestFolders.size();
+		for (size_t x = 0; x < sourceDestFoldersSize; x++)
 		{
 			if (sourceDestFolders[x] == destFolder)
 			{
@@ -562,6 +596,8 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 CompileResult Compiler::CompileWindows(const CompilerParams& params)
 {
+	compilationMethod = CompilationMethod::MSVC;
+
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
 		const std::string engineLibPath = engineFolderLocation + ENGINE_EDITOR + ".lib";
@@ -671,8 +707,11 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	return CompileResult::SUCCESS;
 }
 
+// Deprecated
 CompileResult Compiler::CompileWSL(const CompilerParams& params)
 {
+	compilationMethod = CompilationMethod::WSL;
+
 	const std::string convertedEnginePath = WindowsPathToWSL(engineProjectLocation);
 	const std::string convertedEngineExePath = WindowsPathToWSL(engineFolderLocation);
 	// Clear compilation folder
@@ -765,8 +804,19 @@ bool Compiler::CreateDockerImage()
 	return result == 0;
 }
 
+void Compiler::CancelCompilation()
+{
+	if (compilationMethod == CompilationMethod::DOCKER) 
+	{
+		system("docker stop -t 0 XenityEngineBuild");
+		isCompilationCancelled = true;
+	}
+}
+
 CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 {
+	compilationMethod = CompilationMethod::DOCKER;
+
 	DockerState state = CheckDockerState(nullptr);
 	if (state == DockerState::NOT_INSTALLED)
 	{
@@ -859,6 +909,9 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
 	const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
 
+	if (isCompilationCancelled)
+		return CompileResult::ERROR_COMPILATION_CANCELLED;
+
 	// Copy XMB/Livearea images
 	if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
@@ -869,8 +922,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		CopyAssetsToDocker(params);
 	}
 
+	if (isCompilationCancelled)
+		return CompileResult::ERROR_COMPILATION_CANCELLED;
+
 	const std::string startCommand = "docker start -a XenityEngineBuild";
 	const int startResult = system(startCommand.c_str());
+
+	if (isCompilationCancelled)
+		return CompileResult::ERROR_COMPILATION_CANCELLED;
 
 	std::string fileName = "";
 	if (params.buildPlatform.platform == Platform::P_PSP)
@@ -1026,8 +1085,8 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	command += " /LD";
 
 	// Add all source folders
-	const int sourceDestFoldersSize = sourceDestFolders.size();
-	for (int i = 0; i < sourceDestFoldersSize; i++)
+	const size_t sourceDestFoldersSize = sourceDestFolders.size();
+	for (size_t i = 0; i < sourceDestFoldersSize; i++)
 	{
 		command += " \"" + sourceDestFolders[i] + "*.cpp\"";
 	}
@@ -1083,6 +1142,10 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
+	DXASSERT(!exportPath.empty(), "[Compiler::StartGame] exportPath is empty")
+	if (exportPath.empty())
+		return;
+
 	std::string command = "";
 	if (platform == Platform::P_Windows)
 	{

@@ -116,9 +116,9 @@ public:
 */
 static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 {
-	int textSize = enumData.size();
+	size_t textSize = enumData.size();
 	// Remove all spaces in the string
-	for (int charIndex = 0; charIndex < textSize; charIndex++)
+	for (size_t charIndex = 0; charIndex < textSize; charIndex++)
 	{
 		if (enumData[charIndex] == ' ')
 		{

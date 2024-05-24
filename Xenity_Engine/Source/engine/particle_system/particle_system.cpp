@@ -204,7 +204,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 
 	Vector3 rotation = Vector3(0);
 
-	const int camCount = Graphics::cameras.size();
+	const int camCount = (int)Graphics::cameras.size();
 
 	const Vector3& camScale = Graphics::usedCamera->GetTransform()->GetScale();
 	const glm::mat4& camMat = Graphics::usedCamera->GetTransform()->GetTransformationMatrix();

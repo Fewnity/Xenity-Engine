@@ -42,8 +42,8 @@ void EngineAssetManagerMenu::Draw()
 			engineAssetsFiles = ProjectManager::publicEngineAssetsDirectoryBase->GetAllFiles(true);
 
 			ids.clear();
-			int fileCount = engineAssetsFiles.size();
-			for (int i = 0; i < fileCount; i++)
+			size_t fileCount = engineAssetsFiles.size();
+			for (size_t i = 0; i < fileCount; i++)
 			{
 				std::shared_ptr<File> file = engineAssetsFiles[i];
 				if (file->GetPath().substr(file->GetPath().size() - 5) == ".meta") 
@@ -78,11 +78,11 @@ void EngineAssetManagerMenu::Draw()
 			}
 			oldIds = ids;
 		}
-		const int idCount = ids.size();
+		const size_t idCount = ids.size();
 		ImGui::SameLine();
 		if (ImGui::Button("Save"))
 		{
-			for (int i = 0; i < idCount; i++)
+			for (size_t i = 0; i < idCount; i++)
 			{
 				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(oldIds[i]);
 				fileRef->fileId = ids[i];

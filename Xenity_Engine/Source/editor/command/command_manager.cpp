@@ -18,7 +18,7 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 	XASSERT(command != nullptr, "[CommandManager::AddCommand] command is nullptr")
 
 	commands.push_back(command);
-	int commandCount = commands.size();
+	size_t commandCount = commands.size();
 	// If we are not at the end of the list, remove all other commands starting from currentCommand to the end of the list
 	if (currentCommand != commandCount - 1)
 	{

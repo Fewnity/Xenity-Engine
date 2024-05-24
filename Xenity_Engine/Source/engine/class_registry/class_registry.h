@@ -112,8 +112,8 @@ public:
 	static GetFileClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
-		const int fileClassInfosCount = fileClassInfos.size();
-		for (int i = 0; i < fileClassInfosCount; i++)
+		const size_t fileClassInfosCount = fileClassInfos.size();
+		for (size_t i = 0; i < fileClassInfosCount; i++)
 		{
 			const FileClassInfo& info = fileClassInfos[i];
 			if (classId == info.typeId)
@@ -133,8 +133,8 @@ public:
 	static GetClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
-		const int classInfosCount = classInfos.size();
-		for (int i = 0; i < classInfosCount; i++)
+		const size_t classInfosCount = classInfos.size();
+		for (size_t i = 0; i < classInfosCount; i++)
 		{
 			const ClassInfo& info = classInfos[i];
 			if (classId == info.typeId)
@@ -153,8 +153,8 @@ public:
 	*/
 	static std::string GetClassNameById(uint64_t classId)
 	{
-		const int classInfosCount = classInfos.size();
-		for (int i = 0; i < classInfosCount; i++)
+		const size_t classInfosCount = classInfos.size();
+		for (size_t i = 0; i < classInfosCount; i++)
 		{
 			const ClassInfo& info = classInfos[i];
 			if (classId == info.typeId)
@@ -162,8 +162,8 @@ public:
 				return info.name;
 			}
 		}
-		const int fileClassInfosCount = fileClassInfos.size();
-		for (int i = 0; i < fileClassInfosCount; i++)
+		const size_t fileClassInfosCount = fileClassInfos.size();
+		for (size_t i = 0; i < fileClassInfosCount; i++)
 		{
 			const FileClassInfo& info = fileClassInfos[i];
 			if (classId == info.typeId)

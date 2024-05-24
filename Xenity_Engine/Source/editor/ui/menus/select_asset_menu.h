@@ -30,7 +30,7 @@ public:
 	{
 	}
 
-	void DrawItem(const std::string& itemName, int& currentCol, int colCount,int offset, std::shared_ptr<Texture> icon, int iconSize, int index, bool isSelected)
+	void DrawItem(const std::string& itemName, int& currentCol, int colCount,int offset, std::shared_ptr<Texture> icon, int iconSize, size_t index, bool isSelected)
 	{
 		if (currentCol == 0)
 			ImGui::TableNextRow();
@@ -87,15 +87,15 @@ public:
 			OnStartDrawing();
 
 			const float width = ImGui::GetContentRegionAvail().x;
-			int colCount = width / (100 * 1); // Replace 1 by EditorUI::GetUIScale()
+			int colCount = (int)(width / (100 * 1)); // Replace 1 by EditorUI::GetUIScale()
 			if (colCount <= 0)
 				colCount = 1;
 			const float offset = ImGui::GetCursorPosX();
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
-				const int fileCount = foundFiles.size();
+				const size_t fileCount = foundFiles.size();
 				int currentCol = 0;
-				for (int i = 0; i < fileCount; i++)
+				for (size_t i = 0; i < fileCount; i++)
 				{
 					FileExplorerItem item;
 					item.file = foundFiles[i];
@@ -110,8 +110,8 @@ public:
 							onValueChangedEvent->Trigger();
 						}
 						const std::vector<std::shared_ptr<InspectorMenu>> inspectors = Editor::GetMenus<InspectorMenu>();
-						const int inspectorsCount = inspectors.size();
-						for (int menuIndex = 0; menuIndex < inspectorsCount; menuIndex++)
+						const size_t inspectorsCount = inspectors.size();
+						for (size_t menuIndex = 0; menuIndex < inspectorsCount; menuIndex++)
 						{
 							inspectors[menuIndex]->forceItemUpdate = true;
 						}

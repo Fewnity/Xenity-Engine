@@ -81,7 +81,7 @@ void HierarchyMenu::Draw()
 				rightClickedElement.reset();
 			};
 
-			const int selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
+			const size_t selectedGameObjectCount = Editor::GetSelectedGameObjects().size();
 			const bool hasSelectedGameObject = selectedGameObjectCount != 0;
 			const bool hasOneSelectedGameObject = selectedGameObjectCount == 1;
 

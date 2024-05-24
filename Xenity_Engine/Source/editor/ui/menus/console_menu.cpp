@@ -48,7 +48,7 @@ void ConsoleMenu::Draw()
 		const ImVec2 startCusorPos = ImGui::GetCursorPos();
 
 		ImGui::SetCursorPosY(startCusorPos.y * 2);
-		const int historyCount = Debug::debugMessageHistory.size();
+		const size_t historyCount = Debug::debugMessageHistory.size();
 		
 		if (needUpdateScrool != 0)
 			needUpdateScrool++;
@@ -73,7 +73,7 @@ void ConsoleMenu::Draw()
 		}
 		else
 		{
-			for (int i = 0; i < historyCount; i++)
+			for (size_t i = 0; i < historyCount; i++)
 			{
 				const DebugHistory& history = Debug::debugMessageHistory[i];
 

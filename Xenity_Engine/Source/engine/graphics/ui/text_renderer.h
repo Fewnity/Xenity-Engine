@@ -15,7 +15,7 @@
 #include <string>
 
 class Font;
-class TextInfo;
+struct TextInfo;
 class MeshData;
 
 class API TextRenderer : public IDrawable

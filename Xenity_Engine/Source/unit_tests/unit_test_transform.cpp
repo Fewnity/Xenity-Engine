@@ -114,7 +114,7 @@ bool TransformSetRotationTest::Start(std::string& errorOut)
 
 	// SetLocalRotation in a parent
 	transform->SetLocalRotation(Vector3(10, 20, 30));
-	if (!Compare(transform->GetRotation(), Vector3(8.21814728, 42.4855042, 61.8378143)))
+	if (!Compare(transform->GetRotation(), Vector3(8.21814728f, 42.4855042f, 61.8378143f)))
 	{
 		errorOut += "Bad Transform SetLocalRotation in a parent (GetRotation)\n";
 		result = false;

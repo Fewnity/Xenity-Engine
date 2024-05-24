@@ -8,7 +8,7 @@
 
 #include "menu.h"
 
-class CompilerParams;
+struct CompilerParams;
 
 enum class CompilingPupopState
 {

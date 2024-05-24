@@ -15,7 +15,7 @@
 #include <engine/vectors/vector3.h>
 
 class Font;
-class TextInfo;
+struct TextInfo;
 class MeshData;
 
 class API TextRendererCanvas : public IDrawable

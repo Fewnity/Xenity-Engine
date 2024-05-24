@@ -174,9 +174,9 @@ void Debug::AddMessageInHistory(const std::string& message, DebugType messageTyp
 	if (!Engine::IsRunning(false))
 		return;
 
-	int historySize = debugMessageHistory.size();
+	const size_t historySize = debugMessageHistory.size();
 	bool found = false;
-	for (int i = 0; i < historySize; i++)
+	for (size_t i = 0; i < historySize; i++)
 	{
 		DebugHistory& historyItem = debugMessageHistory[i];
 		if (historyItem.type == messageType && historyItem.message == message)

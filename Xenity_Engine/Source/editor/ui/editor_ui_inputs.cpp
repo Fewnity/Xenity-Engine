@@ -48,12 +48,12 @@ bool EditorUI::DrawEnum(const std::string& inputName, int& newValue, uint64_t en
 	std::vector<EnumValueName>& names = EnumHelper::GetEnumStringsLists()[enumType];
 	std::vector<EnumValueName> mergednames;
 
-	const int enumSize = names.size();
+	const size_t enumSize = names.size();
 	std::string comboTitle = "";
 	bool isFirst = true;
 
 	int mergedNameSize = 0;
-	for (int enumIndex = 0; enumIndex < enumSize; enumIndex++)
+	for (size_t enumIndex = 0; enumIndex < enumSize; enumIndex++)
 	{
 		const EnumValueName& currentName = names[enumIndex];
 		// If the enum is selected, add the name to the combo's title

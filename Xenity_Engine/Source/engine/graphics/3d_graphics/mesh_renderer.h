@@ -79,7 +79,7 @@ private:
 
 	std::shared_ptr <MeshData> meshData = nullptr;
 	std::vector<std::shared_ptr <Material>> materials;
-	int matCount = 0;
+	size_t matCount = 0;
 
 public:
 	bool culled = false;

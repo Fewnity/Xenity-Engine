@@ -23,6 +23,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Add undo/redo to move tool
+Check if id is copied in delete commands
 Rework the documentation
 Clean code
 
