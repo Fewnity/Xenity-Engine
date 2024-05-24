@@ -353,14 +353,13 @@ public:
 	{
 		onValueChangedEvent = _onValueChangedEvent;
 		bool valueChanged = false;
-		for (const auto& kv : myMap)
+		for (const ReflectiveEntry& reflectionEntry : myMap)
 		{
-			const ReflectiveEntry& reflectionEntry = kv.second;
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
-				const VariableReference& variableRef = kv.second.variable.value();
-				valueChangedTemp = ProcessVariant(variableRef, GetPrettyVariableName(kv.first), command, parent, reflectionEntry);
+				const VariableReference& variableRef = reflectionEntry.variable.value();
+				valueChangedTemp = ProcessVariant(variableRef, GetPrettyVariableName(reflectionEntry.variableName), command, parent, reflectionEntry);
 
 				if (valueChangedTemp)
 				{

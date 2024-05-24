@@ -223,9 +223,9 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
 	{
 		auto map = reflections[reflectionIndex]->GetReflectiveData();
-		for (const auto& kv : map)
+		for (const ReflectiveEntry& reflectiveEntry : map)
 		{
-			const VariableReference& variableRef = kv.second.variable.value();
+			const VariableReference& variableRef = reflectiveEntry.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
 			{
 				if (valuePtr->get() == fileReference)

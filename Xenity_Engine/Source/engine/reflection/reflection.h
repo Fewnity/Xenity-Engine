@@ -254,12 +254,13 @@ public:
 	std::optional<VariableReference> variable;
 	uint64_t typeId = 0;
 	TypeSpawner* typeSpawner = nullptr;
+	std::string variableName;
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 	bool isEnum = false;
 };
 
-typedef std::vector<std::pair<std::string, ReflectiveEntry>> ReflectiveData;
+typedef std::vector<ReflectiveEntry> ReflectiveData;
 
 /**
 * @brief Class to inherit if you want to access child's variables to fill variables from json or save them to json
@@ -366,11 +367,11 @@ protected:
 	{
 		const uint64_t type = typeid(T).hash_code();
 		Reflective::CreateReflectionEntry(vector, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
-		for (auto& otherEntry : vector)
+		for (ReflectiveEntry& otherEntry : vector)
 		{
-			if (otherEntry.first == variableName) 
+			if (otherEntry.variableName == variableName) 
 			{
-				otherEntry.second.typeSpawner = new TypeSpawnerImpl<T>();
+				otherEntry.typeSpawner = new TypeSpawnerImpl<T>();
 				break;
 			}
 		}

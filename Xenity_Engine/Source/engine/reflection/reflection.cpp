@@ -14,6 +14,7 @@ void Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableRef
 	entry.isPublic = isPublic;
 	entry.typeId = id;
 	entry.isEnum = isEnum;
-	
-	vector.push_back(std::make_pair(variableName, entry));
+	entry.variableName = variableName;
+
+	vector.push_back(entry);
 }

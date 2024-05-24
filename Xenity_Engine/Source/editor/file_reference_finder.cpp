@@ -67,9 +67,9 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& us
 {
 	size_t usedFilesIdsCount = usedFilesIds.size();
 
-	for (const auto& kv : reflectiveData)
+	for (const ReflectiveEntry& reflectiveEntry : reflectiveData)
 	{
-		const VariableReference& variableRef = kv.second.variable.value();
+		const VariableReference& variableRef = reflectiveEntry.variable.value();
 		bool isFileFound = false;
 		std::vector<uint64_t> foundFileIds;
 		std::visit([&foundFileIds, &isFileFound](const auto& value)

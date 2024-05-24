@@ -205,13 +205,13 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 
 			for (auto& otherEntry : dataList)
 			{
-				if (otherEntry.first == kv.key())
+				if (otherEntry.variableName == kv.key())
 				{
-					const VariableReference& variableRef = otherEntry.second.variable.value();
+					const VariableReference& variableRef = otherEntry.variable.value();
 					const auto& kvValue = kv.value();
 					std::visit([&kvValue, &otherEntry](const auto& value)
 						{
-							JsonToVariable(kvValue, &value, otherEntry.second);
+							JsonToVariable(kvValue, &value, otherEntry);
 						}, variableRef);
 					break;
 				}
@@ -384,14 +384,13 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 {
 	json json;
-	for (const auto& kv : dataList)
+	for (const auto& entry : dataList)
 	{
-		const std::string& key = kv.first;
-		const VariableReference& variableRef = kv.second.variable.value();
+		const VariableReference& variableRef = entry.variable.value();
 
-		std::visit([&key, &json](const auto& value)
+		std::visit([&entry, &json](const auto& value)
 			{
-				VariableToJson(json, key, &value);
+				VariableToJson(json, entry.variableName, &value);
 			}, variableRef);
 	}
 	return json;

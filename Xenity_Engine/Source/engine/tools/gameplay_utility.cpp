@@ -106,9 +106,9 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 	for (size_t componentIndex = 0; componentIndex < componentCount; componentIndex++)
 	{
 		const ReflectiveData newReflection = ComponentsAndIds[componentIndex].newComponent->GetReflectiveData();
-		for (auto& kv : newReflection)
+		for (const ReflectiveEntry& reflectiveEntry : newReflection)
 		{
-			const VariableReference& variableRef = kv.second.variable.value();
+			const VariableReference& variableRef = reflectiveEntry.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 			{
 				if (valuePtr->get().lock())
