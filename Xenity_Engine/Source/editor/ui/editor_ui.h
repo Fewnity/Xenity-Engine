@@ -45,6 +45,15 @@ class Reflective;
 class ProjectDirectory;
 class Collider;
 
+struct ReflectiveDataToDraw
+{
+	std::vector<ReflectiveEntry> entryStack;
+	ReflectiveEntry currentEntry;
+	std::string name;
+	std::shared_ptr<Command> command;
+	//uint64_t parentUniqueId = 0;
+};
+
 #include <engine/tools/template_utils.h>
 
 enum class EditorUIError
@@ -215,7 +224,7 @@ public:
 		bool changed = false;
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
-		changed = DrawFileReference(&ref, inputName, newValue);
+		changed = DrawFileReference( &ref, inputName, newValue);
 
 		if (changed)
 		{
@@ -349,7 +358,7 @@ public:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawReflectiveData(const ReflectiveData& myMap, std::shared_ptr<Command>& command, std::shared_ptr<T> parent, Event<>* _onValueChangedEvent)
+	static bool DrawReflectiveData(ReflectiveDataToDraw& reflectiveDataToDraw, const ReflectiveData& myMap, std::shared_ptr<T> parent, Event<>* _onValueChangedEvent)
 	{
 		onValueChangedEvent = _onValueChangedEvent;
 		bool valueChanged = false;
@@ -358,8 +367,9 @@ public:
 			if (reflectionEntry.isPublic)
 			{
 				bool valueChangedTemp = false;
-				const VariableReference& variableRef = reflectionEntry.variable.value();
-				valueChangedTemp = ProcessVariant(variableRef, GetPrettyVariableName(reflectionEntry.variableName), command, parent, reflectionEntry);
+				reflectiveDataToDraw.currentEntry = reflectionEntry;
+				reflectiveDataToDraw.name = GetPrettyVariableName(reflectionEntry.variableName);
+				valueChangedTemp = ProcessVariant(reflectiveDataToDraw, parent);
 
 				if (valueChangedTemp)
 				{
@@ -489,13 +499,13 @@ public:
 	* @return True if the value has changed
 	*/
 	template <typename T>
-	static bool DrawVector(std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const std::string& variableName)
+	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
 
 		const size_t vectorSize = valuePtr->get().size();
-		const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -573,11 +583,11 @@ public:
 	* @return True if the value has changed
 	*/
 	template <typename T>
-	static bool DrawVector(const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const std::string& variableName, const uint64_t dragdropId)
+	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
 	{
 		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
+		ImGui::Text(reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			std::string inputText = "None (" + className + ")";
@@ -598,7 +608,7 @@ public:
 			}
 
 			std::shared_ptr <T> ref = nullptr;
-			const std::string payloadName = "Type" + std::to_string(dragdropId);
+			const std::string payloadName = "Type" + std::to_string(reflectiveDataToDraw.currentEntry.typeId);
 			if (DragDropTarget(payloadName, ref))
 			{
 				valuePtr->get()[vectorI] = ref;
@@ -626,13 +636,13 @@ public:
 		return valueChangedTemp;
 	}
 
-	template <typename T, typename T2>
+	template <typename T, typename ParentType>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, bool>
-	static DrawVector(const std::string& className, std::reference_wrapper<std::vector<T*>>* valuePtr, const std::string& variableName, const ReflectiveEntry& entry, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent)
+	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, std::reference_wrapper<std::vector<T*>>* valuePtr, std::shared_ptr<ParentType> parent)
 	{
 		bool valueChanged = false;
 		const size_t vectorSize = valuePtr->get().size();
-		ImGui::Text(variableName.c_str());
+		ImGui::Text(reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			T* ptr = valuePtr->get()[vectorI];
@@ -641,30 +651,30 @@ public:
 				bool valueChangedTemp = false;
 				if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective("", command, parent, val);
+					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, "", parent, val);
 				}
 				else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective("", command, parent, val);
+					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, "", parent, val);
 				}
 				else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective("", command, parent, val);
+					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, "", parent, val);
 				}
 				else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective("", command, parent, val);
+					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, "", parent, val);
 				}
 				else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective("", command, parent, val);
+					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, "", parent, val);
 				}
 				else //Basic draw
 				{
-					const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)ptr);
+					const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)ptr);
 					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 					{
-						valueChangedTemp = DrawReflectiveData(ptr->GetReflectiveData(), command, parent, nullptr);
+						valueChangedTemp = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), parent, nullptr);
 					}
 				}
 				if (valueChangedTemp) 
@@ -681,7 +691,7 @@ public:
 		const std::string addText = "Add " + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
-			valuePtr->get().push_back((T*)entry.typeSpawner->Allocate());
+			valuePtr->get().push_back((T*)reflectiveDataToDraw.currentEntry.typeSpawner->Allocate());
 			valueChanged = true;
 		}
 
@@ -698,20 +708,21 @@ public:
 		return valueChanged;
 	}
 
-	template <typename T, typename T2>
+	template <typename T, typename ParentType>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVector(const std::string& className, std::reference_wrapper<std::vector<T>>* valuePtr, const std::string& variableName, const ReflectiveEntry& entry, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent)
+	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, std::reference_wrapper<std::vector<T>>* valuePtr, std::shared_ptr<ParentType> parent)
 	{
 		bool valueChangedTemp = false;
 		std::vector<T>& valueRef = valuePtr->get();
 		const size_t vectorSize = valueRef.size();
-		ImGui::Text(variableName.c_str());
+		ImGui::Text(reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			T& ptr = valueRef[vectorI];
 			auto ref = std::ref(valueRef[vectorI]);
-			if (DrawVariable("", command, parent, &ref, entry)) 
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
+			if (DrawVariable(reflectiveDataToDraw, parent, &ref))
 			{
 				valueChangedTemp = true;
 			}
@@ -784,13 +795,13 @@ private:
 	* @param valuePtr Reference to the value
 	* @return True if the value has changed
 	*/
-	template<typename T2, typename T>
-	static bool DrawInputReflective(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, T* valuePtr)
+	template<typename ParentType, typename T>
+	static bool DrawInputReflective(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& variableName, std::shared_ptr<ParentType> parent, T* valuePtr)
 	{
 		T newValue = *valuePtr;
 		const bool valueChangedTemp = DrawInput(variableName, newValue);
 		if (valueChangedTemp)
-			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, valuePtr, newValue, *valuePtr);
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<ParentType, Reflective>>(parent, reflectiveDataToDraw.currentEntry, newValue, *valuePtr);
 
 		return valueChangedTemp;
 	}
@@ -803,23 +814,24 @@ private:
 	* @param valuePtr Reference to the value
 	* @param reflectionEntry Reflection entry of the variable
 	*/
-	template<typename T2, typename T>
+	template<typename ParentType, typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
-	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<T>* valuePtr)
 	{
 		T newValue = valuePtr->get();
 		bool valueChangedTemp = false;
-		if (!reflectionEntry.isEnum)
+		if (!reflectiveDataToDraw.currentEntry.isEnum)
 		{
-			ValueInputState state = DrawInputTemplate(variableName, newValue);
+			ValueInputState state = DrawInputTemplate(reflectiveDataToDraw.name, newValue);
 			if (state == ValueInputState::APPLIED)
 				valueChangedTemp = true;
 		}
 		else if constexpr (std::is_same<int, T>())
-			valueChangedTemp = DrawEnum(variableName, newValue, reflectionEntry.typeId);
+			valueChangedTemp = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
 		if (valueChangedTemp)
-			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<ParentType, T>>(parent, reflectiveDataToDraw.currentEntry, newValue, valuePtr->get());
+
 		return valueChangedTemp;
 	}
 
@@ -832,21 +844,21 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2>
-	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	template<typename ParentType>
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<std::vector<Reflective*>>* valuePtr)
 	{
 		bool valueChangedTemp = false;
-		valueChangedTemp = DrawVector("Reflective", valuePtr, variableName, reflectionEntry, command, parent);
+		valueChangedTemp = DrawVector(reflectiveDataToDraw, "Reflective", valuePtr, parent);
 		return valueChangedTemp;
 	}
 
-	template<typename T, typename T2>
+	template<typename T, typename ParentType>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 		|| std::is_same<T, double>::value || std::is_same<T, bool>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw,  std::shared_ptr<ParentType> parent, std::reference_wrapper<std::vector<T>>* valuePtr)
 	{
 		bool valueChangedTemp = false;
-		valueChangedTemp = DrawVector("simple value", valuePtr, variableName, reflectionEntry, command, parent);
+		valueChangedTemp = DrawVector(reflectiveDataToDraw, "simple value", valuePtr, parent);
 		return valueChangedTemp;
 	}
 
@@ -859,22 +871,22 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2, typename T>
-	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	template<typename ParentType, typename T>
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr)
 	{
 		bool valueChangedTemp = false;
 
 		if constexpr (std::is_same <T, GameObject>())
 		{
-			valueChangedTemp = DrawVector("GameObject", valuePtr, variableName, reflectionEntry.typeId);
+			valueChangedTemp = DrawVector(reflectiveDataToDraw, "GameObject", valuePtr);
 		}
 		else if constexpr (std::is_same <T, Transform>())
 		{
-			valueChangedTemp = DrawVector("Transform", valuePtr, variableName, reflectionEntry.typeId);
+			valueChangedTemp = DrawVector(reflectiveDataToDraw, "Transform", valuePtr);
 		}
 		else if constexpr (std::is_same <T, Component>())
 		{
-			valueChangedTemp = DrawVector(ClassRegistry::GetClassNameById(reflectionEntry.typeId), valuePtr, variableName, reflectionEntry.typeId);
+			valueChangedTemp = DrawVector(reflectiveDataToDraw, ClassRegistry::GetClassNameById(reflectiveDataToDraw.currentEntry.typeId), valuePtr);
 		}
 
 		return valueChangedTemp;
@@ -889,10 +901,10 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2, typename T>
-	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	template<typename ParentType, typename T>
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr)
 	{
-		const bool valueChangedTemp = DrawVector(valuePtr, variableName);
+		const bool valueChangedTemp = DrawVector(reflectiveDataToDraw, valuePtr);
 		return valueChangedTemp;
 	}
 
@@ -905,14 +917,14 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2, typename T>
+	template<typename ParentType, typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
-		static DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<T>* valuePtr, const ReflectiveEntry& reflectionEntry)
+		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<T>* valuePtr)
 	{
 		T newValue;
-		const bool valueChangedTemp = DrawFileReference(valuePtr, variableName, newValue);
+		const bool valueChangedTemp = DrawFileReference(valuePtr, reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			command = std::make_shared<InspectorChangeValueCommand<T2, T>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<ParentType, T>>(parent, reflectiveDataToDraw.currentEntry, newValue, valuePtr->get());
 		return valueChangedTemp;
 	}
 
@@ -925,13 +937,13 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2, typename T>
-	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	template<typename ParentType, typename T>
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<std::weak_ptr<T>>* valuePtr)
 	{
 		std::weak_ptr<T> newValue = valuePtr->get();
-		const bool valueChangedTemp = DrawInput(variableName, newValue, reflectionEntry.typeId);
+		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 		if (valueChangedTemp)
-			command = std::make_shared<InspectorChangeValueCommand<T2, std::weak_ptr<T>>>(parent, &valuePtr->get(), newValue, valuePtr->get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<ParentType, std::weak_ptr<T>>>(parent, reflectiveDataToDraw.currentEntry, newValue, valuePtr->get());
 
 		return valueChangedTemp;
 	}
@@ -945,37 +957,37 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	template<typename T2>
-	static bool DrawVariable(const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<T2> parent, std::reference_wrapper<Reflective>* valuePtr, const ReflectiveEntry& reflectionEntry)
+	template<typename ParentType>
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent, std::reference_wrapper<Reflective>* valuePtr)
 	{
 		bool valueChangedTemp = false;
 
 		if (auto val = dynamic_cast<Vector2*>(&valuePtr->get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(variableName, command, parent, val);
+			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, reflectiveDataToDraw.name, parent, val);
 		}
 		else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr->get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(variableName, command, parent, val);
+			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, reflectiveDataToDraw.name, parent, val);
 		}
 		else if (auto val = dynamic_cast<Vector3*>(&valuePtr->get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(variableName, command, parent, val);
+			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, reflectiveDataToDraw.name, parent, val);
 		}
 		else if (auto val = dynamic_cast<Vector4*>(&valuePtr->get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(variableName, command, parent, val);
+			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, reflectiveDataToDraw.name, parent, val);
 		}
 		else if (auto val = dynamic_cast<Color*>(&valuePtr->get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(variableName, command, parent, val);
+			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, reflectiveDataToDraw.name, parent, val);
 		}
 		else //Basic draw
 		{
-			const std::string headerName = variableName + "##ListHeader" + std::to_string((uint64_t)valuePtr);
+			const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)valuePtr);
 			if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				valueChangedTemp = DrawReflectiveData(valuePtr->get().GetReflectiveData(), command, parent, nullptr);
+				valueChangedTemp = DrawReflectiveData(reflectiveDataToDraw, valuePtr->get().GetReflectiveData(), parent, nullptr);
 			}
 		}
 
@@ -992,13 +1004,13 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename... Types, typename ParentType>
-	static bool ProcessVariant(const std::variant<Types...>& var, const std::string& variableName, std::shared_ptr<Command>& command, std::shared_ptr<ParentType> parent, const ReflectiveEntry& reflectionEntry) 
+	static bool ProcessVariant(ReflectiveDataToDraw& reflectiveDataToDraw, std::shared_ptr<ParentType> parent)
 	{
 		bool valueChangedTemp = false;
-		std::visit([&valueChangedTemp, &variableName, &command, &parent, &reflectionEntry](auto value)
+		std::visit([&valueChangedTemp, &reflectiveDataToDraw, &parent](auto& value)
 			{
-				valueChangedTemp = DrawVariable(variableName, command, parent, &value, reflectionEntry);
-			}, var);
+				valueChangedTemp = DrawVariable(reflectiveDataToDraw, parent, &value);
+			}, reflectiveDataToDraw.currentEntry.variable.value());
 
 		return valueChangedTemp;
 	}

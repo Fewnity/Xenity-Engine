@@ -189,12 +189,12 @@ void BuildSettingsMenu::Draw()
 			//ImGui::Text("Settings");
 			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
 
-			std::shared_ptr<Command> command = nullptr;
-			const bool valueChanged = EditorUI::DrawReflectiveData(platform.settings->GetReflectiveData(), command, platform.settings, onSettingChangedEvent);
-			if (valueChanged && command)
+			ReflectiveDataToDraw reflectiveDataToDraw;
+			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), platform.settings, onSettingChangedEvent);
+			if (valueChanged && reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(command);
-				command->Execute();
+				CommandManager::AddCommand(reflectiveDataToDraw.command);
+				reflectiveDataToDraw.command->Execute();
 				platform.settings->OnReflectionUpdated();
 			}
 

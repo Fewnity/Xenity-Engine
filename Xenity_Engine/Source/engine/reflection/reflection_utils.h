@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include "reflection.h"
 #include <engine/tools/template_utils.h>
+#include <engine/physics/collider.h>
 
 class File;
 
@@ -24,6 +25,8 @@ class File;
 class ReflectionUtils
 {
 public:
+
+	static ReflectiveEntry GetReflectiveEntryByName(const ReflectiveData& dataList, const std::string& name);
 
 #pragma region Fill variables
 
@@ -46,6 +49,13 @@ public:
 	*/
 	static void JsonToReflectiveData(const nlohmann::json& json, const ReflectiveData& dataList);
 
+	/**
+	* @brief Fill Reflective data list from Json data
+	* @param json Json data
+	* @param theMap The Reflective data list to fill
+	*/
+	static void JsonToReflectiveEntry(const nlohmann::json& json, const ReflectiveEntry& entry);
+
 #pragma endregion
 
 #pragma region Fill json
@@ -56,6 +66,13 @@ public:
 	* @return Json data
 	*/
 	static nlohmann::json ReflectiveToJson(Reflective& reflective);
+
+	/**
+	* @brief Create Json data from Reflective object
+	* @param reflection Reflective object
+	* @return Json data
+	*/
+	static nlohmann::json ReflectiveEntryToJson(ReflectiveEntry& entry);
 
 	/**
 	* @brief Create Json data from Reflective data list
@@ -91,6 +108,82 @@ public:
 	* @return True if the data has been written successfully
 	*/
 	static bool JsonToFile(const nlohmann::json& data, std::shared_ptr<File> file);
+
+#pragma endregion
+
+#pragma region Fill json
+
+	/**
+	* @brief Fill a json value with a variable (basic type)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	template<typename T>
+	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<T>* valuePtr);
+
+	/**
+	* @brief Fill a json value with a variable (reflective)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	static void VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective>* valuePtr);
+
+	/**
+	* @brief Fill a json value with a vector variable (reflective)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	static void VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr);
+
+	/**
+	* @brief Fill a json value with a vector variable (GameObject, Transform, Component, Collider)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr);
+
+	template<typename T>
+	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
+		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>>* valuePtr);
+
+	/**
+	* @brief Fill a json value with a vector variable (file reference)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr);
+
+	/**
+	* @brief Fill a json value with a vector variable (GameObject, Transform, Component, Collider)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr);
+
+
+	/**
+	* @brief Fill a json value with a vector variable (file reference)
+	* @param jsonValue Json value
+	* @param key Key
+	* @param valuePtr Variable to fill
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
+		static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr);
 
 #pragma endregion
 
@@ -186,80 +279,6 @@ private:
 
 #pragma endregion
 
-#pragma region Fill json
 
-	/**
-	* @brief Fill a json value with a variable (basic type)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	template<typename T>
-	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<T>* valuePtr);
-
-	/**
-	* @brief Fill a json value with a variable (reflective)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	static void VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective>* valuePtr);
-
-	/**
-	* @brief Fill a json value with a vector variable (reflective)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	static void VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>>* valuePtr);
-
-	/**
-	* @brief Fill a json value with a vector variable (GameObject, Transform, Component, Collider)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>* valuePtr);
-
-	template<typename T>
-	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
-		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>>* valuePtr);
-
-	/**
-	* @brief Fill a json value with a vector variable (file reference)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>>* valuePtr);
-
-	/**
-	* @brief Fill a json value with a vector variable (GameObject, Transform, Component, Collider)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>* valuePtr);
-
-
-	/**
-	* @brief Fill a json value with a vector variable (file reference)
-	* @param jsonValue Json value
-	* @param key Key
-	* @param valuePtr Variable to fill
-	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-	static VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr);
-
-#pragma endregion
 };
 

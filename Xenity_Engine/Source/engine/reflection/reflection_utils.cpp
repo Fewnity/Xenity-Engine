@@ -220,6 +220,38 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 	}
 }
 
+void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::json& json, const ReflectiveEntry& entry)
+{
+	const VariableReference& variableRef = entry.variable.value();
+	if (json.is_null()) 
+	{
+		const auto& kvValue = 0;
+		std::visit([&kvValue, &entry](const auto& value)
+			{
+				JsonToVariable(kvValue, &value, entry);
+			}, variableRef);
+	}
+	else 
+	{
+		const auto& kvValue = json.at(entry.variableName);
+		std::visit([&kvValue, &entry](const auto& value)
+			{
+				JsonToVariable(kvValue, &value, entry);
+			}, variableRef);
+	}
+}
+
+ReflectiveEntry ReflectionUtils::GetReflectiveEntryByName(const ReflectiveData& dataList, const std::string& name)
+{
+	for (const ReflectiveEntry& entry : dataList)
+	{
+		if (entry.variableName == name) 
+		{
+			return entry;
+		}
+	}
+}
+
 void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
 {
 	const ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
@@ -403,10 +435,26 @@ json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 	return jsonData;
 }
 
+nlohmann::json ReflectionUtils::ReflectiveEntryToJson(ReflectiveEntry& entry)
+{
+	json json;
+	std::visit([&entry, &json](const auto& value)
+		{
+			VariableToJson(json, entry.variableName, &value);
+		}, entry.variable.value());
+
+	return json;
+}
+
 template <typename T>
 void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>>* variablePtr)
 {
 	DXASSERT(variablePtr != nullptr, "[ReflectionUtils::FillFileReference] variablePtr is nullptr")
+
+	if (fileId == 0) 
+	{
+		variablePtr->get() = nullptr;
+	}
 
 	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId); // Try to find the file reference
 	if (file)

@@ -23,13 +23,13 @@ void ProjectSettingsMenu::Draw()
 	{
 		OnStartDrawing();
 
-		std::shared_ptr<Command> command = nullptr;
 		std::shared_ptr<FileReference> emptyPtr = std::make_shared<FileReference>();
-		EditorUI::DrawReflectiveData(ProjectManager::projectSettings.GetReflectiveData(), command, emptyPtr, nullptr);
-		if (command)
+		ReflectiveDataToDraw reflectiveDataToDraw;
+		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), emptyPtr, nullptr);
+		if (reflectiveDataToDraw.command)
 		{
-			CommandManager::AddCommand(command);
-			command->Execute();
+			CommandManager::AddCommand(reflectiveDataToDraw.command);
+			reflectiveDataToDraw.command->Execute();
 		}
 		if (ImGui::Button("Save"))
 		{

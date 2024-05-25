@@ -31,6 +31,112 @@
  //----------------------------------------------------------------------------
 
 template<typename U, typename T>
+class ReflectiveChangeValueCommand : public Command
+{
+public:
+	ReflectiveChangeValueCommand() = delete;
+	ReflectiveChangeValueCommand(std::weak_ptr<U> target, ReflectiveEntry reflectiveEntry, T& newValue, T& lastValue);
+	void Execute() override;
+	void Undo() override;
+private:
+	void SetValue(nlohmann::json valueToSet, bool isUndo);
+
+	uint64_t targetId = 0;
+	std::string variableName;
+	nlohmann::json newValue;
+	nlohmann::json lastValue;
+};
+
+template<typename U, typename T>
+inline ReflectiveChangeValueCommand<U, T>::ReflectiveChangeValueCommand(std::weak_ptr<U> target, ReflectiveEntry reflectiveEntry, T& newValue, T& lastValue)
+{
+	if constexpr (std::is_base_of<U, FileReference>())
+	{
+		if (target.lock())
+			this->targetId = target.lock()->fileId;
+	}
+	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
+	{
+		if (target.lock())
+			this->targetId = target.lock()->GetUniqueId();
+	}
+	
+	variableName = reflectiveEntry.variableName;
+
+	std::reference_wrapper<T> newValueRef = std::ref(newValue);
+	std::reference_wrapper<T> lastValueRef = std::ref(lastValue);
+	ReflectionUtils::VariableToJson(this->newValue, reflectiveEntry.variableName, &newValueRef);
+	ReflectionUtils::VariableToJson(this->lastValue, reflectiveEntry.variableName, &lastValueRef);
+	Debug::Print(this->newValue.dump(3));
+	Debug::Print(this->lastValue.dump(3));
+}
+
+template<typename U, typename T>
+inline void ReflectiveChangeValueCommand<U, T>::SetValue(nlohmann::json valueToSet, bool isUndo)
+{
+	bool hasBeenSet = false;
+	if (targetId != 0)
+	{
+		if constexpr (std::is_base_of<U, FileReference>())
+		{
+			std::shared_ptr<FileReference> foundFileRef = ProjectManager::GetFileReferenceById(targetId);
+			if (foundFileRef)
+			{
+				ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundFileRef->GetReflectiveData(), variableName));
+				foundFileRef->OnReflectionUpdated();
+				// Do not set scene as dirty
+				hasBeenSet = true;
+			}
+		}
+		else if constexpr (std::is_base_of<U, Component>())
+		{
+			std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
+			if (foundComponent)
+			{
+				ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundComponent->GetReflectiveData(), variableName));
+				foundComponent->OnReflectionUpdated();
+				SceneManager::SetSceneModified(true);
+				hasBeenSet = true;
+			}
+		}
+		else if constexpr (std::is_base_of<U, GameObject>())
+		{
+			std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+			if (foundGameObject)
+			{
+				ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundGameObject->GetReflectiveData(), variableName));
+				foundGameObject->OnReflectionUpdated();
+				SceneManager::SetSceneModified(true);
+				hasBeenSet = true;
+			}
+		}
+		else
+		{
+			Debug::PrintError("Can't do Command!");
+		}
+	}
+
+	if (hasBeenSet && isUndo)
+	{
+		Debug::Print("Undo value changed in Inspector");
+	}
+}
+
+template<typename U, typename T>
+inline void ReflectiveChangeValueCommand<U, T>::Execute()
+{
+	SetValue(newValue, false);
+}
+
+template<typename U, typename T>
+inline void ReflectiveChangeValueCommand<U, T>::Undo()
+{
+	SetValue(lastValue, true);
+}
+
+ //----------------------------------------------------------------------------
+
+template<typename U, typename T>
 class InspectorChangeValueCommand : public Command
 {
 public:
@@ -512,7 +618,8 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, target.lock());
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
-		componentId = component->GetUniqueId();
+		component->SetUniqueId(componentId);
+		//componentId = component->GetUniqueId();
 		SceneManager::SetSceneModified(true);
 	}
 }

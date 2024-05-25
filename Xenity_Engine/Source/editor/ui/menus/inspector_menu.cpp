@@ -370,12 +370,12 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 		const ReflectiveData reflectionList = reflection->GetReflectiveData();
 		if (reflectionList.size() != 0)
 		{
-			std::shared_ptr<Command> command = nullptr;
-			const bool changed = EditorUI::DrawReflectiveData(reflectionList, command, selectedFileReference, nullptr);
-			if (changed && command)
+			ReflectiveDataToDraw reflectiveDataToDraw;
+			const bool changed = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, selectedFileReference, nullptr);
+			if (changed && reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(command);
-				command->Execute();
+				CommandManager::AddCommand(reflectiveDataToDraw.command);
+				reflectiveDataToDraw.command->Execute();
 			}
 			if (forceItemUpdate)
 			{
@@ -386,13 +386,13 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 	const ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (metaReflection.size() != 0)
 	{
-		std::shared_ptr<Command> command = nullptr;
-		if (EditorUI::DrawReflectiveData(metaReflection, command, selectedFileReference, nullptr))
+		ReflectiveDataToDraw reflectiveDataToDraw;
+		if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, selectedFileReference, nullptr))
 		{
-			if (command)
+			if (reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(command);
-				command->Execute();
+				CommandManager::AddCommand(reflectiveDataToDraw.command);
+				reflectiveDataToDraw.command->Execute();
 			}
 		}
 
@@ -562,13 +562,13 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				}
 
 				//Draw component variables
-				std::shared_ptr<Command> command = nullptr;
-				if (EditorUI::DrawReflectiveData(comp->GetReflectiveData(), command, comp, nullptr))
+				ReflectiveDataToDraw reflectiveDataToDraw;
+				if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), comp, nullptr))
 				{
-					if (command)
+					if (reflectiveDataToDraw.command)
 					{
-						CommandManager::AddCommand(command);
-						command->Execute();
+						CommandManager::AddCommand(reflectiveDataToDraw.command);
+						reflectiveDataToDraw.command->Execute();
 					}
 					else
 					{
