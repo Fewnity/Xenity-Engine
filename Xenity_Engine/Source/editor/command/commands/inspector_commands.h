@@ -56,10 +56,8 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(uint64_t ta
 	
 	variableName = reflectiveEntry.variableName;
 
-	std::reference_wrapper<T> newValueRef = std::ref(newValue);
-	std::reference_wrapper<T> lastValueRef = std::ref(lastValue);
-	ReflectionUtils::VariableToJson(this->newValue, reflectiveEntry.variableName, &newValueRef);
-	ReflectionUtils::VariableToJson(this->lastValue, reflectiveEntry.variableName, &lastValueRef);
+	ReflectionUtils::VariableToJson(this->newValue, reflectiveEntry.variableName, std::ref(newValue));
+	ReflectionUtils::VariableToJson(this->lastValue, reflectiveEntry.variableName, std::ref(lastValue));
 	Debug::Print(this->newValue.dump(3));
 	Debug::Print(this->lastValue.dump(3));
 }
