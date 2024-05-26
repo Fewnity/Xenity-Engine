@@ -45,15 +45,7 @@ class Reflective;
 class ProjectDirectory;
 class Collider;
 
-struct ReflectiveDataToDraw
-{
-	std::vector<ReflectiveEntry> entryStack;
-	ReflectiveEntry currentEntry;
-	std::string name;
-	std::shared_ptr<Command> command;
-	uint64_t ownerUniqueId = 0;
-	int ownerType = -1; // -1 no parent, 0 FileReference, 1 GameObject, 2 Component
-};
+#include "reflective_data_to_draw.h"
 
 #include <engine/tools/template_utils.h>
 
@@ -394,12 +386,17 @@ public:
 			{
 				reflectiveDataToDraw.currentEntry = reflectionEntry;
 				reflectiveDataToDraw.name = GetPrettyVariableName(reflectionEntry.variableName);
+				reflectiveDataToDraw.entryStack.push_back(reflectionEntry);
+				reflectiveDataToDraw.reflectiveDataStack.push_back(myMap);
 
 				bool valueChangedTemp = false;
 				std::visit([&valueChangedTemp, &reflectiveDataToDraw](auto& value)
 					{
 						valueChangedTemp = DrawVariable(reflectiveDataToDraw, value);
 					}, reflectiveDataToDraw.currentEntry.variable.value());
+
+				reflectiveDataToDraw.entryStack.erase(reflectiveDataToDraw.entryStack.end()-1);
+				reflectiveDataToDraw.reflectiveDataStack.erase(reflectiveDataToDraw.reflectiveDataStack.end() - 1);
 
 				if (valueChangedTemp)
 				{
@@ -830,7 +827,7 @@ private:
 		T newValue = *valuePtr;
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, *valuePtr);
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, *valuePtr);
 
 		return valueChangedTemp;
 	}
@@ -859,13 +856,13 @@ private:
 			valueChangedTemp = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
 
 		return valueChangedTemp;
 	}
 
 	/**
-	* @brief Draw a variable of a list of reflectives (not implemented)
+	* @brief Draw a variable of a list of reflectives
 	* @param variableName Name of the variable
 	* @param command Command to apply if the value has changed
 	* @param parent Parent of the reflective data
@@ -952,7 +949,7 @@ private:
 		T newValue = nullptr;
 		const bool valueChangedTemp = DrawFileReference(valuePtr, reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
 		return valueChangedTemp;
 	}
 
@@ -971,7 +968,7 @@ private:
 		std::weak_ptr<T> newValue = valuePtr.get();
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
 
 		return valueChangedTemp;
 	}

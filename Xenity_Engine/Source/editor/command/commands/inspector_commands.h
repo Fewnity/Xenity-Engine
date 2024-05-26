@@ -27,6 +27,7 @@
 #include <engine/vectors/vector3.h>
 #include <engine/component.h>
 #include <engine/tools/gameplay_utility.h>
+#include <editor/ui/reflective_data_to_draw.h>
 
  //----------------------------------------------------------------------------
 
@@ -35,7 +36,7 @@ class ReflectiveChangeValueCommand : public Command
 {
 public:
 	ReflectiveChangeValueCommand() = delete;
-	ReflectiveChangeValueCommand(uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue);
+	ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -49,7 +50,7 @@ private:
 };
 
 template<typename T>
-inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue)
+inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue)
 {
 	this->targetId = targetId;
 	this->ownerType = ownerType;
@@ -58,6 +59,7 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(uint64_t ta
 
 	ReflectionUtils::VariableToJson(this->newValue, reflectiveEntry.variableName, std::ref(newValue));
 	ReflectionUtils::VariableToJson(this->lastValue, reflectiveEntry.variableName, std::ref(lastValue));
+	//this->newValue = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
 	Debug::Print(this->newValue.dump(3));
 	Debug::Print(this->lastValue.dump(3));
 }

@@ -322,6 +322,7 @@
     <ClInclude Include="Source\editor\platform_settings.h" />
     <ClInclude Include="Source\engine\graphics\icon.h" />
     <ClInclude Include="Source\engine\assertions\assertions.h" />
+    <ClInclude Include="Source\editor\ui\reflective_data_to_draw.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

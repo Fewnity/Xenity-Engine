@@ -843,6 +843,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\ui\reflective_data_to_draw.h" />
     <ClInclude Include="Source\engine\assertions\assertions.h" />
     <ClInclude Include="Source\engine\graphics\icon.h" />
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
