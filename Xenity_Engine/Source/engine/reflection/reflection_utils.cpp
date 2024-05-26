@@ -220,7 +220,7 @@ void ReflectionUtils::JsonToReflectiveData(const json& json, const ReflectiveDat
 	}
 }
 
-void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::json& json, const ReflectiveEntry& entry)
+void ReflectionUtils::JsonToReflectiveEntry(const json& json, const ReflectiveEntry& entry)
 {
 	const VariableReference& variableRef = entry.variable.value();
 	if (json.is_null()) 
@@ -416,7 +416,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 {
 	json json;
-	for (const auto& entry : dataList)
+	for (const ReflectiveEntry& entry : dataList)
 	{
 		const VariableReference& variableRef = entry.variable.value();
 
@@ -435,7 +435,7 @@ json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 	return jsonData;
 }
 
-nlohmann::json ReflectionUtils::ReflectiveEntryToJson(ReflectiveEntry& entry)
+json ReflectionUtils::ReflectiveEntryToJson(const ReflectiveEntry& entry)
 {
 	json json;
 	std::visit([&entry, &json](const auto& value)
@@ -549,7 +549,7 @@ bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, std::
 	return ok;
 }
 
-bool ReflectionUtils::JsonToFile(const nlohmann::json& data, std::shared_ptr<File> file)
+bool ReflectionUtils::JsonToFile(const json& data, std::shared_ptr<File> file)
 {
 	DXASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr")
 

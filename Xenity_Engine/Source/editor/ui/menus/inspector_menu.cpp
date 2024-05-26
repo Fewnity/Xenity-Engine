@@ -370,8 +370,8 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 		const ReflectiveData reflectionList = reflection->GetReflectiveData();
 		if (reflectionList.size() != 0)
 		{
-			ReflectiveDataToDraw reflectiveDataToDraw;
-			const bool changed = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, selectedFileReference, nullptr);
+			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+			const bool changed = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
 			if (changed && reflectiveDataToDraw.command)
 			{
 				CommandManager::AddCommand(reflectiveDataToDraw.command);
@@ -386,8 +386,8 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 	const ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
 	if (metaReflection.size() != 0)
 	{
-		ReflectiveDataToDraw reflectiveDataToDraw;
-		if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, selectedFileReference, nullptr))
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+		if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr))
 		{
 			if (reflectiveDataToDraw.command)
 			{
@@ -562,8 +562,8 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				}
 
 				//Draw component variables
-				ReflectiveDataToDraw reflectiveDataToDraw;
-				if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), comp, nullptr))
+				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(comp);
+				if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), nullptr))
 				{
 					if (reflectiveDataToDraw.command)
 					{

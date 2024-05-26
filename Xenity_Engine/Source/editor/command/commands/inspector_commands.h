@@ -30,36 +30,29 @@
 
  //----------------------------------------------------------------------------
 
-template<typename U, typename T>
+template<typename T>
 class ReflectiveChangeValueCommand : public Command
 {
 public:
 	ReflectiveChangeValueCommand() = delete;
-	ReflectiveChangeValueCommand(std::weak_ptr<U> target, ReflectiveEntry reflectiveEntry, T& newValue, T& lastValue);
+	ReflectiveChangeValueCommand(uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue);
 	void Execute() override;
 	void Undo() override;
 private:
-	void SetValue(nlohmann::json valueToSet, bool isUndo);
+	void SetValue(const nlohmann::json& valueToSet, bool isUndo);
 
 	uint64_t targetId = 0;
+	int ownerType = -1;
 	std::string variableName;
 	nlohmann::json newValue;
 	nlohmann::json lastValue;
 };
 
-template<typename U, typename T>
-inline ReflectiveChangeValueCommand<U, T>::ReflectiveChangeValueCommand(std::weak_ptr<U> target, ReflectiveEntry reflectiveEntry, T& newValue, T& lastValue)
+template<typename T>
+inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T& newValue, T& lastValue)
 {
-	if constexpr (std::is_base_of<U, FileReference>())
-	{
-		if (target.lock())
-			this->targetId = target.lock()->fileId;
-	}
-	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
-	{
-		if (target.lock())
-			this->targetId = target.lock()->GetUniqueId();
-	}
+	this->targetId = targetId;
+	this->ownerType = ownerType;
 	
 	variableName = reflectiveEntry.variableName;
 
@@ -71,13 +64,13 @@ inline ReflectiveChangeValueCommand<U, T>::ReflectiveChangeValueCommand(std::wea
 	Debug::Print(this->lastValue.dump(3));
 }
 
-template<typename U, typename T>
-inline void ReflectiveChangeValueCommand<U, T>::SetValue(nlohmann::json valueToSet, bool isUndo)
+template<typename T>
+inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valueToSet, bool isUndo)
 {
 	bool hasBeenSet = false;
 	if (targetId != 0)
 	{
-		if constexpr (std::is_base_of<U, FileReference>())
+		if (ownerType == 0)
 		{
 			std::shared_ptr<FileReference> foundFileRef = ProjectManager::GetFileReferenceById(targetId);
 			if (foundFileRef)
@@ -88,7 +81,7 @@ inline void ReflectiveChangeValueCommand<U, T>::SetValue(nlohmann::json valueToS
 				hasBeenSet = true;
 			}
 		}
-		else if constexpr (std::is_base_of<U, Component>())
+		else if (ownerType == 2)
 		{
 			std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
 			if (foundComponent)
@@ -99,7 +92,7 @@ inline void ReflectiveChangeValueCommand<U, T>::SetValue(nlohmann::json valueToS
 				hasBeenSet = true;
 			}
 		}
-		else if constexpr (std::is_base_of<U, GameObject>())
+		else if (ownerType == 1)
 		{
 			std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
 			if (foundGameObject)
@@ -122,14 +115,14 @@ inline void ReflectiveChangeValueCommand<U, T>::SetValue(nlohmann::json valueToS
 	}
 }
 
-template<typename U, typename T>
-inline void ReflectiveChangeValueCommand<U, T>::Execute()
+template<typename T>
+inline void ReflectiveChangeValueCommand<T>::Execute()
 {
 	SetValue(newValue, false);
 }
 
-template<typename U, typename T>
-inline void ReflectiveChangeValueCommand<U, T>::Undo()
+template<typename T>
+inline void ReflectiveChangeValueCommand<T>::Undo()
 {
 	SetValue(lastValue, true);
 }
@@ -185,6 +178,7 @@ inline void InspectorChangeValueCommand<U, T>::SetValue(T valueToSet, bool isUnd
 			{
 				*valuePtr = valueToSet;
 				foundFileRef->OnReflectionUpdated();
+				// Do not set scene as dirty
 				hasBeenSet = true;
 			}
 		}

@@ -24,8 +24,8 @@ void ProjectSettingsMenu::Draw()
 		OnStartDrawing();
 
 		std::shared_ptr<FileReference> emptyPtr = std::make_shared<FileReference>();
-		ReflectiveDataToDraw reflectiveDataToDraw;
-		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), emptyPtr, nullptr);
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(emptyPtr);
+		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), nullptr);
 		if (reflectiveDataToDraw.command)
 		{
 			CommandManager::AddCommand(reflectiveDataToDraw.command);

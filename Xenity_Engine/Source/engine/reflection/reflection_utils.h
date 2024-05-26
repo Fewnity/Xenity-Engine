@@ -72,7 +72,7 @@ public:
 	* @param reflection Reflective object
 	* @return Json data
 	*/
-	static nlohmann::json ReflectiveEntryToJson(ReflectiveEntry& entry);
+	static nlohmann::json ReflectiveEntryToJson(const ReflectiveEntry& entry);
 
 	/**
 	* @brief Create Json data from Reflective data list

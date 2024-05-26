@@ -189,8 +189,8 @@ void BuildSettingsMenu::Draw()
 			//ImGui::Text("Settings");
 			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
 
-			ReflectiveDataToDraw reflectiveDataToDraw;
-			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), platform.settings, onSettingChangedEvent);
+			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(platform.settings);
+			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), onSettingChangedEvent);
 			if (valueChanged && reflectiveDataToDraw.command)
 			{
 				CommandManager::AddCommand(reflectiveDataToDraw.command);
