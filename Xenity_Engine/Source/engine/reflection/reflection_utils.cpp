@@ -100,17 +100,20 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 {
 	if constexpr (std::is_same <T, GameObject>())
 	{
-		auto go = FindGameObjectById(jsonValue);
+		const auto go = FindGameObjectById(jsonValue);
 		valuePtr.get() = go;
 	}
 	else if constexpr (std::is_same <T, Transform>())
 	{
-		auto go = FindGameObjectById(jsonValue);
-		valuePtr.get() = go->GetTransform();
+		const auto go = FindGameObjectById(jsonValue);
+		if(go)
+			valuePtr.get() = go->GetTransform();
+		else
+			valuePtr.get().reset();
 	}
 	else if constexpr (std::is_same <T, Component>())
 	{
-		auto comp = FindComponentById(jsonValue);
+		const auto comp = FindComponentById(jsonValue);
 		valuePtr.get() = comp;
 	}
 	else if constexpr (std::is_same <T, Collider>())
@@ -332,6 +335,10 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 			Debug::PrintError("[VariableToJson] not implemented for std::weak_ptr<Collider>!", true);
 		}
 	}
+	else 
+	{
+		jsonValue[key] = 0;
+	}
 }
 
 template<typename T>
@@ -342,6 +349,8 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 
 	if (valuePtr.get() != nullptr)
 		jsonValue[key] = valuePtr.get()->fileId;
+	else
+		jsonValue[key] = 0;
 }
 
 template<typename T>

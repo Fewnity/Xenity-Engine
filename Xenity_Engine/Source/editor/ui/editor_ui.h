@@ -827,7 +827,7 @@ private:
 		T newValue = *valuePtr;
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, *valuePtr);
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, valuePtr, newValue, *valuePtr);
 
 		return valueChangedTemp;
 	}
@@ -856,7 +856,7 @@ private:
 			valueChangedTemp = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
 
 		return valueChangedTemp;
 	}
@@ -949,7 +949,7 @@ private:
 		T newValue = nullptr;
 		const bool valueChangedTemp = DrawFileReference(valuePtr, reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
 		return valueChangedTemp;
 	}
 
@@ -968,7 +968,7 @@ private:
 		std::weak_ptr<T> newValue = valuePtr.get();
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
 
 		return valueChangedTemp;
 	}

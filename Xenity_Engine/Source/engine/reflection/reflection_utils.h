@@ -187,7 +187,7 @@ public:
 
 #pragma endregion
 
-private:
+//private:
 	/**
 	* @brief Find, load and fill a file reference variable
 	* @param fileId File id
