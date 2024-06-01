@@ -105,8 +105,7 @@ Vector3 Transform::GetDown() const
 void Transform::SetPosition(const Vector3& value)
 {
 	// Security check
-	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
-		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+	if (value.HasInvalidValues())
 		return;
 
 	if (value != position)
@@ -129,13 +128,14 @@ void Transform::SetPosition(const Vector3& value)
 		SetChildrenWorldPositions();
 		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->GetParent().lock()->GetTransform()->transformationMatrix);
 	}
+	if (localPosition.HasInvalidValues())
+		localPosition = Vector3(0);
 }
 
 void Transform::SetLocalPosition(const Vector3& value)
 {
 	// Security check
-	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
-		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+	if (value.HasInvalidValues())
 		return;
 
 	if (gameObject.lock()->GetParent().expired())
@@ -158,8 +158,7 @@ void Transform::SetLocalPosition(const Vector3& value)
 void Transform::SetRotation(const Vector3& value)
 {
 	// Security check
-	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) || 
-		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+	if (value.HasInvalidValues())
 		return;
 
 	// Do not update the matrix if it's the same value
@@ -185,8 +184,7 @@ void Transform::SetRotation(const Vector3& value)
 void Transform::SetLocalRotation(const Vector3& value)
 {
 	// Security check
-	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
-		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+	if (value.HasInvalidValues())
 		return;
 
 	if (gameObject.lock()->GetParent().expired())
@@ -209,8 +207,7 @@ void Transform::SetLocalRotation(const Vector3& value)
 void Transform::SetLocalScale(const Vector3& value)
 {
 	// Security check
-	if (std::isinf(value.x) || std::isinf(value.y) || std::isinf(value.z) ||
-		std::isnan(value.x) || std::isnan(value.y) || std::isnan(value.z))
+	if (value.HasInvalidValues())
 		return;
 
 	isTransformationMatrixDirty = true;

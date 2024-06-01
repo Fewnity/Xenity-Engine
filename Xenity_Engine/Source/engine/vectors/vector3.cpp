@@ -122,6 +122,16 @@ Vector3 Vector3::Cross(const Vector3& v) const
 	return Vector3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
+bool Vector3::HasInvalidValues() const
+{
+	if (std::isnan(x) || std::isnan(y) || std::isnan(z) ||
+		std::isinf(x) || std::isinf(y) || std::isinf(z))
+	{
+		return true;
+	}
+	return false;
+}
+
 double Vector3::Dot(const Vector3& a, const Vector3& b)
 {
 	return a.x * b.x + a.y * b.y + a.z * b.z;

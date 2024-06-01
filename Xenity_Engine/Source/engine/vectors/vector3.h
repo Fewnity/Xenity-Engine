@@ -71,6 +71,11 @@ public:
 	Vector3 Cross(const Vector3& v) const;
 
 	/**
+	* @brief Return True is the vector has invalid values (NaN or Inf)
+	*/
+	bool HasInvalidValues() const;
+
+	/**
 	* @brief Get the dot product of two vectors
 	*/
 	static double Dot(const Vector3& a, const Vector3& b);

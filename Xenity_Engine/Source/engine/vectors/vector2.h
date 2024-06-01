@@ -51,6 +51,11 @@ public:
 	*/
 	float Magnitude() const;
 
+	/**
+	* @brief Return True is the vector has invalid values (NaN or Inf)
+	*/
+	bool HasInvalidValues() const;
+
 	float x;
 	float y;
 };

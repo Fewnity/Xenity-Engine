@@ -90,6 +90,16 @@ Vector2 Vector2::Lerp(const Vector2& a, const Vector2& b, const float t)
 	return a + (b - a) * t;
 }
 
+bool Vector2::HasInvalidValues() const
+{
+	if (std::isnan(x) || std::isnan(y) ||
+		std::isinf(x) || std::isinf(y))
+	{
+		return true;
+	}
+	return false;
+}
+
 #pragma region Operators
 
 Vector2 operator+(const Vector2& left, const Vector2& right)

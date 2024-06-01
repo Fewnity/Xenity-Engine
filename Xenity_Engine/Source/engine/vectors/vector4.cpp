@@ -80,6 +80,16 @@ Vector4 Vector4::Lerp(const Vector4& a, const Vector4& b, const float t)
 	return a + (b - a) * t;
 }
 
+bool Vector4::HasInvalidValues() const
+{
+	if (std::isnan(x) || std::isnan(y) || std::isnan(z) || std::isnan(w) ||
+		std::isinf(x) || std::isinf(y) || std::isinf(z) || std::isinf(w))
+	{
+		return true;
+	}
+	return false;
+}
+
 #pragma region Operators
 
 Vector4 operator+(const Vector4& left, const Vector4& right)
