@@ -22,9 +22,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Add undo/redo commands to DrawVector functions
-Add undo/redo to move tool
-Check if id is copied in delete commands
 Rework the documentation
+Box colliders are not affected by gameobject scale
 Clean code
 
 --- Can be for next release
