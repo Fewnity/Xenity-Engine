@@ -10,7 +10,7 @@
 #include <engine/assertions/assertions.h>
 
 std::vector<std::shared_ptr<Command>> CommandManager::commands;
-int CommandManager::maxCommandCount = 10;
+int CommandManager::maxCommandCount = 100;
 int CommandManager::currentCommand = -1;
 
 void CommandManager::AddCommand(std::shared_ptr<Command> command)
