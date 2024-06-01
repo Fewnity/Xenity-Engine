@@ -28,8 +28,7 @@ void ProjectSettingsMenu::Draw()
 		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), nullptr);
 		if (reflectiveDataToDraw.command)
 		{
-			CommandManager::AddCommand(reflectiveDataToDraw.command);
-			reflectiveDataToDraw.command->Execute();
+			CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 		}
 		if (ImGui::Button("Save"))
 		{

@@ -222,8 +222,7 @@ public:
 		if (changed)
 		{
 			std::shared_ptr<Command> command = std::make_shared<InspectorChangeValueCommand<void, std::shared_ptr<T>>>(std::weak_ptr<void>(), &ref.get(), newValue, ref.get());
-			CommandManager::AddCommand(command);
-			command->Execute();
+			CommandManager::AddCommandAndExecute(command);
 		}
 
 		return changed;

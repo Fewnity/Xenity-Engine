@@ -193,8 +193,7 @@ void BuildSettingsMenu::Draw()
 			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), onSettingChangedEvent);
 			if (valueChanged && reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(reflectiveDataToDraw.command);
-				reflectiveDataToDraw.command->Execute();
+				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 				platform.settings->OnReflectionUpdated();
 			}
 

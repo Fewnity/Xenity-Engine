@@ -74,5 +74,8 @@ private:
 	float finalAngle = 0;
 	bool allowRotation = false;
 	void Switch2DMode(bool is2D);
+	Vector3 oldTransformPosition;
+	Vector3 oldTransformRotation;
+	Vector3 oldTransformScale;
 };
 

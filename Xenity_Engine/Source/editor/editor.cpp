@@ -366,22 +366,19 @@ void Editor::RemoveEditorStyle()
 void Editor::CreateEmpty()
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
-	CommandManager::AddCommand(command);
-	command->Execute();
+	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::CreateEmptyChild()
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 1);
-	CommandManager::AddCommand(command);
-	command->Execute();
+	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::CreateEmptyParent()
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 2);
-	CommandManager::AddCommand(command);
-	command->Execute();
+	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference)

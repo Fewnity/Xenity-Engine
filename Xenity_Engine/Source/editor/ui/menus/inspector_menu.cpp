@@ -45,13 +45,13 @@ void InspectorMenu::Draw()
 		if (Editor::GetSelectedGameObjects().size() == 1)
 		{
 			std::shared_ptr <GameObject> selectedGameObject = Editor::GetSelectedGameObjects()[0].lock();
-			
+
 			if (selectedGameObject)
 			{
 				DrawGameObjectInfo(selectedGameObject);
 			}
 		}
-		else 
+		else
 		{
 			std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 			if (selectedFileReference)
@@ -93,8 +93,7 @@ int InspectorMenu::CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>&
 	std::function<void()> pastFunc = [&transform]()
 		{
 			std::shared_ptr<InspectorSetTransformDataCommand> command = std::make_shared<InspectorSetTransformDataCommand>(transform, EditorUI::copiedComponentJson);
-			CommandManager::AddCommand(command);
-			command->Execute();
+			CommandManager::AddCommandAndExecute(command);
 		};
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
@@ -122,8 +121,7 @@ int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& componen
 	std::function<void()> deleteFunc = [&component, &componentCount, &componentIndex]()
 		{
 			auto command = std::make_shared<InspectorDeleteComponentCommand<Component>>(component);
-			CommandManager::AddCommand(command);
-			command->Execute();
+			CommandManager::AddCommandAndExecute(command);
 			componentCount--;
 			componentIndex--;
 		};
@@ -140,8 +138,7 @@ int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& componen
 	std::function<void()> pastFunc = [&component]()
 		{
 			std::shared_ptr<InspectorSetComponentDataCommand<Component>> command = std::make_shared<InspectorSetComponentDataCommand<Component>>(component, EditorUI::copiedComponentJson);
-			CommandManager::AddCommand(command);
-			command->Execute();
+			CommandManager::AddCommandAndExecute(command);
 		};
 
 	RightClickMenu inspectorRightClickMenu = RightClickMenu(id);
@@ -374,8 +371,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 			const bool changed = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
 			if (changed && reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(reflectiveDataToDraw.command);
-				reflectiveDataToDraw.command->Execute();
+				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 			}
 			if (forceItemUpdate)
 			{
@@ -391,8 +387,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 		{
 			if (reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommand(reflectiveDataToDraw.command);
-				reflectiveDataToDraw.command->Execute();
+				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 			}
 		}
 
@@ -420,14 +415,12 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 	if (str0 != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
 		auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->GetName(), str0, selectedGameObject->GetName());
-		CommandManager::AddCommand(command);
-		command->Execute();
+		CommandManager::AddCommandAndExecute(command);
 	}
 	if (active != selectedGameObject->GetActive())
 	{
-		auto command = std::make_shared<InspectorGameObjectSetActiveCommand>(selectedGameObject, active, selectedGameObject->GetActive());
-		CommandManager::AddCommand(command);
-		command->Execute();
+		auto command = std::make_shared<InspectorItemSetActiveCommand<GameObject>>(selectedGameObject, active);
+		CommandManager::AddCommandAndExecute(command);
 	}
 
 	ImGui::Spacing();
@@ -455,8 +448,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
 				auto command = std::make_shared<InspectorAddComponentCommand>(Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
-				CommandManager::AddCommand(command);
-				command->Execute();
+				CommandManager::AddCommandAndExecute(command);
 
 				std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
 
@@ -496,9 +488,8 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
-			auto command = std::make_shared<InspectorTransformSetLocalPositionCommand>(selectedTransform, localPos, selectedTransform->GetLocalPosition());
-			CommandManager::AddCommand(command);
-			command->Execute();
+			auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localPos, selectedTransform->GetLocalPosition(), true);
+			CommandManager::AddCommandAndExecute(command);
 		}
 		//ImGui::Text("World Position: %f %f %f", selectedTransform->GetPosition().x, selectedTransform->GetPosition().y, selectedTransform->GetPosition().z);
 
@@ -509,9 +500,8 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 		changed = EditorUI::DrawInput("Local Rotation", localRot);
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
-			auto command = std::make_shared<InspectorTransformSetLocalRotationCommand>(selectedTransform, localRot, selectedTransform->GetLocalRotation());
-			CommandManager::AddCommand(command);
-			command->Execute();
+			auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localRot, selectedTransform->GetLocalRotation(), true);
+			CommandManager::AddCommandAndExecute(command);
 		}
 		//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);
 
@@ -522,9 +512,8 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 		changed = EditorUI::DrawInput("Local Scale", localScale);
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
-			auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedTransform, localScale, selectedTransform->GetLocalScale());
-			CommandManager::AddCommand(command);
-			command->Execute();
+			auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localScale, selectedTransform->GetLocalScale());
+			CommandManager::AddCommandAndExecute(command);
 		}
 		//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
 		ImGui::Separator();
@@ -567,8 +556,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				{
 					if (reflectiveDataToDraw.command)
 					{
-						CommandManager::AddCommand(reflectiveDataToDraw.command);
-						reflectiveDataToDraw.command->Execute();
+						CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 					}
 					else
 					{
@@ -587,14 +575,14 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		// Draw component enabled checkbox
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY);
-		ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
-		if (comp->GetIsEnabled() != isEnable)
+		bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+		if (isEnabledChanged)
 		{
-			comp->SetIsEnabled(isEnable);
+			auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(comp, isEnable);
+			CommandManager::AddCommandAndExecute(command);
 		}
 
 		//Draw component title
-		ImGui::SetCursorPosY(cursorY);
 		ImGui::SetCursorPosX(65);
 		ImGui::SetCursorPosY(cursorY + 3);
 		if (!comp->GetComponentName().empty())

@@ -41,6 +41,14 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 	}
 }
 
+void CommandManager::AddCommandAndExecute(std::shared_ptr<Command> command)
+{
+	XASSERT(command != nullptr, "[CommandManager::AddCommand] command is nullptr")
+
+	AddCommand(command);
+	command->Execute();
+}
+
 void CommandManager::ClearCommands()
 {
 	commands.clear();

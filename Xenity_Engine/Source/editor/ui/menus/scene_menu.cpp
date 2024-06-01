@@ -394,7 +394,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	if (toolMode != ToolMode::Tool_MoveCamera)
 	{
 		std::shared_ptr<GameObject> selectedGO = nullptr;
-		if(Editor::GetSelectedGameObjects().size() == 1)
+		if (Editor::GetSelectedGameObjects().size() == 1)
 			selectedGO = Editor::GetSelectedGameObjects()[0].lock();
 
 		if (selectedGO)
@@ -426,6 +426,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 			if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))
 			{
 				side = DetectSide(camDistance, objectPosition, camPosition, mouseWorldDirNormalized, objectRight, objectUp, objectForward);
+
+				oldTransformPosition = selectedGoTransform->GetPosition();
+				oldTransformRotation = selectedGoTransform->GetLocalRotation();
+				oldTransformScale = selectedGoTransform->GetLocalScale();
 			}
 
 			if (InputSystem::GetKey(KeyCode::MOUSE_LEFT) && (side != Side::Side_None || toolMode == ToolMode::Tool_Rotate))
@@ -520,6 +524,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					}
 					else
 					{
+						//selectedGoTransform->SetLocalPosition(startObjectValue + objectOffset);
 						selectedGoTransform->SetPosition(startObjectValue + objectOffset);
 					}
 				}
@@ -570,12 +575,30 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
 				}
 			}
-		}
-	}
 
-	if (InputSystem::GetKeyUp(KeyCode::MOUSE_LEFT))
-	{
-		side = Side::Side_None;
+			if (InputSystem::GetKeyUp(KeyCode::MOUSE_LEFT))
+			{
+				if (side != Side::Side_None)
+				{
+					if (toolMode == ToolMode::Tool_Move)
+					{
+						auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetPosition(), oldTransformPosition, false);
+						CommandManager::AddCommandAndExecute(command);
+					}
+					else if (toolMode == ToolMode::Tool_Rotate)
+					{
+						auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalRotation(), oldTransformRotation, true);
+						CommandManager::AddCommandAndExecute(command);
+					}
+					else if (toolMode == ToolMode::Tool_Scale)
+					{
+						auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalScale(), oldTransformScale);
+						CommandManager::AddCommandAndExecute(command);
+					}
+				}
+					side = Side::Side_None;
+			}
+		}
 	}
 
 	if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))

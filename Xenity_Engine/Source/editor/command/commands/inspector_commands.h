@@ -7,6 +7,11 @@
 #pragma once
 
 /**
+* IMPORTANT: Do not store pointers to GameObjects, Components, Transforms, etc. in commands.
+* This is because the pointers can become invalid if the object is deleted. Use the unique id instead.
+*/
+
+/**
  * [Internal]
  */
 
@@ -46,8 +51,6 @@ private:
 	uint64_t targetId = 0;
 	int ownerType = -1;
 	std::string variableName;
-	nlohmann::json newValue;
-	nlohmann::json lastValue;
 
 	nlohmann::json newValue2;
 	nlohmann::json lastValue2;
@@ -78,22 +81,26 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 {
 	this->targetId = targetId;
 	this->ownerType = ownerType;
-	
+
 	variableName = reflectiveEntry.variableName;
+
+
+	nlohmann::json newValueTemp;
+	nlohmann::json lastValueTemp;
 
 	// Ugly code
 	// Save variable alone to json (new and old values)
-	ReflectionUtils::VariableToJson(this->newValue, reflectiveEntry.variableName, std::ref(newValue));
-	ReflectionUtils::VariableToJson(this->lastValue, reflectiveEntry.variableName, std::ref(lastValue));
+	ReflectionUtils::VariableToJson(newValueTemp, reflectiveEntry.variableName, std::ref(newValue));
+	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveEntry.variableName, std::ref(lastValue));
 
 	// Save the whole reflective data to json (new and old values) for later use
 	lastValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
-	for (const auto& kv : this->newValue.items())
+	for (const auto& kv : newValueTemp.items())
 	{
 		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveEntry);
 	}
 	newValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
-	for (const auto& kv : this->lastValue.items())
+	for (const auto& kv : lastValueTemp.items())
 	{
 		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveEntry);
 	}
@@ -114,10 +121,10 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	//	//items = temp.items();
 	//}
 
-	Debug::Print("newValue\n" + this->newValue.dump(3));
+	/*Debug::Print("newValue\n" + this->newValue.dump(3));
 	Debug::Print("lastValue\n" + this->lastValue.dump(3));
 	Debug::Print("lastValue2\n" + lastValue2.dump(3));
-	Debug::Print("newValue2\n" + newValue2.dump(3));
+	Debug::Print("newValue2\n" + newValue2.dump(3));*/
 }
 
 template<typename T>
@@ -186,7 +193,7 @@ inline void ReflectiveChangeValueCommand<T>::Undo()
 	SetValue(lastValue2, true);
 }
 
- //----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 template<typename U, typename T>
 class InspectorChangeValueCommand : public Command
@@ -210,12 +217,12 @@ inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_
 {
 	if constexpr (std::is_base_of<U, FileReference>())
 	{
-		if(target.lock())
+		if (target.lock())
 			this->targetId = target.lock()->fileId;
 	}
 	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
 	{
-		if(target.lock())
+		if (target.lock())
 			this->targetId = target.lock()->GetUniqueId();
 	}
 
@@ -294,119 +301,171 @@ inline void InspectorChangeValueCommand<U, T>::Undo()
 
 
 //----------------------------------------------------------------------------
-
-class InspectorGameObjectSetActiveCommand : public Command
+template<typename T>
+class InspectorItemSetActiveCommand : public Command
 {
 public:
-	InspectorGameObjectSetActiveCommand() = delete;
-	InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> target, bool newValue, bool lastValue);
+	InspectorItemSetActiveCommand() = delete;
+	InspectorItemSetActiveCommand(std::shared_ptr<T> target, bool newValue);
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<GameObject> target;
+	void ApplyValue(bool valueToSet);
+	uint64_t targetId = 0;
 	bool newValue;
-	bool lastValue;
 };
 
-inline InspectorGameObjectSetActiveCommand::InspectorGameObjectSetActiveCommand(std::weak_ptr<GameObject> _target, bool newValue, bool lastValue) : target(_target)
+template<typename T>
+inline void InspectorItemSetActiveCommand<T>::ApplyValue(bool valueToSet)
 {
+	if constexpr (std::is_base_of<T, Component>())
+	{
+		std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
+		if (foundComponent)
+		{
+			foundComponent->SetIsEnabled(valueToSet);
+			foundComponent->OnReflectionUpdated();
+			SceneManager::SetSceneModified(true);
+		}
+	}
+	else if constexpr (std::is_base_of<T, GameObject>())
+	{
+		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+		if (foundGameObject)
+		{
+			foundGameObject->SetActive(valueToSet);
+			foundGameObject->OnReflectionUpdated();
+			SceneManager::SetSceneModified(true);
+		}
+	}
+	else
+	{
+		Debug::PrintError("Can't do Command!");
+	}
+}
+
+template<typename T>
+inline InspectorItemSetActiveCommand<T>::InspectorItemSetActiveCommand(std::shared_ptr<T> target, bool newValue)
+{
+	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
+	{
+		if (target)
+			this->targetId = target->GetUniqueId();
+	}
 	this->newValue = newValue;
-	this->lastValue = lastValue;
 }
 
-inline void InspectorGameObjectSetActiveCommand::Execute()
+template<typename T>
+inline void InspectorItemSetActiveCommand<T>::Execute()
 {
-	if (target.lock())
-	{
-		target.lock()->SetActive(newValue);
-		SceneManager::SetSceneModified(true);
-	}
+	ApplyValue(newValue);
 }
 
-inline void InspectorGameObjectSetActiveCommand::Undo()
+template<typename T>
+inline void InspectorItemSetActiveCommand<T>::Undo()
 {
-	if (target.lock())
-	{
-		target.lock()->SetActive(lastValue);
-		SceneManager::SetSceneModified(true);
-	}
+	ApplyValue(!newValue);
 }
 
 
 //----------------------------------------------------------------------------
 
-class InspectorTransformSetLocalPositionCommand : public Command
+class InspectorTransformSetPositionCommand : public Command
 {
 public:
-	InspectorTransformSetLocalPositionCommand() = delete;
-	InspectorTransformSetLocalPositionCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
+	InspectorTransformSetPositionCommand() = delete;
+	InspectorTransformSetPositionCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalPosition);
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<Transform> target;
+	uint64_t targetId;
 	Vector3 newValue;
 	Vector3 lastValue;
+	bool isLocalPosition;
 };
 
-inline InspectorTransformSetLocalPositionCommand::InspectorTransformSetLocalPositionCommand(std::weak_ptr<Transform> _target, Vector3 newValue, Vector3 lastValue) : target(_target)
+inline InspectorTransformSetPositionCommand::InspectorTransformSetPositionCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalPosition)
 {
+	this->targetId = _targetId;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
+	this->isLocalPosition = isLocalPosition;
 }
 
-inline void InspectorTransformSetLocalPositionCommand::Execute()
+inline void InspectorTransformSetPositionCommand::Execute()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalPosition(newValue);
+		if(isLocalPosition)
+			foundGameObject->GetTransform()->SetLocalPosition(newValue);
+		else
+			foundGameObject->GetTransform()->SetPosition(newValue);
+
 		SceneManager::SetSceneModified(true);
 	}
 }
 
-inline void InspectorTransformSetLocalPositionCommand::Undo()
+inline void InspectorTransformSetPositionCommand::Undo()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalPosition(lastValue);
+		if(isLocalPosition)
+			foundGameObject->GetTransform()->SetLocalPosition(lastValue);
+		else
+			foundGameObject->GetTransform()->SetPosition(lastValue);
+
 		SceneManager::SetSceneModified(true);
 	}
 }
 
 //----------------------------------------------------------------------------
 
-class InspectorTransformSetLocalRotationCommand : public Command
+class InspectorTransformSetRotationCommand : public Command
 {
 public:
-	InspectorTransformSetLocalRotationCommand() = delete;
-	InspectorTransformSetLocalRotationCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
+	InspectorTransformSetRotationCommand() = delete;
+	InspectorTransformSetRotationCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalRotation);
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<Transform> target;
+	uint64_t targetId;
 	Vector3 newValue;
 	Vector3 lastValue;
+	bool isLocalRotation;
 };
 
-inline InspectorTransformSetLocalRotationCommand::InspectorTransformSetLocalRotationCommand(std::weak_ptr<Transform> _target, Vector3 newValue, Vector3 lastValue) : target(_target)
+inline InspectorTransformSetRotationCommand::InspectorTransformSetRotationCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalRotation)
 {
+	this->targetId = _targetId;
 	this->newValue = newValue;
 	this->lastValue = lastValue;
+	this->isLocalRotation = isLocalRotation;
 }
 
-inline void InspectorTransformSetLocalRotationCommand::Execute()
+inline void InspectorTransformSetRotationCommand::Execute()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalRotation(newValue);
+		if(isLocalRotation)
+			foundGameObject->GetTransform()->SetLocalRotation(newValue);
+		else
+			foundGameObject->GetTransform()->SetRotation(newValue);
 		SceneManager::SetSceneModified(true);
 	}
 }
 
-inline void InspectorTransformSetLocalRotationCommand::Undo()
+inline void InspectorTransformSetRotationCommand::Undo()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalRotation(lastValue);
+		if(isLocalRotation)
+			foundGameObject->GetTransform()->SetLocalRotation(lastValue);
+		else
+			foundGameObject->GetTransform()->SetRotation(lastValue);
 		SceneManager::SetSceneModified(true);
 	}
 }
@@ -417,33 +476,36 @@ class InspectorTransformSetLocalScaleCommand : public Command
 {
 public:
 	InspectorTransformSetLocalScaleCommand() = delete;
-	InspectorTransformSetLocalScaleCommand(std::weak_ptr<Transform> target, Vector3 newValue, Vector3 lastValue);
+	InspectorTransformSetLocalScaleCommand(uint64_t _target, Vector3 newValue, Vector3 lastValue);
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<Transform> target;
+	uint64_t targetId;
 	Vector3 newValue;
 	Vector3 lastValue;
 };
 
-inline InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(std::weak_ptr<Transform> _target, Vector3 _newValue, Vector3 _lastValue) : target(_target), newValue(_newValue), lastValue(_lastValue)
+inline InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(uint64_t _targetId, Vector3 _newValue, Vector3 _lastValue) : newValue(_newValue), lastValue(_lastValue)
 {
+	this->targetId = _targetId;
 }
 
 inline void InspectorTransformSetLocalScaleCommand::Execute()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalScale(newValue);
+		foundGameObject->GetTransform()->SetLocalScale(newValue);
 		SceneManager::SetSceneModified(true);
 	}
 }
 
 inline void InspectorTransformSetLocalScaleCommand::Undo()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	if (foundGameObject)
 	{
-		target.lock()->SetLocalScale(lastValue);
+		foundGameObject->GetTransform()->SetLocalScale(lastValue);
 		SceneManager::SetSceneModified(true);
 	}
 }
@@ -477,12 +539,12 @@ inline void InspectorAddComponentCommand::Execute()
 	if (foundGameObject)
 	{
 		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentName, foundGameObject);
-		if (newComponent) 
+		if (newComponent)
 		{
 			componentId = newComponent->GetUniqueId();
 			SceneManager::SetSceneModified(true);
 		}
-		else 
+		else
 		{
 			componentId = 0;
 		}
@@ -495,7 +557,7 @@ inline void InspectorAddComponentCommand::Undo()
 	if (foundGameObject && componentId != 0)
 	{
 		std::shared_ptr<Component> oldComponent = FindComponentById(componentId);
-		if (oldComponent) 
+		if (oldComponent)
 		{
 			Destroy(oldComponent);
 			SceneManager::SetSceneModified(true);
@@ -513,38 +575,53 @@ public:
 	InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& targets, int mode);
 	void Execute() override;
 	void Undo() override;
-	std::vector<std::weak_ptr<GameObject>> createdGameObjects;
+	std::vector<uint64_t> createdGameObjects;
 private:
-	std::vector<std::weak_ptr<GameObject>> targets;
-	std::vector<std::weak_ptr<GameObject>> oldParents;
+	std::vector<uint64_t> targets;
+	std::vector<uint64_t> oldParents;
 	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
+	bool alreadyExecuted = false;
 };
 
-inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& _targets, int mode) : targets(_targets)
+inline InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& _targets, int mode)// : targets(_targets)
 {
 	this->mode = mode;
+
+	for (std::weak_ptr<GameObject> weakTarget : _targets)
+	{
+		if (auto target = weakTarget.lock())
+		{
+			targets.push_back(target->GetUniqueId());
+		}
+	}
 }
 
 inline void InspectorCreateGameObjectCommand::Execute()
 {
 	bool done = false;
 
-	createdGameObjects.clear();
-	oldParents.clear();
-
 	if (mode == 0)
 	{
-		createdGameObjects.push_back(CreateGameObject());
+		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+		if (!alreadyExecuted)
+			createdGameObjects.push_back(newGameObject->GetUniqueId());
+		else
+			newGameObject->SetUniqueId(createdGameObjects[0]);
 		done = true;
 	}
 	else if (mode == 1)
 	{
-		for (std::weak_ptr<GameObject> weakTarget : targets)
+		const size_t targetCount = targets.size();
+		for (size_t i = 0; i < targetCount; i++)
 		{
-			if (auto target = weakTarget.lock())
+			std::shared_ptr<GameObject> target = FindGameObjectById(targets[i]);
+			if(target)
 			{
 				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-				createdGameObjects.push_back(newGameObject);
+				if (!alreadyExecuted)
+					createdGameObjects.push_back(newGameObject->GetUniqueId());
+				else
+					newGameObject->SetUniqueId(createdGameObjects[i]);
 				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
 				newGameObject->SetParent(target);
 				transform->SetLocalPosition(Vector3(0));
@@ -556,12 +633,17 @@ inline void InspectorCreateGameObjectCommand::Execute()
 	}
 	else if (mode == 2)
 	{
-		for (std::weak_ptr<GameObject> weakTarget : targets)
+		const size_t targetCount = targets.size();
+		for (size_t i = 0; i < targetCount; i++)
 		{
-			if (auto target = weakTarget.lock())
+			std::shared_ptr<GameObject> target = FindGameObjectById(targets[i]);
+			if (target)
 			{
 				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-				createdGameObjects.push_back(newGameObject);
+				if (!alreadyExecuted)
+					createdGameObjects.push_back(newGameObject->GetUniqueId());
+				else
+					newGameObject->SetUniqueId(createdGameObjects[i]);
 				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
 				std::shared_ptr<Transform> selectedTransform = target->GetTransform();
 				transform->SetPosition(selectedTransform->GetPosition());
@@ -572,8 +654,10 @@ inline void InspectorCreateGameObjectCommand::Execute()
 				{
 					newGameObject->SetParent(target->GetParent().lock());
 				}
-
-				oldParents.push_back(target->GetParent().lock());
+				if(target->GetParent().lock())
+					oldParents.push_back(target->GetParent().lock()->GetUniqueId());
+				else
+					oldParents.push_back(0);
 
 				target->SetParent(newGameObject);
 				done = true;
@@ -581,12 +665,16 @@ inline void InspectorCreateGameObjectCommand::Execute()
 		}
 	}
 
+	alreadyExecuted = true;
+
 	if (done)
 	{
 		Editor::ClearSelectedGameObjects();
-		for (std::weak_ptr<GameObject> createdGameObject : createdGameObjects)
+		for (uint64_t createdGameObjectId : createdGameObjects)
 		{
-			Editor::AddSelectedGameObject(createdGameObject.lock());
+			std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(createdGameObjectId);
+			if(createdGameObject)
+				Editor::AddSelectedGameObject(createdGameObject);
 		}
 		Editor::SetSelectedFileReference(nullptr);
 		SceneManager::SetSceneModified(true);
@@ -600,9 +688,10 @@ inline void InspectorCreateGameObjectCommand::Undo()
 		bool done = false;
 		if (mode != 2)
 		{
-			for (std::weak_ptr<GameObject> weakGameObject : createdGameObjects)
+			for (uint64_t gameObjectId : createdGameObjects)
 			{
-				Destroy(weakGameObject.lock());
+				std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(gameObjectId);
+				Destroy(createdGameObject);
 			}
 			done = true;
 		}
@@ -611,12 +700,17 @@ inline void InspectorCreateGameObjectCommand::Undo()
 			const size_t targetCount = targets.size();
 			for (size_t i = 0; i < targetCount; i++)
 			{
-				if (oldParents[i].lock())
-					targets[i].lock()->SetParent(oldParents[i].lock());
+				std::shared_ptr<GameObject> target = FindGameObjectById(targets[i]);
+				if (oldParents[i] != 0) 
+				{
+					std::shared_ptr<GameObject> oldParent = FindGameObjectById(oldParents[i]);
+					target->SetParent(oldParent);
+				}
 				else
-					targets[i].lock()->SetParent(nullptr);
+					target->SetParent(nullptr);
 
-				Destroy(createdGameObjects[i].lock());
+				std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(createdGameObjects[i]);
+				Destroy(createdGameObject);
 				done = true;
 			}
 		}
@@ -637,7 +731,7 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	std::weak_ptr<GameObject> target;
+	uint64_t gameObjectId = 0;
 	uint64_t componentId = 0;
 	nlohmann::json componentData;
 	std::string componentName = "";
@@ -647,8 +741,8 @@ template<typename T>
 inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
 {
 	std::shared_ptr<T> componentToDestroyLock = componentToDestroy.lock();
-	this->target = componentToDestroyLock->GetGameObject();
 	this->componentId = componentToDestroyLock->GetUniqueId();
+	this->gameObjectId = componentToDestroyLock->GetGameObject()->GetUniqueId();
 	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
 	this->componentName = componentToDestroyLock->GetComponentName();
 }
@@ -667,12 +761,12 @@ inline void InspectorDeleteComponentCommand<T>::Execute()
 template<typename T>
 inline void InspectorDeleteComponentCommand<T>::Undo()
 {
-	if (target.lock())
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId);
+	if (gameObject)
 	{
-		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, target.lock());
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, gameObject);
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
 		component->SetUniqueId(componentId);
-		//componentId = component->GetUniqueId();
 		SceneManager::SetSceneModified(true);
 	}
 }

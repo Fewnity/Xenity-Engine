@@ -22,10 +22,10 @@ class CommandManager
 {
 public:
 	/**
-	* @brief Add new command to the history, allow the command to be used by Undo and Redo
+	* @brief Add new command to the history, allow the command to be used by Undo and Redo. The command is executed after being added.
 	* @param command Command to add
 	*/
-	static void AddCommand(std::shared_ptr<Command> command);
+	static void AddCommandAndExecute(std::shared_ptr<Command> command);
 
 	/**
 	* @brief Clear commands history
@@ -43,6 +43,8 @@ public:
 	static void Redo();
 
 private:
+	static void AddCommand(std::shared_ptr<Command> command);
+
 	// Size of the command history
 	static int maxCommandCount;
 	// Current command index in the history

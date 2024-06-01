@@ -72,8 +72,7 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 			continue;
 
 		auto command = std::make_shared<InspectorAddComponentCommand>(currentGameObject, ClassRegistry::GetClassInfo<T>()->name);
-		CommandManager::AddCommand(command);
-		command->Execute();
+		CommandManager::AddCommandAndExecute(command);
 
 		std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
 
@@ -86,13 +85,12 @@ template <typename T>
 std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
 {
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
-	CommandManager::AddCommand(command);
-	command->Execute();
-	command->createdGameObjects[0].lock()->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
+	CommandManager::AddCommandAndExecute(command);
+	std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(command->createdGameObjects[0]);
+	createdGameObject->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
 
-	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(command->createdGameObjects[0], ClassRegistry::GetClassInfo<T>()->name);
-	CommandManager::AddCommand(componentCommand);
-	componentCommand->Execute();
+	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(createdGameObject, ClassRegistry::GetClassInfo<T>()->name);
+	CommandManager::AddCommandAndExecute(componentCommand);
 	std::shared_ptr<Component> newComponent = FindComponentById(componentCommand->componentId);
 
 	/*auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObjects[0].lock());
