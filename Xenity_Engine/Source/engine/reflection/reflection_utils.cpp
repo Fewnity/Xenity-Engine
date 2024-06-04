@@ -397,6 +397,8 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 	{
 		if (getVal.at(vIndex))
 			jsonValue[key][vIndex] = getVal.at(vIndex)->fileId;
+		else
+			jsonValue[key][vIndex] = 0;
 	}
 }
 

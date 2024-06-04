@@ -124,7 +124,7 @@ void SpriteEditorMenu::DrawSpriteSheetOverlay()
 	// Draw sprite sheet texture variable
 	std::shared_ptr<Texture> newValue;
 	std::reference_wrapper<std::shared_ptr<Texture>> textureRef = std::ref(spriteToEdit);
-	EditorUI::DrawFileReference(textureRef, "Texture", newValue);
+	EditorUI::DrawFileReference(nullptr, textureRef, "Texture", newValue);
 	if (spriteToEdit != oldSpriteToEdit)
 	{
 		oldSpriteToEdit = spriteToEdit;

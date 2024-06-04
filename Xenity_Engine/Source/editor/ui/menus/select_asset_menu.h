@@ -20,6 +20,8 @@
 #include <editor/ui/menus/inspector_menu.h>
 #include <editor/editor.h>
 #include <engine/event_system/event_system.h>
+#include <editor/command/command_manager.h>
+#include <editor/command/commands/inspector_commands.h>
 
 template <class T>
 class SelectAssetMenu : public Menu
@@ -104,7 +106,17 @@ public:
 
 					if (ImGui::IsItemClicked())
 					{
-						valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
+						if (hasReflectiveDataToDraw) 
+						{
+							std::shared_ptr<T> newValue = std::dynamic_pointer_cast<T>(foundFiles[i]);
+							auto command = std::make_shared<ReflectiveChangeValueCommand<std::shared_ptr<T>>>(reflectiveDataToDraw, &valuePtr->get(), newValue);
+							CommandManager::AddCommandAndExecute(command);
+						}
+						else 
+						{
+							valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
+						}
+
 						if (onValueChangedEvent) 
 						{
 							onValueChangedEvent->Trigger();
@@ -139,6 +151,8 @@ public:
 
 	std::optional<std::reference_wrapper<std::shared_ptr<T>>> valuePtr;
 	Event<>* onValueChangedEvent = nullptr;
+	ReflectiveDataToDraw reflectiveDataToDraw;
+	bool hasReflectiveDataToDraw = false;
 private:
 	std::vector<std::shared_ptr<FileReference>> foundFiles;
 };

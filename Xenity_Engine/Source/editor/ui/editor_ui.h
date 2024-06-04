@@ -217,7 +217,7 @@ public:
 		bool changed = false;
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
-		changed = DrawFileReference(ref, inputName, newValue);
+		changed = DrawFileReference(nullptr, ref, inputName, newValue);
 
 		if (changed)
 		{
@@ -340,6 +340,13 @@ public:
 			returnValue = ValueInputState::CHANGED;
 
 		return returnValue;
+	}
+
+	static ReflectiveDataToDraw CreateReflectiveDataToDraw()
+	{
+		ReflectiveDataToDraw reflectiveDataToDraw;
+		reflectiveDataToDraw.ownerType = -1;
+		return reflectiveDataToDraw;
 	}
 
 	template<typename T>
@@ -469,7 +476,7 @@ public:
 	*/
 	template <typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static DrawFileReference(const std::reference_wrapper<std::shared_ptr<T>>& valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
+	static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>>& valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
@@ -503,6 +510,11 @@ public:
 			selectMenu->SetActive(true);
 			selectMenu->valuePtr = valuePtr;
 			selectMenu->SearchFiles(classInfo->fileType);
+			if (reflectiveDataToDraw) 
+			{
+				selectMenu->reflectiveDataToDraw = *reflectiveDataToDraw;
+				selectMenu->hasReflectiveDataToDraw = true;
+			}
 			currentSelectAssetMenu = selectMenu;
 			selectMenu->Focus();
 		}
@@ -527,55 +539,23 @@ public:
 	template <typename T>
 	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& valuePtr)
 	{
-		bool valueChangedTemp = false;
-		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
+		bool listChangedTemp = false;
 
-		const size_t vectorSize = valuePtr.get().size();
 		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
+			const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
+			const size_t vectorSize = valuePtr.get().size();
+			std::string tempName = reflectiveDataToDraw.name;
+			//reflectiveDataToDraw.name = "";
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				std::string inputText = "None (" + classInfo->name + ")";
-				const auto& ptr = valuePtr.get()[vectorI];
-				if (ptr != nullptr)
+				std::shared_ptr<T> newValue = nullptr;
+				bool variableChangedTemp = DrawVariable(reflectiveDataToDraw, std::ref(valuePtr.get()[vectorI]));
+				if (variableChangedTemp)
 				{
-					if (ptr->file != nullptr)
-						inputText = ptr->file->GetFileName();
-					else
-						inputText = "Filled but invalid " + classInfo->name;
-
-					inputText += " " + std::to_string(ptr->fileId) + " ";
-					if (ptr->file)
-						inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
-				}
-
-				const InputButtonState result = DrawInputButton("", inputText, true);
-				if (result == InputButtonState::ResetValue)
-				{
-					valuePtr.get()[vectorI] = nullptr;
-					valueChangedTemp = true;
-				}
-				else if (result == InputButtonState::OpenAssetMenu)
-				{
-					if (currentSelectAssetMenu)
-						Editor::RemoveMenu(currentSelectAssetMenu.get());
-
-					std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
-					selectMenu->onValueChangedEvent = onValueChangedEvent;
-					selectMenu->SetActive(true);
-					selectMenu->valuePtr = (valuePtr.get()[vectorI]);
-					selectMenu->SearchFiles(classInfo->fileType);
-					currentSelectAssetMenu = selectMenu;
-					selectMenu->Focus();
-				}
-
-				std::shared_ptr <FileReference> ref = nullptr;
-				const std::string payloadName = "Files" + std::to_string((int)classInfo->fileType);
-				if (DragDropTarget(payloadName, ref))
-				{
-					valuePtr.get()[vectorI] = std::dynamic_pointer_cast<T>(ref);
-					valueChangedTemp = true;
+					listChangedTemp = true;
+					valuePtr.get()[vectorI] = newValue;
 				}
 			}
 
@@ -583,7 +563,7 @@ public:
 			if (ImGui::Button(addText.c_str()))
 			{
 				valuePtr.get().push_back(nullptr);
-				valueChangedTemp = true;
+				listChangedTemp = true;
 			}
 
 			const std::string removeText = "Remove " + classInfo->name + GenerateItemId();
@@ -592,12 +572,13 @@ public:
 				if (vectorSize != 0)
 				{
 					valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
-					valueChangedTemp = true;
+					listChangedTemp = true;
 				}
 			}
+			//reflectiveDataToDraw.name = tempName;
 		}
 		ImGui::Separator();
-		return valueChangedTemp;
+		return listChangedTemp;
 	}
 
 	/**
@@ -826,7 +807,7 @@ private:
 		T newValue = *valuePtr;
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, valuePtr, newValue, *valuePtr);
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, valuePtr, newValue);
 
 		return valueChangedTemp;
 	}
@@ -855,7 +836,7 @@ private:
 			valueChangedTemp = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
 
 		return valueChangedTemp;
 	}
@@ -946,9 +927,9 @@ private:
 		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T>& valuePtr)
 	{
 		T newValue = nullptr;
-		const bool valueChangedTemp = DrawFileReference(valuePtr, reflectiveDataToDraw.name, newValue);
+		const bool valueChangedTemp = DrawFileReference(&reflectiveDataToDraw, valuePtr, reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
 		return valueChangedTemp;
 	}
 
@@ -967,7 +948,7 @@ private:
 		std::weak_ptr<T> newValue = valuePtr.get();
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, reflectiveDataToDraw.ownerUniqueId, reflectiveDataToDraw.ownerType, reflectiveDataToDraw.currentEntry, &valuePtr.get(), newValue, valuePtr.get());
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
 
 		return valueChangedTemp;
 	}

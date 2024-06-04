@@ -41,7 +41,7 @@ class ReflectiveChangeValueCommand : public Command
 {
 public:
 	ReflectiveChangeValueCommand() = delete;
-	ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T* valuePtr, T& newValue, T& lastValue);
+	ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& newValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -51,7 +51,8 @@ private:
 	uint64_t targetId = 0;
 	int ownerType = -1;
 	std::string variableName;
-
+	T* valuePtr;
+	ReflectiveEntry reflectiveEntry;
 	nlohmann::json newValue2;
 	nlohmann::json lastValue2;
 };
@@ -77,32 +78,33 @@ void ReflectiveChangeValueCommand<T>::FindValueToChange(ReflectiveDataToDraw& re
 }
 
 template<typename T>
-inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, uint64_t targetId, int ownerType, const ReflectiveEntry& reflectiveEntry, T* valuePtr, T& newValue, T& lastValue)
+inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& newValue)
 {
-	this->targetId = targetId;
-	this->ownerType = ownerType;
+	this->valuePtr = valuePtr;
+	targetId = reflectiveDataToDraw.ownerUniqueId;
+	ownerType = reflectiveDataToDraw.ownerType;
 
-	variableName = reflectiveEntry.variableName;
-
+	variableName = reflectiveDataToDraw.currentEntry.variableName;
+	reflectiveEntry = reflectiveDataToDraw.currentEntry;
 
 	nlohmann::json newValueTemp;
 	nlohmann::json lastValueTemp;
 
 	// Ugly code
 	// Save variable alone to json (new and old values)
-	ReflectionUtils::VariableToJson(newValueTemp, reflectiveEntry.variableName, std::ref(newValue));
-	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveEntry.variableName, std::ref(lastValue));
-
+	ReflectionUtils::VariableToJson(newValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(newValue));
+	//ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(lastValue));
+	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(*valuePtr));
 	// Save the whole reflective data to json (new and old values) for later use
 	lastValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
 	for (const auto& kv : newValueTemp.items())
 	{
-		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveEntry);
+		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveDataToDraw.currentEntry);
 	}
 	newValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
 	for (const auto& kv : lastValueTemp.items())
 	{
-		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveEntry);
+		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveDataToDraw.currentEntry);
 	}
 
 	// Remove all other variables from the json
@@ -122,9 +124,9 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	//}
 
 	/*Debug::Print("newValue\n" + this->newValue.dump(3));
-	Debug::Print("lastValue\n" + this->lastValue.dump(3));
+	Debug::Print("lastValue\n" + this->lastValue.dump(3));*/
 	Debug::Print("lastValue2\n" + lastValue2.dump(3));
-	Debug::Print("newValue2\n" + newValue2.dump(3));*/
+	Debug::Print("newValue2\n" + newValue2.dump(3));
 }
 
 template<typename T>
@@ -139,7 +141,6 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			if (foundFileRef)
 			{
 				ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetReflectiveData());
-				//ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundFileRef->GetReflectiveData(), variableName));
 				foundFileRef->OnReflectionUpdated();
 				// Do not set scene as dirty
 				hasBeenSet = true;
@@ -151,7 +152,6 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			if (foundComponent)
 			{
 				ReflectionUtils::JsonToReflectiveData(valueToSet, foundComponent->GetReflectiveData());
-				//ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundComponent->GetReflectiveData(), variableName));
 				foundComponent->OnReflectionUpdated();
 				SceneManager::SetSceneModified(true);
 				hasBeenSet = true;
@@ -163,7 +163,6 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			if (foundGameObject)
 			{
 				ReflectionUtils::JsonToReflectiveData(valueToSet, foundGameObject->GetReflectiveData());
-				//ReflectionUtils::JsonToReflectiveEntry(valueToSet, ReflectionUtils::GetReflectiveEntryByName(foundGameObject->GetReflectiveData(), variableName));
 				foundGameObject->OnReflectionUpdated();
 				SceneManager::SetSceneModified(true);
 				hasBeenSet = true;
@@ -173,6 +172,11 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 		{
 			Debug::PrintError("Can't do Command!");
 		}
+	}
+	else 
+	{
+		//ReflectionUtils::Jsonto
+		ReflectionUtils::JsonToVariable(valueToSet["Values"][variableName], std::ref(*valuePtr), reflectiveEntry);
 	}
 
 	if (hasBeenSet && isUndo)

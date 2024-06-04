@@ -22,9 +22,13 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Add undo/redo commands to DrawVector functions
+Fix when removing a disabled component and readding it, the component is enabled
+Fix twice confirm on quit
 Rework the documentation
 Box colliders are not affected by gameobject scale
 Clean code
+Add delete gameobject command
+Add Rename gameobject command to replace the used InspectorChangeValueCommand one
 
 --- Can be for next release
 New Input system
