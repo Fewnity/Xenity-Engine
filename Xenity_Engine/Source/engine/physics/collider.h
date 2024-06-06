@@ -7,8 +7,9 @@
 #pragma once
 
 #include <engine/component.h>
+#include <engine/api.h>
 
-class Collider : public Component
+class API Collider : public Component
 {
 public:
 };

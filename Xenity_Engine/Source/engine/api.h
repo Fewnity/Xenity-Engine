@@ -5,7 +5,7 @@
 // This file is part of Xenity Engine
 
 // Header to include and use API macro when you want to use a class from the DLL
-
+#pragma warning( disable : 4251 )
 #if defined(EXPORT)
 #define API __declspec(dllexport)
 #elif defined(IMPORT)

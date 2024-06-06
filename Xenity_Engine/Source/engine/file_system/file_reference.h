@@ -11,14 +11,14 @@
  */
 
 #include "file_type.h"
-
+#include <engine/api.h>
 #include <engine/reflection/reflection.h>
 
 #include <memory>
 
 class File;
 
-class FileReference : public std::enable_shared_from_this<FileReference>
+class API FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
 	FileReference() = default;

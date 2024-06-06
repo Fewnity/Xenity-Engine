@@ -6,11 +6,12 @@
 
 #pragma once
 #include <cstdint>
+#include <engine/api.h>
 
 /**
 * @brief Class to inherit if you want an object to have an unique Id.
 */
-class UniqueId
+class API UniqueId
 {
 public:
 	UniqueId();
