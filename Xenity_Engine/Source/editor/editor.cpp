@@ -54,6 +54,7 @@
 #include <imgui/imgui_internal.h>
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
+#include "command/commands/delete.h"
 
 using json = nlohmann::json;
 
@@ -187,7 +188,7 @@ void Editor::Update()
 			SetSelectedFileReference(nullptr);
 		}
 
-		if (InputSystem::GetKey(KeyCode::DELETE))
+		if (InputSystem::GetKeyDown(KeyCode::DELETE))
 		{
 			const std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
@@ -195,8 +196,10 @@ void Editor::Update()
 			{
 				for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 				{
-					Destroy(currentGameObject.lock());
+					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(currentGameObject);
+					CommandManager::AddCommandAndExecute(command);
 				}
+				selectedGameObjects.clear();
 			}
 		}
 

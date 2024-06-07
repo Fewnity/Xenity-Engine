@@ -10,6 +10,7 @@
 #include <editor/ui/editor_ui.h>
 #include <editor/ui/utils/menu_builder.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <editor/command/commands/delete.h>
 
 void HierarchyMenu::Init()
 {
@@ -77,7 +78,8 @@ void HierarchyMenu::Draw()
 		{
 		std::function<void()> destroyGameObjectFunc = [this]()
 			{
-				Destroy(rightClickedElement);
+				auto command = std::make_shared<InspectorDeleteGameObjectCommand>(rightClickedElement);
+				CommandManager::AddCommandAndExecute(command);
 				rightClickedElement.reset();
 			};
 

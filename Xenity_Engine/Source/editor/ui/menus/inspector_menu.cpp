@@ -401,20 +401,24 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
 {
-	std::string str0 = selectedGameObject->GetName();
 
 	//Active checkbox
 	bool active = selectedGameObject->GetActive();
 	ImGui::Checkbox("##Active", &active);
 
 	//Name input
+	std::string gameObjectName = selectedGameObject->GetName();
 	ImGui::SameLine();
-	ImGui::InputText("##Name ", &str0);
+	ImGui::InputText("##Name ", &gameObjectName);
 
 	//Apply new values if changed
-	if (str0 != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
+	if (gameObjectName != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
-		auto command = std::make_shared<InspectorChangeValueCommand<GameObject, std::string>>(selectedGameObject, &selectedGameObject->GetName(), str0, selectedGameObject->GetName());
+		// Improve this
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject);
+		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject->GetReflectiveData(), "name");
+		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject->GetReflectiveData());
+		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject->GetName(), gameObjectName);
 		CommandManager::AddCommandAndExecute(command);
 	}
 	if (active != selectedGameObject->GetActive())

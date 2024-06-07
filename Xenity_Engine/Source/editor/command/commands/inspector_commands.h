@@ -93,7 +93,6 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	// Ugly code
 	// Save variable alone to json (new and old values)
 	ReflectionUtils::VariableToJson(newValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(newValue));
-	//ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(lastValue));
 	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(*valuePtr));
 	// Save the whole reflective data to json (new and old values) for later use
 	lastValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
@@ -125,8 +124,8 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 
 	/*Debug::Print("newValue\n" + this->newValue.dump(3));
 	Debug::Print("lastValue\n" + this->lastValue.dump(3));*/
-	Debug::Print("lastValue2\n" + lastValue2.dump(3));
-	Debug::Print("newValue2\n" + newValue2.dump(3));
+	//Debug::Print("lastValue2\n" + lastValue2.dump(3));
+	//Debug::Print("newValue2\n" + newValue2.dump(3));
 }
 
 template<typename T>
@@ -739,6 +738,7 @@ private:
 	uint64_t componentId = 0;
 	nlohmann::json componentData;
 	std::string componentName = "";
+	bool isEnabled = true;
 };
 
 template<typename T>
@@ -749,6 +749,7 @@ inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::
 	this->gameObjectId = componentToDestroyLock->GetGameObject()->GetUniqueId();
 	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
 	this->componentName = componentToDestroyLock->GetComponentName();
+	isEnabled = componentToDestroyLock->GetIsEnabled();
 }
 
 template<typename T>
@@ -770,10 +771,17 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, gameObject);
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
+		component->SetIsEnabled(isEnabled);
 		component->SetUniqueId(componentId);
 		SceneManager::SetSceneModified(true);
 	}
 }
+
+//----------------------------------------------------------------------------
+
+
+
+//----------------------------------------------------------------------------
 
 template<typename T>
 class InspectorSetComponentDataCommand : public Command
