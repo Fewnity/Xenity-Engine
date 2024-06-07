@@ -281,7 +281,7 @@ public:
 	static void DrawTableInput(const std::string& inputName, const std::string& inputId, int columnIndex, T& value)
 	{
 		ImGui::TableSetColumnIndex(columnIndex);
-		ImGui::Text(inputName.c_str());
+		ImGui::Text("%s", inputName.c_str());
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(-1);
 
@@ -594,7 +594,7 @@ public:
 	{
 		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr.get().size();
-		ImGui::Text(reflectiveDataToDraw.name.c_str());
+		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			std::string inputText = "None (" + className + ")";
@@ -649,7 +649,7 @@ public:
 	{
 		bool valueChanged = false;
 		const size_t vectorSize = valuePtr.get().size();
-		ImGui::Text(reflectiveDataToDraw.name.c_str());
+		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			T* ptr = valuePtr.get()[vectorI];
@@ -724,7 +724,7 @@ public:
 		bool valueChangedTemp = false;
 		std::vector<T>& valueRef = valuePtr.get();
 		const size_t vectorSize = valueRef.size();
-		ImGui::Text(reflectiveDataToDraw.name.c_str());
+		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!

@@ -87,7 +87,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	for (int i = 0; i < textLenght; i++)
 	{
 		const char c = text[i];
-		Character *ch = font->Characters[c];
+		Character *ch = font->Characters[(int)c];
 
 		if (c == '\n')
 		{
@@ -201,7 +201,7 @@ TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, 
 
 	for (int i = 0; i < textLen; i++)
 	{
-		const Character *ch = font->Characters[text[i]];
+		const Character *ch = font->Characters[(int)text[i]];
 		if (text[i] == '\n')
 		{
 			textInfos->linesInfo[currentLine].lenght *= scale;

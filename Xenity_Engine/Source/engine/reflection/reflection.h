@@ -114,7 +114,7 @@ public:
 * @brief Create a map with the int value as key and the second value as the enum name
 * @param enumData The enum data as a string
 */
-static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
+[[maybe_unused]] static std::vector<EnumValueName> ConvertEnumToVector(std::string enumData)
 {
 	size_t textSize = enumData.size();
 	// Remove all spaces in the string

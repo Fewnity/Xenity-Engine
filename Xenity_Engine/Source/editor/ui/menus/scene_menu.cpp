@@ -715,7 +715,7 @@ void SceneMenu::Draw()
 			MoveCamera();
 
 			camera->ChangeFrameBufferSize(startAvailableSize);
-			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((ImTextureID)(size_t)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			std::shared_ptr<FileReference> mesh;
 			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh);
@@ -777,7 +777,7 @@ bool SceneMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)texture->GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture->GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
 	return clicked;

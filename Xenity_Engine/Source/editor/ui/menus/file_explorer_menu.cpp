@@ -91,7 +91,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(*iconTexture);
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	const bool hovered = ImGui::IsItemHovered();
 
 	// Create an unique popupid
@@ -116,7 +116,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		imageCursorPos.y -= iconSize / 3 / 2;
 
 		ImGui::SetCursorPos(imageCursorPos);
-		ImGui::Image((ImTextureID)matTexture->GetTextureId(), ImVec2(iconSize / 3, iconSize / 3), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+		ImGui::Image((ImTextureID)(size_t)matTexture->GetTextureId(), ImVec2(iconSize / 3, iconSize / 3), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	}
 
 	ImGui::SetCursorPos(finalImageCursorPos);
@@ -164,11 +164,11 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (textWidth <= availWidth)
 		{
 			ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
-			ImGui::Text(itemName.c_str());
+			ImGui::Text("%s", itemName.c_str());
 		}
 		else
 		{
-			ImGui::TextWrapped(itemName.c_str());
+			ImGui::TextWrapped("%s", itemName.c_str());
 		}
 	}
 
@@ -344,8 +344,8 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, s
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
 		}
 
-		ImGui::Image((ImTextureID)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
-		ImGui::TextWrapped(itemName.c_str());
+		ImGui::Image((ImTextureID)(size_t)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::TextWrapped("%s", itemName.c_str());
 		ImGui::EndDragDropSource();
 	}
 }

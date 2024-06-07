@@ -240,7 +240,7 @@ void EditorUI::DrawTextCentered(const std::string& text)
 	const float windowWidth = ImGui::GetWindowSize().x;
 	const float textWidth = ImGui::CalcTextSize(text.c_str()).x;
 	ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-	ImGui::Text(text.c_str());
+	ImGui::Text("%s", text.c_str());
 }
 
 #pragma endregion

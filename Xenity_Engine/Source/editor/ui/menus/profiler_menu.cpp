@@ -140,7 +140,7 @@ void ProfilerMenu::DrawFilesList()
 					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->GetIsLoaded(), fileRef->fileType, fileRef.use_count());
+					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->GetIsLoaded(), (int)fileRef->fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");

@@ -62,7 +62,7 @@ void DockerConfigMenu::Draw()
 			color = ImVec4(0, 1, 0, 1);
 		}
 		
-		ImGui::TextColored(color, stateText.c_str());
+		ImGui::TextColored(color, "%s", stateText.c_str());
 		if (currentDockerState == DockerState::NOT_INSTALLED)
 		{
 			ImGui::Text("You have to install Docker on your computer");

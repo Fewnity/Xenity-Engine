@@ -113,7 +113,7 @@ void GameMenu::DrawNoCameraText()
 	const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
 	const float offY = ImGui::GetCursorPosY();
 	ImGui::SetCursorPos(ImVec2((startAvailableSize.x - textSize.x) / 2.0f, (startAvailableSize.y + offY) / 2.0f));
-	ImGui::Text(noCamText.c_str());
+	ImGui::Text("%s", noCamText.c_str());
 	ImGui::PopFont();
 
 	//Reset font

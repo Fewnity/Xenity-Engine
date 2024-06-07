@@ -32,7 +32,7 @@ public:
 	{
 	}
 
-	void DrawItem(const std::string& itemName, int& currentCol, int colCount,int offset, std::shared_ptr<Texture> icon, int iconSize, size_t index, bool isSelected)
+	void DrawItem(const std::string& itemName, int& currentCol, int colCount, float offset, std::shared_ptr<Texture> icon, float iconSize, size_t index, bool isSelected)
 	{
 		if (currentCol == 0)
 			ImGui::TableNextRow();
@@ -50,18 +50,18 @@ public:
 		const int cursorPos = (int)ImGui::GetCursorPosX();
 		const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 		ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
-		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)icon->GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)(size_t)icon->GetTextureId(), ImVec2(iconSize, iconSize));
 
 		const float windowWidth = ImGui::GetContentRegionAvail().x;
 		const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
 		if (textWidth <= availWidth)
 		{
 			ImGui::SetCursorPosX(cursorPos + (windowWidth - textWidth) * 0.5f);
-			ImGui::Text(itemName.c_str());
+			ImGui::Text("%s", itemName.c_str());
 		}
 		else
 		{
-			ImGui::TextWrapped(itemName.c_str());
+			ImGui::TextWrapped("%s", itemName.c_str());
 		}
 		ImGui::EndGroup();
 		ImGui::PopStyleColor(3);

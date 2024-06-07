@@ -64,6 +64,7 @@ enum class DrawMode
 class API Renderer
 {
 public:
+	virtual ~Renderer() = default;
 	virtual int Init() = 0;
 	virtual void Setup() = 0;
 	virtual void Stop() = 0;

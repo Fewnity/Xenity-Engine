@@ -196,7 +196,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;
 			ImGui::SetDragDropPayload(payloadName.c_str(), &emptyInt, sizeof(int), 0);
-			ImGui::Text(gameObject->GetName().c_str());
+			ImGui::Text("%s", gameObject->GetName().c_str());
 			ImGui::EndDragDropSource();
 		}
 		ImGui::PopStyleColor();

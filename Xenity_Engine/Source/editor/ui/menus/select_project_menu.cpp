@@ -45,7 +45,7 @@ void SelectProjectMenu::Draw()
 		const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
 
 		ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
-		ImGui::Text(noCamText.c_str());
+		ImGui::Text("%s", noCamText.c_str());
 
 		ImGui::PopFont();
 
@@ -127,8 +127,8 @@ void SelectProjectMenu::DrawProjectsList()
 	for (size_t i = 0; i < projectCount; i++)
 	{
 		ImGui::BeginGroup();
-		ImGui::Text(projectsList[i].name.c_str());
-		ImGui::Text(projectsList[i].path.c_str());
+		ImGui::Text("%s", projectsList[i].name.c_str());
+		ImGui::Text("%s", projectsList[i].path.c_str());
 		ImGui::EndGroup();
 
 		if (ImGui::IsItemClicked(0))

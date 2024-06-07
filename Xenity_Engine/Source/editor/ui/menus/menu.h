@@ -18,6 +18,8 @@ enum class MenuGroup
 class Menu : public std::enable_shared_from_this<Menu>
 {
 public:
+	virtual ~Menu() = default;
+
 	/**
 	* @brief Initializes the menu, called once when the menu is created
 	*/

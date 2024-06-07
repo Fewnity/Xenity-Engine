@@ -174,7 +174,7 @@ void InspectorMenu::DrawFilePreview()
 		if (availSize.x > availSize.y)
 			sizeY = availSize.y;
 
-		int textureId = 0;
+		unsigned int textureId = 0;
 		// If the selected file needs to be loaded for preview
 		if (loadedPreview != Editor::GetSelectedFileReference())
 		{
@@ -219,7 +219,7 @@ void InspectorMenu::DrawFilePreview()
 			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
 			const ImVec2 availArea = ImGui::GetContentRegionAvail();
 			Engine::GetRenderer().BindTexture(*texture);
-			ImGui::Image((ImTextureID)textureId, availArea);
+			ImGui::Image((ImTextureID)(size_t)textureId, availArea);
 
 			const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
 			const ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
@@ -235,7 +235,7 @@ void InspectorMenu::DrawFilePreview()
 
 			// Print texture resolution
 			ImGui::SetCursorPos(textPos);
-			ImGui::Text(text.c_str());
+			ImGui::Text("%s", text.c_str());
 		}
 		else if (loadedPreview->fileType == FileType::File_Mesh) // Draw audio preview
 		{
@@ -357,7 +357,7 @@ void InspectorMenu::DrawFilePreview()
 void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedFileReference)
 {
 	const std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
-	ImGui::Text(fileNameExt.c_str());
+	ImGui::Text("%s", fileNameExt.c_str());
 	ImGui::Separator();
 
 	std::shared_ptr<Reflective> reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);

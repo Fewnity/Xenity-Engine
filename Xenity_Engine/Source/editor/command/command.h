@@ -13,6 +13,7 @@
 class Command
 {
 public:
+	virtual ~Command() = default;
 
 	/**
 	* @brief Execute the command
