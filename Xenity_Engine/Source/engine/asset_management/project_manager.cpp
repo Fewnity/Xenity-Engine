@@ -643,21 +643,34 @@ void ProjectManager::UnloadProject()
 {
 #if defined(EDITOR)
 	Editor::SetCurrentProjectDirectory(nullptr);
+
 #endif
 	SceneManager::SetSceneModified(false);
 	SceneManager::SetOpenedScene(nullptr);
+	SceneManager::ClearScene();
 	SceneManager::CreateEmptyScene();
 	Graphics::SetDefaultValues();
+
+	ClassRegistry::Reset();
+	ClassRegistry::RegisterEngineComponents();
 
 	projectSettings.startScene.reset();
 	projectDirectoryBase.reset();
 	additionalAssetDirectoryBase.reset();
+	projectDirectoryBase.reset();
 	projectDirectory.reset();
 	projectFilesIds.clear();
 	oldProjectFilesIds.clear();
 	projectLoaded = false;
 	projectSettings.projectName.clear();
-	projectSettings.gameName.clear();
+	projectSettings.gameName.clear(); 
+	projectFolderPath.clear();
+
+	assetFolderPath.clear();
+
+	Engine::game.reset();
+	DynamicLibrary::UnloadGameLibrary();
+	AssetManager::RemoveAllFileReferences();
 	Window::UpdateWindowTitle();
 
 	projectUnloadedEvent.Trigger();
