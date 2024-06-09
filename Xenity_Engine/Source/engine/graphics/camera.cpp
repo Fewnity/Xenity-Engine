@@ -130,21 +130,6 @@ void Camera::SetProjectionSize(const float value)
 	isProjectionDirty = true;
 }
 
-float Camera::GetProjectionSize() const
-{
-	return projectionSize;
-}
-
-float Camera::GetNearClippingPlane() const
-{
-	return nearClippingPlane;
-}
-
-float Camera::GetFarClippingPlane() const
-{
-	return farClippingPlane;
-}
-
 void Camera::SetNearClippingPlane(float value)
 {
 	if (value >= farClippingPlane)
@@ -232,27 +217,11 @@ void Camera::UpdateProjection()
 	}
 }
 
-glm::mat4& Camera::GetProjection()
-{
-	return projection;
-}
-
-glm::mat4& Camera::GetCanvasProjection()
-{
-	return canvasProjection;
-}
-
 void Camera::SetProjectionType(const ProjectionTypes type)
 {
 	projectionType = type;
 	isProjectionDirty = true;
 }
-
-ProjectionTypes Camera::GetProjectionType() const
-{
-	return projectionType;
-}
-
 
 void Camera::UpdateFrameBuffer()
 {

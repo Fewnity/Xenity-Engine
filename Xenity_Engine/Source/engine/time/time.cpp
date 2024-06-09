@@ -41,31 +41,6 @@ std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_poi
 
 #pragma region Accessors
 
-float Time::GetTime()
-{
-	return time;
-}
-
-float Time::GetUnscaledTime()
-{
-	return unscaledTime;
-}
-
-float Time::GetDeltaTime()
-{
-	return deltaTime;
-}
-
-float Time::GetUnscaledDeltaTime()
-{
-	return unscaledDeltaTime;
-}
-
-float Time::GetTimeScale()
-{
-	return timeScale;
-}
-
 void Time::SetTimeScale(float _timeScale)
 {
 	if (_timeScale < 0)

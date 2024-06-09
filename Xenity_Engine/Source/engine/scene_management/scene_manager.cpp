@@ -205,7 +205,7 @@ bool SceneManager::OnQuit()
 	}
 #endif
 	return cancel;
-		}
+}
 
 void SceneManager::LoadScene(const ordered_json& jsonData)
 {
@@ -398,7 +398,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
-	DXASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr")
+	XASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr")
 
 	bool canceled = OnQuit();
 	if (canceled)

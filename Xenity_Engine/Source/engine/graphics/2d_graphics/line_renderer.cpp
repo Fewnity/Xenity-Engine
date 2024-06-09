@@ -46,11 +46,6 @@ LineRenderer::~LineRenderer()
 {
 }
 
-int LineRenderer::GetDrawPriority() const
-{
-	return orderInLayer;
-}
-
 #pragma endregion
 
 void LineRenderer::SetOrderInLayer(int orderInLayer)
@@ -70,7 +65,7 @@ void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	command.subMesh = nullptr;
 	command.transform = GetTransform();
 	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
-	if (!material->useTransparency)
+	if (!material->GetUseTransparency())
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
 		renderQueue.commands.push_back(command);
@@ -139,9 +134,7 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
-	renderSettings.useLighting = material->useLighting;
-	renderSettings.useBlend = material->useTransparency;
+	renderSettings.useLighting = material->GetUseLighting();
+	renderSettings.useBlend = material->GetUseTransparency();
 	MeshManager::DrawMesh(GetTransform(), *subMesh, material, renderSettings);
-	//Graphics::DrawSubMesh(*subMesh, material, )
-	//SpriteManager::Render2DLine(meshData);
 }

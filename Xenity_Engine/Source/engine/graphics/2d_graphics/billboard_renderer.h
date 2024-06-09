@@ -24,25 +24,12 @@ public:
 	BillboardRenderer();
 	~BillboardRenderer();
 
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
-
-	/**
-	 * @brief [Internal]
-	 */
-	int GetDrawPriority() const override;
-
 	void SetOrderInLayer(int orderInLayer);
-
-	int GetOrderInLayer() const
-	{
-		return orderInLayer;
-	}
 
 	/**
 	* @brief Set the color of the sprite
 	*/
-	void SetColor(const Color& color)
+	inline void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
@@ -50,7 +37,7 @@ public:
 	/**
 	* @brief Get the material of the sprite
 	*/
-	std::shared_ptr <Material> GetMaterial()
+	inline std::shared_ptr <Material> GetMaterial()
 	{
 		return material;
 	}
@@ -58,7 +45,7 @@ public:
 	/**
 	* @brief Get the texture of the sprite
 	*/
-	std::shared_ptr <Texture> GetTexture()
+	inline std::shared_ptr <Texture> GetTexture()
 	{
 		return texture;
 	}
@@ -73,7 +60,9 @@ public:
 	*/
 	void SetTexture(std::shared_ptr <Texture> texture);
 
-private:
+protected:
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* @brief Called when the component is disabled

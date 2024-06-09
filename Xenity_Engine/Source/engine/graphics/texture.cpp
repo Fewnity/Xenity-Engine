@@ -306,7 +306,7 @@ unsigned int GetColorByteCount(PSPTextureType psm)
 
 void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
-	DXASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr")
+	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr")
 
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
@@ -387,7 +387,7 @@ void Texture::OnLoadFileReferenceFinished()
 
 void Texture::SetData(const unsigned char *texData)
 {
-	DXASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr")
+	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr")
 	// sceGeEdramSetSize(4096);
 	// The psp needs a pow2 sized texture
 #if defined(__PSP__)

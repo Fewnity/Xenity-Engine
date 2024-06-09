@@ -12,8 +12,8 @@
 
 ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::string& name)
 {
-	DXASSERT(!category.empty(), "[ProfilerBenchmark::ProfilerBenchmark] category is empty")
-	DXASSERT(!name.empty(), "[ProfilerBenchmark::ProfilerBenchmark] name is empty")
+	XASSERT(!category.empty(), "[ProfilerBenchmark::ProfilerBenchmark] category is empty")
+	XASSERT(!name.empty(), "[ProfilerBenchmark::ProfilerBenchmark] name is empty")
 
 #if defined(EDITOR)
 	//If the profiler is new, created a new one

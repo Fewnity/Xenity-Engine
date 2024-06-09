@@ -48,11 +48,6 @@ TextRenderer::~TextRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-int TextRenderer::GetDrawPriority() const
-{
-	return orderInLayer;
-}
-
 void TextRenderer::SetOrderInLayer(int orderInLayer)
 {
 	this->orderInLayer = orderInLayer;
@@ -131,4 +126,35 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 		isTextInfoDirty = false;
 	}
 	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
+}
+
+void TextRenderer::SetFontSize(float fontSize)
+{
+	this->fontSize = fontSize;
+	isTextInfoDirty = true;
+}
+
+void TextRenderer::SetLineSpacing(float lineSpacing)
+{
+	this->lineSpacing = lineSpacing;
+	isTextInfoDirty = true;
+}
+
+void TextRenderer::SetCharacterSpacing(float characterSpacing)
+{
+	this->characterSpacing = characterSpacing;
+	isTextInfoDirty = true;
+
+}
+
+void TextRenderer::SetVerticalAlignment(VerticalAlignment verticalAlignment)
+{
+	this->verticalAlignment = verticalAlignment;
+	isTextInfoDirty = true;
+}
+
+void TextRenderer::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+{
+	this->horizontalAlignment = horizontalAlignment;
+	isTextInfoDirty = true;
 }

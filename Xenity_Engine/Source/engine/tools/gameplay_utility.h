@@ -11,6 +11,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/component.h>
+#include <engine/accessors/acc_gameobject.h>
 
 /**
 * @brief Check if a GameObject or a Component is valid
@@ -101,6 +102,9 @@ std::enable_if_t<std::is_base_of<Component, T>::value, void>
 Destroy(const std::shared_ptr<T>& component) 
 {
 	// Remove the component from the his parent's components list
-	if (component)
-		component->GetGameObject()->RemoveComponent(component);
+	if (component) 
+	{
+		GameObjectAccessor gameObjectAcc = GameObjectAccessor(component->GetGameObject());
+		gameObjectAcc.RemoveComponent(component);
+	}
 }

@@ -16,16 +16,16 @@ class API AudioClip : public FileReference, public Reflective
 public:
 	AudioClip();
 
+protected:
+	friend class AudioClipStream;
+	friend class ProjectManager;
+
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<AudioClip> MakeAudioClip();
 
 	void LoadFileReference() override;
 	void UnloadFileReference() override;
-
-
-private:
-	friend class AudioClipStream;
 
 	struct AudioMemory
 	{
@@ -36,7 +36,7 @@ private:
 	/**
 	* [Internal]
 	*/
-	bool GetIsLoadedInMemory() 
+	inline bool GetIsLoadedInMemory()
 	{
 		return loadedInMemory;
 	}
@@ -44,7 +44,7 @@ private:
 	/**
 	* [Internal]
 	*/
-	const AudioMemory& GetAudioMemory()
+	inline const AudioMemory& GetAudioMemory()
 	{
 		return audioMemory;
 	}

@@ -93,7 +93,7 @@ public:
 	/**
 	* @brief Get game state
 	*/
-	static GameState GetGameState()
+	static inline GameState GetGameState()
 	{
 		return gameState;
 	}
@@ -101,7 +101,7 @@ public:
 	/**
 	* @brief Get the OnPlay event
 	*/
-	static Event<>& GetOnPlayEvent() 
+	static inline Event<>& GetOnPlayEvent()
 	{
 		return OnPlayEvent;
 	}

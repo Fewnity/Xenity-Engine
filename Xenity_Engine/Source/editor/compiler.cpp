@@ -47,8 +47,8 @@ bool Compiler::isCompilationCancelled = false;
 
 void Compiler::AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest)
 {
-	DXASSERT(!source.empty(), "[Compiler::AddCopyEntry] source is empty")
-	DXASSERT(!dest.empty(), "[Compiler::AddCopyEntry] dest is empty")
+	XASSERT(!source.empty(), "[Compiler::AddCopyEntry] source is empty")
+	XASSERT(!dest.empty(), "[Compiler::AddCopyEntry] dest is empty")
 
 	if (source.empty() || dest.empty())
 	{
@@ -271,7 +271,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 
 CompileResult Compiler::CompilePlugin(Platform platform, const std::string& pluginPath)
 {
-	DXASSERT(!pluginPath.empty(), "[Compiler::CompilePlugin] pluginPath is empty")
+	XASSERT(!pluginPath.empty(), "[Compiler::CompilePlugin] pluginPath is empty")
 
 	if (pluginPath.empty())
 		return CompileResult::ERROR_UNKNOWN;
@@ -332,7 +332,7 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 
 bool Compiler::ExportProjectFiles(const std::string& exportPath)
 {
-	DXASSERT(!exportPath.empty(), "[Compiler::ExportProjectFiles] exportPath is empty")
+	XASSERT(!exportPath.empty(), "[Compiler::ExportProjectFiles] exportPath is empty")
 	if (exportPath.empty())
 		return false;
 
@@ -367,7 +367,7 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 
 CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
-	DXASSERT(!exportPath.empty(), "[Compiler::CompileGame] exportPath is empty")
+	XASSERT(!exportPath.empty(), "[Compiler::CompileGame] exportPath is empty")
 	if (exportPath.empty())
 		return CompileResult::ERROR_UNKNOWN;
 
@@ -524,7 +524,7 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 
 std::string WindowsPathToWSL(const std::string& path)
 {
-	DXASSERT(!path.empty(), "[Compiler::WindowsPathToWSL] path is empty")
+	XASSERT(!path.empty(), "[Compiler::WindowsPathToWSL] path is empty")
 	if (path.empty())
 		return "";
 
@@ -1142,7 +1142,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 
 void Compiler::StartGame(Platform platform, const std::string& exportPath)
 {
-	DXASSERT(!exportPath.empty(), "[Compiler::StartGame] exportPath is empty")
+	XASSERT(!exportPath.empty(), "[Compiler::StartGame] exportPath is empty")
 	if (exportPath.empty())
 		return;
 

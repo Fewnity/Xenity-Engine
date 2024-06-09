@@ -172,7 +172,7 @@ public:
 	*/
 	static void RemoveMenu(Menu* menu)
 	{
-		DXASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr")
+		XASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr")
 
 		for (int i = 0; i < menuCount; i++)
 		{

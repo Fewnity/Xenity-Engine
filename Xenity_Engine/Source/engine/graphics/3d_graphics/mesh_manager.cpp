@@ -21,7 +21,7 @@ void MeshManager::Init()
 
 std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 {
-	DXASSERT(!path.empty(), "[MeshManager::LoadMesh] path is empty")
+	XASSERT(!path.empty(), "[MeshManager::LoadMesh] path is empty")
 
 	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
 	mesh->file = FileSystem::MakeFile(path);
@@ -32,7 +32,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings)
 {
-	DXASSERT(material != nullptr, "[MeshManager::DrawMesh] material is nullptr")
+	XASSERT(material != nullptr, "[MeshManager::DrawMesh] material is nullptr")
 
 	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
@@ -40,8 +40,8 @@ void MeshManager::DrawMesh(const Vector3& position, const Vector3& rotation, con
 
 void MeshManager::DrawMesh(const std::shared_ptr<Transform>& transform, const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings)
 {
-	DXASSERT(transform != nullptr, "[MeshManager::DrawMesh] transform is nullptr")
-	DXASSERT(material != nullptr, "[MeshManager::DrawMesh] material is nullptr")
+	XASSERT(transform != nullptr, "[MeshManager::DrawMesh] transform is nullptr")
+	XASSERT(material != nullptr, "[MeshManager::DrawMesh] material is nullptr")
 
 	const Vector3& scale = transform->GetScale();
 

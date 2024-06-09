@@ -21,8 +21,6 @@ public:
 	explicit Transform(const std::shared_ptr<GameObject>& gameObject);
 	virtual ~Transform() = default;
 
-	ReflectiveData GetReflectiveData() override;
-
 	/**
 	* @brief Get position
 	*/
@@ -128,10 +126,13 @@ public:
 
 private:
 
+	ReflectiveData GetReflectiveData() override;
+
 	friend class InspectorSetTransformDataCommand;
 	friend class InspectorDeleteGameObjectCommand;
 	friend class GameObject;
 	friend class SceneManager;
+	friend class InspectorMenu;
 
 	/**
 	* @brief [Internal] Update children world positions

@@ -23,11 +23,6 @@ public:
 	Camera();
 	~Camera();
 
-	void RemoveReferences() override;
-
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
-
 	/**
 	* @brief Set field of view
 	* @param Field of view angle
@@ -48,17 +43,26 @@ public:
 	/**
 	* @brief Get projection size
 	*/
-	float GetProjectionSize() const;
+	inline float GetProjectionSize() const
+	{
+		return projectionSize;
+	}
 
 	/**
 	* @brief Get near clipping plane
 	*/
-	float GetNearClippingPlane() const;
+	inline float GetNearClippingPlane() const
+	{
+		return nearClippingPlane;
+	}
 
 	/**
 	* @brief Get far clipping plane
 	*/
-	float GetFarClippingPlane() const;
+	inline float GetFarClippingPlane() const
+	{
+		return farClippingPlane;
+	}
 
 	/**
 	* @brief Set near clipping plane
@@ -85,30 +89,33 @@ public:
 	Vector2 MouseTo2DWorld();
 
 	/**
-	* @brief Get projection matrix
-	*/
-	glm::mat4& GetProjection();
-
-	/**
 	* @brief Set projection type
 	* @param type Projection type
 	*/
 	void SetProjectionType(const ProjectionTypes type);
 
 	/**
+	* @brief Get projection matrix
+	*/
+	inline glm::mat4& GetProjection()
+	{
+		return projection;
+	}
+
+	/**
 	* @brief Get projection type
 	*/
-	ProjectionTypes GetProjectionType() const;
+	inline ProjectionTypes GetProjectionType() const
+	{
+		return projectionType;
+	}
 
 	Vector3 GetMouseRay();
-
-	void OnDrawGizmosSelected() override;
-	void OnDrawGizmos() override;
 
 	/**
 	* @brief Get view width in pixel
 	*/
-	int GetWidth() const
+	inline int GetWidth() const
 	{
 		return width;
 	}
@@ -116,7 +123,7 @@ public:
 	/**
 	* @brief Get view height in pixel
 	*/
-	int GetHeight() const
+	inline int GetHeight() const
 	{
 		return height;
 	}
@@ -124,7 +131,7 @@ public:
 	/**
 	* @brief Get view aspect ratio
 	*/
-	float GetAspectRatio() const
+	inline float GetAspectRatio() const
 	{
 		return aspect;
 	}
@@ -132,7 +139,7 @@ public:
 	/**
 	* @brief Get if the camera is using multisampling (Windows Only)
 	*/
-	bool GetUseMultisampling() 
+	inline bool GetUseMultisampling()
 	{
 		return useMultisampling;
 	}
@@ -141,13 +148,12 @@ public:
 	* @brief Set if the camera is using multisampling (Windows Only)
 	* @param _UseMultisampling True to enable Multisampling
 	*/
-	void SetUseMultisampling(bool _UseMultisampling) 
+	inline void SetUseMultisampling(bool _UseMultisampling)
 	{
 		useMultisampling = _UseMultisampling;
 	}
 
-
-private:
+protected:
 	friend class SceneMenu;
 	friend class GameMenu;
 	friend class Shader;
@@ -160,10 +166,25 @@ private:
 	friend class Window;
 	friend class SpriteManager;
 
+	void RemoveReferences() override;
+
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
+	void OnDrawGizmosSelected() override;
+	void OnDrawGizmos() override;
+
 	/**
-* @brief [Internal] Update projection matrix
-*/
+	* @brief [Internal] Update projection matrix
+	*/
 	void UpdateProjection();
+
+	/**
+	* @brief [Internal] Get projection matrix without Clipping Planes values
+	*/
+	inline glm::mat4& GetCanvasProjection()
+	{
+		return canvasProjection;
+	}
 
 	/**
 	* @brief [Internal] Change Frame buffer size in pixel
@@ -183,11 +204,6 @@ private:
 
 	// [Internal]
 	unsigned int secondFramebufferTexture = -1;
-
-	/**
-* @brief [Internal] Get projection matrix without Clipping Planes values
-*/
-	glm::mat4& GetCanvasProjection();
 
 	unsigned int framebufferTexture = -1;
 
@@ -223,7 +239,7 @@ private:
 	/**
 	* [Internal] Get if the camera is for the editor
 	*/
-	bool GetIsEditor() 
+	inline bool GetIsEditor()
 	{
 		return isEditor;
 	}
@@ -231,7 +247,7 @@ private:
 	/**
 	* [Internal] Set if the camera is for the editor
 	*/
-	void SetIsEditor(bool _isEditor)
+	inline void SetIsEditor(bool _isEditor)
 	{
 		isEditor = _isEditor;
 	}

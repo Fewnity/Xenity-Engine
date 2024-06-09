@@ -280,8 +280,12 @@ public:
 	*/
 	virtual void OnReflectionUpdated() {};
 
-
 protected:
+	//friend class EditorUI;
+	//friend class AssetManager;
+	//friend class InspectorMenu;
+	//friend class InspectorDeleteGameObjectCommand;
+
 	/**
 	* @brief Add a variable to the list of variables (basic type)
 	* @param vector The list of variables

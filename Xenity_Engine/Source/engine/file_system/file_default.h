@@ -25,7 +25,7 @@ class API FileDefault : public File
 {
 public:
 	FileDefault() = delete;
-	FileDefault(std::string _path);
+	explicit FileDefault(std::string _path);
 	~FileDefault();
 
 	/**

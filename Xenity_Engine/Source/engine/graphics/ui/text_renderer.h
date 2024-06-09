@@ -22,16 +22,8 @@ class API TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
 
 	~TextRenderer();
-
-	/**
-	 * @brief [Internal]
-	 */
-	int GetDrawPriority() const override;
-
 
 	/**
 	* @brief Set order in layer
@@ -42,7 +34,7 @@ public:
 	/**
 	* @brief Get order in layer
 	*/
-	int GetOrderInLayer() const
+	inline int GetOrderInLayer() const
 	{
 		return orderInLayer;
 	}
@@ -51,7 +43,7 @@ public:
 	* @brief Set text color
 	* @param color Color
 	*/
-	void SetColor(const Color& color)
+	inline void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
@@ -72,7 +64,41 @@ public:
 
 	void SetMaterial(std::shared_ptr<Material> _material);
 
-private:
+	void SetFontSize(float fontSize);
+	inline float GetFontSize()
+	{
+		return fontSize;
+	}
+
+	void SetLineSpacing(float lineSpacing);
+	inline float GetLineSpacing()
+	{
+		return lineSpacing;
+	}
+
+	void SetCharacterSpacing(float characterSpacing);
+	inline float GetCharacterSpacing()
+	{
+		return characterSpacing;
+	}
+
+	void SetVerticalAlignment(VerticalAlignment verticalAlignment);
+	inline VerticalAlignment GetVerticalAlignment()
+	{
+		return verticalAlignment;
+	}
+
+	void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment);
+	inline HorizontalAlignment GetHorizontalAlignment()
+	{
+		return horizontalAlignment;
+	}
+
+protected:
+
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
+
 	std::shared_ptr<Material> material = nullptr;
 
 	/**
@@ -105,13 +131,10 @@ private:
 	int orderInLayer = 0;
 	float fontSize = 1;
 
-public:
-	float size = 16;
 	float lineSpacing = 0;
 	float characterSpacing = 0;
 	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
 	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
 
-private:
 	bool isTextInfoDirty = true;
 };

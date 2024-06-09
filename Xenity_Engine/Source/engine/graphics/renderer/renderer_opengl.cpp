@@ -252,7 +252,7 @@ void RendererOpengl::ApplyTextureFilters(const Texture& texture)
 
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
 {
-	DrawSubMesh(subMesh, material, *material.texture, settings);
+	DrawSubMesh(subMesh, material, *material.GetTexture(), settings);
 }
 
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
@@ -341,7 +341,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 	const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
 	const Vector4 colorToUse = rgba.ToVector4();
-	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.shader->fileId))
+	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->fileId))
 	{
 		lastUsedColor = colorToUse;
 		if (Graphics::UseOpenGLFixedFunctions)
@@ -350,8 +350,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 		else 
 		{
-			lastShaderIdUsedColor = material.shader->fileId;
-			material.shader->SetShaderAttribut("color", colorToUse);
+			lastShaderIdUsedColor = material.GetShader()->fileId;
+			material.GetShader()->SetShaderAttribut("color", colorToUse);
 		}
 	}
 
@@ -368,8 +368,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	{
 		glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
-		glTranslatef(material.offset.x, material.offset.y, 0);
-		glScalef(material.tiling.x, material.tiling.y, 1.0f);
+		glTranslatef(material.GetOffset().x, material.GetOffset().y, 0);
+		glScalef(material.GetTiling().x, material.GetTiling().y, 1.0f);
 	}
 
 	// Draw

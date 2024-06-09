@@ -13,6 +13,7 @@
 
 #include <engine/component.h>
 #include <iostream>
+#include <engine/accessors/acc_gameobject.h>
 
 
 #pragma region Constructors / Destructor
@@ -23,7 +24,8 @@ std::shared_ptr<GameObject> CreateGameObject()
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>();
 	GameplayManager::AddGameObject(newGameObject);
-	newGameObject->Setup();
+	GameObjectAccessor gameObjectAcc = GameObjectAccessor(newGameObject);
+	gameObjectAcc.Setup();
 	return newGameObject;
 }
 
@@ -31,7 +33,8 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
 	GameplayManager::AddGameObject(newGameObject);
-	newGameObject->Setup();
+	GameObjectAccessor gameObjectAcc = GameObjectAccessor(newGameObject);
+	gameObjectAcc.Setup();
 	return newGameObject;
 }
 
@@ -39,7 +42,8 @@ std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
 	GameplayManager::AddGameObjectEditor(newGameObject);
-	newGameObject->Setup();
+	GameObjectAccessor gameObjectAcc = GameObjectAccessor(newGameObject);
+	gameObjectAcc.Setup();
 	return newGameObject;
 }
 
@@ -48,12 +52,16 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 	{
 		std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
+
+		GameObjectAccessor gameobjectAcc = GameObjectAccessor(gameobject);
+		std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
+
 		const int componentCount = gameobject->GetComponentCount();
 		for (int compI = 0; compI < componentCount; compI++)
 		{
-			if (gameobject->components[compI]->GetUniqueId() == id)
+			if (gameobjectComponents[compI]->GetUniqueId() == id)
 			{
-				return gameobject->components[compI];
+				return gameobjectComponents[compI];
 			}
 		}
 	}
@@ -100,7 +108,7 @@ void GameObject::Setup()
 
 void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 {
-	DXASSERT(component != nullptr, "[GameObject::RemoveComponent] component is nullptr")
+	XASSERT(component != nullptr, "[GameObject::RemoveComponent] component is nullptr")
 
 		// If the component is not already waiting for destroy
 		if (component && !component->waitingForDestroy)
@@ -123,7 +131,7 @@ void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 
 void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 {
-	DXASSERT(newChild != nullptr, "[GameObject::AddChild] newChild is nullptr")
+	XASSERT(newChild != nullptr, "[GameObject::AddChild] newChild is nullptr")
 
 		if (newChild)
 		{
@@ -200,7 +208,7 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 
 void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componentToAdd)
 {
-	DXASSERT(componentToAdd != nullptr, "[GameObject::AddExistingComponent] componentToAdd is nullptr")
+	XASSERT(componentToAdd != nullptr, "[GameObject::AddExistingComponent] componentToAdd is nullptr")
 
 		if (!componentToAdd.get())
 			return;
@@ -238,7 +246,7 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 
 std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 {
-	DXASSERT(!name.empty(), "[GameObject::FindGameObjectByName] name is empty")
+	XASSERT(!name.empty(), "[GameObject::FindGameObjectByName] name is empty")
 
 		const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
 
@@ -296,7 +304,7 @@ void GameObject::SetActive(const bool active)
 
 void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 {
-	DXASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty")
+	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty")
 
 	const bool lastLocalActive = localActive;
 	if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false

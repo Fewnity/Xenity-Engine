@@ -30,14 +30,9 @@ public:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated()  override;
 
-	/**
-	 * @brief [Internal]
-	 */
-	int GetDrawPriority() const override;
-
 	void SetOrderInLayer(int orderInLayer);
 
-	int GetOrderInLayer() const
+	inline int GetOrderInLayer() const
 	{
 		return orderInLayer;
 	}
@@ -45,27 +40,27 @@ public:
 	/**
 	* @brief Set the color of the sprite
 	*/
-	void SetColor(const Color& color)
+	inline void SetColor(const Color& color)
 	{
 		this->color = color;
 	}
 
-	Vector3 GetStartPosition() 
+	inline Vector3 GetStartPosition()
 	{
 		return startPosition;
 	}
 
-	Vector3 GetEndPosition()
+	inline Vector3 GetEndPosition()
 	{
 		return endPosition;
 	}
 
-	void SetStartPosition(const Vector3& newStartPosition)
+	inline void SetStartPosition(const Vector3& newStartPosition)
 	{
 		startPosition = newStartPosition;
 	}
 
-	void SetEndPosition(const Vector3& newEndPosition)
+	inline void SetEndPosition(const Vector3& newEndPosition)
 	{
 		endPosition = newEndPosition;
 	}

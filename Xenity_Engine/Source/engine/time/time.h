@@ -29,27 +29,41 @@ public:
 	/**
 	* @brief Get total scaled elapsed time
 	*/
-	static float GetTime();
+	static inline float GetTime()
+	{
+		return time;
+	}
 
 	/**
 	* @brief Get total unscaled elapsed time
 	*/
-	static float GetUnscaledTime();
+	static inline float GetUnscaledTime()
+	{
+		return unscaledTime;
+	}
 
 	/**
 	* @brief Get scaled delta time
 	*/
-	static float GetDeltaTime();
-
+	static inline float GetDeltaTime()
+	{
+		return deltaTime;
+	}
 	/**
 	* @brief Get unscaled delta time
 	*/
-	static float GetUnscaledDeltaTime();
+	static inline float GetUnscaledDeltaTime()
+	{
+		return unscaledDeltaTime;
+	}
 
 	/**
 	* @brief Get time scale
 	*/
-	static float GetTimeScale();
+	static inline float GetTimeScale()
+	{
+		return timeScale;
+	}
 
 	/**
 	* @brief Set time scale

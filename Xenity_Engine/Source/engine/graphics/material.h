@@ -30,14 +30,6 @@ public:
 	Material();
 	~Material();
 
-	// [Internal]
-	void Use();
-
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
-	void OnReflectionUpdated() override;
-
-	void LoadFileReference() override;
 
 	/**
 	* @brief Set attribute of the material
@@ -51,10 +43,80 @@ public:
 	void SetAttribute(const char* attribute, const int value);
 	//void SetAttribute(const char* attribut, Texture* value);
 
-	static std::shared_ptr<Material> MakeMaterial();
+	inline void SetShader(const std::shared_ptr<Shader>& _shader)
+	{
+		shader = _shader;
+	}
+
+	inline void SetTexture(const std::shared_ptr<Texture>& _texture)
+	{
+		texture = _texture;
+	}
+
+	inline void SetUseLighting(const bool _useLighting)
+	{
+		useLighting = _useLighting;
+	}
+
+	inline void SetUseTransparency(const bool _useTransparency)
+	{
+		useTransparency = _useTransparency;
+	}
+
+	inline void SetOffset(const Vector2& _offset)
+	{
+		offset = _offset;
+	}
+
+	inline void SetTiling(const Vector2& _tiling)
+	{
+		tiling = _tiling;
+	}
+
+	inline std::shared_ptr<Shader> GetShader() const
+	{
+		return shader;
+	}
+
+	inline std::shared_ptr<Texture> GetTexture() const
+	{
+		return texture;
+	}
+
+	inline bool GetUseLighting() const
+	{
+		return useLighting;
+	}
+
+	inline bool GetUseTransparency() const
+	{
+		return useTransparency;
+	}
+
+	inline Vector2 GetOffset() const
+	{
+		return offset;
+	}
+
+	inline Vector2 GetTiling() const
+	{
+		return tiling;
+	}
+
+protected:
+	friend class AssetManager;
+	friend class ProjectManager;
+	friend class Graphics;
 
 	// [Internal]
-private:
+	void Use();
+
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData() override;
+	void OnReflectionUpdated() override;
+
+	void LoadFileReference() override;
+	static std::shared_ptr<Material> MakeMaterial();
 
 	/**
 	* @brief Update the material
@@ -69,7 +131,6 @@ private:
 	std::unordered_map <const char*, int> uniformsInt;
 	std::unordered_map <const char*, float> uniformsFloat;
 
-public:
 	std::shared_ptr<Shader> shader = nullptr;
 	std::shared_ptr<Texture> texture;
 	IDrawableTypes lastUpdatedType = IDrawableTypes::Draw_3D;
@@ -80,6 +141,5 @@ public:
 	Vector2 tiling = Vector2(1, 1);
 
 	static constexpr int version = 1;
-
 };
 

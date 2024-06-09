@@ -25,6 +25,16 @@ public:
 	SkyBox();
 	~SkyBox();
 
+	std::shared_ptr<Texture> front = nullptr;
+	std::shared_ptr<Texture> back = nullptr;
+	std::shared_ptr<Texture> up = nullptr;
+	std::shared_ptr<Texture> down = nullptr;
+	std::shared_ptr<Texture> left = nullptr;
+	std::shared_ptr<Texture> right = nullptr;
+
+protected:
+	friend class ProjectManager;
+
 	/**
 	* @brief Create a skybox
 	* @param front Front face
@@ -41,15 +51,6 @@ public:
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;
-
-	std::shared_ptr<Texture> front = nullptr;
-	std::shared_ptr<Texture> back = nullptr;
-	std::shared_ptr<Texture> up = nullptr;
-	std::shared_ptr<Texture> down = nullptr;
-	std::shared_ptr<Texture> left = nullptr;
-	std::shared_ptr<Texture> right = nullptr;
-
-private:
 
 	static constexpr int version = 1;
 };

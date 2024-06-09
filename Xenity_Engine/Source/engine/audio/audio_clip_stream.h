@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief Get channel count
 	*/
-	int GetChannelCount() const
+	inline int GetChannelCount() const
 	{
 		return channelCount;
 	}
@@ -83,7 +83,7 @@ public:
 	/**
 	* @brief Get audio type
 	*/
-	AudioType GetAudioType() const
+	inline AudioType GetAudioType() const
 	{
 		return type;
 	}

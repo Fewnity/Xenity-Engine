@@ -17,9 +17,12 @@ class API Scene : public FileReference, public Reflective
 {
 public:
 	Scene();
+
+protected:
+	friend class ProjectManager;
+
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<Scene> MakeScene();
-private:
 };
 

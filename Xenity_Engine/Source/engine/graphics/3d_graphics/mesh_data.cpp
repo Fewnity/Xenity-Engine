@@ -424,7 +424,7 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 
 void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
-	DXASSERT(vcount != 0 || index_count != 0, "[MeshData::AllocSubMesh] vcount and index_count are 0")
+	XASSERT(vcount != 0 || index_count != 0, "[MeshData::AllocSubMesh] vcount and index_count are 0")
 
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
 	newSubMesh->meshData = this;

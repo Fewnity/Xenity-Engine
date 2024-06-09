@@ -28,7 +28,7 @@ class API File : public UniqueId, public std::enable_shared_from_this<File>
 {
 public:
 	File() = delete;
-	File(std::string _path);
+	explicit File(std::string _path);
 	~File() = default;
 
 	/**
@@ -70,7 +70,7 @@ public:
 	/**
 	* @brief Get file path
 	*/
-	const std::string& GetPath() const
+	inline const std::string& GetPath() const
 	{
 		return path;
 	}
@@ -88,7 +88,7 @@ public:
 	/**
 	* @brief Get file extension (dot included)
 	*/
-	const std::string& GetFileExtension() const
+	inline const std::string& GetFileExtension() const
 	{
 		return pathExtention;
 	}

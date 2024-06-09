@@ -217,9 +217,9 @@ bool Shader::Use()
 
 void Shader::Compile(const std::string& shaderData, ShaderType type)
 {
-	DXASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty")
+	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty")
 
-		const char* shaderDataConst = shaderData.c_str();
+	const char* shaderDataConst = shaderData.c_str();
 
 	unsigned int* id = nullptr;
 
@@ -239,7 +239,7 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 		break;
 	}
 
-	DXASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr")
+	XASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr")
 
 	//Compile
 	*id = Engine::GetRenderer().CreateShader(type);
@@ -435,7 +435,7 @@ void Shader::Link()
 /// <param name="index">Shader's point light index</param>
 void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	DXASSERT(light != nullptr, "[Shader::SetPointLightData] light is nullptr")
+	XASSERT(light != nullptr, "[Shader::SetPointLightData] light is nullptr")
 
 	const std::string baseString = "pointLights[" + std::to_string(index) + "].";
 
@@ -457,7 +457,7 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 /// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	DXASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
+	XASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
 
 	static const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
@@ -475,7 +475,7 @@ void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const 
 /// <param name="index">Shader's spot light index</param>
 void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int index)
 {
-	DXASSERT(light != nullptr, "[Shader::SetSpotLightData] light is nullptr")
+	XASSERT(light != nullptr, "[Shader::SetSpotLightData] light is nullptr")
 
 	const std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();

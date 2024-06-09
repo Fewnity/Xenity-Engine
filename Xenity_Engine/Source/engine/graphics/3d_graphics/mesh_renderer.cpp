@@ -57,11 +57,6 @@ MeshRenderer::~MeshRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-int MeshRenderer::GetDrawPriority() const
-{
-	return 0;
-}
-
 void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
 	if (!meshData)
@@ -85,7 +80,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = meshData->subMeshes[i];
 		command.transform = GetTransform();
 		command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
-		if (!material->useTransparency)
+		if (!material->GetUseTransparency())
 		{
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
 			renderQueue.commands.push_back(command);
@@ -147,7 +142,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
-	renderSettings.useLighting = renderCommand.material->useLighting;
-	renderSettings.useBlend = renderCommand.material->useTransparency;
+	renderSettings.useLighting = renderCommand.material->GetUseLighting();
+	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
 	MeshManager::DrawMesh(GetTransform(), *renderCommand.subMesh, renderCommand.material, renderSettings);
 }

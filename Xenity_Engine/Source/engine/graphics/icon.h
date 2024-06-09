@@ -11,7 +11,9 @@
 
 class Icon : public FileReference, public Reflective
 {
-public:
+protected:
+	friend class ProjectManager;
+
 	ReflectiveData GetReflectiveData() override;
 
 	static std::shared_ptr<Icon> MakeIcon();

@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\accessors\acc_gameobject.cpp" />
     <ClCompile Include="Source\editor\command\commands\delete.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
@@ -934,6 +935,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\accessors\acc_gameobject.h" />
     <ClInclude Include="Source\editor\command\commands\delete.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>

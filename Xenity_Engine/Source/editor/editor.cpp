@@ -850,7 +850,7 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 
 bool Editor::OpenExecutableFile(const std::string& executablePath)
 {
-	DXASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty")
+	XASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty")
 	if (executablePath.empty())
 		return false;
 

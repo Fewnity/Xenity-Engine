@@ -134,10 +134,6 @@ void Light::UpdateLightValues()
 	quadratic = (7 * 1.8f) / (powf(range, 2) / 6.0f);
 }
 
-float Light::GetRange() const
-{
-	return range;
-}
 
 void Light::SetSpotAngle(float angle)
 {
@@ -159,26 +155,11 @@ void Light::SetSpotSmoothness(float smoothness)
 	spotSmoothness = smoothness;
 }
 
-float Light::GetSpotAngle() const
-{
-	return spotAngle;
-}
-
-float Light::GetSpotSmoothness() const
-{
-	return spotSmoothness;
-}
-
 void Light::SetIntensity(float intensity)
 {
 	if (intensity < 0)
 		intensity = 0;
 	this->intensity = intensity;
-}
-
-float Light::GetIntensity() const
-{
-	return intensity;
 }
 
 void Light::SetRange(float value)

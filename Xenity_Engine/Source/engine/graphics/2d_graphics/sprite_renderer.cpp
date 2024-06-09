@@ -42,11 +42,6 @@ SpriteRenderer::~SpriteRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-int SpriteRenderer::GetDrawPriority() const
-{
-	return orderInLayer;
-}
-
 void SpriteRenderer::SetOrderInLayer(int orderInLayer)
 {
 	this->orderInLayer = orderInLayer;

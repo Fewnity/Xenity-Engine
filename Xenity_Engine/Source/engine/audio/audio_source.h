@@ -18,12 +18,6 @@ public:
 	AudioSource();
 	~AudioSource();
 
-	void RemoveReferences() override;
-
-	ReflectiveData GetReflectiveData() override;
-
-	void Awake() override;
-
 	/**
 	* @brief Play audio
 	*/
@@ -43,7 +37,6 @@ public:
 	* @brief Stop audio
 	*/
 	void Stop();
-
 
 	/**
 	* @brief Set volume
@@ -66,7 +59,7 @@ public:
 	/**
 	* @brief Get volume
 	*/
-	float GetVolume() const
+	inline float GetVolume() const
 	{
 		return volume;
 	}
@@ -74,7 +67,7 @@ public:
 	/**
 	* @brief Get panning
 	*/
-	float GetPanning() const
+	inline float GetPanning() const
 	{
 		return pan;
 	}
@@ -82,7 +75,7 @@ public:
 	/**
 	* @brief Get is playing
 	*/
-	bool GetIsPlaying() const
+	inline bool GetIsPlaying() const
 	{
 		return isPlaying;
 	}
@@ -90,31 +83,36 @@ public:
 	/**
 	* @brief Get is looping
 	*/
-	bool GetIsLooping() const
+	inline bool GetIsLooping() const
 	{
 		return loop;
 	}
 
-	std::shared_ptr<AudioClip> GetAudioClip()
+	inline std::shared_ptr<AudioClip> GetAudioClip()
 	{
 		return audioClip;
 	}
 
-	void SetAudioClip(std::shared_ptr<AudioClip> audioClip)
+	inline void SetAudioClip(std::shared_ptr<AudioClip> audioClip)
 	{
 		this->audioClip = audioClip;
 	}
 
+protected:
 	void OnDrawGizmos() override;
 
-private:
+	void RemoveReferences() override;
+
+	ReflectiveData GetReflectiveData() override;
+
+	void Awake() override;
 
 	std::shared_ptr<AudioClip> audioClip = nullptr;
 
 	/**
 	* @brief Get shared pointer from this
 	*/
-	std::shared_ptr<AudioSource> GetThisShared()
+	inline std::shared_ptr<AudioSource> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
 	}

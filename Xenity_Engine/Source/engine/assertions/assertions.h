@@ -13,14 +13,12 @@
 
 void OnAssertionFailed(const std::string& message);
 
-#define XASSERT(x, message) if (!(x)) { OnAssertionFailed(message); assert(false); }
-
 #if defined(DEBUG)
 // DASSERT is a debug assertion that will only be compiled in debug mode
-#define DXASSERT(x, message) if (!(x)) { OnAssertionFailed(message); assert(false); }
+#define XASSERT(x, message) if (!(x)) { OnAssertionFailed(message); assert(false); }
 #else
 // DASSERT is a debug assertion that will only be compiled in debug mode
-#define DXASSERT(x, text)
+#define XASSERT(x, text)
 #endif
 
 // ------------------------------- Type assertions -------------------------------

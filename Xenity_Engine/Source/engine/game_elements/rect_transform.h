@@ -17,13 +17,13 @@ public:
 	RectTransform();
 	~RectTransform();
 
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
 	Vector2 anchors = Vector2(0);
 	Vector2 position = Vector2(0);
 
 
-private:
+protected:
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	friend class Canvas;
 

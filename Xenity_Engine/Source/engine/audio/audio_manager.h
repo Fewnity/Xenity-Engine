@@ -82,7 +82,7 @@ public:
 	/**
 	* @brief Lock mutex
 	*/
-	void Lock()
+	inline void Lock()
 	{
 #if defined(__vita__)
 		sceKernelLockMutex(mutexid, 1, nullptr);
@@ -96,7 +96,7 @@ public:
 	/**
 	* @brief Unlock mutex
 	*/
-	void Unlock()
+	inline void Unlock()
 	{
 #if defined(__vita__)
 		sceKernelUnlockMutex(mutexid, 1);

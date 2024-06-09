@@ -16,7 +16,11 @@
 class CodeFile : public FileReference, public Reflective
 {
 public:
-	CodeFile(const bool isHeader);
+	explicit CodeFile(const bool isHeader);
+
+protected:
+	friend class ProjectManager;
+
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
 	static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
@@ -25,12 +29,11 @@ public:
 	* @brief Gets if the file is a header file
 	* @return If the file is a header file
 	*/
-	bool GetIsHeader() 
+	inline bool GetIsHeader()
 	{
 		return isHeader;
 	}
 
-private:
 	bool isHeader = false;
 };
 

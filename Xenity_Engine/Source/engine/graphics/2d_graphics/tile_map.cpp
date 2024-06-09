@@ -47,11 +47,6 @@ ReflectiveData Tilemap::GetReflectiveData()
 	return reflectedVariables;
 }
 
-int Tilemap::GetDrawPriority() const
-{
-	return orderInLayer;
-}
-
 void Tilemap::Setup(int _width, int _height)
 {
 	Setup(_width, _height, DEFAULT_CHUNK_SIZE);

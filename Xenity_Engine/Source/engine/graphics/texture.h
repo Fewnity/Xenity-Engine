@@ -30,28 +30,7 @@ class API Texture : public FileReference, public Reflective
 {
 public:
 	Texture();
-
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
-
-	static std::shared_ptr<Texture> MakeTexture();
-
 	~Texture();
-
-	void LoadFileReference() override;
-	void OnLoadFileReferenceFinished() override;
-	void UnloadFileReference() override;
-
-	/**
-	 * @brief Set texture data
-	 * @param data Texture data
-	 */
-	void SetData(const unsigned char *data);
-
-	/**
-	 * @brief [Internal] Get texture ID
-	 */
-	unsigned int GetTextureId() const;
 
 	/**
 	 * @brief Set texture filter
@@ -65,7 +44,7 @@ public:
 	 */
 	void SetWrapMode(const WrapMode mode);
 
-	void SetSize(int width, int height)
+	inline void SetSize(int width, int height)
 	{
 		this->width = width;
 		this->height = height;
@@ -93,16 +72,6 @@ public:
 	int GetPixelPerUnit() const;
 
 	/**
-	 * @brief Get texture channel count
-	 */
-	int GetChannelCount() const;
-
-	void SetChannelCount(int channelCount)
-	{
-		this->nrChannels = channelCount;
-	}
-
-	/**
 	 * @brief Get if the texture is using mipmap
 	 */
 	bool GetUseMipmap() const;
@@ -117,10 +86,40 @@ public:
 	 */
 	WrapMode GetWrapMode() const;
 
+protected:
+	template <class T>
+	friend class SelectAssetMenu;
+	friend class RendererOpengl;
+	friend class RendererGU;
+	friend class RendererGsKit;
+	friend class RendererVU1;
+	friend class EditorUI;
+	friend class Editor;
+	friend class SpriteEditorMenu;
+	friend class BuildSettingsMenu;
+	friend class FileExplorerMenu;
+	friend class SceneMenu;
+	friend class InspectorMenu;
+	friend class MainBarMenu;
+	friend class Font;
+	friend class AssetManager;
+	friend class ProjectManager;
+	friend class TextManager;
+
+	/**
+	* @brief Get texture channel count
+	*/
+	int GetChannelCount() const;
+
+	inline void SetChannelCount(int channelCount)
+	{
+		this->nrChannels = channelCount;
+	}
+
 	/**
 	 * @brief Return if the texture is valid
 	 */
-	bool IsValid() const
+	inline bool IsValid() const
 	{
 		return isValid;
 	}
@@ -129,7 +128,7 @@ public:
 	* @brief [Internal] Get mipmap level count
 	* @return 0 if mipmapping is not used
 	*/
-	int GetMipmaplevelCount() const
+	inline int GetMipmaplevelCount() const
 	{
 		return mipmaplevelCount;
 	}
@@ -137,14 +136,15 @@ public:
 	/**
 	* @bried [Internal] Get if the texture is using mipmapping
 	*/
-	bool GetIsUsingMipMap() const
+	inline bool GetIsUsingMipMap() const
 	{
 		return useMipMap;
 	}
+
 	/**
 	 * @brief [Internal]
 	 */
-	std::shared_ptr<Texture> GetThisShared()
+	inline std::shared_ptr<Texture> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Texture>(shared_from_this());
 	}
@@ -175,7 +175,25 @@ public:
 	*/
 	void ClearSpriteSelections();
 
-private:
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData() override;
+
+	static std::shared_ptr<Texture> MakeTexture();
+
+	void LoadFileReference() override;
+	void OnLoadFileReferenceFinished() override;
+	void UnloadFileReference() override;
+
+	/**
+	 * @brief Set texture data
+	 * @param data Texture data
+	 */
+	void SetData(const unsigned char* data);
+
+	/**
+	 * @brief [Internal] Get texture ID
+	 */
+	unsigned int GetTextureId() const;
 
 	int mipmaplevelCount = 0;
 

@@ -159,6 +159,7 @@
     <ClCompile Include="Source\engine\graphics\icon.cpp" />
     <ClCompile Include="Source\engine\assertions\assertions.cpp" />
     <ClCompile Include="Source\editor\command\commands\delete.cpp" />
+    <ClCompile Include="Source\engine\accessors\acc_gameobject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Source\engine\assertions\assertions.h" />
     <ClInclude Include="Source\editor\ui\reflective_data_to_draw.h" />
     <ClInclude Include="Source\editor\command\commands\delete.h" />
+    <ClInclude Include="Source\engine\accessors\acc_gameobject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -12,6 +12,7 @@
 #endif
 #include <engine/class_registry/class_registry.h>
 #include <engine/reflection/reflection_utils.h>
+#include <engine/accessors/acc_gameobject.h>
 
 using json = nlohmann::json;
 
@@ -29,7 +30,8 @@ struct GameObjectAndId
 
 void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
 {
-	DXASSERT(goToDuplicate != nullptr, "[GamePlayUtility::DuplicateChild] goToDuplicate is nullptr")
+	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::DuplicateChild] goToDuplicate is nullptr")
+
 
 	// Create new gameobject
 	std::string newGameObjectName = goToDuplicate->GetName();
@@ -55,10 +57,12 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 	}
 
-	const size_t componentCount = goToDuplicate->components.size();
+	GameObjectAccessor goToDuplicateAcc = GameObjectAccessor(goToDuplicate);
+	std::vector<std::shared_ptr<Component>>& goToDuplicateComponents = goToDuplicateAcc.GetComponents();
+	const size_t componentCount = goToDuplicateComponents.size();
 	for (size_t i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr<Component> componentToDuplicate = goToDuplicate->components[i];
+		std::shared_ptr<Component> componentToDuplicate = goToDuplicateComponents[i];
 		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), newGameObject);
 		newComponent->SetIsEnabled(componentToDuplicate->GetIsEnabled());
 		ReflectiveData newReflection = newComponent->GetReflectiveData();
@@ -82,16 +86,16 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 
 	GameObjectsAndIds.push_back(gameObjectAndId);
 
-	const int childCount = goToDuplicate->childCount;
+	const int childCount = goToDuplicate->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DuplicateChild(newGameObject, goToDuplicate->GetChildren()[i].lock(), ComponentsAndIds, GameObjectsAndIds);
+		DuplicateChild(newGameObject, goToDuplicateAcc.GetChildren()[i].lock(), ComponentsAndIds, GameObjectsAndIds);
 	}
 }
 
 std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToDuplicate)
 {
-	DXASSERT(goToDuplicate != nullptr, "[GamePlayUtility::Instantiate] goToDuplicate is nullptr")
+	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::Instantiate] goToDuplicate is nullptr")
 
 	if (!goToDuplicate)
 		return nullptr;
@@ -198,30 +202,36 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 
 void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 {
-	DXASSERT(gameObject != nullptr, "[GamePlayUtility::DestroyGameObjectAndChild] gameObject is nullptr")
+	XASSERT(gameObject != nullptr, "[GamePlayUtility::DestroyGameObjectAndChild] gameObject is nullptr")
 
 	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
-	gameObject->waitingForDestroy = true;
+	GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);
+	gameObjectAcc.SetWaitingForDestroy( true);
 
 	// Remove the destroyed gameobject from his parent's children list
 	if (auto parent = gameObject->GetParent().lock())
 	{
 		const int parentChildCount = parent->GetChildrenCount();
+		GameObjectAccessor parentAcc = GameObjectAccessor(parent);
+		std::vector<std::weak_ptr<GameObject>>& parentChildren = parentAcc.GetChildren();
+
 		for (int i = 0; i < parentChildCount; i++)
 		{
-			if (parent->GetChildren()[i].lock() == gameObject)
+			if (parentChildren[i].lock() == gameObject)
 			{
-				parent->GetChildren().erase(parent->GetChildren().begin() + i);
-				parent->childCount--;
+				parentChildren.erase(parentChildren.begin() + i);
+				parentAcc.SetChildrenCount(parent->GetChildrenCount() - 1);
 				break;
 			}
 		}
 	}
 
+	std::vector<std::weak_ptr<GameObject>>& gameObjectChildren = gameObjectAcc.GetChildren();
+
 	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DestroyGameObjectAndChild(gameObject->GetChildren()[0].lock());
+		DestroyGameObjectAndChild(gameObjectChildren[0].lock());
 		i--;
 		childCount--;
 	}
@@ -235,7 +245,8 @@ void Destroy(const std::weak_ptr<GameObject>& gameObject)
 
 void Destroy(const std::shared_ptr<GameObject>& gameObject)
 {
-	if (gameObject && !gameObject->waitingForDestroy)
+	GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);
+	if (gameObject && !gameObjectAcc.IsWaitingForDestroy())
 	{
 		DestroyGameObjectAndChild(gameObject);
 	}

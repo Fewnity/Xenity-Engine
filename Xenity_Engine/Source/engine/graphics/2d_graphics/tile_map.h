@@ -22,7 +22,6 @@ class API Tilemap : public IDrawable
 public:
 	Tilemap();
 	~Tilemap();;
-	ReflectiveData GetReflectiveData() override;
 
 	class Tile
 	{
@@ -30,8 +29,6 @@ public:
 		Texture* texture = nullptr;
 		int textureId = 0;
 	};
-
-	int GetDrawPriority() const override;
 
 	/**
 	* @brief Setup the Tilemap before usage (chunkSize to default)
@@ -94,7 +91,7 @@ public:
 	/**
 	* Get tile map width (column)
 	*/
-	int GetWidth() const
+	inline int GetWidth() const
 	{
 		return width;
 	}
@@ -102,16 +99,14 @@ public:
 	/**
 	* Get tile map height (row)
 	*/
-	int GetHeight() const
+	inline int GetHeight() const
 	{
 		return height;
 	}
 
-
 	void SetOrderInLayer(int orderInLayer);
 
-
-	int GetOrderInLayer() const
+	inline int GetOrderInLayer() const
 	{
 		return orderInLayer;
 	}
@@ -121,7 +116,8 @@ public:
 	*/
 	void SetColor(const Color& color);
 
-private:
+protected:
+	ReflectiveData GetReflectiveData() override;
 	void OnDisabled() override;
 	void OnEnabled() override;
 	void CreateRenderCommands(RenderBatch& renderBatch) override;

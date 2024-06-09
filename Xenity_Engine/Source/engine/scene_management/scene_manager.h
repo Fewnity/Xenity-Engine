@@ -67,7 +67,7 @@ public:
 	/**
 	* @brief [Internal] Get opened scene
 	*/
-	static std::shared_ptr<Scene> GetOpenedScene()
+	static inline std::shared_ptr<Scene> GetOpenedScene()
 	{
 		return openedScene;
 	}
@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief [Internal] Set opened scene
 	*/
-	static void SetOpenedScene(const std::shared_ptr<Scene>& _openedScene)
+	static inline void SetOpenedScene(const std::shared_ptr<Scene>& _openedScene)
 	{
 		openedScene = _openedScene;
 	}
@@ -88,7 +88,7 @@ public:
 	/**
 	 * @brief [Internal]
 	 */
-	static bool GetSceneModified() 
+	static inline bool GetSceneModified()
 	{
 		return sceneModified;
 	}

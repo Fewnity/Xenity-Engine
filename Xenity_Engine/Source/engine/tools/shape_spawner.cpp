@@ -54,7 +54,7 @@ std::shared_ptr <GameObject>ShapeSpawner::SpawnCylinder()
 
 std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath)
 {
-	DXASSERT(!meshFilePath.empty(), "[ShapeSpawner::MakeMesh] meshFilePath is empty")
+	XASSERT(!meshFilePath.empty(), "[ShapeSpawner::MakeMesh] meshFilePath is empty")
 
 	std::shared_ptr<GameObject> gameObject = CreateGameObject(gameObjectName);
 	std::shared_ptr<MeshRenderer> mesh = gameObject->AddComponent<MeshRenderer>();
@@ -70,7 +70,7 @@ std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObject
 
 void ShapeSpawner::SetDefaultValues(const std::shared_ptr <GameObject>& gameObject)
 {
-	DXASSERT(gameObject != nullptr, "[ShapeSpawner::SetDefaultValues] gameObject is empty")
+	XASSERT(gameObject != nullptr, "[ShapeSpawner::SetDefaultValues] gameObject is empty")
 
 	std::shared_ptr<Transform> transform = gameObject->GetTransform();
 	transform->SetPosition(defaultPosition);

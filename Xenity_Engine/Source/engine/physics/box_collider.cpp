@@ -45,8 +45,8 @@ void BoxCollider::OnReflectionUpdated()
 
 bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
 {
-	DXASSERT(a != nullptr, "[BoxCollider::CheckTrigger] a is nullptr")
-	DXASSERT(b != nullptr, "[BoxCollider::CheckTrigger] b is nullptr")
+	XASSERT(a != nullptr, "[BoxCollider::CheckTrigger] a is nullptr")
+	XASSERT(b != nullptr, "[BoxCollider::CheckTrigger] b is nullptr")
 
 	const Vector3 aPos = a->GetTransform()->GetPosition();
 	const Vector3 bPos = b->GetTransform()->GetPosition();
@@ -70,8 +70,8 @@ bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std:
 
 CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b, const Vector3 &aVelocity)
 {
-	DXASSERT(a != nullptr, "[BoxCollider::CheckCollision] a is nullptr")
-	DXASSERT(b != nullptr, "[BoxCollider::CheckCollision] b is nullptr")
+	XASSERT(a != nullptr, "[BoxCollider::CheckCollision] a is nullptr")
+	XASSERT(b != nullptr, "[BoxCollider::CheckCollision] b is nullptr")
 
 	const Vector3& aPosition = a->GetTransform()->GetPosition();
 	const Vector3& bPosition = b->GetTransform()->GetPosition();
@@ -185,17 +185,10 @@ void BoxCollider::SetSize(const Vector3& size)
 	CalculateBoundingBox();
 }
 
-const Vector3& BoxCollider::GetSize()
-{
-	return size;
-}
 
 void BoxCollider::SetOffset(const Vector3& offset)
 {
 	this->offset = offset;
 }
 
-const Vector3& BoxCollider::GetOffset()
-{
-	return offset;
-}
+

@@ -24,22 +24,22 @@ public:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	inline Vector3 GetVelocity() { return velocity; }
+	inline Vector3 GetVelocity() const { return velocity; }
 	void SetVelocity(Vector3 _velocity);
 
-	inline float GetDrag() { return drag; }
+	inline float GetDrag() const { return drag; }
 	void SetDrag(float _drag);
 
-	inline float GetBounce() { return bounce; }
+	inline float GetBounce() const { return bounce; }
 	void SetBounce(float _bounce);
 
-	inline float GetGravityMultiplier() { return gravityMultiplier; }
+	inline float GetGravityMultiplier() const  { return gravityMultiplier; }
 	void SetGravityMultiplier(float _gravityMultiplier);
 
-	inline float IsStatic() { return isStatic; }
+	inline float IsStatic() const  { return isStatic; }
 	void SetIsStatic(float _isStatic);
 
-private:
+protected:
 	friend class PhysicsManager;
 
 	Vector3 velocity = Vector3(0, 0, 0);

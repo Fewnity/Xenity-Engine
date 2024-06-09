@@ -70,7 +70,7 @@ public:
 	/**
 	 * @brief Get the renderer
 	 */
-	API static Renderer &GetRenderer()
+	API static inline Renderer &GetRenderer()
 	{
 		return *renderer;
 	}
@@ -78,7 +78,7 @@ public:
 	/**
 	 * @brief Get the OnWindowFocus event
 	 */
-	static Event<>* GetOnWindowFocusEvent() 
+	static inline Event<>* GetOnWindowFocusEvent()
 	{
 		return OnWindowFocusEvent;
 	}

@@ -29,6 +29,14 @@ class Material;
 class Shader : public FileReference, public Reflective
 {
 public:
+	Shader();
+	~Shader();
+
+protected:
+	friend class Renderer;
+	friend class AssetManager;
+	friend class ProjectManager;
+
 	enum class ShaderType
 	{
 		Vertex_Shader,
@@ -37,8 +45,6 @@ public:
 		Tessellation_Evaluation_Shader,
 	};
 
-	Shader();
-	~Shader();
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData() override;
@@ -46,7 +52,6 @@ public:
 	void LoadFileReference() override;
 
 	static std::shared_ptr<Shader> MakeShader();
-private:
 
 	friend class Material;
 	friend class Graphics;

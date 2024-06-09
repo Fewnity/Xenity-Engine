@@ -19,7 +19,7 @@ class API Directory : public UniqueId, public std::enable_shared_from_this<Direc
 {
 public:
 	Directory() = delete;
-	Directory(std::string _path);
+	explicit Directory(std::string _path);
 	~Directory();
 
 	/**
@@ -39,7 +39,7 @@ public:
 	/**
 	* @brief Get directory path
 	*/
-	const std::string& GetPath() const
+	inline const std::string& GetPath() const
 	{
 		return path;
 	}

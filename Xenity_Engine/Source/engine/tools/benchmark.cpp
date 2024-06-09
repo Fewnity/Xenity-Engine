@@ -43,38 +43,3 @@ void Benchmark::Stop()
 	time = endTick - startTick;
 #endif
 }
-
-/// <summary>
-/// Get how many microseconds passed during the benchmark
-/// </summary>
-/// <returns>Microseconds</returns>
-long long Benchmark::GetMicroSeconds() const
-{
-	return time;
-}
-
-/// <summary>
-/// Get how many milliseconds passed during the benchmark
-/// </summary>
-/// <returns>Milliseconds</returns>
-long long Benchmark::GetMilliseconds() const
-{
-	return (long long)(time / 1000.0f);
-}
-
-/// <summary>
-/// Get how many seconds passed during the benchmark
-/// </summary>
-/// <returns>Seconds</returns>
-float Benchmark::GetSeconds() const
-{
-	return time / 1000000.0f;
-}
-
-/// <summary>
-/// Reset the timer
-/// </summary>
-void Benchmark::Reset()
-{
-	time = 0;
-}

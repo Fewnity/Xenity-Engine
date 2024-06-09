@@ -31,6 +31,38 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
+	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
+
+	bool isTrigger = false;
+
+	inline const Vector3& GetMin() const
+	{
+		return min;
+	}
+
+	inline const Vector3& GetMax() const
+	{
+		return max;
+	}
+
+	void SetSize(const Vector3& size);
+	inline const Vector3& GetSize() const
+	{
+		return size;
+	}
+
+	void SetOffset(const Vector3& offset);
+	inline const Vector3& GetOffset() const
+	{
+		return offset;
+	}
+
+protected:
+
+	friend class RigidBody;
+	friend class InspectorMenu;
+	friend class MainBarMenu;
+
 	void Awake() override;
 
 	ReflectiveData GetReflectiveData() override;
@@ -38,36 +70,6 @@ public:
 
 
 	void OnDrawGizmosSelected() override;
-
-
-
-	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
-
-	bool isTrigger = false;
-
-	const Vector3& GetMin() const
-	{
-		return min;
-	}
-
-	const Vector3& GetMax() const
-	{
-		return max;
-	}
-
-	void SetSize(const Vector3& size);
-	const Vector3& GetSize();
-
-	void SetOffset(const Vector3& offset);
-	const Vector3& GetOffset();
-
-
-
-private:
-
-	friend class RigidBody;
-	friend class InspectorMenu;
-	friend class MainBarMenu;
 
 	/**
 	* @brief Set the default size of the box collider based on the mesh renderer

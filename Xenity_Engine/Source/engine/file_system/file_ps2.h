@@ -25,7 +25,7 @@ class API FilePS2 : public File
 {
 public:
 	FilePS2() = delete;
-	FilePS2(std::string _path);
+	explicit FilePS2(std::string _path);
 	~FilePS2();
 
 	/**

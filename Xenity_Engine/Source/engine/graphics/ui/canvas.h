@@ -15,16 +15,11 @@ class API Canvas : public IDrawable
 public:
 	Canvas();
 	~Canvas();
+
+protected:
 	void OnDrawGizmos() override;
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
-
-	/**
-	* @brief [Internal]
-	*/
-	int GetDrawPriority() const override;
-
-private:
 
 	/**
 	* @brief Called when the component is disabled

@@ -97,7 +97,7 @@ public:
 	/**
 	* @brief Get RGBA
 	*/
-	const RGBA& GetRGBA() const
+	inline const RGBA& GetRGBA() const
 	{
 		return rgba;
 	}
@@ -105,7 +105,7 @@ public:
 	/**
 	* @brief Get RGBA value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntRGBA() const
+	inline unsigned int GetUnsignedIntRGBA() const
 	{
 		return rgbaInt;
 	}
@@ -113,7 +113,7 @@ public:
 	/**
 	* @brief Get ABGR value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntABGR() const
+	inline unsigned int GetUnsignedIntABGR() const
 	{
 		return abgrInt;
 	}

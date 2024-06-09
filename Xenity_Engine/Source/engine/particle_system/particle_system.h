@@ -37,34 +37,29 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 
+	/**
+	* Emitte particle when not in loop mode
+	*/
+	void Play();
+
+	inline void SetIsEmitting(bool _isEmitting)
+	{
+		isEmitting = _isEmitting;
+	}
+
+	inline bool GetIsEmitting() const
+	{
+		return isEmitting;
+	}
+
+protected:
+
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	void Start() override;
 
 	void Update() override;
-
-	/**
-	 * @brief [Internal]
-	 */
-	int GetDrawPriority() const override;
-
-	/**
-	* Emitte particle when not in loop mode
-	*/
-	void Play();
-
-	void SetIsEmitting(bool _isEmitting) 
-	{
-		isEmitting = _isEmitting;
-	}
-
-	bool GetIsEmitting() 
-	{
-		return isEmitting;
-	}
-
-private:
 
 	/**
 	* @brief Create the render commands

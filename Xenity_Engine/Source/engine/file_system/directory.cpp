@@ -54,7 +54,7 @@ Directory::~Directory()
 
 void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, std::shared_ptr<Directory> directory)
 {
-	DXASSERT(directory != nullptr, "[Directory::AddDirectoryFiles] directory is nullptr")
+	XASSERT(directory != nullptr, "[Directory::AddDirectoryFiles] directory is nullptr")
 
 	const int fileCount = (int)directory->files.size();
 	for (int i = 0; i < fileCount; i++)

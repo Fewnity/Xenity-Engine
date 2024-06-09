@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <engine/assertions/assertions.h>
 
-#if defined(_WIN64)
+#if defined(_WIN64) // Use size_t insead?
 #define ADDR_SIZE uint64_t
 #elif defined(__PSP__) || defined(_EE) || defined(__vita__)
 #define ADDR_SIZE uint32_t
@@ -64,7 +64,7 @@ public:
 	*/
 	void Bind(void(*function)(Args...))
 	{
-		DXASSERT(function != nullptr, "[Event::Bind] function is nullptr")
+		XASSERT(function != nullptr, "[Event::Bind] function is nullptr")
 
 		if (!function)
 			return;
@@ -89,8 +89,8 @@ public:
 	template<typename ObjType>
 	void Bind(void(ObjType::* function)(Args...), ObjType* obj)
 	{
-		DXASSERT(function != nullptr, "[Event::Bind] ObjType::function is nullptr")
-		DXASSERT(obj != nullptr, "[Event::Bind] obj is nullptr")
+		XASSERT(function != nullptr, "[Event::Bind] ObjType::function is nullptr")
+		XASSERT(obj != nullptr, "[Event::Bind] obj is nullptr")
 
 		if (!function || !obj)
 			return;
@@ -111,7 +111,7 @@ public:
 	*/
 	void Unbind(void(*function)(Args...))
 	{
-		DXASSERT(function != nullptr, "[Event::Unbind] function is nullptr")
+		XASSERT(function != nullptr, "[Event::Unbind] function is nullptr")
 
 		if (!function)
 			return;
@@ -131,8 +131,8 @@ public:
 	template<typename ObjType>
 	void Unbind(void(ObjType::* function)(Args...), ObjType* obj)
 	{
-		DXASSERT(function != nullptr, "[Event::Unbind] ObjType::function is nullptr")
-		DXASSERT(obj != nullptr, "[Event::Unbind] obj is nullptr")
+		XASSERT(function != nullptr, "[Event::Unbind] ObjType::function is nullptr")
+		XASSERT(obj != nullptr, "[Event::Unbind] obj is nullptr")
 
 		if (!function || !obj)
 			return;
@@ -147,7 +147,7 @@ public:
 	/**
 	* @brief Unbind all binded function
 	*/
-	void UnbindAll() 
+	inline void UnbindAll()
 	{
 		functionCount = 0;
 		functionsInfosList.clear();
@@ -156,7 +156,7 @@ public:
 	/**
 	* @brief Get the number of listener
 	*/
-	int GetBindedFunctionCount()
+	inline int GetBindedFunctionCount()
 	{
 		return functionCount;
 	}
@@ -233,8 +233,8 @@ private:
 	template<typename ObjType, std::size_t... Is>
 	std::function<void(Args...)> CreateBindHelper(void(ObjType::* function)(Args...), ObjType* obj, const std::index_sequence<Is...>)
 	{
-		DXASSERT(function != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
-		DXASSERT(obj != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
+		XASSERT(function != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
+		XASSERT(obj != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr")
 
 		// Add the right number of placeholders
 #if defined(__GNUC__)
@@ -254,7 +254,7 @@ private:
 	template<std::size_t... Is>
 	std::function<void(Args...)> CreateBindHelper(void(*function)(Args...), const std::index_sequence<Is...>)
 	{
-		DXASSERT(function != nullptr, "[Event::CreateBindHelper] function is nullptr")
+		XASSERT(function != nullptr, "[Event::CreateBindHelper] function is nullptr")
 
 		// Add the right number of placeholders
 #if defined(__GNUC__)

@@ -20,14 +20,6 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
-
-	/**
-	 * @brief [Internal]
-	 */
-	int GetDrawPriority() const override;
-
 	/**
 	* @brief Set mesh data
 	* @param meshData The mesh data
@@ -39,14 +31,14 @@ public:
 	*/
 	std::shared_ptr <MeshData> GetMeshData();
 
-	std::vector<std::shared_ptr <Material>> GetMaterials() const
+	inline std::vector<std::shared_ptr <Material>> GetMaterials() const
 	{
 		return materials;
 	}
 
 	void SetMaterial(std::shared_ptr <Material> material, int index);
 
-	std::shared_ptr <Material> GetMaterial(int index) const
+	inline std::shared_ptr <Material> GetMaterial(int index) const
 	{
 		if (index < materials.size())
 			return materials[index];
@@ -55,7 +47,12 @@ public:
 	}
 
 
-private:
+protected:
+
+	friend class Lod;
+
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* @brief Called when the component is disabled
@@ -81,6 +78,5 @@ private:
 	std::vector<std::shared_ptr <Material>> materials;
 	size_t matCount = 0;
 
-public:
 	bool culled = false;
 };

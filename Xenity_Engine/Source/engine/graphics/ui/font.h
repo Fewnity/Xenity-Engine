@@ -20,6 +20,12 @@ class API Font : public FileReference, public Reflective
 {
 public:
 	~Font();
+
+protected:
+	friend class TextManager;
+	friend class ProjectManager;
+
+
 	static std::shared_ptr<Font> MakeFont();
 
 	ReflectiveData GetReflectiveData() override;
@@ -34,17 +40,16 @@ public:
 	/**
 	* @brief [Internal] Get the shared pointer of this object
 	*/
-	std::shared_ptr<Font> GetThisShared()
+	inline std::shared_ptr<Font> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Font>(shared_from_this());
 	}
 
-	std::shared_ptr <Texture>& GetFontAtlas() 
+	inline std::shared_ptr <Texture>& GetFontAtlas()
 	{
 		return fontAtlas;
 	}
 
-private:
 	std::shared_ptr <Texture> fontAtlas = nullptr;
 	bool CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath);
 };

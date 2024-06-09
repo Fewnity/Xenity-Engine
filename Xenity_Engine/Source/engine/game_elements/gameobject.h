@@ -70,24 +70,16 @@ class API GameObject : public Reflective, public UniqueId, public std::enable_sh
 public:
 
 	GameObject();
-	GameObject(const std::string& name);
-
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
+	explicit GameObject(const std::string& name);
 
 	virtual ~GameObject();
 
-	/**
-	* @brief [Internal] Setup the GameObject
-	*/
-	void Setup();
-
-	/*const*/ std::string & GetName()
+	/*const*/ inline std::string & GetName()
 	{
 		return name;
 	}
 
-	void SetName(const std::string& name) 
+	inline void SetName(const std::string& name)
 	{
 		this->name = name;
 	}
@@ -104,7 +96,6 @@ public:
 	*/
 	void SetParent(const std::shared_ptr<GameObject>& gameObject);
 
-
 	/**
 	* @brief Add a component
 	* @return The added component
@@ -117,12 +108,6 @@ public:
 		AddExistingComponent(newC);
 		return std::shared_ptr<T>(std::dynamic_pointer_cast<T>(newC));
 	}
-
-	/**
-	* @brief Remove a component
-	* @param component Component to remove
-	*/
-	void RemoveComponent(const std::shared_ptr <Component>& component);
 
 	/**
 	* @brief Get a component
@@ -161,7 +146,7 @@ public:
 	/**
 	* @brief Get children count
 	*/
-	int GetChildrenCount() const
+	inline int GetChildrenCount() const
 	{
 		return childCount;
 	}
@@ -169,7 +154,7 @@ public:
 	/**
 	* @brief Get component count
 	*/
-	int GetComponentCount() const
+	inline int GetComponentCount() const
 	{
 		return componentCount;
 	}
@@ -187,24 +172,55 @@ public:
 		return parent;
 	}
 
-	std::weak_ptr<GameObject> GetChild(int index) 
+	inline std::weak_ptr<GameObject> GetChild(int index)
 	{
 		return children[index];
 	}
 
-	/**
-	* 
-	*/
-	std::vector<std::weak_ptr<GameObject>>& GetChildren()
-	{
-		return children;
-	}
+private:
+	friend class GameObjectAccessor;
+	friend class GameplayManager;
+	friend class SceneManager;
+	friend class EditorUI;
+	friend class InspectorMenu;
+	friend class InspectorDeleteGameObjectCommand;
+	friend class Transform;
+	friend class Canvas;
+	friend class Editor;
+	template<typename T>
+	friend class ReflectiveChangeValueCommand;
+	template<typename T>
+	friend class InspectorItemSetActiveCommand;
+	friend class Graphics;
+	template<typename U, typename T>
+	friend class InspectorChangeValueCommand;
+
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	std::vector<std::shared_ptr<Component>> components;
-private:
 	std::vector<std::weak_ptr<GameObject>> children;
 	std::string name = "GameObject";
 	std::weak_ptr<GameObject> parent;
+
+	/**
+	* @brief [Internal] Setup the GameObject
+	*/
+	void Setup();
+
+	/**
+	* @brief Remove a component
+	* @param component Component to remove
+	*/
+	void RemoveComponent(const std::shared_ptr <Component>& component);
+
+	/**
+	* 
+	*/
+	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
+	{
+		return children;
+	}
 
 	/**
 	* @brief Add an existing component
@@ -225,7 +241,6 @@ private:
 
 	std::shared_ptr<Transform> transform;
 
-public:
 	int childCount = 0;
 	int componentCount = 0;
 
@@ -234,7 +249,6 @@ public:
 #endif
 	bool waitingForDestroy = false;
 
-private:
 	bool active = true;
 	bool localActive = true;
 };

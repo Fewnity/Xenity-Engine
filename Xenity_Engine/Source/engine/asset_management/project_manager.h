@@ -172,7 +172,7 @@ public:
 	/**
 	* @brief Get project name
 	*/
-	static std::string GetProjectName()
+	static inline std::string GetProjectName()
 	{
 		return projectSettings.projectName;
 	}
@@ -180,7 +180,7 @@ public:
 	/**
 	* @brief Get game name
 	*/
-	static std::string GetGameName()
+	static inline std::string GetGameName()
 	{
 		return projectSettings.gameName;
 	}
@@ -188,7 +188,7 @@ public:
 	/**
 	* @brief Get game start scene
 	*/
-	static std::shared_ptr<Scene> GetStartScene()
+	static inline std::shared_ptr<Scene> GetStartScene()
 	{
 		return projectSettings.startScene;
 	}
@@ -196,7 +196,7 @@ public:
 	/**
 	* @brief Get project folder path
 	*/
-	static const std::string& GetProjectFolderPath()
+	static inline const std::string& GetProjectFolderPath()
 	{
 		return projectFolderPath;
 	}
@@ -204,7 +204,7 @@ public:
 	/**
 	* @brief Get asset folder path
 	*/
-	static const std::string& GetAssetFolderPath()
+	static inline const std::string& GetAssetFolderPath()
 	{
 		return assetFolderPath;
 	}
@@ -212,7 +212,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static const std::string& GetEngineAssetFolderPath()
+	static inline const std::string& GetEngineAssetFolderPath()
 	{
 		return engineAssetsFolderPath;
 	}
@@ -220,7 +220,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static const std::string& GetPublicEngineAssetFolderPath()
+	static inline const std::string& GetPublicEngineAssetFolderPath()
 	{
 		return publicEngineAssetsFolderPath;
 	}
@@ -228,7 +228,7 @@ public:
 	/**
 	* @brief Get if the project is loaded
 	*/
-	static bool GetIsProjectLoaded()
+	static inline bool GetIsProjectLoaded()
 	{
 		return projectLoaded;
 	}
@@ -307,12 +307,12 @@ public:
 */
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
 
-	static Event<>& GetProjectLoadedEvent()
+	static inline Event<>& GetProjectLoadedEvent()
 	{
 		return projectLoadedEvent;
 	}
 
-	static Event<>& GetProjectUnloadedEvent()
+	static inline Event<>& GetProjectUnloadedEvent()
 	{
 		return projectUnloadedEvent;
 	}
@@ -344,8 +344,6 @@ private:
 	* @brief Create Visual Studio Code settings file
 	*/
 	static void CreateVisualStudioSettings();
-
-
 
 	/**
 	* @brief Load meta file

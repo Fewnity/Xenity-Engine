@@ -23,7 +23,7 @@ class API Socket
 public:
 
 	Socket() = delete;
-	Socket(int socketId)
+	explicit Socket(int socketId)
 	{
 		this->socketId = socketId;
 	}

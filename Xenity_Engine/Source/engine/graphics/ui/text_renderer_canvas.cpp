@@ -48,11 +48,6 @@ TextRendererCanvas::~TextRendererCanvas()
 	AssetManager::RemoveReflection(this);
 }
 
-int TextRendererCanvas::GetDrawPriority() const
-{
-	return 5000 + orderInLayer;
-}
-
 #pragma endregion
 
 void TextRendererCanvas::SetOrderInLayer(int orderInLayer)
@@ -132,4 +127,34 @@ void TextRendererCanvas::DrawCommand(const RenderCommand& renderCommand)
 		isTextInfoDirty = false;
 	}
 	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, true, mesh, font, material);
+}
+
+void TextRendererCanvas::SetFontSize(float fontSize)
+{
+	this->fontSize = fontSize;
+	isTextInfoDirty = true;
+}
+
+void TextRendererCanvas::SetLineSpacing(float lineSpacing)
+{
+	this->lineSpacing = lineSpacing;
+	isTextInfoDirty = true;
+}
+
+void TextRendererCanvas::SetCharacterSpacing(float characterSpacing)
+{
+	this->characterSpacing = characterSpacing;
+	isTextInfoDirty = true;
+}
+
+void TextRendererCanvas::SetVerticalAlignment(VerticalAlignment verticalAlignment)
+{
+	this->verticalAlignment = verticalAlignment;
+	isTextInfoDirty = true;
+}
+
+void TextRendererCanvas::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+{
+	this->horizontalAlignment = horizontalAlignment;
+	isTextInfoDirty = true;
 }

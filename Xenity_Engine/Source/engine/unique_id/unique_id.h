@@ -20,7 +20,7 @@ public:
 	/**
 	* @brief Get unique Id
 	*/
-	uint64_t GetUniqueId() const
+	inline uint64_t GetUniqueId() const
 	{
 		return uniqueId;
 	}
@@ -29,7 +29,7 @@ public:
 	* @brief [Internal] Set unique Id
 	* @param id Id to set
 	*/
-	void SetUniqueId(uint64_t id)
+	inline void SetUniqueId(uint64_t id)
 	{
 		uniqueId = id;
 	}

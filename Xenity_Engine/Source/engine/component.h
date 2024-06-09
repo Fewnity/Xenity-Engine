@@ -61,7 +61,6 @@ public:
 	*/
 	virtual void OnDrawGizmosSelected() {};
 
-
 	int updatePriority = 5000; //Lower is more priotary
 
 	/**
@@ -75,7 +74,6 @@ public:
 	*/
 	void SetIsEnabled(bool isEnabled);
 
-
 private:
 	friend class GameplayManager;
 	friend class GameObject;
@@ -87,13 +85,13 @@ private:
 	bool waitingForDestroy = false;
 	bool isEnabled = true;
 
-public:
-
 	/**
 	* @brief [Internal] Set component's GameObject
 	* @param gameObject: GameObject to set
 	*/
 	void SetGameObject(const std::shared_ptr<GameObject>& gameObject);
+
+public:
 
 	/**
 	* @brief Get component's GameObject

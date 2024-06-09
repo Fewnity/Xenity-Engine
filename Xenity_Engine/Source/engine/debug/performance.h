@@ -22,7 +22,7 @@ public:
 	/**
 	* @brief Add a time value to the profiler
 	*/
-	void AddValue(long long v)
+	inline void AddValue(long long v)
 	{
 		value += v;
 		addedValue += v;
@@ -31,7 +31,7 @@ public:
 	/**
 	* @brief Reset the value
 	*/
-	void ResetValue()
+	inline void ResetValue()
 	{
 		lastValue = value;
 		value = 0;
@@ -40,7 +40,7 @@ public:
 	/**
 	* @brief Get the value
 	*/
-	long long GetValue()
+	inline long long GetValue()
 	{
 		return lastValue;
 	}
@@ -48,7 +48,7 @@ public:
 	/**
 	* @brief Set the last value
 	*/
-	void SetLastValue(long long v)
+	inline void SetLastValue(long long v)
 	{
 		lastValue = v;
 	}

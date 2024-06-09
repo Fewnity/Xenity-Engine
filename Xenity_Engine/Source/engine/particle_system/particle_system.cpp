@@ -199,8 +199,8 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
-	renderSettings.useLighting = renderCommand.material->useLighting;
-	renderSettings.useBlend = renderCommand.material->useTransparency;
+	renderSettings.useLighting = renderCommand.material->GetUseLighting();
+	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
 
 	Vector3 rotation = Vector3(0);
 
@@ -317,7 +317,7 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = mesh->subMeshes[0];
 	command.transform = GetTransform();
 	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
-	if (!material->useTransparency)
+	if (!material->GetUseTransparency())
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
 		renderQueue.commands.push_back(command);
@@ -328,9 +328,4 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 		renderBatch.transparentMeshCommands.push_back(command);
 		renderBatch.transparentMeshCommandIndex++;
 	}
-}
-
-int ParticleSystem::GetDrawPriority() const
-{
-	return 0;
 }

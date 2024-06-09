@@ -79,7 +79,7 @@ void SpriteManager::Init()
  */
 void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	DXASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
+	XASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
 
 		spriteBenchmark->Start();
 
@@ -112,9 +112,9 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 
 void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
 {
-	DXASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
+	XASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
 
-		spriteBenchmark->Start();
+	spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
 
@@ -142,7 +142,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 {
-	DXASSERT(meshData != nullptr, "[SpriteManager::Render2DLine] meshData is nullptr")
+	XASSERT(meshData != nullptr, "[SpriteManager::Render2DLine] meshData is nullptr")
 
 	spriteBenchmark->Start();
 

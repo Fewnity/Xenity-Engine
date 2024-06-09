@@ -70,7 +70,7 @@ Event<> ProjectManager::projectUnloadedEvent;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
 {
-	DXASSERT(directoryToCheck != nullptr, "[ProjectManager::FindProjectDirectory] directoryToCheck is null")
+    XASSERT(directoryToCheck != nullptr, "[ProjectManager::FindProjectDirectory] directoryToCheck is null")
 
 	const size_t dirCount = directoryToCheck->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
@@ -94,7 +94,7 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 
 uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
 {
-	DXASSERT(file != nullptr, "[ProjectManager::ReadFileId] file is null")
+	XASSERT(file != nullptr, "[ProjectManager::ReadFileId] file is null")
 
 	uint64_t id = -1;
 	std::string metaFilePath = file->GetPath() + META_EXTENSION;
@@ -134,7 +134,7 @@ uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
 
 void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets)
 {
-	DXASSERT(directorySource != nullptr, "[ProjectManager::AddFilesToProjectFiles] directorySource is null")
+	XASSERT(directorySource != nullptr, "[ProjectManager::AddFilesToProjectFiles] directorySource is null")
 
 	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource->GetAllFiles(true);
 	const int projectAssetFilesCount = (int)projectAssetFiles.size();
@@ -365,8 +365,8 @@ void ProjectManager::CreateVisualStudioSettings()
 
 void ProjectManager::CreateProjectDirectories(std::shared_ptr<Directory> projectDirectoryBase, std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
-	DXASSERT(projectDirectoryBase != nullptr, "[ProjectManager::CreateProjectDirectories] projectDirectoryBase is null")
-	DXASSERT(realProjectDirectory != nullptr, "[ProjectManager::CreateProjectDirectories] realProjectDirectory is null")
+	XASSERT(projectDirectoryBase != nullptr, "[ProjectManager::CreateProjectDirectories] projectDirectoryBase is null")
+	XASSERT(realProjectDirectory != nullptr, "[ProjectManager::CreateProjectDirectories] realProjectDirectory is null")
 
 	const size_t dirCount = projectDirectoryBase->subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
@@ -384,7 +384,7 @@ void ProjectManager::RefreshProjectDirectory()
 
 void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> realProjectDirectory)
 {
-	DXASSERT(realProjectDirectory != nullptr, "[ProjectManager::FillProjectDirectory] realProjectDirectory is null")
+	XASSERT(realProjectDirectory != nullptr, "[ProjectManager::FillProjectDirectory] realProjectDirectory is null")
 
 	std::vector<std::shared_ptr<FileReference>>& projFileVector = realProjectDirectory->files;
 	projFileVector.clear();
@@ -418,8 +418,8 @@ void ProjectManager::Init()
 
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
-	DXASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty")
-	DXASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty")
+	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty")
+	XASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty")
 
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\");
 	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\temp\\");
@@ -644,7 +644,6 @@ void ProjectManager::UnloadProject()
 #if defined(EDITOR)
 	Editor::SetCurrentProjectDirectory(nullptr);
 
-#endif
 	SceneManager::SetSceneModified(false);
 	SceneManager::SetOpenedScene(nullptr);
 	SceneManager::ClearScene();
@@ -674,6 +673,7 @@ void ProjectManager::UnloadProject()
 	Window::UpdateWindowTitle();
 
 	projectUnloadedEvent.Trigger();
+#endif
 }
 
 std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()

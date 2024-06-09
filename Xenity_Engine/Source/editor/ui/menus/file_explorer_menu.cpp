@@ -397,13 +397,13 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 		case FileType::File_Material:
 		{
 			std::shared_ptr<Material> mat = std::dynamic_pointer_cast<Material>(fileExplorerItem.file);
-			if (!mat->texture || mat->texture->GetTextureId() == 0)
+			if (!mat->GetTexture() || mat->GetTexture()->GetTextureId() == 0)
 			{
 				tex = AssetManager::defaultTexture;
 			}
 			else
 			{
-				tex = mat->texture;
+				tex = mat->GetTexture();
 			}
 			break;
 		}

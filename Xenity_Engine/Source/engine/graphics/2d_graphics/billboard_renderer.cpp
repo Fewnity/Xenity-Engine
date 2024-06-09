@@ -42,11 +42,6 @@ BillboardRenderer::~BillboardRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-int BillboardRenderer::GetDrawPriority() const
-{
-	return orderInLayer;
-}
-
 void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 {
 	this->orderInLayer = orderInLayer;

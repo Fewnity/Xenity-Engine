@@ -17,11 +17,10 @@ public:
 	Lod();
 	~Lod();
 
+protected:
 	ReflectiveData GetReflectiveData() override;
 
 	void RemoveReferences()  override;
-
-private:
 
 	friend class Graphics;
 

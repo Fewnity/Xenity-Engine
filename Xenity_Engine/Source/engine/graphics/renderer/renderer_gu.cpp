@@ -306,7 +306,7 @@ void RendererGU::ApplyTextureFilters(const Texture& texture)
 
 void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
 {
-	DrawSubMesh(subMesh, material, *material.texture, settings);
+	DrawSubMesh(subMesh, material, *material.GetTexture(), settings);
 }
 
 void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
@@ -399,8 +399,8 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 		usedTexture = texture.data[0];
 		BindTexture(texture);
 	}
-	sceGuTexOffset(material.offset.x, material.offset.y);
-	sceGuTexScale(material.tiling.x, material.tiling.y);
+	sceGuTexOffset(material.GetOffset().x, material.GetOffset().y);
+	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
 
 	// Draw
 	if (!subMesh.meshData->hasIndices)

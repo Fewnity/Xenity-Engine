@@ -29,25 +29,37 @@ public:
 	/**
 	* @brief Get elapsed microseconds between Start and Stop calls
 	*/
-	long long GetMicroSeconds() const;
+	inline long long GetMicroSeconds() const
+	{
+		return time;
+	}
 
 	/**
 	* @brief Get elapsed milliseconds between Start and Stop calls
 	*/
-	long long GetMilliseconds() const;
+	inline long long GetMilliseconds() const
+	{
+		return (long long)(time / 1000.0f);
+	}
 
 	/**
 	* @brief Get elapsed seconds between Start and Stop calls
 	*/
-	float GetSeconds() const;
+	inline float GetSeconds() const
+	{
+		return time / 1000000.0f;
+	}
 
 	/**
 	* @brief Set times values to 0
 	*/
-	void Reset();
+	inline void Reset()
+	{
+		time = 0;
+	}
 
 private:
-	std::chrono::time_point< std::chrono::high_resolution_clock> start_point, end_point;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_point;
 	long long time = 0;
 
 #if defined(__PSP__)

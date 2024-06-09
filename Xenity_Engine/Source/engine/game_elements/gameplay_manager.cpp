@@ -34,7 +34,7 @@ GameState GameplayManager::gameState = GameState::Stopped;
 
 void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
-	DXASSERT(gameObject != nullptr, "[GameplayManager::AddGameObject] gameObject is nullptr")
+	XASSERT(gameObject != nullptr, "[GameplayManager::AddGameObject] gameObject is nullptr")
 
 	gameObjects.push_back(gameObject);
 	gameObjectCount++;
@@ -42,7 +42,7 @@ void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObjec
 
 void GameplayManager::AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject)
 {
-	DXASSERT(gameObject != nullptr, "[GameplayManager::AddGameObjectEditor] gameObject is nullptr")
+	XASSERT(gameObject != nullptr, "[GameplayManager::AddGameObjectEditor] gameObject is nullptr")
 
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;

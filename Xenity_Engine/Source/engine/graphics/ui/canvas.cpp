@@ -32,11 +32,6 @@ void Canvas::OnReflectionUpdated()
 {
 }
 
-int Canvas::GetDrawPriority() const
-{
-	return 0;
-}
-
 void Canvas::OnDisabled()
 {
 	Graphics::isRenderingBatchDirty = true;

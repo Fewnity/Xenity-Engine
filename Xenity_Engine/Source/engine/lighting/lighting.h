@@ -25,11 +25,6 @@ public:
 	Light();
 	~Light();
 
-	void RemoveReferences() override;
-
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
-
 	/**
 	* @brief Setup the light as a point light
 	* @param color Light color
@@ -71,12 +66,6 @@ public:
 	void SetRange(float value);
 
 	/**
-	* @brief Get light range
-	* @param value Light range
-	*/
-	float GetRange() const;
-
-	/**
 	* @brief Set spot angle
 	* @param value Spot angle [0;179]
 	*/
@@ -88,16 +77,6 @@ public:
 	*/
 	void SetSpotSmoothness(float smoothness);
 
-	/**
-	* @brief Get spot angle
-	*/
-	float GetSpotAngle() const;
-
-	/**
-	* @brief Get spot smoothness
-	*/
-	float GetSpotSmoothness() const;
-
 	Color color = Color();
 
 	/**
@@ -105,18 +84,58 @@ public:
 	*/
 	void SetIntensity(float intensity);
 
+	inline LightType GetType() const
+	{
+		return type;
+	}
+
+	inline void SetType(LightType type)
+	{
+		this->type = type;
+	}
+
+	/**
+	* @brief Get light range
+	* @param value Light range
+	*/
+	inline float GetRange() const
+	{
+		return range;
+	}
+
+	/**
+	* @brief Get spot angle
+	*/
+	inline float GetSpotAngle() const
+	{
+		return spotAngle;
+	}
+
+	/**
+	* @brief Get spot smoothness
+	*/
+	inline float GetSpotSmoothness() const
+	{
+		return spotSmoothness;
+	}
+
 	/**
 	* @brief Get light intensity
 	*/
-	float GetIntensity() const;
+	inline float GetIntensity() const
+	{
+		return intensity;
+	}
 
-
+protected:
 
 	void OnDrawGizmos() override;
 	void OnDrawGizmosSelected() override;
+	void RemoveReferences() override;
 
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
-private:
 	float GetLinearValue() 
 	{
 		return linear;
@@ -151,6 +170,5 @@ private:
 	float spotAngle = 30;
 	float spotSmoothness = 0;
 
-public:
 	LightType type = LightType::Directional;
 };
