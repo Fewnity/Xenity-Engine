@@ -157,6 +157,8 @@ private:
 	friend class RendererVU1;
 	friend class Graphics;
 	friend class SceneManager;
+	friend class Window;
+	friend class SpriteManager;
 
 	/**
 * @brief [Internal] Update projection matrix
