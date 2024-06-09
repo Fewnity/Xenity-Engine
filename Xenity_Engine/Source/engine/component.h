@@ -61,10 +61,6 @@ public:
 	*/
 	virtual void OnDrawGizmosSelected() {};
 
-	/**
-	* @brief [Internal] Remove references of this component for some specific cases
-	*/
-	virtual void RemoveReferences() {};
 
 	int updatePriority = 5000; //Lower is more priotary
 
@@ -78,11 +74,17 @@ public:
 	* @param isEnabled: true to enable, false to disable
 	*/
 	void SetIsEnabled(bool isEnabled);
+
+
+private:
+	friend class GameplayManager;
+	friend class GameObject;
+	friend class InspectorMenu;
+	friend class SceneManager;
+
 	bool initiated = false;
 	bool isAwakeCalled = false;
-
 	bool waitingForDestroy = false;
-private:
 	bool isEnabled = true;
 
 public:
@@ -96,7 +98,7 @@ public:
 	/**
 	* @brief Get component's GameObject
 	*/
-	std::shared_ptr <GameObject> GetGameObject() const
+	inline std::shared_ptr <GameObject> GetGameObject() const
 	{
 		return gameObject.lock();
 	}
@@ -104,7 +106,7 @@ public:
 	/**
 	* @brief Get component's Transform
 	*/
-	std::shared_ptr <Transform> GetTransform() const
+	inline std::shared_ptr <Transform> GetTransform() const
 	{
 		return transform.lock();
 	}
@@ -112,12 +114,17 @@ public:
 	/**
 	* @brief Get component's name
 	*/
-	const std::string& GetComponentName() const
+	inline const std::string& GetComponentName() const
 	{
 		return componentName;
 	}
 
 protected:
+	/**
+	* @brief [Internal] Remove references of this component for some specific cases
+	*/
+	virtual void RemoveReferences() {};
+
 	std::string componentName = "";
 
 private:

@@ -21,5 +21,6 @@ private:
 	void OnLoadButtonClick();
 	void DrawProjectsList();
 	std::vector<ProjectListItem> projectsList;
+	ProjectListItem* selectedProject = nullptr;
 };
 

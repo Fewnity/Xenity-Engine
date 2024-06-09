@@ -50,16 +50,6 @@ public:
 	int GetDrawPriority() const override;
 
 	/**
-	* @brief Create the render commands
-	*/
-	void CreateRenderCommands(RenderBatch& renderBatch) override;
-
-	/**
-	* @brief Draw the command
-	*/
-	void DrawCommand(const RenderCommand& renderCommand) override;
-
-	/**
 	* Emitte particle when not in loop mode
 	*/
 	void Play();
@@ -75,6 +65,17 @@ public:
 	}
 
 private:
+
+	/**
+	* @brief Create the render commands
+	*/
+	void CreateRenderCommands(RenderBatch& renderBatch) override;
+
+	/**
+	* @brief Draw the command
+	*/
+	void DrawCommand(const RenderCommand& renderCommand) override;
+
 	bool isEmitting = true;
 
 	/**

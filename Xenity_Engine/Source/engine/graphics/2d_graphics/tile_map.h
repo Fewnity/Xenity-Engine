@@ -21,8 +21,7 @@ class API Tilemap : public IDrawable
 {
 public:
 	Tilemap();
-	~Tilemap();
-	//void SetReflection();
+	~Tilemap();;
 	ReflectiveData GetReflectiveData() override;
 
 	class Tile

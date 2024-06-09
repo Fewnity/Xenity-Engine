@@ -19,8 +19,13 @@ public:
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
-	Vector2 position = Vector2(0);
 	Vector2 anchors = Vector2(0);
+	Vector2 position = Vector2(0);
+
+
+private:
+
+	friend class Canvas;
 
 	/**
 	 * @brief [Internal] Update the position of the rect transform
@@ -31,6 +36,4 @@ public:
 	 * @brief [Internal] Update the position of the rect transform
 	 */
 	void UpdatePosition(std::shared_ptr <RectTransform> canvas);
-
-private:
 };

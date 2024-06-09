@@ -37,8 +37,6 @@ public:
 		Tessellation_Evaluation_Shader,
 	};
 
-	static void Init();
-
 	Shader();
 	~Shader();
 
@@ -46,6 +44,18 @@ public:
 	ReflectiveData GetMetaReflectiveData() override;
 
 	void LoadFileReference() override;
+
+	static std::shared_ptr<Shader> MakeShader();
+private:
+
+	friend class Material;
+	friend class Graphics;
+	friend class RendererOpengl;
+	friend class RendererGU;
+	friend class RendererGsKit;
+	friend class RendererVU1;
+
+	static void Init();
 
 	/**
 	* @brief Get the shader program id
@@ -104,9 +114,6 @@ public:
 	* @brief Update lights in the shader
 	*/
 	void UpdateLights(bool disableLights);
-
-	static std::shared_ptr<Shader> MakeShader();
-private:
 
 	/**
 	* @brief Link the shader programs

@@ -115,6 +115,8 @@ public:
 	void OnDrawGizmos() override;
 	void OnDrawGizmosSelected() override;
 
+
+private:
 	float GetLinearValue() 
 	{
 		return linear;
@@ -125,7 +127,12 @@ public:
 		return quadratic;
 	}
 
-private:
+	friend class Shader;
+	friend class RendererOpengl;
+	friend class RendererGU;
+	friend class RendererGsKit;
+	friend class RendererVU1;
+
 	//// Internal
 	//Spot and point light
 	float linear = 0;

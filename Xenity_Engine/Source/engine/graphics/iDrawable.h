@@ -24,6 +24,10 @@ public:
 	virtual ~IDrawable();
 
 	virtual int GetDrawPriority() const = 0;
+
+private:
+	friend class Graphics;
+
 	void RemoveReferences() override;
 
 	/**

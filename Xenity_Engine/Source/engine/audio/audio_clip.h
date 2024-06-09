@@ -14,11 +14,6 @@
 class API AudioClip : public FileReference, public Reflective
 {
 public:
-	struct AudioMemory
-	{
-		int dataLength = 0;
-		short* data = nullptr;
-	};
 	AudioClip();
 
 	ReflectiveData GetReflectiveData() override;
@@ -27,6 +22,16 @@ public:
 
 	void LoadFileReference() override;
 	void UnloadFileReference() override;
+
+
+private:
+	friend class AudioClipStream;
+
+	struct AudioMemory
+	{
+		int dataLength = 0;
+		short* data = nullptr;
+	};
 
 	/**
 	* [Internal]
@@ -44,7 +49,6 @@ public:
 		return audioMemory;
 	}
 
-private:
 	AudioMemory audioMemory;
 	bool loadedInMemory = false;
 };

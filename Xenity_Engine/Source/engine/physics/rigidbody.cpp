@@ -26,14 +26,55 @@ ReflectiveData RigidBody::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, isStatic, "isStatic", true);
 	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
-	//AddVariable(reflectedVariables, velocity, "velocity", true);
 	AddVariable(reflectedVariables, drag, "drag", true);
 	AddVariable(reflectedVariables, bounce, "bounce", true);
 	return reflectedVariables;
 }
 
-void RigidBody::Update()
+void RigidBody::OnReflectionUpdated()
 {
+	// Call setters to make sure the values are correct
+	SetDrag(drag);
+	SetBounce(bounce);
+}
+
+void RigidBody::SetVelocity(Vector3 _velocity)
+{
+	velocity = _velocity;
+}
+
+void RigidBody::SetDrag(float _drag)
+{
+	if(_drag < 0)
+	{
+		drag = 0;
+	}
+	else
+	{
+		drag = _drag;
+	}
+}
+
+void RigidBody::SetBounce(float _bounce)
+{
+	if (_bounce < 0)
+	{
+		bounce = 0;
+	}
+	else
+	{
+		bounce = _bounce;
+	}
+}
+
+void RigidBody::SetGravityMultiplier(float _gravityMultiplier)
+{
+	gravityMultiplier = _gravityMultiplier;
+}
+
+void RigidBody::SetIsStatic(float _isStatic)
+{
+	isStatic = _isStatic;
 }
 
 void RigidBody::Tick()

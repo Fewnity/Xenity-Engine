@@ -19,13 +19,16 @@ public:
 
 	ReflectiveData GetReflectiveData() override;
 
+	void RemoveReferences()  override;
+
+private:
+
+	friend class Graphics;
+
 	/**
 	* @brief [Internal] Check the lod
 	*/
 	void CheckLod();
-	void RemoveReferences()  override;
-
-private:
 
 	/**
 	* @brief Use one of the level and disable the others

@@ -18,7 +18,7 @@ class API Transform : public Reflective, public std::enable_shared_from_this<Tra
 
 public:
 	Transform() = delete;
-	Transform(const std::shared_ptr<GameObject>& gameObject);
+	explicit Transform(const std::shared_ptr<GameObject>& gameObject);
 	virtual ~Transform() = default;
 
 	ReflectiveData GetReflectiveData() override;
@@ -113,18 +113,7 @@ public:
 	*/
 	void SetLocalScale(const Vector3& value);
 
-	/**
-	* @brief [Internal] Update children world positions
-	*/
-	void SetChildrenWorldPositions();
-
-	/**
-	* @brief TODO Function called when the parent changed
-	*/
-	void OnParentChanged();
-
-
-	const glm::mat4& GetTransformationMatrix() 
+	inline const glm::mat4& GetTransformationMatrix() 
 	{
 		return transformationMatrix;
 	}
@@ -132,17 +121,32 @@ public:
 	/**
 	* @brief Get GameObject
 	*/
-	std::shared_ptr<GameObject> GetGameObject() const
+	inline std::shared_ptr<GameObject> GetGameObject() const
 	{
 		return gameObject.lock();
 	}
+
+private:
+
+	friend class InspectorSetTransformDataCommand;
+	friend class InspectorDeleteGameObjectCommand;
+	friend class GameObject;
+	friend class SceneManager;
+
+	/**
+	* @brief [Internal] Update children world positions
+	*/
+	void SetChildrenWorldPositions();
+
+	/**
+	* @brief Function called when the parent changed
+	*/
+	void OnParentChanged();
 
 	/**
 	* @brief [Internal] Update world values
 	*/
 	void UpdateWorldValues();
-
-private:
 
 	glm::mat4 transformationMatrix;
 

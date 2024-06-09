@@ -74,7 +74,7 @@ bool EditorUI::DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGame
 	if (DragDropTarget("GameObject", droppedGameObject))
 	{
 		std::shared_ptr<GameObject> newParent = dropAreaOwner->GetParent().lock();
-		if (isParentOpened && dropAreaOwner->childCount != 0 && !isParent)
+		if (isParentOpened && dropAreaOwner->GetChildrenCount() != 0 && !isParent)
 		{
 			newParent = dropAreaOwner;
 		}
@@ -110,7 +110,7 @@ bool EditorUI::DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGame
 		}
 		else
 		{
-			const int gameObjectCount = newParent->childCount;
+			const int gameObjectCount = newParent->GetChildrenCount();
 			int gameObjectIndex = -1;
 			int gameObjectToMoveIndex = -1;
 
@@ -258,7 +258,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			}
 		}
 
-		if ((!opened && gameObject->childCount == 0) || (opened && gameObject->childCount != 0))
+		if ((!opened && gameObject->GetChildrenCount() == 0) || (opened && gameObject->GetChildrenCount() != 0))
 		{
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
 			ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);

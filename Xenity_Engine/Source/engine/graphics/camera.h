@@ -90,11 +90,6 @@ public:
 	glm::mat4& GetProjection();
 
 	/**
-	* @brief [Internal] Get projection matrix without Clipping Planes values
-	*/
-	glm::mat4& GetCanvasProjection();
-
-	/**
 	* @brief Set projection type
 	* @param type Projection type
 	*/
@@ -104,27 +99,6 @@ public:
 	* @brief Get projection type
 	*/
 	ProjectionTypes GetProjectionType() const;
-
-	/**
-	* @brief [Internal] Update projection matrix
-	*/
-	void UpdateProjection();
-
-	/**
-	* @brief [Internal] Change Frame buffer size in pixel
-	* @param resolution The new resolution
-	*/
-	void ChangeFrameBufferSize(const Vector2Int& resolution);
-
-	/**
-	* @brief [Internal] Update FrameBuffer
-	*/
-	void UpdateFrameBuffer();
-
-	/**
-	* @brief [Internal] Bind view frame buffer
-	*/
-	void BindFrameBuffer();
 
 	Vector3 GetMouseRay();
 
@@ -172,21 +146,57 @@ public:
 		useMultisampling = _UseMultisampling;
 	}
 
+
+private:
+	friend class SceneMenu;
+	friend class GameMenu;
+	friend class Shader;
+	friend class RendererOpengl;
+	friend class RendererGU;
+	friend class RendererGsKit;
+	friend class RendererVU1;
+	friend class Graphics;
+	friend class SceneManager;
+
+	/**
+* @brief [Internal] Update projection matrix
+*/
+	void UpdateProjection();
+
+	/**
+	* @brief [Internal] Change Frame buffer size in pixel
+	* @param resolution The new resolution
+	*/
+	void ChangeFrameBufferSize(const Vector2Int& resolution);
+
+	/**
+	* @brief [Internal] Update FrameBuffer
+	*/
+	void UpdateFrameBuffer();
+
+	/**
+	* @brief [Internal] Bind view frame buffer
+	*/
+	void BindFrameBuffer();
+
 	// [Internal]
 	unsigned int secondFramebufferTexture = -1;
 
-private:
+	/**
+* @brief [Internal] Get projection matrix without Clipping Planes values
+*/
+	glm::mat4& GetCanvasProjection();
+
 	unsigned int framebufferTexture = -1;
 
 	glm::mat4 projection;
 	glm::mat4 canvasProjection;
-public:
+
 	/**
 	* @brief [Internal]
 	*/
 	void CopyMultiSampledFrameBuffer();
 
-private:
 	unsigned int framebuffer = -1;
 	unsigned int secondFramebuffer = -1;
 	int width, height;
@@ -207,8 +217,6 @@ private:
 	bool lastMultisamplingValue = useMultisampling;
 	// [Internal]
 	bool isEditor = false;
-
-public:
 
 	/**
 	* [Internal] Get if the camera is for the editor

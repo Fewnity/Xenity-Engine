@@ -66,7 +66,7 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 	{*/
 	lastSize = Vector2Int(Window::GetWidth(), Window::GetHeight());
 
-	for (int i = 0; i < GetGameObject()->childCount; i++)
+	for (int i = 0; i < GetGameObject()->GetChildrenCount(); i++)
 	{
 		std::shared_ptr<RectTransform> rect = GetGameObject()->GetChildren()[i].lock()->GetComponent<RectTransform>();
 		if (rect)
