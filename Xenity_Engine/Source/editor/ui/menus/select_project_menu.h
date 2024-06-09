@@ -20,6 +20,7 @@ public:
 private:
 	void OnLoadButtonClick();
 	void DrawProjectsList();
+	void DeleteProject(int projectIndex, bool deleteFiles);
 	std::vector<ProjectListItem> projectsList;
 	ProjectListItem* selectedProject = nullptr;
 };

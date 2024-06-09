@@ -123,17 +123,59 @@ void SelectProjectMenu::OnLoadButtonClick()
 void SelectProjectMenu::DrawProjectsList()
 {
 	ImGui::Separator();
-	const size_t projectCount = projectsList.size();
-	for (size_t i = 0; i < projectCount; i++)
-	{
-		ImGui::BeginGroup();
-		ImGui::Text("%s", projectsList[i].name.c_str());
-		ImGui::Text("%s", projectsList[i].path.c_str());
-		ImGui::EndGroup();
 
-		if (ImGui::IsItemClicked(0))
+	size_t projectListSize = projectsList.size();
+	for (size_t i = 0; i < projectListSize; i++)
+	{
+		ProjectListItem& project = projectsList[i];
+		ImGui::BeginGroup();
+		ImVec2 cursorPos = ImGui::GetCursorPos();
+		ImGui::Text("%s", project.name.c_str());
+		ImGui::Text("%s", project.path.c_str());
+		float availWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SameLine();
+		ImGui::SetCursorPos(ImVec2(availWidth - 50, cursorPos.y + 15));
+		if (ImGui::Button((std::string("...") + EditorUI::GenerateItemId()).c_str()))
 		{
-			if (ProjectManager::LoadProject(projectsList[i].path))
+			selectedProject = &project;
+			ImGui::OpenPopup(std::to_string(*(size_t*)selectedProject).c_str());
+		}
+		if (selectedProject == &project) 
+		{
+
+			if (ImGui::BeginPopup(std::to_string(*(size_t*)selectedProject).c_str()))
+			{
+				if (ImGui::MenuItem("Remove from list"))
+				{
+					DialogResult result = EditorUI::OpenDialog("Remove " + project.name, "Are you sure you want to remove the " + project.name + " project from the list?\n(Files won't be deleted)", DialogType::Dialog_Type_YES_NO_CANCEL);
+					if (result == DialogResult::Dialog_YES)
+					{
+						DeleteProject(i, false);
+						i--;
+						projectListSize--;
+					}
+					selectedProject = nullptr;
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Delete"))
+				{
+					DialogResult result = EditorUI::OpenDialog("Delete " + project.name, "Are you sure you want to delete the " + project.name + " project?\n(Files will be deleted)", DialogType::Dialog_Type_YES_NO_CANCEL);
+					if (result == DialogResult::Dialog_YES) 
+					{
+						DeleteProject(i, true);
+						i--;
+						projectListSize--;
+					}
+					selectedProject = nullptr;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+		ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y));
+		if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availWidth, 60)))
+		{
+			if (ProjectManager::LoadProject(project.path))
 			{
 				Editor::currentMenu = MenuGroup::Menu_Editor;
 			}
@@ -142,6 +184,25 @@ void SelectProjectMenu::DrawProjectsList()
 				Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project", true);
 			}
 		}
+		ImGui::EndGroup();
+
 		ImGui::Separator();
 	}
+}
+
+void SelectProjectMenu::DeleteProject(int projectIndex, bool deleteFiles)
+{
+	ProjectListItem& project = projectsList[projectIndex];
+	if (deleteFiles && std::filesystem::exists(project.path))
+	{
+		try
+		{
+			std::filesystem::remove_all(project.path);
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+	projectsList.erase(projectsList.begin() + projectIndex);
+	ProjectManager::SaveProjectsList(projectsList);
 }
