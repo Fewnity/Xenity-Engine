@@ -36,11 +36,6 @@ public:
 	void SendData(const std::string& text);
 
 	/**
-	* @brief [Internal] Read data from the socket
-	*/
-	void Update();
-
-	/**
 	* @brief Close the socket
 	*/
 	void Close();
@@ -53,7 +48,14 @@ public:
 		return incommingData;
 	}
 
-private:
+protected:
+	friend class NetworkManager;
+
+	/**
+	* @brief [Internal] Read data from the socket
+	*/
+	void Update();
+
 	std::string incommingData;
 	int socketId = -1;
 };
@@ -61,6 +63,17 @@ private:
 class API NetworkManager
 {
 public:
+
+
+	/**
+	* @brief Create a socket
+	*/
+	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
+
+
+private:
+	friend class Engine;
+	friend class Graphics;
 
 	/**
 	* @brief [Internal] Init network manager
@@ -71,11 +84,6 @@ public:
 	* @brief [Internal] Update all sockets (To call every frame)
 	*/
 	static void Update();
-
-	/**
-	* @brief Create a socket
-	*/
-	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
 
 	/**
 	* @brief [Internal] draw network setup menu for the PSP
@@ -89,6 +97,5 @@ public:
 #endif
 	static bool done;
 
-private:
 	static std::vector< std::shared_ptr<Socket>> sockets;
 };

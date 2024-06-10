@@ -585,8 +585,8 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 			renderSettings.useLighting = false;
 			renderSettings.useTexture = false;
 
-			const Vector3 min = meshRenderer->GetMeshData()->minBoundingBox;
-			const Vector3 max = meshRenderer->GetMeshData()->maxBoundingBox;
+			const Vector3 min = meshRenderer->GetMeshData()->GetMinBoundingBox();
+			const Vector3 max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
 
 			const glm::mat4x4& matrix = selectedGO->GetTransform()->GetTransformationMatrix();
 			const Vector3 bottom0 = matrix * glm::vec4(min.x, min.y, min.z, 1);

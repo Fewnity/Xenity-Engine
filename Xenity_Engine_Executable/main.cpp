@@ -21,15 +21,16 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // For the Alpha Release
 /*
 --- Needed
-Use Friend class for components
+File_Mesh and check all classes to see if the work is done
+Add application class
+
 Add undo/redo commands to DrawVector functions
 Fix twice confirm on quit
 Rework the documentation
 Box colliders are not affected by gameobject scale
 Clean code + Clean commands, move commands in more folder (delete, create, modify)
-Add the ability to delete a project
-Add GetTransform to components
-
+Fix ImGui moved dock
+Add Game running in debug mode message
 --- Can be for next release
 New Input system
 

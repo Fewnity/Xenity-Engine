@@ -162,45 +162,43 @@ class API InputSystem
 public:
 
 	/**
-	* @brief [Internal] Init input system
-	*/
-	static void Init();
-
-	/**
-	* @brief [Internal] Read input events
-	*/
-	static void Read();
-#if defined(_WIN32) || defined(_WIN64)
-
-	/**
-	* @brief [Internal] Read input events
-	* @parem event SDL event
-	*/
-	static void Read(const SDL_Event& event);
-#endif
-
-	/**
 	* @brief Return true if the key has just been pressed
 	* @param Key code to check
 	*/
-	static bool GetKeyDown(const KeyCode keyCode);
+	static inline bool GetKeyDown(const KeyCode keyCode)
+	{
+#if defined(EDITOR)
+		if (blockGameInput)
+			return false;
+#endif
+		return inputs[(int)keyCode].pressed;
+	}
 
 	/**
 	* @brief Return true if the key is held
 	* @param Key code to check
 	*/
-	static bool GetKey(const KeyCode keyCode);
+	static inline bool GetKey(const KeyCode keyCode)
+	{
+#if defined(EDITOR)
+		if (blockGameInput)
+			return false;
+#endif
+		return inputs[(int)keyCode].held;
+	}
 
 	/**
 	* @brief Return true if the key has just been released
 	* @param Key code to check
 	*/
-	static bool GetKeyUp(const KeyCode keyCode);
-
-	/**
-	* @brief [Internal] Set all keys states to inactive
-	*/
-	static void ClearInputs();
+	static inline bool GetKeyUp(const KeyCode keyCode)
+	{
+#if defined(EDITOR)
+		if (blockGameInput)
+			return false;
+#endif
+		return inputs[(int)keyCode].released;
+	}
 
 	/**
 	* @brief Get how many touch screens the device has
@@ -237,14 +235,40 @@ public:
 	static Vector2 mouseSpeed;
 	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
-	static bool blockGameInput;
 
 private:
+	friend class Engine;
+
 	struct TouchScreen
 	{
 		std::vector<Touch> touches;
 		std::vector<bool> updated;
 	};
+
+	/**
+	* @brief [Internal] Init input system
+	*/
+	static void Init();
+
+	/**
+	* @brief [Internal] Read input events
+	*/
+	static void Read();
+#if defined(_WIN32) || defined(_WIN64)
+
+	/**
+	* @brief [Internal] Read input events
+	* @parem event SDL event
+	*/
+	static void Read(const SDL_Event& event);
+#endif
+
+
+	/**
+	* @brief [Internal] Set all keys states to inactive
+	*/
+	static void ClearInputs();
+	static bool blockGameInput;
 
 	static void UpdateControllers();
 	/**

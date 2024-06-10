@@ -432,34 +432,3 @@ void InputSystem::SetInputInactive(const KeyCode keyCode)
 }
 
 #pragma endregion
-
-#pragma region Getters
-
-bool InputSystem::GetKeyDown(const KeyCode keyCode)
-{
-#if defined(EDITOR)
-	if (blockGameInput)
-		return false;
-#endif
-	return inputs[(int)keyCode].pressed;
-}
-
-bool InputSystem::GetKey(const KeyCode keyCode)
-{
-#if defined(EDITOR)
-	if (blockGameInput)
-		return false;
-#endif
-	return inputs[(int)keyCode].held;
-}
-
-bool InputSystem::GetKeyUp(const KeyCode keyCode)
-{
-#if defined(EDITOR)
-	if (blockGameInput)
-		return false;
-#endif
-	return inputs[(int)keyCode].released;
-}
-
-#pragma endregion

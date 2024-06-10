@@ -167,8 +167,8 @@ void BoxCollider::SetDefaultSize()
 	{
 		std::shared_ptr<MeshData> meshData = mesh->GetMeshData();
 		Vector3 scale = GetTransform()->GetLocalScale();
-		size = (meshData->maxBoundingBox - meshData->minBoundingBox) * scale;
-		offset = ((meshData->maxBoundingBox + meshData->minBoundingBox) / 2.0f) * scale;
+		size = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()) * scale;
+		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f) * scale;
 		CalculateBoundingBox();
 	}
 }

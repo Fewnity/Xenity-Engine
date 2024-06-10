@@ -21,9 +21,6 @@ public:
 	RigidBody();
 	~RigidBody();
 
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
-
 	inline Vector3 GetVelocity() const { return velocity; }
 	void SetVelocity(Vector3 _velocity);
 
@@ -40,6 +37,9 @@ public:
 	void SetIsStatic(float _isStatic);
 
 protected:
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
+
 	friend class PhysicsManager;
 
 	Vector3 velocity = Vector3(0, 0, 0);

@@ -21,7 +21,7 @@ class API Tilemap : public IDrawable
 {
 public:
 	Tilemap();
-	~Tilemap();;
+	~Tilemap();
 
 	class Tile
 	{

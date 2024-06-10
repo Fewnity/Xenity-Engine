@@ -30,7 +30,6 @@ public:
 	Material();
 	~Material();
 
-
 	/**
 	* @brief Set attribute of the material
 	* @param attribute The attribute to set

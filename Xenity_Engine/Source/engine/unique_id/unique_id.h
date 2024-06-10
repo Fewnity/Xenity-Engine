@@ -25,14 +25,15 @@ public:
 		return uniqueId;
 	}
 
-	/**
-	* @brief [Internal] Set unique Id
-	* @param id Id to set
-	*/
-	inline void SetUniqueId(uint64_t id)
-	{
-		uniqueId = id;
-	}
+private:
+	friend class ProjectManager;
+	friend class SceneManager;
+	friend class Compiler;
+	friend class InspectorCreateGameObjectCommand;
+	friend class InspectorDeleteGameObjectCommand;
+	friend class EngineAssetManagerMenu;
+	template<typename T>
+	friend class InspectorDeleteComponentCommand;
 
 	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;
@@ -46,7 +47,14 @@ public:
 	*/
 	static uint64_t GenerateUniqueId(bool forFile);
 
-private:
+	/**
+	* @brief [Internal] Set unique Id
+	* @param id Id to set
+	*/
+	inline void SetUniqueId(uint64_t id)
+	{
+		uniqueId = id;
+	}
 
 	uint64_t uniqueId;
 	bool forFile = false;

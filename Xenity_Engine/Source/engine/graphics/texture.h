@@ -32,18 +32,6 @@ public:
 	Texture();
 	~Texture();
 
-	/**
-	 * @brief Set texture filter
-	 * @param filter Filter
-	 */
-	void SetFilter(const Filter filter);
-
-	/**
-	 * @brief Set texture wrap mode
-	 * @param mode Wrap mode
-	 */
-	void SetWrapMode(const WrapMode mode);
-
 	inline void SetSize(int width, int height)
 	{
 		this->width = width;
@@ -51,40 +39,79 @@ public:
 	}
 
 	/**
+	 * @brief Set texture filter
+	 * @param filter Filter
+	 */
+	inline void SetFilter(const Filter filter)
+	{
+		this->filter = filter;
+	}
+
+	/**
+	 * @brief Set texture wrap mode
+	 * @param mode Wrap mode
+	 */
+	inline void SetWrapMode(const WrapMode mode)
+	{
+		wrapMode = mode;
+	}
+
+	/**
 	 * @brief Get texture width
 	 */
-	int GetWidth() const;
+	inline int GetWidth() const
+	{
+		return width;
+	}
 
 	/**
 	 * @brief Get texture height
 	 */
-	int GetHeight() const;
+	inline int GetHeight() const
+	{
+		return height;
+	}
 
 	/**
 	 * @brief Set texture pixel per unit
 	 * @param value Pixel per unit
 	 */
-	void SetPixelPerUnit(int value);
+	inline void SetPixelPerUnit(int value)
+	{
+		pixelPerUnit = value;
+	}
 
 	/**
 	 * @brief Get texture pixel per unit
 	 */
-	int GetPixelPerUnit() const;
+	inline int GetPixelPerUnit() const
+	{
+		return pixelPerUnit;
+	}
 
 	/**
 	 * @brief Get if the texture is using mipmap
 	 */
-	bool GetUseMipmap() const;
+	inline bool GetUseMipmap() const
+	{
+		return useMipMap;
+	}
 
 	/**
 	 * @brief Get texture filter
 	 */
-	Filter GetFilter() const;
-
+	inline Filter GetFilter() const
+	{
+		return filter;
+	}
+	
 	/**
 	 * @brief Get texture wrap mode
 	 */
-	WrapMode GetWrapMode() const;
+	inline WrapMode GetWrapMode() const
+	{
+		return wrapMode;
+	}
 
 protected:
 	template <class T>
@@ -109,7 +136,10 @@ protected:
 	/**
 	* @brief Get texture channel count
 	*/
-	int GetChannelCount() const;
+	inline int GetChannelCount() const
+	{
+		return nrChannels;
+	}
 
 	inline void SetChannelCount(int channelCount)
 	{
@@ -191,9 +221,12 @@ protected:
 	void SetData(const unsigned char* data);
 
 	/**
-	 * @brief [Internal] Get texture ID
-	 */
-	unsigned int GetTextureId() const;
+	* @brief [Internal] Get texture ID
+	*/
+	inline unsigned int GetTextureId() const
+	{
+		return textureId;
+	}
 
 	int mipmaplevelCount = 0;
 

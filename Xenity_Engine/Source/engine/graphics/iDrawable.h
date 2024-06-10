@@ -23,7 +23,7 @@ public:
 
 	virtual ~IDrawable();
 
-private:
+protected:
 	friend class Graphics;
 
 	void RemoveReferences() override;

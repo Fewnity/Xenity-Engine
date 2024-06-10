@@ -17,16 +17,6 @@ class API Time
 public:
 
 	/**
-	* @brief [Internal] Init time system
-	*/
-	static void Init();
-
-	/**
-	* @brief [Internal] Update time values
-	*/
-	static void UpdateTime();
-
-	/**
 	* @brief Get total scaled elapsed time
 	*/
 	static inline float GetTime()
@@ -72,6 +62,18 @@ public:
 	static void SetTimeScale(float _timeScale);
 
 private:
+	friend class Engine;
+
+	/**
+	* @brief [Internal] Init time system
+	*/
+	static void Init();
+
+	/**
+	* @brief [Internal] Update time values
+	*/
+	static void UpdateTime();
+
 	static float timeScale;
 	static float time;
 	static float deltaTime;

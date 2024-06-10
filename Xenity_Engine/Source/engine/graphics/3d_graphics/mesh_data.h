@@ -83,25 +83,7 @@ public:
 
 	static std::shared_ptr<MeshData> MakeMeshData();
 	static std::shared_ptr<MeshData> MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV);
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
 	~MeshData();
-
-	void LoadFileReference() override;
-	void OnLoadFileReferenceFinished() override;
-	void UnloadFileReference() override;
-
-	/**
-	* @brief Update ps2 packets
-	* @param index The index of the submesh
-	* @param texture The texture to use
-	*/
-	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
-
-	/**
-	 * @brief Alloc memory for a new submesh
-	 */
-	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -166,6 +148,39 @@ public:
 	 */
 	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
 
+
+	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+
+	inline Vector3 GetMinBoundingBox()  const
+	{
+		return minBoundingBox;
+	}
+
+	inline Vector3 GetMaxBoundingBox()  const
+	{
+		return maxBoundingBox;
+	}
+
+protected:
+	friend class RendererOpengl;
+	friend class RendererGU;
+	friend class RendererGsKit;
+	friend class RendererVU1;
+	friend class WavefrontLoader;
+	friend class SpriteManager;
+	friend class Tilemap;
+	friend class TextManager;
+	friend class InspectorMenu;
+	friend class MeshRenderer;
+	friend class Graphics;
+	friend class LineRenderer;
+	friend class SceneMenu;
+	friend class ParticleSystem;
+	friend class MeshManager;
+
+	Vector3 minBoundingBox;
+	Vector3 maxBoundingBox;
+
 	std::vector<SubMesh *> subMeshes;
 
 	/**
@@ -173,10 +188,23 @@ public:
 	*/
 	void SendDataToGpu();
 
-	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
+	ReflectiveData GetReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData() override;
+	void LoadFileReference() override;
+	void OnLoadFileReferenceFinished() override;
+	void UnloadFileReference() override;
 
-	Vector3 minBoundingBox;
-	Vector3 maxBoundingBox;
+	/**
+	* @brief Update ps2 packets
+	* @param index The index of the submesh
+	* @param texture The texture to use
+	*/
+	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
+
+	/**
+	 * @brief Alloc memory for a new submesh
+	 */
+	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
 	int subMeshCount = 0;
 	bool hasUv = false;
@@ -195,7 +223,6 @@ public:
 	int pspDrawParam = 0;
 #endif
 
-private:
 #if defined(__PSP__)
 	bool isOnVram = true;
 #endif

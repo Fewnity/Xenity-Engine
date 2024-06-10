@@ -196,8 +196,8 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr
 
 		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
 		{
-			const Vector3 min = meshRenderer->GetMeshData()->minBoundingBox;
-			const Vector3 max = meshRenderer->GetMeshData()->maxBoundingBox;
+			const Vector3 min = meshRenderer->GetMeshData()->GetMinBoundingBox();
+			const Vector3 max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
 			Vector3 transformedMin = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(min.x, min.y, min.z, 1);
 			Vector3 transformedMax = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(max.x, max.y, max.z, 1);
 			transformedMin.x = -transformedMin.x;

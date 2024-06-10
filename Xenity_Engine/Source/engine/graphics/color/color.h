@@ -13,7 +13,6 @@
 class API RGBA : public Reflective
 {
 public:
-	ReflectiveData GetReflectiveData() override;
 	RGBA() = delete;
 
 	RGBA(float r, float g, float b, float a)
@@ -33,14 +32,15 @@ public:
 	float g = 1;
 	float b = 1;
 	float a = 1;
+
+protected:
+	ReflectiveData GetReflectiveData() override;
 };
 
 class API Color : public Reflective
 {
 public:
 	Color();
-	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated() override;
 
 	/**
 	* @brief Create color from ints
@@ -118,7 +118,10 @@ public:
 		return abgrInt;
 	}
 
-private:
+protected:
+
+	ReflectiveData GetReflectiveData() override;
+	void OnReflectionUpdated() override;
 
 	/**
 	* @brief Update the unsigned ints
