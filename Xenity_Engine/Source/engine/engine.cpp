@@ -139,6 +139,14 @@ int Engine::Init()
 		// Not a critical module, do not stop the engine
 	}
 
+#if defined(DEBUG)
+#if defined(EDITOR)
+	Debug::PrintWarning("-------- The editor is running in debug mode --------", true);
+#else
+	Debug::PrintWarning("-------- The game is running in debug mode --------", true);
+#endif
+#endif
+	
 	ClassRegistry::RegisterEngineComponents();
 	ClassRegistry::RegisterEngineFileClasses();
 
