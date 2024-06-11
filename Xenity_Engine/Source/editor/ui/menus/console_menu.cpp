@@ -41,7 +41,7 @@ void ConsoleMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 
-	const bool visible = ImGui::Begin("Console", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Console###Console0", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

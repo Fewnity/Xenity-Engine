@@ -329,6 +329,44 @@ public:
 	static bool isToolLocalMode;
 
 private:
+	class MenuSetting : public Reflective
+	{
+	public:
+		ReflectiveData GetReflectiveData() override
+		{
+			ReflectiveData reflectedVariables;
+			Reflective::AddVariable(reflectedVariables, name, "name", true);
+			Reflective::AddVariable(reflectedVariables, id, "id", true);
+			Reflective::AddVariable(reflectedVariables, isActive, "isActive", true);
+			return reflectedVariables;
+		}
+
+		std::string name = "";
+		int id = 0;
+		bool isActive = true;
+	};
+
+	class MenuSettings : public Reflective
+	{
+	public:
+		ReflectiveData GetReflectiveData() override 
+		{
+			ReflectiveData reflectedVariables;
+			Reflective::AddVariable(reflectedVariables, menuSettings, "menuSettings", true);
+			Reflective::AddVariable(reflectedVariables, version, "version", true);
+			return reflectedVariables;
+		}
+
+		std::vector<MenuSetting*> menuSettings;
+		int version = 1;
+	};
+	static MenuSettings menuSettings;
+
+	static void SaveMenuSettings();
+	static void LoadMenuSettings();
+	static void CreateNewMenuSettings();
+	static void AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive);
+
 	static void OnFileModified();
 	static void OnCodeModified();
 

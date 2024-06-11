@@ -81,11 +81,16 @@ std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
 
 std::vector<std::string> Editor::dragdropEntries;
 
+Editor::MenuSettings Editor::menuSettings;
+
 int Editor::menuCount = 0;
 bool Editor::isToolLocalMode;
 
 void Editor::Init()
 {
+	ClassRegistry::RegisterMenus();
+	LoadMenuSettings();
+	SaveMenuSettings();
 	CreateMenus();
 
 	// Create audio source for audio clip preview
@@ -110,6 +115,62 @@ void Editor::Init()
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 }
 
+void Editor::SaveMenuSettings()
+{
+	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
+	ReflectionUtils::ReflectiveDataToFile(menuSettings.GetReflectiveData(), file);
+}
+
+void Editor::LoadMenuSettings()
+{
+	bool success = false;
+	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
+	if (file->CheckIfExist())
+	{
+		success = ReflectionUtils::FileToReflectiveData(file, menuSettings.GetReflectiveData());
+	}
+
+	if (!success)
+	{
+		CreateNewMenuSettings();
+	}
+}
+
+void Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive)
+{
+	MenuSetting* newMenuSetting = new MenuSetting();
+	newMenuSetting->name = name;
+	newMenuSetting->isActive = isActive;
+	menuSettingList.push_back(newMenuSetting);
+}
+
+void Editor::CreateNewMenuSettings()
+{
+	menuSettings = MenuSettings();
+	std::vector<MenuSetting*>& menuSettingList = menuSettings.menuSettings;
+	AddMenuSetting(menuSettingList, "Scene", true);
+
+	AddMenuSetting(menuSettingList, "CreateClassMenu", false);
+	AddMenuSetting(menuSettingList, "LightingMenu", false);
+	AddMenuSetting(menuSettingList, "ProjectSettingsMenu", false);
+	AddMenuSetting(menuSettingList, "EngineSettingsMenu", false);
+	AddMenuSetting(menuSettingList, "DockerConfigMenu", false);
+	AddMenuSetting(menuSettingList, "AboutMenu", false);
+	AddMenuSetting(menuSettingList, "BuildSettingsMenu", false);
+	AddMenuSetting(menuSettingList, "EngineAssetManagerMenu", false);
+
+	AddMenuSetting(menuSettingList, "FileExplorerMenu", true);
+	AddMenuSetting(menuSettingList, "HierarchyMenu", true);
+	AddMenuSetting(menuSettingList, "InspectorMenu", true);
+	AddMenuSetting(menuSettingList, "ProfilerMenu", true);
+	AddMenuSetting(menuSettingList, "GameMenu", true);
+	AddMenuSetting(menuSettingList, "SceneMenu", true);
+	AddMenuSetting(menuSettingList, "CompilingMenu", true);
+	AddMenuSetting(menuSettingList, "SelectProjectMenu", true);
+	AddMenuSetting(menuSettingList, "CreateProjectMenu", true);
+	AddMenuSetting(menuSettingList, "ConsoleMenu", true);
+}
+
 void Editor::OnFileModified()
 {
 	ProjectManager::RefreshProjectDirectory();
@@ -117,7 +178,7 @@ void Editor::OnFileModified()
 
 void Editor::OnCodeModified()
 {
-	if(EngineSettings::values.compileOnCodeChanged)
+	if (EngineSettings::values.compileOnCodeChanged)
 		Compiler::HotReloadGame();
 }
 
@@ -178,7 +239,7 @@ void Editor::Update()
 		if ((InputSystem::GetKey(KeyCode::LEFT_CONTROL) && InputSystem::GetKeyDown(KeyCode::NUM_1)))
 		{
 			std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
-			if(sceneMenu)
+			if (sceneMenu)
 				sceneMenu->Focus();
 		}
 
@@ -255,6 +316,7 @@ void Editor::Draw()
 
 	ImGui::Begin("Background", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+	// Dock windows if they are not already docked (first time using the editor)
 	const ImGuiID dsId = ImGui::GetID("BackgroundDock");
 	const ImGuiDockNode* first_time = ImGui::DockBuilderGetNode(dsId);
 	if (!first_time)
@@ -276,6 +338,7 @@ void Editor::Draw()
 
 		ImGui::DockBuilderDockWindow("###Hierarchy0", hierarchyNode);
 		ImGui::DockBuilderDockWindow("###File_Explorer0", fileExplorerNode);
+		ImGui::DockBuilderDockWindow("###Console0", fileExplorerNode);
 		ImGui::DockBuilderDockWindow("###Inspector0", inspectorNode);
 		ImGui::DockBuilderDockWindow("###Debug0", inspectorNode);
 		ImGui::DockBuilderDockWindow("###Scene0", SceneNode);
@@ -412,7 +475,7 @@ void Editor::ClearSelectedGameObjects()
 {
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
-		if(currentGameObject.lock())
+		if (currentGameObject.lock())
 			currentGameObject.lock()->isSelected = false;
 	}
 	selectedGameObjects.clear();
@@ -422,17 +485,17 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 {
 	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr")
 
-	bool found = false;
+		bool found = false;
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
-		if (currentGameObject.lock() == gameObjectToAdd) 
+		if (currentGameObject.lock() == gameObjectToAdd)
 		{
 			found = true;
 			break;
 		}
 	}
 
-	if (!found) 
+	if (!found)
 	{
 		gameObjectToAdd->isSelected = true;
 		selectedGameObjects.push_back(gameObjectToAdd);
@@ -443,7 +506,7 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 {
 	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr")
 
-	const size_t goCount = selectedGameObjects.size();
+		const size_t goCount = selectedGameObjects.size();
 	for (size_t i = 0; i < goCount; i++)
 	{
 		if (selectedGameObjects[i].lock() == gameObjectToRemove)
@@ -459,13 +522,13 @@ bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObje
 {
 	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr")
 
-	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
-	{
-		if (currentGameObject.lock() == gameObjectToCheck)
+		for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 		{
-			return true;
+			if (currentGameObject.lock() == gameObjectToCheck)
+			{
+				return true;
+			}
 		}
-	}
 
 	return false;
 }
@@ -522,7 +585,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	default:
 	{
 		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file")
-		break;
+			break;
 	}
 	}
 
@@ -598,7 +661,7 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 {
 	int endParenthesis = -1;
 	int startParenthesis = -1;
-	int nameLenght = (int)name.size();
+	const int nameLenght = (int)name.size();
 	int numberState = 2; // 0 Other than number, 1 only number, 2 nothing found
 
 	for (int i = nameLenght - 1; i > 0; i--)
@@ -659,7 +722,7 @@ std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 
 	//const int gameObjectCount = GameplayManager::gameObjects.size();
 	//for (int i = 0; i < gameObjectCount; i++)
-	for(const std::shared_ptr<GameObject>& gameObject : GameplayManager::gameObjects)
+	for (const std::shared_ptr<GameObject>& gameObject : GameplayManager::gameObjects)
 	{
 		std::string tempName;
 		int tempNumber;
@@ -730,22 +793,22 @@ void Editor::OnDragAndDropFileFinished()
 	ProjectManager::RefreshProjectDirectory();
 }
 
-bool Editor::IsParentOf(const std::shared_ptr<GameObject>&parent, const std::shared_ptr<GameObject>& child)
+bool Editor::IsParentOf(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& child)
 {
 	if (parent == nullptr || child == nullptr)
 		return false;
 
 	for (std::weak_ptr<GameObject> curChild : parent->GetChildren())
 	{
-		if (auto curChildLock = curChild.lock()) 
+		if (auto curChildLock = curChild.lock())
 		{
-			if (curChildLock == child) 
+			if (curChildLock == child)
 			{
 				return true;
 			}
-			else 
+			else
 			{
-				if (IsParentOf(curChildLock, child)) 
+				if (IsParentOf(curChildLock, child))
 				{
 					return true;
 				}
@@ -764,7 +827,7 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 	for (size_t i = 0; i < goCount; i++)
 	{
 		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
-		if (currentGameObject == nullptr) 
+		if (currentGameObject == nullptr)
 		{
 			goCount--;
 			parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + i);
@@ -775,14 +838,14 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 	for (int i = 0; i < goCount; i++)
 	{
 		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
-		
+
 		for (int j = 0; j < goCount; j++)
 		{
 			std::shared_ptr<GameObject> currentGameObject2 = parentsAndChildrenCopy[j];
 			if (currentGameObject == currentGameObject2)
 				continue;
 
-			if (IsParentOf(currentGameObject, currentGameObject2)) 
+			if (IsParentOf(currentGameObject, currentGameObject2))
 			{
 				goCount--;
 				parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + j);
@@ -822,7 +885,7 @@ void Editor::CreateMenus()
 	mainBar->Init();
 }
 
-bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName) 
+bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName)
 {
 	if (fullPath.empty())
 		return false;
@@ -851,19 +914,19 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 bool Editor::OpenExecutableFile(const std::string& executablePath)
 {
 	XASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty")
-	if (executablePath.empty())
-		return false;
+		if (executablePath.empty())
+			return false;
 
 	std::string finalName;
 	std::string path;
 
-	if(SeparateFileFromPath(executablePath, path, finalName))
+	if (SeparateFileFromPath(executablePath, path, finalName))
 	{
 		std::string command = "cd \"" + path + "\"" + " && " + "\"" + finalName + "\"";
 		const int result = system(command.c_str());
 		return result == 0;
 	}
-	else 
+	else
 	{
 		return false;
 	}

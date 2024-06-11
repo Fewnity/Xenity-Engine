@@ -327,6 +327,7 @@
     <ClInclude Include="Source\editor\ui\reflective_data_to_draw.h" />
     <ClInclude Include="Source\editor\command\commands\delete.h" />
     <ClInclude Include="Source\engine\accessors\acc_gameobject.h" />
+    <ClInclude Include="Source\engine\asset_management\project_list_item.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

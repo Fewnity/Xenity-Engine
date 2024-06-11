@@ -9,7 +9,7 @@
 #include "menu.h"
 #include <vector>
 
-struct ProjectListItem;
+#include <engine/asset_management/project_list_item.h>
 
 class SelectProjectMenu : public Menu
 {

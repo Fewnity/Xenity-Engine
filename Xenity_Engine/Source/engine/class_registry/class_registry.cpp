@@ -38,6 +38,30 @@
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
 std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
+#if defined(EDITOR)
+#include <editor/ui/menus/menu.h>
+#include <editor/ui/menus/project_settings_menu.h>
+#include <editor/ui/menus/engine_settings_menu.h>
+#include <editor/ui/menus/file_explorer_menu.h>
+#include <editor/ui/menus/hierarchy_menu.h>
+#include <editor/ui/menus/inspector_menu.h>
+#include <editor/ui/menus/main_bar_menu.h>
+#include <editor/ui/menus/profiler_menu.h>
+#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/compiling_menu.h>
+#include <editor/ui/menus/select_project_menu.h>
+#include <editor/ui/menus/create_project_menu.h>
+#include <editor/ui/menus/lighting_menu.h>
+#include <editor/ui/menus/create_class_menu.h>
+#include <editor/ui/menus/about_menu.h>
+#include <editor/ui/menus/console_menu.h>
+#include <editor/ui/menus/docker_config_menu.h>
+#include <editor/ui/menus/build_settings_menu.h>
+#include <editor/ui/menus/engine_asset_manager_menu.h>
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::nameToMenu;
+std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
+#endif
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
@@ -47,6 +71,20 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{
 		return nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
+{
+	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty")
+
+	if (nameToMenu.find(name) != nameToMenu.end()) // Check if the component is in the list
+	{
+		return nameToMenu[name].first(); // Call the function to add the component to the gameObject
 	}
 	else
 	{
@@ -94,7 +132,6 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<MissingScript>("MissingScript", false);
 }
 
-
 void ClassRegistry::RegisterEngineFileClasses()
 {
 	// List all Engine file classes
@@ -107,4 +144,29 @@ void ClassRegistry::RegisterEngineFileClasses()
 	AddFileClass<Shader>("Shader", FileType::File_Shader);
 	AddFileClass<Material>("Material", FileType::File_Material);
 	AddFileClass<Icon>("Icon", FileType::File_Icon);
+}
+
+void ClassRegistry::RegisterMenus()
+{
+	//AddMenuClass<Texture>("Texture");
+
+	AddMenuClass<CreateClassMenu>("CreateClassMenu");
+	AddMenuClass<LightingMenu>("LightingMenu");
+	AddMenuClass<ProjectSettingsMenu>("ProjectSettingsMenu");
+	AddMenuClass<EngineSettingsMenu>("EngineSettingsMenu");
+	AddMenuClass<DockerConfigMenu>("DockerConfigMenu");
+	AddMenuClass<AboutMenu>("AboutMenu");
+	AddMenuClass<BuildSettingsMenu>("BuildSettingsMenu");
+	AddMenuClass<EngineAssetManagerMenu>("EngineAssetManagerMenu");
+
+	AddMenuClass<FileExplorerMenu>("FileExplorerMenu");
+	AddMenuClass<HierarchyMenu>("HierarchyMenu");
+	AddMenuClass<InspectorMenu>("InspectorMenu");
+	AddMenuClass<ProfilerMenu>("ProfilerMenu");
+	AddMenuClass<GameMenu>("GameMenu");
+	AddMenuClass<SceneMenu>("SceneMenu");
+	AddMenuClass<CompilingMenu>("CompilingMenu");
+	AddMenuClass<SelectProjectMenu>("SelectProjectMenu");
+	AddMenuClass<CreateProjectMenu>("CreateProjectMenu");
+	AddMenuClass<ConsoleMenu>("ConsoleMenu");
 }

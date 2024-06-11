@@ -17,7 +17,9 @@
 #include <engine/debug/debug.h>
 #include <engine/file_system/file_type.h>
 #include <engine/assertions/assertions.h>
-
+#if defined (EDITOR)
+class Menu;
+#endif
 class Component;
 
 class API ClassRegistry
@@ -25,16 +27,24 @@ class API ClassRegistry
 public:
 	struct FileClassInfo
 	{
-		std::string name;
-		uint64_t typeId;
+		std::string name = "";
+		uint64_t typeId = 0;
 		FileType fileType = FileType::File_Other;
 	};
 
 	struct ClassInfo
 	{
-		std::string name;
-		uint64_t typeId;
+		std::string name = "";
+		uint64_t typeId = 0;
 	};
+
+#if defined (EDITOR)
+	struct MenuClassInfo
+	{
+		std::string name = "";
+		uint64_t typeId = 0;
+	};
+#endif
 
 	/**
 	* @brief Add a function to create a component
@@ -59,6 +69,31 @@ public:
 		classInfos.push_back(classInfo);
 	}
 
+#if defined (EDITOR)
+	/**
+	* @brief Add a function to create a component
+	* @param name Component name
+	* @param isVisible Is the component visible in the editor
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<Menu, T>::value, void>
+	static AddMenuClass(const std::string& name, bool isVisible = true)
+	{
+		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty")
+
+		auto function = []()
+		{
+			return std::make_shared<T>();
+		};
+		nameToMenu[name] = { function , isVisible };
+
+		MenuClassInfo classInfo;
+		classInfo.name = name;
+		classInfo.typeId = typeid(T).hash_code();
+		menuClassInfos.push_back(classInfo);
+	}
+#endif
+
 	/**
 	* @brief Register all engine components
 	*/
@@ -69,12 +104,21 @@ public:
 	*/
 	static void RegisterEngineFileClasses();
 
+#if defined (EDITOR)
+	/**
+	* @brief Register all editor menus
+	*/
+	static void RegisterMenus();
+#endif
+
 	/**
 	* @brief Add a component to a GameObject from the component name
 	* @param name Component name
 	* @param gameObject GameObject to add the component to
 	*/
 	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
+
+	static std::shared_ptr<Menu> CreateMenuFromName(const std::string& name);
 
 	/**
 	* @brief Get a list of all component names
@@ -180,5 +224,9 @@ private:
 	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> nameToComponent;
 	static std::vector<FileClassInfo> fileClassInfos;
 	static std::vector<ClassInfo> classInfos;
+#if defined(EDITOR)
+	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> nameToMenu;
+	static std::vector<MenuClassInfo> menuClassInfos;
+#endif
 };
 

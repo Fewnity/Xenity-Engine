@@ -19,6 +19,7 @@
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/event_system/event_system.h>
+#include <engine/asset_management/project_list_item.h>
 
 class FileReference;
 class File;
@@ -47,12 +48,6 @@ public:
 	std::vector<std::shared_ptr<ProjectDirectory>> subdirectories;
 	std::vector<std::shared_ptr<FileReference>> files;
 	uint64_t uniqueId = 0;
-};
-
-struct ProjectListItem
-{
-	std::string name;
-	std::string path;
 };
 
 class ProjectEngineFile 

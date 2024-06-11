@@ -22,7 +22,7 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Add application class
-
+Remove unused files
 Add undo/redo commands to DrawVector functions
 Fix twice confirm on quit
 Rework the documentation
