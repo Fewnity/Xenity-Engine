@@ -152,7 +152,7 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Edit")) // ----------------------------------- Draw File menu
+	if (ImGui::BeginMenu("Edit")) // ----------------------------------- Draw Edit menu
 	{
 		if (ImGui::MenuItem("Unselect"))
 		{
@@ -464,16 +464,16 @@ void MainBarMenu::Draw()
 
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Other")) // ----------------------------------- Draw Window menu
-	{
-		if (ImGui::MenuItem("Engine Asset Manager"))
-		{
-			Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
-			Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
-		}
-		ImGui::EndMenu();
-	}
-	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Window menu
+	//if (ImGui::BeginMenu("Other")) // ----------------------------------- Draw Window menu
+	//{
+	//	if (ImGui::MenuItem("Engine Asset Manager"))
+	//	{
+	//		Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
+	//		Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
+	//	}
+	//	ImGui::EndMenu();
+	//}
+	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Help menu
 	{
 		if (ImGui::MenuItem("Documentation"))
 		{
