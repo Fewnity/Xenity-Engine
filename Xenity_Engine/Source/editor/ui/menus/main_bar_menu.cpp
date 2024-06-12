@@ -9,10 +9,6 @@
 
 #include <imgui/imgui.h>
 
-#include <Windows.h>
-#include <Commdlg.h>
-#include <ShObjIdl.h>
-
 #include <editor/ui/editor_ui.h>
 #include <editor/compiler.h>
 #include <editor/command/commands/inspector_commands.h>
@@ -407,36 +403,36 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Game"))
 			{
-				Editor::AddMenu<GameMenu>(true);
+				Editor::AddMenu("GameMenu", true);
 			}
 			if (ImGui::MenuItem("Scene"))
 			{
-				Editor::AddMenu<SceneMenu>(true);
+				Editor::AddMenu("SceneMenu", true);
 			}
 			if (ImGui::MenuItem("Inspector"))
 			{
-				Editor::AddMenu<InspectorMenu>(true);
+				Editor::AddMenu("InspectorMenu", true);
 			}
 			if (ImGui::MenuItem("Profiler"))
 			{
-				Editor::AddMenu<ProfilerMenu>(true);
+				Editor::AddMenu("ProfilerMenu", true);
 			}
 			if (ImGui::MenuItem("File Explorer"))
 			{
-				Editor::AddMenu<FileExplorerMenu>(true);
+				Editor::AddMenu("FileExplorerMenu", true);
 			}
 			if (ImGui::MenuItem("Hierarchy"))
 			{
-				Editor::AddMenu<HierarchyMenu>(true);
+				Editor::AddMenu("HierarchyMenu", true);
 			}
 			if (ImGui::MenuItem("Console"))
 			{
-				Editor::AddMenu<ConsoleMenu>(true);
+				Editor::AddMenu("ConsoleMenu", true);
 			}
-			if (ImGui::MenuItem("Sprite Editor"))
+			/*if (ImGui::MenuItem("Sprite Editor"))
 			{
-				Editor::AddMenu<SpriteEditorMenu>(true);
-			}
+				Editor::AddMenu("SpriteEditorMenu", true);
+			}*/
 			ImGui::EndMenu();
 		}
 		ImGui::Separator();

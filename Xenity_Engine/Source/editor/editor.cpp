@@ -130,45 +130,75 @@ void Editor::LoadMenuSettings()
 		success = ReflectionUtils::FileToReflectiveData(file, menuSettings.GetReflectiveData());
 	}
 
-	if (!success)
+	// If the file does not exist or is corrupted, create a new one
+	if (!success || menuSettings.settings.empty())
 	{
 		CreateNewMenuSettings();
+		SaveMenuSettings();
 	}
 }
 
-void Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive)
+Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id = 0)
 {
 	MenuSetting* newMenuSetting = new MenuSetting();
 	newMenuSetting->name = name;
 	newMenuSetting->isActive = isActive;
+	newMenuSetting->isUnique = isUnique;
+	newMenuSetting->id = id;
 	menuSettingList.push_back(newMenuSetting);
+	return newMenuSetting;
+}
+
+Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id)
+{
+	const size_t menuSize = menuSettings.settings.size();
+	bool found = false;
+	MenuSetting* menuSetting = nullptr;
+	for (size_t i = 0; i < menuSize; i++)
+	{
+		MenuSetting& setting = *menuSettings.settings[i];
+		if (setting.name == name && setting.id == id)
+		{
+			setting.isActive = isActive;
+			setting.id = id;
+			found = true;
+			menuSetting= &setting;
+			break;
+		}
+	}
+
+	if(!found)
+	{
+		return AddMenuSetting(menuSettingList, name, isActive, isUnique, id);
+	}
+
+	return menuSetting;
 }
 
 void Editor::CreateNewMenuSettings()
 {
 	menuSettings = MenuSettings();
-	std::vector<MenuSetting*>& menuSettingList = menuSettings.menuSettings;
-	AddMenuSetting(menuSettingList, "Scene", true);
+	std::vector<MenuSetting*>& menuSettingList = menuSettings.settings;
 
-	AddMenuSetting(menuSettingList, "CreateClassMenu", false);
-	AddMenuSetting(menuSettingList, "LightingMenu", false);
-	AddMenuSetting(menuSettingList, "ProjectSettingsMenu", false);
-	AddMenuSetting(menuSettingList, "EngineSettingsMenu", false);
-	AddMenuSetting(menuSettingList, "DockerConfigMenu", false);
-	AddMenuSetting(menuSettingList, "AboutMenu", false);
-	AddMenuSetting(menuSettingList, "BuildSettingsMenu", false);
-	AddMenuSetting(menuSettingList, "EngineAssetManagerMenu", false);
+	AddMenuSetting(menuSettingList, "CreateClassMenu", false, true);
+	AddMenuSetting(menuSettingList, "LightingMenu", false, true);
+	AddMenuSetting(menuSettingList, "ProjectSettingsMenu", false, true);
+	AddMenuSetting(menuSettingList, "EngineSettingsMenu", false, true);
+	AddMenuSetting(menuSettingList, "DockerConfigMenu", false, true);
+	AddMenuSetting(menuSettingList, "AboutMenu", false, true);
+	AddMenuSetting(menuSettingList, "BuildSettingsMenu", false, true);
+	AddMenuSetting(menuSettingList, "EngineAssetManagerMenu", false, true);
 
-	AddMenuSetting(menuSettingList, "FileExplorerMenu", true);
-	AddMenuSetting(menuSettingList, "HierarchyMenu", true);
-	AddMenuSetting(menuSettingList, "InspectorMenu", true);
-	AddMenuSetting(menuSettingList, "ProfilerMenu", true);
-	AddMenuSetting(menuSettingList, "GameMenu", true);
-	AddMenuSetting(menuSettingList, "SceneMenu", true);
-	AddMenuSetting(menuSettingList, "CompilingMenu", true);
-	AddMenuSetting(menuSettingList, "SelectProjectMenu", true);
-	AddMenuSetting(menuSettingList, "CreateProjectMenu", true);
-	AddMenuSetting(menuSettingList, "ConsoleMenu", true);
+	AddMenuSetting(menuSettingList, "FileExplorerMenu", true, false);
+	AddMenuSetting(menuSettingList, "HierarchyMenu", true, false);
+	AddMenuSetting(menuSettingList, "InspectorMenu", true, false);
+	AddMenuSetting(menuSettingList, "ProfilerMenu", true, false);
+	AddMenuSetting(menuSettingList, "GameMenu", true, false);
+	AddMenuSetting(menuSettingList, "SceneMenu", true, false);
+	AddMenuSetting(menuSettingList, "CompilingMenu", true, false);
+	AddMenuSetting(menuSettingList, "SelectProjectMenu", true, false);
+	AddMenuSetting(menuSettingList, "CreateProjectMenu", true, false);
+	AddMenuSetting(menuSettingList, "ConsoleMenu", true, false);
 }
 
 void Editor::OnFileModified()
@@ -862,25 +892,14 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 
 void Editor::CreateMenus()
 {
-	AddMenu<CreateClassMenu>(false);
-	AddMenu<LightingMenu>(false);
-	AddMenu<ProjectSettingsMenu>(false);
-	AddMenu<EngineSettingsMenu>(false);
-	AddMenu<DockerConfigMenu>(false);
-	AddMenu<AboutMenu>(false);
-	AddMenu<BuildSettingsMenu>(false);
-	AddMenu<EngineAssetManagerMenu>(false);
+	const size_t menuSize = menuSettings.settings.size();
+	for (size_t i = 0; i < menuSize; i++)
+	{
+		MenuSetting& setting = *menuSettings.settings[i];
+		if(setting.isUnique || setting.isActive)
+			AddMenu(setting.name, setting.isActive, setting.id);
+	}
 
-	AddMenu<FileExplorerMenu>(true);
-	AddMenu<HierarchyMenu>(true);
-	AddMenu<InspectorMenu>(true);
-	AddMenu<ProfilerMenu>(true);
-	AddMenu<GameMenu>(true);
-	AddMenu<SceneMenu>(true);
-	AddMenu<CompilingMenu>(true);
-	AddMenu<SelectProjectMenu>(true);
-	AddMenu<CreateProjectMenu>(true);
-	AddMenu<ConsoleMenu>(true);
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
 }

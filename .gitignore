@@ -34,6 +34,7 @@ Xenity_Engine_Executable/Xenity Editor/
 Xenity_Engine_Executable/plugins/*.dll
 Xenity_Engine_Executable/*.dll
 Xenity_Engine_Executable/build_settings.json
+Xenity_Engine_Executable/menu_settings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

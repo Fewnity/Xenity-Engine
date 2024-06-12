@@ -40,8 +40,8 @@ void ConsoleMenu::OnPlay()
 void ConsoleMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-
-	const bool visible = ImGui::Begin("Console###Console0", &isActive, ImGuiWindowFlags_NoCollapse);
+	const std::string windowName = "Console###Console" + std::to_string(id);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

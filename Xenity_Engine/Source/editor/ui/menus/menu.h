@@ -73,8 +73,11 @@ public:
 
 	MenuGroup group = MenuGroup::Menu_Editor;
 	int id = 0;
+	std::string name;
 
 	virtual void OnOpen() {}
+
+	virtual void OnClose();
 
 protected:
 
@@ -97,6 +100,8 @@ protected:
 	bool isFocused = false;
 	bool forceFocus = false;
 	bool isActive = true;
+	bool previousIsActive = true;
+
 
 	Vector2Int windowSize = Vector2Int(0);
 	Vector2Int windowPosition = Vector2Int(0);

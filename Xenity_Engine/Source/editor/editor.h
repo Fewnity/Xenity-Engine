@@ -18,6 +18,7 @@
 #include <engine/file_system/file_type.h>
 #include <editor/ui/menus/menu.h>
 #include <engine/assertions/assertions.h>
+#include <engine/class_registry/class_registry.h>
 
 class Component;
 class Reflective;
@@ -120,11 +121,11 @@ public:
 	* @return Menu of type T or nullptr if not found
 	*/
 	template <typename T>
-	static std::shared_ptr<T> GetMenu() 
+	static std::shared_ptr<T> GetMenu()
 	{
 		for (int i = 0; i < menuCount; i++)
 		{
-			if (auto menu = std::dynamic_pointer_cast<T>(menus[i])) 
+			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
 			{
 				return menu;
 			}
@@ -174,15 +175,15 @@ public:
 	{
 		XASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr")
 
-		for (int i = 0; i < menuCount; i++)
-		{
-			if (menu == menus[i].get())
+			for (int i = 0; i < menuCount; i++)
 			{
-				menus.erase(menus.begin() + i);
-				menuCount--;
-				break;
+				if (menu == menus[i].get())
+				{
+					menus.erase(menus.begin() + i);
+					menuCount--;
+					break;
+				}
 			}
-		}
 	}
 
 	/**
@@ -209,6 +210,107 @@ public:
 		newMenu->SetActive(active);
 		menuCount++;
 		return newMenu;
+	}
+
+	static void OnMenuActiveStateChange(std::string menuName, bool active, int id)
+	{
+		const size_t menuSize = menuSettings.settings.size();
+		for (size_t i = 0; i < menuSize; i++)
+		{
+			MenuSetting& setting = *menuSettings.settings[i];
+			if (setting.name == menuName && setting.id == id)
+			{
+				setting.isActive = active;
+				break;
+			}
+		}
+		SaveMenuSettings();
+	}
+
+	static std::shared_ptr<Menu> AddMenu(std::string menuName, bool active, int id = -1)
+	{
+		// Make a list of all ids and use the smallest one that is not used
+		std::vector<int> usedIds;
+		size_t idCount = 0;
+		if (id == -1)
+		{
+			//int count = 0;
+			int highestId = 0;
+			for (int i = 0; i < menuCount; i++)
+			{
+				if (menus[i]->name == menuName)
+				{
+					idCount++;
+					usedIds.push_back(menus[i]->id);
+					if (menus[i]->id > highestId)
+					{
+						highestId = menus[i]->id;
+					}
+				}
+			}
+			//id = count;
+			if (idCount != 0)
+			{
+				int lowestId = highestId+1;
+				for (size_t i = 0; i < idCount; i++)
+				{
+					bool isUsed = false;
+					for (size_t j = 0; j < idCount; j++)
+					{
+						if (usedIds[j] == i)
+						{
+							isUsed = true;
+							break;
+						}
+					}
+					if (!isUsed && i < lowestId)
+					{
+						lowestId = i;
+					}
+				}
+				id = lowestId;
+				//lowestId = usedIds[0] + 1;
+
+			}
+			else
+			{
+				id = 0;
+			}
+		}
+
+		std::shared_ptr<Menu> menu = ClassRegistry::CreateMenuFromName(menuName);
+		menus.push_back(menu);
+
+		menu->id = id;
+		menu->name = menuName;
+		menu->Init();
+		menu->SetActive(active);
+		menuCount++;
+
+		bool menuSettingFound = false;
+		const size_t menuSize = menuSettings.settings.size();
+		MenuSetting* settingToUse = nullptr;
+		for (size_t i = 0; i < menuSize; i++)
+		{
+			MenuSetting& setting = *menuSettings.settings[i];
+			if (setting.name == menuName)
+			{
+				settingToUse = &setting;
+				if (setting.id == id)
+				{
+					setting.isActive = active;
+					menuSettingFound = true;
+					break;
+				}
+			}
+		}
+		if (!menuSettingFound && settingToUse)
+		{
+			UpdateOrAddMenuSetting(menuSettings.settings, menuName, active, settingToUse->isUnique, id);
+		}
+		SaveMenuSettings();
+
+		return menu;
 	}
 
 	static MenuGroup currentMenu;
@@ -338,26 +440,28 @@ private:
 			Reflective::AddVariable(reflectedVariables, name, "name", true);
 			Reflective::AddVariable(reflectedVariables, id, "id", true);
 			Reflective::AddVariable(reflectedVariables, isActive, "isActive", true);
+			Reflective::AddVariable(reflectedVariables, isUnique, "isUnique", true);
 			return reflectedVariables;
 		}
 
 		std::string name = "";
 		int id = 0;
 		bool isActive = true;
+		bool isUnique = false;
 	};
 
 	class MenuSettings : public Reflective
 	{
 	public:
-		ReflectiveData GetReflectiveData() override 
+		ReflectiveData GetReflectiveData() override
 		{
 			ReflectiveData reflectedVariables;
-			Reflective::AddVariable(reflectedVariables, menuSettings, "menuSettings", true);
+			Reflective::AddVariable(reflectedVariables, settings, "settings", true);
 			Reflective::AddVariable(reflectedVariables, version, "version", true);
 			return reflectedVariables;
 		}
 
-		std::vector<MenuSetting*> menuSettings;
+		std::vector<MenuSetting*> settings;
 		int version = 1;
 	};
 	static MenuSettings menuSettings;
@@ -365,7 +469,8 @@ private:
 	static void SaveMenuSettings();
 	static void LoadMenuSettings();
 	static void CreateNewMenuSettings();
-	static void AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive);
+	static MenuSetting* AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id);
+	static MenuSetting* UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id);
 
 	static void OnFileModified();
 	static void OnCodeModified();
@@ -379,7 +484,7 @@ private:
 	* @brief Get info from a GameObject name with a number at the end (or not)
 	* @param name Name of the GameObject
 	* @param baseName Base name of the GameObject without the number
-	* @param number New number at the end of the GameObject name 
+	* @param number New number at the end of the GameObject name
 	*/
 	static void GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number);
 

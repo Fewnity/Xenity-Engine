@@ -6,6 +6,7 @@
 
 #include "menu.h"
 #include <imgui/imgui.h>
+#include <editor/editor.h>
 
 void Menu::Focus()
 {
@@ -40,15 +41,25 @@ Vector2Int Menu::GetMousePosition() const
 void Menu::SetActive(bool active)
 {
 	isActive = active;
+	previousIsActive = active;
 	if (isActive) 
 	{
 		OnOpen();
+	}
+	else
+	{
+		OnClose();
 	}
 }
 
 bool Menu::GetActive() const
 {
 	return isActive;
+}
+
+void Menu::OnClose()
+{
+	Editor::OnMenuActiveStateChange(name, isActive, id);
 }
 
 void Menu::OnStartDrawing()
@@ -83,4 +94,13 @@ void Menu::CalculateWindowValues()
 	mousePosition = Vector2Int((int)imguiMousePos.x, (int)(imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
 	isFocused = ImGui::IsWindowFocused();
 	isHovered = ImGui::IsWindowHovered();
+
+	if (isActive != previousIsActive)
+	{
+		if (!isActive)
+		{
+			OnClose();
+		}
+		previousIsActive = isActive;
+	}
 }
