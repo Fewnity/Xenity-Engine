@@ -7,7 +7,7 @@
 #pragma once
 
 /**
- * [Internal]
+ * [Internal] Classes not visible by the user
  */
 
 #include <vector>
@@ -118,7 +118,7 @@ public:
 	static int Init();
 
 	/**
-	* @brief Unload audio manager
+	* @brief Stop audio manager
 	*/
 	static void Stop();
 

@@ -7,7 +7,7 @@
 #pragma once
 
 /**
- * [Internal]
+ * [Internal] Classes not visible to users
  */
 
 #define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
@@ -34,6 +34,10 @@ class ProjectDirectory
 {
 public:
 	ProjectDirectory() = delete;
+	/**
+	* @param _path Path of the Directory
+	* @param _uniqueId Unique Id of the Directory
+	*/
 	ProjectDirectory(const std::string& _path, uint64_t _uniqueId) : path(_path)
 	{
 		uniqueId = _uniqueId;
@@ -151,6 +155,7 @@ public:
 
 	/**
 	* @brief Save the meta file of a file reference
+	* @param fileReference save meta file of this file reference
 	*/
 	static void SaveMetaFile(const std::shared_ptr<FileReference>& fileReference);
 
@@ -246,12 +251,15 @@ public:
 	static void SaveProjectsList(const std::vector<ProjectListItem>& projects);
 
 	/**
-	* @brief Fill project directory with all files and directories
+	* @brief Fill project directory with all files (files sorted in editor mode)
+	* @param _projectDirectory ProjectDirectory to fill
 	*/
-	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> realProjectDirectory);
+	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> _projectDirectory);
 
 	/**
-	* @brief Create project directories
+	* @brief Create project directories from projectDirectoryBase
+	* @param projectDirectoryBase From
+	* @param realProjectDirectory To
 	*/
 	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
 
@@ -262,6 +270,8 @@ public:
 
 	/**
 	* @brief Find and get a project directory from a path and a parent directory
+	* @param directoryToCheck ProjectDirectory to use to find the ProjectDirectory from the path
+	* @param directoryPath Path of the directory to find
 	*/
 	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
 
@@ -295,18 +305,24 @@ public:
 	static uint64_t ReadFileId(const std::shared_ptr<File>& file);
 
 	/**
-* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
-* @param path File path
-* @param id File Id
-* @return File reference
-*/
+	* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
+	* @param path File path
+	* @param id File Id
+	* @return File reference
+	*/
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
 
+	/**
+	* Get the event that is called when a project is loaded
+	*/
 	static inline Event<>& GetProjectLoadedEvent()
 	{
 		return projectLoadedEvent;
 	}
 
+	/**
+	* Get the event that is called when a project is unloaded
+	*/
 	static inline Event<>& GetProjectUnloadedEvent()
 	{
 		return projectUnloadedEvent;
@@ -318,6 +334,12 @@ public:
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 private:
 
+	/**
+	* @brief Add all files of a directory to a list of project file list
+	* @param projectFilesDestination Destination of the files to add
+	* @param directorySource Source directory
+	* @param isEngineAssets Are the assets to add engine assets?
+	*/
 	static void AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets);
 
 #if defined(EDITOR)

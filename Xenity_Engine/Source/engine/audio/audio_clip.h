@@ -27,6 +27,7 @@ protected:
 	void LoadFileReference() override;
 	void UnloadFileReference() override;
 
+	// Struct that stores the full audio data if the clip is stored in memory
 	struct AudioMemory
 	{
 		int dataLength = 0;
@@ -34,15 +35,15 @@ protected:
 	};
 
 	/**
-	* [Internal]
+	* [Internal] Is the audio clip stored in memory?
 	*/
-	inline bool GetIsLoadedInMemory()
+	inline bool IsStoredInMemory()
 	{
 		return loadedInMemory;
 	}
 
 	/**
-	* [Internal]
+	* [Internal] Get the audio memory data (to use if the audio is stored in memory)
 	*/
 	inline const AudioMemory& GetAudioMemory()
 	{

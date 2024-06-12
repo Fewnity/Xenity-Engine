@@ -7,7 +7,7 @@
 #pragma once
 
 /**
- * [Internal]
+ * [Internal] Class not visible to users
  */
 
 #include <engine/file_system/file_reference.h>

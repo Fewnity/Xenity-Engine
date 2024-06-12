@@ -382,17 +382,17 @@ void ProjectManager::RefreshProjectDirectory()
 	FindAllProjectFiles();
 }
 
-void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> realProjectDirectory)
+void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> _projectDirectory)
 {
-	XASSERT(realProjectDirectory != nullptr, "[ProjectManager::FillProjectDirectory] realProjectDirectory is null")
+	XASSERT(_projectDirectory != nullptr, "[ProjectManager::FillProjectDirectory] realProjectDirectory is null")
 
-	std::vector<std::shared_ptr<FileReference>>& projFileVector = realProjectDirectory->files;
+	std::vector<std::shared_ptr<FileReference>>& projFileVector = _projectDirectory->files;
 	projFileVector.clear();
 
 	for (const auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
-		if (realProjectDirectory->path == kv.second.file->GetFolderPath())
+		if (_projectDirectory->path == kv.second.file->GetFolderPath())
 		{
 			projFileVector.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}

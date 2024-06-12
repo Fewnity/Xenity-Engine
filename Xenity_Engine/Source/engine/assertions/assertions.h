@@ -11,6 +11,9 @@
 #include <string>
 #include <cassert>
 
+/**
+* @brief Function to call when an assert fails to print a message in the logs
+*/
 void OnAssertionFailed(const std::string& message);
 
 #if defined(DEBUG)

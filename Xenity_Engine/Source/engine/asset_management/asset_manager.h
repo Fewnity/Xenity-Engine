@@ -7,7 +7,7 @@
 #pragma once
 
 /**
- * [Internal]
+ * [Internal] Class not visible to users
  */
 
 #include <vector>
@@ -22,6 +22,9 @@ class Reflective;
 class Material;
 class Shader;
 
+/**
+* @brief Class to keep in memory some objects
+*/
 class AssetManager
 {
 public:
@@ -30,7 +33,14 @@ public:
 	*/
 	static void Init();
 
+	/**
+	* @brief Event called when a project is loaded
+	*/
 	static void OnProjectLoaded();
+
+	/**
+	* @brief Event called when a project is unloaded
+	*/
 	static void OnProjectUnloaded();
 
 	/**

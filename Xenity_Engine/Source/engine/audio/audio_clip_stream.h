@@ -34,20 +34,20 @@ public:
 
 	/**
 	* @brief Open audio clip stream
-	* @param file File
+	* @param audioFile AudioClip to open
 	*/
 	void OpenStream(std::shared_ptr<AudioClip> audioFile);
 
 	/**
-	* @brief Fill audio buffer
-	* @param size Buffer size
-	* @param bufferOffset Buffer offset
-	* @param buff Buffer
+	* @brief Fill the given audio buffer
+	* @param amount Amount to fill
+	* @param offset Offset in the buffer
+	* @param buff Buffer to fill
 	*/
-	void FillBuffer(int size, int bufferOffset, short* buff);
+	void FillBuffer(int amount, int offset, short* buff);
 
 	/**
-	* @brief Get audio clip frequency
+	* @brief Get audio clip frequency in Hz
 	*/
 	int GetFrequency() const;
 
@@ -81,7 +81,7 @@ public:
 	}
 
 	/**
-	* @brief Get audio type
+	* @brief Get audio type (Mp3, Wav...)
 	*/
 	inline AudioType GetAudioType() const
 	{

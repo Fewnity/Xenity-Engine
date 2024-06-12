@@ -31,6 +31,7 @@ Clean code + Clean commands, move commands in more folder (delete, create, modif
 Fix ImGui moved dock
 --- Can be for next release
 New Input system
+Implement AudioManager::Stop for PSP and PsVita
 
 --- Done
 
