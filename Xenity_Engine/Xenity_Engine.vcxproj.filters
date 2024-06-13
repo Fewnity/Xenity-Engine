@@ -115,7 +115,6 @@
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
     <ClCompile Include="Source\editor\ui\editor_dialog.cpp" />
     <ClCompile Include="Source\editor\command\command.cpp" />
-    <ClCompile Include="Source\editor\command\commands\inspector_commands.cpp" />
     <ClCompile Include="Source\editor\command\command_manager.cpp" />
     <ClCompile Include="Source\engine\file_system\directory.cpp" />
     <ClCompile Include="Source\engine\file_system\file.cpp" />
@@ -160,6 +159,8 @@
     <ClCompile Include="Source\engine\assertions\assertions.cpp" />
     <ClCompile Include="Source\editor\command\commands\delete.cpp" />
     <ClCompile Include="Source\engine\accessors\acc_gameobject.cpp" />
+    <ClCompile Include="Source\editor\command\commands\modify.cpp" />
+    <ClCompile Include="Source\editor\command\commands\create.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -283,7 +284,6 @@
     <ClInclude Include="Source\engine\cpu.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_gskit.h" />
     <ClInclude Include="Source\editor\command\command.h" />
-    <ClInclude Include="Source\editor\command\commands\inspector_commands.h" />
     <ClInclude Include="Source\editor\command\command_manager.h" />
     <ClInclude Include="Source\engine\file_system\directory.h" />
     <ClInclude Include="Source\engine\file_system\file.h" />
@@ -328,6 +328,8 @@
     <ClInclude Include="Source\editor\command\commands\delete.h" />
     <ClInclude Include="Source\engine\accessors\acc_gameobject.h" />
     <ClInclude Include="Source\engine\asset_management\project_list_item.h" />
+    <ClInclude Include="Source\editor\command\commands\modify.h" />
+    <ClInclude Include="Source\editor\command\commands\create.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

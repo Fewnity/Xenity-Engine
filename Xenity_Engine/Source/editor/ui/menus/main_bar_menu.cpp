@@ -11,7 +11,7 @@
 
 #include <editor/ui/editor_ui.h>
 #include <editor/compiler.h>
-#include <editor/command/commands/inspector_commands.h>
+#include <editor/command/commands/create.h>
 #include <editor/command/command_manager.h>
 #include <editor/command/command.h>
 #include <editor/ui/menus/engine_settings_menu.h>

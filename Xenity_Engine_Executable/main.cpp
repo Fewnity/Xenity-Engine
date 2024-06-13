@@ -27,8 +27,10 @@ Add undo/redo commands to DrawVector functions
 Fix twice confirm on quit
 Rework the documentation
 Box colliders are not affected by gameobject scale
-Clean code + Clean commands, move commands in more folder (delete, create, modify)
-Fix ImGui moved dock
+Clean code
+
+Check memory leak when modifing vector with reflection
+
 --- Can be for next release
 New Input system
 Implement AudioManager::Stop for PSP and PsVita

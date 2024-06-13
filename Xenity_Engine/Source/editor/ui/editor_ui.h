@@ -21,7 +21,7 @@
 #include <engine/game_elements/transform.h>
 #include <editor/command/command.h>
 #include <editor/command/command_manager.h>
-#include <editor/command/commands/inspector_commands.h>
+#include <editor/command/commands/modify.h>
 
 // List of all types drawn by the EditorUI or the editor wont compile
 #include <engine/vectors/vector2.h>

@@ -1,4 +1,15 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Gregory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #pragma once
+
+/**
+* IMPORTANT: Do not store pointers to GameObjects, Components, Transforms, etc. in commands.
+* This is because the pointers can become invalid if the object is deleted. Use the unique id instead.
+*/
 
 #include <memory>
 #include <json.hpp>
@@ -9,6 +20,9 @@
 #include <engine/class_registry/class_registry.h>
 #include <engine/tools/gameplay_utility.h>
 #include <engine/scene_management/scene_manager.h>
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class InspectorDeleteGameObjectCommand : public Command
 {
@@ -135,4 +149,59 @@ inline void InspectorDeleteGameObjectCommand::Undo()
 	gameObject->OnReflectionUpdated();
 	gameObject->SetUniqueId(gameObjectId);
 	SceneManager::SetSceneModified(true);*/
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+template<typename T>
+class InspectorDeleteComponentCommand : public Command
+{
+public:
+	InspectorDeleteComponentCommand() = delete;
+	InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy);
+	void Execute() override;
+	void Undo() override;
+private:
+	uint64_t gameObjectId = 0;
+	uint64_t componentId = 0;
+	nlohmann::json componentData;
+	std::string componentName = "";
+	bool isEnabled = true;
+};
+
+template<typename T>
+inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
+{
+	std::shared_ptr<T> componentToDestroyLock = componentToDestroy.lock();
+	this->componentId = componentToDestroyLock->GetUniqueId();
+	this->gameObjectId = componentToDestroyLock->GetGameObject()->GetUniqueId();
+	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
+	this->componentName = componentToDestroyLock->GetComponentName();
+	isEnabled = componentToDestroyLock->GetIsEnabled();
+}
+
+template<typename T>
+inline void InspectorDeleteComponentCommand<T>::Execute()
+{
+	std::shared_ptr<Component> componentToDestroy = FindComponentById(componentId);
+	if (componentToDestroy)
+	{
+		Destroy(componentToDestroy);
+		SceneManager::SetSceneModified(true);
+	}
+}
+
+template<typename T>
+inline void InspectorDeleteComponentCommand<T>::Undo()
+{
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId);
+	if (gameObject)
+	{
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, gameObject);
+		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
+		component->SetIsEnabled(isEnabled);
+		component->SetUniqueId(componentId);
+		SceneManager::SetSceneModified(true);
+	}
 }

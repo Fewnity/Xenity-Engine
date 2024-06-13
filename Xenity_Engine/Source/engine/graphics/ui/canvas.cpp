@@ -20,6 +20,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/ui/window.h>
 #include <engine/game_elements/rect_transform.h>
+#include <engine/engine.h>
 
 ReflectiveData Canvas::GetReflectiveData()
 {

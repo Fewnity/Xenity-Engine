@@ -23,6 +23,7 @@
 #endif
 #include <cmath>
 #include <engine/graphics/graphics.h>
+#include <engine/engine.h>
 
 #pragma region Constructors / Destructor
 

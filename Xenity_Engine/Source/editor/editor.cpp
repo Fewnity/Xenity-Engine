@@ -55,6 +55,7 @@
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
 #include "command/commands/delete.h"
+#include "command/commands/create.h"
 
 using json = nlohmann::json;
 

@@ -9,6 +9,7 @@
 
 #include "editor/ui/editor_ui.h"
 #include <engine/engine_settings.h>
+#include <thread>
 
 void DockerConfigMenu::Init()
 {

@@ -4,4 +4,6 @@
 //
 // This file is part of Xenity Engine
 
-#include "inspector_commands.h"
+#include "modify.h"
+
+

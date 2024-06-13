@@ -21,7 +21,7 @@
 #include <editor/editor.h>
 #include <engine/event_system/event_system.h>
 #include <editor/command/command_manager.h>
-#include <editor/command/commands/inspector_commands.h>
+#include <editor/command/commands/modify.h>
 
 template <class T>
 class SelectAssetMenu : public Menu

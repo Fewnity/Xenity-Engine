@@ -16,6 +16,7 @@
 #include <engine/debug/debug.h>
 #include <engine/inputs/input_system.h>
 #include <editor/ui/menus/scene_menu.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
 {

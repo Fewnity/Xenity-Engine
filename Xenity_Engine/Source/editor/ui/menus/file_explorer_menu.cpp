@@ -28,6 +28,7 @@
 #include <engine/debug/debug.h>
 #include <editor/ui/utils/menu_builder.h>
 #include <editor/file_handler.h>
+#include <engine/engine.h>
 
 void FileExplorerMenu::Init()
 {
