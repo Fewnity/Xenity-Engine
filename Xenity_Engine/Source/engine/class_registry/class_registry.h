@@ -117,9 +117,9 @@ public:
 	* @param gameObject GameObject to add the component to
 	*/
 	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
-
+#if defined (EDITOR)
 	static std::shared_ptr<Menu> CreateMenuFromName(const std::string& name);
-
+#endif
 	/**
 	* @brief Get a list of all component names
 	*/

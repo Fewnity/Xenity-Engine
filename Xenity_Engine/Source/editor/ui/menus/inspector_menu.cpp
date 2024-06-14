@@ -10,7 +10,8 @@
 #include <imgui/imgui_stdlib.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <editor/command/commands/inspector_commands.h>
+#include <editor/command/commands/delete.h>
+#include <editor/command/commands/create.h>
 #include <editor/command/command_manager.h>
 #include <editor/ui/editor_ui.h>
 #include <editor/ui/utils/menu_builder.h>

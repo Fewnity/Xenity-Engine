@@ -77,7 +77,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 		return nullptr;
 	}
 }
-
+#if defined (EDITOR)
 std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 {
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty")
@@ -91,7 +91,7 @@ std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 		return nullptr;
 	}
 }
-
+#endif
 std::vector<std::string> ClassRegistry::GetComponentNames()
 {
 	std::vector<std::string> names;
@@ -145,7 +145,7 @@ void ClassRegistry::RegisterEngineFileClasses()
 	AddFileClass<Material>("Material", FileType::File_Material);
 	AddFileClass<Icon>("Icon", FileType::File_Icon);
 }
-
+#if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
 {
 	//AddMenuClass<Texture>("Texture");
@@ -170,3 +170,4 @@ void ClassRegistry::RegisterMenus()
 	AddMenuClass<CreateProjectMenu>("CreateProjectMenu");
 	AddMenuClass<ConsoleMenu>("ConsoleMenu");
 }
+#endif
