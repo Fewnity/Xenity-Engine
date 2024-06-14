@@ -13,12 +13,11 @@ class Texture;
 class Shader;
 class Camera;
 
-// Vectors includes needed for other platforms
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
-//
 
+#include <engine/graphics/color/color.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 #include "iDrawableTypes.h"
@@ -102,6 +101,16 @@ public:
 		return tiling;
 	}
 
+	inline const Color& GetColor() const
+	{
+		return color;
+	}
+
+	inline void SetColor(const Color& _color)
+	{
+		color = _color;
+	}
+
 protected:
 	friend class AssetManager;
 	friend class ProjectManager;
@@ -138,6 +147,7 @@ protected:
 	bool useTransparency = false;
 	Vector2 offset = Vector2(0,0);
 	Vector2 tiling = Vector2(1, 1);
+	Color color;
 
 	static constexpr int version = 1;
 };

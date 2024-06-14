@@ -124,7 +124,7 @@ void RendererGU::EndFrame()
 
 	//if (vsync)
 	//{
-		//sceDisplayWaitVblankStart();
+		sceDisplayWaitVblankStart();
 	//}
 
 	sceGuSwapBuffers();
@@ -388,10 +388,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	if(!subMesh.meshData->hasColor)
-	{
-		sceGuColor(subMesh.meshData->unifiedColor.GetUnsignedIntABGR());
-	}
+	sceGuColor((material.GetColor() * subMesh.meshData->unifiedColor).GetUnsignedIntABGR());
 
 	// Bind texture
 	if (usedTexture != texture.data[0])

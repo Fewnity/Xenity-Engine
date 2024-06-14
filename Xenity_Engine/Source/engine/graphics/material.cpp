@@ -221,6 +221,7 @@ ReflectiveData Material::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, shader, "shader", true);
 	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	Reflective::AddVariable(reflectedVariables, offset, "offset", true);
 	Reflective::AddVariable(reflectedVariables, tiling, "tiling", true);
 	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);

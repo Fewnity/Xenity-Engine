@@ -339,19 +339,20 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
-	const RGBA& rgba = subMesh.meshData->unifiedColor.GetRGBA();
-	const Vector4 colorToUse = rgba.ToVector4();
-	if (lastUsedColor != colorToUse || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->fileId))
+
+	const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+
+	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->fileId))
 	{
-		lastUsedColor = colorToUse;
+		lastUsedColor = colorMix;
 		if (Graphics::UseOpenGLFixedFunctions)
 		{
-			glColor4f(rgba.r, rgba.g, rgba.b, rgba.a);
+			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
 		}
 		else 
 		{
 			lastShaderIdUsedColor = material.GetShader()->fileId;
-			material.GetShader()->SetShaderAttribut("color", colorToUse);
+			material.GetShader()->SetShaderAttribut("color", colorMix);
 		}
 	}
 
