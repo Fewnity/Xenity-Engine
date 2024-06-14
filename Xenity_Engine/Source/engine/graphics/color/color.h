@@ -133,3 +133,6 @@ protected:
 	unsigned int rgbaInt = 0xFFFFFFFF;
 	unsigned int abgrInt = 0xFFFFFFFF;
 };
+
+API Color operator*(const Color& left, const Color& right);
+API Color& operator*=(Color& vec, const Color& vecRight);

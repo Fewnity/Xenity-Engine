@@ -101,3 +101,21 @@ Vector4 RGBA::ToVector4() const
 {
 	return Vector4(r, g, b, a);
 }
+
+Color operator*(const Color& left, const Color& right)
+{
+	const Vector4 colorMix = right.GetRGBA().ToVector4() * left.GetRGBA().ToVector4();
+
+	Color newColor = Color::CreateFromRGBAFloat(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+
+	return newColor;
+}
+
+Color& operator*=(Color& color, const Color& colorRight)
+{
+	const Vector4 colorMix = color.GetRGBA().ToVector4() * colorRight.GetRGBA().ToVector4();
+
+	color.SetFromRGBAfloat(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+
+	return color;
+}
