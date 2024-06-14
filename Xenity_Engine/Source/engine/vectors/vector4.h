@@ -52,24 +52,146 @@ public:
 	float w;
 };
 
-API Vector4 operator+(const Vector4& left, const Vector4& right);
-API Vector4 operator-(const Vector4& left, const Vector4& right);
-API Vector4 operator*(const Vector4& vec, const float value);
-API Vector4 operator*(const float value, const Vector4& vec);
-API Vector4 operator*(const Vector4& left, const Vector4& right);
-API Vector4 operator/(const Vector4& left, const Vector4& right);
-API Vector4 operator/(const Vector4& vec, const float value);
-API Vector4 operator/(const float value, const Vector4& vec);
+//API Vector4 operator+(const Vector4& left, const Vector4& right);
+//API Vector4 operator-(const Vector4& left, const Vector4& right);
+//API Vector4 operator*(const Vector4& vec, const float value);
+//API Vector4 operator*(const float value, const Vector4& vec);
+//API Vector4 operator*(const Vector4& left, const Vector4& right);
+//API Vector4 operator/(const Vector4& left, const Vector4& right);
+//API Vector4 operator/(const Vector4& vec, const float value);
+//API Vector4 operator/(const float value, const Vector4& vec);
+//
+//API Vector4 operator/=(Vector4& vec, const float value);
+//API Vector4 operator*=(Vector4& vec, const float value);
+//API Vector4 operator+=(Vector4& vec, const float value);
+//API Vector4 operator-=(Vector4& vec, const float value);
+//
+//API Vector4 operator/=(Vector4& vec, const Vector4& vecRight);
+//API Vector4 operator*=(Vector4& vec, const Vector4& vecRight);
+//API Vector4 operator+=(Vector4& vec, const Vector4& vecRight);
+//API Vector4 operator-=(Vector4& vec, const Vector4& vecRight);
+//
+//API bool operator==(const Vector4& left, const Vector4& right);
+//API bool operator!=(const Vector4& left, const Vector4& right);
 
-API Vector4 operator/=(Vector4& vec, const float value);
-API Vector4 operator*=(Vector4& vec, const float value);
-API Vector4 operator+=(Vector4& vec, const float value);
-API Vector4 operator-=(Vector4& vec, const float value);
+inline Vector4 operator+(const Vector4& left, const Vector4& right)
+{
+	return { left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w };
+}
 
-API Vector4 operator/=(Vector4& vec, const Vector4& vecRight);
-API Vector4 operator*=(Vector4& vec, const Vector4& vecRight);
-API Vector4 operator+=(Vector4& vec, const Vector4& vecRight);
-API Vector4 operator-=(Vector4& vec, const Vector4& vecRight);
+inline Vector4 operator-(const Vector4& left, const Vector4& right)
+{
+	return { left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
+}
 
-API bool operator==(const Vector4& left, const Vector4& right);
-API bool operator!=(const Vector4& left, const Vector4& right);
+inline Vector4 operator*(const float value, const Vector4& vec)
+{
+	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
+}
+
+inline Vector4 operator*(const Vector4& left, const Vector4& right)
+{
+	return { left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w };
+}
+
+inline Vector4 operator*(const Vector4& vec, const float value)
+{
+	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
+}
+
+inline Vector4 operator/(const float value, const Vector4& vec)
+{
+	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
+}
+
+inline Vector4 operator/(const Vector4& vec, const float value)
+{
+	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
+}
+
+inline Vector4 operator/(const Vector4& left, const Vector4& right)
+{
+	return { left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w };
+}
+
+inline Vector4& operator/=(Vector4& vec, const float value)
+{
+	vec.x /= value;
+	vec.y /= value;
+	vec.z /= value;
+	vec.w /= value;
+	return vec;
+}
+
+inline Vector4& operator*=(Vector4& vec, const float value)
+{
+	vec.x *= value;
+	vec.y *= value;
+	vec.z *= value;
+	vec.w *= value;
+	return vec;
+}
+
+inline Vector4& operator+=(Vector4& vec, const float value)
+{
+	vec.x += value;
+	vec.y += value;
+	vec.z += value;
+	vec.w += value;
+	return vec;
+}
+
+inline Vector4& operator-=(Vector4& vec, const float value)
+{
+	vec.x -= value;
+	vec.y -= value;
+	vec.z -= value;
+	vec.w -= value;
+	return vec;
+}
+
+inline Vector4& operator/=(Vector4& vec, const Vector4& vecRight)
+{
+	vec.x /= vecRight.x;
+	vec.y /= vecRight.y;
+	vec.z /= vecRight.z;
+	vec.w /= vecRight.w;
+	return vec;
+}
+
+inline Vector4& operator*=(Vector4& vec, const Vector4& vecRight)
+{
+	vec.x *= vecRight.x;
+	vec.y *= vecRight.y;
+	vec.z *= vecRight.z;
+	vec.w *= vecRight.w;
+	return vec;
+}
+
+inline Vector4& operator+=(Vector4& vec, const Vector4& vecRight)
+{
+	vec.x += vecRight.x;
+	vec.y += vecRight.y;
+	vec.z += vecRight.z;
+	vec.w += vecRight.w;
+	return vec;
+}
+
+inline Vector4& operator-=(Vector4& vec, const Vector4& vecRight)
+{
+	vec.x -= vecRight.x;
+	vec.y -= vecRight.y;
+	vec.z -= vecRight.z;
+	vec.w -= vecRight.w;
+	return vec;
+}
+
+inline bool operator==(const Vector4& left, const Vector4& right)
+{
+	return left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
+}
+
+inline bool operator!=(const Vector4& left, const Vector4& right)
+{
+	return left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w;
+}

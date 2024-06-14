@@ -36,24 +36,108 @@ public:
 };
 
 
-API Vector2Int operator+(const Vector2Int& left, const Vector2Int& right);
-API Vector2Int operator-(const Vector2Int& left, const Vector2Int& right);
-API Vector2Int operator*(const Vector2Int& vec, const float value);
-API Vector2Int operator*(const float value, const Vector2Int& vec);
-API Vector2Int operator*(const Vector2Int& left, const Vector2Int& right);
-API Vector2Int operator/(const Vector2Int& left, const Vector2Int& right);
-API Vector2Int operator/(const Vector2Int& vec, const float value);
-API Vector2Int operator/(const float value, const Vector2Int& vec);
+inline Vector2Int operator+(const Vector2Int& left, const Vector2Int& right)
+{
+	return { (int)(left.x + right.x), (int)(left.y + right.y) };
+}
 
-API Vector2Int operator/=(Vector2Int& vec, const float value);
-API Vector2Int operator*=(Vector2Int& vec, const float value);
-API Vector2Int operator+=(Vector2Int& vec, const float value);
-API Vector2Int operator-=(Vector2Int& vec, const float value);
+inline Vector2Int operator-(const Vector2Int& left, const Vector2Int& right)
+{
+	return { (int)(left.x - right.x), (int)(left.y - right.y) };
+}
 
-API Vector2Int operator/=(Vector2Int& vec, const Vector2Int& vecRight);
-API Vector2Int operator*=(Vector2Int& vec, const Vector2Int& vecRight);
-API Vector2Int operator+=(Vector2Int& vec, const Vector2Int& vecRight);
-API Vector2Int operator-=(Vector2Int& vec, const Vector2Int& vecRight);
+inline Vector2Int operator*(const float value, const Vector2Int& vec)
+{
+	return { (int)(vec.x * value), (int)(vec.y * value) };
+}
 
-API bool operator==(const Vector2Int& left, const Vector2Int& right);
-API bool operator!=(const Vector2Int& left, const Vector2Int& right);
+inline Vector2Int operator*(const Vector2Int& left, const Vector2Int& right)
+{
+	return { (int)(left.x * right.x), (int)(left.y * right.y) };
+}
+
+inline Vector2Int operator*(const Vector2Int& vec, const float value)
+{
+	return { (int)(vec.x * value), (int)(vec.y * value) };
+}
+
+inline Vector2Int operator/(const float value, const Vector2Int& vec)
+{
+	return { (int)(vec.x / value), (int)(vec.y / value) };
+}
+
+inline Vector2Int operator/(const Vector2Int& vec, const float value)
+{
+	return { (int)(vec.x / value), (int)(vec.y / value) };
+}
+
+inline Vector2Int operator/(const Vector2Int& left, const Vector2Int& right)
+{
+	return { (int)(left.x / right.x), (int)(left.y / right.y) };
+}
+
+inline Vector2Int& operator/=(Vector2Int& vec, const float value)
+{
+	vec.x /= (int)value;
+	vec.y /= (int)value;
+	return vec;
+}
+
+inline Vector2Int& operator*=(Vector2Int& vec, const float value)
+{
+	vec.x *= (int)value;
+	vec.y *= (int)value;
+	return vec;
+}
+
+inline Vector2Int& operator+=(Vector2Int& vec, const float value)
+{
+	vec.x += (int)value;
+	vec.y += (int)value;
+	return vec;
+}
+
+inline Vector2Int& operator-=(Vector2Int& vec, const float value)
+{
+	vec.x -= (int)value;
+	vec.y -= (int)value;
+	return vec;
+}
+
+inline Vector2Int& operator/=(Vector2Int& vec, const Vector2Int& vecRight)
+{
+	vec.x /= vecRight.x;
+	vec.y /= vecRight.y;
+	return vec;
+}
+
+inline Vector2Int& operator*=(Vector2Int& vec, const Vector2Int& vecRight)
+{
+	vec.x *= vecRight.x;
+	vec.y *= vecRight.y;
+	return vec;
+}
+
+inline Vector2Int& operator+=(Vector2Int& vec, const Vector2Int& vecRight)
+{
+	vec.x += vecRight.x;
+	vec.y += vecRight.y;
+	return vec;
+}
+
+inline Vector2Int& operator-=(Vector2Int& vec, const Vector2Int& vecRight)
+{
+	vec.x -= vecRight.x;
+	vec.y -= vecRight.y;
+	return vec;
+}
+
+inline bool operator==(const Vector2Int& left, const Vector2Int& right)
+{
+	return left.x == right.x && left.y == right.y;
+}
+
+inline bool operator!=(const Vector2Int& left, const Vector2Int& right)
+{
+	return left.x != right.x || left.y != right.y;
+}

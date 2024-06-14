@@ -61,24 +61,108 @@ public:
 };
 
 
-API Vector2 operator+(const Vector2& left, const Vector2& right);
-API Vector2 operator-(const Vector2& left, const Vector2& right);
-API Vector2 operator*(const Vector2& vec, const float value);
-API Vector2 operator*(const float value, const Vector2& vec);
-API Vector2 operator*(const Vector2& left, const Vector2& right);
-API Vector2 operator/(const Vector2& left, const Vector2& right);
-API Vector2 operator/(const Vector2& vec, const float value);
-API Vector2 operator/(const float value, const Vector2& vec);
+inline Vector2 operator+(const Vector2& left, const Vector2& right)
+{
+	return { left.x + right.x, left.y + right.y };
+}
 
-API Vector2 operator/=(Vector2& vec, const float value);
-API Vector2 operator*=(Vector2& vec, const float value);
-API Vector2 operator+=(Vector2& vec, const float value);
-API Vector2 operator-=(Vector2& vec, const float value);
+inline Vector2 operator-(const Vector2& left, const Vector2& right)
+{
+	return { left.x - right.x, left.y - right.y };
+}
 
-API Vector2 operator/=(Vector2& vec, const Vector2& vecRight);
-API Vector2 operator*=(Vector2& vec, const Vector2& vecRight);
-API Vector2 operator+=(Vector2& vec, const Vector2& vecRight);
-API Vector2 operator-=(Vector2& vec, const Vector2& vecRight);
+inline Vector2 operator*(const float value, const Vector2& vec)
+{
+	return { vec.x * value, vec.y * value };
+}
 
-API bool operator==(const Vector2& left, const Vector2& right);
-API bool operator!=(const Vector2& left, const Vector2& right);
+inline Vector2 operator*(const Vector2& left, const Vector2& right)
+{
+	return { left.x * right.x, left.y * right.y };
+}
+
+inline Vector2 operator*(const Vector2& vec, const float value)
+{
+	return { vec.x * value, vec.y * value };
+}
+
+inline Vector2 operator/(const float value, const Vector2& vec)
+{
+	return { vec.x / value, vec.y / value };
+}
+
+inline Vector2 operator/(const Vector2& vec, const float value)
+{
+	return { vec.x / value, vec.y / value };
+}
+
+inline Vector2 operator/(const Vector2& left, const Vector2& right)
+{
+	return { left.x / right.x, left.y / right.y };
+}
+
+inline Vector2& operator/=(Vector2& vec, const float value)
+{
+	vec.x /= value;
+	vec.y /= value;
+	return vec;
+}
+
+inline Vector2& operator*=(Vector2& vec, const float value)
+{
+	vec.x *= value;
+	vec.y *= value;
+	return vec;
+}
+
+inline Vector2& operator+=(Vector2& vec, const float value)
+{
+	vec.x += value;
+	vec.y += value;
+	return vec;
+}
+
+inline Vector2& operator-=(Vector2& vec, const float value)
+{
+	vec.x -= value;
+	vec.y -= value;
+	return vec;
+}
+
+inline Vector2& operator/=(Vector2& vec, const Vector2& vecRight)
+{
+	vec.x /= vecRight.x;
+	vec.y /= vecRight.y;
+	return vec;
+}
+
+inline Vector2& operator*=(Vector2& vec, const Vector2& vecRight)
+{
+	vec.x *= vecRight.x;
+	vec.y *= vecRight.y;
+	return vec;
+}
+
+inline Vector2& operator+=(Vector2& vec, const Vector2& vecRight)
+{
+	vec.x += vecRight.x;
+	vec.y += vecRight.y;
+	return vec;
+}
+
+inline Vector2& operator-=(Vector2& vec, const Vector2& vecRight)
+{
+	vec.x -= vecRight.x;
+	vec.y -= vecRight.y;
+	return vec;
+}
+
+inline bool operator==(const Vector2& left, const Vector2& right)
+{
+	return left.x == right.x && left.y == right.y;
+}
+
+inline bool operator!=(const Vector2& left, const Vector2& right)
+{
+	return left.x != right.x || left.y != right.y;
+}
