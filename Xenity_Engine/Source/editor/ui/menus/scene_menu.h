@@ -77,5 +77,6 @@ private:
 	Vector3 oldTransformPosition;
 	Vector3 oldTransformRotation;
 	Vector3 oldTransformScale;
+	std::shared_ptr<GameObject> draggedMeshGameObject;
 };
 

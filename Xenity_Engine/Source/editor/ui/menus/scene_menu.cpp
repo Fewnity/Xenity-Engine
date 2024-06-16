@@ -596,7 +596,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 						CommandManager::AddCommandAndExecute(command);
 					}
 				}
-					side = Side::Side_None;
+				side = Side::Side_None;
 			}
 		}
 	}
@@ -718,18 +718,37 @@ void SceneMenu::Draw()
 			ImGui::Image((ImTextureID)(size_t)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			std::shared_ptr<FileReference> mesh;
-			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh);
+			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh, false);
 			if (mesh)
 			{
-				std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->file->GetFileName());
-				std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
-				meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
-				const size_t matCount = meshRenderer->GetMaterials().size();
-				for (int i = 0; i < matCount; i++)
+				Vector3 worldCoords;
+				Vector3 mouseWorldDir;
+				Vector3 mouseWorldDirNormalized;
+				GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, camera);
+
+				if (draggedMeshGameObject)
 				{
-					meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
+					draggedMeshGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 				}
-				Editor::SetSelectedGameObject(newGameObject);
+				else
+				{
+					std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->file->GetFileName());
+
+					newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
+					std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
+					meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
+					const size_t matCount = meshRenderer->GetMaterials().size();
+					for (int i = 0; i < matCount; i++)
+					{
+						meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
+					}
+					Editor::SetSelectedGameObject(newGameObject);
+					draggedMeshGameObject = newGameObject;
+				}
+			}
+			else
+			{
+				draggedMeshGameObject.reset();
 			}
 
 			if (ImGui::IsItemHovered())
@@ -738,7 +757,7 @@ void SceneMenu::Draw()
 				{
 					if (Editor::GetSelectedGameObjects().size() == 1)
 					{
-						if (auto selectedGameObject = Editor::GetSelectedGameObjects()[0].lock())
+						if (std::shared_ptr<GameObject> selectedGameObject = Editor::GetSelectedGameObjects()[0].lock())
 						{
 							selectedGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + camera->GetTransform()->GetForward() * 2);
 						}
