@@ -432,26 +432,35 @@ void Compiler::HotReloadGame()
 	DynamicLibrary::UnloadGameLibrary();
 
 	// Compile game
-	Compiler::CompileGame(
+	CompileResult result = Compiler::CompileGame(
 		BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows),
 		BuildType::EditorHotReloading,
 		ProjectManager::GetProjectFolderPath() + "temp\\"
 	);
 
-	// Reload game
-	DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\" + "game_editor");
-
-	// Create game instance
-	Engine::game = DynamicLibrary::CreateGame();
-	if (Engine::game)
+	if (result == CompileResult::SUCCESS)
 	{
-		Debug::Print("Game compilation done");
-		Engine::game->Start();
+		// Reload game
+		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\" + "game_editor");
+
+		// Create game instance
+		Engine::game = DynamicLibrary::CreateGame();
+		if (Engine::game)
+		{
+			Debug::Print("Game compilation done");
+			Engine::game->Start();
+		}
+		else
+		{
+			// Should not happen here
+			Debug::PrintError("[Compiler::HotReloadGame] Game compilation failed");
+		}
 	}
 	else
 	{
 		Debug::PrintError("[Compiler::HotReloadGame] Game compilation failed");
 	}
+
 	SceneManager::RestoreSceneHotReloading();
 #endif
 }
