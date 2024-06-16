@@ -17,11 +17,13 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/physics/collider.h>
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if(!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			FileReference* movedFile = (FileReference*)payload->Data;
@@ -39,11 +41,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectDirectory>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectDirectory>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if (!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			ProjectDirectory* movedFolder = (ProjectDirectory*)payload->Data;
@@ -59,11 +63,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectD
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if (!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		Component* comp = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
@@ -96,11 +102,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if (!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			Collider* obj = ((Collider*)payload->Data);
@@ -116,11 +124,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Collider>
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if (!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		GameObject* gameObject = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
@@ -142,11 +152,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObjec
 	return false;
 }
 
-bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref)
+bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref, bool getOnMouseRelease)
 {
 	if (ImGui::BeginDragDropTarget())
 	{
 		ImGuiDragDropFlags target_flags = 0;
+		if (!getOnMouseRelease)
+			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		Transform* trans = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{

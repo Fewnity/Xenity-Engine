@@ -190,13 +190,16 @@ public:
 
 	/**
 	* @brief Add a drag drop target to the previous UI element
+	* @param name Name of the drag drop target
+	* @param ref Reference to the object to set
+	* @param getOnMouseRelease Get the object on mouse release or every frame on hover
 	*/
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<ProjectDirectory>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref);
-	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<FileReference>& ref, bool getOnMouseRelease = true);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<ProjectDirectory>& ref, bool getOnMouseRelease = true);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Component>& ref, bool getOnMouseRelease = true);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Collider>& ref, bool getOnMouseRelease = true);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<GameObject>& ref, bool getOnMouseRelease = true);
+	static bool DragDropTarget(const std::string& name, std::shared_ptr<Transform>& ref, bool getOnMouseRelease = true);
 
 	/**
 	* @brief Draw input for specific types Color, Vectors
