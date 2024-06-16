@@ -479,7 +479,7 @@ public:
 	*/
 	template <typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>>& valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
+	static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
@@ -540,7 +540,7 @@ public:
 	* @return True if the value has changed
 	*/
 	template <typename T>
-	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& valuePtr)
+	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 	{
 		bool listChangedTemp = false;
 
@@ -593,7 +593,7 @@ public:
 	* @return True if the value has changed
 	*/
 	template <typename T>
-	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>& valuePtr)
+	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 	{
 		bool valueChangedTemp = false;
 		const size_t vectorSize = valuePtr.get().size();
@@ -646,16 +646,15 @@ public:
 		return valueChangedTemp;
 	}
 
-	template <typename T>
-	std::enable_if_t<std::is_base_of<Reflective, T>::value, bool>
-	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T*>>& valuePtr)
+	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 	{
 		bool valueChanged = false;
 		const size_t vectorSize = valuePtr.get().size();
 		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
+		ReflectiveEntry temp = reflectiveDataToDraw.currentEntry;
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
-			T* ptr = valuePtr.get()[vectorI];
+			Reflective* ptr = valuePtr.get()[vectorI];
 			if (ptr)
 			{
 				bool valueChangedTemp = false;
@@ -702,7 +701,7 @@ public:
 		const std::string addText = "Add " + GenerateItemId();
 		if (ImGui::Button(addText.c_str()))
 		{
-			valuePtr.get().push_back((T*)reflectiveDataToDraw.currentEntry.typeSpawner->Allocate());
+			valuePtr.get().push_back((Reflective*)temp.typeSpawner->Allocate());
 			valueChanged = true;
 		}
 
@@ -711,6 +710,7 @@ public:
 		{
 			if (vectorSize != 0)
 			{
+				delete valuePtr.get()[vectorSize - 1];
 				valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
 				valueChanged = true;
 			}
@@ -722,7 +722,7 @@ public:
 	template <typename T>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>>& valuePtr)
+	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
 		bool valueChangedTemp = false;
 		std::vector<T>& valueRef = valuePtr.get();
@@ -825,7 +825,7 @@ private:
 	*/
 	template<typename T>
 	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
-	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T>& valuePtr)
+	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T> valuePtr)
 	{
 		T newValue = valuePtr.get();
 		bool valueChangedTemp = false;
@@ -853,7 +853,7 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<Reflective*>>& valuePtr)
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 	{
 		bool valueChangedTemp = false;
 		valueChangedTemp = DrawVector(reflectiveDataToDraw, "Reflective", valuePtr);
@@ -863,7 +863,7 @@ private:
 	template<typename T>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 		|| std::is_same<T, double>::value || std::is_same<T, bool>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<T>>& valuePtr)
+	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
 		bool valueChangedTemp = false;
 		valueChangedTemp = DrawVector(reflectiveDataToDraw, "simple value", valuePtr);
@@ -910,7 +910,7 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& valuePtr)
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 	{
 		const bool valueChangedTemp = DrawVector(reflectiveDataToDraw, valuePtr);
 		return valueChangedTemp;
@@ -927,7 +927,7 @@ private:
 	*/
 	template<typename T>
 	std::enable_if_t<is_shared_ptr<T>::value, bool>
-		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T>& valuePtr)
+		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T> valuePtr)
 	{
 		T newValue = nullptr;
 		const bool valueChangedTemp = DrawFileReference(&reflectiveDataToDraw, valuePtr, reflectiveDataToDraw.name, newValue);
@@ -946,7 +946,7 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::weak_ptr<T>>& valuePtr)
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
 	{
 		std::weak_ptr<T> newValue = valuePtr.get();
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
@@ -965,7 +965,7 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective>& valuePtr)
+	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective> valuePtr)
 	{
 		bool valueChangedTemp = false;
 
