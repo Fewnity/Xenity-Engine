@@ -37,17 +37,17 @@ using json = nlohmann::json;
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<T>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<T> valuePtr, const ReflectiveEntry& entry)
 {
 	valuePtr.get() = jsonValue;
 }
 
-void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<Reflective>& valuePtr, const ReflectiveEntry& entry)
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<Reflective> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::JsonToReflective(jsonValue, valuePtr.get());
 }
 
-void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>>& valuePtr, const ReflectiveEntry& entry)
+void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -75,7 +75,7 @@ void ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference
 template<typename T>
 std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<T>>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -96,7 +96,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	if constexpr (std::is_same <T, GameObject>())
 	{
@@ -124,14 +124,14 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
 }
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -176,7 +176,7 @@ ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrap
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& valuePtr, const ReflectiveEntry& entry)
+ReflectionUtils::JsonToVariable(const json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
 }
@@ -266,21 +266,21 @@ void ReflectionUtils::JsonToReflective(const json& j, Reflective& reflective)
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<T>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<T> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson0] key is empty")
 
 	jsonValue[key] = valuePtr.get();
 }
 
-void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective>& valuePtr)
+void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson1] key is empty")
 
 	jsonValue[key]["Values"] = ReflectionUtils::ReflectiveToJson(valuePtr.get());
 }
 
-void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>>& valuePtr)
+void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson2] key is empty")
 
@@ -298,7 +298,7 @@ void ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, co
 template<typename T>
 std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 				|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson3] key is empty")
 
@@ -312,7 +312,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson4] key is empty")
 
@@ -343,7 +343,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson5] key is empty")
 
@@ -355,7 +355,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson6] key is empty")
 
@@ -387,7 +387,7 @@ ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const s
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& valuePtr)
+ReflectionUtils::VariableToJson(json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson7] key is empty")
 
@@ -436,7 +436,7 @@ json ReflectionUtils::ReflectiveEntryToJson(const ReflectiveEntry& entry)
 }
 
 template <typename T>
-void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>>& variablePtr)
+void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> variablePtr)
 {
 	if (fileId == 0) 
 	{
@@ -454,7 +454,7 @@ void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::refere
 }
 
 template <typename T>
-void ReflectionUtils::FillVectorFileReference(const json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>>& vectorRefPtr)
+void ReflectionUtils::FillVectorFileReference(const json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr)
 {
 	const size_t jsonArraySize = jsonVectorData.size();
 	const size_t vectorSize = vectorRefPtr.get().size();
