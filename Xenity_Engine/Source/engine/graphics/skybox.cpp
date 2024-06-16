@@ -68,10 +68,17 @@ void SkyBox::OnReflectionUpdated()
 
 void SkyBox::LoadFileReference()
 {
-	const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
-	if (!loadResult) 
+	if (!isLoaded)
 	{
-		Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
+		const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
+		if (!loadResult)
+		{
+			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
+		}
+		else 
+		{
+			isLoaded = true;
+		}
 	}
 }
 
