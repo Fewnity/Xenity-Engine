@@ -27,7 +27,7 @@
 #include <engine/file_system/file.h>
 
 #include <engine/asset_management/project_manager.h>
-
+#include "screen.h"
 
 int Window::width = 0;
 int Window::height = 0;
@@ -41,6 +41,8 @@ void Window::SetResolution(const int width_, const int height_)
 {
 	width = width_;
 	height = height_;
+	Screen::width = width;
+	Screen::height = height;
 #if defined(_WIN32) || defined(_WIN64)
 	if (window != nullptr)
 #endif

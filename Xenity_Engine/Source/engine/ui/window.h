@@ -4,6 +4,10 @@
 //
 // This file is part of Xenity Engine
 
+/**
+* [Internal] Not visible from the user
+*/
+
 #pragma once
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -75,6 +79,7 @@ public:
 #endif
 
 private:
+
 	/**
 	* @brief [Internal] Update the aspect ratio
 	*/
