@@ -75,6 +75,18 @@ void Menu::OnStartDrawing()
 	}
 }
 
+void Menu::CheckOnCloseEvent() 
+{
+	if (isActive != previousIsActive)
+	{
+		if (!isActive)
+		{
+			OnClose();
+		}
+		previousIsActive = isActive;
+	}
+}
+
 void Menu::ResetWindowValues()
 {
 	windowPosition = Vector2Int(0, 0);
@@ -83,6 +95,8 @@ void Menu::ResetWindowValues()
 	startAvailableSize = Vector2Int(0, 0);
 	isHovered = false;
 	isFocused = false;
+
+	CheckOnCloseEvent();
 }
 
 void Menu::CalculateWindowValues()
@@ -95,12 +109,5 @@ void Menu::CalculateWindowValues()
 	isFocused = ImGui::IsWindowFocused();
 	isHovered = ImGui::IsWindowHovered();
 
-	if (isActive != previousIsActive)
-	{
-		if (!isActive)
-		{
-			OnClose();
-		}
-		previousIsActive = isActive;
-	}
+	CheckOnCloseEvent();
 }

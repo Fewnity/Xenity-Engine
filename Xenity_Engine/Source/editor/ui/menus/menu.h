@@ -91,6 +91,8 @@ protected:
 	*/
 	virtual void ResetWindowValues();
 
+	void CheckOnCloseEvent();
+
 	/**
 	* @brief Calculate the window values (size, position, etc.)
 	*/
