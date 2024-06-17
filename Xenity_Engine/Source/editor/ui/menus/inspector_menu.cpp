@@ -450,6 +450,10 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		const size_t componentCount = componentNames.size();
 		for (size_t i = 0; i < componentCount; i++)
 		{
+			float lastCursorX = ImGui::GetCursorPosX();
+			float lastCursorY = ImGui::GetCursorPosY();
+
+			ImGui::SetCursorPosX(30);
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
 				auto command = std::make_shared<InspectorAddComponentCommand>(Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
@@ -462,6 +466,15 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 
 				showAddComponentMenu = false;
 			}
+			std::shared_ptr<Texture> texture = EditorUI::componentsIcons[componentNames[i]];
+			if (texture)
+			{
+				ImGui::SetCursorPosX(lastCursorX);
+				ImGui::SetCursorPosY(lastCursorY);
+				Engine::GetRenderer().BindTexture(*texture);
+				ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+			}
+
 		}
 		ImGui::EndChild();
 		if ((ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)) && !ImGui::IsItemHovered() && !justChanged)
@@ -575,10 +588,11 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 			}
 		}
 
+		const float lastCursorX = ImGui::GetCursorPosX();
 		const float lastCursorY = ImGui::GetCursorPosY();
 
 		// Draw component enabled checkbox
-		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosX(62);
 		ImGui::SetCursorPosY(cursorY);
 		bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
 		if (isEnabledChanged)
@@ -588,13 +602,23 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		}
 
 		//Draw component title
-		ImGui::SetCursorPosX(65);
+		ImGui::SetCursorPosX(92);
 		ImGui::SetCursorPosY(cursorY + 3);
 		if (!comp->GetComponentName().empty())
 			ImGui::Text("%s", comp->GetComponentName().c_str());
 		else
 			ImGui::Text("Missing component name");
 
+		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosY(cursorY+1);
+		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->componentName];
+		if (texture)
+		{
+			Engine::GetRenderer().BindTexture(*texture);
+			ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+		}
+
+		ImGui::SetCursorPosX(lastCursorX);
 		ImGui::SetCursorPosY(lastCursorY);
 	}
 }

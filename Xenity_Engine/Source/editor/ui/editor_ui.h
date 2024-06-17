@@ -460,6 +460,7 @@ public:
 	static std::string GenerateItemId();
 
 	static std::vector<std::shared_ptr<Texture>> icons;
+	static std::map<std::string, std::shared_ptr<Texture>> componentsIcons;
 	static std::shared_ptr<Menu> currentSelectAssetMenu;
 
 	/**
@@ -795,6 +796,7 @@ private:
 	* @brief Load editor icons
 	*/
 	static void LoadEditorIcon(IconName iconName, const std::string& path);
+	static void LoadComponentIcon(std::string iconName, const std::string& path);
 
 	/**
 	* @brief Draw input for reflective (Color, Vectors)

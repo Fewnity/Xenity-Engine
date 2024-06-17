@@ -31,6 +31,7 @@ using json = nlohmann::json;
 
 int EditorUI::uiId = 0;
 
+std::map<std::string, std::shared_ptr<Texture>> EditorUI::componentsIcons;
 std::vector<std::shared_ptr<Texture>> EditorUI::icons;
 MultiDragData EditorUI::multiDragData;
 
@@ -74,13 +75,15 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Audio, "icons/audio.png");
 	LoadEditorIcon(IconName::Icon_Font, "icons/font.png");
 	LoadEditorIcon(IconName::Icon_Sky, "icons/sky.png");
+	LoadEditorIcon(IconName::Icon_Material, "icons/material.png");
+	LoadEditorIcon(IconName::Icon_Shader, "icons/shader.png");
+
+	// 3D icons
+	LoadEditorIcon(IconName::Icon_Camera, "icons/camera.png");
 	LoadEditorIcon(IconName::Icon_Audio_Source, "icons/audio_source.png");
 	LoadEditorIcon(IconName::Icon_Point_Light, "icons/point_light.png");
 	LoadEditorIcon(IconName::Icon_Sun_Light, "icons/sun_light.png");
 	LoadEditorIcon(IconName::Icon_Spot_Light, "icons/spot_light.png");
-	LoadEditorIcon(IconName::Icon_Camera, "icons/camera.png");
-	LoadEditorIcon(IconName::Icon_Material, "icons/material.png");
-	LoadEditorIcon(IconName::Icon_Shader, "icons/shader.png");
 
 	// Play Pause Stop icons...
 	LoadEditorIcon(IconName::Icon_Play, "icons/play.png");
@@ -100,6 +103,18 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Platform_PS2, "icons/platform_ps2.png");
 	LoadEditorIcon(IconName::Icon_Platform_PS3, "icons/platform_ps3.png");
 	LoadEditorIcon(IconName::Icon_Platform_PS4, "icons/platform_ps4.png");
+
+	LoadComponentIcon("BoxCollider", "icons/components/box_collider.png");
+	LoadComponentIcon("SpriteRenderer", "icons/components/sprite_renderer.png");
+	LoadComponentIcon("Lod", "icons/components/lod.png");
+	LoadComponentIcon("MeshRenderer", "icons/components/mesh_renderer.png");
+	LoadComponentIcon("ParticleSystem", "icons/components/particles.png");
+	LoadComponentIcon("Canvas", "icons/components/canvas.png");
+	LoadComponentIcon("TextRendererCanvas", "icons/components/text_renderer_canvas.png");
+	LoadComponentIcon("TextRenderer", "icons/components/text_renderer.png");
+	LoadComponentIcon("AudioSource", "icons/components/audio_source.png");
+	LoadComponentIcon("Camera", "icons/camera.png");
+	LoadComponentIcon("Light", "icons/point_light.png");
 
 	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;
@@ -199,6 +214,15 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
 	fileIcon->LoadFileReference();
 	icons[(int)iconName] = std::move(fileIcon);
+}
+
+void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
+{
+	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
+	fileIcon->file = FileSystem::MakeFile(path);
+	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
+	fileIcon->LoadFileReference();
+	componentsIcons[iconName] = std::move(fileIcon);
 }
 
 /**

@@ -1,0 +1,6 @@
+Audio orange: #FFBA00
+Sprite: light pink #F7BEFF, purple : #BB76C9
+
+Physics: light green rgba(167, 255, 143, 1), green rgba(66, 255, 66, 1)
+
+Graphics: #83E9FF
