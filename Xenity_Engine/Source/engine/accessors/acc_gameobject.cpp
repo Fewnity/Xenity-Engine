@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Gregory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
 #include "acc_gameobject.h"
 
 #include <engine/game_elements/gameobject.h>	
