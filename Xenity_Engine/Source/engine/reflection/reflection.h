@@ -281,10 +281,6 @@ public:
 	virtual void OnReflectionUpdated() {};
 
 protected:
-	//friend class EditorUI;
-	//friend class AssetManager;
-	//friend class InspectorMenu;
-	//friend class InspectorDeleteGameObjectCommand;
 
 	/**
 	* @brief Add a variable to the list of variables (basic type)
@@ -348,14 +344,6 @@ protected:
 	{
 		const uint64_t type = typeid(T).hash_code();
 		Reflective::CreateReflectionEntry(vector, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
-	}
-
-	template<typename T>
-	std::enable_if_t<std::is_same<float, T>::value, void>
-	static AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, bool isPublic)
-	{
-		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
 	}
 
 	/**
