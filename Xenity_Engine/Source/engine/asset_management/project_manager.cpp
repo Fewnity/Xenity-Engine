@@ -1090,6 +1090,7 @@ ReflectiveData ProjectSettings::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
 	Reflective::AddVariable(reflectedVariables, gameName, "gameName", true);
+	Reflective::AddVariable(reflectedVariables, companyName, "companyName", true);
 	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
 	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", false);
 	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", false);

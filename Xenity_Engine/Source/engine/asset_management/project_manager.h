@@ -87,6 +87,7 @@ class ProjectSettings : public Reflective
 public:
 	std::string gameName = "";
 	std::string projectName = "";
+	std::string companyName = "";
 	std::shared_ptr<Scene> startScene = nullptr;
 	std::string engineVersion = "0.0";
 	std::string compiledLibEngineVersion = "0";
