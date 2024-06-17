@@ -21,15 +21,14 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // For the Alpha Release
 /*
 --- Needed
-Add application class
-Remove unused files
 Add undo/redo commands to DrawVector functions
 Fix twice confirm on quit
 Rework the documentation
 Box colliders are not affected by gameobject scale
 Clean code
-
-Check memory leak when modifing vector with reflection
+Check material system
+Add icons to components (Rigidbody and Rect transform)
+Rename text renderers
 
 --- Can be for next release
 New Input system

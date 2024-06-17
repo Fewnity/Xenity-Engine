@@ -162,6 +162,7 @@
     <ClCompile Include="Source\editor\command\commands\modify.cpp" />
     <ClCompile Include="Source\editor\command\commands\create.cpp" />
     <ClCompile Include="Source\engine\ui\screen.cpp" />
+    <ClCompile Include="Source\engine\application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -332,6 +333,7 @@
     <ClInclude Include="Source\editor\command\commands\modify.h" />
     <ClInclude Include="Source\editor\command\commands\create.h" />
     <ClInclude Include="Source\engine\ui\screen.h" />
+    <ClInclude Include="Source\engine\application.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
