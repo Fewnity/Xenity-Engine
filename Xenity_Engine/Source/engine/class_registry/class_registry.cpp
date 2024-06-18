@@ -8,8 +8,8 @@
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/ui/canvas.h>
-#include <engine/graphics/ui/text_renderer_canvas.h>
 #include <engine/graphics/ui/text_renderer.h>
+#include <engine/graphics/ui/text_mesh.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
@@ -114,10 +114,10 @@ void ClassRegistry::RegisterEngineComponents()
 	// List all Engine components
 	AddComponentClass<Light>("Light");
 	AddComponentClass<Camera>("Camera");
-	AddComponentClass<TextRendererCanvas>("TextRendererCanvas");
+	AddComponentClass<TextRenderer>("TextRenderer");
 	AddComponentClass<Canvas>("Canvas");
 	AddComponentClass<RectTransform>("RectTransform");
-	AddComponentClass<TextRenderer>("TextRenderer");
+	AddComponentClass<TextMesh>("TextMesh");
 	AddComponentClass<MeshRenderer>("MeshRenderer");
 	AddComponentClass<Tilemap>("Tilemap");
 	AddComponentClass<SpriteRenderer>("SpriteRenderer");

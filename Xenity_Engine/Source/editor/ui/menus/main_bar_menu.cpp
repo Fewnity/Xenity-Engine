@@ -34,14 +34,14 @@
 #include <engine/scene_management/scene_manager.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/tools/shape_spawner.h>
-#include <engine/graphics/ui/text_renderer_canvas.h>
+#include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
 #include <engine/test_component.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/lighting/lighting.h>
-#include <engine/graphics/ui/text_renderer.h>
+#include <engine/graphics/ui/text_mesh.h>
 #include <engine/graphics/ui/canvas.h>
 #include <engine/audio/audio_source.h>
 #include <engine/debug/debug.h>
@@ -260,7 +260,7 @@ void MainBarMenu::Draw()
 			}
 			if (ImGui::MenuItem("Text Mesh", nullptr, nullptr, hasSelectedGameObject))
 			{
-				AddComponentToSelectedGameObject<TextRenderer>();
+				AddComponentToSelectedGameObject<TextMesh>();
 			}
 			ImGui::EndMenu();
 		}
@@ -328,7 +328,7 @@ void MainBarMenu::Draw()
 			}
 			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
-				AddComponentToSelectedGameObject<TextRendererCanvas>();
+				AddComponentToSelectedGameObject<TextRenderer>();
 			}
 			ImGui::EndMenu();
 		}

@@ -21,7 +21,7 @@
     <ClCompile Include="Source\engine\graphics\iDrawable.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\engine\debug\debug.cpp" />
-    <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_mesh.cpp" />
     <ClCompile Include="Source\engine\tools\math.cpp" />
     <ClCompile Include="Source\engine\tools\curve.cpp" />
     <ClCompile Include="Source\engine\tools\shape_spawner.cpp" />
@@ -44,7 +44,7 @@
     <ClCompile Include="Source\engine\graphics\renderer\renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_opengl.cpp" />
     <ClCompile Include="Source\engine\graphics\color\color.cpp" />
-    <ClCompile Include="Source\engine\graphics\ui\text_renderer_canvas.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
     <ClCompile Include="Source\engine\noise\noise.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_manager.cpp" />
     <ClCompile Include="Source\engine\graphics\3d_graphics\mesh_data.cpp" />
@@ -184,7 +184,7 @@
     <ClInclude Include="Source\engine\graphics\iDrawable.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\debug\debug.h" />
-    <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_mesh.h" />
     <ClInclude Include="Source\engine\tools\math.h" />
     <ClInclude Include="Source\engine\tools\curve.h" />
     <ClInclude Include="Source\engine\tools\shape_spawner.h" />
@@ -214,7 +214,7 @@
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_opengl.h" />
     <ClInclude Include="Source\engine\graphics\color\color.h" />
-    <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
     <ClInclude Include="Source\engine\noise\noise.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_manager.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\mesh_data.h" />

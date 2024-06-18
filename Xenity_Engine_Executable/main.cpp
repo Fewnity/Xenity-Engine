@@ -27,8 +27,6 @@ Rework the documentation
 Box colliders are not affected by gameobject scale
 Clean code
 Check material system
-Add icons to components (Rigidbody and Rect transform)
-Rename text renderers
 
 --- Can be for next release
 New Input system

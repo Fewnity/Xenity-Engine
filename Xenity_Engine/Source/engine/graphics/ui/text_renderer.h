@@ -7,12 +7,12 @@
 #pragma once
 #include <engine/api.h>
 
-#include "TextAlignments.h"
+#include <string>
 
+#include "TextAlignments.h"
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
-
-#include <string>
+#include <engine/vectors/vector3.h>
 
 class Font;
 struct TextInfo;
@@ -22,8 +22,16 @@ class API TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();
-
 	~TextRenderer();
+
+	/**
+	* @brief Set text color
+	* @param color Color
+	*/
+	inline void SetColor(const Color& color)
+	{
+		this->color = color;
+	}
 
 	/**
 	* @brief Set order in layer
@@ -37,15 +45,6 @@ public:
 	inline int GetOrderInLayer() const
 	{
 		return orderInLayer;
-	}
-
-	/**
-	* @brief Set text color
-	* @param color Color
-	*/
-	inline void SetColor(const Color& color)
-	{
-		this->color = color;
 	}
 
 	/**
@@ -113,28 +112,26 @@ protected:
 
 	/**
 	* @brief Create the render commands
-	* @param renderBatch Render batch
 	*/
 	void CreateRenderCommands(RenderBatch& renderBatch) override;
 
 	/**
-	* Draw the command
-	* @param renderCommand Render command
+	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	TextInfo* textInfo = nullptr;
-	std::shared_ptr <MeshData> mesh = nullptr;
+	std::shared_ptr<MeshData> mesh = nullptr;
 	std::shared_ptr<Font> font;
+	TextInfo* textInfo = nullptr;
 	std::string text;
 	Color color = Color();
 	int orderInLayer = 0;
 	float fontSize = 1;
 
-	float lineSpacing = 0;
-	float characterSpacing = 0;
 	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
 	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
+	float lineSpacing = 0;
+	float characterSpacing = 0;
 
 	bool isTextInfoDirty = true;
 };

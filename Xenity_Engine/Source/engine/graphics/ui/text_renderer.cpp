@@ -13,7 +13,7 @@
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-
+#include <engine/debug/debug.h>
 
 #pragma region Constructors / Destructor
 
@@ -22,7 +22,7 @@ TextRenderer::TextRenderer()
 	componentName = "TextRenderer";
 
 	AssetManager::AddReflection(this);
-	material = AssetManager::standardMaterial;
+	material = AssetManager::unlitMaterial;
 }
 
 ReflectiveData TextRenderer::GetReflectiveData()
@@ -48,13 +48,13 @@ TextRenderer::~TextRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
+#pragma endregion
+
 void TextRenderer::SetOrderInLayer(int orderInLayer)
 {
 	this->orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
-
-#pragma endregion
 
 void TextRenderer::SetText(const std::string& text)
 {
@@ -71,6 +71,7 @@ void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 	{
 		this->font = font;
 		isTextInfoDirty = true;
+		Graphics::isRenderingBatchDirty = true;
 	}
 }
 
@@ -107,8 +108,8 @@ void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	command.transform = GetTransform();
 	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
 
-	renderBatch.transparentMeshCommands.push_back(command);
-	renderBatch.transparentMeshCommandIndex++;
+	renderBatch.uiCommands.push_back(command);
+	renderBatch.uiCommandIndex++;
 }
 
 /// <summary>
@@ -125,7 +126,7 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font, fontSize);
 		isTextInfoDirty = false;
 	}
-	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
+	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, true, mesh, font, material);
 }
 
 void TextRenderer::SetFontSize(float fontSize)
@@ -144,7 +145,6 @@ void TextRenderer::SetCharacterSpacing(float characterSpacing)
 {
 	this->characterSpacing = characterSpacing;
 	isTextInfoDirty = true;
-
 }
 
 void TextRenderer::SetVerticalAlignment(VerticalAlignment verticalAlignment)

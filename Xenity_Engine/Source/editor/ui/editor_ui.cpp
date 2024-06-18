@@ -110,8 +110,8 @@ int EditorUI::Init()
 	LoadComponentIcon("MeshRenderer", "icons/components/mesh_renderer.png");
 	LoadComponentIcon("ParticleSystem", "icons/components/particles.png");
 	LoadComponentIcon("Canvas", "icons/components/canvas.png");
-	LoadComponentIcon("TextRendererCanvas", "icons/components/text_renderer_canvas.png");
-	LoadComponentIcon("TextRenderer", "icons/components/text_renderer.png");
+	LoadComponentIcon("TextRenderer", "icons/components/text_renderer_canvas.png");
+	LoadComponentIcon("TextMesh", "icons/components/text_renderer.png");
 	LoadComponentIcon("AudioSource", "icons/components/audio_source.png");
 	LoadComponentIcon("RigidBody", "icons/components/rigidbody.png");
 	LoadComponentIcon("Transform", "icons/components/transform.png");

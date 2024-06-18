@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#include "text_renderer_canvas.h"
+#include "text_mesh.h"
 
 #include "text_manager.h"
 
@@ -13,19 +13,19 @@
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-#include <engine/debug/debug.h>
+
 
 #pragma region Constructors / Destructor
 
-TextRendererCanvas::TextRendererCanvas()
+TextMesh::TextMesh()
 {
-	componentName = "TextRendererCanvas";
+	componentName = "TextMesh";
 
 	AssetManager::AddReflection(this);
-	material = AssetManager::unlitMaterial;
+	material = AssetManager::standardMaterial;
 }
 
-ReflectiveData TextRendererCanvas::GetReflectiveData()
+ReflectiveData TextMesh::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, text, "text", true);
@@ -37,26 +37,26 @@ ReflectiveData TextRendererCanvas::GetReflectiveData()
 	return reflectedVariables;
 }
 
-void TextRendererCanvas::OnReflectionUpdated()
+void TextMesh::OnReflectionUpdated()
 {
 	isTextInfoDirty = true;
 	Graphics::isRenderingBatchDirty = true;
 }
 
-TextRendererCanvas::~TextRendererCanvas()
+TextMesh::~TextMesh()
 {
 	AssetManager::RemoveReflection(this);
 }
 
-#pragma endregion
-
-void TextRendererCanvas::SetOrderInLayer(int orderInLayer)
+void TextMesh::SetOrderInLayer(int orderInLayer)
 {
 	this->orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
-void TextRendererCanvas::SetText(const std::string& text)
+#pragma endregion
+
+void TextMesh::SetText(const std::string& text)
 {
 	if (this->text != text)
 	{
@@ -65,38 +65,37 @@ void TextRendererCanvas::SetText(const std::string& text)
 	}
 }
 
-void TextRendererCanvas::SetFont(const std::shared_ptr<Font>& font)
+void TextMesh::SetFont(const std::shared_ptr<Font>& font)
 {
 	if (this->font != font)
 	{
 		this->font = font;
 		isTextInfoDirty = true;
-		Graphics::isRenderingBatchDirty = true;
 	}
 }
 
-std::shared_ptr<Material> TextRendererCanvas::GetMaterial()
+std::shared_ptr<Material> TextMesh::GetMaterial()
 {
 	return material;
 }
 
-void TextRendererCanvas::SetMaterial(std::shared_ptr<Material> _material)
+void TextMesh::SetMaterial(std::shared_ptr<Material> _material)
 {
 	material = _material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void TextRendererCanvas::OnDisabled()
+void TextMesh::OnDisabled()
 {
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void TextRendererCanvas::OnEnabled()
+void TextMesh::OnEnabled()
 {
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void TextRendererCanvas::CreateRenderCommands(RenderBatch& renderBatch)
+void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 {
 	if (!material || !font)
 		return;
@@ -108,14 +107,14 @@ void TextRendererCanvas::CreateRenderCommands(RenderBatch& renderBatch)
 	command.transform = GetTransform();
 	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
 
-	renderBatch.uiCommands.push_back(command);
-	renderBatch.uiCommandIndex++;
+	renderBatch.transparentMeshCommands.push_back(command);
+	renderBatch.transparentMeshCommandIndex++;
 }
 
 /// <summary>
 /// Draw text
 /// </summary>
-void TextRendererCanvas::DrawCommand(const RenderCommand& renderCommand)
+void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (isTextInfoDirty)
 	{
@@ -126,34 +125,35 @@ void TextRendererCanvas::DrawCommand(const RenderCommand& renderCommand)
 		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font, fontSize);
 		isTextInfoDirty = false;
 	}
-	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, true, mesh, font, material);
+	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
 }
 
-void TextRendererCanvas::SetFontSize(float fontSize)
+void TextMesh::SetFontSize(float fontSize)
 {
 	this->fontSize = fontSize;
 	isTextInfoDirty = true;
 }
 
-void TextRendererCanvas::SetLineSpacing(float lineSpacing)
+void TextMesh::SetLineSpacing(float lineSpacing)
 {
 	this->lineSpacing = lineSpacing;
 	isTextInfoDirty = true;
 }
 
-void TextRendererCanvas::SetCharacterSpacing(float characterSpacing)
+void TextMesh::SetCharacterSpacing(float characterSpacing)
 {
 	this->characterSpacing = characterSpacing;
 	isTextInfoDirty = true;
+
 }
 
-void TextRendererCanvas::SetVerticalAlignment(VerticalAlignment verticalAlignment)
+void TextMesh::SetVerticalAlignment(VerticalAlignment verticalAlignment)
 {
 	this->verticalAlignment = verticalAlignment;
 	isTextInfoDirty = true;
 }
 
-void TextRendererCanvas::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+void TextMesh::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
 {
 	this->horizontalAlignment = horizontalAlignment;
 	isTextInfoDirty = true;

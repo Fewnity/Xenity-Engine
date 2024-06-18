@@ -862,7 +862,7 @@
     <ClCompile Include="Source\engine\graphics\color\color.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_opengl.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer.cpp" />
-    <ClCompile Include="Source\engine\graphics\ui\text_renderer_canvas.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
     <ClCompile Include="Source\engine\network\network.cpp" />
     <ClCompile Include="Source\engine\noise\noise.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
@@ -903,7 +903,7 @@
     <ClCompile Include="Source\engine\game_elements\transform.cpp" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\wavefront_loader.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
-    <ClCompile Include="Source\engine\graphics\ui\text_renderer.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\text_mesh.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_color.cpp" />
@@ -1285,7 +1285,7 @@
     <ClInclude Include="Source\engine\graphics\color\color.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_opengl.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer.h" />
-    <ClInclude Include="Source\engine\graphics\ui\text_renderer_canvas.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
     <ClInclude Include="Source\engine\inputs\input_pad.h" />
     <ClInclude Include="Source\engine\inputs\input_touch_raw.h" />
     <ClInclude Include="Source\engine\network\network.h" />
@@ -1332,7 +1332,7 @@
     <ClInclude Include="Source\engine\game_elements\transform.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
-    <ClInclude Include="Source\engine\graphics\ui\text_renderer.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_mesh.h" />
     <ClInclude Include="Source\psp\video_hardware_dxtn.h" />
     <ClInclude Include="Source\unit_tests\unit_test_manager.h" />
     <ClInclude Include="Source\windows\inputs\inputs.h" />
