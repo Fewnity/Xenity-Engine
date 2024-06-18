@@ -113,8 +113,15 @@ int EditorUI::Init()
 	LoadComponentIcon("TextRendererCanvas", "icons/components/text_renderer_canvas.png");
 	LoadComponentIcon("TextRenderer", "icons/components/text_renderer.png");
 	LoadComponentIcon("AudioSource", "icons/components/audio_source.png");
+	LoadComponentIcon("RigidBody", "icons/components/rigidbody.png");
+	LoadComponentIcon("Transform", "icons/components/transform.png");
+	LoadComponentIcon("RectTransform", "icons/components/rect_transform.png");
+	LoadComponentIcon("BillboardRenderer", "icons/components/billboard.png");
+	LoadComponentIcon("Default", "icons/components/default.png");
+	// Reuse existing icons
 	LoadComponentIcon("Camera", "icons/camera.png");
 	LoadComponentIcon("Light", "icons/point_light.png");
+
 
 	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;

@@ -467,6 +467,8 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 				showAddComponentMenu = false;
 			}
 			std::shared_ptr<Texture> texture = EditorUI::componentsIcons[componentNames[i]];
+			if(!texture)
+				texture = EditorUI::componentsIcons["Default"];
 			if (texture)
 			{
 				ImGui::SetCursorPosX(lastCursorX);
@@ -488,7 +490,12 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 {
 	//Local position input
 	ImGui::Spacing();
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	float cursorX = ImGui::GetCursorPosX();
+	float cursorY = ImGui::GetCursorPosY();
+
+	std::shared_ptr<Texture> texture = EditorUI::componentsIcons["Transform"];
+
+	if (ImGui::CollapsingHeader("##Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
 		CheckOpenRightClickPopupTransform(selectedTransform, "RightClick" + std::to_string(selectedTransform->GetGameObject()->GetUniqueId()));
@@ -498,6 +505,15 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 			const std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
 			const std::string payloadName = "Type" + typeId;
 			ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
+
+			if (texture)
+			{
+				Engine::GetRenderer().BindTexture(*texture);
+				ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+				ImGui::SameLine();
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
+			}
+
 			ImGui::Text("Transform");
 			ImGui::EndDragDropSource();
 		}
@@ -536,6 +552,22 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 		//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
 		ImGui::Separator();
 	}
+	float finalCursorX = ImGui::GetCursorPosX();
+	float finalCursorY = ImGui::GetCursorPosY();
+	ImGui::SetCursorPosX(63);
+	ImGui::SetCursorPosY(cursorY + 3);
+	ImGui::Text("Transform");
+
+	if (texture)
+	{
+		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosY(cursorY + 1);
+		Engine::GetRenderer().BindTexture(*texture);
+		ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+	}
+
+	ImGui::SetCursorPosX(finalCursorX);
+	ImGui::SetCursorPosY(finalCursorY);
 }
 
 void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& selectedGameObject)
@@ -550,6 +582,10 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 
 		bool isEnable = comp->GetIsEnabled();
 
+		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->componentName];
+		if (!texture)
+			texture = EditorUI::componentsIcons["Default"];
+
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
@@ -561,6 +597,15 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 					const std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
 					const std::string payloadName = "Type" + typeId;
 					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
+
+					if (texture)
+					{
+						Engine::GetRenderer().BindTexture(*texture);
+						ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+						ImGui::SameLine();
+						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
+					}
+
 					if (!comp->GetComponentName().empty())
 						ImGui::Text("%s", comp->GetComponentName().c_str());
 					else
@@ -594,7 +639,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		// Draw component enabled checkbox
 		ImGui::SetCursorPosX(62);
 		ImGui::SetCursorPosY(cursorY);
-		bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+		const bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
 		if (isEnabledChanged)
 		{
 			auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(comp, isEnable);
@@ -610,8 +655,8 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 			ImGui::Text("Missing component name");
 
 		ImGui::SetCursorPosX(35);
-		ImGui::SetCursorPosY(cursorY+1);
-		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->componentName];
+		ImGui::SetCursorPosY(cursorY + 1);
+
 		if (texture)
 		{
 			Engine::GetRenderer().BindTexture(*texture);
