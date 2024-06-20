@@ -23,8 +23,7 @@ void ProfilerMenu::Draw()
 {
 	UpdateFpsCounter();
 	const std::string windowName = "Debug###Debug" + std::to_string(id);
-	bool isOpen = true;
-	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -49,11 +48,6 @@ void ProfilerMenu::Draw()
 	}
 
 	ImGui::End();
-
-	if (!isOpen)
-	{
-		Editor::RemoveMenu(this);
-	}
 }
 
 void ProfilerMenu::UpdateFpsCounter()

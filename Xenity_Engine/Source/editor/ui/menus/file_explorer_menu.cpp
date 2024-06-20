@@ -425,8 +425,8 @@ void FileExplorerMenu::Draw()
 
 	const float iconSize = 64 * EditorUI::GetUiScale();
 	std::string windowName = "File Explorer###File_Explorer" + std::to_string(id);
-	bool isOpen = true;
-	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
+
+	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
 
 	if (visible)
 	{
@@ -525,11 +525,6 @@ void FileExplorerMenu::Draw()
 		cancelNextClick = false;
 	}
 	ImGui::End();
-
-	if (!isOpen)
-	{
-		Editor::RemoveMenu(this);
-	}
 }
 
 void FileExplorerMenu::Rename()

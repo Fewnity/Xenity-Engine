@@ -58,8 +58,7 @@ void GameMenu::Draw()
 	windowName += "###Game" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool isOpen = true;
-	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
 	isLastFrameOpened = visible;
 	if (visible)
 	{
@@ -94,11 +93,6 @@ void GameMenu::Draw()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
-
-	if (!isOpen)
-	{
-		Editor::RemoveMenu(this);
-	}
 }
 
 void GameMenu::DrawNoCameraText()

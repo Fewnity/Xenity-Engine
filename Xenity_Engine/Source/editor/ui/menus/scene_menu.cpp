@@ -697,8 +697,7 @@ void SceneMenu::Draw()
 	windowName += "###Scene" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	bool isOpen = true;
-	const bool visible = ImGui::Begin(windowName.c_str(), &isOpen, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse);
 	isLastFrameOpened = visible;
 	if (visible)
 	{
@@ -785,11 +784,6 @@ void SceneMenu::Draw()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
-
-	if (!isOpen)
-	{
-		Editor::RemoveMenu(this);
-	}
 }
 
 bool SceneMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
