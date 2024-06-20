@@ -237,10 +237,6 @@ void Engine::CheckEvents()
 			}
 			break;
 
-		case SDL_EVENT_QUIT:
-			Quit();
-			break;
-
 #if defined(EDITOR)
 		case (SDL_EVENT_DROP_COMPLETE):
 		{
