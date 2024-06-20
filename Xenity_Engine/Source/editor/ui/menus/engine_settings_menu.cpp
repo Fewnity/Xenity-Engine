@@ -111,13 +111,13 @@ void EngineSettingsMenu::Draw()
 		if (valueChanged)
 			settingsChanged = true;
 
-		valueChanged = EditorUI::DrawInput("Backbground color",EngineSettings::values.backbgroundColor);
+		valueChanged = EditorUI::DrawInput("Backbground color",EngineSettings::values.backbgroundColor) != ValueInputState::NO_CHANGE;
 		if (valueChanged)
 			settingsChanged = true;
-		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::values.secondaryColor);
+		valueChanged = EditorUI::DrawInput("Secondary color", EngineSettings::values.secondaryColor) != ValueInputState::NO_CHANGE;
 		if (valueChanged)
 			settingsChanged = true;
-		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::values.playTintColor);
+		valueChanged = EditorUI::DrawInput("Play tint color", EngineSettings::values.playTintColor) != ValueInputState::NO_CHANGE;
 		if (valueChanged)
 			settingsChanged = true;
 

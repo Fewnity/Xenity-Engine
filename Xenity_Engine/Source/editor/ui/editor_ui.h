@@ -111,6 +111,7 @@ enum class ValueInputState
 	NO_CHANGE,
 	CHANGED,
 	APPLIED,
+	ON_OPEN,
 };
 
 enum class InputButtonState
@@ -204,19 +205,20 @@ public:
 	/**
 	* @brief Draw input for specific types Color, Vectors
 	*/
-	static bool DrawInput(const std::string& inputName, Color& newValue);
-	static bool DrawInput(const std::string& inputName, Vector2& newValue);
-	static bool DrawInput(const std::string& inputName, Vector2Int& newValue);
-	static bool DrawInput(const std::string& inputName, Vector3& newValue);
-	static bool DrawInput(const std::string& inputName, Vector4& newValue);
+	static ValueInputState DrawInput(const std::string& inputName, Color& newValue);
+	static ValueInputState DrawInput(const std::string& inputName, Vector2& newValue);
+	static ValueInputState DrawInput(const std::string& inputName, Vector2Int& newValue);
+	static ValueInputState DrawInput(const std::string& inputName, Vector3& newValue);
+	static ValueInputState DrawInput(const std::string& inputName, Vector4& newValue);
 
 	/**
 	* @brief Draw input for file references
 	*/
 	template<typename T>
-	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
+	std::enable_if_t<std::is_base_of<FileReference, T>::value, ValueInputState>
 		static DrawInput(const std::string& inputName, std::shared_ptr<T>& value)
 	{
+		ValueInputState state = ValueInputState::NO_CHANGE;
 		bool changed = false;
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
@@ -224,11 +226,12 @@ public:
 
 		if (changed)
 		{
+			state = ValueInputState::APPLIED;
 			std::shared_ptr<Command> command = std::make_shared<InspectorChangeValueCommand<void, std::shared_ptr<T>>>(std::weak_ptr<void>(), &ref.get(), newValue, ref.get());
 			CommandManager::AddCommandAndExecute(command);
 		}
 
-		return changed;
+		return state;
 	}
 
 	/**
@@ -250,7 +253,7 @@ public:
 	* @param enumType Type of the enum
 	* @return True if the value has changed
 	*/
-	static bool DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType);
+	static ValueInputState DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType);
 
 	/**
 	* @brief Draw gameobject tree
@@ -385,8 +388,9 @@ public:
 	* @param parent Parent of the reflective data
 	* @return True if the value has changed
 	*/
-	static bool DrawReflectiveData(ReflectiveDataToDraw& reflectiveDataToDraw, const ReflectiveData& myMap, Event<>* _onValueChangedEvent)
+	static ValueInputState DrawReflectiveData(ReflectiveDataToDraw& reflectiveDataToDraw, const ReflectiveData& myMap, Event<>* _onValueChangedEvent)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		onValueChangedEvent = _onValueChangedEvent;
 		bool valueChanged = false;
 		for (const ReflectiveEntry& reflectionEntry : myMap)
@@ -398,27 +402,29 @@ public:
 				reflectiveDataToDraw.entryStack.push_back(reflectionEntry);
 				reflectiveDataToDraw.reflectiveDataStack.push_back(myMap);
 
-				bool valueChangedTemp = false;
-				std::visit([&valueChangedTemp, &reflectiveDataToDraw](auto& value)
+				ValueInputState tempValueInputState = ValueInputState::NO_CHANGE;
+				std::visit([&tempValueInputState, &reflectiveDataToDraw](auto& value)
 					{
-						valueChangedTemp = DrawVariable(reflectiveDataToDraw, value);
+						tempValueInputState = DrawVariable(reflectiveDataToDraw, value);
 					}, reflectiveDataToDraw.currentEntry.variable.value());
 
-				reflectiveDataToDraw.entryStack.erase(reflectiveDataToDraw.entryStack.end()-1);
+				reflectiveDataToDraw.entryStack.erase(reflectiveDataToDraw.entryStack.end() - 1);
 				reflectiveDataToDraw.reflectiveDataStack.erase(reflectiveDataToDraw.reflectiveDataStack.end() - 1);
 
-				if (valueChangedTemp)
+				if (tempValueInputState != ValueInputState::NO_CHANGE)
 				{
-					valueChanged = true;
+					valueInputState = tempValueInputState;
 				}
 			}
 		}
-		if (onValueChangedEvent && valueChanged) 
+		if (onValueChangedEvent && valueInputState != ValueInputState::NO_CHANGE)
 		{
 			onValueChangedEvent->Trigger();
 		}
 		ImGui::Separator();
-		return valueChanged;
+		/*if(valueChanged)
+			valueInputState = ValueInputState::APPLIED;*/
+		return valueInputState;
 	}
 
 	/**
@@ -480,7 +486,7 @@ public:
 	*/
 	template <typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
+		static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
 		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
@@ -514,7 +520,7 @@ public:
 			selectMenu->SetActive(true);
 			selectMenu->valuePtr = valuePtr;
 			selectMenu->SearchFiles(classInfo->fileType);
-			if (reflectiveDataToDraw) 
+			if (reflectiveDataToDraw)
 			{
 				selectMenu->reflectiveDataToDraw = *reflectiveDataToDraw;
 				selectMenu->hasReflectiveDataToDraw = true;
@@ -555,8 +561,8 @@ public:
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
 				std::shared_ptr<T> newValue = nullptr;
-				bool variableChangedTemp = DrawVariable(reflectiveDataToDraw, std::ref(valuePtr.get()[vectorI]));
-				if (variableChangedTemp)
+				ValueInputState variableChangedTemp = DrawVariable(reflectiveDataToDraw, std::ref(valuePtr.get()[vectorI]));
+				if (variableChangedTemp != ValueInputState::NO_CHANGE)
 				{
 					listChangedTemp = true;
 					valuePtr.get()[vectorI] = newValue;
@@ -658,42 +664,42 @@ public:
 			Reflective* ptr = valuePtr.get()[vectorI];
 			if (ptr)
 			{
-				bool valueChangedTemp = false;
+				ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
 				if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 				}
 				else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 				}
 				else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 				}
 				else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 				}
 				else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
 				{
-					valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 				}
 				else //Basic draw
 				{
 					const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)ptr);
 					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 					{
-						valueChangedTemp = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), nullptr);
+						valueInputState = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), nullptr);
 					}
 				}
-				if (valueChangedTemp) 
+				if (valueInputState != ValueInputState::NO_CHANGE)
 				{
 					valueChanged = true;
 				}
 			}
-			else 
+			else
 			{
 				ImGui::Text("Null element");
 			}
@@ -723,7 +729,7 @@ public:
 	template <typename T>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 		|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>> valuePtr)
+		static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
 		bool valueChangedTemp = false;
 		std::vector<T>& valueRef = valuePtr.get();
@@ -732,7 +738,7 @@ public:
 		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 		{
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
-			if (DrawVariable(reflectiveDataToDraw, std::ref(valueRef[vectorI])))
+			if (DrawVariable(reflectiveDataToDraw, std::ref(valueRef[vectorI])) != ValueInputState::NO_CHANGE)
 			{
 				valueChangedTemp = true;
 			}
@@ -807,14 +813,39 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawInputReflective(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr)
+	static ValueInputState DrawInputReflective(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr)
 	{
 		T newValue = *valuePtr;
-		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue);
-		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, valuePtr, newValue);
+		static T newValue2;
+		static size_t canChange = true;
+		const ValueInputState valueInputState = DrawInput(reflectiveDataToDraw.name, newValue);
 
-		return valueChangedTemp;
+		if constexpr (std::is_same<T, Color>())
+		{
+			if (valueInputState == ValueInputState::ON_OPEN || canChange == reinterpret_cast<size_t>(valuePtr))
+			{
+				newValue2 = *valuePtr;
+				canChange = 0;
+			}
+
+			if (valueInputState == ValueInputState::CHANGED)
+			{
+				reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, valuePtr, *valuePtr, newValue);
+			}
+			if (valueInputState == ValueInputState::APPLIED)
+			{
+				reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, valuePtr, newValue2, newValue);
+				canChange = reinterpret_cast<size_t>(valuePtr);
+			}
+		}
+		else 
+		{
+			if (valueInputState == ValueInputState::APPLIED)
+			{
+				reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<Reflective>>(reflectiveDataToDraw, valuePtr, *valuePtr, newValue);
+			}
+		}
+		return valueInputState;
 	}
 
 	/**
@@ -826,24 +857,22 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	*/
 	template<typename T>
-	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, bool>
-	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T> valuePtr)
+	std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, ValueInputState>
+		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T> valuePtr)
 	{
+		ValueInputState state = ValueInputState::NO_CHANGE;
 		T newValue = valuePtr.get();
-		bool valueChangedTemp = false;
 		if (!reflectiveDataToDraw.currentEntry.isEnum)
 		{
-			ValueInputState state = DrawInputTemplate(reflectiveDataToDraw.name, newValue);
-			if (state == ValueInputState::APPLIED)
-				valueChangedTemp = true;
+			state = DrawInputTemplate(reflectiveDataToDraw.name, newValue);
 		}
 		else if constexpr (std::is_same<int, T>())
-			valueChangedTemp = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
+			state = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
-		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
+		if (state != ValueInputState::NO_CHANGE)
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);
 
-		return valueChangedTemp;
+		return state;
 	}
 
 	/**
@@ -855,21 +884,29 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
+	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		bool valueChangedTemp = false;
 		valueChangedTemp = DrawVector(reflectiveDataToDraw, "Reflective", valuePtr);
-		return valueChangedTemp;
+
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	template<typename T>
 	std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
-		|| std::is_same<T, double>::value || std::is_same<T, bool>::value || std::is_same<T, std::string>::value, bool>
-	static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<T>> valuePtr)
+		|| std::is_same<T, double>::value || std::is_same<T, bool>::value || std::is_same<T, std::string>::value, ValueInputState>
+		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		bool valueChangedTemp = false;
 		valueChangedTemp = DrawVector(reflectiveDataToDraw, "simple value", valuePtr);
-		return valueChangedTemp;
+
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	/**
@@ -882,8 +919,9 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>& valuePtr)
+	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::weak_ptr<T>>>& valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		bool valueChangedTemp = false;
 
 		if constexpr (std::is_same <T, GameObject>())
@@ -899,7 +937,9 @@ private:
 			valueChangedTemp = DrawVector(reflectiveDataToDraw, ClassRegistry::GetClassNameById(reflectiveDataToDraw.currentEntry.typeId), valuePtr);
 		}
 
-		return valueChangedTemp;
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	/**
@@ -912,10 +952,14 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
+	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		const bool valueChangedTemp = DrawVector(reflectiveDataToDraw, valuePtr);
-		return valueChangedTemp;
+
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	/**
@@ -928,14 +972,19 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	std::enable_if_t<is_shared_ptr<T>::value, bool>
+	std::enable_if_t<is_shared_ptr<T>::value, ValueInputState>
 		static DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<T> valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+
 		T newValue = nullptr;
 		const bool valueChangedTemp = DrawFileReference(&reflectiveDataToDraw, valuePtr, reflectiveDataToDraw.name, newValue);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
-		return valueChangedTemp;
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);
+
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	/**
@@ -948,14 +997,17 @@ private:
 	* @return True if the value has changed
 	*/
 	template<typename T>
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
+	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
 	{
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 		std::weak_ptr<T> newValue = valuePtr.get();
 		const bool valueChangedTemp = DrawInput(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 		if (valueChangedTemp)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, &valuePtr.get(), newValue);
+			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<std::weak_ptr<T>>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);
 
-		return valueChangedTemp;
+		if (valueChangedTemp)
+			valueInputState = ValueInputState::APPLIED;
+		return valueInputState;
 	}
 
 	/**
@@ -967,40 +1019,43 @@ private:
 	* @param reflectionEntry Reflection entry of the variable
 	* @return True if the value has changed
 	*/
-	static bool DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective> valuePtr)
+	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective> valuePtr)
 	{
-		bool valueChangedTemp = false;
+		ValueInputState valueInputState = ValueInputState::NO_CHANGE;
 
 		if (auto val = dynamic_cast<Vector2*>(&valuePtr.get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+			valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 		}
 		else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr.get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+			valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 		}
 		else if (auto val = dynamic_cast<Vector3*>(&valuePtr.get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+			valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 		}
 		else if (auto val = dynamic_cast<Vector4*>(&valuePtr.get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+			valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 		}
 		else if (auto val = dynamic_cast<Color*>(&valuePtr.get())) // Specific draw
 		{
-			valueChangedTemp = DrawInputReflective(reflectiveDataToDraw, val);
+			valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
 		}
 		else //Basic draw
 		{
-			const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&(valuePtr.get()));
+			const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t) & (valuePtr.get()));
 			if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 			{
-				valueChangedTemp = DrawReflectiveData(reflectiveDataToDraw, valuePtr.get().GetReflectiveData(), nullptr);
+				valueInputState = DrawReflectiveData(reflectiveDataToDraw, valuePtr.get().GetReflectiveData(), nullptr);
 			}
 		}
 
-		return valueChangedTemp;
+		/*if(valueInputState != ValueInputState::NO_CHANGE)
+			valueChangedTemp = true;*/
+
+		return valueInputState;
 	}
 
 	static bool DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened);

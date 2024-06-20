@@ -240,19 +240,19 @@ void SpriteEditorMenu::DrawToolWindow()
 			{
 				// Position variable
 				Vector2 selectionPosition = currentSelection.position;
-				const bool positionUpdated = EditorUI::DrawInput("Position", selectionPosition);
+				const bool positionUpdated = EditorUI::DrawInput("Position", selectionPosition) != ValueInputState::NO_CHANGE;
 				if (positionUpdated)
 					currentSelection.position = selectionPosition;
 
 				// Size variable
 				Vector2 selectionSize = currentSelection.size;
-				const bool sizeUpdated = EditorUI::DrawInput("Size", selectionSize);
+				const bool sizeUpdated = EditorUI::DrawInput("Size", selectionSize) != ValueInputState::NO_CHANGE;
 				if (sizeUpdated)
 					currentSelection.size = selectionSize;
 
 				// Pivot variable
 				Vector2 selectionPivot = currentSelection.pivot;
-				const bool pivotUpdated = EditorUI::DrawInput("Pivot", selectionPivot);
+				const bool pivotUpdated = EditorUI::DrawInput("Pivot", selectionPivot) != ValueInputState::NO_CHANGE;
 				if (pivotUpdated)
 					currentSelection.pivot = selectionPivot;
 			}

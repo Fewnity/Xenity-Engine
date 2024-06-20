@@ -40,8 +40,9 @@ void EditorUI::DrawInputTitle(const std::string& title)
 
 #pragma region New Inputs
 
-bool EditorUI::DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType)
+ValueInputState EditorUI::DrawEnum(const std::string& inputName, int& newValue, uint64_t enumType)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	DrawInputTitle(inputName);
 	int value = newValue;
 	const int oldValue = int(value);
@@ -107,11 +108,14 @@ bool EditorUI::DrawEnum(const std::string& inputName, int& newValue, uint64_t en
 	}
 
 	newValue = value;
-	return value != oldValue;
+	if (value != oldValue)
+		state = ValueInputState::APPLIED;
+	return state;
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, Vector2& newValue)
+ValueInputState EditorUI::DrawInput(const std::string& inputName, Vector2& newValue)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	Vector2 value = newValue;
 	const Vector2 oldValue = Vector2(value);
 
@@ -125,11 +129,14 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2& newValue)
 		ImGui::EndTable();
 	}
 	newValue = value;
-	return value != oldValue;
+	if (value != oldValue)
+		state = ValueInputState::APPLIED;
+	return state;
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, Vector2Int& newValue)
+ValueInputState EditorUI::DrawInput(const std::string& inputName, Vector2Int& newValue)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	Vector2Int value = newValue;
 	const Vector2Int oldValue = Vector2Int(value);
 
@@ -143,11 +150,14 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector2Int& newValue)
 		ImGui::EndTable();
 	}
 	newValue = value;
-	return value != oldValue;
+	if (value != oldValue)
+		state = ValueInputState::APPLIED;
+	return state;
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, Vector3& newValue)
+ValueInputState EditorUI::DrawInput(const std::string& inputName, Vector3& newValue)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	Vector3 value = newValue;
 	const Vector3 oldValue = Vector3(value);
 
@@ -162,11 +172,14 @@ bool EditorUI::DrawInput(const std::string& inputName, Vector3& newValue)
 		ImGui::EndTable();
 	}
 	newValue = value;
-	return value != oldValue;
+	if (value != oldValue)
+		state = ValueInputState::APPLIED;
+	return state;
 }
 
-bool EditorUI::DrawInput(const std::string& inputName,Vector4& newValue)
+ValueInputState EditorUI::DrawInput(const std::string& inputName,Vector4& newValue)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	Vector4 value = newValue;
 	const Vector4 oldValue = Vector4(value);
 
@@ -182,7 +195,9 @@ bool EditorUI::DrawInput(const std::string& inputName,Vector4& newValue)
 		ImGui::EndTable();
 	}
 	newValue = value;
-	return value != oldValue;
+	if(value != oldValue)
+		state = ValueInputState::APPLIED;
+	return state;
 }
 
 bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>& newValue, uint64_t typeId)
@@ -306,20 +321,37 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	return oldValue != value.lock();
 }
 
-bool EditorUI::DrawInput(const std::string& inputName, Color& newValue)
+ValueInputState EditorUI::DrawInput(const std::string& inputName, Color& newValue)
 {
+	ValueInputState state = ValueInputState::NO_CHANGE;
 	DrawInputTitle(inputName);
 
 	const Vector4 vec4 = newValue.GetRGBA().ToVector4();
 	ImVec4 color = ImVec4(vec4.x, vec4.y, vec4.z, vec4.w);
 
-	ImGui::ColorEdit4(GenerateItemId().c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs);
+	bool isEdited = ImGui::ColorEdit4(GenerateItemId().c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs);
+
+	if (ImGui::IsItemClicked()) 
+	{
+		state = ValueInputState::ON_OPEN;
+		Debug::Print("OPEN");
+	}
+	if (ImGui::IsItemDeactivatedAfterEdit())
+	{
+		state = ValueInputState::APPLIED;
+	}
+	else if (isEdited) 
+	{
+		state = ValueInputState::CHANGED;
+	}
+
 	newValue.SetFromRGBAfloat(color.x, color.y, color.z, color.w);
 
-	bool valueChanged = false;
+
+	/*bool valueChanged = false;
 	if (vec4.x != color.x || vec4.y != color.y || vec4.z != color.z || vec4.w != color.w)
-		valueChanged = true;
-	return valueChanged;
+		valueChanged = true;*/
+	return state;
 }
 
 #pragma endregion

@@ -369,10 +369,13 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 		if (reflectionList.size() != 0)
 		{
 			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
-			const bool changed = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
-			if (changed && reflectiveDataToDraw.command)
+			const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
+			if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
 			{
-				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
+				if (valueInputState == ValueInputState::APPLIED)
+					CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
+				else
+					reflectiveDataToDraw.command->Execute();
 			}
 			if (forceItemUpdate)
 			{
@@ -384,12 +387,13 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 	if (metaReflection.size() != 0)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
-		if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr))
+		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr);
+		if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
 		{
-			if (reflectiveDataToDraw.command)
-			{
+			if (valueInputState == ValueInputState::APPLIED)
 				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
-			}
+			else
+				reflectiveDataToDraw.command->Execute();
 		}
 
 		if (ImGui::Button("Apply"))
@@ -419,7 +423,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject);
 		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject->GetReflectiveData(), "name");
 		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject->GetReflectiveData());
-		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject->GetName(), gameObjectName);
+		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject->GetName(), selectedGameObject->GetName(), gameObjectName);
 		CommandManager::AddCommandAndExecute(command);
 	}
 	if (active != selectedGameObject->GetActive())
@@ -518,7 +522,7 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 			ImGui::EndDragDropSource();
 		}
 		Vector3 localPos = selectedTransform->GetLocalPosition();
-		bool changed = EditorUI::DrawInput("Local Position", localPos);
+		bool changed = EditorUI::DrawInput("Local Position", localPos) != ValueInputState::NO_CHANGE;
 
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
@@ -531,7 +535,7 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 		ImGui::Spacing();
 		ImGui::Spacing();
 		Vector3 localRot = selectedTransform->GetLocalRotation();
-		changed = EditorUI::DrawInput("Local Rotation", localRot);
+		changed = EditorUI::DrawInput("Local Rotation", localRot) != ValueInputState::NO_CHANGE;
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
 			auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localRot, selectedTransform->GetLocalRotation(), true);
@@ -543,7 +547,7 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 		ImGui::Spacing();
 		ImGui::Spacing();
 		Vector3 localScale = selectedTransform->GetLocalScale();
-		changed = EditorUI::DrawInput("Local Scale", localScale);
+		changed = EditorUI::DrawInput("Local Scale", localScale) != ValueInputState::NO_CHANGE;
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
 			auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localScale, selectedTransform->GetLocalScale());
@@ -615,17 +619,23 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 
 				//Draw component variables
 				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(comp);
-				if (EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), nullptr))
+
+				const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), nullptr);
+				if (valueInputState != ValueInputState::NO_CHANGE)
 				{
-					if (reflectiveDataToDraw.command)
+					if (reflectiveDataToDraw.command) 
 					{
-						CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
+						if (valueInputState == ValueInputState::APPLIED)
+							CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
+						else
+							reflectiveDataToDraw.command->Execute();
 					}
-					else
+					else 
 					{
 						comp->OnReflectionUpdated();
 					}
 				}
+
 				if (forceItemUpdate)
 				{
 					comp->OnReflectionUpdated();

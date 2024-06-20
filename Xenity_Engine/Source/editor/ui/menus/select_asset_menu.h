@@ -109,7 +109,7 @@ public:
 						if (hasReflectiveDataToDraw) 
 						{
 							std::shared_ptr<T> newValue = std::dynamic_pointer_cast<T>(foundFiles[i]);
-							auto command = std::make_shared<ReflectiveChangeValueCommand<std::shared_ptr<T>>>(reflectiveDataToDraw, &valuePtr->get(), newValue);
+							auto command = std::make_shared<ReflectiveChangeValueCommand<std::shared_ptr<T>>>(reflectiveDataToDraw, &valuePtr->get(), valuePtr->get(), newValue);
 							CommandManager::AddCommandAndExecute(command);
 						}
 						else 

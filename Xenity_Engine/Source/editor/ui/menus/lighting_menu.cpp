@@ -34,7 +34,7 @@ void LightingMenu::Draw()
 		//std::reference_wrapper<std::shared_ptr<int>> ref = std::ref(t);
 		//EditorUI::DrawFileReference(&ref, "r", t);
 
-		if (EditorUI::DrawInput("Color", Graphics::settings.skyColor))
+		if (EditorUI::DrawInput("Color", Graphics::settings.skyColor) != ValueInputState::NO_CHANGE)
 			changed = true;
 
 		ImGui::Spacing();
@@ -48,7 +48,7 @@ void LightingMenu::Draw()
 			changed = true;
 		if (EditorUI::DrawInputTemplate("End", Graphics::settings.fogEnd) != ValueInputState::NO_CHANGE)
 			changed = true;
-		if (EditorUI::DrawInput("Color", Graphics::settings.fogColor))
+		if (EditorUI::DrawInput("Color", Graphics::settings.fogColor) != ValueInputState::NO_CHANGE)
 			changed = true;
 
 		if (changed)

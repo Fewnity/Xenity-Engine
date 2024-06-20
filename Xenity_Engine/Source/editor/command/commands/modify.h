@@ -30,7 +30,7 @@ class ReflectiveChangeValueCommand : public Command
 {
 public:
 	ReflectiveChangeValueCommand() = delete;
-	ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& newValue);
+	ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& oldValue, T& newValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -67,7 +67,7 @@ void ReflectiveChangeValueCommand<T>::FindValueToChange(ReflectiveDataToDraw& re
 }
 
 template<typename T>
-inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& newValue)
+inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveDataToDraw& reflectiveDataToDraw, T* valuePtr, T& oldValue, T& newValue)
 {
 	this->valuePtr = valuePtr;
 	targetId = reflectiveDataToDraw.ownerUniqueId;
@@ -82,8 +82,13 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	// Ugly code
 	// Save variable alone to json (new and old values)
 	ReflectionUtils::VariableToJson(newValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(newValue));
-	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(*valuePtr));
+	ReflectionUtils::VariableToJson(lastValueTemp, reflectiveDataToDraw.currentEntry.variableName, std::ref(oldValue));
+
 	// Save the whole reflective data to json (new and old values) for later use
+	for (const auto& kv : lastValueTemp.items())
+	{
+		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveDataToDraw.currentEntry);
+	}
 	lastValue2["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectiveDataToDraw.reflectiveDataStack[0]);
 	for (const auto& kv : newValueTemp.items())
 	{
