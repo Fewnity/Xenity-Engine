@@ -46,33 +46,16 @@ public:
 	*/
 	bool HasInvalidValues() const;
 
+	/**
+	* @brief Return a string representation of the vector
+	*/
+	std::string ToString() const;
+
 	float x;
 	float y;
 	float z;
 	float w;
 };
-
-//API Vector4 operator+(const Vector4& left, const Vector4& right);
-//API Vector4 operator-(const Vector4& left, const Vector4& right);
-//API Vector4 operator*(const Vector4& vec, const float value);
-//API Vector4 operator*(const float value, const Vector4& vec);
-//API Vector4 operator*(const Vector4& left, const Vector4& right);
-//API Vector4 operator/(const Vector4& left, const Vector4& right);
-//API Vector4 operator/(const Vector4& vec, const float value);
-//API Vector4 operator/(const float value, const Vector4& vec);
-//
-//API Vector4 operator/=(Vector4& vec, const float value);
-//API Vector4 operator*=(Vector4& vec, const float value);
-//API Vector4 operator+=(Vector4& vec, const float value);
-//API Vector4 operator-=(Vector4& vec, const float value);
-//
-//API Vector4 operator/=(Vector4& vec, const Vector4& vecRight);
-//API Vector4 operator*=(Vector4& vec, const Vector4& vecRight);
-//API Vector4 operator+=(Vector4& vec, const Vector4& vecRight);
-//API Vector4 operator-=(Vector4& vec, const Vector4& vecRight);
-//
-//API bool operator==(const Vector4& left, const Vector4& right);
-//API bool operator!=(const Vector4& left, const Vector4& right);
 
 inline Vector4 operator+(const Vector4& left, const Vector4& right)
 {

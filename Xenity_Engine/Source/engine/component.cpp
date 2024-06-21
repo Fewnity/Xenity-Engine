@@ -92,3 +92,8 @@ void Component::SetIsEnabled(bool isEnabled)
 	else
 		OnEnabled();
 }
+
+std::string Component::ToString()
+{
+	return "{" + componentName + "}";
+}

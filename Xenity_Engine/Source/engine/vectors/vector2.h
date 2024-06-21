@@ -56,6 +56,11 @@ public:
 	*/
 	bool HasInvalidValues() const;
 
+	/**
+	* @brief Return a string representation of the vector
+	*/
+	std::string ToString() const;
+
 	float x;
 	float y;
 };

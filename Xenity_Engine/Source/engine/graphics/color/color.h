@@ -118,6 +118,11 @@ public:
 		return abgrInt;
 	}
 
+	/**
+	* @brief Return a string representation of the color
+	*/
+	std::string ToString() const;
+
 protected:
 
 	ReflectiveData GetReflectiveData() override;

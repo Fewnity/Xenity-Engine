@@ -84,6 +84,11 @@ public:
 	* @brief Get the cross product of two vectors
 	*/
 	static Vector3 Cross(const Vector3& a, const Vector3& b);
+	
+	/**
+	* @brief Return a string representation of the vector
+	*/
+	std::string ToString() const;
 
 	float x;
 	float y;

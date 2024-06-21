@@ -31,6 +31,11 @@ public:
 	*/
 	float Magnitude() const;
 
+	/**
+	* @brief Return a string representation of the vector
+	*/
+	std::string ToString() const;
+
 	int x;
 	int y;
 };

@@ -154,3 +154,8 @@ Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const float t)
 {
 	return a + (b-a) * t;
 }
+
+std::string Vector3::ToString() const
+{
+	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + " z:" + std::to_string(z) + "}";
+}

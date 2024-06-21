@@ -74,25 +74,6 @@ public:
 	*/
 	void SetIsEnabled(bool isEnabled);
 
-private:
-	friend class GameplayManager;
-	friend class GameObject;
-	friend class InspectorMenu;
-	friend class SceneManager;
-
-	bool initiated = false;
-	bool isAwakeCalled = false;
-	bool waitingForDestroy = false;
-	bool isEnabled = true;
-
-	/**
-	* @brief [Internal] Set component's GameObject
-	* @param gameObject: GameObject to set
-	*/
-	void SetGameObject(const std::shared_ptr<GameObject>& gameObject);
-
-public:
-
 	/**
 	* @brief Get component's GameObject
 	*/
@@ -116,6 +97,28 @@ public:
 	{
 		return componentName;
 	}
+
+	/**
+	* @brief Return a string representation of the component
+	*/
+	virtual std::string ToString();
+
+private:
+	friend class GameplayManager;
+	friend class GameObject;
+	friend class InspectorMenu;
+	friend class SceneManager;
+
+	bool initiated = false;
+	bool isAwakeCalled = false;
+	bool waitingForDestroy = false;
+	bool isEnabled = true;
+
+	/**
+	* @brief [Internal] Set component's GameObject
+	* @param gameObject: GameObject to set
+	*/
+	void SetGameObject(const std::shared_ptr<GameObject>& gameObject);
 
 protected:
 	/**

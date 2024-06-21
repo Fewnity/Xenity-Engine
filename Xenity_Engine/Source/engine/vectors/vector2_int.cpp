@@ -53,3 +53,8 @@ float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)
 	const float yDis = (float)(a.y - b.y);
 	return sqrtf(xDis * xDis + yDis * yDis);
 }
+
+std::string Vector2Int::ToString() const
+{
+	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + "}";
+}

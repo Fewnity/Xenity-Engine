@@ -21,6 +21,22 @@ Color::Color()
 {
 }
 
+std::string Color::ToString() const
+{
+	std::stringstream stream;
+	stream << "{";
+	stream << "R:" << rgba.r;
+	stream << " G:" << rgba.g;
+	stream << " B:" << rgba.b;
+	stream << " A:" << rgba.a;
+	stream << " | RGBA Hex:#" << std::hex << rgbaInt;
+	stream << " | ABGR Hex:#" << std::hex << abgrInt;
+	stream << "}";
+	std::string result(stream.str());
+
+	return result;
+}
+
 ReflectiveData Color::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

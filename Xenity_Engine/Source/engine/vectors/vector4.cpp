@@ -89,3 +89,8 @@ bool Vector4::HasInvalidValues() const
 	}
 	return false;
 }
+
+std::string Vector4::ToString() const
+{
+	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + " z:" + std::to_string(z) + " w:" + std::to_string(w) + "}";
+}
