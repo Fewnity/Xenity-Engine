@@ -91,6 +91,7 @@ void Shader::LoadFileReference()
 {
 	if (!isLoaded)
 	{
+		//Debug::Print("LoadFileReference()" + std::to_string(file->GetUniqueId())+ " " + std::to_string(fileId), true);
 		isLoaded = true;
 		if (Graphics::UseOpenGLFixedFunctions)
 			return;
@@ -162,28 +163,39 @@ void Shader::LoadFileReference()
 
 					std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
 
-					Compile(vertexShaderData, ShaderType::Vertex_Shader);
-					Compile(fragShaderData, ShaderType::Fragment_Shader);
+					bool vertexRet = Compile(vertexShaderData, ShaderType::Vertex_Shader);
+					bool fragRet = Compile(fragShaderData, ShaderType::Fragment_Shader);
+
+					if (vertexRet && fragRet)
+					{
+						Link();
+					}
+					else 
+					{
+						Debug::PrintError("[Shader::LoadFileReference] Cannot link the shader, the compilation has failed: " + file->GetPath(), true);
+						isLoaded = false;
+					}
 
 					//useTessellation = true;
 					//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
 					//LoadShader(fragmentShaderPath, Fragment_Shader);
-
-					Link();
 				}
 				else
 				{
 					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + file->GetPath(), true);
+					isLoaded = false;
 				}
 			}
 			else
 			{
 				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + file->GetPath(), true);
+				isLoaded = false;
 			}
 		}
 		else
 		{
 			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + file->GetPath(), true);
+			isLoaded = false;
 		}
 	}
 }
@@ -215,7 +227,7 @@ bool Shader::Use()
 
 #pragma region Data loading
 
-void Shader::Compile(const std::string& shaderData, ShaderType type)
+bool Shader::Compile(const std::string& shaderData, ShaderType type)
 {
 	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty")
 
@@ -278,7 +290,10 @@ void Shader::Compile(const std::string& shaderData, ShaderType type)
 
 		shaderError += ". File path: " + shaderData;
 		Debug::PrintError(shaderError);
+		return false;
 	}
+
+	return true;
 }
 
 #pragma endregion

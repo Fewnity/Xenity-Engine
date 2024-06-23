@@ -130,7 +130,7 @@ protected:
 	* @param filePath The file path of the shader
 	* @param type The type of the shader
 	*/
-	void Compile(const std::string& filePath, ShaderType type);
+	bool Compile(const std::string& filePath, ShaderType type);
 
 	/**
 	* @brief Set the shader uniform of a point light
