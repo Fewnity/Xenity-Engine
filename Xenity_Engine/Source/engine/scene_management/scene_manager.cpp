@@ -31,6 +31,7 @@
 #endif
 #include <engine/debug/debug.h>
 #include <engine/missing_script.h>
+#include <engine/world_partitionner/world_partitionner.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -389,6 +390,8 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::settings.GetReflectiveData());
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
+
+	//WorldPartitionner::ProcessPartionning();
 
 	// Automaticaly set the game in play mode if built in engine mode
 #if !defined(EDITOR)

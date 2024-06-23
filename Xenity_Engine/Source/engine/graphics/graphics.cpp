@@ -48,6 +48,7 @@
 
 #include <algorithm>
 #include <engine/debug/debug.h>
+#include <engine/world_partitionner/world_partitionner.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
@@ -56,7 +57,7 @@ bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 int Graphics::lodsCount = 0;
 
-std::vector<IDrawable*> Graphics::orderedIDrawable;
+std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
 
 std::vector<std::weak_ptr<Lod>> Graphics::lods;
 
@@ -297,6 +298,8 @@ void Graphics::Draw()
 					}
 				}
 
+				//WorldPartitionner::OnDrawGizmos();
+
 				DrawEditorTool(camPos);
 			}
 #endif
@@ -392,9 +395,9 @@ void Graphics::OrderDrawables()
 	{
 		isRenderingBatchDirty = false;
 		renderBatch.Reset();
-		for (IDrawable* drawable : orderedIDrawable)
+		for (std::weak_ptr<IDrawable> drawable : orderedIDrawable)
 		{
-			drawable->CreateRenderCommands(renderBatch);
+			drawable.lock()->CreateRenderCommands(renderBatch);
 		}
 	}
 
@@ -412,7 +415,7 @@ void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 {
 	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr")
 
-	orderedIDrawable.push_back(drawableToAdd.get());
+	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
 	isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
@@ -427,7 +430,7 @@ void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i] == drawableToRemove.get())
+		if (orderedIDrawable[i].lock() == drawableToRemove)
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;

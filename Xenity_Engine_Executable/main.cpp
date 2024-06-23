@@ -26,6 +26,8 @@ Rework the documentation
 Box colliders are not affected by gameobject scale
 Clean code
 Check material system
+Make console text selectable
+Fix shader compiled twice
 
 --- Can be for next release
 New Input system
@@ -61,7 +63,6 @@ Reload texture/mesh/audio if modified (only if scene is stopped)
 Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
 First PSP frame doest not use light
-Mesh drag drop into the scene
 Multiple gameobject selection
 
 --- To do in a long time

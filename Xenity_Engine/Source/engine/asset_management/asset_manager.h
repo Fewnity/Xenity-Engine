@@ -129,6 +129,8 @@ public:
 	*/
 	static std::weak_ptr<Light> GetLight(const int index);
 
+	static const std::vector<std::weak_ptr<Light>>& GetLights();
+
 	/**
 	* @brief Remove all unused files from the file references list
 	*/

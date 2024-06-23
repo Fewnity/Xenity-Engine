@@ -369,6 +369,11 @@ std::weak_ptr<Light> AssetManager::GetLight(const int index)
 	return lights[index];
 }
 
+const std::vector<std::weak_ptr<Light>>& AssetManager::GetLights()
+{
+	return lights;
+}
+
 void AssetManager::RemoveUnusedFiles()
 {
 	int fileRefCount = GetFileReferenceCount();
