@@ -143,6 +143,11 @@ public:
 	*/
 	void SetActive(const bool active);
 
+	inline bool IsStatic() const
+	{
+		return isStatic;
+	}
+
 	/**
 	* @brief Get children count
 	*/
@@ -194,6 +199,8 @@ private:
 	friend class Graphics;
 	template<typename U, typename T>
 	friend class InspectorChangeValueCommand;
+	template<typename T>
+	friend class InspectorItemSetStaticCommand;
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
@@ -251,4 +258,5 @@ private:
 
 	bool active = true;
 	bool localActive = true;
+	bool isStatic = false;
 };

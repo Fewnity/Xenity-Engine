@@ -368,6 +368,75 @@ inline void InspectorItemSetActiveCommand<T>::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
+template<typename T>
+class InspectorItemSetStaticCommand : public Command
+{
+public:
+	InspectorItemSetStaticCommand() = delete;
+	InspectorItemSetStaticCommand(std::shared_ptr<T> target, bool newValue);
+	void Execute() override;
+	void Undo() override;
+private:
+	void ApplyValue(bool valueToSet);
+	uint64_t targetId = 0;
+	bool newValue;
+};
+
+template<typename T>
+inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
+{
+	if constexpr (std::is_base_of<T, Component>())
+	{
+		std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
+		if (foundComponent)
+		{
+			foundComponent->isStatic = valueToSet;
+			foundComponent->OnReflectionUpdated();
+			SceneManager::SetSceneModified(true);
+		}
+	}
+	else if constexpr (std::is_base_of<T, GameObject>())
+	{
+		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+		if (foundGameObject)
+		{
+			foundGameObject->isStatic = valueToSet;
+			foundGameObject->OnReflectionUpdated();
+			SceneManager::SetSceneModified(true);
+		}
+	}
+	else
+	{
+		Debug::PrintError("Can't do Command!");
+	}
+}
+
+template<typename T>
+inline InspectorItemSetStaticCommand<T>::InspectorItemSetStaticCommand(std::shared_ptr<T> target, bool newValue)
+{
+	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
+	{
+		if (target)
+			this->targetId = target->GetUniqueId();
+	}
+	this->newValue = newValue;
+}
+
+template<typename T>
+inline void InspectorItemSetStaticCommand<T>::Execute()
+{
+	ApplyValue(newValue);
+}
+
+template<typename T>
+inline void InspectorItemSetStaticCommand<T>::Undo()
+{
+	ApplyValue(!newValue);
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
 class InspectorTransformSetPositionCommand : public Command
 {
 public:

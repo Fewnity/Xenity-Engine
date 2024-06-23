@@ -400,7 +400,6 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
 {
-
 	//Active checkbox
 	bool active = selectedGameObject->GetActive();
 	ImGui::Checkbox("##Active", &active);
@@ -409,6 +408,11 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 	std::string gameObjectName = selectedGameObject->GetName();
 	ImGui::SameLine();
 	ImGui::InputText("##Name ", &gameObjectName);
+
+	bool isStatic = selectedGameObject->IsStatic();
+	ImGui::Checkbox("##IsStatic", &isStatic);
+	ImGui::SameLine();
+	ImGui::Text("Is Static");
 
 	//Apply new values if changed
 	if (gameObjectName != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
@@ -423,6 +427,12 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 	if (active != selectedGameObject->GetActive())
 	{
 		auto command = std::make_shared<InspectorItemSetActiveCommand<GameObject>>(selectedGameObject, active);
+		CommandManager::AddCommandAndExecute(command);
+	}
+
+	if (isStatic != selectedGameObject->IsStatic())
+	{
+		auto command = std::make_shared<InspectorItemSetStaticCommand<GameObject>>(selectedGameObject, isStatic);
 		CommandManager::AddCommandAndExecute(command);
 	}
 
