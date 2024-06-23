@@ -109,11 +109,6 @@ void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 	Graphics::isRenderingBatchDirty = true;
 }
 
-std::shared_ptr<MeshData> MeshRenderer::GetMeshData()
-{
-	return meshData;
-}
-
 void MeshRenderer::SetMaterial(std::shared_ptr<Material> material, int index)
 {
 	if (index < materials.size())

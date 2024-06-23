@@ -24,32 +24,50 @@ public:
 	/**
 	* @brief Get position
 	*/
-	const Vector3& GetPosition() const;
+	inline const Vector3& GetPosition() const
+	{
+		return position;
+	}
 
 	/**
 	* @brief Get local position
 	*/
-	const Vector3& GetLocalPosition() const;
+	inline const Vector3& GetLocalPosition() const
+	{
+		return localPosition;
+	}
 
 	/**
 	* @brief Get rotation (in degree)
 	*/
-	const Vector3& GetRotation() const;
+	inline const Vector3& GetRotation() const
+	{
+		return rotation;
+	}
 
 	/**
 	* @brief Get local rotation (in degree)
 	*/
-	const Vector3& GetLocalRotation() const;
+	inline const Vector3& GetLocalRotation() const
+	{
+		return localRotation;
+	}
 
 	/**
 	* @brief Get scale
 	*/
-	const Vector3& GetScale() const;
+	inline const Vector3& GetScale() const
+	{
+		return scale;
+	}
 
 	/**
 	* @brief Get local scale
 	*/
-	const Vector3& GetLocalScale() const;
+	inline const Vector3& GetLocalScale() const
+	{
+		return localScale;
+	}
 
 	/**
 	* @brief Get forward direction

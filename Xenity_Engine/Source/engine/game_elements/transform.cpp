@@ -39,36 +39,6 @@ ReflectiveData Transform::GetReflectiveData()
 
 #pragma region Accessors
 
-const Vector3& Transform::GetPosition() const
-{
-	return position;
-}
-
-const Vector3& Transform::GetLocalPosition() const
-{
-	return localPosition;
-}
-
-const Vector3& Transform::GetRotation() const
-{
-	return rotation;
-}
-
-const Vector3& Transform::GetLocalRotation() const
-{
-	return localRotation;
-}
-
-const Vector3& Transform::GetScale() const
-{
-	return scale;
-}
-
-const Vector3& Transform::GetLocalScale() const
-{
-	return localScale;
-}
-
 Vector3 Transform::GetForward() const
 {
 	const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);

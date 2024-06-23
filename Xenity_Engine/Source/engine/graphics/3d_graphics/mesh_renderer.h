@@ -29,7 +29,10 @@ public:
 	/**
 	* @brief Get mesh data
 	*/
-	std::shared_ptr <MeshData> GetMeshData();
+	inline std::shared_ptr<MeshData> GetMeshData()
+	{
+		return meshData;
+	}
 
 	inline std::vector<std::shared_ptr <Material>> GetMaterials() const
 	{
