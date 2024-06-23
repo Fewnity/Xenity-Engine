@@ -486,7 +486,9 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 
 	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
 	SetShaderAttribut((baseString + "position").c_str(), pos);
-	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
+	Vector3 dir = light->GetTransform()->GetForward();
+	dir.x = -dir.x;
+	SetShaderAttribut((baseString + "direction").c_str(), dir);
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
 	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
 	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
