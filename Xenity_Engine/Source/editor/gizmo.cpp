@@ -69,36 +69,36 @@ void Gizmo::DrawSphere(const Vector3& position, const float radius)
 		// Draw sphere with lines
 		{
 			Vector3 pos0 = position;
-			pos0.x += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.z += 5 * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x += radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.z += radius * sin((angleStep * i) * Math::PI / 180.0f);
 
 			Vector3 pos1 = position;
-			pos1.x += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.z += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
 			Gizmo::DrawLine(pos0, pos1);
 		}
 
 		{
 			Vector3 pos0 = position;
-			pos0.x += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.y += 5 * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x += radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.y += radius * sin((angleStep * i) * Math::PI / 180.0f);
 
 			Vector3 pos1 = position;
-			pos1.x += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.y += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
 			Gizmo::DrawLine(pos0, pos1);
 		}
 
 		{
 			Vector3 pos0 = position;
-			pos0.y += 5 * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.z += 5 * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.y += radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.z += radius * sin((angleStep * i) * Math::PI / 180.0f);
 
 			Vector3 pos1 = position;
-			pos1.y += 5 * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.z += 5 * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
 			Gizmo::DrawLine(pos0, pos1);
 		}
