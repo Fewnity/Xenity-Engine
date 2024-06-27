@@ -347,6 +347,12 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 		{
 			if (fileInfo->file->GetUniqueId() <= UniqueId::reservedFileId)
 				continue;
+			
+			if (fileInfo->path[0] == '.') 
+			{
+				Debug::PrintError("[Compiler::ExportProjectFiles] Invalid file path (Maybe no meta file or wrong id?): " + fileInfo->path);
+				continue;
+			}
 
 			const std::string newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
 			AddCopyEntry(false, fileInfo->path, exportPath + ASSETS_FOLDER + newPath);
