@@ -440,11 +440,14 @@ void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType
 {
 }
 
-void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float quadraticAttenuation, float linearAttenuation, float constAttenuation)
+void RendererGU::SetLight(const int lightIndex, const std::shared_ptr<Light>& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
 	if (lightIndex >= maxLightCount)
 		return;
 
+	float intensity = light->intensity;
+	const Color& color = light->color;
+	const LightType& type = light->type;
 	const RGBA& rgba = color.GetRGBA();
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
@@ -452,21 +455,46 @@ void RendererGU::SetLight(int lightIndex, const Vector3& lightPosition, float in
 	if (intensity > 1)
 		intensity = 1;
 
-	color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
+	float typeIntensity = 1;
+	if (type == LightType::Directional)
+		typeIntensity = 2;
+
+	const Color fixedColor = Color::CreateFromRGBAFloat(rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1);
+	//color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
 	ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
-	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+	ScePspFVector3 rot = { lightDirection.x, lightDirection.y, lightDirection.z };
 	if (type == LightType::Directional)
 	{
-		sceGuLightColor(lightIndex, GU_AMBIENT, color.GetUnsignedIntABGR());
+		sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
+		sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
+	}
+	else if (type == LightType::Ambient)
+	{
+		sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+		sceGuLightColor(lightIndex, GU_AMBIENT, fixedColor.GetUnsignedIntABGR());
 		sceGuLightColor(lightIndex, GU_DIFFUSE, 0x00000000);
+	}
+	else if (type == LightType::Spot)
+	{
+		sceGuLight(lightIndex, GU_SPOTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
+		sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
+		
+		sceGuLightSpot(lightIndex, &rot, light->GetSpotSmoothness() * 5, 1 - (light->GetSpotAngle() * light->GetSpotAngle()) / 8100);
 	}
 	else
 	{
-		sceGuLightColor(lightIndex, GU_DIFFUSE, color.GetUnsignedIntABGR());
+		sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
+		sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
 		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	}
 	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-	if (type == LightType::Directional) 
+	
+	float quadraticAttenuation = light->GetQuadraticValue();
+	float linearAttenuation = light->GetLinearValue();
+	float constAttenuation = 1;
+	if (type == LightType::Directional || type == LightType::Ambient)
 	{
 		quadraticAttenuation = 0;
 		linearAttenuation = 0;
@@ -485,7 +513,7 @@ void RendererGU::DisableAllLight()
 
 void RendererGU::Setlights(const Camera& camera)
 {
-	std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
+	/*std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
@@ -505,6 +533,42 @@ void RendererGU::Setlights(const Camera& camera)
 			else
 			{
 				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), light->GetLinearValue(), 1);
+			}
+			usedLightCount++;
+			if (usedLightCount == maxLightCount)
+				break;
+		}
+	}*/
+
+	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
+
+	DisableAllLight();
+	const int lightCount = AssetManager::GetLightCount();
+	int usedLightCount = 0;
+	for (int i = 0; i < lightCount; i++)
+	{
+		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
+		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
+		{
+			if (light->type == LightType::Directional)
+			{
+				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
+				SetLight(usedLightCount, light, Vector3(0, 0, 0) + dir, dir);
+			}
+			else if (light->type == LightType::Ambient)
+			{
+				SetLight(usedLightCount, light, Vector3(0, 0, 0), Vector3(0, 0, 0));
+			}
+			else if (light->type == LightType::Spot)
+			{
+				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x).Normalized();
+				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), dir);
+			}
+			else
+			{
+				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)

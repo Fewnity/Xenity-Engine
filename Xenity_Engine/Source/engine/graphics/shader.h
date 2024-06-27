@@ -145,6 +145,7 @@ protected:
 	* @param index The index of the light
 	*/
 	void SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetAmbientLightData(const Vector3& color);
 
 	/**
 	* @brief Set the shader uniform of a spot light

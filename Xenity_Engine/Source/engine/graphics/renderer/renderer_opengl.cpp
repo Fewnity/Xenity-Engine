@@ -458,50 +458,59 @@ void RendererOpengl::SetTextureData(const Texture& texture, unsigned int texture
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, float intensity, Color color, LightType type, float quadraticAttenuation, float linearAttenuation, float constAttenuation)
+void RendererOpengl::SetLight(const int lightIndex, const std::shared_ptr<Light>& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
-#if defined(__vita__)
-	return;
-#endif
-
+	// This won't compile on PsVita, and if the code compile, it would not work because the fixed pipeline is broken on vitagl
+#if !defined(__vita__)
 	if (lightIndex >= maxLightCount)
 		return;
 
-	const RGBA& rgba = color.GetRGBA();
+	float intensity = light->intensity;
+	const Color& color = light->color;
+	const LightType& type = light->type;
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
-	float lightAttenuation[1] = { quadraticAttenuation };
-	float lightLinearAttenuation[1] = { linearAttenuation };
-	float lightConstAttenuation[1] = { constAttenuation };
-	if (type == LightType::Directional) {
+	float lightAttenuation[1] = { light->GetQuadraticValue() };
+	float lightLinearAttenuation[1] = { light->GetLinearValue() };
+	float lightConstAttenuation[1] = { 1 };
+	if (type == LightType::Directional || type == LightType::Ambient)
+	{
 		lightAttenuation[0] = { 0 };
 		lightLinearAttenuation[0] = { 0 };
 		lightConstAttenuation[0] = { 1 };
 	}
 
 	glLightfv(GL_LIGHT0 + lightIndex, GL_QUADRATIC_ATTENUATION, lightAttenuation);
-
 	glLightfv(GL_LIGHT0 + lightIndex, GL_LINEAR_ATTENUATION, lightLinearAttenuation);
 	glLightfv(GL_LIGHT0 + lightIndex, GL_CONSTANT_ATTENUATION, lightConstAttenuation);
 
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
-	if (type == LightType::Directional)
+	if (type == LightType::Directional || type == LightType::Ambient)
 		typeIntensity = 5;
 	else if (type == LightType::Point)
+		typeIntensity = 2;
+	else if (type == LightType::Spot)
 		typeIntensity = 2;
 
 	if (intensity > 1)
 		intensity = 1;
 
+	const RGBA& rgba = color.GetRGBA();
 	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
 	const float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	const float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
+	const float direction[] = { lightDirection.x, lightDirection.y, lightDirection.z, 1 };
 
 	// Assign created components to GL_LIGHT0
 	if (type == LightType::Directional)
+	{
+		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, zeroLight);
+		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, lightColor);
+	}
+	else if (type == LightType::Ambient)
 	{
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, lightColor);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, zeroLight);
@@ -511,9 +520,30 @@ void RendererOpengl::SetLight(int lightIndex, const Vector3& lightPosition, floa
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, zeroLight);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, lightColor);
 	}
+	if (type == LightType::Spot) 
+	{
+		float cutOff[1] = { light->GetSpotAngle() };
+		// Fixed pipeline does not support more than 90 degrees
+		if (cutOff[0] > 90)
+			cutOff[0] = 90;
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_CUTOFF, cutOff);
+		float exponent[1] = { light->GetSpotSmoothness() * 128 };
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_EXPONENT, exponent);
+
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, direction);
+	}
+	else 
+	{
+		float zero[1] = { 0 };
+		float defaultCutOff[1] = { 180 };
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_CUTOFF, defaultCutOff);
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_EXPONENT, zero);
+		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, zeroLight);
+	}
+
 	glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, zeroLight);
 	glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
-
+#endif
 }
 
 void RendererOpengl::DisableAllLight()
@@ -533,19 +563,28 @@ void RendererOpengl::Setlights(const Camera& camera)
 	int usedLightCount = 0;
 	for (int i = 0; i < lightCount; i++)
 	{
-		auto light = AssetManager::GetLight(i).lock();
+		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
 		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
 		{
 			if (light->type == LightType::Directional)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
-				const Vector3& cameraPosition = cameraTransform->GetPosition();
-				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), 1, 0);
+				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
+				SetLight(usedLightCount, light,  Vector3(0, 0, 0) + dir, dir);
+			}
+			else if (light->type == LightType::Ambient)
+			{
+				SetLight(usedLightCount, light, Vector3(0, 0, 0), Vector3(0, 0, 0));
+			}
+			else if (light->type == LightType::Spot)
+			{
+				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x + 180).Normalized();
+				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), dir);
 			}
 			else
 			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), light->GetLinearValue(), 1);
+				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)

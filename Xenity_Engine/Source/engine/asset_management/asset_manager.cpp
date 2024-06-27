@@ -37,14 +37,16 @@ int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
 int AssetManager::lightCount = 0;
 
-std::shared_ptr <Shader> AssetManager::shader = nullptr;
-std::shared_ptr <Shader> AssetManager::unlitShader = nullptr;
-std::shared_ptr <Shader> AssetManager::lineShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardVertexLightShader = nullptr;
+std::shared_ptr<Shader> AssetManager::unlitShader = nullptr;
+std::shared_ptr<Shader> AssetManager::lineShader = nullptr;
 std::shared_ptr<Material> AssetManager::standardMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::standardVertexLightMaterial = nullptr;
 std::shared_ptr<Material> AssetManager::unlitMaterial = nullptr;
 std::shared_ptr<Material> AssetManager::lineMaterial = nullptr;
 
-std::shared_ptr <Texture> AssetManager::defaultTexture = nullptr;
+std::shared_ptr<Texture> AssetManager::defaultTexture = nullptr;
 
 /**
  * @brief Init
@@ -68,32 +70,39 @@ void AssetManager::OnProjectLoaded()
 	if (!Graphics::UseOpenGLFixedFunctions)
 	{
 		// Load standard shader
-		shader = Shader::MakeShader();
-		shader->file = FileSystem::MakeFile("public_engine_assets\\shaders/standard.shader");
+		standardShader = Shader::MakeShader();
+		standardShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard.shader");
+			
+		standardVertexLightShader = Shader::MakeShader();
+		standardVertexLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_vertex_lighting.shader");
 
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
-		unlitShader->file = FileSystem::MakeFile("public_engine_assets\\shaders/unlit.shader");
+		unlitShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\unlit.shader");
 
 		// Load line shader
 		lineShader = Shader::MakeShader();
-		lineShader->file = FileSystem::MakeFile("public_engine_assets\\shaders/line.shader");
+		lineShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\line.shader");
 
-		shader->LoadFileReference();
+		standardShader->LoadFileReference();
+		standardVertexLightShader->LoadFileReference();
 		unlitShader->LoadFileReference();
 		lineShader->LoadFileReference();
 	}
 
 	// Create materials
-	standardMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/standardMaterial.mat"));
-	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/unlitMaterial.mat"));
-	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials/lineMaterial.mat"));
+	standardMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterial.mat"));
+	standardVertexLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardVertexLightingMaterial.mat"));
+	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\unlitMaterial.mat"));
+	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\lineMaterial.mat"));
 	
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+	XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
 	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
 	XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
 
 	standardMaterial->LoadFileReference();
+	standardVertexLightMaterial->LoadFileReference();
 	unlitMaterial->LoadFileReference();
 	lineMaterial->LoadFileReference();
 }
@@ -102,7 +111,7 @@ void AssetManager::OnProjectUnloaded()
 {
 	defaultTexture.reset();
 
-	shader.reset();
+	standardShader.reset();
 	unlitShader.reset();
 	lineShader.reset();
 
@@ -440,7 +449,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\material.mat");
 		break;
 	case FileType::File_Shader:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\shader.shader");
+		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\standardShader.standardShader");
 		break;
 	}
 

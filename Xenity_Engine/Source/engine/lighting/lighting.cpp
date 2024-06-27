@@ -11,6 +11,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/vectors/vector2.h>
 #include <engine/tools/math.h>
+#include <engine/debug/debug.h>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -49,7 +50,7 @@ ReflectiveData Light::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, type, "type", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	Reflective::AddVariable(reflectedVariables, intensity, "intensity", true);
-	Reflective::AddVariable(reflectedVariables, range, "range", type != LightType::Directional);
+	Reflective::AddVariable(reflectedVariables, range, "range", type != LightType::Directional && type != LightType::Ambient);
 	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", type == LightType::Spot);
 	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", type == LightType::Spot);
 	return reflectedVariables;
@@ -111,7 +112,7 @@ void Light::OnDrawGizmos()
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 	IconName icon = IconName::Icon_Point_Light;
-	if(type == LightType::Directional)
+	if(type == LightType::Directional || type == LightType::Ambient)
 		icon = IconName::Icon_Sun_Light;
 	else if (type == LightType::Spot)
 		icon = IconName::Icon_Spot_Light;
@@ -124,15 +125,28 @@ void Light::OnDrawGizmos()
 void Light::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
-	//Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-	//Gizmo::DrawSphere(GetTransform()->GetPosition(), 4);
+	if (type == LightType::Point) 
+	{
+		Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
+
+		const float fixedLinear = (0.7f * 7.0f) / (range);
+		const float fixedQuadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f));
+		const float minIntensity = 0.05f;
+		const float dis = (-minIntensity * fixedLinear + sqrt(pow(minIntensity * fixedLinear, 2) - 4 * minIntensity * fixedQuadratic * (minIntensity - 1))) / (2 * minIntensity * fixedQuadratic);
+
+		Gizmo::DrawSphere(GetTransform()->GetPosition(), dis);
+	}
 #endif
 }
 
 void Light::UpdateLightValues()
 {
-	linear = (0.7f * 7.0f) / range;
-	quadratic = (7 * 1.8f) / (powf(range, 2) / 6.0f);
+	float tempInsity = intensity;
+	if(intensity == 0)
+		tempInsity = 0.0001f;
+
+	linear = (0.7f * 7.0f) / (range / tempInsity);
+	quadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f) / tempInsity);
 }
 
 
@@ -140,8 +154,8 @@ void Light::SetSpotAngle(float angle)
 {
 	if (angle < 0)
 		angle = 0;
-	else if (angle > 179)
-		angle = 179;
+	else if (angle > 90)
+		angle = 90;
 
 	spotAngle = angle;
 }

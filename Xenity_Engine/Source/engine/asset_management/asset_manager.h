@@ -164,10 +164,12 @@ public:
 	static std::string GetDefaultFileData(FileType fileType);
 
 	static std::shared_ptr <Texture> defaultTexture;
-	static std::shared_ptr<Shader> shader;
+	static std::shared_ptr<Shader> standardShader;
+	static std::shared_ptr<Shader> standardVertexLightShader;
 	static std::shared_ptr<Shader> unlitShader;
 	static std::shared_ptr<Shader> lineShader;
 	static std::shared_ptr<Material> standardMaterial;
+	static std::shared_ptr<Material> standardVertexLightMaterial;
 	static std::shared_ptr<Material> unlitMaterial;
 	static std::shared_ptr<Material> lineMaterial;
 

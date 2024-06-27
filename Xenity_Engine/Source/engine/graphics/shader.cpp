@@ -474,13 +474,20 @@ void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const 
 {
 	XASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
 
-	static const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
+	const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
 	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
-	SetShaderAttribut((baseString + "direction").c_str(), light->GetTransform()->GetForward());
+	Vector3 dir = light->GetTransform()->GetForward();
+	dir.x = -dir.x;
+	SetShaderAttribut((baseString + "direction").c_str(), dir);
+}
+
+void Shader::SetAmbientLightData(const Vector3& color)
+{
+	SetShaderAttribut("ambientLight", color);
 }
 
 /// <summary>
@@ -507,7 +514,7 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
 	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
 	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
-	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * light->GetSpotSmoothness())));
+	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * (1-light->GetSpotSmoothness()))));
 	SetShaderAttribut((baseString + "outerCutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle())));
 }
 
@@ -522,6 +529,8 @@ void Shader::UpdateLights(bool disableLights)
 	if (disableLights)
 	{
 		const int lightCount = AssetManager::GetLightCount();
+
+		Vector4 ambientLight = Vector4(0, 0, 0, 0);
 
 		//For each lights
 		for (int lightI = 0; lightI < lightCount; lightI++)
@@ -544,8 +553,14 @@ void Shader::UpdateLights(bool disableLights)
 					SetSpotLightData(light, spotUsed);
 					spotUsed++;
 				}
+				else if (light->type == LightType::Ambient)
+				{
+					ambientLight += light->color.GetRGBA().ToVector4() * light->intensity;
+				}
 			}
 		}
+
+		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
 	}
 
 	SetShaderAttribut("usedPointLightCount", pointUsed);

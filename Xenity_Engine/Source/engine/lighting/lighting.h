@@ -13,7 +13,7 @@
 
 const float lightConstant = 1;
 
-ENUM(LightType, Directional, Point, Spot);
+ENUM(LightType, Directional, Point, Spot, Ambient);
 
 /**
 * @brief Component to produce light
@@ -45,7 +45,7 @@ public:
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
-	* @param angle Spot angle [0;179]
+	* @param angle Spot angle [0;90]
 	*/
 	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle);
 
@@ -54,7 +54,7 @@ public:
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
-	* @param angle Spot angle [0;179]
+	* @param angle Spot angle [0;90]
 	* @param smoothness Spot smoothness [0;1]
 	*/
 	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle, const float _smoothness);
@@ -67,7 +67,7 @@ public:
 
 	/**
 	* @brief Set spot angle
-	* @param value Spot angle [0;179]
+	* @param value Spot angle [0;90]
 	*/
 	void SetSpotAngle(float angle);
 
@@ -152,7 +152,6 @@ protected:
 	friend class RendererGsKit;
 	friend class RendererVU1;
 
-	//// Internal
 	//Spot and point light
 	float linear = 0;
 	float quadratic = 0;
