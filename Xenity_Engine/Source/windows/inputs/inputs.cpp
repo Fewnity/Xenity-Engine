@@ -95,6 +95,8 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 
 	buttonMap[SDL_GAMEPAD_BUTTON_START] = &inputs[(int)KeyCode::START];
 	buttonMap[SDL_GAMEPAD_BUTTON_BACK] = &inputs[(int)KeyCode::SELECT];
+	buttonMap[SDL_GAMEPAD_BUTTON_LEFT_SHOULDER] = &inputs[(int)KeyCode::LTRIGGER1];
+	buttonMap[SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER] = &inputs[(int)KeyCode::RTRIGGER1];
 	//buttonMap[SDL_CONTROLLER_BUTTON_GUIDE] = &inputs[(int)KeyCode::SELECT];
 }
 
@@ -126,6 +128,9 @@ InputPad CrossGetInputPad()
 
 	pad.pressedButtons[SDL_GAMEPAD_BUTTON_BACK] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_BACK);
 	pad.pressedButtons[SDL_GAMEPAD_BUTTON_START] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_START);
+
+	pad.pressedButtons[SDL_GAMEPAD_BUTTON_LEFT_SHOULDER] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_LEFT_SHOULDER);
+	pad.pressedButtons[SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER);
 
 	int16_t rightXValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_RIGHTX);
 	int16_t rightYValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_RIGHTY);
