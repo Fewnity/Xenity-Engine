@@ -41,12 +41,124 @@
 using json = nlohmann::json;
 
 glm::mat4 Shader::canvasCameraTransformationMatrix;
+std::vector<Shader::PointLightVariableNames*> Shader::pointlightVariableNames;
+std::vector<Shader::DirectionalLightsVariableNames*> Shader::directionallightVariableNames;
+std::vector<Shader::SpotLightVariableNames*> Shader::spotlightVariableNames;
+
+Shader::PointLightVariableNames::PointLightVariableNames(int index)
+{
+	constexpr int bufferSize = 30;
+
+	color = new char[bufferSize];
+	position = new char[bufferSize];
+	constant = new char[bufferSize];
+	linear = new char[bufferSize];
+	quadratic = new char[bufferSize];
+
+#if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(color, bufferSize, "pointLights[%d].color", index);
+	sprintf_s(position, bufferSize, "pointLights[%d].position", index);
+	sprintf_s(constant, bufferSize, "pointLights[%d].constant", index);
+	sprintf_s(linear, bufferSize, "pointLights[%d].linear", index);
+	sprintf_s(quadratic, bufferSize, "pointLights[%d].quadratic", index);
+#else
+	sprintf(color, "pointLights[%d].color", index);
+	sprintf(position, "pointLights[%d].position", index);
+	sprintf(constant, "pointLights[%d].constant", index);
+	sprintf(linear, "pointLights[%d].linear", index);
+	sprintf(quadratic, "pointLights[%d].quadratic", index);
+#endif
+}
+
+Shader::PointLightVariableNames::~PointLightVariableNames()
+{
+	delete[] color;
+	delete[] position;
+	delete[] constant;
+	delete[] linear;
+	delete[] quadratic;
+}
+
+Shader::DirectionalLightsVariableNames::DirectionalLightsVariableNames(int index)
+{
+	constexpr int bufferSize = 35;
+
+	color = new char[bufferSize];
+	direction = new char[bufferSize];
+
+#if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(color, bufferSize, "directionalLights[%d].color", index);
+	sprintf_s(direction, bufferSize, "directionalLights[%d].direction", index);
+#else
+	sprintf(color, "directionalLights[%d].color", index);
+	sprintf(direction, "directionalLights[%d].direction", index);
+#endif
+}
+
+Shader::DirectionalLightsVariableNames::~DirectionalLightsVariableNames()
+{
+	delete[] color;
+	delete[] direction;
+}
+
+Shader::SpotLightVariableNames::SpotLightVariableNames(int index)
+{
+	constexpr int bufferSize = 30;
+
+	color = new char[bufferSize];
+	position = new char[bufferSize];
+	direction = new char[bufferSize];
+	constant = new char[bufferSize];
+	linear = new char[bufferSize];
+	quadratic = new char[bufferSize];
+	cutOff = new char[bufferSize];
+	outerCutOff = new char[bufferSize];
+
+#if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(color, bufferSize, "spotLights[%d].color", index);
+	sprintf_s(position, bufferSize, "spotLights[%d].position", index);
+	sprintf_s(direction, bufferSize, "spotLights[%d].direction", index);
+	sprintf_s(constant, bufferSize, "spotLights[%d].constant", index);
+	sprintf_s(linear, bufferSize, "spotLights[%d].linear", index);
+	sprintf_s(quadratic, bufferSize, "spotLights[%d].quadratic", index);
+	sprintf_s(cutOff, bufferSize, "spotLights[%d].cutOff", index);
+	sprintf_s(outerCutOff, bufferSize, "spotLights[%d].outerCutOff", index);
+#else
+	sprintf(color, "spotLights[%d].color", index);
+	sprintf(position, "spotLights[%d].position", index);
+	sprintf(direction, "spotLights[%d].direction", index);
+	sprintf(constant, "spotLights[%d].constant", index);
+	sprintf(linear, "spotLights[%d].linear", index);
+	sprintf(quadratic, "spotLights[%d].quadratic", index);
+	sprintf(cutOff, "spotLights[%d].cutOff", index);
+	sprintf(outerCutOff, "spotLights[%d].outerCutOff", index);
+#endif
+}
+
+Shader::SpotLightVariableNames::~SpotLightVariableNames()
+{
+	delete[] color;
+	delete[] position;
+	delete[] direction;
+	delete[] constant;
+	delete[] linear;
+	delete[] quadratic;
+	delete[] cutOff;
+	delete[] outerCutOff;
+}
 
 #pragma region Constructors / Destructor
 
 void Shader::Init()
 {
 	canvasCameraTransformationMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+
+	for (int i = 0; i < 10; i++)
+	{
+		pointlightVariableNames.push_back(new PointLightVariableNames(i));
+		directionallightVariableNames.push_back(new DirectionalLightsVariableNames(i));
+		spotlightVariableNames.push_back(new SpotLightVariableNames(i));
+	}
 }
 
 Shader::Shader()
@@ -452,17 +564,18 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 {
 	XASSERT(light != nullptr, "[Shader::SetPointLightData] light is nullptr")
 
-	const std::string baseString = "pointLights[" + std::to_string(index) + "].";
-
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
-	SetShaderAttribut((baseString + "color").c_str(), lightColor * light->GetIntensity());
-	SetShaderAttribut((baseString + "position").c_str(), pos);
-	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
-	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
-	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
+
+	SetShaderAttribut(pointlightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(pointlightVariableNames[index]->position, pos);
+	SetShaderAttribut(pointlightVariableNames[index]->constant, lightConstant);
+	SetShaderAttribut(pointlightVariableNames[index]->linear, light->GetLinearValue());
+	SetShaderAttribut(pointlightVariableNames[index]->quadratic, light->GetQuadraticValue());
+	
+
 }
 
 /// <summary>
@@ -474,15 +587,14 @@ void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const 
 {
 	XASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
 
-	const std::string baseString = "directionalLights[" + std::to_string(index) + "].";
 
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
 	Vector3 dir = light->GetTransform()->GetForward();
 	dir.x = -dir.x;
-	SetShaderAttribut((baseString + "direction").c_str(), dir);
+	SetShaderAttribut(directionallightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(directionallightVariableNames[index]->direction, dir);
 }
 
 void Shader::SetAmbientLightData(const Vector3& color)
@@ -499,23 +611,23 @@ void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int ind
 {
 	XASSERT(light != nullptr, "[Shader::SetSpotLightData] light is nullptr")
 
-	const std::string baseString = "spotLights[" + std::to_string(index) + "].";
 	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
 	Vector3 pos = light->GetTransform()->GetPosition();
 	pos.x = -pos.x;
 
-	SetShaderAttribut((baseString + "color").c_str(), light->GetIntensity() * lightColor);
-	SetShaderAttribut((baseString + "position").c_str(), pos);
 	Vector3 dir = light->GetTransform()->GetForward();
 	dir.x = -dir.x;
-	SetShaderAttribut((baseString + "direction").c_str(), dir);
-	SetShaderAttribut((baseString + "constant").c_str(), lightConstant);
-	SetShaderAttribut((baseString + "linear").c_str(), light->GetLinearValue());
-	SetShaderAttribut((baseString + "quadratic").c_str(), light->GetQuadraticValue());
-	SetShaderAttribut((baseString + "cutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle() * (1-light->GetSpotSmoothness()))));
-	SetShaderAttribut((baseString + "outerCutOff").c_str(), glm::cos(glm::radians(light->GetSpotAngle())));
+
+	SetShaderAttribut(spotlightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(spotlightVariableNames[index]->position, pos);
+	SetShaderAttribut(spotlightVariableNames[index]->direction, dir);
+	SetShaderAttribut(spotlightVariableNames[index]->constant, lightConstant);
+	SetShaderAttribut(spotlightVariableNames[index]->linear, light->GetLinearValue());
+	SetShaderAttribut(spotlightVariableNames[index]->quadratic, light->GetQuadraticValue());
+	SetShaderAttribut(spotlightVariableNames[index]->cutOff, glm::cos(glm::radians(light->GetSpotAngle() * (1 - light->GetSpotSmoothness()))));
+	SetShaderAttribut(spotlightVariableNames[index]->outerCutOff, glm::cos(glm::radians(light->GetSpotAngle())));
 }
 
 /// <summary>

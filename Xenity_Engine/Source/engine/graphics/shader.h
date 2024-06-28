@@ -37,6 +37,53 @@ protected:
 	friend class AssetManager;
 	friend class ProjectManager;
 
+	class PointLightVariableNames 
+	{
+	public:
+		PointLightVariableNames() = delete;
+		PointLightVariableNames(int index);
+		~PointLightVariableNames();
+
+		char* color = nullptr;
+		char* position = nullptr;
+		char* constant = nullptr;
+		char* linear = nullptr;
+		char* quadratic = nullptr;
+	};
+
+	class DirectionalLightsVariableNames
+	{
+	public:
+		DirectionalLightsVariableNames() = delete;
+		DirectionalLightsVariableNames(int index);
+		~DirectionalLightsVariableNames();
+
+		char* color = nullptr;
+		char* direction = nullptr;
+	};
+
+
+	class SpotLightVariableNames
+	{
+	public:
+		SpotLightVariableNames() = delete;
+		SpotLightVariableNames(int index);
+		~SpotLightVariableNames();
+
+		char* color = nullptr;
+		char* position = nullptr;
+		char* direction = nullptr;
+		char* constant = nullptr;
+		char* linear = nullptr;
+		char* quadratic = nullptr;
+		char* cutOff = nullptr;
+		char* outerCutOff = nullptr;
+	};
+
+	static std::vector<PointLightVariableNames*> pointlightVariableNames;
+	static std::vector<DirectionalLightsVariableNames*> directionallightVariableNames;
+	static std::vector<SpotLightVariableNames*> spotlightVariableNames;
+
 	enum class ShaderType
 	{
 		Vertex_Shader,
