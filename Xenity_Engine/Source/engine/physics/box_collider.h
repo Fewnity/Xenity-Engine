@@ -91,7 +91,7 @@ protected:
 	* @param a The first box collider
 	* @param b The second box collider
 	*/
-	static bool CheckTrigger(const std::shared_ptr<BoxCollider>& a, const std::shared_ptr <BoxCollider>& b);
+	static bool CheckTrigger(const BoxCollider& a, const BoxCollider& b);
 
 	/**
 	 * @brief [Internal] Check if two box colliders are colliding with each other
@@ -99,7 +99,7 @@ protected:
 	 * @param b The second box collider
 	 * @param aVelocity The velocity of the first box collider
 	 */
-	static CollisionSide CheckCollision(const std::shared_ptr <BoxCollider>& a, const std::shared_ptr <BoxCollider>& b, const Vector3& aVelocity);
+	static CollisionSide CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity);
 
 	std::weak_ptr<RigidBody> attachedRigidbody;
 	Vector3 size = Vector3(1);

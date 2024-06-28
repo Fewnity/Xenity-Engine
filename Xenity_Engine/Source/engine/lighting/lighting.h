@@ -136,12 +136,12 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	float GetLinearValue() 
+	float GetLinearValue() const
 	{
 		return linear;
 	}
 
-	float GetQuadraticValue() 
+	float GetQuadraticValue() const
 	{
 		return quadratic;
 	}

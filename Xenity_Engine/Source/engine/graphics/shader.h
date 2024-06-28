@@ -184,14 +184,14 @@ protected:
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetPointLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetPointLightData(const Light& light, const int index);
 
 	/**
 	* @brief Set the shader uniform of a directional light
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetDirectionalLightData(const Light& light, const int index);
 	void SetAmbientLightData(const Vector3& color);
 
 	/**
@@ -199,7 +199,7 @@ protected:
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetSpotLightData(const std::shared_ptr<Light>& light, const int index);
+	void SetSpotLightData(const Light& light, const int index);
 
 	static glm::mat4 canvasCameraTransformationMatrix;
 

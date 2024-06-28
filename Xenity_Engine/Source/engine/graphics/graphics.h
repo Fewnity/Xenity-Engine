@@ -120,7 +120,7 @@ public:
 	* @param matrix The matrix to apply
 	* @param forUI If the mesh is for UI
 	*/
-	static void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 	
 	/**
 	* @brief Draw a submesh
@@ -131,7 +131,7 @@ public:
 	* @param matrix The matrix to apply
 	* @param forUI If the mesh is for UI
 	*/
-	static void DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 
 	/**
 	* @brief Set draw order list as dirty

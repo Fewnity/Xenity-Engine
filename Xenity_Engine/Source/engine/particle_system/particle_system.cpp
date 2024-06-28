@@ -237,7 +237,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 
 		renderCommand.subMesh->meshData->unifiedColor.SetFromRGBAfloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
 
-		Graphics::DrawSubMesh(*renderCommand.subMesh, material, texture, renderSettings, newMat, false);
+		Graphics::DrawSubMesh(*renderCommand.subMesh, *material, texture, renderSettings, newMat, false);
 
 		particle.position += particle.direction * Time::GetDeltaTime() / camCount * particle.currentSpeed;
 

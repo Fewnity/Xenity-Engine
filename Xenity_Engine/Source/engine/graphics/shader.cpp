@@ -560,20 +560,18 @@ void Shader::Link()
 /// </summary>
 /// <param name="light">Point light</param>
 /// <param name="index">Shader's point light index</param>
-void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int index)
+void Shader::SetPointLightData(const Light& light, const int index)
 {
-	XASSERT(light != nullptr, "[Shader::SetPointLightData] light is nullptr")
-
-	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
-	Vector3 pos = light->GetTransform()->GetPosition();
+	Vector3 pos = light.GetTransform()->GetPosition();
 	pos.x = -pos.x;
 
-	SetShaderAttribut(pointlightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(pointlightVariableNames[index]->color, lightColor * light.GetIntensity());
 	SetShaderAttribut(pointlightVariableNames[index]->position, pos);
 	SetShaderAttribut(pointlightVariableNames[index]->constant, lightConstant);
-	SetShaderAttribut(pointlightVariableNames[index]->linear, light->GetLinearValue());
-	SetShaderAttribut(pointlightVariableNames[index]->quadratic, light->GetQuadraticValue());
+	SetShaderAttribut(pointlightVariableNames[index]->linear, light.GetLinearValue());
+	SetShaderAttribut(pointlightVariableNames[index]->quadratic, light.GetQuadraticValue());
 	
 
 }
@@ -583,17 +581,14 @@ void Shader::SetPointLightData(const std::shared_ptr<Light>& light, const int in
 /// </summary>
 /// <param name="light">Directional light</param>
 /// <param name="index">Shader's directional light index</param>
-void Shader::SetDirectionalLightData(const std::shared_ptr<Light>& light, const int index)
+void Shader::SetDirectionalLightData(const Light& light, const int index)
 {
-	XASSERT(light != nullptr, "[Shader::SetDirectionalLightData] light is nullptr")
-
-
-	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	Vector3 dir = light->GetTransform()->GetForward();
+	Vector3 dir = light.GetTransform()->GetForward();
 	dir.x = -dir.x;
-	SetShaderAttribut(directionallightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(directionallightVariableNames[index]->color, lightColor * light.GetIntensity());
 	SetShaderAttribut(directionallightVariableNames[index]->direction, dir);
 }
 
@@ -607,27 +602,25 @@ void Shader::SetAmbientLightData(const Vector3& color)
 /// </summary>
 /// <param name="light">Spot light</param>
 /// <param name="index">Shader's spot light index</param>
-void Shader::SetSpotLightData(const std::shared_ptr<Light>& light, const int index)
+void Shader::SetSpotLightData(const Light& light, const int index)
 {
-	XASSERT(light != nullptr, "[Shader::SetSpotLightData] light is nullptr")
-
-	const Vector4 lightColorV4 = light->color.GetRGBA().ToVector4();
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	Vector3 pos = light->GetTransform()->GetPosition();
+	Vector3 pos = light.GetTransform()->GetPosition();
 	pos.x = -pos.x;
 
-	Vector3 dir = light->GetTransform()->GetForward();
+	Vector3 dir = light.GetTransform()->GetForward();
 	dir.x = -dir.x;
 
-	SetShaderAttribut(spotlightVariableNames[index]->color, lightColor * light->GetIntensity());
+	SetShaderAttribut(spotlightVariableNames[index]->color, lightColor * light.GetIntensity());
 	SetShaderAttribut(spotlightVariableNames[index]->position, pos);
 	SetShaderAttribut(spotlightVariableNames[index]->direction, dir);
 	SetShaderAttribut(spotlightVariableNames[index]->constant, lightConstant);
-	SetShaderAttribut(spotlightVariableNames[index]->linear, light->GetLinearValue());
-	SetShaderAttribut(spotlightVariableNames[index]->quadratic, light->GetQuadraticValue());
-	SetShaderAttribut(spotlightVariableNames[index]->cutOff, glm::cos(glm::radians(light->GetSpotAngle() * (1 - light->GetSpotSmoothness()))));
-	SetShaderAttribut(spotlightVariableNames[index]->outerCutOff, glm::cos(glm::radians(light->GetSpotAngle())));
+	SetShaderAttribut(spotlightVariableNames[index]->linear, light.GetLinearValue());
+	SetShaderAttribut(spotlightVariableNames[index]->quadratic, light.GetQuadraticValue());
+	SetShaderAttribut(spotlightVariableNames[index]->cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
+	SetShaderAttribut(spotlightVariableNames[index]->outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
 }
 
 /// <summary>
@@ -647,27 +640,27 @@ void Shader::UpdateLights(bool disableLights)
 		//For each lights
 		for (int lightI = 0; lightI < lightCount; lightI++)
 		{
-			std::shared_ptr<Light> light = AssetManager::GetLight(lightI).lock();
-			if (light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
+			Light& light = *AssetManager::GetLight(lightI).lock();
+			if (light.GetIsEnabled() && light.GetGameObject()->GetLocalActive())
 			{
-				if (light->type == LightType::Directional)
+				if (light.type == LightType::Directional)
 				{
 					SetDirectionalLightData(light, directionalUsed);
 					directionalUsed++;
 				}
-				else if (light->type == LightType::Point)
+				else if (light.type == LightType::Point)
 				{
 					SetPointLightData(light, pointUsed);
 					pointUsed++;
 				}
-				else if (light->type == LightType::Spot)
+				else if (light.type == LightType::Spot)
 				{
 					SetSpotLightData(light, spotUsed);
 					spotUsed++;
 				}
-				else if (light->type == LightType::Ambient)
+				else if (light.type == LightType::Ambient)
 				{
-					ambientLight += light->color.GetRGBA().ToVector4() * light->intensity;
+					ambientLight += light.color.GetRGBA().ToVector4() * light.intensity;
 				}
 			}
 		}

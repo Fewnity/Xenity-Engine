@@ -100,7 +100,7 @@ private:
 	int GetWrapModeEnum(WrapMode wrapMode);
 	int maxLightCount = 8;
 	void DisableAllLight();
-	void SetLight(const int lightIndex, const std::shared_ptr<Light>& light, const Vector3& lightPosition, const Vector3& lightDirection) override;
+	void SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection) override;
 
 	float fogStart = 0;
 	float fogEnd = 10;

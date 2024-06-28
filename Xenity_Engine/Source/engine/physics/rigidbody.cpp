@@ -97,7 +97,7 @@ void RigidBody::Tick()
 					const std::shared_ptr<RigidBody> otherRigidbody = other->GetAttachedRigidbody().lock();
 					if (rbBoxCollider->isTrigger && isStatic && otherRigidbody && !otherRigidbody->isStatic) // Check trigger
 					{
-						const bool trigger = BoxCollider::CheckTrigger(rbBoxCollider, other);
+						const bool trigger = BoxCollider::CheckTrigger(*rbBoxCollider, *other);
 						if (trigger)
 						{
 							rbBoxCollider->onTriggerEvent.Trigger(other);
@@ -105,7 +105,7 @@ void RigidBody::Tick()
 					}
 					else if (!other->isTrigger && !isStatic) // Check collision
 					{
-						const int tempSide = (int)BoxCollider::CheckCollision(rbBoxCollider, other, deltaTimeVelocity);
+						const int tempSide = (int)BoxCollider::CheckCollision(*rbBoxCollider, *other, deltaTimeVelocity);
 						if (tempSide != (int)CollisionSide::NoSide)
 						{
 							if ((side & tempSide) == 0)

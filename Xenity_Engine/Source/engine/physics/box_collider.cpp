@@ -43,18 +43,15 @@ void BoxCollider::OnReflectionUpdated()
 	CalculateBoundingBox();
 }
 
-bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b)
+bool BoxCollider::CheckTrigger(const BoxCollider &a, const BoxCollider &b)
 {
-	XASSERT(a != nullptr, "[BoxCollider::CheckTrigger] a is nullptr")
-	XASSERT(b != nullptr, "[BoxCollider::CheckTrigger] b is nullptr")
+	const Vector3 aPos = a.GetTransform()->GetPosition();
+	const Vector3 bPos = b.GetTransform()->GetPosition();
 
-	const Vector3 aPos = a->GetTransform()->GetPosition();
-	const Vector3 bPos = b->GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a->min + aPos;
-	const Vector3 aMaxPos = a->max + aPos;
-	const Vector3 bMinPos = b->min + bPos;
-	const Vector3 bMaxPos = b->max + bPos;
+	const Vector3 aMinPos = a.min + aPos;
+	const Vector3 aMaxPos = a.max + aPos;
+	const Vector3 bMinPos = b.min + bPos;
+	const Vector3 bMaxPos = b.max + bPos;
 
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -68,18 +65,15 @@ bool BoxCollider::CheckTrigger(const std::shared_ptr<BoxCollider> &a, const std:
 	return false;
 }
 
-CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a, const std::shared_ptr<BoxCollider> &b, const Vector3 &aVelocity)
+CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3 &aVelocity)
 {
-	XASSERT(a != nullptr, "[BoxCollider::CheckCollision] a is nullptr")
-	XASSERT(b != nullptr, "[BoxCollider::CheckCollision] b is nullptr")
+	const Vector3& aPosition = a.GetTransform()->GetPosition();
+	const Vector3& bPosition = b.GetTransform()->GetPosition();
 
-	const Vector3& aPosition = a->GetTransform()->GetPosition();
-	const Vector3& bPosition = b->GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a->min + aPosition + aVelocity;
-	const Vector3 aMaxPos = a->max + aPosition + aVelocity;
-	const Vector3 bMinPos = b->min + bPosition;
-	const Vector3 bMaxPos = b->max + bPosition;
+	const Vector3 aMinPos = a.min + aPosition + aVelocity;
+	const Vector3 aMaxPos = a.max + aPosition + aVelocity;
+	const Vector3 bMinPos = b.min + bPosition;
+	const Vector3 bMaxPos = b.max + bPosition;
 
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -88,8 +82,8 @@ CollisionSide BoxCollider::CheckCollision(const std::shared_ptr<BoxCollider> &a,
 
 	if (xColl && yColl && zColl)
 	{
-		const Vector3 aMinPosBef = a->min + aPosition;
-		const Vector3 aMaxPosBef = a->max + aPosition;
+		const Vector3 aMinPosBef = a.min + aPosition;
+		const Vector3 aMaxPosBef = a.max + aPosition;
 		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
 		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
 		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;

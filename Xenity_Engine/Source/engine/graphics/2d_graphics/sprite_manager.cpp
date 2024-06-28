@@ -77,11 +77,9 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
 {
-	XASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
-
-		spriteBenchmark->Start();
+	spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
 
@@ -110,10 +108,8 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 	spriteBenchmark->Stop();
 }
 
-void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, const std::shared_ptr<Material>& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
 {
-	XASSERT(material != nullptr, "[SpriteManager::DrawSprite] material is nullptr")
-
 	spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;

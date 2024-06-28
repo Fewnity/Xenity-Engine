@@ -136,5 +136,5 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = material->GetUseLighting();
 	renderSettings.useBlend = material->GetUseTransparency();
-	MeshManager::DrawMesh(GetTransform(), *subMesh, material, renderSettings);
+	MeshManager::DrawMesh(*GetTransform(), *subMesh, *material, renderSettings);
 }

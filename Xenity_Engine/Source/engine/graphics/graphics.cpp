@@ -482,14 +482,13 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 	}
 }
 
-void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	DrawSubMesh(subMesh, material, material->texture, renderSettings, matrix, forUI);
+	DrawSubMesh(subMesh, material, material.texture, renderSettings, matrix, forUI);
 }
 
-void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_ptr<Material>& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	XASSERT(material != nullptr, "[Graphics::DrawSubMesh] material is nullptr")
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr")
 
 	if (texture == nullptr)
@@ -499,7 +498,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 
 	if (!UseOpenGLFixedFunctions)
 	{
-		material->Use();
+		material.Use();
 
 		if (!currentShader)
 			return;
@@ -515,7 +514,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, const std::shared_p
 		Engine::GetRenderer().SetTransform(matrix);
 	}
 
-	Engine::GetRenderer().DrawSubMesh(subMesh, *material, *texture, renderSettings);
+	Engine::GetRenderer().DrawSubMesh(subMesh, material, *texture, renderSettings);
 	drawMeshBenchmark->Stop();
 }
 
@@ -540,17 +539,17 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useLighting = false;
 
 		AssetManager::unlitMaterial->texture = settings.skybox->down;
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->up;
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->front;
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->back;
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->left;
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->right;
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 	}
 }
 
@@ -729,15 +728,15 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		AssetManager::unlitMaterial->texture = Editor::toolArrowsTexture;
 		if (sceneMenu->toolMode == ToolMode::Tool_Move || sceneMenu->toolMode == ToolMode::Tool_Scale)
 		{
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
 		else if (sceneMenu->toolMode == ToolMode::Tool_Rotate)
 		{
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
-			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->subMeshes[0], AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			MeshManager::DrawMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
 		AssetManager::unlitMaterial->texture = nullptr;
 	}

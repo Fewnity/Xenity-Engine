@@ -139,5 +139,5 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
-	MeshManager::DrawMesh(GetTransform(), *renderCommand.subMesh, renderCommand.material, renderSettings);
+	MeshManager::DrawMesh(*GetTransform(), *renderCommand.subMesh, *renderCommand.material, renderSettings);
 }

@@ -440,14 +440,14 @@ void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType
 {
 }
 
-void RendererGU::SetLight(const int lightIndex, const std::shared_ptr<Light>& light, const Vector3& lightPosition, const Vector3& lightDirection)
+void RendererGU::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
 	if (lightIndex >= maxLightCount)
 		return;
 
-	float intensity = light->intensity;
-	const Color& color = light->color;
-	const LightType& type = light->type;
+	float intensity = light.intensity;
+	const Color& color = light.color;
+	const LightType& type = light.type;
 	const RGBA& rgba = color.GetRGBA();
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
@@ -481,7 +481,7 @@ void RendererGU::SetLight(const int lightIndex, const std::shared_ptr<Light>& li
 		sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 		sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
 		
-		sceGuLightSpot(lightIndex, &rot, light->GetSpotSmoothness() * 5, 1 - (light->GetSpotAngle() * light->GetSpotAngle()) / 8100);
+		sceGuLightSpot(lightIndex, &rot, light.GetSpotSmoothness() * 5, 1 - (light.GetSpotAngle() * light.GetSpotAngle()) / 8100);
 	}
 	else
 	{
@@ -491,8 +491,8 @@ void RendererGU::SetLight(const int lightIndex, const std::shared_ptr<Light>& li
 	}
 	sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
 	
-	float quadraticAttenuation = light->GetQuadraticValue();
-	float linearAttenuation = light->GetLinearValue();
+	float quadraticAttenuation = light.GetQuadraticValue();
+	float linearAttenuation = light.GetLinearValue();
 	float constAttenuation = 1;
 	if (type == LightType::Directional || type == LightType::Ambient)
 	{
@@ -513,33 +513,6 @@ void RendererGU::DisableAllLight()
 
 void RendererGU::Setlights(const Camera& camera)
 {
-	/*std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
-
-	DisableAllLight();
-	const int lightCount = AssetManager::GetLightCount();
-	int usedLightCount = 0;
-	for (int i = 0; i < lightCount; i++)
-	{
-		auto light = AssetManager::GetLight(i).lock();
-		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
-		{
-			if (light->type == LightType::Directional)
-			{
-				const Vector3& lightRotation = light->GetTransform()->GetRotation();
-				const Vector3& cameraPosition = cameraTransform->GetPosition();
-				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, Vector3(-cameraPosition.x, cameraPosition.y, cameraPosition.z) + dir, light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), 1, 0);
-			}
-			else
-			{
-				SetLight(usedLightCount, light->GetTransform()->GetPosition(), light->GetIntensity(), light->color, light->type, light->GetQuadraticValue(), light->GetLinearValue(), 1);
-			}
-			usedLightCount++;
-			if (usedLightCount == maxLightCount)
-				break;
-		}
-	}*/
-
 	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
 	DisableAllLight();
@@ -554,21 +527,21 @@ void RendererGU::Setlights(const Camera& camera)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, light, Vector3(0, 0, 0) + dir, dir);
+				SetLight(usedLightCount, *light, Vector3(0, 0, 0) + dir, dir);
 			}
 			else if (light->type == LightType::Ambient)
 			{
-				SetLight(usedLightCount, light, Vector3(0, 0, 0), Vector3(0, 0, 0));
+				SetLight(usedLightCount, *light, Vector3(0, 0, 0), Vector3(0, 0, 0));
 			}
 			else if (light->type == LightType::Spot)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x).Normalized();
-				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), dir);
+				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), dir);
 			}
 			else
 			{
-				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
+				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)

@@ -129,7 +129,7 @@ public:
 	*/
 	void SetLocalScale(const Vector3& value);
 
-	inline const glm::mat4& GetTransformationMatrix() 
+	inline const glm::mat4& GetTransformationMatrix() const
 	{
 		return transformationMatrix;
 	}

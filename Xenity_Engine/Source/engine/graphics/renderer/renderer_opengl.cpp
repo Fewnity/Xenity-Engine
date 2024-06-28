@@ -458,21 +458,21 @@ void RendererOpengl::SetTextureData(const Texture& texture, unsigned int texture
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void RendererOpengl::SetLight(const int lightIndex, const std::shared_ptr<Light>& light, const Vector3& lightPosition, const Vector3& lightDirection)
+void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
 	// This won't compile on PsVita, and if the code compile, it would not work because the fixed pipeline is broken on vitagl
 #if !defined(__vita__)
 	if (lightIndex >= maxLightCount)
 		return;
 
-	float intensity = light->intensity;
-	const Color& color = light->color;
-	const LightType& type = light->type;
+	float intensity = light.intensity;
+	const Color& color = light.color;
+	const LightType& type = light.type;
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
-	float lightAttenuation[1] = { light->GetQuadraticValue() };
-	float lightLinearAttenuation[1] = { light->GetLinearValue() };
+	float lightAttenuation[1] = { light.GetQuadraticValue() };
+	float lightLinearAttenuation[1] = { light.GetLinearValue() };
 	float lightConstAttenuation[1] = { 1 };
 	if (type == LightType::Directional || type == LightType::Ambient)
 	{
@@ -522,12 +522,12 @@ void RendererOpengl::SetLight(const int lightIndex, const std::shared_ptr<Light>
 	}
 	if (type == LightType::Spot) 
 	{
-		float cutOff[1] = { light->GetSpotAngle() };
+		float cutOff[1] = { light.GetSpotAngle() };
 		// Fixed pipeline does not support more than 90 degrees
 		if (cutOff[0] > 90)
 			cutOff[0] = 90;
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_CUTOFF, cutOff);
-		float exponent[1] = { light->GetSpotSmoothness() * 128 };
+		float exponent[1] = { light.GetSpotSmoothness() * 128 };
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_EXPONENT, exponent);
 
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, direction);
@@ -570,21 +570,21 @@ void RendererOpengl::Setlights(const Camera& camera)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, light,  Vector3(0, 0, 0) + dir, dir);
+				SetLight(usedLightCount, *light,  Vector3(0, 0, 0) + dir, dir);
 			}
 			else if (light->type == LightType::Ambient)
 			{
-				SetLight(usedLightCount, light, Vector3(0, 0, 0), Vector3(0, 0, 0));
+				SetLight(usedLightCount, *light, Vector3(0, 0, 0), Vector3(0, 0, 0));
 			}
 			else if (light->type == LightType::Spot)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetRotation();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x + 180).Normalized();
-				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), dir);
+				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), dir);
 			}
 			else
 			{
-				SetLight(usedLightCount, light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
+				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
 			}
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
