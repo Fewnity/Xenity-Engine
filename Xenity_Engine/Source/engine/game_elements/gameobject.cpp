@@ -282,16 +282,6 @@ std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 
 #pragma region Accessors
 
-bool GameObject::GetActive() const
-{
-	return active;
-}
-
-bool GameObject::GetLocalActive() const
-{
-	return localActive;
-}
-
 void GameObject::SetActive(const bool active)
 {
 	if (active != this->active)
@@ -369,7 +359,9 @@ bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 		}
 		else
 		{
-			return children[i].lock()->IsParentOf(gameObject);
+			const bool temp = children[i].lock()->IsParentOf(gameObject);
+			if (temp)
+				return true;
 		}
 	}
 	return false;

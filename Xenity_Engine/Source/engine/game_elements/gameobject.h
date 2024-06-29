@@ -130,12 +130,18 @@ public:
 	/**
 	* @brief Get if the GameObject is marked as active
 	*/
-	bool GetActive() const;
+	inline bool GetActive() const
+	{
+		return active;
+	}
 
 	/**
 	* @brief Get if the GameObject is active based on his parents
 	*/
-	bool GetLocalActive() const;
+	inline bool GetLocalActive() const
+	{
+		return localActive;
+	}
 
 	/**
 	* @brief Set GameObject as active or not
