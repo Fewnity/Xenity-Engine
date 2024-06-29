@@ -153,7 +153,7 @@ void Graphics::Draw()
 	OrderDrawables();
 
 	const int matCount = AssetManager::GetMaterialCount();
-	for(std::weak_ptr<Camera>& weakCam: cameras)
+	for(const std::weak_ptr<Camera>& weakCam: cameras)
 	{
 		usedCamera = weakCam.lock();
 		if (usedCamera->GetIsEnabled() && usedCamera->GetGameObject()->GetLocalActive())
@@ -271,7 +271,7 @@ void Graphics::Draw()
 				std::vector<std::shared_ptr<SceneMenu>> sceneMenus;
 				sceneMenus = Editor::GetMenus<SceneMenu>();
 				int gridAxis = 0;
-				for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
+				for (std::shared_ptr<SceneMenu>& sceneMenu : sceneMenus)
 				{
 					if (sceneMenu->weakCamera.lock() == usedCamera)
 					{
@@ -284,7 +284,7 @@ void Graphics::Draw()
 				DrawSelectedItemBoundingBox(camPos);
 
 				// Draw all gizmos
-				for (std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
+				for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 				{
 					if (std::shared_ptr<Component> component = weakComponent.lock())
 					{

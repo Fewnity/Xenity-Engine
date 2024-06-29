@@ -165,10 +165,18 @@ public:
 
 	static std::shared_ptr <Texture> defaultTexture;
 	static std::shared_ptr<Shader> standardShader;
+	static std::shared_ptr<Shader> standardOneLightEachShader;
+	static std::shared_ptr<Shader> standardOnePointLightShader;
+	static std::shared_ptr<Shader> standardOneSpotLightShader;
+	static std::shared_ptr<Shader> standardOneDirectionalLightShader;
 	static std::shared_ptr<Shader> standardVertexLightShader;
 	static std::shared_ptr<Shader> unlitShader;
 	static std::shared_ptr<Shader> lineShader;
 	static std::shared_ptr<Material> standardMaterial;
+	static std::shared_ptr<Material> standardOneLightEachMaterial;
+	static std::shared_ptr<Material> standardOnePointLightMaterial;
+	static std::shared_ptr<Material> standardOneSpotLightMaterial;
+	static std::shared_ptr<Material> standardOneDirectionalLightMaterial;
 	static std::shared_ptr<Material> standardVertexLightMaterial;
 	static std::shared_ptr<Material> unlitMaterial;
 	static std::shared_ptr<Material> lineMaterial;

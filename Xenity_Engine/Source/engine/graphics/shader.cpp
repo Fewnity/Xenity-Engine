@@ -572,8 +572,6 @@ void Shader::SetPointLightData(const Light& light, const int index)
 	SetShaderAttribut(pointlightVariableNames[index]->constant, lightConstant);
 	SetShaderAttribut(pointlightVariableNames[index]->linear, light.GetLinearValue());
 	SetShaderAttribut(pointlightVariableNames[index]->quadratic, light.GetQuadraticValue());
-	
-
 }
 
 /// <summary>
@@ -628,19 +626,23 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 /// </summary>
 void Shader::UpdateLights(bool disableLights)
 {
+	SetShaderAttribut(pointlightVariableNames[0]->color, Vector3(0,0,0));
+	SetShaderAttribut(spotlightVariableNames[0]->color, Vector3(0, 0, 0));
+	SetShaderAttribut(directionallightVariableNames[0]->color, Vector3(0, 0, 0));
+
 	int directionalUsed = 0;
 	int pointUsed = 0;
 	int spotUsed = 0;
+	Vector4 ambientLight = Vector4(0, 0, 0, 0);
+
 	if (disableLights)
 	{
 		const int lightCount = AssetManager::GetLightCount();
 
-		Vector4 ambientLight = Vector4(0, 0, 0, 0);
-
 		//For each lights
 		for (int lightI = 0; lightI < lightCount; lightI++)
 		{
-			Light& light = *AssetManager::GetLight(lightI).lock();
+			const Light& light = *AssetManager::GetLight(lightI).lock();
 			if (light.GetIsEnabled() && light.GetGameObject()->GetLocalActive())
 			{
 				if (light.type == LightType::Directional)
@@ -665,9 +667,9 @@ void Shader::UpdateLights(bool disableLights)
 			}
 		}
 
-		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
 	}
 
+	SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
 	SetShaderAttribut("usedPointLightCount", pointUsed);
 	SetShaderAttribut("usedSpotLightCount", spotUsed);
 	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);

@@ -38,10 +38,18 @@ int AssetManager::fileReferenceCount = 0;
 int AssetManager::lightCount = 0;
 
 std::shared_ptr<Shader> AssetManager::standardShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardOneLightEachShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardOnePointLightShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardOneSpotLightShader = nullptr;
+std::shared_ptr<Shader> AssetManager::standardOneDirectionalLightShader = nullptr;
 std::shared_ptr<Shader> AssetManager::standardVertexLightShader = nullptr;
 std::shared_ptr<Shader> AssetManager::unlitShader = nullptr;
 std::shared_ptr<Shader> AssetManager::lineShader = nullptr;
 std::shared_ptr<Material> AssetManager::standardMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::standardOneLightEachMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::standardOnePointLightMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::standardOneSpotLightMaterial = nullptr;
+std::shared_ptr<Material> AssetManager::standardOneDirectionalLightMaterial = nullptr;
 std::shared_ptr<Material> AssetManager::standardVertexLightMaterial = nullptr;
 std::shared_ptr<Material> AssetManager::unlitMaterial = nullptr;
 std::shared_ptr<Material> AssetManager::lineMaterial = nullptr;
@@ -73,8 +81,20 @@ void AssetManager::OnProjectLoaded()
 		standardShader = Shader::MakeShader();
 		standardShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard.shader");
 			
-		standardVertexLightShader = Shader::MakeShader();
-		standardVertexLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_vertex_lighting.shader");
+		standardOneLightEachShader = Shader::MakeShader();
+		standardOneLightEachShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_one_light_each.shader");
+
+		standardOnePointLightShader = Shader::MakeShader();
+		standardOnePointLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_one_point_light.shader");
+
+		standardOneSpotLightShader = Shader::MakeShader();
+		standardOneSpotLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_one_spot_light.shader");
+
+		standardOneDirectionalLightShader = Shader::MakeShader();
+		standardOneDirectionalLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_one_directional_light.shader");
+
+		/*standardVertexLightShader = Shader::MakeShader();
+		standardVertexLightShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\standard_vertex_lighting.shader");*/
 
 		// Load unlit shader
 		unlitShader = Shader::MakeShader();
@@ -85,24 +105,43 @@ void AssetManager::OnProjectLoaded()
 		lineShader->file = FileSystem::MakeFile("public_engine_assets\\shaders\\line.shader");
 
 		standardShader->LoadFileReference();
-		standardVertexLightShader->LoadFileReference();
+
+		standardOneLightEachShader->LoadFileReference();
+		standardOnePointLightShader->LoadFileReference();
+		standardOneSpotLightShader->LoadFileReference();
+		standardOneDirectionalLightShader->LoadFileReference();
+
+		//standardVertexLightShader->LoadFileReference();
 		unlitShader->LoadFileReference();
 		lineShader->LoadFileReference();
 	}
 
 	// Create materials
 	standardMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterial.mat"));
-	standardVertexLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardVertexLightingMaterial.mat"));
+	standardOneLightEachMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat"));
+	standardOnePointLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterialOnePointLight.mat"));
+	standardOneSpotLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterialOneSpotLight.mat"));
+	standardOneDirectionalLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat"));
+
+	//standardVertexLightMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\standardVertexLightingMaterial.mat"));
 	unlitMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\unlitMaterial.mat"));
 	lineMaterial = std::dynamic_pointer_cast<Material>(ProjectManager::GetFileReferenceByFilePath("public_engine_assets\\materials\\lineMaterial.mat"));
 	
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-	XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	//XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
 	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
 	XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
 
 	standardMaterial->LoadFileReference();
-	standardVertexLightMaterial->LoadFileReference();
+	standardOneLightEachMaterial->LoadFileReference();
+	standardOnePointLightMaterial->LoadFileReference();
+	standardOneSpotLightMaterial->LoadFileReference();
+	standardOneDirectionalLightMaterial->LoadFileReference();
+	//standardVertexLightMaterial->LoadFileReference();
 	unlitMaterial->LoadFileReference();
 	lineMaterial->LoadFileReference();
 }
