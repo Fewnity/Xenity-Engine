@@ -298,6 +298,7 @@ void GameObject::SetActive(const bool active)
 	{
 		this->active = active;
 		UpdateActive(shared_from_this());
+		GameplayManager::componentsInitListDirty = true;
 	}
 }
 

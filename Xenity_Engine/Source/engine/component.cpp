@@ -86,11 +86,16 @@ bool Component::GetIsEnabled() const
 
 void Component::SetIsEnabled(bool isEnabled)
 {
+	if(this->isEnabled == isEnabled)
+		return;
+
 	this->isEnabled = isEnabled;
 	if (isEnabled)
 		OnDisabled();
 	else
 		OnEnabled();
+
+	GameplayManager::componentsInitListDirty = true;
 }
 
 std::string Component::ToString()

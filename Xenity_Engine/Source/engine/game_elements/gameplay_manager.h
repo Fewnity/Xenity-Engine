@@ -47,7 +47,7 @@ public:
 	static const std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
 
 	static bool componentsListDirty;
-
+	static bool componentsInitListDirty;
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static int gameObjectCount;
