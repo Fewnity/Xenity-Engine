@@ -385,17 +385,7 @@ private:
 template<typename T>
 inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
 {
-	if constexpr (std::is_base_of<T, Component>())
-	{
-		std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
-		if (foundComponent)
-		{
-			foundComponent->isStatic = valueToSet;
-			foundComponent->OnReflectionUpdated();
-			SceneManager::SetSceneModified(true);
-		}
-	}
-	else if constexpr (std::is_base_of<T, GameObject>())
+	if constexpr (std::is_base_of<T, GameObject>())
 	{
 		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
 		if (foundGameObject)
