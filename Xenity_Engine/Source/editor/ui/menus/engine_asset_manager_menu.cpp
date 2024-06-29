@@ -91,7 +91,7 @@ void EngineAssetManagerMenu::Draw()
 			}
 			oldIds = ids;
 		}
-		if (ImGui::Button("Fix ids"))
+		/*if (ImGui::Button("Fix ids"))
 		{
 			int fileRefCount = AssetManager::GetFileReferenceCount();
 			for (int i = 0; i < fileRefCount; i++)
@@ -104,7 +104,7 @@ void EngineAssetManagerMenu::Draw()
 			{
 				ProjectManager::SaveMetaFile(AssetManager::GetFileReference(i));
 			}
-		}
+		}*/
 		ImGui::Separator();
 
 		ImGui::Text("Engine Assets list");

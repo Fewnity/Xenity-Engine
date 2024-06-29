@@ -460,15 +460,17 @@ void MainBarMenu::Draw()
 
 		ImGui::EndMenu();
 	}
-	//if (ImGui::BeginMenu("Other")) // ----------------------------------- Draw Window menu
-	//{
-	//	if (ImGui::MenuItem("Engine Asset Manager"))
-	//	{
-	//		Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
-	//		Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
-	//	}
-	//	ImGui::EndMenu();
-	//}
+#if defined(DEBUG)
+	if (ImGui::BeginMenu("Engine Setup")) // ----------------------------------- Draw Other menu
+	{
+		if (ImGui::MenuItem("Engine Asset Manager"))
+		{
+			Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
+			Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
+		}
+		ImGui::EndMenu();
+	}
+#endif
 	if (ImGui::BeginMenu("Help")) // ----------------------------------- Draw Help menu
 	{
 		if (ImGui::MenuItem("Documentation"))
