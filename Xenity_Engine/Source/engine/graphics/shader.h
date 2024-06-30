@@ -41,7 +41,7 @@ protected:
 	{
 	public:
 		PointLightVariableNames() = delete;
-		PointLightVariableNames(int index);
+		explicit PointLightVariableNames(int index);
 		~PointLightVariableNames();
 
 		char* color = nullptr;
@@ -55,7 +55,7 @@ protected:
 	{
 	public:
 		DirectionalLightsVariableNames() = delete;
-		DirectionalLightsVariableNames(int index);
+		explicit DirectionalLightsVariableNames(int index);
 		~DirectionalLightsVariableNames();
 
 		char* color = nullptr;
@@ -67,7 +67,7 @@ protected:
 	{
 	public:
 		SpotLightVariableNames() = delete;
-		SpotLightVariableNames(int index);
+		explicit SpotLightVariableNames(int index);
 		~SpotLightVariableNames();
 
 		char* color = nullptr;
@@ -80,9 +80,53 @@ protected:
 		char* outerCutOff = nullptr;
 	};
 
+	class PointLightVariableIds
+	{
+	public:
+		PointLightVariableIds() = delete;
+		explicit PointLightVariableIds(int index, unsigned int programId);
+
+		unsigned int color = 0;
+		unsigned int position = 0;
+		unsigned int constant = 0;
+		unsigned int linear = 0;
+		unsigned int quadratic = 0;
+	};
+
+	class DirectionalLightsVariableIds
+	{
+	public:
+		DirectionalLightsVariableIds() = delete;
+		explicit DirectionalLightsVariableIds(int index, unsigned int programId);
+
+		unsigned int color = 0;
+		unsigned int direction = 0;
+	};
+
+
+	class SpotLightVariableIds
+	{
+	public:
+		SpotLightVariableIds() = delete;
+		explicit SpotLightVariableIds(int index, unsigned int programId);
+
+		unsigned int color = 0;
+		unsigned int position = 0;
+		unsigned int direction = 0;
+		unsigned int constant = 0;
+		unsigned int linear = 0;
+		unsigned int quadratic = 0;
+		unsigned int cutOff = 0;
+		unsigned int outerCutOff = 0;
+	};
+
 	static std::vector<PointLightVariableNames*> pointlightVariableNames;
 	static std::vector<DirectionalLightsVariableNames*> directionallightVariableNames;
 	static std::vector<SpotLightVariableNames*> spotlightVariableNames;
+
+	std::vector<PointLightVariableIds*> pointlightVariableIds;
+	std::vector<DirectionalLightsVariableIds*> directionallightVariableIds;
+	std::vector<SpotLightVariableIds*> spotlightVariableIds;
 
 	enum class ShaderType
 	{
@@ -210,6 +254,12 @@ protected:
 	unsigned int programId = 0;
 	unsigned int modelLocation = 0;
 	unsigned int projectionLocation = 0;
+	unsigned int cameraLocation = 0;
+	unsigned int ambientLightLocation = 0;
+
+	unsigned int usedPointLightCountLocation = 0;
+	unsigned int usedSpotLightCountLocation = 0;
+	unsigned int usedDirectionalLightCountLocation = 0;
 
 	bool useTessellation = false;
 };

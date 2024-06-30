@@ -45,6 +45,33 @@ std::vector<Shader::PointLightVariableNames*> Shader::pointlightVariableNames;
 std::vector<Shader::DirectionalLightsVariableNames*> Shader::directionallightVariableNames;
 std::vector<Shader::SpotLightVariableNames*> Shader::spotlightVariableNames;
 
+Shader::PointLightVariableIds::PointLightVariableIds(int index, unsigned int programId)
+{
+	color = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->color);
+	position = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->position);
+	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->constant);
+	linear = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->linear);
+	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->quadratic);
+}
+
+Shader::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, unsigned int programId)
+{
+	color = Engine::GetRenderer().GetShaderUniformLocation(programId, directionallightVariableNames[index]->color);
+	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, directionallightVariableNames[index]->direction);
+}
+
+Shader::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int programId)
+{
+	color = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->color);
+	position = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->position);
+	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->direction);
+	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->constant);
+	linear = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->linear);
+	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->quadratic);
+	cutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->cutOff);
+	outerCutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->outerCutOff);
+}
+
 Shader::PointLightVariableNames::PointLightVariableNames(int index)
 {
 	constexpr int bufferSize = 30;
@@ -445,7 +472,7 @@ void Shader::SetShaderCameraPosition()
 		else
 			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
 		camera = rotationMatrix * camera;
-		Engine::GetRenderer().SetShaderAttribut(programId, "camera", camera);
+		Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, camera);
 	}
 }
 
@@ -455,7 +482,7 @@ void Shader::SetShaderCameraPosition()
 void Shader::SetShaderCameraPositionCanvas()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "camera", canvasCameraTransformationMatrix);
+	Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, canvasCameraTransformationMatrix);
 }
 
 /// <summary>
@@ -464,13 +491,13 @@ void Shader::SetShaderCameraPositionCanvas()
 void Shader::SetShaderProjection()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetProjection());
 }
 
 void Shader::SetShaderProjectionCanvas()
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "projection", Graphics::usedCamera->GetCanvasProjection());
+	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetCanvasProjection());
 }
 
 /// <summary>
@@ -480,7 +507,7 @@ void Shader::SetShaderProjectionCanvas()
 void Shader::SetShaderModel(const glm::mat4& trans)
 {
 	Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, "model", trans);
+	Engine::GetRenderer().SetShaderAttribut(programId, modelLocation, trans);
 }
 
 /// <summary>
@@ -502,36 +529,36 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
-	Engine::GetRenderer().SetShaderAttribut(programId, "model", transformationMatrix);
+	Engine::GetRenderer().SetShaderAttribut(programId, modelLocation, transformationMatrix);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector4& value)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector3& value)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, const Vector2& value)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, float value)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
 void Shader::SetShaderAttribut(const char* attribut, int value)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
 }
 
@@ -553,6 +580,19 @@ void Shader::Link()
 
 	modelLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "model");
 	projectionLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "projection");
+	cameraLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "camera");
+	ambientLightLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "ambientLight");
+
+	usedPointLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "usedPointLightCount");
+	usedSpotLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "usedSpotLightCount");
+	usedDirectionalLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(programId, "usedDirectionalLightCount");
+
+	for (int i = 0; i < 10; i++)
+	{
+		pointlightVariableIds.push_back(new PointLightVariableIds(i, programId));
+		directionallightVariableIds.push_back(new DirectionalLightsVariableIds(i, programId));
+		spotlightVariableIds.push_back(new SpotLightVariableIds(i, programId));
+	}
 }
 
 /// <summary>
@@ -567,11 +607,12 @@ void Shader::SetPointLightData(const Light& light, const int index)
 	Vector3 pos = light.GetTransform()->GetPosition();
 	pos.x = -pos.x;
 
-	SetShaderAttribut(pointlightVariableNames[index]->color, lightColor * light.GetIntensity());
-	SetShaderAttribut(pointlightVariableNames[index]->position, pos);
-	SetShaderAttribut(pointlightVariableNames[index]->constant, lightConstant);
-	SetShaderAttribut(pointlightVariableNames[index]->linear, light.GetLinearValue());
-	SetShaderAttribut(pointlightVariableNames[index]->quadratic, light.GetQuadraticValue());
+	const PointLightVariableIds* ids = pointlightVariableIds[index];
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->color, lightColor * light.GetIntensity());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->position, pos);
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->constant, lightConstant);
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->linear, light.GetLinearValue());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->quadratic, light.GetQuadraticValue());
 }
 
 /// <summary>
@@ -586,13 +627,15 @@ void Shader::SetDirectionalLightData(const Light& light, const int index)
 
 	Vector3 dir = light.GetTransform()->GetForward();
 	dir.x = -dir.x;
-	SetShaderAttribut(directionallightVariableNames[index]->color, lightColor * light.GetIntensity());
-	SetShaderAttribut(directionallightVariableNames[index]->direction, dir);
+
+	const DirectionalLightsVariableIds* ids = directionallightVariableIds[index];
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->color, lightColor * light.GetIntensity());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->direction, dir);
 }
 
 void Shader::SetAmbientLightData(const Vector3& color)
 {
-	SetShaderAttribut("ambientLight", color);
+	Engine::GetRenderer().SetShaderAttribut(programId, ambientLightLocation, color);
 }
 
 /// <summary>
@@ -611,14 +654,15 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 	Vector3 dir = light.GetTransform()->GetForward();
 	dir.x = -dir.x;
 
-	SetShaderAttribut(spotlightVariableNames[index]->color, lightColor * light.GetIntensity());
-	SetShaderAttribut(spotlightVariableNames[index]->position, pos);
-	SetShaderAttribut(spotlightVariableNames[index]->direction, dir);
-	SetShaderAttribut(spotlightVariableNames[index]->constant, lightConstant);
-	SetShaderAttribut(spotlightVariableNames[index]->linear, light.GetLinearValue());
-	SetShaderAttribut(spotlightVariableNames[index]->quadratic, light.GetQuadraticValue());
-	SetShaderAttribut(spotlightVariableNames[index]->cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
-	SetShaderAttribut(spotlightVariableNames[index]->outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
+	const SpotLightVariableIds* ids = spotlightVariableIds[index];
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->color, lightColor * light.GetIntensity());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->position, pos);
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->direction, dir);
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->constant, lightConstant);
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->linear, light.GetLinearValue());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->quadratic, light.GetQuadraticValue());
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
+	Engine::GetRenderer().SetShaderAttribut(programId, ids->outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
 }
 
 /// <summary>
@@ -626,9 +670,9 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 /// </summary>
 void Shader::UpdateLights(bool disableLights)
 {
-	SetShaderAttribut(pointlightVariableNames[0]->color, Vector3(0,0,0));
-	SetShaderAttribut(spotlightVariableNames[0]->color, Vector3(0, 0, 0));
-	SetShaderAttribut(directionallightVariableNames[0]->color, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, pointlightVariableIds[0]->color, Vector3(0,0,0));
+	Engine::GetRenderer().SetShaderAttribut(programId, spotlightVariableIds[0]->color, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, directionallightVariableIds[0]->color, Vector3(0, 0, 0));
 
 	int directionalUsed = 0;
 	int pointUsed = 0;
@@ -670,9 +714,9 @@ void Shader::UpdateLights(bool disableLights)
 	}
 
 	SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
-	SetShaderAttribut("usedPointLightCount", pointUsed);
-	SetShaderAttribut("usedSpotLightCount", spotUsed);
-	SetShaderAttribut("usedDirectionalLightCount", directionalUsed);
+	Engine::GetRenderer().SetShaderAttribut(programId, usedPointLightCountLocation, pointUsed);
+	Engine::GetRenderer().SetShaderAttribut(programId, usedSpotLightCountLocation, spotUsed);
+	Engine::GetRenderer().SetShaderAttribut(programId, usedDirectionalLightCountLocation, directionalUsed);
 }
 
 std::shared_ptr<Shader> Shader::MakeShader()

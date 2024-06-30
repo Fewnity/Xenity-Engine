@@ -129,6 +129,14 @@ public:
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) {}
 	virtual void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) {}
 
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector4& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector3& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector2& value) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const float value) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const int value) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans) {}
+	virtual void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans) {}
+
 private:
 	virtual void SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection) = 0;
 };

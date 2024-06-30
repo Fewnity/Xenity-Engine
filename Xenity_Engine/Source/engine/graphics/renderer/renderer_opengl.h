@@ -85,6 +85,15 @@ public:
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
 	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
+
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector4& value) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector3& value) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector2& value) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const float value) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const int value) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans) override;
+	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans) override;
+
 	void Setlights(const Camera& camera) override;
 
 private:

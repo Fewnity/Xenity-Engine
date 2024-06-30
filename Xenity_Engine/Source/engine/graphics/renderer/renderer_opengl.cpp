@@ -911,6 +911,41 @@ void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attri
 	glUniformMatrix3fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
 }
 
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector4& value)
+{
+	glUniform4f(attributId, value.x, value.y, value.z, value.w);
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector3& value)
+{
+	glUniform3f(attributId, value.x, value.y, value.z);
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector2& value)
+{
+	glUniform2f(attributId, value.x, value.y);
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const float value)
+{
+	glUniform1f(attributId, value);
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const int value)
+{
+	glUniform1i(attributId, value);
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans)
+{
+	glUniformMatrix4fv(attributId, 1, false, glm::value_ptr(trans));
+}
+
+void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans)
+{
+	glUniformMatrix3fv(attributId, 1, false, glm::value_ptr(trans));
+}
+
 int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 {
 	int type = GL_REPEAT;
