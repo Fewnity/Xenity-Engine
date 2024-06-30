@@ -182,6 +182,10 @@ public:
 	static std::shared_ptr<Material> lineMaterial;
 
 private:
+
+	template <typename T>
+	static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath);
+
 	static int materialCount;
 	static int reflectionCount;
 	static int fileReferenceCount;
