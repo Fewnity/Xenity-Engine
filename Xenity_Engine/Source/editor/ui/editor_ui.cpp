@@ -118,9 +118,8 @@ int EditorUI::Init()
 	LoadComponentIcon("RectTransform", "icons/components/rect_transform.png");
 	LoadComponentIcon("BillboardRenderer", "icons/components/billboard.png");
 	LoadComponentIcon("Default", "icons/components/default.png");
-	// Reuse existing icons
-	LoadComponentIcon("Camera", "icons/camera.png");
-	LoadComponentIcon("Light", "icons/point_light.png");
+	LoadComponentIcon("Camera", "icons/components/camera.png");
+	LoadComponentIcon("Light", "icons/components/point_light.png");
 
 
 	Debug::Print("---- Editor UI initiated ----", true);
