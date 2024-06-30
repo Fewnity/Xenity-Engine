@@ -92,16 +92,16 @@ void AssetManager::OnProjectLoaded()
 		standardOneDirectionalLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_one_directional_light.shader");
 		//standardVertexLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_vertex_lighting.shader");
 		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\unlit.shader");
-		lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\line.shader");
+		//lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\line.shader");
 
-		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-		XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-		XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-		XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null")
+		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null")
+		XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Shader is null")
+		XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Shader is null")
+		XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Shader is null")
 		//XASSERT(standardVertexLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-		XASSERT(lineShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Unlit Shader is null")
+		//XASSERT(lineShader != nullptr, "[AssetManager::OnProjectLoaded] Line Shader is null")
 
 		standardShader->LoadFileReference();
 		standardOneLightEachShader->LoadFileReference();
@@ -110,7 +110,7 @@ void AssetManager::OnProjectLoaded()
 		standardOneDirectionalLightShader->LoadFileReference();
 		//standardVertexLightShader->LoadFileReference();
 		unlitShader->LoadFileReference();
-		lineShader->LoadFileReference();
+		//lineShader->LoadFileReference();
 	}
 
 	// Load materials
@@ -121,16 +121,16 @@ void AssetManager::OnProjectLoaded()
 	standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat");
 	//standardVertexLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardVertexLightingMaterial.mat");
 	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\unlitMaterial.mat");
-	lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\lineMaterial.mat");
+	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\lineMaterial.mat");
 	
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
+	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null")
+	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null")
+	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Material is null")
+	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Material is null")
 	//XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-	XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
+	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Unlit Material is null")
+	//XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Line Material is null")
 
 	standardMaterial->LoadFileReference();
 	standardOneLightEachMaterial->LoadFileReference();
@@ -139,7 +139,7 @@ void AssetManager::OnProjectLoaded()
 	standardOneDirectionalLightMaterial->LoadFileReference();
 	//standardVertexLightMaterial->LoadFileReference();
 	unlitMaterial->LoadFileReference();
-	lineMaterial->LoadFileReference();
+	//lineMaterial->LoadFileReference();
 }
 
 void AssetManager::OnProjectUnloaded()
@@ -147,10 +147,20 @@ void AssetManager::OnProjectUnloaded()
 	defaultTexture.reset();
 
 	standardShader.reset();
+	standardOneLightEachShader.reset();
+	standardOnePointLightShader.reset();
+	standardOneSpotLightShader.reset();
+	standardOneDirectionalLightShader.reset();
+	standardVertexLightShader.reset();
 	unlitShader.reset();
 	lineShader.reset();
 
 	standardMaterial.reset();
+	standardOneLightEachMaterial.reset();
+	standardOnePointLightMaterial.reset();
+	standardOneSpotLightMaterial.reset();
+	standardOneDirectionalLightMaterial.reset();
+	standardVertexLightMaterial.reset();
 	unlitMaterial.reset();
 	lineMaterial.reset();
 }
