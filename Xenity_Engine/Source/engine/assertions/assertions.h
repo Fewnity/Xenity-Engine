@@ -16,11 +16,10 @@
 */
 void OnAssertionFailed(const std::string& message);
 
+// XASSERT is a macro to assert a condition and print a message in the logs in debug mode
 #if defined(DEBUG)
-// DASSERT is a debug assertion that will only be compiled in debug mode
 #define XASSERT(x, message) if (!(x)) { OnAssertionFailed(message); assert(false); } 0
 #else
-// DASSERT is a debug assertion that will only be compiled in debug mode
 #define XASSERT(x, message) 0
 #endif
 
