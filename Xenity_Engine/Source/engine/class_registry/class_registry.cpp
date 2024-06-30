@@ -65,8 +65,8 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
 {
-	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty")
-	XASSERT(gameObject != nullptr, "[ClassRegistry::AddComponentFromName] gameObject is empty")
+	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
+	XASSERT(gameObject != nullptr, "[ClassRegistry::AddComponentFromName] gameObject is empty");
 
 	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{
@@ -80,7 +80,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 #if defined (EDITOR)
 std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 {
-	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty")
+	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
 
 	if (nameToMenu.find(name) != nameToMenu.end()) // Check if the component is in the list
 	{

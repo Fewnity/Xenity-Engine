@@ -55,7 +55,7 @@ public:
 	std::enable_if_t<std::is_base_of<Component, T>::value, void>
 	static AddComponentClass(const std::string& name, bool isVisible = true)
 	{
-		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty")
+		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
 
 		auto function = [](std::shared_ptr<GameObject> go)
 		{
@@ -79,7 +79,7 @@ public:
 	std::enable_if_t<std::is_base_of<Menu, T>::value, void>
 	static AddMenuClass(const std::string& name, bool isVisible = true)
 	{
-		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty")
+		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
 
 		auto function = []()
 		{
@@ -139,7 +139,7 @@ public:
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 	static AddFileClass(const std::string& name, const FileType fileType)
 	{
-		XASSERT(!name.empty(), "[ClassRegistry::AddFileClass] name is empty")
+		XASSERT(!name.empty(), "[ClassRegistry::AddFileClass] name is empty");
 
 		FileClassInfo fileClassInfo;
 		fileClassInfo.name = name;

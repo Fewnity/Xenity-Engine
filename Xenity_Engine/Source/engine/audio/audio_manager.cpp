@@ -426,7 +426,7 @@ PlayedSound::~PlayedSound()
 
 void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
-	XASSERT(audioSource != nullptr, "[AudioManager::PlayAudioSource] audioSource is null")
+	XASSERT(audioSource != nullptr, "[AudioManager::PlayAudioSource] audioSource is null");
 
 	bool found = false;
 
@@ -476,7 +476,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
-	XASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null")
+	XASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null");
 
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;
@@ -509,7 +509,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 /// <param name="light"></param>
 void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 {
-	XASSERT(audioSource != nullptr, "[AudioManager::RemoveAudioSource] audioSource is null")
+	XASSERT(audioSource != nullptr, "[AudioManager::RemoveAudioSource] audioSource is null");
 
 	AudioManager::myMutex->Lock();
 	int audioSourceIndex = 0;

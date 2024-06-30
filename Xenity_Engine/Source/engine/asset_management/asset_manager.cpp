@@ -94,13 +94,13 @@ void AssetManager::OnProjectLoaded()
 		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\unlit.shader");
 		//lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\line.shader");
 
-		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null")
-		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null")
-		XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Shader is null")
-		XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Shader is null")
-		XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Shader is null")
+		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null");
+		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null");
+		XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Shader is null");
+		XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Shader is null");
+		XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Shader is null");
 		//XASSERT(standardVertexLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Unlit Shader is null")
+		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Unlit Shader is null");
 		//XASSERT(lineShader != nullptr, "[AssetManager::OnProjectLoaded] Line Shader is null")
 
 		standardShader->LoadFileReference();
@@ -123,14 +123,14 @@ void AssetManager::OnProjectLoaded()
 	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\unlitMaterial.mat");
 	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\lineMaterial.mat");
 	
-	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null")
-	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null")
-	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null")
-	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Material is null")
-	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Material is null")
-	//XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
-	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Unlit Material is null")
-	//XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Line Material is null")
+	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null");
+	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null");
+	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null");
+	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Material is null");
+	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Material is null");
+	//XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null");
+	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Unlit Material is null");
+	//XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Line Material is null");
 
 	standardMaterial->LoadFileReference();
 	standardOneLightEachMaterial->LoadFileReference();
@@ -169,7 +169,7 @@ void AssetManager::OnProjectUnloaded()
 
 void AssetManager::AddMaterial(Material* material)
 {
-	XASSERT(material != nullptr, "[AssetManager::AddMaterial] Material is null")
+	XASSERT(material != nullptr, "[AssetManager::AddMaterial] Material is null");
 
 	materials.push_back(material);
 	materialCount++;
@@ -177,7 +177,7 @@ void AssetManager::AddMaterial(Material* material)
 
 void AssetManager::AddReflection(Reflective* reflection)
 {
-	XASSERT(reflection != nullptr, "[AssetManager::AddReflection] Reflection is null")
+	XASSERT(reflection != nullptr, "[AssetManager::AddReflection] Reflection is null");
 
 #if defined(EDITOR)
 	if (initialised)
@@ -190,7 +190,7 @@ void AssetManager::AddReflection(Reflective* reflection)
 
 void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
-	XASSERT(fileReference != nullptr, "[AssetManager::AddFileReference] fileReference is null")
+	XASSERT(fileReference != nullptr, "[AssetManager::AddFileReference] fileReference is null");
 
 	fileReferences.push_back(fileReference);
 	fileReferenceCount++;
@@ -202,7 +202,7 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 /// <param name="light"></param>
 void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 {
-	XASSERT(light.lock() != nullptr, "[AssetManager::AddLight] light is null")
+	XASSERT(light.lock() != nullptr, "[AssetManager::AddLight] light is null");
 
 	lights.push_back(light);
 	lightCount++;
@@ -214,7 +214,7 @@ void AssetManager::AddLight(const std::weak_ptr<Light>& light)
 
 void AssetManager::RemoveMaterial(const Material* material)
 {
-	XASSERT(material != nullptr, "[AssetManager::RemoveMaterial] material is null")
+	XASSERT(material != nullptr, "[AssetManager::RemoveMaterial] material is null");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -240,7 +240,7 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflective* reflection)
 {
-	XASSERT(reflection != nullptr, "[AssetManager::RemoveReflection] reflection is null")
+	XASSERT(reflection != nullptr, "[AssetManager::RemoveReflection] reflection is null");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -271,7 +271,7 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
-	XASSERT(fileReference != nullptr, "[AssetManager::ForceDeleteFileReference] fileReference is null")
+	XASSERT(fileReference != nullptr, "[AssetManager::ForceDeleteFileReference] fileReference is null");
 
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
@@ -345,7 +345,7 @@ void AssetManager::RemoveAllFileReferences()
 
 void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
-	XASSERT(fileReference != nullptr, "[AssetManager::RemoveFileReference] fileReference is null")
+	XASSERT(fileReference != nullptr, "[AssetManager::RemoveFileReference] fileReference is null");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -375,7 +375,7 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 /// <param name="light"></param>
 void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 {
-	XASSERT(light.lock() != nullptr, "[AssetManager::RemoveLight] light is null")
+	XASSERT(light.lock() != nullptr, "[AssetManager::RemoveLight] light is null");
 
 	if (!Engine::IsRunning(true))
 		return;

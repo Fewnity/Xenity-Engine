@@ -138,7 +138,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation,
 
 void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 {
-	XASSERT(meshData != nullptr, "[SpriteManager::Render2DLine] meshData is nullptr")
+	XASSERT(meshData != nullptr, "[SpriteManager::Render2DLine] meshData is nullptr");
 
 	spriteBenchmark->Start();
 

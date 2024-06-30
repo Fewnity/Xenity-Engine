@@ -109,74 +109,74 @@ void GameObject::Setup()
 
 void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 {
-	XASSERT(component != nullptr, "[GameObject::RemoveComponent] component is nullptr")
+	XASSERT(component != nullptr, "[GameObject::RemoveComponent] component is nullptr");
 
-		// If the component is not already waiting for destroy
-		if (component && !component->waitingForDestroy)
+	// If the component is not already waiting for destroy
+	if (component && !component->waitingForDestroy)
+	{
+		component->waitingForDestroy = true;
+		GameplayManager::componentsToDestroy.push_back(component);
+
+		// Remove the component from the gameobject's components list
+		for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
 		{
-			component->waitingForDestroy = true;
-			GameplayManager::componentsToDestroy.push_back(component);
-
-			// Remove the component from the gameobject's components list
-			for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
+			if (components[componentIndex] == component)
 			{
-				if (components[componentIndex] == component)
-				{
-					components.erase(components.begin() + componentIndex);
-					componentCount--;
-					break;
-				}
+				components.erase(components.begin() + componentIndex);
+				componentCount--;
+				break;
 			}
 		}
+	}
 }
 
 void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 {
-	XASSERT(newChild != nullptr, "[GameObject::AddChild] newChild is nullptr")
+	XASSERT(newChild != nullptr, "[GameObject::AddChild] newChild is nullptr");
 
-		if (newChild)
+	if (newChild)
+	{
+		if (newChild->IsParentOf(shared_from_this()))
 		{
-			if (newChild->IsParentOf(shared_from_this()))
-			{
-				return;
-			}
+			return;
+		}
 
-			// Remove the new child from his old parent's children list
-			if (newChild->parent.lock())
+		// Remove the new child from his old parent's children list
+		if (newChild->parent.lock())
+		{
+			std::shared_ptr<GameObject> oldParent = newChild->parent.lock();
+			const int parentChildCount = oldParent->childCount;
+			for (int i = 0; i < parentChildCount; i++)
 			{
-				std::shared_ptr<GameObject> oldParent = newChild->parent.lock();
-				const int parentChildCount = oldParent->childCount;
-				for (int i = 0; i < parentChildCount; i++)
+				if (oldParent->children[i].lock() == newChild)
 				{
-					if (oldParent->children[i].lock() == newChild)
-					{
-						oldParent->children.erase(oldParent->children.begin() + i);
-						oldParent->childCount--;
-						break;
-					}
-				}
-			}
-
-			// Check if the child to add is alrady a child of this gameobject
-			bool add = true;
-			for (int i = 0; i < childCount; i++)
-			{
-				if (children[i].lock() == newChild)
-				{
-					add = false;
+					oldParent->children.erase(oldParent->children.begin() + i);
+					oldParent->childCount--;
 					break;
 				}
 			}
+		}
 
-			if (add)
+		// Check if the child to add is alrady a child of this gameobject
+		bool add = true;
+		for (int i = 0; i < childCount; i++)
+		{
+			if (children[i].lock() == newChild)
 			{
-				children.push_back(newChild);
-				childCount++;
-				newChild->parent = shared_from_this();
-				newChild->transform->OnParentChanged();
-				newChild->UpdateActive(newChild);
+				add = false;
+				break;
 			}
 		}
+
+		if (add)
+		{
+			children.push_back(newChild);
+			childCount++;
+			newChild->parent = shared_from_this();
+			newChild->transform->OnParentChanged();
+			newChild->UpdateActive(newChild);
+		}
+	}
 }
 
 void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
@@ -209,10 +209,10 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 
 void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componentToAdd)
 {
-	XASSERT(componentToAdd != nullptr, "[GameObject::AddExistingComponent] componentToAdd is nullptr")
+	XASSERT(componentToAdd != nullptr, "[GameObject::AddExistingComponent] componentToAdd is nullptr");
 
-		if (!componentToAdd.get())
-			return;
+	if (!componentToAdd.get())
+		return;
 
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
@@ -247,9 +247,9 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 
 std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 {
-	XASSERT(!name.empty(), "[GameObject::FindGameObjectByName] name is empty")
+	XASSERT(!name.empty(), "[GameObject::FindGameObjectByName] name is empty");
 
-		const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
+	const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
 
 	if (name == "@")
 		return std::shared_ptr<GameObject>();
@@ -296,7 +296,7 @@ void GameObject::SetActive(const bool active)
 
 void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 {
-	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty")
+	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty");
 
 	const bool lastLocalActive = localActive;
 	if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false

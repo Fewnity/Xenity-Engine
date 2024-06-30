@@ -413,7 +413,7 @@ void Graphics::DeleteAllDrawables()
 
 void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 {
-	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr")
+	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr");
 
 	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
@@ -423,7 +423,7 @@ void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 
 void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove)
 {
-	XASSERT(drawableToRemove != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr")
+	XASSERT(drawableToRemove != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -442,7 +442,7 @@ void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove
 
 void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 {
-	XASSERT(lodToAdd.lock() != nullptr, "[Graphics::AddLod] lodToAdd is nullptr")
+	XASSERT(lodToAdd.lock() != nullptr, "[Graphics::AddLod] lodToAdd is nullptr");
 
 	lods.push_back(lodToAdd);
 	lodsCount++;
@@ -450,7 +450,7 @@ void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 
 void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 {
-	XASSERT(lodToRemove.lock() != nullptr, "[Graphics::RemoveLod] lodToRemove is nullptr")
+	XASSERT(lodToRemove.lock() != nullptr, "[Graphics::RemoveLod] lodToRemove is nullptr");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -468,7 +468,7 @@ void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 
 void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 {
-	XASSERT(cameraToRemove.lock() != nullptr, "[Graphics::RemoveCamera] cameraToRemove is nullptr")
+	XASSERT(cameraToRemove.lock() != nullptr, "[Graphics::RemoveCamera] cameraToRemove is nullptr");
 
 	const size_t cameraCount = cameras.size();
 	for (size_t cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++)
@@ -489,7 +489,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr")
+	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
 	if (texture == nullptr)
 		texture = AssetManager::defaultTexture;

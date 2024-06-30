@@ -30,7 +30,7 @@ struct GameObjectAndId
 
 void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& goToDuplicate, std::vector<ComponentAndId>& ComponentsAndIds, std::vector<GameObjectAndId>& GameObjectsAndIds)
 {
-	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::DuplicateChild] goToDuplicate is nullptr")
+	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::DuplicateChild] goToDuplicate is nullptr");
 
 
 	// Create new gameobject
@@ -95,7 +95,7 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 
 std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToDuplicate)
 {
-	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::Instantiate] goToDuplicate is nullptr")
+	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::Instantiate] goToDuplicate is nullptr");
 
 	if (!goToDuplicate)
 		return nullptr;
@@ -202,7 +202,7 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 
 void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 {
-	XASSERT(gameObject != nullptr, "[GamePlayUtility::DestroyGameObjectAndChild] gameObject is nullptr")
+	XASSERT(gameObject != nullptr, "[GamePlayUtility::DestroyGameObjectAndChild] gameObject is nullptr");
 
 	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
 	GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);

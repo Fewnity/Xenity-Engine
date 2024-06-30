@@ -43,7 +43,7 @@ void RectTransform::OnReflectionUpdated()
 
 void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas) 
 {
-	XASSERT(canvas != nullptr, "[RectTransform::UpdatePosition] canvas is nullptr")
+	XASSERT(canvas != nullptr, "[RectTransform::UpdatePosition] canvas is nullptr");
 
 	float aspect = Graphics::usedCamera->GetAspectRatio();
 #if defined(EDITOR)

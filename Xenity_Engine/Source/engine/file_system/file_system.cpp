@@ -46,7 +46,7 @@ FileSystem *FileSystem::fileSystem = nullptr;
 
 void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recursive)
 {
-	XASSERT(directory != nullptr, "[FileSystem::FillDirectory] directory is nullptr")
+	XASSERT(directory != nullptr, "[FileSystem::FillDirectory] directory is nullptr");
 
 	directory->files.clear();
 	directory->subdirectories.clear();
@@ -253,7 +253,7 @@ std::vector<std::shared_ptr<File>> files;
 
 std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 {
-	XASSERT(!path.empty(), "[FileSystem::MakeFile] path is empty")
+	XASSERT(!path.empty(), "[FileSystem::MakeFile] path is empty");
 
 	std::shared_ptr<File> file;
 
@@ -291,7 +291,7 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 
 bool FileSystem::CreateFolder(const std::string &path)
 {
-	XASSERT(!path.empty(), "[FileSystem::CreateFolder] path is empty")
+	XASSERT(!path.empty(), "[FileSystem::CreateFolder] path is empty");
 
 	bool result = true;
 	try
@@ -308,7 +308,7 @@ bool FileSystem::CreateFolder(const std::string &path)
 
 void FileSystem::Delete(const std::string &path)
 {
-	XASSERT(!path.empty(), "[FileSystem::Delete] path is empty")
+	XASSERT(!path.empty(), "[FileSystem::Delete] path is empty");
 #if defined(_EE)
 	return;
 #endif

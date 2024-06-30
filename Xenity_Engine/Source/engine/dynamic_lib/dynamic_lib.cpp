@@ -17,7 +17,7 @@ HINSTANCE library;
 
 void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
-	XASSERT(!libraryName.empty(), "[DynamicLibrary::LoadGameLibrary] libraryName is empty")
+	XASSERT(!libraryName.empty(), "[DynamicLibrary::LoadGameLibrary] libraryName is empty");
 
 	const std::string fileName = libraryName + ".dll";
 

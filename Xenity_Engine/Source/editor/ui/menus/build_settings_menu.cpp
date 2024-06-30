@@ -299,7 +299,7 @@ const BuildPlatform& BuildSettingsMenu::GetBuildPlatform(Platform platform)
 		}
 	}
 
-	XASSERT(false, "[BuildSettingsMenu::GetBuildPlatform] No platform found")
+	XASSERT(false, "[BuildSettingsMenu::GetBuildPlatform] No platform found");
 	return buildPlatforms[0];
 }
 

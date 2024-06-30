@@ -173,17 +173,17 @@ public:
 	*/
 	static void RemoveMenu(Menu* menu)
 	{
-		XASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr")
+		XASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr");
 
-			for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < menuCount; i++)
+		{
+			if (menu == menus[i].get())
 			{
-				if (menu == menus[i].get())
-				{
-					menus.erase(menus.begin() + i);
-					menuCount--;
-					break;
-				}
+				menus.erase(menus.begin() + i);
+				menuCount--;
+				break;
 			}
+		}
 	}
 
 	/**

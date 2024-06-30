@@ -368,7 +368,7 @@ bool Shader::Use()
 
 bool Shader::Compile(const std::string& shaderData, ShaderType type)
 {
-	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty")
+	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty");
 
 	const char* shaderDataConst = shaderData.c_str();
 
@@ -390,7 +390,7 @@ bool Shader::Compile(const std::string& shaderData, ShaderType type)
 		break;
 	}
 
-	XASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr")
+	XASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr");
 
 	//Compile
 	*id = Engine::GetRenderer().CreateShader(type);

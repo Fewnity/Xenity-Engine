@@ -13,7 +13,7 @@
 
 File::File(std::string _path) : UniqueId(true)
 {
-	XASSERT(!_path.empty(), "[File::File] _path is nullptr")
+	XASSERT(!_path.empty(), "[File::File] _path is nullptr");
 
 	if (_path.empty())
 	{

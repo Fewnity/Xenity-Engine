@@ -514,9 +514,9 @@ void Editor::ClearSelectedGameObjects()
 
 void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToAdd)
 {
-	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr")
+	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr");
 
-		bool found = false;
+	bool found = false;
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
 		if (currentGameObject.lock() == gameObjectToAdd)
@@ -535,9 +535,9 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 
 void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToRemove)
 {
-	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr")
+	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr");
 
-		const size_t goCount = selectedGameObjects.size();
+	const size_t goCount = selectedGameObjects.size();
 	for (size_t i = 0; i < goCount; i++)
 	{
 		if (selectedGameObjects[i].lock() == gameObjectToRemove)
@@ -551,15 +551,15 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 
 bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObjectToCheck)
 {
-	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr")
+	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr");
 
-		for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	{
+		if (currentGameObject.lock() == gameObjectToCheck)
 		{
-			if (currentGameObject.lock() == gameObjectToCheck)
-			{
-				return true;
-			}
+			return true;
 		}
+	}
 
 	return false;
 }
@@ -615,8 +615,8 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 		break;
 	default:
 	{
-		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file")
-			break;
+		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file");
+		break;
 	}
 	}
 
@@ -933,9 +933,9 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 
 bool Editor::OpenExecutableFile(const std::string& executablePath)
 {
-	XASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty")
-		if (executablePath.empty())
-			return false;
+	XASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty");
+	if (executablePath.empty())
+		return false;
 
 	std::string finalName;
 	std::string path;
