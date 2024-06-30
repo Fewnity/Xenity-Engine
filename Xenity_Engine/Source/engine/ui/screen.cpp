@@ -10,7 +10,7 @@
 
 int Screen::height = 0;
 int Screen::width = 0;
-bool Screen::useVSync = 0;
+bool Screen::useVSync = true;
 
 void Screen::SetFullScreen(bool useFullScreenMode)
 {
@@ -33,4 +33,9 @@ void Screen::SetVSync(bool _useVSync)
 		SDL_GL_SetSwapInterval(0);
 	}
 #endif
+}
+
+bool Screen::IsVSyncEnabled()
+{
+	return useVSync;
 }

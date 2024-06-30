@@ -18,6 +18,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <engine/ui/screen.h>
 
 static unsigned int __attribute__((aligned(16))) list[262144];
 #include <pspkernel.h>
@@ -122,10 +123,10 @@ void RendererGU::EndFrame()
 	sceGuSync(0, 0);
 	//}
 
-	//if (vsync)
-	//{
+	if (Screen::IsVSyncEnabled())
+	{
 		sceDisplayWaitVblankStart();
-	//}
+	}
 
 	sceGuSwapBuffers();
 }

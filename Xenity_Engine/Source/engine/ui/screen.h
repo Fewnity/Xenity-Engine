@@ -34,6 +34,12 @@ public:
 	*/
 	static void SetVSync(bool isVSync);
 
+	/**
+	* @brief Get if VSync is enabled
+	* @return True if VSync is enabled, false otherwise
+	*/
+	static bool IsVSyncEnabled();
+
 private:
 	static int height;
 	static int width;
