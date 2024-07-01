@@ -131,7 +131,7 @@ void MainBarMenu::Draw()
 			SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 		}
 		ImGui::Separator();
-		if (ImGui::MenuItem("Build Settings", nullptr, nullptr, isGameStopped))
+		if (ImGui::MenuItem("Build Settings", nullptr, nullptr))
 		{
 			Editor::GetMenu<BuildSettingsMenu>()->SetActive(true);
 			Editor::GetMenu<BuildSettingsMenu>()->Focus();

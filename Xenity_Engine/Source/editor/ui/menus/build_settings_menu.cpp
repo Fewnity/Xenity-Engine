@@ -12,6 +12,7 @@
 #include <engine/engine_settings.h>
 #include <engine/file_system/file_system.h>
 #include <editor/command/command_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 using json = nlohmann::json;
 
@@ -93,6 +94,8 @@ void BuildSettingsMenu::Draw()
 	if (visible)
 	{
 		OnStartDrawing();
+
+		bool isGameStopped = GameplayManager::GetGameState() == GameState::Stopped;
 		ImGuiStyle& style = ImGui::GetStyle();
 		// Create table
 		if (ImGui::BeginTable("build_settings_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
@@ -263,6 +266,7 @@ void BuildSettingsMenu::Draw()
 			else
 				ImGui::SetCursorPosX(availColSize.x - (80));
 			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y));
+			ImGui::BeginDisabled(!isGameStopped);
 			if (ImGui::Button("Build", ImVec2(80, 20)))
 			{
 				StartBuild(platform, BuildType::BuildGame);
@@ -275,6 +279,7 @@ void BuildSettingsMenu::Draw()
 					StartBuild(platform, BuildType::BuildAndRunGame);
 				}
 			}
+			ImGui::EndDisabled();
 
 			ImGui::EndChild();
 		}
