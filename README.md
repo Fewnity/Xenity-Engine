@@ -33,7 +33,8 @@ Features:
 - [X] Skyboxes
 - [X] Scenes
 - [ ] Animations
-- [X] Physics (Only box colliders, not affected by rotation and scale of a transform)
+- [X] 3D Physics (Only box colliders, not affected by rotation and scale of a transform)
+- [ ] 2D Physics
 - [X] C++ Hot Reloading
 
 > [!NOTE]
