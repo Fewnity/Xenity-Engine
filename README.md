@@ -1,6 +1,6 @@
 # Xenity Engine
 
-Xenity Engine is a crossplatform game engine based on GameObjects and Components.
+Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita and Windows.
 
 [Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
 
@@ -22,7 +22,7 @@ Refactor, bug fixes, optimizations, structure improvements or documentations eve
 ✔️ | PlayStation Vita
 ❌ | PlayStation 2
 ❌ | PlayStation 3
-
+❌ | Linux
 
 Features:
 
@@ -33,23 +33,21 @@ Features:
 - [X] Skyboxes
 - [X] Scenes
 - [ ] Animations
-- [X] Physics (Only box colliders, needs to be changed with a pre-made physics engine like Bullet)
+- [X] Physics (Only box colliders, not affected by rotation and scale of a transform)
 - [X] C++ Hot Reloading
 
+> [!NOTE]
+> I'm planning to create Xenity Engine 2 from scratch to fix all code problems of the current Xenity Engine, so don't expect new feature in the future.
+
 > [!WARNING]
-> The engine is far from finished. So there are many problems you may encounter during game development:
-> - A project can be corrupted if a bug append during file read/write.
-  Meta files maybe be blank, so keep a save of your project.
+> The engine is not finished. So you may encounter problems during game development like:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
-> - Do not duplicate a meta file, each meta file has a unique file id in it.
+> - Duplicating a meta file will cause problems, each meta file has a unique file id in it.
+> - Gamepad hot plug is not supported yet
 
 > [!NOTE]
 > If you want to compile a game in the editor, you have to change set `Compiler path` in the `Engine Settings` menu (Window->Engine Settings). You can set the `PPSSPP location` for Build And Run for PSP builds.
 > `Compiler path` is by default `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build`, change this if your Visual Studio installation/version is different.
-
-## How to compile the engine in Visual Studio
-- Set the project `Xenity_Engine_Executable` as startup project.
-- Compile `Engine` configuration then `Editor` to generate all dll files.
 
 ## How to use the engine
 ### How to play the game in the editor
@@ -75,6 +73,10 @@ Audio: `.wav .mp3`
 Mesh: `.obj (Triangulate, no vertex color)`
 
 Font: `.ttf`
+
+## How to compile the engine in Visual Studio
+- Set the project `Xenity_Engine_Executable` as startup project.
+- Compile `Engine` configuration then `Editor` to generate all dll files.
 
 ## How the engine internally works
 
