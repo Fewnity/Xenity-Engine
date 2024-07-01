@@ -75,12 +75,12 @@ public:
 		isLoading = _isLoading;
 	}
 
-	bool GetIsLoading() const
+	bool IsLoading() const
 	{
 		return isLoading;
 	}
 
-	bool GetIsLoaded() const
+	bool IsLoaded() const
 	{
 		return isLoaded;
 	}

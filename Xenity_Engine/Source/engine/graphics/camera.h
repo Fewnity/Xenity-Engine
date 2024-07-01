@@ -239,7 +239,7 @@ protected:
 	/**
 	* [Internal] Get if the camera is for the editor
 	*/
-	inline bool GetIsEditor()
+	inline bool IsEditor()
 	{
 		return isEditor;
 	}

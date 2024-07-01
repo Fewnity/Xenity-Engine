@@ -64,7 +64,7 @@ void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	command.drawable = this;
 	command.subMesh = nullptr;
 	command.transform = GetTransform();
-	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 	if (!material->GetUseTransparency())
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];

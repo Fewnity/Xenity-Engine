@@ -106,7 +106,7 @@ void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	command.drawable = this;
 	command.subMesh = nullptr;
 	command.transform = GetTransform();
-	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.uiCommands.push_back(command);
 	renderBatch.uiCommandIndex++;

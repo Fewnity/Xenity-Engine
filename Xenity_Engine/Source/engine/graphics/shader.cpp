@@ -687,7 +687,7 @@ void Shader::UpdateLights(bool disableLights)
 		for (int lightI = 0; lightI < lightCount; lightI++)
 		{
 			const Light& light = *AssetManager::GetLight(lightI).lock();
-			if (light.GetIsEnabled() && light.GetGameObject()->GetLocalActive())
+			if (light.IsEnabled() && light.GetGameObject()->IsLocalActive())
 			{
 				if (light.type == LightType::Directional)
 				{

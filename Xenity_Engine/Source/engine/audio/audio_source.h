@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief Get is playing
 	*/
-	inline bool GetIsPlaying() const
+	inline bool IsPlaying() const
 	{
 		return isPlaying;
 	}
@@ -83,7 +83,7 @@ public:
 	/**
 	* @brief Get is looping
 	*/
-	inline bool GetIsLooping() const
+	inline bool IsLooping() const
 	{
 		return loop;
 	}

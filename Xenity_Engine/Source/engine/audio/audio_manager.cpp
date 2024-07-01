@@ -308,8 +308,8 @@ int fillAudioBufferThread()
 
 					playedSound->volume = audioSource->GetVolume();
 					playedSound->pan = audioSource->GetPanning();
-					playedSound->isPlaying = audioSource->GetIsPlaying();
-					playedSound->loop = audioSource->GetIsLooping();
+					playedSound->isPlaying = audioSource->IsPlaying();
+					playedSound->loop = audioSource->IsLooping();
 				}
 			}
 		}
@@ -464,8 +464,8 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 		newPlayedSound->volume = audioSource->GetVolume();
 		newPlayedSound->pan = audioSource->GetPanning();
-		newPlayedSound->isPlaying = audioSource->GetIsPlaying();
-		newPlayedSound->loop = audioSource->GetIsLooping();
+		newPlayedSound->isPlaying = audioSource->IsPlaying();
+		newPlayedSound->loop = audioSource->IsLooping();
 
 		AudioManager::myMutex->Lock();
 		channel->playedSounds.push_back(newPlayedSound);

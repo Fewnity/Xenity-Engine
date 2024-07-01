@@ -79,7 +79,7 @@ void RigidBody::SetIsStatic(float _isStatic)
 
 void RigidBody::Tick()
 {
-	if (GetGameObject()->GetLocalActive() && GetIsEnabled())
+	if (GetGameObject()->IsLocalActive() && IsEnabled())
 	{
 		int side = (int)CollisionSide::NoSide;
 		std::shared_ptr<BoxCollider> rbBoxCollider = GetGameObject()->GetComponent<BoxCollider>();
@@ -92,7 +92,7 @@ void RigidBody::Tick()
 			for (int i = 0; i < colliderCount; i++)
 			{
 				other = PhysicsManager::boxColliders[i].lock();
-				if (other != rbBoxCollider && other->GetIsEnabled() && other->GetGameObject()->GetLocalActive())
+				if (other != rbBoxCollider && other->IsEnabled() && other->GetGameObject()->IsLocalActive())
 				{
 					const std::shared_ptr<RigidBody> otherRigidbody = other->GetAttachedRigidbody().lock();
 					if (rbBoxCollider->isTrigger && isStatic && otherRigidbody && !otherRigidbody->isStatic) // Check trigger

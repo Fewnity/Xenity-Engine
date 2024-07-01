@@ -156,7 +156,7 @@ void Graphics::Draw()
 	for(const std::weak_ptr<Camera>& weakCam: cameras)
 	{
 		usedCamera = weakCam.lock();
-		if (usedCamera->GetIsEnabled() && usedCamera->GetGameObject()->GetLocalActive())
+		if (usedCamera->IsEnabled() && usedCamera->GetGameObject()->IsLocalActive())
 		{
 			SortTransparentDrawables();
 			CheckLods();
@@ -215,9 +215,9 @@ void Graphics::Draw()
 					com.drawable->DrawCommand(com);
 			}
 
-			if (!usedCamera->GetIsEditor())
+			if (!usedCamera->IsEditor())
 				currentMode = IDrawableTypes::Draw_UI;
-			if (UseOpenGLFixedFunctions && !usedCamera->GetIsEditor())
+			if (UseOpenGLFixedFunctions && !usedCamera->IsEditor())
 			{
 				Engine::GetRenderer().SetCameraPosition(Vector3(0,0,-1), Vector3(0,0,0));
 				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
@@ -233,7 +233,7 @@ void Graphics::Draw()
 			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
-			if (usedCamera->GetIsEditor())
+			if (usedCamera->IsEditor())
 			{
 				Engine::GetRenderer().SetFog(false);
 
@@ -288,7 +288,7 @@ void Graphics::Draw()
 				{
 					if (std::shared_ptr<Component> component = weakComponent.lock())
 					{
-						if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
+						if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
 						{
 							component->OnDrawGizmos();
 
@@ -508,7 +508,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	else
 	{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
-		if (!forUI || usedCamera->GetIsEditor())
+		if (!forUI || usedCamera->IsEditor())
 			Engine::GetRenderer().SetCameraPosition(*usedCamera);
 #endif
 		Engine::GetRenderer().SetTransform(matrix);
@@ -577,7 +577,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 			continue;
 
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
-		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->GetLocalActive() && meshRenderer->GetIsEnabled())
+		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->IsLocalActive() && meshRenderer->IsEnabled())
 		{
 			const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
 

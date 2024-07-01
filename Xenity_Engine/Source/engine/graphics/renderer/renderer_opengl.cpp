@@ -383,7 +383,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
 	}
 	glBindVertexArray(0); // Disable this?
-	if (Graphics::usedCamera->GetIsEditor())
+	if (Graphics::usedCamera->IsEditor())
 	{
 		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		Performance::AddDrawCall();
@@ -564,7 +564,7 @@ void RendererOpengl::Setlights(const Camera& camera)
 	for (int i = 0; i < lightCount; i++)
 	{
 		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
-		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
+		if (light && light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
 			if (light->type == LightType::Directional)
 			{

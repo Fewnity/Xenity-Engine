@@ -99,7 +99,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			{
 				j["GameObjects"][gameObjectId]["Components"][compIdString]["Type"] = component->GetComponentName();
 				j["GameObjects"][gameObjectId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveDataToJson(componentData);
-				j["GameObjects"][gameObjectId]["Components"][compIdString]["Enabled"] = component->GetIsEnabled();
+				j["GameObjects"][gameObjectId]["Components"][compIdString]["Enabled"] = component->IsEnabled();
 			}
 			else
 			{
@@ -371,7 +371,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			for (int i = 0; i < componentsToInitCount; i++)
 			{
 				std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
-				if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->GetLocalActive())
+				if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive())
 				{
 					componentToInit->Awake();
 					componentToInit->isAwakeCalled = true;
@@ -445,7 +445,7 @@ void SceneManager::ClearScene()
 	size_t cameraCount = Graphics::cameras.size();
 	for (size_t i = 0; i < cameraCount; i++)
 	{
-		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->GetIsEditor())
+		if (Graphics::cameras[i].expired() || !Graphics::cameras[i].lock()->IsEditor())
 		{
 			Graphics::cameras.erase(Graphics::cameras.begin() + i);
 			i--;

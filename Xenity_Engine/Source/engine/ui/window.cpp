@@ -141,7 +141,7 @@ void Window::UpdateWindowTitle()
 {
 #if defined(_WIN32) || defined(_WIN64)
 	std::string newTitle = "";
-	if (ProjectManager::GetIsProjectLoaded())
+	if (ProjectManager::IsProjectLoaded())
 	{
 		newTitle += ProjectManager::GetProjectName() + " - ";
 		if (SceneManager::GetOpenedScene())

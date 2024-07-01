@@ -330,7 +330,7 @@ void Engine::Loop()
 		editorUpdateBenchmark->Stop();
 #endif
 
-		if (ProjectManager::GetIsProjectLoaded())
+		if (ProjectManager::IsProjectLoaded())
 		{
 			AssetManager::RemoveUnusedFiles();
 

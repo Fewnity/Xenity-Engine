@@ -79,7 +79,7 @@ public:
 	/**
 	* @brief Get the enabled state of the item
 	*/
-	bool GetIsEnabled() const
+	bool IsEnabled() const
 	{
 		return isEnabled;
 	}

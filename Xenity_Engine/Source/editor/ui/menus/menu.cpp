@@ -52,7 +52,7 @@ void Menu::SetActive(bool active)
 	}
 }
 
-bool Menu::GetActive() const
+bool Menu::IsActive() const
 {
 	return isActive;
 }

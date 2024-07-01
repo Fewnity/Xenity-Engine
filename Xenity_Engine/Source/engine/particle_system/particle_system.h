@@ -47,7 +47,7 @@ public:
 		isEmitting = _isEmitting;
 	}
 
-	inline bool GetIsEmitting() const
+	inline bool IsEmitting() const
 	{
 		return isEmitting;
 	}

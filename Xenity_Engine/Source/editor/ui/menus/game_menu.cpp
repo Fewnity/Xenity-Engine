@@ -27,7 +27,7 @@ void GameMenu::Draw()
 		// Get game's camera
 		for (size_t i = 0; i < cameraCount; i++)
 		{
-			if (!Graphics::cameras[i].lock()->GetIsEditor())
+			if (!Graphics::cameras[i].lock()->IsEditor())
 			{
 				camera = Graphics::cameras[i].lock();
 				if (needUpdateCamera)

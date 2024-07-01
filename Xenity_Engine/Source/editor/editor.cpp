@@ -215,7 +215,7 @@ void Editor::OnCodeModified()
 
 void Editor::OnWindowFocused()
 {
-	if (ProjectManager::GetIsProjectLoaded())
+	if (ProjectManager::IsProjectLoaded())
 	{
 		FileHandler::HasFileChangedOrAddedThreaded(ProjectManager::GetAssetFolderPath(), OnFileModified);
 		FileHandler::HasCodeChangedThreaded(ProjectManager::GetAssetFolderPath(), OnCodeModified);
@@ -224,7 +224,7 @@ void Editor::OnWindowFocused()
 
 void Editor::Update()
 {
-	if (ProjectManager::GetIsProjectLoaded())
+	if (ProjectManager::IsProjectLoaded())
 	{
 		//------- Check shortcuts
 
@@ -382,7 +382,7 @@ void Editor::Draw()
 	//int menuCount = menus.size();
 	for (int i = 0; i < menuCount; i++)
 	{
-		if (menus[i]->GetActive() && menus[i]->group == currentMenu)
+		if (menus[i]->IsActive() && menus[i]->group == currentMenu)
 			menus[i]->Draw();
 	}
 

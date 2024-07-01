@@ -229,7 +229,7 @@ public:
 	/**
 	* @brief Get if the project is loaded
 	*/
-	static inline bool GetIsProjectLoaded()
+	static inline bool IsProjectLoaded()
 	{
 		return projectLoaded;
 	}

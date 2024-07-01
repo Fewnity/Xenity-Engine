@@ -29,7 +29,7 @@ protected:
 	* @brief Gets if the file is a header file
 	* @return If the file is a header file
 	*/
-	inline bool GetIsHeader()
+	inline bool IsHeader()
 	{
 		return isHeader;
 	}

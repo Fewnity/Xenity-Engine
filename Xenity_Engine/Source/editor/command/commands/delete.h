@@ -71,7 +71,7 @@ inline InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObje
 		gameObjectComponent.componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(component->GetReflectiveData());
 		gameObjectComponent.componentName = component->GetComponentName();
 		gameObjectComponent.componentId = component->GetUniqueId();
-		gameObjectComponent.isEnabled = component->GetIsEnabled();
+		gameObjectComponent.isEnabled = component->IsEnabled();
 		gameObjectChild.components.push_back(gameObjectComponent);
 	}
 	return gameObjectChild;
@@ -127,7 +127,7 @@ inline InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(std::w
 	//this->gameObjectId = gameObjectToDestroyLock->GetUniqueId();
 	//this->gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(gameObjectToDestroyLock->GetReflectiveData());
 	//this->componentName = componentToDestroyLock->GetComponentName();
-	//isEnabled = componentToDestroyLock->GetIsEnabled();
+	//isEnabled = componentToDestroyLock->IsEnabled();
 }
 
 inline void InspectorDeleteGameObjectCommand::Execute()
@@ -178,7 +178,7 @@ inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::
 	this->gameObjectId = componentToDestroyLock->GetGameObject()->GetUniqueId();
 	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
 	this->componentName = componentToDestroyLock->GetComponentName();
-	isEnabled = componentToDestroyLock->GetIsEnabled();
+	isEnabled = componentToDestroyLock->IsEnabled();
 }
 
 template<typename T>

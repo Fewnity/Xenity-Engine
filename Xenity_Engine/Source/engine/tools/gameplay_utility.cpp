@@ -64,7 +64,7 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 	{
 		std::shared_ptr<Component> componentToDuplicate = goToDuplicateComponents[i];
 		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), newGameObject);
-		newComponent->SetIsEnabled(componentToDuplicate->GetIsEnabled());
+		newComponent->SetIsEnabled(componentToDuplicate->IsEnabled());
 		ReflectiveData newReflection = newComponent->GetReflectiveData();
 		ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
 

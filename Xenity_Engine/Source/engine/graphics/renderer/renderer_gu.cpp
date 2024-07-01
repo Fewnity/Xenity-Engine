@@ -522,7 +522,7 @@ void RendererGU::Setlights(const Camera& camera)
 	for (int i = 0; i < lightCount; i++)
 	{
 		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
-		if (light && light->GetIsEnabled() && light->GetGameObject()->GetLocalActive())
+		if (light && light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
 			if (light->type == LightType::Directional)
 			{

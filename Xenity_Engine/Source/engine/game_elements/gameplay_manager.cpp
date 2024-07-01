@@ -117,7 +117,7 @@ void GameplayManager::UpdateComponents()
 		{
 			if (std::shared_ptr<Component> component = orderedComponents[i].lock())
 			{
-				if (component->GetGameObject()->GetLocalActive() && component->GetIsEnabled())
+				if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
 				{
 					lastUpdatedComponent = component;
 					component->Update();
@@ -177,7 +177,7 @@ void GameplayManager::InitialiseComponents()
 	{
 		if (auto componentToCheck = orderedComponents[i].lock())
 		{
-			if (!componentToCheck->initiated && componentToCheck->GetIsEnabled() && componentToCheck->GetGameObject()->GetLocalActive())
+			if (!componentToCheck->initiated && componentToCheck->IsEnabled() && componentToCheck->GetGameObject()->IsLocalActive())
 			{
 				orderedComponentsToInit.push_back(componentToCheck);
 				componentsToInitCount++;

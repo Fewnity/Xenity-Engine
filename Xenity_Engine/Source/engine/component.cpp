@@ -79,7 +79,7 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 	}
 }
 
-bool Component::GetIsEnabled() const
+bool Component::IsEnabled() const
 {
 	return isEnabled;
 }

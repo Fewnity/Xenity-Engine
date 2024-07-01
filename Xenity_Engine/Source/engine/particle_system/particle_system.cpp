@@ -316,7 +316,7 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 	else
 		command.subMesh = mesh->subMeshes[0];
 	command.transform = GetTransform();
-	command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 	if (!material->GetUseTransparency())
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];

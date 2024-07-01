@@ -69,7 +69,7 @@ public:
 	/**
 	* @brief Return if the menu is active
 	*/
-	virtual bool GetActive() const;
+	virtual bool IsActive() const;
 
 	MenuGroup group = MenuGroup::Menu_Editor;
 	int id = 0;

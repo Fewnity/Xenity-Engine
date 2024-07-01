@@ -66,7 +66,7 @@ public:
 	/**
 	* @brief Get if the component is enabled
 	*/
-	bool GetIsEnabled() const;
+	bool IsEnabled() const;
 
 	/**
 	* @brief Enable or disable the component*

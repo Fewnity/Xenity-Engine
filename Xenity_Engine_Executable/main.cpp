@@ -24,8 +24,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Rework the documentation
 Box colliders are not affected by gameobject scale
-Clean code
-Check material system
 Make console text selectable
 Fix shader compiled twice
 
@@ -95,6 +93,10 @@ Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = tr
 
 int main(int argc, char* argv[])
 {
+	if (true) 
+	{
+
+	};
 	// Init engine
 	const int engineInitResult = Engine::Init();
 	if (engineInitResult != 0)

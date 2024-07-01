@@ -23,7 +23,7 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 	for (size_t i = 0; i < colliderCount; i++)
 	{
 		const std::shared_ptr<BoxCollider> boxCollider = PhysicsManager::boxColliders[i].lock();
-		if (boxCollider && boxCollider->GetIsEnabled() && boxCollider->GetGameObject()->GetLocalActive())
+		if (boxCollider && boxCollider->IsEnabled() && boxCollider->GetGameObject()->IsLocalActive())
 		{
 			RaycastHit currentHit;
 			if (Check(boxCollider, startPosition, direction, maxDistance, currentHit))

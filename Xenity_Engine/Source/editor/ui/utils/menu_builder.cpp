@@ -34,7 +34,7 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 	const size_t itemsCount = item.onHoverItems.size();
 	if (itemsCount != 0) 
 	{
-		if (ImGui::BeginMenu(item.GetTitle().c_str(), item.GetIsEnabled()))
+		if (ImGui::BeginMenu(item.GetTitle().c_str(), item.IsEnabled()))
 		{
 			for (size_t i = 0; i < itemsCount; i++)
 			{
@@ -45,7 +45,7 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 	}
 	else
 	{
-		if (ImGui::MenuItem(item.GetTitle().c_str(), nullptr, nullptr, item.GetIsEnabled()))
+		if (ImGui::MenuItem(item.GetTitle().c_str(), nullptr, nullptr, item.IsEnabled()))
 		{
 			if (item.onClicked)
 				item.onClicked();

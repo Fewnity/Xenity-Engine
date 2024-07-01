@@ -217,7 +217,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	componentCount++;
-	if (GameplayManager::GetGameState() == GameState::Playing && GetLocalActive())
+	if (GameplayManager::GetGameState() == GameState::Playing && IsLocalActive())
 	{
 		componentToAdd->Awake();
 		componentToAdd->isAwakeCalled = true;
@@ -299,7 +299,7 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty");
 
 	const bool lastLocalActive = localActive;
-	if (!changed->GetActive() || (!changed->GetLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
+	if (!changed->IsActive() || (!changed->IsLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
 	{
 		localActive = false;
 	}
@@ -311,7 +311,7 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 		{
 			const std::shared_ptr<GameObject> gm = gmToCheck.lock();
 
-			if (!gm->GetActive() || !gm->GetLocalActive()) // If a parent is disabled, set local active to false
+			if (!gm->IsActive() || !gm->IsLocalActive()) // If a parent is disabled, set local active to false
 			{
 				newActive = false;
 				break;

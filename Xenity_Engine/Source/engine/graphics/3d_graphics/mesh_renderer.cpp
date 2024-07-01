@@ -79,7 +79,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.drawable = this;
 		command.subMesh = meshData->subMeshes[i];
 		command.transform = GetTransform();
-		command.isEnabled = GetIsEnabled() && GetGameObject()->GetLocalActive();
+		command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 		if (!material->GetUseTransparency())
 		{
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];

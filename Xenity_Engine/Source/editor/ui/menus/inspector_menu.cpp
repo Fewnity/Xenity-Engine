@@ -253,7 +253,7 @@ void InspectorMenu::DrawFilePreview()
 			// Draw Play/Stop button
 			if (stream)
 			{
-				if (Editor::audioSource.lock()->GetIsPlaying())
+				if (Editor::audioSource.lock()->IsPlaying())
 				{
 					if (ImGui::Button("Pause audio"))
 					{
@@ -401,7 +401,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
 {
 	//Active checkbox
-	bool active = selectedGameObject->GetActive();
+	bool active = selectedGameObject->IsActive();
 	ImGui::Checkbox("##Active", &active);
 
 	//Name input
@@ -424,7 +424,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject->GetName(), selectedGameObject->GetName(), gameObjectName);
 		CommandManager::AddCommandAndExecute(command);
 	}
-	if (active != selectedGameObject->GetActive())
+	if (active != selectedGameObject->IsActive())
 	{
 		auto command = std::make_shared<InspectorItemSetActiveCommand<GameObject>>(selectedGameObject, active);
 		CommandManager::AddCommandAndExecute(command);
@@ -588,7 +588,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 
 		const float cursorY = ImGui::GetCursorPosY();
 
-		bool isEnable = comp->GetIsEnabled();
+		bool isEnable = comp->IsEnabled();
 
 		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->componentName];
 		if (!texture)
