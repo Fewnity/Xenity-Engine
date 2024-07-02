@@ -38,11 +38,6 @@ class API Debug
 public:
 
 	/**
-	* @brief [Internal] Init debug system
-	*/
-	static int Init();
-
-	/**
 	* @brief Print a text
 	* @param text Text to print
 	* @param hideInConsole If true, the text will not be printed in the console
@@ -64,8 +59,31 @@ public:
 	static void PrintWarning(const std::string& text, bool hideInConsole = false);
 
 	/**
-	 * @brief [Internal] Send all profiler data to the debug server
-	 */
+	* @brief Get the event when a debug message is printed
+	*/
+	static Event<>& GetOnDebugLogEvent()
+	{
+		return OnDebugLogEvent;
+	}
+
+
+private:
+	friend class BottomBarMenu;
+	friend class Engine;
+	friend class ConsoleMenu;
+	friend class NetworkManager;
+	friend class Compiler;
+
+	static int lastDebugMessageHistoryIndex;
+
+	/**
+	* @brief [Internal] Init debug system
+	*/
+	static int Init();
+
+	/**
+	* @brief [Internal] Send all profiler data to the debug server
+	*/
 	static void SendProfilerDataToServer();
 
 	/**
@@ -90,19 +108,6 @@ public:
 	// [Internal] Lower is higher speed
 	static float SendProfilerDelay;
 	static std::vector<DebugHistory> debugMessageHistory;
-
-	/**
-	* @brief Get the event when a debug message is printed
-	*/
-	static Event<>& GetOnDebugLogEvent()
-	{
-		return OnDebugLogEvent;
-	}
-
-
-private:
-	friend class BottomBarMenu;
-	static int lastDebugMessageHistoryIndex;
 
 	/**
 	* @brief Add a message in the history
