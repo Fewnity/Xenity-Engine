@@ -41,7 +41,7 @@ public:
 	void SetupDirectionalLight(const Color& color, const float _intensity);
 
 	/**
-	* @brief Setup the light as a directional light
+	* @brief Setup the light as an ambient light
 	* @param color Light color
 	* @param intensity Light intensity
 	*/
