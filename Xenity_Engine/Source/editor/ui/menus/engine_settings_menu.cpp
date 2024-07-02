@@ -44,7 +44,6 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 	ImGui::Separator();
 	ImGui::Text("Compiler Options:");
 	ImGui::Separator();
-
 	std::string tempCompilerPath = EngineSettings::values.compilerPath;
 	ImGui::Text("Compiler location: %s", EngineSettings::values.compilerPath.c_str());
 	valueChanged = DrawSelectFolderButton(tempCompilerPath);
@@ -53,7 +52,9 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		EngineSettings::values.compilerPath = tempCompilerPath;
 		settingsChanged = true;
 	}
+	ImGui::Text("(Default compiler location: C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build)");
 
+	ImGui::Separator();
 	std::string tempPpssppExePath = EngineSettings::values.ppssppExePath;
 	ImGui::Text("PPSSPP location: %s", EngineSettings::values.ppssppExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempPpssppExePath);
@@ -63,7 +64,9 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
+	ImGui::Separator();
 	std::string tempDockerExePath = EngineSettings::values.dockerExePath;
+	ImGui::Text("(Default Docker location: C:\\Program Files\\Docker\\Docker)");
 	ImGui::Text("Docker location: %s", EngineSettings::values.dockerExePath.c_str());
 	valueChanged = DrawSelectFolderButton(tempDockerExePath);
 	if (valueChanged)
@@ -72,6 +75,7 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
+	ImGui::Separator();
 	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::values.compileOnCodeChanged);
 	if (valueChanged)
 		settingsChanged = true;
