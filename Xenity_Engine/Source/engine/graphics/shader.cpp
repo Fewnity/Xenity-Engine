@@ -52,12 +52,23 @@ Shader::PointLightVariableIds::PointLightVariableIds(int index, unsigned int pro
 	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->constant);
 	linear = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->linear);
 	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, pointlightVariableNames[index]->quadratic);
+
+	// Initialize values
+	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, position, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, constant, 1.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, linear, 0.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, quadratic, 0.0f);
 }
 
 Shader::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, unsigned int programId)
 {
 	color = Engine::GetRenderer().GetShaderUniformLocation(programId, directionallightVariableNames[index]->color);
 	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, directionallightVariableNames[index]->direction);
+
+	// Initialize values
+	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, direction, Vector3(0, 0, 0));
 }
 
 Shader::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int programId)
@@ -70,6 +81,16 @@ Shader::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int progr
 	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->quadratic);
 	cutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->cutOff);
 	outerCutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, spotlightVariableNames[index]->outerCutOff);
+
+	// Initialize values
+	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, position, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, direction, Vector3(0, 0, 0));
+	Engine::GetRenderer().SetShaderAttribut(programId, constant, 1.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, linear, 0.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, quadratic, 0.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, cutOff, 0.0f);
+	Engine::GetRenderer().SetShaderAttribut(programId, outerCutOff, 0.0f);
 }
 
 Shader::PointLightVariableNames::PointLightVariableNames(int index)
@@ -670,7 +691,7 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 /// </summary>
 void Shader::UpdateLights(bool disableLights)
 {
-	Engine::GetRenderer().SetShaderAttribut(programId, pointlightVariableIds[0]->color, Vector3(0,0,0));
+	Engine::GetRenderer().SetShaderAttribut(programId, pointlightVariableIds[0]->color, Vector3(0, 0, 0));
 	Engine::GetRenderer().SetShaderAttribut(programId, spotlightVariableIds[0]->color, Vector3(0, 0, 0));
 	Engine::GetRenderer().SetShaderAttribut(programId, directionallightVariableIds[0]->color, Vector3(0, 0, 0));
 
