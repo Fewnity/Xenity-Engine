@@ -115,7 +115,7 @@ void AssetManager::OnProjectLoaded()
 
 	// Load materials
 	standardMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterial.mat");
-	standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat");
+	standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneLightEach.mat");
 	standardOnePointLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOnePointLight.mat");
 	standardOneSpotLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneSpotLight.mat");
 	standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat");
