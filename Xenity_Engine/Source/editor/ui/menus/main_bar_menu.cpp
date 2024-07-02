@@ -209,12 +209,17 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::BeginMenu("Light"))
 		{
+			if (ImGui::MenuItem("Ambient Light"))
+			{
+				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Ambient Light");
+				light->SetupAmbientLight(Color::CreateFromRGBFloat(1, 1, 1), 0.2f);
+			}
 			if (ImGui::MenuItem("Directional Light"))
 			{
 				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Directional Light");
 				light->SetupDirectionalLight(Color::CreateFromRGBFloat(1, 1, 1), 1);
 			}
-			if (ImGui::MenuItem("Spot Light", 0, false, false))
+			if (ImGui::MenuItem("Spot Light"))
 			{
 				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Spot Light");
 				light->SetupSpotLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10, 60, 0.5f);
