@@ -33,7 +33,7 @@ float Debug::SendProfilerDelay = 0.2f;
 std::vector<DebugHistory> Debug::debugMessageHistory;
 
 Event<> Debug::OnDebugLogEvent;
-
+int Debug::lastDebugMessageHistoryIndex = -1;
 MyMutex* debugMutex = nullptr;
 
 /**
@@ -164,6 +164,7 @@ void Debug::ClearDebugLogs()
 
 	debugMutex->Lock();
 	debugMessageHistory.clear();
+	lastDebugMessageHistoryIndex = -1;
 	debugText.clear();
 	debugMutex->Unlock();
 }
@@ -183,6 +184,7 @@ void Debug::AddMessageInHistory(const std::string& message, DebugType messageTyp
 		{
 			historyItem.count++;
 			found = true;
+			lastDebugMessageHistoryIndex = i;
 			break;
 		}
 	}
@@ -194,6 +196,7 @@ void Debug::AddMessageInHistory(const std::string& message, DebugType messageTyp
 		historyItem.count = 1;
 		historyItem.type = messageType;
 		debugMessageHistory.push_back(historyItem);
+		lastDebugMessageHistoryIndex = debugMessageHistory.size() - 1;
 	}
 #endif
 }

@@ -25,6 +25,7 @@ class Reflective;
 class FileReference;
 class ProjectSettingsMenu;
 class EngineSettingsMenu;
+class BottomBarMenu;
 class FileExplorerMenu;
 class HierarchyMenu;
 class InspectorMenu;
@@ -494,6 +495,7 @@ private:
 	static std::shared_ptr<FileReference> selectedFileReference;
 
 	static std::shared_ptr<MainBarMenu> mainBar;
+	static std::shared_ptr <BottomBarMenu> bottomBar;
 	static std::vector<std::string> dragdropEntries;
 };
 

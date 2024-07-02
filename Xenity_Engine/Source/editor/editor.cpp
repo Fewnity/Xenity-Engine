@@ -30,6 +30,7 @@
 #include <editor/ui/menus/docker_config_menu.h>
 #include <editor/ui/menus/build_settings_menu.h>
 #include <editor/ui/menus/engine_asset_manager_menu.h>
+#include <editor/ui/menus/bottom_bar_menu.h>
 #include <editor/compiler.h>
 
 #include <functional>
@@ -68,6 +69,7 @@ std::vector<std::shared_ptr<Menu>> Editor::menus;
 std::weak_ptr <Menu> Editor::lastFocusedGameMenu;
 
 std::shared_ptr <MainBarMenu> Editor::mainBar = nullptr;
+std::shared_ptr <BottomBarMenu> Editor::bottomBar = nullptr;
 
 std::vector <std::weak_ptr<GameObject>> Editor::selectedGameObjects;
 std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
@@ -163,12 +165,12 @@ Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& m
 			setting.isActive = isActive;
 			setting.id = id;
 			found = true;
-			menuSetting= &setting;
+			menuSetting = &setting;
 			break;
 		}
 	}
 
-	if(!found)
+	if (!found)
 	{
 		return AddMenuSetting(menuSettingList, name, isActive, isUnique, id);
 	}
@@ -341,7 +343,7 @@ void Editor::Draw()
 	if (currentMenu != MenuGroup::Menu_Editor)
 		offset = 0;
 
-	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset));
+	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset - 32));
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
@@ -388,6 +390,11 @@ void Editor::Draw()
 
 	ImGui::PopStyleVar();
 	ImGui::End();
+
+	if (currentMenu == MenuGroup::Menu_Editor)
+	{
+		bottomBar->Draw();
+	}
 
 	RemoveEditorStyle();
 	EditorUI::Render();
@@ -897,12 +904,14 @@ void Editor::CreateMenus()
 	for (size_t i = 0; i < menuSize; i++)
 	{
 		MenuSetting& setting = *menuSettings.settings[i];
-		if(setting.isUnique || setting.isActive)
+		if (setting.isUnique || setting.isActive)
 			AddMenu(setting.name, setting.isActive, setting.id);
 	}
 
 	mainBar = std::make_shared<MainBarMenu>();
 	mainBar->Init();
+
+	bottomBar = std::make_shared<BottomBarMenu>();
 }
 
 bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName)

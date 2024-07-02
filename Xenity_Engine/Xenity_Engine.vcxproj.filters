@@ -164,6 +164,7 @@
     <ClCompile Include="Source\engine\ui\screen.cpp" />
     <ClCompile Include="Source\engine\application.cpp" />
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -336,6 +337,7 @@
     <ClInclude Include="Source\engine\ui\screen.h" />
     <ClInclude Include="Source\engine\application.h" />
     <ClInclude Include="Source\engine\world_partitionner\world_partitionner.h" />
+    <ClInclude Include="Source\editor\ui\menus\bottom_bar_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

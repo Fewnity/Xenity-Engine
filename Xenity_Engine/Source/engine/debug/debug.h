@@ -99,7 +99,10 @@ public:
 		return OnDebugLogEvent;
 	}
 
+
 private:
+	friend class BottomBarMenu;
+	static int lastDebugMessageHistoryIndex;
 
 	/**
 	* @brief Add a message in the history
