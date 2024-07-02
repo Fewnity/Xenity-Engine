@@ -86,6 +86,16 @@ void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 	this->linear = 0;
 }
 
+void Light::SetupAmbientLight(const Color& _color, const float _intensity)
+{
+	this->type = LightType::Ambient;
+
+	this->color = _color;
+	SetIntensity(_intensity);
+	this->quadratic = 0;
+	this->linear = 0;
+}
+
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle)
 {
 	SetupSpotLight(_color, _intensity, _range, _angle, spotSmoothness);
@@ -125,9 +135,12 @@ void Light::OnDrawGizmos()
 void Light::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
+	Gizmo::SetColor(Color::CreateFromRGBA(255, 245, 130, 255));
+
+	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
+
 	if (type == LightType::Point) 
 	{
-		Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 		const float fixedLinear = (0.7f * 7.0f) / (range);
 		const float fixedQuadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f));
@@ -135,6 +148,10 @@ void Light::OnDrawGizmosSelected()
 		const float dis = (-minIntensity * fixedLinear + sqrt(pow(minIntensity * fixedLinear, 2) - 4 * minIntensity * fixedQuadratic * (minIntensity - 1))) / (2 * minIntensity * fixedQuadratic);
 
 		Gizmo::DrawSphere(GetTransform()->GetPosition(), dis);
+	}
+	else if (type == LightType::Directional || type == LightType::Spot)
+	{
+		Gizmo::DrawLine(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward() * 3);
 	}
 #endif
 }
