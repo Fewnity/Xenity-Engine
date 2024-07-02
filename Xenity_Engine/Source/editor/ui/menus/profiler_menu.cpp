@@ -35,11 +35,12 @@ void ProfilerMenu::Draw()
 
 		ImGui::Text("DrawCalls Count: %d", Performance::GetDrawCallCount());
 		ImGui::Text("Triangles Count: %d", Performance::GetDrawTrianglesCount());
-		ImGui::Text("Updated Materials: %d", Performance::GetUpdatedMaterialCount());
+		ImGui::Text("Materials update count: %d", Performance::GetUpdatedMaterialCount());
 
+#if defined(DEBUG)
 		DrawProfilerBenchmarks();
 		DrawFilesList();
-
+#endif
 		CalculateWindowValues();
 	}
 	else

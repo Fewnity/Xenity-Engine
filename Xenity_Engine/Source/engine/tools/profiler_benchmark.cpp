@@ -15,7 +15,7 @@ ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::str
 	XASSERT(!category.empty(), "[ProfilerBenchmark::ProfilerBenchmark] category is empty");
 	XASSERT(!name.empty(), "[ProfilerBenchmark::ProfilerBenchmark] name is empty");
 
-#if defined(EDITOR)
+#if defined(EDITOR) && defined(DEBUG)
 	//If the profiler is new, created a new one
 	if (Performance::profilerCategories.count(category) == 0)
 	{
@@ -36,7 +36,7 @@ ProfilerBenchmark::~ProfilerBenchmark()
 
 void ProfilerBenchmark::Start()
 {
-#if defined(EDITOR)
+#if defined(EDITOR)&& defined(DEBUG)
 	if (EngineSettings::values.useProfiler)
 		bench->Start();
 #endif
@@ -44,7 +44,7 @@ void ProfilerBenchmark::Start()
 
 void ProfilerBenchmark::Stop()
 {
-#if defined(EDITOR)
+#if defined(EDITOR)&& defined(DEBUG)
 	if (EngineSettings::values.useProfiler)
 	{
 		bench->Stop();
