@@ -253,28 +253,28 @@ void BuildSettingsMenu::Draw()
 			availColSize = ImGui::GetContentRegionAvail();
 			if (platform.supportBuildAndRunOnHardware)
 			{
-				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y)*2);
-				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x));
-				if (ImGui::Button("Build And Run On Hardware", ImVec2(180 + style.ItemSpacing.x, 20)))
+				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y)*2 * EditorUI::GetUiScale());
+				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x) * EditorUI::GetUiScale());
+				if (ImGui::Button("Build And Run On Hardware", ImVec2((180 + style.ItemSpacing.x) * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 				{
 					StartBuild(platform, BuildType::BuildAndRunOnHardwareGame);
 				}
 			}
 
 			if (platform.supportBuildAndRun)
-				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x));
+				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x) * EditorUI::GetUiScale());
 			else
-				ImGui::SetCursorPosX(availColSize.x - (80));
-			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y));
+				ImGui::SetCursorPosX(availColSize.x - (80) * EditorUI::GetUiScale());
+			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y) * EditorUI::GetUiScale());
 			ImGui::BeginDisabled(!isGameStopped);
-			if (ImGui::Button("Build", ImVec2(80, 20)))
+			if (ImGui::Button("Build", ImVec2(80 * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 			{
 				StartBuild(platform, BuildType::BuildGame);
 			}
 			if (platform.supportBuildAndRun)
 			{
 				ImGui::SameLine();
-				if (ImGui::Button("Build And Run", ImVec2(100, 20)))
+				if (ImGui::Button("Build And Run", ImVec2(100 * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 				{
 					StartBuild(platform, BuildType::BuildAndRunGame);
 				}
