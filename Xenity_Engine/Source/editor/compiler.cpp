@@ -207,6 +207,14 @@ void Compiler::Init()
 #else
 	compilerExecFileName = MSVC_START_FILE_32BITS;
 #endif
+
+	CompilerParams params;
+	params.buildPlatform = BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows);
+	CompilerAvailability availability = CheckCompilerAvailability(params);
+	if (availability == CompilerAvailability::MISSING_COMPILER_SOFTWARE)
+	{
+		Debug::PrintWarning("[Compiler::Init] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]", false);
+	}
 }
 
 CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& params)
