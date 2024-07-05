@@ -168,7 +168,7 @@ Vector2 Camera::MouseTo2DWorld()
 
 void Camera::UpdateProjection()
 {
-	if (Graphics::UseOpenGLFixedFunctions)
+	if constexpr (Graphics::UseOpenGLFixedFunctions)
 	{
 		if (projectionType == ProjectionTypes::Perspective)
 		{

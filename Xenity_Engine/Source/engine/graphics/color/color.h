@@ -15,7 +15,7 @@ class API RGBA : public Reflective
 public:
 	RGBA() = delete;
 
-	RGBA(float r, float g, float b, float a)
+	constexpr RGBA(float r, float g, float b, float a)
 	{
 		this->r = r;
 		this->a = a;

@@ -220,17 +220,20 @@ Shader::~Shader()
 {
 	if (isLoaded)
 	{
-		if (!Graphics::UseOpenGLFixedFunctions && Engine::IsRunning(true))
+		if constexpr (!Graphics::UseOpenGLFixedFunctions)
 		{
-			Engine::GetRenderer().DeleteShader(vertexShaderId);
-			Engine::GetRenderer().DeleteShader(fragmentShaderId);
-			if (useTessellation)
+			if (Engine::IsRunning(true))
 			{
-				Engine::GetRenderer().DeleteShader(tessellationEvaluationShaderId);
+				Engine::GetRenderer().DeleteShader(vertexShaderId);
 				Engine::GetRenderer().DeleteShader(fragmentShaderId);
+				if (useTessellation)
+				{
+					Engine::GetRenderer().DeleteShader(tessellationEvaluationShaderId);
+					Engine::GetRenderer().DeleteShader(fragmentShaderId);
+				}
+				// This cause the psvita to crash, bug in older version of vitaGL, fixed in the latest version but the latest version is running very slow
+				//Engine::GetRenderer().DeleteShaderProgram(programId);
 			}
-			// This cause the psvita to crash, bug in older version of vitaGL, fixed in the latest version but the latest version is running very slow
-			//Engine::GetRenderer().DeleteShaderProgram(programId);
 		}
 	}
 }
@@ -253,7 +256,7 @@ void Shader::LoadFileReference()
 	{
 		//Debug::Print("LoadFileReference()" + std::to_string(file->GetUniqueId())+ " " + std::to_string(fileId), true);
 		isLoaded = true;
-		if (Graphics::UseOpenGLFixedFunctions)
+		if constexpr (Graphics::UseOpenGLFixedFunctions)
 			return;
 
 		const bool isOpen = file->Open(FileMode::ReadOnly);
@@ -330,7 +333,7 @@ void Shader::LoadFileReference()
 					{
 						Link();
 					}
-					else 
+					else
 					{
 						Debug::PrintError("[Shader::LoadFileReference] Cannot link the shader, the compilation has failed: " + file->GetPath(), true);
 						isLoaded = false;

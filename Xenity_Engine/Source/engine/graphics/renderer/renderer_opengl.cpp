@@ -345,7 +345,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->fileId))
 	{
 		lastUsedColor = colorMix;
-		if (Graphics::UseOpenGLFixedFunctions)
+		if constexpr (Graphics::UseOpenGLFixedFunctions)
 		{
 			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
 		}
@@ -365,7 +365,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		BindTexture(texture);
 	}
 
-	if (Graphics::UseOpenGLFixedFunctions)
+	if constexpr (Graphics::UseOpenGLFixedFunctions)
 	{
 		glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
@@ -742,7 +742,7 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 					//glTexCoordPointer(2, GL_FLOAT, stride, &data[0].u);
 					//glVertexPointer(3, GL_FLOAT, stride, &data[0].x);
 
-					if (Graphics::UseOpenGLFixedFunctions)
+					if constexpr (Graphics::UseOpenGLFixedFunctions)
 					{
 						glEnableClientState(GL_VERTEX_ARRAY);
 						glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
@@ -778,7 +778,7 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 			else
 			{
 				stride = sizeof(VertexNormalsNoColor);
-				if (Graphics::UseOpenGLFixedFunctions)
+				if constexpr (Graphics::UseOpenGLFixedFunctions)
 				{
 					glEnableClientState(GL_VERTEX_ARRAY);
 					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));

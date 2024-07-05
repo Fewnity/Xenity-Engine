@@ -138,7 +138,11 @@ public:
 	*/
 	static void SetDrawOrderListAsDirty();
 
-	static bool UseOpenGLFixedFunctions;
+#if defined(__PSP__) || defined(_EE)
+	static constexpr bool UseOpenGLFixedFunctions = true;
+#else
+	static constexpr bool UseOpenGLFixedFunctions = false;
+#endif
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	API static std::shared_ptr<Camera> usedCamera;

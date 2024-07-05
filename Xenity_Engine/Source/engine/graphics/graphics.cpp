@@ -75,7 +75,6 @@ std::shared_ptr <Shader> Graphics::currentShader = nullptr;
 std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
 IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
 
-bool Graphics::UseOpenGLFixedFunctions = false;
 bool Graphics::isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
@@ -106,10 +105,6 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 
 void Graphics::Init()
 {
-#if defined(__PSP__) || defined(_EE)
-	UseOpenGLFixedFunctions = true;
-#endif
-
 	skyPlane = MeshManager::LoadMesh("public_engine_assets\\models\\PlaneTriangulate.obj");
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
@@ -153,7 +148,7 @@ void Graphics::Draw()
 	OrderDrawables();
 
 	const int matCount = AssetManager::GetMaterialCount();
-	for(const std::weak_ptr<Camera>& weakCam: cameras)
+	for (const std::weak_ptr<Camera>& weakCam : cameras)
 	{
 		usedCamera = weakCam.lock();
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObject()->IsLocalActive())
@@ -180,7 +175,7 @@ void Graphics::Draw()
 			Engine::GetRenderer().SetClearColor(settings.skyColor);
 			Engine::GetRenderer().Clear();
 
-			if (UseOpenGLFixedFunctions)
+			if constexpr (UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 				Engine::GetRenderer().Setlights(*usedCamera);
@@ -196,7 +191,7 @@ void Graphics::Draw()
 
 			for (const auto& renderQueue : renderBatch.renderQueues)
 			{
-				for(const RenderCommand& com : renderQueue.second.commands)
+				for (const RenderCommand& com : renderQueue.second.commands)
 				{
 					if (com.isEnabled)
 						com.drawable->DrawCommand(com);
@@ -217,10 +212,13 @@ void Graphics::Draw()
 
 			if (!usedCamera->IsEditor())
 				currentMode = IDrawableTypes::Draw_UI;
-			if (UseOpenGLFixedFunctions && !usedCamera->IsEditor())
+			if constexpr (UseOpenGLFixedFunctions)
 			{
-				Engine::GetRenderer().SetCameraPosition(Vector3(0,0,-1), Vector3(0,0,0));
-				Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
+				if (!usedCamera->IsEditor())
+				{
+					Engine::GetRenderer().SetCameraPosition(Vector3(0, 0, -1), Vector3(0, 0, 0));
+					Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
+				}
 			}
 			const int uiCommandCount = renderBatch.uiCommandIndex;
 			for (int commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
@@ -241,7 +239,7 @@ void Graphics::Draw()
 				if (currentMode != IDrawableTypes::Draw_3D)
 				{
 					currentMode = IDrawableTypes::Draw_3D;
-					if (UseOpenGLFixedFunctions)
+					if constexpr (UseOpenGLFixedFunctions)
 					{
 						usedCamera->UpdateProjection();
 					}
@@ -251,7 +249,7 @@ void Graphics::Draw()
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 
 				// Currently lines do not support shaders
-				if (!UseOpenGLFixedFunctions)
+				if constexpr (!UseOpenGLFixedFunctions)
 				{
 					Engine::GetRenderer().UseShaderProgram(0);
 					currentShader = nullptr;
@@ -496,7 +494,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 	drawMeshBenchmark->Start();
 
-	if (!UseOpenGLFixedFunctions)
+	if constexpr (!UseOpenGLFixedFunctions)
 	{
 		material.Use();
 

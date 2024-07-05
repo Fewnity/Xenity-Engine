@@ -31,7 +31,7 @@ void Gizmo::DrawLine(Vector3 a, Vector3 b)
 	b.x = -b.x;
 
 	// Currently lines do not support shaders
-	if (!Graphics::UseOpenGLFixedFunctions)
+	if constexpr (!Graphics::UseOpenGLFixedFunctions)
 	{
 		Engine::GetRenderer().UseShaderProgram(0);
 		Graphics::currentShader = nullptr;
