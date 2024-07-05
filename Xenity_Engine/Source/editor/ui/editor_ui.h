@@ -147,11 +147,6 @@ public:
 	[[nodiscard]] static int Init();
 
 	/**
-	* @brief Draw menus
-	*/
-	static void Draw();
-
-	/**
 	* @brief Start a new frame
 	*/
 	static void NewFrame();

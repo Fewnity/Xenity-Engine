@@ -126,12 +126,6 @@ int EditorUI::Init()
 	return 0;
 }
 
-void EditorUI::Draw()
-{
-	NewFrame();
-	Render();
-}
-
 #pragma endregion
 
 #pragma region Update
