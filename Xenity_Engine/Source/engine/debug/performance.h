@@ -15,6 +15,8 @@
 #include <iostream>
 #include <unordered_map>
 
+class MemoryTracker;
+
 class ProfilerValue
 {
 public:
@@ -117,6 +119,10 @@ public:
 	static void Update();
 
 	static std::unordered_map<std::string, ProfilerCategory*> profilerCategories;
+
+	static MemoryTracker* gameObjectMemoryTracker;
+	static MemoryTracker* meshDataMemoryTracker;
+	static MemoryTracker* textureMemoryTracker;
 private:
 
 	/**

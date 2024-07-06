@@ -27,6 +27,11 @@ private:
 	void DrawProfilerBenchmarks();
 
 	/**
+	* Draw memory stats
+	*/
+	void DrawMemoryStats();
+
+	/**
 	* Draw files reference count list
 	*/
 	void DrawFilesList();

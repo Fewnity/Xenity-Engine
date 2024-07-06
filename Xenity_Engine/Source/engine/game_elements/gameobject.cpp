@@ -14,6 +14,8 @@
 #include <engine/component.h>
 #include <iostream>
 #include <engine/accessors/acc_gameobject.h>
+#include <engine/debug/performance.h>
+#include <engine/debug/memory_tracker.h>
 
 
 #pragma region Constructors / Destructor
@@ -71,6 +73,10 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 GameObject::GameObject()
 {
 	this->name = DEFAULT_GAMEOBJECT_NAME;
+
+#if defined (DEBUG)
+	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
+#endif
 }
 
 GameObject::GameObject(const std::string& _name)
@@ -79,6 +85,10 @@ GameObject::GameObject(const std::string& _name)
 		this->name = _name;
 	else
 		this->name = DEFAULT_GAMEOBJECT_NAME;
+
+#if defined (DEBUG)
+	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
+#endif
 }
 
 ReflectiveData GameObject::GetReflectiveData()
@@ -98,6 +108,10 @@ GameObject::~GameObject()
 			components[i]->RemoveReferences();
 	}
 	components.clear();
+
+#if defined (DEBUG)
+	Performance::gameObjectMemoryTracker->Deallocate(sizeof(GameObject));
+#endif
 }
 
 void GameObject::Setup()

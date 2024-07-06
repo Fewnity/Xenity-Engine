@@ -24,6 +24,8 @@
 #if defined(_EE)
 #include <engine/graphics/renderer/renderer_vu1.h>
 #endif
+#include <engine/debug/performance.h>
+#include <engine/debug/memory_tracker.h>
 
 MeshData::MeshData()
 {
@@ -315,6 +317,11 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				Engine::GetRenderer().DeleteSubMeshData(*subMesh);
 				delete subMesh;
 			}
+
+#if defined (DEBUG)
+			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
+			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
+#endif
 		}
 	}
 
@@ -430,11 +437,18 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->meshData = this;
 	if (index_count != 0 && hasIndices) 
 	{
+		const size_t indexMemSize = sizeof(unsigned short) * index_count;
 #if defined(__PSP__)
-		newSubMesh->indices = (unsigned short*)memalign(16, sizeof(unsigned short) * index_count);
+		newSubMesh->indices = (unsigned short*)memalign(16, indexMemSize);
 #else
-		newSubMesh->indices = (unsigned short*)malloc(sizeof(unsigned short) * index_count);
+		newSubMesh->indices = (unsigned short*)malloc(indexMemSize);
 #endif
+
+#if defined (DEBUG)
+		Performance::meshDataMemoryTracker->Allocate(indexMemSize);
+		newSubMesh->debugIndexMemSize = indexMemSize;
+#endif
+
 		if (newSubMesh->indices == nullptr)
 		{
 			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices", true);
@@ -442,50 +456,32 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 			return;
 		}
 	}
+
+	size_t vertexMemSize = 1; // Set to 1 to avoid warning
+
 	// Allocate memory for mesh data
 #if defined(__PSP__)
 	isOnVram = true;
 	if (!hasNormal)
 	{
 		if (!hasUv)
-		{
-			newSubMesh->data = (VertexNoColorNoUv*)vramalloc(vcount * sizeof(VertexNoColorNoUv));
-			if(!newSubMesh->data)
-			{
-				isOnVram = false;
-				newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
-			}
-		}
+			vertexMemSize = sizeof(VertexNoColorNoUv) * vcount;
 		else
-		{
-			newSubMesh->data = (VertexNoColor*)vramalloc(vcount * sizeof(VertexNoColor));
-			if (!newSubMesh->data)
-			{
-				isOnVram = false;
-				newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
-			}
-		}
+			vertexMemSize = sizeof(VertexNoColor) * vcount;
 	}
 	else
 	{
 		if (!hasUv)
-		{
-			newSubMesh->data = (VertexNormalsNoColorNoUv*)vramalloc(vcount * sizeof(VertexNormalsNoColorNoUv));
-			if (!newSubMesh->data)
-			{
-				isOnVram = false;
-				newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
-			}
-		}
+			vertexMemSize = sizeof(VertexNormalsNoColorNoUv) * vcount;
 		else
-		{
-			newSubMesh->data = (VertexNormalsNoColor*)vramalloc(vcount * sizeof(VertexNormalsNoColor));
-			if (!newSubMesh->data)
-			{
-				isOnVram = false;
-				newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
-			}
-		}
+			vertexMemSize = sizeof(VertexNormalsNoColor) * vcount;
+	}
+
+	newSubMesh->data = (void*)vramalloc(vertexMemSize);
+	if (!newSubMesh->data)
+	{
+		isOnVram = false;
+		newSubMesh->data = (void*)memalign(16, vertexMemSize);
 	}
 #elif defined(_EE)
 	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
@@ -528,17 +524,24 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	if (!hasNormal)
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNoColorNoUv*)malloc(sizeof(VertexNoColorNoUv) * vcount);
+			vertexMemSize = sizeof(VertexNoColorNoUv) * vcount;
 		else
-			newSubMesh->data = (VertexNoColor*)malloc(sizeof(VertexNoColor) * vcount);
+			vertexMemSize = sizeof(VertexNoColor) * vcount;
 	}
 	else
 	{
 		if (!hasUv)
-			newSubMesh->data = (VertexNormalsNoColorNoUv*)malloc(sizeof(VertexNormalsNoColorNoUv) * vcount);
+			vertexMemSize = sizeof(VertexNormalsNoColorNoUv) * vcount;
 		else
-			newSubMesh->data = (VertexNormalsNoColor*)malloc(sizeof(VertexNormalsNoColor) * vcount);
+			vertexMemSize = sizeof(VertexNormalsNoColor) * vcount;
 	}
+
+	newSubMesh->data = (void*)malloc(vertexMemSize);
+#endif
+
+#if defined (DEBUG)
+	Performance::meshDataMemoryTracker->Allocate(vertexMemSize);
+	newSubMesh->debugVertexMemSize = vertexMemSize;
 #endif
 
 #if !defined(_EE)

@@ -39,6 +39,8 @@
 #include "renderer/renderer_vu1.h"
 #endif
 #include <engine/file_system/async_file_loading.h>
+#include <engine/debug/performance.h>
+#include <engine/debug/memory_tracker.h>
 
 Texture::Texture()
 {
@@ -480,7 +482,6 @@ void Texture::LoadTexture()
 		file->Close();
 
 		// Load image with stb_image
-		// stbi_set_flip_vertically_on_load(GL_TRUE);
 		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
 									   &nrChannels, 4);
 
@@ -491,9 +492,15 @@ void Texture::LoadTexture()
 			Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
 			return;
 		}
+
 #if defined(__PSP__) || defined(_EE)
 		SetData(buffer);
+#else
+#if defined (DEBUG)
+		Performance::textureMemoryTracker->Allocate(width * height * 4);
 #endif
+#endif
+
 	}
 	else
 	{
@@ -506,6 +513,10 @@ void Texture::Unload()
 {
 	ClearSpriteSelections();
 	Engine::GetRenderer().DeleteTexture(*this);
+
+#if defined (DEBUG)
+	Performance::textureMemoryTracker->Deallocate(width * height * nrChannels);
+#endif
 }
 
 #pragma endregion

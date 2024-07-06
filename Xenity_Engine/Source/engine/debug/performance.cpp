@@ -8,6 +8,7 @@
 #include <engine/time/time.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
+#include "memory_tracker.h"
 
 int Performance::drawCallCount = 0;
 int Performance::drawTriangleCount = 0;
@@ -19,11 +20,21 @@ float Performance::averageCoolDown = 0;
 int Performance::LastDrawCallCount = 0;
 int Performance::LastDrawTriangleCount = 0;
 
+MemoryTracker* Performance::gameObjectMemoryTracker = nullptr;
+MemoryTracker* Performance::meshDataMemoryTracker = nullptr;
+MemoryTracker* Performance::textureMemoryTracker = nullptr;
+
 #pragma region Update values
 
 void Performance::Init()
 {
 	Debug::Print("-------- Profiler initiated --------", true);
+
+#if defined(DEBUG)
+	gameObjectMemoryTracker = new MemoryTracker("GameObjects");
+	meshDataMemoryTracker = new MemoryTracker("Mesh Data");
+	textureMemoryTracker = new MemoryTracker("Textures");
+#endif
 }
 
 void Performance::ResetCounters()

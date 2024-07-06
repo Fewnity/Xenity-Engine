@@ -76,6 +76,11 @@ public:
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
+
+#if defined(DEBUG)
+		size_t debugVertexMemSize = 0;
+		size_t debugIndexMemSize = 0;
+#endif
 	};
 
 	MeshData();

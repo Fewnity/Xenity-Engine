@@ -11,6 +11,7 @@
 #include <engine/time/time.h>
 #include <engine/engine_settings.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 #include <editor/editor.h>
@@ -38,6 +39,7 @@ void ProfilerMenu::Draw()
 		ImGui::Text("Materials update count: %d", Performance::GetUpdatedMaterialCount());
 
 #if defined(DEBUG)
+		DrawMemoryStats();
 		DrawProfilerBenchmarks();
 		DrawFilesList();
 #endif
@@ -82,6 +84,33 @@ void ProfilerMenu::UpdateFpsCounter()
 	}
 	fpsAVG /= FPS_HISTORY_SIZE - 1;
 	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
+}
+
+void ProfilerMenu::DrawMemoryStats() 
+{
+	if (ImGui::CollapsingHeader("Memory stats", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	{
+		MemoryTracker* goMem = Performance::gameObjectMemoryTracker;
+
+		ImGui::Text("%s:", goMem->name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", goMem->allocatedMemory - goMem->deallocatedMemory, goMem->allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (goMem->allocatedMemory - goMem->deallocatedMemory) / 1000000.0f, goMem->allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", goMem->allocCount, goMem->deallocCount);
+
+		MemoryTracker* meshDataMem = Performance::meshDataMemoryTracker;
+		ImGui::Separator();
+		ImGui::Text("%s:", meshDataMem->name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", meshDataMem->allocatedMemory - meshDataMem->deallocatedMemory, meshDataMem->allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (meshDataMem->allocatedMemory - meshDataMem->deallocatedMemory) / 1000000.0f, meshDataMem->allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", meshDataMem->allocCount, meshDataMem->deallocCount);
+
+		MemoryTracker* textureMem = Performance::textureMemoryTracker;
+		ImGui::Separator();
+		ImGui::Text("%s:", textureMem->name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->allocatedMemory - textureMem->deallocatedMemory, textureMem->allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (textureMem->allocatedMemory - textureMem->deallocatedMemory) / 1000000.0f, textureMem->allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", textureMem->allocCount, textureMem->deallocCount);
+	}
 }
 
 void ProfilerMenu::DrawProfilerBenchmarks()
