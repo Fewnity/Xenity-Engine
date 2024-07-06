@@ -382,12 +382,15 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	{
 		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
 	}
-	glBindVertexArray(0); // Disable this?
+	glBindVertexArray(0);
+
+#if defined(EDITOR)
 	if (Graphics::usedCamera->IsEditor())
 	{
 		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		Performance::AddDrawCall();
 	}
+#endif
 
 	glDepthMask(GL_TRUE);
 }
