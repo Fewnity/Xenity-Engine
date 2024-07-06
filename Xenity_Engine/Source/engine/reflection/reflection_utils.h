@@ -4,7 +4,8 @@
 //
 // This file is part of Xenity Engine
 
-#pragma once
+#ifndef MYCLASS_H
+#define MYCLASS_H
 
 /**
  * @brief [Internal] Maybe not? 
@@ -282,3 +283,6 @@ public:
 
 };
 
+#include "reflection_utils.inl"
+
+#endif // MYCLASS_H

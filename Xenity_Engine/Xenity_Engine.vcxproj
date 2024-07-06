@@ -80,13 +80,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -117,13 +117,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -514,7 +514,6 @@
   <ItemGroup>
     <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
     <ClCompile Include="Source\engine\application.cpp" />
-    <ClCompile Include="Source\engine\reflection\enum_utils.cpp" />
     <ClCompile Include="Source\engine\ui\screen.cpp" />
     <ClCompile Include="Source\editor\command\commands\create.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
@@ -772,7 +771,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
@@ -922,6 +920,7 @@
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\engine\reflection\reflection_utils.inl" />
     <None Include="Source\shaders\2D\fSprite.shader" />
     <None Include="Source\shaders\2D\vSprite.shader" />
     <None Include="Source\shaders\3D\fStandard.shader" />

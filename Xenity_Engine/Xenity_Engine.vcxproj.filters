@@ -81,7 +81,6 @@
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
-    <ClCompile Include="Source\engine\reflection\reflection_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
     <ClCompile Include="Source\editor\compiler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
@@ -165,7 +164,6 @@
     <ClCompile Include="Source\engine\application.cpp" />
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
     <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
-    <ClCompile Include="Source\engine\reflection\enum_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -378,5 +376,6 @@
     <None Include="Source\shaders\vertexStandard2DZ.shader" />
     <None Include="Source\shaders\tessellation.shader" />
     <None Include="Source\shaders\tessellation_evaluation.shader" />
+    <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
 </Project>
