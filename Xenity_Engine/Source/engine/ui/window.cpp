@@ -111,9 +111,10 @@ int Window::Init()
 	}
 
 	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
-	SDL_GL_SetSwapInterval(0);
+	SDL_GL_SetSwapInterval(1);
 	OnResize();
 
+#if defined(EDITOR)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -123,6 +124,7 @@ int Window::Init()
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL3_InitForOpenGL(Window::window, context);
 	ImGui_ImplOpenGL3_Init();
+#endif
 
 	UpdateWindowTitle();
 #endif
