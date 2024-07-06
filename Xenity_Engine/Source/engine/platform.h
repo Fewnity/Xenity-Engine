@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <engine/reflection/reflection.h>
+#include <engine/reflection/enum_utils.h>
 
 // Do not remove the "P_" because without that, the PSP compiler will not allow the enum
 ENUM(Platform,

@@ -16,6 +16,7 @@
 #include <engine/reflection/reflection.h>
 #include <engine/event_system/event_system.h>
 #include <editor/platform_settings.h>
+#include <engine/reflection/enum_utils.h>
 
 ENUM(BuildType, 
 	EditorHotReloading,

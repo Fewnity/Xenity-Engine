@@ -14,6 +14,7 @@
 #include <engine/vectors/vector2_int.h>
 
 #include "camera_projection_types.h"
+#include <engine/reflection/enum_utils.h>
 
 #include <glm/glm.hpp>
 

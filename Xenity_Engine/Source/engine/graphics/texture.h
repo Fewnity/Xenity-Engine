@@ -12,6 +12,7 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/2d_graphics/sprite_selection.h>
+#include <engine/reflection/enum_utils.h>
 
 #if defined(_EE)
 #include <draw.h>

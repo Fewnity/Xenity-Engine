@@ -10,6 +10,7 @@
 #include <engine/vectors/vector3.h>
 #include <engine/component.h>
 #include <engine/graphics/color/color.h>
+#include <engine/reflection/enum_utils.h>
 
 const float lightConstant = 1;
 

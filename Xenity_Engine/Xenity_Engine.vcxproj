@@ -514,6 +514,7 @@
   <ItemGroup>
     <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
     <ClCompile Include="Source\engine\application.cpp" />
+    <ClCompile Include="Source\engine\reflection\enum_utils.cpp" />
     <ClCompile Include="Source\engine\ui\screen.cpp" />
     <ClCompile Include="Source\editor\command\commands\create.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
@@ -955,6 +956,7 @@
   <ItemGroup>
     <ClInclude Include="Source\editor\ui\menus\bottom_bar_menu.h" />
     <ClInclude Include="Source\engine\application.h" />
+    <ClInclude Include="Source\engine\reflection\enum_utils.h" />
     <ClInclude Include="Source\engine\ui\screen.h" />
     <ClInclude Include="Source\editor\command\commands\create.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
