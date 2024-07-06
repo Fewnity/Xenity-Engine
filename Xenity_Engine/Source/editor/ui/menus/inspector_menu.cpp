@@ -381,6 +381,7 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 	if (metaReflection.size() != 0)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+		reflectiveDataToDraw.isMeta = true;
 		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr);
 		if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
 		{

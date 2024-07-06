@@ -44,6 +44,7 @@ private:
 	ReflectiveEntry reflectiveEntry;
 	nlohmann::json newValue2;
 	nlohmann::json lastValue2;
+	bool isMetadata = false;
 };
 
 template<typename T>
@@ -75,6 +76,7 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 
 	variableName = reflectiveDataToDraw.currentEntry.variableName;
 	reflectiveEntry = reflectiveDataToDraw.currentEntry;
+	isMetadata = reflectiveDataToDraw.isMeta;
 
 	nlohmann::json newValueTemp;
 	nlohmann::json lastValueTemp;
@@ -133,7 +135,10 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			std::shared_ptr<FileReference> foundFileRef = ProjectManager::GetFileReferenceById(targetId);
 			if (foundFileRef)
 			{
-				ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetReflectiveData());
+				if(isMetadata)
+					ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetMetaReflectiveData());
+				else
+					ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetReflectiveData());
 				foundFileRef->OnReflectionUpdated();
 				// Do not set scene as dirty
 				hasBeenSet = true;
