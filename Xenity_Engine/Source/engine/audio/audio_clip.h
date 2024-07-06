@@ -37,7 +37,7 @@ protected:
 	/**
 	* [Internal] Is the audio clip stored in memory?
 	*/
-	inline bool IsStoredInMemory()
+	inline bool IsStoredInMemory() const
 	{
 		return loadedInMemory;
 	}
@@ -45,7 +45,7 @@ protected:
 	/**
 	* [Internal] Get the audio memory data (to use if the audio is stored in memory)
 	*/
-	inline const AudioMemory& GetAudioMemory()
+	inline const AudioMemory& GetAudioMemory() const
 	{
 		return audioMemory;
 	}

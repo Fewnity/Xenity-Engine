@@ -53,12 +53,12 @@ public:
 	/**
 	* @brief Set the material of the sprite
 	*/
-	void SetMaterial(std::shared_ptr <Material> material);
+	void SetMaterial(const std::shared_ptr <Material>& material);
 	
 	/**
 	* @brief Set the texture of the sprite
 	*/
-	void SetTexture(std::shared_ptr <Texture> texture);
+	void SetTexture(const std::shared_ptr <Texture>& texture);
 
 protected:
 	ReflectiveData GetReflectiveData() override;

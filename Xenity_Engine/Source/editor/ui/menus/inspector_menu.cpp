@@ -48,7 +48,7 @@ void InspectorMenu::Draw()
 
 			if (selectedGameObject)
 			{
-				DrawGameObjectInfo(selectedGameObject);
+				DrawGameObjectInfo(*selectedGameObject);
 			}
 		}
 		else
@@ -56,7 +56,7 @@ void InspectorMenu::Draw()
 			std::shared_ptr<FileReference> selectedFileReference = Editor::GetSelectedFileReference();
 			if (selectedFileReference)
 			{
-				DrawFileInfo(selectedFileReference);
+				DrawFileInfo(*selectedFileReference);
 			}
 		}
 
@@ -75,12 +75,12 @@ void InspectorMenu::Draw()
 	forceItemUpdate = false;
 }
 
-int InspectorMenu::CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>& transform, const std::string& id)
+int InspectorMenu::CheckOpenRightClickPopupTransform(Transform& transform, const std::string& id)
 {
 	std::function<void()> copyFunc = [&transform]()
 		{
 			json copyData;
-			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform->GetReflectiveData());
+			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());
 			EditorUI::copiedComponentJson = copyData;
 			EditorUI::currentCopyType = CopyType::Transform;
 		};
@@ -111,7 +111,7 @@ int InspectorMenu::CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>&
 	return state;
 }
 
-int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id)
+int InspectorMenu::CheckOpenRightClickPopup(Component& component, int& componentCount, int& componentIndex, const std::string& id)
 {
 	std::function<void()> deleteFunc = [&component, &componentCount, &componentIndex]()
 		{
@@ -124,9 +124,9 @@ int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& componen
 	std::function<void()> copyFunc = [&component]()
 		{
 			json copyData;
-			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(component->GetReflectiveData());
+			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(component.GetReflectiveData());
 			EditorUI::copiedComponentJson = copyData;
-			EditorUI::copiedComponentName = component->GetComponentName();
+			EditorUI::copiedComponentName = component.GetComponentName();
 			EditorUI::currentCopyType = CopyType::Component;
 		};
 
@@ -142,7 +142,7 @@ int InspectorMenu::CheckOpenRightClickPopup(std::shared_ptr<Component>& componen
 	{
 		inspectorRightClickMenu.AddItem("Copy component values", copyFunc);
 		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Past component values", pastFunc);
-		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Component && EditorUI::copiedComponentName == component->GetComponentName());
+		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Component && EditorUI::copiedComponentName == component.GetComponentName());
 		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
 	}
 	const bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
@@ -349,35 +349,31 @@ void InspectorMenu::DrawFilePreview()
 	}
 }
 
-void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedFileReference)
+void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 {
-	const std::string fileNameExt = selectedFileReference->file->GetFileName() + selectedFileReference->file->GetFileExtension();
+	const std::string fileNameExt = selectedFileReference.file->GetFileName() + selectedFileReference.file->GetFileExtension();
 	ImGui::Text("%s", fileNameExt.c_str());
 	ImGui::Separator();
 
-	std::shared_ptr<Reflective> reflection = std::dynamic_pointer_cast<Reflective>(selectedFileReference);
-
-	if (reflection)
+	const ReflectiveData reflectionList = selectedFileReference.GetReflectiveData();
+	if (reflectionList.size() != 0)
 	{
-		const ReflectiveData reflectionList = reflection->GetReflectiveData();
-		if (reflectionList.size() != 0)
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
+		if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
 		{
-			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
-			const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
-			if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
-			{
-				if (valueInputState == ValueInputState::APPLIED)
-					CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
-				else
-					reflectiveDataToDraw.command->Execute();
-			}
-			if (forceItemUpdate)
-			{
-				reflection->OnReflectionUpdated();
-			}
+			if (valueInputState == ValueInputState::APPLIED)
+				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
+			else
+				reflectiveDataToDraw.command->Execute();
+		}
+		if (forceItemUpdate)
+		{
+			selectedFileReference.OnReflectionUpdated();
 		}
 	}
-	const ReflectiveData metaReflection = selectedFileReference->GetMetaReflectiveData();
+
+	const ReflectiveData metaReflection = selectedFileReference.GetMetaReflectiveData();
 	if (metaReflection.size() != 0)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
@@ -393,45 +389,45 @@ void InspectorMenu::DrawFileInfo(const std::shared_ptr<FileReference>& selectedF
 
 		if (ImGui::Button("Apply"))
 		{
-			selectedFileReference->isMetaDirty = true;
+			selectedFileReference.isMetaDirty = true;
 			ProjectManager::SaveMetaFile(selectedFileReference);
 		}
 	}
 }
 
-void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject)
+void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 {
 	//Active checkbox
-	bool active = selectedGameObject->IsActive();
+	bool active = selectedGameObject.IsActive();
 	ImGui::Checkbox("##Active", &active);
 
 	//Name input
-	std::string gameObjectName = selectedGameObject->GetName();
+	std::string gameObjectName = selectedGameObject.GetName();
 	ImGui::SameLine();
 	ImGui::InputText("##Name ", &gameObjectName);
 
-	bool isStatic = selectedGameObject->IsStatic();
+	bool isStatic = selectedGameObject.IsStatic();
 	ImGui::Checkbox("##IsStatic", &isStatic);
 	ImGui::SameLine();
 	ImGui::Text("Is Static");
 
 	//Apply new values if changed
-	if (gameObjectName != selectedGameObject->GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
+	if (gameObjectName != selectedGameObject.GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
 		// Improve this
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject);
-		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject->GetReflectiveData(), "name");
-		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject->GetReflectiveData());
-		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject->GetName(), selectedGameObject->GetName(), gameObjectName);
+		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject.GetReflectiveData(), "name");
+		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject.GetReflectiveData());
+		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject.GetName(), selectedGameObject.GetName(), gameObjectName);
 		CommandManager::AddCommandAndExecute(command);
 	}
-	if (active != selectedGameObject->IsActive())
+	if (active != selectedGameObject.IsActive())
 	{
 		auto command = std::make_shared<InspectorItemSetActiveCommand<GameObject>>(selectedGameObject, active);
 		CommandManager::AddCommandAndExecute(command);
 	}
 
-	if (isStatic != selectedGameObject->IsStatic())
+	if (isStatic != selectedGameObject.IsStatic())
 	{
 		auto command = std::make_shared<InspectorItemSetStaticCommand<GameObject>>(selectedGameObject, isStatic);
 		CommandManager::AddCommandAndExecute(command);
@@ -465,7 +461,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 			ImGui::SetCursorPosX(30);
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
-				auto command = std::make_shared<InspectorAddComponentCommand>(Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
+				auto command = std::make_shared<InspectorAddComponentCommand>(*Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
 				CommandManager::AddCommandAndExecute(command);
 
 				std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
@@ -476,7 +472,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 				showAddComponentMenu = false;
 			}
 			std::shared_ptr<Texture> texture = EditorUI::componentsIcons[componentNames[i]];
-			if(!texture)
+			if (!texture)
 				texture = EditorUI::componentsIcons["Default"];
 			if (texture)
 			{
@@ -495,7 +491,7 @@ void InspectorMenu::DrawGameObjectInfo(const std::shared_ptr <GameObject>& selec
 	}
 }
 
-void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selectedGameObject)
+void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 {
 	//Local position input
 	ImGui::Spacing();
@@ -506,8 +502,8 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 
 	if (ImGui::CollapsingHeader("##Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		std::shared_ptr<Transform> selectedTransform = selectedGameObject->GetTransform();
-		CheckOpenRightClickPopupTransform(selectedTransform, "RightClick" + std::to_string(selectedTransform->GetGameObject()->GetUniqueId()));
+		std::shared_ptr<Transform> selectedTransform = selectedGameObject.GetTransform();
+		CheckOpenRightClickPopupTransform(*selectedTransform, "RightClick" + std::to_string(selectedTransform->GetGameObject()->GetUniqueId()));
 
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
@@ -579,13 +575,13 @@ void InspectorMenu::DrawTransformHeader(const std::shared_ptr<GameObject>& selec
 	ImGui::SetCursorPosY(finalCursorY);
 }
 
-void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& selectedGameObject)
+void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 {
 	//Component list
-	int componentCount = selectedGameObject->GetComponentCount();
+	int componentCount = selectedGameObject.GetComponentCount();
 	for (int i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr <Component> comp = selectedGameObject->components[i];
+		std::shared_ptr <Component> comp = selectedGameObject.components[i];
 
 		const float cursorY = ImGui::GetCursorPosY();
 
@@ -598,7 +594,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
-			CheckOpenRightClickPopup(comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
+			CheckOpenRightClickPopup(*comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 			if (!comp->waitingForDestroy)
 			{
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -623,19 +619,19 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 				}
 
 				//Draw component variables
-				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(comp);
+				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(*comp);
 
 				const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), nullptr);
 				if (valueInputState != ValueInputState::NO_CHANGE)
 				{
-					if (reflectiveDataToDraw.command) 
+					if (reflectiveDataToDraw.command)
 					{
 						if (valueInputState == ValueInputState::APPLIED)
 							CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 						else
 							reflectiveDataToDraw.command->Execute();
 					}
-					else 
+					else
 					{
 						comp->OnReflectionUpdated();
 					}
@@ -657,7 +653,7 @@ void InspectorMenu::DrawComponentsHeaders(const std::shared_ptr<GameObject>& sel
 		const bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
 		if (isEnabledChanged)
 		{
-			auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(comp, isEnable);
+			auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(*comp, isEnable);
 			CommandManager::AddCommandAndExecute(command);
 		}
 

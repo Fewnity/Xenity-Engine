@@ -21,17 +21,18 @@ public:
 	void Init() override;
 	void Draw() override;
 
-	/**
-	* Check if the user wants to open the right click menu and open it if needed
-	*/
-	int CheckOpenRightClickPopup(std::shared_ptr<Component>& component, int& componentCount, int& componentIndex, const std::string& id);
-
-	int CheckOpenRightClickPopupTransform(std::shared_ptr<Transform>& transform, const std::string& id);
-
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
+
 	bool forceItemUpdate = false;
 
 private:
+	/**
+	* Check if the user wants to open the right click menu and open it if needed
+	*/
+	int CheckOpenRightClickPopup(Component& component, int& componentCount, int& componentIndex, const std::string& id);
+
+	int CheckOpenRightClickPopupTransform(Transform& transform, const std::string& id);
+
 	/**
 	* Draw file preview part
 	*/
@@ -40,22 +41,22 @@ private:
 	/**
 	* Draw file info part
 	*/
-	void DrawFileInfo(const std::shared_ptr<FileReference>& selectedFileReference);
+	void DrawFileInfo(FileReference& selectedFileReference);
 
 	/**
 	* Draw selected gameobject infos
 	*/
-	void DrawGameObjectInfo(const std::shared_ptr <GameObject>& selectedGameObject);
+	void DrawGameObjectInfo(GameObject& selectedGameObject);
 
 	/**
 	* Draw selected transform header
 	*/
-	void DrawTransformHeader(const std::shared_ptr <GameObject>& selectedGameObject);
+	void DrawTransformHeader(const GameObject& selectedGameObject);
 
 	/**
 	* Draw components headers
 	*/
-	void DrawComponentsHeaders(const std::shared_ptr <GameObject>& selectedGameObject);
+	void DrawComponentsHeaders(const GameObject& selectedGameObject);
 
 	bool showAddComponentMenu = false;
 

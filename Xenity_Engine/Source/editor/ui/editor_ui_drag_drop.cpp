@@ -51,7 +51,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectD
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
 			ProjectDirectory* movedFolder = (ProjectDirectory*)payload->Data;
-			std::shared_ptr<ProjectDirectory> directory = ProjectManager::FindProjectDirectory(ProjectManager::GetProjectDirectory(), movedFolder->path);
+			std::shared_ptr<ProjectDirectory> directory = ProjectManager::FindProjectDirectory(*ProjectManager::GetProjectDirectory(), movedFolder->path);
 			if (directory)
 			{
 				ref = directory;

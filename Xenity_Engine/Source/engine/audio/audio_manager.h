@@ -145,5 +145,6 @@ public:
 	static Channel* channel;
 	static MyMutex* myMutex;
 
+	static void FillChannelBuffer(short* buffer, int length, Channel* channel);
 private:
 };

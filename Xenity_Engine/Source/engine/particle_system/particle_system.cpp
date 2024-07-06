@@ -309,13 +309,13 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material;
+	command.material = material.get();
 	command.drawable = this;
 	if (!mesh)
 		command.subMesh = SpriteManager::spriteMeshData->subMeshes[0];
 	else
 		command.subMesh = mesh->subMeshes[0];
-	command.transform = GetTransform();
+	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 	if (!material->GetUseTransparency())
 	{

@@ -36,7 +36,7 @@ public:
 	* @brief Open audio clip stream
 	* @param audioFile AudioClip to open
 	*/
-	void OpenStream(std::shared_ptr<AudioClip> audioFile);
+	void OpenStream(const AudioClip& audioFile);
 
 	/**
 	* @brief Fill the given audio buffer

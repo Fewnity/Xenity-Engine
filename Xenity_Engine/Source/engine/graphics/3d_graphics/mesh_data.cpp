@@ -341,7 +341,7 @@ void MeshData::LoadFileReference()
 		isLoaded = true;
 		isValid = false;
 
-		WavefrontLoader::LoadFromRawData(std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		WavefrontLoader::LoadFromRawData(*this);
 
 		OnLoadFileReferenceFinished();
 //#if defined(EDITOR)

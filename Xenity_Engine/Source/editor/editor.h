@@ -213,7 +213,7 @@ public:
 		return newMenu;
 	}
 
-	static void OnMenuActiveStateChange(std::string menuName, bool active, int id)
+	static void OnMenuActiveStateChange(const std::string& menuName, bool active, int id)
 	{
 		const size_t menuSize = menuSettings.settings.size();
 		for (size_t i = 0; i < menuSize; i++)
@@ -228,7 +228,7 @@ public:
 		SaveMenuSettings();
 	}
 
-	static std::shared_ptr<Menu> AddMenu(std::string menuName, bool active, int id = -1)
+	static std::shared_ptr<Menu> AddMenu(const std::string& menuName, bool active, int id = -1)
 	{
 		// Make a list of all ids and use the smallest one that is not used
 		std::vector<int> usedIds;
@@ -332,7 +332,7 @@ public:
 	* @brief Set current project directory
 	* @param dir New current project directory
 	*/
-	static void SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir);
+	static void SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>& dir);
 
 	/**
 	* @brief Get current project directory

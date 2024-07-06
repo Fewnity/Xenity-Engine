@@ -32,7 +32,7 @@ public:
 	{
 	}
 
-	void DrawItem(const std::string& itemName, int& currentCol, int colCount, float offset, std::shared_ptr<Texture> icon, float iconSize, size_t index, bool isSelected)
+	void DrawItem(const std::string& itemName, int& currentCol, int colCount, float offset, const Texture& icon, float iconSize, size_t index, bool isSelected)
 	{
 		if (currentCol == 0)
 			ImGui::TableNextRow();
@@ -50,7 +50,7 @@ public:
 		const int cursorPos = (int)ImGui::GetCursorPosX();
 		const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 		ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
-		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)(size_t)icon->GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)(size_t)icon.GetTextureId(), ImVec2(iconSize, iconSize));
 
 		const float windowWidth = ImGui::GetContentRegionAvail().x;
 		const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
@@ -102,7 +102,7 @@ public:
 					FileExplorerItem item;
 					item.file = foundFiles[i];
 					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(foundFiles[i]);
-					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
+					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
 
 					if (ImGui::IsItemClicked())
 					{

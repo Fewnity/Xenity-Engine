@@ -67,7 +67,7 @@ public:
 	/**
 	* @brief [Internal] Get opened scene
 	*/
-	static inline std::shared_ptr<Scene> GetOpenedScene()
+	static inline const std::shared_ptr<Scene>& GetOpenedScene()
 	{
 		return openedScene;
 	}

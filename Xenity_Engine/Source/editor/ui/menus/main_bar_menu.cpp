@@ -67,7 +67,7 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 		if(!currentGameObject.lock())
 			continue;
 
-		auto command = std::make_shared<InspectorAddComponentCommand>(currentGameObject, ClassRegistry::GetClassInfo<T>()->name);
+		auto command = std::make_shared<InspectorAddComponentCommand>(*currentGameObject.lock(), ClassRegistry::GetClassInfo<T>()->name);
 		CommandManager::AddCommandAndExecute(command);
 
 		std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
@@ -85,7 +85,7 @@ std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string&
 	std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(command->createdGameObjects[0]);
 	createdGameObject->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
 
-	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(createdGameObject, ClassRegistry::GetClassInfo<T>()->name);
+	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(*createdGameObject, ClassRegistry::GetClassInfo<T>()->name);
 	CommandManager::AddCommandAndExecute(componentCommand);
 	std::shared_ptr<Component> newComponent = FindComponentById(componentCommand->componentId);
 
@@ -97,11 +97,11 @@ std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string&
 	return std::dynamic_pointer_cast<T>(newComponent);
 }
 
-bool MainBarMenu::DrawImageButton(const bool enabled, const std::shared_ptr<Texture>& texture)
+bool MainBarMenu::DrawImageButton(const bool enabled, const Texture& texture)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture->GetTextureId(), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture.GetTextureId(), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
 	return clicked;
@@ -370,7 +370,7 @@ void MainBarMenu::Draw()
 					{
 						if (currentGameObject.lock()) 
 						{
-							std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentNames[i], currentGameObject.lock());
+							std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentNames[i], *currentGameObject.lock());
 							if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
 								boxCollider->SetDefaultSize();
 						}
@@ -511,11 +511,11 @@ void MainBarMenu::Draw()
 	style.FramePadding.x = 14;
 	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + style.ItemSpacing.x * 2 + style.FramePadding.x * 6) / 2.0f);
 	ImGui::BeginGroup();
-	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, EditorUI::icons[(int)IconName::Icon_Play]);
+	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, *EditorUI::icons[(int)IconName::Icon_Play]);
 	ImGui::SameLine();
-	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Pause]);
+	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorUI::icons[(int)IconName::Icon_Pause]);
 	ImGui::SameLine();
-	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, EditorUI::icons[(int)IconName::Icon_Stop]);
+	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorUI::icons[(int)IconName::Icon_Stop]);
 	ImGui::EndGroup();
 	style.FramePadding.x = oldFramePadding;
 

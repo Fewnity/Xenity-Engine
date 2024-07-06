@@ -21,8 +21,8 @@ public:
 	RigidBody();
 	~RigidBody();
 
-	inline Vector3 GetVelocity() const { return velocity; }
-	void SetVelocity(Vector3 _velocity);
+	inline const Vector3& GetVelocity() const { return velocity; }
+	void SetVelocity(const Vector3& _velocity);
 
 	inline float GetDrag() const { return drag; }
 	void SetDrag(float _drag);

@@ -29,7 +29,7 @@ public:
 	* @brief Add a file loading with a thread
 	* @param file File to load
 	*/
-	static void AddFile(std::shared_ptr<FileReference> file);
+	static void AddFile(const std::shared_ptr<FileReference>& file);
 
 private:
 	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;

@@ -208,7 +208,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
-	CheckItemDrag(item, iconTexture, iconSize, itemName);
+	CheckItemDrag(item, *iconTexture, iconSize, itemName);
 
 	ImGui::PopStyleColor(3);
 }
@@ -325,7 +325,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 	return state;
 }
 
-void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, std::shared_ptr<Texture>& iconTexture, const float iconSize, const std::string& itemName)
+void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, const Texture& iconTexture, const float iconSize, const std::string& itemName)
 {
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 	{
@@ -345,7 +345,7 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, s
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
 		}
 
-		ImGui::Image((ImTextureID)(size_t)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::Image((ImTextureID)(size_t)iconTexture.GetTextureId(), ImVec2(iconSize, iconSize));
 		ImGui::TextWrapped("%s", itemName.c_str());
 		ImGui::EndDragDropSource();
 	}

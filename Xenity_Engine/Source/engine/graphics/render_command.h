@@ -15,8 +15,8 @@ class IDrawable;
 class RenderCommand
 {
 public:
-	std::shared_ptr<Transform> transform = nullptr;
-	std::shared_ptr<Material> material = nullptr;
+	Transform* transform = nullptr;
+	Material* material = nullptr;
 	const MeshData::SubMesh* subMesh = nullptr;
 	IDrawable* drawable = nullptr;
 	bool isEnabled;

@@ -164,7 +164,7 @@ protected:
 	static void AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, (std::vector<int>&)value, variableName, false, isPublic, type, true);
+		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
 	}
 
 	/**
@@ -178,7 +178,7 @@ protected:
 	static void AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, (int&)value, variableName, false, isPublic, type, true);
+		Reflective::CreateReflectionEntry(vector, reinterpret_cast<int&>(value), variableName, false, isPublic, type, true);
 	}
 
 	/**
@@ -192,7 +192,7 @@ protected:
 	static void AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, (std::weak_ptr<Component>&)value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
 	}
 	
 	/**
@@ -206,7 +206,7 @@ protected:
 	static void AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, (std::vector<std::weak_ptr<Component>>&)value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
 	}
 
 	/**
@@ -221,7 +221,7 @@ protected:
 	static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, (std::vector<Reflective*>&)value, variableName, false, isPublic, type, false);
+		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
 		for (ReflectiveEntry& otherEntry : vector)
 		{
 			if (otherEntry.variableName == variableName) 

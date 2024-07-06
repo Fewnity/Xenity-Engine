@@ -21,12 +21,13 @@
 #include <engine/tools/gameplay_utility.h>
 #include <engine/scene_management/scene_manager.h>
 #include <editor/editor.h>
+#include <engine/assertions/assertions.h>
 
 class InspectorAddComponentCommand : public Command
 {
 public:
 	InspectorAddComponentCommand() = delete;
-	InspectorAddComponentCommand(std::weak_ptr<GameObject> target, const std::string& componentName);
+	InspectorAddComponentCommand(const GameObject& target, const std::string& componentName);
 	void Execute() override;
 	void Undo() override;
 
@@ -36,18 +37,17 @@ private:
 	uint64_t targetId = 0;
 };
 
-inline InspectorAddComponentCommand::InspectorAddComponentCommand(std::weak_ptr<GameObject> target, const std::string& _componentName) : componentName(_componentName)
+inline InspectorAddComponentCommand::InspectorAddComponentCommand(const GameObject& target, const std::string& _componentName) : componentName(_componentName)
 {
-	if (target.lock())
-		targetId = target.lock()->GetUniqueId();
+	targetId = target.GetUniqueId();
 }
 
 inline void InspectorAddComponentCommand::Execute()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	const std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
 	if (foundGameObject)
 	{
-		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentName, foundGameObject);
+		const std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentName, *foundGameObject);
 		if (newComponent)
 		{
 			componentId = newComponent->GetUniqueId();

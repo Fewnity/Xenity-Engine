@@ -263,7 +263,7 @@ public:
 	* @param projectDir Project directory to draw
 	* @return True if the item has been clicked
 	*/
-	static bool DrawTreeItem(std::shared_ptr <ProjectDirectory> projectDir);
+	static bool DrawTreeItem(const std::shared_ptr <ProjectDirectory>& projectDir);
 
 	/**
 	* @brief Draw input title
@@ -351,26 +351,23 @@ public:
 	}
 
 	template<typename T>
-	static ReflectiveDataToDraw CreateReflectiveDataToDraw(std::shared_ptr<T> owner)
+	static ReflectiveDataToDraw CreateReflectiveDataToDraw(T& owner)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw;
 		if constexpr (std::is_base_of<T, FileReference>())
 		{
 			reflectiveDataToDraw.ownerType = 0;
-			if (owner)
-				reflectiveDataToDraw.ownerUniqueId = owner->fileId;
+			reflectiveDataToDraw.ownerUniqueId = owner.fileId;
 		}
 		else if constexpr (std::is_base_of<T, GameObject>())
 		{
 			reflectiveDataToDraw.ownerType = 1;
-			if (owner)
-				reflectiveDataToDraw.ownerUniqueId = owner->GetUniqueId();
+			reflectiveDataToDraw.ownerUniqueId = owner.GetUniqueId();
 		}
 		else if constexpr (std::is_base_of<T, Component>())
 		{
 			reflectiveDataToDraw.ownerType = 2;
-			if (owner)
-				reflectiveDataToDraw.ownerUniqueId = owner->GetUniqueId();
+			reflectiveDataToDraw.ownerUniqueId = owner.GetUniqueId();
 		}
 
 		return reflectiveDataToDraw;

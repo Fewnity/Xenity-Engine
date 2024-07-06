@@ -28,7 +28,7 @@ class InspectorDeleteGameObjectCommand : public Command
 {
 public:
 	InspectorDeleteGameObjectCommand() = delete;
-	InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject> gameObjectToDestroy);
+	InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject>& gameObjectToDestroy);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -48,13 +48,13 @@ private:
 		std::vector<GameObjectChild> children;
 		std::vector<GameObjectComponent> components;
 	};
-	GameObjectChild AddChild(std::shared_ptr<GameObject> child);
-	void ReCreateChild(const GameObjectChild& child, std::shared_ptr<GameObject> parent);
+	GameObjectChild AddChild(const std::shared_ptr<GameObject>& child);
+	void ReCreateChild(const GameObjectChild& child, const std::shared_ptr<GameObject>& parent);
 	void UpdateChildComponents(const GameObjectChild& child);
 	GameObjectChild gameObjectChild;
 };
 
-inline InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectCommand::AddChild(std::shared_ptr<GameObject> child)
+inline InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectCommand::AddChild(const std::shared_ptr<GameObject>& child)
 {
 	GameObjectChild gameObjectChild;
 	gameObjectChild.gameObjectId = child->GetUniqueId();
@@ -91,7 +91,7 @@ inline void InspectorDeleteGameObjectCommand::UpdateChildComponents(const GameOb
 	}
 }
 
-inline void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& child, std::shared_ptr<GameObject> parent)
+inline void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& child, const std::shared_ptr<GameObject>& parent)
 {
 	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 	std::shared_ptr<Transform> transformToUpdate = newGameObject->GetTransform();
@@ -110,7 +110,7 @@ inline void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChil
 	}
 	for (const GameObjectComponent& childChild : child.components)
 	{
-		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(childChild.componentName, newGameObject);
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(childChild.componentName, *newGameObject);
 		//ReflectionUtils::JsonToReflectiveData(childChild.componentData, component->GetReflectiveData());
 		component->SetIsEnabled(childChild.isEnabled);
 		component->SetUniqueId(childChild.componentId);
@@ -120,7 +120,7 @@ inline void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChil
 	}
 }
 
-inline InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject> gameObjectToDestroy)
+inline InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject>& gameObjectToDestroy)
 {
 	std::shared_ptr<GameObject> gameObjectToDestroyLock = gameObjectToDestroy.lock();
 	gameObjectChild = AddChild(gameObjectToDestroyLock);
@@ -159,7 +159,7 @@ class InspectorDeleteComponentCommand : public Command
 {
 public:
 	InspectorDeleteComponentCommand() = delete;
-	InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy);
+	InspectorDeleteComponentCommand(T& componentToDestroy);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -171,14 +171,13 @@ private:
 };
 
 template<typename T>
-inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(std::weak_ptr<T> componentToDestroy)
+inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(T& componentToDestroy)
 {
-	std::shared_ptr<T> componentToDestroyLock = componentToDestroy.lock();
-	this->componentId = componentToDestroyLock->GetUniqueId();
-	this->gameObjectId = componentToDestroyLock->GetGameObject()->GetUniqueId();
-	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroyLock->GetReflectiveData());
-	this->componentName = componentToDestroyLock->GetComponentName();
-	isEnabled = componentToDestroyLock->IsEnabled();
+	this->componentId = componentToDestroy.GetUniqueId();
+	this->gameObjectId = componentToDestroy.GetGameObject()->GetUniqueId();
+	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.GetReflectiveData());
+	this->componentName = componentToDestroy.GetComponentName();
+	isEnabled = componentToDestroy.IsEnabled();
 }
 
 template<typename T>
@@ -198,7 +197,7 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 	std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId);
 	if (gameObject)
 	{
-		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, gameObject);
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, *gameObject);
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
 		component->SetIsEnabled(isEnabled);
 		component->SetUniqueId(componentId);

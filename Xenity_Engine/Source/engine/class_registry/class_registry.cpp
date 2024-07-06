@@ -35,7 +35,7 @@
 #include <engine/graphics/icon.h>
 #include <engine/particle_system/particle_system.h>
 
-std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> ClassRegistry::nameToComponent;
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
 std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 #if defined(EDITOR)
@@ -63,10 +63,9 @@ std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()
 std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
 #endif
 
-std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
+std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, GameObject& gameObject)
 {
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
-	XASSERT(gameObject != nullptr, "[ClassRegistry::AddComponentFromName] gameObject is empty");
 
 	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
 	{

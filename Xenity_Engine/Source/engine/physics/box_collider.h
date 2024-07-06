@@ -81,7 +81,7 @@ protected:
 	*/
 	void CalculateBoundingBox();
 
-	std::weak_ptr<RigidBody> GetAttachedRigidbody()
+	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{
 		return attachedRigidbody;
 	}

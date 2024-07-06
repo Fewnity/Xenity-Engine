@@ -30,11 +30,6 @@ class API FileSystem
 public:
 	static FileSystem* fileSystem;
 
-	/**
-	* @brief [Internal] Init file system
-	* @return 0 if success
-	*/
-	int InitFileSystem();
 
 	/**
 	* @brief Create a directory
@@ -63,4 +58,13 @@ public:
 	 * @brief [Internal] ?
 	 */
 	static std::shared_ptr<File> MakeFile(const std::string& path);
+
+private:
+	friend class Engine;
+
+	/**
+	* @brief [Internal] Init file system
+	* @return 0 if success
+	*/
+	int InitFileSystem();
 };

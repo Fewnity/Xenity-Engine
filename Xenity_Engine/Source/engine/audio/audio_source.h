@@ -99,6 +99,9 @@ public:
 	}
 
 protected:
+	friend class Editor;
+	friend class AudioManager;
+
 	void OnDrawGizmos() override;
 
 	void RemoveReferences() override;
@@ -123,7 +126,6 @@ protected:
 	bool isPlaying = false;
 	bool playOnAwake = true;
 
-public:
 	// [Internal]
 	bool isEditor = false;
 };

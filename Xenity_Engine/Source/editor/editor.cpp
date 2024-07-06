@@ -576,14 +576,14 @@ const std::vector<std::weak_ptr<GameObject>>& Editor::GetSelectedGameObjects()
 	return selectedGameObjects;
 }
 
-void Editor::SetCurrentProjectDirectory(std::shared_ptr <ProjectDirectory> dir)
+void Editor::SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>& dir)
 {
 	if (currentProjectDirectory)
 		currentProjectDirectory->files.clear();
 	currentProjectDirectory = dir;
 	if (currentProjectDirectory)
 	{
-		ProjectManager::FillProjectDirectory(currentProjectDirectory);
+		ProjectManager::FillProjectDirectory(*currentProjectDirectory);
 		const size_t itemCount = currentProjectDirectory->files.size();
 		for (size_t i = 0; i < itemCount; i++)
 		{

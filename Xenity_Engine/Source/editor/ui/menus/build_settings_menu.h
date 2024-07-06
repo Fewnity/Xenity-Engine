@@ -28,7 +28,7 @@ private:
 	void OnSettingChanged();
 	void LoadSettings();
 	void SaveSettings();
-	void StartBuild(BuildPlatform buildPlatform, BuildType buildType);
+	void StartBuild(const BuildPlatform& buildPlatform, BuildType buildType);
 	static std::vector<BuildPlatform> buildPlatforms;
 	int lastSettingError = 0;
 

@@ -38,7 +38,7 @@ void RigidBody::OnReflectionUpdated()
 	SetBounce(bounce);
 }
 
-void RigidBody::SetVelocity(Vector3 _velocity)
+void RigidBody::SetVelocity(const Vector3& _velocity)
 {
 	velocity = _velocity;
 }

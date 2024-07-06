@@ -56,23 +56,23 @@ void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material;
+	command.material = material.get();
 	command.drawable = this;
 	command.subMesh = nullptr;
-	command.transform = GetTransform();
+	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
 }
 
-void SpriteRenderer::SetMaterial(std::shared_ptr<Material> material)
+void SpriteRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
 	this->material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void SpriteRenderer::SetTexture(std::shared_ptr<Texture> texture)
+void SpriteRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
 	this->texture = texture;
 	Graphics::isRenderingBatchDirty = true;
@@ -90,5 +90,5 @@ void SpriteRenderer::OnEnabled()
 
 void SpriteRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(GetTransform(), color, *material, texture);
+	SpriteManager::DrawSprite(*GetTransform(), color, *material, texture);
 }

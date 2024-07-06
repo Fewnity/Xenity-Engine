@@ -309,7 +309,7 @@ class InspectorItemSetActiveCommand : public Command
 {
 public:
 	InspectorItemSetActiveCommand() = delete;
-	InspectorItemSetActiveCommand(std::shared_ptr<T> target, bool newValue);
+	InspectorItemSetActiveCommand(const T& target, bool newValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -348,12 +348,11 @@ inline void InspectorItemSetActiveCommand<T>::ApplyValue(bool valueToSet)
 }
 
 template<typename T>
-inline InspectorItemSetActiveCommand<T>::InspectorItemSetActiveCommand(std::shared_ptr<T> target, bool newValue)
+inline InspectorItemSetActiveCommand<T>::InspectorItemSetActiveCommand(const T& target, bool newValue)
 {
 	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
 	{
-		if (target)
-			this->targetId = target->GetUniqueId();
+		this->targetId = target.GetUniqueId();
 	}
 	this->newValue = newValue;
 }
@@ -378,7 +377,7 @@ class InspectorItemSetStaticCommand : public Command
 {
 public:
 	InspectorItemSetStaticCommand() = delete;
-	InspectorItemSetStaticCommand(std::shared_ptr<T> target, bool newValue);
+	InspectorItemSetStaticCommand(const T& target, bool newValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -407,12 +406,11 @@ inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
 }
 
 template<typename T>
-inline InspectorItemSetStaticCommand<T>::InspectorItemSetStaticCommand(std::shared_ptr<T> target, bool newValue)
+inline InspectorItemSetStaticCommand<T>::InspectorItemSetStaticCommand(const T& target, bool newValue)
 {
 	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
 	{
-		if (target)
-			this->targetId = target->GetUniqueId();
+		this->targetId = target.GetUniqueId();
 	}
 	this->newValue = newValue;
 }
@@ -582,7 +580,7 @@ class InspectorSetComponentDataCommand : public Command
 {
 public:
 	InspectorSetComponentDataCommand() = delete;
-	InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData);
+	InspectorSetComponentDataCommand(T& componentToUse, nlohmann::json newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -593,11 +591,11 @@ private:
 };
 
 template<typename T>
-inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(std::weak_ptr<T> componentToUse, nlohmann::json newComponentData) : componentData(newComponentData)
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, nlohmann::json newComponentData) : componentData(newComponentData)
 {
-	this->componentId = componentToUse.lock()->GetUniqueId();
-	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
-	this->componentName = componentToUse.lock()->GetComponentName();
+	this->componentId = componentToUse.GetUniqueId();
+	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.GetReflectiveData());
+	this->componentName = componentToUse.GetComponentName();
 }
 
 template<typename T>
@@ -631,7 +629,7 @@ class InspectorSetTransformDataCommand : public Command
 {
 public:
 	InspectorSetTransformDataCommand() = delete;
-	InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newComponentData);
+	InspectorSetTransformDataCommand(Transform& transform, nlohmann::json newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -640,10 +638,10 @@ private:
 	nlohmann::json oldTransformData;
 };
 
-inline InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(std::weak_ptr<Transform> componentToUse, nlohmann::json newTransformDataData) : transformData(newTransformDataData)
+inline InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, nlohmann::json newTransformDataData) : transformData(newTransformDataData)
 {
-	this->transformtId = componentToUse.lock()->GetGameObject()->GetUniqueId();
-	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.lock()->GetReflectiveData());
+	this->transformtId = transform.GetGameObject()->GetUniqueId();
+	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());
 }
 
 inline void InspectorSetTransformDataCommand::Execute()

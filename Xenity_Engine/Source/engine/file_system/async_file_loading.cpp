@@ -32,7 +32,7 @@ void AsyncFileLoading::FinishThreadedFileLoading()
 	threadLoadingMutex.unlock();
 }
 
-void AsyncFileLoading::AddFile(std::shared_ptr<FileReference> file)
+void AsyncFileLoading::AddFile(const std::shared_ptr<FileReference>& file)
 {
 	XASSERT(file != nullptr, "[AsyncFileLoading::AddFile] file is nullptr");
 

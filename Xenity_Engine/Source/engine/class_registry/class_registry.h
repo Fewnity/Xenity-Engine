@@ -57,9 +57,9 @@ public:
 	{
 		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
 
-		auto function = [](std::shared_ptr<GameObject> go)
+		auto function = [](GameObject& go)
 		{
-			return go->AddComponent<T>();
+			return go.AddComponent<T>();
 		};
 		nameToComponent[name] = { function , isVisible };
 
@@ -116,7 +116,7 @@ public:
 	* @param name Component name
 	* @param gameObject GameObject to add the component to
 	*/
-	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, const std::shared_ptr<GameObject>& gameObject);
+	static std::shared_ptr<Component> AddComponentFromName(const std::string& name, GameObject& gameObject);
 #if defined (EDITOR)
 	static std::shared_ptr<Menu> CreateMenuFromName(const std::string& name);
 #endif
@@ -221,7 +221,7 @@ public:
 
 private:
 
-	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(const std::shared_ptr<GameObject>&)>, bool>> nameToComponent;
+	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> nameToComponent;
 	static std::vector<FileClassInfo> fileClassInfos;
 	static std::vector<ClassInfo> classInfos;
 #if defined(EDITOR)

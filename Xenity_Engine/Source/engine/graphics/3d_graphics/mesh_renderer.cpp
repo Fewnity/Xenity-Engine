@@ -75,10 +75,10 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 			continue;
 
 		RenderCommand command = RenderCommand();
-		command.material = material;
+		command.material = material.get();
 		command.drawable = this;
 		command.subMesh = meshData->subMeshes[i];
-		command.transform = GetTransform();
+		command.transform = GetTransform().get();
 		command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 		if (!material->GetUseTransparency())
 		{

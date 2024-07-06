@@ -26,11 +26,9 @@
 
 using namespace std;
 
-bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
+bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 {
-	XASSERT(mesh != nullptr, "[WavefrontLoader::LoadFromRawData] mesh is nullptr");
-
-	std::shared_ptr<File>& file = mesh->file;
+	std::shared_ptr<File>& file = mesh.file;
 	Debug::Print("Loading mesh: " + file->GetPath(), true);
 
 	const bool opened = file->Open(FileMode::ReadOnly);
@@ -272,22 +270,22 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 			stop = false;
 			currentSubMeshPtr = nullptr;
 
-			mesh->hasUv = !hasNoUv;
-			mesh->hasNormal = !hasNoNormals;
-			mesh->hasColor = false;
+			mesh.hasUv = !hasNoUv;
+			mesh.hasNormal = !hasNoNormals;
+			mesh.hasColor = false;
 #if defined(__PSP__)
-			mesh->hasIndices = false; // Disable indices on psp, this will improve performances
+			mesh.hasIndices = false; // Disable indices on psp, this will improve performances
 #else
-			mesh->hasIndices = true;
+			mesh.hasIndices = true;
 #endif
 			for (int i = 0; i < currentSubMesh + 1; i++)
 			{
 				const SubMesh* sub = submeshes[i];
-				mesh->AllocSubMesh(sub->indicesCount, sub->indicesCount);
+				mesh.AllocSubMesh(sub->indicesCount, sub->indicesCount);
 			}
 
 			/*if(!mtlFile.empty())
-				ReadMtlFile(mesh->file->GetFolderPath() + mtlFile);*/
+				ReadMtlFile(mesh.file->GetFolderPath() + mtlFile);*/
 
 			for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
 			{
@@ -304,7 +302,7 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 						stop = true;
 						break;
 					}
-					if (mesh->hasUv)
+					if (mesh.hasUv)
 					{
 						textureIndex = submesh->textureIndices[i] - 1;
 						if (textureIndex >= tempTexturesCoordsCount)
@@ -314,17 +312,17 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 						}
 					}
 					const Vector3& vertice = tempVertices.at(vertexIndex);
-					if (!mesh->hasNormal)
+					if (!mesh.hasNormal)
 					{
-						if (!mesh->hasUv)
+						if (!mesh.hasUv)
 						{
-							mesh->AddVertex(
+							mesh.AddVertex(
 								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 						}
 						else
 						{
 							const Vector2& uv = tempTexturesCoords.at(textureIndex);
-							mesh->AddVertex(
+							mesh.AddVertex(
 								uv.x, uv.y,
 								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 						}
@@ -338,24 +336,24 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 							break;
 						}
 						const Vector3& normal = tempNormals.at(normalIndices);
-						if (!mesh->hasUv)
+						if (!mesh.hasUv)
 						{
-							mesh->AddVertex(
+							mesh.AddVertex(
 								normal.x, normal.y, normal.z,
 								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 						}
 						else
 						{
 							const Vector2& uv = tempTexturesCoords.at(textureIndex);
-							mesh->AddVertex(
+							mesh.AddVertex(
 								uv.x, uv.y,
 								normal.x, normal.y, normal.z,
 								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 
 						}
 					}
-					if (mesh->hasIndices)
-						mesh->subMeshes[subMeshIndex]->indices[i] = i;
+					if (mesh.hasIndices)
+						mesh.subMeshes[subMeshIndex]->indices[i] = i;
 				}
 				if (stop)
 				{
@@ -377,17 +375,17 @@ bool WavefrontLoader::LoadFromRawData(const std::shared_ptr<MeshData>& mesh)
 		sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-		mesh->SetIsLoading(false);
+		mesh.SetIsLoading(false);
 		if (notSupported)
 		{
-			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh->file->GetPath());
+			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh.file->GetPath());
 			return false;
 		}
 	}
 	else
 	{
 		// Print error if the file can't be read
-		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh->file->GetPath());
+		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh.file->GetPath());
 		return false;
 	}
 	return true;

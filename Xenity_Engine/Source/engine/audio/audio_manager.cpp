@@ -66,7 +66,7 @@ short MixSoundToBuffer(short bufferValue, short soundValue)
 	return newVal;
 }
 
-void FillChannelBuffer(short* buffer, int length, Channel* channel)
+void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel)
 {
 	// Reset buffer
 	for (int i = 0; i < length; i++)
@@ -195,7 +195,7 @@ int audio_thread(SceSize args, void* argp)
 		{
 			//audioBenchmark2->Start();
 			int16_t wave_buf[audiosize * 2] = { 0 };
-			FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
+			AudioManager::FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
 			sceAudioOutput(0, PSP_AUDIO_VOLUME_MAX, wave_buf);
 			//audioBenchmark2->Stop();
 		}
@@ -212,7 +212,7 @@ int audio_thread(SceSize args, void* argp)
 		if (sceAudioOutGetRestSample(AudioManager::channel->port) == 0)
 		{
 			int16_t wave_buf[audiosize * 2] = { 0 };
-			FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
+			AudioManager::FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::channel);
 			sceAudioOutOutput(AudioManager::channel->port, wave_buf);
 		}
 	}
@@ -239,7 +239,7 @@ int audio_thread()
 				buffToUse = audioData2;
 
 			// Send audio data
-			FillChannelBuffer((short*)buffToUse, quarterBuffSize, AudioManager::channel);
+			AudioManager::FillChannelBuffer((short*)buffToUse, quarterBuffSize, AudioManager::channel);
 			w->lpData = reinterpret_cast<LPSTR>(buffToUse);
 			w->dwBufferLength = buffSize;
 			w->dwFlags = 0;
@@ -456,7 +456,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		AudioClipStream* newAudioClipStream = new AudioClipStream();
 		newPlayedSound->audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(audioSource->GetAudioClip());
+		newAudioClipStream->OpenStream(*audioSource->GetAudioClip());
 		newPlayedSound->audioSource = audioSource;
 		newPlayedSound->seekPosition = 0;
 		newPlayedSound->needFillFirstHalfBuffer = true;

@@ -192,7 +192,7 @@ void BuildSettingsMenu::Draw()
 			//ImGui::Text("Settings");
 			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
 
-			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(platform.settings);
+			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(*platform.settings);
 			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), onSettingChangedEvent) != ValueInputState::NO_CHANGE;
 			if (valueChanged && reflectiveDataToDraw.command)
 			{
@@ -375,7 +375,7 @@ void BuildSettingsMenu::SaveSettings()
 	file->Close();
 }
 
-void BuildSettingsMenu::StartBuild(BuildPlatform buildPlatform, BuildType buildType)
+void BuildSettingsMenu::StartBuild(const BuildPlatform& buildPlatform, BuildType buildType)
 {
 	const int validityResult = buildPlatform.settings->IsValid();
 	lastSettingError = validityResult;

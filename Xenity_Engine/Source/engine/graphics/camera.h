@@ -98,7 +98,7 @@ public:
 	/**
 	* @brief Get projection matrix
 	*/
-	inline glm::mat4& GetProjection()
+	inline const glm::mat4& GetProjection() const
 	{
 		return projection;
 	}
@@ -182,7 +182,7 @@ protected:
 	/**
 	* @brief [Internal] Get projection matrix without Clipping Planes values
 	*/
-	inline glm::mat4& GetCanvasProjection()
+	inline const glm::mat4& GetCanvasProjection()
 	{
 		return canvasProjection;
 	}

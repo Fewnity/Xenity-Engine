@@ -48,7 +48,7 @@ public:
 	* @param material Sprite's material
 	* @param texture Sprite's texture
 	*/
-	static void DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture);
+	static void DrawSprite(const Transform& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture);
 
 	/**
 	* @brief Render a 2D line

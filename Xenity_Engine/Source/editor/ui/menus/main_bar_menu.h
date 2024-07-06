@@ -42,7 +42,7 @@ private:
 	* Draw an image as a button
 	* @return is clicked
 	*/
-	bool DrawImageButton(const bool enabled, const std::shared_ptr<Texture>& texture);
+	bool DrawImageButton(const bool enabled, const Texture& texture);
 
 	int height = 0;
 };

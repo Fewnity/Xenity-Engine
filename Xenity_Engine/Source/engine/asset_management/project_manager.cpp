@@ -68,14 +68,12 @@ std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullpt
 Event<> ProjectManager::projectLoadedEvent;
 Event<> ProjectManager::projectUnloadedEvent;
 
-std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shared_ptr<ProjectDirectory> directoryToCheck, const std::string& directoryPath)
+std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath)
 {
-	XASSERT(directoryToCheck != nullptr, "[ProjectManager::FindProjectDirectory] directoryToCheck is null");
-
-	const size_t dirCount = directoryToCheck->subdirectories.size();
+	const size_t dirCount = directoryToCheck.subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
-		std::shared_ptr<ProjectDirectory> subDir = directoryToCheck->subdirectories[i];
+		std::shared_ptr<ProjectDirectory> subDir = directoryToCheck.subdirectories[i];
 		// Check if the sub directory is the directory to find
 		if (subDir->path == directoryPath)
 		{
@@ -84,7 +82,7 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 		else
 		{
 			// Start recursive to search in the sub directory
-			std::shared_ptr<ProjectDirectory> foundSubDir = FindProjectDirectory(subDir, directoryPath);
+			std::shared_ptr<ProjectDirectory> foundSubDir = FindProjectDirectory(*subDir, directoryPath);
 			if (foundSubDir)
 				return foundSubDir;
 		}
@@ -92,12 +90,10 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(std::shar
 	return nullptr;
 }
 
-uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
+uint64_t ProjectManager::ReadFileId(const File& file)
 {
-	XASSERT(file != nullptr, "[ProjectManager::ReadFileId] file is null");
-
 	uint64_t id = -1;
-	std::string metaFilePath = file->GetPath() + META_EXTENSION;
+	std::string metaFilePath = file.GetPath() + META_EXTENSION;
 
 #if defined(_EE)
 	metaFilePath = metaFilePath.substr(5);
@@ -132,11 +128,9 @@ uint64_t ProjectManager::ReadFileId(const std::shared_ptr<File>& file)
 	return id;
 }
 
-void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets)
+void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, Directory& directorySource, bool isEngineAssets)
 {
-	XASSERT(directorySource != nullptr, "[ProjectManager::AddFilesToProjectFiles] directorySource is null");
-
-	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource->GetAllFiles(true);
+	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource.GetAllFiles(true);
 	const int projectAssetFilesCount = (int)projectAssetFiles.size();
 	for (int i = 0; i < projectAssetFilesCount; i++)
 	{
@@ -172,9 +166,9 @@ void ProjectManager::FindAllProjectFiles()
 	// Get all files of the project
 	std::vector<ProjectEngineFile> projectFiles;
 
-	AddFilesToProjectFiles(projectFiles, publicEngineAssetsDirectoryBase, true); // This directory first
-	AddFilesToProjectFiles(projectFiles, projectDirectoryBase, false);
-	AddFilesToProjectFiles(projectFiles, additionalAssetDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
+	AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
 
 	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
 
@@ -208,7 +202,7 @@ void ProjectManager::FindAllProjectFiles()
 	for (const auto& compatibleFile : compatibleFiles)
 	{
 		std::shared_ptr<File> file = compatibleFile.file.file;
-		uint64_t fileId = ReadFileId(file);
+		uint64_t fileId = ReadFileId(*file);
 		if (fileId == -1)
 		{
 			fileWithoutMeta.push_back(file);
@@ -290,8 +284,8 @@ void ProjectManager::FindAllProjectFiles()
 
 #if defined(EDITOR)
 	// Get all project directories and open one
-	CreateProjectDirectories(projectDirectoryBase, projectDirectory);
-	std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(projectDirectory, oldPath);
+	CreateProjectDirectories(*projectDirectoryBase, *projectDirectory);
+	std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
 	if (lastOpenedDir)
 		Editor::SetCurrentProjectDirectory(lastOpenedDir);
 	else
@@ -363,17 +357,14 @@ void ProjectManager::CreateVisualStudioSettings()
 	}
 }
 
-void ProjectManager::CreateProjectDirectories(std::shared_ptr<Directory> projectDirectoryBase, std::shared_ptr<ProjectDirectory> realProjectDirectory)
+void ProjectManager::CreateProjectDirectories(Directory& projectDirectoryBase, ProjectDirectory& realProjectDirectory)
 {
-	XASSERT(projectDirectoryBase != nullptr, "[ProjectManager::CreateProjectDirectories] projectDirectoryBase is null");
-	XASSERT(realProjectDirectory != nullptr, "[ProjectManager::CreateProjectDirectories] realProjectDirectory is null");
-
-	const size_t dirCount = projectDirectoryBase->subdirectories.size();
+	const size_t dirCount = projectDirectoryBase.subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
-		std::shared_ptr<ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase->subdirectories[i]->GetPath(), projectDirectoryBase->subdirectories[i]->GetUniqueId());
-		realProjectDirectory->subdirectories.push_back(newDir);
-		CreateProjectDirectories(projectDirectoryBase->subdirectories[i], newDir);
+		std::shared_ptr<ProjectDirectory> newDir = std::make_shared<ProjectDirectory>(projectDirectoryBase.subdirectories[i]->GetPath(), projectDirectoryBase.subdirectories[i]->GetUniqueId());
+		realProjectDirectory.subdirectories.push_back(newDir);
+		CreateProjectDirectories(*projectDirectoryBase.subdirectories[i], *newDir);
 	}
 }
 
@@ -382,17 +373,15 @@ void ProjectManager::RefreshProjectDirectory()
 	FindAllProjectFiles();
 }
 
-void ProjectManager::FillProjectDirectory(std::shared_ptr<ProjectDirectory> _projectDirectory)
+void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 {
-	XASSERT(_projectDirectory != nullptr, "[ProjectManager::FillProjectDirectory] realProjectDirectory is null");
-
-	std::vector<std::shared_ptr<FileReference>>& projFileVector = _projectDirectory->files;
+	std::vector<std::shared_ptr<FileReference>>& projFileVector = _projectDirectory.files;
 	projFileVector.clear();
 
 	for (const auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
-		if (_projectDirectory->path == kv.second.file->GetFolderPath())
+		if (_projectDirectory.path == kv.second.file->GetFolderPath())
 		{
 			projFileVector.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}
@@ -799,7 +788,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	return fileRef;
 }
 
-std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(std::shared_ptr<File> file)
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(File& file)
 {
 	const uint64_t fileId = ProjectManager::ReadFileId(file);
 	return GetFileReferenceById(fileId);
@@ -808,7 +797,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(std::share
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string& filePath)
 {
 	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
-	const uint64_t fileId = ProjectManager::ReadFileId(file);
+	const uint64_t fileId = ProjectManager::ReadFileId(*file);
 
 	return GetFileReferenceById(fileId);
 }
@@ -878,26 +867,26 @@ void ProjectManager::SaveProjectSettings()
 	}
 }
 
-void ProjectManager::SaveMetaFile(const std::shared_ptr<FileReference>& fileReference)
+void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
-	std::shared_ptr<File> file = fileReference->file;
+	std::shared_ptr<File> file = fileReference.file;
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	bool exists = metaFile->CheckIfExist();
-	if (!file || (!fileReference->isMetaDirty && exists))
+	if (!file || (!fileReference.isMetaDirty && exists))
 		return;
 
 	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
-	metaData["id"] = fileReference->fileId;
+	metaData["id"] = fileReference.fileId;
 	metaData["MetaVersion"] = metaVersion;
-	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference->GetMetaReflectiveData());
+	metaData["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData());
 
 	if (metaFile->Open(FileMode::WriteCreateFile))
 	{
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
-		fileReference->isMetaDirty = false;
+		fileReference.isMetaDirty = false;
 #if defined(EDITOR)
 		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
 		if (!exists)
@@ -1027,17 +1016,17 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 		fileRef->fileId = id;
 		fileRef->file = file;
 		fileRef->fileType = type;
-		LoadMetaFile(fileRef);
+		LoadMetaFile(*fileRef);
 #if defined(EDITOR)
-		SaveMetaFile(fileRef);
+		SaveMetaFile(*fileRef);
 #endif
 	}
 	return fileRef;
 }
 
-void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileReference)
+void ProjectManager::LoadMetaFile(FileReference& fileReference)
 {
-	const std::string path = fileReference->file->GetPath() + META_EXTENSION;
+	const std::string path = fileReference.file->GetPath() + META_EXTENSION;
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->CheckIfExist())
 	{
@@ -1057,7 +1046,7 @@ void ProjectManager::LoadMetaFile(const std::shared_ptr<FileReference>& fileRefe
 				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error", true);
 				return;
 			}
-			ReflectionUtils::JsonToReflectiveData(metaData, fileReference->GetMetaReflectiveData());
+			ReflectionUtils::JsonToReflectiveData(metaData, fileReference.GetMetaReflectiveData());
 		}
 		else
 		{

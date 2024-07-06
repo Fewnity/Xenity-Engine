@@ -87,7 +87,7 @@ void EngineAssetManagerMenu::Draw()
 				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(oldIds[i]);
 				fileRef->fileId = ids[i];
 				fileRef->isMetaDirty = true;
-				ProjectManager::SaveMetaFile(fileRef);
+				ProjectManager::SaveMetaFile(*fileRef);
 			}
 			oldIds = ids;
 		}

@@ -46,7 +46,7 @@ private:
 	/**
 	* Check if an item is being dragged, and apply drag behavior if needed
 	*/
-	void CheckItemDrag(const FileExplorerItem& fileExplorerItem, std::shared_ptr<Texture>& iconTexture, const float iconSize, const std::string& itemName);
+	void CheckItemDrag(const FileExplorerItem& fileExplorerItem, const Texture& iconTexture, const float iconSize, const std::string& itemName);
 
 	/**
 	* Rename the selected file

@@ -101,10 +101,10 @@ void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material;
+	command.material = material.get();
 	command.drawable = this;
 	command.subMesh = nullptr;
-	command.transform = GetTransform();
+	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.transparentMeshCommands.push_back(command);

@@ -71,12 +71,12 @@ public:
 		tiling = _tiling;
 	}
 
-	inline std::shared_ptr<Shader> GetShader() const
+	inline const std::shared_ptr<Shader>& GetShader() const
 	{
 		return shader;
 	}
 
-	inline std::shared_ptr<Texture> GetTexture() const
+	inline const std::shared_ptr<Texture>& GetTexture() const
 	{
 		return texture;
 	}
@@ -91,12 +91,12 @@ public:
 		return useTransparency;
 	}
 
-	inline Vector2 GetOffset() const
+	inline const Vector2& GetOffset() const
 	{
 		return offset;
 	}
 
-	inline Vector2 GetTiling() const
+	inline const Vector2& GetTiling() const
 	{
 		return tiling;
 	}

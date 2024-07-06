@@ -49,7 +49,7 @@ void Canvas::CreateRenderCommands(RenderBatch& renderBatch)
 	command.material = nullptr;
 	command.drawable = this;
 	command.subMesh = nullptr;
-	command.transform = GetTransform();
+	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.uiCommands.push_back(command);

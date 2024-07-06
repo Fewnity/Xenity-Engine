@@ -174,16 +174,16 @@ bool getHitDistance(const Vector3& corner1, const Vector3& corner2, const Vector
 	return false;
 }
 
-std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr<Camera>& camera)
+std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 {
-	const Vector3 dir = camera->GetMouseRay();
+	const Vector3 dir = camera.GetMouseRay();
 
 	Vector3 dirfrac;
 	dirfrac.x = 1.0f / dir.x;
 	dirfrac.y = 1.0f / dir.y;
 	dirfrac.z = 1.0f / dir.z;
 
-	const Vector3& camPos = camera->GetTransform()->GetPosition();
+	const Vector3& camPos = camera.GetTransform()->GetPosition();
 
 	float dis = 999999;
 	float minDis = dis;
@@ -220,9 +220,9 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(std::shared_ptr
 	return newGameObject;
 }
 
-void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, std::shared_ptr<Camera>& camera)
+void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, Camera& camera)
 {
-	const std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
+	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
 	// Calculate camera matrix without translate
 	const Vector3& cameraRotation = cameraTransform->GetRotation();
@@ -234,7 +234,7 @@ void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormal
 	const glm::vec3 mousePositionGLM = glm::vec3(startAvailableSize.x - mousePosition.x, startAvailableSize.y - (windowSize.y - mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera->GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
+	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
 	worldCoords = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z);
 
 	// Normalise direction if needed
@@ -363,7 +363,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	Vector3 mouseWorldDir;
 	Vector3 mouseWorldDirNormalized;
 
-	GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, camera);
+	GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, *camera);
 	mouseWorldDir *= -1;
 	mouseWorldDirNormalized *= -1;
 
@@ -377,7 +377,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 	std::shared_ptr<GameObject> newGameObjectSelected = nullptr;
 	if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))
 	{
-		newGameObjectSelected = CheckBoundingBoxesOnClick(camera);
+		newGameObjectSelected = CheckBoundingBoxesOnClick(*camera);
 	}
 
 	// Move the camera if the mouse left button is held
@@ -723,7 +723,7 @@ void SceneMenu::Draw()
 				Vector3 worldCoords;
 				Vector3 mouseWorldDir;
 				Vector3 mouseWorldDirNormalized;
-				GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, camera);
+				GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, *camera);
 
 				if (draggedMeshGameObject)
 				{
@@ -786,11 +786,11 @@ void SceneMenu::Draw()
 	ImGui::PopStyleVar();
 }
 
-bool SceneMenu::DrawImageButton(bool enabled, std::shared_ptr<Texture> texture)
+bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture->GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture.GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
 	return clicked;
@@ -801,16 +801,16 @@ void SceneMenu::DrawToolWindow()
 	if (ImGui::CollapsingHeader("Tool modes", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
-		bool moveCameraClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Camera_Move]);
+		bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Camera_Move]);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Move);
-		bool moveClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Move]);
+		bool moveClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Move]);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Rotate);
-		bool rotateClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Rotate]);
+		bool rotateClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Rotate]);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Scale);
-		bool scaleClicked = DrawImageButton(true, EditorUI::icons[(int)IconName::Icon_Scale]);
+		bool scaleClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Scale]);
 		EditorUI::EndButtonColor();
 		if (moveCameraClicked)
 		{

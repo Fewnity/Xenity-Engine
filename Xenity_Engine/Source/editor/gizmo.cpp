@@ -25,10 +25,12 @@ void Gizmo::Init()
 	color = Color::CreateFromRGB(255, 255, 255);
 }
 
-void Gizmo::DrawLine(Vector3 a, Vector3 b)
+void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 {
-	a.x = -a.x;
-	b.x = -b.x;
+	Vector3 aCopy = a;
+	Vector3 bCopy = b;
+	aCopy.x = -aCopy.x;
+	bCopy.x = -bCopy.x;
 
 	// Currently lines do not support shaders
 	if constexpr (!Graphics::UseOpenGLFixedFunctions)
@@ -43,7 +45,7 @@ void Gizmo::DrawLine(Vector3 a, Vector3 b)
 	renderSettings.useDepth = false;
 	renderSettings.useLighting = false;
 	renderSettings.useTexture = false;
-	Engine::GetRenderer().DrawLine(a, b, color, renderSettings);
+	Engine::GetRenderer().DrawLine(aCopy, bCopy, color, renderSettings);
 }
 
 void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color)

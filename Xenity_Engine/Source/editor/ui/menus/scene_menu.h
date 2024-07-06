@@ -38,13 +38,13 @@ public:
 
 private:
 	void DrawToolWindow();
-	bool DrawImageButton(bool enabled, std::shared_ptr<Texture> texture);
+	bool DrawImageButton(bool enabled, const Texture& texture);
 	void MoveCamera();
 	void ProcessTool(std::shared_ptr<Camera>& camera);
-	std::shared_ptr<GameObject> CheckBoundingBoxesOnClick(std::shared_ptr<Camera>& camera);
+	std::shared_ptr<GameObject> CheckBoundingBoxesOnClick(Camera& camera);
 
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
-	void GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, std::shared_ptr<Camera>& camera);
+	void GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, Camera& camera);
 	Side GetNearSide(float camDistance,
 		const Vector3& rightClosestPointCam, const Vector3& rightClosestPoint,
 		const Vector3& upClosestPointCam, const Vector3& upClosestPoint,

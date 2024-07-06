@@ -18,7 +18,7 @@
 #include <editor/ui/menus/scene_menu.h>
 #include <engine/game_elements/gameplay_manager.h>
 
-bool EditorUI::DrawTreeItem(std::shared_ptr<ProjectDirectory> projectDir)
+bool EditorUI::DrawTreeItem(const std::shared_ptr<ProjectDirectory>& projectDir)
 {
 	static bool cancelClick = false;
 	bool objectClicked = false;

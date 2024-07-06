@@ -77,13 +77,13 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const Transform& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
 {
 	spriteBenchmark->Start();
 
 	spriteMeshData->unifiedColor = color;
 
-	const Vector3& scale = transform->GetScale();
+	const Vector3& scale = transform.GetScale();
 	RenderingSettings renderSettings = RenderingSettings();
 
 	if (scale.x * scale.y < 0)
@@ -100,7 +100,7 @@ void SpriteManager::DrawSprite(const std::shared_ptr<Transform>& transform, cons
 	const float w = texture->GetWidth() * scaleCoef;
 	const float h = texture->GetHeight() * scaleCoef;
 
-	const glm::mat4 matCopy = glm::scale(transform->GetTransformationMatrix(), glm::vec3(w, h, 1));
+	const glm::mat4 matCopy = glm::scale(transform.GetTransformationMatrix(), glm::vec3(w, h, 1));
 
 	//Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
 	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);

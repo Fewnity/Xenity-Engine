@@ -28,7 +28,7 @@ public:
 	~LineRenderer();
 
 	ReflectiveData GetReflectiveData() override;
-	void OnReflectionUpdated()  override;
+	void OnReflectionUpdated() override;
 
 	void SetOrderInLayer(int orderInLayer);
 
@@ -45,12 +45,17 @@ public:
 		this->color = color;
 	}
 
-	inline Vector3 GetStartPosition()
+	inline const Color& GetColor() const
+	{
+		return color;
+	}
+
+	inline const Vector3& GetStartPosition()
 	{
 		return startPosition;
 	}
 
-	inline Vector3 GetEndPosition()
+	inline const Vector3& GetEndPosition()
 	{
 		return endPosition;
 	}

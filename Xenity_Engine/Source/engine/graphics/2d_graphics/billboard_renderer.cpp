@@ -56,23 +56,23 @@ void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material;
+	command.material = material.get();
 	command.drawable = this;
 	command.subMesh = nullptr;
-	command.transform = GetTransform();
+	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
 }
 
-void BillboardRenderer::SetMaterial(std::shared_ptr<Material> material)
+void BillboardRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
 	this->material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void BillboardRenderer::SetTexture(std::shared_ptr<Texture> texture)
+void BillboardRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
 	this->texture = texture;
 	Graphics::isRenderingBatchDirty = true;

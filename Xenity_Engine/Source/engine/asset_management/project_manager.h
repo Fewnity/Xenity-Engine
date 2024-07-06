@@ -138,7 +138,7 @@ public:
 	* @param file File
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceByFile(std::shared_ptr<File> file);
+	static std::shared_ptr<FileReference> GetFileReferenceByFile(File& file);
 
 	/**
 	* @brief Get file reference by file path (does not load the file reference)
@@ -158,7 +158,7 @@ public:
 	* @brief Save the meta file of a file reference
 	* @param fileReference save meta file of this file reference
 	*/
-	static void SaveMetaFile(const std::shared_ptr<FileReference>& fileReference);
+	static void SaveMetaFile(FileReference& fileReference);
 
 	/**
 	* @brief Load project settings
@@ -255,14 +255,14 @@ public:
 	* @brief Fill project directory with all files (files sorted in editor mode)
 	* @param _projectDirectory ProjectDirectory to fill
 	*/
-	static void FillProjectDirectory(std::shared_ptr <ProjectDirectory> _projectDirectory);
+	static void FillProjectDirectory(ProjectDirectory& _projectDirectory);
 
 	/**
 	* @brief Create project directories from projectDirectoryBase
 	* @param projectDirectoryBase From
 	* @param realProjectDirectory To
 	*/
-	static void CreateProjectDirectories(std::shared_ptr <Directory> projectDirectoryBase, std::shared_ptr <ProjectDirectory> realProjectDirectory);
+	static void CreateProjectDirectories(Directory& projectDirectoryBase, ProjectDirectory& realProjectDirectory);
 
 	/**
 	* @brief Refresh project directory
@@ -274,7 +274,7 @@ public:
 	* @param directoryToCheck ProjectDirectory to use to find the ProjectDirectory from the path
 	* @param directoryPath Path of the directory to find
 	*/
-	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(std::shared_ptr <ProjectDirectory> directoryToCheck, const std::string& directoryPath);
+	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath);
 
 	/**
 	* @brief Get file type from extension
@@ -303,7 +303,7 @@ public:
 		return projectDirectory;
 	}
 
-	static uint64_t ReadFileId(const std::shared_ptr<File>& file);
+	static uint64_t ReadFileId(const File& file);
 
 	/**
 	* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
@@ -341,7 +341,7 @@ private:
 	* @param directorySource Source directory
 	* @param isEngineAssets Are the assets to add engine assets?
 	*/
-	static void AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, std::shared_ptr<Directory> directorySource, bool isEngineAssets);
+	static void AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, Directory& directorySource, bool isEngineAssets);
 
 #if defined(EDITOR)
 	/**
@@ -367,7 +367,7 @@ private:
 	* @brief Load meta file
 	* @param fileReference File reference
 	*/
-	static void LoadMetaFile(const std::shared_ptr<FileReference>& fileReference);
+	static void LoadMetaFile(FileReference& fileReference);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
