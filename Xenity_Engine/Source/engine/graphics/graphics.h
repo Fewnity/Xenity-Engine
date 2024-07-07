@@ -34,7 +34,7 @@ public:
 
 	std::shared_ptr <SkyBox> skybox;
 
-	bool isFogEnabled;
+	bool isFogEnabled = false;
 	float fogStart = 0;
 	float fogEnd = 10;
 	Color fogColor;
