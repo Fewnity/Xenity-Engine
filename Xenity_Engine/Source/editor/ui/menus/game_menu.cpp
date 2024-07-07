@@ -27,9 +27,10 @@ void GameMenu::Draw()
 		// Get game's camera
 		for (size_t i = 0; i < cameraCount; i++)
 		{
-			if (!Graphics::cameras[i].lock()->IsEditor())
+			std::shared_ptr<Camera> tempCam = Graphics::cameras[i].lock();
+			if (!tempCam->IsEditor() && tempCam->IsEnabled() && tempCam->GetGameObject()->IsLocalActive())
 			{
-				camera = Graphics::cameras[i].lock();
+				camera = tempCam;
 				if (needUpdateCamera)
 				{
 					camera->ChangeFrameBufferSize(startAvailableSize);
