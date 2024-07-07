@@ -18,11 +18,100 @@
 
 #include <glm/glm.hpp>
 
+struct Plane
+{
+	float A, B, C, D;
+
+	void Normalize() {
+		float length = sqrt(A * A + B * B + C * C);
+		A /= length;
+		B /= length;
+		C /= length;
+		D /= length;
+	}
+};
+
+struct Matrix4x4 {
+	float m[16];
+
+	static Matrix4x4 identity() {
+		return { 1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1 };
+	}
+};
+
+struct Frustum
+{
+	Plane planes[6];
+
+	void ExtractPlanes(const float* projMatrix, const float* viewMatrix)
+	{
+		float clip[16];
+		// Multiply the projection matrix by the view matrix to get the clipping matrix
+		for (int i = 0; i < 4; ++i) 
+		{
+			for (int j = 0; j < 4; ++j) 
+			{
+				clip[i * 4 + j] = viewMatrix[i * 4 + 0] * projMatrix[0 * 4 + j] +
+					viewMatrix[i * 4 + 1] * projMatrix[1 * 4 + j] +
+					viewMatrix[i * 4 + 2] * projMatrix[2 * 4 + j] +
+					viewMatrix[i * 4 + 3] * projMatrix[3 * 4 + j];
+			}
+		}
+
+		// Extract the right plane
+		planes[0].A = clip[3] - clip[0];
+		planes[0].B = clip[7] - clip[4];
+		planes[0].C = clip[11] - clip[8];
+		planes[0].D = clip[15] - clip[12];
+		planes[0].Normalize();
+
+		// Extract the left plane
+		planes[1].A = clip[3] + clip[0];
+		planes[1].B = clip[7] + clip[4];
+		planes[1].C = clip[11] + clip[8];
+		planes[1].D = clip[15] + clip[12];
+		planes[1].Normalize();
+
+		// Extract the bottom plane
+		planes[2].A = clip[3] + clip[1];
+		planes[2].B = clip[7] + clip[5];
+		planes[2].C = clip[11] + clip[9];
+		planes[2].D = clip[15] + clip[13];
+		planes[2].Normalize();
+
+		// Extract the top plane
+		planes[3].A = clip[3] - clip[1];
+		planes[3].B = clip[7] - clip[5];
+		planes[3].C = clip[11] - clip[9];
+		planes[3].D = clip[15] - clip[13];
+		planes[3].Normalize();
+
+		// Extract the far plane
+		planes[4].A = clip[3] - clip[2];
+		planes[4].B = clip[7] - clip[6];
+		planes[4].C = clip[11] - clip[10];
+		planes[4].D = clip[15] - clip[14];
+		planes[4].Normalize();
+
+		// Extract the near plane
+		planes[5].A = clip[3] + clip[2];
+		planes[5].B = clip[7] + clip[6];
+		planes[5].C = clip[11] + clip[10];
+		planes[5].D = clip[15] + clip[14];
+		planes[5].Normalize();
+	}
+};
+
 class API Camera : public Component
 {
 public:
 	Camera();
 	~Camera();
+
+	Frustum frustum;
 
 	/**
 	* @brief Set field of view
@@ -178,6 +267,8 @@ protected:
 	* @brief [Internal] Update projection matrix
 	*/
 	void UpdateProjection();
+
+	void UpdateFrustum();
 
 	/**
 	* @brief [Internal] Get projection matrix without Clipping Planes values

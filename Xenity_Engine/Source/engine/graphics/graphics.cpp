@@ -169,6 +169,7 @@ void Graphics::Draw()
 
 			// Update camera and bind frame buffer
 			usedCamera->UpdateProjection();
+			usedCamera->UpdateFrustum();
 			usedCamera->BindFrameBuffer();
 			const Vector3& camPos = usedCamera->GetTransform()->GetPosition();
 

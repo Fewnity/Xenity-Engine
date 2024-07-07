@@ -131,6 +131,20 @@ void GameplayManager::UpdateComponents()
 			}
 		}
 	}
+#if defined(EDITOR)
+	// Update components
+	for (int i = 0; i < componentsCount; i++)
+	{
+		if (std::shared_ptr<Component> component = orderedComponents[i].lock())
+		{
+			if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
+			{
+				lastUpdatedComponent = component;
+				component->UpdateEditor();
+			}
+		}
+	}
+#endif
 }
 
 void GameplayManager::OrderComponents()

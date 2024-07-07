@@ -40,6 +40,13 @@ public:
 	* @brief Function called every frame
 	*/
 	virtual void Update() {}
+
+#if defined(EDITOR)
+	/**
+	* @brief Function called every frame in the editor only
+	*/
+	virtual void UpdateEditor() {}
+#endif
 	//virtual void OnParentChanged() {}
 
 	/**

@@ -14,6 +14,12 @@
 class MeshData;
 class Material;
 
+struct Sphere 
+{
+	Vector3 position;
+	float radius;
+};
+
 class API MeshRenderer : public IDrawable
 {
 public:
@@ -49,8 +55,16 @@ public:
 		return nullptr;
 	}
 
+	void OnDrawGizmosSelected() override;
+
+	Sphere GetBoundingSphere() const;
+
+	void Update() override;
+	void UpdateEditor() override;
 
 protected:
+	Sphere boundingSphere;
+	bool outOfFrustum = false;
 
 	friend class Lod;
 
@@ -76,6 +90,8 @@ protected:
 	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
+
+	void OnTransformPositionUpdated();
 
 	std::shared_ptr <MeshData> meshData = nullptr;
 	std::vector<std::shared_ptr <Material>> materials;

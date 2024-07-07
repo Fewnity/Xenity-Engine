@@ -217,6 +217,40 @@ void Camera::UpdateProjection()
 	}
 }
 
+Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetPosition, const Vector3& upVector)
+{
+	Vector3 forward = (targetPosition - cameraPosition).Normalized();
+	forward = -forward;
+	Vector3 right = upVector.Cross(forward).Normalized();
+	Vector3 up = forward.Cross(right);
+
+	Matrix4x4 viewMatrix = Matrix4x4::identity();
+
+	viewMatrix.m[0] = right.x;
+	viewMatrix.m[1] = up.x;
+	viewMatrix.m[2] = forward.x;
+
+	viewMatrix.m[4] = right.y;
+	viewMatrix.m[5] = up.y;
+	viewMatrix.m[6] = forward.y;
+
+	viewMatrix.m[8] = right.z;
+	viewMatrix.m[9] = up.z;
+	viewMatrix.m[10] = forward.z;
+
+	viewMatrix.m[12] = -right.Dot(cameraPosition);
+	viewMatrix.m[13] = -up.Dot(cameraPosition);
+	viewMatrix.m[14] = -forward.Dot(cameraPosition);
+
+	return viewMatrix;
+}
+
+void Camera::UpdateFrustum()
+{
+	Matrix4x4 v = createViewMatrix(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward(), GetTransform()->GetUp());
+	frustum.ExtractPlanes((float*)&GetProjection(), v.m);
+}
+
 void Camera::SetProjectionType(const ProjectionTypes type)
 {
 	projectionType = type;

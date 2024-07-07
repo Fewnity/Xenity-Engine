@@ -18,10 +18,31 @@
 #include <engine/inputs/input_system.h>
 #include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>
+#include <editor/gizmo.h>
+#include <engine/graphics/camera.h>
 
 using namespace std;
 
 // #pragma region MeshRenderer Constructors / Destructor
+
+bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
+{
+	for (const Plane& plane : frustum.planes)
+	{
+		// Calcul de la distance du centre de la sphère au plan
+		float distance = plane.A * sphere.position.x +
+			plane.B * sphere.position.y +
+			plane.C * sphere.position.z +
+			plane.D;
+
+		// Si la distance est inférieure à -radius, la sphère est complètement hors du frustum
+		if (distance < -sphere.radius)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
 /// <summary>
 /// Instantiate an empty mesh
@@ -30,6 +51,42 @@ MeshRenderer::MeshRenderer()
 {
 	componentName = "MeshRenderer";
 	AssetManager::AddReflection(this);
+}
+
+void MeshRenderer::OnDrawGizmosSelected()
+{
+	Sphere sphere = GetBoundingSphere();
+	Gizmo::DrawSphere(sphere.position, sphere.radius);
+}
+
+Sphere MeshRenderer::GetBoundingSphere() const
+{
+	Sphere sphere;
+	if(!meshData)
+		return sphere;
+
+	Vector3 spherePosition = (meshData->minBoundingBox + meshData->maxBoundingBox) / 2.0f;
+	glm::vec3 transformedPosition = glm::vec3(GetTransform()->GetTransformationMatrix() * glm::vec4(spherePosition.x, spherePosition.y, spherePosition.z, 1.0f));
+	spherePosition = Vector3(-transformedPosition.x, transformedPosition.y, transformedPosition.z);
+
+	Vector3 halfDiagonal = (meshData->maxBoundingBox - meshData->minBoundingBox) / 2.0f;
+	const Vector3& scale = GetTransform()->GetScale();
+	float spshereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z) * std::max({ scale.x, scale.y, scale.z });
+
+	sphere.position = spherePosition;
+	sphere.radius = spshereRadius;
+	return sphere;
+}
+
+void MeshRenderer::Update()
+{
+	outOfFrustum = !IsSphereInFrustum(Graphics::cameras[2].lock()->frustum, boundingSphere);
+}
+
+void MeshRenderer::UpdateEditor()
+{
+	if(GameplayManager::GetGameState() != GameState::Playing)
+		outOfFrustum = !IsSphereInFrustum(Graphics::cameras[2].lock()->frustum, boundingSphere);
 }
 
 ReflectiveData MeshRenderer::GetReflectiveData()
@@ -47,6 +104,8 @@ void MeshRenderer::OnReflectionUpdated()
 
 	matCount = materials.size();
 	Graphics::isRenderingBatchDirty = true;
+
+	boundingSphere = GetBoundingSphere();
 }
 
 /// <summary>
@@ -130,7 +189,7 @@ void MeshRenderer::OnEnabled()
 
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (culled)
+	if (culled || outOfFrustum)
 		return;
 
 	RenderingSettings renderSettings = RenderingSettings();
@@ -140,4 +199,9 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
 	MeshManager::DrawMesh(*GetTransform(), *renderCommand.subMesh, *renderCommand.material, renderSettings);
+}
+
+void MeshRenderer::OnTransformPositionUpdated()
+{
+	boundingSphere = GetBoundingSphere();
 }
