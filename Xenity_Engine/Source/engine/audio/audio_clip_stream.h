@@ -89,7 +89,7 @@ public:
 	}
 
 private:
-	int64_t sampleCount = 0;
+	uint64_t sampleCount = 0;
 	drmp3* mp3 = nullptr;
 	drwav* wav = nullptr;
 	AudioType type = AudioType::Null;
