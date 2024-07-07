@@ -37,7 +37,7 @@ void LightingMenu::Draw()
 		if (EditorUI::DrawInput("Color", Graphics::settings.skyColor) != ValueInputState::NO_CHANGE)
 			changed = true;
 
-		ImGui::Spacing();
+		/*ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Text("Fog");
 		ImGui::Separator();
@@ -49,7 +49,7 @@ void LightingMenu::Draw()
 		if (EditorUI::DrawInputTemplate("End", Graphics::settings.fogEnd) != ValueInputState::NO_CHANGE)
 			changed = true;
 		if (EditorUI::DrawInput("Color", Graphics::settings.fogColor) != ValueInputState::NO_CHANGE)
-			changed = true;
+			changed = true;*/
 
 		if (changed)
 		{
