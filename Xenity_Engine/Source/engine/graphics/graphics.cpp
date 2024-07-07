@@ -536,6 +536,8 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
+		std::shared_ptr<Texture> &texture = AssetManager::unlitMaterial->texture;
+
 		AssetManager::unlitMaterial->texture = settings.skybox->down;
 		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->up;
@@ -548,6 +550,8 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		AssetManager::unlitMaterial->texture = settings.skybox->right;
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
+		AssetManager::unlitMaterial->texture = texture;
 	}
 }
 
