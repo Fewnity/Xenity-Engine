@@ -157,7 +157,7 @@ void Material::Use()
 void Material::Update()
 {
 	//materialUpdateBenchmark->Start();
-	if (shader != nullptr)
+	if (shader != nullptr && shader->isLoaded)
 	{
 		Performance::AddMaterialUpdate();
 

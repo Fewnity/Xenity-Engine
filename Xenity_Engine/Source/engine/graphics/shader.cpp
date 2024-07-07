@@ -254,7 +254,6 @@ void Shader::LoadFileReference()
 {
 	if (!isLoaded)
 	{
-		//Debug::Print("LoadFileReference()" + std::to_string(file->GetUniqueId())+ " " + std::to_string(fileId), true);
 		isLoaded = true;
 		if constexpr (Graphics::UseOpenGLFixedFunctions)
 			return;
