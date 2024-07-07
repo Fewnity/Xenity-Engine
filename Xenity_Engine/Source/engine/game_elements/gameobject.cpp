@@ -116,6 +116,7 @@ GameObject::~GameObject()
 
 void GameObject::Setup()
 {
+	// Create the transform after the constructor because we can't use shared_from_this() in the constructor
 	transform = std::make_shared<Transform>(shared_from_this());
 }
 
