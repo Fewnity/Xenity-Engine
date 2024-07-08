@@ -6,6 +6,8 @@
 
 #pragma once
 
+#if defined(_WIN32) || defined(_WIN64)
+
 /**
  * [Internal]
  */
@@ -15,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+
 
 class PluginManager
 {
@@ -37,3 +40,5 @@ public:
 private:
 	static std::vector<std::unique_ptr<Plugin>> plugins;
 };
+
+#endif

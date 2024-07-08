@@ -67,7 +67,12 @@ std::string File::GetFolderPath() const
 
 	int lastSlashPos = (int)path.find_last_of('\\');
 	if (lastSlashPos == -1)
+	{
+		lastSlashPos = (int)path.find_last_of('/');
+		if (lastSlashPos == -1)
 		lastSlashPos = 0;
+	}
+
 
 #if defined(_EE)
 	const std::string fileName = path.substr(5, lastSlashPos + 1);

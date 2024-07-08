@@ -12,14 +12,6 @@
 #include <stdint.h>
 #include <engine/assertions/assertions.h>
 
-#if defined(_WIN64) // Use size_t insead?
-#define ADDR_SIZE uint64_t
-#elif defined(__PSP__) || defined(_EE) || defined(__vita__)
-#define ADDR_SIZE uint32_t
-#else
-#define ADDR_SIZE uint32_t
-#endif
-
 /**
 * @brief Class used to bind functions to an event
 * @brief |
@@ -70,7 +62,7 @@ public:
 			return;
 
 		// Get function address
-		const ADDR_SIZE functionAddress = *((ADDR_SIZE*)&function);
+		const size_t functionAddress = *((size_t*)&function);
 
 		// Create function and add it to the list
 		const std::function<void(Args...)> callableFunction = CreateBindHelper(function, std::index_sequence_for<Args...>{});
@@ -96,8 +88,8 @@ public:
 			return;
 
 		// Get object and function addresses
-		const ADDR_SIZE objectAddress = (ADDR_SIZE)obj;
-		const ADDR_SIZE functionAddress = *((ADDR_SIZE*)&function);
+		const size_t objectAddress = (size_t)obj;
+		const size_t functionAddress = *((size_t*)&function);
 
 		// Create function and add it to the list
 		const std::function<void(Args...)> callableFunction = CreateBindHelper(function, obj, std::index_sequence_for<Args...>{});
@@ -117,7 +109,7 @@ public:
 			return;
 
 		// Get function address
-		const ADDR_SIZE functionAddress = *((ADDR_SIZE*)&function);
+		const size_t functionAddress = *((size_t*)&function);
 
 		RemoveFunction(functionAddress, 0);
 	}
@@ -138,8 +130,8 @@ public:
 			return;
 
 		// Get object and function addresses
-		const ADDR_SIZE objectAddress = (ADDR_SIZE)obj;
-		const ADDR_SIZE functionAddress = *((ADDR_SIZE*)&function);
+		const size_t objectAddress = (size_t)obj;
+		const size_t functionAddress = *((size_t*)&function);
 
 		RemoveFunction(functionAddress, objectAddress);
 	}
@@ -170,7 +162,7 @@ private:
 	* @param objectAddress: Address of the object (0 if no object is used)
 	* @param callableFunction: Address of the function
 	*/
-	void AddFunction(const ADDR_SIZE functionAddress, const ADDR_SIZE objectAddress, const std::function<void(Args...)>& callableFunction)
+	void AddFunction(const size_t functionAddress, const size_t objectAddress, const std::function<void(Args...)>& callableFunction)
 	{
 		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
 		if (funcIndex == -1)
@@ -191,7 +183,7 @@ private:
 	* @param functionAddress: Address of the function
 	* @param objectAddress: Address of the object (0 if no object is used)
 	*/
-	void RemoveFunction(const ADDR_SIZE functionAddress, const ADDR_SIZE objectAddress)
+	void RemoveFunction(const size_t functionAddress, const size_t objectAddress)
 	{
 		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
 		if (funcIndex != -1)
@@ -209,7 +201,7 @@ private:
 	* 
 	* @return index of the function in the list, -1 if not found
 	*/
-	int FindExistingFunction(const ADDR_SIZE functionAddress, const ADDR_SIZE objectAddress)
+	int FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
 	{
 		for (int i = 0; i < functionCount; i++)
 		{
@@ -269,8 +261,8 @@ private:
 	*/
 	struct BindedFunctionInfo
 	{
-		ADDR_SIZE objectAddress = 0;
-		ADDR_SIZE funcAddress = 0;
+		size_t objectAddress = 0;
+		size_t funcAddress = 0;
 		std::function<void(Args...)> function;
 	};
 

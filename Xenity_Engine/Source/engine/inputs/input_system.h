@@ -9,7 +9,7 @@
 
 #include <map>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <SDL3/SDL_events.h>
 #endif
 
@@ -254,7 +254,7 @@ private:
 	* @brief [Internal] Read input events
 	*/
 	static void Read();
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 
 	/**
 	* @brief [Internal] Read input events

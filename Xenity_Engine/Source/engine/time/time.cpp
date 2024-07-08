@@ -53,7 +53,7 @@ void Time::SetTimeScale(float _timeScale)
 
 void Time::Init()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	start_point = high_resolution_clock::now();
 	end_point = start_point;
 #elif defined(__PSP__)

@@ -14,6 +14,7 @@
 #include <engine/vectors/vector2.h>
 #include <engine/graphics/color/color.h>
 #include <engine/debug/debug.h>
+#include <thread>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -94,7 +95,7 @@ void AudioSource::Play()
 	{
 		isPlaying = true;
 		std::shared_ptr<AudioSource> sharedThis = GetThisShared();
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
 		t.detach();
 		//AudioManager::PlayAudioSource(GetThisShared());

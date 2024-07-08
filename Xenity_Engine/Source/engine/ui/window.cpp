@@ -5,13 +5,16 @@
 // This file is part of Xenity Engine
 
 #include "window.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl3.h>
-#include <dwmapi.h>
-#include <windows.h>
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+// #include <dwmapi.h>
+// #include <windows.h>
 #endif
 
 #include <engine/engine.h>
@@ -33,7 +36,7 @@ int Window::width = 0;
 int Window::height = 0;
 float Window::aspect = 0;
 const char* ENGINE_NAME = "Xenity Engine"; //TODO : To move
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 SDL_Window* Window::window = nullptr;
 #endif
 
@@ -43,7 +46,7 @@ void Window::SetResolution(const int width_, const int height_)
 	height = height_;
 	Screen::width = width;
 	Screen::height = height;
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (window != nullptr)
 #endif
 		OnResize();
@@ -75,7 +78,7 @@ int Window::GetHeight()
 int Window::GetTitleBarHeight()
 {
 	int size = 0;
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_GetWindowBordersSize(window, &size, 0, 0, 0);
 #endif
 	return size;
@@ -88,7 +91,7 @@ float Window::GetAspectRatio()
 
 int Window::Init()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	//  Init SDL
 	const int sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
 	if (sdlInitResult != 0)
@@ -134,14 +137,14 @@ int Window::Init()
 
 void Window::UpdateScreen()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_GL_SwapWindow(window);
 #endif
 }
 
 void Window::UpdateWindowTitle()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	std::string newTitle = "";
 	if (ProjectManager::IsProjectLoaded())
 	{
@@ -169,7 +172,7 @@ void Window::UpdateWindowTitle()
 
 void Window::SetFullScreenMode(bool enable)
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetWindowFullscreen(window, enable);
 	//if (enable)
 	//	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);

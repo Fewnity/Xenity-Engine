@@ -4,16 +4,18 @@
 //
 // This file is part of Xenity Engine
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include "dynamic_lib.h"
 #include <engine/game_interface.h>
+#if defined(_WIN32) || defined(_WIN64) 
 #include <windows.h>
+typedef GameInterface* (__cdecl* CreateGameFunction)();
+HINSTANCE library;
+#endif
 #include <engine/debug/debug.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/assertions/assertions.h>
 
-typedef GameInterface* (__cdecl* CreateGameFunction)();
-HINSTANCE library;
 
 void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {
@@ -21,6 +23,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 
 	const std::string fileName = libraryName + ".dll";
 
+#if defined(_WIN32) || defined(_WIN64)
 	//Disable error popup
 	SetErrorMode(SEM_FAILCRITICALERRORS);
 #if defined(VISUAL_STUDIO)
@@ -42,10 +45,13 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 	}
 
 	ProjectManager::projectSettings.isCompiled = result;
+#endif
 }
 
 void DynamicLibrary::UnloadGameLibrary()
 {
+
+#if defined(_WIN32) || defined(_WIN64)
 	if (library != NULL)
 	{
 		if (FreeLibrary(library))
@@ -57,11 +63,14 @@ void DynamicLibrary::UnloadGameLibrary()
 			Debug::PrintError("[DynamicLibrary::UnloadGameLibrary] Library cannot be freed", true);
 		}
 	}
+#endif
 }
 
 std::unique_ptr<GameInterface> DynamicLibrary::CreateGame()
-{
+{	
 	GameInterface* gameInterface = nullptr;
+
+#if defined(_WIN32) || defined(_WIN64)
 	if (library != NULL)
 	{
 		// Find the "CreateGame" function
@@ -79,7 +88,7 @@ std::unique_ptr<GameInterface> DynamicLibrary::CreateGame()
 	{
 		Debug::PrintError("[DynamicLibrary::CreateGame] Cannot create game", true);
 	}
-
+#endif
 	return std::unique_ptr<GameInterface> (gameInterface);
 }
 #endif

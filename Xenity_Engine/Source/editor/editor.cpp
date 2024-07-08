@@ -102,16 +102,16 @@ void Editor::Init()
 	audioSource.lock()->isEditor = true;
 
 	// Load Assets
-	rightArrow = MeshManager::LoadMesh("engine_assets\\right_arrow.obj");
-	upArrow = MeshManager::LoadMesh("engine_assets\\up_arrow.obj");
-	forwardArrow = MeshManager::LoadMesh("engine_assets\\forward_arrow.obj");
+	rightArrow = MeshManager::LoadMesh("engine_assets/right_arrow.obj");
+	upArrow = MeshManager::LoadMesh("engine_assets/up_arrow.obj");
+	forwardArrow = MeshManager::LoadMesh("engine_assets/forward_arrow.obj");
 
-	rotationCircleX = MeshManager::LoadMesh("engine_assets\\rotation_circleX.obj");
-	rotationCircleY = MeshManager::LoadMesh("engine_assets\\rotation_circleY.obj");
-	rotationCircleZ = MeshManager::LoadMesh("engine_assets\\rotation_circleZ.obj");
+	rotationCircleX = MeshManager::LoadMesh("engine_assets/rotation_circleX.obj");
+	rotationCircleY = MeshManager::LoadMesh("engine_assets/rotation_circleY.obj");
+	rotationCircleZ = MeshManager::LoadMesh("engine_assets/rotation_circleZ.obj");
 
 	toolArrowsTexture = Texture::MakeTexture();
-	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets\\tool_arrows_colors.png");
+	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Filter::Point);
 	toolArrowsTexture->LoadFileReference();
 

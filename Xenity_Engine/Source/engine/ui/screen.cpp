@@ -23,7 +23,7 @@ void Screen::SetFullScreen(bool useFullScreenMode)
 void Screen::SetVSync(bool _useVSync)
 {
 	useVSync = _useVSync;
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (_useVSync) 
 	{
 		SDL_GL_SetSwapInterval(1);

@@ -92,7 +92,7 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 			std::shared_ptr<Directory> newDirectory = nullptr;
 			try
 			{
-				newDirectory = std::make_shared<Directory>(fullPath + "\\");
+				newDirectory = std::make_shared<Directory>(fullPath + "/");
 				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
@@ -148,7 +148,7 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 		int c = newDirs.size();
 		for (int i = 0; i < c; i++)
 		{
-			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(newDirs[i] + "\\");
+			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(newDirs[i] + "/");
 			if (recursive)
 				newDirectory->GetAllFiles(true);
 			directory->subdirectories.push_back(newDirectory);
@@ -168,7 +168,7 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 				path = path.substr(5);
 				// path = path.substr(6);
 #endif
-				newDirectory = std::make_shared<Directory>(path + "\\");
+				newDirectory = std::make_shared<Directory>(path + "/");
 				if (recursive)
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
@@ -203,7 +203,7 @@ bool FileSystem::Rename(const std::string &path, const std::string &newPath)
 	bool success = true;
 	try
 	{
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		if (std::filesystem::exists(newPath))
 		{
 			success = false;

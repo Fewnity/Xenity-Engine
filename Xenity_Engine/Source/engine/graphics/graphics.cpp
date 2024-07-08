@@ -42,7 +42,7 @@
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
 #endif
 
@@ -105,7 +105,7 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 
 void Graphics::Init()
 {
-	skyPlane = MeshManager::LoadMesh("public_engine_assets\\models\\PlaneTriangulate.obj");
+	skyPlane = MeshManager::LoadMesh("public_engine_assets/models/PlaneTriangulate.obj");
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
 	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");

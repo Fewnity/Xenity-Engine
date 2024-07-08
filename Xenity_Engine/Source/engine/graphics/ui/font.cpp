@@ -63,7 +63,7 @@ void Font::LoadFileReference()
 bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &filePath)
 {
 	Debug::Print("Loading font: " + filePath, true);
-
+#if !defined(__LINUX__)
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{
@@ -194,6 +194,6 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 #endif
 
 	Debug::Print("Font loaded", true);
-
+#endif
 	return true;
 }

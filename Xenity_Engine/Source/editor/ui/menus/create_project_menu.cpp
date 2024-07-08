@@ -11,13 +11,16 @@
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/directory.h>
 #include <engine/asset_management/project_manager.h>
+
+#if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #include <ShlObj.h>
+#endif
 
 CreateProjectMenu::CreateProjectMenu()
 {
 	group = MenuGroup::Menu_Create_Project;
-
+#if defined(_WIN32) || defined(_WIN64)
 	// Get Xenity's default project location
 	TCHAR docPath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPath(NULL,
@@ -36,6 +39,7 @@ CreateProjectMenu::CreateProjectMenu()
 			projectParentDir.clear();
 		}
 	}
+	#endif
 }
 
 void CreateProjectMenu::Init()

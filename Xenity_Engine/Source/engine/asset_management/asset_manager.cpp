@@ -78,21 +78,21 @@ std::shared_ptr<T> AssetManager::LoadEngineAsset(const std::string& filePath)
 void AssetManager::OnProjectLoaded()
 {
 	defaultTexture = Texture::MakeTexture();
-	defaultTexture->file = FileSystem::MakeFile("public_engine_assets\\textures\\default_texture.png");
+	defaultTexture->file = FileSystem::MakeFile("public_engine_assets/textures/default_texture.png");
 	defaultTexture->LoadFileReference();
 
 	if constexpr (!Graphics::UseOpenGLFixedFunctions)
 	{
 		// Load shaders
-			
-		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard.shader");
-		standardOneLightEachShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_one_light_each.shader");
-		standardOnePointLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_one_point_light.shader");
-		standardOneSpotLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_one_spot_light.shader");
-		standardOneDirectionalLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_one_directional_light.shader");
-		//standardVertexLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\standard_vertex_lighting.shader");
-		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\unlit.shader");
-		//lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets\\shaders\\line.shader");
+
+		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard.shader");
+		standardOneLightEachShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_light_each.shader");
+		standardOnePointLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_point_light.shader");
+		standardOneSpotLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_spot_light.shader");
+		standardOneDirectionalLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_directional_light.shader");
+		//standardVertexLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_vertex_lighting.shader");
+		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/unlit.shader");
+		//lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/line.shader");
 
 		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null");
 		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null");
@@ -114,14 +114,14 @@ void AssetManager::OnProjectLoaded()
 	}
 
 	// Load materials
-	standardMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterial.mat");
-	standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneLightEach.mat");
-	standardOnePointLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOnePointLight.mat");
-	standardOneSpotLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneSpotLight.mat");
-	standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardMaterialOneDirectionalLight.mat");
-	//standardVertexLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\standardVertexLightingMaterial.mat");
-	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\unlitMaterial.mat");
-	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets\\materials\\lineMaterial.mat");
+	standardMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterial.mat");
+	standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneLightEach.mat");
+	standardOnePointLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOnePointLight.mat");
+	standardOneSpotLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneSpotLight.mat");
+	standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneDirectionalLight.mat");
+	//standardVertexLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardVertexLightingMaterial.mat");
+	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/unlitMaterial.mat");
+	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/lineMaterial.mat");
 	
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null");
 	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null");
@@ -479,22 +479,22 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 	switch (fileType)
 	{
 	case FileType::File_Scene:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\scene.xen");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/scene.xen");
 		break;
 	case FileType::File_Code:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.cpp");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/class.cpp");
 		break;
 	case FileType::File_Header:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\class.h");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/class.h");
 		break;
 	case FileType::File_Skybox:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\skybox.sky");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/skybox.sky");
 		break;
 	case FileType::File_Material:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\material.mat");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/material.mat");
 		break;
 	case FileType::File_Shader:
-		newFile = FileSystem::MakeFile("engine_assets\\empty_default\\standardShader.standardShader");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/standardShader.standardShader");
 		break;
 	}
 

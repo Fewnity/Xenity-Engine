@@ -18,7 +18,7 @@ using namespace std::chrono;
 /// </summary>
 void Benchmark::Start()
 {
-#if defined(_WIN32) || defined(_WIN64) || defined(__vita__)
+#if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
 	start_point = high_resolution_clock::now();
 #elif defined(__PSP__)
 	sceRtcGetCurrentTick(&startTick);
@@ -30,7 +30,7 @@ void Benchmark::Start()
 /// </summary>
 void Benchmark::Stop()
 {
-#if defined(_WIN32) || defined(_WIN64) || defined(__vita__)
+#if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
 	end_point = high_resolution_clock::now();
 
 	const long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();

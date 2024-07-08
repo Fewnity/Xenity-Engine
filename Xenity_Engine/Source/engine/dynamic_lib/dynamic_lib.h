@@ -10,7 +10,7 @@
  * [Internal]
  */
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 
 #include <string>
 #include <engine/platform.h>

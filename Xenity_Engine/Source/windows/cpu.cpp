@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 
 #include "../engine/cpu.h"
 

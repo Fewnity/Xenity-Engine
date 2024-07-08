@@ -48,7 +48,7 @@
 #include <psp/callbacks.h>
 #elif defined(__vita__)
 #include <psp2/kernel/processmgr.h>
-#elif defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <csignal>
 #endif
 
@@ -192,7 +192,9 @@ int Engine::Init()
 
 	//  Init Editor
 #if defined(EDITOR)
+#if defined(_WIN32) || defined(_WIN64)
 	PluginManager::Init();
+#endif
 	Gizmo::Init();
 	const int editorUiInitResult = EditorUI::Init();
 	if (editorUiInitResult != 0)
@@ -218,15 +220,15 @@ int Engine::Init()
 void Engine::CheckEvents()
 {
 	int focusCount = 0;
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	// Check SDL event
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-#if defined(EDITOR)
-		ImGui_ImplSDL3_ProcessEvent(&event);
-#endif
-		InputSystem::Read(event);
+ 	SDL_Event event;
+ 	while (SDL_PollEvent(&event))
+ 	{
+ #if defined(EDITOR)
+ 		ImGui_ImplSDL3_ProcessEvent(&event);
+ #endif
+ 		InputSystem::Read(event);
 
 		switch (event.type)
 		{
@@ -270,7 +272,7 @@ void Engine::CheckEvents()
 		default:
 			break;
 		}
-	}
+ 	}
 
 	if (focusCount == 1)
 	{
@@ -309,8 +311,7 @@ void Engine::Loop()
 		Time::UpdateTime();
 		InputSystem::ClearInputs();
 		NetworkManager::Update();
-
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		Engine::CheckEvents();
 #else
 		InputSystem::Read();
@@ -319,8 +320,10 @@ void Engine::Loop()
 		canUpdateAudio = false;
 #if defined(EDITOR)
 		AsyncFileLoading::FinishThreadedFileLoading();
+
 		editorUpdateBenchmark->Start();
 		Editor::Update();
+
 		const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
 		if (gameMenu)
 			InputSystem::blockGameInput = !gameMenu->IsFocused();
@@ -353,6 +356,7 @@ void Engine::Loop()
 
 				GameplayManager::SetGameState(GameState::Stopped, true);
 			}
+
 #else
 			GameplayManager::UpdateComponents();
 #endif
@@ -406,7 +410,7 @@ void Engine::Stop()
 	renderer->Stop();
 	renderer.reset();
 	AudioManager::Stop();
-#if defined(EDITOR)
+#if defined(_WIN32) || defined(_WIN64)
 	PluginManager::Stop();
 #endif
 

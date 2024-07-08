@@ -75,7 +75,7 @@ void InputSystem::Init()
 
 void InputSystem::HideMouse()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
 	hidedMouse = true;
@@ -83,7 +83,7 @@ void InputSystem::HideMouse()
 
 void InputSystem::ShowMouse()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 #endif
 	hidedMouse = false;
@@ -182,7 +182,7 @@ void InputSystem::UpdateControllers()
 #endif
 }
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 void InputSystem::Read(const SDL_Event& event)
 {
 	UpdateControllers();
@@ -299,15 +299,15 @@ void InputSystem::Read(const SDL_Event& event)
 
 	case SDL_EVENT_KEY_DOWN:
 	{
-		if (keyMap.count(event.key.keysym.sym) != 0)
-			SetInput(true, keyMap[event.key.keysym.sym]->code);
+		if (keyMap.count(event.key.key) != 0)
+			SetInput(true, keyMap[event.key.key]->code);
 		break;
 	}
 
 	case SDL_EVENT_KEY_UP:
 	{
-		if (keyMap.count(event.key.keysym.sym) != 0)
-			SetInput(false, keyMap[event.key.keysym.sym]->code);
+		if (keyMap.count(event.key.key) != 0)
+			SetInput(false, keyMap[event.key.key]->code);
 		break;
 	}
 

@@ -6,8 +6,12 @@
 
 #include "crash_handler.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <csignal>
+#include <execinfo.h>
+#endif
+#if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #include <DbgHelp.h>
 #endif
@@ -170,12 +174,31 @@ void CrashHandler::Handler(int signum)
 	// Raise SIGBREAK signal to correctly shutdown the engine
 	raise(SIGBREAK);
 	exit(signum);
+#elif defined(__LINUX__)
+Debug::Print("AN ERROR");
+
+const int maxStackTraceSize = 30;
+	void* stackTrace[maxStackTraceSize];
+	int stackTraceSize = backtrace(stackTrace, maxStackTraceSize);
+	char** stackSymbols = backtrace_symbols(stackTrace, stackTraceSize);
+
+	if (stackSymbols != nullptr) 
+	{
+		for (int i = 0; i < stackTraceSize; ++i) 
+		{
+			std::cerr << stackSymbols[i] << std::endl;
+		}
+		free(stackSymbols);
+	}
+
+//raise(SIGBREAK);
+	exit(signum);
 #endif
 }
 
 void CrashHandler::Init()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	signal(SIGSEGV, Handler); // SIGSEGV (segmentation fault)
 	signal(SIGFPE, Handler);  // SIGFPE (floating point number error)
 #endif
@@ -195,6 +218,7 @@ bool CrashHandler::CallInTry(void (*function)())
 	}
 	return errorResult;
 #else
+	function();
 	return false;
 #endif
 }

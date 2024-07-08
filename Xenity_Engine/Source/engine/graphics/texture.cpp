@@ -27,7 +27,7 @@
 #include <psp/video_hardware_dxtn.h>
 #include <pspkernel.h>
 #include <vram.h>
-#elif defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <thread>
 #include <glad/glad.h>
 #elif defined(_EE)
@@ -376,7 +376,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 
 void Texture::OnLoadFileReferenceFinished()
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(*this);
 	const unsigned int rgba = 0x1908;
@@ -459,7 +459,7 @@ void Texture::SetData(const unsigned char *texData)
 	// gsKit_TexManager_bind(((RendererGsKit &)Engine::GetRenderer()).gsGlobal, &ps2Tex);
 #endif
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(*this);
 	// unsigned int alpha = 0x1906;

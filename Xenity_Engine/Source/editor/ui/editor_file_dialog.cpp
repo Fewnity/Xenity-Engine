@@ -5,10 +5,11 @@
 // This file is part of Xenity Engine
 
 #if defined(EDITOR)
-
 #include <variant>
+#if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #include <ShObjIdl.h>
+#endif
 
 // ImGui
 #include <imgui/imgui.h>
@@ -20,6 +21,7 @@
 std::string EditorUI::OpenFolderDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
+	#if defined(_WIN32) || defined(_WIN64)
 
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
@@ -87,13 +89,14 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 
 	CoUninitialize();
 
+	#endif
 	return path;
 }
 
 std::string EditorUI::OpenFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
-
+#if defined(_WIN32) || defined(_WIN64)
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	IFileSaveDialog* pFileOpen;
@@ -172,14 +175,14 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 	}
 
 	CoUninitialize();
-
+#endif
 	return path;
 }
 
 std::string EditorUI::SaveFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
-
+#if defined(_WIN32) || defined(_WIN64)
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	IFileSaveDialog* pFileOpen;
@@ -281,7 +284,7 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 	}
 
 	CoUninitialize();
-
+#endif
 	return path;
 }
 

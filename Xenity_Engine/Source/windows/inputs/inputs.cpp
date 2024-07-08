@@ -6,7 +6,7 @@
 
 #include "inputs.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"

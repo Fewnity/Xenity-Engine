@@ -6,10 +6,11 @@
 
 #if defined(EDITOR)
 #include "editor_ui.h"
-
-#include <variant>
+#if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #include <ShObjIdl.h>
+#endif
+#include <variant>
 #include <SDL3/SDL_video.h>
 
 // ImGui

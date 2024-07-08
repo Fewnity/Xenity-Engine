@@ -22,7 +22,7 @@
 #include <engine/debug/performance.h>
 #include <engine/tools/profiler_benchmark.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -57,7 +57,7 @@ int RendererOpengl::Init()
 		result = 1;
 
 	Window::SetResolution(960, 544);
-#elif defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	result = glfwInit();
 	Window::SetResolution(1280, 720);
 #endif
@@ -82,7 +82,7 @@ void RendererOpengl::Setup()
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	glEnable(GL_MULTISAMPLE);
 #endif
 }
@@ -136,7 +136,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	const GLfloat zNear = nearClippingPlane;
 	const GLfloat zFar = farClippingPlane;
 	const GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
@@ -987,7 +987,7 @@ int RendererOpengl::GetWrapModeEnum(WrapMode wrapMode)
 	{
 	case WrapMode::ClampToEdge:
 	case WrapMode::ClampToBorder:
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 		mode = GL_CLAMP_TO_EDGE;
 #else
 		mode = GL_CLAMP;

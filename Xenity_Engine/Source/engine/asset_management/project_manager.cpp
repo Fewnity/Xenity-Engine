@@ -306,7 +306,7 @@ void ProjectManager::CreateVisualStudioSettings()
 		const std::string includesPath = exePath.generic_string() + "/includes/";
 
 		// Read the empty vscode settings file
-		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile(".\\vscodeSample\\c_cpp_properties.json");
+		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile("./vscodeSample/c_cpp_properties.json");
 
 		const bool isOpen = emptyVSCodeParamFile->Open(FileMode::ReadOnly);
 		if (isOpen)
@@ -328,9 +328,9 @@ void ProjectManager::CreateVisualStudioSettings()
 			}
 
 			// Create vscode folder
-			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode\\");
+			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode/");
 
-			const std::string filePath = assetFolderPath + ".vscode\\c_cpp_properties.json";
+			const std::string filePath = assetFolderPath + ".vscode/c_cpp_properties.json";
 			FileSystem::fileSystem->Delete(filePath);
 
 			// Create the vscode settings file
@@ -399,8 +399,8 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 
 void ProjectManager::Init()
 {
-	engineAssetsFolderPath = ".\\engine_assets\\";
-	publicEngineAssetsFolderPath = ".\\public_engine_assets\\";
+	engineAssetsFolderPath = "./engine_assets/";
+	publicEngineAssetsFolderPath = "./public_engine_assets/";
 
 	publicEngineAssetsDirectoryBase = std::make_shared<Directory>(publicEngineAssetsFolderPath);
 }
@@ -410,15 +410,15 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty");
 	XASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty");
 
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\temp\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\additional_assets\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Scripts\\");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "\\assets\\Scenes\\");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/temp/");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/additional_assets/");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/Scripts/");
+	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
 
 	// Create default scene
-	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "\\assets\\Scenes\\MainScene.xen", UniqueId::GenerateUniqueId(true)));
+	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true)));
 	if (sceneRef->file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
@@ -429,8 +429,8 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	// TODO improve this (use copy entry system like in the compiler class)
 	try
 	{
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.cpp", folderPath + name + "\\assets\\game.cpp", std::filesystem::copy_options::overwrite_existing);
-		std::filesystem::copy_file("engine_assets\\empty_default\\game.h", folderPath + name + "\\assets\\game.h", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets/empty_default/game.cpp", folderPath + name + "/assets/game.cpp", std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file("engine_assets/empty_default/game.h", folderPath + name + "/assets/game.h", std::filesystem::copy_options::overwrite_existing);
 	}
 	catch (const std::exception&)
 	{
@@ -440,7 +440,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	projectSettings.projectName = name;
 	projectSettings.gameName = name;
 	projectSettings.startScene = sceneRef;
-	projectFolderPath = folderPath + name + "\\";
+	projectFolderPath = folderPath + name + "/";
 	SaveProjectSettings();
 
 	return LoadProject(projectFolderPath);
@@ -547,7 +547,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectLoaded = false;
 
 	projectFolderPath = projectPathToLoad;
-	assetFolderPath = projectPathToLoad + "assets\\";
+	assetFolderPath = projectPathToLoad + "assets/";
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 	if (!projectDirectoryBase->CheckIfExist())
@@ -555,10 +555,10 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		return projectLoaded;
 	}
 
-	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\temp\\");
-	FileSystem::fileSystem->CreateFolder(projectFolderPath + "\\additional_assets\\");
+	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/temp/");
+	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
 
-	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "\\additional_assets\\");
+	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "/additional_assets/");
 
 	FindAllProjectFiles();
 
@@ -569,6 +569,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	// Load dynamic library and create game
+	#if !defined(__LINUX__)
 #if defined(_WIN32) || defined(_WIN64)
 	bool isDebugMode = false;
 	bool is64Bits = false;
@@ -581,7 +582,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION && projectSettings.isLibCompiledForDebug == isDebugMode && projectSettings.isLibCompiledFor64Bits == is64Bits)
 	{
 #if defined(EDITOR)
-		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\game_editor");
+		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/game_editor");
 #else
 		DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
@@ -595,7 +596,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 	Engine::game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
-
+#endif
 	// Fill class registery
 	if (Engine::game)
 		Engine::game->Start();
@@ -1067,7 +1068,7 @@ std::string ProjectDirectory::GetFolderName()
 
 	const size_t textLen = path.size();
 
-	const size_t lastSlashPos = path.find_last_of('\\', textLen - 2);
+	const size_t lastSlashPos = path.find_last_of('/', textLen - 2);
 
 	const std::string fileName = path.substr(lastSlashPos + 1, textLen - lastSlashPos - 2);
 

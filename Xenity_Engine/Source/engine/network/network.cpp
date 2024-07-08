@@ -16,7 +16,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <unistd.h>
-#elif defined(LINUX)
+#elif defined(__LINUX__)
 #include <sys/socket.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -188,13 +188,14 @@ void NetworkManager::DrawNetworkSetupMenu()
 
 std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address, int port)
 {
+	int newSocketId = 1;
+	#if !defined(__LINUX__)
 	if (address.empty() || port <= 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Invalid address or port");
 		return nullptr;
 	}
 
-	int newSocketId = 1;
 #if !defined(_EE)
 	struct sockaddr_in serv_addr;
 
@@ -238,6 +239,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 		Debug::PrintError("Failed to change socket flags");
 		return nullptr;
 	}
+#endif
 #endif
 #endif
 	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newSocketId);

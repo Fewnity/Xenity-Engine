@@ -106,7 +106,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 					float x = 0, y = 0, z = 0;
 #if defined(_WIN32) || defined(_WIN64)
 					sscanf_s(line.c_str(), "v %f %f %f\n", &x, &y, &z);
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 					sscanf(line.c_str(), "v %f %f %f\n", &x, &y, &z);
 #endif
 					if (currentSubMeshPtr)
@@ -122,7 +122,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 						float x = 0, y = 0;
 #if defined(_WIN32) || defined(_WIN64)
 						sscanf_s(line.c_str(), "vt %f %f\n", &x, &y);
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 						sscanf(line.c_str(), "vt %f %f\n", &x, &y);
 #endif
 						if (currentSubMeshPtr)
@@ -135,7 +135,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 						float x = 0, y = 0, z = 0;
 #if defined(_WIN32) || defined(_WIN64)
 						sscanf_s(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 						sscanf(line.c_str(), "vn %f %f %f\n", &x, &y, &z);
 #endif
 						if (currentSubMeshPtr)
@@ -187,7 +187,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 				{
 #if defined(_WIN32) || defined(_WIN64)
 					sscanf_s(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 					sscanf(line.c_str(), "f %d %d %d\n", &v1, &v2, &v3); // For no uv no normals
 #endif
 					hasNoNormals = true;
@@ -198,7 +198,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 					hasNoNormals = true;
 #if defined(_WIN32) || defined(_WIN64)
 					sscanf_s(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 					sscanf(line.c_str(), "f %d/%d %d/%d %d/%d\n", &v1, &vt1, &v2, &vt2, &v3, &vt3); // For no normals
 #endif
 				}
@@ -207,13 +207,13 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 					if (hasNoUv)
 #if defined(_WIN32) || defined(_WIN64)
 						sscanf_s(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3); // For no uv
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 						sscanf(line.c_str(), "f %d//%d %d//%d %d//%d\n", &v1, &vn1, &v2, &vn2, &v3, &vn3);						   // For no uv
 #endif
 					else
 #if defined(_WIN32) || defined(_WIN64)
 						sscanf_s(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
-#elif defined(__PSP__) || defined(__vita__) || defined(_EE)
+#elif defined(__PSP__) || defined(__vita__) || defined(_EE) || defined(__LINUX__)
 						sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3); // For classic
 #endif
 				}

@@ -5,11 +5,12 @@
 // This file is part of Xenity Engine
 
 #include "plugin_manager.h"
+#if defined(_WIN32) || defined(_WIN64)
 
 #include <xenity.h>
 #include <filesystem>
-#include <Windows.h>
 #include <editor/compiler.h>
+#include <Windows.h>
 
 typedef Plugin* (__cdecl* CreatePluginFunction)();
 
@@ -126,3 +127,4 @@ void PluginManager::Register(Plugin* plugin)
 	plugins.emplace_back(plugin);
 	Debug::Print("[PluginManager::Register] Registered plugin '" + infos.name + "'", true);
 }
+#endif

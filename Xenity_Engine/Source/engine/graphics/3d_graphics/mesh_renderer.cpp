@@ -29,13 +29,13 @@ bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
 {
 	for (const Plane& plane : frustum.planes)
 	{
-		// Calcul de la distance du centre de la sphère au plan
+		// Calcul de la distance du centre de la sphï¿½re au plan
 		float distance = plane.A * sphere.position.x +
 			plane.B * sphere.position.y +
 			plane.C * sphere.position.z +
 			plane.D;
 
-		// Si la distance est inférieure à -radius, la sphère est complètement hors du frustum
+		// Si la distance est infï¿½rieure ï¿½ -radius, la sphï¿½re est complï¿½tement hors du frustum
 		if (distance < -sphere.radius)
 		{
 			return false;

@@ -16,7 +16,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
 #endif
 
@@ -44,7 +44,7 @@ Camera::Camera()
 	this->fov = 60;
 	isProjectionDirty = true;
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glGenFramebuffers(1, &secondFramebuffer);
@@ -84,7 +84,7 @@ void Camera::OnReflectionUpdated()
 
 Camera::~Camera()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (framebuffer != -1)
 	{
 		glDeleteFramebuffers(1, &framebuffer);
@@ -259,7 +259,7 @@ void Camera::SetProjectionType(const ProjectionTypes type)
 
 void Camera::UpdateFrameBuffer()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (needFrameBufferUpdate)
 	{
 		if (framebufferTexture != -1)
@@ -356,7 +356,7 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 
 void Camera::BindFrameBuffer()
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	UpdateFrameBuffer();
 #if defined(EDITOR)
 	if (framebuffer != -1)
@@ -471,7 +471,7 @@ void Camera::CopyMultiSampledFrameBuffer()
 {
 	if (useMultisampling)
 	{
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
 #if defined(EDITOR)
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, secondFramebuffer);

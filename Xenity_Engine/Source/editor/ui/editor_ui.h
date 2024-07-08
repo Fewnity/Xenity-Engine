@@ -5,7 +5,7 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#if defined(_WIN32) || defined(_WIN64)
+// #if defined(_WIN32) || defined(_WIN64)
 
 #include <string>
 #include <memory>
@@ -1052,4 +1052,4 @@ private:
 
 	static bool DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened);
 };
-#endif
+// #endif

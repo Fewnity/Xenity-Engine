@@ -383,7 +383,7 @@ void MeshData::OnLoadFileReferenceFinished()
 	pspDrawParam |= GU_TRANSFORM_3D;
 #endif
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64)
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SendDataToGpu();
 #endif
 	ComputeBoundingBox();
