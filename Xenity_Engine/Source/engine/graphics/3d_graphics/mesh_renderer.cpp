@@ -78,15 +78,10 @@ Sphere MeshRenderer::GetBoundingSphere() const
 	return sphere;
 }
 
-void MeshRenderer::Update()
+void MeshRenderer::OnNewRender()
 {
-	outOfFrustum = !IsSphereInFrustum(Graphics::cameras[2].lock()->frustum, boundingSphere);
-}
-
-void MeshRenderer::UpdateEditor()
-{
-	if(GameplayManager::GetGameState() != GameState::Playing)
-		outOfFrustum = !IsSphereInFrustum(Graphics::cameras[2].lock()->frustum, boundingSphere);
+	if(Graphics::usedCamera)
+		outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, boundingSphere);
 }
 
 ReflectiveData MeshRenderer::GetReflectiveData()

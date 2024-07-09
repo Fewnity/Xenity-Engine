@@ -37,4 +37,6 @@ protected:
 	* @brief Draw the command
 	*/
 	virtual void DrawCommand(const RenderCommand & renderCommand) {};
+
+	virtual void OnNewRender() {};
 };

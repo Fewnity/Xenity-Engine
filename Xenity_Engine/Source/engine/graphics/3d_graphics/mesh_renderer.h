@@ -59,8 +59,7 @@ public:
 
 	Sphere GetBoundingSphere() const;
 
-	void Update() override;
-	void UpdateEditor() override;
+	void OnNewRender() override;
 
 protected:
 	Sphere boundingSphere;

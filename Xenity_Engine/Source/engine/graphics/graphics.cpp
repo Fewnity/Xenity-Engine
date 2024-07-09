@@ -190,6 +190,14 @@ void Graphics::Draw()
 
 			drawAllBenchmark->Start();
 
+			for (std::weak_ptr<IDrawable> drawable : orderedIDrawable)
+			{
+				if(std::shared_ptr<IDrawable> drawablePtr = drawable.lock())
+				{
+					drawablePtr->OnNewRender();
+				}
+			}
+
 			for (const auto& renderQueue : renderBatch.renderQueues)
 			{
 				for (const RenderCommand& com : renderQueue.second.commands)
