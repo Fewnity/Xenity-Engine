@@ -7,11 +7,12 @@
 #include "crash_handler.h"
 
 
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#if defined(__LINUX__)
 #include <csignal>
 #include <execinfo.h>
 #endif
 #if defined(_WIN32) || defined(_WIN64)
+#include <csignal>
 #include <Windows.h>
 #include <DbgHelp.h>
 #endif
