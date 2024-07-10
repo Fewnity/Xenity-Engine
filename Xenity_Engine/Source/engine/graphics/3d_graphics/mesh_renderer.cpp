@@ -55,8 +55,10 @@ MeshRenderer::MeshRenderer()
 
 void MeshRenderer::OnDrawGizmosSelected()
 {
+#if defined(EDITOR)
 	Sphere sphere = GetBoundingSphere();
 	Gizmo::DrawSphere(sphere.position, sphere.radius);
+#endif
 }
 
 Sphere MeshRenderer::GetBoundingSphere() const
