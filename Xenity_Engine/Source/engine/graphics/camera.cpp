@@ -178,22 +178,9 @@ void Camera::UpdateProjection()
 		{
 			Engine::GetRenderer().SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
 		}
-#if defined (EDITOR)
-		if (projectionType == ProjectionTypes::Perspective) // 3D projection
-		{
-			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
-		}
-		else // 2D projection
-		{
-			const float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
-			const float halfOne = 0.5f * GetProjectionSize() / 5.0f;
-			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
-			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
-		}
-#endif
 	}
-	else if (isProjectionDirty)
+
+	if (isProjectionDirty)
 	{
 		isProjectionDirty = false;
 		if (projectionType == ProjectionTypes::Perspective) // 3D projection
