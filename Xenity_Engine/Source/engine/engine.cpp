@@ -293,7 +293,7 @@ void Engine::Loop()
 #if defined(_EE)
 	const bool projectLoaded = ProjectManager::LoadProject("");
 #else
-	const bool projectLoaded = ProjectManager::LoadProject(".\\");
+	const bool projectLoaded = ProjectManager::LoadProject("./");
 #endif
 	if (!projectLoaded)
 	{

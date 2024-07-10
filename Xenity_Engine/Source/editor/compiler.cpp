@@ -23,7 +23,7 @@
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
 #include <engine/assertions/assertions.h>
-
+#include <engine/file_system/file_system.h>
 #include <stb_image.h>
 #include <stb_image_write.h>
 
@@ -99,9 +99,9 @@ bool Compiler::ExecuteCopyEntries()
 
 #define ENGINE_EDITOR "Xenity_Editor"
 #define ENGINE_GAME "Xenity_Engine"
-#define ASSETS_FOLDER "assets\\"
-#define ENGINE_ASSETS_FOLDER "engine_assets\\"
-#define PUBLIC_ENGINE_ASSETS_FOLDER "public_engine_assets\\"
+#define ASSETS_FOLDER "assets/"
+#define ENGINE_ASSETS_FOLDER "engine_assets/"
+#define PUBLIC_ENGINE_ASSETS_FOLDER "public_engine_assets/"
 #define MSVC_START_FILE_64BITS "vcvars64.bat"
 #define MSVC_START_FILE_32BITS "vcvars32.bat"
 
@@ -109,7 +109,7 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
 	if (!fs::path(path).is_absolute())
 	{
-		return root + "\\" + path;
+		return root + "/" + path;
 	}
 
 	return path;
@@ -151,7 +151,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		fs::remove_all(params.tempPath);
 		fs::create_directory(params.tempPath);
-		fs::create_directory(engineProjectLocation + "Source\\game_code\\");
+		fs::create_directory(engineProjectLocation + "Source/game_code/");
 	}
 	catch (const std::exception&)
 	{
@@ -195,18 +195,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 void Compiler::Init()
 {
-	const std::string root = fs::current_path().string();
-	engineFolderLocation = root + "\\";
-	engineProjectLocation = engineFolderLocation;
-#if defined (VISUAL_STUDIO)
-	const size_t backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('\\');
-	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine\\";
-#endif
-#if defined(_WIN64) 
-	compilerExecFileName = MSVC_START_FILE_64BITS;
-#else
-	compilerExecFileName = MSVC_START_FILE_32BITS;
-#endif
+	UpdatePaths();
 
 	CompilerParams params;
 	params.buildPlatform = BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows);
@@ -217,8 +206,26 @@ void Compiler::Init()
 	}
 }
 
+void Compiler::UpdatePaths()
+{
+	const std::string root = FileSystem::ConvertWindowsPath(fs::current_path().string());
+	engineFolderLocation = root + "/";
+	engineProjectLocation = engineFolderLocation;
+#if defined (VISUAL_STUDIO)
+	const size_t backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('/');
+	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+#endif
+#if defined(_WIN64) 
+	compilerExecFileName = MSVC_START_FILE_64BITS;
+#else
+	compilerExecFileName = MSVC_START_FILE_32BITS;
+#endif
+}
+
 CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& params)
 {
+	UpdatePaths();
+
 	int error = 0;
 
 	// Check if the compiler executable exists
@@ -279,6 +286,8 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 
 CompileResult Compiler::CompilePlugin(Platform platform, const std::string& pluginPath)
 {
+	UpdatePaths();
+
 	XASSERT(!pluginPath.empty(), "[Compiler::CompilePlugin] pluginPath is empty");
 
 	if (pluginPath.empty())
@@ -291,8 +300,8 @@ CompileResult Compiler::CompilePlugin(Platform platform, const std::string& plug
 	params.buildPlatform = BuildSettingsMenu::GetBuildPlatform(platform);
 	params.buildType = BuildType::EditorHotReloading;
 	params.sourcePath = pluginPath;
-	params.tempPath = "plugins\\.build\\";
-	params.exportPath = "plugins\\";
+	params.tempPath = "plugins/.build/";
+	params.exportPath = "plugins/";
 
 	const CompileResult result = Compile(params);
 	return result;
@@ -367,7 +376,7 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 			AddCopyEntry(false, fileInfo->path + ".meta", exportPath + ASSETS_FOLDER + newPath + ".meta");
 
 			std::string folderToCreate = (exportPath + ASSETS_FOLDER + newPath);
-			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('\\'));
+			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('/'));
 			fs::create_directories(folderToCreate);
 		}
 	}
@@ -381,6 +390,8 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 
 CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
+	UpdatePaths();
+
 	XASSERT(!exportPath.empty(), "[Compiler::CompileGame] exportPath is empty");
 	if (exportPath.empty())
 		return CompileResult::ERROR_UNKNOWN;
@@ -390,7 +401,7 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	params.buildPlatform = buildPlatform;
 	params.buildType = buildType;
 	params.sourcePath = ProjectManager::GetAssetFolderPath();
-	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build\\";
+	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
 	params.exportPath = exportPath;
 
 	OnCompilationStartedEvent.Trigger(params);
@@ -449,13 +460,13 @@ void Compiler::HotReloadGame()
 	CompileResult result = Compiler::CompileGame(
 		BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows),
 		BuildType::EditorHotReloading,
-		ProjectManager::GetProjectFolderPath() + "temp\\"
+		ProjectManager::GetProjectFolderPath() + "temp/"
 	);
 
 	if (result == CompileResult::SUCCESS)
 	{
 		// Reload game
-		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp\\" + "game_editor");
+		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/" + "game_editor");
 
 		// Create game instance
 		Engine::game = DynamicLibrary::CreateGame();
@@ -556,7 +567,7 @@ std::string WindowsPathToWSL(const std::string& path)
 	const int pathSize = (int)path.size();
 	for (int i = 1; i < pathSize; i++)
 	{
-		if (newPath[i] == '\\')
+		if (newPath[i] == '/')
 		{
 			newPath[i] = '/';
 		}
@@ -571,7 +582,7 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 	// Copy source code
 
-	fs::create_directory(params.tempPath + "source\\");
+	fs::create_directory(params.tempPath + "source/");
 
 	const size_t sourcePathLen = params.sourcePath.size();
 	std::shared_ptr<Directory> gameSourceDir = std::make_shared<Directory>(params.sourcePath);
@@ -588,12 +599,12 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 		// Copy file
 		const std::string filePathToCopy = files[i]->GetPath();
-		const std::string destFolder = params.tempPath + "source\\" + files[i]->GetFolderPath().substr(sourcePathLen);
+		const std::string destFolder = params.tempPath + "source/" + files[i]->GetFolderPath().substr(sourcePathLen);
 		fs::create_directories(destFolder);
 
 		fs::copy_file(
 			filePathToCopy,
-			params.tempPath + "source\\" + filePathToCopy.substr(sourcePathLen), // substr to remove all folders including the locations of the project/source files
+			params.tempPath + "source/" + filePathToCopy.substr(sourcePathLen), // substr to remove all folders including the locations of the project/source files
 			fs::copy_options::overwrite_existing
 		);
 
@@ -628,7 +639,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		// Copy engine editor lib to the temp build folder
 		AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR + ".lib");
 		// Copy editor header
-		AddCopyEntry(false, engineProjectLocation + "Source\\xenity_editor.h", params.tempPath + "xenity_editor.h");
+		AddCopyEntry(false, engineProjectLocation + "Source/xenity_editor.h", params.tempPath + "xenity_editor.h");
 	}
 	else // In build mode:
 	{
@@ -648,8 +659,8 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	}
 
 	// Copy engine headers to the temp build folder
-	AddCopyEntry(true, engineProjectLocation + "Source\\engine\\", params.tempPath + "engine\\");
-	AddCopyEntry(false, engineProjectLocation + "Source\\xenity.h", params.tempPath + "xenity.h");
+	AddCopyEntry(true, engineProjectLocation + "Source/engine/", params.tempPath + "engine/");
+	AddCopyEntry(false, engineProjectLocation + "Source/xenity.h", params.tempPath + "xenity.h");
 	AddCopyEntry(false, engineFolderLocation + "main.cpp", params.tempPath + "main.cpp");
 	const bool headerCopyResult = ExecuteCopyEntries();
 	if (!headerCopyResult)
@@ -792,7 +803,7 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	const size_t pathSize = compileFolderPath.size();
 	for (size_t i = 0; i < pathSize; i++)
 	{
-		if (compileFolderPath[i] == '\\')
+		if (compileFolderPath[i] == '/')
 		{
 			compileFolderPath[i] = '/';
 		}

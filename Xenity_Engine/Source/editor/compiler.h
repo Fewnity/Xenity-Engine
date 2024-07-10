@@ -112,6 +112,8 @@ public:
 	*/
 	static void Init();
 
+	static void UpdatePaths();
+
 	/**
 	* @brief Check if the compiler has all needed files to start a compilation
 	*/

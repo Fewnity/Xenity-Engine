@@ -59,6 +59,8 @@ public:
 	 */
 	static std::shared_ptr<File> MakeFile(const std::string& path);
 
+	static std::string ConvertWindowsPath(const std::string& path);
+
 private:
 	friend class Engine;
 
