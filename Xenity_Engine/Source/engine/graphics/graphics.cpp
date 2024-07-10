@@ -514,7 +514,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	}
 	else
 	{
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) // The PSP does not need to set the camera position every draw call
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) // The PSP does not need to set the camera position every draw call
 		if (!forUI || usedCamera->IsEditor())
 			Engine::GetRenderer().SetCameraPosition(*usedCamera);
 #endif
@@ -634,18 +634,18 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
 	float distance;
 	if (gridAxis == 0)
-		distance = abs(cameraPosition.y);
+		distance = fabs(cameraPosition.y);
 	else if (gridAxis == 1)
-		distance = abs(cameraPosition.x);
+		distance = fabs(cameraPosition.x);
 	else //if (gridAxis == 2)
-		distance = abs(cameraPosition.z);
+		distance = fabs(cameraPosition.z);
 
 	if (distance < 0.7f)
 		distance = 0.7f;
 
 	// Get the coef for grid lineCount by using the camera distance
 	int coef = 1;
-	while (coef < distance / 10)
+	while (coef < distance / 10.0f)
 	{
 		coef *= 10;
 	}

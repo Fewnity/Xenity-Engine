@@ -82,9 +82,9 @@ void ParticleSystem::OnReflectionUpdated()
 	speedDistribution = std::uniform_real_distribution<float>(speedMin, speedMax);
 	lifeTimeDistribution = std::uniform_real_distribution<float>(lifeTimeMin, lifeTimeMax);
 
-	boxSize.x = abs(boxSize.x);
-	boxSize.y = abs(boxSize.y);
-	boxSize.z = abs(boxSize.z);
+	boxSize.x = fabs(boxSize.x);
+	boxSize.y = fabs(boxSize.y);
+	boxSize.z = fabs(boxSize.z);
 
 	boxXDistribution = std::uniform_real_distribution<float>(-boxSize.x / 2.0f, boxSize.x / 2.0f);
 	boxYDistribution = std::uniform_real_distribution<float>(-boxSize.y / 2.0f, boxSize.y / 2.0f);

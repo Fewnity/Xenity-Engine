@@ -121,19 +121,19 @@ void InputSystem::UpdateControllers()
 	InputPad pad = CrossGetInputPad();
 	const float JoystickDeadZone = 0.25f;
 
-	if (pad.lx < JoystickDeadZone && pad.lx > -JoystickDeadZone && abs(pad.ly) < JoystickDeadZone)
+	if (pad.lx < JoystickDeadZone && pad.lx > -JoystickDeadZone && fabs(pad.ly) < JoystickDeadZone)
 	{
 		pad.lx = 0;
 	}
-	if (pad.ly < JoystickDeadZone && pad.ly > -JoystickDeadZone && abs(pad.lx) < JoystickDeadZone)
+	if (pad.ly < JoystickDeadZone && pad.ly > -JoystickDeadZone && fabs(pad.lx) < JoystickDeadZone)
 	{
 		pad.ly = 0;
 	}
-	if (pad.rx < JoystickDeadZone && pad.rx > -JoystickDeadZone && abs(pad.ry) < JoystickDeadZone)
+	if (pad.rx < JoystickDeadZone && pad.rx > -JoystickDeadZone && fabs(pad.ry) < JoystickDeadZone)
 	{
 		pad.rx = 0;
 	}
-	if (pad.ry < JoystickDeadZone && pad.ry > -JoystickDeadZone && abs(pad.rx) < JoystickDeadZone)
+	if (pad.ry < JoystickDeadZone && pad.ry > -JoystickDeadZone && fabs(pad.rx) < JoystickDeadZone)
 	{
 		pad.ry = 0;
 	}

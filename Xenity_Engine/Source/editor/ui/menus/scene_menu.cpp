@@ -44,15 +44,15 @@ void SceneMenu::Init()
 
 bool IntersectionPoint(const Vector3& origin, const Vector3& direction, const Vector3& plane, Vector3& intersection)
 {
-	// Vérifie si la ligne est parallèle au plan
+	// Vï¿½rifie si la ligne est parallï¿½le au plan
 	const double dotProduct = direction.Dot(plane);
 	if (std::abs(dotProduct) < 1e-6) {
-		// La ligne est parallèle au plan
-		//std::cerr << "La ligne est parallèle au plan, aucune intersection." << std::endl;
+		// La ligne est parallï¿½le au plan
+		//std::cerr << "La ligne est parallï¿½le au plan, aucune intersection." << std::endl;
 		return false; // ou une autre valeur d'erreur
 	}
 
-	// Calcul de la distance le long de la ligne à partir de son origine jusqu'au point d'intersection
+	// Calcul de la distance le long de la ligne ï¿½ partir de son origine jusqu'au point d'intersection
 	const double t = (-origin.Dot(plane)) / dotProduct;
 
 	// Calcul du point d'intersection
@@ -305,14 +305,14 @@ Side SceneMenu::DetectSide(float camDistance, const Vector3& objectPosition, con
 
 	// Check if the side of the arrows is correct
 
-	bool isRightTooFar = abs(objectPosition.x - rightClosestPoint.x) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
-	bool isUpTooFar = abs(objectPosition.y - upClosestPoint.y) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
-	bool isForwardTooFar = abs(objectPosition.z - forwardClosestPoint.z) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
+	bool isRightTooFar = fabs(objectPosition.x - rightClosestPoint.x) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
+	bool isUpTooFar = fabs(objectPosition.y - upClosestPoint.y) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
+	bool isForwardTooFar = fabs(objectPosition.z - forwardClosestPoint.z) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
 	if (!mode2D)
 	{
-		isRightTooFar = abs(objectPosition.x - rightClosestPoint.x) > 1 * camDistance / 8.0f;
-		isUpTooFar = abs(objectPosition.y - upClosestPoint.y) > 1 * camDistance / 8.0f;
-		isForwardTooFar = abs(objectPosition.z - forwardClosestPoint.z) > 1 * camDistance / 8.0f;
+		isRightTooFar = fabs(objectPosition.x - rightClosestPoint.x) > 1 * camDistance / 8.0f;
+		isUpTooFar = fabs(objectPosition.y - upClosestPoint.y) > 1 * camDistance / 8.0f;
+		isForwardTooFar = fabs(objectPosition.z - forwardClosestPoint.z) > 1 * camDistance / 8.0f;
 	}
 
 	const Side nearSide = GetNearSide(camDistance, rightClosestPointCam, rightClosestPoint, upClosestPointCam, upClosestPoint, forwardClosestPointCam, forwardClosestPoint);
