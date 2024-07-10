@@ -44,6 +44,11 @@ public:
 	//virtual void OnParentChanged() {}
 
 	/**
+	 * @brief Event called when a component is attached to a GameObject (Called once after AddComponent) 
+	 */
+	virtual void OnComponentAttached() {};
+
+	/**
 	* @brief Called when the component is enabled
 	*/
 	virtual void OnDisabled() {};

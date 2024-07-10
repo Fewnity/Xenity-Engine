@@ -84,6 +84,11 @@ void MeshRenderer::OnNewRender()
 		outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, boundingSphere);
 }
 
+void MeshRenderer::OnComponentAttached()
+{
+	GetTransform()->GetOnTransformUpdated().Bind(&MeshRenderer::OnTransformPositionUpdated, this);
+}
+
 ReflectiveData MeshRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -108,6 +113,7 @@ void MeshRenderer::OnReflectionUpdated()
 /// </summary>
 MeshRenderer::~MeshRenderer()
 {
+	GetTransform()->GetOnTransformUpdated().Unbind(&MeshRenderer::OnTransformPositionUpdated, this);
 	AssetManager::RemoveReflection(this);
 }
 

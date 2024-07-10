@@ -321,6 +321,8 @@ void Transform::UpdateTransformationMatrix()
 	}
 
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+
+	onTransformUpdated.Trigger();
 }
 
 void Transform::UpdateWorldScale()

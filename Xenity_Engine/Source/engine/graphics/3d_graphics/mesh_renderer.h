@@ -61,6 +61,8 @@ public:
 
 	void OnNewRender() override;
 
+	void OnComponentAttached() override;
+
 protected:
 	Sphere boundingSphere;
 	bool outOfFrustum = false;

@@ -77,6 +77,8 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 			PhysicsManager::boxColliders.push_back(result);
 		}
 	}
+
+	OnComponentAttached();
 }
 
 bool Component::IsEnabled() const

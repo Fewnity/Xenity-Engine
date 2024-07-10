@@ -7,6 +7,7 @@
 #pragma once
 #include <engine/api.h>
 
+#include <engine/event_system/event_system.h>
 #include <engine/vectors/vector3.h>
 #include <glm/glm.hpp>
 #include <memory>
@@ -142,7 +143,13 @@ public:
 		return gameObject.lock();
 	}
 
+	Event<>& GetOnTransformUpdated()
+	{
+		return onTransformUpdated;
+	}
+
 private:
+	Event<> onTransformUpdated;
 
 	ReflectiveData GetReflectiveData() override;
 
