@@ -312,16 +312,16 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				free(subMesh->indices);
 				subMesh->indices = nullptr;
 			}
+#if defined (DEBUG)
+			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
+			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
+#endif
 			if (deleteSubMeshes && Engine::IsRunning(true))
 			{
 				Engine::GetRenderer().DeleteSubMeshData(*subMesh);
 				delete subMesh;
 			}
 
-#if defined (DEBUG)
-			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
-			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
-#endif
 		}
 	}
 
