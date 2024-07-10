@@ -24,8 +24,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Rework the documentation
 Box colliders are not affected by gameobject scale
-Make console text selectable
-Fix shader compiled twice
+Make console text copyable (with right click)
+Pre-open audio file for faster loading
 
 --- Can be for next release
 New Input system
@@ -65,6 +65,7 @@ Multiple gameobject selection
 
 --- To do in a long time
 Regenerate an id if a meta file is corrupted
+Finish UploadMeshData for fixed pipeline or shader mode with currently unused vertex structures
 Add a property window on components to have values in a new window
 Add network profiler
 Add map reflection support
