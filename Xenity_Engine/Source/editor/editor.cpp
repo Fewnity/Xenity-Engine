@@ -649,6 +649,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 
 void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 {
+	const std::string convertedPath = FileSystem::ConvertBasicPathToWindowsPath(path);
 	std::string command = "explorer.exe ";
 	if (isSelected)
 	{
@@ -659,7 +660,7 @@ void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 		command += "\"";
 	}
 
-	command += path;
+	command += convertedPath;
 
 	command += "\"";
 
