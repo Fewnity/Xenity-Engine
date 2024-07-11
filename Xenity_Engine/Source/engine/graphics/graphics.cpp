@@ -663,42 +663,42 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 	if (gridAxis == 0)
 	{
 		// For XZ
-		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
+		for (int z = static_cast<int>(-lineCount + cameraPosition.z / coef); z < lineCount + cameraPosition.z / coef; z++)
 		{
-			int zPos = z * coef;
+			float zPos = static_cast<float>(z * coef);
 			Engine::GetRenderer().DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
 		}
-		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
+		for (int x = static_cast<int>(-lineCount + cameraPosition.x / coef); x < lineCount + cameraPosition.x / coef; x++)
 		{
-			int xPos = -x * coef;
+			float xPos = static_cast<float>(-x * coef);
 			Engine::GetRenderer().DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 1)
 	{
 		//For YZ
-		for (int z = -lineCount + cameraPosition.z / coef; z < lineCount + cameraPosition.z / coef; z++)
+		for (int z = static_cast<int>(-lineCount + cameraPosition.z / coef); z < lineCount + cameraPosition.z / coef; z++)
 		{
-			const float zPos = z * coef;
+			const float zPos = static_cast<float>(z * coef);
 			Engine::GetRenderer().DrawLine(Vector3(0, -lineLenght - cameraPosition.y, zPos), Vector3(0, lineLenght - cameraPosition.y, zPos), color, renderSettings);
 		}
-		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
+		for (int y = static_cast<int>(-lineCount + cameraPosition.y / coef); y < lineCount + cameraPosition.y / coef; y++)
 		{
-			const float yPos = -y * coef;
+			const float yPos = static_cast<float>(-y * coef);
 			Engine::GetRenderer().DrawLine(Vector3(0, yPos, -lineLenght + cameraPosition.z), Vector3(0, yPos, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
 	else if (gridAxis == 2)
 	{
 		// For XY
-		for (int x = -lineCount + cameraPosition.x / coef; x < lineCount + cameraPosition.x / coef; x++)
+		for (int x = static_cast<int>(-lineCount + cameraPosition.x / coef); x < lineCount + cameraPosition.x / coef; x++)
 		{
-			const int xPos = x * coef;
+			const float xPos = static_cast<float>(x * coef);
 			Engine::GetRenderer().DrawLine(Vector3(xPos, -lineLenght - cameraPosition.y, 0), Vector3(xPos, lineLenght - cameraPosition.y, 0), color, renderSettings);
 		}
-		for (int y = -lineCount + cameraPosition.y / coef; y < lineCount + cameraPosition.y / coef; y++)
+		for (int y = static_cast<int>(-lineCount + cameraPosition.y / coef); y < lineCount + cameraPosition.y / coef; y++)
 		{
-			const int yPos = -y * coef;
+			const float yPos = static_cast<float>(-y * coef);
 			Engine::GetRenderer().DrawLine(Vector3(-lineLenght + cameraPosition.x, yPos, 0), Vector3(lineLenght + cameraPosition.x, yPos, 0), color, renderSettings);
 		}
 	}

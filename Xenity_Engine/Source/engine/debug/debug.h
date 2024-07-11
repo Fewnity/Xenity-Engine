@@ -74,7 +74,7 @@ private:
 	friend class NetworkManager;
 	friend class Compiler;
 
-	static int lastDebugMessageHistoryIndex;
+	static size_t lastDebugMessageHistoryIndex;
 
 	/**
 	* @brief [Internal] Init debug system

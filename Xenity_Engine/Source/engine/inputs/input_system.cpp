@@ -220,8 +220,8 @@ void InputSystem::Read(const SDL_Event& event)
 		if (Graphics::usedCamera)
 		{
 			float a = 0;
-			int w = 0;
-			int h = 0;
+			float w = 0;
+			float h = 0;
 #if defined(EDITOR)
 			if (gameMenu && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
 			{
@@ -236,19 +236,19 @@ void InputSystem::Read(const SDL_Event& event)
 			else
 			{
 				// Use window instead?
-				w = Graphics::usedCamera->GetWidth();
-				h = Graphics::usedCamera->GetHeight();
+				w = static_cast<float>(Graphics::usedCamera->GetWidth());
+				h = static_cast<float>(Graphics::usedCamera->GetHeight());
 			}
 #else
 			// Use window instead?
-			w = Graphics::usedCamera->GetWidth();
-			h = Graphics::usedCamera->GetHeight();
+			w = static_cast<float>(Graphics::usedCamera->GetWidth());
+			h = static_cast<float>(Graphics::usedCamera->GetHeight());
 #endif
 
-			a = (float)w / (float)h;
+			a = w / h;
 			// Get mouse speed
-			xSpeed = event.motion.xrel / (float)w * a;
-			ySpeed = -event.motion.yrel / (float)h;
+			xSpeed = event.motion.xrel / w * a;
+			ySpeed = -event.motion.yrel / h;
 			xSpeedRaw = (int)event.motion.xrel;
 			ySpeedRaw = (int)-event.motion.yrel;
 		}
@@ -320,20 +320,20 @@ void InputSystem::Read(const SDL_Event& event)
 
 void InputSystem::Read()
 {
-	const int screenCount = (int)screens.size();
+	const size_t screenCount = screens.size();
 	const std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
-	const int touchesRawCount = (int)touchesRaw.size();
+	const size_t touchesRawCount = touchesRaw.size();
 
-	for (int touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
+	for (size_t touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
 	{
 		TouchRaw touchRaw = touchesRaw[touchRawI];
 		TouchScreen* screen = screens[touchRaw.screenIndex];
 		bool newInput = true;
-		int foundInputIndex = -1;
+		int foundInputIndex = 0;
 
 		const int fingerId = touchRaw.fingerId;
 
-		for (int touchI = 0; touchI < screen->touches.size(); touchI++)
+		for (size_t touchI = 0; touchI < screen->touches.size(); touchI++)
 		{
 			if (screen->touches[touchI].fingerId == fingerId)
 			{
@@ -362,11 +362,11 @@ void InputSystem::Read()
 	}
 
 	// Remove not updated inputs
-	for (int screenIndex = 0; screenIndex < screenCount; screenIndex++)
+	for (size_t screenIndex = 0; screenIndex < screenCount; screenIndex++)
 	{
 		TouchScreen* screen = screens[screenIndex];
-		int touchCount = (int)screen->updated.size();
-		for (int updatedI = 0; updatedI < touchCount; updatedI++)
+		size_t touchCount = screen->updated.size();
+		for (size_t updatedI = 0; updatedI < touchCount; updatedI++)
 		{
 			// if the input has not been updated last frame
 			if (!screen->updated[updatedI])

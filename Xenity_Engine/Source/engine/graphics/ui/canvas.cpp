@@ -92,8 +92,8 @@ void Canvas::OnDrawGizmos()
 
 	if (Editor::lastFocusedGameMenu.lock() != nullptr)
 	{
-		const Vector2Int windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
-		aspect = (float)windowsSize.x / (float)windowsSize.y;
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
+		aspect = windowsSize.x / windowsSize.y;
 	}
 
 	const float xOff = (-aspect * 5) + (GetTransform()->GetPosition().x * (aspect * 10));

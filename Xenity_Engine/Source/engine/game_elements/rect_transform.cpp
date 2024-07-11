@@ -49,8 +49,8 @@ void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas)
 #if defined(EDITOR)
 	if (Editor::lastFocusedGameMenu.lock() != nullptr) 
 	{
-		Vector2Int windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
-		aspect = (float)windowsSize.x / (float)windowsSize.y;
+		Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
+		aspect = windowsSize.x / windowsSize.y;
 	}
 #endif
 	const float xOff = (-aspect * 5) + (position.x * (aspect * 10));

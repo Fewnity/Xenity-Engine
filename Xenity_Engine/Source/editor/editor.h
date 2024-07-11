@@ -232,7 +232,7 @@ public:
 	{
 		// Make a list of all ids and use the smallest one that is not used
 		std::vector<int> usedIds;
-		size_t idCount = 0;
+		int idCount = 0;
 		if (id == -1)
 		{
 			//int count = 0;
@@ -253,10 +253,10 @@ public:
 			if (idCount != 0)
 			{
 				int lowestId = highestId+1;
-				for (size_t i = 0; i < idCount; i++)
+				for (int i = 0; i < idCount; i++)
 				{
 					bool isUsed = false;
-					for (size_t j = 0; j < idCount; j++)
+					for (int j = 0; j < idCount; j++)
 					{
 						if (usedIds[j] == i)
 						{
@@ -271,7 +271,6 @@ public:
 				}
 				id = lowestId;
 				//lowestId = usedIds[0] + 1;
-
 			}
 			else
 			{

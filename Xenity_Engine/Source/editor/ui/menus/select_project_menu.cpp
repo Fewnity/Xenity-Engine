@@ -190,7 +190,7 @@ void SelectProjectMenu::DrawProjectsList()
 	}
 }
 
-void SelectProjectMenu::DeleteProject(int projectIndex, bool deleteFiles)
+void SelectProjectMenu::DeleteProject(size_t projectIndex, bool deleteFiles)
 {
 	ProjectListItem& project = projectsList[projectIndex];
 	if (deleteFiles && std::filesystem::exists(project.path))

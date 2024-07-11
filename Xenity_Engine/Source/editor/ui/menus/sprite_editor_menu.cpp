@@ -195,7 +195,7 @@ void SpriteEditorMenu::DrawToolWindow()
 		// Draw button to add a new selection
 		if (ImGui::Button("Add new sprite selection"))
 		{
-			AddNewSpriteSelection(Vector2(0, 0), Vector2(spriteToEdit->GetWidth(), spriteToEdit->GetHeight()), Vector2(0.5f, 0.5f));
+			AddNewSpriteSelection(Vector2(0, 0), Vector2(static_cast<float>(spriteToEdit->GetWidth()), static_cast<float>(spriteToEdit->GetHeight())), Vector2(0.5f, 0.5f));
 		}
 		ImGui::Separator();
 

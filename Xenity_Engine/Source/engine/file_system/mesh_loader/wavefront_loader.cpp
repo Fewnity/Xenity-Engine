@@ -47,9 +47,9 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 		std::vector<Vector3> tempVertices;
 		std::vector<Vector2> tempTexturesCoords;
 		std::vector<Vector3> tempNormals;
-		int tempVerticesCount = 0;
-		int tempTexturesCoordsCount = 0;
-		int tempNormalsCount = 0;
+		unsigned int tempVerticesCount = 0;
+		unsigned int tempTexturesCoordsCount = 0;
+		unsigned int tempNormalsCount = 0;
 		bool hasNoUv = false;
 		bool hasNoNormals = false;
 		int count = -1;

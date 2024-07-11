@@ -145,7 +145,7 @@ void Light::OnDrawGizmosSelected()
 		const float fixedLinear = (0.7f * 7.0f) / (range);
 		const float fixedQuadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f));
 		const float minIntensity = 0.05f;
-		const float dis = (-minIntensity * fixedLinear + sqrt(pow(minIntensity * fixedLinear, 2) - 4 * minIntensity * fixedQuadratic * (minIntensity - 1))) / (2 * minIntensity * fixedQuadratic);
+		const float dis = (-minIntensity * fixedLinear + sqrtf(powf(minIntensity * fixedLinear, 2) - 4 * minIntensity * fixedQuadratic * (minIntensity - 1))) / (2 * minIntensity * fixedQuadratic);
 
 		Gizmo::DrawSphere(GetTransform()->GetPosition(), dis);
 	}

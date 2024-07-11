@@ -239,7 +239,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 
 		Graphics::DrawSubMesh(*renderCommand.subMesh, *material, texture, renderSettings, newMat, false);
 
-		particle.position += particle.direction * Time::GetDeltaTime() / camCount * particle.currentSpeed;
+		particle.position += particle.direction * Time::GetDeltaTime() / static_cast<float>(camCount) * particle.currentSpeed;
 
 		particle.currentLifeTime += Time::GetDeltaTime() / camCount;
 		if (particle.currentLifeTime >= particle.lifeTime)

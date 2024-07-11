@@ -446,7 +446,7 @@ void FileExplorerMenu::Draw()
 			ImGui::EndChild();
 			ImGui::TableSetColumnIndex(1);
 			const float width = ImGui::GetContentRegionAvail().x;
-			int colCount = width / (100 * EditorUI::GetUiScale());
+			int colCount = static_cast<int>(width / (100 * EditorUI::GetUiScale()));
 			if (colCount <= 0)
 				colCount = 1;
 

@@ -7,6 +7,7 @@
 #include "menu.h"
 #include <imgui/imgui.h>
 #include <editor/editor.h>
+#include <engine/vectors/vector2.h>
 
 void Menu::Focus()
 {
@@ -23,17 +24,17 @@ bool Menu::IsHovered() const
 	return isHovered;
 }
 
-Vector2Int Menu::GetWindowSize() const
+Vector2 Menu::GetWindowSize() const
 {
 	return windowSize;
 }
 
-Vector2Int Menu::GetWindowPosition() const
+Vector2 Menu::GetWindowPosition() const
 {
 	return windowPosition;
 }
 
-Vector2Int Menu::GetMousePosition() const
+Vector2 Menu::GetMousePosition() const
 {
 	return mousePosition;
 }
@@ -65,7 +66,7 @@ void Menu::OnClose()
 void Menu::OnStartDrawing()
 {
 	const ImVec2 size = ImGui::GetContentRegionAvail();
-	startAvailableSize = Vector2Int(size.x, size.y);
+	startAvailableSize = Vector2(size.x, size.y);
 	windowSize = startAvailableSize;
 	if (forceFocus)
 	{
@@ -89,10 +90,10 @@ void Menu::CheckOnCloseEvent()
 
 void Menu::ResetWindowValues()
 {
-	windowPosition = Vector2Int(0, 0);
-	mousePosition = Vector2Int(0, 0);
-	windowSize = Vector2Int(0, 0);
-	startAvailableSize = Vector2Int(0, 0);
+	windowPosition = Vector2(0, 0);
+	mousePosition = Vector2(0, 0);
+	windowSize = Vector2(0, 0);
+	startAvailableSize = Vector2(0, 0);
 	isHovered = false;
 	isFocused = false;
 
@@ -103,9 +104,9 @@ void Menu::CalculateWindowValues()
 {
 	const ImVec2 imguiWindowPos = ImGui::GetWindowPos();
 	const ImVec2 imguiMousePos = ImGui::GetMousePos();
-	windowPosition = Vector2Int((int)imguiWindowPos.x, (int)imguiWindowPos.y);
+	windowPosition = Vector2(imguiWindowPos.x, imguiWindowPos.y);
 	oldMousePosition = mousePosition;
-	mousePosition = Vector2Int((int)imguiMousePos.x, (int)(imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
+	mousePosition = Vector2(imguiMousePos.x, (imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
 	isFocused = ImGui::IsWindowFocused();
 	isHovered = ImGui::IsWindowHovered();
 

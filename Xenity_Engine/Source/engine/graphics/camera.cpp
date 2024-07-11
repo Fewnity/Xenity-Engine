@@ -225,9 +225,9 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 	viewMatrix.m[9] = up.z;
 	viewMatrix.m[10] = forward.z;
 
-	viewMatrix.m[12] = -right.Dot(cameraPosition);
-	viewMatrix.m[13] = -up.Dot(cameraPosition);
-	viewMatrix.m[14] = -forward.Dot(cameraPosition);
+	viewMatrix.m[12] = static_cast<float>(-right.Dot(cameraPosition));
+	viewMatrix.m[13] = static_cast<float>(-up.Dot(cameraPosition));
+	viewMatrix.m[14] = static_cast<float>(-forward.Dot(cameraPosition));
 
 	return viewMatrix;
 }

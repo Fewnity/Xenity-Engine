@@ -62,20 +62,20 @@ ENUM(CompilationMethod,
 struct CompilerParams
 {
 	// Build type
-	BuildType buildType;
+	BuildType buildType = BuildType::EditorHotReloading;
 
 	// Path for temporary files to be created, automatically removed at the end of
 	// compilation
-	std::string tempPath;
+	std::string tempPath = "";
 
 	// Path for source files (.cpp & .h) to be copied
-	std::string sourcePath;
+	std::string sourcePath = "";
 
 	// Path for outputing the compiled files
-	std::string exportPath;
+	std::string exportPath = "";
 
 	// Library file name (e.g. DLL)
-	std::string libraryName;
+	std::string libraryName ="";
 
 	BuildPlatform buildPlatform;
 

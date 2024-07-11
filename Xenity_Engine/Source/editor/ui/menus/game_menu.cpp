@@ -33,7 +33,7 @@ void GameMenu::Draw()
 				camera = tempCam;
 				if (needUpdateCamera)
 				{
-					camera->ChangeFrameBufferSize(startAvailableSize);
+					camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
 					needUpdateCamera = false;
 				}
 				frameBufferSize.x = camera->GetWidth();
@@ -75,7 +75,7 @@ void GameMenu::Draw()
 			if ((isHovered || isFocused || lastSize != startAvailableSize || Editor::lastFocusedGameMenu.lock() == nullptr) && (startAvailableSize.x != 0 && startAvailableSize.y != 0))
 			{
 				Editor::lastFocusedGameMenu = shared_from_this();
-				camera->ChangeFrameBufferSize(startAvailableSize);
+				camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
 				lastSize = startAvailableSize;
 			}
 			ImGui::Image((ImTextureID)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));

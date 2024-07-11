@@ -749,11 +749,11 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 	const std::string convertedEnginePath = WindowsPathToWSL(engineProjectLocation);
 	const std::string convertedEngineExePath = WindowsPathToWSL(engineFolderLocation);
 	// Clear compilation folder
-	const int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
+	[[maybe_unused]] const int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
 	// Create folders
-	const int createProjectFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject'");
-	const int createBuildFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject/build'");
+	[[maybe_unused]] const int createProjectFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject'");
+	[[maybe_unused]] const int createBuildFolderResult = system("wsl sh -c 'mkdir ~/XenityTestProject/build'");
 
 	// Copy files
 	const std::string copyEngineSourceCommand = "wsl sh -c 'cp -R /mnt/" + convertedEnginePath + "Source ~/XenityTestProject'";
@@ -894,8 +894,8 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 
 	// We have to stop and remove the container to recreate it
-	const int stopResult = system("docker stop XenityEngineBuild");
-	const int removeResult = system("docker remove XenityEngineBuild");
+	[[maybe_unused]] const int stopResult = system("docker stop XenityEngineBuild");
+	[[maybe_unused]] const int removeResult = system("docker remove XenityEngineBuild");
 
 	std::string prepareCompileCommand = "";
 	if (params.buildPlatform.platform == Platform::P_PSP) 
@@ -918,16 +918,16 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 
 	std::string createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
-	const int createResult = system(createCommand.c_str());
+	[[maybe_unused]] const int createResult = system(createCommand.c_str());
 
 	const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
+	[[maybe_unused]] const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
 	const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
+	[[maybe_unused]] const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
 	const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
-	const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
+	[[maybe_unused]] const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
 	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
+	[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 
 	// Copy source code in the build folder
 	try
@@ -941,7 +941,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 
 	// Copy game source from the build folder to docker
 	const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
-	const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
+	[[maybe_unused]] const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
 
 	if (isCompilationCancelled)
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
@@ -960,7 +960,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 
 	const std::string startCommand = "docker start -a XenityEngineBuild";
-	const int startResult = system(startCommand.c_str());
+	[[maybe_unused]] const int startResult = system(startCommand.c_str());
 
 	if (isCompilationCancelled)
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
@@ -980,7 +980,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	{
 		std::string fileName2 = "hello.prx";
 		const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName2 + "\" \"" + params.exportPath + fileName2 + "\"";
-		const int copyGameFileResult2 = system(copyGameFileCommand2.c_str()); // Engine's source code + (game's code but to change later)
+		[[maybe_unused]] const int copyGameFileResult2 = system(copyGameFileCommand2.c_str()); // Engine's source code + (game's code but to change later)
 	}
 
 	if (copyGameFileResult != 0)
@@ -1000,24 +1000,24 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		//---------------- PSP compiler will look for images in the build folder ----------------
 		// Copy default psp images
 		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
-		const int copyImagesResult = system(copyImagesCommand.c_str());
+		[[maybe_unused]] const int copyImagesResult = system(copyImagesCommand.c_str());
 		if (platformSettings)
 		{
 			// Copy and replace images with custom ones
 			if (platformSettings->backgroundImage)
 			{
 				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/BG.PNG\"";
-				const int copyBgImageResult = system(copyBgImageCommand.c_str());
+				[[maybe_unused]] const int copyBgImageResult = system(copyBgImageCommand.c_str());
 			}
 			if (platformSettings->iconImage)
 			{
 				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/ICON.PNG\"";
-				const int copyIconImageResult = system(copyIconImageCommand.c_str());
+				[[maybe_unused]] const int copyIconImageResult = system(copyIconImageCommand.c_str());
 			}
 			if (platformSettings->previewImage)
 			{
 				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->previewImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/PREVIEW.PNG\"";
-				const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
+				[[maybe_unused]] const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
 			}
 		}
 	}
@@ -1026,20 +1026,20 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
 		// Copy default psp images
 		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
-		const int copyImagesResult = system(copyImagesCommand.c_str());
+		[[maybe_unused]] const int copyImagesResult = system(copyImagesCommand.c_str());
 
 		const std::string copyGameEngineAssetsCommand = "docker cp \"" + ProjectManager::GetEngineAssetFolderPath().substr(0, ProjectManager::GetEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
-		const int copyGameEngineAssetsResult = system(copyGameEngineAssetsCommand.c_str());
+		[[maybe_unused]] const int copyGameEngineAssetsResult = system(copyGameEngineAssetsCommand.c_str());
 
 		const std::string copyGamePublicEngineAssetsCommand = "docker cp \"" + ProjectManager::GetPublicEngineAssetFolderPath().substr(0, ProjectManager::GetPublicEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
-		const int copyGamePublicEngineAssetsResult = system(copyGamePublicEngineAssetsCommand.c_str());
+		[[maybe_unused]] const int copyGamePublicEngineAssetsResult = system(copyGamePublicEngineAssetsCommand.c_str());
 
 		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
-		const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
+		[[maybe_unused]] const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
 
-		const bool copyResult = ExportProjectFiles(params.tempPath);
+		[[maybe_unused]] const bool copyResult = ExportProjectFiles(params.tempPath);
 		const std::string copyGameAssetsCommand = "docker cp \"" + params.tempPath + "assets\" XenityEngineBuild:\"/home/XenityBuild/\"";
-		const int copyGameAssetsResult = system(copyGameAssetsCommand.c_str());
+		[[maybe_unused]] const int copyGameAssetsResult = system(copyGameAssetsCommand.c_str());
 
 		if (platformSettings)
 		{
@@ -1047,17 +1047,17 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 			if (platformSettings->backgroundImage)
 			{
 				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/bg.png\"";
-				const int copyBgImageResult = system(copyBgImageCommand.c_str());
+				[[maybe_unused]] const int copyBgImageResult = system(copyBgImageCommand.c_str());
 			}
 			if (platformSettings->iconImage)
 			{
 				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/icon0.png\"";
-				const int copyIconImageResult = system(copyIconImageCommand.c_str());
+				[[maybe_unused]] const int copyIconImageResult = system(copyIconImageCommand.c_str());
 			}
 			if (platformSettings->startupImage)
 			{
 				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->startupImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/startup.png\"";
-				const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
+				[[maybe_unused]] const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
 			}
 		}
 	}

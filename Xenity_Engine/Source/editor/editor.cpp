@@ -339,7 +339,7 @@ void Editor::Draw()
 	if (currentMenu == MenuGroup::Menu_Editor)
 		mainBar->Draw();
 
-	int offset = mainBar->GetHeight();
+	float offset = mainBar->GetHeight();
 	if (currentMenu != MenuGroup::Menu_Editor)
 		offset = 0;
 
@@ -788,7 +788,7 @@ void Editor::OnDragAndDropFileFinished()
 		{
 			std::string& path = dragdropEntries[dragIndex];
 			const bool isDirectory = std::filesystem::is_directory(path);
-			const size_t pathSize = path.size();
+			const int pathSize = static_cast<int>(path.size());
 
 			// Find the last backslash
 			int lastBackSlash = -1;

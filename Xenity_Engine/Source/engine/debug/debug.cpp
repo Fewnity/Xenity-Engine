@@ -33,7 +33,7 @@ float Debug::SendProfilerDelay = 0.2f;
 std::vector<DebugHistory> Debug::debugMessageHistory;
 
 Event<> Debug::OnDebugLogEvent;
-int Debug::lastDebugMessageHistoryIndex = -1;
+size_t Debug::lastDebugMessageHistoryIndex = -1;
 MyMutex* debugMutex = nullptr;
 
 /**
@@ -228,7 +228,7 @@ int Debug::Init()
 	debugMutex = new MyMutex("DebugMutex");
 	std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
-	fileName = "ux0:data\\xenity_engine\\" + fileName;
+	fileName = "ux0:data/xenity_engine/" + fileName;
 #endif
 	FileSystem::fileSystem->Delete(fileName);
 

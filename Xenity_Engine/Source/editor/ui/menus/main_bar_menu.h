@@ -20,7 +20,7 @@ public:
 	/**
 	* Get bar height
 	*/
-	int GetHeight() const
+	float GetHeight() const
 	{
 		return height;
 	}
@@ -44,5 +44,5 @@ private:
 	*/
 	bool DrawImageButton(const bool enabled, const Texture& texture);
 
-	int height = 0;
+	float height = 0;
 };

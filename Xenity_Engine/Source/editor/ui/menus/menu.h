@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <engine/vectors/vector2_int.h>
+#include <engine/vectors/vector2.h>
 
 enum class MenuGroup
 {
@@ -38,27 +38,27 @@ public:
 	/**
 	* @brief Return if the menu is focused
 	*/
-	virtual bool IsFocused() const;
+	bool IsFocused() const;
 
 	/**
 	* @brief Return if the menu is hovered
 	*/
-	virtual bool IsHovered() const;
+	bool IsHovered() const;
 
 	/**
 	* @brief Return the window size
 	*/
-	virtual Vector2Int GetWindowSize() const;
+	Vector2 GetWindowSize() const;
 
 	/**
 	* @brief Return the window position
 	*/
-	virtual Vector2Int GetWindowPosition() const;
+	Vector2 GetWindowPosition() const;
 
 	/**
 	* @brief Return the mouse position
 	*/
-	virtual Vector2Int GetMousePosition() const;
+	Vector2 GetMousePosition() const;
 
 	/**
 	* @brief Activate or deactivate the menu
@@ -105,10 +105,10 @@ protected:
 	bool previousIsActive = true;
 
 
-	Vector2Int windowSize = Vector2Int(0);
-	Vector2Int windowPosition = Vector2Int(0);
-	Vector2Int mousePosition = Vector2Int(0);
-	Vector2Int oldMousePosition = Vector2Int(0);
-	Vector2Int startAvailableSize = Vector2Int(0);
+	Vector2 windowSize = Vector2(0);
+	Vector2 windowPosition = Vector2(0);
+	Vector2 mousePosition = Vector2(0);
+	Vector2 oldMousePosition = Vector2(0);
+	Vector2 startAvailableSize = Vector2(0);
 };
 

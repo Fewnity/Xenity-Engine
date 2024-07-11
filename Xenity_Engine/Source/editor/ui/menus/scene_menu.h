@@ -63,7 +63,7 @@ private:
 	Vector3 startObjectValue;
 	Side side = Side::Side_None;
 	float snapAmount = 1.0f;
-	int cameraHandMoveSpeed = 200;
+	float cameraHandMoveSpeed = 200.0f;
 
 	std::weak_ptr<GameObject> cube1;
 	std::weak_ptr<GameObject> cube2;

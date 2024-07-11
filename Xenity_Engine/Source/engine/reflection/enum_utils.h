@@ -16,8 +16,8 @@
 class EnumValueName
 {
 public:
-	std::string name;
-	int value;
+	std::string name = "";
+	int value = 0;
 };
 
 /**

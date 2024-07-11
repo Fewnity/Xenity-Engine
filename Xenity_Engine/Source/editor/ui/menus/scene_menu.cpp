@@ -541,7 +541,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					if (finalIntersection != startDragPos)
 					{
 						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
-						const double angleDeg = acos(angle) * 180.0 / M_PI;
+						const float angleDeg = static_cast<float>(acos(angle) * 180.0 / M_PI);
 						if (!isnan(angleDeg))
 						{
 							float crossProduct = 0;
@@ -713,7 +713,7 @@ void SceneMenu::Draw()
 		{
 			MoveCamera();
 
-			camera->ChangeFrameBufferSize(startAvailableSize);
+			camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
 			ImGui::Image((ImTextureID)(size_t)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			std::shared_ptr<FileReference> mesh;

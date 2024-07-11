@@ -12,9 +12,9 @@ public:
 
 	std::string name;
 
-	int allocatedMemory = 0;
-	int deallocatedMemory = 0;
-	int allocCount = 0;
-	int deallocCount = 0;
+	size_t allocatedMemory = 0;
+	size_t deallocatedMemory = 0;
+	size_t allocCount = 0;
+	size_t deallocCount = 0;
 };
 
