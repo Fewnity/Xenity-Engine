@@ -21,6 +21,7 @@ Xenity_Engine/build/hello
 Xenity_Engine/buildvita/
 Xenity_Engine/Xenity Editor/
 Xenity_Engine/plugins/*.dll
+Xenity_Engine/build/
 
 Xenity_Engine_Executable/build/CMakeFiles/
 Xenity_Engine_Executable/build/cmake_install.cmake
