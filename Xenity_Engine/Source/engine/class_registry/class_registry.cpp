@@ -76,6 +76,7 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 		return nullptr;
 	}
 }
+
 #if defined (EDITOR)
 std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 {
@@ -87,6 +88,7 @@ std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 	}
 	else
 	{
+		XASSERT(false, "[ClassRegistry::CreateMenuFromName] Cannot create a menu with this name");
 		return nullptr;
 	}
 }
@@ -147,8 +149,6 @@ void ClassRegistry::RegisterEngineFileClasses()
 #if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
 {
-	//AddMenuClass<Texture>("Texture");
-
 	AddMenuClass<CreateClassMenu>("CreateClassMenu");
 	AddMenuClass<LightingMenu>("LightingMenu");
 	AddMenuClass<ProjectSettingsMenu>("ProjectSettingsMenu");

@@ -244,6 +244,7 @@ void Material::OnReflectionUpdated()
 	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, file);
 	if (!saveResult)
 	{
+		XASSERT(false, "[Material::OnReflectionUpdated] Failed to save the material file: " + file->GetPath());
 		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath(), true);
 	}
 }
@@ -256,7 +257,8 @@ void Material::LoadFileReference()
 		const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
 		if (!loadResult)
 		{
-			Debug::PrintError("[Material::LoadFileReference] Fail to load the material file: " + file->GetPath(), true);
+			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + file->GetPath());
+			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + file->GetPath(), true);
 		}
 	}
 }

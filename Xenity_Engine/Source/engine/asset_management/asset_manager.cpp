@@ -219,6 +219,8 @@ void AssetManager::RemoveMaterial(const Material* material)
 	if (!Engine::IsRunning(true))
 		return;
 
+	XASSERT(!materials.empty(), "[AssetManager::RemoveMaterial] materials is empty");
+
 	int materialIndex = 0;
 	bool found = false;
 	for (int i = 0; i < materialCount; i++)
@@ -244,6 +246,8 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 	if (!Engine::IsRunning(true))
 		return;
+
+	XASSERT(!reflections.empty(), "[AssetManager::RemoveReflection] reflections is empty");
 
 #if defined(EDITOR)
 	if (initialised)
@@ -350,6 +354,8 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 	if (!Engine::IsRunning(true))
 		return;
 
+	XASSERT(!fileReferences.empty(), "[AssetManager::RemoveFileReference] fileReferences is empty");
+
 	int fileReferenceIndex = 0;
 	bool found = false;
 	for (int i = 0; i < fileReferenceCount; i++)
@@ -380,6 +386,8 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 	if (!Engine::IsRunning(true))
 		return;
 
+	XASSERT(!lights.empty(), "[AssetManager::RemoveLight] lights is empty");
+
 	int lightIndex = 0;
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
@@ -405,21 +413,25 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 
 Material* AssetManager::GetMaterial(const int index)
 {
+	XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
 	return materials[index];
 }
 
 Reflective* AssetManager::GetReflectiveData(const int index)
 {
+	XASSERT(index < reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
 	return reflections[index];
 }
 
 std::shared_ptr<FileReference> AssetManager::GetFileReference(const int index)
 {
+	XASSERT(index < fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
 	return fileReferences[index];
 }
 
 std::weak_ptr<Light> AssetManager::GetLight(const int index)
 {
+	XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
 	return lights[index];
 }
 

@@ -35,11 +35,13 @@ public:
 	*/
 	static void AddGameObject(const std::shared_ptr<GameObject>& gameObject);
 
+#if defined(EDITOR)
 	/**
 	* @brief Add a component into the engine only (Not visible from the game)
 	* @param gameObject GameObject to add
 	*/
 	static void AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject);
+#endif
 
 	/**
 	* @brief Get all GameObjects
@@ -51,9 +53,11 @@ public:
 	static std::vector<std::weak_ptr<Component>> orderedComponents;
 	static int componentsCount;
 	static int gameObjectCount;
-	static int gameObjectEditorCount;
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
+#if defined(EDITOR)
+	static int gameObjectEditorCount;
 	static std::vector<std::shared_ptr<GameObject>> gameObjectsEditor;
+#endif
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::shared_ptr<Component>> componentsToDestroy;
 	static std::weak_ptr<Component> lastUpdatedComponent;

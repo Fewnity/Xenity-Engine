@@ -56,6 +56,9 @@ std::shared_ptr<ProfilerBenchmark> audioBenchmark2 = nullptr;
 
 #define audiosize 2048
 
+static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
+static_assert(audiosize % 16 == 0, "audiosize must be a multiple of 16");
+
 short MixSoundToBuffer(short bufferValue, short soundValue)
 {
 	int newVal = bufferValue + soundValue;
@@ -93,7 +96,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 #endif
 		{
 			AudioClipStream* stream = sound->audioClipStream;
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 			const float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->pan)) * 2;
 			const float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->pan)) * 2;
 #else
@@ -351,12 +354,14 @@ int AudioManager::Init()
 	pspAudioInit();
 	sceAudioChReserve(0, audiosize, 0);
 	SceUID thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
+	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
 	if (thd_id >= 0)
 	{
 		sceKernelStartThread(thd_id, 0, 0);
 	}
 
 	SceUID thd_id2 = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
+	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
 	if (thd_id2 >= 0)
 	{
 		sceKernelStartThread(thd_id2, 0, 0);
@@ -365,6 +370,8 @@ int AudioManager::Init()
 #elif defined(__vita__)
 	SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
 	SceUID thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
+	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
+	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
 	if (thd_id >= 0 && thd_id2 >= 0)
 	{
 		sceKernelStartThread(thd_id2, 0, 0);
@@ -373,6 +380,9 @@ int AudioManager::Init()
 #elif defined(_WIN32) || defined(_WIN64)
 	audioData = (short*)malloc(sizeof(short) * buffSize);
 	audioData2 = (short*)malloc(sizeof(short) * buffSize);
+
+	XASSERT(audioData != nullptr, "[AudioManager::Init] audioData is null");
+	XASSERT(audioData2 != nullptr, "[AudioManager::Init] audioData2 is null");
 
 	WAVEFORMATEX waveFormat;
 	waveFormat.wFormatTag = WAVE_FORMAT_PCM;
@@ -502,6 +512,10 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 		channel->playedSoundsCount--;
 	}
+	else 
+	{
+		XASSERT(false, "[AudioManager::StopAudioSource] audioSource not found");
+	}
 	AudioManager::myMutex->Unlock();
 }
 
@@ -536,6 +550,7 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 		channel->playedSoundsCount--;
 	}
+
 	AudioManager::myMutex->Unlock();
 }
 

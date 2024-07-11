@@ -19,13 +19,15 @@
 #endif
 
 int GameplayManager::gameObjectCount = 0;
-int GameplayManager::gameObjectEditorCount = 0;
 bool GameplayManager::componentsListDirty = true;
 bool GameplayManager::componentsInitListDirty = true;
 std::vector<std::weak_ptr<Component>> GameplayManager::orderedComponents;
 int GameplayManager::componentsCount = 0;
 std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjects;
+#if defined(EDITOR)
+int GameplayManager::gameObjectEditorCount = 0;
 std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
+#endif
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
 std::weak_ptr<Component> GameplayManager::lastUpdatedComponent;
@@ -41,6 +43,7 @@ void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObjec
 	gameObjectCount++;
 }
 
+#if defined(EDITOR)
 void GameplayManager::AddGameObjectEditor(const std::shared_ptr<GameObject>& gameObject)
 {
 	XASSERT(gameObject != nullptr, "[GameplayManager::AddGameObjectEditor] gameObject is nullptr");
@@ -48,6 +51,7 @@ void GameplayManager::AddGameObjectEditor(const std::shared_ptr<GameObject>& gam
 	gameObjectsEditor.push_back(gameObject);
 	gameObjectEditorCount++;
 }
+#endif
 
 const std::vector<std::shared_ptr<GameObject>>& GameplayManager::GetGameObjects()
 {
@@ -80,6 +84,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	{
 		gameState = GameState::Playing;
 	}
+
 	if (auto menu = Editor::lastFocusedGameMenu.lock())
 	{
 		std::dynamic_pointer_cast<GameMenu>(menu)->needUpdateCamera = true;
@@ -197,8 +202,8 @@ void GameplayManager::InitialiseComponents()
 void GameplayManager::RemoveDestroyedGameObjects()
 {
 	// Remove destroyed GameObjects from the Engine's GameObjects list
-	const int gameObjectToDestroyCount = (int)gameObjectsToDestroy.size();
-	for (int i = 0; i < gameObjectToDestroyCount; i++)
+	const size_t gameObjectToDestroyCount = gameObjectsToDestroy.size();
+	for (size_t i = 0; i < gameObjectToDestroyCount; i++)
 	{
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 		{

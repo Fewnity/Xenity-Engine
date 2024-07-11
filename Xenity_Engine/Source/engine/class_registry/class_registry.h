@@ -17,6 +17,7 @@
 #include <engine/debug/debug.h>
 #include <engine/file_system/file_type.h>
 #include <engine/assertions/assertions.h>
+
 #if defined (EDITOR)
 class Menu;
 #endif
@@ -166,6 +167,7 @@ public:
 			}
 		}
 
+		XASSERT(false, "[ClassRegistry::GetFileClassInfo] FileClassInfo not found");
 		return nullptr;
 	}
 
@@ -187,6 +189,7 @@ public:
 			}
 		}
 
+		XASSERT(false, "[ClassRegistry::GetClassInfo] ClassInfo not found");
 		return nullptr;
 	}
 

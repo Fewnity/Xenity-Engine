@@ -66,21 +66,6 @@ void CrashHandler::Handler(int signum)
 	if (isFileDumpOpened)
 		file->Write(stackTraceMessage + "\n");
 
-	// Linux code
-	/*const int maxStackTraceSize = 10;
-	void* stackTrace[maxStackTraceSize];
-	int stackTraceSize = backtrace(stackTrace, maxStackTraceSize);
-	char** stackSymbols = backtrace_symbols(stackTrace, stackTraceSize);
-
-	if (stackSymbols != nullptr) 
-	{
-		for (int i = 0; i < stackTraceSize; ++i) 
-		{
-			std::cerr << stackSymbols[i] << std::endl;
-		}
-		free(stackSymbols);
-	}*/
-
 	SYMBOL_INFO* symbol;
 	symbol = (SYMBOL_INFO*)malloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char));
 

@@ -26,6 +26,7 @@ Rework the documentation
 Box colliders are not affected by gameobject scale
 Make console text copyable (with right click)
 Pre-open audio file for faster loading
+Do not ask to save scene when playing
 
 --- Can be for next release
 New Input system

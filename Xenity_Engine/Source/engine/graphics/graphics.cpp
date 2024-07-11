@@ -106,6 +106,7 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 void Graphics::Init()
 {
 	skyPlane = MeshManager::LoadMesh("public_engine_assets/models/PlaneTriangulate.obj");
+	XASSERT(skyPlane != nullptr, "[Graphics::Init] skyPlane is null");
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
 	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");
@@ -377,15 +378,9 @@ void Graphics::Draw()
 
 bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 {
-	/*if (!c1.transform)
-		return false;
-	if (!c2.transform)
-		return false;*/
-	const Vector3& pos1 = c1.transform->GetPosition();
-	const Vector3& pos2 = c2.transform->GetPosition();
 	const Vector3& camPos = Graphics::usedCamera->GetTransform()->GetPosition();
-	const float dis1 = Vector3::Distance(pos1, camPos);
-	const float dis2 = Vector3::Distance(pos2, camPos);
+	const float dis1 = Vector3::Distance(c1.transform->GetPosition(), camPos);
+	const float dis2 = Vector3::Distance(c2.transform->GetPosition(), camPos);
 
 	return dis1 > dis2;
 }
@@ -545,7 +540,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		std::shared_ptr<Texture> &texture = AssetManager::unlitMaterial->texture;
+		const std::shared_ptr<Texture> &texture = AssetManager::unlitMaterial->texture;
 
 		AssetManager::unlitMaterial->texture = settings.skybox->down;
 		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);

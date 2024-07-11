@@ -40,6 +40,7 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	return newGameObject;
 }
 
+#if defined(EDITOR)
 std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 {
 	std::shared_ptr<GameObject> newGameObject = std::make_shared<GameObject>(name);
@@ -48,6 +49,7 @@ std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 	gameObjectAcc.Setup();
 	return newGameObject;
 }
+#endif
 
 std::shared_ptr<Component> FindComponentById(const uint64_t id)
 {
@@ -226,7 +228,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 {
 	XASSERT(componentToAdd != nullptr, "[GameObject::AddExistingComponent] componentToAdd is nullptr");
 
-	if (!componentToAdd.get())
+	if (!componentToAdd)
 		return;
 
 	components.push_back(componentToAdd);
@@ -245,14 +247,14 @@ std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string
 {
 	std::vector<std::shared_ptr<GameObject>> foundGameObjects;
 
-	if (name == "@")
-		return foundGameObjects;
+	//if (name == "@")
+	//	return foundGameObjects;
 
 	const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
 
-	const int gameObjectCount = (int)gameObjects.size();
+	const size_t gameObjectCount = gameObjects.size();
 
-	for (int i = 0; i < gameObjectCount; i++)
+	for (size_t i = 0; i < gameObjectCount; i++)
 	{
 		if (gameObjects[i]->GetName() == name)
 			foundGameObjects.push_back(gameObjects[i]);
@@ -266,12 +268,12 @@ std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 
 	const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
 
-	if (name == "@")
-		return std::shared_ptr<GameObject>();
+	//if (name == "@")
+	//	return std::shared_ptr<GameObject>();
 
-	const int gameObjectCount = (int)gameObjects.size();
+	const size_t gameObjectCount = gameObjects.size();
 
-	for (int i = 0; i < gameObjectCount; i++)
+	for (size_t i = 0; i < gameObjectCount; i++)
 	{
 		if (gameObjects[i]->GetName() == name)
 			return gameObjects[i];
@@ -283,9 +285,9 @@ std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 {
 	const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
 
-	const int gameObjectCount = (int)gameObjects.size();
+	const size_t gameObjectCount = gameObjects.size();
 
-	for (int i = 0; i < gameObjectCount; i++)
+	for (size_t i = 0; i < gameObjectCount; i++)
 	{
 		if (gameObjects[i]->GetUniqueId() == id)
 			return gameObjects[i];

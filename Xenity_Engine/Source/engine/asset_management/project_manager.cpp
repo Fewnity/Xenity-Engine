@@ -131,7 +131,7 @@ uint64_t ProjectManager::ReadFileId(const File& file)
 void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, Directory& directorySource, bool isEngineAssets)
 {
 	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource.GetAllFiles(true);
-	const int projectAssetFilesCount = (int)projectAssetFiles.size();
+	const size_t projectAssetFilesCount = projectAssetFiles.size();
 	for (int i = 0; i < projectAssetFilesCount; i++)
 	{
 		ProjectEngineFile projectEngineFile;

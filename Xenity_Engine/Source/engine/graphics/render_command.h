@@ -32,14 +32,15 @@ public:
 class RenderBatch
 {
 public:
+	// uint64_t = material id
 	std::unordered_map<uint64_t, RenderQueue> renderQueues;
 
 	std::vector<RenderCommand> transparentMeshCommands;
 	std::vector<RenderCommand> spriteCommands;
 	std::vector<RenderCommand> uiCommands;
-	int transparentMeshCommandIndex = 0;
-	int spriteCommandIndex = 0;
-	int uiCommandIndex = 0;
+	size_t transparentMeshCommandIndex = 0;
+	size_t spriteCommandIndex = 0;
+	size_t uiCommandIndex = 0;
 
 	/**
 	* @brief Reset the render batch

@@ -30,12 +30,14 @@ API std::shared_ptr<GameObject> CreateGameObject();
 */
 API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
+#if defined(EDITOR)
 /**
 * @brief Create a GameObject not visible in the hierarchy
 * @param name GameObject name
 * @return The created GameObject
 */
 API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
+#endif
 
 /**
 * @brief Find a GameObject with a name

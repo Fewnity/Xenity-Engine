@@ -121,7 +121,7 @@ void Camera::SetFov(const float fov)
 
 float Camera::GetFov() const
 {
-	return this->fov;
+	return fov;
 }
 
 void Camera::SetProjectionSize(const float value)
@@ -234,8 +234,8 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 
 void Camera::UpdateFrustum()
 {
-	Matrix4x4 v = createViewMatrix(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward(), GetTransform()->GetUp());
-	frustum.ExtractPlanes((float*)&GetProjection(), v.m);
+	Matrix4x4 vm = createViewMatrix(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward(), GetTransform()->GetUp());
+	frustum.ExtractPlanes((float*)&GetProjection(), vm.m);
 }
 
 void Camera::SetProjectionType(const ProjectionTypes type)

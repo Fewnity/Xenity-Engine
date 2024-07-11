@@ -74,6 +74,8 @@ Vector3 Transform::GetDown() const
 
 void Transform::SetPosition(const Vector3& value)
 {
+	XASSERT(!value.HasInvalidValues(), "[Transform::SetPosition] value is invalid");
+
 	// Security check
 	if (value.HasInvalidValues())
 		return;
@@ -104,6 +106,8 @@ void Transform::SetPosition(const Vector3& value)
 
 void Transform::SetLocalPosition(const Vector3& value)
 {
+	XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalPosition] value is invalid");
+
 	// Security check
 	if (value.HasInvalidValues())
 		return;
@@ -127,6 +131,8 @@ void Transform::SetLocalPosition(const Vector3& value)
 
 void Transform::SetRotation(const Vector3& value)
 {
+	XASSERT(!value.HasInvalidValues(), "[Transform::SetRotation] value is invalid");
+
 	// Security check
 	if (value.HasInvalidValues())
 		return;
@@ -153,6 +159,8 @@ void Transform::SetRotation(const Vector3& value)
 
 void Transform::SetLocalRotation(const Vector3& value)
 {
+	XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalRotation] value is invalid");
+
 	// Security check
 	if (value.HasInvalidValues())
 		return;
@@ -176,6 +184,8 @@ void Transform::SetLocalRotation(const Vector3& value)
 
 void Transform::SetLocalScale(const Vector3& value)
 {
+	XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalScale] value is invalid");
+
 	// Security check
 	if (value.HasInvalidValues())
 		return;
@@ -198,7 +208,7 @@ void Transform::OnParentChanged()
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (!gm->GetParent().expired())
 	{
-		auto parentTransform = gm->GetParent().lock()->GetTransform();
+		std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
 		//----- Set new local scale
 		localScale = scale / parentTransform->scale;
 
