@@ -43,20 +43,41 @@
  * if you aren't reading from a file) as a basic means to load sound data into
  * your program.
  *
- * For multi-channel audio, data is interleaved (one sample for each channel,
- * then repeat). The SDL channel order is:
+ * ## Channel layouts as SDL expects them
  *
- * - Stereo: FL, FR
- * - 2.1 surround: FL, FR, LFE
- * - Quad: FL, FR, BL, BR
- * - 4.1 surround: FL, FR, LFE, BL, BR
- * - 5.1 surround: FL, FR, FC, LFE, SL, SR (last two can also be BL BR)
- * - 6.1 surround: FL, FR, FC, LFE, BC, SL, SR
- * - 7.1 surround: FL, FR, FC, LFE, BL, BR, SL, SR
+ * Abbreviations:
+ *
+ * - FRONT = single mono speaker
+ * - FL = front left speaker
+ * - FR = front right speaker
+ * - FC = front center speaker
+ * - BL = back left speaker
+ * - BR = back right speaker
+ * - SR = surround right speaker
+ * - SL = surround left speaker
+ * - BC = back center speaker
+ * - LFE = low-frequency speaker
+ *
+ * These are listed in the order they are laid out in memory, so "FL, FR"
+ * means "the front left speaker is laid out in memory first, then the front
+ * right, then it repeats for the next audio frame".
+ *
+ * - 1 channel (mono) layout: FRONT
+ * - 2 channels (stereo) layout: FL, FR
+ * - 3 channels (2.1) layout: FL, FR, LFE
+ * - 4 channels (quad) layout: FL, FR, BL, BR
+ * - 5 channels (4.1) layout: FL, FR, LFE, BL, BR
+ * - 6 channels (5.1) layout: FL, FR, FC, LFE, BL, BR (last two can also be
+ *   BL, BR)
+ * - 7 channels (6.1) layout: FL, FR, FC, LFE, BC, SL, SR
+ * - 8 channels (7.1) layout: FL, FR, FC, LFE, BL, BR, SL, SR
  *
  * This is the same order as DirectSound expects, but applied to all
  * platforms; SDL will swizzle the channels as necessary if a platform expects
  * something different.
+ *
+ * SDL_AudioStream can also be provided a channel map to change this ordering
+ * to whatever is necessary, in other audio processing scenarios.
  */
 
 #ifndef SDL_audio_h_
@@ -281,6 +302,18 @@ typedef Uint32 SDL_AudioDeviceID;
 #define SDL_AUDIO_DEVICE_DEFAULT_RECORDING ((SDL_AudioDeviceID) 0xFFFFFFFE)
 
 /**
+ * Maximum channels that an SDL_AudioSpec channel map can handle.
+ *
+ * This is (currently) double the number of channels that SDL supports, to
+ * allow for future expansion while maintaining binary compatibility.
+ *
+ * \since This macro is available since SDL 3.0.0.
+ *
+ * \sa SDL_AudioSpec
+ */
+#define SDL_MAX_CHANNEL_MAP_SIZE 16
+
+/**
  * Format specifier for audio data.
  *
  * \since This struct is available since SDL 3.0.0.
@@ -292,6 +325,8 @@ typedef struct SDL_AudioSpec
     SDL_AudioFormat format;     /**< Audio data format */
     int channels;               /**< Number of channels: 1 mono, 2 stereo, etc */
     int freq;                   /**< sample rate: sample frames per second */
+    SDL_bool use_channel_map;   /**< If SDL_FALSE, ignore `channel_map` and use default order. */
+    Uint8 channel_map[SDL_MAX_CHANNEL_MAP_SIZE];      /**< `channels` items of channel order. */
 } SDL_AudioSpec;
 
 /**
@@ -318,6 +353,7 @@ typedef struct SDL_AudioSpec
  *   when it doesn't have the complete buffer available.
  * - It can handle incoming data in any variable size.
  * - It can handle input/output format changes on the fly.
+ * - It can remap audio channels between inputs and outputs.
  * - You push data as you have it, and pull it when you need it
  * - It can also function as a basic audio data queue even if you just have
  *   sound that needs to pass from one place to another.
@@ -683,6 +719,62 @@ extern SDL_DECLSPEC int SDLCALL SDL_ResumeAudioDevice(SDL_AudioDeviceID dev);
 extern SDL_DECLSPEC SDL_bool SDLCALL SDL_AudioDevicePaused(SDL_AudioDeviceID dev);
 
 /**
+ * Get the gain of an audio device.
+ *
+ * The gain of a device is its volume; a larger gain means a louder output,
+ * with a gain of zero being silence.
+ *
+ * Audio devices default to a gain of 1.0f (no change in output).
+ *
+ * Physical devices may not have their gain changed, only logical devices, and
+ * this function will always return -1.0f when used on physical devices.
+ *
+ * \param devid the audio device to query.
+ * \returns the gain of the device, or -1.0f on error.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL 3.0.0.
+ *
+ * \sa SDL_SetAudioDeviceGain
+ */
+extern SDL_DECLSPEC float SDLCALL SDL_GetAudioDeviceGain(SDL_AudioDeviceID devid);
+
+/**
+ * Change the gain of an audio device.
+ *
+ * The gain of a device is its volume; a larger gain means a louder output,
+ * with a gain of zero being silence.
+ *
+ * Audio devices default to a gain of 1.0f (no change in output).
+ *
+ * Physical devices may not have their gain changed, only logical devices, and
+ * this function will always return -1 when used on physical devices. While it
+ * might seem attractive to adjust several logical devices at once in this
+ * way, it would allow an app or library to interfere with another portion of
+ * the program's otherwise-isolated devices.
+ *
+ * This is applied, along with any per-audiostream gain, during playback to
+ * the hardware, and can be continuously changed to create various effects. On
+ * recording devices, this will adjust the gain before passing the data into
+ * an audiostream; that recording audiostream can then adjust its gain further
+ * when outputting the data elsewhere, if it likes, but that second gain is
+ * not applied until the data leaves the audiostream again.
+ *
+ * \param devid the audio device on which to change gain.
+ * \param gain the gain. 1.0f is no change, 0.0f is silence.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \threadsafety It is safe to call this function from any thread, as it holds
+ *               a stream-specific mutex while running.
+ *
+ * \since This function is available since SDL 3.0.0.
+ *
+ * \sa SDL_GetAudioDeviceGain
+ */
+extern SDL_DECLSPEC int SDLCALL SDL_SetAudioDeviceGain(SDL_AudioDeviceID devid, float gain);
+
+/**
  * Close a previously-opened audio device.
  *
  * The application should close open audio devices once they are no longer
@@ -944,6 +1036,51 @@ extern SDL_DECLSPEC float SDLCALL SDL_GetAudioStreamFrequencyRatio(SDL_AudioStre
  * \sa SDL_SetAudioStreamFormat
  */
 extern SDL_DECLSPEC int SDLCALL SDL_SetAudioStreamFrequencyRatio(SDL_AudioStream *stream, float ratio);
+
+/**
+ * Get the gain of an audio stream.
+ *
+ * The gain of a stream is its volume; a larger gain means a louder output,
+ * with a gain of zero being silence.
+ *
+ * Audio streams default to a gain of 1.0f (no change in output).
+ *
+ * \param stream the SDL_AudioStream to query.
+ * \returns the gain of the stream, or -1.0f on error.
+ *
+ * \threadsafety It is safe to call this function from any thread, as it holds
+ *               a stream-specific mutex while running.
+ *
+ * \since This function is available since SDL 3.0.0.
+ *
+ * \sa SDL_SetAudioStreamGain
+ */
+extern SDL_DECLSPEC float SDLCALL SDL_GetAudioStreamGain(SDL_AudioStream *stream);
+
+/**
+ * Change the gain of an audio stream.
+ *
+ * The gain of a stream is its volume; a larger gain means a louder output,
+ * with a gain of zero being silence.
+ *
+ * Audio streams default to a gain of 1.0f (no change in output).
+ *
+ * This is applied during SDL_GetAudioStreamData, and can be continuously
+ * changed to create various effects.
+ *
+ * \param stream the stream on which the gain is being changed.
+ * \param gain the gain. 1.0f is no change, 0.0f is silence.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \threadsafety It is safe to call this function from any thread, as it holds
+ *               a stream-specific mutex while running.
+ *
+ * \since This function is available since SDL 3.0.0.
+ *
+ * \sa SDL_GetAudioStreamGain
+ */
+extern SDL_DECLSPEC int SDLCALL SDL_SetAudioStreamGain(SDL_AudioStream *stream, float gain);
+
 
 /**
  * Add data to the stream.
@@ -1428,6 +1565,10 @@ extern SDL_DECLSPEC SDL_AudioStream *SDLCALL SDL_OpenAudioDeviceStream(SDL_Audio
  * specified in `spec`, which can change between callbacks if the audio device
  * changed. However, this only covers frequency and channel count; data is
  * always provided here in SDL_AUDIO_F32 format.
+ *
+ * The postmix callback runs _after_ logical device gain and audiostream gain
+ * have been applied, which is to say you can make the output data louder at
+ * this point than the gain settings would suggest.
  *
  * \param userdata a pointer provided by the app through
  *                 SDL_SetAudioPostmixCallback, for its own use.

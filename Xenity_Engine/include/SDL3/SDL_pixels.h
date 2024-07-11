@@ -39,14 +39,22 @@ extern "C" {
 #endif
 
 /**
- *  \name Transparency definitions
+ * A fully opaque 8-bit alpha value.
  *
- *  These define alpha as the opacity of a surface.
+ * \since This macro is available since SDL 3.0.0.
+ *
+ * \sa SDL_ALPHA_TRANSPARENT
  */
-/* @{ */
 #define SDL_ALPHA_OPAQUE 255
+
+/**
+ * A fully transparent 8-bit alpha value.
+ *
+ * \since This macro is available since SDL 3.0.0.
+ *
+ * \sa SDL_ALPHA_OPAQUE
+ */
 #define SDL_ALPHA_TRANSPARENT 0
-/* @} */
 
 /** Pixel type. */
 typedef enum SDL_PixelType
@@ -743,10 +751,10 @@ typedef struct SDL_PixelFormat
     Uint32 Gmask;
     Uint32 Bmask;
     Uint32 Amask;
-    Uint8 Rloss;
-    Uint8 Gloss;
-    Uint8 Bloss;
-    Uint8 Aloss;
+    Uint8 Rbits;
+    Uint8 Gbits;
+    Uint8 Bbits;
+    Uint8 Abits;
     Uint8 Rshift;
     Uint8 Gshift;
     Uint8 Bshift;
