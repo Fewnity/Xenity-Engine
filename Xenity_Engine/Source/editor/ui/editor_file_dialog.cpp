@@ -90,7 +90,7 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 	CoUninitialize();
 
 	#endif
-	return FileSystem::ConvertWindowsPath(path);
+	return FileSystem::ConvertWindowsPathToBasicPath(path);
 }
 
 std::string EditorUI::OpenFileDialog(const std::string& title, const std::string& defaultLocation)
@@ -176,7 +176,7 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 
 	CoUninitialize();
 #endif
-	return FileSystem::ConvertWindowsPath(path);
+	return FileSystem::ConvertWindowsPathToBasicPath(path);
 }
 
 std::string EditorUI::SaveFileDialog(const std::string& title, const std::string& defaultLocation)
@@ -285,7 +285,7 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 
 	CoUninitialize();
 #endif
-	return FileSystem::ConvertWindowsPath(path);
+	return FileSystem::ConvertWindowsPathToBasicPath(path);
 }
 
 #endif // #if defined(EDITOR)

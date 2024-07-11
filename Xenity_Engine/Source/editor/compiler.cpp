@@ -208,7 +208,7 @@ void Compiler::Init()
 
 void Compiler::UpdatePaths()
 {
-	const std::string root = FileSystem::ConvertWindowsPath(fs::current_path().string());
+	const std::string root = FileSystem::ConvertWindowsPathToBasicPath(fs::current_path().string());
 	engineFolderLocation = root + "/";
 	engineProjectLocation = engineFolderLocation;
 #if defined (VISUAL_STUDIO)

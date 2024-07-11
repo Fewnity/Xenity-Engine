@@ -283,7 +283,7 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 	return file;
 }
 
-std::string FileSystem::ConvertWindowsPath(const std::string& path)
+std::string FileSystem::ConvertWindowsPathToBasicPath(const std::string& path)
 {
 	size_t pathSize = path.size();
 	std::string newPath = path;
@@ -296,6 +296,21 @@ std::string FileSystem::ConvertWindowsPath(const std::string& path)
 	}
 	return newPath;
 }
+
+std::string FileSystem::ConvertBasicPathToWindowsPath(const std::string& path)
+{
+	size_t pathSize = path.size();
+	std::string newPath = path;
+	for (size_t i = 0; i < pathSize; i++)
+	{
+		if (path[i] == '/')
+		{
+			newPath[i] = '\\';
+		}
+	}
+	return newPath;
+}
+
 
 #pragma endregion
 
