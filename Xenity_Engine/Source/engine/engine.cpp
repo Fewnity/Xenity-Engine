@@ -248,7 +248,7 @@ void Engine::CheckEvents()
 
 		case (SDL_EVENT_DROP_FILE):
 		{
-			char *dropped_filedir = event.drop.data;
+			const char *dropped_filedir = event.drop.data;
 			Editor::AddDragAndDrop(dropped_filedir);
 			//SDL_free(dropped_filedir); // Free dropped_filedir memory // FIXME TODO memory leak here! Crash if used since updated to SDL3
 			break;
