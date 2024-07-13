@@ -13,7 +13,7 @@
 #include "file_type.h"
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
-
+#include <engine/platform.h>
 #include <memory>
 
 class File;
@@ -59,7 +59,7 @@ public:
 	/**
 	* @brief Get reflection of the file meta
 	*/
-	virtual ReflectiveData GetMetaReflectiveData()
+	virtual ReflectiveData GetMetaReflectiveData(AssetPlatform plaform)
 	{
 		return ReflectiveData();
 	}

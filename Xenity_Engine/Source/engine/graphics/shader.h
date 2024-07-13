@@ -138,7 +138,7 @@ protected:
 
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	void LoadFileReference() override;
 

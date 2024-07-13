@@ -44,6 +44,23 @@ Platform Application::GetPlatform()
 #endif
 }
 
+AssetPlatform Application::PlatformToAssetPlatform(Platform platform)
+{
+if (platform == Platform::P_PSP)
+	return AssetPlatform::AP_PSP;
+else if (platform == Platform::P_PsVita)
+	return AssetPlatform::AP_PsVita;
+else if (platform == Platform::P_PS2)
+	return AssetPlatform::AP_PS2;
+else if (platform == Platform::P_PS3)
+	return AssetPlatform::AP_PS3;
+else if (platform == Platform::P_PS4)
+	return AssetPlatform::AP_PS4;
+else //if(platform == Platform::P_Windows || platform == Platform::P_Linux)
+	return AssetPlatform::AP_Standalone;
+
+}
+
 std::string Application::GetXenityVersion()
 {
 	return ENGINE_VERSION;

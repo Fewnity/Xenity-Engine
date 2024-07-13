@@ -120,7 +120,7 @@ protected:
 	void Use();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	void OnReflectionUpdated() override;
 
 	void LoadFileReference() override;

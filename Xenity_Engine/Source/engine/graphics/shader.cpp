@@ -244,7 +244,7 @@ ReflectiveData Shader::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Shader::GetMetaReflectiveData()
+ReflectiveData Shader::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

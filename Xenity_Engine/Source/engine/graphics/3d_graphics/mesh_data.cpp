@@ -70,7 +70,7 @@ ReflectiveData MeshData::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData MeshData::GetMetaReflectiveData()
+ReflectiveData MeshData::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

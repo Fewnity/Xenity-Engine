@@ -194,7 +194,7 @@ protected:
 	void SendDataToGpu();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	void LoadFileReference() override;
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;

@@ -21,6 +21,10 @@ public:
 	static std::string GetCompanyName();
 
 private:
+	friend class InspectorMenu;
+	friend class BuildSettingsMenu;
+
+	static AssetPlatform PlatformToAssetPlatform(Platform platform);
 	static std::string xenityVersion;
 };
 

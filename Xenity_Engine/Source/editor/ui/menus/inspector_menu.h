@@ -9,6 +9,7 @@
 #include "menu.h"
 #include <memory>
 #include <string>
+#include <engine/platform.h>
 
 class FileReference;
 class Component;
@@ -24,6 +25,8 @@ public:
 	std::shared_ptr<FileReference> loadedPreview = nullptr;
 
 	bool forceItemUpdate = false;
+
+	AssetPlatform platformView = AssetPlatform::AP_Standalone;
 
 private:
 	/**

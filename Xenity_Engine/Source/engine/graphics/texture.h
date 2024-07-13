@@ -13,6 +13,9 @@
 #include <engine/reflection/reflection.h>
 #include <engine/graphics/2d_graphics/sprite_selection.h>
 #include <engine/reflection/enum_utils.h>
+#include <engine/vectors/vector2_int.h>
+#include <engine/platform.h>
+#include <engine/application.h>
 
 #if defined(_EE)
 #include <draw.h>
@@ -21,8 +24,63 @@
 
 ENUM(Filter, Point, Bilinear);
 ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
+ENUM(TextureResolutions, R_64x64, R_128x128, R_256x256, R_512x512, R_1024x1024, R_2048x2048);
 ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
 ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
+
+class TextureSettings : public Reflective
+{
+public:
+	TextureResolutions resolution;
+	Filter filter = Filter::Bilinear;
+	WrapMode wrapMode = WrapMode::Repeat;
+	bool useMipMap = false;
+	int mipmaplevelCount = 0;
+	int pixelPerUnit = 100;
+
+	ReflectiveData GetReflectiveData() override
+	{
+		ReflectiveData reflectedVariables;
+		//Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
+		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
+		return reflectedVariables;
+	}
+};
+
+class TextureSettingsStandalone : public TextureSettings
+{
+public:
+};
+
+class TextureSettingsPSVITA : public TextureSettings
+{
+public:
+};
+
+class TextureSettingsPSP : public TextureSettings
+{
+public:
+	PSPTextureType type = PSPTextureType::RGBA_5650;
+	bool tryPutInVram = true;
+
+	ReflectiveData GetReflectiveData() override
+	{
+		ReflectiveData reflectedVariables;
+		//Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
+		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
+		Reflective::AddVariable(reflectedVariables, type, "type", true);
+		Reflective::AddVariable(reflectedVariables, tryPutInVram, "tryPutInVram", true);
+		return reflectedVariables;
+	}
+};
 
 /**
 * @brief Texture file class
@@ -32,6 +90,8 @@ class API Texture : public FileReference, public Reflective
 public:
 	Texture();
 	~Texture();
+
+	std::vector<TextureSettings*> settings;
 
 	inline void SetSize(int width, int height)
 	{
@@ -45,7 +105,7 @@ public:
 	 */
 	inline void SetFilter(const Filter filter)
 	{
-		this->filter = filter;
+		settings[static_cast<int>(Application::GetPlatform())]->filter = filter;
 	}
 
 	/**
@@ -54,7 +114,7 @@ public:
 	 */
 	inline void SetWrapMode(const WrapMode mode)
 	{
-		wrapMode = mode;
+		settings[static_cast<int>(Application::GetPlatform())]->wrapMode = mode;
 	}
 
 	/**
@@ -79,7 +139,7 @@ public:
 	 */
 	inline void SetPixelPerUnit(int value)
 	{
-		pixelPerUnit = value;
+		settings[static_cast<int>(Application::GetPlatform())]->pixelPerUnit = value;
 	}
 
 	/**
@@ -87,7 +147,7 @@ public:
 	 */
 	inline int GetPixelPerUnit() const
 	{
-		return pixelPerUnit;
+		return settings[static_cast<int>(Application::GetPlatform())]->pixelPerUnit;
 	}
 
 	/**
@@ -95,7 +155,7 @@ public:
 	 */
 	inline bool GetUseMipmap() const
 	{
-		return useMipMap;
+		return settings[static_cast<int>(Application::GetPlatform())]->useMipMap;
 	}
 
 	/**
@@ -103,7 +163,7 @@ public:
 	 */
 	inline Filter GetFilter() const
 	{
-		return filter;
+		return settings[static_cast<int>(Application::GetPlatform())]->filter;
 	}
 	
 	/**
@@ -111,7 +171,7 @@ public:
 	 */
 	inline WrapMode GetWrapMode() const
 	{
-		return wrapMode;
+		return settings[static_cast<int>(Application::GetPlatform())]->wrapMode;
 	}
 
 protected:
@@ -161,15 +221,7 @@ protected:
 	*/
 	inline int GetMipmaplevelCount() const
 	{
-		return mipmaplevelCount;
-	}
-
-	/**
-	* @bried [Internal] Get if the texture is using mipmapping
-	*/
-	inline bool GetIsUsingMipMap() const
-	{
-		return useMipMap;
+		return settings[static_cast<int>(Application::GetPlatform())]->mipmaplevelCount;
 	}
 
 	/**
@@ -198,7 +250,7 @@ protected:
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
-	PSPTextureType type = PSPTextureType::RGBA_5650;
+	//PSPTextureType type = PSPTextureType::RGBA_5650;
 	std::vector<SpriteSelection*> spriteSelections;
 
 	/**
@@ -207,7 +259,7 @@ protected:
 	void ClearSpriteSelections();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform plaform) override;
 
 	static std::shared_ptr<Texture> MakeTexture();
 
@@ -229,7 +281,7 @@ protected:
 		return textureId;
 	}
 
-	int mipmaplevelCount = 0;
+	//int mipmaplevelCount = 0;
 
 	/**
 	 * @brief Create the texture
@@ -249,13 +301,13 @@ protected:
 	void Unload();
 
 	unsigned char *buffer = nullptr;
-	Filter filter = Filter::Bilinear;
-	WrapMode wrapMode = WrapMode::Repeat;
+	//Filter filter = Filter::Bilinear;
+	//WrapMode wrapMode = WrapMode::Repeat;
 	unsigned int textureId = 0;
 	int width = 0, height = 0, nrChannels = 0;
 
-	int pixelPerUnit = 100;
+	//int pixelPerUnit = 100;
 	bool isValid = false;
-	bool useMipMap = false;
+	//bool useMipMap = false;
 public:
 };

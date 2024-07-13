@@ -20,7 +20,7 @@ ReflectiveData AudioClip::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData AudioClip::GetMetaReflectiveData()
+ReflectiveData AudioClip::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, loadedInMemory, "loadedInMemory", true);

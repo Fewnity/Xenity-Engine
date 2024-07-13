@@ -18,3 +18,13 @@ ENUM(Platform,
 	P_PS3,
 	P_PS4, 
 	P_COUNT);
+
+// Do not remove the "AP_" because without that, the PSP compiler will not allow the enum
+ENUM(AssetPlatform,
+	AP_Standalone,
+	AP_PSP,
+	AP_PsVita,
+	AP_PS2,
+	AP_PS3,
+	AP_PS4,
+	AP_COUNT);

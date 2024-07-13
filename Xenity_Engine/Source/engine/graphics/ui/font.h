@@ -29,7 +29,7 @@ protected:
 	static std::shared_ptr<Font> MakeFont();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;

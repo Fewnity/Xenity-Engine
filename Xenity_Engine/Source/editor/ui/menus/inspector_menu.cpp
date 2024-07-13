@@ -27,11 +27,13 @@
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
 #include <engine/physics/box_collider.h>
+#include <engine/application.h>
 
 using json = nlohmann::json;
 
 void InspectorMenu::Init()
 {
+	platformView = Application::PlatformToAssetPlatform(Application::GetPlatform());
 }
 
 void InspectorMenu::Draw()
@@ -358,7 +360,7 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 	const ReflectiveData reflectionList = selectedFileReference.GetReflectiveData();
 	if (reflectionList.size() != 0)
 	{
-		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference, platformView);
 		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, reflectionList, nullptr);
 		if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
 		{
@@ -373,10 +375,33 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 		}
 	}
 
-	const ReflectiveData metaReflection = selectedFileReference.GetMetaReflectiveData();
+	const ReflectiveData metaReflection = selectedFileReference.GetMetaReflectiveData(platformView);
 	if (metaReflection.size() != 0)
 	{
-		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference);
+		EditorUI::SetButtonColor(platformView == AssetPlatform::AP_Standalone);
+		if (ImGui::Button("Standalone"))
+		{
+			platformView = AssetPlatform::AP_Standalone;
+		}
+		EditorUI::EndButtonColor();
+
+		ImGui::SameLine();
+		EditorUI::SetButtonColor(platformView == AssetPlatform::AP_PSP);
+		if (ImGui::Button("PSP"))
+		{
+			platformView = AssetPlatform::AP_PSP;
+		}
+		EditorUI::EndButtonColor();
+
+		ImGui::SameLine();
+		EditorUI::SetButtonColor(platformView == AssetPlatform::AP_PsVita);
+		if (ImGui::Button("PSVita"))
+		{
+			platformView = AssetPlatform::AP_PsVita;
+		}
+		EditorUI::EndButtonColor();
+
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference, platformView);
 		reflectiveDataToDraw.isMeta = true;
 		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr);
 		if (valueInputState != ValueInputState::NO_CHANGE && reflectiveDataToDraw.command)
@@ -415,7 +440,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 	if (gameObjectName != selectedGameObject.GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
 		// Improve this
-		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject);
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject, platformView);
 		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject.GetReflectiveData(), "name");
 		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject.GetReflectiveData());
 		auto command = std::make_shared<ReflectiveChangeValueCommand<std::string>>(reflectiveDataToDraw, &selectedGameObject.GetName(), selectedGameObject.GetName(), gameObjectName);
@@ -619,7 +644,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 				}
 
 				//Draw component variables
-				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(*comp);
+				ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(*comp, platformView);
 
 				const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, comp->GetReflectiveData(), nullptr);
 				if (valueInputState != ValueInputState::NO_CHANGE)

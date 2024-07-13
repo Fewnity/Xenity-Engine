@@ -44,6 +44,13 @@
 
 Texture::Texture()
 {
+	TextureSettingsStandalone* textureSettingsStandalone = new TextureSettingsStandalone();
+	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
+	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
+
+	settings.push_back(textureSettingsStandalone);
+	settings.push_back(textureSettingsPSP);
+	settings.push_back(textureSettingsPSVITA);
 }
 
 ReflectiveData Texture::GetReflectiveData()
@@ -52,16 +59,11 @@ ReflectiveData Texture::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Texture::GetMetaReflectiveData()
+ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform plaform)
 {
 	ReflectiveData reflectedVariables;
-	//Reflective::AddVariable(reflectedVariables, inVram, "inVram", true);
-	Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-	Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-	Reflective::AddVariable(reflectedVariables, filter, "filter", true);
-	Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
-	Reflective::AddVariable(reflectedVariables, spriteSelections, "spriteSelections", true);
-	Reflective::AddVariable(reflectedVariables, type, "type", true);
+	ReflectiveData reflectedVariablesPlatform = settings[static_cast<int>(plaform)]->GetReflectiveData();
+	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }
 
@@ -87,10 +89,10 @@ void Texture::LoadFileReference()
 		isLoading = true;
 		AsyncFileLoading::AddFile(shared_from_this());
 
-		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, filter, useMipMap);
+		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
 		threadLoading.detach();
 #else
-		CreateTexture(filter, useMipMap);
+		CreateTexture(GetFilter(), GetUseMipmap());
 		OnLoadFileReferenceFinished();
 #endif
 	}
@@ -127,8 +129,9 @@ void Texture::ClearSpriteSelections()
 /// <param name="useMipMap">Will texture use mipmap</param>
 void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 {
-	this->filter = filter;
-	this->useMipMap = useMipMap;
+	SetFilter(filter);
+
+	settings[static_cast<int>(Application::GetPlatform())]->useMipMap = useMipMap;
 
 	LoadTexture();
 }
@@ -310,6 +313,8 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
 	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr");
 
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(settings[static_cast<int>(Application::GetPlatform())])->type;
+
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
 
@@ -402,12 +407,12 @@ void Texture::SetData(const unsigned char *texData)
 	pH = Math::nextPow2(height);
 
 	SetTextureLevel(0, texData);
-	if (useMipMap)
+	if (GetUseMipmap())
 	{
 		SetTextureLevel(1, texData);
 		// SetTextureLevel(2, texData);
 		// SetTextureLevel(3, texData);
-		mipmaplevelCount = 1;
+		settings[static_cast<int>(Application::GetPlatform())]->mipmaplevelCount = 1;
 	}
 #elif defined(_EE)
 	texbuff.width = width;

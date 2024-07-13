@@ -41,7 +41,7 @@ ReflectiveData Font::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Font::GetMetaReflectiveData()
+ReflectiveData Font::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;
@@ -177,7 +177,9 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	std::shared_ptr<Texture> newAtlas = Texture::MakeTexture();
 	newAtlas->SetSize(atlasSize, atlasSize);
 	newAtlas->SetChannelCount(channelCount);
-	newAtlas->type = PSPTextureType::RGBA_4444;
+#if defined(__PSP__)
+	reinterpret_cast<TextureSettingsPSP*>(newAtlas->settings[static_cast<int>(AssetPlatform::AP_PSP)])->type = PSPTextureType::RGBA_4444;
+#endif
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);
 	newAtlas->SetWrapMode(WrapMode::ClampToEdge);

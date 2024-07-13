@@ -454,7 +454,7 @@ void RendererOpengl::DeleteTexture(Texture& texture)
 void RendererOpengl::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture.GetWidth(), texture.GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
-	if (texture.GetIsUsingMipMap())
+	if (texture.GetUseMipmap())
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 

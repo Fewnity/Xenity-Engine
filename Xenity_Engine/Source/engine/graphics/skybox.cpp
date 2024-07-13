@@ -47,7 +47,7 @@ ReflectiveData SkyBox::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData SkyBox::GetMetaReflectiveData()
+ReflectiveData SkyBox::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

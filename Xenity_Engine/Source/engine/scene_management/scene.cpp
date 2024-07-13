@@ -17,7 +17,7 @@ ReflectiveData Scene::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Scene::GetMetaReflectiveData()
+ReflectiveData Scene::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

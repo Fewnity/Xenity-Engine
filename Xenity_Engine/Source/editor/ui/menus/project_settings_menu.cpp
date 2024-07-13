@@ -23,7 +23,7 @@ void ProjectSettingsMenu::Draw()
 	{
 		OnStartDrawing();
 
-		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw();
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(AssetPlatform::AP_Standalone);
 		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), nullptr);
 		if (reflectiveDataToDraw.command)
 		{

@@ -344,17 +344,19 @@ public:
 		return returnValue;
 	}
 
-	static ReflectiveDataToDraw CreateReflectiveDataToDraw()
+	static ReflectiveDataToDraw CreateReflectiveDataToDraw(AssetPlatform platform)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw;
 		reflectiveDataToDraw.ownerType = -1;
+		reflectiveDataToDraw.platform = platform;
 		return reflectiveDataToDraw;
 	}
 
 	template<typename T>
-	static ReflectiveDataToDraw CreateReflectiveDataToDraw(T& owner)
+	static ReflectiveDataToDraw CreateReflectiveDataToDraw(T& owner, AssetPlatform platform)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw;
+		reflectiveDataToDraw.platform = platform;
 		if constexpr (std::is_base_of<T, FileReference>())
 		{
 			reflectiveDataToDraw.ownerType = 0;

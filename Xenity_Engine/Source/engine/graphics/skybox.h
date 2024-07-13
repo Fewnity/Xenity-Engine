@@ -47,7 +47,7 @@ protected:
 	SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right);
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;

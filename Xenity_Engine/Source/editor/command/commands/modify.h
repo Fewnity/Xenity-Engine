@@ -45,6 +45,7 @@ private:
 	nlohmann::json newValue2;
 	nlohmann::json lastValue2;
 	bool isMetadata = false;
+	AssetPlatform platform;
 };
 
 template<typename T>
@@ -77,6 +78,7 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	variableName = reflectiveDataToDraw.currentEntry.variableName;
 	reflectiveEntry = reflectiveDataToDraw.currentEntry;
 	isMetadata = reflectiveDataToDraw.isMeta;
+	platform = reflectiveDataToDraw.platform;
 
 	nlohmann::ordered_json newValueTemp;
 	nlohmann::ordered_json lastValueTemp;
@@ -136,7 +138,7 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			if (foundFileRef)
 			{
 				if(isMetadata)
-					ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetMetaReflectiveData());
+					ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetMetaReflectiveData(platform));
 				else
 					ReflectionUtils::JsonToReflectiveData(valueToSet, foundFileRef->GetReflectiveData());
 				foundFileRef->OnReflectionUpdated();

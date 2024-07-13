@@ -25,7 +25,7 @@ ReflectiveData CodeFile::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData CodeFile::GetMetaReflectiveData()
+ReflectiveData CodeFile::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

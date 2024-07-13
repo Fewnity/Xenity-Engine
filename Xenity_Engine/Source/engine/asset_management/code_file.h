@@ -22,7 +22,7 @@ protected:
 	friend class ProjectManager;
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData() override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
 
 	/**
