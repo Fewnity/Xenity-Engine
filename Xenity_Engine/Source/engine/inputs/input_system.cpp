@@ -329,7 +329,7 @@ void InputSystem::Read()
 		TouchRaw touchRaw = touchesRaw[touchRawI];
 		TouchScreen* screen = screens[touchRaw.screenIndex];
 		bool newInput = true;
-		int foundInputIndex = 0;
+		size_t foundInputIndex = 0;
 
 		const int fingerId = touchRaw.fingerId;
 

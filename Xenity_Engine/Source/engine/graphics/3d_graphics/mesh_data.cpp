@@ -87,7 +87,7 @@ ReflectiveData MeshData::GetMetaReflectiveData()
  * @param z Z position
  * @param index Vertex index
  */
-void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
 	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
@@ -122,7 +122,7 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 #endif
 }
 
-void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
 	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
@@ -140,7 +140,7 @@ void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
 #endif
 }
 
-void MeshData::AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float u, float v, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
 	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
@@ -170,7 +170,7 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index,
 #endif
 }
 
-void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
 	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
@@ -203,7 +203,7 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 #endif
 }
 
-void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
+void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
 	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 

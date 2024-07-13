@@ -101,7 +101,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, const Color &color, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, const Color &color, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -111,7 +111,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -123,7 +123,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -138,7 +138,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -151,7 +151,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex);
+	void AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
