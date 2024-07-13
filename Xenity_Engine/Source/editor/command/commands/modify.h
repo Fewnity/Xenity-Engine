@@ -78,8 +78,8 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	reflectiveEntry = reflectiveDataToDraw.currentEntry;
 	isMetadata = reflectiveDataToDraw.isMeta;
 
-	nlohmann::json newValueTemp;
-	nlohmann::json lastValueTemp;
+	nlohmann::ordered_json newValueTemp;
+	nlohmann::ordered_json lastValueTemp;
 
 	// Ugly code
 	// Save variable alone to json (new and old values)

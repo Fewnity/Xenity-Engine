@@ -51,7 +51,7 @@
 #include <engine/graphics/icon.h>
 #include <engine/assertions/assertions.h>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;

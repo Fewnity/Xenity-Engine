@@ -31,17 +31,17 @@
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-inline  ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<T> valuePtr, const ReflectiveEntry& entry)
+inline  ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<T> valuePtr, const ReflectiveEntry& entry)
 {
 	valuePtr.get() = jsonValue;
 }
 
-inline  void ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<Reflective> valuePtr, const ReflectiveEntry& entry)
+inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<Reflective> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::JsonToReflective(jsonValue, valuePtr.get());
 }
 
-inline  void ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>> valuePtr, const ReflectiveEntry& entry)
+inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -69,7 +69,7 @@ inline  void ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, co
 template<typename T>
 std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
-	inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::vector<T>> valuePtr, const ReflectiveEntry& entry)
+	inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -90,7 +90,7 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>> valuePtr, const ReflectiveEntry& entry)
+inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	if constexpr (std::is_same <T, GameObject>())
 	{
@@ -118,14 +118,14 @@ inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const st
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const ReflectiveEntry& entry)
+inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
 }
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
+inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
@@ -170,12 +170,12 @@ inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const st
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-inline ReflectionUtils::JsonToVariable(const nlohmann::json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
+inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
 	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
 }
 
-inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::json& json, const ReflectiveData& dataList)
+inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::ordered_json& json, const ReflectiveData& dataList)
 {
 	if (json.contains("Values"))
 	{
@@ -201,7 +201,7 @@ inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::json& json, co
 	}
 }
 
-inline void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::json& json, const ReflectiveEntry& entry)
+inline void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::ordered_json& json, const ReflectiveEntry& entry)
 {
 	const VariableReference& variableRef = entry.variable.value();
 	if (json.is_null())
@@ -238,7 +238,7 @@ inline ReflectiveEntry ReflectionUtils::GetReflectiveEntryByName(const Reflectiv
 inline void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
 {
 	const ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
-	nlohmann::json jsonData;
+	nlohmann::ordered_json jsonData;
 	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
 
 	ReflectiveData toReflectiveData = toReflective.GetReflectiveData();
@@ -246,7 +246,7 @@ inline void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, 
 	toReflective.OnReflectionUpdated();
 }
 
-inline void ReflectionUtils::JsonToReflective(const nlohmann::json& j, Reflective& reflective)
+inline void ReflectionUtils::JsonToReflective(const nlohmann::ordered_json& j, Reflective& reflective)
 {
 	const ReflectiveData myMap = reflective.GetReflectiveData();
 	JsonToReflectiveData(j, myMap);
@@ -260,21 +260,21 @@ inline void ReflectionUtils::JsonToReflective(const nlohmann::json& j, Reflectiv
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
-inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<T> valuePtr)
+inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<T> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson0] key is empty");
 
 	jsonValue[key] = valuePtr.get();
 }
 
-inline void ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective> valuePtr)
+inline void ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson1] key is empty");
 
 	jsonValue[key]["Values"] = ReflectionUtils::ReflectiveToJson(valuePtr.get());
 }
 
-inline void ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
+inline void ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson2] key is empty");
 
@@ -292,7 +292,7 @@ inline void ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std
 template<typename T>
 std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value || std::is_same<T, uint64_t>::value
 	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
-	inline 	ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>> valuePtr)
+	inline 	ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson3] key is empty");
 
@@ -306,7 +306,7 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
+inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson4] key is empty");
 
@@ -337,7 +337,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::str
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>> valuePtr)
+inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson5] key is empty");
 
@@ -349,7 +349,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::str
 
 template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
-inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
+inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson6] key is empty");
 
@@ -381,7 +381,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::str
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
-inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
+inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 {
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson7] key is empty");
 
@@ -396,9 +396,9 @@ inline ReflectionUtils::VariableToJson(nlohmann::json& jsonValue, const std::str
 	}
 }
 
-inline nlohmann::json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
+inline nlohmann::ordered_json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 {
-	nlohmann::json json;
+	nlohmann::ordered_json json;
 	for (const ReflectiveEntry& entry : dataList)
 	{
 		const VariableReference& variableRef = entry.variable.value();
@@ -411,16 +411,16 @@ inline nlohmann::json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData
 	return json;
 }
 
-inline nlohmann::json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
+inline nlohmann::ordered_json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 {
 	const auto dataList = reflective.GetReflectiveData();
-	const nlohmann::json jsonData = ReflectiveDataToJson(dataList);
+	const nlohmann::ordered_json jsonData = ReflectiveDataToJson(dataList);
 	return jsonData;
 }
 
-inline nlohmann::json ReflectionUtils::ReflectiveEntryToJson(const ReflectiveEntry& entry)
+inline nlohmann::ordered_json ReflectionUtils::ReflectiveEntryToJson(const ReflectiveEntry& entry)
 {
-	nlohmann::json json;
+	nlohmann::ordered_json json;
 	std::visit([&entry, &json](const auto& value)
 		{
 			VariableToJson(json, entry.variableName, value);
@@ -448,7 +448,7 @@ inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std:
 }
 
 template <typename T>
-inline void ReflectionUtils::FillVectorFileReference(const nlohmann::json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr)
+inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr)
 {
 	const size_t jsonArraySize = jsonVectorData.size();
 	const size_t vectorSize = vectorRefPtr.get().size();
@@ -494,7 +494,7 @@ inline bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, co
 		{
 			try
 			{
-				nlohmann::json myJson = nlohmann::json::parse(jsonString);
+				nlohmann::ordered_json myJson = nlohmann::ordered_json::parse(jsonString);
 				ReflectionUtils::JsonToReflectiveData(myJson, dataList);
 				ok = true;
 			}
@@ -521,14 +521,14 @@ inline bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList
 	XASSERT(file != nullptr, "[ReflectionUtils::ReflectiveDataToFile] file is nullptr");
 
 	bool ok = false;
-	nlohmann::json myJson;
+	nlohmann::ordered_json myJson;
 	myJson["Values"] = ReflectionUtils::ReflectiveDataToJson(dataList);
 	ok = JsonToFile(myJson, file);
 
 	return ok;
 }
 
-inline bool ReflectionUtils::JsonToFile(const nlohmann::json& data, std::shared_ptr<File> file)
+inline bool ReflectionUtils::JsonToFile(const nlohmann::ordered_json& data, std::shared_ptr<File> file)
 {
 	XASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr");
 
