@@ -11,8 +11,10 @@
 // Do not remove the "P_" because without that, the PSP compiler will not allow the enum
 ENUM(Platform,
 	P_Windows,
+	P_Linux,
 	P_PSP,
 	P_PsVita,
 	P_PS2,
 	P_PS3,
-	P_PS4);
+	P_PS4, 
+	P_COUNT);

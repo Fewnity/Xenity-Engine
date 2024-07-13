@@ -99,6 +99,7 @@ int EditorUI::Init()
 
 	// Platform icons
 	LoadEditorIcon(IconName::Icon_Platform_Windows, "icons/platform_windows.png");
+	LoadEditorIcon(IconName::Icon_Platform_Linux, "icons/platform_linux.png");
 	LoadEditorIcon(IconName::Icon_Platform_PSP, "icons/platform_psp.png");
 	LoadEditorIcon(IconName::Icon_Platform_PSVITA, "icons/platform_psvita.png");
 	LoadEditorIcon(IconName::Icon_Platform_PS2, "icons/platform_ps2.png");

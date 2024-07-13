@@ -81,6 +81,7 @@ enum class IconName
 	Icon_Rotate,
 	Icon_Scale,
 	Icon_Platform_Windows,
+	Icon_Platform_Linux,
 	Icon_Platform_PSP,
 	Icon_Platform_PSVITA,
 	Icon_Platform_PS2,

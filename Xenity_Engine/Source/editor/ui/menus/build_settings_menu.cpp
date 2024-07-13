@@ -33,6 +33,15 @@ void BuildSettingsMenu::Init()
 	windowsPlatform.platform = Platform::P_Windows;
 	windowsPlatform.settings = std::make_shared<PlatformSettingsWindows>(onSettingChangedEvent);
 
+	BuildPlatform linuxPlatform = BuildPlatform();
+	linuxPlatform.name = "Linux";
+	linuxPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_Linux];
+	linuxPlatform.isSupported = false;
+	linuxPlatform.supportBuildAndRun = false;
+	linuxPlatform.supportBuildAndRunOnHardware = false;
+	linuxPlatform.platform = Platform::P_Linux;
+	linuxPlatform.settings = std::make_shared<PlatformSettingsWindows>(onSettingChangedEvent);
+
 	BuildPlatform pspPlatform = BuildPlatform();
 	pspPlatform.name = "PSP";
 	pspPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PSP];
@@ -78,6 +87,7 @@ void BuildSettingsMenu::Init()
 	buildPlatforms.push_back(windowsPlatform);
 	buildPlatforms.push_back(pspPlatform);
 	buildPlatforms.push_back(psvitaPlatform);
+	buildPlatforms.push_back(linuxPlatform);
 	buildPlatforms.push_back(ps2Platform);
 	buildPlatforms.push_back(ps3Platform);
 	buildPlatforms.push_back(ps4Platform);

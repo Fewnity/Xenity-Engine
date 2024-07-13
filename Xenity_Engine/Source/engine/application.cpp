@@ -31,6 +31,14 @@ Platform Application::GetPlatform()
 	return Platform::P_PSP;
 #elif defined(__vita__)
 	return Platform::P_PsVita;
+#elif defined(__PS2__)
+	return Platform::P_PS2;
+#elif defined(__PS3__)
+	return Platform::P_PS3;
+#elif defined(__PS4__)
+	return Platform::P_PS4;
+#elif defined(__LINUX__)
+	return Platform::P_Linux;
 #elif defined(_WIN32) || defined(_WIN64)
 	return Platform::P_Windows;
 #endif
