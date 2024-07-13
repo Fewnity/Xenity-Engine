@@ -24,7 +24,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Rework the documentation
 Box colliders are not affected by gameobject scale
-Make console text copyable (with right click)
 Pre-open audio file for faster loading
 Do not ask to save scene when playing
 
