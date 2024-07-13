@@ -173,6 +173,7 @@ void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 
 void MeshRenderer::SetMaterial(std::shared_ptr<Material> material, int index)
 {
+	XASSERT(index < materials.size(), "[MeshRenderer::SetMaterial] Index is out of bounds");
 	if (index < materials.size())
 	{
 		materials[index] = material;

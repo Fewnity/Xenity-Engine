@@ -102,7 +102,6 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 
 	const glm::mat4 matCopy = glm::scale(transform.GetTransformationMatrix(), glm::vec3(w, h, 1));
 
-	//Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, renderSettings, matCopy, false);
 	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);
 
 	spriteBenchmark->Stop();

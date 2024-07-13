@@ -55,6 +55,7 @@ DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& m
 	{
 		dialogResult = DialogResult::Dialog_CANCEL;
 	}
+#elif defined(__LINUX__)
 #endif
 	return dialogResult;
 }

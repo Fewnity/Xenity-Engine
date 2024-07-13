@@ -122,14 +122,11 @@ void RendererOpengl::SetClearColor(const Color& color)
 
 void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
-	if (Graphics::usedCamera)
-	{
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
-		const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
-		glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-	}
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
+	const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
+	glOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
@@ -559,8 +556,6 @@ void RendererOpengl::DisableAllLight()
 
 void RendererOpengl::Setlights(const Camera& camera)
 {
-	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
-
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
 	int usedLightCount = 0;

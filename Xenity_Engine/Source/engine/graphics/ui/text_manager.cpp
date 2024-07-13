@@ -36,7 +36,7 @@ void TextManager::Init()
 
 std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color &color, const std::shared_ptr<Font> &font, float scale)
 {
-	if (!font || !font->GetFontAtlas())
+	if (!font->GetFontAtlas())
 		return nullptr;
 
 	textBenchmark->Start();

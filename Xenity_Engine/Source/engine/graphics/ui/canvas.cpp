@@ -46,9 +46,7 @@ void Canvas::OnEnabled()
 void Canvas::CreateRenderCommands(RenderBatch& renderBatch)
 {
 	RenderCommand command = RenderCommand();
-	command.material = nullptr;
 	command.drawable = this;
-	command.subMesh = nullptr;
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 

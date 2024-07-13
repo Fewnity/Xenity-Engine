@@ -189,7 +189,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
 
-#ifdef __PSP__
+#if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 

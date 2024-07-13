@@ -20,7 +20,7 @@
 
 #include <iostream>
 #include <json.hpp>
-
+#include <string.h>
 
 using json = nlohmann::json;
 
@@ -52,6 +52,7 @@ Material::~Material()
 /// <param name="value">Vector2</param>
 void Material::SetAttribute(const char* attribute, const Vector2& value)
 {
+	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
 	uniformsVector2.emplace(std::pair <const char*, Vector2>(attribute, value));
 }
 
@@ -62,6 +63,7 @@ void Material::SetAttribute(const char* attribute, const Vector2& value)
 /// <param name="value">Vector3</param>
 void Material::SetAttribute(const char* attribute, const Vector3& value)
 {
+	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
 	uniformsVector3.emplace(std::pair <const char*, Vector3>(attribute, value));
 }
 
@@ -72,6 +74,7 @@ void Material::SetAttribute(const char* attribute, const Vector3& value)
 /// <param name="value">Vector4</param>
 void Material::SetAttribute(const char* attribute, const Vector4& value)
 {
+	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
 	uniformsVector4.emplace(std::pair <const char*, Vector4>(attribute, value));
 }
 
@@ -92,6 +95,7 @@ void Material::SetAttribute(const char* attribute, const Vector4& value)
 /// <param name="value">float</param>
 void Material::SetAttribute(const char* attribute, const float value)
 {
+	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
 	uniformsFloat.emplace(std::pair <const char*, float>(attribute, value));
 }
 
@@ -102,6 +106,7 @@ void Material::SetAttribute(const char* attribute, const float value)
 /// <param name="value">int</param>
 void Material::SetAttribute(const char* attribute, const int value)
 {
+	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
 	uniformsInt.emplace(std::pair <const char*, int>(attribute, value));
 }
 

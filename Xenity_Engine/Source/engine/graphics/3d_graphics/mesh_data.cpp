@@ -39,6 +39,8 @@ MeshData::MeshData()
  */
 MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
 {
+	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
+
 	this->hasUv = useUV;
 	this->hasNormal = useNormals;
 	this->hasColor = useVertexColor;
@@ -55,6 +57,8 @@ std::shared_ptr<MeshData> MeshData::MakeMeshData()
 
 std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
 {
+	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
+
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>(vcount, index_count, useVertexColor, useNormals, useUV);
 	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
@@ -85,6 +89,8 @@ ReflectiveData MeshData::GetMetaReflectiveData()
  */
 void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, int index, int subMeshIndex)
 {
+	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+
 	Vertex vert;
 	vert.u = u;
 	vert.v = v;
@@ -118,6 +124,8 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 
 void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
 {
+	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+
 	VertexNoColorNoUv vert;
 	vert.x = x;
 	vert.y = y;
@@ -134,6 +142,8 @@ void MeshData::AddVertex(float x, float y, float z, int index, int subMeshIndex)
 
 void MeshData::AddVertex(float u, float v, float x, float y, float z, int index, int subMeshIndex)
 {
+	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+
 	VertexNoColor vert;
 	vert.u = u;
 	vert.v = v;
@@ -162,6 +172,8 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, int index,
 
 void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
 {
+	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+
 	VertexNormalsNoColor vert;
 	vert.u = u;
 	vert.v = v;
@@ -193,6 +205,8 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 
 void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, int index, int subMeshIndex)
 {
+	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+
 	VertexNormalsNoColorNoUv vert;
 	vert.normX = nx;
 	vert.normY = ny;
@@ -321,7 +335,6 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				Engine::GetRenderer().DeleteSubMeshData(*subMesh);
 				delete subMesh;
 			}
-
 		}
 	}
 
