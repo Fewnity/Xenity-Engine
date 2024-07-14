@@ -10,6 +10,30 @@
 #include <memory>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
+#include <engine/application.h>
+
+class AudioClipSettings : public Reflective
+{
+public:
+	bool loadedInMemory = false;
+
+	ReflectiveData GetReflectiveData() override;
+};
+
+class AudioClipSettingsStandalone : public AudioClipSettings
+{
+public:
+};
+
+class AudioClipSettingsPSVITA : public AudioClipSettings
+{
+public:
+};
+
+class AudioClipSettingsPSP : public AudioClipSettings
+{
+public:
+};
 
 class API AudioClip : public FileReference, public Reflective
 {
@@ -34,12 +58,19 @@ protected:
 		short* data = nullptr;
 	};
 
+	std::vector<AudioClipSettings*> settings;
+
 	/**
 	* [Internal] Is the audio clip stored in memory?
 	*/
 	inline bool IsStoredInMemory() const
 	{
-		return loadedInMemory;
+		return settings[static_cast<int>(Application::GetPlatform())]->loadedInMemory;
+	}
+
+	inline void SetIsStoredInMemory(bool value) const
+	{
+		settings[static_cast<int>(Application::GetPlatform())]->loadedInMemory = value;
 	}
 
 	/**
@@ -51,5 +82,4 @@ protected:
 	}
 
 	AudioMemory audioMemory;
-	bool loadedInMemory = false;
 };
