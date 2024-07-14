@@ -512,10 +512,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		channel->playedSounds.erase(channel->playedSounds.begin() + audioSourceIndex);
 		channel->playedSoundsCount--;
 	}
-	else 
-	{
-		XASSERT(false, "[AudioManager::StopAudioSource] audioSource not found");
-	}
+
 	AudioManager::myMutex->Unlock();
 }
 
