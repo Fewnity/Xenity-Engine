@@ -31,6 +31,9 @@
 #include <editor/editor.h>
 #include "ui/menus/docker_config_menu.h"
 #include "ui/menus/build_settings_menu.h"
+#include "cooker/cooker.h"
+
+namespace fs = std::filesystem;
 
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
@@ -38,7 +41,6 @@ Event<CompilerParams> Compiler::OnCompilationStartedEvent;
 std::string Compiler::engineFolderLocation = "";
 std::string Compiler::engineProjectLocation = "";
 std::string  Compiler::compilerExecFileName = "";
-namespace fs = std::filesystem;
 
 std::vector<CopyEntry> Compiler::copyEntries;
 
@@ -151,12 +153,17 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		fs::remove_all(params.tempPath);
 		fs::create_directory(params.tempPath);
+		fs::create_directory(params.tempPath + "cooked_assets/");
 		fs::create_directory(engineProjectLocation + "Source/game_code/");
 	}
 	catch (const std::exception&)
 	{
 		Debug::PrintWarning("[Compiler::Compile] Unable to clear the compilation folder", true);
 	}
+	CookSettings cookSettings;
+	cookSettings.exportPath = params.tempPath + "cooked_assets/";
+	cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
+	Cooker::CookAssets(cookSettings);
 
 	// Compile depending on platform
 	CompileResult result = CompileResult::ERROR_UNKNOWN;

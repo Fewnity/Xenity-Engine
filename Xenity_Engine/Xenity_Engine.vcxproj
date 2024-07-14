@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\cooker\cooker.cpp" />
     <ClCompile Include="Source\engine\debug\memory_tracker.cpp" />
     <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
     <ClCompile Include="Source\engine\application.cpp" />
@@ -954,6 +955,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\cooker\cooker.h" />
     <ClInclude Include="Source\engine\debug\memory_tracker.h" />
     <ClInclude Include="Source\editor\ui\menus\bottom_bar_menu.h" />
     <ClInclude Include="Source\engine\application.h" />

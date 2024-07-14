@@ -165,6 +165,7 @@
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
     <ClCompile Include="Source\editor\ui\menus\bottom_bar_menu.cpp" />
     <ClCompile Include="Source\engine\debug\memory_tracker.cpp" />
+    <ClCompile Include="Source\editor\cooker\cooker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -340,6 +341,7 @@
     <ClInclude Include="Source\editor\ui\menus\bottom_bar_menu.h" />
     <ClInclude Include="Source\engine\reflection\enum_utils.h" />
     <ClInclude Include="Source\engine\debug\memory_tracker.h" />
+    <ClInclude Include="Source\editor\cooker\cooker.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
