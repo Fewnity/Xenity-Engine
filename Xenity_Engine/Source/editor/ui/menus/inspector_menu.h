@@ -64,5 +64,9 @@ private:
 	bool showAddComponentMenu = false;
 
 	std::string previewText = "";
+	bool isPlayingAudio = false;
+	bool areWindowsFocused = false;
+
+	void StopAudio();
 };
 

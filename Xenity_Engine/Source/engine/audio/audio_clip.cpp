@@ -76,3 +76,13 @@ void AudioClip::UnloadFileReference()
 	}
 	isLoaded = false;
 }
+
+void AudioClip::OnReflectionUpdated()
+{
+	// Reload file
+	if (GameplayManager::GetGameState() == GameState::Stopped)
+	{
+		UnloadFileReference();
+		LoadFileReference();
+	}
+}

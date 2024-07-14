@@ -50,6 +50,7 @@ protected:
 
 	void LoadFileReference() override;
 	void UnloadFileReference() override;
+	void OnReflectionUpdated() override;
 
 	// Struct that stores the full audio data if the clip is stored in memory
 	struct AudioMemory

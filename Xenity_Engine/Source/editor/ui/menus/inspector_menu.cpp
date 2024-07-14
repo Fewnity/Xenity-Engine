@@ -66,13 +66,28 @@ void InspectorMenu::Draw()
 		DrawFilePreview();
 
 		CalculateWindowValues();
+
+		if(isFocused)
+			areWindowsFocused = true;
+		
+		if (!areWindowsFocused)
+		{
+			StopAudio();
+		}
+
+		areWindowsFocused = false;
 	}
 	else
 	{
 		ResetWindowValues();
+		StopAudio();
 	}
-
+	if (!isActive) 
+	{
+		StopAudio();
+	}
 	ImGui::End();
+
 
 	forceItemUpdate = false;
 }
@@ -273,6 +288,7 @@ void InspectorMenu::DrawFilePreview()
 				if (ImGui::Button("Stop audio"))
 				{
 					Editor::audioSource.lock()->Stop();
+					isPlayingAudio = false;
 				}
 			}
 			else
@@ -285,6 +301,7 @@ void InspectorMenu::DrawFilePreview()
 						audioSource->Stop();
 						audioSource->SetAudioClip(std::dynamic_pointer_cast<AudioClip>(loadedPreview));
 						audioSource->Play();
+						isPlayingAudio = true;
 					}
 				}
 			}
@@ -347,6 +364,9 @@ void InspectorMenu::DrawFilePreview()
 		else
 			ImGui::Text("No preview available");
 
+			if (ImGui::IsWindowFocused())
+				areWindowsFocused = true;
+
 		ImGui::EndChild();
 	}
 }
@@ -376,7 +396,23 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 	}
 
 	const ReflectiveData metaReflection = selectedFileReference.GetMetaReflectiveData(platformView);
-	if (metaReflection.size() != 0)
+	bool disableMetaView = false;
+	if (loadedPreview && loadedPreview->fileType == FileType::File_Audio) // Draw audio preview
+	{
+		const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
+		AudioClipStream* stream = nullptr;
+		for (size_t i = 0; i < playedSoundCount; i++)
+		{
+			if (AudioManager::channel->playedSounds[i]->audioSource.lock() == Editor::audioSource.lock())
+			{
+				// Get audio stream
+				disableMetaView = true;
+				break;
+			}
+		}
+	}
+
+	if (metaReflection.size() != 0 && !disableMetaView)
 	{
 		EditorUI::SetButtonColor(platformView == AssetPlatform::AP_Standalone);
 		if (ImGui::Button("Standalone"))
@@ -701,5 +737,14 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 		ImGui::SetCursorPosX(lastCursorX);
 		ImGui::SetCursorPosY(lastCursorY);
+	}
+}
+
+void InspectorMenu::StopAudio()
+{
+	if (isPlayingAudio)
+	{
+		Editor::audioSource.lock()->Stop();
+		isPlayingAudio = false;
 	}
 }
