@@ -259,7 +259,7 @@ protected:
 	void ClearSpriteSelections();
 
 	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData(AssetPlatform plaform) override;
+	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	static std::shared_ptr<Texture> MakeTexture();
 

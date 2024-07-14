@@ -45,8 +45,8 @@
 Texture::Texture()
 {
 	TextureSettingsStandalone* textureSettingsStandalone = new TextureSettingsStandalone();
-	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
 	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
+	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
 
 	settings.push_back(textureSettingsStandalone);
 	settings.push_back(textureSettingsPSP);
@@ -59,10 +59,10 @@ ReflectiveData Texture::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform plaform)
+ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
-	ReflectiveData reflectedVariablesPlatform = settings[static_cast<int>(plaform)]->GetReflectiveData();
+	ReflectiveData reflectedVariablesPlatform = settings[static_cast<int>(platform)]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }

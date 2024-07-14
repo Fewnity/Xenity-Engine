@@ -59,7 +59,7 @@ public:
 	/**
 	* @brief Get reflection of the file meta
 	*/
-	virtual ReflectiveData GetMetaReflectiveData(AssetPlatform plaform)
+	virtual ReflectiveData GetMetaReflectiveData(AssetPlatform platform)
 	{
 		return ReflectiveData();
 	}
