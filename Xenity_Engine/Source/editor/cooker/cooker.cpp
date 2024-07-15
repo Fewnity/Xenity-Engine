@@ -5,6 +5,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/debug.h>
+#include <editor/utils/copy_utils.h>
 
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -43,19 +44,21 @@ void Cooker::CookAssets(const CookSettings& settings)
 			CookAsset(settings , *fileInfo, folderToCreate);
 		}
 	}
+
+	CopyUtils::ExecuteCopyEntries();
 }
 
-void Cooker::CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportPath)
+void Cooker::CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportFolderPath)
 {
 }
 
-void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath)
+void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath)
 {
+	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 	if (fileInfo.type == FileType::File_Texture) 
 	{
 		const std::string texturePath = fileInfo.path;
 		//const std::string textureExportPath = exportPath;
-		const std::string textureExportPath = exportPath  +"/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 
 		int width, height, channels;
 		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &channels, 0);
@@ -66,14 +69,17 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		}
 
 		unsigned char* data2 = (unsigned char* )malloc((width /2) * (height / 2) * channels);
-		//const std::string textureData = std::string((char*)data, width * height * channels);
 		stbir_resize_uint8(data, width, height, 0, data2, width / 2, height / 2, 0, channels);
-		stbi_write_png(textureExportPath.c_str(), width / 2, height / 2, channels, data2, 0);
+		stbi_write_png(exportPath.c_str(), width / 2, height / 2, channels, data2, 0);
 
 		stbi_image_free(data);
 
 		/*FileSystem::WriteFile(textureExportPathData, textureData);
 		FileSystem::WriteFile(textureExportPathDataMeta, "type: Texture\n");*/
 	}
-
+	else 
+	{
+		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+	}
+	CopyUtils::AddCopyEntry(false, fileInfo.path + ".meta", exportPath + ".meta");
 }

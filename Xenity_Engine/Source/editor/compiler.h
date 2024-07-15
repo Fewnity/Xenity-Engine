@@ -96,13 +96,6 @@ struct CompilerParams
 	}
 };
 
-struct CopyEntry 
-{
-	bool isFolder = false;
-	std::string sourcePath = "";
-	std::string destPath = "";
-};
-
 class Compiler
 {
 public:
@@ -179,26 +172,14 @@ public:
 
 private:
 
+	static void DeleteTempFiles(const CompilerParams& params);
+
 	/**
 	* @brief Export all game's files into the build folder
 	* @param params Compilation parameters
 	* @return True if the export was successful
 	*/
 	static bool ExportProjectFiles(const std::string& exportPath);
-
-	/**
-	* @brief Execute all created copy entries and clear the list
-	* @return True if all copy entries were successful
-	*/
-	static bool ExecuteCopyEntries();
-
-	/**
-	* @brief Create a new copy to be executed later
-	* @param isFolder True if the source is a folder
-	* @param source Source path
-	* @param dest Destination path
-	*/
-	static void AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest);
 
 	/**
 	 * @brief General function to compile a source code
@@ -286,7 +267,6 @@ private:
 
 	static void CopyAssetsToDocker(const CompilerParams& params);
 
-	static std::vector<CopyEntry> copyEntries;
 
 	static Event<CompilerParams, bool> OnCompilationEndedEvent;
 	static Event<CompilerParams> OnCompilationStartedEvent;
