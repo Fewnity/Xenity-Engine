@@ -242,6 +242,7 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflective* reflection)
 {
+#if defined(EDITOR)
 	XASSERT(reflection != nullptr, "[AssetManager::RemoveReflection] reflection is null");
 
 	if (!Engine::IsRunning(true))
@@ -249,7 +250,6 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 	XASSERT(!reflections.empty(), "[AssetManager::RemoveReflection] reflections is empty");
 
-#if defined(EDITOR)
 	if (initialised)
 	{
 		int reflectionIndex = 0;
