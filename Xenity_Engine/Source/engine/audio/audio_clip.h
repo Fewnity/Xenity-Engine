@@ -66,12 +66,12 @@ protected:
 	*/
 	inline bool IsStoredInMemory() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->loadedInMemory;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->loadedInMemory;
 	}
 
 	inline void SetIsStoredInMemory(bool value) const
 	{
-		settings[static_cast<int>(Application::GetPlatform())]->loadedInMemory = value;
+		settings[static_cast<int>(Application::GetAssetPlatform())]->loadedInMemory = value;
 	}
 
 	/**

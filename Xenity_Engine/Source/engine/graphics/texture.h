@@ -105,7 +105,7 @@ public:
 	 */
 	inline void SetFilter(const Filter filter)
 	{
-		settings[static_cast<int>(Application::GetPlatform())]->filter = filter;
+		settings[static_cast<int>(Application::GetAssetPlatform())]->filter = filter;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public:
 	 */
 	inline void SetWrapMode(const WrapMode mode)
 	{
-		settings[static_cast<int>(Application::GetPlatform())]->wrapMode = mode;
+		settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode = mode;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public:
 	 */
 	inline void SetPixelPerUnit(int value)
 	{
-		settings[static_cast<int>(Application::GetPlatform())]->pixelPerUnit = value;
+		settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit = value;
 	}
 
 	/**
@@ -147,7 +147,7 @@ public:
 	 */
 	inline int GetPixelPerUnit() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->pixelPerUnit;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public:
 	 */
 	inline bool GetUseMipmap() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->useMipMap;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public:
 	 */
 	inline Filter GetFilter() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->filter;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->filter;
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public:
 	 */
 	inline WrapMode GetWrapMode() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->wrapMode;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode;
 	}
 
 protected:
@@ -221,7 +221,7 @@ protected:
 	*/
 	inline int GetMipmaplevelCount() const
 	{
-		return settings[static_cast<int>(Application::GetPlatform())]->mipmaplevelCount;
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount;
 	}
 
 	/**

@@ -131,7 +131,7 @@ void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 {
 	SetFilter(filter);
 
-	settings[static_cast<int>(Application::GetPlatform())]->useMipMap = useMipMap;
+	settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap = useMipMap;
 
 	LoadTexture();
 }
@@ -313,7 +313,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
 	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr");
 
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(settings[static_cast<int>(Application::GetPlatform())])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(settings[static_cast<int>(Application::GetAssetPlatform())])->type;
 
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
@@ -412,7 +412,7 @@ void Texture::SetData(const unsigned char *texData)
 		SetTextureLevel(1, texData);
 		// SetTextureLevel(2, texData);
 		// SetTextureLevel(3, texData);
-		settings[static_cast<int>(Application::GetPlatform())]->mipmaplevelCount = 1;
+		settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount = 1;
 	}
 #elif defined(_EE)
 	texbuff.width = width;

@@ -44,6 +44,11 @@ Platform Application::GetPlatform()
 #endif
 }
 
+AssetPlatform Application::GetAssetPlatform()
+{
+	return PlatformToAssetPlatform(GetPlatform());
+}
+
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)
 {
 if (platform == Platform::P_PSP)
