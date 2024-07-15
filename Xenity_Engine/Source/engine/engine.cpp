@@ -410,7 +410,7 @@ void Engine::Stop()
 	renderer->Stop();
 	renderer.reset();
 	AudioManager::Stop();
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(EDITOR) && (defined(_WIN32) || defined(_WIN64))
 	PluginManager::Stop();
 #endif
 
