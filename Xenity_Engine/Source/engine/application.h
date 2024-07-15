@@ -19,12 +19,12 @@ public:
 	static std::string GetXenityVersion();
 	static std::string GetGameName();
 	static std::string GetCompanyName();
+	static AssetPlatform GetAssetPlatform();
 
 private:
 	friend class InspectorMenu;
 	friend class BuildSettingsMenu;
 	friend class Compiler;
-	static AssetPlatform GetAssetPlatform();
 	static AssetPlatform PlatformToAssetPlatform(Platform platform);
 	static std::string xenityVersion;
 };
