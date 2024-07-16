@@ -66,7 +66,6 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 
 CompileResult Compiler::Compile(CompilerParams params)
 {
-	Debug::ClearDebugLogs();
 	isCompilationCancelled = false;
 
 	// Ensure path are absolute
@@ -374,6 +373,7 @@ void Compiler::DeleteTempFiles(const CompilerParams& params)
 
 void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
+	Debug::ClearDebugLogs();
 	std::thread t = std::thread(CompileGame, buildPlatform, buildType, exportPath);
 	t.detach();
 }
