@@ -411,6 +411,10 @@ public:
 	static bool OpenExecutableFile(const std::string& executablePath);
 
 	/**
+	 * 
+	 */
+	static int ExecuteSystemCommand(std::string command, std::string& outputText);
+	/**
 	* @brief Get folder path and file name from a full path
 	* @param fullPath Full path
 	* @param folderPath Folder path

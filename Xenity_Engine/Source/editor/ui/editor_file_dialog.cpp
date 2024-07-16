@@ -21,7 +21,9 @@
 std::string EditorUI::OpenFolderDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
-	#if defined(_WIN32) || defined(_WIN64)
+	#if defined(__LINUX__)
+
+	#elif defined(_WIN32) || defined(_WIN64)
 
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
@@ -96,7 +98,9 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 std::string EditorUI::OpenFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(__LINUX__)
+
+#elif defined(_WIN32) || defined(_WIN64)
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	IFileSaveDialog* pFileOpen;
@@ -182,7 +186,17 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 std::string EditorUI::SaveFileDialog(const std::string& title, const std::string& defaultLocation)
 {
 	std::string path = "";
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(__LINUX__)
+	//Debug::Print(Editor::ExecuteSystemCommand("zenity --file-selection --save --file-filter=\"*.xen\""));
+	std::string output;
+	int retResult = Editor::ExecuteSystemCommand("zenity --file-selection --save --file-filter=\"*.xen\"", output);
+	if(reResult == 0)
+	{
+		path = output;
+	}
+	//Debug::Print(std::to_string(retResult) + " " + output);
+
+#elif defined(_WIN32) || defined(_WIN64)
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	IFileSaveDialog* pFileOpen;
