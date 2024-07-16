@@ -962,14 +962,21 @@ bool Editor::OpenExecutableFile(const std::string& executablePath)
 	}
 }
 
-int Editor::ExecuteSystemCommand(std::string command, std::string& outputText)
+int Editor::ExecuteSystemCommand(const std::string& command, std::string& outputText)
 {
+#if defined(__LINUX)
 	FILE *f = popen(command.c_str(), "r");
+#else
+	FILE* f = _popen(command.c_str(), "r");
+#endif
 	constexpr size_t bufferSize = 2048;
 	char output[bufferSize];
 	fgets(output, bufferSize, f); 
-
-	int ret=pclose(f);
+#if defined(__LINUX)
+	int ret = pclose(f);
+#else
+	int ret = _pclose(f);
+#endif
 	outputText = std::string(output);
 	return ret;
 }

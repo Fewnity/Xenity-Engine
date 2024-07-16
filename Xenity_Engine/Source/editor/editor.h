@@ -413,7 +413,7 @@ public:
 	/**
 	 * 
 	 */
-	static int ExecuteSystemCommand(std::string command, std::string& outputText);
+	static int ExecuteSystemCommand(const std::string& command, std::string& outputText);
 	/**
 	* @brief Get folder path and file name from a full path
 	* @param fullPath Full path
