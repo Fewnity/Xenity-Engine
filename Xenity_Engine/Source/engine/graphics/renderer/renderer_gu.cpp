@@ -250,7 +250,7 @@ int TypeToGUPSM(PSPTextureType psm)
 
 void RendererGU::BindTexture(const Texture& texture)
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.settings[static_cast<int>(Application::GetPlatform())])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.settings[static_cast<int>(Application::GetAssetPlatform())])->type;
 
 	sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);

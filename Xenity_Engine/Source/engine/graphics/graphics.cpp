@@ -191,7 +191,7 @@ void Graphics::Draw()
 
 			drawAllBenchmark->Start();
 
-			for (std::weak_ptr<IDrawable> drawable : orderedIDrawable)
+			for (const std::weak_ptr<IDrawable>& drawable : orderedIDrawable)
 			{
 				if(std::shared_ptr<IDrawable> drawablePtr = drawable.lock())
 				{
@@ -230,8 +230,8 @@ void Graphics::Draw()
 					Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 				}
 			}
-			const int uiCommandCount = renderBatch.uiCommandIndex;
-			for (int commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
+			const size_t uiCommandCount = renderBatch.uiCommandIndex;
+			for (size_t commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
 			{
 				const RenderCommand& com = renderBatch.uiCommands[commandIndex];
 				if (com.isEnabled)

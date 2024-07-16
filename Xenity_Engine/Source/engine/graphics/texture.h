@@ -24,14 +24,14 @@
 
 ENUM(Filter, Point, Bilinear);
 ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
-ENUM(TextureResolutions, R_64x64, R_128x128, R_256x256, R_512x512, R_1024x1024, R_2048x2048);
+ENUM(TextureResolutions, R_64x64 = 64, R_128x128 = 128, R_256x256 = 256, R_512x512 = 512, R_1024x1024 = 1024, R_2048x2048 = 2048);
 ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
 ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
 
 class TextureSettings : public Reflective
 {
 public:
-	TextureResolutions resolution;
+	TextureResolutions resolution = TextureResolutions::R_2048x2048;
 	Filter filter = Filter::Bilinear;
 	WrapMode wrapMode = WrapMode::Repeat;
 	bool useMipMap = false;
@@ -41,7 +41,7 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		//Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
 		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
 		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
@@ -70,7 +70,7 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		//Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
 		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
 		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
@@ -224,6 +224,11 @@ protected:
 		return settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount;
 	}
 
+	inline TextureResolutions GetCookResolution() const
+	{
+		return settings[static_cast<int>(Application::GetAssetPlatform())]->resolution;
+	}
+
 	/**
 	 * @brief [Internal]
 	 */
@@ -250,7 +255,6 @@ protected:
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
-	//PSPTextureType type = PSPTextureType::RGBA_5650;
 	std::vector<SpriteSelection*> spriteSelections;
 
 	/**
@@ -260,6 +264,7 @@ protected:
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
+	void OnReflectionUpdated() override;
 
 	static std::shared_ptr<Texture> MakeTexture();
 
@@ -281,8 +286,6 @@ protected:
 		return textureId;
 	}
 
-	//int mipmaplevelCount = 0;
-
 	/**
 	 * @brief Create the texture
 	 * @param filter Texture filter
@@ -301,13 +304,12 @@ protected:
 	void Unload();
 
 	unsigned char *buffer = nullptr;
-	//Filter filter = Filter::Bilinear;
-	//WrapMode wrapMode = WrapMode::Repeat;
 	unsigned int textureId = 0;
 	int width = 0, height = 0, nrChannels = 0;
 
-	//int pixelPerUnit = 100;
 	bool isValid = false;
-	//bool useMipMap = false;
+#if defined(EDITOR)
+	TextureResolutions previousResolution = TextureResolutions::R_2048x2048;
+#endif
 public:
 };

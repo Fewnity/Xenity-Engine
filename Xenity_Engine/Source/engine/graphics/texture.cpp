@@ -67,6 +67,18 @@ ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 	return reflectedVariables;
 }
 
+void Texture::OnReflectionUpdated()
+{
+#if defined(EDITOR)
+	if(previousResolution != GetCookResolution() && isLoaded && isValid)
+	{
+		previousResolution = GetCookResolution();
+		UnloadFileReference();
+		LoadFileReference();
+	}
+#endif
+}
+
 std::shared_ptr<Texture> Texture::MakeTexture()
 {
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>();
@@ -388,7 +400,7 @@ void Texture::OnLoadFileReferenceFinished()
 	Engine::GetRenderer().SetTextureData(*this, rgba, buffer);
 #endif
 
-	stbi_image_free(buffer);
+	free(buffer);
 	isValid = true;
 }
 
@@ -486,11 +498,44 @@ void Texture::LoadTexture()
 		unsigned char *fileData = file->ReadAllBinary(fileBufferSize);
 		file->Close();
 
+		// Only for editor, live resizing
+#if defined(EDITOR)
 		// Load image with stb_image
-		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+		unsigned char* data2 = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
 									   &nrChannels, 4);
 
 		free(fileData);
+		int newWidth = width;
+		int newHeight = height;
+		if((newWidth > height) && newWidth > static_cast<int>(GetCookResolution()))
+		{
+			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(width)));
+			newWidth = static_cast<int>(GetCookResolution());
+		}
+		else if((newHeight > width) && newHeight > static_cast<int>(GetCookResolution()))
+		{
+			newWidth = static_cast<int>(width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
+			newHeight = static_cast<int>(GetCookResolution());
+		}
+		else if ((newWidth == newHeight) && newWidth > static_cast<int>(GetCookResolution()))
+		{
+			newWidth = static_cast<int>(GetCookResolution());
+			newHeight = static_cast<int>(GetCookResolution());
+		}
+		Debug::Print(file->GetPath() + "Old width: " + std::to_string(width) + " Old height: " + std::to_string(height));
+		Debug::Print(file->GetPath() + "New width: " + std::to_string(newWidth) + " New height: " + std::to_string(newHeight));
+		buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
+		stbir_resize_uint8(data2, width, height, 0, buffer, newWidth, newHeight, 0, 4);
+		free(data2);
+		width = newWidth;
+		height = newHeight;
+#else
+		// Load image with stb_image
+		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+			&nrChannels, 4);
+
+		free(fileData);
+#endif
 
 		if (!buffer)
 		{
@@ -520,7 +565,7 @@ void Texture::Unload()
 	Engine::GetRenderer().DeleteTexture(*this);
 
 #if defined (DEBUG)
-	Performance::textureMemoryTracker->Deallocate(width * height * nrChannels);
+	Performance::textureMemoryTracker->Deallocate(width * height * 4);
 #endif
 }
 
