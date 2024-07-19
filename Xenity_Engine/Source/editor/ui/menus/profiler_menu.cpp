@@ -6,6 +6,8 @@
 
 #include "profiler_menu.h"
 #include <imgui/imgui.h>
+#include <implot/implot.h>
+#include <implot/implot_internal.h>
 
 #include <engine/file_system/file_reference.h>
 #include <engine/time/time.h>
@@ -43,6 +45,43 @@ void ProfilerMenu::Draw()
 		DrawProfilerBenchmarks();
 		DrawFilesList();
 #endif
+
+		const int callCount = 4;
+		float start[callCount];
+		start[0] = 0;
+		start[1] = 1;
+		start[2] = 3;
+		start[3] = 5;
+
+		float end[callCount];
+		end[0] = 16;
+		end[1] = 14;
+		end[2] = 13;
+		end[3] = 7;
+		float lineHeigh = 0.1;
+		float lineSpace = 0.1;
+
+		ImDrawList* draw_list = ImPlot::GetPlotDrawList();
+		if (ImPlot::BeginPlot("Profiler")) 
+		{
+			if (ImPlot::BeginItem("Engine")) 
+			{
+				for (int i = 0; i < callCount; i++)
+				{
+					ImVec2 open_pos = ImPlot::PlotToPixels(start[i], i * lineSpace);
+					ImVec2 close_pos = ImPlot::PlotToPixels(end[i], i * lineSpace + lineHeigh);
+					draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImVec4(i/3.0f, 1, 1, 1)));
+				}
+				/*ImVec2 open_pos = ImPlot::PlotToPixels(1, 1);
+				ImVec2 close_pos = ImPlot::PlotToPixels(2,1.1f);
+				draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)));*/
+				//draw_list->AddRectFilled(ImVec2(0, 0), ImVec2(200, 200), ImGui::GetColorU32(ImVec4(1,1,1,1)));
+				ImPlot::EndItem();
+			}
+			ImPlot::EndPlot();
+		}
+
+
 		CalculateWindowValues();
 	}
 	else

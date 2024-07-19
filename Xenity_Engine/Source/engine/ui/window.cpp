@@ -7,14 +7,13 @@
 #include "window.h"
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
+#endif
+
+#if defined(EDITOR)
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl3.h>
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-// #include <dwmapi.h>
-// #include <windows.h>
+#include <implot/implot.h>
 #endif
 
 #include <engine/engine.h>
@@ -120,6 +119,7 @@ int Window::Init()
 #if defined(EDITOR)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
