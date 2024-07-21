@@ -46,37 +46,31 @@ void ProfilerMenu::Draw()
 		DrawFilesList();
 #endif
 
-		const int callCount = 4;
-		float start[callCount];
-		start[0] = 0;
-		start[1] = 1;
-		start[2] = 3;
-		start[3] = 5;
+		const size_t callCount = Performance::scopProfilerList.size();
+		float lineHeigh = 1;
+		float lineSpace = 1;
 
-		float end[callCount];
-		end[0] = 16;
-		end[1] = 14;
-		end[2] = 13;
-		end[3] = 7;
-		float lineHeigh = 0.1;
-		float lineSpace = 0.1;
+		uint64_t offsetTime = Performance::scopProfilerList["Engine::Loop"][0].start;
+		uint64_t endTime = Performance::scopProfilerList["Engine::Loop"][0].end;
 
 		ImDrawList* draw_list = ImPlot::GetPlotDrawList();
-		if (ImPlot::BeginPlot("Profiler")) 
+		ImPlot::SetNextAxesLimits(0, (endTime - offsetTime) / 200.0f, 0, 7, ImPlotCond_Always);
+		if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
 		{
-			if (ImPlot::BeginItem("Engine")) 
+			int i = 0;
+			for (const auto& valCategory : Performance::scopProfilerList) 
 			{
-				for (int i = 0; i < callCount; i++)
+				if (ImPlot::BeginItem(valCategory.first.c_str()))
 				{
-					ImVec2 open_pos = ImPlot::PlotToPixels(start[i], i * lineSpace);
-					ImVec2 close_pos = ImPlot::PlotToPixels(end[i], i * lineSpace + lineHeigh);
-					draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImVec4(i/3.0f, 1, 1, 1)));
+					for (const auto& value : valCategory.second)
+					{
+						ImVec2 open_pos = ImPlot::PlotToPixels((value.start - offsetTime)/200.0f, i * lineSpace);
+						ImVec2 close_pos = ImPlot::PlotToPixels((value.end - offsetTime)/200.0f, i * lineSpace + lineHeigh);
+						draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
+						i++;
+					}
+					ImPlot::EndItem();
 				}
-				/*ImVec2 open_pos = ImPlot::PlotToPixels(1, 1);
-				ImVec2 close_pos = ImPlot::PlotToPixels(2,1.1f);
-				draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)));*/
-				//draw_list->AddRectFilled(ImVec2(0, 0), ImVec2(200, 200), ImGui::GetColorU32(ImVec4(1,1,1,1)));
-				ImPlot::EndItem();
 			}
 			ImPlot::EndPlot();
 		}
@@ -125,7 +119,7 @@ void ProfilerMenu::UpdateFpsCounter()
 	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
 }
 
-void ProfilerMenu::DrawMemoryStats() 
+void ProfilerMenu::DrawMemoryStats()
 {
 	if (ImGui::CollapsingHeader("Memory stats", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{

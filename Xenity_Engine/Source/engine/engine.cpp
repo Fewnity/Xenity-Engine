@@ -80,6 +80,7 @@
 
 #include <engine/file_system/async_file_loading.h>
 #include <engine/debug/crash_handler.h>
+#include <engine/tools/scope_benchmark.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -146,7 +147,7 @@ int Engine::Init()
 	Debug::PrintWarning("-------- The game is running in debug mode --------", true);
 #endif
 #endif
-	
+
 	ClassRegistry::RegisterEngineComponents();
 	ClassRegistry::RegisterEngineFileClasses();
 
@@ -219,16 +220,17 @@ int Engine::Init()
 
 void Engine::CheckEvents()
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Engine::CheckEvents");
 	int focusCount = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	// Check SDL event
- 	SDL_Event event;
- 	while (SDL_PollEvent(&event))
- 	{
- #if defined(EDITOR)
- 		ImGui_ImplSDL3_ProcessEvent(&event);
- #endif
- 		InputSystem::Read(event);
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+#if defined(EDITOR)
+		ImGui_ImplSDL3_ProcessEvent(&event);
+#endif
+		InputSystem::Read(event);
 
 		switch (event.type)
 		{
@@ -248,7 +250,7 @@ void Engine::CheckEvents()
 
 		case (SDL_EVENT_DROP_FILE):
 		{
-			const char *dropped_filedir = event.drop.data;
+			const char* dropped_filedir = event.drop.data;
 			Editor::AddDragAndDrop(dropped_filedir);
 			//SDL_free(dropped_filedir); // Free dropped_filedir memory // FIXME TODO memory leak here! Crash if used since updated to SDL3
 			break;
@@ -263,7 +265,7 @@ void Engine::CheckEvents()
 			break;
 
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-			if (event.window.windowID == SDL_GetWindowID(Window::window)) 
+			if (event.window.windowID == SDL_GetWindowID(Window::window))
 			{
 				Window::SetResolution(event.window.data1, event.window.data2);
 			}
@@ -272,14 +274,14 @@ void Engine::CheckEvents()
 		default:
 			break;
 		}
- 	}
+	}
 
 	if (focusCount == 1)
 	{
 #if defined(EDITOR)
-		if(!EditorUI::IsEditingElement())
+		if (!EditorUI::IsEditingElement())
 #endif
-		OnWindowFocusEvent->Trigger();
+			OnWindowFocusEvent->Trigger();
 	}
 #endif
 }
@@ -305,85 +307,89 @@ void Engine::Loop()
 	canUpdateAudio = true;
 	while (isRunning)
 	{
-		engineLoopBenchmark->Start();
+		{
+			ScopeBenchmark scopeBenchmark = ScopeBenchmark("Engine::Loop");
+			engineLoopBenchmark->Start();
 
-		// Update time, inputs and network
-		Time::UpdateTime();
-		InputSystem::ClearInputs();
-		NetworkManager::Update();
+			// Update time, inputs and network
+			Time::UpdateTime();
+			InputSystem::ClearInputs();
+			NetworkManager::Update();
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-		Engine::CheckEvents();
+			Engine::CheckEvents();
 #else
-		InputSystem::Read();
+			InputSystem::Read();
 #endif
 
-		canUpdateAudio = false;
+			canUpdateAudio = false;
 #if defined(EDITOR)
-		AsyncFileLoading::FinishThreadedFileLoading();
+			AsyncFileLoading::FinishThreadedFileLoading();
 
-		editorUpdateBenchmark->Start();
-		Editor::Update();
+			editorUpdateBenchmark->Start();
+			Editor::Update();
 
-		const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
-		if (gameMenu)
-			InputSystem::blockGameInput = !gameMenu->IsFocused();
-		else
-			InputSystem::blockGameInput = true;
+			const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
+			if (gameMenu)
+				InputSystem::blockGameInput = !gameMenu->IsFocused();
+			else
+				InputSystem::blockGameInput = true;
 
-		editorUpdateBenchmark->Stop();
+			editorUpdateBenchmark->Stop();
 #endif
 
-		if (ProjectManager::IsProjectLoaded())
-		{
-			AssetManager::RemoveUnusedFiles();
-
-			// Update all components
-			componentsUpdateBenchmark->Start();
-#if defined(EDITOR)
-			// Catch game's code error to prevent the editor to crash
-			const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
-			if (tryResult) 
+			if (ProjectManager::IsProjectLoaded())
 			{
-				std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
-				std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
-				if (lastComponent)
-				{
-					lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
-					if (lastComponent->GetGameObject())
-						lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->GetName();
-				}
-				Debug::PrintError(lastComponentMessage);
+				AssetManager::RemoveUnusedFiles();
 
-				GameplayManager::SetGameState(GameState::Stopped, true);
-			}
+				// Update all components
+				componentsUpdateBenchmark->Start();
+#if defined(EDITOR)
+				// Catch game's code error to prevent the editor to crash
+				const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
+				if (tryResult)
+				{
+					std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
+					std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
+					if (lastComponent)
+					{
+						lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
+						if (lastComponent->GetGameObject())
+							lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->GetName();
+					}
+					Debug::PrintError(lastComponentMessage);
+
+					GameplayManager::SetGameState(GameState::Stopped, true);
+				}
 
 #else
-			GameplayManager::UpdateComponents();
+				GameplayManager::UpdateComponents();
 #endif
-			if (GameplayManager::GetGameState() == GameState::Playing)
-				PhysicsManager::Update();
+				if (GameplayManager::GetGameState() == GameState::Playing)
+					PhysicsManager::Update();
 
-			// Remove all destroyed gameobjects and components
-			GameplayManager::RemoveDestroyedGameObjects();
-			GameplayManager::RemoveDestroyedComponents();
+				// Remove all destroyed gameobjects and components
+				GameplayManager::RemoveDestroyedGameObjects();
+				GameplayManager::RemoveDestroyedComponents();
 
-			componentsUpdateBenchmark->Stop();
+				componentsUpdateBenchmark->Stop();
 
-			canUpdateAudio = true;
+				canUpdateAudio = true;
 
-			// Draw
-			drawIDrawablesBenchmark->Start();
-			Graphics::Draw();
-			drawIDrawablesBenchmark->Stop();
-		}
-		else
-		{
+				// Draw
+				drawIDrawablesBenchmark->Start();
+				Graphics::Draw();
+				drawIDrawablesBenchmark->Stop();
+			}
+			else
+			{
 #if defined(EDITOR)
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			renderer->Clear();
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				renderer->Clear();
 #endif
+			}
+			InputSystem::blockGameInput = false;
 		}
-		InputSystem::blockGameInput = false;
+
 #if defined(EDITOR)
 		editorDrawBenchmark->Start();
 		Editor::Draw();
@@ -422,7 +428,7 @@ void Engine::Stop()
 void Engine::Quit()
 {
 #if defined(EDITOR)
-	if (isRunning) 
+	if (isRunning)
 	{
 		const bool cancelQuit = SceneManager::OnQuit();
 		isRunning = cancelQuit;

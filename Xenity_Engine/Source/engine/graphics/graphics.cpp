@@ -49,6 +49,7 @@
 #include <algorithm>
 #include <engine/debug/debug.h>
 #include <engine/world_partitionner/world_partitionner.h>
+#include <engine/tools/scope_benchmark.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
@@ -135,6 +136,7 @@ void Graphics::SetDefaultValues()
 
 void Graphics::Draw()
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::Draw");
 	/*auto camera = usedCamera.lock();
 	if (!camera)
 	{
@@ -533,6 +535,7 @@ void Graphics::OnProjectLoaded()
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSkybox");
 	if (settings.skybox)
 	{
 		Engine::GetRenderer().SetFog(false);
@@ -581,6 +584,7 @@ void Graphics::CheckLods()
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSelectedItemBoundingBox");
 	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
 	for (const std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
 	{
@@ -633,6 +637,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawEditorGrid");
 	float distance;
 	if (gridAxis == 0)
 		distance = fabs(cameraPosition.y);

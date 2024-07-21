@@ -68,6 +68,12 @@ struct ProfilerCategory
 	std::unordered_map<std::string, ProfilerValue*> profilerList;
 };
 
+struct ScopTimerResult
+{
+	long long start;
+	long long end;
+};
+
 class Performance
 {
 public:
@@ -119,6 +125,7 @@ public:
 	static void Update();
 
 	static std::unordered_map<std::string, ProfilerCategory*> profilerCategories;
+	static std::unordered_map<std::string, std::vector<ScopTimerResult>> scopProfilerList;
 
 	static MemoryTracker* gameObjectMemoryTracker;
 	static MemoryTracker* meshDataMemoryTracker;

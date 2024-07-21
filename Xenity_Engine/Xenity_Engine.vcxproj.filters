@@ -172,6 +172,7 @@
     <ClCompile Include="include\implot\implot_demo.cpp" />
     <ClCompile Include="include\implot\implot_items.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
+    <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -353,6 +354,7 @@
     <ClInclude Include="include\implot\implot.h" />
     <ClInclude Include="include\implot\implot_internal.h" />
     <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />
+    <ClInclude Include="Source\engine\tools\scope_benchmark.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

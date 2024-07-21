@@ -14,6 +14,7 @@ int Performance::drawCallCount = 0;
 int Performance::drawTriangleCount = 0;
 int Performance::updatedMaterialCount = 0;
 std::unordered_map<std::string, ProfilerCategory*> Performance::profilerCategories;
+std::unordered_map<std::string, std::vector<ScopTimerResult>> Performance::scopProfilerList;
 
 int Performance::tickCount = 0;
 float Performance::averageCoolDown = 0;
@@ -109,6 +110,8 @@ void Performance::Update()
 
 void Performance::ResetProfiler()
 {
+	scopProfilerList.clear();
+
 	for (const auto& categoryKV : Performance::profilerCategories)
 	{
 		for (const auto& profilerValueKV : categoryKV.second->profilerList)

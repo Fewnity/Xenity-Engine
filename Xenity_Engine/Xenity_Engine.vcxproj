@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
     <ClCompile Include="include\implot\implot.cpp" />
     <ClCompile Include="include\implot\implot_demo.cpp" />
@@ -971,6 +972,7 @@
     <None Include="Source\shaders\vertexText.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\tools\scope_benchmark.h" />
     <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />
     <ClInclude Include="include\implot\implot.h" />
     <ClInclude Include="include\implot\implot_internal.h" />
