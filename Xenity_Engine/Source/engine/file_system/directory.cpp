@@ -52,20 +52,20 @@ Directory::~Directory()
 	files.clear();
 }
 
-void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, std::shared_ptr<Directory> directory)
+void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, Directory& directory)
 {
-	XASSERT(directory != nullptr, "[Directory::AddDirectoryFiles] directory is nullptr");
+	//XASSERT(directory != nullptr, "[Directory::AddDirectoryFiles] directory is nullptr");
 
-	const int fileCount = (int)directory->files.size();
-	for (int i = 0; i < fileCount; i++)
+	const size_t fileCount = directory.files.size();
+	for (size_t i = 0; i < fileCount; i++)
 	{
-		vector.push_back(directory->files[i]);
+		vector.push_back(directory.files[i]);
 	}
 
-	const int directoryCount = (int)directory->subdirectories.size();
-	for (int i = 0; i < directoryCount; i++)
+	const size_t directoryCount = directory.subdirectories.size();
+	for (size_t i = 0; i < directoryCount; i++)
 	{
-		AddDirectoryFiles(vector, directory->subdirectories[i]);
+		AddDirectoryFiles(vector, *directory.subdirectories[i]);
 	}
 }
 
@@ -73,7 +73,7 @@ std::vector<std::shared_ptr<File>> Directory::GetAllFiles(bool recursive)
 {
 	FileSystem::fileSystem->FillDirectory(shared_from_this(), recursive);
 	std::vector<std::shared_ptr<File>> vector;
-	AddDirectoryFiles(vector, shared_from_this());
+	AddDirectoryFiles(vector, *this);
 	return vector;
 }
 

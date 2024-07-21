@@ -48,7 +48,7 @@ public:
 	* @brief Get all files of a directory and fill it
 	* @param directory Directory to fill
 	*/
-	void FillDirectory(std::shared_ptr <Directory> directory, bool recursive);
+	void FillDirectory(const std::shared_ptr <Directory>& directory, bool recursive);
 
 	bool Rename(const std::string& path, const std::string& newPath);
 

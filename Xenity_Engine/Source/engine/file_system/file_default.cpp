@@ -49,6 +49,22 @@ void FileDefault::Write(const std::string& data)
 	}
 }
 
+void FileDefault::Write(const unsigned char* data, size_t size)
+{
+	if (currentFileMode == FileMode::ReadOnly)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		return;
+	}
+
+	if (file.is_open())
+	{
+		file.seekg(0, std::ios_base::end);
+		file.write(reinterpret_cast<const char*>(data), size);
+		file.flush();
+	}
+}
+
 std::string FileDefault::ReadAll()
 {
 	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
@@ -80,12 +96,37 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 	file.seekg(0, std::ios_base::end);
 	const std::streampos pos = file.tellg();
 	file.seekg(0, std::ios_base::beg);
-	data = new char[pos];
-	if(!data)
+	if(pos <= 0)
+	{
+		size = 0;
 		return nullptr;
+	}
+
+	data = new char[pos];
+	if (!data) 
+	{
+		size = 0;
+		return nullptr;
+	}
 
 	file.read(data, pos);
 	size = pos;
+	return (unsigned char*)data;
+}
+
+unsigned char* FileDefault::ReadBinary(int offset, int size)
+{
+	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	{
+		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		return nullptr;
+	}
+
+	char* data = nullptr;
+	file.seekg(offset, std::ios_base::beg);
+	data = new char[size];
+	file.read(data, size);
+
 	return (unsigned char*)data;
 }
 

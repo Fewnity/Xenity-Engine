@@ -38,9 +38,11 @@
 #include <gs_psm.h>
 #include "renderer/renderer_vu1.h"
 #endif
+
 #include <engine/file_system/async_file_loading.h>
-#include <engine/debug/performance.h>
 #include <engine/debug/memory_tracker.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/debug/performance.h>
 
 Texture::Texture()
 {
@@ -489,14 +491,21 @@ void Texture::SetData(const unsigned char *texData)
 
 void Texture::LoadTexture()
 {
-	Debug::Print("Loading texture: " + file->GetPath(), true);
-
-	const bool openResult = file->Open(FileMode::ReadOnly);
+	//Debug::Print("Loading texture: " + file->GetPath(), true);
+	bool openResult = true;
+#if defined(EDITOR)
+	openResult = file->Open(FileMode::ReadOnly);
+#endif
 	if (openResult)
 	{
-		int fileBufferSize = 0;
-		unsigned char *fileData = file->ReadAllBinary(fileBufferSize);
+		int fileBufferSize = fileSize;
+		unsigned char* fileData = nullptr;
+#if defined(EDITOR)
+		fileData = file->ReadAllBinary(fileBufferSize);
 		file->Close();
+#else
+		fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileBufferSize);
+#endif
 
 		// Only for editor, live resizing
 #if defined(EDITOR)
@@ -522,8 +531,7 @@ void Texture::LoadTexture()
 			newWidth = static_cast<int>(GetCookResolution());
 			newHeight = static_cast<int>(GetCookResolution());
 		}
-		Debug::Print(file->GetPath() + "Old width: " + std::to_string(width) + " Old height: " + std::to_string(height));
-		Debug::Print(file->GetPath() + "New width: " + std::to_string(newWidth) + " New height: " + std::to_string(newHeight));
+
 		buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
 		stbir_resize_uint8(data2, width, height, 0, buffer, newWidth, newHeight, 0, 4);
 		free(data2);

@@ -174,7 +174,8 @@ vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   FILE project_settings.json project_settings.json
   FILE assets assets
   FILE public_engine_assets public_engine_assets
-  FILE engine_assets engine_assets
+  FILE data.xenb data.xenb
+  FILE db.bin db.bin
 )
 else()
 message(STATUS "BUILD WINDOWS")

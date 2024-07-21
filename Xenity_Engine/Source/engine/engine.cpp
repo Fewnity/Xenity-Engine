@@ -182,9 +182,9 @@ int Engine::Init()
 	renderer->Setup();
 
 	//------------------------------------------ Init other things
-	Graphics::Init();
 	InputSystem::Init();
 	ProjectManager::Init();
+	Graphics::Init();
 	AssetManager::Init();
 	AudioManager::Init();
 	Time::Init();

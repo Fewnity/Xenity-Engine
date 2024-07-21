@@ -180,6 +180,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 			// If the played sound needs to be deleted
 			if (deleteAudio)
 			{
+				delete sound;
 				channel->playedSounds.erase(channel->playedSounds.begin() + soundIndex);
 				channel->playedSoundsCount--;
 				soundIndex--;

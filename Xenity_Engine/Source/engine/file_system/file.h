@@ -28,14 +28,16 @@ class API File : public UniqueId, public std::enable_shared_from_this<File>
 {
 public:
 	File() = delete;
-	explicit File(std::string _path);
+	explicit File(const std::string& _path);
 	~File() = default;
 
 	/**
 	* @brief Write string data to the file
 	* @param data The data to write
 	*/
-	virtual void Write(const std::string& data) {};
+	virtual void Write(const std::string& data) = 0;
+
+	virtual void Write(const unsigned char* data, size_t size) = 0;
 
 	/**
 	* @brief Read all the content of the file as a string
@@ -48,6 +50,8 @@ public:
 	* @return The binary data
 	*/
 	virtual unsigned char* ReadAllBinary(int& size) { return nullptr; };
+
+	virtual unsigned char* ReadBinary(int offset, int size) { return nullptr; };
 
 	/**
 	* @brief Check if the file exists

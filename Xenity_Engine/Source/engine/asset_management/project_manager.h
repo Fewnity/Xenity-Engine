@@ -20,6 +20,7 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/event_system/event_system.h>
 #include <engine/asset_management/project_list_item.h>
+#include <engine/file_system/data_base/file_data_base.h>
 
 class FileReference;
 class File;
@@ -59,6 +60,10 @@ class ProjectEngineFile
 public:
 	std::shared_ptr<File> file = nullptr;
 	bool isEngineAsset = false;
+	uint64_t filePos = 0;
+	uint64_t fileSize= 0;
+	uint64_t metaFilePos = 0;
+	uint64_t metaFileSize = 0;
 };
 
 class CompatibleFile
@@ -73,6 +78,11 @@ struct FileInfo
 	std::string path;
 	std::shared_ptr<File> file;
 	FileType type;
+
+	uint64_t filePos = 0;
+	uint64_t fileSize = 0;
+	uint64_t metaFilePos = 0;
+	uint64_t metaFileSize = 0;
 };
 
 struct FileChange
@@ -312,7 +322,7 @@ public:
 	* @return File reference
 	*/
 	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
-
+	static std::shared_ptr<FileReference> CreateFileReference(const FileInfo& fileInfo, const uint64_t id);
 	/**
 	* Get the event that is called when a project is loaded
 	*/
@@ -333,6 +343,7 @@ public:
 	static std::shared_ptr <Directory> projectDirectoryBase;
 	static std::shared_ptr <Directory> publicEngineAssetsDirectoryBase;
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
+	static FileDataBase fileDataBase;
 private:
 
 	/**
@@ -370,7 +381,6 @@ private:
 	static void LoadMetaFile(FileReference& fileReference);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
-	static std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
 	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
 	static bool projectLoaded;
 	static std::string projectFolderPath;

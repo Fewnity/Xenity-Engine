@@ -55,6 +55,7 @@ ReflectiveData SkyBox::GetMetaReflectiveData(AssetPlatform platform)
 
 void SkyBox::OnReflectionUpdated()
 {
+#if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = version;
@@ -64,20 +65,46 @@ void SkyBox::OnReflectionUpdated()
 	{
 		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath(), true);
 	}
+#endif
 }
 
 void SkyBox::LoadFileReference()
 {
 	if (!isLoaded)
 	{
-		const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
-		if (!loadResult)
+		bool openResult = true;
+#if defined(EDITOR)
+		openResult = file->Open(FileMode::ReadOnly);
+#endif
+		if (openResult)
 		{
-			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
+			std::string jsonString;
+#if defined(EDITOR)
+			jsonString = file->ReadAll();
+			file->Close();
+#else
+			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileSize);
+			jsonString = std::string(reinterpret_cast<const char*>(binData), fileSize);
+			free(binData);
+#endif
+
+			json j;
+			try
+			{
+				j = json::parse(jsonString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::LoadFileReference] Failed to load the material file", true);
+				return;
+			}
+			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
+
+			isLoaded = true;
 		}
 		else 
 		{
-			isLoaded = true;
+			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
 		}
 	}
 }

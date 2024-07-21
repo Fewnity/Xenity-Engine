@@ -167,6 +167,11 @@
     <ClCompile Include="Source\engine\debug\memory_tracker.cpp" />
     <ClCompile Include="Source\editor\cooker\cooker.cpp" />
     <ClCompile Include="Source\editor\utils\copy_utils.cpp" />
+    <ClCompile Include="Source\engine\file_system\data_base\file_data_base.cpp" />
+    <ClCompile Include="include\implot\implot.cpp" />
+    <ClCompile Include="include\implot\implot_demo.cpp" />
+    <ClCompile Include="include\implot\implot_items.cpp" />
+    <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -344,6 +349,10 @@
     <ClInclude Include="Source\engine\debug\memory_tracker.h" />
     <ClInclude Include="Source\editor\cooker\cooker.h" />
     <ClInclude Include="Source\editor\utils\copy_utils.h" />
+    <ClInclude Include="Source\engine\file_system\data_base\file_data_base.h" />
+    <ClInclude Include="include\implot\implot.h" />
+    <ClInclude Include="include\implot\implot_internal.h" />
+    <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

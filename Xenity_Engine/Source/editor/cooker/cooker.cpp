@@ -1,8 +1,12 @@
 #include "cooker.h"
+
 #include <string>
+#include <filesystem>
+
 #include <engine/asset_management/project_manager.h>
 #include <engine/unique_id/unique_id.h>
 #include <engine/file_system/file_system.h>
+#include <engine/reflection/reflection_utils.h>
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
 #include <engine/debug/debug.h>
@@ -12,14 +16,19 @@
 #include "stb_image_write.h"
 #include "stb_image_resize.h"
 #include <engine/application.h>
-
 namespace fs = std::filesystem;
 
 #define ASSETS_FOLDER "assets/"
 
+FileDataBase Cooker::fileDataBase;
+using ordered_json = nlohmann::ordered_json;
+
 void Cooker::CookAssets(const CookSettings& settings)
 {
-	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath() + ASSETS_FOLDER;
+	fileDataBase.Clear();
+	fileDataBase.bitFile.Create(settings.exportPath + "data.xenb");
+
+	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
 	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
 	const size_t idsCount = ids.size();
@@ -28,39 +37,40 @@ void Cooker::CookAssets(const CookSettings& settings)
 		const FileInfo* fileInfo = ProjectManager::GetFileById(ids[i]);
 		if (fileInfo)
 		{
-			if (fileInfo->file->GetUniqueId() <= UniqueId::reservedFileId)
-				continue;
-
+			std::string newPath;
 			if (fileInfo->path[0] == '.')
 			{
-				Debug::PrintError("[Compiler::ExportProjectFiles] Invalid file path (Maybe no meta file or wrong id?): " + fileInfo->path);
-				continue;
+				newPath = fileInfo->path.substr(2);
+			}
+			else
+			{
+				newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
 			}
 
-			const std::string newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
-			/*AddCopyEntry(false, fileInfo->path, exportPath + ASSETS_FOLDER + newPath);
-			AddCopyEntry(false, fileInfo->path + ".meta", exportPath + ASSETS_FOLDER + newPath + ".meta");*/
-			std::string folderToCreate = (settings.exportPath + ASSETS_FOLDER + newPath);
+			std::string folderToCreate = (settings.exportPath + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('/'));
 			fs::create_directories(folderToCreate);
-			CookAsset(settings , *fileInfo, folderToCreate);
+
+			CookAsset(settings, *fileInfo, folderToCreate, newPath);
 		}
 	}
 
-	CopyUtils::ExecuteCopyEntries();
+	fileDataBase.SaveToFile(settings.exportPath + "db.bin");
+
 }
 
 void Cooker::CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportFolderPath)
 {
 }
 
-void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath)
+void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
 {
+	uint64_t cookedFileSize = 0;
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
-	if (fileInfo.type == FileType::File_Texture) 
+
+	if (fileInfo.type == FileType::File_Texture)
 	{
 		const std::string texturePath = fileInfo.path;
-		//const std::string textureExportPath = exportPath;
 
 		int width, height, channels;
 		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
@@ -92,18 +102,59 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 			newHeight = static_cast<int>(textureResolution);
 		}
 
-		unsigned char* data2 = (unsigned char* )malloc(newWidth * newHeight * 4);
+		//TODO do not resize if the texture is already at the correct size
+		unsigned char* data2 = (unsigned char*)malloc(newWidth * newHeight * 4);
 		stbir_resize_uint8(data, width, height, 0, data2, newWidth, newHeight, 0, 4);
 		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, data2, 0);
 
-		stbi_image_free(data);
+		free(data);
+		free(data2);
 
-		/*FileSystem::WriteFile(textureExportPathData, textureData);
-		FileSystem::WriteFile(textureExportPathDataMeta, "type: Texture\n");*/
+		cookedFileSize = fs::file_size(exportPath.c_str());
 	}
-	else 
+	else
 	{
 		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+		cookedFileSize = fs::file_size(fileInfo.path);
 	}
 	CopyUtils::AddCopyEntry(false, fileInfo.path + ".meta", exportPath + ".meta");
+	uint64_t metaSize = fs::file_size(fileInfo.path + ".meta");
+
+	CopyUtils::ExecuteCopyEntries();
+
+	// Do not include audio in the binary file
+	size_t dataOffset = 0;
+	if (fileInfo.type != FileType::File_Audio)
+	{
+		std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
+		int cookedFileSizeOut;
+		cookedFile->Open(FileMode::ReadOnly);
+		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
+		cookedFile->Close();
+		dataOffset = fileDataBase.bitFile.AddData(fileData, cookedFileSize);
+		free(fileData);
+		FileSystem::fileSystem->Delete(exportPath);
+	}
+
+	size_t metaDataOffset = 0;
+	std::shared_ptr<File> cookedMetaFile = FileSystem::MakeFile(exportPath + ".meta");
+	int cookedMetaFileSizeOut;
+	cookedMetaFile->Open(FileMode::ReadOnly);
+	unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
+	cookedMetaFile->Close();
+	metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
+	free(metaFileData);
+	FileSystem::fileSystem->Delete(exportPath + ".meta");
+
+	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
+	fileDataBaseEntry->p = partialFilePath;
+	fileDataBaseEntry->id = fileInfo.file->GetUniqueId();
+	fileDataBaseEntry->po = dataOffset;
+	fileDataBaseEntry->s = cookedFileSize;
+	fileDataBaseEntry->mpo = metaDataOffset;
+	fileDataBaseEntry->ms = metaSize;
+	fileDataBaseEntry->t = fileInfo.type;
+
+	fileDataBase.AddFile(fileDataBaseEntry);
+
 }

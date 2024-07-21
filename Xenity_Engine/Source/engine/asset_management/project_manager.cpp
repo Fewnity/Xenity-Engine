@@ -50,10 +50,10 @@
 #include <engine/tools/string_tag_finder.h>
 #include <engine/graphics/icon.h>
 #include <engine/assertions/assertions.h>
+#include <filesystem>
 
 using json = nlohmann::ordered_json;
 
-std::unordered_map<uint64_t, FileChange> ProjectManager::oldProjectFilesIds;
 std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;
 std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
 ProjectSettings ProjectManager::projectSettings;
@@ -67,6 +67,7 @@ std::shared_ptr<Directory> ProjectManager::publicEngineAssetsDirectoryBase = nul
 std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
 Event<> ProjectManager::projectLoadedEvent;
 Event<> ProjectManager::projectUnloadedEvent;
+FileDataBase ProjectManager::fileDataBase;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath)
 {
@@ -145,13 +146,13 @@ void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& proj
 void ProjectManager::FindAllProjectFiles()
 {
 	// Keep in memory the old opened directory path to re-open it later
-	std::string oldPath = "";
 #if defined(EDITOR)
+	std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
+	std::string oldPath = "";
 	if (Editor::GetCurrentProjectDirectory())
 		oldPath = Editor::GetCurrentProjectDirectory()->path;
 
 	Editor::SetCurrentProjectDirectory(nullptr);
-#endif
 
 	// Keep in memory all old files path to check later if some files have been moved
 	for (const auto& kv : projectFilesIds)
@@ -160,82 +161,101 @@ void ProjectManager::FindAllProjectFiles()
 		fileChange.path = kv.second.path;
 		oldProjectFilesIds[kv.first] = fileChange;
 	}
+#endif
+	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
 
 	projectFilesIds.clear();
 
-	// Get all files of the project
-	std::vector<ProjectEngineFile> projectFiles;
-
-	AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
-	AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
-	AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
-
-	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
-
 	std::vector<CompatibleFile> compatibleFiles;
-
-	// Get all files supported by the engine
-	const int fileCount = (int)projectFiles.size();
-	for (int i = 0; i < fileCount; i++)
+	// Get all compatible files of the project
 	{
-		const std::shared_ptr<File> file = projectFiles[i].file;
-		const FileType fileType = GetFileType(file->GetFileExtension());
+#if defined(EDITOR)
+		std::vector<ProjectEngineFile> projectFiles;
+		AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
+		AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
+		AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
 
-		// If the file is supported, add it to the list
-		if (fileType != FileType::File_Other)
+		// Get all files supported by the engine
+		const size_t fileCount = projectFiles.size();
+		for (size_t i = 0; i < fileCount; i++)
+		{
+			const std::shared_ptr<File> file = projectFiles[i].file;
+			const FileType fileType = GetFileType(file->GetFileExtension());
+
+			// If the file is supported, add it to the list
+			if (fileType != FileType::File_Other)
+			{
+				CompatibleFile compatibleFile;
+				compatibleFile.file.file = file;
+				compatibleFile.file.isEngineAsset = projectFiles[i].isEngineAsset;
+				compatibleFile.type = fileType;
+				compatibleFiles.push_back(compatibleFile);
+			}
+		}
+		projectFiles.clear();
+#else
+		// All files in fileDataBase.fileList are compatible
+		for (const auto& f : fileDataBase.fileList)
 		{
 			CompatibleFile compatibleFile;
-			compatibleFile.file.file = file;
-			compatibleFile.file.isEngineAsset = projectFiles[i].isEngineAsset;
-			compatibleFile.type = fileType;
+			compatibleFile.file.file = FileSystem::MakeFile(f->p);
+			compatibleFile.file.file->SetUniqueId(f->id);
+			compatibleFile.file.isEngineAsset = false; // Not used when not in editor
+			compatibleFile.type = f->t;
+			compatibleFile.file.filePos = f->po;
+			compatibleFile.file.fileSize = f->s;
+			compatibleFile.file.metaFilePos = f->mpo;
+			compatibleFile.file.metaFileSize = f->ms;
+
 			compatibleFiles.push_back(compatibleFile);
 		}
+#endif
 	}
-	projectFiles.clear();
 
-	// Read meta files and list all files that do not have a meta file for later use
-	std::unordered_map<uint64_t, bool> usedIds;
-	std::vector<std::shared_ptr<File>> fileWithoutMeta;
-	int fileWithoutMetaCount = 0;
-	uint64_t biggestId = UniqueId::reservedFileId;
-
-	for (const auto& compatibleFile : compatibleFiles)
 	{
-		std::shared_ptr<File> file = compatibleFile.file.file;
-		uint64_t fileId = ReadFileId(*file);
-		if (fileId == -1)
-		{
-			fileWithoutMeta.push_back(file);
-			fileWithoutMetaCount++;
-		}
-		else
-		{
+		// Read meta files and list all files that do not have a meta file for later use
 #if defined(EDITOR)
-			if (!compatibleFile.file.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
-				//if (usedIds[id] == true)
+		std::unordered_map<uint64_t, bool> usedIds;
+		std::vector<std::shared_ptr<File>> fileWithoutMeta;
+		int fileWithoutMetaCount = 0;
+		uint64_t biggestId = UniqueId::reservedFileId;
+		for (const auto& compatibleFile : compatibleFiles)
+		{
+			std::shared_ptr<File> file = compatibleFile.file.file;
+			uint64_t fileId = ReadFileId(*file);
+			if (fileId == -1)
 			{
-				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
 				fileWithoutMeta.push_back(file);
 				fileWithoutMetaCount++;
-				continue;
 			}
-#endif
+			else
+			{
+				if (!compatibleFile.file.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+					//if (usedIds[id] == true)
+				{
+					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
+					fileWithoutMeta.push_back(file);
+					fileWithoutMetaCount++;
+					continue;
+				}
 
-			usedIds[fileId] = true;
+				usedIds[fileId] = true;
 
-			if (fileId > biggestId)
-				biggestId = fileId;
-			file->SetUniqueId(fileId);
+				if (fileId > biggestId)
+					biggestId = fileId;
+				file->SetUniqueId(fileId);
+			}
 		}
-	}
-	usedIds.clear();
+		usedIds.clear();
 
-	// Set new files ids
-	UniqueId::lastFileUniqueId = biggestId;
-	for (int i = 0; i < fileWithoutMetaCount; i++)
-	{
-		const uint64_t id = UniqueId::GenerateUniqueId(true);
-		fileWithoutMeta[i]->SetUniqueId(id);
+		// Set new files ids
+		UniqueId::lastFileUniqueId = biggestId;
+		for (int i = 0; i < fileWithoutMetaCount; i++)
+		{
+			const uint64_t id = UniqueId::GenerateUniqueId(true);
+			fileWithoutMeta[i]->SetUniqueId(id);
+		}
+#endif
 	}
 
 	// Fill projectFilesIds
@@ -244,16 +264,33 @@ void ProjectManager::FindAllProjectFiles()
 		FileInfo fileAndPath = FileInfo();
 		fileAndPath.file = kv.file.file;
 		fileAndPath.path = kv.file.file->GetPath();
+		fileAndPath.type = kv.type;
+		fileAndPath.filePos = kv.file.filePos;
+		fileAndPath.fileSize = kv.file.fileSize;
+		fileAndPath.metaFilePos = kv.file.metaFilePos;
+		fileAndPath.metaFileSize = kv.file.metaFileSize;
 		projectFilesIds[kv.file.file->GetUniqueId()] = fileAndPath;
 	}
+	compatibleFiles.clear();
 
 	// Create files references
 	for (auto& kv : projectFilesIds)
 	{
-		std::shared_ptr<FileReference> fileRef = CreateFileReference(kv.second.path, kv.first);
+		std::shared_ptr<FileReference> fileRef;
+#if defined(EDITOR)
+		fileRef = CreateFileReference(kv.second.path, kv.first);
+#else
+		fileRef = CreateFileReference(kv.second, kv.first);
+#endif
+		//fileRef->filePosition = kv.second.filePos;
+		//fileRef->fileSize = kv.second.fileSize;
+		//fileRef->metaPosition = kv.second.metaFilePos;
+		//fileRef->metaSize = kv.second.metaFileSize;
+
 		kv.second.type = fileRef->fileType;
 	}
 
+#if defined(EDITOR)
 	// Check if a file has changed or has been deleted
 	for (const auto& kv : projectFilesIds)
 	{
@@ -281,8 +318,8 @@ void ProjectManager::FindAllProjectFiles()
 			AssetManager::ForceDeleteFileReference(GetFileReferenceById(kv.first));
 		}
 	}
+	oldProjectFilesIds.clear();
 
-#if defined(EDITOR)
 	// Get all project directories and open one
 	CreateProjectDirectories(*projectDirectoryBase, *projectDirectory);
 	std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
@@ -291,10 +328,6 @@ void ProjectManager::FindAllProjectFiles()
 	else
 		Editor::SetCurrentProjectDirectory(projectDirectory);
 #endif
-
-	oldProjectFilesIds.clear();
-	fileWithoutMeta.clear();
-	compatibleFiles.clear();
 }
 
 void ProjectManager::CreateVisualStudioSettings()
@@ -390,8 +423,8 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 	// Sort files by name (only in editor)
 #if defined(EDITOR)
 	std::sort(projFileVector.begin(), projFileVector.end(),
-		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b) 
-		{ 
+		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b)
+		{
 			return (a->file->GetFileName() + a->file->GetFileExtension()) < (b->file->GetFileName() + b->file->GetFileExtension());
 		});
 #endif
@@ -542,7 +575,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
 #if defined(EDITOR)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
+#else
+	fileDataBase.LoadFromFile(projectPathToLoad + "db.bin");
+	fileDataBase.bitFile.Open("data.xenb");
 #endif
+
 	Debug::Print("Loading project: " + projectPathToLoad, true);
 	projectLoaded = false;
 
@@ -550,10 +587,6 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	assetFolderPath = projectPathToLoad + "assets/";
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
-	if (!projectDirectoryBase->CheckIfExist())
-	{
-		return projectLoaded;
-	}
 
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/temp/");
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
@@ -569,7 +602,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #endif
 
 	// Load dynamic library and create game
-	#if !defined(__LINUX__)
+#if !defined(__LINUX__)
 #if defined(_WIN32) || defined(_WIN64)
 	bool isDebugMode = false;
 	bool is64Bits = false;
@@ -649,10 +682,9 @@ void ProjectManager::UnloadProject()
 	projectDirectoryBase.reset();
 	projectDirectory.reset();
 	projectFilesIds.clear();
-	oldProjectFilesIds.clear();
 	projectLoaded = false;
 	projectSettings.projectName.clear();
-	projectSettings.gameName.clear(); 
+	projectSettings.gameName.clear();
 	projectFolderPath.clear();
 
 	assetFolderPath.clear();
@@ -673,6 +705,14 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	int idCount = 0;
 	const std::vector<FileInfo> sceneFiles = GetFilesByType(FileType::File_Scene);
 	const size_t sceneCount = sceneFiles.size();
+
+	for (auto& fileIds : projectFilesIds)
+	{
+		if (fileIds.first <= UniqueId::reservedFileId)
+			ids.push_back(fileIds.first);
+	}
+
+	//projectFilesIds
 	for (size_t i = 0; i < sceneCount; i++)
 	{
 		ids.push_back(sceneFiles[i].file->GetUniqueId());
@@ -753,7 +793,7 @@ FileInfo* ProjectManager::GetFileById(const uint64_t id)
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64_t id)
 {
-	if (id == -1) 
+	if (id == -1)
 	{
 		return nullptr;
 	}
@@ -777,7 +817,11 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	{
 		if (projectFilesIds.contains(id))
 		{
+#if defined(EDITOR)
 			fileRef = CreateFileReference(projectFilesIds[id].path, id);
+#else
+			fileRef = CreateFileReference(projectFilesIds[id], id);
+#endif
 			if (fileRef)
 			{
 				if (fileRef->fileType == FileType::File_Skybox)
@@ -797,9 +841,20 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(File& file
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string& filePath)
 {
+#if defined(EDITOR)
 	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	const uint64_t fileId = ProjectManager::ReadFileId(*file);
-
+#else
+	uint64_t fileId = -1;
+	for(const auto& kv : projectFilesIds)
+	{
+		if(kv.second.path == filePath)
+		{
+			fileId = kv.first;
+			break;
+		}
+	}
+#endif
 	return GetFileReferenceById(fileId);
 }
 
@@ -1017,9 +1072,77 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 
 	if (fileRef)
 	{
+#if defined(EDITOR)
 		fileRef->fileId = id;
+#endif
 		fileRef->file = file;
 		fileRef->fileType = type;
+		LoadMetaFile(*fileRef);
+#if defined(EDITOR)
+		SaveMetaFile(*fileRef);
+#endif
+	}
+	return fileRef;
+}
+
+std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInfo& fileInfo, const uint64_t id)
+{
+	std::shared_ptr<FileReference> fileRef = nullptr;
+	//std::shared_ptr<File> file = FileSystem::MakeFile(fileInfo.file);
+
+	switch (fileInfo.type)
+	{
+	case FileType::File_Audio:
+		fileRef = AudioClip::MakeAudioClip();
+		break;
+	case FileType::File_Mesh:
+		fileRef = MeshData::MakeMeshData();
+		break;
+	case FileType::File_Texture:
+		fileRef = Texture::MakeTexture();
+		break;
+	case FileType::File_Scene:
+		fileRef = Scene::MakeScene();
+		break;
+	case FileType::File_Header:
+		fileRef = CodeFile::MakeCode(true);
+		break;
+	case FileType::File_Code:
+		fileRef = CodeFile::MakeCode(false);
+		break;
+	case FileType::File_Skybox:
+		fileRef = SkyBox::MakeSkyBox();
+		break;
+	case FileType::File_Font:
+		fileRef = Font::MakeFont();
+		break;
+	case FileType::File_Material:
+		fileRef = Material::MakeMaterial();
+		break;
+	case FileType::File_Shader:
+		fileRef = Shader::MakeShader();
+		break;
+	case FileType::File_Icon:
+		fileRef = Icon::MakeIcon();
+		break;
+
+	case FileType::File_Other:
+		// Do nothing
+		break;
+	}
+
+	if (fileRef)
+	{
+		fileRef->filePosition = fileInfo.filePos;
+		fileRef->fileSize = fileInfo.fileSize;
+		fileRef->metaPosition = fileInfo.metaFilePos;
+		fileRef->metaSize = fileInfo.metaFileSize;
+
+#if defined(EDITOR)
+		fileRef->fileId = id;
+#endif
+		fileRef->file = fileInfo.file;
+		fileRef->fileType = fileInfo.type;
 		LoadMetaFile(*fileRef);
 #if defined(EDITOR)
 		SaveMetaFile(*fileRef);
@@ -1031,34 +1154,48 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 void ProjectManager::LoadMetaFile(FileReference& fileReference)
 {
 	const std::string path = fileReference.file->GetPath() + META_EXTENSION;
+
+#if defined(EDITOR)
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
-	if (metaFile->CheckIfExist())
+	if (metaFile->Open(FileMode::ReadOnly))
+#else
+	if(true)
+#endif
 	{
-		if (metaFile->Open(FileMode::ReadOnly))
+		std::string jsonString;
+#if defined(EDITOR)
+		jsonString = metaFile->ReadAll();
+		metaFile->Close();
+#else
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(fileReference.metaPosition, fileReference.metaSize);
+		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.metaSize);
+		free(binData);
+#endif
+
+		json metaData;
+		try
 		{
-			std::string jsonString = "";
-			jsonString = metaFile->ReadAll();
-			metaFile->Close();
+			metaData = json::parse(jsonString);
+		}
+		catch (const std::exception&)
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error", true);
+			return;
+		}
 
-			json metaData;
-			try
-			{
-				metaData = json::parse(jsonString);
-			}
-			catch (const std::exception&)
-			{
-				Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file error", true);
-				return;
-			}
-
+		if(Application::GetAssetPlatform() == AssetPlatform::AP_Standalone || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["Standalone"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
+		if (Application::GetAssetPlatform() == AssetPlatform::AP_PSP || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["PSP"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));
+		if (Application::GetAssetPlatform() == AssetPlatform::AP_PsVita || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["PSVITA"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
-		}
-		else
-		{
-			Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path, true);
-		}
+
+		fileReference.file->SetUniqueId(metaData["id"]);
+		fileReference.fileId = metaData["id"];
+	}
+	else
+	{
+		Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path, true);
 	}
 }
 

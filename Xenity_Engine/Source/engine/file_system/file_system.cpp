@@ -44,7 +44,7 @@ FileSystem *FileSystem::fileSystem = nullptr;
 
 #pragma region Directory
 
-void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recursive)
+void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool recursive)
 {
 	XASSERT(directory != nullptr, "[FileSystem::FillDirectory] directory is nullptr");
 
@@ -63,9 +63,10 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 	struct dirent *ent;
 	while ((ent = readdir(dir)) != NULL)
 	{
-		std::string found = "";
-		found += ent->d_name;
-		if (found == "." || found == "..")
+		std::string found = ent->d_name;
+		/*if (found == "." || found == "..")
+			continue;*/
+		if (found[0] == '.')
 			continue;
 
 		std::string fullPath = directory->GetPath() + found;
@@ -77,29 +78,15 @@ void FileSystem::FillDirectory(std::shared_ptr<Directory> directory, bool recurs
 
 		if (S_ISREG(statbuf.st_mode)) // If the entry is a file
 		{
-			std::shared_ptr<File> newFile = nullptr;
-			try
-			{
-				newFile = FileSystem::MakeFile(fullPath);
-				directory->files.push_back(newFile);
-			}
-			catch (const std::exception &)
-			{
-			}
+			std::shared_ptr<File> newFile = FileSystem::MakeFile(fullPath);
+			directory->files.push_back(newFile);
 		}
 		else if (S_ISDIR(statbuf.st_mode)) // If the entry is a folder
 		{
-			std::shared_ptr<Directory> newDirectory = nullptr;
-			try
-			{
-				newDirectory = std::make_shared<Directory>(fullPath + "/");
-				if (recursive)
-					newDirectory->GetAllFiles(true);
-				directory->subdirectories.push_back(newDirectory);
-			}
-			catch (const std::exception &)
-			{
-			}
+			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(fullPath + "/");
+			if (recursive)
+				newDirectory->GetAllFiles(true);
+			directory->subdirectories.push_back(newDirectory);
 		}
 	}
 	closedir(dir);
@@ -249,15 +236,15 @@ int FileSystem::CopyFile(const std::string &path, const std::string &newPath, bo
 	return result;
 }
 
-std::vector<std::shared_ptr<File>> files;
+//std::vector<std::shared_ptr<File>> files;
 
 std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 {
 	XASSERT(!path.empty(), "[FileSystem::MakeFile] path is empty");
 
-	std::shared_ptr<File> file;
+	std::shared_ptr<File> file = nullptr;
 
-	size_t fileCount = files.size();
+	/*size_t fileCount = files.size();
 	for (size_t i = 0; i < fileCount; i++)
 	{
 		if (files[i]->GetPath() == path)
@@ -265,10 +252,10 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 			file = files[i];
 			break;
 		}
-	}
+	}*/
 
-	if (!file)
-	{
+	/*if (!file)
+	{*/
 #if defined(__PSP__)
 		file = std::make_shared<FilePSP>(path);
 #elif defined(_EE)
@@ -277,8 +264,8 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 #else
 		file = std::make_shared<FileDefault>(path);
 #endif
-		files.push_back(file);
-	}
+		//files.push_back(file);
+	//}
 
 	return file;
 }

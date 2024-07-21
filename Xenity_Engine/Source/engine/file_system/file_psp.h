@@ -25,7 +25,7 @@ class API FilePSP : public File
 {
 public:
 	FilePSP() = delete;
-	explicit FilePSP(std::string _path);
+	explicit FilePSP(const std::string& _path);
 	~FilePSP();
 
 	/**
@@ -58,14 +58,17 @@ public:
 	*/
 	unsigned char* ReadAllBinary(int& size) override;
 
+	unsigned char* ReadBinary(int offset, int size) override;
+
 	/**
 	* @brief Write string data to the file
 	* @param data The data to write
 	*/
 	void Write(const std::string& data) override;
+	void Write(const unsigned char* data, size_t size) override;
 
 protected:
-	SceUID fileId;
+	SceUID fileId = -1;
 };
 
 #endif

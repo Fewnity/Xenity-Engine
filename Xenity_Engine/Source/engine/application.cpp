@@ -49,6 +49,14 @@ AssetPlatform Application::GetAssetPlatform()
 	return PlatformToAssetPlatform(GetPlatform());
 }
 
+bool Application::IsInEditor()
+{
+#if defined(EDITOR)
+	return true;
+#endif
+	return false;
+}
+
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)
 {
 if (platform == Platform::P_PSP)

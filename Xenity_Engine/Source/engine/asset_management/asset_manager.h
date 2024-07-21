@@ -14,6 +14,7 @@
 #include <string>
 #include <memory>
 #include <engine/file_system/file_type.h>
+#include <engine/asset_management/project_manager.h>
 
 class Texture;
 class Light;
@@ -181,10 +182,13 @@ public:
 	static std::shared_ptr<Material> unlitMaterial;
 	static std::shared_ptr<Material> lineMaterial;
 
+	template <typename T>
+	static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath)
+	{
+		return std::dynamic_pointer_cast<T>(ProjectManager::GetFileReferenceByFilePath(filePath));
+	}
 private:
 
-	template <typename T>
-	static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath);
 
 	static int materialCount;
 	static int reflectionCount;

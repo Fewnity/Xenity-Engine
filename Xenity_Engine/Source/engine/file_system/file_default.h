@@ -58,11 +58,15 @@ public:
 	*/
 	unsigned char* ReadAllBinary(int& size) override;
 	
+	unsigned char* ReadBinary(int offset, int size) override;
+
 	/**
 	* @brief Write string data to the file
 	* @param data The data to write
 	*/
 	void Write(const std::string& data) override;
+
+	void Write(const unsigned char* data, size_t size) override;
 
 protected:
 	std::fstream file;

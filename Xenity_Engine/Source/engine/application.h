@@ -20,6 +20,7 @@ public:
 	static std::string GetGameName();
 	static std::string GetCompanyName();
 	static AssetPlatform GetAssetPlatform();
+	static bool IsInEditor();
 
 private:
 	friend class InspectorMenu;

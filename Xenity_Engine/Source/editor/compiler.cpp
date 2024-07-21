@@ -66,6 +66,8 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 
 CompileResult Compiler::Compile(CompilerParams params)
 {
+	DeleteTempFiles(params);
+
 	isCompilationCancelled = false;
 
 	// Ensure path are absolute
@@ -299,9 +301,17 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 	const std::string projectCookedAssetsFolder = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/" + ASSETS_FOLDER;
 	CopyUtils::AddCopyEntry(true, projectCookedAssetsFolder, exportPath + ASSETS_FOLDER);
 
-	CopyUtils::AddCopyEntry(true, ProjectManager::GetEngineAssetFolderPath(), exportPath + ENGINE_ASSETS_FOLDER);
-	CopyUtils::AddCopyEntry(true, ProjectManager::GetPublicEngineAssetFolderPath(), exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
+	const std::string fileDataBasePath = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.bin";
+	CopyUtils::AddCopyEntry(false, fileDataBasePath, exportPath + "db.bin");
+
+	const std::string binaryFilePath = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/data.xenb";
+	CopyUtils::AddCopyEntry(false, binaryFilePath, exportPath + "data.xenb");
+
+	const std::string projectCookedPublicEngineAssetsFolder = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/" + PUBLIC_ENGINE_ASSETS_FOLDER;
+	CopyUtils::AddCopyEntry(true, projectCookedPublicEngineAssetsFolder, exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
+
 	CopyUtils::AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME);
+
 	const bool copyResult = CopyUtils::ExecuteCopyEntries();
 	return copyResult;
 }
@@ -328,7 +338,10 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	const CompileResult result = Compile(params);
 
 	if (result != CompileResult::SUCCESS) 
+	{
+		DeleteTempFiles(params);
 		return result;
+	}
 
 	// Copy assets
 	if (params.buildType != BuildType::EditorHotReloading)
@@ -338,6 +351,7 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 			const bool copyResult = ExportProjectFiles(params.exportPath);
 			if (!copyResult)
 			{
+				DeleteTempFiles(params);
 				return CompileResult::ERROR_FILE_COPY;
 			}
 		}
@@ -976,6 +990,12 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
 		[[maybe_unused]] const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
 
+		const std::string copydbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.bin" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "db.bin" + "\"";
+		[[maybe_unused]] const int copydbFileResult = system(copydbFileCommand.c_str());
+
+		const std::string copyxenbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/data.xenb" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "data.xenb" + "\"";
+		[[maybe_unused]] const int copyxenbFileResult = system(copyxenbFileCommand.c_str());
+
 		[[maybe_unused]] const bool copyResult = ExportProjectFiles(params.tempPath);
 		const std::string copyGameAssetsCommand = "docker cp \"" + params.tempPath + "assets\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyGameAssetsResult = system(copyGameAssetsCommand.c_str());
@@ -1041,7 +1061,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 #if defined(DEBUG)
 	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT"; // Start compilation
 #else
-	command += "cl /std:c++20 /MP /EHsc /MD /DIMPORT"; // Start compilation
+	command += "cl /std:c++20 /O2 /MP /EHsc /MD /DIMPORT"; // Start compilation
 #endif
 
 	// Define "EDITOR" if compiled to play game in editor
@@ -1106,6 +1126,9 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 	std::string command;
 	//Buid game exe
 	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc";
+#if !defined(DEBUG)
+	command += " /O2";
+#endif
 	command += " -I \"" + engineProjectLocation + "include\"";
 	command += " -I \"" + engineProjectLocation + "Source\"";
 	command += " main.cpp " + std::string(ENGINE_GAME) + ".lib";

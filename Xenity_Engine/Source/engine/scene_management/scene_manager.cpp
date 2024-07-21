@@ -410,12 +410,21 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 	Debug::Print("Loading scene...", true);
 
 	// Get scene file and read all data
-	std::shared_ptr<File> jsonFile = scene->file;
-	const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
-	if (isOpen)
+	bool openResult = true;
+#if defined(EDITOR)
+	openResult = scene->file->Open(FileMode::ReadOnly);
+#endif
+	if (openResult)
 	{
-		const std::string jsonString = jsonFile->ReadAll();
-		jsonFile->Close();
+		std::string jsonString;
+#if defined(EDITOR)
+		jsonString = scene->file->ReadAll();
+		scene->file->Close();
+#else
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(scene->filePosition, scene->fileSize);
+		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->fileSize);
+		free(binData);
+#endif
 
 		try
 		{

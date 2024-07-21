@@ -66,6 +66,11 @@ public:
 
 	uint64_t fileId = -1;
 
+	uint64_t filePosition = 0;
+	uint64_t fileSize = 0;
+	uint64_t metaPosition = 0;
+	uint64_t metaSize = 0;
+
 	std::shared_ptr<File> file = nullptr;
 	FileType fileType = FileType::File_Other;
 	bool isMetaDirty = false;

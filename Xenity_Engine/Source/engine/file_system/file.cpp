@@ -11,7 +11,7 @@
 
 #include <filesystem>
 
-File::File(std::string _path) : UniqueId(true)
+File::File(const std::string& _path) : UniqueId(true)
 {
 	XASSERT(!_path.empty(), "[File::File] _path is nullptr");
 
@@ -21,10 +21,12 @@ File::File(std::string _path) : UniqueId(true)
 	}
 
 #if defined(_EE)
-	_path = "mass:" + _path;
+	//_path = "mass:" + _path;
+	this->path = "mass:" + _path;
+#else
+	this->path = _path;
 	//_path = "host0:" + _path;
 #endif
-	this->path = _path;
 	const size_t pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 

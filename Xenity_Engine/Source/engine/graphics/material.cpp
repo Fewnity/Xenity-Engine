@@ -242,6 +242,7 @@ ReflectiveData Material::GetMetaReflectiveData(AssetPlatform platform)
 
 void Material::OnReflectionUpdated()
 {
+#if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = version;
@@ -252,6 +253,7 @@ void Material::OnReflectionUpdated()
 		XASSERT(false, "[Material::OnReflectionUpdated] Failed to save the material file: " + file->GetPath());
 		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath(), true);
 	}
+#endif
 }
 
 void Material::LoadFileReference()
@@ -259,8 +261,37 @@ void Material::LoadFileReference()
 	if (!isLoaded)
 	{
 		isLoaded = true;
-		const bool loadResult = ReflectionUtils::FileToReflectiveData(file, GetReflectiveData());
-		if (!loadResult)
+
+		bool loadResult = true;
+#if defined(EDITOR)
+		loadResult = file->Open(FileMode::ReadOnly);
+#endif
+		if (loadResult)
+		{
+			std::string jsonString;
+#if defined(EDITOR)
+			jsonString = file->ReadAll();
+			file->Close();
+#else
+			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileSize);
+			jsonString = std::string(reinterpret_cast<const char*>(binData), fileSize);
+			free(binData);
+#endif
+
+			json j;
+			try
+			{
+				j = json::parse(jsonString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::LoadFileReference] Failed to load the material file", true);
+				return;
+			}
+			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
+
+		}
+		else 
 		{
 			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + file->GetPath());
 			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + file->GetPath(), true);

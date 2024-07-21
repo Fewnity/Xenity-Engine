@@ -69,22 +69,13 @@ void AssetManager::Init()
 	Debug::Print("-------- Asset Manager initiated --------", true);
 }
 
-template <typename T>
-std::shared_ptr<T> AssetManager::LoadEngineAsset(const std::string& filePath)
-{
-	return std::dynamic_pointer_cast<T>(ProjectManager::GetFileReferenceByFilePath(filePath));
-}
-
 void AssetManager::OnProjectLoaded()
 {
-	defaultTexture = Texture::MakeTexture();
-	defaultTexture->file = FileSystem::MakeFile("public_engine_assets/textures/default_texture.png");
+	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	defaultTexture->LoadFileReference();
-
 	if constexpr (!Graphics::UseOpenGLFixedFunctions)
 	{
 		// Load shaders
-
 		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard.shader");
 		standardOneLightEachShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_light_each.shader");
 		standardOnePointLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_point_light.shader");

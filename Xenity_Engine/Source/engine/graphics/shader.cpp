@@ -258,11 +258,23 @@ void Shader::LoadFileReference()
 		if constexpr (Graphics::UseOpenGLFixedFunctions)
 			return;
 
-		const bool isOpen = file->Open(FileMode::ReadOnly);
-		if (isOpen)
+		bool openResult = true;
+#if defined(EDITOR)
+		openResult = file->Open(FileMode::ReadOnly);
+#endif
+		if (openResult)
 		{
-			const std::string shaderText = file->ReadAll();
+			std::string shaderText;
+
+#if defined(EDITOR)
+			shaderText = file->ReadAll();
 			file->Close();
+#else
+			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileSize);
+			shaderText = std::string(reinterpret_cast<const char*>(binData), fileSize);
+			free(binData);
+#endif
+
 			const size_t textSize = shaderText.size();
 
 			if (textSize != 0)

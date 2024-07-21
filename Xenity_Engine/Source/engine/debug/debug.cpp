@@ -131,7 +131,7 @@ void Debug::PrintInConsole(const std::string& text)
 
 void Debug::PrintInFile(const std::string& text)
 {
-	if (file && file.use_count() == 2)
+	if (file)
 		file->Write(text);
 }
 
@@ -225,7 +225,6 @@ int Debug::Init()
 	if (!EngineSettings::values.useDebugger)
 		return 0;
 
-	debugMutex = new MyMutex("DebugMutex");
 	std::string fileName = "xenity_engine_debug.txt";
 #if defined(__vita__)
 	fileName = "ux0:data/xenity_engine/" + fileName;
@@ -233,13 +232,13 @@ int Debug::Init()
 	FileSystem::fileSystem->Delete(fileName);
 
 	file = FileSystem::MakeFile(fileName);
-	file->Open(FileMode::WriteCreateFile);
 
-	if (!file->CheckIfExist())
+	if (!file->Open(FileMode::WriteCreateFile))
 	{
 		Print("-------- Debug file not created --------", true);
 		return -1;
 	}
+	debugMutex = new MyMutex("DebugMutex");
 
 	Print("-------- Debug initiated --------", true);
 	return 0;

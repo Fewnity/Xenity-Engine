@@ -161,6 +161,8 @@ public:
 
 private:
 
+	static void OnProjectLoaded();
+
 	/**
 	* @brief Draw skybox
 	* @param cameraPosition The camera position

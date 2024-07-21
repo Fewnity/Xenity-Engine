@@ -23,19 +23,30 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <engine/asset_management/project_manager.h>
 
 using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 {
 	std::shared_ptr<File>& file = mesh.file;
-	Debug::Print("Loading mesh: " + file->GetPath(), true);
+	//Debug::Print("Loading mesh: " + file->GetPath(), true);
 
-	const bool opened = file->Open(FileMode::ReadOnly);
+	bool opened = true;
+#if defined(EDITOR)
+	opened  = file->Open(FileMode::ReadOnly);
+#endif
 	if (opened)
 	{
-		const std::string allString = file->ReadAll();
+		std::string allString;
+#if defined(EDITOR)
+		allString = file->ReadAll();
 		file->Close();
+#else
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.filePosition, mesh.fileSize);
+		allString = std::string(reinterpret_cast<const char*>(binData), mesh.fileSize);
+		free(binData);
+#endif
 		const size_t textSize = allString.size();
 
 		bool verticesFound = false;

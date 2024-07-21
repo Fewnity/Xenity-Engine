@@ -94,6 +94,10 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 	// }
 }
 
+AudioClipStream::AudioClipStream()
+{
+}
+
 AudioClipStream::~AudioClipStream()
 {
 	if (type == AudioType::Mp3)
@@ -145,10 +149,7 @@ uint64_t AudioClipStream::GetSeekPosition() const
 
 void AudioClipStream::ResetSeek()
 {
-	if (type == AudioType::Mp3)
-		drmp3_seek_to_pcm_frame(mp3, 0);
-	else if (type == AudioType::Wav)
-		drwav_seek_to_pcm_frame(wav, 0);
+	SetSeek(0);
 }
 
 void AudioClipStream::SetSeek(uint64_t seekPosition)

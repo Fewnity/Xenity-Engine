@@ -105,8 +105,7 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 
 void Graphics::Init()
 {
-	skyPlane = MeshManager::LoadMesh("public_engine_assets/models/PlaneTriangulate.obj");
-	XASSERT(skyPlane != nullptr, "[Graphics::Init] skyPlane is null");
+	ProjectManager::GetProjectLoadedEvent().Bind(&Graphics::OnProjectLoaded);
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
 	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");
@@ -523,6 +522,13 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 void Graphics::SetDrawOrderListAsDirty()
 {
 	drawOrderListDirty = true;
+}
+
+void Graphics::OnProjectLoaded()
+{
+	skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
+	XASSERT(skyPlane != nullptr, "[Graphics::Init] skyPlane is null");
+	skyPlane->LoadFileReference();
 }
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)

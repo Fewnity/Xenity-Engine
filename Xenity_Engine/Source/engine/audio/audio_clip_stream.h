@@ -30,6 +30,7 @@ enum class AudioType
 class AudioClipStream
 {
 public:
+	AudioClipStream();
 	~AudioClipStream();
 
 	/**
