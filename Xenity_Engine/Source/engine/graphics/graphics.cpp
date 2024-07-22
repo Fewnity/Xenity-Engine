@@ -200,19 +200,25 @@ void Graphics::Draw()
 				}
 			}
 
-			for (const auto& renderQueue : renderBatch.renderQueues)
 			{
-				for (const RenderCommand& com : renderQueue.second.commands)
+				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::RenderOpaque");
+				for (const auto& renderQueue : renderBatch.renderQueues)
+				{
+					for (const RenderCommand& com : renderQueue.second.commands)
+					{
+						if (com.isEnabled)
+							com.drawable->DrawCommand(com);
+					}
+				}
+			}
+
+			{
+				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::RenderTransparent");
+				for (const RenderCommand& com : renderBatch.transparentMeshCommands)
 				{
 					if (com.isEnabled)
 						com.drawable->DrawCommand(com);
 				}
-			}
-
-			for (const RenderCommand& com : renderBatch.transparentMeshCommands)
-			{
-				if (com.isEnabled)
-					com.drawable->DrawCommand(com);
 			}
 			currentMode = IDrawableTypes::Draw_2D;
 			for (const RenderCommand& com : renderBatch.spriteCommands)
@@ -293,16 +299,19 @@ void Graphics::Draw()
 				DrawSelectedItemBoundingBox(camPos);
 
 				// Draw all gizmos
-				for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 				{
-					if (std::shared_ptr<Component> component = weakComponent.lock())
+					ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawGizmo");
+					for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 					{
-						if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
+						if (std::shared_ptr<Component> component = weakComponent.lock())
 						{
-							component->OnDrawGizmos();
+							if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
+							{
+								component->OnDrawGizmos();
 
-							if (component->GetGameObject()->isSelected)
-								component->OnDrawGizmosSelected();
+								if (component->GetGameObject()->isSelected)
+									component->OnDrawGizmosSelected();
+							}
 						}
 					}
 				}
@@ -377,17 +386,16 @@ void Graphics::Draw()
 //	return dis1 > dis2;
 //}
 
+Vector3 meshComparatorCamPos;
 bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 {
-	const Vector3& camPos = Graphics::usedCamera->GetTransform()->GetPosition();
-	const float dis1 = Vector3::Distance(c1.transform->GetPosition(), camPos);
-	const float dis2 = Vector3::Distance(c2.transform->GetPosition(), camPos);
-
-	return dis1 > dis2;
+	return Vector3::Distance(c1.transform->GetPosition(), meshComparatorCamPos) > Vector3::Distance(c2.transform->GetPosition(), meshComparatorCamPos);
 }
 
 void Graphics::SortTransparentDrawables()
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::SortTransparentDrawables");
+	meshComparatorCamPos = usedCamera->GetTransform()->GetPosition();
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
 }
 
@@ -396,6 +404,7 @@ void Graphics::OrderDrawables()
 	orderBenchmark->Start();
 	if (isRenderingBatchDirty)
 	{
+		ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::OrderDrawables");
 		isRenderingBatchDirty = false;
 		renderBatch.Reset();
 		for (std::weak_ptr<IDrawable> drawable : orderedIDrawable)
@@ -492,6 +501,8 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSubMesh");
+
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
 	if (texture == nullptr)
@@ -712,6 +723,8 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawEditorTool");
+
 	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 	// Draw tool
 	if (Editor::GetSelectedGameObjects().size() == 1 && sceneMenu)

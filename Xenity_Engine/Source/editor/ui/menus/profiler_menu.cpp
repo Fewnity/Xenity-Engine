@@ -46,36 +46,59 @@ void ProfilerMenu::Draw()
 		DrawFilesList();
 #endif
 
+		if (ImGui::Button("Pause Profiler"))
+		{
+			isPaused = !isPaused;
+		}
+
 		const size_t callCount = Performance::scopProfilerList.size();
 		float lineHeigh = 1;
 		float lineSpace = 1;
 
-		uint64_t offsetTime = Performance::scopProfilerList["Engine::Loop"][0].start;
-		uint64_t endTime = Performance::scopProfilerList["Engine::Loop"][0].end;
+		uint64_t offsetTime = lastStartTime;
+		uint64_t endTime = lastEndTime;
+		if (!isPaused)
+		{
+			offsetTime = Performance::scopProfilerList["Engine::Loop"][0].start;
+			endTime = Performance::scopProfilerList["Engine::Loop"][0].end;
+			timelineItems.clear();
+			for (const auto& valCategory : Performance::scopProfilerList)
+			{
+				for (const auto& value : valCategory.second)
+				{
+					TimelineItem item;
+					item.name = valCategory.first;
+					item.start = value.start;
+					item.end = value.end;
+					item.level = value.level;
+					timelineItems.push_back(item);
+				}
+			}
+			lastStartTime = offsetTime;
+			lastEndTime = endTime;
+
+			// Sort by start time
+			std::sort(timelineItems.begin(), timelineItems.end(), [](const TimelineItem& a, const TimelineItem& b) { return a.start < b.start; });
+		}
+
 
 		ImDrawList* draw_list = ImPlot::GetPlotDrawList();
-		ImPlot::SetNextAxesLimits(0, (endTime - offsetTime) / 200.0f, 0, 7, ImPlotCond_Always);
+		ImPlot::SetNextAxesLimits(0, (endTime - offsetTime), 0, 7, ImPlotCond_Always);
 		if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
 		{
-			int i = 0;
-			for (const auto& valCategory : Performance::scopProfilerList) 
+			for (int i = 0; i < timelineItems.size(); i++)
 			{
-				if (ImPlot::BeginItem(valCategory.first.c_str()))
+				const TimelineItem& item = timelineItems[i];
+				if (ImPlot::BeginItem(item.name.c_str()))
 				{
-					for (const auto& value : valCategory.second)
-					{
-						ImVec2 open_pos = ImPlot::PlotToPixels((value.start - offsetTime)/200.0f, i * lineSpace);
-						ImVec2 close_pos = ImPlot::PlotToPixels((value.end - offsetTime)/200.0f, i * lineSpace + lineHeigh);
-						draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
-						i++;
-					}
+					ImVec2 open_pos = ImPlot::PlotToPixels((item.start - offsetTime), item.level * lineSpace);
+					ImVec2 close_pos = ImPlot::PlotToPixels((item.end - offsetTime), item.level * lineSpace + lineHeigh);
+					draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
 					ImPlot::EndItem();
 				}
 			}
 			ImPlot::EndPlot();
 		}
-
-
 		CalculateWindowValues();
 	}
 	else

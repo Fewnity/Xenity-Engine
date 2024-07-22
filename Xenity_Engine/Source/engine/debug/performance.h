@@ -72,6 +72,7 @@ struct ScopTimerResult
 {
 	long long start;
 	long long end;
+	uint32_t level;
 };
 
 class Performance
@@ -130,6 +131,7 @@ public:
 	static MemoryTracker* gameObjectMemoryTracker;
 	static MemoryTracker* meshDataMemoryTracker;
 	static MemoryTracker* textureMemoryTracker;
+	static uint32_t benchmarkScopeLevel;
 private:
 
 	/**

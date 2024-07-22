@@ -9,6 +9,15 @@
 #include "menu.h"
 #define FPS_HISTORY_SIZE 400
 
+class TimelineItem 
+{
+public:
+	std::string name;
+	uint64_t start;
+	uint64_t end;
+	uint32_t level;
+};
+
 class ProfilerMenu : public Menu
 {
 public:
@@ -41,5 +50,9 @@ private:
 	float lastFps = 0;
 	float fpsHistory[FPS_HISTORY_SIZE] = { 0 };
 	bool counterInitialised = false;
+	std::vector<TimelineItem> timelineItems;
+	bool isPaused = false;
+	uint64_t lastStartTime;
+	uint64_t lastEndTime;
 };
 

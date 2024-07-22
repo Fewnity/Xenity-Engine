@@ -24,6 +24,7 @@ int Performance::LastDrawTriangleCount = 0;
 MemoryTracker* Performance::gameObjectMemoryTracker = nullptr;
 MemoryTracker* Performance::meshDataMemoryTracker = nullptr;
 MemoryTracker* Performance::textureMemoryTracker = nullptr;
+uint32_t Performance::benchmarkScopeLevel = 0;
 
 #pragma region Update values
 
