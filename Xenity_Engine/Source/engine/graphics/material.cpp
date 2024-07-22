@@ -21,6 +21,7 @@
 #include <iostream>
 #include <json.hpp>
 #include <string.h>
+#include <engine/tools/scope_benchmark.h>
 
 using json = nlohmann::json;
 
@@ -131,12 +132,19 @@ void Material::Use()
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
+		ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChanged");
 		if (shader)
 		{
 			lastUsedCamera = Graphics::usedCamera;
 			lastUpdatedType = Graphics::currentMode;
-			shader->Use();
-			Update();
+			{
+				//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChangedUse");
+				shader->Use();
+			}
+			{
+				//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChangedUpdate");
+				Update();
+			}
 
 			const int matCount = AssetManager::GetMaterialCount();
 			for (int i = 0; i < matCount; i++)
@@ -167,15 +175,19 @@ void Material::Update()
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
-		if (Graphics::currentMode == IDrawableTypes::Draw_UI)
+
 		{
-			shader->SetShaderCameraPositionCanvas();
-			shader->SetShaderProjectionCanvas();
-		}
-		else
-		{
-			shader->SetShaderCameraPosition();
-			shader->SetShaderProjection();
+			//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
+			if (Graphics::currentMode == IDrawableTypes::Draw_UI)
+			{
+				shader->SetShaderCameraPositionCanvas();
+				shader->SetShaderProjectionCanvas();
+			}
+			else
+			{
+				shader->SetShaderCameraPosition();
+				shader->SetShaderProjection();
+			}
 		}
 
 		if (!updated)
@@ -185,7 +197,7 @@ void Material::Update()
 			shader->SetShaderAttribut("tiling", tiling);
 			shader->SetShaderAttribut("offset", offset);
 
-			int textureIndex = 0;
+			//int textureIndex = 0;
 			/*for (const auto& kv : uniformsTextures)
 			{
 				//Enable each textures units
@@ -291,7 +303,7 @@ void Material::LoadFileReference()
 			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
 
 		}
-		else 
+		else
 		{
 			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + file->GetPath());
 			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + file->GetPath(), true);

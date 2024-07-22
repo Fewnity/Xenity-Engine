@@ -17,6 +17,7 @@
 #elif defined(__vita__)
 #include <psp2/rtc.h> 
 #endif
+#include <engine/tools/scope_benchmark.h>
 
 using namespace std::chrono;
 
@@ -68,6 +69,7 @@ void Time::Init()
 
 void Time::UpdateTime()
 {
+	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Time::UpdateTime");
 #if defined(__PSP__)
 	sceRtcGetCurrentTick(&currentTick);
 	const float tempDeltaTime = (currentTick - lastTick) / 1000000.0f;

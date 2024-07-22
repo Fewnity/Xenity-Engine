@@ -200,11 +200,11 @@ protected:
 	/**
 	* @brief Set the shader uniform for basic types
 	*/
-	void SetShaderAttribut(const char* attribut, const Vector4& value);
-	void SetShaderAttribut(const char* attribut, const Vector3& value);
-	void SetShaderAttribut(const char* attribut, const Vector2& value);
-	void SetShaderAttribut(const char* attribut, float value);
-	void SetShaderAttribut(const char* attribut, int value);
+	void SetShaderAttribut(const std::string& attribut, const Vector4& value);
+	void SetShaderAttribut(const std::string& attribut, const Vector3& value);
+	void SetShaderAttribut(const std::string& attribut, const Vector2& value);
+	void SetShaderAttribut(const std::string& attribut, float value);
+	void SetShaderAttribut(const std::string& attribut, int value);
 
 	/**
 	* @brief Update lights in the shader
@@ -262,4 +262,5 @@ protected:
 	unsigned int usedDirectionalLightCountLocation = 0;
 
 	bool useTessellation = false;
+	std::unordered_map<std::string, unsigned int> uniformsIds;
 };

@@ -148,7 +148,7 @@ public:
 	API static std::shared_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
-	static std::vector <std::weak_ptr<IDrawable>> orderedIDrawable;
+	static std::vector <IDrawable*> orderedIDrawable;
 	static std::vector<std::weak_ptr<Lod>> lods;
 
 	

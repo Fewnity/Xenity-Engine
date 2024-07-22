@@ -58,7 +58,7 @@ bool Graphics::needUpdateCamera = true;
 int Graphics::iDrawablesCount = 0;
 int Graphics::lodsCount = 0;
 
-std::vector<std::weak_ptr<IDrawable>> Graphics::orderedIDrawable;
+std::vector<IDrawable*> Graphics::orderedIDrawable;
 
 std::vector<std::weak_ptr<Lod>> Graphics::lods;
 
@@ -192,11 +192,11 @@ void Graphics::Draw()
 
 			drawAllBenchmark->Start();
 
-			for (const std::weak_ptr<IDrawable>& drawable : orderedIDrawable)
 			{
-				if(std::shared_ptr<IDrawable> drawablePtr = drawable.lock())
+				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::CallOnNewRender");
+				for (IDrawable* drawable : orderedIDrawable)
 				{
-					drawablePtr->OnNewRender();
+					drawable->OnNewRender();
 				}
 			}
 
@@ -407,9 +407,9 @@ void Graphics::OrderDrawables()
 		ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::OrderDrawables");
 		isRenderingBatchDirty = false;
 		renderBatch.Reset();
-		for (std::weak_ptr<IDrawable> drawable : orderedIDrawable)
+		for (IDrawable* drawable : orderedIDrawable)
 		{
-			drawable.lock()->CreateRenderCommands(renderBatch);
+			drawable->CreateRenderCommands(renderBatch);
 		}
 	}
 
@@ -427,7 +427,7 @@ void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 {
 	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr");
 
-	orderedIDrawable.push_back(drawableToAdd);
+	orderedIDrawable.push_back(drawableToAdd.get());
 	iDrawablesCount++;
 	isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
@@ -442,7 +442,7 @@ void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i].lock() == drawableToRemove)
+		if (orderedIDrawable[i] == drawableToRemove.get())
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
@@ -560,18 +560,23 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		const std::shared_ptr<Texture> &texture = AssetManager::unlitMaterial->texture;
+		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->texture;
 
 		AssetManager::unlitMaterial->texture = settings.skybox->down;
 		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
 		AssetManager::unlitMaterial->texture = settings.skybox->up;
 		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
 		AssetManager::unlitMaterial->texture = settings.skybox->front;
 		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
 		AssetManager::unlitMaterial->texture = settings.skybox->back;
 		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
 		AssetManager::unlitMaterial->texture = settings.skybox->left;
 		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+
 		AssetManager::unlitMaterial->texture = settings.skybox->right;
 		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 

@@ -479,7 +479,7 @@ bool Shader::Compile(const std::string& shaderData, ShaderType type)
 /// </summary>
 void Shader::SetShaderCameraPosition()
 {
-	Use();
+	//Use();
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
@@ -516,7 +516,7 @@ void Shader::SetShaderCameraPosition()
 /// </summary>
 void Shader::SetShaderCameraPositionCanvas()
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, canvasCameraTransformationMatrix);
 }
 
@@ -525,13 +525,13 @@ void Shader::SetShaderCameraPositionCanvas()
 /// </summary>
 void Shader::SetShaderProjection()
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetProjection());
 }
 
 void Shader::SetShaderProjectionCanvas()
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetCanvasProjection());
 }
 
@@ -541,7 +541,7 @@ void Shader::SetShaderProjectionCanvas()
 /// <param name="trans"></param>
 void Shader::SetShaderModel(const glm::mat4& trans)
 {
-	Use();
+	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, modelLocation, trans);
 }
 
@@ -551,7 +551,7 @@ void Shader::SetShaderModel(const glm::mat4& trans)
 /// <param name="trans"></param>
 void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
-	Use();
+	//Use();
 
 	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
 
@@ -567,34 +567,59 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 	Engine::GetRenderer().SetShaderAttribut(programId, modelLocation, transformationMatrix);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const Vector4& value)
+void Shader::SetShaderAttribut(const std::string& attribut, const Vector4& value)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
+	auto it = uniformsIds.find(attribut);
+	if (it == uniformsIds.end())
+	{
+		unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(programId, attribut.c_str());
+		it = uniformsIds.emplace(attribut, id).first;
+	}
+	Engine::GetRenderer().SetShaderAttribut(programId, it->second, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const Vector3& value)
+void Shader::SetShaderAttribut(const std::string& attribut, const Vector3& value)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
+	auto it = uniformsIds.find(attribut);
+	if (it == uniformsIds.end())
+	{
+		unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(programId, attribut.c_str());
+		it = uniformsIds.emplace(attribut, id).first;
+	}
+	Engine::GetRenderer().SetShaderAttribut(programId, it->second, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, const Vector2& value)
+void Shader::SetShaderAttribut(const std::string& attribut, const Vector2& value)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
+	auto it = uniformsIds.find(attribut);
+	if (it == uniformsIds.end())
+	{
+		unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(programId, attribut.c_str());
+		it = uniformsIds.emplace(attribut, id).first;
+	}
+	Engine::GetRenderer().SetShaderAttribut(programId, it->second, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, float value)
+void Shader::SetShaderAttribut(const std::string& attribut, float value)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
+	auto it = uniformsIds.find(attribut);
+	if (it == uniformsIds.end())
+	{
+		unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(programId, attribut.c_str());
+		it = uniformsIds.emplace(attribut, id).first;
+	}
+	Engine::GetRenderer().SetShaderAttribut(programId, it->second, value);
 }
 
-void Shader::SetShaderAttribut(const char* attribut, int value)
+void Shader::SetShaderAttribut(const std::string& attribut, int value)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(programId, attribut, value);
+	auto it = uniformsIds.find(attribut);
+	if (it == uniformsIds.end())
+	{
+		unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(programId, attribut.c_str());
+		it = uniformsIds.emplace(attribut, id).first;
+	}
+	Engine::GetRenderer().SetShaderAttribut(programId, it->second, value);
 }
 
 
@@ -745,7 +770,6 @@ void Shader::UpdateLights(bool disableLights)
 				}
 			}
 		}
-
 	}
 
 	SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
