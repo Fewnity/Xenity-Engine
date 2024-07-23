@@ -59,6 +59,7 @@ void ProfilerMenu::Draw()
 		uint64_t endTime = lastEndTime;
 		if (!isPaused)
 		{
+			uint32_t newMaxLevel = 0;
 			offsetTime = Performance::scopProfilerList["Engine::Loop"][0].start;
 			endTime = Performance::scopProfilerList["Engine::Loop"][0].end;
 			timelineItems.clear();
@@ -71,21 +72,30 @@ void ProfilerMenu::Draw()
 					item.start = value.start;
 					item.end = value.end;
 					item.level = value.level;
+					if (newMaxLevel < value.level)
+						newMaxLevel = value.level;
 					timelineItems.push_back(item);
 				}
 			}
 			lastStartTime = offsetTime;
 			lastEndTime = endTime;
-
+			lastMaxLevel = newMaxLevel;
 			// Sort by start time
 			std::sort(timelineItems.begin(), timelineItems.end(), [](const TimelineItem& a, const TimelineItem& b) { return a.start < b.start; });
 		}
+		uint32_t maxLevel = lastMaxLevel;
 
 
 		ImDrawList* draw_list = ImPlot::GetPlotDrawList();
-		ImPlot::SetNextAxesLimits(0, (endTime - offsetTime), 0, 7, ImPlotCond_Always);
 		if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
 		{
+			ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, (endTime - offsetTime));
+			ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel+1);
+
+			ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
+			ImVec2 mousePixelPos = ImPlot::PlotToPixels(mousePoint.x, mousePoint.y);
+
+			int hoveredItem = -1;
 			for (int i = 0; i < timelineItems.size(); i++)
 			{
 				const TimelineItem& item = timelineItems[i];
@@ -94,9 +104,37 @@ void ProfilerMenu::Draw()
 					ImVec2 open_pos = ImPlot::PlotToPixels((item.start - offsetTime), item.level * lineSpace);
 					ImVec2 close_pos = ImPlot::PlotToPixels((item.end - offsetTime), item.level * lineSpace + lineHeigh);
 					draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
+
+					if (mousePixelPos.x >= open_pos.x && mousePixelPos.x <= close_pos.x)
+					{
+						if (mousePixelPos.y >= close_pos.y && mousePixelPos.y <= open_pos.y)
+						{
+							hoveredItem = i;
+						}
+					}
 					ImPlot::EndItem();
 				}
 			}
+			if (hoveredItem != -1)
+			{
+				float oldMouseX = mousePixelPos.x;
+				float oldMouseY = mousePixelPos.y;
+				mousePixelPos.y -= 30;
+				std::string mouseText = timelineItems[hoveredItem].name;
+				ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
+				mousePixelPos.x -= textSize.x / 2.0f;
+				draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
+
+				mousePixelPos.x = oldMouseX;
+				mousePixelPos.y = oldMouseY;
+				mousePixelPos.y -= 15;
+
+				mouseText = "Time";
+				textSize = ImGui::CalcTextSize(mouseText.c_str());
+				mousePixelPos.x -= textSize.x / 2.0f;
+				draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
+			}
+
 			ImPlot::EndPlot();
 		}
 		CalculateWindowValues();

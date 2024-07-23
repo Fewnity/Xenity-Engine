@@ -54,5 +54,6 @@ private:
 	bool isPaused = false;
 	uint64_t lastStartTime;
 	uint64_t lastEndTime;
+	uint32_t lastMaxLevel;
 };
 
