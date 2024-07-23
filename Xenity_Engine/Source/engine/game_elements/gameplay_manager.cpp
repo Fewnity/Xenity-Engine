@@ -18,6 +18,7 @@
 #include <editor/ui/menus/game_menu.h>
 #endif
 #include <engine/tools/scope_benchmark.h>
+#include <engine/debug/performance.h>
 
 int GameplayManager::gameObjectCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -97,7 +98,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 
 void GameplayManager::UpdateComponents()
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("GameplayManager::UpdateComponents");
+	SCOPED_PROFILER("GameplayManager::UpdateComponents", scopeBenchmark);
 	// Order components and initialise new components
 	if (componentsListDirty)
 	{

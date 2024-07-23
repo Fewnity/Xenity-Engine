@@ -50,6 +50,7 @@
 #include <engine/debug/debug.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/tools/scope_benchmark.h>
+#include <engine/debug/performance.h>
 
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
@@ -136,7 +137,7 @@ void Graphics::SetDefaultValues()
 
 void Graphics::Draw()
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::Draw");
+	SCOPED_PROFILER("Graphics::Draw", scopeBenchmark);
 	/*auto camera = usedCamera.lock();
 	if (!camera)
 	{
@@ -193,7 +194,7 @@ void Graphics::Draw()
 			drawAllBenchmark->Start();
 
 			{
-				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::CallOnNewRender");
+				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
 				for (IDrawable* drawable : orderedIDrawable)
 				{
 					drawable->OnNewRender();
@@ -201,7 +202,7 @@ void Graphics::Draw()
 			}
 
 			{
-				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::RenderOpaque");
+				SCOPED_PROFILER("Graphics::RenderOpaque", scopeBenchmarkRenderOpaque);
 				for (const auto& renderQueue : renderBatch.renderQueues)
 				{
 					for (const RenderCommand& com : renderQueue.second.commands)
@@ -213,13 +214,14 @@ void Graphics::Draw()
 			}
 
 			{
-				ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::RenderTransparent");
+				SCOPED_PROFILER("Graphics::RenderTransparent", scopeBenchmarkRenderTransparent);
 				for (const RenderCommand& com : renderBatch.transparentMeshCommands)
 				{
 					if (com.isEnabled)
 						com.drawable->DrawCommand(com);
 				}
 			}
+
 			currentMode = IDrawableTypes::Draw_2D;
 			for (const RenderCommand& com : renderBatch.spriteCommands)
 			{
@@ -300,7 +302,7 @@ void Graphics::Draw()
 
 				// Draw all gizmos
 				{
-					ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawGizmo");
+					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
 					for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 					{
 						if (std::shared_ptr<Component> component = weakComponent.lock())
@@ -394,7 +396,7 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 
 void Graphics::SortTransparentDrawables()
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::SortTransparentDrawables");
+	SCOPED_PROFILER("Graphics::SortTransparentDrawables", scopeBenchmark);
 	meshComparatorCamPos = usedCamera->GetTransform()->GetPosition();
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
 }
@@ -404,7 +406,7 @@ void Graphics::OrderDrawables()
 	orderBenchmark->Start();
 	if (isRenderingBatchDirty)
 	{
-		ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::OrderDrawables");
+		SCOPED_PROFILER("Graphics::OrderDrawables", scopeBenchmark);
 		isRenderingBatchDirty = false;
 		renderBatch.Reset();
 		for (IDrawable* drawable : orderedIDrawable)
@@ -501,7 +503,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSubMesh");
+	SCOPED_PROFILER("Graphics::DrawSubMesh", scopeBenchmark);
 
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
@@ -546,7 +548,7 @@ void Graphics::OnProjectLoaded()
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSkybox");
+	SCOPED_PROFILER("Graphics::DrawSkybox", scopeBenchmark);
 	if (settings.skybox)
 	{
 		Engine::GetRenderer().SetFog(false);
@@ -586,6 +588,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 
 void Graphics::CheckLods()
 {
+	SCOPED_PROFILER("Graphics::CheckLods", scopeBenchmark);
 	for (int i = 0; i < lodsCount; i++)
 	{
 		std::shared_ptr<Lod> lod = lods[i].lock();
@@ -600,7 +603,7 @@ void Graphics::CheckLods()
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawSelectedItemBoundingBox");
+	SCOPED_PROFILER("Graphics::DrawSelectedItemBoundingBox", scopeBenchmark);
 	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
 	for (const std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
 	{
@@ -653,7 +656,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawEditorGrid");
+	SCOPED_PROFILER("Graphics::DrawEditorGrid", scopeBenchmark);
 	float distance;
 	if (gridAxis == 0)
 		distance = fabs(cameraPosition.y);
@@ -728,7 +731,7 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Graphics::DrawEditorTool");
+	SCOPED_PROFILER("Graphics::DrawEditorTool", scopeBenchmark);
 
 	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 	// Draw tool

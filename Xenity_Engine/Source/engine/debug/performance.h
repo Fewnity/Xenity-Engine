@@ -14,6 +14,17 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
+#include <engine/tools/scope_benchmark.h>
+
+#if defined(EDITOR)
+#define USE_PROFILER
+#endif
+
+#if defined(USE_PROFILER)
+#define SCOPED_PROFILER(name, variableName) ScopeBenchmark variableName = ScopeBenchmark(name)
+#else
+#define SCOPED_PROFILER(name, variableName)
+#endif
 
 class MemoryTracker;
 
@@ -24,7 +35,7 @@ public:
 	/**
 	* @brief Add a time value to the profiler
 	*/
-	inline void AddValue(long long v)
+	inline void AddValue(uint64_t v)
 	{
 		value += v;
 		addedValue += v;
@@ -50,17 +61,17 @@ public:
 	/**
 	* @brief Set the last value
 	*/
-	inline void SetLastValue(long long v)
+	inline void SetLastValue(uint64_t v)
 	{
 		lastValue = v;
 	}
 
-	long long average = 0;
-	long long addedValue = 0;
+	uint64_t average = 0;
+	uint64_t addedValue = 0;
 
 private:
-	long long lastValue = 0;
-	long long value = 0;
+	uint64_t lastValue = 0;
+	uint64_t value = 0;
 };
 
 struct ProfilerCategory
@@ -70,8 +81,8 @@ struct ProfilerCategory
 
 struct ScopTimerResult
 {
-	long long start;
-	long long end;
+	uint64_t start;
+	uint64_t end;
 	uint32_t level;
 };
 

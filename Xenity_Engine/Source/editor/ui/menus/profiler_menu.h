@@ -45,6 +45,10 @@ private:
 	*/
 	void DrawFilesList();
 
+	void DrawProfilerGraph();
+
+	void CreateTimelineItems();
+
 	float fpsAVG = 0;
 	float nextFpsUpdate = 0;
 	float lastFps = 0;

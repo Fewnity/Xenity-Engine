@@ -132,19 +132,14 @@ void Material::Use()
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
-		ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChanged");
+		SCOPED_PROFILER("Material::OnMaterialChanged", scopeBenchmark);
 		if (shader)
 		{
 			lastUsedCamera = Graphics::usedCamera;
 			lastUpdatedType = Graphics::currentMode;
-			{
-				//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChangedUse");
-				shader->Use();
-			}
-			{
-				//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::OnMaterialChangedUpdate");
-				Update();
-			}
+
+			shader->Use();
+			Update();
 
 			const int matCount = AssetManager::GetMaterialCount();
 			for (int i = 0; i < matCount; i++)

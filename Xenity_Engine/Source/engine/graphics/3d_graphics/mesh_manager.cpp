@@ -13,7 +13,6 @@
 #include <engine/debug/debug.h>
 #include <engine/tools/math.h>
 
-
 void MeshManager::Init()
 {
 	Debug::Print("-------- Mesh Manager initiated --------", true);

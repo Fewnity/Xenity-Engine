@@ -220,7 +220,7 @@ int Engine::Init()
 
 void Engine::CheckEvents()
 {
-	ScopeBenchmark scopeBenchmark = ScopeBenchmark("Engine::CheckEvents");
+	SCOPED_PROFILER("Engine::CheckEvents", scopeBenchmark);
 	int focusCount = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	// Check SDL event
@@ -308,7 +308,7 @@ void Engine::Loop()
 	while (isRunning)
 	{
 		{
-			ScopeBenchmark scopeBenchmark = ScopeBenchmark("Engine::Loop");
+			SCOPED_PROFILER("Engine::Loop", scopeBenchmark);
 			engineLoopBenchmark->Start();
 
 			// Update time, inputs and network
