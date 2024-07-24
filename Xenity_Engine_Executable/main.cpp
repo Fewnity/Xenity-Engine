@@ -26,6 +26,11 @@ Rework the documentation
 Box colliders are not affected by gameobject scale
 Pre-open audio file for faster loading
 Do not ask to save scene when playing
+Add assert if project settings file is not found
+Replace CompatibleFile by FileInfo?
+Replace Platform currentPlatform = Platform::P_Windows; of shader.cpp by Application Get Plat
+Add an option to enable /disable the profiler in builds
+Remove the old profiler
 
 --- Can be for next release
 New Input system

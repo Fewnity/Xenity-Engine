@@ -13,6 +13,7 @@
 #include <memory>
 
 class RigidBody;
+class btCollisionShape;
 
 enum class CollisionSide
 {
@@ -58,6 +59,9 @@ public:
 	}
 
 protected:
+
+	//Bullet
+	btCollisionShape* collisionShape;
 
 	friend class RigidBody;
 	friend class InspectorMenu;
