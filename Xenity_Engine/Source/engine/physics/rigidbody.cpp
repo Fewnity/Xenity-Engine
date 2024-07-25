@@ -16,6 +16,8 @@
 #include <engine/game_elements/transform.h>
 #include <bullet/btBulletDynamicsCommon.h>
 #include "physics_manager.h"
+#include <engine/tools/math.h>
+#include <glm/gtx/euler_angles.hpp>
 
 RigidBody::RigidBody()
 {
@@ -86,9 +88,29 @@ void RigidBody::Tick()
 	GetTransform() ->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
 
 	btVector3 rot;
-	PhysicsManager::GetRotation(bulletRigidbody, rot);
-	GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
+	PhysicsManager::GetRotation(bulletRigidbody, rot); //ZYX
+	//GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
 
+	btMatrix3x3 m = bulletRigidbody->getWorldTransform().getBasis();
+	glm::mat4x4 mgl;
+	bulletRigidbody->getWorldTransform().getBasis().getOpenGLSubMatrix((btScalar*)(&mgl));
+	
+	//const glm::mat4 matChildRelative = glm::mat4_cast(mgl);
+
+	float x, y, z;
+	glm::extractEulerAngleXYZ(mgl, x, y, z);
+	x = glm::degrees(x);
+	y = glm::degrees(y);
+	z = glm::degrees(z);
+	GetTransform()->SetRotation(Vector3(x, y, z));
+	//GetTransform()->transformationMatrix = mgl;
+	//GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
+	/*GetTransform()->SetRotation(Vector3(rot.x() / Math::PI * 180.f, rot.y() / Math::PI * 180.f, rot.z() / Math::PI * 180.f));*/
+
+	/*GetTransform()->SetRotation(Vector3(rot.y() / Math::PI * 180.f, rot.x() / Math::PI * 180.f, rot.z() / Math::PI * 180.f));*/
+
+	//GetTransform()->SetRotation(Vector3(0, 0, rot.z() / Math::PI * 180.f));
+	//GetTransform()->SetRotation(Vector3(rot.x() / Math::PI * 180.f, 0, 0));
 	//if (GetGameObject()->IsLocalActive() && IsEnabled())
 	//{
 	//	int side = (int)CollisionSide::NoSide;
@@ -172,25 +194,28 @@ void RigidBody::Awake()
 
 		btTransform offsetTransform;
 
-		btCompoundShape* compoundShape = new btCompoundShape();
+		//btCompoundShape* compoundShape = new btCompoundShape();
 		offsetTransform.setIdentity();
 		//offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
 		offsetTransform.setOrigin(btVector3(0, 0, 0)); // Par exemple, un offset de (1, 0, 0)
-		compoundShape->addChildShape(offsetTransform, physBoxShape);
-		compoundShape->calculateLocalInertia(mass, localInertia);
+		/*compoundShape->addChildShape(offsetTransform, physBoxShape);
+		compoundShape->calculateLocalInertia(mass, localInertia);*/
 
 		/*bulletRigidbody->setCollisionShape(compoundShape);
 		bulletRigidbody->activate();*/
-
+		physBoxShape->calculateLocalInertia(mass, localInertia);
 		btTransform startTransform;
 		startTransform.setIdentity();
 		Vector3 pos = GetTransform()->GetPosition();
 		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+		startTransform.setRotation(btQuaternion(btVector3(-0.2389781, 0.0578619, 0.9692995), 4.4765805));
+		//startTransform.setRotation(btQuaternion(btVector3(0.3, 1, 0.2), 0.8141592653));
+
 		// Create MotionState and RigidBody object for the box shape
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		btVector3 inertia(0, 0, 0);
-		bulletRigidbody = new btRigidBody(1, myMotionState, compoundShape, inertia);
-		bulletRigidbody->applyTorque(btVector3(100, 0, 5000));
+
+		bulletRigidbody = new btRigidBody(1, myMotionState, physBoxShape, localInertia);
+		//bulletRigidbody->applyTorque(btVector3(100, 0, 5000));
 		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 		bulletRigidbody->activate();
 	}

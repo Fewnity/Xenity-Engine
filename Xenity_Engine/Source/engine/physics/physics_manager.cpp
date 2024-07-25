@@ -13,6 +13,9 @@
 #include <engine/time/time.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/debug.h>
+#include <engine/tools/math.h>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 std::vector<std::weak_ptr<BoxCollider>> PhysicsManager::boxColliders;
@@ -52,19 +55,83 @@ void PhysicsManager::QuaternionToEulerXYZ(const btQuaternion& quat, btVector3& e
 	const float sqy = y * y;
 	const float sqz = z * z;
 
-	euler.setZ((atan2f(2.0 * (x * y + z * w), (sqx - sqy - sqz + sqw))));
+	//float test = 2.0 * (y * z + x * w);
+	//if (test > 0.999) { // Singularity at north pole
+	//	euler.setX(2.0 * atan2f(y, w));
+	//	euler.setY(Math::PI / 2.0);
+	//	euler.setZ(0.0);
+	//}
+	//else if (test < -0.999) { // Singularity at south pole
+	//	euler.setX(-2.0 * atan2f(y, w));
+	//	euler.setY(-Math::PI / 2.0);
+	//	euler.setZ(0.0);
+	//}
+	//else {
+	//	euler.setX(-atan2f(2.0 * (y * z - x * w), 1.0 - 2.0 * (sqx + sqy)));
+	//	euler.setY(-asinf(2.0 * (x * z + y * w)));
+	//	euler.setZ(-atan2f(2.0 * (x * y - z * w), 1.0 - 2.0 * (sqy + sqz)));
+	//}
+	euler.setX(-atan2f(2.0 * (y * z - x * w), 1.0 - 2.0 * (sqx + sqy)));
+	euler.setY(-asinf(2.0 * (x * z + y * w)));
+	euler.setZ(-atan2f(2.0 * (x * y - z * w), 1.0 - 2.0 * (sqy + sqz)));
+	/*euler.setZ((atan2f(2.0 * (x * y + z * w), (sqx - sqy - sqz + sqw))));
 	euler.setX((atan2f(2.0 * (y * z + x * w), (-sqx - sqy + sqz + sqw))));
-	euler.setY((asinf(-2.0 * (x * z - y * w))));
+	euler.setY((asinf(-2.0 * (x * z - y * w))));*/
 }
 
 void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
 {
 	btVector3 btv;
 	btQuaternion btq = body->getOrientation();
+
+	const glm::vec3 eulerChildGlobal = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.y(), btq.z())));
+	// try every combination of euler angles
+	glm::vec3 eulerChildGlobal0 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.y(), btq.z())));
+	glm::vec3 eulerChildGlobal1 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.z(), btq.y())));
+	glm::vec3 eulerChildGlobal2 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.y(), btq.x(), btq.z()))); //?
+	glm::vec3 eulerChildGlobal3 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.y(), btq.z(), btq.x())));
+	glm::vec3 eulerChildGlobal4 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.z(), btq.x(), btq.y()))); //?
+	glm::vec3 eulerChildGlobal5 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.z(), btq.y(), btq.x())));
+
+	btq.setX(btq.getX());
+	btq.setY(btq.getY());
+	btq.setZ(btq.getZ());
+	btq.setW(-btq.getW());
+	const glm::mat4 matChildRelative = glm::mat4_cast(glm::quat(btq.w(), btq.y(), btq.z(), btq.x()));
+
+	// try every combination of euler angles
+	glm::vec3 eulerChildGlobal0n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.y(), btq.z()))); //?
+	glm::vec3 eulerChildGlobal1n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.z(), btq.y())));
+	glm::vec3 eulerChildGlobal2n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.y(), btq.x(), btq.z())));
+	glm::vec3 eulerChildGlobal3n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.y(), btq.z(), btq.x())));
+	glm::vec3 eulerChildGlobal4n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.z(), btq.x(), btq.y())));
+	glm::vec3 eulerChildGlobal5n = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.z(), btq.y(), btq.x()))); //?
+
+	rot.setX(-eulerChildGlobal0n.x);
+	rot.setY(-eulerChildGlobal0n.y);
+	rot.setZ(-eulerChildGlobal0n.z);
+
+
+	float x, y, z;
+	glm::extractEulerAngleYXZ(matChildRelative, x, y, z);
+	x = glm::degrees(x);
+	y = glm::degrees(y);
+	z = glm::degrees(z);
+
+	/*btScalar x;
+	btScalar y;
+	btScalar z;
+	body->getWorldTransform().getBasis().getEuler(x, y, z);
+	rot.setX(x);
+	rot.setY(y);
+	rot.setZ(z);*/
+
+	/*const glm::vec3 eulerChildGlobal2 = glm::degrees(glm::eulerAngles(glm::quat(btq.w(), btq.x(), btq.y(), btq.z())));
+
 	QuaternionToEulerXYZ(btq, btv);
 	rot.setX(btv.getX());
 	rot.setY(btv.getY());
-	rot.setZ(btv.getZ());
+	rot.setZ(btv.getZ());*/
 }
 
 void PhysicsManager::Init()
@@ -90,6 +157,7 @@ void PhysicsManager::Init()
 		btTransform groundTransform;
 		groundTransform.setIdentity();
 		groundTransform.setOrigin(btVector3(0, -0.5f, 0));
+		groundTransform.setRotation(btQuaternion(btVector3(0.7040626, -0.0926916, 0.7040626), 0.36971));
 
 		// Create MotionState and RigidBody object for the ground shape
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
