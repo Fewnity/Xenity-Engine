@@ -14,6 +14,8 @@
 
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <bullet/btBulletDynamicsCommon.h>
+#include "physics_manager.h"
 
 RigidBody::RigidBody()
 {
@@ -45,7 +47,7 @@ void RigidBody::SetVelocity(const Vector3& _velocity)
 
 void RigidBody::SetDrag(float _drag)
 {
-	if(_drag < 0)
+	if (_drag < 0)
 	{
 		drag = 0;
 	}
@@ -79,75 +81,120 @@ void RigidBody::SetIsStatic(float _isStatic)
 
 void RigidBody::Tick()
 {
-	if (GetGameObject()->IsLocalActive() && IsEnabled())
-	{
-		int side = (int)CollisionSide::NoSide;
-		std::shared_ptr<BoxCollider> rbBoxCollider = GetGameObject()->GetComponent<BoxCollider>();
-		if (rbBoxCollider)
-		{
-			std::shared_ptr<BoxCollider> other = nullptr;
-			const Vector3 deltaTimeVelocity = velocity * Time::GetDeltaTime();
+	btVector3 pos;
+	PhysicsManager::GetPosition(bulletRigidbody, pos);
+	GetTransform() ->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
 
-			const size_t colliderCount = PhysicsManager::boxColliders.size();
-			for (int i = 0; i < colliderCount; i++)
-			{
-				other = PhysicsManager::boxColliders[i].lock();
-				if (other != rbBoxCollider && other->IsEnabled() && other->GetGameObject()->IsLocalActive())
-				{
-					const std::shared_ptr<RigidBody> otherRigidbody = other->GetAttachedRigidbody().lock();
-					if (rbBoxCollider->isTrigger && isStatic && otherRigidbody && !otherRigidbody->isStatic) // Check trigger
-					{
-						const bool trigger = BoxCollider::CheckTrigger(*rbBoxCollider, *other);
-						if (trigger)
-						{
-							rbBoxCollider->onTriggerEvent.Trigger(other);
-						}
-					}
-					else if (!other->isTrigger && !isStatic) // Check collision
-					{
-						const int tempSide = (int)BoxCollider::CheckCollision(*rbBoxCollider, *other, deltaTimeVelocity);
-						if (tempSide != (int)CollisionSide::NoSide)
-						{
-							if ((side & tempSide) == 0)
-								side |= tempSide;
-						}
-					}
+	btVector3 rot;
+	PhysicsManager::GetRotation(bulletRigidbody, rot);
+	GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
 
-				}
-			}
-		}
+	//if (GetGameObject()->IsLocalActive() && IsEnabled())
+	//{
+	//	int side = (int)CollisionSide::NoSide;
+	//	std::shared_ptr<BoxCollider> rbBoxCollider = GetGameObject()->GetComponent<BoxCollider>();
+	//	if (rbBoxCollider)
+	//	{
+	//		std::shared_ptr<BoxCollider> other = nullptr;
+	//		const Vector3 deltaTimeVelocity = velocity * Time::GetDeltaTime();
 
-		if (!isStatic)
-		{
-			Vector3 newVelocity = velocity;
+	//		const size_t colliderCount = PhysicsManager::boxColliders.size();
+	//		for (int i = 0; i < colliderCount; i++)
+	//		{
+	//			other = PhysicsManager::boxColliders[i].lock();
+	//			if (other != rbBoxCollider && other->IsEnabled() && other->GetGameObject()->IsLocalActive())
+	//			{
+	//				const std::shared_ptr<RigidBody> otherRigidbody = other->GetAttachedRigidbody().lock();
+	//				if (rbBoxCollider->isTrigger && isStatic && otherRigidbody && !otherRigidbody->isStatic) // Check trigger
+	//				{
+	//					const bool trigger = BoxCollider::CheckTrigger(*rbBoxCollider, *other);
+	//					if (trigger)
+	//					{
+	//						rbBoxCollider->onTriggerEvent.Trigger(other);
+	//					}
+	//				}
+	//				else if (!other->isTrigger && !isStatic) // Check collision
+	//				{
+	//					const int tempSide = (int)BoxCollider::CheckCollision(*rbBoxCollider, *other, deltaTimeVelocity);
+	//					if (tempSide != (int)CollisionSide::NoSide)
+	//					{
+	//						if ((side & tempSide) == 0)
+	//							side |= tempSide;
+	//					}
+	//				}
 
-			// Make the rigidbody bounce if there is a wall in the opposite direction
-			if ((side & (int)CollisionSide::SideX) != 0)
-				newVelocity.x = -velocity.x * bounce;
-			if ((side & (int)CollisionSide::SideY) != 0)
-				newVelocity.y = -velocity.y * bounce;
-			if ((side & (int)CollisionSide::SideZ) != 0)
-				newVelocity.z = -velocity.z * bounce;
+	//			}
+	//		}
+	//	}
 
-			// Move the rigidbody
-			if (newVelocity.Magnitude() != 0)
-				GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
+	//	if (!isStatic)
+	//	{
+	//		Vector3 newVelocity = velocity;
 
-			// Apply gravity
-			if ((side & (int)CollisionSide::SideY) == 0)
-			{
-				newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
-				if (newVelocity.y <= -10)
-				{
-					newVelocity.y = -10;
-				}
-			}
-			velocity = newVelocity;
-		}
-	}
+	//		// Make the rigidbody bounce if there is a wall in the opposite direction
+	//		if ((side & (int)CollisionSide::SideX) != 0)
+	//			newVelocity.x = -velocity.x * bounce;
+	//		if ((side & (int)CollisionSide::SideY) != 0)
+	//			newVelocity.y = -velocity.y * bounce;
+	//		if ((side & (int)CollisionSide::SideZ) != 0)
+	//			newVelocity.z = -velocity.z * bounce;
+
+	//		// Move the rigidbody
+	//		if (newVelocity.Magnitude() != 0)
+	//			GetTransform()->SetPosition(GetTransform()->GetPosition() + newVelocity * Time::GetDeltaTime());
+
+	//		// Apply gravity
+	//		if ((side & (int)CollisionSide::SideY) == 0)
+	//		{
+	//			newVelocity.y -= 9.81f * gravityMultiplier * Time::GetDeltaTime();
+	//			if (newVelocity.y <= -10)
+	//			{
+	//				newVelocity.y = -10;
+	//			}
+	//		}
+	//		velocity = newVelocity;
+	//	}
+	//}
 }
 
 RigidBody::~RigidBody()
 {
 	AssetManager::RemoveReflection(this);
+}
+
+void RigidBody::Awake()
+{
+	{
+		btCollisionShape* physBoxShape = new btBoxShape(btVector3(1, 1, 1));
+
+		float mass = 1.0f;
+		btVector3 localInertia(0, 0, 0);
+
+		btTransform offsetTransform;
+
+		btCompoundShape* compoundShape = new btCompoundShape();
+		offsetTransform.setIdentity();
+		//offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
+		offsetTransform.setOrigin(btVector3(0, 0, 0)); // Par exemple, un offset de (1, 0, 0)
+		compoundShape->addChildShape(offsetTransform, physBoxShape);
+		compoundShape->calculateLocalInertia(mass, localInertia);
+
+		/*bulletRigidbody->setCollisionShape(compoundShape);
+		bulletRigidbody->activate();*/
+
+		btTransform startTransform;
+		startTransform.setIdentity();
+		Vector3 pos = GetTransform()->GetPosition();
+		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+		// Create MotionState and RigidBody object for the box shape
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btVector3 inertia(0, 0, 0);
+		bulletRigidbody = new btRigidBody(1, myMotionState, compoundShape, inertia);
+		bulletRigidbody->applyTorque(btVector3(100, 0, 5000));
+		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+		bulletRigidbody->activate();
+	}
+
+	//{
+	//}
 }

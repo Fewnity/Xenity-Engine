@@ -21,6 +21,7 @@
 #include <editor/gizmo.h>
 #endif
 #include "rigidbody.h"
+//#include <bullet/btBulletDynamicsCommon.h>
 
 BoxCollider::BoxCollider()
 {
@@ -107,6 +108,10 @@ BoxCollider::~BoxCollider()
 void BoxCollider::Awake()
 {
 	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
+}
+
+void BoxCollider::Start()
+{
 }
 
 void BoxCollider::OnDrawGizmosSelected()

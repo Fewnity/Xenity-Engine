@@ -17,7 +17,7 @@
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 std::vector<std::weak_ptr<BoxCollider>> PhysicsManager::boxColliders;
 
-btDynamicsWorld* physDynamicsWorld;
+btDynamicsWorld* PhysicsManager::physDynamicsWorld;
 btBroadphaseInterface* physBroadphase;
 btCollisionDispatcher* physDispatcher;
 btConstraintSolver* physSolver;
@@ -27,9 +27,9 @@ btCollisionShape* physBoxShape;
 btRigidBody* physBoxBody;
 btCollisionShape* physGroundShape;
 btRigidBody* physGroundBody;
-std::vector<btRigidBody*> mBodies;
+std::vector<btRigidBody*> PhysicsManager::mBodies;
 
-void GetPosition(const btRigidBody* body, btVector3& pos)
+void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 {
 	if (body && body->getMotionState())
 	{
@@ -40,7 +40,7 @@ void GetPosition(const btRigidBody* body, btVector3& pos)
 	}
 }
 
-void QuaternionToEulerXYZ(const btQuaternion& quat, btVector3& euler)
+void PhysicsManager::QuaternionToEulerXYZ(const btQuaternion& quat, btVector3& euler)
 {
 	const float x = quat.getX();
 	const float y = quat.getY();
@@ -57,7 +57,7 @@ void QuaternionToEulerXYZ(const btQuaternion& quat, btVector3& euler)
 	euler.setY((asinf(-2.0 * (x * z - y * w))));
 }
 
-void GetRotation(const btRigidBody* body, btVector3& rot)
+void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
 {
 	btVector3 btv;
 	btQuaternion btq = body->getOrientation();
@@ -82,32 +82,32 @@ void PhysicsManager::Init()
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 	physSolver = solver;
 
-	//physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
-	//physDynamicsWorld->setGravity(btVector3(0, -10, 0));
-	//{
-	//	physGroundShape = new btBoxShape(btVector3(btScalar(50.0f), btScalar(1.0f), btScalar(50.0f)));
+	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
+	physDynamicsWorld->setGravity(btVector3(0, -10, 0));
+	{
+		physGroundShape = new btBoxShape(btVector3(btScalar(50.0f), btScalar(1.0f), btScalar(50.0f)));
 
-	//	btTransform groundTransform;
-	//	groundTransform.setIdentity();
-	//	groundTransform.setOrigin(btVector3(0, -0.5f, 0));
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -0.5f, 0));
 
-	//	// Create MotionState and RigidBody object for the ground shape
-	//	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		// Create MotionState and RigidBody object for the ground shape
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
 
-	//	float mass = 0;
-	//	bool isDynamic = (mass != 0.f);
+		float mass = 0;
+		bool isDynamic = (mass != 0.f);
 
-	//	btVector3 localInertia(0, 0, 0);
-	//	if (isDynamic)
-	//		physGroundShape->calculateLocalInertia(mass, localInertia);
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			physGroundShape->calculateLocalInertia(mass, localInertia);
 
-	//	physGroundBody = new btRigidBody(mass, myMotionState, physGroundShape, localInertia);
+		physGroundBody = new btRigidBody(mass, myMotionState, physGroundShape, localInertia);
 
-	//	// Add ground body to physics object
-	//	physDynamicsWorld->addRigidBody(physGroundBody);
-	//}
+		// Add ground body to physics object
+		physDynamicsWorld->addRigidBody(physGroundBody);
+	}
 
-	////Create the box object
+	//Create the box object
 	//{
 	//	//Create the box shape
 	//	physBoxShape = new btBoxShape(btVector3(1, 1, 1));
@@ -146,20 +146,23 @@ void PhysicsManager::Init()
 
 	//	btCompoundShape* compoundShape = new btCompoundShape();
 	//	offsetTransform.setIdentity();
-	//	offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
+	//	//offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
+	//	offsetTransform.setOrigin(btVector3(0, 0, 0)); // Par exemple, un offset de (1, 0, 0)
 	//	compoundShape->addChildShape(offsetTransform, physBoxShape);
-
 	//	compoundShape->calculateLocalInertia(mass, inertia);
 
 	//	btTransform startTransform;
 	//	startTransform.setIdentity();
-	//	startTransform.setOrigin(btVector3(55, 10, 0));
+	//	startTransform.setOrigin(btVector3(50, 10, 0));
 	//	// Create MotionState and RigidBody object for the box shape
 	//	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	//	physBoxBody = new btRigidBody(mass, myMotionState, compoundShape, inertia);
+	//	physBoxBody = new btRigidBody(mass, myMotionState, nullptr, inertia);
+	//	physBoxBody->setCollisionShape(compoundShape);
 	//	// Add box body to physics object & activate it
 	//	physDynamicsWorld->addRigidBody(physBoxBody);
 	//	physBoxBody->activate();
+
+	//	//compoundShape->
 
 	//	//add to contener
 	//	mBodies.push_back(physBoxBody);

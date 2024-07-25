@@ -13,7 +13,7 @@
 #include <memory>
 
 class RigidBody;
-class btCollisionShape;
+//class btCollisionShape;
 
 enum class CollisionSide
 {
@@ -61,13 +61,15 @@ public:
 protected:
 
 	//Bullet
-	btCollisionShape* collisionShape;
+	//btCollisionShape* collisionShape;
 
 	friend class RigidBody;
 	friend class InspectorMenu;
 	friend class MainBarMenu;
 
 	void Awake() override;
+
+	void Start() override;
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;

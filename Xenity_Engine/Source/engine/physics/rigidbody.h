@@ -12,6 +12,8 @@
 
 class BoxCollider;
 
+class btRigidBody;
+
 /*
 * @brief Component to add physics to the GameObject
 */
@@ -20,6 +22,8 @@ class API RigidBody : public Component
 public:
 	RigidBody();
 	~RigidBody();
+
+	void Awake() override;
 
 	inline const Vector3& GetVelocity() const { return velocity; }
 	void SetVelocity(const Vector3& _velocity);
@@ -47,6 +51,7 @@ protected:
 	float bounce = 0.5f;
 	float gravityMultiplier = 1.0f;
 	bool isStatic = false;
+	btRigidBody* bulletRigidbody;
 
 	/**
 	 * @brief [Internal]
