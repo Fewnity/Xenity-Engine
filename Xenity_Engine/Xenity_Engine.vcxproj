@@ -614,6 +614,7 @@
     <ClCompile Include="include\bullet\LinearMath\btConvexHull.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btGeometryUtil.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btQuickprof.cpp" />
+    <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
     <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
     <ClCompile Include="include\implot\implot.cpp" />
@@ -1220,6 +1221,7 @@
     <ClInclude Include="include\bullet\LinearMath\btTransform.h" />
     <ClInclude Include="include\bullet\LinearMath\btTransformUtil.h" />
     <ClInclude Include="include\bullet\LinearMath\btVector3.h" />
+    <ClInclude Include="Source\engine\vectors\quaternion.h" />
     <ClInclude Include="Source\engine\tools\scope_benchmark.h" />
     <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />
     <ClInclude Include="include\implot\implot.h" />

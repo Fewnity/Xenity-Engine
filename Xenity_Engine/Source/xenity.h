@@ -19,6 +19,7 @@
 #include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
+#include <engine/vectors/quaternion.h>
 
 // UI
 #include <engine/ui/screen.h>
