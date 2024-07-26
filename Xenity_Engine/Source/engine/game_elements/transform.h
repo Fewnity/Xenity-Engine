@@ -9,6 +9,7 @@
 
 #include <engine/event_system/event_system.h>
 #include <engine/vectors/vector3.h>
+#include <engine/vectors/quaternion.h>
 #include <glm/glm.hpp>
 #include <memory>
 
@@ -125,6 +126,18 @@ public:
 	void SetLocalRotation(const Vector3& value);//Euler angle
 
 	/**
+	* @brief Set rotation
+	* @param value Rotation
+	*/
+	void SetRotation(const Quaternion& value);
+
+	/**
+	* @brief Set local rotation
+	* @param value Local rotation
+	*/
+	void SetLocalRotation(const Quaternion& value);
+
+	/**
 	* @brief Set local scale
 	* @param value Local scale
 	*/
@@ -200,8 +213,11 @@ private:
 	Vector3 localPosition = Vector3(0);
 	Vector3 rotation = Vector3(0);//Euler angle
 	Vector3 localRotation = Vector3(0);//Euler angle
+	Quaternion rotationQuaternion = Quaternion::Identity();//Euler angle
+	Quaternion localRotationQuaternion = Quaternion::Identity();//Euler angle
 	Vector3 scale = Vector3(1);
 	Vector3 localScale = Vector3(1);
+
 	std::weak_ptr<GameObject> gameObject;
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 

@@ -182,6 +182,49 @@ void Transform::SetLocalRotation(const Vector3& value)
 	UpdateWorldValues();
 }
 
+void Transform::SetRotation(const Quaternion& value)
+{
+	isTransformationMatrixDirty = true;
+
+	rotationQuaternion = value;
+	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	if (gm->GetParent().expired())
+	{
+		localRotationQuaternion = value;
+		SetChildrenWorldPositions();
+	}
+	else
+	{
+		SetChildrenWorldPositions();
+		//localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->GetParent().lock()->GetTransform()->GetRotation());
+	}
+}
+
+void Transform::SetLocalRotation(const Quaternion& value)
+{
+	//XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalRotation] value is invalid");
+
+	//// Security check
+	//if (value.HasInvalidValues())
+	//	return;
+
+	if (gameObject.lock()->GetParent().expired())
+	{
+		SetRotation(value);
+		return;
+	}
+
+	/*if (value != localRotation)
+		isTransformationMatrixDirty = true;
+	else
+		return;*/
+
+	isTransformationMatrixDirty = true;
+
+	localRotationQuaternion = value;
+	UpdateWorldValues();
+}
+
 void Transform::SetLocalScale(const Vector3& value)
 {
 	XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalScale] value is invalid");
@@ -258,6 +301,7 @@ void Transform::UpdateWorldRotation()
 	if (gm->GetParent().expired())
 	{
 		rotation = localRotation;
+		rotationQuaternion = localRotationQuaternion;
 		return;
 	}
 
@@ -314,12 +358,17 @@ void Transform::UpdateTransformationMatrix()
 	if(position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
 		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
 
-	if(rotation.y != 0.0f)
+	/*if(rotation.y != 0.0f)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (rotation.x != 0.0f)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	if (rotation.z != 0.0f)
-		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));*/
+
+	//transformationMatrix = glm::rotate(transformationMatrix, glm::quat(2));
+	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(-rotationQuaternion.w, rotationQuaternion.z, rotationQuaternion.y, -rotationQuaternion.x));
+	transformationMatrix *= RotationMatrix2;
+	//transformationMatrix *= glm::quat(rotationQuaternion.w, rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z);
 
 	for (int i = 0; i < 3; i++)
 	{
