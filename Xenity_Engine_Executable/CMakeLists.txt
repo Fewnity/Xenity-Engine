@@ -30,14 +30,17 @@ project(hello)
 # Add any additional include paths here
 include_directories(
     include/
+    include/bullet/
     Source/
 )
 
 # Spécifiez le répertoire contenant vos fichiers source
 set(SOURCES_DIR "Source")
+set(INCLUDES_DIR "include/bullet")
 
 # Recherchez tous les fichiers .cpp dans le répertoire et ses sous-répertoires
-file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c")
+#file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c")
+file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c" "${INCLUDES_DIR}/*.cpp")
 
 list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
 list(FILTER SOURCES EXCLUDE REGEX "Source/glad.c")
