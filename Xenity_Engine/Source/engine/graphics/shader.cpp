@@ -479,35 +479,23 @@ bool Shader::Compile(const std::string& shaderData, ShaderType type)
 /// </summary>
 void Shader::SetShaderCameraPosition()
 {
-	//Use();
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
 		std::shared_ptr<Transform> transform = Graphics::usedCamera->GetTransform();
-		Vector3 lookDirection = transform->GetForward();
-		const Vector3& camPos = transform->GetPosition();
-		lookDirection = lookDirection + camPos;
 
-		float xAngle = transform->GetRotation().x;
-		while (xAngle < -90)
-		{
-			xAngle += 360;
-		}
-		while (xAngle > 360 - 90)
-		{
-			xAngle -= 360;
-		}
+		const Vector3& position = transform->GetPosition();
 
-		const float angle = glm::radians(-transform->GetRotation().z);
-		const glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		const Quaternion& baseQ = transform->GetRotation();
+		Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+		Quaternion newQ = baseQ * offsetQ;
 
-		glm::mat4 camera;
-		if (xAngle > 90 || xAngle < -90)
-			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, -1, 0));
-		else
-			camera = glm::lookAt(glm::vec3(-camPos.x, camPos.y, camPos.z), glm::vec3(-lookDirection.x, lookDirection.y, lookDirection.z), glm::vec3(0, 1, 0));
-		camera = rotationMatrix * camera;
-		Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, camera);
+		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+
+		if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
+			RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
+
+		Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, RotationMatrix); // Y position and rotation inverted
 	}
 }
 
@@ -516,7 +504,6 @@ void Shader::SetShaderCameraPosition()
 /// </summary>
 void Shader::SetShaderCameraPositionCanvas()
 {
-	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, cameraLocation, canvasCameraTransformationMatrix);
 }
 
@@ -525,13 +512,11 @@ void Shader::SetShaderCameraPositionCanvas()
 /// </summary>
 void Shader::SetShaderProjection()
 {
-	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetProjection());
 }
 
 void Shader::SetShaderProjectionCanvas()
 {
-	//Use();
 	Engine::GetRenderer().SetShaderAttribut(programId, projectionLocation, Graphics::usedCamera->GetCanvasProjection());
 }
 
@@ -551,8 +536,6 @@ void Shader::SetShaderModel(const glm::mat4& trans)
 /// <param name="trans"></param>
 void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
-	//Use();
-
 	glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
 
 	if (rotation.y != 0)
@@ -561,6 +544,7 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	if (rotation.z != 0)
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));
+
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 

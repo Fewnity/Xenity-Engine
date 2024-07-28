@@ -28,6 +28,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <glm/gtx/quaternion.hpp>
 
 void SceneMenu::Init()
 {
@@ -71,7 +72,6 @@ void SceneMenu::MoveCamera()
 	{
 		// Get camera transform
 		std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
-		Vector3 rot = cameraTransform->GetRotation();
 		Vector3 pos = cameraTransform->GetPosition();
 
 		if ((ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) && isHovered)
@@ -80,11 +80,7 @@ void SceneMenu::MoveCamera()
 		}
 
 		// Rotate the camera when dragging the mouse right click
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && startRotatingCamera && !mode2D)
-		{
-			rot.x += -InputSystem::mouseSpeed.y * 70;
-			rot.y += InputSystem::mouseSpeed.x * 70;
-		}
+
 
 		// Move the camera when using keyboard's arrows
 		float fwd = 0;
@@ -140,10 +136,21 @@ void SceneMenu::MoveCamera()
 		pos.y -= (upWorld / 7.0f) * 30;
 
 		cameraTransform->SetPosition(pos);
-		if (!mode2D)
-			cameraTransform->SetRotation(rot);
-		else
-			cameraTransform->SetRotation(Vector3(0));
+
+		// Rotate the camera when dragging the mouse right click
+		if (!mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		{
+			const Quaternion& rotQ = cameraTransform->GetRotation();
+			Quaternion rotX = Quaternion::AngleAxis(-InputSystem::mouseSpeed.y * 70, Vector3(1, 0, 0));
+			Quaternion rotY = Quaternion::AngleAxis(InputSystem::mouseSpeed.x * 70, Vector3(0, 1, 0));
+
+			Quaternion newRot = rotY * rotQ * rotX;
+			cameraTransform->SetRotation(newRot);
+		}
+		else if(mode2D)
+		{
+			cameraTransform->SetRotation(Quaternion::Identity());
+		}
 	}
 }
 
@@ -224,18 +231,15 @@ void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormal
 {
 	const std::shared_ptr<Transform> cameraTransform = camera.GetTransform();
 
-	// Calculate camera matrix without translate
-	const Vector3& cameraRotation = cameraTransform->GetRotation();
-	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1), glm::vec3(1.0f, 0.0f, 0.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
+	const Quaternion& baseQ = cameraTransform->GetRotation();
+
+	glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(baseQ.w, -baseQ.x, -baseQ.y, -baseQ.z));
 
 	// Get screen mouse position (inverted)
 	const glm::vec3 mousePositionGLM = glm::vec3(startAvailableSize.x - mousePosition.x, startAvailableSize.y - (windowSize.y - mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
-	worldCoords = Vector3(vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z);
+	worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
 
 	// Normalise direction if needed
 	mouseWorldDir = worldCoords;
@@ -428,7 +432,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				side = DetectSide(camDistance, objectPosition, camPosition, mouseWorldDirNormalized, objectRight, objectUp, objectForward);
 
 				oldTransformPosition = selectedGoTransform->GetPosition();
-				oldTransformRotation = selectedGoTransform->GetLocalRotation();
+				oldTransformRotation = selectedGoTransform->GetLocalEulerAngles();
 				oldTransformScale = selectedGoTransform->GetLocalScale();
 			}
 
@@ -476,7 +480,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 							startObjectValue = selectedGoTransform->GetPosition();
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
-						startObjectValue = selectedGoTransform->GetLocalRotation();
+						startObjectValue = selectedGoTransform->GetLocalEulerAngles();
 					else if (toolMode == ToolMode::Tool_Scale)
 						startObjectValue = selectedGoTransform->GetLocalScale();
 
@@ -587,7 +591,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
 					{
-						auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalRotation(), oldTransformRotation, true);
+						auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalEulerAngles(), oldTransformRotation, true);
 						CommandManager::AddCommandAndExecute(command);
 					}
 					else if (toolMode == ToolMode::Tool_Scale)

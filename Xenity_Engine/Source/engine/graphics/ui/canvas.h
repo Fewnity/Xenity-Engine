@@ -41,6 +41,6 @@ protected:
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	Vector2Int lastSize = 0;
+	Vector2Int lastSize = Vector2Int(0);
 };
 

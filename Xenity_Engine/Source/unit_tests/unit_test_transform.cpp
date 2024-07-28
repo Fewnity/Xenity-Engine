@@ -82,7 +82,7 @@ bool TransformSetRotationTest::Start(std::string& errorOut)
 
 	// Normal SetRotation
 	transform->SetRotation(Vector3(90, 180, 270));
-	if (!Compare(transform->GetRotation(), Vector3(90, 180, 270)))
+	if (!Compare(transform->GetEulerAngles(), Vector3(90, 180, 270)))
 	{
 		errorOut += "Bad Transform SetRotation\n";
 		result = false;
@@ -90,7 +90,7 @@ bool TransformSetRotationTest::Start(std::string& errorOut)
 
 	// Normal SetLocalRotation
 	transform->SetLocalRotation(Vector3(-90, -180, -270));
-	if (!Compare(transform->GetRotation(), Vector3(-90, -180, -270)))
+	if (!Compare(transform->GetEulerAngles(), Vector3(-90, -180, -270)))
 	{
 		errorOut += "Bad Transform SetLocalRotation\n";
 		result = false;
@@ -101,27 +101,27 @@ bool TransformSetRotationTest::Start(std::string& errorOut)
 	gameObject->SetParent(parent);
 	parent->GetTransform()->SetRotation(Vector3(10, 20, 30));
 	transform->SetRotation(Vector3(10, 20, 30));
-	if (!Compare(transform->GetRotation(), Vector3(10, 20, 30)))
+	if (!Compare(transform->GetEulerAngles(), Vector3(10, 20, 30)))
 	{
-		errorOut += "Bad Transform SetRotation in a parent (GetRotation)\n";
+		errorOut += "Bad Transform SetRotation in a parent (GetEulerAngles)\n";
 		result = false;
 	}
-	if (!Compare(transform->GetLocalRotation(), Vector3(0, 0, 0)))
+	if (!Compare(transform->GetLocalEulerAngles(), Vector3(0, 0, 0)))
 	{
-		errorOut += "Bad Transform SetRotation in a parent (GetLocalRotation)\n";
+		errorOut += "Bad Transform SetRotation in a parent (GetLocalEulerAngles)\n";
 		result = false;
 	}
 
 	// SetLocalRotation in a parent
 	transform->SetLocalRotation(Vector3(10, 20, 30));
-	if (!Compare(transform->GetRotation(), Vector3(8.21814728f, 42.4855042f, 61.8378143f)))
+	if (!Compare(transform->GetEulerAngles(), Vector3(8.21814728f, 42.4855042f, 61.8378143f)))
 	{
-		errorOut += "Bad Transform SetLocalRotation in a parent (GetRotation)\n";
+		errorOut += "Bad Transform SetLocalRotation in a parent (GetEulerAngles)\n";
 		result = false;
 	}
-	if (!Compare(transform->GetLocalRotation(), Vector3(10, 20, 30)))
+	if (!Compare(transform->GetLocalEulerAngles(), Vector3(10, 20, 30)))
 	{
-		errorOut += "Bad Transform SetLocalRotation in a parent (GetLocalRotation)\n";
+		errorOut += "Bad Transform SetLocalRotation in a parent (GetLocalEulerAngles)\n";
 		result = false;
 	}
 

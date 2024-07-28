@@ -156,7 +156,7 @@ inline void InspectorCreateGameObjectCommand::Execute()
 				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
 				std::shared_ptr<Transform> selectedTransform = target->GetTransform();
 				transform->SetPosition(selectedTransform->GetPosition());
-				transform->SetRotation(selectedTransform->GetRotation());
+				transform->SetRotation(selectedTransform->GetEulerAngles());
 				transform->SetLocalScale(selectedTransform->GetScale());
 
 				if (target->GetParent().lock())

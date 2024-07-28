@@ -18,8 +18,8 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	Vector2Int();
-	Vector2Int(const int x, const int y);
-	Vector2Int(const int fillValue);
+	explicit Vector2Int(const int x, const int y);
+	explicit Vector2Int(const int fillValue);
 
 	/**
 	* @brief Linearly interpolates between vectors
@@ -43,42 +43,42 @@ public:
 
 inline Vector2Int operator+(const Vector2Int& left, const Vector2Int& right)
 {
-	return { (int)(left.x + right.x), (int)(left.y + right.y) };
+	return Vector2Int{ (int)(left.x + right.x), (int)(left.y + right.y) };
 }
 
 inline Vector2Int operator-(const Vector2Int& left, const Vector2Int& right)
 {
-	return { (int)(left.x - right.x), (int)(left.y - right.y) };
+	return Vector2Int{ (int)(left.x - right.x), (int)(left.y - right.y) };
 }
 
 inline Vector2Int operator*(const float value, const Vector2Int& vec)
 {
-	return { (int)(vec.x * value), (int)(vec.y * value) };
+	return Vector2Int{ (int)(vec.x * value), (int)(vec.y * value) };
 }
 
 inline Vector2Int operator*(const Vector2Int& left, const Vector2Int& right)
 {
-	return { (int)(left.x * right.x), (int)(left.y * right.y) };
+	return Vector2Int{ (int)(left.x * right.x), (int)(left.y * right.y) };
 }
 
 inline Vector2Int operator*(const Vector2Int& vec, const float value)
 {
-	return { (int)(vec.x * value), (int)(vec.y * value) };
+	return Vector2Int{ (int)(vec.x * value), (int)(vec.y * value) };
 }
 
 inline Vector2Int operator/(const float value, const Vector2Int& vec)
 {
-	return { (int)(vec.x / value), (int)(vec.y / value) };
+	return Vector2Int{ (int)(vec.x / value), (int)(vec.y / value) };
 }
 
 inline Vector2Int operator/(const Vector2Int& vec, const float value)
 {
-	return { (int)(vec.x / value), (int)(vec.y / value) };
+	return Vector2Int{ (int)(vec.x / value), (int)(vec.y / value) };
 }
 
 inline Vector2Int operator/(const Vector2Int& left, const Vector2Int& right)
 {
-	return { (int)(left.x / right.x), (int)(left.y / right.y) };
+	return Vector2Int{ (int)(left.x / right.x), (int)(left.y / right.y) };
 }
 
 inline Vector2Int& operator/=(Vector2Int& vec, const float value)

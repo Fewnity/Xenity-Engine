@@ -31,6 +31,9 @@ Replace CompatibleFile by FileInfo?
 Replace Platform currentPlatform = Platform::P_Windows; of shader.cpp by Application Get Plat
 Add an option to enable /disable the profiler in builds
 Remove the old profiler
+Object click does not work if closing the scene menu and reopening it
+Drag drop a mesh do not make the scene dirty
+Drag drop a mesh do not unselect the selected file
 
 --- Can be for next release
 New Input system

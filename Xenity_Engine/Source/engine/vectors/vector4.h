@@ -18,8 +18,8 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	Vector4();
-	Vector4(const float x, const float y, const float z, const float w);
-	Vector4(const float fillValue);
+	explicit Vector4(const float x, const float y, const float z, const float w);
+	explicit Vector4(const float fillValue);
 
 	/**
 	* @brief Linearly interpolates between vectors
@@ -59,42 +59,42 @@ public:
 
 inline Vector4 operator+(const Vector4& left, const Vector4& right)
 {
-	return { left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w };
+	return Vector4{ left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w };
 }
 
 inline Vector4 operator-(const Vector4& left, const Vector4& right)
 {
-	return { left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
+	return Vector4{ left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
 }
 
 inline Vector4 operator*(const float value, const Vector4& vec)
 {
-	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
+	return Vector4{ vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
 
 inline Vector4 operator*(const Vector4& left, const Vector4& right)
 {
-	return { left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w };
+	return Vector4{ left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w };
 }
 
 inline Vector4 operator*(const Vector4& vec, const float value)
 {
-	return { vec.x * value, vec.y * value, vec.z * value, vec.w * value };
+	return Vector4{ vec.x * value, vec.y * value, vec.z * value, vec.w * value };
 }
 
 inline Vector4 operator/(const float value, const Vector4& vec)
 {
-	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
+	return Vector4{ vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
 
 inline Vector4 operator/(const Vector4& vec, const float value)
 {
-	return { vec.x / value, vec.y / value, vec.z / value, vec.w / value };
+	return Vector4{ vec.x / value, vec.y / value, vec.z / value, vec.w / value };
 }
 
 inline Vector4 operator/(const Vector4& left, const Vector4& right)
 {
-	return { left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w };
+	return Vector4{ left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w };
 }
 
 inline Vector4& operator/=(Vector4& vec, const float value)

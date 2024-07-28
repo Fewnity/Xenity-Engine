@@ -33,6 +33,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <engine/debug/debug.h>
+#include <glm/gtx/quaternion.hpp>
 
 
 #pragma region Constructors / Destructor
@@ -381,14 +382,14 @@ Vector3 Camera::GetMouseRay()
 {
 	const std::shared_ptr<Transform> cameraTransform = GetTransform();
 
-	// Calculate camera matrix without translate
-	const Vector3& cameraRotation = cameraTransform->GetRotation();
-	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x * -1 + 180), glm::vec3(1.0f, 0.0f, 0.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y * 1), glm::vec3(0.0f, 1.0f, 0.0f));
+	const Quaternion& baseQ = cameraTransform->GetRotation();
+	Quaternion offsetQ = Quaternion::Euler(180, 0, 0);
+	Quaternion newQ = baseQ * offsetQ;
+
+	glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(width - InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(width -InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
 	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, projection, glm::vec4(0, 0, width, height));
@@ -406,7 +407,7 @@ void Camera::OnDrawGizmosSelected()
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 	const Vector3& cameraPosition = GetTransform()->GetPosition();
-	const Vector3& cameraRotation = GetTransform()->GetRotation();
+	const Vector3& cameraRotation = GetTransform()->GetEulerAngles();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(-cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));

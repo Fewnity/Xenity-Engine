@@ -23,10 +23,10 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	Vector3();
-	Vector3(const float x, const float y, const float z);
+	explicit Vector3(const float x, const float y, const float z);
 	Vector3(const glm::vec3& glmVec3);
 	Vector3(const glm::vec4& glmVec4);
-	Vector3(const float fillValue);
+	explicit Vector3(const float fillValue);
 	Vector3(const Vector2Int& vect);
 	Vector3(const Vector2& vect);
 
@@ -98,47 +98,47 @@ public:
 
 inline Vector3 operator+(const Vector3& left, const Vector3& right)
 {
-	return { left.x + right.x, left.y + right.y, left.z + right.z };
+	return Vector3{ left.x + right.x, left.y + right.y, left.z + right.z };
 }
 
 inline Vector3 operator-(const Vector3& left, const Vector3& right)
 {
-	return { left.x - right.x, left.y - right.y, left.z - right.z };
+	return Vector3{ left.x - right.x, left.y - right.y, left.z - right.z };
 }
 
 inline Vector3 operator-(const Vector3& vec)
 {
-	return { -vec.x, -vec.y, -vec.z };
+	return Vector3{ -vec.x, -vec.y, -vec.z };
 }
 
 inline Vector3 operator*(float value, const Vector3& vec)
 {
-	return { vec.x * value, vec.y * value, vec.z * value };
+	return Vector3{ vec.x * value, vec.y * value, vec.z * value };
 }
 
 inline Vector3 operator*(const Vector3& left, const Vector3& right)
 {
-	return { left.x * right.x, left.y * right.y, left.z * right.z };
+	return Vector3{ left.x * right.x, left.y * right.y, left.z * right.z };
 }
 
 inline Vector3 operator*(const Vector3& vec, const float value)
 {
-	return { vec.x * value, vec.y * value, vec.z * value };
+	return Vector3{ vec.x * value, vec.y * value, vec.z * value };
 }
 
 inline Vector3 operator/(float value, const Vector3& vec)
 {
-	return { vec.x / value, vec.y / value, vec.z / value };
+	return Vector3{ vec.x / value, vec.y / value, vec.z / value };
 }
 
 inline Vector3 operator/(const Vector3& vec, const float value)
 {
-	return { vec.x / value, vec.y / value, vec.z / value };
+	return Vector3{ vec.x / value, vec.y / value, vec.z / value };
 }
 
 inline Vector3 operator/(const Vector3& left, const Vector3& right)
 {
-	return { left.x / right.x, left.y / right.y, left.z / right.z };
+	return Vector3{ left.x / right.x, left.y / right.y, left.z / right.z };
 }
 
 inline Vector3& operator/=(Vector3& vec, const float value)

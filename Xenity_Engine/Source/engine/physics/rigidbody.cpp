@@ -83,26 +83,35 @@ void RigidBody::SetIsStatic(float _isStatic)
 
 void RigidBody::Tick()
 {
-	btVector3 pos;
-	PhysicsManager::GetPosition(bulletRigidbody, pos);
-	GetTransform() ->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
+	if (GetGameObject()->IsLocalActive() && IsEnabled())
+	{
+		//return;
+		btVector3 pos;
+		PhysicsManager::GetPosition(bulletRigidbody, pos);
+		GetTransform()->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
 
-	btVector3 rot;
-	PhysicsManager::GetRotation(bulletRigidbody, rot); //ZYX
-	//GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
+		btVector3 rot;
+		btQuaternion q = bulletRigidbody->getOrientation();
+		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
+	}
+	//PhysicsManager::GetEulerAngles(bulletRigidbody, rot); //ZYX
+	////GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
 
-	btMatrix3x3 m = bulletRigidbody->getWorldTransform().getBasis();
-	glm::mat4x4 mgl;
-	bulletRigidbody->getWorldTransform().getBasis().getOpenGLSubMatrix((btScalar*)(&mgl));
-	
-	//const glm::mat4 matChildRelative = glm::mat4_cast(mgl);
+	//btMatrix3x3 m = bulletRigidbody->getWorldTransform().getBasis();
+	//glm::mat4x4 mgl;
+	//bulletRigidbody->getWorldTransform().getBasis().getOpenGLSubMatrix((btScalar*)(&mgl));
+	//
+	////const glm::mat4 matChildRelative = glm::mat4_cast(mgl);
 
-	float x, y, z;
-	glm::extractEulerAngleXYZ(mgl, x, y, z);
-	x = glm::degrees(x);
-	y = glm::degrees(y);
-	z = glm::degrees(z);
-	GetTransform()->SetRotation(Vector3(x, y, z));
+	//float x, y, z;
+	//glm::extractEulerAngleXYZ(mgl, x, y, z);
+	//x = glm::degrees(x);
+	//y = glm::degrees(y);
+	//z = glm::degrees(z);
+	//GetTransform()->SetRotation(Vector3(x, y, z));
+
+
+
 	//GetTransform()->transformationMatrix = mgl;
 	//GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
 	/*GetTransform()->SetRotation(Vector3(rot.x() / Math::PI * 180.f, rot.y() / Math::PI * 180.f, rot.z() / Math::PI * 180.f));*/
@@ -214,10 +223,14 @@ void RigidBody::Awake()
 		// Create MotionState and RigidBody object for the box shape
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 
-		bulletRigidbody = new btRigidBody(1, myMotionState, physBoxShape, localInertia);
+		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
 		//bulletRigidbody->applyTorque(btVector3(100, 0, 5000));
 		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 		bulletRigidbody->activate();
+
+		PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
+		bulletRigidbody->setCollisionShape(physBoxShape);
+		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 	}
 
 	//{

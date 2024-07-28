@@ -14,6 +14,7 @@
 #include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
+#include <engine/vectors/quaternion.h>
 
 #include <string>
 
@@ -63,6 +64,7 @@ public:
 	Vector3 vec3_3 = Vector3(0);
 	Vector3* vec3_32 = nullptr;
 	Vector4 vec4 = Vector4(0);
+	Quaternion quaternion = Quaternion::Identity();
 
 	Color color;
 	std::shared_ptr <SkyBox> skyBox;

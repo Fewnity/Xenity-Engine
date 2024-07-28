@@ -21,8 +21,8 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	Vector2();
-	Vector2(const float x, const float y);
-	Vector2(const float fillValue);
+	explicit Vector2(const float x, const float y);
+	explicit Vector2(const float fillValue);
 	Vector2(const Vector3& vect3);
 	Vector2(const Vector2Int& vect2Int);
 
@@ -68,42 +68,42 @@ public:
 
 inline Vector2 operator+(const Vector2& left, const Vector2& right)
 {
-	return { left.x + right.x, left.y + right.y };
+	return Vector2{ left.x + right.x, left.y + right.y };
 }
 
 inline Vector2 operator-(const Vector2& left, const Vector2& right)
 {
-	return { left.x - right.x, left.y - right.y };
+	return Vector2{ left.x - right.x, left.y - right.y };
 }
 
 inline Vector2 operator*(const float value, const Vector2& vec)
 {
-	return { vec.x * value, vec.y * value };
+	return Vector2{ vec.x * value, vec.y * value };
 }
 
 inline Vector2 operator*(const Vector2& left, const Vector2& right)
 {
-	return { left.x * right.x, left.y * right.y };
+	return Vector2{ left.x * right.x, left.y * right.y };
 }
 
 inline Vector2 operator*(const Vector2& vec, const float value)
 {
-	return { vec.x * value, vec.y * value };
+	return Vector2{ vec.x * value, vec.y * value };
 }
 
 inline Vector2 operator/(const float value, const Vector2& vec)
 {
-	return { vec.x / value, vec.y / value };
+	return Vector2{ vec.x / value, vec.y / value };
 }
 
 inline Vector2 operator/(const Vector2& vec, const float value)
 {
-	return { vec.x / value, vec.y / value };
+	return Vector2{ vec.x / value, vec.y / value };
 }
 
 inline Vector2 operator/(const Vector2& left, const Vector2& right)
 {
-	return { left.x / right.x, left.y / right.y };
+	return Vector2{ left.x / right.x, left.y / right.y };
 }
 
 inline Vector2& operator/=(Vector2& vec, const float value)

@@ -168,7 +168,7 @@ void RendererGU::SetCameraPosition(const Camera& camera)
 {
 	const std::shared_ptr<Transform> transform = camera.GetTransform();
 	const Vector3& position = transform->GetPosition();
-	const Vector3& rotation = transform->GetRotation();
+	const Vector3& rotation = transform->GetEulerAngles();
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
 
@@ -528,7 +528,7 @@ void RendererGU::Setlights(const Camera& camera)
 		{
 			if (light->type == LightType::Directional)
 			{
-				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, *light, Vector3(0, 0, 0) + dir, dir);
 			}
@@ -538,7 +538,7 @@ void RendererGU::Setlights(const Camera& camera)
 			}
 			else if (light->type == LightType::Spot)
 			{
-				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x).Normalized();
 				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), dir);
 			}

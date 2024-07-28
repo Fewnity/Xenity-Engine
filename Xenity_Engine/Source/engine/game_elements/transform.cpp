@@ -30,7 +30,7 @@ ReflectiveData Transform::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, localPosition, "localPosition", true);
-	Reflective::AddVariable(reflectedVariables, localRotation, "localRotation", true);
+	Reflective::AddVariable(reflectedVariables, localRotationQuaternion, "localRotationQuaternion", true);
 	Reflective::AddVariable(reflectedVariables, localScale, "localScale", true);
 	return reflectedVariables;
 }
@@ -144,16 +144,20 @@ void Transform::SetRotation(const Vector3& value)
 		return;
 
 	rotation = value;
+	rotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
+
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->GetParent().expired())
 	{
 		localRotation = value;
+		localRotationQuaternion = rotationQuaternion;
 		SetChildrenWorldPositions();
 	}
 	else
 	{
 		SetChildrenWorldPositions();
-		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->GetParent().lock()->GetTransform()->GetRotation());
+		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
+		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
 	}
 }
 
@@ -179,6 +183,7 @@ void Transform::SetLocalRotation(const Vector3& value)
 	isTransformationMatrixDirty = true;
 
 	localRotation = value;
+	localRotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
 	UpdateWorldValues();
 }
 
@@ -186,17 +191,20 @@ void Transform::SetRotation(const Quaternion& value)
 {
 	isTransformationMatrixDirty = true;
 
+	rotation = value.ToEuler();
 	rotationQuaternion = value;
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->GetParent().expired())
 	{
+		localRotation = value.ToEuler();
 		localRotationQuaternion = value;
 		SetChildrenWorldPositions();
 	}
 	else
 	{
 		SetChildrenWorldPositions();
-		//localRotation = GetLocalRotationFromWorldRotations(GetRotation(), gm->GetParent().lock()->GetTransform()->GetRotation());
+		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
+		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
 	}
 }
 
@@ -221,6 +229,7 @@ void Transform::SetLocalRotation(const Quaternion& value)
 
 	isTransformationMatrixDirty = true;
 
+	localRotation = value.ToEuler();
 	localRotationQuaternion = value;
 	UpdateWorldValues();
 }
@@ -256,7 +265,8 @@ void Transform::OnParentChanged()
 		localScale = scale / parentTransform->scale;
 
 		//----- Set new local rotation
-		localRotation = GetLocalRotationFromWorldRotations(GetRotation(), parentTransform->GetRotation());
+		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), parentTransform->GetEulerAngles());
+		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
 
 		//----- Set new local position
 		localPosition = GetLocalPositionFromMatrices(transformationMatrix, parentTransform->transformationMatrix);
@@ -265,6 +275,7 @@ void Transform::OnParentChanged()
 	{
 		localPosition = position;
 		localRotation = rotation;
+		localRotationQuaternion = rotationQuaternion;
 		localScale = scale;
 	}
 }
@@ -300,26 +311,17 @@ void Transform::UpdateWorldRotation()
 	const std::shared_ptr<GameObject> gm = gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		rotation = localRotation;
 		rotationQuaternion = localRotationQuaternion;
+		rotation = rotationQuaternion.ToEuler();
+		localRotation = rotation;
 		return;
 	}
 
 	const std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
-	const Vector3& parentRotation = parentTransform->GetRotation();
-	const glm::quat quatParentGlobal = glm::quat(glm::radians(glm::vec3(parentRotation.z, parentRotation.x, parentRotation.y)));
-	const glm::quat quatChildLocal = glm::quat(glm::radians(glm::vec3(localRotation.z, localRotation.x, localRotation.y)));
-
-	const glm::quat quatChildGlobal = quatParentGlobal * quatChildLocal;
-
-	const glm::vec3 eulerChildGlobal = glm::degrees(glm::eulerAngles(quatChildGlobal));
-
-	Vector3 newRotation;
-	newRotation.x = eulerChildGlobal.y;
-	newRotation.y = eulerChildGlobal.z;
-	newRotation.z = eulerChildGlobal.x;
-
-	rotation = newRotation;
+	const Quaternion quatChildGlobal2 = parentTransform->rotationQuaternion * localRotationQuaternion;
+	const Vector3 eulerChildGlobal2 = quatChildGlobal2.ToEuler();
+	rotation = eulerChildGlobal2;
+	rotationQuaternion = quatChildGlobal2;
 }
 
 void Transform::UpdateWorldPosition()
@@ -358,17 +360,8 @@ void Transform::UpdateTransformationMatrix()
 	if(position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
 		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
 
-	/*if(rotation.y != 0.0f)
-		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.y * -1), glm::vec3(0.0f, 1.0f, 0.0f));
-	if (rotation.x != 0.0f)
-		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	if (rotation.z != 0.0f)
-		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(rotation.z * -1), glm::vec3(0.0f, 0.0f, 1.0f));*/
-
-	//transformationMatrix = glm::rotate(transformationMatrix, glm::quat(2));
-	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(-rotationQuaternion.w, rotationQuaternion.z, rotationQuaternion.y, -rotationQuaternion.x));
+	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(rotationQuaternion.w, rotationQuaternion.x, -rotationQuaternion.y, -rotationQuaternion.z));
 	transformationMatrix *= RotationMatrix2;
-	//transformationMatrix *= glm::quat(rotationQuaternion.w, rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -403,6 +396,11 @@ void Transform::UpdateWorldScale()
 			child->GetTransform()->UpdateWorldScale();
 		}
 	}
+}
+
+void Transform::UpdateLocalRotation()
+{
+	localRotation = localRotationQuaternion.ToEuler();
 }
 
 Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const

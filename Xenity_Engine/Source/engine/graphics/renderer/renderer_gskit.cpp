@@ -115,7 +115,7 @@ void RendererGsKit::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	// create_view_screen(view_screen, 4.0f / 3.0f, -fW, fW, -fH, fH, zFar, zNear);
 
 	Vector3 camPos = camera->GetTransform()->GetPosition();
-	Vector3 camRot = camera->GetTransform()->GetRotation();
+	Vector3 camRot = camera->GetTransform()->GetEulerAngles();
 
 	// VECTOR camera_position = { camPos.x, camPos.y, camPos.z, 1.00f };
 	// VECTOR camera_rotation = { camRot.x * 3.14159265359 / 180.0f, camRot.y * 3.14159265359 / 180.0f, camRot.z * 3.14159265359 / 180.0f, 1.00f };

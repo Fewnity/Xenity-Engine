@@ -7,35 +7,60 @@
 #pragma once
 
 #include <engine/api.h>
-
 #include <engine/reflection/reflection.h>
+
+class Vector3;
+class Vector4;
 
 class API Quaternion : public Reflective
 {
 public:
 	ReflectiveData GetReflectiveData() override;
 	Quaternion();
-	Quaternion(const float x, const float y, const float z, const float w);
+	explicit Quaternion(const float x, const float y, const float z, const float w);
+	explicit Quaternion(const Vector4& vector);
 
-	static Quaternion Inverse(Quaternion q);
+	static Quaternion Inverse(const Quaternion& q);
 	static Quaternion Euler(const float x, const float y, const float z);
+	static Quaternion AngleAxis(float angle, const Vector3& axis);
 	static Quaternion Identity();
+	Vector3 ToEuler() const;
 
-	float x;
-	float y;
-	float z;
-	float w;
+	void Set(const float x, const float y, const float z, const float w);
+
+	float x = 0;
+	float y = 0;
+	float z = 0;
+	float w = 1;
 };
 
 inline Quaternion Quaternion::Identity()
 {
-	return { 0, 0, 0 , 1 };
+	return Quaternion { 0, 0, 0 , 1 };
+}
+
+inline void Quaternion::Set(const float x, const float y, const float z, const float w)
+{
+	this->x = x;
+	this->y = y;
+	this->z = z;
+	this->w = w;
 }
 
 inline Quaternion operator*(const Quaternion& left, const Quaternion& right)
 {
-	return { left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
+	return Quaternion { left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
 				left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z,
 				left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x,
 				left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z };
+}
+
+inline bool operator==(const Quaternion& left, const Quaternion& right)
+{
+	return left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
+}
+
+inline bool operator!=(const Quaternion& left, const Quaternion& right)
+{
+	return left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w;
 }

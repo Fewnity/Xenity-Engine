@@ -33,6 +33,7 @@
 
 #include <engine/tools/math.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 RendererOpengl::RendererOpengl()
 {
@@ -155,14 +156,19 @@ void RendererOpengl::SetCameraPosition(const Camera& camera)
 {
 	std::shared_ptr<Transform> transform = camera.GetTransform();
 	const Vector3& position = transform->GetPosition();
-	const Vector3& rotation = transform->GetRotation();
+
+	const Quaternion& baseQ = transform->GetRotation();
+	const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+	Quaternion newQ = baseQ * offsetQ;
+
+	glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+
+	if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
+		RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(-rotation.z, 0, 0, 1);
-	glRotatef(rotation.x, 1, 0, 0);
-	glRotatef(rotation.y + 180, 0, 1, 0);
-	glTranslatef(position.x, -position.y, -position.z);
+	glMultMatrixf((float*)&RotationMatrix);
 }
 
 void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& rotation)
@@ -566,7 +572,7 @@ void RendererOpengl::Setlights(const Camera& camera)
 		{
 			if (light->type == LightType::Directional)
 			{
-				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, *light,  Vector3(0, 0, 0) + dir, dir);
 			}
@@ -576,7 +582,7 @@ void RendererOpengl::Setlights(const Camera& camera)
 			}
 			else if (light->type == LightType::Spot)
 			{
-				const Vector3& lightRotation = light->GetTransform()->GetRotation();
+				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x + 180).Normalized();
 				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), dir);
 			}

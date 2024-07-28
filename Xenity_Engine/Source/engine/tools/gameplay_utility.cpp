@@ -53,7 +53,7 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 		std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
 		std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
 		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
-		newTransform->SetLocalRotation(transformToDuplicate->GetLocalRotation());
+		newTransform->SetLocalRotation(transformToDuplicate->GetLocalEulerAngles());
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 	}
 

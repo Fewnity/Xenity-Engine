@@ -42,7 +42,7 @@ public:
 	/**
 	* @brief Get rotation (in degree)
 	*/
-	inline const Vector3& GetRotation() const
+	inline const Vector3& GetEulerAngles() const
 	{
 		return rotation;
 	}
@@ -50,9 +50,25 @@ public:
 	/**
 	* @brief Get local rotation (in degree)
 	*/
-	inline const Vector3& GetLocalRotation() const
+	inline const Vector3& GetLocalEulerAngles() const
 	{
 		return localRotation;
+	}
+
+	/**
+	* @brief Get rotation
+	*/
+	inline const Quaternion& GetRotation() const
+	{
+		return rotationQuaternion;
+	}
+
+	/**
+	* @brief Get local rotation
+	*/
+	inline const Quaternion& GetLocalRotation() const
+	{
+		return localRotationQuaternion;
 	}
 
 	/**
@@ -161,7 +177,12 @@ public:
 		return onTransformUpdated;
 	}
 
+	glm::mat4 transformationMatrix;
+	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
+
 private:
+	Quaternion rotationQuaternion = Quaternion::Identity();
+	Quaternion localRotationQuaternion = Quaternion::Identity();
 	Event<> onTransformUpdated;
 
 	ReflectiveData GetReflectiveData() override;
@@ -187,7 +208,6 @@ private:
 	*/
 	void UpdateWorldValues();
 
-	glm::mat4 transformationMatrix;
 
 	/**
 	* @brief Update transformation matrix
@@ -209,17 +229,17 @@ private:
 	*/
 	void UpdateWorldScale();
 
+	void UpdateLocalRotation();
+
 	Vector3 position = Vector3(0);
 	Vector3 localPosition = Vector3(0);
 	Vector3 rotation = Vector3(0);//Euler angle
 	Vector3 localRotation = Vector3(0);//Euler angle
-	Quaternion rotationQuaternion = Quaternion::Identity();//Euler angle
-	Quaternion localRotationQuaternion = Quaternion::Identity();//Euler angle
+
 	Vector3 scale = Vector3(1);
 	Vector3 localScale = Vector3(1);
 
 	std::weak_ptr<GameObject> gameObject;
-	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
 	/**
 	* @brief Get localPosition from matrices

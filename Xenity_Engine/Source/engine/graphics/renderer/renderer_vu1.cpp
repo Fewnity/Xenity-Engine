@@ -303,7 +303,7 @@ void RendererVU1::SetCameraPosition(const std::shared_ptr<Camera> &camera)
 	// // create_view_screen(view_screen, 4.0f / 3.0f, -fW, fW, -fH, fH, zFar, zNear);
 
 	Vector3 camPos = camera->GetTransform()->GetPosition();
-	Vector3 camRot = camera->GetTransform()->GetRotation();
+	Vector3 camRot = camera->GetTransform()->GetEulerAngles();
 
 	// camera_position[0] = camPos.x;
 	// camera_position[1] = camPos.y;

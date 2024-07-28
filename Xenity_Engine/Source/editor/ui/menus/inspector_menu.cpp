@@ -596,11 +596,11 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		//Local rotation input
 		ImGui::Spacing();
 		ImGui::Spacing();
-		Vector3 localRot = selectedTransform->GetLocalRotation();
+		Vector3 localRot = selectedTransform->GetLocalEulerAngles();
 		changed = EditorUI::DrawInput("Local Rotation", localRot) != ValueInputState::NO_CHANGE;
 		if (changed && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 		{
-			auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localRot, selectedTransform->GetLocalRotation(), true);
+			auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedTransform->GetGameObject()->GetUniqueId(), localRot, selectedTransform->GetLocalEulerAngles(), true);
 			CommandManager::AddCommandAndExecute(command);
 		}
 		//ImGui::Text("World Rotation: %f %f %f", selectedTransform->GetRotation().x, selectedTransform->GetRotation().y, selectedTransform->GetRotation().z);

@@ -41,6 +41,7 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, vec3_2, "vec3_2", true);
 	Reflective::AddVariable(reflectedVariables, vec3_3, "vec3_3", true);
 	Reflective::AddVariable(reflectedVariables, vec4, "vec4", true);
+	Reflective::AddVariable(reflectedVariables, quaternion, "quaternion", true);
 
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
 

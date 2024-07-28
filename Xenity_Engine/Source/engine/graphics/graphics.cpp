@@ -743,7 +743,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 
 		const Vector3& selectedGoPos = selectedGo->GetTransform()->GetPosition();
 
-		Vector3 selectedGoRot = selectedGo->GetTransform()->GetRotation();
+		Vector3 selectedGoRot = selectedGo->GetTransform()->GetEulerAngles();
 		if (Editor::isToolLocalMode)
 			selectedGoRot = Vector3(0);
 

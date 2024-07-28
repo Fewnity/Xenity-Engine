@@ -307,7 +307,9 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				// Update transform
 				std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
+				//transform->SetRotation(Quaternion::Euler(transform->GetLocalEulerAngles().x, transform->GetLocalEulerAngles().y, transform->GetLocalEulerAngles().z));
 				transform->isTransformationMatrixDirty = true;
+				transform->UpdateLocalRotation();
 				transform->UpdateWorldValues();
 
 				// If the gameobject has components
@@ -319,7 +321,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 					{
 						for (int compI = 0; compI < componentCount; compI++)
 						{
-							std::shared_ptr<Component> component = go->components[compI];
+							const std::shared_ptr<Component>& component = go->components[compI];
 							if (component->GetUniqueId() == std::stoull(kv2.key()))
 							{
 								// Fill values
@@ -370,7 +372,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			// Call components Awake() function
 			for (int i = 0; i < componentsToInitCount; i++)
 			{
-				std::shared_ptr<Component> componentToInit = orderedComponentsToInit[i];
+				const std::shared_ptr<Component>& componentToInit = orderedComponentsToInit[i];
 				if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive())
 				{
 					componentToInit->Awake();
