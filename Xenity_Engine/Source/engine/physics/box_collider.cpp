@@ -21,7 +21,8 @@
 #include <editor/gizmo.h>
 #endif
 #include "rigidbody.h"
-//#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
+#include "physics_manager.h"
 
 BoxCollider::BoxCollider()
 {
@@ -44,7 +45,7 @@ void BoxCollider::OnReflectionUpdated()
 	CalculateBoundingBox();
 }
 
-bool BoxCollider::CheckTrigger(const BoxCollider &a, const BoxCollider &b)
+bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
 {
 	const Vector3 aPos = a.GetTransform()->GetPosition();
 	const Vector3 bPos = b.GetTransform()->GetPosition();
@@ -66,7 +67,7 @@ bool BoxCollider::CheckTrigger(const BoxCollider &a, const BoxCollider &b)
 	return false;
 }
 
-CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3 &aVelocity)
+CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity)
 {
 	const Vector3& aPosition = a.GetTransform()->GetPosition();
 	const Vector3& bPosition = b.GetTransform()->GetPosition();
@@ -112,13 +113,54 @@ void BoxCollider::Awake()
 
 void BoxCollider::Start()
 {
+	//if (bulletCompoundShape)
+	//	return;
+
+	btVector3 localInertia(0, 0, 0);
+	const Vector3& scale = GetTransform()->GetScale();
+	bulletCollisionShape = new btBoxShape(btVector3(size.x/2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+
+	Vector3 pos;
+	if (attachedRigidbody.lock())
+		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
+	else
+		pos = GetTransform()->GetPosition();
+
+	const Quaternion& rot = GetTransform()->GetRotation(); // Fix rotation?
+
+	btTransform startTransform;
+	startTransform.setIdentity();
+	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+
+	if (attachedRigidbody.lock())
+	{
+		// Create transform
+
+		// Create MotionState and RigidBody object for the box shape
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
+		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+
+		bulletRigidbody->activate();
+
+		attachedRigidbody.lock()->AddShape(bulletCollisionShape);
+	}
+	else
+	{
+		btCollisionObject* staticObject = new btCollisionObject();
+		staticObject->setCollisionShape(bulletCollisionShape);
+		staticObject->setWorldTransform(startTransform);
+
+		PhysicsManager::physDynamicsWorld->addCollisionObject(staticObject);
+	}
 }
 
 void BoxCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
-	if(isTrigger)
+	if (isTrigger)
 		lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 0.5f);
 
 	Gizmo::SetColor(lineColor);

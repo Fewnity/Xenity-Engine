@@ -9,10 +9,13 @@
 
 #include <engine/component.h>
 #include <engine/vectors/vector3.h>
+#include <vector>
 
 class BoxCollider;
 
 class btRigidBody;
+class btCollisionShape;
+class btCompoundShape;
 
 /*
 * @brief Component to add physics to the GameObject
@@ -40,6 +43,8 @@ public:
 	inline float IsStatic() const  { return isStatic; }
 	void SetIsStatic(float _isStatic);
 
+	void AddShape(btCollisionShape* shape);
+
 protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
@@ -51,7 +56,10 @@ protected:
 	float bounce = 0.5f;
 	float gravityMultiplier = 1.0f;
 	bool isStatic = false;
-	btRigidBody* bulletRigidbody;
+	btRigidBody* bulletRigidbody = nullptr;
+	btCompoundShape* bulletCompoundShape = nullptr;
+	std::vector<btCollisionShape*> shapes;
+	//std::vector<std::pair<btCollisionShape*, btRigidBody*>> shapes;
 
 	/**
 	 * @brief [Internal]
