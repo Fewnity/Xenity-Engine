@@ -44,8 +44,6 @@ public:
 
 	static void GetPosition(const btRigidBody* body, btVector3& pos);
 
-	static void QuaternionToEulerXYZ(const btQuaternion& quat, btVector3& euler);
-
 	static void GetRotation(const btRigidBody* body, btVector3& rot);
 
 	static btDynamicsWorld* physDynamicsWorld;

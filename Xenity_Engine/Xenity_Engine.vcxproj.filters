@@ -276,6 +276,7 @@
     <ClCompile Include="include\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
+    <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -605,6 +606,7 @@
     <ClInclude Include="include\bullet\BulletDynamics\Vehicle\btRaycastVehicle.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Vehicle\btVehicleRaycaster.h" />
     <ClInclude Include="Source\engine\vectors\quaternion.h" />
+    <ClInclude Include="Source\engine\physics\sphere_collider.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

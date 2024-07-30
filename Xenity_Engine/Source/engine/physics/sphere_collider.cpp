@@ -4,7 +4,9 @@
 //
 // This file is part of Xenity Engine
 
-#include "box_collider.h"
+#include "sphere_collider.h"
+
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
@@ -20,18 +22,18 @@
 #include <editor/editor.h>
 #include <editor/gizmo.h>
 #endif
+
 #include "rigidbody.h"
-#include <bullet/btBulletDynamicsCommon.h>
 #include "physics_manager.h"
 
-BoxCollider::BoxCollider()
+SphereCollider::SphereCollider()
 {
-	componentName = "BoxCollider";
+	componentName = "SphereCollider";
 	AssetManager::AddReflection(this);
 	CalculateBoundingBox();
 }
 
-ReflectiveData BoxCollider::GetReflectiveData()
+ReflectiveData SphereCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, size, "size", true);
@@ -40,14 +42,14 @@ ReflectiveData BoxCollider::GetReflectiveData()
 	return reflectedVariables;
 }
 
-void BoxCollider::OnReflectionUpdated()
+void SphereCollider::OnReflectionUpdated()
 {
 	CalculateBoundingBox();
 }
 
-bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
+bool SphereCollider::CheckTrigger(const SphereCollider& a, const SphereCollider& b)
 {
-	const Vector3 aPos = a.GetTransform()->GetPosition();
+	/*const Vector3 aPos = a.GetTransform()->GetPosition();
 	const Vector3 bPos = b.GetTransform()->GetPosition();
 
 	const Vector3 aMinPos = a.min + aPos;
@@ -62,64 +64,29 @@ bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
 	if (xColl && yColl && zColl)
 	{
 		return true;
-	}
+	}*/
 
 	return false;
 }
 
-CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity)
-{
-	const Vector3& aPosition = a.GetTransform()->GetPosition();
-	const Vector3& bPosition = b.GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a.min + aPosition + aVelocity;
-	const Vector3 aMaxPos = a.max + aPosition + aVelocity;
-	const Vector3 bMinPos = b.min + bPosition;
-	const Vector3 bMaxPos = b.max + bPosition;
-
-	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
-	int result = (int)CollisionSide::NoSide;
-
-	if (xColl && yColl && zColl)
-	{
-		const Vector3 aMinPosBef = a.min + aPosition;
-		const Vector3 aMaxPosBef = a.max + aPosition;
-		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
-		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
-		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
-
-		if (!xCollBefore)
-			result |= (int)CollisionSide::SideX;
-		if (!yCollBefore)
-			result |= (int)CollisionSide::SideY;
-		if (!zCollBefore)
-			result |= (int)CollisionSide::SideZ;
-	}
-
-	return (CollisionSide)result;
-}
-
-BoxCollider::~BoxCollider()
+SphereCollider::~SphereCollider()
 {
 	AssetManager::RemoveReflection(this);
 }
 
-void BoxCollider::Awake()
+void SphereCollider::Awake()
 {
 	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
 }
 
-void BoxCollider::Start()
+void SphereCollider::Start()
 {
 	if (bulletCollisionShape)
 		return;
 
 	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
-	bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
-	//bulletCollisionShape = new btSphereShape(1.0f);
+	bulletCollisionShape = new btSphereShape(size);
 
 	Vector3 pos;
 	if (attachedRigidbody.lock())
@@ -150,10 +117,6 @@ void BoxCollider::Start()
 	}
 	else
 	{
-		pos += offset * 2;
-		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
-
 		btCollisionObject* staticObject = new btCollisionObject();
 		staticObject->setCollisionShape(bulletCollisionShape);
 		staticObject->setWorldTransform(startTransform);
@@ -162,7 +125,7 @@ void BoxCollider::Start()
 	}
 }
 
-void BoxCollider::OnDrawGizmosSelected()
+void SphereCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
@@ -229,9 +192,9 @@ void BoxCollider::OnDrawGizmosSelected()
 #endif
 }
 
-void BoxCollider::SetDefaultSize()
+void SphereCollider::SetDefaultSize()
 {
-	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
+	/*std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
 	if (mesh && mesh->GetMeshData())
 	{
 		std::shared_ptr<MeshData> meshData = mesh->GetMeshData();
@@ -239,23 +202,23 @@ void BoxCollider::SetDefaultSize()
 		size = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()) * scale;
 		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f) * scale;
 		CalculateBoundingBox();
-	}
+	}*/
 }
 
-void BoxCollider::CalculateBoundingBox()
+void SphereCollider::CalculateBoundingBox()
 {
-	min = -size / 2.0f + offset * 2;
-	max = size / 2.0f + offset * 2;
+	/*min = -size / 2.0f + offset * 2;
+	max = size / 2.0f + offset * 2;*/
 }
 
-void BoxCollider::SetSize(const Vector3& size)
+void SphereCollider::SetSize(const float& size)
 {
 	this->size = size;
 	CalculateBoundingBox();
 }
 
 
-void BoxCollider::SetOffset(const Vector3& offset)
+void SphereCollider::SetOffset(const Vector3& offset)
 {
 	this->offset = offset;
 }

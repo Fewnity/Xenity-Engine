@@ -56,9 +56,9 @@ MeshRenderer::MeshRenderer()
 void MeshRenderer::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-	Sphere sphere = GetBoundingSphere();
-	Gizmo::DrawSphere(sphere.position, sphere.radius);
+	//Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
+	//Sphere sphere = GetBoundingSphere();
+	//Gizmo::DrawSphere(sphere.position, sphere.radius);
 #endif
 }
 

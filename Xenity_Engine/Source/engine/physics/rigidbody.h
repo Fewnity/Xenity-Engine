@@ -43,9 +43,12 @@ public:
 	inline float IsStatic() const  { return isStatic; }
 	void SetIsStatic(float _isStatic);
 
-	void AddShape(btCollisionShape* shape, const Vector3& offset);
 
 protected:
+	friend class BoxCollider;
+	friend class SphereCollider;
+
+	void AddShape(btCollisionShape* shape, const Vector3& offset);
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
@@ -60,7 +63,6 @@ protected:
 	btRigidBody* bulletRigidbody = nullptr;
 	btCompoundShape* bulletCompoundShape = nullptr;
 	std::vector<btCollisionShape*> shapes;
-	//std::vector<std::pair<btCollisionShape*, btRigidBody*>> shapes;
 
 	/**
 	 * @brief [Internal]

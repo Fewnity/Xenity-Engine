@@ -21,6 +21,7 @@
 #include <engine/test_component.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/box_collider.h>
+#include <engine/physics/sphere_collider.h>
 #include <engine/test_component.h>
 #include <engine/missing_script.h>
 
@@ -128,6 +129,7 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<ParticleSystem>("ParticleSystem");
 	AddComponentClass<RigidBody>("RigidBody");
 	AddComponentClass<BoxCollider>("BoxCollider");
+	AddComponentClass<SphereCollider>("SphereCollider");
 	AddComponentClass<Lod>("Lod");
 	AddComponentClass<TestComponent>("TestComponent");
 	AddComponentClass<MissingScript>("MissingScript", false);
