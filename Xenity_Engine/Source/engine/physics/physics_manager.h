@@ -36,6 +36,8 @@ public:
 	*/
 	static void Update();
 
+	static void Clear();
+
 	static std::vector<std::weak_ptr<RigidBody>> rigidBodies;
 	static std::vector<std::weak_ptr<BoxCollider>> boxColliders;
 	static std::vector<btRigidBody*> mBodies;

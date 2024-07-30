@@ -32,6 +32,7 @@ ReflectiveData RigidBody::GetReflectiveData()
 	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
 	AddVariable(reflectedVariables, drag, "drag", true);
 	AddVariable(reflectedVariables, bounce, "bounce", true);
+	AddVariable(reflectedVariables, mass, "mass", true);
 	return reflectedVariables;
 }
 
@@ -198,47 +199,30 @@ void RigidBody::Awake()
 	if (bulletCompoundShape)
 		return;
 
-	{
 
-		float mass = 1.0f;
-		btVector3 localInertia(0, 0, 0);
-		//btCollisionShape* physBoxShape = new btBoxShape(btVector3(1, 1, 1));
-		//physBoxShape->calculateLocalInertia(mass, localInertia);
+	btVector3 localInertia(0, 0, 0);
 
-		btTransform offsetTransform;
-		offsetTransform.setIdentity();
-		offsetTransform.setOrigin(btVector3(0, 0, 0)); // Par exemple, un offset de (1, 0, 0)
+	btTransform offsetTransform;
+	offsetTransform.setIdentity();
+	offsetTransform.setOrigin(btVector3(0, 0, 0));
+	btTransform startTransform;
+	startTransform.setIdentity();
+	const Vector3& pos = GetTransform()->GetPosition();
+	const Quaternion& rot = GetTransform()->GetRotation();
 
-		//btCompoundShape* compoundShape = new btCompoundShape();
-		//offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
-		/*compoundShape->addChildShape(offsetTransform, physBoxShape);
-		compoundShape->calculateLocalInertia(mass, localInertia);*/
+	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		/*bulletRigidbody->setCollisionShape(compoundShape);
-		bulletRigidbody->activate();*/
-		btTransform startTransform;
-		startTransform.setIdentity();
-		const Vector3& pos = GetTransform()->GetPosition();
-		const Quaternion& rot = GetTransform()->GetRotation();
-
-		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-		//startTransform.setRotation(btQuaternion(btVector3(-0.2389781, 0.0578619, 0.9692995), 4.4765805)); *
-		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
-		//startTransform.setRotation(btQuaternion(btVector3(0.3, 1, 0.2), 0.8141592653));
-
-		// Create MotionState and RigidBody object for the box shape
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
-		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
-		bulletRigidbody->activate();
-	}
+	// Create MotionState and RigidBody object for the box shape
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+	bulletRigidbody->activate();
 
 	bulletCompoundShape = new btCompoundShape();
-	//btCollisionShape* physBoxShape = new btBoxShape(btVector3(1, 1, 1));
-	//AddShape(physBoxShape);
 }
 
-void RigidBody::AddShape(btCollisionShape* shape)
+void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 {
 	shapes.push_back(shape);
 	//shapes.push_back(std::make_pair(shape, rb));
@@ -261,16 +245,14 @@ void RigidBody::AddShape(btCollisionShape* shape)
 	{
 		float mass = 1.0f;
 		btVector3 inertia(0, 0, 0);
-		//btCollisionShape* physBoxShape = new btBoxShape(btVector3(1, 1, 1));
 
 		btTransform offsetTransform;
 		offsetTransform.setIdentity();
-		offsetTransform.setOrigin(btVector3(0, 0, 0));
-		//offsetTransform.
+		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
+
 		bulletCompoundShape->addChildShape(offsetTransform, shape);
 		bulletCompoundShape->calculateLocalInertia(mass, inertia);
 
-		//compoundShape->calculateLocalInertia(mass, inertia);
 		bulletRigidbody->setCollisionShape(bulletCompoundShape);
 		bulletRigidbody->setMassProps(mass, inertia);
 	}

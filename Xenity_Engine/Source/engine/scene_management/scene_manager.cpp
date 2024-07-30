@@ -464,8 +464,7 @@ void SceneManager::ClearScene()
 		}
 	}
 
-	PhysicsManager::rigidBodies.clear();
-	PhysicsManager::boxColliders.clear();
+	PhysicsManager::Clear();
 	GameplayManager::orderedComponents.clear();
 	GameplayManager::gameObjectsToDestroy.clear();
 	GameplayManager::componentsToDestroy.clear();

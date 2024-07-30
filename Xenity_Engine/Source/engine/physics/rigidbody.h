@@ -43,7 +43,7 @@ public:
 	inline float IsStatic() const  { return isStatic; }
 	void SetIsStatic(float _isStatic);
 
-	void AddShape(btCollisionShape* shape);
+	void AddShape(btCollisionShape* shape, const Vector3& offset);
 
 protected:
 	ReflectiveData GetReflectiveData() override;
@@ -54,6 +54,7 @@ protected:
 	Vector3 velocity = Vector3(0, 0, 0);
 	float drag = 1;
 	float bounce = 0.5f;
+	float mass = 1;
 	float gravityMultiplier = 1.0f;
 	bool isStatic = false;
 	btRigidBody* bulletRigidbody = nullptr;

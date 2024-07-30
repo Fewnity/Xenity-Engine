@@ -118,13 +118,14 @@ void BoxCollider::Start()
 
 	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
-	bulletCollisionShape = new btBoxShape(btVector3(size.x/2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+	bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 
 	Vector3 pos;
 	if (attachedRigidbody.lock())
 		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
 	else
 		pos = GetTransform()->GetPosition();
+	//pos += offset;
 
 	const Quaternion& rot = GetTransform()->GetRotation(); // Fix rotation?
 
@@ -144,7 +145,7 @@ void BoxCollider::Start()
 
 		bulletRigidbody->activate();
 
-		attachedRigidbody.lock()->AddShape(bulletCollisionShape);
+		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
 	}
 	else
 	{
@@ -165,7 +166,7 @@ void BoxCollider::OnDrawGizmosSelected()
 
 	Gizmo::SetColor(lineColor);
 
-	const Vector3 pos = GetTransform()->GetPosition();
+	const Vector3& pos = GetTransform()->GetPosition();
 
 	// Bottom vertex
 	const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
@@ -207,7 +208,7 @@ void BoxCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		std::shared_ptr<MeshData> meshData = mesh->GetMeshData();
-		Vector3 scale = GetTransform()->GetLocalScale();
+		const Vector3& scale = GetTransform()->GetLocalScale();
 		size = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()) * scale;
 		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f) * scale;
 		CalculateBoundingBox();
@@ -216,8 +217,8 @@ void BoxCollider::SetDefaultSize()
 
 void BoxCollider::CalculateBoundingBox()
 {
-	min = -size / 2.0f + offset;
-	max = size / 2.0f + offset;
+	min = -size / 2.0f + offset * 2;
+	max = size / 2.0f + offset * 2;
 }
 
 void BoxCollider::SetSize(const Vector3& size)

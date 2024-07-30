@@ -37,6 +37,8 @@ void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 	if (body && body->getMotionState())
 	{
 		const btPoint3& p = body->getCenterOfMassPosition();
+		const btTransform b = body->getWorldTransform();
+		const btTransform b2 = body->getCenterOfMassTransform();
 		pos.setX(p.getX());
 		pos.setY(p.getY());
 		pos.setZ(p.getZ());
@@ -282,4 +284,22 @@ void PhysicsManager::Update()
 		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
 		rb->Tick();
 	}
+}
+
+void PhysicsManager::Clear()
+{
+	for (int i = physDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = physDynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		physDynamicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	PhysicsManager::rigidBodies.clear();
+	PhysicsManager::boxColliders.clear();
 }
