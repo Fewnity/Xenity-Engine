@@ -119,14 +119,12 @@ void BoxCollider::Start()
 	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
 	bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
-	//bulletCollisionShape = new btSphereShape(1.0f);
 
 	Vector3 pos;
 	if (attachedRigidbody.lock())
 		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
 	else
 		pos = GetTransform()->GetPosition();
-	//pos += offset;
 
 	const Quaternion& rot = GetTransform()->GetRotation(); // Fix rotation?
 
@@ -137,15 +135,6 @@ void BoxCollider::Start()
 
 	if (attachedRigidbody.lock())
 	{
-		// Create transform
-
-		// Create MotionState and RigidBody object for the box shape
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
-		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
-
-		bulletRigidbody->activate();
-
 		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
 	}
 	else

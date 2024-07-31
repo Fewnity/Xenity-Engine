@@ -47,12 +47,6 @@ void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
 {
 	btQuaternion btq = body->getOrientation();
 
-	/*btq.setX(btq.getX());
-	btq.setY(btq.getY());
-	btq.setZ(btq.getZ());*/
-	//btq.setW(-btq.getW());
-
-	// try every combination of euler angles
 	glm::vec3 eulerChildGlobal0n = glm::degrees(glm::eulerAngles(glm::quat(-btq.w(), btq.x(), btq.y(), btq.z())));
 
 	rot.setX(-eulerChildGlobal0n.x);
@@ -85,29 +79,6 @@ void PhysicsManager::Init()
 
 	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
 	physDynamicsWorld->setGravity(btVector3(0, -10, 0));
-	{
-		physGroundShape = new btBoxShape(btVector3(btScalar(50.0f), btScalar(1.0f), btScalar(50.0f)));
-
-		btTransform groundTransform;
-		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, -0.5f, 0));
-		groundTransform.setRotation(btQuaternion(btVector3(0.7040626, -0.0926916, 0.7040626), 0.36971));
-
-		// Create MotionState and RigidBody object for the ground shape
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-
-		float mass = 0;
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			physGroundShape->calculateLocalInertia(mass, localInertia);
-
-		physGroundBody = new btRigidBody(mass, myMotionState, physGroundShape, localInertia);
-
-		// Add ground body to physics object
-		physDynamicsWorld->addRigidBody(physGroundBody);
-	}
 
 	//Create the box object
 	//{
