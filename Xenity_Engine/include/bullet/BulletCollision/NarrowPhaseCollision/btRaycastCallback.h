@@ -13,8 +13,8 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef RAYCAST_TRI_CALLBACK_H
-#define RAYCAST_TRI_CALLBACK_H
+#ifndef BT_RAYCAST_TRI_CALLBACK_H
+#define BT_RAYCAST_TRI_CALLBACK_H
 
 #include "BulletCollision/CollisionShapes/btTriangleCallback.h"
 #include "LinearMath/btTransform.h"
@@ -29,9 +29,20 @@ public:
 	btVector3 m_from;
 	btVector3 m_to;
 
+   //@BP Mod - allow backface filtering and unflipped normals
+   enum EFlags
+   {
+      kF_None                 = 0,
+      kF_FilterBackfaces      = 1 << 0,
+      kF_KeepUnflippedNormal  = 1 << 1,   // Prevents returned face normal getting flipped when a ray hits a back-facing triangle
+	  kF_UseSubSimplexConvexCastRaytest =  1 << 2,   // Uses an approximate but faster ray versus convex intersection algorithm
+      kF_Terminator        = 0xFFFFFFFF
+   };
+   unsigned int m_flags;
+
 	btScalar	m_hitFraction;
 
-	btTriangleRaycastCallback(const btVector3& from,const btVector3& to);
+	btTriangleRaycastCallback(const btVector3& from,const btVector3& to, unsigned int flags=0);
 	
 	virtual void processTriangle(btVector3* triangle, int partId, int triangleIndex);
 
@@ -47,7 +58,8 @@ public:
 	btTransform m_convexShapeTo;
 	btTransform m_triangleToWorld;
 	btScalar m_hitFraction;
-    btScalar m_triangleCollisionMargin;
+	btScalar m_triangleCollisionMargin;
+	btScalar m_allowedPenetration;
 
 	btTriangleConvexcastCallback (const btConvexShape* convexShape, const btTransform& convexShapeFrom, const btTransform& convexShapeTo, const btTransform& triangleToWorld, const btScalar triangleCollisionMargin);
 
@@ -56,5 +68,5 @@ public:
 	virtual btScalar reportHit (const btVector3& hitNormalLocal, const btVector3& hitPointLocal, btScalar hitFraction, int partId, int triangleIndex) = 0;
 };
 
-#endif //RAYCAST_TRI_CALLBACK_H
+#endif //BT_RAYCAST_TRI_CALLBACK_H
 

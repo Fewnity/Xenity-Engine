@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -12,23 +12,29 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
+#if defined (_WIN32) || defined (__i386__)
+#define BT_USE_SSE_IN_API
+#endif
+
 #include "btConvexHullShape.h"
 #include "BulletCollision/CollisionShapes/btCollisionMargin.h"
 
 #include "LinearMath/btQuaternion.h"
+#include "LinearMath/btSerializer.h"
 
-
-
-btConvexHullShape ::btConvexHullShape (const btScalar* points,int numPoints,int stride)
+btConvexHullShape ::btConvexHullShape (const btScalar* points,int numPoints,int stride) : btPolyhedralConvexAabbCachingShape ()
 {
-	m_points.resize(numPoints);
+	m_shapeType = CONVEX_HULL_SHAPE_PROXYTYPE;
+	m_unscaledPoints.resize(numPoints);
 
-	unsigned char* pointsBaseAddress = (unsigned char*)points;
+	unsigned char* pointsAddress = (unsigned char*)points;
 
 	for (int i=0;i<numPoints;i++)
 	{
-		btPoint3* point = (btPoint3*)(pointsBaseAddress + i*stride);
-		m_points[i] = point[0];
+		btScalar* point = (btScalar*)pointsAddress;
+		m_unscaledPoints[i] = btVector3(point[0], point[1], point[2]);
+		pointsAddress += stride;
 	}
 
 	recalcLocalAabb();
@@ -36,42 +42,35 @@ btConvexHullShape ::btConvexHullShape (const btScalar* points,int numPoints,int 
 }
 
 
-void btConvexHullShape::addPoint(const btPoint3& point)
+
+void btConvexHullShape::setLocalScaling(const btVector3& scaling)
 {
-	m_points.push_back(point);
+	m_localScaling = scaling;
 	recalcLocalAabb();
+}
+
+void btConvexHullShape::addPoint(const btVector3& point, bool recalculateLocalAabb)
+{
+	m_unscaledPoints.push_back(point);
+	if (recalculateLocalAabb)
+		recalcLocalAabb();
 
 }
 
-btVector3	btConvexHullShape::localGetSupportingVertexWithoutMargin(const btVector3& vec0)const
+btVector3	btConvexHullShape::localGetSupportingVertexWithoutMargin(const btVector3& vec)const
 {
 	btVector3 supVec(btScalar(0.),btScalar(0.),btScalar(0.));
-	btScalar newDot,maxDot = btScalar(-1e30);
+	btScalar maxDot = btScalar(-BT_LARGE_FLOAT);
 
-	btVector3 vec = vec0;
-	btScalar lenSqr = vec.length2();
-	if (lenSqr < btScalar(0.0001))
-	{
-		vec.setValue(1,0,0);
-	} else
-	{
-		btScalar rlen = btScalar(1.) / btSqrt(lenSqr );
-		vec *= rlen;
-	}
+    // Here we take advantage of dot(a, b*c) = dot(a*b, c).  Note: This is true mathematically, but not numerically. 
+    if( 0 < m_unscaledPoints.size() )
+    {
+        btVector3 scaled = vec * m_localScaling;
+        int index = (int) scaled.maxDot( &m_unscaledPoints[0], m_unscaledPoints.size(), maxDot); // FIXME: may violate encapsulation of m_unscaledPoints
+        return m_unscaledPoints[index] * m_localScaling;
+    }
 
-
-	for (int i=0;i<m_points.size();i++)
-	{
-		btPoint3 vtx = m_points[i] * m_localScaling;
-
-		newDot = vec.dot(vtx);
-		if (newDot > maxDot)
-		{
-			maxDot = newDot;
-			supVec = vtx;
-		}
-	}
-	return supVec;
+    return supVec;
 }
 
 void	btConvexHullShape::batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors,btVector3* supportVerticesOut,int numVectors) const
@@ -81,26 +80,22 @@ void	btConvexHullShape::batchedUnitVectorGetSupportingVertexWithoutMargin(const 
 	{
 		for (int i=0;i<numVectors;i++)
 		{
-			supportVerticesOut[i][3] = btScalar(-1e30);
+			supportVerticesOut[i][3] = btScalar(-BT_LARGE_FLOAT);
 		}
 	}
-	for (int i=0;i<m_points.size();i++)
-	{
-		btPoint3 vtx = m_points[i] * m_localScaling;
 
-		for (int j=0;j<numVectors;j++)
-		{
-			const btVector3& vec = vectors[j];
-			
-			newDot = vec.dot(vtx);
-			if (newDot > supportVerticesOut[j][3])
-			{
-				//WARNING: don't swap next lines, the w component would get overwritten!
-				supportVerticesOut[j] = vtx;
-				supportVerticesOut[j][3] = newDot;
-			}
-		}
-	}
+    for (int j=0;j<numVectors;j++)
+    {
+        btVector3 vec = vectors[j] * m_localScaling;        // dot(a*b,c) = dot(a,b*c)
+        if( 0 <  m_unscaledPoints.size() )
+        {
+            int i = (int) vec.maxDot( &m_unscaledPoints[0], m_unscaledPoints.size(), newDot);
+            supportVerticesOut[j] = getScaledPoint(i);
+            supportVerticesOut[j][3] = newDot;        
+        }
+        else
+            supportVerticesOut[j][3] = -BT_LARGE_FLOAT;
+    }
 
 
 
@@ -137,26 +132,26 @@ btVector3	btConvexHullShape::localGetSupportingVertex(const btVector3& vec)const
 //Please note that you can debug-draw btConvexHullShape with the Raytracer Demo
 int	btConvexHullShape::getNumVertices() const
 {
-	return m_points.size();
+	return m_unscaledPoints.size();
 }
 
 int btConvexHullShape::getNumEdges() const
 {
-	return m_points.size();
+	return m_unscaledPoints.size();
 }
 
-void btConvexHullShape::getEdge(int i,btPoint3& pa,btPoint3& pb) const
+void btConvexHullShape::getEdge(int i,btVector3& pa,btVector3& pb) const
 {
 
-	int index0 = i%m_points.size();
-	int index1 = (i+1)%m_points.size();
-	pa = m_points[index0]*m_localScaling;
-	pb = m_points[index1]*m_localScaling;
+	int index0 = i%m_unscaledPoints.size();
+	int index1 = (i+1)%m_unscaledPoints.size();
+	pa = getScaledPoint(index0);
+	pb = getScaledPoint(index1);
 }
 
-void btConvexHullShape::getVertex(int i,btPoint3& vtx) const
+void btConvexHullShape::getVertex(int i,btVector3& vtx) const
 {
-	vtx = m_points[i]*m_localScaling;
+	vtx = getScaledPoint(i);
 }
 
 int	btConvexHullShape::getNumPlanes() const
@@ -164,16 +159,92 @@ int	btConvexHullShape::getNumPlanes() const
 	return 0;
 }
 
-void btConvexHullShape::getPlane(btVector3& ,btPoint3& ,int ) const
+void btConvexHullShape::getPlane(btVector3& ,btVector3& ,int ) const
 {
 
 	btAssert(0);
 }
 
 //not yet
-bool btConvexHullShape::isInside(const btPoint3& ,btScalar ) const
+bool btConvexHullShape::isInside(const btVector3& ,btScalar ) const
 {
-	assert(0);
+	btAssert(0);
 	return false;
 }
+
+///fills the dataBuffer and returns the struct name (and 0 on failure)
+const char*	btConvexHullShape::serialize(void* dataBuffer, btSerializer* serializer) const
+{
+	//int szc = sizeof(btConvexHullShapeData);
+	btConvexHullShapeData* shapeData = (btConvexHullShapeData*) dataBuffer;
+	btConvexInternalShape::serialize(&shapeData->m_convexInternalShapeData, serializer);
+
+	int numElem = m_unscaledPoints.size();
+	shapeData->m_numUnscaledPoints = numElem;
+#ifdef BT_USE_DOUBLE_PRECISION
+	shapeData->m_unscaledPointsFloatPtr = 0;
+	shapeData->m_unscaledPointsDoublePtr = numElem ? (btVector3Data*)serializer->getUniquePointer((void*)&m_unscaledPoints[0]):  0;
+#else
+	shapeData->m_unscaledPointsFloatPtr = numElem ? (btVector3Data*)serializer->getUniquePointer((void*)&m_unscaledPoints[0]):  0;
+	shapeData->m_unscaledPointsDoublePtr = 0;
+#endif
+	
+	if (numElem)
+	{
+		int sz = sizeof(btVector3Data);
+	//	int sz2 = sizeof(btVector3DoubleData);
+	//	int sz3 = sizeof(btVector3FloatData);
+		btChunk* chunk = serializer->allocate(sz,numElem);
+		btVector3Data* memPtr = (btVector3Data*)chunk->m_oldPtr;
+		for (int i=0;i<numElem;i++,memPtr++)
+		{
+			m_unscaledPoints[i].serialize(*memPtr);
+		}
+		serializer->finalizeChunk(chunk,btVector3DataName,BT_ARRAY_CODE,(void*)&m_unscaledPoints[0]);
+	}
+	
+	return "btConvexHullShapeData";
+}
+
+void btConvexHullShape::project(const btTransform& trans, const btVector3& dir, btScalar& minProj, btScalar& maxProj, btVector3& witnesPtMin,btVector3& witnesPtMax) const
+{
+#if 1
+	minProj = FLT_MAX;
+	maxProj = -FLT_MAX;
+
+	int numVerts = m_unscaledPoints.size();
+	for(int i=0;i<numVerts;i++)
+	{
+		btVector3 vtx = m_unscaledPoints[i] * m_localScaling;
+		btVector3 pt = trans * vtx;
+		btScalar dp = pt.dot(dir);
+		if(dp < minProj)	
+		{
+			minProj = dp;
+			witnesPtMin = pt;
+		}
+		if(dp > maxProj)	
+		{
+			maxProj = dp;
+			witnesPtMax=pt;
+		}
+	}
+#else
+	btVector3 localAxis = dir*trans.getBasis();
+	witnesPtMin  = trans(localGetSupportingVertex(localAxis));
+	witnesPtMax = trans(localGetSupportingVertex(-localAxis));
+
+	minProj = witnesPtMin.dot(dir);
+	maxProj = witnesPtMax.dot(dir);
+#endif
+
+	if(minProj>maxProj)
+	{
+		btSwap(minProj,maxProj);
+		btSwap(witnesPtMin,witnesPtMax);
+	}
+
+
+}
+
 

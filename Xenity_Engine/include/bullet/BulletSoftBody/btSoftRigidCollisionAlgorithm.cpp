@@ -19,12 +19,15 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionShapes/btBoxShape.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "btSoftBody.h"
+#include "BulletSoftBody/btSoftBodySolvers.h"
+#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+
 ///TODO: include all the shapes that the softbody can collide with
 ///alternatively, implement special case collision algorithms (just like for rigid collision shapes)
 
 //#include <stdio.h>
 
-btSoftRigidCollisionAlgorithm::btSoftRigidCollisionAlgorithm(btPersistentManifold* /*mf*/,const btCollisionAlgorithmConstructionInfo& ci,btCollisionObject* /*col0*/,btCollisionObject* /*col1*/, bool isSwapped)
+btSoftRigidCollisionAlgorithm::btSoftRigidCollisionAlgorithm(btPersistentManifold* /*mf*/,const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* ,const btCollisionObjectWrapper* , bool isSwapped)
 : btCollisionAlgorithm(ci),
 //m_ownManifold(false),
 //m_manifoldPtr(mf),
@@ -35,13 +38,13 @@ m_isSwapped(isSwapped)
 
 btSoftRigidCollisionAlgorithm::~btSoftRigidCollisionAlgorithm()
 {
-	
+
 	//m_softBody->m_overlappingRigidBodies.remove(m_rigidCollisionObject);
 
 	/*if (m_ownManifold)
 	{
-		if (m_manifoldPtr)
-			m_dispatcher->releaseManifold(m_manifoldPtr);
+	if (m_manifoldPtr)
+	m_dispatcher->releaseManifold(m_manifoldPtr);
 	}
 	*/
 
@@ -50,16 +53,20 @@ btSoftRigidCollisionAlgorithm::~btSoftRigidCollisionAlgorithm()
 
 #include <stdio.h>
 
-void btSoftRigidCollisionAlgorithm::processCollision (btCollisionObject* body0,btCollisionObject* body1,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut)
+void btSoftRigidCollisionAlgorithm::processCollision (const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut)
 {
 	(void)dispatchInfo;
 	(void)resultOut;
 	//printf("btSoftRigidCollisionAlgorithm\n");
-
-	btSoftBody* softBody =  m_isSwapped? (btSoftBody*)body1 : (btSoftBody*)body0;
-	btCollisionObject* rigidCollisionObject = m_isSwapped? body0 : body1;
+//	const btCollisionObjectWrapper* softWrap = m_isSwapped?body1Wrap:body0Wrap;
+//	const btCollisionObjectWrapper* rigidWrap = m_isSwapped?body0Wrap:body1Wrap;
+	btSoftBody* softBody =  m_isSwapped? (btSoftBody*)body1Wrap->getCollisionObject() : (btSoftBody*)body0Wrap->getCollisionObject();
+	const btCollisionObjectWrapper* rigidCollisionObjectWrap = m_isSwapped? body0Wrap : body1Wrap;
 	
-	softBody->defaultCollisionHandler(rigidCollisionObject);
+	if (softBody->m_collisionDisabledObjects.findLinearSearch(rigidCollisionObjectWrap->getCollisionObject())==softBody->m_collisionDisabledObjects.size())
+	{
+		softBody->getSoftBodySolver()->processCollision(softBody, rigidCollisionObjectWrap);
+	}
 
 
 }

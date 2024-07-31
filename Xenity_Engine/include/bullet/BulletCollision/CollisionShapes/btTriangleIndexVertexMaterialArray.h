@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -41,7 +41,7 @@ ATTRIBUTE_ALIGNED16( struct)	btMaterialProperties
 
 typedef btAlignedObjectArray<btMaterialProperties>	MaterialArray;
 
-///TriangleIndexVertexMaterialArray is built on TriangleIndexVertexArray
+///Teh btTriangleIndexVertexMaterialArray is built on TriangleIndexVertexArray
 ///The addition of a material array allows for the utilization of the partID and
 ///triangleIndex that are returned in the ContactAddedCallback.  As with
 ///TriangleIndexVertexArray, no duplicate is made of the material data, so it

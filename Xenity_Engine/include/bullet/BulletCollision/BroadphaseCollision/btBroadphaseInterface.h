@@ -13,19 +13,41 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef		BROADPHASE_INTERFACE_H
-#define 	BROADPHASE_INTERFACE_H
+#ifndef		BT_BROADPHASE_INTERFACE_H
+#define 	BT_BROADPHASE_INTERFACE_H
 
 
 
 struct btDispatcherInfo;
 class btDispatcher;
 #include "btBroadphaseProxy.h"
+
 class btOverlappingPairCache;
+
+
+
+struct	btBroadphaseAabbCallback
+{
+	virtual ~btBroadphaseAabbCallback() {}
+	virtual bool	process(const btBroadphaseProxy* proxy) = 0;
+};
+
+
+struct	btBroadphaseRayCallback : public btBroadphaseAabbCallback
+{
+	///added some cached data to accelerate ray-AABB tests
+	btVector3		m_rayDirectionInverse;
+	unsigned int	m_signs[3];
+	btScalar		m_lambda_max;
+
+	virtual ~btBroadphaseRayCallback() {}
+};
 
 #include "LinearMath/btVector3.h"
 
-///BroadphaseInterface for aabb-overlapping object pairs
+///The btBroadphaseInterface class provides an interface to detect aabb-overlapping object pairs.
+///Some implementations for this broadphase interface include btAxisSweep3, bt32BitAxisSweep3 and btDbvtBroadphase.
+///The actual overlapping pair management, storage, adding and removing of pairs is dealt by the btOverlappingPairCache class.
 class btBroadphaseInterface
 {
 public:
@@ -34,7 +56,12 @@ public:
 	virtual btBroadphaseProxy*	createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr, short int collisionFilterGroup,short int collisionFilterMask, btDispatcher* dispatcher,void* multiSapProxy) =0;
 	virtual void	destroyProxy(btBroadphaseProxy* proxy,btDispatcher* dispatcher)=0;
 	virtual void	setAabb(btBroadphaseProxy* proxy,const btVector3& aabbMin,const btVector3& aabbMax, btDispatcher* dispatcher)=0;
-	
+	virtual void	getAabb(btBroadphaseProxy* proxy,btVector3& aabbMin, btVector3& aabbMax ) const =0;
+
+	virtual void	rayTest(const btVector3& rayFrom,const btVector3& rayTo, btBroadphaseRayCallback& rayCallback, const btVector3& aabbMin=btVector3(0,0,0), const btVector3& aabbMax = btVector3(0,0,0)) = 0;
+
+	virtual void	aabbTest(const btVector3& aabbMin, const btVector3& aabbMax, btBroadphaseAabbCallback& callback) = 0;
+
 	///calculateOverlappingPairs is optional: incremental algorithms (sweep and prune) might do it during the set aabb
 	virtual void	calculateOverlappingPairs(btDispatcher* dispatcher)=0;
 
@@ -45,8 +72,11 @@ public:
 	///will add some transform later
 	virtual void getBroadphaseAabb(btVector3& aabbMin,btVector3& aabbMax) const =0;
 
+	///reset broadphase internal structures, to ensure determinism/reproducability
+	virtual void resetPool(btDispatcher* dispatcher) { (void) dispatcher; };
+
 	virtual void	printStats() = 0;
 
 };
 
-#endif //BROADPHASE_INTERFACE_H
+#endif //BT_BROADPHASE_INTERFACE_H

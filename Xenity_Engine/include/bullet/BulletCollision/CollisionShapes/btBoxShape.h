@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,23 +13,25 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef OBB_BOX_MINKOWSKI_H
-#define OBB_BOX_MINKOWSKI_H
+#ifndef BT_OBB_BOX_MINKOWSKI_H
+#define BT_OBB_BOX_MINKOWSKI_H
 
 #include "btPolyhedralConvexShape.h"
 #include "btCollisionMargin.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "LinearMath/btPoint3.h"
+#include "LinearMath/btVector3.h"
 #include "LinearMath/btMinMax.h"
 
-///btBoxShape implements both a feature based (vertex/edge/plane) and implicit (getSupportingVertex) Box
-class btBoxShape: public btPolyhedralConvexShape
+///The btBoxShape is a box primitive around the origin, its sides axis aligned with length specified by half extents, in local shape coordinates. When used as part of a btCollisionObject or btRigidBody it will be an oriented box in world space.
+ATTRIBUTE_ALIGNED16(class) btBoxShape: public btPolyhedralConvexShape
 {
 
 	//btVector3	m_boxHalfExtents1; //use m_implicitShapeDimensions instead
 
 
 public:
+
+BT_DECLARE_ALIGNED_ALLOCATOR();
 
 	btVector3 getHalfExtentsWithMargin() const
 	{
@@ -41,11 +43,9 @@ public:
 	
 	const btVector3& getHalfExtentsWithoutMargin() const
 	{
-		return m_implicitShapeDimensions;//changed in Bullet 2.63: assume the scaling and margin are included
+		return m_implicitShapeDimensions;//scaling is included, margin is not
 	}
 	
-
-	virtual int	getShapeType() const { return BOX_SHAPE_PROXYTYPE;}
 
 	virtual btVector3	localGetSupportingVertex(const btVector3& vec) const
 	{
@@ -82,11 +82,7 @@ public:
 	}
 
 
-	btBoxShape( const btVector3& boxHalfExtents)
-	{
-		btVector3 margin(getMargin(),getMargin(),getMargin());
-		m_implicitShapeDimensions = (boxHalfExtents * m_localScaling) - margin;
-	};
+	btBoxShape( const btVector3& boxHalfExtents);
 
 	virtual void setMargin(btScalar collisionMargin)
 	{
@@ -117,7 +113,7 @@ public:
 
 	virtual void	calculateLocalInertia(btScalar mass,btVector3& inertia) const;
 
-	virtual void getPlane(btVector3& planeNormal,btPoint3& planeSupport,int i ) const
+	virtual void getPlane(btVector3& planeNormal,btVector3& planeSupport,int i ) const
 	{
 		//this plane might not be aligned...
 		btVector4 plane ;
@@ -145,7 +141,7 @@ public:
 
 	virtual void getVertex(int i,btVector3& vtx) const
 	{
-		btVector3 halfExtents = getHalfExtentsWithoutMargin();
+		btVector3 halfExtents = getHalfExtentsWithMargin();
 
 		vtx = btVector3(
 				halfExtents.x() * (1-(i&1)) - halfExtents.x() * (i&1),
@@ -161,36 +157,30 @@ public:
 		switch (i)
 		{
 		case 0:
-			plane.setValue(btScalar(1.),btScalar(0.),btScalar(0.));
-			plane[3] = -halfExtents.x();
+			plane.setValue(btScalar(1.),btScalar(0.),btScalar(0.),-halfExtents.x());
 			break;
 		case 1:
-			plane.setValue(btScalar(-1.),btScalar(0.),btScalar(0.));
-			plane[3] = -halfExtents.x();
+			plane.setValue(btScalar(-1.),btScalar(0.),btScalar(0.),-halfExtents.x());
 			break;
 		case 2:
-			plane.setValue(btScalar(0.),btScalar(1.),btScalar(0.));
-			plane[3] = -halfExtents.y();
+			plane.setValue(btScalar(0.),btScalar(1.),btScalar(0.),-halfExtents.y());
 			break;
 		case 3:
-			plane.setValue(btScalar(0.),btScalar(-1.),btScalar(0.));
-			plane[3] = -halfExtents.y();
+			plane.setValue(btScalar(0.),btScalar(-1.),btScalar(0.),-halfExtents.y());
 			break;
 		case 4:
-			plane.setValue(btScalar(0.),btScalar(0.),btScalar(1.));
-			plane[3] = -halfExtents.z();
+			plane.setValue(btScalar(0.),btScalar(0.),btScalar(1.),-halfExtents.z());
 			break;
 		case 5:
-			plane.setValue(btScalar(0.),btScalar(0.),btScalar(-1.));
-			plane[3] = -halfExtents.z();
+			plane.setValue(btScalar(0.),btScalar(0.),btScalar(-1.),-halfExtents.z());
 			break;
 		default:
-			assert(0);
+			btAssert(0);
 		}
 	}
 
 	
-	virtual void getEdge(int i,btPoint3& pa,btPoint3& pb) const
+	virtual void getEdge(int i,btVector3& pa,btVector3& pb) const
 	//virtual void getEdge(int i,Edge& edge) const
 	{
 		int edgeVert0 = 0;
@@ -261,7 +251,7 @@ public:
 
 
 	
-	virtual	bool isInside(const btPoint3& pt,btScalar tolerance) const
+	virtual	bool isInside(const btVector3& pt,btScalar tolerance) const
 	{
 		btVector3 halfExtents = getHalfExtentsWithoutMargin();
 
@@ -312,12 +302,13 @@ public:
 			penetrationVector.setValue(btScalar(0.),btScalar(0.),btScalar(-1.));
 			break;
 		default:
-			assert(0);
+			btAssert(0);
 		}
 	}
 
 };
 
-#endif //OBB_BOX_MINKOWSKI_H
+
+#endif //BT_OBB_BOX_MINKOWSKI_H
 
 

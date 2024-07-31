@@ -20,9 +20,10 @@ subject to the following restrictions:
 #include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
 
 class btTypedConstraint;
-class btRaycastVehicle;
+class btActionInterface;
 class btConstraintSolver;
 class btDynamicsWorld;
+
 
 /// Type for the callback for each tick
 typedef void (*btInternalTickCallback)(btDynamicsWorld *world, btScalar timeStep);
@@ -31,15 +32,18 @@ enum btDynamicsWorldType
 {
 	BT_SIMPLE_DYNAMICS_WORLD=1,
 	BT_DISCRETE_DYNAMICS_WORLD=2,
-	BT_CONTINUOUS_DYNAMICS_WORLD=3
+	BT_CONTINUOUS_DYNAMICS_WORLD=3,
+	BT_SOFT_RIGID_DYNAMICS_WORLD=4,
+	BT_GPU_DYNAMICS_WORLD=5
 };
 
-///btDynamicsWorld is the baseclass for several dynamics implementation, basic, discrete, parallel, and continuous
+///The btDynamicsWorld is the interface class for several dynamics implementation, basic, discrete, parallel, and continuous etc.
 class btDynamicsWorld : public btCollisionWorld
 {
 
 protected:
 		btInternalTickCallback m_internalTickCallback;
+		btInternalTickCallback m_internalPreTickCallback;
 		void*	m_worldUserInfo;
 
 		btContactSolverInfo	m_solverInfo;
@@ -48,7 +52,7 @@ public:
 		
 
 		btDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* broadphase,btCollisionConfiguration* collisionConfiguration)
-		:btCollisionWorld(dispatcher,broadphase,collisionConfiguration), m_internalTickCallback(0), m_worldUserInfo(0)
+		:btCollisionWorld(dispatcher,broadphase,collisionConfiguration), m_internalTickCallback(0),m_internalPreTickCallback(0), m_worldUserInfo(0)
 		{
 		}
 
@@ -56,8 +60,10 @@ public:
 		{
 		}
 		
-		///stepSimulation proceeds the simulation over timeStep units
-		///if maxSubSteps > 0, it will interpolate time steps
+		///stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+		///By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+		///in order to keep the simulation real-time, the maximum number of substeps can be clamped to 'maxSubSteps'.
+		///You can disable subdividing the timestep/substepping by passing maxSubSteps=0 as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
 		virtual int		stepSimulation( btScalar timeStep,int maxSubSteps=1, btScalar fixedTimeStep=btScalar(1.)/btScalar(60.))=0;
 			
 		virtual void	debugDrawWorld() = 0;
@@ -69,16 +75,20 @@ public:
 
 		virtual void	removeConstraint(btTypedConstraint* constraint) {(void)constraint;}
 
-		virtual void	addVehicle(btRaycastVehicle* vehicle) {(void)vehicle;}
+		virtual void	addAction(btActionInterface* action) = 0;
 
-		virtual void	removeVehicle(btRaycastVehicle* vehicle) {(void)vehicle;}
+		virtual void	removeAction(btActionInterface* action) = 0;
 
 		//once a rigidbody is added to the dynamics world, it will get this gravity assigned
 		//existing rigidbodies in the world get gravity assigned too, during this method
 		virtual void	setGravity(const btVector3& gravity) = 0;
 		virtual btVector3 getGravity () const = 0;
 
+		virtual void	synchronizeMotionStates() = 0;
+
 		virtual void	addRigidBody(btRigidBody* body) = 0;
+
+		virtual void	addRigidBody(btRigidBody* body, short group, short mask) = 0;
 
 		virtual void	removeRigidBody(btRigidBody* body) = 0;
 
@@ -97,9 +107,15 @@ public:
 		virtual void	clearForces() = 0;
 
 		/// Set the callback for when an internal tick (simulation substep) happens, optional user info
-		void setInternalTickCallback(btInternalTickCallback cb,	void* worldUserInfo=0) 
+		void setInternalTickCallback(btInternalTickCallback cb,	void* worldUserInfo=0,bool isPreTick=false) 
 		{ 
-			m_internalTickCallback = cb; 
+			if (isPreTick)
+			{
+				m_internalPreTickCallback = cb;
+			} else
+			{
+				m_internalTickCallback = cb; 
+			}
 			m_worldUserInfo = worldUserInfo;
 		}
 
@@ -119,7 +135,32 @@ public:
 		}
 
 
+		///obsolete, use addAction instead.
+		virtual void	addVehicle(btActionInterface* vehicle) {(void)vehicle;}
+		///obsolete, use removeAction instead
+		virtual void	removeVehicle(btActionInterface* vehicle) {(void)vehicle;}
+		///obsolete, use addAction instead.
+		virtual void	addCharacter(btActionInterface* character) {(void)character;}
+		///obsolete, use removeAction instead
+		virtual void	removeCharacter(btActionInterface* character) {(void)character;}
+
+
 };
+
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct btDynamicsWorldDoubleData
+{
+	btContactSolverInfoDoubleData	m_solverInfo;
+	btVector3DoubleData	m_gravity;
+};
+
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct btDynamicsWorldFloatData
+{
+	btContactSolverInfoFloatData	m_solverInfo;
+	btVector3FloatData	m_gravity;
+};
+
 
 #endif //BT_DYNAMICS_WORLD_H
 

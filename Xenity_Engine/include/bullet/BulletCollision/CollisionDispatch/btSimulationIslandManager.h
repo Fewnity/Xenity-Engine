@@ -13,13 +13,13 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef SIMULATION_ISLAND_MANAGER_H
-#define SIMULATION_ISLAND_MANAGER_H
+#ifndef BT_SIMULATION_ISLAND_MANAGER_H
+#define BT_SIMULATION_ISLAND_MANAGER_H
 
 #include "BulletCollision/CollisionDispatch/btUnionFind.h"
 #include "btCollisionCreateFunc.h"
 #include "LinearMath/btAlignedObjectArray.h"
-
+#include "btCollisionObject.h"
 
 class btCollisionObject;
 class btCollisionWorld;
@@ -35,6 +35,7 @@ class btSimulationIslandManager
 	btAlignedObjectArray<btPersistentManifold*>  m_islandmanifold;
 	btAlignedObjectArray<btCollisionObject* >  m_islandBodies;
 	
+	bool m_splitIslands;
 	
 public:
 	btSimulationIslandManager();
@@ -58,14 +59,23 @@ public:
 	{
 		virtual ~IslandCallback() {};
 
-		virtual	void	ProcessIsland(btCollisionObject** bodies,int numBodies,class btPersistentManifold**	manifolds,int numManifolds, int islandId) = 0;
+		virtual	void	processIsland(btCollisionObject** bodies,int numBodies,class btPersistentManifold**	manifolds,int numManifolds, int islandId) = 0;
 	};
 
-	void	buildAndProcessIslands(btDispatcher* dispatcher,btCollisionObjectArray& collisionObjects, IslandCallback* callback);
+	void	buildAndProcessIslands(btDispatcher* dispatcher,btCollisionWorld* collisionWorld, IslandCallback* callback);
 
-	void buildIslands(btDispatcher* dispatcher,btCollisionObjectArray& collisionObjects);
+	void buildIslands(btDispatcher* dispatcher,btCollisionWorld* colWorld);
+
+	bool getSplitIslands()
+	{
+		return m_splitIslands;
+	}
+	void setSplitIslands(bool doSplitIslands)
+	{
+		m_splitIslands = doSplitIslands;
+	}
 
 };
 
-#endif //SIMULATION_ISLAND_MANAGER_H
+#endif //BT_SIMULATION_ISLAND_MANAGER_H
 

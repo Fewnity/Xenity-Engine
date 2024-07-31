@@ -13,50 +13,71 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
-
 #ifndef BT_SOFT_RIGID_DYNAMICS_WORLD_H
 #define BT_SOFT_RIGID_DYNAMICS_WORLD_H
 
-class btSoftBody;
+#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include "btSoftBody.h"
+
 typedef	btAlignedObjectArray<btSoftBody*> btSoftBodyArray;
+
+class btSoftBodySolver;
 
 class btSoftRigidDynamicsWorld : public btDiscreteDynamicsWorld
 {
-	
+
 	btSoftBodyArray	m_softBodies;
 	int				m_drawFlags;
 	bool			m_drawNodeTree;
 	bool			m_drawFaceTree;
 	bool			m_drawClusterTree;
-		
+	btSoftBodyWorldInfo m_sbi;
+	///Solver classes that encapsulate multiple soft bodies for solving
+	btSoftBodySolver *m_softBodySolver;
+	bool			m_ownsSolver;
+
 protected:
-	
+
 	virtual void	predictUnconstraintMotion(btScalar timeStep);
-	
+
 	virtual void	internalSingleStepSimulation( btScalar timeStep);
 
-	void	updateSoftBodies();
+	void	solveSoftBodiesConstraints( btScalar timeStep );
 
-	void	solveSoftBodiesConstraints();
+	void	serializeSoftBodies(btSerializer* serializer);
+
+public:
+
+	btSoftRigidDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration, btSoftBodySolver *softBodySolver = 0 );
+
+	virtual ~btSoftRigidDynamicsWorld();
 
 	virtual void	debugDrawWorld();
 
-public:
-	
-	btSoftRigidDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btConstraintSolver* constraintSolver,btCollisionConfiguration* collisionConfiguration);
-
-	virtual ~btSoftRigidDynamicsWorld();
-		
-			
-	void	addSoftBody(btSoftBody* body);
+	void	addSoftBody(btSoftBody* body,short int collisionFilterGroup=btBroadphaseProxy::DefaultFilter,short int collisionFilterMask=btBroadphaseProxy::AllFilter);
 
 	void	removeSoftBody(btSoftBody* body);
-	
+
+	///removeCollisionObject will first check if it is a rigid body, if so call removeRigidBody otherwise call btDiscreteDynamicsWorld::removeCollisionObject
+	virtual void	removeCollisionObject(btCollisionObject* collisionObject);
+
 	int		getDrawFlags() const { return(m_drawFlags); }
 	void	setDrawFlags(int f)	{ m_drawFlags=f; }
 
-			
+	btSoftBodyWorldInfo&	getWorldInfo()
+	{
+		return m_sbi;
+	}
+	const btSoftBodyWorldInfo&	getWorldInfo() const
+	{
+		return m_sbi;
+	}
+
+	virtual btDynamicsWorldType	getWorldType() const
+	{
+		return	BT_SOFT_RIGID_DYNAMICS_WORLD;
+	}
+
 	btSoftBodyArray& getSoftBodyArray()
 	{
 		return m_softBodies;
@@ -66,7 +87,21 @@ public:
 	{
 		return m_softBodies;
 	}
-		
+
+
+	virtual void rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, RayResultCallback& resultCallback) const; 
+
+	/// rayTestSingle performs a raycast call and calls the resultCallback. It is used internally by rayTest.
+	/// In a future implementation, we consider moving the ray test as a virtual method in btCollisionShape.
+	/// This allows more customization.
+	static void	rayTestSingle(const btTransform& rayFromTrans,const btTransform& rayToTrans,
+					  btCollisionObject* collisionObject,
+					  const btCollisionShape* collisionShape,
+					  const btTransform& colObjWorldTransform,
+					  RayResultCallback& resultCallback);
+
+	virtual	void	serialize(btSerializer* serializer);
+
 };
 
 #endif //BT_SOFT_RIGID_DYNAMICS_WORLD_H

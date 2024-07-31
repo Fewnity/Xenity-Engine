@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,26 +13,31 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef COLLISION_SHAPE_H
-#define COLLISION_SHAPE_H
+#ifndef BT_COLLISION_SHAPE_H
+#define BT_COLLISION_SHAPE_H
 
 #include "LinearMath/btTransform.h"
 #include "LinearMath/btVector3.h"
 #include "LinearMath/btMatrix3x3.h"
-#include "LinearMath/btPoint3.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h" //for the shape types
+class btSerializer;
 
-///btCollisionShape provides interface for collision shapes that can be shared among btCollisionObjects.
-class btCollisionShape
+
+///The btCollisionShape class provides an interface for collision shapes that can be shared among btCollisionObjects.
+ATTRIBUTE_ALIGNED16(class) btCollisionShape
 {
-
+protected:
+	int m_shapeType;
 	void* m_userPointer;
 
 public:
 
-	btCollisionShape() : m_userPointer(0)
+	BT_DECLARE_ALIGNED_ALLOCATOR();
+
+	btCollisionShape() : m_shapeType (INVALID_SHAPE_PROXYTYPE), m_userPointer(0)
 	{
 	}
+
 	virtual ~btCollisionShape()
 	{
 	}
@@ -45,21 +50,32 @@ public:
 	///getAngularMotionDisc returns the maximus radius needed for Conservative Advancement to handle time-of-impact with rotations.
 	virtual btScalar	getAngularMotionDisc() const;
 
+	virtual btScalar	getContactBreakingThreshold(btScalar defaultContactThresholdFactor) const;
+
 
 	///calculateTemporalAabb calculates the enclosing aabb for the moving object over interval [0..timeStep)
 	///result is conservative
 	void calculateTemporalAabb(const btTransform& curTrans,const btVector3& linvel,const btVector3& angvel,btScalar timeStep, btVector3& temporalAabbMin,btVector3& temporalAabbMax) const;
 
-#ifndef __SPU__
+
 
 	SIMD_FORCE_INLINE bool	isPolyhedral() const
 	{
 		return btBroadphaseProxy::isPolyhedral(getShapeType());
 	}
 
+	SIMD_FORCE_INLINE bool	isConvex2d() const
+	{
+		return btBroadphaseProxy::isConvex2d(getShapeType());
+	}
+
 	SIMD_FORCE_INLINE bool	isConvex() const
 	{
 		return btBroadphaseProxy::isConvex(getShapeType());
+	}
+	SIMD_FORCE_INLINE bool	isNonMoving() const
+	{
+		return btBroadphaseProxy::isNonMoving(getShapeType());
 	}
 	SIMD_FORCE_INLINE bool	isConcave() const
 	{
@@ -70,13 +86,18 @@ public:
 		return btBroadphaseProxy::isCompound(getShapeType());
 	}
 
+	SIMD_FORCE_INLINE bool	isSoftBody() const
+	{
+		return btBroadphaseProxy::isSoftBody(getShapeType());
+	}
+
 	///isInfinite is used to catch simulation error (aabb check)
 	SIMD_FORCE_INLINE bool isInfinite() const
 	{
 		return btBroadphaseProxy::isInfinite(getShapeType());
 	}
 
-	virtual int		getShapeType() const=0;
+#ifndef __SPU__
 	virtual void	setLocalScaling(const btVector3& scaling) =0;
 	virtual const btVector3& getLocalScaling() const =0;
 	virtual void	calculateLocalInertia(btScalar mass,btVector3& inertia) const = 0;
@@ -87,13 +108,20 @@ public:
 #endif //__SPU__
 
 	
+	int		getShapeType() const { return m_shapeType; }
 
+	///the getAnisotropicRollingFrictionDirection can be used in combination with setAnisotropicFriction
+	///See Bullet/Demos/RollingFrictionDemo for an example
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		return btVector3(1,1,1);
+	}
 	virtual void	setMargin(btScalar margin) = 0;
 	virtual btScalar	getMargin() const = 0;
 
 	
 	///optional user data pointer
-	void	setUserPointer(void* userPtr)
+	void	setUserPointer(void*  userPtr)
 	{
 		m_userPointer = userPtr;
 	}
@@ -103,7 +131,29 @@ public:
 		return m_userPointer;
 	}
 
+	virtual	int	calculateSerializeBufferSize() const;
+
+	///fills the dataBuffer and returns the struct name (and 0 on failure)
+	virtual	const char*	serialize(void* dataBuffer, btSerializer* serializer) const;
+
+	virtual void	serializeSingleShape(btSerializer* serializer) const;
+
 };	
 
-#endif //COLLISION_SHAPE_H
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct	btCollisionShapeData
+{
+	char	*m_name;
+	int		m_shapeType;
+	char	m_padding[4];
+};
+
+SIMD_FORCE_INLINE	int	btCollisionShape::calculateSerializeBufferSize() const
+{
+	return sizeof(btCollisionShapeData);
+}
+
+
+
+#endif //BT_COLLISION_SHAPE_H
 

@@ -36,7 +36,7 @@ void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 {
 	if (body && body->getMotionState())
 	{
-		const btPoint3& p = body->getCenterOfMassPosition();
+		const btVector3& p = body->getCenterOfMassPosition();
 		pos.setX(p.getX());
 		pos.setY(p.getY());
 		pos.setZ(p.getZ());

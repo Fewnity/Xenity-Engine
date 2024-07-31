@@ -13,8 +13,8 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef SOFT_BODY_HELPERS_H
-#define SOFT_BODY_HELPERS_H
+#ifndef BT_SOFT_BODY_HELPERS_H
+#define BT_SOFT_BODY_HELPERS_H
 
 #include "btSoftBody.h"
 
@@ -39,69 +39,105 @@ struct	fDrawFlags { enum _ {
 	Joints		=	0x1000,
 	/* presets	*/ 
 	Std			=	Links+Faces+Tetras+Anchors+Notes+Joints,
-	StdTetra	=	Std-Faces+Tetras,
+	StdTetra	=	Std-Faces+Tetras
 };};
 
 struct	btSoftBodyHelpers
 {
 	/* Draw body															*/ 
 	static void				Draw(		btSoftBody* psb,
-										btIDebugDraw* idraw,
-										int drawflags=fDrawFlags::Std);
+		btIDebugDraw* idraw,
+		int drawflags=fDrawFlags::Std);
 	/* Draw body infos														*/ 
 	static	void			DrawInfos(	btSoftBody* psb,
-										btIDebugDraw* idraw,
-										bool masses,
-										bool areas,
-										bool stress);
+		btIDebugDraw* idraw,
+		bool masses,
+		bool areas,
+		bool stress);
 	/* Draw node tree														*/ 
 	static void				DrawNodeTree(	btSoftBody* psb,
-											btIDebugDraw* idraw,
-											int mindepth=0,
-											int maxdepth=-1);
+		btIDebugDraw* idraw,
+		int mindepth=0,
+		int maxdepth=-1);
 	/* Draw face tree														*/ 
 	static void				DrawFaceTree(	btSoftBody* psb,
-											btIDebugDraw* idraw,
-											int mindepth=0,
-											int maxdepth=-1);
+		btIDebugDraw* idraw,
+		int mindepth=0,
+		int maxdepth=-1);
 	/* Draw cluster tree													*/ 
 	static void				DrawClusterTree(btSoftBody* psb,
-											btIDebugDraw* idraw,
-											int mindepth=0,
-											int maxdepth=-1);
+		btIDebugDraw* idraw,
+		int mindepth=0,
+		int maxdepth=-1);
 	/* Draw rigid frame														*/ 
 	static	void			DrawFrame(		btSoftBody* psb,
-											btIDebugDraw* idraw);
+		btIDebugDraw* idraw);
 	/* Create a rope														*/ 
-	static	btSoftBody*		CreateRope( btSoftBody::btSoftBodyWorldInfo& worldInfo,
-										const btVector3& from,
-										const btVector3& to,
-										int res,
-										int fixeds);
+	static	btSoftBody*		CreateRope( btSoftBodyWorldInfo& worldInfo,
+		const btVector3& from,
+		const btVector3& to,
+		int res,
+		int fixeds);
 	/* Create a patch														*/ 
-	static	btSoftBody*		CreatePatch(btSoftBody::btSoftBodyWorldInfo& worldInfo,
-										const btVector3& corner00,
-										const btVector3& corner10,
-										const btVector3& corner01,
-										const btVector3& corner11,
-										int resx,
-										int resy,
-										int fixeds,
-										bool gendiags);
+	static	btSoftBody*		CreatePatch(btSoftBodyWorldInfo& worldInfo,
+		const btVector3& corner00,
+		const btVector3& corner10,
+		const btVector3& corner01,
+		const btVector3& corner11,
+		int resx,
+		int resy,
+		int fixeds,
+		bool gendiags);
+	/* Create a patch with UV Texture Coordinates	*/ 
+	static	btSoftBody*		CreatePatchUV(btSoftBodyWorldInfo& worldInfo,
+		const btVector3& corner00,
+		const btVector3& corner10,
+		const btVector3& corner01,
+		const btVector3& corner11,
+		int resx,
+		int resy,
+		int fixeds,
+		bool gendiags,
+		float* tex_coords=0);
+	static	float	CalculateUV(int resx,int resy,int ix,int iy,int id);
 	/* Create an ellipsoid													*/ 
-	static	btSoftBody*		CreateEllipsoid(btSoftBody::btSoftBodyWorldInfo& worldInfo,
-											const btVector3& center,
-											const btVector3& radius,
-											int res);	
+	static	btSoftBody*		CreateEllipsoid(btSoftBodyWorldInfo& worldInfo,
+		const btVector3& center,
+		const btVector3& radius,
+		int res);	
 	/* Create from trimesh													*/ 
-	static	btSoftBody*		CreateFromTriMesh(	btSoftBody::btSoftBodyWorldInfo& worldInfo,
-												const btScalar*	vertices,
-												const int* triangles,
-												int ntriangles);
+	static	btSoftBody*		CreateFromTriMesh(	btSoftBodyWorldInfo& worldInfo,
+		const btScalar*	vertices,
+		const int* triangles,
+		int ntriangles,
+		bool randomizeConstraints = true);
 	/* Create from convex-hull												*/ 
-	static	btSoftBody*		CreateFromConvexHull(	btSoftBody::btSoftBodyWorldInfo& worldInfo,
-													const btVector3* vertices,
-													int nvertices);
+	static	btSoftBody*		CreateFromConvexHull(	btSoftBodyWorldInfo& worldInfo,
+		const btVector3* vertices,
+		int nvertices,
+		bool randomizeConstraints = true);
+
+
+	/* Export TetGen compatible .smesh file									*/ 
+//	static void				ExportAsSMeshFile(	btSoftBody* psb,
+//												const char* filename);	
+	/* Create from TetGen .ele, .face, .node files							*/ 
+//	static btSoftBody*		CreateFromTetGenFile(	btSoftBodyWorldInfo& worldInfo,
+//													const char* ele,
+//													const char* face,
+//													const char* node,
+//													bool bfacelinks,
+//													bool btetralinks,
+//													bool bfacesfromtetras);
+	/* Create from TetGen .ele, .face, .node data							*/ 
+	static btSoftBody*		CreateFromTetGenData(	btSoftBodyWorldInfo& worldInfo,
+													const char* ele,
+													const char* face,
+													const char* node,
+													bool bfacelinks,
+													bool btetralinks,
+													bool bfacesfromtetras);
+	
 };
 
-#endif //SOFT_BODY_HELPERS_H
+#endif //BT_SOFT_BODY_HELPERS_H

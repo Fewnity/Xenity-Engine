@@ -13,11 +13,10 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef JACOBIAN_ENTRY_H
-#define JACOBIAN_ENTRY_H
+#ifndef BT_JACOBIAN_ENTRY_H
+#define BT_JACOBIAN_ENTRY_H
 
-#include "LinearMath/btVector3.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "LinearMath/btMatrix3x3.h"
 
 
 //notes:
@@ -28,7 +27,7 @@ subject to the following restrictions:
 /// Jacobian entry is an abstraction that allows to describe constraints
 /// it can be used in combination with a constraint solver
 /// Can be used to relate the effect of an impulse to the constraint error
-class btJacobianEntry
+ATTRIBUTE_ALIGNED16(class) btJacobianEntry
 {
 public:
 	btJacobianEntry() {};
@@ -153,4 +152,4 @@ public:
 
 };
 
-#endif //JACOBIAN_ENTRY_H
+#endif //BT_JACOBIAN_ENTRY_H

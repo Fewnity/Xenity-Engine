@@ -14,8 +14,6 @@ subject to the following restrictions:
 */
 
 #include "btUnionFind.h"
-#include <assert.h>
-
 
 
 
@@ -55,7 +53,7 @@ class btUnionFindElementSortPredicate
 {
 	public:
 
-		bool operator() ( const btElement& lhs, const btElement& rhs )
+		bool operator() ( const btElement& lhs, const btElement& rhs ) const
 		{
 			return lhs.m_id < rhs.m_id;
 		}
@@ -72,7 +70,9 @@ void	btUnionFind::sortIslands()
 	for (int i=0;i<numElements;i++)
 	{
 		m_elements[i].m_id = find(i);
+#ifndef STATIC_SIMULATION_ISLAND_OPTIMIZATION
 		m_elements[i].m_sz = i;
+#endif //STATIC_SIMULATION_ISLAND_OPTIMIZATION
 	}
 	
 	 // Sort the vector using predicate and std::sort
@@ -80,4 +80,3 @@ void	btUnionFind::sortIslands()
 	  m_elements.quickSort(btUnionFindElementSortPredicate());
 
 }
-

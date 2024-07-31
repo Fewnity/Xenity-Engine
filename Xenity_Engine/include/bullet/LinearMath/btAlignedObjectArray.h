@@ -28,6 +28,7 @@ subject to the following restrictions:
 
 #define BT_USE_PLACEMENT_NEW 1
 //#define BT_USE_MEMCPY 1 //disable, because it is cumbersome to find out for each platform where memcpy is defined. It can be in <memory.h> or <string.h> or otherwise...
+#define BT_ALLOW_ARRAY_COPY_OPERATOR // enabling this can accidently perform deep copies of data if you are not careful
 
 #ifdef BT_USE_MEMCPY
 #include <memory.h>
@@ -39,8 +40,8 @@ subject to the following restrictions:
 #endif //BT_USE_PLACEMENT_NEW
 
 
-///btAlignedObjectArray uses a subset of the stl::vector interface for its methods
-///It is developed to replace stl::vector to avoid STL alignment issues to add SIMD/SSE data
+///The btAlignedObjectArray template class uses a subset of the stl::vector interface for its methods
+///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD/SSE data
 template <typename T> 
 //template <class T> 
 class btAlignedObjectArray
@@ -53,12 +54,24 @@ class btAlignedObjectArray
 	//PCK: added this line
 	bool				m_ownsMemory;
 
-	protected:
+#ifdef BT_ALLOW_ARRAY_COPY_OPERATOR
+public:
+	SIMD_FORCE_INLINE btAlignedObjectArray<T>& operator=(const btAlignedObjectArray<T> &other)
+	{
+		copyFromArray(other);
+		return *this;
+	}
+#else//BT_ALLOW_ARRAY_COPY_OPERATOR
+private:
+		SIMD_FORCE_INLINE btAlignedObjectArray<T>& operator=(const btAlignedObjectArray<T> &other);
+#endif//BT_ALLOW_ARRAY_COPY_OPERATOR
+
+protected:
 		SIMD_FORCE_INLINE	int	allocSize(int size)
 		{
 			return (size ? size*2 : 1);
 		}
-		SIMD_FORCE_INLINE	void	copy(int start,int end, T* dest)
+		SIMD_FORCE_INLINE	void	copy(int start,int end, T* dest) const
 		{
 			int i;
 			for (i=start;i<end;++i)
@@ -120,27 +133,54 @@ class btAlignedObjectArray
 			clear();
 		}
 
-		SIMD_FORCE_INLINE	int capacity() const
-		{	// return current length of allocated storage
-			return m_capacity;
+		///Generally it is best to avoid using the copy constructor of an btAlignedObjectArray, and use a (const) reference to the array instead.
+		btAlignedObjectArray(const btAlignedObjectArray& otherArray)
+		{
+			init();
+
+			int otherSize = otherArray.size();
+			resize (otherSize);
+			otherArray.copy(0, otherSize, m_data);
 		}
+
 		
+		
+		/// return the number of elements in the array
 		SIMD_FORCE_INLINE	int size() const
-		{	// return length of sequence
+		{	
 			return m_size;
 		}
 		
+		SIMD_FORCE_INLINE const T& at(int n) const
+		{
+			btAssert(n>=0);
+			btAssert(n<size());
+			return m_data[n];
+		}
+
+		SIMD_FORCE_INLINE T& at(int n)
+		{
+			btAssert(n>=0);
+			btAssert(n<size());
+			return m_data[n];
+		}
+
 		SIMD_FORCE_INLINE const T& operator[](int n) const
 		{
+			btAssert(n>=0);
+			btAssert(n<size());
 			return m_data[n];
 		}
 
 		SIMD_FORCE_INLINE T& operator[](int n)
 		{
+			btAssert(n>=0);
+			btAssert(n<size());
 			return m_data[n];
 		}
 		
 
+		///clear the array, deallocated memory. Generally it is better to use array.resize(0), to reduce performance overhead of run-time memory (de)allocations.
 		SIMD_FORCE_INLINE	void	clear()
 		{
 			destroy(0,size());
@@ -152,17 +192,38 @@ class btAlignedObjectArray
 
 		SIMD_FORCE_INLINE	void	pop_back()
 		{
+			btAssert(m_size>0);
 			m_size--;
 			m_data[m_size].~T();
 		}
 
+
+		///resize changes the number of elements in the array. If the new size is larger, the new elements will be constructed using the optional second argument.
+		///when the new number of elements is smaller, the destructor will be called, but memory will not be freed, to reduce performance overhead of run-time memory (de)allocations.
+		SIMD_FORCE_INLINE	void	resizeNoInitialize(int newsize)
+		{
+			int curSize = size();
+
+			if (newsize < curSize)
+			{
+			} else
+			{
+				if (newsize > size())
+				{
+					reserve(newsize);
+				}
+				//leave this uninitialized
+			}
+			m_size = newsize;
+		}
+	
 		SIMD_FORCE_INLINE	void	resize(int newsize, const T& fillData=T())
 		{
 			int curSize = size();
 
-			if (newsize < size())
+			if (newsize < curSize)
 			{
-				for(int i = curSize; i < newsize; i++)
+				for(int i = newsize; i < curSize; i++)
 				{
 					m_data[i].~T();
 				}
@@ -183,7 +244,18 @@ class btAlignedObjectArray
 
 			m_size = newsize;
 		}
-	
+		SIMD_FORCE_INLINE	T&  expandNonInitializing( )
+		{	
+			int sz = size();
+			if( sz == capacity() )
+			{
+				reserve( allocSize(size()) );
+			}
+			m_size++;
+
+			return m_data[sz];		
+		}
+
 
 		SIMD_FORCE_INLINE	T&  expand( const T& fillValue=T())
 		{	
@@ -219,6 +291,11 @@ class btAlignedObjectArray
 		}
 
 	
+		/// return the pre-allocated (reserved) elements, this is at least as large as the total number of elements,see size() and reserve()
+		SIMD_FORCE_INLINE	int capacity() const
+		{	
+			return m_capacity;
+		}
 		
 		SIMD_FORCE_INLINE	void reserve(int _Count)
 		{	// determine new minimum length of allocated storage
@@ -253,8 +330,9 @@ class btAlignedObjectArray
 				}
 		};
 	
+
 		template <typename L>
-		void quickSortInternal(L CompareFunc,int lo, int hi)
+		void quickSortInternal(const L& CompareFunc,int lo, int hi)
 		{
 		//  lo is the lower index, hi is the upper index
 		//  of the region of array a that is to be sorted
@@ -284,7 +362,7 @@ class btAlignedObjectArray
 
 
 		template <typename L>
-		void quickSort(L CompareFunc)
+		void quickSort(const L& CompareFunc)
 		{
 			//don't sort 0 or 1 elements
 			if (size()>1)
@@ -296,7 +374,7 @@ class btAlignedObjectArray
 
 		///heap sort from http://www.csse.monash.edu.au/~lloyd/tildeAlgDS/Sort/Heap/
 		template <typename L>
-		void downHeap(T *pArr, int k, int n,L CompareFunc)
+		void downHeap(T *pArr, int k, int n, const L& CompareFunc)
 		{
 			/*  PRE: a[k+1..N] is a heap */
 			/* POST:  a[k..N]  is a heap */
@@ -342,7 +420,7 @@ class btAlignedObjectArray
 		}
 
 	template <typename L>
-	void heapSort(L CompareFunc)
+	void heapSort(const L& CompareFunc)
 	{
 		/* sort a[0..N-1],  N.B. 0 to N-1 */
 		int k;
@@ -368,7 +446,7 @@ class btAlignedObjectArray
 	int	findBinarySearch(const T& key) const
 	{
 		int first = 0;
-		int last = size();
+		int last = size()-1;
 
 		//assume sorted array
 		while (first <= last) {
@@ -419,6 +497,13 @@ class btAlignedObjectArray
 		m_data = (T*)buffer;
 		m_size = size;
 		m_capacity = capacity;
+	}
+
+	void copyFromArray(const btAlignedObjectArray& otherArray)
+	{
+		int otherSize = otherArray.size();
+		resize (otherSize);
+		otherArray.copy(0, otherSize, m_data);
 	}
 
 };

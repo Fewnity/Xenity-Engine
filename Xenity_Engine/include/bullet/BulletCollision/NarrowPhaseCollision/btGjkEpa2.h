@@ -22,8 +22,9 @@ misrepresented as being the original software.
 /*
 GJK-EPA collision solver by Nathanael Presson, 2008
 */
-#ifndef _68DA1F85_90B7_4bb0_A705_83B4040A75C6_
-#define _68DA1F85_90B7_4bb0_A705_83B4040A75C6_
+#ifndef BT_GJK_EPA2_H
+#define BT_GJK_EPA2_H
+
 #include "BulletCollision/CollisionShapes/btConvexShape.h"
 
 ///btGjkEpaSolver contributed under zlib by Nathanael Presson
@@ -55,7 +56,7 @@ static bool		Penetration(const btConvexShape* shape0,const btTransform& wtrs0,
 							const btVector3& guess,
 							sResults& results,
 							bool usemargins=true);
-
+#ifndef __SPU__
 static btScalar	SignedDistance(	const btVector3& position,
 								btScalar margin,
 								const btConvexShape* shape,
@@ -66,6 +67,9 @@ static bool		SignedDistance(	const btConvexShape* shape0,const btTransform& wtrs
 								const btConvexShape* shape1,const btTransform& wtrs1,
 								const btVector3& guess,
 								sResults& results);
+#endif //__SPU__
+
 };
 
-#endif
+#endif //BT_GJK_EPA2_H
+

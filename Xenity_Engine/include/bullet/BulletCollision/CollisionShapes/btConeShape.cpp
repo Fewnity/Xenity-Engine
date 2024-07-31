@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,14 +14,14 @@ subject to the following restrictions:
 */
 
 #include "btConeShape.h"
-#include "LinearMath/btPoint3.h"
 
 
 
-btConeShape::btConeShape (btScalar radius,btScalar height):
+btConeShape::btConeShape (btScalar radius,btScalar height): btConvexInternalShape (),
 m_radius (radius),
 m_height(height)
 {
+	m_shapeType = CONE_SHAPE_PROXYTYPE;
 	setConeUpIndex(1);
 	btVector3 halfExtents;
 	m_sinAngle = (m_radius / btSqrt(m_radius * m_radius + m_height * m_height));
@@ -60,8 +60,12 @@ void	btConeShape::setConeUpIndex(int upIndex)
 			m_coneIndices[2] = 1;
 		break;
 	default:
-		assert(0);
+		btAssert(0);
 	};
+	
+	m_implicitShapeDimensions[m_coneIndices[0]] = m_radius;
+	m_implicitShapeDimensions[m_coneIndices[1]] = m_height;
+	m_implicitShapeDimensions[m_coneIndices[2]] = m_radius;
 }
 
 btVector3 btConeShape::coneLocalSupport(const btVector3& v) const
@@ -131,3 +135,13 @@ btVector3	btConeShape::localGetSupportingVertex(const btVector3& vec)  const
 }
 
 
+void	btConeShape::setLocalScaling(const btVector3& scaling)
+{
+	int axis = m_coneIndices[1];
+	int r1 = m_coneIndices[0];
+	int r2 = m_coneIndices[2];
+	m_height *= scaling[axis] / m_localScaling[axis];
+	m_radius *= (scaling[r1] / m_localScaling[r1] + scaling[r2] / m_localScaling[r2]) / 2;
+	m_sinAngle = (m_radius / btSqrt(m_radius * m_radius + m_height * m_height));
+	btConvexInternalShape::setLocalScaling(scaling);
+}

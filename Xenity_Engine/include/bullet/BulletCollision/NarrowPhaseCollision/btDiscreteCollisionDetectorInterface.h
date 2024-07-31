@@ -14,11 +14,11 @@ subject to the following restrictions:
 */
 
 
-#ifndef DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
-#define DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
+#ifndef BT_DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
+#define BT_DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
+
 #include "LinearMath/btTransform.h"
 #include "LinearMath/btVector3.h"
-class btStackAlloc;
 
 /// This interface is made to be used by an iterative approach to do TimeOfImpact calculations
 /// This interface allows to query for closest points and penetration depth between two (convex) objects
@@ -33,23 +33,22 @@ struct btDiscreteCollisionDetectorInterface
 	
 		virtual ~Result(){}	
 
-		///setShapeIdentifiers provides experimental support for per-triangle material / custom material combiner
-		virtual void setShapeIdentifiers(int partId0,int index0,	int partId1,int index1)=0;
+		///setShapeIdentifiersA/B provides experimental support for per-triangle material / custom material combiner
+		virtual void setShapeIdentifiersA(int partId0,int index0)=0;
+		virtual void setShapeIdentifiersB(int partId1,int index1)=0;
 		virtual void addContactPoint(const btVector3& normalOnBInWorld,const btVector3& pointInWorld,btScalar depth)=0;
 	};
 
 	struct ClosestPointInput
 	{
 		ClosestPointInput()
-			:m_maximumDistanceSquared(btScalar(1e30)),
-			m_stackAlloc(0)
+			:m_maximumDistanceSquared(btScalar(BT_LARGE_FLOAT))
 		{
 		}
 
 		btTransform m_transformA;
 		btTransform m_transformB;
 		btScalar	m_maximumDistanceSquared;
-		btStackAlloc* m_stackAlloc;
 	};
 
 	virtual ~btDiscreteCollisionDetectorInterface() {};
@@ -68,7 +67,7 @@ struct btStorageResult : public btDiscreteCollisionDetectorInterface::Result
 		btVector3	m_closestPointInB;
 		btScalar	m_distance; //negative means penetration !
 
-		btStorageResult() : m_distance(btScalar(1e30))
+		btStorageResult() : m_distance(btScalar(BT_LARGE_FLOAT))
 		{
 
 		}
@@ -85,4 +84,5 @@ struct btStorageResult : public btDiscreteCollisionDetectorInterface::Result
 		}
 };
 
-#endif //DISCRETE_COLLISION_DETECTOR_INTERFACE1_H
+#endif //BT_DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
+

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2008 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,8 +15,8 @@ subject to the following restrictions:
 
 /// This file was created by Alex Silverman
 
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef BT_MATERIAL_H
+#define BT_MATERIAL_H
 
 // Material class to be used by btMultimaterialTriangleMeshShape to store triangle properties
 class btMaterial
@@ -31,4 +31,5 @@ public:
     btMaterial(btScalar fric, btScalar rest) { m_friction = fric; m_restitution = rest; }
 };
 
-#endif // MATERIAL_H
+#endif // BT_MATERIAL_H
+

@@ -16,11 +16,10 @@ subject to the following restrictions:
 
 
 
-#ifndef GJK_PAIR_DETECTOR_H
-#define GJK_PAIR_DETECTOR_H
+#ifndef BT_GJK_PAIR_DETECTOR_H
+#define BT_GJK_PAIR_DETECTOR_H
 
 #include "btDiscreteCollisionDetectorInterface.h"
-#include "LinearMath/btPoint3.h"
 #include "BulletCollision/CollisionShapes/btCollisionMargin.h"
 
 class btConvexShape;
@@ -37,7 +36,13 @@ class btGjkPairDetector : public btDiscreteCollisionDetectorInterface
 	btSimplexSolverInterface* m_simplexSolver;
 	const btConvexShape* m_minkowskiA;
 	const btConvexShape* m_minkowskiB;
+	int	m_shapeTypeA;
+	int m_shapeTypeB;
+	btScalar	m_marginA;
+	btScalar	m_marginB;
+
 	bool		m_ignoreMargin;
+	btScalar	m_cachedSeparatingDistance;
 	
 
 public:
@@ -47,25 +52,38 @@ public:
 	int			m_curIter;
 	int			m_degenerateSimplex;
 	int			m_catchDegeneracies;
-
+	int			m_fixContactNormalDirection;
 
 	btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver);
+	btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,int shapeTypeA,int shapeTypeB,btScalar marginA, btScalar marginB, btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver);
 	virtual ~btGjkPairDetector() {};
 
 	virtual void	getClosestPoints(const ClosestPointInput& input,Result& output,class btIDebugDraw* debugDraw,bool swapResults=false);
 
-	void setMinkowskiA(btConvexShape* minkA)
+	void	getClosestPointsNonVirtual(const ClosestPointInput& input,Result& output,class btIDebugDraw* debugDraw);
+	
+
+	void setMinkowskiA(const btConvexShape* minkA)
 	{
 		m_minkowskiA = minkA;
 	}
 
-	void setMinkowskiB(btConvexShape* minkB)
+	void setMinkowskiB(const btConvexShape* minkB)
 	{
 		m_minkowskiB = minkB;
 	}
 	void setCachedSeperatingAxis(const btVector3& seperatingAxis)
 	{
 		m_cachedSeparatingAxis = seperatingAxis;
+	}
+
+	const btVector3& getCachedSeparatingAxis() const
+	{
+		return m_cachedSeparatingAxis;
+	}
+	btScalar	getCachedSeparatingDistance() const
+	{
+		return m_cachedSeparatingDistance;
 	}
 
 	void	setPenetrationDepthSolver(btConvexPenetrationDepthSolver*	penetrationDepthSolver)
@@ -82,4 +100,4 @@ public:
 
 };
 
-#endif //GJK_PAIR_DETECTOR_H
+#endif //BT_GJK_PAIR_DETECTOR_H

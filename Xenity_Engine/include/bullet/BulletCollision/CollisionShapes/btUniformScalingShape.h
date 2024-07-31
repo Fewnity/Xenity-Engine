@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -19,13 +19,17 @@ subject to the following restrictions:
 #include "btConvexShape.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h" // for the types
 
-class btUniformScalingShape : public btConvexShape
+///The btUniformScalingShape allows to re-use uniform scaled instances of btConvexShape in a memory efficient way.
+///Istead of using btUniformScalingShape, it is better to use the non-uniform setLocalScaling method on convex shapes that implement it.
+ATTRIBUTE_ALIGNED16(class) btUniformScalingShape : public btConvexShape
 {
 	btConvexShape*	m_childConvexShape;
 
 	btScalar	m_uniformScalingFactor;
 	
 	public:
+	
+	BT_DECLARE_ALIGNED_ALLOCATOR();
 	
 	btUniformScalingShape(	btConvexShape* convexChildShape, btScalar uniformScalingFactor);
 	
@@ -59,7 +63,6 @@ class btUniformScalingShape : public btConvexShape
 		return "UniformScalingShape";
 	}
 	
-	virtual int	getShapeType() const { return UNIFORM_SCALING_SHAPE_PROXYTYPE; }
 
 
 	///////////////////////////

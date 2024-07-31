@@ -17,7 +17,7 @@ subject to the following restrictions:
 
 #include "btSimpleBroadphase.h"
 #include "LinearMath/btAabbUtil2.h"
-#include "BulletCollision/CollisionShapes/btOptimizedBvh.h"
+#include "btQuantizedBvh.h"
 
 ///	btSapBroadphaseArray	m_sapBroadphases;
 
@@ -87,7 +87,7 @@ btMultiSapBroadphase::~btMultiSapBroadphase()
 
 void	btMultiSapBroadphase::buildTree(const btVector3& bvhAabbMin,const btVector3& bvhAabbMax)
 {
-	m_optimizedAabbTree = new btOptimizedBvh();
+	m_optimizedAabbTree = new btQuantizedBvh();
 	m_optimizedAabbTree->setQuantizationValues(bvhAabbMin,bvhAabbMax);
 	QuantizedNodeArray&	nodes = m_optimizedAabbTree->getLeafNodeArray();
 	for (int i=0;i<m_sapBroadphases.size();i++)
@@ -149,6 +149,22 @@ amin.getZ() >= bmin.getZ() && amax.getZ() <= bmax.getZ();
 
 
 
+void	btMultiSapBroadphase::getAabb(btBroadphaseProxy* proxy,btVector3& aabbMin, btVector3& aabbMax ) const
+{
+	btMultiSapProxy* multiProxy = static_cast<btMultiSapProxy*>(proxy);
+	aabbMin = multiProxy->m_aabbMin;
+	aabbMax = multiProxy->m_aabbMax;
+}
+
+void	btMultiSapBroadphase::rayTest(const btVector3& rayFrom,const btVector3& rayTo, btBroadphaseRayCallback& rayCallback, const btVector3& aabbMin,const btVector3& aabbMax)
+{
+	for (int i=0;i<m_multiSapProxies.size();i++)
+	{
+		rayCallback.process(m_multiSapProxies[i]);
+	}
+}
+
+
 //#include <stdio.h>
 
 void	btMultiSapBroadphase::setAabb(btBroadphaseProxy* proxy,const btVector3& aabbMin,const btVector3& aabbMax, btDispatcher* dispatcher)
@@ -208,7 +224,9 @@ void	btMultiSapBroadphase::setAabb(btBroadphaseProxy* proxy,const btVector3& aab
 
 
 	
-	m_optimizedAabbTree->reportAabbOverlappingNodex(&myNodeCallback,aabbMin,aabbMax);
+	if (m_optimizedAabbTree)
+		m_optimizedAabbTree->reportAabbOverlappingNodex(&myNodeCallback,aabbMin,aabbMax);
+
 	int i;
 
 	for ( i=0;i<multiProxy->m_bridgeProxies.size();i++)
@@ -323,7 +341,7 @@ class btMultiSapBroadphasePairSortPredicate
 {
 	public:
 
-		bool operator() ( const btBroadphasePair& a1, const btBroadphasePair& b1 )
+		bool operator() ( const btBroadphasePair& a1, const btBroadphasePair& b1 ) const
 		{
 				btMultiSapBroadphase::btMultiSapProxy* aProxy0 = a1.m_pProxy0 ? (btMultiSapBroadphase::btMultiSapProxy*)a1.m_pProxy0->m_multiSapParentProxy : 0;
 				btMultiSapBroadphase::btMultiSapProxy* aProxy1 = a1.m_pProxy1 ? (btMultiSapBroadphase::btMultiSapProxy*)a1.m_pProxy1->m_multiSapParentProxy : 0;
@@ -463,4 +481,9 @@ void	btMultiSapBroadphase::printStats()
 		}
 		*/
 
+}
+
+void btMultiSapBroadphase::resetPool(btDispatcher* dispatcher)
+{
+	// not yet
 }

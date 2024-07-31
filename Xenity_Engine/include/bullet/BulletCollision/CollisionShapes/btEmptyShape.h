@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,8 +13,8 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef EMPTY_SHAPE_H
-#define EMPTY_SHAPE_H
+#ifndef BT_EMPTY_SHAPE_H
+#define BT_EMPTY_SHAPE_H
 
 #include "btConcaveShape.h"
 
@@ -26,11 +26,13 @@ subject to the following restrictions:
 
 
 
-/// btEmptyShape is a collision shape without actual collision detection. 
-///It can be replaced by another shape during runtime
-class btEmptyShape	: public btConcaveShape
+/// The btEmptyShape is a collision shape without actual collision detection shape, so most users should ignore this class.
+/// It can be replaced by another shape during runtime, but the inertia tensor should be recomputed.
+ATTRIBUTE_ALIGNED16(class) btEmptyShape	: public btConcaveShape
 {
 public:
+	BT_DECLARE_ALIGNED_ALLOCATOR();
+	
 	btEmptyShape();
 
 	virtual ~btEmptyShape();
@@ -51,14 +53,14 @@ public:
 
 	virtual void	calculateLocalInertia(btScalar mass,btVector3& inertia) const;
 	
-	virtual int	getShapeType() const { return EMPTY_SHAPE_PROXYTYPE;}
-
-	
 	virtual const char*	getName()const
 	{
 		return "Empty";
 	}
 
+	virtual void processAllTriangles(btTriangleCallback* ,const btVector3& ,const btVector3& ) const
+	{
+	}
 
 protected:
 	btVector3	m_localScaling;
@@ -67,4 +69,4 @@ protected:
 
 
 
-#endif //EMPTY_SHAPE_H
+#endif //BT_EMPTY_SHAPE_H

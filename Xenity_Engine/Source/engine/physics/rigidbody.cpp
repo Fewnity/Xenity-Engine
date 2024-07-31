@@ -32,8 +32,11 @@ ReflectiveData RigidBody::GetReflectiveData()
 	AddVariable(reflectedVariables, isStatic, "isStatic", true);
 	AddVariable(reflectedVariables, gravityMultiplier, "gravityMultiplier", true);
 	AddVariable(reflectedVariables, drag, "drag", true);
+	AddVariable(reflectedVariables, angularDrag, "angularDrag", true);
 	AddVariable(reflectedVariables, bounce, "bounce", true);
 	AddVariable(reflectedVariables, mass, "mass", true);
+	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis", true);
+	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis", true);
 	return reflectedVariables;
 }
 
@@ -42,10 +45,15 @@ void RigidBody::OnReflectionUpdated()
 	// Call setters to make sure the values are correct
 	SetDrag(drag);
 	SetBounce(bounce);
+	SetMass(mass);
+	UpdateLockedAxis();
 }
 
 void RigidBody::SetVelocity(const Vector3& _velocity)
 {
+	if(!bulletRigidbody)
+		return;
+
 	bulletRigidbody->activate();
 	bulletRigidbody->setLinearVelocity(btVector3(_velocity.x, _velocity.y, _velocity.z));
 	//velocity = _velocity;
@@ -61,6 +69,20 @@ void RigidBody::SetDrag(float _drag)
 	{
 		drag = _drag;
 	}
+	UpdateRigidBodyDrag();
+}
+
+void RigidBody::SetAngularDrag(float _angularDrag)
+{
+	if (_angularDrag < 0)
+	{
+		angularDrag = 0;
+	}
+	else
+	{
+		angularDrag = _angularDrag;
+	}
+	UpdateRigidBodyDrag();
 }
 
 void RigidBody::SetBounce(float _bounce)
@@ -73,6 +95,7 @@ void RigidBody::SetBounce(float _bounce)
 	{
 		bounce = _bounce;
 	}
+	UpdateRigidBodyBounce();
 }
 
 void RigidBody::SetGravityMultiplier(float _gravityMultiplier)
@@ -83,6 +106,84 @@ void RigidBody::SetGravityMultiplier(float _gravityMultiplier)
 void RigidBody::SetIsStatic(float _isStatic)
 {
 	isStatic = _isStatic;
+}
+
+void RigidBody::SetMass(float _mass)
+{
+	if (_mass < 0)
+	{
+		mass = 0;
+	}
+	else
+	{
+		mass = _mass;
+	}
+	UpdateRigidBodyMass();
+}
+
+void RigidBody::UpdateRigidBodyMass()
+{
+	if (!bulletRigidbody)
+		return;
+
+	float tempMass = mass;
+	if (isStatic)
+	{
+		tempMass = 0;
+	}
+	btVector3 inertia(0, 0, 0);
+	bulletCompoundShape->calculateLocalInertia(tempMass, inertia);
+
+	bulletRigidbody->setCollisionShape(bulletCompoundShape);
+	bulletRigidbody->setMassProps(tempMass, inertia);
+	if (tempMass != 0)
+		bulletRigidbody->activate();
+}
+
+void RigidBody::UpdateRigidBodyDrag()
+{
+	if (!bulletRigidbody)
+		return;
+
+	bulletRigidbody->setDamping(drag, angularDrag);
+}
+
+void RigidBody::UpdateRigidBodyBounce()
+{
+	if (!bulletRigidbody)
+		return;
+
+	bulletRigidbody->setRestitution(1);
+}
+
+void RigidBody::UpdateLockedAxis()
+{
+	if (!bulletRigidbody)
+		return;
+
+	btVector3 lockRotAxis = btVector3(1, 1, 1);
+	if(lockedRotationAxis.x)
+		lockRotAxis.setX(0);
+
+	if (lockedRotationAxis.y)
+		lockRotAxis.setY(0);
+
+	if (lockedRotationAxis.z)
+		lockRotAxis.setZ(0);
+
+	bulletRigidbody->setAngularFactor(lockRotAxis);
+
+	btVector3 lockMovAxis = btVector3(1, 1, 1);
+	if (lockedMovementAxis.x)
+		lockMovAxis.setX(0);
+
+	if (lockedMovementAxis.y)
+		lockMovAxis.setY(0);
+
+	if (lockedMovementAxis.z)
+		lockMovAxis.setZ(0);
+
+	bulletRigidbody->setLinearFactor(lockMovAxis);
 }
 
 void RigidBody::Tick()
@@ -96,10 +197,11 @@ void RigidBody::Tick()
 		btVector3 rot;
 		btQuaternion q = bulletRigidbody->getOrientation();
 		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
+
+		btVector3 vel = bulletRigidbody->getLinearVelocity();
+		velocity = Vector3(vel.x(), vel.y(), vel.z());
 	}
 
-	btVector3 vel = bulletRigidbody->getLinearVelocity();
-	velocity = Vector3(vel.x(), vel.y(), vel.z());
 
 	//PhysicsManager::GetEulerAngles(bulletRigidbody, rot); //ZYX
 	////GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
@@ -222,7 +324,11 @@ void RigidBody::Awake()
 	// Create MotionState and RigidBody object for the box shape
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
+	UpdateLockedAxis();
+	UpdateRigidBodyDrag();
+	UpdateRigidBodyBounce();
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+
 	bulletRigidbody->activate();
 
 	bulletCompoundShape = new btCompoundShape();
@@ -249,18 +355,23 @@ void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 
 	PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
 	{
-		float mass = 1.0f;
-		btVector3 inertia(0, 0, 0);
 
 		btTransform offsetTransform;
 		offsetTransform.setIdentity();
 		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
 
 		bulletCompoundShape->addChildShape(offsetTransform, shape);
-		bulletCompoundShape->calculateLocalInertia(mass, inertia);
 
-		bulletRigidbody->setCollisionShape(bulletCompoundShape);
-		bulletRigidbody->setMassProps(mass, inertia);
+		UpdateRigidBodyMass();
 	}
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+}
+
+ReflectiveData LockedAxis::GetReflectiveData()
+{
+	ReflectiveData reflectedVariables;
+	AddVariable(reflectedVariables, x, "x", true);
+	AddVariable(reflectedVariables, y, "y", true);
+	AddVariable(reflectedVariables, z, "z", true);
+	return reflectedVariables;
 }

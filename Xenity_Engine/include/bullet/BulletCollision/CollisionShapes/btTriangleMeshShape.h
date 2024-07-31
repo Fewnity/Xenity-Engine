@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,15 +13,15 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef TRIANGLE_MESH_SHAPE_H
-#define TRIANGLE_MESH_SHAPE_H
+#ifndef BT_TRIANGLE_MESH_SHAPE_H
+#define BT_TRIANGLE_MESH_SHAPE_H
 
 #include "btConcaveShape.h"
 #include "btStridingMeshInterface.h"
 
 
-///Concave triangle mesh interface. Don't use this class directly, use btBvhTriangleMeshShape instead.
-class btTriangleMeshShape : public btConcaveShape
+///The btTriangleMeshShape is an internal concave triangle mesh interface. Don't use this class directly, use btBvhTriangleMeshShape instead.
+ATTRIBUTE_ALIGNED16(class) btTriangleMeshShape : public btConcaveShape
 {
 protected:
 	btVector3	m_localAabbMin;
@@ -33,6 +33,7 @@ protected:
 	btTriangleMeshShape(btStridingMeshInterface* meshInterface);
 
 public:
+	BT_DECLARE_ALIGNED_ALLOCATOR();
 
 	virtual ~btTriangleMeshShape();
 
@@ -40,7 +41,7 @@ public:
 
 	virtual btVector3	localGetSupportingVertexWithoutMargin(const btVector3& vec)const
 	{
-		assert(0);
+		btAssert(0);
 		return localGetSupportingVertex(vec);
 	}
 
@@ -65,11 +66,25 @@ public:
 		return m_meshInterface;
 	}
 
+	const btVector3& getLocalAabbMin() const
+	{
+		return m_localAabbMin;
+	}
+	const btVector3& getLocalAabbMax() const
+	{
+		return m_localAabbMax;
+	}
+
+
 
 	//debugging
 	virtual const char*	getName()const {return "TRIANGLEMESH";}
 
+	
 
 };
 
-#endif //TRIANGLE_MESH_SHAPE_H
+
+
+
+#endif //BT_TRIANGLE_MESH_SHAPE_H
