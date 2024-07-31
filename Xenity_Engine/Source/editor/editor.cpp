@@ -282,7 +282,7 @@ void Editor::Update()
 			SetSelectedFileReference(nullptr);
 		}
 
-		if (InputSystem::GetKeyDown(KeyCode::DELETE))
+		if (InputSystem::GetKeyDown(KeyCode::DEL))
 		{
 			const std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();

@@ -80,7 +80,7 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 	keyMap[SDLK_RCTRL] = &inputs[(int)KeyCode::RIGHT_CONTROL];
 	keyMap[SDLK_LALT] = &inputs[(int)KeyCode::LEFT_ALT];
 	keyMap[SDLK_RALT] = &inputs[(int)KeyCode::RIGHT_ALT];
-	keyMap[SDLK_DELETE] = &inputs[(int)KeyCode::DELETE];
+	keyMap[SDLK_DELETE] = &inputs[(int)KeyCode::DEL];
 	keyMap[SDLK_LSHIFT] = &inputs[(int)KeyCode::LEFT_SHIFT];
 	keyMap[SDLK_RSHIFT] = &inputs[(int)KeyCode::RIGHT_SHIFT];
 
