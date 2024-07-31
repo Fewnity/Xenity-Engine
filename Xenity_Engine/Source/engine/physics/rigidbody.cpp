@@ -18,6 +18,7 @@
 #include "physics_manager.h"
 #include <engine/tools/math.h>
 #include <glm/gtx/euler_angles.hpp>
+#include <engine/inputs/input_system.h>
 
 RigidBody::RigidBody()
 {
@@ -45,7 +46,9 @@ void RigidBody::OnReflectionUpdated()
 
 void RigidBody::SetVelocity(const Vector3& _velocity)
 {
-	velocity = _velocity;
+	bulletRigidbody->activate();
+	bulletRigidbody->setLinearVelocity(btVector3(_velocity.x, _velocity.y, _velocity.z));
+	//velocity = _velocity;
 }
 
 void RigidBody::SetDrag(float _drag)
@@ -86,7 +89,6 @@ void RigidBody::Tick()
 {
 	if (GetGameObject()->IsLocalActive() && IsEnabled())
 	{
-		//return;
 		btVector3 pos;
 		PhysicsManager::GetPosition(bulletRigidbody, pos);
 		GetTransform()->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
@@ -95,6 +97,10 @@ void RigidBody::Tick()
 		btQuaternion q = bulletRigidbody->getOrientation();
 		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
 	}
+
+	btVector3 vel = bulletRigidbody->getLinearVelocity();
+	velocity = Vector3(vel.x(), vel.y(), vel.z());
+
 	//PhysicsManager::GetEulerAngles(bulletRigidbody, rot); //ZYX
 	////GetTransform()->SetRotation(Vector3(rot.x(), rot.y(), rot.z()));
 
