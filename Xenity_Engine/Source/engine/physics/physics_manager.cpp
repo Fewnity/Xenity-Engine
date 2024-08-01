@@ -16,6 +16,7 @@
 #include <engine/tools/math.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <unordered_set>
 
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 std::vector<std::weak_ptr<BoxCollider>> PhysicsManager::boxColliders;
@@ -62,6 +63,45 @@ void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
 	//z = glm::degrees(z);
 }
 
+bool customContactProcessedCallback(btManifoldPoint& cp,
+	void* body0, void* body1) {
+	btCollisionObject* colObj0 = static_cast<btCollisionObject*>(body0);
+	btCollisionObject* colObj1 = static_cast<btCollisionObject*>(body1);
+
+	// You can add your event logic here
+	std::cout << "Collision detected between objects: "
+		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
+
+	return false; // Return value not used by Bullet
+}
+
+bool customContactAddedCallback(btManifoldPoint& cp,
+	const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0,
+	const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) {
+	const btCollisionObject* colObj0 = colObj0Wrap->getCollisionObject();
+	const btCollisionObject* colObj1 = colObj1Wrap->getCollisionObject();
+
+	static std::vector<std::pair<btCollisionObject*, btCollisionObject*>> contactedPairs;
+
+	// Create a unique pair identifier
+	auto pair = std::make_pair(colObj0, colObj1);
+	if (colObj0 > colObj1) {
+		pair = std::make_pair(colObj1, colObj0);
+	}
+	std::cout << "Collision detected between objects: "
+		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
+
+	// Check if this pair was already contacted
+	//if (contactedPairs.find(pair) == contactedPairs.end()) {
+	//	// New contact detected
+	//	contactedPairs.insert(pair);
+	//	std::cout << "First contact between objects: "
+	//		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
+	//}
+
+	return false; // Return value not used by Bullet
+}
+
 void PhysicsManager::Init()
 {
 	btVector3 worldAabbMin(-1000, -1000, -1000);
@@ -71,7 +111,6 @@ void PhysicsManager::Init()
 	physCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	physDispatcher = new btCollisionDispatcher(physCollisionConfiguration);
-
 	physBroadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
@@ -80,6 +119,8 @@ void PhysicsManager::Init()
 	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
 	physDynamicsWorld->setGravity(btVector3(0, -10, 0));
 
+	//gContactProcessedCallback = customContactProcessedCallback;
+	gContactAddedCallback = customContactAddedCallback;
 	//Create the box object
 	//{
 	//	//Create the box shape

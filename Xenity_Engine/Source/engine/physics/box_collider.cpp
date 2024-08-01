@@ -22,6 +22,7 @@
 #endif
 #include "rigidbody.h"
 #include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include "physics_manager.h"
 
 BoxCollider::BoxCollider()
@@ -143,7 +144,8 @@ void BoxCollider::Start()
 		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		btCollisionObject* staticObject = new btCollisionObject();
+		//btCollisionObject* staticObject = new btCollisionObject();
+		btCollisionObject* staticObject = new btGhostObject();
 		staticObject->setCollisionShape(bulletCollisionShape);
 		staticObject->setWorldTransform(startTransform);
 

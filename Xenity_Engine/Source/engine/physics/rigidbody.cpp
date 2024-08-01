@@ -56,7 +56,7 @@ void RigidBody::SetVelocity(const Vector3& _velocity)
 
 	bulletRigidbody->activate();
 	bulletRigidbody->setLinearVelocity(btVector3(_velocity.x, _velocity.y, _velocity.z));
-	//velocity = _velocity;
+	velocity = _velocity;
 }
 
 void RigidBody::SetDrag(float _drag)
@@ -198,7 +198,7 @@ void RigidBody::Tick()
 		btQuaternion q = bulletRigidbody->getOrientation();
 		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
 
-		btVector3 vel = bulletRigidbody->getLinearVelocity();
+		const btVector3& vel = bulletRigidbody->getLinearVelocity();
 		velocity = Vector3(vel.x(), vel.y(), vel.z());
 	}
 
@@ -307,12 +307,6 @@ void RigidBody::Awake()
 	if (bulletCompoundShape)
 		return;
 
-
-	btVector3 localInertia(0, 0, 0);
-
-	btTransform offsetTransform;
-	offsetTransform.setIdentity();
-	offsetTransform.setOrigin(btVector3(0, 0, 0));
 	btTransform startTransform;
 	startTransform.setIdentity();
 	const Vector3& pos = GetTransform()->GetPosition();
@@ -323,14 +317,13 @@ void RigidBody::Awake()
 
 	// Create MotionState and RigidBody object for the box shape
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
+	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, btVector3(0, 0, 0));
 	UpdateLockedAxis();
 	UpdateRigidBodyDrag();
 	UpdateRigidBodyBounce();
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 
 	bulletRigidbody->activate();
-
 	bulletCompoundShape = new btCompoundShape();
 }
 
