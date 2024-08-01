@@ -323,6 +323,7 @@ void RigidBody::Awake()
 	UpdateRigidBodyBounce();
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 
+	bulletRigidbody->setUserIndex(GetUniqueId());
 	bulletRigidbody->activate();
 	bulletCompoundShape = new btCompoundShape();
 }
@@ -354,7 +355,7 @@ void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
 
 		bulletCompoundShape->addChildShape(offsetTransform, shape);
-
+		bulletCompoundShape->addChildShape(offsetTransform, bulletRigidbody);
 		UpdateRigidBodyMass();
 	}
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);

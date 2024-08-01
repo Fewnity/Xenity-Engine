@@ -44,63 +44,36 @@ void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 	}
 }
 
-void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
-{
-	btQuaternion btq = body->getOrientation();
-
-	glm::vec3 eulerChildGlobal0n = glm::degrees(glm::eulerAngles(glm::quat(-btq.w(), btq.x(), btq.y(), btq.z())));
-
-	rot.setX(-eulerChildGlobal0n.x);
-	rot.setY(-eulerChildGlobal0n.y);
-	rot.setZ(-eulerChildGlobal0n.z);
-
-
-	//const glm::mat4 matChildRelative = glm::mat4_cast(glm::quat(btq.w(), btq.y(), btq.z(), btq.x()));
-	//float x, y, z;
-	//glm::extractEulerAngleYXZ(matChildRelative, x, y, z);
-	//x = glm::degrees(x);
-	//y = glm::degrees(y);
-	//z = glm::degrees(z);
-}
-
-bool customContactProcessedCallback(btManifoldPoint& cp,
-	void* body0, void* body1) {
-	btCollisionObject* colObj0 = static_cast<btCollisionObject*>(body0);
-	btCollisionObject* colObj1 = static_cast<btCollisionObject*>(body1);
-
-	// You can add your event logic here
-	std::cout << "Collision detected between objects: "
-		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
-
-	return false; // Return value not used by Bullet
-}
-
-bool customContactAddedCallback(btManifoldPoint& cp,
-	const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0,
-	const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) {
-	const btCollisionObject* colObj0 = colObj0Wrap->getCollisionObject();
-	const btCollisionObject* colObj1 = colObj1Wrap->getCollisionObject();
-
-	static std::vector<std::pair<btCollisionObject*, btCollisionObject*>> contactedPairs;
-
-	// Create a unique pair identifier
-	auto pair = std::make_pair(colObj0, colObj1);
-	if (colObj0 > colObj1) {
-		pair = std::make_pair(colObj1, colObj0);
-	}
-	std::cout << "Collision detected between objects: "
-		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
-
-	// Check if this pair was already contacted
-	//if (contactedPairs.find(pair) == contactedPairs.end()) {
-	//	// New contact detected
-	//	contactedPairs.insert(pair);
-	//	std::cout << "First contact between objects: "
-	//		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << std::endl;
-	//}
-
-	return false; // Return value not used by Bullet
-}
+//void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
+//{
+//	btQuaternion btq = body->getOrientation();
+//
+//	glm::vec3 eulerChildGlobal0n = glm::degrees(glm::eulerAngles(glm::quat(-btq.w(), btq.x(), btq.y(), btq.z())));
+//
+//	rot.setX(-eulerChildGlobal0n.x);
+//	rot.setY(-eulerChildGlobal0n.y);
+//	rot.setZ(-eulerChildGlobal0n.z);
+//
+//
+//	//const glm::mat4 matChildRelative = glm::mat4_cast(glm::quat(btq.w(), btq.y(), btq.z(), btq.x()));
+//	//float x, y, z;
+//	//glm::extractEulerAngleYXZ(matChildRelative, x, y, z);
+//	//x = glm::degrees(x);
+//	//y = glm::degrees(y);
+//	//z = glm::degrees(z);
+//}
+//
+//bool customContactProcessedCallback(btManifoldPoint& cp,
+//	void* body0, void* body1) {
+//	btCollisionObject* colObj0 = static_cast<btCollisionObject*>(body0);
+//	btCollisionObject* colObj1 = static_cast<btCollisionObject*>(body1);
+//	
+//	// You can add your event logic here
+//	/*std::cout << "Collision detected between objects: "
+//		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << " " << cp. << std::endl;*/
+//
+//	return false; // Return value not used by Bullet
+//}
 
 void PhysicsManager::Init()
 {
@@ -117,10 +90,11 @@ void PhysicsManager::Init()
 	physSolver = solver;
 
 	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
+
 	physDynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 	//gContactProcessedCallback = customContactProcessedCallback;
-	gContactAddedCallback = customContactAddedCallback;
+
 	//Create the box object
 	//{
 	//	//Create the box shape
@@ -183,23 +157,42 @@ void PhysicsManager::Init()
 	//}
 }
 
+class MyContactResultCallback : public btCollisionWorld::ContactResultCallback {
+public:
+	bool onCollisionEnter(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) 
+	{
+		if(colObj0Wrap->getCollisionObject()->isStaticOrKinematicObject() && colObj1Wrap->getCollisionObject()->isStaticOrKinematicObject())
+		{
+			return false;
+		}
+		std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << "   " << cp.getLifeTime() << std::endl;
+		return false;
+	}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0,
+		const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) override 
+	{
+		onCollisionEnter(cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
+		return 0;
+	}
+};
+
 void PhysicsManager::Update()
 {
 	SCOPED_PROFILER("PhysicsManager::Update", scopeBenchmark);
 
 	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
+	Debug::Print("Tick");
 
-	//{
-	//	btVector3 pos;
-	//	GetPosition(mBodies[0], pos);
-	//	Debug::Print("Cube 0: " + std::to_string(pos.x()) + " " + std::to_string(pos.y()) + " " + std::to_string(pos.z()));
-	//}
-
-	//{
-	//	btVector3 pos;
-	//	GetPosition(mBodies[1], pos);
-	//	Debug::Print("Cube 1: " + std::to_string(pos.x()) + " " + std::to_string(pos.y()) + " " + std::to_string(pos.z()));
-	//}
+	MyContactResultCallback resultCallback;
+ 	const btCollisionObjectArray& a = physDynamicsWorld->getCollisionObjectArray();
+	std::cout << a.size() << std::endl;
+	for (int i = 0; i < a.size(); i++)
+	{
+		std::cout << a[i] << std::endl;
+		physDynamicsWorld->contactTest(a[i], resultCallback);
+	}
 
 	size_t rigidbodyCount = rigidBodies.size();
 	for (int i = 0; i < rigidbodyCount; i++)

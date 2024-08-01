@@ -127,7 +127,7 @@ void BoxCollider::Start()
 	else
 		pos = GetTransform()->GetPosition();
 
-	const Quaternion& rot = GetTransform()->GetRotation(); // Fix rotation?
+	const Quaternion& rot = GetTransform()->GetRotation();
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -144,10 +144,13 @@ void BoxCollider::Start()
 		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		//btCollisionObject* staticObject = new btCollisionObject();
-		btCollisionObject* staticObject = new btGhostObject();
+		btCollisionObject* staticObject = new btCollisionObject();
 		staticObject->setCollisionShape(bulletCollisionShape);
 		staticObject->setWorldTransform(startTransform);
+		if (isTrigger)
+		{
+			staticObject->setCollisionFlags(staticObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		}
 
 		PhysicsManager::physDynamicsWorld->addCollisionObject(staticObject);
 	}
@@ -225,7 +228,7 @@ void BoxCollider::SetDefaultSize()
 	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
 	if (mesh && mesh->GetMeshData())
 	{
-		std::shared_ptr<MeshData> meshData = mesh->GetMeshData();
+		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
 		const Vector3& scale = GetTransform()->GetLocalScale();
 		size = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()) * scale;
 		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f) * scale;

@@ -95,7 +95,7 @@ void SphereCollider::Start()
 		pos = GetTransform()->GetPosition();
 	//pos += offset;
 
-	const Quaternion& rot = GetTransform()->GetRotation(); // Fix rotation?
+	const Quaternion& rot = GetTransform()->GetRotation();
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -107,11 +107,11 @@ void SphereCollider::Start()
 		// Create transform
 
 		// Create MotionState and RigidBody object for the box shape
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		/*btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
 		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 
-		bulletRigidbody->activate();
+		bulletRigidbody->activate();*/
 
 		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
 	}
@@ -120,6 +120,10 @@ void SphereCollider::Start()
 		btCollisionObject* staticObject = new btCollisionObject();
 		staticObject->setCollisionShape(bulletCollisionShape);
 		staticObject->setWorldTransform(startTransform);
+		if (isTrigger)
+		{
+			staticObject->setCollisionFlags(staticObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		}
 
 		PhysicsManager::physDynamicsWorld->addCollisionObject(staticObject);
 	}
