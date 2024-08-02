@@ -334,7 +334,6 @@ ValueInputState EditorUI::DrawInput(const std::string& inputName, Color& newValu
 	if (ImGui::IsItemClicked()) 
 	{
 		state = ValueInputState::ON_OPEN;
-		Debug::Print("OPEN");
 	}
 	if (ImGui::IsItemDeactivatedAfterEdit())
 	{
