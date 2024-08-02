@@ -165,7 +165,8 @@ public:
 		{
 			return false;
 		}
-		std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << "   " << cp.getLifeTime() << std::endl;
+		/*std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
+		std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;*/
 		return false;
 	}
 
@@ -183,15 +184,17 @@ void PhysicsManager::Update()
 	SCOPED_PROFILER("PhysicsManager::Update", scopeBenchmark);
 
 	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
-	Debug::Print("Tick");
+	//Debug::Print("Tick");
 
 	MyContactResultCallback resultCallback;
- 	const btCollisionObjectArray& a = physDynamicsWorld->getCollisionObjectArray();
-	std::cout << a.size() << std::endl;
-	for (int i = 0; i < a.size(); i++)
+ 	const btCollisionObjectArray& objectList = physDynamicsWorld->getCollisionObjectArray();
+	//objectList[0]->set
+	//std::cout << a.size() << std::endl;
+	size_t objectCount = objectList.size();
+	for (size_t i = 0; i < objectCount; i++)
 	{
-		std::cout << a[i] << std::endl;
-		physDynamicsWorld->contactTest(a[i], resultCallback);
+		//std::cout << a[i] << std::endl;
+		physDynamicsWorld->contactTest(objectList[i], resultCallback);
 	}
 
 	size_t rigidbodyCount = rigidBodies.size();
@@ -216,7 +219,7 @@ void PhysicsManager::Update()
 		}
 	}
 
-	for (int i = 0; i < rigidbodyCount; i++)
+	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
 		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
 		rb->Tick();

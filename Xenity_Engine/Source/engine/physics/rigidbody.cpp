@@ -136,6 +136,8 @@ void RigidBody::UpdateRigidBodyMass()
 
 	bulletRigidbody->setCollisionShape(bulletCompoundShape);
 	bulletRigidbody->setMassProps(tempMass, inertia);
+	bulletRigidbody->setUserPointer(this);
+
 	if (tempMass != 0)
 		bulletRigidbody->activate();
 }

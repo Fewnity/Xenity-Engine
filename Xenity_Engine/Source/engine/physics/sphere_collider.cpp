@@ -120,6 +120,8 @@ void SphereCollider::Start()
 		btCollisionObject* staticObject = new btCollisionObject();
 		staticObject->setCollisionShape(bulletCollisionShape);
 		staticObject->setWorldTransform(startTransform);
+		staticObject->setUserPointer(this);
+
 		if (isTrigger)
 		{
 			staticObject->setCollisionFlags(staticObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
