@@ -21,14 +21,6 @@ Quaternion::Quaternion()
 	this->w = 1;
 }
 
-Quaternion::Quaternion(const float x, const float y, const float z, const float w)
-{
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
-}
-
 Quaternion::Quaternion(const Vector4& vector)
 {
 	this->x = vector.x;

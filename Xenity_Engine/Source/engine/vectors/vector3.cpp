@@ -33,13 +33,6 @@ Vector3::Vector3()
 	this->z = 0;
 }
 
-Vector3::Vector3(const float x, const float y, const float z)
-{
-	this->x = x;
-	this->y = y;
-	this->z = z;
-}
-
 Vector3::Vector3(const glm::vec3& glmVec3)
 {
 	this->x = glmVec3.x;

@@ -17,7 +17,10 @@ class API Quaternion : public Reflective
 public:
 	ReflectiveData GetReflectiveData() override;
 	Quaternion();
-	explicit Quaternion(const float x, const float y, const float z, const float w);
+
+	inline explicit Quaternion(const float x, const float y, const float z, const float w)
+		: x(x), y(y), z(z), w(w) {}
+
 	explicit Quaternion(const Vector4& vector);
 
 	static Quaternion Inverse(const Quaternion& q);

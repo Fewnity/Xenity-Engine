@@ -23,7 +23,8 @@ public:
 	ReflectiveData GetReflectiveData() override;
 
 	Vector3();
-	explicit Vector3(const float x, const float y, const float z);
+	inline explicit Vector3(const float x, const float y, const float z)
+		: x(x), y(y), z(z) {}
 	Vector3(const glm::vec3& glmVec3);
 	Vector3(const glm::vec4& glmVec4);
 	explicit Vector3(const float fillValue);
