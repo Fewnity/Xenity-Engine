@@ -63,25 +63,37 @@ public:
 	LockedAxis lockedRotationAxis;
 
 protected:
+	std::vector<Collider*> colliders;
+	bool generatesEvents = false;
+	void UpdateGeneratesEvents();
+
 	void UpdateRigidBodyMass();
 	void UpdateRigidBodyDrag();
 	void UpdateRigidBodyBounce();
 
 	void UpdateLockedAxis();
 
+	void OnEnabled() override;
+	void OnDisabled() override;
+
+	friend class Collider;
 	friend class BoxCollider;
 	friend class SphereCollider;
 
 	void AddShape(btCollisionShape* shape, const Vector3& offset);
+	void AddTriggerShape(btCollisionShape* shape, const Vector3& offset);
+	void RemoveShape(btCollisionShape* shape);
+	void RemoveTriggerShape(btCollisionShape* shape);
+
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	friend class PhysicsManager;
 
 	Vector3 velocity = Vector3(0, 0, 0);
-	float drag = 0.1;
-	float angularDrag = 0.5;
-	float bounce = 0.5f;
+	float drag = 0.1f;
+	float angularDrag = 0.1f;
+	float bounce = 0.0f;
 	float mass = 1;
 	float gravityMultiplier = 1.0f;
 	bool isStatic = false;
@@ -89,6 +101,10 @@ protected:
 	btRigidBody* bulletRigidbody = nullptr;
 	btCompoundShape* bulletCompoundShape = nullptr;
 	std::vector<btCollisionShape*> shapes;
+
+	btRigidBody* bulletTriggerRigidbody = nullptr;
+	btCompoundShape* bulletTriggerCompoundShape = nullptr;
+	std::vector<btCollisionShape*> triggerShapes;
 
 	/**
 	 * @brief [Internal]

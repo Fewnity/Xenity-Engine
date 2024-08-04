@@ -125,6 +125,30 @@ void Graphics::Init()
 	TextManager::Init();
 }
 
+void Graphics::Stop()
+{
+	ProjectManager::GetProjectLoadedEvent().Unbind(&Graphics::OnProjectLoaded);
+
+	orderBenchmark.reset();
+	skyboxBenchmark.reset();
+	drawAllBenchmark.reset();
+	drawMeshBenchmark.reset();
+	drawEndFrameBenchmark.reset();
+
+	cameras.clear();
+	usedCamera.reset();
+	iDrawablesCount = 0;
+	lods.clear();
+	lodsCount = 0;
+	orderedIDrawable.clear();
+	isRenderingBatchDirty = true;
+	renderBatch.Reset();
+	settings.skybox.reset();
+	skyPlane.reset();
+	currentShader.reset();
+	currentMaterial.reset();
+}
+
 void Graphics::SetDefaultValues()
 {
 	settings.isFogEnabled = false;

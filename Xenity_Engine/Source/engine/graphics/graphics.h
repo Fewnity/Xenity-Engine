@@ -50,6 +50,8 @@ public:
 	*/
 	static void Init();
 
+	static void Stop();
+
 	/**
 	* @brief [Internal] Set default values (fog, skybox, ...), called on init and on unloading a project
 	*/

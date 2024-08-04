@@ -13,24 +13,21 @@
 #include <engine/time/time.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/debug.h>
+#include <engine/game_elements/gameobject.h>
 #include <engine/tools/math.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <unordered_set>
 
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
-std::vector<std::weak_ptr<BoxCollider>> PhysicsManager::boxColliders;
+std::vector<std::weak_ptr<Collider>> PhysicsManager::colliders;
 
-btDynamicsWorld* PhysicsManager::physDynamicsWorld;
-btBroadphaseInterface* physBroadphase;
-btCollisionDispatcher* physDispatcher;
-btConstraintSolver* physSolver;
-btDefaultCollisionConfiguration* physCollisionConfiguration;
+btDynamicsWorld* PhysicsManager::physDynamicsWorld = nullptr;
+btBroadphaseInterface* physBroadphase = nullptr;
+btCollisionDispatcher* physDispatcher = nullptr;
+btConstraintSolver* physSolver = nullptr;
+btDefaultCollisionConfiguration* physCollisionConfiguration = nullptr;
 
-btCollisionShape* physBoxShape;
-btRigidBody* physBoxBody;
-btCollisionShape* physGroundShape;
-btRigidBody* physGroundBody;
 std::vector<btRigidBody*> PhysicsManager::mBodies;
 
 void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
@@ -44,117 +41,40 @@ void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 	}
 }
 
-//void PhysicsManager::GetRotation(const btRigidBody* body, btVector3& rot)
-//{
-//	btQuaternion btq = body->getOrientation();
-//
-//	glm::vec3 eulerChildGlobal0n = glm::degrees(glm::eulerAngles(glm::quat(-btq.w(), btq.x(), btq.y(), btq.z())));
-//
-//	rot.setX(-eulerChildGlobal0n.x);
-//	rot.setY(-eulerChildGlobal0n.y);
-//	rot.setZ(-eulerChildGlobal0n.z);
-//
-//
-//	//const glm::mat4 matChildRelative = glm::mat4_cast(glm::quat(btq.w(), btq.y(), btq.z(), btq.x()));
-//	//float x, y, z;
-//	//glm::extractEulerAngleYXZ(matChildRelative, x, y, z);
-//	//x = glm::degrees(x);
-//	//y = glm::degrees(y);
-//	//z = glm::degrees(z);
-//}
-//
-//bool customContactProcessedCallback(btManifoldPoint& cp,
-//	void* body0, void* body1) {
-//	btCollisionObject* colObj0 = static_cast<btCollisionObject*>(body0);
-//	btCollisionObject* colObj1 = static_cast<btCollisionObject*>(body1);
-//	
-//	// You can add your event logic here
-//	/*std::cout << "Collision detected between objects: "
-//		<< colObj0->getUserIndex() << " and " << colObj1->getUserIndex() << " " << cp. << std::endl;*/
-//
-//	return false; // Return value not used by Bullet
-//}
-
 void PhysicsManager::Init()
 {
-	btVector3 worldAabbMin(-1000, -1000, -1000);
+	/*btVector3 worldAabbMin(-1000, -1000, -1000);
 	btVector3 worldAabbMax(1000, 1000, 1000);
-	int maxProxies = 32766;
+	int maxProxies = 32766;*/
 
 	physCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	physDispatcher = new btCollisionDispatcher(physCollisionConfiguration);
-	physBroadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
-	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-	physSolver = solver;
+	btHashedOverlappingPairCache* pairCache = new btHashedOverlappingPairCache();
+	physBroadphase = new btDbvtBroadphase(pairCache);
+
+	physSolver = new btSequentialImpulseConstraintSolver();
 
 	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
 
-	physDynamicsWorld->setGravity(btVector3(0, -10, 0));
+	physDynamicsWorld->setGravity(btVector3(0, -20, 0));
+	physDynamicsWorld->getSolverInfo().m_numIterations = 4;
+}
 
-	//gContactProcessedCallback = customContactProcessedCallback;
+void PhysicsManager::Stop()
+{
+	Clear();
 
-	//Create the box object
-	//{
-	//	//Create the box shape
-	//	physBoxShape = new btBoxShape(btVector3(1, 1, 1));
+	delete physDynamicsWorld;
 
-	//	//Set mass, initial inertia and position for the box
-	//	float mass = 1.0f;
-	//	btVector3 inertia(0, 0, 0);
-	//	btTransform startTransform;
-	//	startTransform.setIdentity();
-	//	startTransform.setOrigin(btVector3(0, 10, 0));
+	delete physSolver;
 
-	//	//Calculate the inertia
-	//	physBoxShape->calculateLocalInertia(mass, inertia);
+	delete physBroadphase;
 
-	//	// Create MotionState and RigidBody object for the box shape
-	//	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	//	physBoxBody = new btRigidBody(mass, myMotionState, physBoxShape, inertia);
+	delete physDispatcher;
 
-	//	// Add box body to physics object & activate it
-	//	physDynamicsWorld->addRigidBody(physBoxBody);
-	//	physBoxBody->activate();
-
-	//	//add to contener
-	//	mBodies.push_back(physBoxBody);
-	//}
-
-	//{
-	//	//Create the box shape
-	//	physBoxShape = new btBoxShape(btVector3(1, 1, 1));
-
-	//	//Set mass, initial inertia and position for the box
-	//	float mass = 1.0f;
-	//	btVector3 inertia(0, 0, 0);
-
-	//	btTransform offsetTransform;
-
-	//	btCompoundShape* compoundShape = new btCompoundShape();
-	//	offsetTransform.setIdentity();
-	//	//offsetTransform.setOrigin(btVector3(-10, 1, 0)); // Par exemple, un offset de (1, 0, 0)
-	//	offsetTransform.setOrigin(btVector3(0, 0, 0)); // Par exemple, un offset de (1, 0, 0)
-	//	compoundShape->addChildShape(offsetTransform, physBoxShape);
-	//	compoundShape->calculateLocalInertia(mass, inertia);
-
-	//	btTransform startTransform;
-	//	startTransform.setIdentity();
-	//	startTransform.setOrigin(btVector3(50, 10, 0));
-	//	// Create MotionState and RigidBody object for the box shape
-	//	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	//	physBoxBody = new btRigidBody(mass, myMotionState, nullptr, inertia);
-	//	physBoxBody->setCollisionShape(compoundShape);
-	//	// Add box body to physics object & activate it
-	//	physDynamicsWorld->addRigidBody(physBoxBody);
-	//	physBoxBody->activate();
-
-	//	//compoundShape->
-
-	//	//add to contener
-	//	mBodies.push_back(physBoxBody);
-	//}
+	delete physCollisionConfiguration;
 }
 
 class MyContactResultCallback : public btCollisionWorld::ContactResultCallback {
@@ -165,8 +85,41 @@ public:
 		{
 			return false;
 		}
-		/*std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
-		std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;*/
+		std::cout << "------------ Collision detected between objects ------------" << std::endl;
+		if (!colObj0Wrap->getCollisionObject()->isStaticOrKinematicObject()) 
+		{
+			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj0Wrap->getCollisionObject()->getUserPointer());
+			std::cout << "Object0: " << rb->GetGameObject()->GetName() << std::endl;
+		}
+		else 
+		{
+			Collider* rb = reinterpret_cast<Collider*>(colObj0Wrap->getCollisionObject()->getUserPointer());
+			std::cout << "Object0: " << rb->GetGameObject()->GetName() << std::endl;
+		}
+		if (colObj0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE) 
+		{
+			std::cout << "Object0 is a trigger" << std::endl;
+		}
+
+		if (!colObj1Wrap->getCollisionObject()->isStaticOrKinematicObject())
+		{
+			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj1Wrap->getCollisionObject()->getUserPointer());
+			std::cout << "Object1: " << rb->GetGameObject()->GetName() << std::endl;
+		}
+		else 
+		{
+			Collider* rb = reinterpret_cast<Collider*>(colObj1Wrap->getCollisionObject()->getUserPointer());
+			std::cout << "Object1: " << rb->GetGameObject()->GetName() << std::endl;
+		}
+		if (colObj1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+		{
+			std::cout << "Object1 is a trigger" << std::endl;
+		}
+
+		//colObj0Wrap->m_collisionObject->
+		std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
+		std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;
+		
 		return false;
 	}
 
@@ -183,20 +136,6 @@ void PhysicsManager::Update()
 {
 	SCOPED_PROFILER("PhysicsManager::Update", scopeBenchmark);
 
-	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
-	//Debug::Print("Tick");
-
-	MyContactResultCallback resultCallback;
- 	const btCollisionObjectArray& objectList = physDynamicsWorld->getCollisionObjectArray();
-	//objectList[0]->set
-	//std::cout << a.size() << std::endl;
-	size_t objectCount = objectList.size();
-	for (size_t i = 0; i < objectCount; i++)
-	{
-		//std::cout << a[i] << std::endl;
-		physDynamicsWorld->contactTest(objectList[i], resultCallback);
-	}
-
 	size_t rigidbodyCount = rigidBodies.size();
 	for (int i = 0; i < rigidbodyCount; i++)
 	{
@@ -208,27 +147,80 @@ void PhysicsManager::Update()
 		}
 	}
 
-	size_t colliderCount = boxColliders.size();
-	for (int i = 0; i < colliderCount; i++)
-	{
-		if (!boxColliders[i].lock())
-		{
-			boxColliders.erase(boxColliders.begin() + i);
-			i--;
-			colliderCount--;
-		}
-	}
+	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
+	//Debug::Print("------------------------ Tick ------------------------");
 
+	//const size_t rigidbodyCount = rigidBodies.size();
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
 		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
 		rb->Tick();
 	}
+
+	MyContactResultCallback resultCallback;
+	for (size_t i = 0; i < rigidbodyCount; i++)
+	{
+		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
+		if(rb->generatesEvents)
+		{
+			physDynamicsWorld->contactTest(rb->bulletRigidbody, resultCallback);
+		}
+	}
+
+	size_t colliderCount = colliders.size();
+	for (int i = 0; i < colliderCount; i++)
+	{
+		if (!colliders[i].lock())
+		{
+			colliders.erase(colliders.begin() + i);
+			i--;
+			colliderCount--;
+		}
+	}
+	for (size_t i = 0; i < colliderCount; i++)
+	{
+		std::shared_ptr<Collider> collider = colliders[i].lock();
+		if (collider->generateCollisionEvents && collider->bulletCollisionObject)
+		{
+			physDynamicsWorld->contactTest(collider->bulletCollisionObject, resultCallback);
+		}
+	}
+	
+ 	//const btCollisionObjectArray& objectList = physDynamicsWorld->getCollisionObjectArray();
+
+	//const size_t objectCount = objectList.size();
+	//for (size_t i = 0; i < objectCount; i++)
+	//{
+	//	//std::cout << a[i] << std::endl;
+	//	physDynamicsWorld->contactTest(objectList[i], resultCallback);
+	//}
+
+	//size_t rigidbodyCount = rigidBodies.size();
+	//for (int i = 0; i < rigidbodyCount; i++)
+	//{
+	//	if (!rigidBodies[i].lock())
+	//	{
+	//		rigidBodies.erase(rigidBodies.begin() + i);
+	//		i--;
+	//		rigidbodyCount--;
+	//	}
+	//}
+
+	//size_t colliderCount = boxColliders.size();
+	//for (int i = 0; i < colliderCount; i++)
+	//{
+	//	if (!boxColliders[i].lock())
+	//	{
+	//		boxColliders.erase(boxColliders.begin() + i);
+	//		i--;
+	//		colliderCount--;
+	//	}
+	//}
 }
 
 void PhysicsManager::Clear()
 {
-	for (int i = physDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	/*for (int i = physDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = physDynamicsWorld->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);
@@ -238,8 +230,8 @@ void PhysicsManager::Clear()
 		}
 		physDynamicsWorld->removeCollisionObject(obj);
 		delete obj;
-	}
+	}*/
 
 	PhysicsManager::rigidBodies.clear();
-	PhysicsManager::boxColliders.clear();
+	PhysicsManager::colliders.clear();
 }

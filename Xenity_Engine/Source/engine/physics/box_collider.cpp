@@ -38,18 +38,23 @@ ReflectiveData BoxCollider::GetReflectiveData()
 	AddVariable(reflectedVariables, size, "size", true);
 	AddVariable(reflectedVariables, offset, "offset", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
+	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
 }
 
 void BoxCollider::OnReflectionUpdated()
 {
 	CalculateBoundingBox();
+	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	{
+		rb->UpdateGeneratesEvents();
+	}
 }
 
 bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
 {
-	const Vector3 aPos = a.GetTransform()->GetPosition();
-	const Vector3 bPos = b.GetTransform()->GetPosition();
+	const Vector3& aPos = a.GetTransform()->GetPosition();
+	const Vector3& bPos = b.GetTransform()->GetPosition();
 
 	const Vector3 aMinPos = a.min + aPos;
 	const Vector3 aMaxPos = a.max + aPos;
@@ -109,17 +114,31 @@ BoxCollider::~BoxCollider()
 
 void BoxCollider::Awake()
 {
-	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
+	FindRigidbody();
 }
 
 void BoxCollider::Start()
 {
-	if (bulletCollisionShape)
+	CreateCollision(false);
+}
+
+void BoxCollider::CreateCollision(bool forceCreation)
+{
+	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
 		return;
+
+	if (bulletCollisionObject)
+	{
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+
+		delete bulletCollisionObject;
+		bulletCollisionObject = nullptr;
+	}
 
 	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
-	bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+	if(!bulletCollisionShape)
+		bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 
 	Vector3 pos;
 	if (attachedRigidbody.lock())
@@ -136,7 +155,10 @@ void BoxCollider::Start()
 
 	if (attachedRigidbody.lock())
 	{
-		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
+		if (!isTrigger)
+			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
+		else
+			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * 2);
 	}
 	else
 	{
@@ -144,17 +166,17 @@ void BoxCollider::Start()
 		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		btCollisionObject* staticObject = new btCollisionObject();
-		staticObject->setCollisionShape(bulletCollisionShape);
-		staticObject->setWorldTransform(startTransform);
-		staticObject->setUserPointer(this);
+		bulletCollisionObject = new btCollisionObject();
+		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
+		bulletCollisionObject->setWorldTransform(startTransform);
+		bulletCollisionObject->setUserPointer(this);
 
 		if (isTrigger)
 		{
-			staticObject->setCollisionFlags(staticObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+			bulletCollisionObject->setCollisionFlags(bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
-		PhysicsManager::physDynamicsWorld->addCollisionObject(staticObject);
+		PhysicsManager::physDynamicsWorld->addCollisionObject(bulletCollisionObject);
 	}
 }
 
@@ -255,5 +277,3 @@ void BoxCollider::SetOffset(const Vector3& offset)
 {
 	this->offset = offset;
 }
-
-

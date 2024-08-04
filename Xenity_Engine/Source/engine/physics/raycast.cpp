@@ -15,7 +15,7 @@
 
 bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)
 {
-	RaycastHit nearestHit;
+	/*RaycastHit nearestHit;
 	nearestHit.hitGameObject.reset();
 	nearestHit.hitCollider.reset();
 
@@ -37,7 +37,8 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 	}
 
 	raycastHit = nearestHit;
-	return nearestHit.hitGameObject.lock() != nullptr;
+	return nearestHit.hitGameObject.lock() != nullptr;*/
+	return false;
 }
 
 bool Raycast::Check(const std::weak_ptr<BoxCollider> boxCollider, const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)

@@ -130,6 +130,25 @@ public:
 	}
 
 	/**
+	* @brief Get a component
+	* @return The component
+	*/
+	template <typename T>
+	std::enable_if_t<std::is_base_of<Component, T>::value, std::vector<std::shared_ptr<T>>>
+	GetComponents() const
+	{
+		std::vector<std::shared_ptr<T>> componentList;
+		for (int i = 0; i < componentCount; i++)
+		{
+			if (auto result = std::dynamic_pointer_cast<T>(components[i]))
+			{
+				componentList.push_back(result);
+			}
+		}
+		return componentList;
+	}
+
+	/**
 	* @brief Get if the GameObject is marked as active
 	*/
 	inline bool IsActive() const

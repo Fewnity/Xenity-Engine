@@ -91,6 +91,8 @@ std::shared_ptr<ProfilerBenchmark> editorDrawBenchmark = nullptr;
 std::unique_ptr<Renderer> Engine::renderer = nullptr;
 bool Engine::canUpdateAudio = false;
 bool Engine::isRunning = true;
+bool Engine::isInitialized = false;
+
 std::unique_ptr<GameInterface> Engine::game = nullptr;
 Event<>* Engine::OnWindowFocusEvent = nullptr;
 
@@ -207,6 +209,7 @@ int Engine::Init()
 	Compiler::Init();
 #endif
 
+	isInitialized = true;
 	Debug::Print("-------- Engine fully initiated --------\n", true);
 
 	CreateBenchmarks();
@@ -404,11 +407,14 @@ void Engine::Loop()
 
 void Engine::Stop()
 {
-	if (!isRunning)
+	if (!isInitialized)
 		return;
 
+	isInitialized = false;
 	isRunning = false;
+
 #if defined(EDITOR)
+	SceneManager::ClearScene();
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
 	game.reset();
@@ -416,6 +422,8 @@ void Engine::Stop()
 	renderer->Stop();
 	renderer.reset();
 	AudioManager::Stop();
+	PhysicsManager::Stop();
+	Graphics::Stop();
 #if defined(EDITOR) && (defined(_WIN32) || defined(_WIN64))
 	PluginManager::Stop();
 #endif

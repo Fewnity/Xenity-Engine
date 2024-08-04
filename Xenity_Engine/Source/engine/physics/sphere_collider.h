@@ -27,8 +27,6 @@ public:
 
 	Event<std::shared_ptr<SphereCollider>> onTriggerEvent;
 
-	bool isTrigger = false;
-
 	inline const Vector3& GetMin() const
 	{
 		return min;
@@ -53,9 +51,6 @@ public:
 
 protected:
 
-	btRigidBody* bulletRigidbody = nullptr;
-	btCollisionShape* bulletCollisionShape = nullptr;
-
 	friend class RigidBody;
 	friend class InspectorMenu;
 	friend class MainBarMenu;
@@ -69,6 +64,7 @@ protected:
 
 
 	void OnDrawGizmosSelected() override;
+	void CreateCollision(bool forceCreation) override;
 
 	/**
 	* @brief Set the default size of the box collider based on the mesh renderer
@@ -92,7 +88,6 @@ protected:
 	*/
 	static bool CheckTrigger(const SphereCollider& a, const SphereCollider& b);
 
-	std::weak_ptr<RigidBody> attachedRigidbody;
 	float size = 1;
 	Vector3 offset = Vector3(0);
 	Vector3 min;

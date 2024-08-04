@@ -61,9 +61,6 @@ public:
 
 protected:
 
-	btRigidBody* bulletRigidbody = nullptr;
-	btCollisionShape* bulletCollisionShape = nullptr;
-
 	friend class RigidBody;
 	friend class InspectorMenu;
 	friend class MainBarMenu;
@@ -71,6 +68,7 @@ protected:
 	void Awake() override;
 
 	void Start() override;
+	void CreateCollision(bool forceCreation) override;
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
@@ -88,11 +86,6 @@ protected:
 	*/
 	void CalculateBoundingBox();
 
-	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
-	{
-		return attachedRigidbody;
-	}
-
 	/**
 	* @brief [Internal] Check if two box colliders are triggering each other
 	* @param a The first box collider
@@ -108,7 +101,6 @@ protected:
 	 */
 	static CollisionSide CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity);
 
-	std::weak_ptr<RigidBody> attachedRigidbody;
 	Vector3 size = Vector3(1);
 	Vector3 offset = Vector3(0);
 	Vector3 min;

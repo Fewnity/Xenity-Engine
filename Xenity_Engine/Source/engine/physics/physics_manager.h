@@ -19,6 +19,7 @@ class btRigidBody;
 class btVector3;
 class btQuaternion;
 class btDynamicsWorld;
+class Collider;
 
 /**
 * @brief Class to manage collisions
@@ -31,6 +32,8 @@ public:
 	*/
 	static void Init();
 
+	static void Stop();
+
 	/**
 	* @brief Update the physics manager
 	*/
@@ -39,12 +42,10 @@ public:
 	static void Clear();
 
 	static std::vector<std::weak_ptr<RigidBody>> rigidBodies;
-	static std::vector<std::weak_ptr<BoxCollider>> boxColliders;
+	static std::vector<std::weak_ptr<Collider>> colliders;
 	static std::vector<btRigidBody*> mBodies;
 
 	static void GetPosition(const btRigidBody* body, btVector3& pos);
-
-	static void GetRotation(const btRigidBody* body, btVector3& rot);
 
 	static btDynamicsWorld* physDynamicsWorld;
 };

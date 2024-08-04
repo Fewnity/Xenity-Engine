@@ -103,4 +103,5 @@ private:
 
 	static std::unique_ptr<Renderer> renderer;
 	static bool isRunning;
+	static bool isInitialized;
 };

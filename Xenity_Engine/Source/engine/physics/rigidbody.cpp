@@ -19,6 +19,7 @@
 #include <engine/tools/math.h>
 #include <glm/gtx/euler_angles.hpp>
 #include <engine/inputs/input_system.h>
+#include <engine/debug/debug.h>
 
 RigidBody::RigidBody()
 {
@@ -37,6 +38,7 @@ ReflectiveData RigidBody::GetReflectiveData()
 	AddVariable(reflectedVariables, mass, "mass", true);
 	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis", true);
 	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis", true);
+	AddVariable(reflectedVariables, generatesEvents, "generatesEvents", true);
 	return reflectedVariables;
 }
 
@@ -51,7 +53,7 @@ void RigidBody::OnReflectionUpdated()
 
 void RigidBody::SetVelocity(const Vector3& _velocity)
 {
-	if(!bulletRigidbody)
+	if (!bulletRigidbody)
 		return;
 
 	bulletRigidbody->activate();
@@ -121,6 +123,20 @@ void RigidBody::SetMass(float _mass)
 	UpdateRigidBodyMass();
 }
 
+void RigidBody::UpdateGeneratesEvents()
+{
+	bool hasEvents = false;
+	for (auto& collider : colliders)
+	{
+		if (collider->generateCollisionEvents)
+		{
+			hasEvents = true;
+			break;
+		}
+	}
+	generatesEvents = hasEvents;
+}
+
 void RigidBody::UpdateRigidBodyMass()
 {
 	if (!bulletRigidbody)
@@ -134,9 +150,7 @@ void RigidBody::UpdateRigidBodyMass()
 	btVector3 inertia(0, 0, 0);
 	bulletCompoundShape->calculateLocalInertia(tempMass, inertia);
 
-	bulletRigidbody->setCollisionShape(bulletCompoundShape);
 	bulletRigidbody->setMassProps(tempMass, inertia);
-	bulletRigidbody->setUserPointer(this);
 
 	if (tempMass != 0)
 		bulletRigidbody->activate();
@@ -155,7 +169,7 @@ void RigidBody::UpdateRigidBodyBounce()
 	if (!bulletRigidbody)
 		return;
 
-	bulletRigidbody->setRestitution(1);
+	bulletRigidbody->setRestitution(bounce);
 }
 
 void RigidBody::UpdateLockedAxis()
@@ -164,7 +178,7 @@ void RigidBody::UpdateLockedAxis()
 		return;
 
 	btVector3 lockRotAxis = btVector3(1, 1, 1);
-	if(lockedRotationAxis.x)
+	if (lockedRotationAxis.x)
 		lockRotAxis.setX(0);
 
 	if (lockedRotationAxis.y)
@@ -188,16 +202,35 @@ void RigidBody::UpdateLockedAxis()
 	bulletRigidbody->setLinearFactor(lockMovAxis);
 }
 
+void RigidBody::OnEnabled()
+{
+	if(bulletRigidbody)
+	{
+		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+		PhysicsManager::physDynamicsWorld->addRigidBody(bulletTriggerRigidbody);
+	}
+}
+
+void RigidBody::OnDisabled()
+{
+	if(bulletRigidbody)
+	{
+		PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
+		PhysicsManager::physDynamicsWorld->removeRigidBody(bulletTriggerRigidbody);
+	}
+}
+
 void RigidBody::Tick()
 {
-	if (GetGameObject()->IsLocalActive() && IsEnabled())
+	//if (GetGameObject()->IsLocalActive() && IsEnabled() && bulletTriggerRigidbody)
+	if (GetGameObject()->IsLocalActive() && bulletTriggerRigidbody)
 	{
-		btVector3 pos;
-		PhysicsManager::GetPosition(bulletRigidbody, pos);
-		GetTransform()->SetPosition(Vector3(pos.x(), pos.y(), pos.z()));
+		bulletTriggerRigidbody->setWorldTransform(bulletRigidbody->getWorldTransform());
 
-		btVector3 rot;
-		btQuaternion q = bulletRigidbody->getOrientation();
+		const btVector3& p = bulletRigidbody->getCenterOfMassPosition();
+		GetTransform()->SetPosition(Vector3(p.x(), p.y(), p.z()));
+
+		const btQuaternion q = bulletRigidbody->getOrientation();
 		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
 
 		const btVector3& vel = bulletRigidbody->getLinearVelocity();
@@ -302,12 +335,37 @@ void RigidBody::Tick()
 RigidBody::~RigidBody()
 {
 	AssetManager::RemoveReflection(this);
+	for (Collider* c : colliders)
+	{
+		c->SetRigidbody(nullptr);
+	}
+
+	if (bulletRigidbody)
+	{
+		PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
+		PhysicsManager::physDynamicsWorld->removeRigidBody(bulletTriggerRigidbody);
+
+		delete bulletCompoundShape;
+		bulletCompoundShape = nullptr;
+
+		delete bulletTriggerCompoundShape;
+		bulletTriggerCompoundShape = nullptr;
+
+		delete bulletRigidbody->getMotionState();
+		delete bulletRigidbody;
+		bulletRigidbody = nullptr;
+
+		delete bulletTriggerRigidbody->getMotionState();
+		delete bulletTriggerRigidbody;
+		bulletTriggerRigidbody = nullptr;
+	}
 }
 
 void RigidBody::Awake()
 {
 	if (bulletCompoundShape)
 		return;
+
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -317,41 +375,49 @@ void RigidBody::Awake()
 	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-	// Create MotionState and RigidBody object for the box shape
+	// Create MotionState and RigidBody object
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, btVector3(0, 0, 0));
+	bulletRigidbody->setUserPointer(this);
+
+	btDefaultMotionState* myMotionStateTrigger = new btDefaultMotionState(startTransform);
+	bulletTriggerRigidbody = new btRigidBody(1, myMotionStateTrigger, nullptr, btVector3(0, 0, 0));
+	bulletTriggerRigidbody->setUserPointer(this);
+
 	UpdateLockedAxis();
 	UpdateRigidBodyDrag();
 	UpdateRigidBodyBounce();
-	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 
-	bulletRigidbody->setUserIndex(GetUniqueId());
-	bulletRigidbody->activate();
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletTriggerRigidbody);
 	bulletCompoundShape = new btCompoundShape();
+	bulletRigidbody->setCollisionShape(bulletCompoundShape);
+
+	bulletTriggerCompoundShape = new btCompoundShape();
+	bulletTriggerRigidbody->setCollisionShape(bulletTriggerCompoundShape);
+	bulletTriggerRigidbody->setCollisionFlags(bulletTriggerRigidbody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	bulletRigidbody->activate();
+	bulletTriggerRigidbody->activate();
+
+	// Add an empty shape to enable gravity with an empty rigidbody
+	btEmptyShape* emptyShape = new btEmptyShape();
+	AddShape(emptyShape, Vector3(0, 0, 0));
+
+	std::vector<std::shared_ptr<Collider>> col = GetGameObject()->GetComponents<Collider>();
+	for(std::shared_ptr<Collider>& c : col)
+	{
+		c->SetRigidbody(std::dynamic_pointer_cast<RigidBody>(shared_from_this()));
+		c->CreateCollision(true);
+	}
 }
 
 void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 {
 	shapes.push_back(shape);
-	//shapes.push_back(std::make_pair(shape, rb));
-	//if (shapes.size() != 1)
-	//{
-	//	btTransform frameInA;
-	//	frameInA.setIdentity();
-	//	frameInA.setOrigin(btVector3(0, 0, 0));
-
-	//	btTransform frameInB;
-	//	frameInB.setIdentity();
-	//	frameInB.setOrigin(btVector3(0, 0, 0));
-
-	//	//btPoint2PointConstraint* p2p = new btPoint2PointConstraint(*bulletRigidbody, frameInA);
-	//	btPoint2PointConstraint* fixedConstraintAB = new btPoint2PointConstraint(*shapes[0].second, *rb, btVector3(0, 0, 0), btVector3(0, 0, 0));
-	//	PhysicsManager::physDynamicsWorld->addConstraint(fixedConstraintAB, true);
-	//}
 
 	PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
 	{
-
 		btTransform offsetTransform;
 		offsetTransform.setIdentity();
 		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
@@ -361,6 +427,41 @@ void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 		UpdateRigidBodyMass();
 	}
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+}
+
+void RigidBody::AddTriggerShape(btCollisionShape* shape, const Vector3& offset)
+{
+	triggerShapes.push_back(shape);
+
+	PhysicsManager::physDynamicsWorld->removeRigidBody(bulletTriggerRigidbody);
+	{
+		btTransform offsetTransform;
+		offsetTransform.setIdentity();
+		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
+
+		bulletTriggerCompoundShape->addChildShape(offsetTransform, shape);
+	}
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletTriggerRigidbody);
+}
+
+void RigidBody::RemoveShape(btCollisionShape* shape)
+{
+	PhysicsManager::physDynamicsWorld->removeRigidBody(bulletRigidbody);
+	{
+		bulletCompoundShape->removeChildShape(shape);
+
+		UpdateRigidBodyMass();
+	}
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
+}
+
+void RigidBody::RemoveTriggerShape(btCollisionShape* shape)
+{
+	PhysicsManager::physDynamicsWorld->removeRigidBody(bulletTriggerRigidbody);
+	{
+		bulletTriggerCompoundShape->removeChildShape(shape);
+	}
+	PhysicsManager::physDynamicsWorld->addRigidBody(bulletTriggerRigidbody);
 }
 
 ReflectiveData LockedAxis::GetReflectiveData()

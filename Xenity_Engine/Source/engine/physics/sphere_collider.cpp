@@ -39,12 +39,17 @@ ReflectiveData SphereCollider::GetReflectiveData()
 	AddVariable(reflectedVariables, size, "size", true);
 	AddVariable(reflectedVariables, offset, "offset", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
+	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
 }
 
 void SphereCollider::OnReflectionUpdated()
 {
 	CalculateBoundingBox();
+	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	{
+		rb->UpdateGeneratesEvents();
+	}
 }
 
 bool SphereCollider::CheckTrigger(const SphereCollider& a, const SphereCollider& b)
@@ -76,59 +81,12 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Awake()
 {
-	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
+	FindRigidbody();
 }
 
 void SphereCollider::Start()
 {
-	if (bulletCollisionShape)
-		return;
-
-	btVector3 localInertia(0, 0, 0);
-	const Vector3& scale = GetTransform()->GetScale();
-	bulletCollisionShape = new btSphereShape(size);
-
-	Vector3 pos;
-	if (attachedRigidbody.lock())
-		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
-	else
-		pos = GetTransform()->GetPosition();
-	//pos += offset;
-
-	const Quaternion& rot = GetTransform()->GetRotation();
-
-	btTransform startTransform;
-	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
-
-	if (attachedRigidbody.lock())
-	{
-		// Create transform
-
-		// Create MotionState and RigidBody object for the box shape
-		/*btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, localInertia);
-		PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
-
-		bulletRigidbody->activate();*/
-
-		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
-	}
-	else
-	{
-		btCollisionObject* staticObject = new btCollisionObject();
-		staticObject->setCollisionShape(bulletCollisionShape);
-		staticObject->setWorldTransform(startTransform);
-		staticObject->setUserPointer(this);
-
-		if (isTrigger)
-		{
-			staticObject->setCollisionFlags(staticObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-		}
-
-		PhysicsManager::physDynamicsWorld->addCollisionObject(staticObject);
-	}
+	CreateCollision(false);
 }
 
 void SphereCollider::OnDrawGizmosSelected()
@@ -198,6 +156,61 @@ void SphereCollider::OnDrawGizmosSelected()
 #endif
 }
 
+void SphereCollider::CreateCollision(bool forceCreation)
+{
+	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
+		return;
+
+	if (bulletCollisionObject)
+	{
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+
+		delete bulletCollisionObject;
+		bulletCollisionObject = nullptr;
+	}
+
+	btVector3 localInertia(0, 0, 0);
+	const Vector3& scale = GetTransform()->GetScale();
+	if(!bulletCollisionShape)
+		bulletCollisionShape = new btSphereShape(size);
+
+	Vector3 pos;
+	if (attachedRigidbody.lock())
+		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
+	else
+		pos = GetTransform()->GetPosition();
+	//pos += offset;
+
+	const Quaternion& rot = GetTransform()->GetRotation();
+
+	btTransform startTransform;
+	startTransform.setIdentity();
+	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+
+	if (attachedRigidbody.lock())
+	{
+		if (!isTrigger)
+			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
+		else
+			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * 2);
+	}
+	else
+	{
+		bulletCollisionObject = new btCollisionObject();
+		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
+		bulletCollisionObject->setWorldTransform(startTransform);
+		bulletCollisionObject->setUserPointer(this);
+
+		if (isTrigger)
+		{
+			bulletCollisionObject->setCollisionFlags(bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		}
+
+		PhysicsManager::physDynamicsWorld->addCollisionObject(bulletCollisionObject);
+	}
+}
+
 void SphereCollider::SetDefaultSize()
 {
 	/*std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
@@ -228,5 +241,3 @@ void SphereCollider::SetOffset(const Vector3& offset)
 {
 	this->offset = offset;
 }
-
-

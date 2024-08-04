@@ -118,12 +118,12 @@ void Transform::SetLocalPosition(const Vector3& value)
 		return;
 	}
 
-	isTransformationMatrixDirty = true;
+	//isTransformationMatrixDirty = true;
 
-	/*if (value != localPosition)
+	if (value != localPosition)
 		isTransformationMatrixDirty = true;
 	else
-		return;*/
+		return;
 
 	localPosition = value;
 	UpdateWorldValues();
@@ -175,12 +175,12 @@ void Transform::SetLocalRotation(const Vector3& value)
 		return;
 	}
 
-	/*if (value != localRotation)
+	if (value != localRotation)
 		isTransformationMatrixDirty = true;
 	else
-		return;*/
+		return;
 
-	isTransformationMatrixDirty = true;
+	//isTransformationMatrixDirty = true;
 
 	localRotation = value;
 	localRotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
@@ -189,7 +189,10 @@ void Transform::SetLocalRotation(const Vector3& value)
 
 void Transform::SetRotation(const Quaternion& value)
 {
-	isTransformationMatrixDirty = true;
+	if (value != rotationQuaternion)
+		isTransformationMatrixDirty = true;
+	else
+		return;
 
 	rotation = value.ToEuler();
 	rotationQuaternion = value;
@@ -222,12 +225,10 @@ void Transform::SetLocalRotation(const Quaternion& value)
 		return;
 	}
 
-	/*if (value != localRotation)
+	if (value != localRotationQuaternion)
 		isTransformationMatrixDirty = true;
 	else
-		return;*/
-
-	isTransformationMatrixDirty = true;
+		return;
 
 	localRotation = value.ToEuler();
 	localRotationQuaternion = value;
