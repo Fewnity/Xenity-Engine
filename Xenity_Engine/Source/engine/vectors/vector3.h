@@ -31,6 +31,10 @@ public:
 	Vector3(const Vector2Int& vect);
 	Vector3(const Vector2& vect);
 
+	float Max();
+
+	float Min();
+
 	/**
 	* @brief Get the look rotation in degrees between two vectors
 	*/
