@@ -93,9 +93,9 @@ void Component::SetIsEnabled(bool isEnabled)
 
 	this->isEnabled = isEnabled;
 	if (isEnabled)
-		OnDisabled();
-	else
 		OnEnabled();
+	else
+		OnDisabled();
 
 	GameplayManager::componentsInitListDirty = true;
 }
