@@ -139,6 +139,7 @@ void GameplayManager::UpdateComponents()
 			}
 		}
 	}
+	lastUpdatedComponent.reset();
 }
 
 void GameplayManager::OrderComponents()

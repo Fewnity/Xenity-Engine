@@ -148,6 +148,13 @@ void CrashHandler::Handler(int signum)
 			if (isFileDumpOpened)
 				file->Write(lastComponentMessage + "\n");
 		}
+		else 
+		{
+			std::string lastComponentMessage = "The crash has occurred outside of the user game loop.";
+			Debug::Print(lastComponentMessage);
+			if (isFileDumpOpened)
+				file->Write(lastComponentMessage + "\n");
+		}
 
 		if (isFileDumpOpened) 
 		{
