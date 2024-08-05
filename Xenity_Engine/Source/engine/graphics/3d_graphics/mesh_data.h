@@ -156,12 +156,12 @@ public:
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
-	inline Vector3 GetMinBoundingBox()  const
+	inline const Vector3& GetMinBoundingBox()  const
 	{
 		return minBoundingBox;
 	}
 
-	inline Vector3 GetMaxBoundingBox()  const
+	inline const Vector3& GetMaxBoundingBox()  const
 	{
 		return maxBoundingBox;
 	}

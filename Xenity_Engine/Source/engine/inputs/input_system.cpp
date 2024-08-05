@@ -198,7 +198,17 @@ void InputSystem::Read(const SDL_Event& event)
 		mousePosition.y = mouseY;
 #else
 		std::shared_ptr<GameMenu> gameMenu = Editor::GetMenu<GameMenu>();
-		std::shared_ptr<SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
+		std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
+		std::shared_ptr<SceneMenu> sceneMenu = nullptr;
+
+		for (std::shared_ptr<SceneMenu> menu : sceneMenus)
+		{
+			if (menu->IsHovered()) 
+			{
+				sceneMenu = menu;
+			}
+		}
+
 
 		if (gameMenu && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
 		{

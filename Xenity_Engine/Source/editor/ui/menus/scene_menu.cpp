@@ -198,13 +198,13 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 	const int gameObjectCount = GameplayManager::gameObjectCount;
 	for (int i = 0; i < gameObjectCount; i++)
 	{
-		const std::shared_ptr<GameObject> selectedGO = GameplayManager::GetGameObjects()[i];
+		const std::shared_ptr<GameObject>& selectedGO = GameplayManager::GetGameObjects()[i];
 		const std::shared_ptr<MeshRenderer> meshRenderer = selectedGO->GetComponent<MeshRenderer>();
 
 		if (meshRenderer && meshRenderer->GetMeshData() && selectedGO->IsLocalActive() && meshRenderer->IsEnabled())
 		{
-			const Vector3 min = meshRenderer->GetMeshData()->GetMinBoundingBox();
-			const Vector3 max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
+			const Vector3& min = meshRenderer->GetMeshData()->GetMinBoundingBox();
+			const Vector3& max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
 			Vector3 transformedMin = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(min.x, min.y, min.z, 1);
 			Vector3 transformedMax = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(max.x, max.y, max.z, 1);
 			transformedMin.x = -transformedMin.x;
@@ -746,6 +746,8 @@ void SceneMenu::Draw()
 						meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
 					}
 					Editor::SetSelectedGameObject(newGameObject);
+					Editor::SetSelectedFileReference(nullptr);
+					SceneManager::SetSceneModified(true);
 					draggedMeshGameObject = newGameObject;
 				}
 			}
