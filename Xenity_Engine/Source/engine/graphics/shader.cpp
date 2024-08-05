@@ -285,10 +285,8 @@ void Shader::LoadFileReference()
 				int vertexPos = -1;
 				int vertexStartPos = -1;
 				bool foundPlatform = false;
-				Platform currentPlatform = Platform::P_Windows;
-#if defined(__vita__)
-				currentPlatform = Platform::P_PsVita;
-#endif
+				Platform currentPlatform = Application::GetPlatform();
+
 				int unused = 0;
 				int end = 0;
 				bool foundEnd = false;
@@ -302,7 +300,7 @@ void Shader::LoadFileReference()
 							foundEnd = true;
 							break;
 						}
-						if (currentPlatform == Platform::P_Windows)
+						if (currentPlatform == Platform::P_Windows || currentPlatform == Platform::P_Linux)
 						{
 							foundPlatform = true;
 						}
