@@ -22,6 +22,9 @@
 #include <pspgum.h>
 #endif
 
+#include <glm/gtx/quaternion.hpp>
+#include <engine/vectors/quaternion.h>
+
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
@@ -77,6 +80,33 @@ if (rotation.z != 0)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 #endif
 
+	return transformationMatrix;
+}
+
+glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale)
+{
+	glm::mat4 transformationMatrix;
+#if defined(__PSP__)
+	ScePspFMatrix4 pspTransformationMatrix;
+	gumLoadIdentity(&pspTransformationMatrix);
+	ScePspFVector3 pspPosition = { -position.x, position.y, position.z };
+	gumTranslate(&pspTransformationMatrix, &pspPosition);
+
+	glm::mat4 qm = glm::toMat4(glm::quat(rotation.w, rotation.x, -rotation.y, -rotation.z));
+	gumMultMatrix(&pspTransformationMatrix, &pspTransformationMatrix, (ScePspFMatrix4*)(&qm));
+
+	ScePspFVector3 pspScale = { scale.x, scale.y, scale.z };
+	gumScale(&pspTransformationMatrix, &pspScale);
+
+	transformationMatrix = *((glm::mat4*)(&pspTransformationMatrix));
+#else
+
+	transformationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, position.y, position.z));
+	
+	transformationMatrix *= glm::toMat4(glm::quat(rotation.w, rotation.x, -rotation.y, -rotation.z));
+
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+#endif
 	return transformationMatrix;
 }
 

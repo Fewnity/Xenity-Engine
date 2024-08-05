@@ -24,6 +24,7 @@ class Texture;
 class Transform;
 struct RenderingSettings;
 class Material;
+class Quaternion;
 
 class API MeshManager
 {
@@ -52,7 +53,7 @@ public:
 	* @param material Material to use
 	* @param renderSettings Rendering settings
 	*/
-	static void DrawMesh(const Vector3& position, const Vector3& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
+	static void DrawMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
 
 	
 	/**

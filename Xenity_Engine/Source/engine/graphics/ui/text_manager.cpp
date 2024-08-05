@@ -146,7 +146,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 
 		Vector3 scl = transform->GetScale();
 		scl.x = -scl.x;
-		const Vector3& rot = transform->GetEulerAngles();
+		const Quaternion& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
 		Graphics::DrawSubMesh(*mesh->subMeshes[0], *material, font->GetFontAtlas(), renderSettings, matrix, canvas);

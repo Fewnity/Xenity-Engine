@@ -18,6 +18,7 @@
 
 #include <engine/debug/debug.h>
 #include <engine/tools/profiler_benchmark.h>
+#include <engine/vectors/quaternion.h>
 
 #include <engine/tools/math.h>
 
@@ -107,7 +108,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 	spriteBenchmark->Stop();
 }
 
-void SpriteManager::DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
 {
 	spriteBenchmark->Start();
 

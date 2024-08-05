@@ -20,6 +20,7 @@ class Texture;
 class Color;
 class Transform;
 class Material;
+class Quaternion;
 
 class API SpriteManager
 {
@@ -39,7 +40,7 @@ public:
 	* @param material Sprite's material
 	* @param texture Sprite's texture
 	*/
-	static void DrawSprite(const Vector3& position, const Vector3& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture);
+	static void DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture);
 	
 	/**
 	* @brief Draw a sprite

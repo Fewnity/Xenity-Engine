@@ -160,7 +160,7 @@ void PhysicsManager::Update()
 	MyContactResultCallback resultCallback;
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
+		const std::shared_ptr<RigidBody> rb = rigidBodies[i].lock();
 		if(rb->generatesEvents)
 		{
 			physDynamicsWorld->contactTest(rb->bulletRigidbody, resultCallback);
@@ -179,7 +179,7 @@ void PhysicsManager::Update()
 	}
 	for (size_t i = 0; i < colliderCount; i++)
 	{
-		std::shared_ptr<Collider> collider = colliders[i].lock();
+		const std::shared_ptr<Collider> collider = colliders[i].lock();
 		if (collider->generateCollisionEvents && collider->bulletCollisionObject)
 		{
 			physDynamicsWorld->contactTest(collider->bulletCollisionObject, resultCallback);

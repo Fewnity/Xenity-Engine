@@ -589,22 +589,22 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->texture;
 
 		AssetManager::unlitMaterial->texture = settings.skybox->down;
-		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Vector3(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, -5, 0) + cameraPosition, Quaternion::Euler(0, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = settings.skybox->up;
-		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Vector3(180, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 5, 0) + cameraPosition, Quaternion::Euler(180, 180, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = settings.skybox->front;
-		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Vector3(90, 0, 180), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 0, 5) + cameraPosition, Quaternion::Euler(90, 0, 180), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = settings.skybox->back;
-		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Vector3(90, 0, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(0, 0, -5) + cameraPosition, Quaternion::Euler(90, 0, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = settings.skybox->left;
-		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Vector3(90, -90, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(5, 0, 0) + cameraPosition, Quaternion::Euler(90, -90, 0), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = settings.skybox->right;
-		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Vector3(90, 0, -90), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		MeshManager::DrawMesh(Vector3(-5, 0, 0) + cameraPosition, Quaternion::Euler(90, 0, -90), scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->texture = texture;
 	}
@@ -767,9 +767,9 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 
 		const Vector3& selectedGoPos = selectedGo->GetTransform()->GetPosition();
 
-		Vector3 selectedGoRot = selectedGo->GetTransform()->GetEulerAngles();
+		Quaternion selectedGoRot = selectedGo->GetTransform()->GetRotation();
 		if (Editor::isToolLocalMode)
-			selectedGoRot = Vector3(0);
+			selectedGoRot = Quaternion::Identity();
 
 		float dist = 1;
 		if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)

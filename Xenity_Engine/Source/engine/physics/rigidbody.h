@@ -63,6 +63,7 @@ public:
 	LockedAxis lockedRotationAxis;
 
 protected:
+	bool disableEvent = false;
 	std::vector<Collider*> colliders;
 	bool generatesEvents = false;
 	void UpdateGeneratesEvents();
@@ -75,6 +76,7 @@ protected:
 
 	void OnEnabled() override;
 	void OnDisabled() override;
+	void OnTransformUpdated();
 
 	friend class Collider;
 	friend class BoxCollider;

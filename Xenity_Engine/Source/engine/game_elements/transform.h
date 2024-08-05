@@ -181,6 +181,8 @@ public:
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
 private:
+	friend class RigidBody;
+
 	Quaternion rotationQuaternion = Quaternion::Identity();
 	Quaternion localRotationQuaternion = Quaternion::Identity();
 	Event<> onTransformUpdated;

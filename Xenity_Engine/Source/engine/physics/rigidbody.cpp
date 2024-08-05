@@ -220,21 +220,38 @@ void RigidBody::OnDisabled()
 	}
 }
 
+void RigidBody::OnTransformUpdated()
+{
+	if (disableEvent)
+		return;
+
+	const Transform& transform = *GetTransform();
+	bulletRigidbody->setWorldTransform(btTransform(
+		btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
+		btVector3(transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z)));
+
+	bulletTriggerRigidbody->setWorldTransform(bulletRigidbody->getWorldTransform());
+
+	bulletRigidbody->activate();
+}
+
 void RigidBody::Tick()
 {
-	//if (GetGameObject()->IsLocalActive() && IsEnabled() && bulletTriggerRigidbody)
 	if (GetGameObject()->IsLocalActive() && bulletTriggerRigidbody)
 	{
+		Transform& transform = *GetTransform();
+		disableEvent = true;
 		bulletTriggerRigidbody->setWorldTransform(bulletRigidbody->getWorldTransform());
 
 		const btVector3& p = bulletRigidbody->getCenterOfMassPosition();
-		GetTransform()->SetPosition(Vector3(p.x(), p.y(), p.z()));
+		transform.SetPosition(Vector3(p.x(), p.y(), p.z()));
 
 		const btQuaternion q = bulletRigidbody->getOrientation();
-		GetTransform()->SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
+		transform.SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
 
 		const btVector3& vel = bulletRigidbody->getLinearVelocity();
 		velocity = Vector3(vel.x(), vel.y(), vel.z());
+		disableEvent = false;
 	}
 
 
@@ -366,6 +383,7 @@ void RigidBody::Awake()
 	if (bulletCompoundShape)
 		return;
 
+	GetTransform()->GetOnTransformUpdated().Bind(&RigidBody::OnTransformUpdated, this);
 
 	btTransform startTransform;
 	startTransform.setIdentity();

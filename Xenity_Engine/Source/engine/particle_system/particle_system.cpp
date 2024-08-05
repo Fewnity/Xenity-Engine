@@ -15,6 +15,8 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/time/time.h>
+#include <engine/vectors/quaternion.h>
+
 #include <random>
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -202,7 +204,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
 
-	Vector3 rotation = Vector3(0);
+	Quaternion rotation = Quaternion::Identity();
 
 	const int camCount = (int)Graphics::cameras.size();
 

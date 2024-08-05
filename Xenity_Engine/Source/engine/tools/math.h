@@ -11,6 +11,7 @@ class Vector4;
 class Vector3;
 class Vector2Int;
 class Vector2;
+class Quaternion;
 
 #include <glm/glm.hpp>
 
@@ -44,6 +45,7 @@ public:
 	* @return Model matrix
 	*/
 	static glm::mat4 CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale);
+	static glm::mat4 CreateModelMatrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale);
 
 	static glm::mat4 MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB);
 
