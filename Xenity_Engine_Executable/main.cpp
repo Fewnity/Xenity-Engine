@@ -24,20 +24,19 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Add undo/redo commands to DrawVector functions
 Rework the documentation
 Box colliders are not affected by gameobject scale
-Pre-open audio file for faster loading
 Do not ask to save scene when playing
 Add assert if project settings file is not found
-Replace CompatibleFile by FileInfo?
-Replace Platform currentPlatform = Platform::P_Windows; of shader.cpp by Application Get Plat
 Add an option to enable /disable the profiler in builds
-Remove the old profiler
-Change collision size if object scale is changed
-Fix collision offset if the object is rotated
-Check why the crash dump print the wrong component name
+Change collision size if object scale is changed (sphere)
+Change collision offset if the offset is changed
+
 
 --- Can be for next release
+Remove the old profiler
 New Input system
 Implement AudioManager::Stop for PSP and PsVita
+Pre-open audio file for faster loading
+Replace CompatibleFile by FileInfo?
 
 --- Done
 
