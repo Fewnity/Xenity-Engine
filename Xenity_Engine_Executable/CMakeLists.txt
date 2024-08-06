@@ -22,11 +22,6 @@ endif()
 
 project(hello)
 
-
-# INCLUDE_DIRECTORIES(../include/glm)
-# LINK_DIRECTORIES(../include/glm)
-# TARGET_LINK_LIBRARIES(glm)
-
 # Add any additional include paths here
 include_directories(
     include/
@@ -39,7 +34,6 @@ set(SOURCES_DIR "Source")
 set(INCLUDES_DIR "include/bullet")
 
 # Recherchez tous les fichiers .cpp dans le répertoire et ses sous-répertoires
-#file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c")
 file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c" "${INCLUDES_DIR}/*.cpp")
 
 list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
@@ -61,7 +55,7 @@ message(STATUS "BUILD PSP")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -D_PSP_FW_VERSION=660")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -D_PSP_FW_VERSION=660 -LARGE_MEMORY=1")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -LARGE_MEMORY=1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -flto -falign-functions=32 -ftree-vectorize -O2 -LARGE_MEMORY=1")
 
 add_definitions("-LARGE_MEMORY=1")
 
@@ -80,6 +74,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
    pspge
    pspgu
    pspvfpu
+   pspfpu
    pspctrl
    pspdebug
    pspvram
@@ -122,7 +117,7 @@ set(VITA_VERSION  "01.00")
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -fcompare-debug-second")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -flto -O2 -fcompare-debug-second")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
 
