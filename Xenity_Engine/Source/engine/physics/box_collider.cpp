@@ -15,6 +15,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/tools/math.h>
 
 #if defined(EDITOR)
 #include <editor/editor.h>
@@ -53,17 +54,18 @@ void BoxCollider::OnReflectionUpdated()
 
 void BoxCollider::OnTransformUpdated()
 {
-	//return;
-
-	if (bulletCollisionShape) 
+	if (bulletCollisionShape)
 	{
 		const Vector3& scale = GetTransform()->GetScale();
 		bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
-		if(attachedRigidbody.lock())
+		attachedRigidbody.lock()->RemoveShape(bulletCollisionShape);
+		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset* scale);
+
+		if (attachedRigidbody.lock())
 			attachedRigidbody.lock()->Activate();
 	}
 
-	if (bulletCollisionObject) 
+	if (bulletCollisionObject)
 	{
 		const Transform& transform = *GetTransform();
 		bulletCollisionObject->setWorldTransform(btTransform(
@@ -130,13 +132,14 @@ CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollide
 
 BoxCollider::~BoxCollider()
 {
-	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
+	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformUpdated, this);
 
 	AssetManager::RemoveReflection(this);
 }
 
 void BoxCollider::Awake()
 {
+	GetTransform()->GetOnTransformScaled().Bind(&BoxCollider::OnTransformUpdated, this);
 	FindRigidbody();
 }
 
@@ -150,8 +153,6 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
 		return;
 
-	GetTransform()->GetOnTransformUpdated().Bind(&BoxCollider::OnTransformUpdated, this);
-
 	if (bulletCollisionObject)
 	{
 		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
@@ -161,33 +162,28 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	}
 
 	const Vector3& scale = GetTransform()->GetScale();
-	if(!bulletCollisionShape)
-		bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 
-	Vector3 pos;
-	if (attachedRigidbody.lock())
-		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
-	else
-		pos = GetTransform()->GetPosition();
-
-	const Quaternion& rot = GetTransform()->GetRotation();
-
-	btTransform startTransform;
-	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+	if (!bulletCollisionShape)
+		bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
+	bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 
 	if (attachedRigidbody.lock())
 	{
 		if (!isTrigger)
-			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
+			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * scale);
 		else
-			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * 2);
+			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * scale);
 	}
 	else
 	{
-		pos += offset * 2;
-		startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+		const Quaternion& rot = GetTransform()->GetRotation();
+
+		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
+		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, -offset.z, 1);
+
+		btTransform startTransform;
+		startTransform.setIdentity();
+		startTransform.setOrigin(btVector3(newPos.x, newPos.y, newPos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
 		bulletCollisionObject = new btCollisionObject();
@@ -272,8 +268,8 @@ void BoxCollider::SetDefaultSize()
 
 void BoxCollider::CalculateBoundingBox()
 {
-	min = -size / 2.0f + offset * 2;
-	max = size / 2.0f + offset * 2;
+	min = -size / 2.0f + offset;
+	max = size / 2.0f + offset;
 }
 
 void BoxCollider::SetSize(const Vector3& size)

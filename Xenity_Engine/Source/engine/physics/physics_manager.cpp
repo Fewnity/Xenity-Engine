@@ -43,10 +43,6 @@ void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
 
 void PhysicsManager::Init()
 {
-	/*btVector3 worldAabbMin(-1000, -1000, -1000);
-	btVector3 worldAabbMax(1000, 1000, 1000);
-	int maxProxies = 32766;*/
-
 	physCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	physDispatcher = new btCollisionDispatcher(physCollisionConfiguration);
@@ -147,6 +143,17 @@ void PhysicsManager::Update()
 		}
 	}
 
+	size_t colliderCount = colliders.size();
+	for (int i = 0; i < colliderCount; i++)
+	{
+		if (!colliders[i].lock())
+		{
+			colliders.erase(colliders.begin() + i);
+			i--;
+			colliderCount--;
+		}
+	}
+
 	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
 	//Debug::Print("------------------------ Tick ------------------------");
 
@@ -167,16 +174,6 @@ void PhysicsManager::Update()
 		}
 	}
 
-	size_t colliderCount = colliders.size();
-	for (int i = 0; i < colliderCount; i++)
-	{
-		if (!colliders[i].lock())
-		{
-			colliders.erase(colliders.begin() + i);
-			i--;
-			colliderCount--;
-		}
-	}
 	for (size_t i = 0; i < colliderCount; i++)
 	{
 		const std::shared_ptr<Collider> collider = colliders[i].lock();
