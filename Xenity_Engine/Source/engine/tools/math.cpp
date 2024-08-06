@@ -86,7 +86,7 @@ if (rotation.z != 0)
 glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale)
 {
 	glm::mat4 transformationMatrix;
-#if defined(__PSP__)
+#if defined(__PSN__NO)
 	ScePspFMatrix4 pspTransformationMatrix;
 	gumLoadIdentity(&pspTransformationMatrix);
 	ScePspFVector3 pspPosition = { -position.x, position.y, position.z };
