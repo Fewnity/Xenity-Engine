@@ -177,6 +177,11 @@ public:
 		return onTransformUpdated;
 	}
 
+	Event<>& GetOnTransformScaled()
+	{
+		return onTransformScaled;
+	}
+
 	glm::mat4 transformationMatrix;
 	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
@@ -186,6 +191,7 @@ private:
 	Quaternion rotationQuaternion = Quaternion::Identity();
 	Quaternion localRotationQuaternion = Quaternion::Identity();
 	Event<> onTransformUpdated;
+	Event<> onTransformScaled;
 
 	ReflectiveData GetReflectiveData() override;
 

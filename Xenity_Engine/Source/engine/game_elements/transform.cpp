@@ -252,6 +252,7 @@ void Transform::SetLocalScale(const Vector3& value)
 
 	localScale = value;
 	UpdateWorldValues();
+	onTransformScaled.Trigger();
 }
 
 #pragma endregion
@@ -279,6 +280,7 @@ void Transform::OnParentChanged()
 		localRotationQuaternion = rotationQuaternion;
 		localScale = scale;
 	}
+	onTransformScaled.Trigger();
 }
 
 void Transform::SetChildrenWorldPositions()
