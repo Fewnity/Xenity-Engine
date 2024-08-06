@@ -123,6 +123,14 @@ void RigidBody::SetMass(float _mass)
 	UpdateRigidBodyMass();
 }
 
+void RigidBody::Activate()
+{
+	if (bulletRigidbody)
+	{
+		bulletRigidbody->activate();
+	}
+}
+
 void RigidBody::UpdateGeneratesEvents()
 {
 	bool hasEvents = false;
@@ -351,6 +359,8 @@ void RigidBody::Tick()
 
 RigidBody::~RigidBody()
 {
+	GetTransform()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
+
 	AssetManager::RemoveReflection(this);
 	for (Collider* c : colliders)
 	{

@@ -73,6 +73,7 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
+	void OnTransformUpdated();
 
 	void OnDrawGizmosSelected() override;
 

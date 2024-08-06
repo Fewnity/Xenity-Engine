@@ -51,6 +51,27 @@ void BoxCollider::OnReflectionUpdated()
 	}
 }
 
+void BoxCollider::OnTransformUpdated()
+{
+	//return;
+
+	if (bulletCollisionShape) 
+	{
+		const Vector3& scale = GetTransform()->GetScale();
+		bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+		if(attachedRigidbody.lock())
+			attachedRigidbody.lock()->Activate();
+	}
+
+	if (bulletCollisionObject) 
+	{
+		const Transform& transform = *GetTransform();
+		bulletCollisionObject->setWorldTransform(btTransform(
+			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
+			btVector3(transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z)));
+	}
+}
+
 bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
 {
 	const Vector3& aPos = a.GetTransform()->GetPosition();
@@ -109,6 +130,8 @@ CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollide
 
 BoxCollider::~BoxCollider()
 {
+	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
+
 	AssetManager::RemoveReflection(this);
 }
 
@@ -127,6 +150,8 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
 		return;
 
+	GetTransform()->GetOnTransformUpdated().Bind(&BoxCollider::OnTransformUpdated, this);
+
 	if (bulletCollisionObject)
 	{
 		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
@@ -135,7 +160,6 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		bulletCollisionObject = nullptr;
 	}
 
-	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
 	if(!bulletCollisionShape)
 		bulletCollisionShape = new btBoxShape(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
@@ -188,20 +212,6 @@ void BoxCollider::OnDrawGizmosSelected()
 		lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 0.5f);
 
 	Gizmo::SetColor(lineColor);
-
-	//const Vector3& pos = GetTransform()->GetPosition();
-
-	// Bottom vertex
-	//const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
-	//const Vector3 v2 = pos + Vector3(min.x, min.y, max.z);
-	//const Vector3 v3 = pos + Vector3(max.x, min.y, min.z);
-	//const Vector3 v4 = pos + Vector3(max.x, min.y, max.z);
-
-	//// Top vertex
-	//const Vector3 v5 = pos + Vector3(min.x, max.y, min.z);
-	//const Vector3 v6 = pos + Vector3(min.x, max.y, max.z);
-	//const Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
-	//const Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
 
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
 	Vector3 bottom0 = matrix * glm::vec4(-min.x, min.y, min.z, 1);

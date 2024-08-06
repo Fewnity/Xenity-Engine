@@ -62,6 +62,8 @@ public:
 	LockedAxis lockedMovementAxis;
 	LockedAxis lockedRotationAxis;
 
+	void Activate();
+
 protected:
 	bool disableEvent = false;
 	std::vector<Collider*> colliders;

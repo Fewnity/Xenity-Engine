@@ -185,53 +185,10 @@ void PhysicsManager::Update()
 			physDynamicsWorld->contactTest(collider->bulletCollisionObject, resultCallback);
 		}
 	}
-	
- 	//const btCollisionObjectArray& objectList = physDynamicsWorld->getCollisionObjectArray();
-
-	//const size_t objectCount = objectList.size();
-	//for (size_t i = 0; i < objectCount; i++)
-	//{
-	//	//std::cout << a[i] << std::endl;
-	//	physDynamicsWorld->contactTest(objectList[i], resultCallback);
-	//}
-
-	//size_t rigidbodyCount = rigidBodies.size();
-	//for (int i = 0; i < rigidbodyCount; i++)
-	//{
-	//	if (!rigidBodies[i].lock())
-	//	{
-	//		rigidBodies.erase(rigidBodies.begin() + i);
-	//		i--;
-	//		rigidbodyCount--;
-	//	}
-	//}
-
-	//size_t colliderCount = boxColliders.size();
-	//for (int i = 0; i < colliderCount; i++)
-	//{
-	//	if (!boxColliders[i].lock())
-	//	{
-	//		boxColliders.erase(boxColliders.begin() + i);
-	//		i--;
-	//		colliderCount--;
-	//	}
-	//}
 }
 
 void PhysicsManager::Clear()
 {
-	/*for (int i = physDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
-	{
-		btCollisionObject* obj = physDynamicsWorld->getCollisionObjectArray()[i];
-		btRigidBody* body = btRigidBody::upcast(obj);
-		if (body && body->getMotionState())
-		{
-			delete body->getMotionState();
-		}
-		physDynamicsWorld->removeCollisionObject(obj);
-		delete obj;
-	}*/
-
 	PhysicsManager::rigidBodies.clear();
 	PhysicsManager::colliders.clear();
 }
