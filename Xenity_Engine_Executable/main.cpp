@@ -28,8 +28,10 @@ Do not ask to save scene when playing
 Add assert if project settings file is not found
 Add an option to enable /disable the profiler in builds
 Change collision size if object scale is changed (sphere)
-Change collision offset if the offset is changed
-
+Change collision offset if the offset and size is changed
+Add trigger event
+Add raycast
+Fix shader tilling + check on PSP
 
 --- Can be for next release
 Remove the old profiler
