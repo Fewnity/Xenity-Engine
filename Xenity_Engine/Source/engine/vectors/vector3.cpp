@@ -70,17 +70,6 @@ Vector3::Vector3(const Vector2& vect)
 
 #pragma endregion
 
-float Vector3::Max()
-{
-	return std::max(std::max(x, y), z);
-}
-
-float Vector3::Min()
-{
-	return std::min(std::min(x, y), z);
-}
-
-
 Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 {
 	const float xdis = to.x - from.x;

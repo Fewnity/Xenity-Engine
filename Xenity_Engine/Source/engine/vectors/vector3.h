@@ -5,6 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
+#include <algorithm>
+
 #include <engine/api.h>
 
 #include <engine/reflection/reflection.h>
@@ -31,9 +34,15 @@ public:
 	Vector3(const Vector2Int& vect);
 	Vector3(const Vector2& vect);
 
-	float Max();
+	float Max() const
+	{
+		return std::max(std::max(x, y), z);
+	}
 
-	float Min();
+	float Min() const
+	{
+		return std::min(std::min(x, y), z);
+	}
 
 	/**
 	* @brief Get the look rotation in degrees between two vectors
