@@ -54,23 +54,6 @@ void SphereCollider::OnReflectionUpdated()
 
 bool SphereCollider::CheckTrigger(const SphereCollider& a, const SphereCollider& b)
 {
-	/*const Vector3 aPos = a.GetTransform()->GetPosition();
-	const Vector3 bPos = b.GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a.min + aPos;
-	const Vector3 aMaxPos = a.max + aPos;
-	const Vector3 bMinPos = b.min + bPos;
-	const Vector3 bMaxPos = b.max + bPos;
-
-	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
-
-	if (xColl && yColl && zColl)
-	{
-		return true;
-	}*/
-
 	return false;
 }
 
@@ -98,61 +81,13 @@ void SphereCollider::OnDrawGizmosSelected()
 
 	Gizmo::SetColor(lineColor);
 
-	//const Vector3& pos = GetTransform()->GetPosition();
-
-	// Bottom vertex
-	//const Vector3 v1 = pos + Vector3(min.x, min.y, min.z);
-	//const Vector3 v2 = pos + Vector3(min.x, min.y, max.z);
-	//const Vector3 v3 = pos + Vector3(max.x, min.y, min.z);
-	//const Vector3 v4 = pos + Vector3(max.x, min.y, max.z);
-
-	//// Top vertex
-	//const Vector3 v5 = pos + Vector3(min.x, max.y, min.z);
-	//const Vector3 v6 = pos + Vector3(min.x, max.y, max.z);
-	//const Vector3 v7 = pos + Vector3(max.x, max.y, min.z);
-	//const Vector3 v8 = pos + Vector3(max.x, max.y, max.z);
-
-	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-	Vector3 bottom0 = matrix * glm::vec4(-min.x, min.y, min.z, 1);
-	Vector3 bottom1 = matrix * glm::vec4(-min.x, min.y, max.z, 1);
-	Vector3 bottom2 = matrix * glm::vec4(-max.x, min.y, min.z, 1);
-	Vector3 bottom3 = matrix * glm::vec4(-max.x, min.y, max.z, 1);
-
-	Vector3 top0 = matrix * glm::vec4(-min.x, max.y, min.z, 1);
-	Vector3 top1 = matrix * glm::vec4(-min.x, max.y, max.z, 1);
-	Vector3 top2 = matrix * glm::vec4(-max.x, max.y, min.z, 1);
-	Vector3 top3 = matrix * glm::vec4(-max.x, max.y, max.z, 1);
-
-	bottom0.x = -bottom0.x;
-	bottom1.x = -bottom1.x;
-	bottom2.x = -bottom2.x;
-	bottom3.x = -bottom3.x;
-
-	top0.x = -top0.x;
-	top1.x = -top1.x;
-	top2.x = -top2.x;
-	top3.x = -top3.x;
-
-
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
-	// Bottom
-	Gizmo::DrawLine(bottom0, bottom1);
-	Gizmo::DrawLine(bottom0, bottom2);
-	Gizmo::DrawLine(bottom3, bottom2);
-	Gizmo::DrawLine(bottom3, bottom1);
+	const float maxScale = GetTransform()->GetScale().Max();
+	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
+	Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
 
-	// Top
-	Gizmo::DrawLine(top0, top1);
-	Gizmo::DrawLine(top0, top2);
-	Gizmo::DrawLine(top3, top2);
-	Gizmo::DrawLine(top3, top1);
-
-	// Bottom to top
-	Gizmo::DrawLine(bottom0, top0);
-	Gizmo::DrawLine(bottom1, top1);
-	Gizmo::DrawLine(bottom2, top2);
-	Gizmo::DrawLine(bottom3, top3);
+	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), size / 2 * maxScale);
 #endif
 }
 
@@ -171,32 +106,31 @@ void SphereCollider::CreateCollision(bool forceCreation)
 
 	btVector3 localInertia(0, 0, 0);
 	const Vector3& scale = GetTransform()->GetScale();
-	if(!bulletCollisionShape)
-		bulletCollisionShape = new btSphereShape(size);
+	if (!bulletCollisionShape)
+		bulletCollisionShape = new btSphereShape(1);
 
-	Vector3 pos;
-	if (attachedRigidbody.lock())
-		pos = attachedRigidbody.lock()->GetTransform()->GetPosition() - GetTransform()->GetPosition();
-	else
-		pos = GetTransform()->GetPosition();
-	//pos += offset;
-
-	const Quaternion& rot = GetTransform()->GetRotation();
-
-	btTransform startTransform;
-	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+	const float maxScale = scale.Max();
+	bulletCollisionShape->setLocalScaling(btVector3(size / 2.0f * maxScale, size / 2.0f * maxScale, size / 2.0f * maxScale));
 
 	if (attachedRigidbody.lock())
 	{
 		if (!isTrigger)
-			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * 2);
+			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * scale);
 		else
-			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * 2);
+			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * scale);
 	}
 	else
 	{
+		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
+		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, -offset.z, 1);
+
+		const Quaternion& rot = GetTransform()->GetRotation();
+
+		btTransform startTransform;
+		startTransform.setIdentity();
+		startTransform.setOrigin(btVector3(-newPos.x, newPos.y, newPos.z));
+		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+
 		bulletCollisionObject = new btCollisionObject();
 		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
 		bulletCollisionObject->setWorldTransform(startTransform);

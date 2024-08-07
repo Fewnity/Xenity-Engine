@@ -52,25 +52,32 @@ void BoxCollider::OnReflectionUpdated()
 	}
 }
 
-void BoxCollider::OnTransformUpdated()
+void BoxCollider::OnTransformScaled()
 {
 	if (bulletCollisionShape)
 	{
 		const Vector3& scale = GetTransform()->GetScale();
 		bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 		attachedRigidbody.lock()->RemoveShape(bulletCollisionShape);
-		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset* scale);
+		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * scale);
 
 		if (attachedRigidbody.lock())
 			attachedRigidbody.lock()->Activate();
 	}
+}
 
+void BoxCollider::OnTransformUpdated()
+{
 	if (bulletCollisionObject)
 	{
 		const Transform& transform = *GetTransform();
+
+		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
+		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+
 		bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
-			btVector3(transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z)));
+			btVector3(-newPos.x, newPos.y, newPos.z)));
 	}
 }
 
@@ -132,14 +139,16 @@ CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollide
 
 BoxCollider::~BoxCollider()
 {
-	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformUpdated, this);
+	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformScaled, this);
+	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
 
 	AssetManager::RemoveReflection(this);
 }
 
 void BoxCollider::Awake()
 {
-	GetTransform()->GetOnTransformScaled().Bind(&BoxCollider::OnTransformUpdated, this);
+	GetTransform()->GetOnTransformScaled().Bind(&BoxCollider::OnTransformScaled, this);
+	GetTransform()->GetOnTransformUpdated().Bind(&BoxCollider::OnTransformUpdated, this);
 	FindRigidbody();
 }
 
@@ -176,14 +185,14 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	}
 	else
 	{
-		const Quaternion& rot = GetTransform()->GetRotation();
-
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, -offset.z, 1);
+		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+
+		const Quaternion& rot = GetTransform()->GetRotation();
 
 		btTransform startTransform;
 		startTransform.setIdentity();
-		startTransform.setOrigin(btVector3(newPos.x, newPos.y, newPos.z));
+		startTransform.setOrigin(btVector3(-newPos.x, newPos.y, newPos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
 		bulletCollisionObject = new btCollisionObject();
