@@ -1059,9 +1059,9 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	// MD Use dll to compile (MDd for debug mode)
 	// DIMPORT define "IMPORT"
 #if defined(DEBUG)
-	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT"; // Start compilation
+	command += "cl /std:c++20 /MP /EHsc /MDd /DIMPORT /DNOMINMAX"; // Start compilation
 #else
-	command += "cl /std:c++20 /O2 /MP /EHsc /MD /DIMPORT"; // Start compilation
+	command += "cl /std:c++20 /O2 /MP /EHsc /MD /DIMPORT /DNOMINMAX"; // Start compilation
 #endif
 
 	// Define "EDITOR" if compiled to play game in editor
@@ -1069,6 +1069,13 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	{
 		command += " /DEDITOR";
 	}
+	else 
+	{
+#if !defined(DEBUG)
+	command += " /O2";
+#endif
+	}
+
 
 	// Add include directories
 	command += " -I \"" + engineProjectLocation + "include\"";
@@ -1125,7 +1132,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 {
 	std::string command;
 	//Buid game exe
-	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc";
+	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc /DNOMINMAX";
 #if !defined(DEBUG)
 	command += " /O2";
 #endif
