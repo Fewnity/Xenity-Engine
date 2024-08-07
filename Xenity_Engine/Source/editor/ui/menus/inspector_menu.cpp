@@ -527,7 +527,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 
 				std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
 
-				if (std::shared_ptr<BoxCollider> boxCollider = std::dynamic_pointer_cast<BoxCollider>(newComponent))
+				if (std::shared_ptr<Collider> boxCollider = std::dynamic_pointer_cast<Collider>(newComponent))
 					boxCollider->SetDefaultSize();
 
 				showAddComponentMenu = false;

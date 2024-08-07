@@ -65,16 +65,13 @@ protected:
 
 	void OnDrawGizmosSelected() override;
 	void CreateCollision(bool forceCreation) override;
+	void OnTransformScaled();
+	void OnTransformUpdated();
 
 	/**
 	* @brief Set the default size of the box collider based on the mesh renderer
 	*/
-	void SetDefaultSize();
-
-	/**
-	* @brief Calculate the bounding box of the box collider
-	*/
-	void CalculateBoundingBox();
+	void SetDefaultSize() override;
 
 	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{

@@ -6,6 +6,8 @@
 
 #include "box_collider.h"
 
+#include <bullet/btBulletDynamicsCommon.h>
+
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
@@ -22,8 +24,6 @@
 #include <editor/gizmo.h>
 #endif
 #include "rigidbody.h"
-#include <bullet/btBulletDynamicsCommon.h>
-#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include "physics_manager.h"
 
 BoxCollider::BoxCollider()
@@ -58,11 +58,13 @@ void BoxCollider::OnTransformScaled()
 	{
 		const Vector3& scale = GetTransform()->GetScale();
 		bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
-		attachedRigidbody.lock()->RemoveShape(bulletCollisionShape);
-		attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * scale);
 
-		if (attachedRigidbody.lock())
-			attachedRigidbody.lock()->Activate();
+		if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+		{
+			rb->RemoveShape(bulletCollisionShape);
+			rb->AddShape(bulletCollisionShape, offset * scale);
+			rb->Activate();
+		}
 	}
 }
 
@@ -176,12 +178,12 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
 	bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 
-	if (attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
 	{
 		if (!isTrigger)
-			attachedRigidbody.lock()->AddShape(bulletCollisionShape, offset * scale);
+			rb->AddShape(bulletCollisionShape, offset * scale);
 		else
-			attachedRigidbody.lock()->AddTriggerShape(bulletCollisionShape, offset * scale);
+			rb->AddTriggerShape(bulletCollisionShape, offset * scale);
 	}
 	else
 	{
@@ -199,6 +201,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
 		bulletCollisionObject->setWorldTransform(startTransform);
 		bulletCollisionObject->setUserPointer(this);
+		bulletCollisionObject->setRestitution(1);
 
 		if (isTrigger)
 		{
@@ -268,9 +271,10 @@ void BoxCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
-		const Vector3& scale = GetTransform()->GetLocalScale();
-		size = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()) * scale;
-		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f) * scale;
+		const Vector3& scale = GetTransform()->GetScale();
+		Vector3 v = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox());
+		size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
+		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
 		CalculateBoundingBox();
 	}
 }

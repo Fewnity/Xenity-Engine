@@ -25,6 +25,8 @@ public:
 protected:
 	friend class PhysicsManager;
 	friend class RigidBody;
+	friend class InspectorMenu;
+	friend class MainBarMenu;
 
 	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{
@@ -35,6 +37,7 @@ protected:
 	void SetRigidbody(const std::shared_ptr<RigidBody>& rb);
 	void OnEnabled() override;
 	void OnDisabled() override;
+	virtual void SetDefaultSize() {}
 
 	virtual void CreateCollision(bool forceCreation) = 0;
 

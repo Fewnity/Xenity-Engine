@@ -81,7 +81,7 @@ protected:
 	/**
 	* @brief Set the default size of the box collider based on the mesh renderer
 	*/
-	void SetDefaultSize();
+	void SetDefaultSize() override;
 
 	/**
 	* @brief Calculate the bounding box of the box collider
