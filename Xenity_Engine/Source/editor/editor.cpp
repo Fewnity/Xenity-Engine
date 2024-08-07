@@ -491,6 +491,9 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 	std::shared_ptr<InspectorMenu> inspector = Editor::GetMenu<InspectorMenu>();
 	if (inspector)
 		inspector->loadedPreview = nullptr;
+
+	if (fileReference)
+		SetSelectedGameObject(nullptr);
 }
 
 std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
@@ -504,6 +507,8 @@ void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelecte
 
 	if (newSelected == nullptr)
 		return;
+
+	SetSelectedFileReference(nullptr);
 
 	newSelected->isSelected = true;
 	selectedGameObjects.push_back(newSelected);

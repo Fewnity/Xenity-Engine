@@ -57,7 +57,6 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 	else if (item.directory) // Open the folder
 	{
 		Editor::SetCurrentProjectDirectory(item.directory);
-		Editor::SetSelectedFileReference(nullptr);
 	}
 }
 
@@ -139,7 +138,6 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 			if (item.file)
 			{
 				Editor::SetSelectedFileReference(item.file);
-				Editor::SetSelectedGameObject(nullptr);
 			}
 		}
 	}

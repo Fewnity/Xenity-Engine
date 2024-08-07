@@ -175,27 +175,27 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Cube"))
 			{
-				ShapeSpawner::SpawnCube();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnCube());
 			}
 			if (ImGui::MenuItem("Sphere"))
 			{
-				ShapeSpawner::SpawnSphere();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnSphere());
 			}
 			if (ImGui::MenuItem("Cylinder"))
 			{
-				ShapeSpawner::SpawnCylinder();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnCylinder());
 			}
 			if (ImGui::MenuItem("Plane"))
 			{
-				ShapeSpawner::SpawnPlane();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnPlane());
 			}
 			if (ImGui::MenuItem("Cone"))
 			{
-				ShapeSpawner::SpawnCone();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnCone());
 			}
 			if (ImGui::MenuItem("Donut"))
 			{
-				ShapeSpawner::SpawnDonut();
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnDonut());
 			}
 			ImGui::EndMenu();
 		}

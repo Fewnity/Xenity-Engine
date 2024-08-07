@@ -224,7 +224,6 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 						else
 						{
 							Editor::SetSelectedGameObject(gameObject);
-							Editor::SetSelectedFileReference(nullptr);
 							state = 2;
 							std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
 							for (std::shared_ptr<SceneMenu> sceneMenu : sceneMenus)
@@ -242,11 +241,13 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 						else
 						{
 							if (InputSystem::GetKey(KeyCode::LEFT_CONTROL))
+							{
 								Editor::AddSelectedGameObject(gameObject);
+								Editor::SetSelectedFileReference(nullptr);
+							}
 							else
 								Editor::SetSelectedGameObject(gameObject);
 
-							Editor::SetSelectedFileReference(nullptr);
 							state = 2;
 						}
 					}

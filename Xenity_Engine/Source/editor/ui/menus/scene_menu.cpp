@@ -612,12 +612,12 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 			if (InputSystem::GetKey(KeyCode::LEFT_CONTROL) && newGameObjectSelected)
 			{
 				Editor::AddSelectedGameObject(newGameObjectSelected);
+				Editor::SetSelectedFileReference(nullptr);
 			}
 			else
 			{
 				Editor::SetSelectedGameObject(newGameObjectSelected);
 			}
-			Editor::SetSelectedFileReference(nullptr);
 		}
 	}
 }
@@ -746,7 +746,6 @@ void SceneMenu::Draw()
 						meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
 					}
 					Editor::SetSelectedGameObject(newGameObject);
-					Editor::SetSelectedFileReference(nullptr);
 					SceneManager::SetSceneModified(true);
 					draggedMeshGameObject = newGameObject;
 				}

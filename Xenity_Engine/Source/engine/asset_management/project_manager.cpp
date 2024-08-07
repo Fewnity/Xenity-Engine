@@ -666,6 +666,8 @@ void ProjectManager::UnloadProject()
 {
 #if defined(EDITOR)
 	Editor::SetCurrentProjectDirectory(nullptr);
+	Editor::SetSelectedGameObject(nullptr);
+	Editor::SetSelectedFileReference(nullptr);
 
 	SceneManager::SetSceneModified(false);
 	SceneManager::SetOpenedScene(nullptr);
