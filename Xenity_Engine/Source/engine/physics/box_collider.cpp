@@ -50,6 +50,8 @@ void BoxCollider::OnReflectionUpdated()
 	{
 		rb->UpdateGeneratesEvents();
 	}
+	OnTransformScaled();
+	OnTransformUpdated();
 }
 
 void BoxCollider::OnTransformScaled()
@@ -271,8 +273,6 @@ void BoxCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
-		const Vector3& scale = GetTransform()->GetScale();
-		Vector3 v = (meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox());
 		size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
 		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
 		CalculateBoundingBox();

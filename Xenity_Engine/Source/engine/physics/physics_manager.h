@@ -45,8 +45,6 @@ public:
 	static std::vector<std::weak_ptr<Collider>> colliders;
 	static std::vector<btRigidBody*> mBodies;
 
-	static void GetPosition(const btRigidBody* body, btVector3& pos);
-
 	static btDynamicsWorld* physDynamicsWorld;
 };
 

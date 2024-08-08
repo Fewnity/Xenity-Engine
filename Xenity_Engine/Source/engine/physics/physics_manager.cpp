@@ -30,17 +30,6 @@ btDefaultCollisionConfiguration* physCollisionConfiguration = nullptr;
 
 std::vector<btRigidBody*> PhysicsManager::mBodies;
 
-void PhysicsManager::GetPosition(const btRigidBody* body, btVector3& pos)
-{
-	if (body && body->getMotionState())
-	{
-		const btVector3& p = body->getCenterOfMassPosition();
-		pos.setX(p.getX());
-		pos.setY(p.getY());
-		pos.setZ(p.getZ());
-	}
-}
-
 void PhysicsManager::Init()
 {
 	physCollisionConfiguration = new btDefaultCollisionConfiguration();

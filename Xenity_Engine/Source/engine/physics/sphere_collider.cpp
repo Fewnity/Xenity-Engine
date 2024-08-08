@@ -49,6 +49,8 @@ void SphereCollider::OnReflectionUpdated()
 	{
 		rb->UpdateGeneratesEvents();
 	}
+	OnTransformScaled();
+	OnTransformUpdated();
 }
 
 bool SphereCollider::CheckTrigger(const SphereCollider& a, const SphereCollider& b)
@@ -185,9 +187,7 @@ void SphereCollider::SetDefaultSize()
 	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
 	if (mesh && mesh->GetMeshData())
 	{
-		std::shared_ptr<MeshData> meshData = mesh->GetMeshData();
-		const Vector3& scale = GetTransform()->GetScale();
-		Vector3 v = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
+		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
 		size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox())).Max();
 		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
 	}

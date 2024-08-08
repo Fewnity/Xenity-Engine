@@ -27,16 +27,6 @@ public:
 
 	Event<std::shared_ptr<SphereCollider>> onTriggerEvent;
 
-	inline const Vector3& GetMin() const
-	{
-		return min;
-	}
-
-	inline const Vector3& GetMax() const
-	{
-		return max;
-	}
-
 	void SetSize(const float& size);
 	inline const float& GetSize() const
 	{
@@ -87,6 +77,4 @@ protected:
 
 	float size = 1;
 	Vector3 offset = Vector3(0);
-	Vector3 min;
-	Vector3 max;
 };
