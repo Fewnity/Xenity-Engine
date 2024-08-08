@@ -7,6 +7,7 @@
 #pragma once
 
 #include "menu.h"
+
 #include <vector>
 
 #include <engine/asset_management/project_list_item.h>

@@ -7,12 +7,11 @@
 #pragma once
 
 #include <algorithm>
-
-#include <engine/api.h>
-
-#include <engine/reflection/reflection.h>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
+
+#include <engine/api.h>
+#include <engine/reflection/reflection.h>
 
 class Vector2Int;
 class Vector2;

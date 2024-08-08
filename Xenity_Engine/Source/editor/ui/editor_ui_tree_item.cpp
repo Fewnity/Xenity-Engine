@@ -10,10 +10,10 @@
 
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
+#include <editor/ui/menus/scene_menu.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/inputs/input_system.h>
-#include <editor/ui/menus/scene_menu.h>
 #include <engine/game_elements/gameplay_manager.h>
 
 bool EditorUI::DrawTreeItem(const std::shared_ptr<ProjectDirectory>& projectDir)

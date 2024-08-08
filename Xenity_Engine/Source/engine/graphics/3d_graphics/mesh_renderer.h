@@ -5,11 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
-#include <engine/graphics/iDrawable.h>
 #include <vector>
 #include <memory>
+
+#include <engine/api.h>
+#include <engine/graphics/iDrawable.h>
 
 class MeshData;
 class Material;

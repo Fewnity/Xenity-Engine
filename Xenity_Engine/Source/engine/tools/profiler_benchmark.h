@@ -5,10 +5,10 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
-#include "benchmark.h"
 #include <string>
+
+#include <engine/api.h>
+#include "benchmark.h"
 
 class ProfilerValue;
 

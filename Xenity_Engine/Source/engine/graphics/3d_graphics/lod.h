@@ -11,7 +11,7 @@
 
 class MeshRenderer;
 
-class Lod : public Component
+class API Lod : public Component
 {
 public:
 	Lod();

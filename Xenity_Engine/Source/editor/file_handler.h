@@ -12,7 +12,6 @@
 
 #include <string>
 #include <functional>
-#include <thread>
 
 class FileHandler
 {

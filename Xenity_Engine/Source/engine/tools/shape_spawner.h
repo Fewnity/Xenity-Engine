@@ -5,10 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
 #include <string>
 #include <memory>
+
+#include <engine/api.h>
 
 class GameObject;
 class Vector3;

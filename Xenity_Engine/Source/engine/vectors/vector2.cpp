@@ -8,10 +8,6 @@
 #include "vector2_int.h"
 #include "vector3.h"
 
-#define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__) || defined(_EE)
-#undef __STRICT_ANSI__
-#endif
 #include <cmath>
 
 #pragma region Constructors

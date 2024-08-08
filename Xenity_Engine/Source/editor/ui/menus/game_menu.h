@@ -7,6 +7,7 @@
 #pragma once
 
 #include "menu.h"
+
 #include <engine/vectors/vector2.h>
 
 class GameMenu : public Menu

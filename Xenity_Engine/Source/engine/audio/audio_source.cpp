@@ -5,23 +5,24 @@
 // This file is part of Xenity Engine
 
 #include "audio_source.h"
-#include "audio_manager.h"
 
-#include <engine/engine.h>
-#include <engine/asset_management/asset_manager.h>
-
-#include <engine/game_elements/transform.h>
-#include <engine/vectors/vector2.h>
-#include <engine/graphics/color/color.h>
-#include <engine/debug/debug.h>
 #include <thread>
+#if defined(__PSP__)
+#include <pspkernel.h>
+#endif
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
-#elif defined(__PSP__)
-#include <pspkernel.h>
 #endif
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/transform.h>
+#include <engine/vectors/vector2.h>
+#include <engine/graphics/color/color.h>
+#include <engine/debug/debug.h>
+#include "audio_manager.h"
+
 
 AudioSource::AudioSource()
 {

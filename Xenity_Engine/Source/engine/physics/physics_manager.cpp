@@ -6,18 +6,16 @@
 
 #include "physics_manager.h"
 
-#include "collider.h"
-#include "box_collider.h"
-#include "rigidbody.h"
+#include <iostream>
 #include <bullet/btBulletDynamicsCommon.h>
-#include <engine/time/time.h>
-#include <engine/debug/performance.h>
-#include <engine/debug/debug.h>
-#include <engine/game_elements/gameobject.h>
-#include <engine/tools/math.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
-#include <unordered_set>
+
+#include <engine/time/time.h>
+#include <engine/debug/performance.h>
+#include <engine/game_elements/gameobject.h>
+#include "collider.h"
+#include "rigidbody.h"
 
 std::vector<std::weak_ptr<RigidBody>> PhysicsManager::rigidBodies;
 std::vector<std::weak_ptr<Collider>> PhysicsManager::colliders;

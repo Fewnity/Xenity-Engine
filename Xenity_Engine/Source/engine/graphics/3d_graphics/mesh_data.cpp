@@ -5,22 +5,21 @@
 // This file is part of Xenity Engine
 
 #include "mesh_data.h"
-#include <malloc.h>
-#include <engine/graphics/color/color.h>
-#include <engine/debug/debug.h>
-#include <engine/engine.h>
 
+#include <malloc.h>
 #if defined(__PSP__)
 #include <pspkernel.h>
 #include <vram.h>
 #include <pspgu.h>
 #endif
 
+#include <engine/graphics/color/color.h>
+#include <engine/debug/debug.h>
+#include <engine/engine.h>
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/file_system/async_file_loading.h>
-
 #if defined(_EE)
 #include <engine/graphics/renderer/renderer_vu1.h>
 #endif

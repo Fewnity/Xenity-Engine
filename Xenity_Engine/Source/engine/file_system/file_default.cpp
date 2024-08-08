@@ -5,15 +5,12 @@
 // This file is part of Xenity Engine
 
 #include "file_default.h"
-#include "file_psp.h"
 
-#include "directory.h"
+#include <string>
 
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
 
-#include <filesystem>
-#include <string>
 
 FileDefault::FileDefault(std::string _path) : File(_path)
 {

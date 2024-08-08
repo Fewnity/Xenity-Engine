@@ -5,11 +5,13 @@
 // This file is part of Xenity Engine
 
 #include "project_settings_menu.h"
+
 #include <imgui/imgui.h>
 
-#include "editor/ui/editor_ui.h"
-#include <engine/asset_management/project_manager.h>
+#include <editor/ui/editor_ui.h>
 #include <editor/command/command_manager.h>
+
+#include <engine/asset_management/project_manager.h>
 
 void ProjectSettingsMenu::Init()
 {

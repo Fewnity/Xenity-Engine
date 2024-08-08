@@ -6,24 +6,23 @@
 
 #include "tile_map.h"
 
-#include <engine/graphics/graphics.h>
-#include "sprite_manager.h"
-#include <engine/graphics/texture.h>
-
-#include <engine/graphics/camera.h>
-#include <engine/graphics/3d_graphics/mesh_manager.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-
-#include <engine/asset_management/asset_manager.h>
-#include <engine/game_elements/gameobject.h>
-#include <engine/game_elements/transform.h>
-
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
 #undef __STRICT_ANSI__
 #endif
 #include <math.h>
 #include <malloc.h>
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+#include "sprite_manager.h"
+
 
 #define DEFAULT_CHUNK_SIZE 10
 

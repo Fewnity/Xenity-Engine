@@ -5,16 +5,8 @@
 // This file is part of Xenity Engine
 
 #include "debug.h"
-#include "performance.h"
 
-#include <engine/engine_settings.h>
-#include <engine/network/network.h>
-#include <engine/engine.h>
-#include <engine/file_system/file_system.h>
-#include <engine/file_system/file.h>
-
-#include <engine/time/time.h>
-
+#include <iostream>
 #if defined(__PSP__)
 #include <pspkernel.h>
 #include <psp/debug/debug.h>
@@ -22,7 +14,15 @@
 #include <psvita/debug/debug.h>
 #include <psp2/io/stat.h>
 #endif
+
+#include <engine/engine_settings.h>
+#include <engine/network/network.h>
+#include <engine/engine.h>
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/time/time.h>
 #include <engine/audio/audio_manager.h>
+#include "performance.h"
 
 std::shared_ptr<File> Debug::file = nullptr;
 std::string Debug::debugText = "";

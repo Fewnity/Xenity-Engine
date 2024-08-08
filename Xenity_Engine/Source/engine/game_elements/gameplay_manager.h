@@ -10,7 +10,6 @@
  * [Internal]
  */
 
-#include <string>
 #include <vector>
 #include <memory>
 #include <engine/event_system/event_system.h>

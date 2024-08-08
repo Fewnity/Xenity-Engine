@@ -12,9 +12,10 @@
 
 #include <memory>
 
+#include <editor/ui/menus/menu.h>
+
 #include <engine/game_elements/gameobject.h>
 #include <engine/file_system/file_type.h>
-#include <editor/ui/menus/menu.h>
 #include <engine/assertions/assertions.h>
 #include <engine/class_registry/class_registry.h>
 

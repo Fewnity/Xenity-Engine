@@ -6,14 +6,7 @@
 
 #include "audio_manager.h"
 
-#include "audio_clip.h"
-#include "audio_clip_stream.h"
-
-#include <engine/engine.h>
-#include <engine/tools/profiler_benchmark.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <engine/debug/debug.h>
-
+#include <cstring>
 #if defined(__PSP__)
 #include <pspaudiolib.h>
 #include <pspaudio.h>
@@ -40,7 +33,12 @@ int currentBuffer = 0;
 #include <thread>
 #endif
 
-#include <cstring>
+#include "audio_clip.h"
+#include "audio_clip_stream.h"
+#include <engine/engine.h>
+#include <engine/tools/profiler_benchmark.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/debug/debug.h>
 #include <engine/assertions/assertions.h>
 
 

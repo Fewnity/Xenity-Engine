@@ -5,12 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
 #include <string>
-#include <iostream>
 #include <memory>
 #include <vector>
+
+#include <engine/api.h>
 #include <engine/event_system/event_system.h>
 
 class Socket;

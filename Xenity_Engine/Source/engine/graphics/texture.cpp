@@ -5,20 +5,13 @@
 // This file is part of Xenity Engine
 
 #include "texture.h"
-#include "renderer/renderer.h"
 
-#include <engine/engine.h>
-#include <engine/debug/debug.h>
-#include <engine/asset_management/asset_manager.h>
-#include <engine/file_system/file.h>
-#include <engine/tools/math.h>
-
+#include <malloc.h>
+#include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb_image_resize.h>
-#include <malloc.h>
-#include <string>
 
 #if defined(__vita__)
 #include <vitaGL.h>
@@ -39,10 +32,16 @@
 #include "renderer/renderer_vu1.h"
 #endif
 
+#include <engine/engine.h>
+#include <engine/debug/debug.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
+#include <engine/tools/math.h>
 #include <engine/file_system/async_file_loading.h>
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/performance.h>
+#include "renderer/renderer.h"
 
 Texture::Texture()
 {

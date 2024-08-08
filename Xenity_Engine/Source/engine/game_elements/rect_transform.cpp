@@ -5,17 +5,17 @@
 // This file is part of Xenity Engine
 
 #include "rect_transform.h"
-#include <engine/asset_management/asset_manager.h>
-#include <engine/graphics/ui/canvas.h>
-#include <engine/debug/debug.h>
-#include <engine/game_elements/transform.h>
-#include <engine/graphics/graphics.h>
-#include <engine/graphics/camera.h>
 
 #if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/ui/menus/game_menu.h>
 #endif
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/graphics/ui/canvas.h>
+#include <engine/game_elements/transform.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
 
 RectTransform::RectTransform()
 {

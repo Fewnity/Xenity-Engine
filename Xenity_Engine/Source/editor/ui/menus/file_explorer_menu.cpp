@@ -5,7 +5,6 @@
 // This file is part of Xenity Engine
 
 #include "file_explorer_menu.h"
-#include "create_class_menu.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
@@ -26,6 +25,8 @@
 #include <editor/ui/utils/menu_builder.h>
 #include <editor/file_handler.h>
 #include <engine/engine.h>
+
+#include "create_class_menu.h"
 
 void FileExplorerMenu::Init()
 {

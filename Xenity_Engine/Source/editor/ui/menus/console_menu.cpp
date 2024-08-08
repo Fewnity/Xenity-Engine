@@ -10,6 +10,7 @@
 
 #include <editor/ui/editor_ui.h>
 #include <editor/ui/utils/menu_builder.h>
+
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameplay_manager.h>
 

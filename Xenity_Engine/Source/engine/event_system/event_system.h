@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include <engine/api.h>
 #include <functional>
 #include <vector>
 #include <stdint.h>
+
+#include <engine/api.h>
 #include <engine/assertions/assertions.h>
 
 /**

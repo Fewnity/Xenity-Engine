@@ -5,23 +5,19 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include "texture.h"
 
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector4.h>
+#include <string>
+#include <memory>
+#include <glm/glm.hpp>
 
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 
-#include <glm/glm.hpp>
-
-#include <string>
-#include <memory>
-
-
 class Light;
 class Material;
+class Vector2;
+class Vector3;
+class Vector4;
 
 /**
 * @brief [Internal] Shader file class

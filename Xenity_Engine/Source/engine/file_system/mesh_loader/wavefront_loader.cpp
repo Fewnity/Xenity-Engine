@@ -6,23 +6,18 @@
 
 #include "wavefront_loader.h"
 
-#include <engine/debug/debug.h>
-#include <engine/file_system/file.h>
-#include <engine/file_system/file_system.h>
-
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector3.h>
-
-#include <engine/graphics/3d_graphics/mesh_data.h>
-
+#include <string>
+#include <vector>
 #if defined(__PSP__)
 #include <pspkernel.h>
 #endif
 
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <engine/debug/debug.h>
+#include <engine/file_system/file.h>
+#include <engine/file_system/file_system.h>
+#include <engine/vectors/vector2.h>
+#include <engine/vectors/vector3.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/project_manager.h>
 
 using namespace std;

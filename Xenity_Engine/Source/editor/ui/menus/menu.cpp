@@ -5,8 +5,11 @@
 // This file is part of Xenity Engine
 
 #include "menu.h"
+
 #include <imgui/imgui.h>
+
 #include <editor/editor.h>
+
 #include <engine/vectors/vector2.h>
 
 void Menu::Focus()

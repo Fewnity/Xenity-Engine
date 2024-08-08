@@ -8,20 +8,19 @@
 
 #include <unordered_map>
 #include <string>
-
-class Texture;
-class Shader;
-class Camera;
+#include <memory>
 
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
-
 #include <engine/graphics/color/color.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 #include "iDrawableTypes.h"
-#include <memory>
+
+class Texture;
+class Shader;
+class Camera;
 
 class Material : public FileReference, public Reflective
 {

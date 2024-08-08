@@ -1,7 +1,8 @@
 #include "scope_benchmark.h"
 
-#include <engine/debug/performance.h>
 #include <chrono>
+
+#include <engine/debug/performance.h>
 
 using namespace std::chrono;
 

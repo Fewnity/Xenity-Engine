@@ -5,14 +5,12 @@
 // This file is part of Xenity Engine
 
 #pragma once
+#include <string>
+
 #include <engine/api.h>
-
-#include "TextAlignments.h"
-
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
-
-#include <string>
+#include "TextAlignments.h"
 
 class Font;
 struct TextInfo;

@@ -9,12 +9,10 @@
 /**
  * [Internal]
  */
-
-#include <engine/api.h>
-
 #include <memory>
 #include <vector>
-#include <engine/vectors/vector2_int.h>
+
+#include <engine/api.h>
 #include "iDrawableTypes.h"
 #include "renderer/renderer.h" // For RenderingSettings
 

@@ -5,10 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
+#include <engine/api.h>
 #include <engine/file_system/file_reference.h>
-#include <string>
 
 /**
 * @brief Scene file

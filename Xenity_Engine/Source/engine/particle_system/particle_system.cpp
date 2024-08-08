@@ -5,8 +5,15 @@
 // This file is part of Xenity Engine
 
 #include "particle_system.h"
+
+#include <random>
+#include <glm/ext/matrix_transform.hpp>
+
+#if defined(EDITOR)
+#include <editor/gizmo.h>
+#endif
+
 #include <engine/asset_management/asset_manager.h>
-#include <engine/graphics/3d_graphics/mesh_manager.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/material.h>
 #include <engine/game_elements/gameobject.h>
@@ -16,13 +23,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/time/time.h>
 #include <engine/vectors/quaternion.h>
-
-#include <random>
-#if defined(EDITOR)
-#include <editor/gizmo.h>
-#endif
 #include <engine/engine.h>
-#include <glm/ext/matrix_transform.hpp>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 
 ParticleSystem::ParticleSystem()

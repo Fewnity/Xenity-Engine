@@ -5,17 +5,15 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
+#include <string>
+#include <memory>
 #if defined(__PSP__)
 #include <pspkernel.h>
 #endif
 
+#include <engine/api.h>
 #include <engine/unique_id/unique_id.h>
-#include <string>
-#include <fstream>
-#include <vector>
-#include <memory>
 
 #if defined(__vita__)
 #define PSVITA_PATH R"(ux0:data\xenity_engine\)"

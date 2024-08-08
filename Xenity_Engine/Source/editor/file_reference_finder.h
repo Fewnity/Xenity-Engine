@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include <engine/reflection/reflection.h>
-#include <engine/tools/template_utils.h>
-#include <string>
 #include <vector>
+
+#include <engine/reflection/reflection.h>
 
 class FileReference;
 

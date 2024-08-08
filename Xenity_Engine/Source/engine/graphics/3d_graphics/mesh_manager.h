@@ -9,14 +9,10 @@
 /**
  * [Internal]
  */
+#include <string>
+#include <memory>
 
 #include <engine/api.h>
-
-#include <string>
-#include <vector>
-#include <memory>
-#include <glm/glm.hpp>
-
 #include <engine/graphics/3d_graphics/mesh_data.h>
 
 class Vector3;

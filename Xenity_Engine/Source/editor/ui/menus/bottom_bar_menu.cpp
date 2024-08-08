@@ -1,5 +1,7 @@
 #include "bottom_bar_menu.h"
+
 #include <imgui/imgui.h>
+
 #include <engine/debug/debug.h>
 
 void BottomBarMenu::Draw()

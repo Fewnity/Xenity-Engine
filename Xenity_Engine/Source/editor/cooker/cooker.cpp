@@ -2,6 +2,11 @@
 
 #include <string>
 #include <filesystem>
+#include <stb_image.h>
+#include <stb_image_write.h>
+#include <stb_image_resize.h>
+
+#include <editor/utils/copy_utils.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/unique_id/unique_id.h>
@@ -9,11 +14,6 @@
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
 #include <engine/debug/debug.h>
-#include <editor/utils/copy_utils.h>
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-#include "stb_image_resize.h"
 
 namespace fs = std::filesystem;
 

@@ -5,14 +5,13 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
-#include "text_manager.h"
-
-#include <engine/file_system/file_reference.h>
-#include <engine/reflection/reflection.h>
 
 #include <memory>
+
+#include <engine/api.h>
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
+#include "text_manager.h"
 
 class Texture;
 

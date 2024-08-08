@@ -5,12 +5,10 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
 #include <memory>
-#include <unordered_map>
+
+#include <engine/api.h>
 #include <engine/file_system/file_reference.h>
-#include <string>
 #include <engine/reflection/reflection.h>
 
 class Texture;

@@ -16,8 +16,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+
 #include <engine/reflection/reflection.h>
-#include <engine/file_system/file_reference.h>
 #include <engine/event_system/event_system.h>
 #include <engine/asset_management/project_list_item.h>
 #include <engine/file_system/data_base/file_data_base.h>

@@ -5,8 +5,8 @@
 // This file is part of Xenity Engine
 
 #include "lod.h"
-#include <engine/vectors/vector3.h>
 
+#include <engine/vectors/vector3.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/game_elements/transform.h>
 #include <engine/graphics/graphics.h>

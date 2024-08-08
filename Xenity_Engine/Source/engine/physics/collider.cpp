@@ -5,10 +5,12 @@
 // This file is part of Xenity Engine
 
 #include "collider.h"
-#include "physics_manager.h"
+
 #include <bullet/btBulletDynamicsCommon.h>
+
 #include <engine/physics/rigidbody.h>
 #include <engine/game_elements/gameobject.h>
+#include "physics_manager.h"
 
 Collider::~Collider()
 {

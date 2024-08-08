@@ -6,6 +6,33 @@
 
 #include "engine.h"
 
+// Other platforms
+#if defined(__PSP__)
+#include <psp/callbacks.h>
+#elif defined(__vita__)
+#include <psp2/kernel/processmgr.h>
+#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <csignal>
+#endif
+
+// Editor
+#if defined(EDITOR)
+#include <imgui/imgui_impl_sdl3.h>
+#include <glad/glad.h>
+
+#include <editor/ui/menus/game_menu.h>
+#include <editor/plugin/plugin_manager.h>
+#include <editor/file_handler.h>
+#include <editor/compiler.h>
+#include <editor/gizmo.h>
+#include <editor/editor.h>
+#include <editor/ui/editor_ui.h>
+
+#include <engine/scene_management/scene_manager.h>
+#endif
+
+#include <engine/cpu.h>
+
 // Settings
 #include "engine_settings.h"
 
@@ -29,28 +56,6 @@
 
 // Class registry
 #include <engine/class_registry/class_registry.h>
-
-// Editor
-#if defined(EDITOR)
-#include <imgui/imgui_impl_sdl3.h>
-#include <xenity_editor.h>
-#include <glad/glad.h>
-#include <editor/ui/menus/game_menu.h>
-#include <engine/scene_management/scene_manager.h>
-#include <editor/plugin/plugin_manager.h>
-#include <editor/file_handler.h>
-#include <editor/compiler.h>
-#endif
-
-// Other platforms
-#include <engine/cpu.h>
-#if defined(__PSP__)
-#include <psp/callbacks.h>
-#elif defined(__vita__)
-#include <psp2/kernel/processmgr.h>
-#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <csignal>
-#endif
 
 // Files & Assets
 #include <engine/file_system/file_system.h>
@@ -81,6 +86,9 @@
 #include <engine/file_system/async_file_loading.h>
 #include <engine/debug/crash_handler.h>
 #include <engine/tools/scope_benchmark.h>
+#include <engine/tools/math.h>
+#include <engine/vectors/quaternion.h>
+#include <engine/vectors/vector3.h>
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -218,6 +226,25 @@ int Engine::Init()
 	UnitTestManager::StartAllTests();
 #endif
 
+	Benchmark b;
+	b.Start();
+	for (size_t i = 0; i < 100000; i++)
+	{
+		Math::CreateModelMatrix(Vector3(10, 20, 30), Quaternion::Euler(11, 21, 31), Vector3(12, 22, 32));
+	}
+	b.Stop();
+
+	Benchmark b2;
+	b2.Start();
+	for (size_t i = 0; i < 100000; i++)
+	{
+		Math::CreateModelMatrix(Vector3(10, 20, 30), Vector3(11, 21, 31), Vector3(12, 22, 32));
+	}
+	b2.Stop();
+
+	Debug::Print("Benchmark: " + std::to_string(b.GetMicroSeconds()), true);
+	Debug::Print("Benchmark: " + std::to_string(b2.GetMicroSeconds()), true);
+	//Debug::Print("Benchmark: " + std::to_string(test - test2), true);
 	return 0;
 }
 

@@ -8,17 +8,19 @@
 
 #include <memory>
 #include <vector>
-#include "menu.h"
 #include <imgui/imgui.h>
-#include <engine/asset_management/project_manager.h>
-#include <engine/file_system/file.h>
-#include <engine/graphics/texture.h>
+
 #include <editor/ui/menus/file_explorer_menu.h>
 #include <editor/ui/menus/inspector_menu.h>
 #include <editor/editor.h>
-#include <engine/event_system/event_system.h>
 #include <editor/command/command_manager.h>
 #include <editor/command/commands/modify.h>
+#include "menu.h"
+
+#include <engine/asset_management/project_manager.h>
+#include <engine/file_system/file.h>
+#include <engine/graphics/texture.h>
+#include <engine/event_system/event_system.h>
 
 template <class T>
 class SelectAssetMenu : public Menu

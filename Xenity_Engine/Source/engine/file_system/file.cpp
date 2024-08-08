@@ -5,11 +5,8 @@
 // This file is part of Xenity Engine
 
 #include "file.h"
-#include "file_system.h"
 
-#include <engine/debug/debug.h>
-
-#include <filesystem>
+#include <engine/assertions/assertions.h>
 
 File::File(const std::string& _path) : UniqueId(true)
 {

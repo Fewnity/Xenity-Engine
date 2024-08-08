@@ -9,16 +9,10 @@
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
 #include <engine/graphics/material.h>
-#include <engine/engine.h>
-#include <engine/game_elements/gameplay_manager.h>
 #include <engine/game_elements/transform.h>
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-#include <engine/inputs/input_system.h>
-#include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>
-#include <editor/gizmo.h>
 #include <engine/graphics/camera.h>
 
 using namespace std;

@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <memory>
+#include <mutex> // std::mutex
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -21,14 +22,12 @@
 #include <psp2/kernel/threadmgr.h>
 #endif
 
-#include <mutex> // std::mutex
 #include "audio_source.h"
 
 #define SOUND_FREQUENCY 44100
 
 class AudioClip;
 class AudioClipStream;
-class AudioSource;
 
 class PlayedSound
 {

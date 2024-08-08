@@ -7,10 +7,12 @@
 #pragma once
 
 #include "menu.h"
-#include <engine/platform.h>
+
 #include <editor/compiler.h>
-#include <engine/event_system/event_system.h>
 #include <editor/platform_settings.h>
+
+#include <engine/platform.h>
+#include <engine/event_system/event_system.h>
 
 class Texture;
 

@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "performance.h"
+
 #include <engine/time/time.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>

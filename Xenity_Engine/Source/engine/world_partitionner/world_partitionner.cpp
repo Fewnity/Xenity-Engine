@@ -1,5 +1,9 @@
 #include "world_partitionner.h"
 
+#if defined(EDITOR)
+#include <editor/gizmo.h>
+#endif
+
 #include <engine/asset_management/asset_manager.h>
 #include <engine/vectors/vector3.h>
 #include <engine/lighting/lighting.h>
@@ -12,10 +16,6 @@
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/tools/math.h>
 #include <engine/tools/benchmark.h>
-
-#if defined(EDITOR)
-#include <editor/gizmo.h>
-#endif
 
 std::map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
 

@@ -6,6 +6,16 @@
 
 #include "project_manager.h"
 
+#include <filesystem>
+#include <json.hpp>
+
+#if defined(EDITOR)
+#include <editor/editor.h>
+#include <editor/file_handler.h>
+#include <editor/compiler.h>
+#include <editor/file_reference_finder.h>
+#endif
+
 #include "code_file.h"
 
 #include <engine/engine.h>
@@ -32,17 +42,9 @@
 #include <engine/ui/window.h>
 
 #include <engine/audio/audio_clip.h>
-#include <json.hpp>
 
 #include <engine/debug/debug.h>
-#include <engine/game_elements/gameplay_manager.h>
-#if defined(EDITOR)
-#include <editor/ui/editor_ui.h>
-#include <editor/editor.h>
-#include <editor/file_handler.h>
-#include <editor/compiler.h>
-#include <editor/file_reference_finder.h>
-#endif
+
 #if !defined(EDITOR) && !defined(_WIN32) && !defined(_WIN64)
 #include "game_code/source/game.h"
 #endif
@@ -50,7 +52,6 @@
 #include <engine/tools/string_tag_finder.h>
 #include <engine/graphics/icon.h>
 #include <engine/assertions/assertions.h>
-#include <filesystem>
 
 using json = nlohmann::ordered_json;
 

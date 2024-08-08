@@ -5,12 +5,12 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
 #include <string>
 #include <memory>
+
+#include <engine/api.h>
 #include <engine/reflection/reflection.h>
-#include <engine/reflection/enum_utils.h>
 #include <engine/unique_id/unique_id.h>
 
 class GameObject;

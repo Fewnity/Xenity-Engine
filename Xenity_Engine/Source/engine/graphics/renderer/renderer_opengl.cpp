@@ -8,6 +8,18 @@
 #include "renderer_opengl.h"
 
 #include <memory>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#define GLFW_DLL
+#elif defined(__vita__)
+#include <vitaGL.h>
+#endif
+
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -20,20 +32,10 @@
 
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
-#include <engine/tools/profiler_benchmark.h>
-
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#define GLFW_DLL
-#elif defined(__vita__)
-#include <vitaGL.h>
-#endif
+#include <engine/graphics/texture.h>
 
 #include <engine/tools/math.h>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/quaternion.hpp>
+
 
 RendererOpengl::RendererOpengl()
 {

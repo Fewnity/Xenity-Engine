@@ -7,19 +7,13 @@
 #pragma once
 #include <engine/api.h>
 
+#include <engine/graphics/iDrawable.h>
+#include <engine/vectors/vector3.h>
+#include <engine/graphics/color/color.h>
+
 class Texture;
 class Material;
 class MeshData;
-
-#include <engine/graphics/iDrawable.h>
-
-#include <engine/engine.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <engine/component.h>
-
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector4.h>
-#include <engine/graphics/color/color.h>
 
 class API LineRenderer : public IDrawable
 {

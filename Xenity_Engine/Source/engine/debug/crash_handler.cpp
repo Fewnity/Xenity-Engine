@@ -10,21 +10,19 @@
 #if defined(__LINUX__)
 #include <csignal>
 #include <execinfo.h>
-#endif
-#if defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64)
 #include <csignal>
 #include <Windows.h>
 #include <DbgHelp.h>
 #endif
 
-#include "debug.h"
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
-#include <engine/engine.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/component.h>
 #include <engine/assertions/assertions.h>
+#include "debug.h"
 
 void CrashHandler::Handler(int signum)
 {

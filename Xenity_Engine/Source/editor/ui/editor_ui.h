@@ -5,7 +5,6 @@
 // This file is part of Xenity Engine
 
 #pragma once
-// #if defined(_WIN32) || defined(_WIN64)
 
 #include <string>
 #include <memory>
@@ -14,14 +13,15 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
 
+#include <editor/command/command.h>
+#include <editor/command/command_manager.h>
+#include <editor/command/commands/modify.h>
+
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/component.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-#include <editor/command/command.h>
-#include <editor/command/command_manager.h>
-#include <editor/command/commands/modify.h>
 
 // List of all types drawn by the EditorUI or the editor wont compile
 #include <engine/vectors/vector2.h>
@@ -1047,4 +1047,3 @@ private:
 
 	static bool DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened);
 };
-// #endif

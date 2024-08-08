@@ -7,19 +7,17 @@
 #if defined(__PSP__)
 
 #include "file_psp.h"
-#include "directory.h"
-#include "file.h"
-
-#include <engine/engine_settings.h>
-#include <engine/debug/debug.h>
 
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <filesystem>
 #include <string>
-
 #include <pspkernel.h>
+
+#include <engine/engine_settings.h>
+#include <engine/debug/debug.h>
+#include "directory.h"
+#include "file.h"
 
 FilePSP::FilePSP(const std::string& _path) : File(_path)
 {

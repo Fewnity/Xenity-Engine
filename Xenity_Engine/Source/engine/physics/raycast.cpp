@@ -6,12 +6,12 @@
 
 #include "raycast.h"
 
+#include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
 #include "collider.h"
 #include "box_collider.h"
 #include "rigidbody.h"
 #include "physics_manager.h"
-#include <engine/game_elements/transform.h>
-#include <engine/game_elements/gameobject.h>
 
 bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)
 {

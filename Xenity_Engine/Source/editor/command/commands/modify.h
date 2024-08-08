@@ -13,12 +13,14 @@
 
 #include <memory>
 #include <json.hpp>
+
 #include <editor/command/command.h>
+#include <editor/ui/reflective_data_to_draw.h>
+
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/scene_management/scene_manager.h>
-#include <editor/ui/reflective_data_to_draw.h>
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------

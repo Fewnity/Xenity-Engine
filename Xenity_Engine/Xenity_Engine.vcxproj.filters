@@ -140,7 +140,6 @@
     <ClCompile Include="Source\editor\file_reference_finder.cpp" />
     <ClCompile Include="Source\editor\ui\menus\sprite_editor_menu.cpp" />
     <ClCompile Include="Source\editor\asset_modifier\asset_modifier.cpp" />
-    <ClCompile Include="Source\engine\event_system\event_system.cpp" />
     <ClCompile Include="Source\engine\missing_script.cpp" />
     <ClCompile Include="Source\editor\ui\menus\docker_config_menu.cpp" />
     <ClCompile Include="Source\editor\windows\editor\win_editor.cpp" />

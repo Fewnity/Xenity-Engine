@@ -7,7 +7,9 @@
 #include "create_class_menu.h"
 
 #include <imgui/imgui.h>
+
 #include <editor/ui/editor_ui.h>
+
 #include <engine/tools/string_tag_finder.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>

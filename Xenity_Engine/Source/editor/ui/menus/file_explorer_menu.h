@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include "menu.h"
 #include <string>
 #include <memory>
+
+#include "menu.h"
 
 class FileReference;
 class ProjectDirectory;

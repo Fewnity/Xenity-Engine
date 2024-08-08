@@ -6,20 +6,14 @@
 
 #include "rigidbody.h"
 
-#include "physics_manager.h"
-#include "box_collider.h"
+#include <bullet/btBulletDynamicsCommon.h>
+#include <glm/gtx/euler_angles.hpp>
 
+#include <engine/physics/collider.h>
 #include <engine/asset_management/asset_manager.h>
-#include <engine/time/time.h>
-
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-#include <bullet/btBulletDynamicsCommon.h>
 #include "physics_manager.h"
-#include <engine/tools/math.h>
-#include <glm/gtx/euler_angles.hpp>
-#include <engine/inputs/input_system.h>
-#include <engine/debug/debug.h>
 
 RigidBody::RigidBody()
 {

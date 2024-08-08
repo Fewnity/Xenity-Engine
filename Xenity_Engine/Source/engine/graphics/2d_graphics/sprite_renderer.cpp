@@ -8,11 +8,9 @@
 
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/material.h>
-#include "sprite_manager.h"
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-
+#include "sprite_manager.h"
 
 #pragma region Constructors / Destructor
 

@@ -15,9 +15,12 @@ enum class Side
 };
 
 #include "menu.h"
-#include <engine/vectors/vector3.h>
-#include <editor/tool_mode.h>
+
 #include <memory>
+
+#include <editor/tool_mode.h>
+
+#include <engine/vectors/vector3.h>
 
 class GameObject;
 class Camera;

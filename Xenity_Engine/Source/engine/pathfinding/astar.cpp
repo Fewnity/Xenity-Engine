@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "astar.h"
+
 #include <malloc.h>
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)

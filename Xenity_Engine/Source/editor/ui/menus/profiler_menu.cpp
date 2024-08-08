@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "profiler_menu.h"
+
 #include <imgui/imgui.h>
 #include <implot/implot.h>
 #include <implot/implot_internal.h>

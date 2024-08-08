@@ -5,18 +5,15 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
+#include <glm/glm.hpp>
+
 #include <engine/api.h>
-
 #include <engine/component.h>
-
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
-
 #include "camera_projection_types.h"
-#include <engine/reflection/enum_utils.h>
-
-#include <glm/glm.hpp>
 
 struct Plane
 {

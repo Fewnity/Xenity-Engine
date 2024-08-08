@@ -6,34 +6,10 @@
 
 #include "graphics.h"
 
-#include "iDrawable.h"
-
-#include "renderer/renderer.h"
-#include "renderer/renderer_opengl.h"
-
-#include "2d_graphics/sprite_manager.h"
-#include "ui/text_manager.h"
-
-#include "3d_graphics/mesh_manager.h"
-#include "3d_graphics/mesh_data.h"
-#include <engine/graphics/3d_graphics/lod.h>
-#include <engine/graphics/render_command.h>
-
-#include "material.h"
-
-#include "skybox.h"
-#include "camera.h"
-
-#include <engine/game_elements/transform.h>
-#include <engine/game_elements/gameobject.h>
-#include <engine/engine.h>
-#include <engine/asset_management/asset_manager.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <engine/network/network.h>
-
-#include <engine/tools/profiler_benchmark.h>
-
-#include <engine/file_system/mesh_loader/wavefront_loader.h>
+#include <algorithm>
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <glad/glad.h>
+#endif
 
 #if defined(EDITOR)
 #include <editor/editor.h>
@@ -42,16 +18,27 @@
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #endif
 
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
-#endif
-
-#include <algorithm>
+#include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/network/network.h>
+#include <engine/tools/profiler_benchmark.h>
+#include <engine/graphics/3d_graphics/lod.h>
+#include <engine/graphics/render_command.h>
 #include <engine/debug/debug.h>
-#include <engine/world_partitionner/world_partitionner.h>
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
-
+#include "iDrawable.h"
+#include "renderer/renderer.h"
+#include "2d_graphics/sprite_manager.h"
+#include "ui/text_manager.h"
+#include "3d_graphics/mesh_manager.h"
+#include "3d_graphics/mesh_data.h"
+#include "material.h"
+#include "skybox.h"
+#include "camera.h"
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;

@@ -7,56 +7,39 @@
 #if defined(EDITOR)
 
 #include "editor.h"
-#include <engine/engine.h>
-#include <engine/audio/audio_source.h>
-#include <engine/graphics/texture.h>
 
-#include <editor/ui/menus/project_settings_menu.h>
-#include <editor/ui/menus/engine_settings_menu.h>
-#include <editor/ui/menus/file_explorer_menu.h>
+#include <imgui/imgui_internal.h>
+
 #include <editor/ui/menus/hierarchy_menu.h>
 #include <editor/ui/menus/inspector_menu.h>
 #include <editor/ui/menus/main_bar_menu.h>
-#include <editor/ui/menus/profiler_menu.h>
-#include <editor/ui/menus/game_menu.h>
 #include <editor/ui/menus/scene_menu.h>
-#include <editor/ui/menus/compiling_menu.h>
-#include <editor/ui/menus/select_project_menu.h>
-#include <editor/ui/menus/create_project_menu.h>
-#include <editor/ui/menus/lighting_menu.h>
-#include <editor/ui/menus/create_class_menu.h>
-#include <editor/ui/menus/about_menu.h>
-#include <editor/ui/menus/console_menu.h>
-#include <editor/ui/menus/docker_config_menu.h>
-#include <editor/ui/menus/build_settings_menu.h>
-#include <editor/ui/menus/engine_asset_manager_menu.h>
 #include <editor/ui/menus/bottom_bar_menu.h>
 #include <editor/compiler.h>
+#include <editor/command/command_manager.h>
+#include <editor/ui/editor_ui.h>
+#include "command/commands/delete.h"
+#include "command/commands/create.h"
+#include "file_handler.h"
 
-#include <functional>
+#include <engine/engine.h>
+#include <engine/audio/audio_source.h>
+#include <engine/graphics/texture.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/scene_management/scene_manager.h>
-#include <editor/command/command_manager.h>
-#include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
 #include <engine/inputs/input_system.h>
-#include <editor/ui/editor_ui.h>
 #include <engine/file_system/file_system.h>
-#include <engine/time/time.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/engine_settings.h>
-#include "file_handler.h"
-#include <imgui/imgui_internal.h>
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
-#include "command/commands/delete.h"
-#include "command/commands/create.h"
 
 using json = nlohmann::json;
 

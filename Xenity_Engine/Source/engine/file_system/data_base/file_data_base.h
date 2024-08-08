@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <string>
-#include <engine/platform.h>
+
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_type.h>
 #include "bit_file.h"

@@ -6,15 +6,8 @@
 
 #include "input_system.h"
 
-#include "input_pad.h"
-#include "input_touch_raw.h"
-
-#include <engine/ui/window.h>
-#include <engine/graphics/camera.h>
-#include <engine/graphics/graphics.h>
-
-#include <engine/debug/debug.h>
-
+#include <map>
+#include <vector>
 #if defined(__vita__)
 #include <psvita/inputs/inputs.h>
 #elif defined(__PSP__)
@@ -30,12 +23,15 @@
 #if defined(EDITOR)
 #include <editor/ui/menus/game_menu.h> // Need to remove this include
 #include <editor/ui/menus/scene_menu.h> // Need to remove this include
-#include <xenity_editor.h> // Need to remove this include
+#include <editor/editor.h>
 #endif
 
-#include <map>
-#include <unordered_map>
-#include <vector>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/graphics.h>
+#include <engine/debug/debug.h>
+
+#include "input_pad.h"
+#include "input_touch_raw.h"
 
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int

@@ -6,18 +6,13 @@
 
 #pragma once
 
-#include "TextAlignments.h"
-
-#include <engine/file_system/file_reference.h>
-#include <engine/reflection/reflection.h>
-
-#include <engine/vectors/vector2.h>
-#include <glm/glm.hpp>
-
 #include <vector>
 #include <string>
 #include <memory>
+#include <glm/glm.hpp>
 
+#include <engine/vectors/vector2.h>
+#include "TextAlignments.h"
 
 class Texture;
 class Vector4;

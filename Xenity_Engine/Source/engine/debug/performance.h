@@ -10,11 +10,10 @@
  * [Internal]
  */
 
-#include <fstream>
 #include <string>
-#include <iostream>
 #include <unordered_map>
 #include <vector>
+
 #include <engine/tools/scope_benchmark.h>
 
 #if defined(EDITOR)

@@ -5,10 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <engine/vectors/vector2.h>
 #include <vector>
+
+#include <engine/api.h>
+#include <engine/vectors/vector2.h>
 
 /**
 * @brief Class used for path finding

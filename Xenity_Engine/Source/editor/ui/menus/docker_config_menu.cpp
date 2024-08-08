@@ -5,11 +5,13 @@
 // This file is part of Xenity Engine
 
 #include "docker_config_menu.h"
+
+#include <thread>
 #include <imgui/imgui.h>
 
 #include <editor/editor.h>
+
 #include <engine/engine_settings.h>
-#include <thread>
 
 void DockerConfigMenu::Init()
 {

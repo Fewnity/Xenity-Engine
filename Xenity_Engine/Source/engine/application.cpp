@@ -5,12 +5,13 @@
 // This file is part of Xenity Engine
 
 #include "application.h"
-#include "engine.h"
-#include <engine/asset_management/project_manager.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <ShObjIdl.h>
 #endif
+
+#include <engine/asset_management/project_manager.h>
+#include "engine.h"
 
 void Application::OpenURL(const std::string& url)
 {

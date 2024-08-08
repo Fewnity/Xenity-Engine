@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "icon.h"
+
 #include <engine/asset_management/asset_manager.h>
 
 ReflectiveData Icon::GetReflectiveData()

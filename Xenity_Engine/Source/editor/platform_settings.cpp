@@ -5,9 +5,8 @@
 // This file is part of Xenity Engine
 
 #include "platform_settings.h"
+
 #include <engine/graphics/texture.h>
-#include <engine/file_system/file.h>
-#include <stb_image.h>
 
 int PlatformSettingsWindows::IsValid()
 {

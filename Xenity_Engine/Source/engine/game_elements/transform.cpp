@@ -5,19 +5,15 @@
 // This file is part of Xenity Engine
 
 #include "transform.h"
-#include "gameobject.h"
 
-#include <engine/tools/math.h>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <iostream>
-#include <stdio.h>      /* printf, scanf, puts, NULL */
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <engine/tools/math.h>
+#include "gameobject.h"
 
 #pragma region Constructors
 

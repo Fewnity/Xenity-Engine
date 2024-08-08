@@ -5,13 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <memory>
-#include <vector>
+#include <engine/api.h>
 #include <engine/component.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-#include "iDrawableTypes.h"
 #include "render_command.h"
 
 class Material;

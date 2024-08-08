@@ -5,7 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
 #include <cstdint>
+
 #include <engine/api.h>
 
 /**

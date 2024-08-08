@@ -3,20 +3,17 @@
 // Copyright (c) 2022-2024 Gregory Machefer (Fewnity)
 //
 // This file is part of Xenity Engine
-
 #include "audio_clip_stream.h"
 
-#include <engine/debug/debug.h>
-
-#include <engine/file_system/file.h>
-#include <engine/audio/audio_clip.h>
-
+#include <memory>
+//#include <stb_vorbis.c>
 #define DR_WAV_IMPLEMENTATION
 #include <dr_wav.h>
 #define DR_MP3_IMPLEMENTATION
 #include <dr_mp3.h>
 
-#include <stb_vorbis.c>
+#include <engine/debug/debug.h>
+#include <engine/file_system/file.h>
 #include "audio_clip.h"
 #include <engine/assertions/assertions.h>
 

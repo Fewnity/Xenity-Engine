@@ -6,13 +6,6 @@
 
 #include "font.h"
 
-#include <engine/graphics/texture.h>
-
-#include <engine/debug/debug.h>
-
-#include <engine/asset_management/asset_manager.h>
-#include <engine/file_system/file.h>
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -22,7 +15,10 @@
 #include <vitaGL.h>
 #endif
 
-// #include <stb_image_resize.h>
+#include <engine/graphics/texture.h>
+#include <engine/debug/debug.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/file_system/file.h>
 
 Font::~Font()
 {

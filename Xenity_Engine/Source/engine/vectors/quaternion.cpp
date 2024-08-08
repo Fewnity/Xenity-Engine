@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "quaternion.h"
+
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/gtc/quaternion.hpp>
 

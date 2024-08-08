@@ -15,6 +15,7 @@
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
+#include <engine/graphics/texture.h>
 
 class ProfilerBenchmark;
 

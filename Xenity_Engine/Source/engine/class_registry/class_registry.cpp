@@ -5,40 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "class_registry.h"
-#include <engine/lighting/lighting.h>
-#include <engine/graphics/camera.h>
-#include <engine/graphics/ui/canvas.h>
-#include <engine/graphics/ui/text_renderer.h>
-#include <engine/graphics/ui/text_mesh.h>
-#include <engine/graphics/3d_graphics/mesh_renderer.h>
-#include <engine/graphics/3d_graphics/lod.h>
-#include <engine/graphics/2d_graphics/tile_map.h>
-#include <engine/graphics/2d_graphics/sprite_renderer.h>
-#include <engine/graphics/2d_graphics/billboard_renderer.h>
-#include <engine/graphics/2d_graphics/line_renderer.h>
-#include <engine/game_elements/rect_transform.h>
-#include <engine/audio/audio_source.h>
-#include <engine/test_component.h>
-#include <engine/physics/rigidbody.h>
-#include <engine/physics/box_collider.h>
-#include <engine/physics/sphere_collider.h>
-#include <engine/test_component.h>
-#include <engine/missing_script.h>
 
-#include <engine/graphics/texture.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-#include <engine/audio/audio_clip.h>
-#include <engine/scene_management/scene.h>
-#include <engine/graphics/skybox.h>
-#include <engine/graphics/ui/font.h>
-#include <engine/graphics/shader.h>
-#include <engine/graphics/material.h>
-#include <engine/graphics/icon.h>
-#include <engine/particle_system/particle_system.h>
-
-std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::nameToComponent;
-std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
-std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 #if defined(EDITOR)
 #include <editor/ui/menus/menu.h>
 #include <editor/ui/menus/project_settings_menu.h>
@@ -63,6 +30,40 @@ std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::nameToMenu;
 std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
 #endif
+
+#include <engine/lighting/lighting.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/ui/canvas.h>
+#include <engine/graphics/ui/text_renderer.h>
+#include <engine/graphics/ui/text_mesh.h>
+#include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/3d_graphics/lod.h>
+#include <engine/graphics/2d_graphics/tile_map.h>
+#include <engine/graphics/2d_graphics/sprite_renderer.h>
+#include <engine/graphics/2d_graphics/billboard_renderer.h>
+#include <engine/graphics/2d_graphics/line_renderer.h>
+#include <engine/game_elements/rect_transform.h>
+#include <engine/audio/audio_source.h>
+#include <engine/test_component.h>
+#include <engine/physics/rigidbody.h>
+#include <engine/physics/box_collider.h>
+#include <engine/physics/sphere_collider.h>
+#include <engine/test_component.h>
+#include <engine/missing_script.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/audio/audio_clip.h>
+#include <engine/scene_management/scene.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/material.h>
+#include <engine/graphics/icon.h>
+#include <engine/particle_system/particle_system.h>
+
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::nameToComponent;
+std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
+std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, GameObject& gameObject)
 {

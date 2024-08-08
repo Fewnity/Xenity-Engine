@@ -13,7 +13,9 @@
 
 #include <memory>
 #include <json.hpp>
+
 #include <editor/command/command.h>
+
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/reflection/reflection_utils.h>

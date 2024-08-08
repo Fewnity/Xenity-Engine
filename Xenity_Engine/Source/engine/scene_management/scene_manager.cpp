@@ -5,33 +5,27 @@
 // This file is part of Xenity Engine
 
 #include "scene_manager.h"
-#include "scene.h"
-
-#include <engine/file_system/file_system.h>
-#include <engine/file_system/file.h>
-
-#include <engine/class_registry/class_registry.h>
-
-#include <engine/reflection/reflection_utils.h>
-
-#include <engine/asset_management/project_manager.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <engine/game_elements/transform.h>
-
-#include <engine/ui/window.h>
-#include <engine/graphics/graphics.h>
-#include <engine/graphics/camera.h>
-
-#include <engine/physics/physics_manager.h>
-#include <engine/tools/template_utils.h>
 
 #if defined(EDITOR)
 #include <editor/ui/editor_ui.h>
 #include <editor/file_reference_finder.h>
 #endif
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
+#include <engine/class_registry/class_registry.h>
+#include <engine/reflection/reflection_utils.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/game_elements/gameplay_manager.h>
+#include <engine/game_elements/transform.h>
+#include <engine/ui/window.h>
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
+#include <engine/physics/physics_manager.h>
+#include <engine/tools/template_utils.h>
 #include <engine/debug/debug.h>
 #include <engine/missing_script.h>
-#include <engine/world_partitionner/world_partitionner.h>
+#include "scene.h"
 
 using ordered_json = nlohmann::ordered_json;
 

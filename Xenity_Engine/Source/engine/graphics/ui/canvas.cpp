@@ -8,8 +8,8 @@
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
-#include <editor/ui/editor_ui.h>
 #include <editor/ui/menus/game_menu.h>
+#include <editor/editor.h>
 #endif
 
 #include <engine/game_elements/gameobject.h>

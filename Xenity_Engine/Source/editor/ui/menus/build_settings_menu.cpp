@@ -7,11 +7,13 @@
 #include "build_settings_menu.h"
 
 #include <imgui/imgui.h>
+
 #include <editor/ui/editor_ui.h>
 #include <editor/compiler.h>
+#include <editor/command/command_manager.h>
+
 #include <engine/engine_settings.h>
 #include <engine/file_system/file_system.h>
-#include <editor/command/command_manager.h>
 #include <engine/game_elements/gameplay_manager.h>
 
 using json = nlohmann::json;

@@ -6,11 +6,12 @@
 
 #pragma once
 
+#include <vector>
+#include <random>
+
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/vectors/vector3.h>
-#include <vector>
-#include <random>
 
 class MeshData;
 class Material;

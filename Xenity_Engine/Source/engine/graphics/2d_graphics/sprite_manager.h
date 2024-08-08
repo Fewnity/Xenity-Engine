@@ -10,9 +10,9 @@
  * [Internal]
  */
 
-#include <engine/api.h>
-
 #include <memory>
+
+#include <engine/api.h>
 
 class Vector3;
 class MeshData;

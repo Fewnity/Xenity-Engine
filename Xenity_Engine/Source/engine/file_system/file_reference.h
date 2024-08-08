@@ -9,12 +9,12 @@
 /**
  * [Internal]
  */
+#include <memory>
 
-#include "file_type.h"
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
 #include <engine/platform.h>
-#include <memory>
+#include "file_type.h"
 
 class File;
 

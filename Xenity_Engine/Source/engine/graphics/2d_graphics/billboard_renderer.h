@@ -5,18 +5,14 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
-class Texture;
-
-#include <engine/graphics/iDrawable.h>
-
-#include <engine/engine.h>
-#include <engine/component.h>
-
-#include <engine/graphics/color/color.h>
 
 #include <memory>
+
+#include <engine/api.h>
+#include <engine/graphics/iDrawable.h>
+#include <engine/graphics/color/color.h>
+
+class Texture;
 
 class API BillboardRenderer : public IDrawable
 {

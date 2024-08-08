@@ -5,11 +5,12 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
 #include <vector>
-#include <engine/vectors/vector3.h>
 #include <memory>
+
+#include <engine/api.h>
+#include <engine/vectors/vector3.h>
 
 class Transform;
 class GameObject;

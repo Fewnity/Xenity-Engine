@@ -6,17 +6,14 @@
 
 #include "gameplay_manager.h"
 
-#include <engine/engine.h>
-#include <engine/scene_management/scene_manager.h>
-
-#include <engine/game_elements/gameobject.h>
-#include <engine/game_elements/transform.h>
-#include <engine/component.h>
-
 #if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/ui/menus/game_menu.h>
 #endif
+
+#include <engine/scene_management/scene_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/component.h>
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
 

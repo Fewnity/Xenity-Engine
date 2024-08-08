@@ -7,10 +7,12 @@
 #include "game_menu.h"
 
 #include <imgui/imgui.h>
+
+#include <editor/editor.h>
+
 #include <engine/graphics/camera.h>
 #include <engine/graphics/graphics.h>
 #include <engine/inputs/input_system.h>
-#include <editor/editor.h>
 
 void GameMenu::Init()
 {

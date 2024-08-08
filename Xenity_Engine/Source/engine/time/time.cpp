@@ -5,20 +5,20 @@
 // This file is part of Xenity Engine
 
 #include "time.h"
-#include <chrono>
-#include <engine/debug/debug.h>
 
+#include <chrono>
 #if defined(_EE)
 #include <timer.h>
-#endif
-#if defined(__PSP__)
+#elif defined(__PSP__)
 #include <psptypes.h>
 #include <psprtc.h>
 #elif defined(__vita__)
 #include <psp2/rtc.h> 
 #endif
+
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/debug.h>
 
 using namespace std::chrono;
 

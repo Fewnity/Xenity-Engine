@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include "menu.h"
 #include <string>
+
+#include "menu.h"
 
 class EngineSettingsMenu : public Menu
 {

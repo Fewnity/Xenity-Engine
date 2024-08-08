@@ -5,16 +5,14 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
 #include <unordered_map>
 #include <functional>
 #include <string>
 #include <memory>
 #include <vector>
 
+#include <engine/api.h>
 #include <engine/game_elements/gameobject.h>
-#include <engine/debug/debug.h>
 #include <engine/file_system/file_type.h>
 #include <engine/assertions/assertions.h>
 

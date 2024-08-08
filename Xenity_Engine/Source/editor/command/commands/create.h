@@ -12,13 +12,15 @@
 */
 
 #include <memory>
+
+#include <editor/editor.h>
+
 #include <editor/command/command.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/tools/gameplay_utility.h>
 #include <engine/scene_management/scene_manager.h>
-#include <editor/editor.h>
 #include <engine/assertions/assertions.h>
 
 class InspectorAddComponentCommand : public Command

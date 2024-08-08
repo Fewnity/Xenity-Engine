@@ -5,22 +5,20 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <string>
 #include <vector>
-#include <engine/file_system/file_reference.h>
-#include <engine/reflection/reflection.h>
-#include <engine/graphics/2d_graphics/sprite_selection.h>
-#include <engine/reflection/enum_utils.h>
-#include <engine/vectors/vector2_int.h>
-#include <engine/platform.h>
-#include <engine/application.h>
-
 #if defined(_EE)
 #include <draw.h>
 // #include <gsKit.h>
 #endif
+
+#include <engine/api.h>
+#include <engine/file_system/file_reference.h>
+#include <engine/reflection/reflection.h>
+#include <engine/graphics/2d_graphics/sprite_selection.h>
+#include <engine/reflection/enum_utils.h>
+#include <engine/platform.h>
+#include <engine/application.h>
 
 ENUM(Filter, Point, Bilinear);
 ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);

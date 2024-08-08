@@ -8,10 +8,11 @@
 
 #include <string>
 #include <vector>
-#include <engine/api.h>
 #include <map>
 #include <cstdint>
 #include <typeinfo>
+
+#include <engine/api.h>
 
 class EnumValueName
 {

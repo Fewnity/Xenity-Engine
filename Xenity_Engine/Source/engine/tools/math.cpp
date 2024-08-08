@@ -4,26 +4,18 @@
 //
 // This file is part of Xenity Engine
 
-#define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__) || defined(_EE)
-#undef __STRICT_ANSI__
-#endif
-#include <cmath>
-
 #include "math.h"
-#include <engine/vectors/vector4.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector2_int.h>
-#include <engine/vectors/vector2.h>
-
-#include <glm/ext/matrix_transform.hpp>
 
 #if defined(__PSP__)
 #include <pspgum.h>
 #endif
-
 #include <glm/gtx/quaternion.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
+#include <engine/vectors/vector3.h>
+#include <engine/vectors/vector2.h>
 #include <engine/vectors/quaternion.h>
+#include <engine/tools/math.h>
 
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
@@ -146,8 +138,8 @@ unsigned int Math::previousPow2(const unsigned int value)
 Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();
-	const float TempS = angleA / 180.0f * (float)M_PI;
-	const float TempT = (180 - angleB) / 180.0f * (float)M_PI;
+	const float TempS = angleA / 180.0f * Math::PI;
+	const float TempT = (180 - angleB) / 180.0f * Math::PI;
 
 	const float cosTempT = cosf(TempT);
 	const float cosTempS = cosf(TempS);
@@ -163,7 +155,7 @@ Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 Vector2 Math::Get2DDirectionFromAngle(const float angleA)
 {
 	Vector2 direction = Vector2();
-	const float TempS = angleA / 180.0f * (float)M_PI;
+	const float TempS = angleA / 180.0f * Math::PI;
 
 	const float cosTempS = cosf(TempS);
 	const float SinTempS = sinf(TempS);

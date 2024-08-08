@@ -5,13 +5,13 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
+#include <glm/glm.hpp>
+#include <memory>
 
+#include <engine/api.h>
 #include <engine/event_system/event_system.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/quaternion.h>
-#include <glm/glm.hpp>
-#include <memory>
 
 class GameObject;
 

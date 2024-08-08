@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "engine_settings.h"
+
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/reflection/reflection_utils.h>

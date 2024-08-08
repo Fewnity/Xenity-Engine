@@ -6,34 +6,30 @@
 
 #include "camera.h"
 
-#include "graphics.h"
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <glad/glad.h>
+#endif
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#if defined(EDITOR)
+#include <editor/gizmo.h>
+#include <editor/ui/editor_ui.h>
+#endif
 
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/engine.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
-
-#include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
-#endif
-
 #include <engine/asset_management/asset_manager.h>
-
-#if defined(EDITOR)
-#include <editor/editor.h>
-#include <editor/gizmo.h>
-#include <editor/ui/editor_ui.h>
-#endif
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include <engine/debug/debug.h>
-#include <glm/gtx/quaternion.hpp>
+#include "graphics.h"
+
+
 
 
 #pragma region Constructors / Destructor

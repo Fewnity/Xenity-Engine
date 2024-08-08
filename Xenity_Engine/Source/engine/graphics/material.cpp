@@ -6,22 +6,18 @@
 
 #include "material.h"
 
-#include "graphics.h"
-#include "renderer/renderer.h"
+#include <json.hpp>
+
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
-
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
-
 #include <engine/reflection/reflection_utils.h>
-
-#include <iostream>
-#include <json.hpp>
-#include <string.h>
 #include <engine/tools/scope_benchmark.h>
+#include "graphics.h"
+#include "renderer/renderer.h"
 
 using json = nlohmann::json;
 

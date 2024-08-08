@@ -6,9 +6,6 @@
 
 #include "network.h"
 
-#include <engine/debug/debug.h>
-#include <engine/engine_settings.h>
-
 #if defined(__vita__) || defined(__PSP__)
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -20,7 +17,6 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <netinet/in.h>
-#include <fcntl.h>
 #include <unistd.h>
 #elif defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
@@ -49,6 +45,9 @@ pspUtilityNetconfData NetworkManager::pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
 int NetworkManager::result = -1;
 #endif
+
+#include <engine/debug/debug.h>
+#include <engine/engine_settings.h>
 
 bool NetworkManager::done = false;
 

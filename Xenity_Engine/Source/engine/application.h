@@ -5,7 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
 #include <string>
+
 #include <engine/api.h>
 #include <engine/platform.h>
 

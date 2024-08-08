@@ -5,13 +5,7 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <string>
-
-#include <engine/graphics/color/color.h>
-#include <engine/vectors/vector3.h>
-#include <engine/file_system/file_reference.h>
 #include <vector>
 
 #if defined(_EE)
@@ -19,6 +13,11 @@
 #include <packet2.h>
 #include <packet2_utils.h>
 #endif
+
+#include <engine/api.h>
+#include <engine/graphics/color/color.h>
+#include <engine/vectors/vector3.h>
+#include <engine/file_system/file_reference.h>
 
 struct Vertex
 {

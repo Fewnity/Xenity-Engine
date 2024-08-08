@@ -10,11 +10,9 @@
  * [Internal]
  */
 
+#include <cstdint>
 #include <dr_mp3.h>
 #include <dr_wav.h>
-
-#include <string>
-#include <memory>
 
 class Channel;
 class File;

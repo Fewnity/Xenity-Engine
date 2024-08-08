@@ -6,14 +6,11 @@
 
 #include "text_mesh.h"
 
-#include "text_manager.h"
-
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
-
+#include "text_manager.h"
 
 #pragma region Constructors / Destructor
 

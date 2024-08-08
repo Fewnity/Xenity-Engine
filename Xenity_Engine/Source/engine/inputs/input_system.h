@@ -8,6 +8,7 @@
 #include <engine/api.h>
 
 #include <map>
+#include <vector>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <SDL3/SDL_events.h>
@@ -15,7 +16,6 @@
 
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
-#include <vector>
 
 enum class KeyCode
 {

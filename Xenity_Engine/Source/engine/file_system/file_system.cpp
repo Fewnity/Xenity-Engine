@@ -6,14 +6,8 @@
 
 #include "file_system.h"
 
-#include "directory.h"
-#include "file.h"
-#include "file_psp.h"
-#include "file_ps2.h"
-#include "file_default.h"
-
-#include <engine/debug/debug.h>
-
+#include <filesystem>
+#include <string>
 #if defined(_EE)
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
@@ -24,17 +18,19 @@
 #include <sbv_patches.h>
 #include <iopcontrol.h>
 #include <iopheap.h>
-#endif
-
-#if defined(__PSP__) || defined(_EE)
+#elif defined(__PSP__) || defined(_EE)
 #include <dirent.h>
 #include <sys/stat.h>
 #elif defined(__vita__)
 #include <psp2/io/stat.h>
 #endif
 
-#include <filesystem>
-#include <string>
+#include <engine/debug/debug.h>
+#include "directory.h"
+#include "file.h"
+#include "file_psp.h"
+#include "file_ps2.h"
+#include "file_default.h"
 
 FileSystem *FileSystem::fileSystem = nullptr;
 

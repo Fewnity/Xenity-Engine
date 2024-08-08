@@ -11,13 +11,11 @@
 /**
  * [Internal]
  */
-
-#include "plugin.h"
-
 #include <string>
 #include <vector>
 #include <memory>
 
+#include "plugin.h"
 
 class PluginManager
 {

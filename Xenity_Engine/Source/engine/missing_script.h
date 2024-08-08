@@ -7,6 +7,7 @@
 #pragma once
 
 #include <json.hpp>
+
 #include <engine/component.h>
 
 /**

@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "window.h"
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
 #endif
@@ -16,18 +17,12 @@
 #include <implot/implot.h>
 #endif
 
-#include <engine/engine.h>
 #include <engine/debug/debug.h>
-
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
-
 #include <engine/scene_management/scene_manager.h>
 #include <engine/scene_management/scene.h>
-
-#include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
-
 #include <engine/asset_management/project_manager.h>
 #include "screen.h"
 

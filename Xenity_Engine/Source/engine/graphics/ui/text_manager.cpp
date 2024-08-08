@@ -6,22 +6,18 @@
 
 #include "text_manager.h"
 
-#include "font.h"
-
-#include <engine/graphics/graphics.h>
-#include <engine/graphics/camera.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-
-#include <engine/debug/debug.h>
-#include <engine/tools/profiler_benchmark.h>
-
-#include <engine/game_elements/transform.h>
-
-#include <engine/tools/math.h>
-
 #if defined(__PSP__)
 #include <pspkernel.h>
 #endif
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/debug/debug.h>
+#include <engine/tools/profiler_benchmark.h>
+#include <engine/game_elements/transform.h>
+#include <engine/tools/math.h>
+#include <engine/graphics/texture.h>
+#include "font.h"
 
 std::shared_ptr<ProfilerBenchmark> textBenchmark = nullptr;
 

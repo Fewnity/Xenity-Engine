@@ -8,21 +8,17 @@
 
 #include <bullet/btBulletDynamicsCommon.h>
 
+#if defined(EDITOR)
+#include <editor/gizmo.h>
+#endif
+
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
-
 #include <engine/graphics/graphics.h>
-
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
-#include <engine/tools/math.h>
-
-#if defined(EDITOR)
-#include <editor/editor.h>
-#include <editor/gizmo.h>
-#endif
 #include "rigidbody.h"
 #include "physics_manager.h"
 

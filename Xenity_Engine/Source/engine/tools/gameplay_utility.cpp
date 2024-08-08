@@ -5,11 +5,12 @@
 // This file is part of Xenity Engine
 
 #include "gameplay_utility.h"
-#include <engine/game_elements/gameplay_manager.h>
 
 #if defined(EDITOR)
 #include <editor/editor.h>
 #endif
+
+#include <engine/game_elements/gameplay_manager.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/accessors/acc_gameobject.h>

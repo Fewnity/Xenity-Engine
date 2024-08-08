@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "menu_builder.h"
+
 #include <imgui/imgui.h>
 
 bool RightClickMenu::isFocusCorrect = false;

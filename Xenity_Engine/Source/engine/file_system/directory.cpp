@@ -5,18 +5,14 @@
 // This file is part of Xenity Engine
 
 #include "directory.h"
-#include "file_system.h"
 
+#include <filesystem>
 #if defined(__PSP__)
 #include <dirent.h>
 #include <sys/stat.h>
 #elif defined(__vita__)
 #include <psp2/io/stat.h>
-#endif
-
-#include <filesystem>
-
-#if defined(_EE)
+#elif defined(_EE)
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <fileio.h>
@@ -27,7 +23,9 @@
 #include <iopcontrol.h>
 #include <iopheap.h>
 #endif
+
 #include <engine/assertions/assertions.h>
+#include "file_system.h"
 
 Directory::Directory(std::string _path) : UniqueId(true)
 {

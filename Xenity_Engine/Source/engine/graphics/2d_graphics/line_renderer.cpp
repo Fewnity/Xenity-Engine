@@ -6,16 +6,14 @@
 
 #include "line_renderer.h"
 
-#include <engine/graphics/graphics.h>
-#include "sprite_manager.h"
-#include <engine/graphics/3d_graphics/mesh_data.h>
-#include <engine/graphics/material.h>
-
-#include <engine/game_elements/gameobject.h>
-
 #if defined(__PSP__)
 #include <pspkernel.h>
 #endif
+
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/graphics/material.h>
+#include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
 
 #pragma region Constructors / Destructor

@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "scene.h"
+
 #include <engine/asset_management/asset_manager.h>
 
 Scene::Scene()

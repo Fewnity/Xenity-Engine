@@ -5,15 +5,15 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
 #include <string>
 #include <vector>
 #include <memory>
-
 #if defined(__PSP__)
 #include <psputility.h>
 #endif
+
+#include <engine/api.h>
 
 /**
 * @brief Class to send and received data to/from a server

@@ -5,12 +5,12 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
 #include <engine/api.h>
+#include <engine/reflection/reflection.h>
 
 class Vector3;
 class Vector2Int;
-
-#include <engine/reflection/reflection.h>
 
 /*
 * @brief Contains 2D coordinates

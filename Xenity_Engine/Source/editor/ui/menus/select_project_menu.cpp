@@ -5,11 +5,13 @@
 // This file is part of Xenity Engine
 
 #include "select_project_menu.h"
+
 #include <imgui/imgui.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
+
 #include <engine/debug/debug.h>
 
 SelectProjectMenu::SelectProjectMenu()

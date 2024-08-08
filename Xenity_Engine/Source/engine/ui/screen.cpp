@@ -5,7 +5,11 @@
 // This file is part of Xenity Engine
 
 #include "screen.h"
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <SDL3/SDL_video.h>
+#endif
+
 #include "window.h"
 
 int Screen::height = 0;

@@ -7,6 +7,7 @@
 #include "command_manager.h"
 
 #include <editor/command/command.h>
+
 #include <engine/assertions/assertions.h>
 
 std::vector<std::shared_ptr<Command>> CommandManager::commands;

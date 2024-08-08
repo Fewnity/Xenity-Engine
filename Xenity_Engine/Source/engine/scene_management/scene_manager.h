@@ -5,11 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <vector>
 #include <memory>
 #include <json.hpp>
+
+#include <engine/api.h>
 
 class Scene;
 class Component;

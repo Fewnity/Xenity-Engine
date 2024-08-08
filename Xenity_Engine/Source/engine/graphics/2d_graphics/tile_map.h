@@ -5,14 +5,13 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
+#include <vector>
 
+#include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
 #include <engine/engine.h>
 #include <engine/game_elements/gameplay_manager.h>
-
-#include <vector>
 
 class Texture;
 class MeshData;

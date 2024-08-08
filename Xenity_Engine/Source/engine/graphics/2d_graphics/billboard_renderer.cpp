@@ -7,12 +7,11 @@
 #include "billboard_renderer.h"
 
 #include <engine/graphics/graphics.h>
-#include "sprite_manager.h"
 #include <engine/graphics/camera.h>
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include "sprite_manager.h"
 
 #pragma region Constructors / Destructor
 

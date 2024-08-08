@@ -5,10 +5,10 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <vector>
 #include <string>
+
+#include <engine/api.h>
 
 class API Dijkstras
 {

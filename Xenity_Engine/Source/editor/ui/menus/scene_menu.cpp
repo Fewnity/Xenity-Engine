@@ -5,17 +5,19 @@
 // This file is part of Xenity Engine
 
 #include "scene_menu.h"
+
 #include <imgui/imgui.h>
 #include <glm/gtx/quaternion.hpp>
+
+#include <editor/editor.h>
+#include <editor/ui/editor_ui.h>
 
 #include <engine/graphics/graphics.h>
 #include <engine/inputs/input_system.h>
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/rect_transform.h>
-#include <editor/editor.h>
 #include <engine/time/time.h>
-#include <editor/ui/editor_ui.h>
 #include <engine/engine_settings.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>

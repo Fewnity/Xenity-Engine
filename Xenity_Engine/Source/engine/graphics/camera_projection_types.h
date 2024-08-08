@@ -6,4 +6,6 @@
 
 #pragma once
 
+#include <engine/reflection/enum_utils.h>
+
 ENUM(ProjectionTypes, Perspective, Orthographic);

@@ -6,13 +6,13 @@
 
 #include "asset_modifier.h"
 
-#include <engine/graphics/texture.h>
-#include <engine/file_system/file.h>
-
 #include <stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 #include <stb_image_resize.h>
+
+#include <engine/graphics/texture.h>
+#include <engine/file_system/file.h>
 #include <engine/debug/debug.h>
 
 void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int posX, const int posY, const int width, const int height, std::shared_ptr<File> fileOutput)

@@ -5,14 +5,11 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <string>
-#include <vector>
 #include <memory>
-#include <engine/platform.h>
+
+#include <engine/api.h>
 #include <engine/event_system/event_system.h>
-#include <mutex>
 
 class Renderer;
 class GameObject;

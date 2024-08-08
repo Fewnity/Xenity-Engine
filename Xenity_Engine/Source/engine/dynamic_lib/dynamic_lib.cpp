@@ -7,15 +7,15 @@
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include "dynamic_lib.h"
 #include <engine/game_interface.h>
+#include <engine/debug/debug.h>
+#include <engine/asset_management/project_manager.h>
+#include <engine/assertions/assertions.h>
+
 #if defined(_WIN32) || defined(_WIN64) 
 #include <windows.h>
 typedef GameInterface* (__cdecl* CreateGameFunction)();
 HINSTANCE library;
 #endif
-#include <engine/debug/debug.h>
-#include <engine/asset_management/project_manager.h>
-#include <engine/assertions/assertions.h>
-
 
 void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 {

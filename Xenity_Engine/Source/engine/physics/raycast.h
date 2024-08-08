@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
-#include <engine/vectors/vector3.h>
+
 #include <engine/api.h>
+#include <engine/vectors/vector3.h>
 
 class RigidBody;
 class BoxCollider;

@@ -5,17 +5,15 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
+#include <memory>
+#include <string>
 #if defined(__PSP__)
 	#include <pspkernel.h>
 #endif
 
+#include <engine/api.h>
 #include <engine/unique_id/unique_id.h>
-#include <vector>
-#include <memory>
-#include <string>
-#include <fstream>
 
 enum class FileMode 
 {

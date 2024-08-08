@@ -5,16 +5,14 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
+#include <memory>
+
 #include <engine/api.h>
-
-class Texture;
-
-#include <engine/component.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
-#include <engine/engine.h>
-#include <engine/game_elements/gameplay_manager.h>
-#include <memory>
+
+class Texture;
 
 class API SpriteRenderer : public IDrawable
 {

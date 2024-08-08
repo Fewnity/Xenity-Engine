@@ -4,39 +4,30 @@
 //
 // This file is part of Xenity Engine
 
+#include "shader.h"
+
 #define _USE_MATH_DEFINES
 #if defined(__PSP__) || defined(__vita__)
 #undef __STRICT_ANSI__
 #endif
-
-#include "shader.h"
-
-#include "graphics.h"
-#include "renderer/renderer.h"
-#include "camera.h"
-
-#include <engine/lighting/lighting.h>
-
-#include <engine/engine.h>
-#include <engine/asset_management/asset_manager.h>
-#include <engine/game_elements/gameobject.h>
-
-#include <engine/debug/debug.h>
-#include <engine/tools/string_tag_finder.h>
-
-#include <engine/file_system/file.h>
-
-#include <engine/game_elements/transform.h>
-
+#include <cmath>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-
-#include <iostream>
-#include <cmath>
-
 #include <json.hpp>
 
+#include <engine/lighting/lighting.h>
+#include <engine/engine.h>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/debug/debug.h>
+#include <engine/tools/string_tag_finder.h>
+#include <engine/file_system/file.h>
+#include <engine/game_elements/transform.h>
+#include "graphics.h"
+#include "renderer/renderer.h"
+#include "camera.h"
+#include <engine/application.h>
 
 using json = nlohmann::json;
 

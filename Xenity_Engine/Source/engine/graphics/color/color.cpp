@@ -5,8 +5,11 @@
 // This file is part of Xenity Engine
 
 #include "color.h"
-#include <engine/tools/math.h>
+
 #include <math.h>
+#include <sstream>
+
+#include <engine/tools/math.h>
 
 /**
  * @brief Create color from RGB

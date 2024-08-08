@@ -9,6 +9,13 @@
 #include <thread>
 #include <filesystem>
 
+// Editor
+#include <editor/editor.h>
+#include "ui/menus/docker_config_menu.h"
+#include "ui/menus/build_settings_menu.h"
+#include "cooker/cooker.h"
+#include <editor/utils/copy_utils.h>
+
 // Engine
 #include <engine/engine_settings.h>
 #include <engine/asset_management/project_manager.h>
@@ -22,13 +29,6 @@
 #include <engine/file_system/file.h>
 #include <engine/assertions/assertions.h>
 #include <engine/file_system/file_system.h>
-
-// Editor
-#include <editor/editor.h>
-#include "ui/menus/docker_config_menu.h"
-#include "ui/menus/build_settings_menu.h"
-#include "cooker/cooker.h"
-#include <editor/utils/copy_utils.h>
 #include <engine/application.h>
 #include <engine/graphics/texture.h>
 

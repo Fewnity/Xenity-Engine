@@ -5,8 +5,6 @@
 // This file is part of Xenity Engine
 
 #include <engine/engine.h>
-#include <engine/debug/debug.h>
-#include <engine/assertions/assertions.h>
 
 // PSP
 #if defined(__PSP__)
@@ -15,6 +13,8 @@ PSP_HEAP_THRESHOLD_SIZE_KB(1024); // Reduce heap size to give the memory to thre
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #endif
+
+#include <engine/debug/debug.h>
 
 //------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
 

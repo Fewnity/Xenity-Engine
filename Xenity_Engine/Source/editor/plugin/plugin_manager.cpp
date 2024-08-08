@@ -7,8 +7,10 @@
 #include "plugin_manager.h"
 #if defined(_WIN32) || defined(_WIN64)
 
-#include <editor/compiler.h>
 #include <Windows.h>
+
+#include <editor/compiler.h>
+
 #include <engine/debug/debug.h>
 #include <engine/file_system/directory.h>
 #include <engine/file_system/file.h>

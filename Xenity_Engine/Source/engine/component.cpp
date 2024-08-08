@@ -5,20 +5,18 @@
 // This file is part of Xenity Engine
 
 #include "component.h"
-#include <engine/game_elements/gameobject.h>
 
+#include <engine/game_elements/gameobject.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/physics/physics_manager.h>
-
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/lighting/lighting.h>
-
 #include <engine/physics/rigidbody.h>
-#include <engine/physics/box_collider.h>
+#include <engine/physics/collider.h>
 
 #pragma region Constructors / Destructor
 

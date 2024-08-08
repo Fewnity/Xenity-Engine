@@ -5,9 +5,9 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
-
 #include <memory>
+
+#include <engine/api.h>
 
 class Vector3;
 class Vector2;

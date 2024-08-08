@@ -7,7 +7,6 @@
 #pragma once
 
 #include <engine/graphics/3d_graphics/mesh_data.h>
-#include <glm/glm.hpp>
 
 class Material;
 class IDrawable;

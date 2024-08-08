@@ -5,8 +5,8 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
+#include <engine/api.h>
 #include <engine/reflection/reflection.h>
 
 /*

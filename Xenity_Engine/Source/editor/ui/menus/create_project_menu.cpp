@@ -6,16 +6,18 @@
 
 #include "create_project_menu.h"
 
-#include <imgui/imgui.h>
-#include <editor/ui/editor_ui.h>
-#include <engine/file_system/file_system.h>
-#include <engine/file_system/directory.h>
-#include <engine/asset_management/project_manager.h>
-
 #if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #include <ShlObj.h>
 #endif
+#include <imgui/imgui.h>
+
+#include <editor/ui/editor_ui.h>
+
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/directory.h>
+#include <engine/asset_management/project_manager.h>
+
 
 CreateProjectMenu::CreateProjectMenu()
 {

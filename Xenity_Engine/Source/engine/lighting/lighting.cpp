@@ -6,23 +6,20 @@
 
 #include "lighting.h"
 
-#include <engine/asset_management/asset_manager.h>
-
-#include <engine/game_elements/transform.h>
-#include <engine/vectors/vector2.h>
-#include <engine/tools/math.h>
-#include <engine/debug/debug.h>
+#define _USE_MATH_DEFINES
+#if defined(__PSP__) || defined(__vita__)
+#undef __STRICT_ANSI__
+#endif
+#include <cmath>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
 #include <editor/ui/editor_ui.h>
 #endif
 
-#define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__)
-#undef __STRICT_ANSI__
-#endif
-#include <cmath>
+#include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/transform.h>
+#include <engine/vectors/vector2.h>
 #include <engine/graphics/graphics.h>
 #include <engine/engine.h>
 

@@ -5,9 +5,10 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
 #include <chrono>
+
+#include <engine/api.h>
 
 /**
 * @brief Class used to test the performances of a piece of code

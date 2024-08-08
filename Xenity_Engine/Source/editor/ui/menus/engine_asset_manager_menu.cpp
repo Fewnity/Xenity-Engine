@@ -7,11 +7,13 @@
 #include "engine_asset_manager_menu.h"
 
 #include <imgui/imgui.h>
+
+#include <editor/ui/editor_ui.h>
+
 #include <engine/file_system/file.h>
 #include <engine/file_system/directory.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/file_system/file_system.h>
-#include <editor/ui/editor_ui.h>
 #include <engine/asset_management/asset_manager.h>
 
 #include <json.hpp>

@@ -5,12 +5,14 @@
 // This file is part of Xenity Engine
 
 #include "hierarchy_menu.h"
+
 #include <imgui/imgui.h>
 
 #include <editor/ui/editor_ui.h>
 #include <editor/ui/utils/menu_builder.h>
-#include <engine/game_elements/gameplay_manager.h>
 #include <editor/command/commands/delete.h>
+
+#include <engine/game_elements/gameplay_manager.h>
 
 void HierarchyMenu::Init()
 {

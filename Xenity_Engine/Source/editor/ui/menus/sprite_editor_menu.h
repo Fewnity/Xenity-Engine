@@ -7,7 +7,9 @@
 #pragma once
 
 #include <memory>
+
 #include "menu.h"
+
 #include <engine/vectors/vector2.h>
 #include <engine/graphics/2d_graphics/sprite_selection.h>
 

@@ -6,9 +6,11 @@
 
 #pragma once
 
-#include "menu.h"
 #include <memory>
 #include <string>
+
+#include "menu.h"
+
 #include <engine/platform.h>
 
 class FileReference;

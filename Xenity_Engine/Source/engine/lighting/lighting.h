@@ -5,9 +5,8 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <engine/api.h>
 
-#include <engine/vectors/vector3.h>
+#include <engine/api.h>
 #include <engine/component.h>
 #include <engine/graphics/color/color.h>
 #include <engine/reflection/enum_utils.h>

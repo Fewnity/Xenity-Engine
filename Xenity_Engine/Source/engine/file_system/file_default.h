@@ -9,14 +9,12 @@
 /**
  * [Internal]
  */
-
-#include <engine/api.h>
-
-#include "file.h"
-
 #include <string>
 #include <fstream>
-#include <vector>
+
+#include <engine/api.h>
+#include "file.h"
+
 
 class Directory;
 class File;

@@ -7,18 +7,11 @@
 #if defined(_EE)
 
 #include "file_ps2.h"
-#include "directory.h"
-#include "file.h"
-
-#include <engine/engine_settings.h>
-#include <engine/debug/debug.h>
 
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <filesystem>
 #include <string>
-
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <fileio.h>
@@ -29,6 +22,12 @@
 #include <iopcontrol.h>
 #include <iopheap.h>
 #include <debug.h>
+
+#include <engine/engine_settings.h>
+#include <engine/debug/debug.h>
+#include "directory.h"
+#include "file.h"
+
 
 FilePS2::FilePS2(std::string _path) : File(_path)
 {

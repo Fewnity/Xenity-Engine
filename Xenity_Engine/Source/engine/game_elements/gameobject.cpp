@@ -7,16 +7,12 @@
 #include "gameobject.h"
 
 #include <engine/debug/debug.h>
-
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/game_elements/transform.h>
-
 #include <engine/component.h>
-#include <iostream>
 #include <engine/accessors/acc_gameobject.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/memory_tracker.h>
-
 
 #pragma region Constructors / Destructor
 

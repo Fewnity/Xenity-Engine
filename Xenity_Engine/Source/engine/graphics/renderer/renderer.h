@@ -10,19 +10,14 @@
  * [Internal]
  */
 
-#include <engine/api.h>
-
-#include <engine/graphics/texture.h>
-#include <engine/graphics/shader.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-
-#include <engine/lighting/lighting.h>
-
 #include <glm/glm.hpp>
 
 #include <vector>
-#include <memory>
 
+#include <engine/api.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/lighting/lighting.h>
 
 class Color;
 class Vector4;

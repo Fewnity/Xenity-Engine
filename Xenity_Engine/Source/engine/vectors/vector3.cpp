@@ -4,16 +4,12 @@
 //
 // This file is part of Xenity Engine
 
-#define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__) || defined(_EE)
-#undef __STRICT_ANSI__
-#endif
-
 #include <cmath>
+
+#include <engine/tools/math.h>
 #include "vector3.h"
 #include "vector2_int.h"
 #include "vector2.h"
-#include <algorithm>
 
 #pragma region Constructors / Destructor
 
@@ -77,7 +73,7 @@ Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 	const float zdis = to.z - from.z;
 	const float xzdis = sqrtf(xdis * xdis + zdis * zdis);
 
-	return Vector3((-atan2f(ydis, xzdis)) * 180 / (float)M_PI, (-(atan2f(-xdis, zdis))) * 180 / (float)M_PI, 0);
+	return Vector3((-atan2f(ydis, xzdis)) * 180 / Math::PI, (-(atan2f(-xdis, zdis))) * 180 / Math::PI, 0);
 }
 
 Vector3 Vector3::Normalized() const

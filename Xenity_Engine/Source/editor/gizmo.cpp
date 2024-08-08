@@ -11,7 +11,6 @@
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/material.h>
 
 #include <engine/engine.h>
 #include <engine/game_elements/transform.h>

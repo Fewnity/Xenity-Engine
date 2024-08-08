@@ -6,32 +6,24 @@
 
 #include "sprite_manager.h"
 
+#include <glm/ext/matrix_transform.hpp>
+#if defined(__PSP__)
+#include <pspkernel.h>
+#endif
+
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/material.h>
-
+#include <engine/graphics/texture.h>
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/transform.h>
 #include <engine/graphics/camera.h>
-
 #include <engine/debug/debug.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/vectors/quaternion.h>
-
 #include <engine/tools/math.h>
-
-#include <stb_image_resize.h>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <cstdlib>
-#include <malloc.h>
-
-#if defined(__PSP__)
-#include <pspkernel.h>
-#endif
 
 std::shared_ptr <MeshData> SpriteManager::spriteMeshData = nullptr;
 

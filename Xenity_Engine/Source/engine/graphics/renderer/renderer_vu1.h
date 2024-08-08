@@ -15,6 +15,7 @@
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
+#include <engine/graphics/texture.h>
 #include <draw3d.h>
 #include <math3d.h>
 

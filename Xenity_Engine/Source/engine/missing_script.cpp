@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "missing_script.h"
+
 #include "asset_management/asset_manager.h"
 
 using json = nlohmann::json;

@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #pragma once
+
 #include <engine/vectors/vector2_int.h>
 
 struct TouchRaw
