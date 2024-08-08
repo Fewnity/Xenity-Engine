@@ -16,7 +16,6 @@
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
-#include <editor/editor.h>
 
 void ProfilerMenu::Init()
 {

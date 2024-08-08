@@ -11,10 +11,6 @@
 #include <ShObjIdl.h>
 #endif
 
-// ImGui
-#include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
-
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 

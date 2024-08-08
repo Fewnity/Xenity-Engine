@@ -18,14 +18,10 @@
 #include <engine/dynamic_lib/dynamic_lib.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/game_interface.h>
-#include <engine/tools/string_tag_finder.h>
 #include <engine/file_system/directory.h>
 #include <engine/file_system/file.h>
-#include <engine/graphics/texture.h>
 #include <engine/assertions/assertions.h>
 #include <engine/file_system/file_system.h>
-#include <stb_image.h>
-#include <stb_image_write.h>
 
 // Editor
 #include <editor/editor.h>
@@ -33,6 +29,8 @@
 #include "ui/menus/build_settings_menu.h"
 #include "cooker/cooker.h"
 #include <editor/utils/copy_utils.h>
+#include <engine/application.h>
+#include <engine/graphics/texture.h>
 
 namespace fs = std::filesystem;
 

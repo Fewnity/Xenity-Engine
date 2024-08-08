@@ -17,15 +17,12 @@
 #include <engine/scene_management/scene_manager.h>
 #include <engine/scene_management/scene.h>
 #include <engine/asset_management/project_manager.h>
-#include <engine/asset_management/code_file.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/file_system/file_system.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
-#include <iostream>
-#include <engine/debug/debug.h>
 #include <editor/ui/utils/menu_builder.h>
 #include <editor/file_handler.h>
 #include <engine/engine.h>

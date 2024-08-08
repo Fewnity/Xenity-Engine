@@ -7,7 +7,7 @@
 #include "docker_config_menu.h"
 #include <imgui/imgui.h>
 
-#include "editor/ui/editor_ui.h"
+#include <editor/editor.h>
 #include <engine/engine_settings.h>
 #include <thread>
 

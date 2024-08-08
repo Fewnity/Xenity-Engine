@@ -6,23 +6,14 @@
 
 #if defined(EDITOR)
 
-//#include <Windows.h>
-//#include <ShObjIdl.h>
-
 // ImGui
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 
-#include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
-
-#include <engine/file_system/file.h>
 #include <engine/physics/collider.h>
 #include <engine/graphics/color/color.h>
-#include <engine/graphics/skybox.h>
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
-#include <engine/vectors/vector2.h>
 #include <engine/vectors/vector3.h>
 
 void EditorUI::DrawInputTitle(const std::string& title)

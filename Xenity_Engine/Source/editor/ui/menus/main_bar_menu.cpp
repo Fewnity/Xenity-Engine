@@ -5,7 +5,6 @@
 // This file is part of Xenity Engine
 
 #include "main_bar_menu.h"
-#include "compiling_menu.h"
 
 #include <imgui/imgui.h>
 
@@ -13,24 +12,14 @@
 #include <editor/compiler.h>
 #include <editor/command/commands/create.h>
 #include <editor/command/command_manager.h>
-#include <editor/command/command.h>
 #include <editor/ui/menus/engine_settings_menu.h>
 #include <editor/ui/menus/project_settings_menu.h>
 #include <editor/ui/menus/lighting_menu.h>
-#include <editor/ui/menus/profiler_menu.h>
-#include <editor/ui/menus/game_menu.h>
-#include <editor/ui/menus/scene_menu.h>
-#include <editor/ui/menus/inspector_menu.h>
-#include <editor/ui/menus/file_explorer_menu.h>
-#include <editor/ui/menus/hierarchy_menu.h>
-#include <editor/ui/menus/console_menu.h>
-#include <editor/ui/menus/sprite_editor_menu.h>
 #include <editor/ui/menus/docker_config_menu.h>
 #include <editor/ui/menus/build_settings_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
-#include <engine/dynamic_lib/dynamic_lib.h>
 #include <engine/scene_management/scene_manager.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/tools/shape_spawner.h>

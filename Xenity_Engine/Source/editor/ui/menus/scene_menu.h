@@ -15,8 +15,6 @@ enum class Side
 };
 
 #include "menu.h"
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
 #include <editor/tool_mode.h>
 #include <memory>

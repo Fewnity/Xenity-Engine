@@ -35,7 +35,7 @@ public:
 	/**
 	* @brief Get mesh data
 	*/
-	inline std::shared_ptr<MeshData> GetMeshData()
+	inline const std::shared_ptr<MeshData>& GetMeshData()
 	{
 		return meshData;
 	}

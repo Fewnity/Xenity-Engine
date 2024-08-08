@@ -6,7 +6,6 @@
 
 #include "menu_builder.h"
 #include <imgui/imgui.h>
-#include <engine/debug/debug.h>
 
 bool RightClickMenu::isFocusCorrect = false;
 bool RightClickMenu::isDrawn = false;

@@ -8,7 +8,6 @@
 
 #include "menu.h"
 
-#include <engine/reflection/reflection.h>
 #include <editor/compiler.h>
 #include <engine/event_system/event_system.h>
 

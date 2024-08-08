@@ -8,11 +8,8 @@
 
 // ImGui
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
-#include <imgui/imgui_internal.h>
 
 #include <editor/ui/editor_ui.h>
-#include <editor/editor.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/physics/collider.h>

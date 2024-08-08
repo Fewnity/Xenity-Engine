@@ -6,14 +6,12 @@
 
 // ImGui
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 #include <imgui/imgui_internal.h>
 
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
 
 #include <engine/asset_management/project_manager.h>
-#include <engine/debug/debug.h>
 #include <engine/inputs/input_system.h>
 #include <editor/ui/menus/scene_menu.h>
 #include <engine/game_elements/gameplay_manager.h>

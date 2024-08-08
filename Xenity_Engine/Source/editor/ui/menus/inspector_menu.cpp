@@ -8,7 +8,6 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
-#include <imgui/imgui_impl_opengl3.h>
 
 #include <editor/command/commands/delete.h>
 #include <editor/command/commands/create.h>
@@ -26,7 +25,6 @@
 #include <engine/inputs/input_system.h>
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
-#include <engine/physics/box_collider.h>
 #include <engine/application.h>
 
 using json = nlohmann::json;

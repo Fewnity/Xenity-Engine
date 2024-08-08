@@ -6,10 +6,6 @@
 
 #pragma once
 
-//class MenuBuilder
-//{
-//};
-
 #include <vector>
 #include <string>
 #include <functional>

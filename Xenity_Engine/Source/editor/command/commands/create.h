@@ -12,11 +12,9 @@
 */
 
 #include <memory>
-#include <json.hpp>
 #include <editor/command/command.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-#include <engine/reflection/reflection_utils.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/tools/gameplay_utility.h>
 #include <engine/scene_management/scene_manager.h>

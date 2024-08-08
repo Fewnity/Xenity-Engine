@@ -8,13 +8,10 @@
 
 #include <memory>
 #include <vector>
-#include <functional>
 #include "menu.h"
 #include <imgui/imgui.h>
 #include <engine/asset_management/project_manager.h>
-#include <engine/debug/debug.h>
 #include <engine/file_system/file.h>
-#include <engine/file_system/directory.h>
 #include <engine/graphics/texture.h>
 #include <editor/ui/menus/file_explorer_menu.h>
 #include <editor/ui/menus/inspector_menu.h>

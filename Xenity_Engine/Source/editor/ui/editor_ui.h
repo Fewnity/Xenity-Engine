@@ -30,15 +30,7 @@
 #include <engine/vectors/vector4.h>
 #include <engine/graphics/color/color.h>
 #include <engine/graphics/texture.h>
-#include <engine/graphics/3d_graphics/mesh_data.h>
-#include <engine/graphics/shader.h>
-#include <engine/graphics/skybox.h>
-#include <engine/graphics/ui/font.h>
-#include <engine/graphics/material.h>
-#include <engine/graphics/icon.h>
-#include <engine/audio/audio_clip.h>
-#include <engine/file_system/file.h>
-#include <engine/scene_management/scene.h>
+
 #include "menus/select_asset_menu.h"
 
 class Reflective;

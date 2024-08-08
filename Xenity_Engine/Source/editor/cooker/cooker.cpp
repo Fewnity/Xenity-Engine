@@ -6,7 +6,6 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/unique_id/unique_id.h>
 #include <engine/file_system/file_system.h>
-#include <engine/reflection/reflection_utils.h>
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
 #include <engine/debug/debug.h>
@@ -15,7 +14,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include "stb_image_resize.h"
-#include <engine/application.h>
+
 namespace fs = std::filesystem;
 
 #define ASSETS_FOLDER "assets/"

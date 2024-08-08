@@ -10,7 +10,6 @@
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
 #include <engine/engine_settings.h>
-#include <engine/debug/debug.h>
 
 void EngineSettingsMenu::Init()
 {

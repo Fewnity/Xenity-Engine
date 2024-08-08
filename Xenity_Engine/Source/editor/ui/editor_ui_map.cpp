@@ -8,10 +8,8 @@
 
 // ImGui
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 
 #include <editor/ui/editor_ui.h>
-#include <editor/editor.h>
 
 InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const std::string& buttonText, bool addUnbindButton)
 {

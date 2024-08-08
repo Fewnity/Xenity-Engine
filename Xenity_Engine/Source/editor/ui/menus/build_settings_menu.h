@@ -9,8 +9,6 @@
 #include "menu.h"
 #include <engine/platform.h>
 #include <editor/compiler.h>
-#include <engine/reflection/reflection.h>
-#include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
 #include <editor/platform_settings.h>
 

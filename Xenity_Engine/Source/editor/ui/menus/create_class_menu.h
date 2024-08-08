@@ -7,7 +7,6 @@
 #pragma once
 
 #include "menu.h"
-#include <memory>
 #include <string>
 
 class CreateClassMenu : public Menu

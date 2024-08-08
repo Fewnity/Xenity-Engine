@@ -10,8 +10,6 @@
 
 #include <editor/ui/editor_ui.h>
 #include <editor/asset_modifier/asset_modifier.h>
-#include <engine/reflection/reflection.h>
-#include <engine/graphics/graphics.h>
 #include <engine/graphics/texture.h>
 #include <engine/inputs/input_system.h>
 #include <engine/file_system/file_system.h>

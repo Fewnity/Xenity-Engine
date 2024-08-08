@@ -6,9 +6,8 @@
 
 #include "scene_menu.h"
 #include <imgui/imgui.h>
+#include <glm/gtx/quaternion.hpp>
 
-#include <glm/ext/matrix_projection.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include <engine/graphics/graphics.h>
 #include <engine/inputs/input_system.h>
 #include <engine/graphics/camera.h>
@@ -16,19 +15,14 @@
 #include <engine/game_elements/rect_transform.h>
 #include <editor/editor.h>
 #include <engine/time/time.h>
-#include <iostream>
-#include <engine/debug/debug.h>
-#include <engine/tools/shape_spawner.h>
 #include <editor/ui/editor_ui.h>
 #include <engine/engine_settings.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/tools/math.h>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <glm/gtx/quaternion.hpp>
 
 void SceneMenu::Init()
 {
@@ -545,7 +539,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					if (finalIntersection != startDragPos)
 					{
 						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
-						const float angleDeg = static_cast<float>(acos(angle) * 180.0 / M_PI);
+						const float angleDeg = static_cast<float>(acos(angle) * 180.0 / Math::PI);
 						if (!isnan(angleDeg))
 						{
 							float crossProduct = 0;
