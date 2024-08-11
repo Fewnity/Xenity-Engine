@@ -96,3 +96,8 @@ void Collider::OnDisabled()
 	if(bulletCollisionObject)
 		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
 }
+
+void Collider::RemoveReferences()
+{
+	PhysicsManager::RemoveCollider(this);
+}

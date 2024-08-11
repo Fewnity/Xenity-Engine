@@ -65,6 +65,8 @@ public:
 	void Activate();
 
 protected:
+	void RemoveReferences()  override;
+
 	bool disableEvent = false;
 	std::vector<Collider*> colliders;
 	bool generatesEvents = false;
@@ -83,6 +85,8 @@ protected:
 	friend class Collider;
 	friend class BoxCollider;
 	friend class SphereCollider;
+	friend class PhysicsManager;
+	friend class MyContactResultCallback;
 
 	void AddShape(btCollisionShape* shape, const Vector3& offset);
 	void AddTriggerShape(btCollisionShape* shape, const Vector3& offset);
@@ -92,7 +96,6 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	friend class PhysicsManager;
 
 	Vector3 velocity = Vector3(0, 0, 0);
 	float drag = 0.1f;

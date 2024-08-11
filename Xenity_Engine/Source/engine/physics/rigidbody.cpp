@@ -125,6 +125,11 @@ void RigidBody::Activate()
 	}
 }
 
+void RigidBody::RemoveReferences()
+{
+	PhysicsManager::RemoveRigidBody(this);
+}
+
 void RigidBody::UpdateGeneratesEvents()
 {
 	bool hasEvents = false;
@@ -307,6 +312,7 @@ void RigidBody::Awake()
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, btVector3(0, 0, 0));
 	bulletRigidbody->setUserPointer(this);
+	bulletRigidbody->setFriction(0);
 
 	btDefaultMotionState* myMotionStateTrigger = new btDefaultMotionState(startTransform);
 	bulletTriggerRigidbody = new btRigidBody(1, myMotionStateTrigger, nullptr, btVector3(0, 0, 0));
@@ -331,6 +337,9 @@ void RigidBody::Awake()
 	// Add an empty shape to enable gravity with an empty rigidbody
 	btEmptyShape* emptyShape = new btEmptyShape();
 	AddShape(emptyShape, Vector3(0, 0, 0));
+
+	btEmptyShape* emptyShape2 = new btEmptyShape();
+	AddTriggerShape(emptyShape2, Vector3(0, 0, 0));
 
 	std::vector<std::shared_ptr<Collider>> col = GetGameObject()->GetComponents<Collider>();
 	for(std::shared_ptr<Collider>& c : col)

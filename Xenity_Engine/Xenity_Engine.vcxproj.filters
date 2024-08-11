@@ -314,6 +314,7 @@
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
+    <ClCompile Include="Source\engine\physics\collision_event.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

@@ -29,7 +29,7 @@ Add assert if project settings file is not found
 Add an option to enable /disable the profiler in builds
 Add trigger event
 Add raycast
-Fix shader tilling + check on PSP
+Fix shader tilling + check on PsVita
 
 --- Can be for next release
 Remove the old profiler

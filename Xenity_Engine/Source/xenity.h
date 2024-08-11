@@ -92,6 +92,7 @@
 #include <engine/physics/box_collider.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/raycast.h>
+#include <engine/physics/collision_event.h>
 
 // Utils
 #include <engine/tools/gameplay_utility.h>

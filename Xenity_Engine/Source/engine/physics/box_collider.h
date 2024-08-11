@@ -35,8 +35,6 @@ public:
 
 	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
 
-	bool isTrigger = false;
-
 	inline const Vector3& GetMin() const
 	{
 		return min;
@@ -58,6 +56,8 @@ public:
 	{
 		return offset;
 	}
+
+	std::string ToString() override;
 
 protected:
 

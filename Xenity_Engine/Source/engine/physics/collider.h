@@ -38,7 +38,7 @@ protected:
 	void OnEnabled() override;
 	void OnDisabled() override;
 	virtual void SetDefaultSize() {}
-
+	void RemoveReferences()  override;
 	virtual void CreateCollision(bool forceCreation) = 0;
 
 	std::weak_ptr<RigidBody> attachedRigidbody;

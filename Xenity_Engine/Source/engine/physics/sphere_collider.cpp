@@ -112,6 +112,7 @@ void SphereCollider::CreateCollision(bool forceCreation)
 
 	const float maxScale = scale.Max();
 	bulletCollisionShape->setLocalScaling(btVector3(size / 2.0f * maxScale, size / 2.0f * maxScale, size / 2.0f * maxScale));
+	bulletCollisionShape->setUserPointer(this);
 
 	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
 	{
@@ -158,7 +159,11 @@ void SphereCollider::OnTransformScaled()
 		if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
 		{
 			rb->RemoveShape(bulletCollisionShape);
-			rb->AddShape(bulletCollisionShape, offset * scale);
+			rb->RemoveTriggerShape(bulletCollisionShape);
+			if (!isTrigger)
+				rb->AddShape(bulletCollisionShape, offset * scale);
+			else
+				rb->AddTriggerShape(bulletCollisionShape, offset * scale);
 			rb->Activate();
 		}
 	}

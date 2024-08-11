@@ -68,11 +68,11 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 		}
 		else if (auto result = std::dynamic_pointer_cast<RigidBody>(thisShared))
 		{
-			PhysicsManager::rigidBodies.push_back(result);
+			PhysicsManager::AddRigidBody(result.get());
 		}
 		else if (auto result = std::dynamic_pointer_cast<Collider>(thisShared))
 		{
-			PhysicsManager::colliders.push_back(result);
+			PhysicsManager::AddCollider(result.get());
 		}
 	}
 

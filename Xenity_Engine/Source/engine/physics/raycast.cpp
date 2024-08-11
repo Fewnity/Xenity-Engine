@@ -6,6 +6,8 @@
 
 #include "raycast.h"
 
+#include <bullet/btBulletDynamicsCommon.h>
+
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include "collider.h"
@@ -38,6 +40,19 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 
 	raycastHit = nearestHit;
 	return nearestHit.hitGameObject.lock() != nullptr;*/
+	RaycastHit nearestHit;
+
+	btVector3 start = btVector3(startPosition.x, startPosition.y, startPosition.z);
+	btVector3 end = btVector3(startPosition.x + direction.x * maxDistance, startPosition.y + direction.y * maxDistance, startPosition.z + direction.z * maxDistance);
+	btCollisionWorld::ClosestRayResultCallback closestResults(start, end);
+	//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
+	PhysicsManager::physDynamicsWorld->rayTest(start, end, closestResults);
+	if (closestResults.hasHit()) 
+	{
+		//nearestHit.hitCollider = 
+		nearestHit.hitCollider = std::dynamic_pointer_cast<Collider>((reinterpret_cast<Collider*>(closestResults.m_collisionObject->getUserPointer()))->shared_from_this());
+		return true;
+	}
 	return false;
 }
 

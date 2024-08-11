@@ -652,6 +652,7 @@
     <ClCompile Include="include\bullet\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btSerializer.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btVector3.cpp" />
+    <ClCompile Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
     <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />

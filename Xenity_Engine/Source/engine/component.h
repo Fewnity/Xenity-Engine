@@ -11,7 +11,9 @@
 
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
+#include <engine/reflection/enum_utils.h>
 #include <engine/unique_id/unique_id.h>
+#include <engine/physics/collision_event.h>
 
 class GameObject;
 class Transform;
@@ -62,6 +64,14 @@ public:
 	* @brief Called each frame to draw gizmos
 	*/
 	virtual void OnDrawGizmos() {};
+
+	virtual void OnCollisionEnter(CollisionEvent info) {};
+	virtual void OnCollisionStay(CollisionEvent info) {};
+	virtual void OnCollisionExit(CollisionEvent info) {};
+
+	virtual void OnTriggerEnter(CollisionEvent info) {};
+	virtual void OnTriggerStay(CollisionEvent info) {};
+	virtual void OnTriggerExit(CollisionEvent info) {};
 
 	/**
 	* @brief Called each frame to draw gizmos if the object is selected

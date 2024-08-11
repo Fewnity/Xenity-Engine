@@ -109,10 +109,11 @@ void GameplayManager::UpdateComponents()
 
 	if (componentsInitListDirty) 
 	{
-		componentsInitListDirty = false;
-
-		if (GetGameState() == GameState::Playing)
+		if (GetGameState() == GameState::Playing) 
+		{
+			componentsInitListDirty = false;
 			InitialiseComponents();
+		}
 	}
 
 	if (GetGameState() == GameState::Playing)

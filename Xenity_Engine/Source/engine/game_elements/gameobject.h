@@ -219,6 +219,7 @@ private:
 	friend class Transform;
 	friend class Canvas;
 	friend class Editor;
+	friend class PhysicsManager;
 	template<typename T>
 	friend class ReflectiveChangeValueCommand;
 	template<typename T>

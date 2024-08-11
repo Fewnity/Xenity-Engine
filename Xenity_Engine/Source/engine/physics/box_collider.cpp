@@ -21,6 +21,7 @@
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include "rigidbody.h"
 #include "physics_manager.h"
+#include <iostream>
 
 BoxCollider::BoxCollider()
 {
@@ -60,7 +61,11 @@ void BoxCollider::OnTransformScaled()
 		if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
 		{
 			rb->RemoveShape(bulletCollisionShape);
-			rb->AddShape(bulletCollisionShape, offset * scale);
+			rb->RemoveTriggerShape(bulletCollisionShape);
+			if (!isTrigger)
+				rb->AddShape(bulletCollisionShape, offset * scale);
+			else
+				rb->AddTriggerShape(bulletCollisionShape, offset * scale);
 			rb->Activate();
 		}
 	}
@@ -175,6 +180,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	if (!bulletCollisionShape)
 		bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
 	bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+	bulletCollisionShape->setUserPointer(this);
 
 	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
 	{
@@ -291,4 +297,9 @@ void BoxCollider::SetSize(const Vector3& size)
 void BoxCollider::SetOffset(const Vector3& offset)
 {
 	this->offset = offset;
+}
+
+std::string BoxCollider::ToString()
+{
+	return size.ToString();
 }
