@@ -177,8 +177,11 @@ void SceneManager::RestoreSceneHotReloading()
 
 void SceneManager::SetSceneModified(bool value)
 {
-	sceneModified = value;
-	Window::UpdateWindowTitle();
+	if (GameplayManager::GetGameState() == GameState::Stopped)
+	{
+		sceneModified = value;
+		Window::UpdateWindowTitle();
+	}
 }
 
 bool SceneManager::OnQuit()
