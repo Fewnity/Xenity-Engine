@@ -5,3 +5,10 @@
 // This file is part of Xenity Engine
 
 #include "command.h"
+
+#include <engine/game_elements/gameplay_manager.h>
+
+Command::Command()
+{
+	doneInPlayMode = GameplayManager::GetGameState() != GameState::Stopped;
+}

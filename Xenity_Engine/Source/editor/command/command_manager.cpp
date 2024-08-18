@@ -9,6 +9,7 @@
 #include <editor/command/command.h>
 
 #include <engine/assertions/assertions.h>
+#include <engine/game_elements/gameplay_manager.h>
 
 std::vector<std::shared_ptr<Command>> CommandManager::commands;
 int CommandManager::maxCommandCount = 100;
@@ -30,7 +31,7 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 			commandCount--;
 		}
 	}
-	
+
 	// If the history is full, 
 	if (commandCount >= maxCommandCount)
 	{
@@ -53,6 +54,21 @@ void CommandManager::AddCommandAndExecute(std::shared_ptr<Command> command)
 void CommandManager::ClearCommands()
 {
 	commands.clear();
+}
+
+void CommandManager::ClearInGameCommands()
+{
+	size_t commandCount = commands.size();
+	for (size_t i = 0; i < commandCount; i++)
+	{
+		if (commands[i]->doneInPlayMode) 
+		{
+			commands.erase(commands.begin() + i);
+			commandCount--;
+			i--;
+		}
+	}
+	currentCommand = commandCount - 1;
 }
 
 void CommandManager::Undo()

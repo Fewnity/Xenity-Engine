@@ -33,6 +33,11 @@ public:
 	static void ClearCommands();
 
 	/**
+	* @brief Clear in game commands history
+	*/
+	static void ClearInGameCommands();
+
+	/**
 	* @brief Undo the previous command
 	*/
 	static void Undo();

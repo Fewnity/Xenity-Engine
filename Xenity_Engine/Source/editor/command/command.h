@@ -13,6 +13,7 @@
 class Command
 {
 public:
+	Command();
 	virtual ~Command() = default;
 
 	/**
@@ -32,5 +33,7 @@ public:
 	{
 		Execute();
 	}
+
+	bool doneInPlayMode = false;
 };
 

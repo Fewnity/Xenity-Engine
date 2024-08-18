@@ -9,6 +9,7 @@
 #if defined(EDITOR)
 #include <editor/editor.h>
 #include <editor/ui/menus/game_menu.h>
+#include <editor/command/command_manager.h>
 #endif
 
 #include <engine/scene_management/scene_manager.h>
@@ -70,6 +71,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	}
 	else if (newGameState == GameState::Stopped && gameState != GameState::Stopped) // Stop game
 	{
+		CommandManager::ClearInGameCommands();
 		gameState = newGameState;
 		if (restoreScene)
 			SceneManager::RestoreScene();
