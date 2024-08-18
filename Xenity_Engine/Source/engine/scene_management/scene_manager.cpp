@@ -188,19 +188,32 @@ bool SceneManager::OnQuit()
 {
 	bool cancel = false;
 #if defined(EDITOR)
-	if (sceneModified)
+	if (GameplayManager::GetGameState() != GameState::Stopped)
 	{
-		// Ask if the user wants to save the scene or not if the quit the scene
-		const DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
+		const DialogResult result = EditorUI::OpenDialog("You are in play mode", "Do you want to stop the game?", DialogType::Dialog_Type_YES_NO_CANCEL);
 		if (result == DialogResult::Dialog_YES)
 		{
-			SaveScene(SaveSceneType::SaveSceneToFile);
+			GameplayManager::SetGameState(GameState::Stopped, true);
 		}
-		else if (result == DialogResult::Dialog_CANCEL)
+		cancel = true;
+	}
+	else
+	{
+		if (sceneModified)
 		{
-			cancel = true;
+			// Ask if the user wants to save the scene or not if the quit the scene
+			const DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
+			if (result == DialogResult::Dialog_YES)
+			{
+				SaveScene(SaveSceneType::SaveSceneToFile);
+			}
+			else if (result == DialogResult::Dialog_CANCEL)
+			{
+				cancel = true;
+			}
 		}
 	}
+
 #endif
 	return cancel;
 }
@@ -396,7 +409,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Playing, true);
 #endif
-	}
+}
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
