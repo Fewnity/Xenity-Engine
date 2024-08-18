@@ -96,10 +96,9 @@ uniform int usedDirectionalLightCount;
 
 vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) 
 {
-
 	vec3 lightDir = normalize(-light2.direction); // Directional light
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
 	//float specularStrength = 0.5;
@@ -114,7 +113,6 @@ vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos,
 
 vec3 CalculatePointLight(PointLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) 
 {
-
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
 	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
@@ -138,7 +136,7 @@ vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, TexCoord))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
 	// float specularStrength = 0.5;
@@ -298,7 +296,7 @@ float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 fragPos
 {
 	float3 lightDir = normalize(-light.direction); // Directional light
 	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
-	float3 tx = (diff * tex2D(material.diffuse, texcoords).xyz) * light.color; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	float3 tx = (diff * tex2D(material.diffuse, (texcoords * tiling) + offset).xyz) * light.color; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 	return tx;
 }
 
@@ -306,7 +304,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 fragPos, vec3 viewDir, 
 {
 	vec3 lightDir = normalize(light.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(tex2D(material.diffuse, texcoords))) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(tex2D(material.diffuse, (texcoords * tiling) + offset))) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
 	//Spectacular
 	// float specularStrength = 0.5;
