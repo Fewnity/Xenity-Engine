@@ -32,7 +32,6 @@ ReflectiveData RigidBody::GetReflectiveData()
 	AddVariable(reflectedVariables, mass, "mass", true);
 	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis", true);
 	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis", true);
-	AddVariable(reflectedVariables, generatesEvents, "generatesEvents", true);
 	return reflectedVariables;
 }
 
