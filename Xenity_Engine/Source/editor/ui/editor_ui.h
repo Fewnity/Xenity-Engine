@@ -523,7 +523,11 @@ public:
 			newValue = std::dynamic_pointer_cast<T>(ref);
 			valueChangedTemp = true;
 		}
-		ImGui::Separator();
+		if (!variableName.empty())
+			ImGui::Separator();
+		else
+			ImGui::Spacing();
+
 		return valueChangedTemp;
 	}
 
@@ -543,8 +547,8 @@ public:
 		{
 			const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
 			const size_t vectorSize = valuePtr.get().size();
-			std::string tempName = reflectiveDataToDraw.name;
-			//reflectiveDataToDraw.name = "";
+			const std::string tempName = reflectiveDataToDraw.name;
+			reflectiveDataToDraw.name = "";
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
 				std::shared_ptr<T> newValue = nullptr;
@@ -555,7 +559,7 @@ public:
 					valuePtr.get()[vectorI] = newValue;
 				}
 			}
-
+			reflectiveDataToDraw.name = tempName;
 			const std::string addText = "Add " + classInfo->name + GenerateItemId();
 			if (ImGui::Button(addText.c_str()))
 			{
@@ -572,7 +576,6 @@ public:
 					listChangedTemp = true;
 				}
 			}
-			//reflectiveDataToDraw.name = tempName;
 		}
 		ImGui::Separator();
 		return listChangedTemp;
@@ -590,126 +593,138 @@ public:
 	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 	{
 		bool valueChangedTemp = false;
-		const size_t vectorSize = valuePtr.get().size();
-		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed)) 
 		{
-			std::string inputText = "None (" + className + ")";
-			const auto& ptr = valuePtr.get()[vectorI].lock();
-			if (ptr != nullptr)
+			const size_t vectorSize = valuePtr.get().size();
+			const std::string tempName = reflectiveDataToDraw.name;
+			reflectiveDataToDraw.name = "";
+			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				if constexpr (std::is_same <T, GameObject>())
-					inputText = ptr->GetName() + " " + std::to_string(ptr->GetUniqueId());
-				else
-					inputText = ptr->GetGameObject()->GetName();
-			}
+				std::string inputText = "None (" + className + ")";
+				const auto& ptr = valuePtr.get()[vectorI].lock();
+				if (ptr != nullptr)
+				{
+					if constexpr (std::is_same <T, GameObject>())
+						inputText = ptr->GetName() + " " + std::to_string(ptr->GetUniqueId());
+					else
+						inputText = ptr->GetGameObject()->GetName();
+				}
 
-			const InputButtonState result = DrawInputButton("", inputText, true);
-			if (result == InputButtonState::ResetValue)
+				const InputButtonState result = DrawInputButton("", inputText, true);
+				if (result == InputButtonState::ResetValue)
+				{
+					valuePtr.get()[vectorI] = std::weak_ptr<T>();
+					valueChangedTemp = true;
+				}
+
+				std::shared_ptr <T> ref = nullptr;
+				const std::string payloadName = "Type" + std::to_string(reflectiveDataToDraw.currentEntry.typeId);
+				if (DragDropTarget(payloadName, ref))
+				{
+					valuePtr.get()[vectorI] = ref;
+					valueChangedTemp = true;
+				}
+			}
+			reflectiveDataToDraw.name = tempName;
+
+			const std::string addText = "Add " + className + GenerateItemId();
+			if (ImGui::Button(addText.c_str()))
 			{
-				valuePtr.get()[vectorI] = std::weak_ptr<T>();
+				valuePtr.get().push_back(std::weak_ptr<T>());
 				valueChangedTemp = true;
 			}
 
-			std::shared_ptr <T> ref = nullptr;
-			const std::string payloadName = "Type" + std::to_string(reflectiveDataToDraw.currentEntry.typeId);
-			if (DragDropTarget(payloadName, ref))
+			const std::string removeText = "Remove " + className + GenerateItemId();
+			if (ImGui::Button(removeText.c_str()))
 			{
-				valuePtr.get()[vectorI] = ref;
-				valueChangedTemp = true;
+				if (vectorSize != 0)
+				{
+					valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
+					valueChangedTemp = true;
+				}
 			}
+			ImGui::Separator();
 		}
-
-		const std::string addText = "Add " + className + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr.get().push_back(std::weak_ptr<T>());
-			valueChangedTemp = true;
-		}
-
-		const std::string removeText = "Remove " + className + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
-			{
-				valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
-				valueChangedTemp = true;
-			}
-		}
-		ImGui::Separator();
 		return valueChangedTemp;
 	}
 
 	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 	{
 		bool valueChanged = false;
-		const size_t vectorSize = valuePtr.get().size();
-		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
-		ReflectiveEntry temp = reflectiveDataToDraw.currentEntry;
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
-			Reflective* ptr = valuePtr.get()[vectorI];
-			if (ptr)
+			const size_t vectorSize = valuePtr.get().size();
+
+			const std::string tempName = reflectiveDataToDraw.name;
+			reflectiveDataToDraw.name = "";
+			ReflectiveEntry temp = reflectiveDataToDraw.currentEntry;
+			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
-				ValueInputState valueInputState = ValueInputState::NO_CHANGE;
-				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
-				if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
+				Reflective* ptr = valuePtr.get()[vectorI];
+				if (ptr)
 				{
-					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
-				}
-				else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
-				{
-					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
-				}
-				else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
-				{
-					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
-				}
-				else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
-				{
-					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
-				}
-				else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
-				{
-					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
-				}
-				else //Basic draw
-				{
-					const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)ptr);
-					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+					ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
+					if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
 					{
-						valueInputState = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), nullptr);
+						valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+					}
+					else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
+					{
+						valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+					}
+					else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
+					{
+						valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+					}
+					else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
+					{
+						valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+					}
+					else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
+					{
+						valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+					}
+					else //Basic draw
+					{
+						const std::string headerName = tempName + "##ListHeader" + std::to_string((uint64_t)ptr);
+						if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+						{
+							valueInputState = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), nullptr);
+						}
+					}
+					if (valueInputState != ValueInputState::NO_CHANGE)
+					{
+						valueChanged = true;
 					}
 				}
-				if (valueInputState != ValueInputState::NO_CHANGE)
+				else
 				{
+					ImGui::Text("Null element");
+				}
+			}
+			reflectiveDataToDraw.name = tempName;
+			const std::string addText = "Add " + GenerateItemId();
+			if (ImGui::Button(addText.c_str()))
+			{
+				valuePtr.get().push_back((Reflective*)temp.typeSpawner->Allocate());
+				valueChanged = true;
+			}
+
+			const std::string removeText = "Remove " + GenerateItemId();
+			if (ImGui::Button(removeText.c_str()))
+			{
+				if (vectorSize != 0)
+				{
+					delete valuePtr.get()[vectorSize - 1];
+					valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
 					valueChanged = true;
 				}
 			}
-			else
-			{
-				ImGui::Text("Null element");
-			}
+			ImGui::Separator();
 		}
-
-		const std::string addText = "Add " + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valuePtr.get().push_back((Reflective*)temp.typeSpawner->Allocate());
-			valueChanged = true;
-		}
-
-		const std::string removeText = "Remove " + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
-			{
-				delete valuePtr.get()[vectorSize - 1];
-				valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
-				valueChanged = true;
-			}
-		}
-		ImGui::Separator();
 		return valueChanged;
 	}
 
@@ -719,36 +734,43 @@ public:
 		static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
 		bool valueChangedTemp = false;
-		std::vector<T>& valueRef = valuePtr.get();
-		const size_t vectorSize = valueRef.size();
-		ImGui::Text("%s", reflectiveDataToDraw.name.c_str());
-		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
-			if (DrawVariable(reflectiveDataToDraw, std::ref(valueRef[vectorI])) != ValueInputState::NO_CHANGE)
+			std::vector<T>& valueRef = valuePtr.get();
+			const size_t vectorSize = valueRef.size();
+
+			const std::string tempName = reflectiveDataToDraw.name;
+			reflectiveDataToDraw.name = "";
+
+			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
 			{
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
+				if (DrawVariable(reflectiveDataToDraw, std::ref(valueRef[vectorI])) != ValueInputState::NO_CHANGE)
+				{
+					valueChangedTemp = true;
+				}
+			}
+			reflectiveDataToDraw.name = tempName;
+
+			const std::string addText = "Add " + GenerateItemId();
+			if (ImGui::Button(addText.c_str()))
+			{
+				valueRef.push_back(T());
 				valueChangedTemp = true;
 			}
-		}
 
-		const std::string addText = "Add " + GenerateItemId();
-		if (ImGui::Button(addText.c_str()))
-		{
-			valueRef.push_back(T());
-			valueChangedTemp = true;
-		}
-
-		const std::string removeText = "Remove " + GenerateItemId();
-		if (ImGui::Button(removeText.c_str()))
-		{
-			if (vectorSize != 0)
+			const std::string removeText = "Remove " + GenerateItemId();
+			if (ImGui::Button(removeText.c_str()))
 			{
-				valueRef.erase(valueRef.begin() + vectorSize - 1);
-				valueChangedTemp = true;
+				if (vectorSize != 0)
+				{
+					valueRef.erase(valueRef.begin() + vectorSize - 1);
+					valueChangedTemp = true;
+				}
 			}
+			ImGui::Separator();
 		}
-		ImGui::Separator();
-
 		return valueChangedTemp;
 	}
 
