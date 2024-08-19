@@ -343,14 +343,25 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 	{
 		for (int i = 0; i < componentCount; i++)
 		{
-			if (components[i])
+			std::shared_ptr<Component>& component = components[i];
+			if (component)
 			{
-				if (localActive)
-					components[i]->OnEnabled();
-				else
-					components[i]->OnDisabled();
+				if (localActive) 
+				{
+					component->OnEnabled();
+					if (!component->isAwakeCalled)
+					{
+						component->isAwakeCalled = true;
+						component->Awake();
+					}
+				}
+				else 
+				{
+					component->OnDisabled();
+				}
 			}
 		}
+
 		// Update children
 		for (int i = 0; i < childCount; i++)
 		{
