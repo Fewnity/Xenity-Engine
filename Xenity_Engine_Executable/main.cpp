@@ -23,24 +23,18 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Rework the documentation
-Box colliders are not affected by gameobject scale
-Do not ask to save scene when playing
-Add assert if project settings file is not found
-Add an option to enable /disable the profiler in builds
-Add trigger event
-Add raycast
-Fix shader tilling + check on PsVita
+Cook mesh files
+Rename member variables to m_memberVariableName
 
---- Can be for next release
+--- Can be done for the next release
 Remove the old profiler
 New Input system
 Implement AudioManager::Stop for PSP and PsVita
 Pre-open audio file for faster loading
 Replace CompatibleFile by FileInfo?
-
---- Done
-
-
+Compress scene json files in builds
+Add assert if project settings file is not found
+Add an option to enable /disable the profiler in builds
 */
 
 
