@@ -4,8 +4,8 @@ Xenity Engine is a crossplatform game engine based on GameObjects and Components
 
 [Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
 
-The game engine is not finished, so any pull requests are welcomed!<br>
-Refactor, bug fixes, optimizations, structure improvements or documentations everything is good to take!
+The game engine is a work in progress, so any pull requests are welcome!<br>
+New features, refactor, bug fixes, optimizations or documentations everything is good to take!
 
 ![image](https://github.com/Fewnity/Xenity-Engine/assets/39272935/df59e12e-b989-4b0d-93b1-4f95fac7c91f)
 
@@ -22,7 +22,7 @@ Refactor, bug fixes, optimizations, structure improvements or documentations eve
 ✔️ | PlayStation Vita
 ❌ | PlayStation 2
 ❌ | PlayStation 3
-❌ | Linux
+🚧 | Linux
 
 Features:
 
@@ -33,12 +33,9 @@ Features:
 - [X] Skyboxes
 - [X] Scenes
 - [ ] Animations
-- [X] 3D Physics (Only box colliders, not affected by rotation and scale of a transform)
+- [X] 3D Physics
 - [ ] 2D Physics
 - [X] C++ Hot Reloading
-
-> [!NOTE]
-> I'm planning to create Xenity Engine 2 from scratch to fix all code problems of the current Xenity Engine, so don't expect new feature in the future.
 
 > [!WARNING]
 > The engine is not finished. So you may encounter problems during game development like:
@@ -50,7 +47,7 @@ Features:
 > If you want to compile a game in the editor, you have to change set `Compiler path` in the `Engine Settings` menu (Window->Engine Settings). You can set the `PPSSPP location` for Build And Run for PSP builds.
 > `Compiler path` is by default `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build`, change this if your Visual Studio installation/version is different.
 
-## How to use the engine
+## How to use the editor
 ### How to play the game in the editor
 - Compile the game in "Game->Compile Game"
 - Click on the play button
@@ -64,14 +61,14 @@ Features:
 Docker Desktop is needed to compile PSP and PsVita games.<br>
 Download Docker Desktop: https://www.docker.com/products/docker-desktop/
 
-Then install the Docker Image in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow Internet connection.
+Then install the Docker Image in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
 
 ## Compatible files
 Images: `.png .jpg .bmp`
 
 Audio: `.wav .mp3`
 
-Mesh: `.obj (Triangulate, no vertex color)`
+Mesh: `.obj (Triangulated only!)`
 
 Font: `.ttf`
 
@@ -97,7 +94,7 @@ Discord: `fewnity`
 The code of this repository is under the MIT license.
 
 ## Used libraries
-Stb (used: stb_image 2.23 (later versions do not on PSP), stb_image_resize 0.97, stb_image_write 1.16): https://github.com/nothings/stb
+Stb (used: stb_image 2.23 (later versions do not work on PSP), stb_image_resize 0.97, stb_image_write 1.16): https://github.com/nothings/stb
 
 drmp3 & drwav: https://github.com/mackron/dr_libs
 
@@ -105,10 +102,12 @@ JSON for Modern C++: https://github.com/nlohmann/json
 
 GLM (slightly modified for PS2): https://github.com/g-truc/glm
 
+Bullet 2.82 (slightly modified to fix compilation): https://code.google.com/archive/p/bullet/downloads
+
 ### Windows specific: 
 FreeType (v2.13.2): https://github.com/ubawurinna/freetype-windows-binaries/
 
-ImGui (1.90.6): https://github.com/ocornut/imgui
+ImGui (1.91.0 WIP): https://github.com/ocornut/imgui
 
 SDL (3.1.2): https://github.com/libsdl-org/SDL
 
