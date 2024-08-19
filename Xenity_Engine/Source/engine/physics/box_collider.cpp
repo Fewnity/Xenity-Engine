@@ -177,8 +177,11 @@ void BoxCollider::CreateCollision(bool forceCreation)
 
 	const Vector3& scale = GetTransform()->GetScale();
 
-	if (!bulletCollisionShape)
+	if (!bulletCollisionShape) 
+	{
 		bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
+	}
+
 	bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 	bulletCollisionShape->setUserPointer(this);
 
@@ -192,7 +195,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+		const Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 

@@ -21,6 +21,7 @@ class btVector3;
 class btQuaternion;
 class btDynamicsWorld;
 class Collider;
+class Vector3;
 
 enum class CollisionState 
 {
@@ -70,6 +71,8 @@ public:
 	static void AddEvent(Collider* collider, Collider* otherCollider, bool isTrigger);
 
 	static btDynamicsWorld* physDynamicsWorld;
+	static Vector3 gravity;
+
 private:
 	static void CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state);
 

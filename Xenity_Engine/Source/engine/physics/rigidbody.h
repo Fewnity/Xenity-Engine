@@ -59,6 +59,9 @@ public:
 	inline float GetMass() const { return mass; }
 	void SetMass(float _mass);
 
+	inline float GetFriction() const { return friction; }
+	void SetFriction(float _friction);
+
 	LockedAxis lockedMovementAxis;
 	LockedAxis lockedRotationAxis;
 
@@ -75,6 +78,8 @@ protected:
 	void UpdateRigidBodyMass();
 	void UpdateRigidBodyDrag();
 	void UpdateRigidBodyBounce();
+	void UpdateRigidBodyGravityMultiplier();
+	void UpdateRigidBodyFriction();
 
 	void UpdateLockedAxis();
 
@@ -103,6 +108,7 @@ protected:
 	float bounce = 0.0f;
 	float mass = 1;
 	float gravityMultiplier = 1.0f;
+	float friction = 0.1f;
 	bool isStatic = false;
 
 	btRigidBody* bulletRigidbody = nullptr;

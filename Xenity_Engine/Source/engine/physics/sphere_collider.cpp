@@ -108,7 +108,9 @@ void SphereCollider::CreateCollision(bool forceCreation)
 
 	const Vector3& scale = GetTransform()->GetScale();
 	if (!bulletCollisionShape)
+	{
 		bulletCollisionShape = new btSphereShape(1);
+	}
 
 	const float maxScale = scale.Max();
 	bulletCollisionShape->setLocalScaling(btVector3(size / 2.0f * maxScale, size / 2.0f * maxScale, size / 2.0f * maxScale));

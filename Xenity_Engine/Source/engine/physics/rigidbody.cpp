@@ -30,6 +30,7 @@ ReflectiveData RigidBody::GetReflectiveData()
 	AddVariable(reflectedVariables, angularDrag, "angularDrag", true);
 	AddVariable(reflectedVariables, bounce, "bounce", true);
 	AddVariable(reflectedVariables, mass, "mass", true);
+	AddVariable(reflectedVariables, friction, "friction", true);
 	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis", true);
 	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis", true);
 	return reflectedVariables;
@@ -37,10 +38,12 @@ ReflectiveData RigidBody::GetReflectiveData()
 
 void RigidBody::OnReflectionUpdated()
 {
-	// Call setters to make sure the values are correct
+	// Call setters to make sure the values are correct and to apply them to the bullet rigidbody
 	SetDrag(drag);
 	SetBounce(bounce);
 	SetMass(mass);
+	SetGravityMultiplier(gravityMultiplier);
+	SetFriction(friction);
 	UpdateLockedAxis();
 }
 
@@ -96,6 +99,7 @@ void RigidBody::SetBounce(float _bounce)
 void RigidBody::SetGravityMultiplier(float _gravityMultiplier)
 {
 	gravityMultiplier = _gravityMultiplier;
+	UpdateRigidBodyGravityMultiplier();
 }
 
 void RigidBody::SetIsStatic(float _isStatic)
@@ -114,6 +118,16 @@ void RigidBody::SetMass(float _mass)
 		mass = _mass;
 	}
 	UpdateRigidBodyMass();
+}
+
+void RigidBody::SetFriction(float _friction)
+{
+	friction = _friction;
+	if (friction < 0)
+	{
+		friction = 0;
+	}
+	UpdateRigidBodyFriction();
 }
 
 void RigidBody::Activate()
@@ -176,6 +190,25 @@ void RigidBody::UpdateRigidBodyBounce()
 		return;
 
 	bulletRigidbody->setRestitution(bounce);
+}
+
+void RigidBody::UpdateRigidBodyGravityMultiplier()
+{
+	if (!bulletRigidbody)
+		return;
+
+	// Apply gravity multiplier
+	const Vector3 newGravity = PhysicsManager::gravity * gravityMultiplier;
+	const btVector3 btgravity = btVector3(newGravity.x, newGravity.y, newGravity.z);
+	bulletRigidbody->setGravity(btgravity);
+}
+
+void RigidBody::UpdateRigidBodyFriction()
+{
+	if (!bulletRigidbody)
+		return;
+
+	bulletRigidbody->setFriction(friction);
 }
 
 void RigidBody::UpdateLockedAxis()
@@ -311,7 +344,6 @@ void RigidBody::Awake()
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	bulletRigidbody = new btRigidBody(1, myMotionState, nullptr, btVector3(0, 0, 0));
 	bulletRigidbody->setUserPointer(this);
-	bulletRigidbody->setFriction(0);
 
 	btDefaultMotionState* myMotionStateTrigger = new btDefaultMotionState(startTransform);
 	bulletTriggerRigidbody = new btRigidBody(1, myMotionStateTrigger, nullptr, btVector3(0, 0, 0));
@@ -320,6 +352,7 @@ void RigidBody::Awake()
 	UpdateLockedAxis();
 	UpdateRigidBodyDrag();
 	UpdateRigidBodyBounce();
+	UpdateRigidBodyFriction();
 
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletRigidbody);
 	PhysicsManager::physDynamicsWorld->addRigidBody(bulletTriggerRigidbody);
@@ -346,6 +379,8 @@ void RigidBody::Awake()
 		c->SetRigidbody(std::dynamic_pointer_cast<RigidBody>(shared_from_this()));
 		c->CreateCollision(true);
 	}
+
+	UpdateRigidBodyGravityMultiplier();
 }
 
 void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)

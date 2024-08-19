@@ -20,6 +20,7 @@
 
 std::vector<RigidBody*> PhysicsManager::rigidBodies;
 std::vector<ColliderInfo> PhysicsManager::colliders;
+Vector3 PhysicsManager::gravity = Vector3(0, -20, 0);
 
 btDynamicsWorld* PhysicsManager::physDynamicsWorld = nullptr;
 btBroadphaseInterface* physBroadphase = nullptr;
