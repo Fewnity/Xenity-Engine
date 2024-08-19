@@ -1,5 +1,13 @@
 {
+"id": 1,
 "MetaVersion": 1,
-"Values": null,
-"id": 1
+"Standalone": {
+"Values": null
+},
+"PSP": {
+"Values": null
+},
+"PSVITA": {
+"Values": null
+}
 }

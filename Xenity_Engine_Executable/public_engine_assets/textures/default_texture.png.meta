@@ -1,11 +1,36 @@
 {
+"id": 12,
 "MetaVersion": 1,
+"Standalone": {
 "Values": {
-"filter": 1,
-"mipmaplevelCount": 0,
-"type": 2,
+"resolution": 2048,
 "useMipMap": false,
-"wrapMode": 3
+"mipmaplevelCount": 0,
+"filter": 1,
+"wrapMode": 3,
+"pixelPerUnit": 100
+}
 },
-"id": 12
+"PSP": {
+"Values": {
+"resolution": 2048,
+"useMipMap": false,
+"mipmaplevelCount": 0,
+"filter": 1,
+"wrapMode": 3,
+"pixelPerUnit": 100,
+"type": 2,
+"tryPutInVram": true
+}
+},
+"PSVITA": {
+"Values": {
+"resolution": 2048,
+"useMipMap": false,
+"mipmaplevelCount": 0,
+"filter": 1,
+"wrapMode": 3,
+"pixelPerUnit": 100
+}
+}
 }
