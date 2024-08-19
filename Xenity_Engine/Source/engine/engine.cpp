@@ -226,25 +226,6 @@ int Engine::Init()
 	UnitTestManager::StartAllTests();
 #endif
 
-	Benchmark b;
-	b.Start();
-	for (size_t i = 0; i < 100000; i++)
-	{
-		Math::CreateModelMatrix(Vector3(10, 20, 30), Quaternion::Euler(11, 21, 31), Vector3(12, 22, 32));
-	}
-	b.Stop();
-
-	Benchmark b2;
-	b2.Start();
-	for (size_t i = 0; i < 100000; i++)
-	{
-		Math::CreateModelMatrix(Vector3(10, 20, 30), Vector3(11, 21, 31), Vector3(12, 22, 32));
-	}
-	b2.Stop();
-
-	Debug::Print("Benchmark: " + std::to_string(b.GetMicroSeconds()), true);
-	Debug::Print("Benchmark: " + std::to_string(b2.GetMicroSeconds()), true);
-	//Debug::Print("Benchmark: " + std::to_string(test - test2), true);
 	return 0;
 }
 
