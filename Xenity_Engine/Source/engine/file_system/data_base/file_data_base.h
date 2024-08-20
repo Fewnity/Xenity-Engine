@@ -6,6 +6,7 @@
 #include <engine/file_system/file_type.h>
 #include "bit_file.h"
 
+// Use small names to reduce the size of the json
 class FileDataBaseEntry : public Reflective
 {
 public:
@@ -21,6 +22,7 @@ private:
 	ReflectiveData GetReflectiveData() override;
 };
 
+// Class that hold data about binary files (Location in the bit file, size, type, etc)
 class FileDataBase : public Reflective
 {
 public:

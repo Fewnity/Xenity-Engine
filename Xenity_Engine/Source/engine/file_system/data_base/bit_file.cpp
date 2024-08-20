@@ -21,12 +21,14 @@ void BitFile::Open(const std::string& path)
 
 size_t BitFile::AddData(const std::vector<uint8_t>& data)
 {
+	const size_t dataSize = data.size();
 	file->Open(FileMode::WriteOnly);
-	file->Write(reinterpret_cast<const unsigned char*>(data.data()), data.size());
+	file->Write(reinterpret_cast<const unsigned char*>(data.data()), dataSize);
 	file->Close();
 
-	size_t dataOffset = fileSize;
-	fileSize += data.size();
+	const size_t dataOffset = fileSize;
+	fileSize += dataSize;
+
 	return dataOffset;
 }
 
@@ -35,7 +37,8 @@ size_t BitFile::AddData(const unsigned char* data, size_t size)
 	file->Open(FileMode::WriteOnly);
 	file->Write(data, size);
 	file->Close();
-	size_t dataOffset = fileSize;
+
+	const size_t dataOffset = fileSize;
 	fileSize += size;
 
 	return dataOffset;

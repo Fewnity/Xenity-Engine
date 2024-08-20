@@ -7,6 +7,7 @@
 
 class File;
 
+// Class that hold binary data
 class BitFile
 {
 public:
@@ -18,6 +19,6 @@ public:
 	unsigned char* ReadBinary(int offset, int size);
 
 	std::shared_ptr<File> file;
-	size_t fileSize;
+	size_t fileSize = 0;
 };
 
