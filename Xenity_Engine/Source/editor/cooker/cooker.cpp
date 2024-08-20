@@ -2,6 +2,7 @@
 
 #include <string>
 #include <filesystem>
+#include <fstream>
 #include <stb_image.h>
 #include <stb_image_write.h>
 #include <stb_image_resize.h>
@@ -13,6 +14,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/debug/debug.h>
 
 namespace fs = std::filesystem;
@@ -72,8 +74,8 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		const std::string texturePath = fileInfo.path;
 
 		int width, height, channels;
-		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
-		if (!data)
+		unsigned char* imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
+		if (!imageData)
 		{
 			Debug::PrintError("Failed to load texture: " + texturePath);
 			return;
@@ -102,14 +104,40 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		}
 
 		//TODO do not resize if the texture is already at the correct size
-		unsigned char* data2 = (unsigned char*)malloc(newWidth * newHeight * 4);
-		stbir_resize_uint8(data, width, height, 0, data2, newWidth, newHeight, 0, 4);
-		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, data2, 0);
+		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
+		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
+		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
 
-		free(data);
-		free(data2);
+		free(imageData);
+		free(resizedImageData);
 
 		cookedFileSize = fs::file_size(exportPath.c_str());
+	}
+	else if (fileInfo.type == FileType::File_Mesh)
+	{
+		/*std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+		std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
+		meshData->LoadFileReference();
+
+		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+
+		meshFile.write((char*)&meshData->vertexDescriptor, sizeof(uint32_t));
+		meshFile.write((char*)&meshData->subMeshCount, sizeof(uint32_t));
+
+		for (auto subMesh : meshData->subMeshes)
+		{
+			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
+			meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
+			meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
+
+			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
+			meshFile.write((char*)&subMesh->vertexMemSize, sizeof(uint32_t));
+			meshFile.write((char*)subMesh->data, subMesh->vertexMemSize);
+		}
+		meshFile.close();*/
+
+		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+		cookedFileSize = fs::file_size(fileInfo.path);
 	}
 	else
 	{
@@ -155,5 +183,4 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	fileDataBaseEntry->t = fileInfo.type;
 
 	fileDataBase.AddFile(fileDataBaseEntry);
-
 }
