@@ -19,6 +19,19 @@
 #include <engine/vectors/vector3.h>
 #include <engine/file_system/file_reference.h>
 
+enum class VertexElements : uint32_t
+{
+	NONE = 0,
+	POSITION_32_BITS = 1 << 0,
+	POSITION_16_BITS = 1 << 1, // Used for PSP
+	NORMAL_32_BITS = 1 << 2,
+	NORMAL_16_BITS = 1 << 3, // Used for PSP
+	NORMAL_8_BITS = 1 << 4, // Used for PSP
+	UV_32_BITS = 1 << 5,
+	UV_16_BITS = 1 << 6, // Used for PSP
+	COLOR = 1 << 7,
+};
+
 struct Vertex
 {
 	float u, v;
@@ -64,8 +77,14 @@ public:
 		unsigned short *indices = nullptr;
 		MeshData* meshData = nullptr;
 		void *data = nullptr;
-		unsigned int index_count = 0;
-		unsigned int vertice_count = 0;
+		uint32_t vertexMemSize = 0;
+		uint32_t indexMemSize = 0;
+#if defined(DEBUG)
+		uint32_t debugVertexMemSize = 0;
+		uint32_t debugIndexMemSize = 0;
+#endif
+		uint32_t index_count = 0;
+		uint32_t vertice_count = 0;
 #if defined(_EE)
 		VECTOR *c_verts = nullptr;
 		VECTOR *c_colours = nullptr;
@@ -76,10 +95,6 @@ public:
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
 
-#if defined(DEBUG)
-		size_t debugVertexMemSize = 0;
-		size_t debugIndexMemSize = 0;
-#endif
 	};
 
 	MeshData();
@@ -181,6 +196,7 @@ protected:
 	friend class SceneMenu;
 	friend class ParticleSystem;
 	friend class MeshManager;
+	friend class Cooker;
 
 	Vector3 minBoundingBox;
 	Vector3 maxBoundingBox;
@@ -217,6 +233,13 @@ protected:
 	bool hasIndices = true;
 	bool isQuad = false;
 	bool isValid = true;
+
+	VertexElements vertexDescriptor = VertexElements::NONE;
+
+	void SetVertexDescritor(VertexElements vertexDescriptor) 
+	{
+		this->vertexDescriptor = vertexDescriptor;
+	}
 
 	/**
 	* @brief Compute the bounding box of the mesh

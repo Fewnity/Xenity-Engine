@@ -44,6 +44,20 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	this->hasNormal = useNormals;
 	this->hasColor = useVertexColor;
 
+	vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
+	if(useUV)
+	{
+		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+	}
+	if (useNormals)
+	{
+		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+	}
+	/*if (hasColor)
+	{
+		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::);
+	}*/
+
 	AllocSubMesh(vcount, index_count);
 }
 
@@ -244,32 +258,33 @@ void MeshData::ComputeBoundingBox()
 		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			if (!hasNormal)
+			if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 			{
-				if (!hasUv)
-				{
-					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-				else
-				{
-					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-			}
-			else
-			{
-				if (!hasUv)
-				{
-					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-				else
+				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
+				else 
+				{
+					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
 			}
+			else 
+			{
+				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				{
+					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+				else
+				{
+					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
+					vert = Vector3(vertex.x, vertex.y, vertex.z);
+				}
+			}
+			
 			if (firstValue)
 			{
 				minBoundingBox.x = vert.x;
@@ -449,16 +464,16 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->meshData = this;
 	if (index_count != 0 && hasIndices) 
 	{
-		const size_t indexMemSize = sizeof(unsigned short) * index_count;
+		newSubMesh->indexMemSize = sizeof(unsigned short) * index_count;
 #if defined(__PSP__)
-		newSubMesh->indices = (unsigned short*)memalign(16, indexMemSize);
+		newSubMesh->indices = (unsigned short*)memalign(16, newSubMesh->indexMemSize);
 #else
-		newSubMesh->indices = (unsigned short*)malloc(indexMemSize);
+		newSubMesh->indices = (unsigned short*)malloc(newSubMesh->indexMemSize);
 #endif
 
 #if defined (DEBUG)
-		Performance::meshDataMemoryTracker->Allocate(indexMemSize);
-		newSubMesh->debugIndexMemSize = indexMemSize;
+		Performance::meshDataMemoryTracker->Allocate(newSubMesh->indexMemSize);
+		newSubMesh->debugIndexMemSize = newSubMesh->indexMemSize;
 #endif
 
 		if (newSubMesh->indices == nullptr)
@@ -469,31 +484,51 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		}
 	}
 
-	size_t vertexMemSize = 1; // Set to 1 to avoid warning
+	// Add position size
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::POSITION_32_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(float[3]);
+	}
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(short[3]);
+	}
+
+	// Add normal size
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(float[3]);
+	}
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(short[3]);
+	}
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(char[3]);
+	}
+
+	// Add UV size
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(float[2]);
+	}
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
+	{
+		newSubMesh->vertexMemSize += sizeof(short[2]);
+	}
+
+	newSubMesh->vertexMemSize *= vcount;
 
 	// Allocate memory for mesh data
 #if defined(__PSP__)
 	isOnVram = true;
-	if (!hasNormal)
-	{
-		if (!hasUv)
-			vertexMemSize = sizeof(VertexNoColorNoUv) * vcount;
-		else
-			vertexMemSize = sizeof(VertexNoColor) * vcount;
-	}
-	else
-	{
-		if (!hasUv)
-			vertexMemSize = sizeof(VertexNormalsNoColorNoUv) * vcount;
-		else
-			vertexMemSize = sizeof(VertexNormalsNoColor) * vcount;
-	}
 
-	newSubMesh->data = (void*)vramalloc(vertexMemSize);
+	newSubMesh->data = (void*)vramalloc(newSubMesh->vertexMemSize);
 	if (!newSubMesh->data)
 	{
 		isOnVram = false;
-		newSubMesh->data = (void*)memalign(16, vertexMemSize);
+		newSubMesh->data = (void*)memalign(16, newSubMesh->vertexMemSize);
 	}
 #elif defined(_EE)
 	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
@@ -516,44 +551,14 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
-	// Debug::Print("A" + std::to_string(vcount));
 
-	// if (!hasNormal)
-	//{
-	//	if (!hasUv)
-	//		newSubMesh->data = (VertexNoColorNoUv*)memalign(16, sizeof(VertexNoColorNoUv) * vcount);
-	//	else
-	//		newSubMesh->data = (VertexNoColor*)memalign(16, sizeof(VertexNoColor) * vcount);
-	// }
-	// else
-	//{
-	//	if (!hasUv)
-	//		newSubMesh->data = (VertexNormalsNoColorNoUv*)memalign(16, sizeof(VertexNormalsNoColorNoUv) * vcount);
-	//	else
-	//		newSubMesh->data = (VertexNormalsNoColor*)memalign(16, sizeof(VertexNormalsNoColor) * vcount);
-	// }
 #else
-	if (!hasNormal)
-	{
-		if (!hasUv)
-			vertexMemSize = sizeof(VertexNoColorNoUv) * vcount;
-		else
-			vertexMemSize = sizeof(VertexNoColor) * vcount;
-	}
-	else
-	{
-		if (!hasUv)
-			vertexMemSize = sizeof(VertexNormalsNoColorNoUv) * vcount;
-		else
-			vertexMemSize = sizeof(VertexNormalsNoColor) * vcount;
-	}
-
-	newSubMesh->data = (void*)malloc(vertexMemSize);
+	newSubMesh->data = (void*)malloc(newSubMesh->vertexMemSize);
 #endif
 
 #if defined (DEBUG)
-	Performance::meshDataMemoryTracker->Allocate(vertexMemSize);
-	newSubMesh->debugVertexMemSize = vertexMemSize;
+	Performance::meshDataMemoryTracker->Allocate(newSubMesh->vertexMemSize);
+	newSubMesh->debugVertexMemSize = newSubMesh->vertexMemSize;
 #endif
 
 #if !defined(_EE)

@@ -276,6 +276,17 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 			stop = false;
 			currentSubMeshPtr = nullptr;
 
+			VertexElements vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
+			if (!hasNoUv)
+			{
+				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+			}
+			if (!hasNoNormals)
+			{
+				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+			}
+			mesh.SetVertexDescritor(vertexDescriptor);
+
 			mesh.hasUv = !hasNoUv;
 			mesh.hasNormal = !hasNoNormals;
 			mesh.hasColor = false;
