@@ -47,11 +47,13 @@ void FileDataBase::SaveToFile(const std::string& path)
 
 	std::vector<uint8_t> binaryFileDataBase;
 	ordered_json::to_msgpack(j, binaryFileDataBase);
-	std::string stringBinary(binaryFileDataBase.begin(), binaryFileDataBase.end());
+	const std::string stringBinary(binaryFileDataBase.begin(), binaryFileDataBase.end());
 
 	FileSystem::fileSystem->Delete(path);
+
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
-	file->Open(FileMode::WriteCreateFile);
+	bool openResult = file->Open(FileMode::WriteCreateFile);
+	XASSERT(openResult, "Failed to create data base file" + path);
 	file->Write(stringBinary);
 	file->Close();
 }
@@ -61,17 +63,22 @@ void FileDataBase::LoadFromFile(const std::string& path)
 	Clear();
 
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
-	std::vector<uint8_t> binaryFileDataBase;
-	file->Open(FileMode::ReadOnly);
+	bool openResult = file->Open(FileMode::ReadOnly);
+
+	XASSERT(openResult, "Data base file not found");
+
 	int dataSize = 0;
 	unsigned char * data = file->ReadAllBinary(dataSize);
 	file->Close();
+
+	XASSERT(dataSize != 0, "Failed to read data base file");
+
+	std::vector<uint8_t> binaryFileDataBase;
 	binaryFileDataBase.resize(dataSize);
 	memcpy(binaryFileDataBase.data(), data, dataSize);
 	free(data);
 
-	ordered_json j;
-	j = ordered_json::from_msgpack(binaryFileDataBase);
+	ordered_json j = ordered_json::from_msgpack(binaryFileDataBase);
 
 	ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
 }
