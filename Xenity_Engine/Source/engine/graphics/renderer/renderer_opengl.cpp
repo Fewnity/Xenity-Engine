@@ -686,22 +686,7 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 
 		glBindBuffer(GL_ARRAY_BUFFER, newSubMesh->VBO);
 
-		size_t totalVertexSize = 0;
-		if (!meshData.hasNormal)
-		{
-			if (!meshData.hasUv)
-				totalVertexSize = sizeof(VertexNoColorNoUv) * newSubMesh->vertice_count;
-			else
-				totalVertexSize = sizeof(VertexNoColor) * newSubMesh->vertice_count;
-		}
-		else
-		{
-			if (!meshData.hasUv)
-				totalVertexSize = sizeof(VertexNormalsNoColorNoUv) * newSubMesh->vertice_count;
-			else
-				totalVertexSize = sizeof(VertexNormalsNoColor) * newSubMesh->vertice_count;
-		}
-		glBufferData(GL_ARRAY_BUFFER, totalVertexSize, newSubMesh->data, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, newSubMesh->vertexMemSize, newSubMesh->data, GL_STATIC_DRAW);
 
 		if (newSubMesh->EBO == 0)
 			newSubMesh->EBO = CreateBuffer();
@@ -709,51 +694,10 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
 		int stride;
-		if (!meshData.hasNormal)
+
+		if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 		{
-			if (!meshData.hasUv)
-			{
-				stride = sizeof(VertexNoColorNoUv);
-				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
-			}
-			else
-			{
-				if (meshData.hasColor)
-				{
-					stride = sizeof(Vertex);
-					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
-					glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
-					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
-				}
-				else
-				{
-					stride = sizeof(VertexNoColor);
-					if constexpr (Graphics::UseOpenGLFixedFunctions)
-					{
-						glEnableClientState(GL_VERTEX_ARRAY);
-						glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
-						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-						glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
-					}
-					else
-					{
-						glEnableVertexAttribArray(0);
-						glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
-						glEnableVertexAttribArray(1);
-						glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
-					}
-				}
-			}
-		}
-		else
-		{
-			if (!meshData.hasUv)
-			{
-				stride = sizeof(VertexNormalsNoColorNoUv);
-				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
-				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
-			}
-			else
+			if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 			{
 				stride = sizeof(VertexNormalsNoColor);
 				if constexpr (Graphics::UseOpenGLFixedFunctions)
@@ -774,6 +718,45 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 					glEnableVertexAttribArray(2);
 					glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, normX));
 				}
+			}
+			else
+			{
+				stride = sizeof(VertexNormalsNoColorNoUv);
+				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
+				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
+			}
+		}
+		else
+		{
+			if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+			{
+				/*if (meshData.hasColor)
+				{
+					stride = sizeof(Vertex);
+					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
+					glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
+					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
+				}else*/
+				stride = sizeof(VertexNoColor);
+				if constexpr (Graphics::UseOpenGLFixedFunctions)
+				{
+					glEnableClientState(GL_VERTEX_ARRAY);
+					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
+				}
+				else
+				{
+					glEnableVertexAttribArray(0);
+					glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
+					glEnableVertexAttribArray(1);
+					glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
+				}
+			}
+			else
+			{
+				stride = sizeof(VertexNoColorNoUv);
+				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
 			}
 		}
 

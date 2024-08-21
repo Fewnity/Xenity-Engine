@@ -115,29 +115,27 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	}
 	else if (fileInfo.type == FileType::File_Mesh)
 	{
-		/*std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+		std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 		std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
 		meshData->LoadFileReference();
 
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
-		meshFile.write((char*)&meshData->vertexDescriptor, sizeof(uint32_t));
+		meshFile.write((char*)&meshData->vertexDescriptor, sizeof(VertexElements));
 		meshFile.write((char*)&meshData->subMeshCount, sizeof(uint32_t));
 
 		for (auto subMesh : meshData->subMeshes)
 		{
-			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
-			meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
-			meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
-
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
+			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->vertexMemSize, sizeof(uint32_t));
+			meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
 			meshFile.write((char*)subMesh->data, subMesh->vertexMemSize);
+			meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
 		}
-		meshFile.close();*/
+		meshFile.close();
 
-		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
-		cookedFileSize = fs::file_size(fileInfo.path);
+		cookedFileSize = fs::file_size(exportPath.c_str());
 	}
 	else
 	{
@@ -159,7 +157,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
 		cookedFile->Close();
 		dataOffset = fileDataBase.bitFile.AddData(fileData, cookedFileSize);
-		free(fileData);
+		delete[] fileData;
 		FileSystem::fileSystem->Delete(exportPath);
 	}
 
@@ -170,7 +168,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
 	cookedMetaFile->Close();
 	metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
-	free(metaFileData);
+	delete[] metaFileData;
 	FileSystem::fileSystem->Delete(exportPath + ".meta");
 
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();

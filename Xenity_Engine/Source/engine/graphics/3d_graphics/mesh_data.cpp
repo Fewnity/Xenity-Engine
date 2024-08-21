@@ -17,6 +17,7 @@
 #include <engine/debug/debug.h>
 #include <engine/engine.h>
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
+#include <engine/file_system/mesh_loader/binary_mesh_loader.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/file_system/async_file_loading.h>
@@ -374,9 +375,11 @@ void MeshData::LoadFileReference()
 	{
 		isLoaded = true;
 		isValid = false;
-
+#if defined(EDITOR)
 		WavefrontLoader::LoadFromRawData(*this);
-
+#else
+		BinaryMeshLoader::LoadMesh(*this);
+#endif
 		OnLoadFileReferenceFinished();
 //#if defined(EDITOR)
 //		isLoading = true;
@@ -402,7 +405,7 @@ void MeshData::OnLoadFileReferenceFinished()
 	{
 		pspDrawParam |= GU_COLOR_8888;
 	}
-	if (hasNormal)
+	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 	{
 		pspDrawParam |= GU_NORMAL_32BITF;
 	}

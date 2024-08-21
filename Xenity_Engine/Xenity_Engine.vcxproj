@@ -119,6 +119,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -512,6 +513,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
@@ -1084,6 +1086,7 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.h" />
     <ClInclude Include="include\bullet\btBulletCollisionCommon.h" />
     <ClInclude Include="include\bullet\btBulletDynamicsCommon.h" />
     <ClInclude Include="include\bullet\Bullet-C-Api.h" />

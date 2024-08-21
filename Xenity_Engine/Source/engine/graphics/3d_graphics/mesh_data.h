@@ -197,6 +197,7 @@ protected:
 	friend class ParticleSystem;
 	friend class MeshManager;
 	friend class Cooker;
+	friend class BinaryMeshLoader;
 
 	Vector3 minBoundingBox;
 	Vector3 maxBoundingBox;

@@ -315,6 +315,7 @@
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
     <ClCompile Include="Source\engine\physics\collision_event.h" />
+    <ClCompile Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -732,6 +733,7 @@
     <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.h" />
     <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.h" />
+    <ClInclude Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
