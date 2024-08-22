@@ -301,7 +301,7 @@ int fillAudioBufferThread()
 		}
 
 		// Get audio sources values
-		if (Engine::canUpdateAudio)
+		if (Engine::s_canUpdateAudio)
 		{
 			const int count = (int)AudioManager::channel->playedSoundsCount;
 			for (int i = 0; i < count; i++)

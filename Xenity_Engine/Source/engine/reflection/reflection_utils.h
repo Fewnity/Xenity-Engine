@@ -278,8 +278,6 @@ public:
 	static JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<T> valuePtr, const ReflectiveEntry& entry);
 
 #pragma endregion
-
-
 };
 
 #include "reflection_utils.inl"

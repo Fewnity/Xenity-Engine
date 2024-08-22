@@ -207,7 +207,7 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 
 	GameplayManager::gameObjectsToDestroy.push_back(gameObject);
 	GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);
-	gameObjectAcc.SetWaitingForDestroy( true);
+	gameObjectAcc.SetWaitingForDestroy(true);
 
 	// Remove the destroyed gameobject from his parent's children list
 	if (auto parent = gameObject->GetParent().lock())

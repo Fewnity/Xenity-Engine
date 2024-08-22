@@ -57,19 +57,19 @@ public:
 	 */
 	static bool IsRunning(bool checkRenderer)
 	{
-		return isRunning && (!checkRenderer || renderer != nullptr);
+		return s_isRunning && (!checkRenderer || s_renderer != nullptr);
 	}
 
-	static std::unique_ptr<GameInterface> game;
+	static std::unique_ptr<GameInterface> s_game;
 
-	static bool canUpdateAudio;
+	static bool s_canUpdateAudio;
 
 	/**
 	 * @brief Get the renderer
 	 */
 	API static inline Renderer &GetRenderer()
 	{
-		return *renderer;
+		return *s_renderer;
 	}
 
 	/**
@@ -77,11 +77,11 @@ public:
 	 */
 	static inline Event<>* GetOnWindowFocusEvent()
 	{
-		return OnWindowFocusEvent;
+		return s_onWindowFocusEvent;
 	}
 
 private:
-	static Event<>* OnWindowFocusEvent;
+	static Event<>* s_onWindowFocusEvent;
 
 	/**
 	 * @brief Close signal, called when the software is closing
@@ -98,7 +98,7 @@ private:
 	 */
 	static void CheckEvents();
 
-	static std::unique_ptr<Renderer> renderer;
-	static bool isRunning;
-	static bool isInitialized;
+	static std::unique_ptr<Renderer> s_renderer;
+	static bool s_isRunning;
+	static bool s_isInitialized;
 };

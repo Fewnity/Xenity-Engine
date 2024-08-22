@@ -168,10 +168,10 @@ public:
 	static inline bool GetKeyDown(const KeyCode keyCode)
 	{
 #if defined(EDITOR)
-		if (blockGameInput)
+		if (s_blockGameInput)
 			return false;
 #endif
-		return inputs[(int)keyCode].pressed;
+		return s_inputs[(int)keyCode].pressed;
 	}
 
 	/**
@@ -181,10 +181,10 @@ public:
 	static inline bool GetKey(const KeyCode keyCode)
 	{
 #if defined(EDITOR)
-		if (blockGameInput)
+		if (s_blockGameInput)
 			return false;
 #endif
-		return inputs[(int)keyCode].held;
+		return s_inputs[(int)keyCode].held;
 	}
 
 	/**
@@ -194,10 +194,10 @@ public:
 	static inline bool GetKeyUp(const KeyCode keyCode)
 	{
 #if defined(EDITOR)
-		if (blockGameInput)
+		if (s_blockGameInput)
 			return false;
 #endif
-		return inputs[(int)keyCode].released;
+		return s_inputs[(int)keyCode].released;
 	}
 
 	/**
@@ -268,7 +268,7 @@ private:
 	* @brief [Internal] Set all keys states to inactive
 	*/
 	static void ClearInputs();
-	static bool blockGameInput;
+	static bool s_blockGameInput;
 
 	static void UpdateControllers();
 
@@ -288,10 +288,10 @@ private:
 	*/
 	static inline void SetInputPressed(const KeyCode keyCode)
 	{
-		if (!inputs[(int)keyCode].held)
+		if (!s_inputs[(int)keyCode].held)
 		{
-			inputs[(int)keyCode].pressed = true;
-			inputs[(int)keyCode].held = true;
+			s_inputs[(int)keyCode].pressed = true;
+			s_inputs[(int)keyCode].held = true;
 		}
 	}
 
@@ -300,8 +300,8 @@ private:
 	*/
 	static inline void SetInputReleased(const KeyCode keyCode)
 	{
-		inputs[(int)keyCode].released = true;
-		inputs[(int)keyCode].held = false;
+		s_inputs[(int)keyCode].released = true;
+		s_inputs[(int)keyCode].held = false;
 	}
 
 	/**
@@ -309,13 +309,13 @@ private:
 	*/
 	static inline void SetInputInactive(const KeyCode keyCode)
 	{
-		inputs[(int)keyCode].pressed = false;
-		inputs[(int)keyCode].released = false;
+		s_inputs[(int)keyCode].pressed = false;
+		s_inputs[(int)keyCode].released = false;
 	}
 
-	static bool hidedMouse;
-	static Input inputs[INPUT_COUNT];
-	static std::map<int, Input*> keyMap;
-	static std::map<int, Input*> buttonMap;
+	static bool s_hidedMouse;
+	static Input s_inputs[INPUT_COUNT];
+	static std::map<int, Input*> s_keyMap;
+	static std::map<int, Input*> s_buttonMap;
 	static std::vector<TouchScreen*> screens;
 };

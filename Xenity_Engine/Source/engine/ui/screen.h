@@ -15,12 +15,12 @@ public:
 	/**
 	* @brief Get the height of the screen in pixels
 	*/
-	static inline int GetHeight() { return height; }
+	static inline int GetHeight() { return s_height; }
 
 	/**
 	* @brief Get the width of the screen in pixels
 	*/
-	static inline int GetWidth() { return width; }
+	static inline int GetWidth() { return s_width; }
 
 	/**
 	* @brief Set if the window should be in fullscreen mode
@@ -42,9 +42,10 @@ public:
 	static bool IsVSyncEnabled();
 
 private:
-	static int height;
-	static int width;
-	static bool useVSync;
 	friend class Window;
+
+	static int s_height;
+	static int s_width;
+	static bool s_useVSync;
 };
 

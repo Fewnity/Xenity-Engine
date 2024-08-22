@@ -96,17 +96,17 @@ std::shared_ptr<ProfilerBenchmark> drawIDrawablesBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> editorUpdateBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> editorDrawBenchmark = nullptr;
 
-std::unique_ptr<Renderer> Engine::renderer = nullptr;
-bool Engine::canUpdateAudio = false;
-bool Engine::isRunning = true;
-bool Engine::isInitialized = false;
+std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
+bool Engine::s_canUpdateAudio = false;
+bool Engine::s_isRunning = true;
+bool Engine::s_isInitialized = false;
 
-std::unique_ptr<GameInterface> Engine::game = nullptr;
-Event<>* Engine::OnWindowFocusEvent = nullptr;
+std::unique_ptr<GameInterface> Engine::s_game = nullptr;
+Event<>* Engine::s_onWindowFocusEvent = nullptr;
 
 void Engine::OnCloseSignal(int)
 {
-	isRunning = false;
+	s_isRunning = false;
 }
 
 int Engine::Init()
@@ -115,7 +115,7 @@ int Engine::Init()
 	signal(SIGBREAK, Engine::OnCloseSignal);
 #endif
 
-	OnWindowFocusEvent = new Event<>();
+	s_onWindowFocusEvent = new Event<>();
 
 	CrashHandler::Init();
 
@@ -163,20 +163,20 @@ int Engine::Init()
 
 	/* Initialize libraries */
 	NetworkManager::Init();
-	NetworkManager::needDrawMenu = false;
+	NetworkManager::s_needDrawMenu = false;
 
 	Performance::Init();
 
 	//------------------------------------------ Init renderer
 #if defined(_EE)
 	// renderer = std::make_unique<RendererGsKit>();
-	renderer = std::make_unique<RendererVU1>();
+	s_renderer = std::make_unique<RendererVU1>();
 #elif defined(__PSP__)
-	renderer = std::make_unique<RendererGU>();
+	s_renderer = std::make_unique<RendererGU>();
 #else
-	renderer = std::make_unique<RendererOpengl>();
+	s_renderer = std::make_unique<RendererOpengl>();
 #endif
-	const int rendererInitResult = renderer->Init();
+	const int rendererInitResult = s_renderer->Init();
 	if (rendererInitResult != 0)
 	{
 		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------", true);
@@ -190,7 +190,7 @@ int Engine::Init()
 		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------", true);
 		return -1;
 	}
-	renderer->Setup();
+	s_renderer->Setup();
 
 	//------------------------------------------ Init other things
 	InputSystem::Init();
@@ -217,7 +217,7 @@ int Engine::Init()
 	Compiler::Init();
 #endif
 
-	isInitialized = true;
+	s_isInitialized = true;
 	Debug::Print("-------- Engine fully initiated --------\n", true);
 
 	CreateBenchmarks();
@@ -246,7 +246,7 @@ void Engine::CheckEvents()
 		switch (event.type)
 		{
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-			if (event.window.windowID == SDL_GetWindowID(Window::window))
+			if (event.window.windowID == SDL_GetWindowID(Window::s_window))
 			{
 				Quit();
 			}
@@ -276,7 +276,7 @@ void Engine::CheckEvents()
 			break;
 
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-			if (event.window.windowID == SDL_GetWindowID(Window::window))
+			if (event.window.windowID == SDL_GetWindowID(Window::s_window))
 			{
 				Window::SetResolution(event.window.data1, event.window.data2);
 			}
@@ -292,7 +292,7 @@ void Engine::CheckEvents()
 #if defined(EDITOR)
 		if (!EditorUI::IsEditingElement())
 #endif
-			OnWindowFocusEvent->Trigger();
+			s_onWindowFocusEvent->Trigger();
 	}
 #endif
 }
@@ -315,8 +315,8 @@ void Engine::Loop()
 #endif
 
 	Time::UpdateTime();
-	canUpdateAudio = true;
-	while (isRunning)
+	s_canUpdateAudio = true;
+	while (s_isRunning)
 	{
 		{
 			SCOPED_PROFILER("Engine::Loop", scopeBenchmark);
@@ -332,7 +332,7 @@ void Engine::Loop()
 			InputSystem::Read();
 #endif
 
-			canUpdateAudio = false;
+			s_canUpdateAudio = false;
 #if defined(EDITOR)
 			AsyncFileLoading::FinishThreadedFileLoading();
 
@@ -341,9 +341,9 @@ void Engine::Loop()
 
 			const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
 			if (gameMenu)
-				InputSystem::blockGameInput = !gameMenu->IsFocused();
+				InputSystem::s_blockGameInput = !gameMenu->IsFocused();
 			else
-				InputSystem::blockGameInput = true;
+				InputSystem::s_blockGameInput = true;
 
 			editorUpdateBenchmark->Stop();
 #endif
@@ -371,10 +371,10 @@ void Engine::Loop()
 
 					GameplayManager::SetGameState(GameState::Stopped, true);
 				}
-
 #else
 				GameplayManager::UpdateComponents();
 #endif
+
 				if (GameplayManager::GetGameState() == GameState::Playing)
 					PhysicsManager::Update();
 
@@ -384,7 +384,7 @@ void Engine::Loop()
 
 				componentsUpdateBenchmark->Stop();
 
-				canUpdateAudio = true;
+				s_canUpdateAudio = true;
 
 				// Draw
 				drawIDrawablesBenchmark->Start();
@@ -395,10 +395,10 @@ void Engine::Loop()
 			{
 #if defined(EDITOR)
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-				renderer->Clear();
+				s_renderer->Clear();
 #endif
 			}
-			InputSystem::blockGameInput = false;
+			InputSystem::s_blockGameInput = false;
 		}
 
 #if defined(EDITOR)
@@ -415,20 +415,20 @@ void Engine::Loop()
 
 void Engine::Stop()
 {
-	if (!isInitialized)
+	if (!s_isInitialized)
 		return;
 
-	isInitialized = false;
-	isRunning = false;
+	s_isInitialized = false;
+	s_isRunning = false;
 
 #if defined(EDITOR)
 	SceneManager::ClearScene();
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
-	game.reset();
+	s_game.reset();
 
-	renderer->Stop();
-	renderer.reset();
+	s_renderer->Stop();
+	s_renderer.reset();
 	AudioManager::Stop();
 	PhysicsManager::Stop();
 	Graphics::Stop();
@@ -444,13 +444,13 @@ void Engine::Stop()
 void Engine::Quit()
 {
 #if defined(EDITOR)
-	if (isRunning)
+	if (s_isRunning)
 	{
 		const bool cancelQuit = SceneManager::OnQuit();
-		isRunning = cancelQuit;
+		s_isRunning = cancelQuit;
 	}
 #else
-	isRunning = false;
+	s_isRunning = false;
 #endif
 }
 

@@ -24,9 +24,9 @@ enum class DebugType {
 class DebugHistory 
 {
 public:
+	std::string message;
 	DebugType type = DebugType::Log;
 	int count = 0;
-	std::string message;
 };
 
 /**
@@ -39,30 +39,30 @@ public:
 	/**
 	* @brief Print a text
 	* @param text Text to print
-	* @param hideInConsole If true, the text will not be printed in the console
+	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
 	*/
-	static void Print(const std::string& text, bool hideInConsole = false);
+	static void Print(const std::string& text, bool hideInEditorConsole = false);
 
 	/**
 	* @brief Print an error
 	* @param text Text to print
-	* @param hideInConsole If true, the text will not be printed in the console
+	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
 	*/
-	static void PrintError(const std::string& text, bool hideInConsole = false);
+	static void PrintError(const std::string& text, bool hideInEditorConsole = false);
 
 	/**
 	* @brief Print a warning
 	* @param text Text to print
-	* @param hideInConsole If true, the text will not be printed in the console
+	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
 	*/
-	static void PrintWarning(const std::string& text, bool hideInConsole = false);
+	static void PrintWarning(const std::string& text, bool hideInEditorConsole = false);
 
 	/**
 	* @brief Get the event when a debug message is printed
 	*/
 	static Event<>& GetOnDebugLogEvent()
 	{
-		return OnDebugLogEvent;
+		return s_onDebugLogEvent;
 	}
 
 
@@ -73,7 +73,7 @@ private:
 	friend class NetworkManager;
 	friend class Compiler;
 
-	static size_t lastDebugMessageHistoryIndex;
+	static size_t s_lastDebugMessageHistoryIndex;
 
 	/**
 	* @brief [Internal] Init debug system
@@ -95,7 +95,7 @@ private:
 	*/
 	static const std::string& GetDebugString()
 	{
-		return debugText;
+		return s_debugText;
 	}
 
 	/**
@@ -105,8 +105,8 @@ private:
 
 
 	// [Internal] Lower is higher speed
-	static float SendProfilerDelay;
-	static std::vector<DebugHistory> debugMessageHistory;
+	static float s_sendProfilerDelay;
+	static std::vector<DebugHistory> s_debugMessageHistory;
 
 	/**
 	* @brief Add a message in the history
@@ -133,9 +133,9 @@ private:
 	*/
 	static void PrintInFile(const std::string& text);
 
-	static Event<> OnDebugLogEvent;
-	static std::string debugText;
-	static std::shared_ptr<Socket> socket;
-	static float SendProfilerCooldown;
-	static std::shared_ptr<File> file;
+	static Event<> s_onDebugLogEvent;
+	static std::string s_debugText;
+	static std::shared_ptr<Socket> s_socket;
+	static float s_sendProfilerCooldown;
+	static std::shared_ptr<File> s_file;
 };

@@ -8,5 +8,5 @@
 
 MonoBehaviour::MonoBehaviour()
 {
-	this->updatePriority = 1000;
+	this->m_updatePriority = 1000;
 }

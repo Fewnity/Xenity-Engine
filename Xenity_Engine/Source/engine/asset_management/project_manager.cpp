@@ -622,7 +622,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 		DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
-		Engine::game = DynamicLibrary::CreateGame();
+		Engine::s_game = DynamicLibrary::CreateGame();
 	}
 	else
 	{
@@ -630,12 +630,12 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");
 	}
 #else
-	Engine::game = std::make_unique<Game>();
+	Engine::s_game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
 #endif
 	// Fill class registery
-	if (Engine::game)
-		Engine::game->Start();
+	if (Engine::s_game)
+		Engine::s_game->Start();
 
 #if defined(EDITOR)
 	CreateVisualStudioSettings();
@@ -694,7 +694,7 @@ void ProjectManager::UnloadProject()
 
 	assetFolderPath.clear();
 
-	Engine::game.reset();
+	Engine::s_game.reset();
 	DynamicLibrary::UnloadGameLibrary();
 	AssetManager::RemoveAllFileReferences();
 	Window::UpdateWindowTitle();

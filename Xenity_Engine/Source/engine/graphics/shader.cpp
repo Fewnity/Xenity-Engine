@@ -722,24 +722,24 @@ void Shader::UpdateLights(bool disableLights)
 			const Light& light = *AssetManager::GetLight(lightI).lock();
 			if (light.IsEnabled() && light.GetGameObject()->IsLocalActive())
 			{
-				if (light.type == LightType::Directional)
+				if (light.m_type == LightType::Directional)
 				{
 					SetDirectionalLightData(light, directionalUsed);
 					directionalUsed++;
 				}
-				else if (light.type == LightType::Point)
+				else if (light.m_type == LightType::Point)
 				{
 					SetPointLightData(light, pointUsed);
 					pointUsed++;
 				}
-				else if (light.type == LightType::Spot)
+				else if (light.m_type == LightType::Spot)
 				{
 					SetSpotLightData(light, spotUsed);
 					spotUsed++;
 				}
-				else if (light.type == LightType::Ambient)
+				else if (light.m_type == LightType::Ambient)
 				{
-					ambientLight += light.color.GetRGBA().ToVector4() * light.intensity;
+					ambientLight += light.color.GetRGBA().ToVector4() * light.m_intensity;
 				}
 			}
 		}

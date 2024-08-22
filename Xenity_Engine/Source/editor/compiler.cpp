@@ -393,8 +393,8 @@ void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType 
 void Compiler::HotReloadGame()
 {
 #if defined(_WIN32) || defined(_WIN64)
-	Engine::game.reset();
-	Engine::game = nullptr;
+	Engine::s_game.reset();
+	Engine::s_game = nullptr;
 
 	// Prepare scene
 	SceneManager::SaveScene(SaveSceneType::SaveSceneForHotReloading);
@@ -420,11 +420,11 @@ void Compiler::HotReloadGame()
 		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/" + "game_editor");
 
 		// Create game instance
-		Engine::game = DynamicLibrary::CreateGame();
-		if (Engine::game)
+		Engine::s_game = DynamicLibrary::CreateGame();
+		if (Engine::s_game)
 		{
 			Debug::Print("Game compilation done");
-			Engine::game->Start();
+			Engine::s_game->Start();
 		}
 		else
 		{

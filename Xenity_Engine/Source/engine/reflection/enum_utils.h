@@ -14,9 +14,8 @@
 
 #include <engine/api.h>
 
-class EnumValueName
+struct EnumValueName
 {
-public:
 	std::string name = "";
 	int value = 0;
 };

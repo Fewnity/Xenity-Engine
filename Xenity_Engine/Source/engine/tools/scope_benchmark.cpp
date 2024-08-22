@@ -8,9 +8,9 @@ using namespace std::chrono;
 
 ScopeBenchmark::ScopeBenchmark(const std::string& classAndFunction)
 {
-	name = classAndFunction;
-	start = time_point_cast<microseconds>(high_resolution_clock::now()).time_since_epoch().count();
-	scopeLevel = Performance::benchmarkScopeLevel;
+	m_name = classAndFunction;
+	m_start = time_point_cast<microseconds>(high_resolution_clock::now()).time_since_epoch().count();
+	m_scopeLevel = Performance::benchmarkScopeLevel;
 	Performance::benchmarkScopeLevel++;
 }
 
@@ -19,5 +19,5 @@ ScopeBenchmark::~ScopeBenchmark()
 	const uint64_t end = time_point_cast<microseconds>(high_resolution_clock::now()).time_since_epoch().count();
 
 	Performance::benchmarkScopeLevel--;
-	Performance::scopProfilerList[name].push_back({ start , end , scopeLevel });
+	Performance::scopProfilerList[m_name].push_back({ m_start , end , m_scopeLevel });
 }

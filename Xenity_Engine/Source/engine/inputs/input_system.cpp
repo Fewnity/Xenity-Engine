@@ -40,25 +40,25 @@ Vector2 InputSystem::mouseSpeedRaw = Vector2();
 
 Vector2 InputSystem::leftJoystick = Vector2();
 Vector2 InputSystem::rightJoystick = Vector2();
-Input InputSystem::inputs[INPUT_COUNT];
+Input InputSystem::s_inputs[INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
-bool InputSystem::hidedMouse = false;
-std::map<int, Input*> InputSystem::keyMap;
-std::map<int, Input*> InputSystem::buttonMap;
+bool InputSystem::s_hidedMouse = false;
+std::map<int, Input*> InputSystem::s_keyMap;
+std::map<int, Input*> InputSystem::s_buttonMap;
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
-bool InputSystem::blockGameInput = false;
+bool InputSystem::s_blockGameInput = false;
 
 void InputSystem::Init()
 {
-	keyMap = std::map<int, Input*>();
-	buttonMap = std::map<int, Input*>();
+	s_keyMap = std::map<int, Input*>();
+	s_buttonMap = std::map<int, Input*>();
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
-		inputs[i] = Input();
-		inputs[i].code = (KeyCode)i;
+		s_inputs[i] = Input();
+		s_inputs[i].code = (KeyCode)i;
 	}
 
-	CrossAddInputs(keyMap, buttonMap, inputs);
+	CrossAddInputs(s_keyMap, s_buttonMap, s_inputs);
 	CrossInputsInit();
 
 #ifdef __vita__
@@ -74,7 +74,7 @@ void InputSystem::HideMouse()
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
-	hidedMouse = true;
+	s_hidedMouse = true;
 }
 
 void InputSystem::ShowMouse()
@@ -82,7 +82,7 @@ void InputSystem::ShowMouse()
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 #endif
-	hidedMouse = false;
+	s_hidedMouse = false;
 }
 
 int InputSystem::GetTouchScreenCount()
@@ -141,8 +141,8 @@ void InputSystem::UpdateControllers()
 	rightJoystick.y = pad.ry;
 
 #if defined(__PSP__) || defined(__vita__)
-	const auto mapE = keyMap.end();
-	for (auto mapB = keyMap.begin(); mapB != mapE; ++mapB)
+	const auto mapE = s_keyMap.end();
+	for (auto mapB = s_keyMap.begin(); mapB != mapE; ++mapB)
 	{
 		if (pad.buttons & mapB->first) // If the input is pressed
 		{
@@ -166,13 +166,13 @@ void InputSystem::UpdateControllers()
 	{
 		if (pressedButtonsBeg->second)
 		{
-			if (!buttonMap[pressedButtonsBeg->first]->held)
-				SetInput(true, buttonMap[pressedButtonsBeg->first]->code);
+			if (!s_buttonMap[pressedButtonsBeg->first]->held)
+				SetInput(true, s_buttonMap[pressedButtonsBeg->first]->code);
 		}
 		else
 		{
-			if (buttonMap[pressedButtonsBeg->first]->held)
-				SetInput(false, buttonMap[pressedButtonsBeg->first]->code);
+			if (s_buttonMap[pressedButtonsBeg->first]->held)
+				SetInput(false, s_buttonMap[pressedButtonsBeg->first]->code);
 		}
 	}
 #endif
@@ -269,7 +269,7 @@ void InputSystem::Read(const SDL_Event& event)
 
 	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 	{
-		if (hidedMouse)
+		if (s_hidedMouse)
 			HideMouse();
 		switch (event.button.button)
 		{
@@ -305,15 +305,15 @@ void InputSystem::Read(const SDL_Event& event)
 
 	case SDL_EVENT_KEY_DOWN:
 	{
-		if (keyMap.count(event.key.key) != 0)
-			SetInput(true, keyMap[event.key.key]->code);
+		if (s_keyMap.count(event.key.key) != 0)
+			SetInput(true, s_keyMap[event.key.key]->code);
 		break;
 	}
 
 	case SDL_EVENT_KEY_UP:
 	{
-		if (keyMap.count(event.key.key) != 0)
-			SetInput(false, keyMap[event.key.key]->code);
+		if (s_keyMap.count(event.key.key) != 0)
+			SetInput(false, s_keyMap[event.key.key]->code);
 		break;
 	}
 

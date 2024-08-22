@@ -646,7 +646,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 		bool isEnable = comp->IsEnabled();
 
-		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->componentName];
+		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->m_componentName];
 		if (!texture)
 			texture = EditorUI::componentsIcons["Default"];
 
@@ -654,7 +654,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
 			CheckOpenRightClickPopup(*comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
-			if (!comp->waitingForDestroy)
+			if (!comp->m_waitingForDestroy)
 			{
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{

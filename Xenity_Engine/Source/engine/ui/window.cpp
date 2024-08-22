@@ -26,22 +26,22 @@
 #include <engine/asset_management/project_manager.h>
 #include "screen.h"
 
-int Window::width = 0;
-int Window::height = 0;
-float Window::aspect = 0;
+int Window::s_width = 0;
+int Window::s_height = 0;
+float Window::s_aspect = 0;
 const char* ENGINE_NAME = "Xenity Engine"; //TODO : To move
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-SDL_Window* Window::window = nullptr;
+SDL_Window* Window::s_window = nullptr;
 #endif
 
 void Window::SetResolution(const int width_, const int height_)
 {
-	width = width_;
-	height = height_;
-	Screen::width = width;
-	Screen::height = height;
+	s_width = width_;
+	s_height = height_;
+	Screen::s_width = s_width;
+	Screen::s_height = s_height;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	if (window != nullptr)
+	if (s_window != nullptr)
 #endif
 		OnResize();
 }
@@ -54,33 +54,33 @@ void Window::OnResize()
 	const int cameraCount = Graphics::cameras.size();
 	for (int i = 0; i < cameraCount; i++)
 	{
-		Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(width, height));
+		Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(s_width, s_height));
 	}
 #endif
 }
 
 int Window::GetWidth()
 {
-	return width;
+	return s_width;
 }
 
 int Window::GetHeight()
 {
-	return height;
+	return s_height;
 }
 
 int Window::GetTitleBarHeight()
 {
 	int size = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_GetWindowBordersSize(window, &size, 0, 0, 0);
+	SDL_GetWindowBordersSize(s_window, &size, 0, 0, 0);
 #endif
 	return size;
 }
 
 float Window::GetAspectRatio()
 {
-	return aspect;
+	return s_aspect;
 }
 
 int Window::Init()
@@ -94,14 +94,14 @@ int Window::Init()
 	}
 
 	// Create SDL Window
-	window = SDL_CreateWindow(ENGINE_NAME, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
-	if (window == nullptr)
+	s_window = SDL_CreateWindow(ENGINE_NAME, s_width, s_height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+	if (s_window == nullptr)
 	{
 		return (int)WindowError::WND_ERROR_SDL_CREATE_WINDOW;
 	}
 
 	// Create OpenGL Context
-	SDL_GLContext context = SDL_GL_CreateContext(window);
+	SDL_GLContext context = SDL_GL_CreateContext(s_window);
 	if (context == nullptr)
 	{
 		return (int)WindowError::WND_ERROR_SDL_GL_CONTEXT;
@@ -120,7 +120,7 @@ int Window::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform 
 	ImGui::StyleColorsDark();
-	ImGui_ImplSDL3_InitForOpenGL(Window::window, context);
+	ImGui_ImplSDL3_InitForOpenGL(Window::s_window, context);
 	ImGui_ImplOpenGL3_Init();
 #endif
 
@@ -133,7 +133,7 @@ int Window::Init()
 void Window::UpdateScreen()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(s_window);
 #endif
 }
 
@@ -161,14 +161,14 @@ void Window::UpdateWindowTitle()
 
 	}
 	newTitle += std::string(ENGINE_NAME) + " 0.1";
-	SDL_SetWindowTitle(window, newTitle.c_str());
+	SDL_SetWindowTitle(s_window, newTitle.c_str());
 #endif
 }
 
 void Window::SetFullScreenMode(bool enable)
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_SetWindowFullscreen(window, enable);
+	SDL_SetWindowFullscreen(s_window, enable);
 	//if (enable)
 	//	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	//else
@@ -178,5 +178,5 @@ void Window::SetFullScreenMode(bool enable)
 
 void Window::UpdateAspectRatio()
 {
-	aspect = (float)width / (float)height;
+	s_aspect = (float)s_width / (float)s_height;
 }

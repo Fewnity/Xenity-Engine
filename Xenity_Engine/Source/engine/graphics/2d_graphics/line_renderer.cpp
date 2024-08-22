@@ -20,7 +20,7 @@
 
 LineRenderer::LineRenderer()
 {
-	componentName = "LineRenderer";
+	m_componentName = "LineRenderer";
 }
 
 ReflectiveData LineRenderer::GetReflectiveData()

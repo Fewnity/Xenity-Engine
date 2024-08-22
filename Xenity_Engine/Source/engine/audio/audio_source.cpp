@@ -26,7 +26,7 @@
 
 AudioSource::AudioSource()
 {
-	componentName = "AudioSource";
+	m_componentName = "AudioSource";
 	AssetManager::AddReflection(this);
 }
 

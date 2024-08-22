@@ -41,18 +41,18 @@
 #include <pspnet_resolver.h>
 #include <psputility.h>
 #include <psputils.h>
-pspUtilityNetconfData NetworkManager::pspNetworkData;
+pspUtilityNetconfData NetworkManager::s_pspNetworkData;
 struct pspUtilityNetconfAdhoc adhocparam;
-int NetworkManager::result = -1;
+int NetworkManager::s_result = -1;
 #endif
 
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 
-bool NetworkManager::done = false;
+bool NetworkManager::s_done = false;
 
-std::vector<std::shared_ptr<Socket>> NetworkManager::sockets;
-bool NetworkManager::needDrawMenu = false;
+std::vector<std::shared_ptr<Socket>> NetworkManager::s_sockets;
+bool NetworkManager::s_needDrawMenu = false;
 
 void NetworkManager::Init()
 {
@@ -64,20 +64,20 @@ void NetworkManager::Init()
 	sceNetInetInit();
 	sceNetApctlInit(0x8000, 48);
 
-	memset(&pspNetworkData, 0, sizeof(pspNetworkData));
-	pspNetworkData.base.size = sizeof(pspNetworkData);
-	pspNetworkData.base.language = PSP_SYSTEMPARAM_LANGUAGE_ENGLISH;
-	pspNetworkData.base.buttonSwap = PSP_UTILITY_ACCEPT_CROSS;
-	pspNetworkData.base.graphicsThread = 17;
-	pspNetworkData.base.accessThread = 19;
-	pspNetworkData.base.fontThread = 18;
-	pspNetworkData.base.soundThread = 16;
-	pspNetworkData.action = PSP_NETCONF_ACTION_CONNECTAP;
+	memset(&s_pspNetworkData, 0, sizeof(s_pspNetworkData));
+	s_pspNetworkData.base.size = sizeof(s_pspNetworkData);
+	s_pspNetworkData.base.language = PSP_SYSTEMPARAM_LANGUAGE_ENGLISH;
+	s_pspNetworkData.base.buttonSwap = PSP_UTILITY_ACCEPT_CROSS;
+	s_pspNetworkData.base.graphicsThread = 17;
+	s_pspNetworkData.base.accessThread = 19;
+	s_pspNetworkData.base.fontThread = 18;
+	s_pspNetworkData.base.soundThread = 16;
+	s_pspNetworkData.action = PSP_NETCONF_ACTION_CONNECTAP;
 
 	memset(&adhocparam, 0, sizeof(adhocparam));
-	pspNetworkData.adhocparam = &adhocparam;
+	s_pspNetworkData.adhocparam = &adhocparam;
 
-	sceUtilityNetconfInitStart(&pspNetworkData);
+	sceUtilityNetconfInitStart(&s_pspNetworkData);
 #else
 	if (EngineSettings::values.useOnlineDebugger)
 	{
@@ -88,29 +88,29 @@ void NetworkManager::Init()
 
 void NetworkManager::Update()
 {
-	const int socketCount = (int)sockets.size();
+	const int socketCount = (int)s_sockets.size();
 	for (int i = 0; i < socketCount; i++)
 	{
-		sockets[i]->Update();
+		s_sockets[i]->Update();
 	}
 }
 
 void Socket::Update()
 {
 #if !defined(_EE)
-	if (socketId < 0)
+	if (m_socketId < 0)
 		return;
 
 	char recvBuff[1024];
 	int recvd_len;
 
-	incommingData.clear();
+	m_incommingData.clear();
 
 	// Read a maximum of 1022 char in one loop
-	while ((recvd_len = recv(socketId, recvBuff, 1023, 0)) > 0) // if recv returns 0, the socket has been closed. (Sometimes yes, sometimes not, lol)
+	while ((recvd_len = recv(m_socketId, recvBuff, 1023, 0)) > 0) // if recv returns 0, the socket has been closed. (Sometimes yes, sometimes not, lol)
 	{
 		recvBuff[recvd_len] = 0;
-		incommingData += recvBuff;
+		m_incommingData += recvBuff;
 	}
 #endif
 }
@@ -119,9 +119,9 @@ void Socket::Close()
 {
 #if !defined(_EE)
 #if defined(_WIN32) || defined(_WIN64)
-	closesocket(socketId);
+	closesocket(m_socketId);
 #elif defined(__PSP__) || defined(__vita__)
-	close(socketId);
+	close(m_socketId);
 #endif
 #endif
 }
@@ -133,18 +133,18 @@ Socket::~Socket()
 
 void Socket::SendData(const std::string& text)
 {
-	if (socketId < 0 || text.empty())
+	if (m_socketId < 0 || text.empty())
 		return;
 
 	const int infoLentgh = (int)text.size();
 #if !defined(_EE)
-	send(socketId, text.c_str(), infoLentgh, 0); // Send data to server
+	send(m_socketId, text.c_str(), infoLentgh, 0); // Send data to server
 #endif
 }
 
 void NetworkManager::DrawNetworkSetupMenu()
 {
-	if (!done)
+	if (!s_done)
 	{
 #if defined(__PSP__)
 		sceGuFinish();
@@ -154,16 +154,16 @@ void NetworkManager::DrawNetworkSetupMenu()
 		{
 		case PSP_UTILITY_DIALOG_NONE:
 		{
-			result = pspNetworkData.base.result;
-			Debug::Print("Network setup: " + std::to_string(result), true);
-			if (result == 0)
+			s_result = s_pspNetworkData.base.result;
+			Debug::Print("Network setup: " + std::to_string(s_result), true);
+			if (s_result == 0)
 			{
 				if (EngineSettings::values.useOnlineDebugger)
 				{
 					Debug::ConnectToOnlineConsole();
 				}
 			}
-			done = true;
+			s_done = true;
 		}
 		break;
 

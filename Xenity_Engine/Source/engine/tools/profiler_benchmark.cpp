@@ -25,20 +25,20 @@ ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::str
 	{
 		Performance::profilerCategories[category]->profilerList[name] = new ProfilerValue();
 	}
-	profilerValue = Performance::profilerCategories[category]->profilerList[name];
+	m_profilerValue = Performance::profilerCategories[category]->profilerList[name];
 #endif
 }
 
 ProfilerBenchmark::~ProfilerBenchmark()
 {
-	delete bench;
+	delete m_bench;
 }
 
 void ProfilerBenchmark::Start()
 {
 #if defined(EDITOR)&& defined(DEBUG)
 	if (EngineSettings::values.useProfiler)
-		bench->Start();
+		m_bench->Start();
 #endif
 }
 
@@ -47,8 +47,8 @@ void ProfilerBenchmark::Stop()
 #if defined(EDITOR)&& defined(DEBUG)
 	if (EngineSettings::values.useProfiler)
 	{
-		bench->Stop();
-		profilerValue->AddValue(bench->GetMicroSeconds());
+		m_bench->Stop();
+		m_profilerValue->AddValue(m_bench->GetMicroSeconds());
 	}
 #endif
 }

@@ -75,7 +75,7 @@ public:
 	static void SetFullScreenMode(bool enable);
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	static SDL_Window* window;
+	static SDL_Window* s_window;
 #endif
 
 private:
@@ -90,6 +90,6 @@ private:
 	*/
 	static void OnResize();
 
-	static int width, height;
-	static float aspect;
+	static int s_width, s_height;
+	static float s_aspect;
 };

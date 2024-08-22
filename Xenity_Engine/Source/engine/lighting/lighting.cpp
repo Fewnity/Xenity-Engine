@@ -27,7 +27,7 @@
 
 Light::Light()
 {
-	componentName = "Light";
+	m_componentName = "Light";
 	AssetManager::AddReflection(this);
 }
 
@@ -44,20 +44,20 @@ void Light::RemoveReferences()
 ReflectiveData Light::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, type, "type", true);
+	Reflective::AddVariable(reflectedVariables, m_type, "type", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, intensity, "intensity", true);
-	Reflective::AddVariable(reflectedVariables, range, "range", type != LightType::Directional && type != LightType::Ambient);
-	Reflective::AddVariable(reflectedVariables, spotAngle, "spotAngle", type == LightType::Spot);
-	Reflective::AddVariable(reflectedVariables, spotSmoothness, "spotSmoothness", type == LightType::Spot);
+	Reflective::AddVariable(reflectedVariables, m_intensity, "intensity", true);
+	Reflective::AddVariable(reflectedVariables, m_range, "range", m_type != LightType::Directional && m_type != LightType::Ambient);
+	Reflective::AddVariable(reflectedVariables, m_spotAngle, "spotAngle", m_type == LightType::Spot);
+	Reflective::AddVariable(reflectedVariables, m_spotSmoothness, "spotSmoothness", m_type == LightType::Spot);
 	return reflectedVariables;
 }
 
 void Light::OnReflectionUpdated()
 {
-	SetRange(range);
-	SetSpotAngle(spotAngle);
-	SetSpotSmoothness(spotSmoothness);
+	SetRange(m_range);
+	SetSpotAngle(m_spotAngle);
+	SetSpotSmoothness(m_spotSmoothness);
 }
 
 #pragma endregion
@@ -66,7 +66,7 @@ void Light::OnReflectionUpdated()
 
 void Light::SetupPointLight(const Color &_color, const float _intensity, const float _range)
 {
-	this->type = LightType::Point;
+	this->m_type = LightType::Point;
 
 	this->color = _color;
 	SetIntensity(_intensity);
@@ -75,35 +75,35 @@ void Light::SetupPointLight(const Color &_color, const float _intensity, const f
 
 void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 {
-	this->type = LightType::Directional;
+	this->m_type = LightType::Directional;
 
 	this->color = _color;
 	SetIntensity(_intensity);
-	this->quadratic = 0;
-	this->linear = 0;
+	this->m_quadratic = 0;
+	this->m_linear = 0;
 }
 
 void Light::SetupAmbientLight(const Color& _color, const float _intensity)
 {
-	this->type = LightType::Ambient;
+	this->m_type = LightType::Ambient;
 
 	this->color = _color;
 	SetIntensity(_intensity);
-	this->quadratic = 0;
-	this->linear = 0;
+	this->m_quadratic = 0;
+	this->m_linear = 0;
 }
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle)
 {
-	SetupSpotLight(_color, _intensity, _range, _angle, spotSmoothness);
+	SetupSpotLight(_color, _intensity, _range, _angle, m_spotSmoothness);
 }
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
-	this->type = LightType::Spot;
+	this->m_type = LightType::Spot;
 
 	this->color = _color;
-	this->intensity = _intensity;
+	this->m_intensity = _intensity;
 	SetRange(_range);
 	SetSpotAngle(_angle);
 	SetSpotSmoothness(_smoothness);
@@ -119,9 +119,9 @@ void Light::OnDrawGizmos()
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
 	IconName icon = IconName::Icon_Point_Light;
-	if(type == LightType::Directional || type == LightType::Ambient)
+	if(m_type == LightType::Directional || m_type == LightType::Ambient)
 		icon = IconName::Icon_Sun_Light;
-	else if (type == LightType::Spot)
+	else if (m_type == LightType::Spot)
 		icon = IconName::Icon_Spot_Light;
 
 	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)icon], color);
@@ -136,17 +136,17 @@ void Light::OnDrawGizmosSelected()
 
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
-	if (type == LightType::Point) 
+	if (m_type == LightType::Point) 
 	{
 
-		const float fixedLinear = (0.7f * 7.0f) / (range);
-		const float fixedQuadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f));
+		const float fixedLinear = (0.7f * 7.0f) / (m_range);
+		const float fixedQuadratic = (7 * 1.8f) / ((powf(m_range, 2) / 6.0f));
 		const float minIntensity = 0.05f;
 		const float dis = (-minIntensity * fixedLinear + sqrtf(powf(minIntensity * fixedLinear, 2) - 4 * minIntensity * fixedQuadratic * (minIntensity - 1))) / (2 * minIntensity * fixedQuadratic);
 
 		Gizmo::DrawSphere(GetTransform()->GetPosition(), dis);
 	}
-	else if (type == LightType::Directional || type == LightType::Spot)
+	else if (m_type == LightType::Directional || m_type == LightType::Spot)
 	{
 		Gizmo::DrawLine(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward() * 3);
 	}
@@ -155,12 +155,12 @@ void Light::OnDrawGizmosSelected()
 
 void Light::UpdateLightValues()
 {
-	float tempInsity = intensity;
-	if(intensity == 0)
+	float tempInsity = m_intensity;
+	if(m_intensity == 0)
 		tempInsity = 0.0001f;
 
-	linear = (0.7f * 7.0f) / (range / tempInsity);
-	quadratic = (7 * 1.8f) / ((powf(range, 2) / 6.0f) / tempInsity);
+	m_linear = (0.7f * 7.0f) / (m_range / tempInsity);
+	m_quadratic = (7 * 1.8f) / ((powf(m_range, 2) / 6.0f) / tempInsity);
 }
 
 
@@ -171,7 +171,7 @@ void Light::SetSpotAngle(float angle)
 	else if (angle > 90)
 		angle = 90;
 
-	spotAngle = angle;
+	m_spotAngle = angle;
 }
 
 void Light::SetSpotSmoothness(float smoothness)
@@ -181,14 +181,14 @@ void Light::SetSpotSmoothness(float smoothness)
 	else if (smoothness > 1)
 		smoothness = 1;
 
-	spotSmoothness = smoothness;
+	m_spotSmoothness = smoothness;
 }
 
 void Light::SetIntensity(float intensity)
 {
 	if (intensity < 0)
 		intensity = 0;
-	this->intensity = intensity;
+	this->m_intensity = intensity;
 }
 
 void Light::SetRange(float value)
@@ -196,8 +196,8 @@ void Light::SetRange(float value)
 	if (value < 0)
 		value = 0;
 
-	range = value;
-	if (type != LightType::Directional)
+	m_range = value;
+	if (m_type != LightType::Directional)
 		UpdateLightValues();
 }
 

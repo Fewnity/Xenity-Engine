@@ -37,7 +37,7 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 	{
 		if (const std::shared_ptr<Component> component = std::dynamic_pointer_cast<Component>(lockPointer))
 		{
-			if (component->waitingForDestroy)
+			if (component->m_waitingForDestroy)
 			{
 				valid = false;
 			}

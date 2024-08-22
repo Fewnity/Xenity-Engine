@@ -107,10 +107,8 @@ public:
 /**
  * @brief [Internal]
  */
-class API ReflectiveEntry
+struct API ReflectiveEntry
 {
-public:
-	ReflectiveEntry() = default;
 	std::optional<VariableReference> variable;
 	uint64_t typeId = 0;
 	TypeSpawner* typeSpawner = nullptr;

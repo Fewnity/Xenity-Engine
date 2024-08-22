@@ -125,9 +125,9 @@ void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 	XASSERT(component != nullptr, "[GameObject::RemoveComponent] component is nullptr");
 
 	// If the component is not already waiting for destroy
-	if (component && !component->waitingForDestroy)
+	if (component && !component->m_waitingForDestroy)
 	{
-		component->waitingForDestroy = true;
+		component->m_waitingForDestroy = true;
 		GameplayManager::componentsToDestroy.push_back(component);
 
 		// Remove the component from the gameobject's components list
@@ -233,7 +233,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && IsLocalActive())
 	{
 		componentToAdd->Awake();
-		componentToAdd->isAwakeCalled = true;
+		componentToAdd->m_isAwakeCalled = true;
 	}
 }
 
@@ -349,9 +349,9 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 				if (localActive) 
 				{
 					component->OnEnabled();
-					if (!component->isAwakeCalled)
+					if (!component->m_isAwakeCalled)
 					{
-						component->isAwakeCalled = true;
+						component->m_isAwakeCalled = true;
 						component->Awake();
 					}
 				}

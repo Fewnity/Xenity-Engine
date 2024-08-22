@@ -473,9 +473,9 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 	if (lightIndex >= maxLightCount)
 		return;
 
-	float intensity = light.intensity;
+	float intensity = light.m_intensity;
 	const Color& color = light.color;
-	const LightType& type = light.type;
+	const LightType& type = light.m_type;
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
@@ -572,17 +572,17 @@ void RendererOpengl::Setlights(const Camera& camera)
 		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
 		if (light && light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
-			if (light->type == LightType::Directional)
+			if (light->m_type == LightType::Directional)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, *light,  Vector3(0, 0, 0) + dir, dir);
 			}
-			else if (light->type == LightType::Ambient)
+			else if (light->m_type == LightType::Ambient)
 			{
 				SetLight(usedLightCount, *light, Vector3(0, 0, 0), Vector3(0, 0, 0));
 			}
-			else if (light->type == LightType::Spot)
+			else if (light->m_type == LightType::Spot)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x + 180).Normalized();

@@ -11,9 +11,9 @@ void BottomBarMenu::Draw()
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + viewport->Size.y - 32));
 	ImGui::Begin("bottom_bar", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-	if (Debug::lastDebugMessageHistoryIndex != -1)
+	if (Debug::s_lastDebugMessageHistoryIndex != -1)
 	{
-		const DebugHistory& history = Debug::debugMessageHistory[Debug::lastDebugMessageHistoryIndex];
+		const DebugHistory& history = Debug::s_debugMessageHistory[Debug::s_lastDebugMessageHistoryIndex];
 
 		ImVec4 color = ImVec4(1, 1, 1, 1);
 		if (history.type == DebugType::Warning)
@@ -25,10 +25,10 @@ void BottomBarMenu::Draw()
 			color = ImVec4(1, 0, 0, 1);
 		}
 
-		ImVec2 txtSize = ImGui::CalcTextSize(Debug::debugMessageHistory[Debug::lastDebugMessageHistoryIndex].message.c_str());
+		ImVec2 txtSize = ImGui::CalcTextSize(Debug::s_debugMessageHistory[Debug::s_lastDebugMessageHistoryIndex].message.c_str());
 		ImGui::SetCursorPosX(4);
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetContentRegionAvail().y / 2 - txtSize.y / 2);
-		ImGui::TextColored(color, "%s", Debug::debugMessageHistory[Debug::lastDebugMessageHistoryIndex].message.c_str());
+		ImGui::TextColored(color, "%s", Debug::s_debugMessageHistory[Debug::s_lastDebugMessageHistoryIndex].message.c_str());
 		// Find a way to force a dock to change tab
 		/*if (ImGui::IsItemClicked())
 		{

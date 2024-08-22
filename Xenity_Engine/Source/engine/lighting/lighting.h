@@ -93,12 +93,12 @@ public:
 
 	inline LightType GetType() const
 	{
-		return type;
+		return m_type;
 	}
 
 	inline void SetType(LightType type)
 	{
-		this->type = type;
+		this->m_type = type;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public:
 	*/
 	inline float GetRange() const
 	{
-		return range;
+		return m_range;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public:
 	*/
 	inline float GetSpotAngle() const
 	{
-		return spotAngle;
+		return m_spotAngle;
 	}
 
 	/**
@@ -123,7 +123,7 @@ public:
 	*/
 	inline float GetSpotSmoothness() const
 	{
-		return spotSmoothness;
+		return m_spotSmoothness;
 	}
 
 	/**
@@ -131,7 +131,7 @@ public:
 	*/
 	inline float GetIntensity() const
 	{
-		return intensity;
+		return m_intensity;
 	}
 
 protected:
@@ -145,12 +145,12 @@ protected:
 
 	float GetLinearValue() const
 	{
-		return linear;
+		return m_linear;
 	}
 
 	float GetQuadraticValue() const
 	{
-		return quadratic;
+		return m_quadratic;
 	}
 
 	friend class Shader;
@@ -160,10 +160,10 @@ protected:
 	friend class RendererVU1;
 
 	//Spot and point light
-	float linear = 0;
-	float quadratic = 0;
+	float m_linear = 0;
+	float m_quadratic = 0;
 
-	float intensity = 1;
+	float m_intensity = 1;
 
 	/**
 	* @brief Calculate light values
@@ -171,10 +171,10 @@ protected:
 	void UpdateLightValues();
 
 	//Spot and point light
-	float range = 10;
+	float m_range = 10;
 	//For spot light
-	float spotAngle = 30;
-	float spotSmoothness = 0;
+	float m_spotAngle = 30;
+	float m_spotSmoothness = 0;
 
-	LightType type = LightType::Directional;
+	LightType m_type = LightType::Directional;
 };

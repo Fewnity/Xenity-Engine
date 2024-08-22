@@ -72,7 +72,6 @@ else if (platform == Platform::P_PS4)
 	return AssetPlatform::AP_PS4;
 else //if(platform == Platform::P_Windows || platform == Platform::P_Linux)
 	return AssetPlatform::AP_Standalone;
-
 }
 
 std::string Application::GetXenityVersion()

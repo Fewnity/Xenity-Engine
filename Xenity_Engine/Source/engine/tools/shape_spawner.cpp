@@ -17,9 +17,9 @@
 
 using namespace std;
 
-Vector3 ShapeSpawner::defaultPosition = Vector3(0, 0, 0);
-Vector3 ShapeSpawner::defaultRotation = Vector3(0, 0, 0);
-Vector3 ShapeSpawner::defaultScale = Vector3(1, 1, 1);
+Vector3 ShapeSpawner::s_defaultPosition = Vector3(0, 0, 0);
+Vector3 ShapeSpawner::s_defaultRotation = Vector3(0, 0, 0);
+Vector3 ShapeSpawner::s_defaultScale = Vector3(1, 1, 1);
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnCube()
 {
@@ -80,7 +80,7 @@ void ShapeSpawner::SetDefaultValues(const std::shared_ptr <GameObject>& gameObje
 	XASSERT(gameObject != nullptr, "[ShapeSpawner::SetDefaultValues] gameObject is empty");
 
 	std::shared_ptr<Transform> transform = gameObject->GetTransform();
-	transform->SetPosition(defaultPosition);
-	transform->SetRotation(defaultRotation);
-	transform->SetLocalScale(defaultScale);
+	transform->SetPosition(s_defaultPosition);
+	transform->SetRotation(s_defaultRotation);
+	transform->SetLocalScale(s_defaultScale);
 }

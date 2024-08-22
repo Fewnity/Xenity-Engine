@@ -14,7 +14,7 @@
 
 Collider::~Collider()
 {
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		//Remove from the rigidbody
 		const size_t colliderCount = rb->colliders.size();
@@ -29,35 +29,35 @@ Collider::~Collider()
 		}
 	}
 
-	if (bulletCollisionObject)
+	if (m_bulletCollisionObject)
 	{
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 
-		delete bulletCollisionObject;
-		bulletCollisionObject = nullptr;
+		delete m_bulletCollisionObject;
+		m_bulletCollisionObject = nullptr;
 	}
 
-	if (bulletCollisionShape)
+	if (m_bulletCollisionShape)
 	{
-		if (attachedRigidbody.lock())
+		if (m_attachedRigidbody.lock())
 		{
 			if (!isTrigger)
-				attachedRigidbody.lock()->RemoveShape(bulletCollisionShape);
+				m_attachedRigidbody.lock()->RemoveShape(m_bulletCollisionShape);
 			else
-				attachedRigidbody.lock()->RemoveTriggerShape(bulletCollisionShape);
+				m_attachedRigidbody.lock()->RemoveTriggerShape(m_bulletCollisionShape);
 		}
 
-		delete bulletCollisionShape;
-		bulletCollisionShape = nullptr;
+		delete m_bulletCollisionShape;
+		m_bulletCollisionShape = nullptr;
 	}
 
 }
 
 void Collider::FindRigidbody()
 {
-	bool isAttached = attachedRigidbody.lock() != nullptr;
-	attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	bool isAttached = m_attachedRigidbody.lock() != nullptr;
+	m_attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isAttached)
 		{
@@ -69,9 +69,9 @@ void Collider::FindRigidbody()
 
 void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 {
-	bool isAttached = attachedRigidbody.lock() != nullptr;
-	attachedRigidbody = rb;
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	bool isAttached = m_attachedRigidbody.lock() != nullptr;
+	m_attachedRigidbody = rb;
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isAttached)
 		{
@@ -87,14 +87,14 @@ void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 
 void Collider::OnEnabled()
 {
-	if (bulletCollisionObject)
-		PhysicsManager::physDynamicsWorld->addCollisionObject(bulletCollisionObject);
+	if (m_bulletCollisionObject)
+		PhysicsManager::physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
 }
 
 void Collider::OnDisabled()
 {
-	if(bulletCollisionObject)
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+	if(m_bulletCollisionObject)
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 }
 
 void Collider::RemoveReferences()

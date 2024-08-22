@@ -158,7 +158,7 @@ void GameplayManager::OrderComponents()
 					for (int i = 0; i < componentsCount; i++)
 					{
 						// Check if the checked has a higher priority (lower value) than the component in the list
-						if (componentToCheck->updatePriority <= orderedComponents[i].lock()->updatePriority)
+						if (componentToCheck->m_updatePriority <= orderedComponents[i].lock()->m_updatePriority)
 						{
 							orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
 							placeFound = true;
@@ -186,7 +186,7 @@ void GameplayManager::InitialiseComponents()
 	{
 		if (auto componentToCheck = orderedComponents[i].lock())
 		{
-			if (!componentToCheck->initiated && componentToCheck->IsEnabled() && componentToCheck->GetGameObject()->IsLocalActive())
+			if (!componentToCheck->m_initiated && componentToCheck->IsEnabled() && componentToCheck->GetGameObject()->IsLocalActive())
 			{
 				orderedComponentsToInit.push_back(componentToCheck);
 				componentsToInitCount++;
@@ -199,7 +199,7 @@ void GameplayManager::InitialiseComponents()
 	{
 		lastUpdatedComponent = orderedComponentsToInit[i];
 		orderedComponentsToInit[i]->Start();
-		orderedComponentsToInit[i]->initiated = true;
+		orderedComponentsToInit[i]->m_initiated = true;
 	}
 }
 

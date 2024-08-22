@@ -25,7 +25,7 @@ public:
 	Socket() = delete;
 	explicit Socket(int socketId)
 	{
-		this->socketId = socketId;
+		this->m_socketId = socketId;
 	}
 
 	~Socket();
@@ -45,7 +45,7 @@ public:
 	*/
 	const std::string& GetIncommingData() const
 	{
-		return incommingData;
+		return m_incommingData;
 	}
 
 protected:
@@ -56,15 +56,13 @@ protected:
 	*/
 	void Update();
 
-	std::string incommingData;
-	int socketId = -1;
+	std::string m_incommingData;
+	int m_socketId = -1;
 };
 
 class API NetworkManager
 {
 public:
-
-
 	/**
 	* @brief Create a socket
 	*/
@@ -90,12 +88,12 @@ private:
 	*/
 	static void DrawNetworkSetupMenu();
 
-	static bool needDrawMenu;
+	static bool s_needDrawMenu;
 #if defined(__PSP__)
-	static pspUtilityNetconfData pspNetworkData;
-	static int result;
+	static pspUtilityNetconfData s_pspNetworkData;
+	static int s_result;
 #endif
-	static bool done;
+	static bool s_done;
 
-	static std::vector< std::shared_ptr<Socket>> sockets;
+	static std::vector< std::shared_ptr<Socket>> s_sockets;
 };

@@ -12,9 +12,9 @@
 
 #include "window.h"
 
-int Screen::height = 0;
-int Screen::width = 0;
-bool Screen::useVSync = true;
+int Screen::s_height = 0;
+int Screen::s_width = 0;
+bool Screen::s_useVSync = true;
 
 void Screen::SetFullScreen(bool useFullScreenMode)
 {
@@ -26,7 +26,7 @@ void Screen::SetFullScreen(bool useFullScreenMode)
 
 void Screen::SetVSync(bool _useVSync)
 {
-	useVSync = _useVSync;
+	s_useVSync = _useVSync;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (_useVSync) 
 	{
@@ -41,5 +41,5 @@ void Screen::SetVSync(bool _useVSync)
 
 bool Screen::IsVSyncEnabled()
 {
-	return useVSync;
+	return s_useVSync;
 }

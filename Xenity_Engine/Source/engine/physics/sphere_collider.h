@@ -25,18 +25,16 @@ public:
 	SphereCollider();
 	~SphereCollider();
 
-	Event<std::shared_ptr<SphereCollider>> onTriggerEvent;
-
 	void SetSize(const float& size);
 	inline const float& GetSize() const
 	{
-		return size;
+		return m_size;
 	}
 
 	void SetOffset(const Vector3& offset);
 	inline const Vector3& GetOffset() const
 	{
-		return offset;
+		return m_offset;
 	}
 
 protected:
@@ -65,7 +63,7 @@ protected:
 
 	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{
-		return attachedRigidbody;
+		return m_attachedRigidbody;
 	}
 
 	/**
@@ -75,6 +73,6 @@ protected:
 	*/
 	static bool CheckTrigger(const SphereCollider& a, const SphereCollider& b);
 
-	float size = 1;
-	Vector3 offset = Vector3(0);
+	float m_size = 1;
+	Vector3 m_offset = Vector3(0);
 };

@@ -30,20 +30,26 @@ Component::~Component()
 
 #pragma endregion
 
+void Component::SetUpdatePriority(int priority)
+{
+	m_updatePriority = priority;
+	GameplayManager::componentsListDirty = true;
+}
+
 void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 {
 	XASSERT(newGameObject != nullptr, "[Component::SetGameObject] newGameObject is empty");
 
 	// Check if the component has been just instanciated
 	bool firstUse = false;
-	if (this->gameObject.expired())
+	if (this->m_gameObject.expired())
 	{
 		GameplayManager::componentsListDirty = true;
 		firstUse = true;
 	}
 
-	this->gameObject = newGameObject;
-	this->transform = newGameObject->GetTransform();
+	this->m_gameObject = newGameObject;
+	this->m_transform = newGameObject->GetTransform();
 
 	if (firstUse)
 	{
@@ -81,11 +87,11 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 void Component::SetIsEnabled(bool isEnabled)
 {
-	if(this->isEnabled == isEnabled)
+	if (this->m_isEnabled == isEnabled)
 		return;
 
-	this->isEnabled = isEnabled;
-	if (isEnabled)
+	this->m_isEnabled = isEnabled;
+	if (m_isEnabled)
 		OnEnabled();
 	else
 		OnDisabled();

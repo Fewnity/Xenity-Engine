@@ -18,14 +18,14 @@ class API UniqueId
 public:
 	inline UniqueId()
 	{
-		this->forFile = false;
-		this->uniqueId = GenerateUniqueId(forFile);
+		this->m_forFile = false;
+		this->m_uniqueId = GenerateUniqueId(m_forFile);
 	}
 
 	inline UniqueId(bool _forFile)
 	{
-		this->forFile = _forFile;
-		this->uniqueId = GenerateUniqueId(_forFile);
+		this->m_forFile = _forFile;
+		this->m_uniqueId = GenerateUniqueId(_forFile);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public:
 	*/
 	inline uint64_t GetUniqueId() const
 	{
-		return uniqueId;
+		return m_uniqueId;
 	}
 
 private:
@@ -77,10 +77,10 @@ private:
 	*/
 	inline void SetUniqueId(uint64_t id)
 	{
-		uniqueId = id;
+		m_uniqueId = id;
 	}
 
-	uint64_t uniqueId;
-	bool forFile = false;
+	uint64_t m_uniqueId;
+	bool m_forFile = false;
 };
 

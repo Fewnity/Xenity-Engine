@@ -36,7 +36,7 @@
 
 Camera::Camera()
 {
-	componentName = "Camera";
+	m_componentName = "Camera";
 
 	this->fov = 60;
 	isProjectionDirty = true;

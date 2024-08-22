@@ -24,28 +24,28 @@
 #include <engine/audio/audio_manager.h>
 #include "performance.h"
 
-std::shared_ptr<File> Debug::file = nullptr;
-std::string Debug::debugText = "";
-std::shared_ptr<Socket> Debug::socket = nullptr;
+std::shared_ptr<File> Debug::s_file = nullptr;
+std::string Debug::s_debugText = "";
+std::shared_ptr<Socket> Debug::s_socket = nullptr;
 
-float Debug::SendProfilerCooldown = 0;
-float Debug::SendProfilerDelay = 0.2f;
-std::vector<DebugHistory> Debug::debugMessageHistory;
+float Debug::s_sendProfilerCooldown = 0;
+float Debug::s_sendProfilerDelay = 0.2f;
+std::vector<DebugHistory> Debug::s_debugMessageHistory;
 
-Event<> Debug::OnDebugLogEvent;
-size_t Debug::lastDebugMessageHistoryIndex = -1;
+Event<> Debug::s_onDebugLogEvent;
+size_t Debug::s_lastDebugMessageHistoryIndex = -1;
 MyMutex* debugMutex = nullptr;
 
 /**
  * Print an error in the console and the debug file
  */
-void Debug::PrintError(const std::string& text, bool hideInConsole)
+void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
 {
 	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	if(!hideInConsole)
+	if(!hideInEditorConsole)
 		AddMessageInHistory(text, DebugType::Error);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
@@ -53,22 +53,22 @@ void Debug::PrintError(const std::string& text, bool hideInConsole)
 	const std::string textWithColor = "\033[31m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	if (!hideInConsole)
-		debugText += textWithoutColor;
+	if (!hideInEditorConsole)
+		s_debugText += textWithoutColor;
 	debugMutex->Unlock();
-	OnDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger();
 }
 
 /**
  * Print a warning in the console and the debug file
  */
-void Debug::PrintWarning(const std::string& text, bool hideInConsole)
+void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
 {
 	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	if (!hideInConsole)
+	if (!hideInEditorConsole)
 		AddMessageInHistory(text, DebugType::Warning);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
@@ -76,19 +76,19 @@ void Debug::PrintWarning(const std::string& text, bool hideInConsole)
 	const std::string textWithColor = "\033[33m" + textWithoutColor;
 	PrintInConsole(textWithColor);
 	PrintInFile(textWithoutColor);
-	if (!hideInConsole)
-		debugText += textWithoutColor;
+	if (!hideInEditorConsole)
+		s_debugText += textWithoutColor;
 	debugMutex->Unlock();
-	OnDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger();
 }
 
 void Debug::SendProfilerDataToServer()
 {
-	if (socket)
+	if (s_socket)
 	{
-		if (SendProfilerCooldown <= 0)
+		if (s_sendProfilerCooldown <= 0)
 		{
-			SendProfilerCooldown = SendProfilerDelay;
+			s_sendProfilerCooldown = s_sendProfilerDelay;
 			if (EngineSettings::values.useProfiler)
 			{
 				//Add profiler texts
@@ -110,7 +110,7 @@ void Debug::SendProfilerDataToServer()
 		}
 		else
 		{
-			SendProfilerCooldown -= Time::GetUnscaledDeltaTime();
+			s_sendProfilerCooldown -= Time::GetUnscaledDeltaTime();
 		}
 	}
 }
@@ -131,30 +131,30 @@ void Debug::PrintInConsole(const std::string& text)
 
 void Debug::PrintInFile(const std::string& text)
 {
-	if (file)
-		file->Write(text);
+	if (s_file)
+		s_file->Write(text);
 }
 
 /**
  * @brief Print text in the console and the debug file
  */
-void Debug::Print(const std::string& text, bool hideInConsole)
+void Debug::Print(const std::string& text, bool hideInEditorConsole)
 {
 	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
 		return;
 
 	debugMutex->Lock();
-	if (!hideInConsole)
+	if (!hideInEditorConsole)
 		AddMessageInHistory(text, DebugType::Log);
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string newString = "\033[37m" + finalText;
 	PrintInConsole(newString);
 	PrintInFile(finalText);
-	if (!hideInConsole)
-		debugText += finalText; // Disable because cause crashes, why? Maybe thread?
+	if (!hideInEditorConsole)
+		s_debugText += finalText; // Disable because cause crashes, why? Maybe thread?
 	debugMutex->Unlock();
-	OnDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger();
 }
 
 void Debug::ClearDebugLogs()
@@ -163,9 +163,9 @@ void Debug::ClearDebugLogs()
 		return;
 
 	debugMutex->Lock();
-	debugMessageHistory.clear();
-	lastDebugMessageHistoryIndex = -1;
-	debugText.clear();
+	s_debugMessageHistory.clear();
+	s_lastDebugMessageHistoryIndex = -1;
+	s_debugText.clear();
 	debugMutex->Unlock();
 }
 
@@ -175,16 +175,16 @@ void Debug::AddMessageInHistory(const std::string& message, DebugType messageTyp
 	if (!Engine::IsRunning(false))
 		return;
 
-	const size_t historySize = debugMessageHistory.size();
+	const size_t historySize = s_debugMessageHistory.size();
 	bool found = false;
 	for (size_t i = 0; i < historySize; i++)
 	{
-		DebugHistory& historyItem = debugMessageHistory[i];
+		DebugHistory& historyItem = s_debugMessageHistory[i];
 		if (historyItem.type == messageType && historyItem.message == message)
 		{
 			historyItem.count++;
 			found = true;
-			lastDebugMessageHistoryIndex = i;
+			s_lastDebugMessageHistoryIndex = i;
 			break;
 		}
 	}
@@ -195,25 +195,25 @@ void Debug::AddMessageInHistory(const std::string& message, DebugType messageTyp
 		historyItem.message = message;
 		historyItem.count = 1;
 		historyItem.type = messageType;
-		debugMessageHistory.push_back(historyItem);
-		lastDebugMessageHistoryIndex = debugMessageHistory.size() - 1;
+		s_debugMessageHistory.push_back(historyItem);
+		s_lastDebugMessageHistoryIndex = s_debugMessageHistory.size() - 1;
 	}
 #endif
 }
 
 void Debug::PrintInOnlineConsole(const std::string& text)
 {
-	if (socket)
+	if (s_socket)
 	{
 		const std::string finalText = "{1;" + text + "}";
-		socket->SendData(finalText);
+		s_socket->SendData(finalText);
 	}
 }
 
 void Debug::ConnectToOnlineConsole()
 {
 	Print("Connect to online console...", true);
-	socket = NetworkManager::CreateSocket("", 6004);
+	s_socket = NetworkManager::CreateSocket("", 6004);
 }
 
 /**
@@ -231,9 +231,9 @@ int Debug::Init()
 #endif
 	FileSystem::fileSystem->Delete(fileName);
 
-	file = FileSystem::MakeFile(fileName);
+	s_file = FileSystem::MakeFile(fileName);
 
-	if (!file->Open(FileMode::WriteCreateFile))
+	if (!s_file->Open(FileMode::WriteCreateFile))
 	{
 		Print("-------- Debug file not created --------", true);
 		return -1;

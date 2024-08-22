@@ -188,7 +188,7 @@ void EditorUI::NewFrame()
 
 void EditorUI::UpdateUIScale()
 {
-	const int index = SDL_GetDisplayForWindow(Window::window);
+	const int index = SDL_GetDisplayForWindow(Window::s_window);
 	if (index >= 0)
 	{
 		uiScale = SDL_GetDisplayContentScale(index);

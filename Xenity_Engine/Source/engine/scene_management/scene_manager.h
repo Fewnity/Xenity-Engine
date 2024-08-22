@@ -69,7 +69,7 @@ public:
 	*/
 	static inline const std::shared_ptr<Scene>& GetOpenedScene()
 	{
-		return openedScene;
+		return s_openedScene;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public:
 	*/
 	static inline void SetOpenedScene(const std::shared_ptr<Scene>& _openedScene)
 	{
-		openedScene = _openedScene;
+		s_openedScene = _openedScene;
 	}
 
 	/**
@@ -90,7 +90,7 @@ public:
 	 */
 	static inline bool GetSceneModified()
 	{
-		return sceneModified;
+		return s_sceneModified;
 	}
 
 	/**
@@ -106,8 +106,8 @@ private:
 	*/
 	static void LoadScene(const nlohmann::ordered_json& jsonData);
 
-	static std::shared_ptr<Scene> openedScene;
-	static bool sceneModified;
-	static constexpr int sceneVersion = 1;
+	static std::shared_ptr<Scene> s_openedScene;
+	static bool s_sceneModified;
+	static constexpr int s_sceneVersion = 1;
 };
 

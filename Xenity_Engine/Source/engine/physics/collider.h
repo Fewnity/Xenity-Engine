@@ -30,7 +30,7 @@ protected:
 
 	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{
-		return attachedRigidbody;
+		return m_attachedRigidbody;
 	}
 
 	void FindRigidbody();
@@ -41,8 +41,8 @@ protected:
 	void RemoveReferences()  override;
 	virtual void CreateCollision(bool forceCreation) = 0;
 
-	std::weak_ptr<RigidBody> attachedRigidbody;
-	btCollisionObject* bulletCollisionObject = nullptr;
-	btCollisionShape* bulletCollisionShape = nullptr;
+	std::weak_ptr<RigidBody> m_attachedRigidbody;
+	btCollisionObject* m_bulletCollisionObject = nullptr;
+	btCollisionShape* m_bulletCollisionShape = nullptr;
 };
 

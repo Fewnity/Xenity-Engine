@@ -19,9 +19,9 @@ using namespace std::chrono;
 void Benchmark::Start()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
-	start_point = high_resolution_clock::now();
+	m_start_point = high_resolution_clock::now();
 #elif defined(__PSP__)
-	sceRtcGetCurrentTick(&startTick);
+	sceRtcGetCurrentTick(&m_startTick);
 #endif
 }
 
@@ -31,15 +31,15 @@ void Benchmark::Start()
 void Benchmark::Stop()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
-	end_point = high_resolution_clock::now();
+	m_end_point = high_resolution_clock::now();
 
-	const long long start = time_point_cast<microseconds>(start_point).time_since_epoch().count();
-	const long long end = time_point_cast<microseconds>(end_point).time_since_epoch().count();
+	const long long start = time_point_cast<microseconds>(m_start_point).time_since_epoch().count();
+	const long long end = time_point_cast<microseconds>(m_end_point).time_since_epoch().count();
 
-	time = end - start;
+	m_time = end - start;
 #elif defined(__PSP__)
-	sceRtcGetCurrentTick(&endTick);
+	sceRtcGetCurrentTick(&m_endTick);
 
-	time = endTick - startTick;
+	m_time = m_endTick - m_startTick;
 #endif
 }

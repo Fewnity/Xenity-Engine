@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 MissingScript::MissingScript()
 {
-	componentName = "MissingScript";
+	m_componentName = "MissingScript";
 	AssetManager::AddReflection(this);
 }
 

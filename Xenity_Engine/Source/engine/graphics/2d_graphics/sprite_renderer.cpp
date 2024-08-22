@@ -16,7 +16,7 @@
 
 SpriteRenderer::SpriteRenderer()
 {
-	componentName = "SpriteRenderer";
+	m_componentName = "SpriteRenderer";
 	AssetManager::AddReflection(this);
 	//material = AssetManager::unlitMaterial;
 }

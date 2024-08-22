@@ -8,9 +8,10 @@ class ScopeBenchmark
 public:
 	ScopeBenchmark(const std::string& classAndFunction);
 	~ScopeBenchmark();
+
 private:
-	std::string name;
-	uint64_t start;
-	uint32_t scopeLevel;
+	std::string m_name;
+	uint64_t m_start;
+	uint32_t m_scopeLevel;
 };
 

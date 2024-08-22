@@ -25,7 +25,7 @@
 
 BoxCollider::BoxCollider()
 {
-	componentName = "BoxCollider";
+	m_componentName = "BoxCollider";
 	AssetManager::AddReflection(this);
 	CalculateBoundingBox();
 }
@@ -33,8 +33,8 @@ BoxCollider::BoxCollider()
 ReflectiveData BoxCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, size, "size", true);
-	AddVariable(reflectedVariables, offset, "offset", true);
+	AddVariable(reflectedVariables, s_size, "size", true);
+	AddVariable(reflectedVariables, m_offset, "offset", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
 	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
@@ -43,7 +43,7 @@ ReflectiveData BoxCollider::GetReflectiveData()
 void BoxCollider::OnReflectionUpdated()
 {
 	CalculateBoundingBox();
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		rb->UpdateGeneratesEvents();
 	}
@@ -53,19 +53,19 @@ void BoxCollider::OnReflectionUpdated()
 
 void BoxCollider::OnTransformScaled()
 {
-	if (bulletCollisionShape)
+	if (m_bulletCollisionShape)
 	{
 		const Vector3& scale = GetTransform()->GetScale();
-		bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+		m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
 
-		if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+		if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 		{
-			rb->RemoveShape(bulletCollisionShape);
-			rb->RemoveTriggerShape(bulletCollisionShape);
+			rb->RemoveShape(m_bulletCollisionShape);
+			rb->RemoveTriggerShape(m_bulletCollisionShape);
 			if (!isTrigger)
-				rb->AddShape(bulletCollisionShape, offset * scale);
+				rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 			else
-				rb->AddTriggerShape(bulletCollisionShape, offset * scale);
+				rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
 			rb->Activate();
 		}
 	}
@@ -73,14 +73,14 @@ void BoxCollider::OnTransformScaled()
 
 void BoxCollider::OnTransformUpdated()
 {
-	if (bulletCollisionObject)
+	if (m_bulletCollisionObject)
 	{
 		const Transform& transform = *GetTransform();
 
 		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
-		Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+		Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
-		bulletCollisionObject->setWorldTransform(btTransform(
+		m_bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
 			btVector3(-newPos.x, newPos.y, newPos.z)));
 	}
@@ -91,10 +91,10 @@ bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
 	const Vector3& aPos = a.GetTransform()->GetPosition();
 	const Vector3& bPos = b.GetTransform()->GetPosition();
 
-	const Vector3 aMinPos = a.min + aPos;
-	const Vector3 aMaxPos = a.max + aPos;
-	const Vector3 bMinPos = b.min + bPos;
-	const Vector3 bMaxPos = b.max + bPos;
+	const Vector3 aMinPos = a.m_min + aPos;
+	const Vector3 aMaxPos = a.m_max + aPos;
+	const Vector3 bMinPos = b.m_min + bPos;
+	const Vector3 bMaxPos = b.m_max + bPos;
 
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -113,10 +113,10 @@ CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollide
 	const Vector3& aPosition = a.GetTransform()->GetPosition();
 	const Vector3& bPosition = b.GetTransform()->GetPosition();
 
-	const Vector3 aMinPos = a.min + aPosition + aVelocity;
-	const Vector3 aMaxPos = a.max + aPosition + aVelocity;
-	const Vector3 bMinPos = b.min + bPosition;
-	const Vector3 bMaxPos = b.max + bPosition;
+	const Vector3 aMinPos = a.m_min + aPosition + aVelocity;
+	const Vector3 aMaxPos = a.m_max + aPosition + aVelocity;
+	const Vector3 bMinPos = b.m_min + bPosition;
+	const Vector3 bMaxPos = b.m_max + bPosition;
 
 	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
 	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
@@ -125,8 +125,8 @@ CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollide
 
 	if (xColl && yColl && zColl)
 	{
-		const Vector3 aMinPosBef = a.min + aPosition;
-		const Vector3 aMaxPosBef = a.max + aPosition;
+		const Vector3 aMinPosBef = a.m_min + aPosition;
+		const Vector3 aMaxPosBef = a.m_max + aPosition;
 		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
 		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
 		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
@@ -164,38 +164,38 @@ void BoxCollider::Start()
 
 void BoxCollider::CreateCollision(bool forceCreation)
 {
-	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
+	if (!forceCreation && (m_bulletCollisionShape || m_bulletCollisionObject))
 		return;
 
-	if (bulletCollisionObject)
+	if (m_bulletCollisionObject)
 	{
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 
-		delete bulletCollisionObject;
-		bulletCollisionObject = nullptr;
+		delete m_bulletCollisionObject;
+		m_bulletCollisionObject = nullptr;
 	}
 
 	const Vector3& scale = GetTransform()->GetScale();
 
-	if (!bulletCollisionShape) 
+	if (!m_bulletCollisionShape) 
 	{
-		bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
+		m_bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
 	}
 
-	bulletCollisionShape->setLocalScaling(btVector3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
-	bulletCollisionShape->setUserPointer(this);
+	m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
+	m_bulletCollisionShape->setUserPointer(this);
 
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isTrigger)
-			rb->AddShape(bulletCollisionShape, offset * scale);
+			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 		else
-			rb->AddTriggerShape(bulletCollisionShape, offset * scale);
+			rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
 	}
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 
@@ -204,18 +204,18 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		startTransform.setOrigin(btVector3(-newPos.x, newPos.y, newPos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		bulletCollisionObject = new btCollisionObject();
-		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
-		bulletCollisionObject->setWorldTransform(startTransform);
-		bulletCollisionObject->setUserPointer(this);
-		bulletCollisionObject->setRestitution(1);
+		m_bulletCollisionObject = new btCollisionObject();
+		m_bulletCollisionObject->setCollisionShape(m_bulletCollisionShape);
+		m_bulletCollisionObject->setWorldTransform(startTransform);
+		m_bulletCollisionObject->setUserPointer(this);
+		m_bulletCollisionObject->setRestitution(1);
 
 		if (isTrigger)
 		{
-			bulletCollisionObject->setCollisionFlags(bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+			m_bulletCollisionObject->setCollisionFlags(m_bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
-		PhysicsManager::physDynamicsWorld->addCollisionObject(bulletCollisionObject);
+		PhysicsManager::physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
 	}
 }
 
@@ -229,15 +229,15 @@ void BoxCollider::OnDrawGizmosSelected()
 	Gizmo::SetColor(lineColor);
 
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-	Vector3 bottom0 = matrix * glm::vec4(-min.x, min.y, min.z, 1);
-	Vector3 bottom1 = matrix * glm::vec4(-min.x, min.y, max.z, 1);
-	Vector3 bottom2 = matrix * glm::vec4(-max.x, min.y, min.z, 1);
-	Vector3 bottom3 = matrix * glm::vec4(-max.x, min.y, max.z, 1);
+	Vector3 bottom0 = matrix * glm::vec4(-m_min.x, m_min.y, m_min.z, 1);
+	Vector3 bottom1 = matrix * glm::vec4(-m_min.x, m_min.y, m_max.z, 1);
+	Vector3 bottom2 = matrix * glm::vec4(-m_max.x, m_min.y, m_min.z, 1);
+	Vector3 bottom3 = matrix * glm::vec4(-m_max.x, m_min.y, m_max.z, 1);
 
-	Vector3 top0 = matrix * glm::vec4(-min.x, max.y, min.z, 1);
-	Vector3 top1 = matrix * glm::vec4(-min.x, max.y, max.z, 1);
-	Vector3 top2 = matrix * glm::vec4(-max.x, max.y, min.z, 1);
-	Vector3 top3 = matrix * glm::vec4(-max.x, max.y, max.z, 1);
+	Vector3 top0 = matrix * glm::vec4(-m_min.x, m_max.y, m_min.z, 1);
+	Vector3 top1 = matrix * glm::vec4(-m_min.x, m_max.y, m_max.z, 1);
+	Vector3 top2 = matrix * glm::vec4(-m_max.x, m_max.y, m_min.z, 1);
+	Vector3 top3 = matrix * glm::vec4(-m_max.x, m_max.y, m_max.z, 1);
 
 	bottom0.x = -bottom0.x;
 	bottom1.x = -bottom1.x;
@@ -278,31 +278,31 @@ void BoxCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
-		size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
-		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
+		s_size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
+		m_offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
 		CalculateBoundingBox();
 	}
 }
 
 void BoxCollider::CalculateBoundingBox()
 {
-	min = -size / 2.0f + offset;
-	max = size / 2.0f + offset;
+	m_min = -s_size / 2.0f + m_offset;
+	m_max = s_size / 2.0f + m_offset;
 }
 
 void BoxCollider::SetSize(const Vector3& size)
 {
-	this->size = size;
+	this->s_size = size;
 	CalculateBoundingBox();
 }
 
 
 void BoxCollider::SetOffset(const Vector3& offset)
 {
-	this->offset = offset;
+	this->m_offset = offset;
 }
 
 std::string BoxCollider::ToString()
 {
-	return size.ToString();
+	return s_size.ToString();
 }

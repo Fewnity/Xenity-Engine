@@ -33,28 +33,26 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
-	Event<std::shared_ptr<BoxCollider>> onTriggerEvent;
-
 	inline const Vector3& GetMin() const
 	{
-		return min;
+		return m_min;
 	}
 
 	inline const Vector3& GetMax() const
 	{
-		return max;
+		return m_max;
 	}
 
 	void SetSize(const Vector3& size);
 	inline const Vector3& GetSize() const
 	{
-		return size;
+		return s_size;
 	}
 
 	void SetOffset(const Vector3& offset);
 	inline const Vector3& GetOffset() const
 	{
-		return offset;
+		return m_offset;
 	}
 
 	std::string ToString() override;
@@ -103,8 +101,8 @@ protected:
 	 */
 	static CollisionSide CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity);
 
-	Vector3 size = Vector3(1);
-	Vector3 offset = Vector3(0);
-	Vector3 min;
-	Vector3 max;
+	Vector3 s_size = Vector3(1);
+	Vector3 m_offset = Vector3(0);
+	Vector3 m_min;
+	Vector3 m_max;
 };

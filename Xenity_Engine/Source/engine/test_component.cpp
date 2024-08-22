@@ -16,7 +16,7 @@
 
 TestComponent::TestComponent()
 {
-	componentName = "TestComponent";
+	m_componentName = "TestComponent";
 	AssetManager::AddReflection(this);
 }
 

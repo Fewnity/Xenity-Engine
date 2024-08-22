@@ -339,7 +339,7 @@ void Graphics::Draw()
 		}
 	}
 
-	if (NetworkManager::needDrawMenu)
+	if (NetworkManager::s_needDrawMenu)
 		NetworkManager::DrawNetworkSetupMenu();
 
 #if defined(EDITOR)

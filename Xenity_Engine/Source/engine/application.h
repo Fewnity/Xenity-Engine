@@ -29,6 +29,5 @@ private:
 	friend class BuildSettingsMenu;
 	friend class Compiler;
 	static AssetPlatform PlatformToAssetPlatform(Platform platform);
-	static std::string xenityVersion;
 };
 

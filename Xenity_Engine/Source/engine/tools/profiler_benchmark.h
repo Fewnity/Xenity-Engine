@@ -32,8 +32,8 @@ public:
 	void Stop();
 
 private:
-	Benchmark* bench = new Benchmark();
+	Benchmark* m_bench = new Benchmark();
 
-	ProfilerValue* profilerValue = nullptr;
+	ProfilerValue* m_profilerValue = nullptr;
 };
 

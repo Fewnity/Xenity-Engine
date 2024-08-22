@@ -32,7 +32,7 @@ public:
 	*/
 	inline long long GetMicroSeconds() const
 	{
-		return time;
+		return m_time;
 	}
 
 	/**
@@ -40,7 +40,7 @@ public:
 	*/
 	inline long long GetMilliseconds() const
 	{
-		return (long long)(time / 1000.0f);
+		return (long long)(m_time / 1000.0f);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public:
 	*/
 	inline float GetSeconds() const
 	{
-		return time / 1000000.0f;
+		return m_time / 1000000.0f;
 	}
 
 	/**
@@ -56,16 +56,16 @@ public:
 	*/
 	inline void Reset()
 	{
-		time = 0;
+		m_time = 0;
 	}
 
 private:
-	std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_point;
-	long long time = 0;
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point, m_end_point;
+	long long m_time = 0;
 
 #if defined(__PSP__)
-	uint64_t endTick;
-	uint64_t startTick;
+	uint64_t m_endTick;
+	uint64_t m_startTick;
 #endif
 };
 

@@ -29,12 +29,12 @@
 
 using ordered_json = nlohmann::ordered_json;
 
-std::shared_ptr<Scene> SceneManager::openedScene = nullptr;
+std::shared_ptr<Scene> SceneManager::s_openedScene = nullptr;
 
 ordered_json savedSceneData;
 ordered_json savedSceneDataHotReloading;
 
-bool SceneManager::sceneModified = false;
+bool SceneManager::s_sceneModified = false;
 
 #if defined(EDITOR)
 
@@ -46,7 +46,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	// Use ordered json to keep gameobject's order
 	ordered_json j;
 
-	j["Version"] = sceneVersion;
+	j["Version"] = s_sceneVersion;
 
 	// For each gameobject:
 	for (std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
@@ -128,9 +128,9 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	{
 		// Get scene path
 		std::string path = "";
-		if (SceneManager::openedScene)
+		if (SceneManager::s_openedScene)
 		{
-			path = SceneManager::openedScene->file->GetPath();
+			path = SceneManager::s_openedScene->file->GetPath();
 		}
 		else
 		{
@@ -162,7 +162,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 void SceneManager::ReloadScene()
 {
-	LoadScene(openedScene);
+	LoadScene(s_openedScene);
 }
 
 void SceneManager::RestoreScene()
@@ -179,7 +179,7 @@ void SceneManager::SetSceneModified(bool value)
 {
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
-		sceneModified = value;
+		s_sceneModified = value;
 		Window::UpdateWindowTitle();
 	}
 }
@@ -199,7 +199,7 @@ bool SceneManager::OnQuit()
 	}
 	else
 	{
-		if (sceneModified)
+		if (s_sceneModified)
 		{
 			// Ask if the user wants to save the scene or not if the quit the scene
 			const DialogResult result = EditorUI::OpenDialog("The Scene Has Been Modified", "Do you want to save?", DialogType::Dialog_Type_YES_NO_CANCEL);
@@ -356,13 +356,13 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			{
 				if (auto& componentToCheck = allComponents[i])
 				{
-					if (!componentToCheck->initiated)
+					if (!componentToCheck->m_initiated)
 					{
 						bool placeFound = false;
 						for (size_t componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
 						{
 							// Check if the checked has a higher priority (lower value) than the component in the list
-							if (componentToCheck->updatePriority <= orderedComponentsToInit[componentToInitIndex]->updatePriority)
+							if (componentToCheck->m_updatePriority <= orderedComponentsToInit[componentToInitIndex]->m_updatePriority)
 							{
 								orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
 								placeFound = true;
@@ -383,10 +383,10 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			for (int i = 0; i < componentsToInitCount; i++)
 			{
 				const std::shared_ptr<Component>& componentToInit = orderedComponentsToInit[i];
-				if (!componentToInit->isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive())
+				if (!componentToInit->m_isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive())
 				{
 					componentToInit->Awake();
-					componentToInit->isAwakeCalled = true;
+					componentToInit->m_isAwakeCalled = true;
 				}
 			}
 		}
@@ -444,7 +444,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 			if (!jsonString.empty())
 				data = ordered_json::parse(jsonString);
 			LoadScene(data);
-			openedScene = scene;
+			s_openedScene = scene;
 			SetSceneModified(false);
 		}
 		catch (const std::exception& e)
@@ -489,6 +489,6 @@ void SceneManager::ClearScene()
 
 void SceneManager::CreateEmptyScene()
 {
-	openedScene.reset();
+	s_openedScene.reset();
 	SceneManager::ClearScene();
 }

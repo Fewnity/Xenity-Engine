@@ -67,8 +67,8 @@ private:
 	*/
 	static std::shared_ptr<GameObject> MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath);
 
-	static Vector3 defaultPosition;
-	static Vector3 defaultRotation;
-	static Vector3 defaultScale;
+	static Vector3 s_defaultPosition;
+	static Vector3 s_defaultRotation;
+	static Vector3 s_defaultScale;
 	static void SetDefaultValues(const std::shared_ptr <GameObject>& gameObject);
 };

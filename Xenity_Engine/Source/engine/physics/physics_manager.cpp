@@ -290,9 +290,9 @@ void PhysicsManager::Update()
 	for (size_t i = 0; i < colliderCount; i++)
 	{
 		const ColliderInfo& colliderInfo = colliders[i];
-		if (colliderInfo.collider->generateCollisionEvents && colliderInfo.collider->bulletCollisionObject)
+		if (colliderInfo.collider->generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject)
 		{
-			physDynamicsWorld->contactTest(colliderInfo.collider->bulletCollisionObject, resultCallback);
+			physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
 		}
 	}
 

@@ -89,7 +89,6 @@ public:
 	Texture();
 	~Texture();
 
-	std::vector<TextureSettings*> settings;
 
 	inline void SetSize(int width, int height)
 	{
@@ -191,6 +190,7 @@ protected:
 	friend class AssetManager;
 	friend class ProjectManager;
 	friend class TextManager;
+	friend class Cooker;
 
 	/**
 	* @brief Get texture channel count
@@ -301,6 +301,7 @@ protected:
 	 */
 	void Unload();
 
+	std::vector<TextureSettings*> settings;
 	unsigned char *buffer = nullptr;
 	unsigned int textureId = 0;
 	int width = 0, height = 0, nrChannels = 0;
@@ -309,5 +310,4 @@ protected:
 #if defined(EDITOR)
 	TextureResolutions previousResolution = TextureResolutions::R_2048x2048;
 #endif
-public:
 };

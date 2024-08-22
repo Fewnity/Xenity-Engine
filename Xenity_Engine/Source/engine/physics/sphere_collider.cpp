@@ -26,15 +26,15 @@
 
 SphereCollider::SphereCollider()
 {
-	componentName = "SphereCollider";
+	m_componentName = "SphereCollider";
 	AssetManager::AddReflection(this);
 }
 
 ReflectiveData SphereCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, size, "size", true);
-	AddVariable(reflectedVariables, offset, "offset", true);
+	AddVariable(reflectedVariables, m_size, "size", true);
+	AddVariable(reflectedVariables, m_offset, "offset", true);
 	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
 	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
@@ -42,7 +42,7 @@ ReflectiveData SphereCollider::GetReflectiveData()
 
 void SphereCollider::OnReflectionUpdated()
 {
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		rb->UpdateGeneratesEvents();
 	}
@@ -87,46 +87,46 @@ void SphereCollider::OnDrawGizmosSelected()
 
 	const float maxScale = GetTransform()->GetScale().Max();
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-	const Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+	const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
-	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), size / 2 * maxScale);
+	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), m_size / 2 * maxScale);
 #endif
 }
 
 void SphereCollider::CreateCollision(bool forceCreation)
 {
-	if (!forceCreation && (bulletCollisionShape || bulletCollisionObject))
+	if (!forceCreation && (m_bulletCollisionShape || m_bulletCollisionObject))
 		return;
 
-	if (bulletCollisionObject)
+	if (m_bulletCollisionObject)
 	{
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(bulletCollisionObject);
+		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 
-		delete bulletCollisionObject;
-		bulletCollisionObject = nullptr;
+		delete m_bulletCollisionObject;
+		m_bulletCollisionObject = nullptr;
 	}
 
 	const Vector3& scale = GetTransform()->GetScale();
-	if (!bulletCollisionShape)
+	if (!m_bulletCollisionShape)
 	{
-		bulletCollisionShape = new btSphereShape(1);
+		m_bulletCollisionShape = new btSphereShape(1);
 	}
 
 	const float maxScale = scale.Max();
-	bulletCollisionShape->setLocalScaling(btVector3(size / 2.0f * maxScale, size / 2.0f * maxScale, size / 2.0f * maxScale));
-	bulletCollisionShape->setUserPointer(this);
+	m_bulletCollisionShape->setLocalScaling(btVector3(m_size / 2.0f * maxScale, m_size / 2.0f * maxScale, m_size / 2.0f * maxScale));
+	m_bulletCollisionShape->setUserPointer(this);
 
-	if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isTrigger)
-			rb->AddShape(bulletCollisionShape, offset * scale);
+			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 		else
-			rb->AddTriggerShape(bulletCollisionShape, offset * scale);
+			rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
 	}
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, -offset.z, 1);
+		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, -m_offset.z, 1);
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 
@@ -135,37 +135,37 @@ void SphereCollider::CreateCollision(bool forceCreation)
 		startTransform.setOrigin(btVector3(-newPos.x, newPos.y, newPos.z));
 		startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-		bulletCollisionObject = new btCollisionObject();
-		bulletCollisionObject->setCollisionShape(bulletCollisionShape);
-		bulletCollisionObject->setWorldTransform(startTransform);
-		bulletCollisionObject->setUserPointer(this);
-		bulletCollisionObject->setRestitution(1);
+		m_bulletCollisionObject = new btCollisionObject();
+		m_bulletCollisionObject->setCollisionShape(m_bulletCollisionShape);
+		m_bulletCollisionObject->setWorldTransform(startTransform);
+		m_bulletCollisionObject->setUserPointer(this);
+		m_bulletCollisionObject->setRestitution(1);
 
 		if (isTrigger)
 		{
-			bulletCollisionObject->setCollisionFlags(bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+			m_bulletCollisionObject->setCollisionFlags(m_bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
-		PhysicsManager::physDynamicsWorld->addCollisionObject(bulletCollisionObject);
+		PhysicsManager::physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
 	}
 }
 
 void SphereCollider::OnTransformScaled()
 {
-	if (bulletCollisionShape)
+	if (m_bulletCollisionShape)
 	{
 		const Vector3& scale = GetTransform()->GetScale();
 		const float maxScale = scale.Max();
-		bulletCollisionShape->setLocalScaling(btVector3(size / 2.0f * maxScale, size / 2.0f * maxScale, size / 2.0f * maxScale));
+		m_bulletCollisionShape->setLocalScaling(btVector3(m_size / 2.0f * maxScale, m_size / 2.0f * maxScale, m_size / 2.0f * maxScale));
 
-		if (std::shared_ptr<RigidBody> rb = attachedRigidbody.lock())
+		if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 		{
-			rb->RemoveShape(bulletCollisionShape);
-			rb->RemoveTriggerShape(bulletCollisionShape);
+			rb->RemoveShape(m_bulletCollisionShape);
+			rb->RemoveTriggerShape(m_bulletCollisionShape);
 			if (!isTrigger)
-				rb->AddShape(bulletCollisionShape, offset * scale);
+				rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 			else
-				rb->AddTriggerShape(bulletCollisionShape, offset * scale);
+				rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
 			rb->Activate();
 		}
 	}
@@ -173,14 +173,14 @@ void SphereCollider::OnTransformScaled()
 
 void SphereCollider::OnTransformUpdated()
 {
-	if (bulletCollisionObject)
+	if (m_bulletCollisionObject)
 	{
 		const Transform& transform = *GetTransform();
 
 		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-offset.x, offset.y, offset.z, 1);
+		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
-		bulletCollisionObject->setWorldTransform(btTransform(
+		m_bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
 			btVector3(-newPos.x, newPos.y, newPos.z)));
 	}
@@ -192,18 +192,18 @@ void SphereCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
-		size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox())).Max();
-		offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
+		m_size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox())).Max();
+		m_offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
 	}
 }
 
 void SphereCollider::SetSize(const float& size)
 {
-	this->size = size;
+	this->m_size = size;
 }
 
 
 void SphereCollider::SetOffset(const Vector3& offset)
 {
-	this->offset = offset;
+	this->m_offset = offset;
 }

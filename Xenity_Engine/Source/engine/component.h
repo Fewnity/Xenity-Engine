@@ -78,14 +78,12 @@ public:
 	*/
 	virtual void OnDrawGizmosSelected() {};
 
-	int updatePriority = 5000; //Lower is more priotary
-
 	/**
 	* @brief Get if the component is enabled
 	*/
 	inline bool IsEnabled() const
 	{
-		return isEnabled;
+		return m_isEnabled;
 	}
 
 	/**
@@ -99,7 +97,7 @@ public:
 	*/
 	inline std::shared_ptr <GameObject> GetGameObject() const
 	{
-		return gameObject.lock();
+		return m_gameObject.lock();
 	}
 
 	/**
@@ -107,7 +105,7 @@ public:
 	*/
 	inline std::shared_ptr <Transform> GetTransform() const
 	{
-		return transform.lock();
+		return m_transform.lock();
 	}
 
 	/**
@@ -115,7 +113,7 @@ public:
 	*/
 	inline const std::string& GetComponentName() const
 	{
-		return componentName;
+		return m_componentName;
 	}
 
 	/**
@@ -123,19 +121,21 @@ public:
 	*/
 	inline virtual std::string ToString()
 	{
-		return "{" + componentName + "}";
+		return "{" + m_componentName + "}";
 	}
+
+	inline int GetUpdatePriority() const
+	{
+		return m_updatePriority;
+	}
+
+	void SetUpdatePriority(int priority);
 
 private:
 	friend class GameplayManager;
 	friend class GameObject;
 	friend class InspectorMenu;
 	friend class SceneManager;
-
-	bool initiated = false;
-	bool isAwakeCalled = false;
-	bool waitingForDestroy = false;
-	bool isEnabled = true;
 
 	/**
 	* @brief [Internal] Set component's GameObject
@@ -149,9 +149,18 @@ protected:
 	*/
 	virtual void RemoveReferences() {};
 
-	std::string componentName = "";
+	std::string m_componentName = "";
 
 private:
-	std::weak_ptr <GameObject> gameObject;
-	std::weak_ptr <Transform> transform;
+	std::weak_ptr <GameObject> m_gameObject;
+	std::weak_ptr <Transform> m_transform;
+
+protected:
+	int m_updatePriority = 5000; //Lower is more priority
+
+private:
+	bool m_initiated = false;
+	bool m_isAwakeCalled = false;
+	bool m_waitingForDestroy = false;
+	bool m_isEnabled = true;
 };

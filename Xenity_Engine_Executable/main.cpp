@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include <engine/engine.h>
+#include <engine/debug/debug.h>
 
 // PSP
 #if defined(__PSP__)
@@ -14,7 +15,6 @@ PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #endif
 
-#include <engine/debug/debug.h>
 
 //------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
 
@@ -23,8 +23,10 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Add undo/redo commands to DrawVector functions
 Rework the documentation
-Cook mesh files
 Rename member variables to m_memberVariableName
+Check after compilation components names
+Set isTrigger and generateCollisionEvents has protected?
+Use vram setting for psp
 
 --- Can be done for the next release
 Remove the old profiler
@@ -35,6 +37,7 @@ Replace CompatibleFile by FileInfo?
 Compress scene json files in builds
 Add assert if project settings file is not found
 Add an option to enable /disable the profiler in builds
+Add a debug option to show what assets are loaded in vram for psp
 */
 
 
