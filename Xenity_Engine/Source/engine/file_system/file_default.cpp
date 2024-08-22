@@ -70,15 +70,15 @@ std::string FileDefault::ReadAll()
 		return "";
 	}
 
-	std::string allText = "";
+	std::stringstream allText;
 	file.seekg(0, std::ios_base::beg);
 	std::string tempText;
 	while (getline(file, tempText))
 	{
-		allText += tempText;
-		allText += "\n";
+		allText << tempText;
+		allText << "\n";
 	}
-	return allText;
+	return allText.str();
 }
 
 unsigned char* FileDefault::ReadAllBinary(int& size)
@@ -99,7 +99,7 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 		return nullptr;
 	}
 
-	data = new char[pos];
+	data = (char*)malloc(pos);
 	if (!data) 
 	{
 		size = 0;
@@ -121,7 +121,7 @@ unsigned char* FileDefault::ReadBinary(int offset, int size)
 
 	char* data = nullptr;
 	file.seekg(offset, std::ios_base::beg);
-	data = new char[size];
+	data = (char*)malloc(size);
 	file.read(data, size);
 
 	return (unsigned char*)data;

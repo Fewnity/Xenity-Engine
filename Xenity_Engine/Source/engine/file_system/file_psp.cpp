@@ -69,11 +69,11 @@ std::string FilePSP::ReadAll()
 	{
 		const int pos = sceIoLseek(fileId, 0, SEEK_END);
 		sceIoLseek(fileId, 0, SEEK_SET);
-		char* data = new char[pos + 1];
+		char* data = (char*)malloc(pos + 1);
 		data[pos] = 0;
 		sceIoRead(fileId, data, pos);
 		allText = data;
-		delete[] data;
+		free(data);
 	}
 	return allText;
 }
@@ -92,7 +92,7 @@ unsigned char* FilePSP::ReadAllBinary(int& size)
 		SceIoStat file_stat;
 		sceIoGetstat(path.c_str(), &file_stat);
 		sceIoLseek(fileId, 0, SEEK_SET);
-		data = new char[file_stat.st_size + 1];
+		data = (char*)malloc(file_stat.st_size + 1);
 		sceIoRead(fileId, data, file_stat.st_size);
 		size = file_stat.st_size;
 	}
@@ -105,7 +105,7 @@ unsigned char* FilePSP::ReadBinary(int offset, int size)
 	if (fileId >= 0)
 	{
 		sceIoLseek(fileId, offset, SEEK_SET);
-		data = new char[size];
+		data = (char*)malloc(size);
 		sceIoRead(fileId, data, size);
 	}
 	return (unsigned char*)data;
