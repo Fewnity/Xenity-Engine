@@ -83,7 +83,10 @@ public:
 	/**
 	* @brief Get if the component is enabled
 	*/
-	bool IsEnabled() const;
+	inline bool IsEnabled() const
+	{
+		return isEnabled;
+	}
 
 	/**
 	* @brief Enable or disable the component*
@@ -118,7 +121,10 @@ public:
 	/**
 	* @brief Return a string representation of the component
 	*/
-	virtual std::string ToString();
+	inline virtual std::string ToString()
+	{
+		return "{" + componentName + "}";
+	}
 
 private:
 	friend class GameplayManager;

@@ -90,32 +90,54 @@ public:
 	/**
 	* @brief Get forward direction
 	*/
-	Vector3 GetForward() const;
-
-	/**
-	* @brief Get left direction
-	*/
-	Vector3 GetLeft() const;
-
-	/**
-	* @brief Get right direction
-	*/
-	Vector3 GetRight() const;
-
-	/**
-	* @brief Get up direction
-	*/
-	Vector3 GetUp() const;
-
-	/**
-	* @brief Get down direction
-	*/
-	Vector3 GetDown() const;
+	inline Vector3 GetForward() const
+	{
+		const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
+		return direction;
+	}
 
 	/**
 	* @brief Get backward direction
 	*/
-	Vector3 GetBackward() const;
+	inline Vector3 GetBackward() const
+	{
+		return -GetForward();
+	}
+
+	/**
+	* @brief Get left direction
+	*/
+	inline Vector3 GetLeft() const
+	{
+		return -GetRight();
+	}
+
+	/**
+	* @brief Get right direction
+	*/
+	inline Vector3 GetRight() const
+	{
+		const Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
+		return direction;
+	}
+
+	/**
+	* @brief Get up direction
+	*/
+	inline Vector3 GetUp() const
+	{
+		const Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
+		return direction;
+	}
+
+	/**
+	* @brief Get down direction
+	*/
+	inline Vector3 GetDown() const
+	{
+		return -GetUp();
+	}
+
 
 	/**
 	* @brief Set position

@@ -222,7 +222,7 @@ void ProjectManager::FindAllProjectFiles()
 		uint64_t biggestId = UniqueId::reservedFileId;
 		for (const auto& compatibleFile : compatibleFiles)
 		{
-			std::shared_ptr<File> file = compatibleFile.file.file;
+			const std::shared_ptr<File>& file = compatibleFile.file.file;
 			uint64_t fileId = ReadFileId(*file);
 			if (fileId == -1)
 			{

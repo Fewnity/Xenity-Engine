@@ -30,11 +30,11 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 	return mesh;
 }
 
-void MeshManager::DrawMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
-{
-	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
-	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
-}
+//void MeshManager::DrawMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
+//{
+//	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
+//	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
+//}
 
 void MeshManager::DrawMesh(const Transform& transform, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
 {

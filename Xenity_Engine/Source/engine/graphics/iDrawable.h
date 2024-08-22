@@ -15,9 +15,7 @@ class Material;
 class API IDrawable : public Component
 {
 public:
-	IDrawable();
-
-	virtual ~IDrawable();
+	virtual ~IDrawable() = default;
 
 protected:
 	friend class Graphics;

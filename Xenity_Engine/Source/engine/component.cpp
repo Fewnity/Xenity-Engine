@@ -79,11 +79,6 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 	OnComponentAttached();
 }
 
-bool Component::IsEnabled() const
-{
-	return isEnabled;
-}
-
 void Component::SetIsEnabled(bool isEnabled)
 {
 	if(this->isEnabled == isEnabled)
@@ -96,9 +91,4 @@ void Component::SetIsEnabled(bool isEnabled)
 		OnDisabled();
 
 	GameplayManager::componentsInitListDirty = true;
-}
-
-std::string Component::ToString()
-{
-	return "{" + componentName + "}";
 }

@@ -408,33 +408,4 @@ void InputSystem::ClearInputs()
 	mouseWheel = 0;
 }
 
-void InputSystem::SetInput(const bool pressed, const KeyCode keyCode)
-{
-	if (pressed)
-		SetInputPressed(keyCode);
-	else
-		SetInputReleased(keyCode);
-}
-
-void InputSystem::SetInputPressed(const KeyCode keyCode)
-{
-	if (!inputs[(int)keyCode].held)
-	{
-		inputs[(int)keyCode].pressed = true;
-		inputs[(int)keyCode].held = true;
-	}
-}
-
-void InputSystem::SetInputReleased(const KeyCode keyCode)
-{
-	inputs[(int)keyCode].released = true;
-	inputs[(int)keyCode].held = false;
-}
-
-void InputSystem::SetInputInactive(const KeyCode keyCode)
-{
-	inputs[(int)keyCode].pressed = false;
-	inputs[(int)keyCode].released = false;
-}
-
 #pragma endregion

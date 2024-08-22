@@ -108,30 +108,49 @@ public:
 	* @param index The index of the material
 	* @return The material
 	*/
-	static Material* GetMaterial(const int index);
+	static inline Material* GetMaterial(const int index)
+	{
+		XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
+		return materials[index];
+	}
 
 	/**
 	* @brief Get a reflection by index
 	* @param index The index of the reflection
 	* @return The reflection
 	*/
-	static Reflective* GetReflectiveData(const int index);
+	static inline Reflective* GetReflectiveData(const int index)
+	{
+		XASSERT(index < reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
+		return reflections[index];
+	}
 
 	/**
 	* @brief Get a file reference by index
 	* @param index The index of the file reference
 	* @return The file reference
 	*/
-	static std::shared_ptr<FileReference> GetFileReference(const int index);
+	static inline const std::shared_ptr<FileReference>& GetFileReference(const int index)
+	{
+		XASSERT(index < fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
+		return fileReferences[index];
+	}
 
 	/**
 	* @brief Get a light by index
 	* @param index The index of the light
 	* @return The light
 	*/
-	static std::weak_ptr<Light> GetLight(const int index);
+	static inline const std::weak_ptr<Light>& GetLight(const int index)
+	{
+		XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
+		return lights[index];
+	}
 
-	static const std::vector<std::weak_ptr<Light>>& GetLights();
+	static inline const std::vector<std::weak_ptr<Light>>& GetLights()
+	{
+		return lights;
+	}
 
 	/**
 	* @brief Remove all unused files from the file references list
@@ -141,22 +160,34 @@ public:
 	/**
 	* @brief Get the number of materials
 	*/
-	static int GetMaterialCount();
+	static inline int GetMaterialCount()
+	{
+		return materialCount;
+	}
 
 	/**
 	* @brief Get the number of reflections
 	*/
-	static int GetReflectionCount();
+	static inline int GetReflectionCount()
+	{
+		return reflectionCount;
+	}
 
 	/**
 	* @brief Get the number of file references
 	*/
-	static int GetFileReferenceCount();
+	static inline int GetFileReferenceCount()
+	{
+		return fileReferenceCount;
+	}
 
 	/**
 	* @brief Get the number of lights
 	*/
-	static int GetLightCount();
+	static inline int GetLightCount()
+	{
+		return lightCount;
+	}
 
 	/**
 	* @brief Get the default file data for a file type

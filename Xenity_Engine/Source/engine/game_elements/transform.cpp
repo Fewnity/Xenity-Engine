@@ -35,39 +35,6 @@ ReflectiveData Transform::GetReflectiveData()
 
 #pragma region Accessors
 
-Vector3 Transform::GetForward() const
-{
-	const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
-	return direction;
-}
-
-Vector3 Transform::GetBackward() const
-{
-	return -GetForward();
-}
-
-Vector3 Transform::GetLeft() const
-{
-	return -GetRight();
-}
-
-Vector3 Transform::GetRight() const
-{
-	const Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
-	return direction;
-}
-
-Vector3 Transform::GetUp() const
-{
-	const Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
-	return direction;
-}
-
-Vector3 Transform::GetDown() const
-{
-	return -GetUp();
-}
-
 void Transform::SetPosition(const Vector3& value)
 {
 	XASSERT(!value.HasInvalidValues(), "[Transform::SetPosition] value is invalid");

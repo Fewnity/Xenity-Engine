@@ -16,8 +16,17 @@
 class API UniqueId
 {
 public:
-	UniqueId();
-	UniqueId(bool _forFile);
+	inline UniqueId()
+	{
+		this->forFile = false;
+		this->uniqueId = GenerateUniqueId(forFile);
+	}
+
+	inline UniqueId(bool _forFile)
+	{
+		this->forFile = _forFile;
+		this->uniqueId = GenerateUniqueId(_forFile);
+	}
 
 	/**
 	* @brief Get unique Id
@@ -48,7 +57,19 @@ private:
 	* @param forFile Is an Id for a file
 	* @return new Id
 	*/
-	static uint64_t GenerateUniqueId(bool forFile);
+	static inline uint64_t GenerateUniqueId(bool forFile)
+	{
+		if (forFile)
+		{
+			lastFileUniqueId++;
+			return lastFileUniqueId;
+		}
+		else
+		{
+			lastUniqueId++;
+			return lastUniqueId;
+		}
+	}
 
 	/**
 	* @brief [Internal] Set unique Id

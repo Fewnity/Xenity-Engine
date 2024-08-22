@@ -402,35 +402,6 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 
 #pragma region Getters
 
-Material* AssetManager::GetMaterial(const int index)
-{
-	XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
-	return materials[index];
-}
-
-Reflective* AssetManager::GetReflectiveData(const int index)
-{
-	XASSERT(index < reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
-	return reflections[index];
-}
-
-std::shared_ptr<FileReference> AssetManager::GetFileReference(const int index)
-{
-	XASSERT(index < fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
-	return fileReferences[index];
-}
-
-std::weak_ptr<Light> AssetManager::GetLight(const int index)
-{
-	XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
-	return lights[index];
-}
-
-const std::vector<std::weak_ptr<Light>>& AssetManager::GetLights()
-{
-	return lights;
-}
-
 void AssetManager::RemoveUnusedFiles()
 {
 	int fileRefCount = GetFileReferenceCount();
@@ -452,26 +423,6 @@ void AssetManager::RemoveUnusedFiles()
 			fileRefCount--;
 		}
 	}
-}
-
-int AssetManager::GetMaterialCount()
-{
-	return materialCount;
-}
-
-int AssetManager::GetReflectionCount()
-{
-	return reflectionCount;
-}
-
-int AssetManager::GetFileReferenceCount()
-{
-	return fileReferenceCount;
-}
-
-int AssetManager::GetLightCount()
-{
-	return lightCount;
 }
 
 std::string AssetManager::GetDefaultFileData(FileType fileType)

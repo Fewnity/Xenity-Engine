@@ -271,25 +271,47 @@ private:
 	static bool blockGameInput;
 
 	static void UpdateControllers();
+
 	/**
 	* @brief Set inputs state
 	*/
-	static void SetInput(const bool pressed, const KeyCode keyCode);
+	static inline void SetInput(const bool pressed, const KeyCode keyCode)
+	{
+		if (pressed)
+			SetInputPressed(keyCode);
+		else
+			SetInputReleased(keyCode);
+	}
 
 	/**
 	* @brief Set an input as pressed
 	*/
-	static void SetInputPressed(const KeyCode keyCode);
+	static inline void SetInputPressed(const KeyCode keyCode)
+	{
+		if (!inputs[(int)keyCode].held)
+		{
+			inputs[(int)keyCode].pressed = true;
+			inputs[(int)keyCode].held = true;
+		}
+	}
 
 	/**
 	* @brief Set an input as released
 	*/
-	static void SetInputReleased(const KeyCode keyCode);
+	static inline void SetInputReleased(const KeyCode keyCode)
+	{
+		inputs[(int)keyCode].released = true;
+		inputs[(int)keyCode].held = false;
+	}
 
 	/**
 	* @brief Set an input states to false
 	*/
-	static void SetInputInactive(const KeyCode keyCode);
+	static inline void SetInputInactive(const KeyCode keyCode)
+	{
+		inputs[(int)keyCode].pressed = false;
+		inputs[(int)keyCode].released = false;
+	}
 
 	static bool hidedMouse;
 	static Input inputs[INPUT_COUNT];
