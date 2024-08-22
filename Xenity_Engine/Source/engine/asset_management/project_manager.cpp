@@ -589,8 +589,10 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 
+#if defined(EDITOR)
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/temp/");
 	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
+#endif
 
 	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "/additional_assets/");
 
