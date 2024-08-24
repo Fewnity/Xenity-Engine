@@ -623,7 +623,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	if (platformSettings && platformSettings->icon)
 	{
 		// Copy game icon
-		CopyUtils::AddCopyEntry(false, platformSettings->icon->file->GetPath(), params.tempPath + "logo.ico");
+		CopyUtils::AddCopyEntry(false, platformSettings->icon->m_file->GetPath(), params.tempPath + "logo.ico");
 	}
 	else
 	{
@@ -957,17 +957,17 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 			// Copy and replace images with custom ones
 			if (platformSettings->backgroundImage)
 			{
-				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/BG.PNG\"";
+				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/BG.PNG\"";
 				[[maybe_unused]] const int copyBgImageResult = system(copyBgImageCommand.c_str());
 			}
 			if (platformSettings->iconImage)
 			{
-				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/ICON.PNG\"";
+				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/ICON.PNG\"";
 				[[maybe_unused]] const int copyIconImageResult = system(copyIconImageCommand.c_str());
 			}
 			if (platformSettings->previewImage)
 			{
-				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->previewImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/PREVIEW.PNG\"";
+				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->previewImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/build/psp_images/PREVIEW.PNG\"";
 				[[maybe_unused]] const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
 			}
 		}
@@ -1003,17 +1003,17 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 			// Copy and replace images with custom ones
 			if (platformSettings->backgroundImage)
 			{
-				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/bg.png\"";
+				const std::string copyBgImageCommand = "docker cp \"" + platformSettings->backgroundImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/bg.png\"";
 				[[maybe_unused]] const int copyBgImageResult = system(copyBgImageCommand.c_str());
 			}
 			if (platformSettings->iconImage)
 			{
-				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/icon0.png\"";
+				const std::string copyIconImageCommand = "docker cp \"" + platformSettings->iconImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/icon0.png\"";
 				[[maybe_unused]] const int copyIconImageResult = system(copyIconImageCommand.c_str());
 			}
 			if (platformSettings->startupImage)
 			{
-				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->startupImage->file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/startup.png\"";
+				const std::string copyPreviewImageCommand = "docker cp \"" + platformSettings->startupImage->m_file->GetPath() + "\" XenityEngineBuild:\"/home/XenityBuild/psvita_images/startup.png\"";
 				[[maybe_unused]] const int copyPreviewImageResult = system(copyPreviewImageCommand.c_str());
 			}
 		}

@@ -731,7 +731,7 @@ void SceneMenu::Draw()
 				}
 				else
 				{
-					std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->file->GetFileName());
+					std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->m_file->GetFileName());
 
 					newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 					std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();

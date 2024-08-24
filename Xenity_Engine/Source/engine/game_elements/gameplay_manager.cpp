@@ -31,9 +31,9 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
 std::weak_ptr<Component> GameplayManager::lastUpdatedComponent;
-Event<> GameplayManager::OnPlayEvent;
+Event<> GameplayManager::s_OnPlayEvent;
 
-GameState GameplayManager::gameState = GameState::Stopped;
+GameState GameplayManager::s_gameState = GameState::Stopped;
 
 void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
@@ -61,29 +61,29 @@ const std::vector<std::shared_ptr<GameObject>>& GameplayManager::GetGameObjects(
 void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 {
 #if defined(EDITOR)
-	if (newGameState == GameState::Playing && gameState == GameState::Stopped) // Start game
+	if (newGameState == GameState::Playing && s_gameState == GameState::Stopped) // Start game
 	{
-		gameState = GameState::Starting;
+		s_gameState = GameState::Starting;
 		SceneManager::SaveScene(SaveSceneType::SaveSceneForPlayState);
 		SceneManager::RestoreScene();
-		gameState = newGameState;
-		OnPlayEvent.Trigger();
+		s_gameState = newGameState;
+		s_OnPlayEvent.Trigger();
 	}
-	else if (newGameState == GameState::Stopped && gameState != GameState::Stopped) // Stop game
+	else if (newGameState == GameState::Stopped && s_gameState != GameState::Stopped) // Stop game
 	{
 		CommandManager::ClearInGameCommands();
-		gameState = newGameState;
+		s_gameState = newGameState;
 		if (restoreScene)
 			SceneManager::RestoreScene();
 	}
-	else if ((newGameState == GameState::Paused && gameState == GameState::Playing) ||
-		(newGameState == GameState::Playing && gameState == GameState::Paused)) // Pause / UnPause
+	else if ((newGameState == GameState::Paused && s_gameState == GameState::Playing) ||
+		(newGameState == GameState::Playing && s_gameState == GameState::Paused)) // Pause / UnPause
 	{
-		gameState = newGameState;
+		s_gameState = newGameState;
 	}
-	else if ((newGameState == GameState::Paused && gameState == GameState::Paused)) // Pause / UnPause
+	else if ((newGameState == GameState::Paused && s_gameState == GameState::Paused)) // Pause / UnPause
 	{
-		gameState = GameState::Playing;
+		s_gameState = GameState::Playing;
 	}
 
 	if (auto menu = Editor::lastFocusedGameMenu.lock())
@@ -91,7 +91,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		std::dynamic_pointer_cast<GameMenu>(menu)->needUpdateCamera = true;
 	}
 #else
-	gameState = newGameState;
+	s_gameState = newGameState;
 #endif
 }
 
@@ -152,7 +152,7 @@ void GameplayManager::OrderComponents()
 			bool placeFound = false;
 			for (int cIndex = 0; cIndex < goComponentCount; cIndex++)
 			{
-				const std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->components[cIndex];
+				const std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->m_components[cIndex];
 				if (componentToCheck)
 				{
 					for (int i = 0; i < componentsCount; i++)

@@ -27,7 +27,7 @@ public:
 	*/
 	inline void SetColor(const Color& color)
 	{
-		this->color = color;
+		this->m_color = color;
 	}
 
 	/**
@@ -35,7 +35,7 @@ public:
 	*/
 	inline std::shared_ptr <Material> GetMaterial()
 	{
-		return material;
+		return m_material;
 	}
 
 	/**
@@ -43,7 +43,7 @@ public:
 	*/
 	inline std::shared_ptr <Texture> GetTexture()
 	{
-		return texture;
+		return m_texture;
 	}
 
 	/**
@@ -80,8 +80,8 @@ protected:
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	Color color = Color();
-	std::shared_ptr <Material> material = nullptr;
-	std::shared_ptr <Texture> texture = nullptr;
-	int orderInLayer = 0;
+	Color m_color = Color();
+	std::shared_ptr <Material> m_material = nullptr;
+	std::shared_ptr <Texture> m_texture = nullptr;
+	int m_orderInLayer = 0;
 };

@@ -70,7 +70,7 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 
 GameObject::GameObject()
 {
-	this->name = DEFAULT_GAMEOBJECT_NAME;
+	this->m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
 	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
@@ -80,9 +80,9 @@ GameObject::GameObject()
 GameObject::GameObject(const std::string& _name)
 {
 	if (!_name.empty())
-		this->name = _name;
+		this->m_name = _name;
 	else
-		this->name = DEFAULT_GAMEOBJECT_NAME;
+		this->m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
 	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
@@ -92,20 +92,20 @@ GameObject::GameObject(const std::string& _name)
 ReflectiveData GameObject::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, name, "name", true);
-	Reflective::AddVariable(reflectedVariables, active, "active", true);
-	Reflective::AddVariable(reflectedVariables, isStatic, "isStatic", true);
+	Reflective::AddVariable(reflectedVariables, m_name, "name", true);
+	Reflective::AddVariable(reflectedVariables, m_active, "active", true);
+	Reflective::AddVariable(reflectedVariables, m_isStatic, "isStatic", true);
 	return reflectedVariables;
 }
 
 GameObject::~GameObject()
 {
-	for (int i = 0; i < componentCount; i++)
+	for (int i = 0; i < m_componentCount; i++)
 	{
-		if (components[i])
-			components[i]->RemoveReferences();
+		if (m_components[i])
+			m_components[i]->RemoveReferences();
 	}
-	components.clear();
+	m_components.clear();
 
 #if defined (DEBUG)
 	Performance::gameObjectMemoryTracker->Deallocate(sizeof(GameObject));
@@ -115,7 +115,7 @@ GameObject::~GameObject()
 void GameObject::Setup()
 {
 	// Create the transform after the constructor because we can't use shared_from_this() in the constructor
-	transform = std::make_shared<Transform>(shared_from_this());
+	m_transform = std::make_shared<Transform>(shared_from_this());
 }
 
 #pragma endregion
@@ -131,12 +131,12 @@ void GameObject::RemoveComponent(const std::shared_ptr<Component>& component)
 		GameplayManager::componentsToDestroy.push_back(component);
 
 		// Remove the component from the gameobject's components list
-		for (int componentIndex = 0; componentIndex < componentCount; componentIndex++)
+		for (int componentIndex = 0; componentIndex < m_componentCount; componentIndex++)
 		{
-			if (components[componentIndex] == component)
+			if (m_components[componentIndex] == component)
 			{
-				components.erase(components.begin() + componentIndex);
-				componentCount--;
+				m_components.erase(m_components.begin() + componentIndex);
+				m_componentCount--;
 				break;
 			}
 		}
@@ -155,16 +155,16 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 		}
 
 		// Remove the new child from his old parent's children list
-		if (newChild->parent.lock())
+		if (newChild->m_parent.lock())
 		{
-			std::shared_ptr<GameObject> oldParent = newChild->parent.lock();
-			const int parentChildCount = oldParent->childCount;
+			std::shared_ptr<GameObject> oldParent = newChild->m_parent.lock();
+			const int parentChildCount = oldParent->m_childCount;
 			for (int i = 0; i < parentChildCount; i++)
 			{
-				if (oldParent->children[i].lock() == newChild)
+				if (oldParent->m_children[i].lock() == newChild)
 				{
-					oldParent->children.erase(oldParent->children.begin() + i);
-					oldParent->childCount--;
+					oldParent->m_children.erase(oldParent->m_children.begin() + i);
+					oldParent->m_childCount--;
 					break;
 				}
 			}
@@ -172,9 +172,9 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 
 		// Check if the child to add is alrady a child of this gameobject
 		bool add = true;
-		for (int i = 0; i < childCount; i++)
+		for (int i = 0; i < m_childCount; i++)
 		{
-			if (children[i].lock() == newChild)
+			if (m_children[i].lock() == newChild)
 			{
 				add = false;
 				break;
@@ -183,10 +183,10 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 
 		if (add)
 		{
-			children.push_back(newChild);
-			childCount++;
-			newChild->parent = shared_from_this();
-			newChild->transform->OnParentChanged();
+			m_children.push_back(newChild);
+			m_childCount++;
+			newChild->m_parent = shared_from_this();
+			newChild->m_transform->OnParentChanged();
 			newChild->UpdateActive(newChild);
 		}
 	}
@@ -201,21 +201,21 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 	else
 	{
 		// If the new parent is the root
-		if (auto lockParent = parent.lock())
+		if (auto lockParent = m_parent.lock())
 		{
-			const int parentChildCount = lockParent->childCount;
+			const int parentChildCount = lockParent->m_childCount;
 			for (int i = 0; i < parentChildCount; i++)
 			{
-				if (lockParent->children[i].lock() == shared_from_this())
+				if (lockParent->m_children[i].lock() == shared_from_this())
 				{
-					lockParent->children.erase(lockParent->children.begin() + i);
-					lockParent->childCount--;
+					lockParent->m_children.erase(lockParent->m_children.begin() + i);
+					lockParent->m_childCount--;
 					break;
 				}
 			}
 		}
-		parent.reset();
-		transform->OnParentChanged();
+		m_parent.reset();
+		m_transform->OnParentChanged();
 		UpdateActive(shared_from_this());
 	}
 }
@@ -227,9 +227,9 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	if (!componentToAdd)
 		return;
 
-	components.push_back(componentToAdd);
+	m_components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
-	componentCount++;
+	m_componentCount++;
 	if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && IsLocalActive())
 	{
 		componentToAdd->Awake();
@@ -297,9 +297,9 @@ std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 
 void GameObject::SetActive(const bool active)
 {
-	if (active != this->active)
+	if (active != this->m_active)
 	{
-		this->active = active;
+		this->m_active = active;
 		UpdateActive(shared_from_this());
 		GameplayManager::componentsInitListDirty = true;
 	}
@@ -311,15 +311,15 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 {
 	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty");
 
-	const bool lastLocalActive = localActive;
+	const bool lastLocalActive = m_localActive;
 	if (!changed->IsActive() || (!changed->IsLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
 	{
-		localActive = false;
+		m_localActive = false;
 	}
-	else if (active)
+	else if (m_active)
 	{
 		bool newActive = true;
-		std::weak_ptr<GameObject> gmToCheck = parent;
+		std::weak_ptr<GameObject> gmToCheck = m_parent;
 		while (!gmToCheck.expired())
 		{
 			const std::shared_ptr<GameObject> gm = gmToCheck.lock();
@@ -333,20 +333,20 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 			{
 				break;
 			}
-			gmToCheck = gm->parent;
+			gmToCheck = gm->m_parent;
 		}
-		localActive = newActive;
+		m_localActive = newActive;
 	}
 
 	// If the gameobject has changed his state
-	if (lastLocalActive != localActive)
+	if (lastLocalActive != m_localActive)
 	{
-		for (int i = 0; i < componentCount; i++)
+		for (int i = 0; i < m_componentCount; i++)
 		{
-			std::shared_ptr<Component>& component = components[i];
+			std::shared_ptr<Component>& component = m_components[i];
 			if (component)
 			{
-				if (localActive) 
+				if (m_localActive) 
 				{
 					component->OnEnabled();
 					if (!component->m_isAwakeCalled)
@@ -363,9 +363,9 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 		}
 
 		// Update children
-		for (int i = 0; i < childCount; i++)
+		for (int i = 0; i < m_childCount; i++)
 		{
-			children[i].lock()->UpdateActive(changed);
+			m_children[i].lock()->UpdateActive(changed);
 		}
 	}
 }
@@ -375,15 +375,15 @@ bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 	if (gameObject == nullptr)
 		return false;
 
-	for (int i = 0; i < childCount; i++)
+	for (int i = 0; i < m_childCount; i++)
 	{
-		if (children[i].lock() == gameObject)
+		if (m_children[i].lock() == gameObject)
 		{
 			return true;
 		}
 		else
 		{
-			const bool temp = children[i].lock()->IsParentOf(gameObject);
+			const bool temp = m_children[i].lock()->IsParentOf(gameObject);
 			if (temp)
 				return true;
 		}

@@ -98,7 +98,7 @@ public:
 	*/
 	static inline GameState GetGameState()
 	{
-		return gameState;
+		return s_gameState;
 	}
 
 	/**
@@ -106,13 +106,13 @@ public:
 	*/
 	static inline Event<>& GetOnPlayEvent()
 	{
-		return OnPlayEvent;
+		return s_OnPlayEvent;
 	}
 
 private:
-	static Event<> OnPlayEvent;
+	static Event<> s_OnPlayEvent;
 
-	static GameState gameState;
+	static GameState s_gameState;
 
 };
 

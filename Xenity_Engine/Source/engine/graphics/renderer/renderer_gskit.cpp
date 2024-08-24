@@ -246,7 +246,7 @@ void calculate_vertices_clipped(VECTOR *output, int count, VECTOR *vertices, MAT
 
 void RendererGsKit::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const std::vector<std::shared_ptr<Texture>> &textures, RenderingSettings &settings)
 {
-	int subMeshCount = meshData->subMeshCount;
+	int subMeshCount = meshData->m_subMeshCount;
 	size_t textureCount = textures.size();
 
 	MeshData::SubMesh *subMesh = nullptr;
@@ -256,7 +256,7 @@ void RendererGsKit::DrawMeshData(const std::shared_ptr<MeshData> &meshData, cons
 
 	for (size_t i = 0; i < subMeshCount; i++)
 	{
-		subMesh = meshData->subMeshes[i];
+		subMesh = meshData->m_subMeshes[i];
 
 		// Do not continue if there are more submeshes than textures
 		if (i == textureCount)
@@ -350,7 +350,7 @@ void RendererGsKit::Clear()
 	gsKit_clear(gsGlobal, CLEAR_CLOR);
 }
 
-void RendererGsKit::SetFog(bool active)
+void RendererGsKit::SetFog(bool m_active)
 {
 }
 

@@ -83,7 +83,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 		std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 		std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
-		TextureResolutions textureResolution = texture->settings[static_cast<int>(settings.platform)]->resolution;
+		TextureResolutions textureResolution = texture->m_settings[static_cast<int>(settings.platform)]->resolution;
 
 		int newWidth = width;
 		int newHeight = height;
@@ -121,10 +121,10 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
-		meshFile.write((char*)&meshData->vertexDescriptor, sizeof(VertexElements));
-		meshFile.write((char*)&meshData->subMeshCount, sizeof(uint32_t));
+		meshFile.write((char*)&meshData->m_vertexDescriptor, sizeof(VertexElements));
+		meshFile.write((char*)&meshData->m_subMeshCount, sizeof(uint32_t));
 
-		for (auto subMesh : meshData->subMeshes)
+		for (auto subMesh : meshData->m_subMeshes)
 		{
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
@@ -158,7 +158,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		cookedFile->Close();
 		dataOffset = fileDataBase.bitFile.AddData(fileData, cookedFileSize);
 		delete[] fileData;
-		FileSystem::fileSystem->Delete(exportPath);
+		FileSystem::s_fileSystem->Delete(exportPath);
 	}
 
 	size_t metaDataOffset = 0;
@@ -169,7 +169,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	cookedMetaFile->Close();
 	metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
 	delete[] metaFileData;
-	FileSystem::fileSystem->Delete(exportPath + ".meta");
+	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
 
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
 	fileDataBaseEntry->p = partialFilePath;

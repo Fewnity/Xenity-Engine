@@ -20,7 +20,7 @@
 
 void AudioClipStream::OpenStream(const AudioClip& audioFile)
 {
-	std::shared_ptr<File> file = audioFile.file;
+	std::shared_ptr<File> file = audioFile.m_file;
 	const std::string& path = file->GetPath();
 	//Debug::Print("Loading audio clip: " + path, true);
 

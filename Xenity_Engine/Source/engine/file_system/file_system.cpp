@@ -32,7 +32,7 @@
 #include "file_ps2.h"
 #include "file_default.h"
 
-FileSystem *FileSystem::fileSystem = nullptr;
+FileSystem *FileSystem::s_fileSystem = nullptr;
 
 #pragma region File
 

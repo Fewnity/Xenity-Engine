@@ -48,7 +48,7 @@ TextRenderer::~TextRenderer()
 
 void TextRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 

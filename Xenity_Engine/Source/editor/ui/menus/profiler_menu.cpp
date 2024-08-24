@@ -161,14 +161,14 @@ void ProfilerMenu::DrawFilesList()
 			if (fileRef && !fileRef->IsLoaded())
 			{
 				ImGui::SetCursorPosX(20);
-				if (fileRef->file)
+				if (fileRef->m_file)
 				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->IsLoaded(), fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->m_fileId, fileRef->IsLoaded(), fileRef.use_count());
 					ImGui::SameLine();
-					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
+					ImGui::Text("%s%s", fileRef->m_file->GetFileName().c_str(), fileRef->m_file->GetFileExtension().c_str());
 				}
 				else
-					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->IsLoaded(), (int)fileRef->fileType, fileRef.use_count());
+					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->IsLoaded(), (int)fileRef->m_fileType, fileRef.use_count());
 			}
 		}
 		ImGui::Text("-----------------------------------------------------");
@@ -178,11 +178,11 @@ void ProfilerMenu::DrawFilesList()
 			if (fileRef && fileRef->IsLoaded())
 			{
 				ImGui::SetCursorPosX(20);
-				if (fileRef->file)
+				if (fileRef->m_file)
 				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->fileId, fileRef->IsLoaded(), fileRef.use_count());
+					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->m_fileId, fileRef->IsLoaded(), fileRef.use_count());
 					ImGui::SameLine();
-					ImGui::Text("%s%s", fileRef->file->GetFileName().c_str(), fileRef->file->GetFileExtension().c_str());
+					ImGui::Text("%s%s", fileRef->m_file->GetFileName().c_str(), fileRef->m_file->GetFileExtension().c_str());
 				}
 				else
 					ImGui::Text("missing file isLoaded:%d useCount:%ld", fileRef->IsLoaded(), fileRef.use_count());

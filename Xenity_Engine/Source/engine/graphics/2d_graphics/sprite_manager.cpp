@@ -25,7 +25,7 @@
 #include <engine/vectors/quaternion.h>
 #include <engine/tools/math.h>
 
-std::shared_ptr <MeshData> SpriteManager::spriteMeshData = nullptr;
+std::shared_ptr <MeshData> SpriteManager::s_spriteMeshData = nullptr;
 
 std::shared_ptr<ProfilerBenchmark> spriteBenchmark = nullptr;
 
@@ -38,14 +38,14 @@ void SpriteManager::Init()
 	spriteBenchmark = std::make_shared<ProfilerBenchmark>("Sprite", "Sprite");
 
 	// Create sprite mesh
-	spriteMeshData = MeshData::MakeMeshData(4, 6, false, false, true);
-	spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0, 0);
-	spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1, 0);
-	spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2, 0);
-	spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3, 0);
-	spriteMeshData->hasIndices = true;
+	s_spriteMeshData = MeshData::MakeMeshData(4, 6, false, false, true);
+	s_spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0, 0);
+	s_spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1, 0);
+	s_spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2, 0);
+	s_spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3, 0);
+	s_spriteMeshData->m_hasIndices = true;
 
-	MeshData::SubMesh* subMesh = spriteMeshData->subMeshes[0];
+	MeshData::SubMesh* subMesh = s_spriteMeshData->m_subMeshes[0];
 	subMesh->indices[0] = 0;
 	subMesh->indices[1] = 2;
 	subMesh->indices[2] = 1;
@@ -53,7 +53,7 @@ void SpriteManager::Init()
 	subMesh->indices[4] = 0;
 	subMesh->indices[5] = 3;
 
-	spriteMeshData->OnLoadFileReferenceFinished();
+	s_spriteMeshData->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
@@ -74,7 +74,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 {
 	spriteBenchmark->Start();
 
-	spriteMeshData->unifiedColor = color;
+	s_spriteMeshData->unifiedColor = color;
 
 	const Vector3& scale = transform.GetScale();
 	RenderingSettings renderSettings = RenderingSettings();
@@ -95,7 +95,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 
 	const glm::mat4 matCopy = glm::scale(transform.GetTransformationMatrix(), glm::vec3(w, h, 1));
 
-	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matCopy, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, false);
 
 	spriteBenchmark->Stop();
 }
@@ -104,7 +104,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 {
 	spriteBenchmark->Start();
 
-	spriteMeshData->unifiedColor = color;
+	s_spriteMeshData->unifiedColor = color;
 
 	RenderingSettings renderSettings = RenderingSettings();
 
@@ -124,7 +124,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 
 	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
 
-	Graphics::DrawSubMesh(*spriteMeshData->subMeshes[0], material, texture, renderSettings, matrix, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matrix, false);
 	spriteBenchmark->Stop();
 }
 
@@ -159,7 +159,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
 
-	Engine::GetRenderer().DrawSubMesh(*meshData->subMeshes[0], *AssetManager::standardMaterial, *AssetManager::defaultTexture, renderSettings);
+	Engine::GetRenderer().DrawSubMesh(*meshData->m_subMeshes[0], *AssetManager::standardMaterial, *AssetManager::defaultTexture, renderSettings);
 
 	spriteBenchmark->Stop();
 }

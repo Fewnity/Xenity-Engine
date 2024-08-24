@@ -64,34 +64,34 @@ public:
 		return ReflectiveData();
 	}
 
-	uint64_t fileId = -1;
+	uint64_t m_fileId = -1;
 
-	uint64_t filePosition = 0;
-	uint64_t fileSize = 0;
-	uint64_t metaPosition = 0;
-	uint64_t metaSize = 0;
+	uint64_t m_filePosition = 0;
+	uint64_t m_fileSize = 0;
+	uint64_t m_metaPosition = 0;
+	uint64_t m_metaSize = 0;
 
-	std::shared_ptr<File> file = nullptr;
-	FileType fileType = FileType::File_Other;
-	bool isMetaDirty = false;
+	std::shared_ptr<File> m_file = nullptr;
+	FileType m_fileType = FileType::File_Other;
+	bool m_isMetaDirty = false;
 
 	void SetIsLoading(bool _isLoading)
 	{
-		isLoading = _isLoading;
+		m_isLoading = _isLoading;
 	}
 
 	bool IsLoading() const
 	{
-		return isLoading;
+		return m_isLoading;
 	}
 
 	bool IsLoaded() const
 	{
-		return isLoaded;
+		return m_isLoaded;
 	}
 
 protected:
-	bool isLoaded = false;
-	bool isLoading = false;
+	bool m_isLoaded = false;
+	bool m_isLoading = false;
 };
 

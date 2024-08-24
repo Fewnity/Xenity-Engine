@@ -172,12 +172,12 @@ public:
 
 	inline const Vector3& GetMinBoundingBox()  const
 	{
-		return minBoundingBox;
+		return m_minBoundingBox;
 	}
 
 	inline const Vector3& GetMaxBoundingBox()  const
 	{
-		return maxBoundingBox;
+		return m_maxBoundingBox;
 	}
 
 protected:
@@ -199,10 +199,10 @@ protected:
 	friend class Cooker;
 	friend class BinaryMeshLoader;
 
-	Vector3 minBoundingBox;
-	Vector3 maxBoundingBox;
+	Vector3 m_minBoundingBox;
+	Vector3 m_maxBoundingBox;
 
-	std::vector<SubMesh *> subMeshes;
+	std::vector<SubMesh *> m_subMeshes;
 
 	/**
 	* @brief Send the mesh data to the GPU
@@ -227,19 +227,19 @@ protected:
 	 */
 	void AllocSubMesh(unsigned int vcount, unsigned int index_count);
 
-	int subMeshCount = 0;
-	bool hasUv = false;
-	bool hasNormal = false;
-	bool hasColor = true;
-	bool hasIndices = true;
-	bool isQuad = false;
-	bool isValid = true;
+	int m_subMeshCount = 0;
+	bool m_hasUv = false;
+	bool m_hasNormal = false;
+	bool m_hasColor = true;
+	bool m_hasIndices = true;
+	bool m_isQuad = false;
+	bool m_isValid = true;
 
-	VertexElements vertexDescriptor = VertexElements::NONE;
+	VertexElements m_vertexDescriptor = VertexElements::NONE;
 
 	void SetVertexDescritor(VertexElements vertexDescriptor) 
 	{
-		this->vertexDescriptor = vertexDescriptor;
+		m_vertexDescriptor = vertexDescriptor;
 	}
 
 	/**

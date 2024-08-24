@@ -92,7 +92,7 @@ public:
 
 	inline void SetSize(int width, int height)
 	{
-		this->width = width;
+		this->m_width = width;
 		this->height = height;
 	}
 
@@ -102,7 +102,7 @@ public:
 	 */
 	inline void SetFilter(const Filter filter)
 	{
-		settings[static_cast<int>(Application::GetAssetPlatform())]->filter = filter;
+		m_settings[static_cast<int>(Application::GetAssetPlatform())]->filter = filter;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public:
 	 */
 	inline void SetWrapMode(const WrapMode mode)
 	{
-		settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode = mode;
+		m_settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode = mode;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 */
 	inline int GetWidth() const
 	{
-		return width;
+		return m_width;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public:
 	 */
 	inline void SetPixelPerUnit(int value)
 	{
-		settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit = value;
+		m_settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit = value;
 	}
 
 	/**
@@ -144,7 +144,7 @@ public:
 	 */
 	inline int GetPixelPerUnit() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public:
 	 */
 	inline bool GetUseMipmap() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public:
 	 */
 	inline Filter GetFilter() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->filter;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->filter;
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public:
 	 */
 	inline WrapMode GetWrapMode() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode;
 	}
 
 protected:
@@ -219,12 +219,12 @@ protected:
 	*/
 	inline int GetMipmaplevelCount() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount;
 	}
 
 	inline TextureResolutions GetCookResolution() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->resolution;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->resolution;
 	}
 
 	/**
@@ -301,10 +301,10 @@ protected:
 	 */
 	void Unload();
 
-	std::vector<TextureSettings*> settings;
-	unsigned char *buffer = nullptr;
+	std::vector<TextureSettings*> m_settings;
+	unsigned char *m_buffer = nullptr;
 	unsigned int textureId = 0;
-	int width = 0, height = 0, nrChannels = 0;
+	int m_width = 0, height = 0, nrChannels = 0;
 
 	bool isValid = false;
 #if defined(EDITOR)

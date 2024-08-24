@@ -31,7 +31,7 @@ Collider::~Collider()
 
 	if (m_bulletCollisionObject)
 	{
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
+		PhysicsManager::s_physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 
 		delete m_bulletCollisionObject;
 		m_bulletCollisionObject = nullptr;
@@ -88,13 +88,13 @@ void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 void Collider::OnEnabled()
 {
 	if (m_bulletCollisionObject)
-		PhysicsManager::physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
+		PhysicsManager::s_physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
 }
 
 void Collider::OnDisabled()
 {
 	if(m_bulletCollisionObject)
-		PhysicsManager::physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
+		PhysicsManager::s_physDynamicsWorld->removeCollisionObject(m_bulletCollisionObject);
 }
 
 void Collider::RemoveReferences()

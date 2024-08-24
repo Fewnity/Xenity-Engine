@@ -17,7 +17,7 @@
 
 #pragma region Constructors
 
-Transform::Transform(const std::shared_ptr<GameObject>& _gameObject) : gameObject(_gameObject)
+Transform::Transform(const std::shared_ptr<GameObject>& _gameObject) : m_gameObject(_gameObject)
 {
 	UpdateTransformationMatrix();
 }
@@ -25,9 +25,9 @@ Transform::Transform(const std::shared_ptr<GameObject>& _gameObject) : gameObjec
 ReflectiveData Transform::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, localPosition, "localPosition", true);
-	Reflective::AddVariable(reflectedVariables, localRotationQuaternion, "localRotationQuaternion", true);
-	Reflective::AddVariable(reflectedVariables, localScale, "localScale", true);
+	Reflective::AddVariable(reflectedVariables, m_localPosition, "localPosition", true);
+	Reflective::AddVariable(reflectedVariables, m_localRotationQuaternion, "localRotationQuaternion", true);
+	Reflective::AddVariable(reflectedVariables, m_localScale, "localScale", true);
 	return reflectedVariables;
 }
 
@@ -43,28 +43,28 @@ void Transform::SetPosition(const Vector3& value)
 	if (value.HasInvalidValues())
 		return;
 
-	if (value != position)
+	if (value != m_position)
 	{
-		isTransformationMatrixDirty = true;
+		m_isTransformationMatrixDirty = true;
 	}
 	else
 		return;
 
-	position = value;
+	m_position = value;
 
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		localPosition = value;
+		m_localPosition = value;
 		SetChildrenWorldPositions();
 	}
 	else
 	{
 		SetChildrenWorldPositions();
-		localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->GetParent().lock()->GetTransform()->transformationMatrix);
+		m_localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->GetParent().lock()->GetTransform()->transformationMatrix);
 	}
-	if (localPosition.HasInvalidValues())
-		localPosition = Vector3(0);
+	if (m_localPosition.HasInvalidValues())
+		m_localPosition = Vector3(0);
 }
 
 void Transform::SetLocalPosition(const Vector3& value)
@@ -75,20 +75,20 @@ void Transform::SetLocalPosition(const Vector3& value)
 	if (value.HasInvalidValues())
 		return;
 
-	if (gameObject.lock()->GetParent().expired())
+	if (m_gameObject.lock()->GetParent().expired())
 	{
 		SetPosition(value);
 		return;
 	}
 
-	//isTransformationMatrixDirty = true;
+	//m_isTransformationMatrixDirty = true;
 
-	if (value != localPosition)
-		isTransformationMatrixDirty = true;
+	if (value != m_localPosition)
+		m_isTransformationMatrixDirty = true;
 	else
 		return;
 
-	localPosition = value;
+	m_localPosition = value;
 	UpdateWorldValues();
 }
 
@@ -101,26 +101,26 @@ void Transform::SetRotation(const Vector3& value)
 		return;
 
 	// Do not update the matrix if it's the same value
-	if (value != rotation)
-		isTransformationMatrixDirty = true;
+	if (value != m_rotation)
+		m_isTransformationMatrixDirty = true;
 	else
 		return;
 
-	rotation = value;
-	rotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
+	m_rotation = value;
+	m_rotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
 
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		localRotation = value;
-		localRotationQuaternion = rotationQuaternion;
+		m_localRotation = value;
+		m_localRotationQuaternion = m_rotationQuaternion;
 		SetChildrenWorldPositions();
 	}
 	else
 	{
 		SetChildrenWorldPositions();
-		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
-		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
+		m_localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
+		m_localRotationQuaternion = Quaternion::Euler(m_localRotation.x, m_localRotation.y, m_localRotation.z);
 	}
 }
 
@@ -132,45 +132,45 @@ void Transform::SetLocalRotation(const Vector3& value)
 	if (value.HasInvalidValues())
 		return;
 
-	if (gameObject.lock()->GetParent().expired())
+	if (m_gameObject.lock()->GetParent().expired())
 	{
 		SetRotation(value);
 		return;
 	}
 
-	if (value != localRotation)
-		isTransformationMatrixDirty = true;
+	if (value != m_localRotation)
+		m_isTransformationMatrixDirty = true;
 	else
 		return;
 
-	//isTransformationMatrixDirty = true;
+	//m_isTransformationMatrixDirty = true;
 
-	localRotation = value;
-	localRotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
+	m_localRotation = value;
+	m_localRotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
 	UpdateWorldValues();
 }
 
 void Transform::SetRotation(const Quaternion& value)
 {
-	if (value != rotationQuaternion)
-		isTransformationMatrixDirty = true;
+	if (value != m_rotationQuaternion)
+		m_isTransformationMatrixDirty = true;
 	else
 		return;
 
-	rotation = value.ToEuler();
-	rotationQuaternion = value;
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	m_rotation = value.ToEuler();
+	m_rotationQuaternion = value;
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		localRotation = value.ToEuler();
-		localRotationQuaternion = value;
+		m_localRotation = value.ToEuler();
+		m_localRotationQuaternion = value;
 		SetChildrenWorldPositions();
 	}
 	else
 	{
 		SetChildrenWorldPositions();
-		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
-		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
+		m_localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), gm->GetParent().lock()->GetTransform()->GetEulerAngles());
+		m_localRotationQuaternion = Quaternion::Euler(m_localRotation.x, m_localRotation.y, m_localRotation.z);
 	}
 }
 
@@ -182,19 +182,19 @@ void Transform::SetLocalRotation(const Quaternion& value)
 	//if (value.HasInvalidValues())
 	//	return;
 
-	if (gameObject.lock()->GetParent().expired())
+	if (m_gameObject.lock()->GetParent().expired())
 	{
 		SetRotation(value);
 		return;
 	}
 
-	if (value != localRotationQuaternion)
-		isTransformationMatrixDirty = true;
+	if (value != m_localRotationQuaternion)
+		m_isTransformationMatrixDirty = true;
 	else
 		return;
 
-	localRotation = value.ToEuler();
-	localRotationQuaternion = value;
+	m_localRotation = value.ToEuler();
+	m_localRotationQuaternion = value;
 	UpdateWorldValues();
 }
 
@@ -206,51 +206,51 @@ void Transform::SetLocalScale(const Vector3& value)
 	if (value.HasInvalidValues())
 		return;
 
-	isTransformationMatrixDirty = true;
+	m_isTransformationMatrixDirty = true;
 
 	/*if (value != localScale)
-		isTransformationMatrixDirty = true;
+		m_isTransformationMatrixDirty = true;
 	else
 		return;*/
 
-	localScale = value;
+	m_localScale = value;
 	UpdateWorldValues();
-	onTransformScaled.Trigger();
+	m_onTransformScaled.Trigger();
 }
 
 #pragma endregion
 
 void Transform::OnParentChanged()
 {
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (!gm->GetParent().expired())
 	{
 		std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
 		//----- Set new local scale
-		localScale = scale / parentTransform->scale;
+		m_localScale = m_scale / parentTransform->m_scale;
 
 		//----- Set new local rotation
-		localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), parentTransform->GetEulerAngles());
-		localRotationQuaternion = Quaternion::Euler(localRotation.x, localRotation.y, localRotation.z);
+		m_localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), parentTransform->GetEulerAngles());
+		m_localRotationQuaternion = Quaternion::Euler(m_localRotation.x, m_localRotation.y, m_localRotation.z);
 
 		//----- Set new local position
-		localPosition = GetLocalPositionFromMatrices(transformationMatrix, parentTransform->transformationMatrix);
+		m_localPosition = GetLocalPositionFromMatrices(transformationMatrix, parentTransform->transformationMatrix);
 	}
 	else
 	{
-		localPosition = position;
-		localRotation = rotation;
-		localRotationQuaternion = rotationQuaternion;
-		localScale = scale;
+		m_localPosition = m_position;
+		m_localRotation = m_rotation;
+		m_localRotationQuaternion = m_rotationQuaternion;
+		m_localScale = m_scale;
 	}
-	onTransformScaled.Trigger();
+	m_onTransformScaled.Trigger();
 }
 
 void Transform::SetChildrenWorldPositions()
 {
 	UpdateTransformationMatrix();
 
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 
 	const int childCount = gm->GetChildrenCount();
 
@@ -258,7 +258,7 @@ void Transform::SetChildrenWorldPositions()
 	for (int i = 0; i < childCount; i++)
 	{
 		std::shared_ptr<Transform> transform = gm->GetChildren()[i].lock()->GetTransform();
-		transform->isTransformationMatrixDirty = true;
+		transform->m_isTransformationMatrixDirty = true;
 		transform->UpdateWorldValues();
 	}
 }
@@ -274,28 +274,28 @@ void Transform::UpdateWorldValues()
 
 void Transform::UpdateWorldRotation()
 {
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		rotationQuaternion = localRotationQuaternion;
-		rotation = rotationQuaternion.ToEuler();
-		localRotation = rotation;
+		m_rotationQuaternion = m_localRotationQuaternion;
+		m_rotation = m_rotationQuaternion.ToEuler();
+		m_localRotation = m_rotation;
 		return;
 	}
 
 	const std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
-	const Quaternion quatChildGlobal2 = parentTransform->rotationQuaternion * localRotationQuaternion;
+	const Quaternion quatChildGlobal2 = parentTransform->m_rotationQuaternion * m_localRotationQuaternion;
 	const Vector3 eulerChildGlobal2 = quatChildGlobal2.ToEuler();
-	rotation = eulerChildGlobal2;
-	rotationQuaternion = quatChildGlobal2;
+	m_rotation = eulerChildGlobal2;
+	m_rotationQuaternion = quatChildGlobal2;
 }
 
 void Transform::UpdateWorldPosition()
 {
-	const std::shared_ptr<GameObject> gm = gameObject.lock();
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
 	if (gm->GetParent().expired())
 	{
-		position = localPosition;
+		m_position = m_localPosition;
 		return;
 	}
 
@@ -311,22 +311,22 @@ void Transform::UpdateWorldPosition()
 	Math::MultiplyMatrices(scaledLocalPos, parentTransform->rotationMatrix, posAfterRotation, 1, 3, 3, 3);
 
 	//Set new child position (with parent's world position added)
-	position = Vector3(posAfterRotation[0] + parentPosition.x, (-posAfterRotation[1] + parentPosition.y), (-posAfterRotation[2] + parentPosition.z));
+	m_position = Vector3(posAfterRotation[0] + parentPosition.x, (-posAfterRotation[1] + parentPosition.y), (-posAfterRotation[2] + parentPosition.z));
 }
 
 void Transform::UpdateTransformationMatrix()
 {
-	if (!isTransformationMatrixDirty)
+	if (!m_isTransformationMatrixDirty)
 		return;
 
-	isTransformationMatrixDirty = false;
+	m_isTransformationMatrixDirty = false;
 
 	transformationMatrix = glm::mat4(1.0f);
 
-	if(position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
-		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-position.x, position.y, position.z));
+	if(m_position.x != 0.0f || m_position.y != 0.0f || m_position.z != 0.0f)
+		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-m_position.x, m_position.y, m_position.z));
 
-	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(rotationQuaternion.w, rotationQuaternion.x, -rotationQuaternion.y, -rotationQuaternion.z));
+	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(m_rotationQuaternion.w, m_rotationQuaternion.x, -m_rotationQuaternion.y, -m_rotationQuaternion.z));
 	transformationMatrix *= RotationMatrix2;
 
 	for (int i = 0; i < 3; i++)
@@ -338,20 +338,20 @@ void Transform::UpdateTransformationMatrix()
 		}
 	}
 
-	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
 
-	onTransformUpdated.Trigger();
+	m_onTransformUpdated.Trigger();
 }
 
 void Transform::UpdateWorldScale()
 {
-	scale = localScale;
-	const std::shared_ptr<GameObject> lockGameObject = gameObject.lock();
+	m_scale = m_localScale;
+	const std::shared_ptr<GameObject> lockGameObject = m_gameObject.lock();
 	if (auto parentGm = lockGameObject->GetParent().lock())
 	{
 		while (parentGm != nullptr)
 		{
-			scale = scale * parentGm->GetTransform()->localScale;
+			m_scale = m_scale * parentGm->GetTransform()->m_localScale;
 			parentGm = parentGm->GetParent().lock();
 		}
 
@@ -366,7 +366,7 @@ void Transform::UpdateWorldScale()
 
 void Transform::UpdateLocalRotation()
 {
-	localRotation = localRotationQuaternion.ToEuler();
+	m_localRotation = m_localRotationQuaternion.ToEuler();
 }
 
 Vector3 Transform::GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const

@@ -26,11 +26,11 @@ LineRenderer::LineRenderer()
 ReflectiveData LineRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, startPosition, "startPosition", true);
-	Reflective::AddVariable(reflectedVariables, endPosition, "endPosition", true);
+	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
+	Reflective::AddVariable(reflectedVariables, m_startPosition, "startPosition", true);
+	Reflective::AddVariable(reflectedVariables, m_endPosition, "endPosition", true);
 	Reflective::AddVariable(reflectedVariables, width, "width", true);
-	Reflective::AddVariable(reflectedVariables, material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
 
 	return reflectedVariables;
 }
@@ -48,23 +48,23 @@ LineRenderer::~LineRenderer()
 
 void LineRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
 void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (material == nullptr)
+	if (m_material == nullptr)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material.get();
+	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
-	if (!material->GetUseTransparency())
+	if (!m_material->GetUseTransparency())
 	{
-		RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
+		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->m_fileId];
 		renderQueue.commands.push_back(command);
 		renderQueue.commandIndex++;
 	}
@@ -90,16 +90,16 @@ void LineRenderer::OnEnabled()
 /// </summary>
 void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (meshData)
-		meshData.reset();
+	if (m_meshData)
+		m_meshData.reset();
 
 	//float sizeFixer = 0.1f;
 	const float sizeFixer = 1.0f;
 
-	const Vector2 dir = (Vector2(endPosition.x, endPosition.y) - Vector2(startPosition.x, startPosition.y)).Normalized();
+	const Vector2 dir = (Vector2(m_endPosition.x, m_endPosition.y) - Vector2(m_startPosition.x, m_startPosition.y)).Normalized();
 
-	Vector3 start = startPosition * sizeFixer;
-	Vector3 end = endPosition * sizeFixer;
+	Vector3 start = m_startPosition * sizeFixer;
+	Vector3 end = m_endPosition * sizeFixer;
 	start.x = -start.x;
 	end.x = -end.x;
 
@@ -108,13 +108,13 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	const float fixedXWidth = width2 / 2.0f * dir.y;
 	const float fixedYWidth = width2 / 2.0f * dir.x;
 
-	meshData = MeshData::MakeMeshData(4, 6, false, false, true);
-	meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0, 0);
-	meshData->AddVertex(0.0f, 0.0f, end.x - fixedXWidth, end.y - fixedYWidth, 0.0f, 1, 0);
-	meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2, 0);
-	meshData->AddVertex(0.0f, 1.0f, start.x + fixedXWidth, start.y + fixedYWidth, 0.0f, 3, 0);
+	m_meshData = MeshData::MakeMeshData(4, 6, false, false, true);
+	m_meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0, 0);
+	m_meshData->AddVertex(0.0f, 0.0f, end.x - fixedXWidth, end.y - fixedYWidth, 0.0f, 1, 0);
+	m_meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2, 0);
+	m_meshData->AddVertex(0.0f, 1.0f, start.x + fixedXWidth, start.y + fixedYWidth, 0.0f, 3, 0);
 
-	MeshData::SubMesh*& subMesh = meshData->subMeshes[0];
+	MeshData::SubMesh*& subMesh = m_meshData->m_subMeshes[0];
 	subMesh->indices[0] = 0;
 	subMesh->indices[1] = 2;
 	subMesh->indices[2] = 1;
@@ -122,7 +122,7 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	subMesh->indices[4] = 0;
 	subMesh->indices[5] = 3;
 
-	meshData->OnLoadFileReferenceFinished();
+	m_meshData->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
@@ -131,7 +131,7 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
-	renderSettings.useLighting = material->GetUseLighting();
-	renderSettings.useBlend = material->GetUseTransparency();
-	MeshManager::DrawMesh(*GetTransform(), *subMesh, *material, renderSettings);
+	renderSettings.useLighting = m_material->GetUseLighting();
+	renderSettings.useBlend = m_material->GetUseTransparency();
+	MeshManager::DrawMesh(*GetTransform(), *subMesh, *m_material, renderSettings);
 }

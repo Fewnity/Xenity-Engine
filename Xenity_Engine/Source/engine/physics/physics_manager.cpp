@@ -18,11 +18,11 @@
 #include "rigidbody.h"
 #include "collision_event.h"
 
-std::vector<RigidBody*> PhysicsManager::rigidBodies;
-std::vector<ColliderInfo> PhysicsManager::colliders;
-Vector3 PhysicsManager::gravity = Vector3(0, -20, 0);
+std::vector<RigidBody*> PhysicsManager::s_rigidBodies;
+std::vector<ColliderInfo> PhysicsManager::s_colliders;
+Vector3 PhysicsManager::s_gravity = Vector3(0, -20, 0);
 
-btDynamicsWorld* PhysicsManager::physDynamicsWorld = nullptr;
+btDynamicsWorld* PhysicsManager::s_physDynamicsWorld = nullptr;
 btBroadphaseInterface* physBroadphase = nullptr;
 btCollisionDispatcher* physDispatcher = nullptr;
 btConstraintSolver* physSolver = nullptr;
@@ -39,17 +39,17 @@ void PhysicsManager::Init()
 
 	physSolver = new btSequentialImpulseConstraintSolver();
 
-	physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
+	s_physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
 
-	physDynamicsWorld->setGravity(btVector3(0, -20, 0));
-	physDynamicsWorld->getSolverInfo().m_numIterations = 4;
+	s_physDynamicsWorld->setGravity(btVector3(0, -20, 0));
+	s_physDynamicsWorld->getSolverInfo().m_numIterations = 4;
 }
 
 void PhysicsManager::Stop()
 {
 	Clear();
 
-	delete physDynamicsWorld;
+	delete s_physDynamicsWorld;
 
 	delete physSolver;
 
@@ -62,18 +62,18 @@ void PhysicsManager::Stop()
 
 void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool isTrigger)
 {
-	const size_t colliderCount = colliders.size();
+	const size_t colliderCount = s_colliders.size();
 	for (size_t i = 0; i < colliderCount; i++)
 	{
-		if (colliders[i].collider == collider)
+		if (s_colliders[i].collider == collider)
 		{
 			/*ColliderInfo::CollisionInfo collisionInfo;
 			collisionInfo.otherCollider = otherCollider;
 			collisionInfo.state = CollisionState::FirstFrame;*/
 			if (isTrigger)
 			{
-				auto tc = colliders[i].triggersCollisions.find(otherCollider);
-				if (tc != colliders[i].triggersCollisions.end())
+				auto tc = s_colliders[i].triggersCollisions.find(otherCollider);
+				if (tc != s_colliders[i].triggersCollisions.end())
 				{
 					//std::cout << "Existing collision: " << collider->GetGameObject()->GetName() << " ToString" << collider->ToString() << std::endl;
 					if (tc->second == CollisionState::RequireUpdate)
@@ -84,13 +84,13 @@ void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool 
 				else
 				{
 					//std::cout << "First collision: " << collider->GetGameObject()->GetName() << " ToString" << collider->ToString() << std::endl;
-					colliders[i].triggersCollisions[otherCollider] = CollisionState::FirstFrame;
+					s_colliders[i].triggersCollisions[otherCollider] = CollisionState::FirstFrame;
 				}
 			}
 			else
 			{
-				auto tc = colliders[i].collisions.find(otherCollider);
-				if (tc != colliders[i].collisions.end())
+				auto tc = s_colliders[i].collisions.find(otherCollider);
+				if (tc != s_colliders[i].collisions.end())
 				{
 					//std::cout << "Existing trigger collision: " << collider->GetGameObject()->GetName() << " ToString" << collider->ToString() << std::endl;
 					//tc->second = CollisionState::Updated;
@@ -102,7 +102,7 @@ void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool 
 				else
 				{
 					//std::cout << "First trigger collision: " << collider->GetGameObject()->GetName() << " ToString" << collider->ToString() << std::endl;
-					colliders[i].collisions[otherCollider] = CollisionState::FirstFrame;
+					s_colliders[i].collisions[otherCollider] = CollisionState::FirstFrame;
 				}
 				//colliders[i].collisions.push_back(collisionInfo);
 			}
@@ -133,9 +133,9 @@ public:
 		{
 			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj0Wrap->getCollisionObject()->getUserPointer());
 			if (colObj0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-				col0 = reinterpret_cast<Collider*>(rb->bulletTriggerCompoundShape->getChildShape(index0)->getUserPointer());
+				col0 = reinterpret_cast<Collider*>(rb->m_bulletTriggerCompoundShape->getChildShape(index0)->getUserPointer());
 			else
-				col0 = reinterpret_cast<Collider*>(rb->bulletCompoundShape->getChildShape(index0)->getUserPointer());
+				col0 = reinterpret_cast<Collider*>(rb->m_bulletCompoundShape->getChildShape(index0)->getUserPointer());
 			//std::cout << "Object0: " << rb->GetGameObject()->GetName() << " ToString" << col0->ToString() << std::endl;
 		}
 		else
@@ -153,9 +153,9 @@ public:
 		{
 			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj1Wrap->getCollisionObject()->getUserPointer());
 			if (colObj1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-				col1 = reinterpret_cast<Collider*>(rb->bulletTriggerCompoundShape->getChildShape(index1)->getUserPointer());
+				col1 = reinterpret_cast<Collider*>(rb->m_bulletTriggerCompoundShape->getChildShape(index1)->getUserPointer());
 			else
-				col1 = reinterpret_cast<Collider*>(rb->bulletCompoundShape->getChildShape(index1)->getUserPointer());
+				col1 = reinterpret_cast<Collider*>(rb->m_bulletCompoundShape->getChildShape(index1)->getUserPointer());
 			//std::cout << "Object1: " << rb->GetGameObject()->GetName() << " ToString" << col1->ToString() << std::endl;
 			//std::cout << "Object1: " << rb->GetGameObject()->GetName() << std::endl;
 		}
@@ -191,8 +191,8 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 {
 	GameObject& goA = *a->GetGameObject();
 	GameObject& goB = *b->GetGameObject();
-	const size_t goAComponentsCount = goA.components.size();
-	const size_t goBComponentsCount = goB.components.size();
+	const size_t goAComponentsCount = goA.m_components.size();
+	const size_t goBComponentsCount = goB.m_components.size();
 
 
 	CollisionEvent collisionEvent = CollisionEvent(a, b);
@@ -200,7 +200,7 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 
 	for (size_t i = 0; i < goAComponentsCount; i++)
 	{
-		std::shared_ptr<Component>& component = goA.components[i];
+		std::shared_ptr<Component>& component = goA.m_components[i];
 		if (component)
 		{
 			if (state == 0)
@@ -229,7 +229,7 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 
 	for (size_t i = 0; i < goBComponentsCount; i++)
 	{
-		std::shared_ptr<Component>& component = goB.components[i];
+		std::shared_ptr<Component>& component = goB.m_components[i];
 		if (component)
 		{
 			if (state == 0)
@@ -261,45 +261,45 @@ void PhysicsManager::Update()
 {
 	SCOPED_PROFILER("PhysicsManager::Update", scopeBenchmark);
 
-	const size_t rigidbodyCount = rigidBodies.size();
+	const size_t rigidbodyCount = s_rigidBodies.size();
 
-	const size_t colliderCount = colliders.size();
+	const size_t colliderCount = s_colliders.size();
 
 	//physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 1, 0.01666666f / 3.0f);
-	physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
+	s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
 
 	//Debug::Print("------------------------ Tick ------------------------");
 	//std::cout << "------------------------ Tick ------------------------" << std::endl;
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		RigidBody* rb = rigidBodies[i];
+		RigidBody* rb = s_rigidBodies[i];
 		rb->Tick();
 	}
 
 	MyContactResultCallback resultCallback;
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		const RigidBody* rb = rigidBodies[i];
-		if (rb->generatesEvents)
+		const RigidBody* rb = s_rigidBodies[i];
+		if (rb->m_generatesEvents)
 		{
-			physDynamicsWorld->contactTest(rb->bulletRigidbody, resultCallback);
-			physDynamicsWorld->contactTest(rb->bulletTriggerRigidbody, resultCallback);
+			s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
+			s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
 		}
 	}
 
 	for (size_t i = 0; i < colliderCount; i++)
 	{
-		const ColliderInfo& colliderInfo = colliders[i];
+		const ColliderInfo& colliderInfo = s_colliders[i];
 		if (colliderInfo.collider->generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject)
 		{
-			physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
+			s_physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
 		}
 	}
 
 	// Call the collision events
 	for (size_t i = 0; i < colliderCount; i++)
 	{
-		ColliderInfo& colliderInfo = colliders[i];
+		ColliderInfo& colliderInfo = s_colliders[i];
 		std::vector<Collider*> toRemove;
 
 		for (auto& collision : colliderInfo.collisions)
@@ -356,23 +356,23 @@ void PhysicsManager::Update()
 
 void PhysicsManager::Clear()
 {
-	PhysicsManager::rigidBodies.clear();
-	PhysicsManager::colliders.clear();
+	PhysicsManager::s_rigidBodies.clear();
+	PhysicsManager::s_colliders.clear();
 }
 
 void PhysicsManager::AddRigidBody(RigidBody* rb)
 {
-	rigidBodies.push_back(rb);
+	s_rigidBodies.push_back(rb);
 }
 
 void PhysicsManager::RemoveRigidBody(const RigidBody* rb)
 {
-	const size_t rigidbodyCount = rigidBodies.size();
+	const size_t rigidbodyCount = s_rigidBodies.size();
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		if (rigidBodies[i] == rb)
+		if (s_rigidBodies[i] == rb)
 		{
-			rigidBodies.erase(rigidBodies.begin() + i);
+			s_rigidBodies.erase(s_rigidBodies.begin() + i);
 			break;
 		}
 	}
@@ -382,17 +382,17 @@ void PhysicsManager::AddCollider(Collider* col)
 {
 	ColliderInfo colliderInfo;
 	colliderInfo.collider = col;
-	colliders.push_back(colliderInfo);
+	s_colliders.push_back(colliderInfo);
 }
 
 void PhysicsManager::RemoveCollider(const Collider* col)
 {
-	const size_t colliderCount = colliders.size();
+	const size_t colliderCount = s_colliders.size();
 	for (size_t i = 0; i < colliderCount; i++)
 	{
-		if (colliders[i].collider == col)
+		if (s_colliders[i].collider == col)
 		{
-			colliders.erase(colliders.begin() + i);
+			s_colliders.erase(s_colliders.begin() + i);
 			break;
 		}
 	}

@@ -146,7 +146,7 @@ void Window::UpdateWindowTitle()
 		newTitle += ProjectManager::GetProjectName() + " - ";
 		if (SceneManager::GetOpenedScene())
 		{
-			newTitle += SceneManager::GetOpenedScene()->file->GetFileName();
+			newTitle += SceneManager::GetOpenedScene()->m_file->GetFileName();
 			if (SceneManager::GetSceneModified())
 				newTitle += "*";
 		}

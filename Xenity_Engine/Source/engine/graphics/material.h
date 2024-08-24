@@ -42,72 +42,72 @@ public:
 
 	inline void SetShader(const std::shared_ptr<Shader>& _shader)
 	{
-		shader = _shader;
+		m_shader = _shader;
 	}
 
 	inline void SetTexture(const std::shared_ptr<Texture>& _texture)
 	{
-		texture = _texture;
+		m_texture = _texture;
 	}
 
 	inline void SetUseLighting(const bool _useLighting)
 	{
-		useLighting = _useLighting;
+		m_useLighting = _useLighting;
 	}
 
 	inline void SetUseTransparency(const bool _useTransparency)
 	{
-		useTransparency = _useTransparency;
+		m_useTransparency = _useTransparency;
 	}
 
 	inline void SetOffset(const Vector2& _offset)
 	{
-		offset = _offset;
+		t_offset = _offset;
 	}
 
 	inline void SetTiling(const Vector2& _tiling)
 	{
-		tiling = _tiling;
+		t_tiling = _tiling;
 	}
 
 	inline const std::shared_ptr<Shader>& GetShader() const
 	{
-		return shader;
+		return m_shader;
 	}
 
 	inline const std::shared_ptr<Texture>& GetTexture() const
 	{
-		return texture;
+		return m_texture;
 	}
 
 	inline bool GetUseLighting() const
 	{
-		return useLighting;
+		return m_useLighting;
 	}
 
 	inline bool GetUseTransparency() const
 	{
-		return useTransparency;
+		return m_useTransparency;
 	}
 
 	inline const Vector2& GetOffset() const
 	{
-		return offset;
+		return t_offset;
 	}
 
 	inline const Vector2& GetTiling() const
 	{
-		return tiling;
+		return t_tiling;
 	}
 
 	inline const Color& GetColor() const
 	{
-		return color;
+		return m_color;
 	}
 
 	inline void SetColor(const Color& _color)
 	{
-		color = _color;
+		m_color = _color;
 	}
 
 protected:
@@ -130,24 +130,24 @@ protected:
 	*/
 	void Update();
 
-	std::weak_ptr<Camera> lastUsedCamera;
+	std::weak_ptr<Camera> m_lastUsedCamera;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
-	std::unordered_map <const char*, Vector2> uniformsVector2;
-	std::unordered_map <const char*, Vector3> uniformsVector3;
-	std::unordered_map <const char*, Vector4> uniformsVector4;
-	std::unordered_map <const char*, int> uniformsInt;
-	std::unordered_map <const char*, float> uniformsFloat;
+	std::unordered_map <const char*, Vector2> m_uniformsVector2;
+	std::unordered_map <const char*, Vector3> m_uniformsVector3;
+	std::unordered_map <const char*, Vector4> m_uniformsVector4;
+	std::unordered_map <const char*, int> m_uniformsInt;
+	std::unordered_map <const char*, float> m_uniformsFloat;
 
-	std::shared_ptr<Shader> shader = nullptr;
-	std::shared_ptr<Texture> texture;
-	IDrawableTypes lastUpdatedType = IDrawableTypes::Draw_3D;
-	bool updated = false;
-	bool useLighting = false;
-	bool useTransparency = false;
-	Vector2 offset = Vector2(0,0);
-	Vector2 tiling = Vector2(1, 1);
-	Color color;
+	std::shared_ptr<Shader> m_shader = nullptr;
+	std::shared_ptr<Texture> m_texture;
+	IDrawableTypes m_lastUpdatedType = IDrawableTypes::Draw_3D;
+	bool m_updated = false;
+	bool m_useLighting = false;
+	bool m_useTransparency = false;
+	Vector2 t_offset = Vector2(0,0);
+	Vector2 t_tiling = Vector2(1, 1);
+	Color m_color;
 
-	static constexpr int version = 1;
+	static constexpr int s_version = 1;
 };
 

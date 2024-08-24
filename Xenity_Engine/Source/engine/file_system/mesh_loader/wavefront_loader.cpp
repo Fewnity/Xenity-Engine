@@ -24,7 +24,7 @@ using namespace std;
 
 bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 {
-	std::shared_ptr<File>& file = mesh.file;
+	std::shared_ptr<File>& file = mesh.m_file;
 	//Debug::Print("Loading mesh: " + file->GetPath(), true);
 
 	bool opened = true;
@@ -38,8 +38,8 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 		allString = file->ReadAll();
 		file->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.filePosition, mesh.fileSize);
-		allString = std::string(reinterpret_cast<const char*>(binData), mesh.fileSize);
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
+		allString = std::string(reinterpret_cast<const char*>(binData), mesh.m_fileSize);
 		free(binData);
 #endif
 		const size_t textSize = allString.size();
@@ -287,13 +287,13 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 			}
 			mesh.SetVertexDescritor(vertexDescriptor);
 
-			mesh.hasUv = !hasNoUv;
-			mesh.hasNormal = !hasNoNormals;
-			mesh.hasColor = false;
+			mesh.m_hasUv = !hasNoUv;
+			mesh.m_hasNormal = !hasNoNormals;
+			mesh.m_hasColor = false;
 #if defined(__PSP__)
-			mesh.hasIndices = false; // Disable indices on psp, this will improve performances
+			mesh.m_hasIndices = false; // Disable indices on psp, this will improve performances
 #else
-			mesh.hasIndices = true;
+			mesh.m_hasIndices = true;
 #endif
 			for (int i = 0; i < currentSubMesh + 1; i++)
 			{
@@ -319,7 +319,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 						stop = true;
 						break;
 					}
-					if (mesh.hasUv)
+					if (mesh.m_hasUv)
 					{
 						textureIndex = submesh->textureIndices[i] - 1;
 						if (textureIndex >= tempTexturesCoordsCount)
@@ -329,9 +329,9 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 						}
 					}
 					const Vector3& vertice = tempVertices.at(vertexIndex);
-					if (!mesh.hasNormal)
+					if (!mesh.m_hasNormal)
 					{
-						if (!mesh.hasUv)
+						if (!mesh.m_hasUv)
 						{
 							mesh.AddVertex(
 								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
@@ -353,7 +353,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 							break;
 						}
 						const Vector3& normal = tempNormals.at(normalIndices);
-						if (!mesh.hasUv)
+						if (!mesh.m_hasUv)
 						{
 							mesh.AddVertex(
 								normal.x, normal.y, normal.z,
@@ -369,8 +369,8 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 
 						}
 					}
-					if (mesh.hasIndices)
-						mesh.subMeshes[subMeshIndex]->indices[i] = i;
+					if (mesh.m_hasIndices)
+						mesh.m_subMeshes[subMeshIndex]->indices[i] = i;
 				}
 				if (stop)
 				{
@@ -395,14 +395,14 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 		mesh.SetIsLoading(false);
 		if (notSupported)
 		{
-			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh.file->GetPath());
+			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh.m_file->GetPath());
 			return false;
 		}
 	}
 	else
 	{
 		// Print error if the file can't be read
-		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh.file->GetPath());
+		Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Path: " + mesh.m_file->GetPath());
 		return false;
 	}
 	return true;

@@ -58,33 +58,33 @@ void SkyBox::OnReflectionUpdated()
 #if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
-	jsonData["Version"] = version;
+	jsonData["Version"] = s_version;
 
-	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, file);
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, m_file);
 	if (!saveResult)
 	{
-		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + file->GetPath(), true);
+		Debug::PrintError("[SkyBox::OnReflectionUpdated] Fail to save the Skybox file: " + m_file->GetPath(), true);
 	}
 #endif
 }
 
 void SkyBox::LoadFileReference()
 {
-	if (!isLoaded)
+	if (!m_isLoaded)
 	{
 		bool openResult = true;
 #if defined(EDITOR)
-		openResult = file->Open(FileMode::ReadOnly);
+		openResult = m_file->Open(FileMode::ReadOnly);
 #endif
 		if (openResult)
 		{
 			std::string jsonString;
 #if defined(EDITOR)
-			jsonString = file->ReadAll();
-			file->Close();
+			jsonString = m_file->ReadAll();
+			m_file->Close();
 #else
-			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileSize);
-			jsonString = std::string(reinterpret_cast<const char*>(binData), fileSize);
+			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, m_fileSize);
+			jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
 			free(binData);
 #endif
 
@@ -100,11 +100,11 @@ void SkyBox::LoadFileReference()
 			}
 			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
 
-			isLoaded = true;
+			m_isLoaded = true;
 		}
 		else 
 		{
-			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + file->GetPath(), true);
+			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + m_file->GetPath(), true);
 		}
 	}
 }

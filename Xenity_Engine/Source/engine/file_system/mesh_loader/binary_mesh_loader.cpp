@@ -12,7 +12,7 @@
 
 void BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
-	unsigned char* fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.filePosition, mesh.fileSize);
+	unsigned char* fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
 	const VertexElements vertexDescriptor = *(VertexElements*)fileData;
@@ -22,11 +22,11 @@ void BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	fileData += sizeof(uint32_t);
 
 #if defined(__PSP__)
-	mesh.hasIndices = false; // Disable indices on psp, this will improve performances
+	mesh.m_hasIndices = false; // Disable indices on psp, this will improve performances
 #else
-	mesh.hasIndices = true;
+	mesh.m_hasIndices = true;
 #endif
-	mesh.hasColor = false;
+	mesh.m_hasColor = false;
 
 	mesh.SetVertexDescritor(vertexDescriptor);
 	for (uint32_t i = 0; i < subMeshCount; i++)
@@ -47,12 +47,12 @@ void BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		fileData += sizeof(uint32_t);
 
 		mesh.AllocSubMesh(vertice_count, index_count);
-		MeshData::SubMesh* subMesh = mesh.subMeshes[mesh.subMeshCount - 1];
+		MeshData::SubMesh* subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		memcpy(subMesh->data, fileData, vertexMemSize);
 		fileData += vertexMemSize;
 
-		if(mesh.hasIndices)
+		if(mesh.m_hasIndices)
 		{
 			memcpy(subMesh->indices, fileData, indexMemSize);
 		}

@@ -24,7 +24,7 @@ public:
 
 	inline int GetOrderInLayer() const
 	{
-		return orderInLayer;
+		return m_orderInLayer;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public:
 	*/
 	inline void SetColor(const Color& color)
 	{
-		this->color = color;
+		this->m_color = color;
 	}
 
 	/**
@@ -69,8 +69,8 @@ protected:
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	Color color = Color();
-	std::shared_ptr <Material> material = nullptr;
-	std::shared_ptr <Texture> texture = nullptr;
-	int orderInLayer = 0;
+	Color m_color = Color();
+	std::shared_ptr <Material> m_material = nullptr;
+	std::shared_ptr <Texture> m_texture = nullptr;
+	int m_orderInLayer = 0;
 };

@@ -191,9 +191,9 @@ void InspectorMenu::DrawFilePreview()
 			loadedPreview = Editor::GetSelectedFileReference();
 			previewText.clear();
 			// Read text file
-			if (loadedPreview->fileType == FileType::File_Code || loadedPreview->fileType == FileType::File_Header || loadedPreview->fileType == FileType::File_Shader)
+			if (loadedPreview->m_fileType == FileType::File_Code || loadedPreview->m_fileType == FileType::File_Header || loadedPreview->m_fileType == FileType::File_Shader)
 			{
-				std::shared_ptr<File> file = loadedPreview->file;
+				std::shared_ptr<File> file = loadedPreview->m_file;
 				if (file->Open(FileMode::ReadOnly))
 				{
 					previewText = file->ReadAll();
@@ -206,7 +206,7 @@ void InspectorMenu::DrawFilePreview()
 			}
 		}
 		// If the file is a texture, get the texture id
-		if (loadedPreview->fileType == FileType::File_Texture)
+		if (loadedPreview->m_fileType == FileType::File_Texture)
 		{
 			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
 		}
@@ -247,11 +247,11 @@ void InspectorMenu::DrawFilePreview()
 			ImGui::SetCursorPos(textPos);
 			ImGui::Text("%s", text.c_str());
 		}
-		else if (loadedPreview->fileType == FileType::File_Mesh) // Draw audio preview
+		else if (loadedPreview->m_fileType == FileType::File_Mesh) // Draw audio preview
 		{
-			ImGui::Text("SubMesh count: %d", std::dynamic_pointer_cast<MeshData>(loadedPreview)->subMeshCount);
+			ImGui::Text("SubMesh count: %d", std::dynamic_pointer_cast<MeshData>(loadedPreview)->m_subMeshCount);
 		}
-		else if (loadedPreview->fileType == FileType::File_Audio) // Draw audio preview
+		else if (loadedPreview->m_fileType == FileType::File_Audio) // Draw audio preview
 		{
 			const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
 			AudioClipStream* stream = nullptr;
@@ -371,7 +371,7 @@ void InspectorMenu::DrawFilePreview()
 
 void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 {
-	const std::string fileNameExt = selectedFileReference.file->GetFileName() + selectedFileReference.file->GetFileExtension();
+	const std::string fileNameExt = selectedFileReference.m_file->GetFileName() + selectedFileReference.m_file->GetFileExtension();
 	ImGui::Text("%s", fileNameExt.c_str());
 	ImGui::Separator();
 
@@ -395,7 +395,7 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 
 	const ReflectiveData metaReflection = selectedFileReference.GetMetaReflectiveData(platformView);
 	bool disableMetaView = false;
-	if (loadedPreview && loadedPreview->fileType == FileType::File_Audio) // Draw audio preview
+	if (loadedPreview && loadedPreview->m_fileType == FileType::File_Audio) // Draw audio preview
 	{
 		const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
 		AudioClipStream* stream = nullptr;
@@ -448,7 +448,7 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 
 		if (ImGui::Button("Apply"))
 		{
-			selectedFileReference.isMetaDirty = true;
+			selectedFileReference.m_isMetaDirty = true;
 			ProjectManager::SaveMetaFile(selectedFileReference);
 		}
 	}
@@ -640,7 +640,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 	int componentCount = selectedGameObject.GetComponentCount();
 	for (int i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr <Component> comp = selectedGameObject.components[i];
+		std::shared_ptr <Component> comp = selectedGameObject.m_components[i];
 
 		const float cursorY = ImGui::GetCursorPosY();
 

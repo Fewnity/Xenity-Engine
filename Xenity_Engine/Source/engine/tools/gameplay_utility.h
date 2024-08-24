@@ -44,7 +44,7 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 		}
 		else if (const std::shared_ptr<GameObject> gameObject = std::dynamic_pointer_cast<GameObject>(lockPointer))
 		{
-			if (gameObject->waitingForDestroy)
+			if (gameObject->m_waitingForDestroy)
 			{
 				valid = false;
 			}

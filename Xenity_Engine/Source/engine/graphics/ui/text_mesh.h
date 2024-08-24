@@ -34,7 +34,7 @@ public:
 	*/
 	inline int GetOrderInLayer() const
 	{
-		return orderInLayer;
+		return m_orderInLayer;
 	}
 
 	/**
@@ -126,7 +126,7 @@ protected:
 	std::shared_ptr<Font> font;
 	std::string text;
 	Color color = Color();
-	int orderInLayer = 0;
+	int m_orderInLayer = 0;
 	float fontSize = 1;
 
 	float lineSpacing = 0;

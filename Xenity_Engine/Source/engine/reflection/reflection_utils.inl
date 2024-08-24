@@ -342,7 +342,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson5] key is empty");
 
 	if (valuePtr.get() != nullptr)
-		jsonValue[key] = valuePtr.get()->fileId;
+		jsonValue[key] = valuePtr.get()->m_fileId;
 	else
 		jsonValue[key] = 0;
 }
@@ -390,7 +390,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
 		if (getVal.at(vIndex))
-			jsonValue[key][vIndex] = getVal.at(vIndex)->fileId;
+			jsonValue[key][vIndex] = getVal.at(vIndex)->m_fileId;
 		else
 			jsonValue[key][vIndex] = 0;
 	}
@@ -533,7 +533,7 @@ inline bool ReflectionUtils::JsonToFile(const nlohmann::ordered_json& data, std:
 	XASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr");
 
 	bool ok = false;
-	FileSystem::fileSystem->Delete(file->GetPath());
+	FileSystem::s_fileSystem->Delete(file->GetPath());
 	if (file->Open(FileMode::WriteCreateFile))
 	{
 		file->Write(data.dump(0));

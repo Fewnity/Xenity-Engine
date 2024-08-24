@@ -116,13 +116,13 @@ protected:
 		unsigned int outerCutOff = 0;
 	};
 
-	static std::vector<PointLightVariableNames*> pointlightVariableNames;
-	static std::vector<DirectionalLightsVariableNames*> directionallightVariableNames;
-	static std::vector<SpotLightVariableNames*> spotlightVariableNames;
+	static std::vector<PointLightVariableNames*> s_pointlightVariableNames;
+	static std::vector<DirectionalLightsVariableNames*> s_directionallightVariableNames;
+	static std::vector<SpotLightVariableNames*> s_spotlightVariableNames;
 
-	std::vector<PointLightVariableIds*> pointlightVariableIds;
-	std::vector<DirectionalLightsVariableIds*> directionallightVariableIds;
-	std::vector<SpotLightVariableIds*> spotlightVariableIds;
+	std::vector<PointLightVariableIds*> m_pointlightVariableIds;
+	std::vector<DirectionalLightsVariableIds*> m_directionallightVariableIds;
+	std::vector<SpotLightVariableIds*> m_spotlightVariableIds;
 
 	enum class ShaderType
 	{
@@ -241,22 +241,22 @@ protected:
 	*/
 	void SetSpotLightData(const Light& light, const int index);
 
-	static glm::mat4 canvasCameraTransformationMatrix;
+	static glm::mat4 m_canvasCameraTransformationMatrix;
 
-	unsigned int vertexShaderId = 0;
-	unsigned int fragmentShaderId = 0;
-	unsigned int tessellationShaderId = 0;
-	unsigned int tessellationEvaluationShaderId = 0;
-	unsigned int programId = 0;
-	unsigned int modelLocation = 0;
-	unsigned int projectionLocation = 0;
-	unsigned int cameraLocation = 0;
-	unsigned int ambientLightLocation = 0;
+	unsigned int m_vertexShaderId = 0;
+	unsigned int m_fragmentShaderId = 0;
+	unsigned int m_tessellationShaderId = 0;
+	unsigned int m_tessellationEvaluationShaderId = 0;
+	unsigned int m_programId = 0;
+	unsigned int m_modelLocation = 0;
+	unsigned int m_projectionLocation = 0;
+	unsigned int m_cameraLocation = 0;
+	unsigned int m_ambientLightLocation = 0;
 
-	unsigned int usedPointLightCountLocation = 0;
-	unsigned int usedSpotLightCountLocation = 0;
-	unsigned int usedDirectionalLightCountLocation = 0;
+	unsigned int m_usedPointLightCountLocation = 0;
+	unsigned int m_usedSpotLightCountLocation = 0;
+	unsigned int m_usedDirectionalLightCountLocation = 0;
 
-	bool useTessellation = false;
-	std::unordered_map<std::string, unsigned int> uniformsIds;
+	bool m_useTessellation = false;
+	std::unordered_map<std::string, unsigned int> m_uniformsIds;
 };

@@ -80,11 +80,11 @@ void SpriteEditorMenu::SaveSpriteSelections()
 	const std::string folderPath0 = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\";
 
 	// Create the folder where sprites will be saved
-	FileSystem::fileSystem->CreateFolder(folderPath0);
+	FileSystem::s_fileSystem->CreateFolder(folderPath0);
 
-	const std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->fileId) + "\\";
+	const std::string folderPath = ProjectManager::GetProjectFolderPath() + "additional_assets\\sprite_sheets\\" + std::to_string(spriteToEdit->m_fileId) + "\\";
 	// Create the folder where sprites will be saved
-	FileSystem::fileSystem->CreateFolder(folderPath);
+	FileSystem::s_fileSystem->CreateFolder(folderPath);
 
 	spriteToEdit->ClearSpriteSelections();
 	const size_t spriteSelectionCount = spriteSelections.size();
@@ -98,12 +98,12 @@ void SpriteEditorMenu::SaveSpriteSelections()
 		spriteToEdit->spriteSelections.push_back(newSpriteSelection);
 
 		// Create cropped texture file
-		std::shared_ptr<File> newFile = FileSystem::fileSystem->MakeFile(folderPath + spriteToEdit->file->GetFileName() + "_" + std::to_string(selectI) + ".png");
+		std::shared_ptr<File> newFile = FileSystem::s_fileSystem->MakeFile(folderPath + spriteToEdit->m_file->GetFileName() + "_" + std::to_string(selectI) + ".png");
 		AssetModifier::CropTexture(spriteToEdit, newSpriteSelection->position.x, newSpriteSelection->position.y, newSpriteSelection->size.x, newSpriteSelection->size.y, newFile);
 	}
 
 	// Save sprite sheet texture meta file
-	spriteToEdit->isMetaDirty = true;
+	spriteToEdit->m_isMetaDirty = true;
 	ProjectManager::SaveMetaFile(*spriteToEdit);
 }
 

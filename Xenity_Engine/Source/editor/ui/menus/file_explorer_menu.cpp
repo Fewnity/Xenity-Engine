@@ -36,19 +36,19 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 {
 	if (item.file) // Do a specific action if the file can be opened
 	{
-		if (item.file->fileType == FileType::File_Scene) // If the file is a scene, load the scene
+		if (item.file->m_fileType == FileType::File_Scene) // If the file is a scene, load the scene
 		{
 			GameplayManager::SetGameState(GameState::Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->fileType == FileType::File_Code || item.file->fileType == FileType::File_Header || item.file->fileType == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
+		else if (item.file->m_fileType == FileType::File_Code || item.file->m_fileType == FileType::File_Header || item.file->m_fileType == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
 		{
 			// Open the folder to allow vs code c++ settings
 			std::string command = "code \"" + ProjectManager::GetAssetFolderPath() + "\"";
 			system(command.c_str());
 
 			// Open the file
-			command = "code \"" + item.file->file->GetPath() + "\"";
+			command = "code \"" + item.file->m_file->GetPath() + "\"";
 			system(command.c_str());
 		}
 	}
@@ -63,7 +63,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	//Get name
 	std::string itemName;
 	if (item.file)
-		itemName = item.file->file->GetFileName();
+		itemName = item.file->m_file->GetFileName();
 	else
 		itemName = item.directory->GetFolderName();
 
@@ -96,7 +96,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	std::string popupId = "RightClick";
 	if (item.file)
 	{
-		popupId += std::to_string(item.file->fileId);
+		popupId += std::to_string(item.file->m_fileId);
 	}
 	else
 	{
@@ -106,7 +106,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
 
-	if (item.file && item.file->fileType == FileType::File_Material)
+	if (item.file && item.file->m_fileType == FileType::File_Material)
 	{
 		std::shared_ptr<Texture> matTexture = EditorUI::icons[(int)IconName::Icon_Material];
 		Engine::GetRenderer().BindTexture(*matTexture);
@@ -178,16 +178,16 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		const bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
 		if (dropFileInFolder)
 		{
-			std::shared_ptr<File>& file = fileRef->file;
-			int copyResult = FileSystem::fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
+			std::shared_ptr<File>& file = fileRef->m_file;
+			int copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
 			if (copyResult == 0)
 			{
-				copyResult = FileSystem::fileSystem->CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
+				copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
 
 				if (copyResult == 0)
 				{
-					FileSystem::fileSystem->Delete(file->GetPath());
-					FileSystem::fileSystem->Delete(file->GetPath() + ".meta");
+					FileSystem::s_fileSystem->Delete(file->GetPath());
+					FileSystem::s_fileSystem->Delete(file->GetPath() + ".meta");
 				}
 			}
 
@@ -198,9 +198,9 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFolderInFolder)
 		{
 			const std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
-			FileSystem::fileSystem->CreateFolder(destinationPath);
+			FileSystem::s_fileSystem->CreateFolder(destinationPath);
 			Editor::StartFolderCopy(directoryRef->path, destinationPath);
-			FileSystem::fileSystem->Delete(directoryRef->path);
+			FileSystem::s_fileSystem->Delete(directoryRef->path);
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
@@ -220,7 +220,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		//--
 		createItem->AddItem("Folder", [&fileExplorerItem]()
 			{
-				FileSystem::fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
+				FileSystem::s_fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
 				ProjectManager::RefreshProjectDirectory();
 			});
 		createItem->AddItem("Scene", [&fileExplorerItem]()
@@ -256,7 +256,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				fileToRename = fileExplorerItem.file;
 				directoryToRename = fileExplorerItem.directory;
 				if (fileToRename)
-					renamingString = fileToRename->file->GetFileName();
+					renamingString = fileToRename->m_file->GetFileName();
 				else if (directoryToRename)
 					renamingString = directoryToRename->GetFolderName();
 
@@ -273,7 +273,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		fileExplorerRightClickMenu.AddItem(explorerTitle, [&fileExplorerItem, &itemSelected]()
 			{
 				if (fileExplorerItem.file)
-					Editor::OpenExplorerWindow(fileExplorerItem.file->file->GetPath(), itemSelected);
+					Editor::OpenExplorerWindow(fileExplorerItem.file->m_file->GetPath(), itemSelected);
 				else if (fileExplorerItem.directory)
 					Editor::OpenExplorerWindow(fileExplorerItem.directory->path, itemSelected);
 
@@ -286,8 +286,8 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 			{
 				if (fileExplorerItem.file)
 				{
-					FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath());
-					FileSystem::fileSystem->Delete(fileExplorerItem.file->file->GetPath() + ".meta");
+					FileSystem::s_fileSystem->Delete(fileExplorerItem.file->m_file->GetPath());
+					FileSystem::s_fileSystem->Delete(fileExplorerItem.file->m_file->GetPath() + ".meta");
 					FileHandler::RemoveOneFile();
 					if (Editor::GetSelectedFileReference() == fileExplorerItem.file)
 					{
@@ -296,7 +296,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				}
 				else if (fileExplorerItem.directory)
 				{
-					FileSystem::fileSystem->Delete(fileExplorerItem.directory->path);
+					FileSystem::s_fileSystem->Delete(fileExplorerItem.directory->path);
 				}
 				ProjectManager::RefreshProjectDirectory();
 			});
@@ -331,7 +331,7 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 			if (isHovered)
 				payloadName = "Files";
 			else
-				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->fileType);
+				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->m_fileType);
 
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
 		}
@@ -357,7 +357,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 	}
 	else
 	{
-		const FileType fileType = fileExplorerItem.file->fileType;
+		const FileType fileType = fileExplorerItem.file->m_fileType;
 
 		switch (fileType)
 		{
@@ -531,11 +531,11 @@ void FileExplorerMenu::Rename()
 	{
 		needUpdate = true;
 
-		std::shared_ptr<File> file = fileToRename->file;
-		const bool success = FileSystem::fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
+		std::shared_ptr<File> file = fileToRename->m_file;
+		const bool success = FileSystem::s_fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
 		if (success)
 		{
-			FileSystem::fileSystem->Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
+			FileSystem::s_fileSystem->Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
 			if (SceneManager::GetOpenedScene() == fileToRename)
 			{
 				needTitleRefresh = true;
@@ -553,7 +553,7 @@ void FileExplorerMenu::Rename()
 		std::string parentPath = directoryToRename->path;
 		const size_t lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
 		parentPath = parentPath.substr(0, lastSlash) + "\\";
-		const bool success = FileSystem::fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
+		const bool success = FileSystem::s_fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
 	}
 
 	fileToRename.reset();

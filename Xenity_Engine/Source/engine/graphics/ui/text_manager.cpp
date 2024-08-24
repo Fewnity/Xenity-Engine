@@ -77,7 +77,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData(6 * charCountToDraw, 6 * charCountToDraw, false, false, true);
 
 	mesh->unifiedColor = color;
-	mesh->hasIndices = true;
+	mesh->m_hasIndices = true;
 
 	int drawnCharIndex = 0;
 	for (int i = 0; i < textLenght; i++)
@@ -145,7 +145,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		const Quaternion& rot = transform->GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
-		Graphics::DrawSubMesh(*mesh->subMeshes[0], *material, font->GetFontAtlas(), renderSettings, matrix, canvas);
+		Graphics::DrawSubMesh(*mesh->m_subMeshes[0], *material, font->GetFontAtlas(), renderSettings, matrix, canvas);
 	}
 }
 
@@ -174,7 +174,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice, 0);
 	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice, 0);
 
-	MeshData::SubMesh *subMesh = mesh->subMeshes[0];
+	MeshData::SubMesh *subMesh = mesh->m_subMeshes[0];
 	subMesh->indices[0 + indiceIndex] = 0 + indice;
 	subMesh->indices[1 + indiceIndex] = 2 + indice;
 	subMesh->indices[2 + indiceIndex] = 1 + indice;

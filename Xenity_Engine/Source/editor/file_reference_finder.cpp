@@ -25,7 +25,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T
 {
 	if (valuePtr && valuePtr->get())
 	{
-		ids.push_back(valuePtr->get()->fileId);
+		ids.push_back(valuePtr->get()->m_fileId);
 		return true;
 	}
 	else
@@ -46,7 +46,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 		{
 			if (getVal.at(vIndex))
 			{
-				ids.push_back(getVal.at(vIndex)->fileId);
+				ids.push_back(getVal.at(vIndex)->m_fileId);
 			}
 		}
 		return true;

@@ -421,7 +421,7 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 	create_local_screen(local_screen, local_world, world_view, view_screen);
 
 	// return;
-	int subMeshCount = meshData->subMeshCount;
+	int subMeshCount = meshData->m_subMeshCount;
 
 	size_t textureCount = textures.size();
 
@@ -439,7 +439,7 @@ void RendererVU1::DrawMeshData(const std::shared_ptr<MeshData> &meshData, const 
 	// for (size_t i = 0; i < 5; i++)
 	// for (size_t i = 5; i < 6; i++)
 	{
-		subMesh = meshData->subMeshes[i];
+		subMesh = meshData->m_subMeshes[i];
 
 		// Do not continue if there are more submeshes than textures
 		if (i == textureCount)
@@ -564,7 +564,7 @@ void RendererVU1::Clear()
 	clear_screen(&frame, &z);
 }
 
-void RendererVU1::SetFog(bool active)
+void RendererVU1::SetFog(bool m_active)
 {
 }
 

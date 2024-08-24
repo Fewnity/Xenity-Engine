@@ -352,7 +352,7 @@ public:
 		if constexpr (std::is_base_of<T, FileReference>())
 		{
 			reflectiveDataToDraw.ownerType = 0;
-			reflectiveDataToDraw.ownerUniqueId = owner.fileId;
+			reflectiveDataToDraw.ownerUniqueId = owner.m_fileId;
 		}
 		else if constexpr (std::is_base_of<T, GameObject>())
 		{
@@ -482,14 +482,14 @@ public:
 		const std::shared_ptr<T> ptr = valuePtr.get();
 		if (ptr != nullptr)
 		{
-			if (ptr->file != nullptr)
-				inputText = ptr->file->GetFileName();
+			if (ptr->m_file != nullptr)
+				inputText = ptr->m_file->GetFileName();
 			else
 				inputText = "Filled but invalid file reference (" + classInfo->name + ")";
 
-			inputText += " " + std::to_string(ptr->fileId) + " ";
-			if (ptr->file)
-				inputText += " " + std::to_string(ptr->file->GetUniqueId()) + " ";
+			inputText += " " + std::to_string(ptr->m_fileId) + " ";
+			if (ptr->m_file)
+				inputText += " " + std::to_string(ptr->m_file->GetUniqueId()) + " ";
 		}
 		const InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
 		if (returnValue == InputButtonState::ResetValue)

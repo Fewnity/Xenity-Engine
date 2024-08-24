@@ -41,20 +41,20 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
 
-	this->hasUv = useUV;
-	this->hasNormal = useNormals;
-	this->hasColor = useVertexColor;
+	this->m_hasUv = useUV;
+	this->m_hasNormal = useNormals;
+	this->m_hasColor = useVertexColor;
 
-	vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
+	m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
 	if(useUV)
 	{
-		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
 	}
 	if (useNormals)
 	{
-		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 	}
-	/*if (hasColor)
+	/*if (m_hasColor)
 	{
 		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::);
 	}*/
@@ -103,7 +103,7 @@ ReflectiveData MeshData::GetMetaReflectiveData(AssetPlatform platform)
  */
 void MeshData::AddVertex(float u, float v, const Color& color, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
-	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+	XASSERT(index < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
 	Vertex vert;
 	vert.u = u;
@@ -122,41 +122,41 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 	vert.z = z;
 
 #if defined(_EE)
-	subMeshes[subMeshIndex]->c_verts[index][0] = x;
-	subMeshes[subMeshIndex]->c_verts[index][1] = y;
-	subMeshes[subMeshIndex]->c_verts[index][2] = z;
-	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
-	subMeshes[subMeshIndex]->c_st[index][0] = u;
-	subMeshes[subMeshIndex]->c_st[index][1] = v;
-	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
+	m_subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	m_subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	m_subMeshes[subMeshIndex]->c_st[index][0] = u;
+	m_subMeshes[subMeshIndex]->c_st[index][1] = v;
+	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
 #else
-	((Vertex*)subMeshes[subMeshIndex]->data)[index] = vert;
+	((Vertex*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
 void MeshData::AddVertex(float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
-	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+	XASSERT(index < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
 	VertexNoColorNoUv vert;
 	vert.x = x;
 	vert.y = y;
 	vert.z = z;
 #if defined(_EE)
-	subMeshes[subMeshIndex]->c_verts[index][0] = x;
-	subMeshes[subMeshIndex]->c_verts[index][1] = y;
-	subMeshes[subMeshIndex]->c_verts[index][2] = z;
-	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	m_subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	m_subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 #else
-	((VertexNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNoColorNoUv*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
 void MeshData::AddVertex(float u, float v, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
-	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+	XASSERT(index < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
 	VertexNoColor vert;
 	vert.u = u;
@@ -165,28 +165,28 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, unsigned i
 	vert.y = y;
 	vert.z = z;
 #if defined(_EE)
-	subMeshes[subMeshIndex]->c_verts[index][0] = x;
-	subMeshes[subMeshIndex]->c_verts[index][1] = y;
-	subMeshes[subMeshIndex]->c_verts[index][2] = z;
-	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	m_subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	m_subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 
-	subMeshes[subMeshIndex]->c_st[index][0] = u;
-	subMeshes[subMeshIndex]->c_st[index][1] = v;
-	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][0] = u;
+	m_subMeshes[subMeshIndex]->c_st[index][1] = v;
+	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
-	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNoColor*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
 void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
-	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+	XASSERT(index < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
 	VertexNormalsNoColor vert;
 	vert.u = u;
@@ -198,28 +198,28 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	vert.y = y;
 	vert.z = z;
 #if defined(_EE)
-	subMeshes[subMeshIndex]->c_verts[index][0] = x;
-	subMeshes[subMeshIndex]->c_verts[index][1] = y;
-	subMeshes[subMeshIndex]->c_verts[index][2] = z;
-	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	m_subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	m_subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 
-	subMeshes[subMeshIndex]->c_st[index][0] = u;
-	subMeshes[subMeshIndex]->c_st[index][1] = v;
-	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][0] = u;
+	m_subMeshes[subMeshIndex]->c_st[index][1] = v;
+	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 
-	subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][0] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][1] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNormalsNoColor*)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNormalsNoColor*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
 void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
 {
-	XASSERT(index < subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
+	XASSERT(index < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddVertex] Index out of bound");
 
 	VertexNormalsNoColorNoUv vert;
 	vert.normX = nx;
@@ -230,15 +230,15 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	vert.z = z;
 
 #if defined(_EE)
-	subMeshes[subMeshIndex]->c_verts[index][0] = x;
-	subMeshes[subMeshIndex]->c_verts[index][1] = y;
-	subMeshes[subMeshIndex]->c_verts[index][2] = z;
-	subMeshes[subMeshIndex]->c_verts[index][3] = 1;
+	m_subMeshes[subMeshIndex]->c_verts[index][0] = x;
+	m_subMeshes[subMeshIndex]->c_verts[index][1] = y;
+	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
+	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 
-	subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
-	subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
+	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 #else
-	((VertexNormalsNoColorNoUv*)subMeshes[subMeshIndex]->data)[index] = vert;
+	((VertexNormalsNoColorNoUv*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -251,17 +251,17 @@ void MeshData::SendDataToGpu()
 void MeshData::ComputeBoundingBox()
 {
 	bool firstValue = true;
-	for (int i = 0; i < subMeshCount; i++)
+	for (int i = 0; i < m_subMeshCount; i++)
 	{
-		SubMesh* subMesh = subMeshes[i];
+		SubMesh* subMesh = m_subMeshes[i];
 
 		int verticesCount = subMesh->vertice_count;
 		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+			if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 			{
-				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
@@ -274,7 +274,7 @@ void MeshData::ComputeBoundingBox()
 			}
 			else 
 			{
-				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
@@ -288,24 +288,24 @@ void MeshData::ComputeBoundingBox()
 			
 			if (firstValue)
 			{
-				minBoundingBox.x = vert.x;
-				minBoundingBox.y = vert.y;
-				minBoundingBox.z = vert.z;
+				m_minBoundingBox.x = vert.x;
+				m_minBoundingBox.y = vert.y;
+				m_minBoundingBox.z = vert.z;
 
-				maxBoundingBox.x = vert.x;
-				maxBoundingBox.y = vert.y;
-				maxBoundingBox.z = vert.z;
+				m_maxBoundingBox.x = vert.x;
+				m_maxBoundingBox.y = vert.y;
+				m_maxBoundingBox.z = vert.z;
 				firstValue = false;
 			}
 			else
 			{
-				minBoundingBox.x = std::min(minBoundingBox.x, vert.x);
-				minBoundingBox.y = std::min(minBoundingBox.y, vert.y);
-				minBoundingBox.z = std::min(minBoundingBox.z, vert.z);
+				m_minBoundingBox.x = std::min(m_minBoundingBox.x, vert.x);
+				m_minBoundingBox.y = std::min(m_minBoundingBox.y, vert.y);
+				m_minBoundingBox.z = std::min(m_minBoundingBox.z, vert.z);
 
-				maxBoundingBox.x = std::max(maxBoundingBox.x, vert.x);
-				maxBoundingBox.y = std::max(maxBoundingBox.y, vert.y);
-				maxBoundingBox.z = std::max(maxBoundingBox.z, vert.z);
+				m_maxBoundingBox.x = std::max(m_maxBoundingBox.x, vert.x);
+				m_maxBoundingBox.y = std::max(m_maxBoundingBox.y, vert.y);
+				m_maxBoundingBox.z = std::max(m_maxBoundingBox.z, vert.z);
 			}
 		}
 	}
@@ -318,9 +318,9 @@ void MeshData::Unload()
 
 void MeshData::FreeMeshData(bool deleteSubMeshes)
 {
-	for (int i = 0; i < subMeshCount; i++)
+	for (int i = 0; i < m_subMeshCount; i++)
 	{
-		SubMesh* subMesh = subMeshes[i];
+		SubMesh* subMesh = m_subMeshes[i];
 		if (subMesh)
 		{
 			if (subMesh->data)
@@ -355,8 +355,8 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 
 	if (deleteSubMeshes)
 	{
-		subMeshes.clear();
-		subMeshCount = 0;
+		m_subMeshes.clear();
+		m_subMeshCount = 0;
 	}
 }
 
@@ -371,10 +371,10 @@ MeshData::~MeshData()
 
 void MeshData::LoadFileReference()
 {
-	if (!isLoaded)
+	if (!m_isLoaded)
 	{
-		isLoaded = true;
-		isValid = false;
+		m_isLoaded = true;
+		m_isValid = false;
 #if defined(EDITOR)
 		WavefrontLoader::LoadFromRawData(*this);
 #else
@@ -396,16 +396,16 @@ void MeshData::LoadFileReference()
 void MeshData::OnLoadFileReferenceFinished()
 {
 #if defined(__PSP__)
-	if (hasIndices)
+	if (m_hasIndices)
 	{
 		pspDrawParam |= GU_INDEX_16BIT;
 	}
 	pspDrawParam |= GU_TEXTURE_32BITF;
-	if (hasColor)
+	if (m_hasColor)
 	{
 		pspDrawParam |= GU_COLOR_8888;
 	}
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 	{
 		pspDrawParam |= GU_NORMAL_32BITF;
 	}
@@ -417,17 +417,17 @@ void MeshData::OnLoadFileReferenceFinished()
 	SendDataToGpu();
 #endif
 	ComputeBoundingBox();
-	isValid = true;
+	m_isValid = true;
 }
 
 void MeshData::UnloadFileReference()
 {
 	if (Engine::IsRunning(true))
 	{
-		if (isLoaded)
+		if (m_isLoaded)
 		{
-			isLoaded = false;
-			isValid = false;
+			m_isLoaded = false;
+			m_isValid = false;
 			Unload();
 		}
 	}
@@ -436,7 +436,7 @@ void MeshData::UnloadFileReference()
 void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 {
 #if defined(_EE)
-	SubMesh* subMesh = subMeshes[index];
+	SubMesh* subMesh = m_subMeshes[index];
 	// if (subMesh->meshPacket)
 	// packet2_free(subMesh->meshPacket);
 	if (!subMesh->meshPacket)
@@ -465,7 +465,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
 	newSubMesh->meshData = this;
-	if (index_count != 0 && hasIndices) 
+	if (index_count != 0 && m_hasIndices) 
 	{
 		newSubMesh->indexMemSize = sizeof(unsigned short) * index_count;
 #if defined(__PSP__)
@@ -488,35 +488,35 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	}
 
 	// Add position size
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::POSITION_32_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_32_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[3]);
 	}
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[3]);
 	}
 
 	// Add normal size
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[3]);
 	}
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[3]);
 	}
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(char[3]);
 	}
 
 	// Add UV size
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[2]);
 	}
-	if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[2]);
 	}
@@ -586,6 +586,6 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 
-	subMeshes.push_back(newSubMesh);
-	subMeshCount++;
+	m_subMeshes.push_back(newSubMesh);
+	m_subMeshCount++;
 }

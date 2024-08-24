@@ -38,28 +38,28 @@ public:
 
 	void Awake() override;
 
-	inline const Vector3& GetVelocity() const { return velocity; }
+	inline const Vector3& GetVelocity() const { return m_velocity; }
 	void SetVelocity(const Vector3& _velocity);
 
-	inline float GetDrag() const { return drag; }
+	inline float GetDrag() const { return m_drag; }
 	void SetDrag(float _drag);
 
-	inline float GetAngularDrag() const { return angularDrag; }
+	inline float GetAngularDrag() const { return m_angularDrag; }
 	void SetAngularDrag(float _angularDrag);
 
-	inline float GetBounce() const { return bounce; }
+	inline float GetBounce() const { return m_bounce; }
 	void SetBounce(float _bounce);
 
-	inline float GetGravityMultiplier() const  { return gravityMultiplier; }
+	inline float GetGravityMultiplier() const  { return m_gravityMultiplier; }
 	void SetGravityMultiplier(float _gravityMultiplier);
 
-	inline float IsStatic() const  { return isStatic; }
+	inline float IsStatic() const  { return m_isStatic; }
 	void SetIsStatic(float _isStatic);
 
-	inline float GetMass() const { return mass; }
+	inline float GetMass() const { return m_mass; }
 	void SetMass(float _mass);
 
-	inline float GetFriction() const { return friction; }
+	inline float GetFriction() const { return m_friction; }
 	void SetFriction(float _friction);
 
 	LockedAxis lockedMovementAxis;
@@ -70,9 +70,9 @@ public:
 protected:
 	void RemoveReferences()  override;
 
-	bool disableEvent = false;
+	bool m_disableEvent = false;
 	std::vector<Collider*> colliders;
-	bool generatesEvents = false;
+	bool m_generatesEvents = false;
 	void UpdateGeneratesEvents();
 
 	void UpdateRigidBodyMass();
@@ -102,22 +102,23 @@ protected:
 	void OnReflectionUpdated() override;
 
 
-	Vector3 velocity = Vector3(0, 0, 0);
-	float drag = 0.1f;
-	float angularDrag = 0.1f;
-	float bounce = 0.0f;
-	float mass = 1;
-	float gravityMultiplier = 1.0f;
-	float friction = 0.1f;
-	bool isStatic = false;
+	Vector3 m_velocity = Vector3(0, 0, 0);
 
-	btRigidBody* bulletRigidbody = nullptr;
-	btCompoundShape* bulletCompoundShape = nullptr;
-	std::vector<btCollisionShape*> shapes;
+	btRigidBody* m_bulletRigidbody = nullptr;
+	btCompoundShape* m_bulletCompoundShape = nullptr;
+	std::vector<btCollisionShape*> m_shapes;
 
-	btRigidBody* bulletTriggerRigidbody = nullptr;
-	btCompoundShape* bulletTriggerCompoundShape = nullptr;
-	std::vector<btCollisionShape*> triggerShapes;
+	btRigidBody* m_bulletTriggerRigidbody = nullptr;
+	btCompoundShape* m_bulletTriggerCompoundShape = nullptr;
+	std::vector<btCollisionShape*> m_triggerShapes;
+
+	float m_drag = 0.1f;
+	float m_angularDrag = 0.1f;
+	float m_bounce = 0.0f;
+	float m_mass = 1;
+	float m_gravityMultiplier = 1.0f;
+	float m_friction = 0.1f;
+	bool m_isStatic = false;
 
 	/**
 	 * @brief [Internal]

@@ -99,7 +99,7 @@ public:
 	*/
 	inline const RGBA& GetRGBA() const
 	{
-		return rgba;
+		return m_rgba;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public:
 	*/
 	inline unsigned int GetUnsignedIntRGBA() const
 	{
-		return rgbaInt;
+		return m_rgbaInt;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public:
 	*/
 	inline unsigned int GetUnsignedIntABGR() const
 	{
-		return abgrInt;
+		return m_abgrInt;
 	}
 
 	/**
@@ -134,9 +134,9 @@ protected:
 	void UpdateUnsignedInts();
 
 	// Color informations, default is white
-	RGBA rgba = RGBA(1, 1, 1, 1);
-	unsigned int rgbaInt = 0xFFFFFFFF;
-	unsigned int abgrInt = 0xFFFFFFFF;
+	RGBA m_rgba = RGBA(1, 1, 1, 1);
+	unsigned int m_rgbaInt = 0xFFFFFFFF;
+	unsigned int m_abgrInt = 0xFFFFFFFF;
 };
 
 API Color operator*(const Color& left, const Color& right);

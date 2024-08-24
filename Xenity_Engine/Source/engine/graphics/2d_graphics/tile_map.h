@@ -107,7 +107,7 @@ public:
 
 	inline int GetOrderInLayer() const
 	{
-		return orderInLayer;
+		return m_orderInLayer;
 	}
 
 	/**
@@ -129,7 +129,7 @@ protected:
 	int chunkSize = 0;
 	bool dirtyMeshes = false;
 
-	int orderInLayer = 0;
+	int m_orderInLayer = 0;
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	/**

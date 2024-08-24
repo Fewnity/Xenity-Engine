@@ -69,7 +69,7 @@ void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, Directory& di
 
 std::vector<std::shared_ptr<File>> Directory::GetAllFiles(bool recursive)
 {
-	FileSystem::fileSystem->FillDirectory(shared_from_this(), recursive);
+	FileSystem::s_fileSystem->FillDirectory(shared_from_this(), recursive);
 	std::vector<std::shared_ptr<File>> vector;
 	AddDirectoryFiles(vector, *this);
 	return vector;

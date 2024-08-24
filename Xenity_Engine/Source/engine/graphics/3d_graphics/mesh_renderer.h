@@ -37,20 +37,20 @@ public:
 	*/
 	inline const std::shared_ptr<MeshData>& GetMeshData()
 	{
-		return meshData;
+		return m_meshData;
 	}
 
 	inline std::vector<std::shared_ptr <Material>> GetMaterials() const
 	{
-		return materials;
+		return m_materials;
 	}
 
 	void SetMaterial(std::shared_ptr <Material> material, int index);
 
 	inline std::shared_ptr <Material> GetMaterial(int index) const
 	{
-		if (index < materials.size())
-			return materials[index];
+		if (index < m_materials.size())
+			return m_materials[index];
 
 		return nullptr;
 	}
@@ -65,7 +65,6 @@ public:
 
 protected:
 	Sphere boundingSphere;
-	bool outOfFrustum = false;
 
 	friend class Lod;
 
@@ -94,9 +93,10 @@ protected:
 
 	void OnTransformPositionUpdated();
 
-	std::shared_ptr <MeshData> meshData = nullptr;
-	std::vector<std::shared_ptr <Material>> materials;
-	size_t matCount = 0;
+	std::shared_ptr <MeshData> m_meshData = nullptr;
+	std::vector<std::shared_ptr <Material>> m_materials;
+	size_t m_matCount = 0;
 
-	bool culled = false;
+	bool m_culled = false;
+	bool outOfFrustum = false;
 };

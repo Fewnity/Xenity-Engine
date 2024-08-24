@@ -26,8 +26,7 @@ class File;
 class API FileSystem
 {
 public:
-	static FileSystem* fileSystem;
-
+	static FileSystem* s_fileSystem;
 
 	/**
 	* @brief Create a directory

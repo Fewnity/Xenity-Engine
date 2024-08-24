@@ -50,7 +50,7 @@ Material::~Material()
 void Material::SetAttribute(const char* attribute, const Vector2& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	uniformsVector2.emplace(std::pair <const char*, Vector2>(attribute, value));
+	m_uniformsVector2.emplace(std::pair <const char*, Vector2>(attribute, value));
 }
 
 /// <summary>
@@ -61,7 +61,7 @@ void Material::SetAttribute(const char* attribute, const Vector2& value)
 void Material::SetAttribute(const char* attribute, const Vector3& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	uniformsVector3.emplace(std::pair <const char*, Vector3>(attribute, value));
+	m_uniformsVector3.emplace(std::pair <const char*, Vector3>(attribute, value));
 }
 
 /// <summary>
@@ -72,7 +72,7 @@ void Material::SetAttribute(const char* attribute, const Vector3& value)
 void Material::SetAttribute(const char* attribute, const Vector4& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	uniformsVector4.emplace(std::pair <const char*, Vector4>(attribute, value));
+	m_uniformsVector4.emplace(std::pair <const char*, Vector4>(attribute, value));
 }
 
 /// <summary>
@@ -93,7 +93,7 @@ void Material::SetAttribute(const char* attribute, const Vector4& value)
 void Material::SetAttribute(const char* attribute, const float value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	uniformsFloat.emplace(std::pair <const char*, float>(attribute, value));
+	m_uniformsFloat.emplace(std::pair <const char*, float>(attribute, value));
 }
 
 /// <summary>
@@ -104,7 +104,7 @@ void Material::SetAttribute(const char* attribute, const float value)
 void Material::SetAttribute(const char* attribute, const int value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	uniformsInt.emplace(std::pair <const char*, int>(attribute, value));
+	m_uniformsInt.emplace(std::pair <const char*, int>(attribute, value));
 }
 
 std::shared_ptr<Material> Material::MakeMaterial()
@@ -122,28 +122,28 @@ std::shared_ptr<Material> Material::MakeMaterial()
 void Material::Use()
 {
 	const bool matChanged = Graphics::currentMaterial != shared_from_this();
-	const bool cameraChanged = lastUsedCamera.lock() != Graphics::usedCamera;
-	const bool drawTypeChanged = Graphics::currentMode != lastUpdatedType;
+	const bool cameraChanged = m_lastUsedCamera.lock() != Graphics::usedCamera;
+	const bool drawTypeChanged = Graphics::currentMode != m_lastUpdatedType;
 
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
 		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
 		SCOPED_PROFILER("Material::OnMaterialChanged", scopeBenchmark);
-		if (shader)
+		if (m_shader)
 		{
-			lastUsedCamera = Graphics::usedCamera;
-			lastUpdatedType = Graphics::currentMode;
+			m_lastUsedCamera = Graphics::usedCamera;
+			m_lastUpdatedType = Graphics::currentMode;
 
-			shader->Use();
+			m_shader->Use();
 			Update();
 
 			const int matCount = AssetManager::GetMaterialCount();
 			for (int i = 0; i < matCount; i++)
 			{
 				Material* mat = AssetManager::GetMaterial(i);
-				if (mat->shader == shader && mat != this)
+				if (mat->m_shader == m_shader && mat != this)
 				{
-					mat->updated = false;
+					mat->m_updated = false;
 				}
 			}
 		}
@@ -161,7 +161,7 @@ void Material::Use()
 void Material::Update()
 {
 	//materialUpdateBenchmark->Start();
-	if (shader != nullptr && shader->isLoaded)
+	if (m_shader != nullptr && m_shader->m_isLoaded)
 	{
 		Performance::AddMaterialUpdate();
 
@@ -171,22 +171,22 @@ void Material::Update()
 			//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
 			if (Graphics::currentMode == IDrawableTypes::Draw_UI)
 			{
-				shader->SetShaderCameraPositionCanvas();
-				shader->SetShaderProjectionCanvas();
+				m_shader->SetShaderCameraPositionCanvas();
+				m_shader->SetShaderProjectionCanvas();
 			}
 			else
 			{
-				shader->SetShaderCameraPosition();
-				shader->SetShaderProjection();
+				m_shader->SetShaderCameraPosition();
+				m_shader->SetShaderProjection();
 			}
 		}
 
-		if (!updated)
+		if (!m_updated)
 		{
-			shader->UpdateLights(useLighting);
+			m_shader->UpdateLights(m_useLighting);
 
-			shader->SetShaderAttribut("tiling", tiling);
-			shader->SetShaderAttribut("offset", offset);
+			m_shader->SetShaderAttribut("tiling", t_tiling);
+			m_shader->SetShaderAttribut("offset", t_offset);
 
 			//int textureIndex = 0;
 			/*for (const auto& kv : uniformsTextures)
@@ -197,28 +197,28 @@ void Material::Update()
 				shader->SetShaderAttribut(kv.first, textureIndex);
 				textureIndex++;
 			}*/
-			for (const auto& kv : uniformsVector2)
+			for (const auto& kv : m_uniformsVector2)
 			{
-				shader->SetShaderAttribut(kv.first, kv.second);
+				m_shader->SetShaderAttribut(kv.first, kv.second);
 			}
-			for (const auto& kv : uniformsVector3)
+			for (const auto& kv : m_uniformsVector3)
 			{
-				shader->SetShaderAttribut(kv.first, kv.second);
+				m_shader->SetShaderAttribut(kv.first, kv.second);
 			}
-			for (auto& kv : uniformsVector4)
+			for (auto& kv : m_uniformsVector4)
 			{
-				shader->SetShaderAttribut(kv.first, kv.second);
+				m_shader->SetShaderAttribut(kv.first, kv.second);
 			}
-			for (const auto& kv : uniformsInt)
+			for (const auto& kv : m_uniformsInt)
 			{
-				shader->SetShaderAttribut(kv.first, kv.second);
+				m_shader->SetShaderAttribut(kv.first, kv.second);
 			}
-			for (const auto& kv : uniformsFloat)
+			for (const auto& kv : m_uniformsFloat)
 			{
-				shader->SetShaderAttribut(kv.first, kv.second);
+				m_shader->SetShaderAttribut(kv.first, kv.second);
 			}
 
-			updated = true;
+			m_updated = true;
 		}
 	}
 	//materialUpdateBenchmark->Stop();
@@ -227,13 +227,13 @@ void Material::Update()
 ReflectiveData Material::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, shader, "shader", true);
-	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, offset, "offset", true);
-	Reflective::AddVariable(reflectedVariables, tiling, "tiling", true);
-	Reflective::AddVariable(reflectedVariables, useLighting, "useLighting", true);
-	Reflective::AddVariable(reflectedVariables, useTransparency, "useTransparency", true);
+	Reflective::AddVariable(reflectedVariables, m_shader, "shader", true);
+	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
+	Reflective::AddVariable(reflectedVariables, t_offset, "offset", true);
+	Reflective::AddVariable(reflectedVariables, t_tiling, "tiling", true);
+	Reflective::AddVariable(reflectedVariables, m_useLighting, "useLighting", true);
+	Reflective::AddVariable(reflectedVariables, m_useTransparency, "useTransparency", true);
 	return reflectedVariables;
 }
 
@@ -248,36 +248,36 @@ void Material::OnReflectionUpdated()
 #if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
-	jsonData["Version"] = version;
+	jsonData["Version"] = s_version;
 
-	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, file);
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, m_file);
 	if (!saveResult)
 	{
-		XASSERT(false, "[Material::OnReflectionUpdated] Failed to save the material file: " + file->GetPath());
-		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + file->GetPath(), true);
+		XASSERT(false, "[Material::OnReflectionUpdated] Failed to save the material file: " + m_file->GetPath());
+		Debug::PrintError("[Material::OnReflectionUpdated] Fail to save the Material file: " + m_file->GetPath(), true);
 	}
 #endif
 }
 
 void Material::LoadFileReference()
 {
-	if (!isLoaded)
+	if (!m_isLoaded)
 	{
-		isLoaded = true;
+		m_isLoaded = true;
 
 		bool loadResult = true;
 #if defined(EDITOR)
-		loadResult = file->Open(FileMode::ReadOnly);
+		loadResult = m_file->Open(FileMode::ReadOnly);
 #endif
 		if (loadResult)
 		{
 			std::string jsonString;
 #if defined(EDITOR)
-			jsonString = file->ReadAll();
-			file->Close();
+			jsonString = m_file->ReadAll();
+			m_file->Close();
 #else
-			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileSize);
-			jsonString = std::string(reinterpret_cast<const char*>(binData), fileSize);
+			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, m_fileSize);
+			jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
 			free(binData);
 #endif
 
@@ -296,8 +296,8 @@ void Material::LoadFileReference()
 		}
 		else
 		{
-			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + file->GetPath());
-			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + file->GetPath(), true);
+			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath());
+			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath(), true);
 		}
 	}
 }

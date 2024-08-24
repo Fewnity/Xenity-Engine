@@ -222,7 +222,7 @@ inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_
 	if constexpr (std::is_base_of<U, FileReference>())
 	{
 		if (target.lock())
-			this->targetId = target.lock()->fileId;
+			this->targetId = target.lock()->m_fileId;
 	}
 	else if constexpr (std::is_base_of<U, GameObject>() || std::is_base_of<U, Component>())
 	{
@@ -396,7 +396,7 @@ inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
 		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
 		if (foundGameObject)
 		{
-			foundGameObject->isStatic = valueToSet;
+			foundGameObject->m_isStatic = valueToSet;
 			foundGameObject->OnReflectionUpdated();
 			SceneManager::SetSceneModified(true);
 		}
@@ -653,7 +653,7 @@ inline void InspectorSetTransformDataCommand::Execute()
 	{
 		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
 		ReflectionUtils::JsonToReflectiveData(transformData, transformToUpdate->GetReflectiveData());
-		transformToUpdate->isTransformationMatrixDirty = true;
+		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();
 		SceneManager::SetSceneModified(true);
@@ -667,7 +667,7 @@ inline void InspectorSetTransformDataCommand::Undo()
 	{
 		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
 		ReflectionUtils::JsonToReflectiveData(oldTransformData, transformToUpdate->GetReflectiveData());
-		transformToUpdate->isTransformationMatrixDirty = true;
+		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();
 		SceneManager::SetSceneModified(true);

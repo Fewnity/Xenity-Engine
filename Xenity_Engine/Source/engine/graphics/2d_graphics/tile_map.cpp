@@ -143,7 +143,7 @@ void Tilemap::FillChunks()
 			{
 				int yChunk = (int)floor(y / (float)chunkSize);
 				MeshData* mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
-				MeshData::SubMesh* subMesh = mesh->subMeshes[0];
+				MeshData::SubMesh* subMesh = mesh->m_subMeshes[0];
 
 				int indiceOff = subMesh->index_count;
 				int verticeOff = subMesh->vertice_count;
@@ -191,7 +191,7 @@ void Tilemap::FillChunks()
 
 void Tilemap::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -243,9 +243,9 @@ void Tilemap::CreateChunksMeshes()
 			for (int i = 0; i < textureSize; i++)
 			{
 				MeshData* mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false, true);
-				mesh->subMeshes[0]->index_count = 0;
-				mesh->subMeshes[0]->vertice_count = 0;
-				mesh->hasIndices = useIndices;
+				mesh->m_subMeshes[0]->index_count = 0;
+				mesh->m_subMeshes[0]->vertice_count = 0;
+				mesh->m_hasIndices = useIndices;
 				mesh->unifiedColor = color;
 				chunk->meshes.push_back(mesh);
 			}

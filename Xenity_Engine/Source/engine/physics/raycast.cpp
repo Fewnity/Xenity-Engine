@@ -23,7 +23,7 @@ bool Raycast::Check(const Vector3& startPosition, const Vector3& direction, cons
 	btVector3 end = btVector3(startPosition.x + direction.x * maxDistance, startPosition.y + direction.y * maxDistance, startPosition.z + direction.z * maxDistance);
 	btCollisionWorld::ClosestRayResultCallback closestResults(start, end);
 	//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
-	PhysicsManager::physDynamicsWorld->rayTest(start, end, closestResults);
+	PhysicsManager::s_physDynamicsWorld->rayTest(start, end, closestResults);
 	if (closestResults.hasHit()) 
 	{
 		nearestHit.hitPosition = Vector3(closestResults.m_hitPointWorld.x(), closestResults.m_hitPointWorld.y(), closestResults.m_hitPointWorld.z());

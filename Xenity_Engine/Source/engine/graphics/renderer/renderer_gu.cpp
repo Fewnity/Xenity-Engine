@@ -166,9 +166,9 @@ void RendererGU::ResetView()
 
 void RendererGU::SetCameraPosition(const Camera& camera)
 {
-	const std::shared_ptr<Transform> transform = camera.GetTransform();
-	const Vector3& position = transform->GetPosition();
-	const Vector3& rotation = transform->GetEulerAngles();
+	const std::shared_ptr<Transform> m_transform = camera.GetTransform();
+	const Vector3& position = m_transform->GetPosition();
+	const Vector3& rotation = m_transform->GetEulerAngles();
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
 
@@ -250,7 +250,7 @@ int TypeToGUPSM(PSPTextureType psm)
 
 void RendererGU::BindTexture(const Texture& texture)
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
 
 	sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
@@ -403,7 +403,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
 
 	// Draw
-	if (!subMesh.meshData->hasIndices)
+	if (!subMesh.meshData->m_hasIndices)
 	{
 		sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
 	}
@@ -448,9 +448,9 @@ void RendererGU::SetLight(const int lightIndex, const Light& light, const Vector
 	if (lightIndex >= maxLightCount)
 		return;
 
-	float intensity = light.intensity;
+	float intensity = light.m_intensity;
 	const Color& color = light.color;
-	const LightType& type = light.type;
+	const LightType& type = light.m_type;
 	const RGBA& rgba = color.GetRGBA();
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
@@ -526,17 +526,17 @@ void RendererGU::Setlights(const Camera& camera)
 		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
 		if (light && light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
-			if (light->type == LightType::Directional)
+			if (light->m_type == LightType::Directional)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
 				SetLight(usedLightCount, *light, Vector3(0, 0, 0) + dir, dir);
 			}
-			else if (light->type == LightType::Ambient)
+			else if (light->m_type == LightType::Ambient)
 			{
 				SetLight(usedLightCount, *light, Vector3(0, 0, 0), Vector3(0, 0, 0));
 			}
-			else if (light->type == LightType::Spot)
+			else if (light->m_type == LightType::Spot)
 			{
 				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
 				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x).Normalized();
@@ -558,14 +558,14 @@ void RendererGU::Clear()
 	sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT /*| GU_STENCIL_BUFFER_BIT*/);
 }
 
-void RendererGU::SetFog(bool active)
+void RendererGU::SetFog(bool m_active)
 {
-	if (active)
+	if (m_active)
 		sceGuEnable(GU_FOG);
 	else
 		sceGuDisable(GU_FOG);
 #if defined(__PSP__)
-	if (active)
+	if (m_active)
 		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 #endif
 }

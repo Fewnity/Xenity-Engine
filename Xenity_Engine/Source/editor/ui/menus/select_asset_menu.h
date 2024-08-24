@@ -101,7 +101,7 @@ public:
 					FileExplorerItem item;
 					item.file = foundFiles[i];
 					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(foundFiles[i]);
-					DrawItem(foundFiles[i]->file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
+					DrawItem(foundFiles[i]->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
 
 					if (ImGui::IsItemClicked())
 					{

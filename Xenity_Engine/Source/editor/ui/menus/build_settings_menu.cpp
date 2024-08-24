@@ -378,7 +378,7 @@ void BuildSettingsMenu::SaveSettings()
 			buildSettingsData[plaform.name]["Values"] = ReflectionUtils::ReflectiveDataToJson(plaform.settings->GetReflectiveData());
 	}
 
-	FileSystem::fileSystem->Delete(ProjectManager::GetProjectFolderPath() + "build_settings.json");
+	FileSystem::s_fileSystem->Delete(ProjectManager::GetProjectFolderPath() + "build_settings.json");
 
 	// Write json into the file
 	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");

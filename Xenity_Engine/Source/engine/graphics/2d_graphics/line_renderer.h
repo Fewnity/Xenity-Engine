@@ -28,7 +28,7 @@ public:
 
 	inline int GetOrderInLayer() const
 	{
-		return orderInLayer;
+		return m_orderInLayer;
 	}
 
 	/**
@@ -36,37 +36,37 @@ public:
 	*/
 	inline void SetColor(const Color& color)
 	{
-		this->color = color;
+		this->m_color = color;
 	}
 
 	inline const Color& GetColor() const
 	{
-		return color;
+		return m_color;
 	}
 
 	inline const Vector3& GetStartPosition()
 	{
-		return startPosition;
+		return m_startPosition;
 	}
 
 	inline const Vector3& GetEndPosition()
 	{
-		return endPosition;
+		return m_endPosition;
 	}
 
 	inline void SetStartPosition(const Vector3& newStartPosition)
 	{
-		startPosition = newStartPosition;
+		m_startPosition = newStartPosition;
 	}
 
 	inline void SetEndPosition(const Vector3& newEndPosition)
 	{
-		endPosition = newEndPosition;
+		m_endPosition = newEndPosition;
 	}
 
-private:
-	Vector3 startPosition = Vector3(0, 0, 0);
-	Vector3 endPosition = Vector3(0, 0, 0);
+protected:
+	Vector3 m_startPosition = Vector3(0, 0, 0);
+	Vector3 m_endPosition = Vector3(0, 0, 0);
 
 	/**
 	* @brief Called when the component is disabled
@@ -88,10 +88,10 @@ private:
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	Color color = Color();
-	std::shared_ptr <MeshData> meshData = nullptr;
-	std::shared_ptr <Material> material = nullptr;
-	int orderInLayer = 0;
+	Color m_color = Color();
+	std::shared_ptr <MeshData> m_meshData = nullptr;
+	std::shared_ptr <Material> m_material = nullptr;
+	int m_orderInLayer = 0;
 
 public:
 	float width = 1;

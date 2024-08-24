@@ -229,7 +229,7 @@ int Debug::Init()
 #if defined(__vita__)
 	fileName = "ux0:data/xenity_engine/" + fileName;
 #endif
-	FileSystem::fileSystem->Delete(fileName);
+	FileSystem::s_fileSystem->Delete(fileName);
 
 	s_file = FileSystem::MakeFile(fileName);
 

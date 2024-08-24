@@ -59,14 +59,14 @@ void MeshRenderer::OnDrawGizmosSelected()
 Sphere MeshRenderer::GetBoundingSphere() const
 {
 	Sphere sphere;
-	if(!meshData)
+	if(!m_meshData)
 		return sphere;
 
-	Vector3 spherePosition = (meshData->minBoundingBox + meshData->maxBoundingBox) / 2.0f;
+	Vector3 spherePosition = (m_meshData->m_minBoundingBox + m_meshData->m_maxBoundingBox) / 2.0f;
 	glm::vec3 transformedPosition = glm::vec3(GetTransform()->GetTransformationMatrix() * glm::vec4(spherePosition.x, spherePosition.y, spherePosition.z, 1.0f));
 	spherePosition = Vector3(-transformedPosition.x, transformedPosition.y, transformedPosition.z);
 
-	Vector3 halfDiagonal = (meshData->maxBoundingBox - meshData->minBoundingBox) / 2.0f;
+	Vector3 halfDiagonal = (m_meshData->m_maxBoundingBox - m_meshData->m_minBoundingBox) / 2.0f;
 	const Vector3& scale = GetTransform()->GetScale();
 	float spshereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z) * std::max({ scale.x, scale.y, scale.z });
 
@@ -89,17 +89,17 @@ void MeshRenderer::OnComponentAttached()
 ReflectiveData MeshRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
-	Reflective::AddVariable(reflectedVariables, materials, "materials", true);
+	Reflective::AddVariable(reflectedVariables, m_meshData, "meshData", true);
+	Reflective::AddVariable(reflectedVariables, m_materials, "materials", true);
 	return reflectedVariables;
 }
 
 void MeshRenderer::OnReflectionUpdated()
 {
-	if (meshData)
-		materials.resize(meshData->subMeshCount);
+	if (m_meshData)
+		m_materials.resize(m_meshData->m_subMeshCount);
 
-	matCount = materials.size();
+	m_matCount = m_materials.size();
 	Graphics::isRenderingBatchDirty = true;
 
 	boundingSphere = GetBoundingSphere();
@@ -116,16 +116,16 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!meshData)
+	if (!m_meshData)
 		return;
 
 	// Create a command for each submesh
-	const int subMeshCount = meshData->subMeshCount;
+	const int subMeshCount = m_meshData->m_subMeshCount;
 	std::shared_ptr<Material> material = nullptr;
 	for (int i = 0; i < subMeshCount; i++)
 	{
-		if (i != matCount)
-			material = materials[i];
+		if (i != m_matCount)
+			material = m_materials[i];
 		else
 			break;
 		if (material == nullptr)
@@ -134,12 +134,12 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		RenderCommand command = RenderCommand();
 		command.material = material.get();
 		command.drawable = this;
-		command.subMesh = meshData->subMeshes[i];
+		command.subMesh = m_meshData->m_subMeshes[i];
 		command.transform = GetTransform().get();
 		command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 		if (!material->GetUseTransparency())
 		{
-			RenderQueue& renderQueue = renderBatch.renderQueues[material->fileId];
+			RenderQueue& renderQueue = renderBatch.renderQueues[material->m_fileId];
 			renderQueue.commands.push_back(command);
 			renderQueue.commandIndex++;
 		}
@@ -153,11 +153,11 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 {
-	this->meshData = meshData;
+	this->m_meshData = meshData;
 	if (meshData) 
 	{
-		materials.resize(meshData->subMeshCount);
-		matCount = meshData->subMeshCount;
+		m_materials.resize(meshData->m_subMeshCount);
+		m_matCount = meshData->m_subMeshCount;
 	}
 	else 
 	{
@@ -168,10 +168,10 @@ void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 
 void MeshRenderer::SetMaterial(std::shared_ptr<Material> material, int index)
 {
-	XASSERT(index < materials.size(), "[MeshRenderer::SetMaterial] Index is out of bounds");
-	if (index < materials.size())
+	XASSERT(index < m_materials.size(), "[MeshRenderer::SetMaterial] Index is out of bounds");
+	if (index < m_materials.size())
 	{
-		materials[index] = material;
+		m_materials[index] = material;
 		Graphics::isRenderingBatchDirty = true;
 	}
 }
@@ -188,7 +188,7 @@ void MeshRenderer::OnEnabled()
 
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (culled || outOfFrustum)
+	if (m_culled || outOfFrustum)
 		return;
 
 	RenderingSettings renderSettings = RenderingSettings();

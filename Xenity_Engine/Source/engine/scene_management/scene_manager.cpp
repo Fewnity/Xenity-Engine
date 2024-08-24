@@ -75,7 +75,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// Save components values
 		//const int componentCount = go->GetComponentCount();
 		//for (int componentI = 0; componentI < componentCount; componentI++)
-		for (std::shared_ptr<Component>& component : go->components)
+		for (std::shared_ptr<Component>& component : go->m_components)
 		{
 			const uint64_t compId = component->GetUniqueId();
 			const std::string compIdString = std::to_string(compId);
@@ -111,7 +111,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	// Add skybox file to the usedFile list
 	if (Graphics::settings.skybox != nullptr)
-		usedFilesIds.push_back(Graphics::settings.skybox->fileId);
+		usedFilesIds.push_back(Graphics::settings.skybox->m_fileId);
 
 	// Save the usedFilesIds list
 	j["UsedFiles"]["Values"] = usedFilesIds;
@@ -130,7 +130,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		std::string path = "";
 		if (SceneManager::s_openedScene)
 		{
-			path = SceneManager::s_openedScene->file->GetPath();
+			path = SceneManager::s_openedScene->m_file->GetPath();
 		}
 		else
 		{
@@ -140,7 +140,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// If there is no error, save the file
 		if (!path.empty())
 		{
-			FileSystem::fileSystem->Delete(path);
+			FileSystem::s_fileSystem->Delete(path);
 			std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(FileMode::WriteCreateFile))
 			{
@@ -276,8 +276,8 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 						std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
 						comp = missingScript;
 						missingScript->data = componentKV.value();
-						newGameObject->components.push_back(missingScript);
-						newGameObject->componentCount++;
+						newGameObject->m_components.push_back(missingScript);
+						newGameObject->m_componentCount++;
 						missingScript->SetGameObject(newGameObject);
 					}
 					allComponents.push_back(comp);
@@ -318,7 +318,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 				//transform->SetRotation(Quaternion::Euler(transform->GetLocalEulerAngles().x, transform->GetLocalEulerAngles().y, transform->GetLocalEulerAngles().z));
-				transform->isTransformationMatrixDirty = true;
+				transform->m_isTransformationMatrixDirty = true;
 				transform->UpdateLocalRotation();
 				transform->UpdateWorldValues();
 
@@ -331,7 +331,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 					{
 						for (int compI = 0; compI < componentCount; compI++)
 						{
-							const std::shared_ptr<Component>& component = go->components[compI];
+							const std::shared_ptr<Component>& component = go->m_components[compI];
 							if (component->GetUniqueId() == std::stoull(kv2.key()))
 							{
 								// Fill values
@@ -424,17 +424,17 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 	// Get scene file and read all data
 	bool openResult = true;
 #if defined(EDITOR)
-	openResult = scene->file->Open(FileMode::ReadOnly);
+	openResult = scene->m_file->Open(FileMode::ReadOnly);
 #endif
 	if (openResult)
 	{
 		std::string jsonString;
 #if defined(EDITOR)
-		jsonString = scene->file->ReadAll();
-		scene->file->Close();
+		jsonString = scene->m_file->ReadAll();
+		scene->m_file->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(scene->filePosition, scene->fileSize);
-		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->fileSize);
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(scene->m_filePosition, scene->m_fileSize);
+		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->m_fileSize);
 		free(binData);
 #endif
 

@@ -5,7 +5,7 @@
 
 void BitFile::Create(const std::string& path)
 {
-	FileSystem::fileSystem->Delete(path);
+	FileSystem::s_fileSystem->Delete(path);
 	file = FileSystem::MakeFile(path);
 	file->Open(FileMode::WriteCreateFile);
 	file->Close();

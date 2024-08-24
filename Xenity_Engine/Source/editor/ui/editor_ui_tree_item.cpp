@@ -157,7 +157,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 		const int childCount = gameObject->GetChildrenCount();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 
-		if (gameObject->isSelected)
+		if (gameObject->m_isSelected)
 			flags |= ImGuiTreeNodeFlags_Selected;
 
 		if (childCount == 0)
@@ -190,7 +190,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			const int componentCount = gameObject->GetComponentCount();
 			for (int i = 0; i < componentCount; i++)
 			{
-				EditorUI::multiDragData.components.push_back(gameObject->components[i].get());
+				EditorUI::multiDragData.components.push_back(gameObject->m_components[i].get());
 			}
 			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;

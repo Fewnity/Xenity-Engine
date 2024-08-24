@@ -175,7 +175,7 @@ void Graphics::Draw()
 			for (int materialIndex = 0; materialIndex < matCount; materialIndex++)
 			{
 				Material* mat = AssetManager::GetMaterial(materialIndex);
-				mat->updated = false;
+				mat->m_updated = false;
 			}
 
 			currentMode = IDrawableTypes::Draw_3D;
@@ -323,7 +323,7 @@ void Graphics::Draw()
 							{
 								component->OnDrawGizmos();
 
-								if (component->GetGameObject()->isSelected)
+								if (component->GetGameObject()->m_isSelected)
 									component->OnDrawGizmosSelected();
 							}
 						}
@@ -510,7 +510,7 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	DrawSubMesh(subMesh, material, material.texture, renderSettings, matrix, forUI);
+	DrawSubMesh(subMesh, material, material.m_texture, renderSettings, matrix, forUI);
 }
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
@@ -574,33 +574,33 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->texture;
+		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->m_texture;
 
-		AssetManager::unlitMaterial->texture = settings.skybox->down;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->down;
 		static const Quaternion q0 = Quaternion::Euler(0, 180, 0);
-		Graphics::DrawSubMesh(Vector3(0, -5, 0) + cameraPosition, q0, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(0, -5, 0) + cameraPosition, q0, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = settings.skybox->up;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->up;
 		static const Quaternion q1 = Quaternion::Euler(180, 180, 0);
-		Graphics::DrawSubMesh(Vector3(0, 5, 0) + cameraPosition, q1, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(0, 5, 0) + cameraPosition, q1, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = settings.skybox->front;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->front;
 		static const Quaternion q2 = Quaternion::Euler(90, 0, 180);
-		Graphics::DrawSubMesh(Vector3(0, 0, 5) + cameraPosition, q2, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(0, 0, 5) + cameraPosition, q2, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = settings.skybox->back;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->back;
 		static const Quaternion q3 = Quaternion::Euler(90, 0, 0);
-		Graphics::DrawSubMesh(Vector3(0, 0, -5) + cameraPosition, q3, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(0, 0, -5) + cameraPosition, q3, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = settings.skybox->left;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->left;
 		static const Quaternion q4 = Quaternion::Euler(90, -90, 0);
-		Graphics::DrawSubMesh(Vector3(5, 0, 0) + cameraPosition, q4, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(5, 0, 0) + cameraPosition, q4, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = settings.skybox->right;
+		AssetManager::unlitMaterial->m_texture = settings.skybox->right;
 		static const Quaternion q5 = Quaternion::Euler(90, 0, -90);
-		Graphics::DrawSubMesh(Vector3(-5, 0, 0) + cameraPosition, q5, scale, *skyPlane->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+		Graphics::DrawSubMesh(Vector3(-5, 0, 0) + cameraPosition, q5, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->texture = texture;
+		AssetManager::unlitMaterial->m_texture = texture;
 	}
 }
 
@@ -787,20 +787,20 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		AssetManager::unlitMaterial->texture = Editor::toolArrowsTexture;
+		AssetManager::unlitMaterial->m_texture = Editor::toolArrowsTexture;
 		if (sceneMenu->toolMode == ToolMode::Tool_Move || sceneMenu->toolMode == ToolMode::Tool_Scale)
 		{
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
 		else if (sceneMenu->toolMode == ToolMode::Tool_Rotate)
 		{
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
-		AssetManager::unlitMaterial->texture = nullptr;
+		AssetManager::unlitMaterial->m_texture = nullptr;
 	}
 }
 #endif // #if defined(EDITOR)

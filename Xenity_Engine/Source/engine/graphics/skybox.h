@@ -50,5 +50,5 @@ protected:
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;
 
-	static constexpr int version = 1;
+	static constexpr int s_version = 1;
 };

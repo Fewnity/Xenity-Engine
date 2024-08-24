@@ -347,7 +347,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
 
-	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->fileId))
+	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = colorMix;
 		if constexpr (Graphics::UseOpenGLFixedFunctions)
@@ -356,7 +356,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 		else 
 		{
-			lastShaderIdUsedColor = material.GetShader()->fileId;
+			lastShaderIdUsedColor = material.GetShader()->m_fileId;
 			material.GetShader()->SetShaderAttribut("color", colorMix);
 		}
 	}
@@ -379,7 +379,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	}
 
 	// Draw
-	if (!subMesh.meshData->hasIndices)
+	if (!subMesh.meshData->m_hasIndices)
 	{
 		glDrawArrays(GL_TRIANGLES, 0, subMesh.vertice_count);
 	}
@@ -672,9 +672,9 @@ void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 
 void RendererOpengl::UploadMeshData(const MeshData& meshData)
 {
-	for (int i = 0; i < meshData.subMeshCount; i++)
+	for (int i = 0; i < meshData.m_subMeshCount; i++)
 	{
-		MeshData::SubMesh* newSubMesh = meshData.subMeshes[i];
+		MeshData::SubMesh* newSubMesh = meshData.m_subMeshes[i];
 
 		if (newSubMesh->VAO == 0)
 			newSubMesh->VAO = CreateVertexArray();
@@ -695,9 +695,9 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 
 		int stride;
 
-		if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+		if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
 		{
-			if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+			if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 			{
 				stride = sizeof(VertexNormalsNoColor);
 				if constexpr (Graphics::UseOpenGLFixedFunctions)
@@ -728,9 +728,9 @@ void RendererOpengl::UploadMeshData(const MeshData& meshData)
 		}
 		else
 		{
-			if ((uint32_t)meshData.vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+			if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 			{
-				/*if (meshData.hasColor)
+				/*if (meshData.m_hasColor)
 				{
 					stride = sizeof(Vertex);
 					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));

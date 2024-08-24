@@ -67,7 +67,7 @@ inline InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObje
 		gameObjectChild.children.push_back(AddChild(childChild.lock()));
 	}
 
-	for (std::shared_ptr<Component> component : child->components)
+	for (std::shared_ptr<Component> component : child->m_components)
 	{
 		GameObjectComponent gameObjectComponent;
 		gameObjectComponent.componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(component->GetReflectiveData());
@@ -103,7 +103,7 @@ inline void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChil
 	if (parent)
 		newGameObject->SetParent(parent);
 	ReflectionUtils::JsonToReflectiveData(child.transformData, transformToUpdate->GetReflectiveData());
-	transformToUpdate->isTransformationMatrixDirty = true;
+	transformToUpdate->m_isTransformationMatrixDirty = true;
 	transformToUpdate->UpdateWorldValues();
 	transformToUpdate->OnReflectionUpdated();
 	for (const GameObjectChild& childChild : child.children)

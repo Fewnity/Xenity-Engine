@@ -94,7 +94,7 @@ void Editor::Init()
 	rotationCircleZ = MeshManager::LoadMesh("engine_assets/rotation_circleZ.obj");
 
 	toolArrowsTexture = Texture::MakeTexture();
-	toolArrowsTexture->file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
+	toolArrowsTexture->m_file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Filter::Point);
 	toolArrowsTexture->LoadFileReference();
 
@@ -493,7 +493,7 @@ void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelecte
 
 	SetSelectedFileReference(nullptr);
 
-	newSelected->isSelected = true;
+	newSelected->m_isSelected = true;
 	selectedGameObjects.push_back(newSelected);
 }
 
@@ -502,7 +502,7 @@ void Editor::ClearSelectedGameObjects()
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
 		if (currentGameObject.lock())
-			currentGameObject.lock()->isSelected = false;
+			currentGameObject.lock()->m_isSelected = false;
 	}
 	selectedGameObjects.clear();
 }
@@ -523,7 +523,7 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 
 	if (!found)
 	{
-		gameObjectToAdd->isSelected = true;
+		gameObjectToAdd->m_isSelected = true;
 		selectedGameObjects.push_back(gameObjectToAdd);
 	}
 }
@@ -537,7 +537,7 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 	{
 		if (selectedGameObjects[i].lock() == gameObjectToRemove)
 		{
-			gameObjectToRemove->isSelected = false;
+			gameObjectToRemove->m_isSelected = false;
 			selectedGameObjects.erase(selectedGameObjects.begin() + i);
 			break;
 		}
@@ -674,12 +674,12 @@ void Editor::StartFolderCopy(const std::string& path, const std::string& newPath
 		if (!file.is_regular_file())
 		{
 			const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
-			FileSystem::fileSystem->CreateFolder(newFolderPath);
+			FileSystem::s_fileSystem->CreateFolder(newFolderPath);
 			StartFolderCopy(file.path().string() + '\\', newFolderPath);
 		}
 		else
 		{
-			FileSystem::fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+			FileSystem::s_fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
 		}
 	}
 }
@@ -794,18 +794,18 @@ void Editor::OnDragAndDropFileFinished()
 
 			if (isDirectory)
 			{
-				FileSystem::fileSystem->CreateFolder(newPath + '\\');
+				FileSystem::s_fileSystem->CreateFolder(newPath + '\\');
 				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
 			}
 			else
 			{
-				const int copyResult = FileSystem::fileSystem->CopyFile(path, newPath, false);
+				const int copyResult = FileSystem::s_fileSystem->CopyFile(path, newPath, false);
 				if (copyResult == -1)
 				{
 					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", DialogType::Dialog_Type_YES_NO_CANCEL);
 					if (result == DialogResult::Dialog_YES)
 					{
-						FileSystem::fileSystem->CopyFile(path, newPath, true);
+						FileSystem::s_fileSystem->CopyFile(path, newPath, true);
 					}
 				}
 			}

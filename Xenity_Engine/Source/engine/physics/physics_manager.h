@@ -70,13 +70,13 @@ public:
 	static void RemoveCollider(const Collider* rb);
 	static void AddEvent(Collider* collider, Collider* otherCollider, bool isTrigger);
 
-	static btDynamicsWorld* physDynamicsWorld;
-	static Vector3 gravity;
+	static btDynamicsWorld* s_physDynamicsWorld;
+	static Vector3 s_gravity;
 
 private:
 	static void CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state);
 
-	static std::vector<RigidBody*> rigidBodies;
-	static std::vector<ColliderInfo> colliders;
+	static std::vector<RigidBody*> s_rigidBodies;
+	static std::vector<ColliderInfo> s_colliders;
 
 };

@@ -26,12 +26,12 @@ public:
 
 	inline std::vector<std::shared_ptr<Component>>& GetComponents()
 	{
-		return gameObject->components;
+		return gameObject->m_components;
 	}
 
 	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
-		return gameObject->children;
+		return gameObject->m_children;
 	}
 
 	inline void RemoveComponent(const std::shared_ptr<Component>& component)
@@ -46,17 +46,17 @@ public:
 
 	inline bool IsWaitingForDestroy()
 	{
-		return gameObject->waitingForDestroy;
+		return gameObject->m_waitingForDestroy;
 	}
 
 	inline void SetWaitingForDestroy(bool waitingForDestroy)
 	{
-		gameObject->waitingForDestroy = waitingForDestroy;
+		gameObject->m_waitingForDestroy = waitingForDestroy;
 	}
 
 	inline void SetChildrenCount(int count)
 	{
-		gameObject->childCount = count;
+		gameObject->m_childCount = count;
 	}
 
 

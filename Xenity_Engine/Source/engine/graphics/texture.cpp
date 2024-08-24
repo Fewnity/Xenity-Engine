@@ -49,9 +49,9 @@ Texture::Texture()
 	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
 	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
 
-	settings.push_back(textureSettingsStandalone);
-	settings.push_back(textureSettingsPSP);
-	settings.push_back(textureSettingsPSVITA);
+	m_settings.push_back(textureSettingsStandalone);
+	m_settings.push_back(textureSettingsPSP);
+	m_settings.push_back(textureSettingsPSVITA);
 }
 
 ReflectiveData Texture::GetReflectiveData()
@@ -63,7 +63,7 @@ ReflectiveData Texture::GetReflectiveData()
 ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
-	ReflectiveData reflectedVariablesPlatform = settings[static_cast<int>(platform)]->GetReflectiveData();
+	ReflectiveData reflectedVariablesPlatform = m_settings[static_cast<int>(platform)]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }
@@ -71,7 +71,7 @@ ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 void Texture::OnReflectionUpdated()
 {
 #if defined(EDITOR)
-	if(previousResolution != GetCookResolution() && isLoaded && isValid)
+	if(previousResolution != GetCookResolution() && m_isLoaded && isValid)
 	{
 		previousResolution = GetCookResolution();
 		UnloadFileReference();
@@ -95,11 +95,11 @@ Texture::~Texture()
 
 void Texture::LoadFileReference()
 {
-	if (!isLoaded)
+	if (!m_isLoaded)
 	{
-		isLoaded = true;
+		m_isLoaded = true;
 #if defined(EDITOR)
-		isLoading = true;
+		m_isLoading = true;
 		AsyncFileLoading::AddFile(shared_from_this());
 
 		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
@@ -116,9 +116,9 @@ void Texture::UnloadFileReference()
 	if (Engine::IsRunning(true))
 	{
 		Debug::Print("Unload", true);
-		if (isLoaded)
+		if (m_isLoaded)
 		{
-			isLoaded = false;
+			m_isLoaded = false;
 			Unload();
 		}
 	}
@@ -144,7 +144,7 @@ void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 {
 	SetFilter(filter);
 
-	settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap = useMipMap;
+	m_settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap = useMipMap;
 
 	LoadTexture();
 }
@@ -326,7 +326,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 {
 	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr");
 
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
 
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
@@ -340,7 +340,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 
 	unsigned int *dataBuffer = (unsigned int *)memalign(16, byteCount);
 
-	if (level != 0 || (width != pW || height != pH))
+	if (level != 0 || (m_width != pW || height != pH))
 	{
 		needResize = true;
 	}
@@ -348,7 +348,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	if (needResize)
 	{
 		unsigned char *resizedData = (unsigned char *)malloc((resizedPW * resizedPH) * 4);
-		stbir_resize_uint8(texData, width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
+		stbir_resize_uint8(texData, m_width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
 		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, PSPTextureType::RGBA_8888);
 		free(resizedData);
 	}
@@ -398,10 +398,10 @@ void Texture::OnLoadFileReferenceFinished()
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(*this);
 	const unsigned int rgba = 0x1908;
-	Engine::GetRenderer().SetTextureData(*this, rgba, buffer);
+	Engine::GetRenderer().SetTextureData(*this, rgba, m_buffer);
 #endif
 
-	free(buffer);
+	free(m_buffer);
 	isValid = true;
 }
 
@@ -416,7 +416,7 @@ void Texture::SetData(const unsigned char *texData)
 	// type = GU_PSM_DXT1;
 
 	// Get pow2 size
-	pW = Math::nextPow2(width);
+	pW = Math::nextPow2(m_width);
 	pH = Math::nextPow2(height);
 
 	SetTextureLevel(0, texData);
@@ -425,20 +425,20 @@ void Texture::SetData(const unsigned char *texData)
 		SetTextureLevel(1, texData);
 		// SetTextureLevel(2, texData);
 		// SetTextureLevel(3, texData);
-		settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount = 1;
+		m_settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount = 1;
 	}
 #elif defined(_EE)
-	texbuff.width = width;
+	texbuff.width = m_width;
 	texbuff.psm = GS_PSM_32;
-	texbuff.address = graph_vram_allocate(width, height, GS_PSM_32, GRAPH_ALIGN_BLOCK);
+	texbuff.address = graph_vram_allocate(m_width, height, GS_PSM_32, GRAPH_ALIGN_BLOCK);
 
-	texbuff.info.width = draw_log2(width);
+	texbuff.info.width = draw_log2(m_width);
 	texbuff.info.height = draw_log2(height);
 	texbuff.info.components = TEXTURE_COMPONENTS_RGB;
 	texbuff.info.function = TEXTURE_FUNCTION_MODULATE;
 
 	packet2_t *packet2 = packet2_create(50, P2_TYPE_NORMAL, P2_MODE_CHAIN, 0);
-	packet2_update(packet2, draw_texture_transfer(packet2->next, (void *)texData, width, height, GS_PSM_32, texbuff.address, texbuff.width));
+	packet2_update(packet2, draw_texture_transfer(packet2->next, (void *)texData, m_width, height, GS_PSM_32, texbuff.address, texbuff.width));
 	packet2_update(packet2, draw_texture_flush(packet2->next));
 	FlushCache(0);
 	dma_channel_send_packet2(packet2, DMA_CHANNEL_GIF, 1);
@@ -493,36 +493,36 @@ void Texture::LoadTexture()
 	//Debug::Print("Loading texture: " + file->GetPath(), true);
 	bool openResult = true;
 #if defined(EDITOR)
-	openResult = file->Open(FileMode::ReadOnly);
+	openResult = m_file->Open(FileMode::ReadOnly);
 #endif
 	if (openResult)
 	{
-		int fileBufferSize = fileSize;
+		int fileBufferSize = m_fileSize;
 		unsigned char* fileData = nullptr;
 #if defined(EDITOR)
-		fileData = file->ReadAllBinary(fileBufferSize);
-		file->Close();
+		fileData = m_file->ReadAllBinary(fileBufferSize);
+		m_file->Close();
 #else
-		fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(filePosition, fileBufferSize);
+		fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, fileBufferSize);
 #endif
 
 		// Only for editor, live resizing
 #if defined(EDITOR)
 		// Load image with stb_image
-		unsigned char* data2 = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+		unsigned char* data2 = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
 									   &nrChannels, 4);
 
 		free(fileData);
-		int newWidth = width;
+		int newWidth = m_width;
 		int newHeight = height;
 		if((newWidth > height) && newWidth > static_cast<int>(GetCookResolution()))
 		{
-			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(width)));
+			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(m_width)));
 			newWidth = static_cast<int>(GetCookResolution());
 		}
-		else if((newHeight > width) && newHeight > static_cast<int>(GetCookResolution()))
+		else if((newHeight > m_width) && newHeight > static_cast<int>(GetCookResolution()))
 		{
-			newWidth = static_cast<int>(width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
+			newWidth = static_cast<int>(m_width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
 			newHeight = static_cast<int>(GetCookResolution());
 		}
 		else if ((newWidth == newHeight) && newWidth > static_cast<int>(GetCookResolution()))
@@ -531,30 +531,30 @@ void Texture::LoadTexture()
 			newHeight = static_cast<int>(GetCookResolution());
 		}
 
-		buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
-		stbir_resize_uint8(data2, width, height, 0, buffer, newWidth, newHeight, 0, 4);
+		m_buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
+		stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
 		free(data2);
-		width = newWidth;
+		m_width = newWidth;
 		height = newHeight;
 #else
 		// Load image with stb_image
-		buffer = stbi_load_from_memory(fileData, fileBufferSize, &width, &height,
+		m_buffer = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
 			&nrChannels, 4);
 
 		free(fileData);
 #endif
 
-		if (!buffer)
+		if (!m_buffer)
 		{
 			Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
 			return;
 		}
 
 #if defined(__PSP__) || defined(_EE)
-		SetData(buffer);
+		SetData(m_buffer);
 #else
 #if defined (DEBUG)
-		Performance::textureMemoryTracker->Allocate(width * height * 4);
+		Performance::textureMemoryTracker->Allocate(m_width * height * 4);
 #endif
 #endif
 
@@ -563,7 +563,7 @@ void Texture::LoadTexture()
 	{
 		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file", true);
 	}
-	isLoading = false;
+	m_isLoading = false;
 }
 
 void Texture::Unload()
@@ -572,7 +572,7 @@ void Texture::Unload()
 	Engine::GetRenderer().DeleteTexture(*this);
 
 #if defined (DEBUG)
-	Performance::textureMemoryTracker->Deallocate(width * height * 4);
+	Performance::textureMemoryTracker->Deallocate(m_width * height * 4);
 #endif
 }
 

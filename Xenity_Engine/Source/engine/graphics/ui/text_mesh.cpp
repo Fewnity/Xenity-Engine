@@ -47,7 +47,7 @@ TextMesh::~TextMesh()
 
 void TextMesh::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 

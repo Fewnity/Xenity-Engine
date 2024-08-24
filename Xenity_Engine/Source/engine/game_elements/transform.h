@@ -28,7 +28,7 @@ public:
 	*/
 	inline const Vector3& GetPosition() const
 	{
-		return position;
+		return m_position;
 	}
 
 	/**
@@ -36,7 +36,7 @@ public:
 	*/
 	inline const Vector3& GetLocalPosition() const
 	{
-		return localPosition;
+		return m_localPosition;
 	}
 
 	/**
@@ -44,7 +44,7 @@ public:
 	*/
 	inline const Vector3& GetEulerAngles() const
 	{
-		return rotation;
+		return m_rotation;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public:
 	*/
 	inline const Vector3& GetLocalEulerAngles() const
 	{
-		return localRotation;
+		return m_localRotation;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public:
 	*/
 	inline const Quaternion& GetRotation() const
 	{
-		return rotationQuaternion;
+		return m_rotationQuaternion;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public:
 	*/
 	inline const Quaternion& GetLocalRotation() const
 	{
-		return localRotationQuaternion;
+		return m_localRotationQuaternion;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public:
 	*/
 	inline const Vector3& GetScale() const
 	{
-		return scale;
+		return m_scale;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public:
 	*/
 	inline const Vector3& GetLocalScale() const
 	{
-		return localScale;
+		return m_localScale;
 	}
 
 	/**
@@ -191,17 +191,17 @@ public:
 	*/
 	inline std::shared_ptr<GameObject> GetGameObject() const
 	{
-		return gameObject.lock();
+		return m_gameObject.lock();
 	}
 
 	Event<>& GetOnTransformUpdated()
 	{
-		return onTransformUpdated;
+		return m_onTransformUpdated;
 	}
 
 	Event<>& GetOnTransformScaled()
 	{
-		return onTransformScaled;
+		return m_onTransformScaled;
 	}
 
 	glm::mat4 transformationMatrix;
@@ -210,10 +210,10 @@ public:
 private:
 	friend class RigidBody;
 
-	Quaternion rotationQuaternion = Quaternion::Identity();
-	Quaternion localRotationQuaternion = Quaternion::Identity();
-	Event<> onTransformUpdated;
-	Event<> onTransformScaled;
+	Quaternion m_rotationQuaternion = Quaternion::Identity();
+	Quaternion m_localRotationQuaternion = Quaternion::Identity();
+	Event<> m_onTransformUpdated;
+	Event<> m_onTransformScaled;
 
 	ReflectiveData GetReflectiveData() override;
 
@@ -261,15 +261,15 @@ private:
 
 	void UpdateLocalRotation();
 
-	Vector3 position = Vector3(0);
-	Vector3 localPosition = Vector3(0);
-	Vector3 rotation = Vector3(0);//Euler angle
-	Vector3 localRotation = Vector3(0);//Euler angle
+	Vector3 m_position = Vector3(0);
+	Vector3 m_localPosition = Vector3(0);
+	Vector3 m_rotation = Vector3(0);//Euler angle
+	Vector3 m_localRotation = Vector3(0);//Euler angle
 
-	Vector3 scale = Vector3(1);
-	Vector3 localScale = Vector3(1);
+	Vector3 m_scale = Vector3(1);
+	Vector3 m_localScale = Vector3(1);
 
-	std::weak_ptr<GameObject> gameObject;
+	std::weak_ptr<GameObject> m_gameObject;
 
 	/**
 	* @brief Get localPosition from matrices
@@ -289,6 +289,6 @@ private:
 
 public:
 	// [Internal]
-	bool isTransformationMatrixDirty = true;
+	bool m_isTransformationMatrixDirty = true;
 };
 

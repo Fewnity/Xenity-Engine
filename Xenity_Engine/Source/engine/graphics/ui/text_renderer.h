@@ -42,7 +42,7 @@ public:
 	*/
 	inline int GetOrderInLayer() const
 	{
-		return orderInLayer;
+		return m_orderInLayer;
 	}
 
 	/**
@@ -123,7 +123,7 @@ protected:
 	TextInfo* textInfo = nullptr;
 	std::string text;
 	Color color = Color();
-	int orderInLayer = 0;
+	int m_orderInLayer = 0;
 	float fontSize = 1;
 
 	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;

@@ -49,10 +49,10 @@ void Font::OnReflectionUpdated()
 
 void Font::LoadFileReference()
 {
-	if (!isLoaded)
+	if (!m_isLoaded)
 	{
-		isLoaded = true;
-		CreateFont(GetThisShared(), file->GetPath());
+		m_isLoaded = true;
+		CreateFont(GetThisShared(), m_file->GetPath());
 	}
 }
 
@@ -174,7 +174,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	newAtlas->SetSize(atlasSize, atlasSize);
 	newAtlas->SetChannelCount(channelCount);
 #if defined(__PSP__)
-	reinterpret_cast<TextureSettingsPSP*>(newAtlas->settings[static_cast<int>(AssetPlatform::AP_PSP)])->type = PSPTextureType::RGBA_4444;
+	reinterpret_cast<TextureSettingsPSP*>(newAtlas->m_settings[static_cast<int>(AssetPlatform::AP_PSP)])->type = PSPTextureType::RGBA_4444;
 #endif
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);

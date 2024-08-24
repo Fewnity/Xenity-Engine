@@ -28,12 +28,12 @@ std::string Color::ToString() const
 {
 	std::stringstream stream;
 	stream << "{";
-	stream << "R:" << rgba.r;
-	stream << " G:" << rgba.g;
-	stream << " B:" << rgba.b;
-	stream << " A:" << rgba.a;
-	stream << " | RGBA Hex:#" << std::hex << rgbaInt;
-	stream << " | ABGR Hex:#" << std::hex << abgrInt;
+	stream << "R:" << m_rgba.r;
+	stream << " G:" << m_rgba.g;
+	stream << " B:" << m_rgba.b;
+	stream << " A:" << m_rgba.a;
+	stream << " | RGBA Hex:#" << std::hex << m_rgbaInt;
+	stream << " | ABGR Hex:#" << std::hex << m_abgrInt;
 	stream << "}";
 	std::string result(stream.str());
 
@@ -43,7 +43,7 @@ std::string Color::ToString() const
 ReflectiveData Color::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, rgba, "rgba", true);
+	Reflective::AddVariable(reflectedVariables, m_rgba, "rgba", true);
 	return reflectedVariables;
 }
 
@@ -82,28 +82,28 @@ Color Color::CreateFromRGBAFloat(float r, float g, float b, float a)
 
 void Color::SetFromRGBA(int r, int g, int b, int a)
 {
-	rgba.r = Math::Clamp(r / 255.0f, 0, 1);
-	rgba.g = Math::Clamp(g / 255.0f, 0, 1);
-	rgba.b = Math::Clamp(b / 255.0f, 0, 1);
-	rgba.a = Math::Clamp(a / 255.0f, 0, 1);
-	rgbaInt = ((int)(rgba.r * 255) << 24) + ((int)(rgba.g * 255) << 16) + ((int)(rgba.b * 255) << 8) + ((int)(rgba.a * 255) << 0);
-	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
+	m_rgba.r = Math::Clamp(r / 255.0f, 0, 1);
+	m_rgba.g = Math::Clamp(g / 255.0f, 0, 1);
+	m_rgba.b = Math::Clamp(b / 255.0f, 0, 1);
+	m_rgba.a = Math::Clamp(a / 255.0f, 0, 1);
+	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
+	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
 }
 
 void Color::SetFromRGBAfloat(float r, float g, float b, float a)
 {
-	rgba.r = Math::Clamp(r, 0, 1);
-	rgba.g = Math::Clamp(g, 0, 1);
-	rgba.b = Math::Clamp(b, 0, 1);
-	rgba.a = Math::Clamp(a, 0, 1);
-	rgbaInt = ((int)(rgba.r * 255) << 24) + ((int)(rgba.g * 255) << 16) + ((int)(rgba.b * 255) << 8) + ((int)(rgba.a * 255) << 0);
-	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
+	m_rgba.r = Math::Clamp(r, 0, 1);
+	m_rgba.g = Math::Clamp(g, 0, 1);
+	m_rgba.b = Math::Clamp(b, 0, 1);
+	m_rgba.a = Math::Clamp(a, 0, 1);
+	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
+	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
 }
 
 void Color::UpdateUnsignedInts()
 {
-	rgbaInt = ((int)(rgba.r * 255) << 24) + ((int)(rgba.g * 255) << 16) + ((int)(rgba.b * 255) << 8) + ((int)(rgba.a * 255) << 0);
-	abgrInt = ((int)(rgba.a * 255) << 24) + ((int)(rgba.b * 255) << 16) + ((int)(rgba.g * 255) << 8) + ((int)(rgba.r * 255) << 0);
+	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
+	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
 }
 
 ReflectiveData RGBA::GetReflectiveData()

@@ -25,9 +25,9 @@ BillboardRenderer::BillboardRenderer()
 ReflectiveData BillboardRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
+	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
 	return reflectedVariables;
 }
 
@@ -43,7 +43,7 @@ BillboardRenderer::~BillboardRenderer()
 
 void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -51,11 +51,11 @@ void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 
 void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!material || !texture)
+	if (!m_material || !m_texture)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material.get();
+	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
@@ -66,13 +66,13 @@ void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void BillboardRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
-	this->material = material;
+	this->m_material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
-	this->texture = texture;
+	this->m_texture = texture;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -92,5 +92,5 @@ void BillboardRenderer::OnEnabled()
 void BillboardRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	const std::shared_ptr<Transform> transform = GetTransform();
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransform()->GetRotation() * transform->GetRotation(), transform->GetScale(), color, *material, texture);
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransform()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *m_material, m_texture);
 }

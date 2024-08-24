@@ -288,7 +288,7 @@ void ProjectManager::FindAllProjectFiles()
 		//fileRef->metaPosition = kv.second.metaFilePos;
 		//fileRef->metaSize = kv.second.metaFileSize;
 
-		kv.second.type = fileRef->fileType;
+		kv.second.type = fileRef->m_fileType;
 	}
 
 #if defined(EDITOR)
@@ -312,7 +312,7 @@ void ProjectManager::FindAllProjectFiles()
 	{
 		if (kv.second.hasChanged)
 		{
-			GetFileReferenceById(kv.first)->file = projectFilesIds[kv.first].file;
+			GetFileReferenceById(kv.first)->m_file = projectFilesIds[kv.first].file;
 		}
 		else if (kv.second.hasBeenDeleted)
 		{
@@ -362,10 +362,10 @@ void ProjectManager::CreateVisualStudioSettings()
 			}
 
 			// Create vscode folder
-			FileSystem::fileSystem->CreateFolder(assetFolderPath + ".vscode/");
+			FileSystem::s_fileSystem->CreateFolder(assetFolderPath + ".vscode/");
 
 			const std::string filePath = assetFolderPath + ".vscode/c_cpp_properties.json";
-			FileSystem::fileSystem->Delete(filePath);
+			FileSystem::s_fileSystem->Delete(filePath);
 
 			// Create the vscode settings file
 			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
@@ -426,7 +426,7 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 	std::sort(projFileVector.begin(), projFileVector.end(),
 		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b)
 		{
-			return (a->file->GetFileName() + a->file->GetFileExtension()) < (b->file->GetFileName() + b->file->GetFileExtension());
+			return (a->m_file->GetFileName() + a->m_file->GetFileExtension()) < (b->m_file->GetFileName() + b->m_file->GetFileExtension());
 		});
 #endif
 }
@@ -444,20 +444,20 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty");
 	XASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty");
 
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/temp/");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/additional_assets/");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/Scripts/");
-	FileSystem::fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/temp/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/additional_assets/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scripts/");
+	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
 
 	// Create default scene
 	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true)));
-	if (sceneRef->file->Open(FileMode::WriteCreateFile))
+	if (sceneRef->m_file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
-		sceneRef->file->Write(data);
-		sceneRef->file->Close();
+		sceneRef->m_file->Write(data);
+		sceneRef->m_file->Close();
 	}
 
 	// TODO improve this (use copy entry system like in the compiler class)
@@ -590,8 +590,8 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 
 #if defined(EDITOR)
-	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/temp/");
-	FileSystem::fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
+	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/temp/");
+	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
 #endif
 
 	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "/additional_assets/");
@@ -810,7 +810,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	for (int i = 0; i < fileRefCount; i++)
 	{
 		std::shared_ptr<FileReference> tempFileRef = AssetManager::GetFileReference(i);
-		if (tempFileRef->fileId == id)
+		if (tempFileRef->m_fileId == id)
 		{
 			fileRef = std::move(tempFileRef);
 			break;
@@ -829,7 +829,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 #endif
 			if (fileRef)
 			{
-				if (fileRef->fileType == FileType::File_Skybox)
+				if (fileRef->m_fileType == FileType::File_Skybox)
 					fileRef->LoadFileReference();
 			}
 		}
@@ -911,7 +911,7 @@ void ProjectManager::LoadProjectSettings()
 void ProjectManager::SaveProjectSettings()
 {
 	const std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
-	FileSystem::fileSystem->Delete(path);
+	FileSystem::s_fileSystem->Delete(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
@@ -930,16 +930,16 @@ void ProjectManager::SaveProjectSettings()
 
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
-	std::shared_ptr<File> file = fileReference.file;
+	std::shared_ptr<File> file = fileReference.m_file;
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	bool exists = metaFile->CheckIfExist();
-	if (!file || (!fileReference.isMetaDirty && exists))
+	if (!file || (!fileReference.m_isMetaDirty && exists))
 		return;
 
-	FileSystem::fileSystem->Delete(file->GetPath() + META_EXTENSION);
+	FileSystem::s_fileSystem->Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
-	metaData["id"] = fileReference.fileId;
+	metaData["id"] = fileReference.m_fileId;
 	metaData["MetaVersion"] = metaVersion;
 
 	metaData["Standalone"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
@@ -950,7 +950,7 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	{
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
-		fileReference.isMetaDirty = false;
+		fileReference.m_isMetaDirty = false;
 #if defined(EDITOR)
 		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
 		if (!exists)
@@ -1015,7 +1015,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::fileSystem->Delete(PROJECTS_LIST_FILE);
+	FileSystem::s_fileSystem->Delete(PROJECTS_LIST_FILE);
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	if (file->Open(FileMode::WriteCreateFile))
 	{
@@ -1078,10 +1078,10 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 	if (fileRef)
 	{
 #if defined(EDITOR)
-		fileRef->fileId = id;
+		fileRef->m_fileId = id;
 #endif
-		fileRef->file = file;
-		fileRef->fileType = type;
+		fileRef->m_file = file;
+		fileRef->m_fileType = type;
 		LoadMetaFile(*fileRef);
 #if defined(EDITOR)
 		SaveMetaFile(*fileRef);
@@ -1138,16 +1138,16 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 
 	if (fileRef)
 	{
-		fileRef->filePosition = fileInfo.filePos;
-		fileRef->fileSize = fileInfo.fileSize;
-		fileRef->metaPosition = fileInfo.metaFilePos;
-		fileRef->metaSize = fileInfo.metaFileSize;
+		fileRef->m_filePosition = fileInfo.filePos;
+		fileRef->m_fileSize = fileInfo.fileSize;
+		fileRef->m_metaPosition = fileInfo.metaFilePos;
+		fileRef->m_metaSize = fileInfo.metaFileSize;
 
 #if defined(EDITOR)
-		fileRef->fileId = id;
+		fileRef->m_fileId = id;
 #endif
-		fileRef->file = fileInfo.file;
-		fileRef->fileType = fileInfo.type;
+		fileRef->m_file = fileInfo.file;
+		fileRef->m_fileType = fileInfo.type;
 		LoadMetaFile(*fileRef);
 #if defined(EDITOR)
 		SaveMetaFile(*fileRef);
@@ -1158,7 +1158,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 
 void ProjectManager::LoadMetaFile(FileReference& fileReference)
 {
-	const std::string path = fileReference.file->GetPath() + META_EXTENSION;
+	const std::string path = fileReference.m_file->GetPath() + META_EXTENSION;
 
 #if defined(EDITOR)
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
@@ -1172,8 +1172,8 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 		jsonString = metaFile->ReadAll();
 		metaFile->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(fileReference.metaPosition, fileReference.metaSize);
-		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.metaSize);
+		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
+		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.m_metaSize);
 		free(binData);
 #endif
 
@@ -1195,8 +1195,8 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 		if (Application::GetAssetPlatform() == AssetPlatform::AP_PsVita || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["PSVITA"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
 
-		fileReference.file->SetUniqueId(metaData["id"]);
-		fileReference.fileId = metaData["id"];
+		fileReference.m_file->SetUniqueId(metaData["id"]);
+		fileReference.m_fileId = metaData["id"];
 	}
 	else
 	{

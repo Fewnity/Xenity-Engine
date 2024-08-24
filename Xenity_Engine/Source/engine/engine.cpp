@@ -130,8 +130,8 @@ int Engine::Init()
 	SetMaxCpuSpeed();
 
 	//------------------------------------------ Init File System
-	FileSystem::fileSystem = new FileSystem();
-	const int fileSystemInitResult = FileSystem::fileSystem->InitFileSystem();
+	FileSystem::s_fileSystem = new FileSystem();
+	const int fileSystemInitResult = FileSystem::s_fileSystem->InitFileSystem();
 	if (fileSystemInitResult != 0)
 	{
 		return -1;

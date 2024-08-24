@@ -78,12 +78,12 @@ public:
 
 	/*const*/ inline std::string & GetName()
 	{
-		return name;
+		return m_name;
 	}
 
 	inline void SetName(const std::string& name)
 	{
-		this->name = name;
+		this->m_name = name;
 	}
 
 	/**
@@ -119,9 +119,9 @@ public:
 	std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
 	GetComponent() const
 	{
-		for (int i = 0; i < componentCount; i++)
+		for (int i = 0; i < m_componentCount; i++)
 		{
-			if (auto result = std::dynamic_pointer_cast<T>(components[i]))
+			if (auto result = std::dynamic_pointer_cast<T>(m_components[i]))
 			{
 				return result;
 			}
@@ -138,9 +138,9 @@ public:
 	GetComponents() const
 	{
 		std::vector<std::shared_ptr<T>> componentList;
-		for (int i = 0; i < componentCount; i++)
+		for (int i = 0; i < m_componentCount; i++)
 		{
-			if (auto result = std::dynamic_pointer_cast<T>(components[i]))
+			if (auto result = std::dynamic_pointer_cast<T>(m_components[i]))
 			{
 				componentList.push_back(result);
 			}
@@ -153,7 +153,7 @@ public:
 	*/
 	inline bool IsActive() const
 	{
-		return active;
+		return m_active;
 	}
 
 	/**
@@ -161,7 +161,7 @@ public:
 	*/
 	inline bool IsLocalActive() const
 	{
-		return localActive;
+		return m_localActive;
 	}
 
 	/**
@@ -172,7 +172,7 @@ public:
 
 	inline bool IsStatic() const
 	{
-		return isStatic;
+		return m_isStatic;
 	}
 
 	/**
@@ -180,7 +180,7 @@ public:
 	*/
 	inline int GetChildrenCount() const
 	{
-		return childCount;
+		return m_childCount;
 	}
 
 	/**
@@ -188,7 +188,7 @@ public:
 	*/
 	inline int GetComponentCount() const
 	{
-		return componentCount;
+		return m_componentCount;
 	}
 
 	/**
@@ -196,17 +196,17 @@ public:
 	*/
 	inline std::shared_ptr<Transform> GetTransform() const
 	{
-		return transform;
+		return m_transform;
 	}
 
 	inline std::weak_ptr<GameObject> GetParent() const
 	{
-		return parent;
+		return m_parent;
 	}
 
 	inline std::weak_ptr<GameObject> GetChild(int index)
 	{
-		return children[index];
+		return m_children[index];
 	}
 
 private:
@@ -233,10 +233,10 @@ private:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	std::vector<std::shared_ptr<Component>> components;
-	std::vector<std::weak_ptr<GameObject>> children;
-	std::string name = "GameObject";
-	std::weak_ptr<GameObject> parent;
+	std::vector<std::shared_ptr<Component>> m_components;
+	std::vector<std::weak_ptr<GameObject>> m_children;
+	std::string m_name = "GameObject";
+	std::weak_ptr<GameObject> m_parent;
 
 	/**
 	* @brief [Internal] Setup the GameObject
@@ -254,7 +254,7 @@ private:
 	*/
 	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
-		return children;
+		return m_children;
 	}
 
 	/**
@@ -274,17 +274,17 @@ private:
 	*/
 	bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
 
-	std::shared_ptr<Transform> transform;
+	std::shared_ptr<Transform> m_transform;
 
-	int childCount = 0;
-	int componentCount = 0;
+	int m_childCount = 0;
+	int m_componentCount = 0;
 
 #if defined(EDITOR)
-	bool isSelected = false;
+	bool m_isSelected = false;
 #endif
-	bool waitingForDestroy = false;
+	bool m_waitingForDestroy = false;
 
-	bool active = true;
-	bool localActive = true;
-	bool isStatic = false;
+	bool m_active = true;
+	bool m_localActive = true;
+	bool m_isStatic = false;
 };

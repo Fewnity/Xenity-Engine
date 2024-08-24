@@ -17,13 +17,13 @@
 
 void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int posX, const int posY, const int width, const int height, std::shared_ptr<File> fileOutput)
 {
-	const bool openResult = textureInput->file->Open(FileMode::ReadOnly);
+	const bool openResult = textureInput->m_file->Open(FileMode::ReadOnly);
 	if (openResult)
 	{
 		// Read texture file's data
 		int fileBufferSize;
-		unsigned char* fileData = textureInput->file->ReadAllBinary(fileBufferSize);
-		textureInput->file->Close();
+		unsigned char* fileData = textureInput->m_file->ReadAllBinary(fileBufferSize);
+		textureInput->m_file->Close();
 
 		if (!fileData) 
 		{

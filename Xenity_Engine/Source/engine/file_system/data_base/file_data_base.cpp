@@ -49,7 +49,7 @@ void FileDataBase::SaveToFile(const std::string& path)
 	ordered_json::to_msgpack(j, binaryFileDataBase);
 	const std::string stringBinary(binaryFileDataBase.begin(), binaryFileDataBase.end());
 
-	FileSystem::fileSystem->Delete(path);
+	FileSystem::s_fileSystem->Delete(path);
 
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	bool openResult = file->Open(FileMode::WriteCreateFile);

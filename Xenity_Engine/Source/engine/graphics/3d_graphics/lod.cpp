@@ -20,33 +20,33 @@ Lod::Lod()
 ReflectiveData Lod::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, lod0MeshRenderer, "lod0MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, lod1MeshRenderer, "lod1MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, lod1Distance, "lod1Distance", true);
-	Reflective::AddVariable(reflectedVariables, lod2MeshRenderer, "lod2MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, lod2Distance, "lod2Distance", true);
-	Reflective::AddVariable(reflectedVariables, culledDistance, "culledDistance", true);
+	Reflective::AddVariable(reflectedVariables, m_lod0MeshRenderer, "lod0MeshRenderer", true);
+	Reflective::AddVariable(reflectedVariables, m_lod1MeshRenderer, "lod1MeshRenderer", true);
+	Reflective::AddVariable(reflectedVariables, m_lod1Distance, "lod1Distance", true);
+	Reflective::AddVariable(reflectedVariables, m_lod2MeshRenderer, "lod2MeshRenderer", true);
+	Reflective::AddVariable(reflectedVariables, m_lod2Distance, "lod2Distance", true);
+	Reflective::AddVariable(reflectedVariables, m_culledDistance, "culledDistance", true);
 	return reflectedVariables;
 }
 
 void Lod::CheckLod()
 {
 	const float camDis = Vector3::Distance(GetTransform()->GetPosition(), Graphics::usedCamera->GetTransform()->GetPosition());
-	if (camDis >= culledDistance) 
+	if (camDis >= m_culledDistance) 
 	{
 		SetAllLevel(false);
 	}
-	else if (camDis >= lod2Distance)
+	else if (camDis >= m_lod2Distance)
 	{
-		UseLevel(lod2MeshRenderer, lod0MeshRenderer, lod1MeshRenderer);
+		UseLevel(m_lod2MeshRenderer, m_lod0MeshRenderer, m_lod1MeshRenderer);
 	}
-	else if (camDis >= lod1Distance)
+	else if (camDis >= m_lod1Distance)
 	{
-		UseLevel(lod1MeshRenderer, lod0MeshRenderer, lod2MeshRenderer);
+		UseLevel(m_lod1MeshRenderer, m_lod0MeshRenderer, m_lod2MeshRenderer);
 	}
 	else
 	{
-		UseLevel(lod0MeshRenderer, lod1MeshRenderer, lod2MeshRenderer);
+		UseLevel(m_lod0MeshRenderer, m_lod1MeshRenderer, m_lod2MeshRenderer);
 	}
 }
 
@@ -58,25 +58,25 @@ void Lod::RemoveReferences()
 void Lod::UseLevel(std::weak_ptr<MeshRenderer> levelToEnable, std::weak_ptr<MeshRenderer> levelToDisable0, std::weak_ptr<MeshRenderer> levelToDisable1)
 {
 	if (levelToEnable.lock())
-		levelToEnable.lock()->culled = false;
+		levelToEnable.lock()->m_culled = false;
 
 	if (levelToDisable0.lock())
-		levelToDisable0.lock()->culled = true;
+		levelToDisable0.lock()->m_culled = true;
 
 	if (levelToDisable1.lock())
-		levelToDisable1.lock()->culled = true;
+		levelToDisable1.lock()->m_culled = true;
 }
 
 void Lod::SetAllLevel(bool visible)
 {
-	if (lod0MeshRenderer.lock())
-		lod0MeshRenderer.lock()->culled = !visible;
+	if (m_lod0MeshRenderer.lock())
+		m_lod0MeshRenderer.lock()->m_culled = !visible;
 
-	if (lod1MeshRenderer.lock())
-		lod1MeshRenderer.lock()->culled = !visible;
+	if (m_lod1MeshRenderer.lock())
+		m_lod1MeshRenderer.lock()->m_culled = !visible;
 
-	if (lod2MeshRenderer.lock())
-		lod2MeshRenderer.lock()->culled = !visible;
+	if (m_lod2MeshRenderer.lock())
+		m_lod2MeshRenderer.lock()->m_culled = !visible;
 }
 
 Lod::~Lod()

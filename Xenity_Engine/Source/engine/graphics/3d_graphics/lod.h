@@ -39,11 +39,11 @@ protected:
 	*/
 	void SetAllLevel(bool visible);
 
-	std::weak_ptr<MeshRenderer> lod0MeshRenderer;
-	std::weak_ptr<MeshRenderer> lod1MeshRenderer;
-	std::weak_ptr<MeshRenderer> lod2MeshRenderer;
-	float lod1Distance = 7;
-	float lod2Distance = 15;
-	float culledDistance = 30;
+	std::weak_ptr<MeshRenderer> m_lod0MeshRenderer;
+	std::weak_ptr<MeshRenderer> m_lod1MeshRenderer;
+	std::weak_ptr<MeshRenderer> m_lod2MeshRenderer;
+	float m_lod1Distance = 7;
+	float m_lod2Distance = 15;
+	float m_culledDistance = 30;
 };
 

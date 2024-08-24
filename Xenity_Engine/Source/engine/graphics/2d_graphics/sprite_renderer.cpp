@@ -24,9 +24,9 @@ SpriteRenderer::SpriteRenderer()
 ReflectiveData SpriteRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
+	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
+	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
 	return reflectedVariables;
 }
 
@@ -42,7 +42,7 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->orderInLayer = orderInLayer;
+	this->m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -50,11 +50,11 @@ void SpriteRenderer::SetOrderInLayer(int orderInLayer)
 
 void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!material || !texture)
+	if (!m_material || !m_texture)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material.get();
+	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
@@ -65,13 +65,13 @@ void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void SpriteRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
-	this->material = material;
+	this->m_material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
-	this->texture = texture;
+	this->m_texture = texture;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -87,5 +87,5 @@ void SpriteRenderer::OnEnabled()
 
 void SpriteRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransform(), color, *material, texture);
+	SpriteManager::DrawSprite(*GetTransform(), m_color, *m_material, m_texture);
 }
