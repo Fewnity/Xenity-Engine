@@ -66,9 +66,9 @@ Sphere MeshRenderer::GetBoundingSphere() const
 	glm::vec3 transformedPosition = glm::vec3(GetTransform()->GetTransformationMatrix() * glm::vec4(spherePosition.x, spherePosition.y, spherePosition.z, 1.0f));
 	spherePosition = Vector3(-transformedPosition.x, transformedPosition.y, transformedPosition.z);
 
-	Vector3 halfDiagonal = (m_meshData->m_maxBoundingBox - m_meshData->m_minBoundingBox) / 2.0f;
+	const Vector3 halfDiagonal = (m_meshData->m_maxBoundingBox - m_meshData->m_minBoundingBox) / 2.0f;
 	const Vector3& scale = GetTransform()->GetScale();
-	float spshereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z) * std::max({ scale.x, scale.y, scale.z });
+	const float spshereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z) * std::max({ std::abs(scale.x), std::abs(scale.y), std::abs(scale.z) });
 
 	sphere.position = spherePosition;
 	sphere.radius = spshereRadius;
