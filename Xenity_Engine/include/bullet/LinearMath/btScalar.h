@@ -72,7 +72,7 @@ inline int	btGetVersion()
 				#define BT_USE_SIMD_VECTOR3
 			#endif
 
-			#define BT_USE_SSE
+			//#define BT_USE_SSE
 			#ifdef BT_USE_SSE
 			//BT_USE_SSE_IN_API is disabled under Windows by default, because 
 			//it makes it harder to integrate Bullet into your application under Windows 
@@ -288,6 +288,7 @@ static  int btInfinityMask = 0x7F800000;
 #endif
 
 //use this, in case there are clashes (such as xnamath.h)
+#define BT_NO_SIMD_OPERATOR_OVERLOADS
 #ifndef BT_NO_SIMD_OPERATOR_OVERLOADS
 inline __m128 operator + (const __m128 A, const __m128 B)
 {
@@ -385,26 +386,33 @@ SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmod(x,y); }
 
 #else
 		
-SIMD_FORCE_INLINE btScalar btSqrt(btScalar y) 
-{ 
-#ifdef USE_APPROXIMATION
-    double x, z, tempf;
-    unsigned long *tfptr = ((unsigned long *)&tempf) + 1;
 
-	tempf = y;
-	*tfptr = (0xbfcdd90a - *tfptr)>>1; /* estimate of 1/sqrt(y) */
-	x =  tempf;
-	z =  y*btScalar(0.5);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);         /* iteration formula     */
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	return x*y;
-#else
-	return sqrtf(y); 
-#endif
+
+#if defined(__PSP__)
+#include <pspfpu.h>
+SIMD_FORCE_INLINE btScalar btFabs(btScalar x) { return pspFpuAbs(x); }
+SIMD_FORCE_INLINE btScalar btCos(btScalar x) { return pspFpuCos(x); }
+SIMD_FORCE_INLINE btScalar btSin(btScalar x) { return pspFpuSin(x); }
+SIMD_FORCE_INLINE btScalar btTan(btScalar x) { return tanf(x); }
+SIMD_FORCE_INLINE btScalar btAcos(btScalar x) {
+	if (x < btScalar(-1))
+		x = btScalar(-1);
+	if (x > btScalar(1))
+		x = btScalar(1);
+	return pspFpuAcos(x);
 }
+SIMD_FORCE_INLINE btScalar btAsin(btScalar x) {
+	if (x < btScalar(-1))
+		x = btScalar(-1);
+	if (x > btScalar(1))
+		x = btScalar(1);
+	return pspFpuAsin(x);
+}
+SIMD_FORCE_INLINE btScalar btAtan(btScalar x) { return pspFpuAtan(x); }
+SIMD_FORCE_INLINE btScalar btExp(btScalar x) { return pspFpuExp(x); }
+SIMD_FORCE_INLINE btScalar btLog(btScalar x) { return pspFpuLog(x); }
+SIMD_FORCE_INLINE btScalar btFmod(btScalar x, btScalar y) { return pspFpuFmod(x, y); }
+#else
 SIMD_FORCE_INLINE btScalar btFabs(btScalar x) { return fabsf(x); }
 SIMD_FORCE_INLINE btScalar btCos(btScalar x) { return cosf(x); }
 SIMD_FORCE_INLINE btScalar btSin(btScalar x) { return sinf(x); }
@@ -424,11 +432,39 @@ SIMD_FORCE_INLINE btScalar btAsin(btScalar x) {
 	return asinf(x); 
 }
 SIMD_FORCE_INLINE btScalar btAtan(btScalar x) { return atanf(x); }
-SIMD_FORCE_INLINE btScalar btAtan2(btScalar x, btScalar y) { return atan2f(x, y); }
 SIMD_FORCE_INLINE btScalar btExp(btScalar x) { return expf(x); }
 SIMD_FORCE_INLINE btScalar btLog(btScalar x) { return logf(x); }
-SIMD_FORCE_INLINE btScalar btPow(btScalar x,btScalar y) { return powf(x,y); }
 SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmodf(x,y); }
+#endif
+
+SIMD_FORCE_INLINE btScalar btSqrt(btScalar y) 
+{ 
+#ifdef USE_APPROXIMATION
+    double x, z, tempf;
+    unsigned long *tfptr = ((unsigned long *)&tempf) + 1;
+
+	tempf = y;
+	*tfptr = (0xbfcdd90a - *tfptr)>>1; /* estimate of 1/sqrt(y) */
+	x =  tempf;
+	z =  y*btScalar(0.5);
+	x = (btScalar(1.5)*x)-(x*x)*(x*z);         /* iteration formula     */
+	x = (btScalar(1.5)*x)-(x*x)*(x*z);
+	x = (btScalar(1.5)*x)-(x*x)*(x*z);
+	x = (btScalar(1.5)*x)-(x*x)*(x*z);
+	x = (btScalar(1.5)*x)-(x*x)*(x*z);
+	return x*y;
+#else
+#if defined(__PSP__)
+	return pspFpuSqrt(y);
+#else
+	return sqrtf(y); 
+#endif
+#endif
+}
+
+
+SIMD_FORCE_INLINE btScalar btAtan2(btScalar x, btScalar y) { return atan2f(x, y); }
+SIMD_FORCE_INLINE btScalar btPow(btScalar x,btScalar y) { return powf(x,y); }
 	
 #endif
 

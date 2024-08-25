@@ -24,7 +24,8 @@
 
 
 
-#if defined BT_USE_SIMD_VECTOR3
+//#if defined BT_USE_SIMD_VECTOR3
+#if false
 
 #if DEBUG
 #include <string.h>//for memset
