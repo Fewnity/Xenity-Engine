@@ -31,6 +31,11 @@ public:
 
 	void Set(const float x, const float y, const float z, const float w);
 
+	/**
+	* @brief Return a string representation of the quaternion
+	*/
+	std::string ToString() const;
+
 	float x = 0;
 	float y = 0;
 	float z = 0;
@@ -48,6 +53,11 @@ inline void Quaternion::Set(const float x, const float y, const float z, const f
 	this->y = y;
 	this->z = z;
 	this->w = w;
+}
+
+inline std::string Quaternion::ToString() const
+{
+	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + " z:" + std::to_string(z) + " w:" + std::to_string(w) + "}";
 }
 
 inline Quaternion operator*(const Quaternion& left, const Quaternion& right)
