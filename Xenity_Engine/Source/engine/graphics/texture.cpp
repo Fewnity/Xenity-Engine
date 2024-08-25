@@ -327,6 +327,7 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr");
 
 	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+	bool tryPutInVram = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->tryPutInVram;
 
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
@@ -358,7 +359,8 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	}
 
 	bool isLevelInVram = true;
-	if (resizedPW > 256 || resizedPH > 256) {
+	if (resizedPW > 256 || resizedPH > 256) 
+	{
 		isLevelInVram = false;
 		Debug::PrintWarning("Texture too big to be in vram", true);
 	}
@@ -366,11 +368,19 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 	// Allocate memory in ram or vram
 	if (isLevelInVram)
 	{
-		unsigned int *newData = (unsigned int *)vramalloc(byteCount); // Divide by 8 when dxt1, by 4 when dxt3 and dxt5
-		// If there is no more free vram
+		unsigned int* newData = nullptr;
+		if(tryPutInVram)
+		{
+			newData = (unsigned int*)vramalloc(byteCount);
+		}
+
+		// If there is no more free vram or if we don't want to put it in vram
 		if (!newData)
 		{
-			Debug::PrintWarning("No enough free vram", true);
+			if(tryPutInVram)
+			{
+				Debug::PrintWarning("No enough free vram", true);
+			}
 			newData = (unsigned int *)memalign(16, byteCount);
 			isLevelInVram = false;
 		}
