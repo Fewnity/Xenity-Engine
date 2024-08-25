@@ -46,13 +46,11 @@ Add ability to move folders into a folder
 Check File::GetFolderPath() for psvita, remove ux0:
 
 --- To do quick:
-Fix crash if rotation values are infinite
 Add ImageRenderer for canvas
 Add buttons for canvas
 Finish rect transform support
-Add Windows controllers support
+Finish Windows controllers support
 Add the ability to change values with mouse when sliding
-Build and run on real harward for psp
 Clean Component::SetGameObject code
 
 Add event for input system for the screen size and mouse position
@@ -61,9 +59,8 @@ Move/Store engine name and version somewhere
 
 --- To do soon:
 Reload texture/mesh/audio if modified (only if scene is stopped)
-Fix Awake : Call awake when a gameobject was disabled and then enabled
 Add filter to file dialog
-First PSP frame doest not use light
+First PSP frame does not use light
 Multiple gameobject selection
 
 --- To do in a long time
@@ -77,9 +74,6 @@ Add support for mesh material loading
 RGBA or RGB in vertex color?
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
-Packing asset system
-Add a tool to rotate selected gameobject
-Fix tool with child and parent negative scale
 Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
 Change ID system, find a way to have an unique ID for files
@@ -87,7 +81,6 @@ Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id
 Touch : Add  input state : Begin, Hold (and End?)
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 Check memory leak when removing an item from vector in the editorUI
-multiple directional light not working properly
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
 Use enum is InspectorCreateGameObjectCommand instead of int
 Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = true; and call UpdateWorldValues in the function?
