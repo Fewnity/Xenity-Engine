@@ -2,6 +2,64 @@
 #include <cmath>
 #include <limits>
 
+#if defined(__PSP__)
+#include <pspfpu.h>
+#endif
+
+inline float mycos(float x)
+{
+#if defined(__PSP__)
+	return pspFpuCos(x);
+#else
+	 return std::cos(x);
+#endif
+}
+
+inline float mysin(float x)
+{
+#if defined(__PSP__)
+	return pspFpuSin(x);
+#else
+	return std::sin(x);
+#endif
+}
+
+inline float myabs(float x)
+{
+#if defined(__PSP__)
+	return pspFpuAbs(x);
+#else
+	return std::abs(x);
+#endif
+}
+
+inline float myacos(float x)
+{
+	return std::acos(x);
+#if defined(__PSP__)
+	return pspFpuAcos(x);
+#else
+#endif
+}
+
+inline float myasin(float x)
+{
+#if defined(__PSP__)
+	return pspFpuAtan(x);
+#else
+	return std::atan(x);
+#endif
+}
+
+inline float myatan(float x)
+{
+#if defined(__PSP__)
+	return pspFpuAtan(x);
+#else
+	return std::atan(x);
+#endif
+}
+
 namespace glm
 {
 	// radians
@@ -40,7 +98,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<L, T, Q> sin(vec<L, T, Q> const& v)
 	{
-		return detail::functor1<vec, L, T, T, Q>::call(sin, v);
+		return detail::functor1<vec, L, T, T, Q>::call(mysin, v);
 	}
 
 	// cos
@@ -49,7 +107,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<L, T, Q> cos(vec<L, T, Q> const& v)
 	{
-		return detail::functor1<vec, L, T, T, Q>::call(cos, v);
+		return detail::functor1<vec, L, T, T, Q>::call(mycos, v);
 	}
 
 	// tan
@@ -67,7 +125,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<L, T, Q> asin(vec<L, T, Q> const& v)
 	{
-		return detail::functor1<vec, L, T, T, Q>::call(asin, v);
+		return detail::functor1<vec, L, T, T, Q>::call(myasin, v);
 	}
 
 	// acos
@@ -76,7 +134,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<L, T, Q> acos(vec<L, T, Q> const& v)
 	{
-		return detail::functor1<vec, L, T, T, Q>::call(acos, v);
+		return detail::functor1<vec, L, T, T, Q>::call(myacos, v);
 	}
 
 	// atan
@@ -99,7 +157,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<L, T, Q> atan(vec<L, T, Q> const& v)
 	{
-		return detail::functor1<vec, L, T, T, Q>::call(atan, v);
+		return detail::functor1<vec, L, T, T, Q>::call(myatan, v);
 	}
 
 	// sinh
