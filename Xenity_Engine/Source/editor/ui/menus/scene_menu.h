@@ -21,6 +21,7 @@ enum class Side
 #include <editor/tool_mode.h>
 
 #include <engine/vectors/vector3.h>
+#include <engine/vectors/quaternion.h>
 
 class GameObject;
 class Camera;
@@ -38,10 +39,10 @@ public:
 	int gridAxis = 0;
 
 private:
-	void DrawToolWindow();
-	bool DrawImageButton(bool enabled, const Texture& texture);
+	bool DrawToolWindow();
+	bool DrawImageButton(bool enabled, const Texture& texture, const std::string& buttonId, bool& isHovered);
 	void MoveCamera();
-	void ProcessTool(std::shared_ptr<Camera>& camera);
+	void ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselection);
 	std::shared_ptr<GameObject> CheckBoundingBoxesOnClick(Camera& camera);
 
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
@@ -62,13 +63,11 @@ private:
 	Vector3 worldMousePosition;
 	Vector3 startMovePosition;
 	Vector3 startObjectValue;
+	Quaternion startObjectRotation;
 	Side side = Side::Side_None;
 	float snapAmount = 1.0f;
 	float cameraHandMoveSpeed = 200.0f;
 
-	std::weak_ptr<GameObject> cube1;
-	std::weak_ptr<GameObject> cube2;
-	std::weak_ptr<GameObject> cube3;
 	Vector3 startDragPos = Vector3(0);
 
 	bool mode2D = false;
@@ -79,5 +78,6 @@ private:
 	Vector3 oldTransformRotation;
 	Vector3 oldTransformScale;
 	std::shared_ptr<GameObject> draggedMeshGameObject;
+	float lastScaleDot = 0;
 };
 

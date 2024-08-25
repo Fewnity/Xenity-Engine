@@ -143,7 +143,7 @@ void SceneMenu::MoveCamera()
 			Quaternion newRot = rotY * rotQ * rotX;
 			cameraTransform->SetRotation(newRot);
 		}
-		else if(mode2D)
+		else if (mode2D)
 		{
 			cameraTransform->SetRotation(Quaternion::Identity());
 		}
@@ -294,13 +294,6 @@ Side SceneMenu::DetectSide(float camDistance, const Vector3& objectPosition, con
 	const Vector3 upClosestPointCam = GetNearestPoint(camPosition, mouseWorldDirNormalized, objectPosition, objectUp);
 	const Vector3 forwardClosestPointCam = GetNearestPoint(camPosition, mouseWorldDirNormalized, objectPosition, objectForward);
 
-	/*if (cube1.lock())
-	{
-		cube1.lock()->GetTransform()->SetPosition(rightClosestPoint);
-		cube2.lock()->GetTransform()->SetPosition(upClosestPoint);
-		cube3.lock()->GetTransform()->SetPosition(forwardClosestPoint);
-	}*/
-
 	//----------------------------------- Check if the mouse is on the arrow
 
 	// Check if the side of the arrows is correct
@@ -354,7 +347,7 @@ void SceneMenu::CheckAllowRotation(float dist, bool& allowRotation, bool isInter
 	}
 }
 
-void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
+void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselection)
 {
 	std::shared_ptr<Transform> cameraTransform = camera->GetTransform();
 
@@ -438,6 +431,13 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				Vector3 planeNormalY = Vector3(0, 1, 0);
 				Vector3 planeNormalZ = Vector3(0, 0, 1);
 
+				if (!Editor::isToolLocalMode && toolMode == ToolMode::Tool_Rotate)
+				{
+					planeNormalX = objectRight;
+					planeNormalY = objectUp;
+					planeNormalZ = objectForward;
+				}
+
 				Vector3 intersectionX = Vector3(0);
 				Vector3 intersectionY = Vector3(0);
 				Vector3 intersectionZ = Vector3(0);
@@ -476,7 +476,8 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 							startObjectValue = selectedGoTransform->GetPosition();
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
-						startObjectValue = selectedGoTransform->GetLocalEulerAngles();
+						//startObjectValue = selectedGoTransform->GetLocalEulerAngles();
+						startObjectRotation = selectedGoTransform->GetRotation();
 					else if (toolMode == ToolMode::Tool_Scale)
 						startObjectValue = selectedGoTransform->GetLocalScale();
 
@@ -506,8 +507,6 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				{
 					// Calculate the value offset
 					Vector3 objectOffset = (closestPoint - startMovePosition);
-					/*objectOffset.x /= (Graphics::usedCamera.lock()->GetAspectRatio() * 10);
-					objectOffset.y /= -10;*/
 
 					// Snap values if needed
 					if (InputSystem::GetKey(KeyCode::LEFT_CONTROL))
@@ -541,7 +540,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 					if (finalIntersection != startDragPos)
 					{
 						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
-						const float angleDeg = static_cast<float>(acos(angle) * 180.0 / Math::PI);
+						float angleDeg = static_cast<float>(acos(angle) * 180.0 / Math::PI);
 						if (!isnan(angleDeg))
 						{
 							float crossProduct = 0;
@@ -553,26 +552,72 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 							else if (side == Side::Side_Forward)
 								crossProduct = startDragPos.y * finalIntersection.x - startDragPos.x * finalIntersection.y;
 
+							if (side == Side::Side_Right)
+							{
+								if (objectRight.x < 0)
+								{
+									angleDeg *= -1;
+								}
+							}
+							else if (side == Side::Side_Up)
+							{
+								if (objectUp.y < 0)
+								{
+									angleDeg *= -1;
+								}
+							}
+							else if (side == Side::Side_Forward)
+							{
+								if (objectForward.z < 0)
+								{
+									angleDeg *= -1;
+								}
+							}
+
 							if (crossProduct < 0)
 								finalAngle += angleDeg;
 							else
 								finalAngle -= angleDeg;
 
 							if (side == Side::Side_Right)
-								selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(finalAngle, 0, 0));
+								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(finalAngle, 0, 0));
 							else if (side == Side::Side_Up)
-								selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, finalAngle, 0));
+								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(0, finalAngle, 0));
 							else if (side == Side::Side_Forward)
-								selectedGoTransform->SetLocalRotation(startObjectValue + Vector3(0, 0, finalAngle));
+								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(0, 0, finalAngle));
 						}
 						startDragPos = finalIntersection;
 					}
 				}
 				else if (toolMode == ToolMode::Tool_Scale)
 				{
-					Vector3 objectOffset = (closestPoint - startMovePosition);
-					objectOffset *= 4;
-					selectedGoTransform->SetLocalScale(startObjectValue + objectOffset);
+					float dotValue = 0;
+					float initialDotValue = 0;
+					float scaleAmount = 0;
+					if (side == Side::Side_Right)
+					{
+						initialDotValue = objectRight.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						dotValue = objectRight.Dot(closestPoint - selectedGoTransform->GetPosition());
+					}
+					else if (side == Side::Side_Up)
+					{
+						initialDotValue = objectUp.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						dotValue = objectUp.Dot(closestPoint - selectedGoTransform->GetPosition());
+					}
+					else if (side == Side::Side_Forward)
+					{
+						initialDotValue = objectForward.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						dotValue = objectForward.Dot(closestPoint - selectedGoTransform->GetPosition());
+					}
+
+					scaleAmount = dotValue - initialDotValue;
+
+					if (side == Side::Side_Right)
+						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(scaleAmount, 0, 0));
+					else if (side == Side::Side_Up)
+						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(0, scaleAmount, 0));
+					else if (side == Side::Side_Forward)
+						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(0, 0, scaleAmount));
 				}
 			}
 
@@ -610,7 +655,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera)
 				Editor::AddSelectedGameObject(newGameObjectSelected);
 				Editor::SetSelectedFileReference(nullptr);
 			}
-			else
+			else if (allowDeselection)
 			{
 				Editor::SetSelectedGameObject(newGameObjectSelected);
 			}
@@ -671,17 +716,6 @@ void SceneMenu::FocusSelectedObject()
 
 void SceneMenu::Draw()
 {
-	/*if (InputSystem::GetKeyDown(R))
-	{
-		cube1 = ShapeSpawner::SpawnCube();
-		cube2 = ShapeSpawner::SpawnCube();
-		cube3 = ShapeSpawner::SpawnCube();
-
-		cube1.lock()->GetTransform()->SetLocalScale(Vector3(0.05));
-		cube2.lock()->GetTransform()->SetLocalScale(Vector3(0.15));
-		cube3.lock()->GetTransform()->SetLocalScale(Vector3(0.3));
-	}*/
-
 	std::shared_ptr<Camera> camera = weakCamera.lock();
 	Vector2Int frameBufferSize = Vector2Int(0, 0);
 	if (camera)
@@ -702,6 +736,7 @@ void SceneMenu::Draw()
 	if (visible)
 	{
 		OnStartDrawing();
+		bool canProcess = false;
 
 		const ImVec2 startCursorPos = ImGui::GetCursorPos();
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
@@ -768,14 +803,17 @@ void SceneMenu::Draw()
 					FocusSelectedObject();
 				}
 
-				ProcessTool(camera);
+				canProcess = true;
 			}
 		}
 
 		// List tool modes
 		ImGui::SetCursorPos(startCursorPos);
-		DrawToolWindow();
-
+		const bool toolButtonClicked = DrawToolWindow();
+		if (canProcess)
+		{
+			ProcessTool(camera, !toolButtonClicked);
+		}
 		CalculateWindowValues();
 	}
 	else
@@ -787,48 +825,58 @@ void SceneMenu::Draw()
 	ImGui::PopStyleVar();
 }
 
-bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture)
+bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture, const std::string& buttonId, bool& isHovered)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)texture.GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(buttonId.c_str(), (ImTextureID)(size_t)texture.GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
+
+	if (ImGui::IsItemHovered())
+	{
+		isHovered = true;
+	}
+
 	return clicked;
 }
 
-void SceneMenu::DrawToolWindow()
+bool SceneMenu::DrawToolWindow()
 {
+	bool buttonHovered = false;
 	if (ImGui::CollapsingHeader("Tool modes", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
-		bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Camera_Move]);
+		const bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Camera_Move], "##SceneMoveCameraButton", buttonHovered);
 		EditorUI::EndButtonColor();
+		//if(ImGui::)
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Move);
-		bool moveClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Move]);
+		const bool moveClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Move], "##SceneMoveButton", buttonHovered);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Rotate);
-		bool rotateClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Rotate]);
+		const bool rotateClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Rotate], "##SceneRotateButton", buttonHovered);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Scale);
-		bool scaleClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Scale]);
+		const bool scaleClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Scale], "##SceneScaleButton", buttonHovered);
 		EditorUI::EndButtonColor();
+
 		if (moveCameraClicked)
 		{
 			toolMode = ToolMode::Tool_MoveCamera;
 		}
-		if (moveClicked)
+		else if (moveClicked)
 		{
 			toolMode = ToolMode::Tool_Move;
 		}
-		if (rotateClicked)
+		else if (rotateClicked)
 		{
 			toolMode = ToolMode::Tool_Rotate;
-			Editor::isToolLocalMode = true;
+			Editor::isToolLocalMode = false;
 		}
-		if (scaleClicked)
+		else if (scaleClicked)
 		{
 			toolMode = ToolMode::Tool_Scale;
+			Editor::isToolLocalMode = false;
 		}
 
 		EditorUI::SetButtonColor(mode2D);
@@ -836,22 +884,35 @@ void SceneMenu::DrawToolWindow()
 		{
 			Switch2DMode(!mode2D);
 		}
+		if (ImGui::IsItemHovered())
+		{
+			buttonHovered = true;
+		}
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(false);
-		if (Editor::isToolLocalMode)
+		if (toolMode == ToolMode::Tool_Move)
 		{
-			if (ImGui::Button("Local"))
+			if (Editor::isToolLocalMode)
 			{
-				Editor::isToolLocalMode = false;
+				if (ImGui::Button("Local"))
+				{
+					Editor::isToolLocalMode = false;
+				}
 			}
-		}
-		else
-		{
-			if (ImGui::Button("World"))
+			else
 			{
-				Editor::isToolLocalMode = true;
+				if (ImGui::Button("World"))
+				{
+					Editor::isToolLocalMode = true;
+				}
+			}
+			if (ImGui::IsItemHovered())
+			{
+				buttonHovered = true;
 			}
 		}
 		EditorUI::EndButtonColor();
 	}
+
+	return buttonHovered;
 }
