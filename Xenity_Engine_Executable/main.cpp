@@ -26,7 +26,6 @@ Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
 Set isTrigger and generateCollisionEvents has protected?
-Use vram setting for psp
 
 --- Can be done for the next release
 Remove the old profiler
