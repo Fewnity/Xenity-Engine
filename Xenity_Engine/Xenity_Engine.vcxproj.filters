@@ -189,7 +189,6 @@
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btDbvt.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp" />
-    <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp" />
@@ -264,7 +263,6 @@
     <ClCompile Include="include\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
-    <ClCompile Include="include\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
@@ -316,6 +314,16 @@
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
     <ClCompile Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.cpp" />
+    <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
+    <ClCompile Include="include\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
+    <ClCompile Include="include\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="include\bullet\LinearMath\btThreads.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -537,7 +545,6 @@
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btDbvt.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btDispatcher.h" />
-    <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCallback.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.h" />
@@ -630,7 +637,6 @@
     <ClInclude Include="include\bullet\BulletDynamics\Dynamics\btRigidBody.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.h" />
     <ClInclude Include="include\bullet\BulletSoftBody\btSparseSDF.h" />
-    <ClInclude Include="include\bullet\Bullet-C-Api.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Vehicle\btWheelInfo.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Vehicle\btRaycastVehicle.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Vehicle\btVehicleRaycaster.h" />
@@ -734,6 +740,24 @@
     <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h" />
     <ClInclude Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.h" />
+    <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.h" />
+    <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btComputeGjkEpaPenetration.h" />
+    <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btGjkCollisionDescription.h" />
+    <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa3.h" />
+    <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btMprPenetration.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodyJointFeedback.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\MLCPSolvers\btLemkeSolver.h" />
+    <ClInclude Include="include\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.h" />
+    <ClInclude Include="include\bullet\LinearMath\btCpuFeatureUtility.h" />
+    <ClInclude Include="include\bullet\LinearMath\btSpatialAlgebra.h" />
+    <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />
