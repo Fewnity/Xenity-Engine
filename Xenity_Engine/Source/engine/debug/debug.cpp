@@ -131,8 +131,16 @@ void Debug::PrintInConsole(const std::string& text)
 
 void Debug::PrintInFile(const std::string& text)
 {
-	if (s_file)
+	if (s_file) 
+	{
+#if defined(__PSP__) // On psp there is a problem with files, so we need to close and reopen the file
+		s_file->Open(FileMode::WriteOnly);
 		s_file->Write(text);
+		s_file->Close();
+#else
+		s_file->Write(text);
+#endif
+	}
 }
 
 /**

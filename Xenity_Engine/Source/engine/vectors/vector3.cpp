@@ -92,7 +92,7 @@ Vector3 Vector3::Normalized() const
 
 Vector3 Vector3::Normalize()
 {
-	*(this) = this->Normalized();
+	*(this) = Normalized();
 	return *(this);
 }
 
@@ -129,14 +129,6 @@ double Vector3::Dot(const Vector3& a, const Vector3& b)
 Vector3 Vector3::Cross(const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
-}
-
-float Vector3::Distance(const Vector3& a, const Vector3& b)
-{
-	const float xDis = a.x - b.x;
-	const float yDis = a.y - b.y;
-	const float zDis = a.z - b.z;
-	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
 }
 
 Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const float t)

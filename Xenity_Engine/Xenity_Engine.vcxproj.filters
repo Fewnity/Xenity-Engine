@@ -758,6 +758,7 @@
     <ClInclude Include="include\bullet\LinearMath\btCpuFeatureUtility.h" />
     <ClInclude Include="include\bullet\LinearMath\btSpatialAlgebra.h" />
     <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
+    <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

@@ -194,12 +194,12 @@ public:
 	/**
 	* @brief Get transform
 	*/
-	inline std::shared_ptr<Transform> GetTransform() const
+	inline const std::shared_ptr<Transform>& GetTransform() const
 	{
 		return m_transform;
 	}
 
-	inline std::weak_ptr<GameObject> GetParent() const
+	inline const std::weak_ptr<GameObject>& GetParent() const
 	{
 		return m_parent;
 	}

@@ -28,9 +28,20 @@
 #include "renderer/renderer.h"
 #include "camera.h"
 #include <engine/application.h>
+#include <engine/accessors/acc_gameobject.h>
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#define GLFW_DLL
+#elif defined(__vita__)
+#include <vitaGL.h>
+#endif
 
 using json = nlohmann::json;
 
+unsigned int uboLightBlock;
 glm::mat4 Shader::m_canvasCameraTransformationMatrix;
 std::vector<Shader::PointLightVariableNames*> Shader::s_pointlightVariableNames;
 std::vector<Shader::DirectionalLightsVariableNames*> Shader::s_directionallightVariableNames;
@@ -38,6 +49,7 @@ std::vector<Shader::SpotLightVariableNames*> Shader::s_spotlightVariableNames;
 
 Shader::PointLightVariableIds::PointLightVariableIds(int index, unsigned int programId)
 {
+	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index]->indices);
 	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index]->color);
 	position = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index]->position);
 	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index]->constant);
@@ -54,6 +66,7 @@ Shader::PointLightVariableIds::PointLightVariableIds(int index, unsigned int pro
 
 Shader::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, unsigned int programId)
 {
+	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index]->indices);
 	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index]->color);
 	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index]->direction);
 
@@ -64,6 +77,7 @@ Shader::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, un
 
 Shader::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int programId)
 {
+	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index]->indices);
 	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index]->color);
 	position = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index]->position);
 	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index]->direction);
@@ -88,6 +102,7 @@ Shader::PointLightVariableNames::PointLightVariableNames(int index)
 {
 	constexpr int bufferSize = 30;
 
+	indices = new char[bufferSize];
 	color = new char[bufferSize];
 	position = new char[bufferSize];
 	constant = new char[bufferSize];
@@ -95,6 +110,7 @@ Shader::PointLightVariableNames::PointLightVariableNames(int index)
 	quadratic = new char[bufferSize];
 
 #if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(indices, bufferSize, "pointLightsIndices[%d]", index);
 	sprintf_s(color, bufferSize, "pointLights[%d].color", index);
 	sprintf_s(position, bufferSize, "pointLights[%d].position", index);
 	sprintf_s(constant, bufferSize, "pointLights[%d].constant", index);
@@ -122,10 +138,12 @@ Shader::DirectionalLightsVariableNames::DirectionalLightsVariableNames(int index
 {
 	constexpr int bufferSize = 35;
 
+	indices = new char[bufferSize];
 	color = new char[bufferSize];
 	direction = new char[bufferSize];
 
 #if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(indices, bufferSize, "directionalLightsIndices[%d]", index);
 	sprintf_s(color, bufferSize, "directionalLights[%d].color", index);
 	sprintf_s(direction, bufferSize, "directionalLights[%d].direction", index);
 #else
@@ -144,6 +162,7 @@ Shader::SpotLightVariableNames::SpotLightVariableNames(int index)
 {
 	constexpr int bufferSize = 30;
 
+	indices = new char[bufferSize];
 	color = new char[bufferSize];
 	position = new char[bufferSize];
 	direction = new char[bufferSize];
@@ -154,6 +173,7 @@ Shader::SpotLightVariableNames::SpotLightVariableNames(int index)
 	outerCutOff = new char[bufferSize];
 
 #if defined(_WIN32) || defined(_WIN64)
+	sprintf_s(indices, bufferSize, "spotLightsIndices[%d]", index);
 	sprintf_s(color, bufferSize, "spotLights[%d].color", index);
 	sprintf_s(position, bufferSize, "spotLights[%d].position", index);
 	sprintf_s(direction, bufferSize, "spotLights[%d].direction", index);
@@ -188,16 +208,24 @@ Shader::SpotLightVariableNames::~SpotLightVariableNames()
 
 #pragma region Constructors / Destructor
 
+std::shared_ptr<Light> defaultDarkLight = std::make_shared<Light>();
+
 void Shader::Init()
 {
+	defaultDarkLight->SetIntensity(0);
 	m_canvasCameraTransformationMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < MAX_LIGHT_COUNT; i++)
 	{
 		s_pointlightVariableNames.push_back(new PointLightVariableNames(i));
 		s_directionallightVariableNames.push_back(new DirectionalLightsVariableNames(i));
 		s_spotlightVariableNames.push_back(new SpotLightVariableNames(i));
 	}
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+	glGenBuffers(1, &uboLightBlock);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
+#endif
 }
 
 Shader::Shader()
@@ -540,6 +568,14 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 	Engine::GetRenderer().SetShaderAttribut(m_programId, m_modelLocation, transformationMatrix);
 }
 
+void Shader::SetLightIndices(const LightsIndices& lightsIndices)
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(lightsIndices), NULL, GL_DYNAMIC_DRAW);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(lightsIndices), &lightsIndices);
+#endif
+}
+
 void Shader::SetShaderAttribut(const std::string& attribut, const Vector4& value)
 {
 	auto it = m_uniformsIds.find(attribut);
@@ -595,7 +631,6 @@ void Shader::SetShaderAttribut(const std::string& attribut, int value)
 	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
 }
 
-
 void Shader::Link()
 {
 	m_programId = Engine::GetRenderer().CreateShaderProgram();
@@ -626,6 +661,26 @@ void Shader::Link()
 		m_directionallightVariableIds.push_back(new DirectionalLightsVariableIds(i, m_programId));
 		m_spotlightVariableIds.push_back(new SpotLightVariableIds(i, m_programId));
 	}
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+	GLuint blockIndex;
+#if defined(__vita__)
+	blockIndex = glGetUniformBlockIndex(m_programId, "lightIndices");
+#else
+	blockIndex = glGetUniformBlockIndex(m_programId, "LightIndices");
+#endif
+
+	if (blockIndex == -1)
+	{
+		Debug::PrintWarning("The shader does not have a LightIndices uniform buffer: " + m_file->GetFileName());
+	}
+	else
+	{
+		GLuint bindingPoint = 0;
+		glUniformBlockBinding(m_programId, blockIndex, bindingPoint);
+		glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, uboLightBlock);
+	}
+#endif // #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 }
 
 /// <summary>
@@ -635,10 +690,17 @@ void Shader::Link()
 /// <param name="index">Shader's point light index</param>
 void Shader::SetPointLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
-	Vector3 pos = light.GetTransform()->GetPosition();
-	pos.x = -pos.x;
+	Vector3 pos = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		pos = light.GetTransformRaw()->GetPosition();
+		pos.x = -pos.x;
+	}
 
 	const PointLightVariableIds* ids = m_pointlightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids->color, lightColor * light.GetIntensity());
@@ -655,11 +717,18 @@ void Shader::SetPointLightData(const Light& light, const int index)
 /// <param name="index">Shader's directional light index</param>
 void Shader::SetDirectionalLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	Vector3 dir = light.GetTransform()->GetForward();
-	dir.x = -dir.x;
+	Vector3 dir = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		dir = light.GetTransformRaw()->GetForward();
+		dir.x = -dir.x;
+	}
 
 	const DirectionalLightsVariableIds* ids = m_directionallightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids->color, lightColor * light.GetIntensity());
@@ -678,14 +747,23 @@ void Shader::SetAmbientLightData(const Vector3& color)
 /// <param name="index">Shader's spot light index</param>
 void Shader::SetSpotLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
-	Vector3 pos = light.GetTransform()->GetPosition();
-	pos.x = -pos.x;
+	Vector3 pos = Vector3(0);
+	Vector3 dir = Vector3(0);
 
-	Vector3 dir = light.GetTransform()->GetForward();
-	dir.x = -dir.x;
+	if (light.GetTransformRaw())
+	{
+		pos = light.GetTransformRaw()->GetPosition();
+		pos.x = -pos.x;
+
+		dir = light.GetTransformRaw()->GetForward();
+		dir.x = -dir.x;
+	}
 
 	const SpotLightVariableIds* ids = m_spotlightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids->color, lightColor * light.GetIntensity());
@@ -703,38 +781,41 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 /// </summary>
 void Shader::UpdateLights(bool disableLights)
 {
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_pointlightVariableIds[0]->color, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_spotlightVariableIds[0]->color, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_directionallightVariableIds[0]->color, Vector3(0, 0, 0));
-
-	int directionalUsed = 0;
-	int pointUsed = 0;
-	int spotUsed = 0;
 	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 
 	if (disableLights)
 	{
+		int directionalUsed = 0;
+		int pointUsed = 0;
+		int spotUsed = 0;
+
+		// Set the first light of each type to a dark light in the shader
+		SetDirectionalLightData(*defaultDarkLight, 0);
+		SetPointLightData(*defaultDarkLight, 0);
+		SetSpotLightData(*defaultDarkLight, 0);
+
+		int offset = 1;
 		const int lightCount = AssetManager::GetLightCount();
 
 		//For each lights
 		for (int lightI = 0; lightI < lightCount; lightI++)
 		{
-			const Light& light = *AssetManager::GetLight(lightI).lock();
-			if (light.IsEnabled() && light.GetGameObject()->IsLocalActive())
+			const Light& light = *AssetManager::GetLight(lightI);
+			if (light.IsEnabled() && light.GetGameObjectRaw()->IsLocalActive())
 			{
 				if (light.m_type == LightType::Directional)
 				{
-					SetDirectionalLightData(light, directionalUsed);
+					SetDirectionalLightData(light, directionalUsed + offset);
 					directionalUsed++;
 				}
 				else if (light.m_type == LightType::Point)
 				{
-					SetPointLightData(light, pointUsed);
+					SetPointLightData(light, pointUsed + offset);
 					pointUsed++;
 				}
 				else if (light.m_type == LightType::Spot)
 				{
-					SetSpotLightData(light, spotUsed);
+					SetSpotLightData(light, spotUsed + offset);
 					spotUsed++;
 				}
 				else if (light.m_type == LightType::Ambient)
@@ -746,9 +827,6 @@ void Shader::UpdateLights(bool disableLights)
 	}
 
 	SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_usedPointLightCountLocation, pointUsed);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_usedSpotLightCountLocation, spotUsed);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_usedDirectionalLightCountLocation, directionalUsed);
 }
 
 std::shared_ptr<Shader> Shader::MakeShader()

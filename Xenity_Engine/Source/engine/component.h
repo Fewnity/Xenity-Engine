@@ -65,14 +65,6 @@ public:
 	*/
 	virtual void OnDrawGizmos() {};
 
-	virtual void OnCollisionEnter(CollisionEvent info) {};
-	virtual void OnCollisionStay(CollisionEvent info) {};
-	virtual void OnCollisionExit(CollisionEvent info) {};
-
-	virtual void OnTriggerEnter(CollisionEvent info) {};
-	virtual void OnTriggerStay(CollisionEvent info) {};
-	virtual void OnTriggerExit(CollisionEvent info) {};
-
 	/**
 	* @brief Called each frame to draw gizmos if the object is selected
 	*/
@@ -99,6 +91,14 @@ public:
 	{
 		return m_gameObject.lock();
 	}
+	
+	/**
+	* @brief Get component's GameObject raw pointer for faster access
+	*/
+	inline GameObject* GetGameObjectRaw() const
+	{
+		return m_gameObjectRaw;
+	}
 
 	/**
 	* @brief Get component's Transform
@@ -106,6 +106,14 @@ public:
 	inline std::shared_ptr <Transform> GetTransform() const
 	{
 		return m_transform.lock();
+	}
+
+	/**
+	* @brief Get component's Transform raw pointer for faster access
+	*/
+	inline Transform* GetTransformRaw() const
+	{
+		return m_transformRaw;
 	}
 
 	/**
@@ -136,6 +144,7 @@ private:
 	friend class GameObject;
 	friend class InspectorMenu;
 	friend class SceneManager;
+	friend class PhysicsManager;
 
 	/**
 	* @brief [Internal] Set component's GameObject
@@ -149,11 +158,22 @@ protected:
 	*/
 	virtual void RemoveReferences() {};
 
+	virtual void OnCollisionEnter(CollisionEvent info) {};
+	virtual void OnCollisionStay(CollisionEvent info) {};
+	virtual void OnCollisionExit(CollisionEvent info) {};
+
+	virtual void OnTriggerEnter(CollisionEvent info) {};
+	virtual void OnTriggerStay(CollisionEvent info) {};
+	virtual void OnTriggerExit(CollisionEvent info) {};
+
 	std::string m_componentName = "";
 
 private:
 	std::weak_ptr <GameObject> m_gameObject;
 	std::weak_ptr <Transform> m_transform;
+	// Raw pointer for faster access
+	Transform* m_transformRaw = nullptr;
+	GameObject* m_gameObjectRaw = nullptr;
 
 protected:
 	int m_updatePriority = 5000; //Lower is more priority

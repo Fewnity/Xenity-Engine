@@ -87,5 +87,5 @@ void SpriteRenderer::OnEnabled()
 
 void SpriteRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransform(), m_color, *m_material, m_texture);
+	SpriteManager::DrawSprite(*GetTransform(), m_color, *m_material, m_texture.get());
 }

@@ -19,6 +19,7 @@
 #include <engine/graphics/texture.h>
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/ui/font.h>
+#include <engine/game_elements/gameobject.h>
 
 #include <engine/scene_management/scene.h>
 #include <engine/audio/audio_clip.h>
@@ -30,7 +31,7 @@ bool initialised = false;
 std::vector<Material*> AssetManager::materials;
 std::vector<Reflective*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
-std::vector<std::weak_ptr<Light>> AssetManager::lights;
+std::vector<Light*> AssetManager::lights;
 
 int AssetManager::materialCount = 0;
 int AssetManager::reflectionCount = 0;
@@ -113,7 +114,7 @@ void AssetManager::OnProjectLoaded()
 	//standardVertexLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardVertexLightingMaterial.mat");
 	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/unlitMaterial.mat");
 	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/lineMaterial.mat");
-	
+
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null");
 	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null");
 	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null");
@@ -191,12 +192,44 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 /// Add a light in the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::AddLight(const std::weak_ptr<Light>& light)
+void AssetManager::AddLight(Light* light)
 {
-	XASSERT(light.lock() != nullptr, "[AssetManager::AddLight] light is null");
+	XASSERT(light != nullptr, "[AssetManager::AddLight] light is null");
 
 	lights.push_back(light);
 	lightCount++;
+
+	Graphics::CreateLightLists();
+}
+
+void AssetManager::UpdateLightIndices()
+{
+	int pointLightCount = 0;
+	int spotLightCount = 0;
+	int directionalLightCount = 0;
+	for (int i = 0; i < lightCount; i++)
+	{
+		Light* light = lights[i];
+		if (light->IsEnabled() && light->GetGameObjectRaw()->IsLocalActive())
+		{
+			if (light->GetType() == LightType::Point)
+			{
+				light->m_indexInShaderList = pointLightCount;
+				pointLightCount++;
+			}
+			else if (light->GetType() == LightType::Spot)
+			{
+				light->m_indexInShaderList = spotLightCount;
+				spotLightCount++;
+			}
+			else if (light->GetType() == LightType::Directional)
+			{
+				light->m_indexInShaderList = directionalLightCount;
+				directionalLightCount++;
+			}
+		}
+		light->m_indexInLightList = i;
+	}
 }
 
 #pragma endregion
@@ -370,9 +403,9 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 /// Remove a light from the light list
 /// </summary>
 /// <param name="light"></param>
-void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
+void AssetManager::RemoveLight(Light* light)
 {
-	XASSERT(light.lock() != nullptr, "[AssetManager::RemoveLight] light is null");
+	XASSERT(light != nullptr, "[AssetManager::RemoveLight] light is null");
 
 	if (!Engine::IsRunning(true))
 		return;
@@ -383,7 +416,7 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 	bool found = false;
 	for (int i = 0; i < lightCount; i++)
 	{
-		if (lights[i].lock() == light.lock())
+		if (lights[i] == light)
 		{
 			found = true;
 			lightIndex = i;
@@ -395,6 +428,7 @@ void AssetManager::RemoveLight(const std::weak_ptr<Light>& light)
 	{
 		lights.erase(lights.begin() + lightIndex);
 		lightCount--;
+		Graphics::CreateLightLists();
 	}
 }
 

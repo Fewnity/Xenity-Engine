@@ -13,11 +13,33 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#define MAX_LIGHT_COUNT 10
+#else
+#define MAX_LIGHT_COUNT 4
+#endif
+
 class Light;
 class Material;
 class Vector2;
 class Vector3;
 class Vector4;
+
+struct LightsIndices 
+{
+	int usedPointLightCount = 0;
+	int usedSpotLightCount = 0;
+	int usedDirectionalLightCount = 0;
+	int padding0;
+
+	int pointLightIndices[MAX_LIGHT_COUNT];
+	int spotLightIndices[MAX_LIGHT_COUNT];
+	int directionalLightIndices[MAX_LIGHT_COUNT];
+
+	// Padding
+	int padding1;
+	int padding2;
+};
 
 /**
 * @brief [Internal] Shader file class
@@ -40,6 +62,7 @@ protected:
 		explicit PointLightVariableNames(int index);
 		~PointLightVariableNames();
 
+		char* indices = nullptr;
 		char* color = nullptr;
 		char* position = nullptr;
 		char* constant = nullptr;
@@ -54,6 +77,7 @@ protected:
 		explicit DirectionalLightsVariableNames(int index);
 		~DirectionalLightsVariableNames();
 
+		char* indices = nullptr;
 		char* color = nullptr;
 		char* direction = nullptr;
 	};
@@ -66,6 +90,7 @@ protected:
 		explicit SpotLightVariableNames(int index);
 		~SpotLightVariableNames();
 
+		char* indices = nullptr;
 		char* color = nullptr;
 		char* position = nullptr;
 		char* direction = nullptr;
@@ -82,6 +107,7 @@ protected:
 		PointLightVariableIds() = delete;
 		explicit PointLightVariableIds(int index, unsigned int programId);
 
+		unsigned int indices = 0;
 		unsigned int color = 0;
 		unsigned int position = 0;
 		unsigned int constant = 0;
@@ -95,6 +121,7 @@ protected:
 		DirectionalLightsVariableIds() = delete;
 		explicit DirectionalLightsVariableIds(int index, unsigned int programId);
 
+		unsigned int indices = 0;
 		unsigned int color = 0;
 		unsigned int direction = 0;
 	};
@@ -106,6 +133,7 @@ protected:
 		SpotLightVariableIds() = delete;
 		explicit SpotLightVariableIds(int index, unsigned int programId);
 
+		unsigned int indices = 0;
 		unsigned int color = 0;
 		unsigned int position = 0;
 		unsigned int direction = 0;
@@ -146,6 +174,7 @@ protected:
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
+	friend class MeshRenderer;
 
 	static void Init();
 
@@ -192,6 +221,8 @@ protected:
 	* @param scale The scale of the object
 	*/
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale);
+
+	void SetLightIndices(const LightsIndices& lightsIndices);
 
 	/**
 	* @brief Set the shader uniform for basic types
@@ -259,4 +290,6 @@ protected:
 
 	bool m_useTessellation = false;
 	std::unordered_map<std::string, unsigned int> m_uniformsIds;
+	std::vector<Light*> currentLights;
+	std::vector<Light*> currentDirectionalLights;
 };

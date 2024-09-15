@@ -102,6 +102,10 @@ void RendererOpengl::Stop()
 void RendererOpengl::NewFrame()
 {
 	lastUsedColor = Vector4(-1, -1, -1, -1);
+	for (int i = 0; i < maxLightCount; i++)
+	{
+		lastUpdatedLights[i] = nullptr;
+	}
 }
 
 void RendererOpengl::EndFrame()
@@ -156,21 +160,9 @@ void RendererOpengl::ResetView()
 
 void RendererOpengl::SetCameraPosition(const Camera& camera)
 {
-	std::shared_ptr<Transform> transform = camera.GetTransform();
-	const Vector3& position = transform->GetPosition();
-
-	const Quaternion& baseQ = transform->GetRotation();
-	const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
-	Quaternion newQ = baseQ * offsetQ;
-
-	glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
-
-	if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
-		RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glMultMatrixf((float*)&RotationMatrix);
+	glMultMatrixf((float*)&camera.cameraTransformMatrix);
 }
 
 void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& rotation)
@@ -436,11 +428,11 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	ver[1].x = b.x;
 	ver[1].y = b.y;
 	ver[1].z = b.z;
-	int stride = sizeof(VertexNoColorNoUv);
+	static const int stride = sizeof(VertexNoColorNoUv);
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
 	const RGBA& vec4Color = color.GetRGBA();
-	Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
+	const Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	lastUsedColor = Vector4(-1, -1, -1, -1);
 	glDrawArrays(GL_LINES, 0, 2);
@@ -479,6 +471,12 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
+	if (lastUpdatedLights[lightIndex] == &light)
+		return;
+
+	lastUpdatedLights[lightIndex] = &light;
+
+
 	float lightAttenuation[1] = { light.GetQuadraticValue() };
 	float lightLinearAttenuation[1] = { light.GetLinearValue() };
 	float lightConstAttenuation[1] = { 1 };
@@ -507,7 +505,7 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 	const RGBA& rgba = color.GetRGBA();
 	const float lightColor[] = { rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1.0f };
-	const float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	static const float zeroLight[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	const float position[] = { -lightPosition.x, lightPosition.y, lightPosition.z, 1 };
 	const float direction[] = { lightDirection.x, lightDirection.y, lightDirection.z, 1 };
@@ -535,15 +533,15 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 		if (cutOff[0] > 90)
 			cutOff[0] = 90;
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_CUTOFF, cutOff);
-		float exponent[1] = { light.GetSpotSmoothness() * 128 };
+		const float exponent[1] = { light.GetSpotSmoothness() * 128 };
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_EXPONENT, exponent);
 
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, direction);
 	}
 	else 
 	{
-		float zero[1] = { 0 };
-		float defaultCutOff[1] = { 180 };
+		static const float zero[1] = { 0 };
+		static const float defaultCutOff[1] = { 180 };
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_CUTOFF, defaultCutOff);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_EXPONENT, zero);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, zeroLight);
@@ -562,36 +560,57 @@ void RendererOpengl::DisableAllLight()
 	}
 }
 
-void RendererOpengl::Setlights(const Camera& camera)
+void RendererOpengl::Setlights(const LightsIndices& lightsIndices, const Camera& camera)
 {
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
+
 	int usedLightCount = 0;
+	static const Vector3 zero = Vector3(0, 0, 0);
+
 	for (int i = 0; i < lightCount; i++)
 	{
-		std::shared_ptr<Light> light = AssetManager::GetLight(i).lock();
-		if (light && light->IsEnabled() && light->GetGameObject()->IsLocalActive())
+		const Light* light = AssetManager::GetLight(i);
+		if (light->m_type == LightType::Ambient && light->IsEnabled() && light->GetGameObjectRaw()->IsLocalActive())
 		{
-			if (light->m_type == LightType::Directional)
-			{
-				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
-				const Vector3 dir = Math::Get3DDirectionFromAngles(lightRotation.y, -lightRotation.x) * 1000;
-				SetLight(usedLightCount, *light,  Vector3(0, 0, 0) + dir, dir);
-			}
-			else if (light->m_type == LightType::Ambient)
-			{
-				SetLight(usedLightCount, *light, Vector3(0, 0, 0), Vector3(0, 0, 0));
-			}
-			else if (light->m_type == LightType::Spot)
-			{
-				const Vector3& lightRotation = light->GetTransform()->GetEulerAngles();
-				const Vector3 dir = Math::Get3DDirectionFromAngles(-lightRotation.y, -lightRotation.x + 180).Normalized();
-				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), dir);
-			}
-			else
-			{
-				SetLight(usedLightCount, *light, light->GetTransform()->GetPosition(), Vector3(0, 0, 0));
-			}
+			SetLight(usedLightCount, *light, zero, zero);
+			usedLightCount++;
+			if (usedLightCount == maxLightCount)
+				break;
+		}
+	}
+	if (usedLightCount != maxLightCount)
+	{
+		for (size_t i = 0; i < lightsIndices.usedDirectionalLightCount; i++)
+		{
+			const Light* light = AssetManager::GetLight(lightsIndices.directionalLightIndices[i] - 1);
+			const Vector3 dir = light->GetTransformRaw()->GetBackward() * 1000;
+			SetLight(usedLightCount, *light, dir, dir);
+
+			usedLightCount++;
+			if (usedLightCount == maxLightCount)
+				break;
+		}
+	}
+	if (usedLightCount != maxLightCount)
+	{
+		for (size_t i = 0; i < lightsIndices.usedPointLightCount; i++)
+		{
+			const Light* light = AssetManager::GetLight(lightsIndices.pointLightIndices[i]-1);
+			SetLight(usedLightCount, *light, light->GetTransformRaw()->GetPosition(), zero);
+			usedLightCount++;
+			if (usedLightCount == maxLightCount)
+				break;
+		}
+	}
+	if (usedLightCount != maxLightCount)
+	{
+		for (size_t i = 0; i < lightsIndices.usedSpotLightCount; i++)
+		{
+			const Light* light = AssetManager::GetLight(lightsIndices.spotLightIndices[i] - 1);
+			Vector3 fwd = light->GetTransformRaw()->GetForward();
+			fwd.x = -fwd.x;
+			SetLight(usedLightCount, *light, light->GetTransformRaw()->GetPosition(), fwd);
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
 				break;

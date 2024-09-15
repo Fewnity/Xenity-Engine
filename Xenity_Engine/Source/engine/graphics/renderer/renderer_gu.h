@@ -50,12 +50,12 @@ public:
 	void DeleteSubMeshData(MeshData::SubMesh& subMesh) override;
 	void UploadMeshData(const MeshData& meshData) override;
 
-	void Setlights(const Camera& camera) override;
+	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
 
 private:
 	void ApplyTextureFilters(const Texture& texture);
-
-	int maxLightCount = 8;
+	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
+	int maxLightCount = 4;
 	void DisableAllLight();
 	void SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection) override;
 	int GetWrapModeEnum(WrapMode wrapMode);

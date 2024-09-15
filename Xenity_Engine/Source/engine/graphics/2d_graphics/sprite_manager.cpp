@@ -70,7 +70,7 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(const Transform& transform, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const Transform& transform, const Color& color, Material& material, Texture* texture)
 {
 	spriteBenchmark->Start();
 
@@ -100,7 +100,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 	spriteBenchmark->Stop();
 }
 
-void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, const std::shared_ptr<Texture>& texture)
+void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, Texture* texture)
 {
 	spriteBenchmark->Start();
 

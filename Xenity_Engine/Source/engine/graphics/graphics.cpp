@@ -40,6 +40,7 @@
 #include "skybox.h"
 #include "camera.h"
 #include <engine/tools/math.h>
+#include <engine/world_partitionner/world_partitionner.h>
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;
@@ -69,6 +70,9 @@ bool Graphics::isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
 GraphicsSettings Graphics::settings;
+
+std::vector <Light*> Graphics::directionalLights;
+bool Graphics::isLightUpdateNeeded = true;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
@@ -150,11 +154,6 @@ void Graphics::SetDefaultValues()
 void Graphics::Draw()
 {
 	SCOPED_PROFILER("Graphics::Draw", scopeBenchmark);
-	/*auto camera = usedCamera.lock();
-	if (!camera)
-	{
-		Debug::PrintWarning("[Graphics::DrawAllDrawable] There is no camera for rendering");
-	}*/
 
 	Engine::GetRenderer().NewFrame();
 	usedCamera.reset();
@@ -166,7 +165,7 @@ void Graphics::Draw()
 	for (const std::weak_ptr<Camera>& weakCam : cameras)
 	{
 		usedCamera = weakCam.lock();
-		if (usedCamera->IsEnabled() && usedCamera->GetGameObject()->IsLocalActive())
+		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
 			SortTransparentDrawables();
 			CheckLods();
@@ -181,12 +180,13 @@ void Graphics::Draw()
 			currentMode = IDrawableTypes::Draw_3D;
 
 			needUpdateCamera = true;
+			isLightUpdateNeeded = true;
 
 			// Update camera and bind frame buffer
 			usedCamera->UpdateProjection();
 			usedCamera->UpdateFrustum();
 			usedCamera->BindFrameBuffer();
-			const Vector3& camPos = usedCamera->GetTransform()->GetPosition();
+			const Vector3& camPos = usedCamera->GetTransformRaw()->GetPosition();
 
 			Engine::GetRenderer().SetClearColor(settings.skyColor);
 			Engine::GetRenderer().Clear();
@@ -194,7 +194,6 @@ void Graphics::Draw()
 			if constexpr (UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
-				Engine::GetRenderer().Setlights(*usedCamera);
 			}
 
 			skyboxBenchmark->Start();
@@ -297,8 +296,7 @@ void Graphics::Draw()
 				}
 
 				// Get the grid axis
-				std::vector<std::shared_ptr<SceneMenu>> sceneMenus;
-				sceneMenus = Editor::GetMenus<SceneMenu>();
+				std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
 				int gridAxis = 0;
 				for (std::shared_ptr<SceneMenu>& sceneMenu : sceneMenus)
 				{
@@ -319,18 +317,18 @@ void Graphics::Draw()
 					{
 						if (std::shared_ptr<Component> component = weakComponent.lock())
 						{
-							if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
+							if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 							{
 								component->OnDrawGizmos();
 
-								if (component->GetGameObject()->m_isSelected)
+								if (component->GetGameObjectRaw()->m_isSelected)
 									component->OnDrawGizmosSelected();
 							}
 						}
 					}
 				}
 
-				//WorldPartitionner::OnDrawGizmos();
+				WorldPartitionner::OnDrawGizmos();
 
 				DrawEditorTool(camPos);
 			}
@@ -339,8 +337,17 @@ void Graphics::Draw()
 		}
 	}
 
+#if defined(DEBUG)
+	if (!usedCamera)
+	{
+		Debug::PrintWarning("There is no camera for rendering");
+	}
+#endif
+
 	if (NetworkManager::s_needDrawMenu)
+	{
 		NetworkManager::DrawNetworkSetupMenu();
+	}
 
 #if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -409,7 +416,7 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 void Graphics::SortTransparentDrawables()
 {
 	SCOPED_PROFILER("Graphics::SortTransparentDrawables", scopeBenchmark);
-	meshComparatorCamPos = usedCamera->GetTransform()->GetPosition();
+	meshComparatorCamPos = usedCamera->GetTransformRaw()->GetPosition();
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
 }
 
@@ -510,17 +517,17 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
-	DrawSubMesh(subMesh, material, material.m_texture, renderSettings, matrix, forUI);
+	DrawSubMesh(subMesh, material, material.m_texture.get(), renderSettings, matrix, forUI);
 }
 
-void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
 	SCOPED_PROFILER("Graphics::DrawSubMesh", scopeBenchmark);
 
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
 	if (texture == nullptr)
-		texture = AssetManager::defaultTexture;
+		texture = AssetManager::defaultTexture.get();
 
 	drawMeshBenchmark->Start();
 
@@ -549,6 +556,19 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 void Graphics::SetDrawOrderListAsDirty()
 {
 	drawOrderListDirty = true;
+}
+
+void Graphics::CreateLightLists()
+{
+	directionalLights.clear();
+	const std::vector<Light*>& lights = AssetManager::GetLights();
+	for (Light* light : lights)
+	{
+		if (light->GetType() == LightType::Directional && light->IsEnabled() && light->GetGameObjectRaw()->IsLocalActive())
+		{
+			directionalLights.push_back(light);
+		}
+	}
 }
 
 void Graphics::OnProjectLoaded()

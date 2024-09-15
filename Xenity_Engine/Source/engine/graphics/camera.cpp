@@ -29,9 +29,6 @@
 #include <engine/debug/debug.h>
 #include "graphics.h"
 
-
-
-
 #pragma region Constructors / Destructor
 
 Camera::Camera()
@@ -50,6 +47,24 @@ Camera::Camera()
 
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
 	AssetManager::AddReflection(this);
+}
+
+void Camera::OnComponentAttached()
+{
+	GetTransformRaw()->GetOnTransformUpdated().Bind(&Camera::UpdateCameraTransformMatrix, this);
+}
+
+void Camera::UpdateCameraTransformMatrix()
+{
+	const Vector3& position = GetTransformRaw()->GetPosition();
+	const Quaternion& baseQ = GetTransformRaw()->GetRotation();
+	const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+	Quaternion newQ = baseQ * offsetQ;
+
+	cameraTransformMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+
+	if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
+		cameraTransformMatrix = glm::translate(cameraTransformMatrix, glm::vec3(position.x, -position.y, -position.z));
 }
 
 void Camera::RemoveReferences()
@@ -104,6 +119,7 @@ Camera::~Camera()
 	}
 #endif
 	AssetManager::RemoveReflection(this);
+	GetTransformRaw()->GetOnTransformUpdated().Unbind(&Camera::UpdateCameraTransformMatrix, this);
 }
 
 #pragma endregion
@@ -152,7 +168,7 @@ void Camera::SetFarClippingPlane(float value)
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
-	const Vector3& camPos = GetTransform()->GetPosition();
+	const Vector3& camPos = GetTransformRaw()->GetPosition();
 	const float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
 	const float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
 	return Vector2(vx, vy);
@@ -231,7 +247,7 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 
 void Camera::UpdateFrustum()
 {
-	Matrix4x4 vm = createViewMatrix(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward(), GetTransform()->GetUp());
+	Matrix4x4 vm = createViewMatrix(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward(), GetTransformRaw()->GetUp());
 	frustum.ExtractPlanes((float*)&GetProjection(), vm.m);
 }
 
@@ -370,7 +386,7 @@ void Camera::BindFrameBuffer()
 void Camera::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
+	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
 #endif
 }
 
@@ -402,8 +418,8 @@ void Camera::OnDrawGizmosSelected()
 
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 
-	const Vector3& cameraPosition = GetTransform()->GetPosition();
-	const Vector3& cameraRotation = GetTransform()->GetEulerAngles();
+	const Vector3& cameraPosition = GetTransformRaw()->GetPosition();
+	const Vector3& cameraRotation = GetTransformRaw()->GetEulerAngles();
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(-cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));

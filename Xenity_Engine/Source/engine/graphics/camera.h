@@ -240,6 +240,12 @@ public:
 		useMultisampling = _UseMultisampling;
 	}
 
+	void OnComponentAttached() override;
+
+	void UpdateCameraTransformMatrix();
+
+	glm::mat4 cameraTransformMatrix;
+
 protected:
 	friend class SceneMenu;
 	friend class GameMenu;

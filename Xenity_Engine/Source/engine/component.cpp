@@ -50,6 +50,8 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 	this->m_gameObject = newGameObject;
 	this->m_transform = newGameObject->GetTransform();
+	this->m_transformRaw = newGameObject->GetTransform().get();
+	this->m_gameObjectRaw = newGameObject.get();
 
 	if (firstUse)
 	{
@@ -66,7 +68,7 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 		}
 		else if (auto result = std::dynamic_pointer_cast<Light>(thisShared))
 		{
-			AssetManager::AddLight(result);
+			AssetManager::AddLight(result.get());
 		}
 		else if (auto result = std::dynamic_pointer_cast<Camera>(thisShared))
 		{

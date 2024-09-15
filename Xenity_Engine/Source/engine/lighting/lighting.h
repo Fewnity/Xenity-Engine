@@ -6,10 +6,13 @@
 
 #pragma once
 
+#include <vector>
+
 #include <engine/api.h>
 #include <engine/component.h>
 #include <engine/graphics/color/color.h>
 #include <engine/reflection/enum_utils.h>
+#include <engine/vectors/vector3.h>
 
 const float lightConstant = 1;
 
@@ -96,10 +99,7 @@ public:
 		return m_type;
 	}
 
-	inline void SetType(LightType type)
-	{
-		this->m_type = type;
-	}
+	void SetType(LightType type);
 
 	/**
 	* @brief Get light range
@@ -134,8 +134,15 @@ public:
 		return m_intensity;
 	}
 
-protected:
 
+	float GetMaxLightDistance() const;
+
+protected:
+	void OnEnabled() override;
+	void OnDisabled() override;
+
+	void OnComponentAttached() override;
+	void OnTransformPositionUpdated();
 	void OnDrawGizmos() override;
 	void OnDrawGizmosSelected() override;
 	void RemoveReferences() override;
@@ -153,12 +160,18 @@ protected:
 		return m_quadratic;
 	}
 
+	friend class AssetManager;
+	friend class WorldPartitionner;
+	friend class MeshRenderer;
 	friend class Shader;
 	friend class RendererOpengl;
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
 
+	std::vector<Vector3> worldChunkPositions;
+	int m_indexInLightList = -1;
+	int m_indexInShaderList = -1;
 	//Spot and point light
 	float m_linear = 0;
 	float m_quadratic = 0;

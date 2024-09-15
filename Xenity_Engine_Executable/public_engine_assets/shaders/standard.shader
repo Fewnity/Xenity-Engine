@@ -94,6 +94,24 @@ uniform int usedPointLightCount;
 uniform int usedSpotLightCount;
 uniform int usedDirectionalLightCount;
 
+uniform int pointLightsIndices[NR_POINT_LIGHTS];
+uniform int spotLightsIndices[NR_SPOT_LIGHTS];
+uniform int directionalLightsIndices[NR_DIRECTIONAL_LIGHTS];
+
+uniform LightIndices
+{
+	int usedPointLightCount;
+	int usedSpotLightCount;
+	int usedDirectionalLightCount;
+	int padding0;
+
+	int pointLightsIndices[NR_POINT_LIGHTS];
+	int spotLightsIndices[NR_SPOT_LIGHTS];
+	int directionalLightsIndices[NR_DIRECTIONAL_LIGHTS];
+	int padding1;
+	int padding2;
+} lightIndices;
+
 vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) 
 {
 	vec3 lightDir = normalize(-light2.direction); // Directional light
@@ -168,17 +186,17 @@ void main()
 
 	//Result
 	vec3 result = ambient; //Set face result
-	for (int i = 0; i < usedPointLightCount; i++)
+	for (int i = 0; i < lightIndices.usedPointLightCount; i++)
 	{
-		result += CalculatePointLight(pointLights[i], norm, FragPos, viewDir);
+		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[i]], norm, FragPos, viewDir);
 	}	
-	for (int i = 0; i < usedSpotLightCount; i++)
+	for (int i = 0; i < lightIndices.usedSpotLightCount; i++)
 	{
-		result += CalculateSpotLight(spotLights[i], norm, FragPos, viewDir);
+		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i]], norm, FragPos, viewDir);
 	}
-	for (int i = 0; i < usedDirectionalLightCount; i++)
+	for (int i = 0; i < lightIndices.usedDirectionalLightCount; i++)
 	{
-		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, viewDir);
+		result += CalculateDirectionalLight(directionalLights[lightIndices.directionalLightsIndices[i]], norm, FragPos, viewDir);
 	}
 	result += vec3(texture(material.diffuse, (TexCoord * tiling) + offset)) * ambientLight;
 
@@ -292,6 +310,25 @@ uniform vec2 tiling;
 uniform vec2 offset;
 uniform vec3 ambientLight;
 
+// uniform LightData 
+// {
+// 	vec4 intensity;
+// } lightData : BUFFER[0];
+
+uniform LightIndices
+{
+	int usedPointLightCount;
+	int usedSpotLightCount;
+	int usedDirectionalLightCount;
+	int padding0;
+
+	int pointLightsIndices[NR_POINT_LIGHTS];
+	int spotLightsIndices[NR_SPOT_LIGHTS];
+	int directionalLightsIndices[NR_DIRECTIONAL_LIGHTS];
+	int padding1;
+	int padding2;
+} lightIndices : BUFFER[0];
+
 float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 fragPos, vec3 viewDir, vec2 texcoords) 
 {
 	float3 lightDir = normalize(-light.direction); // Directional light
@@ -344,18 +381,70 @@ void main()
 	vec3 norm = normalize(Normals); //Direction of normals
 	vec3 viewDir = float3(0.0f, 0.0f, 0.0f); // = normalize(cameraPos - FragPos);
 
+	int currentLight = 0;
+	if(lightIndices.usedPointLightCount > currentLight)
+	{
+		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+		currentLight += 1;
+		if(lightIndices.usedPointLightCount > currentLight)
+		{
+			result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+			currentLight += 1;
+			if(lightIndices.usedPointLightCount > currentLight)
+			{
+				result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+				currentLight += 1;
+				if(lightIndices.usedPointLightCount > currentLight)
+				{
+					result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+					currentLight += 1;
+					if(lightIndices.usedPointLightCount > currentLight)
+					{
+						result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+						currentLight += 1;
+						if(lightIndices.usedPointLightCount > currentLight)
+						{
+							result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+							currentLight += 1;
+							if(lightIndices.usedPointLightCount > currentLight)
+							{
+								result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+								currentLight += 1;
+								if(lightIndices.usedPointLightCount > currentLight)
+								{
+									result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+									currentLight += 1;
+									if(lightIndices.usedPointLightCount > currentLight)
+									{
+										result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+										currentLight += 1;
+										if(lightIndices.usedPointLightCount > currentLight)
+										{
+											result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentLight]], norm, FragPos, viewDir, TexCoord);
+											currentLight += 1;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// Apply lights
-	for (int i = 0; i < usedPointLightCount; i++)
+	// for (int i = 0; i < usedPointLightCount; i++)
+	// {
+	// 	result += CalculatePointLight(pointLights[i], norm, FragPos, viewDir, TexCoord);
+	// }
+	for (int i = 0; i < lightIndices.usedSpotLightCount; i++)
 	{
-		result += CalculatePointLight(pointLights[i], norm, FragPos, viewDir, TexCoord);
+		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i]], norm, FragPos, viewDir, TexCoord);
 	}
-	for (int i = 0; i < usedSpotLightCount; i++)
+	for (int i = 0; i < lightIndices.usedDirectionalLightCount; i++)
 	{
-		result += CalculateSpotLight(spotLights[i], norm, FragPos, viewDir, TexCoord);
-	}
-	for (int i = 0; i < usedDirectionalLightCount; i++)
-	{
-		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, viewDir, TexCoord);
+		result += CalculateDirectionalLight(directionalLights[lightIndices.spotLightsIndices[i]], norm, FragPos, viewDir, TexCoord);
 	}
 
 	// Apply ambient light

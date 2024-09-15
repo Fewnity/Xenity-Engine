@@ -26,6 +26,7 @@
 #include <engine/debug/debug.h>
 #include <engine/missing_script.h>
 #include "scene.h"
+#include <engine/world_partitionner/world_partitionner.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -441,8 +442,10 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		try
 		{
 			ordered_json data;
-			if (!jsonString.empty())
+			if (!jsonString.empty()) 
+			{
 				data = ordered_json::parse(jsonString);
+			}
 			LoadScene(data);
 			s_openedScene = scene;
 			SetSceneModified(false);
@@ -461,6 +464,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 void SceneManager::ClearScene()
 {
+	WorldPartitionner::ClearWorld();
 	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();
 	size_t cameraCount = Graphics::cameras.size();

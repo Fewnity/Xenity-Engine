@@ -47,7 +47,7 @@ void Canvas::CreateRenderCommands(RenderBatch& renderBatch)
 {
 	RenderCommand command = RenderCommand();
 	command.drawable = this;
-	command.transform = GetTransform().get();
+	command.transform = GetTransformRaw();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
 
 	renderBatch.uiCommands.push_back(command);
@@ -94,8 +94,8 @@ void Canvas::OnDrawGizmos()
 		aspect = windowsSize.x / windowsSize.y;
 	}
 
-	const float xOff = (-aspect * 5) + (GetTransform()->GetPosition().x * (aspect * 10));
-	const float yOff = (-1 * 5) + (GetTransform()->GetPosition().y * (1 * 10));
+	const float xOff = (-aspect * 5) + (GetTransformRaw()->GetPosition().x * (aspect * 10));
+	const float yOff = (-1 * 5) + (GetTransformRaw()->GetPosition().y * (1 * 10));
 	const Vector3 pos = Vector3(xOff, -yOff, 1); // Z 1 to avoid issue with near clipping plane
 
 	const Color lineColor = Color::CreateFromRGBAFloat(1, 1, 1, 1);

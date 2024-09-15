@@ -132,7 +132,7 @@ public:
 	* @param matrix The matrix to apply
 	* @param forUI If the mesh is for UI
 	*/
-	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, std::shared_ptr<Texture> texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
 
 
 	static void DrawSubMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
@@ -163,6 +163,9 @@ public:
 
 	static GraphicsSettings settings;
 
+	static std::vector <Light*> directionalLights;
+	static void CreateLightLists();
+	static bool isLightUpdateNeeded;
 private:
 
 	static void OnProjectLoaded();
@@ -172,6 +175,7 @@ private:
 	* @param cameraPosition The camera position
 	*/
 	static void DrawSkybox(const Vector3& cameraPosition);
+
 
 	/**
 	* @brief Check lods

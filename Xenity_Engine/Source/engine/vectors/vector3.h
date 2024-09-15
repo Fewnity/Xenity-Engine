@@ -108,6 +108,13 @@ public:
 	float z;
 };
 
+inline float Vector3::Distance(const Vector3& a, const Vector3& b)
+{
+	const float xDis = a.x - b.x;
+	const float yDis = a.y - b.y;
+	const float zDis = a.z - b.z;
+	return sqrtf(xDis * xDis + yDis * yDis + zDis * zDis);
+}
 
 inline Vector3 operator+(const Vector3& left, const Vector3& right)
 {

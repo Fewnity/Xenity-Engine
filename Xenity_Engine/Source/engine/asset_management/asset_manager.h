@@ -67,7 +67,9 @@ public:
 	* @brief Adds a light
 	* @param light The light to add
 	*/
-	static void AddLight(const std::weak_ptr<Light>& light);
+	static void AddLight(Light* light);
+
+	static void UpdateLightIndices();
 
 	/**
 	* @brief Removes a material
@@ -96,7 +98,7 @@ public:
 	* @brief Removes a light
 	* @param light The light to remove
 	*/
-	static void RemoveLight(const std::weak_ptr<Light>& light);
+	static void RemoveLight(Light* light);
 
 	/**
 	* @brief Remove all reference of a file reference (check all reflections and remove the reference if there is one)
@@ -141,13 +143,13 @@ public:
 	* @param index The index of the light
 	* @return The light
 	*/
-	static inline const std::weak_ptr<Light>& GetLight(const int index)
+	static inline const Light* GetLight(const int index)
 	{
 		XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
 		return lights[index];
 	}
 
-	static inline const std::vector<std::weak_ptr<Light>>& GetLights()
+	static inline const std::vector<Light*>& GetLights()
 	{
 		return lights;
 	}
@@ -230,5 +232,5 @@ private:
 	static std::vector<Material*> materials;
 	static std::vector<Reflective*> reflections;
 	static std::vector<std::shared_ptr<FileReference>> fileReferences;
-	static std::vector<std::weak_ptr<Light>> lights;
+	static std::vector<Light*> lights;
 };

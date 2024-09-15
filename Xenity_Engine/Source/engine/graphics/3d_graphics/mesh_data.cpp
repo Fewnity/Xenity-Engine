@@ -311,6 +311,17 @@ void MeshData::ComputeBoundingBox()
 	}
 }
 
+void MeshData::ComputeBoundingSphere()
+{
+	Vector3 spherePosition = (m_minBoundingBox + m_maxBoundingBox) / 2.0f;
+
+	const Vector3 halfDiagonal = (m_maxBoundingBox - m_minBoundingBox) / 2.0f;
+	const float sphereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z);
+
+	boundingSphere.position = spherePosition;
+	boundingSphere.radius = sphereRadius;
+}
+
 void MeshData::Unload()
 {
 	FreeMeshData(true);
@@ -417,6 +428,7 @@ void MeshData::OnLoadFileReferenceFinished()
 	SendDataToGpu();
 #endif
 	ComputeBoundingBox();
+	ComputeBoundingSphere();
 	m_isValid = true;
 }
 
@@ -492,7 +504,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[3]);
 	}
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
+	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[3]);
 	}
@@ -502,11 +514,11 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[3]);
 	}
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
+	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[3]);
 	}
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
+	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(char[3]);
 	}
@@ -516,7 +528,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	{
 		newSubMesh->vertexMemSize += sizeof(float[2]);
 	}
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
+	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[2]);
 	}

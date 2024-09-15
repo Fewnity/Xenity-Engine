@@ -95,7 +95,7 @@ public:
 	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans) override;
 	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans) override;
 
-	void Setlights(const Camera& camera) override;
+	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
 
 private:
 	void ApplyTextureFilters(const Texture& texture);
@@ -115,6 +115,7 @@ private:
 	float fogStart = 0;
 	float fogEnd = 10;
 	Color fogColor;
+	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);

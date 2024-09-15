@@ -10,15 +10,11 @@
 
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
+#include <engine/graphics/3d_graphics/sphere.h>
 
 class MeshData;
 class Material;
-
-struct Sphere 
-{
-	Vector3 position;
-	float radius;
-};
+class Light;
 
 class API MeshRenderer : public IDrawable
 {
@@ -57,13 +53,20 @@ public:
 
 	void OnDrawGizmosSelected() override;
 
-	Sphere GetBoundingSphere() const;
+	const Sphere& GetBoundingSphere() const
+	{
+		return boundingSphere;
+	}
 
 	void OnNewRender() override;
 
 	void OnComponentAttached() override;
 
+	std::vector<Vector3> worldChunkPositions;
+	std::vector<Light*> affectedByLights;
+
 protected:
+	Sphere ProcessBoundingSphere() const;
 	Sphere boundingSphere;
 
 	friend class Lod;

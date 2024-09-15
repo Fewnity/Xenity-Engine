@@ -83,12 +83,21 @@ struct SpotLight
 
 uniform Material material;
 
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 10
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-#define NR_SPOT_LIGHTS 1
+#define NR_SPOT_LIGHTS 10
 uniform SpotLight spotLights[NR_SPOT_LIGHTS];
-#define NR_DIRECTIONAL_LIGHTS 1
+#define NR_DIRECTIONAL_LIGHTS 10
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
+
+#define NB_USED_POINT_LIGHTS 2
+uniform int pointLightsIndices[NB_USED_POINT_LIGHTS];
+
+#define NB_USED_SPOT_LIGHTS 2
+uniform int spotLightsIndices[NB_USED_SPOT_LIGHTS];
+
+#define NB_USED_DIRECTIONAL_LIGHTS 2
+uniform int directionalLightsIndices[NB_USED_DIRECTIONAL_LIGHTS];
 
 vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos, vec3 viewDir) 
 {
@@ -166,17 +175,17 @@ void main()
 
 	//Result
 	vec3 result = ambient; //Set face result
-	for (int i = 0; i < NR_POINT_LIGHTS; i++)
+	for (int i = 0; i < NB_USED_POINT_LIGHTS; i++)
 	{
-		result += CalculatePointLight(pointLights[i], norm, FragPos, viewDir);
+		result += CalculatePointLight(pointLights[pointLightsIndices[i]], norm, FragPos, viewDir);
 	}	
-	for (int i = 0; i < NR_SPOT_LIGHTS; i++)
+	for (int i = 0; i < NB_USED_SPOT_LIGHTS; i++)
 	{
-		result += CalculateSpotLight(spotLights[i], norm, FragPos, viewDir);
+		result += CalculateSpotLight(spotLights[spotLightsIndices[i]], norm, FragPos, viewDir);
 	}
-	for (int i = 0; i < NR_DIRECTIONAL_LIGHTS; i++)
+	for (int i = 0; i < NB_USED_DIRECTIONAL_LIGHTS; i++)
 	{
-		result += CalculateDirectionalLight(directionalLights[i], norm, FragPos, viewDir);
+		result += CalculateDirectionalLight(directionalLights[directionalLightsIndices[i]], norm, FragPos, viewDir);
 	}
 
 	result += vec3(texture(material.diffuse, (TexCoord * tiling) + offset)) * ambientLight;

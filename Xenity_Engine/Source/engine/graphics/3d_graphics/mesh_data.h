@@ -18,6 +18,7 @@
 #include <engine/graphics/color/color.h>
 #include <engine/vectors/vector3.h>
 #include <engine/file_system/file_reference.h>
+#include <engine/graphics/3d_graphics/sphere.h>
 
 enum class VertexElements : uint32_t
 {
@@ -180,6 +181,11 @@ public:
 		return m_maxBoundingBox;
 	}
 
+	const Sphere& GetBoundingSphere() const
+	{
+		return boundingSphere;
+	}
+
 protected:
 	friend class RendererOpengl;
 	friend class RendererGU;
@@ -235,6 +241,8 @@ protected:
 	bool m_isQuad = false;
 	bool m_isValid = true;
 
+	Sphere boundingSphere;
+
 	VertexElements m_vertexDescriptor = VertexElements::NONE;
 
 	void SetVertexDescritor(VertexElements vertexDescriptor) 
@@ -246,6 +254,8 @@ protected:
 	* @brief Compute the bounding box of the mesh
 	*/
 	void ComputeBoundingBox();
+
+	void ComputeBoundingSphere();
 
 #if defined(__PSP__)
 	int pspDrawParam = 0;

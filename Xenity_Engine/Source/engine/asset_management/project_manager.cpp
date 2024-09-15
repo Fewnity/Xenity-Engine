@@ -553,6 +553,7 @@ void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 	}
 	else
 	{
+		// Set the version to 0 to avoid loading old DLL
 		projectSettings.compiledLibEngineVersion = "0";
 	}
 
