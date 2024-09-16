@@ -60,6 +60,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
 #include <engine/graphics/material.h>
 #include <engine/graphics/icon.h>
 #include <engine/particle_system/particle_system.h>
+#include <engine/debug/stack_debug_object.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
@@ -67,6 +68,8 @@ std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, GameObject& gameObject)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
 
 	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
@@ -82,6 +85,8 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 #if defined (EDITOR)
 std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
 
 	if (nameToMenu.find(name) != nameToMenu.end()) // Check if the component is in the list
@@ -95,8 +100,11 @@ std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 	}
 }
 #endif
+
 std::vector<std::string> ClassRegistry::GetComponentNames()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	std::vector<std::string> names;
 	for (const auto& kv : nameToComponent)
 	{
@@ -108,12 +116,16 @@ std::vector<std::string> ClassRegistry::GetComponentNames()
 
 void ClassRegistry::Reset()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	nameToComponent.clear();
 	classInfos.clear();
 }
 
 void ClassRegistry::RegisterEngineComponents()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	// List all Engine components
 	AddComponentClass<Light>("Light");
 	AddComponentClass<Camera>("Camera");
@@ -138,6 +150,8 @@ void ClassRegistry::RegisterEngineComponents()
 
 void ClassRegistry::RegisterEngineFileClasses()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	// List all Engine file classes
 	AddFileClass<Texture>("Texture", FileType::File_Texture);
 	AddFileClass<MeshData>("MeshData", FileType::File_Mesh);
@@ -152,6 +166,8 @@ void ClassRegistry::RegisterEngineFileClasses()
 #if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	AddMenuClass<CreateClassMenu>("CreateClassMenu");
 	AddMenuClass<LightingMenu>("LightingMenu");
 	AddMenuClass<ProjectSettingsMenu>("ProjectSettingsMenu");

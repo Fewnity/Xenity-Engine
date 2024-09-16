@@ -41,6 +41,7 @@
 #include "camera.h"
 #include <engine/tools/math.h>
 #include <engine/world_partitionner/world_partitionner.h>
+#include <engine/debug/stack_debug_object.h>
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;
@@ -76,6 +77,8 @@ bool Graphics::isLightUpdateNeeded = true;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	settings.skybox = skybox_;
 }
 
@@ -93,12 +96,16 @@ ReflectiveData GraphicsSettings::GetReflectiveData()
 
 void Graphics::OnLightingSettingsReflectionUpdate()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Engine::GetRenderer().SetFog(settings.isFogEnabled);
 	Engine::GetRenderer().SetFogValues(settings.fogStart, settings.fogEnd, settings.fogColor);
 }
 
 void Graphics::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ProjectManager::GetProjectLoadedEvent().Bind(&Graphics::OnProjectLoaded);
 
 	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
@@ -119,6 +126,8 @@ void Graphics::Init()
 
 void Graphics::Stop()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ProjectManager::GetProjectLoadedEvent().Unbind(&Graphics::OnProjectLoaded);
 
 	orderBenchmark.reset();
@@ -143,6 +152,8 @@ void Graphics::Stop()
 
 void Graphics::SetDefaultValues()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	settings.isFogEnabled = false;
 	settings.fogStart = 10;
 	settings.fogEnd = 50;
@@ -153,6 +164,8 @@ void Graphics::SetDefaultValues()
 
 void Graphics::Draw()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::Draw", scopeBenchmark);
 
 	Engine::GetRenderer().NewFrame();
@@ -415,6 +428,8 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 
 void Graphics::SortTransparentDrawables()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::SortTransparentDrawables", scopeBenchmark);
 	meshComparatorCamPos = usedCamera->GetTransformRaw()->GetPosition();
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
@@ -422,6 +437,8 @@ void Graphics::SortTransparentDrawables()
 
 void Graphics::OrderDrawables()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	orderBenchmark->Start();
 	if (isRenderingBatchDirty)
 	{
@@ -439,6 +456,8 @@ void Graphics::OrderDrawables()
 
 void Graphics::DeleteAllDrawables()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	orderedIDrawable.clear();
 	iDrawablesCount = 0;
 	isRenderingBatchDirty = true;
@@ -446,6 +465,8 @@ void Graphics::DeleteAllDrawables()
 
 void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr");
 
 	orderedIDrawable.push_back(drawableToAdd.get());
@@ -456,6 +477,8 @@ void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
 
 void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(drawableToRemove != nullptr, "[Graphics::RemoveDrawable] drawableToRemove is nullptr");
 
 	if (!Engine::IsRunning(true))
@@ -475,6 +498,8 @@ void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove
 
 void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(lodToAdd.lock() != nullptr, "[Graphics::AddLod] lodToAdd is nullptr");
 
 	lods.push_back(lodToAdd);
@@ -483,6 +508,8 @@ void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 
 void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(lodToRemove.lock() != nullptr, "[Graphics::RemoveLod] lodToRemove is nullptr");
 
 	if (!Engine::IsRunning(true))
@@ -501,6 +528,8 @@ void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 
 void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(cameraToRemove.lock() != nullptr, "[Graphics::RemoveCamera] cameraToRemove is nullptr");
 
 	const size_t cameraCount = cameras.size();
@@ -522,6 +551,8 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::DrawSubMesh", scopeBenchmark);
 
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
@@ -555,11 +586,15 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 void Graphics::SetDrawOrderListAsDirty()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	drawOrderListDirty = true;
 }
 
 void Graphics::CreateLightLists()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	directionalLights.clear();
 	const std::vector<Light*>& lights = AssetManager::GetLights();
 	for (Light* light : lights)
@@ -573,6 +608,8 @@ void Graphics::CreateLightLists()
 
 void Graphics::OnProjectLoaded()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
 	XASSERT(skyPlane != nullptr, "[Graphics::Init] skyPlane is null");
 	skyPlane->LoadFileReference();
@@ -580,6 +617,8 @@ void Graphics::OnProjectLoaded()
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::DrawSkybox", scopeBenchmark);
 	if (settings.skybox)
 	{
@@ -626,6 +665,8 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 
 void Graphics::CheckLods()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::CheckLods", scopeBenchmark);
 	for (int i = 0; i < lodsCount; i++)
 	{
@@ -639,6 +680,8 @@ void Graphics::CheckLods()
 
 void Graphics::DrawSubMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
 	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
 }
@@ -647,6 +690,8 @@ void Graphics::DrawSubMesh(const Vector3& position, const Quaternion& rotation, 
 
 void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::DrawSelectedItemBoundingBox", scopeBenchmark);
 	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
 	for (const std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
@@ -700,6 +745,8 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 
 void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::DrawEditorGrid", scopeBenchmark);
 	float distance;
 	if (gridAxis == 0)
@@ -775,6 +822,8 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 
 void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Graphics::DrawEditorTool", scopeBenchmark);
 
 	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();

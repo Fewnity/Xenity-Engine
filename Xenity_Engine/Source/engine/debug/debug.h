@@ -21,7 +21,7 @@ enum class DebugType {
 	Error,
 };
 
-class DebugHistory 
+class DebugHistory
 {
 public:
 	std::string message;

@@ -48,6 +48,7 @@ int NetworkManager::s_result = -1;
 
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
+#include <engine/debug/stack_debug_object.h>
 
 bool NetworkManager::s_done = false;
 
@@ -56,6 +57,7 @@ bool NetworkManager::s_needDrawMenu = false;
 
 void NetworkManager::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 #if defined(__PSP__)
 	sceUtilityLoadNetModule(PSP_NET_MODULE_COMMON);
 	sceUtilityLoadNetModule(PSP_NET_MODULE_INET);
@@ -88,6 +90,8 @@ void NetworkManager::Init()
 
 void NetworkManager::Update()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	const int socketCount = (int)s_sockets.size();
 	for (int i = 0; i < socketCount; i++)
 	{
@@ -97,6 +101,7 @@ void NetworkManager::Update()
 
 void Socket::Update()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if !defined(_EE)
 	if (m_socketId < 0)
 		return;
@@ -117,6 +122,7 @@ void Socket::Update()
 
 void Socket::Close()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if !defined(_EE)
 #if defined(_WIN32) || defined(_WIN64)
 	closesocket(m_socketId);
@@ -128,11 +134,13 @@ void Socket::Close()
 
 Socket::~Socket()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	Close();
 }
 
 void Socket::SendData(const std::string& text)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	if (m_socketId < 0 || text.empty())
 		return;
 
@@ -144,6 +152,7 @@ void Socket::SendData(const std::string& text)
 
 void NetworkManager::DrawNetworkSetupMenu()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	if (!s_done)
 	{
 #if defined(__PSP__)
@@ -187,6 +196,7 @@ void NetworkManager::DrawNetworkSetupMenu()
 
 std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address, int port)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	int newSocketId = 1;
 	#if !defined(__LINUX__)
 	if (address.empty() || port <= 0)

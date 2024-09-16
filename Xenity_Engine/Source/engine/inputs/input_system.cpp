@@ -32,6 +32,7 @@
 
 #include "input_pad.h"
 #include "input_touch_raw.h"
+#include <engine/debug/stack_debug_object.h>
 
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
@@ -50,6 +51,7 @@ bool InputSystem::s_blockGameInput = false;
 
 void InputSystem::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	s_keyMap = std::map<int, Input*>();
 	s_buttonMap = std::map<int, Input*>();
 	for (int i = 0; i < INPUT_COUNT; i++)
@@ -71,6 +73,7 @@ void InputSystem::Init()
 
 void InputSystem::HideMouse()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
@@ -79,6 +82,7 @@ void InputSystem::HideMouse()
 
 void InputSystem::ShowMouse()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 #endif
@@ -87,11 +91,13 @@ void InputSystem::ShowMouse()
 
 int InputSystem::GetTouchScreenCount()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	return (int)screens.size();
 }
 
 int InputSystem::GetTouchCount(const int screenIndex)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	const int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
@@ -102,6 +108,7 @@ int InputSystem::GetTouchCount(const int screenIndex)
 
 Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	const int screenCount = (int)screens.size();
 
 	if (screenCount <= screenIndex)
@@ -114,6 +121,7 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 
 void InputSystem::UpdateControllers()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	InputPad pad = CrossGetInputPad();
 	const float JoystickDeadZone = 0.25f;
 
@@ -181,6 +189,7 @@ void InputSystem::UpdateControllers()
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 void InputSystem::Read(const SDL_Event& event)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	UpdateControllers();
 	switch (event.type)
 	{
@@ -326,6 +335,7 @@ void InputSystem::Read(const SDL_Event& event)
 
 void InputSystem::Read()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	const size_t screenCount = screens.size();
 	const std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
 	const size_t touchesRawCount = touchesRaw.size();
@@ -397,6 +407,7 @@ void InputSystem::Read()
 
 void InputSystem::ClearInputs()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		SetInputInactive((KeyCode)i);

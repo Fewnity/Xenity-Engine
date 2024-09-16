@@ -52,6 +52,7 @@
 #include <engine/tools/string_tag_finder.h>
 #include <engine/graphics/icon.h>
 #include <engine/assertions/assertions.h>
+#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::ordered_json;
 
@@ -72,6 +73,8 @@ FileDataBase ProjectManager::fileDataBase;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const size_t dirCount = directoryToCheck.subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
@@ -94,6 +97,8 @@ std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const Pro
 
 uint64_t ProjectManager::ReadFileId(const File& file)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	uint64_t id = -1;
 	std::string metaFilePath = file.GetPath() + META_EXTENSION;
 
@@ -132,6 +137,8 @@ uint64_t ProjectManager::ReadFileId(const File& file)
 
 void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, Directory& directorySource, bool isEngineAssets)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	std::vector<std::shared_ptr<File>> projectAssetFiles = directorySource.GetAllFiles(true);
 	const size_t projectAssetFilesCount = projectAssetFiles.size();
 	for (int i = 0; i < projectAssetFilesCount; i++)
@@ -146,6 +153,8 @@ void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& proj
 
 void ProjectManager::FindAllProjectFiles()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	// Keep in memory the old opened directory path to re-open it later
 #if defined(EDITOR)
 	std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
@@ -333,6 +342,8 @@ void ProjectManager::FindAllProjectFiles()
 
 void ProjectManager::CreateVisualStudioSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	try
 	{
 		// Get engine includes folder
@@ -393,6 +404,8 @@ void ProjectManager::CreateVisualStudioSettings()
 
 void ProjectManager::CreateProjectDirectories(Directory& projectDirectoryBase, ProjectDirectory& realProjectDirectory)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const size_t dirCount = projectDirectoryBase.subdirectories.size();
 	for (size_t i = 0; i < dirCount; i++)
 	{
@@ -404,11 +417,15 @@ void ProjectManager::CreateProjectDirectories(Directory& projectDirectoryBase, P
 
 void ProjectManager::RefreshProjectDirectory()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	FindAllProjectFiles();
 }
 
 void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::vector<std::shared_ptr<FileReference>>& projFileVector = _projectDirectory.files;
 	projFileVector.clear();
 
@@ -433,6 +450,8 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 
 void ProjectManager::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	engineAssetsFolderPath = "./engine_assets/";
 	publicEngineAssetsFolderPath = "./public_engine_assets/";
 
@@ -441,6 +460,8 @@ void ProjectManager::Init()
 
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty");
 	XASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty");
 
@@ -482,6 +503,8 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 
 FileType ProjectManager::GetFileType(const std::string& _extension)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	FileType fileType = FileType::File_Other;
 	std::string extension = _extension;
 
@@ -544,6 +567,8 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 
 void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (params.buildType != BuildType::EditorHotReloading)
 		return;
 
@@ -575,6 +600,8 @@ void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 
 bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(EDITOR)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
 #else
@@ -668,6 +695,8 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 void ProjectManager::UnloadProject()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(EDITOR)
 	Editor::SetCurrentProjectDirectory(nullptr);
 	Editor::SetSelectedGameObject(nullptr);
@@ -706,6 +735,8 @@ void ProjectManager::UnloadProject()
 
 std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::vector<uint64_t> ids;
 #if defined(EDITOR)
 	int idCount = 0;
@@ -775,6 +806,8 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 
 std::vector<FileInfo> ProjectManager::GetFilesByType(const FileType type)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	std::vector<FileInfo> fileList;
 	for (const auto& fileinfo : projectFilesIds)
 	{
@@ -789,6 +822,8 @@ std::vector<FileInfo> ProjectManager::GetFilesByType(const FileType type)
 
 FileInfo* ProjectManager::GetFileById(const uint64_t id)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	if (projectFilesIds.contains(id))
 	{
 		return &projectFilesIds[id];
@@ -799,6 +834,8 @@ FileInfo* ProjectManager::GetFileById(const uint64_t id)
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64_t id)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	if (id == -1)
 	{
 		return nullptr;
@@ -841,12 +878,16 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(File& file)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const uint64_t fileId = ProjectManager::ReadFileId(file);
 	return GetFileReferenceById(fileId);
 }
 
 std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const std::string& filePath)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 #if defined(EDITOR)
 	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	const uint64_t fileId = ProjectManager::ReadFileId(*file);
@@ -866,6 +907,8 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 
 ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPath)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ProjectSettings settings;
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectPath + PROJECT_SETTINGS_FILE_NAME);
 	if (projectFile->CheckIfExist())
@@ -906,11 +949,15 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 
 void ProjectManager::LoadProjectSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	projectSettings = GetProjectSettings(projectFolderPath);
 }
 
 void ProjectManager::SaveProjectSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
 	FileSystem::s_fileSystem->Delete(path);
 	json projectData;
@@ -931,6 +978,8 @@ void ProjectManager::SaveProjectSettings()
 
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	std::shared_ptr<File> file = fileReference.m_file;
 
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
@@ -966,6 +1015,8 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 
 std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::vector<ProjectListItem> projects;
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	const bool isOpen = file->Open(FileMode::ReadOnly);
@@ -1009,6 +1060,8 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 
 void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projects)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t projectSize = projects.size();
 	json j;
 	for (size_t i = 0; i < projectSize; i++)
@@ -1093,6 +1146,8 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 
 std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInfo& fileInfo, const uint64_t id)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	//std::shared_ptr<File> file = FileSystem::MakeFile(fileInfo.file);
 
@@ -1159,6 +1214,8 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 
 void ProjectManager::LoadMetaFile(FileReference& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const std::string path = fileReference.m_file->GetPath() + META_EXTENSION;
 
 #if defined(EDITOR)
@@ -1207,11 +1264,15 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 
 ProjectDirectory::~ProjectDirectory()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	subdirectories.clear();
 }
 
 std::string ProjectDirectory::GetFolderName()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	if (path.size() == 0)
 		return "";
 

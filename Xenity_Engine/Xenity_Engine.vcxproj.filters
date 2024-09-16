@@ -324,6 +324,7 @@
     <ClCompile Include="include\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btThreads.cpp" />
+    <ClCompile Include="Source\engine\debug\stack_debug_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -759,6 +760,7 @@
     <ClInclude Include="include\bullet\LinearMath\btSpatialAlgebra.h" />
     <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
+    <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

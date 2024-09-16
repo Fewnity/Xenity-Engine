@@ -25,6 +25,7 @@
 #include <engine/file_system/file.h>
 #include <engine/asset_management/project_manager.h>
 #include "screen.h"
+#include <engine/debug/stack_debug_object.h>
 
 int Window::s_width = 0;
 int Window::s_height = 0;
@@ -36,6 +37,7 @@ SDL_Window* Window::s_window = nullptr;
 
 void Window::SetResolution(const int width_, const int height_)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	s_width = width_;
 	s_height = height_;
 	Screen::s_width = s_width;
@@ -48,6 +50,7 @@ void Window::SetResolution(const int width_, const int height_)
 
 void Window::OnResize()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	UpdateAspectRatio();
 
 #if !defined(EDITOR)
@@ -61,16 +64,19 @@ void Window::OnResize()
 
 int Window::GetWidth()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return s_width;
 }
 
 int Window::GetHeight()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return s_height;
 }
 
 int Window::GetTitleBarHeight()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	int size = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_GetWindowBordersSize(s_window, &size, 0, 0, 0);
@@ -80,11 +86,14 @@ int Window::GetTitleBarHeight()
 
 float Window::GetAspectRatio()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return s_aspect;
 }
 
 int Window::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	//  Init SDL
 	const int sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
@@ -132,6 +141,7 @@ int Window::Init()
 
 void Window::UpdateScreen()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_GL_SwapWindow(s_window);
 #endif
@@ -139,6 +149,7 @@ void Window::UpdateScreen()
 
 void Window::UpdateWindowTitle()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	std::string newTitle = "";
 	if (ProjectManager::IsProjectLoaded())
@@ -167,6 +178,7 @@ void Window::UpdateWindowTitle()
 
 void Window::SetFullScreenMode(bool enable)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SDL_SetWindowFullscreen(s_window, enable);
 	//if (enable)
@@ -178,5 +190,6 @@ void Window::SetFullScreenMode(bool enable)
 
 void Window::UpdateAspectRatio()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	s_aspect = (float)s_width / (float)s_height;
 }

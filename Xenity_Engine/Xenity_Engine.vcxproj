@@ -1088,6 +1088,7 @@
     <ClCompile Include="Source\engine\unique_id\unique_id.cpp" />
     <ClCompile Include="Source\engine\tools\string_tag_finder.cpp" />
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
+    <ClCompile Include="Source\engine\debug\stack_debug_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
@@ -1762,6 +1763,7 @@
     <ClInclude Include="Source\engine\unique_id\unique_id.h" />
     <ClInclude Include="Source\engine\tools\string_tag_finder.h" />
     <ClInclude Include="Source\engine\world_partitionner\world_partitionner.h" />
+    <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\images\1.bmp" />

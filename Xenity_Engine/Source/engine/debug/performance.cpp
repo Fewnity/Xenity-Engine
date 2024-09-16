@@ -10,6 +10,7 @@
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 #include "memory_tracker.h"
+#include <engine/debug/stack_debug_object.h>
 
 int Performance::drawCallCount = 0;
 int Performance::drawTriangleCount = 0;
@@ -31,6 +32,7 @@ uint32_t Performance::benchmarkScopeLevel = 0;
 
 void Performance::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	Debug::Print("-------- Profiler initiated --------", true);
 
 #if defined(DEBUG)
@@ -42,6 +44,7 @@ void Performance::Init()
 
 void Performance::ResetCounters()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	LastDrawCallCount = drawCallCount;
 	drawCallCount = 0;
 	LastDrawTriangleCount = drawTriangleCount;
@@ -53,16 +56,19 @@ void Performance::ResetCounters()
 
 void Performance::AddDrawCall()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	drawCallCount++;
 }
 
 void Performance::AddDrawTriangles(int count)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	drawTriangleCount+= count;
 }
 
 void Performance::AddMaterialUpdate()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	updatedMaterialCount++;
 }
 
@@ -72,21 +78,25 @@ void Performance::AddMaterialUpdate()
 
 int Performance::GetDrawCallCount()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return LastDrawCallCount;
 }
 
 int Performance::GetDrawTrianglesCount()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return LastDrawTriangleCount;
 }
 
 int Performance::GetUpdatedMaterialCount()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	return updatedMaterialCount;
 }
 
 void Performance::Update()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	if (EngineSettings::values.useProfiler)
 	{
 		tickCount++;
@@ -112,6 +122,8 @@ void Performance::Update()
 
 void Performance::ResetProfiler()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	scopProfilerList.clear();
 
 	for (const auto& categoryKV : Performance::profilerCategories)
