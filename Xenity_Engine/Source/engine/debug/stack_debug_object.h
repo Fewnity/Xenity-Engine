@@ -13,10 +13,15 @@
 #define STACK_LOW_PRIORITY 2
 #define STACK_VERY_LOW_PRIORITY 3
 
-#define STACK_DEBUG_LEVEL 0
-#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__FUNCTION__, level)
+#define STACK_DEBUG_LEVEL STACK_HIGH_PRIORITY
 
-//#define STACK_DEBUG_OBJECT
+//#define ENABLE_STACK_DEBUG_OBJECT
+
+#if defined(ENABLE_STACK_DEBUG_OBJECT)
+#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__FUNCTION__, level)
+#else
+#define STACK_DEBUG_OBJECT
+#endif
 
 class StackDebugObject
 {
