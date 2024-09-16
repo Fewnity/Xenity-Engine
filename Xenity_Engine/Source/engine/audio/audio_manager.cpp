@@ -40,6 +40,7 @@ int currentBuffer = 0;
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/debug/debug.h>
 #include <engine/assertions/assertions.h>
+#include <engine/debug/stack_debug_object.h>
 
 
 bool AudioManager::isAdding = false;
@@ -341,6 +342,8 @@ Channel::Channel()
 
 int AudioManager::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	audioBenchmark = std::make_shared<ProfilerBenchmark>("Audio", "Audio");
 	audioBenchmark2 = std::make_shared<ProfilerBenchmark>("Audio", "Sub");
 	halfBuffSize = buffSize / 2;
@@ -415,6 +418,8 @@ int AudioManager::Init()
 
 void AudioManager::Stop()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(_WIN32) || defined(_WIN64)
 
 	// Stop WaveOut
@@ -431,12 +436,16 @@ void AudioManager::Stop()
 
 PlayedSound::~PlayedSound()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	delete audioClipStream;
 	free(buffer);
 }
 
 void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(audioSource != nullptr, "[AudioManager::PlayAudioSource] audioSource is null");
 
 	bool found = false;
@@ -487,6 +496,8 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSource)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null");
 
 	AudioManager::myMutex->Lock();
@@ -521,6 +532,8 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 /// <param name="light"></param>
 void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(audioSource != nullptr, "[AudioManager::RemoveAudioSource] audioSource is null");
 
 	AudioManager::myMutex->Lock();
@@ -552,6 +565,8 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 
 MyMutex::MyMutex(const std::string& mutexName)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(__vita__)
 	mutexid = sceKernelCreateMutex(mutexName.c_str(), 0, 1, NULL);
 	//#elif defined(__PSP__)

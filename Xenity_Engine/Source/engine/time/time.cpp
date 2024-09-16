@@ -19,6 +19,7 @@
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/debug.h>
+#include <engine/debug/stack_debug_object.h>
 
 using namespace std::chrono;
 
@@ -45,6 +46,7 @@ std::chrono::time_point<std::chrono::high_resolution_clock> start_point, end_poi
 
 void Time::SetTimeScale(float _timeScale)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	if (_timeScale < 0)
 		_timeScale = 0;
 
@@ -55,6 +57,7 @@ void Time::SetTimeScale(float _timeScale)
 
 void Time::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	start_point = high_resolution_clock::now();
 	end_point = start_point;
@@ -70,6 +73,8 @@ void Time::Init()
 
 void Time::UpdateTime()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("Time::UpdateTime", scopeBenchmark);
 #if defined(__PSP__)
 	sceRtcGetCurrentTick(&currentTick);

@@ -40,6 +40,7 @@
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
+#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::json;
 
@@ -74,6 +75,8 @@ bool Editor::isToolLocalMode;
 
 void Editor::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ClassRegistry::RegisterMenus();
 	LoadMenuSettings();
 	SaveMenuSettings();
@@ -103,12 +106,16 @@ void Editor::Init()
 
 void Editor::SaveMenuSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
 	ReflectionUtils::ReflectiveDataToFile(menuSettings.GetReflectiveData(), file);
 }
 
 void Editor::LoadMenuSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	bool success = false;
 	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
 	if (file->CheckIfExist())
@@ -126,6 +133,8 @@ void Editor::LoadMenuSettings()
 
 Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id = 0)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	MenuSetting* newMenuSetting = new MenuSetting();
 	newMenuSetting->name = name;
 	newMenuSetting->isActive = isActive;
@@ -137,6 +146,8 @@ Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSetti
 
 Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t menuSize = menuSettings.settings.size();
 	bool found = false;
 	MenuSetting* menuSetting = nullptr;
@@ -163,6 +174,8 @@ Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& m
 
 void Editor::CreateNewMenuSettings()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	menuSettings = MenuSettings();
 	std::vector<MenuSetting*>& menuSettingList = menuSettings.settings;
 
@@ -189,17 +202,23 @@ void Editor::CreateNewMenuSettings()
 
 void Editor::OnFileModified()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ProjectManager::RefreshProjectDirectory();
 }
 
 void Editor::OnCodeModified()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (EngineSettings::values.compileOnCodeChanged)
 		Compiler::HotReloadGame();
 }
 
 void Editor::OnWindowFocused()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (ProjectManager::IsProjectLoaded())
 	{
 		FileHandler::HasFileChangedOrAddedThreaded(ProjectManager::GetAssetFolderPath(), OnFileModified);
@@ -209,6 +228,8 @@ void Editor::OnWindowFocused()
 
 void Editor::Update()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (ProjectManager::IsProjectLoaded())
 	{
 		//------- Check shortcuts
@@ -315,6 +336,8 @@ void Editor::Update()
 
 void Editor::Draw()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	EditorUI::NewFrame();
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -385,6 +408,8 @@ void Editor::Draw()
 
 void Editor::ApplyEditorStyle()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	// Default colors
 	// BG 15 15 15
 	// Input 29 47 73
@@ -445,6 +470,8 @@ void Editor::ApplyEditorStyle()
 
 void Editor::RemoveEditorStyle()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	ImGui::PopStyleVar();
 
 	ImGui::PopStyleColor(16);
@@ -452,24 +479,32 @@ void Editor::RemoveEditorStyle()
 
 void Editor::CreateEmpty()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
 	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::CreateEmptyChild()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 1);
 	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::CreateEmptyParent()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 2);
 	CommandManager::AddCommandAndExecute(command);
 }
 
 void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	selectedFileReference = fileReference;
 	std::shared_ptr<InspectorMenu> inspector = Editor::GetMenu<InspectorMenu>();
 	if (inspector)
@@ -486,6 +521,8 @@ std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
 
 void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelected)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ClearSelectedGameObjects();
 
 	if (newSelected == nullptr)
@@ -499,6 +536,8 @@ void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelecte
 
 void Editor::ClearSelectedGameObjects()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 	{
 		if (currentGameObject.lock())
@@ -530,6 +569,8 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 
 void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToRemove)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr");
 
 	const size_t goCount = selectedGameObjects.size();
@@ -546,6 +587,8 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 
 bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObjectToCheck)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr");
 
 	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
@@ -566,6 +609,8 @@ const std::vector<std::weak_ptr<GameObject>>& Editor::GetSelectedGameObjects()
 
 void Editor::SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>& dir)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (currentProjectDirectory)
 		currentProjectDirectory->files.clear();
 	currentProjectDirectory = dir;
@@ -587,6 +632,8 @@ std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
 
 std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::string fileExt = "";
 	switch (type)
 	{
@@ -637,6 +684,8 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 
 void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const std::string convertedPath = FileSystem::ConvertBasicPathToWindowsPath(path);
 	std::string command = "explorer.exe ";
 	if (isSelected)
@@ -657,6 +706,8 @@ void Editor::OpenExplorerWindow(const std::string& path, bool isSelected)
 
 void Editor::AddDragAndDrop(const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (path.empty())
 		return;
 
@@ -665,6 +716,8 @@ void Editor::AddDragAndDrop(const std::string& path)
 
 void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (path.empty() || newPath.empty())
 		return;
 
@@ -686,6 +739,8 @@ void Editor::StartFolderCopy(const std::string& path, const std::string& newPath
 
 void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	int endParenthesis = -1;
 	int startParenthesis = -1;
 	const int nameLenght = (int)name.size();
@@ -742,6 +797,8 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::string finalName = "";
 	int number = 1;
 	bool foundOne = false;
@@ -770,6 +827,8 @@ std::string Editor::GetIncrementedGameObjectName(const std::string& name)
 
 void Editor::OnDragAndDropFileFinished()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t size = dragdropEntries.size();
 	for (size_t dragIndex = 0; dragIndex < size; dragIndex++)
 	{
@@ -822,6 +881,8 @@ void Editor::OnDragAndDropFileFinished()
 
 bool Editor::IsParentOf(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& child)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	if (parent == nullptr || child == nullptr)
 		return false;
 
@@ -848,6 +909,8 @@ bool Editor::IsParentOf(const std::shared_ptr<GameObject>& parent, const std::sh
 
 std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vector<std::shared_ptr<GameObject>> parentsAndChildren)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	std::vector<std::shared_ptr<GameObject>> parentsAndChildrenCopy = parentsAndChildren;
 
 	size_t goCount = parentsAndChildren.size();
@@ -889,6 +952,8 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 
 void Editor::CreateMenus()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t menuSize = menuSettings.settings.size();
 	for (size_t i = 0; i < menuSize; i++)
 	{
@@ -905,6 +970,8 @@ void Editor::CreateMenus()
 
 bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	if (fullPath.empty())
 		return false;
 
@@ -931,6 +998,8 @@ bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& fold
 
 bool Editor::OpenExecutableFile(const std::string& executablePath)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(!executablePath.empty(), "[Editor::OpenExecutableFile] executablePath is empty");
 	if (executablePath.empty())
 		return false;
@@ -952,7 +1021,9 @@ bool Editor::OpenExecutableFile(const std::string& executablePath)
 
 int Editor::ExecuteSystemCommand(const std::string& command, std::string& outputText)
 {
-#if defined(__LINUX)
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+#if defined(__LINUX__)
 	FILE *f = popen(command.c_str(), "r");
 #else
 	FILE* f = _popen(command.c_str(), "r");
@@ -960,7 +1031,7 @@ int Editor::ExecuteSystemCommand(const std::string& command, std::string& output
 	constexpr size_t bufferSize = 2048;
 	char output[bufferSize];
 	fgets(output, bufferSize, f); 
-#if defined(__LINUX)
+#if defined(__LINUX__)
 	int ret = pclose(f);
 #else
 	int ret = _pclose(f);

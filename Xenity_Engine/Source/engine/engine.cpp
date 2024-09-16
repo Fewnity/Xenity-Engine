@@ -89,6 +89,7 @@
 #include <engine/tools/math.h>
 #include <engine/vectors/quaternion.h>
 #include <engine/vectors/vector3.h>
+#include "debug/stack_debug_object.h"
 
 std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
@@ -205,7 +206,7 @@ int Engine::Init()
 #if defined(EDITOR)
 #if defined(_WIN32) || defined(_WIN64)
 	PluginManager::Init();
-#endif
+#endif // #if defined(_WIN32) || defined(_WIN64)
 	Gizmo::Init();
 	const int editorUiInitResult = EditorUI::Init();
 	if (editorUiInitResult != 0)
@@ -215,7 +216,7 @@ int Engine::Init()
 	}
 	Editor::Init();
 	Compiler::Init();
-#endif
+#endif // #if defined(EDITOR)
 
 	s_isInitialized = true;
 	Debug::Print("-------- Engine fully initiated --------\n", true);
@@ -299,6 +300,8 @@ void Engine::CheckEvents()
 
 void Engine::Loop()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	Debug::Print("-------- Initiating game --------", true);
 
 	// Load the game if the executable is not the Editor
@@ -415,6 +418,8 @@ void Engine::Loop()
 
 void Engine::Stop()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (!s_isInitialized)
 		return;
 
@@ -443,6 +448,8 @@ void Engine::Stop()
 
 void Engine::Quit()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(EDITOR)
 	if (s_isRunning)
 	{
@@ -456,6 +463,8 @@ void Engine::Quit()
 
 void Engine::CreateBenchmarks()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	engineLoopBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Engine loop");
 	// gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
 	componentsUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Components update");

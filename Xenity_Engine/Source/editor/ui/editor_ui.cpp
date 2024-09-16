@@ -19,6 +19,7 @@
 #include <engine/ui/window.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
+#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::json;
 
@@ -41,6 +42,8 @@ Event<>* EditorUI::onValueChangedEvent = nullptr;
 
 int EditorUI::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ImGuiIO& io = ImGui::GetIO();
 
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
@@ -151,6 +154,8 @@ void EditorUI::EndButtonColor()
 
 std::string EditorUI::GetPrettyVariableName(std::string variableName)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	variableName[0] = toupper(variableName[0]);
 	size_t nameSize = variableName.size();
 	bool addSpace = false;
@@ -179,6 +184,8 @@ std::string EditorUI::GetPrettyVariableName(std::string variableName)
 */
 void EditorUI::NewFrame()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	EditorUI::UpdateUIScale();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
@@ -188,6 +195,8 @@ void EditorUI::NewFrame()
 
 void EditorUI::UpdateUIScale()
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const int index = SDL_GetDisplayForWindow(Window::s_window);
 	if (index >= 0)
 	{
@@ -203,6 +212,8 @@ void EditorUI::UpdateUIScale()
 
 void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	fileIcon->m_file = FileSystem::MakeFile(path);
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
@@ -212,6 +223,8 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 
 void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	fileIcon->m_file = FileSystem::MakeFile(path);
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
@@ -224,6 +237,8 @@ void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
 */
 void EditorUI::Render()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	isEditingElement = ImGui::IsAnyItemActive();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

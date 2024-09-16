@@ -25,6 +25,7 @@
 #include <engine/audio/audio_clip.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/assertions/assertions.h>
+#include <engine/debug/stack_debug_object.h>
 
 bool initialised = false;
 
@@ -63,6 +64,8 @@ std::shared_ptr<Texture> AssetManager::defaultTexture = nullptr;
  */
 void AssetManager::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	initialised = true;
 	ProjectManager::GetProjectLoadedEvent().Bind(&AssetManager::OnProjectLoaded);
 	ProjectManager::GetProjectUnloadedEvent().Bind(&AssetManager::OnProjectUnloaded);
@@ -72,6 +75,8 @@ void AssetManager::Init()
 
 void AssetManager::OnProjectLoaded()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	defaultTexture->LoadFileReference();
 	if constexpr (!Graphics::UseOpenGLFixedFunctions)
@@ -136,6 +141,8 @@ void AssetManager::OnProjectLoaded()
 
 void AssetManager::OnProjectUnloaded()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	defaultTexture.reset();
 
 	standardShader.reset();
@@ -161,6 +168,8 @@ void AssetManager::OnProjectUnloaded()
 
 void AssetManager::AddMaterial(Material* material)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(material != nullptr, "[AssetManager::AddMaterial] Material is null");
 
 	materials.push_back(material);
@@ -169,6 +178,8 @@ void AssetManager::AddMaterial(Material* material)
 
 void AssetManager::AddReflection(Reflective* reflection)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(reflection != nullptr, "[AssetManager::AddReflection] Reflection is null");
 
 #if defined(EDITOR)
@@ -182,6 +193,8 @@ void AssetManager::AddReflection(Reflective* reflection)
 
 void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(fileReference != nullptr, "[AssetManager::AddFileReference] fileReference is null");
 
 	fileReferences.push_back(fileReference);
@@ -194,6 +207,8 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 /// <param name="light"></param>
 void AssetManager::AddLight(Light* light)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(light != nullptr, "[AssetManager::AddLight] light is null");
 
 	lights.push_back(light);
@@ -204,6 +219,8 @@ void AssetManager::AddLight(Light* light)
 
 void AssetManager::UpdateLightIndices()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	int pointLightCount = 0;
 	int spotLightCount = 0;
 	int directionalLightCount = 0;
@@ -238,6 +255,8 @@ void AssetManager::UpdateLightIndices()
 
 void AssetManager::RemoveMaterial(const Material* material)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(material != nullptr, "[AssetManager::RemoveMaterial] material is null");
 
 	if (!Engine::IsRunning(true))
@@ -266,6 +285,8 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 void AssetManager::RemoveReflection(const Reflective* reflection)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 #if defined(EDITOR)
 	XASSERT(reflection != nullptr, "[AssetManager::RemoveReflection] reflection is null");
 
@@ -299,6 +320,8 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	XASSERT(fileReference != nullptr, "[AssetManager::ForceDeleteFileReference] fileReference is null");
 
 	RemoveFileReference(fileReference);
@@ -367,12 +390,16 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 
 void AssetManager::RemoveAllFileReferences()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	fileReferences.clear();
 	fileReferenceCount = 0;
 }
 
 void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(fileReference != nullptr, "[AssetManager::RemoveFileReference] fileReference is null");
 
 	if (!Engine::IsRunning(true))
@@ -405,6 +432,8 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 /// <param name="light"></param>
 void AssetManager::RemoveLight(Light* light)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(light != nullptr, "[AssetManager::RemoveLight] light is null");
 
 	if (!Engine::IsRunning(true))
@@ -438,6 +467,8 @@ void AssetManager::RemoveLight(Light* light)
 
 void AssetManager::RemoveUnusedFiles()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	int fileRefCount = GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
@@ -461,6 +492,8 @@ void AssetManager::RemoveUnusedFiles()
 
 std::string AssetManager::GetDefaultFileData(FileType fileType)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::string data = "{\n}";
 	std::shared_ptr<File> newFile = nullptr;
 

@@ -17,6 +17,7 @@
 #include "collider.h"
 #include "rigidbody.h"
 #include "collision_event.h"
+#include <engine/debug/stack_debug_object.h>
 
 std::vector<RigidBody*> PhysicsManager::s_rigidBodies;
 std::vector<ColliderInfo> PhysicsManager::s_colliders;
@@ -30,6 +31,8 @@ btDefaultCollisionConfiguration* physCollisionConfiguration = nullptr;
 
 void PhysicsManager::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	physCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	physDispatcher = new btCollisionDispatcher(physCollisionConfiguration);
@@ -47,6 +50,8 @@ void PhysicsManager::Init()
 
 void PhysicsManager::Stop()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	Clear();
 
 	delete s_physDynamicsWorld;
@@ -62,6 +67,8 @@ void PhysicsManager::Stop()
 
 void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool isTrigger)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	const size_t colliderCount = s_colliders.size();
 	for (size_t i = 0; i < colliderCount; i++)
 	{
@@ -118,6 +125,8 @@ class MyContactResultCallback : public btCollisionWorld::ContactResultCallback
 public:
 	bool onCollisionEnter(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
 	{
+		STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 		if (colObj0Wrap->getCollisionObject()->isStaticOrKinematicObject() && colObj1Wrap->getCollisionObject()->isStaticOrKinematicObject())
 		{
 			return false;
@@ -189,11 +198,12 @@ public:
 
 void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	GameObject& goA = *a->GetGameObject();
 	GameObject& goB = *b->GetGameObject();
 	const size_t goAComponentsCount = goA.m_components.size();
 	const size_t goBComponentsCount = goB.m_components.size();
-
 
 	CollisionEvent collisionEvent = CollisionEvent(a, b);
 	CollisionEvent collisionEventOther = CollisionEvent(b, a);
@@ -259,6 +269,8 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 
 void PhysicsManager::Update()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("PhysicsManager::Update", scopeBenchmark);
 
 	const size_t rigidbodyCount = s_rigidBodies.size();
@@ -268,8 +280,6 @@ void PhysicsManager::Update()
 	//physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 1, 0.01666666f / 3.0f);
 	s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
 
-	//Debug::Print("------------------------ Tick ------------------------");
-	//std::cout << "------------------------ Tick ------------------------" << std::endl;
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
 		RigidBody* rb = s_rigidBodies[i];
@@ -356,17 +366,23 @@ void PhysicsManager::Update()
 
 void PhysicsManager::Clear()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	PhysicsManager::s_rigidBodies.clear();
 	PhysicsManager::s_colliders.clear();
 }
 
 void PhysicsManager::AddRigidBody(RigidBody* rb)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	s_rigidBodies.push_back(rb);
 }
 
 void PhysicsManager::RemoveRigidBody(const RigidBody* rb)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const size_t rigidbodyCount = s_rigidBodies.size();
 	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
@@ -380,6 +396,8 @@ void PhysicsManager::RemoveRigidBody(const RigidBody* rb)
 
 void PhysicsManager::AddCollider(Collider* col)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	ColliderInfo colliderInfo;
 	colliderInfo.collider = col;
 	s_colliders.push_back(colliderInfo);
@@ -387,6 +405,8 @@ void PhysicsManager::AddCollider(Collider* col)
 
 void PhysicsManager::RemoveCollider(const Collider* col)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const size_t colliderCount = s_colliders.size();
 	for (size_t i = 0; i < colliderCount; i++)
 	{

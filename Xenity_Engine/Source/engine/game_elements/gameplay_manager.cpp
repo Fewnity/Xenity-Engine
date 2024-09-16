@@ -17,6 +17,7 @@
 #include <engine/component.h>
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/stack_debug_object.h>
 
 int GameplayManager::gameObjectCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -60,6 +61,8 @@ const std::vector<std::shared_ptr<GameObject>>& GameplayManager::GetGameObjects(
 
 void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(EDITOR)
 	if (newGameState == GameState::Playing && s_gameState == GameState::Stopped) // Start game
 	{
@@ -97,6 +100,8 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 
 void GameplayManager::UpdateComponents()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SCOPED_PROFILER("GameplayManager::UpdateComponents", scopeBenchmark);
 	// Order components and initialise new components
 	if (componentsListDirty)
@@ -144,6 +149,8 @@ void GameplayManager::UpdateComponents()
 
 void GameplayManager::OrderComponents()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	for(const std::shared_ptr<GameObject>& gameObjectToCheck : gameObjects)
 	{
 		if (gameObjectToCheck)
@@ -179,6 +186,8 @@ void GameplayManager::OrderComponents()
 
 void GameplayManager::InitialiseComponents()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	int componentsToInitCount = 0;
 	std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
 	// Find uninitiated components and order them
@@ -205,6 +214,8 @@ void GameplayManager::InitialiseComponents()
 
 void GameplayManager::RemoveDestroyedGameObjects()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	// Remove destroyed GameObjects from the Engine's GameObjects list
 	const size_t gameObjectToDestroyCount = gameObjectsToDestroy.size();
 	for (size_t i = 0; i < gameObjectToDestroyCount; i++)
@@ -225,6 +236,8 @@ void GameplayManager::RemoveDestroyedGameObjects()
 
 void GameplayManager::RemoveDestroyedComponents()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t componentToDestroyCount = componentsToDestroy.size();
 	for (size_t i = 0; i < componentToDestroyCount; i++)
 	{

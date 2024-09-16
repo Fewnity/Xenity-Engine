@@ -16,16 +16,21 @@
 #include <engine/game_elements/transform.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/tools/math.h>
+#include <engine/debug/stack_debug_object.h>
 
 Color Gizmo::color;
 
 void Gizmo::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	color = Color::CreateFromRGB(255, 255, 255);
 }
 
 void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	Vector3 aCopy = a;
 	Vector3 bCopy = b;
 	aCopy.x = -aCopy.x;
@@ -49,6 +54,8 @@ void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 
 void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	const float distance = Vector3::Distance(position, Graphics::usedCamera->GetTransform()->GetPosition());
 	float alpha = 1;
 	if (distance <= 1.3f)
@@ -60,6 +67,8 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 
 void Gizmo::DrawSphere(const Vector3& position, const float radius)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	if (radius == 0)
 		return;
 
@@ -108,5 +117,7 @@ void Gizmo::DrawSphere(const Vector3& position, const float radius)
 
 void Gizmo::SetColor(const Color& newColor)
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	color = newColor;
 }
