@@ -40,14 +40,11 @@ public:
 	static void TryTest(UnitTest& RegisterEnumStringsMap);
 };
 
-//
-// --------------------- Vector
-//
+#pragma region Vector
 
 class VectorAddTest : public UnitTest
 {
 public:
-	VectorAddTest() = delete;
 	VectorAddTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -56,7 +53,6 @@ public:
 class VectorMinusTest : public UnitTest
 {
 public:
-	VectorMinusTest() = delete;
 	VectorMinusTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -65,7 +61,6 @@ public:
 class VectorMultiplyTest : public UnitTest
 {
 public:
-	VectorMultiplyTest() = delete;
 	VectorMultiplyTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -74,7 +69,6 @@ public:
 class VectorDivideTest : public UnitTest
 {
 public:
-	VectorDivideTest() = delete;
 	VectorDivideTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -83,20 +77,18 @@ public:
 class VectorNormalizeTest : public UnitTest
 {
 public:
-	VectorNormalizeTest() = delete;
 	VectorNormalizeTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-//
-// --------------------- Transform
-//
+#pragma endregion
+
+#pragma region Transform
 
 class TransformSetPositionTest : public UnitTest
 {
 public:
-	TransformSetPositionTest() = delete;
 	TransformSetPositionTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -105,7 +97,6 @@ public:
 class TransformSetRotationTest : public UnitTest
 {
 public:
-	TransformSetRotationTest() = delete;
 	TransformSetRotationTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -114,20 +105,18 @@ public:
 class TransformSetScaleTest : public UnitTest
 {
 public:
-	TransformSetScaleTest() = delete;
 	TransformSetScaleTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-//
-// --------------------- Color
-//
+#pragma endregion
+
+#pragma region Color
 
 class ColorConstructorTest : public UnitTest
 {
 public:
-	ColorConstructorTest() = delete;
 	ColorConstructorTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -136,20 +125,18 @@ public:
 class ColorSetTest : public UnitTest
 {
 public:
-	ColorSetTest() = delete;
 	ColorSetTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
 
-//
-// --------------------- Event System
-//
+#pragma endregion
+
+#pragma region Event System
 
 class EventSystemTest : public UnitTest
 {
 public:
-	EventSystemTest() = delete;
 	EventSystemTest(const std::string& name) : UnitTest(name) { }
 
 	static void EventFunction(int& value);
@@ -158,14 +145,13 @@ public:
 	bool Start(std::string& errorOut) override;
 };
 
-//
-// --------------------- Math
-//
+#pragma endregion
+
+#pragma region Math
 
 class MathBasicTest : public UnitTest
 {
 public:
-	MathBasicTest() = delete;
 	MathBasicTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
@@ -174,8 +160,33 @@ public:
 class MathMatrixTest : public UnitTest
 {
 public:
-	MathMatrixTest() = delete;
 	MathMatrixTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };
+
+#pragma endregion
+
+#pragma region Asset Manager
+
+class AssetManagerTest : public UnitTest
+{
+public:
+	AssetManagerTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+};
+
+#pragma endregion
+
+#pragma region Class Registry
+
+class ClassRegistryTest : public UnitTest
+{
+public:
+	ClassRegistryTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+};
+
+#pragma endregion

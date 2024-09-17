@@ -221,8 +221,8 @@ public:
 	{
 		return std::dynamic_pointer_cast<T>(ProjectManager::GetFileReferenceByFilePath(filePath));
 	}
-private:
 
+private:
 
 	static int materialCount;
 	static int reflectionCount;

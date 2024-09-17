@@ -73,6 +73,18 @@ void UnitTestManager::StartAllTests()
 		TryTest(mathMatrixTest);
 	}
 
+	//------------------------------------------------------------------ Asset Manager
+	{
+		AssetManagerTest assetManagerTest = AssetManagerTest("Asset Manager");
+		TryTest(assetManagerTest);
+	}
+
+	//------------------------------------------------------------------ ClassRegistry Test
+	{
+		ClassRegistryTest classRegistryTest = ClassRegistryTest("Asset Manager");
+		TryTest(classRegistryTest);
+	}
+
 	Debug::Print("------ Unit Tests finished! ------", true);
 }
 
