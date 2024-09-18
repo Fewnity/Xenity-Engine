@@ -225,6 +225,7 @@ void Shader::Init()
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 	glGenBuffers(1, &uboLightBlock);
 	glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(LightsIndices), NULL, GL_DYNAMIC_DRAW);
 #endif
 }
 
@@ -499,12 +500,12 @@ void Shader::SetShaderCameraPosition()
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
-		std::shared_ptr<Transform> transform = Graphics::usedCamera->GetTransform();
+		const std::shared_ptr<Transform> transform = Graphics::usedCamera->GetTransform();
 
 		const Vector3& position = transform->GetPosition();
 
 		const Quaternion& baseQ = transform->GetRotation();
-		Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+		const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
 		Quaternion newQ = baseQ * offsetQ;
 
 		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
@@ -571,7 +572,7 @@ void Shader::SetShaderModel(const Vector3& position, const Vector3& rotation, co
 void Shader::SetLightIndices(const LightsIndices& lightsIndices)
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(lightsIndices), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(lightsIndices), &lightsIndices);
 #endif
 }
@@ -655,7 +656,7 @@ void Shader::Link()
 	m_usedSpotLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "usedSpotLightCount");
 	m_usedDirectionalLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "usedDirectionalLightCount");
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < MAX_LIGHT_COUNT; i++)
 	{
 		m_pointlightVariableIds.push_back(new PointLightVariableIds(i, m_programId));
 		m_directionallightVariableIds.push_back(new DirectionalLightsVariableIds(i, m_programId));
@@ -666,7 +667,7 @@ void Shader::Link()
 	GLuint blockIndex;
 #if defined(__vita__)
 	blockIndex = glGetUniformBlockIndex(m_programId, "lightIndices");
-#else
+#else // #if !defined(__vita__)
 	blockIndex = glGetUniformBlockIndex(m_programId, "LightIndices");
 #endif
 
@@ -678,6 +679,7 @@ void Shader::Link()
 	{
 		GLuint bindingPoint = 0;
 		glUniformBlockBinding(m_programId, blockIndex, bindingPoint);
+		glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
 		glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, uboLightBlock);
 	}
 #endif // #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)

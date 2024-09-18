@@ -90,14 +90,6 @@ uniform SpotLight spotLights[NR_SPOT_LIGHTS];
 #define NR_DIRECTIONAL_LIGHTS 10  
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
 
-uniform int usedPointLightCount;
-uniform int usedSpotLightCount;
-uniform int usedDirectionalLightCount;
-
-uniform int pointLightsIndices[NR_POINT_LIGHTS];
-uniform int spotLightsIndices[NR_SPOT_LIGHTS];
-uniform int directionalLightsIndices[NR_DIRECTIONAL_LIGHTS];
-
 uniform LightIndices
 {
 	int usedPointLightCount;
@@ -289,10 +281,6 @@ uniform SpotLight spotLights[NR_SPOT_LIGHTS];
 #define NR_DIRECTIONAL_LIGHTS 10  
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
 
-uniform int usedDirectionalLightCount;
-uniform int usedSpotLightCount;
-uniform int usedPointLightCount;
-
 uniform vec3 cameraPos;
 
 varying vec2 TexCoord;
@@ -309,11 +297,6 @@ uniform Material material;
 uniform vec2 tiling;
 uniform vec2 offset;
 uniform vec3 ambientLight;
-
-// uniform LightData 
-// {
-// 	vec4 intensity;
-// } lightData : BUFFER[0];
 
 uniform LightIndices
 {
@@ -381,6 +364,7 @@ void main()
 	vec3 norm = normalize(Normals); //Direction of normals
 	vec3 viewDir = float3(0.0f, 0.0f, 0.0f); // = normalize(cameraPos - FragPos);
 
+	// Unrool for loop for better performances
 	int currentLight = 0;
 	if(lightIndices.usedPointLightCount > currentLight)
 	{
@@ -444,7 +428,7 @@ void main()
 	}
 	for (int i = 0; i < lightIndices.usedDirectionalLightCount; i++)
 	{
-		result += CalculateDirectionalLight(directionalLights[lightIndices.spotLightsIndices[i]], norm, FragPos, viewDir, TexCoord);
+		result += CalculateDirectionalLight(directionalLights[lightIndices.directionalLightsIndices[i]], norm, FragPos, viewDir, TexCoord);
 	}
 
 	// Apply ambient light
