@@ -101,7 +101,7 @@ float Vector3::Magnitude() const
 	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
 }
 
-double Vector3::Dot(const Vector3& v) const
+float Vector3::Dot(const Vector3& v) const
 {
 	return x * v.x + y * v.y + z * v.z;
 }
@@ -121,7 +121,7 @@ bool Vector3::HasInvalidValues() const
 	return false;
 }
 
-double Vector3::Dot(const Vector3& a, const Vector3& b)
+float Vector3::Dot(const Vector3& a, const Vector3& b)
 {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }

@@ -260,8 +260,8 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 		if (needLightUpdate)
 		{
 			Graphics::isLightUpdateNeeded = false;
-			size_t pointLightCount = 0;
-			size_t spotLightCount = 0;
+			int pointLightCount = 0;
+			int spotLightCount = 0;
 
 			LightsIndices lightsIndices;
 			lightsIndices.usedDirectionalLightCount = directionalLightCount;

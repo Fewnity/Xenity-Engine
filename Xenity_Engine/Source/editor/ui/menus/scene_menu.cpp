@@ -50,7 +50,7 @@ bool IntersectionPoint(const Vector3& origin, const Vector3& direction, const Ve
 	}
 
 	// Calcul de la distance le long de la ligne � partir de son origine jusqu'au point d'intersection
-	const double t = (-origin.Dot(plane)) / dotProduct;
+	const float t = static_cast<float>(-origin.Dot(plane)) / dotProduct;
 
 	// Calcul du point d'intersection
 	intersection = origin + (direction * t);
@@ -677,7 +677,7 @@ Vector3 SceneMenu::GetNearestPoint(const Vector3& linePos1, const Vector3& lineD
 		const double c = Vector3::Dot(lineDir1, lineDir2);
 
 		const double s = (a - b * dotD1D2) / (1 - dotD1D2 * dotD1D2);
-		const double t = (b - c * s);
+		const float t = static_cast<float>(b - c * s);
 
 		ClosestPoint = linePos2 + t * (lineDir2 * -1);
 	}

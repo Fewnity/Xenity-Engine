@@ -36,11 +36,11 @@ bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector
 		float sphereCoord = (&sphereCenter.x)[i];
 		if (sphereCoord < (&cubeMin.x)[i])
 		{
-			dmin += std::pow(sphereCoord - (&cubeMin.x)[i], 2);
+			dmin += std::powf(sphereCoord - (&cubeMin.x)[i], 2);
 		}
 		else if (sphereCoord > cubeMaxCoord)
 		{
-			dmin += std::pow(sphereCoord - cubeMaxCoord, 2);
+			dmin += std::powf(sphereCoord - cubeMaxCoord, 2);
 		}
 	}
 
@@ -88,11 +88,13 @@ void WorldPartitionner::ClearWorld()
 
 void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 {
+	XASSERT(meshRenderer, "The meshRenderer is null");
+
 	for (auto& position : meshRenderer->worldChunkPositions)
 	{
-		int x = position.x / CHUNK_SIZE;
-		int y = position.y / CHUNK_SIZE;
-		int z = position.z / CHUNK_SIZE;
+		const int x = static_cast<int>(position.x / CHUNK_SIZE);
+		const int y = static_cast<int>(position.y / CHUNK_SIZE);
+		const int z = static_cast<int>(position.z / CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -112,11 +114,13 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 void WorldPartitionner::RemoveLight(Light* light)
 {
+	XASSERT(light, "The light is null");
+
 	for (auto& position : light->worldChunkPositions)
 	{
-		int x = position.x / CHUNK_SIZE;
-		int y = position.y / CHUNK_SIZE;
-		int z = position.z / CHUNK_SIZE;
+		const int x = static_cast<int>(position.x / CHUNK_SIZE);
+		const int y = static_cast<int>(position.y / CHUNK_SIZE);
+		const int z = static_cast<int>(position.z / CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -145,6 +149,8 @@ void WorldPartitionner::RemoveLight(Light* light)
 
 void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 {
+	XASSERT(meshRenderer, "The meshRenderer is null");
+
 	RemoveMeshRenderer(meshRenderer);
 
 	const Sphere& sphere = meshRenderer->GetBoundingSphere();
@@ -156,9 +162,9 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 
 	for (const Vector3Fast& cube : intersectedCubes)
 	{
-		int x = cube.x / CHUNK_SIZE;
-		int y = cube.y / CHUNK_SIZE;
-		int z = cube.z / CHUNK_SIZE;
+		const int x = static_cast<int>(cube.x / CHUNK_SIZE);
+		const int y = static_cast<int>(cube.y / CHUNK_SIZE);
+		const int z = static_cast<int>(cube.z / CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -184,6 +190,8 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 
 void WorldPartitionner::ProcessLight(Light* light)
 {
+	XASSERT(light, "The light is null");
+
 	if (light->GetType() == LightType::Point || light->GetType() == LightType::Spot)
 	{
 		RemoveLight(light);
@@ -194,11 +202,11 @@ void WorldPartitionner::ProcessLight(Light* light)
 			sphere.position = light->GetTransform()->GetPosition();
 			sphere.radius = light->GetMaxLightDistance();
 			getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, CHUNK_SIZE);
-			for (Vector3Fast& cube : intersectedCubes)
+			for (const Vector3Fast& cube : intersectedCubes)
 			{
-				int x = cube.x / CHUNK_SIZE;
-				int y = cube.y / CHUNK_SIZE;
-				int z = cube.z / CHUNK_SIZE;
+				const int x = static_cast<int>(cube.x / CHUNK_SIZE);
+				const int y = static_cast<int>(cube.y / CHUNK_SIZE);
+				const int z = static_cast<int>(cube.z / CHUNK_SIZE);
 
 				XNode& xNode = Tree::children[x];
 				YNode& yNode = xNode.children[y];
@@ -227,7 +235,7 @@ void WorldPartitionner::DrawChunk(const Chunk& chunk, int x, int y, int z)
 		return;
 
 #if defined(EDITOR)
-	const Vector3 pos = Vector3(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE);
+	const Vector3 pos = Vector3(static_cast<float>(x * CHUNK_SIZE), static_cast<float>(y * CHUNK_SIZE), static_cast<float>(z * CHUNK_SIZE));
 
 	// Bottom vertex
 	const Vector3 v1 = pos + Vector3(-CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);

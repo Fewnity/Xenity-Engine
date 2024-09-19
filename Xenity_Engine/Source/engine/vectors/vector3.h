@@ -76,7 +76,7 @@ public:
 	/**
 	* @brief Get the dot product of this vector
 	*/
-	double Dot(const Vector3& v) const;
+	float Dot(const Vector3& v) const;
 
 	/**
 	* @brief Get the cross product of this vector and another
@@ -91,7 +91,7 @@ public:
 	/**
 	* @brief Get the dot product of two vectors
 	*/
-	static double Dot(const Vector3& a, const Vector3& b);
+	static float Dot(const Vector3& a, const Vector3& b);
 
 	/**
 	* @brief Get the cross product of two vectors
