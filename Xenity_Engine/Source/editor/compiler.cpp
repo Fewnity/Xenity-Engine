@@ -210,15 +210,15 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + engineFolderLocation, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + engineFolderLocation);
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::values.ppssppExePath, true);
+			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::values.ppssppExePath);
 		}
 	}
 	return (CompilerAvailability)error;
