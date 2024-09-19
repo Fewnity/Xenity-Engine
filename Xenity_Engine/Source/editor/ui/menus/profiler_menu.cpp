@@ -202,7 +202,8 @@ void ProfilerMenu::DrawProfilerGraph()
 			return;
 		}
 
-		if (ImGui::Button("Pause Profiler"))
+		const std::string pauseText = isPaused ? "Resume Profiler" : "Pause Profiler";
+		if (ImGui::Button(pauseText.c_str()))
 		{
 			isPaused = !isPaused;
 		}
