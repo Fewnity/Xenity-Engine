@@ -26,6 +26,13 @@ Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
 Set isTrigger and generateCollisionEvents has protected?
+Improve crash when removing the engine asset folder by adding logs
+Add folder check (engine assets, icons, public assets)
+Add assert when launching the engine if the data base is missing
+Fix void Compiler::UpdatePaths() when making a public build
+Check if the source file is with the engine
+Check why the compiler search for main.cpp in the engine's folder
+Remove the image and model folder from source
 
 --- Can be done for the next release
 Remove the old profiler
