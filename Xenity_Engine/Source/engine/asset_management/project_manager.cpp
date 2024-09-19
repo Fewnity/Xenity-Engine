@@ -547,15 +547,15 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	{
 		fileType = FileType::File_Font;
 	}
-	else if (extension == ".mat") // If the file is a font
+	else if (extension == ".mat") // If the file is a material
 	{
 		fileType = FileType::File_Material;
 	}
-	else if (extension == ".shader") // If the file is a font
+	else if (extension == ".shader") // If the file is a shader
 	{
 		fileType = FileType::File_Shader;
 	}
-	else if (extension == ".ico") // If the file is a font
+	else if (extension == ".ico") // If the file is an icon
 	{
 		fileType = FileType::File_Icon;
 	}
