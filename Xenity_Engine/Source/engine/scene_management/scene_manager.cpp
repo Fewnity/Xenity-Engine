@@ -74,9 +74,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		j["GameObjects"][gameObjectId]["Children"] = ids;
 
 		// Save components values
-		//const int componentCount = go->GetComponentCount();
-		//for (int componentI = 0; componentI < componentCount; componentI++)
-		for (std::shared_ptr<Component>& component : go->m_components)
+		for (const std::shared_ptr<Component>& component : go->m_components)
 		{
 			const uint64_t compId = component->GetUniqueId();
 			const std::string compIdString = std::to_string(compId);
@@ -86,9 +84,9 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			}
 			usedIds[compId] = true;
 
-			ReflectiveData componentData = component->GetReflectiveData();
+			const ReflectiveData componentData = component->GetReflectiveData();
 
-			std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
+			const std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
 			// If the component is valide, save values
 			if (!missingScript)
 			{
@@ -112,7 +110,9 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	// Add skybox file to the usedFile list
 	if (Graphics::settings.skybox != nullptr)
+	{
 		usedFilesIds.push_back(Graphics::settings.skybox->m_fileId);
+	}
 
 	// Save the usedFilesIds list
 	j["UsedFiles"]["Values"] = usedFilesIds;
@@ -132,6 +132,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		if (SceneManager::s_openedScene)
 		{
 			path = SceneManager::s_openedScene->m_file->GetPath();
+			XASSERT(!path.empty(), "[SceneManager::SaveScene] Scene path is empty");
 		}
 		else
 		{
@@ -404,8 +405,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
 
-	//WorldPartitionner::ProcessPartionning();
-
 	// Automaticaly set the game in play mode if built in engine mode
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Playing, true);
@@ -438,6 +437,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->m_fileSize);
 		free(binData);
 #endif
+		XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
 
 		try
 		{

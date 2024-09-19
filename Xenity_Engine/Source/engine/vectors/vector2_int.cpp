@@ -20,27 +20,27 @@ ReflectiveData Vector2Int::GetReflectiveData()
 
 Vector2Int::Vector2Int()
 {
-	this->x = 0;
-	this->y = 0;
+	x = 0;
+	y = 0;
 }
 
-Vector2Int::Vector2Int(const int x, const int y)
+Vector2Int::Vector2Int(const int _x, const int _y)
 {
-	this->x = x;
-	this->y = y;
+	x = _x;
+	y = _y;
 }
 
 Vector2Int::Vector2Int(const int fillValue)
 {
-	this->x = fillValue;
-	this->y = fillValue;
+	x = fillValue;
+	y = fillValue;
 }
 
 #pragma endregion
 
 float Vector2Int::Magnitude() const
 {
-	return sqrtf(powf((float)this->x, 2) + powf((float)this->y, 2));
+	return sqrtf(powf((float)x, 2) + powf((float)y, 2));
 }
 
 float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)

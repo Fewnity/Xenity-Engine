@@ -500,13 +500,13 @@ void Shader::SetShaderCameraPosition()
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
-		const std::shared_ptr<Transform> transform = Graphics::usedCamera->GetTransform();
+		const Transform* transform = Graphics::usedCamera->GetTransformRaw();
 
 		const Vector3& position = transform->GetPosition();
 
 		const Quaternion& baseQ = transform->GetRotation();
-		const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
-		Quaternion newQ = baseQ * offsetQ;
+		static const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+		const Quaternion newQ = baseQ * offsetQ;
 
 		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
 

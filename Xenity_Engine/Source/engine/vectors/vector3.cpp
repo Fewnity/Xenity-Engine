@@ -22,46 +22,59 @@ ReflectiveData Vector3::GetReflectiveData()
 	return reflectedVariables;
 }
 
-Vector3::Vector3()
-{
-	this->x = 0;
-	this->y = 0;
-	this->z = 0;
-}
-
 Vector3::Vector3(const glm::vec3& glmVec3)
 {
-	this->x = glmVec3.x;
-	this->y = glmVec3.y;
-	this->z = glmVec3.z;
+	XASSERT(!std::isnan(glmVec3.x), "x is Nan");
+	XASSERT(!std::isnan(glmVec3.y), "y is Nan");
+	XASSERT(!std::isnan(glmVec3.z), "z is Nan");
+
+	XASSERT(!std::isinf(glmVec3.x), "x is Inf");
+	XASSERT(!std::isinf(glmVec3.y), "y is Inf");
+	XASSERT(!std::isinf(glmVec3.z), "z is Inf");
+
+	x = glmVec3.x;
+	y = glmVec3.y;
+	z = glmVec3.z;
 }
 
 Vector3::Vector3(const glm::vec4& glmVec4)
 {
-	this->x = glmVec4.x;
-	this->y = glmVec4.y;
-	this->z = glmVec4.z;
+	XASSERT(!std::isnan(glmVec4.x), "x is Nan");
+	XASSERT(!std::isnan(glmVec4.y), "y is Nan");
+	XASSERT(!std::isnan(glmVec4.z), "z is Nan");
+
+	XASSERT(!std::isinf(glmVec4.x), "x is Inf");
+	XASSERT(!std::isinf(glmVec4.y), "y is Inf");
+	XASSERT(!std::isinf(glmVec4.z), "z is Inf");
+
+	x = glmVec4.x;
+	y = glmVec4.y;
+	z = glmVec4.z;
 }
 
 Vector3::Vector3(const float fillValue)
 {
-	this->x = fillValue;
-	this->y = fillValue;
-	this->z = fillValue;
+	XASSERT(!std::isnan(fillValue), "fillValue is Nan");
+
+	XASSERT(!std::isinf(fillValue), "fillValue is Inf");
+
+	x = fillValue;
+	y = fillValue;
+	z = fillValue;
 }
 
 Vector3::Vector3(const Vector2Int& vect)
 {
-	this->x = (float)vect.x;
-	this->y = (float)vect.y;
-	this->z = 0;
+	x = (float)vect.x;
+	y = (float)vect.y;
+	z = 0;
 }
 
 Vector3::Vector3(const Vector2& vect)
 {
-	this->x = vect.x;
-	this->y = vect.y;
-	this->z = 0;
+	x = vect.x;
+	y = vect.y;
+	z = 0;
 }
 
 #pragma endregion
@@ -78,11 +91,11 @@ Vector3 Vector3::LookAt(const Vector3& from, const Vector3& to)
 
 Vector3 Vector3::Normalized() const
 {
-	const float ls = this->x * this->x + this->y * this->y + this->z * this->z;
+	const float ls = x * x + y * y + z * z;
 	if (ls != 0)
 	{
 		const float length = sqrtf(ls);
-		return Vector3(this->x / length, this->y / length, this->z / length);
+		return Vector3(x / length, y / length, z / length);
 	}
 	else
 	{
@@ -98,7 +111,7 @@ Vector3 Vector3::Normalize()
 
 float Vector3::Magnitude() const
 {
-	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
+	return sqrtf(powf(x, 2) + powf(y, 2) + powf(z, 2));
 }
 
 float Vector3::Dot(const Vector3& v) const
@@ -116,6 +129,7 @@ bool Vector3::HasInvalidValues() const
 	if (std::isnan(x) || std::isnan(y) || std::isnan(z) ||
 		std::isinf(x) || std::isinf(y) || std::isinf(z))
 	{
+		XASSERT(false, "The Vector3 has invalid values");
 		return true;
 	}
 	return false;

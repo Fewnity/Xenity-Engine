@@ -22,32 +22,42 @@ ReflectiveData Vector2::GetReflectiveData()
 
 Vector2::Vector2()
 {
-	this->x = 0;
-	this->y = 0;
+	x = 0;
+	y = 0;
 }
 
-Vector2::Vector2(const float x, const float y)
+Vector2::Vector2(const float _x, const float _y)
 {
-	this->x = x;
-	this->y = y;
+	XASSERT(!std::isnan(_x), "x is Nan");
+	XASSERT(!std::isnan(_y), "y is Nan");
+
+	XASSERT(!std::isinf(_x), "x is Inf");
+	XASSERT(!std::isinf(_y), "y is Inf");
+
+	x = _x;
+	y = _y;
 }
 
 Vector2::Vector2(const float fillValue)
 {
-	this->x = fillValue;
-	this->y = fillValue;
+	XASSERT(!std::isnan(fillValue), "fillValue is Nan");
+
+	XASSERT(!std::isinf(fillValue), "fillValue is Inf");
+
+	x = fillValue;
+	y = fillValue;
 }
 
 Vector2::Vector2(const Vector3& vect3)
 {
-	this->x = vect3.x;
-	this->y = vect3.y;
+	x = vect3.x;
+	y = vect3.y;
 }
 
 Vector2::Vector2(const Vector2Int& vect2Int)
 {
-	this->x = (float)vect2Int.x;
-	this->y = (float)vect2Int.y;
+	x = (float)vect2Int.x;
+	y = (float)vect2Int.y;
 }
 
 #pragma endregion
@@ -65,13 +75,13 @@ Vector2 Vector2::Normalized() const
 
 Vector2 Vector2::Normalize()
 {
-	*(this) = this->Normalized();
+	*(this) = Normalized();
 	return *(this);
 }
 
 float Vector2::Magnitude() const
 {
-	return sqrtf(powf(this->x, 2) + powf(this->y, 2));
+	return sqrtf(powf(x, 2) + powf(y, 2));
 }
 
 float Vector2::Distance(const Vector2& a, const Vector2& b)
@@ -91,6 +101,7 @@ bool Vector2::HasInvalidValues() const
 	if (std::isnan(x) || std::isnan(y) ||
 		std::isinf(x) || std::isinf(y))
 	{
+		XASSERT(false, "The Vector2 has invalid values");
 		return true;
 	}
 	return false;

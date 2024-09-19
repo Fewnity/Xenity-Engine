@@ -18,14 +18,14 @@ class API UniqueId
 public:
 	inline UniqueId()
 	{
-		this->m_forFile = false;
-		this->m_uniqueId = GenerateUniqueId(m_forFile);
+		m_forFile = false;
+		m_uniqueId = GenerateUniqueId(m_forFile);
 	}
 
 	inline UniqueId(bool _forFile)
 	{
-		this->m_forFile = _forFile;
-		this->m_uniqueId = GenerateUniqueId(_forFile);
+		m_forFile = _forFile;
+		m_uniqueId = GenerateUniqueId(_forFile);
 	}
 
 	/**

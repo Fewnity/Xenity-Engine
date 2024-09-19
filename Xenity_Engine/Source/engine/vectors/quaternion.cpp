@@ -16,18 +16,18 @@
 Quaternion::Quaternion()
 {
 	// Set identity
-	this->x = 0;
-	this->y = 0;
-	this->z = 0;
-	this->w = 1;
+	x = 0;
+	y = 0;
+	z = 0;
+	w = 1;
 }
 
 Quaternion::Quaternion(const Vector4& vector)
 {
-	this->x = vector.x;
-	this->y = vector.y;
-	this->z = vector.z;
-	this->w = vector.w;
+	x = vector.x;
+	y = vector.y;
+	z = vector.z;
+	w = vector.w;
 }
 
 Quaternion Quaternion::Inverse(const Quaternion& q)
@@ -39,8 +39,15 @@ Quaternion Quaternion::Inverse(const Quaternion& q)
 
 Quaternion Quaternion::Euler(const float x, const float y, const float z)
 {
-	glm::quat q4 = glm::quat(glm::vec3(z / 180.0f * Math::PI, x / 180.0f * Math::PI, y / 180.0f * Math::PI));
+	XASSERT(!std::isnan(x), "x is Nan");
+	XASSERT(!std::isnan(y), "y is Nan");
+	XASSERT(!std::isnan(z), "z is Nan");
 
+	XASSERT(!std::isinf(x), "x is Inf");
+	XASSERT(!std::isinf(y), "y is Inf");
+	XASSERT(!std::isinf(z), "z is Inf");
+
+	const glm::quat q4 = glm::quat(glm::vec3(z / 180.0f * Math::PI, x / 180.0f * Math::PI, y / 180.0f * Math::PI));
 
 	Quaternion quat;
 	quat.x = q4.y;
@@ -52,9 +59,9 @@ Quaternion Quaternion::Euler(const float x, const float y, const float z)
 
 Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis)
 {
-	float rad = angle * Math::PI / 180.0f;
-	float s = sin(rad / 2);
-	float c = cos(rad / 2);
+	const float rad = angle * Math::PI / 180.0f;
+	const float s = sin(rad / 2);
+	const float c = cos(rad / 2);
 
 	return Quaternion(axis.x * s, axis.y * s, axis.z * s, c);
 }
@@ -70,7 +77,7 @@ Vector3 Quaternion::ToEuler() const
 	//y = glm::degrees(y);
 	//z = glm::degrees(z);
 
-	glm::vec3 euler = glm::degrees(glm::eulerAngles(glm::quat(w, y, x, z)));
+	const glm::vec3 euler = glm::degrees(glm::eulerAngles(glm::quat(w, y, x, z)));
 	return Vector3(euler.y, euler.x, euler.z);
 }
 

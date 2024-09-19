@@ -42,16 +42,16 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 	// Check if the component has been just instanciated
 	bool firstUse = false;
-	if (this->m_gameObject.expired())
+	if (m_gameObject.expired())
 	{
 		GameplayManager::componentsListDirty = true;
 		firstUse = true;
 	}
 
-	this->m_gameObject = newGameObject;
-	this->m_transform = newGameObject->GetTransform();
-	this->m_transformRaw = newGameObject->GetTransform().get();
-	this->m_gameObjectRaw = newGameObject.get();
+	m_gameObject = newGameObject;
+	m_transform = newGameObject->GetTransform();
+	m_transformRaw = newGameObject->GetTransform().get();
+	m_gameObjectRaw = newGameObject.get();
 
 	if (firstUse)
 	{
@@ -89,10 +89,10 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 void Component::SetIsEnabled(bool isEnabled)
 {
-	if (this->m_isEnabled == isEnabled)
+	if (m_isEnabled == isEnabled)
 		return;
 
-	this->m_isEnabled = isEnabled;
+	m_isEnabled = isEnabled;
 	if (m_isEnabled)
 		OnEnabled();
 	else

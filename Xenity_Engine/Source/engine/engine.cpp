@@ -367,8 +367,10 @@ void Engine::Loop()
 					if (lastComponent)
 					{
 						lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
-						if (lastComponent->GetGameObject())
-							lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObject()->GetName();
+						if (lastComponent->GetGameObjectRaw())
+						{
+							lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObjectRaw()->GetName();
+						}
 					}
 					Debug::PrintError(lastComponentMessage);
 
@@ -379,7 +381,9 @@ void Engine::Loop()
 #endif
 
 				if (GameplayManager::GetGameState() == GameState::Playing)
+				{
 					PhysicsManager::Update();
+				}
 
 				// Remove all destroyed gameobjects and components
 				GameplayManager::RemoveDestroyedGameObjects();

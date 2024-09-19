@@ -12,6 +12,7 @@
 
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
+#include <engine/assertions/assertions.h>
 
 class Vector2Int;
 class Vector2;
@@ -24,9 +25,19 @@ class API Vector3 : public Reflective
 public:
 	ReflectiveData GetReflectiveData() override;
 
-	Vector3();
+	Vector3() : x(0), y(0), z(0) {}
+
 	inline explicit Vector3(const float x, const float y, const float z)
-		: x(x), y(y), z(z) {}
+		: x(x), y(y), z(z) 
+	{
+		XASSERT(!std::isnan(x), "x is Nan");
+		XASSERT(!std::isnan(y), "y is Nan");
+		XASSERT(!std::isnan(z), "z is Nan");
+
+		XASSERT(!std::isinf(x), "x is Inf");
+		XASSERT(!std::isinf(y), "y is Inf");
+		XASSERT(!std::isinf(z), "z is Inf");
+	}
 	Vector3(const glm::vec3& glmVec3);
 	Vector3(const glm::vec4& glmVec4);
 	explicit Vector3(const float fillValue);

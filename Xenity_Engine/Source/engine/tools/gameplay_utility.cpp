@@ -33,7 +33,6 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 {
 	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::DuplicateChild] goToDuplicate is nullptr");
 
-
 	// Create new gameobject
 	std::string newGameObjectName = goToDuplicate->GetName();
 #if defined(EDITOR)
@@ -51,8 +50,8 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 		newGameObject->SetParent(parent);
 
 		// Set local position/rotation/scale
-		std::shared_ptr<Transform> transformToDuplicate = goToDuplicate->GetTransform();
-		std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
+		const std::shared_ptr<Transform>& transformToDuplicate = goToDuplicate->GetTransform();
+		const std::shared_ptr<Transform>& newTransform = newGameObject->GetTransform();
 		newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
 		newTransform->SetLocalRotation(transformToDuplicate->GetLocalEulerAngles());
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());

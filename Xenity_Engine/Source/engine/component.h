@@ -14,6 +14,7 @@
 #include <engine/reflection/enum_utils.h>
 #include <engine/unique_id/unique_id.h>
 #include <engine/physics/collision_event.h>
+#include <engine/assertions/assertions.h>
 
 class GameObject;
 class Transform;
@@ -89,6 +90,7 @@ public:
 	*/
 	inline std::shared_ptr <GameObject> GetGameObject() const
 	{
+		XASSERT(m_gameObject.lock(), "The gameobject is null");
 		return m_gameObject.lock();
 	}
 	
@@ -97,6 +99,7 @@ public:
 	*/
 	inline GameObject* GetGameObjectRaw() const
 	{
+		XASSERT(m_gameObjectRaw, "The gameobject is null");
 		return m_gameObjectRaw;
 	}
 
@@ -105,6 +108,7 @@ public:
 	*/
 	inline std::shared_ptr <Transform> GetTransform() const
 	{
+		XASSERT(m_transform.lock(), "The transform is null");
 		return m_transform.lock();
 	}
 
@@ -113,6 +117,7 @@ public:
 	*/
 	inline Transform* GetTransformRaw() const
 	{
+		//XASSERT(m_transformRaw, "The transform is null"); // Disabled for a small hack in the lighting system
 		return m_transformRaw;
 	}
 
@@ -121,6 +126,7 @@ public:
 	*/
 	inline const std::string& GetComponentName() const
 	{
+		XASSERT(!m_componentName.empty(), "The component's name is empty");
 		return m_componentName;
 	}
 
