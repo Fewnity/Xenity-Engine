@@ -147,7 +147,8 @@ png
   SceTouch_stub
   SceAudio_stub
   SceNet_stub
-  zip 
+  zip
+  bz2
   vitashark 
   SceShaccCgExt 
   taihen_stub SceShaccCg_stub

@@ -37,9 +37,9 @@ RUN echo "export PATH=\$PATH:\$PSPDEV/bin" >> /root/.bashrc
 # RUN cd /home/vdpm/ && ./bootstrap-vitasdk.sh
 
 # Download vitasdk
-RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/vitasdk-ubuntu-latest3.tar.gz
+RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/vitasdk-ubuntu-latest4.tar.gz
 # Extract files
-RUN cd /usr/local && tar -xvzf vitasdk-ubuntu-latest3.tar.gz && rm vitasdk-ubuntu-latest3.tar.gz
+RUN cd /usr/local && tar -xvzf vitasdk-ubuntu-latest4.tar.gz && rm vitasdk-ubuntu-latest4.tar.gz
 
 ENV VITASDK /usr/local/vitasdk
 ENV PATH {$VITASDK}/bin:$PATH
