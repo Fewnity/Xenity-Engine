@@ -1069,9 +1069,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	}
 	else 
 	{
-#if !defined(DEBUG)
-	command += " /O2";
-#endif
+
 	}
 
 
@@ -1132,7 +1130,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 	//Buid game exe
 	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc /DNOMINMAX";
 #if !defined(DEBUG)
-	command += " /O2";
+	command += " /O2 /GL";
 #endif
 	command += " -I \"" + engineProjectLocation + "include\"";
 	command += " -I \"" + engineProjectLocation + "Source\"";
