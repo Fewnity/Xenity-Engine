@@ -36,11 +36,11 @@ bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector
 		float sphereCoord = (&sphereCenter.x)[i];
 		if (sphereCoord < (&cubeMin.x)[i])
 		{
-			dmin += std::powf(sphereCoord - (&cubeMin.x)[i], 2);
+			dmin += std::pow(sphereCoord - (&cubeMin.x)[i], 2);
 		}
 		else if (sphereCoord > cubeMaxCoord)
 		{
-			dmin += std::powf(sphereCoord - cubeMaxCoord, 2);
+			dmin += std::pow(sphereCoord - cubeMaxCoord, 2);
 		}
 	}
 
