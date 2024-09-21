@@ -25,20 +25,28 @@ class Vector2;
 class Vector3;
 class Vector4;
 
-struct LightsIndices 
+struct ivec4
+{
+	int x;
+	int y;
+	int z;
+	int w;
+};
+
+struct alignas(16) LightsIndices 
 {
 	int usedPointLightCount = 0;
 	int usedSpotLightCount = 0;
 	int usedDirectionalLightCount = 0;
 	int padding0;
 
-	int pointLightIndices[MAX_LIGHT_COUNT];
-	int spotLightIndices[MAX_LIGHT_COUNT];
-	int directionalLightIndices[MAX_LIGHT_COUNT];
+	ivec4 pointLightIndices[MAX_LIGHT_COUNT];
+	ivec4 spotLightIndices[MAX_LIGHT_COUNT];
+	ivec4 directionalLightIndices[MAX_LIGHT_COUNT];
 
 	// Padding
-	int padding1;
-	int padding2;
+	/*int padding1;
+	int padding2;*/
 };
 
 /**

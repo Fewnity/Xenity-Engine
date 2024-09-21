@@ -537,7 +537,7 @@ void RendererGU::Setlights(const LightsIndices& lightsIndices, const Camera& cam
 	{
 		for (size_t i = 0; i < lightsIndices.usedDirectionalLightCount; i++)
 		{
-			const Light* light = AssetManager::GetLight(lightsIndices.directionalLightIndices[i] - 1);
+			const Light* light = AssetManager::GetLight(lightsIndices.directionalLightIndices[i].x - 1);
 			const Vector3 dir = light->GetTransformRaw()->GetBackward() * 1000;
 			SetLight(usedLightCount, *light, dir, dir);
 
@@ -550,7 +550,7 @@ void RendererGU::Setlights(const LightsIndices& lightsIndices, const Camera& cam
 	{
 		for (size_t i = 0; i < lightsIndices.usedPointLightCount; i++)
 		{
-			const Light* light = AssetManager::GetLight(lightsIndices.pointLightIndices[i] - 1);
+			const Light* light = AssetManager::GetLight(lightsIndices.pointLightIndices[i].x - 1);
 			SetLight(usedLightCount, *light, light->GetTransformRaw()->GetPosition(), zero);
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
@@ -561,7 +561,7 @@ void RendererGU::Setlights(const LightsIndices& lightsIndices, const Camera& cam
 	{
 		for (size_t i = 0; i < lightsIndices.usedSpotLightCount; i++)
 		{
-			const Light* light = AssetManager::GetLight(lightsIndices.spotLightIndices[i] - 1);
+			const Light* light = AssetManager::GetLight(lightsIndices.spotLightIndices[i].x - 1);
 			Vector3 fwd = light->GetTransformRaw()->GetForward();
 			fwd.x = -fwd.x;
 			SetLight(usedLightCount, *light, light->GetTransformRaw()->GetPosition(), fwd);

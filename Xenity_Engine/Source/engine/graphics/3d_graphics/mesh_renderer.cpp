@@ -274,18 +274,18 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 				if (light->GetType() == LightType::Point)
 				{
 					if constexpr (Graphics::UseOpenGLFixedFunctions)
-						lightsIndices.pointLightIndices[pointLightCount] = light->m_indexInLightList + 1;
+						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInLightList + 1;
 					else
-						lightsIndices.pointLightIndices[pointLightCount] = light->m_indexInShaderList + 1;
+						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInShaderList + 1;
 
 					pointLightCount++;
 				}
 				else if (light->GetType() == LightType::Spot)
 				{
 					if constexpr (Graphics::UseOpenGLFixedFunctions)
-						lightsIndices.spotLightIndices[spotLightCount] = light->m_indexInLightList + 1;
+						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInLightList + 1;
 					else
-						lightsIndices.spotLightIndices[spotLightCount] = light->m_indexInShaderList + 1;
+						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInShaderList + 1;
 
 					spotLightCount++;
 				}
@@ -294,9 +294,9 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 			for (size_t i = 0; i < directionalLightCount; i++)
 			{
 				if constexpr (Graphics::UseOpenGLFixedFunctions)
-					lightsIndices.directionalLightIndices[i] = Graphics::directionalLights[i]->m_indexInLightList + 1;
+					lightsIndices.directionalLightIndices[i].x = Graphics::directionalLights[i]->m_indexInLightList + 1;
 				else
-					lightsIndices.directionalLightIndices[i] = Graphics::directionalLights[i]->m_indexInShaderList + 1;
+					lightsIndices.directionalLightIndices[i].x = Graphics::directionalLights[i]->m_indexInShaderList + 1;
 			}
 
 			lightsIndices.usedPointLightCount = pointLightCount;
