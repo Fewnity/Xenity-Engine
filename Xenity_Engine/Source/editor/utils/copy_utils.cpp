@@ -4,6 +4,7 @@
 
 #include <engine/debug/debug.h>
 #include <engine/assertions/assertions.h>
+#include <engine/file_system/file_system.h>
 
 namespace fs = std::filesystem;
 
@@ -55,8 +56,8 @@ void CopyUtils::AddCopyEntry(bool isFolder, const std::string& source, const std
 
 	CopyEntry entry;
 	entry.isFolder = isFolder;
-	entry.sourcePath = source;
-	entry.destPath = dest;
+	entry.sourcePath = FileSystem::ConvertBasicPathToWindowsPath(source);
+	entry.destPath = FileSystem::ConvertBasicPathToWindowsPath(dest);
 
 	copyEntries.push_back(entry);
 }

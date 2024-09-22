@@ -7,9 +7,11 @@
 #include "file.h"
 
 #include <engine/assertions/assertions.h>
+#include "file_system.h"
 
 File::File(const std::string& _path) : UniqueId(true)
 {
+
 	XASSERT(!_path.empty(), "[File::File] _path is nullptr");
 
 	if (_path.empty())
@@ -24,6 +26,7 @@ File::File(const std::string& _path) : UniqueId(true)
 	this->path = _path;
 	//_path = "host0:" + _path;
 #endif
+	path = FileSystem::ConvertWindowsPathToBasicPath(path);
 	const size_t pointIndex = path.find_last_of('.');
 	pathExtention = path.substr(pointIndex);
 

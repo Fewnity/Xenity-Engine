@@ -29,6 +29,8 @@
 
 Directory::Directory(std::string _path) : UniqueId(true)
 {
+	_path = FileSystem::ConvertWindowsPathToBasicPath(_path);
+
 #if defined(_EE)
 	_path = "mass:" + _path;
 	//_path = "host0:" + _path;
