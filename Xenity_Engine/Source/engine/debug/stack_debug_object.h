@@ -7,6 +7,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 #define STACK_HIGH_PRIORITY 0
 #define STACK_MEDIUM_PRIORITY 1
