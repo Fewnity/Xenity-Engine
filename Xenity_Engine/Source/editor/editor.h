@@ -469,6 +469,8 @@ private:
 	};
 	static MenuSettings menuSettings;
 
+	static bool CheckIntegrity();
+	static void CheckItemIntegrity(const std::string& itemPath, bool& success);
 	static void SaveMenuSettings();
 	static void LoadMenuSettings();
 	static void CreateNewMenuSettings();

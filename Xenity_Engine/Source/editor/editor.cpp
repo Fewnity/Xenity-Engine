@@ -8,6 +8,8 @@
 
 #include "editor.h"
 
+#include <filesystem>
+
 #include <imgui/imgui_internal.h>
 
 #include <editor/ui/menus/hierarchy_menu.h>
@@ -102,6 +104,8 @@ void Editor::Init()
 	toolArrowsTexture->LoadFileReference();
 
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
+
+	CheckIntegrity();
 }
 
 void Editor::SaveMenuSettings()
@@ -404,6 +408,57 @@ void Editor::Draw()
 
 	RemoveEditorStyle();
 	EditorUI::Render();
+}
+
+void Editor::CheckItemIntegrity(const std::string& itemPath, bool& success)
+{
+	if (!std::filesystem::exists(itemPath)) 
+	{
+		Debug::PrintError("File/Folder does not exist: " + itemPath);
+		success = false;
+	}
+}
+
+bool Editor::CheckIntegrity()
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	bool success = true;
+
+	// Check folders
+	CheckItemIntegrity("engine_assets", success);
+	CheckItemIntegrity("icons", success);
+	CheckItemIntegrity("include", success);
+	CheckItemIntegrity("psp_images", success);
+	CheckItemIntegrity("psvita_images", success);
+	CheckItemIntegrity("public_engine_assets", success);
+	CheckItemIntegrity("Source", success);
+
+	// Check files
+#if defined(_WIN32) || defined(_WIN64)
+	CheckItemIntegrity("freetype.dll", success);
+	CheckItemIntegrity("glfw3.dll", success);
+	CheckItemIntegrity("SDL3.dll", success);
+
+	CheckItemIntegrity("Xenity_Editor.dll", success);
+	CheckItemIntegrity("Xenity_Editor.lib", success);
+	CheckItemIntegrity("Xenity_Engine.dll", success);
+	CheckItemIntegrity("Xenity_Engine.lib", success);
+
+	CheckItemIntegrity("res.rc", success);
+	CheckItemIntegrity("Roboto Regular.ttf", success);
+	CheckItemIntegrity("CMakeLists.txt", success);
+	CheckItemIntegrity("Dockerfile", success);
+
+	CheckItemIntegrity("main.cpp", success);
+#endif
+
+	if (!success)
+	{
+		Debug::PrintError("Some files/folders are missing, please check the integrity of the engine files");
+	}
+
+	return success;
 }
 
 void Editor::ApplyEditorStyle()
