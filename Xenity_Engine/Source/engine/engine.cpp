@@ -103,7 +103,7 @@ bool Engine::s_isRunning = true;
 bool Engine::s_isInitialized = false;
 
 std::unique_ptr<GameInterface> Engine::s_game = nullptr;
-Event<>* Engine::s_onWindowFocusEvent = nullptr;
+Event<>* Engine::s_onWindowFocusEvent = new Event<>();
 
 void Engine::OnCloseSignal(int)
 {
@@ -115,10 +115,6 @@ int Engine::Init()
 #if defined(_WIN32) || defined(_WIN64)
 	signal(SIGBREAK, Engine::OnCloseSignal);
 #endif
-
-	s_onWindowFocusEvent = new Event<>();
-
-	CrashHandler::Init();
 
 	//  Init random
 	srand((unsigned int)time(NULL));
@@ -150,6 +146,8 @@ int Engine::Init()
 		Debug::PrintWarning("-------- Debug init error code: " + std::to_string(debugInitResult) + " --------", true);
 		// Not a critical module, do not stop the engine
 	}
+
+	CrashHandler::Init();
 
 #if defined(DEBUG)
 #if defined(EDITOR)
