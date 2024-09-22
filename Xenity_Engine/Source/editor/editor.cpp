@@ -446,12 +446,12 @@ bool Editor::CheckIntegrity()
 	CheckItemIntegrity("Xenity_Engine.lib", success);
 
 	CheckItemIntegrity("res.rc", success);
+#endif
+
 	CheckItemIntegrity("Roboto Regular.ttf", success);
 	CheckItemIntegrity("CMakeLists.txt", success);
 	CheckItemIntegrity("Dockerfile", success);
-
 	CheckItemIntegrity("main.cpp", success);
-#endif
 
 	if (!success)
 	{
