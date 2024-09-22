@@ -219,6 +219,14 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	if (m_culled || outOfFrustum)
 		return;
 
+	if constexpr (!Graphics::UseOpenGLFixedFunctions)
+	{
+		if (renderCommand.material->GetShader() == nullptr || renderCommand.material->GetShader()->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		{
+			return;
+		}
+	}
+
 	if (renderCommand.material->GetUseLighting())
 	{
 		const size_t lightCount = affectedByLights.size();
