@@ -958,11 +958,11 @@ void ProjectManager::LoadProjectSettings()
 	projectSettings = GetProjectSettings(projectFolderPath);
 }
 
-void ProjectManager::SaveProjectSettings()
+void ProjectManager::SaveProjectSettings(const std::string folderPath)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const std::string path = projectFolderPath + PROJECT_SETTINGS_FILE_NAME;
+	const std::string path = folderPath + PROJECT_SETTINGS_FILE_NAME;
 	FileSystem::s_fileSystem->Delete(path);
 	json projectData;
 
@@ -978,6 +978,11 @@ void ProjectManager::SaveProjectSettings()
 	{
 		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path, true);
 	}
+}
+
+void ProjectManager::SaveProjectSettings()
+{
+	SaveProjectSettings(projectFolderPath);
 }
 
 void ProjectManager::SaveMetaFile(FileReference& fileReference)

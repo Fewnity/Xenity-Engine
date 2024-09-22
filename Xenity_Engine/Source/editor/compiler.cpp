@@ -106,6 +106,29 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		Debug::PrintWarning("[Compiler::Compile] Unable to clear the compilation folder", true);
 	}
+	
+	// Save project settings of the build
+	{
+		ProjectSettings projectSettingsCopy = ProjectManager::projectSettings;
+
+		ProjectManager::projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+		bool isDebugMode = false;
+#if defined(DEBUG)
+		isDebugMode = true;
+#endif
+		ProjectManager::projectSettings.isLibCompiledForDebug = isDebugMode;
+
+		bool is64Bits = false;
+#if defined(_WIN64)
+		is64Bits = true;
+#endif
+		ProjectManager::projectSettings.isLibCompiledFor64Bits = is64Bits;
+
+		ProjectManager::SaveProjectSettings(params.tempPath);
+
+		ProjectManager::projectSettings = projectSettingsCopy;
+	}
+
 	CookSettings cookSettings;
 	cookSettings.exportPath = params.tempPath + "cooked_assets/";
 	cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
@@ -308,7 +331,7 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 	const std::string projectCookedPublicEngineAssetsFolder = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/" + PUBLIC_ENGINE_ASSETS_FOLDER;
 	CopyUtils::AddCopyEntry(true, projectCookedPublicEngineAssetsFolder, exportPath + PUBLIC_ENGINE_ASSETS_FOLDER);
 
-	CopyUtils::AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME);
+	CopyUtils::AddCopyEntry(false, ProjectManager::GetProjectFolderPath() + ".build/" + PROJECT_SETTINGS_FILE_NAME, exportPath + PROJECT_SETTINGS_FILE_NAME);
 
 	const bool copyResult = CopyUtils::ExecuteCopyEntries();
 	return copyResult;
@@ -985,7 +1008,7 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		const std::string copyGamePublicEngineAssetsCommand = "docker cp \"" + ProjectManager::GetPublicEngineAssetFolderPath().substr(0, ProjectManager::GetPublicEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyGamePublicEngineAssetsResult = system(copyGamePublicEngineAssetsCommand.c_str());
 
-		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
+		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/" + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
 		[[maybe_unused]] const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
 
 		const std::string copydbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.bin" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "db.bin" + "\"";
@@ -1130,7 +1153,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 	//Buid game exe
 	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++20 /MP /EHsc /DNOMINMAX";
 #if !defined(DEBUG)
-	command += " /O2 /GL";
+	command += " /O2";
 #endif
 	command += " -I \"" + engineProjectLocation + "include\"";
 	command += " -I \"" + engineProjectLocation + "Source\"";
