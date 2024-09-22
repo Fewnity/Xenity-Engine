@@ -174,9 +174,12 @@ int Engine::Init()
 	s_renderer = std::make_unique<RendererVU1>();
 #elif defined(__PSP__)
 	s_renderer = std::make_unique<RendererGU>();
-#else
+#elif defined(_WIN32) | defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
 	s_renderer = std::make_unique<RendererOpengl>();
+#else
+	#error "No renderer defined for this platform" 
 #endif
+
 	const int rendererInitResult = s_renderer->Init();
 	if (rendererInitResult != 0)
 	{
