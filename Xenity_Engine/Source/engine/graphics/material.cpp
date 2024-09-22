@@ -161,7 +161,7 @@ void Material::Use()
 void Material::Update()
 {
 	//materialUpdateBenchmark->Start();
-	if (m_shader != nullptr && m_shader->m_isLoaded)
+	if (m_shader != nullptr && m_shader->GetFileStatus() == FileStatus::FileStatus_Loaded)
 	{
 		Performance::AddMaterialUpdate();
 
@@ -261,9 +261,9 @@ void Material::OnReflectionUpdated()
 
 void Material::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_isLoaded = true;
+		m_fileStatus = FileStatus::FileStatus_Loading;
 
 		bool loadResult = true;
 #if defined(EDITOR)
@@ -289,15 +289,18 @@ void Material::LoadFileReference()
 			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::LoadFileReference] Failed to load the material file", true);
+				m_fileStatus = FileStatus::FileStatus_Failed;
 				return;
 			}
 			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
-
+			m_fileStatus = FileStatus::FileStatus_Loaded;
 		}
 		else
 		{
 			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath());
 			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath(), true);
+			m_fileStatus = FileStatus::FileStatus_Failed;
+			return;
 		}
 	}
 }

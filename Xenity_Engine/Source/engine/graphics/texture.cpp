@@ -71,7 +71,7 @@ ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 void Texture::OnReflectionUpdated()
 {
 #if defined(EDITOR)
-	if(previousResolution != GetCookResolution() && m_isLoaded && isValid)
+	if(previousResolution != GetCookResolution() && m_fileStatus == FileStatus::FileStatus_Loaded && isValid)
 	{
 		previousResolution = GetCookResolution();
 		UnloadFileReference();
@@ -95,11 +95,11 @@ Texture::~Texture()
 
 void Texture::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_isLoaded = true;
+		m_fileStatus = FileStatus::FileStatus_Loading;
+
 #if defined(EDITOR)
-		m_isLoading = true;
 		AsyncFileLoading::AddFile(shared_from_this());
 
 		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
@@ -116,9 +116,9 @@ void Texture::UnloadFileReference()
 	if (Engine::IsRunning(true))
 	{
 		Debug::Print("Unload", true);
-		if (m_isLoaded)
+		if (m_fileStatus == FileStatus::FileStatus_Loaded)
 		{
-			m_isLoaded = false;
+			m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 			Unload();
 		}
 	}
@@ -525,20 +525,21 @@ void Texture::LoadTexture()
 		free(fileData);
 		int newWidth = m_width;
 		int newHeight = height;
-		if((newWidth > height) && newWidth > static_cast<int>(GetCookResolution()))
+		const int cookResolution = static_cast<int>(GetCookResolution());
+		if((newWidth > height) && newWidth > cookResolution)
 		{
 			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(m_width)));
-			newWidth = static_cast<int>(GetCookResolution());
+			newWidth = cookResolution;
 		}
-		else if((newHeight > m_width) && newHeight > static_cast<int>(GetCookResolution()))
+		else if((newHeight > m_width) && newHeight > cookResolution)
 		{
 			newWidth = static_cast<int>(m_width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
-			newHeight = static_cast<int>(GetCookResolution());
+			newHeight = cookResolution;
 		}
-		else if ((newWidth == newHeight) && newWidth > static_cast<int>(GetCookResolution()))
+		else if ((newWidth == newHeight) && newWidth > cookResolution)
 		{
-			newWidth = static_cast<int>(GetCookResolution());
-			newHeight = static_cast<int>(GetCookResolution());
+			newWidth = cookResolution;
+			newHeight = cookResolution;
 		}
 
 		m_buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
@@ -557,6 +558,7 @@ void Texture::LoadTexture()
 		if (!m_buffer)
 		{
 			Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
+			m_fileStatus = FileStatus::FileStatus_Failed;
 			return;
 		}
 
@@ -572,8 +574,9 @@ void Texture::LoadTexture()
 	else
 	{
 		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file", true);
+		m_fileStatus = FileStatus::FileStatus_Failed;
 	}
-	m_isLoading = false;
+	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
 void Texture::Unload()

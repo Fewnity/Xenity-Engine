@@ -392,7 +392,6 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 		sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-		mesh.SetIsLoading(false);
 		if (notSupported)
 		{
 			Debug::PrintError("[WavefrontLoader::LoadFromRawData] Mesh loading error. Only triangulated meshes are supported. Path: " + mesh.m_file->GetPath());

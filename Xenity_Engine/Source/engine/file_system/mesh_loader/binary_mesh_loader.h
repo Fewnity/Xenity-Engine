@@ -7,6 +7,6 @@ class MeshData;
 class BinaryMeshLoader
 {
 public:
-	static void LoadMesh(MeshData& mesh);
+	static bool LoadMesh(MeshData& mesh);
 };
 

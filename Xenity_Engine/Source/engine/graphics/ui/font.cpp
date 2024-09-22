@@ -49,16 +49,23 @@ void Font::OnReflectionUpdated()
 
 void Font::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_isLoaded = true;
-		CreateFont(GetThisShared(), m_file->GetPath());
+		bool result = CreateFont(*this);
+		if (result) 
+		{
+			m_fileStatus = FileStatus::FileStatus_Loaded;
+		}
+		else
+		{
+			m_fileStatus = FileStatus::FileStatus_Failed;
+		}
 	}
 }
 
-bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &filePath)
+bool Font::CreateFont(Font& font)
 {
-	Debug::Print("Loading font: " + filePath, true);
+	Debug::Print("Loading font: " + font.m_file->GetPath(), true);
 #if !defined(__LINUX__)
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
@@ -69,13 +76,24 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 
 	// Load font
 	FT_Face face;
-
-	if (FT_New_Face(ft, filePath.c_str(), 0, &face))
+#if defined(EDITOR)
+	if (FT_New_Face(ft, font.m_file->GetPath().c_str(), 0, &face))
 	{
 		Debug::PrintError("[Font::CreateFont] Failed to load font", true);
 		return false;
 	}
 
+#else
+	const int fileBufferSize = m_fileSize;
+	unsigned char* fileData = nullptr;
+	fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, fileBufferSize);
+	if (FT_New_Memory_Face(ft, fileData, fileBufferSize, 0, &face))
+	{
+		Debug::PrintError("[Font::CreateFont] Failed to load font from memory", true);
+		return false;
+	}
+	free(fileData);
+#endif
 	int charPixelHeight = 48;
 	// int charPixelHeight = 21;
 	//  Load glyph
@@ -107,7 +125,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 			// load character glyph
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
-				Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath, true);
+				Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + font.m_file->GetPath(), true);
 				continue;
 			}
 
@@ -120,10 +138,10 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 			character->Advance = (unsigned int)face->glyph->advance.x;
 			character->rightAdvance = (face->glyph->advance.x >> 6) * 0.01f;
 
-			font->Characters[c] = character;
+			font.Characters[c] = character;
 
-			if (font->maxCharHeight < (float)character->rightSize.y)
-				font->maxCharHeight = (float)character->rightSize.y;
+			if (font.maxCharHeight < (float)character->rightSize.y)
+				font.maxCharHeight = (float)character->rightSize.y;
 
 			if (int(xOffset + face->glyph->bitmap.width) >= atlasSize)
 			{
@@ -164,7 +182,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 		}
 		catch (...)
 		{
-			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + filePath, true);
+			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + font.m_file->GetPath(), true);
 			free(atlas);
 			return false;
 		}
@@ -180,7 +198,7 @@ bool Font::CreateFont(const std::shared_ptr<Font> &font, const std::string &file
 	newAtlas->SetFilter(Filter::Bilinear);
 	newAtlas->SetWrapMode(WrapMode::ClampToEdge);
 
-	font->fontAtlas = newAtlas;
+	font.fontAtlas = newAtlas;
 
 	free(atlas);
 

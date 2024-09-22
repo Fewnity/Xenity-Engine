@@ -10,7 +10,7 @@
 #include <pspkernel.h>
 #endif
 
-void BinaryMeshLoader::LoadMesh(MeshData& mesh)
+bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
 	unsigned char* fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
@@ -63,7 +63,7 @@ void BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
 
-	mesh.SetIsLoading(false);
-
 	delete[] fileDataOriginalPtr;
+
+	return true;
 }

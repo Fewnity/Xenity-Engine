@@ -70,7 +70,7 @@ void SkyBox::OnReflectionUpdated()
 
 void SkyBox::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		bool openResult = true;
 #if defined(EDITOR)
@@ -96,17 +96,30 @@ void SkyBox::LoadFileReference()
 			catch (const std::exception&)
 			{
 				Debug::PrintError("[ProjectManager::LoadFileReference] Failed to load the material file", true);
+				m_fileStatus = FileStatus::FileStatus_Failed;
 				return;
 			}
 			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
 
-			m_isLoaded = true;
+			m_fileStatus = FileStatus::FileStatus_Loaded;
 		}
 		else 
 		{
 			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + m_file->GetPath(), true);
+			m_fileStatus = FileStatus::FileStatus_Failed;
+			return;
 		}
 	}
+}
+
+void SkyBox::UnloadFileReference()
+{
+	front = nullptr;
+	back = nullptr;
+	up = nullptr;
+	down = nullptr;
+	left = nullptr;
+	right = nullptr;
 }
 
 std::shared_ptr<SkyBox> SkyBox::MakeSkyBox()

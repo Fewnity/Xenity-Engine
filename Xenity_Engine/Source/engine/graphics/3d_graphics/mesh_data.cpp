@@ -382,15 +382,24 @@ MeshData::~MeshData()
 
 void MeshData::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_isLoaded = true;
+		m_fileStatus = FileStatus::FileStatus_Loading;
 		m_isValid = false;
+		bool result;
 #if defined(EDITOR)
-		WavefrontLoader::LoadFromRawData(*this);
+		result = WavefrontLoader::LoadFromRawData(*this);
 #else
-		BinaryMeshLoader::LoadMesh(*this);
+		result = BinaryMeshLoader::LoadMesh(*this);
 #endif
+		if (result) 
+		{
+			m_fileStatus = FileStatus::FileStatus_Loaded;
+		}
+		else
+		{
+			m_fileStatus = FileStatus::FileStatus_Failed;
+		}
 		OnLoadFileReferenceFinished();
 //#if defined(EDITOR)
 //		isLoading = true;
@@ -436,9 +445,9 @@ void MeshData::UnloadFileReference()
 {
 	if (Engine::IsRunning(true))
 	{
-		if (m_isLoaded)
+		if (m_fileStatus == FileStatus::FileStatus_Loaded)
 		{
-			m_isLoaded = false;
+			m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 			m_isValid = false;
 			Unload();
 		}

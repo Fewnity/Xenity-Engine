@@ -50,5 +50,5 @@ protected:
 	}
 
 	std::shared_ptr <Texture> fontAtlas = nullptr;
-	bool CreateFont(const std::shared_ptr<Font>& font, const std::string& filePath);
+	bool CreateFont(Font& font);
 };

@@ -49,6 +49,7 @@ protected:
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
 	void LoadFileReference() override;
+	void UnloadFileReference() override;
 
 	static constexpr int s_version = 1;
 };

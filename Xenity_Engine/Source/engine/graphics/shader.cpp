@@ -238,7 +238,7 @@ Shader::Shader()
 /// </summary>
 Shader::~Shader()
 {
-	if (m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Loaded)
 	{
 		if constexpr (!Graphics::UseOpenGLFixedFunctions)
 		{
@@ -255,6 +255,7 @@ Shader::~Shader()
 				//Engine::GetRenderer().DeleteShaderProgram(m_programId);
 			}
 		}
+		m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 	}
 }
 
@@ -272,11 +273,13 @@ ReflectiveData Shader::GetMetaReflectiveData(AssetPlatform platform)
 
 void Shader::LoadFileReference()
 {
-	if (!m_isLoaded)
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_isLoaded = true;
-		if constexpr (Graphics::UseOpenGLFixedFunctions)
+		if constexpr (Graphics::UseOpenGLFixedFunctions) 
+		{
+			m_fileStatus = FileStatus::FileStatus_Loaded;
 			return;
+		}
 
 		bool openResult = true;
 #if defined(EDITOR)
@@ -361,11 +364,12 @@ void Shader::LoadFileReference()
 					if (vertexRet && fragRet)
 					{
 						Link();
+						m_fileStatus = FileStatus::FileStatus_Loaded;
 					}
 					else
 					{
 						Debug::PrintError("[Shader::LoadFileReference] Cannot link the shader, the compilation has failed: " + m_file->GetPath(), true);
-						m_isLoaded = false;
+						m_fileStatus = FileStatus::FileStatus_Failed;
 					}
 
 					//m_useTessellation = true;
@@ -375,19 +379,19 @@ void Shader::LoadFileReference()
 				else
 				{
 					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + m_file->GetPath(), true);
-					m_isLoaded = false;
+					m_fileStatus = FileStatus::FileStatus_Failed;
 				}
 			}
 			else
 			{
 				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + m_file->GetPath(), true);
-				m_isLoaded = false;
+				m_fileStatus = FileStatus::FileStatus_Failed;
 			}
 		}
 		else
 		{
 			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + m_file->GetPath(), true);
-			m_isLoaded = false;
+			m_fileStatus = FileStatus::FileStatus_Failed;
 		}
 	}
 }

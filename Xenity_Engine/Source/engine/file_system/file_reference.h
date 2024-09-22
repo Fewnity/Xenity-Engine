@@ -18,6 +18,14 @@
 
 class File;
 
+enum class FileStatus
+{
+	FileStatus_Not_Loaded,
+	FileStatus_Loading,
+	FileStatus_Loaded,
+	FileStatus_Failed
+};
+
 class API FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
@@ -26,30 +34,16 @@ public:
 	/**
 	* @brief Load the file
 	*/
-	virtual void LoadFileReference()
-	{
-		//isLoaded = true;
-		//AssetManager::AddFileReference(this);
-	}
+	virtual void LoadFileReference() { }
 
 	/**
 	* @brief Unload the file
 	*/
-	virtual void UnloadFileReference()
-	{
-		//isLoaded = false;
-		//AssetManager::RemoveFileReference(this);
-	}
+	virtual void UnloadFileReference() { }
 
-	virtual void OnLoadFileReferenceFinished()
-	{
+	virtual void OnLoadFileReferenceFinished() { }
 
-	}
-
-	virtual void OnReflectionUpdated()
-	{
-
-	}
+	virtual void OnReflectionUpdated() { }
 
 	virtual ReflectiveData GetReflectiveData()
 	{
@@ -75,23 +69,17 @@ public:
 	FileType m_fileType = FileType::File_Other;
 	bool m_isMetaDirty = false;
 
-	void SetIsLoading(bool _isLoading)
+	void SetFileStatus(FileStatus _fileStatus)
 	{
-		m_isLoading = _isLoading;
+		m_fileStatus = _fileStatus;
 	}
 
-	bool IsLoading() const
+	FileStatus GetFileStatus() const
 	{
-		return m_isLoading;
-	}
-
-	bool IsLoaded() const
-	{
-		return m_isLoaded;
+		return m_fileStatus;
 	}
 
 protected:
-	bool m_isLoaded = false;
-	bool m_isLoading = false;
+	FileStatus m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 };
 
