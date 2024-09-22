@@ -32,10 +32,11 @@ void Cooker::CookAssets(const CookSettings& settings)
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
 	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
-	const size_t idsCount = ids.size();
-	for (size_t i = 0; i < idsCount; i++)
+
+	// Find file from id and cook it
+	for (uint64_t id : ids)
 	{
-		const FileInfo* fileInfo = ProjectManager::GetFileById(ids[i]);
+		const FileInfo* fileInfo = ProjectManager::GetFileById(id);
 		if (fileInfo)
 		{
 			std::string newPath;
@@ -48,6 +49,7 @@ void Cooker::CookAssets(const CookSettings& settings)
 				newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
 			}
 
+			// Create the destination folder for the file
 			std::string folderToCreate = (settings.exportPath + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('/'));
 			fs::create_directories(folderToCreate);
@@ -57,7 +59,6 @@ void Cooker::CookAssets(const CookSettings& settings)
 	}
 
 	fileDataBase.SaveToFile(settings.exportPath + "db.bin");
-
 }
 
 void Cooker::CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportFolderPath)
@@ -69,7 +70,8 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	uint64_t cookedFileSize = 0;
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 
-	if (fileInfo.type == FileType::File_Texture)
+	// We copy the cooked file to the export folder, and then we add the copied file to the binary file
+	if (fileInfo.type == FileType::File_Texture) // Cook texture
 	{
 		const std::string texturePath = fileInfo.path;
 
@@ -81,26 +83,27 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 			return;
 		}
 
-		std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
-		std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
+		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+		const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
 		TextureResolutions textureResolution = texture->m_settings[static_cast<int>(settings.platform)]->resolution;
 
 		int newWidth = width;
 		int newHeight = height;
-		if ((newWidth > height) && newWidth > static_cast<int>(textureResolution))
+		const int textureResolutionInt = static_cast<int>(textureResolution);
+		if ((newWidth > height) && newWidth > textureResolutionInt)
 		{
+			newWidth = textureResolutionInt;
 			newHeight = static_cast<int>(height * (static_cast<float>(textureResolution) / static_cast<float>(width)));
-			newWidth = static_cast<int>(textureResolution);
 		}
-		else if ((newHeight > width) && newHeight > static_cast<int>(textureResolution))
+		else if ((newHeight > width) && newHeight > textureResolutionInt)
 		{
 			newWidth = static_cast<int>(width * (static_cast<float>(textureResolution) / static_cast<float>(height)));
-			newHeight = static_cast<int>(textureResolution);
+			newHeight = textureResolutionInt;
 		}
-		else if ((newWidth == newHeight) && newWidth > static_cast<int>(textureResolution))
+		else if ((newWidth == newHeight) && newWidth > textureResolutionInt)
 		{
-			newWidth = static_cast<int>(textureResolution);
-			newHeight = static_cast<int>(textureResolution);
+			newWidth = textureResolutionInt;
+			newHeight = textureResolutionInt;
 		}
 
 		//TODO do not resize if the texture is already at the correct size
@@ -110,20 +113,20 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 		free(imageData);
 		free(resizedImageData);
-
-		cookedFileSize = fs::file_size(exportPath.c_str());
 	}
-	else if (fileInfo.type == FileType::File_Mesh)
+	else if (fileInfo.type == FileType::File_Mesh) // Cook mesh
 	{
-		std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
-		std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
+		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+		const std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
 		meshData->LoadFileReference();
 
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
+		// Write mesh data
 		meshFile.write((char*)&meshData->m_vertexDescriptor, sizeof(VertexElements));
 		meshFile.write((char*)&meshData->m_subMeshCount, sizeof(uint32_t));
 
+		// Write submeshes data
 		for (auto subMesh : meshData->m_subMeshes)
 		{
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
@@ -134,18 +137,19 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 			meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
 		}
 		meshFile.close();
-
-		cookedFileSize = fs::file_size(exportPath.c_str());
 	}
-	else
+	else // If file can't be cooked, just copy it
 	{
 		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
-		cookedFileSize = fs::file_size(fileInfo.path);
 	}
+
+	// Copy the raw meta file, maybe we should cook it too later
 	CopyUtils::AddCopyEntry(false, fileInfo.path + ".meta", exportPath + ".meta");
-	uint64_t metaSize = fs::file_size(fileInfo.path + ".meta");
+	const uint64_t metaSize = fs::file_size(fileInfo.path + ".meta");
 
 	CopyUtils::ExecuteCopyEntries();
+
+	cookedFileSize = fs::file_size(exportPath.c_str());
 
 	// Do not include audio in the binary file
 	size_t dataOffset = 0;
@@ -161,24 +165,32 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		FileSystem::s_fileSystem->Delete(exportPath);
 	}
 
+	// Add the meta file to the binary file
 	size_t metaDataOffset = 0;
 	std::shared_ptr<File> cookedMetaFile = FileSystem::MakeFile(exportPath + ".meta");
 	int cookedMetaFileSizeOut;
-	cookedMetaFile->Open(FileMode::ReadOnly);
-	unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
-	cookedMetaFile->Close();
-	metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
-	delete[] metaFileData;
+	bool cookedMetaOpen = cookedMetaFile->Open(FileMode::ReadOnly);
+	if (cookedMetaOpen)
+	{
+		unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
+		cookedMetaFile->Close();
+		metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
+		delete[] metaFileData;
+	}
+	else
+	{
+		Debug::PrintError("[Cooker::CookAsset] Failed to open meta file: " + exportPath + ".meta");
+	}
 	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
 
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
-	fileDataBaseEntry->p = partialFilePath;
-	fileDataBaseEntry->id = fileInfo.file->GetUniqueId();
-	fileDataBaseEntry->po = dataOffset;
-	fileDataBaseEntry->s = cookedFileSize;
-	fileDataBaseEntry->mpo = metaDataOffset;
-	fileDataBaseEntry->ms = metaSize;
-	fileDataBaseEntry->t = fileInfo.type;
+	fileDataBaseEntry->p = partialFilePath; // Path
+	fileDataBaseEntry->id = fileInfo.file->GetUniqueId(); // Unique id
+	fileDataBaseEntry->po = dataOffset; // Position in the binary file
+	fileDataBaseEntry->s = cookedFileSize; // Size
+	fileDataBaseEntry->mpo = metaDataOffset; // Meta position in the binary file
+	fileDataBaseEntry->ms = metaSize; // Meta Size
+	fileDataBaseEntry->t = fileInfo.type; // Type
 
 	fileDataBase.AddFile(fileDataBaseEntry);
 }

@@ -643,7 +643,11 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #if defined(DEBUG)
 	isDebugMode = true;
 #endif
-	if (projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION && projectSettings.isLibCompiledForDebug == isDebugMode && projectSettings.isLibCompiledFor64Bits == is64Bits)
+	const bool isSameVersion = projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
+	const bool isSameDebugMode = projectSettings.isLibCompiledForDebug == isDebugMode;
+	const bool isSame64Bits = projectSettings.isLibCompiledFor64Bits == is64Bits;
+
+	if (isSameVersion && isSameDebugMode && isSame64Bits)
 	{
 #if defined(EDITOR)
 		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/game_editor");
