@@ -765,12 +765,6 @@
     <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Source\images\1.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Source\fonts\arial.ttf" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
 </Project>
