@@ -915,20 +915,13 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 
 	ProjectSettings settings;
 	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectPath + PROJECT_SETTINGS_FILE_NAME);
-	if (projectFile->CheckIfExist())
-	{
-		std::string jsonString = "";
+	std::string jsonString = "";
 
-		// Read file
-		if (projectFile->Open(FileMode::ReadOnly))
-		{
-			jsonString = projectFile->ReadAll();
-			projectFile->Close();
-		}
-		else
-		{
-			Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file", true);
-		}
+	// Read file
+	if (projectFile->Open(FileMode::ReadOnly))
+	{
+		jsonString = projectFile->ReadAll();
+		projectFile->Close();
 
 		if (!jsonString.empty())
 		{
@@ -940,7 +933,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[ProjectManager::LoadProjectSettings] Meta file error", true);
+				Debug::PrintError("[ProjectManager::LoadProjectSettings] Corrupted project settings", true);
 				return settings;
 			}
 
@@ -948,6 +941,12 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 			ReflectionUtils::JsonToReflectiveData(projectData, settings.GetReflectiveData());
 		}
 	}
+	else
+	{
+		XASSERT(false, "[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
+		Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file", true);
+	}
+
 	return settings;
 }
 
