@@ -76,14 +76,15 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
-	ImGui::Separator();
+	// Does not work well
+	/*ImGui::Separator();
 	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::values.compileOnCodeChanged);
 	if (valueChanged)
 		settingsChanged = true;
 
 	valueChanged = ImGui::Checkbox("Compile On Project Opened", &EngineSettings::values.compileWhenOpeningProject);
 	if (valueChanged)
-		settingsChanged = true;
+		settingsChanged = true;*/
 
 	return settingsChanged;
 }
