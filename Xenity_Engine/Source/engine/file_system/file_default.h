@@ -67,5 +67,5 @@ public:
 	void Write(const unsigned char* data, size_t size) override;
 
 protected:
-	std::fstream file;
+	std::fstream m_file;
 };

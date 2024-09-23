@@ -27,8 +27,8 @@
 #include <editor/ui/menus/docker_config_menu.h>
 #include <editor/ui/menus/build_settings_menu.h>
 #include <editor/ui/menus/engine_asset_manager_menu.h>
-std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::nameToMenu;
-std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::s_nameToMenu;
+std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #endif
 
 #include <engine/lighting/lighting.h>
@@ -62,9 +62,9 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::menuClassInfos;
 #include <engine/particle_system/particle_system.h>
 #include <engine/debug/stack_debug_object.h>
 
-std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::nameToComponent;
-std::vector<ClassRegistry::FileClassInfo> ClassRegistry::fileClassInfos;
-std::vector<ClassRegistry::ClassInfo> ClassRegistry::classInfos;
+std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::s_nameToComponent;
+std::vector<ClassRegistry::FileClassInfo> ClassRegistry::s_fileClassInfos;
+std::vector<ClassRegistry::ClassInfo> ClassRegistry::s_classInfos;
 
 std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string& name, GameObject& gameObject)
 {
@@ -72,9 +72,9 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
 
-	if (nameToComponent.find(name) != nameToComponent.end()) // Check if the component is in the list
+	if (s_nameToComponent.find(name) != s_nameToComponent.end()) // Check if the component is in the list
 	{
-		return nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
+		return s_nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
 	}
 	else
 	{
@@ -89,9 +89,9 @@ std::shared_ptr<Menu> ClassRegistry::CreateMenuFromName(const std::string& name)
 
 	XASSERT(!name.empty(), "[ClassRegistry::AddComponentFromName] name is empty");
 
-	if (nameToMenu.find(name) != nameToMenu.end()) // Check if the component is in the list
+	if (s_nameToMenu.find(name) != s_nameToMenu.end()) // Check if the component is in the list
 	{
-		return nameToMenu[name].first(); // Call the function to add the component to the gameObject
+		return s_nameToMenu[name].first(); // Call the function to add the component to the gameObject
 	}
 	else
 	{
@@ -106,7 +106,7 @@ std::vector<std::string> ClassRegistry::GetComponentNames()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	std::vector<std::string> names;
-	for (const auto& kv : nameToComponent)
+	for (const auto& kv : s_nameToComponent)
 	{
 		if(kv.second.second)
 			names.push_back(kv.first);
@@ -118,8 +118,8 @@ void ClassRegistry::Reset()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	nameToComponent.clear();
-	classInfos.clear();
+	s_nameToComponent.clear();
+	s_classInfos.clear();
 }
 
 void ClassRegistry::RegisterEngineComponents()

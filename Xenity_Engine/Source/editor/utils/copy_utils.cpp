@@ -49,7 +49,7 @@ void CopyUtils::AddCopyEntry(bool isFolder, const std::string& source, const std
 	XASSERT(!source.empty(), "[Compiler::AddCopyEntry] source is empty");
 	XASSERT(!dest.empty(), "[Compiler::AddCopyEntry] dest is empty");
 
-	if (source.empty() || dest.empty())
+	if (source.empty() || dest.empty() || source == dest)
 	{
 		return;
 	}

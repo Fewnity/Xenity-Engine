@@ -21,23 +21,23 @@ ReflectiveData FileDataBaseEntry::GetReflectiveData()
 ReflectiveData FileDataBase::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, fileList, "fl", true);
+	Reflective::AddVariable(reflectedVariables, m_fileList, "fl", true);
 	return reflectedVariables;
 }
 
 void FileDataBase::AddFile(FileDataBaseEntry* file)
 {
-	fileList.push_back(file);
+	m_fileList.push_back(file);
 }
 
 void FileDataBase::Clear()
 {
-	const size_t listSize = fileList.size();
+	const size_t listSize = m_fileList.size();
 	for (size_t i = 0; i < listSize; i++)
 	{
-		delete fileList[i];
+		delete m_fileList[i];
 	}
-	fileList.clear();
+	m_fileList.clear();
 }
 
 void FileDataBase::SaveToFile(const std::string& path)

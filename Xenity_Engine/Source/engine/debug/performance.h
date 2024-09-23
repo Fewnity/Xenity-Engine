@@ -136,13 +136,13 @@ public:
 	*/
 	static void Update();
 
-	static std::unordered_map<std::string, ProfilerCategory*> profilerCategories;
-	static std::unordered_map<std::string, std::vector<ScopTimerResult>> scopProfilerList;
+	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
+	static std::unordered_map<std::string, std::vector<ScopTimerResult>> s_scopProfilerList;
 
-	static MemoryTracker* gameObjectMemoryTracker;
-	static MemoryTracker* meshDataMemoryTracker;
-	static MemoryTracker* textureMemoryTracker;
-	static uint32_t benchmarkScopeLevel;
+	static MemoryTracker* s_gameObjectMemoryTracker;
+	static MemoryTracker* s_meshDataMemoryTracker;
+	static MemoryTracker* s_textureMemoryTracker;
+	static uint32_t s_benchmarkScopeLevel;
 private:
 
 	/**
@@ -150,12 +150,12 @@ private:
 	*/
 	static void ResetProfiler();
 
-	static int drawCallCount;
-	static int drawTriangleCount;
-	static int LastDrawCallCount;
-	static int LastDrawTriangleCount;
-	static int updatedMaterialCount;
+	static int s_drawCallCount;
+	static int s_drawTriangleCount;
+	static int s_lastDrawCallCount;
+	static int s_lastDrawTriangleCount;
+	static int s_updatedMaterialCount;
 
-	static int tickCount;
-	static float averageCoolDown;
+	static int s_tickCount;
+	static float s_averageCoolDown;
 };

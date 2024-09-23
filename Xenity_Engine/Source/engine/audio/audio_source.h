@@ -61,7 +61,7 @@ public:
 	*/
 	inline float GetVolume() const
 	{
-		return volume;
+		return m_volume;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public:
 	*/
 	inline float GetPanning() const
 	{
-		return pan;
+		return m_pan;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public:
 	*/
 	inline bool IsPlaying() const
 	{
-		return isPlaying;
+		return m_isPlaying;
 	}
 
 	/**
@@ -85,17 +85,17 @@ public:
 	*/
 	inline bool IsLooping() const
 	{
-		return loop;
+		return m_loop;
 	}
 
 	inline std::shared_ptr<AudioClip> GetAudioClip()
 	{
-		return audioClip;
+		return m_audioClip;
 	}
 
 	inline void SetAudioClip(std::shared_ptr<AudioClip> audioClip)
 	{
-		this->audioClip = audioClip;
+		m_audioClip = audioClip;
 	}
 
 protected:
@@ -110,7 +110,7 @@ protected:
 
 	void Awake() override;
 
-	std::shared_ptr<AudioClip> audioClip = nullptr;
+	std::shared_ptr<AudioClip> m_audioClip = nullptr;
 
 	/**
 	* @brief Get shared pointer from this
@@ -120,12 +120,12 @@ protected:
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
 	}
 
-	float volume = 1;
-	float pan = 0.5f;
-	bool loop = true;
-	bool isPlaying = false;
-	bool playOnAwake = true;
+	float m_volume = 1;
+	float m_pan = 0.5f;
+	bool m_loop = true;
+	bool m_isPlaying = false;
+	bool m_playOnAwake = true;
 
 	// [Internal]
-	bool isEditor = false;
+	bool m_isEditor = false;
 };

@@ -513,7 +513,7 @@ void Texture::LoadTexture()
 		fileData = m_file->ReadAllBinary(fileBufferSize);
 		m_file->Close();
 #else
-		fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, fileBufferSize);
+		fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
 #endif
 
 		// Only for editor, live resizing
@@ -566,7 +566,7 @@ void Texture::LoadTexture()
 		SetData(m_buffer);
 #else
 #if defined (DEBUG)
-		Performance::textureMemoryTracker->Allocate(m_width * height * 4);
+		Performance::s_textureMemoryTracker->Allocate(m_width * height * 4);
 #endif
 #endif
 
@@ -585,7 +585,7 @@ void Texture::Unload()
 	Engine::GetRenderer().DeleteTexture(*this);
 
 #if defined (DEBUG)
-	Performance::textureMemoryTracker->Deallocate(m_width * height * 4);
+	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
 #endif
 }
 

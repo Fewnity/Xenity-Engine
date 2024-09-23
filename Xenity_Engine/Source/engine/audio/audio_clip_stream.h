@@ -76,7 +76,7 @@ public:
 	*/
 	inline int GetChannelCount() const
 	{
-		return channelCount;
+		return m_channelCount;
 	}
 
 	/**
@@ -84,13 +84,13 @@ public:
 	*/
 	inline AudioType GetAudioType() const
 	{
-		return type;
+		return m_type;
 	}
 
 private:
-	uint64_t sampleCount = 0;
-	drmp3* mp3 = nullptr;
-	drwav* wav = nullptr;
-	AudioType type = AudioType::Null;
-	int channelCount = 0;
+	uint64_t m_sampleCount = 0;
+	drmp3* m_mp3Stream = nullptr;
+	drwav* m_wavStream = nullptr;
+	AudioType m_type = AudioType::Null;
+	int m_channelCount = 0;
 };

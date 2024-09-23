@@ -94,26 +94,26 @@ void ProfilerMenu::DrawMemoryStats()
 {
 	if (ImGui::CollapsingHeader("Memory stats", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		MemoryTracker* goMem = Performance::gameObjectMemoryTracker;
+		MemoryTracker* goMem = Performance::s_gameObjectMemoryTracker;
 
-		ImGui::Text("%s:", goMem->name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", goMem->allocatedMemory - goMem->deallocatedMemory, goMem->allocatedMemory);
-		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (goMem->allocatedMemory - goMem->deallocatedMemory) / 1000000.0f, goMem->allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", goMem->allocCount, goMem->deallocCount);
+		ImGui::Text("%s:", goMem->m_name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", goMem->m_allocatedMemory - goMem->m_deallocatedMemory, goMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (goMem->m_allocatedMemory - goMem->m_deallocatedMemory) / 1000000.0f, goMem->m_allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", goMem->m_allocCount, goMem->m_deallocCount);
 
-		MemoryTracker* meshDataMem = Performance::meshDataMemoryTracker;
+		MemoryTracker* meshDataMem = Performance::s_meshDataMemoryTracker;
 		ImGui::Separator();
-		ImGui::Text("%s:", meshDataMem->name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", meshDataMem->allocatedMemory - meshDataMem->deallocatedMemory, meshDataMem->allocatedMemory);
-		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (meshDataMem->allocatedMemory - meshDataMem->deallocatedMemory) / 1000000.0f, meshDataMem->allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", meshDataMem->allocCount, meshDataMem->deallocCount);
+		ImGui::Text("%s:", meshDataMem->m_name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory, meshDataMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory) / 1000000.0f, meshDataMem->m_allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", meshDataMem->m_allocCount, meshDataMem->m_deallocCount);
 
-		MemoryTracker* textureMem = Performance::textureMemoryTracker;
+		MemoryTracker* textureMem = Performance::s_textureMemoryTracker;
 		ImGui::Separator();
-		ImGui::Text("%s:", textureMem->name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->allocatedMemory - textureMem->deallocatedMemory, textureMem->allocatedMemory);
-		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (textureMem->allocatedMemory - textureMem->deallocatedMemory) / 1000000.0f, textureMem->allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", textureMem->allocCount, textureMem->deallocCount);
+		ImGui::Text("%s:", textureMem->m_name.c_str());
+		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory, textureMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory) / 1000000.0f, textureMem->m_allocatedMemory / 1000000.0f);
+		ImGui::Text("Alloc count: %d, Delete count: %d", textureMem->m_allocCount, textureMem->m_deallocCount);
 	}
 }
 
@@ -124,7 +124,7 @@ void ProfilerMenu::DrawProfilerBenchmarks()
 		if (EngineSettings::values.useProfiler)
 		{
 			//Add profiler texts
-			for (const auto& kv : Performance::profilerCategories)
+			for (const auto& kv : Performance::s_profilerCategories)
 			{
 				std::string title = kv.first;
 				if (kv.second->profilerList.count(kv.first) != 0)
@@ -196,7 +196,7 @@ void ProfilerMenu::DrawProfilerGraph()
 	if (ImGui::CollapsingHeader("Profiler Graph", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		// If the profiler is not running, display a message
-		if(Performance::scopProfilerList.empty())
+		if(Performance::s_scopProfilerList.empty())
 		{
 			ImGui::Text("No profiler data available");
 			return;
@@ -217,8 +217,8 @@ void ProfilerMenu::DrawProfilerGraph()
 		if (!isPaused)
 		{
 			lastMaxLevel = 0;
-			offsetTime = Performance::scopProfilerList["Engine::Loop"][0].start;
-			endTime = Performance::scopProfilerList["Engine::Loop"][0].end;
+			offsetTime = Performance::s_scopProfilerList["Engine::Loop"][0].start;
+			endTime = Performance::s_scopProfilerList["Engine::Loop"][0].end;
 
 			CreateTimelineItems();
 
@@ -314,7 +314,7 @@ void ProfilerMenu::DrawProfilerGraph()
 void ProfilerMenu::CreateTimelineItems()
 {
 	timelineItems.clear();
-	for (const auto& valCategory : Performance::scopProfilerList)
+	for (const auto& valCategory : Performance::s_scopProfilerList)
 	{
 		for (const auto& value : valCategory.second)
 		{

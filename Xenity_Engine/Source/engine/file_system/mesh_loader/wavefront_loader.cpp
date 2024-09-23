@@ -38,7 +38,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 		allString = file->ReadAll();
 		file->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
+		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 		allString = std::string(reinterpret_cast<const char*>(binData), mesh.m_fileSize);
 		free(binData);
 #endif

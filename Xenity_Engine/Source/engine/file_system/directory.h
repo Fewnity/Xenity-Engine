@@ -41,9 +41,9 @@ public:
 	*/
 	inline const std::string& GetPath() const
 	{
-		return path;
+		return m_path;
 	}
 
 private:
-	std::string path = "";
+	std::string m_path = "";
 };

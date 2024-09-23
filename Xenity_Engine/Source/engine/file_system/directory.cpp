@@ -43,7 +43,7 @@ Directory::Directory(std::string _path) : UniqueId(true)
 		}
 	}
 #endif
-	this->path = _path;
+	this->m_path = _path;
 }
 
 Directory::~Directory()
@@ -81,7 +81,7 @@ bool Directory::CheckIfExist() const
 {
 	bool exists = false;
 #if defined(__PSP__)
-	DIR *dir = opendir(this->path.c_str());
+	DIR *dir = opendir(m_path.c_str());
 	if (dir == NULL)
 	{
 		exists = false;
@@ -92,7 +92,7 @@ bool Directory::CheckIfExist() const
 		exists = true;
 	}
 #elif defined(_EE)
-	int fd = fileXioDopen(this->path.c_str());
+	int fd = fileXioDopen(m_path.c_str());
 	if (fd < 0)
 	{
 		exists = false;
@@ -103,7 +103,7 @@ bool Directory::CheckIfExist() const
 		fileXioDclose(fd);
 	}
 #else
-	exists = std::filesystem::exists(this->path);
+	exists = std::filesystem::exists(m_path);
 #endif
 	return exists;
 }

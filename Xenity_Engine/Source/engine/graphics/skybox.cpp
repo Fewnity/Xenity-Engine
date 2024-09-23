@@ -83,7 +83,7 @@ void SkyBox::LoadFileReference()
 			jsonString = m_file->ReadAll();
 			m_file->Close();
 #else
-			unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(m_filePosition, m_fileSize);
+			unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
 			jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
 			free(binData);
 #endif

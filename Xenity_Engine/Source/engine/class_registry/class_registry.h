@@ -60,12 +60,12 @@ public:
 		{
 			return go.AddComponent<T>();
 		};
-		nameToComponent[name] = { function , isVisible };
+		s_nameToComponent[name] = { function , isVisible };
 
 		ClassInfo classInfo;
 		classInfo.name = name;
 		classInfo.typeId = typeid(T).hash_code();
-		classInfos.push_back(classInfo);
+		s_classInfos.push_back(classInfo);
 	}
 
 #if defined (EDITOR)
@@ -84,12 +84,12 @@ public:
 		{
 			return std::make_shared<T>();
 		};
-		nameToMenu[name] = { function , isVisible };
+		s_nameToMenu[name] = { function , isVisible };
 
 		MenuClassInfo classInfo;
 		classInfo.name = name;
 		classInfo.typeId = typeid(T).hash_code();
-		menuClassInfos.push_back(classInfo);
+		s_menuClassInfos.push_back(classInfo);
 	}
 #endif
 
@@ -144,7 +144,7 @@ public:
 		fileClassInfo.name = name;
 		fileClassInfo.typeId = typeid(T).hash_code();
 		fileClassInfo.fileType = fileType;
-		fileClassInfos.push_back(fileClassInfo);
+		s_fileClassInfos.push_back(fileClassInfo);
 	}
 
 	/**
@@ -155,10 +155,10 @@ public:
 	static GetFileClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
-		const size_t fileClassInfosCount = fileClassInfos.size();
+		const size_t fileClassInfosCount = s_fileClassInfos.size();
 		for (size_t i = 0; i < fileClassInfosCount; i++)
 		{
-			const FileClassInfo& info = fileClassInfos[i];
+			const FileClassInfo& info = s_fileClassInfos[i];
 			if (classId == info.typeId)
 			{
 				return &info;
@@ -177,10 +177,10 @@ public:
 	static GetClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
-		const size_t classInfosCount = classInfos.size();
+		const size_t classInfosCount = s_classInfos.size();
 		for (size_t i = 0; i < classInfosCount; i++)
 		{
-			const ClassInfo& info = classInfos[i];
+			const ClassInfo& info = s_classInfos[i];
 			if (classId == info.typeId)
 			{
 				return &info;
@@ -198,19 +198,19 @@ public:
 	*/
 	static std::string GetClassNameById(uint64_t classId)
 	{
-		const size_t classInfosCount = classInfos.size();
+		const size_t classInfosCount = s_classInfos.size();
 		for (size_t i = 0; i < classInfosCount; i++)
 		{
-			const ClassInfo& info = classInfos[i];
+			const ClassInfo& info = s_classInfos[i];
 			if (classId == info.typeId)
 			{
 				return info.name;
 			}
 		}
-		const size_t fileClassInfosCount = fileClassInfos.size();
+		const size_t fileClassInfosCount = s_fileClassInfos.size();
 		for (size_t i = 0; i < fileClassInfosCount; i++)
 		{
-			const FileClassInfo& info = fileClassInfos[i];
+			const FileClassInfo& info = s_fileClassInfos[i];
 			if (classId == info.typeId)
 			{
 				return info.name;
@@ -222,12 +222,12 @@ public:
 
 private:
 
-	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> nameToComponent;
-	static std::vector<FileClassInfo> fileClassInfos;
-	static std::vector<ClassInfo> classInfos;
+	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> s_nameToComponent;
+	static std::vector<FileClassInfo> s_fileClassInfos;
+	static std::vector<ClassInfo> s_classInfos;
 #if defined(EDITOR)
-	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> nameToMenu;
-	static std::vector<MenuClassInfo> menuClassInfos;
+	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> s_nameToMenu;
+	static std::vector<MenuClassInfo> s_menuClassInfos;
 #endif
 };
 

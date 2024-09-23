@@ -33,34 +33,34 @@ class PlayedSound
 {
 public:
 	~PlayedSound();
-	uint64_t seekPosition = 0;
-	AudioClipStream* audioClipStream = nullptr;
-	std::weak_ptr<AudioSource> audioSource;
-	short* buffer = nullptr;
-	int seekNext = 0;
-	float volume = 1;
-	float pan = 0.5;
-	bool needFillFirstHalfBuffer = false;
-	bool needFillSecondHalfBuffer = false;
+	uint64_t m_seekPosition = 0;
+	AudioClipStream* m_audioClipStream = nullptr;
+	std::weak_ptr<AudioSource> m_audioSource;
+	short* m_buffer = nullptr;
+	int m_seekNext = 0;
+	float m_volume = 1;
+	float m_pan = 0.5;
+	bool m_needFillFirstHalfBuffer = false;
+	bool m_needFillSecondHalfBuffer = false;
 
-	bool loop = true;
-	bool isPlaying = false;
+	bool m_loop = true;
+	bool m_isPlaying = false;
 };
 
 class Channel
 {
 public:
 	Channel();
-	int port = 0;
+	int m_port = 0;
 
-	std::vector<PlayedSound*> playedSounds;
-	int playedSoundsCount = 0;
+	std::vector<PlayedSound*> m_playedSounds;
+	int m_playedSoundsCount = 0;
 
 private:
 #if defined(__vita__)
-	int freq = 7;
-	int mode = SCE_AUDIO_OUT_MODE_STEREO;
-	int vol = SCE_AUDIO_VOLUME_0DB;
+	int m_freq = 7;
+	int m_mode = SCE_AUDIO_OUT_MODE_STEREO;
+	int m_vol = SCE_AUDIO_VOLUME_0DB;
 #endif
 };
 
@@ -75,7 +75,7 @@ public:
 	//#elif defined(__PSP__)
 	//SceLwMutexWorkarea workarea;
 #else
-	std::mutex audioMutex;
+	std::mutex m_audioMutex;
 #endif
 
 	/**
@@ -88,7 +88,7 @@ public:
 //#elif defined(__PSP__)
 //		sceKernelLockLwMutex(&workarea, 1, nullptr);
 #else
-		audioMutex.lock();
+		m_audioMutex.lock();
 #endif
 	}
 
@@ -102,7 +102,7 @@ public:
 //#elif defined(__PSP__)
 //		sceKernelUnlockLwMutex(&workarea, 1);
 #else
-		audioMutex.unlock();
+		m_audioMutex.unlock();
 #endif
 	}
 };
@@ -133,16 +133,15 @@ public:
 	*/
 	static void PlayAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
-
 	/**
 	* @brief Stop an audio source
 	* @param audioSource Audio source
 	*/
 	static void StopAudioSource(const std::shared_ptr<AudioSource>& audioSource);
 
-	static bool isAdding;
-	static Channel* channel;
-	static MyMutex* myMutex;
+	static bool s_isAdding;
+	static Channel* s_channel;
+	static MyMutex* s_myMutex;
 
 	static void FillChannelBuffer(short* buffer, int length, Channel* channel);
 private:

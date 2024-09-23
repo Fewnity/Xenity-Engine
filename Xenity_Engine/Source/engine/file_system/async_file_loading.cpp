@@ -10,33 +10,33 @@
 #include <engine/graphics/graphics.h>
 #include <engine/assertions/assertions.h>
 
-std::vector<std::shared_ptr<FileReference>> AsyncFileLoading::threadLoadedFiles;
-std::mutex AsyncFileLoading::threadLoadingMutex;
+std::vector<std::shared_ptr<FileReference>> AsyncFileLoading::s_threadLoadedFiles;
+std::mutex AsyncFileLoading::s_threadLoadingMutex;
 
 void AsyncFileLoading::FinishThreadedFileLoading()
 {
-	threadLoadingMutex.lock();
-	size_t threadFileCount = threadLoadedFiles.size();
+	s_threadLoadingMutex.lock();
+	size_t threadFileCount = s_threadLoadedFiles.size();
 	for (size_t i = 0; i < threadFileCount; i++)
 	{
-		if (threadLoadedFiles[i]->GetFileStatus() != FileStatus::FileStatus_Loading)
+		if (s_threadLoadedFiles[i]->GetFileStatus() != FileStatus::FileStatus_Loading)
 		{
-			threadLoadedFiles[i]->OnLoadFileReferenceFinished();
-			threadLoadedFiles.erase(threadLoadedFiles.begin() + i);
+			s_threadLoadedFiles[i]->OnLoadFileReferenceFinished();
+			s_threadLoadedFiles.erase(s_threadLoadedFiles.begin() + i);
 			Graphics::isRenderingBatchDirty = true; // Move this in a better location ???
 			threadFileCount--;
 			i--;
 		}
 	}
 
-	threadLoadingMutex.unlock();
+	s_threadLoadingMutex.unlock();
 }
 
 void AsyncFileLoading::AddFile(const std::shared_ptr<FileReference>& file)
 {
 	XASSERT(file != nullptr, "[AsyncFileLoading::AddFile] file is nullptr");
 
-	threadLoadingMutex.lock();
-	threadLoadedFiles.push_back(file);
-	threadLoadingMutex.unlock();
+	s_threadLoadingMutex.lock();
+	s_threadLoadedFiles.push_back(file);
+	s_threadLoadingMutex.unlock();
 }

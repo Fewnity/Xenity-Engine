@@ -12,7 +12,7 @@
 
 bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
-	unsigned char* fileData = ProjectManager::fileDataBase.bitFile.ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
+	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
 	const VertexElements vertexDescriptor = *(VertexElements*)fileData;

@@ -16,7 +16,7 @@
 class AudioClipSettings : public Reflective
 {
 public:
-	bool loadedInMemory = false;
+	bool m_loadedInMemory = false;
 
 	ReflectiveData GetReflectiveData() override;
 };
@@ -56,23 +56,23 @@ protected:
 	// Struct that stores the full audio data if the clip is stored in memory
 	struct AudioMemory
 	{
-		int dataLength = 0;
-		short* data = nullptr;
+		int m_dataLength = 0;
+		short* m_data = nullptr;
 	};
 
-	std::vector<AudioClipSettings*> settings;
+	std::vector<AudioClipSettings*> m_settings;
 
 	/**
 	* [Internal] Is the audio clip stored in memory?
 	*/
 	inline bool IsStoredInMemory() const
 	{
-		return settings[static_cast<int>(Application::GetAssetPlatform())]->loadedInMemory;
+		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->m_loadedInMemory;
 	}
 
 	inline void SetIsStoredInMemory(bool value) const
 	{
-		settings[static_cast<int>(Application::GetAssetPlatform())]->loadedInMemory = value;
+		m_settings[static_cast<int>(Application::GetAssetPlatform())]->m_loadedInMemory = value;
 	}
 
 	/**
@@ -80,8 +80,8 @@ protected:
 	*/
 	inline const AudioMemory& GetAudioMemory() const
 	{
-		return audioMemory;
+		return m_audioMemory;
 	}
 
-	AudioMemory audioMemory;
+	AudioMemory m_audioMemory;
 };

@@ -30,25 +30,25 @@ FilePSP::~FilePSP()
 
 void FilePSP::Close()
 {
-	if (fileId >= 0)
+	if (m_fileId >= 0)
 	{
-		sceIoClose(fileId);
-		fileId = -1;
+		sceIoClose(m_fileId);
+		m_fileId = -1;
 	}
 }
 
 void FilePSP::Write(const std::string& data)
 {
-	if (currentFileMode == FileMode::ReadOnly)
+	if (m_currentFileMode == FileMode::ReadOnly)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
 		return;
 	}
 
-	if (fileId >= 0)
+	if (m_fileId >= 0)
 	{
-		sceIoLseek(fileId, 0, SEEK_END);
-		const int b = sceIoWrite(fileId, data.c_str(), data.size());
+		sceIoLseek(m_fileId, 0, SEEK_END);
+		const int b = sceIoWrite(m_fileId, data.c_str(), data.size());
 	}
 }
 
@@ -58,20 +58,20 @@ void FilePSP::Write(const unsigned char* data, size_t size)
 
 std::string FilePSP::ReadAll()
 {
-	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
 		return "";
 	}
 
 	std::string allText = "";
-	if (fileId >= 0)
+	if (m_fileId >= 0)
 	{
-		const int pos = sceIoLseek(fileId, 0, SEEK_END);
-		sceIoLseek(fileId, 0, SEEK_SET);
+		const int pos = sceIoLseek(m_fileId, 0, SEEK_END);
+		sceIoLseek(m_fileId, 0, SEEK_SET);
 		char* data = (char*)malloc(pos + 1);
 		data[pos] = 0;
-		sceIoRead(fileId, data, pos);
+		sceIoRead(m_fileId, data, pos);
 		allText = data;
 		free(data);
 	}
@@ -80,20 +80,20 @@ std::string FilePSP::ReadAll()
 
 unsigned char* FilePSP::ReadAllBinary(int& size)
 {
-	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
 		return nullptr;
 	}
 
 	char* data = nullptr;
-	if (fileId >= 0)
+	if (m_fileId >= 0)
 	{
 		SceIoStat file_stat;
-		sceIoGetstat(path.c_str(), &file_stat);
-		sceIoLseek(fileId, 0, SEEK_SET);
+		sceIoGetstat(m_path.c_str(), &file_stat);
+		sceIoLseek(m_fileId, 0, SEEK_SET);
 		data = (char*)malloc(file_stat.st_size + 1);
-		sceIoRead(fileId, data, file_stat.st_size);
+		sceIoRead(m_fileId, data, file_stat.st_size);
 		size = file_stat.st_size;
 	}
 	return (unsigned char*)data;
@@ -102,11 +102,11 @@ unsigned char* FilePSP::ReadAllBinary(int& size)
 unsigned char* FilePSP::ReadBinary(int offset, int size)
 {
 	char* data = nullptr;
-	if (fileId >= 0)
+	if (m_fileId >= 0)
 	{
-		sceIoLseek(fileId, offset, SEEK_SET);
+		sceIoLseek(m_fileId, offset, SEEK_SET);
 		data = (char*)malloc(size);
-		sceIoRead(fileId, data, size);
+		sceIoRead(m_fileId, data, size);
 	}
 	return (unsigned char*)data;
 }
@@ -129,7 +129,7 @@ bool FilePSP::CheckIfExist()
 
 bool FilePSP::Open(FileMode fileMode)
 {
-	currentFileMode = fileMode;
+	m_currentFileMode = fileMode;
 
 	bool isOpen = false;
 	int params = 0;
@@ -140,8 +140,8 @@ bool FilePSP::Open(FileMode fileMode)
 
 	if (fileMode == FileMode::WriteCreateFile)
 		params |= PSP_O_CREAT;
-	fileId = sceIoOpen(path.c_str(), params, 0777);
-	if (fileId >= 0)
+	m_fileId = sceIoOpen(m_path.c_str(), params, 0777);
+	if (m_fileId >= 0)
 	{
 		isOpen = true;
 	}

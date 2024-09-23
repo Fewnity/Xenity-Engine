@@ -73,7 +73,7 @@ GameObject::GameObject()
 	this->m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
-	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
+	Performance::s_gameObjectMemoryTracker->Allocate(sizeof(GameObject));
 #endif
 }
 
@@ -85,7 +85,7 @@ GameObject::GameObject(const std::string& _name)
 		this->m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
-	Performance::gameObjectMemoryTracker->Allocate(sizeof(GameObject));
+	Performance::s_gameObjectMemoryTracker->Allocate(sizeof(GameObject));
 #endif
 }
 
@@ -108,7 +108,7 @@ GameObject::~GameObject()
 	m_components.clear();
 
 #if defined (DEBUG)
-	Performance::gameObjectMemoryTracker->Deallocate(sizeof(GameObject));
+	Performance::s_gameObjectMemoryTracker->Deallocate(sizeof(GameObject));
 #endif
 }
 

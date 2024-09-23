@@ -87,7 +87,7 @@ void Editor::Init()
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
 	audioSource = audioSourceGO->AddComponent<AudioSource>();
-	audioSource.lock()->isEditor = true;
+	audioSource.lock()->m_isEditor = true;
 
 	// Load Assets
 	rightArrow = MeshManager::LoadMesh("engine_assets/right_arrow.obj");

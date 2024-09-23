@@ -33,11 +33,11 @@ AudioSource::AudioSource()
 ReflectiveData AudioSource::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, volume, "volume", true);
-	Reflective::AddVariable(reflectedVariables, pan, "pan", true);
-	Reflective::AddVariable(reflectedVariables, playOnAwake, "playOnAwake", true);
-	Reflective::AddVariable(reflectedVariables, loop, "loop", true);
-	Reflective::AddVariable(reflectedVariables, audioClip, "audioClip", true);
+	Reflective::AddVariable(reflectedVariables, m_volume, "volume", true);
+	Reflective::AddVariable(reflectedVariables, m_pan, "pan", true);
+	Reflective::AddVariable(reflectedVariables, m_playOnAwake, "playOnAwake", true);
+	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
+	Reflective::AddVariable(reflectedVariables, m_audioClip, "audioClip", true);
 	return reflectedVariables;
 }
 
@@ -53,7 +53,7 @@ void AudioSource::RemoveReferences()
 
 void AudioSource::Awake()
 {
-	if (playOnAwake)
+	if (m_playOnAwake)
 		Play();
 }
 
@@ -63,7 +63,7 @@ void AudioSource::SetVolume(float _volume)
 		_volume = 1;
 	else if (_volume < 0)
 		_volume = 0;
-	this->volume = _volume;
+	this->m_volume = _volume;
 }
 
 void AudioSource::SetPanning(float panning)
@@ -72,12 +72,12 @@ void AudioSource::SetPanning(float panning)
 		panning = 1;
 	else if (panning < 0)
 		panning = 0;
-	this->pan = panning;
+	this->m_pan = panning;
 }
 
 void AudioSource::SetLoop(bool isLooping)
 {
-	this->loop = isLooping;
+	this->m_loop = isLooping;
 }
 
 #if defined(__PSP__) || defined(__vita__)
@@ -92,9 +92,9 @@ int test(SceSize args, void* argp)
 
 void AudioSource::Play()
 {
-	if (audioClip != nullptr)
+	if (m_audioClip != nullptr)
 	{
-		isPlaying = true;
+		m_isPlaying = true;
 		std::shared_ptr<AudioSource> sharedThis = GetThisShared();
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
@@ -120,20 +120,20 @@ void AudioSource::Play()
 
 void AudioSource::Resume()
 {
-	if (audioClip != nullptr)
+	if (m_audioClip != nullptr)
 	{
-		isPlaying = true;
+		m_isPlaying = true;
 	}
 }
 
 void AudioSource::Pause()
 {
-	isPlaying = false;
+	m_isPlaying = false;
 }
 
 void AudioSource::Stop()
 {
-	isPlaying = false;
+	m_isPlaying = false;
 	AudioManager::StopAudioSource(GetThisShared());
 }
 

@@ -17,15 +17,15 @@ ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::str
 
 #if defined(EDITOR) && defined(DEBUG)
 	//If the profiler is new, created a new one
-	if (Performance::profilerCategories.count(category) == 0)
+	if (Performance::s_profilerCategories.count(category) == 0)
 	{
-		Performance::profilerCategories[category] = new ProfilerCategory();
+		Performance::s_profilerCategories[category] = new ProfilerCategory();
 	}
-	if (Performance::profilerCategories[category]->profilerList.count(name) == 0)
+	if (Performance::s_profilerCategories[category]->profilerList.count(name) == 0)
 	{
-		Performance::profilerCategories[category]->profilerList[name] = new ProfilerValue();
+		Performance::s_profilerCategories[category]->profilerList[name] = new ProfilerValue();
 	}
-	m_profilerValue = Performance::profilerCategories[category]->profilerList[name];
+	m_profilerValue = Performance::s_profilerCategories[category]->profilerList[name];
 #endif
 }
 

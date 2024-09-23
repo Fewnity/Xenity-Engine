@@ -65,7 +65,7 @@ public:
 	void Write(const std::string& data) override;
 
 protected:
-	int fileId;
+	int m_fileId;
 };
 
 #endif

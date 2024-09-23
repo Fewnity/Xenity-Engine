@@ -23,17 +23,17 @@ File::File(const std::string& _path) : UniqueId(true)
 	//_path = "mass:" + _path;
 	this->path = "mass:" + _path;
 #else
-	this->path = _path;
+	this->m_path = _path;
 	//_path = "host0:" + _path;
 #endif
-	path = FileSystem::ConvertWindowsPathToBasicPath(path);
-	const size_t pointIndex = path.find_last_of('.');
-	pathExtention = path.substr(pointIndex);
+	m_path = FileSystem::ConvertWindowsPathToBasicPath(m_path);
+	const size_t pointIndex = m_path.find_last_of('.');
+	m_pathExtention = m_path.substr(pointIndex);
 
 	// Remove all folders from path
 	int finalPos = 0;
-	const int lastSlashPos = (int)path.find_last_of('\\');
-	const int lastSlashPos2 = (int)path.find_last_of('/');
+	const int lastSlashPos = (int)m_path.find_last_of('\\');
+	const int lastSlashPos2 = (int)m_path.find_last_of('/');
 
 	if (lastSlashPos != -1 || lastSlashPos2 != -1)
 	{
@@ -43,13 +43,13 @@ File::File(const std::string& _path) : UniqueId(true)
 			finalPos = lastSlashPos + 1;
 	}
 
-	const std::string fileName = path.substr(finalPos);
+	const std::string fileName = m_path.substr(finalPos);
 
 	// Remove file extension from path
 	int nextPointPos = (int)fileName.find_first_of('.');
 	if (nextPointPos == -1)
 		nextPointPos = INT32_MAX;
-	name = fileName.substr(0, nextPointPos);
+	m_name = fileName.substr(0, nextPointPos);
 #if defined(_EE)
 	const int pathLen = path.size();
 	for (int i = 0; i < pathLen; i++)
@@ -64,13 +64,13 @@ File::File(const std::string& _path) : UniqueId(true)
 
 std::string File::GetFolderPath() const
 {
-	if (path.size() == 0)
+	if (m_path.size() == 0)
 		return "";
 
-	int lastSlashPos = (int)path.find_last_of('\\');
+	int lastSlashPos = (int)m_path.find_last_of('\\');
 	if (lastSlashPos == -1)
 	{
-		lastSlashPos = (int)path.find_last_of('/');
+		lastSlashPos = (int)m_path.find_last_of('/');
 		if (lastSlashPos == -1)
 		lastSlashPos = 0;
 	}
@@ -80,7 +80,7 @@ std::string File::GetFolderPath() const
 	const std::string fileName = path.substr(5, lastSlashPos + 1);
 	// std::string fileName = path.substr(6, lastSlashPos + 1);
 #else
-	const std::string fileName = path.substr(0, lastSlashPos + 1);
+	const std::string fileName = m_path.substr(0, lastSlashPos + 1);
 #endif
 
 	return fileName;
@@ -88,5 +88,5 @@ std::string File::GetFolderPath() const
 
 const std::string& File::GetFileName() const
 {
-	return name;
+	return m_name;
 }

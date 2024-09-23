@@ -5,17 +5,17 @@
 MemoryTracker::MemoryTracker(const std::string& name)
 {
 	XASSERT(!name.empty(), "[MemoryTracker::MemoryTracker] Name is empty");
-	this->name = name;
+	m_name = name;
 }
 
 void MemoryTracker::Allocate(size_t size)
 {
-	allocatedMemory += size;
-	allocCount++;
+	m_allocatedMemory += size;
+	m_allocCount++;
 }
 
 void MemoryTracker::Deallocate(size_t size)
 {
-	deallocatedMemory += size;
-	deallocCount++;
+	m_deallocatedMemory += size;
+	m_deallocCount++;
 }

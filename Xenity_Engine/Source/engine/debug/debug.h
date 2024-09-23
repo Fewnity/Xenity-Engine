@@ -15,15 +15,15 @@
 class Socket;
 class File;
 
-enum class DebugType {
+enum class DebugType 
+{
 	Log,
 	Warning,
 	Error,
 };
 
-class DebugHistory
+struct DebugHistory
 {
-public:
 	std::string message;
 	DebugType type = DebugType::Log;
 	int count = 0;

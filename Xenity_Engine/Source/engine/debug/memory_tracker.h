@@ -10,11 +10,11 @@ public:
 	void Allocate(size_t size);
 	void Deallocate(size_t size);
 
-	std::string name;
+	std::string m_name;
 
-	size_t allocatedMemory = 0;
-	size_t deallocatedMemory = 0;
-	size_t allocCount = 0;
-	size_t deallocCount = 0;
+	size_t m_allocatedMemory = 0;
+	size_t m_deallocatedMemory = 0;
+	size_t m_allocCount = 0;
+	size_t m_deallocCount = 0;
 };
 

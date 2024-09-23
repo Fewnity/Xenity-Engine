@@ -40,9 +40,9 @@ public:
 	*/
 	void Trigger(Args... param)
 	{
-		for (int i = 0; i < functionCount; i++)
+		for (int i = 0; i < m_functionCount; i++)
 		{
-			functionsInfosList[i].function(param...);
+			m_functionsInfosList[i].m_function(param...);
 		}
 	}
 
@@ -142,8 +142,8 @@ public:
 	*/
 	inline void UnbindAll()
 	{
-		functionCount = 0;
-		functionsInfosList.clear();
+		m_functionCount = 0;
+		m_functionsInfosList.clear();
 	}
 
 	/**
@@ -151,7 +151,7 @@ public:
 	*/
 	inline int GetBindedFunctionCount()
 	{
-		return functionCount;
+		return m_functionCount;
 	}
 
 private:
@@ -169,12 +169,12 @@ private:
 		if (funcIndex == -1)
 		{
 			BindedFunctionInfo newFunc;
-			newFunc.function = callableFunction;
-			newFunc.funcAddress = functionAddress;
-			newFunc.objectAddress = objectAddress;
+			newFunc.m_function = callableFunction;
+			newFunc.m_funcAddress = functionAddress;
+			newFunc.m_objectAddress = objectAddress;
 
-			functionsInfosList.push_back(newFunc);
-			functionCount++;
+			m_functionsInfosList.push_back(newFunc);
+			m_functionCount++;
 		}
 	}
 
@@ -189,8 +189,8 @@ private:
 		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
 		if (funcIndex != -1)
 		{
-			functionCount--;
-			functionsInfosList.erase(functionsInfosList.begin() + funcIndex);
+			m_functionCount--;
+			m_functionsInfosList.erase(m_functionsInfosList.begin() + funcIndex);
 		}
 	}
 
@@ -204,10 +204,10 @@ private:
 	*/
 	int FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
 	{
-		for (int i = 0; i < functionCount; i++)
+		for (int i = 0; i < m_functionCount; i++)
 		{
-			const BindedFunctionInfo& info = functionsInfosList[i];
-			if (functionAddress == info.funcAddress && objectAddress == info.objectAddress)
+			const BindedFunctionInfo& info = m_functionsInfosList[i];
+			if (functionAddress == info.m_funcAddress && objectAddress == info.m_objectAddress)
 			{
 				return i;
 			}
@@ -262,11 +262,11 @@ private:
 	*/
 	struct BindedFunctionInfo
 	{
-		size_t objectAddress = 0;
-		size_t funcAddress = 0;
-		std::function<void(Args...)> function;
+		size_t m_objectAddress = 0;
+		size_t m_funcAddress = 0;
+		std::function<void(Args...)> m_function;
 	};
 
-	std::vector<BindedFunctionInfo> functionsInfosList;
-	int functionCount = 0;
+	std::vector<BindedFunctionInfo> m_functionsInfosList;
+	int m_functionCount = 0;
 };

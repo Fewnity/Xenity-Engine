@@ -92,7 +92,7 @@ void Debug::SendProfilerDataToServer()
 			if (EngineSettings::values.useProfiler)
 			{
 				//Add profiler texts
-				for (const auto& kv : Performance::profilerCategories)
+				for (const auto& kv : Performance::s_profilerCategories)
 				{
 					std::string dat = "--- " + kv.first;
 					if (kv.second->profilerList.count(kv.first) != 0)

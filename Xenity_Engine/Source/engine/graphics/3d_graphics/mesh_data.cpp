@@ -353,8 +353,8 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 				subMesh->indices = nullptr;
 			}
 #if defined (DEBUG)
-			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
-			Performance::meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
+			Performance::s_meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
+			Performance::s_meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
 #endif
 			if (deleteSubMeshes && Engine::IsRunning(true))
 			{
@@ -496,7 +496,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 #endif
 
 #if defined (DEBUG)
-		Performance::meshDataMemoryTracker->Allocate(newSubMesh->indexMemSize);
+		Performance::s_meshDataMemoryTracker->Allocate(newSubMesh->indexMemSize);
 		newSubMesh->debugIndexMemSize = newSubMesh->indexMemSize;
 #endif
 
@@ -581,7 +581,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 #endif
 
 #if defined (DEBUG)
-	Performance::meshDataMemoryTracker->Allocate(newSubMesh->vertexMemSize);
+	Performance::s_meshDataMemoryTracker->Allocate(newSubMesh->vertexMemSize);
 	newSubMesh->debugVertexMemSize = newSubMesh->vertexMemSize;
 #endif
 

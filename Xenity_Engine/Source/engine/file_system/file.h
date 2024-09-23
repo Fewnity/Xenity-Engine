@@ -74,7 +74,7 @@ public:
 	*/
 	inline const std::string& GetPath() const
 	{
-		return path;
+		return m_path;
 	}
 
 	/**
@@ -92,12 +92,12 @@ public:
 	*/
 	inline const std::string& GetFileExtension() const
 	{
-		return pathExtention;
+		return m_pathExtention;
 	}
 
 protected:
-	FileMode currentFileMode = FileMode::ReadOnly;
-	std::string path = "";
-	std::string pathExtention = "";
-	std::string name = "";
+	FileMode m_currentFileMode = FileMode::ReadOnly;
+	std::string m_path = "";
+	std::string m_pathExtention = "";
+	std::string m_name = "";
 };

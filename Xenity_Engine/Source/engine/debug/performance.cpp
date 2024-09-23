@@ -12,21 +12,21 @@
 #include "memory_tracker.h"
 #include <engine/debug/stack_debug_object.h>
 
-int Performance::drawCallCount = 0;
-int Performance::drawTriangleCount = 0;
-int Performance::updatedMaterialCount = 0;
-std::unordered_map<std::string, ProfilerCategory*> Performance::profilerCategories;
-std::unordered_map<std::string, std::vector<ScopTimerResult>> Performance::scopProfilerList;
+int Performance::s_drawCallCount = 0;
+int Performance::s_drawTriangleCount = 0;
+int Performance::s_updatedMaterialCount = 0;
+std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
+std::unordered_map<std::string, std::vector<ScopTimerResult>> Performance::s_scopProfilerList;
 
-int Performance::tickCount = 0;
-float Performance::averageCoolDown = 0;
-int Performance::LastDrawCallCount = 0;
-int Performance::LastDrawTriangleCount = 0;
+int Performance::s_tickCount = 0;
+float Performance::s_averageCoolDown = 0;
+int Performance::s_lastDrawCallCount = 0;
+int Performance::s_lastDrawTriangleCount = 0;
 
-MemoryTracker* Performance::gameObjectMemoryTracker = nullptr;
-MemoryTracker* Performance::meshDataMemoryTracker = nullptr;
-MemoryTracker* Performance::textureMemoryTracker = nullptr;
-uint32_t Performance::benchmarkScopeLevel = 0;
+MemoryTracker* Performance::s_gameObjectMemoryTracker = nullptr;
+MemoryTracker* Performance::s_meshDataMemoryTracker = nullptr;
+MemoryTracker* Performance::s_textureMemoryTracker = nullptr;
+uint32_t Performance::s_benchmarkScopeLevel = 0;
 
 #pragma region Update values
 
@@ -36,40 +36,40 @@ void Performance::Init()
 	Debug::Print("-------- Profiler initiated --------", true);
 
 #if defined(DEBUG)
-	gameObjectMemoryTracker = new MemoryTracker("GameObjects");
-	meshDataMemoryTracker = new MemoryTracker("Mesh Data");
-	textureMemoryTracker = new MemoryTracker("Textures");
+	s_gameObjectMemoryTracker = new MemoryTracker("GameObjects");
+	s_meshDataMemoryTracker = new MemoryTracker("Mesh Data");
+	s_textureMemoryTracker = new MemoryTracker("Textures");
 #endif
 }
 
 void Performance::ResetCounters()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
-	LastDrawCallCount = drawCallCount;
-	drawCallCount = 0;
-	LastDrawTriangleCount = drawTriangleCount;
-	drawTriangleCount = 0;
+	s_lastDrawCallCount = s_drawCallCount;
+	s_drawCallCount = 0;
+	s_lastDrawTriangleCount = s_drawTriangleCount;
+	s_drawTriangleCount = 0;
 
-	updatedMaterialCount = 0;
+	s_updatedMaterialCount = 0;
 	ResetProfiler();
 }
 
 void Performance::AddDrawCall()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	drawCallCount++;
+	s_drawCallCount++;
 }
 
 void Performance::AddDrawTriangles(int count)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	drawTriangleCount+= count;
+	s_drawTriangleCount+= count;
 }
 
 void Performance::AddMaterialUpdate()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	updatedMaterialCount++;
+	s_updatedMaterialCount++;
 }
 
 #pragma endregion
@@ -79,19 +79,19 @@ void Performance::AddMaterialUpdate()
 int Performance::GetDrawCallCount()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	return LastDrawCallCount;
+	return s_lastDrawCallCount;
 }
 
 int Performance::GetDrawTrianglesCount()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	return LastDrawTriangleCount;
+	return s_lastDrawTriangleCount;
 }
 
 int Performance::GetUpdatedMaterialCount()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	return updatedMaterialCount;
+	return s_updatedMaterialCount;
 }
 
 void Performance::Update()
@@ -99,22 +99,22 @@ void Performance::Update()
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	if (EngineSettings::values.useProfiler)
 	{
-		tickCount++;
+		s_tickCount++;
 
 		// Update profiler average values
-		averageCoolDown += Time::GetUnscaledDeltaTime();
-		if (averageCoolDown >= 1)
+		s_averageCoolDown += Time::GetUnscaledDeltaTime();
+		if (s_averageCoolDown >= 1)
 		{
-			for (const auto& categoryKV : Performance::profilerCategories)
+			for (const auto& categoryKV : Performance::s_profilerCategories)
 			{
 				for (const auto& profilerValueKV : categoryKV.second->profilerList)
 				{
-					profilerValueKV.second->average = profilerValueKV.second->addedValue / tickCount;
+					profilerValueKV.second->average = profilerValueKV.second->addedValue / s_tickCount;
 					profilerValueKV.second->addedValue = 0;
 				}
 			}
-			averageCoolDown = 0;
-			tickCount = 0;
+			s_averageCoolDown = 0;
+			s_tickCount = 0;
 		}
 		ResetCounters();
 	}
@@ -124,9 +124,9 @@ void Performance::ResetProfiler()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	scopProfilerList.clear();
+	s_scopProfilerList.clear();
 
-	for (const auto& categoryKV : Performance::profilerCategories)
+	for (const auto& categoryKV : Performance::s_profilerCategories)
 	{
 		for (const auto& profilerValueKV : categoryKV.second->profilerList)
 		{

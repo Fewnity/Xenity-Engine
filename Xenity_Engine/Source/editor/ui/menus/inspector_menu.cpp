@@ -253,14 +253,14 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (loadedPreview->m_fileType == FileType::File_Audio) // Draw audio preview
 		{
-			const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
+			const size_t playedSoundCount = AudioManager::s_channel->m_playedSounds.size();
 			AudioClipStream* stream = nullptr;
 			for (size_t i = 0; i < playedSoundCount; i++)
 			{
-				if (AudioManager::channel->playedSounds[i]->audioSource.lock() == Editor::audioSource.lock())
+				if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
 				{
 					// Get audio stream
-					stream = AudioManager::channel->playedSounds[i]->audioClipStream;
+					stream = AudioManager::s_channel->m_playedSounds[i]->m_audioClipStream;
 					break;
 				}
 			}
@@ -397,11 +397,11 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 	bool disableMetaView = false;
 	if (loadedPreview && loadedPreview->m_fileType == FileType::File_Audio) // Draw audio preview
 	{
-		const size_t playedSoundCount = AudioManager::channel->playedSounds.size();
+		const size_t playedSoundCount = AudioManager::s_channel->m_playedSounds.size();
 		AudioClipStream* stream = nullptr;
 		for (size_t i = 0; i < playedSoundCount; i++)
 		{
-			if (AudioManager::channel->playedSounds[i]->audioSource.lock() == Editor::audioSource.lock())
+			if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
 			{
 				// Get audio stream
 				disableMetaView = true;

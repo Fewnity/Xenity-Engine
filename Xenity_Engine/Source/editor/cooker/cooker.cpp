@@ -27,7 +27,7 @@ using ordered_json = nlohmann::ordered_json;
 void Cooker::CookAssets(const CookSettings& settings)
 {
 	fileDataBase.Clear();
-	fileDataBase.bitFile.Create(settings.exportPath + "data.xenb");
+	fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
 
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
@@ -160,7 +160,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		cookedFile->Open(FileMode::ReadOnly);
 		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
 		cookedFile->Close();
-		dataOffset = fileDataBase.bitFile.AddData(fileData, cookedFileSize);
+		dataOffset = fileDataBase.GetBitFile().AddData(fileData, cookedFileSize);
 		delete[] fileData;
 		FileSystem::s_fileSystem->Delete(exportPath);
 	}
@@ -174,7 +174,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	{
 		unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
 		cookedMetaFile->Close();
-		metaDataOffset = fileDataBase.bitFile.AddData(metaFileData, cookedMetaFileSizeOut);
+		metaDataOffset = fileDataBase.GetBitFile().AddData(metaFileData, cookedMetaFileSizeOut);
 		delete[] metaFileData;
 	}
 	else

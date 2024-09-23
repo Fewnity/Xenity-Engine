@@ -35,37 +35,37 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 	const AudioClip::AudioMemory& audioMemory = audioFile.GetAudioMemory();
 	if (lowerExt == "wav")
 	{
-		wav = new drwav();
-		if ((audioFile.IsStoredInMemory() && !drwav_init_memory(wav, audioMemory.data, audioMemory.dataLength, NULL)) || (!audioFile.IsStoredInMemory() && !drwav_init_file(wav, path.c_str(), NULL)))
+		m_wavStream = new drwav();
+		if ((audioFile.IsStoredInMemory() && !drwav_init_memory(m_wavStream, audioMemory.m_data, audioMemory.m_dataLength, NULL)) || (!audioFile.IsStoredInMemory() && !drwav_init_file(m_wavStream, path.c_str(), NULL)))
 		{
 			// Error opening WAV file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path, true);
-			delete wav;
+			delete m_wavStream;
 		}
 		else
 		{
-			type = AudioType::Wav;
+			m_type = AudioType::Wav;
 			// Get informations
-			channelCount = wav->channels;
-			sampleCount = wav->totalPCMFrameCount;
+			m_channelCount = m_wavStream->channels;
+			m_sampleCount = m_wavStream->totalPCMFrameCount;
 			//Debug::Print("Audio clip data: " + std::to_string(wav->channels) + " " + std::to_string(wav->sampleRate), true);
 		}
 	}
 	else if (lowerExt == "mp3")
 	{
-		mp3 = new drmp3();
-		if ((audioFile.IsStoredInMemory() && !drmp3_init_memory(mp3, audioMemory.data, audioMemory.dataLength, NULL)) || (!audioFile.IsStoredInMemory() && !drmp3_init_file(mp3, path.c_str(), NULL)))
+		m_mp3Stream = new drmp3();
+		if ((audioFile.IsStoredInMemory() && !drmp3_init_memory(m_mp3Stream, audioMemory.m_data, audioMemory.m_dataLength, NULL)) || (!audioFile.IsStoredInMemory() && !drmp3_init_file(m_mp3Stream, path.c_str(), NULL)))
 		{
 			// Error opening MP3 file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path, true);
-			delete mp3;
+			delete m_mp3Stream;
 		}
 		else
 		{
-			type = AudioType::Mp3;
+			m_type = AudioType::Mp3;
 			// Get informations
-			channelCount = mp3->channels;
-			sampleCount = drmp3_get_pcm_frame_count(mp3);
+			m_channelCount = m_mp3Stream->channels;
+			m_sampleCount = drmp3_get_pcm_frame_count(m_mp3Stream);
 			//Debug::Print("Audio clip data: " + std::to_string(mp3->channels) + " " + std::to_string(mp3->sampleRate), true);
 		}
 	}
@@ -97,49 +97,49 @@ AudioClipStream::AudioClipStream()
 
 AudioClipStream::~AudioClipStream()
 {
-	if (type == AudioType::Mp3)
+	if (m_type == AudioType::Mp3)
 	{
-		drmp3_uninit(mp3);
-		delete mp3;
+		drmp3_uninit(m_mp3Stream);
+		delete m_mp3Stream;
 	}
-	else if (type == AudioType::Wav)
+	else if (m_type == AudioType::Wav)
 	{
-		drwav_uninit(wav);
-		delete wav;
+		drwav_uninit(m_wavStream);
+		delete m_wavStream;
 	}
 }
 
 void AudioClipStream::FillBuffer(int amount, int offset, short* buff)
 {
-	if (type == AudioType::Mp3)
-		drmp3_read_pcm_frames_s16(mp3, amount, buff + (offset));
-	else if (type == AudioType::Wav)
-		drwav_read_pcm_frames_s16(wav, amount, buff + (offset));
+	if (m_type == AudioType::Mp3)
+		drmp3_read_pcm_frames_s16(m_mp3Stream, amount, buff + (offset));
+	else if (m_type == AudioType::Wav)
+		drwav_read_pcm_frames_s16(m_wavStream, amount, buff + (offset));
 }
 
 int AudioClipStream::GetFrequency() const
 {
 	int rate = 0;
-	if (type == AudioType::Mp3)
-		rate = mp3->sampleRate;
-	else if (type == AudioType::Wav)
-		rate = wav->sampleRate;
+	if (m_type == AudioType::Mp3)
+		rate = m_mp3Stream->sampleRate;
+	else if (m_type == AudioType::Wav)
+		rate = m_wavStream->sampleRate;
 
 	return rate;
 }
 
 uint64_t AudioClipStream::GetSampleCount() const
 {
-	return sampleCount;
+	return m_sampleCount;
 }
 
 uint64_t AudioClipStream::GetSeekPosition() const
 {
 	uint64_t seekPos = 0;
-	if (type == AudioType::Mp3)
-		seekPos = mp3->currentPCMFrame;
-	else if (type == AudioType::Wav)
-		seekPos = wav->readCursorInPCMFrames;
+	if (m_type == AudioType::Mp3)
+		seekPos = m_mp3Stream->currentPCMFrame;
+	else if (m_type == AudioType::Wav)
+		seekPos = m_wavStream->readCursorInPCMFrames;
 
 	return seekPos;
 }
@@ -151,8 +151,8 @@ void AudioClipStream::ResetSeek()
 
 void AudioClipStream::SetSeek(uint64_t seekPosition)
 {
-	if (type == AudioType::Mp3)
-		drmp3_seek_to_pcm_frame(mp3, seekPosition);
-	else if (type == AudioType::Wav)
-		drwav_seek_to_pcm_frame(wav, seekPosition);
+	if (m_type == AudioType::Mp3)
+		drmp3_seek_to_pcm_frame(m_mp3Stream, seekPosition);
+	else if (m_type == AudioType::Wav)
+		drwav_seek_to_pcm_frame(m_wavStream, seekPosition);
 }

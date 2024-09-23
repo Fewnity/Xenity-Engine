@@ -433,7 +433,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		jsonString = scene->m_file->ReadAll();
 		scene->m_file->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(scene->m_filePosition, scene->m_fileSize);
+		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(scene->m_filePosition, scene->m_fileSize);
 		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->m_fileSize);
 		free(binData);
 #endif

@@ -14,7 +14,7 @@
 ReflectiveData AudioClipSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, loadedInMemory, "loadedInMemory", GameplayManager::GetGameState() == GameState::Stopped);
+	Reflective::AddVariable(reflectedVariables, m_loadedInMemory, "loadedInMemory", GameplayManager::GetGameState() == GameState::Stopped);
 	return reflectedVariables;
 }
 
@@ -24,9 +24,9 @@ AudioClip::AudioClip()
 	AudioClipSettingsPSP* audioClipSettingsPSP = new AudioClipSettingsPSP();
 	AudioClipSettingsPSVITA* audioClipSettingsPSVITA = new AudioClipSettingsPSVITA();
 
-	settings.push_back(audioClipSettingsStandalone);
-	settings.push_back(audioClipSettingsPSP);
-	settings.push_back(audioClipSettingsPSVITA);
+	m_settings.push_back(audioClipSettingsStandalone);
+	m_settings.push_back(audioClipSettingsPSP);
+	m_settings.push_back(audioClipSettingsPSVITA);
 }
 
 ReflectiveData AudioClip::GetReflectiveData()
@@ -38,7 +38,7 @@ ReflectiveData AudioClip::GetReflectiveData()
 ReflectiveData AudioClip::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
-	ReflectiveData reflectedVariablesPlatform = settings[static_cast<int>(platform)]->GetReflectiveData();
+	ReflectiveData reflectedVariablesPlatform = m_settings[static_cast<int>(platform)]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }
@@ -55,9 +55,9 @@ void AudioClip::LoadFileReference()
 	if (IsStoredInMemory() && m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		m_file->Open(FileMode::ReadOnly);
-		audioMemory.data = (short*)m_file->ReadAllBinary(audioMemory.dataLength);
+		m_audioMemory.m_data = (short*)m_file->ReadAllBinary(m_audioMemory.m_dataLength);
 		m_file->Close();
-		if (!audioMemory.data || audioMemory.dataLength == 0)
+		if (!m_audioMemory.m_data || m_audioMemory.m_dataLength == 0)
 		{
 			SetIsStoredInMemory(false);
 			Debug::PrintError("Not enough memory for audio: " + m_file->GetPath());
@@ -68,10 +68,10 @@ void AudioClip::LoadFileReference()
 
 void AudioClip::UnloadFileReference()
 {
-	if (audioMemory.data)
+	if (m_audioMemory.m_data)
 	{
-		free(audioMemory.data);
-		audioMemory.data = nullptr;
+		free(m_audioMemory.m_data);
+		m_audioMemory.m_data = nullptr;
 	}
 	m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 }

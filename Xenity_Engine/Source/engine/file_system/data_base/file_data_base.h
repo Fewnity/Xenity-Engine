@@ -31,8 +31,18 @@ public:
 	void Clear();
 	void SaveToFile(const std::string& path);
 	void LoadFromFile(const std::string& path);
-	std::vector<FileDataBaseEntry*> fileList;
-	BitFile bitFile;
+
+	const std::vector<FileDataBaseEntry*>& GetFileList() const
+	{
+		return m_fileList;
+	}
+
+	BitFile& GetBitFile()
+	{
+		return m_bitFile;
+	}
 
 private:
+	std::vector<FileDataBaseEntry*> m_fileList;
+	BitFile m_bitFile;
 };

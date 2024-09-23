@@ -24,56 +24,56 @@ FileDefault::~FileDefault()
 
 void FileDefault::Close()
 {
-	if (file.is_open())
+	if (m_file.is_open())
 	{
-		file.close();
+		m_file.close();
 	}
 }
 
 void FileDefault::Write(const std::string& data)
 {
-	if (currentFileMode == FileMode::ReadOnly)
+	if (m_currentFileMode == FileMode::ReadOnly)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
 		return;
 	}
 
-	if (file.is_open())
+	if (m_file.is_open())
 	{
-		file.seekg(0, std::ios_base::end);
-		file << data;
-		file.flush();
+		m_file.seekg(0, std::ios_base::end);
+		m_file << data;
+		m_file.flush();
 	}
 }
 
 void FileDefault::Write(const unsigned char* data, size_t size)
 {
-	if (currentFileMode == FileMode::ReadOnly)
+	if (m_currentFileMode == FileMode::ReadOnly)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
 		return;
 	}
 
-	if (file.is_open())
+	if (m_file.is_open())
 	{
-		file.seekg(0, std::ios_base::end);
-		file.write(reinterpret_cast<const char*>(data), size);
-		file.flush();
+		m_file.seekg(0, std::ios_base::end);
+		m_file.write(reinterpret_cast<const char*>(data), size);
+		m_file.flush();
 	}
 }
 
 std::string FileDefault::ReadAll()
 {
-	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
 		return "";
 	}
 
 	std::stringstream allText;
-	file.seekg(0, std::ios_base::beg);
+	m_file.seekg(0, std::ios_base::beg);
 	std::string tempText;
-	while (getline(file, tempText))
+	while (getline(m_file, tempText))
 	{
 		allText << tempText;
 		allText << "\n";
@@ -83,16 +83,16 @@ std::string FileDefault::ReadAll()
 
 unsigned char* FileDefault::ReadAllBinary(int& size)
 {
-	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
 		return nullptr;
 	}
 
 	char* data = nullptr;
-	file.seekg(0, std::ios_base::end);
-	const std::streampos pos = file.tellg();
-	file.seekg(0, std::ios_base::beg);
+	m_file.seekg(0, std::ios_base::end);
+	const std::streampos pos = m_file.tellg();
+	m_file.seekg(0, std::ios_base::beg);
 	if(pos <= 0)
 	{
 		size = 0;
@@ -106,23 +106,23 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 		return nullptr;
 	}
 
-	file.read(data, pos);
+	m_file.read(data, pos);
 	size = pos;
 	return (unsigned char*)data;
 }
 
 unsigned char* FileDefault::ReadBinary(int offset, int size)
 {
-	if (currentFileMode == FileMode::WriteOnly || currentFileMode == FileMode::WriteCreateFile)
+	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
 		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
 		return nullptr;
 	}
 
 	char* data = nullptr;
-	file.seekg(offset, std::ios_base::beg);
+	m_file.seekg(offset, std::ios_base::beg);
 	data = (char*)malloc(size);
-	file.read(data, size);
+	m_file.read(data, size);
 
 	return (unsigned char*)data;
 }
@@ -130,7 +130,7 @@ unsigned char* FileDefault::ReadBinary(int offset, int size)
 bool FileDefault::CheckIfExist()
 {
 	bool exists = false;
-	if (file.is_open())
+	if (m_file.is_open())
 	{
 		exists = true;
 	}
@@ -138,20 +138,20 @@ bool FileDefault::CheckIfExist()
 	{
 		std::ios_base::openmode params = std::fstream::in;
 
-		file.open(path, params);
+		m_file.open(m_path, params);
 
-		if (file.is_open())
+		if (m_file.is_open())
 		{
 			exists = true;
 		}
-		file.close();
+		m_file.close();
 	}
 	return exists;
 }
 
 bool FileDefault::Open(FileMode fileMode)
 {
-	currentFileMode = fileMode;
+	m_currentFileMode = fileMode;
 
 	bool isOpen = false;
 	std::ios_base::openmode params = std::fstream::binary;
@@ -160,17 +160,17 @@ bool FileDefault::Open(FileMode fileMode)
 	else
 		params |= std::fstream::in;
 
-	file.open(path, params);
-	if (!file.is_open())
+	m_file.open(m_path, params);
+	if (!m_file.is_open())
 	{
 		if (fileMode == FileMode::WriteCreateFile)
 		{
 			// Try to create the file
 			params |= std::fstream::trunc;
-			file.open(path, params);
-			if (!file.is_open())
+			m_file.open(m_path, params);
+			if (!m_file.is_open())
 			{
-				Debug::PrintError("[File::Open] Fail while creating and opening and creating file: " + path, true);
+				Debug::PrintError("[File::Open] Fail while creating and opening and creating file: " + m_path, true);
 			}
 			else
 			{
@@ -179,7 +179,7 @@ bool FileDefault::Open(FileMode fileMode)
 		}
 		else
 		{
-			Debug::Print("[File::Open] Fail while opening file or file not found: " + path);
+			Debug::Print("[File::Open] Fail while opening file or file not found: " + m_path);
 		}
 	}
 	else

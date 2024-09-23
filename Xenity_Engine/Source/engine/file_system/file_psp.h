@@ -68,7 +68,7 @@ public:
 	void Write(const unsigned char* data, size_t size) override;
 
 protected:
-	SceUID fileId = -1;
+	SceUID m_fileId = -1;
 };
 
 #endif

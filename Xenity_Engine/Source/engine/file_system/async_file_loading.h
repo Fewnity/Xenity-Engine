@@ -32,7 +32,7 @@ public:
 	static void AddFile(const std::shared_ptr<FileReference>& file);
 
 private:
-	static std::vector<std::shared_ptr<FileReference>> threadLoadedFiles;
-	static std::mutex threadLoadingMutex;
+	static std::vector<std::shared_ptr<FileReference>> s_threadLoadedFiles;
+	static std::mutex s_threadLoadingMutex;
 };
 

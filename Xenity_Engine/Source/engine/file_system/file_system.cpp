@@ -253,9 +253,9 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 	/*if (!file)
 	{*/
 #if defined(__PSP__)
-		file = std::make_shared<FilePSP>(path);
+	file = std::make_shared<FilePSP>(path);
 #elif defined(_EE)
-		file = std::make_shared<FilePS2>(path);
+	file = std::make_shared<FilePS2>(path);
 		// file = std::make_shared<FileDefault>(path);
 #else
 		file = std::make_shared<FileDefault>(path);

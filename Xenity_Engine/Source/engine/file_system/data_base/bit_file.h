@@ -18,7 +18,8 @@ public:
 	size_t AddData(const unsigned char* data, size_t size);
 	unsigned char* ReadBinary(int offset, int size);
 
-	std::shared_ptr<File> file;
-	size_t fileSize = 0;
+private:
+	std::shared_ptr<File> m_file;
+	size_t m_fileSize = 0;
 };
 

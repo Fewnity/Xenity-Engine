@@ -205,7 +205,7 @@ void ProjectManager::FindAllProjectFiles()
 		projectFiles.clear();
 #else
 		// All files in fileDataBase.fileList are compatible
-		for (const auto& f : fileDataBase.fileList)
+		for (const auto& f : fileDataBase.GetFileList())
 		{
 			CompatibleFile compatibleFile;
 			compatibleFile.file.file = FileSystem::MakeFile(f->p);
@@ -606,7 +606,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
 #else
 	fileDataBase.LoadFromFile(projectPathToLoad + "db.bin");
-	fileDataBase.bitFile.Open("data.xenb");
+	fileDataBase.GetBitFile().Open("data.xenb");
 #endif
 
 	Debug::Print("Loading project: " + projectPathToLoad, true);
@@ -1238,7 +1238,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 		jsonString = metaFile->ReadAll();
 		metaFile->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.bitFile.ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
+		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
 		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.m_metaSize);
 		free(binData);
 #endif
