@@ -217,8 +217,8 @@ void ProfilerMenu::DrawProfilerGraph()
 		if (!isPaused)
 		{
 			lastMaxLevel = 0;
-			offsetTime = Performance::s_scopProfilerList["Engine::Loop"][0].start;
-			endTime = Performance::s_scopProfilerList["Engine::Loop"][0].end;
+			offsetTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].start;
+			endTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].end;
 
 			CreateTimelineItems();
 
@@ -272,7 +272,7 @@ void ProfilerMenu::DrawProfilerGraph()
 
 				// Draw hovered item name
 				{
-					std::string mouseText = hoveredItem.name;
+					const std::string& mouseText = hoveredItem.name;
 					ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
 					mousePixelPos.y -= textSize.y * 3;
 					mousePixelPos.x -= textSize.x / 2.0f;
@@ -318,8 +318,7 @@ void ProfilerMenu::CreateTimelineItems()
 	{
 		for (const auto& value : valCategory.second)
 		{
-			TimelineItem item;
-			item.name = valCategory.first;
+			TimelineItem item(Performance::s_scopProfilerNames[valCategory.first]);
 			item.start = value.start;
 			item.end = value.end;
 			item.level = value.level;

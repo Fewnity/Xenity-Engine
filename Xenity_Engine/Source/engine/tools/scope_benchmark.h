@@ -6,11 +6,11 @@
 class ScopeBenchmark
 {
 public:
-	ScopeBenchmark(const std::string& classAndFunction);
+	ScopeBenchmark(const size_t hash);
 	~ScopeBenchmark();
 
 private:
-	std::string m_name;
+	size_t m_hash;
 	uint64_t m_start;
 	uint32_t m_scopeLevel;
 };

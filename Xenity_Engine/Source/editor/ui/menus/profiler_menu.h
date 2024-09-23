@@ -12,7 +12,8 @@
 class TimelineItem 
 {
 public:
-	std::string name;
+	TimelineItem(const std::string& _name) : name(_name) {}
+	const std::string& name;
 	uint64_t start;
 	uint64_t end;
 	uint32_t level;
