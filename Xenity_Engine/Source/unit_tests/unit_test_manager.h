@@ -7,6 +7,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+class GameObject;
 
 class UnitTest 
 {
@@ -181,10 +184,21 @@ public:
 
 #pragma region Class Registry
 
-class ClassRegistryTest : public UnitTest
+class ClassRegistryAddComponentFromNameTest : public UnitTest
 {
 public:
-	ClassRegistryTest(const std::string& name) : UnitTest(name) { }
+	ClassRegistryAddComponentFromNameTest(const std::string& name) : UnitTest(name) { }
+
+	bool Start(std::string& errorOut) override;
+
+	template <typename T>
+	void TestAddComponent(std::shared_ptr<GameObject>& newGameObject, bool& result, std::string& errorOut, const std::string& componentName);
+};
+
+class ClassRegistryGetComponentNamesTest : public UnitTest
+{
+public:
+	ClassRegistryGetComponentNamesTest(const std::string& name) : UnitTest(name) { }
 
 	bool Start(std::string& errorOut) override;
 };

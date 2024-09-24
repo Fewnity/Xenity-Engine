@@ -81,8 +81,11 @@ void UnitTestManager::StartAllTests()
 
 	//------------------------------------------------------------------ ClassRegistry Test
 	{
-		ClassRegistryTest classRegistryTest = ClassRegistryTest("Asset Manager");
-		TryTest(classRegistryTest);
+		ClassRegistryAddComponentFromNameTest classRegistryAddComponentFromNameTest = ClassRegistryAddComponentFromNameTest("Class Registry");
+		TryTest(classRegistryAddComponentFromNameTest);
+
+		ClassRegistryGetComponentNamesTest classRegistryGetComponentNamesTest = ClassRegistryGetComponentNamesTest("Class Registry");
+		TryTest(classRegistryGetComponentNamesTest);
 	}
 
 	Debug::Print("------ Unit Tests finished! ------", true);
