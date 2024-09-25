@@ -174,10 +174,14 @@ void Compiler::UpdatePaths()
 	const std::string root = FileSystem::ConvertWindowsPathToBasicPath(fs::current_path().string());
 	engineFolderLocation = root + "/";
 	engineProjectLocation = engineFolderLocation;
-#if defined (VISUAL_STUDIO)
+
 	const size_t backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('/');
-	engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
-#endif
+	std::string visualStudioProjectPath = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+	if (fs::exists(visualStudioProjectPath + "Xenity_Engine.vcxproj"))
+	{
+		engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+	}
+
 #if defined(_WIN64) 
 	compilerExecFileName = MSVC_START_FILE_64BITS;
 #else
