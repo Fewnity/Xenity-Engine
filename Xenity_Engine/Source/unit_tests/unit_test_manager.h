@@ -27,6 +27,12 @@ public:
 		return valueA == valueB;
 	}
 
+	template <typename T, typename U>
+	bool Compare(const T& valueA, const U& valueB) const
+	{
+		return valueA == valueB;
+	}
+
 	const std::string& GetName() const
 	{
 		return name;
