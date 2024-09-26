@@ -267,7 +267,7 @@ private:
 	* @brief Update local active value
 	* @param changed The changed GameObject
 	*/
-	void UpdateActive(const std::shared_ptr<GameObject>& changed);
+	void UpdateActive(const GameObject& changed);
 
 	/**
 	* @brief Check if the GameObject is a parent of another GameObject

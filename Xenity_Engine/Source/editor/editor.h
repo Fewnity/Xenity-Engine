@@ -114,7 +114,7 @@ public:
 	* @brief Remove all children and keep parents of a list with a mix of parents and children
 	* @param parentsAndChildren List of GameObjects
 	*/
-	static std::vector<std::shared_ptr<GameObject>> RemoveChildren(const std::vector<std::shared_ptr<GameObject>> parentsAndChildren);
+	static std::vector<std::shared_ptr<GameObject>> RemoveChildren(std::vector<std::shared_ptr<GameObject>> parentsAndChildren);
 
 	/**
 	* @brief Get menu of type T

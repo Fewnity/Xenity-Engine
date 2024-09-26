@@ -962,38 +962,36 @@ bool Editor::IsParentOf(const std::shared_ptr<GameObject>& parent, const std::sh
 	return false;
 }
 
-std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vector<std::shared_ptr<GameObject>> parentsAndChildren)
+std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(std::vector<std::shared_ptr<GameObject>> parentsAndChildren)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
-
-	std::vector<std::shared_ptr<GameObject>> parentsAndChildrenCopy = parentsAndChildren;
 
 	size_t goCount = parentsAndChildren.size();
 	for (size_t i = 0; i < goCount; i++)
 	{
-		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
+		std::shared_ptr<GameObject> currentGameObject = parentsAndChildren[i];
 		if (currentGameObject == nullptr)
 		{
 			goCount--;
-			parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + i);
+			parentsAndChildren.erase(parentsAndChildren.begin() + i);
 			i--;
 		}
 	}
 
 	for (int i = 0; i < goCount; i++)
 	{
-		std::shared_ptr<GameObject> currentGameObject = parentsAndChildrenCopy[i];
+		const std::shared_ptr<GameObject>& currentGameObject = parentsAndChildren[i];
 
 		for (int j = 0; j < goCount; j++)
 		{
-			std::shared_ptr<GameObject> currentGameObject2 = parentsAndChildrenCopy[j];
+			const std::shared_ptr<GameObject>& currentGameObject2 = parentsAndChildren[j];
 			if (currentGameObject == currentGameObject2)
 				continue;
 
 			if (IsParentOf(currentGameObject, currentGameObject2))
 			{
 				goCount--;
-				parentsAndChildrenCopy.erase(parentsAndChildrenCopy.begin() + j);
+				parentsAndChildren.erase(parentsAndChildren.begin() + j);
 				if (j <= i)
 					i--;
 				j--;
@@ -1002,7 +1000,7 @@ std::vector<std::shared_ptr<GameObject>> Editor::RemoveChildren(const std::vecto
 		}
 	}
 
-	return parentsAndChildrenCopy;
+	return parentsAndChildren;
 }
 
 void Editor::CreateMenus()

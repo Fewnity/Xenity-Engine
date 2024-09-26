@@ -187,7 +187,7 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 			m_childCount++;
 			newChild->m_parent = shared_from_this();
 			newChild->m_transform->OnParentChanged();
-			newChild->UpdateActive(newChild);
+			newChild->UpdateActive(*newChild);
 		}
 	}
 }
@@ -216,7 +216,7 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 		}
 		m_parent.reset();
 		m_transform->OnParentChanged();
-		UpdateActive(shared_from_this());
+		UpdateActive(*this);
 	}
 }
 
@@ -300,19 +300,17 @@ void GameObject::SetActive(const bool active)
 	if (active != this->m_active)
 	{
 		this->m_active = active;
-		UpdateActive(shared_from_this());
+		UpdateActive(*this);
 		GameplayManager::componentsInitListDirty = true;
 	}
 }
 
 #pragma endregion
 
-void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
+void GameObject::UpdateActive(const GameObject& changed)
 {
-	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty");
-
 	const bool lastLocalActive = m_localActive;
-	if (!changed->IsActive() || (!changed->IsLocalActive() && changed.get() != this)) // if the new parent's state is false, set local active to false
+	if (!changed.IsActive() || (!changed.IsLocalActive() && &changed != this)) // if the new parent's state is false, set local active to false
 	{
 		m_localActive = false;
 	}
@@ -329,7 +327,7 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 				newActive = false;
 				break;
 			}
-			if (gm == changed)
+			if (gm.get() == &changed)
 			{
 				break;
 			}
@@ -393,5 +391,5 @@ bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 
 void GameObject::OnReflectionUpdated()
 {
-	UpdateActive(shared_from_this());
+	UpdateActive(*this);
 }
