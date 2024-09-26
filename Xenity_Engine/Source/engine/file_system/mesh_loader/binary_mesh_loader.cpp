@@ -10,6 +10,19 @@
 #include <pspkernel.h>
 #endif
 
+/**
+* Vertex descriptor - 4 bytes
+* Sub mesh count - 4 bytes
+* ------ For one sub mesh
+* vertice_count - 4 bytes
+* index_count - 4 bytes
+* vertexMemSize - 4 bytes
+* indexMemSize - 4 bytes
+* vertice data - vertexMemSize bytes
+* indices data - indexMemSize bytes
+* ------
+*/
+
 bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
@@ -28,7 +41,9 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #endif
 	mesh.m_hasColor = false;
 
-	mesh.SetVertexDescritor(vertexDescriptor);
+	mesh.SetVertexDescriptor(vertexDescriptor);
+
+	// Read all sub meshes
 	for (uint32_t i = 0; i < subMeshCount; i++)
 	{
 		uint32_t vertice_count;
@@ -49,9 +64,11 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		mesh.AllocSubMesh(vertice_count, index_count);
 		MeshData::SubMesh* subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
+		// Copy vertices data
 		memcpy(subMesh->data, fileData, vertexMemSize);
 		fileData += vertexMemSize;
 
+		// Copy indices data
 		if(mesh.m_hasIndices)
 		{
 			memcpy(subMesh->indices, fileData, indexMemSize);

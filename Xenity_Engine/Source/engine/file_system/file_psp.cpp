@@ -78,7 +78,7 @@ std::string FilePSP::ReadAll()
 	return allText;
 }
 
-unsigned char* FilePSP::ReadAllBinary(int& size)
+unsigned char* FilePSP::ReadAllBinary(size_t& size)
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
@@ -99,7 +99,7 @@ unsigned char* FilePSP::ReadAllBinary(int& size)
 	return (unsigned char*)data;
 }
 
-unsigned char* FilePSP::ReadBinary(int offset, int size)
+unsigned char* FilePSP::ReadBinary(size_t offset, size_t size)
 {
 	char* data = nullptr;
 	if (m_fileId >= 0)

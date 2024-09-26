@@ -31,7 +31,7 @@ ReflectiveData Lod::GetReflectiveData()
 
 void Lod::CheckLod()
 {
-	const float camDis = Vector3::Distance(GetTransform()->GetPosition(), Graphics::usedCamera->GetTransform()->GetPosition());
+	const float camDis = Vector3::Distance(GetTransformRaw()->GetPosition(), Graphics::usedCamera->GetTransformRaw()->GetPosition());
 	if (camDis >= m_culledDistance) 
 	{
 		SetAllLevel(false);
@@ -55,8 +55,9 @@ void Lod::RemoveReferences()
 	Graphics::RemoveLod(std::dynamic_pointer_cast<Lod>(shared_from_this()));
 }
 
-void Lod::UseLevel(std::weak_ptr<MeshRenderer> levelToEnable, std::weak_ptr<MeshRenderer> levelToDisable0, std::weak_ptr<MeshRenderer> levelToDisable1)
+void Lod::UseLevel(const std::weak_ptr<MeshRenderer>& levelToEnable, const std::weak_ptr<MeshRenderer>& levelToDisable0, const std::weak_ptr<MeshRenderer>& levelToDisable1)
 {
+	// Set levelToEnable as visible and other as not visible
 	if (levelToEnable.lock())
 		levelToEnable.lock()->m_culled = false;
 

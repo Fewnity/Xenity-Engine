@@ -162,7 +162,7 @@ void RendererOpengl::SetCameraPosition(const Camera& camera)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glMultMatrixf((float*)&camera.cameraTransformMatrix);
+	glMultMatrixf((float*)&camera.m_cameraTransformMatrix);
 }
 
 void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& rotation)

@@ -133,7 +133,8 @@ void CrashHandler::Handler(int signum)
 			}
 		}
 
-		std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
+		// Print infos about the last updated component by the GameplayManager
+		std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
 
 		if (lastComponent)
 		{

@@ -19,24 +19,24 @@ TextMesh::TextMesh()
 	m_componentName = "TextMesh";
 
 	AssetManager::AddReflection(this);
-	material = AssetManager::standardMaterial;
+	m_material = AssetManager::standardMaterial;
 }
 
 ReflectiveData TextMesh::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, text, "text", true);
-	Reflective::AddVariable(reflectedVariables, font, "font", true);
-	Reflective::AddVariable(reflectedVariables, material, "material", true);
-	Reflective::AddVariable(reflectedVariables, horizontalAlignment, "horizontalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, verticalAlignment, "verticalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, fontSize, "fontSize", true);
+	Reflective::AddVariable(reflectedVariables, m_text, "text", true);
+	Reflective::AddVariable(reflectedVariables, m_font, "font", true);
+	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize", true);
 	return reflectedVariables;
 }
 
 void TextMesh::OnReflectionUpdated()
 {
-	isTextInfoDirty = true;
+	m_isTextInfoDirty = true;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -55,30 +55,25 @@ void TextMesh::SetOrderInLayer(int orderInLayer)
 
 void TextMesh::SetText(const std::string& text)
 {
-	if (this->text != text)
+	if (this->m_text != text)
 	{
-		this->text = text;
-		isTextInfoDirty = true;
+		this->m_text = text;
+		m_isTextInfoDirty = true;
 	}
 }
 
 void TextMesh::SetFont(const std::shared_ptr<Font>& font)
 {
-	if (this->font != font)
+	if (this->m_font != font)
 	{
-		this->font = font;
-		isTextInfoDirty = true;
+		this->m_font = font;
+		m_isTextInfoDirty = true;
 	}
-}
-
-std::shared_ptr<Material> TextMesh::GetMaterial()
-{
-	return material;
 }
 
 void TextMesh::SetMaterial(std::shared_ptr<Material> _material)
 {
-	material = _material;
+	m_material = _material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -94,11 +89,11 @@ void TextMesh::OnEnabled()
 
 void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!material || !font)
+	if (!m_material || !m_font)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material.get();
+	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransformRaw();
 	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
@@ -112,45 +107,45 @@ void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 /// </summary>
 void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (isTextInfoDirty)
+	if (m_isTextInfoDirty)
 	{
-		delete textInfo;
-		if (mesh)
-			mesh.reset();
-		textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);
-		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font, fontSize);
-		isTextInfoDirty = false;
+		delete m_textInfo;
+		if (m_mesh)
+			m_mesh.reset();
+		m_textInfo = TextManager::GetTextInfomations(m_text, (int)m_text.size(), m_font, 1);
+		m_mesh = TextManager::CreateMesh(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, m_color, m_font, m_fontSize);
+		m_isTextInfoDirty = false;
 	}
-	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, false, mesh, font, material);
+	TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, false, *m_mesh, *m_font, *m_material);
 }
 
 void TextMesh::SetFontSize(float fontSize)
 {
-	this->fontSize = fontSize;
-	isTextInfoDirty = true;
+	this->m_fontSize = fontSize;
+	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetLineSpacing(float lineSpacing)
 {
-	this->lineSpacing = lineSpacing;
-	isTextInfoDirty = true;
+	this->m_lineSpacing = lineSpacing;
+	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetCharacterSpacing(float characterSpacing)
 {
-	this->characterSpacing = characterSpacing;
-	isTextInfoDirty = true;
+	this->m_characterSpacing = characterSpacing;
+	m_isTextInfoDirty = true;
 
 }
 
 void TextMesh::SetVerticalAlignment(VerticalAlignment verticalAlignment)
 {
-	this->verticalAlignment = verticalAlignment;
-	isTextInfoDirty = true;
+	this->m_verticalAlignment = verticalAlignment;
+	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
 {
-	this->horizontalAlignment = horizontalAlignment;
-	isTextInfoDirty = true;
+	this->m_horizontalAlignment = horizontalAlignment;
+	m_isTextInfoDirty = true;
 }

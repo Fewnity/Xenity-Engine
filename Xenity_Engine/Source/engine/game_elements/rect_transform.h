@@ -30,10 +30,10 @@ protected:
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(std::shared_ptr <Canvas> canvas);
+	void UpdatePosition(const std::shared_ptr <Canvas>& canvas);
 
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(std::shared_ptr <RectTransform> canvas);
+	void UpdatePosition(const std::shared_ptr <RectTransform>& canvas);
 };

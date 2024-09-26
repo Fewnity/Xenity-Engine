@@ -107,7 +107,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 			const int channelCount = stream->GetChannelCount();
 			short* rightBuf = nullptr;
 			short* leftBuf = nullptr;
-			const int frequency = stream->GetFrequency();
+			const uint32_t frequency = stream->GetFrequency();
 			const uint64_t sampleCount = stream->GetSampleCount();
 			int leftBufferIndex = 0;
 			int rightBufferIndex = 0;

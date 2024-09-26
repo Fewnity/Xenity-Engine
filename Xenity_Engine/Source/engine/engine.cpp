@@ -364,7 +364,7 @@ void Engine::Loop()
 				if (tryResult)
 				{
 					std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
-					std::shared_ptr<Component> lastComponent = GameplayManager::lastUpdatedComponent.lock();
+					std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
 					if (lastComponent)
 					{
 						lastComponentMessage += "Component name: " + lastComponent->GetComponentName();

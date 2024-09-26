@@ -48,7 +48,7 @@ public:
 	/**
 	* @brief Get audio clip frequency in Hz
 	*/
-	int GetFrequency() const;
+	uint32_t GetFrequency() const;
 
 	/**
 	* @brief Get audio clip sample count

@@ -57,14 +57,13 @@ void MeshRenderer::OnDrawGizmosSelected()
 
 #if defined(EDITOR)
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-	Sphere sphere = ProcessBoundingSphere();
-	Gizmo::DrawSphere(sphere.position, sphere.radius);
+	Gizmo::DrawSphere(boundingSphere.position, boundingSphere.radius);
 
 	const Color meshLineColor = Color::CreateFromRGBAFloat(0, 0, 1, 1);
 
 	Gizmo::SetColor(meshLineColor);
 
-	Vector3 tPos = GetTransform()->GetPosition();
+	const Vector3& tPos = GetTransformRaw()->GetPosition();
 	for (auto& chunk : worldChunkPositions)
 	{
 		Gizmo::DrawLine(tPos, chunk + Vector3(CHUNK_HALF_SIZE));
@@ -76,7 +75,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 
 	for (auto& light : affectedByLights)
 	{
-		Gizmo::DrawLine(tPos, light->GetTransform()->GetPosition());
+		Gizmo::DrawLine(tPos, light->GetTransformRaw()->GetPosition());
 	}
 #endif
 }
@@ -167,7 +166,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 		if (!material->GetUseTransparency())
 		{
-			RenderQueue& renderQueue = renderBatch.renderQueues[material->m_fileId];
+			RenderQueue& renderQueue = renderBatch.renderQueues[material->GetFileId()];
 			renderQueue.commands.push_back(command);
 			renderQueue.commandIndex++;
 		}

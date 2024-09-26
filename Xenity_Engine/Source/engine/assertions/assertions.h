@@ -23,7 +23,7 @@ void OnAssertionFailed(const std::string& message);
 #endif
 
 // ------------------------------- Type assertions -------------------------------
-static_assert(sizeof(int) == 4, "char is not 4 byte");
+static_assert(sizeof(int) == 4, "int is not 4 byte");
 static_assert(sizeof(float) == 4, "float is not 4 byte");
 static_assert(sizeof(double) == 8, "double is not 8 byte");
 static_assert(sizeof(long long) == 8, "long long is not 8 byte");

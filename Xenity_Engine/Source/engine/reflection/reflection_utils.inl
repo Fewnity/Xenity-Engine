@@ -49,13 +49,13 @@ inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonV
 	for (size_t i = 0; i < jsonArraySize; i++)
 	{
 		Reflective* tempVariable = nullptr;
-		if (jsonValue[i].contains("Values"))
+		if (jsonValue[i].contains("Values")) // If the reflective is not null
 		{
 			// Go through json Values list
 			tempVariable = (Reflective*)entry.typeSpawner->Allocate();
 			ReflectionUtils::JsonToReflective(jsonValue[i], *tempVariable);
 		}
-		if (i >= objectVectorSize)
+		if (i >= objectVectorSize) // If the vector is too small, add new slot
 		{
 			valuePtr.get().push_back(tempVariable);
 		}
@@ -342,7 +342,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson5] key is empty");
 
 	if (valuePtr.get() != nullptr)
-		jsonValue[key] = valuePtr.get()->m_fileId;
+		jsonValue[key] = valuePtr.get()->GetFileId();
 	else
 		jsonValue[key] = 0;
 }
@@ -390,7 +390,7 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 	for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
 	{
 		if (getVal.at(vIndex))
-			jsonValue[key][vIndex] = getVal.at(vIndex)->m_fileId;
+			jsonValue[key][vIndex] = getVal.at(vIndex)->GetFileId();
 		else
 			jsonValue[key][vIndex] = 0;
 	}

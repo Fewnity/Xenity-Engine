@@ -749,7 +749,7 @@ void SceneMenu::Draw()
 			MoveCamera();
 
 			camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
-			ImGui::Image((ImTextureID)(size_t)camera->secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((ImTextureID)(size_t)camera->m_secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			std::shared_ptr<FileReference> mesh;
 			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh, false);

@@ -20,6 +20,7 @@ ReflectiveData AudioClipSettings::GetReflectiveData()
 
 AudioClip::AudioClip()
 {
+	// Create platform specific settings
 	AudioClipSettingsStandalone* audioClipSettingsStandalone = new AudioClipSettingsStandalone();
 	AudioClipSettingsPSP* audioClipSettingsPSP = new AudioClipSettingsPSP();
 	AudioClipSettingsPSVITA* audioClipSettingsPSVITA = new AudioClipSettingsPSVITA();
@@ -38,6 +39,7 @@ ReflectiveData AudioClip::GetReflectiveData()
 ReflectiveData AudioClip::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
+	// Add platform specific settings variables to the list of reflected variables
 	ReflectiveData reflectedVariablesPlatform = m_settings[static_cast<int>(platform)]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
@@ -54,13 +56,19 @@ void AudioClip::LoadFileReference()
 {
 	if (IsStoredInMemory() && m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		m_file->Open(FileMode::ReadOnly);
-		m_audioMemory.m_data = (short*)m_file->ReadAllBinary(m_audioMemory.m_dataLength);
-		m_file->Close();
-		if (!m_audioMemory.m_data || m_audioMemory.m_dataLength == 0)
+		if (m_file->Open(FileMode::ReadOnly))
 		{
-			SetIsStoredInMemory(false);
-			Debug::PrintError("Not enough memory for audio: " + m_file->GetPath());
+			m_audioMemory.m_data = (short*)m_file->ReadAllBinary(m_audioMemory.m_dataLength);
+			m_file->Close();
+			if (!m_audioMemory.m_data || m_audioMemory.m_dataLength == 0)
+			{
+				SetIsStoredInMemory(false);
+				Debug::PrintError("[AudioClip::LoadFileReference] Not enough memory for audio: " + m_file->GetPath());
+			}
+		}
+		else 
+		{
+			Debug::PrintError("[AudioClip::LoadFileReference] Failed to open audio clip file");
 		}
 	}
 	m_fileStatus = FileStatus::FileStatus_Loaded;
@@ -68,6 +76,7 @@ void AudioClip::LoadFileReference()
 
 void AudioClip::UnloadFileReference()
 {
+	// If audio file was loaded in memory, free data
 	if (m_audioMemory.m_data)
 	{
 		free(m_audioMemory.m_data);

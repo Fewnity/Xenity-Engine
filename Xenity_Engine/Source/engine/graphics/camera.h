@@ -130,25 +130,25 @@ public:
 	/**
 	* @brief Get projection size
 	*/
-	inline float GetProjectionSize() const
+	float GetProjectionSize() const
 	{
-		return projectionSize;
+		return m_projectionSize;
 	}
 
 	/**
 	* @brief Get near clipping plane
 	*/
-	inline float GetNearClippingPlane() const
+	float GetNearClippingPlane() const
 	{
-		return nearClippingPlane;
+		return m_nearClippingPlane;
 	}
 
 	/**
 	* @brief Get far clipping plane
 	*/
-	inline float GetFarClippingPlane() const
+	float GetFarClippingPlane() const
 	{
-		return farClippingPlane;
+		return m_farClippingPlane;
 	}
 
 	/**
@@ -184,17 +184,17 @@ public:
 	/**
 	* @brief Get projection matrix
 	*/
-	inline const glm::mat4& GetProjection() const
+	const glm::mat4& GetProjection() const
 	{
-		return projection;
+		return m_projection;
 	}
 
 	/**
 	* @brief Get projection type
 	*/
-	inline ProjectionTypes GetProjectionType() const
+	ProjectionTypes GetProjectionType() const
 	{
-		return projectionType;
+		return m_projectionType;
 	}
 
 	Vector3 GetMouseRay();
@@ -202,49 +202,47 @@ public:
 	/**
 	* @brief Get view width in pixel
 	*/
-	inline int GetWidth() const
+	int GetWidth() const
 	{
-		return width;
+		return m_width;
 	}
 
 	/**
 	* @brief Get view height in pixel
 	*/
-	inline int GetHeight() const
+	int GetHeight() const
 	{
-		return height;
+		return m_height;
 	}
 
 	/**
 	* @brief Get view aspect ratio
 	*/
-	inline float GetAspectRatio() const
+	float GetAspectRatio() const
 	{
-		return aspect;
+		return m_aspect;
 	}
 
 	/**
 	* @brief Get if the camera is using multisampling (Windows Only)
 	*/
-	inline bool GetUseMultisampling()
+	bool GetUseMultisampling() const
 	{
-		return useMultisampling;
+		return m_useMultisampling;
 	}
 
 	/**
 	* @brief Set if the camera is using multisampling (Windows Only)
 	* @param _UseMultisampling True to enable Multisampling
 	*/
-	inline void SetUseMultisampling(bool _UseMultisampling)
+	void SetUseMultisampling(bool useMultisampling)
 	{
-		useMultisampling = _UseMultisampling;
+		m_useMultisampling = useMultisampling;
 	}
 
 	void OnComponentAttached() override;
 
 	void UpdateCameraTransformMatrix();
-
-	glm::mat4 cameraTransformMatrix;
 
 protected:
 	friend class SceneMenu;
@@ -276,9 +274,9 @@ protected:
 	/**
 	* @brief [Internal] Get projection matrix without Clipping Planes values
 	*/
-	inline const glm::mat4& GetCanvasProjection()
+	const glm::mat4& GetCanvasProjection() const
 	{
-		return canvasProjection;
+		return m_canvasProjection;
 	}
 
 	/**
@@ -298,52 +296,53 @@ protected:
 	void BindFrameBuffer();
 
 	// [Internal]
-	unsigned int secondFramebufferTexture = -1;
+	unsigned int m_secondFramebufferTexture = -1;
 
-	unsigned int framebufferTexture = -1;
+	unsigned int m_framebufferTexture = -1;
 
-	glm::mat4 projection;
-	glm::mat4 canvasProjection;
+	glm::mat4 m_projection;
+	glm::mat4 m_canvasProjection;
+	glm::mat4 m_cameraTransformMatrix;
 
 	/**
 	* @brief [Internal]
 	*/
 	void CopyMultiSampledFrameBuffer();
 
-	unsigned int framebuffer = -1;
-	unsigned int secondFramebuffer = -1;
-	int width, height;
-	float aspect;
-	float fov = 60.0f;		  // For 3D
-	float projectionSize = 5; // For 2D
-	float nearClippingPlane = 0.3f;
-	float farClippingPlane = 1000;
-	ProjectionTypes projectionType = ProjectionTypes::Perspective;
+	unsigned int m_framebuffer = -1;
+	unsigned int m_secondFramebuffer = -1;
+	int m_width, m_height;
+	float m_aspect;
+	float m_fov = 60.0f;		  // For 3D
+	float m_projectionSize = 5; // For 2D
+	float m_nearClippingPlane = 0.3f;
+	float m_farClippingPlane = 1000;
+	ProjectionTypes m_projectionType = ProjectionTypes::Perspective;
 
-	unsigned int depthframebuffer = -1;
-	bool needFrameBufferUpdate = true;
+	unsigned int m_depthframebuffer = -1;
+	bool m_needFrameBufferUpdate = true;
 
-	bool useMultisampling = true;
+	bool m_useMultisampling = true;
 	// [Internal]
-	bool isProjectionDirty = true;
+	bool m_isProjectionDirty = true;
 	// [Internal]
-	bool lastMultisamplingValue = useMultisampling;
+	bool m_lastMultisamplingValue = m_useMultisampling;
 	// [Internal]
-	bool isEditor = false;
+	bool m_isEditor = false;
 
 	/**
 	* [Internal] Get if the camera is for the editor
 	*/
-	inline bool IsEditor()
+	bool IsEditor() const
 	{
-		return isEditor;
+		return m_isEditor;
 	}
 
 	/**
 	* [Internal] Set if the camera is for the editor
 	*/
-	inline void SetIsEditor(bool _isEditor)
+	void SetIsEditor(bool _isEditor)
 	{
-		isEditor = _isEditor;
+		m_isEditor = _isEditor;
 	}
 };

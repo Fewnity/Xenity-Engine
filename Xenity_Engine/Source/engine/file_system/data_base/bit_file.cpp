@@ -53,7 +53,7 @@ size_t BitFile::AddData(const unsigned char* data, size_t size)
 	return dataOffset;
 }
 
-unsigned char* BitFile::ReadBinary(int offset, int size)
+unsigned char* BitFile::ReadBinary(size_t offset, size_t size)
 {
 	unsigned char* data = m_file->ReadBinary(offset, size);
 	return data;

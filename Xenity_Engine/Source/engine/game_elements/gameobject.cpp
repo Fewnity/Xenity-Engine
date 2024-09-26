@@ -70,7 +70,7 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 
 GameObject::GameObject()
 {
-	this->m_name = DEFAULT_GAMEOBJECT_NAME;
+	m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
 	Performance::s_gameObjectMemoryTracker->Allocate(sizeof(GameObject));
@@ -80,9 +80,9 @@ GameObject::GameObject()
 GameObject::GameObject(const std::string& _name)
 {
 	if (!_name.empty())
-		this->m_name = _name;
+		m_name = _name;
 	else
-		this->m_name = DEFAULT_GAMEOBJECT_NAME;
+		m_name = DEFAULT_GAMEOBJECT_NAME;
 
 #if defined (DEBUG)
 	Performance::s_gameObjectMemoryTracker->Allocate(sizeof(GameObject));
@@ -206,7 +206,7 @@ void GameObject::SetParent(const std::shared_ptr<GameObject>& gameObject)
 			const int parentChildCount = lockParent->m_childCount;
 			for (int i = 0; i < parentChildCount; i++)
 			{
-				if (lockParent->m_children[i].lock() == shared_from_this())
+				if (lockParent->m_children[i].lock().get() == this)
 				{
 					lockParent->m_children.erase(lockParent->m_children.begin() + i);
 					lockParent->m_childCount--;
@@ -312,7 +312,7 @@ void GameObject::UpdateActive(const std::shared_ptr<GameObject>& changed)
 	XASSERT(changed != nullptr, "[GameObject::UpdateActive] changed is empty");
 
 	const bool lastLocalActive = m_localActive;
-	if (!changed->IsActive() || (!changed->IsLocalActive() && changed != shared_from_this())) // if the new parent's state is false, set local active to false
+	if (!changed->IsActive() || (!changed->IsLocalActive() && changed.get() != this)) // if the new parent's state is false, set local active to false
 	{
 		m_localActive = false;
 	}

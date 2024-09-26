@@ -285,7 +285,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 			{
 				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 			}
-			mesh.SetVertexDescritor(vertexDescriptor);
+			mesh.SetVertexDescriptor(vertexDescriptor);
 
 			mesh.m_hasUv = !hasNoUv;
 			mesh.m_hasNormal = !hasNoNormals;

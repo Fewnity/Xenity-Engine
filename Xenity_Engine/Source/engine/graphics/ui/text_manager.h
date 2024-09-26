@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 
 #include <engine/vectors/vector2.h>
-#include "TextAlignments.h"
+#include "text_alignments.h"
 
 class Texture;
 class Vector4;
@@ -82,7 +82,7 @@ public:
 	* @param font Font
 	* @param material Material
 	*/
-	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform>& transform, const Color& color, bool canvas, const std::shared_ptr <MeshData>& mesh, const std::shared_ptr<Font>& font, const std::shared_ptr <Material>& material);
+	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Transform& transform, const Color& color, bool canvas, const MeshData& mesh, const Font& font, Material& material);
 
 	/**
 	* @brief Get informations about a text
@@ -118,6 +118,4 @@ private:
 	* @param letterIndex Letter index in the string
 	*/
 	static void AddCharToMesh(const std::shared_ptr<MeshData>& mesh, Character* ch, float x, float y, int letterIndex, float scale);
-
-	static std::vector<std::shared_ptr<MeshData>> meshes;
 };

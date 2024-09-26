@@ -81,7 +81,7 @@ std::string FileDefault::ReadAll()
 	return allText.str();
 }
 
-unsigned char* FileDefault::ReadAllBinary(int& size)
+unsigned char* FileDefault::ReadAllBinary(size_t& size)
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
@@ -111,7 +111,7 @@ unsigned char* FileDefault::ReadAllBinary(int& size)
 	return (unsigned char*)data;
 }
 
-unsigned char* FileDefault::ReadBinary(int offset, int size)
+unsigned char* FileDefault::ReadBinary(size_t offset, size_t size)
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{

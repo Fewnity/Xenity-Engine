@@ -115,12 +115,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	return mesh;
 }
 
-void TextManager::DrawText(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const std::shared_ptr<Transform> &transform, const Color &color, bool canvas, const std::shared_ptr<MeshData> &mesh, const std::shared_ptr<Font> &font, const std::shared_ptr<Material> &material)
+void TextManager::DrawText(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Transform &transform, const Color& color, bool canvas, const MeshData& mesh, const Font& font, Material& material)
 {
-	if (!font)
-		return;
-
-	if (!font->GetFontAtlas() || !font->GetFontAtlas()->IsValid())
+	if (!font.GetFontAtlas() || !font.GetFontAtlas()->IsValid())
 	{
 		Debug::PrintError("[TextManager::DrawText] Invalid font", true);
 		return;
@@ -129,7 +126,7 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 	if (Graphics::usedCamera)
 	{
 		RenderingSettings renderSettings = RenderingSettings();
-		if (transform->GetScale().x * transform->GetScale().y < 0)
+		if (transform.GetScale().x * transform.GetScale().y < 0)
 			renderSettings.invertFaces = true;
 		else
 			renderSettings.invertFaces = false;
@@ -138,14 +135,14 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = !canvas;
 
-		const Vector3& pos = transform->GetPosition();
+		const Vector3& pos = transform.GetPosition();
 
-		Vector3 scl = transform->GetScale();
+		Vector3 scl = transform.GetScale();
 		scl.x = -scl.x;
-		const Quaternion& rot = transform->GetRotation();
+		const Quaternion& rot = transform.GetRotation();
 		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
 
-		Graphics::DrawSubMesh(*mesh->m_subMeshes[0], *material, font->GetFontAtlas().get(), renderSettings, matrix, canvas);
+		Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, matrix, canvas);
 	}
 }
 

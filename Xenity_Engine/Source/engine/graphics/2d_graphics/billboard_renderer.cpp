@@ -43,7 +43,7 @@ BillboardRenderer::~BillboardRenderer()
 
 void BillboardRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->m_orderInLayer = orderInLayer;
+	m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -57,8 +57,8 @@ void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	RenderCommand command = RenderCommand();
 	command.material = m_material.get();
 	command.drawable = this;
-	command.transform = GetTransform().get();
-	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
+	command.transform = GetTransformRaw();
+	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
@@ -66,13 +66,13 @@ void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void BillboardRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
-	this->m_material = material;
+	m_material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
-	this->m_texture = texture;
+	m_texture = texture;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -91,6 +91,6 @@ void BillboardRenderer::OnEnabled()
 /// </summary>
 void BillboardRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	const std::shared_ptr<Transform> transform = GetTransform();
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransform()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *m_material, m_texture.get());
+	const std::shared_ptr<Transform>& transform = GetTransform();
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransformRaw()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *m_material, m_texture.get());
 }

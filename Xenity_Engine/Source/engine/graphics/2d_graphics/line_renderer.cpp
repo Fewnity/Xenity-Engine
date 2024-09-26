@@ -48,7 +48,7 @@ LineRenderer::~LineRenderer()
 
 void LineRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->m_orderInLayer = orderInLayer;
+	m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -60,11 +60,11 @@ void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	RenderCommand command = RenderCommand();
 	command.material = m_material.get();
 	command.drawable = this;
-	command.transform = GetTransform().get();
-	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
+	command.transform = GetTransformRaw();
+	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 	if (!m_material->GetUseTransparency())
 	{
-		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->m_fileId];
+		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->GetFileId()];
 		renderQueue.commands.push_back(command);
 		renderQueue.commandIndex++;
 	}
@@ -133,5 +133,5 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = m_material->GetUseLighting();
 	renderSettings.useBlend = m_material->GetUseTransparency();
-	MeshManager::DrawMesh(*GetTransform(), *subMesh, *m_material, renderSettings);
+	MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *m_material, renderSettings);
 }

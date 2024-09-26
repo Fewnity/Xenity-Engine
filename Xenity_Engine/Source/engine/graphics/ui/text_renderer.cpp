@@ -18,24 +18,24 @@ TextRenderer::TextRenderer()
 	m_componentName = "TextRenderer";
 
 	AssetManager::AddReflection(this);
-	material = AssetManager::unlitMaterial;
+	m_material = AssetManager::unlitMaterial;
 }
 
 ReflectiveData TextRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, text, "text", true);
-	Reflective::AddVariable(reflectedVariables, font, "font", true);
-	Reflective::AddVariable(reflectedVariables, material, "material", true);
-	Reflective::AddVariable(reflectedVariables, horizontalAlignment, "horizontalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, verticalAlignment, "verticalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, fontSize, "fontSize", true);
+	Reflective::AddVariable(reflectedVariables, m_text, "text", true);
+	Reflective::AddVariable(reflectedVariables, m_font, "font", true);
+	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment", true);
+	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize", true);
 	return reflectedVariables;
 }
 
 void TextRenderer::OnReflectionUpdated()
 {
-	isTextInfoDirty = true;
+	m_isTextInfoDirty = true;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -48,37 +48,37 @@ TextRenderer::~TextRenderer()
 
 void TextRenderer::SetOrderInLayer(int orderInLayer)
 {
-	this->m_orderInLayer = orderInLayer;
+	m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
 void TextRenderer::SetText(const std::string& text)
 {
-	if (this->text != text)
+	if (m_text != text)
 	{
-		this->text = text;
-		isTextInfoDirty = true;
+		m_text = text;
+		m_isTextInfoDirty = true;
 	}
 }
 
 void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 {
-	if (this->font != font)
+	if (m_font != font)
 	{
-		this->font = font;
-		isTextInfoDirty = true;
+		m_font = font;
+		m_isTextInfoDirty = true;
 		Graphics::isRenderingBatchDirty = true;
 	}
 }
 
 std::shared_ptr<Material> TextRenderer::GetMaterial()
 {
-	return material;
+	return m_material;
 }
 
-void TextRenderer::SetMaterial(std::shared_ptr<Material> _material)
+void TextRenderer::SetMaterial(std::shared_ptr<Material> material)
 {
-	material = _material;
+	m_material = material;
 	Graphics::isRenderingBatchDirty = true;
 }
 
@@ -94,15 +94,15 @@ void TextRenderer::OnEnabled()
 
 void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!material || !font)
+	if (!m_material || !m_font)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = material.get();
+	command.material = m_material.get();
 	command.drawable = this;
 	command.subMesh = nullptr;
-	command.transform = GetTransform().get();
-	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
+	command.transform = GetTransformRaw();
+	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 
 	renderBatch.uiCommands.push_back(command);
 	renderBatch.uiCommandIndex++;
@@ -113,44 +113,44 @@ void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 /// </summary>
 void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (isTextInfoDirty)
+	if (m_isTextInfoDirty)
 	{
-		delete textInfo;
-		if (mesh)
-			mesh.reset();
-		textInfo = TextManager::GetTextInfomations(text, (int)text.size(), font, 1);
-		mesh = TextManager::CreateMesh(text, textInfo, horizontalAlignment, verticalAlignment, color, font, fontSize);
-		isTextInfoDirty = false;
+		delete m_textInfo;
+		if (m_mesh)
+			m_mesh.reset();
+		m_textInfo = TextManager::GetTextInfomations(m_text, (int)m_text.size(), m_font, 1);
+		m_mesh = TextManager::CreateMesh(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, m_color, m_font, m_fontSize);
+		m_isTextInfoDirty = false;
 	}
-	TextManager::DrawText(text, textInfo, horizontalAlignment, verticalAlignment, GetTransform(), color, true, mesh, font, material);
+	TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, true, *m_mesh, *m_font, *m_material);
 }
 
 void TextRenderer::SetFontSize(float fontSize)
 {
-	this->fontSize = fontSize;
-	isTextInfoDirty = true;
+	m_fontSize = fontSize;
+	m_isTextInfoDirty = true;
 }
 
 void TextRenderer::SetLineSpacing(float lineSpacing)
 {
-	this->lineSpacing = lineSpacing;
-	isTextInfoDirty = true;
+	m_lineSpacing = lineSpacing;
+	m_isTextInfoDirty = true;
 }
 
 void TextRenderer::SetCharacterSpacing(float characterSpacing)
 {
-	this->characterSpacing = characterSpacing;
-	isTextInfoDirty = true;
+	m_characterSpacing = characterSpacing;
+	m_isTextInfoDirty = true;
 }
 
 void TextRenderer::SetVerticalAlignment(VerticalAlignment verticalAlignment)
 {
-	this->verticalAlignment = verticalAlignment;
-	isTextInfoDirty = true;
+	m_verticalAlignment = verticalAlignment;
+	m_isTextInfoDirty = true;
 }
 
 void TextRenderer::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
 {
-	this->horizontalAlignment = horizontalAlignment;
-	isTextInfoDirty = true;
+	m_horizontalAlignment = horizontalAlignment;
+	m_isTextInfoDirty = true;
 }

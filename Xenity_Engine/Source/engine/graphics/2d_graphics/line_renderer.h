@@ -36,7 +36,7 @@ public:
 	*/
 	inline void SetColor(const Color& color)
 	{
-		this->m_color = color;
+		m_color = color;
 	}
 
 	inline const Color& GetColor() const

@@ -22,6 +22,9 @@ enum class FileMode
 	WriteCreateFile,
 };
 
+/**
+* Class to manage a file (Create, open, read, write)
+*/
 class API File : public UniqueId, public std::enable_shared_from_this<File>
 {
 public:
@@ -35,6 +38,11 @@ public:
 	*/
 	virtual void Write(const std::string& data) = 0;
 
+	/**
+	* @brief Write binary data to the file
+	* @param data The data to write
+	* @param size The size of the data in byte
+	*/
 	virtual void Write(const unsigned char* data, size_t size) = 0;
 
 	/**
@@ -44,12 +52,18 @@ public:
 
 	/**
 	* @brief Read all the content of the file as a binary (Need to free the pointer after)
-	* @param size Output: The size of the binary
+	* @param size Output: The size of the binary in byte
 	* @return The binary data
 	*/
-	virtual unsigned char* ReadAllBinary(int& size) { return nullptr; };
+	virtual unsigned char* ReadAllBinary(size_t& size) { return nullptr; };
 
-	virtual unsigned char* ReadBinary(int offset, int size) { return nullptr; };
+	/**
+	* @brief Read a part of the content of the file as a binary (Need to free the pointer after)
+	* @param offset Read offset in byte
+	* @param size The size to read in byte
+	* @return The binary data
+	*/
+	virtual unsigned char* ReadBinary(size_t offset, size_t size) { return nullptr; };
 
 	/**
 	* @brief Check if the file exists

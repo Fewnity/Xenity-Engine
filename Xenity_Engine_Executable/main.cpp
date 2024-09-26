@@ -26,10 +26,9 @@ Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
 Set isTrigger and generateCollisionEvents has protected?
-Improve crash when removing the engine asset folder by adding logs
-Fix void Compiler::UpdatePaths() when making a public build
 Check why the compiler search for main.cpp in the engine's folder
 Remove TestComponent in release builds
+Fix SaveMenuSettings
 
 --- Can be done for the next release
 Remove the old profiler

@@ -63,7 +63,7 @@ void AudioSource::SetVolume(float _volume)
 		_volume = 1;
 	else if (_volume < 0)
 		_volume = 0;
-	this->m_volume = _volume;
+	m_volume = _volume;
 }
 
 void AudioSource::SetPanning(float panning)
@@ -72,12 +72,12 @@ void AudioSource::SetPanning(float panning)
 		panning = 1;
 	else if (panning < 0)
 		panning = 0;
-	this->m_pan = panning;
+	m_pan = panning;
 }
 
 void AudioSource::SetLoop(bool isLooping)
 {
-	this->m_loop = isLooping;
+	m_loop = isLooping;
 }
 
 #if defined(__PSP__) || defined(__vita__)

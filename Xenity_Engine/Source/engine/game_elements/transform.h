@@ -138,7 +138,6 @@ public:
 		return -GetUp();
 	}
 
-
 	/**
 	* @brief Set position
 	* @param value Position
@@ -194,20 +193,26 @@ public:
 		return m_gameObject.lock();
 	}
 
+	/**
+	* Get the event that is called when the transform is updated (new position, or new rotation or new scale)
+	*/
 	Event<>& GetOnTransformUpdated()
 	{
 		return m_onTransformUpdated;
 	}
 
+	/**
+	* Get the event that is called when the transform is scamled
+	*/
 	Event<>& GetOnTransformScaled()
 	{
 		return m_onTransformScaled;
 	}
 
-	glm::mat4 transformationMatrix;
-	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 
 private:
+	glm::mat4 transformationMatrix;
+	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 	friend class RigidBody;
 
 	Quaternion m_rotationQuaternion = Quaternion::Identity();
@@ -237,7 +242,6 @@ private:
 	* @brief [Internal] Update world values
 	*/
 	void UpdateWorldValues();
-
 
 	/**
 	* @brief Update transformation matrix

@@ -56,7 +56,7 @@ protected:
 	// Struct that stores the full audio data if the clip is stored in memory
 	struct AudioMemory
 	{
-		int m_dataLength = 0;
+		size_t m_dataLength = 0;
 		short* m_data = nullptr;
 	};
 

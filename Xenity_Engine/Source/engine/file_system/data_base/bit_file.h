@@ -7,16 +7,35 @@
 
 class File;
 
-// Class that hold binary data
+// Class that hold game's binary data
 class BitFile
 {
 public:
+
+	/**
+	* Create the file at the given path
+	*/
 	void Create(const std::string& path);
+
+	/**
+	* Open the file at the given path
+	*/
 	void Open(const std::string& path);
 
+	/**
+	* Add binary data at the end of the file
+	*/
 	size_t AddData(const std::vector<uint8_t>& data);
+
+	/**
+	* Add binary data at the end of the file
+	*/
 	size_t AddData(const unsigned char* data, size_t size);
-	unsigned char* ReadBinary(int offset, int size);
+
+	/**
+	* Read binary data
+	*/
+	unsigned char* ReadBinary(size_t offset, size_t size);
 
 private:
 	std::shared_ptr<File> m_file;

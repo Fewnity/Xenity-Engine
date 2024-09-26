@@ -37,7 +37,7 @@ public:
 	AudioClipStream* m_audioClipStream = nullptr;
 	std::weak_ptr<AudioSource> m_audioSource;
 	short* m_buffer = nullptr;
-	int m_seekNext = 0;
+	uint32_t m_seekNext = 0;
 	float m_volume = 1;
 	float m_pan = 0.5;
 	bool m_needFillFirstHalfBuffer = false;

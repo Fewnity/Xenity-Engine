@@ -32,7 +32,7 @@ protected:
 	/**
 	* @brief Use one of the level and disable the others
 	*/
-	void UseLevel(std::weak_ptr<MeshRenderer> levelToEnable, std::weak_ptr<MeshRenderer> levelToDisable0, std::weak_ptr<MeshRenderer> levelToDisable1);
+	void UseLevel(const std::weak_ptr<MeshRenderer>& levelToEnable, const std::weak_ptr<MeshRenderer>& levelToDisable0, const std::weak_ptr<MeshRenderer>& levelToDisable1);
 
 	/**
 	* @brief Set all the level to visible or not

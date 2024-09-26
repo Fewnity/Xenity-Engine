@@ -172,7 +172,7 @@ void RendererGU::ResetView()
 void RendererGU::SetCameraPosition(const Camera& camera)
 {
 	sceGumMatrixMode(GU_VIEW);
-	sceGumLoadMatrix((ScePspFMatrix4*)&camera.cameraTransformMatrix);
+	sceGumLoadMatrix((ScePspFMatrix4*)&camera.m_cameraTransformMatrix);
 }
 
 void RendererGU::SetCameraPosition(const Vector3& position, const Vector3& rotation)

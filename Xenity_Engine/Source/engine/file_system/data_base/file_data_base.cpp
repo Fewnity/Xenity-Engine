@@ -72,7 +72,7 @@ void FileDataBase::LoadFromFile(const std::string& path)
 
 	if (openResult)
 	{
-		int dataSize = 0;
+		size_t dataSize = 0;
 		unsigned char* data = file->ReadAllBinary(dataSize);
 		file->Close();
 

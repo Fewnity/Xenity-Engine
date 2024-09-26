@@ -168,19 +168,27 @@ public:
 	 */
 	void AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
 
-
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
+	/**
+	* Get mesh min bounding box point
+	*/
 	inline const Vector3& GetMinBoundingBox()  const
 	{
 		return m_minBoundingBox;
 	}
 
+	/**
+	* Get mesh max bounding box point
+	*/
 	inline const Vector3& GetMaxBoundingBox()  const
 	{
 		return m_maxBoundingBox;
 	}
 
+	/**
+	* Get mesh bounding sphere
+	*/
 	const Sphere& GetBoundingSphere() const
 	{
 		return boundingSphere;
@@ -245,7 +253,10 @@ protected:
 
 	VertexElements m_vertexDescriptor = VertexElements::NONE;
 
-	void SetVertexDescritor(VertexElements vertexDescriptor) 
+	/**
+	* Set mesh vertex descriptor
+	*/
+	void SetVertexDescriptor(VertexElements vertexDescriptor) 
 	{
 		m_vertexDescriptor = vertexDescriptor;
 	}
@@ -255,6 +266,9 @@ protected:
 	*/
 	void ComputeBoundingBox();
 
+	/**
+	* @brief Compute the bounding spehere of the mesh
+	*/
 	void ComputeBoundingSphere();
 
 #if defined(__PSP__)

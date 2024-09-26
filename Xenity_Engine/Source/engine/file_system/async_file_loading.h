@@ -16,6 +16,9 @@
 
 class FileReference;
 
+/**
+* @brief Class used to manage async file loading
+*/
 class AsyncFileLoading
 {
 public:

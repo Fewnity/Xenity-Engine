@@ -10,7 +10,7 @@
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/color/color.h>
-#include "TextAlignments.h"
+#include "text_alignments.h"
 
 class Font;
 struct TextInfo;
@@ -26,9 +26,9 @@ public:
 	* @brief Set text color
 	* @param color Color
 	*/
-	inline void SetColor(const Color& color)
+	void SetColor(const Color& color)
 	{
-		this->color = color;
+		m_color = color;
 	}
 
 	/**
@@ -40,7 +40,7 @@ public:
 	/**
 	* @brief Get order in layer
 	*/
-	inline int GetOrderInLayer() const
+	int GetOrderInLayer() const
 	{
 		return m_orderInLayer;
 	}
@@ -62,33 +62,33 @@ public:
 	void SetMaterial(std::shared_ptr<Material> _material);
 
 	void SetFontSize(float fontSize);
-	inline float GetFontSize()
+	float GetFontSize() const
 	{
-		return fontSize;
+		return m_fontSize;
 	}
 
 	void SetLineSpacing(float lineSpacing);
-	inline float GetLineSpacing()
+	float GetLineSpacing() const
 	{
-		return lineSpacing;
+		return m_lineSpacing;
 	}
 
 	void SetCharacterSpacing(float characterSpacing);
-	inline float GetCharacterSpacing()
+	float GetCharacterSpacing() const
 	{
-		return characterSpacing;
+		return m_characterSpacing;
 	}
 
 	void SetVerticalAlignment(VerticalAlignment verticalAlignment);
-	inline VerticalAlignment GetVerticalAlignment()
+	VerticalAlignment GetVerticalAlignment() const
 	{
-		return verticalAlignment;
+		return m_verticalAlignment;
 	}
 
 	void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment);
-	inline HorizontalAlignment GetHorizontalAlignment()
+	HorizontalAlignment GetHorizontalAlignment() const
 	{
-		return horizontalAlignment;
+		return m_horizontalAlignment;
 	}
 
 protected:
@@ -96,7 +96,7 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	std::shared_ptr<Material> material = nullptr;
+	std::shared_ptr<Material> m_material = nullptr;
 
 	/**
 	* @brief Called when the component is disabled
@@ -118,18 +118,18 @@ protected:
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
-	std::shared_ptr<MeshData> mesh = nullptr;
-	std::shared_ptr<Font> font;
-	TextInfo* textInfo = nullptr;
-	std::string text;
-	Color color = Color();
+	std::shared_ptr<MeshData> m_mesh = nullptr;
+	std::shared_ptr<Font> m_font;
+	TextInfo* m_textInfo = nullptr;
+	std::string m_text;
+	Color m_color = Color();
 	int m_orderInLayer = 0;
-	float fontSize = 1;
+	float m_fontSize = 1;
 
-	HorizontalAlignment horizontalAlignment = HorizontalAlignment::Center;
-	VerticalAlignment verticalAlignment = VerticalAlignment::Center;
-	float lineSpacing = 0;
-	float characterSpacing = 0;
+	HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Center;
+	VerticalAlignment m_verticalAlignment = VerticalAlignment::Center;
+	float m_lineSpacing = 0;
+	float m_characterSpacing = 0;
 
-	bool isTextInfoDirty = true;
+	bool m_isTextInfoDirty = true;
 };

@@ -59,7 +59,6 @@ public:
 #endif
 	static std::vector<std::weak_ptr<GameObject>> gameObjectsToDestroy;
 	static std::vector<std::shared_ptr<Component>> componentsToDestroy;
-	static std::weak_ptr<Component> lastUpdatedComponent;
 
 	/**
 	* @brief Update all active components
@@ -109,7 +108,17 @@ public:
 		return s_OnPlayEvent;
 	}
 
+	/**
+	* Get a weak pointer to the last updated component (only for debug)
+	*/
+	static const std::weak_ptr<Component>& GetLastUpdatedComponent()
+	{
+		return s_lastUpdatedComponent;
+	}
+
 private:
+	static std::weak_ptr<Component> s_lastUpdatedComponent;
+
 	static Event<> s_OnPlayEvent;
 
 	static GameState s_gameState;

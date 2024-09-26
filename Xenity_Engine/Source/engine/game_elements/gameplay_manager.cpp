@@ -31,7 +31,7 @@ std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjectsEditor;
 #endif
 std::vector<std::weak_ptr<GameObject>> GameplayManager::gameObjectsToDestroy;
 std::vector<std::shared_ptr<Component>> GameplayManager::componentsToDestroy;
-std::weak_ptr<Component> GameplayManager::lastUpdatedComponent;
+std::weak_ptr<Component> GameplayManager::s_lastUpdatedComponent;
 Event<> GameplayManager::s_OnPlayEvent;
 
 GameState GameplayManager::s_gameState = GameState::Stopped;
@@ -132,7 +132,7 @@ void GameplayManager::UpdateComponents()
 			{
 				if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
 				{
-					lastUpdatedComponent = component;
+					s_lastUpdatedComponent = component;
 					component->Update();
 				}
 			}
@@ -144,7 +144,7 @@ void GameplayManager::UpdateComponents()
 			}
 		}
 	}
-	lastUpdatedComponent.reset();
+	s_lastUpdatedComponent.reset();
 }
 
 void GameplayManager::OrderComponents()
@@ -206,7 +206,7 @@ void GameplayManager::InitialiseComponents()
 	// Init components
 	for (int i = 0; i < componentsToInitCount; i++)
 	{
-		lastUpdatedComponent = orderedComponentsToInit[i];
+		s_lastUpdatedComponent = orderedComponentsToInit[i];
 		orderedComponentsToInit[i]->Start();
 		orderedComponentsToInit[i]->m_initiated = true;
 	}
@@ -222,7 +222,7 @@ void GameplayManager::RemoveDestroyedGameObjects()
 	{
 		for (int gIndex = 0; gIndex < gameObjectCount; gIndex++)
 		{
-			std::shared_ptr<GameObject> gameObjectToCheck = gameObjects[gIndex];
+			const std::shared_ptr<GameObject>& gameObjectToCheck = gameObjects[gIndex];
 			if (gameObjectToCheck == gameObjectsToDestroy[i].lock())
 			{
 				gameObjects.erase(gameObjects.begin() + gIndex);

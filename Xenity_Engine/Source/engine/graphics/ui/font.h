@@ -44,7 +44,10 @@ protected:
 		return std::dynamic_pointer_cast<Font>(shared_from_this());
 	}
 
-	inline std::shared_ptr <Texture>& GetFontAtlas()
+	/**
+	* Get font atlas texture
+	*/
+	inline const std::shared_ptr <Texture>& GetFontAtlas() const
 	{
 		return fontAtlas;
 	}

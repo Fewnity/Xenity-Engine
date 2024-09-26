@@ -507,7 +507,7 @@ void Texture::LoadTexture()
 #endif
 	if (openResult)
 	{
-		int fileBufferSize = m_fileSize;
+		size_t fileBufferSize = m_fileSize;
 		unsigned char* fileData = nullptr;
 #if defined(EDITOR)
 		fileData = m_file->ReadAllBinary(fileBufferSize);

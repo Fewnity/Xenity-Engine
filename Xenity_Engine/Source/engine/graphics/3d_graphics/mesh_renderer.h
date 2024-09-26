@@ -36,6 +36,9 @@ public:
 		return m_meshData;
 	}
 
+	/**
+	* Get materials list
+	*/
 	inline std::vector<std::shared_ptr <Material>> GetMaterials() const
 	{
 		return m_materials;
@@ -51,21 +54,20 @@ public:
 		return nullptr;
 	}
 
-	void OnDrawGizmosSelected() override;
-
 	const Sphere& GetBoundingSphere() const
 	{
 		return boundingSphere;
 	}
 
-	void OnNewRender() override;
-
-	void OnComponentAttached() override;
-
-	std::vector<Vector3> worldChunkPositions;
-	std::vector<Light*> affectedByLights;
+	void OnDrawGizmosSelected() override;
 
 protected:
+	friend class WorldPartitionner;
+
+	void OnNewRender() override;
+	void OnComponentAttached() override;
+	std::vector<Vector3> worldChunkPositions;
+	std::vector<Light*> affectedByLights;
 	Sphere ProcessBoundingSphere() const;
 	Sphere boundingSphere;
 

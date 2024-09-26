@@ -36,12 +36,12 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 	const bool result = library != NULL;
 	if (!result)
 	{
-		// https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
+		// "https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-"
 		const int errorCode = GetLastError();
 		if(errorCode == 127)
 			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Failed to load library (wrong version): " + fileName, true);
 		else
-			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found: " + fileName, true);
+			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found, error code:" + std::to_string(errorCode) + " file: " + fileName, true);
 	}
 
 	ProjectManager::projectSettings.isCompiled = result;
@@ -50,7 +50,6 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 
 void DynamicLibrary::UnloadGameLibrary()
 {
-
 #if defined(_WIN32) || defined(_WIN64)
 	if (library != NULL)
 	{

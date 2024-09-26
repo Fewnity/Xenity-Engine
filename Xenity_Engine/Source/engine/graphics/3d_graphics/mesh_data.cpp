@@ -41,9 +41,9 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
 
-	this->m_hasUv = useUV;
-	this->m_hasNormal = useNormals;
-	this->m_hasColor = useVertexColor;
+	m_hasUv = useUV;
+	m_hasNormal = useNormals;
+	m_hasColor = useVertexColor;
 
 	m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
 	if(useUV)
@@ -130,7 +130,6 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 	m_subMeshes[subMeshIndex]->c_st[index][1] = v;
 	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
 	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
-
 #else
 	((Vertex*)m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif

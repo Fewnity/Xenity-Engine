@@ -987,9 +987,8 @@ void ProjectManager::SaveProjectSettings()
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
-
-	std::shared_ptr<File> file = fileReference.m_file;
-
+	const std::shared_ptr<File>& file = fileReference.m_file;
+#if defined(EDITOR)
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
 	bool exists = metaFile->CheckIfExist();
 	if (!file || (!fileReference.m_isMetaDirty && exists))
@@ -1009,16 +1008,17 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 		metaFile->Write(metaData.dump(0));
 		metaFile->Close();
 		fileReference.m_isMetaDirty = false;
-#if defined(EDITOR)
 		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
 		if (!exists)
 			FileHandler::AddOneFile();
-#endif
 	}
 	else
 	{
 		Debug::PrintError("[ProjectManager::SaveMetaFile] Cannot save meta file: " + file->GetPath(), true);
 	}
+#else
+	Debug::PrintError("[ProjectManager::SaveMetaFile] Trying to save a meta file in game mode!!!!: " + file->GetPath(), true);
+#endif
 }
 
 std::vector<ProjectListItem> ProjectManager::GetProjectsList()

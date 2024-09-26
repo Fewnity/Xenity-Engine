@@ -36,12 +36,12 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 {
 	if (item.file) // Do a specific action if the file can be opened
 	{
-		if (item.file->m_fileType == FileType::File_Scene) // If the file is a scene, load the scene
+		if (item.file->GetFileType() == FileType::File_Scene) // If the file is a scene, load the scene
 		{
 			GameplayManager::SetGameState(GameState::Stopped, false);
 			SceneManager::LoadScene(std::dynamic_pointer_cast<Scene>(item.file));
 		}
-		else if (item.file->m_fileType == FileType::File_Code || item.file->m_fileType == FileType::File_Header || item.file->m_fileType == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
+		else if (item.file->GetFileType() == FileType::File_Code || item.file->GetFileType() == FileType::File_Header || item.file->GetFileType() == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
 		{
 			// Open the folder to allow vs code c++ settings
 			std::string command = "code \"" + ProjectManager::GetAssetFolderPath() + "\"";
@@ -106,7 +106,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
 
-	if (item.file && item.file->m_fileType == FileType::File_Material)
+	if (item.file && item.file->GetFileType() == FileType::File_Material)
 	{
 		std::shared_ptr<Texture> matTexture = EditorUI::icons[(int)IconName::Icon_Material];
 		Engine::GetRenderer().BindTexture(*matTexture);
@@ -331,7 +331,7 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 			if (isHovered)
 				payloadName = "Files";
 			else
-				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->m_fileType);
+				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->GetFileType());
 
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
 		}
@@ -357,7 +357,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 	}
 	else
 	{
-		const FileType fileType = fileExplorerItem.file->m_fileType;
+		const FileType fileType = fileExplorerItem.file->GetFileType();
 
 		switch (fileType)
 		{

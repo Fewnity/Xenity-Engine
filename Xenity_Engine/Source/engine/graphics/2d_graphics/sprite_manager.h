@@ -57,6 +57,11 @@ public:
 	*/
 	static void Render2DLine(const std::shared_ptr<MeshData>& meshData);
 
-	static std::shared_ptr <MeshData> s_spriteMeshData;
+	static const std::shared_ptr <MeshData>& GetBasicSpriteMeshData() 
+	{
+		return s_spriteMeshData;
+	}
+
 private:
+	static std::shared_ptr <MeshData> s_spriteMeshData;
 };

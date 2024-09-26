@@ -1740,7 +1740,7 @@
     <ClInclude Include="Source\engine\graphics\camera.h" />
     <ClInclude Include="Source\engine\graphics\graphics.h" />
     <ClInclude Include="Source\engine\tools\math.h" />
-    <ClInclude Include="Source\engine\graphics\ui\TextAlignments.h" />
+    <ClInclude Include="Source\engine\graphics\ui\text_alignments.h" />
     <ClInclude Include="Source\engine\vectors\vector2.h" />
     <ClInclude Include="Source\engine\vectors\vector2_int.h" />
     <ClInclude Include="Source\engine\vectors\vector3.h" />

@@ -123,7 +123,7 @@ void ParticleSystem::OnDrawGizmosSelected()
 	const Color lineColor = Color::CreateFromRGBAFloat(0, 1, 1, 1);
 	Gizmo::SetColor(lineColor);
 
-	Vector3 pos = GetTransform()->GetPosition();
+	const Vector3& pos = GetTransformRaw()->GetPosition();
 
 	if (m_emitterShape == EmitterShape::Box)
 	{
@@ -205,16 +205,16 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
 
-	Quaternion rotation = Quaternion::Identity();
+	static Quaternion rotation = Quaternion::Identity();
 
 	const int camCount = (int)Graphics::cameras.size();
 
-	const Vector3& camScale = Graphics::usedCamera->GetTransform()->GetScale();
-	const glm::mat4& camMat = Graphics::usedCamera->GetTransform()->GetTransformationMatrix();
-	const glm::mat4& transMat = GetTransform()->GetTransformationMatrix();
+	const Vector3& camScale = Graphics::usedCamera->GetTransformRaw()->GetScale();
+	const glm::mat4& camMat = Graphics::usedCamera->GetTransformRaw()->GetTransformationMatrix();
+	const glm::mat4& transMat = GetTransformRaw()->GetTransformationMatrix();
 
 	const RGBA& rgba = m_color.GetRGBA();
-	const Vector3& scale = GetTransform()->GetScale();
+	const Vector3& scale = GetTransformRaw()->GetScale();
 	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y) * glm::vec3(scale.x, scale.y, scale.z);
 
 	for (int i = 0; i < m_maxParticles; i++)
@@ -315,14 +315,14 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 	command.material = m_material.get();
 	command.drawable = this;
 	if (!m_mesh)
-		command.subMesh = SpriteManager::s_spriteMeshData->m_subMeshes[0];
+		command.subMesh = SpriteManager::GetBasicSpriteMeshData()->m_subMeshes[0];
 	else
 		command.subMesh = m_mesh->m_subMeshes[0];
 	command.transform = GetTransform().get();
-	command.isEnabled = IsEnabled() && GetGameObject()->IsLocalActive();
+	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 	if (!m_material->GetUseTransparency())
 	{
-		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->m_fileId];
+		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->GetFileId()];
 		renderQueue.commands.push_back(command);
 		renderQueue.commandIndex++;
 	}

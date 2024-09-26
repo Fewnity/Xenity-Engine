@@ -6,7 +6,10 @@
 #include <engine/file_system/file_type.h>
 #include "bit_file.h"
 
-// Use small names to reduce the size of the json
+/*
+* @brief Class that hold data about a binarized file (Location in the bit file, size, type, etc)
+* @brief Use small names to reduce the size of the json
+*/
 class FileDataBaseEntry : public Reflective
 {
 public:
@@ -22,27 +25,50 @@ private:
 	ReflectiveData GetReflectiveData() override;
 };
 
-// Class that hold data about binary files (Location in the bit file, size, type, etc)
+// Class that hold data about binarized files in the binary file
 class FileDataBase : public Reflective
 {
 public:
 	ReflectiveData GetReflectiveData() override;
+
+	/**
+	* @brief Add a infos about a file to the list
+	*/
 	void AddFile(FileDataBaseEntry* file);
+
+	/**
+	* @brief Clear all files infos
+	*/
 	void Clear();
+
+	/**
+	* @brief Save infos to a file at the given path
+	*/
 	void SaveToFile(const std::string& path);
+
+	/**
+	* @brief Load infos from a file at the given path
+	*/
 	void LoadFromFile(const std::string& path);
 
+	/*
+	* @brief Get the files list
+	*/
 	const std::vector<FileDataBaseEntry*>& GetFileList() const
 	{
 		return m_fileList;
 	}
 
+	/**
+	* @brief Get the bit file
+	*/
 	BitFile& GetBitFile()
 	{
 		return m_bitFile;
 	}
 
 private:
+	// Pointer list because the reflection system do not support basic objects in lists
 	std::vector<FileDataBaseEntry*> m_fileList;
 	BitFile m_bitFile;
 };

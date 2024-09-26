@@ -21,7 +21,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 	if (openResult)
 	{
 		// Read texture file's data
-		int fileBufferSize;
+		size_t fileBufferSize;
 		unsigned char* fileData = textureInput->m_file->ReadAllBinary(fileBufferSize);
 		textureInput->m_file->Close();
 

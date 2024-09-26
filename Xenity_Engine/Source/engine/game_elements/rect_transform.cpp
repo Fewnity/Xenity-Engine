@@ -41,7 +41,7 @@ void RectTransform::OnReflectionUpdated()
 {
 }
 
-void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas) 
+void RectTransform::UpdatePosition(const std::shared_ptr <Canvas>& canvas) 
 {
 	XASSERT(canvas != nullptr, "[RectTransform::UpdatePosition] canvas is nullptr");
 
@@ -56,10 +56,10 @@ void RectTransform::UpdatePosition(std::shared_ptr <Canvas> canvas)
 	const float xOff = (-aspect * 5) + (position.x * (aspect * 10));
 	const float yOff = (-1 * 5) + (position.y * (1 * 10));
 	const Vector3 newPos = Vector3(xOff, -yOff, 0); // Z 1 to avoid issue with near clipping plane
-	GetTransform()->SetLocalPosition(newPos);
+	GetTransformRaw()->SetLocalPosition(newPos);
 }
 
-void RectTransform::UpdatePosition(std::shared_ptr <RectTransform> rect)
+void RectTransform::UpdatePosition(const std::shared_ptr <RectTransform>& rect)
 {
 
 }

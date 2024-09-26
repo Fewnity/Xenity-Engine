@@ -35,14 +35,14 @@ Camera::Camera()
 {
 	m_componentName = "Camera";
 
-	this->fov = 60;
-	isProjectionDirty = true;
+	m_fov = 60;
+	m_isProjectionDirty = true;
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glGenFramebuffers(1, &secondFramebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, secondFramebuffer);
+	glGenFramebuffers(1, &m_framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+	glGenFramebuffers(1, &m_secondFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_secondFramebuffer);
 #endif
 
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
@@ -58,13 +58,13 @@ void Camera::UpdateCameraTransformMatrix()
 {
 	const Vector3& position = GetTransformRaw()->GetPosition();
 	const Quaternion& baseQ = GetTransformRaw()->GetRotation();
-	const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
-	Quaternion newQ = baseQ * offsetQ;
+	static const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+	const Quaternion newQ = baseQ * offsetQ;
 
-	cameraTransformMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+	m_cameraTransformMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
 
 	if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
-		cameraTransformMatrix = glm::translate(cameraTransformMatrix, glm::vec3(position.x, -position.y, -position.z));
+		m_cameraTransformMatrix = glm::translate(m_cameraTransformMatrix, glm::vec3(position.x, -position.y, -position.z));
 }
 
 void Camera::RemoveReferences()
@@ -75,47 +75,47 @@ void Camera::RemoveReferences()
 ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, projectionType, "projectionType", true);
-	Reflective::AddVariable(reflectedVariables, fov, "fov", projectionType == ProjectionTypes::Perspective);
-	Reflective::AddVariable(reflectedVariables, projectionSize, "projectionSize", projectionType == ProjectionTypes::Orthographic);
-	Reflective::AddVariable(reflectedVariables, nearClippingPlane, "nearClippingPlane", true);
-	Reflective::AddVariable(reflectedVariables, farClippingPlane, "farClippingPlane", true);
-	Reflective::AddVariable(reflectedVariables, useMultisampling, "useMultisampling", true);
+	Reflective::AddVariable(reflectedVariables, m_projectionType, "projectionType", true);
+	Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionTypes::Perspective);
+	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize", m_projectionType == ProjectionTypes::Orthographic);
+	Reflective::AddVariable(reflectedVariables, m_nearClippingPlane, "nearClippingPlane", true);
+	Reflective::AddVariable(reflectedVariables, m_farClippingPlane, "farClippingPlane", true);
+	Reflective::AddVariable(reflectedVariables, m_useMultisampling, "useMultisampling", true);
 	return reflectedVariables;
 }
 
 void Camera::OnReflectionUpdated()
 {
-	isProjectionDirty = true;
-	if (lastMultisamplingValue != useMultisampling)
+	m_isProjectionDirty = true;
+	if (m_lastMultisamplingValue != m_useMultisampling)
 	{
-		lastMultisamplingValue = useMultisampling;
-		needFrameBufferUpdate = true;
+		m_lastMultisamplingValue = m_useMultisampling;
+		m_needFrameBufferUpdate = true;
 	}
 }
 
 Camera::~Camera()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	if (framebuffer != -1)
+	if (m_framebuffer != -1)
 	{
-		glDeleteFramebuffers(1, &framebuffer);
+		glDeleteFramebuffers(1, &m_framebuffer);
 	}
-	if (secondFramebuffer != -1)
+	if (m_secondFramebuffer != -1)
 	{
-		glDeleteFramebuffers(1, &secondFramebuffer);
+		glDeleteFramebuffers(1, &m_secondFramebuffer);
 	}
-	if (framebufferTexture != -1)
+	if (m_framebufferTexture != -1)
 	{
-		glDeleteTextures(1, &framebufferTexture);
+		glDeleteTextures(1, &m_framebufferTexture);
 	}
-	if (secondFramebufferTexture != -1)
+	if (m_secondFramebufferTexture != -1)
 	{
-		glDeleteTextures(1, &secondFramebufferTexture);
+		glDeleteTextures(1, &m_secondFramebufferTexture);
 	}
-	if (depthframebuffer != -1)
+	if (m_depthframebuffer != -1)
 	{
-		glDeleteRenderbuffers(1, &depthframebuffer);
+		glDeleteRenderbuffers(1, &m_depthframebuffer);
 	}
 #endif
 	AssetManager::RemoveReflection(this);
@@ -128,49 +128,49 @@ Camera::~Camera()
 
 void Camera::SetFov(const float fov)
 {
-	this->fov = fov;
-	isProjectionDirty = true;
+	m_fov = fov;
+	m_isProjectionDirty = true;
 }
 
 float Camera::GetFov() const
 {
-	return fov;
+	return m_fov;
 }
 
 void Camera::SetProjectionSize(const float value)
 {
-	projectionSize = value;
-	isProjectionDirty = true;
+	m_projectionSize = value;
+	m_isProjectionDirty = true;
 }
 
 void Camera::SetNearClippingPlane(float value)
 {
-	if (value >= farClippingPlane)
+	if (value >= m_farClippingPlane)
 	{
-		farClippingPlane = value + 0.01f;
+		m_farClippingPlane = value + 0.01f;
 	}
-	nearClippingPlane = value;
-	isProjectionDirty = true;
+	m_nearClippingPlane = value;
+	m_isProjectionDirty = true;
 }
 
 void Camera::SetFarClippingPlane(float value)
 {
-	if (value <= nearClippingPlane)
+	if (value <= m_nearClippingPlane)
 	{
-		farClippingPlane = value + 0.01f;
+		m_farClippingPlane = value + 0.01f;
 	}
 	else
 	{
-		farClippingPlane = value;
+		m_farClippingPlane = value;
 	}
-	isProjectionDirty = true;
+	m_isProjectionDirty = true;
 }
 
 Vector2 Camera::ScreenTo2DWorld(int x, int y)
 {
 	const Vector3& camPos = GetTransformRaw()->GetPosition();
-	const float vx = (x - width / 2.0f) / (width / 10.f / aspect / projectionSize * 5.0f) + camPos.x;
-	const float vy = -(y - height / 2.0f) / (height / 10.f / projectionSize * 5.0f) + camPos.y;
+	const float vx = (x - m_width / 2.0f) / (m_width / 10.f / m_aspect / m_projectionSize * 5.0f) + camPos.x;
+	const float vy = -(y - m_height / 2.0f) / (m_height / 10.f / m_projectionSize * 5.0f) + camPos.y;
 	return Vector2(vx, vy);
 }
 
@@ -183,29 +183,29 @@ void Camera::UpdateProjection()
 {
 	if constexpr (Graphics::UseOpenGLFixedFunctions)
 	{
-		if (projectionType == ProjectionTypes::Perspective)
+		if (m_projectionType == ProjectionTypes::Perspective)
 		{
-			Engine::GetRenderer().SetProjection3D(fov, nearClippingPlane, farClippingPlane, aspect);
+			Engine::GetRenderer().SetProjection3D(m_fov, m_nearClippingPlane, m_farClippingPlane, m_aspect);
 		}
 		else
 		{
-			Engine::GetRenderer().SetProjection2D(projectionSize, nearClippingPlane, farClippingPlane);
+			Engine::GetRenderer().SetProjection2D(m_projectionSize, m_nearClippingPlane, m_farClippingPlane);
 		}
 	}
 
-	if (isProjectionDirty)
+	if (m_isProjectionDirty)
 	{
-		isProjectionDirty = false;
-		if (projectionType == ProjectionTypes::Perspective) // 3D projection
+		m_isProjectionDirty = false;
+		if (m_projectionType == ProjectionTypes::Perspective) // 3D projection
 		{
-			projection = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+			m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClippingPlane, m_farClippingPlane);
 		}
 		else // 2D projection
 		{
 			const float halfAspect = GetAspectRatio() / 2.0f * GetProjectionSize() / 5.0f;
 			const float halfOne = 0.5f * GetProjectionSize() / 5.0f;
-			projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
-			projection = glm::scale(projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
+			m_projection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, m_nearClippingPlane, m_farClippingPlane);
+			m_projection = glm::scale(m_projection, glm::vec3(1 / 10.0f, 1 / 10.0f, 1));
 			//projection = glm::scale(projection, glm::vec3(1 / (5.0f * GetAspectRatio() * 1.054f), 1 / 10.0f, 1)); // 1.054f is needed for correct size but why?
 		}
 
@@ -213,7 +213,7 @@ void Camera::UpdateProjection()
 		const float fixedProjectionSize = 5;
 		const float halfAspect = GetAspectRatio() / 2.0f * 10 * fixedProjectionSize / 5.0f;
 		const float halfOne = 0.5f * 10 * fixedProjectionSize / 5.0f;
-		canvasProjection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
+		m_canvasProjection = glm::orthoZO(-halfAspect, halfAspect, -halfOne, halfOne, 0.03f, 100.0f);
 	}
 }
 
@@ -221,8 +221,8 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 {
 	Vector3 forward = (targetPosition - cameraPosition).Normalized();
 	forward = -forward;
-	Vector3 right = upVector.Cross(forward).Normalized();
-	Vector3 up = forward.Cross(right);
+	const Vector3 right = upVector.Cross(forward).Normalized();
+	const Vector3 up = forward.Cross(right);
 
 	Matrix4x4 viewMatrix = Matrix4x4::identity();
 
@@ -247,106 +247,106 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 
 void Camera::UpdateFrustum()
 {
-	Matrix4x4 vm = createViewMatrix(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward(), GetTransformRaw()->GetUp());
+	const Matrix4x4 vm = createViewMatrix(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward(), GetTransformRaw()->GetUp());
 	frustum.ExtractPlanes((float*)&GetProjection(), vm.m);
 }
 
 void Camera::SetProjectionType(const ProjectionTypes type)
 {
-	projectionType = type;
-	isProjectionDirty = true;
+	m_projectionType = type;
+	m_isProjectionDirty = true;
 }
 
 void Camera::UpdateFrameBuffer()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	if (needFrameBufferUpdate)
+	if (m_needFrameBufferUpdate)
 	{
-		if (framebufferTexture != -1)
+		if (m_framebufferTexture != -1)
 		{
-			glDeleteTextures(1, &framebufferTexture);
-			framebufferTexture = -1;
+			glDeleteTextures(1, &m_framebufferTexture);
+			m_framebufferTexture = -1;
 		}
-		if (secondFramebufferTexture != -1)
+		if (m_secondFramebufferTexture != -1)
 		{
-			glDeleteTextures(1, &secondFramebufferTexture);
-			secondFramebufferTexture = -1;
+			glDeleteTextures(1, &m_secondFramebufferTexture);
+			m_secondFramebufferTexture = -1;
 		}
-		if (depthframebuffer != -1)
+		if (m_depthframebuffer != -1)
 		{
-			glDeleteRenderbuffers(1, &depthframebuffer);
-			depthframebuffer = -1;
+			glDeleteRenderbuffers(1, &m_depthframebuffer);
+			m_depthframebuffer = -1;
 		}
 
-		if (useMultisampling)
+		if (m_useMultisampling)
 		{
 			int sample = 8;
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-			glGenTextures(1, &framebufferTexture);
-			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, framebufferTexture);
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample, GL_RGB, width, height, GL_TRUE);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+			glGenTextures(1, &m_framebufferTexture);
+			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_framebufferTexture);
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample, GL_RGB, m_width, m_height, GL_TRUE);
 			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, framebufferTexture, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_framebufferTexture, 0);
 
-			glGenRenderbuffers(1, &depthframebuffer);
-			glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
-			glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample, GL_DEPTH_COMPONENT, width, height);
+			glGenRenderbuffers(1, &m_depthframebuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, m_depthframebuffer);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample, GL_DEPTH_COMPONENT, m_width, m_height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthframebuffer);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			//Screen buffer
-			glBindFramebuffer(GL_FRAMEBUFFER, secondFramebuffer);
-			glGenTextures(1, &secondFramebufferTexture);
-			glBindTexture(GL_TEXTURE_2D, secondFramebufferTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_secondFramebuffer);
+			glGenTextures(1, &m_secondFramebufferTexture);
+			glBindTexture(GL_TEXTURE_2D, m_secondFramebufferTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFramebufferTexture, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_secondFramebufferTexture, 0);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 		}
 		else
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-			glGenTextures(1, &secondFramebufferTexture);
-			glBindTexture(GL_TEXTURE_2D, secondFramebufferTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+			glGenTextures(1, &m_secondFramebufferTexture);
+			glBindTexture(GL_TEXTURE_2D, m_secondFramebufferTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFramebufferTexture, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_secondFramebufferTexture, 0);
 
-			glGenRenderbuffers(1, &depthframebuffer);
-			glBindRenderbuffer(GL_RENDERBUFFER, depthframebuffer);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+			glGenRenderbuffers(1, &m_depthframebuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, m_depthframebuffer);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthframebuffer);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthframebuffer);
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				Debug::PrintError("[Camera::UpdateFrameBuffer] Framebuffer not created", true);
 		}
 
-		needFrameBufferUpdate = false;
+		m_needFrameBufferUpdate = false;
 	}
 #endif
 }
 
 void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 {
-	if (width != resolution.x || height != resolution.y)
+	if (m_width != resolution.x || m_height != resolution.y)
 	{
-		width = resolution.x;
-		height = resolution.y;
-		aspect = (float)width / (float)height;
+		m_width = resolution.x;
+		m_height = resolution.y;
+		m_aspect = (float)m_width / (float)m_height;
 
-		needFrameBufferUpdate = true;
-		isProjectionDirty = true;
+		m_needFrameBufferUpdate = true;
+		m_isProjectionDirty = true;
 		UpdateProjection();
 #if defined(__PSP__)
 		Engine::GetRenderer().SetViewport(0, 0, width, height);
@@ -359,16 +359,16 @@ void Camera::BindFrameBuffer()
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	UpdateFrameBuffer();
 #if defined(EDITOR)
-	if (framebuffer != -1)
+	if (m_framebuffer != -1)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	}
 #else
-	if (useMultisampling)
+	if (m_useMultisampling)
 	{
-		if (framebuffer != -1)
+		if (m_framebuffer != -1)
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 		}
 	}
 	else
@@ -379,7 +379,7 @@ void Camera::BindFrameBuffer()
 #endif
 
 #if !defined(__PSP__)
-	Engine::GetRenderer().SetViewport(0, 0, width, height);
+	Engine::GetRenderer().SetViewport(0, 0, m_width, m_height);
 #endif
 }
 
@@ -392,19 +392,17 @@ void Camera::OnDrawGizmos()
 
 Vector3 Camera::GetMouseRay()
 {
-	const std::shared_ptr<Transform> cameraTransform = GetTransform();
+	const Quaternion& baseQ = GetTransformRaw()->GetRotation();
+	static const Quaternion offsetQ = Quaternion::Euler(180, 0, 0);
+	const Quaternion newQ = baseQ * offsetQ;
 
-	const Quaternion& baseQ = cameraTransform->GetRotation();
-	Quaternion offsetQ = Quaternion::Euler(180, 0, 0);
-	Quaternion newQ = baseQ * offsetQ;
-
-	glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+	const glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(width -InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(m_width -InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, projection, glm::vec4(0, 0, width, height));
+	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, m_projection, glm::vec4(0, 0, m_width, m_height));
 
 	// Normalise direction
 	return Vector3(-vec3worldCoords.x, vec3worldCoords.y, vec3worldCoords.z).Normalized();
@@ -429,26 +427,26 @@ void Camera::OnDrawGizmosSelected()
 	const glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
 
 	//Top left
-	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
-	const glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z));
 
 	//Top right
-	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
-	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
 
 	//Bottom left
-	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
-	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) );
 
 	//Bottom right
-	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.0f), cameraModelMatrix, projection, screenSizeNorm);
-	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, projection, screenSizeNorm);
+	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) , Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) );
 
@@ -469,12 +467,12 @@ void Camera::OnDrawGizmosSelected()
 
 void Camera::CopyMultiSampledFrameBuffer()
 {
-	if (useMultisampling)
+	if (m_useMultisampling)
 	{
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_framebuffer);
 #if defined(EDITOR)
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, secondFramebuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_secondFramebuffer);
 #else
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 #endif

@@ -26,6 +26,10 @@ enum class FileStatus
 	FileStatus_Failed
 };
 
+/**
+* @brief Class implemented by asset classes (Texture, Audio Clip...)
+* @brief Used to implement Load/Unload function and to store file infos (type, size...)
+*/
 class API FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
@@ -41,6 +45,9 @@ public:
 	*/
 	virtual void UnloadFileReference() { }
 
+	/**
+	* @brief event function called when a file has finshed to load
+	*/
 	virtual void OnLoadFileReferenceFinished() { }
 
 	virtual void OnReflectionUpdated() { }
@@ -58,28 +65,60 @@ public:
 		return ReflectiveData();
 	}
 
-	uint64_t m_fileId = -1;
-
-	uint64_t m_filePosition = 0;
-	uint64_t m_fileSize = 0;
-	uint64_t m_metaPosition = 0;
-	uint64_t m_metaSize = 0;
-
-	std::shared_ptr<File> m_file = nullptr;
-	FileType m_fileType = FileType::File_Other;
-	bool m_isMetaDirty = false;
-
+	/**
+	* @brief Set file status
+	*/
 	void SetFileStatus(FileStatus _fileStatus)
 	{
 		m_fileStatus = _fileStatus;
 	}
 
+	/**
+	* @brief Get file status
+	*/
 	FileStatus GetFileStatus() const
 	{
 		return m_fileStatus;
 	}
 
+	/**
+	* @brief Get file type
+	*/
+	FileType GetFileType() const
+	{
+		return m_fileType;
+	}
+
+	uint64_t GetFileId() const
+	{
+		return m_fileId;
+	}
+
 protected:
+	friend class ProjectManager;
+	friend class InspectorMenu;
+	friend class EngineAssetManagerMenu;
+	friend class EditorUI;
+	friend class AssetModifier;
+	friend class Compiler;
+	friend class ProfilerMenu;
+	template<class T>
+	friend class SelectAssetMenu;
+	friend class SceneMenu;
+	friend class FileExplorerMenu;
+	friend class Window;
+	friend class SceneManager;
+
+	std::shared_ptr<File> m_file = nullptr;
+	FileType m_fileType = FileType::File_Other;
+	uint64_t m_filePosition = 0;
+	uint64_t m_fileSize = 0;
+	uint64_t m_metaPosition = 0;
+	uint64_t m_metaSize = 0;
+
+	uint64_t m_fileId = -1;
+
+	bool m_isMetaDirty = false;
 	FileStatus m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 };
 

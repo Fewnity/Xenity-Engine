@@ -54,9 +54,15 @@ public:
 	* @param size Output: The size of the binary
 	* @return The binary data
 	*/
-	unsigned char* ReadAllBinary(int& size) override;
+	unsigned char* ReadAllBinary(size_t& size) override;
 	
-	unsigned char* ReadBinary(int offset, int size) override;
+	/**
+	* @brief Read a part of the content of the file as a binary (Need to free the pointer after)
+	* @param offset Read offset in byte
+	* @param size The size to read in byte
+	* @return The binary data
+	*/
+	unsigned char* ReadBinary(size_t offset, size_t size) override;
 
 	/**
 	* @brief Write string data to the file
@@ -64,6 +70,11 @@ public:
 	*/
 	void Write(const std::string& data) override;
 
+	/**
+	* @brief Write binary data to the file
+	* @param data The data to write
+	* @param size The size of the data in byte
+	*/
 	void Write(const unsigned char* data, size_t size) override;
 
 protected:

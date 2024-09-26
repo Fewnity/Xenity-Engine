@@ -40,7 +40,7 @@ public:
 	*/
 	void Trigger(Args... param)
 	{
-		for (int i = 0; i < m_functionCount; i++)
+		for (size_t i = 0; i < m_functionCount; i++)
 		{
 			m_functionsInfosList[i].m_function(param...);
 		}
@@ -149,7 +149,7 @@ public:
 	/**
 	* @brief Get the number of listener
 	*/
-	inline int GetBindedFunctionCount()
+	inline size_t GetBindedFunctionCount()
 	{
 		return m_functionCount;
 	}
@@ -165,8 +165,9 @@ private:
 	*/
 	void AddFunction(const size_t functionAddress, const size_t objectAddress, const std::function<void(Args...)>& callableFunction)
 	{
-		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
-		if (funcIndex == -1)
+		// Check if the function is already bind
+		const size_t funcIndex = FindExistingFunction(functionAddress, objectAddress);
+		if (funcIndex == s_invalidIndex)
 		{
 			BindedFunctionInfo newFunc;
 			newFunc.m_function = callableFunction;
@@ -186,8 +187,8 @@ private:
 	*/
 	void RemoveFunction(const size_t functionAddress, const size_t objectAddress)
 	{
-		const int funcIndex = FindExistingFunction(functionAddress, objectAddress);
-		if (funcIndex != -1)
+		const size_t funcIndex = FindExistingFunction(functionAddress, objectAddress);
+		if (funcIndex != s_invalidIndex)
 		{
 			m_functionCount--;
 			m_functionsInfosList.erase(m_functionsInfosList.begin() + funcIndex);
@@ -202,9 +203,9 @@ private:
 	* 
 	* @return index of the function in the list, -1 if not found
 	*/
-	int FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
+	size_t FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
 	{
-		for (int i = 0; i < m_functionCount; i++)
+		for (size_t i = 0; i < m_functionCount; i++)
 		{
 			const BindedFunctionInfo& info = m_functionsInfosList[i];
 			if (functionAddress == info.m_funcAddress && objectAddress == info.m_objectAddress)
@@ -212,7 +213,7 @@ private:
 				return i;
 			}
 		}
-		return -1;
+		return s_invalidIndex;
 	}
 
 	/**
@@ -268,5 +269,6 @@ private:
 	};
 
 	std::vector<BindedFunctionInfo> m_functionsInfosList;
-	int m_functionCount = 0;
+	size_t m_functionCount = 0;
+	static constexpr size_t s_invalidIndex = -1;
 };

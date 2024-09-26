@@ -156,7 +156,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	if (fileInfo.type != FileType::File_Audio)
 	{
 		std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
-		int cookedFileSizeOut;
+		size_t cookedFileSizeOut;
 		cookedFile->Open(FileMode::ReadOnly);
 		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
 		cookedFile->Close();
@@ -168,7 +168,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	// Add the meta file to the binary file
 	size_t metaDataOffset = 0;
 	std::shared_ptr<File> cookedMetaFile = FileSystem::MakeFile(exportPath + ".meta");
-	int cookedMetaFileSizeOut;
+	size_t cookedMetaFileSizeOut;
 	bool cookedMetaOpen = cookedMetaFile->Open(FileMode::ReadOnly);
 	if (cookedMetaOpen)
 	{

@@ -15,6 +15,9 @@
 
 class File;
 
+/**
+* Class to manage a directory (Get all files of a folder)
+*/
 class API Directory : public UniqueId, public std::enable_shared_from_this<Directory>
 {
 public:
