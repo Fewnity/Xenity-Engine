@@ -349,7 +349,7 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 		m_isProjectionDirty = true;
 		UpdateProjection();
 #if defined(__PSP__)
-		Engine::GetRenderer().SetViewport(0, 0, width, height);
+		Engine::GetRenderer().SetViewport(0, 0, m_width, m_height);
 #endif
 	}
 }
