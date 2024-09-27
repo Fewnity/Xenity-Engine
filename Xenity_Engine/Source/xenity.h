@@ -62,7 +62,7 @@
 #include <engine/graphics/ui/text_mesh.h>
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/ui/text_renderer.h>
-#include <engine/graphics/ui/TextAlignments.h>
+#include <engine/graphics/ui/text_alignments.h>
 #include <engine/graphics/ui/canvas.h>
 
 // Files
