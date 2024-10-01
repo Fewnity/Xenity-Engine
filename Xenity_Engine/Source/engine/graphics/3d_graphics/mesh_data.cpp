@@ -54,10 +54,10 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	{
 		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 	}
-	/*if (m_hasColor)
+	if (useVertexColor)
 	{
-		vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::);
-	}*/
+		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::COLOR);
+	}
 
 	AllocSubMesh(vcount, index_count);
 }
@@ -539,6 +539,11 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
 	{
 		newSubMesh->vertexMemSize += sizeof(short[2]);
+	}
+
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::COLOR)
+	{
+		newSubMesh->vertexMemSize += sizeof(float[4]);
 	}
 
 	newSubMesh->vertexMemSize *= vcount;
