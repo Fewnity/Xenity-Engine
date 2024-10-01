@@ -29,6 +29,14 @@ Set isTrigger and generateCollisionEvents has protected?
 Check why the compiler search for main.cpp in the engine's folder
 Remove TestComponent in release builds
 Fix SaveMenuSettings
+Can't rename folder
+Use lighting and color does not work together material fixed pipeline
+Disable "Use lighting" do not block all lights
+Reload material file on game stop
+Add option to disable the grid
+Add an option to create a material from a texture
+Grid looks wrong with an used cutout material
+Add color to standard shader in psvita
 
 --- Can be done for the next release
 Remove the old profiler

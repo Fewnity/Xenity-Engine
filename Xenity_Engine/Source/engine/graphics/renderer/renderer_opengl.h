@@ -121,7 +121,8 @@ private:
 	int GetShaderTypeEnum(Shader::ShaderType shaderType);
 	RenderingSettings lastSettings;
 	unsigned int usedTexture = 0;
-	Vector4 lastUsedColor = Vector4(-1, -1, -1, -1);
+	unsigned int lastUsedColor = 0x00000000;
+	unsigned int lastUsedColor2 = 0xFFFFFFFF;
 	uint64_t lastShaderIdUsedColor = 0;
 	// int GetDrawModeEnum(DrawMode drawMode);
 };

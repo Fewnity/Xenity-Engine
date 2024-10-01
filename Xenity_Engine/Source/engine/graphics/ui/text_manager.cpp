@@ -130,7 +130,8 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 			renderSettings.invertFaces = true;
 		else
 			renderSettings.invertFaces = false;
-		renderSettings.useBlend = true;
+
+		renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 		renderSettings.useDepth = !canvas;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = !canvas;

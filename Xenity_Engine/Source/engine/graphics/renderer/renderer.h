@@ -18,6 +18,7 @@
 #include <engine/graphics/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/lighting/lighting.h>
+#include <engine/graphics/material_rendering_modes.h>
 
 class Color;
 class Vector4;
@@ -30,8 +31,8 @@ struct LightsIndices;
 
 struct RenderingSettings
 {
+	MaterialRenderingModes renderingMode;
 	bool useDepth = false;
-	bool useBlend = false;
 	bool invertFaces = false;
 	bool useTexture = true;
 	bool useLighting = true;

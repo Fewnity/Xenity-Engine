@@ -1347,6 +1347,7 @@
     <ClInclude Include="include\bullet\vectormath\sse\vec_aos.h" />
     <ClInclude Include="include\bullet\vectormath\vmInclude.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
+    <ClInclude Include="Source\engine\graphics\material_rendering_modes.h" />
     <ClInclude Include="Source\engine\physics\sphere_collider.h" />
     <ClInclude Include="Source\engine\vectors\quaternion.h" />
     <ClInclude Include="Source\engine\tools\scope_benchmark.h" />

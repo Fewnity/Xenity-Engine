@@ -62,7 +62,8 @@ void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	command.drawable = this;
 	command.transform = GetTransformRaw();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
-	if (!m_material->GetUseTransparency())
+
+	if (m_material->GetRenderingMode() == MaterialRenderingModes::Opaque || m_material->GetRenderingMode() == MaterialRenderingModes::Cutout)
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->GetFileId()];
 		renderQueue.commands.push_back(command);
@@ -132,6 +133,6 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = m_material->GetUseLighting();
-	renderSettings.useBlend = m_material->GetUseTransparency();
+	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 	MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *m_material, renderSettings);
 }

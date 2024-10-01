@@ -227,13 +227,13 @@ void Material::Update()
 ReflectiveData Material::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode", true);
 	Reflective::AddVariable(reflectedVariables, m_shader, "shader", true);
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
 	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, t_offset, "offset", true);
 	Reflective::AddVariable(reflectedVariables, t_tiling, "tiling", true);
 	Reflective::AddVariable(reflectedVariables, m_useLighting, "useLighting", true);
-	Reflective::AddVariable(reflectedVariables, m_useTransparency, "useTransparency", true);
 	return reflectedVariables;
 }
 

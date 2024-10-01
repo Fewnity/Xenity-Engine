@@ -16,6 +16,7 @@
 #include <engine/graphics/color/color.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
+#include <engine/graphics/material_rendering_modes.h>
 #include "iDrawableTypes.h"
 
 class Texture;
@@ -55,11 +56,6 @@ public:
 		m_useLighting = _useLighting;
 	}
 
-	inline void SetUseTransparency(const bool _useTransparency)
-	{
-		m_useTransparency = _useTransparency;
-	}
-
 	inline void SetOffset(const Vector2& _offset)
 	{
 		t_offset = _offset;
@@ -85,9 +81,9 @@ public:
 		return m_useLighting;
 	}
 
-	inline bool GetUseTransparency() const
+	MaterialRenderingModes GetRenderingMode() 
 	{
-		return m_useTransparency;
+		return m_renderingMode;
 	}
 
 	inline const Vector2& GetOffset() const
@@ -140,13 +136,13 @@ protected:
 
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Texture> m_texture;
-	IDrawableTypes m_lastUpdatedType = IDrawableTypes::Draw_3D;
-	bool m_updated = false;
-	bool m_useLighting = false;
-	bool m_useTransparency = false;
+	Color m_color;
 	Vector2 t_offset = Vector2(0,0);
 	Vector2 t_tiling = Vector2(1, 1);
-	Color m_color;
+	IDrawableTypes m_lastUpdatedType = IDrawableTypes::Draw_3D;
+	MaterialRenderingModes m_renderingMode = MaterialRenderingModes::Opaque;
+	bool m_updated = false;
+	bool m_useLighting = false;
 
 	static constexpr int s_version = 1;
 };

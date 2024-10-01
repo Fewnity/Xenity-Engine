@@ -164,7 +164,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = m_meshData->m_subMeshes[i];
 		command.transform = GetTransformRaw();
 		command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
-		if (!material->GetUseTransparency())
+		if (material->GetRenderingMode() == MaterialRenderingModes::Opaque || material->GetRenderingMode() == MaterialRenderingModes::Cutout)
 		{
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->GetFileId()];
 			renderQueue.commands.push_back(command);
@@ -327,7 +327,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
-	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
+	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 	MeshManager::DrawMesh(*GetTransformRaw(), *renderCommand.subMesh, *renderCommand.material, renderSettings);
 }
 

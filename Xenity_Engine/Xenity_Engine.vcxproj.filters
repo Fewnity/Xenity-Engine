@@ -763,6 +763,7 @@
     <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
     <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
+    <ClInclude Include="Source\engine\graphics\material_rendering_modes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

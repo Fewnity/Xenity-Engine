@@ -203,7 +203,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
-	renderSettings.useBlend = renderCommand.material->GetUseTransparency();
+	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 
 	static Quaternion rotation = Quaternion::Identity();
 
@@ -320,7 +320,7 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = m_mesh->m_subMeshes[0];
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
-	if (!m_material->GetUseTransparency())
+	if (m_material->GetRenderingMode() == MaterialRenderingModes::Opaque || m_material->GetRenderingMode() == MaterialRenderingModes::Cutout)
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->GetFileId()];
 		renderQueue.commands.push_back(command);

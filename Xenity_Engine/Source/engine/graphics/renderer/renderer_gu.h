@@ -65,6 +65,8 @@ private:
 	//std::shared_ptr<Texture> usedTexture = nullptr;
 	void* usedTexture = nullptr;
 	RenderingSettings lastSettings;
+	unsigned int lastUsedColor = 0x00000000;
+	unsigned int lastUsedColor2 = 0xFFFFFFFF;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 

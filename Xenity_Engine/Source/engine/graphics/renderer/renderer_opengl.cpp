@@ -101,7 +101,9 @@ void RendererOpengl::Stop()
 
 void RendererOpengl::NewFrame()
 {
-	lastUsedColor = Vector4(-1, -1, -1, -1);
+	lastUsedColor = 0x00000000;
+	lastUsedColor2 = 0xFFFFFFFF;
+
 	for (int i = 0; i < maxLightCount; i++)
 	{
 		lastUpdatedLights[i] = nullptr;
@@ -290,7 +292,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 	}
 
-	if (lastSettings.useBlend != settings.useBlend)
+	/*if (lastSettings.useBlend != settings.useBlend)
 	{
 		if (settings.useBlend)
 		{
@@ -300,6 +302,27 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		else
 		{
 			glDisable(GL_BLEND);
+		}
+	}*/
+
+	if (lastSettings.renderingMode != settings.renderingMode)
+	{
+		if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		{
+			glDisable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+		}
+		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		{
+			glDisable(GL_BLEND);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.5f);
+		}
+		else
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_ALPHA_TEST);
 		}
 	}
 
@@ -320,12 +343,14 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	if (settings.useBlend)
+	if (settings.renderingMode == MaterialRenderingModes::Transparent) 
+	{
 		glDepthMask(GL_FALSE);
+	}
 
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
-	lastSettings.useBlend = settings.useBlend;
+	lastSettings.renderingMode = settings.renderingMode;
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
@@ -337,7 +362,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 
-	const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+	/*const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
 
 	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
@@ -347,6 +372,22 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
 		}
 		else 
+		{
+			lastShaderIdUsedColor = material.GetShader()->m_fileId;
+			material.GetShader()->SetShaderAttribut("color", colorMix);
+		}
+	}*/
+
+	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+	{
+		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
+		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
+		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+		if constexpr (Graphics::UseOpenGLFixedFunctions)
+		{
+			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+		}
+		else
 		{
 			lastShaderIdUsedColor = material.GetShader()->m_fileId;
 			material.GetShader()->SetShaderAttribut("color", colorMix);
@@ -414,7 +455,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 
-	lastSettings.useBlend = true;
+	lastSettings.renderingMode = MaterialRenderingModes::Transparent;
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = false;
@@ -434,7 +475,9 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	const RGBA& vec4Color = color.GetRGBA();
 	const Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
-	lastUsedColor = Vector4(-1, -1, -1, -1);
+	//lastUsedColor = Vector4(-1, -1, -1, -1);
+	lastUsedColor = 0x00000000;
+	lastUsedColor2 = 0xFFFFFFFF;
 	glDrawArrays(GL_LINES, 0, 2);
 }
 

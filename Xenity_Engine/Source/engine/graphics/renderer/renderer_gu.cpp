@@ -108,7 +108,8 @@ void RendererGU::NewFrame()
 	{
 		lastUpdatedLights[i] = nullptr;
 	}
-
+	lastUsedColor = 0x00000000;
+	lastUsedColor2 = 0xFFFFFFFF;
 	// sceGuClearColor(0);
 	// sceGuClearDepth(1);
 	/*if (dialog)
@@ -386,7 +387,12 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	sceGuColor((material.GetColor() * subMesh.meshData->unifiedColor).GetUnsignedIntABGR());
+	if (lastUsedColor != material.GetColor().GetUnsignedIntABGR() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntABGR())
+	{
+		lastUsedColor = material.GetColor().GetUnsignedIntABGR();
+		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntABGR();
+		sceGuColor((material.GetColor() * subMesh.meshData->unifiedColor).GetUnsignedIntABGR());
+	}
 
 	// Bind texture
 	if (usedTexture != texture.data[0])

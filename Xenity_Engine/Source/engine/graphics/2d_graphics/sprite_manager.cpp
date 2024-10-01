@@ -84,7 +84,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 	else
 		renderSettings.invertFaces = false;
 
-	renderSettings.useBlend = true;
+	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 	renderSettings.useDepth = false;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
@@ -113,7 +113,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 	else
 		renderSettings.invertFaces = false;
 
-	renderSettings.useBlend = true;
+	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 	renderSettings.useDepth = false;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
@@ -154,7 +154,7 @@ void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)
 	RenderingSettings renderSettings = RenderingSettings();
 
 	renderSettings.invertFaces = false;
-	renderSettings.useBlend = true;
+	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 	renderSettings.useDepth = false;
 	renderSettings.useTexture = true;
 	renderSettings.useLighting = false;
