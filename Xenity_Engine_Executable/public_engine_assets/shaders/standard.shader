@@ -6,6 +6,7 @@
 layout (location = 0) in vec3 position;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
+layout(location = 3) in vec3 color;
 
 out vec2 TexCoord;
 out vec3 Normal;
@@ -31,7 +32,7 @@ void main()
 
 uniform vec3 ambiantLightColor;
 uniform vec3 cameraPos;
-
+uniform vec4 color;
 in vec3 Normal;
 in vec3 FragPos;
 
@@ -190,9 +191,9 @@ void main()
 	}
 	result += vec3(texture(material.diffuse, (TexCoord * tiling) + offset)) * ambientLight;
 
-	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a;
+	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a* color.w;
 
-	gl_FragColor = vec4(result, alpha); //Add texture color
+	gl_FragColor = vec4(color.xyz * result, alpha); //Add texture color
 }
 
 //-------------- {psvita}
