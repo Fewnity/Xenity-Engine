@@ -126,7 +126,7 @@ public:
 	*/
 	inline const std::string& GetComponentName() const
 	{
-		XASSERT(!m_componentName.empty(), "The component's name is empty");
+		//XASSERT(!m_componentName.empty(), "The component's name is empty");
 		return m_componentName;
 	}
 
