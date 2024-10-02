@@ -35,7 +35,7 @@ Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add option to disable the grid
 Add an option to create a material from a texture
-Grid looks wrong with an used cutout material
+Add cutout support on PSP
 Add color to standard shader in psvita
 
 --- Can be done for the next release

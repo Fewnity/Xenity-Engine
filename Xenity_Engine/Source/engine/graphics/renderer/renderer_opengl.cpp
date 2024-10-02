@@ -442,6 +442,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 		glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
