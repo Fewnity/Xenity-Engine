@@ -346,16 +346,24 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 		}
 	}
 
-	if (lastSettings.useBlend != settings.useBlend)
+	if (lastSettings.renderingMode != settings.renderingMode)
 	{
-		if (settings.useBlend)
+		if (settings.renderingMode == MaterialRenderingModes::Opaque)
 		{
-			sceGuEnable(GU_BLEND);
-			sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
+			sceGuDisable(GU_BLEND);
+			sceGuDisable(GU_ALPHA_TEST);
+		}
+		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		{
+			sceGuDisable(GU_BLEND);
+			sceGuEnable(GU_ALPHA_TEST);
+			sceGuAlphaFunc(GU_GREATER, 128, 0xff);
 		}
 		else
 		{
-			sceGuDisable(GU_BLEND);
+			sceGuEnable(GU_BLEND);
+			sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
+			sceGuDisable(GU_ALPHA_TEST);
 		}
 	}
 
@@ -377,12 +385,14 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	}
 
 	// glDepthMask needs GL_FALSE here, pspsdk is doing this wrong, may change in a sdk update
-	if (settings.useBlend)
+	if (settings.renderingMode == MaterialRenderingModes::Transparent)
+	{
 		sceGuDepthMask(GU_TRUE);
+	}
 
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
-	lastSettings.useBlend = settings.useBlend;
+	lastSettings.renderingMode = settings.renderingMode;
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
@@ -589,10 +599,9 @@ void RendererGU::SetFog(bool m_active)
 		sceGuEnable(GU_FOG);
 	else
 		sceGuDisable(GU_FOG);
-#if defined(__PSP__)
+
 	if (m_active)
 		sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
-#endif
 }
 
 void RendererGU::SetFogValues(float start, float end, const Color& color)
