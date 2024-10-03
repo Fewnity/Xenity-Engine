@@ -88,6 +88,10 @@ void RendererOpengl::Setup()
 #if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	glEnable(GL_MULTISAMPLE);
 #endif
+
+	// Disable ambient light
+	GLfloat globalAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 }
 
 void RendererOpengl::Stop()
@@ -362,22 +366,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 
-	/*const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
-
-	if (lastUsedColor != colorMix || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
-	{
-		lastUsedColor = colorMix;
-		if constexpr (Graphics::UseOpenGLFixedFunctions)
-		{
-			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
-		}
-		else 
-		{
-			lastShaderIdUsedColor = material.GetShader()->m_fileId;
-			material.GetShader()->SetShaderAttribut("color", colorMix);
-		}
-	}*/
-
+	// Maybe check if useLighting was changed to recalculate the color in fixed pipeline?
 	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
@@ -385,7 +374,15 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
 		if constexpr (Graphics::UseOpenGLFixedFunctions)
 		{
-			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+			if (settings.useLighting) 
+			{
+				GLfloat materialDiffuse[] = { colorMix.x, colorMix.y, colorMix.z, colorMix.w };
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
+			}
+			else 
+			{
+				glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+			}
 		}
 		else
 		{
@@ -476,10 +473,10 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	const RGBA& vec4Color = color.GetRGBA();
 	const Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
-	//lastUsedColor = Vector4(-1, -1, -1, -1);
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
 	glDrawArrays(GL_LINES, 0, 2);
+	glColor4f(1, 1, 1, 1);
 }
 
 unsigned int RendererOpengl::CreateNewTexture()
@@ -538,7 +535,7 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
 	if (type == LightType::Directional || type == LightType::Ambient)
-		typeIntensity = 5;
+		typeIntensity = 2;
 	else if (type == LightType::Point)
 		typeIntensity = 2;
 	else if (type == LightType::Spot)
