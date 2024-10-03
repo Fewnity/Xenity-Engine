@@ -60,6 +60,8 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 	float alpha = 1;
 	if (distance <= 1.3f)
 		alpha = distance - 0.3f;
+	if (alpha < 0)
+		alpha = 0;
 
 	const RGBA& rgba = color.GetRGBA();
 	SpriteManager::DrawSprite(position, Graphics::usedCamera->GetTransform()->GetRotation(), Vector3(0.2f), Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), *AssetManager::unlitMaterial, texture.get());
