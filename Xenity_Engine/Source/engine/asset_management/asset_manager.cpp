@@ -215,6 +215,7 @@ void AssetManager::AddLight(Light* light)
 	lightCount++;
 
 	Graphics::CreateLightLists();
+	UpdateLightIndices();
 }
 
 void AssetManager::UpdateLightIndices()
@@ -458,6 +459,7 @@ void AssetManager::RemoveLight(Light* light)
 		lights.erase(lights.begin() + lightIndex);
 		lightCount--;
 		Graphics::CreateLightLists();
+		UpdateLightIndices();
 	}
 }
 
